@@ -5,11 +5,13 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PageNotFoundComponent } from './_components/page-not-found/page-not-found.component';
+import { TasklistComponent } from './_components/tasklist/tasklist.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    TasklistComponent
   ],
   imports: [
     BrowserModule,
