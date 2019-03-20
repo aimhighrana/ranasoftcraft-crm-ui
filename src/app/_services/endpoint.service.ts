@@ -8,8 +8,9 @@ export class EndpointService {
 
   constructor() { }
 
-  public login(): string {
-    return '<api_url>' + '/' + '<api_version>' + '/login';
+  public getTasks(): string {
+    // return '<api_url>' + '/' + '<api_version>' + '/login';
+    return 'https://mdoqa.masterdataonline.com/MDOSF/REST/restTasklistServices/taskList?userId=demorev';
   }
 
 }

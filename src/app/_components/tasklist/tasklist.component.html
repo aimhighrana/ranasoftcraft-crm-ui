@@ -1,3 +1,7 @@
-<p>
-  tasklist works!
-</p>
+<mat-list>
+  <mat-list-item *ngFor="let task of taskResponse.data;">
+    {{task}}
+  </mat-list-item>
+</mat-list>
+<mat-spinner diameter="500" strokeWidth="30"></mat-spinner>
+<mat-toolbar>TEST BIG TOOL BAR</mat-toolbar>

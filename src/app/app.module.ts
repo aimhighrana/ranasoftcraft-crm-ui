@@ -6,15 +6,18 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PageNotFoundComponent } from './_components/page-not-found/page-not-found.component';
 import { TasklistComponent } from './_components/tasklist/tasklist.component';
+import { LoginModule } from './login/login.module';
+import { HomeModule } from './home/home.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    PageNotFoundComponent,
-    TasklistComponent
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule,
+    LoginModule,
+    HomeModule,
     AppRoutingModule,
     BrowserAnimationsModule
   ],
