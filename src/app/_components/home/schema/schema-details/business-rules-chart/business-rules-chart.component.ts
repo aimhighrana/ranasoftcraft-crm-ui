@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { ChartDataSets, ChartType, ChartOptions } from 'chart.js';
+import { Label } from 'ng2-charts';
+import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-details.service';
 
 @Component({
   selector: 'pros-business-rules-chart',
@@ -7,9 +10,49 @@ import { Component, OnInit } from '@angular/core';
 })
 export class BusinessRulesChartComponent implements OnInit {
 
-  constructor() { }
+  businessChartDataSet:ChartDataSets[];
+  businessChartLabels:Label[];
+  businessChartLegend:boolean =false;
+  businessChartType:ChartType='bar';
+  businessChartOptions:ChartOptions={
+    responsive:true,
+    scales:{
+      xAxes:[{
+        stacked:true,
+        scaleLabel:{
+          display:true,
+          labelString:'Business Rules'
+        },
+        categoryPercentage: .2,
+			  barPercentage: 1,
+      }   
+    ],
+      yAxes:[{
+        stacked:true,
+        scaleLabel:{
+          display:true,
+          labelString:'Value'
+        }
+      }
+    ]
+    },
+    tooltips:{
+      mode:'label'
+    }
+
+  }
+  
+  constructor(private _schemaDetailService:SchemaDetailsService) { }
 
   ngOnInit() {
+    this.getBusinessChartData();
   }
 
+  getBusinessChartData(){
+    let data = this._schemaDetailService.getSchemaBusinessRuleChartData();
+    if(data!=null){
+      this.businessChartDataSet = data.dataSet;
+      this.businessChartLabels = data.labels;
+    }
+  }
 }

@@ -51,7 +51,7 @@ export class SchemaTileComponent implements OnInit {
   ngOnInit() {
   }
 
-  openDialog(): void {
+  openDialog(event): void {
     const dialogRef = this._dialog.open(SchemaDialogComponent, {
       width: '600px',
       data:{"moduleId":this.moduleId,"schemaId":this.schemaId,"schemaName":this.title}
@@ -59,6 +59,7 @@ export class SchemaTileComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
     });
+    event.stopPropagation();
   }
 
 }
