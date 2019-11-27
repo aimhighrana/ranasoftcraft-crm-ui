@@ -2,10 +2,10 @@ import { TestBed, async, inject } from '@angular/core/testing';
 
 import { AuthGuard } from './auth.guard';
 import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-//import { AuthenticationService } from '../_services/authentication.service';
+// import { AuthenticationService } from '../_services/authentication.service';
 
 describe('AuthGuard', () => {
-  //const authenticationService = jasmine.createSpyObj<AuthenticationService>('AuthenticationService', ['currentUser']);
+  // const authenticationService = jasmine.createSpyObj<AuthenticationService>('AuthenticationService', ['currentUser']);
   const router = {
     navigate: jasmine.createSpy('navigate')
   };
@@ -15,7 +15,7 @@ describe('AuthGuard', () => {
       providers: [
         AuthGuard,
         {provide: Router, useValue: router},
-        //{provide: AuthenticationService, useValue: authenticationService}
+        // {provide: AuthenticationService, useValue: authenticationService}
       ]
     });
   });
@@ -27,7 +27,7 @@ describe('AuthGuard', () => {
   it('should be false for not authenticated', inject([AuthGuard], (guard: AuthGuard) => {
     // TODO Check call params also
     // let routerSS: RouterStateSnapshot = jasmine.createSpyObj<RouterStateSnapshot>('RouterStateSnapshot', ['toString']);
-    expect(guard.canActivate(<any>{}, <any>{})).toBeFalsy();
+    expect(guard.canActivate({} as any, {} as any)).toBeFalsy();
     expect(router.navigate).toHaveBeenCalled();
   }));
 

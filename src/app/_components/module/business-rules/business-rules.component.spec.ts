@@ -10,9 +10,9 @@ describe('BusinessRulesComponent', () => {
   let fixture: ComponentFixture<BusinessRulesComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({   
-      imports:[MatCardModule,MatToolbarModule,MatIconModule,MatDividerModule,MatChipsModule,MatListModule,RouterModule.forRoot([])],                                           
-      declarations: [ BusinessRulesComponent,BreadcrumbComponent ]
+    TestBed.configureTestingModule({
+      imports: [MatCardModule, MatToolbarModule, MatIconModule, MatDividerModule, MatChipsModule, MatListModule, RouterModule.forRoot([])],
+      declarations: [ BusinessRulesComponent, BreadcrumbComponent ]
     })
     .compileComponents();
   }));

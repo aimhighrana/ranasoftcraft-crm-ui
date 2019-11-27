@@ -10,9 +10,9 @@ describe('ChangeRequestComponent', () => {
   let fixture: ComponentFixture<ChangeRequestComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({     
-      imports:[MatCardModule,MatToolbarModule,MatIconModule,MatDividerModule,MatChipsModule,MatListModule,RouterModule.forRoot([])],                                         
-      declarations: [ ChangeRequestComponent,BreadcrumbComponent ]
+    TestBed.configureTestingModule({
+      imports: [MatCardModule, MatToolbarModule, MatIconModule, MatDividerModule, MatChipsModule, MatListModule, RouterModule.forRoot([])],
+      declarations: [ ChangeRequestComponent, BreadcrumbComponent ]
     })
     .compileComponents();
   }));

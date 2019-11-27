@@ -11,9 +11,9 @@ describe('UserManagementComponent', () => {
   let fixture: ComponentFixture<UserManagementComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({     
-      imports:[MatCardModule,MatToolbarModule,MatIconModule,MatDividerModule,MatChipsModule,RouterModule.forRoot([])],  
-      declarations: [ UserManagementComponent,BreadcrumbComponent ,AdminTileComponent]
+    TestBed.configureTestingModule({
+      imports: [MatCardModule, MatToolbarModule, MatIconModule, MatDividerModule, MatChipsModule, RouterModule.forRoot([])],
+      declarations: [ UserManagementComponent, BreadcrumbComponent , AdminTileComponent]
     })
     .compileComponents();
   }));

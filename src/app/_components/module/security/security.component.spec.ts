@@ -10,9 +10,9 @@ describe('SecurityComponent', () => {
   let fixture: ComponentFixture<SecurityComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({ 
-      imports:[MatCardModule,MatToolbarModule,MatIconModule,MatDividerModule,MatChipsModule,MatListModule,RouterModule.forRoot([])],                                             
-      declarations: [ SecurityComponent,BreadcrumbComponent ]
+    TestBed.configureTestingModule({
+      imports: [MatCardModule, MatToolbarModule, MatIconModule, MatDividerModule, MatChipsModule, MatListModule, RouterModule.forRoot([])],
+      declarations: [ SecurityComponent, BreadcrumbComponent ]
     })
     .compileComponents();
   }));

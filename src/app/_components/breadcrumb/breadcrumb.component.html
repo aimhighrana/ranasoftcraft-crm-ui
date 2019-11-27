@@ -1,14 +1,16 @@
 <mat-toolbar class="breadcrumbs">
-    <mat-toolbar-row>
+    <mat-toolbar-row *ngIf="crumbs && crumbs.heading">
         <h1>{{crumbs.heading}}</h1>
         <span class="flex-spacer"></span>
         <!-- <button mat-flat-button color="primary">Create New </button> -->
     </mat-toolbar-row>
     <mat-toolbar-row>
         <mat-icon color="primary">home</mat-icon>
-        <ng-template ngFor let-link [ngForOf]="crumbs.links">
-            <mat-icon>keyboard_arrow_right</mat-icon>
-            <a routerLink="{{link.link}}" class="mat-h4" color="primary">{{ link.text }}</a>
+        <ng-template [ngIf]="crumbs && crumbs.links">
+            <ng-template ngFor let-link [ngForOf]="crumbs.links">
+                <mat-icon>keyboard_arrow_right</mat-icon>
+                <a routerLink="{{link.link}}" class="mat-h4" color="primary">{{ link.text }}</a>
+            </ng-template>
         </ng-template>
     </mat-toolbar-row>
 </mat-toolbar>

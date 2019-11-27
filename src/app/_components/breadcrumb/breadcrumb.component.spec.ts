@@ -4,19 +4,21 @@ import { BreadcrumbComponent } from './breadcrumb.component';
 import { Component } from '@angular/core';
 import { MatToolbarModule, MatIconModule } from '@angular/material';
 import { RouterModule } from '@angular/router';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('BreadcrumbComponent', () => {
 
   let component: BreadcrumbComponent;
   let fixture: ComponentFixture<BreadcrumbComponent>;
-  
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports:[
-        MatToolbarModule,
-        MatIconModule,RouterModule.forRoot([])
+      imports: [
+        AppMaterialModuleForSpec,
+        RouterTestingModule
       ],
-      declarations: [ BreadcrumbComponent ]      
+      declarations: [ BreadcrumbComponent ]
     })
     .compileComponents();
   }));
@@ -40,7 +42,7 @@ describe('BreadcrumbComponent', () => {
     template:'<pros-breadcrumb [crumbs]="breadcrumb"></pros-breadcrumb>'
   })
   class BreadcrumbComponent{
-    
+
   }
   */
 });

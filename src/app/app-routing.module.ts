@@ -1,7 +1,6 @@
 import { NgModule, Component } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { PageNotFoundComponent } from './_components/page-not-found/page-not-found.component';
-import { TasklistComponent } from './_components/tasklist/tasklist.component';
 import { IntMappingComponent } from './_components/int-mapping/int-mapping.component';
 import { AdminLayoutComponent } from './_components/admin-layout/admin-layout.component';
 import { AdminHomeComponent } from './_components/admin-home/admin-home.component';
@@ -48,13 +47,12 @@ import { SchemaComponent } from './_components/home/schema/schema/schema.compone
 import { SchemaDetailsComponent } from './_components/home/schema/schema-details/schema-details.component';
 
 const routes: Routes = [
-   { path: 'tasklist', component: TasklistComponent },
-   {path:'home',component:HomeLayoutComponent,
-    children:[
-      { path: '', redirectTo: 'schema', pathMatch: 'full'},
-      {path:'schema',component:SchemaComponent},      
-      {path:'schema/schema-list/:schemaGrpId/:title',component:SchemalistComponent},
-      {path:'schema/schema-details/:schemaId/:title',component:SchemaDetailsComponent}
+   { path: 'home', component: HomeLayoutComponent,
+     children: [
+      { path: '', redirectTo: 'schema', pathMatch: 'full' },
+      { path: 'schema', component: SchemaComponent },
+      { path: 'schema/schema-list/:schemaGrpId/:title', component: SchemalistComponent },
+      { path: 'schema/schema-details/:schemaId/:title', component: SchemaDetailsComponent }
     ]
   },
   { path: 'admin', component: AdminLayoutComponent,

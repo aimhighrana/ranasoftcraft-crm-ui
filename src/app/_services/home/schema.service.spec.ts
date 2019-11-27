@@ -5,7 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 describe('SchemaService', () => {
   beforeEach(() => TestBed.configureTestingModule({
-    imports:[HttpClientModule]
+    imports: [HttpClientModule]
   }));
 
   it('should be created', () => {

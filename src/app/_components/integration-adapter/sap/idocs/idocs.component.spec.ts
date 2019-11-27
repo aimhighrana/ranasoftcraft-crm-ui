@@ -10,9 +10,9 @@ describe('IdocsComponent', () => {
   let fixture: ComponentFixture<IdocsComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({ 
-      imports:[MatIconModule,MatCardModule,MatListModule,MatToolbarModule,RouterModule.forRoot([])],     
-      declarations: [ IdocsComponent,BreadcrumbComponent ]
+    TestBed.configureTestingModule({
+      imports: [MatIconModule, MatCardModule, MatListModule, MatToolbarModule, RouterModule.forRoot([])],
+      declarations: [ IdocsComponent, BreadcrumbComponent ]
     })
     .compileComponents();
   }));

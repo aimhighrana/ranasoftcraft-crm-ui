@@ -12,8 +12,8 @@ describe('WebserviceComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports:[MatCardModule,MatToolbarModule,MatIconModule,MatDividerModule,MatChipsModule,MatListModule,RouterModule.forRoot([])],                                              
-      declarations: [ WebserviceComponent,BreadcrumbComponent,AdminTileComponent ]
+      imports: [MatCardModule, MatToolbarModule, MatIconModule, MatDividerModule, MatChipsModule, MatListModule, RouterModule.forRoot([])],
+      declarations: [ WebserviceComponent, BreadcrumbComponent, AdminTileComponent ]
     })
     .compileComponents();
   }));

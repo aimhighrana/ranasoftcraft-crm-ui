@@ -11,68 +11,68 @@ import * as moment from 'moment';
 })
 export class CategoriesChartComponent implements OnInit {
 
-  categoryChartData:ChartDataSets[];
-  categoryChartLabels:Label[]=this.generateDynamicTimeSeries();
-  categoryChartOptions:ChartOptions={
-    responsive:true,     
-    elements:{line:{fill:false}},
-    legend:{
-      display:true,
-      position:'top',
-      
-    },   
-    scales:{xAxes:[{
-      type:'time',
-      time:{tooltipFormat:'lll'},
-      scaleLabel:{display:true,labelString:'Date'},
-      ticks:{maxRotation:0}      
-    }],yAxes:[{
-      scaleLabel:{
-        display:true,
-        labelString:'Value'
+  categoryChartData: ChartDataSets[];
+  categoryChartLabels: Label[] = this.generateDynamicTimeSeries();
+  categoryChartOptions: ChartOptions = {
+    responsive: true,
+    elements: {line: {fill: false}},
+    legend: {
+      display: true,
+      position: 'top',
+
+    },
+    scales: {xAxes: [{
+      type: 'time',
+      time: {tooltipFormat: 'lll'},
+      scaleLabel: {display: true, labelString: 'Date'},
+      ticks: {maxRotation: 0}
+    }], yAxes: [{
+      scaleLabel: {
+        display: true,
+        labelString: 'Value'
       }
     }]},
-    plugins:{
-      zoom:{
-        pan:{
-          enabled:true,
-          mode:'x',
-          speed:10,
-          threshold:10,            
-          onPan:function(){console.log('I am pan ...!');},
-          onPanComplete:function(){console.log('On pan Complete !')}
+    plugins: {
+      zoom: {
+        pan: {
+          enabled: true,
+          mode: 'x',
+          speed: 10,
+          threshold: 10,
+          onPan() {console.log('I am pan ...!'); },
+          onPanComplete() {console.log('On pan Complete !'); }
         },
-        zoom:{
-          enabled:true,
-          grag:true,
-          mode:'x',
-          limits:{max:10,min:0.5},          
-          onZoom:function(){console.log('ONZOOM')},
-          onZoomComplete:function(){console.log('ZOOM Complete')}
+        zoom: {
+          enabled: true,
+          grag: true,
+          mode: 'x',
+          limits: {max: 10, min: 0.5},
+          onZoom() {console.log('ONZOOM'); },
+          onZoomComplete() {console.log('ZOOM Complete'); }
         }
     }
    }
-  }
-  categoryChartLegend:boolean =true;
-  categoryChartType:ChartType='line';
+  };
+  categoryChartLegend = true;
+  categoryChartType: ChartType = 'line';
 
-  constructor(private __schemaDetailsService:SchemaDetailsService) { }
+  constructor(private schemaDetailsService: SchemaDetailsService) { }
 
   ngOnInit() {
     this.getCategoryChartData();
   }
-  getCategoryChartData(){
-    let categoryChartdata = this.__schemaDetailsService.getCategoryChartData();
-    if(categoryChartdata!=undefined && categoryChartdata!=''){
+  getCategoryChartData() {
+    const categoryChartdata = this.schemaDetailsService.getCategoryChartData();
+    if (categoryChartdata !== undefined && categoryChartdata !== '') {
       this.categoryChartData = categoryChartdata.dataSet;
-      //this.categoryChartLabels = categoryChartdata.labels;
+      // this.categoryChartLabels = categoryChartdata.labels;
     }
   }
 
-  generateDynamicTimeSeries():Label[]{
-    let array = new Array();
-    for(let i=0;i<7;i++){
-      array.push(moment().add(i,'d').toDate());
+  generateDynamicTimeSeries(): Label[] {
+    const array = new Array();
+    for (let i = 0; i < 7; i++) {
+      array.push(moment().add(i, 'd').toDate());
     }
     return array;
   }

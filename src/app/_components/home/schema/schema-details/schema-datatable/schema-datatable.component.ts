@@ -12,16 +12,16 @@ import { SchemaDatatableDialogComponent } from '../schema-datatable-dialog/schem
 })
 export class SchemaDatatableComponent implements OnInit {
 
-  
-  tabs=['All','Error','Success','Skipped','Draft','Outdated','Duplicate'];
-  schemaDetailsTable:Schemadetailstable;
-  dataSource:MatTableDataSource<SchemaDataSource>;
+
+  tabs = ['All', 'Error', 'Success', 'Skipped', 'Draft', 'Outdated', 'Duplicate'];
+  schemaDetailsTable: Schemadetailstable;
+  dataSource: MatTableDataSource<SchemaDataSource>;
   displayedColumns: string[];
   selection = new SelectionModel<SchemaDataSource>(true, []);
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
-  schemaStatusRecordCount:any={};
+  schemaStatusRecordCount: any = {};
   /*for checkbox column */
   isAllSelected() {
     const numSelected = this.selection.selected.length;
@@ -39,66 +39,66 @@ export class SchemaDatatableComponent implements OnInit {
     }
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.materialNumber + 1}`;
   }
-  
-  constructor(private _schemaDetailsService:SchemaDetailsService,private _dialog:MatDialog) { }
+
+  constructor(private schemaDetailsService: SchemaDetailsService, private dialog: MatDialog) { }
 
   ngOnInit() {
     this.loadSchemaDetailsTable();
     this.getSchemaStatusCount();
     this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;    
+    this.dataSource.sort = this.sort;
   }
-  loadSchemaDetailsTable(){
-    this.schemaDetailsTable =  this._schemaDetailsService.getSchemaDetailsTableData();    
-    let  datas:SchemaDataSource[]  = this.schemaDetailsTable.dataSource;
+  loadSchemaDetailsTable() {
+    this.schemaDetailsTable =  this.schemaDetailsService.getSchemaDetailsTableData();
+    const  datas: SchemaDataSource[]  = this.schemaDetailsTable.dataSource;
     this.dataSource = new MatTableDataSource<SchemaDataSource>(datas);
     this.displayedColumns = this.schemaDetailsTable.displayedColumns;
   }
-  loadSchemaErrorDetailsTable(){
-    this.schemaDetailsTable =  this._schemaDetailsService.getSchemaAllErrorData();
-    let  datas:SchemaDataSource[]  = this.schemaDetailsTable.dataSource;
+  loadSchemaErrorDetailsTable() {
+    this.schemaDetailsTable =  this.schemaDetailsService.getSchemaAllErrorData();
+    const  datas: SchemaDataSource[]  = this.schemaDetailsTable.dataSource;
     this.dataSource = new MatTableDataSource<SchemaDataSource>(datas);
     this.displayedColumns = this.schemaDetailsTable.displayedColumns;
   }
 
-  manageStatusCount(index:number):boolean{
-    if(index<2){
+  manageStatusCount(index: number): boolean {
+    if (index < 2) {
       return false;
-    }else{
+    } else {
       return true;
     }
   }
 
-  getSchemaStatusCount(){
-    let data = this._schemaDetailsService.getSchemaStatusCount();
-    if(data!=undefined && data!=""){
+  getSchemaStatusCount() {
+    const data = this.schemaDetailsService.getSchemaStatusCount();
+    if (data !== undefined && data !== '') {
       this.schemaStatusRecordCount = data.status_count;
     }
   }
 
-  loadSchameDataByStatus(index:number){
-    if(index!=null){
-      if(this.tabs[index]=='All'){
+  loadSchameDataByStatus(index: number) {
+    if (index != null) {
+      if (this.tabs[index] === 'All') {
         this.loadSchemaDetailsTable();
-      }else if(this.tabs[index]=='Error'){
+      } else if (this.tabs[index] === 'Error') {
         this.loadSchemaErrorDetailsTable();
       }
-    }    
+    }
   }
 
-  openChooseColumnDialog(){
-    const dialogRef = this._dialog.open(SchemaDatatableDialogComponent, {
-      width: '600px'      
+  openChooseColumnDialog() {
+    const dialogRef = this.dialog.open(SchemaDatatableDialogComponent, {
+      width: '600px'
     });
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
     });
   }
 
-  manageChips(index:number){
-     return (index==undefined || index<2)?true:false;
+  manageChips(index: number) {
+     return (index === undefined || index < 2) ? true : false;
   }
-  getHideStatusCount(status:any){
-    return '+'+(status.length-2);
+  getHideStatusCount(status: any) {
+    return '+' + (status.length - 2);
   }
 }

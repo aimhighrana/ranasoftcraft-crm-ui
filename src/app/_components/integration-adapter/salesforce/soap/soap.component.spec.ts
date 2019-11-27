@@ -11,8 +11,8 @@ describe('SoapComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports:[MatCardModule,MatToolbarModule,MatIconModule,MatDividerModule,MatChipsModule,MatListModule,RouterModule.forRoot([])],                                              
-      declarations: [ SoapComponent,BreadcrumbComponent ]
+      imports: [MatCardModule, MatToolbarModule, MatIconModule, MatDividerModule, MatChipsModule, MatListModule, RouterModule.forRoot([])],
+      declarations: [ SoapComponent, BreadcrumbComponent ]
     })
     .compileComponents();
   }));

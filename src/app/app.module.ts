@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core'; 
+import { NgModule } from '@angular/core';
 
 import {
   MatAutocompleteModule,
@@ -37,7 +37,7 @@ import {
   MatToolbarModule,
   MatTooltipModule,
   MatTreeModule,
-  MatFormFieldModule ,  
+  MatFormFieldModule ,
   MatLineModule
 } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -45,9 +45,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { PageNotFoundComponent } from './_components/page-not-found/page-not-found.component';
-import { TasklistComponent } from './_components/tasklist/tasklist.component';
-import { LoginModule } from './login/login.module';
-import { HomeModule } from './home/home.module';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { IntMappingComponent } from './_components/int-mapping/int-mapping.component';
 import { AdminLayoutComponent } from './_components/admin-layout/admin-layout.component';
@@ -98,11 +95,11 @@ import { JwtInterceptorService } from './_services/jwt-interceptor.service';
 import { HomeLayoutComponent } from './_components/home/home-layout/home-layout.component';
 import { SchemaProgressbarComponent } from './_components/home/schema-progressbar/schema-progressbar.component';
 import {FlexLayoutModule} from '@angular/flex-layout';
-import { SchemalistComponent } from './_components/home/schema/schemalist/schemalist.component'
+import { SchemalistComponent } from './_components/home/schema/schemalist/schemalist.component';
 import {ChartsModule} from 'ng2-charts';
 import { SchemaComponent } from './_components/home/schema/schema/schema.component';
 import { SchemaLayoutComponent } from './_components/home/schema/schema-layout/schema-layout.component';
-import { SchemaTileComponent } from './_components/home/schema/schema-tile/schema-tile.component'
+import { SchemaTileComponent } from './_components/home/schema/schema-tile/schema-tile.component';
 import { DataSource } from '@angular/cdk/table';
 import { SchemaDetailsComponent } from './_components/home/schema/schema-details/schema-details.component';
 import { SchemaDialogComponent } from './_components/home/schema/schema-dialog/schema-dialog.component';
@@ -111,10 +108,11 @@ import { CategoriesChartComponent } from './_components/home/schema/schema-detai
 import { BusinessRulesChartComponent } from './_components/home/schema/schema-details/business-rules-chart/business-rules-chart.component';
 import { SchemaDatatableComponent } from './_components/home/schema/schema-details/schema-datatable/schema-datatable.component';
 import { SchemaDatatableDialogComponent } from './_components/home/schema/schema-details/schema-datatable-dialog/schema-datatable-dialog.component';
+
 @NgModule({
   declarations: [
     AppComponent,
-    PageNotFoundComponent,    
+    PageNotFoundComponent,
     IntMappingComponent,
     AdminLayoutComponent,
     AdminHomeComponent,
@@ -157,7 +155,7 @@ import { SchemaDatatableDialogComponent } from './_components/home/schema/schema
     SecurityComponent,
     CustomEventsComponent,
     BusinessRulesComponent,
-    NounsCharacteristicsComponent,   
+    NounsCharacteristicsComponent,
     HomeLayoutComponent,
     SchemaProgressbarComponent,
     SchemalistComponent,
@@ -170,19 +168,17 @@ import { SchemaDatatableDialogComponent } from './_components/home/schema/schema
     CategoriesChartComponent,
     BusinessRulesChartComponent,
     SchemaDatatableComponent,
-    SchemaDatatableDialogComponent    
+    SchemaDatatableDialogComponent
   ],
   imports: [
-  	LoginModule,
-    HomeModule,
     HttpClientModule,
     BrowserModule,
     FormsModule,
-    ReactiveFormsModule,    
-    // for flex-progress bar 
+    ReactiveFormsModule,
+    // for flex-progress bar
     FlexLayoutModule,
-    // for chart     
-    ChartsModule, 
+    // for chart
+    ChartsModule,
     // Material Modules Start
     MatAutocompleteModule,
     MatBadgeModule,
@@ -222,20 +218,20 @@ import { SchemaDatatableDialogComponent } from './_components/home/schema/schema
     MatTreeModule,
     MatListModule,
     MatLineModule,
-    MatTableModule,    
+    MatTableModule,
     // Material Modules End
     // Theme changer CDK
     OverlayModule,
-    BrowserAnimationsModule,    
+    BrowserAnimationsModule,
     AppRoutingModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptorService, multi: true },
   ],
   bootstrap: [ AppComponent ],
-  exports:[
+  exports: [
     BreadcrumbComponent
   ],
-  entryComponents:[SchemaDialogComponent,SchemaDatatableDialogComponent]
+  entryComponents: [SchemaDialogComponent, SchemaDatatableDialogComponent]
 })
 export class AppModule { }

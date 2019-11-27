@@ -11,39 +11,45 @@ import { SchemaList, SchemaDetails } from 'src/app/_models/schema/schemalist';
   styleUrls: ['./schemalist.component.scss']
 })
 export class SchemalistComponent implements OnInit {
-  title:string;
+  title: string;
   breadcrumb: Breadcrumb = {
-    heading: this.title+' List',
+    heading: this.title + ' List',
     links: [
       {
         link: '/home/schema',
         text: 'Schema'
-      } 
+      }
     ]
   };
-  constructor(private _schemaService:SchemaService,private _schemaListService:SchemalistService,private _activatedRouter:ActivatedRoute,private _router:Router) { }
+  constructor(
+    private schemaService: SchemaService,
+    private schemaListService: SchemalistService,
+    private activatedRouter: ActivatedRoute,
+    private router: Router
+  ) { }
 
-  schemaGroupId:string;
-  schemaLists:SchemaList[];  
+  schemaGroupId: string;
+  schemaLists: SchemaList[];
   ngOnInit() {
-    this._activatedRouter.params.subscribe(params=>{
-      let grpId = params['schemaGrpId'];
-      let title = params['title'];
-      if(grpId!=undefined && grpId!=""){
+    this.activatedRouter.params.subscribe(params => {
+      const grpId = params.schemaGrpId;
+      const title = params.title;
+      if (grpId !== undefined && grpId !== '') {
         this.schemaGroupId = grpId;
         this.title = title;
-        this.breadcrumb.heading=this.title+' List';
+        this.breadcrumb.heading = this.title + ' List';
       }
     });
     this.getAllSchemaList();
   }
 
-  getAllSchemaList(){
-    if(this.schemaGroupId!=undefined && this.schemaGroupId!="")
-     this.schemaLists =  this._schemaListService.getAllSchemaDetails(this.schemaGroupId);
+  getAllSchemaList() {
+    if (this.schemaGroupId !== undefined && this.schemaGroupId !== '') {
+     this.schemaLists =  this.schemaListService.getAllSchemaDetails(this.schemaGroupId);
+    }
   }
 
-  showSchemaDetails(schemaDetails:any){
-    this._router.navigate(['/home/schema/schema-details',schemaDetails.schema_id,schemaDetails.title]);
+  showSchemaDetails(schemaDetails: any) {
+    this.router.navigate(['/home/schema/schema-details', schemaDetails.schema_id, schemaDetails.title]);
   }
 }

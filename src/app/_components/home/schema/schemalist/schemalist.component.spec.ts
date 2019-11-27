@@ -6,15 +6,22 @@ import { MatCardModule, MatToolbarModule, MatIconModule, MatDividerModule, MatCh
 import { RouterModule } from '@angular/router';
 import { HttpClient } from 'selenium-webdriver/http';
 import { HttpClientModule } from '@angular/common/http';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { RouterTestingModule } from '@angular/router/testing';
+import { SchemaTileComponent } from '../schema-tile/schema-tile.component';
+import { SchemaProgressbarComponent } from '../../schema-progressbar/schema-progressbar.component';
 
 describe('SchemalistComponent', () => {
   let component: SchemalistComponent;
   let fixture: ComponentFixture<SchemalistComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({   
-      imports:[MatCardModule,MatToolbarModule,MatIconModule,MatDividerModule,MatChipsModule,MatListModule,HttpClientModule,RouterModule.forRoot([])],            
-      declarations: [ SchemalistComponent,BreadcrumbComponent ]
+    TestBed.configureTestingModule({
+      imports: [
+        AppMaterialModuleForSpec,
+        RouterTestingModule
+      ],
+      declarations: [ SchemalistComponent, BreadcrumbComponent, SchemaTileComponent, SchemaProgressbarComponent ]
     })
     .compileComponents();
   }));

@@ -10,9 +10,9 @@ describe('GridFieldsComponent', () => {
   let fixture: ComponentFixture<GridFieldsComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({      
-      imports:[MatCardModule,MatToolbarModule,MatIconModule,MatDividerModule,MatChipsModule,MatListModule,RouterModule.forRoot([])],                                        
-      declarations: [ GridFieldsComponent,BreadcrumbComponent ]
+    TestBed.configureTestingModule({
+      imports: [MatCardModule, MatToolbarModule, MatIconModule, MatDividerModule, MatChipsModule, MatListModule, RouterModule.forRoot([])],
+      declarations: [ GridFieldsComponent, BreadcrumbComponent ]
     })
     .compileComponents();
   }));

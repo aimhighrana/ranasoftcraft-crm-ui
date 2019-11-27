@@ -8,15 +8,20 @@ import { SchemaTileComponent } from '../schema-tile/schema-tile.component';
 import { SchemaProgressbarComponent } from '../../schema-progressbar/schema-progressbar.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { HttpClientModule } from '@angular/common/http';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('SchemaComponent', () => {
   let component: SchemaComponent;
   let fixture: ComponentFixture<SchemaComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({    
-      imports:[HttpClientModule,FlexLayoutModule,MatCardModule,MatToolbarModule,MatIconModule,MatDividerModule,MatChipsModule,MatListModule,RouterModule.forRoot([])],                             
-      declarations: [ SchemaComponent,BreadcrumbComponent,SchemaTileComponent,SchemaProgressbarComponent ]
+    TestBed.configureTestingModule({
+      imports: [
+        AppMaterialModuleForSpec,
+        RouterTestingModule
+      ],
+      declarations: [ SchemaComponent, BreadcrumbComponent, SchemaTileComponent, SchemaProgressbarComponent ]
     })
     .compileComponents();
   }));

@@ -10,9 +10,9 @@ describe('PostGreSQLComponent', () => {
   let fixture: ComponentFixture<PostGreSQLComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({ 
-      imports:[MatCardModule,MatToolbarModule,MatIconModule,MatDividerModule,MatChipsModule,MatListModule,RouterModule.forRoot([])],                                             
-      declarations: [ PostGreSQLComponent,BreadcrumbComponent ]
+    TestBed.configureTestingModule({
+      imports: [MatCardModule, MatToolbarModule, MatIconModule, MatDividerModule, MatChipsModule, MatListModule, RouterModule.forRoot([])],
+      declarations: [ PostGreSQLComponent, BreadcrumbComponent ]
     })
     .compileComponents();
   }));

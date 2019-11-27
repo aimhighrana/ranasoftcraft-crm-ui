@@ -17,60 +17,60 @@ import { FormControl } from '@angular/forms';
   styleUrls: ['./schema-details.component.scss']
 })
 export class SchemaDetailsComponent implements OnInit {
-  title:string;
+  title: string;
   breadcrumb: Breadcrumb = {
     heading: 'Schema Deatils',
     links: [
       {
         link: '/home/schema',
         text: 'Schema'
-      },{
+      }, {
         link: '/home/schema/schema-list/all',
         text: 'Schema List'
-      } 
+      }
     ]
-  }; 
-  @ViewChild(OverviewChartComponent,{static:false})schemaOverviewChart:OverviewChartComponent;
+  };
+  @ViewChild(OverviewChartComponent, {static: false})schemaOverviewChart: OverviewChartComponent;
   overviewChartFormControl = new FormControl();
-  // for doughnut chart 
-  doughnutChartType:ChartType='doughnut';
-  doughnutChartLabels:Label[];
-  doughnutChartData:ChartDataSets;
-  doughnutColours:Color[]=[{backgroundColor:['rgba(76, 170, 0, 1)','rgba(195, 0, 0, 1)'],},];
-  doughnutChartOption:ChartOptions={
-    responsive:true,
-    title:{display:true,text:this.title!=undefined?this.title:'Rule Check'}
+  // for doughnut chart
+  doughnutChartType: ChartType = 'doughnut';
+  doughnutChartLabels: Label[];
+  doughnutChartData: ChartDataSets;
+  doughnutColours: Color[] = [{backgroundColor: ['rgba(76, 170, 0, 1)', 'rgba(195, 0, 0, 1)'], }, ];
+  doughnutChartOption: ChartOptions = {
+    responsive: true,
+    title: {display: true, text: this.title !== undefined ? this.title : 'Rule Check'}
 
-  } 
-  // for schema table 
-  constructor(private _schemaDetailsService:SchemaDetailsService,private _activatedRouter:ActivatedRoute) { }
+  };
+  // for schema table
+  constructor(private schemaDetailsService: SchemaDetailsService, private activatedRouter: ActivatedRoute) { }
   ngOnInit() {
-    this._activatedRouter.params.subscribe(params=>{
-      let schemaId = params["schemaId"];
-      let title = params["title"];
+    this.activatedRouter.params.subscribe(params => {
+      const schemaId = params.schemaId;
+      const title = params.title;
       this.title = title;
-      this.breadcrumb.heading=this.title+' Detail(s)';
-    });    
-    this.getDoughnutChartData();           
+      this.breadcrumb.heading = this.title + ' Detail(s)';
+    });
+    this.getDoughnutChartData();
   }
 
-  getDoughnutChartData(){
-    let doughnutData = this._schemaDetailsService.getDoughnutChartData();
-    if(doughnutData!=undefined && doughnutData!=""){
+  getDoughnutChartData() {
+    const doughnutData = this.schemaDetailsService.getDoughnutChartData();
+    if (doughnutData !== undefined && doughnutData !== '') {
       this.doughnutChartLabels = doughnutData.labels;
       this.doughnutChartData = doughnutData.dataSet.data;
-      //this.doughnutColours = doughnutData.dataSet.backgroundColor;
+      // this.doughnutColours = doughnutData.dataSet.backgroundColor;
     }
-  } 
-  overViewChartPercentage(event){
-     console.log('Event ::'+event);    
-     let status = this.overviewChartFormControl.value;
-     if(status!=null && status){
+  }
+  overViewChartPercentage(event) {
+     console.log('Event ::' + event);
+     const status = this.overviewChartFormControl.value;
+     if (status != null && status) {
         this.schemaOverviewChart.getOverViewChartDataInPercentage();
-     }else{
+     } else {
        this.schemaOverviewChart.getOverViewChartdata();
      }
-     console.log('is Selected ::'+this.overviewChartFormControl.value);     
+     console.log('is Selected ::' + this.overviewChartFormControl.value);
   }
 
 }

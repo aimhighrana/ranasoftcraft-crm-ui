@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SchemaDialogComponent } from './schema-dialog.component';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 describe('SchemaDialogComponent', () => {
   let component: SchemaDialogComponent;
@@ -8,7 +11,15 @@ describe('SchemaDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SchemaDialogComponent ]
+      imports: [
+        AppMaterialModuleForSpec,
+        ReactiveFormsModule
+      ],
+      declarations: [ SchemaDialogComponent ],
+      providers: [
+        { provide: MatDialogRef, useValue: {} },
+        { provide: MAT_DIALOG_DATA, useValue: [] }
+      ]
     })
     .compileComponents();
   }));

@@ -10,9 +10,9 @@ describe('ApiComponent', () => {
   let fixture: ComponentFixture<ApiComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({  
-      imports:[MatCardModule,MatToolbarModule,MatIconModule,MatDividerModule,MatChipsModule,MatListModule, RouterModule.forRoot([])],         
-      declarations: [ ApiComponent,BreadcrumbComponent ]
+    TestBed.configureTestingModule({
+      imports: [MatCardModule, MatToolbarModule, MatIconModule, MatDividerModule, MatChipsModule, MatListModule, RouterModule.forRoot([])],
+      declarations: [ ApiComponent, BreadcrumbComponent ]
     })
     .compileComponents();
   }));

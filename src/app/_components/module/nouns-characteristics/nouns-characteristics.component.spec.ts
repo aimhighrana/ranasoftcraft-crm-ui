@@ -10,9 +10,9 @@ describe('NounsCharacteristicsComponent', () => {
   let fixture: ComponentFixture<NounsCharacteristicsComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({ 
-      imports:[MatCardModule,MatToolbarModule,MatIconModule,MatDividerModule,MatChipsModule,MatListModule,RouterModule.forRoot([])],                                             
-      declarations: [ NounsCharacteristicsComponent,BreadcrumbComponent ]
+    TestBed.configureTestingModule({
+      imports: [MatCardModule, MatToolbarModule, MatIconModule, MatDividerModule, MatChipsModule, MatListModule, RouterModule.forRoot([])],
+      declarations: [ NounsCharacteristicsComponent, BreadcrumbComponent ]
     })
     .compileComponents();
   }));

@@ -10,9 +10,9 @@ describe('WsRestComponent', () => {
   let fixture: ComponentFixture<WsRestComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({      
-      imports:[MatCardModule,MatToolbarModule,MatIconModule,MatDividerModule,MatChipsModule,MatListModule,RouterModule.forRoot([])],            
-      declarations: [ WsRestComponent,BreadcrumbComponent ]
+    TestBed.configureTestingModule({
+      imports: [MatCardModule, MatToolbarModule, MatIconModule, MatDividerModule, MatChipsModule, MatListModule, RouterModule.forRoot([])],
+      declarations: [ WsRestComponent, BreadcrumbComponent ]
     })
     .compileComponents();
   }));

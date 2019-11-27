@@ -10,114 +10,114 @@ import * as moment from 'moment';
   styleUrls: ['./overview-chart.component.scss']
 })
 export class OverviewChartComponent implements OnInit {
-  timeDateFormat:TimeDisplayFormat;
-  overviewChartdata:ChartDataSets[];
-  overviewChartLabels:Label[]=this.generateDynamicTimeSeries();
-  overviewChartLegend:boolean=true;
-  overviewChartType:string ='line';
-  overviewChartOptions:ChartOptions={
-    responsive:true,
-    scales:{
-      xAxes:[{
-        type:"time",
-        time:{          
-          tooltipFormat:'lll'
+  timeDateFormat: TimeDisplayFormat;
+  overviewChartdata: ChartDataSets[];
+  overviewChartLabels: Label[] = this.generateDynamicTimeSeries();
+  overviewChartLegend = true;
+  overviewChartType = 'line';
+  overviewChartOptions: ChartOptions = {
+    responsive: true,
+    scales: {
+      xAxes: [{
+        type: 'time',
+        time: {
+          tooltipFormat: 'lll'
         },
-        scaleLabel:{
-          display:true,
-          labelString:"Date"
+        scaleLabel: {
+          display: true,
+          labelString: 'Date'
         },
-        ticks:{
-          maxRotation:0,         
-          fontSize:12
-          
+        ticks: {
+          maxRotation: 0,
+          fontSize: 12
+
 
         }
       }],
-      yAxes:[{
-        scaleLabel:{
-          display:true,
-          labelString:"Value"
+      yAxes: [{
+        scaleLabel: {
+          display: true,
+          labelString: 'Value'
         }
       }]
     },
-    plugins:{      
-      zoom:{
-        pan:{
-          enabled:true,
-          mode:'x',
-          speed:10,
-          threshold:10,            
-          onPan:function(){console.log('I am pan ...!');},
-          onPanComplete:function(){console.log('On pan Complete !')}
+    plugins: {
+      zoom: {
+        pan: {
+          enabled: true,
+          mode: 'x',
+          speed: 10,
+          threshold: 10,
+          onPan() {console.log('I am pan ...!'); },
+          onPanComplete() {console.log('On pan Complete !'); }
         },
-        zoom:{
-          enabled:true,
-          grag:true,
-          mode:'x',
-          limits:{max:10,min:0.5},          
-          onZoom:function(){console.log('ONZOOM')},
-          onZoomComplete:function(){console.log('ZOOM Complete')}
+        zoom: {
+          enabled: true,
+          grag: true,
+          mode: 'x',
+          limits: {max: 10, min: 0.5},
+          onZoom() {console.log('ONZOOM'); },
+          onZoomComplete() {console.log('ZOOM Complete'); }
 
         }
       }
     },
-    tooltips:{
-      mode:'index',
-      intersect:false
+    tooltips: {
+      mode: 'index',
+      intersect: false
     },
-    hover:{
-      mode:'nearest',
-      intersect:true
+    hover: {
+      mode: 'nearest',
+      intersect: true
     },
-    legend:{
-      display:false
+    legend: {
+      display: false
     }
-  }
+  };
 
-  
-  constructor(private _schemaDetailsService:SchemaDetailsService) { }
+
+  constructor(private schemaDetailsService: SchemaDetailsService) { }
 
   ngOnInit() {
     this.getOverViewChartdata();
   }
 
-  getOverViewChartdata(){
-    let data = this._schemaDetailsService.getOverViewChartData();
-    if(data!=undefined && data!=''){
+  getOverViewChartdata() {
+    const data = this.schemaDetailsService.getOverViewChartData();
+    if (data !== undefined && data !== '') {
       this.overviewChartdata = data.dataSet;
-      //this.overviewChartLabels = data.labels;
+      // this.overviewChartLabels = data.labels;
     }
   }
 
-  getOverViewChartDataInPercentage(){
-    let data = this._schemaDetailsService.getOverViewChartData();
-    let dataSet = data.dataSet;
-    if(dataSet!=undefined && dataSet!=''){      
+  getOverViewChartDataInPercentage() {
+    const data = this.schemaDetailsService.getOverViewChartData();
+    const dataSet = data.dataSet;
+    if (dataSet !== undefined && dataSet !== '') {
       let counter = 0;
-      dataSet.forEach(element => {        
-        let dataArray = element.data;
+      dataSet.forEach(element => {
+        const dataArray = element.data;
         let total = 0;
-        let newArray = new Array();
+        const newArray = new Array();
         dataArray.forEach(dElement => {
-          total+=dElement;           
+          total += dElement;
         });
-        dataArray.forEach(dElement => {          
-          let val = (dElement/total)*100;
+        dataArray.forEach(dElement => {
+          const val = (dElement / total) * 100;
           newArray.push(val);
         });
-        dataSet[counter].data=newArray;
+        dataSet[counter].data = newArray;
         counter++;
 
       });
     }
-    this.overviewChartdata= dataSet;
+    this.overviewChartdata = dataSet;
   }
 
-  generateDynamicTimeSeries():Label[]{
-    let array = new Array();
-    for(let i=0;i<7;i++){
-      array.push(moment().add(i,'d').toDate());
+  generateDynamicTimeSeries(): Label[] {
+    const array = new Array();
+    for (let i = 0; i < 7; i++) {
+      array.push(moment().add(i, 'd').toDate());
     }
     return array;
   }

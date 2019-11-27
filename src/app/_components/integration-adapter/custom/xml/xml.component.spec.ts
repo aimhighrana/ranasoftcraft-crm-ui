@@ -10,9 +10,9 @@ describe('XmlComponent', () => {
   let fixture: ComponentFixture<XmlComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({    
-      imports:[MatCardModule,MatToolbarModule,MatIconModule,MatDividerModule,MatChipsModule,MatListModule,RouterModule.forRoot([])],                                    
-      declarations: [ XmlComponent,BreadcrumbComponent ]
+    TestBed.configureTestingModule({
+      imports: [MatCardModule, MatToolbarModule, MatIconModule, MatDividerModule, MatChipsModule, MatListModule, RouterModule.forRoot([])],
+      declarations: [ XmlComponent, BreadcrumbComponent ]
     })
     .compileComponents();
   }));

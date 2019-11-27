@@ -14,8 +14,8 @@ describe('InterfacesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports:[MatTableModule,FormsModule,ReactiveFormsModule,MatMenuModule,MatCardModule,MatToolbarModule,MatIconModule,MatDividerModule,MatChipsModule,MatListModule,MatFormFieldModule,MatAutocompleteModule,MatOptionModule,MatCheckboxModule,MatFormFieldModule,MatPaginatorModule,BrowserAnimationsModule,RouterModule.forRoot([])],                                              
-      declarations: [ InterfacesComponent,BreadcrumbComponent]
+      imports: [MatTableModule, FormsModule, ReactiveFormsModule, MatMenuModule, MatCardModule, MatToolbarModule, MatIconModule, MatDividerModule, MatChipsModule, MatListModule, MatFormFieldModule, MatAutocompleteModule, MatOptionModule, MatCheckboxModule, MatFormFieldModule, MatPaginatorModule, BrowserAnimationsModule, RouterModule.forRoot([])],
+      declarations: [ InterfacesComponent, BreadcrumbComponent]
     })
     .compileComponents();
   }));

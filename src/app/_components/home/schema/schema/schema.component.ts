@@ -12,8 +12,8 @@ import { SchemaService } from 'src/app/_services/home/schema.service';
 })
 export class SchemaComponent implements OnInit {
 
-  schemas:Schema[];
-  constructor(private _scheamService:SchemaService,private _httpRouter:ActivatedRoute,private router:Router) { }
+  schemas: Schema[];
+  constructor(private _scheamService: SchemaService, private _httpRouter: ActivatedRoute, private router: Router) { }
 
   breadcrumb: Breadcrumb = {
     heading: 'Schema(s)',
@@ -22,18 +22,18 @@ export class SchemaComponent implements OnInit {
   ngOnInit() {
     this.getAllSchemas();
   }
- 
-  getAllSchemas(){
-    this.schemas=this._scheamService.getAllSchema();
+
+  getAllSchemas() {
+    this.schemas = this._scheamService.getAllSchema();
   }
 
-  showSchemaList(schema:Schema){
-    if(schema!=undefined && schema.schemaId!=undefined && schema.schemaId!=''){
-      this.router.navigate(['/home/schema/schema-list',schema.schemaId,schema.title]);
+  showSchemaList(schema: Schema) {
+    if (schema !== undefined && schema.schemaId !== undefined && schema.schemaId !== '') {
+      this.router.navigate(['/home/schema/schema-list', schema.schemaId, schema.title]);
     }
   }
 
-  showChart(){
+  showChart() {
     this.router.navigate(['/home/show-chart']);
   }
 

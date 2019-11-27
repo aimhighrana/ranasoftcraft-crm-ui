@@ -11,9 +11,9 @@ describe('SecurityLogsComponent', () => {
   let fixture: ComponentFixture<SecurityLogsComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({   
-      imports:[MatCardModule,MatToolbarModule,MatIconModule,MatDividerModule,MatChipsModule,RouterModule.forRoot([])],     
-      declarations: [ SecurityLogsComponent,BreadcrumbComponent,AdminTileComponent ]
+    TestBed.configureTestingModule({
+      imports: [MatCardModule, MatToolbarModule, MatIconModule, MatDividerModule, MatChipsModule, RouterModule.forRoot([])],
+      declarations: [ SecurityLogsComponent, BreadcrumbComponent, AdminTileComponent ]
     })
     .compileComponents();
   }));

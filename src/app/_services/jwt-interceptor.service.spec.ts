@@ -8,7 +8,7 @@ import { HttpClientModule } from '@angular/common/http';
 describe('JwtInterceptorService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule,HttpClientModule],
+      imports: [RouterTestingModule, HttpClientModule],
       providers: [JwtInterceptorService, EndpointService]
     });
   });

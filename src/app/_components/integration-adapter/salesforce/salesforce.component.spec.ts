@@ -11,9 +11,9 @@ describe('SalesforceComponent', () => {
   let fixture: ComponentFixture<SalesforceComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({ 
-      imports:[MatCardModule,MatToolbarModule,MatIconModule,MatDividerModule,MatChipsModule,MatListModule,RouterModule.forRoot([])],                                             
-      declarations: [ SalesforceComponent,BreadcrumbComponent,AdminTileComponent ]
+    TestBed.configureTestingModule({
+      imports: [MatCardModule, MatToolbarModule, MatIconModule, MatDividerModule, MatChipsModule, MatListModule, RouterModule.forRoot([])],
+      declarations: [ SalesforceComponent, BreadcrumbComponent, AdminTileComponent ]
     })
     .compileComponents();
   }));

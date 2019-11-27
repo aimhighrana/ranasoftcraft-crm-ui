@@ -10,9 +10,9 @@ describe('CxmlComponent', () => {
   let fixture: ComponentFixture<CxmlComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({   
-      imports:[MatCardModule,MatToolbarModule,MatIconModule,MatDividerModule,MatChipsModule,MatListModule,RouterModule.forRoot([])],                                           
-      declarations: [ CxmlComponent,BreadcrumbComponent ]
+    TestBed.configureTestingModule({
+      imports: [MatCardModule, MatToolbarModule, MatIconModule, MatDividerModule, MatChipsModule, MatListModule, RouterModule.forRoot([])],
+      declarations: [ CxmlComponent, BreadcrumbComponent ]
     })
     .compileComponents();
   }));

@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SchemaDatatableComponent } from './schema-datatable.component';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 describe('SchemaDatatableComponent', () => {
   let component: SchemaDatatableComponent;
@@ -8,6 +9,9 @@ describe('SchemaDatatableComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [
+        AppMaterialModuleForSpec
+      ],
       declarations: [ SchemaDatatableComponent ]
     })
     .compileComponents();

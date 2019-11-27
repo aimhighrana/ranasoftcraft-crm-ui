@@ -10,9 +10,9 @@ describe('ListPageComponent', () => {
   let fixture: ComponentFixture<ListPageComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({      
-      imports:[MatCardModule,MatToolbarModule,MatIconModule,MatDividerModule,MatChipsModule,MatListModule,RouterModule.forRoot([])],                                        
-      declarations: [ ListPageComponent,BreadcrumbComponent ]
+    TestBed.configureTestingModule({
+      imports: [MatCardModule, MatToolbarModule, MatIconModule, MatDividerModule, MatChipsModule, MatListModule, RouterModule.forRoot([])],
+      declarations: [ ListPageComponent, BreadcrumbComponent ]
     })
     .compileComponents();
   }));

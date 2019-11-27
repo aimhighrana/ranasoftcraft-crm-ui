@@ -10,9 +10,9 @@ describe('OdataComponent', () => {
   let fixture: ComponentFixture<OdataComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({   
-      imports:[MatCardModule,MatToolbarModule,MatIconModule,MatDividerModule,MatChipsModule,MatListModule,RouterModule.forRoot([])],                                           
-      declarations: [ OdataComponent,BreadcrumbComponent ]
+    TestBed.configureTestingModule({
+      imports: [MatCardModule, MatToolbarModule, MatIconModule, MatDividerModule, MatChipsModule, MatListModule, RouterModule.forRoot([])],
+      declarations: [ OdataComponent, BreadcrumbComponent ]
     })
     .compileComponents();
   }));
@@ -23,7 +23,7 @@ describe('OdataComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {    
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });

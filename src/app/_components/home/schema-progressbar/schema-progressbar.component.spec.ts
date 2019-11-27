@@ -5,15 +5,20 @@ import { BreadcrumbComponent } from '../../breadcrumb/breadcrumb.component';
 import { FlexModule } from '@angular/flex-layout';
 import { RouterModule } from '@angular/router';
 import { MatCardModule, MatToolbarModule, MatIconModule, MatDividerModule, MatChipsModule } from '@angular/material';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('SchemaProgressbarComponent', () => {
   let component: SchemaProgressbarComponent;
   let fixture: ComponentFixture<SchemaProgressbarComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({      
-      imports:[FlexModule, MatCardModule,MatToolbarModule,MatIconModule,MatDividerModule,MatChipsModule,RouterModule.forRoot([])],  
-      declarations: [ SchemaProgressbarComponent,BreadcrumbComponent ]
+    TestBed.configureTestingModule({
+      imports: [
+        AppMaterialModuleForSpec,
+        RouterTestingModule
+      ],
+      declarations: [ SchemaProgressbarComponent, BreadcrumbComponent ]
     })
     .compileComponents();
   }));

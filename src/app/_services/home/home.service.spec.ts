@@ -5,7 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 describe('HomeService', () => {
   beforeEach(() => TestBed.configureTestingModule({
-    imports:[HttpClientModule]
+    imports: [HttpClientModule]
 
   }));
 

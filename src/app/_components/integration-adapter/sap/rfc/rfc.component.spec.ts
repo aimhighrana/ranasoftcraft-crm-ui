@@ -11,9 +11,9 @@ describe('RfcComponent', () => {
   let fixture: ComponentFixture<RfcComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({ 
-      imports:[MatIconModule,MatCardModule,MatListModule,MatToolbarModule,RouterModule.forRoot([])],     
-      declarations: [ RfcComponent,BreadcrumbComponent ]
+    TestBed.configureTestingModule({
+      imports: [MatIconModule, MatCardModule, MatListModule, MatToolbarModule, RouterModule.forRoot([])],
+      declarations: [ RfcComponent, BreadcrumbComponent ]
     })
     .compileComponents();
   }));

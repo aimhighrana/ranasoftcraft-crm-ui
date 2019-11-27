@@ -10,9 +10,9 @@ describe('IBMDB2Component', () => {
   let fixture: ComponentFixture<IBMDB2Component>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({   
-      imports:[MatCardModule,MatToolbarModule,MatIconModule,MatDividerModule,MatChipsModule,MatListModule,RouterModule.forRoot([])],               
-      declarations: [ IBMDB2Component,BreadcrumbComponent ]
+    TestBed.configureTestingModule({
+      imports: [MatCardModule, MatToolbarModule, MatIconModule, MatDividerModule, MatChipsModule, MatListModule, RouterModule.forRoot([])],
+      declarations: [ IBMDB2Component, BreadcrumbComponent ]
     })
     .compileComponents();
   }));

@@ -10,9 +10,9 @@ describe('WsSoapComponent', () => {
   let fixture: ComponentFixture<WsSoapComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({   
-      imports:[MatCardModule,MatToolbarModule,MatIconModule,MatDividerModule,MatChipsModule,MatListModule,RouterModule.forRoot([])],                                           
-      declarations: [ WsSoapComponent,BreadcrumbComponent ]
+    TestBed.configureTestingModule({
+      imports: [MatCardModule, MatToolbarModule, MatIconModule, MatDividerModule, MatChipsModule, MatListModule, RouterModule.forRoot([])],
+      declarations: [ WsSoapComponent, BreadcrumbComponent ]
     })
     .compileComponents();
   }));

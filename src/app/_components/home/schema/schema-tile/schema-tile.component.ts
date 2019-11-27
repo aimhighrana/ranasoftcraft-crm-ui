@@ -14,47 +14,47 @@ export class SchemaTileComponent implements OnInit {
   @Input()
   title: string;
   @Input()
-  color: string;   
+  color: string;
   @Input()
   help: string;
   @Input()
-  info: string;   
+  info: string;
   @Input()
   link: string;
   @Input()
-  iconColor: string;   
+  iconColor: string;
   @Input()
-  totalValue:string;
+  totalValue: string;
   @Input()
-  enableProgressBar:boolean;
+  enableProgressBar: boolean;
   @Input()
-  successValue:number;
+  successValue: number;
   @Input()
-  errorValue:number;
+  errorValue: number;
   @Input()
-  thisWeekProgress:string;  
+  thisWeekProgress: string;
   @Input()
-  isSchemaList:string;
+  isSchemaList: string;
   @Input()
-  moduleId:string;
+  moduleId: string;
   @Input()
-  schemaId:string;
+  schemaId: string;
   @Input()
-  variantCount:string;
-  
+  variantCount: string;
 
-  linker() {     
-      return this.link;     
+
+  linker() {
+      return this.link;
   }
-  constructor(private _dialog:MatDialog) { }
+  constructor(private dialog: MatDialog) { }
 
   ngOnInit() {
   }
 
   openDialog(event): void {
-    const dialogRef = this._dialog.open(SchemaDialogComponent, {
+    const dialogRef = this.dialog.open(SchemaDialogComponent, {
       width: '600px',
-      data:{"moduleId":this.moduleId,"schemaId":this.schemaId,"schemaName":this.title}
+      data: {moduleId: this.moduleId, schemaId: this.schemaId, schemaName: this.title}
     });
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');

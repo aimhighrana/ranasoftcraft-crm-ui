@@ -11,9 +11,9 @@ describe('IntegrationAdapterComponent', () => {
   let fixture: ComponentFixture<IntegrationAdapterComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({  
-      imports:[MatCardModule,MatToolbarModule,MatIconModule,MatDividerModule,MatChipsModule,MatListModule,RouterModule.forRoot([])],                                            
-      declarations: [ IntegrationAdapterComponent,BreadcrumbComponent,AdminTileComponent ]
+    TestBed.configureTestingModule({
+      imports: [MatCardModule, MatToolbarModule, MatIconModule, MatDividerModule, MatChipsModule, MatListModule, RouterModule.forRoot([])],
+      declarations: [ IntegrationAdapterComponent, BreadcrumbComponent, AdminTileComponent ]
     })
     .compileComponents();
   }));

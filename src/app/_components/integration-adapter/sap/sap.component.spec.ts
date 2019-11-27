@@ -5,15 +5,20 @@ import { BreadcrumbComponent } from '../../breadcrumb/breadcrumb.component';
 import { AdminTileComponent } from '../../admin-tile/admin-tile.component';
 import { MatCardModule, MatToolbarModule, MatIconModule, MatDividerModule, MatChipsModule } from '@angular/material';
 import { RouterModule } from '@angular/router';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('SapComponent', () => {
   let component: SapComponent;
   let fixture: ComponentFixture<SapComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({  
-      imports:[MatCardModule,MatToolbarModule,MatIconModule,MatDividerModule,MatChipsModule,RouterModule.forRoot([])],    
-      declarations: [ SapComponent,BreadcrumbComponent,AdminTileComponent ]
+    TestBed.configureTestingModule({
+      imports: [
+        AppMaterialModuleForSpec,
+        RouterTestingModule
+      ],
+      declarations: [ SapComponent, BreadcrumbComponent, AdminTileComponent ]
     })
     .compileComponents();
   }));

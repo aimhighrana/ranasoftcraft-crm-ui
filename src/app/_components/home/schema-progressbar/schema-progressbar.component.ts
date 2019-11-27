@@ -8,13 +8,13 @@ import { Component, OnInit, Input } from '@angular/core';
 export class SchemaProgressbarComponent implements OnInit {
 
   @Input()
-  successValue:number;
+  successValue: number;
   @Input()
-  errorValue:number;
+  errorValue: number;
   @Input()
-  successClass:string;
+  successClass: string;
   @Input()
-  errorClass:string;
+  errorClass: string;
   constructor() { }
 
   ngOnInit() {

@@ -10,7 +10,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 export class SchemaDatatableDialogComponent implements OnInit {
 
   constructor(public dialogRef: MatDialogRef<SchemaDatatableDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public dialogData:DialogData
+              @Inject(MAT_DIALOG_DATA) public dialogData: DialogData
     ) { }
 
   ngOnInit() {

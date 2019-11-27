@@ -6,15 +6,20 @@ import { MatCardModule, MatToolbarModule, MatIconModule, MatDividerModule, MatCh
 import { RouterModule } from '@angular/router';
 import { AdminTileComponent } from '../admin-tile/admin-tile.component';
 import { HttpClientModule } from '@angular/common/http';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('ModuleComponent', () => {
   let component: ModuleComponent;
   let fixture: ComponentFixture<ModuleComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({      
-      imports:[HttpClientModule,MatCardModule,MatToolbarModule,MatIconModule,MatDividerModule,MatChipsModule,MatListModule,RouterModule.forRoot([])],                                        
-      declarations: [ ModuleComponent,BreadcrumbComponent,AdminTileComponent ]
+    TestBed.configureTestingModule({
+      imports: [
+        AppMaterialModuleForSpec,
+        RouterTestingModule
+      ],
+      declarations: [ ModuleComponent, BreadcrumbComponent, AdminTileComponent ]
     })
     .compileComponents();
   }));

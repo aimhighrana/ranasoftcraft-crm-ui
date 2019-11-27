@@ -10,9 +10,9 @@ describe('CustomEventsComponent', () => {
   let fixture: ComponentFixture<CustomEventsComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({  
-      imports:[MatCardModule,MatToolbarModule,MatIconModule,MatDividerModule,MatChipsModule,MatListModule,RouterModule.forRoot([])],                                            
-      declarations: [ CustomEventsComponent,BreadcrumbComponent ]
+    TestBed.configureTestingModule({
+      imports: [MatCardModule, MatToolbarModule, MatIconModule, MatDividerModule, MatChipsModule, MatListModule, RouterModule.forRoot([])],
+      declarations: [ CustomEventsComponent, BreadcrumbComponent ]
     })
     .compileComponents();
   }));

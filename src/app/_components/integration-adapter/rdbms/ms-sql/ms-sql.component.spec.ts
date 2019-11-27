@@ -11,8 +11,8 @@ describe('MsSqlComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports:[MatCardModule,MatToolbarModule,MatIconModule,MatDividerModule,MatChipsModule,MatListModule,RouterModule.forRoot([])],                                              
-      declarations: [ MsSqlComponent,BreadcrumbComponent ]
+      imports: [MatCardModule, MatToolbarModule, MatIconModule, MatDividerModule, MatChipsModule, MatListModule, RouterModule.forRoot([])],
+      declarations: [ MsSqlComponent, BreadcrumbComponent ]
     })
     .compileComponents();
   }));

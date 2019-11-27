@@ -11,9 +11,9 @@ describe('RdbmsComponent', () => {
   let fixture: ComponentFixture<RdbmsComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({ 
-      imports:[MatCardModule,MatToolbarModule,MatIconModule,MatDividerModule,MatChipsModule,MatListModule,RouterModule.forRoot([])],                                             
-      declarations: [ RdbmsComponent,BreadcrumbComponent,AdminTileComponent ]
+    TestBed.configureTestingModule({
+      imports: [MatCardModule, MatToolbarModule, MatIconModule, MatDividerModule, MatChipsModule, MatListModule, RouterModule.forRoot([])],
+      declarations: [ RdbmsComponent, BreadcrumbComponent, AdminTileComponent ]
     })
     .compileComponents();
   }));

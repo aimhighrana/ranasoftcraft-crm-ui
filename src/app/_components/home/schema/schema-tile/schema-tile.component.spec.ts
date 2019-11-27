@@ -6,15 +6,20 @@ import { MatCardModule, MatToolbarModule, MatIconModule, MatDividerModule, MatCh
 import { RouterModule } from '@angular/router';
 import { SchemaProgressbarComponent } from '../../schema-progressbar/schema-progressbar.component';
 import { FlexModule } from '@angular/flex-layout';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('SchemaTileComponent', () => {
   let component: SchemaTileComponent;
   let fixture: ComponentFixture<SchemaTileComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({   
-      imports:[FlexModule,MatCardModule,MatToolbarModule,MatIconModule,MatDividerModule,MatChipsModule,MatListModule,RouterModule.forRoot([])],                                  
-      declarations: [ SchemaTileComponent,BreadcrumbComponent,SchemaProgressbarComponent ]
+    TestBed.configureTestingModule({
+      imports: [
+        AppMaterialModuleForSpec,
+        RouterTestingModule
+      ],
+      declarations: [ SchemaTileComponent, BreadcrumbComponent, SchemaProgressbarComponent ]
     })
     .compileComponents();
   }));
