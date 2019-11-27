@@ -1,0 +1,98 @@
+<mat-card class="table-root">  
+        <mat-toolbar>
+            <mat-toolbar-row>
+              <span>Stocking Rule Check Listing</span>
+              <span class="flex-spacer"></span>
+            <button mat-flat-button>Status Info</button>
+            <button mat-flat-button>Business Rules</button>
+            </mat-toolbar-row>
+        </mat-toolbar>
+        <mat-divider></mat-divider>
+
+        <div class="mat-elevation-z8 bxshadow-variant-1 root-schemalisting">
+
+            <mat-tab-group dynamicHeight (selectedIndexChange)="loadSchameDataByStatus($event);">
+                <mat-tab *ngFor="let tab of tabs; let index = index" [label]="tab">
+                    <div class="schematable-filters">
+                        <mat-form-field>
+                            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+                          </mat-form-field>
+                        <span class="flex-spacer"></span>
+                        <button mat-flat-button color="primary" (click)="openChooseColumnDialog();">Choose Column</button>
+                        <button mat-flat-button color="primary">Download</button>
+                    </div>
+                    <div class="root-AdminTable">
+                        <table mat-table [dataSource]="dataSource" matSort>
+                            <ng-container matColumnDef="actionColumn" stickyEnd>
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+                                <td mat-cell *matCellDef="let element" [matMenuTriggerFor]="actiontable">
+                                    <mat-icon mat-icon-button>more_vert</mat-icon>
+                                    <mat-menu #actiontable="matMenu">
+                                        <button mat-menu-item *ngFor="let action of schemaDetailsTable.matMenu">{{action}}</button>                                           
+                                        <ng-template [ngIf]="element.hasError">
+                                            <button mat-menu-item (click)="element.startEdit();">Edit</button>                                           
+                                            <button mat-menu-item>Update</button>
+                                        </ng-template>
+                                    </mat-menu>                    
+                                </td>
+                            </ng-container>    
+                            <!-- Checkbox Column -->
+                            <ng-container matColumnDef="checkBoxColumn">
+                              <th mat-header-cell *matHeaderCellDef class="checkbox-colunm">
+                                <mat-checkbox  color="primary" (change)="$event ? masterToggle() : null"
+                                              [checked]="selection.hasValue() && isAllSelected()"
+                                              [indeterminate]="selection.hasValue() && !isAllSelected()"
+                                              [aria-label]="checkboxLabel()">
+                                </mat-checkbox>
+                              </th>
+                              <td mat-cell *matCellDef="let row" class="checkbox-colunm">
+                                <mat-checkbox color="primary" (click)="$event.stopPropagation()"
+                                              (change)="$event ? selection.toggle(row) : null"
+                                              [checked]="selection.isSelected(row)"
+                                              [aria-label]="checkboxLabel(row)">
+                                </mat-checkbox>
+                              </td>
+                            </ng-container>
+                
+                            <!-- ADD DATA AND COLUMN -->            
+                            <ng-container  *ngFor="let columnId of schemaDetailsTable.displayedColumnsForAppend" matColumnDef="{{columnId}}">                                
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header > {{schemaDetailsTable.columnName[columnId]}}</th>
+                                <ng-template [ngIf]="columnId=='status'" [ngIfElse]="allColumns">
+                                    <td mat-cell  *matCellDef="let element"> 
+                                        <mat-chip-list aria-label="Status selection">      
+                                            <ng-template *ngFor="let status of element[columnId].all_status; let idx=index" [ngIf]="manageChips(idx)" [ngIfElse]="countChips">
+                                                <mat-chip  [color]="status.color" selected>{{status.status}}</mat-chip>                                           
+                                            </ng-template> 
+                                            <ng-template #countChips>
+                                                {{getHideStatusCount(element[columnId].all_status)}}
+                                            </ng-template>
+                                        </mat-chip-list>                                    
+                                    </td>
+                                </ng-template> 
+                                <ng-template #allColumns>
+                                    <td mat-cell  *matCellDef="let element" [class.errorCell]="element[columnId].isInError" matTooltip="{{element[columnId].error_msg}}"> 
+                                       <ng-template [ngIf]="element[columnId].isInError" [ngIfElse]="nonEditableCell">
+                                        <mat-form-field>
+                                            <input matInput [readonly]="!element.hasError" type="text" name="columnId" value="{{element[columnId].data}}" ([ngModel])="element[columnId].data">
+                                        </mat-form-field>
+                                       </ng-template>
+                                       <ng-template #nonEditableCell>
+                                            {{element[columnId].data}} 
+                                       </ng-template>                                        
+                                    </td>
+                                </ng-template>                              
+                            </ng-container>              
+                          
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        </table>
+                        <mat-paginator  [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons></mat-paginator>
+                    </div>
+                </mat-tab>
+            </mat-tab-group>
+
+
+
+            
+        </div>
+  </mat-card>

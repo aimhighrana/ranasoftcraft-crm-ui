@@ -1,0 +1,83 @@
+<mat-card class="flex-container">
+    <div class="flex-col-12">
+      <div class="content-row">
+        <pros-breadcrumb [crumbs]="breadcrumb"></pros-breadcrumb>
+      </div>
+      <div class="flex-col-9">
+        <mat-card class="graph-root">
+            <mat-toolbar>
+                <mat-toolbar-row>
+                  <span>Overview</span>
+                  <span class="flex-spacer"></span>
+                  <mat-slide-toggle color="primary" [formControl]="overviewChartFormControl" (change)="overViewChartPercentage($event);" >Percentage</mat-slide-toggle>
+                </mat-toolbar-row>
+            </mat-toolbar>
+            <mat-divider></mat-divider>
+            <mat-card-content>
+                <pros-overview-chart></pros-overview-chart> 
+            </mat-card-content>
+        </mat-card>
+      </div>
+      <div class="flex-col-3">
+      <mat-card class="graph-root">
+          <mat-toolbar>
+              <mat-toolbar-row>
+                <span>Stocking Rule Check</span>
+              </mat-toolbar-row>
+          </mat-toolbar>
+          <mat-divider></mat-divider>
+        <mat-card-content>
+            <div style="display: block">
+                <canvas baseChart
+                  [data]="doughnutChartData"
+                  [labels]="doughnutChartLabels"
+                  [chartType]="doughnutChartType"
+                  [colors]="doughnutColours">
+                </canvas>
+              </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Category chart -->
+    <div class="flex-col-9">
+        <mat-card class="graph-root">
+            <mat-toolbar>
+                <mat-toolbar-row>
+                  <span>Category</span>
+                  <span class="flex-spacer"></span>
+                  <mat-slide-toggle color="primary">Percentage</mat-slide-toggle>
+                </mat-toolbar-row>
+            </mat-toolbar>
+            <mat-divider></mat-divider>
+            <mat-card-content>
+                <pros-categories-chart></pros-categories-chart>
+            </mat-card-content>
+        </mat-card>
+    </div>
+
+
+    <!-- Business Roles  chart -->
+    <div class="flex-col-9">
+        <mat-card class="graph-root">
+            <mat-toolbar>
+                <mat-toolbar-row>
+                  <span>Business Rules</span>
+                  <span class="flex-spacer"></span>
+                  <mat-slide-toggle color="primary">Percentage</mat-slide-toggle>
+                </mat-toolbar-row>
+            </mat-toolbar>
+            <mat-divider></mat-divider>
+            <mat-card-content>
+                <pros-business-rules-chart></pros-business-rules-chart>
+            </mat-card-content>
+        </mat-card>
+    </div>
+
+    <div class="flex-col-9">       
+        <pros-schema-datatable class="flex-col-12"></pros-schema-datatable>
+    </div>
+  </div> 
+</mat-card>
+
+

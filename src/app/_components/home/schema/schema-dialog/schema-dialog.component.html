@@ -1,0 +1,57 @@
+<h1 mat-dialog-title>{{dialogData.schemaName}}</h1>
+<div mat-dialog-content>
+  
+      <div class="matform--control">
+          <label id="example-radio-group-label" class="label">Type:</label>
+          <mat-radio-group aria-label="Select an option" class="matradio--control" color="primary">
+              <mat-radio-button value="1">Conditional</mat-radio-button>
+              <mat-radio-button value="2">Run for All</mat-radio-button>
+              <mat-radio-button value="3">Run Recently Modified</mat-radio-button>
+          </mat-radio-group>
+          </div>
+
+      <div class="matform--control">
+
+      <mat-form-field class="textarecontrol">
+          <textarea matInput placeholder="Description"></textarea>
+       </mat-form-field>
+   </div>
+
+<!-- ADD DYNAMIC DOM -->
+<div class="flex-col-12" *ngFor="let container of fieldContainer; index as indx">
+    <mat-form-field class="flex-item_x1">        
+        <input type="text" placeholder="Select field" aria-label="Number" matInput [formControl]="dialogFieldFormControl" [matAutocomplete]="auto_field_index">
+        <mat-autocomplete #auto_field_index="matAutocomplete">
+           <mat-option *ngFor="let option of filterFieldList | async" [value]="option">
+              {{option}}
+            </mat-option>
+       </mat-autocomplete>
+   </mat-form-field>
+
+   <mat-form-field class="flex-item_x1 valuefields">
+        <input type="text" placeholder="Select Value" aria-label="Number" matInput [formControl]="dialogValueFormControl" [matAutocomplete]="auto_value_index">
+        <mat-autocomplete #auto_value_index="matAutocomplete">
+          <mat-option *ngFor="let option of filterValueList | async" [value]="option">
+              {{option}}
+            </mat-option>
+      </mat-autocomplete>
+  </mat-form-field>
+ 
+  <button mat-mini-fab aria-label="Add Row" color="primary" (click)="addMoreField();" *ngIf="indx==fieldContainer.length-1;else removeButton">
+      <mat-icon>add</mat-icon>
+  </button>
+  <ng-template #removeButton>
+    <button mat-mini-fab aria-label="Remove Row" color="warn" (click)="removeField(container);">
+      <mat-icon>remove</mat-icon>
+    </button>
+  </ng-template>
+  
+</div>
+
+
+
+</div>
+<div mat-dialog-actions>
+  <button  mat-flat-button (click)="onNoClick()">Cancel</button>
+  <button mat-flat-button color="primary" cdkFocusInitial>Run</button>
+</div>

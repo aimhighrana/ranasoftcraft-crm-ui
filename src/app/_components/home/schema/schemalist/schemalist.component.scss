@@ -1,0 +1,28 @@
+.flex-container{ 
+    display: flex; 
+    flex-direction: row; 
+    flex-wrap: nowrap; 
+    justify-content: space-between; 
+    align-items: flex-start;
+    background: #f1f5f8;
+    
+     
+}
+.flex-col-12{ 
+    flex:1 100%; 
+    display: flex; 
+    flex-wrap: wrap; 
+    justify-content: center; 
+    align-items: center;
+    margin-bottom: 30px;
+    pros-schema-tile{
+        margin: 16px;
+        flex: 1 1 30%;
+    }
+}
+.H3{
+    display: grid;
+    width: 100%;
+    margin: 24px 16px 0 16px;
+}
+

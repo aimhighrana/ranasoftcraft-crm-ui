@@ -1,0 +1,110 @@
+.graph-root{
+  width:100%;
+  box-shadow:0px 2px 10px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0), 0px 1px 3px 0px rgba(0, 0, 0, 0);
+  padding: 0px;
+  margin-bottom: 30px;
+  mat-toolbar{
+    font-size: 18px;
+    height: 50px;
+    background: #f9fafc;
+    min-height:50px;
+    mat-toolbar-row{
+      height: 50px;
+      mat-slide-toggle{
+        font-size:14px;
+      }
+    }
+  }
+  mat-card-content{
+    padding:16px;
+  }
+}
+.table-root{
+    padding: 0px;
+    margin-bottom: 30px;
+    width:100%;
+    min-height: 650px;
+    mat-toolbar{
+      font-size: 18px;
+      height: 50px;
+      background: #f9fafc;
+      min-height:50px;
+      mat-toolbar-row{
+        height: 50px;
+        .mat-flat-button{
+         margin: 0 5px;
+        }
+      }
+    }
+    .root-schemalisting{
+      margin:16px;
+      .schematable-filters{
+        margin:16px;
+        .mat-flat-button{
+          margin: 0 5px;
+        }
+      }
+      .root-AdminTable{ 
+        height: 500px;
+        overflow: auto; 
+        border-top: 1px solid #e0e0e0;
+        table{
+          width:100%;
+          td.mat-column-star {
+            width:30px;
+            padding-left: 8px;
+          }
+          th.mat-column-position, td.mat-column-position {
+            padding-left: 12px;
+          }
+          td.mat-cell, .mat-header-cell{ 
+            padding-left: 16px;
+          }
+          .mat-table-sticky:first-child {
+            border-right: 1px solid #e0e0e0;
+            width: 32px;
+            padding-left: 8px;
+            cursor: pointer;
+          }
+          .checkbox-colunm{
+            border-right:1px solid #e0e0e0;
+            width: 32px;
+            padding-left: 16px;
+          }
+          tr:nth-child(even){
+            background: #fafafc;
+          }
+        }
+      }
+    }
+}
+
+
+
+
+.flex-col-12{  
+  flex:1 100%; 
+  display: flex;
+  flex-wrap: wrap; 
+  justify-content: left; 
+  align-items: flex-start;
+  margin-bottom: 30px;
+}
+
+.flex-col-9{  
+  flex:1 70%; 
+  display: flex;
+  flex-wrap: wrap; 
+  justify-content: left; 
+  margin: 30px 16px 30px 16px;
+  vertical-align: top;
+  order: 2;
+}
+.flex-col-3{  
+  display: flex;
+  flex-wrap: wrap; 
+  justify-content: left; 
+  margin: 30px 16px 30px 16px;
+  vertical-align: top;
+  order: 2;
+}

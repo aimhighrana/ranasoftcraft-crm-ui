@@ -1,0 +1,64 @@
+.table-root{
+    padding: 0px;
+    margin-bottom: 30px;
+    width:100%;
+    min-height: 650px;
+    mat-toolbar{
+      font-size: 18px;
+      height: 50px;
+      background: #f9fafc;
+      min-height:50px;
+      mat-toolbar-row{
+        height: 50px;
+        .mat-flat-button{
+         margin: 0 5px;
+        }
+      }
+    }
+    .root-schemalisting{
+      margin:16px;
+      .schematable-filters{
+        margin:16px;
+        .mat-flat-button{
+          margin: 0 5px;
+        }
+      }
+      .root-AdminTable{ 
+        height: 500px;
+        overflow: auto; 
+        border-top: 1px solid #e0e0e0;
+        table{
+          width:100%;                     
+          td.mat-column-star {
+            width:30px;
+            padding-left: 8px;
+          }
+          td.errorCell{
+            border-bottom: 2px solid #ff0000;
+            color: #ff0000;
+          }
+          th.mat-column-position, td.mat-column-position {
+            padding-left: 12px;
+          }
+          td.mat-cell, .mat-header-cell{ 
+            padding-left: 16px;
+          }
+          .mat-table-sticky:first-child {
+            border-right: 1px solid #e0e0e0;
+            width: 32px;
+            padding-left: 8px;
+            cursor: pointer;
+          }
+          .checkbox-colunm{
+            border-right:1px solid #e0e0e0;
+            width: 32px;
+            padding-left: 16px;
+          }
+          tr:nth-child(even){
+            background: #fafafc;
+          }
+        }
+        
+      }
+    }
+}

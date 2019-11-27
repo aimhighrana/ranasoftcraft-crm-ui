@@ -1,7 +1,40 @@
 /* You can add global styles to this file, and also import other style files */
 
-// Google fonts served from frontend instead of google
-@import 'fonts/_fonts.css';
+@import 'assets/fonts/_fonts.css';
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+@import 'assets/themes/themes.scss';
+
+body, h1, h2, h3, h4, h5, h6, p { margin: 0; }
+
+//Spacer's
+.col-spacer {
+    width: 16px;
+}
+.row-spacer {
+    height: 16px;
+}
+.flex-spacer {
+    flex-grow: 1;
+}
+.content-row {
+    width:100%;
+}
+//box-shadow's
+.bxshadow-variant-0 { 
+    box-shadow: none !important;
+}
+.bxshadow-variant-1 {
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23) !important;
+}
+.flex-item_x1{
+    flex-grow: 1;
+ }
+ .flex-item_x2{
+    flex-grow: 2;
+ }
+ .flex-item_x3{
+    flex-grow: 3;
+ }
+
+
+
