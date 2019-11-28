@@ -1,9 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { BreadcrumbComponent } from './breadcrumb.component';
-import { Component } from '@angular/core';
-import { MatToolbarModule, MatIconModule } from '@angular/material';
-import { RouterModule } from '@angular/router';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { RouterTestingModule } from '@angular/router/testing';
 

@@ -3,7 +3,7 @@ import { Breadcrumb } from 'src/app/_models/breadcrumb';
 import { SchemaService } from 'src/app/_services/home/schema.service';
 import { SchemalistService } from 'src/app/_services/home/schema/schemalist.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SchemaList, SchemaDetails } from 'src/app/_models/schema/schemalist';
+import { SchemaList } from 'src/app/_models/schema/schemalist';
 
 @Component({
   selector: 'pros-schemalist',

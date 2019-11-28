@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Schemadetailstable, SchemaDataSource } from 'src/app/_models/schema/schemadetailstable';
-import { MatTableDataSource, MatPaginator, MatSort, MatTabChangeEvent, MatDialog } from '@angular/material';
+import { MatTableDataSource, MatPaginator, MatSort, MatDialog } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections';
 import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-details.service';
 import { SchemaDatatableDialogComponent } from '../schema-datatable-dialog/schema-datatable-dialog.component';

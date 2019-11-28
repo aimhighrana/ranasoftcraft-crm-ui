@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import * as moment from 'moment';
 import { Task } from '../_models/task';
 import { TaskResponse } from '../_models/task-response';
 @Injectable({

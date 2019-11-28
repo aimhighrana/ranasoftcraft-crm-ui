@@ -1,4 +1,4 @@
-import { NgModule, Component } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { PageNotFoundComponent } from './_components/page-not-found/page-not-found.component';
 import { IntMappingComponent } from './_components/int-mapping/int-mapping.component';

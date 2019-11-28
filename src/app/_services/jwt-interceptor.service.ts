@@ -3,7 +3,7 @@ import { HttpInterceptor, HttpHandler, HttpEvent, HttpRequest, HttpErrorResponse
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { catchError, filter, take, switchMap, finalize } from 'rxjs/operators';
 import { EndpointService } from '../_services/endpoint.service';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'

@@ -1,5 +1,4 @@
-import { Component, DoCheck } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component } from '@angular/core';
 
 @Component({
   templateUrl: './page-not-found.component.html',

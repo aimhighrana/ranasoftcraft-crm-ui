@@ -1,12 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { IntMappingComponent } from './int-mapping.component';
-import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
-import { MatCardModule, MatToolbarModule, MatIconModule, MatDividerModule, MatChipsModule, MatListModule, MatLabel, MatTreeModule, MatFormFieldModule, MatMenuModule, MatTableDataSource } from '@angular/material';
-import { RouterModule } from '@angular/router';
-import { DataSource } from '@angular/cdk/table';
-import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
-import { FormsModule } from '@angular/forms';
 
 // describe('IntMappingComponent', () => {
 //   let component: IntMappingComponent;

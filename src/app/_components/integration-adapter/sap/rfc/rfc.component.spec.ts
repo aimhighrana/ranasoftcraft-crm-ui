@@ -4,7 +4,6 @@ import { RfcComponent } from './rfc.component';
 import { BreadcrumbComponent } from 'src/app/_components/breadcrumb/breadcrumb.component';
 import { MatIconModule, MatCardModule, MatListModule, MatToolbarModule } from '@angular/material';
 import { RouterModule } from '@angular/router';
-import { AppRoutingModule } from 'src/app/app-routing.module';
 
 describe('RfcComponent', () => {
   let component: RfcComponent;

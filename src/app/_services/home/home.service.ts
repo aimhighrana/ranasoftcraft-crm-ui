@@ -13,7 +13,7 @@ export class HomeService {
   getALlLanguage() {
     const header = new HttpHeaders();
     header.set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJ1c2VySWRcIjpcIkFkbWluXCIsXCJmdWxsbmFtZVwiOlwiQWRtaW4gQWRtaW5cIn0iLCJpc3MiOiJNRE8iLCJleHAiOjE1NzM2MTg5MzYsImlhdCI6MTU3MzYxODAzNn0.-KWrMVeqcYgWe1dqTuT79qlWbqVIck_7Eydd1wbUfiY');
-    const body = '';
+    // const body = '';
     return this.http.get<any>(this.languageUrl, {headers: header});
   }
 

@@ -1,15 +1,11 @@
-import { Component, OnInit, Input, ViewChild, Output } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Breadcrumb } from 'src/app/_models/breadcrumb';
 import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-details.service';
-import { ChartDataSets, ChartOptions, ChartType, ChartColor, ChartData } from 'chart.js';
+import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
 import { Label, Color } from 'ng2-charts';
 import { ActivatedRoute } from '@angular/router';
-import { Schemadetailstable, SchemaDataSource } from 'src/app/_models/schema/schemadetailstable';
-import { MatTableDataSource, MatPaginator, MatSort, MatSlideToggleChange, MatSlideToggle } from '@angular/material';
-import { SelectionModel } from '@angular/cdk/collections';
 import 'chartjs-plugin-zoom';
 import { OverviewChartComponent } from './overview-chart/overview-chart.component';
-import { EventEmitter } from 'events';
 import { FormControl } from '@angular/forms';
 @Component({
   selector: 'pros-schema-details',

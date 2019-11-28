@@ -3,7 +3,7 @@ import {Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {MatAutocompleteSelectedEvent, MatChipInputEvent, MatAutocomplete } from '@angular/material';
 import {Observable } from 'rxjs';
-import {map, startWith} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
 
 export interface PeriodicElement {
   Description: string;
@@ -52,7 +52,7 @@ export class InterfacesComponent implements OnInit {
 
   constructor() {
     this.filteredFruits = this.fruitCtrl.valueChanges.pipe(
-        startWith(null),
+        // startWith(null),
         map((fruit: string | null) => fruit ? this._filter(fruit) : this.allFruits.slice()));
   }
 

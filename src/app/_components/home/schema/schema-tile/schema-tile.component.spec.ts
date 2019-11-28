@@ -2,10 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SchemaTileComponent } from './schema-tile.component';
 import { BreadcrumbComponent } from 'src/app/_components/breadcrumb/breadcrumb.component';
-import { MatCardModule, MatToolbarModule, MatIconModule, MatDividerModule, MatChipsModule, MatListModule } from '@angular/material';
-import { RouterModule } from '@angular/router';
 import { SchemaProgressbarComponent } from '../../schema-progressbar/schema-progressbar.component';
-import { FlexModule } from '@angular/flex-layout';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { RouterTestingModule } from '@angular/router/testing';
 

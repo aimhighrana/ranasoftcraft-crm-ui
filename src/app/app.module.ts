@@ -100,7 +100,6 @@ import {ChartsModule} from 'ng2-charts';
 import { SchemaComponent } from './_components/home/schema/schema/schema.component';
 import { SchemaLayoutComponent } from './_components/home/schema/schema-layout/schema-layout.component';
 import { SchemaTileComponent } from './_components/home/schema/schema-tile/schema-tile.component';
-import { DataSource } from '@angular/cdk/table';
 import { SchemaDetailsComponent } from './_components/home/schema/schema-details/schema-details.component';
 import { SchemaDialogComponent } from './_components/home/schema/schema-dialog/schema-dialog.component';
 import { OverviewChartComponent } from './_components/home/schema/schema-details/overview-chart/overview-chart.component';

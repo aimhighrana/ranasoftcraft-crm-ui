@@ -1,6 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CategoriesChartComponent } from './categories-chart.component';
 
 // describe('CategoriesChartComponent', () => {
 //   let component: CategoriesChartComponent;
