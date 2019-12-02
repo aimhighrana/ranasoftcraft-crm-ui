@@ -37,4 +37,7 @@ export class SchemaComponent implements OnInit {
       console.log('Error while fetching schema groups');
     });
   }
+  public editSchemaGroup(edit: any) {
+    this.router.navigate(['/home/schema/edit-group', edit.groupId]);
+  }
 }

@@ -25,6 +25,29 @@ mat-card.root {
         line-height: 30px;
         margin-top: 5px;
       }
+
+      display: flex;
+
+      mat-icon {
+        font-size: 20px;
+      }
+
+      .vt--col {
+        display: inline-block;
+        padding: 0 10px;
+        cursor: pointer;
+
+        mat-card-title {
+          font-size: 14px;
+          margin: 0;
+          line-height: 20px;
+        }
+
+        mat-card-subtitle {
+          font-size: 12px;
+          margin: 0;
+        }
+      }
     }
   }
 
@@ -72,31 +95,6 @@ mat-card.root {
     .score-subhead {
       display: grid;
       margin: 10px 0 5px 0;
-    }
-  }
-
-  mat-card-actions {
-    display: flex;
-
-    mat-icon {
-      font-size: 20px;
-    }
-
-    .vt--col {
-      display: inline-block;
-      padding: 0 10px;
-      cursor: pointer;
-
-      mat-card-title {
-        font-size: 14px;
-        margin: 0;
-        line-height: 20px;
-      }
-
-      mat-card-subtitle {
-        font-size: 12px;
-        margin: 0;
-      }
     }
   }
 }

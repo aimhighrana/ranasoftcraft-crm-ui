@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Task } from '../_models/task';
 import { TaskResponse } from '../_models/task-response';
-import { SchemaListOnLoadResponse, SchemaGroupResponse, SchemaGroupDetailsResponse } from '../_models/schema/schema';
+import { SchemaListOnLoadResponse, SchemaGroupResponse, SchemaGroupDetailsResponse, SchemaGroupCountResponse, ObjectTypeResponse, GetAllSchemabymoduleidsRes } from '../_models/schema/schema';
 import { SchamaListDetails, VariantFieldList, SchemaVariantResponse, SchemaBrInfoList, CategoriesResponse, DependencyResponse, VariantDetailsScheduleSchema, VariantAssignedFieldDetails, SchemaListModuleList } from '../_models/schema/schemalist';
 import { SchemaDataTableColumnInfoResponse, ResponseFieldList, SchemaTableData, SchemaDataTableResponse } from '../_models/schema/schemadetailstable';
 import { Userdetails, AssignedRoles } from '../_models/userdetails';
@@ -117,47 +117,29 @@ export class Any2tsService {
     }
   }
   public any2SchemaGroupResponse(response: any): SchemaGroupResponse[] {
-    if (response === undefined) {return []; }
-    const schemaGroupResponseList: SchemaGroupResponse[] = [];
-    response.SCHEMA_GROUPS.forEach((grp) => {
-      const groupId = grp.groupId;
-      if (groupId !== null && groupId !== '') {
-        const schemaGroupResponse: SchemaGroupResponse = new SchemaGroupResponse();
-        schemaGroupResponse.groupId = groupId;
-        schemaGroupResponse.groupName = grp.groupName;
-        schemaGroupResponse.createdDate = grp.createdDate;
-        schemaGroupResponse.updatedDate = grp.updatedDate;
-        schemaGroupResponse.isEnable = grp.isEnable;
-        schemaGroupResponseList.push(this.getlatestSchemaRunDetails(groupId, response, schemaGroupResponse));
-      }
+    const schemaGroups: SchemaGroupResponse[] = [];
+    response.forEach(grp => {
+      const schemaGroupResponse: SchemaGroupResponse = new SchemaGroupResponse();
+      schemaGroupResponse.groupId = grp.groupId;
+      schemaGroupResponse.groupName = grp.groupDescription;
+      schemaGroupResponse.isEnable = grp.isEnable ? grp.isEnable : false;
+      schemaGroupResponse.objectIds = grp.objectId ? grp.objectId.split(',') : '';
+      schemaGroupResponse.plantCode = grp.plantCode;
+      schemaGroupResponse.updateDate = grp.updateDate;
+
+      const schemaGroupCountResponse: SchemaGroupCountResponse = new SchemaGroupCountResponse();
+      schemaGroupCountResponse.total = grp.total ? grp.total : 0;
+      schemaGroupCountResponse.error = grp.error ? grp.error : 0;
+      schemaGroupCountResponse.duplicate = grp.duplicate ? grp.duplicate : 0;
+      schemaGroupCountResponse.success = grp.success ? grp.success : 0;
+      schemaGroupCountResponse.skipped = grp.skipped ? grp.skipped : 0;
+      schemaGroupCountResponse.outdated = grp.outdated ? grp.outdated : 0;
+      schemaGroupCountResponse.errorPercentage = grp.errorPercentage ? grp.errorPercentage : 0;
+      schemaGroupCountResponse.successPercentage = grp.successPercentage ? grp.successPercentage : 0;
+      schemaGroupResponse.runCount = schemaGroupCountResponse;
+      schemaGroups.push(schemaGroupResponse);
     });
-    return schemaGroupResponseList;
-  }
-  private getlatestSchemaRunDetails(groupId: string, response: any, schemaGroupResponse: SchemaGroupResponse): SchemaGroupResponse {
-    const latestRunSchemaId: number = response.LATESTRUNSCHEMAS[groupId];
-    const serverResponse: any = response.GROUP_DETAILS[groupId + '_' + latestRunSchemaId];
-    if (serverResponse !== null) {
-      schemaGroupResponse.errorCount = serverResponse[latestRunSchemaId + '_error'];
-      schemaGroupResponse.successCount = serverResponse[latestRunSchemaId + '_success'];
-      schemaGroupResponse.totalCount = serverResponse[latestRunSchemaId + '_total'];
-      schemaGroupResponse.per = serverResponse[latestRunSchemaId + '_per'];
-      schemaGroupResponse.dateModified = serverResponse[latestRunSchemaId + '_dt_mod'];
-      schemaGroupResponse.state = serverResponse[latestRunSchemaId + '_state'];
-      schemaGroupResponse.errorLabel = serverResponse[latestRunSchemaId + '_labelErr'];
-      schemaGroupResponse.successLabel = serverResponse[latestRunSchemaId + '_labelSucc'];
-      schemaGroupResponse.totalLabel = serverResponse[latestRunSchemaId + '_labelTotal'];
-      schemaGroupResponse.variantCount = serverResponse[latestRunSchemaId + '_var_count'];
-      schemaGroupResponse.createdBy = serverResponse[latestRunSchemaId + '_cr_by'];
-      schemaGroupResponse.schemaId = String(latestRunSchemaId);
-      schemaGroupResponse.schemaDescription = serverResponse[latestRunSchemaId + '_desc'];
-      schemaGroupResponse.struc = serverResponse[latestRunSchemaId + '_struc'];
-      schemaGroupResponse.scat = serverResponse[latestRunSchemaId + '_scat'];
-      schemaGroupResponse.scatDesc = serverResponse[latestRunSchemaId + '_scat_desc'];
-      schemaGroupResponse.lr = serverResponse[latestRunSchemaId + '_lr'];
-      schemaGroupResponse.errorPercentage = serverResponse[latestRunSchemaId + '_error_per'] !== undefined ? serverResponse[latestRunSchemaId + '_error_per'] : 0;
-      schemaGroupResponse.successPercentage = serverResponse[latestRunSchemaId + '_success_per'] !== undefined ? serverResponse[latestRunSchemaId + '_success_per'] : 0;
-    }
-    return schemaGroupResponse;
+    return schemaGroups;
   }
 
   public anyToSchemaListViewForGrp(response: any): SchamaListDetails[] {
@@ -436,5 +418,39 @@ export class Any2tsService {
       userDetails.assignedRoles = assignedRoles;
     }
     return userDetails;
+  }
+
+  public any2SchemaGroupCountResposne(response: any): SchemaGroupCountResponse {
+    const schemaGroupCountResponse: SchemaGroupCountResponse = new SchemaGroupCountResponse();
+    schemaGroupCountResponse.total = response.total ? response.total : 0;
+    schemaGroupCountResponse.error = response.error ? response.error : 0;
+    schemaGroupCountResponse.duplicate = response.duplicate ? response.duplicate : 0;
+    schemaGroupCountResponse.success = response.success ? response.success : 0;
+    schemaGroupCountResponse.skipped = response.skipped ? response.skipped : 0;
+    schemaGroupCountResponse.outdated = response.outdated ? response.outdated : 0;
+    return schemaGroupCountResponse;
+  }
+
+  public any2ObjectType(response: any): ObjectTypeResponse[] {
+    const objectTypeList: ObjectTypeResponse[] = [];
+    response.forEach(objType => {
+      const objecttype: ObjectTypeResponse = new ObjectTypeResponse();
+      objecttype.objectdesc = objType.objectDecsription;
+      objecttype.objectid = objType.objectId;
+      objectTypeList.push(objecttype);
+    });
+    return objectTypeList;
+  }
+
+  public any2GetAllSchemabymoduleidsResponse(resposne: any): GetAllSchemabymoduleidsRes[] {
+    const getAllSchemaList: GetAllSchemabymoduleidsRes[] = [];
+    resposne.forEach(schema => {
+      const schemaRes: GetAllSchemabymoduleidsRes = new GetAllSchemabymoduleidsRes();
+      schemaRes.discription = schema.discription;
+      schemaRes.moduleId = schema.moduleId;
+      schemaRes.schemaId = schema.schemaId;
+      getAllSchemaList.push(schemaRes);
+    });
+    return getAllSchemaList;
   }
 }

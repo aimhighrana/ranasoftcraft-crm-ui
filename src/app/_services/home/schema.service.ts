@@ -4,7 +4,7 @@ import { EndpointService } from '../endpoint.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../any2ts.service';
-import { SchemaGroupResponse, SchemaGroupDetailsResponse } from 'src/app/_models/schema/schema';
+import { SchemaGroupResponse, SchemaGroupDetailsResponse, SchemaGroupCountResponse, CreateSchemaGroupRequest, GetAllSchemabymoduleidsReq, ObjectTypeResponse, GetAllSchemabymoduleidsRes } from 'src/app/_models/schema/schema';
 
 @Injectable({
   providedIn: 'root'
@@ -16,36 +16,41 @@ export class SchemaService {
     private any2tsService: Any2tsService
   ) { }
 
-  /*
-  public onLoadSchema(): Observable<any> {
-    return this.http.get(this.endpointService.onLoadSchema()).pipe(map(data => {
-      return this.any2tsService.anyToSchemaListOnLoadResponse(data);
-    }));
-  }
-  public createSchemaGroup(schemaGroup: SchemaGroupRequest ): Observable<any> {
-    return this.http.post<SchemaGroupRequest>(this.endpointService.getCreateSchemaGroupUtl(), schemaGroup, this.httpOptions);
-  }
-  public schemaGroupMapping(schemaGroupId: number , schemaIds: string[]): Observable<any> {
-    const sendData = JSON.stringify(schemaIds);
-    const sendUrl = this.endpointService.getSchemaGroupMappingUrl(schemaGroupId) + '?selectedSchemas=' + sendData;
-    return this.http.post<any>(sendUrl, sendData, this.httpOptions);
-  } */
   public getAllSchemaGroup(): Observable<SchemaGroupResponse[]> {
     return this.http.get(this.endpointService.getSchemaGroupsUrl()).pipe(map(data => {
       return this.any2tsService.any2SchemaGroupResponse(data);
     }));
   }
-  /*
-  public getSchemaDescModuleIdByGroupId(groupId: string): Observable<any> {
-    return this.http.get<any>(this.endpointService.getSchemaDescModuleIdByGroupId(groupId));
-  }
-  public deleteSchemaGroupAndMapping(groupId: string): Observable<any> {
-    return this.http.post<any>(this.endpointService.deleteSchemaGroupUrl(groupId), '');
-  } */
-
   public getSchemaGroupDetailsBySchemaGrpId(schemaGroupId: string): Observable<SchemaGroupDetailsResponse> {
     return this.http.post<any>(this.endpointService.getSchemaGroupDetailsByGrpIdUrl(schemaGroupId), '').pipe(map(data => {
       return this.any2tsService.any2SchemaDetails(data);
     }));
   }
+
+  public getSchemaGroupCounts(groupId: number): Observable<SchemaGroupCountResponse> {
+    return this.http.get<any>(this.endpointService.getSchemaGroupCountUrl(groupId)).pipe(map(data => {
+      return this.any2tsService.any2SchemaGroupCountResposne(data);
+    }));
+  }
+
+  public createSchemaGroup(createSchemaGroupRequest: CreateSchemaGroupRequest): Observable<any> {
+    return  this.http.post<any>(this.endpointService.getCreateSchemaGroupUrl(), createSchemaGroupRequest);
+  }
+
+  public getAllSchemabymoduleids(getAllSchemabymoduleidsReq: GetAllSchemabymoduleidsReq): Observable<GetAllSchemabymoduleidsRes[]> {
+    return this.http.post<any>(this.endpointService.getAllSchemabymoduleids(), getAllSchemabymoduleidsReq).pipe(map(data => {
+      return this.any2tsService.any2GetAllSchemabymoduleidsResponse(data);
+    }));
+  }
+
+  public getAllObjectType(): Observable<ObjectTypeResponse[]> {
+    return this.http.get<any>(this.endpointService.getAllObjecttypeUrl()).pipe(map(data => {
+      return this.any2tsService.any2ObjectType(data);
+    }));
+  }
+
+  /*public getSchemaGroupDetailsByGroupId(schemaGroupId: number): Observable<SchemaGroupWithAssignSchemas> {
+
+  } */
+
 }

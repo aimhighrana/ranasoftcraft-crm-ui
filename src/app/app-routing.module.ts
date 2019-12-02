@@ -46,18 +46,23 @@ import { SchemalistComponent } from './_components/home/schema/schemalist/schema
 import { SchemaComponent } from './_components/home/schema/schema/schema.component';
 import { SchemaDetailsComponent } from './_components/home/schema/schema-details/schema-details.component';
 import { SchemaVariantsComponent } from './_components/home/schema/schema-variants/schema-variants.component';
+import { SchemaGroupMappingComponent } from './_components/home/schema/schema-group-mapping/schema-group-mapping.component';
 
 const routes: Routes = [
-   { path: 'home', component: HomeLayoutComponent,
-     children: [
+  {
+    path: 'home', component: HomeLayoutComponent,
+    children: [
       { path: '', redirectTo: 'schema', pathMatch: 'full' },
       { path: 'schema', component: SchemaComponent },
       { path: 'schema/schema-list/:schemaGrpId', component: SchemalistComponent },
       { path: 'schema/schema-details/:moduleId/:schemaGroupId/:schemaId', component: SchemaDetailsComponent },
-      { path: 'schema/schema-variants/:moduleId/:groupId/:schemaId', component: SchemaVariantsComponent},
+      { path: 'schema/schema-variants/:moduleId/:groupId/:schemaId', component: SchemaVariantsComponent },
+      { path: 'schema/add-group', component: SchemaGroupMappingComponent },
+      { path: 'schema/edit-group/:groupId', component: SchemaGroupMappingComponent }
     ]
   },
-  { path: 'admin', component: AdminLayoutComponent,
+  {
+    path: 'admin', component: AdminLayoutComponent,
     children: [
       { path: '', redirectTo: 'default', pathMatch: 'full' },
       { path: 'default', component: AdminHomeComponent },
@@ -113,7 +118,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [ RouterModule.forRoot(routes, { useHash: true }) ],
-  exports: [ RouterModule ]
+  imports: [RouterModule.forRoot(routes, { useHash: true })],
+  exports: [RouterModule]
 })
 export class AppRoutingModule { }

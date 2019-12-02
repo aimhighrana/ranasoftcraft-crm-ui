@@ -8,7 +8,7 @@ import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SubstringPipe } from 'src/app/_pipes/substringpipe.pipe';
 import { SchemabadgeTileComponent } from '../schemabadge-tile/schemabadge-tile.component';
-import { SchemaGroupResponse } from 'src/app/_models/schema/schema';
+import { SchemaGroupResponse, SchemaGroupCountResponse } from 'src/app/_models/schema/schema';
 import { SchemaService } from 'src/app/_services/home/schema.service';
 import { of } from 'rxjs';
 
@@ -41,18 +41,19 @@ describe('SchemaComponent', () => {
 
   const mockData: SchemaGroupResponse[] = [];
   const schemaRes1: SchemaGroupResponse = new SchemaGroupResponse();
+  const runCount: SchemaGroupCountResponse = new SchemaGroupCountResponse();
   schemaRes1.groupName = 'Function Location';
   schemaRes1.groupId = 87346923798423;
-  schemaRes1.successCount = 1200;
-  schemaRes1.errorCount = 100;
-  schemaRes1.totalCount = 1300;
+  runCount.total = 0;
+  schemaRes1.runCount = runCount;
 
   const schemaRes2: SchemaGroupResponse = new SchemaGroupResponse();
+  const runCount1: SchemaGroupCountResponse = new SchemaGroupCountResponse();
   schemaRes2.groupName = 'Material 100';
   schemaRes2.groupId = 8757825782;
-  schemaRes2.successCount = 300;
-  schemaRes2.errorCount = 400;
-  schemaRes2.totalCount = 700;
+  runCount1.total = 0;
+  schemaRes2.runCount = runCount1;
+
   mockData.push(schemaRes1);
   mockData.push(schemaRes2);
 

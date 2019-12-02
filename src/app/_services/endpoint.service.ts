@@ -21,15 +21,15 @@ export class EndpointService {
     return this.apiUrl + '/moduleCount';
   }
 
-  public getCreateSchemaGroupUtl(): string {
-    return this.apiUrl + '/createSchemaGroup';
+  public getCreateSchemaGroupUrl(): string {
+    return this.apiUrl + '/schema/create-schemagroup';
   }
   public getSchemaGroupMappingUrl(schemaGroupId: number): string {
     return this.apiUrl + '/schemaGroupMapping/' + schemaGroupId;
   }
 
   public getSchemaGroupsUrl() {
-    return this.apiUrl + '/loadAllGroup';
+    return this.apiUrl + '/schema/get-all-groups';
   }
   public getSchemaListByGroupIdUrl(groupId: string) {
     return this.apiUrl + '/restLoadSchemByGroupId' + '?groupId=' + groupId;
@@ -95,9 +95,20 @@ export class EndpointService {
     return this.apiUrl + '/get-variant-control/' + variantId;
   }
   public getSchemaGroupDetailsByGrpIdUrl(schemaGroupId: string): string {
-    return this.apiUrl + '/getSchemaGroupDetails/' + schemaGroupId;
+    return this.apiUrl + '/get-group-details/' + schemaGroupId;
   }
   public getUserDetailsUrl(userName: string): string {
     return this.apiUrl + '/getUserDetails' + '/' + userName;
+  }
+
+  public getSchemaGroupCountUrl(groupId: number): string {
+    return this.apiUrl + '/schema/get-schema-group-count' + '/' + groupId;
+  }
+
+  public getAllSchemabymoduleids(): string {
+    return this.apiUrl + '/schema/get-all-schemabymoduleids';
+  }
+  public getAllObjecttypeUrl(): string {
+    return this.apiUrl + '/schema/get-all-objecttype';
   }
 }

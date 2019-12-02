@@ -12,5 +12,9 @@
                 <a routerLink="{{link.link}}" class="mat-h4" color="primary">{{ link.text }}</a>
             </ng-template>
         </ng-template>
+        <ng-template [ngIf]="crumbs && crumbs.links && crumbs.heading">
+            <mat-icon>keyboard_arrow_right</mat-icon>
+            <a  class="mat-null-link">{{ crumbs.heading }}</a>
+        </ng-template>        
     </mat-toolbar-row>
 </mat-toolbar>

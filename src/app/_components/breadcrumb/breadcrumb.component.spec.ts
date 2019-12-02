@@ -54,11 +54,11 @@ describe('BreadcrumbComponent', () => {
     };
     component.crumbs = crumbsMock;
     fixture.detectChanges();
-    expect(breadcrumbHtml.getElementsByTagName('a').length).toEqual(2);
-    expect(breadcrumbHtml.getElementsByTagName('a').item(0).getAttribute('ng-reflect-router-link')).toEqual(crumbsMock.links[0].link);
-    expect(breadcrumbHtml.getElementsByTagName('a').item(1).getAttribute('ng-reflect-router-link')).toEqual(crumbsMock.links[1].link);
-    expect(breadcrumbHtml.getElementsByTagName('a').item(0).textContent).toEqual(crumbsMock.links[0].text);
-    expect(breadcrumbHtml.getElementsByTagName('a').item(1).textContent).toEqual(crumbsMock.links[1].text);
+    expect(breadcrumbHtml.getElementsByClassName('mat-h4').length).toEqual(2);
+    expect(breadcrumbHtml.getElementsByClassName('mat-h4').item(0).getAttribute('ng-reflect-router-link')).toEqual(crumbsMock.links[0].link);
+    expect(breadcrumbHtml.getElementsByClassName('mat-h4').item(1).getAttribute('ng-reflect-router-link')).toEqual(crumbsMock.links[1].link);
+    expect(breadcrumbHtml.getElementsByClassName('mat-h4').item(0).textContent).toEqual(crumbsMock.links[0].text);
+    expect(breadcrumbHtml.getElementsByClassName('mat-h4').item(1).textContent).toEqual(crumbsMock.links[1].text);
   }));
 
   it('should create', () => {

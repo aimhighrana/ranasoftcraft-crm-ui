@@ -4,10 +4,10 @@
   </div>
 
   <pros-schema-tile class="flex-col-1" *ngFor="let schema of schemaGroups" (click)="showSchemaList(schema);"
-    color="#1c90ff" icon="dashboard" title="{{schema.groupName | titlecase }}" totalValue="{{schema.totalCount}}"
-    thisWeekProgress="0" enableProgressBar=true successValue="{{schema.successPercentage}}"
-    errorValue="{{schema.errorPercentage}}" enableEditButton=true enableDeleteButton=true groupId="{{schema.groupId}}"
-    groupName="{{schema.groupName}}"></pros-schema-tile>
+    color="#1c90ff" icon="dashboard" title="{{schema.groupName | titlecase }}" totalValue="{{schema.runCount.total}}"
+    thisWeekProgress="0" enableProgressBar=true successValue="{{schema.runCount.successPercentage}}"
+    errorValue="{{schema.runCount.errorPercentage}}" enableEditButton=true enableDeleteButton=true groupId="{{schema.groupId}}"
+    groupName="{{schema.groupName}}" (editTrigger)="editSchemaGroup($event)"></pros-schema-tile>
 
-  <pros-schemabadge-tile class="flex-col-1" showAddNewTitle="Add New Group"></pros-schemabadge-tile>
+  <pros-schemabadge-tile class="flex-col-1" showAddNewTitle="Add New Group" routerLink="/home/schema/add-group"></pros-schemabadge-tile>
 </mat-card>
