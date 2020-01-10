@@ -1,27 +1,24 @@
 <mat-card class="flex-container">
   <div class="flex-col-12">
-    <div class="content-row">
-      <pros-breadcrumb [crumbs]="breadcrumb"></pros-breadcrumb>
-    </div>
-    
-    <div *ngFor="let schemaList of schemaLists | keyvalue" class="flex-col-12">
-      <h3 class="H3">{{schemaList.key}}</h3>
-      <pros-schema-tile *ngFor="let schemaLst of schemaLists[schemaList.key]" (click)="showSchemaDetails(schemaLst)" color="#1c90ff" icon="dashboard" title="{{schemaLst.title}}"  totalValue="{{schemaLst.totalValue}}" thisWeekProgress="{{schemaLst.thisWeekProgress}}" enableProgressBar="{{schemaLst.enableProgressBar}}" successValue="{{schemaLst.successValue}}" errorValue="{{schemaLst.errorValue}}" isSchemaList="true" moduleId="{{schemaList.key}}" schemaId="{{schemaLst.schema_id}}" variantCount="{{schemaLst.variants.total_variants}}"></pros-schema-tile>
-    </div>
-    <!--  (click)="showSchemaDetails(schemaLst)"  -->
+    <pros-breadcrumb [crumbs]="breadcrumb"></pros-breadcrumb>
+  </div>
+  <div *ngFor="let module of moduleSchemaListDetails" class="flex-row-container">
+    <h3 class="H3">{{module.moduleDesc}}</h3>
+    <pros-schema-tile class="flex-col-1" *ngFor="let schemaLst of module.schemaLists"
+      (click)="showSchemaDetails(schemaLst,module.moduleId)" color="#1c90ff" icon="dashboard"
+      title="{{schemaLst.schemaDescription}}" totalValue="{{schemaLst.totalCount}}" thisWeekProgress=""
+      enableProgressBar="true" successValue="{{schemaLst.successPercentage}}" errorValue="{{schemaLst.errorPercentage}}"
+      isSchemaList="true" moduleId="{{module.moduleId}}" schemaId="{{schemaLst.schemaId}}"
+      variantCount="{{schemaLst.variantCount}}" schemaCreatedBy="{{schemaLst.createdBy}}"
+      createdDate="{{schemaLst.dateModified}}" modifiedBy="{{schemaLst.createdBy}}"
+      lastModifiedDate="{{schemaLst.dateModified}}" lastRunTime="{{schemaLst.lr}}" lastRunDuration="{{schemaLst.lr}}"
+      colaborators="{{schemaLst.colaborators}}" schemaStructure="{{schemaLst.struc}}" enableEditButton=true groupId="{{schemaGroupId}}"
+      (editTrigger)="editSchema($event, schemaLst.schemaDescription);" (showVariantClick)="showVariants($event)">
+    </pros-schema-tile>
 
-   
-    
+    <pros-schemabadge-tile class="flex-col-1" showAddNewTitle="Create a new schema" createSchemaBadge=true>
+    </pros-schemabadge-tile>
 
-  </div>    
+  </div>
+
 </mat-card>
-
-
-
-
-
-
-
-<!--
-<button class="btn btn-success" (click)="showChart();">Show Chart</button>
--->

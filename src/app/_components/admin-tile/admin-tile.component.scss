@@ -24,10 +24,10 @@ mat-card.root {
         }
     }
     mat-divider{    
-         right: 0;
-         width: calc(100% - 130px);
-         left: auto;
-        }
+        right: 0;
+        width: calc(100% - 130px);
+        left: auto;
+       }
     mat-card-content {
         margin-top: 40px;
         overflow: hidden;
@@ -45,9 +45,5 @@ mat-card.root {
     }
     img {
         height: 60px;
-    }
-        
-    
+    }  
 }
-
-

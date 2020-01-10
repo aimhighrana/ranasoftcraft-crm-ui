@@ -49,10 +49,9 @@ export class BusinessRulesChartComponent implements OnInit {
   }
 
   getBusinessChartData() {
-    const data = this.schemaDetailService.getSchemaBusinessRuleChartData();
-    if (data != null) {
+    this.schemaDetailService.getSchemaBusinessRuleChartData().subscribe(data => {
       this.businessChartDataSet = data.dataSet;
       this.businessChartLabels = data.labels;
-    }
+    });
   }
 }

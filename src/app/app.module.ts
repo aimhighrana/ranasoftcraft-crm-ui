@@ -101,13 +101,18 @@ import { SchemaComponent } from './_components/home/schema/schema/schema.compone
 import { SchemaLayoutComponent } from './_components/home/schema/schema-layout/schema-layout.component';
 import { SchemaTileComponent } from './_components/home/schema/schema-tile/schema-tile.component';
 import { SchemaDetailsComponent } from './_components/home/schema/schema-details/schema-details.component';
-import { SchemaDialogComponent } from './_components/home/schema/schema-dialog/schema-dialog.component';
 import { OverviewChartComponent } from './_components/home/schema/schema-details/overview-chart/overview-chart.component';
 import { CategoriesChartComponent } from './_components/home/schema/schema-details/categories-chart/categories-chart.component';
 import { BusinessRulesChartComponent } from './_components/home/schema/schema-details/business-rules-chart/business-rules-chart.component';
 import { SchemaDatatableComponent } from './_components/home/schema/schema-details/schema-datatable/schema-datatable.component';
 import { SchemaDatatableDialogComponent } from './_components/home/schema/schema-details/schema-datatable-dialog/schema-datatable-dialog.component';
-
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { MatRangeDatepickerModule, MatRangeNativeDateModule } from 'mat-range-datepicker';
+import { SchemaVariantsComponent } from './_components/home/schema/schema-variants/schema-variants.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { SubstringPipe } from './_pipes/substringpipe.pipe';
+import { SchemaStatusinfoDialogComponent } from './_components/home/schema/schema-details/schema-statusinfo-dialog/schema-statusinfo-dialog.component';
+import { SchemabadgeTileComponent } from './_components/home/schema/schemabadge-tile/schemabadge-tile.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -162,23 +167,23 @@ import { SchemaDatatableDialogComponent } from './_components/home/schema/schema
     SchemaLayoutComponent,
     SchemaTileComponent,
     SchemaDetailsComponent,
-    SchemaDialogComponent,
     OverviewChartComponent,
     CategoriesChartComponent,
     BusinessRulesChartComponent,
     SchemaDatatableComponent,
-    SchemaDatatableDialogComponent
+    SchemaDatatableDialogComponent,
+    SchemaVariantsComponent,
+    SubstringPipe,
+    SchemaStatusinfoDialogComponent,
+    SchemabadgeTileComponent
   ],
   imports: [
     HttpClientModule,
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
-    // for flex-progress bar
     FlexLayoutModule,
-    // for chart
     ChartsModule,
-    // Material Modules Start
     MatAutocompleteModule,
     MatBadgeModule,
     MatBottomSheetModule,
@@ -218,19 +223,24 @@ import { SchemaDatatableDialogComponent } from './_components/home/schema/schema
     MatListModule,
     MatLineModule,
     MatTableModule,
-    // Material Modules End
-    // Theme changer CDK
     OverlayModule,
     BrowserAnimationsModule,
-    AppRoutingModule
+    NgxMatSelectSearchModule,
+    AppRoutingModule,
+    MatRangeDatepickerModule,
+    MatRangeNativeDateModule,
+    MatDatepickerModule,
+    DragDropModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptorService, multi: true },
   ],
   bootstrap: [ AppComponent ],
   exports: [
-    BreadcrumbComponent
+    BreadcrumbComponent,
+    DragDropModule
   ],
-  entryComponents: [SchemaDialogComponent, SchemaDatatableDialogComponent]
+  entryComponents: [SchemaDatatableDialogComponent, SchemaStatusinfoDialogComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

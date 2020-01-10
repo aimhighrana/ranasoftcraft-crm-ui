@@ -1,8 +1,55 @@
-<h1 mat-dialog-title>Schema choose column </h1>
-<div mat-dialog-content>  
-  
+<h1 mat-dialog-title>Schema Choose Column </h1>
+<div mat-dialog-content cdkDropListGroup class="dailog-container">  
+    <div class="flex-col-6">
+      <mat-toolbar>
+        <mat-toolbar-row>
+          <span>Selected Fiels(s)</span>
+        </mat-toolbar-row>
+      </mat-toolbar>
+      
+      <div class="selected-col-container" cdkDropList [cdkDropListData]="selectedFields" (cdkDropListDropped)="drop($event)">
+        <div class="selection-input">
+          <mat-form-field>
+            <input matInput ng-model="searchText" placeholder="Search Selected Column">
+          </mat-form-field>          
+        </div>
+        <div class="colunm-listing">
+          <div class="list-label-row" *ngFor="let item of selectedFields" cdkDrag>
+            <mat-list-item>{{item.label}}</mat-list-item>
+            <button mat-stroked-button color="warn" (click)="removeFromSelected($event,item);">Remove</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <span class="flex-spacer"></span>
+
+    <div class="flex-col-6">
+      <mat-toolbar>
+        <mat-toolbar-row>
+          <span>Unselected Field(s)</span>
+        </mat-toolbar-row>
+      </mat-toolbar>
+      
+      <div class="selected-col-container"  cdkDropList [cdkDropListData]="unSelectedFields" (cdkDropListDropped)="drop($event)">
+        <div class="selection-input">
+          <mat-form-field>
+            <input matInput ng-model="searchText" placeholder="Search UnSelected Column">
+          </mat-form-field>          
+        </div>
+        <div class="colunm-listing">
+          <div class="list-label-row" *ngFor="let item of unSelectedFields" cdkDrag>
+            <mat-list-item>{{item.label}}</mat-list-item>
+            <button mat-stroked-button color="primary" (click)="addToSelected($event, item);">Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
 </div>
+
+
 <div mat-dialog-actions>
-  <button mat-button (click)="onNoClick()">No Thanks</button>
-  <button mat-button  cdkFocusInitial>Ok</button>
+  <button mat-flat-button (click)="onNoClick()">Cancel</button>
+  <button mat-flat-button color="primary" cdkFocusInitial (click)="showSelectedFields($event);">Submit</button>
 </div>

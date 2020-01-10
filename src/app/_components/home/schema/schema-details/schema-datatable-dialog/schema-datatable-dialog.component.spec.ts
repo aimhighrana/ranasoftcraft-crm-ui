@@ -13,7 +13,7 @@ describe('SchemaDatatableDialogComponent', () => {
       imports: [
         AppMaterialModuleForSpec
       ],
-      declarations: [ SchemaDatatableDialogComponent ],
+      declarations: [ SchemaDatatableDialogComponent],
       providers: [
         { provide: MatDialogRef, useValue: {} },
         { provide: MAT_DIALOG_DATA, useValue: [] }

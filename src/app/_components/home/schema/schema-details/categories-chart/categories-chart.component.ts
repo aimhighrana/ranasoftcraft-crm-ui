@@ -62,11 +62,9 @@ export class CategoriesChartComponent implements OnInit {
     this.getCategoryChartData();
   }
   getCategoryChartData() {
-    const categoryChartdata = this.schemaDetailsService.getCategoryChartData();
-    if (categoryChartdata !== undefined && categoryChartdata !== '') {
+    this.schemaDetailsService.getCategoryChartData().subscribe(categoryChartdata => {
       this.categoryChartData = categoryChartdata.dataSet;
-      // this.categoryChartLabels = categoryChartdata.labels;
-    }
+    });
   }
 
   generateDynamicTimeSeries(): Label[] {

@@ -1,7 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { MatDialog } from '@angular/material';
-import { SchemaDialogComponent } from '../schema-dialog/schema-dialog.component';
-
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 @Component({
   selector: 'pros-schema-tile',
   templateUrl: './schema-tile.component.html',
@@ -41,25 +38,57 @@ export class SchemaTileComponent implements OnInit {
   schemaId: string;
   @Input()
   variantCount: string;
-
-
+  @Input()
+  showAddNew: boolean;
+  @Input()
+  enableEditButton: boolean;
+  @Input()
+  groupId: string;
+  @Input()
+  groupName: string;
+  @Input()
+  isSchemaVarinat: boolean;
+  @Input()
+  lastSchemaExecutionDate: string;
+  @Input()
+  enableDeleteButton: boolean;
+  @Input()
+  schemaStructure: string;
+  @Input()
+  schemaCreatedBy: any;
+  @Input()
+  createdDate: number;
+  @Input()
+  modifiedBy: any;
+  @Input()
+  lastModifiedDate: number;
+  @Input()
+  lastRunTime: number;
+  @Input()
+  lastRunDuration: number;
+  @Input()
+  colaborators: string;
+  @Output()
+  deleteSchemaGroup = new EventEmitter();
+  @Output()
+  editTrigger = new EventEmitter();
+  @Output()
+  showVariantClick = new EventEmitter();
   linker() {
-      return this.link;
+    return this.link;
   }
-  constructor(private dialog: MatDialog) { }
-
+  constructor() { }
   ngOnInit() {
   }
-
-  openDialog(event): void {
-    const dialogRef = this.dialog.open(SchemaDialogComponent, {
-      width: '600px',
-      data: {moduleId: this.moduleId, schemaId: this.schemaId, schemaName: this.title}
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-    });
-    event.stopPropagation();
+  public onEditTrigger(groupId: string, groupName: string, schemaId: string) {
+    const sendBack: any = { groupId, schemaId, groupName, objectId: this.moduleId };
+    return this.editTrigger.emit(sendBack);
   }
-
+  public deleteSchemaGroupAndMapping(groupId: string) {
+    return this.deleteSchemaGroup.emit(groupId);
+  }
+  public showSchemaVariants(moduleId: string, groupId: string, schemaId: string) {
+    const sendBack: any = { moduleId, groupId, schemaId};
+    return this.showVariantClick.emit(sendBack);
+  }
 }

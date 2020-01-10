@@ -1,32 +1,13 @@
-<mat-card class="flex-container">
-    <div class="flex-col-12">
-      <div class="content-row">
-        <pros-breadcrumb [crumbs]="breadcrumb"></pros-breadcrumb>
-      </div>
-      
-      <pros-schema-tile   *ngFor="let schema of schemas" (click)="showSchemaList(schema);" color="#1c90ff" icon="dashboard" title="{{schema.title}}"  totalValue="{{schema.totalValue}}" thisWeekProgress="{{schema.thisWeekProgress}}" enableProgressBar="{{schema.enableProgressBar}}" successValue="{{schema.successValue}}" errorValue="{{schema.errorValue}}"></pros-schema-tile>
-      <!-- <pros-schema-tile link="/schema-list" color="#1c90ff" icon="dashboard" title="Vendor"  totalValue="7.8K" thisWeekProgress="-10" enableProgressBar=true successValue="20" errorValue="80"></pros-schema-tile>
-      <pros-schema-tile link="/schema-list" color="#1c90ff" icon="dashboard" title="Test"  totalValue="9.6K" thisWeekProgress="+36" enableProgressBar=true successValue="99" errorValue="1"></pros-schema-tile>
-      <pros-schema-tile link="/schema-list" color="#1c90ff" icon="dashboard" title="Hello"  totalValue="10.6K" thisWeekProgress="-04" enableProgressBar=true successValue="54" errorValue="46"></pros-schema-tile>
-      <pros-schema-tile link="/schema-list" color="#1c90ff" icon="dashboard" title="MDA"   totalValue="45.6K" thisWeekProgress="+16" enableProgressBar=true successValue="80" errorValue="20"></pros-schema-tile>
-      <pros-schema-tile link="/schema-list" color="#1c90ff" icon="dashboard" title="FMG"  totalValue="56.6K" thisWeekProgress="-80" enableProgressBar=false successValue="12" errorValue="88"></pros-schema-tile>
-      <pros-schema-tile link="/schema-list" color="#1c90ff" icon="dashboard" title="DOW"  totalValue="423" thisWeekProgress="+70" enableProgressBar=true successValue="100" errorValue="0"></pros-schema-tile>
-      <pros-schema-tile link="/schema-list" color="#1c90ff" icon="dashboard" title="Hello"  totalValue="44.65K" thisWeekProgress="+56" enableProgressBar=true successValue="0" errorValue="100"></pros-schema-tile>
-      <pros-schema-tile link="/schema-list" color="#1c90ff" icon="dashboard" title="Test"   totalValue="4.6K" thisWeekProgress="+11" enableProgressBar=true successValue="22" errorValue="88"></pros-schema-tile>
-      -->
+<mat-card class="flex-container bxshadow-variant-0">
+  <div class="flex-col-12">
+    <pros-breadcrumb [crumbs]="breadcrumb"></pros-breadcrumb>
+  </div>
 
+  <pros-schema-tile class="flex-col-1" *ngFor="let schema of schemaGroups" (click)="showSchemaList(schema);"
+    color="#1c90ff" icon="dashboard" title="{{schema.groupName | titlecase }}" totalValue="{{schema.totalCount}}"
+    thisWeekProgress="0" enableProgressBar=true successValue="{{schema.successPercentage}}"
+    errorValue="{{schema.errorPercentage}}" enableEditButton=true enableDeleteButton=true groupId="{{schema.groupId}}"
+    groupName="{{schema.groupName}}"></pros-schema-tile>
 
-
-    </div>    
-  </mat-card>
-  
-  
-  
-  
-
-
-
-
-<!--
-<button class="btn btn-success" (click)="showChart();">Show Chart</button>
--->
+  <pros-schemabadge-tile class="flex-col-1" showAddNewTitle="Add New Group"></pros-schemabadge-tile>
+</mat-card>

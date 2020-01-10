@@ -5,6 +5,10 @@ mat-toolbar.breadcrumbs{
     min-height: auto;
     mat-toolbar-row{
         height: auto;
+        white-space: normal;
+        h1{
+            line-height: 26px;
+        }
         mat-icon{
             font-size:16px;
             height: 16px;
@@ -18,3 +22,4 @@ mat-toolbar.breadcrumbs{
         }
     }
 }
+

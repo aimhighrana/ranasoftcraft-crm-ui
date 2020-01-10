@@ -45,14 +45,16 @@ import { HomeLayoutComponent } from './_components/home/home-layout/home-layout.
 import { SchemalistComponent } from './_components/home/schema/schemalist/schemalist.component';
 import { SchemaComponent } from './_components/home/schema/schema/schema.component';
 import { SchemaDetailsComponent } from './_components/home/schema/schema-details/schema-details.component';
+import { SchemaVariantsComponent } from './_components/home/schema/schema-variants/schema-variants.component';
 
 const routes: Routes = [
    { path: 'home', component: HomeLayoutComponent,
      children: [
       { path: '', redirectTo: 'schema', pathMatch: 'full' },
       { path: 'schema', component: SchemaComponent },
-      { path: 'schema/schema-list/:schemaGrpId/:title', component: SchemalistComponent },
-      { path: 'schema/schema-details/:schemaId/:title', component: SchemaDetailsComponent }
+      { path: 'schema/schema-list/:schemaGrpId', component: SchemalistComponent },
+      { path: 'schema/schema-details/:moduleId/:schemaGroupId/:schemaId', component: SchemaDetailsComponent },
+      { path: 'schema/schema-variants/:moduleId/:groupId/:schemaId', component: SchemaVariantsComponent},
     ]
   },
   { path: 'admin', component: AdminLayoutComponent,

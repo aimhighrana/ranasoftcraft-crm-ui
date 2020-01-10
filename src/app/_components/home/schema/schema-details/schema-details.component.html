@@ -1,83 +1,122 @@
-<mat-card class="flex-container">
-    <div class="flex-col-12">
-      <div class="content-row">
-        <pros-breadcrumb [crumbs]="breadcrumb"></pros-breadcrumb>
-      </div>
-      <div class="flex-col-9">
-        <mat-card class="graph-root">
-            <mat-toolbar>
-                <mat-toolbar-row>
-                  <span>Overview</span>
-                  <span class="flex-spacer"></span>
-                  <mat-slide-toggle color="primary" [formControl]="overviewChartFormControl" (change)="overViewChartPercentage($event);" >Percentage</mat-slide-toggle>
-                </mat-toolbar-row>
-            </mat-toolbar>
-            <mat-divider></mat-divider>
+<mat-card class="flex-container container-show">
+  <div class="flex-col-12">
+    <pros-breadcrumb [crumbs]="breadcrumb"></pros-breadcrumb>
+  </div>
+  <div class="flex-col-12 margin16">
+    <mat-card class="graph-root">
+      <mat-toolbar>
+        <mat-toolbar-row>
+          <span>Overview</span>
+        </mat-toolbar-row>
+      </mat-toolbar>
+      <mat-divider></mat-divider>
+      <mat-card-content class="graph-divider">
+        <div class="grid-flexcol-9">
+          <mat-card class="sidegraph-details bxshadow-variant-0 vertical-divider">
+            <mat-card-header>
+              <mat-card-title></mat-card-title>
+              <span class="flex-spacer"></span>
+              <mat-slide-toggle color="primary">Percentage</mat-slide-toggle>
+            </mat-card-header>
             <mat-card-content>
-                <pros-overview-chart></pros-overview-chart> 
+              <pros-overview-chart></pros-overview-chart>
             </mat-card-content>
-        </mat-card>
-      </div>
-      <div class="flex-col-3">
-      <mat-card class="graph-root">
-          <mat-toolbar>
-              <mat-toolbar-row>
-                <span>Stocking Rule Check</span>
-              </mat-toolbar-row>
-          </mat-toolbar>
-          <mat-divider></mat-divider>
-        <mat-card-content>
-            <div style="display: block">
-                <canvas baseChart
-                  [data]="doughnutChartData"
-                  [labels]="doughnutChartLabels"
-                  [chartType]="doughnutChartType"
-                  [colors]="doughnutColours">
-                </canvas>
-              </div>
-        </mat-card-content>
-      </mat-card>
-    </div>
-
-    <!-- Category chart -->
-    <div class="flex-col-9">
-        <mat-card class="graph-root">
-            <mat-toolbar>
-                <mat-toolbar-row>
-                  <span>Category</span>
-                  <span class="flex-spacer"></span>
-                  <mat-slide-toggle color="primary">Percentage</mat-slide-toggle>
-                </mat-toolbar-row>
-            </mat-toolbar>
-            <mat-divider></mat-divider>
+          </mat-card>
+        </div>
+        <div class="grid-flexcol-3">
+          <mat-card class="sidegraph-details bxshadow-variant-0">
+            <mat-card-header>
+              <mat-card-title>Latest Execution Summary</mat-card-title>
+            </mat-card-header>
             <mat-card-content>
-                <pros-categories-chart></pros-categories-chart>
+              <h2 class="H2">{{schemaDetails.totalCount}}</h2>
+              <small>{{schemaDetails.totalLabel}}</small>
+
+              <mat-list role="list" class="valuedes-list">
+                <mat-list-item role="listitem">
+                  <span mat-list-icon><em class="box-blk error-clr"></em></span>
+                  <h4 class="H4">{{schemaDetails.errorLabel}}</h4>
+                  <p class="P">{{schemaDetails.errorCount}}</p>
+                </mat-list-item>
+                <mat-list-item role="listitem">
+                  <span mat-list-icon><em class="box-blk success-clr"></em></span>
+                  <h4 class="H4">{{schemaDetails.successLabel}}</h4>
+                  <p class="P">{{schemaDetails.successCount}}</p>
+                </mat-list-item>
+                <mat-list-item role="listitem">
+                  <span mat-list-icon><em class="box-blk skipped-clr"></em></span>
+                  <h4 class="H4">Skipped</h4>
+                  <p class="P"></p>
+                </mat-list-item>
+                <mat-list-item role="listitem">
+                  <span mat-list-icon><em class="box-blk duplicate-clr"></em></span>
+                  <h4 class="H4">Dupilcate</h4>
+                  <p class="P"></p>
+                </mat-list-item>
+              </mat-list>
             </mat-card-content>
-        </mat-card>
-    </div>
+          </mat-card>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
 
-
-    <!-- Business Roles  chart -->
-    <div class="flex-col-9">
-        <mat-card class="graph-root">
-            <mat-toolbar>
-                <mat-toolbar-row>
-                  <span>Business Rules</span>
-                  <span class="flex-spacer"></span>
-                  <mat-slide-toggle color="primary">Percentage</mat-slide-toggle>
-                </mat-toolbar-row>
-            </mat-toolbar>
-            <mat-divider></mat-divider>
+  <div class="flex-col-12 margin16">
+    <mat-card class="graph-root">
+      <mat-toolbar>
+        <mat-toolbar-row>
+          <span>Category</span>
+        </mat-toolbar-row>
+      </mat-toolbar>
+      <mat-divider></mat-divider>
+      <mat-card-content class="graph-divider">
+        <div class="grid-flexcol-9">
+          <mat-card class="sidegraph-details bxshadow-variant-0 vertical-divider">
+            <mat-card-header>
+              <mat-form-field>
+                <mat-label>Past Run ID</mat-label>
+                <select matNativeControl required>                  
+                </select>
+              </mat-form-field>
+              <span class="flex-spacer"></span>
+              <mat-slide-toggle color="primary">Percentage</mat-slide-toggle>
+            </mat-card-header>
             <mat-card-content>
-                <pros-business-rules-chart></pros-business-rules-chart>
+              <pros-overview-chart></pros-overview-chart>
             </mat-card-content>
-        </mat-card>
-    </div>
+          </mat-card>
+        </div>
+        <div class="grid-flexcol-3">
+          <mat-card class="sidegraph-details bxshadow-variant-0">
+            <mat-card-header>
+              <mat-card-title>Latest Category Summary</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <h2 class="H2">2.3k</h2>
+              <small>Total</small>
 
-    <div class="flex-col-9">       
-        <pros-schema-datatable class="flex-col-12"></pros-schema-datatable>
-    </div>
-  </div> 
+              <mat-list role="list" class="valuedes-list">
+                <mat-list-item role="listitem">
+                  <span mat-list-icon><em class="box-blk error-clr"></em></span>
+                  <h4 class="H4">Data Quality</h4>
+                  <p class="P">1230</p>
+                </mat-list-item>
+                <mat-list-item role="listitem">
+                  <span mat-list-icon><em class="box-blk error-clr"></em></span>
+                  <h4 class="H4">Duplicate</h4>
+                  <p class="P">1078</p>
+                </mat-list-item>
+
+              </mat-list>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div class="flex-col-12 margin16">
+    <pros-schema-datatable objectId="{{moduleId}}" schemaId="{{schemaId}}" totalRecord="{{schemaDetails.totalCount}}"
+      successCount="{{schemaDetails.successCount}}" errorCount="{{schemaDetails.errorCount}}"
+      dynamicRecordCount="{{schemaDetails.errorCount}}"></pros-schema-datatable>
+  </div>
 </mat-card>
-
-

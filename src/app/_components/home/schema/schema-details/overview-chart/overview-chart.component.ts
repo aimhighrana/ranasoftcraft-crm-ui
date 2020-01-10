@@ -30,8 +30,6 @@ export class OverviewChartComponent implements OnInit {
         ticks: {
           maxRotation: 0,
           fontSize: 12
-
-
         }
       }],
       yAxes: [{
@@ -55,7 +53,7 @@ export class OverviewChartComponent implements OnInit {
           enabled: true,
           grag: true,
           mode: 'x',
-          limits: {max: 10, min: 0.5},
+          /*limits: {max: 10, min: 0.5}, */
           onZoom() {console.log('ONZOOM'); },
           onZoomComplete() {console.log('ZOOM Complete'); }
 
@@ -83,35 +81,9 @@ export class OverviewChartComponent implements OnInit {
   }
 
   getOverViewChartdata() {
-    const data = this.schemaDetailsService.getOverViewChartData();
-    if (data !== undefined && data !== '') {
+    this.schemaDetailsService.getOverViewChartData().subscribe(data => {
       this.overviewChartdata = data.dataSet;
-      // this.overviewChartLabels = data.labels;
-    }
-  }
-
-  getOverViewChartDataInPercentage() {
-    const data = this.schemaDetailsService.getOverViewChartData();
-    const dataSet = data.dataSet;
-    if (dataSet !== undefined && dataSet !== '') {
-      let counter = 0;
-      dataSet.forEach(element => {
-        const dataArray = element.data;
-        let total = 0;
-        const newArray = new Array();
-        dataArray.forEach(dElement => {
-          total += dElement;
-        });
-        dataArray.forEach(dElement => {
-          const val = (dElement / total) * 100;
-          newArray.push(val);
-        });
-        dataSet[counter].data = newArray;
-        counter++;
-
-      });
-    }
-    this.overviewChartdata = dataSet;
+    });
   }
 
   generateDynamicTimeSeries(): Label[] {

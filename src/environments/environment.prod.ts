@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  production: true,
+  apiurl:  document.getElementsByTagName('base')[0].href
 };

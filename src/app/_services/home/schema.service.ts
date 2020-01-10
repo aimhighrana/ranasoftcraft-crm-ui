@@ -1,99 +1,51 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { EndpointService } from '../endpoint.service';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Any2tsService } from '../any2ts.service';
+import { SchemaGroupResponse, SchemaGroupDetailsResponse } from 'src/app/_models/schema/schema';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SchemaService {
-
-  private schemaListUrl = 'http://localhost:8080/MDOSF/moduleCount';
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private endpointService: EndpointService,
+    private any2tsService: Any2tsService
   ) { }
 
-  getAllSchema() {
-    return [
-      {
-        schemaId: 'MDA_123',
-        title: 'MRO',
-        totalValue: '4.6K',
-        thisWeekProgress: '+10',
-        enableProgressBar: true,
-        successValue: 70,
-        errorValue: 30
-      },
-      {
-        schemaId: '837456',
-        title: 'Vendor',
-        totalValue: '7.8K',
-        thisWeekProgress: '-10',
-        enableProgressBar: true,
-        successValue: 20,
-        errorValue: 80
-      },
-      {
-        schemaId: '846',
-        title: 'Test',
-        totalValue: '56.3K',
-        thisWeekProgress: '-80',
-        enableProgressBar: true,
-        successValue: 20,
-        errorValue: 80
-      },
-      {
-        schemaId: '8769863',
-        title: 'MDA',
-        totalValue: '4.6K',
-        thisWeekProgress: '+10',
-        enableProgressBar: true,
-        successValue: 100,
-        errorValue: 0
-      },
-      {
-        schemaId: '836958',
-        title: 'TESTING 2',
-        totalValue: '4.6K',
-        thisWeekProgress: '+67',
-        enableProgressBar: true,
-        successValue: 0,
-        errorValue: 100
-      },
-      {
-        schemaId: '8475693',
-        title: 'MRO',
-        totalValue: '4.6K',
-        thisWeekProgress: '+10',
-        enableProgressBar: true,
-        successValue: 10,
-        errorValue: 99
-      },
-      {
-        schemaId: '478965',
-        title: 'MRO',
-        totalValue: '4.6K',
-        thisWeekProgress: '+10',
-        enableProgressBar: true,
-        successValue: 1,
-        errorValue: 99
-      },
-      {
-        schemaId: '9386498',
-        title: 'MRO',
-        totalValue: '4.6K',
-        thisWeekProgress: '+10',
-        enableProgressBar: true,
-        successValue: 1,
-        errorValue: 99
-      },
-      {
-        schemaId: '98364892',
-        title: 'MRO',
-        totalValue: '4.6K',
-        thisWeekProgress: '+10',
-        enableProgressBar: true,
-        successValue: 0,
-        errorValue: 100
-      }
-    ];
+  /*
+  public onLoadSchema(): Observable<any> {
+    return this.http.get(this.endpointService.onLoadSchema()).pipe(map(data => {
+      return this.any2tsService.anyToSchemaListOnLoadResponse(data);
+    }));
+  }
+  public createSchemaGroup(schemaGroup: SchemaGroupRequest ): Observable<any> {
+    return this.http.post<SchemaGroupRequest>(this.endpointService.getCreateSchemaGroupUtl(), schemaGroup, this.httpOptions);
+  }
+  public schemaGroupMapping(schemaGroupId: number , schemaIds: string[]): Observable<any> {
+    const sendData = JSON.stringify(schemaIds);
+    const sendUrl = this.endpointService.getSchemaGroupMappingUrl(schemaGroupId) + '?selectedSchemas=' + sendData;
+    return this.http.post<any>(sendUrl, sendData, this.httpOptions);
+  } */
+  public getAllSchemaGroup(): Observable<SchemaGroupResponse[]> {
+    return this.http.get(this.endpointService.getSchemaGroupsUrl()).pipe(map(data => {
+      return this.any2tsService.any2SchemaGroupResponse(data);
+    }));
+  }
+  /*
+  public getSchemaDescModuleIdByGroupId(groupId: string): Observable<any> {
+    return this.http.get<any>(this.endpointService.getSchemaDescModuleIdByGroupId(groupId));
+  }
+  public deleteSchemaGroupAndMapping(groupId: string): Observable<any> {
+    return this.http.post<any>(this.endpointService.deleteSchemaGroupUrl(groupId), '');
+  } */
+
+  public getSchemaGroupDetailsBySchemaGrpId(schemaGroupId: string): Observable<SchemaGroupDetailsResponse> {
+    return this.http.post<any>(this.endpointService.getSchemaGroupDetailsByGrpIdUrl(schemaGroupId), '').pipe(map(data => {
+      return this.any2tsService.any2SchemaDetails(data);
+    }));
   }
 }

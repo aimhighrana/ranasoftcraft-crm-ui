@@ -1,0 +1,48 @@
+<mat-card class="flex-container bxshadow-variant-0">
+    <div class="flex-col-12">
+        <pros-breadcrumb [crumbs]="breadcrumb"></pros-breadcrumb>
+    </div>
+
+    <div class="flex-col-12">
+        <mat-card class="bxshadow-variant-0 mat-background-0">
+          <mat-card-content class="flex-container-grow">
+            <div class="grid-flexcol-3">
+              <h3 class="H3">{{title}}</h3>
+              <mat-list class="variant-listcount">
+                  <mat-list-item>
+                    <h4 mat-line>{{schemaListDetails.totalCount}}</h4>
+                    <p mat-line> Total</p>
+                  </mat-list-item>
+                  <mat-list-item>
+                    <h4 mat-line>{{schemaListDetails.errorCount}}</h4>
+                    <p mat-line> Error</p>
+                  </mat-list-item>
+                  <mat-list-item>
+                    <h4 mat-line>{{schemaListDetails.successCount}}</h4>
+                    <p mat-line> Success</p>
+                  </mat-list-item>
+                  <mat-list-item>
+                    <button mat-flat-button color="primary">Execute</button>
+                  </mat-list-item>
+              </mat-list>
+          </div>
+          <div class="grid-flexcol-9">
+            <mat-card class="bxshadow-variant-1">
+              <mat-card-content>
+                <div class="flex-row-container">
+                  <mat-form-field>
+                    <mat-label>Search by Variants Description</mat-label>
+                    <input matInput>
+                  </mat-form-field>
+                <pros-schema-tile class="flex-col-1" *ngFor="let schema of schemaVariantList" (click)="showSchemaList(schema);"
+            color="#1c90ff" icon="dashboard" title="{{schema.name | uppercase }}"
+            totalValue="{{schema.total}}" thisWeekProgress="0" enableProgressBar=true
+            successValue="{{schema.successPercentage}}" errorValue="{{schema.errorPercentage}}" isSchemaVarinat=true lastSchemaExecutionDate="{{schema.lastExecutionDate}}"></pros-schema-tile>
+                </div>   
+              </mat-card-content>
+            </mat-card>
+          </div>
+          </mat-card-content>
+        </mat-card>
+    </div>
+</mat-card> 

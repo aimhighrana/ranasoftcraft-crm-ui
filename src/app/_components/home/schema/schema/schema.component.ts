@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Breadcrumb } from 'src/app/_models/breadcrumb';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Schema } from 'src/app/_models/schema/schema';
+import { SchemaGroupResponse } from 'src/app/_models/schema/schema';
 import { SchemaService } from 'src/app/_services/home/schema.service';
 
 @Component({
@@ -11,29 +11,30 @@ import { SchemaService } from 'src/app/_services/home/schema.service';
 })
 export class SchemaComponent implements OnInit {
 
-  schemas: Schema[];
-  constructor(private scheamService: SchemaService, private httpRouter: ActivatedRoute, private router: Router) { }
+  schemaGroups: SchemaGroupResponse[] = [];
+  constructor(
+    private scheamService: SchemaService,
+    private httpRouter: ActivatedRoute,
+    private router: Router
+  ) { }
 
   breadcrumb: Breadcrumb = {
-    heading: 'Schema(s)',
+    heading: 'Schema(s) Group',
     links: []
   };
   ngOnInit() {
-    this.getAllSchemas();
+    this.getAllSchemaGroup();
   }
-
-  getAllSchemas() {
-    this.schemas = this.scheamService.getAllSchema();
-  }
-
-  showSchemaList(schema: Schema) {
-    if (schema !== undefined && schema.schemaId !== undefined && schema.schemaId !== '') {
-      this.router.navigate(['/home/schema/schema-list', schema.schemaId, schema.title]);
+  showSchemaList(schema: SchemaGroupResponse) {
+    if (schema !== undefined && schema.groupId !== null) {
+      this.router.navigate(['/home/schema/schema-list', schema.groupId]);
     }
   }
-
-  showChart() {
-    this.router.navigate(['/home/show-chart']);
+  private getAllSchemaGroup() {
+    this.scheamService.getAllSchemaGroup().subscribe((response: SchemaGroupResponse[]) => {
+      this.schemaGroups = response;
+    }, error => {
+      console.log('Error while fetching schema groups');
+    });
   }
-
 }

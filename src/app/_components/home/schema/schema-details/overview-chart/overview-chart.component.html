@@ -1,10 +1,5 @@
-<div>
-        <div>
-            <div style="display: block">
-                <canvas baseChart [datasets]="overviewChartdata"
-                    [labels]="overviewChartLabels" [options]="overviewChartOptions"
-                    [legend]="overviewChartLegend" [chartType]="overviewChartType">
-                    </canvas>
-            </div>
-        </div>
+<div class="graph-divider">
+    <canvas baseChart [datasets]="overviewChartdata" class="inner-flexcol-12" [labels]="overviewChartLabels"
+        [options]="overviewChartOptions" [legend]="overviewChartLegend" [chartType]="overviewChartType">
+    </canvas>
 </div>

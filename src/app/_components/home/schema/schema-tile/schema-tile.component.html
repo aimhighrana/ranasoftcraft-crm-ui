@@ -1,29 +1,57 @@
 <mat-card class="root">
-  <mat-card-header> 
-    <mat-card-title>{{title}}</mat-card-title>
+  <mat-card-header>
+    <mat-card-title>{{title | substringpipe}}</mat-card-title>
     <span class="flex-spacer"></span>
-    <mat-card-actions *ngIf="isSchemaList=='true'">
-        <button prosClickStopPropagation mat-icon-button aria-label="info icon" matTooltip="info">
-            <mat-icon>info</mat-icon>
-        </button>
-    </mat-card-actions>       
-  </mat-card-header>                
+    <mat-card-actions>
+      <button *ngIf="enableEditButton" prosClickStopPropagation mat-icon-button aria-label="info icon" matTooltip="Edit"
+        (click)="onEditTrigger(groupId, groupName, schemaId);">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button *ngIf="enableDeleteButton" prosClickStopPropagation mat-icon-button aria-label="delete icon"
+        matTooltip="Delete" (click)="deleteSchemaGroupAndMapping(groupId);">
+        <mat-icon>delete</mat-icon>
+      </button>
+      <button [matMenuTriggerFor]="menu" *ngIf="isSchemaList=='true'" prosClickStopPropagation mat-icon-button
+        aria-label="info icon" matTooltip="info">
+        <mat-icon>info</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item><b>Structure - </b> {{schemaStructure}}</button>
+        <button mat-menu-item><b>Created By -</b> {{schemaCreatedBy}}</button>
+        <button mat-menu-item><b>Creation Date -</b> {{createdDate | date}}</button>
+        <button mat-menu-item><b>Modified By -</b> {{modifiedBy}}</button>
+        <button mat-menu-item><b>Last Modified Date -</b> {{lastModifiedDate | date}} </button>
+        <button mat-menu-item><b>Last Run Time -</b>{{lastRunTime | date}}</button>
+        <button mat-menu-item><b>Last Run Duration -</b> {{lastRunDuration | date}}</button>
+        <button mat-menu-item><b>Colaborators -</b><span matTooltip="{{colaborators}}">{{colaborators}} </span></button>
+      </mat-menu>
+    </mat-card-actions>
+  </mat-card-header>
   <mat-divider></mat-divider>
   <mat-card-content>
     <h2 class="H2">{{totalValue}}</h2>
     <small>Total</small>
-    <mat-icon aria-hidden="false" aria-label="Example home icon">trending_up</mat-icon>
+    <mat-icon class="trendhigh" aria-hidden="false" aria-label="Example home icon">trending_up</mat-icon>
     <h3>{{thisWeekProgress}} <em class="countrelation">(This Week)</em></h3>
-    <strong class="score-subhead">Score</strong>          
-    <pros-schema-progressbar *ngIf="enableProgressBar" successValue="{{successValue}}" errorValue="{{errorValue}}" successClass="success" errorClass="error"></pros-schema-progressbar>
+    <strong class="score-subhead">Score</strong>
+    <pros-schema-progressbar *ngIf="enableProgressBar" successValue="{{successValue}}" errorValue="{{errorValue}}"
+      successClass="success" errorClass="error"></pros-schema-progressbar>
   </mat-card-content>
-  <mat-divider *ngIf="isSchemaList=='true'"></mat-divider>
+  <mat-divider *ngIf="isSchemaList=='true' || isSchemaVarinat"></mat-divider>
   <mat-card-actions *ngIf="isSchemaList=='true'">
-    <div class="vt--col">
-        <mat-card-title>{{variantCount}}</mat-card-title>
-        <mat-card-subtitle>Variants</mat-card-subtitle>
+    <div class="vt--col" (click)="showSchemaVariants(moduleId,groupId,schemaId);" prosClickStopPropagation>
+      <mat-card-title>{{variantCount}}</mat-card-title>
+      <mat-card-subtitle>Variants</mat-card-subtitle>
     </div>
     <span class="flex-spacer"></span>
-    <button mat-button color="primary" (click)="openDialog($event);" >Execute</button>
+    <button mat-button color="primary" (click)="openDialog($event);">Execute</button>
+  </mat-card-actions>
+  <mat-card-actions *ngIf="isSchemaVarinat">
+    <div class="vt--col" prosClickStopPropagation>
+      <mat-card-title>{{lastSchemaExecutionDate | date}}</mat-card-title>
+      <mat-card-subtitle>Last Run</mat-card-subtitle>
+    </div>
+    <span class="flex-spacer"></span>
+    <button mat-button color="primary">Execute Again</button>
   </mat-card-actions>
 </mat-card>
