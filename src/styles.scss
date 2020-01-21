@@ -1,7 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import "assets/fonts/_fonts.css";
-
 @import "assets/themes/themes.scss";
 
 body,
@@ -14,6 +13,7 @@ h6,
 p {
   margin: 0;
 }
+
 body {
   background-color: #f1f5f8;
 }
@@ -22,12 +22,15 @@ body {
 .col-spacer {
   width: 16px;
 }
+
 .row-spacer {
   height: 16px;
 }
+
 .flex-spacer {
   flex-grow: 1;
 }
+
 .content-row {
   width: 100%;
 }
@@ -41,6 +44,7 @@ body {
 .bxshadow-variant-0 {
   box-shadow: none !important;
 }
+
 .bxshadow-variant-1 {
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23) !important;
 }
@@ -52,21 +56,27 @@ body {
 .flex-item_x1 {
   flex-grow: 1;
 }
+
 .flex-item_x2 {
   flex-grow: 2;
 }
+
 .flex-item_x3 {
   flex-grow: 3;
 }
+
 .editable-error .mat-form-field-appearance-fill .mat-form-field-flex {
-  border-radius: 0px !important;
+  border-radius: 0 !important;
 }
+
 .editable-error .mat-form-field-appearance-fill .mat-form-field-underline::before {
   background-color: rgba(0, 0, 0, 0.42) !important;
 }
+
 .editable-error .mat-form-field .mat-form-field-underline .mat-form-field-ripple {
   background-color: rgba(0, 0, 0, 0.04) !important;
 }
+
 .editable-error .mat-form-field.mat-focused .mat-form-field-underline .mat-form-field-ripple {
   background-color: rgba(0, 0, 0, 0.04) !important;
 }

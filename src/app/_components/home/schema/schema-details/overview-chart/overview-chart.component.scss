@@ -1,8 +1,9 @@
-.graph-divider{
-    display: flex;
-    flex-flow: row;
-    flex-wrap: wrap;
-.inner-flexcol-12{
+.graph-divider {
+  display: flex;
+  flex-flow: row;
+  flex-wrap: wrap;
+
+  .inner-flexcol-12 {
     flex: 0 0 100%;
   }
 }

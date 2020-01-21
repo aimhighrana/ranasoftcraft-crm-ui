@@ -11,5 +11,4 @@ $candy-app-theme:   mat-light-theme($candy-app-primary, $candy-app-accent);
 @include angular-material-theme($candy-app-theme);
 
 @import 'dark.scss';
-
 @import 'light.scss';

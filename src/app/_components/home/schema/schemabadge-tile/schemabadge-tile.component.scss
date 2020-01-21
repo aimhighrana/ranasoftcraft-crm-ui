@@ -5,13 +5,16 @@ mat-card.badge-addblock {
   text-align: center;
   min-height: 185px;
   cursor: pointer;
+
   mat-card-content {
     margin: 50px 0;
+
     mat-icon {
       font-size: 56px;
       margin-left: -30px;
       color: #6f7072;
     }
+
     h3.badge-h3 {
       font-size: 16px;
       color: #6f7072;
@@ -19,8 +22,10 @@ mat-card.badge-addblock {
     }
   }
 }
+
 mat-card.createSchemaBadge {
   min-height: 230px;
+
   mat-card-content {
     margin: 76px 0;
   }

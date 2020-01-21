@@ -1,43 +1,51 @@
-.dailog-container{
-    display: flex;
-    flex: row wrap;
-    justify-content: flex-start;
-    align-items: flex-start;
-    align-content: flex-start;
-    .flex-col-12{
-        flex: 1 100%;
-        mat-list-item{
-            padding: 0 0 16px 0;
-            display: flex;
-            h4.mat-line{
-                font-size:14px;
-                margin-bottom: 8px;
-            }
-            .error-text{
-                color:#c30000
-            }
-            .skipped-text{
-                color:#a391c5;
-            }
-            .success-text{
-                color:#12a44a;
-            }
-            .draft-text{
-                color:#478cca;
-            }
-            .inprogress-text{
-                color:#faac53;
-            }
-            .outdate-text{
-                color:#b4b5b4;
-            }
-            p.mat-line{
-                font-size:12px;
-                color:#9a9a9a;
-                line-height: 20px;
-            }
-        }
+.dailog-container {
+  display: flex;
+  flex: row wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  align-content: flex-start;
 
+  .flex-col-12 {
+    flex: 1 100%;
+
+    mat-list-item {
+      padding: 0 0 16px 0;
+      display: flex;
+
+      h4.mat-line {
+        font-size: 14px;
+        margin-bottom: 8px;
+      }
+
+      .error-text {
+        color: #c30000;
+      }
+
+      .skipped-text {
+        color: #a391c5;
+      }
+
+      .success-text {
+        color: #12a44a;
+      }
+
+      .draft-text {
+        color: #478cca;
+      }
+
+      .inprogress-text {
+        color: #faac53;
+      }
+
+      .outdate-text {
+        color: #b4b5b4;
+      }
+
+      p.mat-line {
+        font-size: 12px;
+        color: #9a9a9a;
+        line-height: 20px;
+      }
     }
-
+  }
 }

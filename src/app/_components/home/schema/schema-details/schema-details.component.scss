@@ -4,79 +4,98 @@
 
 .graph-root {
   width: 100%;
-  box-shadow: 0px 2px 10px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0), 0px 1px 3px 0px rgba(0, 0, 0, 0);
-  padding: 0px;
+  box-shadow: 0 2px 10px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0), 0 1px 3px 0 rgba(0, 0, 0, 0);
+  padding: 0;
   margin-bottom: 30px;
+
   mat-toolbar {
     font-size: 18px;
     height: 50px;
     background: #f9fafc;
     min-height: 50px;
+
     mat-toolbar-row {
       height: 50px;
+
       mat-slide-toggle {
         font-size: 14px;
       }
     }
   }
+
   mat-card-content {
     padding: 16px;
   }
 }
+
 .table-root {
-  padding: 0px;
+  padding: 0;
   margin-bottom: 30px;
   width: 100%;
   min-height: 650px;
+
   mat-toolbar {
     font-size: 18px;
     height: 50px;
     background: #f9fafc;
     min-height: 50px;
+
     mat-toolbar-row {
       height: 50px;
+
       .mat-flat-button {
         margin: 0 5px;
       }
     }
   }
+
   .root-schemalisting {
     margin: 16px;
+
     .schematable-filters {
       margin: 16px;
+
       .mat-flat-button {
         margin: 0 5px;
       }
     }
+
     .root-AdminTable {
       height: 500px;
       overflow: auto;
       border-top: 1px solid #e0e0e0;
+
       table {
         width: 100%;
+
         td.mat-column-star {
           width: 30px;
           padding-left: 8px;
         }
+
         th.mat-column-position,
         td.mat-column-position {
           padding-left: 12px;
         }
+
         td.mat-cell,
         .mat-header-cell {
           padding-left: 16px;
         }
+
         .mat-table-sticky:first-child {
           border-right: 1px solid #e0e0e0;
           width: 32px;
           padding-left: 8px;
           cursor: pointer;
         }
+
         .checkbox-colunm {
           border-right: 1px solid #e0e0e0;
           width: 32px;
           padding-left: 16px;
         }
+
         tr:nth-child(even) {
           background: #fafafc;
         }
@@ -91,20 +110,25 @@
   justify-content: flex-start;
   align-items: flex-start;
   align-content: flex-start;
+
   .flex-col-12 {
     flex: 1 100%;
   }
 }
+
 .graph-divider {
   display: flex;
   flex-flow: row;
   flex-wrap: wrap;
+
   .grid-flexcol-9 {
     flex: 1;
   }
+
   .grid-flexcol-3 {
     flex: 0 0 24%;
   }
+
   .inner-flexcol-12 {
     flex: 0 0 100%;
   }
@@ -113,26 +137,31 @@
 .vertical-divider {
   border-right: 1px solid #e0e0e0;
   padding-right: 32px !important;
-  border-radius: 0px;
+  border-radius: 0;
 }
 
 .sidegraph-details {
   padding: 16px 0;
+
   mat-card-title {
     font-size: 16px;
   }
+
   .H2 {
     font-size: 40px;
   }
+
   small {
     font-size: 14px;
     opacity: 0.5;
     font-weight: 500;
   }
+
   .valuedes-list {
     mat-list-item {
       height: auto;
       margin: 0 -16px;
+
       .box-blk {
         width: 12px;
         height: 12px;
@@ -142,18 +171,23 @@
         top: 6px;
         border-radius: 3px;
       }
+
       .error-clr {
         background: #c30000;
       }
+
       .success-clr {
         background: #4caa00;
       }
+
       .skipped-clr {
         background: #a391c5;
       }
+
       .duplicate-clr {
         background: #478cca;
       }
+
       .H4 {
         display: flex;
         margin: 0 30px 0 0;
@@ -162,6 +196,7 @@
         font-weight: 400;
         font-size: 14px;
       }
+
       .P {
         font-size: 14px;
         color: #000;

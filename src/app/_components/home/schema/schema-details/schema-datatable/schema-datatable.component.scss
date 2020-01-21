@@ -1,53 +1,67 @@
-.table-root{
-  padding: 0px;
+.table-root {
+  padding: 0;
   margin-bottom: 30px;
-  width:100%;
+  width: 100%;
   min-height: 650px;
-  mat-toolbar{
+
+  mat-toolbar {
     font-size: 18px;
     height: 50px;
     background: #f9fafc;
-    min-height:50px;
-    mat-toolbar-row{
+    min-height: 50px;
+
+    mat-toolbar-row {
       height: 50px;
-      .mat-flat-button{
-       margin: 0 5px;
-      }
-    }
-  }
-  .root-schemalisting{
-    margin:16px;
-    width: 1517px;
-    .schematable-filters{
-      margin:4px 16px;
-      display: flex;
-      align-items: center;
-      .mat-flat-button{
+
+      .mat-flat-button {
         margin: 0 5px;
       }
     }
-    .root-AdminTable{ 
+  }
+
+  .root-schemalisting {
+    margin: 16px;
+    width: 1517px;
+
+    .schematable-filters {
+      margin: 4px 16px;
+      display: flex;
+      align-items: center;
+
+      .mat-flat-button {
+        margin: 0 5px;
+      }
+    }
+
+    .root-AdminTable {
       height: 450px;
       overflow: auto;
       border-top: 1px solid #e0e0e0;
-      table{
-        width:100%;                     
+
+      table {
+        width: 100%;
+
         td.mat-column-star {
-          width:30px;
+          width: 30px;
           padding-left: 8px;
         }
-        td.errorCell{
-          border-bottom: 2px solid #ff0000;
-          color: #ff0000;
-        }        
-        td.mat-cell, th.mat-header-cell{ 
+
+        td.errorCell {
+          border-bottom: 2px solid #f00;
+          color: #f00;
+        }
+
+        td.mat-cell,
+        th.mat-header-cell {
           padding: 0 10px;
           border-right: 1px solid #e0e0e0;
-        } 
-        td.mat-cell:last-child, th.mat-header-cell:last-child{
-          border-right:none;
-
         }
+
+        td.mat-cell:last-child,
+        th.mat-header-cell:last-child {
+          border-right: none;
+        }
+
         .mat-table-sticky:first-child {
           border-right: 1px solid #e0e0e0;
           width: 32px;
@@ -55,33 +69,38 @@
           padding-right: 8px;
           cursor: pointer;
         }
-        .checkbox-colunm{
-          border-right:1px solid #e0e0e0;
+
+        .checkbox-colunm {
+          border-right: 1px solid #e0e0e0;
           width: 32px;
           padding-left: 16px;
           padding-right: 16px;
         }
-        tr:nth-child(even){
+
+        tr:nth-child(even) {
           background: #fafafc;
         }
-        .editable-error{
-          margin:0 -10px -20px -10px;
+
+        .editable-error {
+          margin: 0 -10px -20px -10px;
         }
-        .statusinput{ 
+
+        .statusinput {
           position: relative;
-          top:-5px;
+          top: -5px;
         }
-        .custom-chip{
-          padding:0 10px;
+
+        .custom-chip {
+          padding: 0 10px;
           min-height: 26px;
-          font-size:12px;
+          font-size: 12px;
         }
       }
-      .schema-pagination{        
+
+      .schema-pagination {
         bottom: 15px;
-        right:0px;
-      }      
+        right: 0;
+      }
     }
   }
 }
-

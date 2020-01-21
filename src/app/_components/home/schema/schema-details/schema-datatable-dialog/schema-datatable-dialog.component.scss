@@ -1,58 +1,68 @@
-.dailog-container{
+.dailog-container {
   display: flex;
   flex: row wrap;
   justify-content: flex-start;
   align-items: flex-start;
   align-content: flex-start;
-  .flex-col-6{
+
+  .flex-col-6 {
     flex: 1 45%;
     background: #f9fafc;
     border-radius: 3px;
     border: 1px solid #e0e0e0;
-    padding:8px;
-      mat-toolbar{
-        min-height: 40px;
-        background: #f9fafc;
-        margin-bottom: 5px;
-          mat-toolbar-row{
-           height: 40px;
-           padding: 0px;
-           font-size: 16px;
-          }
+    padding: 8px;
+
+    mat-toolbar {
+      min-height: 40px;
+      background: #f9fafc;
+      margin-bottom: 5px;
+
+      mat-toolbar-row {
+        height: 40px;
+        padding: 0;
+        font-size: 16px;
       }
-      .selected-col-container{
-        background-color: #fff;
-        border:1px solid #e0e0e0;
-        border-radius: 3px;
-        .selection-input{
-          border-bottom: 1px solid #e0e0e0;
-          padding: 8px 8px 0px 8px;
-          mat-form-field{
-            width: 100%;
-            font-size: 14px;
-          }
+    }
+
+    .selected-col-container {
+      background-color: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 3px;
+
+      .selection-input {
+        border-bottom: 1px solid #e0e0e0;
+        padding: 8px 8px 0 8px;
+
+        mat-form-field {
+          width: 100%;
+          font-size: 14px;
         }
       }
+    }
   }
 }
-.colunm-listing{
+
+.colunm-listing {
   height: 276px;
   overflow: auto;
   display: flex;
   flex-direction: column;
 }
-.list-label-row{
-  display:flex;
+
+.list-label-row {
+  display: flex;
   align-items: center;
   border-bottom: 1px solid #e0e0e0;
   padding: 8px;
   background: #fff;
   justify-content: space-between;
-  cursor:move;
-  mat-list-item{
+  cursor: move;
+
+  mat-list-item {
     font-size: 14px;
   }
-  button{
-    font-size:12px;
+
+  button {
+    font-size: 12px;
   }
 }
