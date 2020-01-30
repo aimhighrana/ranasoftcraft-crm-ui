@@ -54,11 +54,10 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'schema', pathMatch: 'full' },
       { path: 'schema', component: SchemaComponent },
+      { path: 'schema/group/:groupId', component: SchemaGroupMappingComponent },
       { path: 'schema/schema-list/:schemaGrpId', component: SchemalistComponent },
       { path: 'schema/schema-details/:moduleId/:schemaGroupId/:schemaId', component: SchemaDetailsComponent },
-      { path: 'schema/schema-variants/:moduleId/:groupId/:schemaId', component: SchemaVariantsComponent },
-      { path: 'schema/add-group', component: SchemaGroupMappingComponent },
-      { path: 'schema/edit-group/:groupId', component: SchemaGroupMappingComponent }
+      { path: 'schema/schema-variants/:moduleId/:groupId/:schemaId', component: SchemaVariantsComponent }
     ]
   },
   {

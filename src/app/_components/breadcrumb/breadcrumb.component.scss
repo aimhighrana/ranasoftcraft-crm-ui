@@ -1,34 +1,14 @@
-// Breadcrumb Component CSS
-mat-toolbar.breadcrumbs {
-  background: transparent;
-  margin: 20px 0 10px 0;
-  min-height: auto;
+mat-toolbar-row {
+  height: auto;
 
-  mat-toolbar-row {
-    height: auto;
-    white-space: normal;
+  mat-icon {
+    font-size: 14px;
+    height: 14px;
+    width: 14px;
+  }
 
-    h1 {
-      line-height: 26px;
-    }
-
-    mat-icon {
-      font-size: 16px;
-      height: 16px;
-      width: 16px;
-    }
-
-    .mat-h4 {
-      font-size: 14px;
-      margin: 0;
-      text-decoration: none;
-      color: #0076be;
-    }
-
-    .mat-null-link {
-      font-size: 14px;
-      margin: 0;
-      text-decoration: none;
-    }
+  .mat-h4 {
+    margin: 0;
+    color: #0076be;
   }
 }

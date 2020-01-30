@@ -1,64 +1,61 @@
-<div class="flex-container">
-  <div class="flex-col-12">
-      <pros-breadcrumb [crumbs]="breadcrumb"></pros-breadcrumb>
+<div class="root">
+  <div class="breadcrumb-wrapper">
+    <pros-breadcrumb [crumbs]="breadcrumb"></pros-breadcrumb>
   </div>
-  <div class="flex-col-12 margin16">
-    <mat-card class="groupfields-container">
-      <mat-card-content class="Grid-Row">
-          <div class="Grid-Cell">
-            <mat-form-field>
-              <input matInput placeholder="Schema Group Name *" [formControl]="groupNameFrmCtrl">
-            </mat-form-field>  
-            
-            <mat-form-field class="field-x2 example-chip-list">
-              <mat-chip-list #chipList aria-label="Module  selection">
-                <mat-chip *ngFor="let module of selectedModules" [selectable]="selectable"
-                  [removable]="removable"
-                  (removed)="remove(module)">
-                  {{module.objectdesc}}
-                  <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-                </mat-chip>
-                <input
-                  placeholder="Select modules"
-                  #moduleSearchInp
-                  [formControl]="moduleInpCtrl"
-                  [matAutocomplete]="auto"
-                  [matChipInputFor]="chipList"
-                  [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                  [matChipInputAddOnBlur]="addOnBlur"
-                  (matChipInputTokenEnd)="add($event)">
-              </mat-chip-list>
-              <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="selected($event)">
-                <mat-option *ngFor="let module of moduleList" [value]="module">
-                  {{module.objectdesc}}
-                </mat-option>
-              </mat-autocomplete>
-            </mat-form-field>
+  <mat-card>
+    <div class="row">
+      <mat-form-field>
+        <input matInput placeholder="Schema Group Name *" [formControl]="groupNameFrmCtrl">
+      </mat-form-field>  
+      <span class="col-spacer"></span>
+      <mat-form-field class="field-x2 example-chip-list">
+        <mat-chip-list #chipList aria-label="Module  selection">
+          <mat-chip *ngFor="let module of selectedModules" [selectable]="selectable"
+            [removable]="removable"
+            (removed)="remove(module)">
+            {{module.objectdesc}}
+            <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+          </mat-chip>
+          <input
+            placeholder="Select modules"
+            #moduleSearchInp
+            [formControl]="moduleInpCtrl"
+            [matAutocomplete]="auto"
+            [matChipInputFor]="chipList"
+            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+            [matChipInputAddOnBlur]="addOnBlur"
+            (matChipInputTokenEnd)="add($event)">
+        </mat-chip-list>
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="selected($event)">
+          <mat-option *ngFor="let module of moduleList" [value]="module">
+            {{module.objectdesc}}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
 
-          </div>  
+    </div>  
 
-          <div class="Grid-Cell">
-            <mat-form-field>
-              <input matInput placeholder="Search scehma(s)" [formControl]="searchLodedSchemaCtrl">
-            </mat-form-field>  
-          </div>
-          <div class="Grid-Cell content1-1">
-            <pros-schema-mapping-list *ngFor ="let schema of schemaListObservable | async" schemaName="{{schema.discription}}" schemaId="{{schema.schemaId}}" class="tiles-cell" (checkboxChangeState)="manageSelectedSchemas($event);"></pros-schema-mapping-list>
-          </div>
+    <div class="row">
+      <mat-form-field>
+        <input matInput placeholder="Search for schemas" [formControl]="searchLodedSchemaCtrl">
+      </mat-form-field>  
+    </div>
 
-          <div class="Grid-Cell content1-2" *ngIf="showNullState">
-            <button mat-fab aria-label="Example icon-button with a heart icon">
-              <mat-icon color="primary">layers_clear</mat-icon>
-            </button>
-            <p>Please select at least one module </p>
-          </div>
+    <div class="row content1-1">
+      <pros-schema-mapping-list *ngFor ="let schema of schemaListObservable | async" schemaName="{{schema.discription}}" schemaId="{{schema.schemaId}}" class="tiles-cell" (checkboxChangeState)="manageSelectedSchemas($event);"></pros-schema-mapping-list>
+    </div>
 
-          <div class="Grid-Cell">
-            <button mat-button>Discard</button>
-            <button mat-flat-button color="primary" (click)="saveSchemaGroup()">Save Changes</button>
-          </div>
+    <div class="row nullstate" *ngIf="showNullState">
+      <button mat-fab disabled>
+        <mat-icon color="primary">layers_clear</mat-icon>
+      </button>
+      <p>Please select at least one module </p>
+    </div>
 
-      </mat-card-content>
-    </mat-card>
-  </div>
+    <div class="row">
+      <button mat-button>Discard</button>
+      <button mat-flat-button color="primary" (click)="saveSchemaGroup()">Save Changes</button>
+    </div>
+
+  </mat-card>
 </div>

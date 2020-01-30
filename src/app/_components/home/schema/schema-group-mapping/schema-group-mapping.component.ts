@@ -17,11 +17,11 @@ import { Router } from '@angular/router';
 })
 export class SchemaGroupMappingComponent implements OnInit, AfterViewInit {
   breadcrumb: Breadcrumb = {
-    heading: 'Add Schema Group',
+    heading: 'Add a new schema group',
     links: [
       {
         link: '/home/schema',
-        text: 'Schema'
+        text: 'Schema group(s)'
       }
     ]
   };

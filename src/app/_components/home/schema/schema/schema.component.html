@@ -1,5 +1,6 @@
-<mat-card class="flex-container bxshadow-variant-0">
-  <div class="flex-col-12">
+<div class="root">
+
+  <div class="breadcrumb-wrapper">
     <pros-breadcrumb [crumbs]="breadcrumb"></pros-breadcrumb>
   </div>
 
@@ -9,5 +10,5 @@
     errorValue="{{schema.runCount.errorPercentage}}" enableEditButton=true enableDeleteButton=true groupId="{{schema.groupId}}"
     groupName="{{schema.groupName}}" (editTrigger)="editSchemaGroup($event)"></pros-schema-tile>
 
-  <pros-schemabadge-tile class="flex-col-1" showAddNewTitle="Add New Group" routerLink="/home/schema/add-group"></pros-schemabadge-tile>
-</mat-card>
+  <pros-schemabadge-tile class="flex-col-1" showAddNewTitle="Add a new group" routerLink="/home/schema/group/new"></pros-schemabadge-tile>
+</div>

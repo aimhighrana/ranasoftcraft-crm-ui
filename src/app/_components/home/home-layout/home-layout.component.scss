@@ -24,9 +24,11 @@ mat-toolbar.root {
 
     mat-divider {
       height: 100%;
-      margin: 0 16px;
     }
-    .mat-h4 { margin-top: 16px; }
+
+    .mat-h4 {
+      margin-top: 16px;
+    }
 
     a {
       display: flex;
@@ -52,5 +54,9 @@ mat-toolbar.footer {
   mat-toolbar-row {
     min-height: 40px;
     max-height: 40px;
+
+    a {
+      color: #fff;
+    }
   }
 }

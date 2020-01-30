@@ -18,6 +18,7 @@ export class HomeLayoutComponent implements OnInit {
     this.userDetails = new Userdetails();
     this.getUserDetails();
   }
+
   private getUserDetails() {
     this.userService.getUserDetails().subscribe(
       (response: Userdetails) => {
@@ -25,4 +26,5 @@ export class HomeLayoutComponent implements OnInit {
       }
     );
   }
+
 }
