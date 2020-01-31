@@ -15,6 +15,8 @@ export class SchemaProgressbarComponent implements OnInit {
   successClass: string;
   @Input()
   errorClass: string;
+  @Input()
+  disabledProgress: string;
   constructor() { }
 
   ngOnInit() {

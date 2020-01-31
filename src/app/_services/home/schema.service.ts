@@ -4,7 +4,7 @@ import { EndpointService } from '../endpoint.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../any2ts.service';
-import { SchemaGroupResponse, SchemaGroupDetailsResponse, SchemaGroupCountResponse, CreateSchemaGroupRequest, GetAllSchemabymoduleidsReq, ObjectTypeResponse, GetAllSchemabymoduleidsRes } from 'src/app/_models/schema/schema';
+import { SchemaGroupResponse, SchemaGroupDetailsResponse, SchemaGroupCountResponse, CreateSchemaGroupRequest, GetAllSchemabymoduleidsReq, ObjectTypeResponse, GetAllSchemabymoduleidsRes, SchemaGroupWithAssignSchemas } from 'src/app/_models/schema/schema';
 
 @Injectable({
   providedIn: 'root'
@@ -49,8 +49,10 @@ export class SchemaService {
     }));
   }
 
-  /*public getSchemaGroupDetailsByGroupId(schemaGroupId: number): Observable<SchemaGroupWithAssignSchemas> {
-
-  } */
+  public getSchemaGroupDetailsByGroupId(schemaGroupId: string): Observable<SchemaGroupWithAssignSchemas> {
+    return this.http.get<any>(this.endpointService.groupDetailswithAssignedschemaUrl(schemaGroupId)).pipe(map(response => {
+      return this.any2tsService.any2SchemaGroupWithAssignSchemasResponse(response);
+    }));
+  }
 
 }

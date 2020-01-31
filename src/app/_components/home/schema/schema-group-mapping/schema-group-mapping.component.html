@@ -42,7 +42,11 @@
     </div>
 
     <div class="row content1-1">
-      <pros-schema-mapping-list *ngFor ="let schema of schemaListObservable | async" schemaName="{{schema.discription}}" schemaId="{{schema.schemaId}}" class="tiles-cell" (checkboxChangeState)="manageSelectedSchemas($event);"></pros-schema-mapping-list>
+      <mat-card  class="flielsel-tiles" *ngFor ="let schema of schemaListObservable | async">
+        <mat-card-content>
+            <mat-checkbox color="primary" (change)="manageSelectedSchemas($event,schema.schemaId);" [checked]="schema.isSelected"> <label class="tilelabel">{{schema.discription}}</label> </mat-checkbox>          
+        </mat-card-content>        
+      </mat-card>      
     </div>
 
     <div class="row nullstate" *ngIf="showNullState">
@@ -53,7 +57,7 @@
     </div>
 
     <div class="row">
-      <button mat-button>Discard</button>
+      <button mat-button (click)="resetFields()">Discard</button>
       <button mat-flat-button color="primary" (click)="saveSchemaGroup()">Save Changes</button>
     </div>
 

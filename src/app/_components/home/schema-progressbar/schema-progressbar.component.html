@@ -1,4 +1,9 @@
 <div fxLayout="row" fxLayoutGap="3px" style="width: 100%">
-  <div fxFlex="{{errorValue}}" class="{{errorClass}}"  matTooltip="Error {{errorValue}}%"></div>
-  <div fxFlex="{{successValue}}" class="{{successClass}}" matTooltip="Success {{successValue}}%"></div>  
+  <ng-template [ngIf]="disabledProgress === 'true'" [ngIfElse]="showProgressDiv">
+    <div fxFlex="100" class="disabledProgressClass"></div>
+  </ng-template>
+  <ng-template #showProgressDiv>
+    <div fxFlex="{{errorValue}}" class="{{errorClass}}"  matTooltip="Error {{errorValue}}%"></div>
+    <div fxFlex="{{successValue}}" class="{{successClass}}" matTooltip="Success {{successValue}}%"></div>
+  </ng-template>    
 </div>

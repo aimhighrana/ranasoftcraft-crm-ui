@@ -31,11 +31,14 @@
   <mat-card-content>
     <h2 class="H2">{{totalValue}}</h2>
     <small>Total</small>
-    <mat-icon class="trendhigh" aria-hidden="false" aria-label="Example home icon">trending_up</mat-icon>
+    <mat-icon  class="trendhigh" aria-hidden="false" aria-label="Example home icon">trending_flat</mat-icon>
+    <!--<ng-template #hasthisWeekProgress>
+      <mat-icon class="trendhigh" aria-hidden="false" aria-label="Example home icon">trending_up</mat-icon>
+    </ng-template> -->
     <h3>{{thisWeekProgress}} <em class="countrelation">(This Week)</em></h3>
     <strong class="score-subhead">Score</strong>
     <pros-schema-progressbar *ngIf="enableProgressBar" successValue="{{successValue}}" errorValue="{{errorValue}}"
-      successClass="success" errorClass="error"></pros-schema-progressbar>
+      successClass="success" errorClass="error" disabledProgress="{{disabledProgress}}"></pros-schema-progressbar>
   </mat-card-content>
   <mat-divider *ngIf="isSchemaList=='true' || isSchemaVarinat"></mat-divider>
   <mat-card-actions *ngIf="isSchemaList=='true'">

@@ -98,7 +98,7 @@ export class EndpointService {
     return this.apiUrl + '/get-group-details/' + schemaGroupId;
   }
   public getUserDetailsUrl(userName: string): string {
-    return this.apiUrl + '/getUserDetails' + '/' + userName;
+    return this.apiUrl + '/schema/getUserDetails' + '/' + userName;
   }
 
   public getSchemaGroupCountUrl(groupId: number): string {
@@ -110,5 +110,8 @@ export class EndpointService {
   }
   public getAllObjecttypeUrl(): string {
     return this.apiUrl + '/schema/get-all-objecttype';
+  }
+  public groupDetailswithAssignedschemaUrl(groupId: string): string {
+    return this.apiUrl + '/schema/group-detailswith-assignedschema/' + groupId;
   }
 }

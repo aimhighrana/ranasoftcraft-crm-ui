@@ -74,11 +74,15 @@ export class SchemaTileComponent implements OnInit {
   editTrigger = new EventEmitter();
   @Output()
   showVariantClick = new EventEmitter();
+  disabledProgress: string;
   linker() {
     return this.link;
   }
   constructor() { }
   ngOnInit() {
+    if (Number(this.totalValue) <= 0) {
+      this.disabledProgress = 'true';
+    }
   }
   public onEditTrigger(groupId: string, groupName: string, schemaId: string) {
     const sendBack: any = { groupId, schemaId, groupName, objectId: this.moduleId };

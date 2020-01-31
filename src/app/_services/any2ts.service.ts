@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Task } from '../_models/task';
 import { TaskResponse } from '../_models/task-response';
-import { SchemaListOnLoadResponse, SchemaGroupResponse, SchemaGroupDetailsResponse, SchemaGroupCountResponse, ObjectTypeResponse, GetAllSchemabymoduleidsRes } from '../_models/schema/schema';
+import { SchemaListOnLoadResponse, SchemaGroupResponse, SchemaGroupDetailsResponse, SchemaGroupCountResponse, ObjectTypeResponse, GetAllSchemabymoduleidsRes, SchemaGroupWithAssignSchemas, SchemaGroupMapping } from '../_models/schema/schema';
 import { SchamaListDetails, VariantFieldList, SchemaVariantResponse, SchemaBrInfoList, CategoriesResponse, DependencyResponse, VariantDetailsScheduleSchema, VariantAssignedFieldDetails, SchemaListModuleList } from '../_models/schema/schemalist';
 import { SchemaDataTableColumnInfoResponse, ResponseFieldList, SchemaTableData, SchemaDataTableResponse } from '../_models/schema/schemadetailstable';
 import { Userdetails, AssignedRoles } from '../_models/userdetails';
@@ -452,5 +452,21 @@ export class Any2tsService {
       getAllSchemaList.push(schemaRes);
     });
     return getAllSchemaList;
+  }
+
+  public any2SchemaGroupWithAssignSchemasResponse(response: any): SchemaGroupWithAssignSchemas {
+    const schemaGrpRes: SchemaGroupWithAssignSchemas = new SchemaGroupWithAssignSchemas();
+    schemaGrpRes.groupId = response.groupId;
+    schemaGrpRes.groupName = response.groupName;
+    schemaGrpRes.objectId = response.objectIds ? response.objectIds : [];
+    schemaGrpRes.schemaGroupMappings = [];
+    response.schemaGroupMappings.forEach(grpMapping => {
+      const schemaGrpMapping: SchemaGroupMapping = new SchemaGroupMapping();
+      schemaGrpMapping.schemaGroupId = grpMapping.schemaGroupId;
+      schemaGrpMapping.schemaId = grpMapping.schemaId;
+      schemaGrpMapping.updatedDate = grpMapping.updateDate;
+      schemaGrpRes.schemaGroupMappings.push(schemaGrpMapping);
+    });
+    return schemaGrpRes;
   }
 }

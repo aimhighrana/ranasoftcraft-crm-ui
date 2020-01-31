@@ -43,14 +43,14 @@ describe('SchemaComponent', () => {
   const schemaRes1: SchemaGroupResponse = new SchemaGroupResponse();
   const runCount: SchemaGroupCountResponse = new SchemaGroupCountResponse();
   schemaRes1.groupName = 'Function Location';
-  schemaRes1.groupId = 87346923798423;
+  schemaRes1.groupId = '87346923798423';
   runCount.total = 0;
   schemaRes1.runCount = runCount;
 
   const schemaRes2: SchemaGroupResponse = new SchemaGroupResponse();
   const runCount1: SchemaGroupCountResponse = new SchemaGroupCountResponse();
   schemaRes2.groupName = 'Material 100';
-  schemaRes2.groupId = 8757825782;
+  schemaRes2.groupId = '8757825782';
   runCount1.total = 0;
   schemaRes2.runCount = runCount1;
 

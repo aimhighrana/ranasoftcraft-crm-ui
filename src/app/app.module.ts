@@ -114,7 +114,6 @@ import { SubstringPipe } from './_pipes/substringpipe.pipe';
 import { SchemaStatusinfoDialogComponent } from './_components/home/schema/schema-details/schema-statusinfo-dialog/schema-statusinfo-dialog.component';
 import { SchemabadgeTileComponent } from './_components/home/schema/schemabadge-tile/schemabadge-tile.component';
 import { SchemaGroupMappingComponent } from './_components/home/schema/schema-group-mapping/schema-group-mapping.component';
-import { SchemaMappingListComponent } from './_components/home/schema/schema-group-mapping/schema-mapping-list/schema-mapping-list.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -178,8 +177,7 @@ import { SchemaMappingListComponent } from './_components/home/schema/schema-gro
     SubstringPipe,
     SchemaStatusinfoDialogComponent,
     SchemabadgeTileComponent,
-    SchemaGroupMappingComponent,
-    SchemaMappingListComponent
+    SchemaGroupMappingComponent
   ],
   imports: [
     HttpClientModule,

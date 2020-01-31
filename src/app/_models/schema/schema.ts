@@ -25,7 +25,7 @@ export class SchemaGroupRequest {
      constructor(public groupId: string, public groupName: string, public isEnable: boolean) { }
 }
 export class SchemaGroupResponse {
-     groupId: number;
+     groupId: string;
      groupName: string;
      updateDate: number;
      isEnable: boolean;
@@ -55,6 +55,7 @@ export class CreateSchemaGroupRequest {
      moduleIds: string[];
      schemaIds: number[];
      plantCode: string;
+     groupId: string;
 }
 export class GetAllSchemabymoduleidsReq {
      mosuleIds: string[];
@@ -68,6 +69,7 @@ export class GetAllSchemabymoduleidsRes {
      schemaId: number;
      discription: string;
      moduleId: string;
+     isSelected: boolean;
 }
 export class SchemaGroupWithAssignSchemas {
      groupId: number;
@@ -83,5 +85,4 @@ export class SchemaGroupMapping {
      schemaId: number;
      updatedDate: number;
      plantCode: string;
-     schemaGroupModel: SchemaGroupWithAssignSchemas;
 }
