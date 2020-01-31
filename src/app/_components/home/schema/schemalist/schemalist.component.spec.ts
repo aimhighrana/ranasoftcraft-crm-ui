@@ -1,7 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SchemalistComponent } from './schemalist.component';
-import { BreadcrumbComponent } from 'src/app/_components/breadcrumb/breadcrumb.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SchemaTileComponent } from '../schema-tile/schema-tile.component';
@@ -9,6 +8,7 @@ import { SchemaProgressbarComponent } from '../../schema-progressbar/schema-prog
 import { SubstringPipe } from 'src/app/_pipes/substringpipe.pipe';
 import { SchemabadgeTileComponent } from '../schemabadge-tile/schemabadge-tile.component';
 import { SchemaListModuleList, SchamaListDetails } from 'src/app/_models/schema/schemalist';
+import { BreadcrumbComponent } from 'src/app/_components/common/breadcrumb/breadcrumb.component';
 
 describe('SchemalistComponent', () => {
   let component: SchemalistComponent;

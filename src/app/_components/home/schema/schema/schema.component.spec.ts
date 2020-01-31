@@ -1,7 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SchemaComponent } from './schema.component';
-import { BreadcrumbComponent } from 'src/app/_components/breadcrumb/breadcrumb.component';
 import { SchemaTileComponent } from '../schema-tile/schema-tile.component';
 import { SchemaProgressbarComponent } from '../../schema-progressbar/schema-progressbar.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
@@ -11,6 +10,7 @@ import { SchemabadgeTileComponent } from '../schemabadge-tile/schemabadge-tile.c
 import { SchemaGroupResponse, SchemaGroupCountResponse } from 'src/app/_models/schema/schema';
 import { SchemaService } from 'src/app/_services/home/schema.service';
 import { of } from 'rxjs';
+import { BreadcrumbComponent } from 'src/app/_components/common/breadcrumb/breadcrumb.component';
 
 describe('SchemaComponent', () => {
   let component: SchemaComponent;

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from 'src/app/_services/user/userservice.service';
 import { Userdetails } from 'src/app/_models/userdetails';
+import { ThemeSelectorService } from 'src/app/_services/theme-selector.service';
 @Component({
   selector: 'pros-home-layout',
   templateUrl: './home-layout.component.html',
@@ -11,7 +12,8 @@ export class HomeLayoutComponent implements OnInit {
   userDetails: Userdetails;
 
   constructor(
-    private userService: UserService
+    private userService: UserService,
+    private themeSelector: ThemeSelectorService
   ) { }
 
   ngOnInit() {
@@ -25,6 +27,10 @@ export class HomeLayoutComponent implements OnInit {
         this.userDetails = response;
       }
     );
+  }
+
+  public changeTheme(theme): void {
+    this.themeSelector.theme.next(theme);
   }
 
 }

@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HomeLayoutComponent } from './home-layout.component';
-import { BreadcrumbComponent } from '../../breadcrumb/breadcrumb.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { RouterTestingModule } from '@angular/router/testing';
+import { BreadcrumbComponent } from '../../common/breadcrumb/breadcrumb.component';
 
 describe('HomeLayoutComponent', () => {
   let component: HomeLayoutComponent;

@@ -1,9 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SchemaLayoutComponent } from './schema-layout.component';
-import { BreadcrumbComponent } from 'src/app/_components/breadcrumb/breadcrumb.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { RouterTestingModule } from '@angular/router/testing';
+import { BreadcrumbComponent } from 'src/app/_components/common/breadcrumb/breadcrumb.component';
 
 describe('SchemaLayoutComponent', () => {
   let component: SchemaLayoutComponent;
