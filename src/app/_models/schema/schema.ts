@@ -39,6 +39,7 @@ export class SchemaGroupDetailsResponse {
      createdDate: number;
      updatedDate: number;
      isEnable: boolean;
+     objectIds: string[];
 }
 export class SchemaGroupCountResponse {
      error: number;

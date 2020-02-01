@@ -22,7 +22,7 @@ export class SchemaService {
     }));
   }
   public getSchemaGroupDetailsBySchemaGrpId(schemaGroupId: string): Observable<SchemaGroupDetailsResponse> {
-    return this.http.post<any>(this.endpointService.getSchemaGroupDetailsByGrpIdUrl(schemaGroupId), '').pipe(map(data => {
+    return this.http.get<any>(this.endpointService.getSchemaGroupDetailsByGrpIdUrl(schemaGroupId)).pipe(map(data => {
       return this.any2tsService.any2SchemaDetails(data);
     }));
   }

@@ -60,7 +60,7 @@ describe('SchemalistComponent', () => {
   });
 
   it('flex-row-container: module list should create', () => {
-    component.moduleSchemaListDetails = mockData;
+    component.schemaListDetails = mockData;
     fixture.detectChanges();
     expect(htmlNative.getElementsByClassName('flex-row-container').length).toEqual(mockData.length);
     expect(htmlNative.getElementsByClassName('flex-row-container').item(0).firstChild.textContent).toEqual(mockData[0].moduleDesc);

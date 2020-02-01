@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Task } from '../_models/task';
 import { TaskResponse } from '../_models/task-response';
 import { SchemaListOnLoadResponse, SchemaGroupResponse, SchemaGroupDetailsResponse, SchemaGroupCountResponse, ObjectTypeResponse, GetAllSchemabymoduleidsRes, SchemaGroupWithAssignSchemas, SchemaGroupMapping } from '../_models/schema/schema';
-import { SchamaListDetails, VariantFieldList, SchemaVariantResponse, SchemaBrInfoList, CategoriesResponse, DependencyResponse, VariantDetailsScheduleSchema, VariantAssignedFieldDetails, SchemaListModuleList } from '../_models/schema/schemalist';
+import { SchamaListDetails, VariantFieldList, SchemaVariantResponse, SchemaBrInfoList, CategoriesResponse, DependencyResponse, VariantDetailsScheduleSchema, VariantAssignedFieldDetails, SchemaListModuleList, SchemaModuleList } from '../_models/schema/schemalist';
 import { SchemaDataTableColumnInfoResponse, ResponseFieldList, SchemaTableData, SchemaDataTableResponse } from '../_models/schema/schemadetailstable';
 import { Userdetails, AssignedRoles } from '../_models/userdetails';
 @Injectable({
@@ -63,59 +63,7 @@ export class Any2tsService {
     return schema;
   }
 
-  public anyToSchemaListsViewPage(responseData: any): SchemaListModuleList[] {
-    const schemaLstModule: SchemaListModuleList[] = [];
-    const moduleList = responseData.moduleList;
-    for (const key of Object.keys(moduleList)) {
-      const schemaModule: SchemaListModuleList = new SchemaListModuleList();
-      schemaModule.moduleId = key;
-      schemaModule.moduleDesc = moduleList.key;
-      const schemaDetails = responseData.finalSchemaData[key + '_schemaobj'];
-      const schemaOrder = responseData.finalSchemaData[key + '_order'];
-      schemaModule.schemaLists = this.anyToSchemaListView(schemaDetails, schemaOrder, responseData);
-      schemaLstModule.push(schemaModule);
-    }
-    return schemaLstModule;
-  }
 
-  public anyToSchemaListView(schemaDetails: any, schemaOrder: any, response: any): SchamaListDetails[] {
-    const schemaList: SchamaListDetails[] = [];
-    if (response !== null) {
-      schemaOrder.forEach(element => {
-        schemaList.push(this.returnSchemaListData(schemaDetails, element));
-      });
-    }
-    return schemaList;
-  }
-  private returnSchemaListData(schemaDetails: any, schemaDetailsFor): SchamaListDetails {
-    const schamaListDetails: SchamaListDetails = new SchamaListDetails();
-    const schemaObj = schemaDetails;
-    for (const key in schemaObj) {
-      if (key.startsWith(schemaDetailsFor)) {
-        schamaListDetails.errorCount = schemaObj[schemaDetailsFor + '_error'];
-        schamaListDetails.successCount = schemaObj[schemaDetailsFor + '_success'];
-        schamaListDetails.totalCount = schemaObj[schemaDetailsFor + '_total'];
-        schamaListDetails.per = schemaObj[schemaDetailsFor + '_per'];
-        schamaListDetails.dateModified = schemaObj[schemaDetailsFor + '_dt_mod'];
-        schamaListDetails.state = schemaObj[schemaDetailsFor + '_state'];
-        schamaListDetails.errorLabel = schemaObj[schemaDetailsFor + '_labelErr'];
-        schamaListDetails.successLabel = schemaObj[schemaDetailsFor + '_labelSucc'];
-        schamaListDetails.totalLabel = schemaObj[schemaDetailsFor + '_labelTotal'];
-        schamaListDetails.variantCount = schemaObj[schemaDetailsFor + '_var_count'];
-        schamaListDetails.createdBy = schemaObj[schemaDetailsFor + '_cr_by'];
-        schamaListDetails.schemaId = schemaDetailsFor;
-        schamaListDetails.schemaDescription = schemaObj[schemaDetailsFor + '_desc'];
-        schamaListDetails.struc = schemaObj[schemaDetailsFor + '_struc'];
-        schamaListDetails.scat = schemaObj[schemaDetailsFor + '_scat'];
-        schamaListDetails.scatDesc = schemaObj[schemaDetailsFor + '_scat_desc'];
-        schamaListDetails.lr = schemaObj[schemaDetailsFor + '_lr'];
-        schamaListDetails.errorPercentage = schemaObj[schemaDetailsFor + '_error_per'] !== undefined ? schemaObj[schemaDetailsFor + '_error_per'] : 0;
-        schamaListDetails.successPercentage = schemaObj[schemaDetailsFor + '_success_per'] !== undefined ? schemaObj[schemaDetailsFor + '_success_per'] : 0;
-        schamaListDetails.isCheckBoxEnable = false;
-        return schamaListDetails;
-      }
-    }
-  }
   public any2SchemaGroupResponse(response: any): SchemaGroupResponse[] {
     const schemaGroups: SchemaGroupResponse[] = [];
     response.forEach(grp => {
@@ -142,44 +90,6 @@ export class Any2tsService {
     return schemaGroups;
   }
 
-  public anyToSchemaListViewForGrp(response: any): SchamaListDetails[] {
-    const schemaList: SchamaListDetails[] = [];
-    if (response !== null) {
-      const schemaOrder = response.schemaOrder;
-      schemaOrder.forEach(element => {
-        schemaList.push(this.returnSchemaListDataForGrp(response, element));
-      });
-    }
-    return schemaList;
-  }
-  public returnSchemaListDataForGrp(response: any, schemaDetailsFor): SchamaListDetails {
-    const schamaListDetails: SchamaListDetails = new SchamaListDetails();
-    const schemaObj = response.schemaObj;
-    for (const key in schemaObj) {
-      if (key.startsWith(schemaDetailsFor)) {
-        schamaListDetails.errorCount = schemaObj[schemaDetailsFor + '_error'];
-        schamaListDetails.successCount = schemaObj[schemaDetailsFor + '_success'];
-        schamaListDetails.totalCount = schemaObj[schemaDetailsFor + '_total'];
-        schamaListDetails.per = schemaObj[schemaDetailsFor + '_per'];
-        schamaListDetails.dateModified = schemaObj[schemaDetailsFor + '_dt_mod'];
-        schamaListDetails.state = schemaObj[schemaDetailsFor + '_state'];
-        schamaListDetails.errorLabel = schemaObj[schemaDetailsFor + '_labelErr'];
-        schamaListDetails.successLabel = schemaObj[schemaDetailsFor + '_labelSucc'];
-        schamaListDetails.totalLabel = schemaObj[schemaDetailsFor + '_labelTotal'];
-        schamaListDetails.variantCount = schemaObj[schemaDetailsFor + '_var_count'];
-        schamaListDetails.createdBy = schemaObj[schemaDetailsFor + '_cr_by'];
-        schamaListDetails.schemaId = schemaDetailsFor;
-        schamaListDetails.schemaDescription = schemaObj[schemaDetailsFor + '_desc'];
-        schamaListDetails.struc = schemaObj[schemaDetailsFor + '_struc'];
-        schamaListDetails.scat = schemaObj[schemaDetailsFor + '_scat'];
-        schamaListDetails.scatDesc = schemaObj[schemaDetailsFor + '_scat_desc'];
-        schamaListDetails.lr = schemaObj[schemaDetailsFor + '_lr'];
-        schamaListDetails.errorPercentage = schemaObj[schemaDetailsFor + '_error_per'] !== undefined ? schemaObj[schemaDetailsFor + '_error_per'] : 0;
-        schamaListDetails.successPercentage = schemaObj[schemaDetailsFor + '_success_per'] !== undefined ? schemaObj[schemaDetailsFor + '_success_per'] : 0;
-        return schamaListDetails;
-      }
-    }
-  }
   public any2VariantFieldList(response: any): VariantFieldList[] {
     const returnFldList: VariantFieldList[] = [];
     response.forEach(element => {
@@ -382,13 +292,12 @@ export class Any2tsService {
   }
   public any2SchemaDetails(response: any): SchemaGroupDetailsResponse {
     const schemaDetsails: SchemaGroupDetailsResponse = new SchemaGroupDetailsResponse();
-    if (response && response.STATUS === 'SUCCESS' && response.hasOwnProperty('data')) {
-      response = response.data;
-      schemaDetsails.createdDate = response.createdDate;
+    if (response) {
+      schemaDetsails.createdDate = response.updatedDate;
       schemaDetsails.groupId = response.groupId;
       schemaDetsails.groupName = response.groupName;
       schemaDetsails.isEnable = response.isEnable;
-      schemaDetsails.updatedDate = response.updatedDate;
+      schemaDetsails.objectIds = response.objectId ? response.objectId.split(',') : [];
     }
     return schemaDetsails;
   }
@@ -468,5 +377,44 @@ export class Any2tsService {
       schemaGrpRes.schemaGroupMappings.push(schemaGrpMapping);
     });
     return schemaGrpRes;
+  }
+
+  public any2SchemaListView(response: any): SchemaListModuleList[] {
+    const schemaListView: SchemaListModuleList[] = [];
+    const moduleData: SchemaModuleList[] = [];
+    response.forEach(schemas => {
+      if (moduleData.filter(module => module.moduleId === schemas.moduleId).length <= 0) {
+        const schemaModuleList: SchemaModuleList = new SchemaModuleList();
+        schemaModuleList.moduleId = schemas.moduleId;
+        schemaModuleList.moduleDescription = schemas.moduleDescription;
+        moduleData.push(schemaModuleList);
+      }
+    });
+    moduleData.forEach(module => {
+      const schemaLstView: SchemaListModuleList = new SchemaListModuleList();
+      schemaLstView.moduleId = module.moduleId;
+      schemaLstView.moduleDesc = module.moduleDescription;
+      const schamaListDetails: SchamaListDetails[] = [];
+      const schemaData = response.filter(res => res.moduleId === module.moduleId);
+      schemaData.forEach(schema => {
+        const schemaDetail: SchamaListDetails = new SchamaListDetails();
+        schemaDetail.createdBy = schema.createdBy;
+        schemaDetail.errorCount = schema.error ? schema.error : 0;
+        schemaDetail.errorPercentage = schema.errorPercentage ? schema.errorPercentage : 0;
+        schemaDetail.schemaDescription = schema.schemaDescription;
+        schemaDetail.schemaId = schema.schemaId;
+        schemaDetail.successCount = schema.success ? schema.success : 0;
+        schemaDetail.successPercentage = schema.successPercentage ? schema.successPercentage : 0;
+        schemaDetail.totalCount = schema.total ? schema.total : 0;
+        schemaDetail.trendingCount = schema.trendingCount ? schema.trendingCount : 'N.A';
+        schemaDetail.variantCount = schema.variantCount ? schema.variantCount : 0;
+        schemaDetail.executionStartTime = schema.executionStartTime ? schema.executionStartTime : 0;
+        schemaDetail.executionEndTime = schema.executionEndTime ? schema.executionEndTime : 0;
+        schamaListDetails.push(schemaDetail);
+      });
+      schemaLstView.schemaLists = schamaListDetails;
+      schemaListView.push(schemaLstView);
+    });
+    return schemaListView;
   }
 }

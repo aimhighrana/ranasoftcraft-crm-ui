@@ -12,7 +12,7 @@ describe('SchemalistService', () => {
   let any2tsServiceSpy: jasmine.SpyObj<Any2tsService>;
   let endpointServiceSpy: jasmine.SpyObj<EndpointService>;
   beforeEach(() => {
-    const any2tsSpy = jasmine.createSpyObj('Any2tsService', ['anyToSchemaListsViewPage']);
+    const any2tsSpy = jasmine.createSpyObj('Any2tsService', ['any2SchemaListView']);
     const endpointSpy = jasmine.createSpyObj('EndpointService', ['getSchemaListByGroupIdUrl']);
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
@@ -43,7 +43,7 @@ describe('SchemalistService', () => {
     expectedData.push(new SchemaListModuleList());
     expectedData.push(new SchemaListModuleList());
     // mock any2Ts
-    any2tsServiceSpy.anyToSchemaListsViewPage.withArgs(mockData).and.returnValue(expectedData);
+    any2tsServiceSpy.any2SchemaListView.withArgs(mockData).and.returnValue(expectedData);
     // actual service call
     schemalistService.getSchemaListByGroupId(grpId).subscribe(actualResponse => {
       expect(actualResponse).toEqual(expectedData);

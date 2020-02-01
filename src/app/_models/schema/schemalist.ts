@@ -44,22 +44,13 @@ export class SchamaListDetails {
     errorCount: number;
     successCount: number;
     totalCount: number;
-    errorLabel: string;
-    successLabel: string;
-    totalLabel: string;
-    dateModified: number;
-    state: string;
-    lr: string;
-    per: string;
-    scat: string;
-    scatDesc: string;
-    struc: string;
-    variantCount: number;
-    variantRunDetails: [];
-    createdBy: [];
+    createdBy: string;
     errorPercentage: number;
     successPercentage: number;
-    isCheckBoxEnable: boolean;
+    trendingCount: string;
+    variantCount: number;
+    executionStartTime: number;
+    executionEndTime: number;
 }
 export class SendDataForSchemaVariantFields {
     schemaId: string;

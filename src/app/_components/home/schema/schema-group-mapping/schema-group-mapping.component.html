@@ -10,10 +10,10 @@
       <span class="col-spacer"></span>
       <mat-form-field class="field-x2">
         <mat-chip-list #chipList aria-label="Module selection">
-          <mat-chip *ngFor="let module of selectedModules" [selectable]="'true'"
+          <mat-chip *ngFor="let module of groupDetails.objectId" [selectable]="'true'"
             [removable]="'true'"
             (removed)="remove(module)">
-            {{module.objectdesc}}
+            {{displayObjectDescription(module)}}
             <mat-icon matChipRemove>cancel</mat-icon>
           </mat-chip>
           <input

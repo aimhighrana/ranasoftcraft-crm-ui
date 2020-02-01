@@ -41,7 +41,7 @@
       successClass="success" errorClass="error" disabledProgress="{{disabledProgress}}"></pros-schema-progressbar>
   </mat-card-content>
   <mat-divider *ngIf="isSchemaList=='true' || isSchemaVarinat"></mat-divider>
-  <mat-card-actions *ngIf="isSchemaList=='true'">
+  <mat-card-actions *ngIf="isSchemaList=='true'" class="mat-card-actions-footer">
     <div class="vt--col" (click)="showSchemaVariants(moduleId,groupId,schemaId);" prosClickStopPropagation>
       <mat-card-title>{{variantCount}}</mat-card-title>
       <mat-card-subtitle>Variants</mat-card-subtitle>
@@ -49,7 +49,7 @@
     <span class="flex-spacer"></span>
     <button mat-button color="primary" (click)="openDialog($event);">Execute</button>
   </mat-card-actions>
-  <mat-card-actions *ngIf="isSchemaVarinat">
+  <mat-card-actions *ngIf="isSchemaVarinat" class="mat-card-actions-footer">
     <div class="vt--col" prosClickStopPropagation>
       <mat-card-title>{{lastSchemaExecutionDate | date}}</mat-card-title>
       <mat-card-subtitle>Last Run</mat-card-subtitle>

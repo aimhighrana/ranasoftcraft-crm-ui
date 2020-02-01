@@ -32,7 +32,7 @@ export class EndpointService {
     return this.apiUrl + '/schema/get-all-groups';
   }
   public getSchemaListByGroupIdUrl(groupId: string) {
-    return this.apiUrl + '/restLoadSchemByGroupId' + '?groupId=' + groupId;
+    return this.apiUrl + '/schema/schemas-details/' + groupId;
   }
   public getSchemaDescModuleIdByGroupId(groupId: string) {
     return this.apiUrl + '/getSchemaDescModuleIdByGroupId/' + groupId;
@@ -95,7 +95,7 @@ export class EndpointService {
     return this.apiUrl + '/get-variant-control/' + variantId;
   }
   public getSchemaGroupDetailsByGrpIdUrl(schemaGroupId: string): string {
-    return this.apiUrl + '/get-group-details/' + schemaGroupId;
+    return this.apiUrl + '/schema/get-group-details/' + schemaGroupId;
   }
   public getUserDetailsUrl(userName: string): string {
     return this.apiUrl + '/schema/getUserDetails' + '/' + userName;

@@ -1,7 +1,7 @@
 import { TestBed, async } from '@angular/core/testing';
 
 import { SchemaService } from './schema.service';
-import { SchemaGroupResponse, SchemaGroupDetailsResponse, CreateSchemaGroupRequest } from 'src/app/_models/schema/schema';
+import { SchemaGroupResponse, SchemaGroupDetailsResponse, CreateSchemaGroupRequest, ObjectTypeResponse } from 'src/app/_models/schema/schema';
 import { HttpTestingController, HttpClientTestingModule } from '@angular/common/http/testing';
 import { EndpointService } from '../endpoint.service';
 import { Any2tsService } from '../any2ts.service';
@@ -12,8 +12,8 @@ describe('SchemaService', () => {
   let any2tsSpy: jasmine.SpyObj<Any2tsService>;
 
   beforeEach(async(() => {
-    const epsSpy = jasmine.createSpyObj('EndpointService', [ 'getSchemaGroupsUrl', 'getSchemaGroupDetailsByGrpIdUrl', 'getCreateSchemaGroupUrl' ]);
-    const any2Spy = jasmine.createSpyObj('Any2tsService', [ 'any2SchemaGroupResponse', 'any2SchemaDetails' ]);
+    const epsSpy = jasmine.createSpyObj('EndpointService', [ 'getSchemaGroupsUrl', 'getSchemaGroupDetailsByGrpIdUrl', 'getCreateSchemaGroupUrl', 'getAllObjecttypeUrl' ]);
+    const any2Spy = jasmine.createSpyObj('Any2tsService', [ 'any2SchemaGroupResponse', 'any2SchemaDetails', 'any2ObjectType' ]);
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule ],
       providers: [
@@ -73,7 +73,7 @@ describe('SchemaService', () => {
     });
     // mocking http
     const httpReq = httpTestingController.expectOne(url);
-    expect(httpReq.request.method).toEqual('POST');
+    expect(httpReq.request.method).toEqual('GET');
     httpReq.flush(mockhttpData);
     // verify http
     httpTestingController.verify();
@@ -103,5 +103,30 @@ describe('SchemaService', () => {
     // verify http
     httpTestingController.verify();
 
+  }));
+
+  it('getAllObjectType() : will return list of object type ', async(() => {
+    // mock data
+    const objectTypeList: ObjectTypeResponse[] = [];
+    objectTypeList.push(new ObjectTypeResponse());
+
+    // mock url
+    const getObejctTypeUrl = 'get-all-objecttype';
+    const httpMockData = {} as any;
+    endpointServiceSpy.getAllObjecttypeUrl.and.returnValue(getObejctTypeUrl);
+
+    any2tsSpy.any2ObjectType.withArgs(httpMockData).and.returnValue(objectTypeList);
+
+    // call actual service method
+    schemaService.getAllObjectType().subscribe(data => {
+      expect(data).toEqual(objectTypeList);
+    });
+
+    // mock http
+    const httpReq = httpTestingController.expectOne(getObejctTypeUrl);
+    expect(httpReq.request.method).toEqual('GET');
+    httpReq.flush(httpMockData);
+    // verify http
+    httpTestingController.verify();
   }));
 });

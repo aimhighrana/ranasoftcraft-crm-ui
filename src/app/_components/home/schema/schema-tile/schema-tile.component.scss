@@ -31,22 +31,26 @@ mat-card.root {
       mat-icon {
         font-size: 20px;
       }
+    }
+  }
 
-      .vt--col {
-        display: inline-block;
-        padding: 0 10px;
-        cursor: pointer;
+  .mat-card-actions-footer {
+    display: flex;
 
-        mat-card-title {
-          font-size: 14px;
-          margin: 0;
-          line-height: 20px;
-        }
+    .vt--col {
+      display: inline-block;
+      padding: 0 10px;
+      cursor: pointer;
 
-        mat-card-subtitle {
-          font-size: 12px;
-          margin: 0;
-        }
+      mat-card-title {
+        font-size: 14px;
+        margin: 0;
+        line-height: 20px;
+      }
+
+      mat-card-subtitle {
+        font-size: 12px;
+        margin: 0;
       }
     }
   }

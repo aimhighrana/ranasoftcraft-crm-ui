@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Breadcrumb } from 'src/app/_models/breadcrumb';
 import { SchemaService } from 'src/app/_services/home/schema.service';
-import { ObjectTypeResponse, GetAllSchemabymoduleidsReq, GetAllSchemabymoduleidsRes, CreateSchemaGroupRequest, SchemaGroupWithAssignSchemas } from 'src/app/_models/schema/schema';
+import { ObjectTypeResponse, GetAllSchemabymoduleidsReq, GetAllSchemabymoduleidsRes, CreateSchemaGroupRequest, SchemaGroupWithAssignSchemas, SchemaGroupMapping } from 'src/app/_models/schema/schema';
 import { FormControl } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { MatAutocomplete, MatChipInputEvent, MatAutocompleteSelectedEvent } from '@angular/material';
@@ -26,10 +26,8 @@ export class SchemaGroupMappingComponent implements OnInit {
   groupDetails: SchemaGroupWithAssignSchemas;
   showNullState = true;
   moduleList: ObjectTypeResponse[] = [];
-  selectedModules: ObjectTypeResponse[] = [];
   schemaList: GetAllSchemabymoduleidsRes[] = [];
   schemaListObservable: Observable<GetAllSchemabymoduleidsRes[]> = of([]);
-  selectedSchemaId: number[] = [];
   groupNameFrmCtrl: FormControl;
   moduleInpCtrl = new FormControl();
   searchLodedSchemaCtrl: FormControl;
@@ -63,6 +61,9 @@ export class SchemaGroupMappingComponent implements OnInit {
             this.getSchemaGroupDetailsByGroupId(this.groupId);
           }
       });
+      /**
+       * Search all
+       */
       this.searchLodedSchemaCtrl.valueChanges.subscribe(
           data => {
             const filterData = this.schemaList.filter(schema => (schema.discription.toLowerCase().indexOf(data.toLowerCase()) === 0));
@@ -71,6 +72,23 @@ export class SchemaGroupMappingComponent implements OnInit {
 
           }
       );
+
+      /**
+       * Update object type list on filter data
+       */
+      this.moduleInpCtrl.valueChanges.subscribe(value => {
+        if (value instanceof ObjectTypeResponse) {} else {
+          const filteredObjectTypes = this.moduleList.filter(module => (module.objectdesc.toLowerCase().indexOf(value.toLowerCase())) === 0);
+          this.filteredModules = of(filteredObjectTypes);
+        }
+      });
+
+      /**
+       * update schema group description
+       */
+      this.groupNameFrmCtrl.valueChanges.subscribe(data => {
+        this.groupDetails.groupName = data;
+      });
   }
 
   /**
@@ -99,10 +117,12 @@ export class SchemaGroupMappingComponent implements OnInit {
    * This method will help us for remove object type from selected objects
    *  objectType
    */
-  remove(objectType: ObjectTypeResponse): void {
-    const index = this.selectedModules.indexOf(objectType);
+  remove(objectId: string): void {
+    const objectIds: string[] = this.groupDetails.objectId ? this.groupDetails.objectId : [];
+    const index = objectIds.indexOf(objectId);
     if (index >= 0) {
-      this.selectedModules.splice(index, 1);
+      objectIds.splice(index, 1);
+      this.groupDetails.objectId = objectIds;
       this.getAllSchemaByModuleId();
     }
   }
@@ -112,9 +132,11 @@ export class SchemaGroupMappingComponent implements OnInit {
    */
   selected(event: MatAutocompleteSelectedEvent): void {
     const selData =  event.option.value;
-    const exitData =  this.selectedModules.filter(data => data.objectid === selData.objectid);
+    const objectIds: string[] = this.groupDetails.objectId ? this.groupDetails.objectId : [];
+    const exitData =  objectIds.filter(objId => objId === selData.objectId);
     if (exitData.length === 0) {
-      this.selectedModules.push(selData);
+      objectIds.push(selData.objectid);
+      this.groupDetails.objectId = objectIds;
       this.moduleSearchInp.nativeElement.value = '';
       this.moduleInpCtrl.setValue(null);
       this.getAllSchemaByModuleId();
@@ -142,24 +164,11 @@ export class SchemaGroupMappingComponent implements OnInit {
   }
 
   /**
-   * While this component open in edit mode , push all selected object to selectedModules
-   */
-  private editGroupSelectedObjects() {
-    this.selectedModules = [];
-    this.groupDetails.objectId.forEach(objId => {
-      this.selectedModules.push(this.moduleList.filter(module => module.objectid === objId)[0]);
-    });
-  }
-
-  /**
    * Getting all schema(s) based on object ids
    * If there is no schema(s) on selected object then the null state will be visiable
    */
   public getAllSchemaByModuleId() {
-    const selSchemaId: string[] = [];
-    this.selectedModules.forEach(module => {
-      selSchemaId.push(module.objectid);
-    });
+    const selSchemaId: string[] = this.groupDetails.objectId;
     const getAllSchemabymoduleidsReq: GetAllSchemabymoduleidsReq = new GetAllSchemabymoduleidsReq();
     getAllSchemabymoduleidsReq.mosuleIds = selSchemaId;
     this.schemaService.getAllSchemabymoduleids(getAllSchemabymoduleidsReq).subscribe(
@@ -180,9 +189,9 @@ export class SchemaGroupMappingComponent implements OnInit {
    */
   private getSchemaListResponseAsSelected(data: GetAllSchemabymoduleidsRes[]) {
     let returnData: GetAllSchemabymoduleidsRes[] = [];
-    if (this.selectedSchemaId && this.selectedSchemaId.length > 0) {
+    if (this.groupDetails.schemaGroupMappings && this.groupDetails.schemaGroupMappings.length > 0) {
       data.forEach(schema => {
-        const selSchema = this.selectedSchemaId.filter(selSc => selSc === schema.schemaId)[0];
+        const selSchema = this.groupDetails.schemaGroupMappings.filter(selSc => selSc.schemaId === schema.schemaId)[0];
         if (selSchema) {
           schema.isSelected = true;
         } else {
@@ -201,9 +210,9 @@ export class SchemaGroupMappingComponent implements OnInit {
    */
   public saveSchemaGroup() {
     const createSchemaGroup: CreateSchemaGroupRequest = new CreateSchemaGroupRequest();
-    createSchemaGroup.moduleIds = this.selectedModules.map(data => data.objectid);
-    createSchemaGroup.schemaGroupName = this.groupNameFrmCtrl.value;
-    createSchemaGroup.schemaIds = this.selectedSchemaId;
+    createSchemaGroup.moduleIds = this.groupDetails.objectId;
+    createSchemaGroup.schemaGroupName = this.groupDetails.groupName;
+    createSchemaGroup.schemaIds = this.groupDetails.schemaGroupMappings.map(grp => grp.schemaId);
     createSchemaGroup.groupId = (this.groupId && this.groupId !== 'new') ? this.groupId : '';
     this.schemaService.createSchemaGroup(createSchemaGroup).subscribe(
       data => {
@@ -221,12 +230,16 @@ export class SchemaGroupMappingComponent implements OnInit {
    */
   public manageSelectedSchemas(event, schemaId: number) {
     if (schemaId) {
-      const index = this.selectedSchemaId.indexOf(schemaId);
-      if (index >= 0) {
-        this.selectedSchemaId.splice(index, 1);
+      const schemaGrpMapSchemaIds: SchemaGroupMapping[] = this.groupDetails.schemaGroupMappings ? this.groupDetails.schemaGroupMappings : [];
+      const selectedSchema = schemaGrpMapSchemaIds.filter(selectedSchemas => selectedSchemas.schemaId === schemaId)[0];
+      if (selectedSchema && selectedSchema.schemaId) {
+        schemaGrpMapSchemaIds.splice(schemaGrpMapSchemaIds.indexOf(selectedSchema), 1);
       } else if (event.checked) {
-        this.selectedSchemaId.push(schemaId);
+        const newSchemaGrpMap: SchemaGroupMapping = new SchemaGroupMapping();
+        newSchemaGrpMap.schemaId = schemaId;
+        schemaGrpMapSchemaIds.push(newSchemaGrpMap);
       }
+      this.groupDetails.schemaGroupMappings = schemaGrpMapSchemaIds;
     }
   }
   /**
@@ -238,15 +251,6 @@ export class SchemaGroupMappingComponent implements OnInit {
       this.groupDetails = data;
       this.breadcrumb.heading = 'Edit ' + this.groupDetails.groupName;
       this.groupNameFrmCtrl.setValue(this.groupDetails.groupName);
-
-      // set selected schema id while edit group
-      this.groupDetails.schemaGroupMappings.forEach(grpDel => {
-        this.selectedSchemaId.push(grpDel.schemaId);
-      });
-
-      // get the object number while edit group
-      this.editGroupSelectedObjects();
-
       // get all schema on selected object ids while edit group
       this.getAllSchemaByModuleId();
     }, error => {
@@ -259,6 +263,14 @@ export class SchemaGroupMappingComponent implements OnInit {
    */
   public resetFields() {
     this.router.navigate(['/home/schema']);
+  }
+
+  /**
+   * For return object description by objectid
+   *
+   */
+  displayObjectDescription(objectId: string): string {
+    return this.moduleList.filter(module => module.objectid === objectId)[0].objectdesc;
   }
 
 }

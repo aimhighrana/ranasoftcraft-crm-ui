@@ -2,11 +2,11 @@
   <div class="flex-col-12">
     <pros-breadcrumb [crumbs]="breadcrumb"></pros-breadcrumb>
   </div>
-  <div *ngFor="let module of moduleSchemaListDetails" class="flex-row-container">
+  <div *ngFor="let module of schemaListDetails" class="flex-row-container">
     <h3 class="H3">{{module.moduleDesc}}</h3>
     <pros-schema-tile class="flex-col-1" *ngFor="let schemaLst of module.schemaLists"
       (click)="showSchemaDetails(schemaLst,module.moduleId)" color="#1c90ff" icon="dashboard"
-      title="{{schemaLst.schemaDescription}}" totalValue="{{schemaLst.totalCount}}" thisWeekProgress=""
+      title="{{schemaLst.schemaDescription}}" totalValue="{{schemaLst.totalCount}}" thisWeekProgress="{{schemaLst.trendingCount}}"
       enableProgressBar="true" successValue="{{schemaLst.successPercentage}}" errorValue="{{schemaLst.errorPercentage}}"
       isSchemaList="true" moduleId="{{module.moduleId}}" schemaId="{{schemaLst.schemaId}}"
       variantCount="{{schemaLst.variantCount}}" schemaCreatedBy="{{schemaLst.createdBy}}"

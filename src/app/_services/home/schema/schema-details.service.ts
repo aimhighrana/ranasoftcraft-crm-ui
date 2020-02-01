@@ -56,9 +56,10 @@ export class SchemaDetailsService {
       return this.any2tsService.any2SchemaTableData(data);
     }));
   }
+
   public getSchemaDetailsBySchemaId(schemaId: string): Observable<SchamaListDetails> {
     return this.http.post<any>(this.endpointService.getSchemaDetailsBySchemaId(schemaId), '').pipe(map(data => {
-      return this.any2tsService.returnSchemaListDataForGrp(data, schemaId);
+      return  null; // this.any2tsService.returnSchemaListDataForGrp(data, schemaId);
     }));
   }
   public getSchemaDataTableShowMore(scrollId: string): Observable<any> {
