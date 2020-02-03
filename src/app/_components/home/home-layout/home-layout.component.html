@@ -20,27 +20,3 @@
 </mat-toolbar>
 <mat-progress-bar *ngIf="loadingSvc.isLoading | async" mode="indeterminate"></mat-progress-bar>
 <router-outlet></router-outlet>
-<mat-toolbar class="footer">
-  <mat-toolbar-row>
-    <span class="mat-caption">© 2019 Prospecta Software Pvt. Ltd.. All Rights Reserved.</span>
-    <span class="flex-spacer"></span>
-    <a href="https://help.masterdataonline.com/privacy-policy-2/" class="mat-caption" target="_blank">Privacy Policy</a>
-    <span class="col-spacer"></span>
-    <a href="https://help.masterdataonline.com/terms-of-use/" class="mat-caption" target="_blank">Terms of Use</a>
-    <span class="col-spacer"></span>
-    <button mat-icon-button [matMenuTriggerFor]="stylemenu">
-      <mat-icon>color_lens</mat-icon>
-    </button>
-  </mat-toolbar-row>
-</mat-toolbar>
-<mat-menu #stylemenu="matMenu">
-  <button mat-menu-item (click)="changeTheme('default-theme')">
-    <span>Default</span>
-  </button>
-  <button mat-menu-item (click)="changeTheme('light-theme')">
-    <span>Light</span>
-  </button>
-  <button mat-menu-item (click)="changeTheme('dark-theme')">
-    <span>Dark</span>
-  </button>
-</mat-menu>

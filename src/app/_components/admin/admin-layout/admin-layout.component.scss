@@ -39,18 +39,3 @@ mat-toolbar.root {
     }
   }
 }
-
-mat-toolbar.footer {
-  background-color: #000;
-  color: #fff;
-  position: fixed;
-  bottom: 0;
-  z-index: 2;
-  min-height: 40px;
-  max-height: 40px;
-
-  mat-toolbar-row {
-    min-height: 40px;
-    max-height: 40px;
-  }
-}

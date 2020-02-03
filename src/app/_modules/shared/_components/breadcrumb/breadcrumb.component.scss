@@ -1,14 +1,22 @@
-mat-toolbar-row {
+mat-toolbar {
   height: auto;
 
-  mat-icon {
-    font-size: 14px;
-    height: 14px;
-    width: 14px;
+  mat-toolbar-row {
+    height: auto;
+
+    mat-icon {
+      font-size: 14px;
+      height: 14px;
+      width: 14px;
+    }
+
+    .mat-h4 {
+      margin: 0;
+      color: #0076be;
+    }
   }
 
-  .mat-h4 {
-    margin: 0;
-    color: #0076be;
+  .spacer {
+    height: 6px;
   }
 }

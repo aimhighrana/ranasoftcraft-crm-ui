@@ -1,0 +1,26 @@
+<mat-sidenav-container>
+  <mat-sidenav-content>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+<mat-toolbar class="footer">
+  <mat-toolbar-row>
+    <span class="mat-caption">© 2019 Prospecta Software Pvt. Ltd.. All Rights Reserved.</span>
+    <span class="flex-spacer"></span>
+    <a href="https://help.masterdataonline.com/privacy-policy-2/" class="mat-caption" target="_blank">Privacy Policy</a>
+    <span class="col-spacer"></span>
+    <a href="https://help.masterdataonline.com/terms-of-use/" class="mat-caption" target="_blank">Terms of Use</a>
+    <span class="col-spacer"></span>
+    <button mat-icon-button [matMenuTriggerFor]="stylemenu" matTooltip="Select a theme">
+      <mat-icon>color_lens</mat-icon>
+    </button>
+  </mat-toolbar-row>
+</mat-toolbar>
+<mat-menu #stylemenu="matMenu">
+  <div class="palette" *ngFor="let theme of themes">
+    <div class="primary" (click)="changeTheme(theme.name)" [ngStyle]="{'background-color': theme.primary}">
+      <mat-icon *ngIf="isActiveTheme(theme.name)">check_circle</mat-icon>
+      <div [ngStyle]="{'background-color': theme.bg}"></div>
+    </div>
+  </div>
+</mat-menu>
