@@ -18,6 +18,7 @@
     </a>
   </mat-toolbar-row>
 </mat-toolbar>
+<mat-progress-bar *ngIf="loadingSvc.isLoading | async" mode="indeterminate"></mat-progress-bar>
 <router-outlet></router-outlet>
 <mat-toolbar class="footer">
   <mat-toolbar-row>

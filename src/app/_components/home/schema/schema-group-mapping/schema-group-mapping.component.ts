@@ -1,11 +1,10 @@
-import { Component, OnInit, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Breadcrumb } from 'src/app/_models/breadcrumb';
 import { SchemaService } from 'src/app/_services/home/schema.service';
 import { ObjectTypeResponse, GetAllSchemabymoduleidsReq, GetAllSchemabymoduleidsRes, CreateSchemaGroupRequest, SchemaGroupWithAssignSchemas } from 'src/app/_models/schema/schema';
 import { FormControl } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { MatAutocomplete, MatChipInputEvent, MatAutocompleteSelectedEvent } from '@angular/material';
-import { ENTER, COMMA } from '@angular/cdk/keycodes';
 import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -13,7 +12,7 @@ import { Router, ActivatedRoute } from '@angular/router';
   templateUrl: './schema-group-mapping.component.html',
   styleUrls: ['./schema-group-mapping.component.scss']
 })
-export class SchemaGroupMappingComponent implements OnInit, AfterViewInit {
+export class SchemaGroupMappingComponent implements OnInit {
   breadcrumb: Breadcrumb = {
     heading: 'Add a new schema group',
     links: [
@@ -34,12 +33,7 @@ export class SchemaGroupMappingComponent implements OnInit, AfterViewInit {
   groupNameFrmCtrl: FormControl;
   moduleInpCtrl = new FormControl();
   searchLodedSchemaCtrl: FormControl;
-  removable = true;
   filteredModules: Observable<ObjectTypeResponse[]>;
-  visible = true;
-  selectable = true;
-  addOnBlur = true;
-  separatorKeysCodes: number[] = [ENTER, COMMA];
 
   @ViewChild('moduleSearchInp', {static: false}) moduleSearchInp: ElementRef<HTMLInputElement>;
   @ViewChild('auto', {static: false}) matAutocomplete: MatAutocomplete;
@@ -78,14 +72,7 @@ export class SchemaGroupMappingComponent implements OnInit, AfterViewInit {
           }
       );
   }
-  ngAfterViewInit() {
 
-  }
-
-  private _modulefilter(value: string): ObjectTypeResponse[] {
-    const filterValue = value.toLowerCase();
-    return this.moduleList.filter(module => module.objectdesc.toLowerCase().indexOf(filterValue) === 0);
-  }
   /**
    * add while search click on object type   *
    */
@@ -142,12 +129,12 @@ export class SchemaGroupMappingComponent implements OnInit, AfterViewInit {
     this.schemaService.getAllObjectType().subscribe(data => {
       this.moduleList = data;
     }, error => {
-      console.error('Error whiel fetching modules');
+      console.error('Error while fetching modules');
     });
   }
 
   /**
-   * Will help us for display the object decsription from objectType object
+   * Will help us for display the object description from objectType object
    *  objectType
    */
   displayFn(objectType: ObjectTypeResponse): string | undefined {

@@ -5,16 +5,16 @@
   <mat-card>
     <div class="row">
       <mat-form-field>
-        <input matInput placeholder="Schema Group Name *" [formControl]="groupNameFrmCtrl">
+        <input matInput placeholder="Schema Group Name" [formControl]="groupNameFrmCtrl">
       </mat-form-field>  
       <span class="col-spacer"></span>
-      <mat-form-field class="field-x2 example-chip-list">
-        <mat-chip-list #chipList aria-label="Module  selection">
-          <mat-chip *ngFor="let module of selectedModules" [selectable]="selectable"
-            [removable]="removable"
+      <mat-form-field class="field-x2">
+        <mat-chip-list #chipList aria-label="Module selection">
+          <mat-chip *ngFor="let module of selectedModules" [selectable]="'true'"
+            [removable]="'true'"
             (removed)="remove(module)">
             {{module.objectdesc}}
-            <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+            <mat-icon matChipRemove>cancel</mat-icon>
           </mat-chip>
           <input
             placeholder="Select modules"
@@ -22,8 +22,7 @@
             [formControl]="moduleInpCtrl"
             [matAutocomplete]="auto"
             [matChipInputFor]="chipList"
-            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-            [matChipInputAddOnBlur]="addOnBlur"
+            [matChipInputAddOnBlur]="'true'"
             (matChipInputTokenEnd)="add($event)">
         </mat-chip-list>
         <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="selected($event)">
@@ -41,11 +40,11 @@
       </mat-form-field>  
     </div>
 
-    <div class="row content1-1">
-      <mat-card  class="flielsel-tiles" *ngFor ="let schema of schemaListObservable | async">
-        <mat-card-content>
-            <mat-checkbox color="primary" (change)="manageSelectedSchemas($event,schema.schemaId);" [checked]="schema.isSelected"> <label class="tilelabel">{{schema.discription}}</label> </mat-checkbox>          
-        </mat-card-content>        
+    <div class="row content">
+      <mat-card *ngFor ="let schema of schemaListObservable | async">
+        <mat-checkbox color="primary" (change)="manageSelectedSchemas($event,schema.schemaId);" [checked]="schema.isSelected">
+          <label class="tilelabel">{{schema.discription}}</label>
+        </mat-checkbox>      
       </mat-card>      
     </div>
 

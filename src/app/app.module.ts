@@ -114,6 +114,7 @@ import { SubstringPipe } from './_pipes/substringpipe.pipe';
 import { SchemaStatusinfoDialogComponent } from './_components/home/schema/schema-details/schema-statusinfo-dialog/schema-statusinfo-dialog.component';
 import { SchemabadgeTileComponent } from './_components/home/schema/schemabadge-tile/schemabadge-tile.component';
 import { SchemaGroupMappingComponent } from './_components/home/schema/schema-group-mapping/schema-group-mapping.component';
+import { LoadingInterceptorService } from './_services/loading-interceptor.service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -236,6 +237,7 @@ import { SchemaGroupMappingComponent } from './_components/home/schema/schema-gr
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptorService, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptorService, multi: true }
   ],
   bootstrap: [ AppComponent ],
   exports: [

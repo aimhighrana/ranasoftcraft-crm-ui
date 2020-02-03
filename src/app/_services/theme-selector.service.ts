@@ -6,7 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class ThemeSelectorService {
 
-  constructor() { }
-
   public theme: BehaviorSubject<string> = new BehaviorSubject<string>('default-theme');
+
+  constructor() { }
 }

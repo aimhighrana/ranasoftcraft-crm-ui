@@ -6,6 +6,11 @@ mat-toolbar.toolbar-spacer {
   }
 }
 
+mat-progress-bar {
+  position: fixed;
+  z-index: 2;
+}
+
 mat-toolbar.root {
   position: fixed;
   top: 0;
