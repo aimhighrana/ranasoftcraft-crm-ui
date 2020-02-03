@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NounsCharacteristicsComponent } from './nouns-characteristics.component';
-import { BreadcrumbComponent } from '../../../common/breadcrumb/breadcrumb.component';
+import { BreadcrumbComponent } from '../../../../_modules/shared/_components/breadcrumb/breadcrumb.component';
 import { MatCardModule, MatToolbarModule, MatIconModule, MatDividerModule, MatChipsModule, MatListModule } from '@angular/material';
 import { RouterModule } from '@angular/router';
 

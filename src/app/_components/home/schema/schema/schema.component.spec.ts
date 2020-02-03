@@ -10,7 +10,7 @@ import { SchemabadgeTileComponent } from '../schemabadge-tile/schemabadge-tile.c
 import { SchemaGroupResponse, SchemaGroupCountResponse } from 'src/app/_models/schema/schema';
 import { SchemaService } from 'src/app/_services/home/schema.service';
 import { of } from 'rxjs';
-import { BreadcrumbComponent } from 'src/app/_components/common/breadcrumb/breadcrumb.component';
+import { BreadcrumbComponent } from 'src/app/_modules/shared/_components/breadcrumb/breadcrumb.component';
 
 describe('SchemaComponent', () => {
   let component: SchemaComponent;

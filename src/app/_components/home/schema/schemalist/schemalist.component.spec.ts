@@ -8,7 +8,7 @@ import { SchemaProgressbarComponent } from '../../schema-progressbar/schema-prog
 import { SubstringPipe } from 'src/app/_pipes/substringpipe.pipe';
 import { SchemabadgeTileComponent } from '../schemabadge-tile/schemabadge-tile.component';
 import { SchemaListModuleList, SchamaListDetails } from 'src/app/_models/schema/schemalist';
-import { BreadcrumbComponent } from 'src/app/_components/common/breadcrumb/breadcrumb.component';
+import { BreadcrumbComponent } from 'src/app/_modules/shared/_components/breadcrumb/breadcrumb.component';
 
 describe('SchemalistComponent', () => {
   let component: SchemalistComponent;

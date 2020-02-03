@@ -4,7 +4,7 @@ import { SchemaProgressbarComponent } from './schema-progressbar.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { RouterTestingModule } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
-import { BreadcrumbComponent } from '../../common/breadcrumb/breadcrumb.component';
+import { BreadcrumbComponent } from '../../../_modules/shared/_components/breadcrumb/breadcrumb.component';
 export class SchemaProgressBar {
   constructor(public successValue: number, public errorValue: number, public successClass: string, public errorClass: string) { }
 }

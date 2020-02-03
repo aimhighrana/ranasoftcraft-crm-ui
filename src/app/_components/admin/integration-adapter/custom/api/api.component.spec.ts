@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ApiComponent } from './api.component';
-import { BreadcrumbComponent } from 'src/app/_components/common/breadcrumb/breadcrumb.component';
+import { BreadcrumbComponent } from 'src/app/_modules/shared/_components/breadcrumb/breadcrumb.component';
 import { MatCardModule, MatToolbarModule, MatIconModule, MatDividerModule, MatChipsModule, MatListModule } from '@angular/material';
 import { RouterModule } from '@angular/router';
 

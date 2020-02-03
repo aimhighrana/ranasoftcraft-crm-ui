@@ -12,7 +12,7 @@ import { SchamaListDetails } from 'src/app/_models/schema/schemalist';
 import { SchemaVariantService } from 'src/app/_services/home/schema/schema-variant.service';
 import { SchemaService } from 'src/app/_services/home/schema.service';
 import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-details.service';
-import { BreadcrumbComponent } from 'src/app/_components/common/breadcrumb/breadcrumb.component';
+import { BreadcrumbComponent } from 'src/app/_modules/shared/_components/breadcrumb/breadcrumb.component';
 
 describe('SchemaVariantsComponent', () => {
   let component: SchemaVariantsComponent;

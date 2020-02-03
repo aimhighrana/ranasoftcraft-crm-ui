@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UserManagementComponent } from './user-management.component';
-import { BreadcrumbComponent } from '../../common/breadcrumb/breadcrumb.component';
+import { BreadcrumbComponent } from '../../../_modules/shared/_components/breadcrumb/breadcrumb.component';
 import { MatCardModule, MatToolbarModule, MatIconModule, MatDividerModule, MatChipsModule } from '@angular/material';
 import { RouterModule } from '@angular/router';
 import { AdminTileComponent } from '../admin-tile/admin-tile.component';
