@@ -1,13 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Breadcrumb } from 'src/app/_models/breadcrumb';
-import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-details.service';
 import { ActivatedRoute } from '@angular/router';
 import 'chartjs-plugin-zoom';
 import { OverviewChartComponent } from './overview-chart/overview-chart.component';
-import { SchamaListDetails } from 'src/app/_models/schema/schemalist';
-import { Any2tsService } from 'src/app/_services/any2ts.service';
 import { SchemaService } from 'src/app/_services/home/schema.service';
 import { SchemaGroupDetailsResponse } from 'src/app/_models/schema/schema';
+import { SchemaListDetails } from 'src/app/_models/schema/schemalist';
+import { SchemalistService } from 'src/app/_services/home/schema/schemalist.service';
 @Component({
   selector: 'pros-schema-details',
   templateUrl: './schema-details.component.html',
@@ -19,7 +18,7 @@ export class SchemaDetailsComponent implements OnInit {
   schemaId: string;
   schemaGroupId: string;
   schemaGroupDescription: string;
-  schemaDetails: SchamaListDetails = new SchamaListDetails();
+  schemaDetails: SchemaListDetails = new SchemaListDetails();
   breadcrumb: Breadcrumb = {
     heading: 'Schema Deatils',
     links: [
@@ -33,7 +32,11 @@ export class SchemaDetailsComponent implements OnInit {
     ]
   };
   @ViewChild(OverviewChartComponent, {static: false})schemaOverviewChart: OverviewChartComponent;
-  constructor(private schemaDetailsService: SchemaDetailsService, private activatedRouter: ActivatedRoute, private any2tsService: Any2tsService, private schemaService: SchemaService) { }
+  constructor(
+      private activatedRouter: ActivatedRoute,
+      private schemaService: SchemaService,
+      private schemaListService: SchemalistService
+  ) { }
   ngOnInit() {
     this.activatedRouter.params.subscribe(params => {
       this.schemaId = params.schemaId;
@@ -44,12 +47,11 @@ export class SchemaDetailsComponent implements OnInit {
     });
   }
   private getSchemaDetailsBySchemaId(schemaId: string) {
-    this.schemaDetailsService.getSchemaDetailsBySchemaId(schemaId)
+    this.schemaListService.getSchemaDetailsBySchemaId(schemaId)
     .subscribe(
-      (resposne: SchamaListDetails) => {
+      (resposne: SchemaListDetails) => {
           this.schemaDetails = resposne;
-          this.title = this.schemaDetails.schemaDescription ? this.schemaDetails.schemaDescription : '';
-          this.breadcrumb.heading = this.title + 'Details';
+          this.breadcrumb.heading = this.schemaDetails.schemaDescription + 'Details';
       }, error => {
         console.error('Went wrong while fetching schema details by schema id');
       }

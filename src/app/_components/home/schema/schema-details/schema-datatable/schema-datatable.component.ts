@@ -1,11 +1,14 @@
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
-import { Schemadetailstable, SendReqForSchemaDataTableColumnInfo, SchemaDataTableColumnInfoResponse, SchemaTableData, ResponseFieldList, SchemaDataTableResponse } from 'src/app/_models/schema/schemadetailstable';
+import { Schemadetailstable, SchemaDataTableColumnInfoResponse, SchemaTableData, ResponseFieldList, RequestForSchemaDetailsWithBr, DataTableSourceResponse, SchemaTableViewRequest } from 'src/app/_models/schema/schemadetailstable';
 import { MatTableDataSource, MatPaginator, MatSort, MatDialog } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections';
 import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-details.service';
-import { SchemaDatatableDialogComponent } from '../schema-datatable-dialog/schema-datatable-dialog.component';
-import { Any2tsService } from 'src/app/_services/any2ts.service';
 import { SchemaStatusinfoDialogComponent } from '../schema-statusinfo-dialog/schema-statusinfo-dialog.component';
+import { SchemaListDetails } from 'src/app/_models/schema/schemalist';
+import { SchemalistService } from 'src/app/_services/home/schema/schemalist.service';
+import { FormControl } from '@angular/forms';
+import { takeUntil } from 'rxjs/operators';
+import { Subject, Observable, of } from 'rxjs';
 
 @Component({
   selector: 'pros-schema-datatable',
@@ -21,7 +24,9 @@ export class SchemaDatatableComponent implements OnInit {
   dataSource: MatTableDataSource<SchemaTableData>;
   displayedColumns: string[];
   allDisplayedColumns: string[] = [];
-  allDisplayedColumnsDesc: any = {};
+  allDisplayedColumnsObservable: Observable<string[]>;
+  allDisplayedColumnsWithAction: string[] = [];
+  allDisplayedColumnsDesc: any = {} as any;
   selection = new SelectionModel<SchemaTableData>(true, []);
   @Input()
   objectId: string;
@@ -35,6 +40,11 @@ export class SchemaDatatableComponent implements OnInit {
   errorCount: number;
   @Input()
   dynamicRecordCount: number;
+
+
+  schemaDetails: SchemaListDetails;
+  dataTableDataSource: MatTableDataSource<DataTableSourceResponse>;
+
   pageSizeOption: number[] = [40, 60, 100];
   pageSize = 40;
   scrollId: string;
@@ -43,9 +53,15 @@ export class SchemaDatatableComponent implements OnInit {
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   selectedTabIndex: number;
   schemaStatusRecordCount: any = {};
-  dataTableColumnInfo: SchemaDataTableColumnInfoResponse;
-  tableData: any;
-  queryData: any;
+
+  /**
+   * control for choose columns   *
+   */
+  public chooseColumnCtrl: FormControl = new FormControl();
+  public chooseColumnFilterCtrl: FormControl = new FormControl();
+  private onDestroy = new Subject<void>();
+  allColumnsListOnLoad: string[] = [];
+
   private setTabSelectionOnLoad() {
     this.selectedTabIndex = this.tabs.indexOf('Error');
   }
@@ -66,14 +82,34 @@ export class SchemaDatatableComponent implements OnInit {
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.fieldId + 1}`;
   }
 
-  constructor(private schemaDetailsService: SchemaDetailsService, private dialog: MatDialog, private any2tsService: Any2tsService) { }
+  constructor(
+    private schemaDetailsService: SchemaDetailsService,
+    private dialog: MatDialog,
+    private schemaListService: SchemalistService
+
+  ) {
+    this.schemaDetails = new SchemaListDetails();
+    this.allDisplayedColumnsObservable = of([]);
+  }
 
   ngOnInit() {
     if (this.objectId && this.schemaId) {
+      this.getSchemaDetails(this.schemaId);
       this.setTabSelectionOnLoad();
-      this.getSchemaDataTableColumnInfo();
-      this.getSchemaDataTableData('');
+      // this.getSchemaDataTableColumnInfo();
+      // this.getSchemaDataTableData('');
+
     }
+
+    this.chooseColumnFilterCtrl.valueChanges
+      .pipe(takeUntil(this.onDestroy))
+      .subscribe((newVal) => {
+        if (newVal && newVal !== '') {
+          this.allDisplayedColumnsObservable = of(this.allDisplayedColumns.filter(data => data.toLocaleLowerCase().indexOf(newVal.toLocaleLowerCase()) === 0));
+        } else {
+          this.allDisplayedColumnsObservable = of(this.allDisplayedColumns);
+        }
+      });
   }
 
   manageStatusCount(index: number): boolean {
@@ -84,42 +120,8 @@ export class SchemaDatatableComponent implements OnInit {
     }
   }
 
-  loadSchameDataByStatus(index: number) {
-    if (index != null) {
-      if (index === 0) {
-        this.dynamicRecordCount = this.totalRecord;
-        this.getSchemaDataTableData('all');
-      } else if (index === 1) {
-        this.dynamicRecordCount = this.errorCount;
-        this.getSchemaDataTableData('');
-      } else if (index === 2) {
-        this.dynamicRecordCount = this.successCount;
-        this.getSchemaDataTableData('success');
-      }
-    }
-  }
 
-  openChooseColumnDialog() {
-    const dialogRef = this.dialog.open(SchemaDatatableDialogComponent, {
-      width: '900px',
-      data: { schemaId: this.schemaId, objectId: this.objectId, selectedFldIds: this.allDisplayedColumns, fieldLists: this.fieldList }
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      if (result !== undefined && result.hasOwnProperty('data')) {
-        console.log(result.data);
-      }
-    });
-  }
 
-  private getFieldDescription(fieldId: string): string {
-    let fldDesc = '';
-    this.dataTableColumnInfo.fieldList.forEach(fldLstData => {
-      if (fldLstData.index === fieldId) {
-        fldDesc = fldLstData.label;
-      }
-    });
-    return fldDesc;
-  }
   manageChips(index: number) {
     return (index === undefined || index < 2) ? true : false;
   }
@@ -127,28 +129,7 @@ export class SchemaDatatableComponent implements OnInit {
     return '+' + (status.length - 2);
   }
 
-  private getSchemaDataTableColumnInfo() {
-    const sendData: SendReqForSchemaDataTableColumnInfo = new SendReqForSchemaDataTableColumnInfo();
-    sendData.schemaId = this.schemaId;
-    sendData.objectId = this.objectId;
-    sendData.brIds = JSON.stringify({});
-    sendData.sortFields = JSON.stringify({});
-    sendData.filterFields = JSON.stringify({});
-    sendData.srchRanQry = '';
-    sendData.isDataInsight = false;
-    sendData.isJQGrid = true;
-    sendData.selectedStatus = '';
 
-    this.schemaDetailsService.getSchemaDataTableColumnInfo(sendData)
-      .subscribe((response: SchemaDataTableColumnInfoResponse) => {
-        this.dataTableColumnInfo = response;
-        this.allDisplayedColumns = response.fieldOrder;
-        this.allDisplayedColumnsDesc = this.getAllDisplayedColumnOnLoad(response);
-        this.fieldList = response.fieldList;
-      }, error => {
-        console.log('Error while fetching schema data table column info');
-      });
-  }
   private getAllDisplayedColumnOnLoad(resData: SchemaDataTableColumnInfoResponse): any {
     const dispColumnLabel: any = {};
     resData.fieldOrder.forEach(element => {
@@ -162,30 +143,7 @@ export class SchemaDatatableComponent implements OnInit {
     return dispColumnLabel;
   }
 
-  public getSchemaDataTableData(selectedStatus: string) {
-    const sendData: SendReqForSchemaDataTableColumnInfo = new SendReqForSchemaDataTableColumnInfo();
-    sendData.schemaId = this.schemaId;
-    sendData.objectId = this.objectId;
-    sendData.brIds = JSON.stringify({});
-    sendData.sortFields = JSON.stringify({});
-    sendData.filterFields = JSON.stringify({});
-    sendData.srchRanQry = '';
-    sendData.isDataInsight = false;
-    sendData.isJQGrid = false;
-    sendData.selectedStatus = (selectedStatus !== undefined && selectedStatus !== '') ? selectedStatus : '';
-    this.schemaDetailsService.getSchemaTableData(sendData)
-      .subscribe(
-        (response: SchemaDataTableResponse) => {
-          this.tableData = response;
-          this.queryData = response.queryData;
-          this.dataSource = new MatTableDataSource<SchemaTableData>(response.data);
-          this.dataSource.paginator = this.paginator;
-          this.dataSource.sort = this.sort;
-          this.scrollId = response.scrollId;
 
-        }
-      );
-  }
   public openStatusInfoDialog() {
     const dialogRef = this.dialog.open(SchemaStatusinfoDialogComponent, {
       width: '900px',
@@ -195,4 +153,140 @@ export class SchemaDatatableComponent implements OnInit {
       console.log('The dialog was closed');
     });
   }
+
+  private getSchemaTableDetailsForError(schemaDetails: SchemaListDetails) {
+    const sendRequest: RequestForSchemaDetailsWithBr = new RequestForSchemaDetailsWithBr();
+    sendRequest.schemaId = schemaDetails.schemaId;
+    sendRequest.runId = schemaDetails.runId;
+    sendRequest.brId = schemaDetails.brInformation[schemaDetails.brInformation.length - 1].brId;
+    sendRequest.variantId = schemaDetails.variantId;
+    sendRequest.requestStatus = 'error';
+    this.schemaDetailsService.getSchemaTableDetailsByBrId(sendRequest).subscribe(resposne => {
+      console.table(resposne);
+      this.dataTableDataSource = new MatTableDataSource<DataTableSourceResponse>(resposne.data);
+      this.dataTableDataSource.paginator = this.paginator;
+      this.dataTableDataSource.sort = this.sort;
+      this.allDisplayedColumns = this.allDisplayedColumnsFun(resposne.data[0]);
+      this.allDisplayedColumnsDesc = this.allDisplayedColumnsDescFun(resposne.data[0]);
+    }, error => {
+      console.error('Error while fetching schema table details');
+    });
+  }
+
+  private getSchemaTableDetailsForSuccess(schemaDetails: SchemaListDetails) {
+    const sendRequest: RequestForSchemaDetailsWithBr = new RequestForSchemaDetailsWithBr();
+    sendRequest.schemaId = schemaDetails.schemaId;
+    sendRequest.runId = schemaDetails.runId;
+    sendRequest.brId = schemaDetails.brInformation[schemaDetails.brInformation.length - 1].brId;
+    sendRequest.variantId = schemaDetails.variantId;
+    sendRequest.requestStatus = 'success';
+    this.schemaDetailsService.getSchemaTableDetailsByBrId(sendRequest).subscribe(resposne => {
+      console.table(resposne);
+      this.dataTableDataSource = new MatTableDataSource<DataTableSourceResponse>(resposne.data);
+      this.dataTableDataSource.paginator = this.paginator;
+      this.dataTableDataSource.sort = this.sort;
+      this.allDisplayedColumns = this.allDisplayedColumnsFun(resposne.data[0]);
+      this.allDisplayedColumnsDesc = this.allDisplayedColumnsDescFun(resposne.data[0]);
+    }, error => {
+      console.error('Error while fetching schema table details');
+    });
+  }
+
+  private getSchemaTableDetailsForAll(schemaDetails: SchemaListDetails) {
+    const sendRequest: RequestForSchemaDetailsWithBr = new RequestForSchemaDetailsWithBr();
+    sendRequest.schemaId = schemaDetails.schemaId;
+    sendRequest.runId = schemaDetails.runId;
+    sendRequest.brId = schemaDetails.brInformation[schemaDetails.brInformation.length - 1].brId;
+    sendRequest.variantId = schemaDetails.variantId;
+    sendRequest.requestStatus = 'all';
+    sendRequest.executionStartDate = String(schemaDetails.executionStartTime);
+    this.schemaDetailsService.getSchemaTableDetailsByBrId(sendRequest).subscribe(resposne => {
+      console.table(resposne);
+      this.dataTableDataSource = new MatTableDataSource<DataTableSourceResponse>(resposne.data);
+      this.dataTableDataSource.paginator = this.paginator;
+      this.dataTableDataSource.sort = this.sort;
+      this.allDisplayedColumns = this.allDisplayedColumnsFun(resposne.data[0]);
+      this.allDisplayedColumnsDesc = this.allDisplayedColumnsDescFun(resposne.data[0]);
+    }, error => {
+      console.error('Error while fetching schema table details');
+    });
+  }
+
+  private getSchemaDetails(schemaId: string) {
+    this.schemaListService.getSchemaDetailsBySchemaId(schemaId).subscribe(data => {
+      this.schemaDetails = data;
+      console.table(data);
+      this.getSchemaTableDetailsForError(data);
+    });
+  }
+
+  private allDisplayedColumnsFun(data: any): string[] {
+    const allDisColumns: string[] = [];
+    if (data) {
+      Object.keys(data).forEach(key => {
+        allDisColumns.push(key);
+      });
+    }
+    this.chooseColumnCtrl.setValue(allDisColumns);
+    this.allDisplayedColumnsObservable = of(allDisColumns);
+    this.allColumnsListOnLoad = allDisColumns;
+    allDisColumns.splice(0, 0, 'row_action');
+    allDisColumns.splice(1, 0, 'row_selection_check2box');
+    return allDisColumns;
+  }
+  private allDisplayedColumnsDescFun(data: any): any {
+    const returnData: any = {} as any;
+    if (data) {
+      Object.keys(data).forEach(key => {
+        returnData[key] = data[key].fieldDesc;
+      });
+    }
+    return returnData;
+  }
+
+  loadSchameDataByStatus(index: number) {
+    if (index != null) {
+      if (index === 0) {
+        this.getSchemaTableDetailsForAll(this.schemaDetails);
+      } else if (index === 1) {
+        this.getSchemaTableDetailsForError(this.schemaDetails);
+      } else if (index === 2) {
+        this.getSchemaTableDetailsForSuccess(this.schemaDetails);
+      }
+    }
+  }
+
+  public chooseColumns(event) {
+    const selectedArray = event.value;
+    if (selectedArray) {
+      this.allDisplayedColumns = selectedArray;
+      this.allDisplayedColumns.splice(0, 0, 'row_action');
+      this.allDisplayedColumns.splice(1, 0, 'row_selection_check2box');
+      this.updateTableView();
+    }
+  }
+
+  private updateTableView() {
+    const schemaTableViewRequest: SchemaTableViewRequest = new SchemaTableViewRequest();
+    schemaTableViewRequest.schemaId = this.schemaDetails.schemaId;
+    schemaTableViewRequest.variantId = this.schemaDetails.variantId;
+    schemaTableViewRequest.unassignedFields = this.getAllUnassignedFields();
+
+    this.schemaDetailsService.updateSchemaTableView(schemaTableViewRequest).subscribe(response => {
+      console.log('Updated view {} is success.', response);
+    }, error => {
+      console.error('Error while update schema table view');
+    });
+  }
+
+  private getAllUnassignedFields(): string[] {
+    const unassignedFields: string[] = [];
+    this.allColumnsListOnLoad.forEach(fldId => {
+        if (this.allDisplayedColumns.indexOf(fldId) === -1) {
+         unassignedFields.push(fldId);
+        }
+    });
+    return unassignedFields;
+  }
+
 }

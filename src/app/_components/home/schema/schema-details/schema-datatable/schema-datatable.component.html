@@ -18,13 +18,38 @@
                         <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
                     </mat-form-field>
                     <span class="flex-spacer"></span>
+
+
+                    <!-- 
                     <button mat-button color="primary" (click)="openChooseColumnDialog();">Choose Column</button>
+                    -->
+                    <mat-form-field>
+                        <mat-select (selectionChange)="chooseColumns($event);" [formControl]="chooseColumnCtrl" placeholder="Choose Column" [multiple]="true">
+                            <mat-option>
+                                <ngx-mat-select-search [formControl]="chooseColumnFilterCtrl" placeholderLabel="Search"></ngx-mat-select-search>
+                            </mat-option>                       
+                            <ng-template ngFor let-column [ngForOf]="allDisplayedColumnsObservable | async">
+                                <ng-template [ngIf]="column !== 'row_action'">
+                                    <ng-template [ngIf]="column !== 'row_selection_check2box'">
+                                        <mat-option  [value]="column">                                            
+                                            {{allDisplayedColumnsDesc[column]}}
+                                        </mat-option>
+                                    </ng-template>                                    
+                                </ng-template>                                
+                            </ng-template>
+
+                        </mat-select>
+                    </mat-form-field>
+
                     <button mat-button color="primary" (click)="downloadErrorData($event);">Download Error(s)</button>
                 </div>
                 <div class="root-AdminTable">
-                    <table mat-table [dataSource]="dataSource" matSort>
+                    <table mat-table [dataSource]="dataTableDataSource" matSort>
+                        <!-- ADD DATA AND COLUMN -->
+                        <ng-container *ngFor="let columnId of allDisplayedColumns" matColumnDef="{{columnId}}">
 
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+                         <ng-template [ngIf]="columnId === 'row_action'">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header matColumnDef="row_action"></th>
                         <td mat-cell *matCellDef="let element" [matMenuTriggerFor]="actiontable">
                             <mat-icon mat-icon-button>more_vert</mat-icon>
                             <mat-menu #actiontable="matMenu">
@@ -35,8 +60,10 @@
                                 </ng-template>
                             </mat-menu>
                         </td>
+                        </ng-template>   
 
-                        <th mat-header-cell *matHeaderCellDef class="checkbox-colunm">
+                        <ng-template [ngIf]="columnId === 'row_selection_check2box'">   
+                        <th mat-header-cell *matHeaderCellDef class="checkbox-colunm" matColumnDef="row_selection_check2box">
                             <mat-checkbox color="primary" (change)="$event ? masterToggle() : null"
                                 [checked]="selection.hasValue() && isAllSelected()"
                                 [indeterminate]="selection.hasValue() && !isAllSelected()"
@@ -49,25 +76,18 @@
                                 [aria-label]="checkboxLabel(row)">
                             </mat-checkbox>
                         </td>
-                        <!-- ADD DATA AND COLUMN -->
-                        <ng-container *ngFor="let columnId of allDisplayedColumns" matColumnDef="{{columnId}}">
+                        </ng-template>
+
+
+
+                        <ng-template [ngIf]="columnId !== 'row_selection_check2box' || columnId !== 'row_action'">   
                             <th mat-header-cell *matHeaderCellDef mat-sort-header>
                                 {{allDisplayedColumnsDesc[columnId]}}</th>
 
-                            <td mat-cell *matCellDef="let element" [class.errorCell]="element[columnId].isInError"
-                                matTooltip="{{element[columnId].errorMsg}}">
-                                <ng-template [ngIf]="element[columnId].isInError" [ngIfElse]="nonEditableCell">
-                                    <mat-form-field appearance="fill" class="editable-error">
-                                        <input class="statusinput" matInput [readonly]="!element.hasError" type="text"
-                                            name="columnId" value="{{element[columnId].fieldData}}"
-                                            ([ngModel])="element[columnId].fieldData">
-                                    </mat-form-field>
-
-                                </ng-template>
-                                <ng-template #nonEditableCell>
-                                    {{element[columnId].fieldData}}
-                                </ng-template>
+                            <td mat-cell *matCellDef="let element">
+                                {{element[columnId].fieldData}}
                             </td>
+                        </ng-template>
 
                         </ng-container>
 

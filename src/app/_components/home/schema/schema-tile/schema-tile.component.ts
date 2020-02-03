@@ -74,6 +74,8 @@ export class SchemaTileComponent implements OnInit {
   editTrigger = new EventEmitter();
   @Output()
   showVariantClick = new EventEmitter();
+  @Output()
+  executeTrigger = new EventEmitter();
   disabledProgress: string;
   linker() {
     return this.link;
@@ -94,5 +96,8 @@ export class SchemaTileComponent implements OnInit {
   public showSchemaVariants(moduleId: string, groupId: string, schemaId: string) {
     const sendBack: any = { moduleId, groupId, schemaId};
     return this.showVariantClick.emit(sendBack);
+  }
+  public executeTriggerFun(schemaId: string) {
+    return this.executeTrigger.emit(schemaId);
   }
 }

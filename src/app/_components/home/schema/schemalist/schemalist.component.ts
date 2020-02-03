@@ -68,4 +68,7 @@ export class SchemalistComponent implements OnInit {
   public showVariants(data: any) {
     this.router.navigate(['/home/schema/schema-variants', data.moduleId, data.groupId, data.schemaId]);
   }
+  public executeSchemaPage(schemaId: string) {
+    this.router.navigate(['/home/schema/schema-execution', this.schemaGroupId, schemaId]);
+  }
 }

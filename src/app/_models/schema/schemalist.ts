@@ -36,9 +36,9 @@ export class SchemaModuleList {
 export class SchemaListModuleList {
     moduleId: string;
     moduleDesc: string;
-    schemaLists: SchamaListDetails[];
+    schemaLists: SchemaListDetails[];
 }
-export class SchamaListDetails {
+export class SchemaListDetails {
     schemaId: string;
     schemaDescription: string;
     errorCount: number;
@@ -51,6 +51,17 @@ export class SchamaListDetails {
     variantCount: number;
     executionStartTime: number;
     executionEndTime: number;
+    variantId: string;
+    runId: string;
+    brInformation: BusinessRuleExecutionDetails[];
+}
+export class BusinessRuleExecutionDetails {
+    brId: string;
+    error: number;
+    success: number;
+    skipped: number;
+    outdated: number;
+    duplicate: number;
 }
 export class SendDataForSchemaVariantFields {
     schemaId: string;

@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { EndpointService } from '../../endpoint.service';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { SendReqForSchemaDataTableColumnInfo, SendDataForSchemaTableShowMore, SchemaStatusInformation, SchemaDataTableColumnInfoResponse, SchemaDataTableResponse } from 'src/app/_models/schema/schemadetailstable';
+import { SendReqForSchemaDataTableColumnInfo, SendDataForSchemaTableShowMore, SchemaStatusInformation, SchemaDataTableColumnInfoResponse, RequestForSchemaDetailsWithBr, DataTableSourceResponse, SchemaTableViewRequest } from 'src/app/_models/schema/schemadetailstable';
 import * as moment from 'moment';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../../any2ts.service';
-import { SchamaListDetails } from 'src/app/_models/schema/schemalist';
+import { SchemaListDetails } from 'src/app/_models/schema/schemalist';
 
 @Injectable({
   providedIn: 'root'
@@ -51,13 +51,8 @@ export class SchemaDetailsService {
       return this.any2tsService.any2SchemaDataTableResponse(data);
     }));
   }
-  public getSchemaTableData(sendData: SendReqForSchemaDataTableColumnInfo): Observable<SchemaDataTableResponse> {
-    return this.http.post<any>(this.endpointService.getSchemaDataTableColumnInfoUrl(), sendData).pipe(map(data => {
-      return this.any2tsService.any2SchemaTableData(data);
-    }));
-  }
 
-  public getSchemaDetailsBySchemaId(schemaId: string): Observable<SchamaListDetails> {
+  public getSchemaDetailsBySchemaId(schemaId: string): Observable<SchemaListDetails> {
     return this.http.post<any>(this.endpointService.getSchemaDetailsBySchemaId(schemaId), '').pipe(map(data => {
       return  null; // this.any2tsService.returnSchemaListDataForGrp(data, schemaId);
     }));
@@ -112,4 +107,18 @@ export class SchemaDetailsService {
     this.schemaBusinessRule = new BehaviorSubject<any>(this.schemaBusinessRuleChartData);
     return this.schemaBusinessRule.asObservable();
   }
+
+  public getSchemaTableDetailsByBrId(request: RequestForSchemaDetailsWithBr): Observable<DataTableSourceResponse> {
+    return this.http.post<any>(this.endpointService.getSchemaTableDetailsUrl(), request).pipe(map(response => {
+      return this.any2tsService.any2SchemaTableData(this.any2tsService.any2DataTable(response));
+    }));
+  }
+
+  /**
+   * updateSchemaTableView
+   */
+  public updateSchemaTableView(schemaTableViewReq: SchemaTableViewRequest): Observable<any> {
+    return this.http.post<any>(this.endpointService.getUpdateSchemaTableViewUrl(), schemaTableViewReq);
+  }
+
 }

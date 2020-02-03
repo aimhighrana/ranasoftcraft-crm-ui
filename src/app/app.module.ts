@@ -57,7 +57,6 @@ import { OverviewChartComponent } from './_components/home/schema/schema-details
 import { CategoriesChartComponent } from './_components/home/schema/schema-details/categories-chart/categories-chart.component';
 import { BusinessRulesChartComponent } from './_components/home/schema/schema-details/business-rules-chart/business-rules-chart.component';
 import { SchemaDatatableComponent } from './_components/home/schema/schema-details/schema-datatable/schema-datatable.component';
-import { SchemaDatatableDialogComponent } from './_components/home/schema/schema-details/schema-datatable-dialog/schema-datatable-dialog.component';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { SchemaVariantsComponent } from './_components/home/schema/schema-variants/schema-variants.component';
 import { SubstringPipe } from './_pipes/substringpipe.pipe';
@@ -66,6 +65,7 @@ import { SchemabadgeTileComponent } from './_components/home/schema/schemabadge-
 import { SchemaGroupMappingComponent } from './_components/home/schema/schema-group-mapping/schema-group-mapping.component';
 import { LoadingInterceptorService } from './_services/loading-interceptor.service';
 import { SharedModule } from './_modules/shared/shared/shared.module';
+import { SchemaExecutionComponent } from './_components/home/schema/schema-execution/schema-execution.component';
 
 @NgModule({
   declarations: [
@@ -123,12 +123,12 @@ import { SharedModule } from './_modules/shared/shared/shared.module';
     CategoriesChartComponent,
     BusinessRulesChartComponent,
     SchemaDatatableComponent,
-    SchemaDatatableDialogComponent,
     SchemaVariantsComponent,
     SubstringPipe,
     SchemaStatusinfoDialogComponent,
     SchemabadgeTileComponent,
-    SchemaGroupMappingComponent
+    SchemaGroupMappingComponent,
+    SchemaExecutionComponent
   ],
   imports: [
     ChartsModule,
@@ -141,7 +141,7 @@ import { SharedModule } from './_modules/shared/shared/shared.module';
     { provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptorService, multi: true }
   ],
   bootstrap: [ AppComponent ],
-  entryComponents: [SchemaDatatableDialogComponent, SchemaStatusinfoDialogComponent]
+  entryComponents: [SchemaStatusinfoDialogComponent]
 })
 export class AppModule {
 }

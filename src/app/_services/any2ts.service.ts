@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { Task } from '../_models/task';
 import { TaskResponse } from '../_models/task-response';
 import { SchemaListOnLoadResponse, SchemaGroupResponse, SchemaGroupDetailsResponse, SchemaGroupCountResponse, ObjectTypeResponse, GetAllSchemabymoduleidsRes, SchemaGroupWithAssignSchemas, SchemaGroupMapping } from '../_models/schema/schema';
-import { SchamaListDetails, VariantFieldList, SchemaVariantResponse, SchemaBrInfoList, CategoriesResponse, DependencyResponse, VariantDetailsScheduleSchema, VariantAssignedFieldDetails, SchemaListModuleList, SchemaModuleList } from '../_models/schema/schemalist';
-import { SchemaDataTableColumnInfoResponse, ResponseFieldList, SchemaTableData, SchemaDataTableResponse } from '../_models/schema/schemadetailstable';
+import { VariantFieldList, SchemaVariantResponse, SchemaBrInfoList, CategoriesResponse, DependencyResponse, VariantDetailsScheduleSchema, VariantAssignedFieldDetails, SchemaListModuleList, SchemaModuleList, SchemaListDetails, BusinessRuleExecutionDetails } from '../_models/schema/schemalist';
+import { SchemaDataTableColumnInfoResponse, ResponseFieldList, SchemaTableData, DataTableResponse, DataTableHeaderResponse, DataTableHeaderLabelLang, DataTableHeaderValueLang, DataTableSourceResponse } from '../_models/schema/schemadetailstable';
 import { Userdetails, AssignedRoles } from '../_models/userdetails';
 @Injectable({
   providedIn: 'root'
@@ -160,44 +160,6 @@ export class Any2tsService {
     resFldList.picklist = data.picklist ? data.picklist : '';
     resFldList.width = data.width;
     return resFldList;
-  }
-  public any2SchemaTableData(response: any): SchemaDataTableResponse {
-    const schemaDataTableRes: SchemaDataTableResponse = new SchemaDataTableResponse();
-    schemaDataTableRes.queryData = response.queryData;
-    const fieldOrder = response.fieldOrder;
-    let returnData: any = [];
-    if (fieldOrder !== undefined) {
-      fieldOrder.splice(0, 0, 'OBJECTNUMBER');
-    }
-    const dataArray = response.fieldData;
-    if (dataArray !== undefined && dataArray.length > 0) {
-      returnData = this.returnSchemaTableData(fieldOrder, dataArray);
-    }
-    schemaDataTableRes.data = returnData;
-    schemaDataTableRes.scrollId = response.scrollId;
-    return schemaDataTableRes;
-  }
-  private returnSchemaTableData(fieldIdArray: any, fieldDataArray: any): any {
-    const finalDataOutput: any = [];
-    fieldDataArray.forEach(fldData => {
-      const dataJson: any = {};
-      fieldIdArray.forEach(fldIds => {
-        const schemaTableData: SchemaTableData = new SchemaTableData();
-        if (fldData.hasOwnProperty(fldIds)) {
-          schemaTableData.fieldId = fldIds;
-          schemaTableData.fieldData = fldData[fldIds];
-          if (fldData.hasOwnProperty(fldIds + '_msg')) {
-            schemaTableData.isInError = true;
-            schemaTableData.errorMsg = fldData[fldIds + '_msg'];
-          }
-        } else {
-          schemaTableData.fieldId = fldIds;
-        }
-        dataJson[fldIds] = schemaTableData;
-      });
-      finalDataOutput.push(dataJson);
-    });
-    return finalDataOutput;
   }
   public any2SchemaBrInfoList(response): SchemaBrInfoList[] {
     const schemaBrInfoLst: SchemaBrInfoList[] = [];
@@ -394,10 +356,10 @@ export class Any2tsService {
       const schemaLstView: SchemaListModuleList = new SchemaListModuleList();
       schemaLstView.moduleId = module.moduleId;
       schemaLstView.moduleDesc = module.moduleDescription;
-      const schamaListDetails: SchamaListDetails[] = [];
+      const schamaListDetails: SchemaListDetails[] = [];
       const schemaData = response.filter(res => res.moduleId === module.moduleId);
       schemaData.forEach(schema => {
-        const schemaDetail: SchamaListDetails = new SchamaListDetails();
+        const schemaDetail: SchemaListDetails = new SchemaListDetails();
         schemaDetail.createdBy = schema.createdBy;
         schemaDetail.errorCount = schema.error ? schema.error : 0;
         schemaDetail.errorPercentage = schema.errorPercentage ? schema.errorPercentage : 0;
@@ -406,7 +368,7 @@ export class Any2tsService {
         schemaDetail.successCount = schema.success ? schema.success : 0;
         schemaDetail.successPercentage = schema.successPercentage ? schema.successPercentage : 0;
         schemaDetail.totalCount = schema.total ? schema.total : 0;
-        schemaDetail.trendingCount = schema.trendingCount ? schema.trendingCount : 'N.A';
+        schemaDetail.trendingCount = schema.trendingCount ? schema.trendingCount : 'N/A';
         schemaDetail.variantCount = schema.variantCount ? schema.variantCount : 0;
         schemaDetail.executionStartTime = schema.executionStartTime ? schema.executionStartTime : 0;
         schemaDetail.executionEndTime = schema.executionEndTime ? schema.executionEndTime : 0;
@@ -417,4 +379,126 @@ export class Any2tsService {
     });
     return schemaListView;
   }
+
+  public any2SchemaDetailsWithCount(resposne: any): SchemaListDetails {
+    const schemaDetail: SchemaListDetails = new SchemaListDetails();
+    schemaDetail.createdBy = resposne.createdBy;
+    schemaDetail.errorCount = resposne.error ? resposne.error : 0;
+    schemaDetail.errorPercentage = resposne.errorPercentage ? resposne.errorPercentage : 0;
+    schemaDetail.schemaDescription = resposne.schemaDescription;
+    schemaDetail.schemaId = resposne.schemaId;
+    schemaDetail.successCount = resposne.success ? resposne.success : 0;
+    schemaDetail.successPercentage = resposne.successPercentage ? resposne.successPercentage : 0;
+    schemaDetail.totalCount = resposne.total ? resposne.total : 0;
+    schemaDetail.trendingCount = resposne.trendingCount ? resposne.trendingCount : 'N/A';
+    schemaDetail.variantCount = resposne.variantCount ? resposne.variantCount : 0;
+    schemaDetail.executionStartTime = resposne.executionStartTime ? resposne.executionStartTime : 0;
+    schemaDetail.executionEndTime = resposne.executionEndTime ? resposne.executionEndTime : 0;
+    schemaDetail.variantId = resposne.variantId ? resposne.variantId : '';
+    schemaDetail.runId = resposne.runId ? resposne.runId : '';
+    schemaDetail.brInformation = [];
+
+    if (resposne.brInformation) {
+      resposne.brInformation.forEach(br => {
+        const brInfo: BusinessRuleExecutionDetails = new BusinessRuleExecutionDetails();
+        brInfo.brId = br.brId ? br.brId : '';
+        brInfo.duplicate = br.duplicate ? br.duplicate : 0;
+        brInfo.error = br.error ? br.error : 0;
+        brInfo.outdated = br.outdated ? br.outdated : 0;
+        brInfo.skipped = br.skipped ? br.skipped : 0;
+        brInfo.success = br.success ? br.success : 0;
+        schemaDetail.brInformation.push(brInfo);
+      });
+    }
+    return schemaDetail;
+  }
+
+  /**
+   * Help this method for convert any to schema datatable response
+   */
+  public any2DataTable(response: any): DataTableResponse[] {
+    const dataTableReponse: DataTableResponse[] = [];
+    if (response) {
+      response.forEach(data => {
+        const dataTable: DataTableResponse = new DataTableResponse();
+        dataTable.id = data.id;
+        dataTable.stat = data.stat;
+        dataTable.hdvs = this.convertAny2DataTableHeaderResponse(data.hdvs);
+        dataTableReponse.push(dataTable);
+      });
+    }
+    return dataTableReponse;
+  }
+
+  private convertAny2DataTableHeaderResponse(response: any): DataTableHeaderResponse[] {
+    const dataTableHeaderResponse: DataTableHeaderResponse[] = [];
+    if (response) {
+      Object.keys(response).forEach(key => {
+        const dataTableHeader: DataTableHeaderResponse = new DataTableHeaderResponse();
+        dataTableHeader.fId = response[key].fId;
+        dataTableHeader.lls = [];
+        dataTableHeader.vls = [];
+        const currentObj = response[key];
+        // for get label lang of fields
+        if (currentObj.lls) {
+          Object.keys(currentObj.lls).forEach(llsKey => {
+            const dataTableHeaderLabelLang: DataTableHeaderLabelLang = new DataTableHeaderLabelLang();
+            dataTableHeaderLabelLang.label = currentObj.lls[llsKey].label;
+            dataTableHeaderLabelLang.lang = llsKey;
+            dataTableHeader.lls.push(dataTableHeaderLabelLang);
+          });
+        }
+
+        // get value of this field on lang
+        if (currentObj.vls) {
+          Object.keys(currentObj.vls).filter(vlskey => {
+            const dataTableHeaderValueLang: DataTableHeaderValueLang = new DataTableHeaderValueLang();
+            dataTableHeaderValueLang.lang = vlskey;
+            dataTableHeaderValueLang.valueText =  currentObj.vls[vlskey].valueTxt;
+            dataTableHeader.vls.push(dataTableHeaderValueLang);
+          });
+        }
+        dataTableHeaderResponse.push(dataTableHeader);
+      });
+    }
+
+    return dataTableHeaderResponse;
+  }
+
+  public any2SchemaTableData(response: DataTableResponse[]): DataTableSourceResponse {
+    const finalResposne: DataTableSourceResponse = new DataTableSourceResponse();
+    const anyArray: any[] = [];
+    response.forEach(data => {
+      // for object number column
+      const returnData: any = {} as any;
+      const objNumberColumn: SchemaTableData = new SchemaTableData();
+      objNumberColumn.fieldId = 'OBJECTNUMBER';
+      objNumberColumn.fieldData = data.id;
+      objNumberColumn.fieldDesc = 'Object Number';
+      returnData[objNumberColumn.fieldId] = objNumberColumn;
+      // anyArray.push(objNumberColumn);
+
+      data.hdvs.forEach(hdvs => {
+        const schemaTableData: SchemaTableData = new SchemaTableData();
+        schemaTableData.fieldId = hdvs.fId;
+        schemaTableData.fieldDesc = hdvs.lls.filter(lls => lls.lang === 'EN')[0].label;
+        schemaTableData.fieldData = hdvs.vls.filter(vls => vls.lang === 'EN')[0].valueText ? hdvs.vls.filter(vls => vls.lang === 'EN')[0].valueText : '';
+        returnData[schemaTableData.fieldId] = schemaTableData;
+        // anyArray.push(objNumberColumn);
+      });
+
+      // for status column
+      const statusColumn: SchemaTableData = new SchemaTableData();
+      statusColumn.fieldId = 'STATUS';
+      statusColumn.fieldData = data.stat;
+      statusColumn.fieldDesc = 'Status';
+      returnData[statusColumn.fieldId] = statusColumn;
+      // anyArray.push(statusColumn);
+
+      anyArray.push(returnData);
+    });
+    finalResposne.data = anyArray;
+    return finalResposne;
+  }
+
 }

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SchemalistService } from 'src/app/_services/home/schema/schemalist.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SchemaVariantService } from 'src/app/_services/home/schema/schema-variant.service';
-import { SendSchemavariantRequest, SchemaVariantResponse, SchamaListDetails } from 'src/app/_models/schema/schemalist';
+import { SendSchemavariantRequest, SchemaVariantResponse, SchemaListDetails } from 'src/app/_models/schema/schemalist';
 import { Any2tsService } from 'src/app/_services/any2ts.service';
 import { Breadcrumb } from 'src/app/_models/breadcrumb';
 import { SchemaService } from 'src/app/_services/home/schema.service';
@@ -21,7 +21,7 @@ export class SchemaVariantsComponent implements OnInit {
   schemaVariantList: SchemaVariantResponse[] = [];
   title = '';
   schemaGroupDetails: SchemaGroupDetailsResponse = new SchemaGroupDetailsResponse();
-  schemaListDetails: SchamaListDetails = new SchamaListDetails();
+  schemaListDetails: SchemaListDetails = new SchemaListDetails();
   breadcrumb: Breadcrumb = {
     heading: this.title + ' Variant(s)',
     links: [

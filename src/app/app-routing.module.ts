@@ -47,6 +47,7 @@ import { SchemaComponent } from './_components/home/schema/schema/schema.compone
 import { SchemaDetailsComponent } from './_components/home/schema/schema-details/schema-details.component';
 import { SchemaVariantsComponent } from './_components/home/schema/schema-variants/schema-variants.component';
 import { SchemaGroupMappingComponent } from './_components/home/schema/schema-group-mapping/schema-group-mapping.component';
+import { SchemaExecutionComponent } from './_components/home/schema/schema-execution/schema-execution.component';
 
 const routes: Routes = [
   {
@@ -57,7 +58,8 @@ const routes: Routes = [
       { path: 'schema/group/:groupId', component: SchemaGroupMappingComponent },
       { path: 'schema/schema-list/:schemaGrpId', component: SchemalistComponent },
       { path: 'schema/schema-details/:moduleId/:schemaGroupId/:schemaId', component: SchemaDetailsComponent },
-      { path: 'schema/schema-variants/:moduleId/:groupId/:schemaId', component: SchemaVariantsComponent }
+      { path: 'schema/schema-variants/:moduleId/:groupId/:schemaId', component: SchemaVariantsComponent },
+      {path: 'schema/schema-execution/:groupId/:schemaId', component: SchemaExecutionComponent}
     ]
   },
   {

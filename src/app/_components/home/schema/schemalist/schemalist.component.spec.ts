@@ -7,7 +7,7 @@ import { SchemaTileComponent } from '../schema-tile/schema-tile.component';
 import { SchemaProgressbarComponent } from '../../schema-progressbar/schema-progressbar.component';
 import { SubstringPipe } from 'src/app/_pipes/substringpipe.pipe';
 import { SchemabadgeTileComponent } from '../schemabadge-tile/schemabadge-tile.component';
-import { SchemaListModuleList, SchamaListDetails } from 'src/app/_models/schema/schemalist';
+import { SchemaListModuleList, SchemaListDetails } from 'src/app/_models/schema/schemalist';
 import { BreadcrumbComponent } from 'src/app/_modules/shared/_components/breadcrumb/breadcrumb.component';
 
 describe('SchemalistComponent', () => {
@@ -35,7 +35,7 @@ describe('SchemalistComponent', () => {
   const mockDataObj1: SchemaListModuleList = new SchemaListModuleList();
   mockDataObj1.moduleDesc = 'Function Location';
   mockDataObj1.moduleId = '1006';
-  const mockDataObj1Schema1: SchamaListDetails = new SchamaListDetails();
+  const mockDataObj1Schema1: SchemaListDetails = new SchemaListDetails();
   mockDataObj1Schema1.schemaDescription = 'Check Function Location Installation';
   mockDataObj1Schema1.schemaId = '27348729347';
   mockDataObj1.schemaLists = [];
@@ -43,10 +43,10 @@ describe('SchemalistComponent', () => {
   const mockDataObj2: SchemaListModuleList = new SchemaListModuleList();
   mockDataObj2.moduleDesc = 'Material Module';
   mockDataObj2.moduleId = '1005';
-  const mockDataObj2Schema1: SchamaListDetails = new SchamaListDetails();
+  const mockDataObj2Schema1: SchemaListDetails = new SchemaListDetails();
   mockDataObj2Schema1.schemaDescription = 'Check ZMRO Type';
   mockDataObj2Schema1.schemaId = '986902';
-  const mockDataObj2Schema2: SchamaListDetails = new SchamaListDetails();
+  const mockDataObj2Schema2: SchemaListDetails = new SchemaListDetails();
   mockDataObj2Schema2.schemaDescription = 'Check HRSH Type';
   mockDataObj2Schema2.schemaId = '10927907';
   mockDataObj2.schemaLists = [];

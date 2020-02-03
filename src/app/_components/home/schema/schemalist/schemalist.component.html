@@ -1,4 +1,4 @@
-<mat-card class="flex-container">
+<div class="root">
   <div class="flex-col-12">
     <pros-breadcrumb [crumbs]="breadcrumb"></pros-breadcrumb>
   </div>
@@ -13,7 +13,7 @@
       createdDate="{{schemaLst.dateModified}}" modifiedBy="{{schemaLst.createdBy}}"
       lastModifiedDate="{{schemaLst.dateModified}}" lastRunTime="{{schemaLst.lr}}" lastRunDuration="{{schemaLst.lr}}"
       colaborators="{{schemaLst.colaborators}}" schemaStructure="{{schemaLst.struc}}" enableEditButton=true groupId="{{schemaGroupId}}"
-      (editTrigger)="editSchema($event, schemaLst.schemaDescription);" (showVariantClick)="showVariants($event)">
+      (editTrigger)="editSchema($event, schemaLst.schemaDescription);" (showVariantClick)="showVariants($event)" (executeTrigger)="executeSchemaPage($event);">
     </pros-schema-tile>
 
     <pros-schemabadge-tile class="flex-col-1" showAddNewTitle="Create a new schema" createSchemaBadge=true>
@@ -21,4 +21,4 @@
 
   </div>
 
-</mat-card>
+</div>

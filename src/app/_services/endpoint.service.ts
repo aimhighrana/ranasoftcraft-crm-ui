@@ -65,7 +65,7 @@ export class EndpointService {
     return this.apiUrl + '/assignBrToSchema';
   }
   public getScheduleSchemaUrl(): string {
-    return this.apiUrl + '/ScheduleSchema';
+    return this.apiUrl + '/schema/schedule-schema';
   }
   public getCategoriesUrl(): string {
     return this.apiUrl + '/getCategories';
@@ -113,5 +113,15 @@ export class EndpointService {
   }
   public groupDetailswithAssignedschemaUrl(groupId: string): string {
     return this.apiUrl + '/schema/group-detailswith-assignedschema/' + groupId;
+  }
+  public getSchemaDetailsBySchemaIdUrl(schemaId: string): string {
+    return this.apiUrl + '/schema/schema-details/' + schemaId;
+  }
+
+  public getSchemaTableDetailsUrl(): string {
+    return this.apiUrl + '/schema/schema-details';
+  }
+  public getUpdateSchemaTableViewUrl(): string {
+    return this.apiUrl + '/schema/update-schema-table-view';
   }
 }

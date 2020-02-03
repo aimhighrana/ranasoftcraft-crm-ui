@@ -8,11 +8,11 @@ import { MatIconModule } from '@angular/material';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SubstringPipe } from 'src/app/_pipes/substringpipe.pipe';
 import { SchemaProgressbarComponent } from '../../schema-progressbar/schema-progressbar.component';
-import { SchamaListDetails } from 'src/app/_models/schema/schemalist';
 import { SchemaVariantService } from 'src/app/_services/home/schema/schema-variant.service';
 import { SchemaService } from 'src/app/_services/home/schema.service';
 import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-details.service';
 import { BreadcrumbComponent } from 'src/app/_modules/shared/_components/breadcrumb/breadcrumb.component';
+import { SchemaListDetails } from 'src/app/_models/schema/schemalist';
 
 describe('SchemaVariantsComponent', () => {
   let component: SchemaVariantsComponent;
@@ -46,7 +46,7 @@ describe('SchemaVariantsComponent', () => {
 
   it('schemaDetails: should create', () => {
     // mock data
-    const mockSchemaData: SchamaListDetails = new SchamaListDetails();
+    const mockSchemaData: SchemaListDetails = new SchemaListDetails();
     mockSchemaData.schemaDescription = 'Function Location';
     mockSchemaData.errorCount = 100;
     mockSchemaData.successCount = 700;

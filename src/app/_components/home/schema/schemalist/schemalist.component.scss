@@ -1,4 +1,4 @@
-.flex-container {
+.root {
   display: flex;
   flex-flow: row wrap;
   justify-content: flex-start;
@@ -6,6 +6,10 @@
   align-content: flex-start;
   box-shadow: none;
   background: #f1f5f8;
+
+  .breadcrumb-wrapper {
+    flex: 1 100%;
+  }
 
   .flex-row-container {
     display: flex;

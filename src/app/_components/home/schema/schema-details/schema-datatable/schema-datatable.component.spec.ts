@@ -2,6 +2,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SchemaDatatableComponent } from './schema-datatable.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
 describe('SchemaDatatableComponent', () => {
   let component: SchemaDatatableComponent;
@@ -10,7 +12,10 @@ describe('SchemaDatatableComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        AppMaterialModuleForSpec
+        AppMaterialModuleForSpec,
+        FormsModule,
+        ReactiveFormsModule,
+        NgxMatSelectSearchModule
       ],
       declarations: [ SchemaDatatableComponent ]
     })
