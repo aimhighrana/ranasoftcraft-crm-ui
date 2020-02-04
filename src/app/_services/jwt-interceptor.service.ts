@@ -25,14 +25,14 @@ export class JwtInterceptorService implements HttpInterceptor {
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     // add authorization header with jwt token if available
-    const jwtToken = localStorage.getItem('JWT-TOKEN');
-    if (jwtToken && !request.headers.has('Authorization')) {
-        request = this.addToken(request, jwtToken);
-    }
     if (request.headers.has('Skip401Interceptor')) {
         const headers = request.headers.delete('Skip401Interceptor');
         return next.handle(request.clone({ headers }));
     } else {
+        const jwtToken = localStorage.getItem('JWT-TOKEN');
+        if (jwtToken && !request.headers.has('Authorization')) {
+            request = this.addToken(request, jwtToken);
+        }
         return next.handle(request).pipe(
             catchError((error: HttpErrorResponse) => {
                 switch (error.status) {
@@ -57,7 +57,7 @@ export class JwtInterceptorService implements HttpInterceptor {
             Skip401Interceptor: ''
         });
         const refreshToken = localStorage.getItem('JWT-REFRESH-TOKEN');
-        return this.http.post<any>(this.endpointService.jwtRefresh(), { refreshToken }, { observe: 'response', headers })
+        return this.http.post<any>(this.endpointService.jwtRefresh(), refreshToken, { observe: 'response', headers })
             .pipe(
                 finalize(() => this.isRefreshingToken = false),
                 switchMap(

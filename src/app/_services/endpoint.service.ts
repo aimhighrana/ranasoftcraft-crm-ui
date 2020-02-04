@@ -11,7 +11,7 @@ export class EndpointService {
   }
 
   public jwtRefresh(): string {
-    return '/jwt/refresh';
+    return this.apiUrl + '/jwt/refresh';
   }
 
   public onLoadSchema(): string {

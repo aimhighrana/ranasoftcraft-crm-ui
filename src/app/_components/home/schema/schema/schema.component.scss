@@ -9,25 +9,25 @@
     flex: 1 100%;
   }
 
-  .flex-col-1 {
+  .tile {
     flex: 0 1 22.33333%;
     margin: 16px;
   }
 
   @media only screen and (min-width: 1024px) and (max-width: 1200px) {
-    .flex-col-1 {
+    .tile {
       flex: 1 1 22.33333%;
     }
   }
 
   @media only screen and (min-width: 768px) and (max-width: 1024px) {
-    .flex-col-1 {
+    .tile {
       flex: 1 44%;
     }
   }
 
   @media only screen and (min-width: 200px) and (max-width: 767px) {
-    .flex-col-1 {
+    .tile {
       flex: 1 100%;
     }
   }
