@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { PageNotFoundComponent } from './_components/page-not-found/page-not-found.component';
 import { IntMappingComponent } from './_components/admin/int-mapping/int-mapping.component';
 import { AdminLayoutComponent } from './_components/admin/admin-layout/admin-layout.component';
 import { AdminHomeComponent } from './_components/admin/admin-home/admin-home.component';
@@ -71,7 +70,6 @@ import { SharedModule } from './_modules/shared/shared/shared.module';
 @NgModule({
   declarations: [
     AppComponent,
-    PageNotFoundComponent,
     IntMappingComponent,
     AdminLayoutComponent,
     AdminHomeComponent,

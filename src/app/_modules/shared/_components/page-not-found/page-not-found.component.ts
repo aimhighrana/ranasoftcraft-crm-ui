@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Location } from '@angular/common';
 
 @Component({
   templateUrl: './page-not-found.component.html',
@@ -6,6 +7,11 @@ import { Component } from '@angular/core';
 })
 export class PageNotFoundComponent {
 
-  constructor() {}
+  constructor(
+    private location: Location
+  ) {}
 
+  back(): void {
+    this.location.back();
+  }
 }

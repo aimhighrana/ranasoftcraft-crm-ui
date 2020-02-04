@@ -11,11 +11,13 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { RouterModule } from '@angular/router';
 import { BreadcrumbComponent } from '../_components/breadcrumb/breadcrumb.component';
+import { PageNotFoundComponent } from '../_components/page-not-found/page-not-found.component';
 
 
 
 @NgModule({
   declarations: [
+    PageNotFoundComponent,
     BreadcrumbComponent
   ],
   imports: [
@@ -127,6 +129,7 @@ import { BreadcrumbComponent } from '../_components/breadcrumb/breadcrumb.compon
     DragDropModule,
     OverlayModule,
     // components
+    PageNotFoundComponent,
     BreadcrumbComponent
   ]
 })

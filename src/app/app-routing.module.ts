@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { PageNotFoundComponent } from './_components/page-not-found/page-not-found.component';
+import { PageNotFoundComponent } from './_modules/shared/_components/page-not-found/page-not-found.component';
 import { IntMappingComponent } from './_components/admin/int-mapping/int-mapping.component';
 import { AdminLayoutComponent } from './_components/admin/admin-layout/admin-layout.component';
 import { AdminHomeComponent } from './_components/admin/admin-home/admin-home.component';
