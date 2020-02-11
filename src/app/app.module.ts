@@ -61,7 +61,6 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { SchemaVariantsComponent } from './_components/home/schema/schema-variants/schema-variants.component';
 import { SubstringPipe } from './_pipes/substringpipe.pipe';
 import { SchemaStatusinfoDialogComponent } from './_components/home/schema/schema-details/schema-statusinfo-dialog/schema-statusinfo-dialog.component';
-import { SchemabadgeTileComponent } from './_components/home/schema/schemabadge-tile/schemabadge-tile.component';
 import { SchemaGroupMappingComponent } from './_components/home/schema/schema-group-mapping/schema-group-mapping.component';
 import { LoadingInterceptorService } from './_services/loading-interceptor.service';
 import { SharedModule } from './_modules/shared/shared/shared.module';
@@ -126,7 +125,6 @@ import { SchemaExecutionComponent } from './_components/home/schema/schema-execu
     SchemaVariantsComponent,
     SubstringPipe,
     SchemaStatusinfoDialogComponent,
-    SchemabadgeTileComponent,
     SchemaGroupMappingComponent,
     SchemaExecutionComponent
   ],

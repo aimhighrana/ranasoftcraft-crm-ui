@@ -7,4 +7,6 @@ $mdo-dark:   mat-dark-theme($mdo-dark-primary, $mdo-dark-accent, $mdo-dark-warn)
 
 .mdo-dark {
   @include angular-material-theme($mdo-dark);
+  @include pros-cmp-theme($mdo-dark);
+  @include pros-cmp-typography(mat-typography-config());
 }

@@ -7,4 +7,6 @@ $ckh-light: mat-light-theme($ckh-light-primary, $ckh-light-accent, $ckh-light-wa
 
 .ckh-light {
   @include angular-material-theme($ckh-light);
+  @include pros-cmp-theme($ckh-light);
+  @include pros-cmp-typography(mat-typography-config());
 }

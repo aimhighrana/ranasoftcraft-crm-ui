@@ -1,0 +1,28 @@
+@mixin pros-cmp-theme($theme) {
+  $primary-palette: map-get($theme, primary);
+  $accent-palette: map-get($theme, accent);
+  $warn-palette: map-get($theme, warn);
+  $foreground-palette: map-get($theme, foreground);
+  $background-palette: map-get($theme, background);
+
+  pros-add-tile .root {
+    background-color: mat-color($background-palette, disabled-button);
+    border-color: mat-color($background-palette, disabled-button);
+
+    h3,
+    mat-icon {
+      color: mat-color($foreground-palette, secondary-text);
+    }
+  }
+}
+
+@mixin pros-cmp-typography($config) {
+  pros-add-tile .root {
+    mat-icon {
+      width: mat-font-size($config, display-3);
+      height: mat-font-size($config, display-3);
+      font-size: mat-font-size($config, display-3);
+      font-weight: mat-font-weight($config, display-3);
+    }
+  }
+}

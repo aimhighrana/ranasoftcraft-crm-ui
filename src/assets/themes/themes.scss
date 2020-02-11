@@ -2,15 +2,8 @@
 
 @include mat-core();
 
-$mdo-light-primary: mat-palette($mat-blue, 700, 300, 900);
-$mdo-light-accent:  mat-palette($mat-pink);
-$mdo-light-warn:    mat-palette($mat-red);
-
-$mdo-light:   mat-light-theme($mdo-light-primary, $mdo-light-accent, $mdo-light-warn);
-
-// Include the default theme styles.
-@include angular-material-theme($mdo-light);
-
+@import 'mixins.scss';
+@import 'mdo-light.scss';
 @import 'mdo-dark.scss';
 @import 'ckh-light.scss';
 @import 'ckh-dark.scss';

@@ -6,9 +6,9 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { SchemaTileComponent } from '../schema-tile/schema-tile.component';
 import { SchemaProgressbarComponent } from '../../schema-progressbar/schema-progressbar.component';
 import { SubstringPipe } from 'src/app/_pipes/substringpipe.pipe';
-import { SchemabadgeTileComponent } from '../schemabadge-tile/schemabadge-tile.component';
 import { SchemaListModuleList, SchemaListDetails } from 'src/app/_models/schema/schemalist';
 import { BreadcrumbComponent } from 'src/app/_modules/shared/_components/breadcrumb/breadcrumb.component';
+import { AddTileComponent } from 'src/app/_modules/shared/_components/add-tile/add-tile.component';
 
 describe('SchemalistComponent', () => {
   let component: SchemalistComponent;
@@ -20,7 +20,7 @@ describe('SchemalistComponent', () => {
         AppMaterialModuleForSpec,
         RouterTestingModule
       ],
-      declarations: [SchemalistComponent, BreadcrumbComponent, SchemaTileComponent, SchemabadgeTileComponent, SchemaProgressbarComponent, SubstringPipe],
+      declarations: [SchemalistComponent, BreadcrumbComponent, SchemaTileComponent, AddTileComponent, SchemaProgressbarComponent, SubstringPipe],
 
     }).compileComponents();
   }));

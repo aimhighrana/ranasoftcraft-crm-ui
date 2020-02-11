@@ -1,0 +1,11 @@
+// Light theme
+$mdo-light-primary: mat-palette($mat-blue, 700, 300, 900);
+$mdo-light-accent:  mat-palette($mat-pink);
+$mdo-light-warn:    mat-palette($mat-red);
+
+$mdo-light:   mat-light-theme($mdo-light-primary, $mdo-light-accent, $mdo-light-warn);
+
+// Include the default theme styles.
+@include angular-material-theme($mdo-light);
+@include pros-cmp-theme($mdo-light);
+@include pros-cmp-typography(mat-typography-config());

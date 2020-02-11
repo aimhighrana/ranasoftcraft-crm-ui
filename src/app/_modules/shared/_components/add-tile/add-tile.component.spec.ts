@@ -1,23 +1,23 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SchemabadgeTileComponent } from './schemabadge-tile.component';
+import { AddTileComponent } from './add-tile.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { RouterTestingModule } from '@angular/router/testing';
 
-describe('SchemabadgeTileComponent', () => {
-  let component: SchemabadgeTileComponent;
-  let fixture: ComponentFixture<SchemabadgeTileComponent>;
+describe('AddTileComponent', () => {
+  let component: AddTileComponent;
+  let fixture: ComponentFixture<AddTileComponent>;
   let htmlNative: HTMLElement;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [AppMaterialModuleForSpec, RouterTestingModule],
-      declarations: [ SchemabadgeTileComponent ]
+      declarations: [ AddTileComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SchemabadgeTileComponent);
+    fixture = TestBed.createComponent(AddTileComponent);
     component = fixture.componentInstance;
     htmlNative = fixture.debugElement.nativeElement;
   });
@@ -27,9 +27,9 @@ describe('SchemabadgeTileComponent', () => {
   });
 
   it('showAddNewTitle: title should create', () => {
-    component.showAddNewTitle = 'Add New Schema';
+    component.text = 'Add New Schema';
     fixture.detectChanges();
-    expect(htmlNative.getElementsByClassName('badge-h3').length).toEqual(1);
-    expect(htmlNative.getElementsByClassName('badge-h3').item(0).textContent).toEqual(component.showAddNewTitle);
+    expect(htmlNative.getElementsByTagName('h3').length).toEqual(1);
+    expect(htmlNative.getElementsByTagName('h3').item(0).textContent).toEqual(component.text);
   });
 });

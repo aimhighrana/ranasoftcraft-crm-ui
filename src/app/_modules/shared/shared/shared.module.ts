@@ -12,13 +12,15 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { RouterModule } from '@angular/router';
 import { BreadcrumbComponent } from '../_components/breadcrumb/breadcrumb.component';
 import { PageNotFoundComponent } from '../_components/page-not-found/page-not-found.component';
+import { AddTileComponent } from '../_components/add-tile/add-tile.component';
 
 
 
 @NgModule({
   declarations: [
     PageNotFoundComponent,
-    BreadcrumbComponent
+    BreadcrumbComponent,
+    AddTileComponent
   ],
   imports: [
     CommonModule,
@@ -130,7 +132,8 @@ import { PageNotFoundComponent } from '../_components/page-not-found/page-not-fo
     OverlayModule,
     // components
     PageNotFoundComponent,
-    BreadcrumbComponent
+    BreadcrumbComponent,
+    AddTileComponent
   ]
 })
 export class SharedModule { }

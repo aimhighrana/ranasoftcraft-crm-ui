@@ -6,11 +6,11 @@ import { SchemaProgressbarComponent } from '../../schema-progressbar/schema-prog
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SubstringPipe } from 'src/app/_pipes/substringpipe.pipe';
-import { SchemabadgeTileComponent } from '../schemabadge-tile/schemabadge-tile.component';
 import { SchemaGroupResponse, SchemaGroupCountResponse } from 'src/app/_models/schema/schema';
 import { SchemaService } from 'src/app/_services/home/schema.service';
 import { of } from 'rxjs';
 import { BreadcrumbComponent } from 'src/app/_modules/shared/_components/breadcrumb/breadcrumb.component';
+import { AddTileComponent } from 'src/app/_modules/shared/_components/add-tile/add-tile.component';
 
 describe('SchemaComponent', () => {
   let component: SchemaComponent;
@@ -24,7 +24,7 @@ describe('SchemaComponent', () => {
         AppMaterialModuleForSpec,
         RouterTestingModule
       ],
-      declarations: [SchemaComponent, BreadcrumbComponent, SchemaTileComponent, SchemabadgeTileComponent, SchemaProgressbarComponent, SubstringPipe],
+      declarations: [SchemaComponent, BreadcrumbComponent, SchemaTileComponent, AddTileComponent, SchemaProgressbarComponent, SubstringPipe],
       providers: [
         {provide: SchemaService, useValue: schemaSerSpy}
       ]
@@ -71,8 +71,8 @@ describe('SchemaComponent', () => {
 
   }));
 
-  it('pros-schemabadge-tile: should create', () => {
-    expect(htmlnative.getElementsByTagName('pros-schemabadge-tile').length).toEqual(1);
+  it('pros-add-tile: should create', () => {
+    expect(htmlnative.getElementsByTagName('pros-add-tile').length).toEqual(1);
   });
 
 });
