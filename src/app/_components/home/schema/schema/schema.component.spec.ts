@@ -2,7 +2,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SchemaComponent } from './schema.component';
 import { SchemaTileComponent } from '../schema-tile/schema-tile.component';
-import { SchemaProgressbarComponent } from '../../schema-progressbar/schema-progressbar.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SubstringPipe } from 'src/app/_pipes/substringpipe.pipe';
@@ -24,7 +23,7 @@ describe('SchemaComponent', () => {
         AppMaterialModuleForSpec,
         RouterTestingModule
       ],
-      declarations: [SchemaComponent, BreadcrumbComponent, SchemaTileComponent, AddTileComponent, SchemaProgressbarComponent, SubstringPipe],
+      declarations: [SchemaComponent, BreadcrumbComponent, SchemaTileComponent, AddTileComponent, SubstringPipe],
       providers: [
         {provide: SchemaService, useValue: schemaSerSpy}
       ]
@@ -66,8 +65,8 @@ describe('SchemaComponent', () => {
     expect(htmlnative.getElementsByTagName('pros-schema-tile').length).toEqual(0);
     fixture.detectChanges();
     expect(htmlnative.getElementsByTagName('pros-schema-tile').length).toEqual(mockData.length);
-    expect(htmlnative.getElementsByTagName('pros-schema-tile').item(0).getElementsByTagName('mat-card-title').item(0).textContent).toEqual(mockData[0].groupName);
-    expect(htmlnative.getElementsByTagName('pros-schema-tile').item(1).getElementsByTagName('mat-card-title').item(0).textContent).toEqual(mockData[1].groupName);
+    expect(htmlnative.getElementsByTagName('pros-schema-tile').item(0).getElementsByTagName('h3').item(0).textContent).toEqual(mockData[0].groupName);
+    expect(htmlnative.getElementsByTagName('pros-schema-tile').item(1).getElementsByTagName('h3').item(0).textContent).toEqual(mockData[1].groupName);
 
   }));
 

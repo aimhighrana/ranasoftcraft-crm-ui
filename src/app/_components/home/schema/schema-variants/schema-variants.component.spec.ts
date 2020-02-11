@@ -6,7 +6,6 @@ import { SchemaTileComponent } from '../schema-tile/schema-tile.component';
 import { MatIconModule } from '@angular/material';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SubstringPipe } from 'src/app/_pipes/substringpipe.pipe';
-import { SchemaProgressbarComponent } from '../../schema-progressbar/schema-progressbar.component';
 import { SchemaVariantService } from 'src/app/_services/home/schema/schema-variant.service';
 import { SchemaService } from 'src/app/_services/home/schema.service';
 import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-details.service';
@@ -24,7 +23,7 @@ describe('SchemaVariantsComponent', () => {
     const schemaDeSerSpy = jasmine.createSpyObj('SchemaDetailsService', ['getSchemaDetailsBySchemaId']);
     TestBed.configureTestingModule({
       imports: [AppMaterialModuleForSpec, MatIconModule, RouterTestingModule],
-      declarations: [SchemaVariantsComponent, BreadcrumbComponent, SchemaTileComponent, AddTileComponent, SubstringPipe, SchemaProgressbarComponent],
+      declarations: [SchemaVariantsComponent, BreadcrumbComponent, SchemaTileComponent, AddTileComponent, SubstringPipe ],
       providers: [
         { provide: SchemaVariantService, useValue: schemaVarServiceSpy },
         { provide: SchemaService, useValue: schemaSerSpy },

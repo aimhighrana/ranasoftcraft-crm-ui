@@ -4,20 +4,40 @@
   </div>
   <div *ngFor="let module of schemaListDetails" class="flex-row-container">
     <h3 class="H3">{{module.moduleDesc}}</h3>
-    <pros-schema-tile class="flex-col-1" *ngFor="let schemaLst of module.schemaLists"
-      (click)="showSchemaDetails(schemaLst,module.moduleId)" color="#1c90ff" icon="dashboard"
-      title="{{schemaLst.schemaDescription}}" totalValue="{{schemaLst.totalCount}}" thisWeekProgress="{{schemaLst.trendingCount}}"
-      enableProgressBar="true" successValue="{{schemaLst.successPercentage}}" errorValue="{{schemaLst.errorPercentage}}"
-      isSchemaList="true" moduleId="{{module.moduleId}}" schemaId="{{schemaLst.schemaId}}"
-      variantCount="{{schemaLst.variantCount}}" schemaCreatedBy="{{schemaLst.createdBy}}"
-      createdDate="{{schemaLst.dateModified}}" modifiedBy="{{schemaLst.createdBy}}"
-      lastModifiedDate="{{schemaLst.dateModified}}" lastRunTime="{{schemaLst.lr}}" lastRunDuration="{{schemaLst.lr}}"
-      colaborators="{{schemaLst.colaborators}}" schemaStructure="{{schemaLst.struc}}" enableEditButton=true groupId="{{schemaGroupId}}"
-      (editTrigger)="editSchema($event, schemaLst.schemaDescription);" (showVariantClick)="showVariants($event)" (executeTrigger)="executeSchemaPage($event);">
+    <pros-schema-tile class="flex-col-1" *ngFor="let schema of module.schemaLists"
+      [routerLink]="['/home', 'schema', 'schema-details', module.moduleId, schemaGroupId, schema.schemaId]"
+
+      title="{{ schema.schemaDescription }}" 
+      bottomLeftLabel="3 Variants"
+      bottomRightLabel="Run"
+
+      info="true"
+      edit="true"
+      delete="true"
+
+      totalValue="2022"
+      successValue="501"
+      errorValue="1800"
+      skippedValue="200"
+      correctionValue="10"
+      duplicateValue="0"
+
+      totalUniqueValue="1050"
+      successUniqueValue="200"
+      errorUniqueValue="700"
+      skippedUniqueValue="5"
+
+      successTrendValue="-9"
+      errorTrendValue="20"
+
+      timestamp="12th Feb 2020, 12:50 AM"
+
+      (evtEdit)="edit(schema);"
+      (evtBottomLeft)="variants(module.moduleId, schema.schemaId);"
+      (evtBottomRight)="run(schema.schemaId);">
     </pros-schema-tile>
 
-    <pros-add-tile class="flex-col-1" text="Create a new schema">
-    </pros-add-tile>
+    <pros-add-tile class="flex-col-1" text="Create a new schema"></pros-add-tile>
 
   </div>
 

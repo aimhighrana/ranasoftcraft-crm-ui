@@ -19,7 +19,26 @@ a {
   text-decoration: none;
 }
 
+//Flex row and col
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+}
+
 //Spacer's
+.col-spacer-half {
+  width: 8px;
+}
+
+.row-spacer-half {
+  height: 8px;
+}
+
 .col-spacer {
   width: 16px;
 }

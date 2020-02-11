@@ -41,8 +41,11 @@ export class SchemaComponent implements OnInit {
     });
   }
 
-  public editSchemaGroup(edit: any) {
-    this.router.navigate(['/home/schema/group', edit.groupId]);
+  public edit(group: SchemaGroupResponse) {
+    this.router.navigate(['/home/schema/group', group.groupId]);
   }
 
+  public delete(group: SchemaGroupResponse) {
+    // TODO
+  }
 }

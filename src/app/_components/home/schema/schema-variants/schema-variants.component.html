@@ -37,7 +37,7 @@
                 <pros-schema-tile class="flex-col-1" *ngFor="let schema of schemaVariantList" (click)="showSchemaList(schema);"
             color="#1c90ff" icon="dashboard" title="{{schema.name | uppercase }}"
             totalValue="{{schema.total}}" thisWeekProgress="0" enableProgressBar=true
-            successValue="{{schema.successPercentage}}" errorValue="{{schema.errorPercentage}}" isSchemaVarinat=true lastSchemaExecutionDate="{{schema.lastExecutionDate}}"></pros-schema-tile>
+            successValue="{{schema.successPercentage}}" errorValue="{{schema.errorPercentage}}"></pros-schema-tile>
                 </div>   
               </mat-card-content>
             </mat-card>

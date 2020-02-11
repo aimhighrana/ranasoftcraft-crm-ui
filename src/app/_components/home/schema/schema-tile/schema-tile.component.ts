@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { MatSlideToggleChange } from '@angular/material';
 @Component({
   selector: 'pros-schema-tile',
   templateUrl: './schema-tile.component.html',
@@ -7,97 +8,104 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 export class SchemaTileComponent implements OnInit {
 
   @Input()
-  icon: string;
-  @Input()
   title: string;
   @Input()
-  color: string;
+  bottomLeftLabel: string;
   @Input()
-  help: string;
+  bottomRightLabel: string;
+
   @Input()
-  info: string;
+  info: boolean;
   @Input()
-  link: string;
+  edit: boolean;
   @Input()
-  iconColor: string;
+  delete: boolean;
+
+  @Output()
+  evtEdit = new EventEmitter();
+  @Output()
+  evtDelete = new EventEmitter();
+  @Output()
+  evtBottomLeft = new EventEmitter();
+  @Output()
+  evtBottomRight = new EventEmitter();
+  @Output()
+  evtInfo = new EventEmitter();
+
   @Input()
-  totalValue: string;
-  @Input()
-  enableProgressBar: boolean;
+  totalValue: number;
   @Input()
   successValue: number;
   @Input()
   errorValue: number;
   @Input()
-  thisWeekProgress: string;
+  skippedValue: number;
   @Input()
-  isSchemaList: string;
+  correctionValue: number;
   @Input()
-  moduleId: string;
+  duplicateValue: number;
+
   @Input()
-  schemaId: string;
+  totalUniqueValue: number;
   @Input()
-  variantCount: string;
+  successUniqueValue: number;
   @Input()
-  showAddNew: boolean;
+  errorUniqueValue: number;
   @Input()
-  enableEditButton: boolean;
+  skippedUniqueValue: number;
+
   @Input()
-  groupId: string;
+  successTrendValue: number;
   @Input()
-  groupName: string;
+  errorTrendValue: number;
+
   @Input()
-  isSchemaVarinat: boolean;
-  @Input()
-  lastSchemaExecutionDate: string;
-  @Input()
-  enableDeleteButton: boolean;
-  @Input()
-  schemaStructure: string;
-  @Input()
-  schemaCreatedBy: any;
-  @Input()
-  createdDate: number;
-  @Input()
-  modifiedBy: any;
-  @Input()
-  lastModifiedDate: number;
-  @Input()
-  lastRunTime: number;
-  @Input()
-  lastRunDuration: number;
-  @Input()
-  colaborators: string;
-  @Output()
-  deleteSchemaGroup = new EventEmitter();
-  @Output()
-  editTrigger = new EventEmitter();
-  @Output()
-  showVariantClick = new EventEmitter();
-  @Output()
-  executeTrigger = new EventEmitter();
-  disabledProgress: string;
-  linker() {
-    return this.link;
-  }
+  timestamp: string; // this should be date
+
+  showingErrors = true;
+  showUnique = false;
+
   constructor() { }
+
   ngOnInit() {
-    if (Number(this.totalValue) <= 0) {
-      this.disabledProgress = 'true';
-    }
   }
-  public onEditTrigger(groupId: string, groupName: string, schemaId: string) {
-    const sendBack: any = { groupId, schemaId, groupName, objectId: this.moduleId };
-    return this.editTrigger.emit(sendBack);
+
+  public percentageErrorStr(): number {
+    const num = this.showUnique ? this.errorUniqueValue / this.totalUniqueValue : this.errorValue / this.totalValue;
+    return Math.round((num + Number.EPSILON) * 100 * 100) / 100;
   }
-  public deleteSchemaGroupAndMapping(groupId: string) {
-    return this.deleteSchemaGroup.emit(groupId);
+
+  public percentageSuccessStr(): number {
+    const num = this.showUnique ? this.successUniqueValue / this.totalUniqueValue : this.successValue / this.totalValue;
+    return Math.round((num + Number.EPSILON) * 100 * 100) / 100;
   }
-  public showSchemaVariants(moduleId: string, groupId: string, schemaId: string) {
-    const sendBack: any = { moduleId, groupId, schemaId};
-    return this.showVariantClick.emit(sendBack);
+
+  public toggle() {
+    this.showingErrors = !this.showingErrors;
   }
-  public executeTriggerFun(schemaId: string) {
-    return this.executeTrigger.emit(schemaId);
+
+  public toggleUnique(evt: MatSlideToggleChange) {
+    this.showUnique = evt.checked;
   }
+
+  public onEdit() {
+    return this.evtEdit.emit();
+  }
+
+  public onDelete() {
+    return this.evtDelete.emit();
+  }
+
+  public onBottomLeft() {
+    return this.evtBottomLeft.emit();
+  }
+
+  public onBottomRight() {
+    return this.evtBottomRight.emit();
+  }
+
+  public onInfo() {
+    return this.evtInfo.emit();
+  }
+
 }

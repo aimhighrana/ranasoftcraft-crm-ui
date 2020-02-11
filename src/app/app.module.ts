@@ -46,7 +46,6 @@ import { NounsCharacteristicsComponent } from './_components/admin/module/nouns-
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { JwtInterceptorService } from './_services/jwt-interceptor.service';
 import { HomeLayoutComponent } from './_components/home/home-layout/home-layout.component';
-import { SchemaProgressbarComponent } from './_components/home/schema-progressbar/schema-progressbar.component';
 import { SchemalistComponent } from './_components/home/schema/schemalist/schemalist.component';
 import {ChartsModule} from 'ng2-charts';
 import { SchemaComponent } from './_components/home/schema/schema/schema.component';
@@ -112,7 +111,6 @@ import { SchemaExecutionComponent } from './_components/home/schema/schema-execu
     BusinessRulesComponent,
     NounsCharacteristicsComponent,
     HomeLayoutComponent,
-    SchemaProgressbarComponent,
     SchemalistComponent,
     SchemaComponent,
     SchemaLayoutComponent,

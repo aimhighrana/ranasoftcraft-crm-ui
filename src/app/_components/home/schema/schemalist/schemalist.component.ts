@@ -4,7 +4,7 @@ import { SchemalistService } from 'src/app/_services/home/schema/schemalist.serv
 import { ActivatedRoute, Router } from '@angular/router';
 import { SchemaService } from 'src/app/_services/home/schema.service';
 import { Observable } from 'rxjs';
-import { SchemaListModuleList } from 'src/app/_models/schema/schemalist';
+import { SchemaListModuleList, SchemaListDetails } from 'src/app/_models/schema/schemalist';
 import { Userdetails } from 'src/app/_models/userdetails';
 
 @Component({
@@ -62,13 +62,16 @@ export class SchemalistComponent implements OnInit {
       console.error('Error while fetch group details');
     });
   }
-  showSchemaDetails(schemaDetails: any, moduleId: string) {
+  public showSchemaDetails(schemaDetails: any, moduleId: string) {
     this.router.navigate(['/home/schema/schema-details', moduleId, this.schemaGroupId, schemaDetails.schemaId]);
   }
-  public showVariants(data: any) {
-    this.router.navigate(['/home/schema/schema-variants', data.moduleId, data.groupId, data.schemaId]);
+  public variants(moduleId: string, schemaId: string) {
+    this.router.navigate(['/home/schema/schema-variants', moduleId, this.schemaGroupId, schemaId]);
   }
-  public executeSchemaPage(schemaId: string) {
+  public run(schemaId: string) {
     this.router.navigate(['/home/schema/schema-execution', this.schemaGroupId, schemaId]);
+  }
+  public edit(schema: SchemaListDetails) {
+    // TODO
   }
 }
