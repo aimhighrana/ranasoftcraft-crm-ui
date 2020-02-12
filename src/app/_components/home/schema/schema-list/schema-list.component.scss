@@ -10,19 +10,19 @@
   }
 
   .flex-row-container {
-    display: flex;
-    flex-flow: row;
     flex-wrap: wrap;
     flex: 1 100%;
+
+    .mat-headline {
+      display: flex;
+      flex: 0 1 100%;
+      margin: 8px 16px;
+    }
   }
 
   .flex-col-1 {
     flex: 0 1 22.33333%;
     margin: 16px;
-  }
-
-  .flex-col-12 {
-    flex: 1 100%;
   }
 
   @media only screen and (min-width: 1024px) and (max-width: 1200px) {
@@ -42,10 +42,4 @@
       flex: 1 100%;
     }
   }
-}
-
-.H3 {
-  display: flex;
-  flex: 0 1 100%;
-  margin: 16px 16px 0 16px;
 }

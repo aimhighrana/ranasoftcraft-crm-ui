@@ -9,6 +9,11 @@
     flex: 1 100%;
   }
 
+  .f-row {
+    flex-wrap: wrap;
+    flex: 1 100%;
+  }
+
   .tile {
     flex: 0 1 22.33333%;
     margin: 16px;

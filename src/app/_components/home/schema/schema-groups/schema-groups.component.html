@@ -4,28 +4,30 @@
     <pros-breadcrumb [crumbs]="breadcrumb"></pros-breadcrumb>
   </div>
 
-  <pros-schema-tile class="tile" *ngFor="let schemagrp of schemaGroups" 
-    [routerLink]="['/home', 'schema', 'schema-list', schemagrp.groupId]"
-    title="{{ schemagrp.groupName | titlecase }}"
+  <div class="f-row">
+    <pros-schema-tile class="tile" *ngFor="let schemagrp of schemaGroups" 
+      [routerLink]="['/home', 'schema', 'schema-list', schemagrp.groupId]"
+      title="{{ schemagrp.groupName | titlecase }}"
 
-    info="true"
-    edit="true"
-    delete="true"
+      info="true"
+      edit="true"
+      delete="true"
 
-    totalValue="2022"
-    successValue="501"
-    errorValue="1800"
-    skippedValue="200"
-    correctionValue="10"
-    duplicateValue="0"
+      totalValue="2022"
+      successValue="501"
+      errorValue="1800"
+      skippedValue="200"
+      correctionValue="10"
+      duplicateValue="0"
 
-    successTrendValue="-9"
-    errorTrendValue="20"
+      successTrendValue="-9"
+      errorTrendValue="20"
 
-    timestamp="12th Feb 2020, 12:50 AM"
-    
-    (evtEdit)="edit(schemagrp);"
-    (evtDelete)="delete(schemagrp);"></pros-schema-tile>
+      timestamp="12th Feb 2020, 12:50 AM"
+      
+      (evtEdit)="edit(schemagrp);"
+      (evtDelete)="delete(schemagrp);"></pros-schema-tile>
 
-  <pros-add-tile class="tile" text="Add a new group" routerLink="/home/schema/group/new"></pros-add-tile>
+    <pros-add-tile class="tile" text="Add a new group" routerLink="/home/schema/group/new"></pros-add-tile>
+  </div>
 </div>

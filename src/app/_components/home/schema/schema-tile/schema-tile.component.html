@@ -1,37 +1,37 @@
 <mat-card class="root mat-elevation-z6">
-  <div class="header row">
+  <div class="header f-row">
     <h3 class="mat-h3" [matTooltip]="title">{{ title }}</h3>
-    <span class="flex-spacer"></span>
+    <span class="f-spacer"></span>
     <mat-icon *ngIf="edit" prosClickStopPropagation matTooltip="Edit" (click)="onEdit();">edit</mat-icon>
-    <span class="col-spacer-half"></span>
+    <span class="f-col-spacer-half"></span>
     <mat-icon *ngIf="delete" prosClickStopPropagation matTooltip="Delete" (click)="onDelete();">delete</mat-icon>
-    <span class="col-spacer-half"></span>
-    <mat-icon *ngIf="info" prosClickStopPropagation matTooltip="Info" (click)="onInfo();">info</mat-icon>
+    <span class="f-col-spacer-half"></span>
+    <mat-icon *ngIf="info" prosClickStopPropagation matTooltip="Information comming soon ..." (click)="onInfo();">info</mat-icon>
   </div>
-  <mat-card-content class="col">
-    <div class="row">
+  <mat-card-content class="f-col">
+    <div class="f-row">
       <ng-template [ngIf]="totalValue && showingErrors">
         <h2 class="perc err">{{ percentageErrorStr() }}</h2>
         <h2 class="perc-symbol err">%</h2>
-        <span class="col-spacer-half"></span>
+        <span class="f-col-spacer-half"></span>
         <span class="mat-caption row1text">Error in last run</span>
       </ng-template>
       <ng-template [ngIf]="totalValue && !showingErrors">
         <h2 class="perc scs">{{ percentageSuccessStr() }}</h2>
         <h2 class="perc-symbol scs">%</h2>
-        <span class="col-spacer-half"></span>
+        <span class="f-col-spacer-half"></span>
         <span class="mat-caption row1text">Success in last run</span>
       </ng-template>
       <ng-template [ngIf]="!totalValue">
         <mat-icon class="na">report</mat-icon>
-        <span class="col-spacer-half"></span>
+        <span class="f-col-spacer-half"></span>
         <span class="mat-caption row1text">no results to show</span>
       </ng-template>
-      <span class="flex-spacer"></span>
+      <span class="f-spacer"></span>
       <button *ngIf="totalValue" mat-icon-button prosClickStopPropagation matTooltip="Toggle Error/Success" (click)="toggle();"><mat-icon>shuffle</mat-icon></button>
     </div>
     <div class="row-spacer"></div>
-    <div class="row">
+    <div class="f-row">
       <ng-template [ngIf]="showingErrors">
         <mat-icon *ngIf="!errorTrendValue || errorTrendValue === 0" class="err">trending_flat</mat-icon>
         <mat-icon *ngIf="errorTrendValue && errorTrendValue > 0" class="err">trending_up</mat-icon>
@@ -42,20 +42,20 @@
         <mat-icon *ngIf="successTrendValue && successTrendValue > 0" class="scs">trending_up</mat-icon>
         <mat-icon *ngIf="successTrendValue && successTrendValue < 0" class="scs">trending_down</mat-icon>
       </ng-template>
-      <div class="col-spacer-half"></div>
+      <div class="f-col-spacer-half"></div>
       <ng-template [ngIf]="showingErrors">
         <h2>{{ errorTrendValue ? errorTrendValue > 0 ? '+' + errorTrendValue : errorTrendValue : 0 }}</h2>
       </ng-template>
       <ng-template [ngIf]="!showingErrors">
         <h2>{{ successTrendValue ? successTrendValue > 0 ? '+' + successTrendValue : successTrendValue : 0 }}</h2>
       </ng-template>
-      <div class="col-spacer-half"></div>
+      <div class="f-col-spacer-half"></div>
       <span class="mat-caption week">(This Week)</span>
-      <span class="flex-spacer"></span>
+      <span class="f-spacer"></span>
       <mat-slide-toggle *ngIf="totalUniqueValue" color="primary" prosClickStopPropagation matTooltip="Show unique record counts" (change)="toggleUnique($event);"></mat-slide-toggle>
     </div>
     <div class="row-spacer"></div>
-    <mat-chip-list class="row">
+    <mat-chip-list class="f-row">
       <mat-chip class="total">Total - {{ showUnique ? totalUniqueValue : totalValue }}</mat-chip>
       <mat-chip class="error">Error - {{ showUnique ? errorUniqueValue : errorValue }}</mat-chip>
       <mat-chip class="success">Success - {{ showUnique ? successUniqueValue : successValue }}</mat-chip>
@@ -72,7 +72,7 @@
     <mat-divider class="btm-divider"></mat-divider>
     <mat-card-footer>
       <button *ngIf="bottomLeftLabel" mat-button color="primary" (click)="onBottomLeft();">{{ bottomLeftLabel }}</button>
-      <span class="flex-spacer"></span>
+      <span class="f-spacer"></span>
       <button *ngIf="bottomRightLabel" mat-button color="primary" (click)="onBottomRight();">{{ bottomRightLabel }}</button>
     </mat-card-footer>
   </ng-template>

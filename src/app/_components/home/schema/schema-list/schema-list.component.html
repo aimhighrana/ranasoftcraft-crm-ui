@@ -1,9 +1,9 @@
 <div class="root">
-  <div class="flex-col-12">
+  <div class="breadcrumb-wrapper">
     <pros-breadcrumb [crumbs]="breadcrumb"></pros-breadcrumb>
   </div>
-  <div *ngFor="let module of schemaListDetails" class="flex-row-container">
-    <h3 class="H3">{{module.moduleDesc}}</h3>
+  <div *ngFor="let module of schemaListDetails" class="flex-row-container f-row">
+    <h2 class="mat-headline">{{module.moduleDesc}}</h2>
     <pros-schema-tile class="flex-col-1" *ngFor="let schema of module.schemaLists"
       [routerLink]="['/home', 'schema', 'schema-details', module.moduleId, schemaGroupId, schema.schemaId]"
 

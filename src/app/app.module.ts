@@ -63,6 +63,7 @@ import { SchemaGroupFormComponent } from './_components/home/schema/schema-group
 import { LoadingInterceptorService } from './_services/loading-interceptor.service';
 import { SharedModule } from './_modules/shared/shared/shared.module';
 import { SchemaExecutionComponent } from './_components/home/schema/schema-execution/schema-execution.component';
+import { SchemaCollaboratorsComponent } from './_components/home/schema/schema-collaborators/schema-collaborators.component';
 
 @NgModule({
   declarations: [
@@ -122,7 +123,8 @@ import { SchemaExecutionComponent } from './_components/home/schema/schema-execu
     SubstringPipe,
     SchemaStatusinfoDialogComponent,
     SchemaGroupFormComponent,
-    SchemaExecutionComponent
+    SchemaExecutionComponent,
+    SchemaCollaboratorsComponent
   ],
   imports: [
     ChartsModule,
