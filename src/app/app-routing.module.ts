@@ -42,11 +42,11 @@ import { SecurityComponent } from './_components/admin/module/security/security.
 import { CustomEventsComponent } from './_components/admin/module/custom-events/custom-events.component';
 import { NounsCharacteristicsComponent } from './_components/admin/module/nouns-characteristics/nouns-characteristics.component';
 import { HomeLayoutComponent } from './_components/home/home-layout/home-layout.component';
-import { SchemalistComponent } from './_components/home/schema/schemalist/schemalist.component';
-import { SchemaComponent } from './_components/home/schema/schema/schema.component';
+import { SchemaListComponent } from './_components/home/schema/schema-list/schema-list.component';
+import { SchemaGroupsComponent } from './_components/home/schema/schema-groups/schema-groups.component';
 import { SchemaDetailsComponent } from './_components/home/schema/schema-details/schema-details.component';
 import { SchemaVariantsComponent } from './_components/home/schema/schema-variants/schema-variants.component';
-import { SchemaGroupMappingComponent } from './_components/home/schema/schema-group-mapping/schema-group-mapping.component';
+import { SchemaGroupFormComponent } from './_components/home/schema/schema-group-form/schema-group-form.component';
 import { SchemaExecutionComponent } from './_components/home/schema/schema-execution/schema-execution.component';
 
 const routes: Routes = [
@@ -54,12 +54,12 @@ const routes: Routes = [
     path: 'home', component: HomeLayoutComponent,
     children: [
       { path: '', redirectTo: 'schema', pathMatch: 'full' },
-      { path: 'schema', component: SchemaComponent },
-      { path: 'schema/group/:groupId', component: SchemaGroupMappingComponent },
-      { path: 'schema/schema-list/:schemaGrpId', component: SchemalistComponent },
+      { path: 'schema', component: SchemaGroupsComponent },
+      { path: 'schema/group/:groupId', component: SchemaGroupFormComponent },
+      { path: 'schema/schema-list/:schemaGrpId', component: SchemaListComponent },
       { path: 'schema/schema-details/:moduleId/:schemaGroupId/:schemaId', component: SchemaDetailsComponent },
       { path: 'schema/schema-variants/:moduleId/:groupId/:schemaId', component: SchemaVariantsComponent },
-      {path: 'schema/schema-execution/:groupId/:schemaId', component: SchemaExecutionComponent}
+      { path: 'schema/schema-execution/:groupId/:schemaId', component: SchemaExecutionComponent }
     ]
   },
   {

@@ -8,11 +8,11 @@ import { MatAutocomplete, MatChipInputEvent, MatAutocompleteSelectedEvent } from
 import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'pros-schema-group-mapping',
-  templateUrl: './schema-group-mapping.component.html',
-  styleUrls: ['./schema-group-mapping.component.scss']
+  selector: 'pros-schema-group-form',
+  templateUrl: './schema-group-form.component.html',
+  styleUrls: ['./schema-group-form.component.scss']
 })
-export class SchemaGroupMappingComponent implements OnInit {
+export class SchemaGroupFormComponent implements OnInit {
   breadcrumb: Breadcrumb = {
     heading: 'Add a new schema group',
     links: [

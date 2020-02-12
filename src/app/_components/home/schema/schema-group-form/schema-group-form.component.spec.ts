@@ -1,18 +1,18 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SchemaGroupMappingComponent } from './schema-group-mapping.component';
+import { SchemaGroupFormComponent } from './schema-group-form.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BreadcrumbComponent } from 'src/app/_modules/shared/_components/breadcrumb/breadcrumb.component';
 
-describe('SchemaGroupMappingComponent', () => {
-  let component: SchemaGroupMappingComponent;
-  let fixture: ComponentFixture<SchemaGroupMappingComponent>;
+describe('SchemaGroupFormComponent', () => {
+  let component: SchemaGroupFormComponent;
+  let fixture: ComponentFixture<SchemaGroupFormComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SchemaGroupMappingComponent, BreadcrumbComponent],
+      declarations: [ SchemaGroupFormComponent, BreadcrumbComponent],
       imports: [
         AppMaterialModuleForSpec,
         RouterTestingModule,
@@ -24,7 +24,7 @@ describe('SchemaGroupMappingComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SchemaGroupMappingComponent);
+    fixture = TestBed.createComponent(SchemaGroupFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SchemaComponent } from './schema.component';
+import { SchemaGroupsComponent } from './schema-groups.component';
 import { SchemaTileComponent } from '../schema-tile/schema-tile.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -11,9 +11,9 @@ import { of } from 'rxjs';
 import { BreadcrumbComponent } from 'src/app/_modules/shared/_components/breadcrumb/breadcrumb.component';
 import { AddTileComponent } from 'src/app/_modules/shared/_components/add-tile/add-tile.component';
 
-describe('SchemaComponent', () => {
-  let component: SchemaComponent;
-  let fixture: ComponentFixture<SchemaComponent>;
+describe('SchemaGroupsComponent', () => {
+  let component: SchemaGroupsComponent;
+  let fixture: ComponentFixture<SchemaGroupsComponent>;
   let htmlnative: HTMLElement;
   let schemaServiceSpy: jasmine.SpyObj<SchemaService>;
   beforeEach(async(() => {
@@ -23,7 +23,7 @@ describe('SchemaComponent', () => {
         AppMaterialModuleForSpec,
         RouterTestingModule
       ],
-      declarations: [SchemaComponent, BreadcrumbComponent, SchemaTileComponent, AddTileComponent, SubstringPipe],
+      declarations: [SchemaGroupsComponent, BreadcrumbComponent, SchemaTileComponent, AddTileComponent, SubstringPipe],
       providers: [
         {provide: SchemaService, useValue: schemaSerSpy}
       ]
@@ -33,7 +33,7 @@ describe('SchemaComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SchemaComponent);
+    fixture = TestBed.createComponent(SchemaGroupsComponent);
     component = fixture.componentInstance;
     htmlnative = fixture.nativeElement;
   });

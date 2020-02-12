@@ -20,6 +20,12 @@
   // tooltip
   $background-palette: map-get($theme, background);
 
+  pros-breadcrumb .root {
+    a.link {
+      color: mat-color($primary-palette);
+    }
+  }
+
   pros-add-tile .root {
     background-color: mat-color($background-palette, disabled-button);
     border-color: mat-color($background-palette, disabled-button);

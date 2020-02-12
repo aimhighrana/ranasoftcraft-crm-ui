@@ -8,18 +8,18 @@ import { SchemaListModuleList, SchemaListDetails } from 'src/app/_models/schema/
 import { Userdetails } from 'src/app/_models/userdetails';
 
 @Component({
-  selector: 'pros-schemalist',
-  templateUrl: './schemalist.component.html',
-  styleUrls: ['./schemalist.component.scss']
+  selector: 'pros-schema-list',
+  templateUrl: './schema-list.component.html',
+  styleUrls: ['./schema-list.component.scss']
 })
-export class SchemalistComponent implements OnInit {
+export class SchemaListComponent implements OnInit {
   title: Observable<string>;
   breadcrumb: Breadcrumb = {
     heading: ' List',
     links: [
       {
         link: '/home/schema',
-        text: 'Schema'
+        text: 'Schema group(s)'
       }
     ]
   };

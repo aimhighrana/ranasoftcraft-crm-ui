@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SchemalistComponent } from './schemalist.component';
+import { SchemaListComponent } from './schema-list.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SchemaTileComponent } from '../schema-tile/schema-tile.component';
@@ -9,9 +9,9 @@ import { SchemaListModuleList, SchemaListDetails } from 'src/app/_models/schema/
 import { BreadcrumbComponent } from 'src/app/_modules/shared/_components/breadcrumb/breadcrumb.component';
 import { AddTileComponent } from 'src/app/_modules/shared/_components/add-tile/add-tile.component';
 
-describe('SchemalistComponent', () => {
-  let component: SchemalistComponent;
-  let fixture: ComponentFixture<SchemalistComponent>;
+describe('SchemaListComponent', () => {
+  let component: SchemaListComponent;
+  let fixture: ComponentFixture<SchemaListComponent>;
   let htmlNative: HTMLElement;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -19,13 +19,13 @@ describe('SchemalistComponent', () => {
         AppMaterialModuleForSpec,
         RouterTestingModule
       ],
-      declarations: [SchemalistComponent, BreadcrumbComponent, SchemaTileComponent, AddTileComponent, SubstringPipe],
+      declarations: [SchemaListComponent, BreadcrumbComponent, SchemaTileComponent, AddTileComponent, SubstringPipe],
 
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SchemalistComponent);
+    fixture = TestBed.createComponent(SchemaListComponent);
     component = fixture.componentInstance;
     htmlNative = fixture.debugElement.nativeElement;
   });

@@ -1,6 +1,7 @@
 mat-card.root {
   padding: 0;
   cursor: pointer;
+  min-width: 350px;
 
   div.header {
     justify-content: center;

@@ -5,11 +5,11 @@ import { SchemaGroupResponse } from 'src/app/_models/schema/schema';
 import { SchemaService } from 'src/app/_services/home/schema.service';
 
 @Component({
-  selector: 'pros-schema',
-  templateUrl: './schema.component.html',
-  styleUrls: ['./schema.component.scss']
+  selector: 'pros-schema-groups',
+  templateUrl: './schema-groups.component.html',
+  styleUrls: ['./schema-groups.component.scss']
 })
-export class SchemaComponent implements OnInit {
+export class SchemaGroupsComponent implements OnInit {
 
   schemaGroups: SchemaGroupResponse[] = [];
 
