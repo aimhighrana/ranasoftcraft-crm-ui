@@ -50,6 +50,20 @@
       color: mat-color($foreground-palette, secondary-text);
     }
   }
+
+  pros-svg-icon {
+    svg.primary path {
+      fill: mat-color($primary-palette);
+    }
+
+    svg.accent path {
+      fill: mat-color($accent-palette);
+    }
+
+    svg.warn path {
+      fill: mat-color($warn-palette);
+    }
+  }
 }
 
 @mixin pros-cmp-typography($config) {

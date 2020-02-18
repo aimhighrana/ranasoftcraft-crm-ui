@@ -13,6 +13,7 @@ import { RouterModule } from '@angular/router';
 import { BreadcrumbComponent } from '../_components/breadcrumb/breadcrumb.component';
 import { PageNotFoundComponent } from '../_components/page-not-found/page-not-found.component';
 import { AddTileComponent } from '../_components/add-tile/add-tile.component';
+import { SvgIconComponent } from '../_components/svg-icon/svg-icon.component';
 
 
 
@@ -20,7 +21,8 @@ import { AddTileComponent } from '../_components/add-tile/add-tile.component';
   declarations: [
     PageNotFoundComponent,
     BreadcrumbComponent,
-    AddTileComponent
+    AddTileComponent,
+    SvgIconComponent
   ],
   imports: [
     CommonModule,
@@ -133,7 +135,8 @@ import { AddTileComponent } from '../_components/add-tile/add-tile.component';
     // components
     PageNotFoundComponent,
     BreadcrumbComponent,
-    AddTileComponent
+    AddTileComponent,
+    SvgIconComponent
   ]
 })
 export class SharedModule { }
