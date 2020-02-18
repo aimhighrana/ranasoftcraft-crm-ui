@@ -1,21 +1,32 @@
 <mat-toolbar class="toolbar-spacer">
   <mat-toolbar-row></mat-toolbar-row>
 </mat-toolbar>
-<mat-toolbar color="primary" class="root">
+<mat-toolbar class="root mat-elevation-z3">
   <mat-toolbar-row>
     <img src="assets/images/mdo.png" alt="MDO"/>
-    <button mat-stroked-button color="primary">Search Platform Setting&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<mat-icon matSuffix>search</mat-icon></button>
-    <span class="f-spacer"></span>
-    <mat-icon>person</mat-icon>
-    <span class="col-spacer"></span>
-    <span class="mat-h4">{{userDetails.fullName}}</span>
     <span class="col-spacer"></span>
     <mat-divider vertical="true"></mat-divider>
+    <span class="f-spacer"></span>
+    <button mat-icon-button matTooltip="Comming Soon ..."><mat-icon>search</mat-icon></button>
+    <button mat-icon-button matTooltip="Comming Soon ..."><mat-icon>dashboard</mat-icon></button>
+    <button mat-icon-button matTooltip="Comming Soon ..."><mat-icon>notifications</mat-icon></button>
     <span class="col-spacer"></span>
-    <a>
-      <mat-icon>power_settings_new</mat-icon>
-      Logout
-    </a>
+    <button class="userBtn" mat-button [matMenuTriggerFor]="userMenu" #um="matMenuTrigger">
+      <mat-icon>person</mat-icon>
+      {{userDetails.fullName}}
+      <mat-icon *ngIf="!um.menuOpen">arrow_left</mat-icon>
+      <mat-icon *ngIf="um.menuOpen">arrow_drop_down</mat-icon>
+    </button>
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item>
+        <mat-icon>settings</mat-icon>
+        <span>Settings</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>power_settings_new</mat-icon>
+        <span>Logout</span>
+      </button>
+    </mat-menu>
   </mat-toolbar-row>
 </mat-toolbar>
 <mat-progress-bar *ngIf="loadingSvc.isLoading | async" mode="indeterminate"></mat-progress-bar>

@@ -21,28 +21,13 @@ mat-toolbar.root {
       height: calc(100% - 16px);
     }
 
-    button {
-      height: 40px;
-      margin: 0 50px;
-      background-color: rgba($color: #fff, $alpha: 0.75);
+    .userBtn {
+      padding: 0;
+      font-weight: bolder;
     }
 
     mat-divider {
-      height: 100%;
-    }
-
-    .mat-h4 {
-      margin-top: 16px;
-    }
-
-    a {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      font-size: 12px;
-      text-transform: uppercase;
-      line-height: 20px;
-      cursor: pointer;
+      height: 60%;
     }
   }
 }

@@ -266,8 +266,7 @@ export class Any2tsService {
 
   public any2UserDetails(response: any): Userdetails {
     const userDetails: Userdetails = new Userdetails();
-    if (response && response.hasOwnProperty('userDetails')) {
-      response = response.userDetails;
+    if (response) {
       userDetails.userName = response.userName;
       userDetails.firstName = response.firstName;
       userDetails.lastName = response.lastName;

@@ -7,6 +7,7 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class SvgIconComponent implements OnInit {
 
+  // icon possible values
   iconPV: string[] = [
     'P_BR_METADATA_RULE',
     'P_BR_UDR_RULE',

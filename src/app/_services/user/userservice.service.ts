@@ -12,7 +12,7 @@ import { Any2tsService } from '../any2ts.service';
 })
 export class UserService {
 
-  private userDeatilsBehaviorSubject = new BehaviorSubject<Userdetails>(new Userdetails());
+  private userDetailsBehaviorSubject = new BehaviorSubject<Userdetails>(new Userdetails());
 
   constructor(
     private endpointService: EndpointService,
@@ -41,11 +41,11 @@ export class UserService {
   public getUserDetails(): Observable<Userdetails> {
     // check subjectuserdetails userid !== jwt token userid, call service
     const currentUserId = this.getUserIdFromToken();
-    if (this.userDeatilsBehaviorSubject.getValue().userName !== currentUserId) {
-      this.http.post<any>(this.endpointService.getUserDetailsUrl(currentUserId), '').pipe(map(data => {
-        this.userDeatilsBehaviorSubject.next(this.any2tsService.any2UserDetails(data));
-      })).subscribe().unsubscribe();
+    if (this.userDetailsBehaviorSubject.getValue().userName !== currentUserId) {
+      this.http.get<any>(this.endpointService.getUserDetailsUrl(currentUserId)).pipe(map(data => {
+        this.userDetailsBehaviorSubject.next(this.any2tsService.any2UserDetails(data));
+      })).subscribe();
     }
-    return this.userDeatilsBehaviorSubject;
+    return this.userDetailsBehaviorSubject;
   }
 }

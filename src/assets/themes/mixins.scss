@@ -20,6 +20,16 @@
   // tooltip
   $background-palette: map-get($theme, background);
 
+  pros-home-layout .root {
+    button {
+      color: mat-color($primary-palette, 700);
+    }
+
+    button:hover {
+      color: mat-color($primary-palette, 600);
+    }
+  }
+
   pros-breadcrumb .root {
     a.link {
       color: mat-color($primary-palette);
