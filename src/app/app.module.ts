@@ -137,7 +137,7 @@ import { SchemaCollaboratorsComponent } from './_components/home/schema/schema-c
     { provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptorService, multi: true }
   ],
   bootstrap: [ AppComponent ],
-  entryComponents: [SchemaStatusinfoDialogComponent]
+  entryComponents: [ SchemaStatusinfoDialogComponent ]
 })
 export class AppModule {
 }

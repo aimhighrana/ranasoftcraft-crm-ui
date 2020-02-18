@@ -1,4 +1,7 @@
 <mat-sidenav-container>
+  <mat-sidenav #rightSideNav mode="over" position="end">
+    <router-outlet name="sb"></router-outlet>
+  </mat-sidenav>
   <mat-sidenav-content>
     <router-outlet></router-outlet>
   </mat-sidenav-content>

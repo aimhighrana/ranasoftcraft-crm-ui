@@ -2,6 +2,7 @@
   <div class="flex-col-12">
     <pros-breadcrumb [crumbs]="breadcrumb"></pros-breadcrumb>
   </div>
+  <button mat-button [routerLink]="['', { outlets: { sb: 'schema/collab/' + schemaId } } ]">Collaborators</button>
   <div class="flex-col-12 margin16">
     <mat-card class="graph-root">
       <mat-toolbar>

@@ -48,8 +48,10 @@ import { SchemaDetailsComponent } from './_components/home/schema/schema-details
 import { SchemaVariantsComponent } from './_components/home/schema/schema-variants/schema-variants.component';
 import { SchemaGroupFormComponent } from './_components/home/schema/schema-group-form/schema-group-form.component';
 import { SchemaExecutionComponent } from './_components/home/schema/schema-execution/schema-execution.component';
+import { SchemaCollaboratorsComponent } from './_components/home/schema/schema-collaborators/schema-collaborators.component';
 
 const routes: Routes = [
+  { path: 'schema/collab/:schemaId', component: SchemaCollaboratorsComponent, outlet: 'sb' },
   {
     path: 'home', component: HomeLayoutComponent,
     children: [
