@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { EndpointService } from '../../endpoint.service';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { SendReqForSchemaDataTableColumnInfo, SendDataForSchemaTableShowMore, SchemaStatusInformation, SchemaDataTableColumnInfoResponse, RequestForSchemaDetailsWithBr, DataTableSourceResponse, SchemaTableViewRequest } from 'src/app/_models/schema/schemadetailstable';
+import { SendReqForSchemaDataTableColumnInfo, SendDataForSchemaTableShowMore, SchemaStatusInformation, SchemaDataTableColumnInfoResponse, RequestForSchemaDetailsWithBr, DataTableSourceResponse, SchemaTableViewRequest, OverViewChartDataSet, CategoryInfo, CategoryChartDataSet } from 'src/app/_models/schema/schemadetailstable';
 import * as moment from 'moment';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../../any2ts.service';
@@ -119,6 +119,32 @@ export class SchemaDetailsService {
    */
   public updateSchemaTableView(schemaTableViewReq: SchemaTableViewRequest): Observable<any> {
     return this.http.post<any>(this.endpointService.getUpdateSchemaTableViewUrl(), schemaTableViewReq);
+  }
+
+  public getOverviewChartDetails(schemaId: string, variantId: string, runId: string): Observable<OverViewChartDataSet> {
+    schemaId = schemaId ? schemaId : '';
+    runId = runId ? runId : '';
+    return this.http.get<any>(this.endpointService.getOverviewChartDataUrl(schemaId, variantId, runId)).pipe(map(data => {
+      return this.any2tsService.any2OverviewChartData(data);
+    }));
+  }
+
+  public getAllCategoryInfo(): Observable<CategoryInfo[]> {
+    return this.http.get<any>(this.endpointService.getCategoryInfoUrl()).pipe(map(data => {
+      return this.any2tsService.any2CategoryInfo(data);
+    }));
+  }
+
+  public getSchemaStatus(): Observable<string[]> {
+    return this.http.get<any>(this.endpointService.getSchemaStatusUrl()).pipe(map(data => {
+      return this.any2tsService.any2SchemaStatus(data);
+    }));
+  }
+
+  public getCategoryChartDetails(schemaId: string, variantId: string, categoryId: string, status: string ): Observable<CategoryChartDataSet> {
+    return this.http.get<any>(this.endpointService.categoryChartData(schemaId, variantId, categoryId, status)).pipe(map(response => {
+      return this.any2tsService.any2CategoryChartData(response);
+    }));
   }
 
 }

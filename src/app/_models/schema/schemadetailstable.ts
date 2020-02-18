@@ -122,3 +122,92 @@ export class SchemaTableViewRequest {
     isDefaultView: boolean;
     variantId: string;
 }
+export class SchemaExecutionDetails {
+    schemaId: string;
+    variantId: string;
+    runId: number;
+    exeStrtDate: string;
+    exeEndDate: string;
+    userId: string;
+    plantCode: string;
+    total: number;
+    totalSuccess: number;
+    totalError: number;
+    uniqueSuccess: number;
+    uniqueError: number;
+    uniqueSkipped: number;
+    skipped: number;
+    outdated: number;
+    duplicate: number;
+    isInRunning: boolean;
+    isInterrupted: boolean;
+    interruptedMessage: string;
+    successPercentage: number;
+    errorPercentage: number;
+    brExecutionDetails: SchemaBrExecutionDetails[];
+}
+export class SchemaBrExecutionDetails {
+    brId: string;
+    outdated: number;
+    success: number;
+    duplicate: number;
+    error: number;
+    skipped: number;
+    runId: number;
+    isInterrupted: boolean;
+    interruptedMessage: string;
+    exeStrtDate: string;
+    exeEndDate: string;
+}
+export class OverViewChartDataSet {
+    dataSet: OverViewChartData[];
+}
+export class OverViewChartData {
+    type: string;
+    label: string;
+    id: string;
+    backgroundColor: string;
+    borderColor: string;
+    fill: boolean;
+    pointRadius: number;
+    pointBackgroundColor: string;
+    data: OverViewChartDataXY[];
+}
+export class OverViewChartDataXY {
+    x: string;
+    y: number;
+}
+export class CategoryInfo {
+    categoryId: string;
+    categoryDesc: string;
+}
+
+export class CategoryChartDataSet {
+    dataSet: OverViewChartData[];
+    schemaId: string;
+    runId: string;
+    variantId: string;
+    schemaStatus: string;
+    categoryId: string;
+    categoryDesc: string;
+    total: number;
+}
+export class CategoryChartData {
+    type: string;
+    label: string;
+    id: string;
+    backgroundColor: string;
+    borderColor: string;
+    fill: boolean;
+    pointRadius: number;
+    pointBackgroundColor: string;
+    data: CategoryChartDataXY[];
+    total: number;
+    brDesc: string;
+}
+export class CategoryChartDataXY {
+    x: string;
+    y: number;
+}
+
+

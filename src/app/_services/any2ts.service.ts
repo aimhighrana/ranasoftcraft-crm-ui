@@ -3,8 +3,9 @@ import { Task } from '../_models/task';
 import { TaskResponse } from '../_models/task-response';
 import { SchemaListOnLoadResponse, SchemaGroupResponse, SchemaGroupDetailsResponse, SchemaGroupCountResponse, ObjectTypeResponse, GetAllSchemabymoduleidsRes, SchemaGroupWithAssignSchemas, SchemaGroupMapping } from '../_models/schema/schema';
 import { VariantFieldList, SchemaVariantResponse, SchemaBrInfoList, CategoriesResponse, DependencyResponse, VariantDetailsScheduleSchema, VariantAssignedFieldDetails, SchemaListModuleList, SchemaModuleList, SchemaListDetails, BusinessRuleExecutionDetails } from '../_models/schema/schemalist';
-import { SchemaDataTableColumnInfoResponse, ResponseFieldList, SchemaTableData, DataTableResponse, DataTableHeaderResponse, DataTableHeaderLabelLang, DataTableHeaderValueLang, DataTableSourceResponse } from '../_models/schema/schemadetailstable';
+import { SchemaDataTableColumnInfoResponse, ResponseFieldList, SchemaTableData, DataTableResponse, DataTableHeaderResponse, DataTableHeaderLabelLang, DataTableHeaderValueLang, DataTableSourceResponse, OverViewChartData, OverViewChartDataXY, OverViewChartDataSet, CategoryInfo, CategoryChartDataSet, CategoryChartData, CategoryChartDataXY } from '../_models/schema/schemadetailstable';
 import { Userdetails, AssignedRoles } from '../_models/userdetails';
+import * as moment from 'moment';
 @Injectable({
   providedIn: 'root'
 })
@@ -500,4 +501,174 @@ export class Any2tsService {
     return finalResposne;
   }
 
+  public any2OverviewChartData(response): OverViewChartDataSet {
+    const overViewChartDataSet: OverViewChartDataSet = new OverViewChartDataSet();
+    const overViewChartData: OverViewChartData[] = [];
+    if (response) {
+      // for status success
+      const successOverView: OverViewChartData = new OverViewChartData();
+      successOverView.id = 'ERROR_OVERVIEW_ID';
+      successOverView.type = 'line';
+      successOverView.label = 'Error';
+      successOverView.backgroundColor = 'rgba(249, 229, 229, 1)';
+      successOverView.borderColor = 'rgba(195, 0, 0, 1)';
+      successOverView.fill = false;
+      successOverView.pointRadius = 5;
+      successOverView.pointBackgroundColor = 'rgba(195, 0, 0, 1)';
+      successOverView.data = this.getOverViewDataForXYAxis(response, 'SUCCESS');
+
+      // for status error
+      const errorOverview: OverViewChartData = new OverViewChartData();
+      errorOverview.id = 'SUCCESS_OVERVIEW_ID';
+      errorOverview.type = 'line';
+      errorOverview.label = 'Success';
+      errorOverview.backgroundColor = 'rgba(231, 246, 237, 1)';
+      errorOverview.borderColor = 'rgba(18, 164, 74, 1)';
+      errorOverview.fill = false;
+      errorOverview.pointRadius = 5;
+      errorOverview.pointBackgroundColor = 'rgba(18, 164, 74, 1)';
+      errorOverview.data = this.getOverViewDataForXYAxis(response, 'ERROR');
+
+      // for status skipped
+      const skippedOverview: OverViewChartData = new OverViewChartData();
+      skippedOverview.id = 'SKIPPED_OVERVIEW_ID';
+      skippedOverview.type = 'line';
+      skippedOverview.label = 'Skipped';
+      skippedOverview.backgroundColor = 'rgba(246, 244, 249, 1)';
+      skippedOverview.borderColor = 'rgba(163, 145, 197, 1)';
+      skippedOverview.fill = false;
+      skippedOverview.pointRadius = 5;
+      skippedOverview.pointBackgroundColor = 'rgba(163, 145, 197, 1)';
+      skippedOverview.data = this.getOverViewDataForXYAxis(response, 'SKIPPED');
+
+      overViewChartData.push(successOverView);
+      overViewChartData.push(errorOverview);
+      overViewChartData.push(skippedOverview);
+
+    }
+    overViewChartDataSet.dataSet = overViewChartData;
+    return overViewChartDataSet;
+  }
+
+  private getOverViewDataForXYAxis(response, type): OverViewChartDataXY[] {
+    const xyAxis: OverViewChartDataXY[] = [];
+    response.forEach(data => {
+      const xyData: OverViewChartDataXY = new OverViewChartDataXY();
+      if (type === 'SUCCESS') {
+        xyData.y = data.totalSuccess ? data.totalSuccess : 0;
+      } else if (type === 'ERROR') {
+        xyData.y = data.totalError ? data.totalError : 0;
+      } else if (type === 'SKIPPED') {
+        xyData.y = data.skipped ? data.skipped : 0;
+      }
+      if (data.exeEndDate) {
+        xyData.x = moment(data.exeStrtDate).format('MM/DD/YYYY HH:mm');
+        xyAxis.push(xyData);
+      }
+    });
+    return xyAxis;
+  }
+
+  public any2CategoryInfo(response: any): CategoryInfo[] {
+    const categoryInfoLst: CategoryInfo[] = [];
+    response.forEach(data => {
+      const catData: CategoryInfo = new CategoryInfo();
+      catData.categoryDesc = data.categoryDesc;
+      catData.categoryId = data.categoryId;
+      categoryInfoLst.push(catData);
+    });
+    return categoryInfoLst;
+  }
+
+  public any2SchemaStatus(response: any): string[] {
+    const returnData: string[] = [];
+    response.forEach(ele => {
+      returnData.push(ele);
+    });
+    return returnData;
+  }
+
+  public any2CategoryChartData(response: any): CategoryChartDataSet {
+    const categoryChartDataSet: CategoryChartDataSet = new CategoryChartDataSet();
+    if (response) {
+      categoryChartDataSet.dataSet = this.categoryChartData(response.brExecutionDetails , response.schemaStatus);
+      categoryChartDataSet.variantId = response.variantId;
+      categoryChartDataSet.categoryDesc = response.categoryDesc;
+      categoryChartDataSet.total = response.total ? response.total : 0;
+    }
+    return categoryChartDataSet;
+  }
+
+  private categoryChartData(response: any, status: string): CategoryChartData[] {
+    const categoryChartDataLst: CategoryChartData[] = [];
+    // find unique br ids
+    const bridsArray  = [];
+    response.forEach(catData => {
+      const index = bridsArray.indexOf(catData.brId);
+      if (index === -1) {
+        bridsArray.push(catData.brId);
+      }
+
+    });
+    bridsArray.forEach(br => {
+      const brData = response.filter(res => res.brId === br);
+      if (brData.length > 0) {
+        const categoryChartData: CategoryChartData = new CategoryChartData();
+        categoryChartData.id = status + '_' + br;
+        categoryChartData.type = 'line';
+        categoryChartData.label = br;
+        categoryChartData.backgroundColor = this.generateRandomRgba();
+        categoryChartData.borderColor = this.generateRandomRgba();
+        categoryChartData.fill = false;
+        categoryChartData.pointRadius = 5;
+        categoryChartData.pointBackgroundColor = this.generateRandomRgba();
+        categoryChartData.data = this.getCategoryViewForXYAxis(brData, status);
+        categoryChartData.total = this.getTotalForcategory(brData, status);
+        categoryChartData.brDesc = this.getBrDecs(br, brData);
+        categoryChartDataLst.push(categoryChartData);
+      }
+    });
+    return categoryChartDataLst;
+  }
+  private generateRandomRgba(): string {
+    const o = Math.round;
+    const r = Math.random;
+    const s = 255;
+    return 'rgba(' + o(r() * s) + ',' + o(r() * s) + ',' + o(r() * s) + ',' + r().toFixed(1) + ')';
+  }
+
+  private getBrDecs(brId: string, brList: any): string {
+    return brList.filter(br => br.brId === brId)[0].brDesc;
+  }
+  private getTotalForcategory(response, type): number {
+    let total = 0;
+    response.forEach(data => {
+      if (type === 'SUCCESS') {
+        total += data.success ? data.success : 0;
+      } else if (type === 'ERROR') {
+        total  += data.error ? data.error : 0;
+      } else if (type === 'SKIPPED') {
+        total += data.skipped ? data.skipped : 0;
+      }
+    });
+    return total;
+  }
+  private getCategoryViewForXYAxis(response, type): CategoryChartDataXY[] {
+    const xyAxis: CategoryChartDataXY[] = [];
+    response.forEach(data => {
+      const xyData: CategoryChartDataXY = new CategoryChartDataXY();
+      if (type === 'SUCCESS') {
+        xyData.y = data.success ? data.success : 0;
+      } else if (type === 'ERROR') {
+        xyData.y = data.error ? data.error : 0;
+      } else if (type === 'SKIPPED') {
+        xyData.y = data.skipped ? data.skipped : 0;
+      }
+      if (data.executionEndTimestamp) {
+        xyData.x = moment(data.executionStartTimestamp).format('MM/DD/YYYY HH:mm');
+        xyAxis.push(xyData);
+      }
+    });
+    return xyAxis;
+  }
 }

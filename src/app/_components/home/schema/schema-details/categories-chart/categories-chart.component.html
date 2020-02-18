@@ -1,8 +1,64 @@
-<div style="display: block;">
-        <canvas baseChart
-                    [datasets]="categoryChartData"
-                    [labels]="categoryChartLabels"
-                    [options]="categoryChartOptions"                    
-                    [legend]="categoryChartLegend"
-                    [chartType]="categoryChartType"></canvas>
-</div>
+<mat-card class="graph-root">
+        <mat-toolbar>
+          <mat-toolbar-row>
+            <span>Category</span>
+          </mat-toolbar-row>
+        </mat-toolbar>
+        <mat-divider></mat-divider>
+        <mat-card-content class="graph-divider">
+          <div class="grid-flexcol-9">
+            <mat-card class="sidegraph-details bxshadow-variant-0 vertical-divider">
+              <mat-card-header>
+                <mat-form-field>
+                  <mat-label>Select Category</mat-label>
+                  <mat-select [(ngModel)]="selectedCategoryId" (selectionChange)="changeCategoryChart()">
+                        <mat-option *ngFor="let catInfo of categoryInfoLst" [value]="catInfo.categoryId">
+                                {{catInfo.categoryDesc}}
+                        </mat-option>
+                  </mat-select>                  
+                </mat-form-field>              
+                <mat-form-field>
+                  <mat-label>Select Status</mat-label>
+                  <mat-select [(ngModel)]="selectedStatus" (selectionChange)="changeCategoryChart()">
+                        <mat-option *ngFor="let status of schemaStatusLst" [value]="status">
+                                {{status}}
+                        </mat-option>
+                  </mat-select>                                    
+                </mat-form-field>
+                <span class="f-spacer"></span>
+                <mat-slide-toggle color="primary">Percentage</mat-slide-toggle>
+              </mat-card-header>
+              <mat-card-content>
+                <div style="display: block;">
+                        <canvas baseChart
+                                    [datasets]="categoryChartData"
+                                    [labels]="categoryChartLabels"
+                                    [options]="categoryChartOptions"                    
+                                    [legend]="categoryChartLegend"
+                                    [chartType]="categoryChartType"></canvas>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+          <div class="grid-flexcol-3">
+            <mat-card class="sidegraph-details bxshadow-variant-0">
+              <mat-card-header>
+                <mat-card-title>Category Summary</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <h2 class="H2">{{categoryChartDataDetails.total}}</h2>
+                <small>Total</small>
+  
+                <mat-list role="list" class="valuedes-list">
+                  <mat-list-item  *ngFor="let br of categoryChartDataDetails.dataSet"  role="listitem">
+                    <span mat-list-icon><em class="box-blk" [style.background-color]="br.borderColor"></em></span>
+                    <h4 class="H4">{{br.brDesc}}</h4>
+                    <p class="P">{{br.total}}</p>
+                  </mat-list-item>
+                  
+                </mat-list>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </mat-card-content>
+      </mat-card>

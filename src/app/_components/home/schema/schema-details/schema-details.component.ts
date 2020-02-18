@@ -7,6 +7,7 @@ import { SchemaService } from 'src/app/_services/home/schema.service';
 import { SchemaGroupDetailsResponse } from 'src/app/_models/schema/schema';
 import { SchemaListDetails } from 'src/app/_models/schema/schemalist';
 import { SchemalistService } from 'src/app/_services/home/schema/schemalist.service';
+import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-details.service';
 @Component({
   selector: 'pros-schema-details',
   templateUrl: './schema-details.component.html',
@@ -35,7 +36,8 @@ export class SchemaDetailsComponent implements OnInit {
   constructor(
       private activatedRouter: ActivatedRoute,
       private schemaService: SchemaService,
-      private schemaListService: SchemalistService
+      private schemaListService: SchemalistService,
+      private schemaDetailService: SchemaDetailsService
   ) { }
   ngOnInit() {
     this.activatedRouter.params.subscribe(params => {
@@ -69,4 +71,5 @@ export class SchemaDetailsComponent implements OnInit {
       }
     );
   }
+
 }

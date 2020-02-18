@@ -124,4 +124,20 @@ export class EndpointService {
   public getUpdateSchemaTableViewUrl(): string {
     return this.apiUrl + '/schema/update-schema-table-view';
   }
+
+  public getOverviewChartDataUrl(schemaId: string, variantId: string, runid: string): string {
+    return this.apiUrl + '/schema/overview-chart-data/' + schemaId + '/' + variantId + '/' + runid;
+  }
+
+  public getCategoryInfoUrl(): string {
+    return this.apiUrl + '/schema/category-list';
+  }
+
+  public getSchemaStatusUrl(): string {
+    return this.apiUrl + '/schema/schema-status';
+  }
+
+  public categoryChartData(schemaId: string, variantId: string, categoryId: string, status: string): string {
+    return this.apiUrl + '/schema/category-chart-data/' + schemaId + '/' + variantId + '/' + categoryId + '/' + status;
+  }
 }
