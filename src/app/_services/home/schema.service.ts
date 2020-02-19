@@ -55,4 +55,7 @@ export class SchemaService {
     }));
   }
 
+  public scheduleSchemaCount(schemaId: string): Observable<number> {
+    return this.http.get<any>(this.endpointService.scheduleSchemaCount(schemaId));
+  }
 }

@@ -1,0 +1,41 @@
+.res-circle {
+  border-radius: 50%;
+  line-height: 0;
+  background: #bcd6ff;
+  color: #6d8bee;
+  position: relative;
+  height: 10em;
+  width: 10em;
+  margin-left: 180px;
+}
+
+.res-circle::after {
+  display: block;
+  padding-bottom: 100%;
+}
+
+.circle-txt {
+  position: absolute;
+  bottom: 50%;
+  width: 100%;
+  text-align: center;
+  font-family: arial, sans-serif;
+  font-size: 5em;
+  font-weight: bold;
+}
+
+.text {
+  margin-top: 50px;
+  text-align: center;
+}
+
+.test {
+  display: inline-block;
+  text-align: center;
+  margin-top: 20px;
+  margin-left: 25px;
+}
+
+.test > .button:not(:last-child) {
+  margin-right: 15px;
+}

@@ -140,4 +140,7 @@ export class EndpointService {
   public categoryChartData(schemaId: string, variantId: string, categoryId: string, status: string): string {
     return this.apiUrl + '/schema/category-chart-data/' + schemaId + '/' + variantId + '/' + categoryId + '/' + status;
   }
+  public scheduleSchemaCount(schemaId: string): string {
+    return this.apiUrl + '/schema/record-count/' + schemaId;
+  }
 }

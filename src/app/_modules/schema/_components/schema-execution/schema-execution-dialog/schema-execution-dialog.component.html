@@ -1,0 +1,11 @@
+<div class="res-circle">
+    <div class="circle-txt">{{totalCount | thousandconvertor}}</div>
+  </div>
+  <div class="text">
+    <h3><b>schema will be executed on {{totalCount | thousandconvertor}} records</b></h3>
+</div>
+<div class="test">
+    <button mat-flat-button class ='button' (click)="closeDialog()" >Go back and edit variant</button>
+    <button mat-flat-button class ='button' >Scheduling</button>
+    <button mat-flat-button color="primary" (click)="scheduleSchema()" class ='button' >Run on {{totalCount | thousandconvertor}} now</button>
+</div>
