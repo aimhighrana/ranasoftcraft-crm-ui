@@ -1,0 +1,33 @@
+mat-toolbar.toolbar-spacer {
+  background-color: transparent;
+
+  mat-toolbar-row {
+    background-color: transparent;
+  }
+}
+
+mat-progress-bar {
+  position: fixed;
+  z-index: 2;
+}
+
+mat-toolbar.root {
+  position: fixed;
+  top: 0;
+  z-index: 2;
+
+  mat-toolbar-row {
+    img {
+      height: calc(100% - 16px);
+    }
+
+    .userBtn {
+      padding: 0;
+      font-weight: bolder;
+    }
+
+    mat-divider {
+      height: 60%;
+    }
+  }
+}

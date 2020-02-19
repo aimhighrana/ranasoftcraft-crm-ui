@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HomeLayoutComponent } from './home-layout.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { RouterTestingModule } from '@angular/router/testing';
-import { BreadcrumbComponent } from '../../../_modules/shared/_components/breadcrumb/breadcrumb.component';
+import { BreadcrumbComponent } from '../../../shared/_components/breadcrumb/breadcrumb.component';
 
 describe('HomeLayoutComponent', () => {
   let component: HomeLayoutComponent;

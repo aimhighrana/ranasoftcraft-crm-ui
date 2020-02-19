@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SchemaVariantsComponent } from './schema-variants.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
-import { SchemaTileComponent } from '../schema-tile/schema-tile.component';
+import { SchemaTileComponent } from '../../../../_modules/schema/_components/schema-tile/schema-tile.component';
 import { MatIconModule } from '@angular/material';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SubstringPipe } from 'src/app/_pipes/substringpipe.pipe';

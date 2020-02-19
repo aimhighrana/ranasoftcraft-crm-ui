@@ -11,6 +11,8 @@ import { BreadcrumbComponent } from './_components/breadcrumb/breadcrumb.compone
 import { PageNotFoundComponent } from './_components/page-not-found/page-not-found.component';
 import { AddTileComponent } from './_components/add-tile/add-tile.component';
 import { SvgIconComponent } from './_components/svg-icon/svg-icon.component';
+import { ChartsModule } from 'ng2-charts';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
 
 
@@ -22,61 +24,13 @@ import { SvgIconComponent } from './_components/svg-icon/svg-icon.component';
     SvgIconComponent
   ],
   imports: [
+    // ng modules
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
     FlexLayoutModule,
-    MatAutocompleteModule,
-    MatBadgeModule,
-    MatBottomSheetModule,
-    MatButtonModule,
-    MatButtonToggleModule,
-    MatCardModule,
-    MatCheckboxModule,
-    MatChipsModule,
-    MatDatepickerModule,
-    MatDatepickerModule,
-    MatDialogModule,
-    MatDividerModule,
-    MatExpansionModule,
-    MatFormFieldModule,
-    MatGridListModule,
-    MatIconModule,
-    MatInputModule,
-    MatLineModule,
-    MatListModule,
-    MatListModule,
-    MatMenuModule,
-    MatNativeDateModule,
-    MatPaginatorModule,
-    MatProgressBarModule,
-    MatProgressSpinnerModule,
-    MatRadioModule,
-    MatRangeDatepickerModule,
-    MatRangeNativeDateModule,
-    MatRippleModule,
-    MatSelectModule,
-    MatSidenavModule,
-    MatSliderModule,
-    MatSlideToggleModule,
-    MatSnackBarModule,
-    MatSortModule,
-    MatStepperModule,
-    MatTableModule,
-    MatTableModule,
-    MatTabsModule,
-    MatToolbarModule,
-    MatTooltipModule,
-    MatTreeModule,
-    DragDropModule,
-    OverlayModule
-  ],
-  exports: [
-    // modules
-    FormsModule,
-    ReactiveFormsModule,
-    FlexLayoutModule,
+    // material modules
     MatAutocompleteModule,
     MatBadgeModule,
     MatBottomSheetModule,
@@ -121,6 +75,66 @@ import { SvgIconComponent } from './_components/svg-icon/svg-icon.component';
     MatTreeModule,
     DragDropModule,
     OverlayModule,
+    // custom mat search module
+    NgxMatSelectSearchModule,
+    // chart module
+    ChartsModule
+  ],
+  exports: [
+    // modules
+    // ng modules
+    FormsModule,
+    ReactiveFormsModule,
+    FlexLayoutModule,
+    // material modules
+    MatAutocompleteModule,
+    MatBadgeModule,
+    MatBottomSheetModule,
+    MatButtonModule,
+    MatButtonToggleModule,
+    MatCardModule,
+    MatCheckboxModule,
+    MatChipsModule,
+    MatDatepickerModule,
+    MatDatepickerModule,
+    MatDialogModule,
+    MatDividerModule,
+    MatExpansionModule,
+    MatFormFieldModule,
+    MatGridListModule,
+    MatIconModule,
+    MatInputModule,
+    MatLineModule,
+    MatListModule,
+    MatListModule,
+    MatMenuModule,
+    MatNativeDateModule,
+    MatPaginatorModule,
+    MatProgressBarModule,
+    MatProgressSpinnerModule,
+    MatRadioModule,
+    MatRangeDatepickerModule,
+    MatRangeNativeDateModule,
+    MatRippleModule,
+    MatSelectModule,
+    MatSidenavModule,
+    MatSliderModule,
+    MatSlideToggleModule,
+    MatSnackBarModule,
+    MatSortModule,
+    MatStepperModule,
+    MatTableModule,
+    MatTableModule,
+    MatTabsModule,
+    MatToolbarModule,
+    MatTooltipModule,
+    MatTreeModule,
+    DragDropModule,
+    OverlayModule,
+    // custom mat search module
+    NgxMatSelectSearchModule,
+    // chart module
+    ChartsModule,
     // components
     PageNotFoundComponent,
     BreadcrumbComponent,

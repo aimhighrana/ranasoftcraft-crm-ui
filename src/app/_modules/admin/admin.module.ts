@@ -7,7 +7,6 @@ import { AdminLayoutComponent } from 'src/app/_modules/admin/_components/admin-l
 import { AdminHomeComponent } from 'src/app/_modules/admin/_components/admin-home/admin-home.component';
 import { AdminTileComponent } from 'src/app/_modules/admin/_components/admin-tile/admin-tile.component';
 import { IntegrationAdapterComponent } from 'src/app/_modules/admin/_components/integration-adapter/integration-adapter.component';
-import { ClickStopPropagationDirective } from 'src/app/_directives/click-stop-propagation.directive';
 import { InterfacesComponent } from 'src/app/_modules/admin/_components/interfaces/interfaces.component';
 import { IdocsComponent } from 'src/app/_modules/admin/_components/integration-adapter/sap/idocs/idocs.component';
 import { SapComponent } from 'src/app/_modules/admin/_components/integration-adapter/sap/sap.component';
@@ -52,7 +51,6 @@ import { NounsCharacteristicsComponent } from 'src/app/_modules/admin/_component
     AdminHomeComponent,
     AdminTileComponent,
     IntegrationAdapterComponent,
-    ClickStopPropagationDirective,
     InterfacesComponent,
     IdocsComponent,
     SapComponent,
