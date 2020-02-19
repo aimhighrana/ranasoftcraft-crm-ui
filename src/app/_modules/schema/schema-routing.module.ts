@@ -7,15 +7,16 @@ import { SchemaListComponent } from 'src/app/_modules/schema/_components/schema-
 import { SchemaDetailsComponent } from 'src/app/_components/home/schema/schema-details/schema-details.component';
 import { SchemaVariantsComponent } from 'src/app/_components/home/schema/schema-variants/schema-variants.component';
 import { SchemaExecutionComponent } from 'src/app/_components/home/schema/schema-execution/schema-execution.component';
+import { SchemaCollaboratorsComponent } from 'src/app/_modules/schema/_components/schema-collaborators/schema-collaborators.component';
 
 const routes: Routes = [
-  // primary outlet
   { path: '', component: SchemaGroupsComponent },
   { path: 'group/:groupId', component: SchemaGroupFormComponent },
   { path: 'schema-list/:schemaGrpId', component: SchemaListComponent },
   { path: 'schema-details/:moduleId/:schemaGroupId/:schemaId', component: SchemaDetailsComponent },
   { path: 'schema-variants/:moduleId/:groupId/:schemaId', component: SchemaVariantsComponent },
   { path: 'schema-execution/:groupId/:schemaId', component: SchemaExecutionComponent },
+  { path: 'collab/:schemaId', component: SchemaCollaboratorsComponent },
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent }
 ];

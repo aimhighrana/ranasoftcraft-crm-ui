@@ -14,6 +14,7 @@ import { SchemaVariantsComponent } from 'src/app/_components/home/schema/schema-
 import { SchemaStatusinfoDialogComponent } from 'src/app/_components/home/schema/schema-details/schema-statusinfo-dialog/schema-statusinfo-dialog.component';
 import { SchemaGroupFormComponent } from 'src/app/_modules/schema/_components/schema-group-form/schema-group-form.component';
 import { SchemaExecutionComponent } from 'src/app/_components/home/schema/schema-execution/schema-execution.component';
+import { SchemaCollaboratorsComponent } from 'src/app/_modules/schema/_components/schema-collaborators/schema-collaborators.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { SchemaExecutionComponent } from 'src/app/_components/home/schema/schema
     SchemaVariantsComponent,
     SchemaStatusinfoDialogComponent,
     SchemaGroupFormComponent,
-    SchemaExecutionComponent
+    SchemaExecutionComponent,
+    SchemaCollaboratorsComponent
   ],
   imports: [
     CommonModule,

@@ -13,11 +13,17 @@ import { AddTileComponent } from './_components/add-tile/add-tile.component';
 import { SvgIconComponent } from './_components/svg-icon/svg-icon.component';
 import { ChartsModule } from 'ng2-charts';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { ClickStopPropagationDirective } from 'src/app/_directives/click-stop-propagation.directive';
+import { SubstringPipe } from 'src/app/_pipes/substringpipe.pipe';
 
 
 
 @NgModule({
   declarations: [
+    // shared directives
+    ClickStopPropagationDirective,
+    SubstringPipe,
+    // shared components
     PageNotFoundComponent,
     BreadcrumbComponent,
     AddTileComponent,
@@ -135,6 +141,9 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
     NgxMatSelectSearchModule,
     // chart module
     ChartsModule,
+    // directives
+    ClickStopPropagationDirective,
+    SubstringPipe,
     // components
     PageNotFoundComponent,
     BreadcrumbComponent,
