@@ -13,15 +13,16 @@
       edit="true"
       delete="true"
 
-      totalValue="2022"
-      successValue="501"
-      errorValue="1800"
-      skippedValue="200"
-      correctionValue="10"
-      duplicateValue="0"
+      totalValue="{{schemagrp.runCount.total}}"
 
-      successTrendValue="-9"
-      errorTrendValue="20"
+      successValue="{{schemagrp.runCount.success}}"
+      errorValue="{{schemagrp.runCount.error}}"
+      skippedValue="{{schemagrp.runCount.skipped}}"
+      correctionValue="{{schemagrp.runCount.correctionValue}}"
+      duplicateValue="{{schemagrp.runCount.duplicate}}"
+
+      successTrendValue="{{schemagrp.runCount.successTrendValue}}"
+      errorTrendValue="{{schemagrp.runCount.errorTrendValue}}"
 
       timestamp="12th Feb 2020, 12:50 AM"
       

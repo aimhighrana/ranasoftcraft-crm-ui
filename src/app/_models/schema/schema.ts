@@ -48,6 +48,9 @@ export class SchemaGroupCountResponse {
      skipped: number;
      outdated: number;
      duplicate: number;
+     correctionValue: number;
+     successTrendValue: number;
+     errorTrendValue: number;
      errorPercentage: number;
      successPercentage: number;
 }
