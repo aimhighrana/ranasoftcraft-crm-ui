@@ -30,7 +30,7 @@
       successTrendValue="{{ schema.successTrendValue }}"
       errorTrendValue="{{ schema.errorTrendValue }}"
 
-      timestamp="{{ schema.executionEndTime }}"
+      timestamp="{{ schema.executionEndTime | date}}"
 
       (evtEdit)="edit(schema);"
       (evtBottomLeft)="variants(module.moduleId, schema.schemaId);"

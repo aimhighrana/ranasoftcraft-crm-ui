@@ -177,7 +177,7 @@ export class SchemaDatatableComponent implements OnInit {
     const sendRequest: RequestForSchemaDetailsWithBr = new RequestForSchemaDetailsWithBr();
     sendRequest.schemaId = schemaDetails.schemaId;
     sendRequest.runId = schemaDetails.runId;
-    sendRequest.brId = schemaDetails.brInformation[schemaDetails.brInformation.length - 1].brId;
+    sendRequest.brId = schemaDetails.brInformation[schemaDetails.brInformation.length - 1] ? schemaDetails.brInformation[schemaDetails.brInformation.length - 1].brId : '';
     sendRequest.variantId = schemaDetails.variantId;
     sendRequest.requestStatus = 'success';
     this.schemaDetailsService.getSchemaTableDetailsByBrId(sendRequest).subscribe(resposne => {
@@ -196,7 +196,7 @@ export class SchemaDatatableComponent implements OnInit {
     const sendRequest: RequestForSchemaDetailsWithBr = new RequestForSchemaDetailsWithBr();
     sendRequest.schemaId = schemaDetails.schemaId;
     sendRequest.runId = schemaDetails.runId;
-    sendRequest.brId = schemaDetails.brInformation[schemaDetails.brInformation.length - 1].brId;
+    sendRequest.brId = schemaDetails.brInformation[schemaDetails.brInformation.length - 1] ? schemaDetails.brInformation[schemaDetails.brInformation.length - 1].brId : '';
     sendRequest.variantId = schemaDetails.variantId;
     sendRequest.requestStatus = 'all';
     sendRequest.executionStartDate = String(schemaDetails.executionStartTime);
