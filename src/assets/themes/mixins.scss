@@ -20,12 +20,12 @@
   // tooltip
   $background-palette: map-get($theme, background);
 
-  pros-home-layout .root {
-    button {
+  pros-home-layout mat-toolbar.root {
+    button.hdrBtn {
       color: mat-color($primary-palette, 700);
     }
 
-    button:hover {
+    button.hdrBtn:hover {
       color: mat-color($primary-palette, 600);
     }
   }

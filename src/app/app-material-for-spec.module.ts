@@ -41,7 +41,6 @@ import {
   MatFormFieldModule
 } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
@@ -88,8 +87,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     MatTooltipModule,
     MatTreeModule,
     DragDropModule,
-    BrowserAnimationsModule,
-    FlexLayoutModule
+    BrowserAnimationsModule
   ],
   declarations: []
 })

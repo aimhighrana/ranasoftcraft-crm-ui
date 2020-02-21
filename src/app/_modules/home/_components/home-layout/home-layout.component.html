@@ -7,11 +7,11 @@
     <span class="col-spacer"></span>
     <mat-divider vertical="true"></mat-divider>
     <span class="f-spacer"></span>
-    <button mat-icon-button matTooltip="Comming Soon ..."><mat-icon>search</mat-icon></button>
-    <button mat-icon-button matTooltip="Comming Soon ..."><mat-icon>dashboard</mat-icon></button>
-    <button mat-icon-button matTooltip="Comming Soon ..."><mat-icon>notifications</mat-icon></button>
+    <button class="hdrBtn" mat-icon-button matTooltip="Comming Soon ..."><mat-icon>search</mat-icon></button>
+    <button class="hdrBtn" mat-icon-button matTooltip="Comming Soon ..."><mat-icon>dashboard</mat-icon></button>
+    <button class="hdrBtn" mat-icon-button matTooltip="Comming Soon ..."><mat-icon>notifications</mat-icon></button>
     <span class="col-spacer"></span>
-    <button class="userBtn" mat-button [matMenuTriggerFor]="userMenu" #um="matMenuTrigger">
+    <button class="hdrBtn userBtn" mat-button [matMenuTriggerFor]="userMenu" #um="matMenuTrigger">
       <mat-icon>person</mat-icon>
       {{userDetails.fullName}}
       <mat-icon *ngIf="!um.menuOpen">arrow_left</mat-icon>
