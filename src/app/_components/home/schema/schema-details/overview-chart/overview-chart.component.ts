@@ -12,7 +12,7 @@ import { SchemalistService } from 'src/app/_services/home/schema/schemalist.serv
 })
 export class OverviewChartComponent implements OnInit {
   timeDateFormat: TimeDisplayFormat;
-  overviewChartdata: ChartDataSets[];
+  overviewChartdata: ChartDataSets[] = [];
   overviewChartLabels: Label[] = this.generateDynamicTimeSeries();
   overviewChartLegend = true;
   overviewChartType = 'line';

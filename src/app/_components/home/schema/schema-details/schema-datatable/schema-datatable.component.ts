@@ -162,7 +162,6 @@ export class SchemaDatatableComponent implements OnInit {
     sendRequest.variantId = schemaDetails.variantId;
     sendRequest.requestStatus = 'error';
     this.schemaDetailsService.getSchemaTableDetailsByBrId(sendRequest).subscribe(resposne => {
-      console.table(resposne);
       this.dataTableDataSource = new MatTableDataSource<DataTableSourceResponse>(resposne.data);
       this.dataTableDataSource.paginator = this.paginator;
       this.dataTableDataSource.sort = this.sort;
@@ -181,7 +180,6 @@ export class SchemaDatatableComponent implements OnInit {
     sendRequest.variantId = schemaDetails.variantId;
     sendRequest.requestStatus = 'success';
     this.schemaDetailsService.getSchemaTableDetailsByBrId(sendRequest).subscribe(resposne => {
-      console.table(resposne);
       this.dataTableDataSource = new MatTableDataSource<DataTableSourceResponse>(resposne.data);
       this.dataTableDataSource.paginator = this.paginator;
       this.dataTableDataSource.sort = this.sort;
@@ -201,7 +199,6 @@ export class SchemaDatatableComponent implements OnInit {
     sendRequest.requestStatus = 'all';
     sendRequest.executionStartDate = String(schemaDetails.executionStartTime);
     this.schemaDetailsService.getSchemaTableDetailsByBrId(sendRequest).subscribe(resposne => {
-      console.table(resposne);
       this.dataTableDataSource = new MatTableDataSource<DataTableSourceResponse>(resposne.data);
       this.dataTableDataSource.paginator = this.paginator;
       this.dataTableDataSource.sort = this.sort;

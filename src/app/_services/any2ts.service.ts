@@ -528,7 +528,7 @@ export class Any2tsService {
       successOverView.fill = false;
       successOverView.pointRadius = 5;
       successOverView.pointBackgroundColor = 'rgba(195, 0, 0, 1)';
-      successOverView.data = this.getOverViewDataForXYAxis(response, 'SUCCESS');
+      successOverView.data = this.getOverViewDataForXYAxis(response, 'ERROR');
 
       // for status error
       const errorOverview: OverViewChartData = new OverViewChartData();
@@ -540,7 +540,7 @@ export class Any2tsService {
       errorOverview.fill = false;
       errorOverview.pointRadius = 5;
       errorOverview.pointBackgroundColor = 'rgba(18, 164, 74, 1)';
-      errorOverview.data = this.getOverViewDataForXYAxis(response, 'ERROR');
+      errorOverview.data = this.getOverViewDataForXYAxis(response, 'SUCCESS');
 
       // for status skipped
       const skippedOverview: OverViewChartData = new OverViewChartData();
