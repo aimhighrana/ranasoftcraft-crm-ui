@@ -8,6 +8,8 @@ import { SchemaDetailsComponent } from 'src/app/_components/home/schema/schema-d
 import { SchemaVariantsComponent } from 'src/app/_components/home/schema/schema-variants/schema-variants.component';
 import { SchemaExecutionComponent } from 'src/app/_components/home/schema/schema-execution/schema-execution.component';
 import { SchemaCollaboratorsComponent } from 'src/app/_modules/schema/_components/schema-collaborators/schema-collaborators.component';
+import { CreateSchemaComponent } from 'src/app/_components/home/schema/create-schema/create-schema.component';
+import { AddbusinessruleComponent } from 'src/app/_components/home/schema/addbusinessrule/addbusinessrule.component';
 
 const routes: Routes = [
   { path: '', component: SchemaGroupsComponent },
@@ -17,6 +19,8 @@ const routes: Routes = [
   { path: 'schema-variants/:moduleId/:groupId/:schemaId', component: SchemaVariantsComponent },
   { path: 'schema-execution/:groupId/:schemaId', component: SchemaExecutionComponent },
   { path: 'collab/:schemaId', component: SchemaCollaboratorsComponent },
+  { path: 'create-schema', component: CreateSchemaComponent},
+  { path: 'addbusinessrule', component: AddbusinessruleComponent},
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent }
 ];

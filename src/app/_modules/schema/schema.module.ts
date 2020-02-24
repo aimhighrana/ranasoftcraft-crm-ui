@@ -15,6 +15,8 @@ import { SchemaStatusinfoDialogComponent } from 'src/app/_components/home/schema
 import { SchemaGroupFormComponent } from 'src/app/_modules/schema/_components/schema-group-form/schema-group-form.component';
 import { SchemaExecutionComponent } from 'src/app/_components/home/schema/schema-execution/schema-execution.component';
 import { SchemaCollaboratorsComponent } from 'src/app/_modules/schema/_components/schema-collaborators/schema-collaborators.component';
+import { CreateSchemaComponent } from 'src/app/_components/home/schema/create-schema/create-schema.component';
+import { AddbusinessruleComponent } from 'src/app/_components/home/schema/addbusinessrule/addbusinessrule.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +32,9 @@ import { SchemaCollaboratorsComponent } from 'src/app/_modules/schema/_component
     SchemaStatusinfoDialogComponent,
     SchemaGroupFormComponent,
     SchemaExecutionComponent,
-    SchemaCollaboratorsComponent
+    SchemaCollaboratorsComponent,
+    CreateSchemaComponent,
+    AddbusinessruleComponent
   ],
   imports: [
     CommonModule,

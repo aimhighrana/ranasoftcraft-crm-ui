@@ -1,0 +1,316 @@
+<div class="root">
+
+    <div class="breadcrumb-wrapper">
+        <pros-breadcrumb [crumbs]="breadcrumb"></pros-breadcrumb>
+    </div>
+
+    <div class="f-col addrule">
+
+        <h3 class="mat-h3">Add Rule</h3>
+
+        <div class="f-row">
+
+            <mat-card class="mat-elevation-z3 rules">
+                <div class="f-row">
+                    <mat-radio-group>
+                        <mat-radio-button value="1" color="primary"></mat-radio-button>
+                    </mat-radio-group>
+                    <div class="f-col">
+                        <h4 class="mat-h4">Missing Rule</h4>
+                        <p>This rule establish a dependency relationship between source and target fields</p>
+                    </div>
+                    <span class="f-spacer"></span>
+                    <pros-svg-icon size="70" icon="P_BR_MISSING_RULE" color="primary"></pros-svg-icon>
+                </div>
+            </mat-card>
+
+            <mat-card class="mat-elevation-z3 rules">
+                <div class="f-row">
+                    <mat-radio-group>
+                        <mat-radio-button value="1" color="primary"></mat-radio-button>
+                    </mat-radio-group>
+                    <div class="f-col">
+                        <h4 class="mat-h4">Metadata Rule</h4>
+                        <p>This rule establish a dependency relationship between source and target fields</p>
+                    </div>
+                    <span class="f-spacer"></span>
+                    <pros-svg-icon size="70" icon="P_BR_METADATA_RULE" color="primary"></pros-svg-icon>
+                </div>
+            </mat-card>
+
+            <mat-card class="mat-elevation-z3 rules">
+                <div class="f-row">
+                    <mat-radio-group>
+                        <mat-radio-button value="1" color="primary"></mat-radio-button>
+                    </mat-radio-group>
+                    <div class="f-col">
+                        <h4 class="mat-h4">User Defined Rule</h4>
+                        <p>This rule establish a dependency relationship between source and target fields</p>
+                    </div>
+                    <span class="f-spacer"></span>
+                    <pros-svg-icon size="70" icon="P_BR_UDR_RULE" color="primary"></pros-svg-icon>
+                </div>
+            </mat-card>
+
+            <mat-card class="mat-elevation-z3 rules">
+                <div class="f-row">
+                    <mat-radio-group>
+                        <mat-radio-button value="1" color="primary"></mat-radio-button>
+                    </mat-radio-group>
+                    <div class="f-col">
+                        <h4 class="mat-h4">User Defined Rule</h4>
+                        <p>This rule establish a dependency relationship between source and target fields</p>
+                    </div>
+                    <span class="f-spacer"></span>
+                    <pros-svg-icon size="70" icon="P_BR_UDR_RULE" color="primary"></pros-svg-icon>
+                </div>
+            </mat-card>
+
+        </div>
+    </div>
+
+    <!-- Missing Buisness Rule Container Starts Here-->
+    <mat-card class="mat-elevation-z3 rulesfields">
+        <mat-toolbar>
+            <mat-toolbar-row>
+              <span>Fill Details</span>
+            </mat-toolbar-row>
+        </mat-toolbar>
+
+        <div class="f-col">
+            <mat-form-field>
+                <mat-label>Description</mat-label>
+                <input matInput>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Select Fields</mat-label>
+                <input matInput>
+            </mat-form-field>
+
+            <div class="f-row fieldselection">
+
+                <mat-card class="mat-elevation-z2">
+                    <mat-checkbox color="primary">
+                      <label class="tilelabel">Criticality</label>
+                    </mat-checkbox>      
+                </mat-card> 
+
+                <mat-card class="mat-elevation-z2">
+                    <mat-checkbox color="primary">
+                      <label class="tilelabel">Acquisition Date</label>
+                    </mat-checkbox>      
+                </mat-card> 
+
+                <mat-card class="mat-elevation-z2">
+                    <mat-checkbox color="primary">
+                      <label class="tilelabel">Acquisition Value</label>
+                    </mat-checkbox>      
+                </mat-card> 
+
+                <mat-card class="mat-elevation-z2">
+                    <mat-checkbox color="primary">
+                      <label class="tilelabel">Actual Superior Functional</label>
+                    </mat-checkbox>      
+                </mat-card> 
+
+                <mat-card class="mat-elevation-z2">
+                    <mat-checkbox color="primary">
+                      <label class="tilelabel">Main Asset Number</label>
+                    </mat-checkbox>      
+                </mat-card> 
+
+                <mat-card class="mat-elevation-z2">
+                    <mat-checkbox color="primary">
+                      <label class="tilelabel">Attachment Details</label>
+                    </mat-checkbox>      
+                </mat-card> 
+
+                <mat-card class="mat-elevation-z2">
+                    <mat-checkbox color="primary">
+                      <label class="tilelabel">Business Area</label>
+                    </mat-checkbox>      
+                </mat-card> 
+
+            </div>
+
+        </div>
+    </mat-card>
+    <!-- Missing Buisness Rule Container End Here-->    
+
+
+    <!-- User Defined Buisness Rule Container Starts Here-->
+    <mat-card class="mat-elevation-z3 rulesfields">
+        <mat-toolbar>
+            <mat-toolbar-row>
+              <span>Create Conditions</span>
+            </mat-toolbar-row>
+        </mat-toolbar>
+
+        <div class="f-col">
+            <mat-form-field>
+                <mat-label>Condition Name</mat-label>
+                <input matInput>
+            </mat-form-field>
+            <div class="f-row">
+            <mat-form-field>
+                <mat-label>Field</mat-label>
+                <mat-select>
+                    <mat-option value="option">Option</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <div class="col-spacer"></div>
+
+            <mat-form-field>
+                <mat-label>Operator</mat-label>
+                <mat-select>
+                    <mat-option value="option">Option</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <div class="col-spacer"></div>
+
+            <mat-form-field>
+                <mat-label>Comparison</mat-label>
+                <mat-select>
+                    <mat-option value="option">Option</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <div class="col-spacer"></div>
+
+            <mat-form-field>
+                <mat-label>Comparison Value</mat-label>
+                <input matInput>
+            </mat-form-field>
+
+            </div>
+            <mat-card-actions>
+                <button mat-flat-button color="primary">Save</button>
+            </mat-card-actions>
+        </div>
+    </mat-card>
+
+    <mat-card class="mat-elevation-z3 condition-col">
+        <mat-toolbar>
+            <mat-toolbar-row>
+              <span>Conditions List</span>
+              <span class="f-spacer"></span>
+              <button mat-button>Expand All</button>
+            </mat-toolbar-row>
+        </mat-toolbar>
+        <mat-card class="mat-elevation-z0">
+            <mat-accordion class="mat-elevation-z2">
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                        Condition Text One
+                        </mat-panel-title>
+                        <div class="f-spacer"></div>
+                        <button mat-icon-button><mat-icon matTooltip="Delete">delete</mat-icon></button>
+                    </mat-expansion-panel-header>
+                    <p>I'm visible because I am open</p>
+                </mat-expansion-panel>
+
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                        Condition Text One
+                        </mat-panel-title>
+                        <div class="f-spacer"></div>
+                        <button mat-icon-button><mat-icon matTooltip="Delete">delete</mat-icon></button>
+                    </mat-expansion-panel-header>
+                    <p>I'm visible because I am open</p>
+                </mat-expansion-panel>
+
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                        Condition Text Two
+                        </mat-panel-title>
+                        <div class="f-spacer"></div>
+                        <button mat-icon-button><mat-icon matTooltip="Delete">delete</mat-icon></button>
+                    </mat-expansion-panel-header>
+                    <p>I'm visible because I am open</p>
+                </mat-expansion-panel>
+
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                        Condition Text Three
+                        </mat-panel-title>
+                        <div class="f-spacer"></div>
+                        <button mat-icon-button><mat-icon matTooltip="Delete">delete</mat-icon></button>
+                    </mat-expansion-panel-header>
+                    <p>I'm visible because I am open</p>
+                </mat-expansion-panel>
+
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                        Condition Text Four
+                        </mat-panel-title>
+                        <div class="f-spacer"></div>
+                        <button mat-icon-button><mat-icon matTooltip="Delete">delete</mat-icon></button>
+                    </mat-expansion-panel-header>
+                    <p>I'm visible because I am open</p>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </mat-card>
+        
+    </mat-card>
+
+    <mat-card class="mat-elevation-z3 condition-col">
+        <mat-toolbar>
+            <mat-toolbar-row>
+              <span>And/Or Block</span>
+            </mat-toolbar-row>
+        </mat-toolbar>
+        <mat-card class="mat-elevation-z0">
+            <mat-accordion class="mat-elevation-z2">
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                        Condition Type One
+                        </mat-panel-title>
+                        <div class="f-spacer"></div>
+                        <button mat-icon-button><mat-icon matTooltip="Delete">delete</mat-icon></button>
+                    </mat-expansion-panel-header>
+                    <p>I'm visible because I am open</p>
+                </mat-expansion-panel>
+                <div class="condition-division">And</div>
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                        Condition Type One
+                        </mat-panel-title>
+                        <div class="f-spacer"></div>
+                        <button mat-icon-button><mat-icon matTooltip="Delete">delete</mat-icon></button>
+                    </mat-expansion-panel-header>
+                    <p>I'm visible because I am open</p>
+                </mat-expansion-panel>
+
+                <pros-add-tile class="tile" text="Add Add" routerLink="/home/schema/group/new"></pros-add-tile>
+                <div class="f-row-spacer-half"></div>
+                <pros-add-tile class="tile" text="Add Or" routerLink="/home/schema/group/new"></pros-add-tile>
+            </mat-accordion>
+        </mat-card>
+        
+    </mat-card>
+    <!-- User Defined Buisness Rule Container End Here-->
+
+
+
+
+
+
+<mat-card class="container-show content-row">
+    <mat-card-actions>
+        <button mat-flat-button>Back</button>
+        <button mat-flat-button color="primary">Finish Process</button>
+    </mat-card-actions>
+</mat-card>
+    
+</div> 
+

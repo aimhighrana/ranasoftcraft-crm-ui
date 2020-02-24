@@ -1,0 +1,130 @@
+<div class="root">
+    <div class="breadcrumb-wrapper">
+        <pros-breadcrumb [crumbs]="breadcrumb"></pros-breadcrumb>
+    </div>
+
+    <mat-card class="mat-elevation-z3 categories">
+        
+            <mat-form-field>
+                <mat-label>Schema Name</mat-label>
+                <input matInput>
+            </mat-form-field>
+   
+    <h3 class="mat-h3">Category</h3>
+    <mat-card class="category-section">
+      
+            <mat-form-field appearance="fill">
+                <input matInput placeholder="Category Name" required>
+            </mat-form-field>
+      
+        <div class="f-row">
+            <mat-card class="mat-elevation-z3 br-tile">
+                <div class="f-row">
+                    <pros-svg-icon size="40" icon="P_BR_METADATA_RULE" color="primary"></pros-svg-icon>
+                    <h4 class="mat-h4">Missing Business Rule</h4>
+                </div>
+                <div class="f-row">
+                    <button mat-icon-button><mat-icon matTooltip="Edit">edit</mat-icon></button> 
+                    <button mat-icon-button><mat-icon matTooltip="Delete">delete_outline</mat-icon></button>
+                </div>
+            </mat-card>
+
+            <mat-card class="mat-elevation-z3 br-tile">
+                <div class="f-row">
+                    <pros-svg-icon size="40" icon="P_BR_METADATA_RULE" color="primary"></pros-svg-icon>
+                    <h4 class="mat-h4">Missing Business Rule</h4>
+                </div>
+                <div class="f-row">
+                    <button mat-icon-button><mat-icon matTooltip="Edit">edit</mat-icon></button> 
+                    <button mat-icon-button><mat-icon matTooltip="Delete">delete_outline</mat-icon></button>
+                </div>
+            </mat-card>
+
+            <mat-card class="mat-elevation-z3 br-tile">
+                <div class="f-row">
+                    <pros-svg-icon size="40" icon="P_BR_METADATA_RULE" color="primary"></pros-svg-icon>
+                    <h4 class="mat-h4">Missing Business Rule</h4>
+                </div>
+                <div class="f-row">
+                    <button mat-icon-button><mat-icon matTooltip="Edit">edit</mat-icon></button> 
+                    <button mat-icon-button><mat-icon matTooltip="Delete">delete_outline</mat-icon></button>
+                </div>
+            </mat-card>
+
+            <mat-card class="mat-elevation-z3 br-tile">
+                <div class="f-row">
+                    <pros-svg-icon size="40" icon="P_BR_METADATA_RULE" color="primary"></pros-svg-icon>
+                    <h4 class="mat-h4">Missing Business Rule</h4>
+                </div>
+                <div class="f-row">
+                    <button mat-icon-button><mat-icon matTooltip="Edit">edit</mat-icon></button> 
+                    <button mat-icon-button><mat-icon matTooltip="Delete">delete_outline</mat-icon></button>
+                </div>
+            </mat-card>
+
+            <mat-card class="mat-elevation-z3 br-tile">
+                <div class="f-row">
+                    <pros-svg-icon size="40" icon="P_BR_METADATA_RULE" color="primary"></pros-svg-icon>
+                    <h4 class="mat-h4">Missing Business Rule</h4>
+                </div>
+                <div class="f-row">
+                    <button mat-icon-button><mat-icon matTooltip="Edit">edit</mat-icon></button> 
+                    <button mat-icon-button><mat-icon matTooltip="Delete">delete_outline</mat-icon></button>
+                </div>
+            </mat-card>
+        </div>
+    </mat-card>
+    <div class="row-spacer"></div>
+    <pros-add-tile class="tile" text="Add a new category" routerLink="/home/schema/group/new"></pros-add-tile>
+
+    <mat-card-actions>
+        <button mat-flat-button>Cancel</button>
+        <button mat-flat-button color="primary">Save</button>
+    </mat-card-actions>
+
+    </mat-card>
+
+    <mat-card class="mat-elevation-z3 brs">
+        <h3 class="mat-h3">Business Rules</h3>
+       
+        <div class="f-col">
+            <mat-card class="mat-elevation-z3 br-tile">
+                <div class="f-row">
+                    <pros-svg-icon size="40" icon="P_BR_METADATA_RULE" color="primary"></pros-svg-icon>
+                    <h4 class="mat-h4">Metadata Business Rule</h4>
+                </div>
+                <div class="f-row">
+                    <button mat-icon-button><mat-icon matTooltip="Edit">edit</mat-icon></button> 
+                    <button mat-icon-button><mat-icon matTooltip="Delete">delete_outline</mat-icon></button>
+                </div>
+            </mat-card>
+            <div class="row-spacer"></div>
+            <mat-card class="mat-elevation-z3 br-tile">
+                <div class="f-row">
+                    <pros-svg-icon size="40" icon="P_BR_UDR_RULE" color="primary"></pros-svg-icon>
+                    <h4 class="mat-h4">User Defined Business Rule</h4>
+                </div>
+                <div class="f-row">
+                    <button mat-icon-button><mat-icon matTooltip="Edit">edit</mat-icon></button> 
+                    <button mat-icon-button><mat-icon matTooltip="Delete">delete_outline</mat-icon></button>
+                </div>
+            </mat-card>
+            <div class="row-spacer"></div>
+            <mat-card class="mat-elevation-z3 br-tile">
+                <div class="f-row">
+                    <pros-svg-icon size="40" icon="P_BR_MISSING_RULE" color="primary"></pros-svg-icon>
+                    <h4 class="mat-h4">Missing Business Rule</h4>
+                </div>
+                <div class="f-row">
+                    <button mat-icon-button><mat-icon matTooltip="Edit">edit</mat-icon></button> 
+                    <button mat-icon-button><mat-icon matTooltip="Delete">delete_outline</mat-icon></button>
+                </div>
+            </mat-card>
+        </div>
+
+        <div class="row-spacer"></div>
+
+        <pros-add-tile class="tile" text="Add a new business rule" routerLink="/home/schema/group/new"></pros-add-tile>
+    </mat-card>
+    
+</div>
