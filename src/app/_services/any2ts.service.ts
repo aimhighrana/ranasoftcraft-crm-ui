@@ -381,8 +381,8 @@ export class Any2tsService {
         schemaDetail.successTrendValue = schema.successTrendValue ? schema.successTrendValue : 'N/A';
         schemaDetail.errorTrendValue = schema.errorTrendValue ? schema.errorTrendValue : 'N/A';
         schemaDetail.variantCount = schema.variantCount ? schema.variantCount : 0;
-        schemaDetail.executionStartTime = schema.executionStartTime ? schema.executionStartTime : 0;
-        schemaDetail.executionEndTime = schema.executionEndTime ? schema.executionEndTime : 0;
+        schemaDetail.executionStartTime = schema.executionStartTime ? schema.executionStartTime : '';
+        schemaDetail.executionEndTime = schema.executionEndTime ? schema.executionEndTime : '';
         schamaListDetails.push(schemaDetail);
       });
       schemaLstView.schemaLists = schamaListDetails;

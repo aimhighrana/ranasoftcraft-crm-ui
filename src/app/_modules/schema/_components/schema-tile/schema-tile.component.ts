@@ -71,12 +71,12 @@ export class SchemaTileComponent implements OnInit {
   }
 
   public percentageErrorStr(): number {
-    const num = this.showUnique ? this.errorUniqueValue / this.totalUniqueValue : this.errorValue / this.totalValue;
+    const num = this.showUnique ? (this.totalUniqueValue > 0 ? this.errorUniqueValue / this.totalUniqueValue : 0) : (this.totalValue > 0 ? this.errorValue / this.totalValue : 0);
     return Math.round((num + Number.EPSILON) * 100 * 100) / 100;
   }
 
   public percentageSuccessStr(): number {
-    const num = this.showUnique ? this.successUniqueValue / this.totalUniqueValue : this.successValue / this.totalValue;
+    const num = this.showUnique ? (this.totalUniqueValue > 0 ? this.successUniqueValue / this.totalUniqueValue : 0) : (this.totalValue > 0 ? this.successValue / this.totalValue : 0);
     return Math.round((num + Number.EPSILON) * 100 * 100) / 100;
   }
 

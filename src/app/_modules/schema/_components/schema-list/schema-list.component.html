@@ -8,7 +8,7 @@
       [routerLink]="['/home', 'schema', 'schema-details', module.moduleId, schemaGroupId, schema.schemaId]"
 
       title="{{ schema.schemaDescription }}" 
-      bottomLeftLabel="3 Variants"
+      bottomLeftLabel="{{ schema.variantCount }} Variants"
       bottomRightLabel="Run"
 
       info="true"
@@ -30,7 +30,7 @@
       successTrendValue="{{ schema.successTrendValue }}"
       errorTrendValue="{{ schema.errorTrendValue }}"
 
-      timestamp="{{ schema.executionEndTime | date}}"
+      timestamp="{{ schema.executionEndTime | date }}"
 
       (evtEdit)="edit(schema);"
       (evtBottomLeft)="variants(module.moduleId, schema.schemaId);"
