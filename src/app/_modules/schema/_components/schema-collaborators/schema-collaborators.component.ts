@@ -12,4 +12,6 @@ export class SchemaCollaboratorsComponent implements OnInit {
   ngOnInit() {
   }
 
+
+
 }

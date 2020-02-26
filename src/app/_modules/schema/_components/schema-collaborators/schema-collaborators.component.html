@@ -1,1 +1,135 @@
-<p>schema-collaborators works!</p>
+<div class="root f-col">
+    <mat-toolbar>
+        <mat-toolbar-row>
+          <span>Collaborators</span>
+          <span class="f-spacer"></span>
+          <button mat-icon-button><mat-icon>close</mat-icon></button>
+        </mat-toolbar-row>
+    </mat-toolbar>
+
+    <mat-form-field>
+        <mat-label>Search Collaborators</mat-label>
+        <input matInput>
+    </mat-form-field>
+    <div class="f-col collaborators-list">
+        <mat-card class="mat-elevation-z3 collaborators-card">
+            <div class="f-row">
+                <div class="mat-card-avatar"><mat-icon mat-list-icon>person</mat-icon></div>
+                <div class="f-col">
+                    <h4 mat-line>Mark John</h4>
+                    <p mat-line>mark.john@prospecta.com</p>
+                </div>
+                <div class="f-spacer"></div>
+                <button mat-icon-button color="primary"><mat-icon>save</mat-icon></button>
+            </div>
+            <div class="f-row permissions">
+                <mat-slide-toggle color="primary">Admin</mat-slide-toggle>
+                <mat-slide-toggle color="primary">View</mat-slide-toggle>
+                <mat-slide-toggle color="primary">Editor</mat-slide-toggle>
+                <mat-slide-toggle color="primary">Reviewer</mat-slide-toggle>
+            </div>
+        </mat-card>
+
+        <mat-card class="mat-elevation-z0 collaborators-card">
+            <div class="f-row">
+                <div class="mat-card-avatar"><mat-icon mat-list-icon>person</mat-icon></div>
+                <div class="f-col">
+                    <h4 mat-line>Rahul Khurana</h4>
+                    <p mat-line>mark.john@prospecta.com</p>
+                </div>
+                <div class="f-spacer"></div>
+                <button mat-icon-button color="primary"><mat-icon>edit</mat-icon></button>
+            </div>
+        </mat-card>
+
+        <mat-card class="mat-elevation-z0 collaborators-card">
+            <div class="f-row">
+                <div class="mat-card-avatar"><mat-icon mat-list-icon>person</mat-icon></div>
+                <div class="f-col">
+                    <h4 mat-line>Jayant</h4>
+                    <p mat-line>mark.john@prospecta.com</p>
+                </div>
+                <div class="f-spacer"></div>
+                <button mat-icon-button color="primary"><mat-icon>edit</mat-icon></button>
+            </div>
+            <div class="f-row permissions">
+                <mat-slide-toggle color="primary">Admin</mat-slide-toggle>
+                <mat-slide-toggle color="primary">View</mat-slide-toggle>
+                <mat-slide-toggle color="primary">Editor</mat-slide-toggle>
+                <mat-slide-toggle color="primary">Reviewer</mat-slide-toggle>
+            </div>
+        </mat-card>
+
+        <mat-card class="mat-elevation-z0 collaborators-card">
+            <div class="f-row">
+                <div class="mat-card-avatar"><mat-icon mat-list-icon>person</mat-icon></div>
+                <div class="f-col">
+                    <h4 mat-line>Sandeep</h4>
+                    <p mat-line>mark.john@prospecta.com</p>
+                </div>
+                <div class="f-spacer"></div>
+                <button mat-icon-button color="primary"><mat-icon>edit</mat-icon></button>
+            </div>
+        </mat-card>
+
+        <mat-card class="mat-elevation-z0 collaborators-card">
+            <div class="f-row">
+                <div class="mat-card-avatar"><mat-icon mat-list-icon>person</mat-icon></div>
+                <div class="f-col">
+                    <h4 mat-line>Abhishek</h4>
+                    <p mat-line>mark.john@prospecta.com</p>
+                </div>
+                <div class="f-spacer"></div>
+                <button mat-icon-button color="primary"><mat-icon>edit</mat-icon></button>
+            </div>
+        </mat-card>
+
+        <mat-card class="mat-elevation-z0 collaborators-card">
+            <div class="f-row">
+                <div class="mat-card-avatar"><mat-icon mat-list-icon>person</mat-icon></div>
+                <div class="f-col">
+                    <h4 mat-line>Amit</h4>
+                    <p mat-line>mark.john@prospecta.com</p>
+                </div>
+                <div class="f-spacer"></div>
+                <button mat-icon-button color="primary"><mat-icon>edit</mat-icon></button>
+            </div>
+        </mat-card>
+
+        <mat-card class="mat-elevation-z0 collaborators-card">
+            <div class="f-row">
+                <div class="mat-card-avatar"><mat-icon mat-list-icon>person</mat-icon></div>
+                <div class="f-col">
+                    <h4 mat-line>Amit</h4>
+                    <p mat-line>mark.john@prospecta.com</p>
+                </div>
+                <div class="f-spacer"></div>
+                <button mat-icon-button color="primary"><mat-icon>edit</mat-icon></button>
+            </div>
+        </mat-card>
+    </div>
+
+    
+
+    <div class="f-col collaborators-add">
+        <mat-divider></mat-divider>
+        <div class="f-row-spacer-half"></div>
+        <h3 mat-line>Add Collaborators</h3>
+
+        <mat-form-field>
+            <mat-label>Email Address</mat-label>
+            <input matInput>
+        </mat-form-field>
+        
+        <h4 mat-line>Permissions</h4>
+        <div class="f-row permissions">
+            <mat-slide-toggle color="primary">Admin</mat-slide-toggle>
+            <mat-slide-toggle color="primary">View</mat-slide-toggle>
+            <mat-slide-toggle color="primary">Editor</mat-slide-toggle>
+            <mat-slide-toggle color="primary">Reviewer</mat-slide-toggle>
+        </div>
+        <div class="f-row-spacer-half"></div>
+         <div class="f-row action"><button mat-flat-button color="primary">Add</button></div>
+        
+    </div>
+</div>
