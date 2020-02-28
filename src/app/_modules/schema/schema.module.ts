@@ -13,10 +13,11 @@ import { SchemaDatatableComponent } from 'src/app/_components/home/schema/schema
 import { SchemaVariantsComponent } from 'src/app/_components/home/schema/schema-variants/schema-variants.component';
 import { SchemaStatusinfoDialogComponent } from 'src/app/_components/home/schema/schema-details/schema-statusinfo-dialog/schema-statusinfo-dialog.component';
 import { SchemaGroupFormComponent } from 'src/app/_modules/schema/_components/schema-group-form/schema-group-form.component';
-import { SchemaExecutionComponent } from 'src/app/_components/home/schema/schema-execution/schema-execution.component';
 import { SchemaCollaboratorsComponent } from 'src/app/_modules/schema/_components/schema-collaborators/schema-collaborators.component';
 import { CreateSchemaComponent } from 'src/app/_components/home/schema/create-schema/create-schema.component';
 import { AddbusinessruleComponent } from 'src/app/_components/home/schema/addbusinessrule/addbusinessrule.component';
+import { SchemaExecutionComponent } from './_components/schema-execution/schema-execution.component';
+import { SchemaExecutionDialogComponent } from './_components/schema-execution/schema-execution-dialog/schema-execution-dialog.component';
 
 @NgModule({
   declarations: [
@@ -34,13 +35,14 @@ import { AddbusinessruleComponent } from 'src/app/_components/home/schema/addbus
     SchemaExecutionComponent,
     SchemaCollaboratorsComponent,
     CreateSchemaComponent,
-    AddbusinessruleComponent
+    AddbusinessruleComponent,
+    SchemaExecutionDialogComponent
   ],
   imports: [
     CommonModule,
     SchemaRoutingModule,
     SharedModule
   ],
-  entryComponents: [ SchemaStatusinfoDialogComponent ]
+  entryComponents: [ SchemaStatusinfoDialogComponent, SchemaExecutionDialogComponent]
 })
 export class SchemaModule { }

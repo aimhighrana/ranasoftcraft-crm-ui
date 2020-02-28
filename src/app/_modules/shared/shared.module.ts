@@ -14,7 +14,7 @@ import { ChartsModule } from 'ng2-charts';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { ClickStopPropagationDirective } from 'src/app/_directives/click-stop-propagation.directive';
 import { SubstringPipe } from 'src/app/_pipes/substringpipe.pipe';
-
+import { ThousandconvertorPipe } from 'src/app/_pipes/thousandconvertor.pipe';
 
 
 @NgModule({
@@ -22,6 +22,7 @@ import { SubstringPipe } from 'src/app/_pipes/substringpipe.pipe';
     // shared directives
     ClickStopPropagationDirective,
     SubstringPipe,
+    ThousandconvertorPipe,
     // shared components
     PageNotFoundComponent,
     BreadcrumbComponent,
@@ -145,7 +146,8 @@ import { SubstringPipe } from 'src/app/_pipes/substringpipe.pipe';
     PageNotFoundComponent,
     BreadcrumbComponent,
     AddTileComponent,
-    SvgIconComponent
-  ]
+    SvgIconComponent,
+    ThousandconvertorPipe
+]
 })
 export class SharedModule { }

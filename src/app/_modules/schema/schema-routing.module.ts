@@ -6,7 +6,7 @@ import { SchemaGroupFormComponent } from 'src/app/_modules/schema/_components/sc
 import { SchemaListComponent } from 'src/app/_modules/schema/_components/schema-list/schema-list.component';
 import { SchemaDetailsComponent } from 'src/app/_components/home/schema/schema-details/schema-details.component';
 import { SchemaVariantsComponent } from 'src/app/_components/home/schema/schema-variants/schema-variants.component';
-import { SchemaExecutionComponent } from 'src/app/_components/home/schema/schema-execution/schema-execution.component';
+import { SchemaExecutionComponent } from './_components/schema-execution/schema-execution.component';
 import { SchemaCollaboratorsComponent } from 'src/app/_modules/schema/_components/schema-collaborators/schema-collaborators.component';
 import { CreateSchemaComponent } from 'src/app/_components/home/schema/create-schema/create-schema.component';
 import { AddbusinessruleComponent } from 'src/app/_components/home/schema/addbusinessrule/addbusinessrule.component';

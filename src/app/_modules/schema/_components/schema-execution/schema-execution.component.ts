@@ -5,12 +5,15 @@ import { SchemalistService } from 'src/app/_services/home/schema/schemalist.serv
 import { ActivatedRoute, Router } from '@angular/router';
 import { SchemaExecutionService } from 'src/app/_services/home/schema/schema-execution.service';
 import { SchemaExecutionRequest } from 'src/app/_models/schema/schema-execution';
+import { MatDialog } from '@angular/material';
+import { SchemaExecutionDialogComponent } from './schema-execution-dialog/schema-execution-dialog.component';
 
 @Component({
   selector: 'pros-schema-execution',
   templateUrl: './schema-execution.component.html',
   styleUrls: ['./schema-execution.component.scss']
 })
+
 export class SchemaExecutionComponent implements OnInit {
 
   breadcrumb: Breadcrumb = {
@@ -33,7 +36,8 @@ export class SchemaExecutionComponent implements OnInit {
     private schemaListService: SchemalistService,
     private activatedRouter: ActivatedRoute,
     private schemaExecutionService: SchemaExecutionService,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog
   ) {
     this.schemaDetail = new SchemaListDetails();
    }
@@ -43,7 +47,7 @@ export class SchemaExecutionComponent implements OnInit {
       this.schemaId = param.schemaId;
       this.groupId = param.groupId;
       this.getSchemaDetail(this.schemaId);
-    });
+});
   }
 
   private getSchemaDetail(schemaId: string) {
@@ -66,6 +70,15 @@ export class SchemaExecutionComponent implements OnInit {
     }, error => {
       console.error('Error while schedule schema');
     });
+}
+  openDialog() {
+    const dialogRef = this.dialog.open(SchemaExecutionDialogComponent, {
+      height: '400px',
+      width: '550px',
+      data: {schemaId: this.schemaId}
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
   }
-
 }
