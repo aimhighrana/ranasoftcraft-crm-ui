@@ -15,7 +15,7 @@ const routes: Routes = [
   { path: '', component: SchemaGroupsComponent },
   { path: 'group/:groupId', component: SchemaGroupFormComponent },
   { path: 'schema-list/:schemaGrpId', component: SchemaListComponent },
-  { path: 'schema-details/:moduleId/:schemaGroupId/:schemaId', component: SchemaDetailsComponent },
+  { path: 'schema-details/:moduleId/:schemaGroupId/:schemaId/:variantId', component: SchemaDetailsComponent },
   { path: 'schema-variants/:moduleId/:groupId/:schemaId', component: SchemaVariantsComponent },
   { path: 'schema-execution/:groupId/:schemaId', component: SchemaExecutionComponent },
   { path: 'collab/:schemaId', component: SchemaCollaboratorsComponent },

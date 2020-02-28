@@ -22,12 +22,15 @@ export class CategoriesChartComponent implements OnInit {
   categoryId: string;
   @Input()
   schemaStatus: string;
+  @Input()
+  variantId: string;
+
   selectedCategoryId: string;
   selectedStatus: string;
   categoryInfoLst: CategoryInfo[];
   schemaStatusLst: string[];
   schemaDetails: SchemaListDetails;
-  categoryChartData: ChartDataSets[];
+  categoryChartData: ChartDataSets[] = [{ data: []}];
   categoryChartDataDetails: CategoryChartDataSet;
   categoryChartLabels: Label[] = this.generateDynamicTimeSeries();
   categoryChartOptions: ChartOptions = {
@@ -77,7 +80,7 @@ export class CategoriesChartComponent implements OnInit {
     private schemaDetailsService: SchemaDetailsService,
     private schemaListService: SchemalistService
   ) {
-    this.categoryChartData = [];
+    this.categoryChartData = [{ data: []}];
     this.categoryInfoLst = [];
     this.schemaStatusLst = [];
     this.categoryChartDataDetails = new CategoryChartDataSet();

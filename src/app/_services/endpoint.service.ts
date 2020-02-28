@@ -143,4 +143,15 @@ export class EndpointService {
   public scheduleSchemaCount(schemaId: string): string {
     return this.apiUrl + '/schema/record-count/' + schemaId;
   }
+  public getMetadataFields(objectId: string): string {
+    return this.apiUrl + '/schema/metadata-fileds/' + objectId;
+  }
+
+  public getFieldsOfGridUrl(gridId: string): string {
+    return `${this.apiUrl}/schema/fields-of-grid/${gridId}`;
+  }
+
+  public getFieldsOfheirerchy(heirerchyId: string): string {
+    return `${this.apiUrl}/schema/fields-of-heirerchy/${heirerchyId}`;
+  }
 }

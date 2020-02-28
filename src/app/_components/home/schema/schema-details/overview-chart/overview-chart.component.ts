@@ -11,9 +11,10 @@ import { SchemalistService } from 'src/app/_services/home/schema/schemalist.serv
   styleUrls: ['./overview-chart.component.scss']
 })
 export class OverviewChartComponent implements OnInit {
+
   timeDateFormat: TimeDisplayFormat;
-  overviewChartdata: ChartDataSets[] = [];
-  overviewChartLabels: Label[] = this.generateDynamicTimeSeries();
+  overviewChartdata: ChartDataSets[];
+  overviewChartLabels: Label[] = [];
   overviewChartLegend = true;
   overviewChartType = 'line';
 
@@ -21,6 +22,10 @@ export class OverviewChartComponent implements OnInit {
   schemaId: string;
   @Input()
   runId: string;
+
+  @Input()
+  variantId: string;
+
   schemaDetails: SchemaListDetails;
   overviewChartOptions: ChartOptions = {
     responsive: true,
@@ -85,35 +90,28 @@ export class OverviewChartComponent implements OnInit {
     private schemaDetailsService: SchemaDetailsService,
     private schemaListService: SchemalistService
   ) {
-    this.overviewChartdata = [];
+    this.overviewChartdata = [{ data: []}];
     this.schemaDetails = new SchemaListDetails();
   }
 
   ngOnInit() {
     this.getSchemaDetails();
+    this.getOverViewChartdata(this.schemaId, this.variantId);
   }
 
-  getOverViewChartdata(schemaId: string, variantId: string, runId: string) {
+  private getOverViewChartdata(schemaId: string, variantId: string) {
     this.schemaDetailsService.getOverviewChartDetails(schemaId, variantId, undefined).subscribe(data => {
       this.overviewChartdata = data.dataSet as any;
-      console.log(this.overviewChartdata);
     }, error => {
-      console.error('Execption while fetching overview chart data');
+      console.error(`Execption while fetching overview chart data ${error}`);
     });
-  }
-
-  generateDynamicTimeSeries(): Label[] {
-    const array = new Array();
-    /*for (let i = 7; i > 1; i--) {
-      array.push(moment().add(i, 'd').toDate());
-    }*/
-    return array;
   }
 
   private getSchemaDetails() {
     this.schemaListService.getSchemaDetailsBySchemaId(this.schemaId).subscribe(data => {
       this.schemaDetails = data;
-      this.getOverViewChartdata(this.schemaId, this.schemaDetails.variantId, this.schemaDetails.runId);
+    },error=>{
+      console.error(`Exception while fetching schema details ${error}`);
     });
   }
 }

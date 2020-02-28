@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { EndpointService } from '../../endpoint.service';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { SendReqForSchemaDataTableColumnInfo, SendDataForSchemaTableShowMore, SchemaDataTableColumnInfoResponse, RequestForSchemaDetailsWithBr, DataTableSourceResponse, SchemaTableViewRequest, OverViewChartDataSet, CategoryInfo, CategoryChartDataSet } from 'src/app/_models/schema/schemadetailstable';
+import { SendReqForSchemaDataTableColumnInfo, SendDataForSchemaTableShowMore, SchemaDataTableColumnInfoResponse, RequestForSchemaDetailsWithBr, DataTableSourceResponse, SchemaTableViewRequest, OverViewChartDataSet, CategoryInfo, CategoryChartDataSet, MetadataModeleResponse } from 'src/app/_models/schema/schemadetailstable';
 import * as moment from 'moment';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../../any2ts.service';
@@ -68,7 +68,7 @@ export class SchemaDetailsService {
 
   public getSchemaTableDetailsByBrId(request: RequestForSchemaDetailsWithBr): Observable<DataTableSourceResponse> {
     return this.http.post<any>(this.endpointService.getSchemaTableDetailsUrl(), request).pipe(map(response => {
-      return this.any2tsService.any2SchemaTableData(this.any2tsService.any2DataTable(response));
+      return this.any2tsService.any2SchemaTableData(this.any2tsService.any2DataTable(response, request), request);
     }));
   }
 
@@ -105,4 +105,9 @@ export class SchemaDetailsService {
     }));
   }
 
+  public getMetadataFields(objectId: string): Observable<MetadataModeleResponse> {
+    return this.http.get<any>(this.endpointService.getMetadataFields(objectId)).pipe(map(res => {
+      return this.any2tsService.any2MetadataResponse(res);
+    }));
+  }
 }

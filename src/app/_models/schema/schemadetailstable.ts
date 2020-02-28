@@ -83,6 +83,11 @@ export  class RequestForSchemaDetailsWithBr {
     variantId: string;
     requestStatus: string;
     executionStartDate: string;
+    selectedFields: string[];
+    fetchSize: number;
+    fetchCount: number;
+    gridId: string;
+    hierarchy: string;
 }
 
 export class DataTableSourceResponse {
@@ -91,8 +96,8 @@ export class DataTableSourceResponse {
 export class DataTableResponse {
     id: string;
     hdvs: DataTableHeaderResponse[];
-    gvs: any;
-    hyvs: any;
+    gvs: DataTableHeaderResponse[][];
+    hyvs: DataTableHeaderResponse[][];
     stat: string;
 }
 export class DataTableHeaderResponse {
@@ -205,4 +210,92 @@ export class CategoryChartDataXY {
     y: number;
 }
 
+export interface MetadataModel {
+    fieldId: string;
+    fieldDescri: string;
+    dataType: string;
+    maxChar: string;
+    mandatory: string;
+    backEnd: number;
+    systemId: string;
+    pickTable: string;
+    picklist: string;
+    pickService: string;
+    dependency: string;
+    validationService: string;
+    defaultValue: string;
+    eventService: string;
+    outputLen: string;
+    strucId: string;
+    permission: string;
+    intUse: string;
+    intUseService: string;
+    searchEngin: string;
+    ajax: string;
+    keys: string;
+    flag: string;
+    objecttype: string;
+    parentField: string;
+    reference: string;
+    languageIndependent: string;
+    gridDisplay: string;
+    defaultDate: string;
+    workFlowField: string;
+    repField: string;
+    locType: string;
+    descField: string;
+    refField: string;
+    workflowCriteria: string;
+    numberSettingCriteria: string;
+    isCheckList: string;
+    isCompBased: string;
+    textAreaLength: string;
+    textAreaWidth: string;
+    plantCode: string;
+    defaultDisplay: string;
+    isCompleteness: string;
+    criteriaDisplay: string;
+    isShoppingCartRefField: boolean;
 
+}
+export class Heirarchy {
+    objnr: number;
+    heirarchyId: string;
+    heirarchyText: string;
+    fieldId: string;
+    structureId: string;
+    tableName: string;
+    objectType: string;
+}
+export interface MetadataModeleResponse {
+    headers: any;
+    grids: any;
+    hierarchy: Heirarchy[];
+    gridFields: any;
+    hierarchyFields: any;
+
+}
+export class HeirarchyFields {
+    fieldId: string;
+    fieldDesc: string;
+    fields: MetadataModel[];
+}
+
+export class GridFields {
+    fieldId: string;
+    fieldDesc: string;
+    fields: MetadataModel[];
+}
+
+export class DataTableReqType {
+    static error = 'error';
+    static success = 'success';
+    static all = 'all';
+    static duplicate = 'duplicate';
+    static outDated = 'outdated';
+}
+
+export class DataTableGroupBy {
+    objectNumber: string;
+    isGroup: boolean;
+}

@@ -33,6 +33,17 @@
       }
     }
 
+    .schematable-filters-fields {
+      margin: 4px 16px;
+      display: inline-block;
+      align-items: center;
+
+      mat-button-toggle-group {
+        overflow: auto;
+        width: 1499px;
+      }
+    }
+
     .root-AdminTable {
       height: 450px;
       overflow: auto;
@@ -103,4 +114,10 @@
       }
     }
   }
+}
+
+.mat-chip-list-wrapper .mat-standard-chip,
+.mat-chip-list-wrapper input.mat-input-element {
+  margin: 13px;
+  min-height: 23px;
 }

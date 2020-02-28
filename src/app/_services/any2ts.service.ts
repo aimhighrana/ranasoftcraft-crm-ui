@@ -3,7 +3,7 @@ import { Task } from '../_models/task';
 import { TaskResponse } from '../_models/task-response';
 import { SchemaListOnLoadResponse, SchemaGroupResponse, SchemaGroupDetailsResponse, SchemaGroupCountResponse, ObjectTypeResponse, GetAllSchemabymoduleidsRes, SchemaGroupWithAssignSchemas, SchemaGroupMapping } from '../_models/schema/schema';
 import { VariantFieldList, SchemaVariantResponse, SchemaBrInfoList, CategoriesResponse, DependencyResponse, VariantDetailsScheduleSchema, VariantAssignedFieldDetails, SchemaListModuleList, SchemaModuleList, SchemaListDetails, BusinessRuleExecutionDetails } from '../_models/schema/schemalist';
-import { SchemaDataTableColumnInfoResponse, ResponseFieldList, SchemaTableData, DataTableResponse, DataTableHeaderResponse, DataTableHeaderLabelLang, DataTableHeaderValueLang, DataTableSourceResponse, OverViewChartData, OverViewChartDataXY, OverViewChartDataSet, CategoryInfo, CategoryChartDataSet, CategoryChartData, CategoryChartDataXY } from '../_models/schema/schemadetailstable';
+import { SchemaDataTableColumnInfoResponse, ResponseFieldList, SchemaTableData, DataTableResponse, DataTableHeaderResponse, DataTableHeaderLabelLang, DataTableHeaderValueLang, DataTableSourceResponse, OverViewChartData, OverViewChartDataXY, OverViewChartDataSet, CategoryInfo, CategoryChartDataSet, CategoryChartData, CategoryChartDataXY, MetadataModel, RequestForSchemaDetailsWithBr, MetadataModeleResponse, Heirarchy } from '../_models/schema/schemadetailstable';
 import { Userdetails, AssignedRoles } from '../_models/userdetails';
 import * as moment from 'moment';
 @Injectable({
@@ -381,6 +381,7 @@ export class Any2tsService {
         schemaDetail.successTrendValue = schema.successTrendValue ? schema.successTrendValue : 'N/A';
         schemaDetail.errorTrendValue = schema.errorTrendValue ? schema.errorTrendValue : 'N/A';
         schemaDetail.variantCount = schema.variantCount ? schema.variantCount : 0;
+        schemaDetail.variantId = schema.variantId ? schema.variantId : null;
         schemaDetail.executionStartTime = schema.executionStartTime ? schema.executionStartTime : '';
         schemaDetail.executionEndTime = schema.executionEndTime ? schema.executionEndTime : '';
         schamaListDetails.push(schemaDetail);
@@ -429,7 +430,7 @@ export class Any2tsService {
   /**
    * Help this method for convert any to schema datatable response
    */
-  public any2DataTable(response: any): DataTableResponse[] {
+  public any2DataTable(response: any, request: RequestForSchemaDetailsWithBr): DataTableResponse[] {
     const dataTableReponse: DataTableResponse[] = [];
     if (response) {
       response.forEach(data => {
@@ -437,6 +438,12 @@ export class Any2tsService {
         dataTable.id = data.id;
         dataTable.stat = data.stat;
         dataTable.hdvs = this.convertAny2DataTableHeaderResponse(data.hdvs);
+        if (request.gridId) {
+          dataTable.gvs = this.convertAny2DataTableGridResponse(data.gvs, request.gridId);
+        }
+        if (request.hierarchy) {
+          dataTable.hyvs = this.convertAny2DataTableHeirerchyResponse(data.hyvs, request.hierarchy);
+        }
         dataTableReponse.push(dataTable);
       });
     }
@@ -477,9 +484,98 @@ export class Any2tsService {
 
     return dataTableHeaderResponse;
   }
+  private convertAny2DataTableGridResponse(response: any, gridId: string): DataTableHeaderResponse[][] {
+    const gridResponse: DataTableHeaderResponse[][] = [];
+    if (response && response.hasOwnProperty(gridId)) {
+      const rows = response[gridId].rows;
+      rows.forEach(row => {
+        const griddataRow: DataTableHeaderResponse[] = [];
+        Object.keys(row).forEach(key => {
+          const dataTableHeader: DataTableHeaderResponse = new DataTableHeaderResponse();
+          dataTableHeader.fId = row[key].fId;
+          dataTableHeader.lls = [];
+          dataTableHeader.vls = [];
+          const currentObj = row[key];
+          // for get label lang of fields
+          if (currentObj.lls) {
+            Object.keys(currentObj.lls).forEach(llsKey => {
+              const dataTableHeaderLabelLang: DataTableHeaderLabelLang = new DataTableHeaderLabelLang();
+              dataTableHeaderLabelLang.label = currentObj.lls[llsKey].label;
+              dataTableHeaderLabelLang.lang = llsKey;
+              dataTableHeader.lls.push(dataTableHeaderLabelLang);
+            });
+          }
 
-  public any2SchemaTableData(response: DataTableResponse[]): DataTableSourceResponse {
+          // get value of this field on lang
+          if (currentObj.vls) {
+            Object.keys(currentObj.vls).filter(vlskey => {
+              const dataTableHeaderValueLang: DataTableHeaderValueLang = new DataTableHeaderValueLang();
+              dataTableHeaderValueLang.lang = vlskey;
+              dataTableHeaderValueLang.valueText =  currentObj.vls[vlskey].valueTxt;
+              dataTableHeader.vls.push(dataTableHeaderValueLang);
+            });
+          }
+          griddataRow.push(dataTableHeader);
+        });
+        gridResponse.push(griddataRow);
+      });
+    }
+    return gridResponse;
+  }
+
+  private convertAny2DataTableHeirerchyResponse(response: any, heirarchyId: string): DataTableHeaderResponse[][] {
+    const gridResponse: DataTableHeaderResponse[][] = [];
+    if (response && response.hasOwnProperty(heirarchyId)) {
+      const rows = response[heirarchyId].rows;
+      rows.forEach(row => {
+        const griddataRow: DataTableHeaderResponse[] = [];
+        Object.keys(row).forEach(key => {
+          const dataTableHeader: DataTableHeaderResponse = new DataTableHeaderResponse();
+          dataTableHeader.fId = row[key].fId;
+          dataTableHeader.lls = [];
+          dataTableHeader.vls = [];
+          const currentObj = row[key];
+          // for get label lang of fields
+          if (currentObj.lls) {
+            Object.keys(currentObj.lls).forEach(llsKey => {
+              const dataTableHeaderLabelLang: DataTableHeaderLabelLang = new DataTableHeaderLabelLang();
+              dataTableHeaderLabelLang.label = currentObj.lls[llsKey].label;
+              dataTableHeaderLabelLang.lang = llsKey;
+              dataTableHeader.lls.push(dataTableHeaderLabelLang);
+            });
+          }
+
+          // get value of this field on lang
+          if (currentObj.vls) {
+            Object.keys(currentObj.vls).filter(vlskey => {
+              const dataTableHeaderValueLang: DataTableHeaderValueLang = new DataTableHeaderValueLang();
+              dataTableHeaderValueLang.lang = vlskey;
+              dataTableHeaderValueLang.valueText =  currentObj.vls[vlskey].valueTxt;
+              dataTableHeader.vls.push(dataTableHeaderValueLang);
+            });
+          }
+          griddataRow.push(dataTableHeader);
+        });
+        gridResponse.push(griddataRow);
+      });
+    }
+    return gridResponse;
+  }
+
+  public any2SchemaTableData(response: DataTableResponse[], request: RequestForSchemaDetailsWithBr): DataTableSourceResponse {
     const finalResposne: DataTableSourceResponse = new DataTableSourceResponse();
+
+    if (request.gridId) {
+      finalResposne.data = this.any2GridResponseData(response);
+    } else if (request.hierarchy) {
+      finalResposne.data = this.any2HeirerchyResponseData(response);
+    } else {
+      finalResposne.data = this.any2HeaderResponseData(response);
+    }
+
+    return finalResposne;
+  }
+  private any2HeaderResponseData(response: DataTableResponse[]): any[] {
     const anyArray: any[] = [];
     response.forEach(data => {
       // for object number column
@@ -510,8 +606,159 @@ export class Any2tsService {
 
       anyArray.push(returnData);
     });
-    finalResposne.data = anyArray;
-    return finalResposne;
+    return anyArray;
+  }
+
+  private any2GridResponseData(response: DataTableResponse[]): any[] {
+    const anyArray: any[] = [];
+    response.forEach(data => {
+      if (data.gvs.length > 0) {
+        data.gvs.forEach(gvs => {
+          // for object number column
+          const returnData: any = {} as any;
+          const objNumberColumn: SchemaTableData = new SchemaTableData();
+          objNumberColumn.fieldId = 'OBJECTNUMBER';
+          objNumberColumn.fieldData = data.id;
+          objNumberColumn.fieldDesc = 'Object Number';
+          returnData[objNumberColumn.fieldId] = objNumberColumn;
+          // anyArray.push(objNumberColumn);
+
+          data.hdvs.forEach(hdvs => {
+            const schemaTableData: SchemaTableData = new SchemaTableData();
+            schemaTableData.fieldId = hdvs.fId;
+            schemaTableData.fieldDesc = hdvs.lls.filter(lls => lls.lang === 'EN')[0].label;
+            schemaTableData.fieldData = hdvs.vls.filter(vls => vls.lang === 'EN')[0].valueText ? hdvs.vls.filter(vls => vls.lang === 'EN')[0].valueText : '';
+            returnData[schemaTableData.fieldId] = schemaTableData;
+            // anyArray.push(objNumberColumn);
+          });
+
+          gvs.forEach(gv => {
+            const schemaTableData: SchemaTableData = new SchemaTableData();
+            schemaTableData.fieldId = gv.fId;
+            schemaTableData.fieldDesc = gv.lls.filter(lls => lls.lang === 'EN')[0].label;
+            schemaTableData.fieldData = gv.vls.filter(vls => vls.lang === 'EN')[0].valueText ? gv.vls.filter(vls => vls.lang === 'EN')[0].valueText : '';
+            returnData[schemaTableData.fieldId] = schemaTableData;
+            // anyArray.push(objNumberColumn);
+          });
+
+          // for status column
+          const statusColumn: SchemaTableData = new SchemaTableData();
+          statusColumn.fieldId = 'STATUS';
+          statusColumn.fieldData = data.stat;
+          statusColumn.fieldDesc = 'Status';
+          returnData[statusColumn.fieldId] = statusColumn;
+          // anyArray.push(statusColumn);
+
+          anyArray.push(returnData);
+        });
+      } else {
+
+          const returnData: any = {} as any;
+          const objNumberColumn: SchemaTableData = new SchemaTableData();
+          objNumberColumn.fieldId = 'OBJECTNUMBER';
+          objNumberColumn.fieldData = data.id;
+          objNumberColumn.fieldDesc = 'Object Number';
+          returnData[objNumberColumn.fieldId] = objNumberColumn;
+          // anyArray.push(objNumberColumn);
+
+          data.hdvs.forEach(hdvs => {
+            const schemaTableData: SchemaTableData = new SchemaTableData();
+            schemaTableData.fieldId = hdvs.fId;
+            schemaTableData.fieldDesc = hdvs.lls.filter(lls => lls.lang === 'EN')[0].label;
+            schemaTableData.fieldData = hdvs.vls.filter(vls => vls.lang === 'EN')[0].valueText ? hdvs.vls.filter(vls => vls.lang === 'EN')[0].valueText : '';
+            returnData[schemaTableData.fieldId] = schemaTableData;
+            // anyArray.push(objNumberColumn);
+          });
+          // for status column
+          const statusColumn: SchemaTableData = new SchemaTableData();
+          statusColumn.fieldId = 'STATUS';
+          statusColumn.fieldData = data.stat;
+          statusColumn.fieldDesc = 'Status';
+          returnData[statusColumn.fieldId] = statusColumn;
+          // anyArray.push(statusColumn);
+
+          anyArray.push(returnData);
+
+      }
+
+    });
+    return anyArray;
+  }
+
+  private any2HeirerchyResponseData(response: DataTableResponse[]): any[] {
+    const anyArray: any[] = [];
+    response.forEach(data => {
+      if (data.hyvs.length > 0) {
+        data.hyvs.forEach(hyv => {
+          // for object number column
+          const returnData: any = {} as any;
+          const objNumberColumn: SchemaTableData = new SchemaTableData();
+          objNumberColumn.fieldId = 'OBJECTNUMBER';
+          objNumberColumn.fieldData = data.id;
+          objNumberColumn.fieldDesc = 'Object Number';
+          returnData[objNumberColumn.fieldId] = objNumberColumn;
+          // anyArray.push(objNumberColumn);
+
+          data.hdvs.forEach(hdvs => {
+            const schemaTableData: SchemaTableData = new SchemaTableData();
+            schemaTableData.fieldId = hdvs.fId;
+            schemaTableData.fieldDesc = hdvs.lls.filter(lls => lls.lang === 'EN')[0].label;
+            schemaTableData.fieldData = hdvs.vls.filter(vls => vls.lang === 'EN')[0].valueText ? hdvs.vls.filter(vls => vls.lang === 'EN')[0].valueText : '';
+            returnData[schemaTableData.fieldId] = schemaTableData;
+            // anyArray.push(objNumberColumn);
+          });
+
+          hyv.forEach(gv => {
+            const schemaTableData: SchemaTableData = new SchemaTableData();
+            schemaTableData.fieldId = gv.fId;
+            schemaTableData.fieldDesc = gv.lls.filter(lls => lls.lang === 'EN')[0].label;
+            schemaTableData.fieldData = gv.vls.filter(vls => vls.lang === 'EN')[0].valueText ? gv.vls.filter(vls => vls.lang === 'EN')[0].valueText : '';
+            returnData[schemaTableData.fieldId] = schemaTableData;
+            // anyArray.push(objNumberColumn);
+          });
+
+          // for status column
+          const statusColumn: SchemaTableData = new SchemaTableData();
+          statusColumn.fieldId = 'STATUS';
+          statusColumn.fieldData = data.stat;
+          statusColumn.fieldDesc = 'Status';
+          returnData[statusColumn.fieldId] = statusColumn;
+          // anyArray.push(statusColumn);
+
+          anyArray.push(returnData);
+        });
+      } else {
+
+          const returnData: any = {} as any;
+          const objNumberColumn: SchemaTableData = new SchemaTableData();
+          objNumberColumn.fieldId = 'OBJECTNUMBER';
+          objNumberColumn.fieldData = data.id;
+          objNumberColumn.fieldDesc = 'Object Number';
+          returnData[objNumberColumn.fieldId] = objNumberColumn;
+          // anyArray.push(objNumberColumn);
+
+          data.hdvs.forEach(hdvs => {
+            const schemaTableData: SchemaTableData = new SchemaTableData();
+            schemaTableData.fieldId = hdvs.fId;
+            schemaTableData.fieldDesc = hdvs.lls.filter(lls => lls.lang === 'EN')[0].label;
+            schemaTableData.fieldData = hdvs.vls.filter(vls => vls.lang === 'EN')[0].valueText ? hdvs.vls.filter(vls => vls.lang === 'EN')[0].valueText : '';
+            returnData[schemaTableData.fieldId] = schemaTableData;
+            // anyArray.push(objNumberColumn);
+          });
+          // for status column
+          const statusColumn: SchemaTableData = new SchemaTableData();
+          statusColumn.fieldId = 'STATUS';
+          statusColumn.fieldData = data.stat;
+          statusColumn.fieldDesc = 'Status';
+          returnData[statusColumn.fieldId] = statusColumn;
+          // anyArray.push(statusColumn);
+
+          anyArray.push(returnData);
+
+      }
+
+    });
+    return anyArray;
   }
 
   public any2OverviewChartData(response): OverViewChartDataSet {
@@ -684,4 +931,37 @@ export class Any2tsService {
     });
     return xyAxis;
   }
+
+  public any2MetadataResponse(resposne: any): MetadataModeleResponse {
+    const fldResposne: MetadataModeleResponse = {gridFields:null, headers: null, hierarchyFields: null, hierarchy: null, grids: null};
+    if (resposne) {
+      // header
+      fldResposne.headers = resposne.headers as Map<string,MetadataModel>;
+      fldResposne.grids = resposne.grids as Map<string,MetadataModel>;
+      fldResposne.hierarchy = resposne.hierarchy as Heirarchy[];
+      // fldResposne.gridFields = this.any2GridFields(resposne.gridFields);
+      // fldResposne.hierarchyFields = this.any2HeirerchyFields(resposne.hierarchyFields);
+      fldResposne.gridFields = resposne.gridFields as Map<string, Map<string,MetadataModel>>;
+      fldResposne.hierarchyFields = resposne.hierarchyFields as Map<string, Map<string,MetadataModel>>;
+
+    }
+    return resposne;
+  }
+
+
+  // public any2GridFields(response: any): any {
+  //   const gridFields: Map<string, Map<string,MetadataModel>> = new Map;
+  //   for(const key in response) {
+  //     gridFields.set(key, response[key] as Map<string,MetadataModel>);
+  //   }
+  //   return gridFields;
+  // }
+
+  // public any2HeirerchyFields(response: any): Map<string, Map<string,MetadataModel>> {
+  //   const heiFields: Map<string, Map<string,MetadataModel>> = new Map;
+  //   for(const key in response) {
+  //     heiFields.set(key, response[key] as Map<string,MetadataModel>);
+  //   }
+  //   return heiFields;
+  // }
 }

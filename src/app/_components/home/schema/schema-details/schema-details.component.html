@@ -4,15 +4,17 @@
   </div>
   <button mat-button [routerLink]="['', { outlets: { sb: 'sb/schema/collab/' + schemaId } } ]">Collaborators</button>
   <div class="flex-col-12 margin16">
-    <pros-overview-chart schemaId={{schemaId}}></pros-overview-chart>
+    <pros-overview-chart schemaId={{schemaId}} variantId="{{ variantId }}"></pros-overview-chart>
   </div>
 
   <div class="flex-col-12 margin16">
-    <pros-categories-chart schemaId={{schemaId}}></pros-categories-chart>
+    <pros-categories-chart schemaId={{schemaId}} variantId="{{ variantId }}"></pros-categories-chart>
   </div>
   <div class="flex-col-12 margin16">
-    <pros-schema-datatable objectId="{{moduleId}}" schemaId="{{schemaId}}" totalRecord="{{schemaDetails.totalCount}}"
+    
+    <pros-schema-datatable objectId="{{moduleId}}" variantId="{{ variantId }}" schemaId="{{schemaId}}" totalRecord="{{schemaDetails.totalCount}}"
       successCount="{{schemaDetails.successCount}}" errorCount="{{schemaDetails.errorCount}}"
       dynamicRecordCount="{{schemaDetails.errorCount}}"></pros-schema-datatable>
+    
   </div>
 </mat-card>

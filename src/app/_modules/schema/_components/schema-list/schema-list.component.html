@@ -5,7 +5,7 @@
   <div *ngFor="let module of schemaListDetails" class="flex-row-container f-row">
     <h2 class="mat-headline">{{module.moduleDesc}}</h2>
     <pros-schema-tile class="flex-col-1" *ngFor="let schema of module.schemaLists"
-      [routerLink]="['/home', 'schema', 'schema-details', module.moduleId, schemaGroupId, schema.schemaId]"
+      [routerLink]="['/home', 'schema', 'schema-details', module.moduleId, schemaGroupId, schema.schemaId, schema.variantId]"
 
       title="{{ schema.schemaDescription }}" 
       bottomLeftLabel="{{ schema.variantCount }} Variants"

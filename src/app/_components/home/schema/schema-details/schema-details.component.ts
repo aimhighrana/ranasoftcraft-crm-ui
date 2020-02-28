@@ -1,8 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Breadcrumb } from 'src/app/_models/breadcrumb';
 import { ActivatedRoute } from '@angular/router';
 import 'chartjs-plugin-zoom';
-import { OverviewChartComponent } from './overview-chart/overview-chart.component';
 import { SchemaService } from 'src/app/_services/home/schema.service';
 import { SchemaGroupDetailsResponse } from 'src/app/_models/schema/schema';
 import { SchemaListDetails } from 'src/app/_models/schema/schemalist';
@@ -17,6 +16,7 @@ export class SchemaDetailsComponent implements OnInit {
   title: string;
   moduleId: string;
   schemaId: string;
+  variantId: string;
   schemaGroupId: string;
   schemaGroupDescription: string;
   schemaDetails: SchemaListDetails = new SchemaListDetails();
@@ -32,7 +32,7 @@ export class SchemaDetailsComponent implements OnInit {
       }
     ]
   };
-  @ViewChild(OverviewChartComponent)schemaOverviewChart: OverviewChartComponent;
+  // @ViewChild(OverviewChartComponent)schemaOverviewChart: OverviewChartComponent;
   constructor(
       private activatedRouter: ActivatedRoute,
       private schemaService: SchemaService,
@@ -44,6 +44,7 @@ export class SchemaDetailsComponent implements OnInit {
       this.schemaId = params.schemaId;
       this.moduleId = params.moduleId;
       this.schemaGroupId = params.schemaGroupId;
+      this.variantId = params.variantId;
       this.getSchemaDetailsBySchemaId(this.schemaId);
       this.getSchemaGroupDetails(this.schemaGroupId);
     });

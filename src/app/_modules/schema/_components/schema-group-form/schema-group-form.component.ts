@@ -34,8 +34,8 @@ export class SchemaGroupFormComponent implements OnInit {
   searchLodedSchemaCtrl: FormControl;
   filteredModules: Observable<ObjectTypeResponse[]>;
 
-  @ViewChild('moduleSearchInp') moduleSearchInp: ElementRef<HTMLInputElement>;
-  @ViewChild('auto') matAutocomplete: MatAutocomplete;
+  @ViewChild('moduleSearchInp',{static: true}) moduleSearchInp: ElementRef<HTMLInputElement>;
+  @ViewChild('auto',{static: true}) matAutocomplete: MatAutocomplete;
   constructor(
     private schemaService: SchemaService,
     private router: Router,
@@ -132,7 +132,7 @@ export class SchemaGroupFormComponent implements OnInit {
    *  event
    */
   selected(event: MatAutocompleteSelectedEvent): void {
-    const selData =  event.option.value;
+    const selData =  event.option? event.option.value : '';
     const objectIds: string[] = this.groupDetails.objectId ? this.groupDetails.objectId : [];
     const exitData =  objectIds.filter(objId => objId === selData.objectId);
     if (exitData.length === 0) {
@@ -168,7 +168,7 @@ export class SchemaGroupFormComponent implements OnInit {
    * Getting all schema(s) based on object ids
    * If there is no schema(s) on selected object then the null state will be visiable
    */
-  public getAllSchemaByModuleId() {
+  private getAllSchemaByModuleId() {
     const selSchemaId: string[] = this.groupDetails.objectId;
     const getAllSchemabymoduleidsReq: GetAllSchemabymoduleidsReq = new GetAllSchemabymoduleidsReq();
     getAllSchemabymoduleidsReq.mosuleIds = selSchemaId;
