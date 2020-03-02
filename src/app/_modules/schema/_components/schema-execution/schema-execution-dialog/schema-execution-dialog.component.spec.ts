@@ -3,6 +3,7 @@ import { SchemaExecutionDialogComponent } from './schema-execution-dialog.compon
 import { ThousandconvertorPipe } from 'src/app/_pipes/thousandconvertor.pipe';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { HttpClientModule } from '@angular/common/http';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 describe('SchemaExecutionDialogComponent', () => {
   let component: SchemaExecutionDialogComponent;
@@ -13,7 +14,7 @@ describe('SchemaExecutionDialogComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ SchemaExecutionDialogComponent, ThousandconvertorPipe],
-      imports: [ MatDialogModule, HttpClientModule],
+      imports: [ MatDialogModule, AppMaterialModuleForSpec, HttpClientModule],
       providers: [
         {
           provide: MatDialogRef,

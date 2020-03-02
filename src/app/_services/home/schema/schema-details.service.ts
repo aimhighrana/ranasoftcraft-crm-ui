@@ -22,7 +22,7 @@ export class SchemaDetailsService {
   doughnutChartData: any = { labels: ['Success', 'Error'], dataSet: { data: [20, 80] } };
 
   schemaCategoryData: any = { dataSet: [{ type: 'line', label: 'Validness', id: 'Validness_01', backgroundColor: 'rgba(217,83,79,0.75)', fill: false, data: [1000, 2000, 4000, 5000] }, { type: 'line', label: 'Accuracy', id: 'Accuracy_01', backgroundColor: 'rgba(92,184,92,0.75)', fill: false, data: [500, 600, 700, 800] }], labels: ['01-NOV', '02-NOV', '03-NOV', '02-NOV'] };
-  schemaBusinessRuleChartData: any = {labels: ['MRP Controller', 'Reorder point', 'Rounding Value', 'Max stock level'], dataSet: [{label: 'Error', data: [100, 200, 230, 150], backgroundColor: '#c30000', hoverBackgroundColor: '#c30000'}, {label: 'Success', data: [30, 40, 200, 400], backgroundColor: '#12a44a', hoverBackgroundColor: '#12a44a'}, {label: 'Skipped', data: [50, 80, 120, 0], backgroundColor: '#a391c5', hoverBackgroundColor: '#a391c5'}, {label: 'Duplicate', data: [100, 300, 60, 20], backgroundColor: '#b668aa', hoverBackgroundColor: '#b668aa'}, {label: 'Draft', data: [10, 0, 155, 100], backgroundColor: '#66aa00', hoverBackgroundColor: '#66aa00'}, {label: 'Outdated', data: [0, 4, 5, 1], backgroundColor: '#dd4477', hoverBackgroundColor: '#dd4477'}]};
+  schemaBusinessRuleChartData: any = {labels: ['MRP Controller', 'Reorder point', 'Rounding Value', 'Max stock level'], dataSet: [{label: 'Error', data: [100, 200, 230, 150], backgroundColor: '#c30000', hoverBackgroundColor: '#c30000'}, {label: 'Success', data: [30, 40, 200, 400], backgroundColor: '#12a44a', hoverBackgroundColor: '#12a44a'}, {label: 'Skipped', data: [50, 80, 120, 0], backgroundColor: '#a391c5', hoverBackgroundColor: '#a391c5'}, {label: 'Duplicate', data: [100, 300, 60, 20], backgroundColor: '#b668aa', hoverBackgroundColor: '#b668aa'}, {label: 'correction', data: [10, 0, 155, 100], backgroundColor: '#66aa00', hoverBackgroundColor: '#66aa00'}, {label: 'Outdated', data: [0, 4, 5, 1], backgroundColor: '#dd4477', hoverBackgroundColor: '#dd4477'}]};
   constructor(
     private http: HttpClient,
     private endpointService: EndpointService,
@@ -64,41 +64,41 @@ export class SchemaDetailsService {
   public getSchemaStatusInformation(): Observable<SchemaStatusInformation[]> {
     const schemaStatusInfoList: SchemaStatusInformation[] = [];
     const successObj: SchemaStatusInformation = new SchemaStatusInformation();
-    successObj.colorClassName = 'success-text';
-    successObj.statusDescription = 'Success status of any record represent that all business rules executed on time of processing on Schema execution with properly and no rule break on the record.';
+    successObj.colorClassName = 'success-status';
+    successObj.statusDescription = 'Success status against a record represents that records have passed all the business rules within a schema run. All the records processed successfully can be viewed under the Success status tab.';
     successObj.status = 'Success';
 
     const errorObj: SchemaStatusInformation = new SchemaStatusInformation();
-    errorObj.colorClassName = 'error-text';
-    errorObj.statusDescription = 'Error status of any record represent that one or more business rules failed on time of processing on Schema execution. If your record contains the error status after schema execution that\'s means one of the business is failed, So you can find the reason of failure by click on the error status. it\'s shows you the reason of failure.';
+    errorObj.colorClassName = 'error-status';
+    errorObj.statusDescription = 'Error status against a record represents that one or more business rules have failed during the schema run. All the records in error status can be viewed under the Error status tab. Error(s) within each record will be highlighted in red and the user can view the error message by hovering the mouse over the highlighted area.';
     errorObj.status = 'Error';
 
     const skippedObj: SchemaStatusInformation = new SchemaStatusInformation();
-    skippedObj.colorClassName = 'skipped-text';
-    skippedObj.statusDescription = 'Skipped status of any record represent that one of business rule not executed on time of processing on Schema execution. So for skipped rule you can find the reason of skipped by click on the skipped status.';
+    skippedObj.colorClassName = 'skipped-status';
+    skippedObj.statusDescription = 'Skipped status against a record represents that one or more business rule(s) were skipped during the schema run. All such records can be viewed under the Skipped status tab. The reason for skipping a rule can be viewed…. UI???';
     skippedObj.status = 'Skipped';
 
-    const draftObj: SchemaStatusInformation = new SchemaStatusInformation();
-    draftObj.colorClassName = 'draft-text';
-    draftObj.statusDescription = 'Success status of any record represent that all business rules executed on time of processing on Schema execution with properly and no rule break on the record.';
-    draftObj.status = 'Draft';
+    const correctionObj: SchemaStatusInformation = new SchemaStatusInformation();
+    correctionObj.colorClassName = 'correction-status';
+    correctionObj.statusDescription = 'Correction status against a record represents that the data errors identified during the schema run have been corrected in that record. All the corrected records can be viewed under the Correction status tab.';
+    correctionObj.status = 'Correction';
 
-    const inprogressObj: SchemaStatusInformation = new SchemaStatusInformation();
-    inprogressObj.colorClassName = 'inprogress-text';
-    inprogressObj.statusDescription = 'Success status of any record represent that all business rules executed on time of processing on Schema execution with properly and no rule break on the record.';
-    inprogressObj.status = 'Inprogress';
+    const duplicateObj: SchemaStatusInformation = new SchemaStatusInformation();
+    duplicateObj.colorClassName = 'duplicate-status';
+    duplicateObj.statusDescription = 'Duplicate status against a record represents that the record has been identified as a duplicate based upon the duplicity rules configured within a schema. All duplicate records can be viewed under the Duplicate status tab.';
+    duplicateObj.status = 'Duplicate';
 
     const outdatedObj: SchemaStatusInformation = new SchemaStatusInformation();
-    outdatedObj.colorClassName = 'outdate-text';
-    outdatedObj.statusDescription = 'Success status of any record represent that all business rules executed on time of processing on Schema execution with properly and no rule break on the record.';
+    outdatedObj.colorClassName = 'outdate-status';
+    outdatedObj.statusDescription = 'Outdated status against a record represents that the data within the record has been modified from its original state and the schema result is invalid. All such records can be viewed under the Outdated status tab.';
     outdatedObj.status = 'Outdated';
 
-    schemaStatusInfoList.push(successObj);
     schemaStatusInfoList.push(errorObj);
-    schemaStatusInfoList.push(outdatedObj);
-    schemaStatusInfoList.push(inprogressObj);
-    schemaStatusInfoList.push(draftObj);
+    schemaStatusInfoList.push(successObj);
+    schemaStatusInfoList.push(correctionObj);
     schemaStatusInfoList.push(skippedObj);
+    schemaStatusInfoList.push(duplicateObj);
+    schemaStatusInfoList.push(outdatedObj);
     this.schemaStatusBehSub.next(schemaStatusInfoList);
     return this.schemaStatusBehSub.asObservable();
   }

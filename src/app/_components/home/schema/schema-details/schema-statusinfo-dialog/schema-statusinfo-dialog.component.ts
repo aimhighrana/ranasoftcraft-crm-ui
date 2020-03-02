@@ -19,5 +19,4 @@ export class SchemaStatusinfoDialogComponent implements OnInit {
   private getAllStatusInfo() {
     this.schemaDetailsService.getSchemaStatusInformation().subscribe(data => this.schemaStatusInfoList = data);
   }
-
 }

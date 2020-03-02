@@ -1,51 +1,53 @@
-.dailog-container {
-  display: flex;
-  flex: row wrap;
-  justify-content: flex-start;
+.root {
   align-items: flex-start;
   align-content: flex-start;
+  justify-content: flex-start;
+  margin: -24px;
 
-  .flex-col-12 {
-    flex: 1 100%;
+  mat-toolbar {
+    min-height: 50px;
 
-    mat-list-item {
-      padding: 0 0 16px 0;
-      display: flex;
+    mat-toolbar-row {
+      height: 50px;
+    }
+  }
 
-      h4.mat-line {
-        font-size: 14px;
-        margin-bottom: 8px;
-      }
+  mat-list-item {
+    padding-bottom: 8px;
+    height: auto;
 
-      .error-text {
-        color: #c30000;
-      }
+    h4.mat-line {
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
 
-      .skipped-text {
-        color: #a391c5;
-      }
+    p.mat-line {
+      font-size: 12px;
+      white-space: normal;
+    }
 
-      .success-text {
-        color: #12a44a;
-      }
+    .error-status {
+      color: #c30000;
+    }
 
-      .draft-text {
-        color: #478cca;
-      }
+    .skipped-status {
+      color: #a391c5;
+    }
 
-      .inprogress-text {
-        color: #faac53;
-      }
+    .success-status {
+      color: #12a44a;
+    }
 
-      .outdate-text {
-        color: #b4b5b4;
-      }
+    .correction-status {
+      color: #478cca;
+    }
 
-      p.mat-line {
-        font-size: 12px;
-        color: #9a9a9a;
-        line-height: 20px;
-      }
+    .duplicate-status {
+      color: #faac53;
+    }
+
+    .outdate-status {
+      color: #b4b5b4;
     }
   }
 }
