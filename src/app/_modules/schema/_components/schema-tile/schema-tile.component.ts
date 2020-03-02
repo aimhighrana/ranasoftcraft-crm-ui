@@ -20,6 +20,8 @@ export class SchemaTileComponent implements OnInit {
   edit: boolean;
   @Input()
   delete: boolean;
+  @Input()
+  pulse: boolean;
 
   @Output()
   evtEdit = new EventEmitter();

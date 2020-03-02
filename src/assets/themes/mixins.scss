@@ -20,6 +20,19 @@
   // tooltip
   $background-palette: map-get($theme, background);
 
+  // infinite pulsing of box-shadow mimicing mat-elevation-z6 parameters
+  .pulse_opacity_step_10_repeat::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    animation: pulse_opacity_step_10_repeat 2s infinite;
+    box-shadow: 0 3px 5px -1px mat-color($primary-palette, 700, 0.4), 0 6px 10px 0 mat-color($primary-palette, 700, 0.28), 0 1px 18px 0 mat-color($primary-palette, 700, 0.24);
+    opacity: 0;
+  }
+
   pros-home-layout mat-toolbar.root {
     button.hdrBtn {
       color: mat-color($primary-palette, 700);
