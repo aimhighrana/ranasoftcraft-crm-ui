@@ -11,7 +11,7 @@ import { CategoriesChartComponent } from 'src/app/_components/home/schema/schema
 import { BusinessRulesChartComponent } from 'src/app/_components/home/schema/schema-details/business-rules-chart/business-rules-chart.component';
 import { SchemaDatatableComponent } from 'src/app/_components/home/schema/schema-details/schema-datatable/schema-datatable.component';
 import { SchemaVariantsComponent } from 'src/app/_components/home/schema/schema-variants/schema-variants.component';
-import { SchemaStatusinfoDialogComponent } from 'src/app/_components/home/schema/schema-details/schema-statusinfo-dialog/schema-statusinfo-dialog.component';
+import { SchemaStatusinfoDialogComponent } from './_components/schema-details/schema-statusinfo-dialog/schema-statusinfo-dialog.component';
 import { SchemaGroupFormComponent } from 'src/app/_modules/schema/_components/schema-group-form/schema-group-form.component';
 import { SchemaCollaboratorsComponent } from 'src/app/_modules/schema/_components/schema-collaborators/schema-collaborators.component';
 import { CreateSchemaComponent } from 'src/app/_components/home/schema/create-schema/create-schema.component';

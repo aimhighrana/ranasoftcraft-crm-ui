@@ -32,7 +32,7 @@ export class SchemaDetailsComponent implements OnInit {
       }
     ]
   };
-  @ViewChild(OverviewChartComponent, {static: false})schemaOverviewChart: OverviewChartComponent;
+  @ViewChild(OverviewChartComponent)schemaOverviewChart: OverviewChartComponent;
   constructor(
       private activatedRouter: ActivatedRoute,
       private schemaService: SchemaService,

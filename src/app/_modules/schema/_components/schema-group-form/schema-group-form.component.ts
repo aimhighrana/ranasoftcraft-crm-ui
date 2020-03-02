@@ -4,7 +4,8 @@ import { SchemaService } from 'src/app/_services/home/schema.service';
 import { ObjectTypeResponse, GetAllSchemabymoduleidsReq, GetAllSchemabymoduleidsRes, CreateSchemaGroupRequest, SchemaGroupWithAssignSchemas, SchemaGroupMapping } from 'src/app/_models/schema/schema';
 import { FormControl } from '@angular/forms';
 import { Observable, of } from 'rxjs';
-import { MatAutocomplete, MatChipInputEvent, MatAutocompleteSelectedEvent } from '@angular/material';
+import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatChipInputEvent } from '@angular/material/chips';
 import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -33,8 +34,8 @@ export class SchemaGroupFormComponent implements OnInit {
   searchLodedSchemaCtrl: FormControl;
   filteredModules: Observable<ObjectTypeResponse[]>;
 
-  @ViewChild('moduleSearchInp', {static: false}) moduleSearchInp: ElementRef<HTMLInputElement>;
-  @ViewChild('auto', {static: false}) matAutocomplete: MatAutocomplete;
+  @ViewChild('moduleSearchInp') moduleSearchInp: ElementRef<HTMLInputElement>;
+  @ViewChild('auto') matAutocomplete: MatAutocomplete;
   constructor(
     private schemaService: SchemaService,
     private router: Router,

@@ -1,0 +1,33 @@
+<div class="root">
+  <mat-toolbar>
+    <mat-toolbar-row>
+      <span>Status Info</span>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  <mat-list>
+    <mat-list-item>
+      <h4 mat-line class="success-status">Success</h4>
+      <p mat-line>Success status against a record represents that records have passed all the business rules within a schema run. All the records processed successfully can be viewed under the Success status tab.</p>
+    </mat-list-item>
+    <mat-list-item>
+      <h4 mat-line class="error-status">Error</h4>
+      <p mat-line>Error status against a record represents that one or more business rules have failed during the schema run. All the records in error status can be viewed under the Error status tab. Error(s) within each record will be highlighted in red and the user can view the error message by hovering the mouse over the highlighted area.</p>
+    </mat-list-item>
+    <mat-list-item>
+      <h4 mat-line class="skipped-status">Skipped</h4>
+      <p mat-line>Skipped status against a record represents that one or more business rule(s) were skipped during the schema run. All such records can be viewed under the Skipped status tab. The reason for skipping a rule can be viewed…. UI???</p>
+    </mat-list-item>
+    <mat-list-item>
+      <h4 mat-line class="correction-status">Correction</h4>
+      <p mat-line>Correction status against a record represents that the data errors identified during the schema run have been corrected in that record. All the corrected records can be viewed under the Correction status tab.</p>
+    </mat-list-item>
+    <mat-list-item>
+      <h4 mat-line class="duplicate-status">Duplicate</h4>
+      <p mat-line>Duplicate status against a record represents that the record has been identified as a duplicate based upon the duplicity rules configured within a schema. All duplicate records can be viewed under the Duplicate status tab.</p>
+    </mat-list-item>
+    <mat-list-item>
+      <h4 mat-line class="outdate-status">Outdated</h4>
+      <p mat-line>Outdated status against a record represents that the data within the record has been modified from its original state and the schema result is invalid. All such records can be viewed under the Outdated status tab.</p>
+    </mat-list-item>
+  </mat-list>
+</div>

@@ -71,11 +71,6 @@ export class SchemaDownloadErrorRequest {
     statusType: string;
     runId: string;
 }
-export class SchemaStatusInformation {
-    status: string;
-    colorClassName: string;
-    statusDescription: string;
-}
 export class SchemaDataTableResponse {
     data: SchemaTableData[];
 }

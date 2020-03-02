@@ -3,7 +3,7 @@ import { Subscription } from 'rxjs';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { ThemeSelectorService } from './_services/theme-selector.service';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
-import { MatSidenav } from '@angular/material';
+import { MatSidenav } from '@angular/material/sidenav';
 import { filter } from 'rxjs/operators';
 
 @Component({

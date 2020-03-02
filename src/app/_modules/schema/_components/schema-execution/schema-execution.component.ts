@@ -5,7 +5,7 @@ import { SchemalistService } from 'src/app/_services/home/schema/schemalist.serv
 import { ActivatedRoute, Router } from '@angular/router';
 import { SchemaExecutionService } from 'src/app/_services/home/schema/schema-execution.service';
 import { SchemaExecutionRequest } from 'src/app/_models/schema/schema-execution';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { SchemaExecutionDialogComponent } from './schema-execution-dialog/schema-execution-dialog.component';
 
 @Component({

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { EndpointService } from '../../endpoint.service';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { SendReqForSchemaDataTableColumnInfo, SendDataForSchemaTableShowMore, SchemaStatusInformation, SchemaDataTableColumnInfoResponse, RequestForSchemaDetailsWithBr, DataTableSourceResponse, SchemaTableViewRequest, OverViewChartDataSet, CategoryInfo, CategoryChartDataSet } from 'src/app/_models/schema/schemadetailstable';
+import { SendReqForSchemaDataTableColumnInfo, SendDataForSchemaTableShowMore, SchemaDataTableColumnInfoResponse, RequestForSchemaDetailsWithBr, DataTableSourceResponse, SchemaTableViewRequest, OverViewChartDataSet, CategoryInfo, CategoryChartDataSet } from 'src/app/_models/schema/schemadetailstable';
 import * as moment from 'moment';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../../any2ts.service';
@@ -13,7 +13,6 @@ import { SchemaListDetails } from 'src/app/_models/schema/schemalist';
 })
 export class SchemaDetailsService {
 
-  public schemaStatusBehSub: BehaviorSubject<SchemaStatusInformation[]> = new BehaviorSubject<SchemaStatusInformation[]>([]);
   private schemaOverviewChart: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   private schemaCategory: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   private schemaBusinessRule: BehaviorSubject<any> = new BehaviorSubject<any>(null);
@@ -60,47 +59,6 @@ export class SchemaDetailsService {
   public getSchemaDataTableShowMore(scrollId: string): Observable<any> {
     const sendData: SendDataForSchemaTableShowMore = new SendDataForSchemaTableShowMore(scrollId, '');
     return this.http.post<any>(this.endpointService.getShowMoreSchemaTableDataUrl(), sendData);
-  }
-  public getSchemaStatusInformation(): Observable<SchemaStatusInformation[]> {
-    const schemaStatusInfoList: SchemaStatusInformation[] = [];
-    const successObj: SchemaStatusInformation = new SchemaStatusInformation();
-    successObj.colorClassName = 'success-status';
-    successObj.statusDescription = 'Success status against a record represents that records have passed all the business rules within a schema run. All the records processed successfully can be viewed under the Success status tab.';
-    successObj.status = 'Success';
-
-    const errorObj: SchemaStatusInformation = new SchemaStatusInformation();
-    errorObj.colorClassName = 'error-status';
-    errorObj.statusDescription = 'Error status against a record represents that one or more business rules have failed during the schema run. All the records in error status can be viewed under the Error status tab. Error(s) within each record will be highlighted in red and the user can view the error message by hovering the mouse over the highlighted area.';
-    errorObj.status = 'Error';
-
-    const skippedObj: SchemaStatusInformation = new SchemaStatusInformation();
-    skippedObj.colorClassName = 'skipped-status';
-    skippedObj.statusDescription = 'Skipped status against a record represents that one or more business rule(s) were skipped during the schema run. All such records can be viewed under the Skipped status tab. The reason for skipping a rule can be viewed…. UI???';
-    skippedObj.status = 'Skipped';
-
-    const correctionObj: SchemaStatusInformation = new SchemaStatusInformation();
-    correctionObj.colorClassName = 'correction-status';
-    correctionObj.statusDescription = 'Correction status against a record represents that the data errors identified during the schema run have been corrected in that record. All the corrected records can be viewed under the Correction status tab.';
-    correctionObj.status = 'Correction';
-
-    const duplicateObj: SchemaStatusInformation = new SchemaStatusInformation();
-    duplicateObj.colorClassName = 'duplicate-status';
-    duplicateObj.statusDescription = 'Duplicate status against a record represents that the record has been identified as a duplicate based upon the duplicity rules configured within a schema. All duplicate records can be viewed under the Duplicate status tab.';
-    duplicateObj.status = 'Duplicate';
-
-    const outdatedObj: SchemaStatusInformation = new SchemaStatusInformation();
-    outdatedObj.colorClassName = 'outdate-status';
-    outdatedObj.statusDescription = 'Outdated status against a record represents that the data within the record has been modified from its original state and the schema result is invalid. All such records can be viewed under the Outdated status tab.';
-    outdatedObj.status = 'Outdated';
-
-    schemaStatusInfoList.push(errorObj);
-    schemaStatusInfoList.push(successObj);
-    schemaStatusInfoList.push(correctionObj);
-    schemaStatusInfoList.push(skippedObj);
-    schemaStatusInfoList.push(duplicateObj);
-    schemaStatusInfoList.push(outdatedObj);
-    this.schemaStatusBehSub.next(schemaStatusInfoList);
-    return this.schemaStatusBehSub.asObservable();
   }
 
   getSchemaBusinessRuleChartData() {

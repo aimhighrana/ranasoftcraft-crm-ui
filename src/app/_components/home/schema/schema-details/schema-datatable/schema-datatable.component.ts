@@ -1,9 +1,12 @@
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { Schemadetailstable, SchemaDataTableColumnInfoResponse, SchemaTableData, ResponseFieldList, RequestForSchemaDetailsWithBr, DataTableSourceResponse, SchemaTableViewRequest } from 'src/app/_models/schema/schemadetailstable';
-import { MatTableDataSource, MatPaginator, MatSort, MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 import { SelectionModel } from '@angular/cdk/collections';
 import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-details.service';
-import { SchemaStatusinfoDialogComponent } from '../schema-statusinfo-dialog/schema-statusinfo-dialog.component';
+import { SchemaStatusinfoDialogComponent } from 'src/app/_modules/schema/_components/schema-details/schema-statusinfo-dialog/schema-statusinfo-dialog.component';
 import { SchemaListDetails } from 'src/app/_models/schema/schemalist';
 import { SchemalistService } from 'src/app/_services/home/schema/schemalist.service';
 import { FormControl } from '@angular/forms';
