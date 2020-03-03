@@ -26,8 +26,8 @@ describe('SchemaVariantService', () => {
     });
     httpTestingController = TestBed.inject(HttpTestingController);
     schemaVariantService = TestBed.inject(SchemaVariantService);
-    any2tsServiceSpy = TestBed.get(Any2tsService);
-    endpointServiceSpy = TestBed.get(EndpointService);
+    any2tsServiceSpy = TestBed.inject(Any2tsService) as jasmine.SpyObj<Any2tsService>;
+    endpointServiceSpy = TestBed.inject(EndpointService) as jasmine.SpyObj<EndpointService>;
   }));
 
   it('should be created', () => {

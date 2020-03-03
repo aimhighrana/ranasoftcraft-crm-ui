@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SchemaGroupsComponent } from './schema-groups.component';
 import { SchemaTileComponent } from '../schema-tile/schema-tile.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
@@ -29,7 +28,7 @@ describe('SchemaGroupsComponent', () => {
       ]
     })
       .compileComponents();
-    schemaServiceSpy = TestBed.get(SchemaService);
+    schemaServiceSpy = TestBed.inject(SchemaService) as jasmine.SpyObj<SchemaService>;
   }));
 
   beforeEach(() => {
