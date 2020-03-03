@@ -18,7 +18,13 @@ module.exports = function (config) {
     coverageIstanbulReporter: {
       dir: require('path').join(__dirname, '../coverage/ngx-mdo'),
       reports: ['html', 'lcovonly', 'text-summary'],
-      fixWebpackSourcePaths: true
+      fixWebpackSourcePaths: true,
+      thresholds: {
+        statements: 49.25,
+        lines: 47.81,
+        branches: 7.73,
+        functions: 52.78
+      }
     },
     reporters: ['progress', 'kjhtml'],
     port: 9876,

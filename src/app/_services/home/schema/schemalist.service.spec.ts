@@ -22,8 +22,8 @@ describe('SchemalistService', () => {
         { provide: EndpointService, useValue: endpointSpy }
       ]
     }).compileComponents();
-    schemalistService = TestBed.get(SchemalistService);
-    httpTestingController = TestBed.get(HttpTestingController);
+    schemalistService = TestBed.inject(SchemalistService);
+    httpTestingController = TestBed.inject(HttpTestingController);
     any2tsServiceSpy = TestBed.get(Any2tsService);
     endpointServiceSpy = TestBed.get(EndpointService);
   });

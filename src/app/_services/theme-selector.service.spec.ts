@@ -6,7 +6,7 @@ describe('ThemeSelectorService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: ThemeSelectorService = TestBed.get(ThemeSelectorService);
+    const service: ThemeSelectorService = TestBed.inject(ThemeSelectorService);
     expect(service).toBeTruthy();
   });
 });

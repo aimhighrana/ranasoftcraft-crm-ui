@@ -9,7 +9,7 @@ describe('SchemaDetailsService', () => {
   }));
 
   it('should be created', () => {
-    const service: SchemaDetailsService = TestBed.get(SchemaDetailsService);
+    const service: SchemaDetailsService = TestBed.inject(SchemaDetailsService);
     expect(service).toBeTruthy();
   });
 });

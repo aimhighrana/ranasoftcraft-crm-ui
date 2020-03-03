@@ -24,14 +24,14 @@ describe('SchemaVariantService', () => {
         { provide: EndpointService, useValue: endpointSpy },
       ]
     });
-    httpTestingController = TestBed.get(HttpTestingController);
-    schemaVariantService = TestBed.get(SchemaVariantService);
+    httpTestingController = TestBed.inject(HttpTestingController);
+    schemaVariantService = TestBed.inject(SchemaVariantService);
     any2tsServiceSpy = TestBed.get(Any2tsService);
     endpointServiceSpy = TestBed.get(EndpointService);
   }));
 
   it('should be created', () => {
-    const service: SchemaVariantService = TestBed.get(SchemaVariantService);
+    const service: SchemaVariantService = TestBed.inject(SchemaVariantService);
     expect(service).toBeTruthy();
   });
 

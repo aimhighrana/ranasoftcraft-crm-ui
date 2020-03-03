@@ -6,7 +6,7 @@ describe('Any2tsService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: Any2tsService = TestBed.get(Any2tsService);
+    const service: Any2tsService = TestBed.inject(Any2tsService);
     expect(service).toBeTruthy();
   });
 });

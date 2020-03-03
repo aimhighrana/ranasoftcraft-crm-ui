@@ -24,14 +24,14 @@ describe('UserService', () => {
         { provide: Any2tsService, useValue: any2tsSpy }
       ]
     }).compileComponents();
-    userService = TestBed.get(UserService);
+    userService = TestBed.inject(UserService);
     any2tsServiceSpy = TestBed.get(Any2tsService);
     endpointServiceSpy = TestBed.get(EndpointService);
-    httpTestingController = TestBed.get(HttpTestingController);
+    httpTestingController = TestBed.inject(HttpTestingController);
   }));
 
   it('should be created', () => {
-    const service: UserService = TestBed.get(UserService);
+    const service: UserService = TestBed.inject(UserService);
     expect(service).toBeTruthy();
   });
 
