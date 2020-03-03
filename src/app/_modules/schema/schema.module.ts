@@ -42,7 +42,6 @@ import { SchemaExecutionDialogComponent } from './_components/schema-execution/s
     CommonModule,
     SchemaRoutingModule,
     SharedModule
-  ],
-  entryComponents: [ SchemaStatusinfoDialogComponent, SchemaExecutionDialogComponent]
+  ]
 })
 export class SchemaModule { }
