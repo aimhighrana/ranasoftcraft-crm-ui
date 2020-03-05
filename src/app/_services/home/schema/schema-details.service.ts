@@ -110,4 +110,8 @@ export class SchemaDetailsService {
       return this.any2tsService.any2MetadataResponse(res);
     }));
   }
+
+  public getAllUnselectedFields(schemaId: string, variantId: string): Observable<string[]> {
+    return this.http.get<string[]>(this.endpointService.getAllUnselectedFields(), {params:{schemaId, variantId}});
+  }
 }

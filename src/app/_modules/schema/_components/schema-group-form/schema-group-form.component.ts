@@ -78,9 +78,11 @@ export class SchemaGroupFormComponent implements OnInit {
        * Update object type list on filter data
        */
       this.moduleInpCtrl.valueChanges.subscribe(value => {
-        if (value instanceof ObjectTypeResponse) {} else {
+        if (value instanceof ObjectTypeResponse) {} else if(value && value !==''){
           const filteredObjectTypes = this.moduleList.filter(module => (module.objectdesc.toLowerCase().indexOf(value.toLowerCase())) === 0);
           this.filteredModules = of(filteredObjectTypes);
+        } else {
+          this.filteredModules = of(this.moduleList);
         }
       });
 
@@ -151,6 +153,7 @@ export class SchemaGroupFormComponent implements OnInit {
   private getAllModuleList() {
     this.schemaService.getAllObjectType().subscribe(data => {
       this.moduleList = data;
+      this.filteredModules = of(data);
     }, error => {
       console.error('Error while fetching modules');
     });

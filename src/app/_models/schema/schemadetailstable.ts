@@ -86,8 +86,8 @@ export  class RequestForSchemaDetailsWithBr {
     selectedFields: string[];
     fetchSize: number;
     fetchCount: number;
-    gridId: string;
-    hierarchy: string;
+    gridId: string[];
+    hierarchy: string[];
 }
 
 export class DataTableSourceResponse {
@@ -267,7 +267,7 @@ export class Heirarchy {
     tableName: string;
     objectType: string;
 }
-export interface MetadataModeleResponse {
+export class MetadataModeleResponse {
     headers: any;
     grids: any;
     hierarchy: Heirarchy[];

@@ -147,11 +147,8 @@ export class EndpointService {
     return this.apiUrl + '/schema/metadata-fileds/' + objectId;
   }
 
-  public getFieldsOfGridUrl(gridId: string): string {
-    return `${this.apiUrl}/schema/fields-of-grid/${gridId}`;
+  public getAllUnselectedFields(): string {
+    return this.apiUrl + `/schema/get-unselected-fields`;
   }
 
-  public getFieldsOfheirerchy(heirerchyId: string): string {
-    return `${this.apiUrl}/schema/fields-of-heirerchy/${heirerchyId}`;
-  }
 }

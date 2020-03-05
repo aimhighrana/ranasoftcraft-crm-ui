@@ -484,79 +484,87 @@ export class Any2tsService {
 
     return dataTableHeaderResponse;
   }
-  private convertAny2DataTableGridResponse(response: any, gridId: string): DataTableHeaderResponse[][] {
+  private convertAny2DataTableGridResponse(response: any, gridId: string[]): DataTableHeaderResponse[][] {
     const gridResponse: DataTableHeaderResponse[][] = [];
-    if (response && response.hasOwnProperty(gridId)) {
-      const rows = response[gridId].rows;
-      rows.forEach(row => {
-        const griddataRow: DataTableHeaderResponse[] = [];
-        Object.keys(row).forEach(key => {
-          const dataTableHeader: DataTableHeaderResponse = new DataTableHeaderResponse();
-          dataTableHeader.fId = row[key].fId;
-          dataTableHeader.lls = [];
-          dataTableHeader.vls = [];
-          const currentObj = row[key];
-          // for get label lang of fields
-          if (currentObj.lls) {
-            Object.keys(currentObj.lls).forEach(llsKey => {
-              const dataTableHeaderLabelLang: DataTableHeaderLabelLang = new DataTableHeaderLabelLang();
-              dataTableHeaderLabelLang.label = currentObj.lls[llsKey].label;
-              dataTableHeaderLabelLang.lang = llsKey;
-              dataTableHeader.lls.push(dataTableHeaderLabelLang);
-            });
-          }
+    if (response) {
+      gridId.forEach(grid =>{
+        if(response.hasOwnProperty(grid)) {
+          const rows = response[grid].rows;
+        rows.forEach(row => {
+          const griddataRow: DataTableHeaderResponse[] = [];
+          Object.keys(row).forEach(key => {
+            const dataTableHeader: DataTableHeaderResponse = new DataTableHeaderResponse();
+            dataTableHeader.fId = row[key].fId;
+            dataTableHeader.lls = [];
+            dataTableHeader.vls = [];
+            const currentObj = row[key];
+            // for get label lang of fields
+            if (currentObj.lls) {
+              Object.keys(currentObj.lls).forEach(llsKey => {
+                const dataTableHeaderLabelLang: DataTableHeaderLabelLang = new DataTableHeaderLabelLang();
+                dataTableHeaderLabelLang.label = currentObj.lls[llsKey].label;
+                dataTableHeaderLabelLang.lang = llsKey;
+                dataTableHeader.lls.push(dataTableHeaderLabelLang);
+              });
+            }
 
-          // get value of this field on lang
-          if (currentObj.vls) {
-            Object.keys(currentObj.vls).filter(vlskey => {
-              const dataTableHeaderValueLang: DataTableHeaderValueLang = new DataTableHeaderValueLang();
-              dataTableHeaderValueLang.lang = vlskey;
-              dataTableHeaderValueLang.valueText =  currentObj.vls[vlskey].valueTxt;
-              dataTableHeader.vls.push(dataTableHeaderValueLang);
-            });
-          }
-          griddataRow.push(dataTableHeader);
+            // get value of this field on lang
+            if (currentObj.vls) {
+              Object.keys(currentObj.vls).filter(vlskey => {
+                const dataTableHeaderValueLang: DataTableHeaderValueLang = new DataTableHeaderValueLang();
+                dataTableHeaderValueLang.lang = vlskey;
+                dataTableHeaderValueLang.valueText =  currentObj.vls[vlskey].valueTxt;
+                dataTableHeader.vls.push(dataTableHeaderValueLang);
+              });
+            }
+            griddataRow.push(dataTableHeader);
+          });
+          gridResponse.push(griddataRow);
         });
-        gridResponse.push(griddataRow);
+        }
       });
     }
     return gridResponse;
   }
 
-  private convertAny2DataTableHeirerchyResponse(response: any, heirarchyId: string): DataTableHeaderResponse[][] {
+  private convertAny2DataTableHeirerchyResponse(response: any, heirarchyId: string[]): DataTableHeaderResponse[][] {
     const gridResponse: DataTableHeaderResponse[][] = [];
-    if (response && response.hasOwnProperty(heirarchyId)) {
-      const rows = response[heirarchyId].rows;
-      rows.forEach(row => {
-        const griddataRow: DataTableHeaderResponse[] = [];
-        Object.keys(row).forEach(key => {
-          const dataTableHeader: DataTableHeaderResponse = new DataTableHeaderResponse();
-          dataTableHeader.fId = row[key].fId;
-          dataTableHeader.lls = [];
-          dataTableHeader.vls = [];
-          const currentObj = row[key];
-          // for get label lang of fields
-          if (currentObj.lls) {
-            Object.keys(currentObj.lls).forEach(llsKey => {
-              const dataTableHeaderLabelLang: DataTableHeaderLabelLang = new DataTableHeaderLabelLang();
-              dataTableHeaderLabelLang.label = currentObj.lls[llsKey].label;
-              dataTableHeaderLabelLang.lang = llsKey;
-              dataTableHeader.lls.push(dataTableHeaderLabelLang);
-            });
-          }
+    if (response) {
+      heirarchyId.forEach(heiID => {
+        if(response.hasOwnProperty(heirarchyId)) {
+          const rows = response[heiID].rows;
+          rows.forEach(row => {
+            const griddataRow: DataTableHeaderResponse[] = [];
+            Object.keys(row).forEach(key => {
+              const dataTableHeader: DataTableHeaderResponse = new DataTableHeaderResponse();
+              dataTableHeader.fId = row[key].fId;
+              dataTableHeader.lls = [];
+              dataTableHeader.vls = [];
+              const currentObj = row[key];
+              // for get label lang of fields
+              if (currentObj.lls) {
+                Object.keys(currentObj.lls).forEach(llsKey => {
+                  const dataTableHeaderLabelLang: DataTableHeaderLabelLang = new DataTableHeaderLabelLang();
+                  dataTableHeaderLabelLang.label = currentObj.lls[llsKey].label;
+                  dataTableHeaderLabelLang.lang = llsKey;
+                  dataTableHeader.lls.push(dataTableHeaderLabelLang);
+                });
+              }
 
-          // get value of this field on lang
-          if (currentObj.vls) {
-            Object.keys(currentObj.vls).filter(vlskey => {
-              const dataTableHeaderValueLang: DataTableHeaderValueLang = new DataTableHeaderValueLang();
-              dataTableHeaderValueLang.lang = vlskey;
-              dataTableHeaderValueLang.valueText =  currentObj.vls[vlskey].valueTxt;
-              dataTableHeader.vls.push(dataTableHeaderValueLang);
+              // get value of this field on lang
+              if (currentObj.vls) {
+                Object.keys(currentObj.vls).filter(vlskey => {
+                  const dataTableHeaderValueLang: DataTableHeaderValueLang = new DataTableHeaderValueLang();
+                  dataTableHeaderValueLang.lang = vlskey;
+                  dataTableHeaderValueLang.valueText =  currentObj.vls[vlskey].valueTxt;
+                  dataTableHeader.vls.push(dataTableHeaderValueLang);
+                });
+              }
+              griddataRow.push(dataTableHeader);
             });
-          }
-          griddataRow.push(dataTableHeader);
-        });
-        gridResponse.push(griddataRow);
+            gridResponse.push(griddataRow);
+          });
+        }
       });
     }
     return gridResponse;
@@ -565,11 +573,13 @@ export class Any2tsService {
   public any2SchemaTableData(response: DataTableResponse[], request: RequestForSchemaDetailsWithBr): DataTableSourceResponse {
     const finalResposne: DataTableSourceResponse = new DataTableSourceResponse();
 
-    if (request.gridId) {
+    if (request.gridId.length>0) {
       finalResposne.data = this.any2GridResponseData(response);
-    } else if (request.hierarchy) {
+    }
+    if (request.hierarchy.length>0) {
       finalResposne.data = this.any2HeirerchyResponseData(response);
-    } else {
+    }
+    if(request.gridId.length<=0 && request.hierarchy.length<=0) {
       finalResposne.data = this.any2HeaderResponseData(response);
     }
 

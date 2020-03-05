@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
-import { SchemaTableData, ResponseFieldList, RequestForSchemaDetailsWithBr, SchemaTableViewRequest, MetadataModeleResponse } from 'src/app/_models/schema/schemadetailstable';
+import { SchemaTableData, ResponseFieldList, RequestForSchemaDetailsWithBr, SchemaTableViewRequest, MetadataModeleResponse, Heirarchy } from 'src/app/_models/schema/schemadetailstable';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { MetadataModel, DataTableReqType } from 'src/app/_models/schema/schemadetailstable';
+import { DataTableReqType } from 'src/app/_models/schema/schemadetailstable';
 import { PageEvent, MatPaginatorIntl } from '@angular/material/paginator';
 import { SelectionModel } from '@angular/cdk/collections';
 import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-details.service';
@@ -11,9 +11,8 @@ import { SchemaStatusinfoDialogComponent } from 'src/app/_modules/schema/_compon
 import { SchemaListDetails } from 'src/app/_models/schema/schemalist';
 import { SchemalistService } from 'src/app/_services/home/schema/schemalist.service';
 import { FormControl } from '@angular/forms';
-import { Subject, Observable, of } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { SchemaDataSource } from './schema-data-source';
-import { MatButtonToggleChange } from '@angular/material/button-toggle';
 
 @Component({
   selector: 'pros-schema-datatable',
@@ -23,14 +22,10 @@ import { MatButtonToggleChange } from '@angular/material/button-toggle';
 })
 export class SchemaDatatableComponent implements OnInit {
 
-
   tabs = ['All', 'Error', 'Success', 'Skipped', 'Corrections', 'Duplicate'];
   matMenu: any[] = ['Show Details', 'Delete', 'Edit'];
-  allDisplayedColumns: string[] = [];
-  allDisplayedColumnsObservable: Observable<Map<string,MetadataModel>>;
-  selectedFields: string[];
-  allDisplayedColumnsDesc: any = {} as any;
   selection = new SelectionModel<SchemaTableData>(true, []);
+
   @Input()
   objectId: string;
   @Input()
@@ -58,14 +53,15 @@ export class SchemaDatatableComponent implements OnInit {
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   selectedTabIndex = 1; // Defaut error status should be visible
   dynamicPageSize: number;
-  allMetaDataFields: MetadataModeleResponse;
-  selectedGridId: string;
-  selectedHeiField: string;
+  staticColumns = ['row_more_action', 'row_selection_check2box', 'OBJECTNUMBER'];
+  allMetaDataFields: BehaviorSubject<MetadataModeleResponse> = new BehaviorSubject(new MetadataModeleResponse());
+  displayedFields: BehaviorSubject<string[]> = new BehaviorSubject(this.staticColumns); // all selected fields across header, selected hierarchy, selected grids
+  unselectedFields: string[] = []; // all unselected fields across header, hierarchy, grids
+  selectedGridIds: string[] = []; // currently selected grid ids
+  selectedHierarchyIds: string[] = []; // currently selected hierarchy ids
 
   public chooseColumnCtrl: FormControl = new FormControl();
   public chooseColumnFilterCtrl: FormControl = new FormControl();
-  private onDestroy = new Subject<void>();
-
 
   constructor(
     private schemaDetailsService: SchemaDetailsService,
@@ -73,30 +69,57 @@ export class SchemaDatatableComponent implements OnInit {
     private schemaListService: SchemalistService
 
   ) {
+
+  }
+  ngOnInit() {
     this.schemaDetails = new SchemaListDetails();
-    // this.allDisplayedColumnsObservable = of([]);
     this.paginator = new MatPaginator(new MatPaginatorIntl(), null);
-    this.allMetaDataFields = {grids:null, gridFields: null,headers: null,hierarchy: null,hierarchyFields: null};
-    this.selectedFields = [];
+    this.getMetadataFields();
+    this.getSchemaDetails(this.schemaId);
+    this.dataTableDataSource = new SchemaDataSource(this.schemaDetailsService);
+    this.dataTableRequest(0, 40, DataTableReqType.error);
+
+    this.allMetaDataFields.subscribe((allMDF) => {
+      this.calculateDisplayFields();
+    });
+    this.schemaDetailsService.getAllUnselectedFields(this.schemaId , this.variantId).subscribe(data =>{
+      // this.unselectedFields = data ? data : [];
+    },error=>{
+      console.error(`Error while getting unselected fields : ${error}`);
+    })
   }
 
-  ngOnInit() {
-    if (this.objectId && this.schemaId) {
-      this.getMetadataFields();
-      this.getSchemaDetails(this.schemaId);
-      this.dataTableDataSource = new SchemaDataSource(this.schemaDetailsService);
-      this.dataTableRequest(0, 40, DataTableReqType.error, null, null);
+  calculateDisplayFields(): void {
+    const allMDF = this.allMetaDataFields.getValue();
+    const fields = [];
+    this.staticColumns.forEach(col => fields.push(col));
+    for (const headerField in allMDF.headers) {
+      if (fields.indexOf(headerField) < 0 && this.unselectedFields.indexOf(headerField) < 0) {
+        fields.push(headerField);
+      }
     }
 
-    // this.chooseColumnFilterCtrl.valueChanges
-    //   .pipe(takeUntil(this.onDestroy))
-    //   .subscribe((newVal) => {
-    //     // if (newVal && newVal !== '') {
-    //     //   this.allDisplayedColumnsObservable = of(this.chooseColumnFields.filter(data => data.fieldDescri.toLocaleLowerCase().indexOf(newVal.toLocaleLowerCase()) === 0));
-    //     // } else {
-    //     //   this.allDisplayedColumnsObservable = of(this.chooseColumnFields);
-    //     // }
-    //   }).unsubscribe();
+    for (const hierarchyIdx in allMDF.hierarchy) {
+      if (this.selectedHierarchyIds.indexOf(allMDF.hierarchy[hierarchyIdx].heirarchyId) >= 0) {
+        for (const hierarchyChildField in allMDF.hierarchyFields[allMDF.hierarchy[hierarchyIdx].heirarchyId]) {
+          if (fields.indexOf(allMDF.hierarchy[hierarchyIdx].heirarchyId + '+' + hierarchyChildField) < 0 && this.unselectedFields.indexOf(allMDF.hierarchy[hierarchyIdx].heirarchyId + '+' + hierarchyChildField) < 0) {
+            fields.push(allMDF.hierarchy[hierarchyIdx].heirarchyId + '+' + hierarchyChildField);
+          }
+        }
+      }
+    }
+
+    for (const gridField in allMDF.grids) {
+      if (this.selectedGridIds.indexOf(gridField) >= 0) {
+        for (const gridChildField in allMDF.gridFields[gridField]) {
+          if (fields.indexOf(gridField + '+' + gridChildField) < 0 && this.unselectedFields.indexOf(gridField + '+' + gridChildField) < 0) {
+            fields.push(gridField + '+' + gridChildField);
+          }
+        }
+      }
+    }
+
+    this.displayedFields.next(fields);
   }
 
   isAllSelected() {
@@ -137,8 +160,7 @@ export class SchemaDatatableComponent implements OnInit {
 
   public openStatusInfoDialog() {
     const dialogRef = this.dialog.open(SchemaStatusinfoDialogComponent, {
-      width: '900px',
-      data: { schemaId: this.schemaId, objectId: this.objectId, selectedFldIds: this.allDisplayedColumns, fieldLists: this.fieldList }
+      width: '900px'
     });
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
@@ -148,19 +170,20 @@ export class SchemaDatatableComponent implements OnInit {
   private getSchemaDetails(schemaId: string) {
     this.schemaListService.getSchemaDetailsBySchemaId(schemaId).subscribe(data => {
       this.schemaDetails = data;
-
+    }, error => {
+      console.error('Error while getting schema details');
     });
   }
 
-  public dataTableRequest(fetchCount: number, fetchSize: number, requestType: string, selectedGridId: string, selectedHeiId: string) {
+  public dataTableRequest(fetchCount: number, fetchSize: number, requestType: string) {
     const sendRequest: RequestForSchemaDetailsWithBr = new RequestForSchemaDetailsWithBr();
     sendRequest.schemaId = this.schemaId;
     sendRequest.variantId = this.variantId;
     sendRequest.requestStatus = requestType ? requestType : DataTableReqType.error;
     sendRequest.fetchCount = fetchCount ? fetchCount : 0;
     sendRequest.fetchSize = fetchSize ? fetchSize : 40;
-    sendRequest.gridId = selectedGridId;
-    sendRequest.hierarchy = selectedHeiId;
+    sendRequest.gridId = this.selectedGridIds ? this.selectedGridIds : [];
+    sendRequest.hierarchy = this.selectedHierarchyIds ? this.selectedHierarchyIds : [];
     this.dataTableDataSource.getTableData(sendRequest);
   }
 
@@ -168,32 +191,24 @@ export class SchemaDatatableComponent implements OnInit {
     // 0, 40 for initial load on each status
     this.selectedTabIndex = index;
     this.dynamicPageSize = this.matChipCountLabel(this.selectedTabIndex);
-    this.dataTableRequest(0, 40, this.tabs[index], this.selectedGridId, this.selectedHeiField);
+    this.dataTableRequest(0, 40, this.tabs[index]);
   }
 
   public chooseColumns(event) {
-    const selectedArray = event.value;
+    // const selectedArray = event.value;
     // console.log(this.getSelectedFields());
     // this.getSchemaTableDetailsForError(this.schemaDetails);
-    this.selectedFields = selectedArray;
-    if (selectedArray) {
-      //  this.allDisplayedColumns = selectedArray.map(fld => fld.fieldId);
-      //  this.allDisplayedColumns.splice(0, 0, 'row_more_action');
-      //  this.allDisplayedColumns.splice(1, 0, 'row_selection_check2box');
-      //  this.allDisplayedColumns.splice(2, 0, 'OBJECTNUMBER');
-      this.selectedFields.splice(0, 0, 'row_more_action');
-      this.selectedFields.splice(1, 0, 'row_selection_check2box');
-      this.selectedFields.splice(2, 0, 'OBJECTNUMBER');
-      // this.changeDetectonRef.detectChanges();
-      this.updateTableView();
-    }
+    // this.selectedFields = selectedArray;
+    // if (selectedArray) {
+      this.persistenceTableView();
+    // }
   }
 
-  private updateTableView() {
+  private persistenceTableView() {
     const schemaTableViewRequest: SchemaTableViewRequest = new SchemaTableViewRequest();
     schemaTableViewRequest.schemaId = this.schemaDetails.schemaId;
     schemaTableViewRequest.variantId = this.schemaDetails.variantId;
-    schemaTableViewRequest.unassignedFields = this.getAllUnassignedFields();
+    schemaTableViewRequest.unassignedFields = this.unselectedFields;
 
     this.schemaDetailsService.updateSchemaTableView(schemaTableViewRequest).subscribe(response => {
       console.log('Updated view {} is success.', response);
@@ -202,40 +217,9 @@ export class SchemaDatatableComponent implements OnInit {
     });
   }
 
-  private getAllUnassignedFields(): string[] {
-    const unassignedFields: string[] = [];
-    const selectedFields: string[] = this.chooseColumnCtrl.value.map(fld => fld.fieldId);
-    this.allMetaDataFields.headers.forEach(fld => {
-      if (selectedFields.indexOf(fld.fieldId) === -1) {
-        unassignedFields.push(fld.fieldId);
-      }
-    });
-    return unassignedFields;
-  }
-
   private getMetadataFields() {
     this.schemaDetailsService.getMetadataFields(this.objectId).subscribe(response => {
-      this.allMetaDataFields = response;
-      this.allDisplayedColumnsObservable = of(response.headers);
-      this.selectedFields = [];
-      if(response.headers) {
-        this.selectedFields = Object.keys(response.headers);
-      }
-      this.chooseColumnCtrl.setValue(this.selectedFields);
-      // this.allDisplayedColumns = response.headers.map(fld => fld.fieldId);
-
-      //  // add static column to table
-      //  this.allDisplayedColumns.splice(0, 0, 'row_more_action');
-      //  this.allDisplayedColumns.splice(1, 0, 'row_selection_check2box');
-      //  this.allDisplayedColumns.splice(2, 0, 'OBJECTNUMBER');
-      // //  this.allDisplayedColumns.splice(0,0,'OBJECTNUMBER');
-      // //  response.headers.forEach(element => {
-      // //    this.allDisplayedColumnsDesc[element.fieldId] = element.fieldDescri;
-      // //  });
-      //  this.allDisplayedColumnsDesc.OBJECTNUMBER = 'Object Number';
-      this.selectedFields.splice(0, 0, 'row_more_action');
-      this.selectedFields.splice(1, 0, 'row_selection_check2box');
-      this.selectedFields.splice(2, 0, 'OBJECTNUMBER');
+      this.allMetaDataFields.next(response);
     }, error => {
       console.error(`Error while getting headers field and unassigned fields ${error}`);
     });
@@ -243,16 +227,12 @@ export class SchemaDatatableComponent implements OnInit {
 
 
   public doPagination(pageEvent: PageEvent) {
-    this.dataTableRequest(pageEvent.pageIndex, pageEvent.pageSize, this.tabs[this.selectedTabIndex], null, null);
+    this.dataTableRequest(pageEvent.pageIndex, pageEvent.pageSize, this.tabs[this.selectedTabIndex]);
   }
 
 
   public dataTableTrackByFun(index, object) {
-    if (object) {
-      return object.fieldId;
-    } else {
-      return null;
-    }
+    return object.key;
   }
 
   public matChipCountLabel(tabIndex: number) {
@@ -287,56 +267,32 @@ export class SchemaDatatableComponent implements OnInit {
     return dynCount;
   }
 
-  public applyGridField(event: MatButtonToggleChange) {
-    const selectedGridId = event.value;
-    if (selectedGridId) {
-        this.selectedGridId = selectedGridId;
-        this.selectedHeiField = '';
-        // const gridFld = this.allMetaDataFields.gridFields.get(selectedGridId);
-
-
-          // this.chooseColumnCtrl.setValue(this.chooseColumnCtrl.value.concat(keys));
-          // this.selectedFields =  ['ADD_ZZELU'];//this.chooseColumnCtrl.value;
-          // this.allDisplayedColumnsObservable = of(this.allMetaDataFields.headers.concat(gridFld));
-          // this.allDisplayedColumns = (this.allMetaDataFields.headers.concat(gridFld)).map(fld => fld.fieldId);
-          // this.allDisplayedColumns.splice(0, 0, 'row_more_action');
-          // this.allDisplayedColumns.splice(1, 0, 'row_selection_check2box');
-          // this.allDisplayedColumns.splice(2, 0, 'OBJECTNUMBER');
-          // this.dataTableRequest(0, 40, this.tabs[this.selectedTabIndex], selectedGridId, null);
+  public applyGridField(gridId: string, add: boolean) {
+    this.selectedHierarchyIds = [];
+    this.selectedGridIds = [];
+    if(add) {
+      this.selectedGridIds.push(gridId);
     }
+    this.calculateDisplayFields();
+    this.dataTableRequest(0, 40, this.tabs[this.selectedTabIndex]);
   }
 
-  public applyHeirarchyField(event: MatButtonToggleChange) {
-    const selectedHeiId = event.value;
-    if (selectedHeiId) {
-      this.selectedGridId = '';
-      this.selectedHeiField = selectedHeiId;
-      const heiFld = this.allMetaDataFields.hierarchyFields.get(selectedHeiId);
-
-        const selectedFld = []; // this.chooseColumnCtrl.value;
-        heiFld.forEach(fld => {
-            selectedFld.push(fld);
-            this.allDisplayedColumnsDesc[fld.fieldId] = fld.fieldDescri;
-          });
-          // this.chooseColumnCtrl.setValue(this.allMetaDataFields.headers.concat(heiFld));
-          // this.selectedFields = this.chooseColumnCtrl.value;
-          // this.allDisplayedColumnsObservable = of(this.allMetaDataFields.headers.concat(heiFld));
-          // this.allDisplayedColumns = (this.allMetaDataFields.headers.concat(heiFld)).map(fld => fld.fieldId);
-          this.allDisplayedColumns.splice(0, 0, 'row_more_action');
-          this.allDisplayedColumns.splice(1, 0, 'row_selection_check2box');
-          this.allDisplayedColumns.splice(2, 0, 'OBJECTNUMBER');
-          this.dataTableRequest(0, 40, this.tabs[this.selectedTabIndex], selectedHeiId, null);
+  public applyHeirarchyField(hId: string, add: boolean) {
+    this.selectedGridIds = [];
+    this.selectedHierarchyIds = [];
+    if(add) {
+      this.selectedHierarchyIds.push(hId);
     }
-    console.log(selectedHeiId);
+    this.calculateDisplayFields();
+    this.dataTableRequest(0, 40, this.tabs[this.selectedTabIndex]);
   }
 
-  chooseColumnTrackBy(index, object) {
-    if(object) {
-      return object.fieldId;
-    } else{
-      return null;
-    }
+  hierarchyTrackBy(hierarchy: Heirarchy): string {
+    return hierarchy.heirarchyId;
   }
 
+  gridTrackBy(grid: any): string {
+    return grid;
+  }
 
 }
