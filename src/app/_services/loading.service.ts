@@ -5,9 +5,13 @@ import { Injectable, EventEmitter } from '@angular/core';
 })
 export class LoadingService {
 
-  isLoading: EventEmitter<boolean> = new EventEmitter(true);
+  private loadingEmitter: EventEmitter<boolean> = new EventEmitter(true);
 
   constructor() {
-    this.isLoading.emit(false);
+    this.isLoading().emit(false);
+  }
+
+  isLoading(): EventEmitter<boolean> {
+    return this.loadingEmitter;
   }
 }

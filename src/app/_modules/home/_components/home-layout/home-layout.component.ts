@@ -11,27 +11,24 @@ import { Subscription } from 'rxjs';
 export class HomeLayoutComponent implements OnInit, OnDestroy {
 
   udSub: Subscription;
-  userDetails: Userdetails;
-  loadingSvc: LoadingService;
+  userDetails: Userdetails = new Userdetails();;
 
   constructor(
     private userService: UserService,
     private loadingService: LoadingService
   ) {
-    this.loadingSvc = loadingService;
   }
 
   ngOnInit() {
-    this.userDetails = new Userdetails();
-    this.getUserDetails();
-  }
-
-  private getUserDetails() {
     this.udSub = this.userService.getUserDetails().subscribe(
       (response: Userdetails) => {
         this.userDetails = response;
       }
     );
+  }
+
+  isLoading() {
+    return this.loadingService.isLoading();
   }
 
   ngOnDestroy() {

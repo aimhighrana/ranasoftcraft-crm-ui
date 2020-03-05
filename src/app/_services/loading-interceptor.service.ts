@@ -19,12 +19,12 @@ export class LoadingInterceptorService implements HttpInterceptor {
     if (i >= 0) {
         this.requests.splice(i, 1);
     }
-    this.loadingService.isLoading.emit(this.requests.length > 0);
+    this.loadingService.isLoading().emit(this.requests.length > 0);
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     this.requests.push(req);
-    this.loadingService.isLoading.emit(true);
+    this.loadingService.isLoading().emit(true);
     return new Observable(observer => {
         const subscription = next.handle(req)
             .subscribe(
