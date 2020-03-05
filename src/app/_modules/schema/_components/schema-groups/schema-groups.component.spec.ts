@@ -9,12 +9,14 @@ import { SchemaService } from 'src/app/_services/home/schema.service';
 import { of } from 'rxjs';
 import { BreadcrumbComponent } from 'src/app/_modules/shared/_components/breadcrumb/breadcrumb.component';
 import { AddTileComponent } from 'src/app/_modules/shared/_components/add-tile/add-tile.component';
+import { Router } from '@angular/router';
 
 describe('SchemaGroupsComponent', () => {
   let component: SchemaGroupsComponent;
   let fixture: ComponentFixture<SchemaGroupsComponent>;
   let htmlnative: HTMLElement;
   let schemaServiceSpy: jasmine.SpyObj<SchemaService>;
+  let router: Router;
   beforeEach(async(() => {
     const schemaSerSpy = jasmine.createSpyObj('SchemaService', ['getAllSchemaGroup']);
     TestBed.configureTestingModule({
@@ -29,6 +31,7 @@ describe('SchemaGroupsComponent', () => {
     })
       .compileComponents();
     schemaServiceSpy = TestBed.inject(SchemaService) as jasmine.SpyObj<SchemaService>;
+    router = TestBed.inject(Router);
   }));
 
   beforeEach(() => {
@@ -71,6 +74,14 @@ describe('SchemaGroupsComponent', () => {
 
   it('pros-add-tile: should create', () => {
     expect(htmlnative.getElementsByTagName('pros-add-tile').length).toEqual(1);
+  });
+
+  it('edit: function should navigate', () => {
+    schemaServiceSpy.getAllSchemaGroup.and.returnValue(of(mockData));
+    fixture.detectChanges();
+    spyOn(router, 'navigate');
+    component.edit(mockData[0]);
+    expect(router.navigate).toHaveBeenCalledWith(['/home/schema/group', mockData[0].groupId]);
   });
 
 });

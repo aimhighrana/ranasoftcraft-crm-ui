@@ -24,16 +24,6 @@ export class SchemaGroupsComponent implements OnInit {
   };
 
   ngOnInit() {
-    this.getAllSchemaGroup();
-  }
-
-  showSchemaList(schema: SchemaGroupResponse) {
-    if (schema !== undefined && schema.groupId !== null) {
-      this.router.navigate(['/home/schema/schema-list', schema.groupId]);
-    }
-  }
-
-  private getAllSchemaGroup() {
     this.scheamService.getAllSchemaGroup().subscribe((response: SchemaGroupResponse[]) => {
       this.schemaGroups = response;
     }, error => {
