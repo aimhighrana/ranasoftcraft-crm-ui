@@ -204,3 +204,22 @@ export class VariantAssignedFieldDetails {
     fieldDesc: string;
     value: string;
 }
+export class VariantListDetails {
+    title: string;
+    variantId: string;
+    totalValue: number;
+    errorValue: number;
+    successValue: number;
+    skippedValue: number;
+    correctionValue: number;
+    duplicateValue: number;
+    successTrendValue: number;
+    errorTrendValue: number;
+    totalUniqueValue: number;
+    successUniqueValue: number;
+    errorUniqueValue: number;
+    skippedUniqueValue: number;
+    timestamp: number;
+    isVariant: boolean;
+    isInRunning: boolean;
+}

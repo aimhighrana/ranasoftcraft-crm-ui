@@ -71,9 +71,9 @@
   <ng-template [ngIf]="bottomLeftLabel || bottomRightLabel">
     <mat-divider class="btm-divider"></mat-divider>
     <mat-card-footer>
-      <button *ngIf="bottomLeftLabel" mat-button color="primary" (click)="onBottomLeft();">{{ bottomLeftLabel }}</button>
+      <button *ngIf="bottomLeftLabel" prosClickStopPropagation mat-button color="primary" (click)="onBottomLeft();">{{ bottomLeftLabel }}</button>
       <span class="f-spacer"></span>
-      <button *ngIf="bottomRightLabel" mat-button color="primary" (click)="onBottomRight();">{{ bottomRightLabel }}</button>
+      <button *ngIf="bottomRightLabel" prosClickStopPropagation mat-button color="primary" (click)="onBottomRight();">{{ bottomRightLabel }}</button>
     </mat-card-footer>
   </ng-template>
 </mat-card>

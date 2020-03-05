@@ -41,16 +41,16 @@ export class EndpointService {
     return this.apiUrl + '/getFieldListBySchema';
   }
   public schemaVarinatDetails(): string {
-    return this.apiUrl + '/schemaVariantList';
+    return this.apiUrl + '/schema/schemaVariantList';
   }
   public deleteSchemaGroupUrl(groupId: string): string {
-    return this.apiUrl + '/deleteSchemaGroup/' + groupId;
+    return this.apiUrl + '/schema/delete-schema-group/' + groupId;
   }
   public getSchemaDataTableColumnInfoUrl(): string {
     return this.apiUrl + '/getListPageLayout';
   }
   public getSchemaDetailsBySchemaId(schemaId: string): string {
-    return this.apiUrl + '/schemaCount/' + schemaId;
+    return this.apiUrl + '/schema/schemaCount/' + schemaId;
   }
   public getShowMoreSchemaTableDataUrl(): string {
     return this.apiUrl + '/showMoreSchemaTableData';
@@ -151,4 +151,7 @@ export class EndpointService {
     return this.apiUrl + `/schema/get-unselected-fields`;
   }
 
+  public getSchemaVariantsUrl(schemaId: string): string {
+    return this.apiUrl + '/schema/schema-variants/' + schemaId;
+  }
 }

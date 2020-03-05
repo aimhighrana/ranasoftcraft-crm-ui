@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Task } from '../_models/task';
-import { TaskResponse } from '../_models/task-response';
 import { SchemaListOnLoadResponse, SchemaGroupResponse, SchemaGroupDetailsResponse, SchemaGroupCountResponse, ObjectTypeResponse, GetAllSchemabymoduleidsRes, SchemaGroupWithAssignSchemas, SchemaGroupMapping } from '../_models/schema/schema';
-import { VariantFieldList, SchemaVariantResponse, SchemaBrInfoList, CategoriesResponse, DependencyResponse, VariantDetailsScheduleSchema, VariantAssignedFieldDetails, SchemaListModuleList, SchemaModuleList, SchemaListDetails, BusinessRuleExecutionDetails } from '../_models/schema/schemalist';
+import { VariantFieldList, SchemaVariantResponse, SchemaBrInfoList, CategoriesResponse, DependencyResponse, VariantDetailsScheduleSchema, VariantAssignedFieldDetails, SchemaListModuleList, SchemaModuleList, SchemaListDetails, BusinessRuleExecutionDetails, VariantListDetails } from '../_models/schema/schemalist';
 import { SchemaDataTableColumnInfoResponse, ResponseFieldList, SchemaTableData, DataTableResponse, DataTableHeaderResponse, DataTableHeaderLabelLang, DataTableHeaderValueLang, DataTableSourceResponse, OverViewChartData, OverViewChartDataXY, OverViewChartDataSet, CategoryInfo, CategoryChartDataSet, CategoryChartData, CategoryChartDataXY, MetadataModel, RequestForSchemaDetailsWithBr, MetadataModeleResponse, Heirarchy } from '../_models/schema/schemadetailstable';
 import { Userdetails, AssignedRoles } from '../_models/userdetails';
 import * as moment from 'moment';
@@ -12,45 +10,6 @@ import * as moment from 'moment';
 export class Any2tsService {
 
   constructor() { }
-
-  public anyToTask(contentItem: any): Task {
-    const task: Task = new Task();
-    // task.date = moment(contentItem.date);
-    task.nextAgentType = contentItem.nextAgentType;
-    task.eventId = contentItem.eventId;
-    task.receiver = contentItem.receiver;
-    task.claimed = contentItem.claimed;
-    task.dueDate = contentItem.dueDate;
-    task.stepId = contentItem.stepId;
-    task.REQUESTOR_DATE = contentItem.REQUESTOR_DATE;
-    task.REQUESTOR_NAME = contentItem.REQUESTOR_NAME;
-    task.DATESTARTED = contentItem.DATESTARTED;
-    task.entryStatus = contentItem.entryStatus;
-    task.workflowpath = contentItem.workflowpath;
-    task.sender = contentItem.sender;
-    task.objectName = contentItem.objectName;
-    task.claimable = contentItem.claimable;
-    task.ROLEID = contentItem.ROLEID;
-    task.objecttype = contentItem.objecttype;
-    task.event = contentItem.event;
-    task.wfId = contentItem.wfId;
-    task.taskId = contentItem.taskId;
-    task.objectId = contentItem.objectId;
-    task.forwardEnabled = contentItem.forwardEnabled;
-    task.status = contentItem.status;
-    task.desc = contentItem.desc;
-    return task;
-  }
-
-  public anyToTaskResponse(contentItem: any): TaskResponse {
-    const tr: TaskResponse = new TaskResponse();
-    const dataArr: Task[] = [];
-    contentItem.data.forEach(taskItem => {
-      dataArr.push(this.anyToTask(taskItem));
-    });
-    tr.data = dataArr;
-    return tr;
-  }
 
   public anyToSchemaListOnLoadResponse(data: any): SchemaListOnLoadResponse {
     const schema: SchemaListOnLoadResponse = new SchemaListOnLoadResponse();
@@ -974,4 +933,32 @@ export class Any2tsService {
   //   }
   //   return heiFields;
   // }
+
+public any2VaraintListView(data: any): VariantListDetails[] {
+  const returnList: VariantListDetails[] = [];
+  if (data) {
+    data.forEach(resposne => {
+      const variantDetail: VariantListDetails = new VariantListDetails();
+      variantDetail.title = resposne.title ? resposne.title : 'N/A';
+      variantDetail.variantId = resposne.variantId;
+      variantDetail.totalValue = resposne.totalValue ? resposne.totalValue : 0;
+      variantDetail.errorValue = resposne.errorValue ? resposne.errorValue : 0;
+      variantDetail.successValue = resposne.successValue ? resposne.successValue : 0;
+      variantDetail.skippedValue = resposne.skippedValue ? resposne.skippedValue : 0;
+      variantDetail.correctionValue = resposne.correctionValue ? resposne.correctionValue : 0;
+      variantDetail.duplicateValue = resposne.duplicateValue ? resposne.duplicateValue : 0;
+      variantDetail.successTrendValue = resposne.successValue ? resposne.successValue : 0;
+      variantDetail.errorTrendValue = resposne.errorTrendValue ? resposne.errorTrendValue : 0;
+      variantDetail.totalUniqueValue = resposne.totalUniqueValue ? resposne.totalUniqueValue : 0;
+      variantDetail.successUniqueValue = resposne.successUniqueValue ? resposne.successUniqueValue : 0;
+      variantDetail.errorUniqueValue = resposne.errorUniqueValue ? resposne.errorUniqueValue : 0;
+      variantDetail.skippedUniqueValue = resposne.skippedUniqueValue ? resposne.skippedUniqueValue : 0;
+      variantDetail.timestamp = resposne.timestamp ? resposne.timestamp : '';
+      variantDetail.isVariant = resposne.isVariant;
+      variantDetail.isInRunning = resposne.isInRunning;
+      returnList.push(variantDetail);
+    });
+  }
+  return returnList;
+  }
 }

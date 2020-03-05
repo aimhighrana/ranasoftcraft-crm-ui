@@ -27,7 +27,7 @@ export class SchemaGroupsComponent implements OnInit {
     this.scheamService.getAllSchemaGroup().subscribe((response: SchemaGroupResponse[]) => {
       this.schemaGroups = response;
     }, error => {
-      console.log('Error while fetching schema groups');
+      console.error(`Error while fetching schema groups: ${error}`);
     });
   }
 
@@ -36,6 +36,16 @@ export class SchemaGroupsComponent implements OnInit {
   }
 
   public delete(group: SchemaGroupResponse) {
-    // TODO
+    this.scheamService.deleteSchemaGroup(group.groupId).subscribe(data => {
+      if(data) {
+        this.scheamService.getAllSchemaGroup().subscribe((response: SchemaGroupResponse[]) => {
+          this.schemaGroups = response;
+        }, error => {
+          console.error(`Error while fetching schema groups : ${error}`);
+        });
+      }
+    }, error=>{
+      console.error(`Error while delete schema group: ${error}`);
+    });
   }
 }

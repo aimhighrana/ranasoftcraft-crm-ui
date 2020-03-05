@@ -10,19 +10,22 @@ import { SchemaVariantService } from 'src/app/_services/home/schema/schema-varia
 import { SchemaService } from 'src/app/_services/home/schema.service';
 import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-details.service';
 import { BreadcrumbComponent } from 'src/app/_modules/shared/_components/breadcrumb/breadcrumb.component';
-import { SchemaListDetails } from 'src/app/_models/schema/schemalist';
+import { VariantListDetails } from 'src/app/_models/schema/schemalist';
 import { AddTileComponent } from 'src/app/_modules/shared/_components/add-tile/add-tile.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { of } from 'rxjs';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 
 describe('SchemaVariantsComponent', () => {
   let component: SchemaVariantsComponent;
   let fixture: ComponentFixture<SchemaVariantsComponent>;
   let htmlNative: HTMLElement;
   beforeEach(async(() => {
-    const schemaVarServiceSpy = jasmine.createSpyObj('SchemaVariantService', ['schemavariantDetailsBySchemaId']);
+    const schemaVarServiceSpy = jasmine.createSpyObj('SchemaVariantService', ['getSchemaVariantDetails']);
     const schemaSerSpy = jasmine.createSpyObj('SchemaService', ['getSchemaGroupDetailsBySchemaGrpId']);
     const schemaDeSerSpy = jasmine.createSpyObj('SchemaDetailsService', ['getSchemaDetailsBySchemaId']);
     TestBed.configureTestingModule({
-      imports: [AppMaterialModuleForSpec, MatIconModule, RouterTestingModule],
+      imports: [AppMaterialModuleForSpec, MatIconModule, RouterTestingModule, FormsModule, ReactiveFormsModule],
       declarations: [SchemaVariantsComponent, BreadcrumbComponent, SchemaTileComponent, AddTileComponent, SubstringPipe ],
       providers: [
         { provide: SchemaVariantService, useValue: schemaVarServiceSpy },
@@ -43,26 +46,50 @@ describe('SchemaVariantsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('schemaDetails: should create', () => {
-    // mock data
-    const mockSchemaData: SchemaListDetails = new SchemaListDetails();
-    mockSchemaData.schemaDescription = 'Function Location';
-    mockSchemaData.errorCount = 100;
-    mockSchemaData.successCount = 700;
-    mockSchemaData.totalCount = 800;
-    component.schemaListDetails = mockSchemaData;
+  const mockVaraintData: VariantListDetails = new VariantListDetails();
+    mockVaraintData.variantId = '0';
+    mockVaraintData.title = 'Prospecta';
+    mockVaraintData.totalValue = 7652365;
+    mockVaraintData.errorValue = 672376;
+    mockVaraintData.successValue = 8726;
+    mockVaraintData.skippedValue = 5678;
+    mockVaraintData.correctionValue = 8756;
+    mockVaraintData.duplicateValue = 8765;
+    mockVaraintData.successTrendValue = 8765;
+    mockVaraintData.errorTrendValue = 987;
+    mockVaraintData.totalUniqueValue = 876;
+    mockVaraintData.successUniqueValue = 98765;
+    mockVaraintData.errorUniqueValue = 9876;
+    mockVaraintData.skippedUniqueValue = 87654;
+
+  it('schemaVaraint: should create', () => {
+    component.variarantDetailsOb = of([mockVaraintData]);
     fixture.detectChanges();
-    expect(htmlNative.getElementsByTagName('mat-list-item').length).toEqual(4, 'mat-list-item length should equal to 4');
-
-    expect(Number(htmlNative.getElementsByTagName('mat-list-item').item(0).getElementsByTagName('h4').item(0).textContent)).toEqual(mockSchemaData.totalCount, 'check the total record count');
-    expect(htmlNative.getElementsByTagName('mat-list-item').item(0).getElementsByTagName('p').item(0).textContent.trim()).toEqual('Total', 'check the total record count text');
-
-    expect(Number(htmlNative.getElementsByTagName('mat-list-item').item(1).getElementsByTagName('h4').item(0).textContent)).toEqual(mockSchemaData.errorCount, 'check the error record count');
-    expect(htmlNative.getElementsByTagName('mat-list-item').item(1).getElementsByTagName('p').item(0).textContent.trim()).toEqual('Error', 'check the total error count text');
-
-    expect(Number(htmlNative.getElementsByTagName('mat-list-item').item(2).getElementsByTagName('h4').item(0).textContent)).toEqual(mockSchemaData.successCount, 'check the success record count');
-    expect(htmlNative.getElementsByTagName('mat-list-item').item(2).getElementsByTagName('p').item(0).textContent.trim()).toEqual('Success', 'check the success record count text');
-
+    console.log(htmlNative.getElementsByTagName('pros-schema-tile').length);
+    expect(htmlNative.getElementsByTagName('pros-schema-tile').length).toEqual(1);
   });
 
+  it('percentageErrorStr(), ', async(() => {
+      component.masterVariant = mockVaraintData;
+      const num =  component.percentageErrorStr();
+      console.log(num);
+  }));
+
+  it('percentageSuccessStr()', async(() => {
+      component.masterVariant = mockVaraintData;
+      const num = component.percentageSuccessStr();
+      console.log(num);
+  }));
+
+  it('toggleUniqueContainer()', async(() => {
+      const event =   new MatSlideToggleChange(null, true);
+      component.toggleUniqueContainer(event);
+      expect(component.showUnique).toEqual(true);
+  }))
+
+  it('toggle()', async() => {
+    component.showingErrors = true;
+    component.toggle();
+    expect(false).toEqual(component.showingErrors);
+  })
 });

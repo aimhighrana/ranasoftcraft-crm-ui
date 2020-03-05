@@ -1,48 +1,123 @@
-<mat-card class="flex-container bxshadow-variant-0">
-    <div class="flex-col-12">
-        <pros-breadcrumb [crumbs]="breadcrumb"></pros-breadcrumb>
-    </div>
+<div class="root">
+  <div class="breadcrumb-wrapper">
+    <pros-breadcrumb [crumbs]="breadcrumb"></pros-breadcrumb>
+  </div>
 
-    <div class="flex-col-12">
-        <mat-card class="bxshadow-variant-0 mat-background-0">
-          <mat-card-content class="flex-container-grow">
-            <div class="grid-flexcol-3">
-              <h3 class="H3">{{title}}</h3>
-              <mat-list class="variant-listcount">
-                  <mat-list-item>
-                    <h4 mat-line>{{schemaListDetails.totalCount}}</h4>
-                    <p mat-line> Total</p>
-                  </mat-list-item>
-                  <mat-list-item>
-                    <h4 mat-line>{{schemaListDetails.errorCount}}</h4>
-                    <p mat-line> Error</p>
-                  </mat-list-item>
-                  <mat-list-item>
-                    <h4 mat-line>{{schemaListDetails.successCount}}</h4>
-                    <p mat-line> Success</p>
-                  </mat-list-item>
-                  <mat-list-item>
-                    <button mat-flat-button color="primary">Execute</button>
-                  </mat-list-item>
-              </mat-list>
-          </div>
-          <div class="grid-flexcol-9">
-            <mat-card class="bxshadow-variant-1">
-              <mat-card-content>
-                <div class="flex-row-container">
-                  <mat-form-field>
-                    <mat-label>Search by Variants Description</mat-label>
-                    <input matInput>
-                  </mat-form-field>
-                <pros-schema-tile class="flex-col-1" *ngFor="let schema of schemaVariantList" (click)="showSchemaList(schema);"
-            color="#1c90ff" icon="dashboard" title="{{schema.name | uppercase }}"
-            totalValue="{{schema.total}}" thisWeekProgress="0" enableProgressBar=true
-            successValue="{{schema.successPercentage}}" errorValue="{{schema.errorPercentage}}"></pros-schema-tile>
-                </div>   
-              </mat-card-content>
-            </mat-card>
-          </div>
-          </mat-card-content>
-        </mat-card>
+  <mat-card class="container-show" [class.Variant-details]="masterVariant" *ngIf="masterVariant">
+    <h2>{{ masterVariant.title }}</h2>
+    <div class="f-row">
+      <ng-template [ngIf]="showingErrors">
+        <mat-icon *ngIf="!masterVariant.errorTrendValue || masterVariant.errorTrendValue === 0" class="err">trending_flat</mat-icon>
+        <button *ngIf="masterVariant.totalValue && masterVariant.errorTrendValue && masterVariant.errorTrendValue < 0" prosClickStopPropagation matTooltip="Toggle Error/Success" (click)="toggle();" class="err"><mat-icon>trending_down</mat-icon></button>
+        <button *ngIf="masterVariant.totalValue && masterVariant.errorTrendValue && masterVariant.errorTrendValue > 0" prosClickStopPropagation matTooltip="Toggle Error/Success" (click)="toggle();" class="err"><mat-icon>trending_up</mat-icon></button>
+      </ng-template>
+      <ng-template [ngIf]="!showingErrors">
+        <mat-icon *ngIf="!masterVariant.successTrendValue || masterVariant.successTrendValue === 0" class="scs">trending_flat</mat-icon>
+        <button *ngIf="masterVariant.successTrendValue && masterVariant.successTrendValue > 0" prosClickStopPropagation matTooltip="Toggle Error/Success" (click)="toggle();" class="scs"><mat-icon>trending_up</mat-icon></button>
+        <button *ngIf="masterVariant.successTrendValue && masterVariant.successTrendValue < 0" prosClickStopPropagation matTooltip="Toggle Error/Success" (click)="toggle();" class="scs"><mat-icon>trending_down</mat-icon></button>
+      </ng-template>
+      <div class="f-col-spacer-half"></div>
+      <ng-template [ngIf]="showingErrors">
+        <h2>{{ masterVariant.errorTrendValue ? masterVariant.errorTrendValue > 0 ? '+' + masterVariant.errorTrendValue : masterVariant.errorTrendValue : 0 }}</h2>
+      </ng-template>
+      <ng-template [ngIf]="!showingErrors">
+        <h2>{{ masterVariant.successTrendValue ? masterVariant.successTrendValue > 0 ? '+' + masterVariant.successTrendValue : masterVariant.successTrendValue : 0 }}</h2>
+      </ng-template>
+      <div class="f-col-spacer-half"></div>
+      <span class="mat-caption week">(This Week)</span>
     </div>
-</mat-card> 
+    <div class="row-spacer"></div>
+    <div class="f-row">
+      <ng-template [ngIf]="masterVariant.totalValue && showingErrors">
+        <h2 class="perc err">{{ percentageErrorStr() }}</h2>
+        <h2 class="perc-symbol err">%</h2>
+        <span class="f-col-spacer-half"></span>
+        <span class="mat-caption row1text">Error in last run</span>
+      </ng-template>
+      <ng-template [ngIf]="masterVariant.totalValue && !showingErrors">
+        <h2 class="perc scs">{{ percentageSuccessStr() }}</h2>
+        <h2 class="perc-symbol scs">%</h2>
+        <span class="f-col-spacer-half"></span>
+        <span class="mat-caption row1text">Success in last run</span>
+      </ng-template>
+      <ng-template [ngIf]="!masterVariant.totalValue">
+        <mat-icon class="na">report</mat-icon>
+        <span class="f-col-spacer-half"></span>
+        <span class="mat-caption row1text">no results to show</span>
+      </ng-template>
+    </div>
+    <div class="row-spacer"></div>
+    <div >
+      {{ masterVariant.timestamp | date }} Last Run
+    </div>
+    <div class="row-spacer"></div>
+    <div class="f-row">
+      <mat-slide-toggle color="primary" prosClickStopPropagation matTooltip="Show unique record counts" (change)="toggleUniqueContainer($event);">Unique Records Count</mat-slide-toggle>
+    </div>
+    <mat-list>
+      <mat-list-item >
+        <h4 mat-line>{{ showUnique ? masterVariant.totalUniqueValue : masterVariant.totalValue }}</h4>
+        <p mat-line>Total</p>
+      </mat-list-item>
+      <mat-list-item >
+        <h4 mat-line>{{ showUnique ? masterVariant.errorUniqueValue : masterVariant.errorValue }}</h4>
+        <p mat-line>Error</p>
+      </mat-list-item>
+      <mat-list-item >
+        <h4 mat-line>{{ showUnique ? masterVariant.successUniqueValue : masterVariant.successValue }}</h4>
+        <p mat-line>Success</p>
+      </mat-list-item>
+      <mat-list-item >
+        <h4 mat-line>{{ showUnique ? masterVariant.skippedUniqueValue : masterVariant.skippedValue }}</h4>
+        <p mat-line>Skipped</p>
+      </mat-list-item>
+      <mat-list-item >
+        <h4 mat-line>{{masterVariant.correctionValue}}</h4>
+        <p mat-line>Corrections</p>
+      </mat-list-item>
+      <mat-list-item >
+        <h4 mat-line>{{masterVariant.duplicateValue}}</h4>
+        <p mat-line>Duplicate</p>
+      </mat-list-item>
+    </mat-list>
+    </mat-card>
+
+  <mat-card class="mat-elevation-z3 variants-container">
+    <div class="f-col">
+      <mat-form-field>
+        <mat-label>Search Variants</mat-label>
+        <input matInput class="form-control" [formControl]="searchField">
+      </mat-form-field>
+       <div class="f-row">
+        <pros-schema-tile class="tile"  *ngFor = "let vrtdetail of variarantDetailsOb | async"
+          [routerLink]="['/home', 'schema', 'schema-list']"
+          title="{{ vrtdetail.title }}"
+          
+          [info]=true
+          [edit]=true
+          [delete]=true
+          bottomRightLabel="{{vrtdetail.isInRunning ? 'Running ...' : vrtdetail.totalValue > 0 ? 'Run Again' : 'Run'}}"
+          totalValue="{{ vrtdetail.totalValue }}"
+          successValue="{{ vrtdetail.successValue }}"
+          errorValue="{{ vrtdetail.errorValue }}"
+          skippedValue="{{ vrtdetail.skippedValue }}"
+          correctionValue="{{ vrtdetail.correctionValue }}"
+          duplicateValue="{{ vrtdetail.duplicateValue }}"
+
+          successTrendValue="{{ vrtdetail.successTrendValue }}"
+          errorTrendValue="{{ vrtdetail.errorTrendValue }}"
+          totalUniqueValue="{{ vrtdetail.totalUniqueValue }}"
+          successUniqueValue="{{ vrtdetail.successUniqueValue }}"
+          errorUniqueValue="{{ vrtdetail.errorUniqueValue }}"
+          skippedUniqueValue="{{ vrtdetail.skippedUniqueValue }}"
+
+          timestamp="{{ vrtdetail.timestamp | date }}"
+          (evtEdit)="edit(schemagrp);"
+          (evtDelete)="delete(schemagrp);"></pros-schema-tile>
+
+        <pros-add-tile class="tile" text="Add a new Variant" routerLink="/home/schema/variant/new"></pros-add-tile>
+       </div>
+    </div>
+  </mat-card>
+
+</div>

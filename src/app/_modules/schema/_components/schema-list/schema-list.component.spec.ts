@@ -8,11 +8,13 @@ import { SubstringPipe } from 'src/app/_pipes/substringpipe.pipe';
 import { SchemaListModuleList, SchemaListDetails } from 'src/app/_models/schema/schemalist';
 import { BreadcrumbComponent } from 'src/app/_modules/shared/_components/breadcrumb/breadcrumb.component';
 import { AddTileComponent } from 'src/app/_modules/shared/_components/add-tile/add-tile.component';
+import { Router } from '@angular/router';
 
 describe('SchemaListComponent', () => {
   let component: SchemaListComponent;
   let fixture: ComponentFixture<SchemaListComponent>;
   let htmlNative: HTMLElement;
+  let router: Router;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -22,6 +24,7 @@ describe('SchemaListComponent', () => {
       declarations: [SchemaListComponent, BreadcrumbComponent, SchemaTileComponent, AddTileComponent, SubstringPipe],
 
     }).compileComponents();
+    router = TestBed.inject(Router);
   }));
 
   beforeEach(() => {
@@ -72,5 +75,34 @@ describe('SchemaListComponent', () => {
 
 
   });
+
+  it('showSchemaDetails(), should navigate schema detail page', () => {
+    const schemaDetails  = {schemaId: 87234687264862};
+    component.schemaGroupId = '732864726783';
+    fixture.detectChanges();
+    spyOn(router, 'navigate');
+    component.showSchemaDetails(schemaDetails, '1005');
+    expect(router.navigate).toHaveBeenCalledWith(['/home/schema/schema-details', '1005', component.schemaGroupId, schemaDetails.schemaId]);
+  });
+
+  it('variants(), should navigate to schema variant  page', () => {
+    const schemaId  = '87234687264862';
+    component.schemaGroupId = '732864726783';
+    fixture.detectChanges();
+    spyOn(router, 'navigate');
+    component.variants('1005', schemaId);
+    expect(router.navigate).toHaveBeenCalledWith(['/home/schema/schema-variants', '1005', component.schemaGroupId, schemaId]);
+  });
+
+  it('run(), should navigate to schema execution  page', () => {
+    const schemaId  = '87234687264862';
+    component.schemaGroupId = '732864726783';
+    fixture.detectChanges();
+    spyOn(router, 'navigate');
+    component.run(schemaId);
+    expect(router.navigate).toHaveBeenCalledWith(['/home/schema/schema-execution', component.schemaGroupId, schemaId]);
+  });
+
+
 
 });

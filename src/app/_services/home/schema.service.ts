@@ -58,4 +58,8 @@ export class SchemaService {
   public scheduleSchemaCount(schemaId: string): Observable<number> {
     return this.http.get<any>(this.endpointService.scheduleSchemaCount(schemaId));
   }
+
+  public deleteSchemaGroup(groupId: string): Observable<boolean> {
+    return this.http.delete<boolean>(this.endpointService.deleteSchemaGroupUrl(groupId));
+  }
 }

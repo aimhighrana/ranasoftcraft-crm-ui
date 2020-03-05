@@ -1,102 +1,59 @@
-.margin16 { margin: 16px; }
-
-.flex-container {
+.root {
   display: flex;
   flex-flow: row wrap;
-  justify-content: flex-start;
   align-items: flex-start;
   align-content: flex-start;
-  background: transparent;
+  justify-content: space-around;
 
-  .flex-col-1 {
-    flex: 1 1 30%;
-    margin: 16px;
-  }
-
-  .flex-col-12 {
+  .breadcrumb-wrapper {
     flex: 1 100%;
   }
 
-  .flex-container-grow {
-    display: flex;
-    flex-flow: row;
-    flex-wrap: wrap;
+  .Variant-details {
+    width: 240px;
 
-    .grid-flexcol-9 {
+    .f-row {
+      h2 {
+        margin: 0;
+      }
+
+      h2.perc {
+        font-size: 40px;
+      }
+
+      h2.perc-symbol {
+        font-size: 30px;
+        align-self: flex-end;
+      }
+
+      span.row1text {
+        align-self: flex-end;
+      }
+
+      .err {
+        color: #c30000;
+      }
+
+      .scs {
+        color: #4caa00;
+      }
+    }
+  }
+
+  .variants-container {
+    width: calc(100% - 240px - 8 * 16px);
+
+    mat-form-field {
       flex: 1;
     }
 
-    .grid-flexcol-3 {
-      flex: 0 0 24%;
-    }
-
-    .inner-flexcol-12 {
-      flex: 0 0 100%;
-    }
-
-    .H3 {
-      color: #313131;
-    }
-
-    @media only screen and (min-width: 447px) and (max-width: 1024px) {
-      //Put your CSS here for 447px to 1024px width devices(covers all iPad portrait width //
-      .grid-flexcol-9 {
-        flex: 1 100%;
-      }
-
-      .grid-flexcol-3 {
-        flex: 1 100%;
-      }
-
-      .mat-subheader {
-        padding: 0;
-      }
-
-      .variant-listcount {
-        display: flex;
-        align-items: center;
-
-        .mat-list-item {
-          margin-top: 0;
-
-          h4 {
-            font-size: 30px;
-          }
-        }
-      }
-    }
-
-    @media only screen and (min-width: 200px) and (max-width: 447px) {
-      .variant-listcount {
-        display: block;
-      }
+    .f-row {
+      flex-wrap: wrap;
     }
   }
 
-  .flex-row-container {
-    display: flex;
-    flex-flow: row;
-    flex-wrap: wrap;
-    flex: 1 100%;
-
-    mat-form-field {
-      flex: 1 100%;
-    }
-  }
-
-  .variant-listcount {
-    mat-list-item {
-      margin: 16px 0;
-
-      h4 {
-        font-size: 36px;
-        font-weight: 600;
-      }
-
-      p {
-        font-size: 14px;
-        opacity: 0.5;
-      }
-    }
+  .tile {
+    flex: 0 1 22.33333%;
+    margin: 16px;
   }
 }
