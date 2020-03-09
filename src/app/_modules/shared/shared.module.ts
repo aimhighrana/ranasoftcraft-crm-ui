@@ -36,7 +36,6 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTreeModule } from '@angular/material/tree';
-import { MatRangeDatepickerModule, MatRangeNativeDateModule } from 'mat-range-datepicker';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { RouterModule } from '@angular/router';
@@ -45,7 +44,6 @@ import { PageNotFoundComponent } from './_components/page-not-found/page-not-fou
 import { AddTileComponent } from './_components/add-tile/add-tile.component';
 import { SvgIconComponent } from './_components/svg-icon/svg-icon.component';
 import { ChartsModule } from 'ng2-charts';
-import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { ClickStopPropagationDirective } from 'src/app/_directives/click-stop-propagation.directive';
 import { SubstringPipe } from 'src/app/_pipes/substringpipe.pipe';
 import { ThousandconvertorPipe } from 'src/app/_pipes/thousandconvertor.pipe';
@@ -96,8 +94,6 @@ import { ThousandconvertorPipe } from 'src/app/_pipes/thousandconvertor.pipe';
     MatProgressBarModule,
     MatProgressSpinnerModule,
     MatRadioModule,
-    MatRangeDatepickerModule,
-    MatRangeNativeDateModule,
     MatRippleModule,
     MatSelectModule,
     MatSidenavModule,
@@ -114,8 +110,6 @@ import { ThousandconvertorPipe } from 'src/app/_pipes/thousandconvertor.pipe';
     MatTreeModule,
     DragDropModule,
     OverlayModule,
-    // custom mat search module
-    NgxMatSelectSearchModule,
     // chart module
     ChartsModule
   ],
@@ -151,8 +145,6 @@ import { ThousandconvertorPipe } from 'src/app/_pipes/thousandconvertor.pipe';
     MatProgressBarModule,
     MatProgressSpinnerModule,
     MatRadioModule,
-    MatRangeDatepickerModule,
-    MatRangeNativeDateModule,
     MatRippleModule,
     MatSelectModule,
     MatSidenavModule,
@@ -169,8 +161,6 @@ import { ThousandconvertorPipe } from 'src/app/_pipes/thousandconvertor.pipe';
     MatTreeModule,
     DragDropModule,
     OverlayModule,
-    // custom mat search module
-    NgxMatSelectSearchModule,
     // chart module
     ChartsModule,
     // directives
