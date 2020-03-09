@@ -1,190 +1,192 @@
-<mat-card class="table-root">
+<mat-card class="root mat-elevation-z6">
     <mat-toolbar>
         <mat-toolbar-row>
-            <span>Stocking Rule Check Listing</span>
+            <h4 class="mat-h4">Stocking Rule Check Listing</h4>
             <span class="f-spacer"></span>
-            <button mat-flat-button (click)="openStatusInfoDialog();">Status Info</button>
+            <button mat-stroked-button (click)="openStatusInfoDialog();">Status Info</button>
         </mat-toolbar-row>
     </mat-toolbar>
     <mat-divider></mat-divider>
-
-    <div class="mat-elevation-z8 f-col">
-        <mat-tab-group dynamicHeight selectedIndex="{{selectedTabIndex}}" disablePagination disableRipple
-            (selectedIndexChange)="loadSchameDataByStatus($event);">
-            <mat-tab *ngFor="let tab of tabs; let index = index">
-                <ng-template mat-tab-label>
-                    {{tab}}
-                    <mat-chip-list aria-label="Count">
-                        <mat-chip>{{ matChipCountLabel(index) }}</mat-chip>
-                    </mat-chip-list>
-                </ng-template>
-            </mat-tab>
-        </mat-tab-group>
-
-        <div class="f-row-spacer-half"></div>
-
-        <div class="f-row" *ngIf="(allMetaDataFields | async).hierarchy && (allMetaDataFields | async).hierarchy.length > 0">
-            <div class="f-col-spacer-half"></div>
-            <ng-template ngFor let-hierarchy [ngForOf]="(allMetaDataFields | async).hierarchy" [ngForTrackBy]="hierarchyTrackBy">
-                <button (click)="applyHeirarchyField(hierarchy.heirarchyId, true)" mat-stroked-button *ngIf="selectedHierarchyIds.indexOf(hierarchy.heirarchyId) < 0">{{ hierarchy.heirarchyText }}</button>
-                <button (click)="applyHeirarchyField(hierarchy.heirarchyId, false)" mat-flat-button color="primary" *ngIf="selectedHierarchyIds.indexOf(hierarchy.heirarchyId) >= 0">{{ hierarchy.heirarchyText }}</button>
-                <div class="f-col-spacer-half"></div>
+    <div class="f-col">
+        <mat-card class="mat-elevation-z3">
+            <mat-tab-group class="status-nav" dynamicHeight selectedIndex="{{selectedTabIndex}}" disablePagination
+                disableRipple (selectedIndexChange)="loadSchameDataByStatus($event);">
+                <mat-tab *ngFor="let tab of tabs; let index = index">
+                    <ng-template mat-tab-label>
+                        {{tab}}
+                        <mat-chip-list aria-label="Count">
+                            <mat-chip>{{ matChipCountLabel(index) }}</mat-chip>
+                        </mat-chip-list>
+                    </ng-template>
+                </mat-tab>
+            </mat-tab-group>
+            <ng-template [ngIf]="((allMetaDataFields | async).hierarchy && (allMetaDataFields | async).hierarchy.length > 0) || (((allMetaDataFields | async).grids | keyvalue) && ((allMetaDataFields | async).grids | keyvalue).length > 0)">
+                <div class="row-spacer"></div>
+                <div class="f-row hierarchy-row" *ngIf="(allMetaDataFields | async).hierarchy && (allMetaDataFields | async).hierarchy.length > 0">
+                    <ng-template ngFor let-hierarchy [ngForOf]="(allMetaDataFields | async).hierarchy"
+                        [ngForTrackBy]="hierarchyTrackBy">
+                        <button (click)="applyHeirarchyField(hierarchy.heirarchyId, true)" mat-stroked-button
+                            *ngIf="selectedHierarchyIds.indexOf(hierarchy.heirarchyId) < 0">{{ hierarchy.heirarchyText }}</button>
+                        <button (click)="applyHeirarchyField(hierarchy.heirarchyId, false)" mat-flat-button color="primary"
+                            *ngIf="selectedHierarchyIds.indexOf(hierarchy.heirarchyId) >= 0">{{ hierarchy.heirarchyText }}</button>
+                    </ng-template>
+                </div>
+                <div class="f-row grid-row" *ngIf="((allMetaDataFields | async).grids | keyvalue) && ((allMetaDataFields | async).grids | keyvalue).length > 0">
+                    <ng-template ngFor let-grdFld [ngForOf]="(allMetaDataFields | async).grids | keyvalue">
+                        <button (click)="applyGridField(grdFld.key, true)" mat-stroked-button
+                            *ngIf="selectedGridIds.indexOf(grdFld.key) < 0">{{ grdFld.value.fieldDescri }}</button>
+                        <button (click)="applyGridField(grdFld.key, false)" mat-flat-button color="primary"
+                            *ngIf="selectedGridIds.indexOf(grdFld.key) >= 0">{{ grdFld.value.fieldDescri }}</button>
+                        <div class="f-col-spacer-half"></div>
+                    </ng-template>
+                </div>
+                <mat-divider></mat-divider>
             </ng-template>
-        </div>
-
-        <div class="f-row-spacer-half"></div>
-
-        <div class="f-row" *ngIf="((allMetaDataFields | async).grids | keyvalue) && ((allMetaDataFields | async).grids | keyvalue).length > 0">
-            <div class="f-col-spacer-half"></div>
-            <ng-template ngFor let-grdFld [ngForOf]="(allMetaDataFields | async).grids | keyvalue">
-                <button (click)="applyGridField(grdFld.key, true)" mat-stroked-button *ngIf="selectedGridIds.indexOf(grdFld.key) < 0">{{ grdFld.value.fieldDescri }}</button>
-                <button (click)="applyGridField(grdFld.key, false)" mat-flat-button color="primary" *ngIf="selectedGridIds.indexOf(grdFld.key) >= 0">{{ grdFld.value.fieldDescri }}</button>
-                <div class="f-col-spacer-half"></div>
-            </ng-template>
-        </div>
-
-        <div class="f-row-spacer-half"></div>
-
-        <mat-divider></mat-divider>
-        <div class="schematable-filters">
-            <mat-form-field>
-                <input matInput placeholder="Filter">
-            </mat-form-field>
-            <span class="f-spacer"></span>
-            <mat-form-field>
-                <mat-label>Choose Column</mat-label>
-                <mat-select [formControl]="chooseColumnCtrl" multiple disableRipple
-                    (selectionChange)="chooseColumns($event);">
-                    <!-- <mat-select-trigger>
+            <div class="f-row settings-row">
+                <mat-form-field>
+                    <input matInput placeholder="Filter">
+                </mat-form-field>
+                <span class="f-spacer"></span>
+                <mat-form-field>
+                    <mat-label>Choose Column</mat-label>
+                    <mat-select [formControl]="chooseColumnCtrl" multiple disableRipple
+                        (selectionChange)="chooseColumns($event);">
+                        <!-- <mat-select-trigger>
                             {{chooseColumnCtrl.value ? chooseColumnCtrl.value[0].fieldDescri : ''}}
                             <span *ngIf="chooseColumnCtrl.value?.length > 1" class="example-additional-selection">
                                 (+{{chooseColumnCtrl.value.length - 1}} {{chooseColumnCtrl.value?.length === 2 ? 'other' : 'others'}})
                             </span>
                             </mat-select-trigger> -->
-                    <mat-optgroup label="Header">
-                        <mat-option *ngFor="let field of (allMetaDataFields | async).headers | keyvalue" [value]="field.key">
-                            {{field.value.fieldDescri}}</mat-option>
-                    </mat-optgroup>
-                    <mat-optgroup *ngFor="let hierarchy of (allMetaDataFields | async).hierarchy"
-                        [label]="hierarchy.heirarchyText">
-                        <mat-option
-                            *ngFor="let field of (allMetaDataFields | async).hierarchyFields[hierarchy.heirarchyId] | keyvalue"
-                            [value]="field.key">{{field.value.fieldDescri}}</mat-option>
-                    </mat-optgroup>
-                    <mat-optgroup *ngFor="let grid of (allMetaDataFields | async).grids | keyvalue"
-                        [label]="grid.value.fieldDescri">
-                        <mat-option *ngFor="let field of (allMetaDataFields | async).gridFields[grid.key] | keyvalue"
-                            [value]="field.key">{{field.value.fieldDescri}}</mat-option>
-                    </mat-optgroup>
-                </mat-select>
-            </mat-form-field>
-            <button mat-button color="primary">Download Error(s)</button>
+                        <mat-optgroup label="Header">
+                            <mat-option *ngFor="let field of (allMetaDataFields | async).headers | keyvalue"
+                                [value]="field.key">
+                                {{field.value.fieldDescri}}</mat-option>
+                        </mat-optgroup>
+                        <mat-optgroup *ngFor="let hierarchy of (allMetaDataFields | async).hierarchy"
+                            [label]="hierarchy.heirarchyText">
+                            <mat-option
+                                *ngFor="let field of (allMetaDataFields | async).hierarchyFields[hierarchy.heirarchyId] | keyvalue"
+                                [value]="field.key">{{field.value.fieldDescri}}</mat-option>
+                        </mat-optgroup>
+                        <mat-optgroup *ngFor="let grid of (allMetaDataFields | async).grids | keyvalue"
+                            [label]="grid.value.fieldDescri">
+                            <mat-option
+                                *ngFor="let field of (allMetaDataFields | async).gridFields[grid.key] | keyvalue"
+                                [value]="field.key">{{field.value.fieldDescri}}</mat-option>
+                        </mat-optgroup>
+                    </mat-select>
+                </mat-form-field>
+                <button mat-flat-button color="primary">Download</button>
+                <button mat-icon-button><mat-icon>more_vert</mat-icon></button>
+            </div>
+            <div class="table-row">
+                <table mat-table [dataSource]="dataTableDataSource" matSort>
 
-        </div>
-        <div class="root-AdminTable">
-            <table mat-table [dataSource]="dataTableDataSource" matSort>
-                
-                <ng-container matColumnDef="row_more_action">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
-                    <td mat-cell *matCellDef="let element" [matMenuTriggerFor]="actiontable">
-                        <mat-icon mat-icon-button>more_vert</mat-icon>
-                        <mat-menu #actiontable="matMenu">
-                            <button mat-menu-item *ngFor="let action of matMenu">{{action}}</button>
-                            <ng-template [ngIf]="element.hasError">
-                                <button mat-menu-item (click)="element.startEdit();">Edit</button>
-                                <button mat-menu-item>Update</button>
-                            </ng-template>
-                        </mat-menu>
-                    </td>
-                </ng-container>
+                    <ng-container matColumnDef="row_more_action" sticky>
+                        <th mat-header-cell *matHeaderCellDef class="any-cell more-cell"></th>
+                        <td mat-cell *matCellDef="let element" [matMenuTriggerFor]="actiontable" class="any-cell more-cell">
+                            <mat-icon mat-icon-button>more_vert</mat-icon>
+                            <mat-menu #actiontable="matMenu">
+                                <button mat-menu-item *ngFor="let action of matMenu">{{action}}</button>
+                                <ng-template [ngIf]="element.hasError">
+                                    <button mat-menu-item (click)="element.startEdit();">Edit</button>
+                                    <button mat-menu-item>Update</button>
+                                </ng-template>
+                            </mat-menu>
+                        </td>
+                    </ng-container>
 
-                <ng-container matColumnDef="row_selection_check2box">
-                    <th mat-header-cell *matHeaderCellDef class="checkbox-colunm">
-                        <mat-checkbox color="primary" (change)="$event ? masterToggle() : null"
-                            [checked]="selection.hasValue() && isAllSelected()"
-                            [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
-                        </mat-checkbox>
-                    </th>
-                    <td mat-cell *matCellDef="let row" class="checkbox-colunm">
-                        <mat-checkbox color="primary" (click)="$event.stopPropagation()"
-                            (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)"
-                            [aria-label]="checkboxLabel(row)">
-                        </mat-checkbox>
-                    </td>
-                </ng-container>
+                    <ng-container matColumnDef="row_selection_check2box" sticky>
+                        <th mat-header-cell *matHeaderCellDef class="any-cell checkbox-cell">
+                            <mat-checkbox color="primary" (change)="$event ? masterToggle() : null"
+                                [checked]="selection.hasValue() && isAllSelected()"
+                                [indeterminate]="selection.hasValue() && !isAllSelected()"
+                                [aria-label]="checkboxLabel()">
+                            </mat-checkbox>
+                        </th>
+                        <td mat-cell *matCellDef="let row" class="any-cell checkbox-cell">
+                            <mat-checkbox color="primary" (click)="$event.stopPropagation()"
+                                (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)"
+                                [aria-label]="checkboxLabel(row)">
+                            </mat-checkbox>
+                        </td>
+                    </ng-container>
 
-                <ng-container matColumnDef="OBJECTNUMBER">
-                    <th mat-header-cell *matHeaderCellDef>
-                        Object Number
-                    </th>
-                    <td mat-cell *matCellDef="let row">
-                        {{ row['OBJECTNUMBER'] ? row['OBJECTNUMBER'].fieldData : '' }}
-                    </td>
-                </ng-container>
+                    <ng-container matColumnDef="OBJECTNUMBER" sticky>
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="any-cell objnr-cell">
+                            Object Number
+                        </th>
+                        <td mat-cell *matCellDef="let row" class="any-cell objnr-cell">
+                            {{ row['OBJECTNUMBER'] ? row['OBJECTNUMBER'].fieldData : '' }}
+                        </td>
+                    </ng-container>
 
-                <ng-container *ngFor="let field of (allMetaDataFields | async).headers | keyvalue; trackBy: dataTableTrackByFun"
-                    [matColumnDef]="field.key">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                        {{ field.value.fieldDescri }}
-                    </th>
-                    <td mat-cell *matCellDef="let row">
-                        {{ row[field.key] ? row[field.key].fieldData : '' }}
-                    </td>
-                </ng-container>
-
-                <ng-template ngFor let-hierarchy [ngForOf]="(allMetaDataFields | async).hierarchyFields | keyvalue">
-                    <ng-container *ngFor="let field of hierarchy.value | keyvalue; trackBy: dataTableTrackByFun"
-                        [matColumnDef]="hierarchy.key + '+' + field.key">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                    <ng-container
+                        *ngFor="let field of (allMetaDataFields | async).headers | keyvalue; trackBy: dataTableTrackByFun"
+                        [matColumnDef]="field.key">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="any-cell data-cell">
                             {{ field.value.fieldDescri }}
                         </th>
-                        <td mat-cell *matCellDef="let row">
+                        <td mat-cell *matCellDef="let row" class="any-cell data-cell">
                             {{ row[field.key] ? row[field.key].fieldData : '' }}
                         </td>
                     </ng-container>
-                </ng-template>
 
-                <ng-template ngFor let-grid [ngForOf]="(allMetaDataFields | async).gridFields | keyvalue">
-                    <ng-container *ngFor="let field of grid.value | keyvalue; trackBy: dataTableTrackByFun"
-                        [matColumnDef]="grid.key + '+' + field.key">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                            {{ field.value.fieldDescri }}
-                        </th>
-                        <td mat-cell *matCellDef="let row">
-                            {{ row[field.key] ? row[field.key].fieldData : '' }}
+                    <ng-template ngFor let-hierarchy [ngForOf]="(allMetaDataFields | async).hierarchyFields | keyvalue">
+                        <ng-container *ngFor="let field of hierarchy.value | keyvalue; trackBy: dataTableTrackByFun"
+                            [matColumnDef]="hierarchy.key + '+' + field.key">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header class="any-cell data-cell">
+                                {{ field.value.fieldDescri }}
+                            </th>
+                            <td mat-cell *matCellDef="let row" class="any-cell data-cell">
+                                {{ row[field.key] ? row[field.key].fieldData : '' }}
+                            </td>
+                        </ng-container>
+                    </ng-template>
+
+                    <ng-template ngFor let-grid [ngForOf]="(allMetaDataFields | async).gridFields | keyvalue">
+                        <ng-container *ngFor="let field of grid.value | keyvalue; trackBy: dataTableTrackByFun"
+                            [matColumnDef]="grid.key + '+' + field.key">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header class="any-cell data-cell">
+                                {{ field.value.fieldDescri }}
+                            </th>
+                            <td mat-cell *matCellDef="let row" class="any-cell data-cell">
+                                {{ row[field.key] ? row[field.key].fieldData : '' }}
+                            </td>
+                        </ng-container>
+                    </ng-template>
+
+                    <ng-container matColumnDef="row_status" stickyEnd>
+                        <th mat-header-cell *matHeaderCellDef class="any-cell status-cell">
+                            Status</th>
+                        <td mat-cell *matCellDef="let element" class="any-cell status-cell">
+                            <!--  <mat-chip-list aria-label="Status selection">      
+                                        <ng-template *ngFor="let status of element[columnId].all_status; let idx=index" [ngIf]="manageChips(idx)" [ngIfElse]="countChips">
+                                            <mat-chip class="custom-chip" [color]="status.color" selected>{{status.status}}</mat-chip>                                           
+                                        </ng-template> 
+                                        <ng-template #countChips>
+                                            {{getHideStatusCount(element[columnId].all_status)}}
+                                        </ng-template>
+                                    </mat-chip-list> -->
                         </td>
                     </ng-container>
-                </ng-template>
 
 
-                <th mat-header-cell *matHeaderCellDef mat-sort-header class="statusColumn">
-                    Status</th>
-                <td mat-cell *matCellDef="let element" style="width: 300px;">
-                    <!--  <mat-chip-list aria-label="Status selection">      
-                                    <ng-template *ngFor="let status of element[columnId].all_status; let idx=index" [ngIf]="manageChips(idx)" [ngIfElse]="countChips">
-                                        <mat-chip class="custom-chip" [color]="status.color" selected>{{status.status}}</mat-chip>                                           
-                                    </ng-template> 
-                                    <ng-template #countChips>
-                                        {{getHideStatusCount(element[columnId].all_status)}}
-                                    </ng-template>
-                                </mat-chip-list> -->
-                </td>
+                    <tr mat-header-row *matHeaderRowDef="displayedFields | async; sticky: true"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedFields | async;"></tr>
 
+                    <!-- Group header -->
+                    <!-- <ng-container matColumnDef="groupHeader">
+                        <td colspan="999" mat-cell *matCellDef="let groupBy">{{ groupBy.objectNumber }}</td>
+                    </ng-container> -->
 
-                <tr mat-header-row *matHeaderRowDef="displayedFields | async; sticky: true"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedFields | async;"></tr>
+                    <!-- <tr mat-row *matRowDef="let row; columns: ['groupHeader']; when: isGroup"> </tr> -->
 
-                <!-- Group header -->
-                <ng-container matColumnDef="groupHeader">
-                    <td colspan="999" mat-cell *matCellDef="let groupBy">{{ groupBy.objectNumber }}</td>
-                </ng-container>
-
-                <tr mat-row *matRowDef="let row; columns: ['groupHeader']; when: isGroup"> </tr>
-
-            </table>
+                </table>
+            </div>
             <mat-paginator class="schema-pagination" [length]="dynamicPageSize" [pageSize]="40"
                 [pageSizeOptions]="[40, 60, 100]" showFirstLastButtons (page)="doPagination($event);">
             </mat-paginator>
-        </div>
+        </mat-card>
     </div>
 </mat-card>

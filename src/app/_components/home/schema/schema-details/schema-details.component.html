@@ -1,20 +1,37 @@
-<mat-card class="flex-container container-show">
-  <div class="flex-col-12">
+<div class="root f-col">
+  <div class="crumbrow f-row">
     <pros-breadcrumb [crumbs]="breadcrumb"></pros-breadcrumb>
+    <div class="f-spacer"></div>
+    <button mat-stroked-button><mat-icon>edit</mat-icon></button>
+    <div class="f-col-spacer-half"></div>
+    <button mat-stroked-button [routerLink]="['', { outlets: { sb: 'sb/schema/collab/' + schemaId } } ]"><mat-icon>group</mat-icon></button>
+    <div class="f-col-spacer-half"></div>
+    <mat-form-field>
+      <mat-label>Choose a date</mat-label>
+      <input matInput [matDatepicker]="picker">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+    <div class="col-spacer"></div>
   </div>
-  <button mat-button [routerLink]="['', { outlets: { sb: 'sb/schema/collab/' + schemaId } } ]">Collaborators</button>
-  <div class="flex-col-12 margin16">
+
+  <div class="root-row">
+    <mat-card class="mat-elevation-z6">
+      SUMMARY WILL COME HERE
+    </mat-card>
+  </div>
+
+  <div class="root-row">
     <pros-overview-chart schemaId={{schemaId}} variantId="{{ variantId }}"></pros-overview-chart>
   </div>
 
-  <div class="flex-col-12 margin16">
+  <div class="root-row">
     <pros-categories-chart schemaId={{schemaId}} variantId="{{ variantId }}"></pros-categories-chart>
   </div>
-  <div class="flex-col-12 margin16">
-    
+
+  <div class="root-row">
     <pros-schema-datatable objectId="{{moduleId}}" variantId="{{ variantId }}" schemaId="{{schemaId}}" totalRecord="{{schemaDetails.totalCount}}"
       successCount="{{schemaDetails.successCount}}" errorCount="{{schemaDetails.errorCount}}"
       dynamicRecordCount="{{schemaDetails.errorCount}}"></pros-schema-datatable>
-    
   </div>
-</mat-card>
+</div>

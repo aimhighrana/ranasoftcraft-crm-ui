@@ -87,6 +87,13 @@
       fill: mat-color($warn-palette);
     }
   }
+
+  pros-schema-datatable {
+    table.mat-table td,
+    table.mat-table th {
+      border-color: mat-color($foreground-palette, divider);
+    }
+  }
 }
 
 @mixin pros-cmp-typography($config) {

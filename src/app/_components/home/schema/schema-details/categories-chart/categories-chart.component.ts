@@ -63,7 +63,7 @@ export class CategoriesChartComponent implements OnInit {
           onPanComplete() {console.log('On pan Complete !'); }
         },
         zoom: {
-          enabled: true,
+          enabled: false,
           grag: true,
           mode: 'x',
           limits: {max: 10, min: 0.5},

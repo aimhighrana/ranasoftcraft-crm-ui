@@ -1,60 +1,54 @@
-<mat-card class="graph-root">
-    <mat-toolbar>
-      <mat-toolbar-row>
-        <span>Overview</span>
-      </mat-toolbar-row>
-    </mat-toolbar>
-    <mat-divider></mat-divider>
-    <mat-card-content class="graph-divider">
-      <div class="grid-flexcol-9">
-        <mat-card class="sidegraph-details bxshadow-variant-0 vertical-divider">
-          <mat-card-header>
-            <mat-card-title></mat-card-title>
-            <span class="f-spacer"></span>
-            <mat-slide-toggle color="primary">Percentage</mat-slide-toggle>
-          </mat-card-header>
-          <mat-card-content>
-            <div class="graph-divider">
-                <canvas baseChart [datasets]="overviewChartdata" class="inner-flexcol-12" [labels]="overviewChartLabels"
-                    [options]="overviewChartOptions" [legend]="overviewChartLegend" [chartType]="overviewChartType">
-                </canvas>
-            </div>
-          </mat-card-content>
-        </mat-card>
+<mat-card class="root mat-elevation-z6">
+  <mat-toolbar>
+    <mat-toolbar-row>
+      <h4 class="mat-h4">Overall Data Trend</h4>
+      <div class="f-spacer"></div>
+      <button mat-icon-button><mat-icon>info</mat-icon></button>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  <mat-divider></mat-divider>
+  <div class="f-row">
+    <div class="left f-col">
+      <canvas baseChart [datasets]="overviewChartdata" class="inner-flexcol-12" [labels]="overviewChartLabels"
+        [options]="overviewChartOptions" [legend]="overviewChartLegend" [chartType]="overviewChartType">
+      </canvas>
+      <div class="f-row">
+        <button mat-raised-button><mat-icon>zoom_in</mat-icon>Zoom In</button>
+        <div class="f-col-spacer-half"></div>
+        <button mat-raised-button><mat-icon>zoom_out</mat-icon>Zoom Out</button>
       </div>
-      <div class="grid-flexcol-3">
-        <mat-card class="sidegraph-details bxshadow-variant-0">
-          <mat-card-header>
-            <mat-card-title>Latest Execution Summary</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <h2 class="H2">{{schemaDetails.totalCount}}</h2>
-            <small>Total</small>
-
-            <mat-list role="list" class="valuedes-list">
-              <mat-list-item role="listitem">
-                <span mat-list-icon><em class="box-blk error-clr"></em></span>
-                <h4 class="H4">Error</h4>
-                <p class="P">{{schemaDetails.errorCount}}</p>
-              </mat-list-item>
-              <mat-list-item role="listitem">
-                <span mat-list-icon><em class="box-blk success-clr"></em></span>
-                <h4 class="H4">Success</h4>
-                <p class="P">{{schemaDetails.successCount}}</p>
-              </mat-list-item>
-              <mat-list-item role="listitem">
-                <span mat-list-icon><em class="box-blk skipped-clr"></em></span>
-                <h4 class="H4">Skipped</h4>
-                <p class="P">{{schemaDetails.skippedValue}}</p>
-              </mat-list-item>
-              <mat-list-item role="listitem">
-                <span mat-list-icon><em class="box-blk duplicate-clr"></em></span>
-                <h4 class="H4">Dupilcate</h4>
-                <p class="P">{{schemaDetails.duplicateValue}}</p>
-              </mat-list-item>
-            </mat-list>
-          </mat-card-content>
-        </mat-card>
+      <div class="f-row-spacer-half"></div>
+      <small class="mat-caption">Note: WRITE NOTE HERE</small>
+    </div>
+    <mat-divider vertical="true"></mat-divider>
+    <div class="right f-col">
+      <h4 class="mat-h4">Latest Execution Summary</h4>
+      <h1 class="count">{{schemaDetails.totalCount}}</h1>
+      <small class="mat-caption">Total</small>
+      <div class="f-row">
+        <em class="box-blk error-clr"></em>
+        <h4 class="mat-caption">Error</h4>
+        <div class="f-spacer"></div>
+        <h2 class="mat-caption">{{schemaDetails.errorCount}}</h2>
       </div>
-    </mat-card-content>
-  </mat-card>
+      <div class="f-row">
+        <em class="box-blk success-clr"></em>
+        <h4 class="mat-caption">Success</h4>
+        <div class="f-spacer"></div>
+        <h2 class="mat-caption">{{schemaDetails.successCount}}</h2>
+      </div>
+      <div class="f-row">
+        <em class="box-blk skipped-clr"></em>
+        <h4 class="mat-caption">Skipped</h4>
+        <div class="f-spacer"></div>
+        <h2 class="mat-caption">{{schemaDetails.skippedValue}}</h2>
+      </div>
+      <div class="f-row">
+        <em class="box-blk duplicate-clr"></em>
+        <h4 class="mat-caption">Duplicate</h4>
+        <div class="f-spacer"></div>
+        <h2 class="mat-caption">{{schemaDetails.duplicateValue}}</h2>
+      </div>
+    </div>
+  </div>
+</mat-card>

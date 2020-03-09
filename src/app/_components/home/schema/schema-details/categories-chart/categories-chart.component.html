@@ -1,64 +1,57 @@
-<mat-card class="graph-root">
-        <mat-toolbar>
-          <mat-toolbar-row>
-            <span>Category</span>
-          </mat-toolbar-row>
-        </mat-toolbar>
-        <mat-divider></mat-divider>
-        <mat-card-content class="graph-divider">
-          <div class="grid-flexcol-9">
-            <mat-card class="sidegraph-details bxshadow-variant-0 vertical-divider">
-              <mat-card-header>
-                <mat-form-field>
-                  <mat-label>Select Category</mat-label>
-                  <mat-select [(ngModel)]="selectedCategoryId" (selectionChange)="changeCategoryChart()">
-                        <mat-option *ngFor="let catInfo of categoryInfoLst" [value]="catInfo.categoryId">
-                                {{catInfo.categoryDesc}}
-                        </mat-option>
-                  </mat-select>                  
-                </mat-form-field>              
-                <mat-form-field>
-                  <mat-label>Select Status</mat-label>
-                  <mat-select [(ngModel)]="selectedStatus" (selectionChange)="changeCategoryChart()">
-                        <mat-option *ngFor="let status of schemaStatusLst" [value]="status">
-                                {{status}}
-                        </mat-option>
-                  </mat-select>                                    
-                </mat-form-field>
-                <span class="f-spacer"></span>
-                <mat-slide-toggle color="primary">Percentage</mat-slide-toggle>
-              </mat-card-header>
-              <mat-card-content>
-                <div style="display: block;">
-                        <canvas baseChart
-                                    [datasets]="categoryChartData"
-                                    [labels]="categoryChartLabels"
-                                    [options]="categoryChartOptions"                    
-                                    [legend]="categoryChartLegend"
-                                    [chartType]="categoryChartType"></canvas>
-                </div>
-              </mat-card-content>
-            </mat-card>
-          </div>
-          <div class="grid-flexcol-3">
-            <mat-card class="sidegraph-details bxshadow-variant-0">
-              <mat-card-header>
-                <mat-card-title>Category Summary</mat-card-title>
-              </mat-card-header>
-              <mat-card-content>
-                <h2 class="H2">{{categoryChartDataDetails.total}}</h2>
-                <small>Total</small>
-  
-                <mat-list role="list" class="valuedes-list">
-                  <mat-list-item  *ngFor="let br of categoryChartDataDetails.dataSet"  role="listitem">
-                    <span mat-list-icon><em class="box-blk" [style.background-color]="br.borderColor"></em></span>
-                    <h4 class="H4">{{br.brDesc}}</h4>
-                    <p class="P">{{br.total}}</p>
-                  </mat-list-item>
-                  
-                </mat-list>
-              </mat-card-content>
-            </mat-card>
-          </div>
-        </mat-card-content>
-      </mat-card>
+<mat-card class="root mat-elevation-z6">
+  <mat-toolbar>
+    <mat-toolbar-row>
+      <h4 class="mat-h4">Category Data Tren</h4>
+      <div class="f-spacer"></div>
+      <button mat-icon-button>
+        <mat-icon>info</mat-icon>
+      </button>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  <mat-divider></mat-divider>
+  <div class="f-row">
+    <div class="left f-col">
+      <div class="f-row">
+        <mat-form-field>
+          <mat-label>Select Category</mat-label>
+          <mat-select [(ngModel)]="selectedCategoryId" (selectionChange)="changeCategoryChart()">
+            <mat-option *ngFor="let catInfo of categoryInfoLst" [value]="catInfo.categoryId">
+              {{catInfo.categoryDesc}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="col-spacer"></div>
+        <mat-form-field>
+          <mat-label>Select Status</mat-label>
+          <mat-select [(ngModel)]="selectedStatus" (selectionChange)="changeCategoryChart()">
+            <mat-option *ngFor="let status of schemaStatusLst" [value]="status">
+              {{status}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <canvas baseChart [datasets]="categoryChartData" [labels]="categoryChartLabels"
+        [options]="categoryChartOptions" [legend]="categoryChartLegend" [chartType]="categoryChartType">
+      </canvas>
+      <div class="f-row">
+        <button mat-raised-button><mat-icon>zoom_in</mat-icon>Zoom In</button>
+        <div class="f-col-spacer-half"></div>
+        <button mat-raised-button><mat-icon>zoom_out</mat-icon>Zoom Out</button>
+      </div>
+      <div class="f-row-spacer-half"></div>
+      <small class="mat-caption">Note: WRITE NOTE HERE</small>
+    </div>
+    <mat-divider vertical="true"></mat-divider>
+    <div class="right f-col">
+      <h4 class="mat-h4">Category Data Summary</h4>
+      <h1 class="count">{{schemaDetails.totalCount}}</h1>
+      <small class="mat-caption">Error</small>
+      <div class="f-row" *ngFor="let br of categoryChartDataDetails.dataSet">
+        <em class="box-blk" [style.background-color]="br.borderColor"></em>
+        <h4 class="mat-caption">{{br.brDesc}}</h4>
+        <div class="f-spacer"></div>
+        <h2 class="mat-caption">{{br.total}}</h2>
+      </div>
+    </div>
+  </div>
+</mat-card>

@@ -1,123 +1,106 @@
-.table-root {
+.root {
   padding: 0;
-  margin-bottom: 30px;
   width: 100%;
-  min-height: 650px;
 
   mat-toolbar {
-    font-size: 18px;
     height: 50px;
-    background: #f9fafc;
     min-height: 50px;
 
     mat-toolbar-row {
       height: 50px;
-
-      .mat-flat-button {
-        margin: 0 5px;
-      }
     }
   }
 
-  .root-schemalisting {
-    margin: 16px;
-    width: 1517px;
+  > div {
+    padding: 16px;
 
-    .schematable-filters {
-      margin: 4px 16px;
-      display: flex;
-      align-items: center;
+    mat-card {
+      padding: 0;
 
-      .mat-flat-button {
-        margin: 0 5px;
+      mat-tab-group.status-nav {
+        mat-chip-list {
+          margin-left: 8px;
+
+          mat-chip {
+            min-height: 22px;
+          }
+        }
       }
-    }
 
-    .schematable-filters-fields {
-      margin: 4px 16px;
-      display: inline-block;
-      align-items: center;
+      .hierarchy-row,
+      .grid-row {
+        overflow-x: auto;
 
-      mat-button-toggle-group {
-        overflow: auto;
-        width: 1499px;
+        button {
+          margin-right: 16px;
+          flex-shrink: 0;
+        }
+
+        button:first-child {
+          margin-left: 16px;
+        }
+
+        padding-bottom: 16px;
       }
-    }
 
-    .root-AdminTable {
-      height: 450px;
-      overflow: auto;
-      border-top: 1px solid #e0e0e0;
+      .settings-row {
+        align-items: center;
+      }
 
-      table {
+      .table-row {
         width: 100%;
-
-        td.mat-column-star {
-          width: 30px;
-          padding-left: 8px;
-        }
-
-        td.errorCell {
-          border-bottom: 2px solid #f00;
-          color: #f00;
-        }
-
-        td.mat-cell,
-        th.mat-header-cell {
-          padding: 0 10px;
-          border-right: 1px solid #e0e0e0;
-        }
-
-        td.mat-cell:last-child,
-        th.mat-header-cell:last-child {
-          border-right: none;
-        }
-
-        .mat-table-sticky:first-child {
-          border-right: 1px solid #e0e0e0;
-          width: 32px;
-          padding-left: 8px;
-          padding-right: 8px;
-          cursor: pointer;
-        }
-
-        .checkbox-colunm {
-          border-right: 1px solid #e0e0e0;
-          width: 32px;
-          padding-left: 16px;
-          padding-right: 16px;
-        }
-
-        tr:nth-child(even) {
-          background: #fafafc;
-        }
-
-        .editable-error {
-          margin: 0 -10px -20px -10px;
-        }
-
-        .statusinput {
-          position: relative;
-          top: -5px;
-        }
-
-        .custom-chip {
-          padding: 0 10px;
-          min-height: 26px;
-          font-size: 12px;
-        }
-      }
-
-      .schema-pagination {
-        bottom: 15px;
-        right: 0;
+        overflow: auto;
       }
     }
   }
-}
 
-.mat-chip-list-wrapper .mat-standard-chip,
-.mat-chip-list-wrapper input.mat-input-element {
-  margin: 13px;
-  min-height: 23px;
+  th.any-cell {
+    border-top-width: 1px;
+    border-top-style: solid;
+  }
+
+  .any-cell {
+    border-right-width: 1px;
+    border-right-style: solid;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .any-cell:nth-last-child(2) {
+    border-right-width: 0;
+    border-right-style: solid;
+  }
+
+  .more-cell {
+    width: 30px;
+    min-width: 30px;
+    max-width: 30px;
+    border-left-width: 1px;
+    border-left-style: solid;
+    text-align: center;
+    line-height: 10px;
+  }
+
+  .checkbox-cell {
+    width: 30px;
+    min-width: 30px;
+    max-width: 30px;
+    text-align: center;
+  }
+
+  // .objnr-cell {
+  //   flex: 0 0 150px;
+  // }
+
+  .status-cell {
+    width: 200px;
+    min-width: 200px;
+    max-width: 200px;
+    border-left-width: 1px;
+    border-left-style: solid;
+  }
+
+  // .data-cell {
+  //   flex: 0 0 200px;
+  // }
 }

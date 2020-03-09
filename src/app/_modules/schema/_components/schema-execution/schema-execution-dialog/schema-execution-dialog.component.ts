@@ -39,7 +39,7 @@ export class SchemaExecutionDialogComponent implements OnInit {
     const schemaExecutionReq: SchemaExecutionRequest = new SchemaExecutionRequest();
     schemaExecutionReq.schemaId =  this.data.schemaId;
     schemaExecutionReq.variantId = '0'; // 0 for run all
-    this.schemaExecutionService.scheduleSChema(this.data.schemaId).subscribe(data => {
+    this.schemaExecutionService.scheduleSChema(schemaExecutionReq).subscribe(data => {
       console.log('Successfully scheduled');
       this.router.navigate(['/home/schema/schema-list', this.groupId]);
     }, error => {

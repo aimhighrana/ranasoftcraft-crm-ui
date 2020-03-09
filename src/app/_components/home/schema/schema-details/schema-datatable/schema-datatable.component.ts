@@ -53,9 +53,10 @@ export class SchemaDatatableComponent implements OnInit {
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   selectedTabIndex = 1; // Defaut error status should be visible
   dynamicPageSize: number;
-  staticColumns = ['row_more_action', 'row_selection_check2box', 'OBJECTNUMBER'];
+  startColumns = ['row_more_action', 'row_selection_check2box', 'OBJECTNUMBER'];
+  endColumns = ['row_status'];
   allMetaDataFields: BehaviorSubject<MetadataModeleResponse> = new BehaviorSubject(new MetadataModeleResponse());
-  displayedFields: BehaviorSubject<string[]> = new BehaviorSubject(this.staticColumns); // all selected fields across header, selected hierarchy, selected grids
+  displayedFields: BehaviorSubject<string[]> = new BehaviorSubject(this.startColumns); // all selected fields across header, selected hierarchy, selected grids
   unselectedFields: string[] = []; // all unselected fields across header, hierarchy, grids
   selectedGridIds: string[] = []; // currently selected grid ids
   selectedHierarchyIds: string[] = []; // currently selected hierarchy ids
@@ -92,7 +93,7 @@ export class SchemaDatatableComponent implements OnInit {
   calculateDisplayFields(): void {
     const allMDF = this.allMetaDataFields.getValue();
     const fields = [];
-    this.staticColumns.forEach(col => fields.push(col));
+    this.startColumns.forEach(col => fields.push(col));
     for (const headerField in allMDF.headers) {
       if (fields.indexOf(headerField) < 0 && this.unselectedFields.indexOf(headerField) < 0) {
         fields.push(headerField);
@@ -118,6 +119,8 @@ export class SchemaDatatableComponent implements OnInit {
         }
       }
     }
+
+    this.endColumns.forEach(col => fields.push(col));
 
     this.displayedFields.next(fields);
   }
