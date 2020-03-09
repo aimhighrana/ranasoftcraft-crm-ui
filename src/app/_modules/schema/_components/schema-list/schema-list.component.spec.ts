@@ -4,11 +4,11 @@ import { SchemaListComponent } from './schema-list.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SchemaTileComponent } from '../schema-tile/schema-tile.component';
-import { SubstringPipe } from 'src/app/_pipes/substringpipe.pipe';
 import { SchemaListModuleList, SchemaListDetails } from 'src/app/_models/schema/schemalist';
 import { BreadcrumbComponent } from 'src/app/_modules/shared/_components/breadcrumb/breadcrumb.component';
 import { AddTileComponent } from 'src/app/_modules/shared/_components/add-tile/add-tile.component';
 import { Router } from '@angular/router';
+import { SubstringPipe } from 'src/app/_modules/shared/_pipes/substringpipe.pipe';
 
 describe('SchemaListComponent', () => {
   let component: SchemaListComponent;

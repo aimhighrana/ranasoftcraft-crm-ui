@@ -1,9 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { SchemaExecutionDialogComponent } from './schema-execution-dialog.component';
-import { ThousandconvertorPipe } from 'src/app/_pipes/thousandconvertor.pipe';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { HttpClientModule } from '@angular/common/http';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { ThousandconvertorPipe } from 'src/app/_modules/shared/_pipes/thousandconvertor.pipe';
 
 describe('SchemaExecutionDialogComponent', () => {
   let component: SchemaExecutionDialogComponent;

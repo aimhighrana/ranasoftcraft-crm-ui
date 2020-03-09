@@ -1,0 +1,18 @@
+.root {
+  .crumbrow {
+    align-items: center;
+
+    > button {
+      min-width: 38px;
+      padding: 0 6px;
+    }
+  }
+
+  .root-row {
+    padding: 16px;
+
+    mat-card {
+      width: calc(100% - 32px);
+    }
+  }
+}

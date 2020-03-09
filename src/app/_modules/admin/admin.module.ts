@@ -43,6 +43,8 @@ import { SecurityComponent } from 'src/app/_modules/admin/_components/module/sec
 import { CustomEventsComponent } from 'src/app/_modules/admin/_components/module/custom-events/custom-events.component';
 import { BusinessRulesComponent } from 'src/app/_modules/admin/_components/module/business-rules/business-rules.component';
 import { NounsCharacteristicsComponent } from 'src/app/_modules/admin/_components/module/nouns-characteristics/nouns-characteristics.component';
+import { AddbusinessruleComponent } from './_components/module/business-rules/addbusinessrule/addbusinessrule.component';
+import { CreateSchemaComponent } from './_components/module/schema/create-schema/create-schema.component';
 
 @NgModule({
   declarations: [
@@ -87,6 +89,8 @@ import { NounsCharacteristicsComponent } from 'src/app/_modules/admin/_component
     CustomEventsComponent,
     BusinessRulesComponent,
     NounsCharacteristicsComponent,
+    AddbusinessruleComponent,
+    CreateSchemaComponent
   ],
   imports: [
     CommonModule,

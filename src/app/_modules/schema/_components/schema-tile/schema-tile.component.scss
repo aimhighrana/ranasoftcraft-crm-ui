@@ -3,14 +3,7 @@ mat-card.root {
   cursor: pointer;
   min-width: 350px;
 
-  div.header {
-    justify-content: center;
-    align-items: center;
-    padding: 0 16px;
-    border-bottom-width: 1px;
-    border-bottom-style: solid;
-    height: 65px;
-
+  mat-toolbar.header {
     h3 {
       margin: 0;
       display: -webkit-box;
@@ -18,10 +11,11 @@ mat-card.root {
       -webkit-box-orient: vertical;
       overflow: hidden;
       text-overflow: ellipsis;
-    }
-
-    mat-icon {
-      cursor: pointer;
+      white-space: pre-line;
+      word-break: break-word;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 28px;
     }
   }
 

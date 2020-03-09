@@ -60,16 +60,20 @@
   }
 
   pros-schema-tile .root {
-    div.header {
-      background-color: mat-color($background-palette, app-bar);
-      border-bottom-color: mat-color($foreground-palette, divider);
-    }
-
-    div.header h3,
     mat-icon,
     .row1text,
     .week,
     .timestamp {
+      color: mat-color($foreground-palette, secondary-text);
+    }
+  }
+
+  pros-schema-tile .root,
+  pros-categories-chart .root,
+  pros-overview-chart .root,
+  pros-schema-datatable .root {
+    mat-toolbar.header h3,
+    mat-toolbar.header button {
       color: mat-color($foreground-palette, secondary-text);
     }
   }

@@ -5,7 +5,6 @@ import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { SchemaTileComponent } from '../../../../_modules/schema/_components/schema-tile/schema-tile.component';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterTestingModule } from '@angular/router/testing';
-import { SubstringPipe } from 'src/app/_pipes/substringpipe.pipe';
 import { SchemaVariantService } from 'src/app/_services/home/schema/schema-variant.service';
 import { SchemaService } from 'src/app/_services/home/schema.service';
 import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-details.service';
@@ -15,6 +14,7 @@ import { AddTileComponent } from 'src/app/_modules/shared/_components/add-tile/a
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { SubstringPipe } from 'src/app/_modules/shared/_pipes/substringpipe.pipe';
 
 describe('SchemaVariantsComponent', () => {
   let component: SchemaVariantsComponent;

@@ -1,13 +1,14 @@
 <mat-card class="root mat-elevation-z6" [class.pulse_opacity_step_10_repeat]="pulse">
-  <div class="header f-row">
-    <h3 class="mat-h3" [matTooltip]="title">{{ title }}</h3>
-    <span class="f-spacer"></span>
-    <mat-icon *ngIf="edit" prosClickStopPropagation matTooltip="Edit" (click)="onEdit();">edit</mat-icon>
-    <span class="f-col-spacer-half"></span>
-    <mat-icon *ngIf="delete" prosClickStopPropagation matTooltip="Delete" (click)="onDelete();">delete</mat-icon>
-    <span class="f-col-spacer-half"></span>
-    <mat-icon *ngIf="info" prosClickStopPropagation matTooltip="Information comming soon ..." (click)="onInfo();">info</mat-icon>
-  </div>
+  <mat-toolbar class="header">
+    <mat-toolbar-row>
+      <h3 class="mat-h3" [matTooltip]="title">{{ title }}</h3>
+      <span class="f-spacer"></span>
+      <button mat-icon-button><mat-icon *ngIf="edit" prosClickStopPropagation matTooltip="Edit" (click)="onEdit();">edit</mat-icon></button>
+      <button mat-icon-button><mat-icon *ngIf="delete" prosClickStopPropagation matTooltip="Delete" (click)="onDelete();">delete</mat-icon></button>
+      <button mat-icon-button><mat-icon *ngIf="info" prosClickStopPropagation matTooltip="Information comming soon ..." (click)="onInfo();">info</mat-icon></button>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  <mat-divider></mat-divider>
   <mat-card-content class="f-col">
     <div class="f-row">
       <ng-template [ngIf]="totalValue && showingErrors">

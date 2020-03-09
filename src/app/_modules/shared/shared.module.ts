@@ -44,22 +44,25 @@ import { PageNotFoundComponent } from './_components/page-not-found/page-not-fou
 import { AddTileComponent } from './_components/add-tile/add-tile.component';
 import { SvgIconComponent } from './_components/svg-icon/svg-icon.component';
 import { ChartsModule } from 'ng2-charts';
-import { ClickStopPropagationDirective } from 'src/app/_directives/click-stop-propagation.directive';
-import { SubstringPipe } from 'src/app/_pipes/substringpipe.pipe';
-import { ThousandconvertorPipe } from 'src/app/_pipes/thousandconvertor.pipe';
+import { TableColumnSettingsComponent } from './_components/table-column-settings/table-column-settings.component';
+import { ClickStopPropagationDirective } from './_directives/click-stop-propagation.directive';
+import { SubstringPipe } from './_pipes/substringpipe.pipe';
+import { ThousandconvertorPipe } from './_pipes/thousandconvertor.pipe';
 
 
 @NgModule({
   declarations: [
-    // shared directives
+    // directives
     ClickStopPropagationDirective,
+    // pipes
     SubstringPipe,
     ThousandconvertorPipe,
     // shared components
     PageNotFoundComponent,
     BreadcrumbComponent,
     AddTileComponent,
-    SvgIconComponent
+    SvgIconComponent,
+    TableColumnSettingsComponent
   ],
   imports: [
     // ng modules
@@ -165,13 +168,15 @@ import { ThousandconvertorPipe } from 'src/app/_pipes/thousandconvertor.pipe';
     ChartsModule,
     // directives
     ClickStopPropagationDirective,
+    // pipes
     SubstringPipe,
+    ThousandconvertorPipe,
     // components
     PageNotFoundComponent,
     BreadcrumbComponent,
     AddTileComponent,
     SvgIconComponent,
-    ThousandconvertorPipe
+    TableColumnSettingsComponent
 ]
 })
 export class SharedModule { }

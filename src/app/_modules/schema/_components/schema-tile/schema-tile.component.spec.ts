@@ -3,9 +3,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { SchemaTileComponent } from './schema-tile.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { RouterTestingModule } from '@angular/router/testing';
-import { SubstringPipe } from 'src/app/_pipes/substringpipe.pipe';
-// import { By } from '@angular/platform-browser';
 import { BreadcrumbComponent } from 'src/app/_modules/shared/_components/breadcrumb/breadcrumb.component';
+import { SubstringPipe } from 'src/app/_modules/shared/_pipes/substringpipe.pipe';
 
 describe('SchemaTileComponent', () => {
   let component: SchemaTileComponent;
