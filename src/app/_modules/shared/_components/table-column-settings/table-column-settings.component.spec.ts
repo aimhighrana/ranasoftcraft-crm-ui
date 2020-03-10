@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TableColumnSettingsComponent } from './table-column-settings.component';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 describe('TableColumnSettingsComponent', () => {
   let component: TableColumnSettingsComponent;
@@ -8,7 +9,10 @@ describe('TableColumnSettingsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TableColumnSettingsComponent ]
+      declarations: [ TableColumnSettingsComponent ],
+      imports: [
+        AppMaterialModuleForSpec
+      ]
     })
     .compileComponents();
   }));

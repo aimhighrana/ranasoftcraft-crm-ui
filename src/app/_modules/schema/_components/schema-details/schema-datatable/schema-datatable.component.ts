@@ -13,6 +13,7 @@ import { SchemalistService } from 'src/app/_services/home/schema/schemalist.serv
 import { FormControl } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { SchemaDataSource } from './schema-data-source';
+import { TableColumnSettingsComponent } from 'src/app/_modules/shared/_components/table-column-settings/table-column-settings.component';
 
 @Component({
   selector: 'pros-schema-datatable',
@@ -160,13 +161,18 @@ export class SchemaDatatableComponent implements OnInit {
     return '+' + (status.length - 2);
   }
 
-
-  public openStatusInfoDialog() {
-    const dialogRef = this.dialog.open(SchemaStatusinfoDialogComponent, {
+  public openTableColumnSettings() {
+    const dialogRef = this.dialog.open(TableColumnSettingsComponent, {
       width: '900px'
     });
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
+    });
+  }
+
+  public openStatusInfoDialog() {
+    this.dialog.open(SchemaStatusinfoDialogComponent, {
+      width: '900px'
     });
   }
 
