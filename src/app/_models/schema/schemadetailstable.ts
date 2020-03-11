@@ -98,7 +98,7 @@ export class DataTableResponse {
     hdvs: DataTableHeaderResponse[];
     gvs: DataTableHeaderResponse[][];
     hyvs: DataTableHeaderResponse[][];
-    stat: string;
+    stat: string[];
 }
 export class DataTableHeaderResponse {
     fId: string;
@@ -299,3 +299,31 @@ export class DataTableGroupBy {
     objectNumber: string;
     isGroup: boolean;
 }
+
+export class SchemaBrInfo {
+    brType: string;
+    dynamicMessage: string;
+    brId: string;
+    schemaId: string;
+    refId: string;
+    fields: string[];
+    schemaOrder: number;
+    brDescription: string;
+}
+
+export class FieldExitsResponse {
+    fieldId: string;
+    gridId: string;
+    gridObjNum: string;
+    hierarchyId: string;
+}
+
+export interface SchemaCorrectionReq {
+    id: string;
+    fldId: string;
+    gridId: string;
+    heirerchyId: string;
+    vc: string;
+    rowSno: string;
+}
+

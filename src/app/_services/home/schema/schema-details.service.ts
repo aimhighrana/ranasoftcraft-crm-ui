@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { EndpointService } from '../../endpoint.service';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { SendReqForSchemaDataTableColumnInfo, SendDataForSchemaTableShowMore, SchemaDataTableColumnInfoResponse, RequestForSchemaDetailsWithBr, DataTableSourceResponse, SchemaTableViewRequest, OverViewChartDataSet, CategoryInfo, CategoryChartDataSet, MetadataModeleResponse } from 'src/app/_models/schema/schemadetailstable';
+import { SendReqForSchemaDataTableColumnInfo, SendDataForSchemaTableShowMore, SchemaDataTableColumnInfoResponse, RequestForSchemaDetailsWithBr, SchemaTableViewRequest, OverViewChartDataSet, CategoryInfo, CategoryChartDataSet, MetadataModeleResponse, SchemaBrInfo, SchemaCorrectionReq } from 'src/app/_models/schema/schemadetailstable';
 import * as moment from 'moment';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../../any2ts.service';
@@ -66,10 +66,8 @@ export class SchemaDetailsService {
     return this.schemaBusinessRule.asObservable();
   }
 
-  public getSchemaTableDetailsByBrId(request: RequestForSchemaDetailsWithBr): Observable<DataTableSourceResponse> {
-    return this.http.post<any>(this.endpointService.getSchemaTableDetailsUrl(), request).pipe(map(response => {
-      return this.any2tsService.any2SchemaTableData(this.any2tsService.any2DataTable(response, request), request);
-    }));
+  public getSchemaTableDetailsByBrId(request: RequestForSchemaDetailsWithBr): Observable<any> {
+    return this.http.post<any>(this.endpointService.getSchemaTableDetailsUrl(), request);
   }
 
   /**
@@ -114,4 +112,23 @@ export class SchemaDetailsService {
   public getAllUnselectedFields(schemaId: string, variantId: string): Observable<string[]> {
     return this.http.get<string[]>(this.endpointService.getAllUnselectedFields(), {params:{schemaId, variantId}});
   }
+
+  public getSchemaBrInfoList(schemaId: string): Observable<SchemaBrInfo[]> {
+    return this.http.get<SchemaBrInfo[]>(this.endpointService.getSchemaBrInfoList(schemaId)).pipe(map(response=>{
+      return this.any2tsService.any2SchemaBrInfo(response);
+    }));
+  }
+
+  public doCorrection(schemaId: string, request: SchemaCorrectionReq): Observable<any> {
+    return this.http.post<any>(this.endpointService.doCorrectionUrl(schemaId), request);
+  }
+
+  public getCorrectedRecords(schemaId: string, fetchSize: any, fetchCount: any): Observable<any> {
+    return this.http.get<any>(this.endpointService.getCorrectedRecords(schemaId), {params:{fetchSize, fetchCount}});
+  }
+
+  public getLastBrErrorRecords(schemaId: string, objnrs: string[]): Observable<any> {
+    return this.http.post<any>(this.endpointService.getLastBrErrorRecords(schemaId), objnrs);
+  }
+
 }

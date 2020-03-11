@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild, Input } from '@angular/core';
-import { SchemaTableData, ResponseFieldList, RequestForSchemaDetailsWithBr, SchemaTableViewRequest, MetadataModeleResponse, Heirarchy } from 'src/app/_models/schema/schemadetailstable';
+import { Component, OnInit, ViewChild, Input, NgZone } from '@angular/core';
+import { SchemaTableData, ResponseFieldList, RequestForSchemaDetailsWithBr, SchemaTableViewRequest, MetadataModeleResponse, Heirarchy, SchemaBrInfo, FieldExitsResponse, SchemaCorrectionReq } from 'src/app/_models/schema/schemadetailstable';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -14,12 +14,13 @@ import { FormControl } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { SchemaDataSource } from './schema-data-source';
 import { TableColumnSettingsComponent } from 'src/app/_modules/shared/_components/table-column-settings/table-column-settings.component';
+import { Any2tsService } from 'src/app/_services/any2ts.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'pros-schema-datatable',
   templateUrl: './schema-datatable.component.html',
-  styleUrls: ['./schema-datatable.component.scss'],
-  // changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./schema-datatable.component.scss']
 })
 export class SchemaDatatableComponent implements OnInit {
 
@@ -61,6 +62,8 @@ export class SchemaDatatableComponent implements OnInit {
   unselectedFields: string[] = []; // all unselected fields across header, hierarchy, grids
   selectedGridIds: string[] = []; // currently selected grid ids
   selectedHierarchyIds: string[] = []; // currently selected hierarchy ids
+  schemaBrInfoList: SchemaBrInfo[] = [];
+  metaDataFieldList = {} as any;
 
   public chooseColumnCtrl: FormControl = new FormControl();
   public chooseColumnFilterCtrl: FormControl = new FormControl();
@@ -68,7 +71,10 @@ export class SchemaDatatableComponent implements OnInit {
   constructor(
     private schemaDetailsService: SchemaDetailsService,
     private dialog: MatDialog,
-    private schemaListService: SchemalistService
+    private schemaListService: SchemalistService,
+    private any2TsService: Any2tsService,
+    private snackBar: MatSnackBar,
+    private ngZone: NgZone
 
   ) {
 
@@ -77,17 +83,19 @@ export class SchemaDatatableComponent implements OnInit {
     this.schemaDetails = new SchemaListDetails();
     this.paginator = new MatPaginator(new MatPaginatorIntl(), null);
     this.getMetadataFields();
+    this.getSchemaBrInfoList();
     this.getSchemaDetails(this.schemaId);
-    this.dataTableDataSource = new SchemaDataSource(this.schemaDetailsService);
+    this.dataTableDataSource = new SchemaDataSource(this.schemaDetailsService, this.any2TsService);
     this.dataTableRequest(0, 40, DataTableReqType.error);
 
     this.allMetaDataFields.subscribe((allMDF) => {
       this.calculateDisplayFields();
+      this.makeMetadataControle();
     });
     this.schemaDetailsService.getAllUnselectedFields(this.schemaId , this.variantId).subscribe(data =>{
-      // this.unselectedFields = data ? data : [];
+      this.unselectedFields = data ? data : [];
     },error=>{
-      console.error(`Error while getting unselected fields : ${error}`);
+      this.snackBar.open(`Exception : ${error}`, 'Close',{duration:2000});
     })
   }
 
@@ -126,6 +134,40 @@ export class SchemaDatatableComponent implements OnInit {
     this.displayedFields.next(fields);
   }
 
+  makeMetadataControle(): void {
+    const allMDF = this.allMetaDataFields.getValue();
+    if(allMDF) {
+      if(allMDF.headers) {
+        Object.keys(allMDF.headers).forEach(header =>{
+          this.metaDataFieldList[header] = allMDF.headers[header];
+        });
+      }
+
+      // grid
+      if(allMDF.grids) {
+        Object.keys(allMDF.grids).forEach(grid =>{
+          if(allMDF.gridFields[grid]) {
+            Object.keys(allMDF.gridFields[grid]).forEach(fldId => {
+              this.metaDataFieldList[fldId] = allMDF.gridFields[grid][fldId];
+            });
+          }
+        });
+      }
+
+      // // heirerchy
+      if(allMDF.hierarchy) {
+        Object.keys(allMDF.hierarchy).forEach(heiId =>{
+          const heId = allMDF.hierarchy[heiId].heirarchyId;
+          if(allMDF.hierarchyFields[heId]) {
+            Object.keys(allMDF.hierarchyFields[heId]).forEach(fldId => {
+              this.metaDataFieldList[fldId] = allMDF.hierarchyFields[heId][fldId];
+            });
+          }
+        });
+      }
+    }
+  }
+
   isAllSelected() {
     const numSelected = this.selection.selected.length;
     const numRows = this.totalRecord;
@@ -146,24 +188,17 @@ export class SchemaDatatableComponent implements OnInit {
     return item.isGroup;
   }
 
-  manageStatusCount(index: number): boolean {
-    if (index < 2) {
-      return false;
-    } else {
-      return true;
+  isCorrectionTab(index, item): boolean {
+    if(item && item.hasOwnProperty('row_status')) {
+      return (item.row_status.fieldData.indexOf('Corrections') !== -1 ? true : false);
     }
-  }
-
-  manageChips(index: number) {
-    return (index === undefined || index < 2) ? true : false;
-  }
-  getHideStatusCount(status: any) {
-    return '+' + (status.length - 2);
+    return false;
   }
 
   public openTableColumnSettings() {
     const dialogRef = this.dialog.open(TableColumnSettingsComponent, {
-      width: '900px'
+      width: '900px',
+      data:{schemaId: this.schemaId, fields: this.allMetaDataFields.getValue(), selectedGridIds: this.selectedGridIds, selectedHierarchyIds:this.selectedHierarchyIds}
     });
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
@@ -180,7 +215,7 @@ export class SchemaDatatableComponent implements OnInit {
     this.schemaListService.getSchemaDetailsBySchemaId(schemaId).subscribe(data => {
       this.schemaDetails = data;
     }, error => {
-      console.error('Error while getting schema details');
+      this.snackBar.open(`Error : ${error}`, 'Close',{duration:2000});
     });
   }
 
@@ -220,9 +255,9 @@ export class SchemaDatatableComponent implements OnInit {
     schemaTableViewRequest.unassignedFields = this.unselectedFields;
 
     this.schemaDetailsService.updateSchemaTableView(schemaTableViewRequest).subscribe(response => {
-      console.log('Updated view {} is success.', response);
+      this.snackBar.open(`Successfully view updated : ${response}`, 'Close',{duration:2000});
     }, error => {
-      console.error('Error while update schema table view');
+      this.snackBar.open(`Error : ${error}`, 'Close',{duration:2000});
     });
   }
 
@@ -230,7 +265,7 @@ export class SchemaDatatableComponent implements OnInit {
     this.schemaDetailsService.getMetadataFields(this.objectId).subscribe(response => {
       this.allMetaDataFields.next(response);
     }, error => {
-      console.error(`Error while getting headers field and unassigned fields ${error}`);
+      this.snackBar.open(`Error : ${error}`, 'Close',{duration:2000});
     });
   }
 
@@ -302,6 +337,148 @@ export class SchemaDatatableComponent implements OnInit {
 
   gridTrackBy(grid: any): string {
     return grid;
+  }
+
+  public getSchemaBrInfoList() {
+    this.schemaDetailsService.getSchemaBrInfoList(this.schemaId).subscribe(data=>{
+      this.schemaBrInfoList = data;
+    }, error=> this.snackBar.open(`Error : ${error}`, 'Close',{duration:2000}));
+  }
+
+  hasError(row: any, fieldId: string): boolean {
+    if(row.row_status) {
+      const status = row.row_status.fieldData ? row.row_status.fieldData.split(',') : [];
+      if(status.indexOf('Error') !== -1) {
+        let fields: string[] = [];
+        this.schemaBrInfoList.forEach(brInfo =>{
+          fields = fields.concat(brInfo.fields);
+        });
+        if(fields.indexOf(fieldId) !== -1 && !row[fieldId].isCorrected) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  isCorrected(row:any, fieldId: string): boolean {
+    return row[fieldId] ? row[fieldId].isCorrected : false;
+  }
+
+  isEditable(fieldId: string): boolean {
+    if(this.metaDataFieldList[fieldId]) {
+      const dataType = this.metaDataFieldList[fieldId].dataType;
+      const pickList = this.metaDataFieldList[fieldId].picklist;
+      return (dataType === 'CHAR' && pickList === '0') ? true : false;
+    } else {
+      return false;
+    }
+  }
+
+  showErrorMessages(row: any, fieldId: string): string {
+    if(row.row_status) {
+      const status = row.row_status.fieldData ? row.row_status.fieldData.split(',') : [];
+      if(status.indexOf('Error') !== -1) {
+        const errorMsg: string[] = [];
+        this.schemaBrInfoList.forEach(brInfo=>{
+          if(brInfo.fields.indexOf(fieldId) !== -1) {
+            errorMsg.push(brInfo.dynamicMessage);
+          }
+        });
+        return errorMsg.toString();
+      }
+    }
+    return '';
+  }
+  doCorrection(row: any, fieldId: string, inpValue: string, rowIndex: number) {
+    if(row && row.hasOwnProperty(fieldId)) {
+      const objctNumber = row.OBJECTNUMBER.fieldData;
+      const fldExit: FieldExitsResponse = this.findFieldExitsOnMetaRes(fieldId);
+      const request: SchemaCorrectionReq = {id: objctNumber,fldId:fieldId, gridId: fldExit.gridId, heirerchyId: fldExit.hierarchyId, rowSno:null,vc: inpValue};
+      this.schemaDetailsService.doCorrection(this.schemaId, request).subscribe(res=>{
+        if(res.acknowledge) {
+          this.schemaDetails.correctionValue = res.count? res.count : 0;
+        }
+      }, error=>{
+        this.snackBar.open(`Error :: ${error}`, 'Close',{duration:2000});
+        console.error(`Error :: ${error}`);
+      });
+      this.ngZone.runOutsideAngular(() => {
+        if(document.getElementById('edit_' + fieldId + '_' + rowIndex)) {
+          document.getElementById('edit_' + fieldId + '_' + rowIndex).style.display = 'none';
+          const enteredVal = (document.getElementById('edit_inp_' + fieldId + '_' + rowIndex) as HTMLInputElement).value;
+          document.getElementById('view_' + fieldId + '_' + rowIndex).style.display = 'block';
+          document.getElementById('view_' + fieldId + '_' + rowIndex).innerText = enteredVal;
+
+        }
+      });
+    }
+  }
+
+  findFieldExitsOnMetaRes(fieldId: string): FieldExitsResponse {
+    const resposne: FieldExitsResponse = new FieldExitsResponse();
+
+    // check for header
+    if(this.selectedGridIds.length<=0 && this.selectedHierarchyIds.length<=0) {
+      resposne.fieldId = fieldId;
+    }
+
+    // check for grid
+    if(this.selectedGridIds.length>0) {
+      const grids = this.allMetaDataFields.getValue().gridFields;
+      Object.keys(grids).filter(grid =>{
+        if(grids[grid][fieldId]) {
+          resposne.fieldId = fieldId;
+          resposne.gridId = grid;
+          return;
+        }
+      });
+    }
+
+    // check for hierarchy
+    if(this.selectedHierarchyIds.length>0) {
+      const heirarchy = this.allMetaDataFields.getValue().hierarchyFields;
+      Object.keys(heirarchy).filter(heiId =>{
+        if(heirarchy[heiId][fieldId]) {
+          resposne.fieldId = fieldId;
+          resposne.hierarchyId = heiId;
+          return;
+        }
+      });
+    }
+    return resposne;
+  }
+
+  editCurrentCell(fieldId: string, rowIndex: number) {
+    this.ngZone.runOutsideAngular(() =>{
+      if(document.getElementById('edit_' + fieldId + '_' + rowIndex)) {
+        document.getElementById('edit_' + fieldId + '_' + rowIndex).style.display = 'block';
+        document.getElementById('view_' + fieldId + '_' + rowIndex).style.display = 'none';
+      }
+    });
+  }
+
+  dynamicChipColor(status) {
+    status = status.toLocaleLowerCase();
+    let cls = '';
+    switch (status) {
+      case 'error':
+        cls = 'errorChip';
+        break;
+      case 'success':
+        cls = 'successChip';
+        break;
+
+      case 'corrections':
+        cls = 'correctedChip';
+        break;
+      case 'skipped':
+        cls = 'skippedChip';
+        break;
+      default:
+        break;
+    }
+    return cls;
   }
 
 }

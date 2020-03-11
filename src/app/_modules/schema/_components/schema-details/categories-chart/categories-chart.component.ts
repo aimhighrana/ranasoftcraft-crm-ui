@@ -29,7 +29,7 @@ export class CategoriesChartComponent implements OnInit {
   selectedStatus: string;
   categoryInfoLst: CategoryInfo[];
   schemaStatusLst: string[];
-  schemaDetails: SchemaListDetails;
+  schemaDetails: SchemaListDetails = new SchemaListDetails();
   categoryChartData: ChartDataSets[] = [{ data: []}];
   categoryChartDataDetails: CategoryChartDataSet;
   categoryChartLabels: Label[] = this.generateDynamicTimeSeries();

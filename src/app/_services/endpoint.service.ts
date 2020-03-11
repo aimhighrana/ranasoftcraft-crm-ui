@@ -154,4 +154,21 @@ export class EndpointService {
   public getSchemaVariantsUrl(schemaId: string): string {
     return this.apiUrl + '/schema/schema-variants/' + schemaId;
   }
+
+  public getSchemaBrInfoList(schemaId: string): string {
+    return `${this.apiUrl}/schema/schema-br-infolist/${schemaId}`;
+  }
+
+  public doCorrectionUrl(schemaId: string): string {
+    return `${this.apiUrl}/schema/do-correction/${schemaId}`;
+  }
+
+  public getCorrectedRecords(schemaId: string): string {
+    return `${this.apiUrl}/schema/get-corrected-records/${schemaId}`;
+  }
+
+  public getLastBrErrorRecords(schemaId: string): string {
+    return `${this.apiUrl}/schema/get-mdoerror-records/${schemaId}`;
+  }
+
 }
