@@ -4,6 +4,7 @@ import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/materia
 import { HttpClientModule } from '@angular/common/http';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { ThousandconvertorPipe } from 'src/app/_modules/shared/_pipes/thousandconvertor.pipe';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('SchemaExecutionDialogComponent', () => {
   let component: SchemaExecutionDialogComponent;
@@ -14,7 +15,7 @@ describe('SchemaExecutionDialogComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ SchemaExecutionDialogComponent, ThousandconvertorPipe],
-      imports: [ MatDialogModule, AppMaterialModuleForSpec, HttpClientModule],
+      imports: [ MatDialogModule, AppMaterialModuleForSpec, HttpClientModule, RouterTestingModule],
       providers: [
         {
           provide: MatDialogRef,

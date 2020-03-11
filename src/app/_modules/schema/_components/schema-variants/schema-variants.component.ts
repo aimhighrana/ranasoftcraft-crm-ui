@@ -82,7 +82,6 @@ export class SchemaVariantsComponent implements OnInit {
         this.schemaListService.getSchemaDetailsBySchemaId(this.schemaId).subscribe(data => {
           this.breadcrumb.heading = data.schemaDescription + 'Variant(s)';
           this.schemaListDetails = data;
-          console.table(this.schemaListDetails);
         }, error => {
           console.error('Error while fetching schema details');
         });

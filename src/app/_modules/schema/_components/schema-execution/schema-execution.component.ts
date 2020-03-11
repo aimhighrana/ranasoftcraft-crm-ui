@@ -75,7 +75,7 @@ export class SchemaExecutionComponent implements OnInit {
     const dialogRef = this.dialog.open(SchemaExecutionDialogComponent, {
       height: '400px',
       width: '550px',
-      data: {schemaId: this.schemaId}
+      data: {schemaId: this.schemaId, groupId: this.groupId}
     });
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');

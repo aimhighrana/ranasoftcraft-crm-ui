@@ -12,5 +12,12 @@ describe('SubstringPipe', () => {
     const mockString = 'Function Location for  Group(s) testing';
     const actualString =  pipeObject.transform(mockString);
     expect(actualString).toEqual('Function Location for  Group(s) te..');
+    const mockString1 = 'Prospecta';
+    const actualString1 =  pipeObject.transform(mockString1);
+    expect(actualString1).toEqual('Prospecta');
+    const mockString2 = '';
+    const actualString2 =  pipeObject.transform(mockString2);
+    expect(actualString2).toEqual('');
+
   }));
 });
