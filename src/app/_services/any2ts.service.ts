@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SchemaListOnLoadResponse, SchemaGroupResponse, SchemaGroupDetailsResponse, SchemaGroupCountResponse, ObjectTypeResponse, GetAllSchemabymoduleidsRes, SchemaGroupWithAssignSchemas, SchemaGroupMapping } from '../_models/schema/schema';
 import { VariantFieldList, SchemaVariantResponse, SchemaBrInfoList, CategoriesResponse, DependencyResponse, VariantDetailsScheduleSchema, VariantAssignedFieldDetails, SchemaListModuleList, SchemaModuleList, SchemaListDetails, BusinessRuleExecutionDetails, VariantListDetails } from '../_models/schema/schemalist';
-import { SchemaDataTableColumnInfoResponse, ResponseFieldList, SchemaTableData, DataTableResponse, DataTableHeaderResponse, DataTableHeaderLabelLang, DataTableHeaderValueLang, DataTableSourceResponse, OverViewChartData, OverViewChartDataXY, OverViewChartDataSet, CategoryInfo, CategoryChartDataSet, CategoryChartData, CategoryChartDataXY, MetadataModel, RequestForSchemaDetailsWithBr, MetadataModeleResponse, Heirarchy } from '../_models/schema/schemadetailstable';
+import { SchemaDataTableColumnInfoResponse, ResponseFieldList, SchemaTableData, DataTableResponse, DataTableHeaderResponse, DataTableHeaderLabelLang, DataTableHeaderValueLang, DataTableSourceResponse, OverViewChartData, OverViewChartDataXY, OverViewChartDataSet, CategoryInfo, CategoryChartDataSet, CategoryChartData, CategoryChartDataXY, MetadataModel, RequestForSchemaDetailsWithBr, MetadataModeleResponse, Heirarchy, SchemaBrInfo } from '../_models/schema/schemadetailstable';
 import { Userdetails, AssignedRoles } from '../_models/userdetails';
 import * as moment from 'moment';
 @Injectable({
@@ -393,17 +393,52 @@ export class Any2tsService {
     const dataTableReponse: DataTableResponse[] = [];
     if (response) {
       response.forEach(data => {
-        const dataTable: DataTableResponse = new DataTableResponse();
-        dataTable.id = data.id;
-        dataTable.stat = data.stat;
-        dataTable.hdvs = this.convertAny2DataTableHeaderResponse(data.hdvs);
-        if (request.gridId) {
-          dataTable.gvs = this.convertAny2DataTableGridResponse(data.gvs, request.gridId);
-        }
-        if (request.hierarchy) {
-          dataTable.hyvs = this.convertAny2DataTableHeirerchyResponse(data.hyvs, request.hierarchy);
-        }
-        dataTableReponse.push(dataTable);
+
+         // get  objectNumber &  doc count
+         const objNum = data.key;
+         const docCount = data.docCount;
+
+         // get hits
+         const status = new Set<string>();
+         Object.keys(data.hits).forEach(index =>{
+            if(index.indexOf('_do_br_err_') >= 0) {
+              status.add('Error');
+            } else if(index.indexOf('_do_br_scs_') >= 0) {
+              status.add('Success');
+            } else if(index.indexOf('_do_br_skp_') >= 0) {
+              status.add('Skipped');
+            } else if(index.indexOf('_do_br_cor_') >= 0) {
+              status.add('Correction');
+            }
+         });
+
+         const hit: DataTableResponse = new DataTableResponse();
+
+         // check error index is exits then hit from error index
+         const errorIndexLen = Object.keys(data.hits).filter(index => index.indexOf('_do_br_err_') !== -1);
+         if(errorIndexLen.length>0) {
+            const index = errorIndexLen[0];
+            hit.hdvs = this.convertAny2DataTableHeaderResponse(data.hits[index].hdvs);
+            if (request.gridId) {
+                hit.gvs = this.convertAny2DataTableGridResponse(data.hits[index].gvs, request.gridId);
+            }
+            if (request.hierarchy) {
+                hit.hyvs = this.convertAny2DataTableHeirerchyResponse(data.hits[index].hyvs, request.hierarchy);
+            }
+         } else {
+           const index = Object.keys(data.hits)[0];
+            hit.hdvs = this.convertAny2DataTableHeaderResponse(data.hits[index].hdvs);
+            if (request.gridId) {
+                hit.gvs = this.convertAny2DataTableGridResponse(data.hits[index].gvs, request.gridId);
+            }
+            if (request.hierarchy) {
+                hit.hyvs = this.convertAny2DataTableHeirerchyResponse(data.hits[index].hyvs, request.hierarchy);
+            }
+         }
+
+         hit.id = objNum;
+         hit.stat = Array.from(status);
+         dataTableReponse.push(hit);
       });
     }
     return dataTableReponse;
@@ -567,8 +602,8 @@ export class Any2tsService {
 
       // for status column
       const statusColumn: SchemaTableData = new SchemaTableData();
-      statusColumn.fieldId = 'STATUS';
-      statusColumn.fieldData = data.stat;
+      statusColumn.fieldId = 'row_status';
+      statusColumn.fieldData = data.stat ? data.stat.toString() : '';
       statusColumn.fieldDesc = 'Status';
       returnData[statusColumn.fieldId] = statusColumn;
       // anyArray.push(statusColumn);
@@ -612,8 +647,8 @@ export class Any2tsService {
 
           // for status column
           const statusColumn: SchemaTableData = new SchemaTableData();
-          statusColumn.fieldId = 'STATUS';
-          statusColumn.fieldData = data.stat;
+          statusColumn.fieldId = 'row_status';
+          statusColumn.fieldData = data.stat ? data.stat.toString() : '';
           statusColumn.fieldDesc = 'Status';
           returnData[statusColumn.fieldId] = statusColumn;
           // anyArray.push(statusColumn);
@@ -640,8 +675,8 @@ export class Any2tsService {
           });
           // for status column
           const statusColumn: SchemaTableData = new SchemaTableData();
-          statusColumn.fieldId = 'STATUS';
-          statusColumn.fieldData = data.stat;
+          statusColumn.fieldId = 'row_status';
+          statusColumn.fieldData = data.stat ? data.stat.toString() : '';
           statusColumn.fieldDesc = 'Status';
           returnData[statusColumn.fieldId] = statusColumn;
           // anyArray.push(statusColumn);
@@ -688,8 +723,8 @@ export class Any2tsService {
 
           // for status column
           const statusColumn: SchemaTableData = new SchemaTableData();
-          statusColumn.fieldId = 'STATUS';
-          statusColumn.fieldData = data.stat;
+          statusColumn.fieldId = 'row_status';
+          statusColumn.fieldData = data.stat ? data.stat.toString() : '';
           statusColumn.fieldDesc = 'Status';
           returnData[statusColumn.fieldId] = statusColumn;
           // anyArray.push(statusColumn);
@@ -716,8 +751,8 @@ export class Any2tsService {
           });
           // for status column
           const statusColumn: SchemaTableData = new SchemaTableData();
-          statusColumn.fieldId = 'STATUS';
-          statusColumn.fieldData = data.stat;
+          statusColumn.fieldId = 'row_status';
+          statusColumn.fieldData = data.stat ? data.stat.toString() : '';
           statusColumn.fieldDesc = 'Status';
           returnData[statusColumn.fieldId] = statusColumn;
           // anyArray.push(statusColumn);
@@ -917,23 +952,6 @@ export class Any2tsService {
     return resposne;
   }
 
-
-  // public any2GridFields(response: any): any {
-  //   const gridFields: Map<string, Map<string,MetadataModel>> = new Map;
-  //   for(const key in response) {
-  //     gridFields.set(key, response[key] as Map<string,MetadataModel>);
-  //   }
-  //   return gridFields;
-  // }
-
-  // public any2HeirerchyFields(response: any): Map<string, Map<string,MetadataModel>> {
-  //   const heiFields: Map<string, Map<string,MetadataModel>> = new Map;
-  //   for(const key in response) {
-  //     heiFields.set(key, response[key] as Map<string,MetadataModel>);
-  //   }
-  //   return heiFields;
-  // }
-
 public any2VaraintListView(data: any): VariantListDetails[] {
   const returnList: VariantListDetails[] = [];
   if (data) {
@@ -961,4 +979,60 @@ public any2VaraintListView(data: any): VariantListDetails[] {
   }
   return returnList;
   }
+
+  public any2SchemaBrInfo(response: any): SchemaBrInfo[] {
+    const schemaBrInfo: SchemaBrInfo[] = [];
+    if(response) {
+      response.forEach(data => {
+         const brInfo: SchemaBrInfo = new SchemaBrInfo();
+         brInfo.brDescription = data.brDescription;
+         brInfo.brId = data.brInfo;
+         brInfo.brType = data.brType;
+         brInfo.dynamicMessage = data.dynamicMessage ? data.dynamicMessage : '';
+         brInfo.fields = data.fields ? data.fields.split(',') : [];
+         brInfo.refId = data.refId;
+         brInfo.schemaId = data.schemaId;
+         brInfo.schemaOrder = data.schemaOrder;
+         schemaBrInfo.push(brInfo);
+      });
+    }
+    return schemaBrInfo;
+  }
+
+  public any2LatestCorrectedData(response: any, objectNum: string,  fieldId: string, rowObjNum: string): string {
+    if(response) {
+      let record = response.filter(res=> res.id === objectNum);
+      if(record.length>0) {
+        record = record[0];
+        // check for header
+        if(record.hdvs && record.hdvs.hasOwnProperty(fieldId)) {
+          return   ((record.hdvs[fieldId])[record.hdvs[fieldId].length-1]).vc;
+        }
+
+        // check on grid
+        if(record.gvs) {
+          Object.keys(record.gvs).forEach(grid => {
+            const rowObj =  record.gvs[grid][rowObjNum];
+            if(rowObj && rowObj.hasOwnProperty(fieldId)) {
+                return  ((rowObj[fieldId])[rowObj[fieldId].length-1]).vc;
+            }
+          });
+        }
+
+        // check on heirerchy
+        if(record.hyvs) {
+          Object.keys(record.hyvs).forEach(hei => {
+            const rowObj =  record.hyvs[hei][rowObjNum];
+            if(rowObj && rowObj.hasOwnProperty(fieldId)) {
+                return  ((rowObj[fieldId])[rowObj[fieldId].length-1]).vc;
+            }
+          });
+        }
+        return null;
+      }
+      return null;
+    }
+    return null;
+  }
+
 }

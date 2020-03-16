@@ -110,4 +110,36 @@
   // .data-cell {
   //   flex: 0 0 200px;
   // }
+
+  .errorCell {
+    border-bottom: 2px solid #f00;
+    color: #f00;
+  }
+
+  .correctedCell {
+    border-bottom: 2px solid #e2df0d;
+    color: #e2df0d;
+  }
+
+  .errorChip {
+    background-color: #c30000;
+    color: #fff;
+  }
+
+  .successChip {
+    background-color: #4caa00;
+    color: #fff;
+  }
+
+  .skippedChip {
+    background-color: #a391c5;
+  }
+
+  .correctedChip {
+    background-color: #bdd827;
+  }
+
+  .correctedCellHeader {
+    min-width: 100px;
+  }
 }

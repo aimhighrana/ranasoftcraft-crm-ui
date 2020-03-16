@@ -20,4 +20,15 @@ describe('EndpointService', () => {
       const serObj = new EndpointService();
       expect(serObj.getAllUnselectedFields()).toContain('/schema/get-unselected-fields');
   }));
+
+  it('getSchemaBrInfoList(), should return the schema br information list url', async(() =>{
+    const serObj = new EndpointService();
+    expect(serObj.getSchemaBrInfoList('28364872686186')).toContain('schema/schema-br-infolist/28364872686186');
+  }));
+
+  it('doCorrectionUrl(), should return the schema do correction url', async(() =>{
+    const serObj = new EndpointService();
+    expect(serObj.doCorrectionUrl('28364872686186')).toContain('schema/do-correction/28364872686186');
+  }));
+
 });

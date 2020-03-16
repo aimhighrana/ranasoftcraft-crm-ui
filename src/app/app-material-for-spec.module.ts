@@ -39,6 +39,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTreeModule } from '@angular/material/tree';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 @NgModule({
   imports: [
@@ -84,7 +85,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     MatTooltipModule,
     MatTreeModule,
     DragDropModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    ScrollingModule
   ],
   declarations: []
 })
