@@ -999,14 +999,11 @@ public any2VaraintListView(data: any): VariantListDetails[] {
     return schemaBrInfo;
   }
 
-  public any2LatestCorrectedData(response: any, objectNum: string,  fieldId: string, rowObjNum: string): string {
-    if(response) {
-      let record = response.filter(res=> res.id === objectNum);
-      if(record.length>0) {
-        record = record[0];
+  public any2LatestCorrectedData(record: any, fieldId: string, rowObjNum: string): string {
+    if(record) {
         // check for header
         if(record.hdvs && record.hdvs.hasOwnProperty(fieldId)) {
-          return   ((record.hdvs[fieldId])[record.hdvs[fieldId].length-1]).vc;
+          return  record.hdvs[fieldId] ? record.hdvs[fieldId].vc : null;
         }
 
         // check on grid
@@ -1014,7 +1011,7 @@ public any2VaraintListView(data: any): VariantListDetails[] {
           Object.keys(record.gvs).forEach(grid => {
             const rowObj =  record.gvs[grid][rowObjNum];
             if(rowObj && rowObj.hasOwnProperty(fieldId)) {
-                return  ((rowObj[fieldId])[rowObj[fieldId].length-1]).vc;
+                return  rowObj[fieldId] ? rowObj[fieldId].vc : null;
             }
           });
         }
@@ -1024,15 +1021,12 @@ public any2VaraintListView(data: any): VariantListDetails[] {
           Object.keys(record.hyvs).forEach(hei => {
             const rowObj =  record.hyvs[hei][rowObjNum];
             if(rowObj && rowObj.hasOwnProperty(fieldId)) {
-                return  ((rowObj[fieldId])[rowObj[fieldId].length-1]).vc;
+                return  rowObj[fieldId] ? rowObj[fieldId].vc :null;
             }
           });
         }
-        return null;
       }
       return null;
-    }
-    return null;
   }
 
 }

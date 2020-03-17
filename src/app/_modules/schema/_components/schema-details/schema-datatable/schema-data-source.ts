@@ -105,11 +105,11 @@ export class SchemaDataSource implements DataSource<SchemaTableData> {
             const mdo = mdoRec.filter(mRec => mRec.OBJECTNUMBER.fieldData === corrected)[0];
             if(mdo) {
                 const mdoNew = {} as any;
-                const objNum = mdo.OBJECTNUMBER.fieldData;
                 const rowObj = mdo.objnr ? mdo.objnr.fieldData : '';
+                const correctedRecord = this.correctedDataSubject.getValue().filter(res=> res.id === corrected)[0];
                 Object.keys(mdo).forEach(fieldId=>{
                         const oldData =  {} as any;
-                        const correctedVal = this.any2TsService.any2LatestCorrectedData(this.correctedDataSubject.getValue(),objNum,fieldId,rowObj);
+                        const correctedVal = this.any2TsService.any2LatestCorrectedData(correctedRecord,fieldId,rowObj);
                         oldData.fieldData =  correctedVal ? correctedVal : mdo[fieldId].fieldData;
                         oldData.fieldId = fieldId;
                         oldData.fieldDesc = mdo[fieldId].fieldDesc;
