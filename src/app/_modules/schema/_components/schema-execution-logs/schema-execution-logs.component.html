@@ -1,0 +1,44 @@
+<div class="root f-col">
+    <mat-toolbar>
+        <mat-toolbar-row>
+          <span>Execution Logs</span>
+          <span class="f-spacer"></span>
+          <button mat-icon-button><mat-icon>close</mat-icon></button>
+        </mat-toolbar-row>
+    </mat-toolbar>
+     
+    <div class="f-col executionlogs-list">
+        <mat-expansion-panel class="mat-elevation-z3 logs-card" *ngFor="let log of executionLogs; trackBy: executionLogsTrackBy">
+            <mat-expansion-panel-header>
+                <div class="f-row">
+                    <div class="mat-card-avatar">
+                        <ng-template [ngIf]="log.isInterrupted" [ngIfElse]="success">
+                            <mat-icon matTooltip="Execution interrupted" mat-list-icon  class="failed_run">highlight_off</mat-icon>  
+                        </ng-template>
+                        <ng-template #success>
+                            <mat-icon mat-list-icon matTooltip="Successfully executed" class="success_run">check_circle_outline</mat-icon>
+                        </ng-template>
+                    </div>
+                    <div class="f-col">
+                        <h4 mat-line>Last run at</h4>
+                        <p mat-line> {{ log.exeEndDate ? (log.exeEndDate | date:'MMM d, y, h:mm:ss a') : 'Running..'  }} </p>
+                    </div> 
+                </div>
+            </mat-expansion-panel-header>
+            <mat-panel-description>
+                <ng-template [ngIf]="log.isInterrupted" [ngIfElse]="success_message">
+                    <mat-list role="list">
+                        <mat-list-item role="listitem">Task Id : {{ log.reIndexTaskId }}</mat-list-item>
+                        <mat-list-item role="listitem"> Message :  {{ log.interruptedMessage }} </mat-list-item>
+                    </mat-list>
+                </ng-template>
+                <ng-template #success_message>
+                    <mat-list role="list">
+                        <mat-list-item role="listitem">Task Id : {{ log.reIndexTaskId }}</mat-list-item>
+                    </mat-list>
+                </ng-template>
+            </mat-panel-description>
+          </mat-expansion-panel>
+    </div> 
+     
+</div>

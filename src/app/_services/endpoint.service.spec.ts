@@ -31,4 +31,9 @@ describe('EndpointService', () => {
     expect(serObj.doCorrectionUrl('28364872686186')).toContain('schema/do-correction/28364872686186');
   }));
 
+  it('getSchemaExecutionLogUrl(), should return the schema execution logs  url', async(() =>{
+    const serObj = new EndpointService();
+    expect(serObj.getSchemaExecutionLogUrl('28364872686186')).toContain('schema/get-execution-logs/28364872686186');
+  }));
+
 });

@@ -62,6 +62,7 @@ export class SchemaListDetails {
     variantId: string;
     runId: string;
     brInformation: BusinessRuleExecutionDetails[];
+    pulse: boolean;
 }
 export class BusinessRuleExecutionDetails {
     brId: string;

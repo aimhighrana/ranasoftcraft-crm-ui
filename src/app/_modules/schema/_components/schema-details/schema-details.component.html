@@ -6,6 +6,8 @@
     <div class="f-col-spacer-half"></div>
     <button mat-stroked-button [routerLink]="['', { outlets: { sb: 'sb/schema/collab/' + schemaId } } ]"><mat-icon>group</mat-icon></button>
     <div class="f-col-spacer-half"></div>
+    <button matTooltip="Execution logs" mat-stroked-button [routerLink]="['', { outlets: { sb: 'sb/schema/execution-logs/' + schemaId } } ]"><mat-icon>history</mat-icon></button>
+    <div class="f-col-spacer-half"></div>
     <mat-form-field>
       <mat-label>Choose a date</mat-label>
       <input matInput [matDatepicker]="picker">

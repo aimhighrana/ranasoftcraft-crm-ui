@@ -171,4 +171,8 @@ export class EndpointService {
     return `${this.apiUrl}/schema/get-mdoerror-records/${schemaId}`;
   }
 
+  public getSchemaExecutionLogUrl(schemaId:  string): string {
+    return `${this.apiUrl}/schema/get-execution-logs/${schemaId}`;
+  }
+
 }

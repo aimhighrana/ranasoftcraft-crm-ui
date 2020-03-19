@@ -14,7 +14,7 @@
       [info]=true
       [edit]=true
       [delete]=true
-      [pulse]=false
+      [pulse]= "schema.pulse"
 
       totalValue="{{schema.totalCount}}"
       successValue="{{ schema.successCount }}"
@@ -31,7 +31,7 @@
       successTrendValue="{{ schema.successTrendValue }}"
       errorTrendValue="{{ schema.errorTrendValue }}"
 
-      timestamp="{{ schema.executionEndTime | date }}"
+      timestamp="{{ schema.executionEndTime | date:'MMM d, y, h:mm:ss a' }}"
 
       (evtEdit)="edit(schema);"
       (evtBottomLeft)="variants(module.moduleId, schema.schemaId);"

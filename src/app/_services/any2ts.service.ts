@@ -343,6 +343,7 @@ export class Any2tsService {
         schemaDetail.variantId = schema.variantId ? schema.variantId : null;
         schemaDetail.executionStartTime = schema.executionStartTime ? schema.executionStartTime : '';
         schemaDetail.executionEndTime = schema.executionEndTime ? schema.executionEndTime : '';
+        schemaDetail.pulse = schema.isInRunning ? schema.isInRunning : false;
         schamaListDetails.push(schemaDetail);
       });
       schemaLstView.schemaLists = schamaListDetails;
@@ -370,6 +371,7 @@ export class Any2tsService {
     schemaDetail.variantId = resposne.variantId ? resposne.variantId : '';
     schemaDetail.runId = resposne.runId ? resposne.runId : '';
     schemaDetail.brInformation = [];
+    schemaDetail.pulse = resposne.isInRunning ? resposne.isInRunning : false;
 
     if (resposne.brInformation) {
       resposne.brInformation.forEach(br => {

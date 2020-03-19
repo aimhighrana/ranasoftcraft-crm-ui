@@ -8,6 +8,7 @@ import { SchemaDetailsComponent } from './_components/schema-details/schema-deta
 import { SchemaVariantsComponent } from './_components/schema-variants/schema-variants.component';
 import { SchemaExecutionComponent } from './_components/schema-execution/schema-execution.component';
 import { SchemaCollaboratorsComponent } from 'src/app/_modules/schema/_components/schema-collaborators/schema-collaborators.component';
+import { SchemaExecutionLogsComponent } from './_components/schema-execution-logs/schema-execution-logs.component';
 
 
 const routes: Routes = [
@@ -18,6 +19,7 @@ const routes: Routes = [
   { path: 'schema-variants/:moduleId/:groupId/:schemaId', component: SchemaVariantsComponent },
   { path: 'schema-execution/:groupId/:schemaId', component: SchemaExecutionComponent },
   { path: 'collab/:schemaId', component: SchemaCollaboratorsComponent },
+  { path: 'execution-logs/:schemaId', component: SchemaExecutionLogsComponent },
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent }
 ];

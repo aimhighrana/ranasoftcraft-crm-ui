@@ -16,6 +16,7 @@ import { SchemaGroupFormComponent } from 'src/app/_modules/schema/_components/sc
 import { SchemaCollaboratorsComponent } from 'src/app/_modules/schema/_components/schema-collaborators/schema-collaborators.component';
 import { SchemaExecutionComponent } from './_components/schema-execution/schema-execution.component';
 import { SchemaExecutionDialogComponent } from './_components/schema-execution/schema-execution-dialog/schema-execution-dialog.component';
+import { SchemaExecutionLogsComponent } from './_components/schema-execution-logs/schema-execution-logs.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { SchemaExecutionDialogComponent } from './_components/schema-execution/s
     SchemaGroupFormComponent,
     SchemaExecutionComponent,
     SchemaCollaboratorsComponent,
-    SchemaExecutionDialogComponent
+    SchemaExecutionDialogComponent,
+    SchemaExecutionLogsComponent
   ],
   imports: [
     CommonModule,

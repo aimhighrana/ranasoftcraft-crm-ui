@@ -327,3 +327,29 @@ export interface SchemaCorrectionReq {
     rowSno: string;
 }
 
+export interface SchemaExecutionLog {
+    id: string;
+    schemaId: string;
+    variantId: string;
+    runId: string;
+    exeStrtDate: number;
+    exeEndDate: number;
+    userId: string;
+    plantCode: string;
+    total: number;
+    totalSuccess: number;
+    correctionValue: number;
+    totalError: number;
+    uniqueSuccess: number;
+    uniqueError: number;
+    uniqueSkipped: number;
+    skipped: number;
+    outdated: number;
+    duplicate: number;
+    isInRunning: boolean;
+    isInterrupted: boolean;
+    interruptedMessage: string;
+    successPercentage: number;
+    errorPercentage: number;
+    reIndexTaskId: string;
+}

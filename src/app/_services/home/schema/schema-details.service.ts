@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { EndpointService } from '../../endpoint.service';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { SendReqForSchemaDataTableColumnInfo, SendDataForSchemaTableShowMore, SchemaDataTableColumnInfoResponse, RequestForSchemaDetailsWithBr, SchemaTableViewRequest, OverViewChartDataSet, CategoryInfo, CategoryChartDataSet, MetadataModeleResponse, SchemaBrInfo, SchemaCorrectionReq } from 'src/app/_models/schema/schemadetailstable';
+import { SendReqForSchemaDataTableColumnInfo, SendDataForSchemaTableShowMore, SchemaDataTableColumnInfoResponse, RequestForSchemaDetailsWithBr, SchemaTableViewRequest, OverViewChartDataSet, CategoryInfo, CategoryChartDataSet, MetadataModeleResponse, SchemaBrInfo, SchemaCorrectionReq, SchemaExecutionLog } from 'src/app/_models/schema/schemadetailstable';
 import * as moment from 'moment';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../../any2ts.service';
@@ -129,6 +129,10 @@ export class SchemaDetailsService {
 
   public getLastBrErrorRecords(schemaId: string, objnrs: string[]): Observable<any> {
     return this.http.post<any>(this.endpointService.getLastBrErrorRecords(schemaId), objnrs);
+  }
+
+  public getSchemaExecutionLogs(schemaId: string): Observable<SchemaExecutionLog[]> {
+    return this.http.get<SchemaExecutionLog[]>(this.endpointService.getSchemaExecutionLogUrl(schemaId));
   }
 
 }
