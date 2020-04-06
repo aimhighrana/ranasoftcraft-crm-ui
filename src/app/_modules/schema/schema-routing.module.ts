@@ -9,6 +9,7 @@ import { SchemaVariantsComponent } from './_components/schema-variants/schema-va
 import { SchemaExecutionComponent } from './_components/schema-execution/schema-execution.component';
 import { SchemaCollaboratorsComponent } from 'src/app/_modules/schema/_components/schema-collaborators/schema-collaborators.component';
 import { SchemaExecutionLogsComponent } from './_components/schema-execution-logs/schema-execution-logs.component';
+import { AddbusinessruleComponent } from '../admin/_components/module/business-rules/addbusinessrule/addbusinessrule.component';
 
 
 const routes: Routes = [
@@ -20,6 +21,8 @@ const routes: Routes = [
   { path: 'schema-execution/:groupId/:schemaId', component: SchemaExecutionComponent },
   { path: 'collab/:schemaId', component: SchemaCollaboratorsComponent },
   { path: 'execution-logs/:schemaId', component: SchemaExecutionLogsComponent },
+  { path: 'addbusinessrule', component: AddbusinessruleComponent },
+
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent }
 ];
