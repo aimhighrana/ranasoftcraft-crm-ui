@@ -13,7 +13,7 @@
   <div class="f-row">
     <button mat-flat-button (click)="closeDialog()" >Go back and edit variant</button>
     <button mat-flat-button>Scheduling</button>
-    <button mat-flat-button *ngIf = "showRunning" color="primary">Running...</button>
+    <button mat-flat-button *ngIf = "showRunning" color="primary">Fetching ...</button>
     <button mat-flat-button *ngIf = "!showRunning" (click)="scheduleSchema()" color="primary">Run on {{totalCount | thousandconvertor}} now</button>
   </div>
 </div>

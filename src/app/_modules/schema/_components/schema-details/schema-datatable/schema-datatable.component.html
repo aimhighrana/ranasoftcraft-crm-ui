@@ -47,35 +47,6 @@
                     <input matInput placeholder="Filter">
                 </mat-form-field>
                 <span class="f-spacer"></span>
-                <mat-form-field>
-                    <mat-label>Choose Column</mat-label>
-                    <mat-select [formControl]="chooseColumnCtrl" multiple disableRipple
-                        (selectionChange)="chooseColumns($event);">
-                        <!-- <mat-select-trigger>
-                            {{chooseColumnCtrl.value ? chooseColumnCtrl.value[0].fieldDescri : ''}}
-                            <span *ngIf="chooseColumnCtrl.value?.length > 1" class="example-additional-selection">
-                                (+{{chooseColumnCtrl.value.length - 1}} {{chooseColumnCtrl.value?.length === 2 ? 'other' : 'others'}})
-                            </span>
-                            </mat-select-trigger> -->
-                        <mat-optgroup label="Header">
-                            <mat-option *ngFor="let field of (allMetaDataFields | async).headers | keyvalue"
-                                [value]="field.key">
-                                {{field.value.fieldDescri}}</mat-option>
-                        </mat-optgroup>
-                        <mat-optgroup *ngFor="let hierarchy of (allMetaDataFields | async).hierarchy"
-                            [label]="hierarchy.heirarchyText">
-                            <mat-option
-                                *ngFor="let field of (allMetaDataFields | async).hierarchyFields[hierarchy.heirarchyId] | keyvalue"
-                                [value]="field.key">{{field.value.fieldDescri}}</mat-option>
-                        </mat-optgroup>
-                        <mat-optgroup *ngFor="let grid of (allMetaDataFields | async).grids | keyvalue"
-                            [label]="grid.value.fieldDescri">
-                            <mat-option
-                                *ngFor="let field of (allMetaDataFields | async).gridFields[grid.key] | keyvalue"
-                                [value]="field.key">{{field.value.fieldDescri}}</mat-option>
-                        </mat-optgroup>
-                    </mat-select>
-                </mat-form-field>
                 <button mat-flat-button color="primary" (click)="openTableColumnSettings()">Choose Columns</button>
                 <div class="f-col-spacer-half"></div>
                 <button mat-flat-button color="primary">Download</button>

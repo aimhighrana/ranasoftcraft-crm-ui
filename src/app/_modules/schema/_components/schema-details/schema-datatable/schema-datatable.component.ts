@@ -13,9 +13,10 @@ import { SchemalistService } from 'src/app/_services/home/schema/schemalist.serv
 import { FormControl } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { SchemaDataSource } from './schema-data-source';
-import { TableColumnSettingsComponent } from 'src/app/_modules/shared/_components/table-column-settings/table-column-settings.component';
 import { Any2tsService } from 'src/app/_services/any2ts.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
+import { SharedServiceService } from 'src/app/_modules/shared/_services/shared-service.service';
 
 @Component({
   selector: 'pros-schema-datatable',
@@ -59,7 +60,8 @@ export class SchemaDatatableComponent implements OnInit {
   endColumns = ['row_status'];
   allMetaDataFields: BehaviorSubject<MetadataModeleResponse> = new BehaviorSubject(new MetadataModeleResponse());
   displayedFields: BehaviorSubject<string[]> = new BehaviorSubject(this.startColumns); // all selected fields across header, selected hierarchy, selected grids
-  unselectedFields: string[] = []; // all unselected fields across header, hierarchy, grids
+
+  selectedFields: string[] = []; // all selected fields across header, hierarchy, grids
   selectedGridIds: string[] = []; // currently selected grid ids
   selectedHierarchyIds: string[] = []; // currently selected hierarchy ids
   schemaBrInfoList: SchemaBrInfo[] = [];
@@ -74,12 +76,19 @@ export class SchemaDatatableComponent implements OnInit {
     private schemaListService: SchemalistService,
     private any2TsService: Any2tsService,
     private snackBar: MatSnackBar,
-    private ngZone: NgZone
-
+    private ngZone: NgZone,
+    private sharedServices: SharedServiceService,
+    private router: Router
   ) {
 
   }
   ngOnInit() {
+    this.sharedServices.getChooseColumnData().subscribe(result=> {
+;      if(result){
+        this.selectedFields = result.selectedFields ? result.selectedFields : [];
+        this.calculateDisplayFields();
+      }
+    })
     this.schemaDetails = new SchemaListDetails();
     this.paginator = new MatPaginator(new MatPaginatorIntl(), null);
     this.getMetadataFields();
@@ -93,7 +102,7 @@ export class SchemaDatatableComponent implements OnInit {
       this.makeMetadataControle();
     });
     this.schemaDetailsService.getAllUnselectedFields(this.schemaId , this.variantId).subscribe(data =>{
-      this.unselectedFields = data ? data : [];
+      this.selectedFields = data ? data : [];
     },error=>{
       this.snackBar.open(`Exception : ${error}`, 'Close',{duration:2000});
     })
@@ -104,15 +113,16 @@ export class SchemaDatatableComponent implements OnInit {
     const fields = [];
     this.startColumns.forEach(col => fields.push(col));
     for (const headerField in allMDF.headers) {
-      if (fields.indexOf(headerField) < 0 && this.unselectedFields.indexOf(headerField) < 0) {
+      if (fields.indexOf(headerField) < 0 && this.selectedFields.indexOf(headerField) !== -1) {
         fields.push(headerField);
       }
     }
 
+
     for (const hierarchyIdx in allMDF.hierarchy) {
       if (this.selectedHierarchyIds.indexOf(allMDF.hierarchy[hierarchyIdx].heirarchyId) >= 0) {
         for (const hierarchyChildField in allMDF.hierarchyFields[allMDF.hierarchy[hierarchyIdx].heirarchyId]) {
-          if (fields.indexOf(allMDF.hierarchy[hierarchyIdx].heirarchyId + '+' + hierarchyChildField) < 0 && this.unselectedFields.indexOf(allMDF.hierarchy[hierarchyIdx].heirarchyId + '+' + hierarchyChildField) < 0) {
+          if (fields.indexOf(allMDF.hierarchy[hierarchyIdx].heirarchyId + '+' + hierarchyChildField) < 0 &&  this.selectedFields.indexOf(hierarchyChildField) !== -1) {
             fields.push(allMDF.hierarchy[hierarchyIdx].heirarchyId + '+' + hierarchyChildField);
           }
         }
@@ -122,7 +132,7 @@ export class SchemaDatatableComponent implements OnInit {
     for (const gridField in allMDF.grids) {
       if (this.selectedGridIds.indexOf(gridField) >= 0) {
         for (const gridChildField in allMDF.gridFields[gridField]) {
-          if (fields.indexOf(gridField + '+' + gridChildField) < 0 && this.unselectedFields.indexOf(gridField + '+' + gridChildField) < 0) {
+          if (fields.indexOf(gridField + '+' + gridChildField) < 0 && this.selectedFields.indexOf(gridChildField) !== -1) {
             fields.push(gridField + '+' + gridChildField);
           }
         }
@@ -196,13 +206,9 @@ export class SchemaDatatableComponent implements OnInit {
   }
 
   public openTableColumnSettings() {
-    const dialogRef = this.dialog.open(TableColumnSettingsComponent, {
-      width: '900px',
-      data:{schemaId: this.schemaId, fields: this.allMetaDataFields.getValue(), selectedGridIds: this.selectedGridIds, selectedHierarchyIds:this.selectedHierarchyIds}
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-    });
+    const data ={schemaId: this.schemaId, fields: this.allMetaDataFields.getValue(), selectedGridIds: this.selectedGridIds, selectedHierarchyIds:this.selectedHierarchyIds, selectedFields:this.selectedFields}
+    this.sharedServices.setChooseColumnData(data);
+    this.router.navigate(['', { outlets: { sb: 'sb/schema/table-column-settings' } } ]);
   }
 
   public openStatusInfoDialog() {
@@ -252,7 +258,7 @@ export class SchemaDatatableComponent implements OnInit {
     const schemaTableViewRequest: SchemaTableViewRequest = new SchemaTableViewRequest();
     schemaTableViewRequest.schemaId = this.schemaDetails.schemaId;
     schemaTableViewRequest.variantId = this.schemaDetails.variantId;
-    schemaTableViewRequest.unassignedFields = this.unselectedFields;
+    schemaTableViewRequest.unassignedFields = this.selectedFields;
 
     this.schemaDetailsService.updateSchemaTableView(schemaTableViewRequest).subscribe(response => {
       this.snackBar.open(`Successfully view updated : ${response}`, 'Close',{duration:2000});

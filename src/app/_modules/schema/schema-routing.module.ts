@@ -10,6 +10,8 @@ import { SchemaExecutionComponent } from './_components/schema-execution/schema-
 import { SchemaCollaboratorsComponent } from 'src/app/_modules/schema/_components/schema-collaborators/schema-collaborators.component';
 import { SchemaExecutionLogsComponent } from './_components/schema-execution-logs/schema-execution-logs.component';
 import { AddbusinessruleComponent } from '../admin/_components/module/business-rules/addbusinessrule/addbusinessrule.component';
+import { TableColumnSettingsComponent } from '../shared/_components/table-column-settings/table-column-settings.component';
+
 
 
 const routes: Routes = [
@@ -22,7 +24,7 @@ const routes: Routes = [
   { path: 'collab/:schemaId', component: SchemaCollaboratorsComponent },
   { path: 'execution-logs/:schemaId', component: SchemaExecutionLogsComponent },
   { path: 'addbusinessrule', component: AddbusinessruleComponent },
-
+  { path: 'table-column-settings', component: TableColumnSettingsComponent },
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent }
 ];
