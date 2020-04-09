@@ -1,0 +1,63 @@
+.root {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  align-content: flex-start;
+
+  .breadcrumb-wrapper {
+    flex: 1 100%;
+  }
+
+  .upload-process {
+    width: 100%;
+    margin: 0 16px;
+
+    mat-form-field {
+      width: 100%;
+    }
+
+    h3 {
+      margin: 0;
+    }
+
+    mat-card-actions {
+      margin: 0 -8px;
+      padding: 0;
+
+      button {
+        margin: 8px;
+      }
+    }
+
+    .fieldgrid {
+      width: 100%;
+
+      .mat-header-cell {
+        padding: 0 8px;
+      }
+
+      .mat-cell {
+        padding: 0 8px;
+
+        mat-form-field {
+          height: 40px;
+          font-size: 13px;
+          margin: 8px 0;
+        }
+      }
+
+      .map-icon {
+        text-align: right;
+      }
+    }
+  }
+
+  @media only screen and (min-width: 200px) and (max-width: 580px) {
+    .mat-cell {
+      mat-form-field {
+        width: 120px;
+      }
+    }
+  }
+}

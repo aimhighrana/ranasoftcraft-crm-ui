@@ -1,0 +1,78 @@
+.execution-counts {
+  width: 100%;
+  display: grid;
+  grid-gap: 8px 16px;
+  grid-template-columns: repeat(auto-fill, minmax(20%, 1fr));
+
+  .mat-h3 {
+    margin-bottom: 8px;
+  }
+
+  strong {
+    font-size: 36px;
+  }
+
+  .error-status {
+    color: #c30000;
+  }
+
+  .success-status {
+    color: #4caa00;
+  }
+}
+
+.f-row {
+  align-items: baseline;
+}
+
+.execution-summ-process {
+  flex: 1;
+  margin-top: 20px;
+
+  strong {
+    font-size: 30px;
+    margin-right: 8px;
+  }
+
+  .mat-h4 {
+    margin-bottom: 0;
+  }
+
+  mat-progress-bar {
+    height: 10px;
+    border-radius: 5px;
+    width: 70%;
+  }
+}
+
+.execution-summ-details {
+  flex: 2;
+
+  mat-card {
+    flex: 1;
+  }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+  .execution-counts {
+    grid-template-columns: repeat(auto-fill, minmax(40%, 1fr));
+  }
+}
+
+@media only screen and (min-width: 200px) and (max-width: 767px) {
+  .execution-counts {
+    grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+  }
+
+  .f-row {
+    flex-direction: column;
+  }
+
+  .execution-summ-process {
+    width: 100%;
+
+    mat-progress-bar {
+      width: 100%;
+    }
+  }
+}

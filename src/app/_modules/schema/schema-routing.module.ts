@@ -11,7 +11,7 @@ import { SchemaCollaboratorsComponent } from 'src/app/_modules/schema/_component
 import { SchemaExecutionLogsComponent } from './_components/schema-execution-logs/schema-execution-logs.component';
 import { AddbusinessruleComponent } from '../admin/_components/module/business-rules/addbusinessrule/addbusinessrule.component';
 import { TableColumnSettingsComponent } from '../shared/_components/table-column-settings/table-column-settings.component';
-
+import { UploadDataComponent } from './_components/upload-data/upload-data.component';
 
 
 const routes: Routes = [
@@ -25,6 +25,7 @@ const routes: Routes = [
   { path: 'execution-logs/:schemaId', component: SchemaExecutionLogsComponent },
   { path: 'addbusinessrule', component: AddbusinessruleComponent },
   { path: 'table-column-settings', component: TableColumnSettingsComponent },
+  { path: 'uploaddata', component: UploadDataComponent },
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent }
 ];

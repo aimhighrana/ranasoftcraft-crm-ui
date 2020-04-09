@@ -17,6 +17,8 @@ import { SchemaCollaboratorsComponent } from 'src/app/_modules/schema/_component
 import { SchemaExecutionComponent } from './_components/schema-execution/schema-execution.component';
 import { SchemaExecutionDialogComponent } from './_components/schema-execution/schema-execution-dialog/schema-execution-dialog.component';
 import { SchemaExecutionLogsComponent } from './_components/schema-execution-logs/schema-execution-logs.component';
+import { UploadDataComponent } from './_components/upload-data/upload-data.component';
+import { ExecutionSummaryComponent } from './_components/schema-details/execution-summary/execution-summary.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +36,9 @@ import { SchemaExecutionLogsComponent } from './_components/schema-execution-log
     SchemaExecutionComponent,
     SchemaCollaboratorsComponent,
     SchemaExecutionDialogComponent,
-    SchemaExecutionLogsComponent
+    SchemaExecutionLogsComponent,
+    UploadDataComponent,
+    ExecutionSummaryComponent
   ],
   imports: [
     CommonModule,
