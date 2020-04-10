@@ -361,18 +361,31 @@ export class SchemaDatatableComponent implements OnInit {
     return false;
   }
 
-  isCorrected(row:any, fieldId: string): boolean {
-    return row[fieldId] ? row[fieldId].isCorrected : false;
+  isCorrected(row:any, fieldId: string, rIndex: number): boolean {
+    const hasCorrected =  row[fieldId] ? row[fieldId].isCorrected : false;
+    if(hasCorrected && (rIndex +1)%2 !== 0) {
+      return true;
+    }
+    return false;
+  }
+
+  isCorrectedOld(row:any, fieldId: string, rIndex: number): boolean {
+    const hasCorrected =  row[fieldId] ? row[fieldId].isCorrected : false;
+    if(hasCorrected && (rIndex + 1)%2 === 0) {
+      return true;
+    }
+    return false;
   }
 
   isEditable(fieldId: string): boolean {
-    if(this.metaDataFieldList[fieldId]) {
-      const dataType = this.metaDataFieldList[fieldId].dataType;
-      const pickList = this.metaDataFieldList[fieldId].picklist;
-      return (dataType === 'CHAR' && pickList === '0') ? true : false;
-    } else {
-      return false;
-    }
+    // if(this.metaDataFieldList[fieldId]) {
+    //   const dataType = this.metaDataFieldList[fieldId].dataType;
+    //   const pickList = this.metaDataFieldList[fieldId].picklist;
+    //   return (dataType === 'CHAR' && pickList === '0') ? true : false;
+    // } else {
+    //   return false;
+    // }
+    return true;
   }
 
   showErrorMessages(row: any, fieldId: string): string {
@@ -398,6 +411,17 @@ export class SchemaDatatableComponent implements OnInit {
       this.schemaDetailsService.doCorrection(this.schemaId, request).subscribe(res=>{
         if(res.acknowledge) {
           this.schemaDetails.correctionValue = res.count? res.count : 0;
+          this.ngZone.runOutsideAngular(() =>{
+            if(document.getElementById('show_submitted_' + rowIndex)) {
+              document.getElementById('show_submitted_' + rowIndex).style.display = 'none';
+              document.getElementById('show_unreviewd_' + rowIndex).style.display = 'inherit';
+            }
+            if(document.getElementById('show_reviewd_' + rowIndex)) {
+              document.getElementById('show_reviewd_' + rowIndex).style.display = 'none';
+              document.getElementById('show_unreviewd_' + rowIndex).style.display = 'inherit';
+            }
+
+          });
         }
       }, error=>{
         this.snackBar.open(`Error :: ${error}`, 'Close',{duration:2000});

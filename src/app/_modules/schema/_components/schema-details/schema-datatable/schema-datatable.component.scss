@@ -116,9 +116,34 @@
     color: #f00;
   }
 
-  .correctedCell {
-    border-bottom: 2px solid #e2df0d;
-    color: #e2df0d;
+  .correctedCell_New {
+    border-bottom: 2px solid #478cca;
+    color: #478cca;
+  }
+
+  .correctedCell_Old {
+    border-bottom: 2px solid #faac53;
+    color: #faac53;
+  }
+
+  .row_new_icon {
+    color: #478cca;
+  }
+
+  .row_old_icon {
+    color: #faac53;
+  }
+
+  .reviewed_icon {
+    color: #4caa00;
+  }
+
+  .unreviewed_icon {
+    color: #808080;
+  }
+
+  .submitted_icon {
+    color: #1976d2;
   }
 
   .errorChip {

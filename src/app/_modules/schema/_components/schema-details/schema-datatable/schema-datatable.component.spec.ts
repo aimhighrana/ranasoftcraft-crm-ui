@@ -87,10 +87,10 @@ describe('SchemaDatatableComponent', () => {
   it('isCorrected(), check the field is corrected or not', async(()=>{
     let row = {} as any;
     row.VALUE = {isCorrected:true};
-    expect(component.isCorrected(row, 'VALUE')).toEqual(true);
+    expect(component.isCorrected(row, 'VALUE',0)).toEqual(true);
 
     row = {} as any;
-    expect(component.isCorrected(row, 'VALUE')).toEqual(false);
+    expect(component.isCorrected(row, 'VALUE',0)).toEqual(false);
 
   }));
 
@@ -103,7 +103,7 @@ describe('SchemaDatatableComponent', () => {
     expect(component.isEditable('TEST123')).toEqual(true);
 
     component.metaDataFieldList = {};
-    expect(component.isEditable('TEST123')).toEqual(false);
+    expect(component.isEditable('TEST123')).toEqual(true);
   }));
 
   it('showErrorMessages(), show error message matTooltip', async(()=>{

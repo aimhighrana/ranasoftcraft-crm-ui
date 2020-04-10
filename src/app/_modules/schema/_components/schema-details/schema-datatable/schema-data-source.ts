@@ -114,6 +114,7 @@ export class SchemaDataSource implements DataSource<SchemaTableData> {
                         oldData.fieldDesc = mdo[fieldId].fieldDesc;
                         oldData.isCorrected = correctedVal ? true : false;
                         mdoNew[fieldId] = oldData;
+                        mdo[fieldId].isCorrected = correctedVal ? true : false;
                 });
                 mdoNew.isCorrectedRow = true;
                 mdoNew.isReviewed = correctedRec.isReviewed ? correctedRec.isReviewed : false;

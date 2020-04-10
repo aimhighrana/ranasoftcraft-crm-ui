@@ -363,4 +363,7 @@ export class SchemaExecutionSummary {
     total: number;
     runBy: string;
     startTime: number;
+    isInRunning: boolean;
+    exeEndDate: number;
+    completeProgress: number;
 }

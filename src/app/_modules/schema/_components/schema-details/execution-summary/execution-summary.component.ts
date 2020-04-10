@@ -37,7 +37,9 @@ export class ExecutionSummaryComponent implements OnInit {
         summary.total = res.totalCount;
         summary.runBy = res.createdBy;
         summary.startTime = res.executionStartTime;
-
+        summary.isInRunning = res.pulse;
+        summary.exeEndDate = res.executionEndTime;
+        summary.completeProgress = res.pulse ? 0 : 100;
         this.summary = summary;
     });
   }

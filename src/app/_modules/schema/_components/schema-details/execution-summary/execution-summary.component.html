@@ -26,7 +26,7 @@
         <strong>{{ summary.total }}</strong> <span class="mat-caption week">Total Analysis</span>
         <div class="f-row-spacer-half "></div>
         <h4 class="mat-h4">Completion Percentage %</h4>
-        <mat-progress-bar mode="determinate" value="100"></mat-progress-bar>
+        <mat-progress-bar mode="determinate" [value]="summary.completeProgress"></mat-progress-bar>
         </div>
         <div class="f-row execution-summ-details">
             <mat-card class="container-show">
@@ -39,7 +39,7 @@
             </mat-card>
             <mat-card class="container-show">
                 <div class="mat-line">Est. time of completion</div>
-                <div class="mat-line mat-h3">Unknown</div>
+                <div class="mat-line mat-h3">{{ summary.isInRunning ? 'Unknown': summary.exeEndDate | date:'MMM d, y, h:mm:ss a' }} </div>
             </mat-card>
         </div>
     </div>
