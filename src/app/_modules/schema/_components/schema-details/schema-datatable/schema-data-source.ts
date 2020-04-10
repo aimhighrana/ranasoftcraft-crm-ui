@@ -99,17 +99,16 @@ export class SchemaDataSource implements DataSource<SchemaTableData> {
     }
 
     public showCorrectionIndexData(mdoRec: any[]) : any[] {
-        const correctedObjNum = this.correctedDataSubject.getValue().map(map => map.id);
         const output: any[] = [];
-        correctedObjNum.forEach(corrected =>{
-            const mdo = mdoRec.filter(mRec => mRec.OBJECTNUMBER.fieldData === corrected)[0];
+        const correctedIndxRec = this.correctedDataSubject.getValue();
+        correctedIndxRec.forEach(correctedRec=>{
+            const mdo = mdoRec.filter(mRec => mRec.OBJECTNUMBER.fieldData === correctedRec.id)[0];
             if(mdo) {
                 const mdoNew = {} as any;
                 const rowObj = mdo.objnr ? mdo.objnr.fieldData : '';
-                const correctedRecord = this.correctedDataSubject.getValue().filter(res=> res.id === corrected)[0];
                 Object.keys(mdo).forEach(fieldId=>{
                         const oldData =  {} as any;
-                        const correctedVal = this.any2TsService.any2LatestCorrectedData(correctedRecord,fieldId,rowObj);
+                        const correctedVal = this.any2TsService.any2LatestCorrectedData(correctedRec,fieldId,rowObj);
                         oldData.fieldData =  correctedVal ? correctedVal : mdo[fieldId].fieldData;
                         oldData.fieldId = fieldId;
                         oldData.fieldDesc = mdo[fieldId].fieldDesc;
@@ -117,6 +116,8 @@ export class SchemaDataSource implements DataSource<SchemaTableData> {
                         mdoNew[fieldId] = oldData;
                 });
                 mdoNew.isCorrectedRow = true;
+                mdoNew.isReviewed = correctedRec.isReviewed ? correctedRec.isReviewed : false;
+                mdoNew.isSubmitted = correctedRec.isSubmitted ? correctedRec.isSubmitted : false;
                 output.push(mdoNew);
                 output.push(mdo);
             }

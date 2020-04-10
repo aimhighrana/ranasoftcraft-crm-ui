@@ -24,7 +24,7 @@
       successTrendValue="{{schemagrp.runCount.successTrendValue}}"
       errorTrendValue="{{schemagrp.runCount.errorTrendValue}}"
 
-      timestamp="12th Feb 2020, 12:50 AM"
+      timestamp="{{schemagrp.runCount.exeEndDate | date:'MMM d, y, h:mm:ss a'}}"
       
       (evtEdit)="edit(schemagrp);"
       (evtDelete)="delete(schemagrp);"></pros-schema-tile>

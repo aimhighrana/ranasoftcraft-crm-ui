@@ -46,7 +46,14 @@
                 <mat-form-field>
                     <input matInput placeholder="Filter">
                 </mat-form-field>
-                <span class="f-spacer"></span>
+                <ng-template [ngIf]="submitReviewedBtn" [ngIfElse] ="fullSpacer">
+                    <span class="f-spacer"></span>
+                    <button mat-flat-button color="primary" (click)="submitReviewedRecords()">Submit Review</button>
+                    <div class="f-col-spacer-half"></div>
+                </ng-template>
+                <ng-template #fullSpacer>
+                    <span class="f-spacer"></span>
+                </ng-template>
                 <button mat-flat-button color="primary" (click)="openTableColumnSettings()">Choose Columns</button>
                 <div class="f-col-spacer-half"></div>
                 <button mat-flat-button color="primary">Download</button>
@@ -166,8 +173,8 @@
                     <ng-container matColumnDef="row_status" stickyEnd>
                         <th mat-header-cell *matHeaderCellDef class="any-cell status-cell">
                             Status</th>
-                        <td mat-cell *matCellDef="let row" class="any-cell status-cell">
-                            <ng-template [ngIf]="row['row_status'] && row['row_status'].fieldData && selectedTabIndex !== 4" [ngIfElse]="correctedAction">
+                        <td mat-cell *matCellDef="let row; let rIndex = index;" class="any-cell status-cell">
+                            <ng-template [ngIf]="row['row_status'] && row['row_status'].fieldData && selectedTabIndex !== 4">
                                 <mat-chip-list aria-label="Status selection">      
                                     <ng-template ngFor let-status [ngForOf]="(row['row_status'].fieldData.split(','))">
                                         <mat-chip class="custom-chip" class="{{ dynamicChipColor(status) }}" >{{ status }}</mat-chip>                                           
@@ -175,9 +182,36 @@
                                 </mat-chip-list>
                             </ng-template>
 
-                            <ng-template #correctedAction>
-                                <mat-icon mat-icon-button matTooltip="Comming soon.." color="primary">check_circle_outline</mat-icon>
-                                <mat-icon mat-icon-button matTooltip="Comming soon.." color="primary">flash_on_circle_outline</mat-icon>
+                            <ng-template [ngIf]="(rIndex+1)%2 !=0 && selectedTabIndex === 4">
+
+                                <ng-template [ngIf]="row['isSubmitted']" [ngIfElse]="notsubmitted">
+                                    <button  mat-icon-button matTooltip="Submitted">
+                                        <mat-icon color="primary">cloud_done</mat-icon>
+                                    </button>
+                                </ng-template>
+
+                                <ng-template #notsubmitted>
+                                    <ng-template [ngIf]="row['isReviewed']" [ngIfElse] ="notReviewed">
+                                        <button  mat-icon-button matTooltip="Un Reviewed" id="show_unreviewd_{{rIndex}}" style="display: none;" (click)="doReview(true, rIndex, row['OBJECTNUMBER'].fieldData);">
+                                            <mat-icon color="primary">check_circle_outline</mat-icon>
+                                        </button>
+                                        <button  mat-icon-button matTooltip="Reviewed" id="show_reviewd_{{rIndex}}" (click)="doReview(false, rIndex, row['OBJECTNUMBER'].fieldData);">
+                                            <mat-icon color="primary">check_circle</mat-icon>
+                                        </button>
+                                    </ng-template>
+                                    <ng-template #notReviewed>
+                                        <button  mat-icon-button matTooltip="Un Reviewed" id="show_unreviewd_{{rIndex}}" (click)="doReview(true, rIndex, row['OBJECTNUMBER'].fieldData);">
+                                            <mat-icon color="primary">check_circle_outline</mat-icon>
+                                        </button>
+                                        <button  mat-icon-button matTooltip="Reviewed" id="show_reviewd_{{rIndex}}" style="display: none;" (click)="doReview(false, rIndex, row['OBJECTNUMBER'].fieldData);">
+                                            <mat-icon color="primary">check_circle</mat-icon>
+                                        </button>
+                                    </ng-template>
+                                </ng-template> 
+                                
+                                <button mat-icon-button matTooltip="Comming soon..">
+                                    <mat-icon  color="primary">flash_on_circle_outline</mat-icon>
+                                </button>
                             </ng-template>
                         </td>
                     </ng-container> 

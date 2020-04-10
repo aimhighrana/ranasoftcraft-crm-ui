@@ -53,6 +53,8 @@ export class SchemaGroupCountResponse {
      errorTrendValue: number;
      errorPercentage: number;
      successPercentage: number;
+     exeStartDate: string;
+     exeEndDate: string;
 }
 export class CreateSchemaGroupRequest {
      schemaGroupName: string;

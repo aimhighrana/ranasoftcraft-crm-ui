@@ -47,6 +47,8 @@ export class Any2tsService {
       schemaGroupCountResponse.errorTrendValue = grp.errorTrendValue ? grp.errorTrendValue : 0;
       schemaGroupCountResponse.errorPercentage = grp.errorPercentage ? grp.errorPercentage : 0;
       schemaGroupCountResponse.successPercentage = grp.successPercentage ? grp.successPercentage : 0;
+      schemaGroupCountResponse.exeStartDate = grp.exeStartDate ? grp.exeStartDate : '';
+      schemaGroupCountResponse.exeEndDate = grp.exeEndDate ? grp.exeEndDate : '';
       schemaGroupResponse.runCount = schemaGroupCountResponse;
       schemaGroups.push(schemaGroupResponse);
     });

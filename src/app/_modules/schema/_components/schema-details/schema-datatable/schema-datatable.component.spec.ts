@@ -166,4 +166,23 @@ describe('SchemaDatatableComponent', () => {
   }));
 
 
+  it('matChipCountLabel(), should return the status count by status index', async(()=>{
+    component.schemaDetails.totalCount = 100;
+    const allCount =  component.matChipCountLabel(0);
+    expect(100).toEqual(allCount);
+
+    component.schemaDetails.errorCount = 20;
+    const errorCount =  component.matChipCountLabel(1);
+    expect(20).toEqual(errorCount);
+
+    component.schemaDetails.successCount = 79;
+    const successCount =  component.matChipCountLabel(2);
+    expect(79).toEqual(successCount);
+
+    component.schemaDetails.correctionValue = 1;
+    const correctedCount =  component.matChipCountLabel(4);
+    expect(1).toEqual(correctedCount);
+  }));
+
+
 });

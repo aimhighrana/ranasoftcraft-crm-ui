@@ -10,7 +10,6 @@ import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-detai
 import { SchemaStatusinfoDialogComponent } from 'src/app/_modules/schema/_components/schema-details/schema-statusinfo-dialog/schema-statusinfo-dialog.component';
 import { SchemaListDetails } from 'src/app/_models/schema/schemalist';
 import { SchemalistService } from 'src/app/_services/home/schema/schemalist.service';
-import { FormControl } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { SchemaDataSource } from './schema-data-source';
 import { Any2tsService } from 'src/app/_services/any2ts.service';
@@ -66,9 +65,7 @@ export class SchemaDatatableComponent implements OnInit {
   selectedHierarchyIds: string[] = []; // currently selected hierarchy ids
   schemaBrInfoList: SchemaBrInfo[] = [];
   metaDataFieldList = {} as any;
-
-  public chooseColumnCtrl: FormControl = new FormControl();
-  public chooseColumnFilterCtrl: FormControl = new FormControl();
+  submitReviewedBtn = false;
 
   constructor(
     private schemaDetailsService: SchemaDetailsService,
@@ -197,14 +194,6 @@ export class SchemaDatatableComponent implements OnInit {
   isGroup(index, item): boolean {
     return item.isGroup;
   }
-
-  isCorrectionTab(index, item): boolean {
-    if(item && item.hasOwnProperty('row_status')) {
-      return (item.row_status.fieldData.indexOf('Corrections') !== -1 ? true : false);
-    }
-    return false;
-  }
-
   public openTableColumnSettings() {
     const data ={schemaId: this.schemaId, fields: this.allMetaDataFields.getValue(), selectedGridIds: this.selectedGridIds, selectedHierarchyIds:this.selectedHierarchyIds, selectedFields:this.selectedFields}
     this.sharedServices.setChooseColumnData(data);
@@ -241,6 +230,11 @@ export class SchemaDatatableComponent implements OnInit {
     // 0, 40 for initial load on each status
     this.selectedTabIndex = index;
     this.dynamicPageSize = this.matChipCountLabel(this.selectedTabIndex);
+    if(index === this.tabs.indexOf('Corrections')) {
+      this.submitReviewedBtn = true;
+    } else {
+      this.submitReviewedBtn = false;
+    }
     this.dataTableRequest(0, 40, this.tabs[index]);
   }
 
@@ -285,7 +279,7 @@ export class SchemaDatatableComponent implements OnInit {
     return object.key;
   }
 
-  public matChipCountLabel(tabIndex: number) {
+  public matChipCountLabel(tabIndex: number): number {
     const label = this.tabs[tabIndex].toLocaleLowerCase();
     let dynCount = 0;
     switch (label) {
@@ -400,7 +394,7 @@ export class SchemaDatatableComponent implements OnInit {
     if(row && row.hasOwnProperty(fieldId)) {
       const objctNumber = row.OBJECTNUMBER.fieldData;
       const fldExit: FieldExitsResponse = this.findFieldExitsOnMetaRes(fieldId);
-      const request: SchemaCorrectionReq = {id: objctNumber,fldId:fieldId, gridId: fldExit.gridId, heirerchyId: fldExit.hierarchyId, rowSno:null,vc: inpValue};
+      const request: SchemaCorrectionReq = {id: objctNumber,fldId:fieldId, gridId: fldExit.gridId, heirerchyId: fldExit.hierarchyId, rowSno:null,vc: inpValue, isReviewed: null};
       this.schemaDetailsService.doCorrection(this.schemaId, request).subscribe(res=>{
         if(res.acknowledge) {
           this.schemaDetails.correctionValue = res.count? res.count : 0;
@@ -487,4 +481,35 @@ export class SchemaDatatableComponent implements OnInit {
     return cls;
   }
 
+  doReview(isReviewd: boolean, rowIndex: number, objnr: string) {
+    const request: SchemaCorrectionReq = {id: objnr,fldId:null, gridId: null, heirerchyId: null, rowSno:null,vc: null,isReviewed: isReviewd};
+      this.schemaDetailsService.doCorrection(this.schemaId, request).subscribe(res=>{
+        if(res.acknowledge) {
+          if(isReviewd && document.getElementById('show_reviewd_'+ rowIndex)) {
+            document.getElementById('show_unreviewd_'+ rowIndex).style.display = 'none';
+            document.getElementById('show_reviewd_'+ rowIndex).style.display = 'inherit';
+
+          } else if(document.getElementById('show_unreviewd_'+ rowIndex)){
+            document.getElementById('show_unreviewd_'+ rowIndex).style.display = 'inherit';
+            document.getElementById('show_reviewd_'+ rowIndex).style.display = 'none';
+          }
+        }
+      }, error=>{
+        this.snackBar.open(`Error :: ${error}`, 'Close',{duration:2000});
+        console.error(`Error :: ${error}`);
+      });
+
+  }
+
+  submitReviewedRecords() {
+    this.schemaDetailsService.submitReviewedRecords(this.schemaId).subscribe(res =>{
+      console.log(res);
+      if(res.acknowledge) {
+        this.snackBar.open(`Successfully submitted !`, 'Close',{duration:2000});
+        this.dataTableRequest(0, 40, 'Corrections');
+      }
+    }, error=>{
+      this.snackBar.open(`${error.statusText}: Please review atleast one record(s)`, 'Close',{duration:2000});
+    });
+  }
 }

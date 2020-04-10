@@ -325,6 +325,7 @@ export interface SchemaCorrectionReq {
     heirerchyId: string;
     vc: string;
     rowSno: string;
+    isReviewed: boolean;
 }
 
 export interface SchemaExecutionLog {
@@ -352,4 +353,14 @@ export interface SchemaExecutionLog {
     successPercentage: number;
     errorPercentage: number;
     reIndexTaskId: string;
+}
+
+export class SchemaExecutionSummary {
+    totalErrorPer: number;
+    uniqueErrorPer: number;
+    totalSuccessPer: number;
+    uniqueSuccessPer: number;
+    total: number;
+    runBy: string;
+    startTime: number;
 }

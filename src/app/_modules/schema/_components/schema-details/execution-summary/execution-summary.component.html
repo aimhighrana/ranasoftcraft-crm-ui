@@ -2,44 +2,44 @@
     <div class="execution-counts">
         <mat-card class="mat-elevation-z2">
             <h3 class="mat-h3">Total % of Error</h3>
-            <strong class="error-status">39%</strong>
+            <strong class="error-status">{{ summary.totalErrorPer }}%</strong>
         </mat-card>
 
         <mat-card class="mat-elevation-z2">
             <h3 class="mat-h3">Total % of Unique Error</h3>
-            <strong class="error-status">12%</strong>
+            <strong class="error-status">{{ summary.uniqueErrorPer }} %</strong>
         </mat-card>
 
         <mat-card class="mat-elevation-z2">
             <h3 class="mat-h3">Total % of Success</h3>
-            <strong class="success-status">27%</strong>
+            <strong class="success-status">{{ summary.totalSuccessPer }}%</strong>
         </mat-card>
 
         <mat-card class="mat-elevation-z2">
             <h3 class="mat-h3">Total % of Unique Success</h3>
-            <strong class="success-status">10%</strong>
+            <strong class="success-status">{{ summary.uniqueSuccessPer }}%</strong>
         </mat-card>
     </div>
     
     <div class="f-row">
         <div class="execution-summ-process">
-        <strong>235</strong> <span class="mat-caption week">Total Analysis</span>
+        <strong>{{ summary.total }}</strong> <span class="mat-caption week">Total Analysis</span>
         <div class="f-row-spacer-half "></div>
         <h4 class="mat-h4">Completion Percentage %</h4>
-        <mat-progress-bar mode="determinate" value="40"></mat-progress-bar>
+        <mat-progress-bar mode="determinate" value="100"></mat-progress-bar>
         </div>
         <div class="f-row execution-summ-details">
             <mat-card class="container-show">
                 <div class="mat-line">Run by</div>
-                <div class="mat-line mat-h3">Matthew Hayden</div>
+                <div class="mat-line mat-h3">{{ summary.runBy }}</div>
             </mat-card>
             <mat-card class="container-show">
                 <div class="mat-line">Start time</div>
-                <div class="mat-line mat-h3">03:47 PM</div>
+                <div class="mat-line mat-h3">{{ summary.startTime | date:'MMM d, y, h:mm:ss a'}}</div>
             </mat-card>
             <mat-card class="container-show">
                 <div class="mat-line">Est. time of completion</div>
-                <div class="mat-line mat-h3">4 hours</div>
+                <div class="mat-line mat-h3">Unknown</div>
             </mat-card>
         </div>
     </div>

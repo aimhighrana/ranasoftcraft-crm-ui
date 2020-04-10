@@ -135,4 +135,8 @@ export class SchemaDetailsService {
     return this.http.get<SchemaExecutionLog[]>(this.endpointService.getSchemaExecutionLogUrl(schemaId));
   }
 
+  public submitReviewedRecords(schemaId: string): Observable<any> {
+    return this.http.post(this.endpointService.submitReviewedRecordsUrl(schemaId), null);
+  }
+
 }

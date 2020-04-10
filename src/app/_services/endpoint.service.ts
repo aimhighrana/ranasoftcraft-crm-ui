@@ -175,4 +175,8 @@ export class EndpointService {
     return `${this.apiUrl}/schema/get-execution-logs/${schemaId}`;
   }
 
+  public submitReviewedRecordsUrl(schemaId:  string): string {
+    return `${this.apiUrl}/schema/submit-reviewed-records/${schemaId}`;
+  }
+
 }
