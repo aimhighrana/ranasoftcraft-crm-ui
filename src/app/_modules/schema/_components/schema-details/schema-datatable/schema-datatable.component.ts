@@ -81,7 +81,7 @@ export class SchemaDatatableComponent implements OnInit {
   }
   ngOnInit() {
     this.sharedServices.getChooseColumnData().subscribe(result=> {
-;      if(result){
+      if(result){
         this.selectedFields = result.selectedFields ? result.selectedFields : [];
         this.calculateDisplayFields();
       }
@@ -108,10 +108,12 @@ export class SchemaDatatableComponent implements OnInit {
   calculateDisplayFields(): void {
     const allMDF = this.allMetaDataFields.getValue();
     const fields = [];
+    const select = [];
     this.startColumns.forEach(col => fields.push(col));
     for (const headerField in allMDF.headers) {
       if (fields.indexOf(headerField) < 0 && this.selectedFields.indexOf(headerField) !== -1) {
-        fields.push(headerField);
+        const index = this.selectedFields.indexOf(headerField);
+        select[index] = headerField;
       }
     }
 
@@ -120,7 +122,8 @@ export class SchemaDatatableComponent implements OnInit {
       if (this.selectedHierarchyIds.indexOf(allMDF.hierarchy[hierarchyIdx].heirarchyId) >= 0) {
         for (const hierarchyChildField in allMDF.hierarchyFields[allMDF.hierarchy[hierarchyIdx].heirarchyId]) {
           if (fields.indexOf(allMDF.hierarchy[hierarchyIdx].heirarchyId + '+' + hierarchyChildField) < 0 &&  this.selectedFields.indexOf(hierarchyChildField) !== -1) {
-            fields.push(allMDF.hierarchy[hierarchyIdx].heirarchyId + '+' + hierarchyChildField);
+            const index = this.selectedFields.indexOf(hierarchyChildField)
+            select[index] = allMDF.hierarchy[hierarchyIdx].heirarchyId + '+' + hierarchyChildField;
           }
         }
       }
@@ -130,14 +133,14 @@ export class SchemaDatatableComponent implements OnInit {
       if (this.selectedGridIds.indexOf(gridField) >= 0) {
         for (const gridChildField in allMDF.gridFields[gridField]) {
           if (fields.indexOf(gridField + '+' + gridChildField) < 0 && this.selectedFields.indexOf(gridChildField) !== -1) {
-            fields.push(gridField + '+' + gridChildField);
+            const index = this.selectedFields.indexOf(gridChildField);
+            select[index] = gridField + '+' + gridChildField;
           }
         }
       }
     }
-
+    select.forEach(fldId =>fields.push(fldId));
     this.endColumns.forEach(col => fields.push(col));
-
     this.displayedFields.next(fields);
   }
 
