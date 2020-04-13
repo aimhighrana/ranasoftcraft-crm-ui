@@ -2,10 +2,10 @@
   justify-content: flex-start;
   align-items: flex-start;
   align-content: flex-start;
-  max-width: 460px;
+  max-width: 400px;
   position: relative;
   height: 100%;
-  width: 460px;
+  width: 400px;
 
   mat-toolbar {
     min-height: 50px;
@@ -15,46 +15,35 @@
     }
   }
 
-  .mat-line {
-    margin: 0;
-  }
-
   .executionlogs-list {
-    width: 100%;
+    height: calc(100% - 50px);
+    overflow-y: auto;
+    padding: 0 16px;
 
-    .logs-card {
-      padding: 8px;
-      margin: 4px 16px;
+    mat-expansion-panel {
+      margin: 16px 0;
 
-      .f-row {
-        align-items: center;
+      .success_run {
+        color: #4caa00;
       }
 
-      .f-col {
-        padding: 4px 8px;
-      }
-
-      .mat-card-avatar {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        mat-icon.success_run {
-          color: #4caa00;
-        }
-
-        mat-icon.failed_run {
-          color: #c30000;
-        }
+      .failed_run {
+        color: #c30000;
       }
 
       .mat-expansion-panel-header {
-        padding: 0 11px;
+        padding: 0 16px;
+      }
+
+      mat-panel-description {
+        justify-content: space-between;
+        align-items: center;
+        margin: 0;
+
+        .logs-items {
+          margin: 0 -8px;
+        }
       }
     }
-  }
-
-  .logs-details {
-    justify-content: space-between;
   }
 }

@@ -1,25 +1,75 @@
 .root {
-  display: flex;
-  flex-flow: row wrap;
   justify-content: flex-start;
+  align-items: flex-start;
+  align-content: flex-start;
+  max-width: 400px;
+  position: relative;
+  height: 100%;
+  width: 400px;
+
+  mat-toolbar {
+    min-height: 50px;
+
+    mat-toolbar-row {
+      height: 50px;
+    }
+  }
+
+  mat-form-field {
+    width: calc(100% - 32px);
+    height: 80px;
+    margin: 4px 16px;
+  }
 
   mat-card {
     padding: 0;
     width: 100%;
+    height: calc(100% - 50px - 70px - 70px);
+    overflow-y: auto;
 
-    mat-form-field {
-      width: 100%;
+    .checkedall {
+      display: block;
+      padding-left: 16px;
+      padding-top: 8px;
+      background: #fff;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+
+      .checkboxlabel {
+        padding-left: 8px;
+      }
     }
 
     mat-selection-list {
-      width: 100%;
-      height: 500px;
-      overflow-y: auto;
+      padding-top: 6px;
 
-      span.highlightText {
-        color: #0076be;
-        display: contents;
+      mat-list-option {
+        font-size: 14px;
+        height: 36px;
+
+        span.highlightText {
+          color: #9acd32;
+          display: contents;
+        }
       }
+
+      mat-expansion-panel {
+        margin: 8px 16px;
+      }
+    }
+  }
+
+  mat-card-actions {
+    text-align: right;
+    width: 400px;
+    height: 70px;
+    position: fixed;
+    margin-bottom: 0;
+    padding: 0;
+
+    button {
+      margin: 8px;
     }
   }
 }
