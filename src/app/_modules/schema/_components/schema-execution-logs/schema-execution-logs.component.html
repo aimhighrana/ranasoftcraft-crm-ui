@@ -7,38 +7,35 @@
         </mat-toolbar-row>
     </mat-toolbar>
      
-    <div class="f-col executionlogs-list">
-        <mat-expansion-panel class="mat-elevation-z3 logs-card" *ngFor="let log of executionLogs; trackBy: executionLogsTrackBy">
+    <mat-accordion class="executionlogs-list">
+        <mat-expansion-panel class="mat-elevation-z2 logs-card" *ngFor="let log of executionLogs; trackBy: executionLogsTrackBy" hideToggle>
             <mat-expansion-panel-header>
-                <div class="f-row">
-                    <div class="mat-card-avatar">
-                        <ng-template [ngIf]="log.isInterrupted" [ngIfElse]="success">
-                            <mat-icon matTooltip="Execution interrupted" mat-list-icon  class="failed_run">highlight_off</mat-icon>  
-                        </ng-template>
-                        <ng-template #success>
-                            <mat-icon mat-list-icon matTooltip="Successfully executed" class="success_run">check_circle_outline</mat-icon>
-                        </ng-template>
-                    </div>
-                    <div class="f-col">
-                        <h4 mat-line>Last run at</h4>
-                        <p mat-line> {{ log.exeEndDate ? (log.exeEndDate | date:'MMM d, y, h:mm:ss a') : 'Running..'  }} </p>
-                    </div> 
-                </div>
+                <mat-panel-title>Task Id : {{ log.reIndexTaskId }}</mat-panel-title>
+                <mat-panel-description>
+                    <ng-template [ngIf]="log.isInterrupted" [ngIfElse]="success">
+                        <mat-icon matTooltip="Execution Interrupted" mat-list-icon  class="failed_run">error</mat-icon>  
+                    </ng-template>
+                    <ng-template #success>
+                        <mat-icon mat-list-icon matTooltip="Successfully Executed" class="success_run">check_circle</mat-icon>
+                    </ng-template>
+                </mat-panel-description>
             </mat-expansion-panel-header>
+
             <mat-panel-description>
                 <ng-template [ngIf]="log.isInterrupted" [ngIfElse]="success_message">
-                    <mat-list role="list">
-                        <mat-list-item role="listitem">Task Id : {{ log.reIndexTaskId }}</mat-list-item>
-                        <mat-list-item role="listitem"> Message :  {{ log.interruptedMessage }} </mat-list-item>
-                    </mat-list>
+                    <div class="logs-items">
+                        <p mat-line><b>Last Run - </b>{{ log.exeEndDate ? (log.exeEndDate | date:'MMM d, y, h:mm:ss a') : 'Running..'  }}</p>
+                        <p mat-line><b>Total Exection Time - </b>2hr 30min 44sec</p>
+                        <p mat-line><b>Message - </b>{{ log.interruptedMessage }}</p>
+                    </div>
                 </ng-template>
                 <ng-template #success_message>
-                    <mat-list role="list">
-                        <mat-list-item role="listitem">Task Id : {{ log.reIndexTaskId }}</mat-list-item>
-                    </mat-list>
+                    <div class="logs-items">
+                        <p mat-line><b>Last Run - </b>Dec 31, 2019, 7:56 AM </p>
+                        <p mat-line><b>Total Exection Time - </b>2hr 30min 44sec</p>
+                    </div>
                 </ng-template>
             </mat-panel-description>
-          </mat-expansion-panel>
-    </div> 
-     
+        </mat-expansion-panel>
+    </mat-accordion>
 </div>
