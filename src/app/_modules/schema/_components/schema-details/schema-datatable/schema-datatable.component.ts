@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, Input, NgZone } from '@angular/core';
-import { SchemaTableData, ResponseFieldList, RequestForSchemaDetailsWithBr, SchemaTableViewRequest, MetadataModeleResponse, Heirarchy, SchemaBrInfo, FieldExitsResponse, SchemaCorrectionReq } from 'src/app/_models/schema/schemadetailstable';
+import { SchemaTableData, ResponseFieldList, RequestForSchemaDetailsWithBr, MetadataModeleResponse, Heirarchy, SchemaBrInfo, FieldExitsResponse, SchemaCorrectionReq } from 'src/app/_models/schema/schemadetailstable';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -10,12 +10,13 @@ import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-detai
 import { SchemaStatusinfoDialogComponent } from 'src/app/_modules/schema/_components/schema-details/schema-statusinfo-dialog/schema-statusinfo-dialog.component';
 import { SchemaListDetails } from 'src/app/_models/schema/schemalist';
 import { SchemalistService } from 'src/app/_services/home/schema/schemalist.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, combineLatest } from 'rxjs';
 import { SchemaDataSource } from './schema-data-source';
 import { Any2tsService } from 'src/app/_services/any2ts.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { SharedServiceService } from 'src/app/_modules/shared/_services/shared-service.service';
+import { EndpointService } from 'src/app/_services/endpoint.service';
 
 @Component({
   selector: 'pros-schema-datatable',
@@ -66,7 +67,7 @@ export class SchemaDatatableComponent implements OnInit {
   schemaBrInfoList: SchemaBrInfo[] = [];
   metaDataFieldList = {} as any;
   submitReviewedBtn = false;
-
+  selectedFieldsOb: BehaviorSubject<string[]> = new BehaviorSubject([]);
   constructor(
     private schemaDetailsService: SchemaDetailsService,
     private dialog: MatDialog,
@@ -75,7 +76,8 @@ export class SchemaDatatableComponent implements OnInit {
     private snackBar: MatSnackBar,
     private ngZone: NgZone,
     private sharedServices: SharedServiceService,
-    private router: Router
+    private router: Router,
+    private endpointService: EndpointService
   ) {
 
   }
@@ -85,7 +87,7 @@ export class SchemaDatatableComponent implements OnInit {
         this.selectedFields = result.selectedFields ? result.selectedFields : [];
         this.calculateDisplayFields();
       }
-    })
+    });
     this.schemaDetails = new SchemaListDetails();
     this.paginator = new MatPaginator(new MatPaginatorIntl(), null);
     this.getMetadataFields();
@@ -95,14 +97,16 @@ export class SchemaDatatableComponent implements OnInit {
     this.dataTableRequest(0, 40, DataTableReqType.error);
 
     this.allMetaDataFields.subscribe((allMDF) => {
-      this.calculateDisplayFields();
       this.makeMetadataControle();
     });
-    this.schemaDetailsService.getAllUnselectedFields(this.schemaId , this.variantId).subscribe(data =>{
-      this.selectedFields = data ? data : [];
-    },error=>{
-      this.snackBar.open(`Exception : ${error}`, 'Close',{duration:2000});
-    })
+    this.schemaDetailsService.getAllSelectedFields(this.schemaId , this.variantId).subscribe(res=>{
+      this.selectedFieldsOb.next(res ? res : []);
+    },error => console.error(`Error : ${error}`));
+
+    combineLatest(this.allMetaDataFields, this.selectedFieldsOb).subscribe(res=>{
+      this.selectedFields = res ? res[1] : [];
+      this.calculateDisplayFields();
+    });
   }
 
   calculateDisplayFields(): void {
@@ -198,7 +202,7 @@ export class SchemaDatatableComponent implements OnInit {
     return item.isGroup;
   }
   public openTableColumnSettings() {
-    const data ={schemaId: this.schemaId, fields: this.allMetaDataFields.getValue(), selectedGridIds: this.selectedGridIds, selectedHierarchyIds:this.selectedHierarchyIds, selectedFields:this.selectedFields}
+    const data ={schemaId: this.schemaId,variantId: this.variantId, fields: this.allMetaDataFields.getValue(), selectedGridIds: this.selectedGridIds, selectedHierarchyIds:this.selectedHierarchyIds, selectedFields:this.selectedFields}
     this.sharedServices.setChooseColumnData(data);
     this.router.navigate(['', { outlets: { sb: 'sb/schema/table-column-settings' } } ]);
   }
@@ -239,29 +243,6 @@ export class SchemaDatatableComponent implements OnInit {
       this.submitReviewedBtn = false;
     }
     this.dataTableRequest(0, 40, this.tabs[index]);
-  }
-
-  public chooseColumns(event) {
-    // const selectedArray = event.value;
-    // console.log(this.getSelectedFields());
-    // this.getSchemaTableDetailsForError(this.schemaDetails);
-    // this.selectedFields = selectedArray;
-    // if (selectedArray) {
-      this.persistenceTableView();
-    // }
-  }
-
-  private persistenceTableView() {
-    const schemaTableViewRequest: SchemaTableViewRequest = new SchemaTableViewRequest();
-    schemaTableViewRequest.schemaId = this.schemaDetails.schemaId;
-    schemaTableViewRequest.variantId = this.schemaDetails.variantId;
-    schemaTableViewRequest.unassignedFields = this.selectedFields;
-
-    this.schemaDetailsService.updateSchemaTableView(schemaTableViewRequest).subscribe(response => {
-      this.snackBar.open(`Successfully view updated : ${response}`, 'Close',{duration:2000});
-    }, error => {
-      this.snackBar.open(`Error : ${error}`, 'Close',{duration:2000});
-    });
   }
 
   private getMetadataFields() {
@@ -538,5 +519,13 @@ export class SchemaDatatableComponent implements OnInit {
     }, error=>{
       this.snackBar.open(`${error.statusText}: Please review atleast one record(s)`, 'Close',{duration:2000});
     });
+  }
+  downloadExecutionDetails() {
+    const downloadLink = document.createElement('a');
+    downloadLink.href = this.endpointService.downloadExecutionDetailsUrl(this.schemaId, this.tabs[this.selectedTabIndex]) + '?runId=';
+    downloadLink.setAttribute('target', '_blank');
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+
   }
 }

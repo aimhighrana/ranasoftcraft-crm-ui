@@ -109,8 +109,8 @@ export class SchemaDetailsService {
     }));
   }
 
-  public getAllUnselectedFields(schemaId: string, variantId: string): Observable<string[]> {
-    return this.http.get<string[]>(this.endpointService.getAllUnselectedFields(), {params:{schemaId, variantId}});
+  public getAllSelectedFields(schemaId: string, variantId: string): Observable<string[]> {
+    return this.http.get<string[]>(this.endpointService.getAllSelectedFields(), {params:{schemaId, variantId}});
   }
 
   public getSchemaBrInfoList(schemaId: string): Observable<SchemaBrInfo[]> {

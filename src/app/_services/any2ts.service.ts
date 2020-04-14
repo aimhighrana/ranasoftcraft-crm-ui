@@ -882,9 +882,10 @@ export class Any2tsService {
       const brData = response.filter(res => res.brId === br);
       if (brData.length > 0) {
         const categoryChartData: CategoryChartData = new CategoryChartData();
+        const brdesc = this.getBrDecs(br, brData);
         categoryChartData.id = status + '_' + br;
         categoryChartData.type = 'line';
-        categoryChartData.label = br;
+        categoryChartData.label = brdesc;
         categoryChartData.backgroundColor = this.generateRandomRgba();
         categoryChartData.borderColor = this.generateRandomRgba();
         categoryChartData.fill = false;
@@ -892,7 +893,7 @@ export class Any2tsService {
         categoryChartData.pointBackgroundColor = this.generateRandomRgba();
         categoryChartData.data = this.getCategoryViewForXYAxis(brData, status);
         categoryChartData.total = this.getTotalForcategory(brData, status);
-        categoryChartData.brDesc = this.getBrDecs(br, brData);
+        categoryChartData.brDesc = brdesc;
         categoryChartDataLst.push(categoryChartData);
       }
     });

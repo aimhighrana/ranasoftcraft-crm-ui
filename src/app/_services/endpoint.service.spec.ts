@@ -18,7 +18,7 @@ describe('EndpointService', () => {
 
   it('getAllUnselectedFields(), should return the unselected url', async(() =>{
       const serObj = new EndpointService();
-      expect(serObj.getAllUnselectedFields()).toContain('/schema/get-unselected-fields');
+      expect(serObj.getAllSelectedFields()).toContain('/schema/get-unselected-fields');
   }));
 
   it('getSchemaBrInfoList(), should return the schema br information list url', async(() =>{

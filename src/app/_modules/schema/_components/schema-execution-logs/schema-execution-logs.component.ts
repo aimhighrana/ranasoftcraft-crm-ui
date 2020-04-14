@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-details.service';
 import { SchemaExecutionLog } from 'src/app/_models/schema/schemadetailstable';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
@@ -16,7 +16,8 @@ export class SchemaExecutionLogsComponent implements OnInit {
   constructor(
     private schemaDetailService: SchemaDetailsService,
     private activtedRouter: ActivatedRoute,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -36,5 +37,8 @@ export class SchemaExecutionLogsComponent implements OnInit {
     return object ? object.id: null;
   }
 
+  close() {
+    this.router.navigate([{ outlets: { sb: null }}]);
+  }
 
 }

@@ -117,10 +117,14 @@ export class DataTableHeaderValueLang {
 export class SchemaTableViewRequest {
     userId: string;
     plantCode: string;
-    unassignedFields: string[];
+    schemaTableViewMapping: SchemaTableViewFldMap[];
     schemaId: string;
     isDefaultView: boolean;
     variantId: string;
+}
+export class SchemaTableViewFldMap {
+    fieldId: string;
+    order: number;
 }
 export class SchemaExecutionDetails {
     schemaId: string;

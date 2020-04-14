@@ -47,7 +47,7 @@
       <h1 class="count">{{schemaDetails.totalCount}}</h1>
       <small class="mat-caption">Error</small>
       <div class="f-row" *ngFor="let br of categoryChartDataDetails.dataSet">
-        <em class="box-blk" [style.background-color]="br.borderColor"></em>
+        <em class="box-blk" [style.background-color]="br.pointBackgroundColor"></em>
         <h4 class="mat-caption">{{br.brDesc}}</h4>
         <div class="f-spacer"></div>
         <h2 class="mat-caption">{{br.total}}</h2>

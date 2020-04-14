@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable, of } from 'rxjs';
-import { MetadataModel, MetadataModeleResponse } from 'src/app/_models/schema/schemadetailstable';
+import { MetadataModel, MetadataModeleResponse, SchemaTableViewRequest, SchemaTableViewFldMap } from 'src/app/_models/schema/schemadetailstable';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Router } from '@angular/router';
 import { SharedServiceService } from '../../_services/shared-service.service';
+import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-details.service';
 
 @Component({
   selector: 'pros-table-column-settings',
@@ -37,7 +38,8 @@ export class TableColumnSettingsComponent implements OnInit{
 
   constructor(
     private sharedService: SharedServiceService,
-    private router: Router
+    private router: Router,
+    private schemaDetailsService: SchemaDetailsService
   ){}
 
   ngOnInit() {
@@ -417,9 +419,33 @@ export class TableColumnSettingsComponent implements OnInit{
     }
     this.sharedService.setChooseColumnData(this.data);
     this.router.navigate([{ outlets: { sb: null }}]);
+    this.persistenceTableView();
   }
   close()
   {
     this.router.navigate([{ outlets: { sb: null }}]);
   }
+
+  public persistenceTableView() {
+    const schemaTableViewRequest: SchemaTableViewRequest = new SchemaTableViewRequest();
+    schemaTableViewRequest.schemaId = this.data.schemaId;
+    schemaTableViewRequest.variantId = this.data.variantId;
+    const fldObj: SchemaTableViewFldMap[] = [];
+    let order = 0;
+    this.data.selectedFields.forEach(fld => {
+      const schemaTableVMap: SchemaTableViewFldMap = new SchemaTableViewFldMap();
+      schemaTableVMap.fieldId = fld;
+      schemaTableVMap.order = order;
+      order ++;
+      fldObj.push(schemaTableVMap);
+    });
+    schemaTableViewRequest.schemaTableViewMapping = fldObj;
+
+    this.schemaDetailsService.updateSchemaTableView(schemaTableViewRequest).subscribe(response => {
+      console.log(`Viewid ${response}`);
+    }, error => {
+      console.error('Exception while persist table view');
+    });
+  }
+
 }

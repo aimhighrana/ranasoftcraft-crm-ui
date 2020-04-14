@@ -55,8 +55,8 @@ export class EndpointService {
   public getShowMoreSchemaTableDataUrl(): string {
     return this.apiUrl + '/showMoreSchemaTableData';
   }
-  public getDownloadErrorsUrl(): string {
-    return this.apiUrl + '/downloadExcelConnect';
+  public downloadExecutionDetailsUrl(schemaId: string, status: string): string {
+    return `${this.apiUrl}/schema/download/${schemaId}/${status.toLocaleLowerCase()}`;
   }
   public getBusinessRulesBySchemaId(schemaId: string, objectId: string): string {
     return this.apiUrl + '/getBrDetailsBySchemaId/' + schemaId + '/' + objectId;
@@ -147,7 +147,7 @@ export class EndpointService {
     return this.apiUrl + '/schema/metadata-fileds/' + objectId;
   }
 
-  public getAllUnselectedFields(): string {
+  public getAllSelectedFields(): string {
     return this.apiUrl + `/schema/get-unselected-fields`;
   }
 
