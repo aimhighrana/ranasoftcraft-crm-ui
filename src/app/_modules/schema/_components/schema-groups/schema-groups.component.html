@@ -1,7 +1,10 @@
 <div class="root">
 
-  <div class="breadcrumb-wrapper">
+  <div class="crumbrow f-row">
     <pros-breadcrumb [crumbs]="breadcrumb"></pros-breadcrumb>
+    <div class="f-spacer"></div>
+    <button mat-stroked-button matTooltip="Upload data" [routerLink]="['uploaddata']"><mat-icon>cloud_upload</mat-icon></button>
+    <div class="col-spacer"></div>
   </div>
 
   <div class="f-row">

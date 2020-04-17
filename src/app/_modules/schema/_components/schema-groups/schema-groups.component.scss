@@ -5,8 +5,13 @@
   align-items: flex-start;
   align-content: flex-start;
 
-  .breadcrumb-wrapper {
-    flex: 1 100%;
+  .crumbrow {
+    align-items: center;
+
+    > button {
+      min-width: 38px;
+      padding: 0 6px;
+    }
   }
 
   .f-row {

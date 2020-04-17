@@ -36,4 +36,19 @@ describe('EndpointService', () => {
     expect(serObj.getSchemaExecutionLogUrl('28364872686186')).toContain('schema/get-execution-logs/28364872686186');
   }));
 
+  it('uploadFileDataUrl(), should return the upload file data   url', async(() =>{
+    const serObj = new EndpointService();
+    expect(serObj.uploadFileDataUrl()).toContain('schema/upload-file');
+  }));
+
+  it('uploadDataUrl(), should return the upload  data   url', async(() =>{
+    const serObj = new EndpointService();
+    expect(serObj.uploadDataUrl('1005','1234')).toContain('schema/upload-data/1005/1234');
+  }));
+
+  it('getSchemaStatusUrl(), should return the schema status url', async(() =>{
+    const serObj = new EndpointService();
+    expect(serObj.getSchemaStatusUrl()).toContain('schema/schema-status');
+  }));
+
 });

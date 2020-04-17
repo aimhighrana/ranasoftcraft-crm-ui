@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../any2ts.service';
 import { SchemaGroupResponse, SchemaGroupDetailsResponse, SchemaGroupCountResponse, CreateSchemaGroupRequest, GetAllSchemabymoduleidsReq, ObjectTypeResponse, GetAllSchemabymoduleidsRes, SchemaGroupWithAssignSchemas } from 'src/app/_models/schema/schema';
+import { DataSource } from 'src/app/_modules/schema/_components/upload-data/upload-data.component';
 
 @Injectable({
   providedIn: 'root'
@@ -61,5 +62,15 @@ export class SchemaService {
 
   public deleteSchemaGroup(groupId: string): Observable<boolean> {
     return this.http.delete<boolean>(this.endpointService.deleteSchemaGroupUrl(groupId));
+  }
+
+  public uploadUpdateFileData(file: File,fileSno: string): Observable<string> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<string>(`${this.endpointService.uploadFileDataUrl()}?fileSno=${fileSno}`, formData);
+  }
+
+  public uploadData(data: DataSource[], objectType: string, fileSno: string): Observable<string> {
+    return this.http.post<any>(this.endpointService.uploadDataUrl(objectType, fileSno), data);
   }
 }

@@ -19,6 +19,7 @@ import { SchemaExecutionDialogComponent } from './_components/schema-execution/s
 import { SchemaExecutionLogsComponent } from './_components/schema-execution-logs/schema-execution-logs.component';
 import { UploadDataComponent } from './_components/upload-data/upload-data.component';
 import { ExecutionSummaryComponent } from './_components/schema-details/execution-summary/execution-summary.component';
+import { MapMdoFieldComponent } from './_components/upload-data/map-mdo-field/map-mdo-field.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { ExecutionSummaryComponent } from './_components/schema-details/executio
     SchemaExecutionDialogComponent,
     SchemaExecutionLogsComponent,
     UploadDataComponent,
-    ExecutionSummaryComponent
+    ExecutionSummaryComponent,
+    MapMdoFieldComponent
   ],
   imports: [
     CommonModule,

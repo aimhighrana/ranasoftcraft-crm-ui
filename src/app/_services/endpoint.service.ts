@@ -179,4 +179,12 @@ export class EndpointService {
     return `${this.apiUrl}/schema/submit-reviewed-records/${schemaId}`;
   }
 
+  public uploadFileDataUrl(): string {
+    return `${this.apiUrl}/schema/upload-file`;
+  }
+
+  public uploadDataUrl(objectType: string, fileSno: string): string {
+    return `${this.apiUrl}/schema/upload-data/${objectType}/${fileSno}`;
+  }
+
 }
