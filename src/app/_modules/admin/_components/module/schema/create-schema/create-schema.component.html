@@ -1,130 +1,157 @@
-<div class="root">
+<div class="root" cdkDropListGroup *ngIf="!showBusinessPage">
     <div class="breadcrumb-wrapper">
         <pros-breadcrumb [crumbs]="breadcrumb"></pros-breadcrumb>
     </div>
 
+    <!-- Categories Section Starts Here-->
+
     <mat-card class="mat-elevation-z3 categories">
-        
-            <mat-form-field>
-                <mat-label>Schema Name</mat-label>
-                <input matInput>
-            </mat-form-field>
-   
-    <h3 class="mat-h3">Category</h3>
-    <mat-card class="category-section">
-      
-            <mat-form-field appearance="fill">
-                <input matInput placeholder="Category Name" required>
-            </mat-form-field>
-      
-        <div class="f-row">
-            <mat-card class="mat-elevation-z3 br-tile">
-                <div class="f-row">
-                    <pros-svg-icon size="40" icon="P_BR_METADATA_RULE" color="primary"></pros-svg-icon>
-                    <h4 class="mat-h4">Missing Business Rule</h4>
-                </div>
-                <div class="f-row">
-                    <button mat-icon-button><mat-icon matTooltip="Edit">edit</mat-icon></button> 
-                    <button mat-icon-button><mat-icon matTooltip="Delete">delete_outline</mat-icon></button>
+
+        <mat-form-field>
+            <mat-label>Schema Name</mat-label>
+            <input matInput [(ngModel)]="schemaName" (keyup)="enableSaveButton()">
+        </mat-form-field>
+        <h3 class="mat-h3">Categories</h3>
+
+        <div *ngFor="let data of categoriesNamesList; let i = index" class="cardStyle">
+
+            <mat-card class="cardBgColor">
+
+                <div cdkDropList [cdkDropListData]="data.businessRules" class="example-list"
+                    (cdkDropListDropped)="drop($event, i)">
+
+                    <!-- <h3 class="cateroryNameStyle">{{data.categoryname}}</h3> -->
+                    <!-- <mat-form-field>
+                        <mat-select placeholder="Category Name" (selectionChange)="changeCategoryNameId(data, i)"
+                            [(ngModel)]="data.categoryList">
+                            <mat-option *ngFor="let ctname of categoriesNames" [value]="ctname">
+                                {{ ctname.categoryDesc }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field> -->
+                    <form class="example-form">
+                        <mat-form-field class="example-full-width">
+                            <input type="text" placeholder="Category Name" aria-label="Number" matInput name="test"
+                                [matAutocomplete]="auto" [ngModel]="data.categoryDesc"
+                                (keyup)="searchCategoryNames($event.target.value)">
+                            <mat-autocomplete #auto="matAutocomplete"
+                                (optionSelected)="changeCategoryNameId($event, i)">
+                                <mat-option *ngFor="let option of categoriesNames" [value]="option.categoryDesc">
+                                    {{option.categoryDesc}}
+                                </mat-option>
+                            </mat-autocomplete>
+                        </mat-form-field>
+                    </form>
+
+                    <!-- <mat-form-field appearance="fill">
+                        <input class="cateroryNameStyle" matInput placeholder="Category Name"
+                            [(ngModel)]="data.categoryDesc">
+                    </mat-form-field> -->
+
+                    <div *ngFor="let categories of data.businessRules; let j = index" class="boxStyle matStyle" cdkDrag>
+                        <mat-card class="mat-elevation-z3 br-tile f-col ">
+
+                            <div class="f-row">
+                                <pros-svg-icon size="40" icon="P_{{categories.brType}}" color="primary"></pros-svg-icon>
+                                <h4 class="mat-h4">{{categories.brInfo}}</h4>
+                            </div>
+                            <div class="f-row">
+                                <button mat-icon-button>
+                                    <mat-icon matTooltip="Edit">edit</mat-icon>
+                                </button>
+                                <button mat-icon-button (click)="removeBrFromCategory(i,j)">
+                                    <mat-icon matTooltip="Delete">delete_outline</mat-icon>
+                                </button>
+
+                                <button mat-icon-button>
+                                    <mat-icon>menu</mat-icon>
+                                    <!-- <span class="dot">{{categories.count}}</span> -->
+                                </button>
+                            </div>
+
+                        </mat-card>
+                    </div>
+
+                    <!-- <div>
+                       <button mat-button class="deleteBtnStyle">Delete</button>
+                    </div> -->
+
                 </div>
             </mat-card>
 
-            <mat-card class="mat-elevation-z3 br-tile">
-                <div class="f-row">
-                    <pros-svg-icon size="40" icon="P_BR_METADATA_RULE" color="primary"></pros-svg-icon>
-                    <h4 class="mat-h4">Missing Business Rule</h4>
-                </div>
-                <div class="f-row">
-                    <button mat-icon-button><mat-icon matTooltip="Edit">edit</mat-icon></button> 
-                    <button mat-icon-button><mat-icon matTooltip="Delete">delete_outline</mat-icon></button>
-                </div>
-            </mat-card>
-
-            <mat-card class="mat-elevation-z3 br-tile">
-                <div class="f-row">
-                    <pros-svg-icon size="40" icon="P_BR_METADATA_RULE" color="primary"></pros-svg-icon>
-                    <h4 class="mat-h4">Missing Business Rule</h4>
-                </div>
-                <div class="f-row">
-                    <button mat-icon-button><mat-icon matTooltip="Edit">edit</mat-icon></button> 
-                    <button mat-icon-button><mat-icon matTooltip="Delete">delete_outline</mat-icon></button>
-                </div>
-            </mat-card>
-
-            <mat-card class="mat-elevation-z3 br-tile">
-                <div class="f-row">
-                    <pros-svg-icon size="40" icon="P_BR_METADATA_RULE" color="primary"></pros-svg-icon>
-                    <h4 class="mat-h4">Missing Business Rule</h4>
-                </div>
-                <div class="f-row">
-                    <button mat-icon-button><mat-icon matTooltip="Edit">edit</mat-icon></button> 
-                    <button mat-icon-button><mat-icon matTooltip="Delete">delete_outline</mat-icon></button>
-                </div>
-            </mat-card>
-
-            <mat-card class="mat-elevation-z3 br-tile">
-                <div class="f-row">
-                    <pros-svg-icon size="40" icon="P_BR_METADATA_RULE" color="primary"></pros-svg-icon>
-                    <h4 class="mat-h4">Missing Business Rule</h4>
-                </div>
-                <div class="f-row">
-                    <button mat-icon-button><mat-icon matTooltip="Edit">edit</mat-icon></button> 
-                    <button mat-icon-button><mat-icon matTooltip="Delete">delete_outline</mat-icon></button>
-                </div>
-            </mat-card>
         </div>
-    </mat-card>
-    <div class="row-spacer"></div>
-    <pros-add-tile class="tile" text="Add a new category" routerLink="/home/schema/group/new"></pros-add-tile>
-
-    <mat-card-actions>
-        <button mat-flat-button>Cancel</button>
-        <button mat-flat-button color="primary">Save</button>
-    </mat-card-actions>
-
-    </mat-card>
-
-    <mat-card class="mat-elevation-z3 brs">
-        <h3 class="mat-h3">Business Rules</h3>
-       
-        <div class="f-col">
-            <mat-card class="mat-elevation-z3 br-tile">
-                <div class="f-row">
-                    <pros-svg-icon size="40" icon="P_BR_METADATA_RULE" color="primary"></pros-svg-icon>
-                    <h4 class="mat-h4">Metadata Business Rule</h4>
-                </div>
-                <div class="f-row">
-                    <button mat-icon-button><mat-icon matTooltip="Edit">edit</mat-icon></button> 
-                    <button mat-icon-button><mat-icon matTooltip="Delete">delete_outline</mat-icon></button>
-                </div>
-            </mat-card>
-            <div class="row-spacer"></div>
-            <mat-card class="mat-elevation-z3 br-tile">
-                <div class="f-row">
-                    <pros-svg-icon size="40" icon="P_BR_UDR_RULE" color="primary"></pros-svg-icon>
-                    <h4 class="mat-h4">User Defined Business Rule</h4>
-                </div>
-                <div class="f-row">
-                    <button mat-icon-button><mat-icon matTooltip="Edit">edit</mat-icon></button> 
-                    <button mat-icon-button><mat-icon matTooltip="Delete">delete_outline</mat-icon></button>
-                </div>
-            </mat-card>
-            <div class="row-spacer"></div>
-            <mat-card class="mat-elevation-z3 br-tile">
-                <div class="f-row">
-                    <pros-svg-icon size="40" icon="P_BR_MISSING_RULE" color="primary"></pros-svg-icon>
-                    <h4 class="mat-h4">Missing Business Rule</h4>
-                </div>
-                <div class="f-row">
-                    <button mat-icon-button><mat-icon matTooltip="Edit">edit</mat-icon></button> 
-                    <button mat-icon-button><mat-icon matTooltip="Delete">delete_outline</mat-icon></button>
-                </div>
-            </mat-card>
+        <div class="row nullstate" *ngIf="!enableCreateCategoryBtn">
+            <button mat-fab disabled>
+                <mat-icon color="primary">layers_clear</mat-icon>
+            </button>
+            <p>Please create at least one businessRule </p>
         </div>
 
         <div class="row-spacer"></div>
+        <pros-add-tile *ngIf="enableCreateCategoryBtn" class="tile" text="Add a Category" (click)="addCategory()">
+        </pros-add-tile>
 
-        <pros-add-tile class="tile" text="Add a new business rule" routerLink="/home/schema/group/new"></pros-add-tile>
+        <div *ngIf="enableCreateCategoryBtn">
+            <mat-card-actions>
+                <button mat-flat-button (click)="navigateToListPage()">Cancel</button>
+                <button mat-flat-button color="primary" [disabled]="!enableSaveBtn"
+                    (click)="createUpdateSchema()">Save</button>
+            </mat-card-actions>
+        </div>
+
     </mat-card>
-    
+
+    <!-- Categories Section End Here-->
+
+
+    <!-- Add Business Rules Section -->
+
+    <mat-card class="mat-elevation-z3 brs">
+        <h3 class="mat-h3">Business Rules</h3>
+        <div class="inputWidth">
+            <mat-form-field appearance="fill">
+                <input matInput placeholder="Search" (keyup)="search($event.target.value)">
+            </mat-form-field>
+        </div>
+
+        <div cdkDropList [cdkDropListData]="businessRuleNames" class="example-list"
+            (cdkDropListDropped)="drop($event, 1)">
+
+            <div *ngFor="let data of businessRuleNames; let k = index" cdkDrag>
+
+                <mat-card class="mat-elevation-z3 br-tile">
+                    <div class="f-row">
+                        <pros-svg-icon size="40" icon="P_{{data.brType}}" color="primary"></pros-svg-icon>
+                        <h4 class="mat-h4">{{data.brInfo}}</h4>
+                    </div>
+                    <div class="f-row">
+                        <button mat-icon-button (click)="editBusinessRuls(data)">
+                            <mat-icon matTooltip="Edit">edit</mat-icon>
+                        </button>
+                        <button mat-icon-button (click)="deleteBusinessRule(data, k)">
+                            <mat-icon matTooltip="Delete">delete_outline</mat-icon>
+                        </button>
+                        <button mat-icon-button>
+                            <mat-icon>menu</mat-icon>
+                        </button>
+                    </div>
+                </mat-card>
+                <div class="row-spacer"></div>
+            </div>
+        </div>
+
+
+        <!-- <div *ngIf="enableCreateCategoryBtn">
+            <h3>* No Records Found </h3>
+        </div> -->
+        <pros-add-tile class="tile" text="Add a new business rule" (click)="showAddBusinessRulePage()">
+        </pros-add-tile>
+    </mat-card>
+
+    <!-- Add Business Rules Section End Here -->
+
 </div>
+
+<pros-addbusinessrule *ngIf="showBusinessPage" (valueChange)='showParentPage()' [brLength]="businessrulelength"
+    [paramsData]="params" [brData]="selectdBrData">
+</pros-addbusinessrule>

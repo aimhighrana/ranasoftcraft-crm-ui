@@ -71,7 +71,7 @@ export class SchemaListComponent implements OnInit {
   public run(schemaId: string) {
     this.router.navigate(['/home/schema/schema-execution', this.schemaGroupId, schemaId]);
   }
-  public edit(schema: SchemaListDetails) {
-    // TODO
+  public edit(moduleId: string, schema: SchemaListDetails) {
+    this.router.navigate(['/home/schema/create-schema', moduleId, this.schemaGroupId, schema.schemaId]);
   }
 }

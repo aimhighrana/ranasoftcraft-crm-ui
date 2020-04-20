@@ -183,4 +183,8 @@
       flex-direction: column;
     }
   }
+
+  .mat-form-field + .mat-form-field {
+    margin-left: 8px;
+  }
 }

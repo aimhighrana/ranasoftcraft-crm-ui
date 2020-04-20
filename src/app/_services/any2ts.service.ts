@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SchemaListOnLoadResponse, SchemaGroupResponse, SchemaGroupDetailsResponse, SchemaGroupCountResponse, ObjectTypeResponse, GetAllSchemabymoduleidsRes, SchemaGroupWithAssignSchemas, SchemaGroupMapping } from '../_models/schema/schema';
+import { SchemaListOnLoadResponse, SchemaGroupResponse, SchemaGroupDetailsResponse, SchemaGroupCountResponse, ObjectTypeResponse, GetAllSchemabymoduleidsRes, SchemaGroupWithAssignSchemas, SchemaGroupMapping, CategoriesList } from '../_models/schema/schema';
 import { VariantFieldList, SchemaVariantResponse, SchemaBrInfoList, CategoriesResponse, DependencyResponse, VariantDetailsScheduleSchema, VariantAssignedFieldDetails, SchemaListModuleList, SchemaModuleList, SchemaListDetails, BusinessRuleExecutionDetails, VariantListDetails } from '../_models/schema/schemalist';
 import { SchemaDataTableColumnInfoResponse, ResponseFieldList, SchemaTableData, DataTableResponse, DataTableHeaderResponse, DataTableHeaderLabelLang, DataTableHeaderValueLang, DataTableSourceResponse, OverViewChartData, OverViewChartDataXY, OverViewChartDataSet, CategoryInfo, CategoryChartDataSet, CategoryChartData, CategoryChartDataXY, MetadataModel, RequestForSchemaDetailsWithBr, MetadataModeleResponse, Heirarchy, SchemaBrInfo } from '../_models/schema/schemadetailstable';
 import { Userdetails, AssignedRoles } from '../_models/userdetails';
@@ -21,6 +21,20 @@ export class Any2tsService {
     schema.roleId = data.roleId;
     schema.userId = data.userId;
     return schema;
+  }
+
+  public any2CategoriesList(list) {
+    console.log('list in any2cat ', list);
+    const categories: CategoriesList[] = [];
+    list.forEach(ls => {
+      const cts: CategoriesList = new CategoriesList();
+      cts.categoryId = ls.categoryId;
+      cts.categoryDesc = ls.categoryDesc;
+      cts.plantCode = ls.plantCode;
+      cts.businessRules = [];
+      categories.push(cts)
+    })
+    return categories;
   }
 
 
@@ -398,51 +412,51 @@ export class Any2tsService {
     if (response) {
       response.forEach(data => {
 
-         // get  objectNumber &  doc count
-         const objNum = data.key;
-         const docCount = data.docCount;
+        // get  objectNumber &  doc count
+        const objNum = data.key;
+        const docCount = data.docCount;
 
-         // get hits
-         const status = new Set<string>();
-         Object.keys(data.hits).forEach(index =>{
-            if(index.indexOf('_do_br_err_') >= 0) {
-              status.add('Error');
-            } else if(index.indexOf('_do_br_scs_') >= 0) {
-              status.add('Success');
-            } else if(index.indexOf('_do_br_skp_') >= 0) {
-              status.add('Skipped');
-            } else if(index.indexOf('_do_br_cor_') >= 0) {
-              status.add('Correction');
-            }
-         });
+        // get hits
+        const status = new Set<string>();
+        Object.keys(data.hits).forEach(index => {
+          if (index.indexOf('_do_br_err_') >= 0) {
+            status.add('Error');
+          } else if (index.indexOf('_do_br_scs_') >= 0) {
+            status.add('Success');
+          } else if (index.indexOf('_do_br_skp_') >= 0) {
+            status.add('Skipped');
+          } else if (index.indexOf('_do_br_cor_') >= 0) {
+            status.add('Correction');
+          }
+        });
 
-         const hit: DataTableResponse = new DataTableResponse();
+        const hit: DataTableResponse = new DataTableResponse();
 
-         // check error index is exits then hit from error index
-         const errorIndexLen = Object.keys(data.hits).filter(index => index.indexOf('_do_br_err_') !== -1);
-         if(errorIndexLen.length>0) {
-            const index = errorIndexLen[0];
-            hit.hdvs = this.convertAny2DataTableHeaderResponse(data.hits[index].hdvs);
-            if (request.gridId) {
-                hit.gvs = this.convertAny2DataTableGridResponse(data.hits[index].gvs, request.gridId);
-            }
-            if (request.hierarchy) {
-                hit.hyvs = this.convertAny2DataTableHeirerchyResponse(data.hits[index].hyvs, request.hierarchy);
-            }
-         } else {
-           const index = Object.keys(data.hits)[0];
-            hit.hdvs = this.convertAny2DataTableHeaderResponse(data.hits[index].hdvs);
-            if (request.gridId) {
-                hit.gvs = this.convertAny2DataTableGridResponse(data.hits[index].gvs, request.gridId);
-            }
-            if (request.hierarchy) {
-                hit.hyvs = this.convertAny2DataTableHeirerchyResponse(data.hits[index].hyvs, request.hierarchy);
-            }
-         }
+        // check error index is exits then hit from error index
+        const errorIndexLen = Object.keys(data.hits).filter(index => index.indexOf('_do_br_err_') !== -1);
+        if (errorIndexLen.length > 0) {
+          const index = errorIndexLen[0];
+          hit.hdvs = this.convertAny2DataTableHeaderResponse(data.hits[index].hdvs);
+          if (request.gridId) {
+            hit.gvs = this.convertAny2DataTableGridResponse(data.hits[index].gvs, request.gridId);
+          }
+          if (request.hierarchy) {
+            hit.hyvs = this.convertAny2DataTableHeirerchyResponse(data.hits[index].hyvs, request.hierarchy);
+          }
+        } else {
+          const index = Object.keys(data.hits)[0];
+          hit.hdvs = this.convertAny2DataTableHeaderResponse(data.hits[index].hdvs);
+          if (request.gridId) {
+            hit.gvs = this.convertAny2DataTableGridResponse(data.hits[index].gvs, request.gridId);
+          }
+          if (request.hierarchy) {
+            hit.hyvs = this.convertAny2DataTableHeirerchyResponse(data.hits[index].hyvs, request.hierarchy);
+          }
+        }
 
-         hit.id = objNum;
-         hit.stat = Array.from(status);
-         dataTableReponse.push(hit);
+        hit.id = objNum;
+        hit.stat = Array.from(status);
+        dataTableReponse.push(hit);
       });
     }
     return dataTableReponse;
@@ -472,7 +486,7 @@ export class Any2tsService {
           Object.keys(currentObj.vls).filter(vlskey => {
             const dataTableHeaderValueLang: DataTableHeaderValueLang = new DataTableHeaderValueLang();
             dataTableHeaderValueLang.lang = vlskey;
-            dataTableHeaderValueLang.valueText =  currentObj.vls[vlskey].valueTxt;
+            dataTableHeaderValueLang.valueText = currentObj.vls[vlskey].valueTxt;
             dataTableHeader.vls.push(dataTableHeaderValueLang);
           });
         }
@@ -485,40 +499,40 @@ export class Any2tsService {
   private convertAny2DataTableGridResponse(response: any, gridId: string[]): DataTableHeaderResponse[][] {
     const gridResponse: DataTableHeaderResponse[][] = [];
     if (response) {
-      gridId.forEach(grid =>{
-        if(response.hasOwnProperty(grid)) {
+      gridId.forEach(grid => {
+        if (response.hasOwnProperty(grid)) {
           const rows = response[grid].rows;
-        rows.forEach(row => {
-          const griddataRow: DataTableHeaderResponse[] = [];
-          Object.keys(row).forEach(key => {
-            const dataTableHeader: DataTableHeaderResponse = new DataTableHeaderResponse();
-            dataTableHeader.fId = row[key].fId;
-            dataTableHeader.lls = [];
-            dataTableHeader.vls = [];
-            const currentObj = row[key];
-            // for get label lang of fields
-            if (currentObj.lls) {
-              Object.keys(currentObj.lls).forEach(llsKey => {
-                const dataTableHeaderLabelLang: DataTableHeaderLabelLang = new DataTableHeaderLabelLang();
-                dataTableHeaderLabelLang.label = currentObj.lls[llsKey].label;
-                dataTableHeaderLabelLang.lang = llsKey;
-                dataTableHeader.lls.push(dataTableHeaderLabelLang);
-              });
-            }
+          rows.forEach(row => {
+            const griddataRow: DataTableHeaderResponse[] = [];
+            Object.keys(row).forEach(key => {
+              const dataTableHeader: DataTableHeaderResponse = new DataTableHeaderResponse();
+              dataTableHeader.fId = row[key].fId;
+              dataTableHeader.lls = [];
+              dataTableHeader.vls = [];
+              const currentObj = row[key];
+              // for get label lang of fields
+              if (currentObj.lls) {
+                Object.keys(currentObj.lls).forEach(llsKey => {
+                  const dataTableHeaderLabelLang: DataTableHeaderLabelLang = new DataTableHeaderLabelLang();
+                  dataTableHeaderLabelLang.label = currentObj.lls[llsKey].label;
+                  dataTableHeaderLabelLang.lang = llsKey;
+                  dataTableHeader.lls.push(dataTableHeaderLabelLang);
+                });
+              }
 
-            // get value of this field on lang
-            if (currentObj.vls) {
-              Object.keys(currentObj.vls).filter(vlskey => {
-                const dataTableHeaderValueLang: DataTableHeaderValueLang = new DataTableHeaderValueLang();
-                dataTableHeaderValueLang.lang = vlskey;
-                dataTableHeaderValueLang.valueText =  currentObj.vls[vlskey].valueTxt;
-                dataTableHeader.vls.push(dataTableHeaderValueLang);
-              });
-            }
-            griddataRow.push(dataTableHeader);
+              // get value of this field on lang
+              if (currentObj.vls) {
+                Object.keys(currentObj.vls).filter(vlskey => {
+                  const dataTableHeaderValueLang: DataTableHeaderValueLang = new DataTableHeaderValueLang();
+                  dataTableHeaderValueLang.lang = vlskey;
+                  dataTableHeaderValueLang.valueText = currentObj.vls[vlskey].valueTxt;
+                  dataTableHeader.vls.push(dataTableHeaderValueLang);
+                });
+              }
+              griddataRow.push(dataTableHeader);
+            });
+            gridResponse.push(griddataRow);
           });
-          gridResponse.push(griddataRow);
-        });
         }
       });
     }
@@ -529,7 +543,7 @@ export class Any2tsService {
     const gridResponse: DataTableHeaderResponse[][] = [];
     if (response) {
       heirarchyId.forEach(heiID => {
-        if(response.hasOwnProperty(heirarchyId)) {
+        if (response.hasOwnProperty(heirarchyId)) {
           const rows = response[heiID].rows;
           rows.forEach(row => {
             const griddataRow: DataTableHeaderResponse[] = [];
@@ -554,7 +568,7 @@ export class Any2tsService {
                 Object.keys(currentObj.vls).filter(vlskey => {
                   const dataTableHeaderValueLang: DataTableHeaderValueLang = new DataTableHeaderValueLang();
                   dataTableHeaderValueLang.lang = vlskey;
-                  dataTableHeaderValueLang.valueText =  currentObj.vls[vlskey].valueTxt;
+                  dataTableHeaderValueLang.valueText = currentObj.vls[vlskey].valueTxt;
                   dataTableHeader.vls.push(dataTableHeaderValueLang);
                 });
               }
@@ -571,13 +585,13 @@ export class Any2tsService {
   public any2SchemaTableData(response: DataTableResponse[], request: RequestForSchemaDetailsWithBr): DataTableSourceResponse {
     const finalResposne: DataTableSourceResponse = new DataTableSourceResponse();
 
-    if (request.gridId.length>0) {
+    if (request.gridId.length > 0) {
       finalResposne.data = this.any2GridResponseData(response);
     }
-    if (request.hierarchy.length>0) {
+    if (request.hierarchy.length > 0) {
       finalResposne.data = this.any2HeirerchyResponseData(response);
     }
-    if(request.gridId.length<=0 && request.hierarchy.length<=0) {
+    if (request.gridId.length <= 0 && request.hierarchy.length <= 0) {
       finalResposne.data = this.any2HeaderResponseData(response);
     }
 
@@ -661,31 +675,31 @@ export class Any2tsService {
         });
       } else {
 
-          const returnData: any = {} as any;
-          const objNumberColumn: SchemaTableData = new SchemaTableData();
-          objNumberColumn.fieldId = 'OBJECTNUMBER';
-          objNumberColumn.fieldData = data.id;
-          objNumberColumn.fieldDesc = 'Object Number';
-          returnData[objNumberColumn.fieldId] = objNumberColumn;
+        const returnData: any = {} as any;
+        const objNumberColumn: SchemaTableData = new SchemaTableData();
+        objNumberColumn.fieldId = 'OBJECTNUMBER';
+        objNumberColumn.fieldData = data.id;
+        objNumberColumn.fieldDesc = 'Object Number';
+        returnData[objNumberColumn.fieldId] = objNumberColumn;
+        // anyArray.push(objNumberColumn);
+
+        data.hdvs.forEach(hdvs => {
+          const schemaTableData: SchemaTableData = new SchemaTableData();
+          schemaTableData.fieldId = hdvs.fId;
+          schemaTableData.fieldDesc = hdvs.lls.filter(lls => lls.lang === 'EN')[0].label;
+          schemaTableData.fieldData = hdvs.vls.filter(vls => vls.lang === 'EN')[0].valueText ? hdvs.vls.filter(vls => vls.lang === 'EN')[0].valueText : '';
+          returnData[schemaTableData.fieldId] = schemaTableData;
           // anyArray.push(objNumberColumn);
+        });
+        // for status column
+        const statusColumn: SchemaTableData = new SchemaTableData();
+        statusColumn.fieldId = 'row_status';
+        statusColumn.fieldData = data.stat ? data.stat.toString() : '';
+        statusColumn.fieldDesc = 'Status';
+        returnData[statusColumn.fieldId] = statusColumn;
+        // anyArray.push(statusColumn);
 
-          data.hdvs.forEach(hdvs => {
-            const schemaTableData: SchemaTableData = new SchemaTableData();
-            schemaTableData.fieldId = hdvs.fId;
-            schemaTableData.fieldDesc = hdvs.lls.filter(lls => lls.lang === 'EN')[0].label;
-            schemaTableData.fieldData = hdvs.vls.filter(vls => vls.lang === 'EN')[0].valueText ? hdvs.vls.filter(vls => vls.lang === 'EN')[0].valueText : '';
-            returnData[schemaTableData.fieldId] = schemaTableData;
-            // anyArray.push(objNumberColumn);
-          });
-          // for status column
-          const statusColumn: SchemaTableData = new SchemaTableData();
-          statusColumn.fieldId = 'row_status';
-          statusColumn.fieldData = data.stat ? data.stat.toString() : '';
-          statusColumn.fieldDesc = 'Status';
-          returnData[statusColumn.fieldId] = statusColumn;
-          // anyArray.push(statusColumn);
-
-          anyArray.push(returnData);
+        anyArray.push(returnData);
 
       }
 
@@ -737,31 +751,31 @@ export class Any2tsService {
         });
       } else {
 
-          const returnData: any = {} as any;
-          const objNumberColumn: SchemaTableData = new SchemaTableData();
-          objNumberColumn.fieldId = 'OBJECTNUMBER';
-          objNumberColumn.fieldData = data.id;
-          objNumberColumn.fieldDesc = 'Object Number';
-          returnData[objNumberColumn.fieldId] = objNumberColumn;
+        const returnData: any = {} as any;
+        const objNumberColumn: SchemaTableData = new SchemaTableData();
+        objNumberColumn.fieldId = 'OBJECTNUMBER';
+        objNumberColumn.fieldData = data.id;
+        objNumberColumn.fieldDesc = 'Object Number';
+        returnData[objNumberColumn.fieldId] = objNumberColumn;
+        // anyArray.push(objNumberColumn);
+
+        data.hdvs.forEach(hdvs => {
+          const schemaTableData: SchemaTableData = new SchemaTableData();
+          schemaTableData.fieldId = hdvs.fId;
+          schemaTableData.fieldDesc = hdvs.lls.filter(lls => lls.lang === 'EN')[0].label;
+          schemaTableData.fieldData = hdvs.vls.filter(vls => vls.lang === 'EN')[0].valueText ? hdvs.vls.filter(vls => vls.lang === 'EN')[0].valueText : '';
+          returnData[schemaTableData.fieldId] = schemaTableData;
           // anyArray.push(objNumberColumn);
+        });
+        // for status column
+        const statusColumn: SchemaTableData = new SchemaTableData();
+        statusColumn.fieldId = 'row_status';
+        statusColumn.fieldData = data.stat ? data.stat.toString() : '';
+        statusColumn.fieldDesc = 'Status';
+        returnData[statusColumn.fieldId] = statusColumn;
+        // anyArray.push(statusColumn);
 
-          data.hdvs.forEach(hdvs => {
-            const schemaTableData: SchemaTableData = new SchemaTableData();
-            schemaTableData.fieldId = hdvs.fId;
-            schemaTableData.fieldDesc = hdvs.lls.filter(lls => lls.lang === 'EN')[0].label;
-            schemaTableData.fieldData = hdvs.vls.filter(vls => vls.lang === 'EN')[0].valueText ? hdvs.vls.filter(vls => vls.lang === 'EN')[0].valueText : '';
-            returnData[schemaTableData.fieldId] = schemaTableData;
-            // anyArray.push(objNumberColumn);
-          });
-          // for status column
-          const statusColumn: SchemaTableData = new SchemaTableData();
-          statusColumn.fieldId = 'row_status';
-          statusColumn.fieldData = data.stat ? data.stat.toString() : '';
-          statusColumn.fieldDesc = 'Status';
-          returnData[statusColumn.fieldId] = statusColumn;
-          // anyArray.push(statusColumn);
-
-          anyArray.push(returnData);
+        anyArray.push(returnData);
 
       }
 
@@ -859,7 +873,7 @@ export class Any2tsService {
   public any2CategoryChartData(response: any): CategoryChartDataSet {
     const categoryChartDataSet: CategoryChartDataSet = new CategoryChartDataSet();
     if (response) {
-      categoryChartDataSet.dataSet = this.categoryChartData(response.brExecutionDetails , response.schemaStatus);
+      categoryChartDataSet.dataSet = this.categoryChartData(response.brExecutionDetails, response.schemaStatus);
       categoryChartDataSet.variantId = response.variantId;
       categoryChartDataSet.categoryDesc = response.categoryDesc;
       categoryChartDataSet.total = response.total ? response.total : 0;
@@ -870,7 +884,7 @@ export class Any2tsService {
   private categoryChartData(response: any, status: string): CategoryChartData[] {
     const categoryChartDataLst: CategoryChartData[] = [];
     // find unique br ids
-    const bridsArray  = [];
+    const bridsArray = [];
     response.forEach(catData => {
       const index = bridsArray.indexOf(catData.brId);
       if (index === -1) {
@@ -915,7 +929,7 @@ export class Any2tsService {
       if (type === 'SUCCESS') {
         total += data.success ? data.success : 0;
       } else if (type === 'ERROR') {
-        total  += data.error ? data.error : 0;
+        total += data.error ? data.error : 0;
       } else if (type === 'SKIPPED') {
         total += data.skipped ? data.skipped : 0;
       }
@@ -942,96 +956,96 @@ export class Any2tsService {
   }
 
   public any2MetadataResponse(resposne: any): MetadataModeleResponse {
-    const fldResposne: MetadataModeleResponse = {gridFields:null, headers: null, hierarchyFields: null, hierarchy: null, grids: null};
+    const fldResposne: MetadataModeleResponse = { gridFields: null, headers: null, hierarchyFields: null, hierarchy: null, grids: null };
     if (resposne) {
       // header
-      fldResposne.headers = resposne.headers as Map<string,MetadataModel>;
-      fldResposne.grids = resposne.grids as Map<string,MetadataModel>;
+      fldResposne.headers = resposne.headers as Map<string, MetadataModel>;
+      fldResposne.grids = resposne.grids as Map<string, MetadataModel>;
       fldResposne.hierarchy = resposne.hierarchy as Heirarchy[];
       // fldResposne.gridFields = this.any2GridFields(resposne.gridFields);
       // fldResposne.hierarchyFields = this.any2HeirerchyFields(resposne.hierarchyFields);
-      fldResposne.gridFields = resposne.gridFields as Map<string, Map<string,MetadataModel>>;
-      fldResposne.hierarchyFields = resposne.hierarchyFields as Map<string, Map<string,MetadataModel>>;
+      fldResposne.gridFields = resposne.gridFields as Map<string, Map<string, MetadataModel>>;
+      fldResposne.hierarchyFields = resposne.hierarchyFields as Map<string, Map<string, MetadataModel>>;
 
     }
     return resposne;
   }
 
-public any2VaraintListView(data: any): VariantListDetails[] {
-  const returnList: VariantListDetails[] = [];
-  if (data) {
-    data.forEach(resposne => {
-      const variantDetail: VariantListDetails = new VariantListDetails();
-      variantDetail.title = resposne.title ? resposne.title : 'N/A';
-      variantDetail.variantId = resposne.variantId;
-      variantDetail.totalValue = resposne.totalValue ? resposne.totalValue : 0;
-      variantDetail.errorValue = resposne.errorValue ? resposne.errorValue : 0;
-      variantDetail.successValue = resposne.successValue ? resposne.successValue : 0;
-      variantDetail.skippedValue = resposne.skippedValue ? resposne.skippedValue : 0;
-      variantDetail.correctionValue = resposne.correctionValue ? resposne.correctionValue : 0;
-      variantDetail.duplicateValue = resposne.duplicateValue ? resposne.duplicateValue : 0;
-      variantDetail.successTrendValue = resposne.successValue ? resposne.successValue : 0;
-      variantDetail.errorTrendValue = resposne.errorTrendValue ? resposne.errorTrendValue : 0;
-      variantDetail.totalUniqueValue = resposne.totalUniqueValue ? resposne.totalUniqueValue : 0;
-      variantDetail.successUniqueValue = resposne.successUniqueValue ? resposne.successUniqueValue : 0;
-      variantDetail.errorUniqueValue = resposne.errorUniqueValue ? resposne.errorUniqueValue : 0;
-      variantDetail.skippedUniqueValue = resposne.skippedUniqueValue ? resposne.skippedUniqueValue : 0;
-      variantDetail.timestamp = resposne.timestamp ? resposne.timestamp : '';
-      variantDetail.isVariant = resposne.isVariant;
-      variantDetail.isInRunning = resposne.isInRunning;
-      returnList.push(variantDetail);
-    });
-  }
-  return returnList;
+  public any2VaraintListView(data: any): VariantListDetails[] {
+    const returnList: VariantListDetails[] = [];
+    if (data) {
+      data.forEach(resposne => {
+        const variantDetail: VariantListDetails = new VariantListDetails();
+        variantDetail.title = resposne.title ? resposne.title : 'N/A';
+        variantDetail.variantId = resposne.variantId;
+        variantDetail.totalValue = resposne.totalValue ? resposne.totalValue : 0;
+        variantDetail.errorValue = resposne.errorValue ? resposne.errorValue : 0;
+        variantDetail.successValue = resposne.successValue ? resposne.successValue : 0;
+        variantDetail.skippedValue = resposne.skippedValue ? resposne.skippedValue : 0;
+        variantDetail.correctionValue = resposne.correctionValue ? resposne.correctionValue : 0;
+        variantDetail.duplicateValue = resposne.duplicateValue ? resposne.duplicateValue : 0;
+        variantDetail.successTrendValue = resposne.successValue ? resposne.successValue : 0;
+        variantDetail.errorTrendValue = resposne.errorTrendValue ? resposne.errorTrendValue : 0;
+        variantDetail.totalUniqueValue = resposne.totalUniqueValue ? resposne.totalUniqueValue : 0;
+        variantDetail.successUniqueValue = resposne.successUniqueValue ? resposne.successUniqueValue : 0;
+        variantDetail.errorUniqueValue = resposne.errorUniqueValue ? resposne.errorUniqueValue : 0;
+        variantDetail.skippedUniqueValue = resposne.skippedUniqueValue ? resposne.skippedUniqueValue : 0;
+        variantDetail.timestamp = resposne.timestamp ? resposne.timestamp : '';
+        variantDetail.isVariant = resposne.isVariant;
+        variantDetail.isInRunning = resposne.isInRunning;
+        returnList.push(variantDetail);
+      });
+    }
+    return returnList;
   }
 
   public any2SchemaBrInfo(response: any): SchemaBrInfo[] {
     const schemaBrInfo: SchemaBrInfo[] = [];
-    if(response) {
+    if (response) {
       response.forEach(data => {
-         const brInfo: SchemaBrInfo = new SchemaBrInfo();
-         brInfo.brDescription = data.brDescription;
-         brInfo.brId = data.brInfo;
-         brInfo.brType = data.brType;
-         brInfo.dynamicMessage = data.dynamicMessage ? data.dynamicMessage : '';
-         brInfo.fields = data.fields ? data.fields.split(',') : [];
-         brInfo.refId = data.refId;
-         brInfo.schemaId = data.schemaId;
-         brInfo.schemaOrder = data.schemaOrder;
-         schemaBrInfo.push(brInfo);
+        const brInfo: SchemaBrInfo = new SchemaBrInfo();
+        brInfo.brDescription = data.brDescription;
+        brInfo.brId = data.brInfo;
+        brInfo.brType = data.brType;
+        brInfo.dynamicMessage = data.dynamicMessage ? data.dynamicMessage : '';
+        brInfo.fields = data.fields ? data.fields.split(',') : [];
+        brInfo.refId = data.refId;
+        brInfo.schemaId = data.schemaId;
+        brInfo.schemaOrder = data.schemaOrder;
+        schemaBrInfo.push(brInfo);
       });
     }
     return schemaBrInfo;
   }
 
   public any2LatestCorrectedData(record: any, fieldId: string, rowObjNum: string): string {
-    if(record) {
-        // check for header
-        if(record.hdvs && record.hdvs.hasOwnProperty(fieldId)) {
-          return  record.hdvs[fieldId] ? record.hdvs[fieldId].vc : null;
-        }
-
-        // check on grid
-        if(record.gvs) {
-          Object.keys(record.gvs).forEach(grid => {
-            const rowObj =  record.gvs[grid][rowObjNum];
-            if(rowObj && rowObj.hasOwnProperty(fieldId)) {
-                return  rowObj[fieldId] ? rowObj[fieldId].vc : null;
-            }
-          });
-        }
-
-        // check on heirerchy
-        if(record.hyvs) {
-          Object.keys(record.hyvs).forEach(hei => {
-            const rowObj =  record.hyvs[hei][rowObjNum];
-            if(rowObj && rowObj.hasOwnProperty(fieldId)) {
-                return  rowObj[fieldId] ? rowObj[fieldId].vc :null;
-            }
-          });
-        }
+    if (record) {
+      // check for header
+      if (record.hdvs && record.hdvs.hasOwnProperty(fieldId)) {
+        return record.hdvs[fieldId] ? record.hdvs[fieldId].vc : null;
       }
-      return null;
+
+      // check on grid
+      if (record.gvs) {
+        Object.keys(record.gvs).forEach(grid => {
+          const rowObj = record.gvs[grid][rowObjNum];
+          if (rowObj && rowObj.hasOwnProperty(fieldId)) {
+            return rowObj[fieldId] ? rowObj[fieldId].vc : null;
+          }
+        });
+      }
+
+      // check on heirerchy
+      if (record.hyvs) {
+        Object.keys(record.hyvs).forEach(hei => {
+          const rowObj = record.hyvs[hei][rowObjNum];
+          if (rowObj && rowObj.hasOwnProperty(fieldId)) {
+            return rowObj[fieldId] ? rowObj[fieldId].vc : null;
+          }
+        });
+      }
+    }
+    return null;
   }
 
 }

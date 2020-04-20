@@ -21,7 +21,7 @@ export class SchemaDetailsService {
   doughnutChartData: any = { labels: ['Success', 'Error'], dataSet: { data: [20, 80] } };
 
   schemaCategoryData: any = { dataSet: [{ type: 'line', label: 'Validness', id: 'Validness_01', backgroundColor: 'rgba(217,83,79,0.75)', fill: false, data: [1000, 2000, 4000, 5000] }, { type: 'line', label: 'Accuracy', id: 'Accuracy_01', backgroundColor: 'rgba(92,184,92,0.75)', fill: false, data: [500, 600, 700, 800] }], labels: ['01-NOV', '02-NOV', '03-NOV', '02-NOV'] };
-  schemaBusinessRuleChartData: any = {labels: ['MRP Controller', 'Reorder point', 'Rounding Value', 'Max stock level'], dataSet: [{label: 'Error', data: [100, 200, 230, 150], backgroundColor: '#c30000', hoverBackgroundColor: '#c30000'}, {label: 'Success', data: [30, 40, 200, 400], backgroundColor: '#12a44a', hoverBackgroundColor: '#12a44a'}, {label: 'Skipped', data: [50, 80, 120, 0], backgroundColor: '#a391c5', hoverBackgroundColor: '#a391c5'}, {label: 'Duplicate', data: [100, 300, 60, 20], backgroundColor: '#b668aa', hoverBackgroundColor: '#b668aa'}, {label: 'correction', data: [10, 0, 155, 100], backgroundColor: '#66aa00', hoverBackgroundColor: '#66aa00'}, {label: 'Outdated', data: [0, 4, 5, 1], backgroundColor: '#dd4477', hoverBackgroundColor: '#dd4477'}]};
+  schemaBusinessRuleChartData: any = { labels: ['MRP Controller', 'Reorder point', 'Rounding Value', 'Max stock level'], dataSet: [{ label: 'Error', data: [100, 200, 230, 150], backgroundColor: '#c30000', hoverBackgroundColor: '#c30000' }, { label: 'Success', data: [30, 40, 200, 400], backgroundColor: '#12a44a', hoverBackgroundColor: '#12a44a' }, { label: 'Skipped', data: [50, 80, 120, 0], backgroundColor: '#a391c5', hoverBackgroundColor: '#a391c5' }, { label: 'Duplicate', data: [100, 300, 60, 20], backgroundColor: '#b668aa', hoverBackgroundColor: '#b668aa' }, { label: 'correction', data: [10, 0, 155, 100], backgroundColor: '#66aa00', hoverBackgroundColor: '#66aa00' }, { label: 'Outdated', data: [0, 4, 5, 1], backgroundColor: '#dd4477', hoverBackgroundColor: '#dd4477' }] };
   constructor(
     private http: HttpClient,
     private endpointService: EndpointService,
@@ -53,7 +53,7 @@ export class SchemaDetailsService {
 
   public getSchemaDetailsBySchemaId(schemaId: string): Observable<SchemaListDetails> {
     return this.http.post<any>(this.endpointService.getSchemaDetailsBySchemaId(schemaId), '').pipe(map(data => {
-      return  null; // this.any2tsService.returnSchemaListDataForGrp(data, schemaId);
+      return null; // this.any2tsService.returnSchemaListDataForGrp(data, schemaId);
     }));
   }
   public getSchemaDataTableShowMore(scrollId: string): Observable<any> {
@@ -97,7 +97,7 @@ export class SchemaDetailsService {
     }));
   }
 
-  public getCategoryChartDetails(schemaId: string, variantId: string, categoryId: string, status: string ): Observable<CategoryChartDataSet> {
+  public getCategoryChartDetails(schemaId: string, variantId: string, categoryId: string, status: string): Observable<CategoryChartDataSet> {
     return this.http.get<any>(this.endpointService.categoryChartData(schemaId, variantId, categoryId, status)).pipe(map(response => {
       return this.any2tsService.any2CategoryChartData(response);
     }));
@@ -114,7 +114,7 @@ export class SchemaDetailsService {
   }
 
   public getSchemaBrInfoList(schemaId: string): Observable<SchemaBrInfo[]> {
-    return this.http.get<SchemaBrInfo[]>(this.endpointService.getSchemaBrInfoList(schemaId)).pipe(map(response=>{
+    return this.http.get<SchemaBrInfo[]>(this.endpointService.getSchemaBrInfoList(schemaId)).pipe(map(response => {
       return this.any2tsService.any2SchemaBrInfo(response);
     }));
   }
@@ -124,7 +124,7 @@ export class SchemaDetailsService {
   }
 
   public getCorrectedRecords(schemaId: string, fetchSize: any, fetchCount: any): Observable<any> {
-    return this.http.get<any>(this.endpointService.getCorrectedRecords(schemaId), {params:{fetchSize, fetchCount}});
+    return this.http.get<any>(this.endpointService.getCorrectedRecords(schemaId), { params: { fetchSize, fetchCount } });
   }
 
   public getLastBrErrorRecords(schemaId: string, objnrs: string[]): Observable<any> {

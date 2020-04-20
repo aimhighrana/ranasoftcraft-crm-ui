@@ -177,6 +177,6 @@ import { ThousandconvertorPipe } from './_pipes/thousandconvertor.pipe';
     AddTileComponent,
     SvgIconComponent,
     TableColumnSettingsComponent
-]
+  ]
 })
 export class SharedModule { }

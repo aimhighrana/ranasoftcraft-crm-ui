@@ -92,3 +92,10 @@ export class SchemaGroupMapping {
      updatedDate: number;
      plantCode: string;
 }
+
+export class CategoriesList {
+     categoryId: string;
+     categoryDesc: string;
+     plantCode: string;
+     businessRules: any;
+}

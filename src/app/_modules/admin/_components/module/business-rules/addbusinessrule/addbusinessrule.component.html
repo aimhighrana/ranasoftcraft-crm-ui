@@ -9,9 +9,9 @@
         <div class="f-row">
             <mat-card class="mat-elevation-z3 rules">
                 <div class="f-row">
-                    <mat-radio-group>
-                        <mat-radio-button value="1" color="primary"></mat-radio-button>
-                    </mat-radio-group>
+                    <mat-radio-button value="missing" color="primary" [checked]="showMissingRuleSection"
+                        (change)="onChangeRadioButton($event)">
+                    </mat-radio-button>
                     <div class="f-col">
                         <h4 class="mat-h4">Missing Rule</h4>
                         <p>This rule establish a dependency relationship between source and target fields</p>
@@ -23,9 +23,9 @@
 
             <mat-card class="mat-elevation-z3 rules">
                 <div class="f-row">
-                    <mat-radio-group>
-                        <mat-radio-button value="1" color="primary"></mat-radio-button>
-                    </mat-radio-group>
+                    <mat-radio-button value="metadata" color="primary" [checked]="showMetaDataSection"
+                        (change)="onChangeRadioButton($event)">
+                    </mat-radio-button>
                     <div class="f-col">
                         <h4 class="mat-h4">Metadata Rule</h4>
                         <p>This rule establish a dependency relationship between source and target fields</p>
@@ -37,9 +37,9 @@
 
             <mat-card class="mat-elevation-z3 rules">
                 <div class="f-row">
-                    <mat-radio-group>
-                        <mat-radio-button value="1" color="primary"></mat-radio-button>
-                    </mat-radio-group>
+                    <mat-radio-button value="userdefined" color="primary" [checked]="showUserDefinedSection"
+                        (change)="onChangeRadioButton($event)">
+                    </mat-radio-button>
                     <div class="f-col">
                         <h4 class="mat-h4">User Defined Rule</h4>
                         <p>This rule establish a dependency relationship between source and target fields</p>
@@ -49,11 +49,10 @@
                 </div>
             </mat-card>
 
-            <mat-card class="mat-elevation-z3 rules">
+            <!-- <mat-card class="mat-elevation-z3 rules">
                 <div class="f-row">
-                    <mat-radio-group>
-                        <mat-radio-button value="1" color="primary"></mat-radio-button>
-                    </mat-radio-group>
+                    <mat-radio-button value="dependency" color="primary"  [checked]="showDependencySection" (change)="onChangeRadioButton($event)">
+                    </mat-radio-button>
                     <div class="f-col">
                         <h4 class="mat-h4">Dependency Rule</h4>
                         <p>This rule establish a dependency relationship between source and target fields</p>
@@ -61,235 +60,37 @@
                     <span class="f-spacer"></span>
                     <pros-svg-icon size="70" icon="P_BR_UDR_RULE" color="primary"></pros-svg-icon>
                 </div>
-            </mat-card>
+            </mat-card> -->
         </div>
     </div>
 
     <!-- Missing Buisness Rule Container Starts Here-->
-    <mat-card class="mat-elevation-z3 rulesfields">
-        <mat-toolbar>
-            <mat-toolbar-row>
-              <span>Fill Details</span>
-            </mat-toolbar-row>
-        </mat-toolbar>
 
-        <div class="f-col">
-            <mat-form-field>
-                <mat-label>Description</mat-label>
-                <input matInput>
-            </mat-form-field>
-
-            <mat-form-field>
-                <mat-label>Select Fields</mat-label>
-                <input matInput>
-            </mat-form-field>
-
-            <div class="f-row fieldselection">
-
-                <mat-card class="mat-elevation-z2">
-                    <mat-checkbox color="primary">
-                      <label class="tilelabel">Criticality</label>
-                    </mat-checkbox>      
-                </mat-card> 
-
-                <mat-card class="mat-elevation-z2">
-                    <mat-checkbox color="primary">
-                      <label class="tilelabel">Acquisition Date</label>
-                    </mat-checkbox>      
-                </mat-card> 
-
-                <mat-card class="mat-elevation-z2">
-                    <mat-checkbox color="primary">
-                      <label class="tilelabel">Acquisition Value</label>
-                    </mat-checkbox>      
-                </mat-card> 
-
-                <mat-card class="mat-elevation-z2">
-                    <mat-checkbox color="primary">
-                      <label class="tilelabel">Actual Superior Functional</label>
-                    </mat-checkbox>      
-                </mat-card> 
-
-                <mat-card class="mat-elevation-z2">
-                    <mat-checkbox color="primary">
-                      <label class="tilelabel">Main Asset Number</label>
-                    </mat-checkbox>      
-                </mat-card> 
-
-                <mat-card class="mat-elevation-z2">
-                    <mat-checkbox color="primary">
-                      <label class="tilelabel">Attachment Details</label>
-                    </mat-checkbox>      
-                </mat-card> 
-
-                <mat-card class="mat-elevation-z2">
-                    <mat-checkbox color="primary">
-                      <label class="tilelabel">Business Area</label>
-                    </mat-checkbox>      
-                </mat-card> 
-
-            </div>
-
-        </div>
-    </mat-card>
-    <!-- Missing Buisness Rule Container End Here-->    
-
-    <!-- User Defined Buisness Rule Container Starts Here-->
-    <mat-card class="mat-elevation-z3 rulesfields">
-        <mat-toolbar>
-            <mat-toolbar-row>
-              <span>Create Conditions</span>
-            </mat-toolbar-row>
-        </mat-toolbar>
-
-        <div class="f-col">
-            <mat-form-field>
-                <mat-label>Condition Name</mat-label>
-                <input matInput>
-            </mat-form-field>
-            <div class="f-row condition-flex">
-            <mat-form-field>
-                <mat-label>Field</mat-label>
-                <mat-select>
-                    <mat-option value="option">Option</mat-option>
-                </mat-select>
-            </mat-form-field>
-
-            <div class="col-spacer"></div>
-
-            <mat-form-field>
-                <mat-label>Operator</mat-label>
-                <mat-select>
-                    <mat-option value="option">Option</mat-option>
-                </mat-select>
-            </mat-form-field>
-
-            <div class="col-spacer"></div>
-
-            <mat-form-field>
-                <mat-label>Comparison</mat-label>
-                <mat-select>
-                    <mat-option value="option">Option</mat-option>
-                </mat-select>
-            </mat-form-field>
-
-            <div class="col-spacer"></div>
-
-            <mat-form-field>
-                <mat-label>Comparison Value</mat-label>
-                <input matInput>
-            </mat-form-field>
-
-            </div>
-            <mat-card-actions>
-                <button mat-flat-button color="primary">Save</button>
-            </mat-card-actions>
-        </div>
+    <mat-card class="mat-elevation-z3 rulesfields" *ngIf="showMissingRuleSection || showMetaDataSection">
+        <pros-missingrule *ngIf="showMissingRuleSection || showMetaDataSection" [brLength]="brLength"
+            [paramsData]="paramsData" (loadParentPage)="addNewBusiness()" [brType]="brType" [brData]="brData">
+        </pros-missingrule>
     </mat-card>
 
-    <mat-card class="container-show content-row">
-        <div class="f-col nullstate">
-            <button mat-fab disabled>
-                <mat-icon color="primary">list_alt</mat-icon>
-            </button>
-            <p>There is no condition here for and/or block.</p>
-        </div>
+    <!-- Missing Buisness Rule Container End Here-->
+
+    <!-- <mat-card *ngIf="showUserDefinedSection"> -->
+    <mat-card *ngIf="showUserDefinedSection">
+        <pros-user-defined-rule></pros-user-defined-rule>
+        <!-- User Defined Section -->
     </mat-card>
 
-    <mat-card class="mat-elevation-z3 condition-col">
-        <mat-toolbar>
-            <mat-toolbar-row>
-              <span>Conditions List</span>
-              <span class="f-spacer"></span>
-              <button mat-button color="primary">Expand All</button>
-            </mat-toolbar-row>
-        </mat-toolbar>
-        <mat-card class="mat-elevation-z0">
-            <mat-accordion class="mat-elevation-z2">
-                <mat-expansion-panel>
-                    <mat-expansion-panel-header>
-                        <mat-panel-title>
-                        On Single Equipment Installation
-                        </mat-panel-title>
-                        <div class="f-spacer"></div>
-                    </mat-expansion-panel-header>
-                    <p> (EQSINGLE=="off")||(EQSINGLE}=="OFF")||(EQSINGLE=="No") </p>
-                    <button mat-button color="warn">Delete</button>
-                </mat-expansion-panel>
+    <!-- </mat-card> -->
 
-                <mat-expansion-panel>
-                    <mat-expansion-panel-header>
-                        <mat-panel-title>
-                        ObjectType is not equals to Catalog Profile
-                        </mat-panel-title>
-                    </mat-expansion-panel-header>
-                    <p> (EQSINGLE=="off")||(EQSINGLE}=="OFF")||(EQSINGLE=="No") </p>
-                    <button mat-button color="warn">Delete</button>
-                </mat-expansion-panel>
-
-                <mat-expansion-panel>
-                    <mat-expansion-panel-header>
-                        <mat-panel-title>
-                        Condition Text One
-                        </mat-panel-title>
-                    </mat-expansion-panel-header>
-                    <p>I'm visible because I am open</p>
-                    <button mat-button color="warn">Delete</button>
-                </mat-expansion-panel>
-
-                <mat-expansion-panel>
-                    <mat-expansion-panel-header>
-                        <mat-panel-title>
-                        Condition Text Two
-                        </mat-panel-title>
-                    </mat-expansion-panel-header>
-                    <p>I'm visible because I am open</p>
-                    <button mat-button color="warn">Delete</button>
-                </mat-expansion-panel>
-
-                <mat-expansion-panel>
-                    <mat-expansion-panel-header>
-                        <mat-panel-title>
-                        Condition Text Three
-                        </mat-panel-title>
-                    </mat-expansion-panel-header>
-                    <p>I'm visible because I am open</p>
-                    <button mat-button color="warn">Delete</button>
-                </mat-expansion-panel>
-
-                <mat-expansion-panel>
-                    <mat-expansion-panel-header>
-                        <mat-panel-title>
-                        Condition Text Four
-                        </mat-panel-title>
-                    </mat-expansion-panel-header>
-                    <p>I'm visible because I am open</p>
-                    <button mat-button color="warn">Delete</button>
-                </mat-expansion-panel>
-            </mat-accordion>
-        </mat-card>
-        
+    <mat-card *ngIf="showDependencySection">
+        Dependency Section
     </mat-card>
 
-    <mat-card class="mat-elevation-z3 selectedblock-col">
-        <div class="f-col nullstate">
-            <button mat-fab disabled>
-                <mat-icon color="primary">filter_none</mat-icon>
-            </button>
-            <p>Create add/or block for condition apply. Then you can drap and drop and make more block for condition flieds</p>
-            <div class="f-row">
-                <button mat-flat-button color="primary">Create and block</button>
-                <button mat-flat-button color="primary">Create or block</button>
-            </div>
-        </div>
-
-    </mat-card>
-    <!-- User Defined Buisness Rule Container End Here-->
-
-    <mat-card class="container-show content-row">
+    <!-- <mat-card class="container-show content-row">
         <mat-card-actions>
             <button mat-button>Back</button>
             <button mat-flat-button color="primary">Finish Process</button>
         </mat-card-actions>
-    </mat-card>
-</div> 
+    </mat-card> -->
+
+</div>

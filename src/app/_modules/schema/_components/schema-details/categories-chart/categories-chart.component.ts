@@ -30,28 +30,30 @@ export class CategoriesChartComponent implements OnInit {
   categoryInfoLst: CategoryInfo[];
   schemaStatusLst: string[];
   schemaDetails: SchemaListDetails = new SchemaListDetails();
-  categoryChartData: ChartDataSets[] = [{ data: []}];
+  categoryChartData: ChartDataSets[] = [{ data: [] }];
   categoryChartDataDetails: CategoryChartDataSet;
   categoryChartLabels: Label[] = this.generateDynamicTimeSeries();
   categoryChartOptions: ChartOptions = {
     responsive: true,
-    elements: {line: {fill: false}},
+    elements: { line: { fill: false } },
     legend: {
       display: false,
       position: 'top',
 
     },
-    scales: {xAxes: [{
-      type: 'time',
-      time: {tooltipFormat: 'lll'},
-      scaleLabel: {display: true, labelString: 'Date'},
-      ticks: {maxRotation: 0}
-    }], yAxes: [{
-      scaleLabel: {
-        display: true,
-        labelString: 'Value'
-      }
-    }]},
+    scales: {
+      xAxes: [{
+        type: 'time',
+        time: { tooltipFormat: 'lll' },
+        scaleLabel: { display: true, labelString: 'Date' },
+        ticks: { maxRotation: 0 }
+      }], yAxes: [{
+        scaleLabel: {
+          display: true,
+          labelString: 'Value'
+        }
+      }]
+    },
     plugins: {
       zoom: {
         pan: {
@@ -59,19 +61,19 @@ export class CategoriesChartComponent implements OnInit {
           mode: 'x',
           speed: 10,
           threshold: 10,
-          onPan() {console.log('I am pan ...!'); },
-          onPanComplete() {console.log('On pan Complete !'); }
+          onPan() { console.log('I am pan ...!'); },
+          onPanComplete() { console.log('On pan Complete !'); }
         },
         zoom: {
           enabled: false,
           grag: true,
           mode: 'x',
-          limits: {max: 10, min: 0.5},
-          onZoom() {console.log('ONZOOM'); },
-          onZoomComplete() {console.log('ZOOM Complete'); }
+          limits: { max: 10, min: 0.5 },
+          onZoom() { console.log('ONZOOM'); },
+          onZoomComplete() { console.log('ZOOM Complete'); }
         }
+      }
     }
-   }
   };
   categoryChartLegend = true;
   categoryChartType: ChartType = 'line';
@@ -80,7 +82,7 @@ export class CategoriesChartComponent implements OnInit {
     private schemaDetailsService: SchemaDetailsService,
     private schemaListService: SchemalistService
   ) {
-    this.categoryChartData = [{ data: []}];
+    this.categoryChartData = [{ data: [] }];
     this.categoryInfoLst = [];
     this.schemaStatusLst = [];
     this.categoryChartDataDetails = new CategoryChartDataSet();

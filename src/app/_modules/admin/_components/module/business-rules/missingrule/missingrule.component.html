@@ -1,0 +1,56 @@
+<div class="rulesfields">
+    <mat-toolbar>
+        <mat-toolbar-row>
+            <span>Fill Details</span>
+        </mat-toolbar-row>
+    </mat-toolbar>
+
+    <div class="f-col">
+        <mat-form-field>
+            <mat-label>Description</mat-label>
+            <input matInput autocomplete="off" [(ngModel)]="description" (keyup)="enableFinishBtn()">
+        </mat-form-field>
+
+        <form [formGroup]="fillDataForm">
+            <mat-form-field class="field-x2">
+
+                <mat-chip-list #chipList aria-label="Module selection">
+                    <mat-chip *ngFor="let module of groupDetailss" [selectable]="'true'" [removable]="'true'"
+                        (removed)="remove(module)">
+                        <!-- {{displayObjectDescription(module)}} -->
+                        {{module.descr}}
+                        <mat-icon matChipRemove>cancel</mat-icon>
+                    </mat-chip>
+                    <input matInput placeholder="Select Fields" formControlName="selectFields"
+                        [matAutocomplete]="autoGroup" [matChipInputFor]="chipList" [matChipInputAddOnBlur]="'true'"
+                        (click)="openPanel()" #trigger="matAutocompleteTrigger"
+                        (keydown.enter)="$event.target.blur(); trigger.closePanel()">
+                </mat-chip-list>
+
+                <mat-autocomplete #autoGroup="matAutocomplete">
+                    <div *ngFor="let group of moduleListData | async">
+                        <div *ngIf="group.length == 1" class="optionLeftSpace">
+                            <mat-option *ngFor="let name of group.names" [value]="name" (click)="onSelect(name)">
+                                {{name.fieldDescri}}
+                            </mat-option>
+                        </div>
+                        <mat-optgroup *ngIf="group.length > 1" [label]="group.letter">
+                            <mat-option *ngFor="let name of group.names" [value]="name" (click)="onSelect(name)">
+                                {{name.fieldDescri}}
+                            </mat-option>
+                        </mat-optgroup>
+                    </div>
+                </mat-autocomplete>
+            </mat-form-field>
+        </form>
+
+        <div class="f-row fieldselection"> </div>
+
+    </div>
+    <div class="finishBtn">
+        <button mat-button (click)="callParentPage()">Back</button>
+        <button [disabled]="!enablingFinishButton" mat-flat-button color="primary" (click)="saveBrInfo()">Finish
+            Process</button>
+    </div>
+
+</div>

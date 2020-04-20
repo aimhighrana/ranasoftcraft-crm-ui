@@ -33,12 +33,12 @@
 
       timestamp="{{ schema.executionEndTime | date:'MMM d, y, h:mm:ss a' }}"
 
-      (evtEdit)="edit(schema);"
+      (evtEdit)="edit(module.moduleId, schema);"
       (evtBottomLeft)="variants(module.moduleId, schema.schemaId);"
       (evtBottomRight)="run(schema.schemaId);">
     </pros-schema-tile>
 
-    <pros-add-tile class="flex-col-1" text="Create a new schema"></pros-add-tile>
+    <pros-add-tile class="flex-col-1" text="Create a new schema" routerLink="/home/schema/create-schema/{{module.moduleId}}/{{schemaGroupId}}/new"></pros-add-tile>
 
   </div>
 

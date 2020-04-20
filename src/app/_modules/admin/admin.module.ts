@@ -45,6 +45,7 @@ import { BusinessRulesComponent } from 'src/app/_modules/admin/_components/modul
 import { NounsCharacteristicsComponent } from 'src/app/_modules/admin/_components/module/nouns-characteristics/nouns-characteristics.component';
 import { AddbusinessruleComponent } from './_components/module/business-rules/addbusinessrule/addbusinessrule.component';
 import { CreateSchemaComponent } from './_components/module/schema/create-schema/create-schema.component';
+import { MissingruleComponent } from './_components/module/business-rules/missingrule/missingrule.component';
 
 @NgModule({
   declarations: [
@@ -90,7 +91,8 @@ import { CreateSchemaComponent } from './_components/module/schema/create-schema
     BusinessRulesComponent,
     NounsCharacteristicsComponent,
     AddbusinessruleComponent,
-    CreateSchemaComponent
+    CreateSchemaComponent,
+    MissingruleComponent
   ],
   imports: [
     CommonModule,

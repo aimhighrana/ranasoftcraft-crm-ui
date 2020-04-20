@@ -7,6 +7,7 @@ import { Any2tsService } from '../any2ts.service';
 import { SchemaGroupResponse, SchemaGroupDetailsResponse, SchemaGroupCountResponse, CreateSchemaGroupRequest, GetAllSchemabymoduleidsReq, ObjectTypeResponse, GetAllSchemabymoduleidsRes, SchemaGroupWithAssignSchemas } from 'src/app/_models/schema/schema';
 import { DataSource } from 'src/app/_modules/schema/_components/upload-data/upload-data.component';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -35,7 +36,7 @@ export class SchemaService {
   }
 
   public createSchemaGroup(createSchemaGroupRequest: CreateSchemaGroupRequest): Observable<any> {
-    return  this.http.post<any>(this.endpointService.getCreateSchemaGroupUrl(), createSchemaGroupRequest);
+    return this.http.post<any>(this.endpointService.getCreateSchemaGroupUrl(), createSchemaGroupRequest);
   }
 
   public getAllSchemabymoduleids(getAllSchemabymoduleidsReq: GetAllSchemabymoduleidsReq): Observable<GetAllSchemabymoduleidsRes[]> {
@@ -64,7 +65,7 @@ export class SchemaService {
     return this.http.delete<boolean>(this.endpointService.deleteSchemaGroupUrl(groupId));
   }
 
-  public uploadUpdateFileData(file: File,fileSno: string): Observable<string> {
+  public uploadUpdateFileData(file: File, fileSno: string): Observable<string> {
     const formData = new FormData();
     formData.append('file', file);
     return this.http.post<string>(`${this.endpointService.uploadFileDataUrl()}?fileSno=${fileSno}`, formData);
@@ -72,5 +73,30 @@ export class SchemaService {
 
   public uploadData(data: DataSource[], objectType: string, fileSno: string): Observable<string> {
     return this.http.post<any>(this.endpointService.uploadDataUrl(objectType, fileSno), data);
+  }
+  public getAllBusinessRules(schemaId) {
+    return this.http.get(this.endpointService.getBusinessRulesInfo(schemaId));
+  }
+
+  public getAllCategoriesList() {
+    return this.http.get<any>(this.endpointService.getCategoriesInfo()).pipe(map(data => {
+      return this.any2tsService.any2CategoriesList(data);
+    }));
+  }
+
+  public createUpdateSchema(params) {
+    return this.http.post(this.endpointService.createSchema(), params);
+  }
+
+  getFillDataDropdownData(id) {
+    return this.http.get(this.endpointService.getFillDataInfo(id));
+  }
+
+  createBusinessRule(params) {
+    return this.http.post(this.endpointService.createBr(), params);
+  }
+
+  public deleteBr(id) {
+    return this.http.delete(this.endpointService.deleteBr(id));
   }
 }

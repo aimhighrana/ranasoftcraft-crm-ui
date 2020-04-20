@@ -4,7 +4,7 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class EndpointService {
-  constructor( ) { }
+  constructor() { }
   apiUrl = environment.apiurl;
   public login(): string {
     throw new Error('Login not implemented');
@@ -171,11 +171,11 @@ export class EndpointService {
     return `${this.apiUrl}/schema/get-mdoerror-records/${schemaId}`;
   }
 
-  public getSchemaExecutionLogUrl(schemaId:  string): string {
+  public getSchemaExecutionLogUrl(schemaId: string): string {
     return `${this.apiUrl}/schema/get-execution-logs/${schemaId}`;
   }
 
-  public submitReviewedRecordsUrl(schemaId:  string): string {
+  public submitReviewedRecordsUrl(schemaId: string): string {
     return `${this.apiUrl}/schema/submit-reviewed-records/${schemaId}`;
   }
 
@@ -187,4 +187,29 @@ export class EndpointService {
     return `${this.apiUrl}/schema/upload-data/${objectType}/${fileSno}`;
   }
 
+  public getBusinessRulesInfo(id) {
+    return this.apiUrl + '/schema/get-business-rules/' + id
+  }
+
+  public getCategoriesInfo() {
+    return this.apiUrl + '/schema/category-list';
+  }
+
+  public getFillDataInfo(id) {
+    return this.apiUrl + '/schema/metadata-fileds/' + id;
+  }
+
+  public createBr() {
+    return this.apiUrl + '/schema/create-update-br'
+  }
+
+  public createSchema() {
+    return this.apiUrl + '/schema/create-update-schema';
+  }
+
+  public deleteBr(id) {
+    return this.apiUrl + '/schema/delete-business-rule/' + id;
+  }
 }
+
+

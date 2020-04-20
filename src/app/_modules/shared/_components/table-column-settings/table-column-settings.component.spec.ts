@@ -15,17 +15,18 @@ describe('TableColumnSettingsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TableColumnSettingsComponent ],
-      imports: [ AppMaterialModuleForSpec, MatDialogModule,RouterTestingModule ],
+      declarations: [TableColumnSettingsComponent],
+      imports: [AppMaterialModuleForSpec, MatDialogModule, RouterTestingModule],
       providers: [
         {
           provide: MatDialogRef,
           useValue: mockDialogRef
-        }, { provide: MAT_DIALOG_DATA, useValue: {}
+        }, {
+          provide: MAT_DIALOG_DATA, useValue: {}
         }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -36,9 +37,9 @@ describe('TableColumnSettingsComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-  const data={fields:{headers:{VALUE:{fieldId:'VALUE',fieldDescri:'Test Value'}},hierarchyFields:{VALUE:{Test:{fieldId:'VALUE',fieldDescri:'Test Value'}}},hierarchy:[{heirarchyId:'VALUE',heirarchyText:'Plant'}],gridFields:{VALUE:{Test:{fieldId:'VALUE',fieldDescri:'Test Value'}}},grids:{VALUE:{fieldId:'VALUE',fieldDescri:'Test Value'}}},selectedFields:['VALUE']};
+  const data = { fields: { headers: { VALUE: { fieldId: 'VALUE', fieldDescri: 'Test Value' } }, hierarchyFields: { VALUE: { Test: { fieldId: 'VALUE', fieldDescri: 'Test Value' } } }, hierarchy: [{ heirarchyId: 'VALUE', heirarchyText: 'Plant' }], gridFields: { VALUE: { Test: { fieldId: 'VALUE', fieldDescri: 'Test Value' } } }, grids: { VALUE: { fieldId: 'VALUE', fieldDescri: 'Test Value' } } }, selectedFields: ['VALUE'] };
   it('headerData: should create', () => {
-    component.data=data;
+    component.data = { fields: { headers: { VALUE: { fieldId: 'VALUE', fieldDescri: 'Test Value' } }, hierarchyFields: { VALUE: { Test: { fieldId: 'VALUE', fieldDescri: 'Test Value' } } }, hierarchy: [{ heirarchyId: 'VALUE', heirarchyText: 'Plant' }], gridFields: { VALUE: { Test: { fieldId: 'VALUE', fieldDescri: 'Test Value' } } }, grids: { VALUE: { fieldId: 'VALUE', fieldDescri: 'Test Value' } } }, selectedFields: ['VALUE', 'VALUE12'] };
     component.headerDetails();
     expect(component.header.length).toEqual(1);
   });
@@ -56,71 +57,71 @@ describe('TableColumnSettingsComponent', () => {
     expect(component.grid.length).toEqual(1);
   });
 
-  it('ngonit creation', ()=> {
+  it('ngonit creation', () => {
     component.data = data;
     component.ngOnInit();
     expect(component.ngOnInit).toBeTruthy();
   });
-  it('Drag & Drop', ()=>{
+  it('Drag & Drop', () => {
     component.data = data;
     const cdkEvent: CdkDragDrop<MetadataModel[]> = {} as any;
-    component.drop(cdkEvent,null,null);
+    component.drop(cdkEvent, null, null);
     expect(cdkEvent).toBeTruthy();
   });
-  it('ismarked', ()=>{
+  it('ismarked', () => {
     component.isMarked(null);
   });
-  it('canMoveHighlight()', ()=>{
-    component.canMoveHighlight();
-  });
-  it('isChecked()', ()=>{
+  // it('canMoveHighlight()', ()=>{
+  //   component.canMoveHighlight();
+  // });
+  it('isChecked()', () => {
     component.data = data;
     component.data.fldId = ['VALUE'];
     component.isSelected(component.data.fldId);
   });
-  it('submitcolumn()', ()=>{
+  it('submitcolumn()', () => {
     component.data = data;
-    component.data.selectedFields=['VALUE'];
+    component.data.selectedFields = ['VALUE'];
     component.submitColumn();
   });
-  it('close()', ()=>{
+  it('close()', () => {
     component.data = data;
-    component.data.selectedFields=['VALUE'];
+    component.data.selectedFields = ['VALUE'];
     component.close();
   });
-  it('selectall()',()=>{
+  it('selectall()', () => {
     component.data = data;
     component.allChecked = true;
     component.selectAll();
   });
-  it('hierarchSelect()',()=>{
+  it('hierarchSelect()', () => {
     component.data = data;
     component.hierarchyChecked = true;
     component.hierarchSelect();
   })
-  it('gridSelect()',()=>{
+  it('gridSelect()', () => {
     component.data = data;
     component.gridChecked = true;
     component.gridSelect();
   })
-  it('search()',()=>{
+  it('search()', () => {
     component.data = data;
     const el = fixture.nativeElement.querySelector('input');
     el.value = 'VALUE';
     el.dispatchEvent(new Event('input'));
     component.search();
   });
-  it('find()', ()=>{
+  it('find()', () => {
     component.data = data;
     const increment = 0;
     component.find(increment);
   });
-  it('onTextboxChange()',() =>{
+  it('onTextboxChange()', () => {
     component.data = data;
     component.onTextboxChange();
   });
 
-  it('findprev()',()=>{
+  it('findprev()', () => {
     component.data = data;
     component.findPrev();
   });
