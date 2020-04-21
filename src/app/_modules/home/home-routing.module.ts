@@ -6,8 +6,9 @@ import { HomeLayoutComponent } from 'src/app/_modules/home/_components/home-layo
 const routes: Routes = [
   { path: '', component: HomeLayoutComponent,
     children: [
-      { path: '', redirectTo: 'schema', pathMatch: 'full' },
-      { path: 'schema', loadChildren: () => import('../schema/schema.module').then(m => m.SchemaModule) }
+      // { path: '', redirectTo: 'schema', pathMatch: 'full' },
+      { path: 'schema', loadChildren: () => import('../schema/schema.module').then(m => m.SchemaModule) },
+      { path: 'report', loadChildren: () =>import('../report/report.module').then(m => m.ReportModule)}
     ]
   },
   // anything not mapped should go to page not found component

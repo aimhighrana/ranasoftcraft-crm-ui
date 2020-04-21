@@ -1,0 +1,23 @@
+<div class="root f-col">
+
+	<!-- BREADCRUMB-->
+	<div class="breadcrumb-wrapper">
+		<pros-breadcrumb [crumbs]="breadcrumb"></pros-breadcrumb>
+	</div>
+
+    <mat-card cdkDropList (cdkDropListDropped)="drop($event)" [ngStyle]="{'width.px': screenWidth}" class="main-contaier">
+    
+        <ng-template ngFor let-widget [ngForOf]="widgetList">
+            <pros-widget1 [boxSize]="eachBoxSize" [widget]="widget"></pros-widget1>
+        </ng-template>
+    
+    </mat-card>
+    
+	
+</div>
+
+
+
+
+
+

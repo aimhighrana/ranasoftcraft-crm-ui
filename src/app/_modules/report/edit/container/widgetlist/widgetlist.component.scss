@@ -1,0 +1,24 @@
+.condition-col {
+  width: 100%;
+  padding: 0;
+
+  mat-accordion {
+    .condition-division {
+      text-align: center;
+    }
+
+    mat-expansion-panel {
+      margin: 8px 0;
+
+      mat-panel-title {
+        -webkit-box-align: start;
+        align-items: center;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+}

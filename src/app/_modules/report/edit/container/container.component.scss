@@ -1,0 +1,17 @@
+.root {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  align-content: flex-start;
+
+  .breadcrumb-wrapper {
+    flex: 1 100%;
+  }
+
+  .main-contaier {
+    position: relative;
+    height: 99%;
+    border: 1px solid gray;
+  }
+}
