@@ -16,6 +16,10 @@ describe('FilterComponent', () => {
     .compileComponents();
   }));
 
+  it('getFilterMetadata(), get Metadata ', async(()=>{
+        component.getFilterMetadata();
+  }));
+
   beforeEach(() => {
     fixture = TestBed.createComponent(FilterComponent);
     component = fixture.componentInstance;

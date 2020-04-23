@@ -22,6 +22,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
   filterWidget:BehaviorSubject<FilterWidget> = new BehaviorSubject<FilterWidget>(null);
   filteredOptions: Observable<DropDownValues[]> = of([]);
   filterFormControl: FormControl = new FormControl('');
+  headerDesc='';
   constructor(
     private widgetService : WidgetService,
     private reportService: ReportService
@@ -35,12 +36,15 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
    */
   ngOnChanges(changes: import('@angular/core').SimpleChanges): void {
     this.filterWidget.subscribe(widget=>{
-      this.loadAlldropData(widget.fieldId, this.filterCriteria);
+      if(widget) {
+        this.loadAlldropData(widget.fieldId, this.filterCriteria);
+      }
     });
   }
 
   ngOnInit(): void {
     this.getFilterMetadata();
+    this.getHeaderMetaData();
     this.filterFormControl.valueChanges.subscribe(val=>{
       if(val && val !== '' && typeof val === 'string') {
         this.filteredOptions = of( this.values.filter(fill => fill.text.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !==-1));
@@ -49,11 +53,6 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
         if(typeof val === 'string' && val.trim() === ''){
           this.emitEvtFilterCriteria(null);
         }
-      }
-    });
-    this.filterWidget.subscribe(fil=>{
-      if(fil) {
-        this.loadAlldropData(fil.fieldId, this.filterCriteria);
       }
     });
   }
@@ -68,9 +67,15 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     })
   }
 
+  public getHeaderMetaData():void{
+    this.widgetService.getHeaderMetaData(this.widgetId).subscribe(returnData=>{
+      this.headerDesc = returnData.widgetName;
+    });
+  }
+
   public getFilterMetadata():void{
     this.widgetService.getFilterMetadata(this.widgetId).subscribe(returndata=>{
-      if(returndata.fieldId !== this.filterWidget.getValue().fieldId) {
+      if(returndata && returndata.fieldId !== (this.filterWidget.getValue() ? this.filterWidget.getValue().fieldId : null)){
         this.filterWidget.next(returndata);
       }
     },error=>{

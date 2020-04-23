@@ -1,5 +1,8 @@
 <mat-card *ngIf="showList" class="bxshadow-variant-0">
-
+    <mat-card-header>
+        <mat-card-title>{{headerDesc}}</mat-card-title>
+      </mat-card-header>
+      <mat-divider></mat-divider>
             <div class="mat-elevation-z8 root-AdminTable">
                 <table mat-table [dataSource]="dataSource" matSort (matSortChange) = "sortUsers($event)">
         
@@ -9,14 +12,6 @@
                             <mat-icon mat-icon-button>more_vert</mat-icon>
                             <mat-menu #actiontable="matMenu">
                                 <button mat-menu-item>Details</button>
-                                <button mat-menu-item>Change Password</button>
-                                <button mat-menu-item (click)="editUser(element)">Edit</button>
-                                <button mat-menu-item>Delete</button> 
-                                <button mat-menu-item [matMenuTriggerFor]="Download">Download</button>
-                            </mat-menu>
-                            <mat-menu #Download="matMenu">
-                                <button mat-menu-item>WSDL</button>
-                                <button mat-menu-item>XSD</button>
                             </mat-menu>
                         </td>
                     </ng-container>

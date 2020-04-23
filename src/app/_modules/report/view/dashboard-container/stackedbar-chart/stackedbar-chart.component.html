@@ -1,5 +1,8 @@
 <mat-card>
-
+  <mat-card-header>
+    <mat-card-title>{{headerDesc}}</mat-card-title>
+  </mat-card-header>
+  <mat-divider></mat-divider>
     <canvas baseChart 
     [datasets]="barChartData"
     [labels]="barChartLabels"

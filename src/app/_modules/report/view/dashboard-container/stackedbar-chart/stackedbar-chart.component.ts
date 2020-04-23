@@ -1,15 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnChanges } from '@angular/core';
 import { ChartOptions, ChartType, ChartDataSets } from 'chart.js';
 import { Label } from 'ng2-charts';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
+import { BehaviorSubject } from 'rxjs';
+import { StackBarChartWidget, Criteria } from '../../../_models/widget';
 
 @Component({
   selector: 'pros-stackedbar-chart',
   templateUrl: './stackedbar-chart.component.html',
   styleUrls: ['./stackedbar-chart.component.scss']
 })
-export class StackedbarChartComponent extends GenericWidgetComponent implements OnInit {
+export class StackedbarChartComponent extends GenericWidgetComponent implements OnInit ,OnChanges{
+
+
+  stackBarWidget : BehaviorSubject<StackBarChartWidget> = new BehaviorSubject<StackBarChartWidget>(null);
 
   constructor(
     private widgetService : WidgetService
@@ -18,8 +23,8 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
   }
 
   arrayBuckets :any[];
-  xAxis1='MATL_TYPE';
-  xAxis2='MATL_GROUP';
+  xAxis1='';
+  xAxis2='';
   listxAxis2 :any[]=new Array();
   mtl='';
 
@@ -30,30 +35,52 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
   public barChartType: ChartType = 'bar';
   public barChartLegend = true;
   public barChartPlugins = [];
+  headerDesc='';
   public barChartColors:Array<any> = [{
     backgroundColor: ['red', 'yellow', 'green', 'orange','pink']
  }];
 
-    public barChartData: ChartDataSets[] =
-     [
-       { data: [0,0,0,0,0], label: 'Series A', stack: 'a' }
-     ];
+  public barChartData: ChartDataSets[] =
+    [
+      { data: [0,0,0,0,0], label: 'Series A', stack: 'a' }
+    ];
+
+ngOnChanges():void{
+  this.stackBarWidget.subscribe(res=>{
+    if(res){
+      this.getstackbarChartData(this.widgetId,this.filterCriteria);
+    }
+  });
+}
 
   ngOnInit(): void {
     this.getStackChartMetadata();
-    this.getstackbarChartData();
+    this.getHeaderMetaData();
+  }
+
+  public getHeaderMetaData():void{
+    this.widgetService.getHeaderMetaData(this.widgetId).subscribe(returnData=>{
+      this.headerDesc = returnData.widgetName;
+    });
   }
 
   public getStackChartMetadata():void{
     this.widgetService.getStackChartMetadata(this.widgetId).subscribe(returnData=>{
-
-    });
+      console.log(returnData);
+      if(returnData !== undefined && Object.keys(returnData).length>0){
+          this.xAxis2 = returnData.fieldId;
+          this.xAxis1= returnData.groupById
+          this.stackBarWidget.next(returnData);
+         }
+        }, error=>{
+          console.error(`Error : ${error}`);
+      });
   }
 
-  public getstackbarChartData() : void{
-    this.widgetService.getstackbarChartData().subscribe(returnData=>{
+  public getstackbarChartData(widgetId:number,criteria:Criteria[]) : void{
+    this.widgetService.getWidgetData(String(widgetId),criteria).subscribe(returnData=>{
       console.log(returnData);
-      this.arrayBuckets = returnData.aggregations.total_per_year.buckets
+      this.arrayBuckets =  returnData.aggregations['composite#STACKED_BAR_CHART'].buckets;
       const dataObj = new Object();
       this.arrayBuckets.forEach(singleBucket=>{
         if(this.barChartLabels.indexOf(singleBucket.key[this.xAxis1]) === -1){
@@ -78,15 +105,15 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
           dataObj[Number(xval2)] = arr;
       });
 
-      for(let i=0;i<this.listxAxis2.length;i++){
+      this.listxAxis2.forEach(singleLis=>{
         const singleobj= {} as any;
-        singleobj.data=dataObj[this.listxAxis2[i]];
-        singleobj.label=this.listxAxis2[i];
+        singleobj.data=dataObj[singleLis];
+        singleobj.label=singleLis;
         singleobj.stack='a';
-        singleobj.backgroundColor=this.barChartColors[0].backgroundColor[i];
-        singleobj.borderColor=this.barChartColors[0].backgroundColor[i];
+        singleobj.backgroundColor=this.getRandomColor();
+        singleobj.borderColor=this.getRandomColor();
         this.barChartData.push(singleobj);
-      }
+      });
       this.barChartData.splice(0,1);
 
     });
@@ -102,6 +129,16 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     console.log(e);
     // return this.eventClicked.emit(e);
   }
+
+  public getRandomColor():string {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+
 
   emitEvtClick(): void {
     throw new Error('Method not implemented.');

@@ -1,13 +1,16 @@
 <mat-card>
-    <div>
+    <mat-card-header>
+        <mat-card-title>{{chartName}}</mat-card-title>
+      </mat-card-header>
+      <mat-divider></mat-divider>
+  <div>
     <canvas baseChart
     [datasets]="barChartData"
     [labels]="mbarChartLabels"
     [options]="barChartOptions"
     [colors]="barChartColors"
     [legend]="barChartLegend"
-    [chartType]="barChartType"
-    (chartHover)="chartHovered($event)"
-    (chartClick)="chartClicked($event)"></canvas>
+    [chartType]="barChartType">
+  </canvas>
 </div>
 </mat-card>

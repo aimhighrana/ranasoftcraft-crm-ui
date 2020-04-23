@@ -1,29 +1,17 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, OnChanges } from '@angular/core';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
+import { BarChartWidget, Criteria } from '../../../_models/widget';
 
 @Component({
   selector: 'pros-bar-chart',
   templateUrl: './bar-chart.component.html',
   styleUrls: ['./bar-chart.component.scss']
 })
-export class BarChartComponent extends GenericWidgetComponent implements OnInit {
+export class BarChartComponent extends GenericWidgetComponent implements OnInit,OnChanges {
 
-  constructor(
-    private widgetService : WidgetService
-  ) {
-    super();
-  }
-
-
-  @Input() chartName = 'Company1';
-  @Input() backgroundColor = 'rgba(105,159,177,0.2)';
-  @Input() borderColor = 'rgba(105,159,177,1)';
-  @Input() pointBackgroundColor = 'rgba(105,159,177,1)';
-  @Input() pointBorderColor = '#fafafa';
-  @Input() pointHoverBackgroundColor = '#fafafa';
-  @Input() pointHoverBorderColor = 'rgba(105,159,177)';
-  @Input() barThickness :any = 80;
+  barWidget: BarChartWidget;
+  chartName = '';
 
 
   countList:any[] = new Array();
@@ -40,43 +28,57 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit 
 
   public barChartColors:Array<any> = [
     {
-      backgroundColor: this.backgroundColor,
-      borderColor: this.borderColor,
-      pointBackgroundColor: this.pointBackgroundColor,
-      pointBorderColor: this.pointBorderColor,
-      pointHoverBackgroundColor: this.pointHoverBackgroundColor,
-      pointHoverBorderColor: this.pointBorderColor
+      backgroundColor: 'rgba(105,159,177,0.2)',
+      borderColor: 'rgba(105,159,177,1)',
+      pointBackgroundColor: 'rgba(105,159,177,1)',
+      pointBorderColor: '#fafafa',
+      pointHoverBackgroundColor: '#fafafa',
+      pointHoverBorderColor: 'rgba(105,159,177)'
     }
   ];
 
   public barChartData:any[] = [
     {
       label: this.chartName,
-      barThickness: this.barThickness,
+      barThickness: 80,
       data: [0,0,0,0,0,0,0]
     },
   ];
 
+  constructor(
+    private widgetService : WidgetService
+  ) {
+    super();
+  }
+
+  ngOnChanges():void{
+       this.getBarChartData(this.widgetId,this.filterCriteria);
+  }
+
   ngOnInit(): void {
-    this.getBarChartMetadata();
-    this.getBarChartData();
+    this.getHeaderMetaData();
+   this.getBarChartMetadata();
+
   }
 
 
-
-  public getBarChartMetadata():void{
-    this.widgetService.getBarChartMetadata(this.widgetId).subscribe(returndata=>{
-
+  public getHeaderMetaData():void{
+    this.widgetService.getHeaderMetaData(this.widgetId).subscribe(returnData=>{
+      this.chartName = returnData.widgetName;
     });
   }
 
-  public getBarChartData() : void{
-    this.widgetService.getBarChartData().subscribe(returndata=>{
-      console.log(returndata);
-      // this.mbarChartLabels = data.MRP;
+  public getBarChartMetadata():void{
+    this.widgetService.getBarChartMetadata(this.widgetId).subscribe(returndata=>{
+      this.barWidget = returndata;
+    }, error=>{
+      console.error(`Error : ${error}`);
+    });
+  }
 
-
-      this.arrayBuckets = returndata.aggregations.total_per_year.buckets
+  public getBarChartData(widgetId: number, critria: Criteria[]) : void{
+    this.widgetService.getWidgetData(String(widgetId),critria).subscribe(returndata=>{
+      this.arrayBuckets = returndata.aggregations['sterms#BAR_CHART'].buckets;
       this.arrayBuckets.forEach(bucket=>{
         const key = bucket.key;
         const count = bucket.doc_count;
@@ -87,23 +89,12 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit 
    this.barChartData = [
            {
              label: this.chartName,
-             barThickness: this.barThickness,
+             barThickness: 80,
              data: this.countList
            },
          ];
 
     });
-  }
-
-   // events
-   public chartClicked(e:any):void {
-    console.log(e);
-    // return this.eventClicked.emit(e);
-  }
-
-  public chartHovered(e:any):void {
-    console.log(e);
-    // return this.eventClicked.emit(e);
   }
 
   public randomize():void {

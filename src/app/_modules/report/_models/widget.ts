@@ -103,3 +103,38 @@ export interface DropDownValues {
     langu: string;
     code: string;
 }
+
+export enum AggregationOperator {
+    GROUPBY ='GROUPBY',
+    COUNT='COUNT',
+    MIN='MIN',
+    MAX='MAX'
+}
+
+
+export class BarChartWidget {
+    widgetId: number;
+    fieldId: string;
+    aggregationOperator: AggregationOperator;
+}
+
+export class StackBarChartWidget{
+    widgetId: number;
+    groupById: string;
+    fieldId : string;
+    aggregationOperator:AggregationOperator;
+}
+
+export class Count{
+    widgetId: number;
+    fieldId: string;
+    aggregationOperator: AggregationOperator;
+}
+
+export class ReportingWidget{
+    widgetId: number;
+    fields: string;
+    fieldOrder : string;
+    fieldDesc:string;
+    sno:number;
+}

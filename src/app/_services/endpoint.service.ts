@@ -210,9 +210,6 @@ export class EndpointService {
   public deleteBr(id) {
     return this.apiUrl + '/schema/delete-business-rule/' + id;
   }
-  public getDummyJSON(): string {
-    return `${this.apiUrl}/CustomerSummary.do?action=dummyJSON`;
-  }
   public reportDashboardUrl(reportId: number) {
     return `${this.apiUrl}/report/report-info/${reportId}`;
   }
@@ -223,6 +220,31 @@ export class EndpointService {
   public widgetDataUrl(): string {
     return `${this.apiUrl}/widgetData`;
   }
+
+  public getStackBarChartMetaData(widgetId): string {
+    return `${this.apiUrl}/report/widget/stack-barChart/metadata/${widgetId}`;
+  }
+
+  public getFiltertMetaData(widgetId): string {
+    return `${this.apiUrl}/report/widget/filter/metadata/${widgetId}`;
+  }
+
+  public getListTableMetaData(widgetId): string {
+    return `${this.apiUrl}/report/widget/report-list/metadata/${widgetId}`;
+  }
+
+  public getBarChartMetaData(widgetId): string {
+    return `${this.apiUrl}/report/widget/bar-chart/metadata/${widgetId}`;
+  }
+
+  public getCountMetadata(widgetId): string {
+    return `${this.apiUrl}/report/widget/count/metadata/${widgetId}`;
+  }
+
+  public getHeaderMetaData(widgetId): string {
+    return `${this.apiUrl}/report/widget/header/metadata/${widgetId}`;
+  }
+
 }
 
 
