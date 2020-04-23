@@ -1,17 +1,19 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
+import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
 
 @Component({
   selector: 'pros-bar-chart',
   templateUrl: './bar-chart.component.html',
   styleUrls: ['./bar-chart.component.scss']
 })
-export class BarChartComponent implements OnInit {
+export class BarChartComponent extends GenericWidgetComponent implements OnInit {
 
-
- // @Output() eventClicked = new EventEmitter();
-
-  constructor(private widgetService : WidgetService) { }
+  constructor(
+    private widgetService : WidgetService
+  ) {
+    super();
+  }
 
 
   @Input() chartName = 'Company1';
@@ -22,11 +24,10 @@ export class BarChartComponent implements OnInit {
   @Input() pointHoverBackgroundColor = '#fafafa';
   @Input() pointHoverBorderColor = 'rgba(105,159,177)';
   @Input() barThickness :any = 80;
-  @Input() widgetId:any;
+
 
   countList:any[] = new Array();
   arrayBuckets :any[]
-
 
   public barChartOptions:any = {
     scaleShowVerticalLines: false,
@@ -60,6 +61,8 @@ export class BarChartComponent implements OnInit {
     this.getBarChartMetadata();
     this.getBarChartData();
   }
+
+
 
   public getBarChartMetadata():void{
     this.widgetService.getBarChartMetadata(this.widgetId).subscribe(returndata=>{
@@ -115,6 +118,14 @@ export class BarChartComponent implements OnInit {
     const clone = JSON.parse(JSON.stringify(this.barChartData));
     clone[0].data = data;
     this.barChartData = clone;
+  }
+
+
+  emitEvtClick(): void {
+    throw new Error('Method not implemented.');
+  }
+  emitEvtFilterCriteria(): void {
+    throw new Error('Method not implemented.');
   }
 
 }

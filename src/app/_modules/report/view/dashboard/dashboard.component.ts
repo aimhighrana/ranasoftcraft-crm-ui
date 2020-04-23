@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Breadcrumb } from 'src/app/_models/breadcrumb';
+import { ActivatedRoute } from '@angular/router';
+import { ReportService } from '../../_service/report.service';
 @Component({
   selector: 'pros-dashboard',
   templateUrl: './dashboard.component.html',
@@ -12,8 +14,28 @@ export class DashboardComponent implements OnInit {
     links: []
   };
 
-  ngOnInit(): void {
+  reportId: number;
+  constructor(
+    private activatedRouter: ActivatedRoute,
+    private reportService: ReportService
+  ) { }
 
+  ngOnInit(): void {
+    this.activatedRouter.params.subscribe(params=>{
+      this.reportId = params.id;
+    });
+    if(this.reportId) {
+      this.getReportInfo(this.reportId);
+    }
+  }
+
+  getReportInfo(reportId: number) {
+    this.reportService.getReportInfo(reportId).subscribe(res=>{
+      console.log(res);
+      this.breadcrumb.heading = res.reportName;
+    },error=>{
+      console.log(`Error ${error}`);
+    })
   }
 
 }

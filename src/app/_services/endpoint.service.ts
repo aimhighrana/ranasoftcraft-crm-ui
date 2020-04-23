@@ -213,6 +213,9 @@ export class EndpointService {
   public getDummyJSON(): string {
     return `${this.apiUrl}/CustomerSummary.do?action=dummyJSON`;
   }
+  public reportDashboardUrl(reportId: number) {
+    return `${this.apiUrl}/report/report-info/${reportId}`;
+  }
 
 }
 

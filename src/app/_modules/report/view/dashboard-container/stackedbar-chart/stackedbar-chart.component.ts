@@ -1,18 +1,21 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ChartOptions, ChartType, ChartDataSets } from 'chart.js';
 import { Label } from 'ng2-charts';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
+import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
 
 @Component({
   selector: 'pros-stackedbar-chart',
   templateUrl: './stackedbar-chart.component.html',
   styleUrls: ['./stackedbar-chart.component.scss']
 })
-export class StackedbarChartComponent implements OnInit {
+export class StackedbarChartComponent extends GenericWidgetComponent implements OnInit {
 
-  constructor(private widgetService : WidgetService) { }
-
-  @Input() widgetId:any;
+  constructor(
+    private widgetService : WidgetService
+  ) {
+    super();
+  }
 
   arrayBuckets :any[];
   xAxis1='MATL_TYPE';
@@ -98,6 +101,13 @@ export class StackedbarChartComponent implements OnInit {
   public chartHovered(e:any):void {
     console.log(e);
     // return this.eventClicked.emit(e);
+  }
+
+  emitEvtClick(): void {
+    throw new Error('Method not implemented.');
+  }
+  emitEvtFilterCriteria(): void {
+    throw new Error('Method not implemented.');
   }
 
 

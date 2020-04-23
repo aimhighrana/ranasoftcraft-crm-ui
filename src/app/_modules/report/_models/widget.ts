@@ -23,3 +23,19 @@ export enum WidgetType {
     COUNT,
     TABLE_LIST
 }
+
+export interface WidgetMapInfo {
+    sno: number;
+    reportId: number;
+    widgetId: number;
+    positionX: number;
+    positionY: number;
+    height: number;
+    width: number;
+    widgetType: string;
+}
+
+export class Criteria {
+    fieldId: string;
+    value: string[];
+}

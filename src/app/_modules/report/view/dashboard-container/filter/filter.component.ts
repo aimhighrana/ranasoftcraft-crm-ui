@@ -1,8 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
+import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
 
 export interface User {
   name: string;
@@ -13,24 +14,21 @@ export interface User {
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.scss']
 })
-
-
-export class FilterComponent implements OnInit {
-
-  // @Output() filterCriteria = new EventEmitter();
-
-  @Input() widgetId:any;
+export class FilterComponent extends GenericWidgetComponent implements OnInit {
 
   myControl = new FormControl();
   options: string[] = new Array();
   arrayBuckets :any[] ;
   filteredOptions: Observable<string[]>;
-  constructor(private widgetService : WidgetService) { }
+  constructor(
+    private widgetService : WidgetService
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.getFilterMetadata();
     this.loadAlldropData();
-
      this.filteredOptions = this.myControl.valueChanges
       .pipe(
         startWith(''),
@@ -63,6 +61,13 @@ export class FilterComponent implements OnInit {
    changeEvent(eventdata):void{
     console.log(eventdata.source.value);
     // this.filterCriteria.emit(eventdata.source.value);
+  }
+
+  emitEvtClick(): void {
+    throw new Error('Method not implemented.');
+  }
+  emitEvtFilterCriteria(): void {
+    throw new Error('Method not implemented.');
   }
 
 }

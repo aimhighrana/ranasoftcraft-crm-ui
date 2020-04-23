@@ -5,13 +5,15 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
+import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
 
 @Component({
   selector: 'pros-reporting-list',
   templateUrl: './reporting-list.component.html',
   styleUrls: ['./reporting-list.component.scss']
 })
-export class ReportingListComponent implements OnInit {
+export class ReportingListComponent extends GenericWidgetComponent implements OnInit {
+
   public userList : any[];
   public showList =  true;
   displayedColumns: string[] = [ 'star','ObjectNumber', 'Material Type', 'Material Group', 'Material Description','Manufacturer'];
@@ -36,7 +38,9 @@ export class ReportingListComponent implements OnInit {
 
   @Input() widgetId:any;
 
-  constructor(public widgetService : WidgetService) { }
+  constructor(public widgetService : WidgetService) {
+    super();
+  }
 
   ngOnInit(): void {
     this.resultsLength =200;
@@ -81,5 +85,13 @@ export class ReportingListComponent implements OnInit {
    this.getListdata(this.pageSize,this.pageIndex);
     return event;
  }
+
+
+ emitEvtClick(): void {
+  throw new Error('Method not implemented.');
+ }
+  emitEvtFilterCriteria(): void {
+    throw new Error('Method not implemented.');
+  }
 
 }
