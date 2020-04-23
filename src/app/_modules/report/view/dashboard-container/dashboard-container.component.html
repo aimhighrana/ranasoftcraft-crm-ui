@@ -3,19 +3,19 @@
         <div [ngStyle]="{ 'width.px' : (widget.width * boxSize), 'height.px': (widget.height * boxSize), 'top.px':(widget.positionY * boxSize) , 'left.px': (widget.positionX * boxSize) }" class="widget-main-container">
             
             <!-- COUNT WIDGET -->
-            <pros-count *ngIf ="widget.widgetType ==='COUNT'" [widgetId] ="widget.widgetId" [reportId]="reportId" [filterCriteria]="filterCriteria" (evtClick)="click($event)" (evtFilterCriteria)="changeFilterCriteria($event)"></pros-count>
+            <pros-count *ngIf ="widget.widgetType ==='COUNT'" [widgetId] ="widget.widgetId" [reportId]="reportId" [filterCriteria]="filterCriteria" (evtFilterCriteria)="changeFilterCriteria($event)"></pros-count>
 
             <!-- FILTER WIDGET -->
-            <pros-filter *ngIf ="widget.widgetType ==='FILTER'" [widgetId] ="widget.widgetId" [reportId]="reportId" [filterCriteria]="filterCriteria" (evtClick)="click($event)" (evtFilterCriteria)="changeFilterCriteria($event)"></pros-filter>
+            <pros-filter *ngIf ="widget.widgetType ==='FILTER'" [widgetId] ="widget.widgetId" [reportId]="reportId" [filterCriteria]="filterCriteria" (evtFilterCriteria)="changeFilterCriteria($event)"></pros-filter>
 
             <!-- BARCHART WIDGET -->
-            <pros-bar-chart *ngIf ="widget.widgetType ==='BAR_CHART'" [widgetId] ="widget.widgetId" [reportId]="reportId" [filterCriteria]="filterCriteria" (evtClick)="click($event)" (evtFilterCriteria)="changeFilterCriteria($event)"></pros-bar-chart>
+            <pros-bar-chart *ngIf ="widget.widgetType ==='BAR_CHART'" [widgetId] ="widget.widgetId" [reportId]="reportId" [filterCriteria]="filterCriteria" (evtFilterCriteria)="changeFilterCriteria($event)"></pros-bar-chart>
 
             <!-- STACKBARCHART WIDGET -->
-            <pros-stackedbar-chart *ngIf ="widget.widgetType ==='STACKED_BAR_CHART'" [widgetId] ="widget.widgetId" [reportId]="reportId" [filterCriteria]="filterCriteria" (evtClick)="click($event)" (evtFilterCriteria)="changeFilterCriteria($event)"></pros-stackedbar-chart>
+            <pros-stackedbar-chart *ngIf ="widget.widgetType ==='STACKED_BAR_CHART'" [widgetId] ="widget.widgetId" [reportId]="reportId" [filterCriteria]="filterCriteria" (evtFilterCriteria)="changeFilterCriteria($event)"></pros-stackedbar-chart>
             
             <!-- DATATABLE WIDGET -->
-            <pros-reporting-list *ngIf ="widget.widgetType ==='TABLE_LIST'" [widgetId] ="widget.widgetId" [reportId]="reportId" [filterCriteria]="filterCriteria" (evtClick)="click($event)" (evtFilterCriteria)="changeFilterCriteria($event)"></pros-reporting-list>
+            <pros-reporting-list *ngIf ="widget.widgetType ==='TABLE_LIST'" [widgetId] ="widget.widgetId" [reportId]="reportId" [filterCriteria]="filterCriteria" (evtFilterCriteria)="changeFilterCriteria($event)"></pros-reporting-list>
 
         </div>
     </ng-template>

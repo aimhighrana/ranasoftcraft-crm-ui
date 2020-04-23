@@ -11,20 +11,14 @@ export abstract class GenericWidgetComponent {
   @Input()
   filterCriteria: Criteria[];
 
-  @Output()
-  evtClick: EventEmitter<any> = new EventEmitter<any>();
 
   @Output()
   evtFilterCriteria: EventEmitter<Criteria[]> = new EventEmitter<Criteria[]>();
 
-  /**
-   * Emit  onclick widget
-   */
-  abstract emitEvtClick(): void;
 
   /**
    * Emit filter criteria change
    */
-  abstract emitEvtFilterCriteria(): void;
+  abstract emitEvtFilterCriteria(event: any): void;
 
 }

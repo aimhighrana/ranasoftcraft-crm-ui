@@ -1,14 +1,14 @@
 <mat-card>
-    <mat-form-field class="example-full-width">
+    <mat-form-field class="full-width">
         <input type="text"
-               placeholder="Pick one"
+               placeholder="Select"
                aria-label="Number"
                matInput
-               [formControl]="myControl"
+               [formControl]="filterFormControl"
                [matAutocomplete]="auto">
-        <mat-autocomplete #auto="matAutocomplete">
-          <mat-option (onSelectionChange)="changeEvent($event)" *ngFor="let option of filteredOptions | async" [value]="option" >
-            {{option}}
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="fieldDisplayFn" (optionSelected)="emitEvtFilterCriteria($event)">
+          <mat-option *ngFor="let option of filteredOptions | async" [value]="option" >
+            {{ option.TEXT }}
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>

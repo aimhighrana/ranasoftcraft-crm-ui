@@ -217,6 +217,12 @@ export class EndpointService {
     return `${this.apiUrl}/report/report-info/${reportId}`;
   }
 
+  public getFieldMetadatByFldUrl(fieldId: string) : string {
+    return `${this.apiUrl}/report/fields-description/${fieldId}`;
+  }
+  public widgetDataUrl(): string {
+    return `${this.apiUrl}/widgetData`;
+  }
 }
 
 

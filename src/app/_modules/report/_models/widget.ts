@@ -37,5 +37,69 @@ export interface WidgetMapInfo {
 
 export class Criteria {
     fieldId: string;
-    value: string[];
+    conditionFieldId: string;
+    conditionFieldValue: string;
+    blockType: BlockType;
+    conditionOperator: ConditionOperator;
+}
+export enum BlockType {
+    AND = 'AND',
+    OR = 'OR',
+    COND = 'COND'
+}
+export enum ConditionOperator {
+    AGG_GROUP_BY = 'AGG_GROUP_BY',
+	EQUAL = 'EQUAL',
+	MULTI_SELECT = 'MULTI_SELECT',
+	FIELD2FIELD = 'FIELD2FIELD',
+	STARTS_WITH = 'STARTS_WITH',
+	ENDS_WITH = 'ENDS_WITH',
+	CONTAINS = 'CONTAINS',
+	REGEX = 'REGEX',
+	IN = 'IN',
+	NOT_IN = 'NOT_IN',
+	LESS_THAN = 'LESS_THAN',
+	LESS_THAN_EQUAL = 'LESS_THAN_EQUAL',
+	GREATER_THAN = 'GREATER_THAN',
+	GREATER_THAN_EQUAL = 'GREATER_THAN_EQUAL',
+	RANGE = 'RANGE',
+	COUNT_IN = 'COUNT_IN',
+	COUNT_LESS_THAN = 'COUNT_LESS_THAN',
+	COUNT_LESS_THAN_EQUAL ='COUNT_LESS_THAN_EQUAL',
+	COUNT_GREATER_THAN ='COUNT_GREATER_THAN',
+	COUNT_GREATER_THAN_EQUAL ='COUNT_GREATER_THAN_EQUAL',
+	COUNT_RANGE ='COUNT_RANGE',
+	EMPTY ='EMPTY',
+	NOT_EMPTY ='NOT_EMPTY',
+	AVG_IN ='AVG_IN',
+	AVG_LESS_THAN ='AVG_LESS_THAN',
+	AVG_LESS_THAN_EQUAL ='AVG_LESS_THAN_EQUAL',
+	AVG_GREATER_THAN ='AVG_GREATER_THAN',
+	AVG_GREATER_THAN_EQUAL ='AVG_GREATER_THAN_EQUAL',
+	AVG_RANGE ='AVG_RANGE',
+	MAX_IN ='MAX_IN',
+	MAX_LESS_THAN = 'MAX_LESS_THAN',
+	MAX_LESS_THAN_EQUAL = 'MAX_LESS_THAN_EQUAL',
+	MAX_GREATER_THAN = 'MAX_GREATER_THAN',
+	MAX_GREATER_THAN_EQUAL ='MAX_GREATER_THAN_EQUAL',
+	MAX_RANGE = 'MAX_RANGE',
+	MIN_IN = 'MIN_IN',
+	MIN_LESS_THAN = 'MIN_LESS_THAN',
+	MIN_LESS_THAN_EQUAL = 'MIN_LESS_THAN_EQUAL',
+	MIN_GREATER_THAN = 'MIN_GREATER_THAN',
+	MIN_GREATER_THAN_EQUAL = 'MIN_GREATER_THAN_EQUAL',
+	MIN_RANGE = 'MIN_RANGE'
+}
+export class FilterWidget {
+    widgetId: number;
+    type: string;
+    fieldId: string;
+}
+
+export interface DropDownValues {
+    sno: number;
+    fieldName: string;
+    text: string;
+    langu: string;
+    code: string;
 }

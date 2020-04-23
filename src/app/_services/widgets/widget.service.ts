@@ -2,17 +2,26 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { EndpointService } from '../endpoint.service';
 import { HttpClient } from '@angular/common/http';
-import { Any2tsService } from '../any2ts.service';
+import { Criteria } from 'src/app/_modules/report/_models/widget';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WidgetService {
 
-  constructor(  private endpointService: EndpointService,
+  constructor(
+    private endpointService: EndpointService,
     private http: HttpClient,
-    private any2tsService: Any2tsService) { }
+  ) { }
 
+  /**
+   * Call this method for widget data
+   * Provide widgetId , and filterCriteria
+   */
+  public getWidgetData(widgetId: string, filterCriteria: Criteria[]):Observable<any>{
+      filterCriteria = filterCriteria ? filterCriteria : [];
+      return this.http.post<any>(this.endpointService.widgetDataUrl(), filterCriteria, {params:{widgetId}});
+  }
 
   public getBarChartData(): Observable<any> {
     // check subjectuserdetails userid !== jwt token userid, call service
