@@ -47,7 +47,6 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'default', pathMatch: 'full' },
       { path: 'default', component: AdminHomeComponent },
-
       { path: 'user-management', component: UserManagementComponent },
 
       { path: 'modules', component: ModuleComponent },

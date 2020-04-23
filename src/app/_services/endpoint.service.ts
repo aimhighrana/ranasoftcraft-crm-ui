@@ -210,6 +210,10 @@ export class EndpointService {
   public deleteBr(id) {
     return this.apiUrl + '/schema/delete-business-rule/' + id;
   }
+  public getDummyJSON(): string {
+    return `${this.apiUrl}/CustomerSummary.do?action=dummyJSON`;
+  }
+
 }
 
 

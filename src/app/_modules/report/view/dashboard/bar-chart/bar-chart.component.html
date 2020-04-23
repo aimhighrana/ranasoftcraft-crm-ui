@@ -1,0 +1,13 @@
+<mat-card>
+    <div>
+    <canvas baseChart
+    [datasets]="barChartData"
+    [labels]="mbarChartLabels"
+    [options]="barChartOptions"
+    [colors]="barChartColors"
+    [legend]="barChartLegend"
+    [chartType]="barChartType"
+    (chartHover)="chartHovered($event)"
+    (chartClick)="chartClicked($event)"></canvas>
+</div>
+</mat-card>

@@ -47,6 +47,7 @@ import { AddbusinessruleComponent } from './_components/module/business-rules/ad
 import { CreateSchemaComponent } from './_components/module/schema/create-schema/create-schema.component';
 import { MissingruleComponent } from './_components/module/business-rules/missingrule/missingrule.component';
 
+
 @NgModule({
   declarations: [
     IntMappingComponent,
