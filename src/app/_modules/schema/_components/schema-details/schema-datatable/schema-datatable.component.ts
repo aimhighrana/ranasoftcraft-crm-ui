@@ -103,7 +103,7 @@ export class SchemaDatatableComponent implements OnInit {
       this.selectedFieldsOb.next(res ? res : []);
     },error => console.error(`Error : ${error}`));
 
-    combineLatest(this.allMetaDataFields, this.selectedFieldsOb).subscribe(res=>{
+    combineLatest([this.allMetaDataFields, this.selectedFieldsOb]).subscribe(res=>{
       this.selectedFields = res ? res[1] : [];
       this.calculateDisplayFields();
     });

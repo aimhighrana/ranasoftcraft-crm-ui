@@ -44,7 +44,7 @@ export class TableColumnSettingsComponent implements OnInit{
 
   ngOnInit() {
     this.sharedService.getChooseColumnData().subscribe(data=>{
-      this.data  = data;
+      this.data = data;
       this.headerDetails();
       this.hierarchyDetails();
       this.gridDetails();
@@ -54,29 +54,31 @@ export class TableColumnSettingsComponent implements OnInit{
 
   // header
   public headerDetails() {
-    if(this.data.selectedFields.length > 0){
+    if(this.data && this.data.selectedFields && this.data.selectedFields.length > 0){
       for(const fldid of this.data.selectedFields) {
         if(this.data.fields.headers[fldid]) {
           this.header.push(this.data.fields.headers[fldid]);
         }
       }
     }
-    for(const hekey in this.data.fields.headers){
-      if(this.data.selectedFields.length > 0){
-        if(this.data.selectedFields.indexOf(hekey) === -1)
-        {
+    if(this.data && this.data.fields && this.data.fields.headers && this.data.selectedFields){
+      for(const hekey in this.data.fields.headers){
+        if(this.data.selectedFields.length > 0){
+          if(this.data.selectedFields.indexOf(hekey) === -1)
+          {
+            this.header.push(this.data.fields.headers[hekey]);
+          }
+        }
+        else {
           this.header.push(this.data.fields.headers[hekey]);
         }
-      }
-      else {
-        this.header.push(this.data.fields.headers[hekey]);
       }
     }
     this.headerFieldObs = of(this.header);
   }
     // hierarchy
   public hierarchyDetails() {
-    if(this.data.selectedHierarchyIds && this.data.selectedHierarchyIds.length>0) {
+    if(this.data && this.data.selectedHierarchyIds && this.data.selectedHierarchyIds.length>0) {
       for(const hefldId of this.data.selectedHierarchyIds) {
         if(this.data.fields.hierarchyFields[hefldId]) {
           if(this.data.selectedFields.length > 0) {
@@ -108,7 +110,7 @@ export class TableColumnSettingsComponent implements OnInit{
 
     // grid
   public gridDetails() {
-    if(this.data.selectedGridIds && this.data.selectedGridIds.length>0) {
+    if(this.data && this.data.selectedGridIds && this.data.selectedGridIds.length>0) {
       for(const grfldId of this.data.selectedGridIds) {
         if(this.data.fields.gridFields[grfldId]) {
           if(this.data.selectedFields.length > 0) {
