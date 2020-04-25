@@ -99,7 +99,7 @@ export class FilterWidget {
 export interface DropDownValues {
     sno: number;
     fieldName: string;
-    text: string;
+    TEXT: string;
     langu: string;
     code: string;
 }

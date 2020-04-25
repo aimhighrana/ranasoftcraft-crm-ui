@@ -21,7 +21,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
   values: DropDownValues[] = [];
   filterWidget:BehaviorSubject<FilterWidget> = new BehaviorSubject<FilterWidget>(null);
   filteredOptions: Observable<DropDownValues[]> = of([]);
-  filterFormControl: FormControl = new FormControl('');
+  filterFormControl = new FormControl();
   headerDesc='';
   constructor(
     private widgetService : WidgetService,
@@ -47,7 +47,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     this.getHeaderMetaData();
     this.filterFormControl.valueChanges.subscribe(val=>{
       if(val && val !== '' && typeof val === 'string') {
-        this.filteredOptions = of( this.values.filter(fill => fill.text.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !==-1));
+        this.filteredOptions = of( this.values.filter(fill => fill.TEXT.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !==-1));
       } else {
         this.filteredOptions = of(this.values);
         if(typeof val === 'string' && val.trim() === ''){
@@ -109,6 +109,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
   emitEvtFilterCriteria(event: MatAutocompleteSelectedEvent): void {
     const selectedData = new Criteria();
     selectedData.fieldId = this.filterWidget.getValue().fieldId;
+    selectedData.conditionFieldId = this.filterWidget.getValue().fieldId;
     selectedData.conditionFieldValue = event ? event.option.value.CODE : '';
     selectedData.blockType = BlockType.COND;
     selectedData.conditionOperator = ConditionOperator.EQUAL;

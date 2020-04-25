@@ -17,7 +17,7 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit {
   boxSize: number;
 
   widgetList: WidgetMapInfo[];
-  filterCriteria = [];
+  filterCriteria: Criteria[] = [];
 
   constructor(
     private reportService: ReportService,
@@ -47,21 +47,25 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit {
   }
 
   changeFilterCriteria(criteria: Criteria[]) {
-    console.log(criteria);
     const criteriaLst: Criteria[] = this.filterCriteria;
-    this.ngZone.runOutsideAngular(()=>{
-      criteria.forEach(cri=>{
-        // if value is empty or null , it mean remove from criteria
-        if(cri.conditionFieldValue && cri.conditionFieldValue.trim() !== '') {
-          criteriaLst.push(cri);
+    criteria.forEach(cri=>{
+      // if value is empty or null , it mean remove from criteria
+      const previousCri = criteriaLst.filter(fill => fill.conditionFieldId === cri.conditionFieldId);
+      if(cri.conditionFieldValue && cri.conditionFieldValue.trim() !== '') {
+        if(previousCri.length >0) {
+          // update selected value
+          const index  = criteriaLst.indexOf(previousCri[0]);
+          previousCri[0].conditionFieldValue = cri.conditionFieldValue;
+          criteriaLst[index] = previousCri[0];
         } else {
-          const previousCri = criteriaLst.filter(fill => fill.conditionFieldId === cri.conditionFieldId);
-          if(previousCri.length >0) {
-            criteriaLst.splice(criteriaLst.indexOf(previousCri[0]),1);
-          }
+          criteriaLst.push(cri);
         }
+      } else {
+        if(previousCri.length >0) {
+          criteriaLst.splice(criteriaLst.indexOf(previousCri[0]),1);
+        }
+      }
 
-      });
     });
     // create new Array instance for trigger ngOnChange on child component
     this.filterCriteria = new Array();
