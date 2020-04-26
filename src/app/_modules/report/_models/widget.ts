@@ -94,14 +94,15 @@ export class FilterWidget {
     widgetId: number;
     type: string;
     fieldId: string;
+    isMultiSelect: boolean;
 }
 
 export interface DropDownValues {
     sno: number;
-    fieldName: string;
+    FIELDNAME: string;
     TEXT: string;
     langu: string;
-    code: string;
+    CODE: string;
 }
 
 export enum AggregationOperator {
@@ -137,4 +138,14 @@ export class ReportingWidget{
     fieldOrder : string;
     fieldDesc:string;
     sno:number;
+}
+
+export class WidgetHeader {
+    widgetId: number;
+    widgetName: string;
+    widgetType: WidgetType;
+    objectType: string;
+    plantCode: string;
+    indexName: string;
+    desc: string;
 }

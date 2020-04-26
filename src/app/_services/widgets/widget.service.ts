@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { EndpointService } from '../endpoint.service';
 import { HttpClient } from '@angular/common/http';
-import { Criteria, BarChartWidget } from 'src/app/_modules/report/_models/widget';
+import { Criteria, BarChartWidget, WidgetHeader } from 'src/app/_modules/report/_models/widget';
 
 @Injectable({
   providedIn: 'root'
@@ -48,8 +48,8 @@ export class WidgetService {
     return this.http.get<any>(this.endpointService.getCountMetadata(widgetId));
   }
 
-  public getHeaderMetaData(widgetId):Observable<any>{
-    return this.http.get<any>(this.endpointService.getHeaderMetaData(widgetId));
+  public getHeaderMetaData(widgetId):Observable<WidgetHeader>{
+    return this.http.get<WidgetHeader>(this.endpointService.getHeaderMetaData(widgetId));
   }
 
 }

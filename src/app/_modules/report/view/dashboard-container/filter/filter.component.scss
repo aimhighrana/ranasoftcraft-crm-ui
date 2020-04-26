@@ -1,3 +1,25 @@
 .full-width {
   width: 100%;
 }
+
+.vertical-row {
+  button {
+    margin-bottom: 10px;
+    flex-shrink: 0;
+  }
+}
+
+.horizontal-row {
+  overflow-x: auto;
+
+  button {
+    margin-right: 16px;
+    flex-shrink: 0;
+  }
+
+  button:first-child {
+    margin-left: 16px;
+  }
+
+  padding-bottom: 16px;
+}

@@ -1,19 +1,61 @@
 <mat-card>
   <mat-card-header>
-    <mat-card-title>{{headerDesc}}</mat-card-title>
+    <mat-card-title>{{ widgetHeader.desc }}</mat-card-title>
   </mat-card-header>
   <mat-divider></mat-divider>
+
+  <!-- DROPDOWN_VALS -->
+  <ng-template [ngIf]="(filterWidget.getValue() ? filterWidget.getValue().type : '') === 'DROPDOWN_VALS'">
     <mat-form-field class="full-width">
-        <input type="text"
-               placeholder="Select"
-               aria-label="Number"
-               matInput
-               [formControl]="filterFormControl"
-               [matAutocomplete]="auto">
-        <mat-autocomplete #auto="matAutocomplete" [displayWith]="fieldDisplayFn" (optionSelected)="emitEvtFilterCriteria($event)">
-          <mat-option *ngFor="let option of filteredOptions | async" [value]="option" >
-            {{ option.TEXT }}
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
+      <input type="text"
+             placeholder="Select"
+             aria-label="Number"
+             matInput
+             [formControl]="filterFormControl"
+             [matAutocomplete]="auto">
+    </mat-form-field>
+    <mat-autocomplete #auto="matAutocomplete" [displayWith]="fieldDisplayFn">
+      <mat-option *ngFor="let option of filteredOptions | async" [value]="option" >
+          <ng-template [ngIf] ="filterWidget.getValue().isMultiSelect" [ngIfElse]="singleSelection"> 
+            <div (click)="optionClicked($event, option)">
+              <mat-checkbox prosClickStopPropagation (change)="toggleSelection(option)" [checked]="isSelected(option)" color="primary">
+                {{ option.TEXT }}
+              </mat-checkbox>
+            </div>
+          </ng-template>
+          <ng-template #singleSelection>
+              {{ option.TEXT }}
+          </ng-template>
+      </mat-option>
+    </mat-autocomplete>
+  </ng-template>
+
+  <!-- HORIZONTAL_VALS -->
+  <ng-template [ngIf]="(filterWidget.getValue() ? filterWidget.getValue().type : '') === 'HORIZONTAL_VALS'">
+    <div class="f-row horizontal-row">
+      <ng-template ngFor let-option [ngForOf]="filteredOptions | async">
+          <ng-template [ngIf]="isSelected(option)" [ngIfElse]="unselectedButton">
+            <button mat-flat-button color="primary" (click)="optionClicked($event, option)">{{ option.TEXT }}</button>
+          </ng-template>
+          <ng-template #unselectedButton>
+            <button mat-stroked-button (click)="optionClicked($event, option)">{{ option.TEXT }}</button>
+          </ng-template>
+      </ng-template>
+    </div>
+  </ng-template>
+  
+  <!-- VERTICAL_VALS -->
+  <ng-template [ngIf]="(filterWidget.getValue() ? filterWidget.getValue().type : '') === 'VERTICAL_VALS'">
+    <div class="f-col vertical-row">
+      <ng-template ngFor let-option [ngForOf]="filteredOptions | async">
+          <ng-template [ngIf]="isSelected(option)" [ngIfElse]="unselectedButton">
+            <button mat-flat-button color="primary" (click)="optionClicked($event, option)">{{ option.TEXT ? option.TEXT : option.CODE }}</button>
+          </ng-template>
+          <ng-template #unselectedButton>
+            <button mat-stroked-button (click)="optionClicked($event, option)">{{ option.TEXT ? option.TEXT : option.CODE }}</button>
+          </ng-template>
+      </ng-template>
+    </div>
+  </ng-template>
+
 </mat-card>
