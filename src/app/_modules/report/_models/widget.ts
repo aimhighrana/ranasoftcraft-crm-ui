@@ -149,3 +149,9 @@ export class WidgetHeader {
     indexName: string;
     desc: string;
 }
+
+export interface StackbarLegend{
+    legendIndex : number;
+    code : string;
+    text : string;
+}

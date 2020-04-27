@@ -22,6 +22,16 @@ describe('BarChartComponent', () => {
     fixture.detectChanges();
   });
 
+  it('updateLabels(), update labels ', async(()=>{
+    component.updateLabels();
+  }));
+
+  it('getFieldsMetadaDesc(), Fields MetadaDesc axis1 ', async(()=>{
+    const code: string[] = [];
+    const  fieldId = '';
+     component.getFieldsMetadaDesc(code,fieldId);
+  }));
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });

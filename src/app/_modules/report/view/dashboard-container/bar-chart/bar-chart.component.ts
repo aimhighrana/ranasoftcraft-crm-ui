@@ -2,6 +2,8 @@ import { Component, OnInit, OnChanges } from '@angular/core';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
 import { BarChartWidget, Criteria } from '../../../_models/widget';
+import { BehaviorSubject } from 'rxjs';
+import { ReportService } from '../../../_service/report.service';
 
 @Component({
   selector: 'pros-bar-chart',
@@ -10,7 +12,7 @@ import { BarChartWidget, Criteria } from '../../../_models/widget';
 })
 export class BarChartComponent extends GenericWidgetComponent implements OnInit,OnChanges {
 
-  barWidget: BarChartWidget;
+  barWidget: BehaviorSubject<BarChartWidget> = new BehaviorSubject<BarChartWidget>(null);
   chartName = '';
 
 
@@ -25,6 +27,8 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
   public mbarChartLabels:string[] = new Array();
   public barChartType = 'bar';
   public barChartLegend = true;
+  public fieldId = '';
+  public codeText ={} as any;
 
   public barChartColors:Array<any> = [
     {
@@ -46,14 +50,20 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
   ];
 
   constructor(
-    private widgetService : WidgetService
+    private widgetService : WidgetService,
+    private reportService: ReportService
   ) {
     super();
   }
 
   ngOnChanges():void{
       this.mbarChartLabels = new Array();
-       this.getBarChartData(this.widgetId,this.filterCriteria);
+      this.countList = new Array();
+      this.barWidget.subscribe(res=>{
+        if(res){
+          this.getBarChartData(this.widgetId,this.filterCriteria);
+        }
+      });
   }
 
   ngOnInit(): void {
@@ -71,7 +81,8 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
 
   public getBarChartMetadata():void{
     this.widgetService.getBarChartMetadata(this.widgetId).subscribe(returndata=>{
-      this.barWidget = returndata;
+      this.fieldId = returndata.fieldId;
+      this.barWidget.next(returndata);
     }, error=>{
       console.error(`Error : ${error}`);
     });
@@ -85,7 +96,14 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
         const count = bucket.doc_count;
         this.mbarChartLabels.push(key);
         this.countList.push(count);
-      })
+      });
+
+       // update barchartLabels
+       if(Object.keys(this.codeText).length === 0){
+        this.getFieldsMetadaDesc(this.mbarChartLabels,this.fieldId);
+      }else{
+        this.updateLabels();
+      }
 
    this.barChartData = [
            {
@@ -98,20 +116,22 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     });
   }
 
-  public randomize():void {
-    const data = [
-      Math.round(Math.random() * 100),
-      Math.round(Math.random() * 100),
-      Math.round(Math.random() * 100),
-      (Math.random() * 100),
-      Math.round(Math.random() * 100),
-      (Math.random() * 100),
-      Math.round(Math.random() * 100)];
-    const clone = JSON.parse(JSON.stringify(this.barChartData));
-    clone[0].data = data;
-    this.barChartData = clone;
+  getFieldsMetadaDesc(code: string[], fieldId: string) {
+    this.reportService.getMetaDataFldByFldIds(fieldId, code).subscribe(res=>{
+      res.forEach(data=>{
+        this.codeText[data.CODE] =data.TEXT;
+      });
+      this.updateLabels();
+    });
   }
 
+  public updateLabels():void{
+    for(let i=0;i<this.mbarChartLabels.length;i++){
+      if(this.codeText[this.mbarChartLabels[i]] !== undefined && this.codeText[this.mbarChartLabels[i]] !== ''){
+          this.mbarChartLabels[i] = this.codeText[this.mbarChartLabels[i]];
+      }
+    }
+  }
 
   emitEvtClick(): void {
     throw new Error('Method not implemented.');

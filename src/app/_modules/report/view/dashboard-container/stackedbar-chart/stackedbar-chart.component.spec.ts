@@ -32,7 +32,8 @@ describe('StackedbarChartComponent', () => {
   it('legendClick(), click on legend', async(()=>{
     component.stackBarWidget = new BehaviorSubject<StackBarChartWidget>(new StackBarChartWidget());
     component.filterCriteria = [];
-    component.legendClick({text: 'ZMRO'} as ChartLegendLabelItem);
+    component.stackbarLegend=[{code:'ZMRO',legendIndex:1,text:''}];
+    component.legendClick({datasetIndex:1} as ChartLegendLabelItem);
   }));
 
   it('removeOldFilterCriteria(), remove olf filter criteria ', async(()=>{
@@ -43,6 +44,36 @@ describe('StackedbarChartComponent', () => {
     component.removeOldFilterCriteria([filter]);
     expect(component.filterCriteria.length).toEqual(0);
   }));
+
+  it('updateLabelsaxis1(), update labels ', async(()=>{
+    component.updateLabelsaxis1();
+}));
+
+it('getFieldsMetadaDescaxis1(), Fields MetadaDesc axis1 ', async(()=>{
+    const code: string[] = ['HAWA','ZMRO'];
+    const  fieldId = 'MATL_TYPE';
+     component.getFieldsMetadaDescaxis1(code,fieldId);
+}));
+
+it('updateLabelsaxis2(), update labels ', async(()=>{
+  component.listxAxis2.push('ZMRO','HAWA');
+  component.updateLabelsaxis2();
+}));
+
+it('getFieldsMetadaDescaxis2(), Fields MetadaDesc axis2 ', async(()=>{
+  const code: string[] = [];
+  const  fieldId = '';
+   component.getFieldsMetadaDescaxis2(code,fieldId);
+}));
+
+it('getRandomColor(), Random Colour', async(()=>{
+    component.getRandomColor();
+    expect(component.getRandomColor());
+}));
+
+it('getstackbarChartData(), Stackbar Data',async(()=>{
+    component.getstackbarChartData(123,[]);
+}));
 
   it('emitEvtFilterCriteria(), should emit the filter criteria', async(()=>{
     component.emitEvtFilterCriteria([]);

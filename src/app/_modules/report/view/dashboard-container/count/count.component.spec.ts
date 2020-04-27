@@ -22,6 +22,10 @@ describe('CountComponent', () => {
     fixture.detectChanges();
   });
 
+  it('getCountMetadata(), Metadata info ', async(()=>{
+    component.getCountMetadata();
+  }));
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });

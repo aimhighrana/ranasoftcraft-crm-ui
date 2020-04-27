@@ -23,9 +23,9 @@ export class WidgetService {
       return this.http.post<any>(this.endpointService.widgetDataUrl(), filterCriteria, {params:{widgetId}});
   }
 
-  public getListdata(pageSize,pageIndex,widgetId: string, filterCriteria: Criteria[]):Observable<any>{
+  public getListdata(size,from,widgetId: string, filterCriteria: Criteria[]):Observable<any>{
     filterCriteria = filterCriteria ? filterCriteria : [];
-    return this.http.post<any>(this.endpointService.widgetDataUrl(), filterCriteria, {params:{widgetId}});
+    return this.http.post<any>(this.endpointService.widgetDataUrl(), filterCriteria, {params:{widgetId,size,from}});
   }
 
   public getStackChartMetadata(widgetId):Observable<any>{

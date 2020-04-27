@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnChanges } from '@angular/core';
+import { Component, OnInit, ViewChild, OnChanges, Inject, LOCALE_ID } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -32,6 +32,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   listData :any[]=new Array();
   displayedColumnsId :string[]= new Array();
   headerDesc='';
+  objectType = '';
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
@@ -39,11 +40,13 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
 
     reportingListWidget : BehaviorSubject<ReportingWidget> = new BehaviorSubject<ReportingWidget>(null);
 
-  constructor(public widgetService : WidgetService) {
+  constructor(public widgetService : WidgetService,
+    @Inject(LOCALE_ID) public locale: string) {
     super();
   }
 
   ngOnChanges():void{
+    this.listData =new Array();
     this.reportingListWidget.subscribe(res=>{
       if(res) {
         this.getListdata(this.pageSize,this.pageIndex,this.widgetId,this.filterCriteria);
@@ -62,6 +65,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   public getHeaderMetaData():void{
     this.widgetService.getHeaderMetaData(this.widgetId).subscribe(returnData=>{
       this.headerDesc = returnData.widgetName;
+      this.objectType = returnData.objectType;
     });
   }
 
@@ -86,14 +90,20 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
       returndata.hits.hits.forEach(element => {
         const source =element._source;
 
-        const objectNumber = source.id;
+        const objectNumber = element._id;
         const obj = {ObjectNumber:objectNumber};
 
       const hdvs = source.hdvs;
+      let  locale = this.locale!==''?this.locale.split('-')[0]:'EN';
+      locale = locale.toUpperCase();
       for(let j=0;j<this.displayedColumnsId.length;j++){
         const fieldDesc = this.displayedColumns[j+2];
         const fieldId = this.displayedColumnsId[j];
-        obj[fieldDesc] = hdvs[fieldId].vc;
+       if(hdvs[fieldId].vls[locale] !== undefined && hdvs[fieldId].vls[locale].valueTxt !== ''){
+          obj[fieldDesc] = hdvs[fieldId].vls[locale].valueTxt;
+        }else{
+          obj[fieldDesc] = hdvs[fieldId].vc;
+        }
       }
       this.listData.push(obj);
       });
@@ -109,6 +119,12 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
     return event;
  }
 
+ details(data):void{
+  console.log(data);
+  const url = document.getElementsByTagName('base')[0].href.substring(0, document.getElementsByTagName('base')[0].href.indexOf('MDOSF'));
+  window.open(
+    url+'MDOSF/loginPostProcessor?to=summary&objNum='+data.ObjectNumber+'&objectType='+this.objectType, 'MDO_TAB');
+}
 
  emitEvtClick(): void {
   throw new Error('Method not implemented.');

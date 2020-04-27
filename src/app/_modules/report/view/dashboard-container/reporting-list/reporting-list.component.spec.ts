@@ -23,10 +23,6 @@ describe('ReportingListComponent', () => {
     fixture.detectChanges();
   });
 
-  it('getListTableMetadata(), get Metadata ', async(()=>{
-        component.getListTableMetadata();
-  }));
-
   it('getServerData(), do pagination ', async(()=>{
     // mock data
     const evnet = new PageEvent();
@@ -37,6 +33,10 @@ describe('ReportingListComponent', () => {
     expect(evnet.pageSize).toEqual(actualData.pageSize);
     expect(evnet.pageIndex).toEqual(actualData.pageIndex);
   }));
+
+  it('getListTableMetadata(), get Metadata ', async(()=>{
+    component.getListTableMetadata();
+}));
 
   it('should create', () => {
     expect(component).toBeTruthy();

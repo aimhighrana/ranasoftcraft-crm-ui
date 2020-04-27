@@ -16,7 +16,7 @@ export class CountComponent extends GenericWidgetComponent implements OnInit,OnC
   }
   headerDesc='';
   count = 0;
-
+  arrayBuckets :any[]
 
 
   ngOnChanges():void{
@@ -44,10 +44,15 @@ export class CountComponent extends GenericWidgetComponent implements OnInit,OnC
   }
 
   public getCountData(widgetid:number,creiteria:Criteria[]):void{
+    this.count = 0;
     this.widgetService.getWidgetData(String(widgetid),creiteria).subscribe(returndata=>{
-      console.log(returndata);
-      this.count = returndata.hits.total.value;
+      this.arrayBuckets = returndata.aggregations['sterms#COUNT'].buckets;
+      this.arrayBuckets.forEach(bucket=>{
+        const key = bucket.key;
+        const count = bucket.doc_count;
+      this.count += count ;
     });
+  });
   }
 
   emitEvtClick(): void {
