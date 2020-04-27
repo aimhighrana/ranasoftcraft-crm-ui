@@ -1,16 +1,16 @@
-<mat-card>
+<mat-card class="widget mat-elevation-z4">
   <mat-card-header>
     <mat-card-title>{{headerDesc}}</mat-card-title>
   </mat-card-header>
-  <mat-divider></mat-divider>
+  <mat-card-content>
     <canvas baseChart 
-    [datasets]="barChartData"
-    [labels]="barChartLabels"
-    [options]="barChartOptions"
-    [plugins]="barChartPlugins"
-    [legend]="barChartLegend"
-    [colors]="barChartColors"
-    [chartType]="barChartType">
+      [datasets]="barChartData"
+      [labels]="barChartLabels"
+      [options]="barChartOptions"
+      [plugins]="barChartPlugins"
+      [legend]="barChartLegend"
+      [colors]="barChartColors"
+      [chartType]="barChartType">
   </canvas>
-
+</mat-card-content>
 </mat-card>

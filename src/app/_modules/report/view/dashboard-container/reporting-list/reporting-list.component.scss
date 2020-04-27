@@ -1,45 +1,41 @@
-mat-form-field.filtersearch {
-  width: 100%;
-}
+mat-card.widget {
+  border-radius: 6px;
 
-.root-AdminTable {
-  height: 500px;
-  overflow: auto;
+  mat-card-header {
+    margin: 0 -16px;
 
-  table {
-    width: 100%;
-
-    td.mat-column-star {
-      width: 30px;
-      padding-left: 8px;
+    mat-card-title {
+      font-size: 16px;
+      font-weight: normal;
+      display: -webkit-box;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
     }
+  }
 
-    th.mat-column-position,
-    td.mat-column-position {
-      padding-left: 12px;
-    }
+  .root-AdminTable {
+    height: 500px;
+    overflow: auto;
 
-    .mat-table-sticky:first-child {
-      border-right: 1px solid #e0e0e0;
-    }
+    table {
+      width: 100%;
+      z-index: 0;
+      position: relative;
 
-    .direction-fab {
-      width: 20px;
-      height: 20px;
-      box-shadow: none;
-      vertical-align: middle;
-      background: #f5f8fc;
-
-      .mat-button-wrapper {
-        padding: 0 !important;
+      td.mat-column-star {
+        width: 22px;
+        padding-left: 8px;
       }
 
-      mat-icon {
-        font-size: 14px;
-        width: 16px;
-        height: 16px;
-        position: relative;
-        top: -10px;
+      .mat-header-cell,
+      .mat-cell {
+        padding: 0 8px;
+      }
+
+      .mat-table-sticky:first-child {
+        border-right: 1px solid #e0e0e0;
       }
     }
   }
