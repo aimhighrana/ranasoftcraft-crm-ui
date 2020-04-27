@@ -1,7 +1,7 @@
 .root {
   display: flex;
   flex-flow: row wrap;
-  justify-content: flex-start;
+  justify-content: space-around;
   align-items: flex-start;
   align-content: flex-start;
 
@@ -10,7 +10,6 @@
   }
 
   pros-dashboard-container {
-    width: 98%;
-    margin: 0 16px;
+    width: calc(100% - 32px);
   }
 }
