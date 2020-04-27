@@ -52,6 +52,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
   }
 
   ngOnChanges():void{
+      this.mbarChartLabels = new Array();
        this.getBarChartData(this.widgetId,this.filterCriteria);
   }
 

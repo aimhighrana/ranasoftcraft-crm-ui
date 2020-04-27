@@ -12,7 +12,7 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit {
   @Input()
   reportId: number;
 
-  screenWidth: number;
+  screenWidth = 0;
   noOfboxes = 200; // Initial 200
   boxSize: number;
 

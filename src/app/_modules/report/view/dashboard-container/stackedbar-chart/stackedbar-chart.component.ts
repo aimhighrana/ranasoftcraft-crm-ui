@@ -1,10 +1,10 @@
 import { Component, OnInit, OnChanges } from '@angular/core';
-import { ChartOptions, ChartType, ChartDataSets } from 'chart.js';
+import { ChartOptions, ChartDataSets, ChartLegendLabelItem } from 'chart.js';
 import { Label } from 'ng2-charts';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
 import { BehaviorSubject } from 'rxjs';
-import { StackBarChartWidget, Criteria } from '../../../_models/widget';
+import { StackBarChartWidget, Criteria, WidgetHeader, BlockType, ConditionOperator } from '../../../_models/widget';
 
 @Component({
   selector: 'pros-stackedbar-chart',
@@ -13,9 +13,8 @@ import { StackBarChartWidget, Criteria } from '../../../_models/widget';
 })
 export class StackedbarChartComponent extends GenericWidgetComponent implements OnInit ,OnChanges{
 
-
   stackBarWidget : BehaviorSubject<StackBarChartWidget> = new BehaviorSubject<StackBarChartWidget>(null);
-
+  widgetHeader: WidgetHeader = new WidgetHeader();
   constructor(
     private widgetService : WidgetService
   ) {
@@ -23,35 +22,32 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
   }
 
   arrayBuckets :any[];
-  xAxis1='';
-  xAxis2='';
   listxAxis2 :any[]=new Array();
-  mtl='';
-
-  public barChartOptions: ChartOptions = {
+  barChartLabels: Label[] = new Array();
+  barChartColors:Array<any> = [{backgroundColor: ['red', 'yellow', 'green', 'orange','pink']}];
+  barChartData: ChartDataSets[] =[{ data: [0,0,0,0,0], label: 'Loading..', stack: 'a' }];
+  barChartOptions: ChartOptions = {
     responsive: true,
-  };
-  public barChartLabels: Label[] = new Array();
-  public barChartType: ChartType = 'bar';
-  public barChartLegend = true;
-  public barChartPlugins = [];
-  headerDesc='';
-  public barChartColors:Array<any> = [{
-    backgroundColor: ['red', 'yellow', 'green', 'orange','pink']
- }];
-
-  public barChartData: ChartDataSets[] =
-    [
-      { data: [0,0,0,0,0], label: 'Series A', stack: 'a' }
-    ];
-
-ngOnChanges():void{
-  this.stackBarWidget.subscribe(res=>{
-    if(res){
-      this.getstackbarChartData(this.widgetId,this.filterCriteria);
+    legend: {
+      display: true,
+      position: 'top',
+      onClick: (event: MouseEvent, legendItem: ChartLegendLabelItem) => {
+        // call protype of stacked bar chart componenet
+        this.legendClick(legendItem);
+      },
     }
-  });
-}
+  };
+  ngOnChanges():void{
+    this.stackBarWidget.subscribe(res=>{
+      if(res){
+        // reset while filter applied
+        this.barChartLabels = new Array();
+        this.listxAxis2 = new Array();
+        this.barChartData = [{ data: [0,0,0,0,0], label: 'Loading..', stack: 'a' }];
+        this.getstackbarChartData(this.widgetId,this.filterCriteria);
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.getStackChartMetadata();
@@ -60,16 +56,13 @@ ngOnChanges():void{
 
   public getHeaderMetaData():void{
     this.widgetService.getHeaderMetaData(this.widgetId).subscribe(returnData=>{
-      this.headerDesc = returnData.widgetName;
-    });
+      this.widgetHeader = returnData;
+    },error=> console.error(`Error : ${error}`));
   }
 
   public getStackChartMetadata():void{
     this.widgetService.getStackChartMetadata(this.widgetId).subscribe(returnData=>{
-      console.log(returnData);
-      if(returnData !== undefined && Object.keys(returnData).length>0){
-          this.xAxis2 = returnData.fieldId;
-          this.xAxis1= returnData.groupById
+      if(returnData){
           this.stackBarWidget.next(returnData);
          }
         }, error=>{
@@ -83,21 +76,20 @@ ngOnChanges():void{
       this.arrayBuckets =  returnData.aggregations['composite#STACKED_BAR_CHART'].buckets;
       const dataObj = new Object();
       this.arrayBuckets.forEach(singleBucket=>{
-        if(this.barChartLabels.indexOf(singleBucket.key[this.xAxis1]) === -1){
-          this.barChartLabels.push(singleBucket.key[this.xAxis1]);
+        if(this.barChartLabels.indexOf(singleBucket.key[this.stackBarWidget.getValue().groupById]) === -1){
+          this.barChartLabels.push(singleBucket.key[this.stackBarWidget.getValue().groupById]);
         }
-
-        if(this.listxAxis2.indexOf(singleBucket.key[this.xAxis2]) === -1){
-          this.mtl = singleBucket.key[this.xAxis2];
+        if(this.listxAxis2.indexOf(singleBucket.key[this.stackBarWidget.getValue().fieldId]) === -1){
+          const mtl = singleBucket.key[this.stackBarWidget.getValue().fieldId];
           const arr:any[]=[0];
-          dataObj[this.mtl]=arr;
-          this.listxAxis2.push(singleBucket.key[this.xAxis2]);
+          dataObj[mtl]=arr;
+          this.listxAxis2.push(singleBucket.key[this.stackBarWidget.getValue().fieldId]);
         }
       });
 
       this.arrayBuckets.forEach(singleBucket=>{
-        const xval1 = singleBucket.key[this.xAxis1];
-        const xval2 = singleBucket.key[this.xAxis2];
+        const xval1 = singleBucket.key[this.stackBarWidget.getValue().groupById];
+        const xval2 = singleBucket.key[this.stackBarWidget.getValue().fieldId];
           const arr=  dataObj[xval2];
           const xpos1 = this.barChartLabels.indexOf(xval1);
           const count = singleBucket.doc_count;
@@ -119,17 +111,6 @@ ngOnChanges():void{
     });
   }
 
-     // events
-   public chartClicked(e:any):void {
-    console.log(e);
-    // return this.eventClicked.emit(e);
-  }
-
-  public chartHovered(e:any):void {
-    console.log(e);
-    // return this.eventClicked.emit(e);
-  }
-
   public getRandomColor():string {
     const letters = '0123456789ABCDEF';
     let color = '#';
@@ -139,12 +120,53 @@ ngOnChanges():void{
     return color;
   }
 
-
-  emitEvtClick(): void {
-    throw new Error('Method not implemented.');
+  /**
+   * After click on chart legend
+   * legendItem
+   */
+  legendClick(legendItem: ChartLegendLabelItem) {
+    const clickedLegend = legendItem.text;
+    const fieldId = this.stackBarWidget.getValue().fieldId;
+    let appliedFilters = this.filterCriteria.filter(fill => fill.fieldId === fieldId);
+    this.removeOldFilterCriteria(appliedFilters);
+      if(appliedFilters.length >0) {
+        const cri = appliedFilters.filter(fill => fill.conditionFieldValue === clickedLegend);
+        if(cri.length >0) {
+          appliedFilters.splice(appliedFilters.indexOf(cri[0]),1);
+        } else {
+          const critera1: Criteria = new Criteria();
+          critera1.fieldId = fieldId;
+          critera1.conditionFieldId = fieldId;
+          critera1.conditionFieldValue = clickedLegend;
+          critera1.blockType = BlockType.COND;
+          critera1.conditionOperator = ConditionOperator.EQUAL;
+          appliedFilters.push(critera1);
+        }
+      } else {
+        appliedFilters = [];
+        const critera1: Criteria = new Criteria();
+        critera1.fieldId = fieldId;
+        critera1.conditionFieldId = fieldId
+        critera1.conditionFieldValue = clickedLegend;
+        critera1.blockType = BlockType.COND;
+        critera1.conditionOperator = ConditionOperator.EQUAL;
+        appliedFilters.push(critera1);
+      }
+      appliedFilters.forEach(app => this.filterCriteria.push(app));
+      this.emitEvtFilterCriteria(this.filterCriteria);
   }
-  emitEvtFilterCriteria(): void {
-    throw new Error('Method not implemented.');
+  /**
+   * Remove old filter criteria for field
+   * selectedOptions as parameter
+   */
+  removeOldFilterCriteria(selectedOptions: Criteria[]) {
+    selectedOptions.forEach(option=>{
+      this.filterCriteria.splice(this.filterCriteria.indexOf(option), 1);
+    });
+  }
+
+  emitEvtFilterCriteria(critera: Criteria[]): void {
+    this.evtFilterCriteria.emit(critera);
   }
 
 

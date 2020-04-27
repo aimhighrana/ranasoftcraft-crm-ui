@@ -18,6 +18,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
   filteredOptions: Observable<DropDownValues[]> = of([]);
   filterFormControl = new FormControl();
   widgetHeader: WidgetHeader = new WidgetHeader();
+  selectedDropVals: DropDownValues[] = [];
   constructor(
     private widgetService : WidgetService,
     private reportService: ReportService
@@ -46,7 +47,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
       } else {
         this.filteredOptions = of(this.values);
         if(typeof val === 'string' && val.trim() === '' && !this.filterWidget.getValue().isMultiSelect){
-          this.emitEvtFilterCriteria(null);
+          this.removeSingleSelectedVal();
         }
       }
     });
@@ -90,7 +91,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
       const buckets  = returnData.aggregations[`sterms#${fieldId}`]  ? returnData.aggregations[`sterms#${fieldId}`].buckets : [];
       const metadatas: DropDownValues[] = [];
       buckets.forEach(bucket => {
-        const metaData = {CODE: bucket.key, FIELDNAME: fieldId} as DropDownValues;
+        const metaData = {CODE: bucket.key, FIELDNAME: fieldId, TEXT: bucket.key} as DropDownValues;
         metadatas.push(metaData);
       });
       this.values = metadatas;
@@ -159,6 +160,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
         }
     }
     selectedOptions.forEach(op=> this.filterCriteria.push(op));
+    this.selectedDropVals = this.returnSelectedDropValues(selectedOptions);
     this.emitEvtFilterCriteria(this.filterCriteria);
   }
 
@@ -179,5 +181,28 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     } else {
       return false;
     }
+  }
+
+  returnSelectedDropValues(selectedOptions: Criteria[]): DropDownValues[] {
+    const returnValue: DropDownValues[] = [];
+    selectedOptions.forEach(value => {
+      const textVal = this.values.filter(val => val.CODE === value.conditionFieldValue);
+      const text = textVal.length >0 ? textVal[0].TEXT : value.conditionFieldValue;
+      returnValue.push({CODE: value.conditionFieldValue,FIELDNAME: value.fieldId,TEXT: text,langu:'EN',sno: null});
+
+    });
+    return returnValue;
+  }
+
+  remove(option: DropDownValues) {
+    this.toggleSelection(option);
+  }
+
+  removeSingleSelectedVal() {
+    const appliedFiltered = this.filterCriteria.filter(fill => fill.fieldId === this.filterWidget.getValue().fieldId);
+    appliedFiltered.forEach(fill=>{
+      this.filterCriteria.splice(this.filterCriteria.indexOf(fill),1);
+    });
+    this.emitEvtFilterCriteria(this.filterCriteria);
   }
 }

@@ -64,4 +64,14 @@ describe('FilterComponent', () => {
   it('fieldDisplayFn(), should return field desc', async(()=>{
     expect(component.fieldDisplayFn({TEXT:'Matl Desc'})).toEqual('Matl Desc');
   }));
+
+  it('returnSelectedDropValues(), should return selected drop values', async(()=>{
+    expect(component.returnSelectedDropValues([])).toEqual([]);
+  }));
+
+  it('remove(), should remove the selected from criteria', async(()=>{
+    component.filterCriteria = [];
+    component.filterWidget.next(new FilterWidget());
+    component.remove(null);
+  }));
 });

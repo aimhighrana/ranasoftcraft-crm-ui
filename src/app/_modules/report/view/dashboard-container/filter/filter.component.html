@@ -5,13 +5,34 @@
 
   <!-- DROPDOWN_VALS -->
   <ng-template [ngIf]="(filterWidget.getValue() ? filterWidget.getValue().type : '') === 'DROPDOWN_VALS'">
-    <mat-form-field>
+    <mat-form-field class="full-width">
+      <ng-template [ngIf]="filterWidget.getValue().isMultiSelect" [ngIfElse] ="single_select_drop">
+        <mat-chip-list #chipList aria-label="Select">
+          <mat-chip
+            *ngFor="let option of selectedDropVals"
+            [selectable]="true"
+            [removable]="true"
+            (removed)="remove(option)">
+            {{ option.TEXT }}
+            <mat-icon matChipRemove>cancel</mat-icon>
+          </mat-chip>
+        <input type="text"
+              placeholder="Select"
+              aria-label="Number"
+              matInput
+              [formControl]="filterFormControl"
+              [matAutocomplete]="auto">
+        </mat-chip-list>   
+    </ng-template>
+    <ng-template #single_select_drop>
       <input type="text"
-             placeholder="Select"
-             aria-label="Number"
-             matInput
-             [formControl]="filterFormControl"
-             [matAutocomplete]="auto">
+      placeholder="Select"
+      aria-label="Number"
+      value="{{ selectedDropVals[0] ? selectedDropVals[0].TEXT : ''}}"
+      matInput
+      [formControl]="filterFormControl"
+      [matAutocomplete]="auto">
+    </ng-template>
     </mat-form-field>
     <mat-autocomplete #auto="matAutocomplete" [displayWith]="fieldDisplayFn">
       <mat-option *ngFor="let option of filteredOptions | async" [value]="option" >
@@ -23,7 +44,9 @@
             </div>
           </ng-template>
           <ng-template #singleSelection>
+            <div (click)="optionClicked($event, option)">
               {{ option.TEXT }}
+            </div>
           </ng-template>
       </mat-option>
     </mat-autocomplete>
