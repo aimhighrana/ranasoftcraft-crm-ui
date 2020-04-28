@@ -17,7 +17,10 @@
             <!-- DATATABLE WIDGET -->
             <pros-reporting-list *ngIf ="widget.widgetType ==='TABLE_LIST'" [widgetId] ="widget.widgetId" [reportId]="reportId" [filterCriteria]="filterCriteria" (evtFilterCriteria)="changeFilterCriteria($event)"></pros-reporting-list>
 
+            <!-- TIMESERIES WIDGET -->
+            <pros-timeseries-widget *ngIf ="widget.widgetType ==='TIMESERIES'" [widgetId] ="widget.widgetId" [reportId]="reportId" [filterCriteria]="filterCriteria" (evtFilterCriteria)="changeFilterCriteria($event)"></pros-timeseries-widget>
         </div>
     </ng-template>
+    
 
 </div>

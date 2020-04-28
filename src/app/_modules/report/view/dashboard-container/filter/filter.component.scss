@@ -12,6 +12,10 @@ mat-card.widget {
       overflow: hidden;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
+
+      .header-container {
+        align-items: center;
+      }
     }
   }
 
@@ -38,5 +42,17 @@ mat-card.widget {
     button:first-child {
       margin-left: 16px;
     }
+  }
+
+  .f-row {
+    display: -webkit-box;
+  }
+
+  .f-col {
+    flex: 1;
+  }
+
+  mat-slider {
+    width: 100%;
   }
 }

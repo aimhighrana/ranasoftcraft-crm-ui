@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, AfterViewInit, ElementRef, NgZone, HostListener } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit, ElementRef, NgZone, HostListener, OnChanges, Output, EventEmitter } from '@angular/core';
 import { ReportService } from '../../_service/report.service';
 import { WidgetMapInfo, Criteria } from '../../_models/widget';
 
@@ -7,10 +7,16 @@ import { WidgetMapInfo, Criteria } from '../../_models/widget';
   templateUrl: './dashboard-container.component.html',
   styleUrls: ['./dashboard-container.component.scss']
 })
-export class DashboardContainerComponent implements OnInit, AfterViewInit {
+export class DashboardContainerComponent implements OnInit, AfterViewInit, OnChanges {
 
   @Input()
   reportId: number;
+
+  @Input()
+  emitClearBtnEvent: boolean;
+
+  @Output()
+  emitFilterApplied: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   screenWidth = 0;
   noOfboxes = 200; // Initial 200
@@ -24,6 +30,13 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit {
     private elementRef: ElementRef,
     private ngZone: NgZone
   ) { }
+
+  ngOnChanges(changes: import('@angular/core').SimpleChanges): void {
+    if(this.emitClearBtnEvent || !this.emitClearBtnEvent) {
+      this.filterCriteria = [];
+      this.emitFilterApplied.emit(this.filterCriteria.length ? true : false);
+    }
+  }
 
   ngAfterViewInit(): void {
     if(this.elementRef.nativeElement) {
@@ -49,6 +62,7 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit {
   changeFilterCriteria(criteria: Criteria[]) {
     this.filterCriteria = new Array();
     criteria.forEach(loop => this.filterCriteria.push(loop));
+    this.emitFilterApplied.emit(this.filterCriteria.length ? true : false);
   }
 
   @HostListener('window:resize', ['$event'])
@@ -58,4 +72,5 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit {
       this.boxSize = this.screenWidth / this.noOfboxes;
     }
   }
+
 }

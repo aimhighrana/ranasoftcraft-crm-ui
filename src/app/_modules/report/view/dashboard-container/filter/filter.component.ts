@@ -1,17 +1,19 @@
-import { Component, OnInit, OnChanges } from '@angular/core';
+import { Component, OnInit, OnChanges, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable, BehaviorSubject, of } from 'rxjs';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
-import { FilterWidget, DropDownValues, Criteria, BlockType, ConditionOperator, WidgetHeader } from '../../../_models/widget';
+import { FilterWidget, DropDownValues, Criteria, BlockType, ConditionOperator, WidgetHeader, FilterResponse } from '../../../_models/widget';
 import { ReportService } from '../../../_service/report.service';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { MatSliderChange } from '@angular/material/slider';
 
 @Component({
   selector: 'pros-filter',
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.scss']
 })
-export class FilterComponent extends GenericWidgetComponent implements OnInit, OnChanges {
+export class FilterComponent extends GenericWidgetComponent implements OnInit, OnChanges,OnDestroy {
 
   values: DropDownValues[] = [];
   filterWidget:BehaviorSubject<FilterWidget> = new BehaviorSubject<FilterWidget>(null);
@@ -19,6 +21,13 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
   filterFormControl = new FormControl();
   widgetHeader: WidgetHeader = new WidgetHeader();
   selectedDropVals: DropDownValues[] = [];
+  enableClearIcon = false;
+  startDate: string;
+  endDate: string;
+  startDateCtrl: FormControl = new FormControl();
+  endDateCtrl: FormControl = new FormControl();
+  numericValCtrl: FormControl = new FormControl();
+  filterResponse: FilterResponse;
   constructor(
     private widgetService : WidgetService,
     private reportService: ReportService
@@ -26,16 +35,17 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     super();
   }
 
+  ngOnDestroy(): void {
+    this.filterWidget.complete();
+    this.filterWidget.unsubscribe();
+  }
+
   /**
    * Automatic angular trigger when the filterCriteria changed by dashboard container
    *
    */
   ngOnChanges(changes: import('@angular/core').SimpleChanges): void {
-    this.filterWidget.subscribe(widget=>{
-      if(widget) {
-        this.loadAlldropData(widget.fieldId, this.filterCriteria);
-      }
-    });
+
   }
 
   ngOnInit(): void {
@@ -47,8 +57,13 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
       } else {
         this.filteredOptions = of(this.values);
         if(typeof val === 'string' && val.trim() === '' && !this.filterWidget.getValue().isMultiSelect){
-          this.removeSingleSelectedVal();
+          this.removeSingleSelectedVal(false);
         }
+      }
+    });
+    this.filterWidget.subscribe(widget=>{
+      if(widget) {
+        this.loadAlldropData(widget.fieldId, this.filterCriteria);
       }
     });
   }
@@ -89,14 +104,24 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
   private loadAlldropData(fieldId: string, criteria: Criteria[]):void{
     this.widgetService.getWidgetData(String(this.widgetId), criteria).subscribe(returnData=>{
       const buckets  = returnData.aggregations[`sterms#FILTER`]  ? returnData.aggregations[`sterms#FILTER`].buckets : [];
-      const metadatas: DropDownValues[] = [];
-      buckets.forEach(bucket => {
-        const metaData = {CODE: bucket.key, FIELDNAME: fieldId, TEXT: bucket.key} as DropDownValues;
-        metadatas.push(metaData);
-      });
-      this.values = metadatas;
-      const fieldIds = metadatas.map(map => map.CODE);
-      this.getFieldsMetadaDesc(fieldIds, fieldId);
+      if(this.filterWidget.getValue().metaData.picklist === '1') {
+        const metadatas: DropDownValues[] = [];
+        buckets.forEach(bucket => {
+          const metaData = {CODE: bucket.key, FIELDNAME: fieldId, TEXT: bucket.key} as DropDownValues;
+          metadatas.push(metaData);
+        });
+        this.values = metadatas;
+        const fieldIds = metadatas.map(map => map.CODE);
+        this.getFieldsMetadaDesc(fieldIds, fieldId);
+      } else if(this.filterWidget.getValue().metaData.picklist === '0' && this.filterWidget.getValue().metaData.dataType === 'NUMC') {
+        // static data  TODO
+        const filterResponse = new FilterResponse();
+        filterResponse.min = 1;
+        filterResponse.max = 2000;
+        filterResponse.fieldId = this.filterWidget.getValue().fieldId;
+        this.filterResponse = filterResponse;
+      }
+
     }, error=>{
       console.error(`Error : ${error}`);
     });
@@ -137,6 +162,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
           critera1.blockType = BlockType.COND;
           critera1.conditionOperator = ConditionOperator.EQUAL;
           selectedOptions.push(critera1);
+          this.enableClearIcon = true;
         }
       } else {
         const critera1: Criteria = new Criteria();
@@ -146,6 +172,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
         critera1.blockType = BlockType.COND;
         critera1.conditionOperator = ConditionOperator.EQUAL;
         selectedOptions.push(critera1);
+        this.enableClearIcon = true;
       }
     } else {
         selectedOptions = []; // reset previous selection
@@ -157,6 +184,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
           critera1.blockType = BlockType.COND;
           critera1.conditionOperator = ConditionOperator.EQUAL;
           selectedOptions.push(critera1);
+          this.enableClearIcon = true;
         }
     }
     selectedOptions.forEach(op=> this.filterCriteria.push(op));
@@ -198,11 +226,136 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     this.toggleSelection(option);
   }
 
-  removeSingleSelectedVal() {
+  removeSingleSelectedVal(isClearCall: boolean) {
     const appliedFiltered = this.filterCriteria.filter(fill => fill.fieldId === this.filterWidget.getValue().fieldId);
     appliedFiltered.forEach(fill=>{
       this.filterCriteria.splice(this.filterCriteria.indexOf(fill),1);
     });
+    this.enableClearIcon = false;
+    if(isClearCall) {
+      this.selectedDropVals = [];
+    }
     this.emitEvtFilterCriteria(this.filterCriteria);
   }
+
+
+  setPositionOfDatePicker() {
+    setTimeout(()=>{
+      if(document.getElementsByClassName('cdk-overlay-pane mat-datepicker-popup')[0]) {
+        let leftPos1 = (document.getElementsByClassName('cdk-overlay-pane mat-datepicker-popup')[0] as HTMLDivElement).style.left;
+        leftPos1 = leftPos1.split('px')[0];
+
+        let leftPos2 = (document.getElementsByClassName('cdk-overlay-pane mat-datepicker-popup')[1] as HTMLDivElement).style.left;
+        leftPos2 = leftPos2.split('px')[0];
+
+        if(Number(leftPos2)<50) {
+          (document.getElementsByClassName('cdk-overlay-pane mat-datepicker-popup')[0] as HTMLDivElement).style.left = (Number(leftPos1) + 200) + 'px';
+        } else {
+          (document.getElementsByClassName('cdk-overlay-pane mat-datepicker-popup')[1] as HTMLDivElement).style.left = (Number(leftPos1) - 300) + 'px';
+        }
+      }
+    },100);
+  }
+
+
+  changeStartDate(event: MatDatepickerInputEvent<Date>) {
+    if(event.value && event.value.getTime()) {
+      this.startDate = `${event.value.getTime()}`;
+      this.emitDateChangeValues();
+    }
+  }
+
+  changeEndtDate(event: MatDatepickerInputEvent<Date>) {
+    if(event.value && event.value.getTime()) {
+      this.endDate = `${event.value.getTime()}`;
+      this.emitDateChangeValues();
+    }
+  }
+  emitDateChangeValues() {
+    if(this.startDate && this.endDate) {
+      this.enableClearIcon = true;
+      let checkPreviousApplied = this.filterCriteria.filter(fill => fill.conditionFieldId === this.filterWidget.getValue().fieldId);
+      this.removeOldFilterCriteria(checkPreviousApplied);
+      if(checkPreviousApplied.length) {
+        checkPreviousApplied[0].conditionFieldStartValue = this.startDate;
+        checkPreviousApplied[0].conditionFieldEndValue = this.endDate;
+      } else {
+        checkPreviousApplied = [];
+        const critera: Criteria = new Criteria();
+        critera.fieldId = this.filterWidget.getValue().fieldId;
+        critera.conditionFieldId = this.filterWidget.getValue().fieldId;
+        critera.conditionFieldEndValue = this.endDate;
+        critera.conditionFieldStartValue = this.startDate;
+        critera.blockType = BlockType.COND;
+        critera.conditionOperator = ConditionOperator.RANGE;
+        checkPreviousApplied.push(critera);
+      }
+      checkPreviousApplied.forEach(op=> this.filterCriteria.push(op));
+      this.emitEvtFilterCriteria(this.filterCriteria);
+    }
+  }
+  clearSelectedPicker() {
+    this.startDate = null;
+    this.endDate = null;
+    this.startDateCtrl = new FormControl('');
+    this.endDateCtrl = new FormControl('');
+    this.enableClearIcon = false;
+    const checkPreviousApplied = this.filterCriteria.filter(fill => fill.conditionFieldId === this.filterWidget.getValue().fieldId);
+    this.removeOldFilterCriteria(checkPreviousApplied);
+    this.emitEvtFilterCriteria(this.filterCriteria);
+  }
+  formatMatSliderLabel(value: number) {
+    if (value >= 1000) {
+      return Math.round(value / 1000) + 'k';
+    }
+    return value;
+  }
+
+  sliderValueChange(event: MatSliderChange) {
+    if(event && event.value) {
+      this.enableClearIcon = true;
+      let checkPreviousApplied = this.filterCriteria.filter(fill => fill.conditionFieldId === this.filterWidget.getValue().fieldId);
+      this.removeOldFilterCriteria(checkPreviousApplied);
+      if(checkPreviousApplied.length) {
+        checkPreviousApplied[0].conditionFieldStartValue = String(this.filterResponse.min);
+        checkPreviousApplied[0].conditionFieldEndValue = String(event.value);
+      } else {
+        checkPreviousApplied = [];
+        const critera: Criteria = new Criteria();
+        critera.fieldId = this.filterWidget.getValue().fieldId;
+        critera.conditionFieldId = this.filterWidget.getValue().fieldId;
+        critera.conditionFieldEndValue = String(event.value);
+        critera.conditionFieldStartValue = String(this.filterResponse.min);
+        critera.blockType = BlockType.COND;
+        critera.conditionOperator = ConditionOperator.RANGE;
+        checkPreviousApplied.push(critera);
+      }
+      checkPreviousApplied.forEach(op=> this.filterCriteria.push(op));
+      this.emitEvtFilterCriteria(this.filterCriteria);
+    }
+  }
+
+  clearFilterCriteria() {
+    const picklist = this.filterWidget.getValue() ? this.filterWidget.getValue().metaData.picklist : '';
+    const dataType = this.filterWidget.getValue() ? this.filterWidget.getValue().metaData.dataType : '';
+    switch (picklist) {
+      case '0':
+        if(dataType === 'NUMC') {
+          const checkPreviousApplied = this.filterCriteria.filter(fill => fill.conditionFieldId === this.filterWidget.getValue().fieldId);
+          this.removeOldFilterCriteria(checkPreviousApplied);
+          this.emitEvtFilterCriteria(this.filterCriteria);
+          this.numericValCtrl.setValue(this.filterResponse.max);
+        } else if(dataType === 'DTMS') {
+          this.clearSelectedPicker();
+        }
+        break;
+      case '1':
+        this.removeSingleSelectedVal(true);
+        break;
+      default:
+        break;
+    }
+    this.enableClearIcon = false;
+  }
+
 }

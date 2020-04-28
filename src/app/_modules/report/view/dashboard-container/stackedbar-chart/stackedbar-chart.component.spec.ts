@@ -78,4 +78,20 @@ it('getstackbarChartData(), Stackbar Data',async(()=>{
   it('emitEvtFilterCriteria(), should emit the filter criteria', async(()=>{
     component.emitEvtFilterCriteria([]);
   }));
+
+  it('stackClickFilter(), should filter , after click on bar stack',async(()=>{
+    component.stackClickFilter();
+    const array = [{_datasetIndex:0,_index:0}];
+    component.stackClickFilter(null, array);
+
+    component.stackbarLegend = [{code: 'ZMRO',text: 'ZMRO',legendIndex:0}];
+    component.stachbarAxis = [{code: '10001',text: 'Mat 001 ',legendIndex:0}];
+    component.filterCriteria = [];
+    const chartWidget = new StackBarChartWidget();
+    chartWidget.fieldId = 'MATL_TYPE';
+    chartWidget.groupById = 'MATL_GROUP';
+    component.stackBarWidget = new BehaviorSubject<StackBarChartWidget>(chartWidget);
+    component.stackClickFilter(null, array);
+  }));
+
 });
