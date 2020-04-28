@@ -1,4 +1,4 @@
-<div [ngStyle]="{ 'width.px' : screenWidth}" class="root">
+<div class="root" (window:resize)="onResize($event)">
     <ng-template ngFor let-widget [ngForOf]="widgetList">
         <div [ngStyle]="{ 'width.px' : (widget.width * boxSize), 'height.px': (widget.height * boxSize), 'top.px':(widget.positionY * boxSize) , 'left.px': (widget.positionX * boxSize) }" class="widget-main-container">
             

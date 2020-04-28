@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, AfterViewInit, ElementRef, NgZone } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit, ElementRef, NgZone, HostListener } from '@angular/core';
 import { ReportService } from '../../_service/report.service';
 import { WidgetMapInfo, Criteria } from '../../_models/widget';
 
@@ -49,5 +49,13 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit {
   changeFilterCriteria(criteria: Criteria[]) {
     this.filterCriteria = new Array();
     criteria.forEach(loop => this.filterCriteria.push(loop));
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    if(event) {
+      this.screenWidth = event.target.innerWidth;
+      this.boxSize = this.screenWidth / this.noOfboxes;
+    }
   }
 }

@@ -46,4 +46,10 @@ describe('DashboardContainerComponent', () => {
 
 
   }));
+
+  it('onResize(), on resize ', async(()=>{
+    component.onResize(null);
+    const event = {target:{innerWidth:2000}};
+    component.onResize(event);
+  }));
 });
