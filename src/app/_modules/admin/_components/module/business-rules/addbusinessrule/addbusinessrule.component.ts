@@ -1,13 +1,37 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, EventEmitter, Output } from '@angular/core';
 import { Breadcrumb } from 'src/app/_models/breadcrumb';
-import { BusinessRuleType } from '../business-rules.modal';
+import { FormControl } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
+import { CoreSchemaBrInfo, BusinessRuleType } from '../business-rules.modal';
 
 @Component({
   selector: 'pros-addbusinessrule',
   templateUrl: './addbusinessrule.component.html',
   styleUrls: ['./addbusinessrule.component.scss']
 })
-export class AddbusinessruleComponent implements OnInit {
+export class AddbusinessruleComponent implements OnInit, OnChanges {
+
+  @Input()
+  schemaId: string;
+
+  @Input()
+  moduleId: string;
+
+  @Input()
+  schemaGroupId: string;
+
+  @Input()
+  brId: string;
+
+  @Input()
+  fragment: string;
+
+  @Output()
+  evtSavedBrInfo: EventEmitter<CoreSchemaBrInfo> = new EventEmitter<CoreSchemaBrInfo>();
+
+  ruleFrmCtrl: FormControl = new FormControl(this.fragment);
+
+  brType = 'BR_MANDATORY_FIELDS'; // default missing rule is enable
 
   breadcrumb: Breadcrumb = {
     heading: 'Add Business Rule',
@@ -17,75 +41,69 @@ export class AddbusinessruleComponent implements OnInit {
         text: 'Schema group(s)'
       },
       {
-        link: '/home/schema/create-schema/',
+        link: `/home/schema/create-schema`,
         text: 'Create Schema'
       }
     ]
   };
-  showMissingRuleSection = false;
-  showMetaDataSection = false;
-  showUserDefinedSection = false;
-  showDependencySection = false;
-  selectRadioBtn = false;
-  brType: string;
 
-  @Input() brData;
-  @Input() brLength;
-  @Input() paramsData;
-  @Output() valueChange = new EventEmitter();
+  constructor(
+    private router: Router,
+    private activatedRouter: ActivatedRoute
+  ) { }
 
-  constructor() { }
+  ngOnChanges(changes: import('@angular/core').SimpleChanges): void {
+    if(changes.fragment) {
+      this.updateBrTypeBasedOnFragement(changes.fragment.currentValue);
+      this.ruleFrmCtrl.setValue(changes.fragment.currentValue);
+    }
+  }
 
   ngOnInit() {
-    this.getBrdata();
+    this.activatedRouter.queryParams.subscribe(params=>{
+      this.brId = params.brId ? params.brId : '';
+    });
+
+
+    this.ruleFrmCtrl.valueChanges.subscribe(val=>{
+      this.router.navigate(['/home/schema/create-schema', this.moduleId , this.schemaGroupId, this.schemaId], {fragment:val});
+
+      // update br type
+      this.updateBrTypeBasedOnFragement(val);
+    });
+
+    // update link
+    this.breadcrumb.links[1].link = `/home/schema/create-schema/${this.moduleId}/${this.schemaGroupId}/${this.schemaId}`;
   }
 
-  getBrdata() {
-    console.log(this.brData);
-    if (this.brData) {
+  updateBrTypeBasedOnFragement(val: string) {
+    switch (val) {
+      case 'missing':
+        this.brType = BusinessRuleType.BR_MANDATORY_FIELDS;
+        break;
 
-      if (this.brData.brType === BusinessRuleType.missingRuleBrType) {
-        this.showMissingRuleSection = true;
-      }
-      else if (this.brData.brType === BusinessRuleType.meteDataRuleType) {
-        this.showMetaDataSection = true;
-      }
+      case 'metadata':
+        this.brType = BusinessRuleType.BR_METADATA_RULE;;
+        break;
 
-    }
-  }
+      case 'userdefined':
+        this.brType = BusinessRuleType.BR_CUSTOM_SCRIPT;
+        break;
 
-  onChangeRadioButton(event) {
-    if (event.value === 'missing') {
-      this.brType = 'missingRule';
-      this.showMissingRuleSection = true;
-      this.showMetaDataSection = false;
-      this.showUserDefinedSection = false;
-      this.showDependencySection = false;
-    }
-
-    if (event.value === 'metadata') {
-      this.brType = 'metaDataRule';
-      this.showMetaDataSection = true;
-      this.showMissingRuleSection = true;
-      this.showUserDefinedSection = false;
-      this.showDependencySection = false;
-    }
-    else if (event.value === 'userdefined') {
-      this.showUserDefinedSection = true;
-      this.showMissingRuleSection = false;
-      this.showMetaDataSection = false;
-      this.showDependencySection = false;
-    }
-    else if (event.value === 'dependency') {
-      this.showDependencySection = true;
-      this.showMissingRuleSection = false;
-      this.showMetaDataSection = false;
-      this.showUserDefinedSection = false;
+      default:
+        break;
     }
   }
 
-  addNewBusiness() {
-    this.valueChange.emit();
+  /**
+   * Use for send back to create schema - page
+   * @param evt after saved successfully then should navigate to create schema page
+   */
+  afterSaved(evt: CoreSchemaBrInfo) {
+    if(evt) {
+      this.evtSavedBrInfo.emit(evt);
+    }
+    this.router.navigate(['/home/schema/create-schema', this.moduleId , this.schemaGroupId, this.schemaId]);
   }
 
 }

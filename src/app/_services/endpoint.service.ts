@@ -302,6 +302,34 @@ export class EndpointService {
   public deleteCollaboratorUrl(permissionId: string): string {
     return `${this.apiUrl}/admin/permission/collaborator/delete/${permissionId}`;
   }
+
+  public getBrConditionalOperatorUrl() : string {
+    return `${this.apiUrl}/schema/br/condition-operator`;
+  }
+
+  public dropDownValuesUrl(fieldId: string): string {
+    return `${this.apiUrl}/schema/drop-values/${fieldId}`;
+  }
+
+  public saveUpdateUdrBlockUrl(): string {
+    return `${this.apiUrl}/admin/schema/br/udr`;
+  }
+
+  public conditionListsUrl(): string {
+    return `${this.apiUrl}/schema/br/udr/condition-list`;
+  }
+
+  public saveUpdateUDRUrl(): string {
+    return `${this.apiUrl}/admin/schema/udr/save-update`;
+  }
+
+  public getBusinessRuleInfoUrl(brId: string): string {
+    return `${this.apiUrl}/schema/get-business-rule-info/${brId}`;
+  }
+
+  public getUdrBusinessRuleInfoUrl(ruleId: string): string {
+    return `${this.apiUrl}/schema/br/udr/${ruleId}`;
+  }
 }
 
 

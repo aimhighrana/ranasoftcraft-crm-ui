@@ -10,8 +10,8 @@ export class SvgIconComponent implements OnInit {
   // icon possible values
   iconPV: string[] = [
     'P_BR_METADATA_RULE',
-    'P_BR_UDR_RULE',
-    'P_BR_MISSING_RULE',
+    'P_BR_CUSTOM_SCRIPT',
+    'P_BR_MANDATORY_FIELDS',
     'COUNT_WIDGET',
     'LIST_WIDGET',
     'FILTER_WIDGET',

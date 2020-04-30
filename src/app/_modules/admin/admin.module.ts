@@ -46,6 +46,10 @@ import { NounsCharacteristicsComponent } from 'src/app/_modules/admin/_component
 import { AddbusinessruleComponent } from './_components/module/business-rules/addbusinessrule/addbusinessrule.component';
 import { CreateSchemaComponent } from './_components/module/schema/create-schema/create-schema.component';
 import { MissingruleComponent } from './_components/module/business-rules/missingrule/missingrule.component';
+import { UserDefinedRuleComponent } from './_components/module/business-rules/user-defined-rule/user-defined-rule.component';
+import { UdrConditionFormComponent } from './_components/module/business-rules/user-defined-rule/udr-condition-form/udr-condition-form.component';
+import { BrConditionalFieldsComponent } from './_components/module/business-rules/br-conditional-fields/br-conditional-fields.component';
+import { UdrConditionControlComponent } from './_components/module/business-rules/user-defined-rule/udr-condition-control/udr-condition-control.component';
 
 @NgModule({
   declarations: [
@@ -93,6 +97,10 @@ import { MissingruleComponent } from './_components/module/business-rules/missin
     AddbusinessruleComponent,
     CreateSchemaComponent,
     MissingruleComponent,
+    UserDefinedRuleComponent,
+    UdrConditionFormComponent,
+    BrConditionalFieldsComponent,
+    UdrConditionControlComponent
   ],
   imports: [
     CommonModule,

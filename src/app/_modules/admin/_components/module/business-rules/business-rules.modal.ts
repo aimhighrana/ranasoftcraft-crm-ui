@@ -1,6 +1,9 @@
-export class BusinessRuleList {
+import { MetadataModel } from 'src/app/_models/schema/schemadetailstable';
+import { BlockType } from './user-defined-rule/udr-cdktree.service';
+
+export class CoreSchemaBrInfo {
     sno: number;
-    brId: number;
+    brId: string;
     brType: string;
     refId: number;
     fields: string;
@@ -11,7 +14,7 @@ export class BusinessRuleList {
     brInfo: string;
     brExpose: number;
     status: string;
-    categoryId: number;
+    categoryId: string;
     standardFunction: string;
     brWeightage: string;
     totalWeightage: number;
@@ -21,18 +24,77 @@ export class BusinessRuleList {
     dependantStatus: string;
     plantCode: string;
     percentage: number;
-    schemaId: number
+    schemaId: string
+    brIdStr: string;
 }
 
-export const BusinessRuleType = {
-    missingRuleBrType: 'BR_MANDATORY_FIELDS',
-    meteDataRuleType: 'BR_METADATA_RULE'
+export enum BusinessRuleType {
+    BR_MANDATORY_FIELDS = 'BR_MANDATORY_FIELDS',
+    BR_METADATA_RULE = 'BR_METADATA_RULE',
+    BR_CUSTOM_SCRIPT = 'BR_CUSTOM_SCRIPT'
 }
 
 export class CreateUpdateSchema {
     discription: string;
     moduleId: string;
-    schemaId: number;
-    schemaGroupId: number;
-    brs: BusinessRuleList[];
+    schemaId: string;
+    schemaGroupId: string;
+    brs: CoreSchemaBrInfo[];
+}
+
+export class CreateCondtionParams {
+    conditionName: string;
+    fieldType: string;
+    operatorType: string;
+    comparisionType: string;
+    comparisionValue: string;
+}
+
+export class ConditionalField {
+    fieldId: string;
+    fieldDescription: string;
+    fields: MetadataModel[];
+}
+
+export interface DropDownValue {
+    CODE: string;
+    PLANTCODE: string;
+    SNO: string;
+    FIELDNAME: string;
+    TEXT: string;
+    LANGU: string;
+}
+
+export class UDRBlocksModel {
+    id: string;
+    udrid: string;
+    conditionFieldId: string;
+    conditionValueFieldId: string;
+    conditionFieldValue: string;
+    conditionFieldStartValue: string;
+    conditionFieldEndValue: string;
+    blockType: BlockType;
+    conditionOperator: string;
+    blockDesc: string;
+}
+
+export class UDRHierarchyModel {
+    id: string;
+    udrId: string;
+    parentId: string;
+    leftIndex: number;
+    rightIndex: number;
+    blockRefId: string;
+}
+
+export class UdrModel {
+    brInfo: CoreSchemaBrInfo;
+    udrHierarchies: UDRHierarchyModel[];
+    blocks: UDRBlocksModel[];
+}
+
+export class Category {
+    categoryDesc: string;
+    categoryId: string;
+    plantCode: string;
 }

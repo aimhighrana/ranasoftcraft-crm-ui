@@ -1,0 +1,88 @@
+<mat-card class="mat-elevation-z3 pad0">
+    <mat-toolbar>
+        <mat-toolbar-row>
+            <span>Create Conditions</span>
+        </mat-toolbar-row>
+    </mat-toolbar>
+    <div class="f-col" [formGroup]="frmGroup">
+        <mat-form-field>
+            <mat-label>Condition Name</mat-label>
+            <input 
+            matInput
+            formControlName = "conditionDesc">
+        </mat-form-field>
+        <div class="f-row condition-flex">
+            <pros-br-conditional-fields
+            [schemaId]="schemaId"
+            [moduleId]="moduleId"
+            isRequired="true"
+            (evtOnchange) ="changeConditionalField($event)"
+            ></pros-br-conditional-fields>
+
+            <div class="col-spacer"></div>
+            <mat-form-field class="example-full-width">
+                <input
+                placeholder="Operator"
+                aria-label="Number"
+                matInput
+                formControlName="operator"
+                [matAutocomplete]="auto1">
+                <mat-autocomplete #auto1="matAutocomplete" (optionSelected) ="operatorSelectionChng($event)">
+                    <mat-option
+                    *ngFor="let operator of conditionalOperatorsOb | async"
+                    [value]="operator"> 
+                        {{ operator }}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+            <div class="col-spacer"></div>
+
+            <!-- Fields for range -->
+            <ng-template [ngIf]="showRangeFld">
+                <mat-form-field>
+                    <mat-label>Start Value</mat-label>
+                    <input matInput
+                    formControlName="conditionFieldStartValue">
+                </mat-form-field>
+
+                <mat-form-field>
+                    <mat-label>End Value</mat-label>
+                    <input matInput
+                    formControlName="conditionFieldEndValue">
+                </mat-form-field>
+            </ng-template>
+
+            <!-- if picklist is 1 then render autocomplete dropdown-->
+            <ng-template [ngIf]= "!showRangeFld">
+                <ng-template [ngIf]="frmGroup.get('fields').value && frmGroup.get('fields').value.picklist === '1'" [ngIfElse] ="elseBlock">
+                    <mat-form-field>
+                        <mat-label>Comparison Value</mat-label>
+                        <input matInput
+                        placeholder="Selection dropdown"
+                        formControlName="conditionFieldValue"
+                        [matAutocomplete]="dropValAuto">
+                        <mat-autocomplete #dropValAuto="matAutocomplete" [displayWith]="dropValDisplayWith">
+                            <mat-option
+                            *ngFor="let dropVal of dropValuesOb | async"
+                            [value]="dropVal"> 
+                                {{ dropVal.TEXT }}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+                </ng-template>
+    
+                <ng-template #elseBlock>
+                    <mat-form-field>
+                        <mat-label>Comparison Value</mat-label>
+                        <input matInput
+                        formControlName="conditionFieldValue">
+                    </mat-form-field>
+                </ng-template>
+            </ng-template>
+
+        </div>
+        <mat-card-actions>
+            <button mat-flat-button color="primary" (click)="saveUpdateCondition()">Save</button>
+        </mat-card-actions>
+    </div>
+</mat-card>

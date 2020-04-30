@@ -6,12 +6,10 @@
 
     <div class="f-col addrule">
         <h3 class="mat-h3">Add Rule</h3>
-        <div class="f-row">
+        <mat-radio-group [formControl] ="ruleFrmCtrl" class="f-row">
             <mat-card class="mat-elevation-z3 rules">
                 <div class="f-row">
-                    <mat-radio-button value="missing" color="primary" [checked]="showMissingRuleSection"
-                        (change)="onChangeRadioButton($event)">
-                    </mat-radio-button>
+                    <mat-radio-button value="missing" color="primary"></mat-radio-button>
                     <div class="f-col">
                         <h4 class="mat-h4">Missing Rule</h4>
                         <p>This rule establish a dependency relationship between source and target fields</p>
@@ -23,9 +21,7 @@
 
             <mat-card class="mat-elevation-z3 rules">
                 <div class="f-row">
-                    <mat-radio-button value="metadata" color="primary" [checked]="showMetaDataSection"
-                        (change)="onChangeRadioButton($event)">
-                    </mat-radio-button>
+                    <mat-radio-button value="metadata" color="primary"></mat-radio-button>
                     <div class="f-col">
                         <h4 class="mat-h4">Metadata Rule</h4>
                         <p>This rule establish a dependency relationship between source and target fields</p>
@@ -37,9 +33,7 @@
 
             <mat-card class="mat-elevation-z3 rules">
                 <div class="f-row">
-                    <mat-radio-button value="userdefined" color="primary" [checked]="showUserDefinedSection"
-                        (change)="onChangeRadioButton($event)">
-                    </mat-radio-button>
+                    <mat-radio-button value="userdefined" color="primary"></mat-radio-button>
                     <div class="f-col">
                         <h4 class="mat-h4">User Defined Rule</h4>
                         <p>This rule establish a dependency relationship between source and target fields</p>
@@ -48,43 +42,42 @@
                     <pros-svg-icon size="70" icon="P_BR_UDR_RULE" color="primary"></pros-svg-icon>
                 </div>
             </mat-card>
-
-            <!-- <mat-card class="mat-elevation-z3 rules">
-                <div class="f-row">
-                    <mat-radio-button value="dependency" color="primary"  [checked]="showDependencySection" (change)="onChangeRadioButton($event)">
-                    </mat-radio-button>
-                    <div class="f-col">
-                        <h4 class="mat-h4">Dependency Rule</h4>
-                        <p>This rule establish a dependency relationship between source and target fields</p>
-                    </div>
-                    <span class="f-spacer"></span>
-                    <pros-svg-icon size="70" icon="P_BR_UDR_RULE" color="primary"></pros-svg-icon>
-                </div>
-            </mat-card> -->
-        </div>
+            </mat-radio-group>
+        
     </div>
 
-    <!-- Missing Buisness Rule Container Starts Here-->
+    <!-- Missing Buisness Rule & Metada rule Container Starts Here-->
 
-    <mat-card class="mat-elevation-z3 rulesfields" *ngIf="showMissingRuleSection || showMetaDataSection">
-        <pros-missingrule *ngIf="showMissingRuleSection || showMetaDataSection" [brLength]="brLength"
-            [paramsData]="paramsData" (loadParentPage)="addNewBusiness()" [brType]="brType" [brData]="brData">
+    <mat-card class="mat-elevation-z3 rulesfields" *ngIf="ruleFrmCtrl.value === 'missing' || ruleFrmCtrl.value === 'metadata'">
+        <pros-missingrule
+        [schemaId] ="schemaId"
+        [moduleId] = "moduleId"
+        [brId] ="brId"
+        [brType] ="brType"
+        (evtSaved) ="afterSaved($event)">
         </pros-missingrule>
     </mat-card>
 
     <!-- Missing Buisness Rule Container End Here-->
 
-    <!-- <mat-card *ngIf="showUserDefinedSection"> -->
-    <mat-card *ngIf="showUserDefinedSection">
-        <pros-user-defined-rule></pros-user-defined-rule>
-        <!-- User Defined Section -->
-    </mat-card>
 
-    <!-- </mat-card> -->
+    <!-- User Defined Buisness Rule Container Starts Here-->
+    <div class="rulesfields" *ngIf="ruleFrmCtrl.value === 'userdefined'">
+        <pros-user-defined-rule
+        [paramsData]="paramsData"
+        [schemaId] ="schemaId"
+        [moduleId]="moduleId"
+        [brId]="brId"
+        [brType] ="brType"
+        (evtSaved) ="afterSaved($event)">
+        </pros-user-defined-rule>
 
-    <mat-card *ngIf="showDependencySection">
+    </div>
+    <!-- User Defined Buisness Rule Container End Here-->
+
+    <!-- <mat-card>
         Dependency Section
-    </mat-card>
+    </mat-card> -->
 
     <!-- <mat-card class="container-show content-row">
         <mat-card-actions>

@@ -6,6 +6,8 @@ import { map } from 'rxjs/operators';
 import { Any2tsService } from '../any2ts.service';
 import { SchemaGroupResponse, SchemaGroupDetailsResponse, SchemaGroupCountResponse, CreateSchemaGroupRequest, GetAllSchemabymoduleidsReq, ObjectTypeResponse, GetAllSchemabymoduleidsRes, SchemaGroupWithAssignSchemas } from 'src/app/_models/schema/schema';
 import { DataSource } from 'src/app/_modules/schema/_components/upload-data/upload-data.component';
+import { DropDownValue, UDRBlocksModel, UdrModel, CoreSchemaBrInfo, Category } from 'src/app/_modules/admin/_components/module/business-rules/business-rules.modal';
+
 
 
 @Injectable({
@@ -74,29 +76,60 @@ export class SchemaService {
   public uploadData(data: DataSource[], objectType: string, fileSno: string): Observable<string> {
     return this.http.post<any>(this.endpointService.uploadDataUrl(objectType, fileSno), data);
   }
-  public getAllBusinessRules(schemaId) {
-    return this.http.get(this.endpointService.getBusinessRulesInfo(schemaId));
+
+  public getAllBusinessRules(schemaId): Observable<CoreSchemaBrInfo[]> {
+    return this.http.get<CoreSchemaBrInfo[]>(this.endpointService.getBusinessRulesInfo(schemaId));
   }
 
-  public getAllCategoriesList() {
-    return this.http.get<any>(this.endpointService.getCategoriesInfo()).pipe(map(data => {
-      return this.any2tsService.any2CategoriesList(data);
-    }));
+  public getAllCategoriesList(): Observable<Category[]> {
+    return this.http.get<Category[]>(this.endpointService.getCategoriesInfo());
   }
 
-  public createUpdateSchema(params) {
-    return this.http.post(this.endpointService.createSchema(), params);
+  public createUpdateSchema(params): Observable<string> {
+    return this.http.post<string>(this.endpointService.createSchema(), params);
   }
 
   getFillDataDropdownData(id) {
     return this.http.get(this.endpointService.getFillDataInfo(id));
   }
 
-  createBusinessRule(params) {
-    return this.http.post(this.endpointService.createBr(), params);
+  createBusinessRule(params): Observable<CoreSchemaBrInfo> {
+    return this.http.post<CoreSchemaBrInfo>(this.endpointService.createBr(), params);
   }
 
   public deleteBr(id) {
     return this.http.delete(this.endpointService.deleteBr(id));
+  }
+
+  public getBrConditionalOperator(): Observable<string[]> {
+    return this.http.get<string[]>(this.endpointService.getBrConditionalOperatorUrl());
+  }
+
+  public dropDownValues(fieldId: string, queryString: string): Observable<DropDownValue[]> {
+    return this.http.get<DropDownValue[]>(this.endpointService.dropDownValuesUrl(fieldId),{params:{queryString}});
+  }
+
+  public saveUpdateUdrBlock(blocks: UDRBlocksModel[]): Observable<string[]> {
+    return this.http.post<string[]>(this.endpointService.saveUpdateUdrBlockUrl(), blocks);
+  }
+
+  public getConditionList(): Observable<UDRBlocksModel[]> {
+    return this.http.get<UDRBlocksModel[]>(this.endpointService.conditionListsUrl());
+  }
+
+  public saveUpdateUDR(udrReq: UdrModel) : Observable<string> {
+    return this.http.post<string>(this.endpointService.saveUpdateUDRUrl(), udrReq);
+  }
+
+  public getBusinessRuleInfo(brId: string): Observable<CoreSchemaBrInfo> {
+    return this.http.get<CoreSchemaBrInfo>(this.endpointService.getBusinessRuleInfoUrl(brId));
+  }
+
+  /**
+   * Http call and return UdrModel
+   * getUdrBusinessRuleInfoUrl
+   */
+  public getUdrBusinessRuleInfo(ruleId: string): Observable<UdrModel> {
+    return this.http.get<UdrModel>(this.endpointService.getUdrBusinessRuleInfoUrl(ruleId));
   }
 }

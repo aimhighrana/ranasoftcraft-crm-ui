@@ -216,7 +216,7 @@ export class SchemaGroupFormComponent implements OnInit {
     const createSchemaGroup: CreateSchemaGroupRequest = new CreateSchemaGroupRequest();
     createSchemaGroup.moduleIds = this.groupDetails.objectId;
     createSchemaGroup.schemaGroupName = this.groupDetails.groupName;
-    createSchemaGroup.schemaIds = this.groupDetails.schemaGroupMappings.map(grp => grp.schemaId);
+    createSchemaGroup.schemaIds = this.groupDetails.schemaGroupMappings ? this.groupDetails.schemaGroupMappings.map(grp => grp.schemaId) : [];
     createSchemaGroup.groupId = (this.groupId && this.groupId !== 'new') ? this.groupId : '';
     this.schemaService.createSchemaGroup(createSchemaGroup).subscribe(
       data => {

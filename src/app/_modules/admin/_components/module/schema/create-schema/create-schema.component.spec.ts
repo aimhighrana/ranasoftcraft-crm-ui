@@ -1,221 +1,165 @@
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { ReactiveFormsModule, FormsModule, FormGroup, FormArray } from '@angular/forms';
 import { CreateSchemaComponent } from './create-schema.component';
+import { RouterTestingModule } from '@angular/router/testing';
+import { SchemaService } from 'src/app/_services/home/schema.service';
+import { SchemalistService } from 'src/app/_services/home/schema/schemalist.service';
+import { SchemaListDetails } from 'src/app/_models/schema/schemalist';
 import { of } from 'rxjs';
-
-class ServiceStub {
-  getAllBusinessRules() {
-    return ({})
-  }
-
-  getAllCategoriesList() {
-    return ({})
-  }
-}
-
-class SchemaListSerStub {
-  getSchemaDetailsBySchemaId() {
-    return ({});
-  }
-}
+import { CoreSchemaBrInfo, Category, CreateUpdateSchema } from '../../business-rules/business-rules.modal';
 
 describe('CreateSchemaComponent', () => {
-  let component;
-  let service;
-  let schemaSer;
+  let component: CreateSchemaComponent;
+  let fixture: ComponentFixture<CreateSchemaComponent>;
+  let service: SchemaService;
+  let schemaListService: SchemalistService;
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [ CreateSchemaComponent ],
+      imports:[
+        HttpClientTestingModule, AppMaterialModuleForSpec, ReactiveFormsModule, FormsModule,
+        RouterTestingModule
+      ],
+      providers:[
+        SchemaService, SchemalistService
+      ]
+    })
+    .compileComponents();
+  }));
 
   beforeEach(() => {
-    service = new ServiceStub();
-    schemaSer = new SchemaListSerStub()
-    component = new CreateSchemaComponent(service, null, null, schemaSer);
+    fixture = TestBed.createComponent(CreateSchemaComponent);
+    component = fixture.componentInstance;
+    service = fixture.debugElement.injector.get(SchemaService);
+    schemaListService = fixture.debugElement.injector.get(SchemalistService);
   });
 
-  // it('testing  ngOnInit', () => {
-  //   spyOn(component, 'getCategoriesData').and.callFake(() => {
-  //     return '';
-  //   })
-  //   spyOn(component, 'getBusinessRulesData').and.callFake(() => {
-  //     return '';
-  //   })
-  //   component.ngOnInit();
-  // });
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 
-  it('testing showAddBusinessRulePage', () => {
-    component.showAddBusinessRulePage();
-  })
+  it('ngOnInit(), loaded pre required', async(()=>{
+    component.ngOnInit();
+    expect(component.dynCategoryFrmGrp.get('categories')).toBeTruthy();
+  }));
 
-  // it('testing showParentPage - if', () => {
-  //   component.schemaDetails = 'test'
-  //   const res = [{ test: 'test' }]
-  //   spyOn(component, 'getBusinessRulesData').and.callFake(() => {
-  //     return of(res);
-  //   })
-  //   component.showParentPage()
-  // })
+  it('getSchemaData(), should call service for get schema details',async(()=>{
+    // mock data
+    const schemaId = '23472538';
+    const schemaList: SchemaListDetails = new SchemaListDetails();
+    component.schemaId = schemaId;
+    spyOn(schemaListService, 'getSchemaDetailsBySchemaId').withArgs(schemaId).and.returnValue(of(schemaList));
 
-  it('testing showParentPage - else', () => {
-    spyOn(component, 'returnBrsList').and.callFake(() => {
-      return '';
-    })
-    spyOn(component, 'handleNullCondition').and.callFake(() => {
-      return '';
-    })
-    component.showParentPage()
-  })
-
-  it('testing addCategory', () => {
-    component.addCategory();
-  })
-
-  it('testing getBusinessRulesData', () => {
-    const res = {
-      data: 'data'
-    }
-    component.schemaDetails = { schemaId: '11212' }
-    spyOn(service, 'getAllBusinessRules').and.callFake(() => {
-      return of(res);
-    })
-    spyOn(component, 'onloadShowCategories').and.callFake(() => {
-      return '';
-    })
-    component.getBusinessRulesData()
-  })
-
-  it('testing getCategoriesData', () => {
-    const res = {
-      data: 'data'
-    }
-    spyOn(service, 'getAllCategoriesList').and.callFake(() => {
-      return of(res);
-    })
-    component.getCategoriesData()
-  })
-
-  it('testing loopData', () => {
-
-    const dd = {
-      businessRules: [{
-        categoryId: '123'
-      }]
-    }
-    component.loopData(dd);
-  })
-
-  it('testing changeCategoryNameId', () => {
-
-    const eve = {
-      option: {
-        value: 'test'
-      }
-    }
-
-    component.categoriesNames = [{ categoryDesc: 'test' }]
-    component.categoriesNamesList = [{
-      categoryDesc: '',
-      categoryId: ''
-    }]
-
-    spyOn(component, 'loopData').and.callFake(() => {
-      return '';
-    })
-
-    component.changeCategoryNameId(eve, 0);
-  })
-
-  it('testing removeBrFromCategory', () => {
-
-    component.categoriesNamesList = [{
-      businessRules: [{
-        test: 'qwe'
-      },
-      {
-        test: '222'
-      }]
-    }]
-    component.removeBrFromCategory(0, 1);
-  })
-
-  it('checking search()', () => {
-
-    component.filterList = [{
-      brInfo: 'test'
-    }]
-    component.search('test');
-  })
-
-
-  it('testing enableSaveButton', () => {
-    component.schemaName = 'test';
-    component.enableSaveButton();
-  })
-
-  it('testing getSchemaData', () => {
-
-    component.params = {
-      schemaId: '123'
-    }
-    component.schemaDetails = {
-      schemaId: '12345',
-      schemaDescription: 'test'
-    }
-
-    const res = {
-      schemaId: '12345',
-      schemaDescription: 'test'
-    }
-
-    spyOn(schemaSer, 'getSchemaDetailsBySchemaId').and.callFake(() => {
-      return of(res);
-    })
-
-    spyOn(component, 'getBusinessRulesData').and.callFake(() => {
-      return '';
-    })
-    spyOn(component, 'enableSaveButton').and.callFake(() => {
-      return '';
-    })
     component.getSchemaData();
-  })
 
-  it('checking editBusinessRuls', () => {
+    expect(schemaListService.getSchemaDetailsBySchemaId).toHaveBeenCalledWith(schemaId);
+  }));
 
-    component.editBusinessRuls('test');
-  })
+  it('getCategoriesData(), get all categories', async(()=>{
+    spyOn(service,'getAllCategoriesList').and.returnValue(of([]));
 
-  it('checking deleteBusinessRule', () => {
+    component.getCategoriesData();
 
-    const ssData = [{ test: 'test' }, { test: 'test1' }]
+    expect(service.getAllCategoriesList).toHaveBeenCalledTimes(1);
+  }));
 
-    spyOn(component, 'returnBrsList').and.callFake(() => {
-      return ssData;
-    })
-    spyOn(component, 'handleNullCondition').and.callFake(() => {
-      return '';
-    })
-    component.deleteBusinessRule([], 1);
-  })
+  it('getBusinessRulesData(), get all business rules', async(()=>{
+    const schemaId = '23472538';
+    component.schemaId = schemaId;
 
-  it('checking onloadShowCategories', () => {
+    component.dynCategoryFrmGrp = new FormGroup({
+      categories: new FormArray([])
+    });
 
-    const obj = [{
-      categoryId: '123'
-    }]
-    component.categoriesNames = [{
-      categoryId: '123',
-      businessRules: []
-    }]
-    component.onloadShowCategories(obj);
-  })
+    spyOn(service, 'getAllBusinessRules').withArgs(schemaId).and.returnValue(of([]));
 
-  // it('checking updateBrCategoryId', () => {
+    component.getBusinessRulesData();
 
-  //   component.categoriesNamesList = [
-  //     {
-  //       businessRules: [{
-  //         categoryId: '123'
-  //       }]
-  //     }]
-  //   component.businessRuleNames = [{
-  //     categoryId: '123'
-  //   }]
-  //   component.updateBrCategoryId();
-  // })
+    expect(service.getAllBusinessRules).toHaveBeenCalledWith(schemaId);
+  }));
+
+  it('checkIsEmptycategoryAssigned(), check is category empty', async(()=>{
+    component.categoryBrMap = null;
+    const status =  component.checkIsEmptycategoryAssigned();
+    expect(status).toEqual(false);
+  }));
+
+  it('addCategory(), add category', async(()=>{
+    // mock data
+    component.dynCategoryFrmGrp = new FormGroup({
+      categories: new FormArray([])
+    });
+
+    component.addCategory();
+    const array = component.dynCategoryFrmGrp.controls.categories as FormArray
+    expect(array.length).toEqual(1);
+  }));
+
+  it('removeCategory(), remove category', async(()=>{
+    component.dynCategoryFrmGrp = new FormGroup({
+      categories: new FormArray([])
+    });
+    component.addCategory();
+    component.removeCategory(0);
+    const array = component.dynCategoryFrmGrp.controls.categories as FormArray
+    expect(array.length).toEqual(0);
+  }));
+
+  it('afterSavedBrinfo(), after saved br info', async(()=>{
+    // mock data
+    const brIno: CoreSchemaBrInfo = new CoreSchemaBrInfo();
+    brIno.brId = '2735467235';
+
+    component.brList = [];
+    component.afterSavedBrinfo(brIno);
+
+    expect(component.brList.length).toEqual(1);
+  }));
+
+  it('categoryDisplayWith(), return category description', async(()=>{
+    const cat: Category = new Category();
+    cat.categoryId = '623545281';
+    cat.categoryDesc = 'Validness';
+
+    const actualval = component.categoryDisplayWith(cat);
+
+    expect(actualval).toEqual(cat.categoryDesc);
+
+
+  }));
+
+  it('updateCategoryId(), update category id ', async(()=>{
+
+    // mock data
+    const br1 = new CoreSchemaBrInfo();
+    br1.brIdStr = '23627';
+    component.brList = [br1];
+
+    component.updateCategoryId('7235764823', '23627');
+
+    expect(component.brList[0].categoryId).toEqual('7235764823');
+
+  }));
+
+  it('createUpdateSchema(), test create update schema', async(()=>{
+    component.dynCategoryFrmGrp = new FormGroup({
+      categories: new FormArray([])
+    });
+
+    const request: CreateUpdateSchema = new CreateUpdateSchema();
+    request.moduleId = component.moduleId;
+    request.schemaGroupId = component.schemaGroupId;
+    request.discription = component.schemaName;
+    request.schemaId = component.schemaId;
+    request.brs = component.brList;
+
+    spyOn(service,'createUpdateSchema').withArgs(request).and.returnValue(of(component.schemaId));
+
+    component.createUpdateSchema();
+
+    expect(service.createUpdateSchema).toHaveBeenCalledWith(request);
+  }));
 });

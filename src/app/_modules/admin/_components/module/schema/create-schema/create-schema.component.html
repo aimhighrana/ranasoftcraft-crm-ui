@@ -1,4 +1,4 @@
-<div class="root" cdkDropListGroup *ngIf="!showBusinessPage">
+<div class="root" cdkDropListGroup *ngIf="!fragment">
     <div class="breadcrumb-wrapper">
         <pros-breadcrumb [crumbs]="breadcrumb"></pros-breadcrumb>
     </div>
@@ -6,99 +6,83 @@
     <!-- Categories Section Starts Here-->
 
     <mat-card class="mat-elevation-z3 categories">
-
         <mat-form-field>
             <mat-label>Schema Name</mat-label>
-            <input matInput [(ngModel)]="schemaName" (keyup)="enableSaveButton()">
+            <input matInput [(ngModel)]="schemaName">
         </mat-form-field>
         <h3 class="mat-h3">Categories</h3>
 
-        <div *ngFor="let data of categoriesNamesList; let i = index" class="cardStyle">
-
-            <mat-card class="cardBgColor">
-
-                <div cdkDropList [cdkDropListData]="data.businessRules" class="example-list"
-                    (cdkDropListDropped)="drop($event, i)">
-
-                    <!-- <h3 class="cateroryNameStyle">{{data.categoryname}}</h3> -->
-                    <!-- <mat-form-field>
-                        <mat-select placeholder="Category Name" (selectionChange)="changeCategoryNameId(data, i)"
-                            [(ngModel)]="data.categoryList">
-                            <mat-option *ngFor="let ctname of categoriesNames" [value]="ctname">
-                                {{ ctname.categoryDesc }}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field> -->
-                    <form class="example-form">
-                        <mat-form-field class="example-full-width">
-                            <input type="text" placeholder="Category Name" aria-label="Number" matInput name="test"
-                                [matAutocomplete]="auto" [ngModel]="data.categoryDesc"
-                                (keyup)="searchCategoryNames($event.target.value)">
-                            <mat-autocomplete #auto="matAutocomplete"
-                                (optionSelected)="changeCategoryNameId($event, i)">
-                                <mat-option *ngFor="let option of categoriesNames" [value]="option.categoryDesc">
-                                    {{option.categoryDesc}}
-                                </mat-option>
-                            </mat-autocomplete>
-                        </mat-form-field>
-                    </form>
-
-                    <!-- <mat-form-field appearance="fill">
-                        <input class="cateroryNameStyle" matInput placeholder="Category Name"
-                            [(ngModel)]="data.categoryDesc">
-                    </mat-form-field> -->
-
-                    <div *ngFor="let categories of data.businessRules; let j = index" class="boxStyle matStyle" cdkDrag>
-                        <mat-card class="mat-elevation-z3 br-tile f-col ">
-
-                            <div class="f-row">
-                                <pros-svg-icon size="40" icon="P_{{categories.brType}}" color="primary"></pros-svg-icon>
-                                <h4 class="mat-h4">{{categories.brInfo}}</h4>
-                            </div>
-                            <div class="f-row">
-                                <button mat-icon-button>
-                                    <mat-icon matTooltip="Edit">edit</mat-icon>
-                                </button>
-                                <button mat-icon-button (click)="removeBrFromCategory(i,j)">
+        <form [formGroup]="dynCategoryFrmGrp">
+            <div formArrayName="categories" *ngFor="let category of dynCategoryFrmGrp.get('categories').controls; let i = index" class="cardStyle">
+                <ng-container [formGroupName]="i">
+                    <mat-card class="cardBgColor">
+                        <mat-toolbar>
+                            <mat-toolbar-row>
+                                <mat-form-field>
+                                    <mat-label>Category Name</mat-label>
+                                    <input
+                                    placeholder="Category Name"
+                                    aria-label="Number"
+                                    matInput
+                                    [matAutocomplete]="auto"
+                                    formControlName="category">
+                                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="categoryDisplayWith">
+                                            <mat-option *ngFor= "let cat of categoryList" [value]="cat">
+                                                {{ cat.categoryDesc }}
+                                            </mat-option>
+                                    </mat-autocomplete>
+                                    <button mat-button matSuffix mat-icon-button>
+                                        <mat-icon>edit</mat-icon>
+                                      </button>
+                                </mat-form-field>
+                                <span class="f-spacer"></span>
+                                <button mat-icon-button (click)="removeCategory(i)">
                                     <mat-icon matTooltip="Delete">delete_outline</mat-icon>
                                 </button>
+                            </mat-toolbar-row>
+                        </mat-toolbar>
+                        <div cdkDropList [cdkDropListData]="categoryBrMap[i]" (cdkDropListDropped)="drop($event, i, true)" class="min-drop-height inCategory">
+                            <div class="boxStyle matStyle" *ngFor="let br of categoryBrMap[i]" cdkDrag>
+                                <mat-card class="mat-elevation-z3 br-tile f-col ">
+                                    <div class="f-row">
+                                        <pros-svg-icon size="40" icon="P_{{br.brType}}" color="primary"></pros-svg-icon>
+                                        <h4 class="mat-h4">{{ br.brInfo }}</h4>
+                                    </div>
+                                    <div class="f-row">
+                                        <button mat-icon-button>
+                                            <mat-icon matTooltip="Edit" (click)="editBusinessRuls(br.brIdStr, br.brType)">edit</mat-icon>
+                                        </button>
+                                        <!-- (click)="removeBrFromCategory(i,j)" -->
+                                        <button mat-icon-button>
+                                            <mat-icon matTooltip="Delete">delete_outline</mat-icon>
+                                        </button>
+                                    </div>
 
-                                <button mat-icon-button>
-                                    <mat-icon>menu</mat-icon>
-                                    <!-- <span class="dot">{{categories.count}}</span> -->
-                                </button>
+                                </mat-card>
                             </div>
-
-                        </mat-card>
-                    </div>
-
-                    <!-- <div>
-                       <button mat-button class="deleteBtnStyle">Delete</button>
-                    </div> -->
-
+                        </div>
+                    </mat-card>
+                </ng-container>
+            </div>
+            
+            <div class="row-spacer"></div>
+            <!-- [ngIf]="brList.length" [ngIfElse] ="showNullStage" -->
+            <ng-template [ngIf]="brList.length !== 0">
+                <pros-add-tile class="tile" text="Add a Category" (click)="addCategory()"></pros-add-tile>
+                <mat-card-actions>
+                    <button mat-flat-button (click)="navigateToListPage()">Cancel</button>
+                    <button mat-flat-button color="primary" (click)="createUpdateSchema()">Save</button>
+                </mat-card-actions>
+            </ng-template>
+            <ng-template #showNullStage>
+                <div class="row nullstate">
+                    <button mat-fab disabled>
+                        <mat-icon color="primary">layers_clear</mat-icon>
+                    </button>
+                    <p>Please create at least one businessRule </p>
                 </div>
-            </mat-card>
-
-        </div>
-        <div class="row nullstate" *ngIf="!enableCreateCategoryBtn">
-            <button mat-fab disabled>
-                <mat-icon color="primary">layers_clear</mat-icon>
-            </button>
-            <p>Please create at least one businessRule </p>
-        </div>
-
-        <div class="row-spacer"></div>
-        <pros-add-tile *ngIf="enableCreateCategoryBtn" class="tile" text="Add a Category" (click)="addCategory()">
-        </pros-add-tile>
-
-        <div *ngIf="enableCreateCategoryBtn">
-            <mat-card-actions>
-                <button mat-flat-button (click)="navigateToListPage()">Cancel</button>
-                <button mat-flat-button color="primary" [disabled]="!enableSaveBtn"
-                    (click)="createUpdateSchema()">Save</button>
-            </mat-card-actions>
-        </div>
-
+            </ng-template>
+        </form>
     </mat-card>
 
     <!-- Categories Section End Here-->
@@ -110,14 +94,14 @@
         <h3 class="mat-h3">Business Rules</h3>
         <div class="inputWidth">
             <mat-form-field appearance="fill">
-                <input matInput placeholder="Search" (keyup)="search($event.target.value)">
+                <input matInput placeholder="Search">
             </mat-form-field>
         </div>
 
-        <div cdkDropList [cdkDropListData]="businessRuleNames" class="example-list"
+        <div cdkDropList [cdkDropListData]="brList" class="example-list inBrList"
             (cdkDropListDropped)="drop($event, 1)">
 
-            <div *ngFor="let data of businessRuleNames; let k = index" cdkDrag>
+            <div *ngFor="let data of brListOb | async; let k = index" cdkDrag>
 
                 <mat-card class="mat-elevation-z3 br-tile">
                     <div class="f-row">
@@ -125,26 +109,25 @@
                         <h4 class="mat-h4">{{data.brInfo}}</h4>
                     </div>
                     <div class="f-row">
-                        <button mat-icon-button (click)="editBusinessRuls(data)">
+                        <button mat-icon-button (click)="editBusinessRuls(data.brIdStr, data.brType)">
                             <mat-icon matTooltip="Edit">edit</mat-icon>
                         </button>
-                        <button mat-icon-button (click)="deleteBusinessRule(data, k)">
+                        <button mat-icon-button>
                             <mat-icon matTooltip="Delete">delete_outline</mat-icon>
                         </button>
                         <button mat-icon-button>
-                            <mat-icon>menu</mat-icon>
+                            <mat-icon [matBadge]="data.order" matBadgeColor="primary">menu</mat-icon>
                         </button>
                     </div>
                 </mat-card>
                 <div class="row-spacer"></div>
             </div>
         </div>
-
-
-        <!-- <div *ngIf="enableCreateCategoryBtn">
-            <h3>* No Records Found </h3>
-        </div> -->
-        <pros-add-tile class="tile" text="Add a new business rule" (click)="showAddBusinessRulePage()">
+        
+        <pros-add-tile 
+        class="tile" 
+        text="Add a new business rule" 
+        (click)="showAddBusinessRulePage()">
         </pros-add-tile>
     </mat-card>
 
@@ -152,6 +135,11 @@
 
 </div>
 
-<pros-addbusinessrule *ngIf="showBusinessPage" (valueChange)='showParentPage()' [brLength]="businessrulelength"
-    [paramsData]="params" [brData]="selectdBrData">
+<pros-addbusinessrule 
+    *ngIf="fragment"
+    [moduleId]="moduleId"
+    [schemaId] ="schemaId"
+    [schemaGroupId] ="schemaGroupId"
+    [fragment] ="fragment"
+    (evtSavedBrInfo) ="afterSavedBrinfo($event)">
 </pros-addbusinessrule>

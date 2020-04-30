@@ -1,13 +1,15 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, OnChanges } from '@angular/core';
 import { SchemaService } from 'src/app/_services/home/schema.service';
-import { of } from 'rxjs';
+import { of, BehaviorSubject } from 'rxjs';
 import { FormControl, FormBuilder, FormGroup } from '@angular/forms';
 import { SchemaGroupWithAssignSchemas } from 'src/app/_models/schema/schema';
 import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { startWith, map } from 'rxjs/operators';
-import { BusinessRuleList, BusinessRuleType } from 'src/app/_modules/admin/_components/module/business-rules/business-rules.modal';
+import { CoreSchemaBrInfo, BusinessRuleType } from 'src/app/_modules/admin/_components/module/business-rules/business-rules.modal';
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MetadataModeleResponse } from 'src/app/_models/schema/schemadetailstable';
+
 
 
 export const filter = (opt, value: string) => {
@@ -21,7 +23,14 @@ export const filter = (opt, value: string) => {
   templateUrl: './missingrule.component.html',
   styleUrls: ['./missingrule.component.scss']
 })
-export class MissingruleComponent implements OnInit {
+export class MissingruleComponent implements OnInit, OnChanges {
+
+  constructor(private schemaService: SchemaService, private _formBuilder: FormBuilder, private activatedRoute: ActivatedRoute,
+    private snackBar: MatSnackBar) {
+    this.groupDetails = new SchemaGroupWithAssignSchemas();
+    this.fillDetailsSelectFields = of([]);
+    this.fillDetailsFinalDropdownList = of([]);
+  }
 
   arrList: any;
   description: string;
@@ -36,17 +45,8 @@ export class MissingruleComponent implements OnInit {
   gridFieldsData: any = [];
   hierarchyFieldsData: any = [];
   panelOpenState = false;
-  enablingFinishButton = false;
-  finalList: any = []
-  moduleId: any;
-  groupId: any;
-  requestParams: BusinessRuleList = new BusinessRuleList();
 
-  @Input() brLength: number;
-  @Input() brType: string;
-  @Input() brData: BusinessRuleList;
-  @Input() paramsData;
-  @Output() loadParentPage = new EventEmitter();
+  finalList: any = []
 
   @ViewChild('moduleSearchInp') moduleSearchInp: ElementRef;
   @ViewChild('auto', { static: true }) matAutocomplete: MatAutocomplete;
@@ -56,15 +56,34 @@ export class MissingruleComponent implements OnInit {
   groupDetailss = [];
   groupDetails: SchemaGroupWithAssignSchemas;
 
-  constructor(private schemaService: SchemaService, private _formBuilder: FormBuilder, private activatedRoute: ActivatedRoute,
-    private snackBar: MatSnackBar) {
 
-    this.groupDetails = new SchemaGroupWithAssignSchemas();
-    this.fillDetailsSelectFields = of([]);
-    this.fillDetailsFinalDropdownList = of([]);
-  }
+  @Input()
+  schemaId: string;
+
+  @Input()
+  moduleId: string;
+
+  @Input()
+  brId: string;
+
+  @Input()
+  brType: string;
+
+  @Output()
+  evtSaved: EventEmitter<CoreSchemaBrInfo> = new EventEmitter();
+
+
+  brInfo: CoreSchemaBrInfo;
+
+  metaDataFieldList: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
   fillDataForm: FormGroup;
+
+  ngOnChanges(changes: import('@angular/core').SimpleChanges): void {
+    if(changes && changes.brType && changes.brType.previousValue !== changes.brType.currentValue) {
+      this.brType = changes.brType.currentValue;
+    }
+  }
   // fillDataForm: FormGroup = this._formBuilder.group({
   //   selectFields: '',
   // })
@@ -85,69 +104,53 @@ export class MissingruleComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
-    console.log('paramsData', this.paramsData, this.brData);
-
-    // this.activatedRoute.params.subscribe(params => {
-    //   this.moduleId = params.moduleId;
-    //   this.groupId = params.groupId
-    // })
-
     this.fillDataForm = this._formBuilder.group({
       selectFields: '',
-    })
-
-    this.fillDetailsData();
-    this.editDataUpdate();
+    });
 
     this.moduleListData = this.fillDataForm.get('selectFields').valueChanges
       .pipe(
         startWith(''),
         map(value => this.filterGroup(value))
       );
-  }
 
-  editDataUpdate() {
-    if (this.brData) {
-      this.description = this.brData ? this.brData.brInfo : null;
-      this.enableFinishBtn();
+    // get br infomation  while edit br
+    if(this.brId) {
+      this.schemaService.getBusinessRuleInfo(this.brId).subscribe(res=>{
+        this.brInfo = res;
+        this.description = res.brInfo;
+      },error=>console.error(`Error : ${error}`));
+    } else {
+      this.brInfo = new CoreSchemaBrInfo();
     }
+
+    this.metaDataFieldList.subscribe(data=>{
+      if(data) {
+        // get description of selected fields
+        if(this.brInfo && this.brInfo.fields) {
+          const array = this.brInfo.fields.split(',');
+          array.forEach(each=>{
+            this.groupDetailss.push({ id: each, descr: data[each] ? data[each].fieldDescri : ''});
+          });
+        }
+      }
+    });
+
+    this.fillDetailsData();
   }
 
 
   fillDetailsData() {
-    this.schemaService.getFillDataDropdownData(this.paramsData.moduleId).subscribe(res => {
+    this.schemaService.getFillDataDropdownData(this.moduleId).subscribe(res => {
+      this.metaDataFieldList.next(this.makeMetadataControle(res as MetadataModeleResponse));
       const response: any = res;
       this.headersData = this.splitObjKeyValuePair(response.headers, false);
       this.gridsData = response.grids;
       this.hierarchyData = response.hierarchy;
       this.gridFieldsData = this.getDesciption(response.gridFields, 'grid');
-      // this.gridFieldsData = this.splitObjKeyValuePair(res['gridFields'], true, 'grid');
       this.hierarchyFieldsData = this.getDesciption(response.hierarchyFields, 'hierarchy');
-      if (this.brData && res) {
-        this.loopFieldsData(response);
-      }
     })
   }
-
-
-  loopFieldsData(res) {
-    const splitList = this.brData.fields.split(',')
-    splitList.map((sp) => {
-      for (const key in res) {
-        if (key) {
-          Object.values(res[key]).forEach((value) => {
-            const val: any = value;
-            if (sp === val.fieldId) {
-              this.groupDetailss.push({ id: val.fieldId, descr: val.fieldDescri })
-            }
-          })
-        }
-      }
-      this.enableFinishBtn();
-    })
-  }
-
 
   getDesciption(data, action) {
 
@@ -205,7 +208,6 @@ export class MissingruleComponent implements OnInit {
   onSelect(data) {
     const loopData: any = [];
     const selData = data;
-
     this.groupDetailss.map((gd) => {
       if (gd.id === selData.fieldId) {
         loopData.push(true);
@@ -214,15 +216,11 @@ export class MissingruleComponent implements OnInit {
         loopData.push(false)
       }
     })
-
-
-
     if (loopData.includes(true)) {
       return;
     }
 
     this.groupDetailss.push({ id: selData.fieldId, descr: selData.fieldDescri });
-    this.enableFinishBtn()
   }
 
   remove(objectId: string): void {
@@ -234,22 +232,12 @@ export class MissingruleComponent implements OnInit {
     }
   }
 
-  callParentPage() {
-    this.loadParentPage.emit();
-  }
 
   storeData(res) {
     let list;
     list = JSON.parse(sessionStorage.getItem('brsList')) || [];
     list.push(res);
     sessionStorage.setItem('brsList', JSON.stringify(list));
-  }
-
-  enableFinishBtn() {
-    this.enablingFinishButton = false;
-    if (this.description && this.groupDetailss.length > 0) {
-      this.enablingFinishButton = true;
-    }
   }
 
   convertObjtoString() {
@@ -262,47 +250,70 @@ export class MissingruleComponent implements OnInit {
 
   returnBrtype() {
     if (this.brType === 'missingRule') {
-      return BusinessRuleType.missingRuleBrType;
+      return BusinessRuleType.BR_MANDATORY_FIELDS;
     }
     else if (this.brType === 'metaDataRule') {
-      return BusinessRuleType.meteDataRuleType;
+      return BusinessRuleType.BR_METADATA_RULE;
     }
   }
 
-  saveBrInfo() {
-    this.requestParams.sno = null;
-    this.requestParams.brId = null;
-    this.requestParams.brType = this.returnBrtype();
-    this.requestParams.refId = null;
-    this.requestParams.fields = this.convertObjtoString();
-    this.requestParams.regex = '';
-    this.requestParams.order = this.brLength;
-    this.requestParams.message = this.description;
-    this.requestParams.script = '';
-    this.requestParams.brInfo = this.description;
-    this.requestParams.brExpose = 0;
-    this.requestParams.status = '1';
-    this.requestParams.categoryId = null;
-    this.requestParams.standardFunction = '';
-    this.requestParams.brWeightage = null;
-    this.requestParams.totalWeightage = 100;
-    this.requestParams.transformation = 0;
-    this.requestParams.tableName = '';
-    this.requestParams.qryScript = '';
-    this.requestParams.dependantStatus = null;
-    this.requestParams.plantCode = '0';
-    this.requestParams.percentage = 100;
-    this.requestParams.schemaId = null;
-
-    this.schemaService.createBusinessRule(this.requestParams).subscribe(res => {
-      console.log('Response = ', res)
-      if (res) {
-        this.storeData(res);
-        this.callParentPage();
+  makeMetadataControle(allMDF: MetadataModeleResponse) {
+    const metaDataField = {} as any;
+    if(allMDF) {
+      if(allMDF.headers) {
+        Object.keys(allMDF.headers).forEach(header =>{
+          metaDataField[header] = allMDF.headers[header];
+        });
       }
+
+      // grid
+      if(allMDF.grids) {
+        Object.keys(allMDF.grids).forEach(grid =>{
+          if(allMDF.gridFields[grid]) {
+            Object.keys(allMDF.gridFields[grid]).forEach(fldId => {
+              metaDataField[fldId] = allMDF.gridFields[grid][fldId];
+            });
+          }
+        });
+      }
+
+      // // heirerchy
+      if(allMDF.hierarchy) {
+        Object.keys(allMDF.hierarchy).forEach(heiId =>{
+          const heId = allMDF.hierarchy[heiId].heirarchyId;
+          if(allMDF.hierarchyFields[heId]) {
+            Object.keys(allMDF.hierarchyFields[heId]).forEach(fldId => {
+              metaDataField[fldId] = allMDF.hierarchyFields[heId][fldId];
+            });
+          }
+        });
+      }
+    }
+    return metaDataField;
+  }
+
+  /**
+   * Save update br information
+   */
+  saveBrInfo() {
+    this.brInfo.brId = this.brInfo.brIdStr ? this.brInfo.brIdStr : this.brId;
+    this.brInfo.brType = this.brType;
+    this.brInfo.fields = this.convertObjtoString();
+    this.brInfo.message = this.description;
+    this.brInfo.brInfo = this.description;
+    this.brInfo.status = '1'; // for enable
+    this.brInfo.schemaId = this.schemaId !== 'new' ? this.schemaId : '';
+
+    this.schemaService.createBusinessRule(this.brInfo).subscribe(res => {
+      console.log('Response = ', res);
+      res.brId = res.brIdStr;
+      this.discard(res);
     }, error => {
-      this.snackBar.open(`Error : ${error.message}`, 'Close', { duration: 2000 });
+      this.snackBar.open(`Error : ${error.message}`, 'Close', { duration: 5000 });
     })
   }
 
+  discard(res: CoreSchemaBrInfo) {
+    this.evtSaved.emit(res);
+  }
 }

@@ -20,6 +20,17 @@
       text-align: right;
       margin: 8px 0;
     }
+
+    mat-toolbar {
+      mat-form-field {
+        height: 56px;
+        font-size: 16px;
+      }
+    }
+
+    .min-drop-height {
+      min-height: 10px; // create dropable container
+    }
   }
 
   .brs {

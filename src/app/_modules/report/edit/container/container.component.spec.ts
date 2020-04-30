@@ -4,24 +4,32 @@ import { ContainerComponent } from './container.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { ReactiveFormsModule, FormsModule, FormArray, FormGroup, FormControl } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Widget, WidgetTableModel } from '../../_models/widget';
-import { MetadataModel } from 'src/app/_models/schema/schemadetailstable';
+import { Widget, WidgetTableModel, ReportDashboardPermission } from '../../_models/widget';
+import { MetadataModel, MetadataModeleResponse } from 'src/app/_models/schema/schemadetailstable';
 import { BreadcrumbComponent } from 'src/app/_modules/shared/_components/breadcrumb/breadcrumb.component';
 import { SvgIconComponent } from '@modules/shared/_components/svg-icon/svg-icon.component';
 import { ReportService } from '@modules/report/_service/report.service';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { Metadata } from './metadatafield-control/metadatafield-control.component';
+import { ReportList } from '@modules/report/report-list/report-list.component';
+import { of } from 'rxjs';
+import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
+import { SchemaService } from '@services/home/schema.service';
 
 describe('ContainerComponent', () => {
   let component: ContainerComponent;
   let fixture: ComponentFixture<ContainerComponent>;
+  let reportService: ReportService;
+  let schemaDetailsService: SchemaDetailsService;
+  let schemaService: SchemaService;
   beforeEach(async(() => {
-    const schemaDetailsServiceSp = jasmine.createSpyObj(ReportService,['getDocCount']);
     TestBed.configureTestingModule({
       declarations: [ ContainerComponent, BreadcrumbComponent, SvgIconComponent ],
       imports:[AppMaterialModuleForSpec, ReactiveFormsModule, FormsModule, RouterTestingModule],
       providers:[
-        {provide: ReportService,  useValue: schemaDetailsServiceSp}
+        ReportService,
+        SchemaDetailsService,
+        SchemaService
       ]
     })
     .compileComponents();
@@ -30,6 +38,9 @@ describe('ContainerComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ContainerComponent);
     component = fixture.componentInstance;
+    reportService = fixture.debugElement.injector.get(ReportService);
+    schemaDetailsService = fixture.debugElement.injector.get(SchemaDetailsService);
+    schemaService = fixture.debugElement.injector.get(SchemaService);
   });
 
   it('should create', () => {
@@ -153,6 +164,35 @@ describe('ContainerComponent', () => {
     component.ngOnInit();
     component.onFieldChange(option);
     expect(component.styleCtrlGrp.get('field').value).toEqual(metaData.fieldId, 'Field id should equals ${metaData.fieldId}');
+  }));
+
+  it('getReportConfig(), get report config', async(()=>{
+    // mock data
+    const reportList: ReportList = new ReportList();
+    reportList.permission = new ReportDashboardPermission();
+
+    spyOn(reportService,'getReportConfi').withArgs('72523857').and.returnValue(of(reportList));
+
+    component.getReportConfig('72523857');
+
+    expect(reportService.getReportConfi).toHaveBeenCalledWith('72523857');
+  }));
+
+  it('getAllFields(), get all fields', async(()=>{
+
+    spyOn(schemaDetailsService,'getMetadataFields').withArgs('1005').and.returnValue(of({} as MetadataModeleResponse));
+    component.getAllFields('1005');
+
+    expect(schemaDetailsService.getMetadataFields).toHaveBeenCalledWith('1005');
+
+  }));
+
+  it('getAllObjectType(), get all object type', async(()=>{
+      spyOn(schemaService,'getAllObjectType').and.returnValue(of([]));
+
+      component.getAllObjectType();
+      expect(schemaService.getAllObjectType).toHaveBeenCalledTimes(1);
+
   }));
 
 });

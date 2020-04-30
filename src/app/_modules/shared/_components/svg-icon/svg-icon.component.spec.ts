@@ -23,10 +23,10 @@ describe('SvgIconComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('P_BR_METADATA_RULE, P_BR_UDR_RULE, P_BR_MISSING_RULE  on index 0, 1, 2', () => {
+  it('P_BR_METADATA_RULE, P_BR_CUSTOM_SCRIPT, P_BR_MANDATORY_FIELDS  on index 0, 1, 2', () => {
     expect(component.iconPV.indexOf('P_BR_METADATA_RULE') === 0).toBeTruthy();
-    expect(component.iconPV.indexOf('P_BR_UDR_RULE') === 1).toBeTruthy();
-    expect(component.iconPV.indexOf('P_BR_MISSING_RULE') === 2).toBeTruthy();
+    expect(component.iconPV.indexOf('P_BR_CUSTOM_SCRIPT') === 1).toBeTruthy();
+    expect(component.iconPV.indexOf('P_BR_MANDATORY_FIELDS') === 2).toBeTruthy();
   });
 
   it('size and color should be passed onto svg width and class', () => {

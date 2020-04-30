@@ -8,7 +8,7 @@
     <div class="f-col">
         <mat-form-field>
             <mat-label>Description</mat-label>
-            <input matInput autocomplete="off" [(ngModel)]="description" (keyup)="enableFinishBtn()">
+            <input matInput autocomplete="off" [(ngModel)]="description">
         </mat-form-field>
 
         <form [formGroup]="fillDataForm">
@@ -17,7 +17,6 @@
                 <mat-chip-list #chipList aria-label="Module selection">
                     <mat-chip *ngFor="let module of groupDetailss" [selectable]="'true'" [removable]="'true'"
                         (removed)="remove(module)">
-                        <!-- {{displayObjectDescription(module)}} -->
                         {{module.descr}}
                         <mat-icon matChipRemove>cancel</mat-icon>
                     </mat-chip>
@@ -48,8 +47,8 @@
 
     </div>
     <div class="finishBtn">
-        <button mat-button (click)="callParentPage()">Back</button>
-        <button [disabled]="!enablingFinishButton" mat-flat-button color="primary" (click)="saveBrInfo()">Finish
+        <button mat-button (click)="discard(null)">Back</button>
+        <button mat-flat-button color="primary" (click)="saveBrInfo()">Finish
             Process</button>
     </div>
 
