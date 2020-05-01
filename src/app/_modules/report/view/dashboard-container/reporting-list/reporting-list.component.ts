@@ -46,7 +46,6 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   }
 
   ngOnChanges():void{
-    this.listData =new Array();
     this.reportingListWidget.subscribe(res=>{
       if(res) {
         this.getListdata(this.pageSize,this.pageIndex,this.widgetId,this.filterCriteria);
@@ -86,6 +85,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
 
   public getListdata(pageSize,pageIndex,widgetId:number,criteria:Criteria[]):void{
      this.widgetService.getListdata(String(pageSize),String(pageIndex),String(widgetId),criteria).subscribe(returndata=>{
+      this.listData =new Array();
       this.resultsLength = returndata.hits.total.value;
       returndata.hits.hits.forEach(element => {
         const source =element._source;
