@@ -1,7 +1,11 @@
 <mat-card class="widget mat-elevation-z4">
-  <mat-card-header>
-    <mat-card-title>{{ widgetHeader.desc }}</mat-card-title>
-  </mat-card-header>
+  <mat-toolbar-row class="widgettoolbar">
+    <h3 class="mat-h3">{{ widgetHeader.desc }}</h3>
+    <span class="f-spacer"></span>
+    <button mat-icon-button>
+        <mat-icon>get_app</mat-icon>
+    </button>
+</mat-toolbar-row>
   <mat-card-content>
     <canvas baseChart
     [datasets]="barChartData"

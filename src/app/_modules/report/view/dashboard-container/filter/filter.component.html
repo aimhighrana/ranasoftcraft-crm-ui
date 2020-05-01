@@ -1,17 +1,12 @@
 <mat-card class="widget mat-elevation-z4">
-  <mat-card-header>
-    <mat-card-title>
-      <div class="f-row header-container">
-          {{ widgetHeader.desc }}
-        <div class="f-spacer"></div>
+  <mat-toolbar-row class="widgettoolbar">
+  <h3 class="mat-h3">{{ widgetHeader.desc }}</h3>
+  <div class="f-spacer"></div>
           <button *ngIf="enableClearIcon" mat-button mat-icon-button aria-label="Clear" (click)="clearFilterCriteria()">
             <mat-icon>close</mat-icon>
           </button>
-        <div class="f-spacer"></div>
-      </div>  
-    </mat-card-title>
-  </mat-card-header>
-
+</mat-toolbar-row>
+<mat-card-content>
   <!-- CONTROL FOR DROPDOWNS -->
   <ng-template [ngIf]="filterWidget && filterWidget.getValue() && filterWidget.getValue().metaData.picklist === '1'">
     <!-- DROPDOWN_VALS -->
@@ -128,5 +123,6 @@
 <ng-template [ngIf]="filterWidget && filterWidget.getValue() && filterWidget.getValue().metaData.picklist === '0' && filterWidget.getValue().metaData.dataType === 'NUMC'">
   <mat-slider color="primary" thumbLabel [formControl]="numericValCtrl"   [displayWith]="formatMatSliderLabel" tickInterval="1000" [min]="filterResponse ? filterResponse.min : 0"  [max]="filterResponse ? filterResponse.max : 0" [value]="filterResponse ? filterResponse.max : 0" (change)="sliderValueChange($event)"></mat-slider>
 </ng-template>
-
+</mat-card-content>
 </mat-card>
+

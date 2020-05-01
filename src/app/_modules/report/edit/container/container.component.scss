@@ -9,9 +9,141 @@
     flex: 1 100%;
   }
 
-  .main-contaier {
-    position: relative;
-    height: 99%;
-    border: 1px solid gray;
+  mat-card {
+    padding: 0;
+
+    mat-card-content {
+      padding: 16px;
+    }
+  }
+
+  .builder-container {
+    margin: 16px;
+
+    .builder-toolbar {
+      .fieldtoolbar {
+        height: 56px;
+        font-size: 16px;
+      }
+
+      mat-button-toggle-group {
+        height: 36px;
+
+        mat-icon {
+          font-size: 20px;
+          margin-top: -10px;
+        }
+      }
+    }
+
+    .container-row {
+      justify-content: space-between;
+
+      mat-card {
+        border-radius: 0;
+      }
+
+      .widget-col {
+        width: 300px;
+        border-right-width: 1px;
+        border-right-style: solid;
+        border-top-width: 1px;
+        border-top-style: solid;
+
+        mat-expansion-panel {
+          border-radius: 3px;
+          margin-bottom: 16px;
+        }
+      }
+
+      .builder-board {
+        width: calc(100% - 300px - 300px);
+        display: flex;
+        flex-wrap: wrap;
+        border-top-width: 1px;
+        border-top-style: solid;
+        padding: 8px;
+
+        .widget {
+          border-radius: 6px;
+          margin: 8px;
+
+          .widgettoolbar {
+            height: 50px;
+            padding: 16px;
+          }
+
+          .mat-h3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: pre-line;
+            word-break: break-word;
+            font-weight: 400;
+            font-size: 16px;
+            margin: 0;
+          }
+        }
+
+        .count-box {
+          width: 200px;
+          height: 200px;
+        }
+
+        .filter-box {
+          width: 200px;
+          height: 200px;
+        }
+
+        .bar-box {
+          width: 350px;
+          height: 350px;
+        }
+
+        .table-box {
+          width: 100%;
+          height: 350px;
+        }
+      }
+
+      .property-col {
+        width: 300px;
+        border-left-width: 1px;
+        border-left-style: solid;
+        border-top-width: 1px;
+        border-top-style: solid;
+
+        .c-toolbar-row {
+          min-height: 50px;
+
+          mat-toolbar-row {
+            height: 50px;
+
+            .mat-h3 {
+              display: -webkit-box;
+              -webkit-line-clamp: 1;
+              -webkit-box-orient: vertical;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: pre-line;
+              word-break: break-word;
+              font-weight: 400;
+              font-size: 16px;
+              margin: 0;
+            }
+          }
+        }
+
+        mat-form-field {
+          width: 100%;
+        }
+
+        .field-divider {
+          width: 48%;
+        }
+      }
+    }
   }
 }

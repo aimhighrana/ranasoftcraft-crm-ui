@@ -98,6 +98,26 @@
       border-color: mat-color($foreground-palette, divider);
     }
   }
+
+  pros-container {
+    .root {
+      .builder-container {
+        .container-row {
+          .widget-col {
+            border-color: mat-color($foreground-palette, divider);
+          }
+
+          .builder-board {
+            border-color: mat-color($foreground-palette, divider);
+          }
+
+          .property-col {
+            border-color: mat-color($foreground-palette, divider);
+          }
+        }
+      }
+    }
+  }
 }
 
 @mixin pros-cmp-typography($config) {

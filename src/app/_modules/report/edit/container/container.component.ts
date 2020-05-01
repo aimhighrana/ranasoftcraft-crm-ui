@@ -15,6 +15,7 @@ export class ContainerComponent implements OnInit {
     links: []
   };
 
+
   screenWidth: number;
   pixcel = 100; // Initial 200
   eachBoxSize = 0;
