@@ -1,6 +1,6 @@
-import { Component, OnInit, OnChanges, OnDestroy } from '@angular/core';
-import { ChartOptions, ChartDataSets, ChartLegendLabelItem } from 'chart.js';
-import { Label } from 'ng2-charts';
+import { Component, OnInit, OnChanges, OnDestroy, ViewChild } from '@angular/core';
+import { ChartOptions, ChartLegendLabelItem } from 'chart.js';
+import { Label, BaseChartDirective } from 'ng2-charts';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
 import { BehaviorSubject } from 'rxjs';
@@ -27,7 +27,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
   listxAxis2 :any[]=new Array();
   barChartLabels: Label[] = new Array();
   barChartColors:Array<any> = [{backgroundColor: ['red', 'yellow', 'green', 'orange','pink']}];
-  barChartData: ChartDataSets[] =[{ data: [0,0,0,0,0], label: 'Loading..', stack: 'a' }];
+  barChartData: any[] =[{ data: [0,0,0,0,0], label: 'Loading..', stack: 'a' }];
   barChartOptions: ChartOptions = {
     responsive: true,
     legend: {
@@ -42,6 +42,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
       this.stackClickFilter(event, activeElements);
     }
   };
+  @ViewChild(BaseChartDirective) chart: BaseChartDirective;
   constructor(
     private widgetService : WidgetService,
     private reportService: ReportService
@@ -302,6 +303,22 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
           this.emitEvtFilterCriteria(this.filterCriteria);
       }
     }
+  }
+
+  downloadCSV():void{
+    const excelData = [];
+    this.arrayBuckets.forEach(singleBucket=>{
+      const obj = {};
+      obj[this.stackBarWidget.getValue().fieldId] = singleBucket.key[this.stackBarWidget.getValue().fieldId];
+      obj[this.stackBarWidget.getValue().groupById] = singleBucket.key[this.stackBarWidget.getValue().groupById];
+      obj[this.stackBarWidget.getValue().aggregationOperator] = singleBucket.doc_count;
+      excelData.push(obj)
+    });
+    this.widgetService.downloadCSV('StackBar-Chart',excelData);
+  }
+
+  downloadImage(){
+      this.widgetService.downloadImage(this.chart.toBase64Image(),'StackBar-Chart.png');
   }
 
   emitEvtFilterCriteria(critera: Criteria[]): void {

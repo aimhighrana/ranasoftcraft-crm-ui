@@ -34,10 +34,6 @@ describe('ReportingListComponent', () => {
     expect(evnet.pageIndex).toEqual(actualData.pageIndex);
   }));
 
-  it('getListTableMetadata(), get Metadata ', async(()=>{
-    component.getListTableMetadata();
-}));
-
   it('should create', () => {
     expect(component).toBeTruthy();
   });

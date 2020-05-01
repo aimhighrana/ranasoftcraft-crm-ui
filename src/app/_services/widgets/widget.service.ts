@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { EndpointService } from '../endpoint.service';
 import { HttpClient } from '@angular/common/http';
-import { Criteria, BarChartWidget, WidgetHeader, TimeSeriesWidget } from 'src/app/_modules/report/_models/widget';
+import * as XLSX from 'xlsx';
+import { Criteria, BarChartWidget, WidgetHeader, TimeSeriesWidget, WidgetImageModel, WidgetHtmlEditor } from 'src/app/_modules/report/_models/widget';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WidgetService {
+
+  public count :BehaviorSubject<any> =  new BehaviorSubject<any>(0);
 
   constructor(
     private endpointService: EndpointService,
@@ -54,6 +57,51 @@ export class WidgetService {
 
   public getTimeseriesWidgetInfo(widgetId: number): Observable<TimeSeriesWidget> {
     return this.http.get<TimeSeriesWidget>(this.endpointService.getTimeseriesWidgetInfoUrl(widgetId));
+  }
+
+  public getimageMetadata(widgetId):Observable<WidgetImageModel>{
+    return this.http.get<WidgetImageModel>(this.endpointService.getimageMetadata(widgetId));
+  }
+
+  public getHTMLMetadata(widgetId):Observable<WidgetHtmlEditor>{
+    return this.http.get<WidgetHtmlEditor>(this.endpointService.getHTMLMetadata(widgetId));
+  }
+
+  public updateCount(count){
+    this.count.next(count);
+  }
+
+  downloadImage(dataURI:string,imgName:string){
+    dataURI = dataURI.split('data:image/png;base64,')[1];
+    const url = window.URL.createObjectURL(this.dataURItoBlob(dataURI));
+    const a = document.createElement('a');
+        document.body.appendChild(a);
+        a.setAttribute('style', 'display: none');
+        a.href = url;
+        a.download = imgName;
+        a.click();
+        window.URL.revokeObjectURL(url);
+        a.remove();
+  }
+
+  dataURItoBlob(dataURI) {
+   const byteString = window.atob(dataURI);
+   const arrayBuffer = new ArrayBuffer(byteString.length);
+   const int8Array = new Uint8Array(arrayBuffer);
+   for (let i = 0; i < byteString.length; i++) {
+     int8Array[i] = byteString.charCodeAt(i);
+   }
+   const blob = new Blob([int8Array], { type: 'image/png' });
+   return blob;
+  }
+
+  downloadCSV(excelFileName :string,data:any[]){
+    try{
+      const wb = XLSX.utils.book_new()
+      const ws = XLSX.utils.json_to_sheet(data);
+      XLSX.utils.book_append_sheet(wb, ws, 'Data')
+      XLSX.writeFile(wb, excelFileName+'.csv')
+    }catch(e){}
   }
 
 }

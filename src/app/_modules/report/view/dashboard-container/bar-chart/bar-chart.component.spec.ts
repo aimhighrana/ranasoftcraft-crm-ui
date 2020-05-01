@@ -24,18 +24,17 @@ describe('BarChartComponent', () => {
     fixture.detectChanges();
   });
 
-  it('getFieldsMetadaDesc(), Fields MetadaDesc axis1 ', async(()=>{
-    const code: string[] = [];
-    const  fieldId = '';
-     component.getFieldsMetadaDesc(code,fieldId);
-  }));
-
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
   it('stackClickFilter(), should filter , after click on bar stack',async(()=>{
+    // call stack click with no argument then filter criteria should be [] array
+    component.filterCriteria = [];
     component.stackClickFilter();
+    expect(component.filterCriteria.length).toEqual(0);
+
+    // mock data
     const array = [{_datasetIndex:0}];
     component.chartLegend = [{code: 'ZMRO',text: 'ZMRO',legendIndex:0}];
     component.filterCriteria = [];
@@ -44,6 +43,8 @@ describe('BarChartComponent', () => {
     component.barWidget = new BehaviorSubject<BarChartWidget>(chartData);
     component.filterCriteria = [];
     component.stackClickFilter(null, array);
+    // after apply filter criteria then filtercriteria length should be 1
+    expect(component.filterCriteria.length).toEqual(1, 'after apply filter criteria then filtercriteria length should be 1');
   }));
 
 });

@@ -256,6 +256,13 @@ export class EndpointService {
   public getReportListUrl(): string {
     return `${this.apiUrl}/report/list`;
   }
+  public getimageMetadata(widgetId): string {
+    return `${this.apiUrl}/report/widget/image/metadata/${widgetId}`;
+  }
+
+  public getHTMLMetadata(widgetId): string {
+    return `${this.apiUrl}/report/widget/html-editor/metadata/${widgetId}`;
+  }
 
 }
 

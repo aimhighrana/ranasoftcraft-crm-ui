@@ -52,6 +52,7 @@ export class CountComponent extends GenericWidgetComponent implements OnInit,OnC
         const count = bucket.doc_count;
       this.count += count ;
     });
+    this.widgetService.updateCount(this.count);
   });
   }
 

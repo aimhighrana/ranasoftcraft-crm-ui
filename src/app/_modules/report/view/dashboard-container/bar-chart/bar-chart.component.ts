@@ -1,10 +1,11 @@
-import { Component, OnInit, OnChanges } from '@angular/core';
+import { Component, OnInit, OnChanges, ViewChild } from '@angular/core';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
 import { BarChartWidget, Criteria, WidgetHeader, ChartLegend, ConditionOperator, BlockType } from '../../../_models/widget';
 import { BehaviorSubject } from 'rxjs';
 import { ReportService } from '../../../_service/report.service';
 import { ChartOptions, ChartTooltipItem, ChartData } from 'chart.js';
+import { BaseChartDirective } from 'ng2-charts';
 
 @Component({
   selector: 'pros-bar-chart',
@@ -17,6 +18,8 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
   widgetHeader: WidgetHeader = new WidgetHeader();
   chartLegend : ChartLegend[] = [];
   lablels:string[] = [];
+  dataSet: string[] = [];
+  @ViewChild(BaseChartDirective) chart:BaseChartDirective;
 
   public barChartOptions:ChartOptions = {
     responsive: true,
@@ -93,10 +96,10 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
   public getBarChartData(widgetId: number, critria: Criteria[]) : void{
     this.widgetService.getWidgetData(String(widgetId),critria).subscribe(returndata=>{
       const arrayBuckets = returndata.aggregations['sterms#BAR_CHART'].buckets;
-      const dataSet: string[] = [];
+       this.dataSet= [];
       arrayBuckets.forEach(bucket=>{
         this.lablels.push(bucket.key);
-        dataSet.push(bucket.doc_count);
+        this.dataSet.push(bucket.doc_count);
       });
        // update barchartLabels
       if(this.chartLegend.length === 0){
@@ -107,7 +110,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
       this.barChartData = [{
           label: this.widgetHeader.widgetName,
           barThickness: 80,
-          data: dataSet
+          data: this.dataSet
       }];
     });
   }
@@ -163,6 +166,27 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
         appliedFilters.forEach(app => this.filterCriteria.push(app));
         this.emitEvtFilterCriteria(this.filterCriteria);
     }
+  }
+
+/*
+* download chart data as CSV
+*/
+  downloadCSV():void{
+    const excelData = [];
+    for(let i=0;i<this.lablels.length;i++){
+      const obj = {} as any;
+      obj[this.barWidget.getValue().fieldId] = this.lablels[i]+'';
+      obj.Value = this.dataSet[i]+'';
+      excelData.push(obj);
+    }
+  this.widgetService.downloadCSV('Bar-Chart',excelData);
+  }
+
+/*
+* download chart as image
+*/
+  downloadImage(){
+    this.widgetService.downloadImage(this.chart.toBase64Image(),'Bar-Chart.png');
   }
 
   /**

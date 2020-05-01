@@ -5,6 +5,8 @@
       <button mat-icon-button>
           <mat-icon>get_app</mat-icon>
       </button>
+      <button mat-menu-item (click)="downloadImage()">Image (.png)</button>
+      <button mat-menu-item (click)="downloadCSV()">Data (.csv)</button>
   </mat-toolbar-row>
   <mat-card-content>
     <canvas baseChart

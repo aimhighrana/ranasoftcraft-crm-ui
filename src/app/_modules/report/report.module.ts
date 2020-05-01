@@ -17,6 +17,9 @@ import { StackedbarChartComponent } from './view/dashboard-container/stackedbar-
 import { TimeseriesWidgetComponent } from './view/dashboard-container/timeseries-widget/timeseries-widget.component';
 import { DynamicWidgetComponent } from './edit/container/dynamic-widget/dynamic-widget.component';
 import { ReportListComponent } from './report-list/report-list.component';
+import { HtmlEditorComponent } from './view/dashboard-container/html-editor/html-editor.component';
+import { ImageComponent } from './view/dashboard-container/image/image.component';
+
 
 @NgModule({
   declarations: [
@@ -33,7 +36,9 @@ import { ReportListComponent } from './report-list/report-list.component';
     StackedbarChartComponent,
     TimeseriesWidgetComponent,
     DynamicWidgetComponent,
-    ReportListComponent
+    ReportListComponent,
+    HtmlEditorComponent,
+    ImageComponent,
   ],
   imports: [
     CommonModule,

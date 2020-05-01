@@ -214,3 +214,15 @@ export interface WidgetTableModel {
     fieldOrder: number;
     fieldDesc: string;
 }
+
+export class WidgetHtmlEditor {
+    widgetId: number;
+    htmlText: string;
+}
+
+export class WidgetImageModel {
+    widgetId: number;
+    imagesno: string;
+    imageUrl: string;
+    imageName:string;
+    }

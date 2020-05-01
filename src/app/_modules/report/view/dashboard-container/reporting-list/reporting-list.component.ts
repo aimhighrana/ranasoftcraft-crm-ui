@@ -108,6 +108,9 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
       this.listData.push(obj);
       });
      this.dataSource = new MatTableDataSource<any>(this.listData);
+     this.widgetService.count.subscribe(count=>{
+      this.resultsLength = count;
+    })
     });
   }
 
@@ -124,6 +127,13 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   const url = document.getElementsByTagName('base')[0].href.substring(0, document.getElementsByTagName('base')[0].href.indexOf('MDOSF'));
   window.open(
     url+'MDOSF/loginPostProcessor?to=summary&objNum='+data.ObjectNumber+'&objectType='+this.objectType, 'MDO_TAB');
+}
+
+/*
+* down report list data as CSV
+*/
+downloadCSV():void{
+  this.widgetService.downloadCSV('Report-List',this.listData);
 }
 
  emitEvtClick(): void {
