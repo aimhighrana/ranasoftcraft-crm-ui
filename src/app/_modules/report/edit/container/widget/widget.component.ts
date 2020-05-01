@@ -4,10 +4,10 @@ import { Widget } from '../../../_models/widget';
 export abstract class WidgetComponent{
 
   @Input()
-  boxSize: number;
+  boxSize = 0;
 
   @Input()
-  widget: Widget;
+  widget: Widget = new Widget();
 
   @Output()
   evtDelete: EventEmitter<Widget> = new EventEmitter<Widget>();

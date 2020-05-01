@@ -1,0 +1,35 @@
+<div class="root">
+
+	<!-- BREADCRUMB-->
+	<div class="crumbrow f-row">
+		<pros-breadcrumb [crumbs]="breadcrumb"></pros-breadcrumb>
+    </div>
+    
+    <div class="f-row">
+        <mat-form-field>
+            <mat-label>Search Report Dashboard</mat-label>
+            <input matInput [formControl] ="searchReportListCtrl">
+        </mat-form-field>
+    </div>
+
+    <mat-card class="mat-elevation-z4 list count-box" *ngFor="let report of reportListOb | async">
+        <mat-toolbar-row class="widgettoolbar">
+            <h3 class="mat-h3">{{ report.reportName ? report.reportName : 'Untitled' }}</h3>
+            <span class="f-spacer"></span>
+            <button mat-icon-button matTooltip="Dashboard" [routerLink]="['/home', 'report', 'dashboard', report.reportId]">
+                <mat-icon color="primary">dashboard</mat-icon>
+            </button>
+            <div class="f-col-spacer-half"></div>
+            <button mat-icon-button matTooltip="Comming soon..">
+                <mat-icon color="primary">edit</mat-icon>
+            </button>
+            <div class="f-col-spacer-half"></div>
+            <button mat-icon-button matTooltip="Comming soon..">
+                <mat-icon color="primary">delete</mat-icon>
+            </button>
+        </mat-toolbar-row>
+    </mat-card>
+
+    <pros-add-tile text="Create new report" routerLink="/home/report/dashboard-builder/new"></pros-add-tile>
+	
+</div>

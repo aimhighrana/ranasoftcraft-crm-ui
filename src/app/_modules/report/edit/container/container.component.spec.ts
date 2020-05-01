@@ -2,6 +2,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ContainerComponent } from './container.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('ContainerComponent', () => {
   let component: ContainerComponent;
@@ -10,7 +12,7 @@ describe('ContainerComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ContainerComponent ],
-      imports:[AppMaterialModuleForSpec]
+      imports:[AppMaterialModuleForSpec, ReactiveFormsModule, FormsModule, RouterTestingModule]
     })
     .compileComponents();
   }));
