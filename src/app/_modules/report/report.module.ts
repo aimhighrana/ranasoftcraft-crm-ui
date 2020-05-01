@@ -14,6 +14,7 @@ import { CountComponent } from './view/dashboard-container/count/count.component
 import { FilterComponent } from './view/dashboard-container/filter/filter.component';
 import { ReportingListComponent } from './view/dashboard-container/reporting-list/reporting-list.component';
 import { StackedbarChartComponent } from './view/dashboard-container/stackedbar-chart/stackedbar-chart.component';
+import { TimeseriesWidgetComponent } from './view/dashboard-container/timeseries-widget/timeseries-widget.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { StackedbarChartComponent } from './view/dashboard-container/stackedbar-
     CountComponent,
     FilterComponent,
     ReportingListComponent,
-    StackedbarChartComponent
+    StackedbarChartComponent,
+    TimeseriesWidgetComponent
   ],
   imports: [
     CommonModule,

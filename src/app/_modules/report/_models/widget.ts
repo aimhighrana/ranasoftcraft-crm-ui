@@ -1,3 +1,5 @@
+import { MetadataModel } from 'src/app/_models/schema/schemadetailstable';
+
 export class Widget {
     x: number;
     y: number;
@@ -41,6 +43,8 @@ export class Criteria {
     conditionFieldValue: string;
     blockType: BlockType;
     conditionOperator: ConditionOperator;
+    conditionFieldStartValue: string;
+    conditionFieldEndValue: string;
 }
 export enum BlockType {
     AND = 'AND',
@@ -95,6 +99,7 @@ export class FilterWidget {
     type: string;
     fieldId: string;
     isMultiSelect: boolean;
+    metaData: MetadataModel;
 }
 
 export interface DropDownValues {
@@ -150,8 +155,42 @@ export class WidgetHeader {
     desc: string;
 }
 
-export interface StackbarLegend{
+export interface ChartLegend{
     legendIndex : number;
     code : string;
     text : string;
+}
+
+export class FilterResponse {
+    min: number;
+    max: number;
+    fieldId: string;
+}
+
+export interface TimeSeriesWidget {
+    widgetId: number;
+    widgetName: string;
+    widgetType: WidgetType;
+    objectType: string;
+    plantCode: string;
+    indexName: string;
+    desc: string;
+    timeSeries: WidgetTimeseries;
+}
+export interface WidgetTimeseries {
+    widgetId: number;
+    fieldId: number;
+    seriesWith: SeriesWith;
+    seriesFormat: string;
+}
+enum SeriesWith {
+    millisecond = 'millisecond',
+	second = 'second',
+	minute = 'minute',
+	hour = 'hour',
+	day = 'day',
+	week = 'week',
+	month = 'month',
+	quarter = 'quarter',
+	year = 'year'
 }

@@ -15,6 +15,8 @@ export class DashboardComponent implements OnInit {
   };
 
   reportId: number;
+  emitClearBtnEvent: boolean;
+  showClearFilterBtn = false;
   constructor(
     private activatedRouter: ActivatedRoute,
     private reportService: ReportService
@@ -36,6 +38,14 @@ export class DashboardComponent implements OnInit {
     },error=>{
       console.log(`Error ${error}`);
     })
+  }
+
+  clearFilters() {
+    this.emitClearBtnEvent =  this.emitClearBtnEvent ? false : true;
+  }
+
+  showClearBtnEmit(isTrue: boolean) {
+    this.showClearFilterBtn = isTrue;
   }
 
 }

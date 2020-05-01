@@ -245,6 +245,10 @@ export class EndpointService {
     return `${this.apiUrl}/report/widget/header/metadata/${widgetId}`;
   }
 
+  public getTimeseriesWidgetInfoUrl(widgetId: number): string {
+    return `${this.apiUrl}/report/widget/timeseries/${widgetId}`;
+  }
+
 }
 
 

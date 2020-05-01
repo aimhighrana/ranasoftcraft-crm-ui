@@ -1,12 +1,19 @@
 .root {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-around;
-  align-items: flex-start;
-  align-content: flex-start;
+  .crumbrow {
+    align-items: center;
 
-  .breadcrumb-wrapper {
-    flex: 1 100%;
+    > button {
+      min-width: 38px;
+      padding: 0 6px;
+    }
+  }
+
+  .container {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+    align-items: flex-start;
+    align-content: flex-start;
   }
 
   pros-dashboard-container {
