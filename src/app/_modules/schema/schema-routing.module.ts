@@ -13,6 +13,7 @@ import { AddbusinessruleComponent } from '../admin/_components/module/business-r
 import { TableColumnSettingsComponent } from '../shared/_components/table-column-settings/table-column-settings.component';
 import { UploadDataComponent } from './_components/upload-data/upload-data.component';
 import { CreateSchemaComponent } from '../admin/_components/module/schema/create-schema/create-schema.component';
+import { SalesforceConnectionComponent } from './_components/salesforce-connection/salesforce-connection.component';
 
 
 const routes: Routes = [
@@ -28,6 +29,7 @@ const routes: Routes = [
   { path: 'table-column-settings', component: TableColumnSettingsComponent },
   { path: 'uploaddata', component: UploadDataComponent },
   { path: 'create-schema/:moduleId/:groupId/:schemaId', component: CreateSchemaComponent },
+  { path: 'salesforce-connection', component: SalesforceConnectionComponent },
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent }
 ];

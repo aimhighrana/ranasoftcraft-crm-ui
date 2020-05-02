@@ -20,6 +20,7 @@ import { SchemaExecutionLogsComponent } from './_components/schema-execution-log
 import { UploadDataComponent } from './_components/upload-data/upload-data.component';
 import { ExecutionSummaryComponent } from './_components/schema-details/execution-summary/execution-summary.component';
 import { MapMdoFieldComponent } from './_components/upload-data/map-mdo-field/map-mdo-field.component';
+import { SalesforceConnectionComponent } from './_components/salesforce-connection/salesforce-connection.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { MapMdoFieldComponent } from './_components/upload-data/map-mdo-field/ma
     SchemaExecutionLogsComponent,
     UploadDataComponent,
     ExecutionSummaryComponent,
-    MapMdoFieldComponent
+    MapMdoFieldComponent,
+    SalesforceConnectionComponent
   ],
   imports: [
     CommonModule,

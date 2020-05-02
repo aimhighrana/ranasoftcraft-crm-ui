@@ -1,0 +1,184 @@
+<div class="root">
+
+    <div class="breadcrumb-wrapper">
+      <pros-breadcrumb [crumbs]="breadcrumb"></pros-breadcrumb>
+    </div>
+ 
+    <mat-card class="mat-elevation-z3 connection-process">
+        <mat-vertical-stepper [linear]="isLinear" #stepper>
+
+            <mat-step [stepControl]="firstFormGroup">
+
+              <form [formGroup]="firstFormGroup">
+                <ng-template matStepLabel>Credentials</ng-template>
+
+                <mat-form-field>
+                    <mat-label>Connection Name</mat-label>
+                    <input matInput>
+                </mat-form-field>
+
+                <mat-checkbox class="exist-checkbox" color="primary">User existing connection</mat-checkbox>
+
+                <div class="row-spacer"></div>
+
+                <mat-form-field>
+                    <mat-label>Select Connection Sytem</mat-label>
+                    <mat-select>
+                      <mat-option value="option">Option</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                
+              </form>
+            </mat-step>
+
+            <mat-step [stepControl]="secondFormGroup">
+              <form [formGroup]="secondFormGroup">
+                <ng-template matStepLabel>Fill out your address</ng-template>
+
+                <h2 class="mat-h2">Salesforce App Create</h2>
+                <p>Relational Junction provides data integration for Salesforce that enables you to connect and transform your business by giving you the tools you need to streamline operations, drive revenue growth, and improve customer relationships.</p>
+                
+                <h4 class="mat-h2">Following steps are</h4>
+                <p>1. Easily access, replicate, and integrate Salesforce data with any data source including adjacent enterprise systems</p>
+                <p>2. From basic data loading to real-time integration, Relational Junction simplifies the process by creating and continuously synchronizing a local data warehouse that is a perfect 
+                    mirror of your Salesforce data.</p>
+
+                <div class="f-row">
+                    <mat-form-field>
+                        <mat-label>Client ID</mat-label>
+                        <input matInput>
+                    </mat-form-field>
+                    <div class="col-spacer"> </div>
+                    <mat-form-field>
+                        <mat-label>Client Secret</mat-label>
+                        <input matInput>
+                    </mat-form-field>
+                </div>
+            </form>
+            </mat-step>
+
+            <mat-step>
+              <ng-template matStepLabel>Test Integration</ng-template>
+                
+              <div class="f-col proccess-level" style="display: none;">
+                  <h2>Proccessing...</h2>
+                  <div class="f-row p-start-level">
+                      <div class="circle-col"></div>
+                      <div class="middle-bar f-row">
+                        <mat-divider></mat-divider>
+                      </div>
+                      <div class="circle-col"></div>
+                  </div>
+                  <div class="row-spacer"></div>
+                  <button mat-flat-button color="primary">Test</button>
+              </div>
+
+              <div class="f-col proccess-level" style="display: none;">
+                <h2 class="status-success">Testing Succeeded!</h2>
+                <div class="f-row p-start-level">
+                    <div class="circle-col"></div>
+                    <div class="f-row middle-bar">
+                      <mat-divider class="status-success"></mat-divider>
+                      <div class="half-circle-col status-success">
+                          <mat-icon class="status-success">check</mat-icon>
+                      </div>
+                      <mat-divider class="status-success"></mat-divider>
+                    </div>
+                    <div class="circle-col"></div>
+                </div>
+                <div class="row-spacer"></div>
+                <h3 class="mat-line">Yay! Testing your integration succeeded.</h3>
+              </div>
+
+              <div class="f-col proccess-level">
+                <h2 class="status-error">Testing Failed!</h2>
+                <div class="f-row p-start-level">
+                    <div class="circle-col"></div>
+                    <div class="f-row middle-bar">
+                      <mat-divider class="status-error"></mat-divider>
+                      <div class="half-circle-col status-error">
+                          <mat-icon class="status-error">clear</mat-icon>
+                      </div>
+                      <mat-divider class="status-error"></mat-divider>
+                    </div>
+                    <div class="circle-col"></div>
+                </div>
+                <div class="row-spacer"></div>
+                <h3 class="mat-line">Sorry! Testing your integration failed. Try again</h3>
+              </div>
+
+
+            </mat-step>
+
+            <mat-step>
+              <ng-template matStepLabel>Connection</ng-template>
+
+                <div class="f-row">
+                    <mat-form-field>
+                        <mat-label>Scenario Name</mat-label>
+                        <input matInput>
+                    </mat-form-field>
+                    <div class="col-spacer"> </div>
+                    <mat-form-field>
+                        <mat-label>Select Module</mat-label>
+                        <mat-select>
+                          <mat-option value="option">Account</mat-option>
+                          <mat-option value="option">Lead</mat-option>
+                          <mat-option value="option">Opportunity</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                </div>
+
+                <div class="f-row">
+                        <mat-form-field class="daterange">
+                            <mat-label>Choose from date</mat-label>
+                            <input matInput>
+                          </mat-form-field>
+
+                        <div class="f-col-spacer-half"> </div>
+                        
+                        <mat-form-field class="daterange">
+                            <mat-label>Choose to date</mat-label>
+                            <input matInput>
+                        </mat-form-field>
+
+                    <div class="col-spacer"> </div>
+
+                    <mat-form-field>
+                        <mat-label>Number Range</mat-label>
+                        <mat-select>
+                            <mat-option value="option">Option</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+
+                </div>
+
+                <div class="f-row">
+                    <mat-form-field>
+                        <mat-label>Object Status</mat-label>
+                        <input matInput>
+                    </mat-form-field>
+                    <div class="col-spacer"> </div>
+                    <mat-form-field>
+                        <mat-label>Status Type</mat-label>
+                        <input matInput>
+                      </mat-form-field>
+                </div>
+
+              <div class="f-row">
+                <button mat-button>Download Now</button>
+                <div class="col-spacer"> </div>
+                <button mat-flat-button color="primary">Finish</button>
+              </div>
+            </mat-step>
+
+            <mat-step>
+                <ng-template matStepLabel>Scheduling</ng-template>
+  
+                <div>
+                  <button mat-flat-button color="primary">Connection Schedule</button>
+                </div>
+            </mat-step>
+          </mat-vertical-stepper>
+    </mat-card>
+</div>
