@@ -105,7 +105,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
         this.lablels = this.chartLegend.map(map => map.text);
       }
       this.barChartData = [{
-          label: this.widgetHeader.desc,
+          label: this.widgetHeader.widgetName,
           barThickness: 80,
           data: dataSet
       }];

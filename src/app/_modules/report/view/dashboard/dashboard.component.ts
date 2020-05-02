@@ -11,7 +11,12 @@ export class DashboardComponent implements OnInit {
 
   breadcrumb: Breadcrumb = {
     heading: 'Report Dashboard',
-    links: []
+    links: [
+      {
+        link:'/home/report',
+        text:'Report List'
+      }
+    ]
   };
 
   reportId: number;

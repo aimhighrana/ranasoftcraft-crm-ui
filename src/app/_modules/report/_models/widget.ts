@@ -7,23 +7,29 @@ export class Widget {
     width: number;
     widgetId: string;
     widgetType: WidgetType;
+    widgetTitle: string;
+    field: string;
+    aggregrationOp: string;
+    filterType: string;
+    isMultiSelect: boolean;
+    groupById: string;
+    widgetTableFields: WidgetTableModel[];
+    htmlText: string;
+    imagesno: string;
+    imageUrl: string;
+    objectType: string;
 
-    constructor(x: number, y: number, height: number, width: number, widgetId: string, widgetType: WidgetType) {
-        this.x = x;
-        this.y = y;
-        this.height = height;
-        this.width = width;
-        this.widgetId = widgetId;
-        this.widgetType = widgetType;
-    }
 }
 
 export enum WidgetType {
-    FILTER,
-    BAR_CHART,
-    STOCKBAR_CHART,
-    COUNT,
-    TABLE_LIST
+    FILTER = 'FILTER',
+    BAR_CHART = 'BAR_CHART',
+    STACKED_BAR_CHART = 'STACKED_BAR_CHART',
+    COUNT = 'COUNT',
+    TABLE_LIST = 'TABLE_LIST',
+    IMAGE = 'IMAGE',
+    HTML = 'HTML',
+    TIMESERIES = 'TIMESERIES'
 }
 
 export interface WidgetMapInfo {
@@ -193,4 +199,18 @@ enum SeriesWith {
 	month = 'month',
 	quarter = 'quarter',
 	year = 'year'
+}
+
+export class ReportDashboardReq {
+    reportId: string;
+    reportName: string;
+    widgetReqList: Widget[];
+
+}
+
+export interface WidgetTableModel {
+    widgetId: string;
+    fields: string;
+    fieldOrder: number;
+    fieldDesc: string;
 }

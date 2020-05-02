@@ -249,6 +249,14 @@ export class EndpointService {
     return `${this.apiUrl}/report/widget/timeseries/${widgetId}`;
   }
 
+  public createUpdateReportUrl(): string {
+    return `${this.apiUrl}/report/create-update`;
+  }
+
+  public getReportListUrl(): string {
+    return `${this.apiUrl}/report/list`;
+  }
+
 }
 
 

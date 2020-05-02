@@ -19,6 +19,7 @@
 
   .builder-container {
     margin: 16px;
+    width: 100%;
 
     .builder-toolbar {
       .fieldtoolbar {
@@ -53,39 +54,21 @@
         mat-expansion-panel {
           border-radius: 3px;
           margin-bottom: 16px;
+
+          mat-list-item {
+            cursor: move;
+          }
         }
       }
 
       .builder-board {
-        width: calc(100% - 300px - 300px);
+        width: calc(100% - 300px);
         display: flex;
         flex-wrap: wrap;
         border-top-width: 1px;
         border-top-style: solid;
         padding: 8px;
-
-        .widget {
-          border-radius: 6px;
-          margin: 8px;
-
-          .widgettoolbar {
-            height: 50px;
-            padding: 16px;
-          }
-
-          .mat-h3 {
-            display: -webkit-box;
-            -webkit-line-clamp: 1;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: pre-line;
-            word-break: break-word;
-            font-weight: 400;
-            font-size: 16px;
-            margin: 0;
-          }
-        }
+        position: relative;
 
         .count-box {
           width: 200px;

@@ -15,6 +15,8 @@ import { FilterComponent } from './view/dashboard-container/filter/filter.compon
 import { ReportingListComponent } from './view/dashboard-container/reporting-list/reporting-list.component';
 import { StackedbarChartComponent } from './view/dashboard-container/stackedbar-chart/stackedbar-chart.component';
 import { TimeseriesWidgetComponent } from './view/dashboard-container/timeseries-widget/timeseries-widget.component';
+import { DynamicWidgetComponent } from './edit/container/dynamic-widget/dynamic-widget.component';
+import { ReportListComponent } from './report-list/report-list.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,9 @@ import { TimeseriesWidgetComponent } from './view/dashboard-container/timeseries
     FilterComponent,
     ReportingListComponent,
     StackedbarChartComponent,
-    TimeseriesWidgetComponent
+    TimeseriesWidgetComponent,
+    DynamicWidgetComponent,
+    ReportListComponent
   ],
   imports: [
     CommonModule,
