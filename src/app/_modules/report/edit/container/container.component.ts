@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, AfterViewInit, ElementRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ElementRef } from '@angular/core';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Widget, WidgetType, ReportDashboardReq, WidgetTableModel } from '../../_models/widget';
 import { Breadcrumb } from 'src/app/_models/breadcrumb';
@@ -45,7 +45,6 @@ export class ContainerComponent implements OnInit, AfterViewInit {
   dataSetOb: Observable<ObjectTypeResponse[]> = of([]);
 
   constructor(
-    private ngZone: NgZone,
     private formBuilder: FormBuilder,
     private reportService: ReportService,
     private snackbar: MatSnackBar,
@@ -66,8 +65,13 @@ export class ContainerComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.getAllObjectType();
+
     this.activatedRouter.params.subscribe(params=>{
-      this.reportId =  params.id ?((params.id).toLowerCase() === 'new' ? '' : params.reportId) : '';
+      this.reportId =  params.id ?((params.id).toLowerCase() === 'new' ? '' : params.id) : '';
+      if(this.reportId) {
+        this.getReportConfig(this.reportId);
+      }
     });
 
     this.styleCtrlGrp = this.formBuilder.group({
@@ -101,8 +105,6 @@ export class ContainerComponent implements OnInit, AfterViewInit {
         this.preapreNewWidgetPosition(changedWidget);
       }
     });
-    this.getAllObjectType();
-
     this.styleCtrlGrp.get('objectType').valueChanges.subscribe(fillData=>{
       if(fillData && typeof fillData === 'string') {
         if(fillData !== this.styleCtrlGrp.value.objectType) {
@@ -122,6 +124,15 @@ export class ContainerComponent implements OnInit, AfterViewInit {
         this.headerFields = of(headerArray);
       }
     });
+  }
+
+  getReportConfig(reportId: string) {
+    this.reportService.getReportConfi(reportId).subscribe(res=>{
+      this.widgetList = res.widgets;
+      this.reportId = res.reportId;
+      this.reportName = res.reportName;
+      console.log(res);
+    },error=>console.error(`Error: ${error}`));
   }
 
   getAllFields(objNum: string) {
@@ -147,12 +158,11 @@ export class ContainerComponent implements OnInit, AfterViewInit {
     console.log(`Moved x: ${movedX} , and moved y : ${movedY}`);
 
     // drop added widget
-    let dropableWidget = {} as Widget;
+    let dropableWidget = new Widget();
     if(event.item.element.nativeElement.id) {
-      dropableWidget  =  this.widgetList.filter(wid => wid.widgetId === event.item.element.nativeElement.id)[0];
+      dropableWidget  =  this.widgetList.filter(wid => (String(wid.widgetId) === event.item.element.nativeElement.id))[0];
     } else {
       const widgetType = event.item.element.nativeElement.getAttribute('widgetType');
-      dropableWidget = new Widget();
       dropableWidget.x = 0;
       dropableWidget.y = 0;
       dropableWidget.height = 10;
@@ -162,7 +172,7 @@ export class ContainerComponent implements OnInit, AfterViewInit {
     }
     const boxX = Math.round(((dropableWidget.x * this.eachBoxSize) + movedX) / this.eachBoxSize);
     const boxY = Math.round(((dropableWidget.y * this.eachBoxSize) + movedY) / this.eachBoxSize);
-    if(boxX >=0 && (boxX * this.eachBoxSize) <= this.screenWidth) {
+    if((boxX >=0 && (boxX * this.eachBoxSize) <= this.screenWidth) && (boxY >= 0)) {
       dropableWidget.x = boxX;
       dropableWidget.y = boxY;
       this.preapreNewWidgetPosition(dropableWidget);
@@ -186,19 +196,7 @@ export class ContainerComponent implements OnInit, AfterViewInit {
     if(data) {
       const oldWidget  =  this.widgetList.filter(wid => wid.widgetId === data.widgetId)[0];
       this.widgetList.splice(this.widgetList.indexOf(oldWidget),1);
-      this.selStyleWid = data = new Widget();
-      this.styleCtrlGrp.setValue({
-        widgetName: data.widgetTitle ? data.widgetTitle : '',
-        height: data.height, width: data.width,
-        field:data.field ? data.field : '',
-        aggregrationOp: data.aggregrationOp ? data.aggregrationOp : '',
-        filterType: data.filterType ? data.filterType : '',
-        isMultiSelect: data.isMultiSelect ? data.isMultiSelect : false,
-        groupById: data.groupById ? data.groupById : '',
-        objectType: data.objectType ? data.objectType : '',
-        imageUrl: data.imageUrl ? data.imageUrl : '',
-        htmlText: data.htmlText ? data.htmlText : ''
-      });
+      this.selStyleWid  = new Widget();
       this.showProperty = false;
       if(oldWidget.widgetTableFields === this.chooseColumns) {
         this.chooseColumns = [];
@@ -211,7 +209,8 @@ export class ContainerComponent implements OnInit, AfterViewInit {
       this.selStyleWid = data;
       this.styleCtrlGrp.setValue({
         widgetName: data.widgetTitle ? data.widgetTitle : '',
-        height: data.height, width: data.width,
+        height: data.height ? data.height : '',
+        width: data.width ? data.width : '',
         field:data.field ? data.field : '',
         aggregrationOp: data.aggregrationOp ? data.aggregrationOp : '',
         filterType: data.filterType ? data.filterType : '',

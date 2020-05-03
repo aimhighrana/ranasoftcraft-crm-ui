@@ -5,6 +5,7 @@ import { BreadcrumbComponent } from '../../shared/_components/breadcrumb/breadcr
 import { HttpClientModule } from '@angular/common/http';
 import { ReportService } from '../_service/report.service';
 import { of } from 'rxjs';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 describe('ReportListComponent', () => {
   let component: ReportListComponent;
@@ -14,7 +15,7 @@ describe('ReportListComponent', () => {
     const spyObj = jasmine.createSpyObj('ReportService',['reportList']);
     TestBed.configureTestingModule({
       declarations: [ ReportListComponent, BreadcrumbComponent ],
-      imports:[ HttpClientModule],
+      imports:[ HttpClientModule, AppMaterialModuleForSpec],
       providers: [
         {provide: ReportService, useValue: spyObj}
       ]
@@ -32,10 +33,11 @@ describe('ReportListComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it(`reportService(), get report service`,async(()=>{
+  it(`reportsList(), get report service`,async(()=>{
     const returnData: ReportList[] = [];
     reportService.reportList.and.returnValue(of(returnData));
-    component.ngOnInit();
+    component.reportsList();
     expect(reportService.reportList).toHaveBeenCalled();
   }));
+
 });

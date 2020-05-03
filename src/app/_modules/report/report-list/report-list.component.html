@@ -20,11 +20,11 @@
                 <mat-icon color="primary">dashboard</mat-icon>
             </button>
             <div class="f-col-spacer-half"></div>
-            <button mat-icon-button matTooltip="Comming soon..">
+            <button mat-icon-button matTooltip="Edit" [routerLink]="['/home', 'report', 'dashboard-builder', report.reportId]">
                 <mat-icon color="primary">edit</mat-icon>
             </button>
             <div class="f-col-spacer-half"></div>
-            <button mat-icon-button matTooltip="Comming soon..">
+            <button mat-icon-button matTooltip="Delete" (click)="delete(report.reportId)">
                 <mat-icon color="primary">delete</mat-icon>
             </button>
         </mat-toolbar-row>

@@ -3,9 +3,12 @@ import { Breadcrumb } from 'src/app/_models/breadcrumb';
 import { ReportService } from '../_service/report.service';
 import { FormControl } from '@angular/forms';
 import { Observable, of } from 'rxjs';
+import { Widget } from '../_models/widget';
+import { MatSnackBar } from '@angular/material/snack-bar';
 export class ReportList {
   reportId: string;
   reportName: string;
+  widgets: Widget[];
 }
 @Component({
   selector: 'pros-report-list',
@@ -24,15 +27,12 @@ export class ReportListComponent implements OnInit {
   searchReportListCtrl: FormControl = new FormControl('');
 
   constructor(
-    private reportService: ReportService
+    private reportService: ReportService,
+    private snackbar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
-    this.reportService.reportList().subscribe(res=>{
-      this.reportList = res;
-      this.reportListOb = of(res);
-    },error=>console.error(`Error : ${error}`));
-
+    this.reportsList();
     this.searchReportListCtrl.valueChanges.subscribe(val=>{
       if(val && typeof val === 'string') {
         this.reportListOb = of(this.reportList.filter(fill => fill.reportName.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !==-1));
@@ -40,6 +40,22 @@ export class ReportListComponent implements OnInit {
         this.reportListOb = of(this.reportList);
       }
     });
+  }
+
+  reportsList() {
+    this.reportService.reportList().subscribe(res=>{
+      this.reportList = res;
+      this.reportListOb = of(res);
+    },error=>console.error(`Error : ${error}`));
+  }
+
+  delete(reportId: string) {
+    this.reportService.deleteReport(reportId).subscribe(res=>{
+      if(res) {
+        this.snackbar.open(`Successfully Deleted`, 'Close',{duration:3000});
+        this.reportsList();
+      }
+    },err=>console.error(`Error: ${err}`))
   }
 
 }

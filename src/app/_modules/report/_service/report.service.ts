@@ -30,4 +30,12 @@ export class ReportService {
   public reportList(): Observable<ReportList[]> {
     return this.http.get<ReportList[]>(this.endpointService.getReportListUrl());
   }
+
+  public getReportConfi(reportId: string): Observable<ReportList> {
+    return this.http.get<ReportList>(this.endpointService.getReportConfigUrl(reportId));
+  }
+
+  public deleteReport(reportId: string): Observable<boolean> {
+    return this.http.delete<boolean>(this.endpointService.deleteReport(reportId));
+  }
 }

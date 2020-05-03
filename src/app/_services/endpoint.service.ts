@@ -264,6 +264,14 @@ export class EndpointService {
     return `${this.apiUrl}/report/widget/html-editor/metadata/${widgetId}`;
   }
 
+  public getReportConfigUrl(reportId: string): string {
+    return `${this.apiUrl}/report/${reportId}`;
+  }
+
+  public deleteReport(reportId: string): string {
+    return `${this.apiUrl}/report/delete/${reportId}`;
+  }
+
 }
 
 
