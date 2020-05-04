@@ -1,8 +1,8 @@
-import { Component, OnInit, AfterViewInit, ElementRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Widget, WidgetType, ReportDashboardReq, WidgetTableModel } from '../../_models/widget';
 import { Breadcrumb } from 'src/app/_models/breadcrumb';
-import { Observable, of, BehaviorSubject } from 'rxjs';
+import { Observable, of, BehaviorSubject, Subscription } from 'rxjs';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { ReportService } from '../../_service/report.service';
 import { MetadataModel, MetadataModeleResponse } from 'src/app/_models/schema/schemadetailstable';
@@ -17,7 +17,7 @@ import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-detai
   templateUrl: './container.component.html',
   styleUrls: ['./container.component.scss']
 })
-export class ContainerComponent implements OnInit, AfterViewInit {
+export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   breadcrumb: Breadcrumb = {
     heading: 'Dashboard Builder',
@@ -44,6 +44,11 @@ export class ContainerComponent implements OnInit, AfterViewInit {
   dataSets: ObjectTypeResponse[];
   dataSetOb: Observable<ObjectTypeResponse[]> = of([]);
 
+  /**
+   * All the http or normal subscription will store in this array
+   */
+  subscriptions: Subscription[] = [];
+
   constructor(
     private formBuilder: FormBuilder,
     private reportService: ReportService,
@@ -55,6 +60,11 @@ export class ContainerComponent implements OnInit, AfterViewInit {
   ) { }
 
 
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub=>{
+      sub.unsubscribe();
+    });
+  }
   ngAfterViewInit(): void {
     if(this.elementRef.nativeElement) {
       const screenWidth = document.body.offsetWidth;
@@ -67,12 +77,13 @@ export class ContainerComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.getAllObjectType();
 
-    this.activatedRouter.params.subscribe(params=>{
+    const sub = this.activatedRouter.params.subscribe(params=>{
       this.reportId =  params.id ?((params.id).toLowerCase() === 'new' ? '' : params.id) : '';
       if(this.reportId) {
         this.getReportConfig(this.reportId);
       }
     });
+    this.subscriptions.push(sub);
 
     this.styleCtrlGrp = this.formBuilder.group({
       widgetName: [''],
@@ -105,15 +116,16 @@ export class ContainerComponent implements OnInit, AfterViewInit {
         this.preapreNewWidgetPosition(changedWidget);
       }
     });
-    this.styleCtrlGrp.get('objectType').valueChanges.subscribe(fillData=>{
+    const styleSub = this.styleCtrlGrp.get('objectType').valueChanges.subscribe(fillData=>{
       if(fillData && typeof fillData === 'string') {
         if(fillData !== this.styleCtrlGrp.value.objectType) {
           this.getAllFields(fillData);
         }
       }
     });
+    this.subscriptions.push(styleSub);
 
-    this.fields.subscribe(flds=>{
+    const fldSub = this.fields.subscribe(flds=>{
       if(flds) {
         const headerArray: MetadataModel[] = [];
         for(const obj in flds.headers) {
@@ -124,30 +136,34 @@ export class ContainerComponent implements OnInit, AfterViewInit {
         this.headerFields = of(headerArray);
       }
     });
+    this.subscriptions.push(fldSub);
   }
 
   getReportConfig(reportId: string) {
-    this.reportService.getReportConfi(reportId).subscribe(res=>{
+    const reportConfig = this.reportService.getReportConfi(reportId).subscribe(res=>{
       this.widgetList = res.widgets;
       this.reportId = res.reportId;
       this.reportName = res.reportName;
       console.log(res);
     },error=>console.error(`Error: ${error}`));
+    this.subscriptions.push(reportConfig);
   }
 
   getAllFields(objNum: string) {
-    this.schemaDetailsService.getMetadataFields(objNum).subscribe(response => {
+    const allfldSub = this.schemaDetailsService.getMetadataFields(objNum).subscribe(response => {
       this.fields.next(response);
     }, error => {
       console.error(`Error : ${error}`);
     });
+    this.subscriptions.push(allfldSub);
   }
 
   getAllObjectType() {
-    this.schemaService.getAllObjectType().subscribe(res=>{
+   const objSub = this.schemaService.getAllObjectType().subscribe(res=>{
       this.dataSets = res;
       this.dataSetOb = of(res);
     },error=>console.error(`Error: ${error}`));
+    this.subscriptions.push(objSub);
   }
 
   drop(event: CdkDragDrop<string[]>) {
@@ -265,12 +281,13 @@ export class ContainerComponent implements OnInit, AfterViewInit {
     request.reportName = this.reportName;
     request.widgetReqList = this.widgetList;
 
-    this.reportService.createUpdateReport(request).subscribe(res=>{
+    const createUpdateSub = this.reportService.createUpdateReport(request).subscribe(res=>{
       this.reportId = res;
       this.snackbar.open(`Successfully saved chage(s)`, 'Close',{duration:5000});
     },errro=>{
       this.snackbar.open(`Something went wrong`, 'Close',{duration:5000});
-    })
+    });
+    this.subscriptions.push(createUpdateSub);
 
   }
 
