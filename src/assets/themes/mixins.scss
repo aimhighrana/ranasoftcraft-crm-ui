@@ -105,6 +105,12 @@
         .container-row {
           .widget-col {
             border-color: mat-color($foreground-palette, divider);
+
+            mat-expansion-panel {
+              mat-list {
+                border-color: mat-color($foreground-palette, divider);
+              }
+            }
           }
 
           .builder-board {

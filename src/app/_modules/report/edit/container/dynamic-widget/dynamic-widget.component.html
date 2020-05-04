@@ -1,6 +1,6 @@
 <mat-card 
     id="{{ widget.widgetId }}" 
-    class="mat-elevation-z4 widget count-box"
+    class="mat-elevation-z4 widget"
     [ngStyle]="{'width.px': (widget.width * boxSize) , 'height.px': (widget.height * boxSize),'left.px': (widget.x * boxSize), 'top.px':(widget.y * boxSize)  }"
     (click)="emitStyleEvent()"
     cdkDrag>

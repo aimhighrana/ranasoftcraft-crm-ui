@@ -3,10 +3,13 @@
       <mat-toolbar-row class="widgettoolbar">
         <h3 class="mat-h3">{{ headerDesc }}</h3>
         <span class="f-spacer"></span>
-        <button mat-menu-item (click)="downloadCSV()">Data (.csv)</button>
-        <button mat-icon-button>
+       
+        <button mat-icon-button [matMenuTriggerFor]="menu">
             <mat-icon>get_app</mat-icon>
         </button>
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="downloadCSV()">Data (.csv)</button>
+        </mat-menu>
       </mat-toolbar-row>
 
       <mat-card-content>

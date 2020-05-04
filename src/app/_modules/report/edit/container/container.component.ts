@@ -181,8 +181,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       const widgetType = event.item.element.nativeElement.getAttribute('widgetType');
       dropableWidget.x = 0;
       dropableWidget.y = 0;
-      dropableWidget.height = 10;
-      dropableWidget.width = 20;
+      dropableWidget.height = 20;
+      dropableWidget.width = 40;
       dropableWidget.widgetId = String(new Date().getTime());
       dropableWidget.widgetType = widgetType as WidgetType;
     }

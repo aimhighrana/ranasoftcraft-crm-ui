@@ -1,128 +1,130 @@
-<mat-card class="widget mat-elevation-z4">
+<mat-card class="mat-elevation-z4 widget">
+
   <mat-toolbar-row class="widgettoolbar">
-  <h3 class="mat-h3">{{ widgetHeader.desc }}</h3>
-  <div class="f-spacer"></div>
-          <button *ngIf="enableClearIcon" mat-button mat-icon-button aria-label="Clear" (click)="clearFilterCriteria()">
-            <mat-icon>close</mat-icon>
-          </button>
-</mat-toolbar-row>
-<mat-card-content>
-  <!-- CONTROL FOR DROPDOWNS -->
-  <ng-template [ngIf]="filterWidget && filterWidget.getValue() && filterWidget.getValue().metaData.picklist === '1'">
-    <!-- DROPDOWN_VALS -->
-    <ng-template [ngIf]="(filterWidget.getValue() ? filterWidget.getValue().type : '') === 'DROPDOWN_VALS'">
-      <ng-template [ngIf]="filterWidget.getValue().isMultiSelect" [ngIfElse] ="single_select_drop">
-      <mat-form-field class="full-width">
-          <mat-chip-list #chipList aria-label="Select">
-            <mat-chip
-              *ngFor="let option of selectedDropVals"
-              [selectable]="true"
-              [removable]="true"
-              (removed)="remove(option)">
-              {{ option.TEXT }}
-              <mat-icon matChipRemove>cancel</mat-icon>
-            </mat-chip>
+    <h3 class="mat-h3">{{ widgetHeader.desc }}</h3>
+    <div class="f-spacer"></div>
+    <button *ngIf="enableClearIcon" mat-icon-button aria-label="Clear" (click)="clearFilterCriteria()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-toolbar-row>
+
+  <mat-card-content>
+    <!-- CONTROL FOR DROPDOWNS -->
+    <ng-template [ngIf]="filterWidget && filterWidget.getValue() && filterWidget.getValue().metaData.picklist === '1'">
+      <!-- DROPDOWN_VALS -->
+      <ng-template [ngIf]="(filterWidget.getValue() ? filterWidget.getValue().type : '') === 'DROPDOWN_VALS'">
+        <ng-template [ngIf]="filterWidget.getValue().isMultiSelect" [ngIfElse] ="single_select_drop">
+        <mat-form-field class="full-width">
+            <mat-chip-list #chipList aria-label="Select">
+              <mat-chip
+                *ngFor="let option of selectedDropVals"
+                [selectable]="true"
+                [removable]="true"
+                (removed)="remove(option)">
+                {{ option.TEXT }}
+                <mat-icon matChipRemove>cancel</mat-icon>
+              </mat-chip>
+            <input type="text"
+                  placeholder="Select"
+                  aria-label="Number"
+                  matInput
+                  [formControl]="filterFormControl"
+                  [matAutocomplete]="auto">
+            </mat-chip-list> 
+        </mat-form-field>  
+        </ng-template>
+        <ng-template #single_select_drop>
+          <mat-form-field>
           <input type="text"
-                placeholder="Select"
-                aria-label="Number"
-                matInput
-                [formControl]="filterFormControl"
-                [matAutocomplete]="auto">
-          </mat-chip-list> 
-      </mat-form-field>  
+          placeholder="Select"
+          aria-label="Number"
+          value="{{ selectedDropVals.length ? selectedDropVals[0].TEXT : ''}}"
+          matInput
+          [formControl]="filterFormControl"
+          [matAutocomplete]="auto">
+          <button *ngIf="enableClearIcon" mat-button matSuffix mat-icon-button (click)="removeSingleSelectedVal(true)">
+            <mat-icon>close</mat-icon>
+            </button>
+        </mat-form-field>
+        </ng-template>
+        
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="fieldDisplayFn">
+          <mat-option *ngFor="let option of filteredOptions | async" [value]="option" >
+              <ng-template [ngIf] ="filterWidget.getValue().isMultiSelect" [ngIfElse]="singleSelection"> 
+                <div (click)="optionClicked($event, option)">
+                  <mat-checkbox prosClickStopPropagation (change)="toggleSelection(option)" [checked]="isSelected(option)" color="primary">
+                    {{ option.TEXT }}
+                  </mat-checkbox>
+                </div>
+              </ng-template>
+              <ng-template #singleSelection>
+                <div (click)="optionClicked($event, option)">
+                  {{ option.TEXT }}
+                </div>
+              </ng-template>
+          </mat-option>
+        </mat-autocomplete>
       </ng-template>
-      <ng-template #single_select_drop>
-        <mat-form-field>
-        <input type="text"
-        placeholder="Select"
-        aria-label="Number"
-        value="{{ selectedDropVals.length ? selectedDropVals[0].TEXT : ''}}"
-        matInput
-        [formControl]="filterFormControl"
-        [matAutocomplete]="auto">
-        <button *ngIf="enableClearIcon" mat-button matSuffix mat-icon-button (click)="removeSingleSelectedVal(true)">
-          <mat-icon>close</mat-icon>
-          </button>
-      </mat-form-field>
+
+      <!-- HORIZONTAL_VALS -->
+      <ng-template [ngIf]="(filterWidget.getValue() ? filterWidget.getValue().type : '') === 'HORIZONTAL_VALS'">
+        <div class="f-row horizontal-row">
+          <ng-template ngFor let-option [ngForOf]="filteredOptions | async">
+              <ng-template [ngIf]="isSelected(option)" [ngIfElse]="unselectedButton">
+                <button mat-flat-button color="primary" (click)="optionClicked($event, option)">{{ option.TEXT }}</button>
+              </ng-template>
+              <ng-template #unselectedButton>
+                <button mat-stroked-button (click)="optionClicked($event, option)">{{ option.TEXT }}</button>
+              </ng-template>
+          </ng-template>
+        </div>
       </ng-template>
       
-      <mat-autocomplete #auto="matAutocomplete" [displayWith]="fieldDisplayFn">
-        <mat-option *ngFor="let option of filteredOptions | async" [value]="option" >
-            <ng-template [ngIf] ="filterWidget.getValue().isMultiSelect" [ngIfElse]="singleSelection"> 
-              <div (click)="optionClicked($event, option)">
-                <mat-checkbox prosClickStopPropagation (change)="toggleSelection(option)" [checked]="isSelected(option)" color="primary">
-                  {{ option.TEXT }}
-                </mat-checkbox>
-              </div>
-            </ng-template>
-            <ng-template #singleSelection>
-              <div (click)="optionClicked($event, option)">
-                {{ option.TEXT }}
-              </div>
-            </ng-template>
-        </mat-option>
-      </mat-autocomplete>
-    </ng-template>
+      <!-- VERTICAL_VALS -->
+      <ng-template [ngIf]="(filterWidget.getValue() ? filterWidget.getValue().type : '') === 'VERTICAL_VALS'">
+        <div class="f-col vertical-row">
+          <ng-template ngFor let-option [ngForOf]="filteredOptions | async">
+              <ng-template [ngIf]="isSelected(option)" [ngIfElse]="unselectedButton">
+                <button mat-flat-button color="primary" (click)="optionClicked($event, option)">{{ option.TEXT ? option.TEXT : option.CODE }}</button>
+              </ng-template>
+              <ng-template #unselectedButton>
+                <button mat-stroked-button (click)="optionClicked($event, option)">{{ option.TEXT ? option.TEXT : option.CODE }}</button>
+              </ng-template>
+          </ng-template>
+        </div>
+      </ng-template>
+  </ng-template>
 
-    <!-- HORIZONTAL_VALS -->
-    <ng-template [ngIf]="(filterWidget.getValue() ? filterWidget.getValue().type : '') === 'HORIZONTAL_VALS'">
-      <div class="f-row horizontal-row">
-        <ng-template ngFor let-option [ngForOf]="filteredOptions | async">
-            <ng-template [ngIf]="isSelected(option)" [ngIfElse]="unselectedButton">
-              <button mat-flat-button color="primary" (click)="optionClicked($event, option)">{{ option.TEXT }}</button>
-            </ng-template>
-            <ng-template #unselectedButton>
-              <button mat-stroked-button (click)="optionClicked($event, option)">{{ option.TEXT }}</button>
-            </ng-template>
-        </ng-template>
-      </div>
-    </ng-template>
+  <!-- CONTROL FOR DATE PICKER -->
+  <ng-template [ngIf]="filterWidget && filterWidget.getValue() && filterWidget.getValue().metaData.picklist === '0' && filterWidget.getValue().metaData.dataType === 'DTMS'">
     
-    <!-- VERTICAL_VALS -->
-    <ng-template [ngIf]="(filterWidget.getValue() ? filterWidget.getValue().type : '') === 'VERTICAL_VALS'">
-      <div class="f-col vertical-row">
-        <ng-template ngFor let-option [ngForOf]="filteredOptions | async">
-            <ng-template [ngIf]="isSelected(option)" [ngIfElse]="unselectedButton">
-              <button mat-flat-button color="primary" (click)="optionClicked($event, option)">{{ option.TEXT ? option.TEXT : option.CODE }}</button>
-            </ng-template>
-            <ng-template #unselectedButton>
-              <button mat-stroked-button (click)="optionClicked($event, option)">{{ option.TEXT ? option.TEXT : option.CODE }}</button>
-            </ng-template>
-        </ng-template>
+    <div class="f-row">
+      <div class="f-col">
+        <mat-form-field class="example-full-width">
+          <input matInput [matDatepicker]="picker1" [formControl]="startDateCtrl" placeholder="Choose start date" (dateInput)="changeStartDate($event)" (dateChange)="changeStartDate($event)">
+          <mat-datepicker #picker1></mat-datepicker>
+        </mat-form-field>
       </div>
-    </ng-template>
-</ng-template>
-
-<!-- CONTROL FOR DATE PICKER -->
-<ng-template [ngIf]="filterWidget && filterWidget.getValue() && filterWidget.getValue().metaData.picklist === '0' && filterWidget.getValue().metaData.dataType === 'DTMS'">
-  
-  <div class="f-row">
-    <div class="f-col">
-      <mat-form-field class="example-full-width">
-        <input matInput [matDatepicker]="picker1" [formControl]="startDateCtrl" placeholder="Choose start date" (dateInput)="changeStartDate($event)" (dateChange)="changeStartDate($event)">
-        <mat-datepicker #picker1></mat-datepicker>
-      </mat-form-field>
+      <div class="f-col">
+        <mat-form-field class="example-full-width">
+          <input matInput [matDatepicker]="picker2" [formControl]="endDateCtrl" placeholder="Choose end date" (dateInput)="changeEndtDate($event)" (dateChange)="changeEndtDate($event)">
+          <mat-datepicker #picker2></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div class="f-col">
+        <!-- <button mat-button *ngIf="startDate && endDate" mat-icon-button aria-label="Clear" (click)="clearSelectedPicker()">
+          <mat-icon>close</mat-icon>
+        </button> -->
+        <button mat-raised-button (click)="picker2.open(); picker1.open(); setPositionOfDatePicker()">Open</button>
+      </div>
     </div>
-    <div class="f-col">
-      <mat-form-field class="example-full-width">
-        <input matInput [matDatepicker]="picker2" [formControl]="endDateCtrl" placeholder="Choose end date" (dateInput)="changeEndtDate($event)" (dateChange)="changeEndtDate($event)">
-        <mat-datepicker #picker2></mat-datepicker>
-      </mat-form-field>
-    </div>
-    <div class="f-col">
-      <!-- <button mat-button *ngIf="startDate && endDate" mat-icon-button aria-label="Clear" (click)="clearSelectedPicker()">
-        <mat-icon>close</mat-icon>
-      </button> -->
-      <button mat-raised-button (click)="picker2.open(); picker1.open(); setPositionOfDatePicker()">Open</button>
-    </div>
-  </div>
 
-</ng-template>
+  </ng-template>
 
-<!-- CONTROL FOR INPUT TYPE NUM -->
-<ng-template [ngIf]="filterWidget && filterWidget.getValue() && filterWidget.getValue().metaData.picklist === '0' && filterWidget.getValue().metaData.dataType === 'NUMC'">
-  <mat-slider color="primary" thumbLabel [formControl]="numericValCtrl"   [displayWith]="formatMatSliderLabel" tickInterval="1000" [min]="filterResponse ? filterResponse.min : 0"  [max]="filterResponse ? filterResponse.max : 0" [value]="filterResponse ? filterResponse.max : 0" (change)="sliderValueChange($event)"></mat-slider>
-</ng-template>
-</mat-card-content>
+  <!-- CONTROL FOR INPUT TYPE NUM -->
+  <ng-template [ngIf]="filterWidget && filterWidget.getValue() && filterWidget.getValue().metaData.picklist === '0' && filterWidget.getValue().metaData.dataType === 'NUMC'">
+    <mat-slider color="primary" thumbLabel [formControl]="numericValCtrl"   [displayWith]="formatMatSliderLabel" tickInterval="1000" [min]="filterResponse ? filterResponse.min : 0"  [max]="filterResponse ? filterResponse.max : 0" [value]="filterResponse ? filterResponse.max : 0" (change)="sliderValueChange($event)"></mat-slider>
+  </ng-template>
+  </mat-card-content>
 </mat-card>
 

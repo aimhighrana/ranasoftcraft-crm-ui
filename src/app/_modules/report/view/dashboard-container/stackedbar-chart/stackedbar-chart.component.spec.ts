@@ -5,6 +5,7 @@ import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { StackBarChartWidget, Criteria } from '../../../_models/widget';
 import { BehaviorSubject } from 'rxjs';
+import { MatMenuModule } from '@angular/material/menu';
 
 describe('StackedbarChartComponent', () => {
   let component: StackedbarChartComponent;
@@ -13,7 +14,7 @@ describe('StackedbarChartComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ StackedbarChartComponent ],
-      imports:[AppMaterialModuleForSpec,HttpClientTestingModule]
+      imports:[AppMaterialModuleForSpec,HttpClientTestingModule,MatMenuModule]
     })
     .compileComponents();
   }));

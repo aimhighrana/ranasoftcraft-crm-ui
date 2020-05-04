@@ -4,8 +4,10 @@
 	<div class="crumbrow f-row">
 		<pros-breadcrumb [crumbs]="breadcrumb"></pros-breadcrumb>
 		<div class="f-spacer"></div>
-		<button *ngIf="showClearFilterBtn" mat-raised-button (click)="clearFilters()">Clear Filter(s)</button>
+		<button *ngIf="showClearFilterBtn" mat-flat-button color="primary" (click)="clearFilters()">Clear Filter(s)</button>
 		<div class="col-spacer"></div>
-	</div>
+    </div>
+	
 	<pros-dashboard-container [reportId]="reportId" [emitClearBtnEvent]="emitClearBtnEvent" (emitFilterApplied)="showClearBtnEmit($event)" class="container"></pros-dashboard-container>
+	
 </div>

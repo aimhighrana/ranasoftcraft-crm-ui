@@ -33,7 +33,7 @@
         </mat-toolbar>
 
         <div class="f-row container-row">
-            <mat-card class="mat-elevation-z0 container-show widget-col">
+            <mat-card class="mat-elevation-z0 widget-col">
                 <mat-card-content>
                     <mat-accordion>
                         <mat-expansion-panel class="mat-elevation-z2" expanded="true">
@@ -44,11 +44,17 @@
                           </mat-expansion-panel-header>
                           <mat-list role="list" cdkDropList cdkDropListConnectedTo="container">
                             <mat-list-item role="listitem" cdkDrag widgetType="FILTER">Filters</mat-list-item>
+                            <mat-divider></mat-divider>
                             <mat-list-item role="listitem" cdkDrag widgetType="COUNT">Count</mat-list-item>
+                            <mat-divider></mat-divider>
                             <mat-list-item role="listitem" cdkDrag widgetType="TABLE_LIST">Table List</mat-list-item>
+                            <mat-divider></mat-divider>
                             <mat-list-item role="listitem" cdkDrag widgetType="BAR_CHART">Bar Chart</mat-list-item>
+                            <mat-divider></mat-divider>
                             <mat-list-item role="listitem" cdkDrag widgetType="STACKED_BAR_CHART">Stacked Bar Chart</mat-list-item>
+                            <mat-divider></mat-divider>
                             <mat-list-item role="listitem" cdkDrag widgetType="IMAGE">Image</mat-list-item>
+                            <mat-divider></mat-divider>
                             <mat-list-item role="listitem" cdkDrag widgetType="HTML">Html Editor</mat-list-item>
                           </mat-list>
 
@@ -61,13 +67,13 @@
                                 Available Widget
                               </mat-panel-title>
                             </mat-expansion-panel-header>
-                            <p>Coming soon..</p>
+                            <p>Coming soon...</p>
                           </mat-expansion-panel>
                     </mat-accordion>
                 </mat-card-content>  
             </mat-card>
 
-            <mat-card class="mat-elevation-z0 container-show builder-board" id="container" cdkDragBoundary cdkDropList (cdkDropListDropped)="drop($event)">
+            <mat-card class="mat-elevation-z0 container-show builder-board" [class.adjust-property] ="showProperty"  id="container" cdkDragBoundary cdkDropList (cdkDropListDropped)="drop($event)">
                 <ng-template ngFor let-widget [ngForOf]="widgetList">
                     <pros-dynamic-widget
                     [widget]="widget"
@@ -128,7 +134,7 @@
                 
             </mat-card>
 
-            <mat-card class="mat-elevation-z0 mat-elevation-z3 container-show property-col" *ngIf="showProperty">
+            <mat-card class="mat-elevation-z0 property-col" *ngIf="showProperty">
                 <mat-toolbar class="c-toolbar-row">
                     <mat-toolbar-row>
                       <h3 class="mat-h3">{{ selStyleWid ? selStyleWid.widgetTitle : 'Untitled' }} Properties</h3>

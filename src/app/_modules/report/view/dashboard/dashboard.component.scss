@@ -1,19 +1,18 @@
 .root {
-  .crumbrow {
-    align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+  align-items: flex-start;
+  align-content: flex-start;
 
-    > button {
-      min-width: 38px;
-      padding: 0 6px;
-    }
+  .crumbrow {
+    -webkit-box-align: center;
+    align-items: center;
   }
 
-  .container {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: space-around;
-    align-items: flex-start;
-    align-content: flex-start;
+  .f-row {
+    flex-wrap: wrap;
+    flex: 1 100%;
   }
 
   pros-dashboard-container {

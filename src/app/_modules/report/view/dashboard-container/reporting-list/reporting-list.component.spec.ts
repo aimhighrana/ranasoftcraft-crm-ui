@@ -4,6 +4,7 @@ import { ReportingListComponent } from './reporting-list.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { PageEvent } from '@angular/material/paginator';
+import { MatMenuModule } from '@angular/material/menu';
 
 describe('ReportingListComponent', () => {
   let component: ReportingListComponent;
@@ -12,7 +13,7 @@ describe('ReportingListComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ReportingListComponent ],
-      imports:[AppMaterialModuleForSpec,HttpClientTestingModule]
+      imports:[AppMaterialModuleForSpec,HttpClientTestingModule,MatMenuModule]
     })
     .compileComponents();
   }));

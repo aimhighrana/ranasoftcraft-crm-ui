@@ -1,12 +1,15 @@
-<mat-card class="widget mat-elevation-z4">
+<mat-card class="mat-elevation-z4 widget">
     <mat-toolbar-row class="widgettoolbar">
       <h3 class="mat-h3">{{ widgetHeader.desc }}</h3>
       <span class="f-spacer"></span>
-      <button mat-icon-button>
+      <button mat-icon-button [matMenuTriggerFor]="menu">
           <mat-icon>get_app</mat-icon>
       </button>
-      <button mat-menu-item (click)="downloadImage()">Image (.png)</button>
-      <button mat-menu-item (click)="downloadCSV()">Data (.csv)</button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="downloadImage()">Image (.png)</button>
+        <button mat-menu-item (click)="downloadCSV()">Data (.csv)</button>
+      </mat-menu>
+      
   </mat-toolbar-row>
     <mat-card-content>
       <canvas baseChart

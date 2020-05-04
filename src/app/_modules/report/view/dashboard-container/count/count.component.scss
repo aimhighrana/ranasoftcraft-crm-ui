@@ -22,6 +22,7 @@ mat-card.widget {
 
   mat-card-content {
     padding: 16px;
+    overflow: auto;
   }
 
   .count {

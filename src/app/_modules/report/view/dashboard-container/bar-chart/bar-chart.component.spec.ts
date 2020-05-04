@@ -5,6 +5,7 @@ import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { BarChartWidget } from '../../../_models/widget';
 import { BehaviorSubject } from 'rxjs';
+import { MatMenuModule } from '@angular/material/menu';
 
 describe('BarChartComponent', () => {
   let component: BarChartComponent;
@@ -13,7 +14,7 @@ describe('BarChartComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ BarChartComponent ],
-      imports:[AppMaterialModuleForSpec,HttpClientTestingModule]
+      imports:[AppMaterialModuleForSpec,HttpClientTestingModule,MatMenuModule]
     })
     .compileComponents();
   }));
