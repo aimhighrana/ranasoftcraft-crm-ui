@@ -96,7 +96,9 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       groupById: [''],
       objectType:[''],
       imageUrl: [''],
-      htmlText:['']
+      htmlText:[''],
+      imagesno: [''],
+      imageName: ['']
     });
 
     this.styleCtrlGrp.valueChanges.subscribe(latestVal=>{
@@ -113,6 +115,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         changedWidget.objectType = latestVal.objectType;
         changedWidget.imageUrl = latestVal.imageUrl;
         changedWidget.htmlText = latestVal.htmlText;
+        changedWidget.imagesno = latestVal.imagesno;
+        changedWidget.imageName = latestVal.imageName;
         this.preapreNewWidgetPosition(changedWidget);
       }
     });
@@ -223,19 +227,23 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   showStyle(data: Widget) {
     if(data) {
       this.selStyleWid = data;
-      this.styleCtrlGrp.setValue({
-        widgetName: data.widgetTitle ? data.widgetTitle : '',
-        height: data.height ? data.height : '',
-        width: data.width ? data.width : '',
-        field:data.field ? data.field : '',
-        aggregrationOp: data.aggregrationOp ? data.aggregrationOp : '',
-        filterType: data.filterType ? data.filterType : '',
-        isMultiSelect: data.isMultiSelect ? data.isMultiSelect : false,
-        groupById: data.groupById ? data.groupById : '',
-        objectType: data.objectType ? data.objectType : '',
-        imageUrl: data.imageUrl ? data.imageUrl : '',
-        htmlText: data.htmlText ? data.htmlText : ''
-      });
+      if(this.styleCtrlGrp) {
+        this.styleCtrlGrp.setValue({
+          widgetName: data.widgetTitle ? data.widgetTitle : '',
+          height: data.height ? data.height : '',
+          width: data.width ? data.width : '',
+          field:data.field ? data.field : '',
+          aggregrationOp: data.aggregrationOp ? data.aggregrationOp : '',
+          filterType: data.filterType ? data.filterType : '',
+          isMultiSelect: data.isMultiSelect ? data.isMultiSelect : false,
+          groupById: data.groupById ? data.groupById : '',
+          objectType: data.objectType ? data.objectType : '',
+          imageUrl: data.imageUrl ? data.imageUrl : '',
+          htmlText: data.htmlText ? data.htmlText : '',
+          imagesno: data.imagesno ? data.imagesno : '',
+          imageName: data.imageName ? data.imageName : ''
+        });
+      }
       this.showProperty = true;
       this.chooseColumns = data.widgetTableFields ? data.widgetTableFields : [];
     }
@@ -264,6 +272,24 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.toggleSelection(field);
   }
 
+  fileChange(event: any) {
+    if(event && event.target) {
+      this.schemaService.uploadUpdateFileData(event.target.files[0] as File, this.styleCtrlGrp.get('imagesno').value).subscribe(res=>{
+        this.styleCtrlGrp.get('imageName').setValue(event.target.files[0] ? event.target.files[0].name : '');
+        this.styleCtrlGrp.get('imagesno').setValue(res);
+      },error=>console.error(`Error : ${error}`));
+    }
+  }
+  uploadFileChange() {
+    document.getElementById('uploadFileCtrl').click();
+  }
+
+  removeUploadedImage() {
+    if(this.styleCtrlGrp) {
+      this.styleCtrlGrp.get('imageName').setValue('');
+      this.styleCtrlGrp.get('imagesno').setValue('');
+    }
+  }
 
   createUpdateReport() {
     if(this.reportName === undefined || this.reportName.trim() === '') {

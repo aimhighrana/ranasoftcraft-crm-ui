@@ -16,6 +16,7 @@ export class Widget {
     widgetTableFields: WidgetTableModel[];
     htmlText: string;
     imagesno: string;
+    imageName: string;
     imageUrl: string;
     objectType: string;
 

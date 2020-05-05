@@ -39,8 +39,7 @@
 
     .container-row {
       justify-content: space-between;
-      max-height: 488px;
-      height: 488px;
+      height: 4000px;
 
       mat-card {
         border-radius: 0;
@@ -128,6 +127,10 @@
 
         .field-divider {
           width: 48%;
+        }
+
+        .upload-img-inp {
+          width: 75%;
         }
       }
     }
