@@ -41,6 +41,10 @@ import { AdvancedSettingsComponent } from 'src/app/_modules/admin/_components/ad
 import { IntMappingComponent } from 'src/app/_modules/admin/_components/int-mapping/int-mapping.component';
 import { InterfacesComponent } from 'src/app/_modules/admin/_components/interfaces/interfaces.component';
 import { AdminLayoutComponent } from 'src/app/_modules/admin/_components/admin-layout/admin-layout.component';
+import { TaskListComponent } from './_components/task-list/task-list.component';
+import { ColumnsettingComponent } from './_components/task-list/dummy/columnsetting/columnsetting.component';
+import { FiltersDropdownComponent } from './_components/task-list/dummy/filters-dropdown/filters-dropdown.component';
+
 
 const routes: Routes = [
   { path: '', component: AdminLayoutComponent,
@@ -60,11 +64,8 @@ const routes: Routes = [
       { path: 'modules/:id/security', component: SecurityComponent },
       { path: 'modules/:id/custom-events', component: CustomEventsComponent },
       { path: 'modules/:id/nouns-characteristics', component: NounsCharacteristicsComponent },
-
       { path: 'securitylogs', component: SecurityLogsComponent },
-
       { path: 'email', component: EmailNotifComponent },
-
       { path: 'integration', component: IntegrationAdapterComponent },
       { path: 'integration/sap', component: SapComponent },
       { path: 'integration/sap/idocs', component: IdocsComponent },
@@ -86,11 +87,12 @@ const routes: Routes = [
       { path: 'integration/custom/xml', component: XmlComponent },
       { path: 'integration/custom/csv', component: CsvComponent },
       { path: 'integration/custom/api', component: ApiComponent },
-
       { path: 'advanced', component: AdvancedSettingsComponent },
-
       { path: 'integration/:scid/mapping', component: IntMappingComponent },
-      { path: 'interfaces', component: InterfacesComponent }
+      { path: 'interfaces', component: InterfacesComponent },
+      { path: 'tasklist', component: TaskListComponent},
+      { path: 'dummy/columnsetting', component: ColumnsettingComponent},
+      { path: 'dummy/filters-dropdown', component: FiltersDropdownComponent}
     ]
   },
 

@@ -46,6 +46,9 @@ import { NounsCharacteristicsComponent } from 'src/app/_modules/admin/_component
 import { AddbusinessruleComponent } from './_components/module/business-rules/addbusinessrule/addbusinessrule.component';
 import { CreateSchemaComponent } from './_components/module/schema/create-schema/create-schema.component';
 import { MissingruleComponent } from './_components/module/business-rules/missingrule/missingrule.component';
+import { TaskListComponent } from './_components/task-list/task-list.component';
+import { ColumnsettingComponent } from './_components/task-list/dummy/columnsetting/columnsetting.component';
+import { FiltersDropdownComponent } from './_components/task-list/dummy/filters-dropdown/filters-dropdown.component';
 
 
 @NgModule({
@@ -93,12 +96,15 @@ import { MissingruleComponent } from './_components/module/business-rules/missin
     NounsCharacteristicsComponent,
     AddbusinessruleComponent,
     CreateSchemaComponent,
-    MissingruleComponent
+    MissingruleComponent,
+    TaskListComponent,
+    ColumnsettingComponent,
+    FiltersDropdownComponent
   ],
   imports: [
     CommonModule,
     AdminRoutingModule,
-    SharedModule
+    SharedModule,
   ]
 })
 export class AdminModule { }

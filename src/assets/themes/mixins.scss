@@ -124,6 +124,33 @@
       }
     }
   }
+
+  pros-task-list {
+    .root {
+      .tasklist-container {
+        .split-divider {
+          background-color: mat-color($foreground-palette, divider);
+
+          .hand-control {
+            border-color: mat-color($primary-palette);
+            background-color: mat-color($background-palette, card);
+          }
+        }
+      }
+    }
+  }
+
+  pros-filters-dropdown {
+    .filter-slider {
+      mat-card-content {
+        .fields-action {
+          mat-form-field {
+            border-color: mat-color($foreground-palette, divider);
+          }
+        }
+      }
+    }
+  }
 }
 
 @mixin pros-cmp-typography($config) {

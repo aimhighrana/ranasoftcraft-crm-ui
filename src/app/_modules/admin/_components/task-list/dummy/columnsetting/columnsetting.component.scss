@@ -1,0 +1,45 @@
+.column-setting {
+  width: 400px;
+  margin: 16px;
+  padding: 0;
+
+  mat-toolbar {
+    min-height: 50px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+
+    mat-toolbar-row {
+      height: 50px;
+      font-size: 16px;
+    }
+  }
+
+  mat-card-content {
+    display: flex;
+
+    .f-col {
+      flex: 1;
+    }
+
+    .nav-setting {
+      padding-top: 16px;
+
+      .mat-list-item {
+        font-size: 14px;
+        height: 36px;
+      }
+    }
+
+    .checked-colunms {
+      padding: 16px;
+
+      mat-checkbox {
+        margin: 4px 0;
+      }
+
+      button {
+        margin-top: 8px;
+      }
+    }
+  }
+}

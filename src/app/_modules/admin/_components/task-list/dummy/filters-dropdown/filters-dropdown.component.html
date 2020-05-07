@@ -1,0 +1,138 @@
+<mat-card class="mat-elevation-z3 filter-slider">
+    <mat-card-content>
+        <h4 class="mat-h4 mat-line">Select Module/s 
+            <div class="f-spacer"></div>
+            <button mat-icon-button>
+                <mat-icon>close</mat-icon>
+            </button>
+        </h4>
+        <div class="f-row module-actions">
+            <button mat-flat-button color="primary">All Modules</button>
+            <button mat-stroked-button>Material</button>
+            <button mat-stroked-button>Customer</button>
+            <button mat-stroked-button>Function Location</button>
+            <button mat-stroked-button>Vendor</button>
+            <button mat-stroked-button>Plant</button>
+        </div>
+        <div class="f-row fields-action">
+            <mat-form-field appearance="fill">
+                <mat-label>Priority</mat-label>
+                <mat-select>
+                <mat-option value="option">All</mat-option>
+                <mat-option value="option">Low</mat-option>
+                <mat-option value="option">Medium</mat-option>
+                <mat-option value="option">High</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
+                <mat-label>Priority</mat-label>
+                <mat-select>
+                <mat-option value="option">All</mat-option>
+                <mat-option value="option">Low</mat-option>
+                <mat-option value="option">Medium</mat-option>
+                <mat-option value="option">High</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
+                <mat-label>Status</mat-label>
+                <mat-select>
+                <mat-option value="option">All</mat-option>
+                <mat-option value="option">Complete</mat-option>
+                <mat-option value="option">Progress</mat-option>
+                <mat-option value="option">Delete</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="custom-input">
+                <mat-label>Received Date</mat-label>
+                <input matInput>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="custom-input">
+                <mat-label>Due Date</mat-label>
+                <input matInput>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
+                <mat-label>Region</mat-label>
+                <mat-select>
+                <mat-option value="option">India</mat-option>
+                <mat-option value="option">Australia</mat-option>
+                <mat-option value="option">UK</mat-option>
+                <mat-option value="option">USA</mat-option>
+                </mat-select>
+            </mat-form-field>
+            
+            <mat-form-field appearance="fill">
+                <mat-label>Request By</mat-label>
+                <mat-select>
+                <mat-option value="option">User 1</mat-option>
+                <mat-option value="option">User 2</mat-option>
+                <mat-option value="option">User 3</mat-option>
+                <mat-option value="option">User 4</mat-option>
+                </mat-select>
+            </mat-form-field>
+            
+        </div>
+        <a class="mat-line" mat-button>Hide Advanced Filter</a>
+    </mat-card-content>
+
+    <mat-card class="mat-elevation-z3 adv-filter-section">
+        <div class="f-row">
+            <mat-nav-list class="f-col nav-setting">
+                <a mat-list-item>Generic Request</a>
+                <a mat-list-item>Inheritance Data</a>
+                <a mat-list-item>Item Move</a>
+                <a mat-list-item>Maintenance Plan Equipment</a>
+                <a mat-list-item>Material</a>
+                <a mat-list-item>Function Locaton</a>
+                <a mat-list-item>Plant</a>
+                <a mat-list-item>MRO</a>
+                <a mat-list-item>MDA</a>
+                <a mat-list-item>Customer</a>
+                <a mat-list-item>Equitment</a>
+                <a mat-list-item>System</a>
+            </mat-nav-list>
+            <mat-divider [vertical]="true"></mat-divider>
+            <mat-nav-list class="f-col nav-setting">
+                <a mat-list-item>Generic Request</a>
+                <a mat-list-item>Inheritance Data</a>
+                <a mat-list-item>Item Move</a>
+                <a mat-list-item>Maintenance Plan Equipment</a>
+                <a mat-list-item>Material</a>
+                <a mat-list-item>Function Locaton</a>
+                <a mat-list-item>Plant</a>
+                <a mat-list-item>MRO</a>
+                <a mat-list-item>MDA</a>
+                <a mat-list-item>Customer</a>
+                <a mat-list-item>Equitment</a>
+                <a mat-list-item>System</a>
+            </mat-nav-list>
+            <mat-divider [vertical]="true"></mat-divider>
+            <div class="f-col nav-checked">
+                <mat-form-field>
+                    <mat-label>Search</mat-label>
+                    <input matInput>
+                </mat-form-field>
+                <div class="f-col checked-colunms">
+                    <mat-checkbox color="primary">All</mat-checkbox>
+                    <mat-checkbox color="primary">Plant 1</mat-checkbox>
+                    <mat-checkbox color="primary">Plant 2</mat-checkbox>
+                    <mat-checkbox color="primary">Plant 3</mat-checkbox>
+                    <mat-checkbox color="primary">Plant 4</mat-checkbox>
+                    <mat-checkbox color="primary">Plant 5</mat-checkbox>
+                    <mat-checkbox color="primary">Plant 6</mat-checkbox>
+                    <mat-checkbox color="primary">Plant 7</mat-checkbox>
+                </div>
+            </div>
+
+        </div>
+        <div class="f-row mat-elevation-z3 filter-action">
+            <button mat-stroked-button color="primary">Clear Filter</button>
+            <button mat-flat-button color="primary">Update</button>
+        </div>
+    </mat-card>
+
+</mat-card> 
