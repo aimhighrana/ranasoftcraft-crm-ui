@@ -34,9 +34,6 @@ export class ImageComponent extends GenericWidgetComponent implements OnInit {
     });
   }
 
-  emitEvtClick(): void {
-    throw new Error('Method not implemented.');
-   }
   emitEvtFilterCriteria(): void {
     throw new Error('Method not implemented.');
   }

@@ -118,7 +118,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
     console.log(event);
    this.pageSize = event.pageSize;
    this.pageIndex = event.pageIndex;
-   this.getListdata(this.pageSize,this.pageIndex,this.widgetId,this.filterCriteria);
+   this.getListdata(this.pageSize,this.pageIndex * this.pageSize,this.widgetId,this.filterCriteria);
     return event;
  }
 
