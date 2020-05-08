@@ -237,6 +237,20 @@
                                 <mat-label>Image Link</mat-label>
                                 <input matInput formControlName="imageUrl">
                             </mat-form-field>
+
+                            <div class="f-row">
+                               <button mat-icon-button matTooltip="Upload image" (click)="uploadFileChange()">
+                                   <mat-icon color="primary">add_photo_alternate</mat-icon>
+                                </button>
+                                <input type="file" (change)="fileChange($event)" style="display: none;" multiple="false" id="uploadFileCtrl" accept="image/png, image/jpeg"/>
+                                <span class="f-col-spacer-half"></span>
+                                <mat-form-field class="upload-img-inp">
+                                    <input matInput disabled readonly formControlName="imageName">
+                                    <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="removeUploadedImage()">
+                                        <mat-icon>close</mat-icon>
+                                    </button>
+                                </mat-form-field>
+                            </div>
                         </ng-template>
 
                         <!-- FOR IMAGE WIDGET-->

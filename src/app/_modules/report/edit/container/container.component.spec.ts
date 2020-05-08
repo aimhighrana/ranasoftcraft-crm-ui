@@ -6,14 +6,14 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Widget, WidgetTableModel } from '../../_models/widget';
 import { MetadataModel } from 'src/app/_models/schema/schemadetailstable';
+import { BreadcrumbComponent } from 'src/app/_modules/shared/_components/breadcrumb/breadcrumb.component';
 
 describe('ContainerComponent', () => {
   let component: ContainerComponent;
   let fixture: ComponentFixture<ContainerComponent>;
-
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ContainerComponent ],
+      declarations: [ ContainerComponent, BreadcrumbComponent ],
       imports:[AppMaterialModuleForSpec, ReactiveFormsModule, FormsModule, RouterTestingModule]
     })
     .compileComponents();
@@ -22,7 +22,6 @@ describe('ContainerComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ContainerComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
@@ -51,5 +50,41 @@ describe('ContainerComponent', () => {
       expect(component.isSelected(isSelectedObj)).toEqual(false,'If the fld is not exit on choose column then return false');
 
   }));
+
+  it('ngAfterViewInit(), test ngAfterViewInit ',async(()=>{
+    component.ngAfterViewInit();
+    expect(component.screenWidth).toEqual(document.body.offsetWidth, 'Screen width should equal to container width');
+    const expectedBoxSize = component.screenWidth / 200;
+    expect(expectedBoxSize).toEqual(component.eachBoxSize, 'Check box size');
+  }));
+
+  it('preapreNewWidgetPosition(), prepare widget ',async(()=>{
+    const widget = new Widget();
+    widget.widgetId = '7254875287';
+    component.widgetList = [];
+    component.preapreNewWidgetPosition(widget);
+    expect(component.widgetList.length).toEqual(1,'After push to widgetlist size should be 1');
+    widget.x = 10;
+    component.preapreNewWidgetPosition(widget);
+    expect(component.widgetList[0].x).toEqual(10,'After update postion x');
+  }));
+
+  it('delete(), on widget delete',async(()=>{
+    const widget = new Widget();
+    widget.widgetId = '7254875287';
+    component.widgetList = [widget];
+    component.delete(widget);
+
+    expect(component.selStyleWid).toEqual(new Widget(), 'style widget variable should be new object');
+    expect(component.showProperty).toEqual(false, 'Style property panel is hide');
+  }));
+
+  it('ngOnInit(), check all pre require ', async(()=>{
+    component.ngOnInit();
+    const initialFrmGrp = {widgetName: '', width: '', height: '', field: '', aggregrationOp: '', filterType: '', isMultiSelect: false, groupById: '', objectType: '', imageUrl: '', htmlText: '', imagesno: '', imageName: ''};
+    expect(component.subscriptions.length).toEqual(4, 'Size should be 4');
+    expect(component.styleCtrlGrp.value).toEqual(initialFrmGrp, 'Initial form control value should be empty');
+  }));
+
 
 });

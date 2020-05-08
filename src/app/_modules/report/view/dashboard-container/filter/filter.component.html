@@ -96,7 +96,7 @@
   </ng-template>
 
   <!-- CONTROL FOR DATE PICKER -->
-  <ng-template [ngIf]="filterWidget && filterWidget.getValue() && filterWidget.getValue().metaData.picklist === '0' && filterWidget.getValue().metaData.dataType === 'DTMS'">
+  <ng-template [ngIf]="filterWidget && filterWidget.getValue() && filterWidget.getValue().metaData.picklist === '0' && (filterWidget.getValue().metaData.dataType === 'DTMS' || filterWidget.getValue().metaData.dataType === 'DATS')">
     
     <div class="f-row">
       <div class="f-col">
