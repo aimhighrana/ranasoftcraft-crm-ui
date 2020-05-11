@@ -3,26 +3,34 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { StackedbarChartComponent } from './stackedbar-chart.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { StackBarChartWidget, Criteria } from '../../../_models/widget';
-import { BehaviorSubject } from 'rxjs';
+import { StackBarChartWidget, Criteria, WidgetHeader } from '../../../_models/widget';
+import { BehaviorSubject, of } from 'rxjs';
 import { MatMenuModule } from '@angular/material/menu';
+import { BaseChartDirective, Label } from 'ng2-charts';
+import { WidgetService } from 'src/app/_services/widgets/widget.service';
 
 describe('StackedbarChartComponent', () => {
   let component: StackedbarChartComponent;
   let fixture: ComponentFixture<StackedbarChartComponent>;
-
+  let htmlnative: HTMLElement;
+  let widgetService: jasmine.SpyObj<WidgetService>;
   beforeEach(async(() => {
+    const widgetServiceSpy = jasmine.createSpyObj(WidgetService,['downloadCSV','getHeaderMetaData']);
     TestBed.configureTestingModule({
       declarations: [ StackedbarChartComponent ],
-      imports:[AppMaterialModuleForSpec,HttpClientTestingModule,MatMenuModule]
+      imports:[AppMaterialModuleForSpec,HttpClientTestingModule,MatMenuModule],
+      providers:[
+        {provide: WidgetService, userValue: widgetServiceSpy}
+      ]
     })
     .compileComponents();
+    widgetService = TestBed.inject(WidgetService) as jasmine.SpyObj<WidgetService>;
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(StackedbarChartComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    htmlnative = fixture.nativeElement;
   });
 
   it('should create', () => {
@@ -45,27 +53,89 @@ describe('StackedbarChartComponent', () => {
     chartWidget.fieldId = 'MATL_TYPE';
     chartWidget.groupById = 'MATL_GROUP';
     component.stackBarWidget = new BehaviorSubject<StackBarChartWidget>(chartWidget);
+
+    // mock stacked
+    const eleRef = htmlnative.getElementsByTagName('canvas')[0];
+    const baseChart = new BaseChartDirective(eleRef[0], null);
+    baseChart.chart = {canvas: eleRef, getElementAtEvent:(e: any) => [{_datasetIndex:0, _index: 0} as any] } as Chart;
+    component.chart = baseChart;
     component.stackClickFilter(null, array);
-        // after apply filter criteria then filtercriteria length should be 1
-        expect(component.filterCriteria.length).toEqual(2, 'after apply filter criteria then filtercriteria length should be 2');
+    // after apply filter criteria then filtercriteria length should be 1
+    expect(component.filterCriteria.length).toEqual(2, 'after apply filter criteria then filtercriteria length should be 2');
   }));
 
 
-it('getRandomColor(), Random Colour', async(()=>{
-  component.getRandomColor();
-  // length should be 7
-  expect(component.getRandomColor().length).toEqual(7);
-  // should contains #
-  expect(component.getRandomColor()).toContain('#');
-}));
+  it('getRandomColor(), Random Colour', async(()=>{
+    component.getRandomColor();
+    // length should be 7
+    expect(component.getRandomColor().length).toEqual(7);
+    // should contains #
+    expect(component.getRandomColor()).toContain('#');
+  }));
 
-it('removeOldFilterCriteria(), remove olf filter criteria ', async(()=>{
-  const filter: Criteria = new Criteria();
-  filter.conditionFieldId = 'MATL_TYPE';
-  filter.conditionFieldValue = 'ZMRO';
-  component.filterCriteria = [filter];
-  component.removeOldFilterCriteria([filter]);
-  expect(component.filterCriteria.length).toEqual(0,'after remove filter criteria length should be 0');
-}));
+  it('removeOldFilterCriteria(), remove olf filter criteria ', async(()=>{
+    const filter: Criteria = new Criteria();
+    filter.conditionFieldId = 'MATL_TYPE';
+    filter.conditionFieldValue = 'ZMRO';
+    component.filterCriteria = [filter];
+    component.removeOldFilterCriteria([filter]);
+    expect(component.filterCriteria.length).toEqual(0,'after remove filter criteria length should be 0');
+  }));
+
+  it('updateLabelsaxis1(), update axis label', async(()=>{
+    // create mock data
+    const barChartLbl = ['Label 1', 'Label 2'];
+    const lablDesc = {'Label 1': 'Label 1 desc'};
+
+    // asign to component variable
+    component.barChartLabels = barChartLbl as Label[];
+    component.codeTextaxis1  = lablDesc;
+
+    // call actual method
+    component.updateLabelsaxis1();
+
+    expect(barChartLbl.length).toEqual(component.barChartLabels.length, 'Bar chart labels length should equal');
+    expect(lablDesc['Label 1']).toEqual(component.barChartLabels[0], 'Code description should equal');
+    expect('Label 2').toEqual(component.barChartLabels[1], 'If description is not available then return code');
+
+
+  }));
+
+
+  it('updateLabelsaxis2(), update axis 2 labels', async(()=>{
+     // mock data
+     const listxAxis2 = ['Label 1', 'Label 2'];
+
+     // assign to component variable
+     component.listxAxis2 = listxAxis2;
+     component.barChartData = [];
+
+     // call actual component method
+     component.updateLabelsaxis2();
+
+     expect(listxAxis2.length).toEqual(component.barChartData.length, 'Bar chart data length equals to axis 2');
+  }));
+
+  it('getHeaderMetaData(), should call header metadata api', async(()=>{
+    // mock data
+    component.widgetId = 12345;
+    const header = new WidgetHeader();
+    spyOn(widgetService,'getHeaderMetaData').
+    withArgs(component.widgetId).and.returnValue(of(header));
+
+    //  call actual componenet method
+    component.getHeaderMetaData();
+    expect(component.widgetHeader).toEqual(header);
+  }));
+
+  it('ngOnInit(),  should enable pre required on this component', async(()=>{
+    component.stackBarWidget.next(new StackBarChartWidget());
+    component.ngOnInit();
+    expect(component.stackbarLegend.length).toEqual(0, 'Initial stacked bar legend length should be 0');
+    expect(component.stachbarAxis.length).toEqual(0, 'Initial stacked bar axis length should be 0');
+    expect(component.barChartLabels.length).toEqual(0, 'Initial stack chart lebels length should 0');
+    expect(component.listxAxis2.length).toEqual(0, 'Initial stack chart Axis2 length should 0');
+    expect(component.barChartData[0].data.length).toEqual(5, 'Initial stack chart data  length should 5');
+  }));
 
 });

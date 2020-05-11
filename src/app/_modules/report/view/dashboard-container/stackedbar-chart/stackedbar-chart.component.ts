@@ -39,6 +39,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
       },
     },
     onClick: (event?: MouseEvent, activeElements?: Array<{}>) =>{
+
       this.stackClickFilter(event, activeElements);
     }
   };
@@ -86,6 +87,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         });
       }
     });
+
   }
 
   public getHeaderMetaData():void{
@@ -113,7 +115,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         if(this.barChartLabels.indexOf(singleBucket.key[this.stackBarWidget.getValue().groupById]) === -1){
           this.barChartLabels.push(singleBucket.key[this.stackBarWidget.getValue().groupById]);
           this.stachbarAxis.push({legendIndex: this.stachbarAxis.length,code:singleBucket.key[this.stackBarWidget.getValue().groupById],text: singleBucket.key[this.stackBarWidget.getValue().groupById]});
-          if(singleBucket.key[this.stackBarWidget.getValue().groupById] !== ''){
+          if(singleBucket.key[this.stackBarWidget.getValue().groupById] !== '' && this.labels.indexOf(singleBucket.key[this.stackBarWidget.getValue().groupById]) === -1){
             this.labels.push(singleBucket.key[this.stackBarWidget.getValue().groupById]);
           }
         }
@@ -208,10 +210,10 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
 
   updateLabelsaxis1():void{
     for(let i=0;i<this.barChartLabels.length;i++){
-      if(this.codeTextaxis1[this.labels[i]] !== undefined && this.codeTextaxis1[this.labels[i]] !== ''){
-          this.barChartLabels[i] = this.codeTextaxis1[this.labels[i]];
-      }
+      const lbl = this.barChartLabels[i] as any;
+      this.barChartLabels[i] = this.codeTextaxis1[lbl] ? this.codeTextaxis1[lbl] : lbl;
     }
+
   }
 
 
@@ -241,9 +243,10 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
    * Aftre click on chart stack
    */
   stackClickFilter(event?: MouseEvent, activeElements?: Array<any>) {
-    if(activeElements && activeElements.length) {
-      const xval1Index = (activeElements[0])._datasetIndex;
-      const xval2Index = (activeElements[0])._index;
+     if(this.chart && activeElements.length>0) {
+      const option = this.chart.chart.getElementAtEvent(event) as any;
+      const xval1Index = (option[0])._datasetIndex;
+      const xval2Index = (option[0])._index;
 
       const xvalCode1 = this.stackbarLegend[xval1Index] ? this.stackbarLegend[xval1Index].code : null;
       const xvalCode2 = this.stachbarAxis[xval2Index] ? this.stachbarAxis[xval2Index].code : null;
