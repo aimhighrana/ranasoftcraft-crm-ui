@@ -49,6 +49,10 @@ import { MissingruleComponent } from './_components/module/business-rules/missin
 import { TaskListComponent } from './_components/task-list/task-list.component';
 import { ColumnsettingComponent } from './_components/task-list/dummy/columnsetting/columnsetting.component';
 import { FiltersDropdownComponent } from './_components/task-list/dummy/filters-dropdown/filters-dropdown.component';
+import { NameslideToggleComponent } from './_components/task-list/dummy/nameslide-toggle/nameslide-toggle.component';
+import { GeneralInformationTabComponent } from './_components/task-list/dummy/general-information-tab/general-information-tab.component';
+import { HistoryTabComponent } from './_components/task-list/dummy/history-tab/history-tab.component';
+import { SummaryContainerComponent } from './_components/task-list/dummy/summary-container/summary-container.component';
 
 
 @NgModule({
@@ -99,7 +103,11 @@ import { FiltersDropdownComponent } from './_components/task-list/dummy/filters-
     MissingruleComponent,
     TaskListComponent,
     ColumnsettingComponent,
-    FiltersDropdownComponent
+    FiltersDropdownComponent,
+    NameslideToggleComponent,
+    GeneralInformationTabComponent,
+    HistoryTabComponent,
+    SummaryContainerComponent
   ],
   imports: [
     CommonModule,

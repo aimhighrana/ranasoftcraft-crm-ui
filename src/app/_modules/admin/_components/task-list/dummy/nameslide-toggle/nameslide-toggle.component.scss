@@ -1,0 +1,14 @@
+.sildetoogle {
+  padding: 0;
+  width: 200px;
+  border-radius: 0;
+
+  mat-nav-list {
+    padding: 0;
+
+    .mat-list-item {
+      font-size: 14px;
+      height: 40px;
+    }
+  }
+}
