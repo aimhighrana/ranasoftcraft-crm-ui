@@ -90,6 +90,12 @@
     svg.warn path {
       fill: mat-color($warn-palette);
     }
+
+    svg.widget path,
+    rect,
+    polygon {
+      fill: mat-color($foreground-palette, text);
+    }
   }
 
   pros-schema-datatable {

@@ -33,6 +33,9 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   pixcel = 200; // Initial 200
   eachBoxSize = 0;
 
+  // for background-color or additinal dynamic css on main container
+  containerCss: any = {};
+
   widgetList: Widget[] = [];
   selStyleWid:Widget;
   styleCtrlGrp: FormGroup;
@@ -71,6 +74,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.screenWidth  = screenWidth;
       this.eachBoxSize = this.screenWidth / this.pixcel;
       console.log(`Screen width : ${screenWidth}`);
+
+      this.containerCss = {'background-size':`${this.eachBoxSize}px ${this.eachBoxSize}px`};
     }
   }
 
@@ -185,7 +190,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       const widgetType = event.item.element.nativeElement.getAttribute('widgetType');
       dropableWidget.x = 0;
       dropableWidget.y = 0;
-      dropableWidget.height = 20;
+      dropableWidget.height = 22;
       dropableWidget.width = 40;
       dropableWidget.widgetId = String(new Date().getTime());
       dropableWidget.widgetType = widgetType as WidgetType;

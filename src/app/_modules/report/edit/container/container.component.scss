@@ -31,27 +31,26 @@
         height: 36px;
 
         mat-icon {
-          font-size: 20px;
-          margin-top: -10px;
+          margin-top: -15px;
         }
       }
     }
 
     .container-row {
       justify-content: space-between;
-      height: 4000px;
 
       mat-card {
         border-radius: 0;
       }
 
       .widget-col {
-        width: 250px;
+        width: 300px;
         overflow: auto;
         border-right-width: 1px;
         border-right-style: solid;
         border-top-width: 1px;
         border-top-style: solid;
+        height: 600px;
 
         mat-expansion-panel {
           border-radius: 3px;
@@ -72,24 +71,32 @@
             mat-list-item {
               cursor: move;
               font-size: 14px;
+
+              .svg-widgetdrag {
+                display: flex;
+                margin-right: 16px;
+              }
             }
           }
         }
       }
 
       .builder-board {
-        width: calc(100% - 250px);
+        width: calc(100% - 300px);
         display: flex;
         flex-wrap: wrap;
         border-top-width: 1px;
         border-top-style: solid;
         padding: 8px;
         position: relative;
-        overflow: auto;
+        overflow-x: scroll;
+        background: radial-gradient(#e0e0e0 1px, transparent 1px) 0 0;
+        background-position: 5px 5px;
+        max-height: 700px;
       }
 
       .adjust-property {
-        width: calc(100% - 500px);
+        width: calc(100% - 550px);
       }
 
       .property-col {
@@ -99,6 +106,7 @@
         border-left-style: solid;
         border-top-width: 1px;
         border-top-style: solid;
+        height: 600px;
 
         .c-toolbar-row {
           min-height: 50px;

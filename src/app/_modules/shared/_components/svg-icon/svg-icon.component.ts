@@ -11,7 +11,14 @@ export class SvgIconComponent implements OnInit {
   iconPV: string[] = [
     'P_BR_METADATA_RULE',
     'P_BR_UDR_RULE',
-    'P_BR_MISSING_RULE'
+    'P_BR_MISSING_RULE',
+    'COUNT_WIDGET',
+    'LIST_WIDGET',
+    'FILTER_WIDGET',
+    'BAR_WIDGET',
+    'STACKEDBAR_WIDGET',
+    'IMAGE_WIDGET',
+    'HTML_WIDGET'
   ];
 
   @Input()

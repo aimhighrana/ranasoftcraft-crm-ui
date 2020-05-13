@@ -12,6 +12,34 @@
         </button>
     </mat-toolbar-row>
     <mat-card-content>
-      {{ widget.widgetType ? widget.widgetType : 'Undefined widget type' }}
+      <ng-template [ngIf]="widget.widgetType && widget.widgetType === 'COUNT'"> 
+         <pros-svg-icon size="70" icon="COUNT_WIDGET" class="widget-lgsvg" color="widget"></pros-svg-icon>
+      </ng-template>
+
+      <ng-template [ngIf]="widget.widgetType && widget.widgetType === 'FILTER'"> 
+        <pros-svg-icon size="70" icon="FILTER_WIDGET" class="widget-lgsvg" color="widget"></pros-svg-icon>
+     </ng-template>
+
+     <ng-template [ngIf]="widget.widgetType && widget.widgetType === 'BAR_CHART'"> 
+        <pros-svg-icon size="70" icon="BAR_WIDGET" class="widget-lgsvg" color="widget"></pros-svg-icon>
+     </ng-template>
+
+     <ng-template [ngIf]="widget.widgetType && widget.widgetType === 'STACKED_BAR_CHART'"> 
+        <pros-svg-icon size="70" icon="STACKEDBAR_WIDGET" class="widget-lgsvg" color="widget"></pros-svg-icon>
+     </ng-template>
+
+     <ng-template [ngIf]="widget.widgetType && widget.widgetType === 'TABLE_LIST'"> 
+        <pros-svg-icon size="70" icon="LIST_WIDGET" class="widget-lgsvg" color="widget"></pros-svg-icon>
+     </ng-template>
+
+     <ng-template [ngIf]="widget.widgetType && widget.widgetType === 'IMAGE'"> 
+        <pros-svg-icon size="70" icon="IMAGE_WIDGET" class="widget-lgsvg" color="widget"></pros-svg-icon>
+     </ng-template>
+
+     <ng-template [ngIf]="widget.widgetType && widget.widgetType === 'HTML'"> 
+        <pros-svg-icon size="70" icon="HTML_WIDGET" class="widget-lgsvg" color="widget"></pros-svg-icon>
+     </ng-template>
+     
+     
     </mat-card-content>
 </mat-card>

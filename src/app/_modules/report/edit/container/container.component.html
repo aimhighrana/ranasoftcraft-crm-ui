@@ -23,6 +23,9 @@
                 <span class="f-col-spacer-half"></span>
                 <mat-button-toggle-group>
                 <mat-button-toggle>
+                    <mat-icon>view_compact</mat-icon>
+                </mat-button-toggle>
+                <mat-button-toggle>
                     <mat-icon>zoom_out_map</mat-icon>
                 </mat-button-toggle>
                 <mat-button-toggle>
@@ -43,19 +46,19 @@
                             </mat-panel-title>
                           </mat-expansion-panel-header>
                           <mat-list role="list" cdkDropList cdkDropListConnectedTo="container">
-                            <mat-list-item role="listitem" cdkDrag widgetType="FILTER">Filters</mat-list-item>
+                            <mat-list-item role="listitem" cdkDrag widgetType="FILTER"><pros-svg-icon size="20" icon="FILTER_WIDGET" class="svg-widgetdrag" color="widget"></pros-svg-icon>Filter</mat-list-item>
                             <mat-divider></mat-divider>
-                            <mat-list-item role="listitem" cdkDrag widgetType="COUNT">Count</mat-list-item>
+                            <mat-list-item role="listitem" cdkDrag widgetType="COUNT"><pros-svg-icon size="20" icon="COUNT_WIDGET" class="svg-widgetdrag" color="widget"></pros-svg-icon>Count</mat-list-item>
                             <mat-divider></mat-divider>
-                            <mat-list-item role="listitem" cdkDrag widgetType="TABLE_LIST">Table List</mat-list-item>
+                            <mat-list-item role="listitem" cdkDrag widgetType="TABLE_LIST"><pros-svg-icon size="20" icon="LIST_WIDGET" class="svg-widgetdrag" color="widget"></pros-svg-icon>Table List</mat-list-item>
                             <mat-divider></mat-divider>
-                            <mat-list-item role="listitem" cdkDrag widgetType="BAR_CHART">Bar Chart</mat-list-item>
+                            <mat-list-item role="listitem" cdkDrag widgetType="BAR_CHART"><pros-svg-icon size="20" icon="BAR_WIDGET" class="svg-widgetdrag" color="widget"></pros-svg-icon>Bar Chart</mat-list-item>
                             <mat-divider></mat-divider>
-                            <mat-list-item role="listitem" cdkDrag widgetType="STACKED_BAR_CHART">Stacked Bar Chart</mat-list-item>
+                            <mat-list-item role="listitem" cdkDrag widgetType="STACKED_BAR_CHART"><pros-svg-icon size="20" icon="STACKEDBAR_WIDGET" class="svg-widgetdrag" color="widget"></pros-svg-icon>Stacked Bar Chart</mat-list-item>
                             <mat-divider></mat-divider>
-                            <mat-list-item role="listitem" cdkDrag widgetType="IMAGE">Image</mat-list-item>
+                            <mat-list-item role="listitem" cdkDrag widgetType="IMAGE"><pros-svg-icon size="20" icon="IMAGE_WIDGET" class="svg-widgetdrag" color="widget"></pros-svg-icon>Image</mat-list-item>
                             <mat-divider></mat-divider>
-                            <mat-list-item role="listitem" cdkDrag widgetType="HTML">Html Editor</mat-list-item>
+                            <mat-list-item role="listitem" cdkDrag widgetType="HTML"><pros-svg-icon size="20" icon="HTML_WIDGET" class="svg-widgetdrag" color="widget"></pros-svg-icon>Html Editor</mat-list-item>
                           </mat-list>
 
                         </mat-expansion-panel>
@@ -73,7 +76,7 @@
                 </mat-card-content>  
             </mat-card>
 
-            <mat-card class="mat-elevation-z0 container-show builder-board" [class.adjust-property] ="showProperty"  id="container" cdkDragBoundary cdkDropList (cdkDropListDropped)="drop($event)">
+            <mat-card class="mat-elevation-z0 container-show builder-board" [ngStyle]="containerCss" [class.adjust-property] ="showProperty"  id="container" cdkDragBoundary cdkDropList (cdkDropListDropped)="drop($event)">    
                 <ng-template ngFor let-widget [ngForOf]="widgetList">
                     <pros-dynamic-widget
                     [widget]="widget"
@@ -84,7 +87,7 @@
                     </pros-dynamic-widget>
                 </ng-template>
                 
-                    <!-- <mat-card class="mat-elevation-z4 widget count-box">
+                <!-- <mat-card class="mat-elevation-z4 widget count-box">
                         <mat-toolbar-row class="widgettoolbar">
                             <h3 class="mat-h3">Count Widget</h3>
                             <span class="f-spacer"></span>

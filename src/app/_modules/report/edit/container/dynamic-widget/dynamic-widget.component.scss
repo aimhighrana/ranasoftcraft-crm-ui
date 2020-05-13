@@ -26,5 +26,10 @@
 
   mat-card-content {
     padding: 16px;
+
+    .widget-lgsvg {
+      display: flex;
+      justify-content: space-around;
+    }
   }
 }
