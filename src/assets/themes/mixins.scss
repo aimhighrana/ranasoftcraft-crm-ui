@@ -140,6 +140,18 @@
     }
   }
 
+  pros-history-tab {
+    .summary-datarows {
+      .data-tile {
+        .data-topaction {
+          .mat-h4 {
+            color: mat-color($primary-palette);
+          }
+        }
+      }
+    }
+  }
+
   pros-filters-dropdown {
     .filter-slider {
       mat-card-content {
