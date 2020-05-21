@@ -48,12 +48,15 @@ import { TableColumnSettingsComponent } from './_components/table-column-setting
 import { ClickStopPropagationDirective } from './_directives/click-stop-propagation.directive';
 import { SubstringPipe } from './_pipes/substringpipe.pipe';
 import { ThousandconvertorPipe } from './_pipes/thousandconvertor.pipe';
-
+import { FormatTableHeadersPipe } from './_pipes/format-table-headers.pipe';
+import { TagsEllipsisDirective } from './_directives/tags-ellipsis.directive';
+import { ResizeableDirective } from './_directives/resizeable.directive';
 
 @NgModule({
   declarations: [
     // directives
     ClickStopPropagationDirective,
+    TagsEllipsisDirective,
     // pipes
     SubstringPipe,
     ThousandconvertorPipe,
@@ -62,7 +65,9 @@ import { ThousandconvertorPipe } from './_pipes/thousandconvertor.pipe';
     BreadcrumbComponent,
     AddTileComponent,
     SvgIconComponent,
-    TableColumnSettingsComponent
+    TableColumnSettingsComponent,
+    FormatTableHeadersPipe,
+    ResizeableDirective
   ],
   imports: [
     // ng modules
@@ -168,15 +173,18 @@ import { ThousandconvertorPipe } from './_pipes/thousandconvertor.pipe';
     ChartsModule,
     // directives
     ClickStopPropagationDirective,
+    TagsEllipsisDirective,
+    ResizeableDirective,
     // pipes
     SubstringPipe,
     ThousandconvertorPipe,
+    FormatTableHeadersPipe,
     // components
     PageNotFoundComponent,
     BreadcrumbComponent,
     AddTileComponent,
     SvgIconComponent,
-    TableColumnSettingsComponent
+    TableColumnSettingsComponent,
   ]
 })
 export class SharedModule { }

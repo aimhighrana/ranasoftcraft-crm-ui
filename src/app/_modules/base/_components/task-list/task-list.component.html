@@ -1,0 +1,191 @@
+<div class="root">
+    <mat-card class="container-show tasklist-container">
+
+        <mat-tab-group>
+
+            <mat-tab label="My Task">
+                <div class="f-row search-action">
+                    <mat-form-field appearance="outline">
+                        <mat-icon matSuffix>search</mat-icon>
+                        <mat-label>Search</mat-label>
+                        <input matInput placeholder="Placeholder">
+                    </mat-form-field>
+                    <span class="col-spacer"></span>
+                    <button mat-stroked-button color="primary" (click)="toggleDynamicFilters()">
+                        <mat-icon matSuffix>filter_list</mat-icon>Filters
+                    </button>
+                    <span class="f-spacer"></span>
+                    <button mat-button color="primary">
+                        <mat-icon>star_border</mat-icon>Save search
+                    </button>
+                    <span class="col-spacer"></span>
+                    <button mat-button color="primary" [matMenuTriggerFor]="menu">Saved searches<mat-icon>
+                            keyboard_arrow_down</mat-icon></button>
+                    <mat-menu #menu="matMenu">
+                        <button mat-menu-item
+                            *ngFor="let savedSearch of savedSearches">{{savedSearch.searchName}}</button>
+                    </mat-menu>
+                </div>
+
+                <div class="f-row action-list">
+                    <p class="mat-label">{{tasks.length}} results found for
+                        "Search"</p>
+                    <span class="f-spacer"></span>
+                    <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+                </div>
+                <!--  filters -->
+                <pros-filters-dropdown [filters]="filters" *ngIf="dynamicFiltersVisible"
+                    (closeFilterBox)="toggleDynamicFilters()" (updateFilters)="updateFilters($event)">
+                </pros-filters-dropdown>
+
+
+                <div class="f-row list-wrapper">
+
+
+                    <div class="tasklist-mattable" id="task-list-table" [summaryShown]="enableDragging" prosResizeable>
+                        <mat-card class="container-show list-thead list-card">
+
+                            <ng-container *ngFor="let tableColumn of tableColumns" (matSortChange)="sortData($event)">
+                                <div [class.f2-cell]="tableColumn.hasLargeText"
+                                    *ngIf="columnVisible(tableColumn.value)">
+                                    {{tableColumn.value | formatTableHeaders | titlecase}}</div>
+                            </ng-container>
+
+
+                            <button mat-icon-button class="ac-setting" color="primary"
+                                (click)="toggleColumnSettingPopUp()">
+                                <mat-icon>settings</mat-icon>
+                            </button>
+                            <pros-columnsetting [tableColumns]="tableColumns" (updateColumns)="updateColumns($event)"
+                                (close)="toggleColumnSettingPopUp()" *ngIf="showColumnSettingPopUp">
+                            </pros-columnsetting>
+                        </mat-card>
+
+                        <mat-card class="mat-elevation-z2 list-card" *ngFor="let task of tasks"
+                            (click)="getTaskDetails(task.task_id)">
+                            <div *ngIf="columnVisible('task_id')">{{task.task_id}}</div>
+                            <div *ngIf="columnVisible('description')" class="f2-cell">{{task.description}}</div>
+                            <div *ngIf="columnVisible('requestor')">{{task.requestor}}</div>
+                            <div *ngIf="columnVisible('recieved_on')">{{task.recieved_on | date}}</div>
+                            <div *ngIf="columnVisible('due_date')">{{task.due_date | date}}</div>
+                            <div *ngIf="columnVisible('module')">{{task.module}}</div>
+                            <div *ngIf="columnVisible('priority')">
+                                <button class="st-level" mat-button [matMenuTriggerFor]="level">Medium<mat-icon>
+                                        arrow_drop_down</mat-icon></button>
+                                <mat-menu #level="matMenu" class="ac-drowdown">
+                                    <button mat-menu-item>Low</button>
+                                    <button mat-menu-item>Medium</button>
+                                    <button mat-menu-item>High</button>
+                                </mat-menu>
+                            </div>
+
+                            <div *ngIf="columnVisible('tags')">
+                                <mat-chip-list prosTagsEllipsis [tags]="task.tags"></mat-chip-list>
+                            </div>
+                        </mat-card>
+                    </div>
+
+                    
+
+                    <!-- <div class="split-divider">
+                        <div class="hand-control"></div>
+                    </div> -->
+
+                    <div *ngIf="showTaskDetails" style="display: flex;flex: 1;">
+                        <pros-task-summary [taskId]="selectedTaskId" (closeDetails)="closeDetailsModal($event)"
+                            style="flex: 1;">
+                        </pros-task-summary>
+                    </div>
+                </div>
+            </mat-tab>
+
+            <!-- workflow -->
+            <mat-tab label="In Workflow">
+                <div class="f-row search-action">
+                    <mat-form-field appearance="outline">
+                        <mat-icon matSuffix>search</mat-icon>
+                        <mat-label>Search</mat-label>
+                        <input matInput placeholder="Placeholder">
+                    </mat-form-field>
+                    <span class="col-spacer"></span>
+                    <button mat-stroked-button color="primary" (click)="toggleDynamicFilters()">
+                        <mat-icon matSuffix>filter_list</mat-icon>Filters
+                    </button>
+                    <span class="f-spacer"></span>
+                    <button mat-button color="primary">
+                        <mat-icon>star_border</mat-icon>Save search
+                    </button>
+                    <span class="col-spacer"></span>
+                    <button mat-button color="primary" [matMenuTriggerFor]="menu">Saved searches<mat-icon>
+                            keyboard_arrow_down</mat-icon></button>
+                    <mat-menu #menu="matMenu">
+                        <button mat-menu-item
+                            *ngFor="let savedSearch of savedSearches">{{savedSearch.searchName}}</button>
+                    </mat-menu>
+                </div>
+
+                <div class="f-row action-list">
+                    <p class="mat-label">32 results found for "Search"</p>
+                    <span class="f-spacer"></span>
+                    <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+                </div>
+
+                <!-- filters for workflow -->
+                <pros-filters-dropdown [filters]="filters" *ngIf="dynamicFiltersVisible"
+                    (closeFilterBox)="toggleDynamicFilters()" (updateFilters)="updateFilters($event)">
+                </pros-filters-dropdown>
+
+                <div class="f-row">
+                    <div class="tasklist-mattable">
+                        <mat-card class="container-show list-thead list-card">
+                            <div>Task ID</div>
+                            <div class="f2-cell">Description</div>
+                            <button mat-icon-button class="ac-setting" color="primary">
+                                <mat-icon>settings</mat-icon>
+                            </button>
+                        </mat-card>
+
+                        <mat-card class="mat-elevation-z2 list-card">
+                            <div>Task ID - OTV484</div>
+                            <div class="f2-cell">OTV484 Vendor has been created and sent for your approval.</div>
+                        </mat-card>
+
+                        <mat-card class="mat-elevation-z2 list-card">
+                            <div>Task ID - OTV484</div>
+                            <div class="f2-cell">OTV484 Vendor has been has been sent for approval</div>
+                        </mat-card>
+
+                        <mat-card class="mat-elevation-z2 list-card">
+                            <div>Task ID - MP00000111</div>
+                            <div class="f2-cell">OTV484 Vendor has been created and sent for your approval.</div>
+                        </mat-card>
+
+                        <mat-card class="mat-elevation-z2 list-card">
+                            <div>Task ID - MP00000109</div>
+                            <div class="f2-cell">Vendor has been created and sent for your approval.</div>
+                        </mat-card>
+
+                    </div>
+
+                    <div class="split-divider">
+                        <div class="hand-control"></div>
+                    </div>
+
+                    <div class="summary-matcontainer">Work on progress</div>
+                </div>
+            </mat-tab>
+
+            <mat-tab label="Completed">
+                <div class="tasklist-mattable">
+                    <div class="f-row nullstate">
+                        <button mat-fab disabled>
+                            <mat-icon color="primary">toc</mat-icon>
+                        </button>
+                        <p class="mat-line">0 results found for “Jox”</p>
+                    </div>
+                </div>
+            </mat-tab>
+
+        </mat-tab-group>
+    </mat-card>
+</div>

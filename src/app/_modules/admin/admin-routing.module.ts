@@ -41,17 +41,10 @@ import { AdvancedSettingsComponent } from 'src/app/_modules/admin/_components/ad
 import { IntMappingComponent } from 'src/app/_modules/admin/_components/int-mapping/int-mapping.component';
 import { InterfacesComponent } from 'src/app/_modules/admin/_components/interfaces/interfaces.component';
 import { AdminLayoutComponent } from 'src/app/_modules/admin/_components/admin-layout/admin-layout.component';
-import { TaskListComponent } from './_components/task-list/task-list.component';
-import { ColumnsettingComponent } from './_components/task-list/dummy/columnsetting/columnsetting.component';
-import { FiltersDropdownComponent } from './_components/task-list/dummy/filters-dropdown/filters-dropdown.component';
-import { NameslideToggleComponent } from './_components/task-list/dummy/nameslide-toggle/nameslide-toggle.component';
-import { GeneralInformationTabComponent } from './_components/task-list/dummy/general-information-tab/general-information-tab.component';
-import { HistoryTabComponent } from './_components/task-list/dummy/history-tab/history-tab.component';
-import { SummaryContainerComponent } from './_components/task-list/dummy/summary-container/summary-container.component';
-
 
 const routes: Routes = [
-  { path: '', component: AdminLayoutComponent,
+  {
+    path: '', component: AdminLayoutComponent,
     children: [
       { path: '', redirectTo: 'default', pathMatch: 'full' },
       { path: 'default', component: AdminHomeComponent },
@@ -94,14 +87,6 @@ const routes: Routes = [
       { path: 'advanced', component: AdvancedSettingsComponent },
       { path: 'integration/:scid/mapping', component: IntMappingComponent },
       { path: 'interfaces', component: InterfacesComponent },
-      { path: 'tasklist', component: TaskListComponent},
-      { path: 'dummy/columnsetting', component: ColumnsettingComponent},
-      { path: 'dummy/filters-dropdown', component: FiltersDropdownComponent},
-      { path: 'dummy/summary-container', component: SummaryContainerComponent},
-      { path: 'dummy/general-information-tab', component: GeneralInformationTabComponent},
-      { path: 'dummy/history-tab', component: HistoryTabComponent},
-      { path: 'dummy/nameslide-toggle', component: NameslideToggleComponent}
-
     ]
   },
 
@@ -110,7 +95,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [ RouterModule.forChild(routes) ],
-  exports: [ RouterModule ]
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
 })
 export class AdminRoutingModule { }

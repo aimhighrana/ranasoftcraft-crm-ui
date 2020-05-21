@@ -53,6 +53,13 @@
           position: absolute;
           right: 8px;
         }
+
+        pros-columnsetting {
+          position: absolute;
+          z-index: 3;
+          right: 0;
+          top: 20px;
+        }
       }
 
       .nullstate {

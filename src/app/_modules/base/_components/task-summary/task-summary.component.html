@@ -1,0 +1,31 @@
+<div class="root" >
+    <mat-card class="mat-elevation-z2 summary-container">
+        
+        <div class="tab-action">
+            <a mat-button href="#" target="_blank" color="primary" [routerLink]="['/home/task-details',taskId]"><mat-icon>open_in_new</mat-icon></a>
+            <span class="col-spacer"></span>
+            <button mat-icon-button color="primary" (click)="closeDetailsModal()"><mat-icon>close</mat-icon></button>
+        </div>
+        
+        <mat-tab-group>
+            <mat-tab label="General Information">
+                <mat-card-content class="summary-container">
+                    <pros-general-information-tab></pros-general-information-tab>
+                </mat-card-content>
+                
+            </mat-tab>
+            <mat-tab label="Attachment">
+                <mat-card-content class="summary-container">
+                    Attachment Component Here...
+                </mat-card-content>
+                
+            </mat-tab>
+            <mat-tab label="History">
+                <mat-card-content class="summary-container">
+                  <pros-history-tab></pros-history-tab>
+                </mat-card-content>
+            </mat-tab>
+        </mat-tab-group>
+    </mat-card>
+</div>
+

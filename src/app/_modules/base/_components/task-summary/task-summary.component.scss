@@ -1,0 +1,19 @@
+.root {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  align-content: flex-start;
+
+  .summary-container {
+    width: 100%;
+    margin: 16px;
+
+    .tab-action {
+      position: absolute;
+      right: 0;
+      z-index: 2;
+      margin: 4px;
+    }
+  }
+}

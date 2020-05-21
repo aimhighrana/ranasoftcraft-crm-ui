@@ -1,86 +1,70 @@
 <mat-card class="mat-elevation-z3 filter-slider">
     <mat-card-content>
-        <h4 class="mat-h4 mat-line">Select Module/s 
+        <h4 class="mat-h4 mat-line">Select Module/s
             <div class="f-spacer"></div>
-            <button mat-icon-button>
+            <button mat-icon-button (click)="closeFilter()">
                 <mat-icon>close</mat-icon>
             </button>
         </h4>
         <div class="f-row module-actions">
-            <button mat-flat-button color="primary">All Modules</button>
-            <button mat-stroked-button>Material</button>
-            <button mat-stroked-button>Customer</button>
-            <button mat-stroked-button>Function Location</button>
-            <button mat-stroked-button>Vendor</button>
-            <button mat-stroked-button>Plant</button>
+            <button *ngFor="let module of filters.modules" mat-stroked-button [class.mat-flat-button]="module.selected"
+                color="primary" (click)="setFilter('modules',module.value)" color="primary">{{module.value}}
+            </button>
         </div>
         <div class="f-row fields-action">
-            <mat-form-field appearance="fill">
-                <mat-label>Priority</mat-label>
-                <mat-select>
-                <mat-option value="option">All</mat-option>
-                <mat-option value="option">Low</mat-option>
-                <mat-option value="option">Medium</mat-option>
-                <mat-option value="option">High</mat-option>
-                </mat-select>
-            </mat-form-field>
 
             <mat-form-field appearance="fill">
                 <mat-label>Priority</mat-label>
-                <mat-select>
-                <mat-option value="option">All</mat-option>
-                <mat-option value="option">Low</mat-option>
-                <mat-option value="option">Medium</mat-option>
-                <mat-option value="option">High</mat-option>
+                <mat-select (selectionChange)="setFilter('priorities',$event)">
+                    <mat-option *ngFor="let priority of filters.priorities" [value]="priority">{{priority.value}}
+                    </mat-option>
                 </mat-select>
             </mat-form-field>
 
             <mat-form-field appearance="fill">
                 <mat-label>Status</mat-label>
-                <mat-select>
-                <mat-option value="option">All</mat-option>
-                <mat-option value="option">Complete</mat-option>
-                <mat-option value="option">Progress</mat-option>
-                <mat-option value="option">Delete</mat-option>
+                <mat-select (selectionChange)="setFilter('statuses',$event)">
+                    <mat-option value="option" *ngFor="let status of filters.statuses" [value]="status">{{status.value}}
+                    </mat-option>
                 </mat-select>
             </mat-form-field>
 
             <mat-form-field appearance="fill" class="custom-input">
                 <mat-label>Received Date</mat-label>
-                <input matInput>
+                <input matInput [matDatepicker]="pickerrd" [(ngModel)]="filters.received_date">
+                <mat-datepicker-toggle matSuffix [for]="pickerrd"></mat-datepicker-toggle>
+                <mat-datepicker #pickerrd></mat-datepicker>
             </mat-form-field>
 
             <mat-form-field appearance="fill" class="custom-input">
                 <mat-label>Due Date</mat-label>
-                <input matInput>
+                <input matInput [matDatepicker]="pickerdd" [(ngModel)]="filters.due_date">
+                <mat-datepicker-toggle matSuffix [for]="pickerdd"></mat-datepicker-toggle>
+                <mat-datepicker #pickerdd></mat-datepicker>
             </mat-form-field>
 
             <mat-form-field appearance="fill">
                 <mat-label>Region</mat-label>
-                <mat-select>
-                <mat-option value="option">India</mat-option>
-                <mat-option value="option">Australia</mat-option>
-                <mat-option value="option">UK</mat-option>
-                <mat-option value="option">USA</mat-option>
+                <mat-select (selectionChange)="setFilter('regions',$event)">
+                    <mat-option *ngFor="let region of filters.regions" [value]="region">{{region.value}}</mat-option>
                 </mat-select>
             </mat-form-field>
-            
+
             <mat-form-field appearance="fill">
                 <mat-label>Request By</mat-label>
-                <mat-select>
-                <mat-option value="option">User 1</mat-option>
-                <mat-option value="option">User 2</mat-option>
-                <mat-option value="option">User 3</mat-option>
-                <mat-option value="option">User 4</mat-option>
+                <mat-select (selectionChange)="setFilter('requested_by',$event)">
+                    <mat-option *ngFor="let requestors of filters.requested_by" [value]="requestors">
+                        {{requestors.value}}
+                    </mat-option>
                 </mat-select>
             </mat-form-field>
-            
+
         </div>
-        <a class="mat-line" mat-button>Hide Advanced Filter</a>
+        <a class="mat-line" mat-button (click)="toggleAdvancedFilters()">Hide Advanced Filter</a>
     </mat-card-content>
 
     <mat-card class="mat-elevation-z3 adv-filter-section">
-        <div class="f-row">
+        <div class="f-row" *ngIf="showAdvancedFilters">
             <mat-nav-list class="f-col nav-setting">
                 <a mat-list-item>Generic Request</a>
                 <a mat-list-item>Inheritance Data</a>
@@ -131,8 +115,8 @@
         </div>
         <div class="f-row mat-elevation-z3 filter-action">
             <button mat-stroked-button color="primary">Clear Filter</button>
-            <button mat-flat-button color="primary">Update</button>
+            <button mat-flat-button color="primary" (click)="updateFilter()">Update</button>
         </div>
     </mat-card>
 
-</mat-card> 
+</mat-card>

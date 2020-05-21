@@ -1,0 +1,27 @@
+<mat-card class="mat-elevation-z3 column-setting">
+    <mat-toolbar color="primary">
+        <mat-toolbar-row>
+            <span>Column Settings</span>
+            <span class="f-spacer"></span>
+            <button mat-icon-button (click)="closeSettingColumn()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </mat-toolbar-row>
+    </mat-toolbar>
+    <mat-card-content>
+        <mat-nav-list class="f-col nav-setting">
+            <a mat-list-item>Default</a>
+            <a mat-list-item>High priority</a>
+            <a mat-list-item>Sent from Bob</a>
+            <a mat-list-item><button mat-icon-button color="primary">
+                    <mat-icon>add_circle_outline</mat-icon>
+                </button>New setting</a>
+        </mat-nav-list>
+        <mat-divider [vertical]="true"></mat-divider>
+        <div class="f-col checked-colunms">
+            <mat-checkbox color="primary" *ngFor="let column of tableColumns" [checked]="column.visible"
+                (change)="emitChange(column,$event)">{{column.value | formatTableHeaders }}</mat-checkbox>
+            <button mat-stroked-button color="primary">Save Changes</button>
+        </div>
+    </mat-card-content>
+</mat-card>

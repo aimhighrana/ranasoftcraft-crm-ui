@@ -4,11 +4,14 @@ import { PageNotFoundComponent } from '../shared/_components/page-not-found/page
 import { HomeLayoutComponent } from 'src/app/_modules/home/_components/home-layout/home-layout.component';
 
 const routes: Routes = [
-  { path: '', component: HomeLayoutComponent,
+  {
+    path: '', component: HomeLayoutComponent,
     children: [
       // { path: '', redirectTo: 'schema', pathMatch: 'full' },
       { path: 'schema', loadChildren: () => import('../schema/schema.module').then(m => m.SchemaModule) },
-      { path: 'report', loadChildren: () =>import('../report/report.module').then(m => m.ReportModule)}
+      { path: 'report', loadChildren: () => import('../report/report.module').then(m => m.ReportModule) },
+      // load base component
+      { path: '', loadChildren: () => import('../base/base.module').then(m => m.BaseModule) },
     ]
   },
   // anything not mapped should go to page not found component
@@ -16,7 +19,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [ RouterModule.forChild(routes) ],
-  exports: [ RouterModule ]
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
 })
 export class HomeRoutingModule { }

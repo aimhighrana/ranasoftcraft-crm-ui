@@ -46,14 +46,6 @@ import { NounsCharacteristicsComponent } from 'src/app/_modules/admin/_component
 import { AddbusinessruleComponent } from './_components/module/business-rules/addbusinessrule/addbusinessrule.component';
 import { CreateSchemaComponent } from './_components/module/schema/create-schema/create-schema.component';
 import { MissingruleComponent } from './_components/module/business-rules/missingrule/missingrule.component';
-import { TaskListComponent } from './_components/task-list/task-list.component';
-import { ColumnsettingComponent } from './_components/task-list/dummy/columnsetting/columnsetting.component';
-import { FiltersDropdownComponent } from './_components/task-list/dummy/filters-dropdown/filters-dropdown.component';
-import { NameslideToggleComponent } from './_components/task-list/dummy/nameslide-toggle/nameslide-toggle.component';
-import { GeneralInformationTabComponent } from './_components/task-list/dummy/general-information-tab/general-information-tab.component';
-import { HistoryTabComponent } from './_components/task-list/dummy/history-tab/history-tab.component';
-import { SummaryContainerComponent } from './_components/task-list/dummy/summary-container/summary-container.component';
-
 
 @NgModule({
   declarations: [
@@ -101,13 +93,6 @@ import { SummaryContainerComponent } from './_components/task-list/dummy/summary
     AddbusinessruleComponent,
     CreateSchemaComponent,
     MissingruleComponent,
-    TaskListComponent,
-    ColumnsettingComponent,
-    FiltersDropdownComponent,
-    NameslideToggleComponent,
-    GeneralInformationTabComponent,
-    HistoryTabComponent,
-    SummaryContainerComponent
   ],
   imports: [
     CommonModule,
