@@ -129,11 +129,44 @@ export enum AggregationOperator {
     SUM = 'SUM'
 }
 
+export enum PositionType {
+    LEFT = 'left',
+    RIGHT = 'right',
+    TOP = 'top',
+    BOTTOM = 'bottom'
+}
+
+export enum AlignPosition {
+    LEFT = 'left',
+    RIGHT = 'right',
+    TOP = 'top',
+    BOTTOM = 'bottom',
+    CENTER = 'center',
+    END = 'end',
+    START = 'start'
+}
+
+export enum AnchorAlignPosition {
+    CENTER = 'center',
+    END = 'end',
+    START = 'start',
+}
 
 export class BarChartWidget {
     widgetId: number;
     fieldId: string;
     aggregationOperator: AggregationOperator;
+    showCountOnStack: boolean;
+    showLegend: boolean;
+    orientation: string;
+    legendPosition : PositionType;
+    datalabelPosition: AlignPosition;
+    anchorPosition: AnchorAlignPosition;
+    displayAxisLabel: boolean;
+    xAxisLabel : string;
+    yAxisLabel : string;
+    bgColor : string;
+    borderColor : string;
 }
 
 export class StackBarChartWidget{
@@ -141,6 +174,27 @@ export class StackBarChartWidget{
     groupById: string;
     fieldId : string;
     aggregationOperator:AggregationOperator;
+    showCountOnStack: boolean;
+    showLegend: boolean;
+    orientation: string;
+    legendPosition : PositionType;
+    datalabelPosition: AlignPosition;
+    anchorPosition: AnchorAlignPosition;
+    displayAxisLabel: boolean;
+    xAxisLabel : string;
+    yAxisLabel : string;
+}
+
+export class PieChartWidget {
+    widgetId: number;
+    fieldId : string;
+    aggregationOperator:AggregationOperator;
+    showCountOnStack: boolean;
+    showLegend: boolean;
+    orientation: string;
+    legendPosition : PositionType;
+    datalabelPosition: AlignPosition;
+    anchorPosition: AnchorAlignPosition;
 }
 
 export class Count{

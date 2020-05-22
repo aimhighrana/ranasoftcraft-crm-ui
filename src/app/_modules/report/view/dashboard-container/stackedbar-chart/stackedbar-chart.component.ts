@@ -14,6 +14,7 @@ import { ReportService } from '../../../_service/report.service';
 })
 export class StackedbarChartComponent extends GenericWidgetComponent implements OnInit ,OnChanges, OnDestroy{
 
+  orientation = 'bar';
   stackBarWidget : BehaviorSubject<StackBarChartWidget> = new BehaviorSubject<StackBarChartWidget>(null);
   widgetHeader: WidgetHeader = new WidgetHeader();
   stackBardata : BehaviorSubject<any> = new BehaviorSubject<any>(null);
@@ -31,16 +32,32 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
   barChartOptions: ChartOptions = {
     responsive: true,
     legend: {
-      display: true,
-      position: 'top',
+      display: false,
       onClick: (event: MouseEvent, legendItem: ChartLegendLabelItem) => {
         // call protype of stacked bar chart componenet
         this.legendClick(legendItem);
-      },
+      }
     },
     onClick: (event?: MouseEvent, activeElements?: Array<{}>) =>{
 
       this.stackClickFilter(event, activeElements);
+    },
+    plugins: {
+      datalabels: {
+        display: false
+      }
+    },
+    scales : {
+      xAxes : [
+        {
+          display : true
+        }
+      ],
+      yAxes : [
+        {
+          display : true
+        }
+      ]
     }
   };
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
@@ -69,7 +86,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         this.stachbarAxis = [];
         this.barChartLabels = new Array();
         this.listxAxis2 = new Array();
-        this.barChartData = [{ data: [0,0,0,0,0], label: 'Loading..', stack: 'a' }];
+        this.barChartData = [{ data: [0,0,0,0,0], label: 'Loading..', stack: 'a',  barThickness: 'flex' }];
         this.getstackbarChartData(this.widgetId,this.filterCriteria);
         this.stackBardata.subscribe(data=>{
           if(data && this.barChartData.length=== 0){
@@ -100,15 +117,61 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     this.widgetService.getStackChartMetadata(this.widgetId).subscribe(returnData=>{
       if(returnData){
           this.stackBarWidget.next(returnData);
+         this.getBarConfigurationData();
          }
         }, error=>{
           console.error(`Error : ${error}`);
       });
   }
 
+  public getBarConfigurationData() : void {
+     // bar orientation based on orientation value
+
+     this.orientation = this.stackBarWidget.getValue().orientation;
+
+     // if showLegend flag will be true it show legend on Stacked bar widget
+     if (this.stackBarWidget.getValue().showLegend) {
+       this.barChartOptions.legend= {
+         display: true,
+         position: this.stackBarWidget.getValue().legendPosition,
+         onClick: (event: MouseEvent, legendItem: ChartLegendLabelItem) => {
+          // call protype of stacked bar chart componenet
+          this.legendClick(legendItem);
+        }
+       }
+     }
+     // if showCountOnStack flag will be true it show datalables on stack and position of datalables also configurable
+     if (this.stackBarWidget.getValue().showCountOnStack) {
+       this.barChartOptions.plugins = {
+
+         datalabels: {
+           align:  this.stackBarWidget.getValue().datalabelPosition,
+           anchor: this.stackBarWidget.getValue().anchorPosition
+         }
+       }
+     }
+      // if displayAxisLable flag will be true it show Axis on Stacked bar Widget
+     if (this.stackBarWidget.getValue().displayAxisLabel) {
+       this.barChartOptions.scales = {
+         xAxes: [{
+           scaleLabel: {
+             display : true,
+             labelString: this.stackBarWidget.getValue().xAxisLabel,
+           }
+         }],
+         yAxes: [{
+           scaleLabel: {
+             display : true,
+            labelString: this.stackBarWidget.getValue().yAxisLabel,
+           }
+         }]
+       }
+     }
+
+  }
+
   public getstackbarChartData(widgetId:number,criteria:Criteria[]) : void{
     this.widgetService.getWidgetData(String(widgetId),criteria).subscribe(returnData=>{
-      console.log(returnData);
       this.arrayBuckets =  returnData.aggregations['composite#STACKED_BAR_CHART'].buckets;
        this.dataObj = new Object();
       this.arrayBuckets.forEach(singleBucket=>{
@@ -235,6 +298,8 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         singleobj.stack='a';
         singleobj.backgroundColor=this.getRandomColor();
         singleobj.borderColor=this.getRandomColor();
+
+
         this.barChartData.push(singleobj);
       });
   }

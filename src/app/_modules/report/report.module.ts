@@ -17,6 +17,7 @@ import { DynamicWidgetComponent } from './edit/container/dynamic-widget/dynamic-
 import { ReportListComponent } from './report-list/report-list.component';
 import { HtmlEditorComponent } from './view/dashboard-container/html-editor/html-editor.component';
 import { ImageComponent } from './view/dashboard-container/image/image.component';
+import { PieChartComponent } from './view/dashboard-container/pie-chart/pie-chart.component';
 
 
 @NgModule({
@@ -35,6 +36,7 @@ import { ImageComponent } from './view/dashboard-container/image/image.component
     ReportListComponent,
     HtmlEditorComponent,
     ImageComponent,
+    PieChartComponent,
   ],
   imports: [
     CommonModule,

@@ -28,6 +28,7 @@
     "@angular/router": "9.1.7",
     "@auth0/angular-jwt": "4.1.2",
     "chart.js": "2.9.3",
+    "chartjs-plugin-datalabels": "^0.7.0",
     "chartjs-plugin-zoom": "0.7.7",
     "jwt-decode": "2.2.0",
     "moment": "2.25.3",

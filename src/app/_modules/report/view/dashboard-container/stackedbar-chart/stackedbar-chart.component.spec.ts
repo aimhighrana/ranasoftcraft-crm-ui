@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { StackedbarChartComponent } from './stackedbar-chart.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { StackBarChartWidget, Criteria, WidgetHeader } from '../../../_models/widget';
+import { StackBarChartWidget, Criteria, WidgetHeader, PositionType, AlignPosition, AnchorAlignPosition} from '../../../_models/widget';
 import { BehaviorSubject, of } from 'rxjs';
 import { MatMenuModule } from '@angular/material/menu';
 import { BaseChartDirective, Label } from 'ng2-charts';
@@ -136,6 +136,50 @@ describe('StackedbarChartComponent', () => {
     expect(component.barChartLabels.length).toEqual(0, 'Initial stack chart lebels length should 0');
     expect(component.listxAxis2.length).toEqual(0, 'Initial stack chart Axis2 length should 0');
     expect(component.barChartData[0].data.length).toEqual(5, 'Initial stack chart data  length should 5');
+  }));
+
+  it('should show bar orienation based on orienation value', async(()=> {
+    const test = new StackBarChartWidget();
+    test.orientation = 'bar';
+    component.stackBarWidget.next(test);
+    component.getBarConfigurationData();
+    expect(component.stackBarWidget.getValue().orientation).toBe(component.orientation);
+  }));
+
+  it('should have true value for showLegend flag then set legend position', async(()=> {
+    const test = new StackBarChartWidget();
+    test.showLegend = true;
+    test.legendPosition = PositionType.TOP;
+    component.stackBarWidget.next(test);
+    component.getBarConfigurationData();
+    expect(component.stackBarWidget.getValue().showLegend).toBe(true);
+    expect(component.stackBarWidget.getValue().legendPosition).toBe(component.barChartOptions.legend.position);
+
+  }));
+
+  it('should have true value for showCountOnStack flag then set align and anchor position', async(()=> {
+    const test = new StackBarChartWidget();
+    test.showCountOnStack = true;
+    test.datalabelPosition = AlignPosition.CENTER;
+    test.anchorPosition = AnchorAlignPosition.CENTER;
+    component.stackBarWidget.next(test);
+    component.getBarConfigurationData();
+    expect(component.stackBarWidget.getValue().showCountOnStack).toBe(true);
+    expect(component.stackBarWidget.getValue().datalabelPosition).toBe(component.barChartOptions.plugins.datalabels.align.toString());
+    expect(component.stackBarWidget.getValue().anchorPosition).toBe(component.barChartOptions.plugins.datalabels.anchor.toString());
+
+  }));
+
+  it('should have true value for displayAxisLable flag then set xAxisLable, yAxisLable', async (() => {
+    const test = new StackBarChartWidget();
+    test.displayAxisLabel = true;
+    test.xAxisLabel = 'X';
+    test.yAxisLabel = 'Y';
+    component.stackBarWidget.next(test);
+    component.getBarConfigurationData();
+    expect(component.stackBarWidget.getValue().displayAxisLabel).toBe(true);
+    expect(component.stackBarWidget.getValue().xAxisLabel).toBe(component.barChartOptions.scales.xAxes[0].scaleLabel.labelString);
+    expect(component.stackBarWidget.getValue().yAxisLabel).toBe(component.barChartOptions.scales.yAxes[0].scaleLabel.labelString);
   }));
 
 });

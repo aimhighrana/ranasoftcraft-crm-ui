@@ -7,36 +7,60 @@ import { ReportService } from '../../../_service/report.service';
 import { ChartOptions, ChartTooltipItem, ChartData } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 
+
+
 @Component({
   selector: 'pros-bar-chart',
   templateUrl: './bar-chart.component.html',
   styleUrls: ['./bar-chart.component.scss']
 })
-export class BarChartComponent extends GenericWidgetComponent implements OnInit,OnChanges {
+export class BarChartComponent extends GenericWidgetComponent implements OnInit, OnChanges {
 
   barWidget: BehaviorSubject<BarChartWidget> = new BehaviorSubject<BarChartWidget>(null);
   widgetHeader: WidgetHeader = new WidgetHeader();
-  chartLegend : ChartLegend[] = [];
-  lablels:string[] = [];
+  chartLegend: ChartLegend[] = [];
+  lablels: string[] = [];
   dataSet: string[] = [];
-  @ViewChild(BaseChartDirective) chart:BaseChartDirective;
+  @ViewChild(BaseChartDirective) chart: BaseChartDirective;
+  orientation = 'bar';
 
-  public barChartOptions:ChartOptions = {
+
+  public barChartOptions: ChartOptions = {
     responsive: true,
     tooltips: {
-      callbacks:{
+      callbacks: {
         label: (tooltipItem: ChartTooltipItem, data: ChartData) => {
           return `${tooltipItem.value}`;
         }
       },
       displayColors: false
     },
-    onClick: (event?: MouseEvent, activeElements?: Array<{}>) =>{
+    onClick: (event?: MouseEvent, activeElements?: Array<{}>) => {
       this.stackClickFilter(event, activeElements);
+    },
+    legend: {
+      display: false
+    },
+    plugins: {
+      datalabels: {
+        display: false
+      }
+    },
+    scales : {
+      xAxes : [
+        {
+          display : true
+        }
+      ],
+      yAxes : [
+        {
+          display : true
+        }
+      ]
     }
   };
 
-  public barChartColors:Array<any> = [
+  public barChartColors: Array<any> = [
     {
       backgroundColor: 'rgba(105,159,177,0.2)',
       borderColor: 'rgba(105,159,177,1)',
@@ -47,70 +71,117 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     }
   ];
 
-  public barChartData:any[] = [
+  public barChartData: any[] = [
     {
       label: 'Loding..',
       barThickness: 80,
-      data: [0,0,0,0,0,0,0]
+      data: [0, 0, 0, 0, 0, 0, 0]
     },
   ];
 
   constructor(
-    private widgetService : WidgetService,
+    private widgetService: WidgetService,
     private reportService: ReportService
   ) {
     super();
   }
 
-  ngOnChanges():void{
-      this.lablels = [];
-      this.chartLegend = [];
-      this.barWidget.next(this.barWidget.getValue());
+  ngOnChanges(): void {
+    this.lablels = [];
+    this.chartLegend = [];
+    this.barWidget.next(this.barWidget.getValue());
   }
 
   ngOnInit(): void {
     this.getBarChartMetadata();
     this.getHeaderMetaData();
-    this.barWidget.subscribe(res=>{
-      if(res) {
-        this.getBarChartData(this.widgetId,this.filterCriteria);
+    this.barWidget.subscribe(res => {
+      if (res) {
+        this.getBarChartData(this.widgetId, this.filterCriteria);
       }
     });
   }
 
-
-  public getHeaderMetaData():void{
-    this.widgetService.getHeaderMetaData(this.widgetId).subscribe(returnData=>{
+  public getHeaderMetaData(): void {
+    this.widgetService.getHeaderMetaData(this.widgetId).subscribe(returnData => {
       this.widgetHeader = returnData;
-    },error=> console.error(`Error : ${error}`));
+    }, error => console.error(`Error : ${error}`));
   }
 
-  public getBarChartMetadata():void{
-    this.widgetService.getBarChartMetadata(this.widgetId).subscribe(returndata=>{
+  public getBarChartMetadata(): void {
+    this.widgetService.getBarChartMetadata(this.widgetId).subscribe(returndata => {
       this.barWidget.next(returndata);
-    }, error=>{
+      this.getBarConfigurationData();
+    }, error => {
       console.error(`Error : ${error}`);
     });
   }
 
-  public getBarChartData(widgetId: number, critria: Criteria[]) : void{
-    this.widgetService.getWidgetData(String(widgetId),critria).subscribe(returndata=>{
+  public getBarConfigurationData(): void {
+      // Bar orientation
+      // this.orientation = this.barWidget.getValue().orientation;
+
+      // if showLegend flag will be true it show legend on Bar widget
+        if (this.barWidget.getValue().showLegend) {
+          this.barChartOptions.legend = {
+            display: true,
+            position: this.barWidget.getValue().legendPosition
+          }
+        }
+        // if showCountOnStack flag will be true it show datalables on stack and position of datalables also configurable
+        if (this.barWidget.getValue().showCountOnStack) {
+          this.barChartOptions.plugins = {
+            datalabels: {
+              align: this.barWidget.getValue().datalabelPosition,
+              anchor: this.barWidget.getValue().anchorPosition
+            }
+          }
+        }
+
+        // if displayAxisLable flag will be true it show Axis on Bar Widget
+        if (this.barWidget.getValue().displayAxisLabel) {
+          this.barChartOptions.scales = {
+            xAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: this.barWidget.getValue().xAxisLabel
+              }
+            }],
+            yAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: this.barWidget.getValue().yAxisLabel
+              }
+            }]
+          }
+        }
+
+        // Bar widget color
+      this.barChartColors = [{
+        backgroundColor: '#8CF5A9',
+        borderColor: '#8CF5A9',
+      }];
+   }
+
+  public getBarChartData(widgetId: number, critria: Criteria[]): void {
+    this.widgetService.getWidgetData(String(widgetId), critria).subscribe(returndata => {
       const arrayBuckets = returndata.aggregations['sterms#BAR_CHART'].buckets;
-       this.dataSet= [];
-      arrayBuckets.forEach(bucket=>{
+      this.dataSet = [];
+      arrayBuckets.forEach(bucket => {
         this.lablels.push(bucket.key);
         this.dataSet.push(bucket.doc_count);
       });
-       // update barchartLabels
-      if(this.chartLegend.length === 0){
+      // update barchartLabels
+      if (this.chartLegend.length === 0) {
         this.getFieldsMetadaDesc(this.lablels, this.barWidget.getValue().fieldId);
-      }else{
+      } else {
         this.lablels = this.chartLegend.map(map => map.text);
       }
+
       this.barChartData = [{
-          label: this.widgetHeader.widgetName,
-          barThickness: 80,
-          data: this.dataSet
+        label: this.widgetHeader.widgetName,
+        barThickness: 80,
+        data: this.dataSet
       }];
     });
   }
@@ -120,14 +191,14 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
    *
    */
   getFieldsMetadaDesc(code: string[], fieldId: string) {
-    this.reportService.getMetaDataFldByFldIds(fieldId, code).subscribe(res=>{
-      this.lablels.forEach(cod=>{
-        const hasData = res.filter(fill=> fill.CODE === cod);
+    this.reportService.getMetaDataFldByFldIds(fieldId, code).subscribe(res => {
+      this.lablels.forEach(cod => {
+        const hasData = res.filter(fill => fill.CODE === cod);
         let chartLegend: ChartLegend;
-        if(hasData && hasData.length) {
-          chartLegend = {text: hasData[0].TEXT,code: hasData[0].CODE,legendIndex: this.chartLegend.length};
+        if (hasData && hasData.length) {
+          chartLegend = { text: hasData[0].TEXT, code: hasData[0].CODE, legendIndex: this.chartLegend.length };
         } else {
-          chartLegend = {text: cod,code:cod,legendIndex: this.chartLegend.length};
+          chartLegend = { text: cod, code: cod, legendIndex: this.chartLegend.length };
         }
         this.chartLegend.push(chartLegend);
       });
@@ -143,51 +214,51 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
       const fieldId = this.barWidget.getValue().fieldId;
       let appliedFilters = this.filterCriteria.filter(fill => fill.fieldId === fieldId);
       this.removeOldFilterCriteria(appliedFilters);
-        if(appliedFilters.length >0) {
-          const cri = appliedFilters.filter(fill => fill.conditionFieldValue === clickedLagend.code);
-          if(cri.length ===0) {
-            const critera1: Criteria = new Criteria();
-            critera1.fieldId = fieldId;
-            critera1.conditionFieldId = fieldId;
-            critera1.conditionFieldValue = clickedLagend.code;
-            critera1.blockType = BlockType.COND;
-            critera1.conditionOperator = ConditionOperator.EQUAL;
-            appliedFilters.push(critera1);
-          }
-        } else {
-          appliedFilters = [];
+      if (appliedFilters.length > 0) {
+        const cri = appliedFilters.filter(fill => fill.conditionFieldValue === clickedLagend.code);
+        if (cri.length === 0) {
           const critera1: Criteria = new Criteria();
           critera1.fieldId = fieldId;
-          critera1.conditionFieldId = fieldId
+          critera1.conditionFieldId = fieldId;
           critera1.conditionFieldValue = clickedLagend.code;
           critera1.blockType = BlockType.COND;
           critera1.conditionOperator = ConditionOperator.EQUAL;
           appliedFilters.push(critera1);
         }
-        appliedFilters.forEach(app => this.filterCriteria.push(app));
-        this.emitEvtFilterCriteria(this.filterCriteria);
+      } else {
+        appliedFilters = [];
+        const critera1: Criteria = new Criteria();
+        critera1.fieldId = fieldId;
+        critera1.conditionFieldId = fieldId
+        critera1.conditionFieldValue = clickedLagend.code;
+        critera1.blockType = BlockType.COND;
+        critera1.conditionOperator = ConditionOperator.EQUAL;
+        appliedFilters.push(critera1);
+      }
+      appliedFilters.forEach(app => this.filterCriteria.push(app));
+      this.emitEvtFilterCriteria(this.filterCriteria);
     }
   }
 
-/*
-* download chart data as CSV
-*/
-  downloadCSV():void{
+  /*
+  * download chart data as CSV
+  */
+  downloadCSV(): void {
     const excelData = [];
-    for(let i=0;i<this.lablels.length;i++){
+    for (let i = 0; i < this.lablels.length; i++) {
       const obj = {} as any;
-      obj[this.barWidget.getValue().fieldId] = this.lablels[i]+'';
-      obj.Value = this.dataSet[i]+'';
+      obj[this.barWidget.getValue().fieldId] = this.lablels[i] + '';
+      obj.Value = this.dataSet[i] + '';
       excelData.push(obj);
     }
-  this.widgetService.downloadCSV('Bar-Chart',excelData);
+    this.widgetService.downloadCSV('Bar-Chart', excelData);
   }
 
-/*
-* download chart as image
-*/
-  downloadImage(){
-    this.widgetService.downloadImage(this.chart.toBase64Image(),'Bar-Chart.png');
+  /*
+  * download chart as image
+  */
+  downloadImage() {
+    this.widgetService.downloadImage(this.chart.toBase64Image(), 'Bar-Chart.png');
   }
 
   /**
@@ -195,7 +266,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
    * selectedOptions as parameter
    */
   removeOldFilterCriteria(selectedOptions: Criteria[]) {
-    selectedOptions.forEach(option=>{
+    selectedOptions.forEach(option => {
       this.filterCriteria.splice(this.filterCriteria.indexOf(option), 1);
     });
   }
