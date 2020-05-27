@@ -137,7 +137,8 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
 
   stackClickFilter(event?: MouseEvent, activeElements?: Array<any>) {
     if(activeElements && activeElements.length) {
-      const clickedIndex = (activeElements[0])._datasetIndex;
+      const option = this.chart.chart.getElementAtEvent(event) as any;
+      const clickedIndex = (option[0])._index;
       const clickedLagend = this.chartLegend[clickedIndex];
       const fieldId = this.barWidget.getValue().fieldId;
       let appliedFilters = this.filterCriteria.filter(fill => fill.fieldId === fieldId);

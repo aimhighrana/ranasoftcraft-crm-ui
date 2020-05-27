@@ -20,6 +20,9 @@ export class Widget {
     imageUrl: string;
     objectType: string;
 
+    chartProperties: ChartProperties;
+    defaultFilters: Criteria[];
+
 }
 
 export enum WidgetType {
@@ -52,6 +55,7 @@ export class Criteria {
     conditionOperator: ConditionOperator;
     conditionFieldStartValue: string;
     conditionFieldEndValue: string;
+    udrid: string;
 }
 export enum BlockType {
     AND = 'AND',
@@ -121,7 +125,8 @@ export enum AggregationOperator {
     GROUPBY ='GROUPBY',
     COUNT='COUNT',
     MIN='MIN',
-    MAX='MAX'
+    MAX='MAX',
+    SUM = 'SUM'
 }
 
 
@@ -226,4 +231,36 @@ export class WidgetImageModel {
     imagesno: string;
     imageUrl: string;
     imageName:string;
-    }
+}
+
+export enum ChartType {
+    BAR = 'BAR',
+    PIE = 'PIE'
+}
+
+export enum Orientation {
+    VERTICAL = 'VERTICAL',
+    HORIZONTAL = 'HORIZONTAL'
+}
+
+export enum DatalabelsPosition {
+    center = 'center',
+    start = 'start',
+    end = 'end'
+}
+
+export enum LegendPosition {
+    top = 'top',
+    left = 'left',
+    bottom = 'bottom',
+    right = 'right'
+}
+
+export class ChartProperties {
+    chartType: ChartType;
+    orientation: Orientation;
+    isEnableDatalabels: boolean;
+    datalabelsPosition: DatalabelsPosition;
+    isEnableLegend: boolean;
+    legendPosition: LegendPosition;
+}

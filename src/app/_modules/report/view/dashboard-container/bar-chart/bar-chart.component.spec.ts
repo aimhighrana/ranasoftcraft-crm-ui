@@ -6,11 +6,12 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { BarChartWidget } from '../../../_models/widget';
 import { BehaviorSubject } from 'rxjs';
 import { MatMenuModule } from '@angular/material/menu';
+import { BaseChartDirective } from 'ng2-charts';
 
 describe('BarChartComponent', () => {
   let component: BarChartComponent;
   let fixture: ComponentFixture<BarChartComponent>;
-
+  let htmlnative: HTMLElement;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ BarChartComponent ],
@@ -22,7 +23,7 @@ describe('BarChartComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(BarChartComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    htmlnative = fixture.nativeElement;
   });
 
   it('should create', () => {
@@ -43,6 +44,12 @@ describe('BarChartComponent', () => {
     chartData.fieldId = 'MATL_TYPE';
     component.barWidget = new BehaviorSubject<BarChartWidget>(chartData);
     component.filterCriteria = [];
+
+    // mock chart
+    const eleRef = htmlnative.getElementsByTagName('canvas')[0];
+    const baseChart = new BaseChartDirective(eleRef[0], null);
+    baseChart.chart = {canvas: eleRef, getElementAtEvent:(e: any) => [{_datasetIndex:0, _index: 0} as any] } as Chart;
+    component.chart = baseChart;
     component.stackClickFilter(null, array);
     // after apply filter criteria then filtercriteria length should be 1
     expect(component.filterCriteria.length).toEqual(1, 'after apply filter criteria then filtercriteria length should be 1');

@@ -2,18 +2,19 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ContainerComponent } from './container.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule, FormArray, FormGroup } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Widget, WidgetTableModel } from '../../_models/widget';
 import { MetadataModel } from 'src/app/_models/schema/schemadetailstable';
 import { BreadcrumbComponent } from 'src/app/_modules/shared/_components/breadcrumb/breadcrumb.component';
+import { SvgIconComponent } from '@modules/shared/_components/svg-icon/svg-icon.component';
 
 describe('ContainerComponent', () => {
   let component: ContainerComponent;
   let fixture: ComponentFixture<ContainerComponent>;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ContainerComponent, BreadcrumbComponent ],
+      declarations: [ ContainerComponent, BreadcrumbComponent, SvgIconComponent ],
       imports:[AppMaterialModuleForSpec, ReactiveFormsModule, FormsModule, RouterTestingModule]
     })
     .compileComponents();
@@ -84,6 +85,28 @@ describe('ContainerComponent', () => {
     const initialFrmGrp = {widgetName: '', width: '', height: '', field: '', aggregrationOp: '', filterType: '', isMultiSelect: false, groupById: '', objectType: '', imageUrl: '', htmlText: '', imagesno: '', imageName: ''};
     expect(component.subscriptions.length).toEqual(4, 'Size should be 4');
     expect(component.styleCtrlGrp.value).toEqual(initialFrmGrp, 'Initial form control value should be empty');
+  }));
+
+  it(`addMoreDefaultFilter(), should add controles to formArray`, async(()=>{
+    // initialize form array
+    component.defaultFilterCtrlGrp = new FormGroup({filters: new FormArray([])});
+    const selStyleWid = new Widget();
+    selStyleWid.widgetId = '274774721';
+    component.selStyleWid = selStyleWid;
+    // call actual method
+    component.addMoreDefaultFilter();
+    const frmArray = component.defaultFilterCtrlGrp.controls.filters as FormArray;
+    expect(frmArray.length).toEqual(1, `Check length of defaultFilterCtrlGrp should be 1`);
+  }));
+
+  it('removeFilter(), should remove item from array ', async(()=>{
+    // initialize form array
+    component.defaultFilterCtrlGrp = new FormGroup({filters: new FormArray([new FormGroup({})])});
+
+    // call actual method
+    component.removeFilter(0);
+    const frmArray = component.defaultFilterCtrlGrp.controls.filters as FormArray;
+    expect(frmArray.length).toEqual(0, `After remove from array list  length should be 0`);
   }));
 
 

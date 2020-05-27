@@ -5,8 +5,6 @@ import { ReportRoutingModule } from './report-routing.module';
 import { DashboardComponent } from './view/dashboard/dashboard.component';
 import { SharedModule } from '../shared/shared.module';
 import { ContainerComponent } from './edit/container/container.component';
-import { Widget1Component } from './edit/container/widget1/widget1.component';
-import { WidgetlistComponent } from './edit/container/widgetlist/widgetlist.component';
 import { WidgetstyleControlComponent } from './edit/container/widgetstyle-control/widgetstyle-control.component';
 import { DashboardContainerComponent } from './view/dashboard-container/dashboard-container.component';
 import { BarChartComponent } from './view/dashboard-container/bar-chart/bar-chart.component';
@@ -25,8 +23,6 @@ import { ImageComponent } from './view/dashboard-container/image/image.component
   declarations: [
     DashboardComponent,
     ContainerComponent,
-    Widget1Component,
-    WidgetlistComponent,
     WidgetstyleControlComponent,
     DashboardContainerComponent,
     BarChartComponent,

@@ -1,9 +1,9 @@
 import { Component, OnInit, AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { Widget, WidgetType, ReportDashboardReq, WidgetTableModel } from '../../_models/widget';
+import { Widget, WidgetType, ReportDashboardReq, WidgetTableModel, ChartType, Orientation, DatalabelsPosition, LegendPosition, BlockType, ConditionOperator, Criteria } from '../../_models/widget';
 import { Breadcrumb } from 'src/app/_models/breadcrumb';
 import { Observable, of, BehaviorSubject, Subscription } from 'rxjs';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { ReportService } from '../../_service/report.service';
 import { MetadataModel, MetadataModeleResponse } from 'src/app/_models/schema/schemadetailstable';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -46,6 +46,10 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   chooseColumns: WidgetTableModel[] = [];
   dataSets: ObjectTypeResponse[];
   dataSetOb: Observable<ObjectTypeResponse[]> = of([]);
+
+  chartPropCtrlGrp: FormGroup;
+
+  defaultFilterCtrlGrp: FormGroup;
 
   /**
    * All the http or normal subscription will store in this array
@@ -106,6 +110,19 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       imageName: ['']
     });
 
+    this.chartPropCtrlGrp = this.formBuilder.group({
+      chartType:[ChartType.BAR],
+      orientation:[Orientation.VERTICAL],
+      isEnableDatalabels:[false],
+      datalabelsPosition:[DatalabelsPosition.center],
+      isEnableLegend:[false],
+      legendPosition:[LegendPosition.top]
+    });
+
+    this.defaultFilterCtrlGrp = this.formBuilder.group({
+      filters: this.formBuilder.array([])
+    });
+
     this.styleCtrlGrp.valueChanges.subscribe(latestVal=>{
       if(this.selStyleWid) {
         const changedWidget = this.selStyleWid;
@@ -125,6 +142,23 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         this.preapreNewWidgetPosition(changedWidget);
       }
     });
+
+    // detect value change on chart properties
+    this.chartPropCtrlGrp.valueChanges.subscribe(latestProp=>{
+      if(latestProp) {
+        this.selStyleWid.chartProperties = latestProp;
+        this.preapreNewWidgetPosition(this.selStyleWid);
+      }
+    });
+
+    // detect value change on default filters
+    this.defaultFilterCtrlGrp.valueChanges.subscribe(latestProp=>{
+      if(latestProp && latestProp.hasOwnProperty('filters')) {
+        this.selStyleWid.defaultFilters = latestProp.filters;
+        this.preapreNewWidgetPosition(this.selStyleWid);
+      }
+    });
+
     const styleSub = this.styleCtrlGrp.get('objectType').valueChanges.subscribe(fillData=>{
       if(fillData && typeof fillData === 'string') {
         if(fillData !== this.styleCtrlGrp.value.objectType) {
@@ -200,6 +234,15 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     if((boxX >=0 && (boxX * this.eachBoxSize) <= this.screenWidth) && (boxY >= 0)) {
       dropableWidget.x = boxX;
       dropableWidget.y = boxY;
+
+      // add chart properties on widget list
+      if(dropableWidget.widgetType === WidgetType.BAR_CHART || dropableWidget.widgetType === WidgetType.STACKED_BAR_CHART) {
+        dropableWidget.chartProperties = {
+          chartType:ChartType.BAR, orientation:Orientation.VERTICAL, isEnableDatalabels:false,
+          datalabelsPosition:DatalabelsPosition.center, isEnableLegend:false, legendPosition:LegendPosition.top
+        }
+      }
+      dropableWidget.defaultFilters = [];
       this.preapreNewWidgetPosition(dropableWidget);
     }
   }
@@ -248,6 +291,31 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           imagesno: data.imagesno ? data.imagesno : '',
           imageName: data.imageName ? data.imageName : ''
         });
+
+        // set value to properties frm ctrl
+        if(data.chartProperties) {
+          this.chartPropCtrlGrp.setValue(data.chartProperties);
+        } else {
+          this.chartPropCtrlGrp.setValue({ chartType:ChartType.BAR, orientation:Orientation.VERTICAL, isEnableDatalabels:false,
+            datalabelsPosition:DatalabelsPosition.center, isEnableLegend:false, legendPosition:LegendPosition.top});
+        }
+
+        // add default filters
+        if(data.defaultFilters) {
+          const frmArray =  this.defaultFilterCtrlGrp.controls.filters as FormArray;
+          const defFill: Criteria[] = [];
+          data.defaultFilters.forEach(each=> defFill.push(each));
+          frmArray.clear();
+          defFill.forEach(dat=>{
+            frmArray.push(this.formBuilder.group({
+              conditionFieldId: [dat.conditionFieldId],
+              conditionFieldValue:[dat.conditionFieldValue],
+              blockType:[BlockType.COND],
+              conditionOperator:[ConditionOperator.EQUAL],
+              udrid:[data.widgetId ? data.widgetId : '']
+            }));
+          });
+        }
       }
       this.showProperty = true;
       this.chooseColumns = data.widgetTableFields ? data.widgetTableFields : [];
@@ -294,6 +362,30 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.styleCtrlGrp.get('imageName').setValue('');
       this.styleCtrlGrp.get('imagesno').setValue('');
     }
+  }
+
+  /**
+   * Use to add more default filters
+   * Now blockType and conditionalOperator is static
+   */
+  addMoreDefaultFilter() {
+    const frmArray =  this.defaultFilterCtrlGrp.controls.filters as FormArray;
+    frmArray.push(this.formBuilder.group({
+      conditionFieldId: [''],
+      conditionFieldValue:[''],
+      blockType:[BlockType.COND],
+      conditionOperator:[ConditionOperator.EQUAL],
+      udrid:[this.selStyleWid.widgetId ? this.selStyleWid.widgetId : '']
+    }));
+  }
+
+  /**
+   * Remove specific filter from filters
+   * @param idx index of array element that use for remove from FormArray
+   */
+  removeFilter(idx: number) {
+    const frmArray =  this.defaultFilterCtrlGrp.controls.filters as FormArray;
+    frmArray.removeAt(idx);
   }
 
   createUpdateReport() {
