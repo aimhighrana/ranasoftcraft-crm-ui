@@ -95,24 +95,24 @@ describe('PieChartComponent', () => {
 
   it('should have true value for showLegend flag then set legend position', async(()=> {
     const test = new PieChartWidget();
-    test.showLegend = true;
+    test.isEnableLegend = true;
     test.legendPosition = PositionType.TOP;
     component.pieWidget.next(test);
     component.getPieConfigurationData();
-    expect(component.pieWidget.getValue().showLegend).toBe(true);
+    expect(component.pieWidget.getValue().isEnableLegend).toBe(true);
     expect(component.pieWidget.getValue().legendPosition).toBe(component.pieChartOptions.legend.position);
 
   }));
 
   it('should have true value for showCountOnStack flag then set align and anchor position', async(()=> {
     const test = new PieChartWidget();
-    test.showCountOnStack = true;
-    test.datalabelPosition = AlignPosition.CENTER;
+    test.isEnableDatalabels = true;
+    test.datalabelsPosition = AlignPosition.CENTER;
     test.anchorPosition = AnchorAlignPosition.CENTER;
     component.pieWidget.next(test);
     component.getPieConfigurationData();
-    expect(component.pieWidget.getValue().showCountOnStack).toBe(true);
-    expect(component.pieWidget.getValue().datalabelPosition).toBe(component.pieChartOptions.plugins.datalabels.align.toString());
+    expect(component.pieWidget.getValue().isEnableDatalabels).toBe(true);
+    expect(component.pieWidget.getValue().datalabelsPosition).toBe(component.pieChartOptions.plugins.datalabels.align.toString());
 
   }));
 

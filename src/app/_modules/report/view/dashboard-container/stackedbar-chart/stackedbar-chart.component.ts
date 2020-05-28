@@ -127,10 +127,10 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
   public getBarConfigurationData() : void {
      // bar orientation based on orientation value
 
-     this.orientation = this.stackBarWidget.getValue().orientation;
+     this.orientation = this.stackBarWidget.getValue().orientation === 'VERTICAL' ? 'bar' : 'horizontalBar';
 
      // if showLegend flag will be true it show legend on Stacked bar widget
-     if (this.stackBarWidget.getValue().showLegend) {
+     if (this.stackBarWidget.getValue().isEnableLegend) {
        this.barChartOptions.legend= {
          display: true,
          position: this.stackBarWidget.getValue().legendPosition,
@@ -141,12 +141,12 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
        }
      }
      // if showCountOnStack flag will be true it show datalables on stack and position of datalables also configurable
-     if (this.stackBarWidget.getValue().showCountOnStack) {
+     if (this.stackBarWidget.getValue().isEnableDatalabels) {
        this.barChartOptions.plugins = {
 
          datalabels: {
-           align:  this.stackBarWidget.getValue().datalabelPosition,
-           anchor: this.stackBarWidget.getValue().anchorPosition
+           align:  this.stackBarWidget.getValue().datalabelsPosition,
+           anchor: this.stackBarWidget.getValue().datalabelsPosition
          }
        }
      }

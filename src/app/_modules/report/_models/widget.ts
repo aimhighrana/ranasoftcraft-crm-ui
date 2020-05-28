@@ -156,17 +156,21 @@ export class BarChartWidget {
     widgetId: number;
     fieldId: string;
     aggregationOperator: AggregationOperator;
-    showCountOnStack: boolean;
-    showLegend: boolean;
-    orientation: string;
+    isEnableDatalabels: boolean;
+    isEnableLegend: boolean;
+    orientation: Orientation;
     legendPosition : PositionType;
-    datalabelPosition: AlignPosition;
+    datalabelsPosition: AlignPosition;
     anchorPosition: AnchorAlignPosition;
     displayAxisLabel: boolean;
     xAxisLabel : string;
     yAxisLabel : string;
     bgColor : string;
     borderColor : string;
+    chartType: ChartType;
+
+
+
 }
 
 export class StackBarChartWidget{
@@ -174,26 +178,26 @@ export class StackBarChartWidget{
     groupById: string;
     fieldId : string;
     aggregationOperator:AggregationOperator;
-    showCountOnStack: boolean;
-    showLegend: boolean;
-    orientation: string;
+    isEnableDatalabels: boolean;
+    isEnableLegend: boolean;
     legendPosition : PositionType;
-    datalabelPosition: AlignPosition;
+    datalabelsPosition: AlignPosition;
     anchorPosition: AnchorAlignPosition;
     displayAxisLabel: boolean;
     xAxisLabel : string;
     yAxisLabel : string;
+    orientation: Orientation;
 }
 
 export class PieChartWidget {
     widgetId: number;
     fieldId : string;
     aggregationOperator:AggregationOperator;
-    showCountOnStack: boolean;
-    showLegend: boolean;
+    isEnableDatalabels: boolean;
+    isEnableLegend: boolean;
     orientation: string;
     legendPosition : PositionType;
-    datalabelPosition: AlignPosition;
+    datalabelsPosition: AlignPosition;
     anchorPosition: AnchorAlignPosition;
 }
 

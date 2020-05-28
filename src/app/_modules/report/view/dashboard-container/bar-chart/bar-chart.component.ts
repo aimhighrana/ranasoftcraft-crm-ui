@@ -119,20 +119,20 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
 
   public getBarConfigurationData(): void {
       // Bar orientation
-      // this.orientation = this.barWidget.getValue().orientation;
+      this.orientation = this.barWidget.getValue().orientation === 'VERTICAL' ? 'bar' : 'horizontalBar';
 
       // if showLegend flag will be true it show legend on Bar widget
-        if (this.barWidget.getValue().showLegend) {
+        if (this.barWidget.getValue().isEnableLegend) {
           this.barChartOptions.legend = {
             display: true,
             position: this.barWidget.getValue().legendPosition
           }
         }
         // if showCountOnStack flag will be true it show datalables on stack and position of datalables also configurable
-        if (this.barWidget.getValue().showCountOnStack) {
+        if (this.barWidget.getValue().isEnableDatalabels) {
           this.barChartOptions.plugins = {
             datalabels: {
-              align: this.barWidget.getValue().datalabelPosition,
+              align: this.barWidget.getValue().datalabelsPosition,
               anchor: this.barWidget.getValue().anchorPosition
             }
           }

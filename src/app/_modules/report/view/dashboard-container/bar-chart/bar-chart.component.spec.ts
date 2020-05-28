@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BarChartComponent } from './bar-chart.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { BarChartWidget } from '../../../_models/widget';
+import { BarChartWidget, Orientation } from '../../../_models/widget';
 import { BehaviorSubject } from 'rxjs';
 import { MatMenuModule } from '@angular/material/menu';
 import { BaseChartDirective } from 'ng2-charts';
@@ -58,32 +58,32 @@ describe('BarChartComponent', () => {
 
   it('should show bar orienation based on orienation value', async( () => {
     const test = new BarChartWidget();
-    test.orientation = 'bar';
+    test.orientation = Orientation.HORIZONTAL;
     test.legendPosition = PositionType.TOP;
     component.barWidget.next(test);
     component.getBarConfigurationData();
-    expect(component.barWidget.getValue().orientation).toBe(component.orientation);
+    expect('horizontalBar').toBe(component.orientation);
   }));
 
   it('should have true value for showLegend flag then set legend position', async ( () => {
     const test = new BarChartWidget();
-    test.showLegend = true;
+    test.isEnableLegend = true;
     test.legendPosition = PositionType.TOP;
     component.barWidget.next(test);
     component.getBarConfigurationData();
-    expect(component.barWidget.getValue().showLegend).toBe(component.barChartOptions.legend.display);
+    expect(component.barWidget.getValue().isEnableLegend).toBe(component.barChartOptions.legend.display);
     expect(component.barWidget.getValue().legendPosition).toBe(component.barChartOptions.legend.position);
   }));
 
   it('should have true value for showCountOnStack flag then set align and anchor position', async ( () => {
     const test = new BarChartWidget();
-    test.showCountOnStack = true;
-    test.datalabelPosition = AlignPosition.CENTER;
+    test.isEnableDatalabels = true;
+    test.datalabelsPosition = AlignPosition.CENTER;
     test.anchorPosition = AnchorAlignPosition.CENTER
     component.barWidget.next(test);
     component.getBarConfigurationData();
-    expect(component.barWidget.getValue().showCountOnStack).toBe(true);
-    expect(component.barWidget.getValue().datalabelPosition).toBe(component.barChartOptions.plugins.datalabels.align.toString());
+    expect(component.barWidget.getValue().isEnableDatalabels).toBe(true);
+    expect(component.barWidget.getValue().datalabelsPosition).toBe(component.barChartOptions.plugins.datalabels.align.toString());
     expect(component.barWidget.getValue().anchorPosition).toBe(component.barChartOptions.plugins.datalabels.anchor.toString());
   }));
 

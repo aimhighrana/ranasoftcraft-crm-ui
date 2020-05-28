@@ -120,12 +120,9 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
   }
 
   public getPieConfigurationData() : void {
-    // bar orientation based on orientation value
-
-    this.orientation = this.pieWidget.getValue().orientation;
 
     // if showLegend flag will be true it show legend on Stacked bar widget
-    if (this.pieWidget.getValue().showLegend) {
+    if (this.pieWidget.getValue().isEnableLegend) {
       this.pieChartOptions.legend= {
         display: true,
         position: this.pieWidget.getValue().legendPosition,
@@ -136,10 +133,10 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
     }}
 
    // if showCountOnStack flag will be true it show datalables on stack and position of datalables also configurable
-    if (this.pieWidget.getValue().showCountOnStack) {
+    if (this.pieWidget.getValue().isEnableDatalabels) {
       this.pieChartOptions.plugins = {
         datalabels: {
-          align:  this.pieWidget.getValue().datalabelPosition,
+          align:  this.pieWidget.getValue().datalabelsPosition,
           anchor: this.pieWidget.getValue().anchorPosition,
         }
       }
