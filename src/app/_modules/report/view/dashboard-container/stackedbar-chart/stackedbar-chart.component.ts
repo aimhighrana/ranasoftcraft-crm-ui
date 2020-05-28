@@ -6,6 +6,7 @@ import { GenericWidgetComponent } from '../../generic-widget/generic-widget.comp
 import { BehaviorSubject } from 'rxjs';
 import { StackBarChartWidget, Criteria, WidgetHeader, BlockType, ConditionOperator, ChartLegend } from '../../../_models/widget';
 import { ReportService } from '../../../_service/report.service';
+import   ChartDataLables from 'chartjs-plugin-datalabels';
 
 @Component({
   selector: 'pros-stackedbar-chart',
@@ -143,10 +144,10 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
      // if showCountOnStack flag will be true it show datalables on stack and position of datalables also configurable
      if (this.stackBarWidget.getValue().isEnableDatalabels) {
        this.barChartOptions.plugins = {
-
+        ChartDataLables,
          datalabels: {
            align:  this.stackBarWidget.getValue().datalabelsPosition,
-           anchor: this.stackBarWidget.getValue().datalabelsPosition
+           anchor: this.stackBarWidget.getValue().anchorPosition
          }
        }
      }

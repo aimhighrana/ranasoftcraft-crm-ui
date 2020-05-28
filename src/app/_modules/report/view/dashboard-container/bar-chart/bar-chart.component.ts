@@ -6,7 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 import { ReportService } from '../../../_service/report.service';
 import { ChartOptions, ChartTooltipItem, ChartData } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
-
+import   ChartDataLables from 'chartjs-plugin-datalabels';
 
 
 @Component({
@@ -131,6 +131,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
         // if showCountOnStack flag will be true it show datalables on stack and position of datalables also configurable
         if (this.barWidget.getValue().isEnableDatalabels) {
           this.barChartOptions.plugins = {
+            ChartDataLables,
             datalabels: {
               align: this.barWidget.getValue().datalabelsPosition,
               anchor: this.barWidget.getValue().anchorPosition

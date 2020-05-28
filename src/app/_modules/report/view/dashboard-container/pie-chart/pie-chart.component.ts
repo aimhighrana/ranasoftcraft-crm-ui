@@ -6,7 +6,7 @@ import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { ReportService } from '../../../_service/report.service';
 import { ChartOptions, ChartTooltipItem, ChartData, ChartLegendLabelItem } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
-
+import   ChartDataLables from 'chartjs-plugin-datalabels';
 
 @Component({
   selector: 'pros-pie-chart',
@@ -135,6 +135,7 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
    // if showCountOnStack flag will be true it show datalables on stack and position of datalables also configurable
     if (this.pieWidget.getValue().isEnableDatalabels) {
       this.pieChartOptions.plugins = {
+        ChartDataLables,
         datalabels: {
           align:  this.pieWidget.getValue().datalabelsPosition,
           anchor: this.pieWidget.getValue().anchorPosition,
@@ -221,7 +222,8 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
   }
   stackClickFilter(event?: MouseEvent, activeElements?: Array<any>) {
     if (activeElements && activeElements.length) {
-      const clickedIndex = (activeElements[0])._datasetIndex;
+      const option = this.chart.chart.getElementAtEvent(event) as any;
+      const clickedIndex = (option[0])._index;
       const clickedLagend = this.chartLegend[clickedIndex];
       const fieldId = this.pieWidget.getValue().fieldId;
       let appliedFilters = this.filterCriteria.filter(fill => fill.fieldId === fieldId);

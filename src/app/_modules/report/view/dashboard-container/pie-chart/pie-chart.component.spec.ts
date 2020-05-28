@@ -8,11 +8,13 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MatMenuModule } from '@angular/material/menu';
 import { of, BehaviorSubject } from 'rxjs';
 import { ChartLegendLabelItem } from 'chart.js';
+import { BaseChartDirective } from 'ng2-charts';
 
 describe('PieChartComponent', () => {
   let component: PieChartComponent;
   let fixture: ComponentFixture<PieChartComponent>;
   let widgetService: jasmine.SpyObj<WidgetService>;
+  let htmlnative: HTMLElement;
   beforeEach(async(() => {
     const widgetServiceSpy = jasmine.createSpyObj(WidgetService,['downloadCSV','getHeaderMetaData']);
     TestBed.configureTestingModule({
@@ -29,7 +31,7 @@ describe('PieChartComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(PieChartComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    htmlnative = fixture.nativeElement;
   });
 
   it('should create', () => {
@@ -50,6 +52,11 @@ describe('PieChartComponent', () => {
     chartData.fieldId = 'MATL_TYPE';
     component.pieWidget = new BehaviorSubject<PieChartWidget>(chartData);
     component.filterCriteria = [];
+
+    const eleRef = htmlnative.getElementsByTagName('canvas')[0];
+    const baseChart = new BaseChartDirective(eleRef[0], null);
+    baseChart.chart = {canvas: eleRef, getElementAtEvent:(e: any) => [{_datasetIndex:0, _index: 0} as any] } as Chart;
+    component.chart = baseChart;
     component.stackClickFilter(null, array);
     // after apply filter criteria then filtercriteria length should be 1
     expect(component.filterCriteria.length).toEqual(1, 'after apply filter criteria then filtercriteria length should be 1');
@@ -136,18 +143,19 @@ it('legendClick(), should show paticular stack , after click on stack',async(()=
   // call stack click with no argument then filter criteria should be [] array
   component.filterCriteria = [];
   const legendItem : ChartLegendLabelItem = {};
+  legendItem.index = 0;
+  // component.chartLegend = [{'legendIndex': 0, 'code':'HERS', 'text':'test'}];
   component.legendClick(legendItem);
   expect(component.filterCriteria.length).toEqual(0);
 
   // mock data
-  const array = [{_datasetIndex:0}];
   component.chartLegend = [{code: 'ZMRO',text: 'ZMRO',legendIndex:0}];
   component.filterCriteria = [];
   const chartData = new PieChartWidget();
   chartData.fieldId = 'MATL_TYPE';
   component.pieWidget = new BehaviorSubject<PieChartWidget>(chartData);
   component.filterCriteria = [];
-  component.stackClickFilter(null, array);
+  component.legendClick(legendItem);
   // after apply filter criteria then filtercriteria length should be 1
   expect(component.filterCriteria.length).toEqual(1, 'after apply filter criteria then filtercriteria length should be 1');
 }));
