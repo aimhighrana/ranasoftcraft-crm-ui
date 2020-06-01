@@ -151,24 +151,21 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
          }
        }
      }
-      // if displayAxisLable flag will be true it show Axis on Stacked bar Widget
-     if (this.stackBarWidget.getValue().displayAxisLabel) {
-       this.barChartOptions.scales = {
-         xAxes: [{
-           scaleLabel: {
-             display : true,
-             labelString: this.stackBarWidget.getValue().xAxisLabel,
-           }
-         }],
-         yAxes: [{
-           scaleLabel: {
-             display : true,
-            labelString: this.stackBarWidget.getValue().yAxisLabel,
-           }
-         }]
-       }
-     }
-
+      // show axis labels
+      this.barChartOptions.scales = {
+        xAxes: [{
+          scaleLabel: {
+            display : true,
+            labelString: this.stackBarWidget.getValue().xAxisLabel,
+          }
+        }],
+        yAxes: [{
+          scaleLabel: {
+            display : true,
+           labelString: this.stackBarWidget.getValue().yAxisLabel,
+          }
+        }]
+      }
   }
 
   public getstackbarChartData(widgetId:number,criteria:Criteria[]) : void{
@@ -294,7 +291,11 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     this.listxAxis2.forEach(singleLis=>{
         const singleobj= {} as any;
         singleobj.data=this.dataObj[singleLis];
-        singleobj.label=this.codeTextaxis2[singleLis] !== undefined ?this.codeTextaxis2[singleLis]:singleLis;
+        if(singleLis) {
+          singleobj.label=this.codeTextaxis2[singleLis] !== undefined ?this.codeTextaxis2[singleLis]:singleLis;
+        } else {
+          singleobj.label= singleLis;
+        }
         singleobj.fieldCode = singleLis;
         singleobj.stack='a';
         singleobj.backgroundColor=this.getRandomColor();

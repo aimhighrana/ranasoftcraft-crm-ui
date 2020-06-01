@@ -138,23 +138,20 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
             }
           }
         }
-
-        // if displayAxisLable flag will be true it show Axis on Bar Widget
-        if (this.barWidget.getValue().displayAxisLabel) {
-          this.barChartOptions.scales = {
-            xAxes: [{
-              scaleLabel: {
-                display: true,
-                labelString: this.barWidget.getValue().xAxisLabel
-              }
-            }],
-            yAxes: [{
-              scaleLabel: {
-                display: true,
-                labelString: this.barWidget.getValue().yAxisLabel
-              }
-            }]
-          }
+        // show axis labels
+        this.barChartOptions.scales = {
+          xAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: this.barWidget.getValue().xAxisLabel
+            }
+          }],
+          yAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: this.barWidget.getValue().yAxisLabel
+            }
+          }]
         }
 
         // Bar widget color
@@ -194,12 +191,16 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
   getFieldsMetadaDesc(code: string[], fieldId: string) {
     this.reportService.getMetaDataFldByFldIds(fieldId, code).subscribe(res => {
       this.lablels.forEach(cod => {
-        const hasData = res.filter(fill => fill.CODE === cod);
         let chartLegend: ChartLegend;
-        if (hasData && hasData.length) {
-          chartLegend = { text: hasData[0].TEXT, code: hasData[0].CODE, legendIndex: this.chartLegend.length };
+        if(cod) {
+          const hasData = res.filter(fill => fill.CODE === cod);
+          if (hasData && hasData.length) {
+            chartLegend = { text: hasData[0].TEXT, code: hasData[0].CODE, legendIndex: this.chartLegend.length };
+          } else {
+            chartLegend = { text: cod, code: cod, legendIndex: this.chartLegend.length };
+          }
         } else {
-          chartLegend = { text: cod, code: cod, legendIndex: this.chartLegend.length };
+           chartLegend = { text: cod, code: cod, legendIndex: this.chartLegend.length };
         }
         this.chartLegend.push(chartLegend);
       });

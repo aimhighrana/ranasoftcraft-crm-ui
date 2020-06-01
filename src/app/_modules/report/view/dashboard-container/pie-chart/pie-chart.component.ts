@@ -174,12 +174,16 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
   getFieldsMetadaDesc(code: string[], fieldId: string) {
     this.reportService.getMetaDataFldByFldIds(fieldId, code).subscribe(res => {
       this.lablels.forEach(cod => {
-        const hasData = res.filter(fill => fill.CODE === cod);
         let chartLegend: ChartLegend;
-        if (hasData && hasData.length) {
-          chartLegend = { text: hasData[0].TEXT, code: hasData[0].CODE, legendIndex: this.chartLegend.length };
+        if(cod) {
+          const hasData = res.filter(fill => fill.CODE === cod);
+          if (hasData && hasData.length) {
+            chartLegend = { text: hasData[0].TEXT, code: hasData[0].CODE, legendIndex: this.chartLegend.length };
+          } else {
+            chartLegend = { text: cod, code: cod, legendIndex: this.chartLegend.length };
+          }
         } else {
-          chartLegend = { text: cod, code: cod, legendIndex: this.chartLegend.length };
+           chartLegend = { text: cod, code: cod, legendIndex: this.chartLegend.length };
         }
         this.chartLegend.push(chartLegend);
       });

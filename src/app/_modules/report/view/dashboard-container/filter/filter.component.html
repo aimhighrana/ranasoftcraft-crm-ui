@@ -10,7 +10,7 @@
 
   <mat-card-content>
     <!-- CONTROL FOR DROPDOWNS -->
-    <ng-template [ngIf]="filterWidget && filterWidget.getValue() && filterWidget.getValue().metaData.picklist === '1'">
+    <ng-template [ngIf]="filterWidget && filterWidget.getValue() && (filterWidget.getValue().metaData.picklist === '1' || filterWidget.getValue().metaData.picklist === '30')">
       <!-- DROPDOWN_VALS -->
       <ng-template [ngIf]="(filterWidget.getValue() ? filterWidget.getValue().type : '') === 'DROPDOWN_VALS'">
         <ng-template [ngIf]="filterWidget.getValue().isMultiSelect" [ngIfElse] ="single_select_drop">

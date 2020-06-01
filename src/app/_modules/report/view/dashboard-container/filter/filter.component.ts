@@ -104,7 +104,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
   private loadAlldropData(fieldId: string, criteria: Criteria[]):void{
     this.widgetService.getWidgetData(String(this.widgetId), criteria).subscribe(returnData=>{
       const buckets  = returnData.aggregations[`sterms#FILTER`]  ? returnData.aggregations[`sterms#FILTER`].buckets : [];
-      if(this.filterWidget.getValue().metaData.picklist === '1') {
+      if(this.filterWidget.getValue().metaData.picklist === '1' || this.filterWidget.getValue().metaData.picklist === '30') {
         const metadatas: DropDownValues[] = [];
         buckets.forEach(bucket => {
           const metaData = {CODE: bucket.key, FIELDNAME: fieldId, TEXT: bucket.key} as DropDownValues;
@@ -112,7 +112,11 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
         });
         this.values = metadatas;
         const fieldIds = metadatas.map(map => map.CODE);
-        this.getFieldsMetadaDesc(fieldIds, fieldId);
+        if(this.filterWidget.getValue().metaData.picklist === '1') {
+          this.getFieldsMetadaDesc(fieldIds, fieldId);
+        } else {
+          this.filteredOptions = of(this.values);
+        }
       } else if(this.filterWidget.getValue().metaData.picklist === '0' && this.filterWidget.getValue().metaData.dataType === 'NUMC') {
         // static data  TODO
         const filterResponse = new FilterResponse();
@@ -350,6 +354,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
         }
         break;
       case '1':
+      case '30':
         this.removeSingleSelectedVal(true);
         break;
       default:

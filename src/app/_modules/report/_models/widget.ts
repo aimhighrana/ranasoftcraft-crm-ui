@@ -321,4 +321,6 @@ export class ChartProperties {
     datalabelsPosition: DatalabelsPosition;
     isEnableLegend: boolean;
     legendPosition: LegendPosition;
+    xAxisLabel: string;
+    yAxisLabel: string;
 }

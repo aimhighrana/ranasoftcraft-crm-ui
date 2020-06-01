@@ -253,6 +253,19 @@
                                     </mat-select>
                                 </mat-form-field>
 
+                                <ng-template [ngIf]="chartPropCtrlGrp && chartPropCtrlGrp.get('chartType').value === 'BAR'">
+                                    <mat-form-field>
+                                        <mat-label>xAsix Lebel</mat-label>
+                                        <input matInput formControlName="xAxisLabel">
+                                    </mat-form-field>
+
+                                    <mat-form-field>
+                                        <mat-label>yAsix Lebel</mat-label>
+                                        <input matInput formControlName="yAxisLabel">
+                                    </mat-form-field>
+                                </ng-template>
+
+
                                 <mat-checkbox color="primary" formControlName="isEnableDatalabels">Enable Datalabels</mat-checkbox>
 
                                 <mat-form-field *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('isEnableDatalabels').value">

@@ -116,7 +116,9 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       isEnableDatalabels:[false],
       datalabelsPosition:[DatalabelsPosition.center],
       isEnableLegend:[false],
-      legendPosition:[LegendPosition.top]
+      legendPosition:[LegendPosition.top],
+      xAxisLabel:[''],
+      yAxisLabel:['']
     });
 
     this.defaultFilterCtrlGrp = this.formBuilder.group({
@@ -239,7 +241,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       if(dropableWidget.widgetType === WidgetType.BAR_CHART || dropableWidget.widgetType === WidgetType.STACKED_BAR_CHART) {
         dropableWidget.chartProperties = {
           chartType:ChartType.BAR, orientation:Orientation.VERTICAL, isEnableDatalabels:false,
-          datalabelsPosition:DatalabelsPosition.center, isEnableLegend:false, legendPosition:LegendPosition.top
+          datalabelsPosition:DatalabelsPosition.center, isEnableLegend:false, legendPosition:LegendPosition.top,
+          xAxisLabel:'', yAxisLabel:''
         }
       }
       dropableWidget.defaultFilters = [];
@@ -297,7 +300,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           this.chartPropCtrlGrp.setValue(data.chartProperties);
         } else {
           this.chartPropCtrlGrp.setValue({ chartType:ChartType.BAR, orientation:Orientation.VERTICAL, isEnableDatalabels:false,
-            datalabelsPosition:DatalabelsPosition.center, isEnableLegend:false, legendPosition:LegendPosition.top});
+            datalabelsPosition:DatalabelsPosition.center, isEnableLegend:false, legendPosition:LegendPosition.top, xAxisLabel:'', yAxisLabel:''});
         }
 
         // add default filters
