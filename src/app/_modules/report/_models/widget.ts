@@ -168,6 +168,7 @@ export class BarChartWidget {
     bgColor : string;
     borderColor : string;
     chartType: ChartType;
+    metaData: MetadataModel;
 
 
 
@@ -187,6 +188,8 @@ export class StackBarChartWidget{
     xAxisLabel : string;
     yAxisLabel : string;
     orientation: Orientation;
+    fieldIdMetaData: MetadataModel;
+    groupByIdMetaData: MetadataModel;
 }
 
 export class PieChartWidget {
@@ -199,6 +202,7 @@ export class PieChartWidget {
     legendPosition : PositionType;
     datalabelsPosition: AlignPosition;
     anchorPosition: AnchorAlignPosition;
+    metaData: MetadataModel;
 }
 
 export class Count{

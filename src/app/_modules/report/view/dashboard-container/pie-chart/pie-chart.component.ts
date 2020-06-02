@@ -155,11 +155,14 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
         this.lablels.push(bucket.key);
         this.dataSet.push(bucket.doc_count);
       });
-      if (this.chartLegend.length === 0) {
-        this.getFieldsMetadaDesc(this.lablels, this.pieWidget.getValue().fieldId);
-      } else {
-        this.lablels = this.chartLegend.map(map => map.text);
+      if(this.pieWidget.getValue().metaData && (this.pieWidget.getValue().metaData.picklist === '1' || this.pieWidget.getValue().metaData.picklist === '37')) {
+        if (this.chartLegend.length === 0) {
+          this.getFieldsMetadaDesc(this.lablels, this.pieWidget.getValue().fieldId);
+        } else {
+          this.lablels = this.chartLegend.map(map => map.text);
+        }
       }
+
       this.pieChartData = [{
         label: this.widgetHeader.widgetName,
         data: this.dataSet

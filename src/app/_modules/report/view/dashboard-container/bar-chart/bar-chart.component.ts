@@ -170,10 +170,12 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
         this.dataSet.push(bucket.doc_count);
       });
       // update barchartLabels
-      if (this.chartLegend.length === 0) {
-        this.getFieldsMetadaDesc(this.lablels, this.barWidget.getValue().fieldId);
-      } else {
-        this.lablels = this.chartLegend.map(map => map.text);
+      if(this.barWidget.getValue().metaData && (this.barWidget.getValue().metaData.picklist === '1' || this.barWidget.getValue().metaData.picklist === '37')) {
+        if (this.chartLegend.length === 0) {
+          this.getFieldsMetadaDesc(this.lablels, this.barWidget.getValue().fieldId);
+        } else {
+          this.lablels = this.chartLegend.map(map => map.text);
+        }
       }
 
       this.barChartData = [{
