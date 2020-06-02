@@ -1,27 +1,29 @@
 <div class="root">
     <mat-card class="mat-elevation-z2 summary-container">
-        
-        <div class="tab-action">
-            <a mat-button href="#" target="_blank" color="primary"><mat-icon>open_in_new</mat-icon> Open Full Page</a>
-            <span class="col-spacer"></span>
-            <button mat-icon-button color="primary"><mat-icon>close</mat-icon></button>
-        </div>
-        
+        <mat-toolbar class="action-toolbar">
+            <mat-toolbar-row>
+                <h3 class="mat-h3">Task ID Summary</h3>
+                <span class="f-spacer"></span>
+                <a mat-icon-button href="#" target="_blank" color="primary" [routerLink]="['/home/task-details',taskId]" matTooltip="Open in new tab"><mat-icon>open_in_new</mat-icon></a>
+                <button mat-icon-button color="primary"  (click)="closeDetailsModal()" matTooltip="close"><mat-icon>close</mat-icon></button>
+            </mat-toolbar-row>
+        </mat-toolbar>
+
         <mat-tab-group>
             <mat-tab label="General Information">
-                <mat-card-content class="summary-container">
+                <mat-card-content>
                     General Information Component Here...
                 </mat-card-content>
                 
             </mat-tab>
             <mat-tab label="Attachment">
-                <mat-card-content class="summary-container">
+                <mat-card-content>
                     Attachment Component Here...
                 </mat-card-content>
                 
             </mat-tab>
             <mat-tab label="History">
-                <mat-card-content class="summary-container">
+                <mat-card-content>
                     History Component Here...
                 </mat-card-content>
             </mat-tab>

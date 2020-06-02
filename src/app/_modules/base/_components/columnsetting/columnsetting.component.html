@@ -1,13 +1,4 @@
 <mat-card class="mat-elevation-z3 column-setting">
-    <mat-toolbar color="primary">
-        <mat-toolbar-row>
-            <span>Column Settings</span>
-            <span class="f-spacer"></span>
-            <button mat-icon-button (click)="closeSettingColumn()">
-                <mat-icon>close</mat-icon>
-            </button>
-        </mat-toolbar-row>
-    </mat-toolbar>
     <mat-card-content>
         <mat-nav-list class="f-col nav-setting">
             <a mat-list-item>Default</a>
@@ -19,9 +10,19 @@
         </mat-nav-list>
         <mat-divider [vertical]="true"></mat-divider>
         <div class="f-col checked-colunms">
-            <mat-checkbox color="primary" *ngFor="let column of tableColumns" [checked]="column.visible"
-                (change)="emitChange(column,$event)">{{column.value | formatTableHeaders }}</mat-checkbox>
-            <button mat-stroked-button color="primary">Save Changes</button>
+            <mat-form-field>
+                <mat-label>Find a field</mat-label>
+                <input matInput type="text">
+              </mat-form-field>
+
+              <div class="f-col colunm-list">
+                <mat-slide-toggle color="primary" *ngFor="let column of tableColumns" [checked]="column.visible" (change)="emitChange(column,$event)">{{column.value | formatTableHeaders }} </mat-slide-toggle>
+              </div>
+            
+            <div class="f-row">
+                <button mat-stroked-button color="primary">Cancel</button>
+                <button mat-flat-button color="primary">Update</button>
+            </div>
         </div>
     </mat-card-content>
 </mat-card>
