@@ -1,18 +1,7 @@
 .column-setting {
-  width: 400px;
+  width: 500px;
   margin: 16px;
   padding: 0;
-
-  mat-toolbar {
-    min-height: 50px;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-
-    mat-toolbar-row {
-      height: 50px;
-      font-size: 16px;
-    }
-  }
 
   mat-card-content {
     display: flex;
@@ -22,7 +11,7 @@
     }
 
     .nav-setting {
-      padding-top: 16px;
+      padding-top: 8px;
 
       .mat-list-item {
         font-size: 14px;
@@ -31,14 +20,22 @@
     }
 
     .checked-colunms {
-      padding: 16px;
+      padding: 8px 16px;
 
-      mat-checkbox {
-        margin: 4px 0;
+      mat-form-field {
+        height: 50px;
+      }
+
+      .colunm-list {
+        mat-slide-toggle {
+          margin: 6px 0;
+          text-transform: capitalize;
+        }
       }
 
       button {
-        margin-top: 8px;
+        margin: 8px;
+        flex: 1;
       }
     }
   }

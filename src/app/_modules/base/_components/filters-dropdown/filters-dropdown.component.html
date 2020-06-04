@@ -12,7 +12,6 @@
             </button>
         </div>
         <div class="f-row fields-action">
-
             <mat-form-field appearance="fill">
                 <mat-label>Priority</mat-label>
                 <mat-select (selectionChange)="setFilter('priorities',$event)">
@@ -60,40 +59,26 @@
             </mat-form-field>
 
         </div>
-        <a class="mat-line" mat-button (click)="toggleAdvancedFilters()">Hide Advanced Filter</a>
+        <a class="mat-line" mat-button color="primary" (click)="toggleAdvancedFilters()">Hide Advanced Filter</a>
     </mat-card-content>
 
-    <mat-card class="mat-elevation-z3 adv-filter-section">
+    <mat-card class="mat-elevation-z0 adv-filter-section">
         <div class="f-row" *ngIf="showAdvancedFilters">
-            <mat-nav-list class="f-col nav-setting">
-                <a mat-list-item>Generic Request</a>
-                <a mat-list-item>Inheritance Data</a>
-                <a mat-list-item>Item Move</a>
-                <a mat-list-item>Maintenance Plan Equipment</a>
-                <a mat-list-item>Material</a>
-                <a mat-list-item>Function Locaton</a>
-                <a mat-list-item>Plant</a>
-                <a mat-list-item>MRO</a>
-                <a mat-list-item>MDA</a>
-                <a mat-list-item>Customer</a>
-                <a mat-list-item>Equitment</a>
-                <a mat-list-item>System</a>
+           <div class="f-col">
+            <h3 class="mat-line">Material Group</h3>
+            <mat-divider></mat-divider>
+            <mat-nav-list class="nav-setting">
+                <h4 class="mat-line material-nav">Customer</h4>
+                <a mat-list-item>Customer Filter 1</a>
+                <a mat-list-item>Customer Filter 2</a>
+                <a mat-list-item>Customer Filter 3</a>
+                <h4 class="mat-line material-nav">Language</h4>
+                <a mat-list-item>Language Filter 1</a>
+                <a mat-list-item>Language Filter 2</a>
+                <a mat-list-item>Language Filter 3</a>
             </mat-nav-list>
-            <mat-divider [vertical]="true"></mat-divider>
-            <mat-nav-list class="f-col nav-setting">
-                <a mat-list-item>Generic Request</a>
-                <a mat-list-item>Inheritance Data</a>
-                <a mat-list-item>Item Move</a>
-                <a mat-list-item>Maintenance Plan Equipment</a>
-                <a mat-list-item>Material</a>
-                <a mat-list-item>Function Locaton</a>
-                <a mat-list-item>Plant</a>
-                <a mat-list-item>MRO</a>
-                <a mat-list-item>MDA</a>
-                <a mat-list-item>Customer</a>
-                <a mat-list-item>Equitment</a>
-                <a mat-list-item>System</a>
-            </mat-nav-list>
+           </div>
+            
             <mat-divider [vertical]="true"></mat-divider>
             <div class="f-col nav-checked">
                 <mat-form-field>
@@ -111,11 +96,20 @@
                     <mat-checkbox color="primary">Plant 7</mat-checkbox>
                 </div>
             </div>
-
         </div>
-        <div class="f-row mat-elevation-z3 filter-action">
-            <button mat-stroked-button color="primary">Clear Filter</button>
-            <button mat-flat-button color="primary" (click)="updateFilter()">Update</button>
+       
+        <div class="f-row mat-elevation-z3 info-filters-cont">
+            <div class="selected-filters">
+                <mat-chip-list>
+                    <mat-chip><span class="datachip" matTooltip="Customer - Option 1">Customer - Option 1</span> <mat-icon>cancel</mat-icon></mat-chip>
+                    <mat-chip><span class="datachip">Customer</span> <mat-icon>cancel</mat-icon></mat-chip>
+                  </mat-chip-list>
+            </div>
+
+            <div class="filter-action">
+                <button mat-stroked-button color="primary">Clear Filter</button>
+                <button mat-flat-button color="primary" (click)="updateFilter()">Update</button>
+            </div>
         </div>
     </mat-card>
 

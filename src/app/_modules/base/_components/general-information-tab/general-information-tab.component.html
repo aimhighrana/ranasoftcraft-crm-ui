@@ -1,5 +1,5 @@
-<mat-card class="mat-elevation-z0">
-    <mat-card-content class="general-container">
+<mat-card class="mat-elevation-z0 general-container">
+    <mat-card-content>
         <mat-card class="mat-elevation-z0 summary-datarows">
             <div class="f-row">
                 <button mat-button color="primary" class="summary-item-toggle">Summary</button>
@@ -221,12 +221,14 @@
             </mat-card>
         </div>
        </mat-card>
-
-        <mat-divider></mat-divider>
-           <mat-card-actions class="page-actions"> 
-               <button mat-flat-button>Back</button>
-               <span class="f-spacer"></span>
-               <button mat-flat-button color="primary">Edit </button>
-           </mat-card-actions>
     </mat-card-content>
 </mat-card>
+<mat-divider></mat-divider>
+<div class="page-actions">  
+    <button mat-stroked-button>Edit</button>
+    <span class="f-spacer"></span>
+    <button mat-flat-button>Claim</button>
+    <button mat-flat-button>Forward</button>
+    <button mat-flat-button>Reject</button>
+    <button mat-flat-button color="primary">Approve</button>
+</div>

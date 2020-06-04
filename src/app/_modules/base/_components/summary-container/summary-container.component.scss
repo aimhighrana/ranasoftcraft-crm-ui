@@ -7,13 +7,19 @@
 
   .summary-container {
     width: 100%;
-    margin: 16px;
+    padding: 0;
+    margin: 0 8px 8px 8px;
 
-    .tab-action {
-      position: absolute;
-      right: 0;
-      z-index: 2;
-      margin: 4px;
+    .action-toolbar {
+      min-height: 50px;
+
+      mat-toolbar-row {
+        height: 50px;
+
+        .mat-h3 {
+          font-size: 16px;
+        }
+      }
     }
   }
 }

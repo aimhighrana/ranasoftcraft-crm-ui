@@ -1,8 +1,13 @@
 .filter-slider {
+  display: flex;
+  flex-flow: wrap;
+  margin: 8px;
   padding: 0;
 
   mat-card-content {
-    margin: 8px;
+    width: 100%;
+    padding: 8px 16px;
+    margin: 0;
 
     .mat-h4 {
       font-size: 14px;
@@ -12,8 +17,10 @@
     }
 
     .module-actions {
+      flex-wrap: wrap;
+
       button {
-        margin: 0 16px 8px 0;
+        margin: 0 8px 8px 0;
         flex-shrink: 0;
       }
     }
@@ -26,7 +33,7 @@
         border-width: 1px;
         height: 50px;
         border-radius: 4px;
-        margin: 8px 16px 8px 0;
+        margin: 8px 8px 8px 0;
       }
 
       .custom-input {
@@ -38,15 +45,20 @@
   .adv-filter-section {
     border-radius: 0;
     padding: 0;
+    width: 100%;
     display: flex;
     flex-direction: column;
 
     .f-col {
       flex: 1;
+
+      .mat-line {
+        margin: 8px 16px 0 16px;
+      }
     }
 
     .nav-setting {
-      height: 230px;
+      height: 170px;
       overflow: auto;
       padding: 0;
 
@@ -57,20 +69,54 @@
     }
 
     .nav-checked {
-      height: 230px;
+      height: 210px;
       overflow: auto;
-      padding: 0 16px;
+      padding: 8px 16px 0 16px;
+      flex: 3;
 
       mat-checkbox {
         margin: 4px 0;
       }
     }
 
-    .filter-action {
-      justify-content: flex-end;
+    .info-filters-cont {
+      align-items: center;
+      padding: 0 8px;
 
-      button {
-        margin: 8px;
+      .selected-filters {
+        flex: 5;
+        padding: 8px;
+
+        mat-chip {
+          .datachip {
+            font-size: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: pre-line;
+            word-break: break-word;
+            width: 84%;
+          }
+
+          mat-icon {
+            font-size: 16px;
+            height: 16px;
+            width: 16px;
+            margin-left: 4px;
+          }
+        }
+      }
+
+      .filter-action {
+        display: flex;
+        flex: 1;
+        justify-content: flex-end;
+
+        button {
+          margin: 8px;
+        }
       }
     }
   }

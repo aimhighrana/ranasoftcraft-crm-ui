@@ -1,5 +1,5 @@
-<mat-card class="mat-elevation-z0">
-<mat-card-content class="history-container">
+<mat-card class="mat-elevation-z0 history-container">
+<mat-card-content>
     <div class="f-row history-actions">
         <span class="f-spacer"></span>
         <button mat-button color="primary"><mat-icon>get_app</mat-icon> Download</button>
@@ -191,15 +191,14 @@
         </mat-card>
         </div>
     </mat-card>
-
-    <mat-divider></mat-divider>
-    <mat-card-actions class="page-actions"> 
-        <button mat-flat-button>Edit</button>
-        <span class="f-spacer"></span>
-        <button mat-flat-button>Claim</button>
-        <button mat-flat-button>Forward</button>
-        <button mat-flat-button>Reject</button>
-        <button mat-flat-button color="primary">Approve</button>
-    </mat-card-actions>
 </mat-card-content>
 </mat-card>
+<mat-divider></mat-divider>
+<div class="page-actions">  
+    <button mat-stroked-button>Edit</button>
+    <span class="f-spacer"></span>
+    <button mat-flat-button>Claim</button>
+    <button mat-flat-button>Forward</button>
+    <button mat-flat-button>Reject</button>
+    <button mat-flat-button color="primary">Approve</button>
+</div>

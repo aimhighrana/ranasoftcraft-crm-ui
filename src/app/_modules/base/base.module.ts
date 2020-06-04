@@ -7,7 +7,8 @@ import { FiltersDropdownComponent } from './_components/filters-dropdown/filters
 import { SharedModule } from '../shared/shared.module';
 import { HistoryTabComponent } from './_components/history-tab/history-tab.component';
 import { GeneralInformationTabComponent } from './_components/general-information-tab/general-information-tab.component';
-import { TaskSummaryComponent } from './_components/task-summary/task-summary.component'
+import { TaskSummaryComponent } from './_components/task-summary/task-summary.component';
+import { TasklistTableComponent } from './_components/tasklist-table/tasklist-table.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { TaskSummaryComponent } from './_components/task-summary/task-summary.co
     FiltersDropdownComponent,
     HistoryTabComponent,
     GeneralInformationTabComponent,
-    TaskSummaryComponent
+    TaskSummaryComponent,
+    TasklistTableComponent
   ],
   imports: [
     CommonModule,

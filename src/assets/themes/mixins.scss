@@ -131,21 +131,6 @@
     }
   }
 
-  pros-task-list {
-    .root {
-      .tasklist-container {
-        .split-divider {
-          background-color: mat-color($foreground-palette, divider);
-
-          .hand-control {
-            border-color: mat-color($primary-palette);
-            background-color: mat-color($background-palette, card);
-          }
-        }
-      }
-    }
-  }
-
   pros-history-tab {
     .summary-datarows {
       .data-tile {
@@ -166,6 +151,42 @@
             border-color: mat-color($foreground-palette, divider);
           }
         }
+      }
+
+      .adv-filter-section {
+        .material-nav {
+          color: mat-color($primary-palette);
+        }
+      }
+    }
+  }
+
+  pros-tasklist-table {
+    .tasks-container {
+      mat-table {
+        .mat-row {
+          background-color: mat-color($background-palette, card);
+          border-color: mat-color($foreground-palette, divider);
+
+          .mat-cell {
+            .additiontags {
+              color: mat-color($primary-palette);
+            }
+          }
+
+          .mat-cell:first-of-type {
+            color: mat-color($primary-palette);
+          }
+        }
+      }
+    }
+
+    .split {
+      border-color: mat-color($foreground-palette, divider);
+
+      .hand-control {
+        border-color: mat-color($primary-palette);
+        background-color: mat-color($background-palette, card);
       }
     }
   }
