@@ -1,7 +1,7 @@
 import { Component, OnInit, OnChanges, ViewChild } from '@angular/core';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
-import { BarChartWidget, Criteria, WidgetHeader, ChartLegend, ConditionOperator, BlockType } from '../../../_models/widget';
+import { BarChartWidget, Criteria, WidgetHeader, ChartLegend, ConditionOperator, BlockType, Orientation } from '../../../_models/widget';
 import { BehaviorSubject } from 'rxjs';
 import { ReportService } from '../../../_service/report.service';
 import { ChartOptions, ChartTooltipItem, ChartData } from 'chart.js';
@@ -134,25 +134,13 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
             ChartDataLables,
             datalabels: {
               align: this.barWidget.getValue().datalabelsPosition,
-              anchor: this.barWidget.getValue().anchorPosition
+              anchor: this.barWidget.getValue().anchorPosition,
+              display:'auto'
             }
           }
         }
-        // show axis labels
-        this.barChartOptions.scales = {
-          xAxes: [{
-            scaleLabel: {
-              display: true,
-              labelString: this.barWidget.getValue().xAxisLabel
-            }
-          }],
-          yAxes: [{
-            scaleLabel: {
-              display: true,
-              labelString: this.barWidget.getValue().yAxisLabel
-            }
-          }]
-        }
+        // set scale range and axis lebels
+        this.setChartAxisAndScaleRange();
 
         // Bar widget color
       this.barChartColors = [{
@@ -165,10 +153,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     this.widgetService.getWidgetData(String(widgetId), critria).subscribe(returndata => {
       const arrayBuckets = returndata.aggregations['sterms#BAR_CHART'].buckets;
       this.dataSet = [];
-      arrayBuckets.forEach(bucket => {
-        this.lablels.push(bucket.key);
-        this.dataSet.push(bucket.doc_count);
-      });
+      this.dataSet = this.transformDataSets(arrayBuckets);
       // update barchartLabels
       if(this.barWidget.getValue().metaData && (this.barWidget.getValue().metaData.picklist === '1' || this.barWidget.getValue().metaData.picklist === '37')) {
         if (this.chartLegend.length === 0) {
@@ -180,7 +165,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
 
       this.barChartData = [{
         label: this.widgetHeader.widgetName,
-        barThickness: 80,
+        barThickness: 'flex',
         data: this.dataSet
       }];
     });
@@ -278,6 +263,103 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
 
   emitEvtFilterCriteria(critera: Criteria[]): void {
     this.evtFilterCriteria.emit(critera);
+  }
+
+
+  /**
+   * Use for set scale range and axis labels
+   */
+  setChartAxisAndScaleRange() {
+    if(this.barWidget.getValue().scaleFrom !== null && this.barWidget.getValue().scaleFrom !== undefined
+        && this.barWidget.getValue().scaleTo !== null && this.barWidget.getValue().scaleTo !== undefined
+        && this.barWidget.getValue().stepSize !== null && this.barWidget.getValue().stepSize !== undefined) {
+        const ticks = {min:this.barWidget.getValue().scaleFrom, max:this.barWidget.getValue().scaleTo, stepSize:this.barWidget.getValue().stepSize};
+        if(this.barWidget.getValue().orientation === Orientation.HORIZONTAL) {
+          this.barChartOptions.scales = {
+            xAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: this.barWidget.getValue().xAxisLabel ? this.barWidget.getValue().xAxisLabel : ''
+              },ticks
+            }],
+            yAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: this.barWidget.getValue().yAxisLabel ? this.barWidget.getValue().yAxisLabel : ''
+              }
+            }]
+          }
+        } else {
+          this.barChartOptions.scales = {
+            xAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: this.barWidget.getValue().xAxisLabel ? this.barWidget.getValue().xAxisLabel : ''
+              }
+            }],
+            yAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: this.barWidget.getValue().yAxisLabel ? this.barWidget.getValue().yAxisLabel : ''
+              },ticks
+            }]
+          }
+        }
+    } else {
+      this.barChartOptions.scales = {
+        xAxes: [{
+          scaleLabel: {
+            display: true,
+            labelString: this.barWidget.getValue().xAxisLabel ? this.barWidget.getValue().xAxisLabel : ''
+          }
+        }],
+        yAxes: [{
+          scaleLabel: {
+            display: true,
+            labelString: this.barWidget.getValue().yAxisLabel ? this.barWidget.getValue().yAxisLabel : ''
+          }
+        }]
+      }
+    }
+
+  }
+
+  /**
+   * Before render chart transformation
+   * @param resBuckets response from server
+   */
+  transformDataSets(resBuckets: any[]): string[] {
+    // ckeck configuration
+    const finalDataSet: string[] = [];
+    if(this.barWidget.getValue().scaleFrom !== null && this.barWidget.getValue().scaleFrom !== undefined
+      && this.barWidget.getValue().scaleTo !== null && this.barWidget.getValue().scaleTo !== undefined
+      && this.barWidget.getValue().stepSize !== null && this.barWidget.getValue().stepSize !== undefined) {
+
+      const insideRange = resBuckets.filter(bucket =>{
+        if(this.barWidget.getValue().scaleFrom <= bucket.doc_count && this.barWidget.getValue().scaleTo >= bucket.doc_count) {
+          return bucket;
+        }
+      });
+      if(this.barWidget.getValue().dataSetSize) {
+        for(let i=0 ; i<this.barWidget.getValue().dataSetSize; i++) {
+          if(insideRange[i]) {
+              this.lablels.push(insideRange[i].key);
+              finalDataSet.push(insideRange[i].doc_count);
+          }
+        }
+      } else {
+        insideRange.forEach(bucket => {
+          this.lablels.push(bucket.key);
+          finalDataSet.push(bucket.doc_count);
+        });
+      }
+    } else {
+      resBuckets.forEach(bucket => {
+        this.lablels.push(bucket.key);
+        finalDataSet.push(bucket.doc_count);
+      });
+    }
+    return finalDataSet;
   }
 
 }

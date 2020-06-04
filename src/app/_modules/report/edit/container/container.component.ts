@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { Widget, WidgetType, ReportDashboardReq, WidgetTableModel, ChartType, Orientation, DatalabelsPosition, LegendPosition, BlockType, ConditionOperator, Criteria } from '../../_models/widget';
+import { Widget, WidgetType, ReportDashboardReq, WidgetTableModel, ChartType, Orientation, DatalabelsPosition, LegendPosition, BlockType, ConditionOperator, Criteria, OrderWith } from '../../_models/widget';
 import { Breadcrumb } from 'src/app/_models/breadcrumb';
 import { Observable, of, BehaviorSubject, Subscription } from 'rxjs';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
@@ -118,7 +118,12 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       isEnableLegend:[false],
       legendPosition:[LegendPosition.top],
       xAxisLabel:[''],
-      yAxisLabel:['']
+      yAxisLabel:[''],
+      orderWith: [OrderWith.DESC],
+      scaleFrom: [''],
+      scaleTo:[''],
+      stepSize:[''],
+      dataSetSize:['']
     });
 
     this.defaultFilterCtrlGrp = this.formBuilder.group({
@@ -242,8 +247,9 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         dropableWidget.chartProperties = {
           chartType:ChartType.BAR, orientation:Orientation.VERTICAL, isEnableDatalabels:false,
           datalabelsPosition:DatalabelsPosition.center, isEnableLegend:false, legendPosition:LegendPosition.top,
-          xAxisLabel:'', yAxisLabel:''
-        }
+          xAxisLabel:'', yAxisLabel:'', orderWith: OrderWith.DESC, scaleFrom: null, scaleTo: null, stepSize: null,
+          dataSetSize: null
+        };
       }
       dropableWidget.defaultFilters = [];
       this.preapreNewWidgetPosition(dropableWidget);
@@ -300,7 +306,9 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           this.chartPropCtrlGrp.setValue(data.chartProperties);
         } else {
           this.chartPropCtrlGrp.setValue({ chartType:ChartType.BAR, orientation:Orientation.VERTICAL, isEnableDatalabels:false,
-            datalabelsPosition:DatalabelsPosition.center, isEnableLegend:false, legendPosition:LegendPosition.top, xAxisLabel:'', yAxisLabel:''});
+            datalabelsPosition:DatalabelsPosition.center, isEnableLegend:false, legendPosition:LegendPosition.top, xAxisLabel:'', yAxisLabel:'',
+            orderWith: OrderWith.DESC, scaleFrom:'',scaleTo:'', stepSize:'', dataSetSize:''
+          });
         }
 
         // add default filters

@@ -139,6 +139,7 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
         datalabels: {
           align:  this.pieWidget.getValue().datalabelsPosition,
           anchor: this.pieWidget.getValue().anchorPosition,
+          display:'auto'
         }
       }
     }

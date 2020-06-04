@@ -169,6 +169,11 @@ export class BarChartWidget {
     borderColor : string;
     chartType: ChartType;
     metaData: MetadataModel;
+    orderWith: OrderWith;
+    scaleFrom: number;
+    scaleTo: number;
+    stepSize: number;
+    dataSetSize: number;
 
 
 
@@ -190,6 +195,11 @@ export class StackBarChartWidget{
     orientation: Orientation;
     fieldIdMetaData: MetadataModel;
     groupByIdMetaData: MetadataModel;
+    orderWith: OrderWith;
+    scaleFrom: number;
+    scaleTo: number;
+    stepSize: number;
+    dataSetSize: number;
 }
 
 export class PieChartWidget {
@@ -318,6 +328,11 @@ export enum LegendPosition {
     right = 'right'
 }
 
+export enum OrderWith {
+    ASC = 'asc',
+    DESC = 'desc'
+}
+
 export class ChartProperties {
     chartType: ChartType;
     orientation: Orientation;
@@ -327,4 +342,9 @@ export class ChartProperties {
     legendPosition: LegendPosition;
     xAxisLabel: string;
     yAxisLabel: string;
+    orderWith: OrderWith;
+    scaleFrom: number;
+    scaleTo: number;
+    stepSize: number;
+    dataSetSize: number;
 }

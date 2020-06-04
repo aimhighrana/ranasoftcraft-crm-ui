@@ -4,7 +4,7 @@ import { Label, BaseChartDirective } from 'ng2-charts';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
 import { BehaviorSubject } from 'rxjs';
-import { StackBarChartWidget, Criteria, WidgetHeader, BlockType, ConditionOperator, ChartLegend } from '../../../_models/widget';
+import { StackBarChartWidget, Criteria, WidgetHeader, BlockType, ConditionOperator, ChartLegend, Orientation, OrderWith } from '../../../_models/widget';
 import { ReportService } from '../../../_service/report.service';
 import   ChartDataLables from 'chartjs-plugin-datalabels';
 
@@ -147,31 +147,22 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         ChartDataLables,
          datalabels: {
            align:  this.stackBarWidget.getValue().datalabelsPosition,
-           anchor: this.stackBarWidget.getValue().anchorPosition
+           anchor: this.stackBarWidget.getValue().anchorPosition,
+           display:'auto'
          }
        }
      }
-      // show axis labels
-      this.barChartOptions.scales = {
-        xAxes: [{
-          scaleLabel: {
-            display : true,
-            labelString: this.stackBarWidget.getValue().xAxisLabel,
-          }
-        }],
-        yAxes: [{
-          scaleLabel: {
-            display : true,
-           labelString: this.stackBarWidget.getValue().yAxisLabel,
-          }
-        }]
-      }
+      // show axis labels and scales range
+      this.setChartAxisAndScaleRange();
   }
 
   public getstackbarChartData(widgetId:number,criteria:Criteria[]) : void{
     this.widgetService.getWidgetData(String(widgetId),criteria).subscribe(returnData=>{
       this.arrayBuckets =  returnData.aggregations['composite#STACKED_BAR_CHART'].buckets;
        this.dataObj = new Object();
+
+       // transform data before go for render
+       this.arrayBuckets =  this.transformDataSets(this.arrayBuckets);
       this.arrayBuckets.forEach(singleBucket=>{
         if(this.barChartLabels.indexOf(singleBucket.key[this.stackBarWidget.getValue().groupById]) === -1){
           this.barChartLabels.push(singleBucket.key[this.stackBarWidget.getValue().groupById]);
@@ -393,6 +384,108 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
 
   emitEvtFilterCriteria(critera: Criteria[]): void {
     this.evtFilterCriteria.emit(critera);
+  }
+
+  /**
+   * Before render chart transformation
+   * @param resBuckets response from server
+   */
+  transformDataSets(resBuckets: any[]): any[] {
+    // ckeck configuration
+    let finalDataSet: any[] = [];
+
+    // perform sort
+    if(this.stackBarWidget.getValue().orderWith) {
+      if(this.stackBarWidget.getValue().orderWith === OrderWith.ASC) {
+        resBuckets.sort((a: any, b: any) =>{
+          return a.doc_count - b.doc_count;
+        });
+      } else if(this.stackBarWidget.getValue().orderWith === OrderWith.DESC) {
+        resBuckets.sort((a: any, b: any) =>{
+          return b.doc_count - a.doc_count;
+        });
+      }
+    }
+    if(this.stackBarWidget.getValue().scaleFrom !== null && this.stackBarWidget.getValue().scaleFrom !== undefined
+      && this.stackBarWidget.getValue().scaleTo !== null && this.stackBarWidget.getValue().scaleTo !== undefined
+      && this.stackBarWidget.getValue().stepSize !== null && this.stackBarWidget.getValue().stepSize !== undefined) {
+
+      const insideRange = resBuckets.filter(bucket =>{
+        if(this.stackBarWidget.getValue().scaleFrom <= bucket.doc_count && this.stackBarWidget.getValue().scaleTo >= bucket.doc_count) {
+          return bucket;
+        }
+      });
+      if(this.stackBarWidget.getValue().dataSetSize) {
+        for(let i=0 ; i<this.stackBarWidget.getValue().dataSetSize; i++) {
+          if(insideRange[i]) {
+              finalDataSet.push(insideRange[i]);
+          }
+        }
+      } else {
+        finalDataSet = insideRange;
+      }
+    } else {
+      finalDataSet = resBuckets;
+    }
+    return finalDataSet;
+  }
+
+  /**
+   * Use for set scale range and axis labels
+   */
+  setChartAxisAndScaleRange() {
+    if(this.stackBarWidget.getValue().scaleFrom !== null && this.stackBarWidget.getValue().scaleFrom !== undefined
+      && this.stackBarWidget.getValue().scaleTo !== null && this.stackBarWidget.getValue().scaleTo !== undefined
+      && this.stackBarWidget.getValue().stepSize !== null && this.stackBarWidget.getValue().stepSize !== undefined) {
+        const ticks = {min:this.stackBarWidget.getValue().scaleFrom, max:this.stackBarWidget.getValue().scaleTo, stepSize:this.stackBarWidget.getValue().stepSize};
+        if(this.stackBarWidget.getValue().orientation === Orientation.HORIZONTAL) {
+          this.barChartOptions.scales = {
+            xAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: this.stackBarWidget.getValue().xAxisLabel ? this.stackBarWidget.getValue().xAxisLabel : ''
+              },ticks
+            }],
+            yAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: this.stackBarWidget.getValue().yAxisLabel ? this.stackBarWidget.getValue().yAxisLabel : ''
+              }
+            }]
+          }
+        } else {
+          this.barChartOptions.scales = {
+            xAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: this.stackBarWidget.getValue().xAxisLabel ? this.stackBarWidget.getValue().xAxisLabel : ''
+              }
+            }],
+            yAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: this.stackBarWidget.getValue().yAxisLabel ? this.stackBarWidget.getValue().yAxisLabel : ''
+              },ticks
+            }]
+          }
+        }
+    } else {
+      this.barChartOptions.scales = {
+        xAxes: [{
+          scaleLabel: {
+            display: true,
+            labelString: this.stackBarWidget.getValue().xAxisLabel ? this.stackBarWidget.getValue().xAxisLabel : ''
+          }
+        }],
+        yAxes: [{
+          scaleLabel: {
+            display: true,
+            labelString: this.stackBarWidget.getValue().yAxisLabel ? this.stackBarWidget.getValue().yAxisLabel : ''
+          }
+        }]
+      }
+    }
+
   }
 
 

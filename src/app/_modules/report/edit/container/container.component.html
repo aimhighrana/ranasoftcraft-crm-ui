@@ -263,6 +263,38 @@
                                         <mat-label>yAsix Lebel</mat-label>
                                         <input matInput formControlName="yAxisLabel">
                                     </mat-form-field>
+
+                                    <mat-form-field>
+                                        <mat-label>Count OrderBy </mat-label>
+                                        <mat-select formControlName="orderWith">
+                                            <mat-option value="asc"> Ascending </mat-option>
+                                            <mat-option value="desc"> Descending  </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+
+                                    <div class="f-row">
+                                        <mat-form-field class="field-divider">
+                                            <mat-label>Scale From</mat-label>
+                                            <input type="number" min="0" matInput formControlName="scaleFrom">
+                                        </mat-form-field>
+                                        <span class="f-col-spacer-half"></span>
+                                        <mat-form-field class="field-divider">
+                                            <mat-label>Scale To</mat-label>
+                                            <input type="number" min="0" matInput formControlName="scaleTo">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="f-row">
+                                        <mat-form-field class="field-divider">
+                                            <mat-label>Scale Step Size</mat-label>
+                                            <input type="number" min="0" matInput formControlName="stepSize">
+                                        </mat-form-field>
+                                        <span class="f-col-spacer-half"></span>
+                                        <mat-form-field class="field-divider">
+                                            <mat-label>Max dataset number</mat-label>
+                                            <input type="number" min="0" matInput formControlName="dataSetSize">
+                                        </mat-form-field>
+                                    </div>
                                 </ng-template>
 
 

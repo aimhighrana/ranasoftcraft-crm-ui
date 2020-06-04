@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BarChartComponent } from './bar-chart.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { BarChartWidget, Orientation } from '../../../_models/widget';
+import { BarChartWidget, Orientation, OrderWith } from '../../../_models/widget';
 import { BehaviorSubject } from 'rxjs';
 import { MatMenuModule } from '@angular/material/menu';
 import { BaseChartDirective } from 'ng2-charts';
@@ -97,6 +97,84 @@ describe('BarChartComponent', () => {
     expect(component.barWidget.getValue().displayAxisLabel).toBe(true);
     expect(component.barWidget.getValue().xAxisLabel).toBe(component.barChartOptions.scales.xAxes[0].scaleLabel.labelString);
     expect(component.barWidget.getValue().yAxisLabel).toBe(component.barChartOptions.scales.yAxes[0].scaleLabel.labelString);
+  }));
+
+  it(`setChartAxisAndScaleRange(), should set chart axis and scale on chart option`,async(()=>{
+    // mock data
+    const barWidget =  new BarChartWidget();
+    barWidget.orderWith = OrderWith.ASC;
+    barWidget.scaleFrom = 0;
+    barWidget.scaleTo = 20;
+    barWidget.stepSize = 4;
+    barWidget.xAxisLabel = 'Material Type';
+    barWidget.yAxisLabel = 'Value';
+    component.barWidget.next(barWidget);
+
+    const ticks = {min:barWidget.scaleFrom, max:barWidget.scaleTo, stepSize:barWidget.stepSize};
+    // call actual component function
+    component.setChartAxisAndScaleRange();
+
+    // asserts & expect
+    expect(component.barChartOptions.scales.yAxes[0].ticks).toEqual(ticks);
+    expect(component.barChartOptions.scales.xAxes[0].ticks).toEqual(undefined);
+    expect(component.barChartOptions.scales.yAxes[0].scaleLabel.labelString).toEqual(barWidget.yAxisLabel);
+    expect(component.barChartOptions.scales.xAxes[0].scaleLabel.labelString).toEqual(barWidget.xAxisLabel);
+
+    // scenario  2
+    barWidget.orientation = Orientation.HORIZONTAL;
+    component.barWidget.next(barWidget);
+
+    // call actual component method
+    component.setChartAxisAndScaleRange();
+
+    // asserts & expect
+    expect(component.barChartOptions.scales.xAxes[0].ticks).toEqual(ticks);
+    expect(component.barChartOptions.scales.yAxes[0].ticks).toEqual(undefined);
+    expect(component.barChartOptions.scales.yAxes[0].scaleLabel.labelString).toEqual(barWidget.yAxisLabel);
+    expect(component.barChartOptions.scales.xAxes[0].scaleLabel.labelString).toEqual(barWidget.xAxisLabel);
+
+    // scenario  3
+    const data = new BarChartWidget();
+    data.xAxisLabel = 'Data 1';
+    component.barWidget.next(data);
+    // call actual component method
+    component.setChartAxisAndScaleRange();
+
+    // asserts & expect
+    expect(component.barChartOptions.scales.xAxes[0].ticks).toEqual(undefined);
+    expect(component.barChartOptions.scales.yAxes[0].ticks).toEqual(undefined);
+    expect(component.barChartOptions.scales.yAxes[0].scaleLabel.labelString).toEqual('');
+    expect(component.barChartOptions.scales.xAxes[0].scaleLabel.labelString).toEqual(data.xAxisLabel);
+  }));
+
+
+  it(`transformDataSets(), data transformation before rander on chart`, async(()=>{
+    // mock data
+    const barWidget =  new BarChartWidget();
+    barWidget.orderWith = OrderWith.ASC;
+    barWidget.scaleFrom = 0;
+    barWidget.scaleTo = 20;
+    barWidget.stepSize = 4;
+    component.barWidget.next(barWidget);
+    const resBuckets = [{key:'HAWA',doc_count:10},{key:'DEIN',doc_count:3},{key:'ZMRO',doc_count:30}]
+
+    // call actual component method
+    const actualResponse = component.transformDataSets(resBuckets);
+
+    // expects
+    expect(actualResponse.length).toEqual(2,`Data should be interval in scale range`);
+    expect(component.lablels.length).toEqual(2,`Lablels length should be 2`);
+
+    // scenario  2
+    barWidget.dataSetSize = 1;
+    component.barWidget.next(barWidget);
+
+    // call actual component method
+    const actualResponse1 = component.transformDataSets(resBuckets);
+
+    expect(actualResponse1.length).toEqual(1,`After applied datasetSize length should be equals to dataSetSize`);
+
+
   }));
 
 });

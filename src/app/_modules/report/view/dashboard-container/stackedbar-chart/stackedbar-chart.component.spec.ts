@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { StackedbarChartComponent } from './stackedbar-chart.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { StackBarChartWidget, Criteria, WidgetHeader, PositionType, AlignPosition, AnchorAlignPosition, Orientation} from '../../../_models/widget';
+import { StackBarChartWidget, Criteria, WidgetHeader, PositionType, AlignPosition, AnchorAlignPosition, Orientation, OrderWith} from '../../../_models/widget';
 import { BehaviorSubject, of } from 'rxjs';
 import { MatMenuModule } from '@angular/material/menu';
 import { BaseChartDirective, Label } from 'ng2-charts';
@@ -182,4 +182,96 @@ describe('StackedbarChartComponent', () => {
     expect(component.stackBarWidget.getValue().yAxisLabel).toBe(component.barChartOptions.scales.yAxes[0].scaleLabel.labelString);
   }));
 
+  it(`setChartAxisAndScaleRange(), should set chart axis and scale on chart option`,async(()=>{
+    // mock data
+    const barWidget =  new StackBarChartWidget();
+    barWidget.orderWith = OrderWith.ASC;
+    barWidget.scaleFrom = 0;
+    barWidget.scaleTo = 20;
+    barWidget.stepSize = 4;
+    barWidget.xAxisLabel = 'Material Type';
+    barWidget.yAxisLabel = 'Value';
+    component.stackBarWidget.next(barWidget);
+
+    const ticks = {min:barWidget.scaleFrom, max:barWidget.scaleTo, stepSize:barWidget.stepSize};
+    // call actual component function
+    component.setChartAxisAndScaleRange();
+
+    // asserts & expect
+    expect(component.barChartOptions.scales.yAxes[0].ticks).toEqual(ticks);
+    expect(component.barChartOptions.scales.xAxes[0].ticks).toEqual(undefined);
+    expect(component.barChartOptions.scales.yAxes[0].scaleLabel.labelString).toEqual(barWidget.yAxisLabel);
+    expect(component.barChartOptions.scales.xAxes[0].scaleLabel.labelString).toEqual(barWidget.xAxisLabel);
+
+    // scenario  2
+    barWidget.orientation = Orientation.HORIZONTAL;
+    component.stackBarWidget.next(barWidget);
+
+    // call actual component method
+    component.setChartAxisAndScaleRange();
+
+    // asserts & expect
+    expect(component.barChartOptions.scales.xAxes[0].ticks).toEqual(ticks);
+    expect(component.barChartOptions.scales.yAxes[0].ticks).toEqual(undefined);
+    expect(component.barChartOptions.scales.yAxes[0].scaleLabel.labelString).toEqual(barWidget.yAxisLabel);
+    expect(component.barChartOptions.scales.xAxes[0].scaleLabel.labelString).toEqual(barWidget.xAxisLabel);
+
+    // scenario  3
+    const data = new StackBarChartWidget();
+    data.xAxisLabel = 'Data 1';
+    component.stackBarWidget.next(data);
+    // call actual component method
+    component.setChartAxisAndScaleRange();
+
+    // asserts & expect
+    expect(component.barChartOptions.scales.xAxes[0].ticks).toEqual(undefined);
+    expect(component.barChartOptions.scales.yAxes[0].ticks).toEqual(undefined);
+    expect(component.barChartOptions.scales.yAxes[0].scaleLabel.labelString).toEqual('');
+    expect(component.barChartOptions.scales.xAxes[0].scaleLabel.labelString).toEqual(data.xAxisLabel);
+  }));
+
+
+  it(`transformDataSets(), data transformation before rander on chart`, async(()=>{
+    // mock data
+    const barWidget =  new StackBarChartWidget();
+    barWidget.orderWith = OrderWith.ASC;
+    barWidget.scaleFrom = 0;
+    barWidget.scaleTo = 20;
+    barWidget.stepSize = 4;
+    component.stackBarWidget.next(barWidget);
+    const resBuckets = [{key:'HAWA',doc_count:10},{key:'DEIN',doc_count:3},{key:'ZMRO',doc_count:30}]
+
+    // call actual component method
+    const actualResponse = component.transformDataSets(resBuckets);
+
+    // expects
+    expect(actualResponse.length).toEqual(2,`Data should be interval in scale range`);
+    expect(actualResponse[0].doc_count).toEqual(3,`Small doc count should be on first position`);
+    expect(actualResponse[1].doc_count).toEqual(10,`10 should be on second position`);
+
+    // scenario  2
+    barWidget.orderWith = OrderWith.DESC;
+    barWidget.scaleTo = 30;
+    component.stackBarWidget.next(barWidget);
+
+    // call actual component method
+    const actualResponse01 = component.transformDataSets(resBuckets);
+
+    // expects
+    expect(actualResponse01.length).toEqual(3,`Data should be interval in scale range`);
+    expect(actualResponse01[0].doc_count).toEqual(30,`Top or max doc count should be on first position`);
+    expect(actualResponse01[1].doc_count).toEqual(10,`10 should be on second position`);
+
+
+    // scenario  3
+    barWidget.dataSetSize = 1;
+    component.stackBarWidget.next(barWidget);
+
+    // call actual component method
+    const actualResponse1 = component.transformDataSets(resBuckets);
+
+    expect(actualResponse1.length).toEqual(1,`After applied datasetSize length should be equals to dataSetSize`);
+
+
+  }));
 });
