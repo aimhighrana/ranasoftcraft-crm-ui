@@ -38,4 +38,8 @@ export class ReportService {
   public deleteReport(reportId: string): Observable<boolean> {
     return this.http.delete<boolean>(this.endpointService.deleteReport(reportId));
   }
+
+  public getDocCount(objectType: string): Observable<number> {
+    return this.http.get<number>(this.endpointService.docCountUrl(objectType));
+  }
 }

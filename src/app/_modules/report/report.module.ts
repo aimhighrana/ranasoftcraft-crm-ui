@@ -18,6 +18,7 @@ import { ReportListComponent } from './report-list/report-list.component';
 import { HtmlEditorComponent } from './view/dashboard-container/html-editor/html-editor.component';
 import { ImageComponent } from './view/dashboard-container/image/image.component';
 import { PieChartComponent } from './view/dashboard-container/pie-chart/pie-chart.component';
+import { MetadatafieldControlComponent } from './edit/container/metadatafield-control/metadatafield-control.component';
 
 
 @NgModule({
@@ -37,6 +38,7 @@ import { PieChartComponent } from './view/dashboard-container/pie-chart/pie-char
     HtmlEditorComponent,
     ImageComponent,
     PieChartComponent,
+    MetadatafieldControlComponent,
   ],
   imports: [
     CommonModule,

@@ -2,20 +2,27 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ContainerComponent } from './container.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
-import { ReactiveFormsModule, FormsModule, FormArray, FormGroup } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule, FormArray, FormGroup, FormControl } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Widget, WidgetTableModel } from '../../_models/widget';
 import { MetadataModel } from 'src/app/_models/schema/schemadetailstable';
 import { BreadcrumbComponent } from 'src/app/_modules/shared/_components/breadcrumb/breadcrumb.component';
 import { SvgIconComponent } from '@modules/shared/_components/svg-icon/svg-icon.component';
+import { ReportService } from '@modules/report/_service/report.service';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { Metadata } from './metadatafield-control/metadatafield-control.component';
 
 describe('ContainerComponent', () => {
   let component: ContainerComponent;
   let fixture: ComponentFixture<ContainerComponent>;
   beforeEach(async(() => {
+    const schemaDetailsServiceSp = jasmine.createSpyObj(ReportService,['getDocCount']);
     TestBed.configureTestingModule({
       declarations: [ ContainerComponent, BreadcrumbComponent, SvgIconComponent ],
-      imports:[AppMaterialModuleForSpec, ReactiveFormsModule, FormsModule, RouterTestingModule]
+      imports:[AppMaterialModuleForSpec, ReactiveFormsModule, FormsModule, RouterTestingModule],
+      providers:[
+        {provide: ReportService,  useValue: schemaDetailsServiceSp}
+      ]
     })
     .compileComponents();
   }));
@@ -109,5 +116,43 @@ describe('ContainerComponent', () => {
     expect(frmArray.length).toEqual(0, `After remove from array list  length should be 0`);
   }));
 
+  it('onDefaultFilterChange(), while change value on defould filter', async(()=>{
+    // mock data
+    const metaData = {fieldId:'MATL_DESC', fieldDescri:'Desc'} as Metadata;
+    const option = {option:{value:metaData}} as MatAutocompleteSelectedEvent;
+    const index = 0;
+
+    // call actual method
+    component.defaultFilterCtrlGrp = new FormGroup({filters: new FormArray([new FormGroup({
+      conditionFieldId: new FormControl('')
+    })])});
+    component.onDefaultFilterChange(option, index);
+
+    const frmArray =  component.defaultFilterCtrlGrp.controls.filters as FormArray;
+    expect(frmArray.length).toEqual(1, 'length should be 1');
+    expect(frmArray.at(index).get('conditionFieldId').value).toEqual(metaData.fieldId, `Field id should equals ${metaData.fieldId}`);
+  }));
+
+  it('onGroupByChange(), while change value on group by id', async(()=>{
+    // mock data
+    const metaData = {fieldId:'MATL_DESC', fieldDescri:'Desc'} as Metadata;
+    const option = {option:{value:metaData}} as MatAutocompleteSelectedEvent;
+
+    // call actual method
+    component.ngOnInit();
+    component.onGroupByChange(option);
+    expect(component.styleCtrlGrp.get('groupById').value).toEqual(metaData.fieldId, 'Group by id should equals ${metaData.fieldId}');
+  }));
+
+  it('onFieldChange(), while change value on field  id', async(()=>{
+    // mock data
+    const metaData = {fieldId:'MATL_DESC', fieldDescri:'Desc'} as Metadata;
+    const option = {option:{value:metaData}} as MatAutocompleteSelectedEvent;
+
+    // call actual method
+    component.ngOnInit();
+    component.onFieldChange(option);
+    expect(component.styleCtrlGrp.get('field').value).toEqual(metaData.fieldId, 'Field id should equals ${metaData.fieldId}');
+  }));
 
 });

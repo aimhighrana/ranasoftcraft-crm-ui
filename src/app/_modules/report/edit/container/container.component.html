@@ -48,11 +48,11 @@
                           <mat-list role="list" cdkDropList cdkDropListConnectedTo="container">
                             <mat-list-item role="listitem" cdkDrag widgetType="FILTER"><pros-svg-icon size="20" icon="FILTER_WIDGET" class="svg-widgetdrag" color="widget"></pros-svg-icon>Filter</mat-list-item>
                             <mat-divider></mat-divider>
-                            <mat-list-item role="listitem" cdkDrag widgetType="COUNT"><pros-svg-icon size="20" icon="COUNT_WIDGET" class="svg-widgetdrag" color="widget"></pros-svg-icon>Count</mat-list-item>
+                            <mat-list-item role="listitem" cdkDrag widgetType="COUNT"><pros-svg-icon size="20" icon="COUNT_WIDGET" class="svg-widgetdrag" color="widget"></pros-svg-icon>Metric</mat-list-item>
                             <mat-divider></mat-divider>
                             <mat-list-item role="listitem" cdkDrag widgetType="TABLE_LIST"><pros-svg-icon size="20" icon="LIST_WIDGET" class="svg-widgetdrag" color="widget"></pros-svg-icon>Table List</mat-list-item>
                             <mat-divider></mat-divider>
-                            <mat-list-item role="listitem" cdkDrag widgetType="BAR_CHART"><pros-svg-icon size="20" icon="BAR_WIDGET" class="svg-widgetdrag" color="widget"></pros-svg-icon>Bar Chart</mat-list-item>
+                            <mat-list-item role="listitem" cdkDrag widgetType="BAR_CHART"><pros-svg-icon size="20" icon="BAR_WIDGET" class="svg-widgetdrag" color="widget"></pros-svg-icon>Bar/Pie Chart</mat-list-item>
                             <mat-divider></mat-divider>
                             <mat-list-item role="listitem" cdkDrag widgetType="STACKED_BAR_CHART"><pros-svg-icon size="20" icon="STACKEDBAR_WIDGET" class="svg-widgetdrag" color="widget"></pros-svg-icon>Stacked Bar Chart</mat-list-item>
                             <mat-divider></mat-divider>
@@ -108,42 +108,35 @@
                               </mat-panel-title>
                             </mat-expansion-panel-header>
                             <div class="f-col" [formGroup] = "styleCtrlGrp">
-                                <mat-form-field>
+                                <mat-form-field appearance="outline">
                                     <mat-label>Widget Name</mat-label>
                                     <input matInput formControlName="widgetName">
                                 </mat-form-field>
 
                                 <div class="f-row">
-                                    <mat-form-field class="field-divider">
+                                    <mat-form-field class="field-divider" appearance="outline">
                                         <mat-label>Width</mat-label>
                                         <input type="number" max="pixcel" min="0" matInput formControlName="width">
                                     </mat-form-field>
                                     <span class="f-col-spacer-half"></span>
-                                    <mat-form-field class="field-divider">
+                                    <mat-form-field class="field-divider" appearance="outline">
                                         <mat-label>Height</mat-label>
                                         <input type="number" min="200" matInput formControlName="height">
                                     </mat-form-field>
                                 </div>
 
-                                <mat-form-field>
+                                <mat-form-field appearance="outline">
                                     <mat-label>Data Set</mat-label>
                                     <mat-select formControlName="objectType">
                                         <mat-option *ngFor="let object of dataSetOb | async" value="{{ object.objectid }}"> {{ object.objectdesc }} </mat-option>
                                     </mat-select>
+                                    <mat-hint *ngIf="selStyleWid  && selStyleWid.objectType && recordsCount">Total {{ recordsCount }} record(s) found</mat-hint>
+                                    <mat-hint *ngIf="selStyleWid  && selStyleWid.objectType && !recordsCount">Index not found , please sync data</mat-hint>                                    
                                 </mat-form-field>
 
-                                <ng-template [ngIf]="selStyleWid && (selStyleWid.widgetType === 'COUNT' || selStyleWid.widgetType === 'BAR_CHART' || selStyleWid.widgetType === 'STACKED_BAR_CHART' || selStyleWid.widgetType === 'FILTER')">
-                                    <mat-form-field>
-                                        <mat-label>Field</mat-label>
-                                        <mat-select formControlName="field">
-                                            <mat-option *ngFor="let field of headerFields | async" value="{{ field.fieldId }}"> {{ field.fieldDescri }} </mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
-                                </ng-template>
-
-                                <!-- FOR COUNT WIDGET-->
+                                <!-- FOR Aggregration -->
                                 <ng-template [ngIf]="selStyleWid  && (selStyleWid.widgetType === 'COUNT' || selStyleWid.widgetType === 'BAR_CHART' || selStyleWid.widgetType === 'STACKED_BAR_CHART') ">
-                                    <mat-form-field>
+                                    <mat-form-field appearance="outline">
                                         <mat-label>Aggregration Operator</mat-label>
                                         <mat-select formControlName="aggregrationOp">
                                             <mat-option value="GROUPBY">GROUPBY</mat-option>
@@ -155,9 +148,29 @@
                                     </mat-form-field>
                                 </ng-template>
 
+                                <ng-template [ngIf]="selStyleWid && (selStyleWid.widgetType === 'COUNT' || selStyleWid.widgetType === 'BAR_CHART' || selStyleWid.widgetType === 'STACKED_BAR_CHART' || selStyleWid.widgetType === 'FILTER')">
+                                    <pros-metadatafield-control
+                                    [moduleId] = "selStyleWid && selStyleWid.objectType"
+                                    lebel = "Field"
+                                    [selectedFldId] = "selStyleWid && selStyleWid.field"
+                                    (selectionChange) = 'onFieldChange($event)'
+                                    >
+                                    </pros-metadatafield-control>
+                                </ng-template>
+
+                                <!-- FOR STACKED BAR CHART WIDGET-->
+                                <ng-template [ngIf]="selStyleWid && selStyleWid.widgetType === 'STACKED_BAR_CHART'">
+                                    <pros-metadatafield-control
+                                        [moduleId] = "selStyleWid && selStyleWid.objectType"
+                                        lebel = "Group With(s)"
+                                        [selectedFldId] = "selStyleWid && selStyleWid.groupById"
+                                        (selectionChange) = 'onGroupByChange($event)'>
+                                    </pros-metadatafield-control>
+                                </ng-template>
+
                                 <!-- FOR FILTERs WIDGET-->
                                 <ng-template [ngIf]="selStyleWid && selStyleWid.widgetType === 'FILTER' ">
-                                    <mat-form-field>
+                                    <mat-form-field appearance="outline">
                                         <mat-label>Filter Type</mat-label>
                                         <mat-select formControlName="filterType">
                                             <mat-option value="DROPDOWN_VALS">Dropdown value</mat-option>
@@ -167,20 +180,10 @@
                                     </mat-form-field>
                                     <mat-checkbox color="primary" formControlName="isMultiSelect">Is Multiselect</mat-checkbox>
                                 </ng-template>
-
-                                <!-- FOR STACKED BAR CHART WIDGET-->
-                                <ng-template [ngIf]="selStyleWid && selStyleWid.widgetType === 'STACKED_BAR_CHART'">
-                                    <mat-form-field>
-                                        <mat-label>Group Id</mat-label>
-                                        <mat-select formControlName="groupById">
-                                            <mat-option *ngFor="let field of headerFields | async" value="{{ field.fieldId }}"> {{ field.fieldDescri }} </mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
-                                </ng-template>
-
+                                
                                 <!-- FOR TABLE LIST CHOOSE COLUMNS WIDGET-->
                                 <ng-template [ngIf]="selStyleWid && selStyleWid.widgetType === 'TABLE_LIST'">
-                                    <mat-form-field>
+                                    <mat-form-field appearance="outline">
                                         <mat-label>{{ chooseColumns ? chooseColumns.length : '0' }} Selected</mat-label>
                                         <mat-select>
                                             <mat-option *ngFor="let field of headerFields | async" value="{{ field.fieldId }}" >
@@ -196,7 +199,7 @@
 
                                 <!-- FOR IMAGE WIDGET-->
                                 <ng-template [ngIf]="selStyleWid && selStyleWid.widgetType === 'IMAGE'">
-                                    <mat-form-field>
+                                    <mat-form-field appearance="outline">
                                         <mat-label>Image Link</mat-label>
                                         <input matInput formControlName="imageUrl">
                                     </mat-form-field>
@@ -218,7 +221,7 @@
 
                                 <!-- FOR IMAGE WIDGET-->
                                 <ng-template [ngIf]="selStyleWid && selStyleWid.widgetType === 'HTML'">
-                                    <mat-form-field>
+                                    <mat-form-field appearance="outline">
                                         <mat-label>Html content</mat-label>
                                         <textarea matInput placeholder="Write html text.." formControlName="htmlText"></textarea>
                                     </mat-form-field>
@@ -237,7 +240,7 @@
                               </mat-panel-title>
                             </mat-expansion-panel-header>
                             <div class="f-col" [formGroup] = "chartPropCtrlGrp">
-                                <mat-form-field>
+                                <mat-form-field appearance="outline">
                                     <mat-label>Chart Type </mat-label>
                                     <mat-select formControlName="chartType">
                                         <mat-option value="BAR"> BAR </mat-option>
@@ -245,7 +248,7 @@
                                     </mat-select>
                                 </mat-form-field>
 
-                                <mat-form-field *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('chartType').value === 'BAR'">
+                                <mat-form-field appearance="outline" *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('chartType').value === 'BAR'">
                                     <mat-label>Orientation</mat-label>
                                     <mat-select formControlName="orientation">
                                         <mat-option value="VERTICAL"> Vertical </mat-option>
@@ -254,17 +257,17 @@
                                 </mat-form-field>
 
                                 <ng-template [ngIf]="chartPropCtrlGrp && chartPropCtrlGrp.get('chartType').value === 'BAR'">
-                                    <mat-form-field>
+                                    <mat-form-field appearance="outline">
                                         <mat-label>xAsix Lebel</mat-label>
                                         <input matInput formControlName="xAxisLabel">
                                     </mat-form-field>
 
-                                    <mat-form-field>
+                                    <mat-form-field appearance="outline">
                                         <mat-label>yAsix Lebel</mat-label>
                                         <input matInput formControlName="yAxisLabel">
                                     </mat-form-field>
 
-                                    <mat-form-field>
+                                    <mat-form-field appearance="outline">
                                         <mat-label>Count OrderBy </mat-label>
                                         <mat-select formControlName="orderWith">
                                             <mat-option value="asc"> Ascending </mat-option>
@@ -273,24 +276,24 @@
                                     </mat-form-field>
 
                                     <div class="f-row">
-                                        <mat-form-field class="field-divider">
+                                        <mat-form-field class="field-divider" appearance="outline">
                                             <mat-label>Scale From</mat-label>
                                             <input type="number" min="0" matInput formControlName="scaleFrom">
                                         </mat-form-field>
                                         <span class="f-col-spacer-half"></span>
-                                        <mat-form-field class="field-divider">
+                                        <mat-form-field class="field-divider" appearance="outline">
                                             <mat-label>Scale To</mat-label>
                                             <input type="number" min="0" matInput formControlName="scaleTo">
                                         </mat-form-field>
                                     </div>
 
                                     <div class="f-row">
-                                        <mat-form-field class="field-divider">
+                                        <mat-form-field class="field-divider" appearance="outline">
                                             <mat-label>Scale Step Size</mat-label>
                                             <input type="number" min="0" matInput formControlName="stepSize">
                                         </mat-form-field>
                                         <span class="f-col-spacer-half"></span>
-                                        <mat-form-field class="field-divider">
+                                        <mat-form-field class="field-divider" appearance="outline">
                                             <mat-label>Max dataset number</mat-label>
                                             <input type="number" min="0" matInput formControlName="dataSetSize">
                                         </mat-form-field>
@@ -300,7 +303,7 @@
 
                                 <mat-checkbox color="primary" formControlName="isEnableDatalabels">Enable Datalabels</mat-checkbox>
 
-                                <mat-form-field *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('isEnableDatalabels').value">
+                                <mat-form-field appearance="outline" *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('isEnableDatalabels').value">
                                     <mat-label>Datalabels Position</mat-label>
                                     <mat-select formControlName="datalabelsPosition">
                                         <mat-option value="center"> Center </mat-option>
@@ -311,7 +314,7 @@
 
                                 <mat-checkbox color="primary" formControlName="isEnableLegend">Show Legend</mat-checkbox>
                                 
-                                <mat-form-field *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('isEnableLegend').value">
+                                <mat-form-field appearance="outline" *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('isEnableLegend').value">
                                     <mat-label>Legend Position</mat-label>
                                     <mat-select formControlName="legendPosition">
                                         <mat-option value="top"> Top </mat-option>
@@ -337,15 +340,16 @@
                             <ng-template [ngIf]="selStyleWid  && selStyleWid.defaultFilters">
                                 <div class="f-col" [formGroup] = "defaultFilterCtrlGrp">                                
                                     <div class="f-row" formArrayName="filters" *ngFor="let filter of defaultFilterCtrlGrp.get('filters').controls; let i = index">
-                                        <ng-container [formGroupName]="i">
-                                            <mat-form-field class="field-divider">
-                                                <mat-label>Field</mat-label>
-                                                <mat-select formControlName="conditionFieldId">
-                                                    <mat-option *ngFor="let field of headerFields | async" value="{{ field.fieldId }}"> {{ field.fieldDescri }} </mat-option>
-                                                </mat-select>
-                                            </mat-form-field>
+                                        <ng-container [formGroupName]="i">                                            
+                                            <pros-metadatafield-control
+                                                [moduleId] = "selStyleWid && selStyleWid.objectType"
+                                                lebel = "Field "
+                                                [selectedFldId] = "selStyleWid && selStyleWid.defaultFilters && selStyleWid.defaultFilters[i].conditionFieldId"
+                                                (selectionChange) = 'onDefaultFilterChange($event,i)' class="field-divider">
+                                            </pros-metadatafield-control>
+
                                             <span class="f-col-spacer"></span>
-                                            <mat-form-field class="field-divider">
+                                            <mat-form-field appearance="outline" class="field-divider">
                                                 <mat-label>Value</mat-label>
                                                 <input matInput formControlName="conditionFieldValue">
                                             </mat-form-field>
