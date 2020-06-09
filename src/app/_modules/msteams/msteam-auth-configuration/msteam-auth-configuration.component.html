@@ -1,0 +1,21 @@
+<div class="root mat-card-center">
+    <mat-card class="container-show" style="text-align: center;">
+        <p style="font-size: 1.125rem; line-height: 1.5rem;">Login</p>
+        <hr />
+        <form [formGroup]="signInForm" class="singIn-form" (ngSubmit)="signIn()">
+            <mat-form-field class="input-field-full-width">
+              <mat-label>User Name</mat-label>
+              <input matInput value="mdoteamint" formControlName="userName" >
+            </mat-form-field>
+          
+            <mat-form-field class="input-field-full-width">
+              <mat-label>Password</mat-label>
+              <input matInput type="password" value="Welcome@123" formControlName="password" >
+            </mat-form-field>
+
+            <mat-card-actions>
+                <button mat-raised-button type="submit" color="primary">Sign In</button>
+            </mat-card-actions>
+        </form>
+    </mat-card>
+</div>

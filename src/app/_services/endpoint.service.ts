@@ -284,6 +284,9 @@ export class EndpointService {
     return `${this.apiUrl}/report/record-count/${objectType}`;
   }
 
+  public getReportListUrlForMsTeams(): string {
+    return `${this.apiUrl}/report`;
+  }
 }
 
 

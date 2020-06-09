@@ -1,0 +1,22 @@
+<div class="root mat-card-center">
+    <mat-card class="container-show" style="text-align: center;">
+      <p style="font-size: 1.125rem; line-height: 1.5rem;">Configure Report Url</p>
+        <hr />
+        <mat-radio-group [(value)]="selectedOption">
+          <mat-radio-button *ngFor="let option of radioOptions" [value]="option.optionId" [checked] = "option.optionId == 1" style="padding-right: 20px;"
+          (change)="radioChange(option.optionId)">{{option.optionName}}</mat-radio-button>
+        </mat-radio-group>
+
+        <mat-form-field *ngIf = "selectedOption == radioOptions[0].optionId" class="input-field-full-width" style="margin-top: 30px;">
+            <mat-label>Select a report url</mat-label>
+            <mat-select [(ngModel)]="reportListSelected" (selectionChange)="onSelectUrlChange()">
+              <mat-option *ngFor="let report of reportList" [value] = "report.reportUrl">{{ report.reportName }}</mat-option> 
+            </mat-select>
+        </mat-form-field>
+      
+        <mat-form-field *ngIf = "selectedOption == radioOptions[1].optionId" class="input-field-full-width">
+          <mat-label>Custom Url</mat-label>
+          <input matInput [(ngModel)]="customUrl"  (input)="onCustomUrlChange()">
+        </mat-form-field>
+    </mat-card>
+</div>
