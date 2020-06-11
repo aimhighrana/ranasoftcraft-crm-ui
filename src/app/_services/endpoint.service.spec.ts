@@ -51,4 +51,10 @@ describe('EndpointService', () => {
     expect(serObj.getSchemaStatusUrl()).toContain('schema/schema-status');
   }));
 
+  it('docCountUrl(), should return the get doc count url', async(() =>{
+    const serObj = new EndpointService();
+    const objType = '1005';
+    expect(serObj.docCountUrl(objType)).toContain(`report/record-count/${objType}`, `report/record-count/${objType}  sould be return!`);
+  }));
+
 });

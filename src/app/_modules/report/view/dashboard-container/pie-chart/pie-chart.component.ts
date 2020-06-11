@@ -196,8 +196,8 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
   }
 
   legendClick(legendItem: ChartLegendLabelItem) {
-    const clickedLegend =  this.chartLegend[legendItem.index] ? this.chartLegend[legendItem.index].code : '';;
-    if(clickedLegend === '') {
+    const clickedLegend =  this.chartLegend[legendItem.index] ? this.chartLegend[legendItem.index].code : this.lablels[legendItem.index];
+    if(clickedLegend === undefined) {
       return false;
     }
     const fieldId = this.pieWidget.getValue().fieldId;
@@ -233,6 +233,10 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
       const option = this.chart.chart.getElementAtEvent(event) as any;
       const clickedIndex = (option[0])._index;
       const clickedLagend = this.chartLegend[clickedIndex];
+      const drpCode = this.chartLegend[clickedIndex] ? this.chartLegend[clickedIndex].code : this.lablels[clickedIndex];
+      if(drpCode === undefined) {
+        return false;
+      }
       const fieldId = this.pieWidget.getValue().fieldId;
       let appliedFilters = this.filterCriteria.filter(fill => fill.fieldId === fieldId);
       this.removeOldFilterCriteria(appliedFilters);
@@ -242,7 +246,7 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
           const critera1: Criteria = new Criteria();
           critera1.fieldId = fieldId;
           critera1.conditionFieldId = fieldId;
-          critera1.conditionFieldValue = clickedLagend.code;
+          critera1.conditionFieldValue = drpCode;
           critera1.blockType = BlockType.COND;
           critera1.conditionOperator = ConditionOperator.EQUAL;
           appliedFilters.push(critera1);
@@ -252,7 +256,7 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
         const critera1: Criteria = new Criteria();
         critera1.fieldId = fieldId;
         critera1.conditionFieldId = fieldId
-        critera1.conditionFieldValue = clickedLagend.code;
+        critera1.conditionFieldValue = drpCode;
         critera1.blockType = BlockType.COND;
         critera1.conditionOperator = ConditionOperator.EQUAL;
         appliedFilters.push(critera1);

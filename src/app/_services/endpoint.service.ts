@@ -272,6 +272,10 @@ export class EndpointService {
     return `${this.apiUrl}/report/delete/${reportId}`;
   }
 
+  public docCountUrl(objectType: string): string {
+    return `${this.apiUrl}/report/record-count/${objectType}`;
+  }
+
 }
 
 

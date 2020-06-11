@@ -11,6 +11,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ObjectTypeResponse } from 'src/app/_models/schema/schema';
 import { SchemaService } from 'src/app/_services/home/schema.service';
 import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-details.service';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
 @Component({
   selector: 'pros-container',
@@ -50,6 +51,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   chartPropCtrlGrp: FormGroup;
 
   defaultFilterCtrlGrp: FormGroup;
+
+  recordsCount: number;
 
   /**
    * All the http or normal subscription will store in this array
@@ -170,6 +173,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       if(fillData && typeof fillData === 'string') {
         if(fillData !== this.styleCtrlGrp.value.objectType) {
           this.getAllFields(fillData);
+          this.getRecordCount(fillData);
         }
       }
     });
@@ -399,6 +403,60 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     frmArray.removeAt(idx);
   }
 
+  /**
+   * Update field on formGroup while selection change
+   * @param fieldData option of selection change
+   */
+  onFieldChange(fieldData: MatAutocompleteSelectedEvent) {
+    if(fieldData && fieldData.option.value) {
+      this.styleCtrlGrp.get('field').setValue(fieldData.option.value.fieldId);
+    } else {
+      this.styleCtrlGrp.get('field').setValue('');
+    }
+    console.log(fieldData);
+  }
+
+  /**
+   * Update field on formGroup while selection change
+   * @param fieldData option of selection change
+   */
+  onGroupByChange(fieldData: MatAutocompleteSelectedEvent) {
+    if(fieldData && fieldData.option.value) {
+      this.styleCtrlGrp.get('groupById').setValue(fieldData.option.value.fieldId);
+    } else {
+      this.styleCtrlGrp.get('groupById').setValue('');
+    }
+    console.log(fieldData);
+  }
+
+  /**
+   * Use for update default filter array
+   * @param fieldData selected data or on change dropdown data
+   * @param index row index
+   */
+  onDefaultFilterChange(fieldData: MatAutocompleteSelectedEvent, index: number) {
+    const frmArray =  this.defaultFilterCtrlGrp.controls.filters as FormArray;
+    if(fieldData && fieldData.option.value) {
+      frmArray.at(index).get('conditionFieldId').setValue(fieldData.option.value.fieldId);
+    } else {
+      frmArray.at(index).get('conditionFieldId').setValue('');
+    }
+  }
+
+  /**
+   * Should call api and get the actual records count
+   * @param objectType selected object type
+   */
+  getRecordCount(objectType: string) {
+    const docCountSub = this.reportService.getDocCount(objectType).subscribe(res=>{
+      this.recordsCount = res;
+    },error=>{
+      this.recordsCount = null;
+      console.error(`Error: ${error}`);
+    });
+    this.subscriptions.push(docCountSub);
+  }
+
   createUpdateReport() {
     if(this.reportName === undefined || this.reportName.trim() === '') {
       this.snackbar.open(`Report name can't empty`, 'Close',{duration:2000});
@@ -417,7 +475,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const createUpdateSub = this.reportService.createUpdateReport(request).subscribe(res=>{
       this.reportId = res;
-      this.snackbar.open(`Successfully saved chage(s)`, 'Close',{duration:5000});
+      this.snackbar.open(`Successfully saved change(s)`, 'Close',{duration:5000});
     },errro=>{
       this.snackbar.open(`Something went wrong`, 'Close',{duration:5000});
     });

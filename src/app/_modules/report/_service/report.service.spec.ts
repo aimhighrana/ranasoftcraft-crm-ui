@@ -9,7 +9,7 @@ describe('ReportService', () => {
   let endpointServiceSpy: jasmine.SpyObj<EndpointService>;
   let httpTestingController: HttpTestingController;
   beforeEach(() => {
-    const epsSpy = jasmine.createSpyObj('EndpointService', [ 'reportDashboardUrl']);
+    const epsSpy = jasmine.createSpyObj('EndpointService', [ 'reportDashboardUrl','docCountUrl']);
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule ],
       providers: [
@@ -34,6 +34,26 @@ describe('ReportService', () => {
     const mockhttpData = {} as any;
     // actual call
     service.getReportInfo(265623).subscribe(actualData => {
+      expect(actualData).toEqual(mockhttpData);
+    });
+    // mocking http
+    const req = httpTestingController.expectOne(testurl);
+    expect(req.request.method).toEqual('GET');
+    req.flush(mockhttpData);
+    // verify http
+    httpTestingController.verify();
+
+  }));
+
+  it('getDocCount() : should be return count', async(() => {
+    const testurl = 'count testing url';
+    const objectType = '1005';
+    // mocking url
+    endpointServiceSpy.docCountUrl.withArgs(objectType).and.returnValue(testurl);
+    // mock data
+    const mockhttpData = {} as any;
+    // actual call
+    service.getDocCount(objectType).subscribe(actualData => {
       expect(actualData).toEqual(mockhttpData);
     });
     // mocking http
