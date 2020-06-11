@@ -287,6 +287,17 @@ export class EndpointService {
   public getReportListUrlForMsTeams(): string {
     return `${this.apiUrl}/report`;
   }
+  public getPermissionUrl(): string {
+    return `${this.apiUrl}/admin/permission/collaborators`;
+  }
+
+  public returnCollaboratorsPermisisonUrl(reportId: string): string {
+    return `${this.apiUrl}/admin/permission/collaborators/permission/${reportId}`;
+  }
+
+  public saveUpdateReportCollaborator(): string {
+    return `${this.apiUrl}/admin/permission/collaborators/permission/save-update`;
+  }
 }
 
 

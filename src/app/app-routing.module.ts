@@ -7,6 +7,7 @@ const routes: Routes = [
   { path: 'home', loadChildren: () => import('./_modules/home/home.module').then(m => m.HomeModule) },
   { path: 'sb/schema', loadChildren: () => import('./_modules/schema/schema.module').then(m => m.SchemaModule), outlet: 'sb' },
   { path: 'msteams', loadChildren: () => import('./_modules/msteams/msteams.module').then(m => m.MSTeamsModule) },
+  { path: 'sb/report', loadChildren: () => import('./_modules/report/report.module').then(m => m.ReportModule), outlet: 'sb' },
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent }
 ];

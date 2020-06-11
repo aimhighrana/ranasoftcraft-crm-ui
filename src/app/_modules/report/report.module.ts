@@ -19,7 +19,8 @@ import { HtmlEditorComponent } from './view/dashboard-container/html-editor/html
 import { ImageComponent } from './view/dashboard-container/image/image.component';
 import { PieChartComponent } from './view/dashboard-container/pie-chart/pie-chart.component';
 import { MetadatafieldControlComponent } from './edit/container/metadatafield-control/metadatafield-control.component';
-
+import { ReportCollaboratorComponent } from './permissions/report-collaborator/report-collaborator.component';
+import { CollaboratorComponent } from './permissions/collaborator/collaborator.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,8 @@ import { MetadatafieldControlComponent } from './edit/container/metadatafield-co
     ImageComponent,
     PieChartComponent,
     MetadatafieldControlComponent,
+    ReportCollaboratorComponent,
+    CollaboratorComponent,
   ],
   imports: [
     CommonModule,

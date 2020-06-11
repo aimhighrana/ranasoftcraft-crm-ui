@@ -1,8 +1,11 @@
-<div class="root">
+<div class="root f-col">
 
 	<!-- BREADCRUMB-->
-	<div class="breadcrumb-wrapper">
-		<pros-breadcrumb [crumbs]="breadcrumb"></pros-breadcrumb>
+	<div class="crumbrow f-row">
+        <pros-breadcrumb [crumbs]="breadcrumb"></pros-breadcrumb>
+        <div class="f-spacer"></div>
+        <button *ngIf="collaboratorPermission && reportId"  matTooltip="Collaborator" mat-stroked-button [routerLink]="['', { outlets: { sb: 'sb/report/collaborators/' + reportId } } ]"><mat-icon>group_add</mat-icon></button>
+        <div class="f-col-spacer-half"></div>
     </div>
     
     <mat-card class="mat-elevation-z3 builder-container">

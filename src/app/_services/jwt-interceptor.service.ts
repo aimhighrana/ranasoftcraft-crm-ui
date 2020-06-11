@@ -4,6 +4,7 @@ import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { catchError, filter, take, switchMap, finalize } from 'rxjs/operators';
 import { EndpointService } from '../_services/endpoint.service';
 import { Router } from '@angular/router';
+import { AccessDeniedDialogComponent } from '@modules/shared/_components/access-denied-dialog/access-denied-dialog.component';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,8 @@ export class JwtInterceptorService implements HttpInterceptor {
   constructor(
     private router: Router,
     private http: HttpClient,
-    private endpointService: EndpointService
+    private endpointService: EndpointService,
+    private accessDeniedComponent: AccessDeniedDialogComponent
   ) { }
 
   addToken(req: HttpRequest<any>, token: string): HttpRequest<any> {
@@ -38,6 +40,9 @@ export class JwtInterceptorService implements HttpInterceptor {
                 switch (error.status) {
                     case 401:
                     return this.handlerFor401(request, next);
+
+                    case 403:
+                      this.handlerFor403(request, next);
                 }
                 // notify user here
                 return throwError(error);
@@ -87,6 +92,18 @@ export class JwtInterceptorService implements HttpInterceptor {
             switchMap(token => {
                 return next.handle(this.addToken(req, token));
             }));
+    }
+  }
+
+  /**
+   * While http throw 403 ,
+   * Open access denied comman dialog
+   * @param req http request url control
+   * @param next handler for http request
+   */
+  handlerFor403(req: HttpRequest<any>, next: HttpHandler) {
+    if(req) {
+      this.accessDeniedComponent.open();
     }
   }
 

@@ -348,3 +348,24 @@ export class ChartProperties {
     stepSize: number;
     dataSetSize: number;
 }
+
+export class ReportDashboardPermission {
+    permissionId: number;
+    reportId: number;
+    userId: string;
+    roleId: string;
+    groupId: string;
+    isEditable: boolean;
+    isViewable: boolean;
+    isDeleteable: boolean;
+    isAdmin: boolean;
+    permissionType: PermissionType;
+    createdAt: number;
+    updatedAt: number;
+    createdBy: string;
+}
+export enum PermissionType {
+    USER = 'USER',
+    ROLE = 'ROLE',
+    GROUP = 'GROUP'
+}

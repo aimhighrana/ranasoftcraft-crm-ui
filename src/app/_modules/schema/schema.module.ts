@@ -21,6 +21,7 @@ import { UploadDataComponent } from './_components/upload-data/upload-data.compo
 import { ExecutionSummaryComponent } from './_components/schema-details/execution-summary/execution-summary.component';
 import { MapMdoFieldComponent } from './_components/upload-data/map-mdo-field/map-mdo-field.component';
 import { SalesforceConnectionComponent } from './_components/salesforce-connection/salesforce-connection.component';
+import { AccessDeniedDialogComponent } from '@modules/shared/_components/access-denied-dialog/access-denied-dialog.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { SalesforceConnectionComponent } from './_components/salesforce-connecti
     UploadDataComponent,
     ExecutionSummaryComponent,
     MapMdoFieldComponent,
-    SalesforceConnectionComponent
+    SalesforceConnectionComponent,
+    AccessDeniedDialogComponent
   ],
   imports: [
     CommonModule,

@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { EndpointService } from 'src/app/_services/endpoint.service';
 import { DropDownValues, ReportDashboardReq } from '../_models/widget';
 import { ReportList } from '../report-list/report-list.component';
+import { PermissionOn, ReportDashboardPermission } from '@models/collaborator';
 
 @Injectable({
   providedIn: 'root'
@@ -41,5 +42,17 @@ export class ReportService {
 
   public getDocCount(objectType: string): Observable<number> {
     return this.http.get<number>(this.endpointService.docCountUrl(objectType));
+  }
+
+  public getCollaboratorPermission(queryString: string) : Observable<PermissionOn> {
+    return this.http.get<PermissionOn>(this.endpointService.getPermissionUrl(),{params:{queryString}});
+  }
+
+  public getCollaboratorsPermisison(reportId: string): Observable<ReportDashboardPermission[]> {
+    return this.http.get<ReportDashboardPermission[]>(this.endpointService.returnCollaboratorsPermisisonUrl(reportId));
+  }
+
+  public saveUpdateReportCollaborator(request: ReportDashboardPermission[]): Observable<ReportDashboardPermission[]> {
+    return this.http.post<ReportDashboardPermission[]>(this.endpointService.saveUpdateReportCollaborator(), request);
   }
 }

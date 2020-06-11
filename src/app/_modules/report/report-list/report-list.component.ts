@@ -3,12 +3,13 @@ import { Breadcrumb } from 'src/app/_models/breadcrumb';
 import { ReportService } from '../_service/report.service';
 import { FormControl } from '@angular/forms';
 import { Observable, of } from 'rxjs';
-import { Widget } from '../_models/widget';
+import { Widget, ReportDashboardPermission } from '../_models/widget';
 import { MatSnackBar } from '@angular/material/snack-bar';
 export class ReportList {
   reportId: string;
   reportName: string;
   widgets: Widget[];
+  permission: ReportDashboardPermission;
 }
 @Component({
   selector: 'pros-report-list',

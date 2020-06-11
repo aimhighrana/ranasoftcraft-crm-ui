@@ -54,6 +54,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   recordsCount: number;
 
+  collaboratorPermission = false;
+
   /**
    * All the http or normal subscription will store in this array
    */
@@ -93,6 +95,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.reportId =  params.id ?((params.id).toLowerCase() === 'new' ? '' : params.id) : '';
       if(this.reportId) {
         this.getReportConfig(this.reportId);
+      } else {
+        this.collaboratorPermission = true;
       }
     });
     this.subscriptions.push(sub);
@@ -198,7 +202,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.widgetList = res.widgets;
       this.reportId = res.reportId;
       this.reportName = res.reportName;
-      console.log(res);
+      this.collaboratorPermission = res.permission ? res.permission.isAdmin : false;
     },error=>console.error(`Error: ${error}`));
     this.subscriptions.push(reportConfig);
   }

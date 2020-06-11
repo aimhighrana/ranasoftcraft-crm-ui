@@ -16,15 +16,15 @@
                 <mat-toolbar-row>
                     <h3 class="mat-h3">{{ report.reportName ? report.reportName : 'Untitled' }}</h3>
                     <span class="f-spacer"></span>
-                    <button mat-icon-button matTooltip="Dashboard" [routerLink]="['/home', 'report', 'dashboard', report.reportId]">
+                    <button [disabled]="report.permission && !report.permission.isViewable" mat-icon-button matTooltip="Dashboard" [routerLink]="['/home', 'report', 'dashboard', report.reportId]">
                         <mat-icon>dashboard</mat-icon>
                     </button>
                     <div class="f-col-spacer-half"></div>
-                    <button mat-icon-button matTooltip="Edit" [routerLink]="['/home', 'report', 'dashboard-builder', report.reportId]">
+                    <button [disabled]="report.permission && !report.permission.isEditable" mat-icon-button matTooltip="Edit" [routerLink]="['/home', 'report', 'dashboard-builder', report.reportId]">
                         <mat-icon>edit</mat-icon>
                     </button>
                     <div class="f-col-spacer-half"></div>
-                    <button mat-icon-button matTooltip="Delete" (click)="delete(report.reportId)">
+                    <button [disabled]="report.permission && !report.permission.isDeleteable" mat-icon-button matTooltip="Delete" (click)="delete(report.reportId)">
                         <mat-icon>delete</mat-icon>
                     </button>
                 </mat-toolbar-row>
