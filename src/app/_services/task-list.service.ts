@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { TaskListRow } from '@models/task-list/taskListRow';
-import { Filters } from '@models/task-list/filters';
+import { Filter, StaticFilter, DynamicFilter } from '@models/task-list/filter';
 import { Pagination } from '@models//task-list/pagination';
-import { of } from 'rxjs';
+import { EndpointService } from '@services/endpoint.service';
+import { of, BehaviorSubject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -39,7 +41,7 @@ export class TaskListService {
       requestor: 'Prospecta Administrator',
       recieved_on: 'April 20, 2019 04:40:33',
       due_date: 'September 20, 2020 04:40:33',
-      module: 'Material',
+      module: 'Customer',
       priority: 'Medium',
       tags: [{
         color: 'pink',
@@ -81,7 +83,7 @@ export class TaskListService {
         color: 'pink',
         value: 'tag5'
       }],
-    },{
+    }, {
       task_id: 'Task ID - OTV487',
       description: 'OTV484 Vendor has been created and sent for your approval.',
       requestor: 'Prospecta Administrator',
@@ -108,40 +110,23 @@ export class TaskListService {
     }
   ]
 
-  sampleFilters: Filters = {
-    textInput: '',
-    modules: [
-      { value: 'All Modules', selected: true },
-      { value: 'Material', selected: false },
-      { value: 'Customer', selected: false },
-      { value: 'Prospects', selected: false }
-    ],
-    statuses: [
-      { value: 'All', selected: false },
-      { value: 'Complete', selected: false },
-      { value: 'Progress', selected: false },
-      { value: 'Delete', selected: false }
-    ],
-    priorities: [
-      { value: 'All', selected: false },
-      { value: 'High', selected: false },
-      { value: 'Medium', selected: false },
-      { value: 'Low', selected: false }
-    ],
-    regions: [
-      { value: 'South Australia', selected: false },
-      { value: 'North Australia', selected: false },
-      { value: 'East Australia', selected: false },
-      { value: 'West Australia', selected: false },
-    ],
-    requested_by: [
-      { value: 'Apoorv', selected: false },
-      { value: 'Shashank', selected: false },
-      { value: 'Nikhil', selected: false }
-    ],
-    received_date: '',
-    due_date: '',
+  staticFilters: StaticFilter = {
+    status: '',
+    priority: '',
+    region: '',
+    recieved_on: new Date(),
+    due_date: new Date(),
+    requested_by: ''
   }
+
+  dynamicFilters: DynamicFilter[] = [
+    {
+      objectType: '0000',
+      objectDesc: 'All Modules',
+      filterFields: [],
+      colorActive: true,
+    }
+  ]
 
   sampleColumns = [
     { value: 'task_id', hasLargeText: false, visible: true },
@@ -198,26 +183,43 @@ export class TaskListService {
       auctionedOn: ''
     }]
   }
+  dynamicFiltersObservable: BehaviorSubject<DynamicFilter[]> = new BehaviorSubject([]);
 
   /**
    * Constructor of @class TaskListService
    */
-  constructor() { }
+  constructor(
+    private endpointService: EndpointService,
+    private http: HttpClient
+  ) { }
 
   /**
    * Function to get Task list from Service
    * @param filters the filter object to send to sever
    * @param pagination the pagination object to send to server
    */
-  getTasks(filters: Filters, pagination: Pagination) {
-    return of(this.sampleList)
+  getTasks(filters: Filter, pagination: Pagination) {
+    return of(this.sampleList);
+    // return this.http.get(this.endpointService.getTasksListUrl());
+  }
+
+  public getStaticFilters(): StaticFilter {
+    return this.staticFilters;
   }
 
   /**
-   * Function to get filters
+   * Function to get dynamic filters
    */
-  getFilters() {
-    return of(this.sampleFilters)
+  public getDynamicFilters(userDetails) {
+    const url = this.endpointService.getFiltersUrl();
+    const requestData = {
+      plantCode: userDetails.plantCode,
+      userName: userDetails.userName,
+      roleId: userDetails.currentRoleId,
+      locale: 'en',
+      clientId: '738'
+    }
+    return this.http.post(url, requestData);
   }
 
   /**

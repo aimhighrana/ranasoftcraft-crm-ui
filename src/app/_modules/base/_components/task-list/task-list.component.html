@@ -1,101 +1,165 @@
 <div class="root">
     <mat-card class="container-show tasklist-container">
+        <mat-tab-group (selectedTabChange)="tabChanged($event)">
 
-        <mat-tab-group>
             <mat-tab label="My Task">
-                <div class="f-row search-action">
-                    <mat-form-field appearance="outline">
-                        <mat-icon matSuffix>search</mat-icon>
-                        <mat-label>Search</mat-label>
-                        <input matInput placeholder="Placeholder">
-                    </mat-form-field>
-                    <span class="col-spacer"></span>
-                    <button mat-stroked-button color="primary" (click)="toggleDynamicFilters()">
-                        <mat-icon matSuffix>filter_list</mat-icon>Filters
-                    </button>
-                    <span class="f-spacer"></span>
-                    <button mat-button color="primary">
-                        <mat-icon>star_border</mat-icon>Save search
-                    </button>
-                    <span class="col-spacer"></span>
-                    <button mat-button color="primary" [matMenuTriggerFor]="menu">Saved searches<mat-icon>
-                            keyboard_arrow_down</mat-icon></button>
-                    <mat-menu #menu="matMenu">
-                        <button mat-menu-item
-                            *ngFor="let savedSearch of savedSearches">{{savedSearch.searchName}}</button>
-                    </mat-menu>
-                </div>
-
-                <div class="f-row action-list">
-                    <p class="mat-label">{{tasks.length}} results found for
-                        "Search"</p>
-                    <span class="f-spacer"></span>
-                    <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
-                </div>
-
-                <!--  filters -->
-                <pros-filters-dropdown class="dynamic-filter" [filters]="filters" *ngIf="dynamicFiltersVisible"
-                    (closeFilterBox)="toggleDynamicFilters()" (updateFilters)="updateFilters($event)">
-                </pros-filters-dropdown>
-
-
+                <ng-container *ngTemplateOutlet="commonFilterContent"></ng-container>
                 <div class="f-row list-wrapper">
 
-                    <div class="tasklist-table" id="task-list-table" [summaryShown]="enableDragging" prosResizeable>
-                        <mat-card class="container-show list-thead list-card">
+                    <div class="tasks-container" [class.content-row]="!selectedTaskId" [class.split]="selectedTaskId"
+                        [summaryShown]="enableDragging.asObservable()" prosResizeable>
+                        <button mat-icon-button class="ac-setting" color="primary"
+                            (click)="showColumnSettingPopUp=!showColumnSettingPopUp">
+                            <mat-icon matTooltip="Colunm Setting">settings</mat-icon>
+                        </button>
+                        <pros-columnsetting [tableColumns]="tableColumns" (updateColumns)="updateColumns($event)"
+                            (close)="toggleColumnSettingPopUp()" *ngIf="showColumnSettingPopUp">
+                        </pros-columnsetting>
 
-                            <ng-container *ngFor="let tableColumn of tableColumns" (matSortChange)="sortData($event)">
-                                <div [class.f2-cell]="tableColumn.hasLargeText"
-                                    *ngIf="columnVisible(tableColumn.value)">
-                                    {{tableColumn.value | formatTableHeaders | titlecase}}</div>
+                        <div class="hand-control"></div>
+                        <mat-table #table [dataSource]="dataSource" matSort>
+
+                            <ng-container matColumnDef="task_id">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header> Task ID </mat-header-cell>
+                                <mat-cell *matCellDef="let element" (click)="getTaskDetails(element.task_id)"
+                                    style="cursor:pointer"> {{element.task_id}}</mat-cell>
                             </ng-container>
 
+                            <ng-container matColumnDef="description">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header> Description </mat-header-cell>
+                                <mat-cell *matCellDef="let element">
+                                    <span class="describe-text">
+                                        {{element.description}}
+                                    </span>
+                                </mat-cell>
+                            </ng-container>
 
-                            <button mat-icon-button class="ac-setting" color="primary"
-                                (click)="toggleColumnSettingPopUp()">
-                                <mat-icon>settings</mat-icon>
-                            </button>
-                            <pros-columnsetting [tableColumns]="tableColumns" (updateColumns)="updateColumns($event)"
-                                (close)="toggleColumnSettingPopUp()" *ngIf="showColumnSettingPopUp">
-                            </pros-columnsetting>
-                        </mat-card>
+                            <ng-container matColumnDef="requestor">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header> Requester </mat-header-cell>
+                                <mat-cell *matCellDef="let element">
+                                    <mat-icon>account_circle</mat-icon> {{element.requestor}}
+                                </mat-cell>
+                            </ng-container>
 
-                        <mat-card class="mat-elevation-z2 list-card" *ngFor="let task of tasks"
-                            (click)="getTaskDetails(task.task_id)">
-                            <div *ngIf="columnVisible('task_id')">{{task.task_id}}</div>
-                            <div *ngIf="columnVisible('description')" class="f2-cell">{{task.description}}</div>
-                            <div *ngIf="columnVisible('requestor')">{{task.requestor}}</div>
-                            <div *ngIf="columnVisible('recieved_on')">{{task.recieved_on | date}}</div>
-                            <div *ngIf="columnVisible('due_date')">{{task.due_date | date}}</div>
-                            <div *ngIf="columnVisible('module')">{{task.module}}</div>
-                            <div *ngIf="columnVisible('priority')">
-                                <button class="st-level" mat-button [matMenuTriggerFor]="level">Medium<mat-icon>
-                                        arrow_drop_down</mat-icon></button>
-                                <mat-menu #level="matMenu" class="ac-drowdown">
-                                    <button mat-menu-item>Low</button>
-                                    <button mat-menu-item>Medium</button>
-                                    <button mat-menu-item>High</button>
-                                </mat-menu>
-                            </div>
+                            <ng-container matColumnDef="recieved_on">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header> Received On </mat-header-cell>
+                                <mat-cell *matCellDef="let element"> {{element.recieved_on}} </mat-cell>
+                            </ng-container>
 
-                            <div *ngIf="columnVisible('tags')">
-                                <mat-chip-list prosTagsEllipsis [tags]="task.tags"></mat-chip-list>
-                            </div>
-                        </mat-card>
+                            <ng-container matColumnDef="due_date">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header> Due Date </mat-header-cell>
+                                <mat-cell *matCellDef="let element"> {{element.due_date}}</mat-cell>
+                            </ng-container>
+
+                            <ng-container matColumnDef="module">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header> Module </mat-header-cell>
+                                <mat-cell *matCellDef="let element"> {{element.module}}</mat-cell>
+                            </ng-container>
+
+                            <ng-container matColumnDef="priority">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header> Priority </mat-header-cell>
+                                <mat-cell *matCellDef="let element">
+                                    <button mat-button>{{element.priority}} <mat-icon>arrow_drop_down</mat-icon>
+                                    </button>
+                                </mat-cell>
+                            </ng-container>
+
+                            <ng-container matColumnDef="tags">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header> Tags </mat-header-cell>
+                                <mat-cell *matCellDef="let element">
+                                    <mat-chip-list>
+                                        <mat-chip>Excel Connect</mat-chip>
+                                    </mat-chip-list>
+                                    <a class="additiontags">+1</a>
+                                </mat-cell>
+                            </ng-container>
+
+                            <mat-header-row *matHeaderRowDef="getDisplayColumns"></mat-header-row>
+                            <mat-row *matRowDef="let row; columns: getDisplayColumns;"></mat-row>
+                        </mat-table>
                     </div>
-
-                    <div *ngIf="showTaskDetails" class="split-container">
-                        <pros-task-summary [taskId]="selectedTaskId" (closeDetails)="closeDetailsModal($event)">
-                        </pros-task-summary>
-                    </div>
+                    <ng-container *ngTemplateOutlet="commonDetailsContent"></ng-container>
                 </div>
             </mat-tab>
-
-            <!-- workflow -->
             <mat-tab label="In Workflow">
-                <!-- Workflow Here... -->
-            </mat-tab>
+                <ng-container *ngTemplateOutlet="commonFilterContent"></ng-container>
+                <div class="f-row list-wrapper">
 
+                    <div class="tasks-container" [class.content-row]="!selectedTaskId" [class.split]="selectedTaskId"
+                        [summaryShown]="enableDragging.asObservable()" prosResizeable>
+                        <button mat-icon-button class="ac-setting" color="primary"
+                            (click)="showColumnSettingPopUp=!showColumnSettingPopUp">
+                            <mat-icon matTooltip="Colunm Setting">settings</mat-icon>
+                        </button>
+                        <pros-columnsetting [tableColumns]="tableColumns" (updateColumns)="updateColumns($event)"
+                            (close)="toggleColumnSettingPopUp()" *ngIf="showColumnSettingPopUp">
+                        </pros-columnsetting>
+
+                        <div class="hand-control"></div>
+                        <mat-table #table [dataSource]="dataSource" matSort>
+
+                            <ng-container matColumnDef="task_id">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header> Task ID </mat-header-cell>
+                                <mat-cell *matCellDef="let element" (click)="getTaskDetails(element.task_id)"
+                                    style="cursor:pointer"> {{element.task_id}}</mat-cell>
+                            </ng-container>
+
+                            <ng-container matColumnDef="description">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header> Description </mat-header-cell>
+                                <mat-cell *matCellDef="let element">
+                                    <span class="describe-text">
+                                        {{element.description}}
+                                    </span>
+                                </mat-cell>
+                            </ng-container>
+
+                            <ng-container matColumnDef="requestor">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header> Requester </mat-header-cell>
+                                <mat-cell *matCellDef="let element">
+                                    <mat-icon>account_circle</mat-icon> {{element.requestor}}
+                                </mat-cell>
+                            </ng-container>
+
+                            <ng-container matColumnDef="recieved_on">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header> Received On </mat-header-cell>
+                                <mat-cell *matCellDef="let element"> {{element.recieved_on}} </mat-cell>
+                            </ng-container>
+
+                            <ng-container matColumnDef="due_date">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header> Due Date </mat-header-cell>
+                                <mat-cell *matCellDef="let element"> {{element.due_date}}</mat-cell>
+                            </ng-container>
+
+                            <ng-container matColumnDef="module">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header> Module </mat-header-cell>
+                                <mat-cell *matCellDef="let element"> {{element.module}}</mat-cell>
+                            </ng-container>
+
+                            <ng-container matColumnDef="priority">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header> Priority </mat-header-cell>
+                                <mat-cell *matCellDef="let element">
+                                    <button mat-button>{{element.priority}} <mat-icon>arrow_drop_down</mat-icon>
+                                    </button>
+                                </mat-cell>
+                            </ng-container>
+
+                            <ng-container matColumnDef="tags">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header> Tags </mat-header-cell>
+                                <mat-cell *matCellDef="let element">
+                                    <mat-chip-list>
+                                        <mat-chip>Excel Connect</mat-chip>
+                                    </mat-chip-list>
+                                    <a class="additiontags">+1</a>
+                                </mat-cell>
+                            </ng-container>
+
+                            <mat-header-row *matHeaderRowDef="getDisplayColumns"></mat-header-row>
+                            <mat-row *matRowDef="let row; columns: getDisplayColumns;"></mat-row>
+                        </mat-table>
+                    </div>
+                    <ng-container *ngTemplateOutlet="commonDetailsContent"></ng-container>
+                </div>
+            </mat-tab>
             <mat-tab label="Completed">
                 <div class="f-row nullstate">
                     <button mat-fab disabled>
@@ -104,7 +168,49 @@
                     <p class="mat-line">0 results found for “Jox”</p>
                 </div>
             </mat-tab>
-
         </mat-tab-group>
+
+        <ng-template #commonFilterContent>
+            <div class="f-row search-action">
+                <mat-form-field appearance="outline">
+                    <mat-icon matSuffix>search</mat-icon>
+                    <mat-label>Search</mat-label>
+                    <input matInput placeholder="Placeholder">
+                </mat-form-field>
+                <span class="col-spacer"></span>
+                <button mat-stroked-button color="primary" (click)="getFilters()">
+                    <mat-icon matSuffix>filter_list</mat-icon>Filters
+                </button>
+                <span class="f-spacer"></span>
+                <button mat-button color="primary">
+                    <mat-icon>star_border</mat-icon>Save search
+                </button>
+                <span class="col-spacer"></span>
+                <button mat-button color="primary" [matMenuTriggerFor]="menu">Saved searches<mat-icon>
+                        keyboard_arrow_down</mat-icon></button>
+                <mat-menu #menu="matMenu">
+                    <button mat-menu-item *ngFor="let savedSearch of savedSearches">{{savedSearch.searchName}}</button>
+                </mat-menu>
+            </div>
+            <div class="f-row action-list">
+                <p class="mat-label">{{tasks.length}} results found for
+                    "Search"</p>
+                <span class="f-spacer"></span>
+                <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+            </div>
+
+            <!--  filters -->
+            <pros-filters-dropdown [filterObservable]="filterEmitter.asObservable()" *ngIf="dynamicFiltersVisible"
+                (closeFilterBox)="closeFilters()" (updateFilters)="updateFilters($event)">
+            </pros-filters-dropdown>
+
+        </ng-template>
+
+        <ng-template #commonDetailsContent>
+            <div *ngIf="showTaskDetails" class="split-container">
+                <pros-task-summary [taskId]="selectedTaskId" (closeDetails)="closeDetailsModal($event)">
+                </pros-task-summary>
+            </div>
+        </ng-template>
     </mat-card>
 </div>

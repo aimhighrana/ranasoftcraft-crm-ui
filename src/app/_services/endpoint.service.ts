@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -214,7 +215,7 @@ export class EndpointService {
     return `${this.apiUrl}/report/report-info/${reportId}`;
   }
 
-  public getFieldMetadatByFldUrl(fieldId: string) : string {
+  public getFieldMetadatByFldUrl(fieldId: string): string {
     return `${this.apiUrl}/report/fields-description/${fieldId}`;
   }
   public widgetDataUrl(): string {
@@ -270,6 +271,13 @@ export class EndpointService {
 
   public deleteReport(reportId: string): string {
     return `${this.apiUrl}/report/delete/${reportId}`;
+  }
+
+  public getFiltersUrl() {
+    return `${this.apiUrl}/tasklist/filter`;
+  }
+  public getFilterDynamicListsUrl() {
+    return `${this.apiUrl}/tasklist/filterList`
   }
 
   public docCountUrl(objectType: string): string {

@@ -29,7 +29,10 @@
     bottom: 0;
     right: 0;
     animation: pulse_opacity_step_10_repeat 2s infinite;
-    box-shadow: 0 3px 5px -1px mat-color($primary-palette, 700, 0.4), 0 6px 10px 0 mat-color($primary-palette, 700, 0.28), 0 1px 18px 0 mat-color($primary-palette, 700, 0.24);
+    box-shadow:
+      0 3px 5px -1px mat-color($primary-palette, 700, 0.4),
+      0 6px 10px 0 mat-color($primary-palette, 700, 0.28),
+      0 1px 18px 0 mat-color($primary-palette, 700, 0.24);
     opacity: 0;
   }
 
@@ -161,7 +164,7 @@
     }
   }
 
-  pros-tasklist-table {
+  pros-task-list {
     .tasks-container {
       mat-table {
         .mat-row {

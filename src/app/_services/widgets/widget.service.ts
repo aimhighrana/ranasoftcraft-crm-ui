@@ -10,7 +10,7 @@ import { Criteria, BarChartWidget, WidgetHeader, TimeSeriesWidget, WidgetImageMo
 })
 export class WidgetService {
 
-  public count :BehaviorSubject<any> =  new BehaviorSubject<any>(0);
+  public count: BehaviorSubject<any> = new BehaviorSubject<any>(0);
 
   constructor(
     private endpointService: EndpointService,
@@ -21,9 +21,9 @@ export class WidgetService {
    * Call this method for widget data
    * Provide widgetId , and filterCriteria
    */
-  public getWidgetData(widgetId: string, filterCriteria: Criteria[]):Observable<any>{
-      filterCriteria = filterCriteria ? filterCriteria : [];
-      return this.http.post<any>(this.endpointService.widgetDataUrl(), filterCriteria, {params:{widgetId}});
+  public getWidgetData(widgetId: string, filterCriteria: Criteria[]): Observable<any> {
+    filterCriteria = filterCriteria ? filterCriteria : [];
+    return this.http.post<any>(this.endpointService.widgetDataUrl(), filterCriteria, { params: { widgetId } });
   }
 
   public getListdata(size,from,widgetId: string, filterCriteria: Criteria[], sortMapStr: any):Observable<any>{
@@ -37,27 +37,27 @@ export class WidgetService {
 
   }
 
-  public getStackChartMetadata(widgetId):Observable<any>{
+  public getStackChartMetadata(widgetId): Observable<any> {
     return this.http.get<any>(this.endpointService.getStackBarChartMetaData(widgetId));
   }
 
-  public getFilterMetadata(widgetId):Observable<any>{
+  public getFilterMetadata(widgetId): Observable<any> {
     return this.http.get<any>(this.endpointService.getFiltertMetaData(widgetId));
   }
 
-  public getListTableMetadata(widgetId):Observable<any>{
+  public getListTableMetadata(widgetId): Observable<any> {
     return this.http.get<any>(this.endpointService.getListTableMetaData(widgetId));
   }
 
-  public getBarChartMetadata(widgetId):Observable<BarChartWidget>{
+  public getBarChartMetadata(widgetId): Observable<BarChartWidget> {
     return this.http.get<BarChartWidget>(this.endpointService.getBarChartMetaData(widgetId));
   }
 
-  public getCountMetadata(widgetId):Observable<any>{
+  public getCountMetadata(widgetId): Observable<any> {
     return this.http.get<any>(this.endpointService.getCountMetadata(widgetId));
   }
 
-  public getHeaderMetaData(widgetId):Observable<WidgetHeader>{
+  public getHeaderMetaData(widgetId): Observable<WidgetHeader> {
     return this.http.get<WidgetHeader>(this.endpointService.getHeaderMetaData(widgetId));
   }
 
@@ -65,49 +65,49 @@ export class WidgetService {
     return this.http.get<TimeSeriesWidget>(this.endpointService.getTimeseriesWidgetInfoUrl(widgetId));
   }
 
-  public getimageMetadata(widgetId):Observable<WidgetImageModel>{
+  public getimageMetadata(widgetId): Observable<WidgetImageModel> {
     return this.http.get<WidgetImageModel>(this.endpointService.getimageMetadata(widgetId));
   }
 
-  public getHTMLMetadata(widgetId):Observable<WidgetHtmlEditor>{
+  public getHTMLMetadata(widgetId): Observable<WidgetHtmlEditor> {
     return this.http.get<WidgetHtmlEditor>(this.endpointService.getHTMLMetadata(widgetId));
   }
 
-  public updateCount(count){
+  public updateCount(count) {
     this.count.next(count);
   }
 
-  downloadImage(dataURI:string,imgName:string){
+  downloadImage(dataURI: string, imgName: string) {
     dataURI = dataURI.split('data:image/png;base64,')[1];
     const url = window.URL.createObjectURL(this.dataURItoBlob(dataURI));
     const a = document.createElement('a');
-        document.body.appendChild(a);
-        a.setAttribute('style', 'display: none');
-        a.href = url;
-        a.download = imgName;
-        a.click();
-        window.URL.revokeObjectURL(url);
-        a.remove();
+    document.body.appendChild(a);
+    a.setAttribute('style', 'display: none');
+    a.href = url;
+    a.download = imgName;
+    a.click();
+    window.URL.revokeObjectURL(url);
+    a.remove();
   }
 
   dataURItoBlob(dataURI) {
-   const byteString = window.atob(dataURI);
-   const arrayBuffer = new ArrayBuffer(byteString.length);
-   const int8Array = new Uint8Array(arrayBuffer);
-   for (let i = 0; i < byteString.length; i++) {
-     int8Array[i] = byteString.charCodeAt(i);
-   }
-   const blob = new Blob([int8Array], { type: 'image/png' });
-   return blob;
+    const byteString = window.atob(dataURI);
+    const arrayBuffer = new ArrayBuffer(byteString.length);
+    const int8Array = new Uint8Array(arrayBuffer);
+    for (let i = 0; i < byteString.length; i++) {
+      int8Array[i] = byteString.charCodeAt(i);
+    }
+    const blob = new Blob([int8Array], { type: 'image/png' });
+    return blob;
   }
 
-  downloadCSV(excelFileName :string,data:any[]){
-    try{
+  downloadCSV(excelFileName: string, data: any[]) {
+    try {
       const wb = XLSX.utils.book_new()
       const ws = XLSX.utils.json_to_sheet(data);
       XLSX.utils.book_append_sheet(wb, ws, 'Data')
-      XLSX.writeFile(wb, excelFileName+'.csv')
-    }catch(e){}
+      XLSX.writeFile(wb, excelFileName + '.csv')
+    } catch (e) { }
   }
 
 }

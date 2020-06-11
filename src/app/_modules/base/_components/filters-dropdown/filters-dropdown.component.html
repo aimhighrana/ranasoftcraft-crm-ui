@@ -7,107 +7,140 @@
             </button>
         </h4>
         <div class="f-row module-actions">
-            <button *ngFor="let module of filters.modules" mat-stroked-button [class.mat-flat-button]="module.selected"
-                color="primary" (click)="setFilter('modules',module.value)" color="primary">{{module.value}}
-            </button>
+            <ng-container *ngIf="filters && filters.dynamicFilters">
+                <div *ngFor="let module of filters.dynamicFilters">
+                    <div>
+                        <button mat-stroked-button [class.mat-flat-button]="module.colorActive"
+                            (click)="scrollIntoView(module)" color="primary">{{module.objectDesc}}
+                        </button>
+                    </div>
+                </div>
+            </ng-container>
         </div>
-        <div class="f-row fields-action">
-            <mat-form-field appearance="fill">
-                <mat-label>Priority</mat-label>
-                <mat-select (selectionChange)="setFilter('priorities',$event)">
-                    <mat-option *ngFor="let priority of filters.priorities" [value]="priority">{{priority.value}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
 
-            <mat-form-field appearance="fill">
-                <mat-label>Status</mat-label>
-                <mat-select (selectionChange)="setFilter('statuses',$event)">
-                    <mat-option value="option" *ngFor="let status of filters.statuses" [value]="status">{{status.value}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
+        <ng-container *ngIf="filters && filters.staticFilters">
+            <div class="f-row fields-action">
+                <form [formGroup]="filterForm">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Priority</mat-label>
+                        <mat-select formControlName="priority">
+                            <mat-option value="high">
+                                High
+                            </mat-option>
+                            <mat-option value="Medium">
+                                Medium
+                            </mat-option>
+                            <mat-option value="low">
+                                low
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
 
-            <mat-form-field appearance="fill" class="custom-input">
-                <mat-label>Received Date</mat-label>
-                <input matInput [matDatepicker]="pickerrd" [(ngModel)]="filters.received_date">
-                <mat-datepicker-toggle matSuffix [for]="pickerrd"></mat-datepicker-toggle>
-                <mat-datepicker #pickerrd></mat-datepicker>
-            </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Status</mat-label>
+                        <mat-select formControlName="status">
+                            <mat-option value="active">
+                                Active
+                            </mat-option>
+                            <mat-option value="pending">
+                                Pending
+                            </mat-option>
+                            <mat-option value="Not Active">
+                                Not Active
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
 
-            <mat-form-field appearance="fill" class="custom-input">
-                <mat-label>Due Date</mat-label>
-                <input matInput [matDatepicker]="pickerdd" [(ngModel)]="filters.due_date">
-                <mat-datepicker-toggle matSuffix [for]="pickerdd"></mat-datepicker-toggle>
-                <mat-datepicker #pickerdd></mat-datepicker>
-            </mat-form-field>
+                    <mat-form-field appearance="outline" class="custom-input">
+                        <mat-label>Received Date</mat-label>
+                        <input matInput [matDatepicker]="pickerrd" formControlName="recieved_on">
+                        <mat-datepicker-toggle matSuffix [for]="pickerrd"></mat-datepicker-toggle>
+                        <mat-datepicker #pickerrd></mat-datepicker>
+                    </mat-form-field>
 
-            <mat-form-field appearance="fill">
-                <mat-label>Region</mat-label>
-                <mat-select (selectionChange)="setFilter('regions',$event)">
-                    <mat-option *ngFor="let region of filters.regions" [value]="region">{{region.value}}</mat-option>
-                </mat-select>
-            </mat-form-field>
+                    <mat-form-field appearance="outline" class="custom-input">
+                        <mat-label>Due Date</mat-label>
+                        <input matInput [matDatepicker]="pickerdd" formControlName="due_date">
+                        <mat-datepicker-toggle matSuffix [for]="pickerdd"></mat-datepicker-toggle>
+                        <mat-datepicker #pickerdd></mat-datepicker>
+                    </mat-form-field>
 
-            <mat-form-field appearance="fill">
-                <mat-label>Request By</mat-label>
-                <mat-select (selectionChange)="setFilter('requested_by',$event)">
-                    <mat-option *ngFor="let requestors of filters.requested_by" [value]="requestors">
-                        {{requestors.value}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Region</mat-label>
+                        <mat-select formControlName="region">
+                            <mat-option value="region 1">region 1</mat-option>
+                            <mat-option value="region 2">region 2</mat-option>
+                            <mat-option value="region 3">region 3</mat-option>
+                        </mat-select>
+                    </mat-form-field>
 
-        </div>
-        <a class="mat-line" mat-button color="primary" (click)="toggleAdvancedFilters()">Hide Advanced Filter</a>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Request By</mat-label>
+                        <mat-select formControlName="requested_by">
+                            <mat-option value="apoorv mittal">
+                                Apoorv Mittal
+                            </mat-option>
+                            <mat-option value="sandeep rana">
+                                Sandeep rana
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </form>
+            </div>
+        </ng-container>
+
+
+        <a class="mat-line" mat-button
+            (click)="toggleAdvancedFilters()">{{ showAdvancedFilters ? 'Hide Advanced Filter' : 'Show Advanced Filter' }}</a>
     </mat-card-content>
 
     <mat-card class="mat-elevation-z0 adv-filter-section">
         <div class="f-row" *ngIf="showAdvancedFilters">
-           <div class="f-col">
-            <h3 class="mat-line">Material Group</h3>
-            <mat-divider></mat-divider>
-            <mat-nav-list class="nav-setting">
-                <h4 class="mat-line material-nav">Customer</h4>
-                <a mat-list-item>Customer Filter 1</a>
-                <a mat-list-item>Customer Filter 2</a>
-                <a mat-list-item>Customer Filter 3</a>
-                <h4 class="mat-line material-nav">Language</h4>
-                <a mat-list-item>Language Filter 1</a>
-                <a mat-list-item>Language Filter 2</a>
-                <a mat-list-item>Language Filter 3</a>
-            </mat-nav-list>
-           </div>
-            
+            <div class="f-col">
+                <mat-divider></mat-divider>
+
+                <mat-nav-list class="nav-setting" id="filter-group-list">
+                    <div *ngFor="let parentItem of filterFieldList" id="filter-group-{{parentItem.objectType}}">
+                        <h4 class="mat-line material-nav">{{parentItem.objectDesc}}</h4>
+                        <a mat-list-item *ngFor="let field of parentItem.filterFields" (click)="getDynamicList(field)">
+                            {{field.fieldDesc}}</a>
+                    </div>
+                </mat-nav-list>
+            </div>
+
             <mat-divider [vertical]="true"></mat-divider>
+
             <div class="f-col nav-checked">
                 <mat-form-field>
                     <mat-label>Search</mat-label>
-                    <input matInput>
+                    <input matInput class="search-field" (keyup)="searchAndFilter($event)" autocomplete="false">
                 </mat-form-field>
                 <div class="f-col checked-colunms">
-                    <mat-checkbox color="primary">All</mat-checkbox>
-                    <mat-checkbox color="primary">Plant 1</mat-checkbox>
-                    <mat-checkbox color="primary">Plant 2</mat-checkbox>
-                    <mat-checkbox color="primary">Plant 3</mat-checkbox>
-                    <mat-checkbox color="primary">Plant 4</mat-checkbox>
-                    <mat-checkbox color="primary">Plant 5</mat-checkbox>
-                    <mat-checkbox color="primary">Plant 6</mat-checkbox>
-                    <mat-checkbox color="primary">Plant 7</mat-checkbox>
+                    <mat-checkbox color="primary" *ngFor="let item of checkboxList;let i = index"
+                        (change)="setTags(item,i)" [checked]="item.checked" (value)="item.code">
+                        {{item.CODE}}--{{item.TEXT}}
+                    </mat-checkbox>
+                    <mat-nav-list>
+                        <a mat-list-item *ngIf="checkboxList && checkboxList.length > 0" href="javascript:void(0)"
+                            (click)="paginateDynamicList()">Load more</a>
+                    </mat-nav-list>
+
                 </div>
             </div>
         </div>
-       
+
         <div class="f-row mat-elevation-z3 info-filters-cont">
             <div class="selected-filters">
                 <mat-chip-list>
-                    <mat-chip><span class="datachip" matTooltip="Customer - Option 1">Customer - Option 1</span> <mat-icon>cancel</mat-icon></mat-chip>
-                    <mat-chip><span class="datachip">Customer</span> <mat-icon>cancel</mat-icon></mat-chip>
-                  </mat-chip-list>
+                    <mat-chip *ngFor="let tag of tagsList">
+                        <span class="datachip" matTooltip="{{tag.text}}">{{tag.text}}</span>
+                        <mat-icon (click)="removeTag(tag)">cancel</mat-icon>
+                    </mat-chip>
+                </mat-chip-list>
             </div>
 
             <div class="filter-action">
-                <button mat-stroked-button color="primary">Clear Filter</button>
+                <button mat-stroked-button color="primary" (click)="resetFilters()">Clear Filter</button>
                 <button mat-flat-button color="primary" (click)="updateFilter()">Update</button>
             </div>
         </div>

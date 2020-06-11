@@ -69,79 +69,178 @@
     }
 
     .list-wrapper {
-      // replace task table css
-      .tasklist-table {
-        width: 100%;
-        padding: 0 8px;
+      .tasks-container {
+        padding: 16px 8px;
+        position: relative;
 
-        .list-thead.list-card {
-          margin: 0;
-          min-height: auto;
-
-          .ac-setting {
-            position: absolute;
-            right: 8px;
-          }
-
-          pros-columnsetting {
-            position: absolute;
-            z-index: 2;
-            right: 0;
-            top: 30px;
-          }
+        .ac-setting {
+          position: absolute;
+          right: 16px;
         }
 
-        .list-card {
-          display: flex;
-          align-items: center;
-          padding: 10px 16px;
-          margin: 8px 0;
-          position: relative;
-          flex-wrap: nowrap;
-          border-radius: 4px;
-          font-size: 13px;
-          min-height: 36px;
+        pros-columnsetting {
+          position: absolute;
+          z-index: 2;
+          right: 0;
+          top: 50px;
+        }
 
-          div {
-            margin: 0 8px;
-            flex: 1;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: pre-line;
-            word-break: break-word;
-            line-height: 16px;
-            flex-shrink: 0;
+        mat-table {
+          background: transparent;
 
-            .st-level {
+          .mat-header-row {
+            min-height: 36px;
+            border: none;
+
+            .mat-header-cell {
+              font-size: 14px;
+            }
+          }
+
+          .mat-row {
+            border-width: 1px;
+            border-style: solid;
+            border-radius: 3px;
+            margin: 8px 0;
+
+            .mat-cell {
               font-size: 13px;
-              font-weight: normal;
-              padding: 0 8px;
 
-              mat-icon {
-                font-size: 20px;
+              .describe-text {
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: pre-line;
+                word-break: break-word;
+                line-height: 16px;
+              }
+
+              .mat-button {
+                font-size: 13px;
+                font-weight: 400;
+                padding: 0 0 0 8px;
+
+                mat-icon {
+                  font-size: 22px;
+                }
+              }
+
+              mat-chip {
+                font-size: 13px;
+                font-weight: normal;
+                padding: 6px 10px;
+                min-height: 28px;
+              }
+
+              .additiontags {
+                margin-left: 8px;
+                font-size: 13px;
+                font-weight: 500;
+                cursor: pointer;
               }
             }
 
-            mat-chip {
-              font-size: 12px;
+            .mat-cell:first-of-type {
+              font-weight: 500;
+              font-size: 14px;
             }
-
-            .moretag {
-              height: 30px;
-              width: 30px;
-              line-height: 30px;
-            }
-          }
-
-          .f2-cell {
-            flex: 2;
           }
         }
       }
-      //End Replace task Table CSS
+
+      .split {
+        border-right-width: 1px;
+        border-right-style: solid;
+
+        .hand-control {
+          width: 7px;
+          height: 26px;
+          z-index: 1;
+          position: absolute;
+          right: -5px;
+          top: 48%;
+          border-radius: 6px;
+          border-width: 1px;
+          border-style: solid;
+          cursor: col-resize;
+        }
+      }
+
+      // // replace task table css
+      // .tasklist-table {
+      //   width: 100%;
+      //   padding: 0 8px;
+
+      //   .list-thead.list-card {
+      //     margin: 0;
+      //     min-height: auto;
+
+      //     .ac-setting {
+      //       position: absolute;
+      //       right: 8px;
+      //     }
+
+      //     pros-columnsetting {
+      //       position: absolute;
+      //       z-index: 2;
+      //       right: 0;
+      //       top: 30px;
+      //     }
+      //   }
+
+      //   .list-card {
+      //     display: flex;
+      //     align-items: center;
+      //     padding: 10px 16px;
+      //     margin: 8px 0;
+      //     position: relative;
+      //     flex-wrap: nowrap;
+      //     border-radius: 4px;
+      //     font-size: 13px;
+      //     min-height: 36px;
+
+      //     div {
+      //       margin: 0 8px;
+      //       flex: 1;
+      //       display: -webkit-box;
+      //       -webkit-line-clamp: 2;
+      //       -webkit-box-orient: vertical;
+      //       overflow: hidden;
+      //       text-overflow: ellipsis;
+      //       white-space: pre-line;
+      //       word-break: break-word;
+      //       line-height: 16px;
+      //       flex-shrink: 0;
+
+      //       .st-level {
+      //         font-size: 13px;
+      //         font-weight: normal;
+      //         padding: 0 8px;
+
+      //         mat-icon {
+      //           font-size: 20px;
+      //         }
+      //       }
+
+      //       mat-chip {
+      //         font-size: 12px;
+      //       }
+
+      //       .moretag {
+      //         height: 30px;
+      //         width: 30px;
+      //         line-height: 30px;
+      //       }
+      //     }
+
+      //     .f2-cell {
+      //       flex: 2;
+      //     }
+      //   }
+      // }
+      // //End Replace task Table CSS
 
       .split-container {
         display: flex;
