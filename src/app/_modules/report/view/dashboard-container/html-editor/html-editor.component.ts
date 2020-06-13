@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { WidgetHtmlEditor } from '../../../_models/widget';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
@@ -13,6 +13,12 @@ export class HtmlEditorComponent  extends GenericWidgetComponent implements OnIn
   widgetHtml : WidgetHtmlEditor;
   headerDesc='';
   htmltext = '';
+
+  /**
+   * Get config height
+   */
+  @Input()
+  height: number;
 
   constructor(public widgetService : WidgetService) {
     super();

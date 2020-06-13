@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnChanges, OnDestroy, Input } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable, BehaviorSubject, of } from 'rxjs';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
@@ -28,6 +28,13 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
   endDateCtrl: FormControl = new FormControl();
   numericValCtrl: FormControl = new FormControl();
   filterResponse: FilterResponse;
+
+  /**
+   * When reset filter from main container value should be true
+   */
+  @Input()
+  hasFilterCriteria: boolean;
+
   constructor(
     private widgetService : WidgetService,
     private reportService: ReportService
@@ -45,7 +52,9 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
    *
    */
   ngOnChanges(changes: import('@angular/core').SimpleChanges): void {
-
+    if(changes && changes.hasFilterCriteria && changes.hasFilterCriteria.previousValue !== changes.hasFilterCriteria.currentValue) {
+      this.clearFilterCriteria();
+    }
   }
 
   ngOnInit(): void {

@@ -237,6 +237,12 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       dropableWidget.y = 0;
       dropableWidget.height = 22;
       dropableWidget.width = 40;
+
+      // set default height to table
+      if(widgetType === 'TABLE_LIST') {
+        dropableWidget.height = 585 / this.eachBoxSize;
+        dropableWidget.width = 300 / this.eachBoxSize;
+      }
       dropableWidget.widgetId = String(new Date().getTime());
       dropableWidget.widgetType = widgetType as WidgetType;
     }

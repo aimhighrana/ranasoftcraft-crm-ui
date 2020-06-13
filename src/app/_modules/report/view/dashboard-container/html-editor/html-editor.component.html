@@ -1,3 +1,5 @@
 <mat-card class="widget mat-elevation-z4">
-    <div [innerHtml]="htmltext"></div>
+    <div [innerHtml]="htmltext"
+    [ngStyle]="{'height.px':height, 'overflow':'auto'}"
+    ></div>
 </mat-card>

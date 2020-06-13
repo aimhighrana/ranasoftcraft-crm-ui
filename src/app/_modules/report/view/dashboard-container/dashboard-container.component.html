@@ -1,13 +1,15 @@
 <div class="root" (window:resize)="onResize($event)">
     
     <ng-template ngFor let-widget [ngForOf]="widgetList">
-        <div [ngStyle]="{ 'width.px' : (widget.width * boxSize), 'height.px': (widget.height * boxSize), 'top.px':(widget.positionY * boxSize) , 'left.px': (widget.positionX * boxSize) }" class="widget-main-container">
+        <div [ngStyle]="{ 'width.px' : (widget.width * boxSize),
+            'height.px': (widget.height * boxSize), 'top.px':(widget.positionY * boxSize) ,
+            'left.px': (widget.positionX * boxSize) }" class="widget-main-container">
         
             <!-- COUNT WIDGET -->
             <pros-count *ngIf ="widget.widgetType ==='COUNT'" [widgetId] ="widget.widgetId" [reportId]="reportId" [filterCriteria]="filterCriteria" (evtFilterCriteria)="changeFilterCriteria($event)"></pros-count>
                 
             <!-- FILTER WIDGET -->
-            <pros-filter *ngIf ="widget.widgetType ==='FILTER'" [widgetId] ="widget.widgetId" [reportId]="reportId" [filterCriteria]="filterCriteria" (evtFilterCriteria)="changeFilterCriteria($event)"></pros-filter>
+            <pros-filter *ngIf ="widget.widgetType ==='FILTER'" [widgetId] ="widget.widgetId" [reportId]="reportId" [filterCriteria]="filterCriteria" [hasFilterCriteria] = "emitClearBtnEvent" (evtFilterCriteria)="changeFilterCriteria($event)"></pros-filter>
                 
             <!-- BARCHART WIDGET -->
             <pros-bar-chart *ngIf ="widget.widgetType ==='BAR_CHART'" [widgetId] ="widget.widgetId" [reportId]="reportId" [filterCriteria]="filterCriteria" (evtFilterCriteria)="changeFilterCriteria($event)"></pros-bar-chart>
@@ -28,7 +30,7 @@
             <pros-image *ngIf ="widget.widgetType ==='IMAGE'" [widgetId] ="widget.widgetId" [reportId]="reportId"></pros-image>
                 
             <!-- HTML-EDiTOR WIDGET -->
-            <pros-html-editor *ngIf ="widget.widgetType ==='HTML'" [widgetId] ="widget.widgetId" [reportId]="reportId"></pros-html-editor>
+            <pros-html-editor *ngIf ="widget.widgetType ==='HTML'" [widgetId] ="widget.widgetId" [reportId]="reportId" [height]="widget.height * boxSize"></pros-html-editor>
         </div>
     </ng-template> 
     
