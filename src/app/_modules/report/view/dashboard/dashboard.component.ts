@@ -12,10 +12,10 @@ export class DashboardComponent implements OnInit {
   breadcrumb: Breadcrumb = {
     heading: 'Report Dashboard',
     links: [
-      // {
-      //   link:'/home/report',
-      //   text:'Report List'
-      // }
+      {
+        link:'/home/report',
+        text:'Report List'
+      }
     ]
   };
 

@@ -9,14 +9,29 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 })
 export class CollaboratorComponent implements OnInit {
 
+  /**
+   * report id , that permission assigned on.
+   */
   @Input()
   reportId: string;
 
+  /**
+   * Permission information
+   */
   @Input()
   collaborator: ReportDashboardPermission;
 
+  /**
+   * After click saved button
+   */
   @Output()
   saveClicked: EventEmitter<ReportDashboardPermission> = new EventEmitter<ReportDashboardPermission>();
+
+  /**
+   * After click delete button
+   */
+  @Output()
+  deleteClicked: EventEmitter<string> = new EventEmitter<string>();
 
   isEditMode = false;
 
@@ -42,9 +57,18 @@ export class CollaboratorComponent implements OnInit {
     });
   }
 
+  /**
+   * After click save button should emit
+   */
   updateEmit() {
     this.isEditMode = false;
     this.saveClicked.emit(this.collaborator);
   }
 
+  /**
+   * After click on delete button should emit
+   */
+  deleteEmit() {
+    this.deleteClicked.emit(String(this.collaborator.permissionId));
+  }
 }

@@ -298,6 +298,10 @@ export class EndpointService {
   public saveUpdateReportCollaborator(): string {
     return `${this.apiUrl}/admin/permission/collaborators/permission/save-update`;
   }
+
+  public deleteCollaboratorUrl(permissionId: string): string {
+    return `${this.apiUrl}/admin/permission/collaborator/delete/${permissionId}`;
+  }
 }
 
 

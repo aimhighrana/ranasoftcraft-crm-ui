@@ -55,4 +55,8 @@ export class ReportService {
   public saveUpdateReportCollaborator(request: ReportDashboardPermission[]): Observable<ReportDashboardPermission[]> {
     return this.http.post<ReportDashboardPermission[]>(this.endpointService.saveUpdateReportCollaborator(), request);
   }
+
+  public deleteCollaborator(permissionId: string): Observable<boolean> {
+    return this.http.delete<boolean>(this.endpointService.deleteCollaboratorUrl(permissionId));
+  }
 }

@@ -57,4 +57,10 @@ describe('EndpointService', () => {
     expect(serObj.docCountUrl(objType)).toContain(`report/record-count/${objType}`, `report/record-count/${objType}  sould be return!`);
   }));
 
+  it('deleteCollaboratorUrl(), should return the delete url', async(() =>{
+    const serObj = new EndpointService();
+    const permisionId  = '243787235';
+    expect(serObj.deleteCollaboratorUrl(permisionId)).toContain(`admin/permission/collaborator/delete/${permisionId}`, `admin/permission/collaborator/delete/${permisionId}  sould be return!`);
+  }));
+
 });

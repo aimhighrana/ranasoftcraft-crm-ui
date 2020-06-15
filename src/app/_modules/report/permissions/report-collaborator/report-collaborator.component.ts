@@ -5,6 +5,7 @@ import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 export class PermissionGroup {
   groupId: string;
@@ -18,11 +19,19 @@ export class PermissionGroup {
 })
 export class ReportCollaboratorComponent implements OnInit {
 
-
+  /**
+   * All collaborators response
+   */
   permissionOn: PermissionOn;
 
+  /**
+   * Hold all collaborators with groups
+   */
   collaborators: PermissionGroup[];
 
+  /**
+   * Assigned collaborators list
+   */
   collaboratorList: ReportDashboardPermission[];
   collaboratorListOb: Observable<ReportDashboardPermission[]> = of([]);
 
@@ -30,6 +39,9 @@ export class ReportCollaboratorComponent implements OnInit {
   searchCollCtrl: FormControl = new FormControl('');
   reportId: string;
 
+  /**
+   * Selected collaborators before saved
+   */
   selectedCollaborators: ReportDashboardPermission[]= [];
   possibleChips: ReportDashboardPermission[] = [];
   currentPageIdx = 0;
@@ -38,7 +50,8 @@ export class ReportCollaboratorComponent implements OnInit {
     private reportServie: ReportService,
     private formBuilder: FormBuilder,
     private activatedRouter: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
@@ -55,6 +68,9 @@ export class ReportCollaboratorComponent implements OnInit {
       isDeleteable:[false]
     });
 
+    /**
+     * After value change should call http for load more collaborators
+     */
     this.addCollaboratorFrmGrp.get('addCollaboratorCtrl').valueChanges.subscribe(val=>{
       if(val && typeof val === 'string') {
         this.getCollaboratorPermission(val);
@@ -63,6 +79,9 @@ export class ReportCollaboratorComponent implements OnInit {
       }
     })
 
+    /**
+     * Filtered added collaborators
+     */
     this.searchCollCtrl.valueChanges.subscribe(val=>{
       this.collaboratorListOb = of(this.collaboratorList.filter(fil =>{
         if(fil.userMdoModel && fil.userMdoModel.fullName.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !==-1) {
@@ -81,6 +100,10 @@ export class ReportCollaboratorComponent implements OnInit {
     })
   }
 
+  /**
+   * Get all collaborators permission
+   * @param queryString search able string
+   */
   getCollaboratorPermission(queryString: string) {
     this.reportServie.getCollaboratorPermission(queryString).subscribe(response=>{
       this.permissionOn = response;
@@ -89,6 +112,10 @@ export class ReportCollaboratorComponent implements OnInit {
     },error=>console.error(`Error: ${error}`));
   }
 
+  /**
+   * Help to tarnsfor response into groups
+   * @param response from server for (all collaborators)
+   */
   transformResponse(response: PermissionOn): PermissionGroup[] {
     const grps: PermissionGroup[] = [];
     // for user
@@ -141,6 +168,10 @@ export class ReportCollaboratorComponent implements OnInit {
     return grps;
   }
 
+  /**
+   * Displaywith help to display selection with option description
+   * @param option from mat-autocomplete
+   */
   displayWith(option: ReportDashboardPermission): string {
     return option ? option.description: null;
   }
@@ -178,6 +209,9 @@ export class ReportCollaboratorComponent implements OnInit {
     }
   }
 
+  /**
+   * Get all exiting added collaborators
+   */
   getExitingCollaborators() {
     this.reportServie.getCollaboratorsPermisison(this.reportId).subscribe(res=>{
       this.collaboratorList = res;
@@ -268,6 +302,10 @@ export class ReportCollaboratorComponent implements OnInit {
     this.router.navigate([{ outlets: { sb: null }}]);
   }
 
+  /**
+   * Should http call for update selected permission
+   * @param permission update able permission
+   */
   updatePermission(permission: ReportDashboardPermission) {
     console.log(permission);
     this.reportServie.saveUpdateReportCollaborator([permission]).subscribe(res=>{
@@ -275,9 +313,28 @@ export class ReportCollaboratorComponent implements OnInit {
     },error=> console.error(`Error : ${error}`));
   }
 
+  /**
+   * For delete assigned collaborator based on assigned permission
+   * @param permissionId permission id which we want to delete
+   */
+  deleteCollaborator(permissionId: string) {
+    this.reportServie.deleteCollaborator(permissionId).subscribe(res=>{
+      if(res) {
+        this.snackBar.open(`Successfully deleted`, 'Close',{duration:4000});
+        this.getExitingCollaborators();
+      } else {
+        this.snackBar.open(`Something went wrong`, 'Close',{duration:4000});
+      }
+    },error=>{
+      this.snackBar.open(`Something went wrong`, 'Close',{duration:4000});
+    });
+  }
+
+  /**
+   * Save or update selected permission
+   */
   saveCollaborators() {
     const value = this.addCollaboratorFrmGrp.value;
-    console.log(value);
     this.selectedCollaborators.forEach(coll=>{
       coll.isEditable = value.isEditable ? value.isEditable : false;
       coll.isDeleteable = value.isDeleteable ? value.isDeleteable : false;
