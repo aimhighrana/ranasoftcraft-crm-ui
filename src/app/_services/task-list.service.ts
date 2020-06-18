@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { TaskListRow } from '@models/task-list/taskListRow';
-import { Filter, StaticFilter, DynamicFilter } from '@models/task-list/filter';
+import { Filter } from '@models/task-list/filter';
 import { Pagination } from '@models//task-list/pagination';
 import { EndpointService } from '@services/endpoint.service';
-import { of, BehaviorSubject } from 'rxjs';
+import { of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
@@ -110,24 +110,6 @@ export class TaskListService {
     }
   ]
 
-  staticFilters: StaticFilter = {
-    status: '',
-    priority: '',
-    region: '',
-    recieved_on: new Date(),
-    due_date: new Date(),
-    requested_by: ''
-  }
-
-  dynamicFilters: DynamicFilter[] = [
-    {
-      objectType: '0000',
-      objectDesc: 'All Modules',
-      filterFields: [],
-      colorActive: true,
-    }
-  ]
-
   sampleColumns = [
     { value: 'task_id', hasLargeText: false, visible: true },
     { value: 'description', hasLargeText: true, visible: true },
@@ -183,7 +165,6 @@ export class TaskListService {
       auctionedOn: ''
     }]
   }
-  dynamicFiltersObservable: BehaviorSubject<DynamicFilter[]> = new BehaviorSubject([]);
 
   /**
    * Constructor of @class TaskListService
@@ -200,11 +181,6 @@ export class TaskListService {
    */
   getTasks(filters: Filter, pagination: Pagination) {
     return of(this.sampleList);
-    // return this.http.get(this.endpointService.getTasksListUrl());
-  }
-
-  public getStaticFilters(): StaticFilter {
-    return this.staticFilters;
   }
 
   /**

@@ -1,16 +1,17 @@
-import { Component, OnInit, ViewChild, ElementRef, ChangeDetectionStrategy, Output, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectionStrategy, Output, AfterViewInit, OnDestroy } from '@angular/core';
 import { TaskListRow } from '@models/task-list/taskListRow';
 import { Filter, DynamicFilter } from '@models/task-list/filter';
 import { Pagination } from '@models/task-list/pagination';
 import { TaskListService } from '@services/task-list.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subject, Subscription } from 'rxjs';
+
 import { UserService } from '@services/user/userservice.service';
 import { Userdetails } from '@models/userdetails';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
-import { MatTabChangeEvent } from '@angular/material/tabs';
+import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
 
 @Component({
   selector: 'pros-task-list',
@@ -42,7 +43,16 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   dynamicFiltersVisible = false;
 
+  /**
+   * this is used to subscribe to changes for task list
+   * so that it can be unsubscribed
+   */
   taskListSubscription = new Subscription();
+
+  /**
+   * this is used to subscribe to changes for user details
+   * so that it can be unsubscribed
+   */
   userDetailSubscription = new Subscription();
 
   /**
@@ -61,6 +71,9 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
     tags: []
   }
 
+  /**
+   * This is used to emit the upated filters
+   */
   @Output() filterEmitter = new BehaviorSubject({});
 
   /**
@@ -98,12 +111,26 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   selectedTaskId: string;
 
+  /**
+   * This is used to enable/disable the dragger
+   */
   enableDragging = new Subject();
 
-  @ViewChild('rhs', { static: false }) rhs: ElementRef;
+  /**
+   * This is a view child object to get the tabs data
+   */
+  @ViewChild('tabs') tabGroup: MatTabGroup;
 
+  /**
+   * This is used to get the logged in user details
+   */
   userDetails: Userdetails;
 
+  /**
+   * This is used to get the selected tabs
+   * The reason is to make this dynamic and convert it into
+   * a pascal case value;
+   */
   availableTabs = [
     {
       value: 'My tasks',
@@ -116,8 +143,11 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
       code: 'completed'
     }
   ]
-
+  /**
+   * This is used to get the currently active tab
+   */
   activeTab: string;
+
   /**
    * construtor of @class TaskListComponent
    * @param taskListService This is the object of the service
@@ -125,16 +155,21 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(private taskListService: TaskListService, private _router: Router,
     private _activeRouter: ActivatedRoute, private userService: UserService) { }
 
+  /**
+   * ANGULAR HOOK
+   * This is used here to inlitialize all the Datastructures for
+   * tasks, columns and searches.
+   */
   ngOnInit(): void {
     this.getTasks();
     this.getColumns();
     this.getSavedSearches();
-    this.filters.staticFilters = this.taskListService.getStaticFilters();
   }
 
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
   }
+
   /**
    * This function listens to changes in the URL and
    * shows the summary page.
@@ -150,6 +185,7 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     })
   }
+
   /**
    * function to get task list from the service
    */
@@ -216,10 +252,9 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
   /**
    * function to recieve updated filters from child component
    * @param filters The filters object
+   * [TO BE DONE IN TASK LIST API, TO GENERATE FILTERS]
    */
   updateFilters(filters) {
-    console.log(filters)
-    // to be done later
     return true;
   }
 
@@ -243,17 +278,15 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param tableColumns updated table column from the column setting component
    */
   updateColumns(tableColumns) {
-    console.log(tableColumns);
     this.tableColumns = tableColumns;
   }
 
   /**
    * function to show or hide column and headers
    * @param columnName name of column
+   * [TO BE DONE LATER]
    */
   columnVisible() {
-    // const selectedColumn = this.tableColumns.find((column) => column.value === columnName);
-    // return selectedColumn.visible;
     return true;
   }
 
@@ -272,11 +305,13 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param taskId the id of the selected task
    */
   getTaskDetails(taskId: string) {
+    this.activeTab = this.availableTabs[this.tabGroup.selectedIndex].code;
     this.selectedTaskId = taskId;
-    this.updateQueryParam(taskId);
     this.enableDragging.next(true);
-    this.showTaskDetails = true;
+    this.showTaskDetails = !this.showTaskDetails;
     this.hidefirst2Columns(false);
+    this.updateQueryParam(taskId);
+    if (this.selectedTaskId !== taskId) return
   }
 
   /**
@@ -308,31 +343,44 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param taskId<string> the task id of the selected task
    */
   updateQueryParam(taskId: string) {
-    const paramsURL = taskId ? taskId : '/home/task-list';
-    this._router.navigate([paramsURL], { relativeTo: this._activeRouter });
-  }
-
-  closeFilters() {
-    this.dynamicFiltersVisible = false;
-  }
-
-  get getDisplayColumns() {
-    // return [this.displayedColumns[0],this.displayedColumns[1]];
-    return this.displayedColumns;
-  }
-
-  tabChanged(event: MatTabChangeEvent) {
-    console.log(event);
-    this.activeTab = this.availableTabs[event.index].code
-    console.log(this.activeTab);
+    window.history.replaceState({}, '', `/#/home/task-list/${taskId}`)
   }
 
   /**
-   * Event hooks
-   * calls on close of component
+   * This is used to display specific column
+   * This will be OBSOLETE IN NEXT TASK
+   */
+  get getDisplayColumns() {
+    return this.displayedColumns;
+  }
+
+  /**
+   * This is used to detect the change in the tabs, and also set the active
+   * tab value
+   * @param event the mat tab event
+   */
+  tabChanged(event: MatTabChangeEvent) {
+    this.activeTab = this.availableTabs[event.index].code;
+    this.showTaskDetails = false;
+    this.selectedTaskId = null;
+  }
+
+  /**
+   * Angular Hook
+   * Called when component is closed/destroyed/refreshed
+   * here all the subscription is getting unsubscribed
    */
   ngOnDestroy() {
     this.taskListSubscription.unsubscribe();
     this.userDetailSubscription.unsubscribe();
+    this.filterEmitter.unsubscribe();
+    this.enableDragging.unsubscribe();
+  }
+
+  /**
+   * This is used to toggle filters component selector
+   */
+  closeFilters() {
+    this.dynamicFiltersVisible = false;
   }
 }
