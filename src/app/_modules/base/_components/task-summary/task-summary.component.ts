@@ -13,6 +13,8 @@ export class TaskSummaryComponent implements OnInit {
    */
   @Input() taskId: string;
 
+  @Input() currentTab: string;
+
   /**
    * Task details are stored here
    */
@@ -21,6 +23,7 @@ export class TaskSummaryComponent implements OnInit {
    * This is used to store the details of the task from the service
    */
   taskDetails: object;
+
   /**
    * Constructor of @class DetailsComponent
    * @param taskListService Tasklist service description
@@ -31,6 +34,7 @@ export class TaskSummaryComponent implements OnInit {
    * Event hook
    */
   ngOnInit(): void {
+    console.log(this.currentTab);
     this.getTaskDetails();
     // detect if page is being loaded from URL or from selector
     if (!this.taskId) {

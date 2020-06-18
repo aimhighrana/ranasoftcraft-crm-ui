@@ -224,7 +224,8 @@
     </mat-card-content>
 </mat-card>
 <mat-divider></mat-divider>
-<div class="page-actions">  
+
+<div class="page-actions" *ngIf="currentTab!='inWorkFlow'">  
     <button mat-stroked-button>Edit</button>
     <span class="f-spacer"></span>
     <button mat-flat-button>Claim</button>
