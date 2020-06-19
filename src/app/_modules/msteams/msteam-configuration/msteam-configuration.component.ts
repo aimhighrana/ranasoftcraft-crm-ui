@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as microsoftTeams from '@microsoft/teams-js';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'pros-msteam-configuration',
@@ -14,20 +15,22 @@ export class MsteamConfigurationComponent implements OnInit {
 
   }
 
-  // Login click opens the sign-in page in a pop-up and wait for sucessful login
+  // Login click opens the sign-in page in a pop-up and wait for sucessful login for further
   login() {
+    const apiUrl = environment.apiurl;
+    const newApiUrl = apiUrl.replace('fapi', '');
     const jwtToken = localStorage.getItem('JWT-TOKEN');
     if(jwtToken){
-      window.location.href = '/#/msteams/report';
+      window.location.href = newApiUrl + '/fuze/ngx-mdo/index.html#/msteams/report';
     }else{
       microsoftTeams.initialize();
       microsoftTeams.getContext(tContext => {
           microsoftTeams.authentication.authenticate({
-            url: '/#/msteams/auth',
+            url: newApiUrl + '/fuze/ngx-mdo/index.html#/msteams/auth',
             width: 400,
             height: 400,
             successCallback (t) {
-                window.location.href = '/#/msteams/report'
+                window.location.href =  newApiUrl + '/fuze/ngx-mdo/index.html#/msteams/report'
             },
             failureCallback (err) {
             }
