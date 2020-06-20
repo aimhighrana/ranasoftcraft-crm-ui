@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as microsoftTeams from '@microsoft/teams-js';
 import { environment } from 'src/environments/environment';
+import { MsteamsConfigService } from '../_service/msteams-config.service';
 
 @Component({
   selector: 'pros-msteam-configuration',
@@ -9,21 +10,16 @@ import { environment } from 'src/environments/environment';
 })
 export class MsteamConfigurationComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private msteamsConfigService: MsteamsConfigService
+  ) { }
 
   ngOnInit(): void {
 
   }
 
-  // Login click opens the sign-in page in a pop-up and wait for sucessful login for further
-  login() {
-    const apiUrl = environment.apiurl;
-    const newApiUrl = apiUrl.replace('fapi', '');
-    const jwtToken = localStorage.getItem('JWT-TOKEN');
-    if(jwtToken){
-      window.location.href = newApiUrl + '/fuze/ngx-mdo/index.html#/msteams/report';
-    }else{
-      microsoftTeams.initialize();
+  authLogin(newApiUrl: string){
+    microsoftTeams.initialize();
       microsoftTeams.getContext(tContext => {
           microsoftTeams.authentication.authenticate({
             url: newApiUrl + '/fuze/ngx-mdo/index.html#/msteams/auth',
@@ -31,11 +27,25 @@ export class MsteamConfigurationComponent implements OnInit {
             height: 400,
             successCallback (t) {
                 window.location.href =  newApiUrl + '/fuze/ngx-mdo/index.html#/msteams/report'
-            },
-            failureCallback (err) {
             }
         });
       });
+  }
+
+
+  // Login click opens the sign-in page in a pop-up and wait for sucessful login for further
+  login() {
+    const apiUrl = environment.apiurl;
+    const newApiUrl = apiUrl.replace('fapi', '');
+    const jwtToken = localStorage.getItem('JWT-REFRESH-TOKEN');
+    if(jwtToken){
+      this.msteamsConfigService.validateToken().subscribe(res=>{
+        window.location.href = newApiUrl + '/fuze/ngx-mdo/index.html#/msteams/report';
+      },error=>{
+        this.authLogin(newApiUrl);
+      });
+    }else{
+      this.authLogin(newApiUrl);
     }
   }
 }

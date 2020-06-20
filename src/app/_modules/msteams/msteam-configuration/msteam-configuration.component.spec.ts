@@ -1,7 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
-
 import { MsteamConfigurationComponent } from './msteam-configuration.component';
 
 describe('MsteamConfigurationComponent', () => {
@@ -9,10 +8,9 @@ describe('MsteamConfigurationComponent', () => {
   let fixture: ComponentFixture<MsteamConfigurationComponent>;
 
   beforeEach(async(() => {
-
     TestBed.configureTestingModule({
       declarations: [ MsteamConfigurationComponent ],
-      imports:[HttpClientTestingModule, AppMaterialModuleForSpec],
+      imports:[HttpClientTestingModule, AppMaterialModuleForSpec]
     })
     .compileComponents();
   }));
@@ -30,7 +28,12 @@ describe('MsteamConfigurationComponent', () => {
     component.ngOnInit();
   }));
 
-  it('login(), should set window location to report configuration page', async(() => {
+  it('login(), should set window to report configuration page', async(() => {
     component.login();
+  }))
+
+  it('authLogin(), should set window location to report configuration page', async(() => {
+    const apiUrl = '';
+    component.authLogin(apiUrl);
   }))
 });

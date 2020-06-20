@@ -35,4 +35,8 @@ export class MsteamsConfigService {
     return this.http.get<any[]>(this.endpointService.getReportListUrlForMsTeams());
   }
 
+  public validateToken(){
+    const requestUri = this.apiUrl+'/login_4m_session';
+    return this.http.post<any>(requestUri, null);
+  }
 }
