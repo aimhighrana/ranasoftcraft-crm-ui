@@ -73,10 +73,12 @@ export class UdrCdktreeService {
     if(node) {
       if(conlst) {
         if(isEditMode) {
-          const nodeItem = new ItemNode();
-          nodeItem.item = conlst[0].blockDesc;
-          nodeItem.nodeId = String(conlst[0].id);
-          node.children.push(nodeItem);
+          conlst.forEach(con=>{
+            const nodeItem = new ItemNode();
+            nodeItem.item = con.blockDesc;
+            nodeItem.nodeId = String(con.id);
+            node.children.push(nodeItem);
+          });
         } else {
           const conNodeLst: ItemNode[] = [];
           const searchNode = node.children.filter(fill => fill.item === 'condition_search')[0];

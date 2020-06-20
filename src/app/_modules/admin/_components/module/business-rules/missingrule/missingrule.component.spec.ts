@@ -1,6 +1,12 @@
 import { MissingruleComponent } from './missingrule.component';
 import { of } from 'rxjs';
 import { CoreSchemaBrInfo } from '../business-rules.modal';
+import { TestBed } from '@angular/core/testing';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { RouterTestingModule } from '@angular/router/testing';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { SchemaService } from '@services/home/schema.service';
 
 class SchemaSerStub {
   createBusinessRule() {
@@ -15,6 +21,21 @@ class SchemaSerStub {
 describe('MissingruleComponent', () => {
   let component;
   let service;
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        AppMaterialModuleForSpec,
+        RouterTestingModule,
+        ReactiveFormsModule , HttpClientTestingModule, FormsModule
+      ],
+      declarations: [MissingruleComponent],
+      providers: [
+        SchemaService
+      ]
+    })
+      .compileComponents();
+  });
+
   beforeEach(() => {
     service = new SchemaSerStub();
     component = new MissingruleComponent(service, null, null, null);
@@ -79,14 +100,13 @@ describe('MissingruleComponent', () => {
 
   it('testing saveBrInfo ', () => {
 
-    const res = '1234567';
-    spyOn(service, 'createBusinessRule').and.callFake(() => {
-      return of(res);
-    })
-    spyOn(component, 'storeData').and.callFake(() => {
-      return '';
-    })
     component.brInfo = new CoreSchemaBrInfo();
+    spyOn(service, 'createBusinessRule').and.callFake(() => {
+      return of(component.brInfo);
+    })
+    // spyOn(component, 'storeData').and.callFake(() => {
+    //   return '';
+    // })
     component.saveBrInfo();
   });
 

@@ -50,7 +50,7 @@ export class UserDefinedRuleComponent implements OnInit {
    */
   udrModel: UdrModel = new UdrModel();
 
-  level = 1;
+  level = 0;
 
   udrDescFrmCtrl: FormControl = new FormControl('');
   searchBlockCtrl: FormControl = new FormControl('');
@@ -219,6 +219,8 @@ export class UserDefinedRuleComponent implements OnInit {
     // parent node object
     this.createBlock(parentNodeDesc.blockType, parentNode.blockRefId);
 
+    // after create increase block level
+    this.level = 1;
     // load childs
     const currParentNode = parentNode.blockRefId;
 
@@ -348,6 +350,7 @@ export class UserDefinedRuleComponent implements OnInit {
   blocksToUDRBlocksModel() {
     const nodeItems = this.dataSource.data;
     if(nodeItems) {
+      this.level = 0;
       nodeItems.forEach(node=>{
         const obj = new UDRBlocksModel();
         obj.id = node.nodeId;
@@ -357,6 +360,8 @@ export class UserDefinedRuleComponent implements OnInit {
 
         const hieObj = new UDRHierarchyModel();
         hieObj.blockRefId = node.nodeId;
+        hieObj.leftIndex = this.level;
+        this.level ++;
         this.udrModel.udrHierarchies.push(hieObj);
 
         // get from childrens
@@ -389,20 +394,22 @@ export class UserDefinedRuleComponent implements OnInit {
   }
 
   makeBlockHierarch(childNode: ItemNode[], parentNode: ItemNode) {
-    for(let i= 0; i<childNode.length; i++) {
-      const chldNode = childNode[i];
+    childNode.forEach(node=>{
+      const chldNode = node;
       if(chldNode.item !== 'condition_search') {
         const obj = new UDRHierarchyModel();
         obj.blockRefId = chldNode.nodeId;
-        obj.leftIndex = (i-1) >0 ? i-1 : null;
-        obj.rightIndex = (i+1) < childNode.length ? i+1 : null;
+        // obj.leftIndex = (i-1) >0 ? i-1 : null;
+        // obj.rightIndex = (i+1) < childNode.length ? i+1 : null;
+        obj.leftIndex = this.level;
         obj.parentId = parentNode.nodeId;
         this.udrModel.udrHierarchies.push(obj);
       }
       if(chldNode.children) {
+        this.level++;
         this.makeBlockHierarch(chldNode.children, chldNode);
       }
-    }
+    });
   }
 
   /**
