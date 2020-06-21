@@ -16,10 +16,14 @@ describe('MsteamsConfigService', () => {
   });
 
   it('signIn(), should call signIn', async(() => {
-    service.signIn('testUser', 'testPassword');
+    expect(service.signIn('testUser', 'testPassword')).toBeTruthy();
   }))
 
   it('getReportUrlList(), should call report list', async(() => {
-    service.getReportUrlList();
+    expect(service.getReportUrlList()).toBeTruthy();
+  }))
+
+  it('validateToken(), should call valid toke api', async (() => {
+    expect(service.validateToken()).toBeTruthy();
   }))
 });

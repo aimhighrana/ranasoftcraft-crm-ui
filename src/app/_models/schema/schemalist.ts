@@ -65,6 +65,7 @@ export class SchemaListDetails {
     moduleId: string;
     pulse: boolean;
     schemaThreshold: string;
+    collaboratorModels: SchemaDashboardPermission;
 }
 export class BusinessRuleExecutionDetails {
     brId: string;
@@ -232,4 +233,26 @@ export class SchemaStaticThresholdRes {
     threshold: any;
     thresHoldStatus: string;
     successCnt: number;
+}
+
+export class SchemaDashboardPermission {
+    sno: number;
+    schemaId: string;
+    userid: string;
+    roleId: string;
+    groupid: string;
+    isAdmin: boolean;
+    isViewer: boolean;
+    isEditer: boolean;
+    isReviewer: boolean;
+    permissionType: PermissionType;
+    createdAt: number;
+    updatedAt: number;
+    createdBy: string;
+}
+
+export enum PermissionType {
+    USER = 'USER',
+    ROLE = 'ROLE',
+    GROUP = 'GROUP'
 }

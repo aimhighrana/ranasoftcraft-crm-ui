@@ -92,6 +92,9 @@ describe('RegexRuleComponent', () => {
 
     expect(component.regexFrmGrp.get('queryScript').value).toEqual(regex.FUNC_CODE);
 
+    const event1: MatAutocompleteSelectedEvent = {option:{value:null}} as MatAutocompleteSelectedEvent;
+    expect(component.selectRegex(event1)).toEqual(undefined);
+
   }));
 
   it('saveBrInfo(), should call service for save and update', async(()=>{

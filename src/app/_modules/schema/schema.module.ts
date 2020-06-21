@@ -25,6 +25,7 @@ import { AccessDeniedDialogComponent } from '@modules/shared/_components/access-
 import { DuplicateBusinessruleComponent } from './_components/duplicate-businessrule/duplicate-businessrule.component';
 import { AdvanceoptionsDialogComponent } from './_components/advanceoptions-dialog/advanceoptions-dialog.component';
 import { DuplicateDetailsComponent } from './_components/duplicate-details/duplicate-details.component';
+import { CollaboratorComponent } from './_components/collaborator/collaborator.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,8 @@ import { DuplicateDetailsComponent } from './_components/duplicate-details/dupli
     AccessDeniedDialogComponent,
     DuplicateBusinessruleComponent,
     AdvanceoptionsDialogComponent,
-    DuplicateDetailsComponent
+    DuplicateDetailsComponent,
+    CollaboratorComponent
   ],
   imports: [
     CommonModule,

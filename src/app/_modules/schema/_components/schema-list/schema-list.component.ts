@@ -39,7 +39,7 @@ export class SchemaListComponent implements OnInit {
       this.onLoadSchemaList();
     });
   }
-  private onLoadSchemaList() {
+  public onLoadSchemaList() {
     this.schemaListService.getSchemaList().subscribe(
       (responseData: SchemaListModuleList[]) => {
         this.schemaListDetails = responseData;
@@ -48,13 +48,22 @@ export class SchemaListComponent implements OnInit {
       }
     );
   }
-  private groupDetails() {
+  public groupDetails() {
     this.schemaService.getSchemaGroupDetailsBySchemaGrpId(this.schemaGroupId).subscribe(data => {
       this.breadcrumb.heading = data.groupName + ' List';
     }, error => {
       console.error('Error while fetch group details');
     });
   }
+
+  public schemaDetails(moduleId: string, schema: SchemaListDetails) {
+    if(schema.collaboratorModels){
+      if(schema.collaboratorModels.isAdmin || schema.collaboratorModels.isViewer){
+        this.router.navigate(['/home/schema/schema-details', moduleId, schema.schemaId, schema.variantId]);
+      }
+    }
+  }
+
   public showSchemaDetails(schemaDetails: any, moduleId: string) {
     this.router.navigate(['/home/schema/schema-details', moduleId, schemaDetails.schemaId]);
   }

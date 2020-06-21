@@ -8,7 +8,9 @@ import { FormBuilder } from '@angular/forms';
 describe('DecisionsModalComponent', () => {
   let component: DecisionsModalComponent;
   let fixture: ComponentFixture<DecisionsModalComponent>;
-
+  const mockDialogRef = {
+    close: jasmine.createSpy('close')
+  };
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ DecisionsModalComponent ],
@@ -16,7 +18,7 @@ describe('DecisionsModalComponent', () => {
       providers: [
         FormBuilder,
         { provide: MAT_DIALOG_DATA, useValue: {recipient : 'recipient', fields : [{ id : 1, label : 'Moving price R', key : 'movingPriceR', type : 'input', value: 'test'}]} },
-        { provide: MatDialogRef, useValue: {} }
+        { provide: MatDialogRef, useValue: mockDialogRef }
       ],
       schemas: [ NO_ERRORS_SCHEMA ]
     })
@@ -37,5 +39,9 @@ describe('DecisionsModalComponent', () => {
     expect(component.decisionForm.value['1']).toEqual('test');
   });
 
+  it('it should close the dialog', () => {
+    component.onCancelClick();
+   expect(mockDialogRef.close).toHaveBeenCalled();
+  });
 
 });

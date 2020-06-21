@@ -6,10 +6,12 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SvgIconComponent } from '@modules/shared/_components/svg-icon/svg-icon.component';
 import { BusinessRuleType } from '../business-rules.modal';
+import { Router } from '@angular/router';
 
 describe('AddbusinessruleComponent', () => {
   let component: AddbusinessruleComponent;
   let fixture: ComponentFixture<AddbusinessruleComponent>;
+  let router: Router;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -17,6 +19,7 @@ describe('AddbusinessruleComponent', () => {
       imports: [AppMaterialModuleForSpec, HttpClientTestingModule, RouterTestingModule]
     })
     .compileComponents();
+    router = TestBed.inject(Router);
   }));
 
   beforeEach(() => {
@@ -41,6 +44,10 @@ describe('AddbusinessruleComponent', () => {
     const changes: import('@angular/core').SimpleChanges = {fragment:{currentValue:'missing', previousValue:'metadata',firstChange:null,isFirstChange:null}};
 
     component.ngOnChanges(changes);
+
+    const changes1: import('@angular/core').SimpleChanges = {};
+    component.ngOnChanges(changes1);
+
     expect(component.brType).toEqual(BusinessRuleType.BR_MANDATORY_FIELDS);
   }));
 
@@ -86,6 +93,22 @@ describe('AddbusinessruleComponent', () => {
     expect(component.brType).toEqual(BusinessRuleType.BR_REGEX_RULE);
     expect(component.breadcrumb.heading).toEqual('Regex Rule');
 
+    // case default
+    component.updateBrTypeBasedOnFragement('');
+    expect(component.updateBrTypeBasedOnFragement).toBeTruthy();
   }));
 
+  it('afterSaved(), should navigate', async (() =>{
+    const evt = {sno:765756, brId:'77656', brType: 'TEST', refId: 6566, fields: '',
+      regex: '', order: 765, message: '', script: '', brInfo: '', brExpose: 765, status: '', categoryId: '',
+      standardFunction: '', brWeightage: '', totalWeightage: 98765, transformation: 76, tableName: '',
+      qryScript: '', dependantStatus: '', plantCode: '', percentage: 876, schemaId: '', brIdStr: ''
+    }
+    component.schemaId = '87234687264862';
+    component.moduleId = '1005';
+    spyOn(router, 'navigate');
+    component.afterSaved(evt);
+    component.afterSaved(null);
+    expect(router.navigate).toHaveBeenCalledWith(['/home/schema/create-schema', component.moduleId, component.schemaId]);
+  }));
 });

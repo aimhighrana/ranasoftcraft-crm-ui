@@ -17,6 +17,23 @@ export class ReportDashboardPermission {
     groupHeaderModel: GroupHeaderModel;
 }
 
+export class SchemaDashboardPermission {
+    sno: number;
+    schemaId: string;
+    userid: string;
+    roleId: string;
+    groupid: string;
+    isAdmin: boolean;
+    isViewer: boolean;
+    isEditer: boolean;
+    isReviewer: boolean;
+    permissionType: PermissionType;
+    description: string;
+    userMdoModel: UserMdoModel;
+    rolesModel: RolesModel;
+    groupHeaderModel: GroupHeaderModel;
+}
+
 export enum PermissionType {
     USER = 'USER',
     ROLE = 'ROLE',

@@ -15,6 +15,7 @@ export class SchemaDetailsComponent implements OnInit {
   schemaId: string;
   variantId: string;
   schemaGroupDescription: string;
+  collaboratorPermission = false;
   schemaDetails: SchemaListDetails = new SchemaListDetails();
   breadcrumb: Breadcrumb = {
     heading: 'Schema Deatils',
@@ -28,14 +29,18 @@ export class SchemaDetailsComponent implements OnInit {
   // @ViewChild(OverviewChartComponent)schemaOverviewChart: OverviewChartComponent;
   constructor(
       private activatedRouter: ActivatedRoute,
-      private schemaListService: SchemalistService
+      private schemaListService: SchemalistService,
   ) { }
   ngOnInit() {
     this.activatedRouter.params.subscribe(params => {
-      this.schemaId = params.schemaId;
+      this.schemaId = params.schemaId?((params.schemaId).toLowerCase === 'new' ? '' : params.schemaId): '';
+      if(this.schemaId) {
+        this.getSchemaDetailsBySchemaId(this.schemaId);
+      } else {
+        this.collaboratorPermission = true;
+      }
       this.moduleId = params.moduleId;
       this.variantId = params.variantId;
-      this.getSchemaDetailsBySchemaId(this.schemaId);
     });
   }
   private getSchemaDetailsBySchemaId(schemaId: string) {
@@ -44,10 +49,10 @@ export class SchemaDetailsComponent implements OnInit {
       (resposne: SchemaListDetails) => {
           this.schemaDetails = resposne;
           this.breadcrumb.heading = this.schemaDetails.schemaDescription + 'Details';
+          this.collaboratorPermission = resposne.collaboratorModels ? resposne.collaboratorModels.isAdmin : false;
       }, error => {
         console.error('Went wrong while fetching schema details by schema id');
       }
     );
   }
-
 }

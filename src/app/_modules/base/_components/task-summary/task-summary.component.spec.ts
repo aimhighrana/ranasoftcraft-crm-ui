@@ -37,5 +37,16 @@ describe('TaskSummaryComponent', () => {
   it('getTaskDetails() should get task summary', async () => {
     component.getTaskDetails();
     expect(component.taskDetails).not.toBe(null);
-  })
+  });
+
+  it('closeDetailsModal() should close', async() =>{
+    component.closeDetailsModal();
+    expect(component.closeDetailsModal).toBeTruthy();
+  });
+
+  it('ngOnInit() loaded pre required', async() =>{
+    component.ngOnInit();
+    expect(component.ngOnInit).toBeTruthy();
+  });
+
 });

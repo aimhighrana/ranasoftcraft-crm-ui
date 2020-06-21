@@ -7,6 +7,7 @@ import * as moment from 'moment';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../../any2ts.service';
 import { SchemaListDetails } from 'src/app/_models/schema/schemalist';
+import { PermissionOn, SchemaDashboardPermission } from '@models/collaborator';
 
 @Injectable({
   providedIn: 'root'
@@ -139,4 +140,19 @@ export class SchemaDetailsService {
     return this.http.post(this.endpointService.submitReviewedRecordsUrl(schemaId), null);
   }
 
+  public getAllUserDetails(queryString: string): Observable<PermissionOn> {
+    return this.http.get<PermissionOn>(this.endpointService.getAllUserDetailsUrl(),{params:{queryString}});
+  }
+
+  public getCollaboratorDetails(schemaId: string): Observable<SchemaDashboardPermission[]> {
+    return this.http.get<SchemaDashboardPermission[]>(this.endpointService.getCollaboratorDetailsUrl(schemaId));
+  }
+
+  public createUpdateUserDetails(request: SchemaDashboardPermission[]): Observable<SchemaDashboardPermission[]> {
+    return this.http.post<SchemaDashboardPermission[]>(this.endpointService.createUpdateUserDetailsUrl(),request);
+  }
+
+  public deleteCollaborator(sNo: string): Observable<boolean> {
+    return this.http.delete<boolean>(this.endpointService.deleteSchemaCollaboratorDetailsUrl(sNo));
+  }
 }

@@ -390,6 +390,7 @@ export class Any2tsService {
     schemaDetail.pulse = resposne.isInRunning ? resposne.isInRunning : false;
     schemaDetail.moduleId = resposne.moduleId ? resposne.moduleId : false;
     schemaDetail.schemaThreshold = resposne.schemaThreshold && resposne.schemaThreshold !== 'null'  ? resposne.schemaThreshold : 0;
+    schemaDetail.collaboratorModels = resposne.collaboratorModels;
 
     if (resposne.brInformation) {
       resposne.brInformation.forEach(br => {

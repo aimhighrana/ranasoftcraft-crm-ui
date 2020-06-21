@@ -4,7 +4,7 @@
     <div class="f-spacer"></div>
     <button mat-stroked-button><mat-icon>edit</mat-icon></button>
     <div class="f-col-spacer-half"></div>
-    <button mat-stroked-button [routerLink]="['', { outlets: { sb: 'sb/schema/collab/' + schemaId } } ]"><mat-icon>group</mat-icon></button>
+    <button *ngIf="collaboratorPermission && schemaId" matTooltip="Collaborator" mat-stroked-button [routerLink]="['', { outlets: { sb: 'sb/schema/collab/' + this.schemaId } } ]"><mat-icon>group</mat-icon></button>
     <div class="f-col-spacer-half"></div>
     <button matTooltip="Execution logs" mat-stroked-button [routerLink]="['', { outlets: { sb: 'sb/schema/execution-logs/' + schemaId } } ]"><mat-icon>history</mat-icon></button>
     <div class="f-col-spacer-half"></div>

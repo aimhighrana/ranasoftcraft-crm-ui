@@ -45,7 +45,7 @@ export class SchemaExecutionComponent implements OnInit {
 });
   }
 
-  private getSchemaDetail(schemaId: string) {
+  public getSchemaDetail(schemaId: string) {
     this.schemaListService.getSchemaDetailsBySchemaId(schemaId).subscribe(data => {
       this.schemaDetail = data;
     }, error => {

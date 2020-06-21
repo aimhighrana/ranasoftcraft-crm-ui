@@ -18,7 +18,7 @@
   mat-form-field {
     width: calc(100% - 32px);
     height: 60px;
-    margin: 0 16px;
+    margin: 8px 16px;
   }
 
   .mat-line {
@@ -30,44 +30,89 @@
   }
 
   .collaborators-list {
-    height: calc(100% - 50px - 60px - 240px);
+    height: calc(100% - 50px - 76px - 240px);
     overflow-y: auto;
     width: 100%;
+  }
 
-    .collaborators-card {
-      padding: 8px;
-      margin: 4px 16px;
-
-      .f-row {
-        align-items: center;
-      }
-
-      .f-col {
-        padding: 4px 8px;
-      }
-
-      .mat-card-avatar {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-    }
+  .chip-enable-coll-list {
+    height: calc(100% - 50px - 76px - 274px);
   }
 
   .collaborators-add {
     width: 428px;
-    height: 240px;
+    height: 229px;
     position: fixed;
-    bottom: 0;
+    bottom: 40px;
     padding: 0 16px;
+
+    .mat-h3 {
+      margin: 8px 0 0 0;
+      font-weight: 500;
+    }
 
     mat-form-field {
       margin: 0;
+      width: 100%;
+    }
+
+    .selected-coll-groups {
+      margin: 8px 0;
+      align-items: center;
+      justify-content: space-between;
+
+      mat-chip-list {
+        width: calc(100% - 80px);
+
+        mat-chip {
+          font-size: 12px;
+          display: flex;
+          min-width: 120px;
+          justify-content: space-between;
+          align-items: center;
+          max-width: 170px;
+
+          .chip-content {
+            width: calc(100% - 36px);
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: pre-line;
+            word-break: break-word;
+          }
+
+          .chip-icon {
+            font-size: 18px;
+            height: 18px;
+            width: 18px;
+            margin-top: 2px;
+            cursor: pointer;
+          }
+
+          .icon-user {
+            color: #0d66d0;
+          }
+
+          .icon-role {
+            color: #cb6f10;
+          }
+
+          .icon-group {
+            color: #12805c;
+          }
+        }
+      }
     }
 
     .action {
       justify-content: flex-end;
     }
+  }
+
+  .chip-enable-coll-add {
+    height: 274px;
   }
 
   .permissions {

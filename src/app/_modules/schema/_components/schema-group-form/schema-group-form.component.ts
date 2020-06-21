@@ -150,7 +150,7 @@ export class SchemaGroupFormComponent implements OnInit {
   /**
    * Make a service call for getting all modules
    */
-  private getAllModuleList() {
+  public getAllModuleList() {
     this.schemaService.getAllObjectType().subscribe(data => {
       this.moduleList = data;
       this.filteredModules = of(data);
@@ -171,7 +171,7 @@ export class SchemaGroupFormComponent implements OnInit {
    * Getting all schema(s) based on object ids
    * If there is no schema(s) on selected object then the null state will be visiable
    */
-  private getAllSchemaByModuleId() {
+  public getAllSchemaByModuleId() {
     const selSchemaId: string[] = this.groupDetails.objectId;
     const getAllSchemabymoduleidsReq: GetAllSchemabymoduleidsReq = new GetAllSchemabymoduleidsReq();
     getAllSchemabymoduleidsReq.mosuleIds = selSchemaId;
@@ -191,7 +191,7 @@ export class SchemaGroupFormComponent implements OnInit {
    * Will be called when we getting some schema from selected object ids and make as pre selected
    *  data get all schema response
    */
-  private getSchemaListResponseAsSelected(data: GetAllSchemabymoduleidsRes[]) {
+  public getSchemaListResponseAsSelected(data: GetAllSchemabymoduleidsRes[]) {
     let returnData: GetAllSchemabymoduleidsRes[] = [];
     if (this.groupDetails.schemaGroupMappings && this.groupDetails.schemaGroupMappings.length > 0) {
       data.forEach(schema => {

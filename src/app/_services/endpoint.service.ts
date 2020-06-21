@@ -374,6 +374,19 @@ export class EndpointService {
     return `${this.apiUrl}/es/uploadCorrection/${objectType}/${schemaId}/${runId}/${plantCode}/${fileSno}`;
   }
 
+  public getCollaboratorDetailsUrl(schemaId: string): string {
+    return `${this.apiUrl}/schema/get-all-schemacollaborator-details/${schemaId}`;
+  }
+
+  public createUpdateUserDetailsUrl(): string {
+    return `${this.apiUrl}/schema/create-update-schemacollaborator`;
+  }
+
+  public getAllUserDetailsUrl(): string {
+    return `${this.apiUrl}/admin/permission/collaborators`;
+  }
+
+  public deleteSchemaCollaboratorDetailsUrl(sNo: string): string {
+    return `${this.apiUrl}/admin/users/collaborator-records/delete/${sNo}`;
+  }
 }
-
-

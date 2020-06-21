@@ -12,11 +12,13 @@ describe('ExecutionSummaryComponent', () => {
   let fixture: ComponentFixture<ExecutionSummaryComponent>;
   let schemaService: SchemaService;
   let schemaListService: SchemalistService;
+  let schemalistSer: SchemalistService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ExecutionSummaryComponent ],
-      imports: [HttpClientTestingModule]
+      imports: [HttpClientTestingModule],
+      providers:[ SchemalistService]
     })
     .compileComponents();
   }));
@@ -27,6 +29,7 @@ describe('ExecutionSummaryComponent', () => {
     schemaService = fixture.debugElement.injector.get(SchemaService);
     schemaListService = fixture.debugElement.injector.get(SchemalistService);
     fixture.detectChanges();
+    schemalistSer = fixture.debugElement.injector.get(SchemalistService);
   });
 
   it('should create', () => {
@@ -69,4 +72,27 @@ describe('ExecutionSummaryComponent', () => {
 
   }));
 
+  it('ngOnInit(), loaded pre required',async(()=>{
+  // mock data
+    const schemaid = '23472538';
+    const schemalist: SchemaListDetails = new SchemaListDetails();
+    schemalist.totalCount = 57; schemalist.errorCount = 114; schemalist.errorUniqueValue = 55; schemalist.totalUniqueValue = 110;
+    schemalist.successCount = 76; schemalist.successUniqueValue = 76; schemalist.pulse = true;
+    component.schemaId = schemaid;
+    spyOn(schemalistSer, 'getSchemaDetailsBySchemaId').withArgs(schemaid).and.returnValue(of(schemalist));
+
+    component.ngOnInit();
+
+    expect(schemalistSer.getSchemaDetailsBySchemaId).toHaveBeenCalledWith(schemaid);
+  }));
+
+  it('ngOnInit(), loaded pre required for brach',async(()=>{
+    // mock data
+      const schemaId = '23472538';
+      const schemaList: SchemaListDetails = new SchemaListDetails();
+      component.schemaId = schemaId;
+      spyOn(schemalistSer, 'getSchemaDetailsBySchemaId').withArgs(schemaId).and.returnValue(of(schemaList));
+      component.ngOnInit();
+      expect(schemalistSer.getSchemaDetailsBySchemaId).toHaveBeenCalledWith(schemaId);
+    }));
 });

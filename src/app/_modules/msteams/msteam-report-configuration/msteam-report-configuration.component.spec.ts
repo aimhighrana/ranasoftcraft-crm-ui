@@ -84,6 +84,8 @@ describe('MsteamReportConfigurationComponent', () => {
     spyOn(microsoftTeams.settings, 'setValidityState').and.callFake(() => {
       return '';
     });
+    component.reportListSelected = 'TEST';
+    component.customUrl = 'some url';
     component.radioChange('1')
     expect(component.selectedOption).toEqual('1');
 

@@ -5,6 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { ThousandconvertorPipe } from 'src/app/_modules/shared/_pipes/thousandconvertor.pipe';
 import { RouterTestingModule } from '@angular/router/testing';
+import { SchemaExecutionRequest } from 'src/app/_models/schema/schema-execution';
 
 describe('SchemaExecutionDialogComponent', () => {
   let component: SchemaExecutionDialogComponent;
@@ -37,6 +38,14 @@ describe('SchemaExecutionDialogComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('close should close the dialog', () => {
+  it('it should close the dialog', () => {
+    component.closeDialog();
+    expect(mockDialogRef.close).toHaveBeenCalled();
+  });
+
+  it('scheduleSchema()', () => {
+    const schemaExecutionReq: SchemaExecutionRequest = new SchemaExecutionRequest();
+    console.log(schemaExecutionReq);
+    component.scheduleSchema();
   });
 });

@@ -68,6 +68,8 @@ export class SchemaDatatableComponent implements OnInit {
   schemaBrInfoList: SchemaBrInfo[] = [];
   metaDataFieldList = {} as any;
   submitReviewedBtn = false;
+  collaboratorPermission = false;
+  collaboratorEditor = false;
   selectedFieldsOb: BehaviorSubject<string[]> = new BehaviorSubject([]);
   constructor(
     private schemaDetailsService: SchemaDetailsService,
@@ -218,6 +220,21 @@ export class SchemaDatatableComponent implements OnInit {
   private getSchemaDetails(schemaId: string) {
     this.schemaListService.getSchemaDetailsBySchemaId(schemaId).subscribe(data => {
       this.schemaDetails = data;
+      if(data.collaboratorModels) {
+        if(data.collaboratorModels.isReviewer) {
+          this.collaboratorPermission = false;
+        } else {
+          this.collaboratorPermission = true;
+        }
+        if(data.collaboratorModels.isEditer){
+          this.collaboratorEditor = true;
+        } else {
+          this.collaboratorEditor = false;
+        }
+      } else {
+        this.collaboratorEditor = false;
+        this.collaboratorPermission = false;
+      }
     }, error => {
       this.snackBar.open(`Error : ${error}`, 'Close',{duration:2000});
     });

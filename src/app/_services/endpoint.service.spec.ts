@@ -79,7 +79,6 @@ describe('EndpointService', () => {
     expect(serObj.deleteConditionBlock(blockId)).toContain(`schema/br/udr/delete-conditionblock/${blockId}`);
   }));
 
-
   it('it should call getTaskListViewsUrl() and return formatted URL', () => {
     const serviceobj = new EndpointService();
     const userName = 'DemoApp';
@@ -102,4 +101,23 @@ describe('EndpointService', () => {
     expect(serviceobj.getSaveTaskListURL()).toContain(`tasklist/taskListUserView`);
   })
 
+  it('getCollaboratorDetailsUrl(), should return the person details  url', async(() =>{
+    const serObj = new EndpointService();
+    expect(serObj.getCollaboratorDetailsUrl('28364872686186')).toContain('schema/get-all-schemacollaborator-details/28364872686186');
+  }));
+
+  it('createUpdatePersonDetailsUrl(), should  create and update person details url', async(() =>{
+    const serObj = new EndpointService();
+    expect(serObj.createUpdateUserDetailsUrl()).toContain('schema/create-update-schemacollaborator');
+  }));
+
+  it('getAllUserDetailsUrl(), should return the all person details url', async(() =>{
+    const serObj = new EndpointService();
+    expect(serObj.getAllUserDetailsUrl()).toContain('admin/permission/collaborators');
+  }));
+
+  it('deleteSchemaCollaboratorDetailsUrl(),should delte the exexting collaborator derail', async(() =>{
+    const serObj = new EndpointService();
+    expect(serObj.deleteSchemaCollaboratorDetailsUrl('355535857155320681 ')).toContain('admin/users/collaborator-records/delete/355535857155320681');
+  }));
 });

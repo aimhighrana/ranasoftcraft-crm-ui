@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CollaboratorComponent } from './collaborator.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ReportDashboardPermission } from '@models/collaborator';
+import { SchemaDashboardPermission } from '@models/collaborator';
 
 describe('CollaboratorComponent', () => {
   let component: CollaboratorComponent;
@@ -28,29 +28,30 @@ describe('CollaboratorComponent', () => {
 
   it('ngOnInit(), should initilize pre required ',async(()=>{
     // mock data
-    const data:ReportDashboardPermission = new ReportDashboardPermission();
-    data.isViewable = true; data.isEditable = true; data.isDeleteable = true;
+    const data:SchemaDashboardPermission = new SchemaDashboardPermission();
+    data.isAdmin = true; data.isViewer = true; data.isEditer = true; data.isReviewer = true;
 
     component.collaborator = data;
     // call actual method
     component.ngOnInit();
 
-    const expectedData = {isViewable: true, isEditable: true, isDeleteable: true};
+    const expectedData = {isAdmin: true, isViewer: true, isEditer: true, isReviewer: true};
 
     expect(component.permissionFrmGrp.value).toEqual(expectedData, 'Controls should equals');
 
     // mock Data
-    const response: ReportDashboardPermission = new ReportDashboardPermission();
+    const response:SchemaDashboardPermission = new SchemaDashboardPermission();
     response.roleId = '657658';
     component.collaborator = response;
     // call actual method
     component.ngOnInit();
 
-    const expected = {isViewable: false, isEditable: false, isDeleteable: false};
+    const expected = {isAdmin: false, isViewer: false, isEditer: false, isReviewer: false};
 
     expect(component.permissionFrmGrp.value).toEqual(expected, 'Controls should equals');
 
   }));
+
 
   it('updateEmit(), should emit for update request',async(()=>{
 
@@ -61,8 +62,8 @@ describe('CollaboratorComponent', () => {
 
   it('deleteEmit(), should emit for delete request',async(()=>{
     // mock data
-    const data: ReportDashboardPermission = new ReportDashboardPermission();
-    data.permissionId = 793729260;
+    const data:SchemaDashboardPermission = new SchemaDashboardPermission();
+    data.sno = 793729260;
     component.collaborator = data;
 
     // call actual method

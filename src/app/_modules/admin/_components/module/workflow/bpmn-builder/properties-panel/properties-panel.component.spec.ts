@@ -34,4 +34,9 @@ describe('PropertiesPanelComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('updateStepProperties() should update step properties', async (() =>{
+    const attributes = true;
+    component.updateStepProperties(attributes);
+    expect(component.updateStepProperties).toBeTruthy();
+  }));
 });

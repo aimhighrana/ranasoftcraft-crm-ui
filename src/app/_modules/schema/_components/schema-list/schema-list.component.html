@@ -19,15 +19,15 @@
         <button mat-button color="primary" (click)="uploadData(module)">Upload dataset</button>
       </div>
       <pros-schema-tile class="flex-col-1" *ngFor="let schema of module.schemaLists"
-        [routerLink]="['/home', 'schema', 'schema-details', module.moduleId, schema.schemaId, schema.variantId]"
-  
+        (click) = "schemaDetails(module.moduleId, schema);"
+      
         title="{{ schema.schemaDescription }}" 
         bottomLeftLabel="{{ schema.variantCount }} Variants"
         bottomRightLabel="Run"
-  
+
         [info]=true
-        [edit]=true
-        [delete]=true
+        [edit]="schema.collaboratorModels ? schema.collaboratorModels.isEditer: false"
+        [delete]="schema.collaboratorModels ? schema.collaboratorModels.isAdmin: false"
         [pulse]= "schema.pulse"
         [schemaId]= "schema.schemaId"
         [variantId] ="schema.variantId"

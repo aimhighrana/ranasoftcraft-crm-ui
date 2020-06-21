@@ -8,28 +8,29 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { SchemalistService } from 'src/app/_services/home/schema/schemalist.service';
 import { of } from 'rxjs';
 import { SchemaListDetails } from 'src/app/_models/schema/schemalist';
+import { SchemaExecutionRequest } from '@models/schema/schema-execution';
+import { SchemaExecutionService } from '@services/home/schema/schema-execution.service';
 
 describe('SchemaExecutionComponent', () => {
   let component: SchemaExecutionComponent;
   let fixture: ComponentFixture<SchemaExecutionComponent>;
-  let schemaListServiceSpy: jasmine.SpyObj<SchemalistService>;
+  let schemaListServiceSpy: SchemalistService;
+  let schenaexecutionSpy: SchemaExecutionService;
   beforeEach(async(() => {
-    const schemaLstSerSpy = jasmine.createSpyObj('SchemalistService', ['getSchemaDetailsBySchemaId']);
     TestBed.configureTestingModule({
       imports: [AppMaterialModuleForSpec, ReactiveFormsModule, FormsModule, RouterTestingModule],
       declarations: [ SchemaExecutionComponent, BreadcrumbComponent ],
-      providers: [
-        {provide:SchemalistService, useValue:schemaLstSerSpy}
-      ]
+      providers: [ SchemalistService, SchemaExecutionService ]
     })
     .compileComponents();
-    schemaListServiceSpy = TestBed.inject(SchemalistService) as jasmine.SpyObj<SchemalistService>;
+
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SchemaExecutionComponent);
     component = fixture.componentInstance;
-    // fixture.detectChanges();
+    schemaListServiceSpy = fixture.debugElement.injector.get(SchemalistService);
+    schenaexecutionSpy = fixture.debugElement.injector.get(SchemaExecutionService);
   });
 
   it('should create', () => {
@@ -38,7 +39,26 @@ describe('SchemaExecutionComponent', () => {
 
   it('getSchemaDetail() , should invoke for get schema details by schema id ', async(()=>{
     const schemaId = '87365726767288';
-    expect(schemaListServiceSpy.getSchemaDetailsBySchemaId.withArgs(schemaId).and.returnValue(of(new SchemaListDetails()))).toHaveBeenCalledTimes(0);
+    const schemalist: SchemaListDetails = new SchemaListDetails();
+    component.schemaId = schemaId;
+    spyOn(schemaListServiceSpy, 'getSchemaDetailsBySchemaId').withArgs(schemaId).and.returnValue(of(schemalist));
+    component.getSchemaDetail(component.schemaId);
+    expect(schemaListServiceSpy.getSchemaDetailsBySchemaId).toHaveBeenCalledWith(schemaId);
   }));
 
+  it('scheduleSchema() , should invoke for get schema details by schema id ', async(()=>{
+    const schemaId = '87365726767288';
+    component.schemaId = schemaId;
+    const schemaExecutionReq: SchemaExecutionRequest = new SchemaExecutionRequest();
+    schemaExecutionReq.schemaId = component.schemaId;
+    schemaExecutionReq.variantId = '0';
+    spyOn(schenaexecutionSpy, 'scheduleSChema').withArgs(schemaExecutionReq).and.returnValue(of());
+    component.scheduleSchema();
+    expect(schenaexecutionSpy.scheduleSChema).toHaveBeenCalledWith(schemaExecutionReq);
+  }));
+
+  it('ngOnInit(), loaded pre required', async(()=>{
+    component.ngOnInit();
+    expect(component.ngOnInit).toBeTruthy();
+  }));
 });
