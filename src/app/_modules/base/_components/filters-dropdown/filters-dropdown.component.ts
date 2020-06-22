@@ -6,6 +6,7 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { UserService } from '@services/user/userservice.service';
 import { Userdetails } from '@models/userdetails';
+import * as moment from 'moment';
 
 @Component({
   selector: 'pros-filters-dropdown',
@@ -30,12 +31,14 @@ export class FiltersDropdownComponent implements OnInit, OnDestroy {
       status: '',
       priority: '',
       region: '',
-      recieved_on: new Date(),
-      due_date: new Date(),
-      requested_by: ''
+      recieved_date: '',
+      due_date: '',
+      requested_by: '',
+      requested_date: ''
     },
     dynamicFilters: [],
-    tags: []
+    tags: [],
+    apiRequestStructure: []
   });
 
   // for emitting updated filters
@@ -90,8 +93,13 @@ export class FiltersDropdownComponent implements OnInit, OnDestroy {
     objectDesc: '',
     fieldDesc: ''
   }
+  // used to popiulate the pre-selected field
+  @Input() selectedFields = {
+    priority: '',
+    status: ''
+  };
 
-
+  apiRequestStructure = [];
   /**
    * constructor of @class FiltersDropdownComponent
    */
@@ -105,7 +113,6 @@ export class FiltersDropdownComponent implements OnInit, OnDestroy {
     this.initializeForm();
     this.getUserDetails();
     this.filterObservable.subscribe((filters) => {
-      console.log(filters)
       if (filters.staticFilters && filters.dynamicFilters) {
         this.filters = filters;
         const allModules = this.filters.dynamicFilters.filter((r) => r.objectDesc !== 'All Modules' && r.filterFields.length > 0)
@@ -127,6 +134,15 @@ export class FiltersDropdownComponent implements OnInit, OnDestroy {
     this.filters.dynamicFilters.forEach((l1Object) => {
       this.globalStateStructure[l1Object.objectType] = {}
       l1Object.filterFields.forEach((l2Fields) => {
+        const innerObj = {
+          objectId: l2Fields.objectId,
+          fieldData: {
+            fieldId: l2Fields.fieldId,
+            filterList: []
+          }
+        }
+        this.apiRequestStructure.push(innerObj)
+
         this.globalStateStructure[l1Object.objectType][l2Fields.fieldId] = {
           nextFetchCount: 0,
           noMoreRecords: false,
@@ -135,6 +151,7 @@ export class FiltersDropdownComponent implements OnInit, OnDestroy {
       })
     });
   }
+
 
   /**
    * This function listens to the typing and calls the api
@@ -180,9 +197,10 @@ export class FiltersDropdownComponent implements OnInit, OnDestroy {
    */
   initializeForm() {
     this.filterForm = new FormGroup({
-      priority: new FormControl(),
-      status: new FormControl(),
-      recieved_on: new FormControl(),
+      priority: new FormControl(this.selectedFields.priority),
+      status: new FormControl(this.selectedFields.status),
+      recieved_date: new FormControl(),
+      requested_date: new FormControl(),
       due_date: new FormControl(),
       region: new FormControl(),
       requested_by: new FormControl()
@@ -222,12 +240,18 @@ export class FiltersDropdownComponent implements OnInit, OnDestroy {
   updateFilter() {
     this.filters.staticFilters.priority = this.filterForm.value.priority;
     this.filters.staticFilters.status = this.filterForm.value.status;
-    this.filters.staticFilters.due_date = this.filterForm.value.due_date;
-    this.filters.staticFilters.recieved_on = this.filterForm.value.recieved_on;
+    this.filters.staticFilters.due_date = this.createReturnDateFormat(this.filterForm.value.due_date, this.filterForm.value.due_date);
+    this.filters.staticFilters.recieved_date = this.createReturnDateFormat(this.filterForm.value.recieved_date, this.filterForm.value.recieved_date)
+    this.filters.staticFilters.requested_date = this.createReturnDateFormat(this.filterForm.value.requested_date, this.filterForm.value.requested_date)
     this.filters.staticFilters.requested_by = this.filterForm.value.requested_by;
     this.filters.staticFilters.region = this.filterForm.value.region;
     this.filters.tags = this.tagsList;
+    this.filters.apiRequestStructure = this.apiRequestStructure;
     this.updateFilters.emit(this.filters);
+  }
+
+  createReturnDateFormat(date1: string, date2: string) {
+    return date1 && date2 ? moment(date1).format('DD.MM.YYYY') + '-' + moment(date2).format('DD.MM.YYYY') : '';
   }
 
   /**
@@ -306,9 +330,17 @@ export class FiltersDropdownComponent implements OnInit, OnDestroy {
         text: `${this.globalStateStructure[item.objectId][item.fieldId].list[index].objectDesc}-${this.globalStateStructure[item.objectId][item.fieldId].list[index].fieldDesc}-${item.TEXT}`
       }
       this.tagsList.push(tagObject);
+      const findExisting = this.apiRequestStructure.find((requestItem) => requestItem.objectId === item.objectId && requestItem.fieldData.fieldId === item.fieldId);
+      if (findExisting) {
+        if (!findExisting.fieldData.filterList.includes(item.CODE)) {
+          findExisting.fieldData.filterList.push(item.CODE);
+        }
+      }
     } else {
       const selectedOptionIndex = this.tagsList.findIndex((listItem) => listItem.checkBoxCode === item.CODE);
       this.tagsList.splice(selectedOptionIndex, 1);
+      const findExisting = this.apiRequestStructure.find((requestItem) => requestItem.objectId === item.objectId && requestItem.fieldData.fieldId === item.fieldId);
+      findExisting.fieldData.filterList.splice(findExisting.fieldData.filterList.indexOf(item.CODE), 1)
     }
   }
 
@@ -320,6 +352,11 @@ export class FiltersDropdownComponent implements OnInit, OnDestroy {
     const selectedItemCodeIndex = this.tagsList.findIndex((listItem) => listItem.checkBoxCode === item.checkBoxCode);
     this.tagsList.splice(selectedItemCodeIndex, 1);
     const selectedOption = this.globalStateStructure[item.objectId][item.fieldId].list.find((listItem) => listItem.CODE === item.checkBoxCode);
+    const findExisting = this.apiRequestStructure.find((requestItem) => requestItem.objectId === item.objectId && requestItem.fieldData.fieldId === item.fieldId && requestItem.fieldData.filterList.includes(item.checkBoxCode));
+    if (findExisting) {
+      findExisting.fieldData.filterList.splice(findExisting.fieldData.filterList.indexOf(item.checkBoxCode), 1)
+    }
+    console.log(this.apiRequestStructure);
     if (!selectedOption) return;
     selectedOption.checked = false;
   }
@@ -344,7 +381,6 @@ export class FiltersDropdownComponent implements OnInit, OnDestroy {
   resetFilters() {
     this.tagsList = [];
     const keys = Object.keys(this.globalStateStructure);
-    this.filterForm.reset();
     keys.forEach((key) => {
       const innerKeys = this.globalStateStructure[key];
       const innerObjectKeys = Object.keys(innerKeys);
@@ -354,7 +390,15 @@ export class FiltersDropdownComponent implements OnInit, OnDestroy {
           checked.forEach((item) => item.checked = false);
         }
       })
-    })
+    });
+    this.filterForm.reset();
+    this.filters.apiRequestStructure = [];
+    Object.keys(this.filters.staticFilters).forEach((key) => this.filters.staticFilters[key] = '')
+    this.updateFilters.emit(this.filters);
+  }
+
+  get today() {
+    return new Date();
   }
 
   /**
@@ -362,7 +406,6 @@ export class FiltersDropdownComponent implements OnInit, OnDestroy {
    * calls when page is closed
    */
   ngOnDestroy() {
-    this.filterObservable.unsubscribe();
     this.userSubscription.unsubscribe();
     this.taskListFiltersSubscription.unsubscribe();
   }

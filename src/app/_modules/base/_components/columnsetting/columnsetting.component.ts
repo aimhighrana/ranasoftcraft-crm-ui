@@ -1,6 +1,4 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { MatCheckboxChange } from '@angular/material/checkbox';
-
 @Component({
   selector: 'pros-columnsetting',
   templateUrl: './columnsetting.component.html',
@@ -15,10 +13,11 @@ export class ColumnsettingComponent implements OnInit {
 
   ngOnInit(): void { }
 
-  emitChange(column, event: MatCheckboxChange) {
+  saveChange(column, event) {
+    console.log(column, event)
     column.visible = event.checked;
-    this.updateColumns.emit(this.tableColumns);
   }
+
   closeSettingColumn() {
     this.close.emit(true)
   }

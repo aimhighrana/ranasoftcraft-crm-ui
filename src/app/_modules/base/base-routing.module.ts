@@ -8,7 +8,7 @@ import { TasklistTableComponent } from './_components/tasklist-table/tasklist-ta
 const routes: Routes = [
   { path: 'task-list', component: TaskListComponent, pathMatch: 'full' },
   { path: 'task-list/table', component: TasklistTableComponent },
-  { path: 'task-list/:summaryId', component: TaskListComponent },
+  { path: 'task-list/:tabId/:summaryId', component: TaskListComponent },
   { path: 'task-details/:taskId', component: TaskSummaryComponent },
   { path: '**', component: PageNotFoundComponent }
 ];

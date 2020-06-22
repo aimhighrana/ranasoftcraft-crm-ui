@@ -31,7 +31,7 @@ export class TagsEllipsisDirective implements AfterViewInit {
     if (this.tags.length > 2) {
       this.html = this.html + `<button class="mat-focus-indicator moretag mat-icon-button mat-button-base mat-primary" aria-haspopup="true" [matMenuTriggerFor]="taglist">+${this.tags.length - 2}</button>`;
       const moreThantwo = this.tags.splice(2);
-      this.html = this.html + `<mat-menu #taglist="matMenu">`;
+      this.html = this.html + `<mat-menu #taglist="matMenu" style='display:none'>`;
       moreThantwo.forEach((tag) => {
         this.html = this.html + `<button mat-menu-item>${tag.value}</button>`;
       });

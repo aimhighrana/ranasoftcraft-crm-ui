@@ -24,14 +24,17 @@
                     <mat-form-field appearance="outline">
                         <mat-label>Priority</mat-label>
                         <mat-select formControlName="priority">
-                            <mat-option value="high">
+                            <mat-option value="P1">
+                                Critical
+                            </mat-option>
+                            <mat-option value="P2">
                                 High
                             </mat-option>
-                            <mat-option value="Medium">
+                            <mat-option value="P3">
                                 Medium
                             </mat-option>
-                            <mat-option value="low">
-                                low
+                            <mat-option value="P4">
+                                Low
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
@@ -39,23 +42,27 @@
                     <mat-form-field appearance="outline">
                         <mat-label>Status</mat-label>
                         <mat-select formControlName="status">
-                            <mat-option value="active">
-                                Active
+                            <mat-option value="forwarded">
+                                Forwarded to me
                             </mat-option>
-                            <mat-option value="pending">
-                                Pending
-                            </mat-option>
-                            <mat-option value="Not Active">
-                                Not Active
+                            <mat-option value="claimed">
+                                Claimed By me
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
 
                     <mat-form-field appearance="outline" class="custom-input">
                         <mat-label>Received Date</mat-label>
-                        <input matInput [matDatepicker]="pickerrd" formControlName="recieved_on">
+                        <input matInput [matDatepicker]="pickerrd" [max]="today" formControlName="recieved_date">
                         <mat-datepicker-toggle matSuffix [for]="pickerrd"></mat-datepicker-toggle>
                         <mat-datepicker #pickerrd></mat-datepicker>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="custom-input">
+                        <mat-label>Requested Date</mat-label>
+                        <input matInput [matDatepicker]="pickerrqd" [max]="today" formControlName="requested_date">
+                        <mat-datepicker-toggle matSuffix [for]="pickerrqd"></mat-datepicker-toggle>
+                        <mat-datepicker #pickerrqd></mat-datepicker>
                     </mat-form-field>
 
                     <mat-form-field appearance="outline" class="custom-input">
@@ -65,14 +72,14 @@
                         <mat-datepicker #pickerdd></mat-datepicker>
                     </mat-form-field>
 
-                    <mat-form-field appearance="outline">
+                    <!-- <mat-form-field appearance="outline">
                         <mat-label>Region</mat-label>
                         <mat-select formControlName="region">
                             <mat-option value="region 1">region 1</mat-option>
                             <mat-option value="region 2">region 2</mat-option>
                             <mat-option value="region 3">region 3</mat-option>
                         </mat-select>
-                    </mat-form-field>
+                    </mat-form-field> -->
 
                     <mat-form-field appearance="outline">
                         <mat-label>Request By</mat-label>
