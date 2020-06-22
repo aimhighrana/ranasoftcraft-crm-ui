@@ -8,6 +8,7 @@ import * as XLSX from 'xlsx';
 import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-details.service';
 import { MetadataModeleResponse, MetadataModel } from 'src/app/_models/schema/schemadetailstable';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatStepper } from '@angular/material/stepper';
 export interface DataSource {
   excelFld: string;
   excelFrstRow: string;
@@ -226,7 +227,7 @@ export class UploadDataComponent implements OnInit {
     }
   }
 
-  uploadFileData() {
+  uploadFileData(stepper: MatStepper) {
     if(this.excelMdoFieldMappedData.length <= 0) {
       this.snackBar.open(`Please map atleast one field `, 'Close',{duration:2000});
       this.dataTableCtrl.controls.dataTableFldCtrl.setValue(''); // set valitor here
@@ -235,18 +236,20 @@ export class UploadDataComponent implements OnInit {
     this.schemaService.uploadUpdateFileData(this.uploadFileStepCtrl.get('uploadFileCtrl').value, this.fileSno).subscribe(res=>{
       console.log(res);
       this.fileSno = res;
-      this.uploadDataHttpCall();
+      this.uploadDataHttpCall(stepper);
     },error=>{
       console.error(error);
     });
   }
 
-  uploadDataHttpCall() {
+  uploadDataHttpCall(stepper: MatStepper) {
     const objType = this.moduleFormCtrl.controls.moduleInpFrmCtrl.value.objectid;
     if(objType) {
       this.schemaService.uploadData(this.excelMdoFieldMappedData,objType, this.fileSno).subscribe(res=>{
-        this.dataTableCtrl.controls.dataTableFldCtrl.setValue('done'); // remove valitor here
-        this.snackBar.open(`Reqquest accept successfully `, 'Close',{duration:5000});
+        // remove valitor here and move to next step
+        this.dataTableCtrl.controls.dataTableFldCtrl.setValue('done');
+        stepper.next();
+        this.snackBar.open(`Request accept successfully `, 'Close',{duration:5000});
       },error=>{
         console.error(error);
         this.snackBar.open(`Something went wrong , please check mdo logs `, 'Close',{duration:5000});

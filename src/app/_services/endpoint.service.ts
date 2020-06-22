@@ -208,7 +208,7 @@ export class EndpointService {
     return this.apiUrl + '/schema/create-update-schema';
   }
 
-  public deleteBr(id) {
+  public deleteBr(id): string {
     return this.apiUrl + '/schema/delete-business-rule/' + id;
   }
   public reportDashboardUrl(reportId: number) {

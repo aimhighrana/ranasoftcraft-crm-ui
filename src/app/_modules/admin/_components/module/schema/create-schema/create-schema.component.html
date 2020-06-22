@@ -49,11 +49,11 @@
                                         <h4 class="mat-h4">{{ br.brInfo }}</h4>
                                     </div>
                                     <div class="f-row">
-                                        <button mat-icon-button>
-                                            <mat-icon matTooltip="Edit" (click)="editBusinessRuls(br.brIdStr, br.brType)">edit</mat-icon>
+                                        <button mat-icon-button (click)="editBusinessRuls(br.brIdStr, br.brType)">
+                                            <mat-icon matTooltip="Edit">edit</mat-icon>
                                         </button>
                                         <!-- (click)="removeBrFromCategory(i,j)" -->
-                                        <button mat-icon-button>
+                                        <button mat-icon-button (click)="removeMappedBr(br, i)">
                                             <mat-icon matTooltip="Delete">delete_outline</mat-icon>
                                         </button>
                                     </div>
@@ -112,7 +112,7 @@
                         <button mat-icon-button (click)="editBusinessRuls(data.brIdStr, data.brType)">
                             <mat-icon matTooltip="Edit">edit</mat-icon>
                         </button>
-                        <button mat-icon-button>
+                        <button mat-icon-button (click)="deleteBr(data.brIdStr)">
                             <mat-icon matTooltip="Delete">delete_outline</mat-icon>
                         </button>
                         <button mat-icon-button>

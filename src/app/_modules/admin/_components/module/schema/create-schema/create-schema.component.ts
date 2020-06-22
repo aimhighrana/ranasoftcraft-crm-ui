@@ -257,7 +257,7 @@ export class CreateSchemaComponent implements OnInit {
     categories.removeAt(index);
 
     // remove mapping br also
-    delete this.categoryBrMap.index;
+    delete this.categoryBrMap[index];
   }
 
   /**
@@ -339,6 +339,55 @@ export class CreateSchemaComponent implements OnInit {
   }
 
   /**
+   * Delete business rule
+   * Should call deleteBr service
+   * @param brId business rule id
+   */
+  deleteBr(brId: string) {
+    this.service.deleteBr(brId).subscribe(res=>{
+      if(res) {
+        this.matSnackBar.open(`Successfully deleted`, 'Close',{duration:5000});
+        const br = this.brList.filter(fil=> fil.brIdStr === brId)[0];
+        if(br) {
+          this.brList.splice(this.brList.indexOf(br),1);
+          // reorder
+          this.brList.forEach((br01, index)=>{
+            br01.order = index++;
+          });
+          this.brListOb = of(this.brList);
+
+          // remove from br mapped , category
+          Object.keys(this.categoryBrMap).forEach((cat, index)=>{
+            const data = this.categoryBrMap[cat];
+            const br01 = data.filter(fil=> fil.brIdStr === brId)[0];
+            if(br01) {
+              data.splice(data.indexOf(br01),1);
+              this.categoryBrMap[index] = data;
+              return false;
+            }
+          });
+        }
+      }
+    }, error=>{
+      this.matSnackBar.open(`Something went wrong`, 'Close',{duration:5000});
+    });
+  }
+
+  /**
+   *
+   * @param brId removeable brid
+   * @param index Index of category
+   */
+  removeMappedBr(br: CoreSchemaBrInfo, index: number) {
+    if(br && index !== undefined) {
+      const brMap =  this.categoryBrMap[index];
+      if(brMap) {
+        brMap.splice(brMap.indexOf(br),1);
+        this.categoryBrMap[index] = brMap;
+      }
+    }
+  }
+  /**
    * Call http for save update schema and br mapping
    * along with goup
    */
@@ -351,7 +400,7 @@ export class CreateSchemaComponent implements OnInit {
     }
     const res = this.checkIsEmptycategoryAssigned();
     console.log(res);
-    if(this.checkIsEmptycategoryAssigned()) {
+    if(res) {
       this.matSnackBar.open(`Please assign rule(s) in category`, 'Close',{duration:5000});
       return false;
     }

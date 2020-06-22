@@ -162,4 +162,36 @@ describe('CreateSchemaComponent', () => {
 
     expect(service.createUpdateSchema).toHaveBeenCalledWith(request);
   }));
+
+  it('removeMappedBr(), should remove br mapped with categories', async(()=>{
+    const br: CoreSchemaBrInfo = new CoreSchemaBrInfo();
+    br.brIdStr = '7324725857';
+
+    component.categoryBrMap[0] = [br];
+
+    expect(component.categoryBrMap[0].length).toEqual(1);
+    component.removeMappedBr(br, 0);
+
+    expect(component.categoryBrMap[0].length).toEqual(0);
+
+  }));
+
+  it('deleteBr(), should call http for delete', async(()=>{
+    const brid = '332526634';
+    const br: CoreSchemaBrInfo = new CoreSchemaBrInfo();
+    br.brIdStr = brid;
+
+    component.brList = [br];
+
+    component.categoryBrMap = {0:[br]};
+
+    spyOn(service,'deleteBr').withArgs(brid).and.returnValue(of(true));
+
+    component.deleteBr(brid);
+
+    expect(service.deleteBr).toHaveBeenCalledWith(brid);
+
+    expect(component.brList.length).toEqual(0, 'After remove br length should be 0');
+
+  }));
 });

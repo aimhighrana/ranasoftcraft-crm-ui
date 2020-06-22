@@ -9,6 +9,7 @@ import { BreadcrumbComponent } from 'src/app/_modules/shared/_components/breadcr
 import { AddTileComponent } from 'src/app/_modules/shared/_components/add-tile/add-tile.component';
 import { MetadataModeleResponse } from 'src/app/_models/schema/schemadetailstable';
 import { ObjectTypeResponse } from 'src/app/_models/schema/schema';
+import { MatStepper } from '@angular/material/stepper';
 
 describe('UploadDataComponent', () => {
   let component: UploadDataComponent;
@@ -77,11 +78,13 @@ describe('UploadDataComponent', () => {
   }));
 
   it('uploadDataHttpCall()  ', async(()=>{
-    component.uploadDataHttpCall() ;
+    const stepper: MatStepper = {next:null} as MatStepper;
+    component.uploadDataHttpCall(stepper) ;
   }));
 
   it('uploadFileData()  ', async(()=>{
-    component.uploadFileData();
+    const stepper: MatStepper = {next:null} as MatStepper;
+    component.uploadFileData(stepper);
   }));
 
   it('getSelectedFieldId()  ', async(()=>{

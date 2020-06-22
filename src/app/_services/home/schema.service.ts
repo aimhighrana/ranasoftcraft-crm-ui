@@ -97,8 +97,8 @@ export class SchemaService {
     return this.http.post<CoreSchemaBrInfo>(this.endpointService.createBr(), params);
   }
 
-  public deleteBr(id) {
-    return this.http.delete(this.endpointService.deleteBr(id));
+  public deleteBr(id: string): Observable<boolean> {
+    return this.http.delete<boolean>(this.endpointService.deleteBr(id));
   }
 
   public getBrConditionalOperator(): Observable<string[]> {
