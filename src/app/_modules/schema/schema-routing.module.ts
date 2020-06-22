@@ -14,6 +14,9 @@ import { TableColumnSettingsComponent } from '../shared/_components/table-column
 import { UploadDataComponent } from './_components/upload-data/upload-data.component';
 import { CreateSchemaComponent } from '../admin/_components/module/schema/create-schema/create-schema.component';
 import { SalesforceConnectionComponent } from './_components/salesforce-connection/salesforce-connection.component';
+import { DuplicateBusinessruleComponent } from './_components/duplicate-businessrule/duplicate-businessrule.component';
+import { AdvanceoptionsDialogComponent } from './_components/advanceoptions-dialog/advanceoptions-dialog.component';
+import { DuplicateDetailsComponent } from './_components/duplicate-details/duplicate-details.component';
 
 
 const routes: Routes = [
@@ -30,8 +33,13 @@ const routes: Routes = [
   { path: 'uploaddata', component: UploadDataComponent },
   { path: 'create-schema/:moduleId/:groupId/:schemaId', component: CreateSchemaComponent },
   { path: 'salesforce-connection', component: SalesforceConnectionComponent },
+  { path: 'duplicate-businessrule', component: DuplicateBusinessruleComponent },
+  { path: 'advanceoptions-dialog', component: AdvanceoptionsDialogComponent },
+  { path: 'duplicate-details', component: DuplicateDetailsComponent },
+
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent }
+
 ];
 
 @NgModule({

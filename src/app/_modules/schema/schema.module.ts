@@ -22,6 +22,9 @@ import { ExecutionSummaryComponent } from './_components/schema-details/executio
 import { MapMdoFieldComponent } from './_components/upload-data/map-mdo-field/map-mdo-field.component';
 import { SalesforceConnectionComponent } from './_components/salesforce-connection/salesforce-connection.component';
 import { AccessDeniedDialogComponent } from '@modules/shared/_components/access-denied-dialog/access-denied-dialog.component';
+import { DuplicateBusinessruleComponent } from './_components/duplicate-businessrule/duplicate-businessrule.component';
+import { AdvanceoptionsDialogComponent } from './_components/advanceoptions-dialog/advanceoptions-dialog.component';
+import { DuplicateDetailsComponent } from './_components/duplicate-details/duplicate-details.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +47,10 @@ import { AccessDeniedDialogComponent } from '@modules/shared/_components/access-
     ExecutionSummaryComponent,
     MapMdoFieldComponent,
     SalesforceConnectionComponent,
-    AccessDeniedDialogComponent
+    AccessDeniedDialogComponent,
+    DuplicateBusinessruleComponent,
+    AdvanceoptionsDialogComponent,
+    DuplicateDetailsComponent
   ],
   imports: [
     CommonModule,

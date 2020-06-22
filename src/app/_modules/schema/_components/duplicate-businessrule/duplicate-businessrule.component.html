@@ -1,0 +1,262 @@
+<div class="root">
+    <mat-card class="mat-elevation-z3 rules-container">
+        <mat-toolbar>
+            <mat-toolbar-row>
+              <span>Fill Details</span>
+            </mat-toolbar-row>
+        </mat-toolbar>
+        <div class="f-col datainput-container">
+            <mat-form-field appearance="outline">
+                <mat-label>Description</mat-label>
+                <input matInput placeholder="Placeholder">
+            </mat-form-field>
+
+              <mat-vertical-stepper [linear]="isLinear" #stepper>
+                <mat-step>
+                  <ng-template matStepLabel>Select Fields</ng-template>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Select Fields</mat-label>
+                            <input matInput placeholder="Placeholder">
+                            <button mat-icon-button class="option-setting" matTooltip="Advance Options"><mat-icon matSuffix>settings</mat-icon></button>
+                        </mat-form-field>     
+                    
+                        <div class="fields-grid">
+                            <mat-card class="mat-elevation-z3 tiles">
+                               <mat-checkbox color="primary">Document Number</mat-checkbox> 
+                               <span class="f-spacer"></span>
+                                <div class="field-action">
+                                    <button mat-icon-button matTooltip="Edit Selection Field"><mat-icon>edit</mat-icon></button>
+                                    <button mat-icon-button matTooltip="View Selection Field"><mat-icon>visibility</mat-icon></button>
+                                </div>
+                            </mat-card>
+                            <mat-card class="mat-elevation-z3 tiles">
+                                <mat-checkbox color="primary">Document Type</mat-checkbox> 
+                                <span class="f-spacer"></span>
+                                 
+                             </mat-card>
+                             <mat-card class="mat-elevation-z3 tiles">
+                                <mat-checkbox color="primary">Duplicate Description</mat-checkbox> 
+                                <span class="f-spacer"></span>
+                             </mat-card>
+
+                             <mat-card class="mat-elevation-z3 tiles">
+                                <mat-checkbox color="primary">Rejection Type</mat-checkbox> 
+                                <span class="f-spacer"></span>
+                             </mat-card>
+
+                             <mat-card class="mat-elevation-z3 tiles">
+                                <mat-checkbox color="primary">Last Sales Order No</mat-checkbox> 
+                                <span class="f-spacer"></span>
+                             </mat-card>
+
+                             <mat-card class="mat-elevation-z3 tiles">
+                                <mat-checkbox color="primary">SAP record Number</mat-checkbox> 
+                                <span class="f-spacer"></span>
+                             </mat-card>
+
+                             <mat-card class="mat-elevation-z3 tiles">
+                                <mat-checkbox color="primary">Material Description</mat-checkbox> 
+                                <span class="f-spacer"></span>
+                             </mat-card>
+
+                             <mat-card class="mat-elevation-z3 tiles">
+                                <mat-checkbox color="primary">Material Desc(Standard)</mat-checkbox> 
+                                <span class="f-spacer"></span>
+                             </mat-card>
+
+                             <mat-card class="mat-elevation-z3 tiles">
+                                <mat-checkbox color="primary">Volume unit</mat-checkbox> 
+                                <span class="f-spacer"></span>
+                             </mat-card>
+
+                             <mat-card class="mat-elevation-z3 tiles">
+                                <mat-checkbox color="primary">Manufacturer Part Number(Standard)</mat-checkbox> 
+                                <span class="f-spacer"></span>
+                             </mat-card>
+
+                             <mat-card class="mat-elevation-z3 tiles">
+                                <mat-checkbox color="primary">Base Unit of Measure</mat-checkbox> 
+                                <span class="f-spacer"></span>
+                             </mat-card>
+
+                             <mat-card class="mat-elevation-z3 tiles">
+                                <mat-checkbox color="primary">Pembina Manufacturer Name</mat-checkbox> 
+                                <span class="f-spacer"></span>
+                             </mat-card>
+
+                             <mat-card class="mat-elevation-z3 tiles">
+                              <mat-checkbox color="primary">Pembina SAP Manufacturer Part Number</mat-checkbox> 
+                              <span class="f-spacer"></span>
+                           </mat-card>
+
+                           <mat-card class="mat-elevation-z3 tiles">
+                            <mat-checkbox color="primary">Last Purchase order date</mat-checkbox> 
+                            <span class="f-spacer"></span>
+                         </mat-card>
+
+                         <mat-card class="mat-elevation-z3 tiles">
+                          <mat-checkbox color="primary">Last Purchase order no</mat-checkbox> 
+                          <span class="f-spacer"></span>
+                       </mat-card>
+
+                       <mat-card class="mat-elevation-z3 tiles">
+                        <mat-checkbox color="primary">Batched?</mat-checkbox> 
+                        <span class="f-spacer"></span>
+                     </mat-card>
+
+                     <mat-card class="mat-elevation-z3 tiles">
+                      <mat-checkbox color="primary">Old Material Number</mat-checkbox> 
+                      <span class="f-spacer"></span>
+                   </mat-card>
+                        </div>
+                </mat-step>
+                <mat-step>
+                  <ng-template matStepLabel>Master Criteria</ng-template>
+                      <mat-card class="mat-elevation-z3 dataset-container">
+                        <mat-toolbar>
+                          <mat-toolbar-row>
+                            <span>Data Set</span>
+                          </mat-toolbar-row>
+                      </mat-toolbar>
+
+                      <div class="f-row criteria-header">
+                        <h3 class="mat-h3">Criteria</h3>
+                        <span class="f-spacer"></span>
+                        <button mat-stroked-button color="primary">Upload custom data</button>
+                            <span class="col-spacer"></span>
+                        <button mat-stroked-button color="primary">Setup a service connection</button>
+                      </div>
+
+                      <mat-tab-group>
+                        <mat-tab label="Current Module - Material">
+                          <div class="f-row sortbycategory">
+                            <div class="f-col selected-record-col">
+                              <div class="sort-division">
+                                <mat-card class="mat-elevation-z3 sort-card active-card">
+                                  <mat-icon>sort_by_alpha</mat-icon>
+                                  <h4>Newest Record</h4>
+                                </mat-card>
+                                <mat-card class="mat-elevation-z3 sort-card">
+                                  <mat-icon>sort_by_alpha</mat-icon>
+                                  <h4>Oldest Record</h4>
+                                </mat-card>
+                                <div class="division-mark">
+                                  <div class="circle-mark">
+                                    <button mat-icon-button color="primary">
+                                      <mat-icon>import_export</mat-icon>
+                                    </button>
+                                  </div>
+                                </div>
+                                </div>
+                                <div class="sort-division">
+                                <mat-card class="mat-elevation-z3 sort-card">
+                                  <mat-icon>format_list_numbered_rtl</mat-icon>
+                                  <h4>Maximum Value</h4>
+                                </mat-card>
+                                <mat-card class="mat-elevation-z3 sort-card">
+                                  <mat-icon>format_list_numbered_rtl</mat-icon>
+                                  <h4>Minimum Value</h4>
+                                </mat-card>
+                                <div class="division-mark">
+                                  <div class="circle-mark">
+                                    <button mat-icon-button color="primary">
+                                      <mat-icon>import_export</mat-icon>
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="f-col selected-record-fields">
+                              <h3 class="mat-h3 mat-line">Newest Record</h3>
+                              <mat-form-field appearance="outline">
+                                <mat-label>Select</mat-label>
+                                <mat-select>
+                                  <mat-option value="option">Option</mat-option>
+                                </mat-select>
+                        
+                              </mat-form-field>
+
+                              <h3 class="mat-h3 mat-line">Minimum Value</h3>
+                              <mat-form-field appearance="outline">
+                                <mat-label>Select</mat-label>
+                                <mat-select>
+                                  <mat-option value="option">Option</mat-option>
+                                </mat-select>
+                        
+                              </mat-form-field>
+                            </div>
+                          </div>
+
+                        </mat-tab>
+                        <mat-tab label="Custom Data">
+                          <div class="f-row sortbycategory">
+                            <div class="f-col selected-record-col">
+                              <div class="sort-division">
+                                <mat-card class="mat-elevation-z3 sort-card active-card">
+                                  <mat-icon>sort_by_alpha</mat-icon>
+                                  <h4>Newest Record</h4>
+                                </mat-card>
+                                <mat-card class="mat-elevation-z3 sort-card">
+                                  <mat-icon>sort_by_alpha</mat-icon>
+                                  <h4>Oldest Record</h4>
+                                </mat-card>
+                                <div class="division-mark">
+                                  <div class="circle-mark">
+                                    <button mat-icon-button color="primary">
+                                      <mat-icon>import_export</mat-icon>
+                                    </button>
+                                  </div>
+                                </div>
+                                </div>
+                                <div class="sort-division">
+                                <mat-card class="mat-elevation-z3 sort-card active-card">
+                                  <mat-icon>format_list_numbered_rtl</mat-icon>
+                                  <h4>Maximum Value</h4>
+                                </mat-card>
+                                <mat-card class="mat-elevation-z3 sort-card">
+                                  <mat-icon>format_list_numbered_rtl</mat-icon>
+                                  <h4>Minimum Value</h4>
+                                </mat-card>
+                                <div class="division-mark">
+                                  <div class="circle-mark">
+                                    <button mat-icon-button color="primary">
+                                      <mat-icon>import_export</mat-icon>
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="f-col selected-record-fields">
+                              <h2 class="mat-h2 mat-line">sales_data_002</h2>
+                              <h3 class="mat-h3 mat-line">Newest Record</h3>
+                              <mat-form-field appearance="outline">
+                                <mat-label>Select</mat-label>
+                                <mat-select>
+                                  <mat-option value="option">Option</mat-option>
+                                </mat-select>
+                        
+                              </mat-form-field>
+
+                              <h3 class="mat-h3 mat-line">Minimum Value</h3>
+                              <mat-form-field appearance="outline">
+                                <mat-label>Select</mat-label>
+                                <mat-select>
+                                  <mat-option value="option">Option</mat-option>
+                                </mat-select>
+                        
+                              </mat-form-field>
+                            </div>
+                          </div>
+                        </mat-tab>
+                      </mat-tab-group>
+                      
+                      </mat-card>
+                </mat-step>
+                
+              </mat-vertical-stepper>
+
+            </div>
+    </mat-card>
+</div>
+

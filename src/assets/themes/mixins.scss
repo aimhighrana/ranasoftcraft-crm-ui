@@ -164,6 +164,35 @@
     }
   }
 
+  pros-duplicate-details {
+    .custom-expansion {
+      border-color: mat-color($foreground-palette, divider);
+
+      .duplicatedata-table {
+        border-color: mat-color($foreground-palette, divider);
+
+        .mat-header-cell,
+        .mat-cell {
+          border-color: mat-color($foreground-palette, divider);
+        }
+      }
+
+      .records-labels {
+        .dropdownarrow {
+          color: mat-color($primary-palette);
+        }
+      }
+    }
+
+    .record-cols {
+      border-color: mat-color($foreground-palette, divider);
+
+      .item-list {
+        border-top-color: mat-color($foreground-palette, divider);
+      }
+    }
+  }
+
   pros-task-list {
     .tasks-container {
       mat-table {
@@ -190,6 +219,26 @@
       .hand-control {
         border-color: mat-color($primary-palette);
         background-color: mat-color($background-palette, card);
+      }
+    }
+  }
+
+  pros-duplicate-businessrule {
+    .sort-division {
+      .active-card {
+        border-color: mat-color($primary-palette);
+        color: mat-color($primary-palette);
+
+        mat-icon {
+          color: mat-color($primary-palette);
+        }
+      }
+
+      .division-mark {
+        .circle-mark {
+          background-color: mat-color($background-palette, card);
+          border-color: mat-color($foreground-palette, divider);
+        }
       }
     }
   }

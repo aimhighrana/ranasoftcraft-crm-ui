@@ -1,0 +1,215 @@
+.root {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  align-content: flex-start;
+
+  .rules-container {
+    width: 100%;
+    margin: 16px;
+    padding: 0;
+
+    mat-toolbar {
+      min-height: 50px;
+      font-size: 16px;
+
+      mat-toolbar-row {
+        height: 50px;
+      }
+    }
+
+    .datainput-container {
+      padding: 16px;
+
+      mat-form-field {
+        width: 100%;
+      }
+
+      .option-setting {
+        position: absolute;
+        top: -3px;
+        right: 0;
+      }
+
+      .fields-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(30%, 1fr));
+        grid-gap: 1rem;
+        -webkit-box-align: start;
+        align-items: start;
+        -ms-flex-align: start;
+
+        .tiles {
+          display: flex;
+          font-weight: 400;
+          height: 24px;
+          font-size: 14px;
+          align-items: center;
+
+          .field-action {
+            button {
+              width: 30px;
+              height: 30px;
+              line-height: 30px;
+
+              mat-icon {
+                font-size: 18px;
+                width: 30px;
+                height: 30px;
+              }
+            }
+          }
+        }
+      }
+
+      .dataset-container {
+        padding: 0;
+
+        .criteria-header {
+          margin: 16px;
+          align-items: center;
+
+          mat-h3 {
+            margin: 0;
+          }
+        }
+
+        .sortbycategory {
+          .selected-record-col {
+            flex: 1;
+            padding: 16px;
+
+            .sort-division {
+              position: relative;
+
+              .sort-card {
+                display: flex;
+                margin: 16px 0;
+                cursor: pointer;
+
+                mat-icon {
+                  margin-right: 16px;
+                }
+              }
+
+              .active-card {
+                border-width: 1px;
+                border-style: solid;
+              }
+
+              .division-mark {
+                display: flex;
+                justify-content: center;
+
+                .circle-mark {
+                  border-radius: 50%;
+                  width: 56px;
+                  height: 56px;
+                  border-width: 2px;
+                  border-style: solid;
+                  position: absolute;
+                  z-index: 1;
+                  top: 52px;
+
+                  .mat-icon-button {
+                    border-width: 2px;
+                    border-style: solid;
+                    margin: 8px;
+
+                    mat-icon {
+                      font-size: 28px;
+                      width: 28px;
+                      height: 28px;
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+          .selected-record-fields {
+            flex: 3;
+            padding: 16px;
+
+            .mat-h2 {
+              font-size: 18px;
+              margin-top: 16px;
+              margin-bottom: 0;
+            }
+
+            .mat-h3 {
+              font-size: 16px;
+              font-weight: 500;
+              margin-top: 12px;
+              margin-bottom: 0;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .exp-row {
+    justify-content: flex-end;
+  }
+
+  @media only screen and (min-width: 768px) and (max-width: 1200px) {
+    .rules-container {
+      .datainput-container {
+        .fields-grid {
+          grid-template-columns: repeat(auto-fill, minmax(48%, 1fr));
+        }
+      }
+    }
+  }
+
+  @media only screen and (min-width: 768px) and (max-width: 1024px) {
+    .rules-container {
+      .datainput-container {
+        .fields-grid {
+          grid-template-columns: repeat(auto-fill, minmax(48%, 1fr));
+        }
+
+        .dataset-container {
+          .sortbycategory {
+            .selected-record-col {
+              flex: 2;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @media only screen and (min-width: 200px) and (max-width: 767px) {
+    .rules-container {
+      margin: 0;
+
+      .datainput-container {
+        .fields-grid {
+          grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+        }
+
+        .dataset-container {
+          .criteria-header {
+            flex-direction: column;
+            align-items: flex-start;
+
+            .col-spacer {
+              height: 16px;
+            }
+          }
+
+          .sortbycategory {
+            flex-direction: column;
+
+            .selected-record-col {
+              flex: 2;
+            }
+          }
+        }
+      }
+    }
+  }
+}

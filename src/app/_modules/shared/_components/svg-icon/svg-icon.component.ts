@@ -18,7 +18,12 @@ export class SvgIconComponent implements OnInit {
     'BAR_WIDGET',
     'STACKEDBAR_WIDGET',
     'IMAGE_WIDGET',
-    'HTML_WIDGET'
+    'HTML_WIDGET',
+    'P_BR_API_RULE',
+    'P_BR_DEPENDANCY_RULE',
+    'P_BR_DUPLICATE_RULE',
+    'P_BR_EXTERNALVALIDATION_RULE',
+    'P_BR_REGEX_RULE'
   ];
 
   @Input()
