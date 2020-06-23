@@ -15,7 +15,7 @@
                         <p>This rule establish a dependency relationship between source and target fields</p>
                     </div>
                     <span class="f-spacer"></span>
-                    <pros-svg-icon size="70" icon="P_BR_MISSING_RULE" color="primary"></pros-svg-icon>
+                    <pros-svg-icon size="70" icon="P_BR_MANDATORY_FIELDS" color="primary"></pros-svg-icon>
                 </div>
             </mat-card>
 
@@ -39,7 +39,7 @@
                         <p>This rule establish a dependency relationship between source and target fields</p>
                     </div>
                     <span class="f-spacer"></span>
-                    <pros-svg-icon size="70" icon="P_BR_UDR_RULE" color="primary"></pros-svg-icon>
+                    <pros-svg-icon size="70" icon="P_BR_CUSTOM_SCRIPT" color="primary"></pros-svg-icon>
                 </div>
             </mat-card>
             
@@ -47,7 +47,7 @@
 
             <mat-card class="mat-elevation-z3 rules">
                 <div class="f-row">
-                    <mat-radio-button color="primary">
+                    <mat-radio-button color="primary" value="dependency">
                     </mat-radio-button>
                     <div class="f-col">
                         <h4 class="mat-h4">Dependency Rule</h4>
@@ -60,7 +60,7 @@
 
             <mat-card class="mat-elevation-z3 rules">
                 <div class="f-row">
-                    <mat-radio-button color="primary">
+                    <mat-radio-button color="primary" value="duplicate">
                     </mat-radio-button>
                     <div class="f-col">
                         <h4 class="mat-h4">Duplicate Rule</h4>
@@ -73,7 +73,7 @@
 
             <mat-card class="mat-elevation-z3 rules">
                 <div class="f-row">
-                    <mat-radio-button color="primary">
+                    <mat-radio-button color="primary" value="api">
                     </mat-radio-button>
                     <div class="f-col">
                         <h4 class="mat-h4">API Rule</h4>
@@ -86,7 +86,7 @@
 
             <mat-card class="mat-elevation-z3 rules">
                 <div class="f-row">
-                    <mat-radio-button color="primary">
+                    <mat-radio-button color="primary" value="external">
                     </mat-radio-button>
                     <div class="f-col">
                         <h4 class="mat-h4">External Validation Rule</h4>
@@ -99,7 +99,7 @@
 
             <mat-card class="mat-elevation-z3 rules">
                 <div class="f-row">
-                    <mat-radio-button color="primary">
+                    <mat-radio-button color="primary" value="regex">
                     </mat-radio-button>
                     <div class="f-col">
                         <h4 class="mat-h4">Regex Rule</h4>
@@ -141,6 +141,21 @@
 
     </div>
     <!-- User Defined Buisness Rule Container End Here-->
+
+
+    <!-- START CONTAINER FOR REGEX RULE -->
+    <mat-card class="mat-elevation-z3 rulesfields" *ngIf="ruleFrmCtrl.value === 'regex'">
+        <pros-regex-rule
+        [schemaId] ="schemaId"
+        [moduleId] = "moduleId"
+        [brId] ="brId"
+        [brType] ="brType"
+        (evtSaved) ="afterSaved($event)">
+        </pros-regex-rule>
+    </mat-card>
+    
+    <!-- START CONTAINER FOR REGEX RULE -->
+    
 
     <!-- <mat-card>
         Dependency Section

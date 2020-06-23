@@ -1,0 +1,96 @@
+.rulesfields {
+  width: 100%;
+  //   margin: 16px;
+  padding: 0;
+
+  mat-toolbar {
+    min-height: 50px;
+    font-size: 16px;
+
+    mat-toolbar-row {
+      height: 50px;
+    }
+  }
+
+  mat-form-field {
+    flex: 1;
+  }
+
+  .field-x2 {
+    flex: 3;
+    display: grid;
+  }
+
+  .f-col {
+    margin: 16px;
+
+    .fieldselection {
+      width: 100%;
+      display: grid;
+      grid-gap: 8px;
+      grid-template-columns: repeat(auto-fill, minmax(18%, 1fr));
+    }
+  }
+}
+
+.finishBtn {
+  padding: 0 20px 20px 0;
+  float: right;
+}
+
+.insidePanel {
+  padding: 10px 5px;
+}
+
+.insidePanel:hover {
+  background-color: #e0e0e0;
+}
+
+.dropdownStyle {
+  padding: 0 0 15px 0;
+}
+
+.listStyle {
+  margin: 0;
+  padding: 0 24px;
+  font-size: 16px;
+}
+
+.mat-autocomplete-panel {
+  max-height: 375px;
+  height: 375px;
+}
+
+mat-optgroup {
+  height: 500px;
+}
+
+@media only screen and (min-width: 1024px) and (max-width: 1200px) {
+  .rulesfields {
+    .f-col {
+      .fieldselection {
+        grid-template-columns: repeat(auto-fill, minmax(30%, 1fr));
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+  .rulesfields {
+    .f-col {
+      .fieldselection {
+        grid-template-columns: repeat(auto-fill, minmax(50%, 1fr));
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 200px) and (max-width: 767px) {
+  .rulesfields {
+    .f-col {
+      .fieldselection {
+        grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+      }
+    }
+  }
+}
