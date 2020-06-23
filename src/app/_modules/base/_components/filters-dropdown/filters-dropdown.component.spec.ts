@@ -7,18 +7,20 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { SharedModule } from '../../../shared/shared.module';
 import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
 import { By } from '@angular/platform-browser';
+import { Filter } from '@models/task-list/filter';
 
 describe('FiltersDropdownComponent', () => {
   let fixture: ComponentFixture<FiltersDropdownComponent>;
   let component: FiltersDropdownComponent;
-  const sampleFilters = {
+  const sampleFilters: Filter = {
     tags: [],
     staticFilters: {
       status: '',
       priority: '',
       region: '',
-      recieved_on: new Date(),
-      due_date: new Date(),
+      recieved_date: new Date().toString(),
+      due_date: new Date().toString(),
+      requested_date: new Date().toString(),
       requested_by: ''
     },
     dynamicFilters: [
@@ -36,13 +38,10 @@ describe('FiltersDropdownComponent', () => {
             objectId: '100'
           }
         ],
-        active: false,
-        isListItem: true,
         colorActive: false,
-        dynamicList: [],
-        checkBoxlist: []
       }
-    ]
+    ],
+    apiRequestStructure: []
   }
   const sampleTags = {
     CODE: 'bara',
@@ -74,6 +73,8 @@ describe('FiltersDropdownComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(FiltersDropdownComponent);
     component = fixture.componentInstance;
+    component.selectedFields.priority = 'P4';
+    component.selectedFields.status = 'claimed';
     component.initializeForm();
     component.setFilters(sampleFilters);
   });
@@ -106,21 +107,14 @@ describe('FiltersDropdownComponent', () => {
 
   it('should updateFilters()', () => {
     component = fixture.componentInstance;
-    const recievedOn = new Date();
-    const dueDate = new Date()
-    component = fixture.componentInstance;
     component.filterForm.controls.priority.setValue('1');
     component.filterForm.controls.status.setValue('active');
-    component.filterForm.controls.due_date.setValue(dueDate);
-    component.filterForm.controls.recieved_on.setValue(recievedOn);
     component.filterForm.controls.requested_by.setValue('apoorv');
-    component.filterForm.controls.region.setValue('north india');
+    component.filterForm.controls.region.setValue('north india')
     component.tagsList.push(sampleTags)
     component.updateFilter();
     expect(component.filters.staticFilters.priority).toEqual('1');
     expect(component.filters.staticFilters.status).toEqual('active');
-    expect(component.filters.staticFilters.due_date).toEqual(dueDate);
-    expect(component.filters.staticFilters.recieved_on).toEqual(recievedOn);
     expect(component.filters.staticFilters.requested_by).toEqual('apoorv');
     expect(component.filters.staticFilters.region).toEqual('north india');
   })
@@ -147,17 +141,18 @@ describe('FiltersDropdownComponent', () => {
     expect(component.globalStateStructure[sampleTags.objectId][sampleTags.fieldId].list.length).toBeGreaterThan(0)
   });
 
-  it('should call resetFilters()', () => {
-    component.ngOnInit();
-    component.makeGlobalStructure();
-    component.globalStateStructure[sampleFilters.dynamicFilters[0].filterFields[0].objectId] = {}
-    component.globalStateStructure[sampleFilters.dynamicFilters[0].filterFields[0].objectId][sampleFilters.dynamicFilters[0].filterFields[0].fieldId] = {};
-    component.globalStateStructure[sampleFilters.dynamicFilters[0].filterFields[0].objectId][sampleFilters.dynamicFilters[0].filterFields[0].fieldId].list = [sampleTags]
-    component.getDynamicList(sampleFilters.dynamicFilters[0].filterFields[0]);
-    component.setTags(sampleTags, 0)
-    component.resetFilters()
-    expect(component.tagsList.length).toEqual(0)
-  });
+  // it('should call resetFilters()', () => {
+  //   component.ngOnInit();
+  //   component.makeGlobalStructure();
+  //   component.makeGlobalStructureForApiCall();
+  //   component.globalStateStructure[sampleFilters.dynamicFilters[0].filterFields[0].objectId] = {}
+  //   component.globalStateStructure[sampleFilters.dynamicFilters[0].filterFields[0].objectId][sampleFilters.dynamicFilters[0].filterFields[0].fieldId] = {};
+  //   component.globalStateStructure[sampleFilters.dynamicFilters[0].filterFields[0].objectId][sampleFilters.dynamicFilters[0].filterFields[0].fieldId].list = [sampleTags]
+  //   component.getDynamicList(sampleFilters.dynamicFilters[0].filterFields[0]);
+  //   component.setTags(sampleTags, 0)
+  //   component.resetFilters()
+  //   expect(component.tagsList.length).toEqual(0)
+  // });
 
   it('should search and callAPI in searchAndFilter()', fakeAsync(() => {
     component.ngOnInit();
@@ -195,12 +190,38 @@ describe('FiltersDropdownComponent', () => {
     expect(component.globalStateStructure[component.activeObjects.objectId][component.activeObjects.fieldId].list.length).toBeGreaterThan(0)
   });
 
+  it('should call setTags()', () => {
+    component.ngOnInit();
+    component.makeGlobalStructure();
+    fixture.detectChanges();
+    component.globalStateStructure[sampleFilters.dynamicFilters[0].filterFields[0].objectId] = {}
+    component.globalStateStructure[sampleFilters.dynamicFilters[0].filterFields[0].objectId][sampleFilters.dynamicFilters[0].filterFields[0].fieldId] = {};
+    component.globalStateStructure[sampleFilters.dynamicFilters[0].filterFields[0].objectId][sampleFilters.dynamicFilters[0].filterFields[0].fieldId].list = [sampleTags];
+    component.apiRequestStructure.push({
+      objectId: sampleFilters.dynamicFilters[0].filterFields[0].objectId,
+      fieldData: {
+        fieldId: sampleFilters.dynamicFilters[0].filterFields[0].fieldId,
+        filterList: []
+      }
+    })
+    component.getDynamicList(sampleFilters.dynamicFilters[0].filterFields[0]);
+    component.setTags(sampleTags, 0);
+  })
+
+
   it('should call removeTag()', () => {
     component.ngOnInit();
     component.makeGlobalStructure();
     component.globalStateStructure[sampleFilters.dynamicFilters[0].filterFields[0].objectId] = {}
     component.globalStateStructure[sampleFilters.dynamicFilters[0].filterFields[0].objectId][sampleFilters.dynamicFilters[0].filterFields[0].fieldId] = {};
-    component.globalStateStructure[sampleFilters.dynamicFilters[0].filterFields[0].objectId][sampleFilters.dynamicFilters[0].filterFields[0].fieldId].list = [sampleTags]
+    component.globalStateStructure[sampleFilters.dynamicFilters[0].filterFields[0].objectId][sampleFilters.dynamicFilters[0].filterFields[0].fieldId].list = [sampleTags];
+    component.apiRequestStructure.push({
+      objectId: sampleFilters.dynamicFilters[0].filterFields[0].objectId,
+      fieldData: {
+        fieldId: sampleFilters.dynamicFilters[0].filterFields[0].fieldId,
+        filterList: []
+      }
+    })
     component.getDynamicList(sampleFilters.dynamicFilters[0].filterFields[0]);
     component.setTags(sampleTags, 0);
     const currentTagsLength = component.tagsList.length;

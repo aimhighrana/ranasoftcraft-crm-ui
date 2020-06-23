@@ -274,14 +274,18 @@ export class EndpointService {
   }
 
   public getFiltersUrl() {
-    return `${this.apiUrl}/tasklist/filter`;
+    return `${this.apiUrl}tasklist/filter`;
   }
   public getFilterDynamicListsUrl() {
-    return `${this.apiUrl}/tasklist/filterList`
+    return `${this.apiUrl}tasklist/filterList`
   }
 
   public docCountUrl(objectType: string): string {
     return `${this.apiUrl}/report/record-count/${objectType}`;
+  }
+
+  public getTasksUrl(): string {
+    return `${this.apiUrl}tasklist/taskListData`;
   }
 
   public getReportListUrlForMsTeams(): string {
@@ -330,6 +334,7 @@ export class EndpointService {
   public getUdrBusinessRuleInfoUrl(ruleId: string): string {
     return `${this.apiUrl}/schema/br/udr/${ruleId}`;
   }
+
 }
 
 

@@ -1,7 +1,7 @@
 <div class="root">
     <mat-card class="container-show tasklist-container">
 
-        <mat-tab-group #tabs (selectedTabChange)="tabChanged($event)">
+        <mat-tab-group #tabs>
             <!-- Tab content for My task -->
             <mat-tab label="My Task">
                 <ng-container *ngTemplateOutlet="commonFilterContent"></ng-container>
@@ -10,73 +10,17 @@
                         [summaryShown]="enableDragging.asObservable()" prosResizeable>
                         <button mat-icon-button class="ac-setting" color="primary"
                             (click)="showColumnSettingPopUp=!showColumnSettingPopUp">
-                            <mat-icon matTooltip="Colunm Setting">settings</mat-icon>
+                            <mat-icon matTooltip="Colunm Setting" >settings</mat-icon>
                         </button>
+
+                        <!-- dynamic column -->
                         <pros-columnsetting [tableColumns]="tableColumns" (updateColumns)="updateColumns($event)"
                             (close)="toggleColumnSettingPopUp()" *ngIf="showColumnSettingPopUp">
                         </pros-columnsetting>
+                        <ng-container *ngTemplateOutlet="commonTableComponent"></ng-container>
 
                         <div class="hand-control"></div>
-                        <mat-table #table [dataSource]="dataSource" matSort>
 
-                            <ng-container matColumnDef="task_id">
-                                <mat-header-cell *matHeaderCellDef mat-sort-header> Task ID </mat-header-cell>
-                                <mat-cell *matCellDef="let element" (click)="getTaskDetails(element.task_id)"
-                                    style="cursor:pointer"> {{element.task_id}}</mat-cell>
-                            </ng-container>
-
-                            <ng-container matColumnDef="description">
-                                <mat-header-cell *matHeaderCellDef mat-sort-header> Description </mat-header-cell>
-                                <mat-cell *matCellDef="let element">
-                                    <span class="describe-text">
-                                        {{element.description}}
-                                    </span>
-                                </mat-cell>
-                            </ng-container>
-
-                            <ng-container matColumnDef="requestor">
-                                <mat-header-cell *matHeaderCellDef mat-sort-header> Requester </mat-header-cell>
-                                <mat-cell *matCellDef="let element">
-                                    <mat-icon>account_circle</mat-icon> {{element.requestor}}
-                                </mat-cell>
-                            </ng-container>
-
-                            <ng-container matColumnDef="recieved_on">
-                                <mat-header-cell *matHeaderCellDef mat-sort-header> Received On </mat-header-cell>
-                                <mat-cell *matCellDef="let element"> {{element.recieved_on}} </mat-cell>
-                            </ng-container>
-
-                            <ng-container matColumnDef="due_date">
-                                <mat-header-cell *matHeaderCellDef mat-sort-header> Due Date </mat-header-cell>
-                                <mat-cell *matCellDef="let element"> {{element.due_date}}</mat-cell>
-                            </ng-container>
-
-                            <ng-container matColumnDef="module">
-                                <mat-header-cell *matHeaderCellDef mat-sort-header> Module </mat-header-cell>
-                                <mat-cell *matCellDef="let element"> {{element.module}}</mat-cell>
-                            </ng-container>
-
-                            <ng-container matColumnDef="priority">
-                                <mat-header-cell *matHeaderCellDef mat-sort-header> Priority </mat-header-cell>
-                                <mat-cell *matCellDef="let element">
-                                    <button mat-button>{{element.priority}} <mat-icon>arrow_drop_down</mat-icon>
-                                    </button>
-                                </mat-cell>
-                            </ng-container>
-
-                            <ng-container matColumnDef="tags">
-                                <mat-header-cell *matHeaderCellDef mat-sort-header> Tags </mat-header-cell>
-                                <mat-cell *matCellDef="let element">
-                                    <mat-chip-list>
-                                        <mat-chip>Excel Connect</mat-chip>
-                                    </mat-chip-list>
-                                    <a class="additiontags">+1</a>
-                                </mat-cell>
-                            </ng-container>
-
-                            <mat-header-row *matHeaderRowDef="getDisplayColumns"></mat-header-row>
-                            <mat-row *matRowDef="let row; columns: getDisplayColumns;"></mat-row>
-                        </mat-table>
                     </div>
                     <ng-container *ngTemplateOutlet="commonDetailsContent"></ng-container>
                 </div>
@@ -94,9 +38,10 @@
                             (click)="showColumnSettingPopUp=!showColumnSettingPopUp">
                             <mat-icon matTooltip="Colunm Setting">settings</mat-icon>
                         </button>
-                        <pros-columnsetting [tableColumns]="tableColumns" (updateColumns)="updateColumns($event)"
+
+                        <!-- <pros-columnsetting [tableColumns]="tableColumns" (updateColumns)="updateColumns($event)"
                             (close)="toggleColumnSettingPopUp()" *ngIf="showColumnSettingPopUp">
-                        </pros-columnsetting>
+                        </pros-columnsetting> -->
 
                         <div class="hand-control"></div>
                         <ng-container *ngTemplateOutlet="commonTableComponent"></ng-container>
@@ -117,9 +62,10 @@
                             (click)="showColumnSettingPopUp=!showColumnSettingPopUp">
                             <mat-icon matTooltip="Colunm Setting">settings</mat-icon>
                         </button>
-                        <pros-columnsetting [tableColumns]="tableColumns" (updateColumns)="updateColumns($event)"
+
+                        <!-- <pros-columnsetting [tableColumns]="tableColumns" (updateColumns)="updateColumns($event)"
                             (close)="toggleColumnSettingPopUp()" *ngIf="showColumnSettingPopUp">
-                        </pros-columnsetting>
+                        </pros-columnsetting> -->
 
                         <div class="hand-control"></div>
 
@@ -138,7 +84,7 @@
                 <mat-form-field appearance="outline">
                     <mat-icon matSuffix>search</mat-icon>
                     <mat-label>Search</mat-label>
-                    <input matInput placeholder="Placeholder">
+                    <input matInput (keyup)="doWildSearch($event)" placeholder="Placeholder">
                 </mat-form-field>
                 <span class="col-spacer"></span>
                 <button mat-stroked-button color="primary" (click)="getFilters()">
@@ -156,14 +102,14 @@
                 </mat-menu>
             </div>
             <div class="f-row action-list">
-                <p class="mat-label">{{tasks.length}} results found for
-                    "Search"</p>
+                <p class="mat-label" *ngIf="wildSearchEnabled"> {{dataSource.data.length}} results found for
+                    "{{wildSearchValue}}"</p>
                 <span class="f-spacer"></span>
-                <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+                <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[10, 20, 50, 100]" (page)="paginate($event)"></mat-paginator>
             </div>
 
             <!--  filters -->
-            <pros-filters-dropdown [filterObservable]="filterEmitter.asObservable()" *ngIf="dynamicFiltersVisible"
+            <pros-filters-dropdown [filterObservable]="filterEmitter.asObservable()" [selectedFields]="filterForm.controls.filtersMap.value" *ngIf="dynamicFiltersVisible"
                 (closeFilterBox)="closeFilters()" (updateFilters)="updateFilters($event)">
             </pros-filters-dropdown>
 
@@ -171,60 +117,71 @@
 
         <!-- common template for tables -->
         <ng-template #commonTableComponent>
-            <mat-table #table [dataSource]="dataSource" matSort>
+            <mat-table #table [dataSource]="dataSource" matSort  (matSortChange)="sortData($event)">
 
-                <ng-container matColumnDef="task_id">
+                <ng-container matColumnDef="taskid">
                     <mat-header-cell *matHeaderCellDef mat-sort-header> Task ID </mat-header-cell>
-                    <mat-cell *matCellDef="let element" (click)="getTaskDetails(element.task_id)"
-                        style="cursor:pointer"> {{element.task_id}}</mat-cell>
+                    <mat-cell *matCellDef="let element" (click)="getTaskDetails(element.taskid)" style="cursor:pointer">
+                        {{element.taskid}}</mat-cell>
                 </ng-container>
 
-                <ng-container matColumnDef="description">
+                <ng-container matColumnDef="emailtext">
                     <mat-header-cell *matHeaderCellDef mat-sort-header> Description </mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         <span class="describe-text">
-                            {{element.description}}
+                            {{element.emailtext}}
                         </span>
                     </mat-cell>
                 </ng-container>
 
-                <ng-container matColumnDef="requestor">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header> Requester </mat-header-cell>
+                <ng-container matColumnDef="requestorName">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Requested By </mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        <mat-icon>account_circle</mat-icon> {{element.requestor}}
+                        <mat-icon>account_circle</mat-icon> {{element.requestorName}}
                     </mat-cell>
                 </ng-container>
 
-                <ng-container matColumnDef="recieved_on">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header> Received On </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{element.recieved_on}} </mat-cell>
+                <ng-container matColumnDef="datestarted">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Requested on </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.datestarted | date: 'dd/MM/yyyy hh:mm'}}
+                    </mat-cell>
                 </ng-container>
 
-                <ng-container matColumnDef="due_date">
+                <ng-container matColumnDef="duedate">
                     <mat-header-cell *matHeaderCellDef mat-sort-header> Due Date </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{element.due_date}}</mat-cell>
+                    <mat-cell *matCellDef="let element"> {{element.duedate | date:'dd/MM/yyyy hh:mm'}}</mat-cell>
                 </ng-container>
 
-                <ng-container matColumnDef="module">
+                <ng-container matColumnDef="fname">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Sender </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.fname}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="objectdesc">
                     <mat-header-cell *matHeaderCellDef mat-sort-header> Module </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{element.module}}</mat-cell>
+                    <mat-cell *matCellDef="let element"> {{element.objectdesc}}</mat-cell>
                 </ng-container>
 
-                <ng-container matColumnDef="priority">
+                <ng-container matColumnDef="priorityType">
                     <mat-header-cell *matHeaderCellDef mat-sort-header> Priority </mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        <button mat-button>{{element.priority}} <mat-icon>arrow_drop_down</mat-icon>
-                        </button>
+                        <select matNativeControl [(ngModel)]="element.priorityType" style="width:auto;text-align: right;">
+                            <option value="STATIC">Static</option>
+                            <option value="MEDIUM">Medium</option>
+                            <option value="mercedes">Low</option>
+                          </select>
+                          <mat-icon>arrow_drop_down</mat-icon>
+                        <!-- <button mat-button>{{element.priorityType}} <mat-icon>arrow_drop_down</mat-icon>
+                        </button> -->
                     </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="tags">
                     <mat-header-cell *matHeaderCellDef mat-sort-header> Tags </mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        <mat-chip-list>
-                            <mat-chip>Excel Connect</mat-chip>
+                        <mat-chip-list [tags]="element.tags" prosTagsEllipsis>                          
                         </mat-chip-list>
-                        <a class="additiontags">+1</a>
+                        <!-- <a class="additiontags">+1</a> -->
                     </mat-cell>
                 </ng-container>
 
@@ -236,7 +193,8 @@
         <!-- common template for details -->
         <ng-template #commonDetailsContent>
             <div *ngIf="showTaskDetails" class="split-container">
-                <pros-task-summary [currentTab]="activeTab" [taskId]="selectedTaskId" (closeDetails)="closeDetailsModal($event)">
+                <pros-task-summary [currentTab]="activeTab" [taskId]="selectedTaskId"
+                    (closeDetails)="closeDetailsModal($event)">
                 </pros-task-summary>
             </div>
         </ng-template>

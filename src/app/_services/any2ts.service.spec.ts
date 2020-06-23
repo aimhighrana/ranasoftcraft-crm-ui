@@ -212,4 +212,52 @@ describe('Any2tsService', () => {
     expect(service.any2SchemaTableData(testData, request)).not.toBe(null)
   });
 
+  it('any2CategoryInfo() should return value', () => {
+    const samepleData = [{
+      categoryDesc: 'test',
+      categoryId: '1'
+    }]
+    expect(service.any2CategoryInfo(samepleData)).not.toBe(null);
+  })
+
+  it('any2SchemaStatus() should return value ', () => {
+    expect(service.any2SchemaStatus(['test1', 'test2'])).not.toBe(null);
+  });
+
+  it('any2VaraintListView() should return value', () => {
+    const sampleData = [{
+      title: 'test',
+      variantId: 'test',
+      totalValue: 'test',
+      errorValue: 'test',
+      successValue: 'test',
+      skippedValue: 'test',
+      correctionValue: 'test',
+      duplicateValue: 'test',
+      successTrendValue: 'test',
+      errorTrendValue: 'test',
+      totalUniqueValue: 'test',
+      successUniqueValue: 'test',
+      errorUniqueValue: 'test',
+      skippedUniqueValue: 'test',
+      timestamp: 'test',
+      isVariant: 'test',
+      isInRunning: 'test'
+    }];;
+    expect(service.any2VaraintListView(sampleData)).not.toBe(null)
+  });
+
+  it('any2SchemaBrInfo() should return value', () => {
+    const sampleData = [{
+      brDescription: '',
+      brId: '',
+      brType: '',
+      dynamicMessage: '',
+      fields: '',
+      refId: '',
+      schemaId: '',
+      schemaOrder: '',
+    }];
+    expect(service.any2SchemaBrInfo(sampleData)).not.toBe(null);
+  });
 });

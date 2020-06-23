@@ -16,10 +16,11 @@ export interface FilterRequestObject {
 export interface StaticFilter {
     status: string;
     priority: string;
-    recieved_on: Date;
+    recieved_date: string;
     region: string;
-    due_date: Date;
-    requested_by: string
+    due_date: string;
+    requested_by: string;
+    requested_date: string;
 }
 
 export interface DynamicFilter {
@@ -75,8 +76,17 @@ export interface Tag {
     text: string;
 }
 
+export interface InnerObj {
+    objectId: string,
+    fieldData: {
+        fieldId: string,
+        filterList: string[]
+    }
+}
+
 export interface Filter {
     staticFilters: StaticFilter;
     dynamicFilters?: DynamicFilter[];
-    tags: Tag[]
+    tags: Tag[],
+    apiRequestStructure: InnerObj[]
 }

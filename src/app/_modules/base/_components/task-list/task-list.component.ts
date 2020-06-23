@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild, ChangeDetectionStrategy, Output, AfterViewInit, OnDestroy } from '@angular/core';
 import { TaskListRow } from '@models/task-list/taskListRow';
 import { Filter, DynamicFilter } from '@models/task-list/filter';
-import { Pagination } from '@models/task-list/pagination';
 import { TaskListService } from '@services/task-list.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subject, Subscription } from 'rxjs';
@@ -11,7 +10,10 @@ import { Userdetails } from '@models/userdetails';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
-import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
+import { MatTabGroup } from '@angular/material/tabs';
+import { FormGroup, FormControl } from '@angular/forms';
+import { Location } from '@angular/common';
+import { Pagination } from '@models/task-list/pagination';
 
 @Component({
   selector: 'pros-task-list',
@@ -22,14 +24,16 @@ import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
 export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
   dataSource = new MatTableDataSource();
   displayedColumns = [
-    'task_id',
-    'description',
-    'requestor',
-    'recieved_on',
-    'due_date',
-    'module',
-    'priority',
-    'tags'];
+    'taskid',
+    'emailtext',
+    'requestorName',
+    'datestarted',
+    'duedate',
+    'fname',
+    'objectdesc',
+    'priorityType',
+    'tags',
+  ];
 
   @ViewChild(MatSort) sort: MatSort;
 
@@ -63,12 +67,14 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
       status: '',
       priority: '',
       region: '',
-      recieved_on: new Date(),
-      due_date: new Date(),
+      recieved_date: '',
+      requested_date: '',
+      due_date: '',
       requested_by: ''
     },
     dynamicFilters: [],
-    tags: []
+    tags: [],
+    apiRequestStructure: []
   }
 
   /**
@@ -80,15 +86,6 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
    * list of columns from the service
    */
   tableColumns;
-
-  /**
-   * Pagination object
-   */
-  pagination: Pagination = {
-    length: 100,
-    per_page: 100,
-    page_number: 1
-  }
 
   /**
    * saved seaches list
@@ -119,7 +116,7 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
   /**
    * This is a view child object to get the tabs data
    */
-  @ViewChild('tabs') tabGroup: MatTabGroup;
+  @ViewChild('tabs', { static: false }) tabGroup: MatTabGroup;
 
   /**
    * This is used to get the logged in user details
@@ -143,17 +140,33 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
       code: 'completed'
     }
   ]
+
+  sortableHeaders = [];
   /**
    * This is used to get the currently active tab
    */
   activeTab: string;
+  /**
+   * This is main form to call the task list api
+   */
+  filterForm: FormGroup;
+
+  /**
+   * This is flag for wild card search
+   */
+  wildSearchEnabled = false;
+
+  /**
+   * This is the value for wildCardsearch field
+   */
+  wildSearchValue: string;
 
   /**
    * construtor of @class TaskListComponent
    * @param taskListService This is the object of the service
    */
   constructor(private taskListService: TaskListService, private _router: Router,
-    private _activeRouter: ActivatedRoute, private userService: UserService) { }
+    private _activeRouter: ActivatedRoute, private userService: UserService, private location: Location) { }
 
   /**
    * ANGULAR HOOK
@@ -161,28 +174,67 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
    * tasks, columns and searches.
    */
   ngOnInit(): void {
+    this.initializeForm()
     this.getTasks();
-    this.getColumns();
     this.getSavedSearches();
+    const columnVisibleObject = []
+    this.displayedColumns.forEach((column) => {
+      columnVisibleObject.push({ visible: true, value: column })
+    })
+    this.tableColumns = columnVisibleObject;
   }
 
-  ngAfterViewInit() {
-    this.dataSource.sort = this.sort;
+  doWildSearch(event: KeyboardEvent) {
+    const target = event.target as HTMLInputElement;
+    const existing = this.filterForm.controls.filtersMap.value;
+    if (target.value.length === 0) {
+      delete existing.wildCardSearch;
+      this.wildSearchEnabled = false;
+    }
+    else {
+      existing.wildCardSearch = target.value;
+      this.wildSearchValue = target.value;
+      this.wildSearchEnabled = true;
+    }
+    this.filterForm.controls.filtersMap.setValue(existing);
+    this.filterForm.updateValueAndValidity();
+    this.getTasks();
   }
 
   /**
-   * This function listens to changes in the URL and
-   * shows the summary page.
+   * This funcction initialize the form
    */
-  checkForSummaryTaskId() {
+  initializeForm() {
+    this.filterForm = new FormGroup({
+      objectToLoad: new FormControl(['ALL']),
+      fetchSize: new FormControl(10), // per page no of items
+      fetchCount: new FormControl(0), // page id
+      sortField: new FormControl([]),
+      filtersMap: new FormControl({ wildCardSearch: '' })
+    })
+  }
+
+  /**
+   * Angular hook
+   */
+  ngAfterViewInit() {
     this._activeRouter.params.subscribe((urlParams) => {
       if (urlParams && urlParams.summaryId) {
-        this.selectedTaskId = urlParams.summaryId;
-        this.showTaskDetails = true;
-        if (this.tableColumns) {
-          this.hidefirst2Columns(false);
-        }
+        const selectedTabIndex = this.availableTabs.findIndex(ele => ele.code === urlParams.tabId);
+        this.tabGroup.selectedIndex = selectedTabIndex;
+        // used to handle ExpressionChangedAfterItHasBeenCheckedError
+        setTimeout(() => {
+          this.selectedTaskId = urlParams.summaryId;
+          this.showTaskDetails = true;
+          this.showOnly2Columns();
+        }, 100);
+
       }
+    });
+    this.tabGroup.selectedTabChange.subscribe((tabChange) => {
+      this.selectedTaskId = null
+      this.showTaskDetails = false;
+      this.updateQueryParam(null);
     })
   }
 
@@ -190,12 +242,20 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
    * function to get task list from the service
    */
   getTasks() {
-    this.taskListSubscription = this.taskListService.getTasks(this.filters, this.pagination).subscribe((response: TaskListRow[]) => {
-      this.tasks.length = 0;
-      this.tasks = response;
-      this.dataSource.data.length = 0;
-      this.dataSource.data.push(...this.tasks)
+    this.taskListSubscription = this.taskListService.getTasks(this.filterForm.value).subscribe((response: TaskListRow[]) => {
+      this.dataSource.data = response;
     })
+  }
+
+  /**
+   * This is used to paginate the task list
+   * @param event pagination event
+   */
+  paginate(event: Pagination) {
+    console.log(event);
+    this.filterForm.controls.fetchSize.setValue(event.pageSize);
+    this.filterForm.controls.fetchCount.setValue(event.pageIndex);
+    this.getTasks();
   }
 
   /**
@@ -233,16 +293,6 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
-   * Function to get columns from the service
-   */
-  getColumns() {
-    this.taskListService.getColumns().subscribe((response) => {
-      this.tableColumns = response;
-      this.checkForSummaryTaskId();
-    })
-  }
-
-  /**
    * function to toggle dynamic filters
    */
   toggleDynamicFilters() {
@@ -252,10 +302,33 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
   /**
    * function to recieve updated filters from child component
    * @param filters The filters object
-   * [TO BE DONE IN TASK LIST API, TO GENERATE FILTERS]
    */
-  updateFilters(filters) {
-    return true;
+  updateFilters(filters: Filter) {
+    const staticKeys = Object.keys(filters.staticFilters);
+    const nonNullFields = staticKeys.filter(key => filters.staticFilters[key] != null && filters.staticFilters[key] !== '')
+    this.filterForm.controls.filtersMap.reset()
+    const filtersMapData = { modules: [] }
+    nonNullFields.forEach((field) => {
+      filtersMapData[field] = filters.staticFilters[field]
+    })
+    const availableTagsData = filters.apiRequestStructure.filter(item => item.fieldData.filterList.length > 0);
+    const selectedTagsObjectId = availableTagsData.map(item => item.objectId);
+    console.log(selectedTagsObjectId);
+    if (availableTagsData.length > 0) {
+      const existingSavedObjectIds = this.filterForm.controls.objectToLoad.value;
+      selectedTagsObjectId.forEach((objectId) => {
+        if (existingSavedObjectIds.indexOf(objectId) < 0) {
+          existingSavedObjectIds.push(objectId);
+        }
+      });
+
+      this.filterForm.controls.objectToLoad.setValue(existingSavedObjectIds);
+    } else {
+      this.filterForm.controls.objectToLoad.setValue(['ALL']);
+    }
+    filtersMapData.modules = availableTagsData;
+    this.filterForm.controls.filtersMap.setValue(filtersMapData);
+    this.getTasks();
   }
 
   /**
@@ -278,16 +351,8 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param tableColumns updated table column from the column setting component
    */
   updateColumns(tableColumns) {
-    this.tableColumns = tableColumns;
-  }
-
-  /**
-   * function to show or hide column and headers
-   * @param columnName name of column
-   * [TO BE DONE LATER]
-   */
-  columnVisible() {
-    return true;
+    // this.tableColumns = tableColumns;
+    console.log(tableColumns);
   }
 
   /**
@@ -309,22 +374,8 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.selectedTaskId = taskId;
     this.enableDragging.next(true);
     this.showTaskDetails = !this.showTaskDetails;
-    this.hidefirst2Columns(false);
     this.updateQueryParam(taskId);
-    if (this.selectedTaskId !== taskId) return
-  }
-
-  /**
-   * Common Function to set the visiblity of column(s)
-   * @param show to show oor hide first 2 columns
-   * when show the details page
-   */
-  hidefirst2Columns(show: boolean) {
-    this.tableColumns.forEach((column, index) => {
-      if (index > 1) {
-        column.visible = show;
-      }
-    })
+    this.showOnly2Columns();
   }
 
   /**
@@ -333,9 +384,10 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   closeDetailsModal() {
     this.showTaskDetails = false;
-    this.hidefirst2Columns(true);
+    this.selectedTaskId = null;
     this.enableDragging.next(false)
     this.updateQueryParam('');
+    this.showOnly2Columns();
   }
 
   /**
@@ -343,7 +395,11 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param taskId<string> the task id of the selected task
    */
   updateQueryParam(taskId: string) {
-    window.history.replaceState({}, '', `/#/home/task-list/${taskId}`)
+    if (taskId) {
+      this.location.go(`/home/task-list/${this.activeTab}/${taskId}`);
+      return;
+    }
+    this.location.go(`/home/task-list`)
   }
 
   /**
@@ -351,18 +407,21 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
    * This will be OBSOLETE IN NEXT TASK
    */
   get getDisplayColumns() {
-    return this.displayedColumns;
+    const getActiveColumns = this.tableColumns.filter(columns => columns.visible)
+    return getActiveColumns.map(column => column.value);
   }
 
   /**
-   * This is used to detect the change in the tabs, and also set the active
-   * tab value
-   * @param event the mat tab event
+   * This function manipulates the DOM to show the columns conditionally
    */
-  tabChanged(event: MatTabChangeEvent) {
-    this.activeTab = this.availableTabs[event.index].code;
-    this.showTaskDetails = false;
-    this.selectedTaskId = null;
+  showOnly2Columns() {
+    this.tableColumns.forEach((column, index) => {
+      if (this.showTaskDetails && index > 1) {
+        column.visible = false;
+      } else {
+        column.visible = true;
+      }
+    })
   }
 
   /**
@@ -378,9 +437,33 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
+   * Sorting data and making API call
+   * @param sortEvent Sort Event
+   */
+  sortData(sortEvent: { active: string, direction: string }) {
+    const currentSortableFields = ['datestarted', 'duedate'];
+    if (!currentSortableFields.includes(sortEvent.active)) {
+      console.warn('non sortable field', sortEvent.active);
+      return;
+    }
+    const checkIfExists = this.sortableHeaders.find(field => field.fieldId === sortEvent.active.toUpperCase());
+    if (checkIfExists) {
+      checkIfExists.order = sortEvent.direction.toUpperCase();
+    } else {
+      this.sortableHeaders.push({
+        fieldId: sortEvent.active.toUpperCase(),
+        order: sortEvent.direction.toUpperCase()
+      });
+    }
+    this.filterForm.controls.sortField.setValue(this.sortableHeaders);
+    this.getTasks();
+  }
+
+  /**
    * This is used to toggle filters component selector
    */
   closeFilters() {
     this.dynamicFiltersVisible = false;
   }
+
 }
