@@ -160,6 +160,12 @@
         .material-nav {
           color: mat-color($primary-palette);
         }
+
+        .nav-checked {
+          .load-link {
+            color: mat-color($primary-palette);
+          }
+        }
       }
     }
   }
@@ -196,6 +202,10 @@
   pros-task-list {
     .tasks-container {
       mat-table {
+        .mat-header-row {
+          background-color: mat-color($background-palette, background);
+        }
+
         .mat-row {
           background-color: mat-color($background-palette, card);
           border-color: mat-color($foreground-palette, divider);
@@ -206,7 +216,7 @@
             }
           }
 
-          .mat-cell:first-of-type {
+          .taskid-link {
             color: mat-color($primary-palette);
           }
         }
@@ -219,6 +229,18 @@
       .hand-control {
         border-color: mat-color($primary-palette);
         background-color: mat-color($background-palette, card);
+      }
+    }
+  }
+
+  pros-columnsetting {
+    .column-setting {
+      .nav-setting {
+        .mat-list-item {
+          .listing-icons {
+            color: mat-color($foreground-palette, secondary-text);
+          }
+        }
       }
     }
   }

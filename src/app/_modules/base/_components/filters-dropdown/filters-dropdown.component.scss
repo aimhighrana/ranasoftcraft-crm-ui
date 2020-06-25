@@ -52,11 +52,12 @@
 
       .mat-line {
         margin: 8px 16px 0 16px;
+        font-weight: 600;
       }
     }
 
     .nav-setting {
-      height: 170px;
+      max-height: 220px;
       overflow: auto;
       padding: 0;
 
@@ -74,6 +75,10 @@
 
       mat-checkbox {
         margin: 4px 0;
+      }
+
+      .load-link {
+        margin: 8px 0;
       }
     }
 
@@ -95,7 +100,7 @@
             text-overflow: ellipsis;
             white-space: pre-line;
             word-break: break-word;
-            width: 84%;
+            width: 88%;
           }
 
           mat-icon {
@@ -103,6 +108,7 @@
             height: 16px;
             width: 16px;
             margin-left: 4px;
+            cursor: pointer;
           }
         }
       }

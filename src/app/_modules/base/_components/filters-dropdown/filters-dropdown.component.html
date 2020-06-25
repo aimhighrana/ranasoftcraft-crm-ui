@@ -127,12 +127,8 @@
                         (change)="setTags(item,i)" [checked]="item.checked" (value)="item.code">
                         {{item.CODE}}--{{item.TEXT}}
                     </mat-checkbox>
-                    <mat-nav-list>
-                        <a mat-list-item *ngIf="checkboxList && checkboxList.length > 0" href="javascript:void(0)"
-                            (click)="paginateDynamicList()">Load more</a>
-                    </mat-nav-list>
-
                 </div>
+                <a *ngIf="checkboxList && checkboxList.length > 0" href="javascript:void(0)" (click)="paginateDynamicList()" class="f-row load-link">Load more</a>
             </div>
         </div>
 

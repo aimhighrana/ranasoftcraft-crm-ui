@@ -61,39 +61,52 @@
       }
     }
 
-    .dynamic-filter {
+    pros-filters-dropdown {
       position: absolute;
-      top: 65px;
+      top: 60px;
+      width: 100%;
       z-index: 3;
-      display: flex;
     }
 
     .list-wrapper {
       .tasks-container {
         padding: 16px 8px;
         position: relative;
+        max-height: 768px;
 
         .ac-setting {
-          position: absolute;
-          right: 16px;
+          width: 30px;
+          height: 30px;
+          line-height: 30px;
         }
 
         pros-columnsetting {
           position: absolute;
           z-index: 2;
-          right: 0;
-          top: 50px;
+          right: 4px;
+          top: 74px;
         }
 
         mat-table {
           background: transparent;
+          position: relative;
+          z-index: 1;
 
           .mat-header-row {
-            min-height: 36px;
+            min-height: 30px;
             border: none;
+            padding: 10px 0;
 
             .mat-header-cell {
               font-size: 14px;
+              padding: 0 16px;
+              flex: 6;
+            }
+
+            .mat-header-cell:last-of-type {
+              flex: 1;
+              padding: 0 4px;
+              justify-content: center;
             }
           }
 
@@ -105,8 +118,10 @@
 
             .mat-cell {
               font-size: 13px;
+              padding: 0 16px;
+              flex: 6;
 
-              .describe-text {
+              .mat-text {
                 display: -webkit-box;
                 -webkit-line-clamp: 2;
                 -webkit-box-orient: vertical;
@@ -115,6 +130,15 @@
                 white-space: pre-line;
                 word-break: break-word;
                 line-height: 16px;
+              }
+
+              .dropdown-fields {
+                width: auto;
+                text-align: right;
+              }
+
+              .user-icon {
+                margin-right: 8px;
               }
 
               .mat-button {
@@ -127,11 +151,15 @@
                 }
               }
 
-              mat-chip {
-                font-size: 13px;
-                font-weight: normal;
-                padding: 6px 10px;
-                min-height: 28px;
+              .mat-chip-list {
+                outline: none;
+
+                .mat-chip {
+                  font-size: 12px;
+                  font-weight: normal;
+                  padding: 6px 10px;
+                  min-height: 28px;
+                }
               }
 
               .additiontags {
@@ -142,9 +170,16 @@
               }
             }
 
-            .mat-cell:first-of-type {
+            .mat-cell:last-of-type {
+              flex: 1;
+              padding: 0 4px;
+              justify-content: center;
+            }
+
+            .taskid-link {
               font-weight: 500;
               font-size: 14px;
+              cursor: pointer;
             }
           }
         }
@@ -168,86 +203,42 @@
         }
       }
 
-      // // replace task table css
-      // .tasklist-table {
-      //   width: 100%;
-      //   padding: 0 8px;
-
-      //   .list-thead.list-card {
-      //     margin: 0;
-      //     min-height: auto;
-
-      //     .ac-setting {
-      //       position: absolute;
-      //       right: 8px;
-      //     }
-
-      //     pros-columnsetting {
-      //       position: absolute;
-      //       z-index: 2;
-      //       right: 0;
-      //       top: 30px;
-      //     }
-      //   }
-
-      //   .list-card {
-      //     display: flex;
-      //     align-items: center;
-      //     padding: 10px 16px;
-      //     margin: 8px 0;
-      //     position: relative;
-      //     flex-wrap: nowrap;
-      //     border-radius: 4px;
-      //     font-size: 13px;
-      //     min-height: 36px;
-
-      //     div {
-      //       margin: 0 8px;
-      //       flex: 1;
-      //       display: -webkit-box;
-      //       -webkit-line-clamp: 2;
-      //       -webkit-box-orient: vertical;
-      //       overflow: hidden;
-      //       text-overflow: ellipsis;
-      //       white-space: pre-line;
-      //       word-break: break-word;
-      //       line-height: 16px;
-      //       flex-shrink: 0;
-
-      //       .st-level {
-      //         font-size: 13px;
-      //         font-weight: normal;
-      //         padding: 0 8px;
-
-      //         mat-icon {
-      //           font-size: 20px;
-      //         }
-      //       }
-
-      //       mat-chip {
-      //         font-size: 12px;
-      //       }
-
-      //       .moretag {
-      //         height: 30px;
-      //         width: 30px;
-      //         line-height: 30px;
-      //       }
-      //     }
-
-      //     .f2-cell {
-      //       flex: 2;
-      //     }
-      //   }
-      // }
-      // //End Replace task Table CSS
-
       .split-container {
         display: flex;
         flex: 1;
 
         pros-task-summary {
           flex: 1;
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 200px) and (max-width: 768px) {
+  .root {
+    .tasklist-container {
+      padding: 16px 0;
+
+      .search-action {
+        mat-form-field {
+          width: 300px;
+        }
+      }
+
+      .list-wrapper {
+        .tasks-container {
+          width: 98%;
+
+          mat-table {
+            .mat-header-cell:last-of-type {
+              padding: 0 8px;
+            }
+
+            .mat-cell:last-of-type {
+              padding: 0 8px;
+            }
+          }
         }
       }
     }

@@ -8,10 +8,6 @@
                 <div class="f-row list-wrapper">
                     <div class="tasks-container" [class.content-row]="!selectedTaskId" [class.split]="selectedTaskId"
                         [summaryShown]="enableDragging.asObservable()" prosResizeable>
-                        <button mat-icon-button class="ac-setting" color="primary"
-                            (click)="showColumnSettingPopUp=!showColumnSettingPopUp">
-                            <mat-icon matTooltip="Colunm Setting" >settings</mat-icon>
-                        </button>
 
                         <!-- dynamic column -->
                         <pros-columnsetting [tableColumns]="tableColumns" (updateColumns)="updateColumns($event)"
@@ -121,14 +117,15 @@
 
                 <ng-container matColumnDef="taskid">
                     <mat-header-cell *matHeaderCellDef mat-sort-header> Task ID </mat-header-cell>
-                    <mat-cell *matCellDef="let element" (click)="getTaskDetails(element.taskid)" style="cursor:pointer">
-                        {{element.taskid}}</mat-cell>
+                    <mat-cell *matCellDef="let element" (click)="getTaskDetails(element.taskid)" class="taskid-link">
+                        <span class="mat-text">{{element.taskid}}</span>
+                    </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="emailtext">
                     <mat-header-cell *matHeaderCellDef mat-sort-header> Description </mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        <span class="describe-text">
+                        <span class="mat-text">
                             {{element.emailtext}}
                         </span>
                     </mat-cell>
@@ -137,13 +134,13 @@
                 <ng-container matColumnDef="requestorName">
                     <mat-header-cell *matHeaderCellDef mat-sort-header> Requested By </mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        <mat-icon>account_circle</mat-icon> {{element.requestorName}}
+                        <mat-icon class="user-icon">account_circle</mat-icon> {{element.requestorName}}
                     </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="datestarted">
                     <mat-header-cell *matHeaderCellDef mat-sort-header> Requested on </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{element.datestarted | date: 'dd/MM/yyyy hh:mm'}}
+                    <mat-cell *matCellDef="let element">{{element.datestarted | date: 'dd/MM/yyyy hh:mm'}}
                     </mat-cell>
                 </ng-container>
 
@@ -165,7 +162,7 @@
                 <ng-container matColumnDef="priorityType">
                     <mat-header-cell *matHeaderCellDef mat-sort-header> Priority </mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        <select matNativeControl [(ngModel)]="element.priorityType" style="width:auto;text-align: right;">
+                        <select matNativeControl [(ngModel)]="element.priorityType" class="dropdown-fields">
                             <option value="STATIC">Static</option>
                             <option value="MEDIUM">Medium</option>
                             <option value="mercedes">Low</option>
@@ -178,14 +175,26 @@
 
                 <ng-container matColumnDef="tags">
                     <mat-header-cell *matHeaderCellDef mat-sort-header> Tags </mat-header-cell>
-                    <mat-cell *matCellDef="let element">
+                    <mat-cell *matCellDef="let element" [attr.colspan]="2">
                         <mat-chip-list [tags]="element.tags" prosTagsEllipsis>                          
                         </mat-chip-list>
                         <!-- <a class="additiontags">+1</a> -->
                     </mat-cell>
                 </ng-container>
 
-                <mat-header-row *matHeaderRowDef="getDisplayColumns"></mat-header-row>
+                <ng-container matColumnDef="setting">
+                    <mat-header-cell *matHeaderCellDef>
+                        <button mat-icon-button class="ac-setting" color="primary"
+                        (click)="showColumnSettingPopUp=!showColumnSettingPopUp">
+                        <mat-icon matTooltip="Colunm Setting" >settings</mat-icon>
+                    </button>
+
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                    </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="getDisplayColumns;sticky:true"></mat-header-row>
                 <mat-row *matRowDef="let row; columns: getDisplayColumns;"></mat-row>
             </mat-table>
         </ng-template>

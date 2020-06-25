@@ -33,6 +33,7 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
     'objectdesc',
     'priorityType',
     'tags',
+    'setting',
   ];
 
   @ViewChild(MatSort) sort: MatSort;
@@ -230,6 +231,7 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
         }, 100);
 
       }
+
     });
     this.tabGroup.selectedTabChange.subscribe((tabChange) => {
       this.selectedTaskId = null
@@ -422,6 +424,7 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
         column.visible = true;
       }
     })
+    this.tableColumns[this.tableColumns.length - 1].visible = true;
   }
 
   /**
