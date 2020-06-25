@@ -90,6 +90,26 @@ export class AddbusinessruleComponent implements OnInit, OnChanges {
         this.brType = BusinessRuleType.BR_CUSTOM_SCRIPT;
         break;
 
+      case 'dependency':
+        this.brType = BusinessRuleType.BR_DEPENDANCY_RULE;
+        break;
+
+      case 'duplicate':
+        this.brType = BusinessRuleType.BR_DUPLICATE_RULE;
+        break;
+
+      case 'api':
+        this.brType = BusinessRuleType.BR_API_RULE;
+        break;
+
+      case 'external':
+        this.brType = BusinessRuleType.BR_EXTERNALVALIDATION_RULE;
+        break;
+
+      case 'regex':
+        this.brType = BusinessRuleType.BR_REGEX_RULE;
+        break;
+
       default:
         break;
     }

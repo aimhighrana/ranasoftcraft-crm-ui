@@ -32,6 +32,7 @@ const routes: Routes = [
   { path: 'table-column-settings', component: TableColumnSettingsComponent },
   { path: 'uploaddata', component: UploadDataComponent },
   { path: 'create-schema/:moduleId/:groupId/:schemaId', component: CreateSchemaComponent },
+  { path: 'create-schema/:moduleId/:groupId', component: CreateSchemaComponent },
   { path: 'salesforce-connection', component: SalesforceConnectionComponent },
   { path: 'duplicate-businessrule', component: DuplicateBusinessruleComponent },
   { path: 'advanceoptions-dialog', component: AdvanceoptionsDialogComponent },

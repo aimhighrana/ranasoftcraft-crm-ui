@@ -50,6 +50,8 @@ import { UserDefinedRuleComponent } from './_components/module/business-rules/us
 import { UdrConditionFormComponent } from './_components/module/business-rules/user-defined-rule/udr-condition-form/udr-condition-form.component';
 import { BrConditionalFieldsComponent } from './_components/module/business-rules/br-conditional-fields/br-conditional-fields.component';
 import { UdrConditionControlComponent } from './_components/module/business-rules/user-defined-rule/udr-condition-control/udr-condition-control.component';
+import { RegexRuleComponent } from './_components/module/business-rules/regex-rule/regex-rule.component';
+import { GenericFieldControlComponent } from './_components/module/business-rules/generic-field-control/generic-field-control.component';
 
 @NgModule({
   declarations: [
@@ -100,7 +102,9 @@ import { UdrConditionControlComponent } from './_components/module/business-rule
     UserDefinedRuleComponent,
     UdrConditionFormComponent,
     BrConditionalFieldsComponent,
-    UdrConditionControlComponent
+    UdrConditionControlComponent,
+    RegexRuleComponent,
+    GenericFieldControlComponent
   ],
   imports: [
     CommonModule,

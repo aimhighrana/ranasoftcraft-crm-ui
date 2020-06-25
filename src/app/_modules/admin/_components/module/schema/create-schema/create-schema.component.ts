@@ -177,6 +177,8 @@ export class CreateSchemaComponent implements OnInit {
       fragmentTo = 'metadata';
     } else if(brType === BusinessRuleType.BR_CUSTOM_SCRIPT) {
       fragmentTo = 'userdefined';
+    } else if(brType === BusinessRuleType.BR_REGEX_RULE) {
+      fragmentTo = 'regex';
     }
     this.router.navigate(['/home/schema/create-schema', this.moduleId , this.schemaGroupId, this.schemaId], {queryParams:{brId}, fragment:fragmentTo});
   }
