@@ -80,34 +80,42 @@ export class AddbusinessruleComponent implements OnInit, OnChanges {
     switch (val) {
       case 'missing':
         this.brType = BusinessRuleType.BR_MANDATORY_FIELDS;
+        this.breadcrumb.heading = 'Missing Rule';
         break;
 
       case 'metadata':
-        this.brType = BusinessRuleType.BR_METADATA_RULE;;
+        this.brType = BusinessRuleType.BR_METADATA_RULE;
+        this.breadcrumb.heading = 'Metadata Rule';
         break;
 
       case 'userdefined':
         this.brType = BusinessRuleType.BR_CUSTOM_SCRIPT;
+        this.breadcrumb.heading = 'User Defined Rule';
         break;
 
       case 'dependency':
         this.brType = BusinessRuleType.BR_DEPENDANCY_RULE;
+        this.breadcrumb.heading = 'Dependency Rule';
         break;
 
       case 'duplicate':
         this.brType = BusinessRuleType.BR_DUPLICATE_RULE;
+        this.breadcrumb.heading = 'Duplicate Rule';
         break;
 
       case 'api':
         this.brType = BusinessRuleType.BR_API_RULE;
+        this.breadcrumb.heading = 'API Rule';
         break;
 
       case 'external':
         this.brType = BusinessRuleType.BR_EXTERNALVALIDATION_RULE;
+        this.breadcrumb.heading = 'External Validation Rule';
         break;
 
       case 'regex':
         this.brType = BusinessRuleType.BR_REGEX_RULE;
+        this.breadcrumb.heading = 'Regex Rule';
         break;
 
       default:

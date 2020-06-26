@@ -81,6 +81,7 @@ export class UDRBlocksModel {
     blockType: BlockType;
     conditionOperator: string;
     blockDesc: string;
+    objectType: string;
 }
 
 export class UDRHierarchyModel {

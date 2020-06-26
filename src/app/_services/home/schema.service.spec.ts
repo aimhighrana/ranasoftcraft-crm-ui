@@ -12,7 +12,7 @@ describe('SchemaService', () => {
   let any2tsSpy: jasmine.SpyObj<Any2tsService>;
 
   beforeEach(async(() => {
-    const epsSpy = jasmine.createSpyObj('EndpointService', [ 'getSchemaGroupsUrl', 'getSchemaGroupDetailsByGrpIdUrl', 'getCreateSchemaGroupUrl', 'getAllObjecttypeUrl' ]);
+    const epsSpy = jasmine.createSpyObj('EndpointService', [ 'getSchemaGroupsUrl', 'getSchemaGroupDetailsByGrpIdUrl', 'getCreateSchemaGroupUrl', 'getAllObjecttypeUrl','deleteConditionBlock' ]);
     const any2Spy = jasmine.createSpyObj('Any2tsService', [ 'any2SchemaGroupResponse', 'any2SchemaDetails', 'any2ObjectType' ]);
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule ],
@@ -125,6 +125,28 @@ describe('SchemaService', () => {
     // mock http
     const httpReq = httpTestingController.expectOne(getObejctTypeUrl);
     expect(httpReq.request.method).toEqual('GET');
+    httpReq.flush(httpMockData);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('deleteConditionBlock() : delete call http for delete condition block ', async(() => {
+    // mock data
+    const blockId = '236642364532';
+
+    // mock url
+    const url = 'delete condition block/'+ blockId;
+    const httpMockData = {} as any;
+    endpointServiceSpy.deleteConditionBlock.withArgs(blockId).and.returnValue(url);
+
+    // call actual service method
+    schemaService.deleteConditionBlock(blockId).subscribe(data => {
+      expect(data).toEqual({} as boolean);
+    });
+
+    // mock http
+    const httpReq = httpTestingController.expectOne(url);
+    expect(httpReq.request.method).toEqual('DELETE');
     httpReq.flush(httpMockData);
     // verify http
     httpTestingController.verify();

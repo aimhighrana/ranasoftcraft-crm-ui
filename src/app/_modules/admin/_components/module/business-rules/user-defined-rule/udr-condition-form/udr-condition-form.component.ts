@@ -121,6 +121,7 @@ export class UdrConditionFormComponent implements OnInit {
     request.blockType = BlockType.COND;
     request.conditionFieldStartValue = this.frmGroup.value.conditionFieldStartValue;
     request.conditionFieldEndValue = this.frmGroup.value.conditionFieldEndValue;
+    request.objectType = this.moduleId;
 
     this.schemaService.saveUpdateUdrBlock([request]).subscribe(response=>{
       if(response) {

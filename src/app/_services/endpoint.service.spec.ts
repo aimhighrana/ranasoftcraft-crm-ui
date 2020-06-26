@@ -63,4 +63,10 @@ describe('EndpointService', () => {
     expect(serObj.deleteCollaboratorUrl(permisionId)).toContain(`admin/permission/collaborator/delete/${permisionId}`, `admin/permission/collaborator/delete/${permisionId}  sould be return!`);
   }));
 
+  it('deleteConditionBlock(), should return the delete condition  url', async(() =>{
+    const serObj = new EndpointService();
+    const blockId  = '243787235';
+    expect(serObj.deleteConditionBlock(blockId)).toContain(`schema/br/udr/delete-conditionblock/${blockId}`);
+  }));
+
 });

@@ -4,7 +4,8 @@
         <pros-breadcrumb [crumbs]="breadcrumb"></pros-breadcrumb>
     </div>
 
-    <div class="f-col addrule">
+    <!-- WHILE RULE IN EDIT MODE THEN COTAINER SHOULD BE HIDDEN-->
+    <div class="f-col addrule" [style.display]="brId ? 'none':'block'">
         <h3 class="mat-h3">Add Rule</h3>
         <mat-radio-group [formControl] ="ruleFrmCtrl" class="f-row">
             <mat-card class="mat-elevation-z3 rules">
@@ -110,7 +111,7 @@
                 </div>
             </mat-card>
         </mat-radio-group>
-        </div>
+    </div>
    
 
     <!-- Missing Buisness Rule & Metada rule Container Starts Here-->

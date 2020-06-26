@@ -45,7 +45,7 @@ export class BrConditionalFieldsComponent implements OnInit {
     // autocomplete search
     this.fldFrmGrp.valueChanges.subscribe(val=>{
       if(val && val.conFld && typeof val.conFld === 'string') {
-        this.searchFld = this.autoCompleteSearch(val.conFld);
+        this.autoCompleteSearch(val.conFld);
       } else {
         this.evtOnchange.emit(val.conFld);
       }
@@ -113,23 +113,32 @@ export class BrConditionalFieldsComponent implements OnInit {
     this.searchFld = of(conFields);
   }
 
-  autoCompleteSearch(text: string): Observable<ConditionalField[]> {
-    let returndata: ConditionalField[] = [];
-    text = text.toLocaleLowerCase();
+  /**
+   * For search field after render
+   * @param val queryString / searchable string
+   */
+  autoCompleteSearch(val: string) {
+    if(val && typeof val === 'string' && val.trim() !== '') {
+      const groups = Array.from(this.fields.filter(fil =>fil.fields.length >0));
+      const matchedData: ConditionalField[] = [];
+      groups.forEach(grp=>{
+        const changeAble = {fieldId: grp.fieldId, fields: grp.fields,fieldDescription: grp.fieldDescription} as ConditionalField;
+        const chld: MetadataModel[] = [];
+        changeAble.fields.forEach(child=>{
+            if(child.fieldDescri.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !==-1) {
+              chld.push(child);
+            }
+          });
+          if(chld.length) {
+            changeAble.fields = chld;
+            matchedData.push(changeAble);
+          }
+      });
+      this.searchFld = of(matchedData);
+    } else {
+      this.searchFld = of(this.fields);
+    }
 
-    // check with group  description
-    this.fields.forEach(fld=>{
-      // if the text available on group then return all field of group
-      if(fld.fieldDescription.toLocaleLowerCase().indexOf(text) !== -1) {
-        returndata.push(fld);
-      } else {
-        const serFldLst =  fld.fields.filter(fill => fill.fieldDescri.toLocaleLowerCase().indexOf(text) !== -1);
-        fld.fields = serFldLst;
-        returndata.push(fld);
-      }
-    });
-    returndata = returndata.length ? returndata : this.fields;
-    return of(returndata);
   }
 
   displayWith(obj: MetadataModel): string {

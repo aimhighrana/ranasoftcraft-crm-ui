@@ -110,29 +110,41 @@ export class UploadDataComponent implements OnInit {
     if(evt !== undefined) {
       const target: DataTransfer = (evt.target) as DataTransfer;
       if (target.files.length !== 1) throw new Error('Cannot use multiple files');
-      const reader: FileReader = new FileReader();
-      reader.onload = (e: any) => {
-        /* read workbook */
-        const bstr: string = e.target.result;
-        const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
 
-        /* grab first sheet */
-        const wsname: string = wb.SheetNames[0];
-        const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+      // check file type
+      let type = '';
+      try{
+        type = target.files[0].name.split('.')[1];
+      }catch(ex){console.error(ex)}
+      if(type === 'xlsx' || type === 'xls' || type === 'csv') {
+        const reader: FileReader = new FileReader();
+        reader.onload = (e: any) => {
+          /* read workbook */
+          const bstr: string = e.target.result;
+          const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
 
-        /* save data */
-        const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
-        this.uploadedData = (data as UploadedDataType);
-        console.log(this.uploadedData[0]);
-        this.excelHeader = this.uploadedData[0] as string[];
-        console.log(this.excelHeader);
-        const file = evt.target.files[0]
-        this.uploadedFile = file;
-        this.uploadFileStepCtrl.get('uploadFileCtrl').setValue(file);
+          /* grab first sheet */
+          const wsname: string = wb.SheetNames[0];
+          const ws: XLSX.WorkSheet = wb.Sheets[wsname];
 
-      };
-      reader.readAsBinaryString(target.files[0]);
-      this.excelMdoFieldMappedData = [];
+          /* save data */
+          const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
+          this.uploadedData = (data as UploadedDataType);
+          console.log(this.uploadedData[0]);
+          this.excelHeader = this.uploadedData[0] as string[];
+          console.log(this.excelHeader);
+          const file = evt.target.files[0]
+          this.uploadedFile = file;
+          this.uploadFileStepCtrl.get('uploadFileCtrl').setValue(file);
+
+        };
+        reader.readAsBinaryString(target.files[0]);
+        this.excelMdoFieldMappedData = [];
+      } else {
+        this.uploadedFile = null;
+        this.uploadFileStepCtrl.setValue({uploadFileCtrl:''});
+        this.snackBar.open(`Only allow .xlsx, .xls and .csv file format`, 'Close',{duration:5000});
+      }
     }
   }
 

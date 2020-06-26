@@ -140,6 +140,41 @@ export class UserDefinedRuleComponent implements OnInit {
     }
   }
 
+  /**
+   * Delete block
+   * @param node nodeinfo of deletetable node
+   */
+  deleteBlock(node: ItemNodeInfo) {
+    const block = this.flatNodeMap.get(node);
+    const data = this.dataSource.data;
+    if(block) {
+      // check for parent delete
+      if(block.nodeId === data[0].nodeId) {
+        this.dataSource.data = [];
+        this.enableBlock = false;
+      } else {
+        this.removeFromChildBlocks(data[0].children, block.nodeId);
+      }
+    }
+    console.log(this.flatNodeMap.get(node));
+    console.log(this.dataSource.data);
+    this.treeDataSource.dataSource.next(data);
+  }
+
+  removeFromChildBlocks(block: ItemNode[], removeNodeId:string) {
+    // check index
+    block.forEach(b=>{
+      if(b.item === 'And Block' || b.item === 'Or Block') {
+        if(b.nodeId === removeNodeId) {
+          block.splice(block.indexOf(b),1);
+          return;
+        } else {
+          this.removeFromChildBlocks(b.children, removeNodeId);
+        }
+      }
+    });
+  }
+
   openAllPanels() {
     this.expandPanel = true;
     this.accordion.openAll();
@@ -151,7 +186,7 @@ export class UserDefinedRuleComponent implements OnInit {
   }
 
   fetchConditionList(sno: string[]) {
-    this.schemaService.getConditionList().subscribe(res=>{
+    this.schemaService.getConditionList(this.moduleId).subscribe(res=>{
       this.conditionList = res;
       this.conditionListOb = of(res);
     },error=>console.error(`Error : ${error}`));
@@ -418,6 +453,22 @@ export class UserDefinedRuleComponent implements OnInit {
    */
   discard(brInfo: CoreSchemaBrInfo) {
     this.evtSaved.emit(brInfo);
+  }
+
+  /**
+   * Delete condition block by blockRefid
+   * @param blockId id of block which is going to delete
+   */
+  deleteConditionaBlock(blockId: string) {
+    this.schemaService.deleteConditionBlock(blockId).subscribe(res=>{
+      if(res) {
+        this.snackBar.open(`Successfully deleted `, 'Close',{duration:5000});
+        this.fetchConditionList(null);
+      }
+    },err=>{
+      this.snackBar.open(`${err.error}`, 'Close',{duration:5000});
+      console.log(err);
+    });
   }
 
   /**

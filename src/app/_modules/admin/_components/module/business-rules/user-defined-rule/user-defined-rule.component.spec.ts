@@ -174,4 +174,22 @@ describe('UserDefinedRuleComponent', () => {
 
     component.blocksToUDRBlocksModel();
   }));
+
+
+  it('deleteConditionaBlock(), delete condition block', async(()=>{
+    // mock data
+    const blockId = '632546325';
+
+    component.moduleId = '234';
+    spyOn(schemaService,'deleteConditionBlock').withArgs(blockId).and.returnValue(of(true));
+
+    spyOn(schemaService,'getConditionList').withArgs(component.moduleId).and.returnValue(of([]));
+
+    // call actual method
+    component.deleteConditionaBlock(blockId);
+
+    expect(schemaService.deleteConditionBlock).toHaveBeenCalledWith(blockId);
+    expect(schemaService.getConditionList).toHaveBeenCalledWith(component.moduleId);
+
+  }));
 });

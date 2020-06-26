@@ -49,7 +49,7 @@
                             {{ list.blockDesc }}
                         </mat-panel-title>
                         <div class="f-spacer deleteBtn">
-                            <button mat-button prosClickStopPropagation (click)="deleteCondition(list)" matTooltip="Delete">
+                            <button mat-button prosClickStopPropagation (click)="deleteConditionaBlock(list.id)" matTooltip="Delete">
                                 <mat-icon>delete_outline</mat-icon>
                             </button>
                         </div>
@@ -89,6 +89,12 @@
                     </button>
                     <button class="or-button" mat-button color="primary" (click)="addNewItem(node, 'OR')">
                         Create OR
+                    </button>
+
+                    <button class="delete-button" mat-icon-button color="primary" matTooltip="Delete" (click)="deleteBlock(node)">
+                        <mat-icon>
+                           delete
+                        </mat-icon>
                     </button>
 
                 </mat-tree-node>

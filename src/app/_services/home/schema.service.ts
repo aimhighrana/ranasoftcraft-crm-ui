@@ -113,8 +113,8 @@ export class SchemaService {
     return this.http.post<string[]>(this.endpointService.saveUpdateUdrBlockUrl(), blocks);
   }
 
-  public getConditionList(): Observable<UDRBlocksModel[]> {
-    return this.http.get<UDRBlocksModel[]>(this.endpointService.conditionListsUrl());
+  public getConditionList(objectType: string): Observable<UDRBlocksModel[]> {
+    return this.http.get<UDRBlocksModel[]>(this.endpointService.conditionListsUrl(objectType));
   }
 
   public saveUpdateUDR(udrReq: UdrModel) : Observable<string> {
@@ -131,5 +131,13 @@ export class SchemaService {
    */
   public getUdrBusinessRuleInfo(ruleId: string): Observable<UdrModel> {
     return this.http.get<UdrModel>(this.endpointService.getUdrBusinessRuleInfoUrl(ruleId));
+  }
+
+  /**
+   * Delete blocks and mapping to brs
+   * @param blockId blockid that want to delete
+   */
+  public deleteConditionBlock(blockId: string): Observable<boolean> {
+    return this.http.delete<boolean>(this.endpointService.deleteConditionBlock(blockId));
   }
 }

@@ -109,12 +109,12 @@ export class SchemaDataSource implements DataSource<SchemaTableData> {
                 Object.keys(mdo).forEach(fieldId=>{
                         const oldData =  {} as any;
                         const correctedVal = this.any2TsService.any2LatestCorrectedData(correctedRec,fieldId,rowObj);
-                        oldData.fieldData =  correctedVal ? correctedVal : mdo[fieldId].fieldData;
+                        oldData.fieldData =  (correctedVal === undefined || correctedVal === null) ? mdo[fieldId].fieldData : correctedVal;
                         oldData.fieldId = fieldId;
                         oldData.fieldDesc = mdo[fieldId].fieldDesc;
-                        oldData.isCorrected = correctedVal ? true : false;
+                        oldData.isCorrected = (correctedVal === undefined || correctedVal === null) ? false : true;
                         mdoNew[fieldId] = oldData;
-                        mdo[fieldId].isCorrected = correctedVal ? true : false;
+                        mdo[fieldId].isCorrected = (correctedVal === undefined || correctedVal === null) ? false : true;
                 });
                 mdoNew.isCorrectedRow = true;
                 mdoNew.isReviewed = correctedRec.isReviewed ? correctedRec.isReviewed : false;

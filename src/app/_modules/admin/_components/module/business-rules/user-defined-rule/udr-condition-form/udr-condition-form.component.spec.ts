@@ -100,7 +100,7 @@ describe('UdrConditionFormComponent', () => {
       operator:new FormControl(''),
       conditionFieldValue:new FormControl(''),
       conditionFieldStartValue: new FormControl(''),
-      conditionFieldEndValue: new FormControl(''),
+      conditionFieldEndValue: new FormControl('')
     });
 
     const request: UDRBlocksModel = new UDRBlocksModel();
@@ -113,6 +113,7 @@ describe('UdrConditionFormComponent', () => {
     request.blockType = BlockType.COND;
     request.conditionFieldStartValue = component.frmGroup.value.conditionFieldStartValue;
     request.conditionFieldEndValue = component.frmGroup.value.conditionFieldEndValue;
+    request.objectType = component.moduleId;
     // call actual method
     spyOn(schemaService, 'saveUpdateUdrBlock').withArgs([request]).and.returnValue(of([]));
 

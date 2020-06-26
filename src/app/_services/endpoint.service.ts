@@ -319,8 +319,8 @@ export class EndpointService {
     return `${this.apiUrl}/admin/schema/br/udr`;
   }
 
-  public conditionListsUrl(): string {
-    return `${this.apiUrl}/schema/br/udr/condition-list`;
+  public conditionListsUrl(objectType: string): string {
+    return `${this.apiUrl}/schema/br/udr/condition-list/${objectType}`;
   }
 
   public saveUpdateUDRUrl(): string {
@@ -333,6 +333,10 @@ export class EndpointService {
 
   public getUdrBusinessRuleInfoUrl(ruleId: string): string {
     return `${this.apiUrl}/schema/br/udr/${ruleId}`;
+  }
+
+  public deleteConditionBlock(blockId: string): string {
+    return `${this.apiUrl}/schema/br/udr/delete-conditionblock/${blockId}`;
   }
 
 }

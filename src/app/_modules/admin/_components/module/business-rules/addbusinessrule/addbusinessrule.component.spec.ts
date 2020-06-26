@@ -49,14 +49,43 @@ describe('AddbusinessruleComponent', () => {
     // case 1
     component.updateBrTypeBasedOnFragement('missing');
     expect(component.brType).toEqual(BusinessRuleType.BR_MANDATORY_FIELDS);
+    expect(component.breadcrumb.heading).toEqual('Missing Rule');
 
     // case 2
     component.updateBrTypeBasedOnFragement('metadata');
     expect(component.brType).toEqual(BusinessRuleType.BR_METADATA_RULE);
+    expect(component.breadcrumb.heading).toEqual('Metadata Rule');
 
     // case 3
     component.updateBrTypeBasedOnFragement('userdefined');
     expect(component.brType).toEqual(BusinessRuleType.BR_CUSTOM_SCRIPT);
+    expect(component.breadcrumb.heading).toEqual('User Defined Rule');
+
+    // case 4
+    component.updateBrTypeBasedOnFragement('dependency');
+    expect(component.brType).toEqual(BusinessRuleType.BR_DEPENDANCY_RULE);
+    expect(component.breadcrumb.heading).toEqual('Dependency Rule');
+
+    // case 5
+    component.updateBrTypeBasedOnFragement('duplicate');
+    expect(component.brType).toEqual(BusinessRuleType.BR_DUPLICATE_RULE);
+    expect(component.breadcrumb.heading).toEqual('Duplicate Rule');
+
+    // case 6
+    component.updateBrTypeBasedOnFragement('api');
+    expect(component.brType).toEqual(BusinessRuleType.BR_API_RULE);
+    expect(component.breadcrumb.heading).toEqual('API Rule');
+
+    // case 7
+    component.updateBrTypeBasedOnFragement('external');
+    expect(component.brType).toEqual(BusinessRuleType.BR_EXTERNALVALIDATION_RULE);
+    expect(component.breadcrumb.heading).toEqual('External Validation Rule');
+
+    // case 8
+    component.updateBrTypeBasedOnFragement('regex');
+    expect(component.brType).toEqual(BusinessRuleType.BR_REGEX_RULE);
+    expect(component.breadcrumb.heading).toEqual('Regex Rule');
+
   }));
 
 });
