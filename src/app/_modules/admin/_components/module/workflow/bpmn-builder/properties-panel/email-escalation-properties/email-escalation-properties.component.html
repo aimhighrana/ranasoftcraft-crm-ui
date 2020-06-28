@@ -1,0 +1,69 @@
+<form [formGroup]="emailForm">
+    <!-- BASIC DETAILS-->
+    <mat-accordion>
+        <mat-expansion-panel class="mat-elevation-z2" expanded="false">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Basic Details
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <div class="f-col">
+                <mat-form-field appearance="outline">
+                    <mat-label>Description</mat-label>
+                    <textarea matInput formControlName="name"></textarea>
+                </mat-form-field>
+
+                <mat-form-field class="field-divider" appearance="outline">
+                    <mat-label>Recipient Type</mat-label>
+                    <mat-select formControlName="recipientType">
+                        <mat-option value="User"> User </mat-option>
+                        <mat-option value="Role"> Role </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </mat-expansion-panel>
+    </mat-accordion>
+
+    <!-- Define Recipients-->
+    <mat-accordion>
+        <mat-expansion-panel class="mat-elevation-z2" expanded="false">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Define Recipients
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <div class="f-col">
+                <mat-form-field appearance="outline">
+                    <input type="text" placeholder="{{ emailForm.value.recipientType === 'User' ? 'search for user' : 'search for role' }}" aria-label="Number" matInput
+                        [formControl]="recipientSearchControl" [matAutocomplete]="addRecipient">
+                    <mat-icon matSuffix>search</mat-icon>
+                    <mat-autocomplete #addRecipient="matAutocomplete"
+                        (optionSelected)="recipientSelected($event)">
+                        <mat-option *ngFor="let recipient of recipientsList" [value]="recipient">
+                            {{recipient}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+
+                <div class="f-row selected-coll-groups" *ngIf="selectedRecipients.length">
+                    <button mat-icon-button (click)="paginateChip('prev')" [disabled]="enablePreBtn">
+                        <mat-icon>navigate_before</mat-icon>
+                    </button>
+                    <mat-chip-list aria-label="Fish selection" [selectable]="true">
+                        <ng-container *ngFor="let recipient of possibleRecipients; index as index">
+                            <mat-chip [selectable]="true">
+                                <mat-icon mat-list-icon color="primary">person</mat-icon>
+                                <span class="chip-content">{{ recipient }}</span>
+                                <mat-icon mat-list-icon class="chip-icon" (click)="removeRecipient(index)">
+                                    cancel</mat-icon>
+                            </mat-chip>
+                        </ng-container>
+                    </mat-chip-list>
+                    <button mat-icon-button (click)="paginateChip('next')" [disabled]="!enableNextBtn">
+                        <mat-icon>navigate_next</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </mat-expansion-panel>
+    </mat-accordion>
+</form>

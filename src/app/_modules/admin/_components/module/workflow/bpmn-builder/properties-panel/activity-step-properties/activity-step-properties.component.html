@@ -1,0 +1,322 @@
+<!-- ACTIVITY STEP PROPERTIES    -->
+<ng-container [formGroup]="activityFormGroup" *ngIf="bpmnElement && (bpmnElement.type === ELEMENT_TYPES.Activity)">
+    <!-- BASIC DETAILS-->
+    <mat-accordion>
+        <mat-expansion-panel class="mat-elevation-z2" expanded="false">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Basic Details
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <div class="f-col">
+                <mat-form-field appearance="outline">
+                    <mat-label>Description</mat-label>
+                    <textarea matInput formControlName="name"></textarea>
+                </mat-form-field>
+
+                <mat-form-field class="field-divider" appearance="outline">
+                    <mat-label>Recipient Type</mat-label>
+                    <mat-select formControlName="recipientType">
+                        <mat-option value="User"> User </mat-option>
+                        <mat-option value="Role"> Role </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <span class="f-col-spacer-half"></span>
+
+                <mat-form-field class="field-divider" appearance="outline">
+                    <mat-label>Approved By</mat-label>
+                    <mat-select formControlName="approvedBy">
+                        <mat-option value="0"> By One </mat-option>
+                        <mat-option value="1"> By All </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field *ngIf="activityFormGroup.value.recipientType === 'Role'" class="field-divider"
+                    appearance="outline">
+                    <mat-label>Role Approval By</mat-label>
+                    <mat-select formControlName="roleApprovalBy">
+                        <mat-option value="0"> By One </mat-option>
+                        <mat-option value="1"> By All </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Task Subject</mat-label>
+                    <textarea matInput formControlName="taskSubject"></textarea>
+                </mat-form-field>
+
+                <mat-form-field class="field-divider" appearance="outline">
+                    <mat-label>Agent determination type</mat-label>
+                    <mat-select formControlName="agentDeterminationType">
+                        <mat-option value="DEFAULT"> Default </mat-option>
+                        <mat-option value="INPUT"> User Input </mat-option>
+                        <mat-option value="API"> Custom API </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field *ngIf="activityFormGroup.value.agentDeterminationType !== 'DEFAULT'"
+                    class="field-divider" appearance="outline">
+                    <mat-label>Enhancement Point</mat-label>
+                    <mat-select formControlName="enhancementPoint">
+                        <mat-option value="Select"> Select </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field class="field-divider" appearance="outline">
+                    <mat-label>Step Priority</mat-label>
+                    <mat-select formControlName="stepPriority">
+                        <mat-option value="Low"> Low </mat-option>
+                        <mat-option value="Medium"> Medium </mat-option>
+                        <mat-option value="High"> High </mat-option>
+                        <mat-option value="Critical"> Critical </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-checkbox color="primary" formControlName="addDecisions">Add Decisions</mat-checkbox>
+                <div class="f-row-spacer-half"></div>
+
+                <ng-container *ngIf="activityFormGroup.value.addDecisions === true">
+                    <h4> Workflow Field </h4>
+                    <mat-selection-list class="recipients-list" (selectionChange)="fieldSelectionChange($event)">
+                        <mat-list-option *ngFor="let field of workflowFields;" [value]="field.id"
+                            [selected]="isFieldSelected(field.id)" color="primary">
+                            {{field.label}}
+                            <mat-divider></mat-divider>
+                        </mat-list-option>
+                    </mat-selection-list>
+
+
+
+                    <!-- <mat-form-field class="example-chip-list">
+                                <mat-chip-list #chipList aria-label="Fruit selection">
+                                  <mat-chip
+                                    *ngFor="let fruit of fruits"
+                                    [selectable]="selectable"
+                                    [removable]="removable"
+                                    (removed)="remove(fruit)">
+                                    {{fruit}}
+                                    <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                                  </mat-chip>
+                                  <input
+                                    placeholder="New fruit..."
+                                    #fruitInput
+                                    [formControl]="fruitCtrl"
+                                    [matAutocomplete]="auto"
+                                    [matChipInputFor]="chipList"
+                                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                    (matChipInputTokenEnd)="add($event)">
+                                </mat-chip-list>
+                                <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                                  <mat-option *ngFor="let fruit of filteredFruits | async" [value]="fruit">
+                                    {{fruit}}
+                                  </mat-option>
+                                </mat-autocomplete>
+                              </mat-form-field> -->
+
+                </ng-container>
+
+            </div>
+        </mat-expansion-panel>
+    </mat-accordion>
+
+    <!-- Define Recipients-->
+    <mat-accordion>
+        <mat-expansion-panel class="mat-elevation-z2" expanded="false">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Define Recipients
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <div class="f-col">
+                <mat-form-field appearance="outline">
+                    <input type="text" placeholder="Search" aria-label="Number" matInput
+                        [formControl]="recipientSearchControl" [matAutocomplete]="addRecipient">
+                    <mat-icon matSuffix>search</mat-icon>
+                    <mat-autocomplete #addRecipient="matAutocomplete"
+                        (optionSelected)="recipientSelected($event)">
+                        <mat-option *ngFor="let recipient of recipientsList" [value]="recipient">
+                            {{recipient}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+
+                <div class="f-row selected-coll-groups" *ngIf="selectedRecipients.length">
+                    <button mat-icon-button (click)="paginateChip('prev')" [disabled]="enablePreBtn">
+                        <mat-icon>navigate_before</mat-icon>
+                    </button>
+                    <mat-chip-list aria-label="Fish selection" [selectable]="true">
+                        <ng-container *ngFor="let recipient of possibleRecipients; index as index">
+                            <mat-chip (click)="openDecisionsModal(recipient)" [selectable]="true">
+                                <mat-icon mat-list-icon color="primary">person</mat-icon>
+                                <span class="chip-content">{{ recipient.recipient }}</span>
+                                <mat-icon mat-list-icon class="chip-icon" (click)="removeRecipient(index)">
+                                    cancel</mat-icon>
+                            </mat-chip>
+                        </ng-container>
+                    </mat-chip-list>
+                    <button mat-icon-button (click)="paginateChip('next')" [disabled]="!enableNextBtn">
+                        <mat-icon>navigate_next</mat-icon>
+                    </button>
+                </div>
+
+                <!-- <mat-toolbar class="recipient-actions">
+                        <mat-toolbar-row>
+                            <mat-form-field class="field-divider">
+                                <mat-label> Assign new </mat-label>
+                                <input type="text" matInput [formControl]="recipientSearchControl">
+                                <mat-icon matSuffix [inline]="true">search</mat-icon>
+                            </mat-form-field>
+                            <span class="f-spacer"></span>
+                            <button mat-mini-fab color="primary" matTooltip="Assign All" (click)="checkAllRecipients()"> <mat-icon>done_all</mat-icon> </button>
+                            <span class="f-col-spacer-half"></span>
+                            <button mat-mini-fab color="warn" matTooltip="Unassign all" (click)="uncheckAllRecipients()"> <mat-icon>clear</mat-icon> </button>
+                        </mat-toolbar-row>
+                    </mat-toolbar>
+                    <mat-selection-list #recipientSelect class="recipients-list"  (selectionChange)="updateSelectedRecipients($event)">
+                        <mat-list-option *ngFor="let recipient of filteredRecipients | async" [value]="recipient"  [selected]="isRecipientSelected(recipient)" color="primary">
+                            {{recipient}}
+                            <mat-divider></mat-divider>
+                        </mat-list-option>
+                    </mat-selection-list>
+                    <ng-container *ngIf="selectedRecipients.length">
+                        <mat-toolbar class="recipient-actions">
+                            <mat-toolbar-row>
+                                <span mat-subheader> Assigned </span>
+                            </mat-toolbar-row>
+                        </mat-toolbar>
+                        <mat-list role="list" class="recipients-list">
+                            <mat-list-item  *ngFor="let recipient of selectedRecipients" role="listitem">
+                                 {{recipient}} 
+                                 <mat-divider></mat-divider>
+                            </mat-list-item>
+                        </mat-list>
+                    </ng-container> -->
+
+
+                <!-- <mat-form-field>
+                        <mat-label>Unassigned roles</mat-label>
+                        <input type="text" matInput [matAutocomplete]="auto" formControlName="recipients">
+                      </mat-form-field>
+                      
+                      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="updateSelectedRecipient($event)">
+                        <mat-option *ngFor="let recipient of filteredRecipients | async" [value]="recipient.value">{{recipient.value}}</mat-option>
+                      </mat-autocomplete> -->
+            </div>
+        </mat-expansion-panel>
+    </mat-accordion>
+
+    <!-- Rejection & Notification-->
+    <mat-accordion>
+        <mat-expansion-panel class="mat-elevation-z2" expanded="false">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Rejection & Notification
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <div class="f-col">
+                <!-- SLA Details -->
+                <h4 class="input-group-title"> SLA Details </h4>
+                <mat-form-field appearance="outline">
+                    <mat-label>SLA HRS</mat-label>
+                    <input type="number" matInput formControlName="slaHrs">
+                </mat-form-field>
+                <!-- Reminder Details -->
+                <h4 class="input-group-title"> Reminder Details </h4>
+                <mat-form-field class="field-divider" appearance="outline">
+                    <mat-label>Grace period(hrs)</mat-label>
+                    <input type="number" matInput formControlName="reminderGracePeriode">
+                </mat-form-field>
+                <mat-form-field class="field-divider" appearance="outline">
+                    <mat-label>Interval(hrs)</mat-label>
+                    <input type="number" matInput formControlName="reminderInterval">
+                </mat-form-field>
+                <mat-form-field class="field-divider" appearance="outline">
+                    <mat-label>Occurrences</mat-label>
+                    <input type="number" matInput formControlName="reminderOccurrences">
+                </mat-form-field>
+                <!-- Escalation Details -->
+                <h4 class="input-group-title"> Escalation Details </h4>
+                <mat-form-field class="field-divider" appearance="outline">
+                    <mat-label>Grace period(hrs)</mat-label>
+                    <input type="number" matInput formControlName="escalationGracePeriode">
+                </mat-form-field>
+                <mat-form-field class="field-divider" appearance="outline">
+                    <mat-label>Interval(hrs)</mat-label>
+                    <input type="number" matInput formControlName="escalationInterval">
+                </mat-form-field>
+
+                <mat-checkbox color="primary" formControlName="escalationReoccurring">Reoccurring</mat-checkbox>
+                <div class="row-spacer"></div>
+                <mat-form-field class="field-divider" appearance="outline">
+                    <mat-label>Occurrences</mat-label>
+                    <input type="number" matInput formControlName="escalationOccurrences">
+                </mat-form-field>
+
+
+                <!-- Rejection -->
+                <h4 class="input-group-title"> Rejection </h4>
+                <mat-checkbox color="primary" formControlName="rejectionActivate">Activate Rejection
+                </mat-checkbox>
+                <mat-form-field appearance="outline">
+                    <mat-label>Rejection Message</mat-label>
+                    <textarea matInput formControlName="rejectionMessage"></textarea>
+                </mat-form-field>
+
+                <mat-form-field class="field-divider" appearance="outline">
+                    <mat-label>Enhancement Point</mat-label>
+                    <mat-select formControlName="rejectionEnhancementPoint">
+                        <mat-option value="Select"> Select </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field class="field-divider" appearance="outline">
+                    <mat-label> Rejection Criteria </mat-label>
+                    <mat-select formControlName="rejectionCriteria">
+                        <mat-option value="off"> Reject to All </mat-option>
+                        <mat-option value="on"> Sequential </mat-option>
+                        <mat-option value="selectedUsers"> Reject to selected user </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field class="field-divider" appearance="outline">
+                    <mat-label> Reject to step </mat-label>
+                    <mat-select formControlName="rejectionToStep"
+                        matTooltip="{{ connectionsList.length ? 'select a step' : 'this step has no outgoing connection' }}"
+                        matTooltipPosition="above">
+                        <mat-option *ngFor="let connection of connectionsList" [value]="connection.id">
+                            {{connection.name}} </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-checkbox color="primary" formControlName="rejectionTerminate"> Terminate on Rejection
+                </mat-checkbox>
+                <mat-checkbox color="primary" formControlName="rejectionSendMe"> Enable send to me
+                </mat-checkbox>
+            </div>
+        </mat-expansion-panel>
+    </mat-accordion>
+
+    <!-- Additional Settings -->
+    <mat-accordion>
+        <mat-expansion-panel class="mat-elevation-z2" expanded="false">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Additional Settings
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <mat-checkbox color="primary" formControlName="fieldOwnerStep">Field Owner Step</mat-checkbox>
+            <div class="f-row-spacer-half"></div>
+            <mat-checkbox color="primary" formControlName="reVerificationRequired">Re-Verification Required
+            </mat-checkbox>
+            <div class="f-row-spacer-half"></div>
+            <mat-checkbox color="primary" formControlName="skipUserAlreadyApproved">Skip step if user has
+                already approved</mat-checkbox>
+            <div class="f-row-spacer-half"></div>
+            <mat-checkbox color="primary" formControlName="showUsers">Show users of current user's role
+            </mat-checkbox>
+            <div class="f-row-spacer-half"></div>
+            <mat-checkbox color="primary" formControlName="priorityEditable">Priority editable</mat-checkbox>
+        </mat-expansion-panel>
+    </mat-accordion>
+</ng-container>

@@ -1,0 +1,41 @@
+<form [formGroup]="backgroundForm">
+    <!-- BASIC DETAILS-->
+    <mat-accordion>
+        <mat-expansion-panel class="mat-elevation-z2" expanded="false">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Basic Details
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <div class="f-col">
+                <mat-form-field appearance="outline">
+                    <mat-label>Description</mat-label>
+                    <textarea matInput formControlName="name"></textarea>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label> Enhancement Point </mat-label>
+                    <mat-select formControlName="enhancementPoint">
+                        <mat-option value="Select"> Select </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label> Cross Module </mat-label>
+                    <mat-select formControlName="crossModule">
+                        <mat-option value="Select"> Select </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label> Enhancement Point </mat-label>
+                    <mat-select formControlName="customEvent">
+                        <mat-option *ngFor="let event of customEvents" [value]="event.id">
+                            {{ event.label }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </mat-expansion-panel>
+    </mat-accordion>
+</form>

@@ -52,6 +52,15 @@ import { BrConditionalFieldsComponent } from './_components/module/business-rule
 import { UdrConditionControlComponent } from './_components/module/business-rules/user-defined-rule/udr-condition-control/udr-condition-control.component';
 import { RegexRuleComponent } from './_components/module/business-rules/regex-rule/regex-rule.component';
 import { GenericFieldControlComponent } from './_components/module/business-rules/generic-field-control/generic-field-control.component';
+import { BackgroundStepPropertiesComponent } from './_components/module/workflow/bpmn-builder/properties-panel/background-step-properties/background-step-properties.component';
+import { EmailEscalationPropertiesComponent } from './_components/module/workflow/bpmn-builder/properties-panel/email-escalation-properties/email-escalation-properties.component';
+import { ConnectionConditionModalComponent } from './_components/module/workflow/bpmn-builder/connection-condition-modal/connection-condition-modal.component';
+import { DeterminationStepPropertiesComponent } from './_components/module/workflow/bpmn-builder/properties-panel/determination-step-properties/determination-step-properties.component';
+import { ConnectionPropertiesComponent } from './_components/module/workflow/bpmn-builder/properties-panel/connection-properties/connection-properties.component';
+import { ActivityStepPropertiesComponent } from './_components/module/workflow/bpmn-builder/properties-panel/activity-step-properties/activity-step-properties.component';
+import { DecisionsModalComponent } from './_components/module/workflow/bpmn-builder/decisions-modal/decisions-modal.component';
+import { PropertiesPanelComponent } from './_components/module/workflow/bpmn-builder/properties-panel/properties-panel.component';
+import { BpmnBuilderComponent } from './_components/module/workflow/bpmn-builder/bpmn-builder.component';
 
 @NgModule({
   declarations: [
@@ -104,7 +113,16 @@ import { GenericFieldControlComponent } from './_components/module/business-rule
     BrConditionalFieldsComponent,
     UdrConditionControlComponent,
     RegexRuleComponent,
-    GenericFieldControlComponent
+    GenericFieldControlComponent,
+    BpmnBuilderComponent,
+    PropertiesPanelComponent,
+    DecisionsModalComponent,
+    ActivityStepPropertiesComponent,
+    ConnectionPropertiesComponent,
+    DeterminationStepPropertiesComponent,
+    ConnectionConditionModalComponent,
+    EmailEscalationPropertiesComponent,
+    BackgroundStepPropertiesComponent
   ],
   imports: [
     CommonModule,

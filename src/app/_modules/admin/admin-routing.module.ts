@@ -41,6 +41,7 @@ import { AdvancedSettingsComponent } from 'src/app/_modules/admin/_components/ad
 import { IntMappingComponent } from 'src/app/_modules/admin/_components/int-mapping/int-mapping.component';
 import { InterfacesComponent } from 'src/app/_modules/admin/_components/interfaces/interfaces.component';
 import { AdminLayoutComponent } from 'src/app/_modules/admin/_components/admin-layout/admin-layout.component';
+import { BpmnBuilderComponent } from './_components/module/workflow/bpmn-builder/bpmn-builder.component';
 
 const routes: Routes = [
   {
@@ -53,6 +54,7 @@ const routes: Routes = [
       { path: 'modules', component: ModuleComponent },
       { path: 'modules/:id/business-rules', component: BusinessRulesComponent },
       { path: 'modules/:id/workflow', component: WorkflowComponent },
+      { path: 'modules/all/workflow-builder', component: BpmnBuilderComponent },
       { path: 'modules/:id/change-request', component: ChangeRequestComponent },
       { path: 'modules/:id/fields', component: FieldsComponent },
       { path: 'modules/:id/grid-fields', component: GridFieldsComponent },

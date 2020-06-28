@@ -1,0 +1,26 @@
+
+<h2  mat-dialog-title> Recipient {{data.recipient}} decisions configuration </h2>
+<mat-divider></mat-divider>
+<mat-dialog-content>
+    <mat-card>
+        <mat-card-subtitle> Fields configuration </mat-card-subtitle>
+        <form [formGroup]="decisionForm">
+        <mat-form-field  *ngFor="let field of data.fields" appearance="outline">
+            <mat-label> {{ field.label }}</mat-label>
+            <ng-container [ngSwitch]="field.type">
+                <input *ngSwitchCase="FIELD_TYPE.Input" matInput [formControlName]="field.id">
+                <mat-select *ngSwitchCase="FIELD_TYPE.Select" matInput [formControlName]="field.id">
+                    <mat-option *ngFor="let option of field.options" [value]="option">
+                        {{ option }}
+                    </mat-option>
+                </mat-select>
+                <input *ngSwitchDefault matInput [(ngModel)]="field.value">
+            </ng-container>
+        </mat-form-field>
+        </form>
+    </mat-card>
+</mat-dialog-content>
+<div mat-dialog-actions align="end">
+    <button mat-button (click)="onCancelClick()">Cancel</button>
+    <button mat-button [mat-dialog-close]="decisionForm.value" cdkFocusInitial>Ok</button>
+</div>
