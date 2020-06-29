@@ -3,7 +3,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { EndpointService } from '../endpoint.service';
 import { HttpClient } from '@angular/common/http';
 import * as XLSX from 'xlsx';
-import { Criteria, BarChartWidget, WidgetHeader, TimeSeriesWidget, WidgetImageModel, WidgetHtmlEditor } from 'src/app/_modules/report/_models/widget';
+import { Criteria, BarChartWidget, WidgetHeader, TimeSeriesWidget, WidgetImageModel, WidgetHtmlEditor, ReportingWidget } from 'src/app/_modules/report/_models/widget';
 
 @Injectable({
   providedIn: 'root'
@@ -45,8 +45,8 @@ export class WidgetService {
     return this.http.get<any>(this.endpointService.getFiltertMetaData(widgetId));
   }
 
-  public getListTableMetadata(widgetId): Observable<any> {
-    return this.http.get<any>(this.endpointService.getListTableMetaData(widgetId));
+  public getListTableMetadata(widgetId): Observable<ReportingWidget[]> {
+    return this.http.get<ReportingWidget[]>(this.endpointService.getListTableMetaData(widgetId));
   }
 
   public getBarChartMetadata(widgetId): Observable<BarChartWidget> {

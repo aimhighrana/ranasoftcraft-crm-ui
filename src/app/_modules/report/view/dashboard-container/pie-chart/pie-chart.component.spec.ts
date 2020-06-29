@@ -160,13 +160,27 @@ it('legendClick(), should show paticular stack , after click on stack',async(()=
   expect(component.filterCriteria.length).toEqual(1, 'after apply filter criteria then filtercriteria length should be 1');
 }));
 
-it('should test downloadCSV()', async(()=> {
-const excelData : any[] = [];
-excelData.push({label :'ZERO',data: 110});
-spyOn(widgetService,'downloadCSV').and.returnValue();
-component.downloadCSV();
-expect(excelData[0]).toEqual({label :'ZERO',data: 110});
-expect(widgetService.downloadCSV).toHaveBeenCalledWith('Pie-Chart',[]);
-}));
+  it('should test downloadCSV()', async(()=> {
+    const excelData : any[] = [];
+    excelData.push({label :'ZERO',data: 110});
+    spyOn(widgetService,'downloadCSV').and.returnValue();
+    component.downloadCSV();
+    expect(excelData[0]).toEqual({label :'ZERO',data: 110});
+    expect(widgetService.downloadCSV).toHaveBeenCalledWith('Pie-Chart',[]);
+  }));
+
+  it('getFieldsMetadaDesc(), get description of field', async(()=>{
+    const buckets = [{key:'200010',doc_count:10744,'top_hits#items':{hits:{total:{value:10744,relation:'eq'},max_score:1.0,hits:[{_source:{hdvs:{MATL_GROUP:{fId:'MATL_GROUP',lls:{EN:{label:'Material Group'}},vls:{EN:{valueTxt:'200010'}},vc:'200010'}}}}]}}},{key:'200030',doc_count:775,'top_hits#items':{hits:{total:{value:775,relation:'eq'},max_score:1.0,hits:[{_source:{hdvs:{MATL_GROUP:{fId:'MATL_GROUP',lls:{EN:{label:'Material Group'}},vls:{EN:{valueTxt:'200030'}},vc:'200030'}}}}]}}}];
+
+    const data: PieChartWidget = new PieChartWidget();
+    data.fieldId = 'MATL_GROUP';
+    component.pieWidget.next(data);
+    component.lablels = ['200010','200030'];
+    // call actual method
+    component.getFieldsMetadaDesc(buckets);
+
+    expect(component.lablels.length).toEqual(2);
+    expect(component.chartLegend.length).toEqual(2);
+  }));
 
 });

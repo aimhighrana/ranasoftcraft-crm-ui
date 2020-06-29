@@ -8,6 +8,7 @@ import { BehaviorSubject, of } from 'rxjs';
 import { MatMenuModule } from '@angular/material/menu';
 import { BaseChartDirective, Label } from 'ng2-charts';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
+import { ChartLegendLabelItem } from 'chart.js';
 
 describe('StackedbarChartComponent', () => {
   let component: StackedbarChartComponent;
@@ -15,7 +16,7 @@ describe('StackedbarChartComponent', () => {
   let htmlnative: HTMLElement;
   let widgetService: jasmine.SpyObj<WidgetService>;
   beforeEach(async(() => {
-    const widgetServiceSpy = jasmine.createSpyObj(WidgetService,['downloadCSV','getHeaderMetaData']);
+    const widgetServiceSpy = jasmine.createSpyObj(WidgetService,['downloadCSV','getHeaderMetaData', 'getWidgetData']);
     TestBed.configureTestingModule({
       declarations: [ StackedbarChartComponent ],
       imports:[AppMaterialModuleForSpec,HttpClientTestingModule,MatMenuModule],
@@ -272,6 +273,51 @@ describe('StackedbarChartComponent', () => {
 
     expect(actualResponse1.length).toEqual(1,`After applied datasetSize length should be equals to dataSetSize`);
 
+
+  }));
+
+  it('getFieldsMetadaDescaxis1(), get description of axis 1', async(()=>{
+    const res = [{key:{STATUS__C:'',LEVEL__C:''},doc_count:3,'top_hits#items':{hits:{total:{value:3,relation:'eq'},max_score:1.0,hits:[{_index:'localhost_3901_do_0',_type:'_doc',_id:'TEMP003',_score:1.0,_source:{hdvs:{STATUS__C:{fId:'STATUS__C',lls:{EN:{label:'Status'}},vls:{EN:{valueTxt:''}},vc:''},LEVEL__C:{fId:'LEVEL__C',lls:{EN:{label:'Level'}},vls:{EN:{valueTxt:''}},vc:''}}}}]}}},{key:{STATUS__C:'',LEVEL__C:'Level 3'},doc_count:2,'top_hits#items':{hits:{total:{value:2,relation:'eq'},max_score:1.0,hits:[{_index:'localhost_3901_do_0',_type:'_doc',_id:'TMP000000000000009',_score:1.0,_source:{hdvs:{STATUS__C:{fId:'STATUS__C',loc:'',lls:{EN:{label:'Status'}},ddv:[],msdv:[],vls:{EN:{valueTxt:''}},vc:''},LEVEL__C:{fId:'LEVEL__C',loc:'',lls:{EN:{label:'Level'}},ddv:[{val:'Level 3: $100K - $1MM',lang:'EN'}],msdv:[],vls:{EN:{valueTxt:'Level 3'}},vc:'Level 3'}}}}]}}}];
+
+    component.arrayBuckets = res;
+    component.getFieldsMetadaDescaxis1('LEVEL__C');
+
+    expect(component.codeTextaxis1['Level 3']).toEqual('Level 3: $100K - $1MM');
+
+
+  }));
+
+  it('getFieldsMetadaDescaxis2(), get description of axis 2', async(()=>{
+    const res = [{key:{STATUS__C:'',LEVEL__C:''},doc_count:3,'top_hits#items':{hits:{total:{value:3,relation:'eq'},max_score:1.0,hits:[{_index:'localhost_3901_do_0',_type:'_doc',_id:'TEMP003',_score:1.0,_source:{hdvs:{STATUS__C:{fId:'STATUS__C',lls:{EN:{label:'Status'}},vls:{EN:{valueTxt:''}},vc:''},LEVEL__C:{fId:'LEVEL__C',lls:{EN:{label:'Level'}},vls:{EN:{valueTxt:''}},vc:''}}}}]}}},{key:{STATUS__C:'',LEVEL__C:'Level 3'},doc_count:2,'top_hits#items':{hits:{total:{value:2,relation:'eq'},max_score:1.0,hits:[{_index:'localhost_3901_do_0',_type:'_doc',_id:'TMP000000000000009',_score:1.0,_source:{hdvs:{STATUS__C:{fId:'STATUS__C',loc:'',lls:{EN:{label:'Status'}},ddv:[],msdv:[],vls:{EN:{valueTxt:''}},vc:''},LEVEL__C:{fId:'LEVEL__C',loc:'',lls:{EN:{label:'Level'}},ddv:[{val:'Level 3: $100K - $1MM',lang:'EN'}],msdv:[],vls:{EN:{valueTxt:'Level 3'}},vc:'Level 3'}}}}]}}}];
+
+    component.arrayBuckets = res;
+    component.getFieldsMetadaDescaxis2('STATUS__C');
+
+    expect(component.codeTextaxis1['']).toEqual(undefined);
+
+
+  }));
+
+  it('legendClick(), legend click ', async(()=>{
+    const item: ChartLegendLabelItem = {datasetIndex:0} as ChartLegendLabelItem;
+
+    component.stackbarLegend = [{code:'MATL_TYPE',legendIndex:0,text:'Material Type'}];
+
+    const stackBarWidget: StackBarChartWidget = new StackBarChartWidget();
+    stackBarWidget.fieldId = 'MATL_TYPE';
+    component.stackBarWidget.next(stackBarWidget);
+
+    component.filterCriteria = [{fieldId: 'MATL_TYPE'} as Criteria];
+
+    component.legendClick(item);
+
+    expect(component.filterCriteria.length).toEqual(2);
+
+    component.filterCriteria = [];
+
+    component.legendClick(item);
+
+    expect(component.filterCriteria.length).toEqual(1);
 
   }));
 });

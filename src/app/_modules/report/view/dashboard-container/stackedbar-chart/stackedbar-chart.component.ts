@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnChanges, OnDestroy, ViewChild, LOCALE_ID, Inject } from '@angular/core';
 import { ChartOptions, ChartLegendLabelItem } from 'chart.js';
 import { Label, BaseChartDirective } from 'ng2-charts';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
@@ -64,7 +64,8 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
   constructor(
     private widgetService : WidgetService,
-    private reportService: ReportService
+    private reportService: ReportService,
+    @Inject(LOCALE_ID) public locale: string
   ) {
     super();
   }
@@ -92,12 +93,12 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         this.stackBardata.subscribe(data=>{
           if(data && this.barChartData.length=== 0){
             if(Object.keys(this.codeTextaxis1).length === 0 && (this.stackBarWidget.getValue().groupByIdMetaData.picklist === '1' || this.stackBarWidget.getValue().groupByIdMetaData.picklist === '37')){
-              this.getFieldsMetadaDescaxis1(this.labels,this.stackBarWidget.getValue().groupById);
+              this.getFieldsMetadaDescaxis1(this.stackBarWidget.getValue().groupById);
             }else{
               this.updateLabelsaxis1();
             }
             if(Object.keys(this.codeTextaxis2).length === 0 && (this.stackBarWidget.getValue().fieldIdMetaData.picklist === '1' || this.stackBarWidget.getValue().fieldIdMetaData.picklist === '37')){
-              this.getFieldsMetadaDescaxis2(this.listxAxis2,this.stackBarWidget.getValue().fieldId);
+              this.getFieldsMetadaDescaxis2(this.stackBarWidget.getValue().fieldId);
             }else{
               this.updateLabelsaxis2();
             }
@@ -251,13 +252,23 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     });
   }
 
-  getFieldsMetadaDescaxis1(code: string[], fieldId: string) {
-    this.reportService.getMetaDataFldByFldIds(fieldId, code).subscribe(res=>{
-      res.forEach(data=>{
-        this.codeTextaxis1[data.CODE] =data.TEXT;
-      });
-      this.updateLabelsaxis1();
+  getFieldsMetadaDescaxis1(fieldId: string) {
+    let  locale = this.locale!==''?this.locale.split('-')[0]:'EN';
+    locale = locale.toUpperCase();
+    this.arrayBuckets.forEach(bucket=>{
+      const key = bucket.key[fieldId];
+      const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
+      const ddv = hits._source.hdvs[fieldId] ?( hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].ddv : null) : null;
+      if(ddv) {
+        const hasValue =  ddv.filter(fil=> fil.lang === locale)[0];
+        if(hasValue) {
+          this.codeTextaxis1[key] = hasValue.val;
+        }
+      } else {
+        this.codeTextaxis1[key] = hits._source.hdvs[fieldId].vc;
+      }
     });
+    this.updateLabelsaxis1();
   }
 
   updateLabelsaxis1():void{
@@ -269,13 +280,23 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
   }
 
 
-  getFieldsMetadaDescaxis2(code: string[], fieldId: string) {
-    this.reportService.getMetaDataFldByFldIds(fieldId, code).subscribe(res=>{
-      res.forEach(data=>{
-        this.codeTextaxis2[data.CODE] =data.TEXT;
-      });
-      this.updateLabelsaxis2();
+  getFieldsMetadaDescaxis2(fieldId: string) {
+    let  locale = this.locale!==''?this.locale.split('-')[0]:'EN';
+    locale = locale.toUpperCase();
+    this.arrayBuckets.forEach(bucket=>{
+      const key = bucket.key[fieldId];
+      const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
+      const ddv = hits._source.hdvs[fieldId] ?( hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].ddv : null) : null;
+      if(ddv) {
+        const hasValue =  ddv.filter(fil=> fil.lang === locale)[0];
+        if(hasValue) {
+          this.codeTextaxis2[key] = hasValue.val;
+        }
+      } else {
+        this.codeTextaxis2[key] = hits._source.hdvs[fieldId].vc;
+      }
     });
+    this.updateLabelsaxis2();
   }
 
   updateLabelsaxis2():void{

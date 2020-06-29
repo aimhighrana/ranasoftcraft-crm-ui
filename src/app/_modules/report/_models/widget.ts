@@ -227,6 +227,7 @@ export class ReportingWidget{
     fieldOrder : string;
     fieldDesc:string;
     sno:number;
+    fldMetaData: MetadataModel;
 }
 
 export class WidgetHeader {

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, ViewChild } from '@angular/core';
+import { Component, OnInit, OnChanges, ViewChild, LOCALE_ID, Inject } from '@angular/core';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
 import { BehaviorSubject } from 'rxjs';
 import { PieChartWidget, WidgetHeader, ChartLegend, Criteria, BlockType, ConditionOperator } from '../../../_models/widget';
@@ -80,7 +80,8 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
 
   constructor(
     private widgetService: WidgetService,
-    private reportService: ReportService
+    private reportService: ReportService,
+    @Inject(LOCALE_ID) public locale: string
   ) {
     super();
   }
@@ -158,7 +159,7 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
       });
       if(this.pieWidget.getValue().metaData && (this.pieWidget.getValue().metaData.picklist === '1' || this.pieWidget.getValue().metaData.picklist === '37')) {
         if (this.chartLegend.length === 0) {
-          this.getFieldsMetadaDesc(this.lablels, this.pieWidget.getValue().fieldId);
+          this.getFieldsMetadaDesc(arrayBuckets);
         } else {
           this.lablels = this.chartLegend.map(map => map.text);
         }
@@ -175,24 +176,41 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
    * Http call for get description of fields code
    *
    */
-  getFieldsMetadaDesc(code: string[], fieldId: string) {
-    this.reportService.getMetaDataFldByFldIds(fieldId, code).subscribe(res => {
-      this.lablels.forEach(cod => {
-        let chartLegend: ChartLegend;
-        if(cod) {
-          const hasData = res.filter(fill => fill.CODE === cod);
-          if (hasData && hasData.length) {
-            chartLegend = { text: hasData[0].TEXT, code: hasData[0].CODE, legendIndex: this.chartLegend.length };
-          } else {
-            chartLegend = { text: cod, code: cod, legendIndex: this.chartLegend.length };
-          }
-        } else {
-           chartLegend = { text: cod, code: cod, legendIndex: this.chartLegend.length };
+  getFieldsMetadaDesc(buckets: any[]) {
+    const fldid = this.pieWidget.getValue().fieldId;
+    let  locale = this.locale!==''?this.locale.split('-')[0]:'EN';
+    locale = locale.toUpperCase();
+    const finalVal = {} as any;
+    buckets.forEach(bucket=>{
+      const key = bucket.key;
+      const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
+      const ddv = hits._source.hdvs[fldid] ?( hits._source.hdvs[fldid] ? hits._source.hdvs[fldid].ddv : null) : null;
+      if(ddv) {
+        const hasValue =  ddv.filter(fil=> fil.lang === locale)[0];
+        if(hasValue) {
+          finalVal[key] = hasValue.val;
         }
-        this.chartLegend.push(chartLegend);
-      });
-      this.lablels = this.chartLegend.map(map => map.text);
+      } else {
+        finalVal[key] = hits._source.hdvs[fldid].vc;
+      }
     });
+
+    // update lablels
+    this.lablels.forEach(cod => {
+      let chartLegend: ChartLegend;
+      if(cod) {
+        const hasData = finalVal[cod];
+        if (hasData) {
+          chartLegend = { text: hasData, code: cod, legendIndex: this.chartLegend.length };
+        } else {
+          chartLegend = { text: cod, code: cod, legendIndex: this.chartLegend.length };
+        }
+      } else {
+         chartLegend = { text: cod, code: cod, legendIndex: this.chartLegend.length };
+      }
+      this.chartLegend.push(chartLegend);
+    });
+    this.lablels = this.chartLegend.map(map => map.text);
   }
 
   legendClick(legendItem: ChartLegendLabelItem) {
