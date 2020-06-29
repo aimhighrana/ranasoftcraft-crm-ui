@@ -9,6 +9,9 @@ import { HistoryTabComponent } from './_components/history-tab/history-tab.compo
 import { GeneralInformationTabComponent } from './_components/general-information-tab/general-information-tab.component';
 import { TaskSummaryComponent } from './_components/task-summary/task-summary.component';
 import { TasklistTableComponent } from './_components/tasklist-table/tasklist-table.component';
+import { ListPageComponent } from './list-page_components/list-page/list-page.component';
+import { ListFiltersComponent } from './list-page_components/listfilter-dropdown/listfilter.component';
+import { ListColumnsettingComponent } from './list-page_components/listcolumnsetting/listcolumnsetting.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +21,10 @@ import { TasklistTableComponent } from './_components/tasklist-table/tasklist-ta
     HistoryTabComponent,
     GeneralInformationTabComponent,
     TaskSummaryComponent,
-    TasklistTableComponent
+    TasklistTableComponent,
+    ListPageComponent,
+    ListFiltersComponent,
+    ListColumnsettingComponent,
   ],
   imports: [
     CommonModule,
