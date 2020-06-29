@@ -1,7 +1,15 @@
 .column-setting {
-  width: 500px;
-  margin: 16px;
+  width: 700px;
   padding: 0;
+
+  mat-toolbar {
+    min-height: 50px;
+
+    mat-toolbar-row {
+      height: 50px;
+      font-size: 16px;
+    }
+  }
 
   mat-card-content {
     display: flex;
@@ -12,30 +20,65 @@
 
     .nav-setting {
       padding-top: 8px;
+      max-height: 300px;
+      overflow: auto;
 
       .mat-list-item {
         font-size: 14px;
         height: 36px;
+
+        .listing-icons {
+          font-size: 18px;
+          width: 18px;
+          height: 18px;
+        }
+
+        .check {
+          color: #008040;
+        }
       }
     }
 
+    .newsetting-add {
+      display: flex;
+      border-radius: 0;
+    }
+
+    .settingadd-col {
+      margin: 8px 16px;
+    }
+
     .checked-colunms {
-      padding: 8px 16px;
+      margin: 8px 16px;
 
       mat-form-field {
         height: 50px;
       }
 
       .colunm-list {
-        mat-slide-toggle {
-          margin: 6px 0;
-          text-transform: capitalize;
+        .f-row {
+          align-items: center;
+
+          mat-slide-toggle {
+            margin: 8px 0;
+            text-transform: capitalize;
+            position: relative;
+          }
+
+          mat-icon {
+            width: 18px;
+            height: 18px;
+            font-size: 18px;
+          }
         }
       }
 
-      button {
-        margin: 8px;
-        flex: 1;
+      .setting-actions {
+        justify-content: flex-end;
+
+        button {
+          margin: 16px 4px;
+        }
       }
     }
   }
