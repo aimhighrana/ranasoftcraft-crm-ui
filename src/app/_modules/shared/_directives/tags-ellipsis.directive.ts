@@ -20,7 +20,8 @@ export class TagsEllipsisDirective implements AfterViewInit {
         this.html = this.html + `<mat-chip class="mat-chip mat-focus-indicator mat-standard-chip">${tag.value}</mat-chip>`;
       }
     });
-    this.checkForMoreTags();
+    // this will be worked on once the drag and drog changes are done in API
+    // this.checkForMoreTags();
     this.el.nativeElement.innerHTML = this.html;
   }
 

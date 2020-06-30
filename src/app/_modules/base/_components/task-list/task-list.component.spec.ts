@@ -1,17 +1,16 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { async, ComponentFixture, TestBed, inject } from '@angular/core/testing';
 import { TaskListComponent } from './task-list.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FormatTableHeadersPipe } from '@shared/_pipes/format-table-headers.pipe';
-import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
 import { SharedModule } from '@modules/shared/shared.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TaskListService } from '@services/task-list.service';
 
 describe('TaskListComponent', () => {
   let fixture: ComponentFixture<TaskListComponent>;
   let component: TaskListComponent;
+
   const sampleSelectedFilters = {
     staticFilters: {
       status: 'forwarded',
@@ -39,20 +38,16 @@ describe('TaskListComponent', () => {
       declarations: [TaskListComponent, FormatTableHeadersPipe],
       providers: [
         HttpClientTestingModule,
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            params: of({ summaryId: '124' })
-          },
-        },
+        TaskListService
       ]
-    })
-      .compileComponents();
+    }).compileComponents();
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 200000;
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(TaskListComponent);
     component = fixture.componentInstance;
+
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000000;
     fixture.detectChanges();
   });
@@ -122,5 +117,75 @@ describe('TaskListComponent', () => {
     fixture.detectChanges();
     component.sortData({ active: 'datestarted', direction: 'asc' });
     expect(component.sortableHeaders.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('should call closeDetailsModal()', () => {
+    component.closeDetailsModal();
+    expect(component.showTaskDetails).toBe(false);
+    expect(component.selectedTaskId).toBe(null);
+  });
+
+  it('should call performOperationOnViews()', inject([TaskListService], (taskListService: TaskListService) => {
+    TestBed.createComponent(TaskListComponent); // this is the trigger of constructor method
+    fixture.detectChanges();
+    const operationObject = {
+      type: 'create',
+      data: {
+        viewId: '967589022265877187',
+        viewName: 'top 6 only',
+        fieldId: [
+          'datestarted',
+          'duedate',
+          'requestorName',
+          'taskid',
+          'fname',
+          'emailtext'
+        ],
+        fields: [],
+        default: false,
+        active: false
+      }
+    };
+
+    /**
+     * for Create
+     */
+    const taskListServiceSpy = spyOn(taskListService, 'saveTaskListView').and.callThrough();
+    component.performOperationOnViews(operationObject);
+    expect(taskListServiceSpy).toHaveBeenCalledWith(operationObject.data);
+
+    /**
+     * for Update
+     */
+    const updateListServiceSpy = spyOn(taskListService, 'updateTaskListView').and.callThrough();
+    operationObject.type = 'update';
+    component.performOperationOnViews(operationObject);
+    expect(updateListServiceSpy).toHaveBeenCalledWith(operationObject.data);
+
+    /**
+     * for Delete
+     */
+    const deleteListServiceSpy = spyOn(taskListService, 'deleteTaskListItem').and.callThrough();
+    operationObject.type = 'delete';
+    component.performOperationOnViews(operationObject);
+    expect(deleteListServiceSpy).toHaveBeenCalledWith(operationObject.data.viewId);
+
+    /**
+     * checking response should not be null, it can be 0 but not null
+     * because initally user may not have any views
+     */
+    expect(component.taskListViews.length).toBeGreaterThanOrEqual(0);
+  }));
+
+  it('should call getDefaultViews()', () => {
+    const taskListServiceObj = fixture.debugElement.injector.get(TaskListService);
+    spyOn(taskListServiceObj, 'getTasklListViews');
+    fixture.detectChanges();
+    component.getDefaultViews();
+    fixture.detectChanges();
+    expect(component.userDetails).not.toBe(null);
+    expect(taskListServiceObj.getTasklListViews).toHaveBeenCalled();
+    expect(component.taskListViews.length).toBeGreaterThanOrEqual(0);
   })
+
 })

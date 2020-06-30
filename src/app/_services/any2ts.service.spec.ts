@@ -260,4 +260,15 @@ describe('Any2tsService', () => {
     }];
     expect(service.any2SchemaBrInfo(sampleData)).not.toBe(null);
   });
+
+  it('should call any2CategoriesResponse()', () => {
+    const sampleData = {
+      CATEGORIES: [{
+        categoryDesc: '',
+        categoryId: '',
+        plantCode: '',
+      }]
+    }
+    expect(service.any2CategoriesResponse(sampleData)).not.toBe(null);
+  })
 });

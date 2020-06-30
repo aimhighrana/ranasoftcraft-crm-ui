@@ -274,10 +274,10 @@ export class EndpointService {
   }
 
   public getFiltersUrl() {
-    return `${this.apiUrl}tasklist/filter`;
+    return `${this.apiUrl}/tasklist/filter`;
   }
   public getFilterDynamicListsUrl() {
-    return `${this.apiUrl}tasklist/filterList`
+    return `${this.apiUrl}/tasklist/filterList`
   }
 
   public getDynamicColumnListsUrl() {
@@ -293,7 +293,7 @@ export class EndpointService {
   }
 
   public getTasksUrl(): string {
-    return `${this.apiUrl}tasklist/taskListData`;
+    return `${this.apiUrl}/tasklist/taskListData`;
   }
 
   public getReportListUrlForMsTeams(): string {
@@ -315,7 +315,7 @@ export class EndpointService {
     return `${this.apiUrl}/admin/permission/collaborator/delete/${permissionId}`;
   }
 
-  public getBrConditionalOperatorUrl() : string {
+  public getBrConditionalOperatorUrl(): string {
     return `${this.apiUrl}/schema/br/condition-operator`;
   }
 
@@ -343,6 +343,21 @@ export class EndpointService {
     return `${this.apiUrl}/schema/br/udr/${ruleId}`;
   }
 
+  public getTaskListViewsUrl(userName: string): string {
+    return `${this.apiUrl}/tasklist/getTaskListViews?userCreated=${userName}`;
+  }
+
+  public getDeleteTaskListViewUrl(viewId: string): string {
+    return `${this.apiUrl}/tasklist/deleteTaskListView?viewId=${viewId}`;
+  }
+
+  public getSaveTaskListViewUrl(): string {
+    return `${this.apiUrl}/tasklist/taskListUserView`;
+  }
+
+  public getSaveTaskListURL(): string {
+    return `${this.apiUrl}/tasklist/taskListUserView`;
+  }
   public deleteConditionBlock(blockId: string): string {
     return `${this.apiUrl}/schema/br/udr/delete-conditionblock/${blockId}`;
   }

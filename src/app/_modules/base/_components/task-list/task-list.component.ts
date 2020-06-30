@@ -14,6 +14,8 @@ import { MatTabGroup } from '@angular/material/tabs';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Location } from '@angular/common';
 import { Pagination } from '@models/task-list/pagination';
+import { TaskListViewObject } from '@models/task-list/columnSetting';
+import { moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'pros-task-list',
@@ -55,6 +57,10 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
   taskListSubscription = new Subscription();
 
   /**
+   * router listener
+   */
+  routerSubscription = new Subscription();
+  /**
    * this is used to subscribe to changes for user details
    * so that it can be unsubscribed
    */
@@ -82,6 +88,7 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
    * This is used to emit the upated filters
    */
   @Output() filterEmitter = new BehaviorSubject({});
+
 
   /**
    * list of columns from the service
@@ -125,6 +132,11 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
   userDetails: Userdetails;
 
   /**
+   * This is the list of the task list views
+   */
+  taskListViews: TaskListViewObject[] = [];
+
+  /**
    * This is used to get the selected tabs
    * The reason is to make this dynamic and convert it into
    * a pascal case value;
@@ -163,10 +175,15 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
   wildSearchValue: string;
 
   /**
+   * This stores the active id
+   */
+  activeViewId: string;
+
+  /**
    * construtor of @class TaskListComponent
    * @param taskListService This is the object of the service
    */
-  constructor(private taskListService: TaskListService, private _router: Router,
+  constructor(public taskListService: TaskListService, private _router: Router,
     private _activeRouter: ActivatedRoute, private userService: UserService, private location: Location) { }
 
   /**
@@ -178,6 +195,7 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.initializeForm()
     this.getTasks();
     this.getSavedSearches();
+    this.getDefaultViews()
     const columnVisibleObject = []
     this.displayedColumns.forEach((column) => {
       columnVisibleObject.push({ visible: true, value: column })
@@ -185,6 +203,10 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.tableColumns = columnVisibleObject;
   }
 
+  /**
+   * this is used to call the service with the text search
+   * @param event the typed in text
+   */
   doWildSearch(event: KeyboardEvent) {
     const target = event.target as HTMLInputElement;
     const existing = this.filterForm.controls.filtersMap.value;
@@ -219,7 +241,7 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
    * Angular hook
    */
   ngAfterViewInit() {
-    this._activeRouter.params.subscribe((urlParams) => {
+    this.routerSubscription = this._activeRouter.params.subscribe((urlParams) => {
       if (urlParams && urlParams.summaryId) {
         const selectedTabIndex = this.availableTabs.findIndex(ele => ele.code === urlParams.tabId);
         this.tabGroup.selectedIndex = selectedTabIndex;
@@ -231,7 +253,6 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
         }, 100);
 
       }
-
     });
     this.tabGroup.selectedTabChange.subscribe((tabChange) => {
       this.selectedTaskId = null
@@ -276,7 +297,7 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
         .pipe(
           distinctUntilChanged()
         ).subscribe((userDetails: Userdetails) => {
-          this.taskListService.getDynamicFilters(userDetails)
+          this.taskListSubscription = this.taskListService.getDynamicFilters(userDetails)
             .pipe(distinctUntilChanged())
             .subscribe((dynamicFilters: DynamicFilter[]) => {
               this.filters.dynamicFilters.length = 0;
@@ -323,7 +344,6 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
           existingSavedObjectIds.push(objectId);
         }
       });
-
       this.filterForm.controls.objectToLoad.setValue(existingSavedObjectIds);
     } else {
       this.filterForm.controls.objectToLoad.setValue(['ALL']);
@@ -349,19 +369,10 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
-   * function to update table column
-   * @param tableColumns updated table column from the column setting component
-   */
-  updateColumns(tableColumns) {
-    // this.tableColumns = tableColumns;
-    console.log(tableColumns);
-  }
-
-  /**
    * Function to get Saved Searches
    */
   getSavedSearches() {
-    this.taskListService.getSavedSearches().subscribe((response) => {
+    this.taskListSubscription = this.taskListService.getSavedSearches().subscribe((response) => {
       this.savedSearches = response;
     })
   }
@@ -409,7 +420,8 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
    * This will be OBSOLETE IN NEXT TASK
    */
   get getDisplayColumns() {
-    const getActiveColumns = this.tableColumns.filter(columns => columns.visible)
+    this.tableColumns[this.tableColumns.length - 1].visible = true;
+    const getActiveColumns = this.tableColumns.filter(columns => columns.visible);
     return getActiveColumns.map(column => column.value);
   }
 
@@ -425,18 +437,6 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     })
     this.tableColumns[this.tableColumns.length - 1].visible = true;
-  }
-
-  /**
-   * Angular Hook
-   * Called when component is closed/destroyed/refreshed
-   * here all the subscription is getting unsubscribed
-   */
-  ngOnDestroy() {
-    this.taskListSubscription.unsubscribe();
-    this.userDetailSubscription.unsubscribe();
-    this.filterEmitter.unsubscribe();
-    this.enableDragging.unsubscribe();
   }
 
   /**
@@ -469,4 +469,88 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.dynamicFiltersVisible = false;
   }
 
+  /**
+   * this function calls all the views from the service and
+   * sends to column setting component
+   */
+  getDefaultViews() {
+    this.userDetailSubscription = this.userService.getUserDetails()
+      .pipe(
+        distinctUntilChanged()
+      ).subscribe((userDetails: Userdetails) => {
+        this.userDetails = userDetails;
+        this.taskListSubscription = this.taskListService.getTasklListViews(userDetails.userName).subscribe((tableViewObjects: TaskListViewObject[]) => {
+          this.taskListViews.length = 0;
+          tableViewObjects.forEach(view => { view.active = false });
+          this.taskListViews.push(...tableViewObjects);
+          // get the default view on the basis of flag
+          let defaultView = this.taskListViews.find(view => view.default);
+          // check if user has set any view as active
+          if (this.activeViewId) {
+            defaultView = this.taskListViews.find(item => item.viewId === this.activeViewId);
+          }
+
+          if (defaultView) {
+            const defaultColumns = defaultView.fields.map(item => item.fieldId);
+            defaultView.active = true;
+            this.tableColumns.forEach((column, index) => {
+              const positionOfColumnInDefaultView = defaultView.fields.find(item => item.fieldId === column.value);
+              if (positionOfColumnInDefaultView) {
+                moveItemInArray(this.tableColumns, index, positionOfColumnInDefaultView.order - 1);
+              }
+              column.visible = defaultColumns.includes(column.value) ? true : false;
+            })
+          }
+          const settingObject = this.tableColumns.find(item => item.value === 'setting');
+          this.tableColumns.splice(this.tableColumns.indexOf(settingObject), 1);
+          this.tableColumns.push({ value: 'setting', order: 10 })
+        });
+      })
+  }
+
+  /**
+   * This is the main function to perform change in column view
+   * @param operationObject The operation object that contains info to perform
+   */
+  performOperationOnViews(operationObject: { type: string, data: TaskListViewObject }) {
+    operationObject.data.plantCode = this.userDetails.plantCode;
+    operationObject.data.userCreated = this.userDetails.userName;
+    switch (operationObject.type) {
+      case 'create':
+        this.taskListSubscription = this.taskListService.saveTaskListView(operationObject.data).subscribe(() => {
+          this.getDefaultViews();
+        })
+        break;
+      case 'update':
+        this.taskListSubscription = this.taskListService.updateTaskListView(operationObject.data).subscribe(() => {
+          this.getDefaultViews();
+        });
+        break;
+      case 'delete':
+        this.taskListSubscription = this.taskListService.deleteTaskListItem(operationObject.data.viewId).subscribe(() => {
+          this.getDefaultViews();
+        }); break;
+    }
+  }
+
+  /**
+   * This is used to set the currently active view
+   * @param viewId the selected view
+   */
+  setActiveView(viewId: string) {
+    this.activeViewId = viewId;
+  }
+
+  /**
+   * Angular Hook
+   * Called when component is closed/destroyed/refreshed
+   * here all the subscription is getting unsubscribed
+   */
+  ngOnDestroy() {
+    this.taskListSubscription.unsubscribe();
+    this.userDetailSubscription.unsubscribe();
+    this.filterEmitter.unsubscribe();
+    this.enableDragging.unsubscribe();
+    this.routerSubscription.unsubscribe();
+  }
 }

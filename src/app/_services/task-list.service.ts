@@ -3,6 +3,7 @@ import { Filter } from '@models/task-list/filter';
 import { EndpointService } from '@services/endpoint.service';
 import { of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { TaskListViewObject } from '@models/task-list/columnSetting';
 
 @Injectable({
   providedIn: 'root'
@@ -58,7 +59,7 @@ export class TaskListService {
    * Constructor of @class TaskListService
    */
   constructor(
-    private endpointService: EndpointService,
+    public endpointService: EndpointService,
     private http: HttpClient
   ) { }
 
@@ -99,5 +100,37 @@ export class TaskListService {
    */
   getTaskDetails(taskId: string) {
     return of(this.taskDetails);
+  }
+
+  /**
+   * This is used to get the task list
+   * @param userName The current logged in username
+   */
+  getTasklListViews(userName: string) {
+    return this.http.get(this.endpointService.getTaskListViewsUrl(userName))
+  }
+
+  /**
+   * This is delete to get the task list view
+   * @param userName The current logged in username
+   */
+  deleteTaskListItem(viewId: string) {
+    return this.http.delete(this.endpointService.getDeleteTaskListViewUrl(viewId), {})
+  }
+
+  /**
+   * This is used to save the task list view
+   * @param userName The current logged in username
+   */
+  saveTaskListView(taskListViewObject: TaskListViewObject) {
+    return this.http.post(this.endpointService.getSaveTaskListURL(), taskListViewObject)
+  }
+
+  /**
+   * This is used to update the task list view
+   * @param userName The current logged in username
+   */
+  updateTaskListView(taskListViewObject: TaskListViewObject) {
+    return this.http.post(this.endpointService.getSaveTaskListURL(), taskListViewObject);
   }
 }

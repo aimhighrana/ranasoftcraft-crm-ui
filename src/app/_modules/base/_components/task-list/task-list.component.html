@@ -10,8 +10,9 @@
                         [summaryShown]="enableDragging.asObservable()" prosResizeable>
 
                         <!-- dynamic column -->
-                        <pros-columnsetting [tableColumns]="tableColumns" (updateColumns)="updateColumns($event)"
-                            (close)="toggleColumnSettingPopUp()" *ngIf="showColumnSettingPopUp">
+                        <pros-columnsetting  (activeViewEmitter)="setActiveView($event)" [tableColumns]="tableColumns" [taskListViews]="taskListViews"
+                            (performOperation)="performOperationOnViews($event)" (close)="toggleColumnSettingPopUp()"
+                            *ngIf="showColumnSettingPopUp">
                         </pros-columnsetting>
                         <ng-container *ngTemplateOutlet="commonTableComponent"></ng-container>
 
@@ -80,7 +81,7 @@
                 <mat-form-field appearance="outline">
                     <mat-icon matSuffix>search</mat-icon>
                     <mat-label>Search</mat-label>
-                    <input matInput (keyup)="doWildSearch($event)" placeholder="Placeholder">
+                    <input matInput id="wildSearchField" (keyup)="doWildSearch($event)" placeholder="Placeholder">
                 </mat-form-field>
                 <span class="col-spacer"></span>
                 <button mat-stroked-button color="primary" (click)="getFilters()">
@@ -101,11 +102,13 @@
                 <p class="mat-label" *ngIf="wildSearchEnabled"> {{dataSource.data.length}} results found for
                     "{{wildSearchValue}}"</p>
                 <span class="f-spacer"></span>
-                <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[10, 20, 50, 100]" (page)="paginate($event)"></mat-paginator>
+                <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[10, 20, 50, 100]"
+                    (page)="paginate($event)"></mat-paginator>
             </div>
 
             <!--  filters -->
-            <pros-filters-dropdown [filterObservable]="filterEmitter.asObservable()" [selectedFields]="filterForm.controls.filtersMap.value" *ngIf="dynamicFiltersVisible"
+            <pros-filters-dropdown [filterObservable]="filterEmitter.asObservable()"
+                [selectedFields]="filterForm.controls.filtersMap.value" *ngIf="dynamicFiltersVisible"
                 (closeFilterBox)="closeFilters()" (updateFilters)="updateFilters($event)">
             </pros-filters-dropdown>
 
@@ -113,7 +116,7 @@
 
         <!-- common template for tables -->
         <ng-template #commonTableComponent>
-            <mat-table #table [dataSource]="dataSource" matSort  (matSortChange)="sortData($event)">
+            <mat-table #table [dataSource]="dataSource" matSort (matSortChange)="sortData($event)">
 
                 <ng-container matColumnDef="taskid">
                     <mat-header-cell *matHeaderCellDef mat-sort-header> Task ID </mat-header-cell>
@@ -165,9 +168,9 @@
                         <select matNativeControl [(ngModel)]="element.priorityType" class="dropdown-fields">
                             <option value="STATIC">Static</option>
                             <option value="MEDIUM">Medium</option>
-                            <option value="mercedes">Low</option>
-                          </select>
-                          <mat-icon>arrow_drop_down</mat-icon>
+                            <option value="LOW">Low</option>
+                        </select>
+                        <mat-icon>arrow_drop_down</mat-icon>
                         <!-- <button mat-button>{{element.priorityType}} <mat-icon>arrow_drop_down</mat-icon>
                         </button> -->
                     </mat-cell>
@@ -176,7 +179,7 @@
                 <ng-container matColumnDef="tags">
                     <mat-header-cell *matHeaderCellDef mat-sort-header> Tags </mat-header-cell>
                     <mat-cell *matCellDef="let element" [attr.colspan]="2">
-                        <mat-chip-list [tags]="element.tags" prosTagsEllipsis>                          
+                        <mat-chip-list [tags]="element.tags" prosTagsEllipsis>
                         </mat-chip-list>
                         <!-- <a class="additiontags">+1</a> -->
                     </mat-cell>
@@ -185,9 +188,9 @@
                 <ng-container matColumnDef="setting">
                     <mat-header-cell *matHeaderCellDef>
                         <button mat-icon-button class="ac-setting" color="primary"
-                        (click)="showColumnSettingPopUp=!showColumnSettingPopUp">
-                        <mat-icon matTooltip="Colunm Setting" >settings</mat-icon>
-                    </button>
+                            (click)="showColumnSettingPopUp=!showColumnSettingPopUp">
+                            <mat-icon matTooltip="Colunm Setting">settings</mat-icon>
+                        </button>
 
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element">
