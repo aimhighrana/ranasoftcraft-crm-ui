@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, OnDestroy, Input } from '@angular/core';
+import { Component, OnInit, OnChanges, OnDestroy, Input, LOCALE_ID, Inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable, BehaviorSubject, of } from 'rxjs';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
@@ -37,7 +37,8 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
 
   constructor(
     private widgetService : WidgetService,
-    private reportService: ReportService
+    private reportService: ReportService,
+    @Inject(LOCALE_ID) public locale: string
   ) {
     super();
   }
@@ -94,6 +95,36 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     })
   }
 
+  updateObjRefDescription(buckets:any[], fieldId: string) {
+    let  locale = this.locale!==''?this.locale.split('-')[0]:'EN';
+    locale = locale.toUpperCase();
+    const finalVal = {} as any;
+    buckets.forEach(bucket=>{
+      const key = bucket.key;
+      const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
+      const ddv = hits._source.hdvs[fieldId] ?( hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].ddv : null) : null;
+      if(ddv) {
+        const hasValue =  ddv.filter(fil=> fil.lang === locale)[0];
+        if(hasValue) {
+          finalVal[key] = hasValue.val;
+        }
+      } else {
+        finalVal[key] = hits._source.hdvs[fieldId].vc;
+      }
+    });
+
+    Object.keys(finalVal).forEach(key=>{
+        const valOld = this.values.filter(fill => fill.CODE === key);
+        if(valOld.length >0) {
+          const index = this.values.indexOf(valOld[0]);
+          valOld[0].TEXT = finalVal[key];
+          valOld[0].FIELDNAME = fieldId;
+          this.values[index] = valOld[0];
+        }
+    });
+    this.filteredOptions = of(this.values);
+  }
+
   public getHeaderMetaData():void{
     this.widgetService.getHeaderMetaData(this.widgetId).subscribe(returnData=>{
       this.widgetHeader = returnData;
@@ -123,6 +154,8 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
         const fieldIds = metadatas.map(map => map.CODE);
         if(this.filterWidget.getValue().metaData.picklist === '1' || this.filterWidget.getValue().metaData.picklist === '37') {
           this.getFieldsMetadaDesc(fieldIds, fieldId);
+        } else if(this.filterWidget.getValue().metaData.picklist === '30'){
+          this.updateObjRefDescription(buckets, fieldId);
         } else {
           this.filteredOptions = of(this.values);
         }
