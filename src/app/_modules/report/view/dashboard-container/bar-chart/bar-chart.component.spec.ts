@@ -4,10 +4,12 @@ import { BarChartComponent } from './bar-chart.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { BarChartWidget, Orientation, OrderWith } from '../../../_models/widget';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { MatMenuModule } from '@angular/material/menu';
 import { BaseChartDirective } from 'ng2-charts';
 import { PositionType, AlignPosition, AnchorAlignPosition } from '../../../_models/widget';
+import { WidgetService } from '@services/widgets/widget.service';
+import { MetadataModel } from '@models/schema/schemadetailstable';
 
 describe('BarChartComponent', () => {
   let component: BarChartComponent;
@@ -189,6 +191,23 @@ describe('BarChartComponent', () => {
 
     expect(component.lablels.length).toEqual(2);
     expect(component.chartLegend.length).toEqual(2);
+  }));
+
+  it('getBarChartData(), get bar chart data', async(()=>{
+    const service = fixture.debugElement.injector.get(WidgetService);
+    const buckets = {aggregations:{'sterms#BAR_CHART':{buckets:[{key:'200010',doc_count:10744,'top_hits#items':{hits:{total:{value:10744,relation:'eq'},max_score:1.0,hits:[{_source:{hdvs:{MATL_GROUP:{fId:'MATL_GROUP',lls:{EN:{label:'Material Group'}},vls:{EN:{valueTxt:'200010'}},vc:'200010'}}}}]}}},{key:'200030',doc_count:775,'top_hits#items':{hits:{total:{value:775,relation:'eq'},max_score:1.0,hits:[{_source:{hdvs:{MATL_GROUP:{fId:'MATL_GROUP',lls:{EN:{label:'Material Group'}},vls:{EN:{valueTxt:'200030'}},vc:'200030'}}}}]}}}]}}};
+
+    spyOn(service,'getWidgetData').withArgs('653267432',[]).and.returnValue(of(buckets));
+
+    const pieWidget: BarChartWidget = new BarChartWidget();
+    pieWidget.fieldId = 'MATL_GROUP';
+    pieWidget.metaData = {fieldId:'MATL_GROUP',picklist:'30'} as MetadataModel;
+
+    component.barWidget.next(pieWidget);
+
+    component.getBarChartData(653267432, []);
+
+    expect(service.getWidgetData).toHaveBeenCalledWith('653267432', []);
   }));
 
 });

@@ -9,6 +9,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { of, BehaviorSubject } from 'rxjs';
 import { ChartLegendLabelItem } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
+import { MetadataModel } from '@models/schema/schemadetailstable';
 
 describe('PieChartComponent', () => {
   let component: PieChartComponent;
@@ -181,6 +182,23 @@ it('legendClick(), should show paticular stack , after click on stack',async(()=
 
     expect(component.lablels.length).toEqual(2);
     expect(component.chartLegend.length).toEqual(2);
+  }));
+
+  it('getPieChartData(), get pie chart data', async(()=>{
+    const service = fixture.debugElement.injector.get(WidgetService);
+    const buckets = {aggregations:{'sterms#BAR_CHART':{buckets:[{key:'200010',doc_count:10744,'top_hits#items':{hits:{total:{value:10744,relation:'eq'},max_score:1.0,hits:[{_source:{hdvs:{MATL_GROUP:{fId:'MATL_GROUP',lls:{EN:{label:'Material Group'}},vls:{EN:{valueTxt:'200010'}},vc:'200010'}}}}]}}},{key:'200030',doc_count:775,'top_hits#items':{hits:{total:{value:775,relation:'eq'},max_score:1.0,hits:[{_source:{hdvs:{MATL_GROUP:{fId:'MATL_GROUP',lls:{EN:{label:'Material Group'}},vls:{EN:{valueTxt:'200030'}},vc:'200030'}}}}]}}}]}}};
+
+    spyOn(service,'getWidgetData').withArgs('653267432',[]).and.returnValue(of(buckets));
+
+    const pieWidget: PieChartWidget = new PieChartWidget();
+    pieWidget.fieldId = 'MATL_GROUP';
+    pieWidget.metaData = {fieldId:'MATL_GROUP',picklist:'30'} as MetadataModel;
+
+    component.pieWidget.next(pieWidget);
+
+    component.getPieChartData(653267432, []);
+
+    expect(service.getWidgetData).toHaveBeenCalledWith('653267432', []);
   }));
 
 });

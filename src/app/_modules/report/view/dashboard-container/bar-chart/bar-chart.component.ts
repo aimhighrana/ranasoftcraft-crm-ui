@@ -156,7 +156,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
       this.dataSet = [];
       this.dataSet = this.transformDataSets(arrayBuckets);
       // update barchartLabels
-      if(this.barWidget.getValue().metaData && (this.barWidget.getValue().metaData.picklist === '1' || this.barWidget.getValue().metaData.picklist === '37')) {
+      if(this.barWidget.getValue().metaData && (this.barWidget.getValue().metaData.picklist === '1' || this.barWidget.getValue().metaData.picklist === '37' || this.barWidget.getValue().metaData.picklist === '30')) {
         if (this.chartLegend.length === 0) {
           this.getFieldsMetadaDesc(arrayBuckets);
         } else {
