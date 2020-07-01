@@ -92,12 +92,12 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         this.getstackbarChartData(this.widgetId,this.filterCriteria);
         this.stackBardata.subscribe(data=>{
           if(data && this.barChartData.length=== 0){
-            if(Object.keys(this.codeTextaxis1).length === 0 && (this.stackBarWidget.getValue().groupByIdMetaData.picklist === '1' || this.stackBarWidget.getValue().groupByIdMetaData.picklist === '37')){
+            if(Object.keys(this.codeTextaxis1).length === 0 && (this.stackBarWidget.getValue().groupByIdMetaData.picklist === '1' || this.stackBarWidget.getValue().groupByIdMetaData.picklist === '37' || this.stackBarWidget.getValue().groupByIdMetaData.picklist === '30')){
               this.getFieldsMetadaDescaxis1(this.stackBarWidget.getValue().groupById);
             }else{
               this.updateLabelsaxis1();
             }
-            if(Object.keys(this.codeTextaxis2).length === 0 && (this.stackBarWidget.getValue().fieldIdMetaData.picklist === '1' || this.stackBarWidget.getValue().fieldIdMetaData.picklist === '37')){
+            if(Object.keys(this.codeTextaxis2).length === 0 && (this.stackBarWidget.getValue().fieldIdMetaData.picklist === '1' || this.stackBarWidget.getValue().fieldIdMetaData.picklist === '37' || this.stackBarWidget.getValue().fieldIdMetaData.picklist === '30')){
               this.getFieldsMetadaDescaxis2(this.stackBarWidget.getValue().fieldId);
             }else{
               this.updateLabelsaxis2();
