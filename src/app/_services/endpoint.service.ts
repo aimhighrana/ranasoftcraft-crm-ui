@@ -32,8 +32,8 @@ export class EndpointService {
   public getSchemaGroupsUrl() {
     return this.apiUrl + '/schema/get-all-groups';
   }
-  public getSchemaListByGroupIdUrl(groupId: string) {
-    return this.apiUrl + '/schema/schemas-details/' + groupId;
+  public getSchemaListByGroupIdUrl() {
+    return this.apiUrl + '/schema/schema-list';
   }
   public getSchemaDescModuleIdByGroupId(groupId: string) {
     return this.apiUrl + '/getSchemaDescModuleIdByGroupId/' + groupId;

@@ -32,11 +32,10 @@ describe('SchemalistService', () => {
     expect(schemalistService).toBeTruthy();
   });
 
-  it('getSchemaListByGroupId(): get schema list', async(() => {
+  it('getSchemaList(): get schema list', async(() => {
     const url = 'get schema list url';
-    const grpId = '837645763957';
     // mock url
-    endpointServiceSpy.getSchemaListByGroupIdUrl.withArgs(grpId).and.returnValue(url);
+    endpointServiceSpy.getSchemaListByGroupIdUrl.and.returnValue(url);
     // mock data
     const mockData = {} as any;
     const expectedData: SchemaListModuleList[] = [];
@@ -44,7 +43,7 @@ describe('SchemalistService', () => {
     expectedData.push(new SchemaListModuleList());
 
     // actual service call
-    schemalistService.getSchemaListByGroupId(grpId).subscribe(actualResponse => {
+    schemalistService.getSchemaList().subscribe(actualResponse => {
       // expect(actualResponse).toEqual(expectedData);
       // expect(actualResponse.length).toEqual(expectedData.length);
     });

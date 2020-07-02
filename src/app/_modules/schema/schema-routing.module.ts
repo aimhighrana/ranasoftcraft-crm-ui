@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { PageNotFoundComponent } from '../shared/_components/page-not-found/page-not-found.component';
-import { SchemaGroupsComponent } from 'src/app/_modules/schema/_components/schema-groups/schema-groups.component';
 import { SchemaGroupFormComponent } from 'src/app/_modules/schema/_components/schema-group-form/schema-group-form.component';
 import { SchemaListComponent } from 'src/app/_modules/schema/_components/schema-list/schema-list.component';
 import { SchemaDetailsComponent } from './_components/schema-details/schema-details.component';
@@ -20,19 +19,19 @@ import { DuplicateDetailsComponent } from './_components/duplicate-details/dupli
 
 
 const routes: Routes = [
-  { path: '', component: SchemaGroupsComponent },
+  { path: '', component: SchemaListComponent },
   { path: 'group/:groupId', component: SchemaGroupFormComponent },
-  { path: 'schema-list/:schemaGrpId', component: SchemaListComponent },
-  { path: 'schema-details/:moduleId/:schemaGroupId/:schemaId/:variantId', component: SchemaDetailsComponent },
-  { path: 'schema-variants/:moduleId/:groupId/:schemaId', component: SchemaVariantsComponent },
-  { path: 'schema-execution/:groupId/:schemaId', component: SchemaExecutionComponent },
+  // { path: 'schema-list/:schemaGrpId', component: SchemaListComponent },
+  { path: 'schema-details/:moduleId/:schemaId/:variantId', component: SchemaDetailsComponent },
+  { path: 'schema-variants/:moduleId/:schemaId', component: SchemaVariantsComponent },
+  { path: 'schema-execution/:schemaId', component: SchemaExecutionComponent },
   { path: 'collab/:schemaId', component: SchemaCollaboratorsComponent },
   { path: 'execution-logs/:schemaId', component: SchemaExecutionLogsComponent },
   { path: 'addbusinessrule', component: AddbusinessruleComponent },
   { path: 'table-column-settings', component: TableColumnSettingsComponent },
   { path: 'uploaddata', component: UploadDataComponent },
-  { path: 'create-schema/:moduleId/:groupId/:schemaId', component: CreateSchemaComponent },
-  { path: 'create-schema/:moduleId/:groupId', component: CreateSchemaComponent },
+  { path: 'create-schema/:moduleId/:schemaId', component: CreateSchemaComponent },
+  { path: 'create-schema/:moduleId', component: CreateSchemaComponent },
   { path: 'salesforce-connection', component: SalesforceConnectionComponent },
   { path: 'duplicate-businessrule', component: DuplicateBusinessruleComponent },
   { path: 'advanceoptions-dialog', component: AdvanceoptionsDialogComponent },

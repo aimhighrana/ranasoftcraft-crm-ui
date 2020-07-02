@@ -16,8 +16,8 @@ export class SchemalistService {
     private any2tsService: Any2tsService
   ) { }
 
-  public getSchemaListByGroupId(groupId: string): Observable<SchemaListModuleList[]> {
-    return this.http.get<any>(this.endpointService.getSchemaListByGroupIdUrl(groupId));
+  public getSchemaList(): Observable<SchemaListModuleList[]> {
+    return this.http.get<SchemaListModuleList[]>(this.endpointService.getSchemaListByGroupIdUrl());
   }
 
   public getSchemaDetailsBySchemaId(schemaId: string): Observable<SchemaListDetails> {

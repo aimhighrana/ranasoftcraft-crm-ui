@@ -33,7 +33,7 @@ describe('AddbusinessruleComponent', () => {
     component.schemaGroupId = '237547254672';
     component.schemaId = '327473254';
     component.ngOnInit();
-    expect(component.breadcrumb.links[1].link).toEqual(`/home/schema/create-schema/${component.moduleId}/${component.schemaGroupId}/${component.schemaId}`);
+    expect(component.breadcrumb.links[1].link).toEqual(`/home/schema/create-schema/${component.moduleId}/${component.schemaId}`);
   }));
 
   it('ngOnChanges(), while change rule type', async(()=>{

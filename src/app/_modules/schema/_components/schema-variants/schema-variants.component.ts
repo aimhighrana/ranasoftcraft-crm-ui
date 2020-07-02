@@ -18,7 +18,6 @@ import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 export class SchemaVariantsComponent implements OnInit {
   schemaId: string;
   objectId: string;
-  groupId: string;
   searchField: FormControl;
   masterVariant: VariantListDetails;
   variarantDetails: VariantListDetails[];
@@ -31,9 +30,6 @@ export class SchemaVariantsComponent implements OnInit {
       {
         link: '/home/schema',
         text: 'Schema'
-      }, {
-        link: '/home/schema/schema-list',
-        text: 'Schema List'
       }
     ]
 };
@@ -53,11 +49,9 @@ export class SchemaVariantsComponent implements OnInit {
   ngOnInit() {
     this.activatedRouter.params.subscribe(params => {
       const schemaId = params.schemaId;
-      const groupId = params.groupId;
       const objectId = params.moduleId;
-      if (schemaId && groupId && objectId && this.schemaId !== schemaId && this.groupId !== groupId && this.objectId !== objectId) {
+      if (schemaId  && objectId && this.schemaId !== schemaId &&  this.objectId !== objectId) {
         this.schemaId = params.schemaId;
-        this.groupId = params.groupId;
         this.objectId = params.moduleId;
 
         this.schemaVariantService.getSchemaVariantDetails(this.schemaId).subscribe(response => {
@@ -70,13 +64,6 @@ export class SchemaVariantsComponent implements OnInit {
           this.variarantDetailsOb = of(this.variarantDetails);
           }, error => {
           console.log(`Error while fetching schema variants details ${error}`);
-        });
-        this.schemaService.getSchemaGroupDetailsBySchemaGrpId(this.groupId).subscribe(data => {
-          this.breadcrumb.links[1].link = '/home/schema/schema-list' + '/' + this.groupId;
-          this.breadcrumb.links[1].text = data.groupName + ' List';
-          this.schemaGroupDetails = data;
-        }, error => {
-          console.log('Error while fetching schema group details by id');
         });
 
         this.schemaListService.getSchemaDetailsBySchemaId(this.schemaId).subscribe(data => {

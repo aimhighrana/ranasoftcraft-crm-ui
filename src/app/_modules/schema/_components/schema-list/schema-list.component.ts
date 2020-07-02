@@ -6,6 +6,8 @@ import { SchemaService } from 'src/app/_services/home/schema.service';
 import { Observable } from 'rxjs';
 import { SchemaListModuleList, SchemaListDetails } from 'src/app/_models/schema/schemalist';
 import { Userdetails } from 'src/app/_models/userdetails';
+import { MatDialog } from '@angular/material/dialog';
+import { UploadDataComponent } from '../upload-data/upload-data.component';
 
 @Component({
   selector: 'pros-schema-list',
@@ -16,18 +18,14 @@ export class SchemaListComponent implements OnInit {
   title: Observable<string>;
   breadcrumb: Breadcrumb = {
     heading: ' List',
-    links: [
-      {
-        link: '/home/schema',
-        text: 'Schema group(s)'
-      }
-    ]
+    links: []
   };
   constructor(
     private schemaListService: SchemalistService,
     private activatedRouter: ActivatedRoute,
     private router: Router,
-    private schemaService: SchemaService
+    private schemaService: SchemaService,
+    private matDialog: MatDialog
   ) { }
 
   schemaGroupId: string;
@@ -38,16 +36,11 @@ export class SchemaListComponent implements OnInit {
   }
   private subscribeRouterParams() {
     this.activatedRouter.params.subscribe(params => {
-      const grpId = params.schemaGrpId;
-      if (grpId && this.schemaGroupId !== grpId) {
-        this.schemaGroupId = grpId;
-        this.onLoadSchemaList();
-        this.groupDetails();
-      }
+      this.onLoadSchemaList();
     });
   }
   private onLoadSchemaList() {
-    this.schemaListService.getSchemaListByGroupId(this.schemaGroupId).subscribe(
+    this.schemaListService.getSchemaList().subscribe(
       (responseData: SchemaListModuleList[]) => {
         this.schemaListDetails = responseData;
       }, error => {
@@ -63,15 +56,25 @@ export class SchemaListComponent implements OnInit {
     });
   }
   public showSchemaDetails(schemaDetails: any, moduleId: string) {
-    this.router.navigate(['/home/schema/schema-details', moduleId, this.schemaGroupId, schemaDetails.schemaId]);
+    this.router.navigate(['/home/schema/schema-details', moduleId, schemaDetails.schemaId]);
   }
   public variants(moduleId: string, schemaId: string) {
-    this.router.navigate(['/home/schema/schema-variants', moduleId, this.schemaGroupId, schemaId]);
+    this.router.navigate(['/home/schema/schema-variants', moduleId, schemaId]);
   }
   public run(schemaId: string) {
-    this.router.navigate(['/home/schema/schema-execution', this.schemaGroupId, schemaId]);
+    this.router.navigate(['/home/schema/schema-execution', schemaId]);
   }
   public edit(moduleId: string, schema: SchemaListDetails) {
-    this.router.navigate(['/home/schema/create-schema', moduleId, this.schemaGroupId, schema.schemaId]);
+    this.router.navigate(['/home/schema/create-schema', moduleId , schema.schemaId]);
+  }
+
+  uploadData() {
+    const dialogRef = this.matDialog.open(UploadDataComponent, {
+      height: '500px',
+      width: '800px',
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
   }
 }

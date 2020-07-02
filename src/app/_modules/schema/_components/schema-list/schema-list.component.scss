@@ -5,7 +5,17 @@
   align-items: flex-start;
   align-content: flex-start;
 
-  .breadcrumb-wrapper {
+  .crumbrow {
+    align-items: center;
+
+    > button {
+      min-width: 38px;
+      padding: 0 6px;
+    }
+  }
+
+  .f-row {
+    flex-wrap: wrap;
     flex: 1 100%;
   }
 

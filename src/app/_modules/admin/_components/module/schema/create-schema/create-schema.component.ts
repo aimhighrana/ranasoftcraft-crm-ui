@@ -31,7 +31,6 @@ export class CreateSchemaComponent implements OnInit {
 
   schemaId: string;
   moduleId: string;
-  schemaGroupId: string;
   fragment: string;
   brList: CoreSchemaBrInfo[] = [];
   brListOb : Observable<CoreSchemaBrInfo[]> = of([]);
@@ -50,11 +49,7 @@ export class CreateSchemaComponent implements OnInit {
     links: [
       {
         link: '/home/schema/',
-        text: 'Schema group(s)'
-      },
-      {
-        link: ``,
-        text: 'Schema list'
+        text: 'Schema List'
       }
     ]
   };
@@ -72,15 +67,12 @@ export class CreateSchemaComponent implements OnInit {
     this.activatedRoute.params.subscribe(params => {
       this.moduleId = params.moduleId ? params.moduleId : '';
       this.schemaId = params.schemaId ? (params.schemaId.toLowerCase() === 'new' ? '' : params.schemaId) : '';
-      this.schemaGroupId = params.groupId ? params.groupId : '';
     });
 
     this.dynCategoryFrmGrp =  this.formBuilder.group({
       categories: this.formBuilder.array([])
     });
 
-    // update breadcrum
-    this.breadcrumb.links[1].link = `/home/schema/schema-list/${this.schemaGroupId}`;
 
     this.activatedRoute.fragment.subscribe(frag=>{
       this.fragment = frag;
@@ -107,7 +99,7 @@ export class CreateSchemaComponent implements OnInit {
   }
 
   navigateToListPage() {
-    this.router.navigate(['/home/schema/schema-list', this.schemaGroupId]);
+    this.router.navigate(['/home/schema/schema-list']);
   }
 
   /**
@@ -115,7 +107,7 @@ export class CreateSchemaComponent implements OnInit {
    * For fragment see router.navigate method imp..
    */
   showAddBusinessRulePage() {
-    this.router.navigate(['/home/schema/create-schema', this.moduleId , this.schemaGroupId, this.schemaId], {fragment:'missing'});
+    this.router.navigate(['/home/schema/create-schema', this.moduleId , this.schemaId], {fragment:'missing'});
   }
 
   getCategoriesData() {
@@ -180,7 +172,7 @@ export class CreateSchemaComponent implements OnInit {
     } else if(brType === BusinessRuleType.BR_REGEX_RULE) {
       fragmentTo = 'regex';
     }
-    this.router.navigate(['/home/schema/create-schema', this.moduleId , this.schemaGroupId, this.schemaId], {queryParams:{brId}, fragment:fragmentTo});
+    this.router.navigate(['/home/schema/create-schema', this.moduleId , this.schemaId], {queryParams:{brId}, fragment:fragmentTo});
   }
 
   /**
@@ -411,7 +403,6 @@ export class CreateSchemaComponent implements OnInit {
 
     const request: CreateUpdateSchema = new CreateUpdateSchema();
     request.moduleId = this.moduleId;
-    request.schemaGroupId = this.schemaGroupId;
     request.discription = this.schemaName;
     request.schemaId = this.schemaId;
     request.brs = this.brList;

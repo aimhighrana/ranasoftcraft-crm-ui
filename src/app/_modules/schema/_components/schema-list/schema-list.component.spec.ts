@@ -78,11 +78,10 @@ describe('SchemaListComponent', () => {
 
   it('showSchemaDetails(), should navigate schema detail page', () => {
     const schemaDetails  = {schemaId: 87234687264862};
-    component.schemaGroupId = '732864726783';
     fixture.detectChanges();
     spyOn(router, 'navigate');
     component.showSchemaDetails(schemaDetails, '1005');
-    expect(router.navigate).toHaveBeenCalledWith(['/home/schema/schema-details', '1005', component.schemaGroupId, schemaDetails.schemaId]);
+    expect(router.navigate).toHaveBeenCalledWith(['/home/schema/schema-details', '1005', schemaDetails.schemaId]);
   });
 
   it('variants(), should navigate to schema variant  page', () => {
@@ -91,7 +90,7 @@ describe('SchemaListComponent', () => {
     fixture.detectChanges();
     spyOn(router, 'navigate');
     component.variants('1005', schemaId);
-    expect(router.navigate).toHaveBeenCalledWith(['/home/schema/schema-variants', '1005', component.schemaGroupId, schemaId]);
+    expect(router.navigate).toHaveBeenCalledWith(['/home/schema/schema-variants', '1005', schemaId]);
   });
 
   it('run(), should navigate to schema execution  page', () => {
@@ -100,7 +99,7 @@ describe('SchemaListComponent', () => {
     fixture.detectChanges();
     spyOn(router, 'navigate');
     component.run(schemaId);
-    expect(router.navigate).toHaveBeenCalledWith(['/home/schema/schema-execution', component.schemaGroupId, schemaId]);
+    expect(router.navigate).toHaveBeenCalledWith(['/home/schema/schema-execution', schemaId]);
   });
 
 

@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Breadcrumb } from 'src/app/_models/breadcrumb';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { SchemaService } from 'src/app/_services/home/schema.service';
 import { ObjectTypeResponse } from 'src/app/_models/schema/schema';
@@ -45,15 +44,6 @@ export class UploadDataComponent implements OnInit {
   fileSno = '';
   uploadedFile: File;
 
-  breadcrumb: Breadcrumb = {
-    heading: 'Upload Data',
-    links: [
-      {
-        link: '/home/schema',
-        text: 'Schema group(s)'
-      }
-    ]
-  };
   constructor(
     private _formBuilder: FormBuilder,
     private schemaService: SchemaService,

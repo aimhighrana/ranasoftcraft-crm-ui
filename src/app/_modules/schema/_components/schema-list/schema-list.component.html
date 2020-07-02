@@ -1,11 +1,15 @@
 <div class="root">
-  <div class="breadcrumb-wrapper">
+  <div class="crumbrow f-row">
     <pros-breadcrumb [crumbs]="breadcrumb"></pros-breadcrumb>
+    <div class="f-spacer"></div>
+    <button mat-stroked-button matTooltip="Upload data" (click)="uploadData()"><mat-icon>cloud_upload</mat-icon></button>
+    <div class="col-spacer"></div>
   </div>
+  
   <div *ngFor="let module of schemaListDetails" class="flex-row-container f-row">
     <h2 class="mat-headline">{{module.moduleDesc}}</h2>
     <pros-schema-tile class="flex-col-1" *ngFor="let schema of module.schemaLists"
-      [routerLink]="['/home', 'schema', 'schema-details', module.moduleId, schemaGroupId, schema.schemaId, schema.variantId]"
+      [routerLink]="['/home', 'schema', 'schema-details', module.moduleId, schema.schemaId, schema.variantId]"
 
       title="{{ schema.schemaDescription }}" 
       bottomLeftLabel="{{ schema.variantCount }} Variants"
@@ -38,7 +42,7 @@
       (evtBottomRight)="run(schema.schemaId);">
     </pros-schema-tile>
 
-    <pros-add-tile class="flex-col-1" text="Create a new schema" routerLink="/home/schema/create-schema/{{module.moduleId}}/{{schemaGroupId}}/new"></pros-add-tile>
+    <pros-add-tile class="flex-col-1" text="Create a new schema" routerLink="/home/schema/create-schema/{{module.moduleId}}/new"></pros-add-tile>
 
   </div>
 

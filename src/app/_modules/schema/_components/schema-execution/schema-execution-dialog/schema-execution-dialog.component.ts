@@ -15,7 +15,6 @@ export class SchemaExecutionDialogComponent implements OnInit {
 
   totalCount = 0;
   schemaId: string;
-  groupId: string;
   showRunning = true;
   constructor(
     public dialogRef: MatDialogRef<SchemaExecutionComponent>,
@@ -46,7 +45,7 @@ export class SchemaExecutionDialogComponent implements OnInit {
     schemaExecutionReq.variantId = '0'; // 0 for run all
     this.schemaExecutionService.scheduleSChema(schemaExecutionReq).subscribe(data => {
       console.log('Successfully scheduled');
-      this.router.navigate(['/home/schema/schema-list', this.data.groupId]);
+      this.router.navigate(['/home/schema']);
       this.dialogRef.close();
     }, error => {
       console.log('Error while schedule schema');

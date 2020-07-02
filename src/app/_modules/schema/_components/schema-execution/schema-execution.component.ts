@@ -22,15 +22,11 @@ export class SchemaExecutionComponent implements OnInit {
       {
         link: '/home/schema/',
         text: 'Schema group(s)'
-      }, {
-        link: '/home/schema/schema-list',
-        text: 'Schema List'
       }
     ]
   };
   selectedRunType = 'all';
   schemaId: string;
-  groupId: string;
   schemaDetail: SchemaListDetails;
   constructor(
     private schemaListService: SchemalistService,
@@ -45,7 +41,6 @@ export class SchemaExecutionComponent implements OnInit {
   ngOnInit() {
     this.activatedRouter.params.subscribe(param => {
       this.schemaId = param.schemaId;
-      this.groupId = param.groupId;
       this.getSchemaDetail(this.schemaId);
 });
   }
@@ -53,8 +48,6 @@ export class SchemaExecutionComponent implements OnInit {
   private getSchemaDetail(schemaId: string) {
     this.schemaListService.getSchemaDetailsBySchemaId(schemaId).subscribe(data => {
       this.schemaDetail = data;
-      this.breadcrumb.links[1].link = this.breadcrumb.links[1].link + '/' + this.groupId;
-      this.breadcrumb.links[1].text = this.schemaDetail.schemaDescription;
     }, error => {
       console.error('Error while fetching schema details');
     });
@@ -66,7 +59,7 @@ export class SchemaExecutionComponent implements OnInit {
     schemaExecutionReq.variantId = '0'; // 0 for run all
     this.schemaExecutionService.scheduleSChema(schemaExecutionReq).subscribe(data => {
       alert('Successfully scheduled');
-      this.router.navigate(['/home/schema/schema-list', this.groupId]);
+      this.router.navigate(['/home/schema']);
     }, error => {
       console.error('Error while schedule schema');
     });
@@ -75,7 +68,7 @@ export class SchemaExecutionComponent implements OnInit {
     const dialogRef = this.dialog.open(SchemaExecutionDialogComponent, {
       height: '400px',
       width: '550px',
-      data: {schemaId: this.schemaId, groupId: this.groupId}
+      data: {schemaId: this.schemaId}
     });
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');

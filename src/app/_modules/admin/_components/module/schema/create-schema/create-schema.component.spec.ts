@@ -151,7 +151,6 @@ describe('CreateSchemaComponent', () => {
 
     const request: CreateUpdateSchema = new CreateUpdateSchema();
     request.moduleId = component.moduleId;
-    request.schemaGroupId = component.schemaGroupId;
     request.discription = component.schemaName;
     request.schemaId = component.schemaId;
     request.brs = component.brList;

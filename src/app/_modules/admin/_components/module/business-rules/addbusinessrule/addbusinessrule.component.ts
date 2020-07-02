@@ -66,14 +66,14 @@ export class AddbusinessruleComponent implements OnInit, OnChanges {
 
 
     this.ruleFrmCtrl.valueChanges.subscribe(val=>{
-      this.router.navigate(['/home/schema/create-schema', this.moduleId , this.schemaGroupId, this.schemaId], {fragment:val});
+      this.router.navigate(['/home/schema/create-schema', this.moduleId , this.schemaId], {fragment:val});
 
       // update br type
       this.updateBrTypeBasedOnFragement(val);
     });
 
     // update link
-    this.breadcrumb.links[1].link = `/home/schema/create-schema/${this.moduleId}/${this.schemaGroupId}/${this.schemaId}`;
+    this.breadcrumb.links[1].link = `/home/schema/create-schema/${this.moduleId}/${this.schemaId}`;
   }
 
   updateBrTypeBasedOnFragement(val: string) {
@@ -131,7 +131,7 @@ export class AddbusinessruleComponent implements OnInit, OnChanges {
     if(evt) {
       this.evtSavedBrInfo.emit(evt);
     }
-    this.router.navigate(['/home/schema/create-schema', this.moduleId , this.schemaGroupId, this.schemaId]);
+    this.router.navigate(['/home/schema/create-schema', this.moduleId , this.schemaId]);
   }
 
 }
