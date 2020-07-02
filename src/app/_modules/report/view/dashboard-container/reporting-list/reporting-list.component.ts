@@ -93,7 +93,8 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   public getListdata(pageSize,pageIndex,widgetId:number,criteria:Criteria[],soringMap):void{
      this.widgetService.getListdata(String(pageSize),String(pageIndex),String(widgetId),criteria, soringMap).subscribe(returndata=>{
       this.listData =new Array();
-      this.resultsLength = returndata.hits.total.value;
+      this.resultsLength = returndata.count;
+      returndata = returndata.data;
       returndata.hits.hits.forEach(element => {
         const source =element._source;
 
@@ -164,9 +165,9 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
       });
      this.dataSource = new MatTableDataSource<any>(this.listData);
      this.dataSource.sort = this.sort;
-     this.widgetService.count.subscribe(count=>{
-      this.resultsLength = count;
-    })
+    //  this.widgetService.count.subscribe(count=>{
+    //   this.resultsLength = count;
+    // })
     });
   }
 
@@ -182,7 +183,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   console.log(data);
   const url = document.getElementsByTagName('base')[0].href.substring(0, document.getElementsByTagName('base')[0].href.indexOf('MDOSF'));
   window.open(
-    url+'MDOSF/loginPostProcessor?to=summary&objNum='+data.ObjectNumber+'&objectType='+this.objectType, 'MDO_TAB');
+    url+'MDOSF/loginPostProcessor?to=summary&objNum='+data.bjectNumber+'&objectType='+this.objectType, 'MDO_TAB');
 }
 
 /*
