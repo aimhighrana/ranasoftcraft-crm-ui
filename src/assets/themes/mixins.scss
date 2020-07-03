@@ -36,15 +36,15 @@
     opacity: 0;
   }
 
-  pros-home-layout mat-toolbar.root {
-    button.hdrBtn {
-      color: mat-color($primary-palette, 700);
-    }
+  // pros-home-layout mat-toolbar.root {
+  //   button.hdrBtn {
+  //     color: mat-color($primary-palette, 700);
+  //   }
 
-    button.hdrBtn:hover {
-      color: mat-color($primary-palette, 600);
-    }
-  }
+  //   button.hdrBtn:hover {
+  //     color: mat-color($primary-palette, 600);
+  //   }
+  // }
 
   pros-breadcrumb .root {
     a.link {
@@ -62,12 +62,21 @@
     }
   }
 
-  pros-schema-tile .root {
-    mat-icon,
-    .row1text,
-    .week,
-    .timestamp {
-      color: mat-color($foreground-palette, secondary-text);
+  pros-schema-tile {
+    .root {
+      border-color: mat-color($foreground-palette, divider);
+    }
+
+    .highlight {
+      background-color: mat-color($background-palette, app-bar);
+    }
+  }
+
+  pros-schema-list {
+    .tiles-container {
+      .flex-row-container {
+        border-color: mat-color($foreground-palette, divider);
+      }
     }
   }
 
@@ -259,6 +268,36 @@
       .division-mark {
         .circle-mark {
           background-color: mat-color($background-palette, card);
+          border-color: mat-color($foreground-palette, divider);
+        }
+      }
+    }
+  }
+
+  pros-upload-data {
+    .root {
+      .upload-process {
+        .fileupload-tile {
+          background-color: mat-color($background-palette, disabled-button);
+          border-color: mat-color($background-palette, disabled-button);
+
+          mat-icon {
+            color: mat-color($background-palette, card);
+          }
+        }
+      }
+    }
+  }
+
+  pros-diw-create-schema {
+    .root {
+      .create-scehma {
+        .b-rule-listing {
+          background-color: mat-color($background-palette, app-bar);
+          border-color: mat-color($foreground-palette, divider);
+        }
+
+        .rule-tile-horizotal {
           border-color: mat-color($foreground-palette, divider);
         }
       }

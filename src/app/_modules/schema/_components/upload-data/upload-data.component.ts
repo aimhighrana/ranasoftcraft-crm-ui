@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { SchemaService } from 'src/app/_services/home/schema.service';
 import { ObjectTypeResponse } from 'src/app/_models/schema/schema';
@@ -22,6 +22,8 @@ type UploadedDataType = any[][];
   styleUrls: ['./upload-data.component.scss']
 })
 export class UploadDataComponent implements OnInit {
+  @Input()
+  moduleId: string;
 
   isLinear = true;
   moduleFormCtrl: FormGroup;
@@ -48,7 +50,7 @@ export class UploadDataComponent implements OnInit {
     private _formBuilder: FormBuilder,
     private schemaService: SchemaService,
     private schemaDetailsService: SchemaDetailsService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
   ) {
     this.moduleInpFrmCtrl = new FormControl();
     this.selectedMdoFldCtrl = new FormControl();
@@ -65,7 +67,8 @@ export class UploadDataComponent implements OnInit {
     this.dataTableCtrl = this._formBuilder.group({
       dataTableFldCtrl: ['', Validators.required]
     });
-    this.getAllModules();
+    // this.getAllModules();
+    this.getMetadataFields(this.moduleId);
     this.moduleFormCtrl.valueChanges.subscribe(ctrl=>{
       const chngVal = ctrl ? ctrl.moduleInpFrmCtrl : '';
       if(typeof chngVal === 'string') {

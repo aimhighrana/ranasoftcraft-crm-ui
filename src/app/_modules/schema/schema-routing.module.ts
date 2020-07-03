@@ -16,6 +16,8 @@ import { SalesforceConnectionComponent } from './_components/salesforce-connecti
 import { DuplicateBusinessruleComponent } from './_components/duplicate-businessrule/duplicate-businessrule.component';
 import { AdvanceoptionsDialogComponent } from './_components/advanceoptions-dialog/advanceoptions-dialog.component';
 import { DuplicateDetailsComponent } from './_components/duplicate-details/duplicate-details.component';
+import { DiwCreateSchemaComponent } from './_components/diw-create-schema/diw-create-schema.component';
+import { DiwCreateBusinessruleComponent } from './_components/diw-create-businessrule/diw-create-businessrule.component';
 
 
 const routes: Routes = [
@@ -36,6 +38,8 @@ const routes: Routes = [
   { path: 'duplicate-businessrule', component: DuplicateBusinessruleComponent },
   { path: 'advanceoptions-dialog', component: AdvanceoptionsDialogComponent },
   { path: 'duplicate-details', component: DuplicateDetailsComponent },
+  { path: 'diw-create-schema', component: DiwCreateSchemaComponent },
+  { path: 'diw-create-businessrule', component: DiwCreateBusinessruleComponent },
 
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent }

@@ -2,8 +2,14 @@ mat-card.root {
   padding: 0;
   cursor: pointer;
   min-width: 350px;
+  border-width: 1px;
+  border-style: solid;
+  height: 238px;
 
   mat-toolbar.header {
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+
     h3 {
       margin: 0;
       display: -webkit-box;
@@ -19,109 +25,93 @@ mat-card.root {
     }
   }
 
-  .btm-divider {
-    width: calc(100% - 32px);
-    left: 16px;
-  }
-
-  mat-card-footer {
+  .tile-data {
     display: flex;
-    padding: 8px 0;
-    margin: 0;
-  }
+    padding: 16px;
 
-  mat-card-content {
-    padding: 16px 16px 0;
-    margin: 0;
+    .f-col {
+      flex: 2;
+      align-items: flex-start;
 
-    .f-row {
-      justify-items: center;
-      align-items: center;
-
-      h2 {
-        margin: 0;
+      .display-per {
+        font-size: 34px;
+        font-weight: 700;
+        margin: 8px 0;
       }
 
-      h2.perc {
-        font-size: 40px;
+      .Runbtn {
+        width: 110px;
       }
 
-      h2.perc-symbol {
-        font-size: 30px;
-        align-self: flex-end;
+      .total {
+        color: #000;
       }
 
-      span.row1text {
-        align-self: flex-end;
+      .error {
+        color: #e62a10;
       }
 
-      .trend_up {
-        color: #4caa00;
+      .success {
+        color: #259b24;
       }
 
-      .trend_down {
-        color: #c30000;
-      }
-
-      .err {
-        color: #c30000;
-      }
-
-      .scs {
-        color: #4caa00;
-      }
-
-      mat-chip.total {
-        // background-color: #000; // dark chips
-        // color: #fff; // dark chips
-        background-color: #f2f2f2; // light chips
-        color: #000; // light chips
-        border: 1px solid #000; // light chips
-      }
-
-      mat-chip.error {
-        //background-color: #c30000; // dark chips
-        // color: #fff; // dark chips
-        background-color: #fef1f2; // light chips
-        color: #c30000; // light chips
-        border: 1px solid #c30000; // light chips
-      }
-
-      mat-chip.success {
-        // background-color: #4caa00; // dark chips
-        // color: #fff; // dark chips
-        background-color: #f5fcf2; // light chips
-        color: #4caa00; // light chips
-        border: 1px solid #4caa00; // light chips
-      }
-
-      mat-chip.skipped {
-        // background-color: #a391c5; // dark chips
-        // color: #fff; // dark chips
-        background-color: #faf9fc; // light chips
-        color: #a391c5; // light chips
-        border: 1px solid #a391c5; // light chips
-      }
-
-      mat-chip.duplicate {
-        // background-color: #faac53; // dark chips
-        // color: #fff; // dark chips
-        background-color: #fffbf6; // light chips
-        color: #faac53; // light chips
-        border: 1px solid #faac53; // light chips
-      }
-
-      mat-chip.correction {
-        // background-color: #478cca; // dark chips
-        // color: #fff; // dark chips
-        background-color: #f5f9fc; // light chips
-        color: #478cca; // light chips
-        border: 1px solid #478cca; // light chips
+      .alert-icon {
+        color: #ffa807;
       }
     }
 
-    .timestamp {
-      text-align: center;
+    .links-col {
+      flex: 1;
+      align-items: flex-end;
+
+      a {
+        margin: 4px 0;
+      }
+    }
+  }
+}
+
+mat-card.root.highlight {
+  .run-data {
+    padding: 16px;
+    display: flex;
+
+    .record-text {
+      flex: 2;
+
+      p {
+        margin: 24px 0;
+      }
+    }
+
+    .right-record {
+      align-items: center;
+      flex: 1;
+
+      .check-icon {
+        color: #259b24;
+      }
+
+      .records {
+        font-size: 40px;
+        font-weight: 700;
+        line-height: 40px;
+      }
+    }
+
+    .bottom-actions {
+      justify-content: space-between;
+    }
+  }
+}
+
+mat-card.root.highlight.processing {
+  .run-data {
+    align-items: center;
+
+    strong {
+      font-size: 12px;
+      font-weight: 400;
     }
   }
 }
