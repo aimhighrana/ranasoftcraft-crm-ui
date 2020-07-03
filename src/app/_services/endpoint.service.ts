@@ -280,6 +280,14 @@ export class EndpointService {
     return `${this.apiUrl}tasklist/filterList`
   }
 
+  public getDynamicColumnListsUrl() {
+    return `${this.apiUrl}/listPage/listmetadata`
+  }
+
+  public getDynamicFiltermetaListsUrl() {
+    return `${this.apiUrl}/listPage/getFilterMetaField`
+  }
+
   public docCountUrl(objectType: string): string {
     return `${this.apiUrl}/report/record-count/${objectType}`;
   }

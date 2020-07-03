@@ -1,0 +1,157 @@
+<div class="root">
+  <mat-card class="container-show tasklist-container">
+<h2 class="Material-List">Material List</h2>
+<mat-tab-group>
+
+  <mat-tab *ngFor="let view of listTabview" label="{{view.name}}">
+
+    <div class="f-row search-action">
+      <mat-form-field appearance="outline">
+        <mat-icon matSuffix>search</mat-icon>
+        <mat-label>Search</mat-label>
+        <input matInput placeholder="Placeholder">
+      </mat-form-field>
+      <span class="col-spacer"></span>
+      <button mat-stroked-button color="primary" (click)="toggleDynamicFilters()">
+        <mat-icon matSuffix>filter_list</mat-icon>Filters
+      </button>
+
+      <form class="list-field">
+        <mat-form-field appearance="outline">
+          <!-- <mat-label>List view</mat-label> -->
+          <mat-select [(ngModel)]="selectedValue" name="list">
+            <mat-option *ngFor="let list of listview" [value]="list.value">
+              {{list.viewValue}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </form>
+      <span class="f-spacer"></span>
+      <button mat-button color="primary">
+        <mat-icon>star_border</mat-icon>Save search
+      </button>
+      <span class="col-spacer"></span>
+      <button mat-button color="primary" [matMenuTriggerFor]="menu">Saved searches<mat-icon>
+          keyboard_arrow_down</mat-icon></button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item *ngFor="let savedSearch of savedSearches">{{savedSearch.searchName}}</button>
+      </mat-menu>
+    </div>
+   
+    
+                <!--  filters -->
+                <pros-list-filters-dropdown [filters]="filters" [funcfilters]="funcfilters" *ngIf="dynamicFiltersVisible"
+                    (closeFilterBox)="toggleDynamicFilters()" (updateFilters)="updateFilters($event)" >
+                </pros-list-filters-dropdown>
+
+    <mat-card class="container-show list-thead list-card">
+
+     
+    <button mat-raised-button class="btn-list img-upload">
+      Upload
+   </button>
+
+   <button mat-raised-button class="btn-list img-dwn">
+    Dowload
+   </button>
+
+    <button mat-raised-button class="btn-list img-del" (click)="removeSelectedRows()">
+       Delete
+    </button>
+
+      <button mat-icon-button class="ac-setting" color="primary"
+          (click)="toggleColumnSettingPopUp()">
+          <mat-icon>settings</mat-icon>
+      </button>
+      <pros-listcolumnsetting [tableColumns]="tableColumns" (updateColumns)="updateColumns($event)"
+          (close)="toggleColumnSettingPopUp()" *ngIf="showColumnSettingPopUp">
+      </pros-listcolumnsetting>
+  </mat-card>
+
+  <div class="example-container mat-elevation-z8">
+    <table mat-table [dataSource]="dslistdata" class="mat-elevation-z8" matSort>
+      <!-- Star Column -->
+      <ng-container matColumnDef="star" stickyEnd>
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element">
+          <mat-icon class="header-color">more_vert</mat-icon>
+        </td>
+      </ng-container>
+
+      <!-- Checkbox Column -->
+      <ng-container matColumnDef="select" sticky>
+        <th mat-header-cell *matHeaderCellDef>
+          <mat-checkbox color="primary" (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()"
+            [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
+          </mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <mat-checkbox color="primary" (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+            [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)">
+          </mat-checkbox>
+        </td>
+      </ng-container>
+
+      <!-- Position Column *ngIf="'columnVisible(tableColumn.def)' == 'MaterialID' ? true : false" -->
+      <ng-container  matColumnDef="dynObjectNumber" sticky>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header class="header-color"> dynObjectNumber </th>
+        <td mat-cell *matCellDef="let element" class="header-color"> {{element.MaterialID}} </td>
+      </ng-container>
+
+      <!-- Name Column -->
+      <ng-container matColumnDef="ALT_NUMBER">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> SAP Number </th>
+        <td mat-cell *matCellDef="let element"> {{element.Description}} </td>
+      </ng-container>
+
+      <!-- Name Column -->
+      <ng-container matColumnDef="MATL_TYPE">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Material Type </th>
+        <td mat-cell *matCellDef="let element"> {{element.Description}} </td>
+      </ng-container>
+
+      <!-- Weight Column -->
+      <ng-container matColumnDef="MATL_DESC">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Material Desc(Standard) </th>
+        <td mat-cell *matCellDef="let element"> {{element.MaterialType}} </td>
+      </ng-container>
+
+      <!-- Symbol Column -->
+      <ng-container matColumnDef="MANUFACT">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Manufacturer Part Number(Standard) </th>
+        <td mat-cell *matCellDef="let element"> {{element.Modifiedby}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="STATUS">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> STATUS </th>
+        <td mat-cell *matCellDef="let element"> {{element.Modifiedon}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="STAGE">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> STAGE </th>
+        <td mat-cell *matCellDef="let element"> {{element.Status}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="APPDATE">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> APPDATE </th>
+        <td mat-cell *matCellDef="let element"> {{element.Status}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="USERMODIFIED">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> USERMODIFIED </th>
+        <td mat-cell *matCellDef="let element"> {{element.Status}} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displaylist; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displaylist;" (click)="selection.toggle(row)">
+      </tr>
+    </table>
+</div>
+    <mat-paginator hidePageSize [pageSize]="15" showFirstLastButtons></mat-paginator>
+
+  </mat-tab>
+</mat-tab-group>
+
+</mat-card>
+
+</div>

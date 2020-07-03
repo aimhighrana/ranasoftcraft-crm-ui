@@ -51,6 +51,16 @@ describe('EndpointService', () => {
     expect(serObj.getSchemaStatusUrl()).toContain('schema/schema-status');
   }));
 
+  it('getDynamicColumnListsUrl(), should return the listmetadata url', async(() =>{
+    const serObj = new EndpointService();
+    expect(serObj.getDynamicColumnListsUrl()).toContain('/listPage/listmetadata');
+  }));
+
+  it('getDynamicFiltermetaListsUrl(), should return the FilterMeta field url', async(() =>{
+    const serObj = new EndpointService();
+    expect(serObj.getDynamicFiltermetaListsUrl()).toContain('/listPage/getFilterMetaField');
+  }));
+
   it('docCountUrl(), should return the get doc count url', async(() =>{
     const serObj = new EndpointService();
     const objType = '1005';
