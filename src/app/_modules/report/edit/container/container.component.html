@@ -247,7 +247,7 @@
                                     <mat-label>Chart Type </mat-label>
                                     <mat-select formControlName="chartType">
                                         <mat-option value="BAR"> BAR </mat-option>
-                                        <mat-option value="PIE"> PIE </mat-option>
+                                        <mat-option *ngIf="selStyleWid.widgetType === 'BAR_CHART' " value="PIE"> PIE </mat-option>
                                     </mat-select>
                                 </mat-form-field>
 

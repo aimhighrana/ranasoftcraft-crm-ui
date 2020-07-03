@@ -188,6 +188,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     if(event) {
       event.stopPropagation();
       this.toggleSelection(option);
+      console.log(this.filterFormControl);
     }
   }
 
@@ -260,9 +261,11 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
   returnSelectedDropValues(selectedOptions: Criteria[]): DropDownValues[] {
     const returnValue: DropDownValues[] = [];
     selectedOptions.forEach(value => {
-      const textVal = this.values.filter(val => val.CODE === value.conditionFieldValue);
-      const text = textVal.length >0 ? textVal[0].TEXT : value.conditionFieldValue;
-      returnValue.push({CODE: value.conditionFieldValue,FIELDNAME: value.fieldId,TEXT: text,langu:'EN',sno: null});
+      if(value.fieldId === this.filterWidget.value.fieldId){
+        const textVal = this.values.filter(val => val.CODE === value.conditionFieldValue);
+        const text = textVal.length >0 ? textVal[0].TEXT : value.conditionFieldValue;
+        returnValue.push({CODE: value.conditionFieldValue,FIELDNAME: value.fieldId,TEXT: text,langu:'EN',sno: null});
+      }
 
     });
     return returnValue;
