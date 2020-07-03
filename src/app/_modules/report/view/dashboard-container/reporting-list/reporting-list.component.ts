@@ -185,7 +185,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   console.log(data);
   const url = document.getElementsByTagName('base')[0].href.substring(0, document.getElementsByTagName('base')[0].href.indexOf('MDOSF'));
   window.open(
-    url+'MDOSF/loginPostProcessor?to=summary&objNum='+data.bjectNumber+'&objectType='+this.objectType, 'MDO_TAB');
+    url+'MDOSF/loginPostProcessor?to=summary&objNum='+data.objectNumber+'&objectType='+this.objectType, 'MDO_TAB');
 }
 
 /*

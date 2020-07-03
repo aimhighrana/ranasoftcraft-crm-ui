@@ -44,8 +44,8 @@ export class CountComponent extends GenericWidgetComponent implements OnInit,OnC
   }
 
   public getCountData(widgetid:number,creiteria:Criteria[]):void{
-    this.count = 0;
     this.widgetService.getWidgetData(String(widgetid),creiteria).subscribe(returndata=>{
+      this.count = 0;
       this.arrayBuckets = returndata.aggregations['sterms#COUNT'].buckets;
       this.arrayBuckets.forEach(bucket=>{
         const key = bucket.key;
