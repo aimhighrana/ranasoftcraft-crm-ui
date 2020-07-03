@@ -153,12 +153,14 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
                 obj[column] = hdvs[column] ? hdvs[column].vc : '';
               }
             }
+          }else{
+            // case for other fields
+          if(hdvs[column] && hdvs[column].vls[locale]  && hdvs[column].vls[locale].valueTxt){
+            obj[column] = hdvs[column].vls[locale].valueTxt;
+          }else{
+            obj[column] = hdvs[column] ? hdvs[column].vc : '';
           }
-          // if(hdvs[column] && hdvs[column].vls[locale]  && hdvs[column].vls[locale].valueTxt){
-          //   obj[column] = hdvs[column].vls[locale].valueTxt;
-          // }else{
-          //   obj[column] = hdvs[column] ? hdvs[column].vc : '';
-          // }
+          }
         }
       });
       this.listData.push(obj);

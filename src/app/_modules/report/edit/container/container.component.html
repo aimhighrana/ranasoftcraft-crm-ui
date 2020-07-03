@@ -306,7 +306,7 @@
 
                                 <mat-checkbox color="primary" formControlName="isEnableDatalabels">Enable Datalabels</mat-checkbox>
 
-                                <mat-form-field appearance="outline" *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('isEnableDatalabels').value">
+                                <mat-form-field appearance="outline" *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('isEnableDatalabels').value && chartPropCtrlGrp.get('chartType').value !== 'PIE'">
                                     <mat-label>Datalabels Position</mat-label>
                                     <mat-select formControlName="datalabelsPosition">
                                         <mat-option value="center"> Center </mat-option>
