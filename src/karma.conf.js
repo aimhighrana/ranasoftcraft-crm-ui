@@ -13,7 +13,10 @@ module.exports = function (config) {
       require('@angular-devkit/build-angular/plugins/karma')
     ],
     client: {
-      clearContext: false // leave Jasmine Spec Runner output visible in browser
+      clearContext: false, // leave Jasmine Spec Runner output visible in browser
+      jasmine: {
+        //failSpecWithNoExpectations: true
+      }
     },
     coverageIstanbulReporter: {
       dir: require('path').join(__dirname, '../coverage/ngx-mdo'),
@@ -21,11 +24,14 @@ module.exports = function (config) {
       fixWebpackSourcePaths: true,
       thresholds: {
         statements: 64.8,
-        lines: 64.4,
-        branches: 35.15,
-        functions: 58.83
+        branches: 35.2,
+        functions: 58.9,
+        lines: 64.4
       }
     },
+    failOnEmptyTestSuite: true,
+    failOnSkippedTests: true,
+    failOnFailingTestSuite: true,
     reporters: ['progress', 'kjhtml'],
     port: 9876,
     colors: true,
