@@ -1,9 +1,9 @@
 <div class="root">
   <mat-toolbar>
     <mat-toolbar-row>
-      <span>Upload new dataset for <strong>Materials</strong></span>
+      <span>Upload new dataset for <strong>{{ moduleInfo.module.moduleDesc }}</strong></span>
       <span class="f-spacer"></span>
-      <button mat-icon-button>
+      <button mat-icon-button (click)="closeDialog()">
         <mat-icon>close</mat-icon>
       </button>
     </mat-toolbar-row>
@@ -41,7 +41,7 @@
                 <h4 class="mat-h4">Drag & Drop files here</h4>
                 <span class="or-divider">or</span>
                 <input type="file" (change)="fileChange($event)"  formControlName="uploadFileCtrl" style="display: none;" multiple="false" id="uploadFileCtrl"/>
-                <button mat-flat-button color="primary" (click)="uploadFile()">Browse files…</button>
+                <button mat-flat-button color="primary" (click)="uploadFile()">{{ uploadedFile ? uploadedFile.name:'Browse file' }}</button>
               </div>
               <div class="f-col" style="display: none;">
                 <mat-icon class="basic-icon">loop</mat-icon>
@@ -65,35 +65,36 @@
         <ng-template matStepLabel>Map fields</ng-template>
     
         <div class="field-grid">
-          <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
+          <table mat-table [dataSource]="dataSource" class="mat-elevation-z0 ">
             <!-- Excel Field Column -->
             <ng-container matColumnDef="excel">
-              <th mat-header-cell *matHeaderCellDef>Your file’s header fields </th>
-              <td mat-cell> Object Number </td>
+              <th mat-header-cell *matHeaderCellDef>Your file’s header fields</th>
+              <td mat-cell *matCellDef="let row; let rowIndex = index"> {{ row.excelFld}} </td>
             </ng-container>
-
+          
             <!-- Excel first row data -->
             <ng-container matColumnDef="excelfrstrowdata">
               <th mat-header-cell *matHeaderCellDef> Your file’s first row </th>
-              <td mat-cell>
-                123456
+              <td mat-cell *matCellDef="let row; let rowIndex = index">
+                  {{ row.excelFrstRow }}
               </td>
             </ng-container>
 
             <!-- Map Column -->
             <ng-container matColumnDef="mapping">
-              <th mat-header-cell *matHeaderCellDef> Map to  <mat-icon>trending_flat</mat-icon></th>
-              <td mat-cell></td>
+              <th mat-header-cell *matHeaderCellDef> Map to  <mat-icon>trending_flat</mat-icon> </th>
+              <td *matCellDef="let row; let rowIndex = index" mat-cell></td>
+              <!-- <td mat-cell *matCellDef="let row; let rowIndex = index" class="map-icon"><button mat-mini-fab disabled><mat-icon>trending_flat</mat-icon></button></td> -->
             </ng-container>
-
+          
             <!-- MDO Field Column -->
             <ng-container matColumnDef="field">
               <th mat-header-cell *matHeaderCellDef>MDO fields</th>
-              <td mat-cell>
-                
+              <td mat-cell *matCellDef="let row; let rowIndex = index">
+                <pros-map-mdo-field [cellIndex]="rowIndex" [preSelectedFld]="getSelectedFieldId(rowIndex)" [excelField]="row.excelFld" [mdoFields]="headerFieldsList" (optionSelectedEmit)="updateMapFields($event)"></pros-map-mdo-field>
               </td>
             </ng-container>
-
+           
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
           </table>
@@ -115,7 +116,7 @@
           <span class="title-heading">Your dataset mapping process as been completed successfully.</span>
           <span class="row-spacer"></span>
           <p>We’re sending you a success email</p>
-          <button mat-flat-button color="primary" [routerLink]="['/home']">Close</button>
+          <button mat-flat-button color="primary" (click)="closeDialog()">Close</button>
         </div>
       </mat-step>
     </mat-horizontal-stepper>

@@ -27,7 +27,7 @@
             <p>Please enter your new schema name and create at least one business rule</p>
         </mat-card>
 
-        <div class="b-rule-listing">
+        <div class="b-rule-listing" style="display: none;">
             <div class="f-row">
                 <h4 class="mat-h4">My new rule group</h4>
                 <span class="f-spacer"></span>
@@ -74,7 +74,25 @@
             </mat-card>
         </div>
 
-        <mat-card class="mat-elevation-z0 f-row rule-tile-horizotal">
+
+        <!-- RULES CONTAINER -->
+        <ng-template ngFor let-data [ngForOf]="brListOb | async">
+            <mat-card class="mat-elevation-z0 f-row rule-tile-horizotal">
+                <strong> {{ data.brType }}</strong>
+                <p class="tile-paragraph">{{ data.brInfo }}</p>
+                <span class="f-spacer"></span>
+                <button mat-icon-button>
+                    <mat-icon>import_export</mat-icon>
+                </button>
+                <span class="f-col-spacer-half"></span>
+                <button mat-icon-button>
+                    <mat-icon>more_vert</mat-icon>
+                </button>
+            </mat-card>
+        </ng-template>
+
+
+        <!-- <mat-card class="mat-elevation-z0 f-row rule-tile-horizotal">
             <strong>Regex rule</strong>
             <p class="tile-paragraph">My rule description</p>
             <span class="f-spacer"></span>
@@ -98,7 +116,7 @@
             <button mat-icon-button>
                 <mat-icon>more_vert</mat-icon>
             </button>
-        </mat-card>
+        </mat-card> -->
 
     </mat-card>
 </div>

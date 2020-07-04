@@ -194,6 +194,7 @@ describe('Any2tsService', () => {
       gvs: [],
       hyvs: [],
       stat: [],
+      _score:''
     }]
     const request = {
       schemaId: '',

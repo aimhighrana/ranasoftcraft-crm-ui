@@ -99,19 +99,20 @@ export class DataTableResponse {
     gvs: DataTableHeaderResponse[][];
     hyvs: DataTableHeaderResponse[][];
     stat: string[];
+    _score: string;
 }
 export class DataTableHeaderResponse {
     fId: string;
-    lls: DataTableHeaderLabelLang[];
-    vls: DataTableHeaderValueLang[];
+    ls: string;
+    vc: DataTableHeaderValueLang;
 }
 export class DataTableHeaderLabelLang {
     lang: string;
     label: string;
 }
 export class DataTableHeaderValueLang {
-    lang: string;
-    valueText: string;
+    c: string;
+    t: string;
 }
 
 export class SchemaTableViewRequest {

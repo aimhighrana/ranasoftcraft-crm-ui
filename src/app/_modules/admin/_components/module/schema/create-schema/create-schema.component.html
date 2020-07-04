@@ -6,6 +6,18 @@
     <!-- Categories Section Starts Here-->
 
     <mat-card class="mat-elevation-z3 categories">
+
+        <mat-form-field>
+            <mat-label>Select Module</mat-label>
+            <input matInput placeholder="Select module" [formControl]="moduleInpCtrl" [matAutocomplete]="moduleAutoCmp">
+            <mat-autocomplete #moduleAutoCmp="matAutocomplete" [displayWith]="displayFn" (optionSelected)="selectModule($event)">
+              <mat-option *ngFor="let module of filteredModules | async" [value]="module">
+                {{module.objectdesc}}
+              </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+
+
         <mat-form-field>
             <mat-label>Schema Name</mat-label>
             <input matInput [(ngModel)]="schemaName">

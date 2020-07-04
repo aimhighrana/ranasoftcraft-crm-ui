@@ -16,8 +16,8 @@ import { SalesforceConnectionComponent } from './_components/salesforce-connecti
 import { DuplicateBusinessruleComponent } from './_components/duplicate-businessrule/duplicate-businessrule.component';
 import { AdvanceoptionsDialogComponent } from './_components/advanceoptions-dialog/advanceoptions-dialog.component';
 import { DuplicateDetailsComponent } from './_components/duplicate-details/duplicate-details.component';
-import { DiwCreateSchemaComponent } from './_components/diw-create-schema/diw-create-schema.component';
-import { DiwCreateBusinessruleComponent } from './_components/diw-create-businessrule/diw-create-businessrule.component';
+import { DiwCreateSchemaComponent } from '../admin/_components/module/schema/diw-create-schema/diw-create-schema.component';
+import { DiwCreateBusinessruleComponent } from '../admin/_components/module/schema/diw-create-businessrule/diw-create-businessrule.component';
 
 
 const routes: Routes = [
@@ -32,8 +32,8 @@ const routes: Routes = [
   { path: 'addbusinessrule', component: AddbusinessruleComponent },
   { path: 'table-column-settings', component: TableColumnSettingsComponent },
   { path: 'uploaddata', component: UploadDataComponent },
-  { path: 'create-schema/:moduleId/:schemaId', component: CreateSchemaComponent },
   { path: 'create-schema/:moduleId', component: CreateSchemaComponent },
+  { path: 'create-schema/:moduleId/:schemaId', component: CreateSchemaComponent },
   { path: 'salesforce-connection', component: SalesforceConnectionComponent },
   { path: 'duplicate-businessrule', component: DuplicateBusinessruleComponent },
   { path: 'advanceoptions-dialog', component: AdvanceoptionsDialogComponent },

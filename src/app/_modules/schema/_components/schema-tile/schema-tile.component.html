@@ -3,7 +3,7 @@
     <mat-toolbar-row>
       <h3 class="mat-h3" [matTooltip]="title">{{ title }}</h3>
       <span class="f-spacer"></span>
-      <button mat-icon-button [matMenuTriggerFor]="menu"><mat-icon>more_vert</mat-icon></button>
+      <button mat-icon-button [matMenuTriggerFor]="menu" prosClickStopPropagation><mat-icon>more_vert</mat-icon></button>
       <mat-menu #menu="matMenu">
         <button mat-menu-item *ngIf="edit" prosClickStopPropagation matTooltip="Edit" (click)="onEdit();">Edit</button>
         <button mat-menu-item *ngIf="delete" prosClickStopPropagation matTooltip="Delete" (click)="onDelete();">Delete</button>
@@ -16,17 +16,17 @@
       <span class="display-per error">{{ percentageErrorStr() }}%</span>
       <span class="mat-caption row1text">Last Run: {{ timestamp }}</span>
       <div class="f-row">
-        <button mat-flat-button color="primary" class="Runbtn">Run all</button>
+        <button mat-flat-button color="primary" class="Runbtn" prosClickStopPropagation (click)="onBottomRight();">Run all</button>
         <span class="f-col-spacer-half"></span>
-        <button mat-icon-button><mat-icon class="alert-icon">error</mat-icon></button>
+        <button mat-icon-button><mat-icon class="alert-icon" prosClickStopPropagation>error</mat-icon></button>
       </div>
-      <span class="f-row-spacer-half"></span>
-      <button mat-button color="primary">Run variants</button>
+      <span class="f-row-spacer-half"></span> 
+      <button mat-button color="primary" prosClickStopPropagation (click)="onBottomLeft();">Run variants</button>
     </div>
     <div class="f-col links-col">
-      <a href="#" class="total">Total: {{ showUnique ? totalUniqueValue : totalValue }}</a>
-      <a href="#" class="error">Error: {{ showUnique ? errorUniqueValue : errorValue }}</a>
-      <a href="#" class="success">Success: {{ showUnique ? successUniqueValue : successValue }}</a>
+      <a  class="total">Total: {{ showUnique ? totalUniqueValue : totalValue }}</a>
+      <a  class="error">Error: {{ showUnique ? errorUniqueValue : errorValue }}</a>
+      <a  class="success">Success: {{ showUnique ? successUniqueValue : successValue }}</a>
     </div>
   </mat-card-content>
 </mat-card>

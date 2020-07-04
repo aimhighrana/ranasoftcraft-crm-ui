@@ -1,13 +1,15 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { SchemaService } from 'src/app/_services/home/schema.service';
 import { ObjectTypeResponse } from 'src/app/_models/schema/schema';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import * as XLSX from 'xlsx';
 import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-details.service';
 import { MetadataModeleResponse, MetadataModel } from 'src/app/_models/schema/schemadetailstable';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatStepper } from '@angular/material/stepper';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { SchemaListComponent } from '../schema-list/schema-list.component';
 export interface DataSource {
   excelFld: string;
   excelFrstRow: string;
@@ -22,11 +24,8 @@ type UploadedDataType = any[][];
   styleUrls: ['./upload-data.component.scss']
 })
 export class UploadDataComponent implements OnInit {
-  @Input()
-  moduleId: string;
 
   isLinear = true;
-  moduleFormCtrl: FormGroup;
   uploadFileStepCtrl: FormGroup;
   dataTableCtrl: FormGroup;
   selectedMdoFldCtrl: FormControl;
@@ -34,7 +33,6 @@ export class UploadDataComponent implements OnInit {
   displayedColumns = ['excel','excelfrstrowdata','mapping','field'];
   dataSource = [];
 
-  moduleList: ObjectTypeResponse[] = [];
   filteredModules: Observable<ObjectTypeResponse[]>;
   moduleInpFrmCtrl: FormControl;
   excelHeader: string[];
@@ -46,11 +44,15 @@ export class UploadDataComponent implements OnInit {
   fileSno = '';
   uploadedFile: File;
 
+  @ViewChild(MatStepper) stepper!: MatStepper;
+
   constructor(
     private _formBuilder: FormBuilder,
     private schemaService: SchemaService,
     private schemaDetailsService: SchemaDetailsService,
     private snackBar: MatSnackBar,
+    public dialogRef: MatDialogRef<SchemaListComponent>,
+    @Inject(MAT_DIALOG_DATA) public moduleInfo: any,
   ) {
     this.moduleInpFrmCtrl = new FormControl();
     this.selectedMdoFldCtrl = new FormControl();
@@ -58,45 +60,24 @@ export class UploadDataComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.moduleFormCtrl = this._formBuilder.group({
-      moduleInpFrmCtrl: ['', Validators.required]
-    });
+
+    // get all field of module
+    this.getMetadataFields(this.moduleInfo.module.moduleId);
+
     this.uploadFileStepCtrl = this._formBuilder.group({
       uploadFileCtrl: ['', Validators.required]
     });
     this.dataTableCtrl = this._formBuilder.group({
       dataTableFldCtrl: ['', Validators.required]
     });
-    // this.getAllModules();
-    this.getMetadataFields(this.moduleId);
-    this.moduleFormCtrl.valueChanges.subscribe(ctrl=>{
-      const chngVal = ctrl ? ctrl.moduleInpFrmCtrl : '';
-      if(typeof chngVal === 'string') {
-        if(chngVal && chngVal !== '') {
-          const filteredArray = this.moduleList.filter(module =>module.objectdesc.toLocaleLowerCase().indexOf(chngVal.toLocaleLowerCase()) !==-1);
-          this.filteredModules = of(filteredArray);
-        } else {
-          this.filteredModules = of(this.moduleList);
-        }
-      }
-    });
+
     this.headerFieldsList.push({fieldId: 'objectnumber',fieldDescri: 'Module Object Number'} as MetadataModel);
   }
 
-  getAllModules() {
-    this.schemaService.getAllObjectType().subscribe(data => {
-      this.moduleList = data;
-      this.filteredModules = of(data);
-    }, error => {
-      console.error('Error while fetching modules');
-    });
-  }
-  moduleDisplayFn(obj: ObjectTypeResponse): string {
-    return obj ?( obj.objectdesc ? obj.objectdesc : '') : '';
-  }
-
   uploadFile() {
-    document.getElementById('uploadFileCtrl').click();
+    if(document.getElementById('uploadFileCtrl')) {
+      document.getElementById('uploadFileCtrl').click();
+    }
   }
 
   fileChange(evt) {
@@ -110,6 +91,16 @@ export class UploadDataComponent implements OnInit {
         type = target.files[0].name.split('.')[1];
       }catch(ex){console.error(ex)}
       if(type === 'xlsx' || type === 'xls' || type === 'csv') {
+
+        // check size of file
+        const size = target.files.item(0).size;
+        const sizeKb = Math.round((size / 1024));
+        if(sizeKb > (10*1024)) {
+          this.uploadedFile = null;
+          this.uploadFileStepCtrl.setValue({uploadFileCtrl:''});
+          this.snackBar.open(`File size too large , upload less then 10 MB`, 'Close',{duration:5000});
+          return false;
+        }
         const reader: FileReader = new FileReader();
         reader.onload = (e: any) => {
           /* read workbook */
@@ -125,11 +116,11 @@ export class UploadDataComponent implements OnInit {
           this.uploadedData = (data as UploadedDataType);
           console.log(this.uploadedData[0]);
           this.excelHeader = this.uploadedData[0] as string[];
-          console.log(this.excelHeader);
+          // move to next step
+          this.stepper.next();
           const file = evt.target.files[0]
           this.uploadedFile = file;
           this.uploadFileStepCtrl.get('uploadFileCtrl').setValue(file);
-
         };
         reader.readAsBinaryString(target.files[0]);
         this.excelMdoFieldMappedData = [];
@@ -190,10 +181,6 @@ export class UploadDataComponent implements OnInit {
   controlStepChange(event: any) {
     switch (event.selectedIndex) {
         case 1:
-          const selectedModuleId = event.previouslySelectedStep.stepControl.controls.moduleInpFrmCtrl ? event.previouslySelectedStep.stepControl.controls.moduleInpFrmCtrl.value.objectid: '';
-          if(selectedModuleId) {this.getMetadataFields(selectedModuleId); }
-          break;
-        case 2:
           this.prepareDataSource();
           break;
         default:
@@ -248,7 +235,7 @@ export class UploadDataComponent implements OnInit {
   }
 
   uploadDataHttpCall(stepper: MatStepper) {
-    const objType = this.moduleFormCtrl.controls.moduleInpFrmCtrl.value.objectid;
+    const objType = this.moduleInfo.module.moduleId ? this.moduleInfo.module.moduleId : '';
     if(objType) {
       this.schemaService.uploadData(this.excelMdoFieldMappedData,objType, this.fileSno).subscribe(res=>{
         // remove valitor here and move to next step
@@ -268,6 +255,13 @@ export class UploadDataComponent implements OnInit {
       return availmap[0].mdoFldId;
     }
     return '';
+  }
+
+  /**
+   * Close dialog after saved or click close
+   */
+  closeDialog() {
+    this.dialogRef.close();
   }
 
 }

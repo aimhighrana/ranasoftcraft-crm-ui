@@ -35,4 +35,14 @@ export class HomeLayoutComponent implements OnInit, OnDestroy {
     this.udSub.unsubscribe();
   }
 
+  /**
+   * Get selected role description
+   */
+  get selectedRoleDesc(): string {
+    if(this.userDetails.currentRoleId) {
+      const selRole = this.userDetails.assignedRoles.filter(fil=> fil.roleId === this.userDetails.currentRoleId)[0];
+      return selRole ? selRole.roleDesc : this.userDetails.currentRoleId;
+    }
+    return  '';
+  }
 }

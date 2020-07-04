@@ -56,7 +56,7 @@ export class SchemaDatatableComponent implements OnInit {
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   selectedTabIndex = 1; // Defaut error status should be visible
   dynamicPageSize: number;
-  startColumns = ['row_more_action', 'row_selection_check2box', 'OBJECTNUMBER'];
+  startColumns = ['row_more_action', 'row_selection_check2box', '_score_weightage', 'OBJECTNUMBER'];
   endColumns = ['row_status'];
   allMetaDataFields: BehaviorSubject<MetadataModeleResponse> = new BehaviorSubject(new MetadataModeleResponse());
   displayedFields: BehaviorSubject<string[]> = new BehaviorSubject(this.startColumns); // all selected fields across header, selected hierarchy, selected grids
@@ -388,7 +388,7 @@ export class SchemaDatatableComponent implements OnInit {
     return '';
   }
   doCorrection(row: any, fieldId: string, inpValue: string, rowIndex: number) {
-    if(row && row.hasOwnProperty(fieldId)) {
+    if(row) {
       const objctNumber = row.OBJECTNUMBER.fieldData;
       const fldExit: FieldExitsResponse = this.findFieldExitsOnMetaRes(fieldId);
       const request: SchemaCorrectionReq = {id: objctNumber,fldId:fieldId, gridId: fldExit.gridId, heirerchyId: fldExit.hierarchyId, rowSno:null,vc: inpValue, isReviewed: null};
@@ -461,6 +461,7 @@ export class SchemaDatatableComponent implements OnInit {
     this.ngZone.runOutsideAngular(() =>{
       if(document.getElementById('edit_' + fieldId + '_' + rowIndex)) {
         document.getElementById('edit_' + fieldId + '_' + rowIndex).style.display = 'block';
+        document.getElementById('edit_inp_' + fieldId + '_' + rowIndex).focus();
         document.getElementById('view_' + fieldId + '_' + rowIndex).style.display = 'none';
       }
     });

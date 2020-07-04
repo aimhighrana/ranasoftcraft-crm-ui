@@ -7,6 +7,8 @@ import { CreateUpdateSchema, CoreSchemaBrInfo, Category, BusinessRuleType } from
 import { ActivatedRoute, Router } from '@angular/router';
 import { SchemalistService } from 'src/app/_services/home/schema/schemalist.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ObjectTypeResponse } from '@models/schema/schema';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
 @Component({
   selector: 'pros-create-schema',
@@ -36,6 +38,10 @@ export class CreateSchemaComponent implements OnInit {
   brListOb : Observable<CoreSchemaBrInfo[]> = of([]);
 
   categoryList: Category[] = [];
+
+  moduleList: ObjectTypeResponse[] = [];
+  filteredModules: Observable<ObjectTypeResponse[]> = of([]);
+  moduleInpCtrl: FormControl = new FormControl('');
   /**
    * Use for store br mapped on particular category
    * As key value pair | kay is the index of form array and value is CoreSchemaBrInfo[]
@@ -78,9 +84,33 @@ export class CreateSchemaComponent implements OnInit {
       this.fragment = frag;
     });
     this.getCategoriesData();
+
+    this.service.getAllObjectType().subscribe(data => {
+      this.moduleList = data;
+      this.filteredModules = of(data);
+      if(this.moduleId) {
+        const moduleDesc = this.moduleList.filter(fill => fill.objectid === this.moduleId)[0];
+        if(moduleDesc) {
+          this.moduleInpCtrl.setValue(moduleDesc);
+        }
+      }
+    }, error => {
+      console.error('Error while fetching modules');
+    });
+
     if(this.schemaId) {
       this.getSchemaData();
     }
+
+    this.moduleInpCtrl.valueChanges.subscribe(value => {
+      if (value instanceof ObjectTypeResponse) {} else if(value && value !==''){
+        const filteredObjectTypes = this.moduleList.filter(module => (module.objectdesc.toLowerCase().indexOf(value.toLowerCase())) === 0);
+        this.filteredModules = of(filteredObjectTypes);
+      } else {
+        this.filteredModules = of(this.moduleList);
+      }
+    });
+
   }
 
   getSchemaData() {
@@ -89,6 +119,11 @@ export class CreateSchemaComponent implements OnInit {
       if (this.schemaDetails) {
         this.getBusinessRulesData();
         this.schemaName = this.schemaDetails.schemaDescription;
+        const moduleDesc = this.moduleList.filter(fill => fill.objectid === this.schemaDetails.moduleId)[0];
+        if(moduleDesc) {
+          this.moduleInpCtrl.setValue(moduleDesc);
+          this.moduleInpCtrl.disable({onlySelf:true});
+        }
       }
     })
   }
@@ -107,7 +142,11 @@ export class CreateSchemaComponent implements OnInit {
    * For fragment see router.navigate method imp..
    */
   showAddBusinessRulePage() {
-    this.router.navigate(['/home/schema/create-schema', this.moduleId , this.schemaId], {fragment:'missing'});
+    if(this.moduleId) {
+      this.router.navigate(['/home/schema/create-schema', this.moduleId , this.schemaId], {fragment:'missing'});
+    } else {
+      this.matSnackBar.open(`Please select module`, 'Close',{duration:5000});
+    }
   }
 
   getCategoriesData() {
@@ -381,6 +420,26 @@ export class CreateSchemaComponent implements OnInit {
       }
     }
   }
+
+  /**
+   * Will help us for display the object description from objectType object
+   *  objectType
+   */
+  displayFn(objectType: ObjectTypeResponse): string | undefined {
+    return objectType ? objectType.objectdesc : '';
+  }
+
+  /**
+   * While selection object from object type this method will help us to get assigned schema(s)
+   *  event
+   */
+  selectModule(event: MatAutocompleteSelectedEvent): void {
+    const selData =  event.option? event.option.value : '';
+    if(selData) {
+      this.moduleId = selData.objectid;
+    }
+  }
+
   /**
    * Call http for save update schema and br mapping
    * along with goup

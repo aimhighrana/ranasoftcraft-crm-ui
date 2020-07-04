@@ -123,7 +123,13 @@ describe('SchemaDatatableComponent', () => {
   }));
 
   it('doCorrection(), start correction on blur to field', async(()=>{
-      expect(component.doCorrection({} as any, 'HELLO_TEST','Test123',0)).toEqual(undefined);
+      const row = {
+        OBJECTNUMBER :{
+          fieldData: '387632'
+        }
+      }
+
+      expect(component.doCorrection(row, 'HELLO_TEST','Test123',0)).toEqual(undefined);
   }));
 
   it('editCurrentCell(), edit current cell', async(()=>{

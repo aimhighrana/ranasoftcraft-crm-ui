@@ -4,21 +4,30 @@ import { UploadDataComponent } from './upload-data.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterTestingModule } from '@angular/router/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { BreadcrumbComponent } from 'src/app/_modules/shared/_components/breadcrumb/breadcrumb.component';
 import { AddTileComponent } from 'src/app/_modules/shared/_components/add-tile/add-tile.component';
 import { MetadataModeleResponse } from 'src/app/_models/schema/schemadetailstable';
-import { ObjectTypeResponse } from 'src/app/_models/schema/schema';
 import { MatStepper } from '@angular/material/stepper';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 describe('UploadDataComponent', () => {
   let component: UploadDataComponent;
   let fixture: ComponentFixture<UploadDataComponent>;
-
+  const mockDialogRef = {
+    close: jasmine.createSpy('close')
+  };
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [AppMaterialModuleForSpec, MatIconModule, RouterTestingModule, FormsModule, ReactiveFormsModule],
-      declarations: [ UploadDataComponent, BreadcrumbComponent, AddTileComponent ]
+      declarations: [ UploadDataComponent, BreadcrumbComponent, AddTileComponent ],
+      providers: [
+        {
+          provide: MatDialogRef,
+          useValue: mockDialogRef
+        }, { provide: MAT_DIALOG_DATA, useValue: {}
+        }
+      ]
     })
     .compileComponents();
   }));
@@ -26,7 +35,6 @@ describe('UploadDataComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(UploadDataComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
@@ -50,28 +58,21 @@ describe('UploadDataComponent', () => {
   }));
 
   it('makeMetadataControle(), help to make metadata control for all header , hierarchy and grid field ', async(()=>{
+    component.moduleInfo = {module:'1005'};
     component.metadataFields = new MetadataModeleResponse();
     component.makeMetadataControle();
   }));
 
   it('uploadFile(), should click on uploadFile input ', async(()=>{
+    component.moduleInfo = {module:'1005'};
     component.uploadFile();
   }));
 
-  it('moduleDisplayFn(), should return module desc..', async(()=>{
-    const data = new ObjectTypeResponse();
-    data.objectid = '1005';
-    data.objectdesc = 'Material';
-    expect(component.moduleDisplayFn(data)).toEqual(data.objectdesc);
-  }));
-
   it('ngOnint()', async(() => {
+    component.moduleInfo = {module:'1005'};
     component.ngOnInit();
   }));
 
-  it('getAllModules()', async(() =>{
-    component.getAllModules();
-  }));
 
   it('fileChange', async(()=>{
     component.fileChange(undefined);
@@ -79,11 +80,15 @@ describe('UploadDataComponent', () => {
 
   it('uploadDataHttpCall()  ', async(()=>{
     const stepper: MatStepper = {next:null} as MatStepper;
+    component.moduleInfo = {module:'1005'};
     component.uploadDataHttpCall(stepper) ;
   }));
 
   it('uploadFileData()  ', async(()=>{
     const stepper: MatStepper = {next:null} as MatStepper;
+    component.dataTableCtrl = new FormGroup({
+      dataTableFldCtrl: new FormControl('')
+    });
     component.uploadFileData(stepper);
   }));
 

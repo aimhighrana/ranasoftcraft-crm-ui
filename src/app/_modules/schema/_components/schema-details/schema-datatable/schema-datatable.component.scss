@@ -88,6 +88,15 @@
     line-height: 10px;
   }
 
+  .score-cell {
+    align-items: center;
+
+    mat-progress-bar {
+      border-radius: 10px;
+      height: 8px;
+    }
+  }
+
   .checkbox-cell {
     width: 30px;
     min-width: 30px;

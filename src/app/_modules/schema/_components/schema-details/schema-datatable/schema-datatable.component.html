@@ -108,6 +108,20 @@
                         </td>
                     </ng-container>
 
+                    <!-- SCORE COLUMN -->
+                    <ng-container matColumnDef="_score_weightage" sticky>
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="any-cell objnr-cell">
+                            Score
+                        </th>
+                        <td mat-cell *matCellDef="let row" class="any-cell objnr-cell">
+                            <div class="f-row score-cell">
+                                <mat-progress-bar mode="determinate" [value]="row['_score_weightage'].fieldData" matTooltip="{{ row['_score_weightage'] ? row['_score_weightage'].fieldData : '' }} %"></mat-progress-bar>
+                                <!-- <span class="f-col-spacer-half"></span>
+                                {{ row['_score_weightage'] ? row['_score_weightage'].fieldData : '' }} -->
+                            </div>
+                        </td>
+                    </ng-container>
+
                     <ng-container matColumnDef="OBJECTNUMBER" sticky>
                         <th mat-header-cell *matHeaderCellDef mat-sort-header class="any-cell objnr-cell">
                             Object Number
@@ -124,7 +138,7 @@
                             {{ field.value.fieldDescri }}
                         </th>
                         
-                        <td  mat-cell *matCellDef="let row; let rIndex = index;"  (dblclick)="editCurrentCell(field.key, rIndex);" class="any-cell data-cell" [class.errorCell]="hasError(row,field.key)" [class.correctedCell_New] ="isCorrected(row, field.key, rIndex)" [class.correctedCell_Old] ="isCorrectedOld(row, field.key, rIndex)" [matTooltip]="showErrorMessages(row,field.key)">
+                        <td  mat-cell *matCellDef="let row; let rIndex = index;"  (click)="editCurrentCell(field.key, rIndex);" class="any-cell data-cell" [class.errorCell]="hasError(row,field.key)" [class.correctedCell_New] ="isCorrected(row, field.key, rIndex)" [class.correctedCell_Old] ="isCorrectedOld(row, field.key, rIndex)" [matTooltip]="showErrorMessages(row,field.key)">
                             <ng-template [ngIf]="isEditable(field.key)" [ngIfElse]="headerFldTd">
                                 <span id="view_{{field.key + '_' + rIndex}}">{{ row[field.key] ? row[field.key].fieldData : '' }}</span>
                                 <mat-form-field  id="edit_{{field.key + '_' + rIndex}}" style="display: none;">
@@ -143,7 +157,7 @@
                             <th mat-header-cell *matHeaderCellDef mat-sort-header class="any-cell data-cell">
                                 {{ field.value.fieldDescri }}
                             </th>
-                            <td mat-cell *matCellDef="let row; let rIndex = index;" (dblclick)="editCurrentCell(field.key, rIndex);" class="any-cell data-cell" [class.errorCell]="hasError(row,field.key)" [class.correctedCell_New] ="isCorrected(row, field.key, rIndex)" [class.correctedCell_Old] ="isCorrectedOld(row, field.key, rIndex)" [matTooltip]="showErrorMessages(row,field.key)">
+                            <td mat-cell *matCellDef="let row; let rIndex = index;" (click)="editCurrentCell(field.key, rIndex);" class="any-cell data-cell" [class.errorCell]="hasError(row,field.key)" [class.correctedCell_New] ="isCorrected(row, field.key, rIndex)" [class.correctedCell_Old] ="isCorrectedOld(row, field.key, rIndex)" [matTooltip]="showErrorMessages(row,field.key)">
                                 <ng-template [ngIf]="isEditable(field.key)" [ngIfElse]="hierarchyFld">
                                     <span id="view_{{field.key + '_' + rIndex}}">{{ row[field.key] ? row[field.key].fieldData : '' }}</span>
                                     <mat-form-field  id="edit_{{field.key + '_' + rIndex}}" style="display: none;">
@@ -164,7 +178,7 @@
                             <th mat-header-cell *matHeaderCellDef mat-sort-header class="any-cell data-cell">
                                 {{ field.value.fieldDescri }}
                             </th>
-                            <td mat-cell *matCellDef="let row; let rIndex = index;" (dblclick)="editCurrentCell(field.key, rIndex);" class="any-cell data-cell" [class.errorCell]="hasError(row,field.key)" [class.correctedCell_New] ="isCorrected(row, field.key, rIndex)" [class.correctedCell_Old] ="isCorrectedOld(row, field.key, rIndex)" [matTooltip]="showErrorMessages(row,field.key)">
+                            <td mat-cell *matCellDef="let row; let rIndex = index;" (click)="editCurrentCell(field.key, rIndex);" class="any-cell data-cell" [class.errorCell]="hasError(row,field.key)" [class.correctedCell_New] ="isCorrected(row, field.key, rIndex)" [class.correctedCell_Old] ="isCorrectedOld(row, field.key, rIndex)" [matTooltip]="showErrorMessages(row,field.key)">
                                 <ng-template [ngIf]="isEditable(field.key)" [ngIfElse]="hierarchyFld">
                                     <span id="view_{{field.key + '_' + rIndex}}">{{ row[field.key] ? row[field.key].fieldData : '' }}</span>
                                     <mat-form-field  id="edit_{{field.key + '_' + rIndex}}" style="display: none;">

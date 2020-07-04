@@ -61,6 +61,8 @@ import { ActivityStepPropertiesComponent } from './_components/module/workflow/b
 import { DecisionsModalComponent } from './_components/module/workflow/bpmn-builder/decisions-modal/decisions-modal.component';
 import { PropertiesPanelComponent } from './_components/module/workflow/bpmn-builder/properties-panel/properties-panel.component';
 import { BpmnBuilderComponent } from './_components/module/workflow/bpmn-builder/bpmn-builder.component';
+import { DiwCreateBusinessruleComponent } from './_components/module/schema/diw-create-businessrule/diw-create-businessrule.component';
+import { DiwCreateSchemaComponent } from './_components/module/schema/diw-create-schema/diw-create-schema.component';
 
 @NgModule({
   declarations: [
@@ -122,7 +124,9 @@ import { BpmnBuilderComponent } from './_components/module/workflow/bpmn-builder
     DeterminationStepPropertiesComponent,
     ConnectionConditionModalComponent,
     EmailEscalationPropertiesComponent,
-    BackgroundStepPropertiesComponent
+    BackgroundStepPropertiesComponent,
+    DiwCreateBusinessruleComponent,
+    DiwCreateSchemaComponent
   ],
   imports: [
     CommonModule,

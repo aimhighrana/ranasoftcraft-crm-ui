@@ -12,8 +12,8 @@
     <mat-divider vertical="true"></mat-divider>
     <span class="col-spacer"></span>
     <div class="f-col hdrUser" [matMenuTriggerFor]="userMenu" #um="matMenuTrigger">
-      <span class="U-Details">{{userDetails.fullName}}</span>
-      <span class="U-Name">Andrew Worthington</span>
+      <span class="U-Details">{{ selectedRoleDesc }}</span>
+      <span class="U-Name">{{ userDetails.fullName }}</span>
       <mat-icon>keyboard_arrow_down</mat-icon>
     </div>
     <mat-menu #userMenu="matMenu">

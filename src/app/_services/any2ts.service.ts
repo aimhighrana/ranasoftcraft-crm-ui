@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SchemaListOnLoadResponse, SchemaGroupResponse, SchemaGroupDetailsResponse, SchemaGroupCountResponse, ObjectTypeResponse, GetAllSchemabymoduleidsRes, SchemaGroupWithAssignSchemas, SchemaGroupMapping, CategoriesList } from '../_models/schema/schema';
 import { VariantFieldList, SchemaVariantResponse, SchemaBrInfoList, CategoriesResponse, DependencyResponse, VariantDetailsScheduleSchema, VariantAssignedFieldDetails, SchemaListModuleList, SchemaModuleList, SchemaListDetails, BusinessRuleExecutionDetails, VariantListDetails } from '../_models/schema/schemalist';
-import { SchemaDataTableColumnInfoResponse, ResponseFieldList, SchemaTableData, DataTableResponse, DataTableHeaderResponse, DataTableHeaderLabelLang, DataTableHeaderValueLang, DataTableSourceResponse, OverViewChartData, OverViewChartDataXY, OverViewChartDataSet, CategoryInfo, CategoryChartDataSet, CategoryChartData, CategoryChartDataXY, MetadataModel, RequestForSchemaDetailsWithBr, MetadataModeleResponse, Heirarchy, SchemaBrInfo } from '../_models/schema/schemadetailstable';
+import { SchemaDataTableColumnInfoResponse, ResponseFieldList, SchemaTableData, DataTableResponse, DataTableHeaderResponse, DataTableHeaderValueLang, DataTableSourceResponse, OverViewChartData, OverViewChartDataXY, OverViewChartDataSet, CategoryInfo, CategoryChartDataSet, CategoryChartData, CategoryChartDataXY, MetadataModel, RequestForSchemaDetailsWithBr, MetadataModeleResponse, Heirarchy, SchemaBrInfo } from '../_models/schema/schemadetailstable';
 import { Userdetails, AssignedRoles } from '../_models/userdetails';
 import * as moment from 'moment';
 @Injectable({
@@ -388,6 +388,7 @@ export class Any2tsService {
     schemaDetail.runId = resposne.runId ? resposne.runId : '';
     schemaDetail.brInformation = [];
     schemaDetail.pulse = resposne.isInRunning ? resposne.isInRunning : false;
+    schemaDetail.moduleId = resposne.moduleId ? resposne.moduleId : false;
 
     if (resposne.brInformation) {
       resposne.brInformation.forEach(br => {
@@ -418,15 +419,20 @@ export class Any2tsService {
 
         // get hits
         const status = new Set<string>();
+        let _score = 0;
         Object.keys(data.hits).forEach(index => {
           if (index.indexOf('_do_br_err_') >= 0) {
             status.add('Error');
+            _score += data.hits[index]._score;
           } else if (index.indexOf('_do_br_scs_') >= 0) {
             status.add('Success');
+            _score += data.hits[index]._score;
           } else if (index.indexOf('_do_br_skp_') >= 0) {
             status.add('Skipped');
+            _score += data.hits[index]._score;
           } else if (index.indexOf('_do_br_cor_') >= 0) {
             status.add('Correction');
+            _score += data.hits[index]._score;
           }
         });
 
@@ -456,6 +462,7 @@ export class Any2tsService {
 
         hit.id = objNum;
         hit.stat = Array.from(status);
+        hit._score = String(_score * 100);
         dataTableReponse.push(hit);
       });
     }
@@ -468,28 +475,13 @@ export class Any2tsService {
       Object.keys(response).forEach(key => {
         const dataTableHeader: DataTableHeaderResponse = new DataTableHeaderResponse();
         dataTableHeader.fId = response[key].fId;
-        dataTableHeader.lls = [];
-        dataTableHeader.vls = [];
-        const currentObj = response[key];
-        // for get label lang of fields
-        if (currentObj.lls) {
-          Object.keys(currentObj.lls).forEach(llsKey => {
-            const dataTableHeaderLabelLang: DataTableHeaderLabelLang = new DataTableHeaderLabelLang();
-            dataTableHeaderLabelLang.label = currentObj.lls[llsKey].label;
-            dataTableHeaderLabelLang.lang = llsKey;
-            dataTableHeader.lls.push(dataTableHeaderLabelLang);
-          });
+        dataTableHeader.ls = response[key].ls;
+        const vc: DataTableHeaderValueLang = new DataTableHeaderValueLang();
+        if(response[key].vc) {
+          vc.c = response[key].vc.map(map=> map.c).toString();
+          vc.t = response[key].vc.map(map=> map.t).toString();
         }
-
-        // get value of this field on lang
-        if (currentObj.vls) {
-          Object.keys(currentObj.vls).filter(vlskey => {
-            const dataTableHeaderValueLang: DataTableHeaderValueLang = new DataTableHeaderValueLang();
-            dataTableHeaderValueLang.lang = vlskey;
-            dataTableHeaderValueLang.valueText = currentObj.vls[vlskey].valueTxt;
-            dataTableHeader.vls.push(dataTableHeaderValueLang);
-          });
-        }
+        dataTableHeader.vc = vc;
         dataTableHeaderResponse.push(dataTableHeader);
       });
     }
@@ -506,29 +498,14 @@ export class Any2tsService {
             const griddataRow: DataTableHeaderResponse[] = [];
             Object.keys(row).forEach(key => {
               const dataTableHeader: DataTableHeaderResponse = new DataTableHeaderResponse();
-              dataTableHeader.fId = row[key].fId;
-              dataTableHeader.lls = [];
-              dataTableHeader.vls = [];
-              const currentObj = row[key];
-              // for get label lang of fields
-              if (currentObj.lls) {
-                Object.keys(currentObj.lls).forEach(llsKey => {
-                  const dataTableHeaderLabelLang: DataTableHeaderLabelLang = new DataTableHeaderLabelLang();
-                  dataTableHeaderLabelLang.label = currentObj.lls[llsKey].label;
-                  dataTableHeaderLabelLang.lang = llsKey;
-                  dataTableHeader.lls.push(dataTableHeaderLabelLang);
-                });
+              dataTableHeader.fId = response[key].fId;
+              dataTableHeader.ls = response[key].ls;
+              const vc: DataTableHeaderValueLang = new DataTableHeaderValueLang();
+              if(response[key].vc) {
+                vc.c = response[key].vc.map(map=> map.c).toString();
+                vc.t = response[key].vc.map(map=> map.t).toString();
               }
-
-              // get value of this field on lang
-              if (currentObj.vls) {
-                Object.keys(currentObj.vls).filter(vlskey => {
-                  const dataTableHeaderValueLang: DataTableHeaderValueLang = new DataTableHeaderValueLang();
-                  dataTableHeaderValueLang.lang = vlskey;
-                  dataTableHeaderValueLang.valueText = currentObj.vls[vlskey].valueTxt;
-                  dataTableHeader.vls.push(dataTableHeaderValueLang);
-                });
-              }
+              dataTableHeader.vc = vc;
               griddataRow.push(dataTableHeader);
             });
             gridResponse.push(griddataRow);
@@ -549,29 +526,14 @@ export class Any2tsService {
             const griddataRow: DataTableHeaderResponse[] = [];
             Object.keys(row).forEach(key => {
               const dataTableHeader: DataTableHeaderResponse = new DataTableHeaderResponse();
-              dataTableHeader.fId = row[key].fId;
-              dataTableHeader.lls = [];
-              dataTableHeader.vls = [];
-              const currentObj = row[key];
-              // for get label lang of fields
-              if (currentObj.lls) {
-                Object.keys(currentObj.lls).forEach(llsKey => {
-                  const dataTableHeaderLabelLang: DataTableHeaderLabelLang = new DataTableHeaderLabelLang();
-                  dataTableHeaderLabelLang.label = currentObj.lls[llsKey].label;
-                  dataTableHeaderLabelLang.lang = llsKey;
-                  dataTableHeader.lls.push(dataTableHeaderLabelLang);
-                });
+              dataTableHeader.fId = response[key].fId;
+              dataTableHeader.ls = response[key].ls;
+              const vc: DataTableHeaderValueLang = new DataTableHeaderValueLang();
+              if(response[key].vc) {
+                vc.c = response[key].vc.map(map=> map.c).toString();
+                vc.t = response[key].vc.map(map=> map.t).toString();
               }
-
-              // get value of this field on lang
-              if (currentObj.vls) {
-                Object.keys(currentObj.vls).filter(vlskey => {
-                  const dataTableHeaderValueLang: DataTableHeaderValueLang = new DataTableHeaderValueLang();
-                  dataTableHeaderValueLang.lang = vlskey;
-                  dataTableHeaderValueLang.valueText = currentObj.vls[vlskey].valueTxt;
-                  dataTableHeader.vls.push(dataTableHeaderValueLang);
-                });
-              }
+              dataTableHeader.vc = vc;
               griddataRow.push(dataTableHeader);
             });
             gridResponse.push(griddataRow);
@@ -612,8 +574,8 @@ export class Any2tsService {
       data.hdvs.forEach(hdvs => {
         const schemaTableData: SchemaTableData = new SchemaTableData();
         schemaTableData.fieldId = hdvs.fId;
-        schemaTableData.fieldDesc = hdvs.lls.filter(lls => lls.lang === 'EN')[0].label;
-        schemaTableData.fieldData = hdvs.vls.filter(vls => vls.lang === 'EN')[0].valueText ? hdvs.vls.filter(vls => vls.lang === 'EN')[0].valueText : '';
+        schemaTableData.fieldDesc = hdvs.ls;
+        schemaTableData.fieldData = hdvs.vc.t ? hdvs.vc.t : hdvs.vc.c;
         returnData[schemaTableData.fieldId] = schemaTableData;
         // anyArray.push(objNumberColumn);
       });
@@ -625,6 +587,13 @@ export class Any2tsService {
       statusColumn.fieldDesc = 'Status';
       returnData[statusColumn.fieldId] = statusColumn;
       // anyArray.push(statusColumn);
+
+      // for _score  column
+      const _score: SchemaTableData = new SchemaTableData();
+      _score.fieldId = '_score_weightage';
+      _score.fieldData = data._score;
+      _score.fieldDesc = 'Score';
+      returnData[_score.fieldId] = _score;
 
       anyArray.push(returnData);
     });
@@ -648,8 +617,8 @@ export class Any2tsService {
           data.hdvs.forEach(hdvs => {
             const schemaTableData: SchemaTableData = new SchemaTableData();
             schemaTableData.fieldId = hdvs.fId;
-            schemaTableData.fieldDesc = hdvs.lls.filter(lls => lls.lang === 'EN')[0].label;
-            schemaTableData.fieldData = hdvs.vls.filter(vls => vls.lang === 'EN')[0].valueText ? hdvs.vls.filter(vls => vls.lang === 'EN')[0].valueText : '';
+            schemaTableData.fieldDesc = hdvs.ls;
+            schemaTableData.fieldData = hdvs.vc.t ? hdvs.vc.t : hdvs.vc.c;
             returnData[schemaTableData.fieldId] = schemaTableData;
             // anyArray.push(objNumberColumn);
           });
@@ -657,8 +626,8 @@ export class Any2tsService {
           gvs.forEach(gv => {
             const schemaTableData: SchemaTableData = new SchemaTableData();
             schemaTableData.fieldId = gv.fId;
-            schemaTableData.fieldDesc = gv.lls.filter(lls => lls.lang === 'EN')[0].label;
-            schemaTableData.fieldData = gv.vls.filter(vls => vls.lang === 'EN')[0].valueText ? gv.vls.filter(vls => vls.lang === 'EN')[0].valueText : '';
+            schemaTableData.fieldDesc = gv.ls;
+            schemaTableData.fieldData = gv.vc.t ? gv.vc.t : gv.vc.c;
             returnData[schemaTableData.fieldId] = schemaTableData;
             // anyArray.push(objNumberColumn);
           });
@@ -670,6 +639,13 @@ export class Any2tsService {
           statusColumn.fieldDesc = 'Status';
           returnData[statusColumn.fieldId] = statusColumn;
           // anyArray.push(statusColumn);
+
+          // for _score  column
+          const _score: SchemaTableData = new SchemaTableData();
+          _score.fieldId = '_score_weightage';
+          _score.fieldData = data._score;
+          _score.fieldDesc = 'Score';
+          returnData[_score.fieldId] = _score;
 
           anyArray.push(returnData);
         });
@@ -686,8 +662,8 @@ export class Any2tsService {
         data.hdvs.forEach(hdvs => {
           const schemaTableData: SchemaTableData = new SchemaTableData();
           schemaTableData.fieldId = hdvs.fId;
-          schemaTableData.fieldDesc = hdvs.lls.filter(lls => lls.lang === 'EN')[0].label;
-          schemaTableData.fieldData = hdvs.vls.filter(vls => vls.lang === 'EN')[0].valueText ? hdvs.vls.filter(vls => vls.lang === 'EN')[0].valueText : '';
+          schemaTableData.fieldDesc = hdvs.ls;
+          schemaTableData.fieldData = hdvs.vc.t ? hdvs.vc.t: hdvs.vc.c;
           returnData[schemaTableData.fieldId] = schemaTableData;
           // anyArray.push(objNumberColumn);
         });
@@ -698,6 +674,13 @@ export class Any2tsService {
         statusColumn.fieldDesc = 'Status';
         returnData[statusColumn.fieldId] = statusColumn;
         // anyArray.push(statusColumn);
+
+        // for _score  column
+        const _score: SchemaTableData = new SchemaTableData();
+        _score.fieldId = '_score_weightage';
+        _score.fieldData = data._score;
+        _score.fieldDesc = 'Score';
+        returnData[_score.fieldId] = _score;
 
         anyArray.push(returnData);
 
@@ -724,8 +707,8 @@ export class Any2tsService {
           data.hdvs.forEach(hdvs => {
             const schemaTableData: SchemaTableData = new SchemaTableData();
             schemaTableData.fieldId = hdvs.fId;
-            schemaTableData.fieldDesc = hdvs.lls.filter(lls => lls.lang === 'EN')[0].label;
-            schemaTableData.fieldData = hdvs.vls.filter(vls => vls.lang === 'EN')[0].valueText ? hdvs.vls.filter(vls => vls.lang === 'EN')[0].valueText : '';
+            schemaTableData.fieldDesc = hdvs.ls;
+            schemaTableData.fieldData = hdvs.vc.t ? hdvs.vc.t: hdvs.vc.c;
             returnData[schemaTableData.fieldId] = schemaTableData;
             // anyArray.push(objNumberColumn);
           });
@@ -733,8 +716,8 @@ export class Any2tsService {
           hyv.forEach(gv => {
             const schemaTableData: SchemaTableData = new SchemaTableData();
             schemaTableData.fieldId = gv.fId;
-            schemaTableData.fieldDesc = gv.lls.filter(lls => lls.lang === 'EN')[0].label;
-            schemaTableData.fieldData = gv.vls.filter(vls => vls.lang === 'EN')[0].valueText ? gv.vls.filter(vls => vls.lang === 'EN')[0].valueText : '';
+            schemaTableData.fieldDesc = gv.ls;
+            schemaTableData.fieldData = gv.vc.t ? gv.vc.t : gv.vc.c;
             returnData[schemaTableData.fieldId] = schemaTableData;
             // anyArray.push(objNumberColumn);
           });
@@ -746,6 +729,13 @@ export class Any2tsService {
           statusColumn.fieldDesc = 'Status';
           returnData[statusColumn.fieldId] = statusColumn;
           // anyArray.push(statusColumn);
+
+          // for _score  column
+          const _score: SchemaTableData = new SchemaTableData();
+          _score.fieldId = '_score_weightage';
+          _score.fieldData = data._score;
+          _score.fieldDesc = 'Score';
+          returnData[_score.fieldId] = _score;
 
           anyArray.push(returnData);
         });
@@ -762,8 +752,8 @@ export class Any2tsService {
         data.hdvs.forEach(hdvs => {
           const schemaTableData: SchemaTableData = new SchemaTableData();
           schemaTableData.fieldId = hdvs.fId;
-          schemaTableData.fieldDesc = hdvs.lls.filter(lls => lls.lang === 'EN')[0].label;
-          schemaTableData.fieldData = hdvs.vls.filter(vls => vls.lang === 'EN')[0].valueText ? hdvs.vls.filter(vls => vls.lang === 'EN')[0].valueText : '';
+          schemaTableData.fieldDesc = hdvs.ls;
+          schemaTableData.fieldData = hdvs.vc.t ? hdvs.vc.t : hdvs.vc.c;
           returnData[schemaTableData.fieldId] = schemaTableData;
           // anyArray.push(objNumberColumn);
         });
@@ -774,6 +764,13 @@ export class Any2tsService {
         statusColumn.fieldDesc = 'Status';
         returnData[statusColumn.fieldId] = statusColumn;
         // anyArray.push(statusColumn);
+
+        // for _score  column
+        const _score: SchemaTableData = new SchemaTableData();
+        _score.fieldId = '_score_weightage';
+        _score.fieldData = data._score;
+        _score.fieldDesc = 'Score';
+        returnData[_score.fieldId] = _score;
 
         anyArray.push(returnData);
 

@@ -22,16 +22,18 @@
   </div>
 
   <div class="root-row">
+    <pros-schema-datatable objectId="{{moduleId}}" variantId="{{ variantId }}" schemaId="{{schemaId}}" totalRecord="{{schemaDetails.totalCount}}"
+      successCount="{{schemaDetails.successCount}}" errorCount="{{schemaDetails.errorCount}}"
+      dynamicRecordCount="{{schemaDetails.errorCount}}"></pros-schema-datatable>
+  </div>
+  
+
+  <div class="root-row">
     <pros-overview-chart schemaId={{schemaId}} variantId="{{ variantId }}"></pros-overview-chart>
   </div>
 
   <div class="root-row">
     <pros-categories-chart schemaId={{schemaId}} variantId="{{ variantId }}"></pros-categories-chart>
   </div>
-
-  <div class="root-row">
-    <pros-schema-datatable objectId="{{moduleId}}" variantId="{{ variantId }}" schemaId="{{schemaId}}" totalRecord="{{schemaDetails.totalCount}}"
-      successCount="{{schemaDetails.successCount}}" errorCount="{{schemaDetails.errorCount}}"
-      dynamicRecordCount="{{schemaDetails.errorCount}}"></pros-schema-datatable>
-  </div>
+  
 </div>
