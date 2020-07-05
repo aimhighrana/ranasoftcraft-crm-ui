@@ -68,13 +68,16 @@ export class SchemaListComponent implements OnInit {
     this.router.navigate(['/home/schema/create-schema', moduleId , schema.schemaId]);
   }
 
-  uploadData() {
+  uploadData(moduleId: string) {
     const dialogRef = this.matDialog.open(UploadDataComponent, {
-      height: '500px',
-      width: '800px',
+      height: '706px',
+      width: '1100px',
+      data:{moduleId}
     });
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
     });
   }
+
+
 }

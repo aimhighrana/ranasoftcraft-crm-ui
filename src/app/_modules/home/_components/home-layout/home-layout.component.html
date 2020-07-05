@@ -4,19 +4,18 @@
 <mat-toolbar class="root mat-elevation-z3">
   <mat-toolbar-row>
     <img src="assets/images/mdo.png" alt="MDO"/>
+    <span class="f-spacer"></span>
+    <!-- <button class="hdrBtn" mat-icon-button matTooltip="Comming Soon ..."><mat-icon>search</mat-icon></button>
+         <button class="hdrBtn" mat-icon-button matTooltip="Comming Soon ..."><mat-icon>dashboard</mat-icon></button> -->
+    <button class="hdrBtn" mat-icon-button matTooltip="Notification Comming Soon..."><mat-icon>notifications_none</mat-icon></button>
     <span class="col-spacer"></span>
     <mat-divider vertical="true"></mat-divider>
-    <span class="f-spacer"></span>
-    <button class="hdrBtn" mat-icon-button matTooltip="Comming Soon ..."><mat-icon>search</mat-icon></button>
-    <button class="hdrBtn" mat-icon-button matTooltip="Comming Soon ..."><mat-icon>dashboard</mat-icon></button>
-    <button class="hdrBtn" mat-icon-button matTooltip="Comming Soon ..."><mat-icon>notifications</mat-icon></button>
     <span class="col-spacer"></span>
-    <button class="hdrBtn userBtn" mat-button [matMenuTriggerFor]="userMenu" #um="matMenuTrigger">
-      <mat-icon>person</mat-icon>
-      {{userDetails.fullName}}
-      <mat-icon *ngIf="!um.menuOpen">arrow_left</mat-icon>
-      <mat-icon *ngIf="um.menuOpen">arrow_drop_down</mat-icon>
-    </button>
+    <div class="f-col hdrUser" [matMenuTriggerFor]="userMenu" #um="matMenuTrigger">
+      <span class="U-Details">{{userDetails.fullName}}</span>
+      <span class="U-Name">Andrew Worthington</span>
+      <mat-icon>keyboard_arrow_down</mat-icon>
+    </div>
     <mat-menu #userMenu="matMenu">
       <button mat-menu-item>
         <mat-icon>settings</mat-icon>
@@ -27,6 +26,10 @@
         <span>Logout</span>
       </button>
     </mat-menu>
+    <!-- <button class="hdrBtn userBtn" mat-button>
+     <mat-icon *ngIf="!um.menuOpen">arrow_left</mat-icon>
+      <mat-icon *ngIf="um.menuOpen">arrow_drop_down</mat-icon>
+    </button> -->
   </mat-toolbar-row>
 </mat-toolbar>
 <mat-progress-bar *ngIf="isLoading() | async" mode="indeterminate"></mat-progress-bar>

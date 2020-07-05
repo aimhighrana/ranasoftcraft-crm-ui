@@ -25,6 +25,8 @@ import { AccessDeniedDialogComponent } from '@modules/shared/_components/access-
 import { DuplicateBusinessruleComponent } from './_components/duplicate-businessrule/duplicate-businessrule.component';
 import { AdvanceoptionsDialogComponent } from './_components/advanceoptions-dialog/advanceoptions-dialog.component';
 import { DuplicateDetailsComponent } from './_components/duplicate-details/duplicate-details.component';
+import { DiwCreateSchemaComponent } from './_components/diw-create-schema/diw-create-schema.component';
+import { DiwCreateBusinessruleComponent } from './_components/diw-create-businessrule/diw-create-businessrule.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +52,9 @@ import { DuplicateDetailsComponent } from './_components/duplicate-details/dupli
     AccessDeniedDialogComponent,
     DuplicateBusinessruleComponent,
     AdvanceoptionsDialogComponent,
-    DuplicateDetailsComponent
+    DuplicateDetailsComponent,
+    DiwCreateSchemaComponent,
+    DiwCreateBusinessruleComponent
   ],
   imports: [
     CommonModule,

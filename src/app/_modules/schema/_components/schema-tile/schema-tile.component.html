@@ -1,15 +1,90 @@
-<mat-card class="root mat-elevation-z6" [class.pulse_opacity_step_10_repeat]="pulse">
+<mat-card class="mat-elevation-z0 root" [class.pulse_opacity_step_10_repeat]="pulse">
   <mat-toolbar class="header">
     <mat-toolbar-row>
       <h3 class="mat-h3" [matTooltip]="title">{{ title }}</h3>
       <span class="f-spacer"></span>
-      <button mat-icon-button><mat-icon *ngIf="edit" prosClickStopPropagation matTooltip="Edit" (click)="onEdit();">edit</mat-icon></button>
-      <button mat-icon-button><mat-icon *ngIf="delete" prosClickStopPropagation matTooltip="Delete" (click)="onDelete();">delete</mat-icon></button>
-      <button mat-icon-button><mat-icon *ngIf="info" prosClickStopPropagation matTooltip="Information comming soon ..." (click)="onInfo();">info</mat-icon></button>
+      <button mat-icon-button [matMenuTriggerFor]="menu"><mat-icon>more_vert</mat-icon></button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item *ngIf="edit" prosClickStopPropagation matTooltip="Edit" (click)="onEdit();">Edit</button>
+        <button mat-menu-item *ngIf="delete" prosClickStopPropagation matTooltip="Delete" (click)="onDelete();">Delete</button>
+        <button mat-menu-item *ngIf="info" prosClickStopPropagation matTooltip="Information comming soon ..." (click)="onInfo();">Info</button>
+      </mat-menu>
     </mat-toolbar-row>
   </mat-toolbar>
-  <mat-divider></mat-divider>
-  <mat-card-content class="f-col">
+  <mat-card-content class="f-row tile-data">
+    <div class="f-col"> 
+      <span class="display-per error">{{ percentageErrorStr() }}%</span>
+      <span class="mat-caption row1text">Last Run: {{ timestamp }}</span>
+      <div class="f-row">
+        <button mat-flat-button color="primary" class="Runbtn">Run all</button>
+        <span class="f-col-spacer-half"></span>
+        <button mat-icon-button><mat-icon class="alert-icon">error</mat-icon></button>
+      </div>
+      <span class="f-row-spacer-half"></span>
+      <button mat-button color="primary">Run variants</button>
+    </div>
+    <div class="f-col links-col">
+      <a href="#" class="total">Total: {{ showUnique ? totalUniqueValue : totalValue }}</a>
+      <a href="#" class="error">Error: {{ showUnique ? errorUniqueValue : errorValue }}</a>
+      <a href="#" class="success">Success: {{ showUnique ? successUniqueValue : successValue }}</a>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+
+<mat-card class="mat-elevation-z0 root highlight" style="display: none;">
+  <mat-toolbar class="header">
+    <mat-toolbar-row>
+      <h3 class="mat-h3" [matTooltip]="title">{{ title }}</h3>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  <mat-card-content class="f-col run-data">
+    <div class="f-row">
+      <div class="f-col record-text">
+        <p>The schema will be executed on 67k records</p>
+      </div>
+
+      <div class="f-col right-record">
+        <mat-icon class="check-icon">check_circle</mat-icon>
+        <span class="records">67k</span>
+      </div>
+    </div>
+    <span class="row-spacer"></span>
+    <div class="f-row bottom-actions">
+      <button mat-button>Cancel</button>
+      <button mat-button>Scheduling</button>
+      <button mat-flat-button color="primary">Run now</button>
+    </div>
+    
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="mat-elevation-z0 root highlight processing" style="display: none;">
+  <mat-toolbar class="header">
+    <mat-toolbar-row>
+      <h3 class="mat-h3" [matTooltip]="title">{{ title }}</h3>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  <mat-card-content class="f-col run-data">
+    <mat-spinner diameter="50"></mat-spinner>
+    <strong>Processing run…</strong>
+    <span class="row-spacer"></span>
+    <div class="f-row bottom-actions">
+      <button mat-button>Cancel</button>
+    </div>
+    
+  </mat-card-content>
+</mat-card>
+
+
+
+
+
+
+
+
+
+<!-- <mat-card-content class="f-col">
     <div class="f-row">
       <ng-template [ngIf]="totalValue && showingErrors">
         <h2 class="perc err">{{ percentageErrorStr() }}</h2>
@@ -76,5 +151,4 @@
       <span class="f-spacer"></span>
       <button *ngIf="bottomRightLabel" prosClickStopPropagation mat-button color="primary" (click)="onBottomRight();">{{ bottomRightLabel }}</button>
     </mat-card-footer>
-  </ng-template>
-</mat-card>
+  </ng-template> -->

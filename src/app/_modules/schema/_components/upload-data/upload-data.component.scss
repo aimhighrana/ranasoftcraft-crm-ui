@@ -4,59 +4,109 @@
   justify-content: flex-start;
   align-items: flex-start;
   align-content: flex-start;
+  margin: -24px;
 
-  .breadcrumb-wrapper {
-    flex: 1 100%;
+  mat-toolbar {
+    mat-toolbar-row {
+      font-weight: 400;
+    }
   }
 
   .upload-process {
+    margin: 0 auto;
     width: 100%;
-    margin: 0 16px;
 
-    mat-form-field {
-      width: 100%;
-    }
+    .middle-container {
+      margin: 32px 0;
 
-    h3 {
-      margin: 0;
-    }
+      .fileupload-tile {
+        border-style: dashed;
+        border-width: 2px;
+        border-radius: 3px;
+        align-items: center;
+        width: 436px;
+        min-height: 230px;
+        padding: 52px 32px 0 32px;
+        margin: 0 auto;
 
-    mat-card-actions {
-      margin: 0 -8px;
-      padding: 0;
+        .f-col {
+          align-items: center;
 
-      button {
-        margin: 8px;
-      }
-    }
+          .basic-icon {
+            width: 50px;
+            height: 50px;
+            font-size: 50px;
+          }
 
-    .fieldgrid {
-      width: 100%;
+          .mat-h4 {
+            font-size: 20px;
+            margin: 0;
+          }
 
-      .mat-header-cell {
-        padding: 0 8px;
-      }
+          .or-divider {
+            margin: 24px 0;
+          }
 
-      .mat-cell {
-        padding: 0 8px;
-
-        mat-form-field {
-          height: 40px;
-          font-size: 13px;
-          margin: 8px 0;
+          .message-text {
+            font-size: 16px;
+            margin-top: 32px;
+            text-align: center;
+          }
         }
       }
 
-      .map-icon {
-        text-align: right;
+      .upload-note {
+        text-align: center;
+        min-height: 100px;
+        justify-content: center;
+
+        p {
+          margin: 0;
+        }
       }
     }
-  }
 
-  @media only screen and (min-width: 200px) and (max-width: 580px) {
-    .mat-cell {
-      mat-form-field {
-        width: 120px;
+    .field-grid {
+      width: 100%;
+
+      .mat-table {
+        width: 100%;
+
+        .mat-header-cell {
+          padding: 0 8px;
+          font-size: 14px;
+          border: none;
+        }
+
+        .mat-cell {
+          padding: 0 8px;
+
+          mat-form-field {
+            height: 40px;
+            font-size: 13px;
+            margin: 8px 0;
+          }
+        }
+
+        .map-icon {
+          text-align: right;
+        }
+      }
+    }
+
+    .finish-container {
+      align-items: center;
+
+      .checked-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 40px;
+        color: #259b24;
+      }
+
+      .title-heading {
+        font-size: 24px;
+        font-weight: 500;
       }
     }
   }

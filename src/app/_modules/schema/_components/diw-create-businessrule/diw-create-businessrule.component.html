@@ -1,0 +1,64 @@
+<div class="root">
+  <mat-toolbar>
+    <mat-toolbar-row>
+      <span>Create a new business <strong>rule</strong></span>
+      <span class="f-spacer"></span>
+      <button mat-icon-button>
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-toolbar-row>
+    </mat-toolbar>
+    <mat-card class="mat-elevation-z0 rule-process">
+      <mat-horizontal-stepper [linear]="isLinear" #stepper class="createrule-container">
+        <mat-step [stepControl]="firstFormGroup">
+          <form [formGroup]="firstFormGroup">
+            <ng-template matStepLabel>Select a rule</ng-template>
+                <div class="f-col businessrule-nav">
+                    <button mat-stroked-button>Basic</button>
+                    <button mat-stroked-button>Dependency Rule</button>
+                    <button mat-stroked-button>External Validation Rule</button>
+                    <button mat-stroked-button>Metadata Rule</button>
+                    <button mat-stroked-button>Duplicate Rule</button>
+                    <button mat-stroked-button>Regex Rule</button>
+                    <button mat-stroked-button>User Defined Rule</button>
+                    <button mat-stroked-button>API Rule</button>
+                </div>
+          </form>
+        </mat-step>
+        <mat-step [stepControl]="secondFormGroup">
+          <form [formGroup]="secondFormGroup">
+              <div class="f-col rule-fields">
+                <ng-template matStepLabel>Rule details</ng-template>
+            <h2 class="mat-h2">Regx rule details</h2>
+            <mat-form-field appearance="outline">
+                <mat-label>Description *</mat-label>
+                <input matInput placeholder="Placeholder">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Select fields *</mat-label>
+                <input matInput placeholder="Placeholder">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Standard function *</mat-label>
+                <input matInput placeholder="Placeholder">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="mat-textarea">
+                <mat-label>Text area</mat-label>
+                <textarea matInput></textarea>
+            </mat-form-field>
+          </div>
+            <div class="f-row">
+              <button mat-flat-button color="primary" matStepperPrevious>Back</button>
+              <span class="f-spacer"></span>
+              <button mat-flat-button color="primary"matStepperNext>Save rule</button>
+            </div>
+          </form>
+        </mat-step>
+</mat-horizontal-stepper>
+
+    </mat-card>
+</div>
+
