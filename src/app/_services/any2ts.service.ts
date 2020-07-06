@@ -389,6 +389,7 @@ export class Any2tsService {
     schemaDetail.brInformation = [];
     schemaDetail.pulse = resposne.isInRunning ? resposne.isInRunning : false;
     schemaDetail.moduleId = resposne.moduleId ? resposne.moduleId : false;
+    schemaDetail.schemaThreshold = resposne.schemaThreshold && resposne.schemaThreshold !== 'null'  ? resposne.schemaThreshold : 0;
 
     if (resposne.brInformation) {
       resposne.brInformation.forEach(br => {

@@ -1,24 +1,21 @@
 <mat-card class="mat-elevation-z3">
     <div class="execution-counts">
+
         <mat-card class="mat-elevation-z2">
-            <h3 class="mat-h3">Total % of Error</h3>
-            <strong class="error-status">{{ summary.totalErrorPer }}%</strong>
+            <h3 class="mat-h3">Schema Threshold </h3>
+            <strong [class.error-status]="thresholdRes.thresHoldStatus === 'DANGER'" [class.success-status]="thresholdRes.thresHoldStatus === 'GOOD'">{{ thresholdRes.threshold }}%</strong>
         </mat-card>
 
         <mat-card class="mat-elevation-z2">
-            <h3 class="mat-h3">Total % of Unique Error</h3>
-            <strong class="error-status">{{ summary.uniqueErrorPer }} %</strong>
+            <h3 class="mat-h3">Total % of Error</h3>
+            <strong class="error-status">{{ summary.totalErrorPer }} %</strong>
         </mat-card>
 
         <mat-card class="mat-elevation-z2">
             <h3 class="mat-h3">Total % of Success</h3>
             <strong class="success-status">{{ summary.totalSuccessPer }}%</strong>
         </mat-card>
-
-        <mat-card class="mat-elevation-z2">
-            <h3 class="mat-h3">Total % of Unique Success</h3>
-            <strong class="success-status">{{ summary.uniqueSuccessPer }}%</strong>
-        </mat-card>
+        
     </div>
     
     <div class="f-row">

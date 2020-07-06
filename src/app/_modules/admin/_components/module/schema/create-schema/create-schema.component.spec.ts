@@ -10,12 +10,16 @@ import { SchemalistService } from 'src/app/_services/home/schema/schemalist.serv
 import { SchemaListDetails } from 'src/app/_models/schema/schemalist';
 import { of } from 'rxjs';
 import { CoreSchemaBrInfo, Category, CreateUpdateSchema } from '../../business-rules/business-rules.modal';
+import { Router } from '@angular/router';
+import { ObjectTypeResponse } from '@models/schema/schema';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
 describe('CreateSchemaComponent', () => {
   let component: CreateSchemaComponent;
   let fixture: ComponentFixture<CreateSchemaComponent>;
   let service: SchemaService;
   let schemaListService: SchemalistService;
+  let router: Router;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ CreateSchemaComponent ],
@@ -28,6 +32,7 @@ describe('CreateSchemaComponent', () => {
       ]
     })
     .compileComponents();
+    router = TestBed.inject(Router);
   }));
 
   beforeEach(() => {
@@ -154,6 +159,7 @@ describe('CreateSchemaComponent', () => {
     request.discription = component.schemaName;
     request.schemaId = component.schemaId;
     request.brs = component.brList;
+    request.schemaThreshold = component.schemaThresholdCtrl.value;
 
     spyOn(service,'createUpdateSchema').withArgs(request).and.returnValue(of(component.schemaId));
 
@@ -191,6 +197,42 @@ describe('CreateSchemaComponent', () => {
     expect(service.deleteBr).toHaveBeenCalledWith(brid);
 
     expect(component.brList.length).toEqual(0, 'After remove br length should be 0');
+
+  }));
+
+  it('brWightageChange(), business rule weigthage change', async(()=>{
+    const br: CoreSchemaBrInfo = new CoreSchemaBrInfo();
+    br.brIdStr = '723567';
+
+    component.brList = [br];
+    component.brWightageChange(br, '20');
+
+    expect(component.brList[0].brWeightage).toEqual('20');
+  }));
+
+  it('editBusinessRuls(), edit br rule', async(()=>{
+    const brId = '2645632';
+    spyOn(router, 'navigate');
+    component.editBusinessRuls('2645632','BR_MANDATORY_FIELDS');
+    expect(router.navigate).toHaveBeenCalledWith(['/home/schema/create-schema', component.moduleId , component.schemaId], {queryParams:{brId}, fragment:'missing'});
+  }));
+
+  it('displayFn(), test display fn', async(()=>{
+    const objectType: ObjectTypeResponse = new ObjectTypeResponse();
+    objectType.objectdesc = 'MAterial Desc';
+
+    expect(component.displayFn(objectType)).toEqual(objectType.objectdesc);
+  }));
+
+  it('selectModule(), after select module', async(()=>{
+    const objectType: ObjectTypeResponse = new ObjectTypeResponse();
+    objectType.objectdesc = 'MAterial Desc';
+    objectType.objectid ='1005';
+
+    const event: MatAutocompleteSelectedEvent = {option:{value:{objectType}}} as MatAutocompleteSelectedEvent;
+
+    component.selectModule(event);
+    expect(component.moduleId).toEqual(undefined);
 
   }));
 });

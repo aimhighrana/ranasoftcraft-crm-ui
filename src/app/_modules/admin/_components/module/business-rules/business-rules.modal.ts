@@ -44,6 +44,7 @@ export class CreateUpdateSchema {
     moduleId: string;
     schemaId: string;
     schemaGroupId: string;
+    schemaThreshold: string;
     brs: CoreSchemaBrInfo[];
 }
 

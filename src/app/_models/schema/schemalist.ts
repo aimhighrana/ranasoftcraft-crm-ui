@@ -64,6 +64,7 @@ export class SchemaListDetails {
     brInformation: BusinessRuleExecutionDetails[];
     moduleId: string;
     pulse: boolean;
+    schemaThreshold: string;
 }
 export class BusinessRuleExecutionDetails {
     brId: string;
@@ -224,4 +225,11 @@ export class VariantListDetails {
     timestamp: number;
     isVariant: boolean;
     isInRunning: boolean;
+}
+
+export class SchemaStaticThresholdRes {
+    schemaId: string;
+    threshold: any;
+    thresHoldStatus: string;
+    successCnt: number;
 }

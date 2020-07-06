@@ -31,10 +31,26 @@
     .min-drop-height {
       min-height: 10px; // create dropable container
     }
+
+    .schema-thr {
+      .schema-name {
+        width: 78%;
+      }
+
+      .schema-weightage {
+        width: 20%;
+        padding-left: 10px;
+      }
+    }
   }
 
   .brs {
     width: 332px;
+
+    .br-weightage {
+      padding-left: 8px;
+      width: 53%;
+    }
   }
 
   .f-row {

@@ -362,6 +362,14 @@ export class EndpointService {
     return `${this.apiUrl}/schema/br/udr/delete-conditionblock/${blockId}`;
   }
 
+  public getSchemaThresholdStatics(schemaId: string, variantId?: string): string {
+    if(variantId === undefined || variantId === null || variantId === 'null'){
+      return `${this.apiUrl}/schema/statics/${schemaId}`;
+    } else {
+      return `${this.apiUrl}/schema/statics/${schemaId}/${variantId}`;
+    }
+  }
+
 }
 
 

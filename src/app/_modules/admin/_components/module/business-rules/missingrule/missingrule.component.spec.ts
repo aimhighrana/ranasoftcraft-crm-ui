@@ -1,6 +1,6 @@
 import { MissingruleComponent } from './missingrule.component';
 import { of } from 'rxjs';
-import { CoreSchemaBrInfo } from '../business-rules.modal';
+import { CoreSchemaBrInfo, BusinessRuleType } from '../business-rules.modal';
 import { TestBed } from '@angular/core/testing';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -42,13 +42,15 @@ describe('MissingruleComponent', () => {
   });
 
   it('testing convertObjtoString ', () => {
-    component.groupDetailss = [{ id: 1 }];
-    component.convertObjtoString();
+    component.groupDetailss = [{ id: 1 },{ id: 2}];
+    const actualRes = component.convertObjtoString();
+    expect(actualRes).toEqual('1,2');
   });
 
   it('checking remove()', () => {
     component.groupDetailss = ['1234']
     component.remove('1234');
+    expect(component.groupDetailss.length).toEqual(0);
   })
 
   it('testing getDesciption - grid', () => {
@@ -65,12 +67,14 @@ describe('MissingruleComponent', () => {
       }
     }
     component.getDesciption(data, 'grid');
+    expect(component.finalList.length).toEqual(1);
   })
 
   it('testing onSelect', () => {
     const dd = { fieldId: '123' }
     component.groupDetailss = [{ id: '123' }];
     component.onSelect(dd)
+    expect(component.groupDetailss.length).toEqual(1);
   })
 
   it('testing fillDetailsData', () => {
@@ -81,6 +85,13 @@ describe('MissingruleComponent', () => {
     const res = {
       headers: {
         TEST: { fieldId: 'qwrer', fieldDescri: 'Test Type', dataType: 'CHAR', maxChar: '10', mandatory: '0' }
+      },
+      gridsData:{
+        LANGUAGE_GRID:{
+          LANG:{
+            fieldId: 'LANG', fieldDescri: 'language ', dataType: 'CHAR', maxChar: '10', mandatory: '0'
+          }
+        }
       }
     }
     spyOn(service, 'getFillDataDropdownData').and.callFake(() => {
@@ -96,6 +107,7 @@ describe('MissingruleComponent', () => {
     })
 
     component.fillDetailsData();
+    expect(component.gridsData).toEqual(undefined);
   })
 
   it('testing saveBrInfo ', () => {
@@ -108,17 +120,20 @@ describe('MissingruleComponent', () => {
     //   return '';
     // })
     component.saveBrInfo();
+    expect(service.createBusinessRule).toHaveBeenCalled();
   });
 
 
 
   it('testing returnBrtype', () => {
     component.brType = 'missingRule';
-    component.returnBrtype();
+    const res = component.returnBrtype();
+    expect(BusinessRuleType.BR_MANDATORY_FIELDS).toEqual(res);
   })
 
   it('testing returnBrtype', () => {
     component.brType = 'metaDataRule';
-    component.returnBrtype();
+    const res = component.returnBrtype();
+    expect(BusinessRuleType.BR_METADATA_RULE).toEqual(res);
   })
 });

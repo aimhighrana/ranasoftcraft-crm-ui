@@ -13,7 +13,7 @@
   </mat-toolbar>
   <mat-card-content class="f-row tile-data">
     <div class="f-col"> 
-      <span class="display-per error">{{ percentageErrorStr() }}%</span>
+      <span class="display-per error" [class.error] ="thresholdRes && thresholdRes.thresHoldStatus ==='DANGER'" [class.success] ="thresholdRes && thresholdRes.thresHoldStatus ==='GOOD'" >{{ thresholdRes.threshold }}%</span>
       <span class="mat-caption row1text">Last Run: {{ timestamp }}</span>
       <div class="f-row">
         <button mat-flat-button color="primary" class="Runbtn" prosClickStopPropagation (click)="onBottomRight();">Run all</button>

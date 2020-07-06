@@ -42,6 +42,8 @@ export class CreateSchemaComponent implements OnInit {
   moduleList: ObjectTypeResponse[] = [];
   filteredModules: Observable<ObjectTypeResponse[]> = of([]);
   moduleInpCtrl: FormControl = new FormControl('');
+
+  schemaThresholdCtrl: FormControl = new FormControl('');
   /**
    * Use for store br mapped on particular category
    * As key value pair | kay is the index of form array and value is CoreSchemaBrInfo[]
@@ -119,6 +121,7 @@ export class CreateSchemaComponent implements OnInit {
       if (this.schemaDetails) {
         this.getBusinessRulesData();
         this.schemaName = this.schemaDetails.schemaDescription;
+        this.schemaThresholdCtrl.setValue(this.schemaDetails.schemaThreshold)
         const moduleDesc = this.moduleList.filter(fill => fill.objectid === this.schemaDetails.moduleId)[0];
         if(moduleDesc) {
           this.moduleInpCtrl.setValue(moduleDesc);
@@ -441,6 +444,22 @@ export class CreateSchemaComponent implements OnInit {
   }
 
   /**
+   *
+   * @param br current br info
+   * @param weightage number range 0-100 in percentage
+   */
+  brWightageChange(br: CoreSchemaBrInfo, weightage: string) {
+    if(br) {
+      const brInfo = this.brList.filter(brLst=> brLst.brIdStr === br.brIdStr)[0];
+      if(brInfo) {
+        const indx =  this.brList.indexOf(brInfo);
+        brInfo.brWeightage = weightage;
+        this.brList.splice(indx,1,brInfo);
+      }
+    }
+  }
+
+  /**
    * Call http for save update schema and br mapping
    * along with goup
    */
@@ -465,7 +484,23 @@ export class CreateSchemaComponent implements OnInit {
     request.discription = this.schemaName;
     request.schemaId = this.schemaId;
     request.brs = this.brList;
+    if(this.schemaThresholdCtrl.value <0 || this.schemaThresholdCtrl.value>100) {
+      this.matSnackBar.open(`Schema threshold in 0-100`, 'Close',{duration:5000});
+      return false;
+    }
+    request.schemaThreshold = this.schemaThresholdCtrl.value;
 
+    let totalWigtage = 0;
+    this.brList.forEach(map=> {
+      if(map.brWeightage) {
+        totalWigtage += Number(map.brWeightage);
+      }
+    });
+
+    if(totalWigtage >100) {
+      this.matSnackBar.open(`Total Business rule weightage can't more than 100`, 'Close',{duration:5000});
+      return false;
+    }
     console.log('request : {}', request);
     this.service.createUpdateSchema(request).subscribe(response => {
       console.log('create update schema Response = ', response);

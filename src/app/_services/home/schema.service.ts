@@ -7,6 +7,7 @@ import { Any2tsService } from '../any2ts.service';
 import { SchemaGroupResponse, SchemaGroupDetailsResponse, SchemaGroupCountResponse, CreateSchemaGroupRequest, GetAllSchemabymoduleidsReq, ObjectTypeResponse, GetAllSchemabymoduleidsRes, SchemaGroupWithAssignSchemas } from 'src/app/_models/schema/schema';
 import { DataSource } from 'src/app/_modules/schema/_components/upload-data/upload-data.component';
 import { DropDownValue, UDRBlocksModel, UdrModel, CoreSchemaBrInfo, Category } from 'src/app/_modules/admin/_components/module/business-rules/business-rules.modal';
+import { SchemaStaticThresholdRes } from '@models/schema/schemalist';
 
 
 
@@ -139,5 +140,15 @@ export class SchemaService {
    */
   public deleteConditionBlock(blockId: string): Observable<boolean> {
     return this.http.delete<boolean>(this.endpointService.deleteConditionBlock(blockId));
+  }
+
+  /**
+   * Return Schema threshold based on config ..
+   * Latest Run statics
+   * @param schemaId schema id
+   * @param variantId variant id is an option params ..
+   */
+  public getSchemaThresholdStatics(schemaId: string, variantId?:string): Observable<SchemaStaticThresholdRes> {
+    return this.http.get<SchemaStaticThresholdRes>(this.endpointService.getSchemaThresholdStatics(schemaId, variantId));
   }
 }

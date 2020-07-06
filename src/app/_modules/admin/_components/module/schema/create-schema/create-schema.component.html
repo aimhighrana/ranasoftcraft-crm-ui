@@ -17,11 +17,20 @@
             </mat-autocomplete>
         </mat-form-field>
 
+        <div class="f-row schema-thr">
+            <mat-form-field class="schema-name">
+                <mat-label>Schema Name</mat-label>
+                <input matInput [(ngModel)]="schemaName">
+            </mat-form-field>
 
-        <mat-form-field>
-            <mat-label>Schema Name</mat-label>
-            <input matInput [(ngModel)]="schemaName">
-        </mat-form-field>
+            <mat-form-field class="schema-weightage">
+                <mat-label>Weightage</mat-label>
+                <input matInput placeholder="Ex. 0-100" value="0" min="0" max="100" [formControl]="schemaThresholdCtrl">
+                <mat-hint>Weightage in 0 - 100%</mat-hint>
+            </mat-form-field>
+
+        </div>
+        
         <h3 class="mat-h3">Categories</h3>
 
         <form [formGroup]="dynCategoryFrmGrp">
@@ -130,6 +139,13 @@
                         <button mat-icon-button>
                             <mat-icon [matBadge]="data.order" matBadgeColor="primary">menu</mat-icon>
                         </button>
+                        
+                        <mat-form-field class="br-weightage">
+                            <mat-label>Weightage</mat-label>
+                            <input matInput placeholder="Ex. 0-100" min="0" max="100" [value]="data.brWeightage ? data.brWeightage : 0" (keyup)="brWightageChange(data,$event.target.value);">
+                            <mat-hint>Weightage in 0-100%</mat-hint>
+                        </mat-form-field>
+
                     </div>
                 </mat-card>
                 <div class="row-spacer"></div>

@@ -103,6 +103,8 @@ describe('FiltersDropdownComponent', () => {
     component.globalStateStructure[sampleFilters.dynamicFilters[0].filterFields[0].objectId][sampleFilters.dynamicFilters[0].filterFields[0].fieldId].list = [sampleTags]
     component.getDynamicList(sampleFilters.dynamicFilters[0].filterFields[0]);
     component.setAutoSelectedFromTaglist();
+
+    expect(Object.keys(component.globalStateStructure).length).toEqual(1);
   });
 
   it('should updateFilters()', () => {
@@ -206,6 +208,7 @@ describe('FiltersDropdownComponent', () => {
     })
     component.getDynamicList(sampleFilters.dynamicFilters[0].filterFields[0]);
     component.setTags(sampleTags, 0);
+    expect((component.globalStateStructure[sampleFilters.dynamicFilters[0].filterFields[0].objectId][sampleFilters.dynamicFilters[0].filterFields[0].fieldId].list).length).toEqual(1);
   })
 
 

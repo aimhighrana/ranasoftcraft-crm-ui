@@ -1,11 +1,14 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { SchemaService } from '@services/home/schema.service';
+import { SchemaStaticThresholdRes } from '@models/schema/schemalist';
+import { Subscription } from 'rxjs';
 @Component({
   selector: 'pros-schema-tile',
   templateUrl: './schema-tile.component.html',
   styleUrls: ['./schema-tile.component.scss']
 })
-export class SchemaTileComponent implements OnInit {
+export class SchemaTileComponent implements OnInit, OnDestroy {
 
   @Input()
   title: string;
@@ -62,14 +65,41 @@ export class SchemaTileComponent implements OnInit {
   errorTrendValue: number;
 
   @Input()
+  schemaId: string;
+
+  @Input()
+  variantId: string;
+
+  @Input()
   timestamp: string; // this should be date
 
   showingErrors = true;
   showUnique = false;
 
-  constructor() { }
+  /**
+   * Hold all info related to schema threshold statics
+   */
+  thresholdRes: SchemaStaticThresholdRes = new SchemaStaticThresholdRes();
+
+  /**
+   * All subsriptions are here
+   */
+  subscriptions: Subscription[] = [];
+
+  constructor(
+    private schemaService: SchemaService
+  ) { }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub=>{
+      sub.unsubscribe();
+    });
+  }
 
   ngOnInit() {
+    if(this.schemaId) {
+      this.getSchemaThresholdStatics();
+    }
   }
 
   public percentageErrorStr(): number {
@@ -108,6 +138,20 @@ export class SchemaTileComponent implements OnInit {
 
   public onInfo() {
     return this.evtInfo.emit();
+  }
+
+  /**
+   * Get schema threshold statics
+   * Based on schemaId & variantId
+   */
+  getSchemaThresholdStatics() {
+    const staticSub = this.schemaService.getSchemaThresholdStatics(this.schemaId, this.variantId).subscribe(res=>{
+      this.thresholdRes = res;
+      this.thresholdRes.threshold = Math.round((res.threshold + Number.EPSILON) * 100) / 100;
+    }, error=>{
+      console.error(`Execption : ${error.message}`);
+    });
+    this.subscriptions.push(staticSub);
   }
 
 }
