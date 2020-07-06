@@ -370,6 +370,10 @@ export class EndpointService {
     }
   }
 
+  public uploadCorrectionDataUrl(objectType: string, schemaId: string,runId: string, plantCode: string, fileSno: string): string {
+    return `${this.apiUrl}/es/uploadCorrection/${objectType}/${schemaId}/${runId}/${plantCode}/${fileSno}`;
+  }
+
 }
 
 

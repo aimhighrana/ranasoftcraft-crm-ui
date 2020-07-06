@@ -100,10 +100,12 @@ describe('SchemaDatatableComponent', () => {
     metaDataFieldList.dataType = 'CHAR';
     metaDataFieldList.picklist = '0';
     component.metaDataFieldList = {TEST123:metaDataFieldList};
-    expect(component.isEditable('TEST123')).toEqual(true);
+    const row = {} as any;
+    row.row_status = {fieldData:'Outdated'};
+    expect(component.isEditable('TEST123',row)).toEqual(false);
 
     component.metaDataFieldList = {};
-    expect(component.isEditable('TEST123')).toEqual(true);
+    expect(component.isEditable('TEST123',row)).toEqual(false);
   }));
 
   it('showErrorMessages(), show error message matTooltip', async(()=>{

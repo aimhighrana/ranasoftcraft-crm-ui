@@ -151,4 +151,7 @@ export class SchemaService {
   public getSchemaThresholdStatics(schemaId: string, variantId?:string): Observable<SchemaStaticThresholdRes> {
     return this.http.get<SchemaStaticThresholdRes>(this.endpointService.getSchemaThresholdStatics(schemaId, variantId));
   }
+  public uploadCorrectionData(data: DataSource[], objectType: string, schemaId:string, runId: string, plantCode: string, fileSno: string): Observable<string> {
+    return this.http.post<any>(this.endpointService.uploadCorrectionDataUrl(objectType, schemaId, runId, plantCode, fileSno), data);
+  }
 }

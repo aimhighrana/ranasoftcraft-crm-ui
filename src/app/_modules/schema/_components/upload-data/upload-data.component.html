@@ -1,7 +1,14 @@
 <div class="root">
   <mat-toolbar>
     <mat-toolbar-row>
-      <span>Upload new dataset for <strong>{{ moduleInfo.module.moduleDesc }}</strong></span>
+      <span>Upload new dataset for 
+        <ng-template [ngIf]="moduleInfo.object" [ngIfElse]="elseIndex">
+          <strong>Correction Value</strong>
+        </ng-template>
+        <ng-template #elseIndex>
+          <strong>{{ moduleInfo.module.moduleDesc }}</strong>
+        </ng-template>
+      </span>
       <span class="f-spacer"></span>
       <button mat-icon-button (click)="closeDialog()">
         <mat-icon>close</mat-icon>
@@ -41,7 +48,7 @@
                 <h4 class="mat-h4">Drag & Drop files here</h4>
                 <span class="or-divider">or</span>
                 <input type="file" (change)="fileChange($event)"  formControlName="uploadFileCtrl" style="display: none;" multiple="false" id="uploadFileCtrl"/>
-                <button mat-flat-button color="primary" (click)="uploadFile()">{{ uploadedFile ? uploadedFile.name:'Browse file' }}</button>
+                <button [disabled]="uploadDisabled" mat-flat-button color="primary" (click)="uploadFile()">{{ uploadedFile ? uploadedFile.name:'Browse file' }}</button>
               </div>
               <div class="f-col" style="display: none;">
                 <mat-icon class="basic-icon">loop</mat-icon>
@@ -91,7 +98,7 @@
             <ng-container matColumnDef="field">
               <th mat-header-cell *matHeaderCellDef>MDO fields</th>
               <td mat-cell *matCellDef="let row; let rowIndex = index">
-                <pros-map-mdo-field [cellIndex]="rowIndex" [preSelectedFld]="getSelectedFieldId(rowIndex)" [excelField]="row.excelFld" [mdoFields]="headerFieldsList" (optionSelectedEmit)="updateMapFields($event)"></pros-map-mdo-field>
+                <pros-map-mdo-field [cellIndex]="rowIndex" [preSelectedFld]="getSelectedFieldId(rowIndex)" [excelField]="row.excelFld" [autoSelectedFld]="moduleInfo.object" [mdoFields]="headerFieldsList" (optionSelectedEmit)="updateMapFields($event)"></pros-map-mdo-field>
               </td>
             </ng-container>
            
@@ -110,14 +117,28 @@
 
       <mat-step>
         <ng-template matStepLabel>Finish</ng-template>
-        <div class="f-col finish-container">
-          <mat-icon class="checked-icon">check_circle</mat-icon>
-          <span class="f-row-spacer-half"></span>
-          <span class="title-heading">Your dataset mapping process as been completed successfully.</span>
-          <span class="row-spacer"></span>
-          <p>We’re sending you a success email</p>
-          <button mat-flat-button color="primary" (click)="closeDialog()">Close</button>
-        </div>
+          <div class="f-col middle-container">
+            <div class="fileupload-tile">
+              <div class="f-col">
+                <mat-icon class="basic-icon">backup</mat-icon>
+                <h4 class="mat-h4">Uploading...</h4>
+                <p class="message-text">
+                  You will receive an email once the upload is done. <br>You can close this window.
+                </p>
+              </div>
+            </div>
+            <div class="f-col upload-note">
+              <button mat-flat-button color="primary" (click)="closeDialog()">Close</button>
+            </div>
+          </div>
+          <!-- <div class="f-col finish-container">
+            <mat-icon class="checked-icon">check_circle</mat-icon>
+            <span class="f-row-spacer-half"></span>
+            <span class="title-heading">Your dataset mapping process as been completed successfully.</span>
+            <span class="row-spacer"></span>
+            <p>We’re sending you a success email</p>
+            <button mat-flat-button color="primary" (click)="closeDialog()">Close</button>
+          </div> -->
       </mat-step>
     </mat-horizontal-stepper>
   </mat-card>

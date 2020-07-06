@@ -438,7 +438,7 @@ export class Any2tsService {
         });
 
         const hit: DataTableResponse = new DataTableResponse();
-
+        let isOutdated = false;
         // check error index is exits then hit from error index
         const errorIndexLen = Object.keys(data.hits).filter(index => index.indexOf('_do_br_err_') !== -1);
         if (errorIndexLen.length > 0) {
@@ -450,6 +450,7 @@ export class Any2tsService {
           if (request.hierarchy) {
             hit.hyvs = this.convertAny2DataTableHeirerchyResponse(data.hits[index].hyvs, request.hierarchy);
           }
+          isOutdated =  data.hits[index]._outdated;
         } else {
           const index = Object.keys(data.hits)[0];
           hit.hdvs = this.convertAny2DataTableHeaderResponse(data.hits[index].hdvs);
@@ -459,9 +460,13 @@ export class Any2tsService {
           if (request.hierarchy) {
             hit.hyvs = this.convertAny2DataTableHeirerchyResponse(data.hits[index].hyvs, request.hierarchy);
           }
+          isOutdated =  data.hits[index]._outdated;
         }
 
         hit.id = objNum;
+        if(isOutdated) {
+          status.add('Outdated');
+        }
         hit.stat = Array.from(status);
         hit._score = String(_score * 100);
         dataTableReponse.push(hit);

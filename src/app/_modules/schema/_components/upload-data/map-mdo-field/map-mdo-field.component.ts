@@ -29,6 +29,9 @@ export class MapMdoFieldComponent implements OnInit {
   @Input()
   preSelectedFld: string;
 
+  @Input()
+  autoSelectedFld: string;
+
   @Output()
   optionSelectedEmit: EventEmitter<SelectedMdoField> = new EventEmitter<SelectedMdoField>();
 
@@ -45,14 +48,33 @@ export class MapMdoFieldComponent implements OnInit {
         map(name => name ? (this.mdoFields.filter(fill => fill.fieldDescri.toLocaleLowerCase().indexOf(name.toLocaleLowerCase()) !== -1))    : this.mdoFields.slice())
       );
     this.selectedMdoFldCtrl.valueChanges.subscribe(val=>{
-      if(typeof val === 'string' && val === '') {
-        this.optionSelectedEmit.emit({fieldDesc: '',fieldId: '',index: this.cellIndex, execlFld: this.excelField});
+      if(val !== undefined){
+        if(typeof val === 'string' && val === '') {
+          this.optionSelectedEmit.emit({fieldDesc: '',fieldId: '',index: this.cellIndex, execlFld: this.excelField});
+        }
+        else {
+          this.optionSelectedEmit.emit({fieldDesc: val.fieldDescri,fieldId: val.fieldId,index: this.cellIndex, execlFld: this.excelField});
+        }
       }
     });
 
     // set preselected autocomplete
-    if(this.preSelectedFld) {
+    if(this.preSelectedFld){
       const fld = this.mdoFields.filter(fill => fill.fieldId === this.preSelectedFld)[0];
+      this.selectedMdoFldCtrl.setValue(fld);
+    }
+
+    if(this.autoSelectedFld) {
+      this.selectedMdoFldCtrl.disable({onlySelf:true})
+      let fld : any = [];
+      if(this.excelField === 'id'){
+         fld = this.mdoFields.filter(fill => fill.fieldDescri.toLocaleLowerCase() === ('Module Object Number').toLocaleLowerCase())[0]
+      } else {
+         fld = this.mdoFields.filter(fill => fill.fieldDescri.toLocaleLowerCase() === this.excelField.toLocaleLowerCase())[0];
+        if (!fld) {
+          fld = this.mdoFields.filter(fill => fill.fieldDescri.toLocaleLowerCase().indexOf(this.excelField.toLocaleLowerCase())!== -1)[0];
+        }
+      }
       this.selectedMdoFldCtrl.setValue(fld);
     }
   }

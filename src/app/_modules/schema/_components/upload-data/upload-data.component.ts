@@ -43,7 +43,8 @@ export class UploadDataComponent implements OnInit {
   excelMdoFieldMappedData: DataSource[] = [];
   fileSno = '';
   uploadedFile: File;
-
+  uploadDisabled = true;
+  plantCode: string;
   @ViewChild(MatStepper) stepper!: MatStepper;
 
   constructor(
@@ -62,8 +63,11 @@ export class UploadDataComponent implements OnInit {
   ngOnInit(): void {
 
     // get all field of module
-    this.getMetadataFields(this.moduleInfo.module.moduleId);
-
+    if(this.moduleInfo.module){
+      this.getMetadataFields(this.moduleInfo.module.moduleId);
+    } else {
+      this.getMetadataFields(this.moduleInfo.object);
+    }
     this.uploadFileStepCtrl = this._formBuilder.group({
       uploadFileCtrl: ['', Validators.required]
     });
@@ -136,6 +140,10 @@ export class UploadDataComponent implements OnInit {
     this.schemaDetailsService.getMetadataFields(moduleId).subscribe(response => {
       this.metadataFields = response;
       console.log(this.metadataFields);
+      Object.keys(this.metadataFields.headers).forEach( fldid => {
+        this.plantCode = this.metadataFields.headers[fldid].plantCode;
+      });
+      this.uploadDisabled = false;
       this.makeMetadataControle();
     }, error => {
       console.error(`Error ${error}`);
@@ -190,10 +198,10 @@ export class UploadDataComponent implements OnInit {
 
   prepareDataSource() {
     const dataS: DataSource[] = [];
-    for(let i=0; i< this.uploadedData[0].length; i++) {
-      const datS: DataSource = {excelFld: this.uploadedData[0][i], excelFrstRow: this.uploadedData[1][i],mdoFldId: '',mdoFldDesc: '', columnIndex: i};
-      dataS.push(datS);
-    }
+      for(let i=0; i< this.uploadedData[0].length; i++) {
+        const datS: DataSource = {excelFld: this.uploadedData[0][i], excelFrstRow: this.uploadedData[1][i],mdoFldId: '',mdoFldDesc: '', columnIndex: i};
+        dataS.push(datS);
+      }
     this.dataSource = dataS;
   }
 
@@ -228,16 +236,37 @@ export class UploadDataComponent implements OnInit {
     this.schemaService.uploadUpdateFileData(this.uploadFileStepCtrl.get('uploadFileCtrl').value, this.fileSno).subscribe(res=>{
       console.log(res);
       this.fileSno = res;
-      this.uploadDataHttpCall(stepper);
+      if(this.moduleInfo.object){
+        this.uploadCorrectionHttpCall(stepper);
+      } else {
+        this.uploadDataHttpCall(stepper);
+      }
     },error=>{
       console.error(error);
     });
   }
 
   uploadDataHttpCall(stepper: MatStepper) {
-    const objType = this.moduleInfo.module.moduleId ? this.moduleInfo.module.moduleId : '';
+    const objType = this.moduleInfo.module.moduleId;
     if(objType) {
       this.schemaService.uploadData(this.excelMdoFieldMappedData,objType, this.fileSno).subscribe(res=>{
+        // remove valitor here and move to next step
+        this.dataTableCtrl.controls.dataTableFldCtrl.setValue('done');
+        stepper.next();
+        this.snackBar.open(`Request accept successfully `, 'Close',{duration:5000});
+      },error=>{
+        console.error(error);
+        this.snackBar.open(`Something went wrong , please check mdo logs `, 'Close',{duration:5000});
+      });
+    }
+  }
+
+  uploadCorrectionHttpCall(stepper: MatStepper) {
+    const objType = this.moduleInfo.object;
+    const schemaId = this.moduleInfo.schemaId;
+    const runId = this.moduleInfo.runId;
+    if(objType) {
+      this.schemaService.uploadCorrectionData(this.excelMdoFieldMappedData,objType, schemaId, runId, this.plantCode, this.fileSno).subscribe(res=>{
         // remove valitor here and move to next step
         this.dataTableCtrl.controls.dataTableFldCtrl.setValue('done');
         stepper.next();

@@ -17,6 +17,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { SharedServiceService } from 'src/app/_modules/shared/_services/shared-service.service';
 import { EndpointService } from 'src/app/_services/endpoint.service';
+import { UploadDataComponent } from '../../upload-data/upload-data.component';
 
 @Component({
   selector: 'pros-schema-datatable',
@@ -77,7 +78,8 @@ export class SchemaDatatableComponent implements OnInit {
     private ngZone: NgZone,
     private sharedServices: SharedServiceService,
     private router: Router,
-    private endpointService: EndpointService
+    private endpointService: EndpointService,
+    private matDialog: MatDialog
   ) {
 
   }
@@ -361,7 +363,7 @@ export class SchemaDatatableComponent implements OnInit {
     return false;
   }
 
-  isEditable(fieldId: string): boolean {
+  isEditable(fieldId: string, row: any): boolean {
     // if(this.metaDataFieldList[fieldId]) {
     //   const dataType = this.metaDataFieldList[fieldId].dataType;
     //   const pickList = this.metaDataFieldList[fieldId].picklist;
@@ -369,6 +371,10 @@ export class SchemaDatatableComponent implements OnInit {
     // } else {
     //   return false;
     // }
+    const stat = row.row_status.fieldData;
+    if(stat && stat.indexOf('Outdated')!==-1){
+      return false;
+    }
     return true;
   }
 
@@ -484,6 +490,9 @@ export class SchemaDatatableComponent implements OnInit {
       case 'skipped':
         cls = 'skippedChip';
         break;
+      case 'outdated':
+        cls = 'outdatedChip';
+        break;
       default:
         break;
     }
@@ -528,5 +537,17 @@ export class SchemaDatatableComponent implements OnInit {
     document.body.appendChild(downloadLink);
     downloadLink.click();
 
+  }
+
+  uploadData() {
+    const dialogRef = this.matDialog.open(UploadDataComponent, {
+      height: '706px',
+      width: '1100px',
+      data:{object:this.objectId,schemaId:this.schemaId,runId:this.schemaDetails.runId},
+      disableClose: true
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
   }
 }
