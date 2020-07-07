@@ -28,24 +28,24 @@
         [info]=true
         [edit]="schema.collaboratorModels ? schema.collaboratorModels.isEditer: false"
         [delete]="schema.collaboratorModels ? schema.collaboratorModels.isAdmin: false"
-        [pulse]= "schema.pulse"
+        [state]= "schema.isInRunning ? 'inRunning' : 'cool'"
         [schemaId]= "schema.schemaId"
         [variantId] ="schema.variantId"
 
-        totalValue="{{schema.totalValue}}"
-        successValue="{{ schema.successValue }}"
-        errorValue="{{ schema.errorValue }}"
-        skippedValue="{{ schema.skippedValue }}"
-        correctionValue="{{ schema.correctionValue }}"
-        duplicateValue="{{ schema.duplicateValue }}"
+        totalValue="{{schema.totalValue ? schema.totalValue : 0}}"
+        successValue="{{ schema.successValue ? schema.successValue :0 }}"
+        errorValue="{{ schema.errorValue ? schema.errorValue : 0 }}"
+        skippedValue="{{ schema.skippedValue ? schema.skippedValue : 0 }}"
+        correctionValue="{{ schema.correctionValue ? schema.correctionValue: 0 }}"
+        duplicateValue="{{ schema.duplicateValue ? schema.duplicateValue : 0 }}"
   
-        totalUniqueValue="{{ schema.totalUniqueValue }}"
-        successUniqueValue="{{ schema.successUniqueValue }}"
-        errorUniqueValue="{{ schema.errorUniqueValue }}"
-        skippedUniqueValue="{{ schema.skippedUniqueValue }}"
+        totalUniqueValue="{{ schema.totalUniqueValue ? schema.totalUniqueValue :0 }}"
+        successUniqueValue="{{ schema.successUniqueValue ? schema.successUniqueValue : 0 }}"
+        errorUniqueValue="{{ schema.errorUniqueValue ? schema.errorUniqueValue : 0 }}"
+        skippedUniqueValue="{{ schema.skippedUniqueValue ? schema.skippedUniqueValue : 0 }}"
   
-        successTrendValue="{{ schema.successTrendValue }}"
-        errorTrendValue="{{ schema.errorTrendValue }}"
+        successTrendValue="{{ schema.successTrendValue ? schema.successTrendValue : 0 }}"
+        errorTrendValue="{{ schema.errorTrendValue ? schema.errorTrendValue : 0 }}"
   
         timestamp="{{ schema.executionEndTime | date:'MMM d, y, h:mm:ss a' }}"
   

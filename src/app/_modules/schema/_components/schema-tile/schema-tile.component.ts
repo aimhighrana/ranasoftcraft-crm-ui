@@ -3,6 +3,9 @@ import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { SchemaService } from '@services/home/schema.service';
 import { SchemaStaticThresholdRes } from '@models/schema/schemalist';
 import { Subscription } from 'rxjs';
+import { SchemaExecutionRequest } from '@models/schema/schema-execution';
+import { SchemaExecutionService } from '@services/home/schema/schema-execution.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'pros-schema-tile',
   templateUrl: './schema-tile.component.html',
@@ -23,8 +26,9 @@ export class SchemaTileComponent implements OnInit, OnDestroy {
   edit: boolean;
   @Input()
   delete: boolean;
+
   @Input()
-  pulse: boolean;
+  state: string;
 
   @Output()
   evtEdit = new EventEmitter();
@@ -76,6 +80,9 @@ export class SchemaTileComponent implements OnInit, OnDestroy {
   showingErrors = true;
   showUnique = false;
 
+  totalCount = 0;
+  runAllLebal = 'Run all';
+
   /**
    * Hold all info related to schema threshold statics
    */
@@ -87,7 +94,9 @@ export class SchemaTileComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
 
   constructor(
-    private schemaService: SchemaService
+    private schemaService: SchemaService,
+    private matSnackBar: MatSnackBar,
+    private schemaExecutionService: SchemaExecutionService
   ) { }
 
   ngOnDestroy(): void {
@@ -153,6 +162,38 @@ export class SchemaTileComponent implements OnInit, OnDestroy {
       console.error(`Execption : ${error.message}`);
     });
     this.subscriptions.push(staticSub);
+  }
+
+  /**
+   * Before run get all records count
+   */
+  scheduleSchemaGetCnt() {
+    this.runAllLebal = 'Loading..';
+    this.schemaService.scheduleSchemaCount(this.schemaId).subscribe(data => {
+      this.totalCount = data;
+      this.state = 'readyForRun';
+      this.runAllLebal = 'Run all';
+    },error=>{
+      console.error(`Execption : ${error.message}`);
+      this.matSnackBar.open(`Index not found, please sync data.`, 'Close',{duration:5000});
+      this.runAllLebal = 'Run all';
+    });
+  }
+
+  /**
+   * Schedule / Run Schema for all records
+   */
+  scheduleSchema() {
+    const schemaExecutionReq: SchemaExecutionRequest = new SchemaExecutionRequest();
+    schemaExecutionReq.schemaId =  this.schemaId;
+    schemaExecutionReq.variantId = '0'; // 0 for run all
+    this.schemaExecutionService.scheduleSChema(schemaExecutionReq).subscribe(data => {
+      this.state = 'inRunning';
+      console.log(`After schedule schema ${this.schemaId}  , run id  ${data}`);
+    }, error => {
+      console.log('Error while schedule schema');
+      this.matSnackBar.open(`Something went wrong `, 'Close',{duration:5000});
+    });
   }
 
 }

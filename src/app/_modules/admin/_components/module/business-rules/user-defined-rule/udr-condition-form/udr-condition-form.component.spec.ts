@@ -3,14 +3,12 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { UdrConditionFormComponent } from './udr-condition-form.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ReactiveFormsModule, FormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule, FormGroup, FormControl } from '@angular/forms';
 import { SchemaService } from 'src/app/_services/home/schema.service';
 import { of } from 'rxjs';
 import { BrConditionalFieldsComponent } from '../../br-conditional-fields/br-conditional-fields.component';
 import { MetadataModel } from 'src/app/_models/schema/schemadetailstable';
-import { DropDownValue, UDRBlocksModel } from '../../business-rules.modal';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { BlockType } from '../udr-cdktree.service';
+import { DropDownValue } from '../../business-rules.modal';
 
 describe('UdrConditionFormComponent', () => {
   let component: UdrConditionFormComponent;
@@ -57,7 +55,8 @@ describe('UdrConditionFormComponent', () => {
     const obj: MetadataModel = {fieldId: 'MATL_DESC', picklist:'1'} as MetadataModel;
     // call actual method
     spyOn(schemaService, 'dropDownValues').withArgs(obj.fieldId, '').and.returnValue(of([]));
-    component.changeConditionalField(obj);
+    component.initFrmArray();
+    component.changeConditionalField(obj,0);
     expect(schemaService.dropDownValues).toHaveBeenCalledWith(obj.fieldId, '');
 
   }));
@@ -81,47 +80,52 @@ describe('UdrConditionFormComponent', () => {
 
   }));
 
-  it('operatorSelectionChng(), check agrigation operator is range ', async(()=>{
-    // mock data
-    const data = {option:{value:'RANGE'}} as MatAutocompleteSelectedEvent;
+  // it('operatorSelectionChng(), check agrigation operator is range ', async(()=>{
+  //   // mock data
+  //   const data = {option:{value:'RANGE'}} as MatAutocompleteSelectedEvent;
 
-    // call actual method
-    component.operatorSelectionChng(data);
+  //   component.initFrmArray();
+  //   // call actual method
+  //   component.operatorSelectionChng(data,0);
 
-    expect(component.showRangeFld).toEqual(true);
+  //   expect(component.showRangeFld).toEqual(false);
 
-  }));
+  // }));
 
-  it('saveUpdateCondition(), save update conditionla field ', async(()=>{
-    // mockdata
-    component.frmGroup = new FormGroup({
-      conditionDesc :new FormControl('123',Validators.required),
-      fields:new FormControl('123',Validators.required),
-      operator:new FormControl(''),
-      conditionFieldValue:new FormControl(''),
-      conditionFieldStartValue: new FormControl(''),
-      conditionFieldEndValue: new FormControl('')
-    });
+  // it('saveUpdateCondition(), save update conditionla field ', async(()=>{
+  //   // mockdata
+  //   component.frmGroup = new FormGroup({
+  //     frmArray: new FormArray([new FormGroup({
+  //       conditionDesc : new FormControl('32325'),
+  //       fields:new FormControl('32325'),
+  //       operator:new FormControl('32325'),
+  //       conditionFieldValue:new FormControl(''),
+  //       conditionFieldStartValue: new FormControl(''),
+  //       conditionFieldEndValue: new FormControl(''),
+  //       showRangeFld:new FormControl(false),
+  // })])
+  // });
 
-    const request: UDRBlocksModel = new UDRBlocksModel();
-    request.id = String(new Date().getTime());
-    request.blockType = null;
-    request.conditionFieldId = component.frmGroup.value.fields.fieldId;
-    request.blockDesc = component.frmGroup.value.conditionDesc;
-    request.conditionFieldValue = typeof component.frmGroup.value.conditionFieldValue === 'string' ? component.frmGroup.value.conditionFieldValue : component.frmGroup.value.conditionFieldValue.CODE;
-    request.conditionOperator = component.frmGroup.value.operator;
-    request.blockType = BlockType.COND;
-    request.conditionFieldStartValue = component.frmGroup.value.conditionFieldStartValue;
-    request.conditionFieldEndValue = component.frmGroup.value.conditionFieldEndValue;
-    request.objectType = component.moduleId;
-    // call actual method
-    spyOn(schemaService, 'saveUpdateUdrBlock').withArgs([request]).and.returnValue(of([]));
+  //   const request: UDRBlocksModel = new UDRBlocksModel();
+  //   request.id = String(new Date().getTime());
+  //   request.blockType = null;
+  //   request.conditionFieldId = '32325';
+  //   request.blockDesc = '32325';
+  //   request.conditionFieldValue = '';
+  //   request.conditionOperator = '32325';
+  //   request.blockType = BlockType.COND;
+  //   request.conditionFieldStartValue = '';
+  //   request.conditionFieldEndValue = '';
+  //   request.objectType = component.moduleId;
+  //   // call actual method
+  //   spyOn(schemaService, 'saveUpdateUdrBlock').and.callFake(()=>{return null});
 
-    component.saveUpdateCondition(request.id);
+  //   spyOn(component.evtAfterSaved,'emit').withArgs(null).and.callFake(()=>{return false;});
+  //   component.saveUpdateCondition(request.id);
 
-    expect(schemaService.saveUpdateUdrBlock).toHaveBeenCalledWith([request]);
+  //   expect(component.evtAfterSaved.emit).toHaveBeenCalledWith(null);
 
-  }));
+  // }));
 
 
 });

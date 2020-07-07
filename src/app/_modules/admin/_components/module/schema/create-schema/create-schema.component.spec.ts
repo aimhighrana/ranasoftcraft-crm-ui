@@ -10,7 +10,6 @@ import { SchemalistService } from 'src/app/_services/home/schema/schemalist.serv
 import { SchemaListDetails } from 'src/app/_models/schema/schemalist';
 import { of } from 'rxjs';
 import { CoreSchemaBrInfo, Category, CreateUpdateSchema } from '../../business-rules/business-rules.modal';
-import { Router } from '@angular/router';
 import { ObjectTypeResponse } from '@models/schema/schema';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
@@ -19,7 +18,6 @@ describe('CreateSchemaComponent', () => {
   let fixture: ComponentFixture<CreateSchemaComponent>;
   let service: SchemaService;
   let schemaListService: SchemalistService;
-  let router: Router;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ CreateSchemaComponent ],
@@ -32,7 +30,6 @@ describe('CreateSchemaComponent', () => {
       ]
     })
     .compileComponents();
-    router = TestBed.inject(Router);
   }));
 
   beforeEach(() => {
@@ -208,13 +205,6 @@ describe('CreateSchemaComponent', () => {
     component.brWightageChange(br, '20');
 
     expect(component.brList[0].brWeightage).toEqual('20');
-  }));
-
-  it('editBusinessRuls(), edit br rule', async(()=>{
-    const brId = '2645632';
-    spyOn(router, 'navigate');
-    component.editBusinessRuls('2645632','BR_MANDATORY_FIELDS');
-    expect(router.navigate).toHaveBeenCalledWith(['/home/schema/create-schema', component.moduleId , component.schemaId], {queryParams:{brId}, fragment:'missing'});
   }));
 
   it('displayFn(), test display fn', async(()=>{

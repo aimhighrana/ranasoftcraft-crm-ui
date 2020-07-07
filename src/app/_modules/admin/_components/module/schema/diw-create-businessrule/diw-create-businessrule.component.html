@@ -1,34 +1,41 @@
 <div class="root">
   <mat-toolbar>
     <mat-toolbar-row>
-      <span>Create a new business <strong>{{ businessRuleTypeDef }}</strong></span>
+      <span> {{ brId ? 'Update ' : 'Create a new business '}}  <strong>{{ businessRuleTypeDef }}</strong></span>
       <span class="f-spacer"></span>
-      <button mat-icon-button>
+      <button mat-icon-button (click)="closeDialog()">
         <mat-icon>close</mat-icon>
       </button>
     </mat-toolbar-row>
     </mat-toolbar>
     <mat-card class="mat-elevation-z0 rule-process">
-      <mat-horizontal-stepper [linear]="isLinear" #stepper class="createrule-container">
-        <mat-step [stepControl]="selBrTypeGrp">
-          <form [formGroup]="selBrTypeGrp">
+      <mat-horizontal-stepper [linear]="isLinear" #stepper class="createrule-container" (selectionChange)="controlStepChange($event);">
+        <mat-step [stepControl]="stepOneCtrl">
+          <form [formGroup]="stepOneCtrl">
             <ng-template matStepLabel>Select a rule</ng-template>
                 <div class="f-col businessrule-nav">
-                    <button mat-stroked-button (click)="selBrType('BASIC')">Basic</button>
-                    <button mat-stroked-button (click)="selBrType('BR_DEPENDANCY_RULE')">Dependency Rule</button>
-                    <button mat-stroked-button (click)="selBrType('BR_EXTERNALVALIDATION_RULE')">External Validation Rule</button>
-                    <button mat-stroked-button (click)="selBrType('BR_METADATA_RULE')">Metadata Rule</button>
-                    <button mat-stroked-button (click)="selBrType('BR_MANDATORY_FIELDS')">Missing Rule</button>
-                    <button mat-stroked-button (click)="selBrType('BR_DUPLICATE_RULE')">Duplicate Rule</button>
-                    <button mat-stroked-button (click)="selBrType('BR_REGEX_RULE')">Regex Rule</button>
-                    <button mat-stroked-button (click)="selBrType('BR_CUSTOM_SCRIPT')">User Defined Rule</button>
-                    <button mat-stroked-button (click)="selBrType('BR_API_RULE')">API Rule</button>
+                    <ng-template ngFor let-br [ngForOf]="possibleBrs">
+                        <ng-template [ngIf]="br.isImplemented">
+                          <button *ngIf ="selectedBrType === br.ruleType"  mat-stroked-button (click)="selBrType(br);" color="primary"  >{{ br.ruleDesc }}</button> 
+                          <button *ngIf ="selectedBrType !== br.ruleType"  mat-stroked-button (click)="selBrType(br);" >{{ br.ruleDesc }}</button> 
+                        </ng-template>
+                        <ng-template [ngIf]="!br.isImplemented">
+                          <button mat-stroked-button disabled>{{ br.ruleDesc }}</button> 
+                        </ng-template>         
+                    </ng-template>
                 </div>
           </form>
         </mat-step>
-        <mat-step [stepControl]="brDetailsFrm">
-          <form [formGroup]="brDetailsFrm">
+        <mat-step [stepControl]="stepTwoCtrl" [optional] = "selectedBrType === 'BR_CUSTOM_SCRIPT'">
+          <form [formGroup]="stepTwoCtrl">
 
+            <ng-template [ngIf]="selectedBrType === 'BR_CUSTOM_SCRIPT'">
+              <ng-template matStepLabel>Add conditions</ng-template>
+            </ng-template>
+
+            <ng-template [ngIf]="selectedBrType !== 'BR_CUSTOM_SCRIPT'">
+              <ng-template matStepLabel>Fill rule deatils</ng-template>
+            </ng-template>
 
             <!-- Missing Buisness Rule & Metada rule Container Starts Here-->
             <div class="f-col rule-fields" *ngIf="selectedBrType === 'BR_MANDATORY_FIELDS' || selectedBrType === 'BR_METADATA_RULE'">
@@ -37,10 +44,35 @@
                 [moduleId] = "moduleId"
                 [brId] ="brId"
                 [brType] ="selectedBrType"
+                [svdClicked]="svdClicked"
                 (evtSaved) ="afterSaved($event)">
               </pros-missingrule>
             </div>
+            <!-- Missing Buisness Rule Container End Here-->
 
+            <!-- UDR conditional form fields -->
+            <div class="f-col udr-conditiona-block" *ngIf="selectedBrType === 'BR_CUSTOM_SCRIPT'">
+              <pros-udr-condition-form
+              [schemaId]="schemaId"
+              [moduleId]="moduleId"
+              [svdClicked]="svdClicked"
+              (evtAfterSaved) = "fetchConditionList($event)"
+              ></pros-udr-condition-form>
+            </div>
+
+            <!-- Start REGEX rule container -->
+            <div class="f-col udr-conditiona-block" *ngIf="selectedBrType === 'BR_REGEX_RULE'">
+              <pros-regex-rule
+              [schemaId] ="schemaId"
+              [moduleId] = "moduleId"
+              [brId] ="brId"
+              [brType] ="selectedBrType"
+              [svdClicked]="svdClicked"
+              (evtSaved) ="afterSaved($event)">
+              </pros-regex-rule>
+            </div>
+            <!-- End REGEX rule container -->
+            
            <!-- Missing Buisness Rule Container End Here-->
 
               <!-- <div class="f-col rule-fields">
@@ -70,10 +102,42 @@
             <div class="f-row">
               <button mat-flat-button color="primary" matStepperPrevious>Back</button>
               <span class="f-spacer"></span>
-              <button mat-flat-button color="primary"matStepperNext>Save rule</button>
+              <button *ngIf="selectedBrType !== 'BR_CUSTOM_SCRIPT'" mat-flat-button color="primary" (click)="clickSaved()" >Save rule</button>
+              <button *ngIf="selectedBrType === 'BR_CUSTOM_SCRIPT'" mat-flat-button color="primary" matStepperNext>Skip</button>
+              <button *ngIf="selectedBrType === 'BR_CUSTOM_SCRIPT'" mat-flat-button color="primary" (click)="clickSaved()">Save</button>
             </div> 
           </form>
         </mat-step>
+
+        <mat-step [stepControl]="stepThreeCtrl" *ngIf="selectedBrType === 'BR_CUSTOM_SCRIPT'">
+          <form [formGroup]="stepThreeCtrl">
+            <ng-template matStepLabel>Create process</ng-template>
+            <!-- User Defined Buisness Rule Container Starts Here-->
+              <div class="f-col udr-conditiona-block" *ngIf="stepper.selectedIndex === 2">
+                  <pros-user-defined-rule
+                    [schemaId] ="schemaId"
+                    [moduleId]="moduleId"
+                    [brId]="brId"
+                    [brType] ="selectedBrType"
+                    [needCondRef] ="needCondRef"
+                    [svdClicked]="svdClicked"
+                    (evtSaved) ="afterSaved($event)">
+                  </pros-user-defined-rule>
+
+              </div>
+            <!-- User Defined Buisness Rule Container End Here-->
+
+
+
+            <div class="f-row">
+              <button mat-flat-button color="primary" matStepperPrevious>Back</button>
+              <span class="f-spacer"></span>
+              <button mat-flat-button color="primary" matStepperNext (click)="clickSaved()" >Save rule</button>
+            </div> 
+          </form>
+        </mat-step>
+
+
 </mat-horizontal-stepper>
 
     </mat-card>

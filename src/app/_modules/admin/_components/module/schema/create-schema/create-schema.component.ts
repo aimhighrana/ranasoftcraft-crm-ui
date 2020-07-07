@@ -3,12 +3,14 @@ import { Breadcrumb } from 'src/app/_models/breadcrumb'; import { CdkDragDrop, m
 import { SchemaService } from 'src/app/_services/home/schema.service';
 import { FormControl, FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { Observable, of } from 'rxjs';
-import { CreateUpdateSchema, CoreSchemaBrInfo, Category, BusinessRuleType } from '../../business-rules/business-rules.modal';
+import { CreateUpdateSchema, CoreSchemaBrInfo, Category } from '../../business-rules/business-rules.modal';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SchemalistService } from 'src/app/_services/home/schema/schemalist.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ObjectTypeResponse } from '@models/schema/schema';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { DiwCreateBusinessruleComponent } from '../diw-create-businessrule/diw-create-businessrule.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'pros-create-schema',
@@ -68,12 +70,13 @@ export class CreateSchemaComponent implements OnInit {
     private router: Router,
     private schemaListService: SchemalistService,
     private formBuilder: FormBuilder,
-    private matSnackBar: MatSnackBar
+    private matSnackBar: MatSnackBar,
+    private matDialog: MatDialog
   ) { }
 
   ngOnInit() {
     this.activatedRoute.params.subscribe(params => {
-      this.moduleId = params.moduleId ? params.moduleId : '';
+      this.moduleId = params.moduleId ? (params.moduleId.toLowerCase() === 'new' ? '' : params.moduleId) : '';
       this.schemaId = params.schemaId ? (params.schemaId.toLowerCase() === 'new' ? '' : params.schemaId) : '';
     });
 
@@ -204,17 +207,18 @@ export class CreateSchemaComponent implements OnInit {
    * @param brType type for edit based on type
    */
   editBusinessRuls(brId: string, brType: string) {
-    let fragmentTo = '';
-    if(brType === BusinessRuleType.BR_MANDATORY_FIELDS) {
-      fragmentTo = 'missing';
-    } else if(brType === BusinessRuleType.BR_METADATA_RULE) {
-      fragmentTo = 'metadata';
-    } else if(brType === BusinessRuleType.BR_CUSTOM_SCRIPT) {
-      fragmentTo = 'userdefined';
-    } else if(brType === BusinessRuleType.BR_REGEX_RULE) {
-      fragmentTo = 'regex';
-    }
-    this.router.navigate(['/home/schema/create-schema', this.moduleId , this.schemaId], {queryParams:{brId}, fragment:fragmentTo});
+    // let fragmentTo = '';
+    // if(brType === BusinessRuleType.BR_MANDATORY_FIELDS) {
+    //   fragmentTo = 'missing';
+    // } else if(brType === BusinessRuleType.BR_METADATA_RULE) {
+    //   fragmentTo = 'metadata';
+    // } else if(brType === BusinessRuleType.BR_CUSTOM_SCRIPT) {
+    //   fragmentTo = 'userdefined';
+    // } else if(brType === BusinessRuleType.BR_REGEX_RULE) {
+    //   fragmentTo = 'regex';
+    // }
+    // this.router.navigate(['/home/schema/create-schema', this.moduleId , this.schemaId], {queryParams:{brId}, fragment:fragmentTo});
+    this.createbusinessrule(brId, brType);
   }
 
   /**
@@ -458,6 +462,35 @@ export class CreateSchemaComponent implements OnInit {
       }
     }
   }
+
+  /**
+   * Open create business rule dialog
+   */
+  createbusinessrule(brId?:string, brType?: string) {
+    if(this.moduleId) {
+      const dialogRef = this.matDialog.open(DiwCreateBusinessruleComponent, {
+        height: '706px',
+        width: '1100px',
+        disableClose: true,
+        data:{
+          moduleId: this.moduleId,
+          schemaId: this.schemaId,
+          brId,
+          brType
+        }
+      });
+      dialogRef.afterClosed().subscribe(result => {
+        console.log('The dialog was closed');
+        console.log(result);
+        if(result) {
+          this.afterSavedBrinfo(result);
+        }
+      });
+    } else {
+      this.matSnackBar.open(`Please select module`, 'Close',{duration:5000});
+    }
+  }
+
 
   /**
    * Call http for save update schema and br mapping

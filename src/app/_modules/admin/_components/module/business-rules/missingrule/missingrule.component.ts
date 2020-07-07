@@ -33,7 +33,6 @@ export class MissingruleComponent implements OnInit, OnChanges {
   }
 
   arrList: any;
-  description: string;
   fillDetailsSelectFields: any;
   fillDetailsFinalDropdownList: any;
   moduleListData: any = [];
@@ -72,6 +71,8 @@ export class MissingruleComponent implements OnInit, OnChanges {
   @Output()
   evtSaved: EventEmitter<CoreSchemaBrInfo> = new EventEmitter();
 
+  @Input()
+  svdClicked: boolean;
 
   brInfo: CoreSchemaBrInfo;
 
@@ -82,6 +83,13 @@ export class MissingruleComponent implements OnInit, OnChanges {
   ngOnChanges(changes: import('@angular/core').SimpleChanges): void {
     if(changes && changes.brType && changes.brType.previousValue !== changes.brType.currentValue) {
       this.brType = changes.brType.currentValue;
+    }
+
+    // after clicked saved should validate and save / update br
+    if(changes && changes.svdClicked && changes.svdClicked.previousValue !== changes.svdClicked.currentValue) {
+      if(changes.svdClicked.currentValue) {
+        this.saveBrInfo();
+      }
     }
   }
   // fillDataForm: FormGroup = this._formBuilder.group({
@@ -105,7 +113,8 @@ export class MissingruleComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.fillDataForm = this._formBuilder.group({
-      selectFields: '',
+      selectFields: [''],
+      description:['']
     });
 
     this.moduleListData = this.fillDataForm.get('selectFields').valueChanges
@@ -118,7 +127,7 @@ export class MissingruleComponent implements OnInit, OnChanges {
     if(this.brId) {
       this.schemaService.getBusinessRuleInfo(this.brId).subscribe(res=>{
         this.brInfo = res;
-        this.description = res.brInfo;
+        this.fillDataForm.get('description').setValue(res.brInfo);
       },error=>console.error(`Error : ${error}`));
     } else {
       this.brInfo = new CoreSchemaBrInfo();
@@ -223,7 +232,7 @@ export class MissingruleComponent implements OnInit, OnChanges {
     this.groupDetailss.push({ id: selData.fieldId, descr: selData.fieldDescri });
   }
 
-  remove(objectId: string): void {
+  remove(objectId: any): void {
     const objectIds: any = this.groupDetailss ? this.groupDetailss : [];
     const index = objectIds.indexOf(objectId);
     if (index >= 0) {
@@ -299,17 +308,22 @@ export class MissingruleComponent implements OnInit, OnChanges {
     this.brInfo.brId = this.brInfo.brIdStr ? this.brInfo.brIdStr : this.brId;
     this.brInfo.brType = this.brType;
     this.brInfo.fields = this.convertObjtoString();
-    this.brInfo.message = this.description;
-    this.brInfo.brInfo = this.description;
+    this.brInfo.message = this.fillDataForm.get('description').value ? this.fillDataForm.get('description').value : '';
+    this.brInfo.brInfo = this.fillDataForm.get('description').value ? this.fillDataForm.get('description').value : '';
     this.brInfo.status = '1'; // for enable
     this.brInfo.schemaId = this.schemaId !== 'new' ? this.schemaId : '';
+    console.log(this.brInfo);
+    if(this.brInfo.fields === '' || this.brInfo.message === '') {
+      this.snackBar.open(`Please enter description or select field(s)`, 'Close', { duration: 5000 });
+      return false;
+    }
 
     this.schemaService.createBusinessRule(this.brInfo).subscribe(res => {
       console.log('Response = ', res);
       res.brId = res.brIdStr;
       this.discard(res);
     }, error => {
-      this.snackBar.open(`Error : ${error.message}`, 'Close', { duration: 5000 });
+      this.snackBar.open(`Something went wrong`, 'Close', { duration: 5000 });
     })
   }
 

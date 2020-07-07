@@ -1,14 +1,22 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject, AfterViewInit, AfterContentChecked, NgZone } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 import { BusinessRuleType, CoreSchemaBrInfo } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { CreateSchemaComponent } from '../create-schema/create-schema.component';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
+export class BusinessRules {
+  ruleDesc: string;
+  ruleId: string;
+  ruleType: BusinessRuleType;
+  isImplemented?: boolean;
+}
 @Component({
   selector: 'pros-diw-create-businessrule',
   templateUrl: './diw-create-businessrule.component.html',
   styleUrls: ['./diw-create-businessrule.component.scss']
 })
-export class DiwCreateBusinessruleComponent implements OnInit {
+export class DiwCreateBusinessruleComponent implements OnInit, AfterViewInit, AfterContentChecked {
 
 
   moduleId: string;
@@ -17,35 +25,96 @@ export class DiwCreateBusinessruleComponent implements OnInit {
 
   brId: string;
 
+  possibleBrs: BusinessRules[];
+
   selectedBrType: BusinessRuleType;
 
-  @ViewChild(MatStepper) stepper: MatStepper;
+  @ViewChild('stepper') stepper: MatStepper;
 
   isLinear = false;
-  selBrTypeGrp: FormGroup;
-  brDetailsFrm: FormGroup;
+  stepOneCtrl: FormGroup;
+  stepTwoCtrl: FormGroup;
+  stepThreeCtrl: FormGroup;
 
-  constructor(private _formBuilder: FormBuilder){}
+  /**
+   * When click on save business rule then send value change to rules components
+   */
+  svdClicked;
+
+  /**
+   * After condition saved need to reload condition list
+   */
+  needCondRef;
+
+  constructor(
+    private _formBuilder: FormBuilder,
+    public dialogRef: MatDialogRef<CreateSchemaComponent>,
+    @Inject(MAT_DIALOG_DATA) public dialogData: any,
+    private zone: NgZone
+    ){}
+
+  ngAfterContentChecked(): void {
+
+  }
+
+
+  ngAfterViewInit(): void {
+    setTimeout(()=>{
+      if(this.brId) {
+        this.stepper.steps.first.completed = true;
+        this.stepper.steps.first.editable = false;
+        this.stepper.selectedIndex = 1;
+        this.stepOneCtrl.setValue({brType:this.selectedBrType});
+      }
+    },1000);
+  }
 
 
   ngOnInit(): void {
-    this.selBrTypeGrp = this._formBuilder.group({
+    if(this.dialogData) {
+      this.moduleId = this.dialogData.moduleId;
+      this.schemaId = this.dialogData.schemaId;
+      this.brId = this.dialogData.brId;
+      this.selectedBrType = this.dialogData.brType ? this.dialogData.brType : undefined;
+    }
+    this.stepOneCtrl = this._formBuilder.group({
       brType: ['', Validators.required]
     });
-    this.brDetailsFrm = this._formBuilder.group({
-      brDetails: ['', Validators.required]
+
+    this.stepTwoCtrl = this._formBuilder.group({
+      brDetails: ['',   this.selectedBrType !== 'BR_CUSTOM_SCRIPT' ? Validators.required: false]
     });
+
+    this.stepThreeCtrl = this._formBuilder.group({
+      step3Info: ['', Validators.required]
+    });
+
+    this.possibleBrs = this.allBusinessRules;
   }
 
+
+  get allBusinessRules() : BusinessRules[] {
+    return [
+      {ruleDesc: 'Basic',ruleId:'',ruleType:null, isImplemented: false},
+      {ruleDesc: 'Metadata Rule',ruleId:'',ruleType:BusinessRuleType.BR_METADATA_RULE, isImplemented: true},
+      {ruleDesc: 'Missing Rule',ruleId:'',ruleType:BusinessRuleType.BR_MANDATORY_FIELDS,isImplemented: true},
+      {ruleDesc: 'User Defined Rule',ruleId:'',ruleType:BusinessRuleType.BR_CUSTOM_SCRIPT,isImplemented: true},
+      {ruleDesc: 'Dependency Rule',ruleId:'',ruleType:BusinessRuleType.BR_DEPENDANCY_RULE},
+      {ruleDesc: 'Duplicate Rule',ruleId:'',ruleType:BusinessRuleType.BR_DUPLICATE_RULE},
+      {ruleDesc: 'API Rule',ruleId:'',ruleType:BusinessRuleType.BR_API_RULE},
+      {ruleDesc: 'External Validation Rule',ruleId:'',ruleType:BusinessRuleType.BR_EXTERNALVALIDATION_RULE},
+      {ruleDesc: 'Regex Rule',ruleId:'',ruleType:BusinessRuleType.BR_REGEX_RULE, isImplemented: true},
+    ];
+  }
 
   /**
    * Set br type and control creation steps.
    * @param brType clicked business rule type
    */
-  selBrType(brType: string) {
-    if(brType && brType !== 'BASIC') {
-      this.selBrTypeGrp.setValue({brType});
-      this.selectedBrType = brType as BusinessRuleType;
+  selBrType(brType: BusinessRules) {
+    if(brType && brType.ruleType) {
+      this.stepOneCtrl.setValue({brType:brType.ruleType});
+      this.selectedBrType = brType.ruleType;
       this.stepper.next();
     }
   }
@@ -54,7 +123,7 @@ export class DiwCreateBusinessruleComponent implements OnInit {
    * use for get business rule type defination
    */
   get businessRuleTypeDef(): string {
-    const val = this.selBrTypeGrp.get('brType').value;
+    const val = this.stepOneCtrl.get('brType').value;
     let def = '';
     switch (val) {
       case BusinessRuleType.BR_MANDATORY_FIELDS:
@@ -99,6 +168,45 @@ export class DiwCreateBusinessruleComponent implements OnInit {
    * @param brInfo after saved br info
    */
   afterSaved(brInfo: CoreSchemaBrInfo) {
-    console.log(brInfo);
+    if(brInfo) {
+      this.dialogRef.close(brInfo);
+    }
+  }
+
+  /**
+   * After click saved rule
+   */
+  clickSaved() {
+    this.svdClicked =  Boolean(true);
+  }
+
+  /**
+   * After condition block add
+   */
+  fetchConditionList(sno: string[]) {
+    this.svdClicked =  Boolean(false);
+    this.stepper.next();
+    console.log(sno);
+  }
+
+  /**
+   * After step change manage required steps
+   * @param evt after step change
+   */
+  controlStepChange(evt: any) {
+    switch (evt.selectedIndex) {
+      case 2:
+        this.needCondRef = Boolean(true);
+        break;
+      default:
+        break;
+    }
+  }
+
+  /**
+   * Close dialog after saved or click close
+   */
+  closeDialog() {
+    this.dialogRef.close();
   }
 }

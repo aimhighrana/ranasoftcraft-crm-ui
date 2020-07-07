@@ -1,80 +1,92 @@
-<mat-card class="mat-elevation-z0 root" [class.pulse_opacity_step_10_repeat]="pulse">
-  <mat-toolbar class="header">
-    <mat-toolbar-row>
-      <h3 class="mat-h3" [matTooltip]="title">{{ title }}</h3>
-      <span class="f-spacer"></span>
-      <button mat-icon-button [matMenuTriggerFor]="menu" prosClickStopPropagation><mat-icon>more_vert</mat-icon></button>
-      <mat-menu #menu="matMenu">
-        <button mat-menu-item *ngIf="edit" prosClickStopPropagation (click)="onEdit();">Edit</button>
-        <button mat-menu-item *ngIf="delete" prosClickStopPropagation (click)="onDelete();">Delete</button>
-        <button mat-menu-item *ngIf="info" prosClickStopPropagation matTooltip="Coming Soon" (click)="onInfo();">Info</button>
-      </mat-menu>
-    </mat-toolbar-row>
-  </mat-toolbar>
-  <mat-card-content class="f-row tile-data">
-    <div class="f-col"> 
-      <span class="display-per error" [class.error] ="thresholdRes && thresholdRes.thresHoldStatus ==='DANGER'" [class.success] ="thresholdRes && thresholdRes.thresHoldStatus ==='GOOD'" >{{ thresholdRes.threshold }}%</span>
-      <span class="mat-caption row1text">Last Run: {{ timestamp }}</span>
+<!-- IN RUNNING -->
+<ng-template [ngIf]="state === 'inRunning'">
+  <mat-card class="mat-elevation-z0 root highlight processing">
+    <mat-toolbar class="header">
+      <mat-toolbar-row>
+        <h3 class="mat-h3" [matTooltip]="title">{{ title }}</h3>
+      </mat-toolbar-row>
+    </mat-toolbar>
+    <mat-card-content class="f-col run-data">
+      <mat-spinner diameter="50"></mat-spinner>
+      <strong>Processing run…</strong>
+      <span class="row-spacer"></span>
+      <!-- <div class="f-row bottom-actions">
+        <button mat-button prosClickStopPropagation matTooltip="">Cancel</button>
+      </div> -->
+      
+    </mat-card-content>
+  </mat-card>
+  
+</ng-template>
+
+<!-- RUN ALL SCHEDULE SCHEM -->
+<ng-template [ngIf]="state === 'readyForRun'">
+  <mat-card class="mat-elevation-z0 root highlight">
+    <mat-toolbar class="header">
+      <mat-toolbar-row>
+        <h3 class="mat-h3" [matTooltip]="title">{{ title }}</h3>
+      </mat-toolbar-row>
+    </mat-toolbar>
+    <mat-card-content class="f-col run-data">
       <div class="f-row">
-        <button mat-flat-button color="primary" class="Runbtn" prosClickStopPropagation (click)="onBottomRight();">Run all</button>
-        <span class="f-col-spacer-half"></span>
-        <button mat-icon-button><mat-icon class="alert-icon" prosClickStopPropagation>error</mat-icon></button>
+        <div class="f-col record-text">
+          <p>The schema will be executed on {{ totalCount | thousandconvertor }} records</p>
+        </div>
+  
+        <div class="f-col right-record">
+          <mat-icon class="check-icon">check_circle</mat-icon>
+          <span class="records">{{ totalCount | thousandconvertor }}</span>
+        </div>
       </div>
-      <span class="f-row-spacer-half"></span> 
-      <button mat-button color="primary" prosClickStopPropagation (click)="onBottomLeft();">Run variants</button>
-    </div>
-    <div class="f-col links-col">
-      <a  class="total">Total: {{ showUnique ? totalUniqueValue : totalValue }}</a>
-      <a  class="error">Error: {{ showUnique ? errorUniqueValue : errorValue }}</a>
-      <a  class="success">Success: {{ showUnique ? successUniqueValue : successValue }}</a>
-    </div>
-  </mat-card-content>
-</mat-card>
-
-
-<mat-card class="mat-elevation-z0 root highlight" style="display: none;">
-  <mat-toolbar class="header">
-    <mat-toolbar-row>
-      <h3 class="mat-h3" [matTooltip]="title">{{ title }}</h3>
-    </mat-toolbar-row>
-  </mat-toolbar>
-  <mat-card-content class="f-col run-data">
-    <div class="f-row">
-      <div class="f-col record-text">
-        <p>The schema will be executed on 67k records</p>
+      <span class="row-spacer"></span>
+      <div class="f-row bottom-actions">
+        <button mat-button prosClickStopPropagation (click)="state = 'cool'">Cancel</button>
+        <button mat-button prosClickStopPropagation>Scheduling</button>
+        <button mat-flat-button color="primary" prosClickStopPropagation (click)="scheduleSchema()">Run now</button>
       </div>
+      
+    </mat-card-content>
+  </mat-card>
+</ng-template>
 
-      <div class="f-col right-record">
-        <mat-icon class="check-icon">check_circle</mat-icon>
-        <span class="records">67k</span>
+<!-- COOL -->
+<ng-template [ngIf]="state === 'cool'">
+  <mat-card class="mat-elevation-z0 root">
+    <mat-toolbar class="header">
+      <mat-toolbar-row>
+        <h3 class="mat-h3" [matTooltip]="title">{{ title }}</h3>
+        <span class="f-spacer"></span>
+        <button mat-icon-button [matMenuTriggerFor]="menu" prosClickStopPropagation><mat-icon>more_vert</mat-icon></button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item *ngIf="edit" prosClickStopPropagation matTooltip="Edit" (click)="onEdit();">Edit</button>
+          <button mat-menu-item *ngIf="delete" prosClickStopPropagation matTooltip="Delete" (click)="onDelete();">Delete</button>
+          <button mat-menu-item *ngIf="info" prosClickStopPropagation matTooltip="Information comming soon ..." (click)="onInfo();">Info</button>
+        </mat-menu>
+      </mat-toolbar-row>
+    </mat-toolbar>
+    <mat-card-content class="f-row tile-data">
+      <div class="f-col"> 
+        <span class="display-per error" [class.error] ="thresholdRes && thresholdRes.thresHoldStatus ==='DANGER'" [class.success] ="thresholdRes && thresholdRes.thresHoldStatus ==='GOOD'" >{{ thresholdRes.threshold ? thresholdRes.threshold : 0 }}%</span>
+        <span class="mat-caption row1text">Last Run: {{ timestamp }}</span>
+        <div class="f-row">
+          <button mat-flat-button color="primary" class="Runbtn" prosClickStopPropagation (click)="scheduleSchemaGetCnt()">{{ runAllLebal }}</button>
+          <span class="f-col-spacer-half"></span>
+          <button mat-icon-button><mat-icon class="alert-icon" prosClickStopPropagation>error</mat-icon></button>
+        </div>
+        <span class="f-row-spacer-half"></span> 
+        <button mat-button color="primary" prosClickStopPropagation (click)="onBottomLeft();">Run variants</button>
       </div>
-    </div>
-    <span class="row-spacer"></span>
-    <div class="f-row bottom-actions">
-      <button mat-button>Cancel</button>
-      <button mat-button>Scheduling</button>
-      <button mat-flat-button color="primary">Run now</button>
-    </div>
-    
-  </mat-card-content>
-</mat-card>
+      <div class="f-col links-col">
+        <a  class="total">Total: {{ showUnique ? totalUniqueValue : totalValue }}</a>
+        <a  class="error">Error: {{ showUnique ? errorUniqueValue : errorValue }}</a>
+        <a  class="success">Success: {{ showUnique ? successUniqueValue : successValue }}</a>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</ng-template>
 
-<mat-card class="mat-elevation-z0 root highlight processing" style="display: none;">
-  <mat-toolbar class="header">
-    <mat-toolbar-row>
-      <h3 class="mat-h3" [matTooltip]="title">{{ title }}</h3>
-    </mat-toolbar-row>
-  </mat-toolbar>
-  <mat-card-content class="f-col run-data">
-    <mat-spinner diameter="50"></mat-spinner>
-    <strong>Processing run…</strong>
-    <span class="row-spacer"></span>
-    <div class="f-row bottom-actions">
-      <button mat-button>Cancel</button>
-    </div>
-    
-  </mat-card-content>
-</mat-card>
+
+
 
 
 

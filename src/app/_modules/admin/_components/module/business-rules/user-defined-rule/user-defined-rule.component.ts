@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { UDRBlocksModel, UdrModel, UDRHierarchyModel, CoreSchemaBrInfo } from '../business-rules.modal';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { SchemaService } from 'src/app/_services/home/schema.service';
@@ -14,7 +14,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './user-defined-rule.component.html',
   styleUrls: ['./user-defined-rule.component.scss']
 })
-export class UserDefinedRuleComponent implements OnInit {
+export class UserDefinedRuleComponent implements OnInit, OnChanges {
 
 
 
@@ -33,6 +33,12 @@ export class UserDefinedRuleComponent implements OnInit {
 
   @Input()
   brType: string;
+
+  @Input()
+  needCondRef: boolean;
+
+  @Input()
+  svdClicked: boolean;
 
   @Output()
   evtSaved: EventEmitter<CoreSchemaBrInfo> = new EventEmitter();
@@ -76,6 +82,18 @@ export class UserDefinedRuleComponent implements OnInit {
     this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel,this.isExpandable, this.getChildren);
     this.treeControl = new FlatTreeControl<ItemNodeInfo>(this.getLevel, this.isExpandable);
     this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if(changes && changes.needCondRef && changes.needCondRef.currentValue.toString() === 'true') {
+      this.fetchConditionList(null);
+    }
+
+    // after click save invoke saved finishProcess
+    if(changes && changes.svdClicked && changes.svdClicked.currentValue.toString() === 'true') {
+      this.finishUdrProcess();
+    }
+
   }
 
 

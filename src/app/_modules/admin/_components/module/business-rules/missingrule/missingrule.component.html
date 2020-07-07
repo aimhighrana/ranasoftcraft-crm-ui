@@ -1,17 +1,17 @@
 <div class="rulesfields">
-    <mat-toolbar>
+    <!-- <mat-toolbar>
         <mat-toolbar-row>
             <span>Fill Details</span>
         </mat-toolbar-row>
-    </mat-toolbar>
+    </mat-toolbar> -->
 
-    <div class="f-col">
+    <div class="f-col" [formGroup]="fillDataForm">
         <mat-form-field>
             <mat-label>Description</mat-label>
-            <input matInput autocomplete="off" [(ngModel)]="description">
+            <input matInput autocomplete="off" formControlName="description">
         </mat-form-field>
 
-        <form [formGroup]="fillDataForm">
+        
             <mat-form-field class="field-x2">
 
                 <mat-chip-list #chipList aria-label="Module selection">
@@ -41,15 +41,15 @@
                     </div>
                 </mat-autocomplete>
             </mat-form-field>
-        </form>
+        
 
         <div class="f-row fieldselection"> </div>
 
     </div>
-    <div class="finishBtn">
+    <!-- <div class="finishBtn">
         <button mat-button (click)="discard(null)">Back</button>
         <button mat-flat-button color="primary" (click)="saveBrInfo()">Finish
             Process</button>
-    </div>
+    </div> -->
 
 </div>

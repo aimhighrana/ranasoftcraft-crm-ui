@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { CoreSchemaBrInfo, BusinessRuleType } from '../business-rules.modal';
 import { Metadata } from '@modules/report/edit/container/metadatafield-control/metadatafield-control.component';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
@@ -16,7 +16,7 @@ export interface Regex{
   templateUrl: './regex-rule.component.html',
   styleUrls: ['./regex-rule.component.scss']
 })
-export class RegexRuleComponent implements OnInit {
+export class RegexRuleComponent implements OnInit, OnChanges {
 
   @Input()
   schemaId: string;
@@ -29,6 +29,9 @@ export class RegexRuleComponent implements OnInit {
 
   @Input()
   brType: string;
+
+  @Input()
+  svdClicked: boolean;
 
   @Output()
   evtSaved: EventEmitter<CoreSchemaBrInfo> = new EventEmitter();
@@ -58,6 +61,15 @@ export class RegexRuleComponent implements OnInit {
     private schemaService: SchemaService,
     private matSnackBar: MatSnackBar
   ) { }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    // after clicked saved should validate and save / update br
+    if(changes && changes.svdClicked && changes.svdClicked.previousValue !== changes.svdClicked.currentValue) {
+      if(changes.svdClicked.currentValue) {
+        this.saveBrInfo();
+      }
+    }
+  }
 
   ngOnInit(): void {
     this.regexFrmGrp = this.formBuilder.group({

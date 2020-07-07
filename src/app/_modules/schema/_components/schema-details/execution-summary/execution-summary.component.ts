@@ -53,9 +53,9 @@ export class ExecutionSummaryComponent implements OnInit, OnDestroy {
         summary.total = res.totalCount;
         summary.runBy = res.createdBy;
         summary.startTime = res.executionStartTime;
-        summary.isInRunning = res.pulse;
+        summary.isInRunning = res.isInRunning;
         summary.exeEndDate = res.executionEndTime;
-        summary.completeProgress = res.pulse ? 0 : 100;
+        summary.completeProgress = res.isInRunning ? 0 : 100;
         this.summary = summary;
     },error=> console.error(`Error: ${error.message}`));
     this.subscriptions.push(schemaDetailsSub);

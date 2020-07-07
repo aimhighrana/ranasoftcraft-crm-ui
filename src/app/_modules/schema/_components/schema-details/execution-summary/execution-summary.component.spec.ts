@@ -77,7 +77,7 @@ describe('ExecutionSummaryComponent', () => {
     const schemaid = '23472538';
     const schemalist: SchemaListDetails = new SchemaListDetails();
     schemalist.totalCount = 57; schemalist.errorCount = 114; schemalist.errorUniqueValue = 55; schemalist.totalUniqueValue = 110;
-    schemalist.successCount = 76; schemalist.successUniqueValue = 76; schemalist.pulse = true;
+    schemalist.successCount = 76; schemalist.successUniqueValue = 76; schemalist.isInRunning = true;
     component.schemaId = schemaid;
     spyOn(schemalistSer, 'getSchemaDetailsBySchemaId').withArgs(schemaid).and.returnValue(of(schemalist));
 

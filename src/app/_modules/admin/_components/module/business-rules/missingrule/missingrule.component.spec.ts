@@ -4,9 +4,10 @@ import { CoreSchemaBrInfo, BusinessRuleType } from '../business-rules.modal';
 import { TestBed } from '@angular/core/testing';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule, FormGroup, FormControl } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { SchemaService } from '@services/home/schema.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 class SchemaSerStub {
   createBusinessRule() {
@@ -30,7 +31,8 @@ describe('MissingruleComponent', () => {
       ],
       declarations: [MissingruleComponent],
       providers: [
-        SchemaService
+        SchemaService,
+        MatSnackBar
       ]
     })
       .compileComponents();
@@ -112,13 +114,22 @@ describe('MissingruleComponent', () => {
 
   it('testing saveBrInfo ', () => {
 
-    component.brInfo = new CoreSchemaBrInfo();
+    component.groupDetailss = [{ id: 12423 },{ id: 233}];
+    const brInfo = new CoreSchemaBrInfo();
+    brInfo.message = 'Testing';
+    brInfo.fields = '12423,233';
+    component.brInfo = brInfo;
     spyOn(service, 'createBusinessRule').and.callFake(() => {
       return of(component.brInfo);
     })
     // spyOn(component, 'storeData').and.callFake(() => {
     //   return '';
     // })
+
+    component.fillDataForm = new FormGroup({
+      selectFields:new FormControl(''),
+      description: new FormControl('Testing')
+    });
     component.saveBrInfo();
     expect(service.createBusinessRule).toHaveBeenCalled();
   });
