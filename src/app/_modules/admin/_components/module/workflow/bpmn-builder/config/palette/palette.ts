@@ -10,6 +10,7 @@ export class CustomPalette {
       // bpmnFactory,
       create,
       elementFactory,
+      // palette
       // translate
     } = this;
 
@@ -75,3 +76,10 @@ export class CustomPalette {
     }
   }
 }
+const inject = '$inject' ;
+CustomPalette[inject] = [ 'bpmnFactory',
+  'create',
+  'elementFactory',
+  'palette',
+  'translate'
+];
