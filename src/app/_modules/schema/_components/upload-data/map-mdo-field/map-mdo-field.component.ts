@@ -48,13 +48,13 @@ export class MapMdoFieldComponent implements OnInit {
         map(name => name ? (this.mdoFields.filter(fill => fill.fieldDescri.toLocaleLowerCase().indexOf(name.toLocaleLowerCase()) !== -1))    : this.mdoFields.slice())
       );
     this.selectedMdoFldCtrl.valueChanges.subscribe(val=>{
-      if(val !== undefined){
-        if(typeof val === 'string' && val === '') {
-          this.optionSelectedEmit.emit({fieldDesc: '',fieldId: '',index: this.cellIndex, execlFld: this.excelField});
-        }
-        else {
-          this.optionSelectedEmit.emit({fieldDesc: val.fieldDescri,fieldId: val.fieldId,index: this.cellIndex, execlFld: this.excelField});
-        }
+      if(typeof val === 'string' && val === '') {
+        this.optionSelectedEmit.emit({fieldDesc: '',fieldId: '',index: this.cellIndex, execlFld: this.excelField});
+      }
+      else if(val) {
+        this.optionSelectedEmit.emit({fieldDesc: val.fieldDescri,fieldId: val.fieldId,index: this.cellIndex, execlFld: this.excelField});
+      }else {
+        console.error(`Mapping not found: ${val} `);
       }
     });
 
@@ -65,17 +65,17 @@ export class MapMdoFieldComponent implements OnInit {
     }
 
     if(this.autoSelectedFld) {
-      this.selectedMdoFldCtrl.disable({onlySelf:true})
-      let fld : any = [];
+      let fld;
       if(this.excelField === 'id'){
-         fld = this.mdoFields.filter(fill => fill.fieldDescri.toLocaleLowerCase() === ('Module Object Number').toLocaleLowerCase())[0]
+        fld = this.mdoFields.filter(fill => fill.fieldDescri.toLocaleLowerCase() === ('Module Object Number').toLocaleLowerCase())[0]
       } else {
-         fld = this.mdoFields.filter(fill => fill.fieldDescri.toLocaleLowerCase() === this.excelField.toLocaleLowerCase())[0];
+        fld = this.mdoFields.filter(fill => fill.fieldDescri.toLocaleLowerCase() === this.excelField.toLocaleLowerCase())[0];
         if (!fld) {
           fld = this.mdoFields.filter(fill => fill.fieldDescri.toLocaleLowerCase().indexOf(this.excelField.toLocaleLowerCase())!== -1)[0];
         }
       }
       this.selectedMdoFldCtrl.setValue(fld);
+      this.selectedMdoFldCtrl.disable({onlySelf:true,emitEvent:true})
     }
   }
 
