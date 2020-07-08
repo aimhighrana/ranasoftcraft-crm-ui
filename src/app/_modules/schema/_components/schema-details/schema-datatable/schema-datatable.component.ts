@@ -356,7 +356,7 @@ export class SchemaDatatableComponent implements OnInit {
         this.schemaBrInfoList.forEach(brInfo =>{
           fields = fields.concat(brInfo.fields);
         });
-        if(fields.indexOf(fieldId) !== -1 && !row[fieldId].isCorrected) {
+        if(fields.indexOf(fieldId) !== -1 && row[fieldId]  &&  !row[fieldId].isCorrected) {
           return true;
         }
       }

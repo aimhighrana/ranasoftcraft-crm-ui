@@ -116,11 +116,33 @@ export class SchemaDataSource implements DataSource<SchemaTableData> {
                         mdoNew[fieldId] = oldData;
                         mdo[fieldId].isCorrected = (correctedVal === undefined || correctedVal === null) ? false : true;
                 });
+
+                // check currect data is avail
+                Object.keys(correctedRec.hdvs).forEach(fld=>{
+                    if(!mdo.hasOwnProperty(fld)) {
+                        const oldData =  {} as any;
+                        const newData =  {} as any;
+                        newData.fieldData =  correctedRec.hdvs[fld] ? correctedRec.hdvs[fld] .vc : '';
+                        newData.fieldId = fld;
+                        newData.fieldDesc = '';
+                        newData.isCorrected = true;
+
+                        oldData.fieldData =  '';
+                        oldData.fieldId = fld;
+                        oldData.fieldDesc = '';
+                        oldData.isCorrected = true;
+
+                        mdoNew[fld] = newData;
+                        mdo[fld] = oldData;
+                    }
+                });
+
                 mdoNew.isCorrectedRow = true;
                 mdoNew.isReviewed = correctedRec.isReviewed ? correctedRec.isReviewed : false;
                 mdoNew.isSubmitted = correctedRec.isSubmitted ? correctedRec.isSubmitted : false;
                 output.push(mdoNew);
                 output.push(mdo);
+
             }
 
         });

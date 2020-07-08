@@ -72,6 +72,7 @@ export class ExecutionSummaryComponent implements OnInit, OnDestroy {
       this.thresholdRes = res;
       this.thresholdRes.threshold = Math.round((res.threshold + Number.EPSILON) * 100) / 100;
     }, error=>{
+      this.thresholdRes.threshold = 0;
       console.error(`Execption : ${error.message}`);
     });
     this.subscriptions.push(staticSub);
