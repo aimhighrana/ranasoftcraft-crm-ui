@@ -21,7 +21,7 @@ mat-card.root {
       word-break: break-word;
       font-weight: 500;
       font-size: 16px;
-      line-height: 28px;
+      line-height: 20px;
     }
   }
 
@@ -30,7 +30,7 @@ mat-card.root {
     padding: 16px;
 
     .f-col {
-      flex: 2;
+      flex: 3;
       align-items: flex-start;
 
       .display-per {
@@ -45,6 +45,7 @@ mat-card.root {
 
       .total {
         color: #000;
+        font-weight: 500;
       }
 
       .error {
@@ -61,7 +62,7 @@ mat-card.root {
     }
 
     .links-col {
-      flex: 1;
+      flex: 2;
       align-items: flex-end;
 
       a {
@@ -114,4 +115,8 @@ mat-card.root.highlight.processing {
       font-weight: 400;
     }
   }
+}
+
+mat-card.root:hover {
+  box-shadow: 0 0 0 1px rgba(26, 27, 31, 0.05), 0 5px 24px 0 rgba(0, 0, 0, 0.09);
 }

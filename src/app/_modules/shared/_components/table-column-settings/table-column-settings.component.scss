@@ -7,14 +7,6 @@
   height: 100%;
   width: 400px;
 
-  mat-toolbar {
-    min-height: 50px;
-
-    mat-toolbar-row {
-      height: 50px;
-    }
-  }
-
   mat-form-field {
     width: calc(100% - 32px);
     height: 80px;
@@ -24,7 +16,7 @@
   mat-card {
     padding: 0;
     width: 100%;
-    height: calc(100% - 50px - 70px - 70px);
+    height: calc(100% - 50px - 90px - 70px);
     overflow-y: auto;
 
     .checkedall {
@@ -49,7 +41,7 @@
         height: 36px;
 
         span.highlightText {
-          color: #9acd32;
+          font-weight: 600;
           display: contents;
         }
       }

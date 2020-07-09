@@ -7,12 +7,8 @@
   height: 100%;
   width: 460px;
 
-  mat-toolbar {
-    min-height: 50px;
-
-    mat-toolbar-row {
-      height: 50px;
-    }
+  mat-divider {
+    width: 100%;
   }
 
   mat-form-field {
@@ -81,13 +77,13 @@
             text-overflow: ellipsis;
             white-space: pre-line;
             word-break: break-word;
+            margin: 0 8px;
           }
 
           .chip-icon {
             font-size: 18px;
             height: 18px;
             width: 18px;
-            margin-top: 2px;
             cursor: pointer;
           }
 

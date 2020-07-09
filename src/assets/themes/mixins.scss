@@ -285,6 +285,26 @@
             color: mat-color($background-palette, card);
           }
         }
+
+        .field-grid {
+          .mat-table {
+            .mat-cell:first-of-type {
+              background-color: mat-color($background-palette, app-bar);
+            }
+
+            .mat-cell:nth-child(2) {
+              background-color: mat-color($background-palette, background);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  pros-execution-summary {
+    .execution-counts {
+      mat-card {
+        border-color: mat-color($foreground-palette, divider);
       }
     }
   }

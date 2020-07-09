@@ -5,9 +5,9 @@
       <span class="f-spacer"></span>
       <button mat-icon-button [matMenuTriggerFor]="menu" prosClickStopPropagation><mat-icon>more_vert</mat-icon></button>
       <mat-menu #menu="matMenu">
-        <button mat-menu-item *ngIf="edit" prosClickStopPropagation matTooltip="Edit" (click)="onEdit();">Edit</button>
-        <button mat-menu-item *ngIf="delete" prosClickStopPropagation matTooltip="Delete" (click)="onDelete();">Delete</button>
-        <button mat-menu-item *ngIf="info" prosClickStopPropagation matTooltip="Information comming soon ..." (click)="onInfo();">Info</button>
+        <button mat-menu-item *ngIf="edit" prosClickStopPropagation (click)="onEdit();">Edit</button>
+        <button mat-menu-item *ngIf="delete" prosClickStopPropagation (click)="onDelete();">Delete</button>
+        <button mat-menu-item *ngIf="info" prosClickStopPropagation matTooltip="Coming Soon" (click)="onInfo();">Info</button>
       </mat-menu>
     </mat-toolbar-row>
   </mat-toolbar>

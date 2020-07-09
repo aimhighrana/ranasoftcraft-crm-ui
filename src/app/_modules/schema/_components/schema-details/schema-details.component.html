@@ -2,19 +2,16 @@
   <div class="crumbrow f-row">
     <pros-breadcrumb [crumbs]="breadcrumb"></pros-breadcrumb>
     <div class="f-spacer"></div>
-    <button mat-stroked-button><mat-icon>edit</mat-icon></button>
-    <div class="f-col-spacer-half"></div>
+    <button mat-stroked-button><mat-icon matTooltip="Edit">edit</mat-icon></button>
     <button *ngIf="collaboratorPermission && schemaId" matTooltip="Collaborator" mat-stroked-button [routerLink]="['', { outlets: { sb: 'sb/schema/collab/' + this.schemaId } } ]"><mat-icon>group</mat-icon></button>
-    <div class="f-col-spacer-half"></div>
     <button matTooltip="Execution logs" mat-stroked-button [routerLink]="['', { outlets: { sb: 'sb/schema/execution-logs/' + schemaId } } ]"><mat-icon>history</mat-icon></button>
-    <div class="f-col-spacer-half"></div>
-    <mat-form-field>
+    <!-- <mat-form-field>
       <mat-label>Select date range comming soon..</mat-label>
       <input matInput disabled [matDatepicker]="picker">
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
-    <div class="col-spacer"></div>
+    </mat-form-field> -->
+    <!-- <div class="col-spacer"></div> -->
   </div>
 
   <div class="root-row">

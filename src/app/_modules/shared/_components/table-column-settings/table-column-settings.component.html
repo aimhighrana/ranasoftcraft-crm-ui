@@ -1,100 +1,121 @@
 <div class="root">
     <mat-toolbar>
         <mat-toolbar-row>
-          <span>Choose Columns</span>
-          <span class="f-spacer"></span>
-          <button mat-icon-button (click)="close()"><mat-icon>close</mat-icon></button>
+            <span>Choose Columns</span>
+            <span class="f-spacer"></span>
+            <button mat-icon-button (click)="close()">
+                <mat-icon>close</mat-icon>
+            </button>
         </mat-toolbar-row>
     </mat-toolbar>
+    <mat-divider></mat-divider>
     <mat-form-field>
-    	<input matInput placeholder="Search" [formControl]="globalFormControl" [(ngModel)]="dynamicSearchVal" (ngModelChange)="onTextboxChange()" (keydown)="searchKeyDown($event)">    
-        	<ng-template [ngIf]="dynamicSearchVal.length > 0">
-             	<span *ngIf="matchCount > 0">
-                	{{ index + 1 }} of {{ matchCount }} results
-                </span>
-                <span *ngIf="matchCount == 0">
-                	No results
-                </span>
-                <button mat-icon-button (click)="findPrev()" [disabled]="!canMoveHighlight"><mat-icon>navigate_before</mat-icon></button >
-                <button mat-icon-button (click)="findNext()" [disabled]="!canMoveHighlight"><mat-icon>navigate_next</mat-icon></button>
-            </ng-template>
+        <input matInput placeholder="Search" [formControl]="globalFormControl" [(ngModel)]="dynamicSearchVal"
+            (ngModelChange)="onTextboxChange()" (keydown)="searchKeyDown($event)">
+        <ng-template [ngIf]="dynamicSearchVal.length > 0">
+            <span *ngIf="matchCount > 0">
+                {{ index + 1 }} of {{ matchCount }} results
+            </span>
+            <span *ngIf="matchCount == 0">
+                No results
+            </span>
+            <button mat-icon-button (click)="findPrev()" [disabled]="!canMoveHighlight">
+                <mat-icon>navigate_before</mat-icon>
+            </button>
+            <button mat-icon-button (click)="findNext()" [disabled]="!canMoveHighlight">
+                <mat-icon>navigate_next</mat-icon>
+            </button>
+        </ng-template>
     </mat-form-field>
 
     <mat-card class="mat-elevation-z0">
-        <mat-checkbox class="checkedall" color="primary" (change)="selectAll()" [(ngModel)]="allChecked" [indeterminate]="allIndeterminate"> <span class="checkboxlabel">All</span></mat-checkbox>
-        <mat-selection-list color="primary" cdkDropList (cdkDropListDropped)="drop($event,'header',null)" (selectionChange)="mangeChooseColumn($event)">
-            <mat-list-option [checkboxPosition]="before" *ngFor="let fld of headerFieldObs | async" [value]="fld" cdkDrag id="{{fld.fieldId}}"  [selected]="isSelected(fld.fieldId)">
-               <ng-template [ngIf]="isMarked(fld.fieldId)" [ngIfElse] = "headerElse">
-                   <ng-template [ngIf]="(dynamicSearchVal !=='' && fld.fieldDescri.toLocaleLowerCase().indexOf(dynamicSearchVal.toLocaleLowerCase()) !==-1)" [ngIfElse]="elseIndex">
+        <mat-checkbox class="checkedall" color="primary" (change)="selectAll()" [(ngModel)]="allChecked"
+            [indeterminate]="allIndeterminate"> <span class="checkboxlabel">All</span></mat-checkbox>
+        <mat-selection-list color="primary" cdkDropList (cdkDropListDropped)="drop($event,'header',null)"
+            (selectionChange)="mangeChooseColumn($event)">
+            <mat-list-option [checkboxPosition]="before" *ngFor="let fld of headerFieldObs | async" [value]="fld"
+                cdkDrag id="{{fld.fieldId}}" [selected]="isSelected(fld.fieldId)">
+                <ng-template [ngIf]="isMarked(fld.fieldId)" [ngIfElse]="headerElse">
+                    <ng-template
+                        [ngIf]="(dynamicSearchVal !=='' && fld.fieldDescri.toLocaleLowerCase().indexOf(dynamicSearchVal.toLocaleLowerCase()) !==-1)"
+                        [ngIfElse]="elseIndex">
                         <span class="highlightText">
                             {{ fld.fieldDescri.substring(0, dynamicSearchVal.length) }}
                         </span>
                         {{ fld.fieldDescri.substring(dynamicSearchVal.length, fld.fieldDescri.length) }}
-                   </ng-template>
-                   <ng-template #elseIndex>
+                    </ng-template>
+                    <ng-template #elseIndex>
                         {{ fld.fieldDescri }}
-                   </ng-template>
+                    </ng-template>
                 </ng-template>
-               <ng-template #headerElse>
-                {{ fld.fieldDescri }}
-               </ng-template>
+                <ng-template #headerElse>
+                    {{ fld.fieldDescri }}
+                </ng-template>
             </mat-list-option>
             <!--Hierarchy-->
-                <mat-expansion-panel *ngFor="let hei of hierarchyList | keyvalue" expanded>
-                    <mat-expansion-panel-header>
-                        <mat-panel-title>
-                            <mat-checkbox color="primary" (change)="hierarchSelect()" [(ngModel)]="hierarchyChecked" [indeterminate]="hierarchyIndeterminate">
-                                {{ heText ? heText[hei.key] : '' }}
-                            </mat-checkbox>
-                        </mat-panel-title>
-                    </mat-expansion-panel-header>
-                    <div cdkDropList (cdkDropListDropped)="drop($event, 'hierarchy',hei.key)">
-                        <mat-list-option [checkboxPosition]="before" *ngFor="let fld of (hierarchyList[hei.key])" [value]="fld" cdkDrag id="{{fld.fieldId}}" [selected]="isSelected(fld.fieldId)">
-                            <ng-template [ngIf]="isMarked(fld.fieldId)" [ngIfElse] = "hierarchyElse">
-                                <ng-template [ngIf]="(dynamicSearchVal !=='' && fld.fieldDescri.toLocaleLowerCase().indexOf(dynamicSearchVal.toLocaleLowerCase()) !==-1)" [ngIfElse]="elseIndex">
-                                     <span class="highlightText">
-                                        {{ fld.fieldDescri.substring(0, dynamicSearchVal.length) }}
-                                     </span>
-                                       {{ fld.fieldDescri.substring(dynamicSearchVal.length, fld.fieldDescri.length) }}
-                                </ng-template>
-                                <ng-template #elseIndex>
-                                    {{ fld.fieldDescri }}
-                                </ng-template>
+            <mat-expansion-panel *ngFor="let hei of hierarchyList | keyvalue" expanded>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <mat-checkbox color="primary" (change)="hierarchSelect()" [(ngModel)]="hierarchyChecked"
+                            [indeterminate]="hierarchyIndeterminate">
+                            {{ heText ? heText[hei.key] : '' }}
+                        </mat-checkbox>
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div cdkDropList (cdkDropListDropped)="drop($event, 'hierarchy',hei.key)">
+                    <mat-list-option [checkboxPosition]="before" *ngFor="let fld of (hierarchyList[hei.key])"
+                        [value]="fld" cdkDrag id="{{fld.fieldId}}" [selected]="isSelected(fld.fieldId)">
+                        <ng-template [ngIf]="isMarked(fld.fieldId)" [ngIfElse]="hierarchyElse">
+                            <ng-template
+                                [ngIf]="(dynamicSearchVal !=='' && fld.fieldDescri.toLocaleLowerCase().indexOf(dynamicSearchVal.toLocaleLowerCase()) !==-1)"
+                                [ngIfElse]="elseIndex">
+                                <span class="highlightText">
+                                    {{ fld.fieldDescri.substring(0, dynamicSearchVal.length) }}
+                                </span>
+                                {{ fld.fieldDescri.substring(dynamicSearchVal.length, fld.fieldDescri.length) }}
                             </ng-template>
-                            <ng-template #hierarchyElse>
+                            <ng-template #elseIndex>
                                 {{ fld.fieldDescri }}
                             </ng-template>
-                        </mat-list-option>
-                    </div>
-                </mat-expansion-panel>
+                        </ng-template>
+                        <ng-template #hierarchyElse>
+                            {{ fld.fieldDescri }}
+                        </ng-template>
+                    </mat-list-option>
+                </div>
+            </mat-expansion-panel>
             <!-- Girds -->
-                <mat-expansion-panel *ngFor="let gei of gridList | keyvalue" expanded>
-                    <mat-expansion-panel-header>
-                        <mat-panel-title>
-                             <mat-checkbox (change)="gridSelect()" [(ngModel)]="gridChecked" [indeterminate]="gridIndeterminate">
-                                {{val.fieldDescri}}
-                            </mat-checkbox>
-                        </mat-panel-title>
-                    </mat-expansion-panel-header>
-                    <div cdkDropList (cdkDropListDropped)="drop($event, 'grid', gei.key)">
-                        <mat-list-option [checkboxPosition]="before" *ngFor="let fld of (gridList[gei.key])" [value]="fld" cdkDrag id="{{fld.fieldId}}" >
-                            <ng-template [ngIf]="isMarked(fld.fieldId)" [ngIfElse] = "gridElse">
-                                <ng-template [ngIf]="(dynamicSearchVal !=='' && fld.fieldDescri.toLocaleLowerCase().indexOf(dynamicSearchVal.toLocaleLowerCase()) !==-1)" [ngIfElse]="elseIndex">
-                                    <span class="highlightText"> 
-                                        {{ fld.fieldDescri.substring(0, dynamicSearchVal.length) }}
-                                     </span>
-                                     {{ fld.fieldDescri.substring(dynamicSearchVal.length, fld.fieldDescri.length) }}
-                                </ng-template>
-                                <ng-template #elseIndex>
-                                    {{ fld.fieldDescri }}
-                                </ng-template>
+            <mat-expansion-panel *ngFor="let gei of gridList | keyvalue" expanded>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <mat-checkbox (change)="gridSelect()" [(ngModel)]="gridChecked"
+                            [indeterminate]="gridIndeterminate">
+                            {{val.fieldDescri}}
+                        </mat-checkbox>
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div cdkDropList (cdkDropListDropped)="drop($event, 'grid', gei.key)">
+                    <mat-list-option [checkboxPosition]="before" *ngFor="let fld of (gridList[gei.key])" [value]="fld"
+                        cdkDrag id="{{fld.fieldId}}">
+                        <ng-template [ngIf]="isMarked(fld.fieldId)" [ngIfElse]="gridElse">
+                            <ng-template
+                                [ngIf]="(dynamicSearchVal !=='' && fld.fieldDescri.toLocaleLowerCase().indexOf(dynamicSearchVal.toLocaleLowerCase()) !==-1)"
+                                [ngIfElse]="elseIndex">
+                                <span class="highlightText">
+                                    {{ fld.fieldDescri.substring(0, dynamicSearchVal.length) }}
+                                </span>
+                                {{ fld.fieldDescri.substring(dynamicSearchVal.length, fld.fieldDescri.length) }}
                             </ng-template>
-                            <ng-template #gridElse>
+                            <ng-template #elseIndex>
                                 {{ fld.fieldDescri }}
                             </ng-template>
-                        </mat-list-option>
-                    </div>
-                </mat-expansion-panel>
+                        </ng-template>
+                        <ng-template #gridElse>
+                            {{ fld.fieldDescri }}
+                        </ng-template>
+                    </mat-list-option>
+                </div>
+            </mat-expansion-panel>
         </mat-selection-list>
     </mat-card>
     <mat-card-actions>

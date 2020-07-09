@@ -68,6 +68,8 @@
 
     .field-grid {
       width: 100%;
+      height: 449px;
+      overflow: auto;
 
       .mat-table {
         width: 100%;
@@ -76,26 +78,39 @@
           padding: 0 8px;
           font-size: 14px;
           border: none;
+          flex: 2;
         }
 
         .mat-cell {
-          padding: 0 8px;
+          padding: 0 0 0 8px;
+          flex: 2;
 
-          mat-form-field {
-            height: 40px;
-            font-size: 13px;
-            margin: 8px 0;
+          pros-map-mdo-field {
+            width: 100%;
+            height: 28px;
           }
         }
 
-        .map-icon {
-          text-align: right;
+        .mat-header-cell:nth-child(2),
+        .mat-cell:nth-child(2) {
+          margin-left: 2px;
+        }
+
+        .col-type-first {
+          flex: 3;
+        }
+
+        .col-type-third {
+          flex: 1;
+          justify-content: center;
+          color: #8bc34a;
         }
       }
     }
 
     .finish-container {
       align-items: center;
+      margin-top: 32px;
 
       .checked-icon {
         width: 40px;

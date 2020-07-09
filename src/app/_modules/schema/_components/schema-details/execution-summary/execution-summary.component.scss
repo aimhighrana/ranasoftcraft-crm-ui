@@ -1,11 +1,13 @@
 .execution-counts {
   width: 100%;
-  display: grid;
-  grid-gap: 8px 16px;
-  grid-template-columns: repeat(auto-fill, minmax(20%, 1fr));
+  display: flex;
+  flex-wrap: wrap;
 
-  .mat-h3 {
-    margin-bottom: 8px;
+  mat-card {
+    min-width: 300px;
+    border-width: 1px;
+    border-style: solid;
+    margin: 0 16px 16px 0;
   }
 
   strong {
@@ -13,29 +15,29 @@
   }
 
   .error-status {
-    color: #c30000;
+    color: #e62a10;
   }
 
   .success-status {
-    color: #4caa00;
+    color: #259b24;
   }
 }
 
 .f-row {
-  align-items: baseline;
+  align-items: center;
 }
 
 .execution-summ-process {
   flex: 1;
-  margin-top: 20px;
 
   strong {
     font-size: 30px;
     margin-right: 8px;
   }
 
-  .mat-h4 {
+  .subheading {
     margin-bottom: 0;
+    font-weight: 500;
   }
 
   mat-progress-bar {
@@ -47,31 +49,27 @@
 
 .execution-summ-details {
   flex: 2;
+  align-items: flex-start;
 
   mat-card {
     flex: 1;
+
+    .mat-h3 {
+      font-weight: 500;
+      margin: 0;
+    }
   }
 }
 
-@media only screen and (min-width: 768px) and (max-width: 1024px) {
-  .execution-counts {
-    grid-template-columns: repeat(auto-fill, minmax(40%, 1fr));
-  }
-}
-
-@media only screen and (min-width: 200px) and (max-width: 767px) {
-  .execution-counts {
-    grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
-  }
-
-  .f-row {
+@media only screen and (min-width: 200px) and (max-width: 768px) {
+  .excu-infodetails {
     flex-direction: column;
-  }
 
-  .execution-summ-process {
-    width: 100%;
+    .execution-summ-process {
+      width: 100%;
+    }
 
-    mat-progress-bar {
+    .execution-summ-details {
       width: 100%;
     }
   }

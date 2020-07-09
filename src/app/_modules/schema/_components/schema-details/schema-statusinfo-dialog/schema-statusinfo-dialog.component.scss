@@ -4,21 +4,13 @@
   justify-content: flex-start;
   margin: -24px;
 
-  mat-toolbar {
-    min-height: 50px;
-
-    mat-toolbar-row {
-      height: 50px;
-    }
-  }
-
   mat-list-item {
-    padding-bottom: 8px;
+    padding: 8px 0;
     height: auto;
 
     h4.mat-line {
-      font-size: 14px;
-      margin-bottom: 8px;
+      font-size: 16px;
+      text-transform: uppercase;
     }
 
     p.mat-line {
@@ -27,7 +19,7 @@
     }
 
     .error-status {
-      color: #c30000;
+      color: #e62a10;
     }
 
     .skipped-status {
@@ -35,7 +27,7 @@
     }
 
     .success-status {
-      color: #12a44a;
+      color: #259b24;
     }
 
     .correction-status {

@@ -1,9 +1,9 @@
-<mat-card class="root mat-elevation-z6">
+<mat-card class="root mat-elevation-z3">
   <mat-toolbar class="header">
     <mat-toolbar-row>
       <h3 class="mat-h3">Overall Data Trend</h3>
       <div class="f-spacer"></div>
-      <button mat-icon-button><mat-icon>info</mat-icon></button>
+      <!-- <button mat-icon-button><mat-icon>info</mat-icon></button> -->
     </mat-toolbar-row>
   </mat-toolbar>
   <mat-divider></mat-divider>
@@ -12,13 +12,13 @@
       <canvas baseChart [datasets]="overviewChartdata" class="inner-flexcol-12" [labels]="overviewChartLabels"
         [options]="overviewChartOptions" [legend]="overviewChartLegend" [chartType]="overviewChartType">
       </canvas>
-      <div class="f-row">
+      <!-- <div class="f-row">
         <button mat-raised-button><mat-icon>zoom_in</mat-icon>Zoom In</button>
         <div class="f-col-spacer-half"></div>
         <button mat-raised-button><mat-icon>zoom_out</mat-icon>Zoom Out</button>
       </div>
       <div class="f-row-spacer-half"></div>
-      <small class="mat-caption">Note: WRITE NOTE HERE</small>
+      <small class="mat-caption">Note: WRITE NOTE HERE</small> -->
     </div>
     <mat-divider vertical="true"></mat-divider>
     <div class="right f-col">

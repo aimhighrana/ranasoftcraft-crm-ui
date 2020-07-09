@@ -2,46 +2,46 @@
   justify-content: flex-start;
   align-items: flex-start;
   align-content: flex-start;
-  max-width: 400px;
+  max-width: 460px;
   position: relative;
   height: 100%;
-  width: 400px;
+  width: 460px;
 
-  mat-toolbar {
-    min-height: 50px;
-
-    mat-toolbar-row {
-      height: 50px;
-    }
+  mat-divider {
+    width: 100%;
   }
 
   .executionlogs-list {
     height: calc(100% - 50px);
     overflow-y: auto;
     padding: 0 16px;
+    width: 93%;
 
     mat-expansion-panel {
       margin: 16px 0;
+      border-radius: 4px;
 
       .success_run {
-        color: #4caa00;
+        color: #259b24;
       }
 
       .failed_run {
-        color: #c30000;
+        color: #e62a10;
       }
 
       .mat-expansion-panel-header {
-        padding: 0 16px;
+        padding: 8px 16px;
+        border-radius: 4px;
       }
 
       mat-panel-description {
-        justify-content: space-between;
+        justify-content: flex-end;
         align-items: center;
         margin: 0;
 
         .logs-items {
           margin: 0 -8px;
+          width: 100%;
         }
       }
     }

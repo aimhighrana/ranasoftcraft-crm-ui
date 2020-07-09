@@ -53,9 +53,6 @@
               <div class="f-col" style="display: none;">
                 <mat-icon class="basic-icon">loop</mat-icon>
                 <h4 class="mat-h4">Uploading...</h4>
-                <p class="message-text">
-                  You will receive an email once the upload is done. <br>You can close this window.
-                </p>
               </div>
             </div>
             <div class="f-col upload-note">
@@ -72,47 +69,46 @@
         <ng-template matStepLabel>Map fields</ng-template>
     
         <div class="field-grid">
-          <table mat-table [dataSource]="dataSource" class="mat-elevation-z0 ">
+          <mat-table [dataSource]="dataSource" class="mat-elevation-z0">
             <!-- Excel Field Column -->
             <ng-container matColumnDef="excel">
-              <th mat-header-cell *matHeaderCellDef>Your file’s header fields</th>
-              <td mat-cell *matCellDef="let row; let rowIndex = index"> {{ row.excelFld}} </td>
+              <mat-header-cell *matHeaderCellDef class="col-type-first">Your file’s header fields</mat-header-cell>
+              <mat-cell *matCellDef="let row; let rowIndex = index" class="col-type-first"> {{ row.excelFld}} </mat-cell>
             </ng-container>
           
             <!-- Excel first row data -->
             <ng-container matColumnDef="excelfrstrowdata">
-              <th mat-header-cell *matHeaderCellDef> Your file’s first row </th>
-              <td mat-cell *matCellDef="let row; let rowIndex = index">
+              <mat-header-cell *matHeaderCellDef> Your file’s first row </mat-header-cell>
+              <mat-cell *matCellDef="let row; let rowIndex = index">
                   {{ row.excelFrstRow }}
-              </td>
+              </mat-cell>
             </ng-container>
 
             <!-- Map Column -->
             <ng-container matColumnDef="mapping">
-              <th mat-header-cell *matHeaderCellDef> Map to  <mat-icon>trending_flat</mat-icon> </th>
-              <td *matCellDef="let row; let rowIndex = index" mat-cell></td>
-              <!-- <td mat-cell *matCellDef="let row; let rowIndex = index" class="map-icon"><button mat-mini-fab disabled><mat-icon>trending_flat</mat-icon></button></td> -->
+              <mat-header-cell *matHeaderCellDef class="col-type-third"> Map to<mat-icon>arrow_forward</mat-icon> </mat-header-cell>
+              <mat-cell *matCellDef="let row; let rowIndex = index" class="col-type-third"></mat-cell>
+              <!-- <mat-cell *matCellDef="let row; let rowIndex = index" class="map-icon"><button mat-mini-fab disabled><mat-icon>trending_flat</mat-icon></button></mat-cell> -->
             </ng-container>
           
             <!-- MDO Field Column -->
             <ng-container matColumnDef="field">
-              <th mat-header-cell *matHeaderCellDef>MDO fields</th>
-              <td mat-cell *matCellDef="let row; let rowIndex = index">
+              <mat-header-cell *matHeaderCellDef>MDO fields</mat-header-cell>
+              <mat-cell *matCellDef="let row; let rowIndex = index">
                 <pros-map-mdo-field [cellIndex]="rowIndex" [preSelectedFld]="getSelectedFieldId(rowIndex)" [excelField]="row.excelFld" [autoSelectedFld]="moduleInfo.object" [mdoFields]="headerFieldsList" (optionSelectedEmit)="updateMapFields($event)"></pros-map-mdo-field>
-              </td>
+              </mat-cell>
             </ng-container>
            
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-          </table>
+            <mat-header-row *matHeaderRowDef="displayedColumns;sticky:true"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          </mat-table>
         </div>
-
+        <div class="row-spacer"></div>
         <div class="f-row">
-          <button mat-flat-button matStepperPrevious>Back</button>
+          <button mat-flat-button matStepperPrevious color="primary">Back</button>
           <span class="f-spacer"></span>
           <button mat-flat-button color="primary" matStepperNext (click)="uploadFileData(stepper)">Begin Import</button>
         </div>
-
       </mat-step>
 
       <mat-step>
