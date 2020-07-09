@@ -148,7 +148,7 @@ export class CreateSchemaComponent implements OnInit {
    * For fragment see router.navigate method imp..
    */
   showAddBusinessRulePage() {
-    if(this.moduleId) {
+    if(this.moduleId && this.moduleId !== 'new') {
       this.router.navigate(['/home/schema/create-schema', this.moduleId , this.schemaId], {fragment:'missing'});
     } else {
       this.matSnackBar.open(`Please select module`, 'Close',{duration:5000});
@@ -539,6 +539,7 @@ export class CreateSchemaComponent implements OnInit {
       console.log('create update schema Response = ', response);
       if(response) {
         this.schemaId = response;
+        this.router.navigate(['/home/schema']);
         this.matSnackBar.open(`Successfully saved`, 'Close',{duration:5000});
       }
     }, error=>{

@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { SchemaCollaboratorsComponent } from './schema-collaborators.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { FormsModule, ReactiveFormsModule, FormGroup } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { UserMdoModel, RolesModel, GroupHeaderModel, PermissionType, PermissionOn, SchemaDashboardPermission } from '@models/collaborator';
@@ -88,6 +88,9 @@ describe('SchemaCollaboratorsComponent', () => {
 
   it('onSelectCollaborator(), after select collaborator for add', async(()=>{
     // mock data
+    component.addCollaboratorFrmGrp = new FormGroup({
+      addCollaboratorCtrl:new FormControl('')
+    });
     const selectedOption: SchemaDashboardPermission = new SchemaDashboardPermission();
     selectedOption.description = 'Harshit Jain';
     selectedOption.userid = 'harshit';

@@ -206,7 +206,7 @@ export class SchemaCollaboratorsComponent implements OnInit {
           this.currentPageIdx = 0;
         }
       }
-
+      this.addCollaboratorFrmGrp.controls.addCollaboratorCtrl.reset();
     }
   }
 
