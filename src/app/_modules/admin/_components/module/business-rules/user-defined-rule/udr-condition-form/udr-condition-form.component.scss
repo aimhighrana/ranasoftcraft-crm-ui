@@ -1,73 +1,19 @@
-mat-toolbar {
-  min-height: 50px;
-  font-size: 16px;
+.condition-listing {
+  height: 460px;
+  overflow: auto;
 
-  mat-toolbar-row {
-    height: 50px;
+  .condition-flex {
+    mat-form-field {
+      flex: 1;
+    }
+
+    .mat-icon-button {
+      margin-top: 8px;
+    }
   }
 }
 
 mat-card-actions {
   text-align: right;
   margin: 0;
-}
-
-mat-form-field {
-  flex: 1;
-}
-
-@media only screen and (min-width: 1024px) and (max-width: 1200px) {
-  .addrule {
-    .f-row {
-      grid-template-columns: repeat(auto-fill, minmax(30%, 1fr));
-    }
-  }
-
-  .rulesfields {
-    .f-col {
-      .fieldselection {
-        grid-template-columns: repeat(auto-fill, minmax(30%, 1fr));
-      }
-    }
-  }
-}
-
-@media only screen and (min-width: 768px) and (max-width: 1024px) {
-  .addrule {
-    .f-row {
-      grid-template-columns: repeat(auto-fill, minmax(50%, 1fr));
-    }
-  }
-
-  .rulesfields {
-    .f-col {
-      .fieldselection {
-        grid-template-columns: repeat(auto-fill, minmax(50%, 1fr));
-      }
-    }
-  }
-}
-
-@media only screen and (min-width: 200px) and (max-width: 767px) {
-  .addrule {
-    .f-row {
-      grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
-    }
-  }
-
-  .rulesfields {
-    .f-col {
-      .fieldselection {
-        grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
-      }
-    }
-  }
-
-  .condition-flex {
-    flex-direction: column;
-  }
-}
-
-.mat-form-field + .mat-form-field {
-  margin-left: 8px;
 }
