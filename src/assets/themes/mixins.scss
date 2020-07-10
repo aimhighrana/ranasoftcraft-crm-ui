@@ -108,6 +108,11 @@
     polygon {
       fill: mat-color($foreground-palette, text);
     }
+
+    svg.businessrule path,
+    rect {
+      fill: mat-color($primary-palette);
+    }
   }
 
   pros-schema-datatable {
@@ -309,17 +314,18 @@
     }
   }
 
-  pros-diw-create-schema {
+  pros-create-schema {
     .root {
-      .create-scehma {
-        .b-rule-listing {
-          background-color: mat-color($background-palette, app-bar);
-          border-color: mat-color($foreground-palette, divider);
+      .group-containers {
+        .categorygroup {
+          mat-divider {
+            border-color: mat-color($background-palette, card);
+          }
         }
+      }
 
-        .rule-tile-horizotal {
-          border-color: mat-color($foreground-palette, divider);
-        }
+      .br-tile {
+        border-color: mat-color($foreground-palette, divider);
       }
     }
   }

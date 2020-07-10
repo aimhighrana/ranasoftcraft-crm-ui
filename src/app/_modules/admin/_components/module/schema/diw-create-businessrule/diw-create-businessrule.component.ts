@@ -95,15 +95,15 @@ export class DiwCreateBusinessruleComponent implements OnInit, AfterViewInit, Af
 
   get allBusinessRules() : BusinessRules[] {
     return [
+      {ruleDesc: 'API Rule',ruleId:'',ruleType:BusinessRuleType.BR_API_RULE},
       {ruleDesc: 'Basic',ruleId:'',ruleType:null, isImplemented: false},
-      {ruleDesc: 'Metadata Rule',ruleId:'',ruleType:BusinessRuleType.BR_METADATA_RULE, isImplemented: true},
-      {ruleDesc: 'Missing Rule',ruleId:'',ruleType:BusinessRuleType.BR_MANDATORY_FIELDS,isImplemented: true},
-      {ruleDesc: 'User Defined Rule',ruleId:'',ruleType:BusinessRuleType.BR_CUSTOM_SCRIPT,isImplemented: true},
       {ruleDesc: 'Dependency Rule',ruleId:'',ruleType:BusinessRuleType.BR_DEPENDANCY_RULE},
       {ruleDesc: 'Duplicate Rule',ruleId:'',ruleType:BusinessRuleType.BR_DUPLICATE_RULE},
-      {ruleDesc: 'API Rule',ruleId:'',ruleType:BusinessRuleType.BR_API_RULE},
       {ruleDesc: 'External Validation Rule',ruleId:'',ruleType:BusinessRuleType.BR_EXTERNALVALIDATION_RULE},
+      {ruleDesc: 'Metadata Rule',ruleId:'',ruleType:BusinessRuleType.BR_METADATA_RULE, isImplemented: true},
+      {ruleDesc: 'Missing Rule',ruleId:'',ruleType:BusinessRuleType.BR_MANDATORY_FIELDS,isImplemented: true},
       {ruleDesc: 'Regex Rule',ruleId:'',ruleType:BusinessRuleType.BR_REGEX_RULE, isImplemented: true},
+      {ruleDesc: 'User Defined Rule',ruleId:'',ruleType:BusinessRuleType.BR_CUSTOM_SCRIPT,isImplemented: true},
     ];
   }
 

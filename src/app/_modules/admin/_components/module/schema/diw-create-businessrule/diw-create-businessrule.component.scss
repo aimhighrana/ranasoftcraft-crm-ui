@@ -4,11 +4,16 @@
   justify-content: flex-start;
   align-items: flex-start;
   align-content: flex-start;
+  margin: -24px;
 
   mat-toolbar {
     mat-toolbar-row {
       font-weight: 400;
     }
+  }
+
+  mat-divider {
+    width: 100%;
   }
 
   .rule-process {
@@ -31,11 +36,8 @@
     }
 
     .rule-fields {
-      width: 550px;
-    }
-
-    .udr-conditiona-block {
-      width: 983px;
+      height: 470px;
+      overflow: auto;
     }
   }
 }
