@@ -30,20 +30,20 @@
   }
 
   .collaborators-list {
-    height: calc(100% - 50px - 76px - 220px);
+    height: calc(100% - 65px - 60px - 240px);
     overflow-y: auto;
     width: 100%;
   }
 
   .chip-enable-coll-list {
-    height: calc(100% - 50px - 76px - 274px);
+    height: calc(100% - 65px - 60px - 300px);
   }
 
   .collaborators-add {
     width: 428px;
     height: 220px;
     position: fixed;
-    bottom: 40px;
+    bottom: 0;
     padding: 0 16px;
 
     .mat-h3 {
@@ -112,7 +112,7 @@
   }
 
   .chip-enable-coll-add {
-    height: 274px;
+    height: 276px;
   }
 
   .permissions {

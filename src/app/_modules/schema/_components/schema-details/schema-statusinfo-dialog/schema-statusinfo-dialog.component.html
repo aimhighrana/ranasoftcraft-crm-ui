@@ -3,7 +3,7 @@
     <mat-toolbar-row>
       <span>Status Info</span>
       <span class="f-spacer"></span>
-      <button mat-icon-button><mat-icon>close</mat-icon></button>
+      <button mat-icon-button (click)="closeDialog()"><mat-icon>close</mat-icon></button>
     </mat-toolbar-row>
   </mat-toolbar>
   <mat-divider></mat-divider>
@@ -18,7 +18,7 @@
     </mat-list-item>
     <mat-list-item>
       <h4 mat-line class="skipped-status">Skipped</h4>
-      <p mat-line>Skipped status against a record represents that one or more business rule(s) were skipped during the schema run. All such records can be viewed under the Skipped status tab. The reason for skipping a rule can be viewed…. UI???</p>
+      <p mat-line>Skipped status against a record represents that one or more business rule(s) were skipped during the schema run. All such records can be viewed under the Skipped status tab. The reason for skipping a rule can be viewedâ€¦. UI???</p>
     </mat-list-item>
     <mat-list-item>
       <h4 mat-line class="correction-status">Correction</h4>

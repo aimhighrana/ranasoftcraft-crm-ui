@@ -253,7 +253,6 @@ export class UploadDataComponent implements OnInit {
         // remove valitor here and move to next step
         this.dataTableCtrl.controls.dataTableFldCtrl.setValue('done');
         stepper.next();
-        this.snackBar.open(`Request accept successfully `, 'Close',{duration:5000});
       },error=>{
         console.error(error);
         this.snackBar.open(`Something went wrong , please check mdo logs `, 'Close',{duration:5000});
@@ -270,7 +269,6 @@ export class UploadDataComponent implements OnInit {
         // remove valitor here and move to next step
         this.dataTableCtrl.controls.dataTableFldCtrl.setValue('done');
         stepper.next();
-        this.snackBar.open(`Request accept successfully `, 'Close',{duration:5000});
       },error=>{
         console.error(error);
         this.snackBar.open(`Something went wrong , please check mdo logs `, 'Close',{duration:5000});
