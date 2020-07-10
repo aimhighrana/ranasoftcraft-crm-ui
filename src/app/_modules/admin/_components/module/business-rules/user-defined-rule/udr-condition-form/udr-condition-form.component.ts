@@ -165,7 +165,7 @@ export class UdrConditionFormComponent implements OnInit, OnChanges {
     const frmArray = this.frmArray;
     console.log(frmArray);
     if(!frmArray.valid) {
-      this.snackBar.open(`Please enter required field(s)`,'Close',{duration:5000});
+      // this.snackBar.open(`Please enter required field(s)`,'Close',{duration:5000});
       return false;
     }
     const arrayReq: UDRBlocksModel[] = [];
@@ -173,7 +173,7 @@ export class UdrConditionFormComponent implements OnInit, OnChanges {
     for(let i=0; i<frmArray.length; i++) {
       const ctrl = frmArray.at(i);
       const request: UDRBlocksModel = new UDRBlocksModel();
-      request.id = id ? id : String(new Date().getTime());
+      request.id = id ? id : String(Math.floor(Math.random() * 1000000000));
       request.conditionFieldId = ctrl.value.fields.fieldId ? ctrl.value.fields.fieldId : '';
       request.blockDesc = ctrl.value.conditionDesc;
       request.conditionFieldValue = typeof ctrl.value.conditionFieldValue === 'string' ? ctrl.value.conditionFieldValue : ctrl.value.conditionFieldValue.CODE;

@@ -145,6 +145,7 @@ export class UserDefinedRuleComponent implements OnInit, OnChanges {
     const flatNode = existingNode && existingNode.item === node.item ? existingNode : new ItemNodeInfo();
     flatNode.item = node.item;
     flatNode.level = level;
+    flatNode.nodeId = node.nodeId;
     flatNode.expandable = !!node.children;
     this.flatNodeMap.set(flatNode, node);
     this.nestedNodeMap.set(node, flatNode);
@@ -229,7 +230,7 @@ export class UserDefinedRuleComponent implements OnInit, OnChanges {
     block.forEach(b=>{
       const node =  this.treeControl.dataNodes.filter(fil => ((fil.item.toLocaleLowerCase() === 'and block' || fil.item.toLocaleLowerCase() === 'or block') && fil.level === this.level-1))[0];
       if(node) {
-        this.level++;
+        // this.level++;
         this.addNewItem(node, b.blockType, b.id);
       }
       // check childs
@@ -240,6 +241,7 @@ export class UserDefinedRuleComponent implements OnInit, OnChanges {
       }
     });
   }
+
 
   returnConditional(ele: UDRHierarchyModel[]): UDRBlocksModel[] {
     const cond: UDRBlocksModel[] = [];
@@ -265,40 +267,75 @@ export class UserDefinedRuleComponent implements OnInit, OnChanges {
 
   prepareDataSourceWhileEdit(response: UdrModel) {
     const udrHierarchies = response.udrHierarchies ? response.udrHierarchies : [];
-    const blocks = response.blocks ? response.blocks : [];
-    const parentNode = udrHierarchies.filter(fil => fil.parentId === null)[0];
-    const parentNodeDesc = blocks.filter(fil=> fil.id === parentNode.blockRefId)[0];
+    let cnt =0;
+    udrHierarchies.forEach(udrHie=>{
+      const blockInfo = response.blocks.filter(block=> block.id === udrHie.blockRefId)[0];
+      if(blockInfo) {
+        if(cnt === 0) {
+          this.createBlock(blockInfo.blockType, udrHie.blockRefId);
+          cnt++;
+        } else {
+          switch (blockInfo.blockType) {
+            case BlockType.AND:
+              const andNode =  this.treeControl.dataNodes.filter(fil => ((fil.item.toLocaleLowerCase() === 'and block' || fil.item.toLocaleLowerCase() === 'or block') && fil.level === udrHie.leftIndex-1))[0];
+              this.addNewItem(andNode, BlockType.AND, udrHie.blockRefId);
+              break;
 
-    // parent node object
-    this.createBlock(parentNodeDesc.blockType, parentNode.blockRefId);
+            case BlockType.OR:
+              const orNode =  this.treeControl.dataNodes.filter(fil => ((fil.item.toLocaleLowerCase() === 'and block' || fil.item.toLocaleLowerCase() === 'or block') && fil.level === udrHie.leftIndex-1))[0];
+              this.addNewItem(orNode, BlockType.OR, udrHie.blockRefId);
+              break;
 
-    // after create increase block level
-    this.level = 1;
-    // load childs
-    const currParentNode = parentNode.blockRefId;
-
-    const childElement = udrHierarchies.filter(fil => fil.parentId === currParentNode);
-    this.appendAbleFunc(childElement);
-
-
-    // udrHierarchies.forEach(udrHie=>{
-    //   const condInfo = blocks.filter(fil=> fil.id === udrHie.blockRefId)[0];
-    //   if(condInfo.id !== parentNode.blockRefId) {
-    //     if(udrHie.parentId && condInfo && condInfo.blockType === BlockType.COND && udrHie.parentId === currParentNode) {
-
-    //       // get previous node
-    //       const searchItmNode =  this.treeControl.dataNodes.filter(fil => (fil.item === 'condition_search' && fil.level === level))[0];
-    //       this.assignConBlocks([condInfo], searchItmNode, true);
-    //     } else if(condInfo && (condInfo.blockType === BlockType.OR || condInfo.blockType === BlockType.AND)){
-    //       const node =  this.treeControl.dataNodes.filter(fil => (fil.item !== 'condition_search' && fil.level === level-1))[0];
-    //       level++;
-    //       currParentNode = condInfo.id;
-    //       this.addNewItem(node, condInfo.blockType, currParentNode);
-    //     }
-    //   }
-    // });
-
+            case BlockType.COND:
+              const parentNodeId = udrHie.parentId;
+              const parentNodeEle =  this.treeControl.dataNodes.filter(fil => (fil.nodeId === parentNodeId))[0];
+              const searchItmNode = this.treeControl.dataNodes[this.treeControl.dataNodes.indexOf(parentNodeEle)+1];
+              this.assignConBlocks([blockInfo], searchItmNode, true);
+              break;
+            default:
+              console.log(`${blockInfo.blockType} invalid block type`);
+              break;
+          }
+        }
+      }
+    });
   }
+
+
+  // prepareDataSourceWhileEdit(response: UdrModel) {
+  //   const udrHierarchies = response.udrHierarchies ? response.udrHierarchies : [];
+  //   const blocks = response.blocks ? response.blocks : [];
+  //   const parentNode = udrHierarchies.filter(fil => fil.parentId === null)[0];
+  //   const parentNodeDesc = blocks.filter(fil=> fil.id === parentNode.blockRefId)[0];
+
+  //   // parent node object
+  //   this.createBlock(parentNodeDesc.blockType, parentNode.blockRefId);
+
+  //   // load childs
+  //   const currParentNode = parentNode.blockRefId;
+
+  //   const childElement = udrHierarchies.filter(fil => fil.parentId === currParentNode);
+  //   this.appendAbleFunc(childElement);
+
+
+  //   // udrHierarchies.forEach(udrHie=>{
+  //   //   const condInfo = blocks.filter(fil=> fil.id === udrHie.blockRefId)[0];
+  //   //   if(condInfo.id !== parentNode.blockRefId) {
+  //   //     if(udrHie.parentId && condInfo && condInfo.blockType === BlockType.COND && udrHie.parentId === currParentNode) {
+
+  //   //       // get previous node
+  //   //       const searchItmNode =  this.treeControl.dataNodes.filter(fil => (fil.item === 'condition_search' && fil.level === level))[0];
+  //   //       this.assignConBlocks([condInfo], searchItmNode, true);
+  //   //     } else if(condInfo && (condInfo.blockType === BlockType.OR || condInfo.blockType === BlockType.AND)){
+  //   //       const node =  this.treeControl.dataNodes.filter(fil => (fil.item !== 'condition_search' && fil.level === level-1))[0];
+  //   //       level++;
+  //   //       currParentNode = condInfo.id;
+  //   //       this.addNewItem(node, condInfo.blockType, currParentNode);
+  //   //     }
+  //   //   }
+  //   // });
+
+  // }
 
   /**
    * Use for generate conditional operator to conditional symbol
@@ -403,7 +440,6 @@ export class UserDefinedRuleComponent implements OnInit, OnChanges {
   blocksToUDRBlocksModel() {
     const nodeItems = this.dataSource.data;
     if(nodeItems) {
-      this.level = 0;
       nodeItems.forEach(node=>{
         const obj = new UDRBlocksModel();
         obj.id = node.nodeId;
@@ -413,8 +449,7 @@ export class UserDefinedRuleComponent implements OnInit, OnChanges {
 
         const hieObj = new UDRHierarchyModel();
         hieObj.blockRefId = node.nodeId;
-        hieObj.leftIndex = this.level;
-        this.level ++;
+        hieObj.leftIndex = this.getHierarchyLevel(node.nodeId);
         this.udrModel.udrHierarchies.push(hieObj);
 
         // get from childrens
@@ -424,6 +459,15 @@ export class UserDefinedRuleComponent implements OnInit, OnChanges {
         }
       });
     }
+  }
+
+  /**
+   * Get node level
+   * @param nodeId nodeId for get level
+   */
+  getHierarchyLevel(nodeId: string): number {
+    const lvlData = this.treeControl.dataNodes.filter(fil=> fil.nodeId === nodeId && fil.item !== 'condition_search')[0];
+    return lvlData.level;
   }
 
   udrBlocksModelFromChildren(childNode: ItemNode[]) {
@@ -454,12 +498,11 @@ export class UserDefinedRuleComponent implements OnInit, OnChanges {
         obj.blockRefId = chldNode.nodeId;
         // obj.leftIndex = (i-1) >0 ? i-1 : null;
         // obj.rightIndex = (i+1) < childNode.length ? i+1 : null;
-        obj.leftIndex = this.level;
+        obj.leftIndex =  this.getHierarchyLevel(node.nodeId);;
         obj.parentId = parentNode.nodeId;
         this.udrModel.udrHierarchies.push(obj);
       }
       if(chldNode.children) {
-        this.level++;
         this.makeBlockHierarch(chldNode.children, chldNode);
       }
     });
@@ -500,6 +543,11 @@ export class UserDefinedRuleComponent implements OnInit, OnChanges {
     this.udrModel.brInfo = brInfo;
     brInfo.brId = this.brId ? this.brId : null;
     brInfo.brIdStr = this.brId ? this.brId : null;
+
+    if(this.udrDescFrmCtrl.value) {
+      this.snackBar.open(`Please enter rule description`, 'Close',{duration:5000});
+      return false;
+    }
 
     // create block object & maintain hierarchy
     this.udrModel.blocks = [];
