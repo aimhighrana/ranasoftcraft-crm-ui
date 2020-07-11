@@ -40,28 +40,29 @@
         <form [formGroup]="uploadFileStepCtrl">
           <ng-template matStepLabel>Upload dataset</ng-template>
       
-          <!-- Upload Data Start Here... -->    
-          <div class="f-col middle-container">
-            <div class="fileupload-tile">
-              <div class="f-col">
-                <mat-icon class="basic-icon">backup</mat-icon>
-                <h4 class="mat-h4">Drag & Drop files here</h4>
-                <span class="or-divider">or</span>
-                <input type="file" (change)="fileChange($event)"  formControlName="uploadFileCtrl" style="display: none;" multiple="false" id="uploadFileCtrl"/>
-                <button [disabled]="uploadDisabled" mat-flat-button color="primary" (click)="uploadFile()">{{ uploadedFile ? uploadedFile.name:'Browse file' }}</button>
-              </div>
-              <div class="f-col" style="display: none;">
-                <mat-icon class="basic-icon">loop</mat-icon>
-                <h4 class="mat-h4">Uploading...</h4>
-              </div>
-            </div>
-            <div class="f-col upload-note">
-              <p>Files supported: .xls, .xlsx or .csv</p>
-              <p>Max file size: 10 MB</p>
-            </div>
-
+      <!-- Upload Data Start Here... -->    
+      <div class="f-col middle-container">
+        <div class="fileupload-tile">
+          <div class="f-col parent">
+            <mat-icon class="basic-icon">backup</mat-icon>
+            <h4 class="mat-h4">Drag & Drop files here</h4>
+            <span class="or-divider">or</span>
+            <input type="file" (change)="fileChange($event)" class="child"  formControlName="uploadFileCtrl" multiple="false" id="uploadFileCtrl"/>
+            <button [disabled]="uploadDisabled" mat-flat-button color="primary" (click)="uploadFile()">{{ uploadedFile ? uploadedFile.name:'Browse file' }}</button>
           </div>
-          <!-- Upload Data End Here... -->
+          <div class="f-col" style="display: none;">
+            <mat-icon class="basic-icon">loop</mat-icon>
+            <h4 class="mat-h4">Uploading...</h4>
+          </div>
+
+        </div>
+        <div class="f-col upload-note">
+          <p>Files supported: .xls, .xlsx or .csv</p>
+          <p>Max file size: 10 MB</p>
+        </div>
+
+      </div>
+      <!-- Upload Data End Here... -->
         </form>
       </mat-step>
 
