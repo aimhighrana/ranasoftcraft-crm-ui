@@ -11,6 +11,7 @@ export class ItemNodeInfo {
   item: string;
   level: number;
   expandable = true;
+  nodeId: string;
 }
 
 export enum BlockType {
