@@ -205,7 +205,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
           const critera1: Criteria = new Criteria();
           critera1.fieldId = this.filterWidget.getValue().fieldId;
           critera1.conditionFieldId = this.filterWidget.getValue().fieldId;
-          critera1.conditionFieldValue = option ? option.CODE : '';
+          critera1.conditionFieldValue = option.CODE ? option.CODE : '';
           critera1.blockType = BlockType.COND;
           critera1.conditionOperator = ConditionOperator.EQUAL;
           selectedOptions.push(critera1);

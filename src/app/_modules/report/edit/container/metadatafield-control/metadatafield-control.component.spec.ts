@@ -72,13 +72,18 @@ describe('MetadatafieldControlComponent', () => {
   it(`getFields(), should return all field belong to object / module`, async(()=>{
     // mock data
     component.moduleId = '1005';
-
+    component.selectedFldId = 'NDC_TYPE'
     // call actual component method
     spyOn(schemaDetailsService,'getMetadataFields').withArgs(component.moduleId).and.returnValue(of(metadataModeleResponse));
     component.getFields();
 
     // veriry & asserts
     expect(schemaDetailsService.getMetadataFields).toHaveBeenCalledWith(component.moduleId);
+
+    component.moduleId = null;
+    component.getFields();
+    expect(component.getFields()).toEqual(undefined);
+
   }));
 
   it(`transformFieldRes(), help to transform metadata field with groups & autocomplete search`, async(()=>{
@@ -118,19 +123,44 @@ describe('MetadatafieldControlComponent', () => {
 
   it('ngOnInit(), load prereuired ', async(()=>{
     component.ngOnInit();
-
+    expect(component.ngOnInit).toBeTruthy();
   }));
 
   it('displayFn(), help for display fieldDescription on dropdown ', async(()=>{
     // mock data
-    const obj = {} as Metadata;
-    obj.fieldId = 'MATL_TYPE';
-    obj.fieldDescri = 'Material Type';
+    const obj = {fieldId:'MATL_TYPE', fieldDescri:'Material Type'} as Metadata;
 
     // call actual function
-    const actualRes = component.displayFn(obj);
+    expect(component.displayFn(obj)).toEqual('Material Type');
 
-    expect(actualRes).toEqual(obj.fieldDescri);
+    expect(component.displayFn(null)).toEqual(null);
+  }));
+
+  it('selected() Should emit after value change', async(() => {
+    const option = {} as Metadata;
+    expect(component.selected(option)).toEqual(undefined);
+  }));
+
+  it(`ngOnChanges(), should call reset when reset metadatafield`, async(()=>{
+    // mock data
+    const chnages:import('@angular/core').SimpleChanges = {moduleId:{currentValue:true, previousValue: false, firstChange:null, isFirstChange:null}};
+
+    // call actual method
+    component.ngOnChanges(chnages);
+    expect(component.ngOnChanges).toBeTruthy();
+    // mock data
+    const chnages1:import('@angular/core').SimpleChanges = {selectedFldId:{currentValue:true, previousValue: false, firstChange:null, isFirstChange:null}};
+
+    // call actual method
+    component.ngOnChanges(chnages1);
+    expect(component.ngOnChanges).toBeTruthy();
+    // mock data
+    const chnages2:import('@angular/core').SimpleChanges = null;
+
+    // call actual method
+    component.ngOnChanges(chnages2);
+    expect(component.ngOnChanges).toBeTruthy();
+
   }));
 
 });

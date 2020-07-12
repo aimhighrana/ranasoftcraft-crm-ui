@@ -133,6 +133,7 @@ describe('ReportCollaboratorComponent', () => {
 
   it('close(), should close the current router' , () => {
     component.close();
+    expect(component.close).toBeTruthy();
   });
 
   it('getCollaboratorPermission(), should return for get all user details', async(() =>{

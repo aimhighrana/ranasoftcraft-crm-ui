@@ -10,12 +10,15 @@ import { of } from 'rxjs';
 import { SchemaListDetails } from 'src/app/_models/schema/schemalist';
 import { SchemaExecutionRequest } from '@models/schema/schema-execution';
 import { SchemaExecutionService } from '@services/home/schema/schema-execution.service';
+import { Router } from '@angular/router';
 
 describe('SchemaExecutionComponent', () => {
   let component: SchemaExecutionComponent;
   let fixture: ComponentFixture<SchemaExecutionComponent>;
   let schemaListServiceSpy: SchemalistService;
   let schenaexecutionSpy: SchemaExecutionService;
+  let router: Router;
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [AppMaterialModuleForSpec, ReactiveFormsModule, FormsModule, RouterTestingModule],
@@ -23,7 +26,7 @@ describe('SchemaExecutionComponent', () => {
       providers: [ SchemalistService, SchemaExecutionService ]
     })
     .compileComponents();
-
+    router = TestBed.inject(Router);
   }));
 
   beforeEach(() => {
@@ -52,9 +55,12 @@ describe('SchemaExecutionComponent', () => {
     const schemaExecutionReq: SchemaExecutionRequest = new SchemaExecutionRequest();
     schemaExecutionReq.schemaId = component.schemaId;
     schemaExecutionReq.variantId = '0';
-    spyOn(schenaexecutionSpy, 'scheduleSChema').withArgs(schemaExecutionReq).and.returnValue(of());
+    const data = {} as any;
+    spyOn(schenaexecutionSpy, 'scheduleSChema').withArgs(schemaExecutionReq).and.returnValue(of(data));
+    spyOn(router, 'navigate');
     component.scheduleSchema();
     expect(schenaexecutionSpy.scheduleSChema).toHaveBeenCalledWith(schemaExecutionReq);
+    expect(router.navigate).toHaveBeenCalledWith(['/home/schema']);
   }));
 
   it('ngOnInit(), loaded pre required', async(()=>{

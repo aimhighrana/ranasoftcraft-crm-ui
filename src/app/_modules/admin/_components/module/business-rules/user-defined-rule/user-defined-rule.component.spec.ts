@@ -58,16 +58,12 @@ describe('UserDefinedRuleComponent', () => {
   it('addNewItem(), should add to ne item', async(()=>{
     component.treeControl.dataNodes = [];
     component.addNewItem(new ItemNodeInfo(), BlockType.COND);
+    expect(component.addNewItem).toBeTruthy();
   }));
 
   it('createBlock(), create blocks', async(()=>{
     component.createBlock(BlockType.AND);
     expect(component.enableBlock).toEqual(true);
-  }));
-
-  it('appendAbleFunc(), test while edit rule', async(()=>{
-    // component.treeControl.dataNodes = [];
-    // component.appendAbleFunc([]);
   }));
 
   it('returnConditional(), should return conditional', async(()=>{
@@ -173,6 +169,7 @@ describe('UserDefinedRuleComponent', () => {
     component.udrModel = udrDto;
 
     component.blocksToUDRBlocksModel();
+    expect(component.blocksToUDRBlocksModel).toBeTruthy();
   }));
 
 

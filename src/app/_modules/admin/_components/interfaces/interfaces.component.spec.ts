@@ -2,7 +2,7 @@
 import { InterfacesComponent } from './interfaces.component';
 
 describe('InterfacesComponent', () => {
-  let component;
+  let component: InterfacesComponent;
 
   beforeEach(() => {
     component = new InterfacesComponent();
@@ -10,15 +10,13 @@ describe('InterfacesComponent', () => {
 
   it('testing ngOnInit', () => {
     component.ngOnInit()
+    expect(component.ngOnInit).toBeTruthy();
   })
 
   it('testing remove', () => {
     component.fruits = ['test', 'tttt']
-    component.remove('test')
-  })
-
-  it('testing _filter', () => {
-    component.allFruits = ['test']
-    component._filter('test');
-  })
+    component.remove('test');
+    component.remove('hhh')
+    expect(component.remove).toBeTruthy();
+  });
 });

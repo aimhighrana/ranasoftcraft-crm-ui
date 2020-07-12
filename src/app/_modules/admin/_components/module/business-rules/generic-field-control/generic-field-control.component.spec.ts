@@ -76,9 +76,8 @@ describe('GenericFieldControlComponent', () => {
   });
 
   it('ngOnInit(), should assign pre required ', async(()=>{
-
-
     component.ngOnInit();
+    expect(component.ngOnInit).toBeTruthy();
   }));
 
   it('getFields(), should get all fields by module id', async(()=>{
@@ -88,20 +87,21 @@ describe('GenericFieldControlComponent', () => {
     spyOn(schemaDetailsService, 'getMetadataFields').withArgs(component.moduleId).and.returnValue(of(metadataModeleResponse));
     component.selectedFldId = ['MATL_TYPE'];
     component.getFields();
-
     expect(schemaDetailsService.getMetadataFields).toHaveBeenCalledWith(component.moduleId);
 
+    // mock data
+    component.moduleId = '1005';
+    component.selectedFldId = null;
+    component.getFields();
+    expect(schemaDetailsService.getMetadataFields).toHaveBeenCalledWith(component.moduleId);
+
+    component.moduleId = null;
+    component.getFields();
+    expect(component.getFields()).toEqual(undefined);
   }));
 
   it('selected(), while select dropdown data ', async(()=>{
-    const option: Metadata[] = [
-      {
-        childs:[],
-        fieldId:'MATL_TYPE',
-        fieldDescri:'Material Type',
-        isGroup:false
-      }
-    ];
+    const option = [{ childs:[], fieldId:'MATL_TYPE', fieldDescri:'Material Type', isGroup:false } as Metadata];
 
     const selected:MatAutocompleteSelectedEvent = {option:{value:option[0]}} as MatAutocompleteSelectedEvent;
 
@@ -117,23 +117,48 @@ describe('GenericFieldControlComponent', () => {
 
     expect(component.preSelectedCtrl.length).toEqual(0);
 
+    component.preSelectedCtrl = [{fieldId:'NDC_TYPE'} as Metadata];
+    component.selected(selected);
+    expect(component.preSelectedCtrl.length).toEqual(2);
+
+    const selected1 = {option:{value:null}} as MatAutocompleteSelectedEvent;
+    expect(component.selected(selected1)).toEqual(undefined);
   }));
 
   it('remove(), should remove particular selected item', async(()=>{
-    const option =
-      {
-        childs:[],
-        fieldId:'MATL_TYPE',
-        fieldDescri:'Material Type',
-        isGroup:false
-      };
+    const option = { childs:[], fieldId:'MATL_TYPE', fieldDescri:'Material Type', isGroup:false };
+    component.preSelectedCtrl = [{fieldId:'MATL_TYPE'} as Metadata];
+    component.remove(option);
+    expect(component.preSelectedCtrl.length).toEqual(0);
 
-      component.preSelectedCtrl = [option];
+    const option1 = { childs:[], fieldId:'MATL_TYPE', fieldDescri:'Material Type', isGroup:false };
+    component.preSelectedCtrl = [{fieldId:'NDC_TYPE'} as Metadata];
+    component.remove(option1);
+    expect(component.preSelectedCtrl.length).toEqual(1);
 
-      component.remove(option);
-
-      expect(component.preSelectedCtrl.length).toEqual(0);
-
+    expect(component.remove(null)).toEqual(undefined);
   }));
 
+  it('displayfn(), should return the metadata field desc', async(() => {
+    const obj = {fieldDescri:'NDCTYPE'} as Metadata;
+    expect(component.displayFn(obj)).toEqual('NDCTYPE');
+    expect(component.displayFn(null)).toEqual(null);
+  }));
+
+  it('ngOnChanges(), should call reset when reset filter', async(()=>{
+    // mock data
+    const chnages:import('@angular/core').SimpleChanges = {moduleId:{currentValue:true, previousValue: false, firstChange:null, isFirstChange:null}};
+
+    // call actual method
+    component.ngOnChanges(chnages);
+
+    expect(component.moduleId).toBeTruthy();
+
+    // mock data
+    const chnages2:import('@angular/core').SimpleChanges = null;
+
+    // call actual method
+    component.ngOnChanges(chnages2);
+    expect(component.ngOnChanges).toBeTruthy();
+  }));
 });

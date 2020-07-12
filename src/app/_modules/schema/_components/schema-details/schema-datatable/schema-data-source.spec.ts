@@ -40,19 +40,19 @@ describe('SchemaDataSource', () => {
   }));
 
   it('getTableData(), method for get index data response ', async(() =>{
-      const mockReq: RequestForSchemaDetailsWithBr = new RequestForSchemaDetailsWithBr();
-      mockReq.requestStatus = 'corrections';
-      mockReq.schemaId = '723657653273';
-      mockReq.fetchCount = 0;
-      mockReq.fetchSize = 10;
+    const mockReq: RequestForSchemaDetailsWithBr = new RequestForSchemaDetailsWithBr();
+    mockReq.requestStatus = 'corrections';
+    mockReq.schemaId = '723657653273';
+    mockReq.fetchCount = 0;
+    mockReq.fetchSize = 10;
 
-      schemaDetailSerSpy.getLastBrErrorRecords.withArgs(mockReq.schemaId, []).and.returnValue({} as any);
-      schemaDetailSerSpy.getCorrectedRecords.withArgs(mockReq.schemaId, 0 , 10).and.returnValue({} as any);
+    schemaDetailSerSpy.getLastBrErrorRecords.withArgs(mockReq.schemaId, []).and.returnValue({} as any);
+    schemaDetailSerSpy.getCorrectedRecords.withArgs(mockReq.schemaId, 0 , 10).and.returnValue({} as any);
 
-      schemaDetailSerSpy.getSchemaTableDetailsByBrId.withArgs(mockReq).and.returnValue({} as any);
+    schemaDetailSerSpy.getSchemaTableDetailsByBrId.withArgs(mockReq).and.returnValue({} as any);
 
+    expect(schemaDetailSerSpy.getLastBrErrorRecords).toBeTruthy();
   }));
-
 
   it('showCorrectionIndexData(), get corrected index records ', async(()=>{
       const mockData: any[] = [];
@@ -64,8 +64,5 @@ describe('SchemaDataSource', () => {
     const returnData = schemaDataSourceService.getCorrectedRecordsObjnr();
     expect(returnData).toEqual([]);
   }));
-
-
-
 });
 

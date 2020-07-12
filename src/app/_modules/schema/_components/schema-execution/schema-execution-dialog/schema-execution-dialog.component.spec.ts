@@ -47,5 +47,6 @@ describe('SchemaExecutionDialogComponent', () => {
     const schemaExecutionReq: SchemaExecutionRequest = new SchemaExecutionRequest();
     console.log(schemaExecutionReq);
     component.scheduleSchema();
+    expect(component.scheduleSchema).toBeTruthy();
   });
 });

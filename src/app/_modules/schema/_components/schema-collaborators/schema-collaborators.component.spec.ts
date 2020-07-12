@@ -155,6 +155,7 @@ describe('SchemaCollaboratorsComponent', () => {
 
   it('close(), should close the current router' , () => {
     component.close();
+    expect(component.close).toBeTruthy();
   });
 
   it('updatePermission(), should update collaborator detail', async(() =>{

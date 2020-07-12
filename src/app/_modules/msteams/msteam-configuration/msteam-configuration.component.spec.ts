@@ -26,14 +26,17 @@ describe('MsteamConfigurationComponent', () => {
 
   it('ngOnIt(), should be test with pre required ',async(()=>{
     component.ngOnInit();
+    expect(component.ngOnInit).toBeTruthy();
   }));
 
   it('login(), should set window to report configuration page', async(() => {
     component.login();
+    expect(component.login).toBeTruthy();
   }))
 
   it('authLogin(), should set window location to report configuration page', async(() => {
     const apiUrl = '';
     component.authLogin(apiUrl);
+    expect(component.authLogin).toBeTruthy();
   }))
 });

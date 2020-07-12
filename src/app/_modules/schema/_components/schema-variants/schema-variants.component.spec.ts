@@ -69,27 +69,37 @@ describe('SchemaVariantsComponent', () => {
     expect(htmlNative.getElementsByTagName('pros-schema-tile').length).toEqual(1);
   });
 
-  it('percentageErrorStr(), ', async(() => {
-      component.masterVariant = mockVaraintData;
-      const num =  component.percentageErrorStr();
-      console.log(num);
+  it('percentageErrorStr(), should return percentage error str', async(() => {
+    component.masterVariant = mockVaraintData;
+    const num =  component.percentageErrorStr();
+    expect(num).toEqual(8.79);
+
+    component.showUnique = true;
+    component.masterVariant = mockVaraintData;
+    const num1 =  component.percentageErrorStr();
+    expect(num1).toEqual(1127.4);
   }));
 
-  it('percentageSuccessStr()', async(() => {
-      component.masterVariant = mockVaraintData;
-      const num = component.percentageSuccessStr();
-      console.log(num);
+  it('percentageSuccessStr(), should return percentage success str', async(() => {
+    component.masterVariant = mockVaraintData;
+    const num = component.percentageSuccessStr();
+    expect(num).toEqual(0.11);
+
+    component.showUnique = true;
+    component.masterVariant = mockVaraintData;
+    const num1 =  component.percentageSuccessStr();
+    expect(num1).toEqual(11274.54);
   }));
 
   it('toggleUniqueContainer()', async(() => {
-      const event =   new MatSlideToggleChange(null, true);
-      component.toggleUniqueContainer(event);
-      expect(component.showUnique).toEqual(true);
-  }))
+    const event =   new MatSlideToggleChange(null, true);
+    component.toggleUniqueContainer(event);
+    expect(component.showUnique).toEqual(true);
+  }));
 
   it('toggle()', async() => {
     component.showingErrors = true;
     component.toggle();
     expect(false).toEqual(component.showingErrors);
-  })
+  });
 });

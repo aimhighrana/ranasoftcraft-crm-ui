@@ -33,15 +33,29 @@ describe('UdrConditionControlComponent', () => {
   });
 
   it('ngOnInit(), test prerequid ', async(()=>{
+    component.condotionList = [{id:'222'} as UDRBlocksModel];
       component.ngOnInit();
+      expect(component.ngOnInit).toBeTruthy();
   }));
 
   it('optionSelected(), after option selection', async(()=>{
     // mock data
-    const event = {option:{value:new UDRBlocksModel()}} as MatAutocompleteSelectedEvent;
-
+    const event = {option:{value:{id:'test'}}} as MatAutocompleteSelectedEvent;
     component.optionSelected(event);
+    expect(component.selectedBlocks.length).toEqual(1);
 
+    const event1 = {option:{}} as MatAutocompleteSelectedEvent;
+    component.optionSelected(event1);
+    expect(component.selectedBlocks.length).toEqual(1);
+
+    const event2 = {option:{value:{id:'test'}}} as MatAutocompleteSelectedEvent;
+    component.selectedBlocks = null;
+    component.optionSelected(event2);
+    expect(component.selectedBlocks.length).toEqual(1);
+
+    const event3 = {option:{value:{id:'test'}}} as MatAutocompleteSelectedEvent;
+    component.selectedBlocks = [{id:'test'} as UDRBlocksModel]
+    component.optionSelected(event3);
     expect(component.selectedBlocks.length).toEqual(1);
   }));
 
@@ -58,9 +72,15 @@ describe('UdrConditionControlComponent', () => {
   }));
 
   it('ngOnChanges(), should check on change', async(()=>{
-    const changes: import('@angular/core').SimpleChanges = {selectedBlocks:{currentValue: new UDRBlocksModel(),firstChange:null,isFirstChange:null,previousValue: new UDRBlocksModel()}};
+    const changes: import('@angular/core').SimpleChanges = {selectedBlocks:{currentValue:{id:'test'},firstChange:null,isFirstChange:null,previousValue: new UDRBlocksModel()}};
 
     component.ngOnChanges(changes);
     expect(component.selectedBlocks.length).toEqual(undefined);
+
+    const changes1: import('@angular/core').SimpleChanges = {selectedBlocks:null};
+
+    component.ngOnChanges(changes1);
+    expect(component.selectedBlocks.length).toEqual(undefined);
+
   }));
 });

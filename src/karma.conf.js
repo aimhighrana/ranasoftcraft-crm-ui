@@ -15,7 +15,7 @@ module.exports = function (config) {
     client: {
       clearContext: false, // leave Jasmine Spec Runner output visible in browser
       jasmine: {
-        // failSpecWithNoExpectations: true
+        failSpecWithNoExpectations: true
       }
     },
     coverageIstanbulReporter: {
@@ -23,10 +23,10 @@ module.exports = function (config) {
       reports: ['html', 'lcovonly', 'text-summary'],
       fixWebpackSourcePaths: true,
       thresholds: {
-        statements: 68.0,
-        branches: 40.0,
-        functions: 62.0,
-        lines: 68.01
+        statements: 70.10,
+        branches: 43.85,
+        functions: 64.64,
+        lines: 69.63
       }
     },
     failOnEmptyTestSuite: true,

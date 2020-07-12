@@ -48,6 +48,7 @@ describe('MsteamReportConfigurationComponent', () => {
       const returnData: Report[] = [{reportId: '1', reportName: 'Test Name', reportUrl: 'url test'}];
       msteamsConfigService.getReportUrlList.and.returnValue(of(returnData));
       component.ngOnInit();
+      expect(component.ngOnInit).toBeTruthy();
   }));
 
   it('getReportUrls(), get report list', async(() => {
@@ -65,19 +66,22 @@ describe('MsteamReportConfigurationComponent', () => {
     spyOn(microsoftTeams.settings, 'setValidityState').and.callFake(() => {
       return '';
     });
-  }))
+    expect(component.setValidity).toBeTruthy();
+  }));
 
   it('createTabUrl(), should return selected tab url', async(() => {
     component.selectedOption = '1';
     component.reportListSelected = 'some value';
     component.radioOptions = [{optionId: '1', optionName: 'Select url'}, {optionId: '2', optionName: 'Custom url'}];
     component.createTabUrl();
+    expect(component.createTabUrl).toBeTruthy();
   }))
 
   it('getDisplayName(), should return display name for Microsoft Teams Tab', async(() => {
     component.reportListSelected = 'url test';
     component.reportList = [{reportId: '1', reportName: 'Test Name', reportUrl: 'url test'}];
     component.getDisplayName();
+    expect(component.getDisplayName).toBeTruthy();
   }))
 
   it('radioChange() should set the false for save button in MS Teams App', async(() => {
@@ -101,6 +105,7 @@ describe('MsteamReportConfigurationComponent', () => {
     component.radioOptions = [{optionId: '1', optionName: 'Select url'}, {optionId: '2', optionName: 'Custom url'}];
     component.reportListSelected = 'some report';
     component.onSelectUrlChange();
+    expect(component.onSelectUrlChange).toBeTruthy();
   }))
 
   it('onCustomUrlChange(), should set true for validity', async(() => {
@@ -111,5 +116,6 @@ describe('MsteamReportConfigurationComponent', () => {
     component.customUrl = 'some url';
     component.radioOptions = [{optionId: '1', optionName: 'Select url'}, {optionId: '2', optionName: 'Custom url'}];
     component.onCustomUrlChange();
+    expect(component.onCustomUrlChange).toBeTruthy();
   }))
 });

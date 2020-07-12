@@ -40,58 +40,8 @@ describe('SchemaListComponent', () => {
     schemaListServiceSpy = fixture.debugElement.injector.get(SchemalistService);
   });
 
-  const mockData: SchemaListModuleList[] = [];
-  const mockDataObj1: SchemaListModuleList = new SchemaListModuleList();
-  mockDataObj1.moduleDesc = 'Function Location';
-  mockDataObj1.moduleId = '1006';
-  const mockDataObj1Schema1: SchemaListDetails = new SchemaListDetails();
-  mockDataObj1Schema1.schemaDescription = 'Check Function Location Installation';
-  mockDataObj1Schema1.schemaId = '27348729347';
-  const mockDataObj1Schema1coll: SchemaDashboardPermission = new SchemaDashboardPermission();
-  mockDataObj1Schema1coll.isAdmin = true;
-  mockDataObj1Schema1coll.isEditer = true;
-  mockDataObj1Schema1.collaboratorModels = mockDataObj1Schema1coll;
-  mockDataObj1.schemaLists = [];
-  const mockDataObj2: SchemaListModuleList = new SchemaListModuleList();
-  mockDataObj2.moduleDesc = 'Material Module';
-  mockDataObj2.moduleId = '1005';
-  const mockDataObj2Schema1: SchemaListDetails = new SchemaListDetails();
-  mockDataObj2Schema1.schemaDescription = 'Check ZMRO Type';
-  mockDataObj2Schema1.schemaId = '986902';
-  const mockDataObj2Schema1coll: SchemaDashboardPermission = new SchemaDashboardPermission();
-  mockDataObj2Schema1coll.isAdmin = true;
-  mockDataObj2Schema1coll.isEditer = true;
-  mockDataObj2Schema1.collaboratorModels = mockDataObj2Schema1coll;
-  const mockDataObj2Schema2: SchemaListDetails = new SchemaListDetails();
-  mockDataObj2Schema2.schemaDescription = 'Check HRSH Type';
-  mockDataObj2Schema2.schemaId = '10927907';
-  const mockDataObj2Schema2coll: SchemaDashboardPermission = new SchemaDashboardPermission();
-  mockDataObj2Schema2coll.isAdmin = true;
-  mockDataObj2Schema2coll.isEditer = true;
-  mockDataObj2Schema1.collaboratorModels = mockDataObj2Schema2coll;
-  mockDataObj2.schemaLists = [];
-  mockDataObj2.schemaLists.push(mockDataObj2Schema1);
-  mockDataObj2.schemaLists.push(mockDataObj2Schema2);
-  mockData.push(mockDataObj1);
-  mockData.push(mockDataObj2);
-
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('flex-row-container: module list should create', () => {
-    component.schemaListDetails = mockData;
-    fixture.detectChanges();
-    // expect(htmlNative.getElementsByClassName('flex-row-container').length).toEqual(mockData.length);
-    // expect(htmlNative.getElementsByClassName('flex-row-container').item(0).firstChild.textContent).toEqual(mockData[0].moduleDesc);
-    // expect(htmlNative.getElementsByClassName('flex-row-container').item(0).getElementsByTagName('pros-schema-tile').length).toEqual(mockData[0].schemaLists.length);
-
-
-    // expect(htmlNative.getElementsByClassName('flex-row-container').item(1).firstChild.textContent).toEqual(mockData[1].moduleDesc);
-    // expect(htmlNative.getElementsByClassName('flex-row-container').item(1).getElementsByTagName('pros-schema-tile').length).toEqual(mockData[1].schemaLists.length);
-
-
-
   });
 
   it('showSchemaDetails(), should navigate schema detail page', () => {

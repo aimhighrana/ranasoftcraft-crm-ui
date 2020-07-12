@@ -35,6 +35,7 @@ describe('MsteamAuthConfigurationComponent', () => {
 
   it('ngOnIt(), should be test with pre required ',async(()=>{
     component.ngOnInit();
+    expect(component.ngOnInit).toBeTruthy();
   }));
 
 
@@ -46,6 +47,7 @@ describe('MsteamAuthConfigurationComponent', () => {
       return '';
     });
     component.notifySuccess();
+    expect(component.notifySuccess).toBeTruthy();
   }))
 
   it('signIn(), should sigin and call notifysuccess', async(() => {

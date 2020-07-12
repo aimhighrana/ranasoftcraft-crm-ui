@@ -230,6 +230,7 @@ export class MissingruleComponent implements OnInit, OnChanges {
     }
 
     this.groupDetailss.push({ id: selData.fieldId, descr: selData.fieldDescri });
+    this.fillDataForm.get('selectFields').setValue('');
   }
 
   remove(objectId: any): void {
