@@ -52,7 +52,7 @@ export class DeterminationStepPropertiesComponent implements OnInit, OnChanges {
    * emit an event in order to update the selected step properties
    */
   updateStepProperties(attributes) {
-    this.updateProperties.emit(attributes);
+    this.updateProperties.emit({...attributes, stepDesc : attributes.name});
   }
 
 }

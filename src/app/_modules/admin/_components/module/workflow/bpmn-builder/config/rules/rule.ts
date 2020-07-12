@@ -12,7 +12,7 @@ CustomRules.prototype.init = function () {
 
 
   this.addRule('connection.create', 1100, (context) => {
-    console.log('connection creation')
+    // console.log('connection creation')
     const source = context.source ;
     const target = context.target;
 
@@ -23,13 +23,21 @@ CustomRules.prototype.init = function () {
     if (target.type === 'bpmn:ExclusiveGateway' && target.incoming.length >= 1) { return null; }
 
     // start step don't allow incoming connection
-    if (target.type === 'bpmn:Task') { return null; }
+    // if (target.type === 'bpmn:Task') { return null; }
+    if (target.type === 'bpmn:IntermediateCatchEvent') { return null; }
+
 
     // start step don't allow more than one outgoing connection
-    if (source.type === 'bpmn:Task' && source.outgoing.length >= 1) { return null; }
+    // if (source.type === 'bpmn:Task' && source.outgoing.length >= 1) { return null; }
+    if (source.type === 'bpmn:IntermediateCatchEvent' && source.outgoing.length >= 1) { return null; }
+
 
     // end step don't allow more than one incoming connection
     if (target.type === 'bpmn:EndEvent' && target.incoming.length >= 1) { return null; }
+
+
+    // activity step don't allow more than two outgoing connections
+    if (source.type === 'bpmn:UserTask' && source.outgoing.length >= 2) { return null; }
 
 
   });
@@ -37,11 +45,14 @@ CustomRules.prototype.init = function () {
 
   // don't allow more than one start step
   this.addRule('shape.create', 1100, (context) => {
-    console.log('shape creation :', context.target.children);
+    // console.log('shape creation :', context.target.children);
     const source = context.shape ;
     const target = context.target;
 
-    if (source.type === 'bpmn:Task' && target.children.some (shape => shape.type === 'bpmn:Task')) { return false; }
+    // if (source.type === 'bpmn:Task' && target.children.some (shape => shape.type === 'bpmn:Task')) { return false; }
+    if (source.type === 'bpmn:IntermediateCatchEvent' && target.children.some (shape => shape.type === 'bpmn:IntermediateCatchEvent')) {
+      return false;
+    }
 
   });
 

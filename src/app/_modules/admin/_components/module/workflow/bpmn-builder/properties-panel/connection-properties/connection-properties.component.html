@@ -12,6 +12,12 @@
                 <textarea matInput formControlName="name"></textarea>
             </mat-form-field>
 
+            <div class="row-half-spacer"></div>
+            <mat-checkbox color="primary" formControlName="rejection">
+                Is rejection connection
+            </mat-checkbox>
+            <div class="row-spacer"></div>
+
             <button mat-raised-button (click)="openConditionsModal()" color="primary">
                 <mat-icon>settings</mat-icon> Configure conditions
             </button>

@@ -20,6 +20,7 @@ getContextPadEntries(element) {
     delete result['append.gateway'] ;
     delete result['append.append-task'] ;
     delete result['append.intermediate-event'] ;
+    delete result['append.text-annotation'] ;
 
 
     if (element.type === 'bpmn:SendTask'){

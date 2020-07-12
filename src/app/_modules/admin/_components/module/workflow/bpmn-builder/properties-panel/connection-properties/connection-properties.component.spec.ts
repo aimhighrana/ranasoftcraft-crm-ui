@@ -40,6 +40,7 @@ describe('ConnectionPropertiesComponent', () => {
 
   it('should emit a properties update event', () => {
     spyOn(component.updateProperties, 'emit') ;
+    component.initForm();
     component.updateStepProperties({name: 'test'}) ;
     expect(component.updateProperties.emit).toHaveBeenCalled();
   });

@@ -25,9 +25,26 @@ export class BpmnBuilderComponent implements OnInit, OnDestroy {
   linting;
   zoomRate = 0.8;
   zoomStep = 0.1;
-  blankDigramUrl = '/assets/bpmn/blank.bpmn' ;
-  blankDiagram ;
-  selectedElement ;
+  blankDigramUrl = '/assets/bpmn/blank.bpmn';
+
+  blankDiagram = '<?xml version="1.0" encoding="UTF-8"?>'
+     +'<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" id="Definitions_0f0redl" targetNamespace="http://bpmn.io/schema/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="6.5.1">'
+     +'<bpmn:process id="Process_01r63rg" isExecutable="false" />'
+     +'<bpmndi:BPMNDiagram id="BPMNDiagram_1" >'
+     +'<bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_01r63rg" /></bpmndi:BPMNDiagram></bpmn:definitions>';
+
+  selectedElement;
+
+  // Bpmn step types
+  ELEMENT_TYPES = {
+    Activity: 'bpmn:UserTask',
+    Determination: 'bpmn:ExclusiveGateway',
+    Connection: 'bpmn:SequenceFlow',
+    Email_Escalation: 'bpmn:SendTask',
+    Background: 'bpmn:ServiceTask'
+  }
+
+  nextId = 1;
 
   breadcrumb: Breadcrumb = {
     heading: 'Bpmn Builder',
@@ -86,38 +103,52 @@ export class BpmnBuilderComponent implements OnInit, OnDestroy {
 
     /* this.modeler.on('element.changed', (e) => {
       this.selectedElement = e.element ;
-    }); */
+    });
+    */
+    const self = this ;
+    this.modeler.get('eventBus').on('shape.added', 999999, (event) => {
+      setTimeout(() => {
+        self.setElementId(event.element);
+      }, 100) ;
+       console.log(event.element);
+    });
+
+
 
     this.modeler.on('selection.changed', (e) => {
-        this.selectedElement = e.newSelection[0] ;
+      this.selectedElement = e.newSelection[0];
     });
 
   }
 
   // Init the bpmn modeler with a blank diagram
   init(): void {
+    console.log(this.blankDiagram);
+    this.modeler.importXML(this.blankDiagram);
+    /*
     this.http.get(this.blankDigramUrl,
       {
         headers: { observe: 'response' }, responseType: 'text'
       }).subscribe(
         (x: any) => {
           this.modeler.importXML(x);
-          this.blankDiagram = x ;
+          this.blankDiagram = x;
           console.log(x);
-      },
-    );
+        },
+      );
+      */
   }
 
   // load an existing bpmn diagram
-  load(event){
-    console.log(event);
-    const diagram = event.target.files[0] ;
-    if ( diagram ){
+  load(event) {
+    const diagram = event.target.files[0];
+    if (diagram) {
       const fileReader = new FileReader();
-      fileReader.readAsText(diagram) ;
+      fileReader.readAsText(diagram);
       fileReader.onload = (e) => {
-        console.log('Loaded diagram : ', fileReader.result);
-        this.modeler.importXML(fileReader.result);
+        const finalDiagram = fileReader.result.toString().replace(/'/g, '&#34;')
+        this.modeler.importXML(finalDiagram);
+        console.log('Loaded diagram : ', finalDiagram);
         // Clear the input
         event.srcElement.value = null;
       }
@@ -144,7 +175,8 @@ export class BpmnBuilderComponent implements OnInit, OnDestroy {
       if (err) {
         console.log('Error Occurred while saving XML', err);
       } else {
-        console.log(xml.replace(/&#34;/g,'"'));
+        console.log(xml.replace(/&#34;/g, '\''));
+        // console.log(xml)
 
         /*
         var blob = new Blob([xml], {type: "application/xml;charset=utf-8"});
@@ -172,20 +204,44 @@ export class BpmnBuilderComponent implements OnInit, OnDestroy {
     this.modeler.get('canvas').zoom(this.zoomRate);
   }
 
-  onUpdateProperties(values){
-    if(!this.selectedElement)
+  onUpdateProperties(values) {
+    if (!this.selectedElement)
+      return;
+
+    console.log(values);
+
+    const modeling = this.modeler.get('modeling');
+    modeling.updateProperties(this.selectedElement, values);
+
+    if (values.name) {
+      modeling.updateLabel(this.selectedElement, values.name);
+    }
+
+    // set connection color depending if it's a rejection or not
+    if(this.selectedElement.type === this.ELEMENT_TYPES.Connection) {
+      modeling.setColor(this.selectedElement, {
+        stroke: this.selectedElement.businessObject.$attrs.rejection ? 'red' : '#007bff',
+      });
+    }
+  }
+
+  setElementId(element){
+    if(  element.type !== this.ELEMENT_TYPES.Activity
+      && element.type !== this.ELEMENT_TYPES.Determination
+      && element.type !== this.ELEMENT_TYPES.Email_Escalation
+      && element.type !== this.ELEMENT_TYPES.Background
+      || element.id.match(/^\d+$/))
       return ;
 
-    console.log(values) ;
-    const modeling = this.modeler.get('modeling') ;
-    modeling.updateProperties(this.selectedElement,values) ;
-    if(values.name){
-      modeling.updateLabel(this.selectedElement,values.name) ;
-    }
+    const newId = this.nextId > 9 ? '' + this.nextId : '0' + this.nextId;
+    const modeling = this.modeler.get('modeling');
+    modeling.updateProperties(element, {id : newId});
+    this.nextId++;
   }
 
   ngOnDestroy() {
     this.modeler.destroy();
   }
+
 
 }
