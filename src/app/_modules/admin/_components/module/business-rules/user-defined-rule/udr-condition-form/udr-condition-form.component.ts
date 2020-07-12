@@ -45,7 +45,7 @@ export class UdrConditionFormComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if(changes && changes.svdClicked && changes.svdClicked.previousValue !== changes.svdClicked.currentValue) {
-      if(changes.svdClicked.currentValue.toString() === 'true') {
+      if(changes.svdClicked.currentValue !== undefined) {
         this.saveUpdateCondition();
       }
     }
@@ -165,7 +165,7 @@ export class UdrConditionFormComponent implements OnInit, OnChanges {
     const frmArray = this.frmArray;
     console.log(frmArray);
     if(!frmArray.valid) {
-      // this.snackBar.open(`Please enter required field(s)`,'Close',{duration:5000});
+      this.snackBar.open(`Please enter required field(s)`,'Close',{duration:5000});
       return false;
     }
     const arrayReq: UDRBlocksModel[] = [];

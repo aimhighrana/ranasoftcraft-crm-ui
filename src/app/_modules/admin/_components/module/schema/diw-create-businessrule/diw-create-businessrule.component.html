@@ -95,7 +95,7 @@
             <span class="f-spacer"></span>
             <button *ngIf="selectedBrType !== 'BR_CUSTOM_SCRIPT'" mat-flat-button color="primary"
               (click)="clickSaved()">Save rule</button>
-            <button *ngIf="selectedBrType === 'BR_CUSTOM_SCRIPT'" mat-flat-button matStepperNext>Skip</button>
+            <button *ngIf="selectedBrType === 'BR_CUSTOM_SCRIPT'" mat-flat-button matStepperNext (click)="finishUdrCreProcess = undefined">Skip</button>
             <span class="f-col-spacer-half "></span>
             <button *ngIf="selectedBrType === 'BR_CUSTOM_SCRIPT'" mat-flat-button color="primary"
               (click)="clickSaved()">Save</button>
@@ -109,7 +109,7 @@
           <!-- User Defined Buisness Rule Container Starts Here-->
           <div class="f-col udr-conditiona-block" *ngIf="stepper.selectedIndex === 2">
             <pros-user-defined-rule [schemaId]="schemaId" [moduleId]="moduleId" [brId]="brId" [brType]="selectedBrType"
-              [needCondRef]="needCondRef" [svdClicked]="svdClicked" (evtSaved)="afterSaved($event)">
+              [needCondRef]="needCondRef" [svdClicked]="finishUdrCreProcess" (evtSaved)="afterSaved($event)">
             </pros-user-defined-rule>
 
           </div>
@@ -118,7 +118,7 @@
           <div class="f-row">
             <button mat-flat-button color="primary" matStepperPrevious>Back</button>
             <span class="f-spacer"></span>
-            <button mat-flat-button color="primary" matStepperNext (click)="clickSaved()">Save rule</button>
+            <button mat-flat-button color="primary" (click)="udrClickSaved()">Save rule</button>
           </div>
         </form>
       </mat-step>

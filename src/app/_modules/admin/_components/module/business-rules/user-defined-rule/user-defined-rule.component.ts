@@ -85,12 +85,12 @@ export class UserDefinedRuleComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if(changes && changes.needCondRef && changes.needCondRef.currentValue.toString() === 'true') {
+    if(changes && changes.needCondRef && changes.needCondRef.currentValue !== changes.needCondRef.previousValue && changes.needCondRef.currentValue !== undefined) {
       this.fetchConditionList(null);
     }
 
     // after click save invoke saved finishProcess
-    if(changes && changes.svdClicked && changes.svdClicked.currentValue.toString() === 'true') {
+    if(changes && changes.svdClicked && changes.svdClicked.previousValue !== changes.svdClicked.currentValue && changes.svdClicked.currentValue !== undefined) {
       this.finishUdrProcess();
     }
 
@@ -430,7 +430,12 @@ export class UserDefinedRuleComponent implements OnInit, OnChanges {
     const nodeLevel = this.treeControl.dataNodes.indexOf(node);
     const itemkey = this.treeControl.dataNodes[nodeLevel -1];
     this.treeDataSource.addConBlock(this.flatNodeMap.get(itemkey), event, isEditMode);
-    this.selectedBlocks[this.flatNodeMap.get(node).nodeId] = event;
+    if(isEditMode) {
+      this.selectedBlocks[this.flatNodeMap.get(node).nodeId] = this.selectedBlocks[this.flatNodeMap.get(node).nodeId] ? this.selectedBlocks[this.flatNodeMap.get(node).nodeId] : [];
+      this.selectedBlocks[this.flatNodeMap.get(node).nodeId].push(...event)
+    } else {
+      this.selectedBlocks[this.flatNodeMap.get(node).nodeId] = event
+    }
   }
 
   selectedConBlocks(node: ItemNodeInfo): UDRBlocksModel[] {
@@ -544,7 +549,7 @@ export class UserDefinedRuleComponent implements OnInit, OnChanges {
     brInfo.brId = this.brId ? this.brId : null;
     brInfo.brIdStr = this.brId ? this.brId : null;
 
-    if(this.udrDescFrmCtrl.value) {
+    if(this.udrDescFrmCtrl.value.trim() === '') {
       this.snackBar.open(`Please enter rule description`, 'Close',{duration:5000});
       return false;
     }
@@ -558,6 +563,8 @@ export class UserDefinedRuleComponent implements OnInit, OnChanges {
 
     console.log(this.treeControl.dataNodes);
     console.log(this.dataSource.data);
+
+    this.udrModel.objectType = this.moduleId;
 
     this.schemaService.saveUpdateUDR(this.udrModel).subscribe(res=>{
       this.snackBar.open(`Successfully saved !`, 'Close',{duration:5000});

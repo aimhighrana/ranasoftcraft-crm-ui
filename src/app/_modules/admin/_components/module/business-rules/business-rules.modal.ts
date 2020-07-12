@@ -98,6 +98,7 @@ export class UdrModel {
     brInfo: CoreSchemaBrInfo;
     udrHierarchies: UDRHierarchyModel[];
     blocks: UDRBlocksModel[];
+    objectType: string;
 }
 
 export class Category {

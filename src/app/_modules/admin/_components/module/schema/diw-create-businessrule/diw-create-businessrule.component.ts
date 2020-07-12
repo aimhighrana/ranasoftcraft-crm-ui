@@ -46,6 +46,12 @@ export class DiwCreateBusinessruleComponent implements OnInit, AfterViewInit, Af
    */
   needCondRef;
 
+
+  /**
+   * After click user defined rule finish button ..
+   */
+  finishUdrCreProcess;
+
   constructor(
     private _formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<CreateSchemaComponent>,
@@ -177,14 +183,13 @@ export class DiwCreateBusinessruleComponent implements OnInit, AfterViewInit, Af
    * After click saved rule
    */
   clickSaved() {
-    this.svdClicked =  Boolean(true);
+    this.svdClicked = this.svdClicked ? false : true;
   }
 
   /**
    * After condition block add
    */
   fetchConditionList(sno: string[]) {
-    this.svdClicked =  Boolean(false);
     this.stepper.next();
     console.log(sno);
   }
@@ -196,11 +201,18 @@ export class DiwCreateBusinessruleComponent implements OnInit, AfterViewInit, Af
   controlStepChange(evt: any) {
     switch (evt.selectedIndex) {
       case 2:
-        this.needCondRef = Boolean(true);
+        this.needCondRef = this.svdClicked ? false : true;
         break;
       default:
         break;
     }
+  }
+
+  /**
+   * Call while clicked use defined rule finish process
+   */
+  udrClickSaved() {
+    this.finishUdrCreProcess =  this.finishUdrCreProcess ? false : true;
   }
 
   /**
