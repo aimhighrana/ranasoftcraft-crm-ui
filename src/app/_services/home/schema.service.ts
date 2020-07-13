@@ -154,4 +154,12 @@ export class SchemaService {
   public uploadCorrectionData(data: DataSource[], objectType: string, schemaId:string, runId: string, plantCode: string, fileSno: string): Observable<string> {
     return this.http.post<any>(this.endpointService.uploadCorrectionDataUrl(objectType, schemaId, runId, plantCode, fileSno), data);
   }
+
+  /**
+   * Delete Schema by schemaid
+   * @param schemaId deletable schemaid
+   */
+  public deleteSChema(schemaId: string): Observable<boolean> {
+    return this.http.delete<boolean>(this.endpointService.deleteSchema(schemaId));
+  }
 }

@@ -389,4 +389,8 @@ export class EndpointService {
   public deleteSchemaCollaboratorDetailsUrl(sNo: string): string {
     return `${this.apiUrl}/admin/users/collaborator-records/delete/${sNo}`;
   }
+
+  public deleteSchema(schemaId: string): string {
+    return `${this.apiUrl}/schema/delete/${schemaId}`;
+  }
 }

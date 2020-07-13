@@ -120,4 +120,10 @@ describe('EndpointService', () => {
     const serObj = new EndpointService();
     expect(serObj.deleteSchemaCollaboratorDetailsUrl('355535857155320681 ')).toContain('admin/users/collaborator-records/delete/355535857155320681');
   }));
+
+  it('deleteSchema(),should delte the schema', async(() =>{
+    const serObj = new EndpointService();
+    expect(serObj.deleteSchema('355535857155320681 ')).toContain('schema/delete/355535857155320681');
+  }));
+
 });

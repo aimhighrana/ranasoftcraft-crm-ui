@@ -13,6 +13,7 @@ import { SchemaService } from '@services/home/schema.service';
 import { SchemaGroupDetailsResponse } from '@models/schema/schema';
 import { of } from 'rxjs';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 describe('SchemaListComponent', () => {
   let component: SchemaListComponent;
@@ -27,7 +28,7 @@ describe('SchemaListComponent', () => {
         RouterTestingModule
       ],
       declarations: [SchemaListComponent, BreadcrumbComponent, SchemaTileComponent, AddTileComponent, SubstringPipe],
-      providers:[ SchemaService, SchemalistService ]
+      providers:[ SchemaService, SchemalistService, MatSnackBar ]
 
     }).compileComponents();
     router = TestBed.inject(Router);
@@ -119,6 +120,15 @@ describe('SchemaListComponent', () => {
     spyOn(schemaListServiceSpy,'getSchemaList').and.returnValue(of(response));
     component.onLoadSchemaList();
     expect(schemaListServiceSpy.getSchemaList).toHaveBeenCalled();
+  }));
+
+  it('delete(), delete schema ', async(()=>{
+    spyOn(SchemaServiceSpy, 'deleteSChema').withArgs('2342352').and.returnValue(of(true));
+
+    spyOn(router, 'navigate');
+    component.delete('2342352');
+    expect(SchemaServiceSpy.deleteSChema).toHaveBeenCalledWith('2342352');
+    expect(router.navigate).toHaveBeenCalledWith(['/home/schema']);
   }));
 
 });
