@@ -14,7 +14,7 @@
                     <mat-icon matChipRemove>cancel</mat-icon>
                 </mat-chip>
                 <input matInput formControlName="selectFields" [matAutocomplete]="autoGroup"
-                    [matChipInputFor]="chipList" [matChipInputAddOnBlur]="'true'" (click)="openPanel()"
+                    [matChipInputFor]="chipList" [matChipInputAddOnBlur]="'true'" (matChipInputTokenEnd)="add($event)" (click)="openPanel()"  
                     #trigger="matAutocompleteTrigger" (keydown.enter)="$event.target.blur(); trigger.closePanel()">
             </mat-chip-list>
 

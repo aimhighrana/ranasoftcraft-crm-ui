@@ -9,6 +9,7 @@ import { CoreSchemaBrInfo, BusinessRuleType } from 'src/app/_modules/admin/_comp
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MetadataModeleResponse } from 'src/app/_models/schema/schemadetailstable';
+import { MatChipInputEvent } from '@angular/material/chips';
 
 
 
@@ -213,6 +214,14 @@ export class MissingruleComponent implements OnInit, OnChanges {
 
   }
 
+  add(event: MatChipInputEvent): void {
+    const input = event.input;
+
+    // Reset the input value
+    if (input) {
+      input.value = '';
+    }
+  }
 
   onSelect(data) {
     const loopData: any = [];
@@ -230,7 +239,7 @@ export class MissingruleComponent implements OnInit, OnChanges {
     }
 
     this.groupDetailss.push({ id: selData.fieldId, descr: selData.fieldDescri });
-    this.fillDataForm.get('selectFields').setValue('');
+
   }
 
   remove(objectId: any): void {

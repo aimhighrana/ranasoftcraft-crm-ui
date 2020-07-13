@@ -9,6 +9,7 @@ import { MetadataModel, Heirarchy } from '@models/schema/schemadetailstable';
 import { of } from 'rxjs';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { Metadata } from '@modules/report/edit/container/metadatafield-control/metadatafield-control.component';
+import { MatChipInputEvent } from '@angular/material/chips';
 
 describe('GenericFieldControlComponent', () => {
   let component: GenericFieldControlComponent;
@@ -156,9 +157,21 @@ describe('GenericFieldControlComponent', () => {
 
     // mock data
     const chnages2:import('@angular/core').SimpleChanges = null;
-
     // call actual method
     component.ngOnChanges(chnages2);
     expect(component.ngOnChanges).toBeTruthy();
   }));
+
+  it('add(), while search and enter then value should be set ', async(()=>{
+    const event = {input:{value:''}} as MatChipInputEvent;
+    // call actual method
+    component.add(event);
+    expect(component.add).toBeTruthy();
+
+    const event1 = {value:''} as MatChipInputEvent;
+    // call actual method
+    component.add(event1);
+    expect(component.add).toBeTruthy();
+  }));
+
 });

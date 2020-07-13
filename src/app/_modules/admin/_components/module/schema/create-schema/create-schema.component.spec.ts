@@ -12,12 +12,16 @@ import { of } from 'rxjs';
 import { CoreSchemaBrInfo, Category, CreateUpdateSchema } from '../../business-rules/business-rules.modal';
 import { ObjectTypeResponse } from '@models/schema/schema';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { Router } from '@angular/router';
+
 
 describe('CreateSchemaComponent', () => {
   let component: CreateSchemaComponent;
   let fixture: ComponentFixture<CreateSchemaComponent>;
   let service: SchemaService;
   let schemaListService: SchemalistService;
+  let router: Router;
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ CreateSchemaComponent ],
@@ -30,6 +34,7 @@ describe('CreateSchemaComponent', () => {
       ]
     })
     .compileComponents();
+    router = TestBed.inject(Router);
   }));
 
   beforeEach(() => {
@@ -225,4 +230,10 @@ describe('CreateSchemaComponent', () => {
     expect(component.moduleId).toEqual(undefined);
 
   }));
+
+  it('navigateToListPage(), nab=vigate to schema list page ', async(() => {
+    spyOn(router, 'navigate');
+    component.navigateToListPage();
+    expect(router.navigate).toHaveBeenCalledWith(['/home/schema']);
+  }))
 });

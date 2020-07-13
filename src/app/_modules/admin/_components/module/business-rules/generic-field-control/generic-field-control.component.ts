@@ -5,6 +5,7 @@ import { FormControl } from '@angular/forms';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { MetadataModeleResponse } from '@models/schema/schemadetailstable';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatChipInputEvent } from '@angular/material/chips';
 
 @Component({
   selector: 'pros-generic-field-control',
@@ -71,6 +72,10 @@ export class GenericFieldControlComponent implements OnInit, OnChanges, OnDestro
     if(changes && changes.selectedFldId && changes.selectedFldId.currentValue !== changes.selectedFldId.previousValue) {
       this.preSelectedCtrl = this.returnSelectedFldCtrl(changes.selectedFldId.currentValue);
     }
+  }
+
+  openPanel(): void {
+    this.fieldFrmCtrl.setValue('');
   }
 
   ngOnInit(): void {
@@ -220,6 +225,15 @@ export class GenericFieldControlComponent implements OnInit, OnChanges, OnDestro
    */
   displayFn(obj: Metadata): string {
     return obj? obj.fieldDescri: null;
+  }
+
+  add(event: MatChipInputEvent): void {
+    const input = event.input;
+
+    // Reset the input value
+    if (input) {
+      input.value = '';
+    }
   }
 
   /**

@@ -8,6 +8,7 @@ import { ReactiveFormsModule, FormsModule, FormGroup, FormControl } from '@angul
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { SchemaService } from '@services/home/schema.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatChipInputEvent } from '@angular/material/chips';
 
 class SchemaSerStub {
   createBusinessRule() {
@@ -41,6 +42,19 @@ describe('MissingruleComponent', () => {
   beforeEach(() => {
     service = new SchemaSerStub();
     component = new MissingruleComponent(service, null, null, null);
+  });
+
+  it('ngOnChanges(), should call reset when reset filter', ()=>{
+    // mock data
+    const chnages:import('@angular/core').SimpleChanges = {brType:{currentValue:true, previousValue: false, firstChange:null, isFirstChange:null}};
+    // call actual method
+    component.ngOnChanges(chnages);
+
+    // mock data
+    const chnages2:import('@angular/core').SimpleChanges = null;
+    // call actual method
+    component.ngOnChanges(chnages2);
+    expect(component.ngOnChanges).toBeTruthy();
   });
 
   it('testing convertObjtoString ', () => {
@@ -146,5 +160,17 @@ describe('MissingruleComponent', () => {
     component.brType = 'metaDataRule';
     const res = component.returnBrtype();
     expect(BusinessRuleType.BR_METADATA_RULE).toEqual(res);
-  })
+  });
+
+  it('add(), while search and enter then value should be set ',()=>{
+    const event = {input:{value:''}} as MatChipInputEvent;
+    // call actual method
+    component.add(event);
+    expect(component.add).toBeTruthy();
+
+    const event1 = {value:''} as MatChipInputEvent;
+    // call actual method
+    component.add(event1);
+    expect(component.add).toBeTruthy();
+  });
 });

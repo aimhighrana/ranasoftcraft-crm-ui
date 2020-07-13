@@ -12,7 +12,10 @@
             <input matInput
             [formControl]="fieldFrmCtrl"
             [matAutocomplete]="fieldsCtrl"
-            [matChipInputFor]="chipList">
+            [matChipInputFor]="chipList"
+            [matChipInputAddOnBlur]="'true'"
+            (matChipInputTokenEnd)="add($event)" 
+            (click)="openPanel()">
         </mat-chip-list> 
     </ng-template>
     <ng-template #singleSelection>

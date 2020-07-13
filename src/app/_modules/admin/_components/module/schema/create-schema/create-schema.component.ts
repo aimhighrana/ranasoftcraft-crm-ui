@@ -140,7 +140,7 @@ export class CreateSchemaComponent implements OnInit {
   }
 
   navigateToListPage() {
-    this.router.navigate(['/home/schema/schema-list']);
+    this.router.navigate(['/home/schema']);
   }
 
   /**
