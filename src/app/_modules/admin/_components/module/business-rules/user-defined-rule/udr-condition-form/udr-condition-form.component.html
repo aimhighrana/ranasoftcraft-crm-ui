@@ -12,7 +12,7 @@
                     (evtOnchange)="changeConditionalField($event, i)"></pros-br-conditional-fields>
 
                 <div class="col-spacer"></div>
-                <mat-form-field appearance="outline">
+                <!-- <mat-form-field appearance="outline">
                     <mat-label>Operator</mat-label>
                     <input placeholder="Operator" aria-label="Number" matInput formControlName="operator"
                         [matAutocomplete]="auto1">
@@ -21,7 +21,12 @@
                             {{ operator }}
                         </mat-option>
                     </mat-autocomplete>
-                </mat-form-field>
+                </mat-form-field> -->
+                <pros-udr-condition-operators
+                [conditionalOperators] = "conditionalOperators"
+                (afterSelect) ="operatorSelectionChng($event,i)"
+                >
+                </pros-udr-condition-operators>
                 <div class="col-spacer"></div>
 
                 <!-- Fields for range -->

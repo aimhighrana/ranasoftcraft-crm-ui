@@ -7,7 +7,6 @@ import { SchemaService } from 'src/app/_services/home/schema.service';
 import { DropDownValue, UDRBlocksModel } from '../../business-rules.modal';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BlockType } from '../udr-cdktree.service';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
 @Component({
   selector: 'pros-udr-condition-form',
@@ -28,11 +27,10 @@ export class UdrConditionFormComponent implements OnInit, OnChanges {
   @Output()
   evtAfterSaved: EventEmitter<string[]> = new EventEmitter<string[]>();
 
-  conditionalOperators: string[];
-  conditionalOperatorsOb: Observable<string[]> = of([]);
-
   dropValues: DropDownValue[];
   dropValuesOb: Observable<DropDownValue[]> = of([]);
+
+  conditionalOperators: string[];
 
   frmGroup: FormGroup;
   showRangeFld = false;
@@ -101,7 +99,6 @@ export class UdrConditionFormComponent implements OnInit, OnChanges {
   getBrConditionalOperator() {
     this.schemaService.getBrConditionalOperator().subscribe(res=>{
       this.conditionalOperators = res;
-      this.conditionalOperatorsOb = of(res);
     },error=>console.error(`Error: ${error}`));
   }
 
@@ -127,11 +124,12 @@ export class UdrConditionFormComponent implements OnInit, OnChanges {
     return obj ? obj.TEXT : null;
   }
 
-  operatorSelectionChng(option: MatAutocompleteSelectedEvent, index: number) {
+  operatorSelectionChng(option: string, index: number) {
     const frmArray = this.frmArray;
     const frmCtrl =  frmArray.at(index);
     const val =  frmCtrl.value;
-    val.showRangeFld = option.option.value === 'RANGE' ? true : false;
+    val.operator = option;
+    val.showRangeFld = option=== 'RANGE' ? true : false;
     frmCtrl.setValue(val);
     // frmCtrl.get('showRangeFld').setValue(option.option.value === 'RANGE' ? true : false);
   }

@@ -63,6 +63,7 @@ import { PropertiesPanelComponent } from './_components/module/workflow/bpmn-bui
 import { BpmnBuilderComponent } from './_components/module/workflow/bpmn-builder/bpmn-builder.component';
 import { DiwCreateBusinessruleComponent } from './_components/module/schema/diw-create-businessrule/diw-create-businessrule.component';
 import { DiwCreateSchemaComponent } from './_components/module/schema/diw-create-schema/diw-create-schema.component';
+import { UdrConditionOperatorsComponent } from './_components/module/business-rules/user-defined-rule/udr-condition-operators/udr-condition-operators.component';
 
 @NgModule({
   declarations: [
@@ -126,7 +127,8 @@ import { DiwCreateSchemaComponent } from './_components/module/schema/diw-create
     EmailEscalationPropertiesComponent,
     BackgroundStepPropertiesComponent,
     DiwCreateBusinessruleComponent,
-    DiwCreateSchemaComponent
+    DiwCreateSchemaComponent,
+    UdrConditionOperatorsComponent
   ],
   imports: [
     CommonModule,

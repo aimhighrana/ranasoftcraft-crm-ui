@@ -1,0 +1,10 @@
+<mat-form-field appearance="outline">
+    <mat-label>Operator</mat-label>
+    <input placeholder="Operator" aria-label="Number" matInput [formControl]="operator"
+        [matAutocomplete]="auto1">
+    <mat-autocomplete #auto1="matAutocomplete" (optionSelected)="operatorSelectionChng($event)">
+        <mat-option *ngFor="let operator of conditionalOperatorsOb | async" [value]="operator">
+            {{ operator }}
+        </mat-option>
+    </mat-autocomplete>
+</mat-form-field>

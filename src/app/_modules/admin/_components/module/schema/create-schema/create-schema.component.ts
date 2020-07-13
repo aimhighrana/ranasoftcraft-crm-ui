@@ -534,6 +534,11 @@ export class CreateSchemaComponent implements OnInit {
       this.matSnackBar.open(`Total Business rule weightage can't more than 100`, 'Close',{duration:5000});
       return false;
     }
+
+    if(totalWigtage <100) {
+      this.matSnackBar.open(`Total Business rule weightage can't less than 100`, 'Close',{duration:5000});
+      return false;
+    }
     console.log('request : {}', request);
     this.service.createUpdateSchema(request).subscribe(response => {
       console.log('create update schema Response = ', response);
