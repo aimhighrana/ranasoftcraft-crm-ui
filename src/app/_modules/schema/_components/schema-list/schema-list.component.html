@@ -50,6 +50,7 @@
         timestamp="{{ schema.executionEndTime | date:'MMM d, y, h:mm:ss a' }}"
   
         (evtEdit)="edit(module.moduleId, schema);"
+        (evtDelete)="delete(schema.schemaId)"
         (evtBottomLeft)="variants(module.moduleId, schema.schemaId);"
         (evtBottomRight)="run(schema.schemaId);">
       </pros-schema-tile>

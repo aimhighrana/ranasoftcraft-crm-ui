@@ -12,7 +12,7 @@ describe('SchemaService', () => {
   let any2tsSpy: jasmine.SpyObj<Any2tsService>;
 
   beforeEach(async(() => {
-    const epsSpy = jasmine.createSpyObj('EndpointService', [ 'getSchemaGroupsUrl', 'getSchemaGroupDetailsByGrpIdUrl', 'getCreateSchemaGroupUrl', 'getAllObjecttypeUrl','deleteConditionBlock' ]);
+    const epsSpy = jasmine.createSpyObj('EndpointService', [ 'getSchemaGroupsUrl', 'getSchemaGroupDetailsByGrpIdUrl', 'getCreateSchemaGroupUrl', 'getAllObjecttypeUrl','deleteConditionBlock','deleteSchema' ]);
     const any2Spy = jasmine.createSpyObj('Any2tsService', [ 'any2SchemaGroupResponse', 'any2SchemaDetails', 'any2ObjectType' ]);
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule ],
@@ -141,6 +141,28 @@ describe('SchemaService', () => {
 
     // call actual service method
     schemaService.deleteConditionBlock(blockId).subscribe(data => {
+      expect(data).toEqual({} as boolean);
+    });
+
+    // mock http
+    const httpReq = httpTestingController.expectOne(url);
+    expect(httpReq.request.method).toEqual('DELETE');
+    httpReq.flush(httpMockData);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('deleteSchema() : delete call http for delete schema ', async(() => {
+    // mock data
+    const schemaId = '236642364532';
+
+    // mock url
+    const url = 'delete schema/'+ schemaId;
+    const httpMockData = {} as any;
+    endpointServiceSpy.deleteSchema.withArgs(schemaId).and.returnValue(url);
+
+    // call actual service method
+    schemaService.deleteSChema(schemaId).subscribe(data => {
       expect(data).toEqual({} as boolean);
     });
 

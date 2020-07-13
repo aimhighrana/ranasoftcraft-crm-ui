@@ -8,6 +8,8 @@ import { SchemaListModuleList, SchemaListDetails } from 'src/app/_models/schema/
 import { Userdetails } from 'src/app/_models/userdetails';
 import { MatDialog } from '@angular/material/dialog';
 import { UploadDataComponent } from '../upload-data/upload-data.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'pros-schema-list',
@@ -25,7 +27,9 @@ export class SchemaListComponent implements OnInit {
     private activatedRouter: ActivatedRoute,
     private router: Router,
     private schemaService: SchemaService,
-    private matDialog: MatDialog
+    private matDialog: MatDialog,
+    private matSnackBar: MatSnackBar,
+    private location: Location
   ) { }
 
   schemaGroupId: string;
@@ -87,6 +91,21 @@ export class SchemaListComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
     });
+  }
+
+  /**
+   * Delete schema by schema id
+   * @param schemaId deleteable schemaid
+   */
+  delete(schemaId: string) {
+    this.schemaService.deleteSChema(schemaId).subscribe(res=>{
+      this.matSnackBar.open(`Successfully deleted `, 'Close',{duration:5000});
+      this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+      this.router.onSameUrlNavigation = 'reload'
+      this.router.navigate(['/home/schema']);
+    }, error=>{
+      this.matSnackBar.open(`Something went wrong `, 'Close',{duration:5000});
+    })
   }
 
 
