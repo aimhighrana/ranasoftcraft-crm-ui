@@ -505,12 +505,12 @@ export class Any2tsService {
             const griddataRow: DataTableHeaderResponse[] = [];
             Object.keys(row).forEach(key => {
               const dataTableHeader: DataTableHeaderResponse = new DataTableHeaderResponse();
-              dataTableHeader.fId = response[key].fId;
-              dataTableHeader.ls = response[key].ls;
+              dataTableHeader.fId = row[key].fId;
+              dataTableHeader.ls = row[key].ls;
               const vc: DataTableHeaderValueLang = new DataTableHeaderValueLang();
-              if(response[key].vc) {
-                vc.c = response[key].vc.map(map=> map.c).toString();
-                vc.t = response[key].vc.map(map=> map.t).toString();
+              if(row[key].vc) {
+                vc.c = row[key].vc.map(map=> map.c).toString();
+                vc.t = row[key].vc.map(map=> map.t).toString();
               }
               dataTableHeader.vc = vc;
               griddataRow.push(dataTableHeader);
@@ -533,12 +533,12 @@ export class Any2tsService {
             const griddataRow: DataTableHeaderResponse[] = [];
             Object.keys(row).forEach(key => {
               const dataTableHeader: DataTableHeaderResponse = new DataTableHeaderResponse();
-              dataTableHeader.fId = response[key].fId;
-              dataTableHeader.ls = response[key].ls;
+              dataTableHeader.fId = row[key].fId;
+              dataTableHeader.ls = row[key].ls;
               const vc: DataTableHeaderValueLang = new DataTableHeaderValueLang();
-              if(response[key].vc) {
-                vc.c = response[key].vc.map(map=> map.c).toString();
-                vc.t = response[key].vc.map(map=> map.t).toString();
+              if(row[key].vc) {
+                vc.c = row[key].vc.map(map=> map.c).toString();
+                vc.t = row[key].vc.map(map=> map.t).toString();
               }
               dataTableHeader.vc = vc;
               griddataRow.push(dataTableHeader);
