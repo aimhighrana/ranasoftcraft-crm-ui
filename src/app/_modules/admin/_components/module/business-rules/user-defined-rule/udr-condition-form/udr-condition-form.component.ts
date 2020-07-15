@@ -4,7 +4,7 @@ import { MetadataModel } from 'src/app/_models/schema/schemadetailstable';
 import { of, Observable } from 'rxjs';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { SchemaService } from 'src/app/_services/home/schema.service';
-import { DropDownValue, UDRBlocksModel } from '../../business-rules.modal';
+import { DropDownValue, UDRBlocksModel, ConditionalOperator } from '../../business-rules.modal';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BlockType } from '../udr-cdktree.service';
 
@@ -30,7 +30,8 @@ export class UdrConditionFormComponent implements OnInit, OnChanges {
   dropValues: DropDownValue[];
   dropValuesOb: Observable<DropDownValue[]> = of([]);
 
-  conditionalOperators: string[];
+  // possible / implemented operators
+  conditionalOperators: ConditionalOperator[] = this.possibleOperators;
 
   frmGroup: FormGroup;
   showRangeFld = false;
@@ -52,7 +53,7 @@ export class UdrConditionFormComponent implements OnInit, OnChanges {
   ngOnInit(): void {
 
     // get all operator http call
-    this.getBrConditionalOperator();
+    // this.getBrConditionalOperator();
 
     // form builder
     this.initFrmArray();
@@ -96,11 +97,11 @@ export class UdrConditionFormComponent implements OnInit, OnChanges {
   });
   }
 
-  getBrConditionalOperator() {
-    this.schemaService.getBrConditionalOperator().subscribe(res=>{
-      this.conditionalOperators = res;
-    },error=>console.error(`Error: ${error}`));
-  }
+  // getBrConditionalOperator() {
+  //   this.schemaService.getBrConditionalOperator().subscribe(res=>{
+  //     this.conditionalOperators = res;
+  //   },error=>console.error(`Error: ${error}`));
+  // }
 
   changeConditionalField(obj: MetadataModel, index: number) {
     if(obj && obj.picklist === '1') {
@@ -158,6 +159,43 @@ export class UdrConditionFormComponent implements OnInit, OnChanges {
     const frmArray = this.frmArray;
     frmArray.removeAt(index);
   }
+
+  /**
+   * Return all possible operators
+   */
+  get possibleOperators(): ConditionalOperator[] {
+    // get generic operators
+    const genericOp: ConditionalOperator = new ConditionalOperator();
+    genericOp.desc = 'Common Operator';
+    genericOp.childs = [];
+    genericOp.childs.push('EQUAL');
+    genericOp.childs.push('STARTS_WITH');
+    genericOp.childs.push('ENDS_WITH');
+    genericOp.childs.push('CONTAINS');
+    genericOp.childs.push('EMPTY');
+    genericOp.childs.push('NOT_EMPTY');
+
+    // for numeric number field
+    const onlyNum:ConditionalOperator = new ConditionalOperator();
+    onlyNum.desc = 'Numeric Operators';
+    onlyNum.childs = [];
+    onlyNum.childs.push('RANGE');
+    onlyNum.childs.push('LESS_THAN');
+    onlyNum.childs.push('LESS_THAN_EQUAL');
+    onlyNum.childs.push('GREATER_THAN');
+    onlyNum.childs.push('GREATER_THAN_EQUAL');
+
+    // for special operators
+    const specialOpe:ConditionalOperator = new ConditionalOperator();
+    specialOpe.desc = 'Special Operators';
+    specialOpe.childs = [];
+    specialOpe.childs.push('REGEX');
+    specialOpe.childs.push('FIELD2FIELD');
+    specialOpe.childs.push('LOCATION');
+    return [genericOp,onlyNum,specialOpe];
+  }
+
+
 
   saveUpdateCondition(id?: string) {
     const frmArray = this.frmArray;

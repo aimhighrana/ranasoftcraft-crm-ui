@@ -3,6 +3,7 @@ import { Observable, of } from 'rxjs';
 import { SchemaService } from '@services/home/schema.service';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { FormControl } from '@angular/forms';
+import { ConditionalOperator } from '../../business-rules.modal';
 
 @Component({
   selector: 'pros-udr-condition-operators',
@@ -12,12 +13,12 @@ import { FormControl } from '@angular/forms';
 export class UdrConditionOperatorsComponent implements OnInit, OnChanges {
 
   @Input()
-  conditionalOperators: string[];
+  conditionalOperators: ConditionalOperator[];
 
   @Output()
   afterSelect: EventEmitter<string> = new EventEmitter();
 
-  conditionalOperatorsOb: Observable<string[]> = of([]);
+  conditionalOperatorsOb: Observable<ConditionalOperator[]> = of([]);
 
   operator: FormControl = new FormControl('');
 
@@ -33,8 +34,23 @@ export class UdrConditionOperatorsComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.operator.valueChanges.subscribe(res=>{
-      if(res && typeof res === 'string') {
-        this.conditionalOperatorsOb = of(this.conditionalOperators.filter(con=> con.toLocaleLowerCase().indexOf(res.toLocaleLowerCase()) !==-1));
+      if(res && typeof res === 'string' && res.trim() !== '') {
+        const groups = Array.from(this.conditionalOperators);
+        const matchedData: ConditionalOperator[] = [];
+        groups.forEach(grp=>{
+          const changeAble = {childs:grp.childs,desc: grp.desc} as ConditionalOperator;
+          const chld: string[] = [];
+          changeAble.childs.forEach(child=>{
+              if(child.toLocaleLowerCase().indexOf(res.toLocaleLowerCase()) !==-1) {
+                chld.push(child);
+              }
+            });
+            if(chld.length) {
+              changeAble.childs = chld;
+              matchedData.push(changeAble);
+            }
+        });
+        this.conditionalOperatorsOb = of(matchedData);
       } else {
         this.conditionalOperatorsOb = of(this.conditionalOperators);
       }

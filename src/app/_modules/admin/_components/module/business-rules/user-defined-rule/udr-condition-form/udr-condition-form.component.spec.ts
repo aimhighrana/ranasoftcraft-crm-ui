@@ -8,7 +8,7 @@ import { SchemaService } from 'src/app/_services/home/schema.service';
 import { of } from 'rxjs';
 import { BrConditionalFieldsComponent } from '../../br-conditional-fields/br-conditional-fields.component';
 import { MetadataModel } from 'src/app/_models/schema/schemadetailstable';
-import { DropDownValue } from '../../business-rules.modal';
+import { DropDownValue, ConditionalOperator } from '../../business-rules.modal';
 
 describe('UdrConditionFormComponent', () => {
   let component: UdrConditionFormComponent;
@@ -37,13 +37,13 @@ describe('UdrConditionFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('getBrConditionalOperator(), get all conditional operator', async(()=>{
+  it('possibleOperators(), get all conditional operator', async(()=>{
     // mockdata
-    const data: string[] = [];
-    spyOn(schemaService, 'getBrConditionalOperator').and.returnValue(of(data));
-    component.getBrConditionalOperator();
-
-    expect(schemaService.getBrConditionalOperator).toHaveBeenCalledTimes(1);
+    const ope: ConditionalOperator[] =  component.possibleOperators;
+    expect(ope.length).toEqual(3);
+    expect(ope[0].childs.length).toEqual(6);
+    expect(ope[1].childs.length).toEqual(5);
+    expect(ope[2].childs.length).toEqual(3);
 
   }));
 
