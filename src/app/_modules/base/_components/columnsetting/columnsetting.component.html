@@ -18,7 +18,7 @@
                     <mat-icon (click)="setAsDefault(view)" prosClickStopPropagation
                         matTooltip="{{view.default ? 'Default View' : 'Make Default view'}}" class="listing-icons"
                         [class.check]="view.default">
-                        {{view.default? 'check_circle_outline' :'check_circle'}}</mat-icon> <span
+                        {{view.default? 'check_circle' :'check_circle_outline'}}</mat-icon> <span
                         class="f-col-spacer-half"></span>
                     <mat-icon matTooltip="Delete" class="listing-icons remove" (click)="deleteView(view);" prosClickStopPropagation>delete</mat-icon>
                 </a>

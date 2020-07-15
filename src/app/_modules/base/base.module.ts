@@ -12,6 +12,7 @@ import { TasklistTableComponent } from './_components/tasklist-table/tasklist-ta
 import { ListPageComponent } from './list-page_components/list-page/list-page.component';
 import { ListFiltersComponent } from './list-page_components/listfilter-dropdown/listfilter.component';
 import { ListColumnsettingComponent } from './list-page_components/listcolumnsetting/listcolumnsetting.component';
+import { MaterialEditComponent } from './_components/material-edit/material-edit.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { ListColumnsettingComponent } from './list-page_components/listcolumnset
     ListPageComponent,
     ListFiltersComponent,
     ListColumnsettingComponent,
+    MaterialEditComponent,
   ],
   imports: [
     CommonModule,
