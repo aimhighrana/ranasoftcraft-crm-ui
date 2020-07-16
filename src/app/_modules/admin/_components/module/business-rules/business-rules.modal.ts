@@ -106,3 +106,8 @@ export class Category {
     categoryId: string;
     plantCode: string;
 }
+
+export class ConditionalOperator {
+    desc: string;
+    childs:string[];
+}
