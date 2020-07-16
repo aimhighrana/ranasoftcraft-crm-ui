@@ -15,7 +15,8 @@
         [matAutocomplete]="conditionBlockAuto"
         [matChipInputFor]="chipList"
         [matChipInputAddOnBlur]="'true'"
-        [formControl]="inpFrmCtrl">
+        [formControl]="inpFrmCtrl"
+        (matChipInputTokenEnd)="add($event)">
     </mat-chip-list>
 
     <mat-autocomplete #conditionBlockAuto="matAutocomplete" (optionSelected)="optionSelected($event)">

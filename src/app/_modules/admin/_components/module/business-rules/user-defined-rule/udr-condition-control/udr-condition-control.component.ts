@@ -3,6 +3,7 @@ import { UDRBlocksModel } from '../../business-rules.modal';
 import { Observable, of } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatChipInputEvent } from '@angular/material/chips';
 
 @Component({
   selector: 'pros-udr-condition-control',
@@ -65,6 +66,14 @@ export class UdrConditionControlComponent implements OnInit, OnChanges {
     this.evtSelected.emit(this.selectedBlocks);
   }
 
+  add(event: MatChipInputEvent): void {
+    const input = event.input;
+
+    // Reset the input value
+    if (input) {
+      input.value = '';
+    }
+  }
   /**
    * Remove block from selectedBlocks
    * After remove  should emit the changes values

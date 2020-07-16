@@ -28,6 +28,7 @@ export class DiwCreateSchemaComponent implements OnInit {
     const dialogRef = this.matDialog.open(DiwCreateBusinessruleComponent, {
       height: '706px',
       width: '1100px',
+      autoFocus: false,
     });
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');

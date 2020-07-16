@@ -110,6 +110,16 @@ describe('RegexRuleComponent', () => {
 
     expect(component.evtSaved.emit).toHaveBeenCalledTimes(1);
 
+
+    component.brId = '7654';
+    component.brType = 'Regex';
+    component.selectedFldId = null;
+    component.regexFrmGrp.get('queryScript').setValue('test');
+    component.regexFrmGrp.get('ruleDesc').setValue('test');
+    component.regexFrmGrp.get('standardFun').setValue('mock');
+    component.saveBrInfo();
+    expect(schemaService.createBusinessRule).toHaveBeenCalledWith(component.brInfo);
+
   }));
 
   it('discard(), should emit with current saved value', async(()=>{
@@ -128,4 +138,21 @@ describe('RegexRuleComponent', () => {
 
   }));
 
+  it('ngOnChanges(), should call reset when reset dashboard', async(() => {
+    const chnages:import('@angular/core').SimpleChanges = {svdClicked :{currentValue:true, previousValue: false, firstChange:null, isFirstChange:null}};
+    component.ngOnChanges(chnages);
+    expect(component.ngOnChanges).toBeTruthy();
+
+    const chnages2:import('@angular/core').SimpleChanges = null;
+    component.ngOnChanges(chnages2);
+    expect(component.ngOnChanges).toBeTruthy();
+  }));
+
+  it('displayWithPreRegex(), should return saved regex', async(() => {
+    const regex = {FUNC_NAME:'PAN CARD'} as Regex;
+    expect(component.displayWithPreRegex(regex)).toEqual('PAN CARD');
+
+    const regex1 = null;
+    expect(component.displayWithPreRegex(regex1)).toEqual('');
+  }));
 });
