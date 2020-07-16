@@ -154,7 +154,8 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
       const arrayBuckets = returndata.aggregations['sterms#BAR_CHART'].buckets;
       this.dataSet = [];
       arrayBuckets.forEach(bucket => {
-        this.lablels.push(bucket.key);
+        const key = bucket.key === ''?this.pieWidget.value.blankValueAlias!==undefined?this.pieWidget.value.blankValueAlias:'':bucket.key;
+        this.lablels.push(key);
         this.dataSet.push(bucket.doc_count);
       });
       if(this.pieWidget.getValue().metaData && (this.pieWidget.getValue().metaData.picklist === '1' || this.pieWidget.getValue().metaData.picklist === '37' || this.pieWidget.getValue().metaData.picklist === '30')) {
@@ -214,9 +215,12 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
   }
 
   legendClick(legendItem: ChartLegendLabelItem) {
-    const clickedLegend =  this.chartLegend[legendItem.index] ? this.chartLegend[legendItem.index].code : this.lablels[legendItem.index];
+    let clickedLegend =  this.chartLegend[legendItem.index] ? this.chartLegend[legendItem.index].code : this.lablels[legendItem.index];
     if(clickedLegend === undefined) {
       return false;
+    }
+    if(clickedLegend === this.pieWidget.value.blankValueAlias){
+      clickedLegend = '';
     }
     const fieldId = this.pieWidget.getValue().fieldId;
     let appliedFilters = this.filterCriteria.filter(fill => fill.fieldId === fieldId);

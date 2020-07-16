@@ -174,7 +174,7 @@ export class BarChartWidget {
     scaleTo: number;
     stepSize: number;
     dataSetSize: number;
-
+    blankValueAlias : string;
 
 
 }
@@ -200,6 +200,7 @@ export class StackBarChartWidget{
     scaleTo: number;
     stepSize: number;
     dataSetSize: number;
+    blankValueAlias : string;
 }
 
 export class PieChartWidget {
@@ -213,6 +214,7 @@ export class PieChartWidget {
     datalabelsPosition: AlignPosition;
     anchorPosition: AnchorAlignPosition;
     metaData: MetadataModel;
+    blankValueAlias : string;
 }
 
 export class Count{
@@ -348,6 +350,7 @@ export class ChartProperties {
     scaleTo: number;
     stepSize: number;
     dataSetSize: number;
+    blankValueAlias : string;
 }
 
 export class ReportDashboardPermission {

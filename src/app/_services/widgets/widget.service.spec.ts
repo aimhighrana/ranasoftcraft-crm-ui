@@ -38,7 +38,7 @@ describe('WidgetService', () => {
       expect(actualData).toEqual(mockhttpData);
     });
     // mocking http
-    const req = httpTestingController.expectOne(`${testurl}?widgetId=${widgetId}`);
+    const req = httpTestingController.expectOne(`${testurl}?widgetId=${widgetId}&searchString=`);
     expect(req.request.method).toEqual('POST');
     req.flush(mockhttpData);
     // verify http

@@ -130,7 +130,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       scaleFrom: [''],
       scaleTo:[''],
       stepSize:[''],
-      dataSetSize:['']
+      dataSetSize:[''],
+      blankValueAlias:['']
     });
 
     this.defaultFilterCtrlGrp = this.formBuilder.group({
@@ -262,7 +263,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           chartType:ChartType.BAR, orientation:Orientation.VERTICAL, isEnableDatalabels:false,
           datalabelsPosition:DatalabelsPosition.center, isEnableLegend:false, legendPosition:LegendPosition.top,
           xAxisLabel:'', yAxisLabel:'', orderWith: OrderWith.DESC, scaleFrom: null, scaleTo: null, stepSize: null,
-          dataSetSize: null
+          dataSetSize: null,blankValueAlias:null
         };
       }
       dropableWidget.defaultFilters = [];
@@ -321,7 +322,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         } else {
           this.chartPropCtrlGrp.setValue({ chartType:ChartType.BAR, orientation:Orientation.VERTICAL, isEnableDatalabels:false,
             datalabelsPosition:DatalabelsPosition.center, isEnableLegend:false, legendPosition:LegendPosition.top, xAxisLabel:'', yAxisLabel:'',
-            orderWith: OrderWith.DESC, scaleFrom:'',scaleTo:'', stepSize:'', dataSetSize:''
+            orderWith: OrderWith.DESC, scaleFrom:'',scaleTo:'', stepSize:'', dataSetSize:'',blankValueAlias:''
           });
         }
 

@@ -62,14 +62,14 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     this.getFilterMetadata();
     this.getHeaderMetaData();
     this.filterFormControl.valueChanges.subscribe(val=>{
-      if(val && val !== '' && typeof val === 'string') {
-        this.filteredOptions = of( this.values.filter(fill => fill.TEXT.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !==-1));
-      } else {
-        this.filteredOptions = of(this.values);
-        if(typeof val === 'string' && val.trim() === '' && !this.filterWidget.getValue().isMultiSelect){
-          this.removeSingleSelectedVal(false);
-        }
-      }
+      if(typeof val === 'string') {
+        this.loadAlldropData(this.filterWidget.value.fieldId, this.filterCriteria,val);
+      }else {
+      	   this.filteredOptions = of(this.values);
+     	   if(typeof val === 'string' && val.trim() === '' && !this.filterWidget.getValue().isMultiSelect){
+      	     this.removeSingleSelectedVal(false);
+      	   }
+      	 }
     });
     this.filterWidget.subscribe(widget=>{
       if(widget) {
@@ -141,8 +141,8 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     });
   }
 
-  private loadAlldropData(fieldId: string, criteria: Criteria[]):void{
-    this.widgetService.getWidgetData(String(this.widgetId), criteria).subscribe(returnData=>{
+  private loadAlldropData(fieldId: string, criteria: Criteria[],searchString?:string):void{
+    this.widgetService.getWidgetData(String(this.widgetId), criteria,searchString).subscribe(returnData=>{
       const buckets  = returnData.aggregations[`sterms#FILTER`]  ? returnData.aggregations[`sterms#FILTER`].buckets : [];
       if(this.filterWidget.getValue().metaData.picklist === '1' || this.filterWidget.getValue().metaData.picklist === '30' || this.filterWidget.getValue().metaData.picklist === '37') {
         const metadatas: DropDownValues[] = [];

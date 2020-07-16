@@ -154,6 +154,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     this.widgetService.getWidgetData(String(widgetId), critria).subscribe(returndata => {
       const arrayBuckets = returndata.aggregations['sterms#BAR_CHART'].buckets;
       this.dataSet = [];
+      this.lablels = [];
       this.dataSet = this.transformDataSets(arrayBuckets);
       // update barchartLabels
       if(this.barWidget.getValue().metaData && (this.barWidget.getValue().metaData.picklist === '1' || this.barWidget.getValue().metaData.picklist === '37' || this.barWidget.getValue().metaData.picklist === '30')) {
@@ -218,9 +219,12 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
       const option = this.chart.chart.getElementAtEvent(event) as any;
       const clickedIndex = (option[0])._index;
       const clickedLagend = this.chartLegend[clickedIndex];
-      const drpCode = this.chartLegend[clickedIndex] ? this.chartLegend[clickedIndex].code : this.lablels[clickedIndex];
+      let drpCode = this.chartLegend[clickedIndex] ? this.chartLegend[clickedIndex].code : this.lablels[clickedIndex];
       if(drpCode === undefined) {
         return false;
+      }
+      if(drpCode === this.barWidget.value.blankValueAlias){
+        drpCode = '';
       }
       const fieldId = this.barWidget.getValue().fieldId;
       let appliedFilters = this.filterCriteria.filter(fill => fill.fieldId === fieldId);
@@ -377,7 +381,8 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
       }
     } else {
       resBuckets.forEach(bucket => {
-        this.lablels.push(bucket.key);
+        const key = bucket.key === ''?this.barWidget.value.blankValueAlias!==undefined?this.barWidget.value.blankValueAlias:'':bucket.key;
+        this.lablels.push(key);
         finalDataSet.push(bucket.doc_count);
       });
     }

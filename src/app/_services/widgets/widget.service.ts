@@ -21,9 +21,10 @@ export class WidgetService {
    * Call this method for widget data
    * Provide widgetId , and filterCriteria
    */
-  public getWidgetData(widgetId: string, filterCriteria: Criteria[]): Observable<any> {
+  public getWidgetData(widgetId: string, filterCriteria: Criteria[],searchString?:string): Observable<any> {
+    searchString = searchString===undefined?'':searchString;
     filterCriteria = filterCriteria ? filterCriteria : [];
-    return this.http.post<any>(this.endpointService.widgetDataUrl(), filterCriteria, { params: { widgetId } });
+    return this.http.post<any>(this.endpointService.widgetDataUrl(), filterCriteria, { params: { widgetId,searchString  } });
   }
 
   public getListdata(size,from,widgetId: string, filterCriteria: Criteria[], sortMapStr: any):Observable<any>{
