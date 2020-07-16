@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.prospecta.mdo</groupId>
 	<artifactId>ngx-mdo</artifactId>
-	<version>0.0.5</version>
+	<version>0.0.6-SNAPSHOT</version>
 	<name>Admin page html js and css</name>
 	<description>Admin page html project</description>
 	<packaging>pom</packaging>
