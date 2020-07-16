@@ -262,6 +262,7 @@ export class ListPageComponent implements OnInit, OnDestroy {
         this.displaylist.push(list.fieldName);
       }
     }
+    this.displaylist.push('setting');
   }
 
   /**
@@ -309,8 +310,6 @@ export class ListPageComponent implements OnInit, OnDestroy {
     // to be done later
     return true;
   }
-
-
 
 }
 

@@ -1,12 +1,13 @@
 .filter-slider {
   padding: 0;
-  position: absolute;
-  z-index: 4;
-  width: 100%;
-  margin-top: 5px;
+  flex-flow: wrap;
+  display: flex;
+  margin: 8px;
 
   mat-card-content {
-    margin: 8px;
+    width: 100%;
+    padding: 8px 16px;
+    margin: 0;
 
     .mat-h4 {
       font-size: 14px;
@@ -27,9 +28,9 @@
 
       mat-form-field {
         border-width: 1px;
-        height: 50px;
         border-radius: 4px;
-        margin: 8px 16px 8px 0;
+        margin: 0 16px 8px 0;
+        height: 55px;
       }
 
       .custom-input {
@@ -48,13 +49,23 @@
     .f-col {
       flex: 1;
 
+      .nav-group-field {
+        margin: 8px 16px 0 16px;
+        height: 40px;
+      }
+
       .mat-line {
         margin: 8px 16px 0 16px;
+        font-weight: 600;
+      }
+
+      mat-form-field {
+        height: 40px;
       }
     }
 
     .nav-setting {
-      height: 170px;
+      max-height: 220px;
       overflow: auto;
       padding: 0;
 
@@ -65,13 +76,21 @@
     }
 
     .nav-checked {
-      height: 210px;
-      overflow: auto;
       padding: 8px 16px 0 16px;
       flex: 3;
 
-      mat-checkbox {
-        margin: 4px 0;
+      .checked-colunms {
+        max-height: 210px;
+        overflow: auto;
+        padding: 16px 0 0 16px;
+
+        mat-checkbox {
+          margin: 4px 0;
+        }
+      }
+
+      .load-link {
+        margin: 8px 0;
       }
     }
 
@@ -93,7 +112,7 @@
             text-overflow: ellipsis;
             white-space: pre-line;
             word-break: break-word;
-            width: 84%;
+            width: 88%;
           }
 
           mat-icon {
@@ -101,6 +120,7 @@
             height: 16px;
             width: 16px;
             margin-left: 4px;
+            cursor: pointer;
           }
         }
       }

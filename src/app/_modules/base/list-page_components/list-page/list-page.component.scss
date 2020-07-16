@@ -8,20 +8,14 @@
   .tasklist-container {
     width: 100%;
 
-    .Material-List {
-      height: 39px;
+    .heading-page {
       font-size: 32px;
-      font-weight: 900;
-      font-stretch: normal;
-      font-style: normal;
-      line-height: 1.81;
-      letter-spacing: 0.38px;
-      text-align: left;
-      color: #086fa1;
+      font-weight: 700;
+      margin: 16px 0 8px 0;
     }
 
     .search-action {
-      padding-top: 16px;
+      padding: 8px;
       align-items: center;
 
       mat-form-field {
@@ -30,9 +24,6 @@
       }
 
       .list-field {
-        display: block;
-        margin: 0 0 0 20px;
-
         mat-form-field {
           width: 136px;
         }
@@ -50,51 +41,45 @@
       }
     }
 
-    table {
+    pros-list-filters-dropdown {
+      position: absolute;
+      top: 60px;
       width: 100%;
-      background: #fcfcfd;
-      box-shadow: none;
+      z-index: 101;
+    }
 
-      .header-color {
-        color: #086fa1;
+    .list-table {
+      padding: 0 8px;
+      position: relative;
+      max-height: 768px;
+
+      .mat-table {
+        width: 100%;
+
+        th.mat-header-cell {
+          padding: 0 8px;
+          font-size: 14px;
+        }
+
+        td.mat-cell {
+          padding: 0 8px;
+        }
+
+        .highlighted {
+          font-weight: 500;
+        }
+
+        .ac-setting {
+          z-index: 3;
+        }
       }
     }
 
-    .btn-list {
-      font-size: 12px;
-      font-weight: 300;
-      line-height: 1.19;
-      letter-spacing: 0.96px;
-      text-align: left;
-      box-shadow: none;
-      padding: 10px 10px 10px 20px;
-    }
-
-    .list-thead.list-card {
-      margin: 0;
-      min-height: auto;
-
-      .ac-setting {
-        position: absolute;
-        right: 22px;
-        top: 68px;
-        z-index: 3;
-      }
-
-      pros-listcolumnsetting {
-        position: absolute;
-        z-index: 3;
-        right: 0;
-        top: 60px;
-      }
+    pros-listcolumnsetting {
+      position: absolute;
+      z-index: 101;
+      right: 4px;
+      top: 178px;
     }
   }
-}
-
-.example-container {
-  height: 400px;
-  overflow: auto;
-  z-index: 1;
-  position: relative;
-  box-shadow: none;
 }

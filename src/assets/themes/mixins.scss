@@ -329,6 +329,66 @@
       }
     }
   }
+
+  pros-list-page {
+    .tasklist-container {
+      .listing-actions {
+        .mat-button {
+          color: mat-color($foreground-palette, disabled-button);
+        }
+      }
+
+      .list-table {
+        .mat-header-row {
+          background-color: mat-color($background-palette, background);
+        }
+
+        .highlighted {
+          color: mat-color($primary-palette);
+        }
+      }
+    }
+  }
+
+  pros-listcolumnsetting {
+    .column-setting {
+      .nav-setting {
+        .mat-list-item {
+          .listing-icons {
+            color: mat-color($foreground-palette, secondary-text);
+          }
+        }
+
+        .active {
+          color: mat-color($primary-palette);
+        }
+      }
+    }
+  }
+
+  pros-list-filters-dropdown {
+    .filter-slider {
+      mat-card-content {
+        .fields-action {
+          mat-form-field {
+            border-color: mat-color($foreground-palette, divider);
+          }
+        }
+      }
+
+      .adv-filter-section {
+        .material-nav {
+          color: mat-color($primary-palette);
+        }
+
+        .nav-checked {
+          .load-link {
+            color: mat-color($primary-palette);
+          }
+        }
+      }
+    }
+  }
 }
 
 @mixin pros-cmp-typography($config) {
