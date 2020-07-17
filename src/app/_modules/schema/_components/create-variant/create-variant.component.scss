@@ -1,0 +1,40 @@
+.root {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  align-content: flex-start;
+
+  .creation-variant {
+    width: 100%;
+
+    mat-form-field {
+      width: 100%;
+    }
+
+    .variant-rows {
+      display: flex;
+
+      mat-form-field {
+        flex: 1;
+      }
+
+      .f-row {
+        flex: 2;
+
+        .matfield-colspan2 {
+          flex: 2;
+        }
+      }
+
+      .mat-icon-button {
+        margin-top: 8px;
+      }
+    }
+
+    mat-card-actions {
+      text-align: right;
+      margin: 0;
+    }
+  }
+}

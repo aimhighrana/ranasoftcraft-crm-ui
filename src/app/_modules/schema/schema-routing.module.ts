@@ -18,6 +18,7 @@ import { AdvanceoptionsDialogComponent } from './_components/advanceoptions-dial
 import { DuplicateDetailsComponent } from './_components/duplicate-details/duplicate-details.component';
 import { DiwCreateSchemaComponent } from '../admin/_components/module/schema/diw-create-schema/diw-create-schema.component';
 import { DiwCreateBusinessruleComponent } from '../admin/_components/module/schema/diw-create-businessrule/diw-create-businessrule.component';
+import { CreateVariantComponent } from './_components/create-variant/create-variant.component';
 
 
 const routes: Routes = [
@@ -40,6 +41,7 @@ const routes: Routes = [
   { path: 'duplicate-details', component: DuplicateDetailsComponent },
   { path: 'diw-create-schema', component: DiwCreateSchemaComponent },
   { path: 'diw-create-businessrule', component: DiwCreateBusinessruleComponent },
+  { path: 'create-variant', component: CreateVariantComponent },
 
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent }

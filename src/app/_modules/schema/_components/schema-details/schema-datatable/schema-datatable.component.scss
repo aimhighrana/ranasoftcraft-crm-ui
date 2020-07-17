@@ -70,6 +70,7 @@
           th.any-cell {
             border-top-width: 1px;
             border-top-style: solid;
+            left: 0 !important;
           }
 
           .any-cell {
@@ -77,6 +78,7 @@
             border-right-style: solid;
             padding-left: 8px;
             padding-right: 8px;
+            left: 0 !important;
 
             mat-form-field {
               height: 30px;

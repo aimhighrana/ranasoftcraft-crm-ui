@@ -26,6 +26,7 @@ import { DuplicateBusinessruleComponent } from './_components/duplicate-business
 import { AdvanceoptionsDialogComponent } from './_components/advanceoptions-dialog/advanceoptions-dialog.component';
 import { DuplicateDetailsComponent } from './_components/duplicate-details/duplicate-details.component';
 import { CollaboratorComponent } from './_components/collaborator/collaborator.component';
+import { CreateVariantComponent } from './_components/create-variant/create-variant.component';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ import { CollaboratorComponent } from './_components/collaborator/collaborator.c
     DuplicateBusinessruleComponent,
     AdvanceoptionsDialogComponent,
     DuplicateDetailsComponent,
-    CollaboratorComponent
+    CollaboratorComponent,
+    CreateVariantComponent
   ],
   imports: [
     CommonModule,
