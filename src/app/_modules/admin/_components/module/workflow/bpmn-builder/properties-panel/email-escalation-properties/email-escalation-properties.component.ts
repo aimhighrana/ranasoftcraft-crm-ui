@@ -121,6 +121,7 @@ export class EmailEscalationPropertiesComponent implements OnInit, OnChanges, On
   updateStepProperties() {
 
     const attributes = { ...this.emailForm.value,
+                         stepDesc : this.emailForm.value.name,
                          recipients: JSON.stringify(this.selectedRecipients)
                        };
 

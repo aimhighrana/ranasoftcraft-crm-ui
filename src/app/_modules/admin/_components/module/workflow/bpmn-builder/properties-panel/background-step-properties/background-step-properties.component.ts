@@ -67,7 +67,7 @@ export class BackgroundStepPropertiesComponent implements OnInit, OnChanges, OnD
    * emit an event in order to update the selected step properties
    */
   updateStepProperties() {
-    this.updateProperties.emit(this.backgroundForm.value);
+    this.updateProperties.emit({...this.backgroundForm.value, stepDesc : this.backgroundForm.value.name});
   }
 
   ngOnDestroy() {

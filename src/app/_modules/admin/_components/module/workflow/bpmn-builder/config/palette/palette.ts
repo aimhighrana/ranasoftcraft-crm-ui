@@ -53,12 +53,17 @@ export class CustomPalette {
     }
 
     return {
-
+      'create.start-event':
+        createAction('bpmn:IntermediateCatchEvent', 'event', 'bpmn-icon-intermediate-event-catch-link','add a start step',
+                    {eventDefinitionType:'bpmn:LinkEventDefinition'}),
+      /*
+        createAction('bpmn:IntermediateThrowEvent', 'event', 'bpmn-icon-intermediate-event-none','add', {eventDefinitionType:'bpmn:LinkEventDefinition'})
       'create.start-event':
         createAction('bpmn:Task', 'activity', 'bpmn-icon-task', 'Add a start step'),
+        */
 
       'create.user-task':
-        createAction('bpmn:UserTask', 'activity', 'bpmn-icon-user-task', 'Create an activity'),
+        createAction('bpmn:UserTask', 'activity', 'bpmn-icon-user-task', 'Create an activity step'),
 
       'create.exclusive-gateway':
         createAction('bpmn:ExclusiveGateway', 'activity', 'bpmn-icon-gateway-xor', 'Create a determination step'),
@@ -70,8 +75,7 @@ export class CustomPalette {
         createAction('bpmn:ServiceTask', 'activity', 'bpmn-icon-service-task', 'Create a background step'),
 
       'create.end-event':
-        createAction('bpmn:EndEvent', 'activity', 'bpmn-icon-end-event-none', 'Add an end step'),
-
+        createAction('bpmn:EndEvent', 'activity', 'bpmn-icon-end-event-none', 'Add an end step')
 
     }
   }

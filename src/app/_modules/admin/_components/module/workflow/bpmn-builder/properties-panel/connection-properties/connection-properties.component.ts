@@ -26,7 +26,8 @@ export class ConnectionPropertiesComponent implements OnInit, OnChanges {
   initForm(value?){
 
     this.connectionForm = this.fb.group({
-      name : [ value && value.name ? value.name : '']
+      name : [ value && value.name ? value.name : ''],
+      rejection : [value && value.rejection ? value.rejection : false]
     }) ;
 
     this.connectionForm.valueChanges
@@ -38,15 +39,14 @@ export class ConnectionPropertiesComponent implements OnInit, OnChanges {
     // console.log(changes.bpmnElement);
     const selectedBpmn = changes.bpmnElement;
     if (selectedBpmn && selectedBpmn.currentValue) {
-
-      // get connection name
-      const name = selectedBpmn.currentValue.businessObject.name ;
-      this.initForm({name}) ;
-
       if (Object.keys(selectedBpmn.currentValue.businessObject.$attrs).length === 0) {
         this.conditionsList = [] ;
+        this.initForm();
+        this.updateStepProperties();
       } else {
-        const attrs = selectedBpmn.currentValue.businessObject.$attrs;
+        const attrs = {...selectedBpmn.currentValue.businessObject.$attrs, name : selectedBpmn.currentValue.businessObject.name};
+        this.initForm(attrs) ;
+        console.log(attrs) ;
         // get the allready configured conditions
         this.conditionsList = JSON.parse(attrs.conditions) ;
       }
@@ -64,8 +64,11 @@ export class ConnectionPropertiesComponent implements OnInit, OnChanges {
 
       console.log(result) ;
 
-      if (result)
-        this.updateStepProperties({conditions : JSON.stringify(result.conditions)}) ;
+      if (result){
+        this.conditionsList = result.conditions ;
+        this.updateStepProperties();
+      }
+        // this.updateStepProperties({...this.connectionForm.value, conditions : JSON.stringify(result.conditions)}) ;
 
     });
   }
@@ -73,7 +76,7 @@ export class ConnectionPropertiesComponent implements OnInit, OnChanges {
   /**
    * emit an event in order to update the selected step properties
    */
-  updateStepProperties(attributes) {
-    this.updateProperties.emit(attributes);
+  updateStepProperties(attributes?) {
+    this.updateProperties.emit({...this.connectionForm.value, conditions : JSON.stringify(this.conditionsList)});
   }
 }

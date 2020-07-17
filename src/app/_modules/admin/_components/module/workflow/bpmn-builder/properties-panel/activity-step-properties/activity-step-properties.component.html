@@ -75,8 +75,7 @@
 
                 <mat-checkbox color="primary" formControlName="addDecisions">Add Decisions</mat-checkbox>
                 <div class="f-row-spacer-half"></div>
-
-                <ng-container *ngIf="activityFormGroup.value.addDecisions === true">
+                <ng-container *ngIf="activityFormGroup.value.addDecisions">
                     <h4> Workflow Field </h4>
                     <mat-selection-list class="recipients-list" (selectionChange)="fieldSelectionChange($event)">
                         <mat-list-option *ngFor="let field of workflowFields;" [value]="field.id"

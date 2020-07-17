@@ -80,7 +80,7 @@ export class ActivityStepPropertiesComponent implements OnInit, OnChanges, OnDes
       rejectionMessage: [''],
       rejectionEnhancementPoint: ['Select'],
       rejectionCriteria: ['off'],
-      rejectionToStep: [''],
+      rejectionToStep: [{value :'', disabled : true}],
       rejectionTerminate: [false],
       rejectionSendMe: [false],
       addDecisions: [false],
@@ -123,14 +123,19 @@ export class ActivityStepPropertiesComponent implements OnInit, OnChanges, OnDes
         this.connectionsList = selectedBpmn.currentValue.outgoing.map(out => {
           const connections = {
             id: out.target.businessObject.id,
-            name: out.target.businessObject.name
+            name: out.target.businessObject.name,
+            rejection : out.businessObject.$attrs.rejection || false
           }
           return connections;
         });
-        console.log(this.connectionsList);
+
         // reset the reject to step attribute if there is no outgoing connections
-        if (!this.connectionsList.length) {
+        if (!this.connectionsList.length || !this.connectionsList.some(con => con.rejection === true)) {
           attrs = { ...attrs, rejectionToStep: '' };
+        } else {
+          const rejectToStep = this.connectionsList.find(con => con.rejection === true).id ;
+          console.log('Rejection to ', rejectToStep)
+          attrs = { ...attrs, rejectionToStep: rejectToStep };
         }
         this.activityFormGroup.patchValue(attrs);
       }
@@ -183,7 +188,8 @@ export class ActivityStepPropertiesComponent implements OnInit, OnChanges, OnDes
    */
   updateStepProperties() {
 
-    const attributes = { ...this.activityFormGroup.value,
+    const attributes = { ...this.activityFormGroup.getRawValue(),
+                         stepDesc : this.activityFormGroup.value.name,
                          recipients: JSON.stringify(this.selectedRecipients),
                          workflowFields : JSON.stringify(this.selectedWorkflowFields)
                        };
