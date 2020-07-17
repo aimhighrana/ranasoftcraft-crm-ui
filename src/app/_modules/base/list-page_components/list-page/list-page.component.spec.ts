@@ -104,8 +104,9 @@ describe('ListPageComponent', () => {
   });
 
   it('updateColumns() should changw columns', () => {
-    component.updateColumns([]);
-    expect(component.tableColumns).toEqual([])
+    const tableColumns = [{visible:false}];
+    component.updateColumns(tableColumns);
+    expect(component.tableColumns.length).toEqual(1);
   });
 
   it('updateFilters() should return', () => {

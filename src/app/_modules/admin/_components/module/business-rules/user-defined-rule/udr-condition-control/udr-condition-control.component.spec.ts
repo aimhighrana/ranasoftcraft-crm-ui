@@ -7,6 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { UDRBlocksModel } from '../../business-rules.modal';
+import { MatChipInputEvent } from '@angular/material/chips';
 
 describe('UdrConditionControlComponent', () => {
   let component: UdrConditionControlComponent;
@@ -83,4 +84,16 @@ describe('UdrConditionControlComponent', () => {
     expect(component.selectedBlocks.length).toEqual(undefined);
 
   }));
+
+  it('add(), while search and enter then value should be reset ',()=>{
+    const event = {input:{value:''}} as MatChipInputEvent;
+    // call actual method
+    component.add(event);
+    expect(component.add).toBeTruthy();
+
+    const event1 = {value:''} as MatChipInputEvent;
+    // call actual method
+    component.add(event1);
+    expect(component.add).toBeTruthy();
+  });
 });

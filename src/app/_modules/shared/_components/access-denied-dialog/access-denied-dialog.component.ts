@@ -35,7 +35,7 @@ export class AccessDeniedDialogComponent implements OnInit {
    */
   open() {
     this.dialogRef = this.dialog.open(AccessDeniedDialogComponent, {
-      width: '300px',
+      width: '300px'
       // disableClose: true
     });
 

@@ -60,7 +60,7 @@
                 <div class="f-col-spacer-half"></div>
                 <button mat-flat-button color="primary" (click)="downloadExecutionDetails()">Download</button>
                 <div class="f-col-spacer-half"></div>
-                <button mat-icon-button [matMenuTriggerFor]="moremenu">
+                <button *ngIf= "submitReviewedBtn" mat-icon-button [matMenuTriggerFor]="moremenu">
                     <mat-icon>more_vert</mat-icon>
                 </button>
                 <mat-menu #moremenu="matMenu">

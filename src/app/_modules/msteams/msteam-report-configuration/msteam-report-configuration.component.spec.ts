@@ -75,11 +75,24 @@ describe('MsteamReportConfigurationComponent', () => {
     component.radioOptions = [{optionId: '1', optionName: 'Select url'}, {optionId: '2', optionName: 'Custom url'}];
     component.createTabUrl();
     expect(component.createTabUrl).toBeTruthy();
+
+    component.selectedOption = '2';
+    component.customUrl = 'Custom url';
+    component.createTabUrl();
+    expect(component.createTabUrl).toBeTruthy();
+
+    component.selectedOption = null;
+    component.createTabUrl();
+    expect(component.createTabUrl).toBeTruthy();
   }))
 
   it('getDisplayName(), should return display name for Microsoft Teams Tab', async(() => {
     component.reportListSelected = 'url test';
     component.reportList = [{reportId: '1', reportName: 'Test Name', reportUrl: 'url test'}];
+    component.getDisplayName();
+    expect(component.getDisplayName).toBeTruthy();
+
+    component.reportListSelected = 'mock url';
     component.getDisplayName();
     expect(component.getDisplayName).toBeTruthy();
   }))
@@ -90,10 +103,18 @@ describe('MsteamReportConfigurationComponent', () => {
     });
     component.reportListSelected = 'TEST';
     component.customUrl = 'some url';
-    component.radioChange('1')
+    component.radioChange('1');
     expect(component.selectedOption).toEqual('1');
 
-    component.radioChange('2')
+    component.radioChange('2');
+    expect(component.selectedOption).toEqual('2');
+
+    component.customUrl = null;
+    component.reportListSelected = null;
+    component.radioChange('1');
+    expect(component.selectedOption).toEqual('1');
+
+    component.radioChange('2');
     expect(component.selectedOption).toEqual('2');
   }))
 
@@ -106,6 +127,15 @@ describe('MsteamReportConfigurationComponent', () => {
     component.reportListSelected = 'some report';
     component.onSelectUrlChange();
     expect(component.onSelectUrlChange).toBeTruthy();
+
+    component.selectedOption = '1';
+    component.reportListSelected = null;
+    component.onSelectUrlChange();
+    expect(component.onSelectUrlChange).toBeTruthy();
+
+    component.selectedOption = '3';
+    component.onSelectUrlChange();
+    expect(component.onSelectUrlChange).toBeTruthy();
   }))
 
   it('onCustomUrlChange(), should set true for validity', async(() => {
@@ -115,6 +145,15 @@ describe('MsteamReportConfigurationComponent', () => {
     component.selectedOption = '2';
     component.customUrl = 'some url';
     component.radioOptions = [{optionId: '1', optionName: 'Select url'}, {optionId: '2', optionName: 'Custom url'}];
+    component.onCustomUrlChange();
+    expect(component.onCustomUrlChange).toBeTruthy();
+
+    component.selectedOption = '2';
+    component.customUrl = null;
+    component.onCustomUrlChange();
+    expect(component.onCustomUrlChange).toBeTruthy();
+
+    component.selectedOption = '3';
     component.onCustomUrlChange();
     expect(component.onCustomUrlChange).toBeTruthy();
   }))

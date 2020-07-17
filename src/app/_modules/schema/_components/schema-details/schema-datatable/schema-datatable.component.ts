@@ -213,7 +213,8 @@ export class SchemaDatatableComponent implements OnInit {
 
   public openStatusInfoDialog() {
     this.dialog.open(SchemaStatusinfoDialogComponent, {
-      width: '900px'
+      width: '900px',
+      autoFocus: false
     });
   }
 
@@ -561,7 +562,8 @@ export class SchemaDatatableComponent implements OnInit {
       height: '706px',
       width: '1100px',
       data:{object:this.objectId,schemaId:this.schemaId,runId:this.schemaDetails.runId},
-      disableClose: true
+      disableClose: true,
+      autoFocus: false
     });
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');

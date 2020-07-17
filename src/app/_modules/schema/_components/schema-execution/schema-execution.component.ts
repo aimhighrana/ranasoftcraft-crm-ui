@@ -68,6 +68,7 @@ export class SchemaExecutionComponent implements OnInit {
     const dialogRef = this.dialog.open(SchemaExecutionDialogComponent, {
       height: '400px',
       width: '550px',
+      autoFocus: false,
       data: {schemaId: this.schemaId}
     });
     dialogRef.afterClosed().subscribe(result => {

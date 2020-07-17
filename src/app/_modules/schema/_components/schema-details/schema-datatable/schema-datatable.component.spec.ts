@@ -53,11 +53,21 @@ describe('SchemaDatatableComponent', () => {
   }));
 
   it('applyGridField(), update table view for selected grid fields ', async(()=>{
-    expect(component.applyGridField('LANGUAGEGRID_01', true)).toEqual(undefined);
+    component.applyGridField('LANGUAGEGRID_01', true);
+    expect(component.selectedGridIds.length).toEqual(1);
+
+    component.applyGridField('LANGUAGEGRID_01', false);
+    expect(component.selectedGridIds.length).toEqual(0);
+
   }));
 
   it('applyHeirarchyField(), update table view for selected heirarchy fields', async(()=>{
-    expect(component.applyHeirarchyField('420', true)).toEqual(undefined);
+    component.applyHeirarchyField('420', true);
+    expect(component.selectedHierarchyIds.length).toEqual(1);
+
+    component.applyHeirarchyField('420', false);
+    expect(component.selectedHierarchyIds.length).toEqual(0);
+
   }));
 
   it('hierarchyTrackBy() , track by for hierarchy fields', async(()=>{
@@ -106,6 +116,7 @@ describe('SchemaDatatableComponent', () => {
 
     component.metaDataFieldList = {};
     expect(component.isEditable('TEST123',row)).toEqual(false);
+
   }));
 
   it('showErrorMessages(), show error message matTooltip', async(()=>{
@@ -138,7 +149,7 @@ describe('SchemaDatatableComponent', () => {
     expect(component.editCurrentCell('VALUE',1)).toEqual(undefined);
   }));
 
-  it('dynamicChipColor(), get dynamic chip color ', async(()=>{
+  it('`dynamicChipColor`(), get dynamic chip color ', async(()=>{
     let status = 'error';
     expect(component.dynamicChipColor(status)).toEqual('errorChip');
     status = 'success';
@@ -149,7 +160,8 @@ describe('SchemaDatatableComponent', () => {
     expect(component.dynamicChipColor(status)).toEqual('skippedChip');
     status = '';
     expect(component.dynamicChipColor(status)).toEqual('');
-
+    status = 'outdated';
+    expect(component.dynamicChipColor(status)).toEqual('outdatedChip');
   }));
 
   it('doPagination(), call while pagination ', async(()=>{
@@ -161,6 +173,8 @@ describe('SchemaDatatableComponent', () => {
 
   it('loadSchameDataByStatus(), load the schema data based on status index ', async(()=>{
     expect(component.loadSchameDataByStatus(0)).toEqual(undefined);
+    component.loadSchameDataByStatus(5);
+    expect(component.submitReviewedBtn).toEqual(false);
   }));
 
   it('isGroup(), check the group is enable or not', async(()=>{
@@ -190,6 +204,14 @@ describe('SchemaDatatableComponent', () => {
     component.schemaDetails.correctionValue = 1;
     const correctedCount =  component.matChipCountLabel(4);
     expect(1).toEqual(correctedCount);
+
+    component.schemaDetails.skippedValue = 1;
+    const skippedCount =  component.matChipCountLabel(3);
+    expect(1).toEqual(skippedCount);
+
+    component.schemaDetails.duplicateValue = 1;
+    const duplicateCount =  component.matChipCountLabel(5);
+    expect(1).toEqual(duplicateCount);
   }));
 
 

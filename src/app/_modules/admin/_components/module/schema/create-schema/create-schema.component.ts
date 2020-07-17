@@ -472,6 +472,7 @@ export class CreateSchemaComponent implements OnInit {
         height: '706px',
         width: '1100px',
         disableClose: true,
+        autoFocus: false,
         data:{
           moduleId: this.moduleId,
           schemaId: this.schemaId,
