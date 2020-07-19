@@ -27,7 +27,7 @@ export class ConnectionPropertiesComponent implements OnInit, OnChanges {
 
     this.connectionForm = this.fb.group({
       name : [ value && value.name ? value.name : ''],
-      rejection : [value && value.rejection ? value.rejection : false]
+      // rejection : [value && value.rejection ? value.rejection : false]
     }) ;
 
     this.connectionForm.valueChanges

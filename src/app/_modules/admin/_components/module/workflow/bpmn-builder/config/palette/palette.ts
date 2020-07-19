@@ -1,7 +1,7 @@
 
 
 export class CustomPalette {
-  constructor(private bpmnFactory: any, private create: any, private elementFactory: any, private palette: any, private translate) {
+  constructor(private bpmnFactory: any, private create: any, private elementFactory: any, private palette: any, private translate, private globalConnect, private modeling, private canvas) {
     palette.registerProvider(this);
   }
 
@@ -10,6 +10,8 @@ export class CustomPalette {
       // bpmnFactory,
       create,
       elementFactory,
+      globalConnect,
+      modeling
       // palette
       // translate
     } = this;
@@ -75,7 +77,32 @@ export class CustomPalette {
         createAction('bpmn:ServiceTask', 'activity', 'bpmn-icon-service-task', 'Create a background step'),
 
       'create.end-event':
-        createAction('bpmn:EndEvent', 'activity', 'bpmn-icon-end-event-none', 'Add an end step')
+        createAction('bpmn:EndEvent', 'activity', 'bpmn-icon-end-event-none', 'Add an end step'),
+
+      'forward-connection': {
+          group: 'tools',
+          className: 'bpmn-icon-connection',
+          title: 'Add a forward connection',
+          action: {
+            click(event) {
+              globalConnect.toggle(event);
+            }
+          }
+        },
+
+      'rejection-connection': {
+          group: 'tools',
+          className: 'bpmn-icon-connection-back',
+          title: 'Add a rejection connection',
+          action: {
+            click(event) {
+              // console.log(canvas)
+              modeling.isRejection = true ;
+              // console.log(modeling);
+              globalConnect.toggle(event);
+            }
+          }
+        }
 
     }
   }
@@ -85,5 +112,8 @@ CustomPalette[inject] = [ 'bpmnFactory',
   'create',
   'elementFactory',
   'palette',
-  'translate'
+  'translate',
+  'globalConnect',
+  'modeling',
+  'canvas'
 ];

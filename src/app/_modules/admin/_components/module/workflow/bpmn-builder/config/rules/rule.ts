@@ -56,4 +56,15 @@ CustomRules.prototype.init = function () {
 
   });
 
+  // don't allow element reconnection
+  this.addRule('connection.reconnect', 1100, (context) => {
+    return false ;
+    /* console.log('connection reconnect', context)
+    const connection = context.connection ;
+    if(connection.businessObject.$attrs.rejection){
+      return false;
+    }
+    */
+   });
+
 };
