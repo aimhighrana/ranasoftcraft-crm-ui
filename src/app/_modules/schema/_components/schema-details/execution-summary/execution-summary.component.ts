@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { SchemalistService } from 'src/app/_services/home/schema/schemalist.service';
 import { SchemaExecutionSummary } from 'src/app/_models/schema/schemadetailstable';
 import { SchemaService } from '@services/home/schema.service';
@@ -10,7 +10,7 @@ import { SchemaStaticThresholdRes } from '@models/schema/schemalist';
   templateUrl: './execution-summary.component.html',
   styleUrls: ['./execution-summary.component.scss']
 })
-export class ExecutionSummaryComponent implements OnInit, OnDestroy {
+export class ExecutionSummaryComponent implements OnInit, OnDestroy, OnChanges {
 
   @Input()
   schemaId: string;
@@ -20,7 +20,8 @@ export class ExecutionSummaryComponent implements OnInit, OnDestroy {
 
   summary: SchemaExecutionSummary;
 
-  thresholdRes: SchemaStaticThresholdRes = new SchemaStaticThresholdRes();
+  @Input()
+  thresholdRes: SchemaStaticThresholdRes;
 
   /**
    * All subsriptions are here
@@ -34,6 +35,21 @@ export class ExecutionSummaryComponent implements OnInit, OnDestroy {
     this.summary = new SchemaExecutionSummary();
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if(changes && changes.thresholdRes && changes.thresholdRes.currentValue !== changes.thresholdRes.previousValue) {
+      this.thresholdRes = changes.thresholdRes.currentValue;
+      this.thresholdRes.threshold = Math.round((this.thresholdRes.threshold + Number.EPSILON) * 100) / 100;
+
+      const totalErr = (this.thresholdRes.totalCnt > 0 ? this.thresholdRes.errorCnt / this.thresholdRes.totalCnt : 0);
+      this.summary.totalErrorPer = Math.round((totalErr + Number.EPSILON) * 100 * 100) / 100;
+
+      const totalSuccess = (this.thresholdRes.totalCnt > 0 ? this.thresholdRes.successCnt / this.thresholdRes.totalCnt : 0);
+      this.summary.totalSuccessPer = Math.round((totalSuccess + Number.EPSILON) * 100 * 100) / 100;
+
+      this.summary.total = this.thresholdRes.totalCnt ? this.thresholdRes.totalCnt : this.summary.total;
+    }
+  }
+
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub=>{
@@ -43,39 +59,14 @@ export class ExecutionSummaryComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     const schemaDetailsSub = this.schemaListService.getSchemaDetailsBySchemaId(this.schemaId).subscribe(res=>{
-        const summary: SchemaExecutionSummary  = new SchemaExecutionSummary();
-        const totalErr = (res.totalCount > 0 ? res.errorCount / res.totalCount : 0);
-        summary.totalErrorPer = Math.round((totalErr + Number.EPSILON) * 100 * 100) / 100;
-
-        const totalSuccess = (res.totalCount > 0 ? res.successCount / res.totalCount : 0);
-        summary.totalSuccessPer = Math.round((totalSuccess + Number.EPSILON) * 100 * 100) / 100;
-
-        summary.total = res.totalCount;
-        summary.runBy = res.createdBy;
-        summary.startTime = res.executionStartTime;
-        summary.isInRunning = res.isInRunning;
-        summary.exeEndDate = res.executionEndTime;
-        summary.completeProgress = res.isInRunning ? 0 : 100;
-        this.summary = summary;
+        this.summary.runBy = res.createdBy;
+        this.summary.startTime = res.executionStartTime;
+        this.summary.isInRunning = res.isInRunning;
+        this.summary.exeEndDate = res.executionEndTime;
+        this.summary.completeProgress = res.isInRunning ? 0 : 100;
     },error=> console.error(`Error: ${error.message}`));
     this.subscriptions.push(schemaDetailsSub);
 
-    this.getSchemaThresholdStatics();
-  }
-
-  /**
-   * Get schema threshold statics
-   * Based on schemaId & variantId
-   */
-  getSchemaThresholdStatics() {
-    const staticSub = this.schemaService.getSchemaThresholdStatics(this.schemaId, this.variantId).subscribe(res=>{
-      this.thresholdRes = res;
-      this.thresholdRes.threshold = Math.round((res.threshold + Number.EPSILON) * 100) / 100;
-    }, error=>{
-      this.thresholdRes.threshold = 0;
-      console.error(`Execption : ${error.message}`);
-    });
-    this.subscriptions.push(staticSub);
   }
 
 }

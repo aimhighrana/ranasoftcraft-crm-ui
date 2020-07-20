@@ -157,6 +157,9 @@ export class SchemaTileComponent implements OnInit, OnDestroy {
     const staticSub = this.schemaService.getSchemaThresholdStatics(this.schemaId, this.variantId).subscribe(res=>{
       this.thresholdRes = res;
       this.thresholdRes.threshold = Math.round((res.threshold + Number.EPSILON) * 100) / 100;
+      this.totalCount = res.totalCnt;
+      this.errorValue = res.errorCnt;
+      this.successValue = res.successCnt;
     }, error=>{
       this.thresholdRes.threshold = 0;
       console.error(`Execption : ${error.message}`);

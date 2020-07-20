@@ -44,7 +44,7 @@
     <mat-divider vertical="true"></mat-divider>
     <div class="right f-col">
       <h4 class="mat-h4">Category Data Summary</h4>
-      <h1 class="count">{{schemaDetails.totalCount}}</h1>
+      <h1 class="count">{{thresholdRes ? thresholdRes.totalCnt : 0}}</h1>
       <small class="mat-caption">Error</small>
       <div class="f-row" *ngFor="let br of categoryChartDataDetails.dataSet">
         <em class="box-blk" [style.background-color]="br.pointBackgroundColor"></em>

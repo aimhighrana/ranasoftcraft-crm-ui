@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Input, NgZone } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, NgZone, OnChanges, SimpleChanges } from '@angular/core';
 import { SchemaTableData, ResponseFieldList, RequestForSchemaDetailsWithBr, MetadataModeleResponse, Heirarchy, SchemaBrInfo, FieldExitsResponse, SchemaCorrectionReq } from 'src/app/_models/schema/schemadetailstable';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
@@ -8,7 +8,7 @@ import { PageEvent, MatPaginatorIntl } from '@angular/material/paginator';
 import { SelectionModel } from '@angular/cdk/collections';
 import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-details.service';
 import { SchemaStatusinfoDialogComponent } from 'src/app/_modules/schema/_components/schema-details/schema-statusinfo-dialog/schema-statusinfo-dialog.component';
-import { SchemaListDetails } from 'src/app/_models/schema/schemalist';
+import { SchemaListDetails, SchemaStaticThresholdRes } from 'src/app/_models/schema/schemalist';
 import { SchemalistService } from 'src/app/_services/home/schema/schemalist.service';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { SchemaDataSource } from './schema-data-source';
@@ -24,7 +24,7 @@ import { UploadDataComponent } from '../../upload-data/upload-data.component';
   templateUrl: './schema-datatable.component.html',
   styleUrls: ['./schema-datatable.component.scss']
 })
-export class SchemaDatatableComponent implements OnInit {
+export class SchemaDatatableComponent implements OnInit, OnChanges {
 
   tabs = ['All', 'Error', 'Success', 'Skipped', 'Corrections', 'Duplicate'];
   matMenu: any[] = ['Show Details', 'Delete', 'Edit'];
@@ -36,14 +36,6 @@ export class SchemaDatatableComponent implements OnInit {
   schemaId: string;
   @Input()
   variantId: string;
-  @Input()
-  totalRecord: number;
-  @Input()
-  successCount: number;
-  @Input()
-  errorCount: number;
-  @Input()
-  dynamicRecordCount: number;
 
 
   schemaDetails: SchemaListDetails;
@@ -71,6 +63,10 @@ export class SchemaDatatableComponent implements OnInit {
   collaboratorPermission = false;
   collaboratorEditor = false;
   selectedFieldsOb: BehaviorSubject<string[]> = new BehaviorSubject([]);
+
+  @Input()
+  thresholdRes: SchemaStaticThresholdRes;
+
   constructor(
     private schemaDetailsService: SchemaDetailsService,
     private dialog: MatDialog,
@@ -85,6 +81,12 @@ export class SchemaDatatableComponent implements OnInit {
   ) {
 
   }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if(changes.thresholdRes && changes.thresholdRes.previousValue !== changes.thresholdRes.currentValue) {
+      this.thresholdRes = changes.thresholdRes.currentValue;
+    }
+  }
   ngOnInit() {
     this.sharedServices.getChooseColumnData().subscribe(result=> {
       if(result){
@@ -98,7 +100,6 @@ export class SchemaDatatableComponent implements OnInit {
     this.getSchemaBrInfoList();
     this.getSchemaDetails(this.schemaId);
     this.dataTableDataSource = new SchemaDataSource(this.schemaDetailsService, this.any2TsService);
-    this.dataTableRequest(0, 40, DataTableReqType.error);
 
     this.allMetaDataFields.subscribe((allMDF) => {
       this.makeMetadataControle();
@@ -188,7 +189,7 @@ export class SchemaDatatableComponent implements OnInit {
 
   isAllSelected() {
     const numSelected = this.selection.selected.length;
-    const numRows = this.totalRecord;
+    const numRows = this.thresholdRes ? this.thresholdRes.totalCnt : 0;
     return numSelected === numRows;
   }
   masterToggle() {
@@ -221,6 +222,10 @@ export class SchemaDatatableComponent implements OnInit {
   private getSchemaDetails(schemaId: string) {
     this.schemaListService.getSchemaDetailsBySchemaId(schemaId).subscribe(data => {
       this.schemaDetails = data;
+
+      // get datatable data
+      this.dataTableRequest(0, 40, DataTableReqType.error, Number(data.schemaThreshold));
+
       if(data.collaboratorModels) {
         if(data.collaboratorModels.isReviewer) {
           this.collaboratorPermission = false;
@@ -241,7 +246,7 @@ export class SchemaDatatableComponent implements OnInit {
     });
   }
 
-  public dataTableRequest(fetchCount: number, fetchSize: number, requestType: string) {
+  public dataTableRequest(fetchCount: number, fetchSize: number, requestType: string, schemaThreshold: number) {
     const sendRequest: RequestForSchemaDetailsWithBr = new RequestForSchemaDetailsWithBr();
     sendRequest.schemaId = this.schemaId;
     sendRequest.variantId = this.variantId;
@@ -250,6 +255,10 @@ export class SchemaDatatableComponent implements OnInit {
     sendRequest.fetchSize = fetchSize ? fetchSize : 40;
     sendRequest.gridId = this.selectedGridIds ? this.selectedGridIds : [];
     sendRequest.hierarchy = this.selectedHierarchyIds ? this.selectedHierarchyIds : [];
+    sendRequest.schemaThreshold = schemaThreshold ? schemaThreshold : 0;
+
+    // send while doing pagination
+    sendRequest.afterKey = this.dataTableDataSource.afterKey;
     this.dataTableDataSource.getTableData(sendRequest);
   }
 
@@ -262,7 +271,8 @@ export class SchemaDatatableComponent implements OnInit {
     } else {
       this.submitReviewedBtn = false;
     }
-    this.dataTableRequest(0, 40, this.tabs[index]);
+    this.dataTableDataSource.afterKeySet(null);
+    this.dataTableRequest(0, 40, this.tabs[index], Number(this.schemaDetails.schemaThreshold));
   }
 
   private getMetadataFields() {
@@ -275,7 +285,7 @@ export class SchemaDatatableComponent implements OnInit {
 
 
   public doPagination(pageEvent: PageEvent) {
-    this.dataTableRequest(pageEvent.pageIndex, pageEvent.pageSize, this.tabs[this.selectedTabIndex]);
+    this.dataTableRequest(pageEvent.pageIndex, pageEvent.pageSize, this.tabs[this.selectedTabIndex], Number(this.schemaDetails.schemaThreshold));
   }
 
 
@@ -288,13 +298,13 @@ export class SchemaDatatableComponent implements OnInit {
     let dynCount = 0;
     switch (label) {
       case 'error':
-        dynCount = this.schemaDetails.errorCount ? this.schemaDetails.errorCount : 0;
+        dynCount = this.thresholdRes ? this.thresholdRes.errorCnt : this.schemaDetails.errorCount;
         break;
       case 'success':
-        dynCount = this.schemaDetails.successCount ? this.schemaDetails.successCount : 0;
+        dynCount = this.thresholdRes ? this.thresholdRes.successCnt : this.schemaDetails.successCount;
         break;
       case 'all':
-        dynCount = this.schemaDetails.totalCount ? this.schemaDetails.totalCount : 0;
+        dynCount = this.thresholdRes ? this.thresholdRes.totalCnt : this.schemaDetails.totalCount;
         break;
 
       case 'skipped':
@@ -322,7 +332,8 @@ export class SchemaDatatableComponent implements OnInit {
       this.selectedGridIds.push(gridId);
     }
     this.calculateDisplayFields();
-    this.dataTableRequest(0, 40, this.tabs[this.selectedTabIndex]);
+    this.dataTableDataSource.afterKeySet(null);
+    this.dataTableRequest(0, 40, this.tabs[this.selectedTabIndex], Number(this.schemaDetails.schemaThreshold));
   }
 
   public applyHeirarchyField(hId: string, add: boolean) {
@@ -332,7 +343,8 @@ export class SchemaDatatableComponent implements OnInit {
       this.selectedHierarchyIds.push(hId);
     }
     this.calculateDisplayFields();
-    this.dataTableRequest(0, 40, this.tabs[this.selectedTabIndex]);
+    this.dataTableDataSource.afterKeySet(null);
+    this.dataTableRequest(0, 40, this.tabs[this.selectedTabIndex], Number(this.schemaDetails.schemaThreshold));
   }
 
   hierarchyTrackBy(hierarchy: Heirarchy): string {
@@ -542,7 +554,7 @@ export class SchemaDatatableComponent implements OnInit {
       console.log(res);
       if(res.acknowledge) {
         this.snackBar.open(`Successfully submitted !`, 'Close',{duration:2000});
-        this.dataTableRequest(0, 40, 'Corrections');
+        this.dataTableRequest(0, 40, 'Corrections', Number(this.schemaDetails.schemaThreshold));
       }
     }, error=>{
       this.snackBar.open(`${error.statusText}: Please review atleast one record(s)`, 'Close',{duration:2000});

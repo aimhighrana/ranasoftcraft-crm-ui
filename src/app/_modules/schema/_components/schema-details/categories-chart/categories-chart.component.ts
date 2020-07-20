@@ -1,10 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
 import { Label } from 'ng2-charts';
 import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-details.service';
 import * as moment from 'moment';
 import { CategoryInfo, CategoryChartDataSet } from 'src/app/_models/schema/schemadetailstable';
-import { SchemaListDetails } from 'src/app/_models/schema/schemalist';
+import { SchemaListDetails, SchemaStaticThresholdRes } from 'src/app/_models/schema/schemalist';
 import { SchemalistService } from 'src/app/_services/home/schema/schemalist.service';
 
 @Component({
@@ -12,7 +12,7 @@ import { SchemalistService } from 'src/app/_services/home/schema/schemalist.serv
   templateUrl: './categories-chart.component.html',
   styleUrls: ['./categories-chart.component.scss']
 })
-export class CategoriesChartComponent implements OnInit {
+export class CategoriesChartComponent implements OnInit, OnChanges {
 
   @Input()
   schemaId: string;
@@ -24,6 +24,10 @@ export class CategoriesChartComponent implements OnInit {
   schemaStatus: string;
   @Input()
   variantId: string;
+
+  @Input()
+  thresholdRes: SchemaStaticThresholdRes;
+
 
   selectedCategoryId: string;
   selectedStatus: string;
@@ -88,8 +92,13 @@ export class CategoriesChartComponent implements OnInit {
     this.categoryChartDataDetails = new CategoryChartDataSet();
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if(changes.thresholdRes && changes.thresholdRes.previousValue !== changes.thresholdRes.currentValue) {
+      this.thresholdRes = changes.thresholdRes.currentValue;
+    }
+  }
+
   ngOnInit() {
-    this.getSchemaDetails();
     this.categoryInfoList();
     this.getSchemaStatus();
   }
@@ -112,12 +121,6 @@ export class CategoriesChartComponent implements OnInit {
     return array;
   }
 
-  private getSchemaDetails() {
-    this.schemaListService.getSchemaDetailsBySchemaId(this.schemaId).subscribe(data => {
-      this.schemaDetails = data;
-      this.getCategoryChartData(this.schemaId, data.variantId, this.categoryId, this.schemaStatus);
-    });
-  }
   private categoryInfoList() {
     this.schemaDetailsService.getAllCategoryInfo().subscribe(data => {
       this.categoryInfoLst = data;
@@ -136,7 +139,7 @@ export class CategoriesChartComponent implements OnInit {
 
   public changeCategoryChart() {
     if (this.selectedCategoryId && this.selectedStatus) {
-      this.getCategoryChartData(this.schemaId, this.schemaDetails.variantId, this.selectedCategoryId, this.selectedStatus);
+      this.getCategoryChartData(this.schemaId, this.variantId, this.selectedCategoryId, this.selectedStatus);
     }
   }
 }

@@ -13,6 +13,17 @@ export class SchemaDataSource implements DataSource<SchemaTableData> {
 
     private correctedDataSubject = new BehaviorSubject<any[]>([]);
 
+    private afterKeyPage = new BehaviorSubject<any>(null);
+
+
+    public get afterKey(): any {
+        return this.afterKeyPage.value;
+    }
+
+    public afterKeySet(data:any) {
+        this.afterKeyPage.next(data);
+    }
+
     constructor(
         private schemaDetailService: SchemaDetailsService,
         private any2TsService: Any2tsService
@@ -42,12 +53,16 @@ export class SchemaDataSource implements DataSource<SchemaTableData> {
         } else {
             this.schemaDetailService.getSchemaTableDetailsByBrId(request).subscribe(
                 response => {
-                    this.mdoRecordResponseSub.next(response);
-                    const dataTableRes: DataTableSourceResponse = this.any2TsService.any2SchemaTableData(this.any2TsService.any2DataTable(response, request), request);
-                    if(request.gridId.length<=0 && request.hierarchy.length<=0) {
-                        this.dataSourceSubject.next(dataTableRes.data);
-                    } else {
-                        this.dataSourceSubject.next(this.convertDataToGroupBy(dataTableRes.data))
+                    if(response && response.docs) {
+                        this.afterKeyPage.next(response.afterKey);
+                        response = response.docs;
+                        this.mdoRecordResponseSub.next(response);
+                        const dataTableRes: DataTableSourceResponse = this.any2TsService.any2SchemaTableData(this.any2TsService.any2DataTable(response, request), request);
+                        if(request.gridId.length<=0 && request.hierarchy.length<=0) {
+                            this.dataSourceSubject.next(dataTableRes.data);
+                        } else {
+                            this.dataSourceSubject.next(this.convertDataToGroupBy(dataTableRes.data))
+                        }
                     }
                 }
             , error => {

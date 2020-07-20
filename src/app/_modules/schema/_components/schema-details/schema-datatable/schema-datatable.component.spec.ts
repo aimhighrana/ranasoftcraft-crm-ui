@@ -5,6 +5,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FieldExitsResponse, MetadataModeleResponse, Heirarchy, SchemaBrInfo, MetadataModel } from 'src/app/_models/schema/schemadetailstable';
 import { PageEvent } from '@angular/material/paginator';
 import { RouterTestingModule } from '@angular/router/testing';
+import { SimpleChanges } from '@angular/core';
+import { SchemaStaticThresholdRes } from '@models/schema/schemalist';
 
 describe('SchemaDatatableComponent', () => {
   let component: SchemaDatatableComponent;
@@ -212,6 +214,21 @@ describe('SchemaDatatableComponent', () => {
     component.schemaDetails.duplicateValue = 1;
     const duplicateCount =  component.matChipCountLabel(5);
     expect(1).toEqual(duplicateCount);
+  }));
+
+  it('ngOnChanges(), detect value change while loaded data ', async(()=>{
+    const changes: SimpleChanges = {thresholdRes:{
+      currentValue: {errorCnt:9,totalCnt:10,successCnt:1} as SchemaStaticThresholdRes,
+      firstChange: null,
+      isFirstChange: null,
+      previousValue:undefined
+    }};
+
+    component.ngOnChanges(changes);
+
+    expect(component.thresholdRes.successCnt).toEqual(1);
+    expect(component.thresholdRes.errorCnt).toEqual(9);
+    expect(component.thresholdRes.totalCnt).toEqual(10);
   }));
 
 

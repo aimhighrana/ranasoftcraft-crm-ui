@@ -23,31 +23,31 @@
     <mat-divider vertical="true"></mat-divider>
     <div class="right f-col">
       <h4 class="mat-h4">Latest Execution Summary</h4>
-      <h1 class="count">{{schemaDetails.totalCount}}</h1>
+      <h1 class="count">{{thresholdRes ? thresholdRes.totalCnt : 0}}</h1>
       <small class="mat-caption">Total</small>
       <div class="f-row">
         <em class="box-blk error-clr"></em>
         <h4 class="mat-caption">Error</h4>
         <div class="f-spacer"></div>
-        <h2 class="mat-caption">{{schemaDetails.errorCount}}</h2>
+        <h2 class="mat-caption">{{ thresholdRes ? thresholdRes.errorCnt : 0 }}</h2>
       </div>
       <div class="f-row">
         <em class="box-blk success-clr"></em>
         <h4 class="mat-caption">Success</h4>
         <div class="f-spacer"></div>
-        <h2 class="mat-caption">{{schemaDetails.successCount}}</h2>
+        <h2 class="mat-caption">{{ thresholdRes ? thresholdRes.successCnt :0 }}</h2>
       </div>
       <div class="f-row">
         <em class="box-blk skipped-clr"></em>
         <h4 class="mat-caption">Skipped</h4>
         <div class="f-spacer"></div>
-        <h2 class="mat-caption">{{schemaDetails.skippedValue}}</h2>
+        <h2 class="mat-caption">0</h2>
       </div>
       <div class="f-row">
         <em class="box-blk duplicate-clr"></em>
         <h4 class="mat-caption">Duplicate</h4>
         <div class="f-spacer"></div>
-        <h2 class="mat-caption">{{schemaDetails.duplicateValue}}</h2>
+        <h2 class="mat-caption">0</h2>
       </div>
     </div>
   </div>

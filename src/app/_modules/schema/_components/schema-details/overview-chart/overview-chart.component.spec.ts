@@ -5,19 +5,21 @@ import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { SchemalistService } from 'src/app/_services/home/schema/schemalist.service';
 import { of } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
-import { SchemaListDetails } from 'src/app/_models/schema/schemalist';
+import { SchemaStaticThresholdRes } from 'src/app/_models/schema/schemalist';
+import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
+import { SimpleChanges } from '@angular/core';
 
 
 describe('OverviewChartComponent', () => {
   let component: OverviewChartComponent;
   let fixture: ComponentFixture<OverviewChartComponent>;
-  let schemaListServiceSpy: SchemalistService;
+  let schemaDetailsService: SchemaDetailsService
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports:[AppMaterialModuleForSpec, RouterTestingModule, HttpClientModule],
       declarations: [ OverviewChartComponent ],
-      providers: [ SchemalistService ]
+      providers: [ SchemalistService, SchemaDetailsService ]
     }).compileComponents();
 
   }));
@@ -25,7 +27,7 @@ describe('OverviewChartComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(OverviewChartComponent);
     component = fixture.componentInstance;
-    schemaListServiceSpy = fixture.debugElement.injector.get(SchemalistService);
+    schemaDetailsService = fixture.debugElement.injector.get(SchemaDetailsService);
   });
 
   it('should create', () => {
@@ -35,8 +37,23 @@ describe('OverviewChartComponent', () => {
   it('ngoninit(), should call ngoninit', async(() => {
     expect(component.ngOnInit).toBeTruthy();
     component.schemaId = '3264622345732';
-    spyOn(schemaListServiceSpy,'getSchemaDetailsBySchemaId').withArgs(component.schemaId).and.returnValue(of(new SchemaListDetails()));
+    spyOn(schemaDetailsService,'getOverviewChartDetails').withArgs(component.schemaId, component.variantId,undefined).and.returnValue(of({} as any));
     component.ngOnInit();
-    expect(schemaListServiceSpy.getSchemaDetailsBySchemaId).toHaveBeenCalledWith(component.schemaId);
+    expect(schemaDetailsService.getOverviewChartDetails).toHaveBeenCalledWith(component.schemaId, component.variantId,undefined);
+  }));
+
+  it('ngOnChanges(), detect value change while loaded data ', async(()=>{
+    const changes: SimpleChanges = {thresholdRes:{
+      currentValue: {errorCnt:9,totalCnt:10,successCnt:1} as SchemaStaticThresholdRes,
+      firstChange: null,
+      isFirstChange: null,
+      previousValue:undefined
+    }};
+
+    component.ngOnChanges(changes);
+
+    expect(component.thresholdRes.successCnt).toEqual(1);
+    expect(component.thresholdRes.errorCnt).toEqual(9);
+    expect(component.thresholdRes.totalCnt).toEqual(10);
   }));
 });

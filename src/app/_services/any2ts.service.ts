@@ -415,56 +415,86 @@ export class Any2tsService {
     if (response) {
       response.forEach(data => {
 
-        // get  objectNumber &  doc count
-        const objNum = data.key;
-        const docCount = data.docCount;
+        // get  objectNumber , headers , grids and hierary
+        const objNum = data.id;
+        const gvs = data.gvs;
+        const hdvs = data.hdvs;
+        const hyvs = data.hyvs;
+        const _score = data._score ? data._score : data._score;
+        const isOutdated = data._outdated && data._outdated === 'true'? true: false;
 
         // get hits
-        const status = new Set<string>();
-        let _score = 0;
-        Object.keys(data.hits).forEach(index => {
-          if (index.indexOf('_do_br_err_') >= 0) {
-            status.add('Error');
-            _score += data.hits[index]._score;
-          } else if (index.indexOf('_do_br_scs_') >= 0) {
-            status.add('Success');
-            _score += data.hits[index]._score;
-          } else if (index.indexOf('_do_br_skp_') >= 0) {
-            status.add('Skipped');
-            _score += data.hits[index]._score;
-          } else if (index.indexOf('_do_br_cor_') >= 0) {
-            status.add('Correction');
-            _score += data.hits[index]._score;
-          }
-        });
+        // let status = new Set<string>();
+        // Object.keys(data.hits).forEach(index => {
+        //   if(request.requestStatus && request.requestStatus.toLocaleLowerCase() === 'success') {
+        //     status.add('Success');
+        //   } else if (request.requestStatus && request.requestStatus.toLocaleLowerCase() === 'error') {
+        //     status.add('Error');
+        //   } else {
+        //     // if (index.indexOf('_do_br_err_') >= 0) {
+        //     //   _score += data.hits[index]._score;
+        //     // } else if (index.indexOf('_do_br_scs_') >= 0) {
+        //     //   _score += data.hits[index]._score;
+        //     // } else if (index.indexOf('_do_br_skp_') >= 0) {
+        //     //   _score += data.hits[index]._score;
+        //     // } else if (index.indexOf('_do_br_cor_') >= 0) {
+        //     //   _score += data.hits[index]._score;
+        //     // }
+        //   }
+        //   if(_score<1.0) {
+        //     _score += data.hits[index]._score;
+        //   }
+
+        // });
 
         const hit: DataTableResponse = new DataTableResponse();
-        let isOutdated = false;
-        // check error index is exits then hit from error index
-        const errorIndexLen = Object.keys(data.hits).filter(index => index.indexOf('_do_br_err_') !== -1);
-        if (errorIndexLen.length > 0) {
-          const index = errorIndexLen[0];
-          hit.hdvs = this.convertAny2DataTableHeaderResponse(data.hits[index].hdvs);
-          if (request.gridId) {
-            hit.gvs = this.convertAny2DataTableGridResponse(data.hits[index].gvs, request.gridId);
-          }
-          if (request.hierarchy) {
-            hit.hyvs = this.convertAny2DataTableHeirerchyResponse(data.hits[index].hyvs, request.hierarchy);
-          }
-          isOutdated =  data.hits[index]._outdated;
-        } else {
-          const index = Object.keys(data.hits)[0];
-          hit.hdvs = this.convertAny2DataTableHeaderResponse(data.hits[index].hdvs);
-          if (request.gridId) {
-            hit.gvs = this.convertAny2DataTableGridResponse(data.hits[index].gvs, request.gridId);
-          }
-          if (request.hierarchy) {
-            hit.hyvs = this.convertAny2DataTableHeirerchyResponse(data.hits[index].hyvs, request.hierarchy);
-          }
-          isOutdated =  data.hits[index]._outdated;
+        hit.hdvs = this.convertAny2DataTableHeaderResponse(hdvs);
+        if (request.gridId) {
+            hit.gvs = this.convertAny2DataTableGridResponse(gvs, request.gridId);
+        }
+        if (request.hierarchy) {
+            hit.hyvs = this.convertAny2DataTableHeirerchyResponse(hyvs, request.hierarchy);
         }
 
+
+        // check error index is exits then hit from error index
+        // const errorIndexLen = Object.keys(data.hits).filter(index => index.indexOf('_do_br_err_') !== -1);
+        // if (errorIndexLen.length > 0) {
+        //   const index = errorIndexLen[0];
+        //   hit.hdvs = this.convertAny2DataTableHeaderResponse(data.hits[index].hdvs);
+        //   if (request.gridId) {
+        //     hit.gvs = this.convertAny2DataTableGridResponse(data.hits[index].gvs, request.gridId);
+        //   }
+        //   if (request.hierarchy) {
+        //     hit.hyvs = this.convertAny2DataTableHeirerchyResponse(data.hits[index].hyvs, request.hierarchy);
+        //   }
+        //   isOutdated =  data.hits[index]._outdated;
+        // } else {
+        //   const index = Object.keys(data.hits)[0];
+        //   hit.hdvs = this.convertAny2DataTableHeaderResponse(data.hits[index].hdvs);
+        //   if (request.gridId) {
+        //     hit.gvs = this.convertAny2DataTableGridResponse(data.hits[index].gvs, request.gridId);
+        //   }
+        //   if (request.hierarchy) {
+        //     hit.hyvs = this.convertAny2DataTableHeirerchyResponse(data.hits[index].hyvs, request.hierarchy);
+        //   }
+        //   isOutdated =  data.hits[index]._outdated;
+        // }
+
         hit.id = objNum;
+        // while click on all tab
+        const status = new Set<string>();
+        if(request.requestStatus && request.requestStatus.toLocaleLowerCase() === 'all') {
+          if(_score>= (request.schemaThreshold /100)) {
+            status.add('Success');
+          } else {
+            status.add('Error');
+          }
+        } else if(request.requestStatus && request.requestStatus.toLocaleLowerCase() === 'success') {
+          status.add('Success');
+        } else if(request.requestStatus && request.requestStatus.toLocaleLowerCase() === 'error') {
+          status.add('Error');
+        }
         if(isOutdated) {
           status.add('Outdated');
         }

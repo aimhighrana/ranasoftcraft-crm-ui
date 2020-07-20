@@ -88,6 +88,8 @@ export  class RequestForSchemaDetailsWithBr {
     fetchCount: number;
     gridId: string[];
     hierarchy: string[];
+    schemaThreshold: number;
+    afterKey: any;
 }
 
 export class DataTableSourceResponse {
