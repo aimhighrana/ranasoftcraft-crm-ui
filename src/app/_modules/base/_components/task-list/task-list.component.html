@@ -15,7 +15,7 @@
                             *ngIf="showColumnSettingPopUp">
                         </pros-columnsetting>
                         <ng-container *ngTemplateOutlet="commonTableComponent"></ng-container>
-
+                        <div class="f-row null-content">No records available yet</div>
                         <div class="hand-control"></div>
 
                     </div>
@@ -88,7 +88,7 @@
                     <mat-icon matSuffix>filter_list</mat-icon>Filters
                 </button>
                 <span class="f-spacer"></span>
-                <button mat-button color="primary">
+                <button mat-button color="primary" (click)="openDialog()">
                     <mat-icon>star_border</mat-icon>Save search
                 </button>
                 <span class="col-spacer"></span>
@@ -199,9 +199,12 @@
 
                 <mat-header-row *matHeaderRowDef="getDisplayColumns;sticky:true"></mat-header-row>
                 <mat-row *matRowDef="let row; columns: getDisplayColumns;"></mat-row>
+
+                
             </mat-table>
         </ng-template>
 
+        
         <!-- common template for details -->
         <ng-template #commonDetailsContent>
             <div *ngIf="showTaskDetails" class="split-container">
@@ -210,5 +213,7 @@
                 </pros-task-summary>
             </div>
         </ng-template>
+
+       
     </mat-card>
 </div>

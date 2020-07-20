@@ -16,6 +16,8 @@ import { Location } from '@angular/common';
 import { Pagination } from '@models/task-list/pagination';
 import { TaskListViewObject } from '@models/task-list/columnSetting';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
+import { MatDialog } from '@angular/material/dialog';
+import { SaveSearchDialogComponent } from '../save-search-dialog/save-search-dialog.component';
 
 @Component({
   selector: 'pros-task-list',
@@ -37,6 +39,10 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
     'tags',
     'setting',
   ];
+
+
+
+
 
   @ViewChild(MatSort) sort: MatSort;
 
@@ -184,7 +190,7 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param taskListService This is the object of the service
    */
   constructor(public taskListService: TaskListService, private _router: Router,
-    private _activeRouter: ActivatedRoute, private userService: UserService, private location: Location) { }
+    private _activeRouter: ActivatedRoute, private userService: UserService, private location: Location, public dialog: MatDialog) { }
 
   /**
    * ANGULAR HOOK
@@ -540,6 +546,11 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
   setActiveView(viewId: string) {
     this.activeViewId = viewId;
   }
+
+  openDialog(){
+    this.dialog.open(SaveSearchDialogComponent)
+  }
+
 
   /**
    * Angular Hook

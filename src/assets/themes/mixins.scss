@@ -235,6 +235,10 @@
           }
         }
       }
+
+      .null-content {
+        color: mat-color($background-palette, disabled-button);
+      }
     }
 
     .split {
@@ -386,6 +390,18 @@
             color: mat-color($primary-palette);
           }
         }
+      }
+    }
+  }
+
+  pros-attachment-tab {
+    .attached-box {
+      .attached-file {
+        background-color: mat-color($background-palette, disabled-button);
+      }
+
+      .attachment-name {
+        color: mat-color($primary-palette);
       }
     }
   }
