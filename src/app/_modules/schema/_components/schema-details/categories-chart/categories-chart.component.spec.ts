@@ -5,6 +5,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-details.service';
 import { SchemalistService } from 'src/app/_services/home/schema/schemalist.service';
 import { of } from 'rxjs';
+import { SimpleChanges } from '@angular/core';
+import { SchemaStaticThresholdRes } from '@models/schema/schemalist';
 
 
 describe('CategoriesChartComponent', () => {
@@ -45,6 +47,21 @@ describe('CategoriesChartComponent', () => {
 
   it('getSchemaStatus(), will return all schema status', async(()=>{
     expect(schemaDetailsServiceSpy.getSchemaStatus.and.returnValue(of([]))).toHaveBeenCalledTimes(0);
+  }));
+
+  it('ngOnChanges(), detect value change while loaded data ', async(()=>{
+    const changes: SimpleChanges = {thresholdRes:{
+      currentValue: {errorCnt:9,totalCnt:10,successCnt:1} as SchemaStaticThresholdRes,
+      firstChange: null,
+      isFirstChange: null,
+      previousValue:undefined
+    }};
+
+    component.ngOnChanges(changes);
+
+    expect(component.thresholdRes.successCnt).toEqual(1);
+    expect(component.thresholdRes.errorCnt).toEqual(9);
+    expect(component.thresholdRes.totalCnt).toEqual(10);
   }));
 
 

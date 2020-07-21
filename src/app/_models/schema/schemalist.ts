@@ -233,6 +233,8 @@ export class SchemaStaticThresholdRes {
     threshold: any;
     thresHoldStatus: string;
     successCnt: number;
+    errorCnt: number;
+    totalCnt: number;
 }
 
 export class SchemaDashboardPermission {

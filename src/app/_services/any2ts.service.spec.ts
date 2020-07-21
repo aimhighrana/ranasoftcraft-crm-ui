@@ -348,7 +348,7 @@ describe('Any2tsService', () => {
       },
     }]
     const requestForSchemaDetailsWithBr1 = { schemaId: '', runId: '', brId: '', plantCode: '', variantId: '', requestStatus: '', executionStartDate: '',
-    selectedFields: [], fetchSize: 1, fetchCount: 2, gridId: [], hierarchy: []}
+    selectedFields: [], fetchSize: 1, fetchCount: 2, gridId: [], hierarchy: [],schemaThreshold:0,afterKey:null}
     expect(service.any2DataTable(testData1, requestForSchemaDetailsWithBr1)).not.toBe(null)
 
     const testData2 = [{
@@ -364,7 +364,7 @@ describe('Any2tsService', () => {
       },
     }]
     const requestForSchemaDetailsWithBr2 = { schemaId: '', runId: '', brId: '', plantCode: '', variantId: '', requestStatus: '', executionStartDate: '',
-      selectedFields: [], fetchSize: 1, fetchCount: 2, gridId: [], hierarchy: []}
+      selectedFields: [], fetchSize: 1, fetchCount: 2, gridId: [], hierarchy: [],schemaThreshold:0,afterKey:null}
     expect(service.any2DataTable(testData2, requestForSchemaDetailsWithBr2)).not.toBe(null)
 
     expect(service.any2DataTable(null, requestForSchemaDetailsWithBr1)).not.toBe(null)
@@ -381,7 +381,7 @@ describe('Any2tsService', () => {
       _score:''
     }]
     const request = {schemaId: '', runId: '', brId: '', plantCode: '', variantId: '', requestStatus: '', executionStartDate: '', selectedFields: [],
-      gridId: [], hierarchy: [], fetchSize: 1, fetchCount: 1 }
+      gridId: [], hierarchy: [], fetchSize: 1, fetchCount: 1,schemaThreshold:0, afterKey:null }
     expect(service.any2SchemaTableData(testData, request)).not.toBe(null)
   });
 

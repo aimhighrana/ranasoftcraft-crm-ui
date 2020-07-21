@@ -3,7 +3,7 @@
 
         <mat-card class="mat-elevation-z0">
             <h3 class="mat-h3">Schema Threshold </h3>
-            <strong [class.error-status]="thresholdRes.thresHoldStatus === 'DANGER'" [class.success-status]="thresholdRes.thresHoldStatus === 'GOOD'">{{ thresholdRes.threshold }}%</strong>
+            <strong [class.error-status]="thresholdRes && thresholdRes.thresHoldStatus === 'DANGER'" [class.success-status]="thresholdRes && thresholdRes.thresHoldStatus === 'GOOD'">{{ thresholdRes ? thresholdRes.threshold : 0}}%</strong>
         </mat-card>
 
         <mat-card class="mat-elevation-z0">

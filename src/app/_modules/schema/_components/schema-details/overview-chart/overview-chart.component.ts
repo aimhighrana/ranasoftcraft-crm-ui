@@ -1,16 +1,15 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { ChartDataSets, ChartOptions, TimeDisplayFormat } from 'chart.js';
 import { Label } from 'ng2-charts';
 import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-details.service';
-import { SchemaListDetails } from 'src/app/_models/schema/schemalist';
-import { SchemalistService } from 'src/app/_services/home/schema/schemalist.service';
+import { SchemaListDetails, SchemaStaticThresholdRes } from 'src/app/_models/schema/schemalist';
 
 @Component({
   selector: 'pros-overview-chart',
   templateUrl: './overview-chart.component.html',
   styleUrls: ['./overview-chart.component.scss']
 })
-export class OverviewChartComponent implements OnInit {
+export class OverviewChartComponent implements OnInit, OnChanges {
 
   timeDateFormat: TimeDisplayFormat;
   overviewChartdata: ChartDataSets[];
@@ -25,6 +24,9 @@ export class OverviewChartComponent implements OnInit {
 
   @Input()
   variantId: string;
+
+  @Input()
+  thresholdRes: SchemaStaticThresholdRes;
 
   schemaDetails: SchemaListDetails;
   overviewChartOptions: ChartOptions = {
@@ -87,15 +89,19 @@ export class OverviewChartComponent implements OnInit {
 
 
   constructor(
-    private schemaDetailsService: SchemaDetailsService,
-    private schemaListService: SchemalistService
+    private schemaDetailsService: SchemaDetailsService
   ) {
     this.overviewChartdata = [{ data: []}];
     this.schemaDetails = new SchemaListDetails();
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if(changes.thresholdRes && changes.thresholdRes.previousValue !== changes.thresholdRes.currentValue) {
+      this.thresholdRes = changes.thresholdRes.currentValue;
+    }
+  }
+
   ngOnInit() {
-    this.getSchemaDetails();
     this.getOverViewChartdata(this.schemaId, this.variantId);
   }
 
@@ -107,12 +113,5 @@ export class OverviewChartComponent implements OnInit {
     });
   }
 
-  private getSchemaDetails() {
-    this.schemaListService.getSchemaDetailsBySchemaId(this.schemaId).subscribe(data => {
-      this.schemaDetails = data;
-    },error=>{
-      console.error(`Exception while fetching schema details ${error}`);
-    });
-  }
 }
 

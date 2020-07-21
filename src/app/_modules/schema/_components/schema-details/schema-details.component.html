@@ -15,22 +15,23 @@
   </div>
 
   <div class="root-row">
-   <pros-execution-summary schemaId={{schemaId}}></pros-execution-summary>
+   <pros-execution-summary schemaId={{schemaId}}
+   [thresholdRes]="thresholdRes"></pros-execution-summary>
   </div>
 
   <div class="root-row">
-    <pros-schema-datatable objectId="{{moduleId}}" variantId="{{ variantId }}" schemaId="{{schemaId}}" totalRecord="{{schemaDetails.totalCount}}"
-      successCount="{{schemaDetails.successCount}}" errorCount="{{schemaDetails.errorCount}}"
-      dynamicRecordCount="{{schemaDetails.errorCount}}"></pros-schema-datatable>
+    <pros-schema-datatable objectId="{{moduleId}}" variantId="{{ variantId }}" schemaId="{{schemaId}}"
+    [thresholdRes]="thresholdRes"
+    ></pros-schema-datatable>
   </div>
   
 
   <div class="root-row">
-    <pros-overview-chart schemaId={{schemaId}} variantId="{{ variantId }}"></pros-overview-chart>
+    <pros-overview-chart schemaId={{schemaId}} variantId="{{ variantId }}" [thresholdRes]="thresholdRes"></pros-overview-chart>
   </div>
 
   <div class="root-row">
-    <pros-categories-chart schemaId={{schemaId}} variantId="{{ variantId }}"></pros-categories-chart>
+    <pros-categories-chart schemaId={{schemaId}} variantId="{{ variantId }}" [thresholdRes]="thresholdRes"></pros-categories-chart>
   </div>
   
 </div>
