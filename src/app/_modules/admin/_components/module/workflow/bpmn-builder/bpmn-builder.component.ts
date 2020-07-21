@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { Breadcrumb } from '@models/breadcrumb';
@@ -17,7 +17,8 @@ import bpmnlintConfig from './config/validation/lint-config';
 @Component({
   selector: 'pros-bpmn-builder',
   templateUrl: './bpmn-builder.component.html',
-  styleUrls: ['./bpmn-builder.component.scss']
+  styleUrls: ['./bpmn-builder.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class BpmnBuilderComponent implements OnInit, OnDestroy {
 
@@ -26,6 +27,7 @@ export class BpmnBuilderComponent implements OnInit, OnDestroy {
   zoomRate = 0.8;
   zoomStep = 0.1;
   blankDigramUrl = '/assets/bpmn/blank.bpmn';
+  modelerWidth = '100%';
 
   blankDiagram = '<?xml version="1.0" encoding="UTF-8"?>'
      +'<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" id="Definitions_0f0redl" targetNamespace="http://bpmn.io/schema/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="6.5.1">'
@@ -110,7 +112,7 @@ export class BpmnBuilderComponent implements OnInit, OnDestroy {
       setTimeout(() => {
         self.setElementId(event.element);
       }, 100) ;
-       console.log(event.element);
+      // console.log(event.element);
     });
 
 
@@ -118,6 +120,36 @@ export class BpmnBuilderComponent implements OnInit, OnDestroy {
     this.modeler.on('selection.changed', (e) => {
       this.selectedElement = e.newSelection[0];
     });
+
+    this.modeler.get('eventBus').on('connection.added', (event) => {
+      console.log()
+      const modeling = self.modeler.get('modeling');
+      if (modeling.isRejection && event.element.source.type === self.ELEMENT_TYPES.Activity){
+        // set rejection color
+        setTimeout(() => {
+          modeling.setColor(event.element, {
+            stroke: 'red'
+          });
+          // set the rejection attribute to true
+          modeling.updateProperties(event.element, {
+            rejection: true,
+            conditions : JSON.stringify([])
+          });
+
+          // set the source element rejectionToStep
+          modeling.updateProperties(event.element.source, {
+            rejectionToStep : event.element.target.id
+          })
+
+          modeling.isRejection = false;
+        }, 100)
+      }
+      modeling.isRejection = false;
+   });
+
+   this.modeler.get('eventBus').on('connection.removed', (event) => {
+    this.handleConnectionCreation(event);
+  });
 
   }
 
@@ -217,12 +249,13 @@ export class BpmnBuilderComponent implements OnInit, OnDestroy {
       modeling.updateLabel(this.selectedElement, values.name);
     }
 
-    // set connection color depending if it's a rejection or not
+    /* set connection color depending if it's a rejection or not
     if(this.selectedElement.type === this.ELEMENT_TYPES.Connection) {
       modeling.setColor(this.selectedElement, {
         stroke: this.selectedElement.businessObject.$attrs.rejection ? 'red' : '#007bff',
       });
     }
+    */
   }
 
   setElementId(element){
@@ -237,6 +270,22 @@ export class BpmnBuilderComponent implements OnInit, OnDestroy {
     const modeling = this.modeler.get('modeling');
     modeling.updateProperties(element, {id : newId});
     this.nextId++;
+  }
+
+  handleConnectionCreation(event){
+    if(event.element.businessObject.$attrs.rejection){
+      const modeling = this.modeler.get('modeling');
+      const source = event.element.source;
+      const nextRejection = source.outgoing.find(out => out.businessObject.$attrs.rejection) ;
+      console.log('nextRejection', nextRejection)
+      const rejectTo = nextRejection ? nextRejection.target.id : '';
+      // set the source element rejectionToStep
+      setTimeout(()=>{
+        modeling.updateProperties(source, {
+          rejectionToStep : rejectTo
+        })
+      }, 100)
+    }
   }
 
   ngOnDestroy() {

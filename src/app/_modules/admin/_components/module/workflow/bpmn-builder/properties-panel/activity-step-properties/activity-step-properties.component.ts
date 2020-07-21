@@ -113,7 +113,7 @@ export class ActivityStepPropertiesComponent implements OnInit, OnChanges, OnDes
       } else {
 
         // get element configured attributes and map the name to description field
-        let attrs = { ...selectedBpmn.currentValue.businessObject.$attrs, name: selectedBpmn.currentValue.businessObject.name };
+        const attrs = { ...selectedBpmn.currentValue.businessObject.$attrs, name: selectedBpmn.currentValue.businessObject.name };
         console.log(attrs);
         this.selectedRecipients = JSON.parse(attrs.recipients);
         this.paginateChip() ;
@@ -129,7 +129,7 @@ export class ActivityStepPropertiesComponent implements OnInit, OnChanges, OnDes
           return connections;
         });
 
-        // reset the reject to step attribute if there is no outgoing connections
+        /* reset the reject to step attribute if there is no outgoing connections
         if (!this.connectionsList.length || !this.connectionsList.some(con => con.rejection === true)) {
           attrs = { ...attrs, rejectionToStep: '' };
         } else {
@@ -137,6 +137,7 @@ export class ActivityStepPropertiesComponent implements OnInit, OnChanges, OnDes
           console.log('Rejection to ', rejectToStep)
           attrs = { ...attrs, rejectionToStep: rejectToStep };
         }
+        */
         this.activityFormGroup.patchValue(attrs);
       }
     }

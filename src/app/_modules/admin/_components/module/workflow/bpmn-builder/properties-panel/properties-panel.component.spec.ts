@@ -34,9 +34,16 @@ describe('PropertiesPanelComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('updateStepProperties() should update step properties', async (() =>{
+  it('updateStepProperties() should update step properties', () =>{
+    /*
     const attributes = true;
     component.updateStepProperties(attributes);
     expect(component.updateStepProperties).toBeTruthy();
-  }));
+    */
+
+   spyOn(component.updateProperties, 'emit');
+   component.updateStepProperties({}) ;
+   expect(component.updateProperties.emit).toHaveBeenCalled();
+  });
+
 });
