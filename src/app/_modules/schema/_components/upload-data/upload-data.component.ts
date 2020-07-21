@@ -242,7 +242,7 @@ export class UploadDataComponent implements OnInit {
         this.uploadDataHttpCall(stepper);
       }
     },error=>{
-      console.error(error);
+      console.error(`Error ${error}`);
     });
   }
 
@@ -254,7 +254,7 @@ export class UploadDataComponent implements OnInit {
         this.dataTableCtrl.controls.dataTableFldCtrl.setValue('done');
         stepper.next();
       },error=>{
-        console.error(error);
+        console.error(`Error ${error}`);
         this.snackBar.open(`Something went wrong , please check mdo logs `, 'Close',{duration:5000});
       });
     }
@@ -270,7 +270,7 @@ export class UploadDataComponent implements OnInit {
         this.dataTableCtrl.controls.dataTableFldCtrl.setValue('done');
         stepper.next();
       },error=>{
-        console.error(error);
+        console.error(`Error ${error}`);
         this.snackBar.open(`Something went wrong , please check mdo logs `, 'Close',{duration:5000});
       });
     }

@@ -96,7 +96,7 @@
                 </mat-expansion-panel-header>
                 <div cdkDropList (cdkDropListDropped)="drop($event, 'grid', gei.key)">
                     <mat-list-option [checkboxPosition]="before" *ngFor="let fld of (gridList[gei.key])" [value]="fld"
-                        cdkDrag id="{{fld.fieldId}}">
+                        cdkDrag id="{{fld.fieldId}}" [selected]="isSelected(fld.fieldId)">
                         <ng-template [ngIf]="isMarked(fld.fieldId)" [ngIfElse]="gridElse">
                             <ng-template
                                 [ngIf]="(dynamicSearchVal !=='' && fld.fieldDescri.toLocaleLowerCase().indexOf(dynamicSearchVal.toLocaleLowerCase()) !==-1)"
