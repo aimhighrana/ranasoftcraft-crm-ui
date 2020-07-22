@@ -9,7 +9,6 @@ import { Userdetails } from 'src/app/_models/userdetails';
 import { MatDialog } from '@angular/material/dialog';
 import { UploadDataComponent } from '../upload-data/upload-data.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Location } from '@angular/common';
 
 @Component({
   selector: 'pros-schema-list',
@@ -29,7 +28,6 @@ export class SchemaListComponent implements OnInit {
     private schemaService: SchemaService,
     private matDialog: MatDialog,
     private matSnackBar: MatSnackBar,
-    private location: Location
   ) { }
 
   schemaGroupId: string;

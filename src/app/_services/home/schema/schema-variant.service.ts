@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { EndpointService } from '../../endpoint.service';
-import { SendSchemavariantRequest, SchemaVariantResponse, VariantListDetails } from 'src/app/_models/schema/schemalist';
+import { SendSchemavariantRequest, SchemaVariantResponse, VariantDetails } from 'src/app/_models/schema/schemalist';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../../any2ts.service';
@@ -23,9 +23,19 @@ export class SchemaVariantService {
     }));
   }
 
-  public getSchemaVariantDetails(schemaId: string): Observable<VariantListDetails[]> {
-    return this.http.get<any>(this.endPointService.getSchemaVariantsUrl(schemaId)).pipe(map(response => {
-      return this.any2tsService.any2VaraintListView(response);
-    }));
+  public getSchemaVariantDetails(schemaId: string): Observable<VariantDetails[]> {
+    return this.http.get<VariantDetails[]>(this.endPointService.getSchemaVariantsUrl(schemaId));
+  }
+
+  public saveUpdateSchemaVariant(request): Observable<string> {
+    return this.http.post<string>(this.endPointService.saveUpdateVariantUrl(),request);
+  }
+
+  public getVariantdetailsByvariantId(variantId: string): Observable<VariantDetails> {
+    return this.http.get<any>(this.endPointService.getVariantdetailsByvariantIdUrl(variantId));
+  }
+
+  public deleteVariant(variantId: string): Observable<boolean> {
+    return this.http.delete<boolean>(this.endPointService.deleteVariantUrl(variantId));
   }
 }

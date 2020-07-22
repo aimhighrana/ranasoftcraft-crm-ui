@@ -218,4 +218,25 @@ describe('EndpointService', () => {
     const serviceobj = new EndpointService();
     expect(serviceobj.getSaveWfDefinitionUrl()).toContain(`restWorkflow/saveWorkFlowStepViaXml`);
   });
+
+  it('saveUpdateVariantUrl(), hould  create and update Variant details url', () => {
+    const serviceobj = new EndpointService();
+    expect(serviceobj.saveUpdateVariantUrl()).toContain(`schema/variant/create-update-single`);
+  });
+
+  it('getVariantdetailsByvariantIdUrl(),should return all variant detials by variantId', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getVariantdetailsByvariantIdUrl('355555320681 ')).toContain('schema/variant/355555320681');
+  }));
+
+  it('deleteVariantUrl(),should delete variant details', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.deleteVariantUrl('35555320681 ')).toContain('schema/variant/delete/35555320681');
+  }));
+
+  it('getSchemaDetailsBySchemaIdUrl(),should return all schema detials by schemaId', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getSchemaDetailsBySchemaIdUrl('355555320681 ')).toContain('schema/schema-details/355555320681');
+  }));
+
 });

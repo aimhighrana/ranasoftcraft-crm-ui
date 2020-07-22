@@ -18,6 +18,9 @@ export class UdrConditionOperatorsComponent implements OnInit, OnChanges {
   @Output()
   afterSelect: EventEmitter<string> = new EventEmitter();
 
+  @Input()
+  selecetedOperator: string;
+
   conditionalOperatorsOb: Observable<ConditionalOperator[]> = of([]);
 
   operator: FormControl = new FormControl('');
@@ -55,6 +58,17 @@ export class UdrConditionOperatorsComponent implements OnInit, OnChanges {
         this.conditionalOperatorsOb = of(this.conditionalOperators);
       }
     });
+
+      // set preselected autocomplete
+      if(this.selecetedOperator){
+        this.conditionalOperators.forEach(oper=>{
+          const match = oper.childs.filter(fill => fill === this.selecetedOperator);
+          if(match.length > 0) {
+            this.afterSelect.emit(match[0]);
+            this.operator.setValue(match[0]);
+          }
+        })
+      }
   }
 
 

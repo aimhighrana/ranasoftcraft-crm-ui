@@ -26,6 +26,8 @@ export class SchemaTileComponent implements OnInit, OnDestroy {
   edit: boolean;
   @Input()
   delete: boolean;
+  @Input()
+  isVariant : boolean;
 
   @Input()
   state: string;

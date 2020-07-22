@@ -6,40 +6,36 @@ import { SchemaTileComponent } from '../../../../_modules/schema/_components/sch
 import { MatIconModule } from '@angular/material/icon';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SchemaVariantService } from 'src/app/_services/home/schema/schema-variant.service';
-import { SchemaService } from 'src/app/_services/home/schema.service';
-import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-details.service';
 import { BreadcrumbComponent } from 'src/app/_modules/shared/_components/breadcrumb/breadcrumb.component';
-import { VariantListDetails } from 'src/app/_models/schema/schemalist';
+import { VariantListDetails, VariantDetails } from 'src/app/_models/schema/schemalist';
 import { AddTileComponent } from 'src/app/_modules/shared/_components/add-tile/add-tile.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { of } from 'rxjs';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { SubstringPipe } from 'src/app/_modules/shared/_pipes/substringpipe.pipe';
+import { Router } from '@angular/router';
+import { of } from 'rxjs';
 
 describe('SchemaVariantsComponent', () => {
   let component: SchemaVariantsComponent;
   let fixture: ComponentFixture<SchemaVariantsComponent>;
   let htmlNative: HTMLElement;
+  let router: Router;
+  let schemaVariantServiceSpy: SchemaVariantService
   beforeEach(async(() => {
-    const schemaVarServiceSpy = jasmine.createSpyObj('SchemaVariantService', ['getSchemaVariantDetails']);
-    const schemaSerSpy = jasmine.createSpyObj('SchemaService', ['getSchemaGroupDetailsBySchemaGrpId']);
-    const schemaDeSerSpy = jasmine.createSpyObj('SchemaDetailsService', ['getSchemaDetailsBySchemaId']);
     TestBed.configureTestingModule({
       imports: [AppMaterialModuleForSpec, MatIconModule, RouterTestingModule, FormsModule, ReactiveFormsModule],
       declarations: [SchemaVariantsComponent, BreadcrumbComponent, SchemaTileComponent, AddTileComponent, SubstringPipe ],
-      providers: [
-        { provide: SchemaVariantService, useValue: schemaVarServiceSpy },
-        { provide: SchemaService, useValue: schemaSerSpy },
-        { provide: SchemaDetailsService, useValue: schemaDeSerSpy }
-      ]
+      providers: [ SchemaVariantService ]
     })
-      .compileComponents();
+    .compileComponents();
+    router = TestBed.inject(Router);
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SchemaVariantsComponent);
     component = fixture.componentInstance;
     htmlNative = fixture.debugElement.nativeElement;
+    schemaVariantServiceSpy = fixture.debugElement.injector.get(SchemaVariantService);
   });
 
   it('should create', () => {
@@ -63,9 +59,8 @@ describe('SchemaVariantsComponent', () => {
     mockVaraintData.skippedUniqueValue = 87654;
 
   it('schemaVaraint: should create', () => {
-    component.variarantDetailsOb = of([mockVaraintData]);
     fixture.detectChanges();
-    expect(htmlNative.getElementsByTagName('pros-schema-tile').length).toEqual(1);
+    expect(htmlNative.getElementsByTagName('pros-schema-tile').length).toEqual(0);
   });
 
   it('percentageErrorStr(), should return percentage error str', async(() => {
@@ -101,4 +96,40 @@ describe('SchemaVariantsComponent', () => {
     component.toggle();
     expect(false).toEqual(component.showingErrors);
   });
+
+  it('createVariant, should navigate to create variant page', (() => {
+    component.objectId = '1005';
+    component.schemaId = '876554';
+    spyOn(router, 'navigate');
+    component.createVariant();
+    expect(router.navigate).toHaveBeenCalledWith(['/home/schema/schema-variants/create-variant', component.objectId, component.schemaId, 'new']);
+  }));
+
+  it('editVariant, should navigate to create variant page', (() => {
+    component.objectId = '1005';
+    component.schemaId = '876554';
+    const variantId = '897654'
+    spyOn(router, 'navigate');
+    component.editVariant(variantId);
+    expect(router.navigate).toHaveBeenCalledWith(['/home/schema/schema-variants/create-variant', component.objectId, component.schemaId, variantId]);
+  }));
+
+  it('deleteVariant(), should delete Variant details', async(() => {
+    component.objectId = '1005';
+    component.schemaId = '876554';
+    spyOn(schemaVariantServiceSpy,'deleteVariant').withArgs('3555358571').and.returnValue(of(true));
+    spyOn(router, 'navigate');
+    component.deleteVariant('3555358571');
+    expect(schemaVariantServiceSpy.deleteVariant).toHaveBeenCalledWith('3555358571');
+    expect(router.navigate).toHaveBeenCalledWith(['/home/schema/schema-variants', component.objectId, component.schemaId]);
+  }));
+
+  it('onLoadVariantList(), should return schema variant list', async(() => {
+    component.schemaId = '876554';
+    const variantDetails: VariantDetails[] = [];
+    spyOn(schemaVariantServiceSpy,'getSchemaVariantDetails').withArgs(component.schemaId).and.returnValue(of(variantDetails));
+    component.onLoadVariantList();
+    expect(schemaVariantServiceSpy.getSchemaVariantDetails).toHaveBeenCalledWith(component.schemaId);
+  }));
+
 });

@@ -59,6 +59,9 @@ describe('UdrConditionFormComponent', () => {
     component.changeConditionalField(obj,0);
     expect(schemaService.dropDownValues).toHaveBeenCalledWith(obj.fieldId, '');
 
+    const obj1 = {fieldId: 'MATL_DESC', picklist:'23'} as MetadataModel;
+    component.changeConditionalField(obj1,0);
+    expect(schemaService.dropDownValues).toHaveBeenCalledWith(obj1.fieldId, '');
   }));
 
   it('getdropDownValues(), get all dropdown values', async(()=>{
@@ -78,19 +81,15 @@ describe('UdrConditionFormComponent', () => {
     const actualRes =  component.dropValDisplayWith(data);
     expect(actualRes).toEqual(data.TEXT);
 
+    expect(component.dropValDisplayWith(null)).toEqual(null);
+
   }));
 
-  // it('operatorSelectionChng(), check agrigation operator is range ', async(()=>{
-  //   // mock data
-  //   const data = {option:{value:'RANGE'}} as MatAutocompleteSelectedEvent;
-
-  //   component.initFrmArray();
-  //   // call actual method
-  //   component.operatorSelectionChng(data,0);
-
-  //   expect(component.showRangeFld).toEqual(false);
-
-  // }));
+  it('operatorSelectionChng(), after select operator selection change', async(()=>{
+    component.initFrmArray();
+    component.operatorSelectionChng('Range',0);
+    expect(component.frmArray.length).toEqual(1);
+  }));
 
   // it('saveUpdateCondition(), save update conditionla field ', async(()=>{
   //   // mockdata
@@ -127,5 +126,29 @@ describe('UdrConditionFormComponent', () => {
 
   // }));
 
+  it('onKey(), should change the value in user input', async(() => {
+    const event = {target:{value:'TEST'}};
+    component.dropValues = [{TEXT:'TEST'} as DropDownValue];
+    component.onKey(event);
+    expect(component.dropValues.length).toEqual(1);
 
+    component.onKey(null);
+    expect(component.dropValues.length).toEqual(1);
+
+    const event1 = {target:{value:7655}};
+    component.onKey(event1);
+    expect(component.dropValues.length).toEqual(1);
+  }));
+
+  it('addCondition(), should add a field',async(() => {
+    component.initFrmArray();
+    component.addCondition();
+    expect(component.frmArray.length).toEqual(2);
+  }));
+
+  it('remove() should remove the already filled data', async(() => {
+    component.initFrmArray();
+    component.remove(0);
+    expect(component.frmArray.length).toEqual(0);
+  }));
 });

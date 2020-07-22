@@ -22,8 +22,9 @@
       .f-row {
         flex: 2;
 
-        .matfield-colspan2 {
+        pros-date-picker-field {
           flex: 2;
+          display: flex;
         }
       }
 

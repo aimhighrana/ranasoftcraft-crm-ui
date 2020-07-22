@@ -5,43 +5,14 @@
   align-content: flex-start;
   justify-content: space-around;
 
-  .breadcrumb-wrapper {
-    flex: 1 100%;
+  .crumbrow {
+    align-items: center;
+    margin-left: -15px;
   }
 
-  .Variant-details {
-    width: 240px;
-
-    .f-row {
-      h2 {
-        margin: 0;
-      }
-
-      h2.perc {
-        font-size: 40px;
-      }
-
-      h2.perc-symbol {
-        font-size: 30px;
-        align-self: flex-end;
-      }
-
-      span.row1text {
-        align-self: flex-end;
-      }
-
-      .err {
-        color: #c30000;
-      }
-
-      .scs {
-        color: #4caa00;
-      }
-    }
-  }
-
-  .variants-container {
-    width: calc(100% - 240px - 8 * 16px);
+  .tiles-container {
+    margin: 0 16px;
+    width: 100%;
 
     mat-form-field {
       flex: 1;
@@ -49,11 +20,19 @@
 
     .f-row {
       flex-wrap: wrap;
+      flex: 1 100%;
     }
-  }
 
-  .tile {
-    flex: 0 1 22.33333%;
-    margin: 16px;
+    .flex-row-container {
+      flex-wrap: wrap;
+      flex: 1 100%;
+      padding: 24px 0;
+      border-bottom-width: 1px;
+
+      .flex-col-1 {
+        flex: 0 1 22.33333%;
+        margin: 16px 16px 0 0;
+      }
+    }
   }
 }

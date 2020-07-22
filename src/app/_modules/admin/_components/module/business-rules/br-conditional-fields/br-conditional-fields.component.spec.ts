@@ -52,7 +52,7 @@ describe('BrConditionalFieldsComponent', () => {
       hierarchy:[{heirarchyId:'1', heirarchyText:'Plant'} as Heirarchy],
       hierarchyFields:{1:{PLANT:{fieldId:'PLANT'}}}
     };
-
+    component.selectedFldId = {fieldId:'MATL_TYPE', fieldDescri: 'MATERIAL TYPE'} as MetadataModel;
     // call actual method
     component.makeConditionalFields(response);
     expect(component.fields.length).toEqual(3);

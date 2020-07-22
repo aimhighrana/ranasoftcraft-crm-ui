@@ -1,3 +1,5 @@
+import { UDRBlocksModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+
 export class SchemaList {
     details: SchemaListModule[];
 }
@@ -257,4 +259,11 @@ export enum PermissionType {
     USER = 'USER',
     ROLE = 'ROLE',
     GROUP = 'GROUP'
+}
+
+export class VariantDetails {
+    schemaId: string;
+    variantName: string;
+    variantId: string;
+    udrBlocksModel: UDRBlocksModel[]
 }

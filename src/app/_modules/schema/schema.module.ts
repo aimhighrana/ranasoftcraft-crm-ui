@@ -27,7 +27,7 @@ import { AdvanceoptionsDialogComponent } from './_components/advanceoptions-dial
 import { DuplicateDetailsComponent } from './_components/duplicate-details/duplicate-details.component';
 import { CollaboratorComponent } from './_components/collaborator/collaborator.component';
 import { CreateVariantComponent } from './_components/create-variant/create-variant.component';
-import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { DatePickerFieldComponent } from './_components/create-variant/date-picker-field/date-picker-field.component';
 
 @NgModule({
   declarations: [
@@ -55,13 +55,13 @@ import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
     AdvanceoptionsDialogComponent,
     DuplicateDetailsComponent,
     CollaboratorComponent,
-    CreateVariantComponent
+    CreateVariantComponent,
+    DatePickerFieldComponent
   ],
   imports: [
     CommonModule,
     SchemaRoutingModule,
     SharedModule,
-    AppMaterialModuleForSpec
   ]
 })
 export class SchemaModule { }

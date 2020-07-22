@@ -51,6 +51,8 @@ import { ThousandconvertorPipe } from './_pipes/thousandconvertor.pipe';
 import { FormatTableHeadersPipe } from './_pipes/format-table-headers.pipe';
 import { TagsEllipsisDirective } from './_directives/tags-ellipsis.directive';
 import { ResizeableDirective } from './_directives/resizeable.directive';
+import { BrConditionalFieldsComponent } from '@modules/admin/_components/module/business-rules/br-conditional-fields/br-conditional-fields.component';
+import { UdrConditionOperatorsComponent } from '@modules/admin/_components/module/business-rules/user-defined-rule/udr-condition-operators/udr-condition-operators.component';
 
 @NgModule({
   declarations: [
@@ -67,7 +69,9 @@ import { ResizeableDirective } from './_directives/resizeable.directive';
     SvgIconComponent,
     TableColumnSettingsComponent,
     FormatTableHeadersPipe,
-    ResizeableDirective
+    ResizeableDirective,
+    BrConditionalFieldsComponent,
+    UdrConditionOperatorsComponent
   ],
   imports: [
     // ng modules
@@ -185,6 +189,8 @@ import { ResizeableDirective } from './_directives/resizeable.directive';
     AddTileComponent,
     SvgIconComponent,
     TableColumnSettingsComponent,
+    BrConditionalFieldsComponent,
+    UdrConditionOperatorsComponent
   ]
 })
 export class SharedModule { }

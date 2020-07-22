@@ -21,11 +21,18 @@ export class BrConditionalFieldsComponent implements OnInit {
   @Input()
   isRequired = false;
 
+  /**
+   * Pre selected values
+   */
+  @Input()
+  selectedFldId: MetadataModel;
+
   @Output()
   evtOnchange: EventEmitter<MetadataModel> = new EventEmitter<MetadataModel>();
 
   fields: ConditionalField[];
   searchFld: Observable<ConditionalField[]> = of([]);
+  preSelectedCtrl: MetadataModel[] = [];
 
   fldFrmGrp: FormGroup;
   constructor(
@@ -41,6 +48,11 @@ export class BrConditionalFieldsComponent implements OnInit {
     this.fldFrmGrp = this.formBuilder.group({
       conFld: ['',this.isRequired ? Validators.required : Validators.nullValidator]
     });
+
+    // preselectedfields
+    if(this.selectedFldId) {
+      this.fldFrmGrp.controls.conFld.setValue(this.selectedFldId);
+    }
 
     // autocomplete search
     this.fldFrmGrp.valueChanges.subscribe(val=>{
@@ -144,4 +156,20 @@ export class BrConditionalFieldsComponent implements OnInit {
   displayWith(obj: MetadataModel): string {
     return obj ? obj.fieldDescri : null;
   }
+
+  /**
+   * Should return selected field control
+   * @param fieldId seldcted field id
+   */
+  returnSelectedFldCtrl(fieldId: string): MetadataModel[] {
+    const returnCtrl: MetadataModel[] = [];
+    this.fields.forEach(fld=>{
+      const match =fld.fields.filter(fil => fil.fieldId === fieldId);
+      if(match.length) {
+        returnCtrl.push(match[0]);
+      }
+    });
+    return returnCtrl;
+  }
 }
+

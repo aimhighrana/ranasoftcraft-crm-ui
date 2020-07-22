@@ -74,7 +74,7 @@
           <button mat-icon-button><mat-icon class="alert-icon" prosClickStopPropagation>error</mat-icon></button>
         </div>
         <span class="f-row-spacer-half"></span> 
-        <button mat-button color="primary" prosClickStopPropagation (click)="onBottomLeft();">Run variants</button>
+        <button mat-button color="primary" *ngIf="isVariant" prosClickStopPropagation (click)="onBottomLeft();">Run variants</button>
       </div>
       <div class="f-col links-col">
         <a  class="total">Total: {{ showUnique ? totalUniqueValue : totalValue }}</a>

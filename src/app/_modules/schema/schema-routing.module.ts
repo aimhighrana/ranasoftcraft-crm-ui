@@ -41,7 +41,7 @@ const routes: Routes = [
   { path: 'duplicate-details', component: DuplicateDetailsComponent },
   { path: 'diw-create-schema', component: DiwCreateSchemaComponent },
   { path: 'diw-create-businessrule', component: DiwCreateBusinessruleComponent },
-  { path: 'create-variant', component: CreateVariantComponent },
+  { path: 'schema-variants/create-variant/:moduleId/:schemaId/:variantId', component: CreateVariantComponent },
 
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent }

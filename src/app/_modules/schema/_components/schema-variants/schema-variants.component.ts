@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { SchemalistService } from 'src/app/_services/home/schema/schemalist.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SchemaVariantService } from 'src/app/_services/home/schema/schema-variant.service';
-import { SchemaListDetails, VariantListDetails } from 'src/app/_models/schema/schemalist';
+import { SchemaListDetails, VariantListDetails, VariantDetails } from 'src/app/_models/schema/schemalist';
 import { Breadcrumb } from 'src/app/_models/breadcrumb';
-import { SchemaService } from 'src/app/_services/home/schema.service';
 import { SchemaGroupDetailsResponse } from 'src/app/_models/schema/schema';
 import { FormControl } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'pros-schema-variants',
@@ -18,10 +18,10 @@ import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 export class SchemaVariantsComponent implements OnInit {
   schemaId: string;
   objectId: string;
-  searchField: FormControl;
+  searchField: FormControl = new FormControl('');
   masterVariant: VariantListDetails;
-  variarantDetails: VariantListDetails[];
-  variarantDetailsOb: Observable<VariantListDetails[]>;
+  variarantDetails: VariantDetails[];
+  variarantDetailsOb: Observable<VariantDetails[]>;
   schemaGroupDetails: SchemaGroupDetailsResponse = new SchemaGroupDetailsResponse();
   schemaListDetails: SchemaListDetails = new SchemaListDetails();
   breadcrumb: Breadcrumb = {
@@ -40,9 +40,10 @@ export class SchemaVariantsComponent implements OnInit {
     private schemaListService: SchemalistService,
     private activatedRouter: ActivatedRoute,
     private schemaVariantService: SchemaVariantService,
-    private schemaService: SchemaService,
+    private matSnackBar: MatSnackBar,
+    private router: Router
   ) {
-    this.searchField = new FormControl('');
+    // this.searchField = new FormControl('');
     this.variarantDetailsOb = of([]);
   }
 
@@ -54,32 +55,24 @@ export class SchemaVariantsComponent implements OnInit {
         this.schemaId = params.schemaId;
         this.objectId = params.moduleId;
 
-        this.schemaVariantService.getSchemaVariantDetails(this.schemaId).subscribe(response => {
-          this.variarantDetails = response;
-          const masterVariantFilter = this.variarantDetails.filter(varData => varData.variantId === '0');
-          if (masterVariantFilter && masterVariantFilter.length > 0) {
-            this.masterVariant = masterVariantFilter[0];
-            this.variarantDetails = this.variarantDetails.filter(remove => remove.variantId !== '0');
-          }
-          this.variarantDetailsOb = of(this.variarantDetails);
-          }, error => {
-          console.log(`Error while fetching schema variants details ${error}`);
-        });
+        this.onLoadVariantList();
 
         this.schemaListService.getSchemaDetailsBySchemaId(this.schemaId).subscribe(data => {
-          this.breadcrumb.heading = data.schemaDescription + 'Variant(s)';
+          this.breadcrumb.heading = data.schemaDescription + ' Variant(s)';
           this.schemaListDetails = data;
         }, error => {
           console.error('Error while fetching schema details');
         });
-
-        this.searchField.valueChanges.subscribe(data => {
-          this.variarantDetailsOb = of(this.variarantDetails.filter(fl =>
-          (fl.title.toLocaleLowerCase().indexOf(data.toLocaleLowerCase()) !== -1) || fl.variantId.indexOf(data) !== -1));
-        }, error => {
-          console.log('Error while fetching search variant details');
-        });
       }
+    });
+  }
+
+  onLoadVariantList() {
+    this.schemaVariantService.getSchemaVariantDetails(this.schemaId).subscribe(response => {
+      this.variarantDetails = response;
+      this.variarantDetailsOb = of(this.variarantDetails);
+      }, error => {
+      console.log(`Error while fetching schema variants details ${error}`);
     });
   }
 
@@ -100,4 +93,27 @@ export class SchemaVariantsComponent implements OnInit {
   public toggle() {
     this.showingErrors = !this.showingErrors;
   }
+
+  public createVariant() {
+    this.router.navigate(['/home/schema/schema-variants/create-variant', this.objectId, this.schemaId, 'new']);
+  }
+
+  editVariant(variantId: string) {
+    this.router.navigate(['/home/schema/schema-variants/create-variant', this.objectId, this.schemaId, variantId]);
+  }
+  /**
+   * Delete schema by variant id
+   * @param variantId deleteable variantId
+   */
+  deleteVariant(variantId: string) {
+    this.schemaVariantService.deleteVariant(variantId).subscribe(res=>{
+      this.matSnackBar.open(`Successfully deleted `, 'Close',{duration:5000});
+      this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+      this.router.onSameUrlNavigation = 'reload'
+      this.router.navigate(['/home/schema/schema-variants', this.objectId, this.schemaId]);
+    }, error=>{
+      this.matSnackBar.open(`Something went wrong `, 'Close',{duration:5000});
+    })
+  }
+
 }

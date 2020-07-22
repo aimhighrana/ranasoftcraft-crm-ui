@@ -48,7 +48,6 @@ import { CreateSchemaComponent } from './_components/module/schema/create-schema
 import { MissingruleComponent } from './_components/module/business-rules/missingrule/missingrule.component';
 import { UserDefinedRuleComponent } from './_components/module/business-rules/user-defined-rule/user-defined-rule.component';
 import { UdrConditionFormComponent } from './_components/module/business-rules/user-defined-rule/udr-condition-form/udr-condition-form.component';
-import { BrConditionalFieldsComponent } from './_components/module/business-rules/br-conditional-fields/br-conditional-fields.component';
 import { UdrConditionControlComponent } from './_components/module/business-rules/user-defined-rule/udr-condition-control/udr-condition-control.component';
 import { RegexRuleComponent } from './_components/module/business-rules/regex-rule/regex-rule.component';
 import { GenericFieldControlComponent } from './_components/module/business-rules/generic-field-control/generic-field-control.component';
@@ -63,7 +62,6 @@ import { PropertiesPanelComponent } from './_components/module/workflow/bpmn-bui
 import { BpmnBuilderComponent } from './_components/module/workflow/bpmn-builder/bpmn-builder.component';
 import { DiwCreateBusinessruleComponent } from './_components/module/schema/diw-create-businessrule/diw-create-businessrule.component';
 import { DiwCreateSchemaComponent } from './_components/module/schema/diw-create-schema/diw-create-schema.component';
-import { UdrConditionOperatorsComponent } from './_components/module/business-rules/user-defined-rule/udr-condition-operators/udr-condition-operators.component';
 
 @NgModule({
   declarations: [
@@ -113,7 +111,6 @@ import { UdrConditionOperatorsComponent } from './_components/module/business-ru
     MissingruleComponent,
     UserDefinedRuleComponent,
     UdrConditionFormComponent,
-    BrConditionalFieldsComponent,
     UdrConditionControlComponent,
     RegexRuleComponent,
     GenericFieldControlComponent,
@@ -128,7 +125,6 @@ import { UdrConditionOperatorsComponent } from './_components/module/business-ru
     BackgroundStepPropertiesComponent,
     DiwCreateBusinessruleComponent,
     DiwCreateSchemaComponent,
-    UdrConditionOperatorsComponent
   ],
   imports: [
     CommonModule,

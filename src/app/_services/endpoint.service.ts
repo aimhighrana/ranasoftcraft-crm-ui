@@ -154,7 +154,7 @@ export class EndpointService {
   }
 
   public getSchemaVariantsUrl(schemaId: string): string {
-    return this.apiUrl + '/schema/schema-variants/' + schemaId;
+    return this.apiUrl + '/schema/variants/' + schemaId;
   }
 
   public getSchemaBrInfoList(schemaId: string): string {
@@ -463,5 +463,15 @@ export class EndpointService {
     // return 'https://devreplica.masterdataonline.com/MDOSF/REST/fapi/restWorkflow/loadWorkFlowPathStep';
   }
 
+  public saveUpdateVariantUrl(): string {
+    return `${this.apiUrl}/schema/variant/create-update-single`;
+  }
 
+  public getVariantdetailsByvariantIdUrl(variantId: string): string {
+    return `${this.apiUrl}/schema/variant/${variantId}`;
+  }
+
+  public deleteVariantUrl(variantId: string): string {
+    return `${this.apiUrl}/schema/variant/delete/${variantId}`;
+  }
 }

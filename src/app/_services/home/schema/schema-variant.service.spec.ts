@@ -13,7 +13,7 @@ describe('SchemaVariantService', () => {
   let endpointServiceSpy: jasmine.SpyObj<EndpointService>;
   beforeEach(async(() => {
     const any2TsSpy = jasmine.createSpyObj('Any2tsService', ['any2SchemaVariantResponse']);
-    const endpointSpy = jasmine.createSpyObj('EndpointService', ['schemaVarinatDetails']);
+    const endpointSpy = jasmine.createSpyObj('EndpointService', ['schemaVarinatDetails', 'getVariantdetailsByvariantIdUrl', 'deleteVariantUrl', 'saveUpdateVariantUrl']);
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule
@@ -50,6 +50,68 @@ describe('SchemaVariantService', () => {
       expect(actualData).toEqual(schemaVariants);
     });
 
+    // mock http
+    const mockRequest = httpTestingController.expectOne(url);
+    expect(mockRequest.request.method).toEqual('POST');
+    expect(mockRequest.request.responseType).toEqual('json');
+    mockRequest.flush(mockData);
+    // verify http
+    httpTestingController.verify();
+  });
+
+  it('getVariantdetailsByvariantId(): should call', () =>{
+    const url = 'get all variant details of variant';
+    // mock url
+    endpointServiceSpy.getVariantdetailsByvariantIdUrl.and.returnValue(url);
+
+    // mock data
+    const mockData = {} as any;
+    // actual call
+    const variantId = '7676567575';
+    schemaVariantService.getVariantdetailsByvariantId(variantId).subscribe(actualData => {
+      expect(actualData).toEqual(mockData);
+    });
+    // mock http
+    const mockRequest = httpTestingController.expectOne(url);
+    expect(mockRequest.request.method).toEqual('GET');
+    expect(mockRequest.request.responseType).toEqual('json');
+    mockRequest.flush(mockData);
+    // verify http
+    httpTestingController.verify();
+  });
+
+  it('deleteVariant(): should call', () =>{
+    const url = 'delete variant details';
+    // mock url
+    endpointServiceSpy.deleteVariantUrl.and.returnValue(url);
+
+    // mock data
+    const mockData = true;
+    // actual call
+    const variantId = '7676567575';
+    schemaVariantService.deleteVariant(variantId).subscribe(actualData => {
+      expect(actualData).toEqual(mockData);
+    });
+    // mock http
+    const mockRequest = httpTestingController.expectOne(url);
+    expect(mockRequest.request.method).toEqual('DELETE');
+    expect(mockRequest.request.responseType).toEqual('json');
+    // verify http
+    httpTestingController.verify();
+  });
+
+  it('saveUpdateSchemaVariant(): should call', () =>{
+    const url = 'create and update single details';
+    // mock url
+    endpointServiceSpy.saveUpdateVariantUrl.and.returnValue(url);
+
+    // mock data
+    const mockData = {} as any;
+    // actual call
+    const request = {} as any;
+    schemaVariantService.saveUpdateSchemaVariant(request).subscribe(actualData => {
+      expect(actualData).toEqual(mockData);
+    });
     // mock http
     const mockRequest = httpTestingController.expectOne(url);
     expect(mockRequest.request.method).toEqual('POST');

@@ -7,6 +7,7 @@ import { SchemaService } from 'src/app/_services/home/schema.service';
 import { DropDownValue, UDRBlocksModel, ConditionalOperator } from '../../business-rules.modal';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BlockType } from '../udr-cdktree.service';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
 @Component({
   selector: 'pros-udr-condition-form',
@@ -71,13 +72,6 @@ export class UdrConditionFormComponent implements OnInit, OnChanges {
     //     this.conditionalOperatorsOb = of(this.conditionalOperators);
     //   }
     // });
-
-    // // filter dropdown values
-    // this.frmGroup.get('conditionFieldValue').valueChanges.subscribe(val=>{
-    //   if(typeof val === 'string') {
-    //     this.getdropDownValues(this.frmGroup.get('fields').value.fieldId, val);
-    //   }
-    // });
   }
 
   /**
@@ -114,6 +108,17 @@ export class UdrConditionFormComponent implements OnInit, OnChanges {
     frmCtrl.setValue(val);
   }
 
+    // filter dropdown values
+  onKey(event: any) {
+    const data = event? event.target.value: '';
+    if(typeof data === 'string') {
+      const filteredObjectTypes = this.dropValues.filter(module => (module.TEXT.toLowerCase().indexOf(data.toLowerCase())) === 0);
+      this.dropValuesOb = of(filteredObjectTypes);
+    } else {
+      this.dropValuesOb = of(this.dropValues);
+    }
+  }
+
   getdropDownValues(fieldId: string, queryString: string) {
     this.schemaService.dropDownValues(fieldId, queryString).subscribe(res=>{
       this.dropValues = res;
@@ -123,6 +128,20 @@ export class UdrConditionFormComponent implements OnInit, OnChanges {
 
   dropValDisplayWith(obj: DropDownValue): string {
     return obj ? obj.TEXT : null;
+  }
+
+  /**
+   * While selection object from object type this method will help us to get assigned schema(s)
+   *  event
+   */
+  selectComparisonValue(event: MatAutocompleteSelectedEvent, index: number): void {
+    const frmArray = this.frmArray;
+    const frmCtrl =  frmArray.at(index);
+    const val =  frmCtrl.value;
+    const selData =  event.option? event.option.value : '';
+    if(selData) {
+      val.conditionFieldValue = selData;
+    }
   }
 
   operatorSelectionChng(option: string, index: number) {

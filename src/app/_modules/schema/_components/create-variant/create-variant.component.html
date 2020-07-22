@@ -1,107 +1,104 @@
 <div class="root">
+    <div class="breadcrumb-wrapper">
+        <pros-breadcrumb [crumbs]="breadcrumb"></pros-breadcrumb>
+    </div>
     <mat-card class="container-show creation-variant">
         <mat-form-field appearance="outline">
             <mat-label>Variant Description</mat-label>
-            <input matInput>
+            <input matInput [formControl]="variantDesc">
         </mat-form-field>
+        <form [formGroup]="frmGroup">
 
+            <div class="f-row variant-rows" formArrayName="frmArray"
+                *ngFor="let item of frmArray.controls; let i = index">
+                <ng-container [formGroupName]="i">
+                    <!-- FIELD CONTROL -->
+                    <pros-br-conditional-fields [schemaId]="schemaId" [moduleId]="moduleId" isRequired="true" 
+                    [selectedFldId]="item.value.fields" (evtOnchange)="changeField($event, i)">
+                    </pros-br-conditional-fields>
 
-        <div class="f-row variant-rows">
-            <mat-form-field appearance="outline">
-                <mat-label>Field</mat-label>
-                <input matInput>
-            </mat-form-field>
-            <span class="col-spacer"></span>
-            <mat-form-field appearance="outline">
-                <mat-label>Operator</mat-label>
-                <mat-select>
-                    <mat-option value="option">in</mat-option>
-                    <mat-option value="option">notin</mat-option>
-                    <mat-option value="option">equal</mat-option>
-                    <mat-option value="option">between</mat-option>
-                  </mat-select>
-            </mat-form-field>
-            <span class="col-spacer"></span>
-            <div class="f-row">
-                <mat-form-field appearance="outline">
-                    <mat-label>Choose Date</mat-label>
-                    <input matInput>
-                    
-                </mat-form-field>
-                <span class="col-spacer"></span>
-                <mat-form-field appearance="outline">
-                    <mat-label>Choose Date</mat-label>
-                    <input matInput>
-                </mat-form-field>
+                    <span class="col-spacer"></span>
+                    <!-- OPERATOR CONTROL -->
+                    <pros-udr-condition-operators
+                        [conditionalOperators] = "conditionalOperators" [selecetedOperator]="item.value.operator"
+                        (afterSelect) ="operatorSelectionChng($event,i)">
+                    </pros-udr-condition-operators>
+
+                    <span class="col-spacer"></span>
+
+                    <div class="f-row">
+                        <!-- Fields for range -->
+                        <ng-template [ngIf]="item.value.showRangeFld">
+                            <!-- if dataType is DATS &DTMS then render Date Component -->
+                            <ng-template [ngIf] = "item.value.fields.picklist === '0' && (item.value.fields.dataType === 'DATS' || item.value.fields.dataType === 'DTMS')" [ngIfElse] ="elseRangeDate">
+                                <pros-date-picker-field [showRangeFld]="item.value.showRangeFld" [selectedStrtFld]="item.value.conditionFieldStartValue"
+                                    [selectedEndFld]="item.value.conditionFieldEndValue" (strtValueSelected)="conditionalFieldChange($event, i)" (endValueSelected)="conditionalEndFieldChange($event,i)">
+                                </pros-date-picker-field>
+                            </ng-template>
+    
+                            <ng-template #elseRangeDate>
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Start Value</mat-label>
+                                    <input matInput formControlName="conditionFieldStartValue">
+                                </mat-form-field>
+
+                                <span class="col-spacer"></span>
+
+                                <mat-form-field appearance="outline">
+                                    <mat-label>End Value</mat-label>
+                                    <input matInput formControlName="conditionFieldEndValue">
+                                </mat-form-field>
+                            </ng-template>
+                        </ng-template>
+
+                        <!-- if picklist is 1 then render autocomplete dropdown-->
+                        <ng-template [ngIf]="!item.value.showRangeFld">
+                            <ng-template [ngIf]="item.value && item.value.fields.picklist === '1'" [ngIfElse]="elseDate">
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Comparison Value</mat-label>
+                                    <input matInput placeholder="Selection dropdown" formControlName="conditionFieldValue"
+                                        [matAutocomplete]="dropValAuto" (keyup)="onKey($event)">
+                                    <mat-autocomplete #dropValAuto="matAutocomplete" [displayWith]="dropValDisplayWith"
+                                        (optionSelected)="selectComparisonValue($event,i)">
+                                        <mat-option *ngFor="let dropVal of dropValuesOb | async" [value]="dropVal">
+                                            {{ dropVal.TEXT }}
+                                        </mat-option>
+                                    </mat-autocomplete>
+                                </mat-form-field>
+                            </ng-template>
+
+                            <!-- if dataType is DATS &DTMS then render Date Component -->
+                            <ng-template #elseDate>
+                                <ng-template [ngIf]="item.value && (item.value.fields.dataType === 'DATS' || item.value.fields.dataType === 'DTMS')" [ngIfElse]="elseBlock">
+                                    <pros-date-picker-field [showRangeFld]="item.value.showRangeFld" [preSelectedFld]="item.value.conditionFieldValue"
+                                        (strtValueSelected)="conditionalFieldChange($event, i)">
+                                    </pros-date-picker-field>
+                                </ng-template>
+                            </ng-template>
+
+                            <ng-template #elseBlock>
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Comparison Value</mat-label>
+                                    <input matInput formControlName="conditionFieldValue">
+                                </mat-form-field>
+                            </ng-template>
+                        </ng-template>
+                    </div>
+
+                    <span class="col-spacer"></span>
+                    <button mat-icon-button color="warn" (click)="remove(i)">
+                        <mat-icon>remove_circle</mat-icon>
+                    </button>
+                </ng-container>
             </div>
-            <span class="col-spacer"></span>
-            <button mat-icon-button color="warn">
-                <mat-icon>remove_circle</mat-icon>
-            </button>
-        </div>
+        </form>
 
-        <div class="f-row variant-rows">
-            <mat-form-field appearance="outline">
-                <mat-label>Field</mat-label>
-                <input matInput>
-            </mat-form-field>
-            <span class="col-spacer"></span>
-            <mat-form-field appearance="outline">
-                <mat-label>Operator</mat-label>
-                <mat-select>
-                    <mat-option value="option">in</mat-option>
-                    <mat-option value="option">notin</mat-option>
-                    <mat-option value="option">equal</mat-option>
-                    <mat-option value="option">between</mat-option>
-                  </mat-select>
-            </mat-form-field>
-            <span class="col-spacer"></span>
-
-            <div class="f-row">
-                <mat-form-field appearance="outline" class="matfield-colspan2">
-                    <mat-label>Value</mat-label>
-                    <input matInput>
-                </mat-form-field>
-            </div>
-
-            <span class="col-spacer"></span>
-            <button mat-icon-button color="warn">
-                <mat-icon>remove_circle</mat-icon>
-            </button>
-        </div>
-
-        <div class="f-row variant-rows">
-            <mat-form-field appearance="outline">
-                <mat-label>Field</mat-label>
-                <input matInput>
-            </mat-form-field>
-            <span class="col-spacer"></span>
-            <mat-form-field appearance="outline">
-                <mat-label>Operator</mat-label>
-                <mat-select>
-                    <mat-option value="option">in</mat-option>
-                    <mat-option value="option">notin</mat-option>
-                    <mat-option value="option">equal</mat-option>
-                    <mat-option value="option">between</mat-option>
-                  </mat-select>
-            </mat-form-field>
-            <span class="col-spacer"></span>
-
-            <div class="f-row">
-                <mat-form-field appearance="outline" class="matfield-colspan2">
-                    <mat-label>Value</mat-label>
-                    <input matInput>
-                </mat-form-field>
-            </div>
-
-            <span class="col-spacer"></span>
-            <button mat-icon-button color="warn">
-                <mat-icon>remove_circle</mat-icon>
-            </button>
-        </div>
-
-        <mat-card-actions>
-            <button mat-flat-button color="primary">Add Row</button>
-        </mat-card-actions>
+        <div class="f-row">
+            <button mat-flat-button color="primary" (click)="close()">Discrad</button>
+            <span class="f-spacer"></span>
+            <button mat-flat-button color="primary" (click)="addCondition()">Add Row</button>
+            <span class="f-col-spacer-half "></span>
+            <button mat-flat-button color="primary" (click)="saveUpdateVariant()">Save</button>
+          </div>
     </mat-card>
 </div>

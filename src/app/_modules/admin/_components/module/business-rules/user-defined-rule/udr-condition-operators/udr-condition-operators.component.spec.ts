@@ -40,8 +40,10 @@ describe('UdrConditionOperatorsComponent', () => {
   }));
 
   it('ngOnInit(), test prerequired things', async(()=>{
+    component.selecetedOperator ='RANGE';
+    component.conditionalOperators = [{desc:'Common Operator', childs:['RANGE']}];
     component.ngOnInit();
-    expect(component.ngOnInit).toBeTruthy();
+    expect(component.operator.value).toEqual('RANGE');
   }));
 
   it('operatorSelectionChng(), test operator selection change', async(()=>{
@@ -51,6 +53,9 @@ describe('UdrConditionOperatorsComponent', () => {
 
     expect(component.afterSelect.emit).toHaveBeenCalledWith(option.option.value);
 
+    const option1 = null;
+    component.operatorSelectionChng(option1);
+    expect(component.operatorSelectionChng(option1)).toBeUndefined();
   }));
 
 });
