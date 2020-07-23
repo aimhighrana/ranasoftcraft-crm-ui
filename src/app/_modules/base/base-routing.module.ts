@@ -6,6 +6,8 @@ import { TaskSummaryComponent } from './_components/task-summary/task-summary.co
 import { TasklistTableComponent } from './_components/tasklist-table/tasklist-table.component'
 import { ListPageComponent } from './list-page_components/list-page/list-page.component';
 import { MaterialEditComponent } from './_components/material-edit/material-edit.component';
+import { AttachmentTabComponent } from './_components/attachment-tab/attachment-tab.component';
+import { SaveSearchDialogComponent } from './_components/save-search-dialog/save-search-dialog.component';
 
 const routes: Routes = [
   { path: 'task-list', component: TaskListComponent, pathMatch: 'full' },
@@ -14,6 +16,8 @@ const routes: Routes = [
   { path: 'task-details/:taskId', component: TaskSummaryComponent },
   { path: 'list-page', component: ListPageComponent },
   { path: 'material-edit', component: MaterialEditComponent },
+  { path: 'attachment-tab', component: AttachmentTabComponent },
+  { path: 'save-search-dialog', component: SaveSearchDialogComponent },
   { path: '**', component: PageNotFoundComponent }
 ];
 
