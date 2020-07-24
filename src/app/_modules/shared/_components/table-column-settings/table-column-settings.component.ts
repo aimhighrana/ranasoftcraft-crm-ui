@@ -35,7 +35,9 @@ export class TableColumnSettingsComponent implements OnInit{
   hierarchyIndeterminate = false;
   gridChecked = false;
   gridIndeterminate = false;
-
+  headerArray = [];
+  gridArray = [];
+  hierarchyArray = [];
   constructor(
     private sharedService: SharedServiceService,
     private router: Router,
@@ -48,12 +50,16 @@ export class TableColumnSettingsComponent implements OnInit{
       this.headerDetails();
       this.hierarchyDetails();
       this.gridDetails();
+      if(this.data.selectedFields && this.data.selectedFields.length > 0){
+        this.selectCheckbox();
+      }
       this.search();
     });
   }
 
   // header
   public headerDetails() {
+    this.header = [];
     if(this.data && this.data.selectedFields && this.data.selectedFields.length > 0){
       for(const fldid of this.data.selectedFields) {
         if(this.data.fields.headers[fldid]) {
@@ -75,9 +81,11 @@ export class TableColumnSettingsComponent implements OnInit{
       }
     }
     this.headerFieldObs = of(this.header);
+    this.headerArray = this.header.map(he=> he.fieldId);
   }
     // hierarchy
   public hierarchyDetails() {
+    this.hierarchy = [];
     if(this.data && this.data.selectedHierarchyIds && this.data.selectedHierarchyIds.length>0) {
       for(const hefldId of this.data.selectedHierarchyIds) {
         if(this.data.fields.hierarchyFields[hefldId]) {
@@ -104,12 +112,15 @@ export class TableColumnSettingsComponent implements OnInit{
           this.heText[hefldId] = hedesc.heirarchyText
         }
         this.hierarchyList[hefldId] = this.hierarchy;
+        this.hierarchyArray =this.hierarchy.map(hr=> hr.fieldId);
+
       }
     }
   }
 
     // grid
   public gridDetails() {
+    this.grid = [];
     if(this.data && this.data.selectedGridIds && this.data.selectedGridIds.length>0) {
       for(const grfldId of this.data.selectedGridIds) {
         if(this.data.fields.gridFields[grfldId]) {
@@ -133,7 +144,57 @@ export class TableColumnSettingsComponent implements OnInit{
           this.val = this.data.fields.grids[grfldId];
         }
         this.gridList[grfldId] = this.grid;
+        this.gridArray =this.grid.map(gr=> gr.fieldId);
       }
+    }
+  }
+
+  public selectCheckbox() {
+    let hierarchyCount = 0;
+    let gridCount = 0;
+    let headerCount = 0;
+    const allArray = this.headerArray.concat(this.hierarchyArray).concat(this.gridArray);
+    this.data.selectedFields.forEach( field => {
+      if(this.headerArray.indexOf(field) !== -1){
+        headerCount++;
+      }
+      else if(this.gridArray.length > 0 && this.gridArray.indexOf(field) !== -1) {
+        gridCount++;
+      }
+      else if(this.hierarchyArray.length > 0 && this.hierarchyArray.indexOf(field) !== -1) {
+        hierarchyCount++;
+      }
+    });
+    const allCount = headerCount + hierarchyCount + gridCount;
+      if(allCount === allArray.length){
+        this.allIndeterminate = false;
+        this.allChecked = true;
+        this.hierarchyIndeterminate = false;
+        this.hierarchyChecked = true;
+        this.gridIndeterminate = false;
+        this.gridChecked = true;
+      }
+    else if(allCount > 0) {
+      this.allIndeterminate = true;
+      if(gridCount < this.gridArray.length || hierarchyCount < this.hierarchyArray.length) {
+        this.hierarchyIndeterminate = true;
+        this.hierarchyChecked = false;
+        this.gridIndeterminate = true;
+        this.gridChecked = false;
+      }else if(hierarchyCount === this.hierarchyArray.length || gridCount === this.gridArray.length) {
+        this.hierarchyIndeterminate = false;
+        this.hierarchyChecked = true;
+        this.gridIndeterminate = false;
+        this.gridChecked = true;
+      }
+    }
+    else {
+      this.allIndeterminate = false;
+      this.allChecked = false;
+      this.hierarchyIndeterminate = false;
+      this.hierarchyChecked = false;
+      this.gridIndeterminate = false;
+      this.gridChecked = false;
     }
   }
   // search
@@ -208,8 +269,14 @@ export class TableColumnSettingsComponent implements OnInit{
     return this.markedFields.indexOf(fldId) !==-1 ? true : false;
   }
   onWindowScroll() {
-    const y = document.getElementById(this.markedFields[0]).offsetTop;
-    (document.getElementsByTagName('mat-card')[0]).scrollTo(0,y-40);
+    const data = document.getElementById(this.headerArray[this.headerArray.length-1]).offsetTop;
+    if((this.headerArray.filter(head => head === this.markedFields[this.index])).length > 0 ) {
+      const y = document.getElementById(this.markedFields[this.index]).offsetTop;
+      (document.getElementsByTagName('mat-card')[0]).scrollTo(0,y-40);
+    } else if((this.hierarchyArray.filter(her => her === this.markedFields[this.index])).length > 0 || (this.gridArray.filter(gr => gr === this.markedFields[this.index])).length > 0) {
+      const y =  data + document.getElementById(this.markedFields[this.index]).offsetTop;
+      (document.getElementsByTagName('mat-card')[0]).scrollTo(0,y+5);
+    }
   }
 
   public searchKeyDown(ev) {
@@ -233,16 +300,28 @@ export class TableColumnSettingsComponent implements OnInit{
   public findNext() {
     this.find(1);
     if(this.markedFields.length > 0){
-      const y = document.getElementById(this.markedFields[this.index]).offsetTop;
-      (document.getElementsByTagName('mat-card')[0]).scrollTo(0,y-40);
+      const data = document.getElementById(this.headerArray[this.headerArray.length-1]).offsetTop;
+      if((this.headerArray.filter(head => head === this.markedFields[this.index])).length > 0 ) {
+        const y = document.getElementById(this.markedFields[this.index]).offsetTop;
+        (document.getElementsByTagName('mat-card')[0]).scrollTo(0,y-40);
+      } else if((this.hierarchyArray.filter(her => her === this.markedFields[this.index])).length > 0 || (this.gridArray.filter(gr => gr === this.markedFields[this.index])).length > 0) {
+        const y =  data + document.getElementById(this.markedFields[this.index]).offsetTop;
+        (document.getElementsByTagName('mat-card')[0]).scrollTo(0,y+5);
+      }
     }
   }
 
   public findPrev() {
     this.find(-1);
     if(this.markedFields.length > 0){
-      const y = document.getElementById(this.markedFields[this.index]).offsetTop;
-      (document.getElementsByTagName('mat-card')[0]).scrollTo(0,y-40);
+      const data = document.getElementById(this.headerArray[this.headerArray.length-1]).offsetTop;
+      if((this.headerArray.filter(head => head === this.markedFields[this.index])).length > 0 ) {
+        const y = document.getElementById(this.markedFields[this.index]).offsetTop;
+        (document.getElementsByTagName('mat-card')[0]).scrollTo(0,y-40);
+      } else if((this.hierarchyArray.filter(her => her === this.markedFields[this.index])).length > 0 || (this.gridArray.filter(gr => gr === this.markedFields[this.index])).length > 0) {
+        const y =  data + document.getElementById(this.markedFields[this.index]).offsetTop;
+        (document.getElementsByTagName('mat-card')[0]).scrollTo(0,y+5);
+      }
     }
   }
 
@@ -264,12 +343,11 @@ export class TableColumnSettingsComponent implements OnInit{
   // select All
   public selectAll() {
     if(this.allChecked === true){
-      this.hierarchyChecked = true;
       this.gridChecked = true;
-      const headerArray = this.header.map(he=> he.fieldId);
-      const gridArray = this.grid.map(gr=> gr.fieldId);
-      const hierarchyArray = this.hierarchy.map(hr=> hr.fieldId);
-      const allArray = headerArray.concat(hierarchyArray).concat(gridArray);
+      this.hierarchyChecked = true;
+      this.gridIndeterminate = false;
+      this.hierarchyIndeterminate = false;
+      const allArray = this.headerArray.concat(this.hierarchyArray).concat(this.gridArray);
       allArray.forEach(fldId => {
         if(this.data.selectedFields.indexOf(fldId) === -1) {
           this.data.selectedFields.push(fldId);
@@ -278,15 +356,14 @@ export class TableColumnSettingsComponent implements OnInit{
     }
     else {
       this.data.selectedFields = [];
-      this.hierarchyChecked = false;
       this.gridChecked = false;
+      this.hierarchyChecked = false;
     }
   }
   // hierarchy select all
   public hierarchSelect() {
     if(this.hierarchyChecked === true){
-      const hierarchyArray = this.hierarchy.map(hr=> hr.fieldId);
-      hierarchyArray.forEach(heId => {
+      this.hierarchyArray.forEach(heId => {
         if(this.data.selectedFields.indexOf(heId) === -1) {
           this.data.selectedFields.push(heId);
         }
@@ -294,8 +371,7 @@ export class TableColumnSettingsComponent implements OnInit{
       this.allIndeterminate = true;
     }
     else {
-      const hierarchyArray = this.hierarchy.map(hr=> hr.fieldId);
-      hierarchyArray.forEach(heId => {
+      this.hierarchyArray.forEach(heId => {
         if(this.data.selectedFields.indexOf(heId) !== -1) {
           this.data.selectedFields.splice(heId,1);
         }
@@ -305,8 +381,7 @@ export class TableColumnSettingsComponent implements OnInit{
   // grid Select all
   public gridSelect() {
     if(this.gridChecked === true){
-      const gridArray = this.grid.map(gr=> gr.fieldId);
-      gridArray.forEach(grId => {
+      this.gridArray.forEach(grId => {
         if(this.data.selectedFields.indexOf(grId) === -1) {
           this.data.selectedFields.push(grId);
         }
@@ -314,8 +389,7 @@ export class TableColumnSettingsComponent implements OnInit{
       this.allIndeterminate = true;
     }
     else {
-      const gridArray = this.grid.map(gr=> gr.fieldId);
-      gridArray.forEach(grId => {
+      this.gridArray.forEach(grId => {
         if(this.data.selectedFields.indexOf(grId) !== -1) {
           this.data.selectedFields.splice(grId,1);
         }
@@ -324,9 +398,7 @@ export class TableColumnSettingsComponent implements OnInit{
   }
  // selecetd Fields
   public mangeChooseColumn(event: any) {
-    let hierarchyCount = 0;
-    let gridCount = 0;
-    let headerCount = 0;
+
     const res: any = event.option;
     const fldId = res._value.fieldId;
     const index = this.data.selectedFields.indexOf(fldId);
@@ -336,46 +408,7 @@ export class TableColumnSettingsComponent implements OnInit{
     else {
       this.data.selectedFields.splice(index,1);
     }
-    const headerArray = this.header.map(he=> he.fieldId);
-    const gridArray =this.grid.map(gr=> gr.fieldId);
-    const hierarchyArray =this.hierarchy.map(hr=> hr.fieldId);
-    const allArray = headerArray.concat(hierarchyArray).concat(gridArray);
-    this.data.selectedFields.forEach( field => {
-      let result = headerArray.indexOf(field);
-      headerCount++;
-      if(result === -1) {
-        result = gridArray.indexOf(field);
-        gridCount++;
-      }
-      if(result === -1) {
-        result = hierarchyArray.indexOf(field);
-        hierarchyCount++;
-      }
-    });
-    const allCount = headerCount + hierarchyCount + gridCount;
-      if(allCount === allArray.length || (hierarchyArray.length > 0 && hierarchyCount === hierarchyArray.length) || (gridArray.length > 0 && gridCount === gridArray.length) ){
-        this.allIndeterminate = false;
-        this.allChecked = true;
-        this.hierarchyIndeterminate = false;
-        this.hierarchyChecked = true;
-        this.gridIndeterminate = false;
-        this.gridChecked = true;
-      }
-    else if(allCount > 0 && (gridCount < gridArray.length || hierarchyCount < hierarchyArray.length || allCount < allArray.length) ) {
-      this.allIndeterminate = true;
-      this.hierarchyIndeterminate = true;
-      this.gridIndeterminate = true;
-    }
-
-    else {
-      this.allIndeterminate = false;
-      this.allChecked = false;
-      this.hierarchyIndeterminate = false;
-      this.hierarchyChecked = false;
-      this.gridIndeterminate = false;
-      this.gridChecked = false;
-    }
-
+    this.selectCheckbox();
   }
   // check field is selected or not
   isSelected(fldId: string): boolean {
@@ -398,18 +431,15 @@ export class TableColumnSettingsComponent implements OnInit{
       const gridupdatedArray: Array<string> = new Array();
       const restArray: Array<string> = new Array();
       this.data.selectedFields.forEach(res=>{
-        const headerMap = this.header.map(map => map.fieldId);
-        let index = headerMap.indexOf(res);
+        let index = this.headerArray.indexOf(res);
         headerupdatedArray[index] = res;
 
         if(index === -1) {
-          const gridMap = this.grid.map(map => map.fieldId);
-          index = gridMap.indexOf(res);
+          index = this.gridArray.indexOf(res);
           hierarchyupdatedArray[index] = res;
         }
         if(index === -1) {
-          const heiMap = this.hierarchy.map(map => map.fieldId);
-          index = heiMap.indexOf(res);
+          index = this.hierarchyArray.indexOf(res);
           gridupdatedArray[index] = res;
         }
         if(index === -1) {
@@ -419,8 +449,8 @@ export class TableColumnSettingsComponent implements OnInit{
       });
       this.data.selectedFields = headerupdatedArray.concat(hierarchyupdatedArray).concat(gridupdatedArray).concat(restArray);
     }
-    this.sharedService.setChooseColumnData(this.data);
     this.router.navigate([{ outlets: { sb: null }}]);
+    this.sharedService.setChooseColumnData(this.data);
     this.persistenceTableView();
   }
   close()

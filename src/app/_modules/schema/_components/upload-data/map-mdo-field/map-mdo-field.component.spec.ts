@@ -29,10 +29,19 @@ describe('MapMdoFieldComponent', () => {
   it('ngOnInit(),', async(() => {
       component.preSelectedFld = 'MATL_GROUP';
       component.mdoFields = [{fieldId:'MATL_GROUP', fieldDescri:'Material Group'} as MetadataModel,{fieldId:'object', fieldDescri:'Module Object Number'} as MetadataModel ];
+      component.autoSelectedFld = 'test';
+      component.excelField = 'id';
       component.ngOnInit();
       expect(component.ngOnInit).toBeTruthy();
+
       component.preSelectedFld = '';
-      component.mdoFields = [{fieldId:'MATL_GROUP', fieldDescri:'Material Group'} as MetadataModel,{fieldId:'object', fieldDescri:'Module Object Number'} as MetadataModel ];
+      component.autoSelectedFld = 'test';
+      component.excelField = 'Material Group';
+      component.ngOnInit();
+      expect(component.ngOnInit).toBeTruthy();
+
+      component.excelField = 'Mate';
+      component.autoSelectedFld = 'test';
       component.ngOnInit();
       expect(component.ngOnInit).toBeTruthy();
   }));

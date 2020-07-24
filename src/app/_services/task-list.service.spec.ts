@@ -135,7 +135,7 @@ describe('TaskListService', () => {
         }
       ]
     }
-    service.saveTaskListView(requestJSON).subscribe((response) => {
+    service.updateTaskListView(requestJSON).subscribe((response) => {
       expect(response).toBe('Record is Successfully saved')
     });
 
