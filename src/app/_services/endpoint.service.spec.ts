@@ -1,6 +1,7 @@
 import { TestBed, inject, async } from '@angular/core/testing';
 
 import { EndpointService } from './endpoint.service';
+import { TaskListSummaryRequestParams, CommonGridRequestObject } from '@models/task-list/taskListDetails';
 
 describe('EndpointService', () => {
   beforeEach(() => {
@@ -51,12 +52,12 @@ describe('EndpointService', () => {
     expect(serObj.getSchemaStatusUrl()).toContain('schema/schema-status');
   }));
 
-  it('getDynamicColumnListsUrl(), should return the listmetadata url', async(() =>{
+  it('getDynamicColumnListsUrl(), should return the listmetadata url', async(() => {
     const serObj = new EndpointService();
     expect(serObj.getDynamicColumnListsUrl()).toContain('/listPage/listmetadata');
   }));
 
-  it('getDynamicFiltermetaListsUrl(), should return the FilterMeta field url', async(() =>{
+  it('getDynamicFiltermetaListsUrl(), should return the FilterMeta field url', async(() => {
     const serObj = new EndpointService();
     expect(serObj.getDynamicFiltermetaListsUrl()).toContain('/listPage/getFilterMetaField');
   }));
@@ -79,6 +80,11 @@ describe('EndpointService', () => {
     expect(serObj.deleteConditionBlock(blockId)).toContain(`schema/br/udr/delete-conditionblock/${blockId}`);
   }));
 
+  it('should call getTaskListCountURL(), should return task list count URL', () => {
+    const serObj = new EndpointService();
+    expect(serObj.getTaskListCountURL()).toContain('tasklist/getTaskListCount');
+  })
+
   it('it should call getTaskListViewsUrl() and return formatted URL', () => {
     const serviceobj = new EndpointService();
     const userName = 'DemoApp';
@@ -99,29 +105,86 @@ describe('EndpointService', () => {
   it('it should call getSaveTaskListURL() and return formatted URL', () => {
     const serviceobj = new EndpointService();
     expect(serviceobj.getSaveTaskListURL()).toContain(`tasklist/taskListUserView`);
+  });
+
+  it('should call getTaskSummaryMetaDataURL()', () => {
+    const serviceobj = new EndpointService();
+    const requestObject: TaskListSummaryRequestParams = {
+      plantCode: '123',
+      userRole: '12456890',
+      userId: 'DemoApp',
+      lang: 'en',
+      taskId: '1234567890',
+      wfId: '0987654321',
+      objectnumber: '0101010101',
+      objecttype: '0101010101',
+      eventCode: '0101010101',
+    }
+    expect(serviceobj.getTaskSummaryMetaDataURL(requestObject)).toContain(`/layout/getLayoutMetaData/${requestObject.objectnumber}/${requestObject.objecttype}/${5}?plantCode=${requestObject.plantCode}&userRole=${requestObject.userRole}&taskId=${requestObject.taskId}&userId=${requestObject.userId}&wfId=${requestObject.taskId}&lang=${requestObject.lang}`);
   })
 
-  it('getCollaboratorDetailsUrl(), should return the person details  url', async(() =>{
+  it('should call getTaskSummaryLayoutDataURL()', () => {
+    const serviceobj = new EndpointService();
+    const wfid = 'ERSA2528';
+    const eventCode = '1005'
+    const lang = 'en'
+
+    expect(serviceobj.getTaskSummaryLayoutDataURL(wfid, eventCode, lang)).toContain(`layoutData/getLayoutData/${wfid}/${eventCode}?lang=${lang}`);
+  });
+
+  it('should call getAuditTrailLogsURL()', () => {
+    const serviceobj = new EndpointService();
+    expect(serviceobj.getAuditTrailLogsURL()).toContain(`changeAuditLog/getChangeAuditLog`)
+  });
+
+  it('should call getGridDataURL()', () => {
+    const serviceobj = new EndpointService();
+    const gridRequestParams: CommonGridRequestObject = {
+      objecttype: '123abcd',
+      tabCode: '123',
+      eventCode: '123',
+      plantCode: 'MDO1003',
+      lang: 'en',
+      taskId: '000101001010100101',
+      wfId: '221322101146259092',
+      userId: 'DemoApp',
+      userRole: '663065348460318692',
+      tabId: '840574035205469800',
+      fetchSize: 10,
+      fetchCount: 0,
+      gridId: ''
+    }
+    const urlParams = `plantCode=${gridRequestParams.plantCode}&lang=${gridRequestParams.lang}&taskId=${gridRequestParams.taskId}&wfId=${gridRequestParams.wfId}&userId=${gridRequestParams.userId}&userRole=${gridRequestParams.userRole}&tabId=${gridRequestParams.tabId}`
+    expect(serviceobj.getGridMetaDataURL(gridRequestParams)).toContain(`grid/getGridMetadata/${gridRequestParams.objecttype}/${gridRequestParams.tabCode}/${gridRequestParams.eventCode}?${urlParams}`)
+  });
+
+  it('should call getMetadataByWfid()', () => {
+    const serviceobj = new EndpointService();
+    const wfid = '221322101146259092'
+    expect(serviceobj.getMetadataByWfid(wfid)).toContain(`layout/getMetadataByWfid/${wfid}`);
+  })
+
+  it('getCollaboratorDetailsUrl(), should return the person details  url', async(() => {
     const serObj = new EndpointService();
     expect(serObj.getCollaboratorDetailsUrl('28364872686186')).toContain('schema/get-all-schemacollaborator-details/28364872686186');
   }));
 
-  it('createUpdatePersonDetailsUrl(), should  create and update person details url', async(() =>{
+  it('createUpdatePersonDetailsUrl(), should  create and update person details url', async(() => {
     const serObj = new EndpointService();
     expect(serObj.createUpdateUserDetailsUrl()).toContain('schema/create-update-schemacollaborator');
   }));
 
-  it('getAllUserDetailsUrl(), should return the all person details url', async(() =>{
+  it('getAllUserDetailsUrl(), should return the all person details url', async(() => {
     const serObj = new EndpointService();
     expect(serObj.getAllUserDetailsUrl()).toContain('admin/permission/collaborators');
   }));
 
-  it('deleteSchemaCollaboratorDetailsUrl(),should delte the exexting collaborator derail', async(() =>{
+  it('deleteSchemaCollaboratorDetailsUrl(),should delte the exexting collaborator derail', async(() => {
     const serObj = new EndpointService();
     expect(serObj.deleteSchemaCollaboratorDetailsUrl('355535857155320681 ')).toContain('admin/users/collaborator-records/delete/355535857155320681');
   }));
 
-  it('deleteSchema(),should delte the schema', async(() =>{
+  it('deleteSchema(),should delte the schema', async(() => {
     const serObj = new EndpointService();
     expect(serObj.deleteSchema('355535857155320681 ')).toContain('schema/delete/355535857155320681');
   }));

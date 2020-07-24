@@ -1,0 +1,27 @@
+<mat-tab-group #tabs id="tabs" (selectedTabChange)="toggleTabs($event)">
+    <mat-tab id="generalInfoTab" class="generalInfoTab" label="General Information">
+        <pros-general-information-tab [viewingObj]="detailDataEmitter.asObservable()" [detailsData]="detailsData"
+            [enableEditing]="enableEditing">
+        </pros-general-information-tab>
+    </mat-tab>
+    <mat-tab id="historyTab" class="historyTab" label="History">
+        <pros-history-tab [auditLogData]="auditLogData"></pros-history-tab>
+    </mat-tab>
+    <mat-tab label="Attachments" id="attachmentsTab">
+
+        <pros-attachment-tab></pros-attachment-tab>
+    </mat-tab>
+</mat-tab-group>
+
+<mat-divider></mat-divider>
+
+<div class="page-actions">
+    <button mat-stroked-button *ngIf="selectedTabIndex === 0 && !editGI" (click)="enableGIEditing(true)">Edit</button>
+    <button mat-stroked-button *ngIf="selectedTabIndex === 0 && editGI" (click)="enableGIEditing(false)">Save</button>
+
+    <span class="f-spacer"></span>
+    <button mat-flat-button>Claim</button>
+    <button mat-flat-button>Forward</button>
+    <button mat-flat-button>Reject</button>
+    <button mat-flat-button color="primary">Approve</button>
+</div>

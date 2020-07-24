@@ -1,235 +1,45 @@
 <mat-card class="mat-elevation-z0 general-container">
     <mat-card-content>
-        <mat-card class="mat-elevation-z0 summary-datarows">
-            <div class="f-row">
-                <button mat-button color="primary" class="summary-item-toggle">Summary</button>
-            </div>
-            <div class="f-row">
-             <mat-card class="mat-elevation-z0 data-tile">
-                <mat-grid-list cols="2" rowHeight="56px" class="summary-grid">
-                    <mat-grid-tile>
-                    <div class="f-col">
-                        <mat-label>Material Type</mat-label>
-                        <span class="value-row">ERSA--Spare Parts</span>
+        <mat-card class="mat-elevation-z0 summary-datarows" *ngFor="let item of allDetailsData">
+
+            <div class="f-col">
+
+                <mat-card class="mat-elevation-z0 data-tile">
+
+                    <div class="f-row">
+                        <button mat-button color="primary" class="summary-item-toggle">{{item.tabDesc}}
+                            <mat-icon>
+                                keyboard_arrow_down
+                            </mat-icon>
+                        </button>
                     </div>
-                    </mat-grid-tile>
-                    <mat-grid-tile>
-                    <div class="f-col">
-                        <mat-label>Material Desc</mat-label>
-                        <span class="value-row">BRG BALL,ANNU</span>
+
+                    <div *ngIf="!isEditMode">
+
+                        <mat-grid-list cols="2" [rowHeight]="setDynamicHeight(item)" class="summary-grid grid-min-width"
+                            [id]="item">
+                            <div *ngFor="let fieldData of item.fieldsList">
+                                <div *ngIf="fieldData && !fieldData.hidden">
+                                    <mat-grid-tile *ngIf="getDOMElement(fieldData) !== 'Grid'">
+                                        <div class="f-col">
+                                            <mat-label>{{fieldData.fieldDesc}}</mat-label>
+                                            <p>
+                                                {{fieldData.layoutData ? fieldData.layoutData.textdisplay : ''}}
+                                            </p>
+                                        </div>
+                                    </mat-grid-tile>
+                                    <div class="custom-component-parent" [id]="fieldData.fieldId"
+                                        *ngIf="getDOMElement(fieldData) === 'Grid'">
+                                        <pros-generic-table [gridData]="fieldData.gridData"></pros-generic-table>
+                                    </div>
+                                </div>
+                            </div>
+                        </mat-grid-list>
                     </div>
-                    </mat-grid-tile>
-                    <mat-grid-tile>
-                    <div class="f-col">
-                        <mat-label>Material Group</mat-label>
-                        <span class="value-row">40142100 — Pipe</span>
-                    </div>
-                    </mat-grid-tile>
-                    <mat-grid-tile>
-                    <div class="f-col">
-                        <mat-label>Industry Sector</mat-label>
-                        <span class="value-row">M--Mechanical engineering</span>
-                    </div>
-                    </mat-grid-tile>
-                </mat-grid-list>
-                <div class="row">
-                    <button mat-button color="primary">Reference Records <mat-icon>keyboard_arrow_down</mat-icon></button>
-                    <p>mat-tree comes here</p>
-                </div>
-             </mat-card>
+
+                </mat-card>
             </div>
         </mat-card>
 
-       <mat-card class="mat-elevation-z0 summary-datarows">
-           <div class="f-row">
-               <button mat-button color="primary" class="summary-item-toggle">Basic Data <mat-icon>keyboard_arrow_down</mat-icon></button>
-           </div>
-           <div class="f-row">
-            <mat-card class="mat-elevation-z0 data-tile">
-                <mat-grid-list cols="2" rowHeight="56px" class="summary-grid">
-                    <mat-grid-tile>
-                        <div class="f-col">
-                            <mat-label>Base Unit of Measure</mat-label>
-                            <span class="value-row">EA--each</span>
-                        </div>
-                    </mat-grid-tile>
-                    <mat-grid-tile>
-                        <div class="f-col">
-                            <mat-label>Old Material Number</mat-label>
-                            <span class="value-row">987</span>
-                        </div>
-                    </mat-grid-tile>
-
-                    <mat-grid-tile>
-                        <div class="f-col">
-                            <mat-label>Net Weight</mat-label>
-                            <span class="value-row">2.000</span>
-                        </div>
-                    </mat-grid-tile>
-
-                    <mat-grid-tile>
-                        <div class="f-col">
-                            <mat-label>Gross Weight</mat-label>
-                            <span class="value-row">10.000</span>
-                        </div>
-                    </mat-grid-tile>
-
-                    <mat-grid-tile>
-                        <div class="f-col">
-                            <mat-label>Unit of Weight</mat-label>
-                            <span class="value-row">G--Gram</span>
-                        </div>
-                    </mat-grid-tile>
-
-                    <mat-grid-tile>
-                        <div class="f-col">
-                            <mat-label>Volume</mat-label>
-                            <span class="value-row">01—Product Division</span>
-                        </div>
-                    </mat-grid-tile>
-
-                    <mat-grid-tile>
-                        <div class="f-col">
-                            <mat-label>Volume unit</mat-label>
-                            <span class="value-row">M3—Cubic meter</span>
-                        </div>
-                    </mat-grid-tile>
-
-                    <mat-grid-tile>
-                        <div class="f-col">
-                            <mat-label>Manufacturer</mat-label>
-                            <span class="value-row">EA—each</span>
-                        </div>
-                    </mat-grid-tile>
-
-                    <mat-grid-tile [colspan]="2" [rowspan]="2">
-                        <div class="f-col">
-                            <mat-label>Long Description</mat-label>
-                            <span class="value-row">PIPE,TYPE:LONGITUDINAL SUBMERGED ARC WELDING,INSIDE DIAMETER:3250 MM,MATERIAL:CARBON STEEL,WALL 
-                                THICKNESS:13.75 MM,WEIGHT:7.94 KG,LENGTH:18 IN</span>
-                        </div>
-                    </mat-grid-tile>
-                  </mat-grid-list>
-            </mat-card>
-
-            <mat-card class="mat-elevation-z2 comment-infobox">
-                <h4 class="mat-line"><mat-icon>account_circle</mat-icon> <span class="f-col-spacer-half"></span>John Smith</h4>
-                <p class="mat-line">
-                 We need to update the role type.
-                </p>
-                <div class="f-row">
-                    <button mat-button color="primary">Resolve</button>
-                    <span class="f-spacer"></span>
-                    <button mat-button color="primary">Reply</button>
-                </div>
-            </mat-card> 
-           </div>
-       </mat-card>
-
-       <mat-card class="mat-elevation-z0 summary-datarows">
-        <div class="f-row">
-            <button mat-button color="primary" class="summary-item-toggle">Plant Data <mat-icon>keyboard_arrow_down</mat-icon></button>
-        </div>
-        <div class="f-row">
-            <mat-card class="mat-elevation-z0 data-tile">
-                <div class="data-topaction"><h4 class="mat-h4">Storage Location</h4></div>
-                
-              <mat-grid-list cols="2" rowHeight="56px" class="summary-grid subchild-grid">
-                  <mat-grid-tile>
-                      <div class="f-col">
-                          <mat-label>Work Scheduling</mat-label>
-                          <span class="value-row">EA--each</span>
-                      </div>
-                  </mat-grid-tile>
-                  <mat-grid-tile>
-                      <div class="f-col">
-                          <mat-label>Old Material Number</mat-label>
-                          <span class="value-row">0989</span>
-                      </div>
-                  </mat-grid-tile>
-                  <mat-grid-tile>
-                      <div class="f-col">
-                          <mat-label>Division</mat-label>
-                          <span class="value-row">Division 01</span>
-                      </div>
-                  </mat-grid-tile>
-
-                  <mat-grid-tile>
-                      <div class="f-col">
-                          <mat-label>Cross Plant Material Status</mat-label>
-                          <span class="value-row">01—Block for Procurmet/wheras</span>
-                      </div>
-                  </mat-grid-tile>
-              </mat-grid-list>
-
-              <div class="data-topaction"><h4 class="mat-h4">Valuation</h4></div>
-              <mat-grid-list cols="2" rowHeight="56px" class="summary-grid subchild-grid">
-                  <mat-grid-tile>
-                      <div class="f-col">
-                          <mat-label>Accounting</mat-label>
-                          <span class="value-row">EA--each</span>
-                      </div>
-                  </mat-grid-tile>
-                  <mat-grid-tile>
-                      <div class="f-col">
-                          <mat-label>Old Material Number</mat-label>
-                          <span class="value-row">9879</span>
-                      </div>
-                  </mat-grid-tile>
-                  <mat-grid-tile>
-                      <div class="f-col">
-                          <mat-label>Purchasing</mat-label>
-                          <span class="value-row">01—Product Division</span>
-                      </div>
-                  </mat-grid-tile>
-                  <mat-grid-tile>
-                      <div class="f-col">
-                          <mat-label>Cross Plant Material Status</mat-label>
-                          <span class="value-row"></span>
-                      </div>
-                  </mat-grid-tile>
-              </mat-grid-list>
-           
-              <div class="data-topaction"><h4 class="mat-h4">MRP1</h4></div>
-              <mat-grid-list cols="2" rowHeight="56px" class="summary-grid subchild-grid">
-                  <mat-grid-tile>
-                      <div class="f-col">
-                          <mat-label>MRP Group</mat-label>
-                          <span class="value-row">000— External Procurements</span>
-                      </div>
-                  </mat-grid-tile>
-                  <mat-grid-tile>
-                      <div class="f-col">
-                          <mat-label>MRP Controller</mat-label>
-                          <span class="value-row">001 — John Smith</span>
-                      </div>
-                  </mat-grid-tile>
-                  <mat-grid-tile>
-                      <div class="f-col">
-                          <mat-label>MRP Type</mat-label>
-                          <span class="value-row">ND — No Planning</span>
-                      </div>
-                  </mat-grid-tile>
-
-                  <mat-grid-tile>
-                      <div class="f-col">
-                          <mat-label>Availability check</mat-label>
-                          <span class="value-row">01—Daily requirements</span>
-                      </div>
-                  </mat-grid-tile>
-              </mat-grid-list>
-            </mat-card>
-        </div>
-       </mat-card>
     </mat-card-content>
 </mat-card>
-<mat-divider></mat-divider>
-
-<div class="page-actions" *ngIf="currentTab!='inWorkFlow'">  
-    <button mat-stroked-button>Edit</button>
-    <span class="f-spacer"></span>
-    <button mat-flat-button>Claim</button>
-    <button mat-flat-button>Forward</button>
-    <button mat-flat-button>Reject</button>
-    <button mat-flat-button color="primary">Approve</button>
-</div>

@@ -53,6 +53,47 @@
         .subchild-grid {
           margin: 0 8px 16px 8px;
         }
+
+        .summarygrid-fields {
+          mat-form-field {
+            width: 100%;
+            margin: 0 8px;
+          }
+        }
+
+        .grid-table {
+          border: 1px solid #e1e1e1;
+          width: 70%;
+          margin: 0 8px;
+          border-left: none;
+          border-bottom: none;
+
+          mat-header-cell,
+          mat-cell {
+            padding: 0 8px;
+            font-size: 14px;
+            border-left: 1px solid #e1e1e1;
+          }
+
+          .cell-width-first {
+            flex: 3;
+          }
+
+          .cell-width-second {
+            flex: 2;
+          }
+
+          mat-header-cell:last-of-type,
+          mat-cell:last-of-type {
+            flex: 1;
+            justify-content: center;
+          }
+
+          mat-form-field {
+            width: 100%;
+            height: 29px;
+          }
+        }
       }
 
       .comment-infobox {
@@ -76,4 +117,16 @@
   button {
     margin: 0 8px;
   }
+}
+
+.full-grid {
+  height: auto;
+}
+
+.grid-min-width {
+  height: 77px;
+}
+
+.custom-component-parent {
+  width: 95%;
 }

@@ -24,4 +24,13 @@ describe('GeneralInformationTabComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should call getDOMElement', () => {
+    const object = {
+      picklist: 1
+    }
+    expect(component.getDOMElement(object)).toBe('Dropdown');
+    object.picklist = 5;
+    expect(component.getDOMElement(object)).toBe('Text');
+  });
 });

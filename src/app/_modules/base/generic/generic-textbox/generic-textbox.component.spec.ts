@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SummaryContainerComponent } from './summary-container.component';
+import { GenericTextboxComponent } from './generic-textbox.component';
 
-describe('SummaryContainerComponent', () => {
-  let component: SummaryContainerComponent;
-  let fixture: ComponentFixture<SummaryContainerComponent>;
+describe('GenericTextboxComponent', () => {
+  let component: GenericTextboxComponent;
+  let fixture: ComponentFixture<GenericTextboxComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SummaryContainerComponent ]
+      declarations: [ GenericTextboxComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SummaryContainerComponent);
+    fixture = TestBed.createComponent(GenericTextboxComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

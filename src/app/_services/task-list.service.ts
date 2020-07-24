@@ -3,6 +3,7 @@ import { Filter } from '@models/task-list/filter';
 import { EndpointService } from '@services/endpoint.service';
 import { of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { TaskListSummaryRequestParams, CommonGridRequestObject } from '@models/task-list/taskListDetails';
 import { TaskListViewObject } from '@models/task-list/columnSetting';
 
 @Injectable({
@@ -16,44 +17,6 @@ export class TaskListService {
     { searchName: 'Search 3', id: 'ss-3' },
     { searchName: 'Search 4', id: 'ss-4' },
   ]
-
-  taskDetails = {
-    generalInformation: {
-      task_id: '',
-      requestor: '',
-      due_date: '',
-      module: '',
-      tags: [{
-        color: '',
-        value: 'tag1'
-      }, {
-        color: '#eaeaea',
-        value: 'tag2'
-      }, {
-        color: 'red',
-        value: 'tag3'
-      }],
-      addressDetails: {
-        name: '',
-        address: '',
-        homePhone: '',
-        email: ''
-      },
-      bank_details: {
-        country: '',
-        account_number: '',
-        name: '',
-        email: ''
-      }
-    },
-    history: [{
-      user: '',
-      role: '',
-      slaHours: '',
-      recievedOn: '',
-      auctionedOn: ''
-    }]
-  }
 
   /**
    * Constructor of @class TaskListService
@@ -75,8 +38,7 @@ export class TaskListService {
   /**
    * Function to get dynamic filters
    */
-  public getDynamicFilters(userDetails) {
-    const url = this.endpointService.getFiltersUrl();
+  getDynamicFilters(userDetails) {
     const requestData = {
       plantCode: userDetails.plantCode,
       userName: userDetails.userName,
@@ -84,7 +46,7 @@ export class TaskListService {
       locale: 'en',
       clientId: '738'
     }
-    return this.http.post(url, requestData);
+    return this.http.post(this.endpointService.getFiltersUrl(), requestData);
   }
 
   /**
@@ -95,14 +57,13 @@ export class TaskListService {
   }
 
   /**
-   * Funtion to call the service to get the task details
-   * @param taskId The id of the task
+   * Task list count
    */
-  getTaskDetails(taskId: string) {
-    return of(this.taskDetails);
+  getTaskListCount(filters: Filter) {
+    return this.http.post(this.endpointService.getTaskListCountURL(), filters)
   }
 
-  /**
+  /*
    * This is used to get the task list
    * @param userName The current logged in username
    */
@@ -132,5 +93,34 @@ export class TaskListService {
    */
   updateTaskListView(taskListViewObject: TaskListViewObject) {
     return this.http.post(this.endpointService.getSaveTaskListURL(), taskListViewObject);
+  }
+
+  /**
+   * This is function to get audit logs(history for task summary page)
+   * @param objectNumber object number of selected task
+   * @param taskId task id of selected task
+   */
+  getAuditLogs(objectNumber: string, taskId: string, language: string) {
+    return this.http.post(this.endpointService.getAuditTrailLogsURL(), { objectNumber, taskId, language })
+  }
+
+  getGridMetaData(gridRequestParams: CommonGridRequestObject) {
+    return this.http.get(this.endpointService.getGridMetaDataURL(gridRequestParams))
+  }
+
+  getGridData(gridRequestParams: CommonGridRequestObject) {
+    return this.http.get(this.endpointService.getGridDataUrl(gridRequestParams))
+  }
+
+  getMetadataByWfid(wfid: string) {
+    return this.http.get(this.endpointService.getMetadataByWfid(wfid))
+  }
+
+  getCommonLayoutData(taskListSummaryRequestParams: TaskListSummaryRequestParams) {
+     return this.http.get(this.endpointService.getCommonLayoutDataUrl(taskListSummaryRequestParams))
+  }
+
+  getChangeAuditLogDetails(taskId: string, userId: string, language: string) {
+    return this.http.post(this.endpointService.getChangeLogDetails(), { taskId, userId, language })
   }
 }

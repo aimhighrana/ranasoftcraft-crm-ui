@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChild, ChangeDetectionStrategy, Output, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectionStrategy, Output, OnDestroy } from '@angular/core';
 import { TaskListRow } from '@models/task-list/taskListRow';
 import { Filter, DynamicFilter } from '@models/task-list/filter';
 import { TaskListService } from '@services/task-list.service';
-import { Router, ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, Subject, Subscription } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BehaviorSubject, Subject, Subscription, forkJoin } from 'rxjs';
 
 import { UserService } from '@services/user/userservice.service';
 import { Userdetails } from '@models/userdetails';
@@ -16,6 +16,7 @@ import { Location } from '@angular/common';
 import { Pagination } from '@models/task-list/pagination';
 import { TaskListViewObject } from '@models/task-list/columnSetting';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
+import { Utilities } from '@modules/base/common/utilities';
 import { MatDialog } from '@angular/material/dialog';
 import { SaveSearchDialogComponent } from '../save-search-dialog/save-search-dialog.component';
 
@@ -25,7 +26,7 @@ import { SaveSearchDialogComponent } from '../save-search-dialog/save-search-dia
   styleUrls: ['./task-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.Default
 })
-export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
+export class TaskListComponent implements OnInit, OnDestroy {
   dataSource = new MatTableDataSource();
   displayedColumns = [
     'taskid',
@@ -181,6 +182,14 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
   wildSearchValue: string;
 
   /**
+   * This is the limit for pagination
+   */
+  paginationLimit: number;
+  /**
+   * This is used to get current task
+   */
+  currentTask: any;
+  /*
    * This stores the active id
    */
   activeViewId: string;
@@ -190,7 +199,9 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param taskListService This is the object of the service
    */
   constructor(public taskListService: TaskListService, private _router: Router,
-    private _activeRouter: ActivatedRoute, private userService: UserService, private location: Location, public dialog: MatDialog) { }
+    private _activeRouter: ActivatedRoute, private userService: UserService, private location: Location,
+    public utilities: Utilities,
+    public dialog: MatDialog) { }
 
   /**
    * ANGULAR HOOK
@@ -207,6 +218,14 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
       columnVisibleObject.push({ visible: true, value: column })
     })
     this.tableColumns = columnVisibleObject;
+
+    this.routerSubscription = this._activeRouter.params.subscribe((urlParams) => {
+      if (urlParams && urlParams.wfid) {
+        this.showTaskDetails = true;
+        this.activeTab = urlParams.tabId;
+        this.showOnly2Columns();
+      }
+    });
   }
 
   /**
@@ -244,36 +263,24 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
-   * Angular hook
-   */
-  ngAfterViewInit() {
-    this.routerSubscription = this._activeRouter.params.subscribe((urlParams) => {
-      if (urlParams && urlParams.summaryId) {
-        const selectedTabIndex = this.availableTabs.findIndex(ele => ele.code === urlParams.tabId);
-        this.tabGroup.selectedIndex = selectedTabIndex;
-        // used to handle ExpressionChangedAfterItHasBeenCheckedError
-        setTimeout(() => {
-          this.selectedTaskId = urlParams.summaryId;
-          this.showTaskDetails = true;
-          this.showOnly2Columns();
-        }, 100);
-
-      }
-    });
-    this.tabGroup.selectedTabChange.subscribe((tabChange) => {
-      this.selectedTaskId = null
-      this.showTaskDetails = false;
-      this.updateQueryParam(null);
-    })
-  }
-
-  /**
-   * function to get task list from the service
+   * function to get task list and pagination limit
+   * from the service
    */
   getTasks() {
-    this.taskListSubscription = this.taskListService.getTasks(this.filterForm.value).subscribe((response: TaskListRow[]) => {
-      this.dataSource.data = response;
-    })
+    this.taskListSubscription = forkJoin(
+      [
+        this.taskListService.getTasks(this.filterForm.value),
+        this.taskListService.getTaskListCount(this.filterForm.value)
+      ]
+    ).subscribe(([taskList, paginationLimit]: [TaskListRow[], number]) => {
+      this.dataSource.data = taskList;
+      this.paginationLimit = paginationLimit;
+      if (this.selectedTaskId) {
+        const selectedTask = taskList.find(item => item.taskid === this.selectedTaskId);
+        this.currentTask = selectedTask;
+        this.getDefaultViews();
+      }
+    });
   }
 
   /**
@@ -281,7 +288,6 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param event pagination event
    */
   paginate(event: Pagination) {
-    console.log(event);
     this.filterForm.controls.fetchSize.setValue(event.pageSize);
     this.filterForm.controls.fetchCount.setValue(event.pageIndex);
     this.getTasks();
@@ -388,13 +394,17 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
    * send to the details page
    * @param taskId the id of the selected task
    */
-  getTaskDetails(taskId: string) {
+  getTaskDetails(task: TaskListRow) {
     this.activeTab = this.availableTabs[this.tabGroup.selectedIndex].code;
-    this.selectedTaskId = taskId;
-    this.enableDragging.next(true);
-    this.showTaskDetails = !this.showTaskDetails;
-    this.updateQueryParam(taskId);
-    this.showOnly2Columns();
+    this.userDetailSubscription = this.userService.getUserDetails().subscribe((userDetails) => {
+      this.userDetails = userDetails;
+      this.selectedTaskId = task.taskid;
+      this.currentTask = task;
+      this.enableDragging.next(true);
+      this.updateQueryParam(task.wfid, task.eventCode);
+      this.showTaskDetails = true;
+      this.showOnly2Columns();
+    })
   }
 
   /**
@@ -405,7 +415,7 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.showTaskDetails = false;
     this.selectedTaskId = null;
     this.enableDragging.next(false)
-    this.updateQueryParam('');
+    this.updateQueryParam('', '');
     this.showOnly2Columns();
   }
 
@@ -413,9 +423,9 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
    * This is a common function to update url
    * @param taskId<string> the task id of the selected task
    */
-  updateQueryParam(taskId: string) {
-    if (taskId) {
-      this.location.go(`/home/task-list/${this.activeTab}/${taskId}`);
+  updateQueryParam(wfid: string, eventCode: string) {
+    if (wfid) {
+      this.location.go(`/home/task-list/${this.activeTab}/${wfid}/${eventCode}`);
       return;
     }
     this.location.go(`/home/task-list`)
@@ -452,6 +462,7 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
   sortData(sortEvent: { active: string, direction: string }) {
     const currentSortableFields = ['datestarted', 'duedate'];
     if (!currentSortableFields.includes(sortEvent.active)) {
+      this.utilities.showSnackBar('This is a non sortable field')
       console.warn('non sortable field', sortEvent.active);
       return;
     }
@@ -510,6 +521,9 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
           const settingObject = this.tableColumns.find(item => item.value === 'setting');
           this.tableColumns.splice(this.tableColumns.indexOf(settingObject), 1);
           this.tableColumns.push({ value: 'setting', order: 10 })
+          if (this.showTaskDetails) {
+            this.showOnly2Columns();
+          }
         });
       })
   }
@@ -547,7 +561,7 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.activeViewId = viewId;
   }
 
-  openDialog(){
+  openDialog() {
     this.dialog.open(SaveSearchDialogComponent)
   }
 

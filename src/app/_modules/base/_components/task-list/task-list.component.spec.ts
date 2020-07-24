@@ -1,200 +1,337 @@
-// import { async, ComponentFixture, TestBed, inject } from '@angular/core/testing';
-// import { TaskListComponent } from './task-list.component';
-// import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
-// import { RouterTestingModule } from '@angular/router/testing';
-// import { FormatTableHeadersPipe } from '@shared/_pipes/format-table-headers.pipe';
-// import { SharedModule } from '@modules/shared/shared.module';
-// import { HttpClientTestingModule } from '@angular/common/http/testing';
-// import { TaskListService } from '@services/task-list.service';
-// import { FormGroup, FormControl } from '@angular/forms';
-// import { of } from 'rxjs';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { TaskListComponent } from './task-list.component';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { RouterTestingModule } from '@angular/router/testing';
+import { FormatTableHeadersPipe } from '@shared/_pipes/format-table-headers.pipe';
+import { SharedModule } from '@modules/shared/shared.module';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TaskListService } from '@services/task-list.service';
+import { FormGroup, FormControl } from '@angular/forms';
+import { of } from 'rxjs';
+import { Pagination } from '@models/task-list/pagination';
+import { MatTabGroup } from '@angular/material/tabs';
+import { UserService } from '@services/user/userservice.service';
+import { By } from '@angular/platform-browser';
 
-// describe('TaskListComponent', () => {
-//   let fixture: ComponentFixture<TaskListComponent>;
-//   let component: TaskListComponent;
 
-//   const sampleSelectedFilters = {
-//     staticFilters: {
-//       status: 'forwarded',
-//       priority: 'P2',
-//       region: null,
-//       recieved_date: '',
-//       requested_date: '',
-//       due_date: '',
-//       requested_by: null
-//     },
-//     dynamicFilters: [
-//       {
-//         objectType: '0000',
-//         objectDesc: 'All Modules',
-//         filterFields: [],
-//         colorActive: true
-//       }
-//     ],
-//     tags: [],
-//     apiRequestStructure: []
-//   }
-//   beforeEach(async(() => {
-//     TestBed.configureTestingModule({
-//       imports: [AppMaterialModuleForSpec, RouterTestingModule, SharedModule, HttpClientTestingModule],
-//       declarations: [TaskListComponent, FormatTableHeadersPipe],
-//       providers: [
-//         HttpClientTestingModule,
-//         TaskListService
-//       ]
-//     }).compileComponents();
-//     jasmine.DEFAULT_TIMEOUT_INTERVAL = 200000;
-//   }));
+describe('TaskListComponent', () => {
+  let fixture: ComponentFixture<TaskListComponent>;
+  let component: TaskListComponent;
 
-//   beforeEach(() => {
-//     fixture = TestBed.createComponent(TaskListComponent);
-//     component = fixture.componentInstance;
-//   });
+  const taskListResponse = [
+    {
+      wfid: '239806156229368596',
+      status: 'REJ',
+      taskid: '242554497793480912',
+      uploadid: null,
+      objectid: 'ERSA1889',
+      objecttype: '1005',
+      objectdesc: 'Material',
+      rejecttext: '',
+      rejectioncomment: '',
+      emailtext: '<OBJECTNUMBER>ERSA1889  has been created and sent for your approval ',
+      entrycheck: '1',
+      fname: 'Demo Approver',
+      imageurl: null,
+      duedate: new Date(),
+      datestarted: new Date(),
+      claimable: 'false',
+      stepId: '01',
+      claimed: '',
+      workflowPath: 'WF53',
+      rejectionType: 'Rejection Type : 1--Material already exists- Duplicate Record',
+      requestorName: 'Demo Initiator',
+      requestorDate: new Date(),
+      eventId: 'Create',
+      senderRole: null,
+      forwardEnabled: '0',
+      profilePicSNO: '',
+      massDumpDescription: '',
+      staticPriority: 'P4',
+      dynamicPriority: 'P5',
+      priorityType: 'STATIC',
+      roleid: null,
+      guiActivate: 'off',
+      priorityEditable: '0',
+      eventCode: '1',
+      delegateStatus: null,
+      totalCount: null,
+      tags: []
+    }
+  ]
 
-//   it('should create', () => {
-//     component = fixture.componentInstance;
-//     expect(component).toBeTruthy();
-//   });
+  const sampleSelectedFilters = {
+    staticFilters: {
+      status: 'forwarded',
+      priority: 'P2',
+      region: null,
+      recieved_date: '',
+      requested_date: '',
+      due_date: '',
+      requested_by: null
+    },
+    dynamicFilters: [
+      {
+        objectType: '0000',
+        objectDesc: 'All Modules',
+        filterFields: [],
+        colorActive: true
+      },
+    ],
+    tags: [],
+    apiRequestStructure: [
+      {
+        objectId: '100',
+        fieldData: {
+          fieldId: 'BR103',
+          filterList: []
+        }
+      }
+    ]
+  }
 
-//   it('getTasks() should get columns', async(() => {
-//     component.filterForm = new FormGroup({});
-//     component.getTasks();
-//     fixture.detectChanges();
-//     expect(component.tasks).not.toBe(null)
-//   }))
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      imports: [AppMaterialModuleForSpec, RouterTestingModule, SharedModule, HttpClientTestingModule],
+      declarations: [TaskListComponent, FormatTableHeadersPipe],
+      providers: [
+        HttpClientTestingModule,
+        TaskListService,
+        UserService,
+        RouterTestingModule,
+        {
+          provide: MatTabGroup,
+          useValues: {
+            selectedIndex: 0,
+          }
+        }
+      ]
+    }).compileComponents();
+  }));
 
-//   it('toggleDynamicFilters() should toggle filters component', () => {
-//     component.dynamicFiltersVisible = false;
-//     component.toggleDynamicFilters();
-//     expect(component.dynamicFiltersVisible).toBe(true);
-//   });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(TaskListComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    fixture.whenStable();
+  });
 
-//   it('closeFilterBox() should set value of dynamicFiltersVisible', () => {
-//     component.closeFilterBox();
-//     fixture.detectChanges();
-//     expect(component.dynamicFiltersVisible).toBe(true);
-//   });
+  it('should create', () => {
+    component = fixture.componentInstance;
+    expect(component).toBeTruthy();
+  });
 
-//   it('toggleColumnSettingPopUp() should reset the value for showColumnSettingPopUp', () => {
-//     component.showColumnSettingPopUp = false;
-//     component.toggleColumnSettingPopUp();
-//     expect(component.showColumnSettingPopUp).toBe(true);
-//   });
+  it('should call ngOnInit', () => {
+    component.ngOnInit();
+    expect(component.filterForm.controls).not.toBe(null)
+  });
 
-//   it('updateFilters() should set values', () => {
-//     component.initializeForm();
-//     fixture.detectChanges();
-//     component.updateFilters(sampleSelectedFilters);
-//     fixture.detectChanges();
-//     expect(component.filterForm.value.filtersMap.status).toBe(sampleSelectedFilters.staticFilters.status);
-//     expect(component.filterForm.value.filtersMap.priority).toBe(sampleSelectedFilters.staticFilters.priority);
-//   });
+  it('should call service', () => {
+    component.initializeForm()
+    const filter = {
+      objectToLoad: ['ALL'],
+      fetchSize: 10,
+      fetchCount: 0,
+      sortField: [],
+      filtersMap: { wildCardSearch: '' }
+    }
 
-//   it('should call getTasks()', () => {
-//     component.initializeForm();
-//     fixture.detectChanges();
-//     component.updateFilters(sampleSelectedFilters);
-//     component.getTasks();
-//     expect(component.dataSource.data.length).toBeGreaterThanOrEqual(0)
-//   });
+    component.filterForm.controls.objectToLoad.setValue(filter.objectToLoad);
+    component.filterForm.controls.fetchSize.setValue(filter.fetchSize);
+    component.filterForm.controls.sortField.setValue(filter.sortField);
 
-//   it('should call paginate()', () => {
-//     component.initializeForm();
-//     fixture.detectChanges();
-//     component.updateFilters(sampleSelectedFilters);
-//     fixture.detectChanges();
-//     component.getTasks();
-//     component.paginate({ previousPageIndex: 0, pageIndex: 1, pageSize: 10, length: 100 });
-//     expect(component.dataSource.data.length).toBeGreaterThanOrEqual(0);
-//   })
+    const taskListSpy = spyOn(component.taskListService, 'getTasks').and.callFake(() => {
+      return of(taskListResponse);
+    });
+    const taskListCountSpy = spyOn(component.taskListService, 'getTaskListCount').and.callFake(() => {
+      return of(49)
+    });
+    component.selectedTaskId = '242554497793480912'
 
-//   it('should call sortData()', () => {
-//     component.initializeForm();
-//     // fixture.detectChanges();
-//     component.filterForm = new FormGroup({
-//       objectToLoad: new FormControl(['ALL']),
-//       fetchSize: new FormControl(10), // per page no of items
-//       fetchCount: new FormControl(0), // page id
-//       sortField: new FormControl([]),
-//       filtersMap: new FormControl({ wildCardSearch: '' })
-//     });
-//     component.updateFilters(sampleSelectedFilters);
-//     // fixture.detectChanges();
-//     component.getTasks();
-//     fixture.detectChanges();
-//     // component.filterForm = new FormGroup({});
-//     component.sortData({ active: 'datestarted', direction: 'asc' });
-//     expect(component.sortableHeaders.length).toBeGreaterThanOrEqual(1);
-//   });
+    component.getTasks();
+    expect(taskListSpy).toHaveBeenCalled()
+    expect(taskListCountSpy).toHaveBeenCalled();
+    expect(component.dataSource.data.length).toEqual(taskListResponse.length)
+    expect(component.paginationLimit).toEqual(49);
+    expect(component.currentTask).toBe(taskListResponse[0])
+  });
 
-//   it('should call closeDetailsModal()', () => {
-//     component.tableColumns = [{visible:false}];
-//     component.closeDetailsModal();
-//     expect(component.showTaskDetails).toBe(false);
-//     expect(component.selectedTaskId).toBe(null);
-//   });
+  it('should call paginate()', () => {
+    component.initializeForm()
+    const filter = {
+      objectToLoad: ['ALL'],
+      fetchSize: 10,
+      fetchCount: 0,
+      sortField: [],
+      filtersMap: { wildCardSearch: '' }
+    }
 
-//   // it('should call performOperationOnViews()', inject([TaskListService], (taskListService: TaskListService) => {
-//   //   TestBed.createComponent(TaskListComponent); // this is the trigger of constructor method
-//   //   fixture.detectChanges();
-//   //   const operationObject = {
-//   //     type: 'create',
-//   //     data: {
-//   //       viewId: '967589022265877187',
-//   //       viewName: 'top 6 only',
-//   //       fieldId: [
-//   //         'datestarted',
-//   //         'duedate',
-//   //         'requestorName',
-//   //         'taskid',
-//   //         'fname',
-//   //         'emailtext'
-//   //       ],
-//   //       fields: [],
-//   //       default: false,
-//   //       active: false
-//   //     }
-//   //   };
+    component.filterForm.controls.objectToLoad.setValue(filter.objectToLoad);
+    component.filterForm.controls.fetchSize.setValue(filter.fetchSize);
+    component.filterForm.controls.sortField.setValue(filter.sortField);
 
-//   //   /**
-//   //    * for Create
-//   //    */
-//   //   const taskListServiceSpy = spyOn(taskListService, 'saveTaskListView').and.callThrough();
-//   //   component.performOperationOnViews(operationObject);
-//   //   expect(taskListServiceSpy).toHaveBeenCalledWith(operationObject.data);
+    const taskListSpy = spyOn(component.taskListService, 'getTasks').and.callFake(() => {
+      return of(taskListResponse);
+    });
+    const taskListCountSpy = spyOn(component.taskListService, 'getTaskListCount').and.callFake(() => {
+      return of(49)
+    });
+    const event: Pagination = {
+      length: 0,
+      pageIndex: 10,
+      pageSize: 100,
+      previousPageIndex: 10
+    }
+    component.paginate(event);
+    expect(taskListSpy).toHaveBeenCalled();
+    expect(taskListCountSpy).toHaveBeenCalled();
+  });
 
-//   //   /**
-//   //    * for Update
-//   //    */
-//   //   const updateListServiceSpy = spyOn(taskListService, 'updateTaskListView').and.callThrough();
-//   //   operationObject.type = 'update';
-//   //   component.performOperationOnViews(operationObject);
-//   //   expect(updateListServiceSpy).toHaveBeenCalledWith(operationObject.data);
+  it('toggleDynamicFilters() should toggle filters component', () => {
+    component.dynamicFiltersVisible = false;
+    component.toggleDynamicFilters();
+    expect(component.dynamicFiltersVisible).toBe(true);
+  });
 
-//   //   /**
-//   //    * for Delete
-//   //    */
-//   //   const deleteListServiceSpy = spyOn(taskListService, 'deleteTaskListItem').and.callThrough();
-//   //   operationObject.type = 'delete';
-//   //   component.performOperationOnViews(operationObject);
-//   //   expect(deleteListServiceSpy).toHaveBeenCalledWith(operationObject.data.viewId);
+  it('should closeFilterBox', () => {
+    component.closeFilterBox();
+    expect(component.dynamicFiltersVisible).toEqual(true)
+  });
 
-//   //   /**
-//   //    * checking response should not be null, it can be 0 but not null
-//   //    * because initally user may not have any views
-//   //    */
-//   //   expect(component.taskListViews.length).toBeGreaterThanOrEqual(0);
-//   // }));
+  it('should call toggleColumnSettingPopUp()', () => {
+    component.showColumnSettingPopUp = false;
+    component.toggleColumnSettingPopUp();
+    expect(component.showColumnSettingPopUp).toBe(true);
+  });
 
-//   it('should call getDefaultViews()', () => {
-//     const taskListServiceObj = fixture.debugElement.injector.get(TaskListService);
-//     spyOn(taskListServiceObj, 'getTasklListViews');
-//     fixture.detectChanges();
-//     component.getDefaultViews();
-//     fixture.detectChanges();
-//     expect(component.userDetails).not.toBe(null);
-//     expect(taskListServiceObj.getTasklListViews).toHaveBeenCalled();
-//     expect(component.taskListViews.length).toBeGreaterThanOrEqual(0);
-//   })
+  it('should call closeDetailsModal()', () => {
+    component.tableColumns = [{ visible: false }];
+    component.closeDetailsModal();
+    expect(component.showTaskDetails).toBe(false);
+    expect(component.selectedTaskId).toBe(null);
+  });
 
-// })
+
+  it('should call sortData()', () => {
+    component.initializeForm();
+    component.filterForm = new FormGroup({
+      objectToLoad: new FormControl(['ALL']),
+      fetchSize: new FormControl(10), // per page no of items
+      fetchCount: new FormControl(0), // page id
+      sortField: new FormControl([]),
+      filtersMap: new FormControl({ wildCardSearch: '' })
+    });
+    component.updateFilters(sampleSelectedFilters);
+    component.getTasks();
+    component.sortData({ active: 'datestarted', direction: 'asc' });
+    expect(component.sortableHeaders.length).toBeGreaterThanOrEqual(1);
+  });
+
+
+  it('updateFilters() should set values', () => {
+    component.initializeForm();
+    fixture.detectChanges();
+    component.updateFilters(sampleSelectedFilters);
+    fixture.detectChanges();
+    expect(component.filterForm.value.filtersMap.status).toBe(sampleSelectedFilters.staticFilters.status);
+    expect(component.filterForm.value.filtersMap.priority).toBe(sampleSelectedFilters.staticFilters.priority);
+  });
+
+
+  it('should call performOperationOnViews()', () => {
+    TestBed.createComponent(TaskListComponent); // this is the trigger of constructor method
+    fixture.detectChanges();
+    const operationObject = {
+      type: 'create',
+      data: {
+        viewId: '967589022265877187',
+        viewName: 'top 6 only',
+        fieldId: [
+          'datestarted',
+          'duedate',
+          'requestorName',
+          'taskid',
+          'fname',
+          'emailtext'
+        ],
+        fields: [],
+        default: false,
+        active: false
+      }
+    };
+
+    /**
+     * for Create
+     */
+    const taskListServiceSpy = spyOn(component.taskListService, 'saveTaskListView').and.callThrough();
+    component.performOperationOnViews(operationObject);
+    expect(taskListServiceSpy).toHaveBeenCalledWith(operationObject.data);
+
+    /**
+     * for Update
+     */
+    const updateListServiceSpy = spyOn(component.taskListService, 'updateTaskListView').and.callThrough();
+    operationObject.type = 'update';
+    component.performOperationOnViews(operationObject);
+    expect(updateListServiceSpy).toHaveBeenCalledWith(operationObject.data);
+
+    /**
+     * for Delete
+     */
+    const deleteListServiceSpy = spyOn(component.taskListService, 'deleteTaskListItem').and.callThrough();
+    operationObject.type = 'delete';
+    component.performOperationOnViews(operationObject);
+    expect(deleteListServiceSpy).toHaveBeenCalledWith(operationObject.data.viewId);
+    /**
+     * checking response should not be null, it can be 0 but not null
+     * because initally user may not have any views
+     */
+    expect(component.taskListViews.length).toBeGreaterThanOrEqual(0);
+  });
+
+  it('should call getDefaultViews()', () => {
+    const taskListServiceObj = fixture.debugElement.injector.get(TaskListService);
+    spyOn(taskListServiceObj, 'getTasklListViews');
+    fixture.detectChanges();
+    component.getDefaultViews();
+    fixture.detectChanges();
+    expect(component.userDetails).not.toBe(null);
+    expect(taskListServiceObj.getTasklListViews).toHaveBeenCalled();
+    expect(component.taskListViews.length).toBeGreaterThanOrEqual(0);
+  });
+
+  it('should set setActiveView', () => {
+    component.setActiveView('12');
+    expect(component.activeViewId).toBe('12')
+  });
+
+  it('should call getTaskDetails()', () => {
+    component.tabGroup.selectedIndex = 0;
+    component.getTaskDetails(taskListResponse[0]);
+    expect(component.userDetails).not.toBe(null)
+  });
+
+  it('should call doWildSearch()', () => {
+    const wildcardSearchSpy = spyOn(component, 'doWildSearch');
+    const txtField = fixture.debugElement.query(By.css('#wildSearchField'));
+    txtField.triggerEventHandler('keyup', {
+      target: {
+        value: 'e'
+      }
+    });
+    fixture.whenStable();
+    expect(wildcardSearchSpy).toHaveBeenCalled();
+  });
+
+  it('should call getFilters()', () => {
+    component.getFilters();
+    expect(component.dynamicFiltersVisible).toBe(false);
+
+    component.dynamicFiltersVisible = false;
+    const spy = spyOn(component.taskListService, 'getDynamicFilters');
+    component.getFilters();
+    fixture.whenStable();
+    expect(spy).toHaveBeenCalled();
+
+  })
+})

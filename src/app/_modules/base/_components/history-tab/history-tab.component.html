@@ -1,204 +1,107 @@
 <mat-card class="mat-elevation-z0 history-container">
-<mat-card-content>
-    <div class="f-row history-actions">
-        <span class="f-spacer"></span>
-        <button mat-button color="primary"><mat-icon>get_app</mat-icon> Download</button>
-    </div>
-    <mat-card class="mat-elevation-z0 summary-datarows">
-        <div class="f-row">
-        <mat-card class="mat-elevation-z2 data-tile">
-            <div class="f-row data-topaction">
-                <h4 class="mat-h4">Summary</h4> 
-                        <span class="f-spacer"></span>
-                        <button mat-icon-button><mat-icon matBadgeSize="medium" matBadge="4" matBadgeColor="primary">attach_file</mat-icon></button>
-                        <button mat-icon-button><mat-icon matBadgeSize="medium" matBadge="15" matBadgeColor="primary">comment</mat-icon></button>
-                        <span class="col-spacer"></span>
-                        <mat-chip-list>
-                            <mat-chip color="primary" selected>Completed</mat-chip>
-                </mat-chip-list>
-            </div>
-            <mat-grid-list cols="2" rowHeight="40px" class="summary-grid">
-                <mat-grid-tile>
-                <div class="f-col">
-                    <mat-label>Material Type</mat-label>
-                    <span class="value-row">ERSA--Spare Parts</span>
-                </div>
-                </mat-grid-tile>
-                <mat-grid-tile>
-                <div class="f-col">
-                    <mat-label>Material Desc</mat-label>
-                    <span class="value-row">BRG BALL,ANNU</span>
-                </div>
-                </mat-grid-tile>
-                <mat-grid-tile>
-                <div class="f-col">
-                    <mat-label>Material Group</mat-label>
-                    <span class="value-row">40142100 — Pipe</span>
-                </div>
-                </mat-grid-tile>
-                <mat-grid-tile>
-                <div class="f-col">
-                    <mat-label>Industry Sector</mat-label>
-                    <span class="value-row">M--Mechanical engineering</span>
-                </div>
-                </mat-grid-tile>
-                </mat-grid-list>
-                <div class="row">
-                    <button mat-button color="primary">Reference Records <mat-icon>keyboard_arrow_down</mat-icon></button>
-                    <p>mat-tree comes here</p>
-                </div>
-        </mat-card>
+    <mat-card-content>
+        <div class="f-row history-actions">
+            <span class="f-spacer"></span>
+            <button mat-button color="primary">
+                <mat-icon>get_app</mat-icon> Download
+            </button>
         </div>
-    </mat-card>
 
-    <mat-card class="mat-elevation-z0 summary-datarows">
-        <div class="f-row">
-        <mat-card class="mat-elevation-z2 data-tile">
-            <div class="f-row data-topaction">
-                <h4 class="mat-h4">Summary</h4> 
-                        <span class="f-spacer"></span>
-                        <button mat-icon-button><mat-icon matBadgeSize="medium" matBadge="4" matBadgeColor="primary">attach_file</mat-icon></button>
-                        <button mat-icon-button><mat-icon matBadgeSize="medium" matBadge="15" matBadgeColor="primary">comment</mat-icon></button>
-                        <span class="col-spacer"></span>
-                        <mat-chip-list>
-                            <mat-chip color="primary" selected>Completed</mat-chip>
-                </mat-chip-list>
-            </div>
-            <mat-grid-list cols="2" rowHeight="40px" class="summary-grid">
-                <mat-grid-tile>
-                <div class="f-col">
-                    <mat-label>Material Type</mat-label>
-                    <span class="value-row">ERSA--Spare Parts</span>
-                </div>
-                </mat-grid-tile>
-                <mat-grid-tile>
-                <div class="f-col">
-                    <mat-label>Material Desc</mat-label>
-                    <span class="value-row">BRG BALL,ANNU</span>
-                </div>
-                </mat-grid-tile>
-                <mat-grid-tile>
-                <div class="f-col">
-                    <mat-label>Material Group</mat-label>
-                    <span class="value-row">40142100 — Pipe</span>
-                </div>
-                </mat-grid-tile>
-                <mat-grid-tile>
-                <div class="f-col">
-                    <mat-label>Industry Sector</mat-label>
-                    <span class="value-row">M--Mechanical engineering</span>
-                </div>
-                </mat-grid-tile>
-                </mat-grid-list>
-        </mat-card>
-
-        <mat-card class="mat-elevation-z2 comment-infobox">
-            <h4 class="mat-line"><mat-icon>account_circle</mat-icon> <span class="f-col-spacer-half"></span>John Smith</h4>
-            <p class="mat-line">
-            We need to update the role type.
-            </p>
+        <mat-card class="mat-elevation-z0 summary-datarows" *ngFor="let log of auditLogData">
             <div class="f-row">
-                <button mat-button color="primary">Resolve</button>
-                <span class="f-spacer"></span>
-                <button mat-button color="primary">Reply</button>
-            </div>
-        </mat-card> 
-        </div>
-    </mat-card>
 
-    <mat-card class="mat-elevation-z0 summary-datarows">
-        <div class="f-row">
-        <mat-card class="mat-elevation-z2 data-tile">
-            <div class="f-row data-topaction">
-                <h4 class="mat-h4">Summary</h4> 
+                <mat-card class="mat-elevation-z2 data-tile">
+                    <div class="f-row data-topaction">
+                        <h4 class="mat-h4">{{log.stepDetails.stepText}}</h4>
                         <span class="f-spacer"></span>
-                        <button mat-icon-button><mat-icon matBadgeSize="medium" matBadge="4" matBadgeColor="primary">attach_file</mat-icon></button>
-                        <button mat-icon-button><mat-icon matBadgeSize="medium" matBadge="15" matBadgeColor="primary">comment</mat-icon></button>
                         <span class="col-spacer"></span>
                         <mat-chip-list>
-                            <mat-chip color="primary" selected>Completed</mat-chip>
-                </mat-chip-list>
-            </div>
-            <mat-grid-list cols="2" rowHeight="40px" class="summary-grid">
-                <mat-grid-tile>
-                <div class="f-col">
-                    <mat-label>Material Type</mat-label>
-                    <span class="value-row">ERSA--Spare Parts</span>
-                </div>
-                </mat-grid-tile>
-                <mat-grid-tile>
-                <div class="f-col">
-                    <mat-label>Material Desc</mat-label>
-                    <span class="value-row">BRG BALL,ANNU</span>
-                </div>
-                </mat-grid-tile>
-                <mat-grid-tile>
-                <div class="f-col">
-                    <mat-label>Material Group</mat-label>
-                    <span class="value-row">40142100 — Pipe</span>
-                </div>
-                </mat-grid-tile>
-                <mat-grid-tile>
-                <div class="f-col">
-                    <mat-label>Industry Sector</mat-label>
-                    <span class="value-row">M--Mechanical engineering</span>
-                </div>
-                </mat-grid-tile>
-                </mat-grid-list>
-        </mat-card>
-        </div>
-    </mat-card>
+                            <mat-chip color="primary" selected>{{statusFromShortCode(log.stepDetails.status)}}
+                            </mat-chip>
+                        </mat-chip-list>
+                    </div>
 
-    <mat-card class="mat-elevation-z0 summary-datarows">
-        <div class="f-row">
-        <mat-card class="mat-elevation-z2 data-tile">
-            <div class="f-row data-topaction">
-                <h4 class="mat-h4">Summary</h4> 
-                        <span class="f-spacer"></span>
-                        <button mat-icon-button><mat-icon matBadgeSize="medium" matBadge="4" matBadgeColor="primary">attach_file</mat-icon></button>
-                        <button mat-icon-button><mat-icon matBadgeSize="medium" matBadge="15" matBadgeColor="primary">comment</mat-icon></button>
-                        <span class="col-spacer"></span>
-                        <mat-chip-list>
-                            <mat-chip color="primary" selected>Completed</mat-chip>
-                </mat-chip-list>
+                    <mat-grid-list cols="2" rowHeight="40px" class="summary-grid">
+                        <mat-grid-tile>
+                            <div class="f-col">
+                                <mat-label>User</mat-label>
+                                <span class="value-row">{{log.stepDetails.user}}</span>
+                            </div>
+                        </mat-grid-tile>
+                        <mat-grid-tile>
+                            <div class="f-col">
+                                <mat-label>SLA Hours</mat-label>
+                                <span class="value-row">{{log.stepDetails.slaHours || 0 }} Hour(s) </span>
+                            </div>
+                        </mat-grid-tile>
+                        <mat-grid-tile>
+                            <div class="f-col">
+                                <mat-label>Role</mat-label>
+                                <span class="value-row">{{log.stepDetails.role}}</span>
+                            </div>
+                        </mat-grid-tile>
+                        <mat-grid-tile>
+                            <div class="f-col">
+                                <mat-label>Recieved On</mat-label>
+                                <span class="value-row">{{log.stepDetails.receivedOn}}</span>
+                            </div>
+                        </mat-grid-tile>
+                    </mat-grid-list>
+
+
+                    <mat-grid-list cols="2" rowHeight="40px" class="summary-grid">
+                        <mat-grid-tile>
+                        </mat-grid-tile>
+                        <mat-grid-tile>
+                            <div class="f-col">
+                                <mat-label>Auctioned on</mat-label>
+                                <span class="value-row">{{log.stepDetails.actionedOn}} </span>
+                            </div>
+                        </mat-grid-tile>
+
+                    </mat-grid-list>
+
+                    <div class="row">
+                        <!-- <button mat-button color="primary">View More Details <mat-icon>keyboard_arrow_down</mat-icon>
+                        </button> -->
+
+                        <mat-accordion #accordion="matAccordion">
+                            <mat-expansion-panel (opened)="getChangeLogs(log.taskId,log.stepDetails.user)">
+                                <mat-expansion-panel-header color="primary">
+                                    <mat-panel-title>
+                                        View More Details
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+
+                                <mat-grid-list cols="1" rowHeight="40px" class="summary-grid">
+                                    <div *ngFor="let field of activeMoreLogs">
+                                        <mat-grid-tile>
+                                            <div class="f-col">
+                                                <mat-label>Description</mat-label>
+                                                <span class="value-row">{{field.labelDescription}}</span>
+                                            </div>
+                                            <div class="f-col" *ngFor="let keyField of field.keyFields;let i = index">
+                                                <mat-label>{{keyField}} {{i}}</mat-label>
+
+                                                <div class="f-col" *ngFor="let field of field.fields[i];let j = index">
+                                                    <span class="value-row">
+                                                        <s>{{field.logValues.oldValue}}</s>|
+                                                        {{field.logValues.newValue}}
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                        </mat-grid-tile>
+                                    </div>
+                                </mat-grid-list>
+                                 
+
+                            </mat-expansion-panel>
+                        </mat-accordion>
+                    </div>
+                </mat-card>
             </div>
-            <mat-grid-list cols="2" rowHeight="40px" class="summary-grid">
-                <mat-grid-tile>
-                <div class="f-col">
-                    <mat-label>Material Type</mat-label>
-                    <span class="value-row">ERSA--Spare Parts</span>
-                </div>
-                </mat-grid-tile>
-                <mat-grid-tile>
-                <div class="f-col">
-                    <mat-label>Material Desc</mat-label>
-                    <span class="value-row">BRG BALL,ANNU</span>
-                </div>
-                </mat-grid-tile>
-                <mat-grid-tile>
-                <div class="f-col">
-                    <mat-label>Material Group</mat-label>
-                    <span class="value-row">40142100 — Pipe</span>
-                </div>
-                </mat-grid-tile>
-                <mat-grid-tile>
-                <div class="f-col">
-                    <mat-label>Industry Sector</mat-label>
-                    <span class="value-row">M--Mechanical engineering</span>
-                </div>
-                </mat-grid-tile>
-                </mat-grid-list>
         </mat-card>
-        </div>
-    </mat-card>
-</mat-card-content>
+
+    </mat-card-content>
 </mat-card>
-<mat-divider></mat-divider>
-<div class="page-actions">  
-    <button mat-stroked-button>Edit</button>
-    <span class="f-spacer"></span>
-    <button mat-flat-button>Claim</button>
-    <button mat-flat-button>Forward</button>
-    <button mat-flat-button>Reject</button>
-    <button mat-flat-button color="primary">Approve</button>
-</div>

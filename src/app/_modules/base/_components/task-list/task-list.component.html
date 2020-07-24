@@ -6,20 +6,26 @@
             <mat-tab label="My Task">
                 <ng-container *ngTemplateOutlet="commonFilterContent"></ng-container>
                 <div class="f-row list-wrapper">
-                    <div class="tasks-container" [class.content-row]="!selectedTaskId" [class.split]="selectedTaskId"
-                        [summaryShown]="enableDragging.asObservable()" prosResizeable>
+                    <div class="tasks-container" id="left-table-area" [class.content-row]="!selectedTaskId"
+                        [class.split]="selectedTaskId" [summaryShown]="enableDragging.asObservable()" prosResizeable>
 
                         <!-- dynamic column -->
-                        <pros-columnsetting  (activeViewEmitter)="setActiveView($event)" [tableColumns]="tableColumns" [taskListViews]="taskListViews"
-                            (performOperation)="performOperationOnViews($event)" (close)="toggleColumnSettingPopUp()"
-                            *ngIf="showColumnSettingPopUp">
+                        <pros-columnsetting (activeViewEmitter)="setActiveView($event)" [tableColumns]="tableColumns"
+                            [taskListViews]="taskListViews" (performOperation)="performOperationOnViews($event)"
+                            (close)="toggleColumnSettingPopUp()" *ngIf="showColumnSettingPopUp">
                         </pros-columnsetting>
-                        <ng-container *ngTemplateOutlet="commonTableComponent"></ng-container>
-                        <div class="f-row null-content">No records available yet</div>
-                        <div class="hand-control"></div>
 
+                        <div *ngIf="dataSource.data.length; else norecords">
+                            <ng-container *ngTemplateOutlet="commonTableComponent"></ng-container>
+                        </div>
+
+                    
+                        <!-- <div class="hand-control"></div> -->
                     </div>
-                    <ng-container *ngTemplateOutlet="commonDetailsContent"></ng-container>
+
+                    <div *ngIf="activeTab === 'myTasks' && showTaskDetails">
+                        <ng-container *ngTemplateOutlet="commonDetailsContent"></ng-container>
+                    </div>
                 </div>
             </mat-tab>
             <!-- Tab content for My task ends -->
@@ -44,7 +50,9 @@
                         <ng-container *ngTemplateOutlet="commonTableComponent"></ng-container>
 
                     </div>
-                    <ng-container *ngTemplateOutlet="commonDetailsContent"></ng-container>
+                    <div *ngIf="activeTab === 'inWorkFlow'">
+                        <ng-container *ngTemplateOutlet="commonDetailsContent"></ng-container>
+                    </div>
                 </div>
             </mat-tab>
             <!-- Tab content for In WorkFlow ends-->
@@ -69,7 +77,9 @@
                         <ng-container *ngTemplateOutlet="commonTableComponent"></ng-container>
 
                     </div>
-                    <ng-container *ngTemplateOutlet="commonDetailsContent"></ng-container>
+                    <div *ngIf="activeTab === 'completed'" >
+                        <ng-container *ngTemplateOutlet="commonDetailsContent"></ng-container>
+                    </div>
                 </div>
             </mat-tab>
             <!-- Tab content for Completed ends -->
@@ -102,7 +112,7 @@
                 <p class="mat-label" *ngIf="wildSearchEnabled"> {{dataSource.data.length}} results found for
                     "{{wildSearchValue}}"</p>
                 <span class="f-spacer"></span>
-                <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[10, 20, 50, 100]"
+                <mat-paginator [length]="paginationLimit" [pageSize]="10" [pageSizeOptions]="[10, 20, 50, 100]"
                     (page)="paginate($event)"></mat-paginator>
             </div>
 
@@ -120,7 +130,7 @@
 
                 <ng-container matColumnDef="taskid">
                     <mat-header-cell *matHeaderCellDef mat-sort-header> Task ID </mat-header-cell>
-                    <mat-cell *matCellDef="let element" (click)="getTaskDetails(element.taskid)" class="taskid-link">
+                    <mat-cell *matCellDef="let element" (click)="getTaskDetails(element)" class="taskid-link">
                         <span class="mat-text">{{element.taskid}}</span>
                     </mat-cell>
                 </ng-container>
@@ -200,20 +210,23 @@
                 <mat-header-row *matHeaderRowDef="getDisplayColumns;sticky:true"></mat-header-row>
                 <mat-row *matRowDef="let row; columns: getDisplayColumns;"></mat-row>
 
-                
+
             </mat-table>
         </ng-template>
 
-        
+
         <!-- common template for details -->
         <ng-template #commonDetailsContent>
-            <div *ngIf="showTaskDetails" class="split-container">
-                <pros-task-summary [currentTab]="activeTab" [taskId]="selectedTaskId"
-                    (closeDetails)="closeDetailsModal($event)">
+            <div id="right-details-area" class="split-container">
+                <pros-task-summary [currentTask]="currentTask" (closeDetails)="closeDetailsModal($event)">
                 </pros-task-summary>
             </div>
         </ng-template>
 
-       
+        <ng-template #norecords>
+            <div class="f-row null-content">No records available yet</div>
+        </ng-template>
+
+
     </mat-card>
 </div>

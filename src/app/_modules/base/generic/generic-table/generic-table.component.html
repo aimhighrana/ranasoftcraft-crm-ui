@@ -1,0 +1,20 @@
+<div *ngIf="!dataSource.length;else table">
+    <p>No Details available</p>
+</div>
+<ng-template #table>
+    <mat-card class="mat-elevation-z0 data-tile" style="overflow: scroll;">
+        <mat-table [dataSource]="dataSource" class="mat-elevation-z0" class="grid-table"
+            style="height: 500px;overflow: scroll;">
+
+            <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
+                <mat-header-cell *matHeaderCellDef class="cell-width-first"> {{getColumnDescription(column)}} </mat-header-cell>
+                <mat-cell *matCellDef="let element" class="cell-width-first">
+                    <p>{{getText(element,column)}}</p>
+                </mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+        </mat-table>
+    </mat-card>
+</ng-template>

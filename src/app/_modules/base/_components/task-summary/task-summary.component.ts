@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { TaskListService } from '@services/task-list.service';
+import { TaskListRow } from '@models/task-list/taskListRow';
 import { Router, ActivatedRoute } from '@angular/router';
+
 
 @Component({
   selector: 'pros-task-summary',
@@ -8,54 +9,52 @@ import { Router, ActivatedRoute } from '@angular/router';
   styleUrls: ['./task-summary.component.scss']
 })
 export class TaskSummaryComponent implements OnInit {
-  /**
-   * task id from the emitter
-   */
-  @Input() taskId: string;
 
-  @Input() currentTab: string;
+  wfid: string;
+  eventCode: string;
+  taskId: string;
 
   /**
    * Task details are stored here
    */
   @Output() closeDetails = new EventEmitter();
+
   /**
-   * This is used to store the details of the task from the service
+   * The selected task
    */
-  taskDetails: object;
+  @Input() currentTask: TaskListRow;
 
   /**
    * Constructor of @class DetailsComponent
    * @param taskListService Tasklist service description
    */
-  constructor(private taskListService: TaskListService, private router: Router, private activatedRoute: ActivatedRoute) { }
+  constructor(private router: Router,
+    public activatedRoute: ActivatedRoute) { }
 
   /**
    * Event hook
    */
   ngOnInit(): void {
-    console.log(this.currentTab);
-    this.getTaskDetails();
-    // detect if page is being loaded from URL or from selector
-    if (!this.taskId) {
-      this.taskId = this.activatedRoute.snapshot.params.taskId;
+    if (this.currentTask) {
+      this.taskId = this.currentTask.taskid;
+      this.wfid = this.currentTask.wfid;
+      this.eventCode = this.currentTask.eventCode;
+    } else {
+      this.wfid = this.activatedRoute.snapshot.params.wfid;
+      this.eventCode = this.activatedRoute.snapshot.params.eventCode;
     }
-  }
-
-  /**
-   * function to call api to get task details
-   */
-  getTaskDetails() {
-    this.taskListService.getTaskDetails(this.taskId).subscribe((details: object) => {
-      this.taskDetails = details;
-    })
+    console.log(this.wfid, this.eventCode)
   }
 
   closeDetailsModal() {
     this.closeDetails.emit(true)
   }
 
-  openDetails() {
-    this.router.navigate(['home', 'task-details', `${this.taskId}`])
+  /**
+   * This is used to navigate to details page
+   */
+  navigateToDetailsPage() {
+    const url = `home/task-details/${this.wfid}/${this.eventCode}`
+    this.router.navigateByUrl(url)
   }
 }

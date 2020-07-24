@@ -1,19 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { TasklistTableComponent } from './tasklist-table.component';
 
-describe('TasklistTableComponent', () => {
-  let component: TasklistTableComponent;
-  let fixture: ComponentFixture<TasklistTableComponent>;
+import { GenericDropdownComponent } from './generic-dropdown.component';
+
+describe('GenericDropdownComponent', () => {
+  let component: GenericDropdownComponent;
+  let fixture: ComponentFixture<GenericDropdownComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TasklistTableComponent ]
+      declarations: [ GenericDropdownComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TasklistTableComponent);
+    fixture = TestBed.createComponent(GenericDropdownComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

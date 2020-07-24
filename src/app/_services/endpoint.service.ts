@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
+import { TaskListSummaryRequestParams, CommonGridRequestObject } from '@models/task-list/taskListDetails';
 
 @Injectable({
   providedIn: 'root'
@@ -363,14 +364,14 @@ export class EndpointService {
   }
 
   public getSchemaThresholdStatics(schemaId: string, variantId?: string): string {
-    if(variantId === undefined || variantId === null || variantId === 'null'){
+    if (variantId === undefined || variantId === null || variantId === 'null') {
       return `${this.apiUrl}/schema/statics/${schemaId}`;
     } else {
       return `${this.apiUrl}/schema/statics/${schemaId}/${variantId}`;
     }
   }
 
-  public uploadCorrectionDataUrl(objectType: string, schemaId: string,runId: string, plantCode: string, fileSno: string): string {
+  public uploadCorrectionDataUrl(objectType: string, schemaId: string, runId: string, plantCode: string, fileSno: string): string {
     return `${this.apiUrl}/es/uploadCorrection/${objectType}/${schemaId}/${runId}/${plantCode}/${fileSno}`;
   }
 
@@ -393,4 +394,43 @@ export class EndpointService {
   public deleteSchema(schemaId: string): string {
     return `${this.apiUrl}/schema/delete/${schemaId}`;
   }
+  public getTaskListCountURL(): string {
+    return `${this.apiUrl}/tasklist/getTaskListCount`;
+  }
+
+  public getTaskSummaryMetaDataURL(taskListSummaryRequestParams: TaskListSummaryRequestParams): string {
+    return `${this.apiUrl}/layout/getLayoutMetaData/${taskListSummaryRequestParams.objectnumber}/${taskListSummaryRequestParams.objecttype}/${5}?plantCode=${taskListSummaryRequestParams.plantCode}&userRole=${taskListSummaryRequestParams.userRole}&taskId=${taskListSummaryRequestParams.taskId}&userId=${taskListSummaryRequestParams.userId}&wfId=${taskListSummaryRequestParams.taskId}&lang=${taskListSummaryRequestParams.lang}`
+  }
+
+  public getTaskSummaryLayoutDataURL(wfid: string, eventCode: string, lang: string): string {
+    return `${this.apiUrl}/layoutData/getLayoutData/${wfid}/${eventCode}?lang=${lang}`;
+  }
+
+  public getAuditTrailLogsURL(): string {
+    return `${this.apiUrl}/changeAuditLog/getChangeAuditLog`;
+  }
+
+  public getGridMetaDataURL(gridRequestParams: CommonGridRequestObject): string {
+    const urlParams = `plantCode=${gridRequestParams.plantCode}&lang=${gridRequestParams.lang}&taskId=${gridRequestParams.taskId}&wfId=${gridRequestParams.wfId}&userId=${gridRequestParams.userId}&userRole=${gridRequestParams.userRole}&tabId=${gridRequestParams.tabId}`
+    return `${this.apiUrl}/grid/getGridMetadata/${gridRequestParams.objecttype}/${gridRequestParams.tabCode}/${gridRequestParams.eventCode}?${urlParams}`;
+  }
+
+  public getGridDataUrl(gridRequestParams: CommonGridRequestObject) {
+    const urlParams = `plantCode=${gridRequestParams.plantCode}&lang=${gridRequestParams.lang}&taskId=${gridRequestParams.taskId}&wfId=${gridRequestParams.wfId}&userRole=${gridRequestParams.userRole}&userId=${gridRequestParams.userId}&fetchCount=${gridRequestParams.fetchCount}&fetchSize=${gridRequestParams.fetchSize}`;
+    return `${this.apiUrl}/gridData/getGridData/${gridRequestParams.objecttype}/${gridRequestParams.objectNumber}/${gridRequestParams.gridId}/${gridRequestParams.eventCode}?${urlParams}`
+  }
+
+  public getMetadataByWfid(wfid: string): string {
+    return `${this.apiUrl}/layout/getMetadataByWfid/${wfid}`
+  }
+
+  public getCommonLayoutDataUrl(taskListSummaryRequestParams: TaskListSummaryRequestParams) {
+    const urlParams = `plantCode=${taskListSummaryRequestParams.plantCode}&lang=${taskListSummaryRequestParams.lang}&taskId=${taskListSummaryRequestParams.taskId}&wfId=${taskListSummaryRequestParams.wfId}&userRole=${taskListSummaryRequestParams.userRole}&userId=${taskListSummaryRequestParams.userId}`;
+    return `${this.apiUrl}/layout/getLayoutdata/${taskListSummaryRequestParams.objectnumber}/${taskListSummaryRequestParams.objecttype}/5?${urlParams}`
+  }
+
+  public getChangeLogDetails(): string {
+    return `${this.apiUrl}/changeAuditLog/getChangeLogDetails`
+  }
+
 }
