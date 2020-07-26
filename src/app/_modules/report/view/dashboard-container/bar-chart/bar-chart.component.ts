@@ -1,12 +1,12 @@
 import { Component, OnInit, OnChanges, ViewChild, LOCALE_ID, Inject } from '@angular/core';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
-import { BarChartWidget, Criteria, WidgetHeader, ChartLegend, ConditionOperator, BlockType, Orientation } from '../../../_models/widget';
+import { BarChartWidget, Criteria, WidgetHeader, ChartLegend, ConditionOperator, BlockType, Orientation, WidgetColorPalette } from '../../../_models/widget';
 import { BehaviorSubject } from 'rxjs';
-import { ReportService } from '../../../_service/report.service';
 import { ChartOptions, ChartTooltipItem, ChartData } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import   ChartDataLables from 'chartjs-plugin-datalabels';
+import { MatDialog } from '@angular/material/dialog';
 
 
 @Component({
@@ -81,10 +81,10 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
 
   constructor(
     private widgetService: WidgetService,
-    private reportService: ReportService,
-    @Inject(LOCALE_ID) public locale: string
+    @Inject(LOCALE_ID) public locale: string,
+    public matDialog: MatDialog
   ) {
-    super();
+    super(matDialog);
   }
 
   ngOnChanges(): void {
@@ -101,6 +101,13 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
         this.getBarChartData(this.widgetId, this.filterCriteria);
       }
     });
+
+    // after color defined update on widget
+    this.afterColorDefined.subscribe(res=>{
+      if(res) {
+        this.updateColorBasedOnDefined(res);
+      }
+    });
   }
 
   public getHeaderMetaData(): void {
@@ -111,6 +118,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
 
   public getBarChartMetadata(): void {
     this.widgetService.getBarChartMetadata(this.widgetId).subscribe(returndata => {
+      this.widgetColorPalette = returndata.widgetColorPalette;
       this.barWidget.next(returndata);
       this.getBarConfigurationData();
     }, error => {
@@ -145,8 +153,8 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
 
         // Bar widget color
       this.barChartColors = [{
-        backgroundColor: '#8CF5A9',
-        borderColor: '#8CF5A9',
+        backgroundColor: this.widgetColorPalette && this.widgetColorPalette.colorPalettes ? this.widgetColorPalette.colorPalettes[0].colorCode : '#8CF5A9',
+        borderColor: this.widgetColorPalette && this.widgetColorPalette.colorPalettes ? this.widgetColorPalette.colorPalettes[0].colorCode : '#8CF5A9',
       }];
    }
 
@@ -387,6 +395,34 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
       });
     }
     return finalDataSet;
+  }
+
+  /**
+   * Open Color palette...
+   */
+  openColorPalette() {
+    const req: WidgetColorPalette = new WidgetColorPalette();
+    req.widgetId = String(this.widgetId);
+    req.reportId = String(this.reportId);
+    req.widgetDesc = this.widgetHeader.desc;
+    req.colorPalettes = [{
+      code: 'BAR_CHART',
+      colorCode:  this.barChartColors[0].backgroundColor,
+      text: 'Bar Chart Stack Color'
+    }];
+    super.openColorPalette(req);
+  }
+
+  /**
+   * Update stacked color based on color definations
+   * @param res updated color codes
+   */
+  updateColorBasedOnDefined(res: WidgetColorPalette) {
+    this.widgetColorPalette = res;
+    this.barChartColors = [{
+      backgroundColor: res.colorPalettes[0].colorCode,
+      borderColor: res.colorPalettes[0].colorCode,
+    }];
   }
 
 }

@@ -362,6 +362,10 @@ export class EndpointService {
     return `${this.apiUrl}/schema/br/udr/delete-conditionblock/${blockId}`;
   }
 
+  public defineColorPaletteForWidget(): string {
+    return `${this.apiUrl}/report/color-palette`;
+  }
+
 }
 
 

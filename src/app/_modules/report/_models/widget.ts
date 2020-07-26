@@ -175,6 +175,7 @@ export class BarChartWidget {
     stepSize: number;
     dataSetSize: number;
     blankValueAlias : string;
+    widgetColorPalette: WidgetColorPalette;
 
 
 }
@@ -201,6 +202,7 @@ export class StackBarChartWidget{
     stepSize: number;
     dataSetSize: number;
     blankValueAlias : string;
+    widgetColorPalette: WidgetColorPalette;
 }
 
 export class PieChartWidget {
@@ -372,4 +374,17 @@ export enum PermissionType {
     USER = 'USER',
     ROLE = 'ROLE',
     GROUP = 'GROUP'
+}
+
+export interface AssginedColor {
+    code: string;
+    text: string;
+    colorCode: string;
+}
+
+export class WidgetColorPalette {
+    reportId: string;
+    widgetId: string;
+    widgetDesc: string;
+    colorPalettes: AssginedColor[];
 }

@@ -4,9 +4,10 @@ import { Label, BaseChartDirective } from 'ng2-charts';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
 import { BehaviorSubject } from 'rxjs';
-import { StackBarChartWidget, Criteria, WidgetHeader, BlockType, ConditionOperator, ChartLegend, Orientation, OrderWith } from '../../../_models/widget';
+import { StackBarChartWidget, Criteria, WidgetHeader, BlockType, ConditionOperator, ChartLegend, Orientation, OrderWith, WidgetColorPalette } from '../../../_models/widget';
 import { ReportService } from '../../../_service/report.service';
 import   ChartDataLables from 'chartjs-plugin-datalabels';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'pros-stackedbar-chart',
@@ -62,12 +63,15 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     }
   };
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
+
+
   constructor(
     private widgetService : WidgetService,
     private reportService: ReportService,
-    @Inject(LOCALE_ID) public locale: string
+    @Inject(LOCALE_ID) public locale: string,
+    public matDialog: MatDialog
   ) {
-    super();
+    super(matDialog);
   }
 
   ngOnDestroy(): void {
@@ -111,6 +115,13 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     }
     });
 
+    // after color defined update on widget
+    this.afterColorDefined.subscribe(res=>{
+      if(res) {
+        this.updateColorBasedOnDefined(res);
+      }
+    });
+
   }
 
   public getHeaderMetaData():void{
@@ -122,6 +133,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
   public getStackChartMetadata():void{
     this.widgetService.getStackChartMetadata(this.widgetId).subscribe(returnData=>{
       if(returnData){
+        this.widgetColorPalette = returnData.widgetColorPalette;
           this.stackBarWidget.next(returnData);
          this.getBarConfigurationData();
          }
@@ -332,7 +344,8 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         }
         singleobj.fieldCode = singleLis;
         singleobj.stack='a';
-        singleobj.backgroundColor=this.getRandomColor();
+        // singleobj.backgroundColor=this.getRandomColor();
+        singleobj.backgroundColor=this.getUpdatedColorCode(singleobj.fieldCode);
         singleobj.borderColor=this.getRandomColor();
 
 
@@ -531,5 +544,46 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
 
   }
 
+  /**
+   * Open color palette ..
+   */
+  openColorPalette() {
+    const req: WidgetColorPalette = new WidgetColorPalette();
+    req.widgetId = String(this.widgetId);
+    req.reportId = String(this.reportId);
+    req.widgetDesc = this.widgetHeader.desc;
+    req.colorPalettes = [];
+    this.barChartData.forEach(row=>{
+      req.colorPalettes.push({code:row.fieldCode,colorCode:row.backgroundColor,text:row.label});
+    });
+    console.log(req);
+    super.openColorPalette(req);
+  }
+
+  /**
+   * Update stacked color based on color definations
+   * @param res updated color codes
+   */
+  updateColorBasedOnDefined(res: WidgetColorPalette) {
+    this.widgetColorPalette = res;
+    console.log(res);
+    this.stackBarWidget.next(this.stackBarWidget.getValue());
+  }
+
+  /**
+   * Update color on widget based on defined
+   * If not defined the pick random color
+   * @param code resposne code
+   */
+  getUpdatedColorCode(code: string): string {
+    if(this.widgetColorPalette.colorPalettes) {
+      const res = this.widgetColorPalette.colorPalettes.filter(fil => fil.code === code)[0];
+      if(res) {
+        return res.colorCode;
+      }
+
+    }
+    return this.getRandomColor();
+  }
 
 }

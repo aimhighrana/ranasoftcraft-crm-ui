@@ -12,13 +12,13 @@
             <pros-filter *ngIf ="widget.widgetType ==='FILTER'" [widgetId] ="widget.widgetId" [reportId]="reportId" [filterCriteria]="filterCriteria" [hasFilterCriteria] = "emitClearBtnEvent" (evtFilterCriteria)="changeFilterCriteria($event)"></pros-filter>
                 
             <!-- BARCHART WIDGET -->
-            <pros-bar-chart *ngIf ="widget.widgetType ==='BAR_CHART'" [widgetId] ="widget.widgetId" [reportId]="reportId" [filterCriteria]="filterCriteria" (evtFilterCriteria)="changeFilterCriteria($event)"></pros-bar-chart>
+            <pros-bar-chart *ngIf ="widget.widgetType ==='BAR_CHART'" [widgetId] ="widget.widgetId" [reportId]="reportId" [filterCriteria]="filterCriteria" [permissons]="permissons" (evtFilterCriteria)="changeFilterCriteria($event)"></pros-bar-chart>
             
             <!-- STACKBARCHART WIDGET -->
-            <pros-stackedbar-chart *ngIf ="widget.widgetType ==='STACKED_BAR_CHART'" [widgetId] ="widget.widgetId" [reportId]="reportId" [filterCriteria]="filterCriteria" (evtFilterCriteria)="changeFilterCriteria($event)"></pros-stackedbar-chart>
+            <pros-stackedbar-chart *ngIf ="widget.widgetType ==='STACKED_BAR_CHART'" [widgetId] ="widget.widgetId" [reportId]="reportId" [filterCriteria]="filterCriteria" [permissons]="permissons" (evtFilterCriteria)="changeFilterCriteria($event)"></pros-stackedbar-chart>
 
             <!-- PIEBARCHART WIDGET -->
-           <pros-pie-chart *ngIf ="widget.widgetType ==='PIE_CHART'" [widgetId] ="widget.widgetId" [reportId]="reportId" [filterCriteria]="filterCriteria" (evtFilterCriteria)="changeFilterCriteria($event)"></pros-pie-chart>
+           <pros-pie-chart *ngIf ="widget.widgetType ==='PIE_CHART'" [widgetId] ="widget.widgetId" [reportId]="reportId" [filterCriteria]="filterCriteria" [permissons]="permissons" (evtFilterCriteria)="changeFilterCriteria($event)"></pros-pie-chart>
              
             <!-- DATATABLE WIDGET -->
             <pros-reporting-list *ngIf ="widget.widgetType ==='TABLE_LIST'" [widgetId] ="widget.widgetId" [reportId]="reportId" [filterCriteria]="filterCriteria" (evtFilterCriteria)="changeFilterCriteria($event)"></pros-reporting-list>

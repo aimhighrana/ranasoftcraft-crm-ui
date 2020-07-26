@@ -21,6 +21,7 @@ import { PieChartComponent } from './view/dashboard-container/pie-chart/pie-char
 import { MetadatafieldControlComponent } from './edit/container/metadatafield-control/metadatafield-control.component';
 import { ReportCollaboratorComponent } from './permissions/report-collaborator/report-collaborator.component';
 import { CollaboratorComponent } from './permissions/collaborator/collaborator.component';
+import { WidgetColorPaletteComponent } from './edit/widget-color-palette/widget-color-palette.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { CollaboratorComponent } from './permissions/collaborator/collaborator.c
     MetadatafieldControlComponent,
     ReportCollaboratorComponent,
     CollaboratorComponent,
+    WidgetColorPaletteComponent,
   ],
   imports: [
     CommonModule,

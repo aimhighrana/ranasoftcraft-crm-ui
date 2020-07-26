@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, AfterViewInit, ElementRef, NgZone, HostListener, OnChanges, Output, EventEmitter } from '@angular/core';
 import { ReportService } from '../../_service/report.service';
-import { WidgetMapInfo, Criteria } from '../../_models/widget';
+import { WidgetMapInfo, Criteria, ReportDashboardPermission } from '../../_models/widget';
 
 @Component({
   selector: 'pros-dashboard-container',
@@ -24,6 +24,8 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit, OnCha
 
   widgetList: WidgetMapInfo[];
   filterCriteria: Criteria[] = [];
+
+  permissons: ReportDashboardPermission;
 
   constructor(
     private reportService: ReportService,
@@ -49,6 +51,7 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit, OnCha
     if(this.reportId) {
       this.reportService.getReportInfo(this.reportId).subscribe(res=>{
         this.widgetList = res.widgets;
+        this.permissons = res.permissons;
       },error=>{
         console.log(`Error ${error}`);
       })

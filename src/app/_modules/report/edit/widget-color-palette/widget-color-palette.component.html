@@ -1,0 +1,19 @@
+
+
+<h1 mat-dialog-title>Color Palette `{{ widgetColorPalette ? widgetColorPalette.widgetDesc : 'Unknown'}}`</h1>
+<div mat-dialog-content>
+   <div class="f-col" *ngIf="widgetColorPalette">
+        <div class="f-row color-style" *ngFor="let color of widgetColorPalette.colorPalettes;let idx = index">
+            <span>
+                 {{ color.text }}   
+            </span>
+            <div class="f-spacer"></div>
+            <input matInput type="color" value="{{ color.colorCode }}" (change)="updateColorCode(color, $event.target.value, idx)">
+        </div>
+    
+    </div>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="close(true)">Discard</button>
+  <button mat-button cdkFocusInitial (click)="updateColorPalette()">Update</button>
+</div>

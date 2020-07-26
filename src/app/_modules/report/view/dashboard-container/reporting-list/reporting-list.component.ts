@@ -7,6 +7,7 @@ import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
 import { BehaviorSubject } from 'rxjs';
 import { ReportingWidget, Criteria } from '../../../_models/widget';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'pros-reporting-list',
@@ -48,8 +49,9 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   reportingListWidget : BehaviorSubject<ReportingWidget[]> = new BehaviorSubject<ReportingWidget[]>(null);
 
   constructor(public widgetService : WidgetService,
-    @Inject(LOCALE_ID) public locale: string) {
-    super();
+    @Inject(LOCALE_ID) public locale: string,
+    public matDialog: MatDialog) {
+    super(matDialog);
   }
 
   ngOnChanges():void{

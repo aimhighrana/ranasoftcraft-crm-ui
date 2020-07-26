@@ -3,25 +3,35 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { StackedbarChartComponent } from './stackedbar-chart.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { StackBarChartWidget, Criteria, WidgetHeader, PositionType, AlignPosition, AnchorAlignPosition, Orientation, OrderWith} from '../../../_models/widget';
+import { StackBarChartWidget, Criteria, WidgetHeader, PositionType, AlignPosition, AnchorAlignPosition, Orientation, OrderWith, WidgetColorPalette} from '../../../_models/widget';
 import { BehaviorSubject, of } from 'rxjs';
 import { MatMenuModule } from '@angular/material/menu';
 import { BaseChartDirective, Label } from 'ng2-charts';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { ChartLegendLabelItem } from 'chart.js';
+import { MatDialog } from '@angular/material/dialog';
 
 describe('StackedbarChartComponent', () => {
   let component: StackedbarChartComponent;
   let fixture: ComponentFixture<StackedbarChartComponent>;
   let htmlnative: HTMLElement;
   let widgetService: jasmine.SpyObj<WidgetService>;
+
+  const mockMatDialogOpen = {
+    open: jasmine.createSpy('open')
+  };
+
   beforeEach(async(() => {
     const widgetServiceSpy = jasmine.createSpyObj(WidgetService,['downloadCSV','getHeaderMetaData', 'getWidgetData']);
     TestBed.configureTestingModule({
       declarations: [ StackedbarChartComponent ],
       imports:[AppMaterialModuleForSpec,HttpClientTestingModule,MatMenuModule],
       providers:[
-        {provide: WidgetService, userValue: widgetServiceSpy}
+        {provide: WidgetService, userValue: widgetServiceSpy},
+        {
+          provide: MatDialog,
+          useValue:mockMatDialogOpen
+        }
       ]
     })
     .compileComponents();
@@ -110,6 +120,7 @@ describe('StackedbarChartComponent', () => {
      // assign to component variable
      component.listxAxis2 = listxAxis2;
      component.barChartData = [];
+     component.widgetColorPalette = new WidgetColorPalette();
 
      // call actual component method
      component.updateLabelsaxis2();
@@ -318,6 +329,43 @@ describe('StackedbarChartComponent', () => {
     component.legendClick(item);
 
     expect(component.filterCriteria.length).toEqual(1);
+
+  }));
+
+  it('openColorPalette(), should open color palette dialog', async(()=>{
+    component.widgetId = 72366423;
+    component.reportId = 65631624;
+    component.widgetHeader = {desc: 'Stacked bar Chart'} as WidgetHeader;
+    component.barChartData = [
+      {
+        fieldCode: 'HAWA',
+        backgroundColor: '#f1f1f1',
+        label: 'Hawa material'
+      }
+    ];
+    component.openColorPalette();
+    expect(mockMatDialogOpen.open).toHaveBeenCalled();
+  }));
+
+  it('updateColorBasedOnDefined(), update color based on defination ', async(()=>{
+    const req: WidgetColorPalette = new WidgetColorPalette();
+    req.widgetId = '23467283';
+
+    component.updateColorBasedOnDefined(req);
+    expect(component.widgetColorPalette.widgetId).toEqual(req.widgetId);
+
+  }));
+
+  it('getUpdatedColorCode(), get updated color based on code', async(()=>{
+    const req: WidgetColorPalette = new WidgetColorPalette();
+    req.colorPalettes = [{
+      code: 'HAWA',
+      colorCode: '#f1f1f1',
+      text: 'Hawa material'
+    }];
+    component.widgetColorPalette = req;
+    const actualRes = component.getUpdatedColorCode('HAWA');
+    expect(actualRes).toEqual('#f1f1f1');
 
   }));
 });

@@ -1,12 +1,13 @@
 import { Component, OnInit, OnChanges, ViewChild, LOCALE_ID, Inject } from '@angular/core';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
 import { BehaviorSubject } from 'rxjs';
-import { PieChartWidget, WidgetHeader, ChartLegend, Criteria, BlockType, ConditionOperator } from '../../../_models/widget';
+import { PieChartWidget, WidgetHeader, ChartLegend, Criteria, BlockType, ConditionOperator, WidgetColorPalette } from '../../../_models/widget';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { ReportService } from '../../../_service/report.service';
 import { ChartOptions, ChartTooltipItem, ChartData, ChartLegendLabelItem } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import   ChartDataLables from 'chartjs-plugin-datalabels';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'pros-pie-chart',
@@ -23,7 +24,6 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
   dataSet: string[] = [];
   orientation = 'pie';
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
-  randomColor = [];
 
   public pieChartOptions: ChartOptions = {
     responsive: true,
@@ -65,7 +65,7 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
 
   public pieChartColors: Array<any> = [
     {
-      backgroundColor: this.randomColor,
+      backgroundColor: [],
 
     }
   ];
@@ -81,9 +81,10 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
   constructor(
     private widgetService: WidgetService,
     private reportService: ReportService,
-    @Inject(LOCALE_ID) public locale: string
+    @Inject(LOCALE_ID) public locale: string,
+    public matDialog: MatDialog
   ) {
-    super();
+    super(matDialog);
   }
 
   ngOnChanges(): void {
@@ -101,7 +102,12 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
       }
     });
 
-    this.getColor();
+    // after color defined update on widget
+    this.afterColorDefined.subscribe(res=>{
+      if(res) {
+        this.updateColorBasedOnDefined(res);
+      }
+    });
   }
 
   public getHeaderMetaData(): void {
@@ -113,6 +119,7 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
   public getPieChartMetadata(): void {
     // for time being this is getBarChartMetadata used to fetching data from API
     this.widgetService.getBarChartMetadata(this.widgetId).subscribe(returndata => {
+      this.widgetColorPalette = returndata.widgetColorPalette;
       this.pieWidget.next(returndata);
       this.getPieConfigurationData();
     }, error => {
@@ -170,6 +177,7 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
         label: this.widgetHeader.widgetName,
         data: this.dataSet
       }];
+      this.getColor();
     });
   }
 
@@ -290,8 +298,16 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
 
 
   public getColor() : void {
-    this.pieChartData[0].data.forEach(element => {
-      this.randomColor.push(this.getRandomColor());
+    this.pieChartColors = [];
+    this.pieChartData[0].data.forEach((element,index) => {
+      const codeText = this.chartLegend.filter(fil => fil.legendIndex === index)[0];
+      if(index === 0) {
+        this.pieChartColors.push({
+          backgroundColor: [ codeText ? this.getUpdatedColorCode(codeText.code) : this.getRandomColor()]
+        });
+      } else {
+        this.pieChartColors[0].backgroundColor.push(codeText ?  this.getUpdatedColorCode(codeText.code) : this.getRandomColor());
+      }
     });
   }
 
@@ -340,4 +356,56 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
     this.evtFilterCriteria.emit(critera);
   }
 
+  /**
+   * Open Color palette...
+   */
+  openColorPalette() {
+    console.log(this.pieChartColors);
+    console.log(this.pieChartData);
+    console.log(this.lablels);
+    console.log(this.chartLegend);
+    const req: WidgetColorPalette = new WidgetColorPalette();
+    req.widgetId = String(this.widgetId);
+    req.reportId = String(this.reportId);
+    req.widgetDesc = this.widgetHeader.desc;
+    req.colorPalettes = [];
+
+    this.pieChartData[0].data.forEach((data,index)=>{
+      const colorCode = this.pieChartData[0].backgroundColor[index];
+      const codeTxtObj = this.chartLegend.filter(fil => fil.legendIndex === index)[0];
+      if(codeTxtObj) {
+        req.colorPalettes.push({
+          code: codeTxtObj.code,
+          text : codeTxtObj.text,
+          colorCode
+        });
+      }
+    });
+    super.openColorPalette(req);
+  }
+
+  /**
+   * Update stacked color based on color definations
+   * @param res updated color codes
+   */
+  updateColorBasedOnDefined(res: WidgetColorPalette) {
+    this.widgetColorPalette = res;
+    this.getColor();
+  }
+
+  /**
+   * Update color on widget based on defined
+   * If not defined the pick random color
+   * @param code resposne code
+   */
+  getUpdatedColorCode(code: string): string {
+    if(this.widgetColorPalette.colorPalettes) {
+      const res = this.widgetColorPalette.colorPalettes.filter(fil => fil.code === code)[0];
+      if(res) {
+        return res.colorCode;
+      }
+
+    }
+    return this.getRandomColor();
+  }
 }

@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PieChartComponent } from './pie-chart.component';
-import { PieChartWidget, AnchorAlignPosition, AlignPosition, PositionType, Criteria, WidgetHeader } from '../../../_models/widget';
+import { PieChartWidget, AnchorAlignPosition, AlignPosition, PositionType, Criteria, WidgetHeader, WidgetColorPalette } from '../../../_models/widget';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -10,19 +10,27 @@ import { of, BehaviorSubject } from 'rxjs';
 import { ChartLegendLabelItem } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import { MetadataModel } from '@models/schema/schemadetailstable';
+import { MatDialog } from '@angular/material/dialog';
 
 describe('PieChartComponent', () => {
   let component: PieChartComponent;
   let fixture: ComponentFixture<PieChartComponent>;
   let widgetService: jasmine.SpyObj<WidgetService>;
   let htmlnative: HTMLElement;
+  const mockMatDialogOpen = {
+    open: jasmine.createSpy('open')
+  };
   beforeEach(async(() => {
     const widgetServiceSpy = jasmine.createSpyObj(WidgetService,['downloadCSV','getHeaderMetaData']);
     TestBed.configureTestingModule({
       declarations: [ PieChartComponent ],
       imports:[AppMaterialModuleForSpec,HttpClientTestingModule,MatMenuModule],
       providers:[
-        {provide: WidgetService, userValue: widgetServiceSpy}
+        {provide: WidgetService, userValue: widgetServiceSpy},
+        {
+          provide: MatDialog,
+          useValue:mockMatDialogOpen
+        }
       ]
     })
     .compileComponents();
@@ -124,14 +132,6 @@ describe('PieChartComponent', () => {
 
   }));
 
- it('should push random color in array', async(()=> {
-   component.pieChartData[0].data = [10];
-   component.getColor();
-   // mock data
-   expect('#451DEB'.length).toEqual(component.randomColor[0].length);
-
- }));
-
  it('ngOnInit(),  should enable pre required on this component', async(()=>{
   component.pieWidget.next(new PieChartWidget());
   component.ngOnInit();
@@ -195,10 +195,66 @@ it('legendClick(), should show paticular stack , after click on stack',async(()=
     pieWidget.metaData = {fieldId:'MATL_GROUP',picklist:'30'} as MetadataModel;
 
     component.pieWidget.next(pieWidget);
+    component.widgetColorPalette = new WidgetColorPalette();
 
     component.getPieChartData(653267432, []);
 
     expect(service.getWidgetData).toHaveBeenCalledWith('653267432', []);
+  }));
+
+  it('openColorPalette(), should open color palette dialog', async(()=>{
+    component.widgetId = 72366423;
+    component.reportId = 65631624;
+    component.widgetHeader = {desc: 'Stacked bar Chart'} as WidgetHeader;
+    component.pieChartData = [
+      {
+        fieldCode: 'HAWA',
+        backgroundColor: '#f1f1f1',
+        label: 'Hawa material',
+        data:[213,324,223423]
+      }
+    ];
+    component.chartLegend = [{
+      code: 'HAWA',
+      legendIndex:0,
+      text:'Testing'
+    }]
+    component.openColorPalette();
+    expect(mockMatDialogOpen.open).toHaveBeenCalled();
+  }));
+
+  it('updateColorBasedOnDefined(), update color based on defination ', async(()=>{
+    const req: WidgetColorPalette = new WidgetColorPalette();
+    req.widgetId = '23467283';
+    component.pieChartData = [
+      {
+        fieldCode: 'HAWA',
+        backgroundColor: '#f1f1f1',
+        label: 'Hawa material',
+        data:[213,324,223423]
+      }
+    ];
+    component.chartLegend = [{
+      code: 'HAWA',
+      legendIndex:0,
+      text:'Testing'
+    }]
+    component.updateColorBasedOnDefined(req);
+    expect(component.widgetColorPalette.widgetId).toEqual(req.widgetId);
+
+  }));
+
+  it('getUpdatedColorCode(), get updated color based on code', async(()=>{
+    const req: WidgetColorPalette = new WidgetColorPalette();
+    req.colorPalettes = [{
+      code: 'HAWA',
+      colorCode: '#f1f1f1',
+      text: 'Hawa material'
+    }];
+    component.widgetColorPalette = req;
+    const actualRes = component.getUpdatedColorCode('HAWA');
+    expect(actualRes).toEqual('#f1f1f1');
+
   }));
 
 });

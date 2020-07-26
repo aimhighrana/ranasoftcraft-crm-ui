@@ -3,7 +3,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { EndpointService } from '../endpoint.service';
 import { HttpClient } from '@angular/common/http';
 import * as XLSX from 'xlsx';
-import { Criteria, BarChartWidget, WidgetHeader, TimeSeriesWidget, WidgetImageModel, WidgetHtmlEditor, ReportingWidget } from 'src/app/_modules/report/_models/widget';
+import { Criteria, BarChartWidget, WidgetHeader, TimeSeriesWidget, WidgetImageModel, WidgetHtmlEditor, ReportingWidget, WidgetColorPalette } from 'src/app/_modules/report/_models/widget';
 
 @Injectable({
   providedIn: 'root'
@@ -109,6 +109,14 @@ export class WidgetService {
       XLSX.utils.book_append_sheet(wb, ws, 'Data')
       XLSX.writeFile(wb, excelFileName + '.csv')
     } catch (e) { }
+  }
+
+  /**
+   * Call http for save or define widget color palette
+   * @param req define color palette request for widget
+   */
+  public defineWidgetColorPalette(req: WidgetColorPalette): Observable<WidgetColorPalette> {
+    return this.http.post<WidgetColorPalette>(this.endpointService.defineColorPaletteForWidget(), req);
   }
 
 }
