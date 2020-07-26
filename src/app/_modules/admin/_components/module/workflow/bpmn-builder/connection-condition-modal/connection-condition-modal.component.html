@@ -19,8 +19,8 @@
                 <mat-form-field *ngIf="!isFirst" class="operator">
                     <mat-label>Row operator</mat-label>
                     <mat-select formControlName="rowOperator">
-                        <mat-option value="and"> And </mat-option>
-                        <mat-option value="or"> Or </mat-option>
+                        <mat-option value="&&"> And </mat-option>
+                        <mat-option value="||"> Or </mat-option>
                     </mat-select>
                 </mat-form-field>
             </td>
@@ -32,7 +32,7 @@
                 <mat-form-field>
                     <mat-label>Field</mat-label>
                     <mat-select formControlName="field">
-                        <mat-option *ngFor="let field of workflowFields" [value]="field.key"> {{field.label}} </mat-option>
+                        <mat-option *ngFor="let field of workflowFields" [value]="field.id"> {{field.label}} </mat-option>
                     </mat-select>
                 </mat-form-field>
             </td>
@@ -44,8 +44,13 @@
                 <mat-form-field>
                     <mat-label>Operator</mat-label>
                     <mat-select formControlName="operator">
-                        <mat-option value="equal"> Equal </mat-option>
-                        <mat-option value="not-equal"> Not Equal </mat-option>
+                        <mat-option value="=="> Equals </mat-option>
+                        <mat-option value="!="> Not Equal </mat-option>
+                        <mat-option value="_contains_"> Contains </mat-option>
+                        <mat-option value="_starts_with_"> Starts With </mat-option>
+                        <mat-option value="_ends_with_"> Ends With </mat-option>
+                        <mat-option value="_does_not_starts_with_"> Does Not Starts With </mat-option>
+                        <mat-option value="_does_not_ends_with_"> Does Not Ends With </mat-option>
                     </mat-select>
                 </mat-form-field>
             </td>

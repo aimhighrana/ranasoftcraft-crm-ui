@@ -65,7 +65,12 @@ describe('EmailEscalationPropertiesComponent', () => {
 
   it('should check recipient pagination next is enabled', () => {
 
-    component.selectedRecipients = ['r1', 'r2', 'r3' ] ;
+    component.selectedRecipients = [
+      {id: 'r1', value : 'recipient1'},
+      {id: 'r2', value : 'recipient2'},
+      {id: 'r3', value : 'recipient3'}
+    ] ;
+
 
     component.currentPageIdx = 0;
 
@@ -76,7 +81,11 @@ describe('EmailEscalationPropertiesComponent', () => {
 
   it('should remove a recipient', () => {
 
-    component.selectedRecipients = ['r1', 'r2', 'r3' ] ;
+    component.selectedRecipients = [
+      {id: 'r1', value : 'recipient1'},
+      {id: 'r2', value : 'recipient2'},
+      {id: 'r3', value : 'recipient3'}
+    ] ;
 
     component.possibleRecipients = component.selectedRecipients.slice(0,2) ;
 
@@ -91,7 +100,13 @@ describe('EmailEscalationPropertiesComponent', () => {
 
   it('should init the recipients list', () => {
 
-    component.selectedRecipients = ['r1', 'r2', 'r3' ] ;
+
+
+    component.selectedRecipients = [
+      {id: 'r1', value : 'recipient1'},
+      {id: 'r2', value : 'recipient2'},
+      {id: 'r3', value : 'recipient3'}
+    ] ;
 
     component.initForm();
     component.oldFormValue = {recipientType : 'User'} ;
@@ -105,11 +120,15 @@ describe('EmailEscalationPropertiesComponent', () => {
 
   it('should add a selected recipient', () => {
 
-    component.selectedRecipients = ['r1', 'r2', 'r3' ] ;
+    component.selectedRecipients = [
+      {id: 'r1', value : 'recipient1'},
+      {id: 'r2', value : 'recipient2'},
+      {id: 'r3', value : 'recipient3'}
+    ] ;
 
     const optionData = {
       option : {
-        value : 'r4'
+        value : {id: 'r4', value : 'recipient4'}
       }
     }
 
@@ -121,11 +140,15 @@ describe('EmailEscalationPropertiesComponent', () => {
 
   it('should not add an already selected recipient', () => {
 
-    component.selectedRecipients = ['r1', 'r2', 'r3' ] ;
+    component.selectedRecipients = [
+      {id: 'r1', value : 'recipient1'},
+      {id: 'r2', value : 'recipient2'},
+      {id: 'r3', value : 'recipient3'}
+    ] ;
 
     const optionData = {
       option : {
-        value : 'r1'
+        value : {id: 'r1', value : 'recipient1'}
       }
     }
 
@@ -137,7 +160,12 @@ describe('EmailEscalationPropertiesComponent', () => {
 
   it('should paginate recipients to prev', () => {
 
-    component.selectedRecipients = ['r1', 'r2', 'r3' ] ;
+    component.selectedRecipients = [
+      {id: 'r1', value : 'recipient1'},
+      {id: 'r2', value : 'recipient2'},
+      {id: 'r3', value : 'recipient3'}
+    ] ;
+
     component.currentPageIdx = 1 ;
     component.paginateChip('prev');
     expect(component.currentPageIdx).toEqual(0) ;
@@ -146,7 +174,12 @@ describe('EmailEscalationPropertiesComponent', () => {
 
   it('should paginate recipients to next', () => {
 
-    component.selectedRecipients = ['r1', 'r2', 'r3' ] ;
+    component.selectedRecipients = [
+      {id: 'r1', value : 'recipient1'},
+      {id: 'r2', value : 'recipient2'},
+      {id: 'r3', value : 'recipient3'}
+    ] ;
+
     component.currentPageIdx = 0 ;
     component.paginateChip('next');
     expect(component.currentPageIdx).toEqual(1) ;
@@ -155,9 +188,62 @@ describe('EmailEscalationPropertiesComponent', () => {
 
   it('should update the current displayed recipients', () => {
 
-    component.selectedRecipients = ['r1', 'r2', 'r3' ] ;
+    component.selectedRecipients = [
+      {id: 'r1', value : 'recipient1'},
+      {id: 'r2', value : 'recipient2'},
+      {id: 'r3', value : 'recipient3'}
+    ] ;
+
     component.paginateChip();
     expect(component.possibleRecipients.length).toEqual(2) ;
+
+  });
+
+
+  it('should return option text', () => {
+
+    const option = {
+      id : 1,
+      value : 'option 1'
+    }
+    const result = component.getOptionText(option) ;
+    expect(result).toEqual('option 1');
+
+  });
+
+  it('should return an empty text', () => {
+
+
+    const result = component.getOptionText(null) ;
+    expect(result).toEqual('');
+
+  });
+
+  it('should get the recipient list', () => {
+
+    component.initForm({
+      recipientType : 'USER'
+    });
+
+    component.getRecipientsList();
+
+    expect(component.recipientsList.length).toEqual(0);
+
+  });
+
+  it('should get the recipient list', () => {
+
+    component.bpmnElement = {
+      id : '02'
+    }
+
+    component.initForm({
+      recipientType : 'USER'
+    });
+
+    component.getRecipientsList();
+
+    expect(component.recipientsList.length).toEqual(0);
 
   });
 

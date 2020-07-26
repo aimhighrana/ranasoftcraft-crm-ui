@@ -18,12 +18,22 @@ export class EmailEscalationPropertiesComponent implements OnInit, OnChanges, On
   recipientSearchControl = new FormControl();
   selectedRecipients = [];
   possibleRecipients = [];
-  recipientsList = [];
+  recipientsList : any = [];
   currentPageIdx = 0;
 
   subscriptionsList: Subscription[] = [];
 
   @Output() updateProperties = new EventEmitter<any>();
+
+  recipientsParams = {
+    pathName:'WF72',
+    stepId:'01',
+    recipientType:'USER',
+    fetchCount:'0',
+    plantCode:'MDO1003',
+    clientId:'738',
+    lang:'en'
+  }
 
   constructor(private workflowBuilderService: WorkflowBuilderService,
     private fb: FormBuilder) {
@@ -34,8 +44,7 @@ export class EmailEscalationPropertiesComponent implements OnInit, OnChanges, On
 
   ngOnInit(): void {
 
-    this.subscriptionsList.push(this.workflowBuilderService.getRecipientList()
-      .subscribe(recipients => this.recipientsList = recipients));
+    this.getRecipientsList();
 
   }
 
@@ -46,7 +55,7 @@ export class EmailEscalationPropertiesComponent implements OnInit, OnChanges, On
 
     this.emailForm = this.fb.group({
       name: [value && value.name ? value.name : ''],
-      recipientType: [value && value.recipientType ? value.recipientType : 'User'],
+      recipientType: [value && value.recipientType ? value.recipientType : 'USER'],
     });
 
     this.selectedRecipients = [];
@@ -58,6 +67,7 @@ export class EmailEscalationPropertiesComponent implements OnInit, OnChanges, On
         if(this.oldFormValue && (this.oldFormValue.recipientType !== values.recipientType)){
           this.selectedRecipients = [];
           this.possibleRecipients = [];
+          this.getRecipientsList();
         }
         this.oldFormValue = values;
 
@@ -93,7 +103,7 @@ export class EmailEscalationPropertiesComponent implements OnInit, OnChanges, On
    */
   recipientSelected(event) {
     const selected = event.option.value;
-    if (!this.selectedRecipients.some(r => r === selected)) {
+    if (!this.selectedRecipients.some(r => r.id === selected.id)) {
       this.selectedRecipients.push(selected);
       if (this.currentPageIdx === 0 && this.possibleRecipients.length < 2) {
         this.possibleRecipients.push(selected);
@@ -108,7 +118,7 @@ export class EmailEscalationPropertiesComponent implements OnInit, OnChanges, On
    * @param index the recipient index
    */
   removeRecipient(index) {
-    this.selectedRecipients = this.selectedRecipients.filter(recipient => recipient !== this.possibleRecipients[index]);
+    this.selectedRecipients = this.selectedRecipients.filter(recipient => recipient.id !== this.possibleRecipients[index].id);
     this.updateStepProperties();
     this.possibleRecipients.splice(index, 1);
     this.paginateChip();
@@ -167,6 +177,22 @@ export class EmailEscalationPropertiesComponent implements OnInit, OnChanges, On
    */
   get enableNextBtn() {
     return ((this.currentPageIdx * 2 + 2) < this.selectedRecipients.length && this.selectedRecipients.length > 2);
+  }
+
+  getRecipientsList(){
+
+    const params = {
+      ...this.recipientsParams,
+      recipientType : this.emailForm.value.recipientType,
+      stepId : this.bpmnElement ? this.bpmnElement.id : '01'
+    }
+
+    return this.subscriptionsList.push(this.workflowBuilderService.getRecipientList(params)
+    .subscribe(recipients => this.recipientsList = recipients.data.allData || []));
+  }
+
+  getOptionText(option){
+    return option ? option.value : '';
   }
 
   ngOnDestroy() {

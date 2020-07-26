@@ -189,4 +189,24 @@ describe('EndpointService', () => {
     expect(serObj.deleteSchema('355535857155320681 ')).toContain('schema/delete/355535857155320681');
   }));
 
+  it('it should call getLoadRecipientsListUrl() and return formatted URL', () => {
+    const serviceobj = new EndpointService();
+    expect(serviceobj.getLoadRecipientsListUrl()).toContain(`restWorkflow/loadRecipient`);
+  });
+
+  it('it should call getWfFieldsListUrl() and return formatted URL', () => {
+    const serviceobj = new EndpointService();
+    expect(serviceobj.getWfFieldsListUrl()).toContain(`restWorkflow/loadWorkfLowField`);
+  });
+
+  it('it should call getReportListUrl() and return formatted URL', () => {
+    const serviceobj = new EndpointService();
+    expect(serviceobj.getReportListUrl()).toContain(`report/list`);
+  });
+
+  it('it should call getFiltersUrl() and return formatted URL', () => {
+    const serviceobj = new EndpointService();
+    expect(serviceobj.getFiltersUrl()).toContain(`tasklist/filter`);
+  });
+
 });

@@ -157,9 +157,9 @@ describe('ActivityStepPropertiesComponent', () => {
   it('should remove a recipient', () => {
 
     component.selectedRecipients = [
-      {recipient : 'r1', fields : []},
-      {recipient : 'r2', fields : []},
-      {recipient : 'r3', fields : []}
+      {recipient : {id: 'r1', value : 'recipient1'}, fields : []},
+      {recipient : {id: 'r2', value : 'recipient2'}, fields : []},
+      {recipient : {id: 'r3', value : 'recipient3'}, fields : []}
     ] ;
 
     component.possibleRecipients = component.selectedRecipients.slice(0,2) ;
@@ -175,14 +175,14 @@ describe('ActivityStepPropertiesComponent', () => {
   it('should add a selected recipient', () => {
 
     component.selectedRecipients = [
-      {recipient : 'r1', fields : []},
-      {recipient : 'r2', fields : []},
-      {recipient : 'r3', fields : []}
+      {recipient : {id: 'r1', value : 'recipient1'}, fields : []},
+      {recipient : {id: 'r2', value : 'recipient2'}, fields : []},
+      {recipient : {id: 'r3', value : 'recipient3'}, fields : []}
     ] ;
 
     const optionData = {
       option : {
-        value : 'r4'
+        value : {id : 'r4', value: 'recipient4'}
       }
     }
 
@@ -195,14 +195,14 @@ describe('ActivityStepPropertiesComponent', () => {
   it('should not add an already selected recipient', () => {
 
     component.selectedRecipients = [
-      {recipient : 'r1', fields : []},
-      {recipient : 'r2', fields : []},
-      {recipient : 'r3', fields : []}
+      {recipient : {id: 'r1', value : 'recipient1'}, fields : []},
+      {recipient : {id: 'r2', value : 'recipient2'}, fields : []},
+      {recipient : {id: 'r3', value : 'recipient3'}, fields : []}
     ] ;
 
     const optionData = {
       option : {
-        value : 'r1'
+        value : {id: 'r1', value : 'recipient1'}
       }
     }
 
@@ -215,9 +215,9 @@ describe('ActivityStepPropertiesComponent', () => {
   it('should paginate recipients to prev', () => {
 
     component.selectedRecipients = [
-      {recipient : 'r1', fields : []},
-      {recipient : 'r2', fields : []},
-      {recipient : 'r3', fields : []}
+      {recipient : {id: 'r1', value : 'recipient1'}, fields : []},
+      {recipient : {id: 'r2', value : 'recipient2'}, fields : []},
+      {recipient : {id: 'r3', value : 'recipient3'}, fields : []}
     ] ;
 
     component.currentPageIdx = 1 ;
@@ -229,9 +229,9 @@ describe('ActivityStepPropertiesComponent', () => {
   it('should paginate recipients to next', () => {
 
     component.selectedRecipients = [
-      {recipient : 'r1', fields : []},
-      {recipient : 'r2', fields : []},
-      {recipient : 'r3', fields : []}
+      {recipient : {id: 'r1', value : 'recipient1'}, fields : []},
+      {recipient : {id: 'r2', value : 'recipient2'}, fields : []},
+      {recipient : {id: 'r3', value : 'recipient3'}, fields : []}
     ] ;
 
     component.currentPageIdx = 0 ;
@@ -243,9 +243,9 @@ describe('ActivityStepPropertiesComponent', () => {
   it('should update the current displayed recipients', () => {
 
     component.selectedRecipients = [
-      {recipient : 'r1', fields : []},
-      {recipient : 'r2', fields : []},
-      {recipient : 'r3', fields : []}
+      {recipient : {id: 'r1', value : 'recipient1'}, fields : []},
+      {recipient : {id: 'r2', value : 'recipient2'}, fields : []},
+      {recipient : {id: 'r3', value : 'recipient3'}, fields : []}
     ] ;
 
     component.paginateChip();
@@ -262,6 +262,13 @@ describe('ActivityStepPropertiesComponent', () => {
       { id : 3, label : 'Storage bin', key : 'storageBin', type : 'input'}
     ];
 
+    component.selectedRecipients = [
+      {recipient : {
+        id: 'r1', value: 'recipient1'
+      },
+    fields: []}
+    ]
+
     const selectionData = {
             option: {
               selected : true,
@@ -272,6 +279,7 @@ describe('ActivityStepPropertiesComponent', () => {
     component.fieldSelectionChange(selectionData);
 
     expect(component.selectedWorkflowFields.length).toEqual(1);
+    expect(component.selectedRecipients[0].fields.length).toEqual(1);
 
   });
 
@@ -280,6 +288,15 @@ describe('ActivityStepPropertiesComponent', () => {
     component.selectedWorkflowFields = [
           {id : 1, label : 'recipient one'}
         ] ;
+
+    component.selectedRecipients = [
+          {recipient : {
+            id: 'r1', value: 'recipient1'
+          },
+        fields: [
+          {id : 1, label : 'recipient one', value:''}
+        ]}
+        ]
 
     const selectionData = {
             option: {
@@ -291,10 +308,60 @@ describe('ActivityStepPropertiesComponent', () => {
     component.fieldSelectionChange(selectionData);
 
     expect(component.selectedWorkflowFields.length).toEqual(0);
+    expect(component.selectedRecipients[0].fields.length).toEqual(0);
 
   });
 
+  it('should return option text', () => {
 
+    const option = {
+      id : 1,
+      value : 'option 1'
+    }
+    const result = component.getOptionText(option) ;
+    expect(result).toEqual('option 1');
+
+  });
+
+  it('should return an empty text', () => {
+
+
+    const result = component.getOptionText(null) ;
+    expect(result).toEqual('');
+
+  });
+
+  it('should get the recipient list', () => {
+
+    component.initActivityForm();
+    component.activityFormGroup.patchValue({
+      recipientType : 'USER'
+    })
+    component.getRecipientsList();
+
+    expect(component.recipientsList.length).toEqual(0);
+
+  });
+
+  it('should get the recipient list', () => {
+
+    component.bpmnElement = {
+      id : '02'
+    }
+    component.initActivityForm();
+    component.activityFormGroup.patchValue({
+      recipientType : 'USER'
+    })
+    component.getRecipientsList();
+
+    expect(component.recipientsList.length).toEqual(0);
+
+  });
+
+  it('should get the wf fields', () => {
+    component.getWfFileds();
+    expect(component.workflowFields).toBeDefined();
+  })
 
 
 });

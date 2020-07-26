@@ -16,6 +16,7 @@ export class ConnectionPropertiesComponent implements OnInit, OnChanges {
   conditionsList = [] ;
   connectionForm : FormGroup ;
 
+
   constructor(private dialog: MatDialog,
               private fb : FormBuilder) {}
 

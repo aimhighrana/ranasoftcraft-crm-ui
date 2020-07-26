@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { EndpointService } from './endpoint.service';
-import { of } from 'rxjs';
+import { of, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -30,14 +30,14 @@ export class WorkflowBuilderService {
 
 
 
-  getRecipientList(){
-    return of(this.recipientsListSample) ;
-    // return this.http.get(this.endpointService.getLoadRecipientsListUrl()) ;
+  getRecipientList(data) : Observable<any>{
+    // return of(this.recipientsListSample) ;
+     return this.http.get<any>(this.endpointService.getLoadRecipientsListUrl(), {params : data}) ;
   }
 
-  getWorkflowFields(){
-    return of(this.workflowFieldsSample) ;
-    // return this.http.get(this.endpointService.getLoadRecipientsListUrl()) ;
+  getWorkflowFields(data) : Observable<any>{
+    // return of(this.workflowFieldsSample) ;
+    return this.http.get(this.endpointService.getWfFieldsListUrl(), {params : data}) ;
   }
 
   getCustomEvents(){

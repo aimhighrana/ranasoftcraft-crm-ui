@@ -20,6 +20,11 @@ export class ConnectionConditionModalComponent implements OnInit, OnDestroy {
 
   subscriptions : Subscription[] = [] ;
 
+  wfParams = {
+    moduleId : '1005',
+    pathName: 'WF72'
+  }
+
   constructor(public dialogRef: MatDialogRef<ConnectionConditionModalComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any,
               private fb: FormBuilder,
@@ -28,10 +33,7 @@ export class ConnectionConditionModalComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    this.subscriptions.push(
-      this.workflowBuilderService.getWorkflowFields()
-          .subscribe(fields => this.workflowFields = fields)
-    ) ;
+    this.getWfFields();
 
     if (this.data.length){
       this.data.forEach(condition => {
@@ -54,7 +56,7 @@ export class ConnectionConditionModalComponent implements OnInit, OnDestroy {
       field : [ condition && condition.field ? condition.field : ''],
       operator: [ condition && condition.operator ? condition.operator : ''],
       value: [ condition && condition.value ? condition.value : ''],
-      rowOperator: [ condition && condition.rowOperator ? condition.rowOperator : 'and']
+      rowOperator: [ condition && condition.rowOperator ? condition.rowOperator : '&&']
     });
     this.rows.push(row);
     this.updateView();
@@ -78,6 +80,13 @@ export class ConnectionConditionModalComponent implements OnInit, OnDestroy {
    */
   onCancelClick(): void {
     this.dialogRef.close();
+  }
+
+  getWfFields(){
+    this.subscriptions.push(
+      this.workflowBuilderService.getWorkflowFields(this.wfParams)
+          .subscribe(fields => this.workflowFields = fields.allWFfield || [])
+    ) ;
   }
 
 

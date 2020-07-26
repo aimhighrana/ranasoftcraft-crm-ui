@@ -17,8 +17,8 @@
                 <mat-form-field class="field-divider" appearance="outline">
                     <mat-label>Recipient Type</mat-label>
                     <mat-select formControlName="recipientType">
-                        <mat-option value="User"> User </mat-option>
-                        <mat-option value="Role"> Role </mat-option>
+                        <mat-option value="USER"> User </mat-option>
+                        <mat-option value="ROLE"> Role </mat-option>
                     </mat-select>
                 </mat-form-field>
 
@@ -132,10 +132,10 @@
                     <input type="text" placeholder="Search" aria-label="Number" matInput
                         [formControl]="recipientSearchControl" [matAutocomplete]="addRecipient">
                     <mat-icon matSuffix>search</mat-icon>
-                    <mat-autocomplete #addRecipient="matAutocomplete"
+                    <mat-autocomplete #addRecipient="matAutocomplete" [displayWith]="getOptionText"
                         (optionSelected)="recipientSelected($event)">
                         <mat-option *ngFor="let recipient of recipientsList" [value]="recipient">
-                            {{recipient}}
+                            {{recipient.value}}
                         </mat-option>
                     </mat-autocomplete>
                 </mat-form-field>
@@ -148,7 +148,7 @@
                         <ng-container *ngFor="let recipient of possibleRecipients; index as index">
                             <mat-chip (click)="openDecisionsModal(recipient)" [selectable]="true">
                                 <mat-icon mat-list-icon color="primary">person</mat-icon>
-                                <span class="chip-content">{{ recipient.recipient }}</span>
+                                <span class="chip-content">{{ recipient.recipient.value }}</span>
                                 <mat-icon mat-list-icon class="chip-icon" (click)="removeRecipient(index)">
                                     cancel</mat-icon>
                             </mat-chip>

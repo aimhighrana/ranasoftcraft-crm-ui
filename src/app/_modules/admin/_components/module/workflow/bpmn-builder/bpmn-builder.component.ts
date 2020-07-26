@@ -144,6 +144,13 @@ export class BpmnBuilderComponent implements OnInit, OnDestroy {
           modeling.isRejection = false;
         }, 100)
       }
+      /*
+      else {
+        modeling.updateProperties(event.element, {
+          rejection: false,
+          conditions : JSON.stringify([])
+        });
+      }*/
       modeling.isRejection = false;
    });
 

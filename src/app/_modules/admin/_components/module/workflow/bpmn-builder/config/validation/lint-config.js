@@ -704,8 +704,7 @@ var userTaskValidation = function() {
     const outgoing = node.outgoing || [];
 
 
-    if ((outgoing.length < 2) || outgoing[0].$attrs.rejection === undefined || outgoing[1].$attrs.rejection === undefined
-        || (outgoing[0].$attrs.rejection === outgoing[1].$attrs.rejection) ) {
+    if ((outgoing.length < 2) || (outgoing[0].$attrs.rejection === outgoing[1].$attrs.rejection) ) {
 
       reporter.report(node.id, 'Task step should has one rejection and one approve connection');
     }

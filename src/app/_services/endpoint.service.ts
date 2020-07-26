@@ -433,4 +433,14 @@ export class EndpointService {
     return `${this.apiUrl}/changeAuditLog/getChangeLogDetails`
   }
 
+  public getLoadRecipientsListUrl(): string {
+    return `${this.apiUrl}/restWorkflow/loadRecipient`;
+    // return `https://devreplica.masterdataonline.com/MDOSF/REST/fapi/restWorkflow/loadRecipient`;
+  }
+
+  public getWfFieldsListUrl(): string {
+    return `${this.apiUrl}/restWorkflow/loadWorkfLowField`;
+    // return `https://devreplica.masterdataonline.com/MDOSF/REST/fapi/restWorkflow/loadWorkfLowField`;
+  }
+
 }

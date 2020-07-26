@@ -19,10 +19,10 @@ export class ActivityStepPropertiesComponent implements OnInit, OnChanges, OnDes
   recipientSearchControl = new FormControl();
   selectedRecipients = [];
   possibleRecipients = [];
-  recipientsList = [];
+  recipientsList : any = [];
   currentPageIdx = 0;
 
-  workflowFields = [];
+  workflowFields : any = [];
   selectedWorkflowFields = [];
   connectionsList = [];
 
@@ -35,6 +35,23 @@ export class ActivityStepPropertiesComponent implements OnInit, OnChanges, OnDes
     Activity: 'bpmn:UserTask'
   }
 
+  recipientsParams = {
+    pathName:'WF72',
+    stepId:'01',
+    recipientType:'USER',
+    fetchCount:'0',
+    plantCode:'MDO1003',
+    clientId:'738',
+    lang:'en'
+  }
+
+  wfParams = {
+    moduleId : '1005',
+    pathName: 'WF72'
+  }
+
+  previousRecipientType = 'USER';
+
   constructor(private workflowBuilderService: WorkflowBuilderService,
     private fb: FormBuilder,
     public dialog: MatDialog) {
@@ -45,11 +62,9 @@ export class ActivityStepPropertiesComponent implements OnInit, OnChanges, OnDes
 
   ngOnInit(): void {
 
-    this.subscriptionsList.push(this.workflowBuilderService.getRecipientList()
-      .subscribe(recipients => this.recipientsList = recipients));
+    this.getRecipientsList();
 
-    this.subscriptionsList.push(this.workflowBuilderService.getWorkflowFields()
-      .subscribe(fields => this.workflowFields = fields));
+    this.getWfFileds();
 
   }
 
@@ -60,7 +75,7 @@ export class ActivityStepPropertiesComponent implements OnInit, OnChanges, OnDes
 
     this.activityFormGroup = this.fb.group({
       name: [''],
-      recipientType: ['User'],
+      recipientType: ['USER'],
       approvedBy: ['0'],
       roleApprovalBy: ['0'],
       taskSubject: [''],
@@ -96,9 +111,21 @@ export class ActivityStepPropertiesComponent implements OnInit, OnChanges, OnDes
     this.possibleRecipients = [];
     this.connectionsList = [];
     this.selectedWorkflowFields = [] ;
+    this.previousRecipientType = 'USER';
 
     this.activityFormGroup.valueChanges
       .subscribe(values => {
+
+        // check if recipient type changed
+        if (this.previousRecipientType !== values.recipientType){
+          console.log(this.previousRecipientType);
+          console.log(values.recipientType)
+          this.getRecipientsList();
+          this.previousRecipientType = values.recipientType;
+          this.selectedRecipients = [];
+          this.possibleRecipients = [];
+        }
+
         this.updateStepProperties();
       });
   }
@@ -153,7 +180,7 @@ export class ActivityStepPropertiesComponent implements OnInit, OnChanges, OnDes
    */
   recipientSelected(event) {
     const selected = event.option.value;
-    if (!this.selectedRecipients.some(r => r.recipient === selected)) {
+    if (!this.selectedRecipients.some(r => r.recipient.id === selected.id)) {
       // const newRecipient = { recipient : selected, fields : this.selectedWorkflowFields} ;
       const newRecipient = JSON.parse(JSON.stringify({ recipient : selected, fields : this.selectedWorkflowFields})) ;
       // const newRecipient = { recipient : selected, fields : this.selectedWorkflowFields.map(field => Object.assign(field)).slice()} ;
@@ -177,7 +204,7 @@ export class ActivityStepPropertiesComponent implements OnInit, OnChanges, OnDes
    * @param index the recipient index
    */
   removeRecipient(index) {
-    this.selectedRecipients = this.selectedRecipients.filter(element => element.recipient !== this.possibleRecipients[index].recipient);
+    this.selectedRecipients = this.selectedRecipients.filter(element => element.recipient.id !== this.possibleRecipients[index].recipient.id);
     this.updateStepProperties();
     this.possibleRecipients.splice(index, 1);
     this.paginateChip();
@@ -242,6 +269,7 @@ export class ActivityStepPropertiesComponent implements OnInit, OnChanges, OnDes
   fieldSelectionChange(event){
     if(event.option.selected){
       const fieldAttributes = this.workflowFields.filter(field => field.id === event.option.value)[0] ;
+
       this.selectedWorkflowFields.push({...fieldAttributes, value : ''}) ;
 
       // add the selected field for all selected recipients
@@ -290,6 +318,26 @@ export class ActivityStepPropertiesComponent implements OnInit, OnChanges, OnDes
 
 
     });
+  }
+
+  getRecipientsList(){
+    const params = {
+      ...this.recipientsParams,
+      recipientType : this.activityFormGroup.value.recipientType,
+      stepId : this.bpmnElement ? this.bpmnElement.id : '01'
+    }
+    this.subscriptionsList.push(this.workflowBuilderService.getRecipientList(params)
+      .subscribe(recipients => this.recipientsList = recipients.data.allData || []));
+  }
+
+  getOptionText(option){
+    return option ? option.value : '';
+  }
+
+
+  getWfFileds(){
+    this.subscriptionsList.push(this.workflowBuilderService.getWorkflowFields(this.wfParams)
+      .subscribe(fields => this.workflowFields = fields.allWFfield || []));
   }
 
   ngOnDestroy() {

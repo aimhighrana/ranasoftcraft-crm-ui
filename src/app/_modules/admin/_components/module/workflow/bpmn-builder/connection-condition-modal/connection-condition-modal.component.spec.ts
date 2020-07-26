@@ -46,4 +46,10 @@ describe('ConnectionConditionModalComponent', () => {
     expect(component.dataSource.next).toHaveBeenCalled();
   });
 
+  it('should get the wf fields', () => {
+
+    component.getWfFields();
+    expect(component.workflowFields.length).toEqual(0);
+  });
+
 });

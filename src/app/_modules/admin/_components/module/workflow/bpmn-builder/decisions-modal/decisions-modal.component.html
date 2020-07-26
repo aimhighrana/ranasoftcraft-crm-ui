@@ -1,5 +1,5 @@
 
-<h2  mat-dialog-title> Recipient {{data.recipient}} decisions configuration </h2>
+<h2  mat-dialog-title> Recipient {{data.recipient.value}} decisions configuration </h2>
 <mat-divider></mat-divider>
 <mat-dialog-content>
     <mat-card>
@@ -14,7 +14,7 @@
                         {{ option }}
                     </mat-option>
                 </mat-select>
-                <input *ngSwitchDefault matInput [(ngModel)]="field.value">
+                <input *ngSwitchDefault matInput [formControlName]="field.id">
             </ng-container>
         </mat-form-field>
         </form>
