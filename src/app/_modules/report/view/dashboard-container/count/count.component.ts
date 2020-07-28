@@ -46,12 +46,20 @@ export class CountComponent extends GenericWidgetComponent implements OnInit,OnC
   public getCountData(widgetid:number,creiteria:Criteria[]):void{
     this.widgetService.getWidgetData(String(widgetid),creiteria).subscribe(returndata=>{
       this.count = 0;
-      this.arrayBuckets = returndata.aggregations['sterms#COUNT'].buckets;
-      this.arrayBuckets.forEach(bucket=>{
-        const key = bucket.key;
-        const count = bucket.doc_count;
-      this.count += count ;
-    });
+      if(returndata.aggregations['sterms#COUNT']) {
+        this.arrayBuckets = returndata.aggregations['sterms#COUNT'].buckets;
+        this.arrayBuckets.forEach(bucket=>{
+          const key = bucket.key;
+          const count = bucket.doc_count;
+        this.count += count ;
+      });
+      } else if(returndata.aggregations['sum#COUNT']) {
+        this.count = returndata.aggregations['sum#COUNT'].value;
+        this.count =  Math.round((this.count + Number.EPSILON)  * 100) / 100;
+      } else {
+        console.log('Something missing on count widget !!.');
+      }
+
     this.widgetService.updateCount(this.count);
   });
   }

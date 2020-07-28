@@ -250,7 +250,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
   }
 
   isSelected(option: DropDownValues): boolean {
-    const isPreViusSelected = this.filterCriteria.filter(fill => fill.conditionFieldValue === option.CODE);
+    const isPreViusSelected = this.filterCriteria.filter(fill => ( fill.conditionFieldId === this.filterWidget.getValue().fieldId && fill.conditionFieldValue === option.CODE));
     if(isPreViusSelected.length>0) {
       return true;
     } else {

@@ -38,10 +38,14 @@ describe('FilterComponent', () => {
     const filter: Criteria = new Criteria();
     const option: DropDownValues = {CODE: 'ZMRO',FIELDNAME: 'MATL_TYPE'} as DropDownValues;
     component.filterCriteria = [];
+    component.filterWidget.next(new FilterWidget());
     expect(component.isSelected(option)).toEqual(false);
     filter.conditionFieldId = 'MATL_TYPE';
     filter.conditionFieldValue = 'ZMRO';
     component.filterCriteria = [filter];
+    const fld: FilterWidget = new FilterWidget();
+    fld.fieldId = 'MATL_TYPE';
+    component.filterWidget.next(fld);
     expect(component.isSelected(option)).toEqual(true);
   }));
 

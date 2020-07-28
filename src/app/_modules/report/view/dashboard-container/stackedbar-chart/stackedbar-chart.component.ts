@@ -102,12 +102,18 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
       if(data && this.barChartData.length=== 0){
         if(Object.keys(this.codeTextaxis1).length === 0 && (this.stackBarWidget.getValue().groupByIdMetaData.picklist === '1' || this.stackBarWidget.getValue().groupByIdMetaData.picklist === '37' || this.stackBarWidget.getValue().groupByIdMetaData.picklist === '30')){
           this.getFieldsMetadaDescaxis1(this.stackBarWidget.getValue().groupById);
-        }else{
+        } else if (Object.keys(this.codeTextaxis1).length === 0 && this.stackBarWidget.getValue().groupByIdMetaData.picklist === '0') {
+          this.getFieldsMetadaDescaxis1ForNonFld(this.stackBarWidget.getValue().groupById);
+        }
+        else{
           this.updateLabelsaxis1();
         }
+
         if(Object.keys(this.codeTextaxis2).length === 0 && (this.stackBarWidget.getValue().fieldIdMetaData.picklist === '1' || this.stackBarWidget.getValue().fieldIdMetaData.picklist === '37' || this.stackBarWidget.getValue().fieldIdMetaData.picklist === '30')){
           this.getFieldsMetadaDescaxis2(this.stackBarWidget.getValue().fieldId);
-        }else{
+        }else if(Object.keys(this.codeTextaxis2).length === 0 && this.stackBarWidget.getValue().fieldIdMetaData.picklist === '0') {
+          this.getFieldsMetadaDescaxis2Nondef(this.stackBarWidget.getValue().fieldId);
+        } else{
           this.updateLabelsaxis2();
         }
     }else{
@@ -286,6 +292,22 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     });
   }
 
+  getFieldsMetadaDescaxis1ForNonFld(fieldId: string) {
+    let  locale = this.locale!==''?this.locale.split('-')[0]:'EN';
+    locale = locale.toUpperCase();
+    this.arrayBuckets.forEach(bucket=>{
+      const key = bucket.key[fieldId];
+      const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
+      const ddv = hits._source.hdvs[fieldId] ?( hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vls[locale].valueTxt : null) : null;
+      if(ddv) {
+        this.codeTextaxis1[key] = ddv;
+      } else {
+        this.codeTextaxis1[key] = hits._source.hdvs[fieldId].vc;
+      }
+    });
+    this.updateLabelsaxis1();
+  }
+
   getFieldsMetadaDescaxis1(fieldId: string) {
     let  locale = this.locale!==''?this.locale.split('-')[0]:'EN';
     locale = locale.toUpperCase();
@@ -311,6 +333,23 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
       this.barChartLabels[i] = this.codeTextaxis1[lbl] ? this.codeTextaxis1[lbl] : lbl;
     }
 
+  }
+
+
+  getFieldsMetadaDescaxis2Nondef(fieldId: string) {
+    let  locale = this.locale!==''?this.locale.split('-')[0]:'EN';
+    locale = locale.toUpperCase();
+    this.arrayBuckets.forEach(bucket=>{
+      const key = bucket.key[fieldId];
+      const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
+      const ddv = hits._source.hdvs[fieldId] ?( hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vls[locale].valueTxt : null) : null;
+      if(ddv) {
+        this.codeTextaxis2[key] = ddv;
+      } else {
+        this.codeTextaxis2[key] = hits._source.hdvs[fieldId].vc;
+      }
+    });
+    this.updateLabelsaxis2();
   }
 
 
@@ -576,7 +615,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
    * @param code resposne code
    */
   getUpdatedColorCode(code: string): string {
-    if(this.widgetColorPalette.colorPalettes) {
+    if(this.widgetColorPalette && this.widgetColorPalette.colorPalettes) {
       const res = this.widgetColorPalette.colorPalettes.filter(fil => fil.code === code)[0];
       if(res) {
         return res.colorCode;

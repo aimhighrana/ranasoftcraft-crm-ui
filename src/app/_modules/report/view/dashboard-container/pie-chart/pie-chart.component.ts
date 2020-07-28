@@ -171,6 +171,12 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
         } else {
           this.lablels = this.chartLegend.map(map => map.text);
         }
+      }else {
+        if (this.chartLegend.length === 0) {
+          this.getFieldsDesc(arrayBuckets);
+        } else {
+          this.lablels = this.chartLegend.map(map => map.text);
+        }
       }
 
       this.pieChartData = [{
@@ -179,6 +185,44 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
       }];
       this.getColor();
     });
+  }
+
+  /**
+   * Update label based on configuration
+   * @param buckets update lable
+   */
+  getFieldsDesc(buckets: any[]) {
+    const fldid = this.pieWidget.getValue().fieldId;
+    let  locale = this.locale!==''?this.locale.split('-')[0]:'EN';
+    locale = locale.toUpperCase();
+    const finalVal = {} as any;
+    buckets.forEach(bucket=>{
+      const key = bucket.key;
+      const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
+      const ddv = hits._source.hdvs[fldid] ?( hits._source.hdvs[fldid] ? hits._source.hdvs[fldid].vls[locale].valueTxt : null) : null;
+      if(ddv) {
+        finalVal[key] = ddv;
+      } else {
+        finalVal[key] = hits._source.hdvs[fldid].vc;
+      }
+    });
+
+    // update lablels
+    this.lablels.forEach(cod => {
+      let chartLegend: ChartLegend;
+      if(cod) {
+        const hasData = finalVal[cod];
+        if (hasData) {
+          chartLegend = { text: hasData, code: cod, legendIndex: this.chartLegend.length };
+        } else {
+          chartLegend = { text: cod, code: cod, legendIndex: this.chartLegend.length };
+        }
+      } else {
+         chartLegend = { text: cod, code: cod, legendIndex: this.chartLegend.length };
+      }
+      this.chartLegend.push(chartLegend);
+    });
+    this.lablels = this.chartLegend.map(map => map.text);
   }
 
   /**
@@ -399,7 +443,7 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
    * @param code resposne code
    */
   getUpdatedColorCode(code: string): string {
-    if(this.widgetColorPalette.colorPalettes) {
+    if(this.widgetColorPalette && this.widgetColorPalette.colorPalettes) {
       const res = this.widgetColorPalette.colorPalettes.filter(fil => fil.code === code)[0];
       if(res) {
         return res.colorCode;
