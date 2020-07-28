@@ -121,10 +121,12 @@ describe('FiltersDropdownComponent', () => {
     expect(component.filters.staticFilters.region).toEqual('north india');
   })
 
+  /*
   it('should scroll scrollIntoView()', () => {
     component.scrollIntoView(sampleFilters.dynamicFilters[0]);
     expect(sampleFilters.dynamicFilters[0].colorActive).toBe(false);
   });
+  */
 
   it('should call callFilterFieldsAPI()', () => {
     component.ngOnInit();

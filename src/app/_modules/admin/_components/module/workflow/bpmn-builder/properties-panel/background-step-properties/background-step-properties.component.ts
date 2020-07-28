@@ -15,18 +15,22 @@ export class BackgroundStepPropertiesComponent implements OnInit, OnChanges, OnD
   backgroundForm : FormGroup ;
 
   customEvents = [] ;
+  crossModules = [] ;
 
   subscriptions : Subscription[] = [] ;
+
+  loadApisParams = {
+    plantCode: 'MDO1003',
+    moduleId:'1005'
+  }
+
 
   constructor(private fb: FormBuilder,
               private workflowBuilderService: WorkflowBuilderService) { }
 
   ngOnInit() {
 
-    this.subscriptions.push(
-      this.workflowBuilderService.getCustomEvents()
-          .subscribe(events => this.customEvents = events)
-    )
+    this.loadApis();
 
   }
 
@@ -68,6 +72,16 @@ export class BackgroundStepPropertiesComponent implements OnInit, OnChanges, OnD
    */
   updateStepProperties() {
     this.updateProperties.emit({...this.backgroundForm.value, stepDesc : this.backgroundForm.value.name});
+  }
+
+  loadApis(){
+    this.subscriptions.push(
+      this.workflowBuilderService.getLoadApi(this.loadApisParams)
+          .subscribe(api => {
+            this.customEvents = api.customEvent ;
+            this.crossModules = api.crossModule ;
+          })
+    )
   }
 
   ngOnDestroy() {

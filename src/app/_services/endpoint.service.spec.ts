@@ -209,4 +209,16 @@ describe('EndpointService', () => {
     expect(serviceobj.getFiltersUrl()).toContain(`tasklist/filter`);
   });
 
+  it('it should call getLoadApisUrl() and return formatted URL', () => {
+    const serviceobj = new EndpointService();
+    expect(serviceobj.getLoadApisUrl()).toContain(`restWorkflow/loadAPI`);
+  });
+
+  it('it should call getSaveWfDefinitionUrl() and return formatted URL', () => {
+    const serviceobj = new EndpointService();
+    expect(serviceobj.getSaveWfDefinitionUrl()).toContain(`restWorkflow/saveWorkFlowStepViaXml`);
+  });
+
+
+
 });

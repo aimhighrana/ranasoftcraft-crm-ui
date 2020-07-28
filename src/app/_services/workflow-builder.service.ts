@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { EndpointService } from './endpoint.service';
-import { of, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -40,9 +40,16 @@ export class WorkflowBuilderService {
     return this.http.get(this.endpointService.getWfFieldsListUrl(), {params : data}) ;
   }
 
-  getCustomEvents(){
-    return of(this.customEventsSample) ;
-    // return this.http.get(this.endpointService.getLoadRecipientsListUrl()) ;
+  getLoadApi(data) : Observable<any>{
+    return this.http.get(this.endpointService.getLoadApisUrl(), {params: data}) ;
+  }
+
+  saveWfDefinition(data) : Observable<any>{
+
+    let headers = new HttpHeaders();
+    headers = headers.set('Content-Type', 'application/x-www-form-urlencoded');
+
+    return this.http.post(this.endpointService.getSaveWfDefinitionUrl(), null, {params : data, headers}) ;
   }
 
 }

@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 
 import { Breadcrumb } from '@models/breadcrumb';
 
@@ -11,6 +10,8 @@ import customPaletteModule from './config/palette';
 import contextPadProvider from './config/context_pad';
 import customRules from './config/rules';
 import bpmnlintConfig from './config/validation/lint-config';
+import { WorkflowBuilderService } from '@services/workflow-builder.service';
+import { Subscription } from 'rxjs';
 
 
 
@@ -31,7 +32,7 @@ export class BpmnBuilderComponent implements OnInit, OnDestroy {
 
   blankDiagram = '<?xml version="1.0" encoding="UTF-8"?>'
      +'<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" id="Definitions_0f0redl" targetNamespace="http://bpmn.io/schema/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="6.5.1">'
-     +'<bpmn:process id="Process_01r63rg" isExecutable="false" />'
+     +'<bpmn:process id="Process_01r63rg" isExecutable="false" moduleId="1005" pathName="WF72"/>'
      +'<bpmndi:BPMNDiagram id="BPMNDiagram_1" >'
      +'<bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_01r63rg" /></bpmndi:BPMNDiagram></bpmn:definitions>';
 
@@ -62,8 +63,18 @@ export class BpmnBuilderComponent implements OnInit, OnDestroy {
     ]
   };
 
+  saveWfDefParams = {
+    plantCode:'MDO1003',
+    moduleId:'1005',
+    // sno:'',
+    userName:'DemoInit',
+    stepDataxml:''
+  }
 
-  constructor(private http: HttpClient) { }
+  subscriptionsList: Subscription[] = [];
+
+
+  constructor(private wfService: WorkflowBuilderService) { }
 
   ngOnInit() {
 
@@ -215,7 +226,18 @@ export class BpmnBuilderComponent implements OnInit, OnDestroy {
         console.log('Error Occurred while saving XML', err);
       } else {
         console.log(xml.replace(/&#34;/g, '\''));
-        // console.log(xml)
+
+
+        const body = {
+          ...this.saveWfDefParams,
+          stepDataxml : xml.replace(/&#34;/g, '\'')
+        };
+
+        this.subscriptionsList.push(
+          this.wfService.saveWfDefinition(body)
+              .subscribe(resp => console.log(resp))
+        )
+
 
         /*
         var blob = new Blob([xml], {type: "application/xml;charset=utf-8"});
@@ -297,6 +319,7 @@ export class BpmnBuilderComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.modeler.destroy();
+    this.subscriptionsList.forEach(sub => sub.unsubscribe());
   }
 
 

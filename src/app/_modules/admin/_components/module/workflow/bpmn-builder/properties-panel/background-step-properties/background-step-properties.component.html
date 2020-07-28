@@ -23,15 +23,17 @@
                 <mat-form-field appearance="outline">
                     <mat-label> Cross Module </mat-label>
                     <mat-select formControlName="crossModule">
-                        <mat-option value="Select"> Select </mat-option>
+                        <mat-option *ngFor="let crossModule of crossModules" [value]="crossModule.id"> 
+                            {{ crossModule.value }} 
+                        </mat-option>
                     </mat-select>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline">
-                    <mat-label> Enhancement Point </mat-label>
+                    <mat-label> Custom Event </mat-label>
                     <mat-select formControlName="customEvent">
                         <mat-option *ngFor="let event of customEvents" [value]="event.id">
-                            {{ event.label }}
+                            {{ event.value }}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>

@@ -40,6 +40,7 @@ export class DeterminationStepPropertiesComponent implements OnInit, OnChanges {
 
       if (Object.keys(selectedBpmn.currentValue.businessObject.$attrs).length === 0) {
         // init attributes values
+        this.updateStepProperties(this.determinationForm.value);
       } else {
         // get the allready configured attributes
         const attrs = selectedBpmn.currentValue.businessObject.$attrs;

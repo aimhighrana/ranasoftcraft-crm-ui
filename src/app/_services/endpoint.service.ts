@@ -443,4 +443,14 @@ export class EndpointService {
     // return `https://devreplica.masterdataonline.com/MDOSF/REST/fapi/restWorkflow/loadWorkfLowField`;
   }
 
+  public getLoadApisUrl(): string {
+    return `${this.apiUrl}/restWorkflow/loadAPI`;
+    // return `https://devreplica.masterdataonline.com/MDOSF/REST/fapi/restWorkflow/loadAPI`;
+  }
+
+  public getSaveWfDefinitionUrl(): string {
+    return `${this.apiUrl}/restWorkflow/saveWorkFlowStepViaXml`;
+    // return `https://devreplica.masterdataonline.com/MDOSF/REST/fapi/restWorkflow/saveWorkFlowStepViaXml`;
+  }
+
 }
