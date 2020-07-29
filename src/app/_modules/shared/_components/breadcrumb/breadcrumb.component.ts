@@ -15,4 +15,12 @@ export class BreadcrumbComponent implements OnInit {
 
   ngOnInit() { }
 
+  /**
+   * Go to mdo home page ..
+   */
+  homeRoutingUrl() {
+    const url = document.getElementsByTagName('base')[0].href.substring(0, document.getElementsByTagName('base')[0].href.indexOf('MDOSF'));
+    window.open(url+'MDOSF/loginPostProcessor', '_self');
+  }
+
 }

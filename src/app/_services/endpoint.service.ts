@@ -366,6 +366,10 @@ export class EndpointService {
     return `${this.apiUrl}/report/color-palette`;
   }
 
+  public downloadWidgetDataUrl(widgetId: string): string {
+    return `${this.apiUrl}/widget/download/${widgetId}`;
+  }
+
 }
 
 

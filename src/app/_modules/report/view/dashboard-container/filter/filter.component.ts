@@ -194,7 +194,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
 
   toggleSelection(option: DropDownValues) {
     let selectedOptions = this.filterCriteria.filter(fill => fill.conditionFieldId === option.FIELDNAME);
-    const codeAvail = this.filterCriteria.filter(fill => fill.conditionFieldValue === option.CODE).length >0 ? true : false;
+    const codeAvail = this.filterCriteria.filter(fill => (fill.conditionFieldId === option.FIELDNAME && fill.conditionFieldValue === option.CODE)).length >0 ? true : false;
     this.removeOldFilterCriteria(selectedOptions);
     if(this.filterWidget.getValue() && this.filterWidget.getValue().isMultiSelect) {
       if(selectedOptions.length >0) {
@@ -394,7 +394,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
           this.removeOldFilterCriteria(checkPreviousApplied);
           this.emitEvtFilterCriteria(this.filterCriteria);
           this.numericValCtrl.setValue(this.filterResponse.max);
-        } else if(dataType === 'DTMS') {
+        } else if(dataType === 'DTMS' || dataType === 'DATS') {
           this.clearSelectedPicker();
         }
         break;

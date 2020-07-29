@@ -22,6 +22,7 @@ import { MetadatafieldControlComponent } from './edit/container/metadatafield-co
 import { ReportCollaboratorComponent } from './permissions/report-collaborator/report-collaborator.component';
 import { CollaboratorComponent } from './permissions/collaborator/collaborator.component';
 import { WidgetColorPaletteComponent } from './edit/widget-color-palette/widget-color-palette.component';
+import { ReportListDownloadModelComponent } from './view/dashboard-container/reporting-list/report-list-download-model/report-list-download-model.component';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,7 @@ import { WidgetColorPaletteComponent } from './edit/widget-color-palette/widget-
     ReportCollaboratorComponent,
     CollaboratorComponent,
     WidgetColorPaletteComponent,
+    ReportListDownloadModelComponent,
   ],
   imports: [
     CommonModule,

@@ -30,7 +30,9 @@ export abstract class GenericWidgetComponent {
 
   constructor(
     public matDialog?: MatDialog
-  ){}
+  ){
+    console.log(this.permissons);
+  }
 
   /**
    * Emit filter criteria change
@@ -42,8 +44,8 @@ export abstract class GenericWidgetComponent {
    */
   openColorPalette(req: WidgetColorPalette) {
     const dialogRef = this.matDialog.open(WidgetColorPaletteComponent, {
-      height: '706px',
-      width: '8000px',
+      height: '626px',
+      width: '800px',
       disableClose: true,
       autoFocus: false,
       data:{

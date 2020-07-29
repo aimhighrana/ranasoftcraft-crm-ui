@@ -223,7 +223,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
           const xval1 = singleBucket.key[this.stackBarWidget.getValue().groupById];
           let xval2 = singleBucket.key[this.stackBarWidget.getValue().fieldId];
           xval2 = xval2 === ''?this.stackBarWidget.value.blankValueAlias !== undefined?this.stackBarWidget.value.blankValueAlias:xval2:xval2;
-            const arr=  this.dataObj[xval2];
+            const arr=  this.dataObj[xval2] ? this.dataObj[xval2] : {};
             const xpos1 = this.barChartLabels.indexOf(xval1);
             const count = singleBucket.doc_count;
             arr[xpos1] = count;

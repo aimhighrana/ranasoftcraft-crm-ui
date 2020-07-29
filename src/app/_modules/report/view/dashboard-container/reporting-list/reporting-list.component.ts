@@ -8,6 +8,9 @@ import { GenericWidgetComponent } from '../../generic-widget/generic-widget.comp
 import { BehaviorSubject } from 'rxjs';
 import { ReportingWidget, Criteria } from '../../../_models/widget';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ReportListDownloadModelComponent } from './report-list-download-model/report-list-download-model.component';
+import { EndpointService } from '@services/endpoint.service';
 
 @Component({
   selector: 'pros-reporting-list',
@@ -32,7 +35,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   /**
    * Columns that need to display
    */
-  displayedColumnsId :string[]= ['action','objectNumber'];
+  displayedColumnsId :string[]= ['objectNumber'];
   /**
    * Store fieldid & description as key | value
    */
@@ -50,7 +53,9 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
 
   constructor(public widgetService : WidgetService,
     @Inject(LOCALE_ID) public locale: string,
-    public matDialog: MatDialog) {
+    public matDialog: MatDialog,
+    private endpointService: EndpointService,
+    private snackbar: MatSnackBar) {
     super(matDialog);
   }
 
@@ -192,9 +197,27 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
 
 /*
 * down report list data as CSV
+*If data less then 5000 then download instant
+*Otherwise open dialog and ask for page from number ..
+*
 */
 downloadCSV():void{
-  this.widgetService.downloadCSV('Report-List',this.listData);
+  if(this.resultsLength <=5000) {
+    this.downloadData(0);
+    // this.widgetService.downloadCSV('Report-List',this.listData);
+  } else {
+    const dialogRef = this.matDialog.open(ReportListDownloadModelComponent, {
+       width: '500px',
+       data:{
+        recCount: this.resultsLength
+       }
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if(result) {
+        this.downloadData(result);
+      }
+    });
+  }
 }
 
 /**
@@ -216,6 +239,20 @@ sortTable(sort: Sort) {
     this.getListdata(this.pageSize,this.pageIndex * this.pageSize,this.widgetId,this.filterCriteria,this.activeSorts);
   }
 }
+
+  /**
+   * Download data , call service with filter criteria and page from ...
+   */
+  downloadData(frm: number) {
+    frm = frm*5000;
+    const downloadLink = document.createElement('a');
+    downloadLink.href = `${this.endpointService.downloadWidgetDataUrl(String(this.widgetId))}?from=${frm}&conditionList=${JSON.stringify(this.filterCriteria)}`;
+    downloadLink.setAttribute('target', '_blank');
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+  }
+
+
   emitEvtFilterCriteria(): void {
     throw new Error('Method not implemented.');
   }

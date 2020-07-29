@@ -10,7 +10,7 @@
 
   <mat-card-content>
     <!-- CONTROL FOR DROPDOWNS -->
-    <ng-template [ngIf]="filterWidget && filterWidget.getValue() && (filterWidget.getValue().metaData.picklist === '1' || filterWidget.getValue().metaData.picklist === '30' || filterWidget.getValue().metaData.picklist === '37')">
+    <ng-template [ngIf]="filterWidget && filterWidget.getValue() && filterWidget.getValue().metaData && (filterWidget.getValue().metaData.picklist === '1' || filterWidget.getValue().metaData.picklist === '30' || filterWidget.getValue().metaData.picklist === '37')">
       <!-- DROPDOWN_VALS -->
       <ng-template [ngIf]="(filterWidget.getValue() ? filterWidget.getValue().type : '') === 'DROPDOWN_VALS'">
         <ng-template [ngIf]="filterWidget.getValue().isMultiSelect" [ngIfElse] ="single_select_drop">
@@ -96,30 +96,44 @@
   </ng-template>
 
   <!-- CONTROL FOR DATE PICKER -->
-  <ng-template [ngIf]="filterWidget && filterWidget.getValue() && filterWidget.getValue().metaData.picklist === '0' && (filterWidget.getValue().metaData.dataType === 'DTMS' || filterWidget.getValue().metaData.dataType === 'DATS')">
+  <ng-template [ngIf]="filterWidget && filterWidget.getValue() && filterWidget.getValue().metaData && filterWidget.getValue().metaData.picklist === '0' && (filterWidget.getValue().metaData.dataType === 'DTMS' || filterWidget.getValue().metaData.dataType === 'DATS')">
     
     <div class="f-row">
       <div class="f-col">
-        <mat-form-field class="example-full-width">
+        <!-- <mat-form-field class="example-full-width">
           <input matInput [matDatepicker]="picker1" [formControl]="startDateCtrl" placeholder="Choose start date" (dateInput)="changeStartDate($event)" (dateChange)="changeStartDate($event)">
+          <mat-datepicker #picker1></mat-datepicker>
+        </mat-form-field> -->
+        <mat-form-field>
+          <mat-label>Choose start date</mat-label>
+          <input matInput matInput [matDatepicker]="picker1" [formControl]="startDateCtrl" (dateInput)="changeStartDate($event)" (dateChange)="changeStartDate($event)">
+          <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
           <mat-datepicker #picker1></mat-datepicker>
         </mat-form-field>
       </div>
+      <span class="f-col-spacer-half"></span>
       <div class="f-col">
-        <mat-form-field class="example-full-width">
+        <!-- <mat-form-field class="example-full-width">
           <input matInput [matDatepicker]="picker2" [formControl]="endDateCtrl" placeholder="Choose end date" (dateInput)="changeEndtDate($event)" (dateChange)="changeEndtDate($event)">
           <mat-datepicker #picker2></mat-datepicker>
+        </mat-form-field> -->
+        <mat-form-field>
+          <mat-label>Choose end date</mat-label>
+          <input matInput matInput [matDatepicker]="picker2" [formControl]="endDateCtrl" (dateInput)="changeEndtDate($event)" (dateChange)="changeEndtDate($event)">
+          <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+          <mat-datepicker #picker2></mat-datepicker>
         </mat-form-field>
+
       </div>
-      <div class="f-col">
+      <!-- <div class="f-col">
         <button mat-raised-button (click)="picker2.open(); picker1.open(); setPositionOfDatePicker()">Open</button>
-      </div>
+      </div> -->
     </div>
 
   </ng-template>
 
   <!-- CONTROL FOR INPUT TYPE NUM -->
-  <ng-template [ngIf]="filterWidget && filterWidget.getValue() && filterWidget.getValue().metaData.picklist === '0' && filterWidget.getValue().metaData.dataType === 'NUMC'">
+  <ng-template [ngIf]="filterWidget && filterWidget.getValue() && filterWidget.getValue().metaData && filterWidget.getValue().metaData.picklist === '0' && filterWidget.getValue().metaData.dataType === 'NUMC'">
     <mat-slider color="primary" thumbLabel [formControl]="numericValCtrl"   [displayWith]="formatMatSliderLabel" tickInterval="1000" [min]="filterResponse ? filterResponse.min : 0"  [max]="filterResponse ? filterResponse.max : 0" [value]="filterResponse ? filterResponse.max : 0" (change)="sliderValueChange($event)"></mat-slider>
   </ng-template>
   </mat-card-content>
