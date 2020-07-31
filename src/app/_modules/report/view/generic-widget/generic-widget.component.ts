@@ -31,7 +31,7 @@ export abstract class GenericWidgetComponent {
   constructor(
     public matDialog?: MatDialog
   ){
-    console.log(this.permissons);
+    console.log('Permission on :' + this.permissons);
   }
 
   /**

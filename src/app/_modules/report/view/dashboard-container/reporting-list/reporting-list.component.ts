@@ -213,7 +213,7 @@ downloadCSV():void{
        }
     });
     dialogRef.afterClosed().subscribe(result => {
-      if(result) {
+      if(result !== undefined) {
         this.downloadData(result);
       }
     });
