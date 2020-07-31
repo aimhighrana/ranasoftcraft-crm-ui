@@ -60,17 +60,6 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     }
   };
 
-  public barChartColors: Array<any> = [
-    {
-      backgroundColor: 'rgba(105,159,177,0.2)',
-      borderColor: 'rgba(105,159,177,1)',
-      pointBackgroundColor: 'rgba(105,159,177,1)',
-      pointBorderColor: '#fafafa',
-      pointHoverBackgroundColor: '#fafafa',
-      pointHoverBorderColor: 'rgba(105,159,177)'
-    }
-  ];
-
   public barChartData: any[] = [
     {
       label: 'Loding..',
@@ -152,10 +141,10 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
         this.setChartAxisAndScaleRange();
 
         // Bar widget color
-      this.barChartColors = [{
-        backgroundColor: this.widgetColorPalette && this.widgetColorPalette.colorPalettes ? this.widgetColorPalette.colorPalettes[0].colorCode : '#8CF5A9',
-        borderColor: this.widgetColorPalette && this.widgetColorPalette.colorPalettes ? this.widgetColorPalette.colorPalettes[0].colorCode : '#8CF5A9',
-      }];
+      // this.barChartColors = [{
+      //   backgroundColor: this.widgetColorPalette && this.widgetColorPalette.colorPalettes ? this.widgetColorPalette.colorPalettes[0].colorCode : '#8CF5A9',
+      //   borderColor: this.widgetColorPalette && this.widgetColorPalette.colorPalettes ? this.widgetColorPalette.colorPalettes[0].colorCode : '#8CF5A9',
+      // }];
    }
 
   public getBarChartData(widgetId: number, critria: Criteria[]): void {
@@ -179,10 +168,17 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
         }
       }
 
+      const backgroundColorArray = [];
+      this.chartLegend.forEach(legend=>{
+        backgroundColorArray.push(this.getUpdatedColorCode(legend.code));
+      });
+
       this.barChartData = [{
         label: this.widgetHeader.widgetName,
         barThickness: 'flex',
-        data: this.dataSet
+        data: this.dataSet,
+        backgroundColor:backgroundColorArray
+        // data: this.dataSet
       }];
     });
   }
@@ -445,15 +441,20 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
    * Open Color palette...
    */
   openColorPalette() {
+    console.log(this.barChartData);
+    console.log(this.chartLegend);
     const req: WidgetColorPalette = new WidgetColorPalette();
     req.widgetId = String(this.widgetId);
     req.reportId = String(this.reportId);
     req.widgetDesc = this.widgetHeader.desc;
-    req.colorPalettes = [{
-      code: 'BAR_CHART',
-      colorCode:  this.barChartColors[0].backgroundColor,
-      text: 'Bar Chart Stack Color'
-    }];
+    req.colorPalettes = [];
+    this.chartLegend.forEach(legend=>{
+      req.colorPalettes.push({
+        code: legend.code,
+        colorCode: this.barChartData[0] ? this.barChartData[0].backgroundColor[legend.legendIndex] : this.getRandomColor(),
+        text: legend.text
+      });
+    });
     super.openColorPalette(req);
   }
 
@@ -463,10 +464,34 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
    */
   updateColorBasedOnDefined(res: WidgetColorPalette) {
     this.widgetColorPalette = res;
-    this.barChartColors = [{
-      backgroundColor: res.colorPalettes[0].colorCode,
-      borderColor: res.colorPalettes[0].colorCode,
-    }];
+    this.barWidget.next(this.barWidget.getValue());
   }
 
+  /**
+   * Update color on widget based on defined
+   * If not defined the pick random color
+   * @param code resposne code
+   */
+  getUpdatedColorCode(code: string): string {
+    if(this.widgetColorPalette && this.widgetColorPalette.colorPalettes) {
+      const res = this.widgetColorPalette.colorPalettes.filter(fil => fil.code === code)[0];
+      if(res) {
+        return res.colorCode;
+      }
+
+    }
+    return this.getRandomColor();
+  }
+
+  /**
+   * Return random color in hexa
+   */
+  public getRandomColor(): string {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
 }

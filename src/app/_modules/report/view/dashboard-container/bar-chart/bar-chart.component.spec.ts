@@ -248,7 +248,6 @@ describe('BarChartComponent', () => {
 
     component.updateColorBasedOnDefined(req);
     expect(component.widgetColorPalette.widgetId).toEqual(req.widgetId);
-    expect(component.barChartColors[0].backgroundColor).toEqual(req.colorPalettes[0].colorCode);
   }));
 
 });
