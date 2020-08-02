@@ -4,6 +4,10 @@ import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/materia
 
 import { DecisionsModalComponent } from './decisions-modal.component';
 import { FormBuilder } from '@angular/forms';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { WorkflowBuilderService } from '@services/workflow-builder.service';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 describe('DecisionsModalComponent', () => {
   let component: DecisionsModalComponent;
@@ -14,11 +18,15 @@ describe('DecisionsModalComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ DecisionsModalComponent ],
-      imports : [MatDialogModule],
+      imports : [MatDialogModule, HttpClientTestingModule],
       providers: [
         FormBuilder,
         { provide: MAT_DIALOG_DATA, useValue: {recipient : 'recipient', fields : [{ id : 1, label : 'Moving price R', key : 'movingPriceR', type : 'input', value: 'test'}]} },
-        { provide: MatDialogRef, useValue: mockDialogRef }
+        { provide: MatDialogRef, useValue: mockDialogRef },
+        WorkflowBuilderService,
+        { provide: ActivatedRoute, useValue: {
+          queryParams: of({pathname: 'WF72', moduleId: '1005'})
+        } }
       ],
       schemas: [ NO_ERRORS_SCHEMA ]
     })

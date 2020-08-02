@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { EndpointService } from './endpoint.service';
 import { Observable } from 'rxjs';
 
@@ -12,11 +12,13 @@ export class WorkflowBuilderService {
     'Bilel', 'Nikhil', 'Sandeep', 'Saurabh'
   ] ;
 
-  workflowFieldsSample = [
-    { id : 1, label : 'Moving price R', key : 'movingPriceR', type : 'input'},
-    { id : 2, label : 'Price control', key : 'priceControl', type : 'select', options : ['option 1', 'option 2']},
-    { id : 3, label : 'Storage bin', key : 'storageBin', type : 'input'}
-  ] ;
+  workflowFieldsSample = {
+    allWFfield: [
+      { id : 1, label : 'Moving price R', picklist : '0', datatype : 'CHAR'},
+      // { id : 2, label : 'Price control', key : 'priceControl', type : 'select', options : ['option 1', 'option 2']},
+      { id : 3, label : 'Storage bin', picklist : '0', datatype : 'NUM'}
+    ]
+  };
 
 
   customEventsSample = [
@@ -49,7 +51,24 @@ export class WorkflowBuilderService {
     let headers = new HttpHeaders();
     headers = headers.set('Content-Type', 'application/x-www-form-urlencoded');
 
-    return this.http.post(this.endpointService.getSaveWfDefinitionUrl(), null, {params : data, headers}) ;
+    const body = new HttpParams()
+    .set('plantCode', data.plantCode)
+    .set('moduleId', data.moduleId)
+    .set('userName', data.userName)
+    .set('stepDataxml', data.stepDataxml);
+
+    return this.http.post(this.endpointService.getSaveWfDefinitionUrl(), body, {headers}) ;
+
+    // return this.http.post(this.endpointService.getSaveWfDefinitionUrl(), null, {params : data, headers}) ;
+    // return this.http.post(this.endpointService.getSaveWfDefinitionUrl(), data) ;
+  }
+
+  getFieldOptions(data) : Observable<any>{
+    return this.http.get(this.endpointService.getFieldOptionsUrl(), {params: data}) ;
+  }
+
+  getwfDefinition(data) : Observable<any>{
+    return this.http.get(this.endpointService.getloadWfDefinitionUrl(), {params: data}) ;
   }
 
 }

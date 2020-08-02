@@ -77,7 +77,7 @@ export class CustomPalette {
         createAction('bpmn:ServiceTask', 'activity', 'bpmn-icon-service-task', 'Create a background step'),
 
       'create.end-event':
-        createAction('bpmn:EndEvent', 'activity', 'bpmn-icon-end-event-none', 'Add an end step'),
+        createAction('bpmn:EndEvent', 'activity', 'bpmn-icon-end-event-terminate', 'Add an end step', {eventDefinitionType:'bpmn:TerminateEventDefinition'}),
 
       'forward-connection': {
           group: 'tools',

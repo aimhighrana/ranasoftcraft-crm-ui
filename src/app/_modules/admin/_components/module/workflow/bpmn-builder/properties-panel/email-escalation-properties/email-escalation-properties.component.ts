@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, OnChanges, OnDestroy } 
 import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 import { WorkflowBuilderService } from '@services/workflow-builder.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'pros-email-escalation-properties',
@@ -36,7 +37,8 @@ export class EmailEscalationPropertiesComponent implements OnInit, OnChanges, On
   }
 
   constructor(private workflowBuilderService: WorkflowBuilderService,
-    private fb: FormBuilder) {
+    private fb: FormBuilder,
+    private route: ActivatedRoute) {
 
     this.initForm();
 
@@ -44,8 +46,13 @@ export class EmailEscalationPropertiesComponent implements OnInit, OnChanges, On
 
   ngOnInit(): void {
 
-    this.getRecipientsList();
-
+    // read moduleId and pathname from query params
+    this.subscriptionsList.push(
+      this.route.queryParams.subscribe(params => {
+          this.recipientsParams.pathName = params.pathname;
+          this.getRecipientsList();
+      })
+    )
   }
 
   /**

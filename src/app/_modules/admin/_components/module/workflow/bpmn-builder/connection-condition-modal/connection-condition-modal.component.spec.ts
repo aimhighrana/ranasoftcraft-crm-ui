@@ -5,6 +5,8 @@ import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/materia
 import { FormBuilder } from '@angular/forms';
 import { WorkflowBuilderService } from '@services/workflow-builder.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 describe('ConnectionConditionModalComponent', () => {
   let component: ConnectionConditionModalComponent;
@@ -18,7 +20,10 @@ describe('ConnectionConditionModalComponent', () => {
         FormBuilder,
         WorkflowBuilderService,
         { provide: MAT_DIALOG_DATA, useValue: {conditions : []} },
-        { provide: MatDialogRef, useValue: {} }
+        { provide: MatDialogRef, useValue: {} },
+        { provide: ActivatedRoute, useValue: {
+          queryParams: of({pathname: 'WF72', moduleId: '1005'})
+        } }
       ],
     })
     .compileComponents();

@@ -66,7 +66,14 @@ export class ConnectionPropertiesComponent implements OnInit, OnChanges {
       console.log(result) ;
 
       if (result){
-        this.conditionsList = result.conditions ;
+        // this.conditionsList = result.conditions;
+        // delete extra keys
+        this.conditionsList = result.conditions.map(row => {
+                        delete row.picklist;
+                        delete row.options;
+                        return row;
+                      });
+
         this.updateStepProperties();
       }
         // this.updateStepProperties({...this.connectionForm.value, conditions : JSON.stringify(result.conditions)}) ;

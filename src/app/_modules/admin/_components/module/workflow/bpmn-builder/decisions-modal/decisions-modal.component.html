@@ -7,12 +7,14 @@
         <form [formGroup]="decisionForm">
         <mat-form-field  *ngFor="let field of data.fields" appearance="outline">
             <mat-label> {{ field.label }}</mat-label>
-            <ng-container [ngSwitch]="field.type">
+            <ng-container [ngSwitch]="field.picklist">
                 <input *ngSwitchCase="FIELD_TYPE.Input" matInput [formControlName]="field.id">
                 <mat-select *ngSwitchCase="FIELD_TYPE.Select" matInput [formControlName]="field.id">
-                    <mat-option *ngFor="let option of field.options" [value]="option">
-                        {{ option }}
-                    </mat-option>
+                    <ng-container *ngIf="field.options">
+                        <mat-option *ngFor="let option of field.options" [value]="option.CODE">
+                            {{ option.TEXT }}
+                        </mat-option> 
+                    </ng-container>
                 </mat-select>
                 <input *ngSwitchDefault matInput [formControlName]="field.id">
             </ng-container>

@@ -6,6 +6,8 @@ import { WorkflowBuilderService } from '@services/workflow-builder.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 
 describe('EmailEscalationPropertiesComponent', () => {
@@ -16,7 +18,11 @@ describe('EmailEscalationPropertiesComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ EmailEscalationPropertiesComponent ],
       imports: [HttpClientTestingModule, MatAutocompleteModule],
-      providers : [FormBuilder, WorkflowBuilderService],
+      providers : [FormBuilder, WorkflowBuilderService,
+        { provide: ActivatedRoute, useValue: {
+          queryParams: of({pathname: 'WF72'})
+        } }
+      ],
       schemas: [ NO_ERRORS_SCHEMA ]
     })
     .compileComponents();

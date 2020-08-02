@@ -32,7 +32,7 @@
                     </mat-select>
                 </mat-form-field>
 
-                <mat-form-field *ngIf="activityFormGroup.value.recipientType === 'Role'" class="field-divider"
+                <mat-form-field *ngIf="activityFormGroup.value.recipientType === 'ROLE'" class="field-divider"
                     appearance="outline">
                     <mat-label>Role Approval By</mat-label>
                     <mat-select formControlName="roleApprovalBy">
@@ -73,7 +73,7 @@
                     </mat-select>
                 </mat-form-field>
 
-                <mat-checkbox color="primary" formControlName="addDecisions">Add Decisions</mat-checkbox>
+                <mat-checkbox *ngIf="!isFirstStep()" color="primary" formControlName="addDecisions">Add Decisions</mat-checkbox>
                 <div class="f-row-spacer-half"></div>
                 <ng-container *ngIf="activityFormGroup.value.addDecisions">
                     <h4> Workflow Field </h4>
@@ -255,8 +255,8 @@
 
                 <!-- Rejection -->
                 <h4 class="input-group-title"> Rejection </h4>
-                <mat-checkbox color="primary" formControlName="rejectionActivate">Activate Rejection
-                </mat-checkbox>
+                <!-- <mat-checkbox color="primary" formControlName="rejectionActivate">Activate Rejection
+                </mat-checkbox> -->
                 <mat-form-field appearance="outline">
                     <mat-label>Rejection Message</mat-label>
                     <textarea matInput formControlName="rejectionMessage"></textarea>
@@ -304,14 +304,16 @@
                     Additional Settings
                 </mat-panel-title>
             </mat-expansion-panel-header>
-            <mat-checkbox color="primary" formControlName="fieldOwnerStep">Field Owner Step</mat-checkbox>
+            <mat-checkbox *ngIf="!isFirstStep()" color="primary" formControlName="fieldOwnerStep">Field Owner Step</mat-checkbox>
             <div class="f-row-spacer-half"></div>
             <mat-checkbox color="primary" formControlName="reVerificationRequired">Re-Verification Required
             </mat-checkbox>
             <div class="f-row-spacer-half"></div>
-            <mat-checkbox color="primary" formControlName="skipUserAlreadyApproved">Skip step if user has
-                already approved</mat-checkbox>
-            <div class="f-row-spacer-half"></div>
+            <ng-container *ngIf="!isFirstStep()">
+                <mat-checkbox color="primary" formControlName="skipUserAlreadyApproved">Skip step if user has
+                    already approved</mat-checkbox>
+                <div class="f-row-spacer-half"></div>
+            </ng-container>
             <mat-checkbox color="primary" formControlName="showUsers">Show users of current user's role
             </mat-checkbox>
             <div class="f-row-spacer-half"></div>

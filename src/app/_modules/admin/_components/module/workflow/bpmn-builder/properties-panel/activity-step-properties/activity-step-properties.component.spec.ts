@@ -6,6 +6,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { FormBuilder } from '@angular/forms';
 import { WorkflowBuilderService } from '@services/workflow-builder.service';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 describe('ActivityStepPropertiesComponent', () => {
   let component: ActivityStepPropertiesComponent;
@@ -15,7 +17,11 @@ describe('ActivityStepPropertiesComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ ActivityStepPropertiesComponent ],
       imports : [HttpClientTestingModule, MatDialogModule],
-      providers : [FormBuilder, WorkflowBuilderService],
+      providers : [FormBuilder, WorkflowBuilderService,
+        { provide: ActivatedRoute, useValue: {
+          queryParams: of({pathname: 'WF72', moduleId: '1005'})
+        } }
+      ],
       schemas: [ NO_ERRORS_SCHEMA ]
     })
     .compileComponents();

@@ -2,6 +2,9 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { BpmnBuilderComponent } from './bpmn-builder.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ActivatedRoute } from '@angular/router';
+import { WorkflowBuilderService } from '@services/workflow-builder.service';
+import { of } from 'rxjs';
 
 describe('BpmnBuilderComponent', () => {
   let component: BpmnBuilderComponent;
@@ -10,7 +13,12 @@ describe('BpmnBuilderComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ BpmnBuilderComponent ],
-      imports: [HttpClientTestingModule]
+      imports: [HttpClientTestingModule],
+      providers: [WorkflowBuilderService,
+        { provide: ActivatedRoute, useValue: {
+          queryParams: of({pathname: 'WF72', moduleId: '1005'})
+        } }
+      ]
     })
     .compileComponents();
   }));

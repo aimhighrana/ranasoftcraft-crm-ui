@@ -4,6 +4,7 @@ import { Observable, Subscription } from 'rxjs';
 import { WorkflowBuilderService } from '@services/workflow-builder.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DecisionsModalComponent } from '../../decisions-modal/decisions-modal.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'pros-activity-step-properties',
@@ -54,7 +55,8 @@ export class ActivityStepPropertiesComponent implements OnInit, OnChanges, OnDes
 
   constructor(private workflowBuilderService: WorkflowBuilderService,
     private fb: FormBuilder,
-    public dialog: MatDialog) {
+    public dialog: MatDialog,
+    private route: ActivatedRoute) {
 
     this.initActivityForm();
 
@@ -62,9 +64,17 @@ export class ActivityStepPropertiesComponent implements OnInit, OnChanges, OnDes
 
   ngOnInit(): void {
 
-    this.getRecipientsList();
+    // read moduleId and pathname from query params
+    this.subscriptionsList.push(
+      this.route.queryParams.subscribe(params => {
+          this.recipientsParams.pathName = params.pathname;
+          this.wfParams.moduleId = params.moduleId;
+          this.wfParams.pathName = params.pathname;
 
-    this.getWfFileds();
+          this.getRecipientsList();
+          this.getWfFileds();
+      })
+    )
 
   }
 
@@ -91,7 +101,7 @@ export class ActivityStepPropertiesComponent implements OnInit, OnChanges, OnDes
       escalationInterval: [''],
       escalationReoccurring: [false],
       escalationOccurrences: [''],
-      rejectionActivate: [false],
+      // rejectionActivate: [false],
       rejectionMessage: [''],
       rejectionEnhancementPoint: ['Select'],
       rejectionCriteria: ['off'],
@@ -126,6 +136,7 @@ export class ActivityStepPropertiesComponent implements OnInit, OnChanges, OnDes
           this.possibleRecipients = [];
         }
 
+        this.previousRecipientType = values.recipientType;
         this.updateStepProperties();
       });
   }
@@ -302,7 +313,7 @@ export class ActivityStepPropertiesComponent implements OnInit, OnChanges, OnDes
 
     const dialogRef = this.dialog.open(DecisionsModalComponent, {
       width: '600px',
-      data:   recipient
+      data:   JSON.parse(JSON.stringify(recipient))
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -338,6 +349,10 @@ export class ActivityStepPropertiesComponent implements OnInit, OnChanges, OnDes
   getWfFileds(){
     this.subscriptionsList.push(this.workflowBuilderService.getWorkflowFields(this.wfParams)
       .subscribe(fields => this.workflowFields = fields.allWFfield || []));
+  }
+
+  isFirstStep(){
+    return this.bpmnElement.incoming.some(node => node.source.type === 'bpmn:IntermediateCatchEvent');
   }
 
   ngOnDestroy() {

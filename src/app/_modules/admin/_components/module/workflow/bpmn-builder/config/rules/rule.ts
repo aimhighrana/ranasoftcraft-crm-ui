@@ -23,7 +23,6 @@ CustomRules.prototype.init = function () {
     if (target.type === 'bpmn:ExclusiveGateway' && target.incoming.length >= 1) { return null; }
 
     // start step don't allow incoming connection
-    // if (target.type === 'bpmn:Task') { return null; }
     if (target.type === 'bpmn:IntermediateCatchEvent') { return null; }
 
 
@@ -38,6 +37,9 @@ CustomRules.prototype.init = function () {
 
     // activity step don't allow more than two outgoing connections
     if (source.type === 'bpmn:UserTask' && source.outgoing.length >= 2) { return null; }
+
+    // the first should be an activity step
+    if (source.type === 'bpmn:IntermediateCatchEvent' && target.type !== 'bpmn:UserTask') { return null; }
 
 
   });

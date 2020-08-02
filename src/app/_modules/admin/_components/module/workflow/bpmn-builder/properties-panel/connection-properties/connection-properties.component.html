@@ -20,7 +20,7 @@
             <div class="row-spacer"></div>
             -->
 
-            <button mat-raised-button (click)="openConditionsModal()" color="primary">
+            <button *ngIf="!bpmnElement?.businessObject.$attrs.rejection" mat-raised-button (click)="openConditionsModal()" color="primary">
                 <mat-icon>settings</mat-icon> Configure conditions
             </button>
         </div>

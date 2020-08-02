@@ -692,7 +692,7 @@ const {
 /**
  * A rule that checks if a user task has at least two outgoing connection.
  */
-var userTaskValidation = function() {
+var activityStepValidation = function() {
 
   function check(node, reporter) {
 
@@ -704,10 +704,71 @@ var userTaskValidation = function() {
     const outgoing = node.outgoing || [];
 
 
-    if ((outgoing.length < 2) || (outgoing[0].$attrs.rejection === outgoing[1].$attrs.rejection) ) {
+    const attributes = node.$attrs;
 
-      reporter.report(node.id, 'Task step should has one rejection and one approve connection');
+    // Description is required
+    if (!node.name) {
+      reporter.report(node.id, 'Description is required');
     }
+
+    // Recipient type is required
+    if (!attributes.recipientType) {
+      reporter.report(node.id, 'Recipient type is required');
+    }
+
+    // ApprovedBy is required
+    if (!attributes.approvedBy) {
+      reporter.report(node.id, 'Recipient type is required');
+    }
+
+    // RoleApprovalBy is required
+    if (attributes.recipientType === 'ROLE' && !attributes.roleApprovalBy ) {
+      reporter.report(node.id, 'Role Approval By type is required');
+    }
+
+    // Recipient is required
+    const recipients = JSON.parse(attributes.recipients ? attributes.recipients : '[]');
+    if (!recipients || recipients.length === 0) {
+      reporter.report(node.id, 'Recipient is required');
+    }
+
+    // taskSubject is required
+    if (!attributes.taskSubject ) {
+      reporter.report(node.id, 'Task Subject type is required');
+    }
+
+    // Agent Determination Type is required
+    if (!attributes.agentDeterminationType ) {
+      reporter.report(node.id, 'Agent Determination Type is required');
+    }
+
+    // Step Priority is required
+    if (!attributes.stepPriority ) {
+      reporter.report(node.id, 'Step Priority is required');
+    }
+
+    // SLA HRS required
+    if (!attributes.slaHrs ) {
+      reporter.report(node.id, 'SLA HRS is required');
+    }
+
+
+    const isFirstStep = incoming.some(come => come.sourceRef.$type === 'bpmn:IntermediateCatchEvent') ;
+
+    if (!isFirstStep && ((outgoing.length != 2) || (outgoing[0].$attrs.rejection === outgoing[1].$attrs.rejection) )) {
+
+      reporter.report(node.id, 'Activity step should has one rejection and one approve connection');
+    }
+
+    // First step should not has a rejection connection
+    if (isFirstStep && outgoing.some(out => out.$attrs.rejection)) {
+      reporter.report(node.id, 'First step should not has a rejection connection');
+    }
+
+    /* if (!isFirstStep && ((outgoing.length != 2) || (outgoing[0].$attrs.rejection === outgoing[1].$attrs.rejection) )) {
+
+      reporter.report(node.id, 'Should has an outgoing connection');
+    } */
 
     /*
     if (incoming.length < 1) {
@@ -721,6 +782,32 @@ var userTaskValidation = function() {
 
 };
 
+var startStepRequired = function() {
+
+  function noStartStep(node) {
+    const flowElements = node.flowElements || [];
+
+    return (
+      flowElements.length > 0 && !flowElements.some(node => is$9(node, 'bpmn:IntermediateCatchEvent'))
+    );
+  }
+
+  function check(node, reporter) {
+
+    if (!isAny$6(node, [
+      'bpmn:Process'
+    ])) {
+      return;
+    }
+
+    if (noStartStep(node)) {
+      reporter.report(node.id, 'Start step is missing');
+    }
+  }
+
+  return { check };
+};
+
 
 const {
   is: is$d
@@ -729,7 +816,7 @@ const {
 /**
  * A rule that checks if a send task has at least one incoming connection.
  */
-var sendTaskValidation = function() {
+var emailStepValidation = function() {
 
   function check(node, reporter) {
 
@@ -740,9 +827,25 @@ var sendTaskValidation = function() {
     const incoming = node.incoming || [];
     const outgoing = node.outgoing || [];
 
-    /* commented for tests    
-    console.log(node.$attrs) ;
+    const attributes = node.$attrs;
 
+    // Description is required
+    if (!node.name) {
+      reporter.report(node.id, 'Description is required');
+    }
+
+    // Recipient type is required
+    if (!attributes.recipientType) {
+      reporter.report(node.id, 'Recipient type is required');
+    }
+
+    // Recipient is required
+    const recipients = JSON.parse(attributes.recipients ? attributes.recipients : '[]');
+    if (!recipients || recipients.length === 0) {
+      reporter.report(node.id, 'Recipient is required');
+    }
+
+    /*
     if (incoming.length < 1) {
       reporter.report(node.id, 'Email notification step should has at least one incoming connection');
     }
@@ -751,6 +854,65 @@ var sendTaskValidation = function() {
       reporter.report(node.id, 'Sender is required');
     }
     */
+  }
+
+  return {
+    check
+  };
+
+};
+
+
+/**
+ * A rule that checks if a send task has at least one incoming connection.
+ */
+var backgroundStepValidation = function() {
+
+  function check(node, reporter) {
+
+    if (!is$d(node, 'bpmn:ServiceTask')) {
+      return;
+    }
+
+    const incoming = node.incoming || [];
+    const outgoing = node.outgoing || [];
+
+    const attributes = node.$attrs;
+
+
+    // Description is required
+    if (!node.name) {
+      reporter.report(node.id, 'Description is required');
+    }
+
+  }
+
+  return {
+    check
+  };
+
+};
+
+
+var determinationStepValidation = function() {
+
+  function check(node, reporter) {
+
+    if (!is$d(node, 'bpmn:ExclusiveGateway')) {
+      return;
+    }
+
+    const incoming = node.incoming || [];
+    const outgoing = node.outgoing || [];
+
+    const attributes = node.$attrs;
+
+
+    // Description is required
+    if (!node.name) {
+      reporter.report(node.id, 'Description is required');
+    }
+
   }
 
   return {
@@ -807,8 +969,11 @@ var rules = {
   "sub-process-blank-start-event": "error",
   "superfluous-gateway": "warning",
   */
-  "user-task-connection-count" : "error",
-  "send-task-incoming-count" : "error"
+  "activity-step-validation" : "error",
+  "email-step-validation" : "error",
+  "background-step-validation" : "error",
+  "determination-step-validation" : "error",
+  "start-step-validation" : "error"
 };
 
 var config = {
@@ -839,8 +1004,13 @@ cache['bpmnlint/sub-process-blank-start-event'] = subProcessBlankStartEvent;
 cache['bpmnlint/superfluous-gateway'] = superfluousGateway;
 */
 
-cache['bpmnlint/user-task-connection-count'] = userTaskValidation;
-cache['bpmnlint/send-task-incoming-count'] = sendTaskValidation ;
+cache['bpmnlint/activity-step-validation'] = activityStepValidation;
+cache['bpmnlint/email-step-validation'] = emailStepValidation ;
+cache['bpmnlint/background-step-validation'] = backgroundStepValidation ;
+cache['bpmnlint/determination-step-validation'] = determinationStepValidation;
+cache['bpmnlint/start-step-validation'] = startStepRequired;
+
+
 
 export default bundle;
 export { config, resolver };

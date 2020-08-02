@@ -453,4 +453,15 @@ export class EndpointService {
     // return `https://devreplica.masterdataonline.com/MDOSF/REST/fapi/restWorkflow/saveWorkFlowStepViaXml`;
   }
 
+  public getFieldOptionsUrl(): string {
+    return `${this.apiUrl}/restWorkflow/admin_dropdown_list_dropdown_data`;
+    // return 'https://devreplica.masterdataonline.com/MDOSF/REST/fapi/restWorkflow/admin_dropdown_list_dropdown_data';
+  }
+
+  public getloadWfDefinitionUrl(): string {
+    return `${this.apiUrl}/restWorkflow/loadWorkFlowPathStep`;
+    // return 'https://devreplica.masterdataonline.com/MDOSF/REST/fapi/restWorkflow/loadWorkFlowPathStep';
+  }
+
+
 }

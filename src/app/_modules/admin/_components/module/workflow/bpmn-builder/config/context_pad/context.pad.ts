@@ -65,7 +65,9 @@ export class CustomContextPadProvider extends ContextPadProvider {
                     }
                 }
             }
-        } else if (element.type !== 'bpmn:SendTask' && element.type !== 'bpmn:EndEvent') {
+        } else if (element.type !== 'bpmn:SendTask'
+                   && element.type !== 'bpmn:EndEvent'
+                   && element.type !== 'bpmn:SequenceFlow') {
             // forward connection tool
             result[forward] = {
                 group: forward,
