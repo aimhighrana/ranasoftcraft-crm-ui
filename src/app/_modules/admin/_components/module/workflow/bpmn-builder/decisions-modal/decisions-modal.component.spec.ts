@@ -1,13 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 import { DecisionsModalComponent } from './decisions-modal.component';
 import { FormBuilder } from '@angular/forms';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { WorkflowBuilderService } from '@services/workflow-builder.service';
-import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('DecisionsModalComponent', () => {
   let component: DecisionsModalComponent;
@@ -18,15 +17,11 @@ describe('DecisionsModalComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ DecisionsModalComponent ],
-      imports : [MatDialogModule, HttpClientTestingModule],
+      imports : [AppMaterialModuleForSpec, HttpClientTestingModule, RouterTestingModule],
       providers: [
         FormBuilder,
         { provide: MAT_DIALOG_DATA, useValue: {recipient : 'recipient', fields : [{ id : 1, label : 'Moving price R', key : 'movingPriceR', type : 'input', value: 'test'}]} },
-        { provide: MatDialogRef, useValue: mockDialogRef },
-        WorkflowBuilderService,
-        { provide: ActivatedRoute, useValue: {
-          queryParams: of({pathname: 'WF72', moduleId: '1005'})
-        } }
+        { provide: MatDialogRef, useValue: mockDialogRef }
       ],
       schemas: [ NO_ERRORS_SCHEMA ]
     })
@@ -36,7 +31,6 @@ describe('DecisionsModalComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(DecisionsModalComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
@@ -44,11 +38,12 @@ describe('DecisionsModalComponent', () => {
   });
 
   it('should create and initialize the fields form', () => {
+    component.ngOnInit();
     expect(component.decisionForm.value['1']).toEqual('test');
   });
 
   it('it should close the dialog', () => {
-    component.onCancelClick();
+   component.onCancelClick();
    expect(mockDialogRef.close).toHaveBeenCalled();
   });
 

@@ -9,11 +9,13 @@ import { SchemaDetailsService } from '@services/home/schema/schema-details.servi
 import { UserMdoModel, RolesModel, GroupHeaderModel, PermissionType, PermissionOn, SchemaDashboardPermission } from '@models/collaborator';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { of } from 'rxjs';
+import { Router } from '@angular/router';
 
 describe('SchemaCollaboratorsComponent', () => {
   let component: SchemaCollaboratorsComponent;
   let fixture: ComponentFixture<SchemaCollaboratorsComponent>;
   let schemaDetailsSer: SchemaDetailsService;
+  let router: Router;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -24,6 +26,7 @@ describe('SchemaCollaboratorsComponent', () => {
       ]
     })
     .compileComponents();
+    router = TestBed.inject(Router);
   }));
 
   beforeEach(() => {
@@ -154,8 +157,10 @@ describe('SchemaCollaboratorsComponent', () => {
   }));
 
   it('close(), should close the current router' , () => {
+    spyOn(router, 'navigate');
     component.close();
     expect(component.close).toBeTruthy();
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: null }}]);
   });
 
   it('updatePermission(), should update collaborator detail', async(() =>{

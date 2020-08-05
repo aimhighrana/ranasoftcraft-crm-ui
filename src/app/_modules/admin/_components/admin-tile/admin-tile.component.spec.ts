@@ -23,7 +23,6 @@ describe('AdminTileComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(AdminTileComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

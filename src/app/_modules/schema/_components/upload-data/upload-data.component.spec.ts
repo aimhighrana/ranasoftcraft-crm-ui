@@ -11,11 +11,14 @@ import { MatStepper } from '@angular/material/stepper';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { of } from 'rxjs';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
+import { SchemaService } from '@services/home/schema.service';
 
 describe('UploadDataComponent', () => {
   let component: UploadDataComponent;
   let fixture: ComponentFixture<UploadDataComponent>;
   let schemaDetailsServiceSpy: SchemaDetailsService;
+  let schemaService: SchemaService;
+
   const mockDialogRef = {
     close: jasmine.createSpy('close')
   };
@@ -29,7 +32,8 @@ describe('UploadDataComponent', () => {
           useValue: mockDialogRef
         }, { provide: MAT_DIALOG_DATA, useValue: {}
         },
-         SchemaDetailsService
+         SchemaDetailsService,
+         SchemaService
       ]
     })
     .compileComponents();
@@ -39,6 +43,7 @@ describe('UploadDataComponent', () => {
     fixture = TestBed.createComponent(UploadDataComponent);
     component = fixture.componentInstance;
     schemaDetailsServiceSpy = fixture.debugElement.injector.get(SchemaDetailsService);
+    schemaService = fixture.debugElement.injector.get(SchemaService);
   });
 
   it('should create', () => {
@@ -105,6 +110,8 @@ describe('UploadDataComponent', () => {
 
   it('ngOnint()', (() => {
     component.moduleInfo = {module:'1005'};
+    component.moduleInfo.object = '1005';
+    spyOn(schemaDetailsServiceSpy,'getMetadataFields').withArgs(undefined).and.returnValue(of());
     component.ngOnInit();
     expect(component.ngOnInit).toBeTruthy();
   }));
@@ -118,6 +125,9 @@ describe('UploadDataComponent', () => {
     const stepper: MatStepper = {next:null} as MatStepper;
     component.moduleInfo = {module:{moduleId:'1005'}};
     component.excelMdoFieldMappedData = [{excelFld:'id',excelFrstRow:'3',mdoFldId:'1005',mdoFldDesc:'Material',columnIndex:1}];
+
+    spyOn(schemaService,'uploadData').withArgs(component.excelMdoFieldMappedData,'1005', component.fileSno).and.returnValue(of());
+
     component.uploadDataHttpCall(stepper) ;
     expect(component.uploadDataHttpCall).toBeTruthy();
   });
@@ -127,6 +137,10 @@ describe('UploadDataComponent', () => {
     component.dataTableCtrl = new FormGroup({
       dataTableFldCtrl: new FormControl('')
     });
+    component.uploadFileStepCtrl = new FormGroup({
+      uploadFileCtrl: new FormControl('')
+    });
+    spyOn(schemaService,'uploadUpdateFileData').withArgs(component.uploadFileStepCtrl.get('uploadFileCtrl').value, component.fileSno).and.returnValue(of());
     component.uploadFileData(stepper);
     expect(component.uploadFileData).toBeTruthy();
   }));
@@ -149,6 +163,8 @@ describe('UploadDataComponent', () => {
     component.plantCode = '0';
     component.fileSno = '1';
     component.excelMdoFieldMappedData = [{excelFld:'id',excelFrstRow:'3',mdoFldId:'1005',mdoFldDesc:'Material',columnIndex:1}];
+
+    spyOn(schemaService,'uploadCorrectionData').withArgs(component.excelMdoFieldMappedData,'1005', '7867576', '786', component.plantCode, component.fileSno).and.returnValue(of());
     component.uploadCorrectionHttpCall(stepper);
     expect(component.uploadCorrectionHttpCall).toBeTruthy();
   });

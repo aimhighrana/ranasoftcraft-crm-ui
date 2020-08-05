@@ -5,6 +5,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { SchemaListDetails } from '@models/schema/schemalist';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { of } from 'rxjs';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 describe('ExecutionSummaryComponent', () => {
   let component: ExecutionSummaryComponent;
@@ -14,7 +15,10 @@ describe('ExecutionSummaryComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ExecutionSummaryComponent ],
-      imports: [HttpClientTestingModule],
+      imports: [
+        HttpClientTestingModule,
+        AppMaterialModuleForSpec
+      ],
       providers:[ SchemalistService]
     })
     .compileComponents();

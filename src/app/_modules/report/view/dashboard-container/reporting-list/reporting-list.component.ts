@@ -78,7 +78,6 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
 
   public getListTableMetadata():void{
     this.widgetService.getListTableMetadata(this.widgetId).subscribe(returnData=>{
-      console.log(returnData);
       if(returnData !== undefined && Object.keys(returnData).length>0){
         this.columnDescs.objectNumber = 'Object Number';
          returnData.forEach(singlerow=>{
@@ -174,7 +173,6 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   }
 
   getServerData(event):PageEvent {
-    console.log(event);
    this.pageSize = event.pageSize;
    this.pageIndex = event.pageIndex;
    this.getListdata(this.pageSize,this.pageIndex * this.pageSize,this.widgetId,this.filterCriteria,this.activeSorts);
@@ -182,7 +180,6 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
  }
 
  details(data):void{
-  console.log(data);
   const url = document.getElementsByTagName('base')[0].href.substring(0, document.getElementsByTagName('base')[0].href.indexOf('MDOSF'));
   window.open(
     url+'MDOSF/loginPostProcessor?to=summary&objNum='+data.objectNumber+'&objectType='+this.objectType, 'MDO_TAB');
@@ -202,7 +199,6 @@ downloadCSV():void{
  */
 sortTable(sort: Sort) {
   if(sort) {
-    console.log(sort);
     let fld = sort.active;
     const dir = sort.direction as string;
     this.activeSorts  = {} as any;

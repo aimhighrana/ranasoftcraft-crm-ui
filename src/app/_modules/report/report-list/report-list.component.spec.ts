@@ -6,6 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ReportService } from '../_service/report.service';
 import { of } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { AddTileComponent } from '@modules/shared/_components/add-tile/add-tile.component';
 
 describe('ReportListComponent', () => {
   let component: ReportListComponent;
@@ -14,7 +15,7 @@ describe('ReportListComponent', () => {
   beforeEach(async(() => {
     const spyObj = jasmine.createSpyObj('ReportService',['reportList']);
     TestBed.configureTestingModule({
-      declarations: [ ReportListComponent, BreadcrumbComponent ],
+      declarations: [ ReportListComponent, BreadcrumbComponent, AddTileComponent ],
       imports:[ HttpClientModule, AppMaterialModuleForSpec],
       providers: [
         {provide: ReportService, useValue: spyObj}

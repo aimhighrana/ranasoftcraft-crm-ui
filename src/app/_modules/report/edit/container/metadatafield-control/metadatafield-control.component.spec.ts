@@ -26,7 +26,6 @@ describe('MetadatafieldControlComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(MetadatafieldControlComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
@@ -143,7 +142,9 @@ describe('MetadatafieldControlComponent', () => {
 
   it(`ngOnChanges(), should call reset when reset metadatafield`, async(()=>{
     // mock data
-    const chnages:import('@angular/core').SimpleChanges = {moduleId:{currentValue:true, previousValue: false, firstChange:null, isFirstChange:null}};
+    const chnages:import('@angular/core').SimpleChanges = {moduleId:{currentValue:'1005', previousValue: false, firstChange:null, isFirstChange:null}};
+
+    spyOn(schemaDetailsService,'getMetadataFields').withArgs('1005').and.returnValue(of(metadataModeleResponse));
 
     // call actual method
     component.ngOnChanges(chnages);
@@ -161,6 +162,7 @@ describe('MetadatafieldControlComponent', () => {
     component.ngOnChanges(chnages2);
     expect(component.ngOnChanges).toBeTruthy();
 
+    expect(schemaDetailsService.getMetadataFields).toHaveBeenCalled();
   }));
 
 });

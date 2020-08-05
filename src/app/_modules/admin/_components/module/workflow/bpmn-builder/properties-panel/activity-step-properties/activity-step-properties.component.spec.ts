@@ -2,12 +2,10 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ActivityStepPropertiesComponent } from './activity-step-properties.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { MatDialogModule } from '@angular/material/dialog';
 import { FormBuilder } from '@angular/forms';
 import { WorkflowBuilderService } from '@services/workflow-builder.service';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('ActivityStepPropertiesComponent', () => {
   let component: ActivityStepPropertiesComponent;
@@ -16,13 +14,8 @@ describe('ActivityStepPropertiesComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ActivityStepPropertiesComponent ],
-      imports : [HttpClientTestingModule, MatDialogModule],
-      providers : [FormBuilder, WorkflowBuilderService,
-        { provide: ActivatedRoute, useValue: {
-          queryParams: of({pathname: 'WF72', moduleId: '1005'})
-        } }
-      ],
-      schemas: [ NO_ERRORS_SCHEMA ]
+      imports : [HttpClientTestingModule, AppMaterialModuleForSpec, RouterTestingModule],
+      providers : [FormBuilder, WorkflowBuilderService]
     })
     .compileComponents();
   }));
@@ -30,7 +23,6 @@ describe('ActivityStepPropertiesComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ActivityStepPropertiesComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

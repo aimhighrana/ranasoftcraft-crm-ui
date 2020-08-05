@@ -188,7 +188,6 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     if(event) {
       event.stopPropagation();
       this.toggleSelection(option);
-      console.log(this.filterFormControl);
     }
   }
 

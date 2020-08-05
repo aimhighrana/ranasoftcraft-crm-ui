@@ -27,7 +27,6 @@ describe('SchemaStatusinfoDialogComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SchemaStatusinfoDialogComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

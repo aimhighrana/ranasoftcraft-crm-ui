@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DuplicateDetailsComponent } from './duplicate-details.component';
-import { MatMenuModule } from '@angular/material/menu';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 describe('DuplicateDetailsComponent', () => {
   let component: DuplicateDetailsComponent;
@@ -10,7 +10,9 @@ describe('DuplicateDetailsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ DuplicateDetailsComponent ],
-      imports: [MatMenuModule]
+      imports: [
+        AppMaterialModuleForSpec
+      ]
     })
     .compileComponents();
   }));

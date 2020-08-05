@@ -64,7 +64,9 @@ describe('SchemaExecutionComponent', () => {
   }));
 
   it('ngOnInit(), loaded pre required', async(()=>{
+    spyOn(schemaListServiceSpy,'getSchemaDetailsBySchemaId').withArgs(component.schemaId).and.returnValue(of());
     component.ngOnInit();
     expect(component.ngOnInit).toBeTruthy();
+    expect(schemaListServiceSpy.getSchemaDetailsBySchemaId).toHaveBeenCalledWith(component.schemaId);
   }));
 });

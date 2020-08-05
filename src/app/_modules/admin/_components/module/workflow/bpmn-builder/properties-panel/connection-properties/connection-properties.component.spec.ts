@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ConnectionPropertiesComponent } from './connection-properties.component';
-import { MatDialogModule } from '@angular/material/dialog';
 import { FormBuilder } from '@angular/forms';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 describe('ConnectionPropertiesComponent', () => {
   let component: ConnectionPropertiesComponent;
@@ -11,7 +11,7 @@ describe('ConnectionPropertiesComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ConnectionPropertiesComponent ],
-      imports : [MatDialogModule],
+      imports : [AppMaterialModuleForSpec],
       providers: [FormBuilder]
     })
     .compileComponents();
@@ -20,7 +20,6 @@ describe('ConnectionPropertiesComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ConnectionPropertiesComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

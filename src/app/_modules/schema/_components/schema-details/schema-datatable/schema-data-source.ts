@@ -38,7 +38,6 @@ export class SchemaDataSource implements DataSource<SchemaTableData> {
     }
 
     public getTableData(request: RequestForSchemaDetailsWithBr) {
-        console.log(request);
         if(request.requestStatus.toLocaleLowerCase() === 'corrections') {
             this.schemaDetailService.getCorrectedRecords(request.schemaId, request.fetchSize, request.fetchCount).subscribe(data=>{
                 this.correctedDataSubject.next(data);

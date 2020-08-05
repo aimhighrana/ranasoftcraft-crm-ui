@@ -39,10 +39,12 @@ export class AccessDeniedDialogComponent implements OnInit {
       // disableClose: true
     });
 
-    this.dialogRef.afterClosed().subscribe(result => {
-      // after close go back to previous routed url
-      this.location.back();
-    });
+    if(this.dialogRef) {
+      this.dialogRef.afterClosed().subscribe(result => {
+        // after close go back to previous routed url
+        this.location.back();
+      });
+    }
   }
 
   close() {

@@ -19,7 +19,7 @@ describe('MapMdoFieldComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(MapMdoFieldComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+
   });
 
   it('should create', () => {

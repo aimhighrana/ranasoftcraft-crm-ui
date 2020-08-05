@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DeterminationStepPropertiesComponent } from './determination-step-properties.component';
-import { MatDialogModule } from '@angular/material/dialog';
 import { FormBuilder } from '@angular/forms';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 describe('DeterminationStepPropertiesComponent', () => {
   let component: DeterminationStepPropertiesComponent;
@@ -11,7 +11,7 @@ describe('DeterminationStepPropertiesComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ DeterminationStepPropertiesComponent ],
-      imports : [MatDialogModule],
+      imports : [AppMaterialModuleForSpec],
       providers: [FormBuilder]
     })
     .compileComponents();
@@ -20,7 +20,6 @@ describe('DeterminationStepPropertiesComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(DeterminationStepPropertiesComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

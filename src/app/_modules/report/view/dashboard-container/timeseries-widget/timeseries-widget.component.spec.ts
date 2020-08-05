@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TimeseriesWidgetComponent } from './timeseries-widget.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 describe('TimeseriesWidgetComponent', () => {
   let component: TimeseriesWidgetComponent;
@@ -10,7 +11,10 @@ describe('TimeseriesWidgetComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ TimeseriesWidgetComponent ],
-      imports:[HttpClientTestingModule]
+      imports:[
+        HttpClientTestingModule,
+        AppMaterialModuleForSpec
+      ]
     })
     .compileComponents();
   }));
@@ -18,7 +22,6 @@ describe('TimeseriesWidgetComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TimeseriesWidgetComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

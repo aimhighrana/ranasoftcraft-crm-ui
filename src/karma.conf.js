@@ -16,7 +16,8 @@ module.exports = function (config) {
       clearContext: false, // leave Jasmine Spec Runner output visible in browser
       jasmine: {
         failSpecWithNoExpectations: true
-      }
+      },
+      captureConsole: false // disable console logging while ng test
     },
     coverageIstanbulReporter: {
       dir: require('path').join(__dirname, '../coverage/ngx-mdo'),
@@ -25,7 +26,7 @@ module.exports = function (config) {
       thresholds: {
         statements: 70.3,
         branches: 44.4,
-        functions: 65.02,
+        functions: 62.76,
         lines: 69.85
       }
     },

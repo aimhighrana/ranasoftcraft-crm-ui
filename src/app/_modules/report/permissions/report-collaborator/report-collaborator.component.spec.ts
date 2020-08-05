@@ -9,11 +9,14 @@ import { ReportService } from '@modules/report/_service/report.service';
 import { PermissionOn, UserMdoModel, RolesModel, GroupHeaderModel, ReportDashboardPermission, PermissionType } from '@models/collaborator';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { of } from 'rxjs';
+import { Router } from '@angular/router';
 
 describe('ReportCollaboratorComponent', () => {
   let component: ReportCollaboratorComponent;
   let fixture: ComponentFixture<ReportCollaboratorComponent>;
   let reportServieSpy: ReportService;
+  let router: Router;
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ReportCollaboratorComponent ],
@@ -23,6 +26,7 @@ describe('ReportCollaboratorComponent', () => {
       ]
     })
     .compileComponents();
+    router = TestBed.inject(Router);
   }));
 
   beforeEach(() => {
@@ -132,8 +136,10 @@ describe('ReportCollaboratorComponent', () => {
   }));
 
   it('close(), should close the current router' , () => {
+    spyOn(router, 'navigate');
     component.close();
     expect(component.close).toBeTruthy();
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: null }}]);
   });
 
   it('getCollaboratorPermission(), should return for get all user details', async(() =>{

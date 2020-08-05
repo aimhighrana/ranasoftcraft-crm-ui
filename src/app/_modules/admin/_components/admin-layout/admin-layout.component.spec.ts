@@ -23,7 +23,6 @@ describe('AdminLayoutComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(AdminLayoutComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

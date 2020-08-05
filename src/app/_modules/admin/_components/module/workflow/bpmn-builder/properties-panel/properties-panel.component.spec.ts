@@ -7,7 +7,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { WorkflowBuilderService } from '@services/workflow-builder.service';
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { MatDialogModule } from '@angular/material/dialog';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 
 describe('PropertiesPanelComponent', () => {
@@ -17,7 +17,7 @@ describe('PropertiesPanelComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ PropertiesPanelComponent ],
-      imports : [HttpClientTestingModule, MatDialogModule],
+      imports : [HttpClientTestingModule, AppMaterialModuleForSpec],
       providers : [FormBuilder, WorkflowBuilderService],
       schemas: [ NO_ERRORS_SCHEMA ]
     })
@@ -27,7 +27,6 @@ describe('PropertiesPanelComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(PropertiesPanelComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

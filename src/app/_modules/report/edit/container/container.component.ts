@@ -423,7 +423,6 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       this.styleCtrlGrp.get('field').setValue('');
     }
-    console.log(fieldData);
   }
 
   /**
@@ -436,7 +435,6 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       this.styleCtrlGrp.get('groupById').setValue('');
     }
-    console.log(fieldData);
   }
 
   /**

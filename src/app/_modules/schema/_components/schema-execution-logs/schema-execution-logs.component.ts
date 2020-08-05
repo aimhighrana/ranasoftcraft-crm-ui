@@ -21,7 +21,6 @@ export class SchemaExecutionLogsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log(this.activtedRouter);
     this.activtedRouter.params.subscribe(param =>{
       const schemaId = param.schemaId ? param.schemaId : '';
       this.schemaId = schemaId;

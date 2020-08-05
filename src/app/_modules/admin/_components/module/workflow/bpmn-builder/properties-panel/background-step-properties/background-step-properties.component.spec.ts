@@ -4,6 +4,7 @@ import { BackgroundStepPropertiesComponent } from './background-step-properties.
 import { WorkflowBuilderService } from '@services/workflow-builder.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FormBuilder } from '@angular/forms';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 describe('BackgroundStepPropertiesComponent', () => {
   let component: BackgroundStepPropertiesComponent;
@@ -12,7 +13,7 @@ describe('BackgroundStepPropertiesComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ BackgroundStepPropertiesComponent ],
-      imports: [HttpClientTestingModule],
+      imports: [HttpClientTestingModule, AppMaterialModuleForSpec],
       providers: [WorkflowBuilderService, FormBuilder],
     })
     .compileComponents();
@@ -21,7 +22,6 @@ describe('BackgroundStepPropertiesComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(BackgroundStepPropertiesComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

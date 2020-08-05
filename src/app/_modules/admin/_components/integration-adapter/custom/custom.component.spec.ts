@@ -24,7 +24,6 @@ describe('CustomComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CustomComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

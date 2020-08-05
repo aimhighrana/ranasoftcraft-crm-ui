@@ -24,7 +24,6 @@ export class Any2tsService {
   }
 
   public any2CategoriesList(list) {
-    console.log('list in any2cat ', list);
     const categories: CategoriesList[] = [];
     list.forEach(ls => {
       const cts: CategoriesList = new CategoriesList();

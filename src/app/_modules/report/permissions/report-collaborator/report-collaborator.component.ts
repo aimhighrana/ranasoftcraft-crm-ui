@@ -108,7 +108,6 @@ export class ReportCollaboratorComponent implements OnInit {
     this.reportServie.getCollaboratorPermission(queryString).subscribe(response=>{
       this.permissionOn = response;
       this.collaborators = this.transformResponse(response);
-      console.log(this.collaborators);
     },error=>console.error(`Error: ${error}`));
   }
 
@@ -307,7 +306,6 @@ export class ReportCollaboratorComponent implements OnInit {
    * @param permission update able permission
    */
   updatePermission(permission: ReportDashboardPermission) {
-    console.log(permission);
     this.reportServie.saveUpdateReportCollaborator([permission]).subscribe(res=>{
       this.getExitingCollaborators();
     },error=> console.error(`Error : ${error}`));

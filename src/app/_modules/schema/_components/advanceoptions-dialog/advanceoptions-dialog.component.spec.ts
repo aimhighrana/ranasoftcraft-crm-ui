@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AdvanceoptionsDialogComponent } from './advanceoptions-dialog.component';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 describe('AdvanceoptionsDialogComponent', () => {
   let component: AdvanceoptionsDialogComponent;
@@ -8,7 +9,10 @@ describe('AdvanceoptionsDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AdvanceoptionsDialogComponent ]
+      declarations: [ AdvanceoptionsDialogComponent ],
+      imports:[
+        AppMaterialModuleForSpec
+      ]
     })
     .compileComponents();
   }));

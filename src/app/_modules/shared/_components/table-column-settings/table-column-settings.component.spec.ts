@@ -2,13 +2,21 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TableColumnSettingsComponent } from './table-column-settings.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
-import { MetadataModel } from 'src/app/_models/schema/schemadetailstable';
+import { MetadataModel, SchemaTableViewRequest, SchemaTableViewFldMap } from 'src/app/_models/schema/schemadetailstable';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
+import { Router } from '@angular/router';
+import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
+import { of } from 'rxjs';
+import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 
 describe('TableColumnSettingsComponent', () => {
   let component: TableColumnSettingsComponent;
   let fixture: ComponentFixture<TableColumnSettingsComponent>;
+  let router: Router;
+  let schemaDetailsService: SchemaDetailsService;
+  let sharedService: SharedServiceService;
+
   const mockDialogRef = {
     close: jasmine.createSpy('close')
   };
@@ -23,15 +31,19 @@ describe('TableColumnSettingsComponent', () => {
           useValue: mockDialogRef
         }, {
           provide: MAT_DIALOG_DATA, useValue: {}
-        }
+        },
+        SharedServiceService
       ]
     })
       .compileComponents();
+      router = TestBed.inject(Router);
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(TableColumnSettingsComponent);
     component = fixture.componentInstance;
+    schemaDetailsService = fixture.debugElement.injector.get(SchemaDetailsService);
+    sharedService = fixture.debugElement.injector.get(SharedServiceService);
   });
 
   it('should create', () => {
@@ -41,8 +53,10 @@ describe('TableColumnSettingsComponent', () => {
 
   it('ngonit creation', () => {
     component.data = data;
+    spyOn(sharedService,'getChooseColumnData').and.returnValue(of(data));
     component.ngOnInit();
     expect(component.ngOnInit).toBeTruthy();
+    expect(sharedService.getChooseColumnData).toHaveBeenCalled();
   });
 
   it('headerDetails(), should return the header details', () => {
@@ -225,15 +239,34 @@ describe('TableColumnSettingsComponent', () => {
   it('submitcolumn()', () => {
     component.data = data;
     component.data.selectedFields = ['VALUE'];
+    const schemaTableViewRequest: SchemaTableViewRequest = new SchemaTableViewRequest();
+    schemaTableViewRequest.schemaId = component.data.schemaId;
+    schemaTableViewRequest.variantId = component.data.variantId;
+    const fldObj: SchemaTableViewFldMap[] = [];
+    let order = 0;
+    component.data.selectedFields.forEach(fld => {
+      const schemaTableVMap: SchemaTableViewFldMap = new SchemaTableViewFldMap();
+      schemaTableVMap.fieldId = fld;
+      schemaTableVMap.order = order;
+      order ++;
+      fldObj.push(schemaTableVMap);
+    });
+    schemaTableViewRequest.schemaTableViewMapping = fldObj;
+    spyOn(router, 'navigate');
+    spyOn(schemaDetailsService,'updateSchemaTableView').withArgs(schemaTableViewRequest).and.returnValue(of());
     component.submitColumn();
     expect(component.submitColumn).toBeTruthy();
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: null }}]);
+    expect(schemaDetailsService.updateSchemaTableView).toHaveBeenCalledWith(schemaTableViewRequest);
   });
 
   it('close()', () => {
     component.data = data;
     component.data.selectedFields = ['VALUE'];
+    spyOn(router, 'navigate');
     component.close();
     expect(component.close).toBeTruthy();
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: null }}]);
   });
 
   it('onWindowScroll(), should scroll to initial marked element', () => {

@@ -139,7 +139,6 @@ export class UploadDataComponent implements OnInit {
   getMetadataFields(moduleId) {
     this.schemaDetailsService.getMetadataFields(moduleId).subscribe(response => {
       this.metadataFields = response;
-      console.log(this.metadataFields);
       Object.keys(this.metadataFields.headers).forEach( fldid => {
         this.plantCode = this.metadataFields.headers[fldid].plantCode;
       });
@@ -218,7 +217,6 @@ export class UploadDataComponent implements OnInit {
         oldMapFld.mdoFldDesc = data.fieldDesc;
         this.excelMdoFieldMappedData.push(oldMapFld);
       }
-      console.log(this.excelMdoFieldMappedData);
     } else {
       const availmap =  this.excelMdoFieldMappedData.filter(fill => fill.columnIndex === data.index);
       if(availmap.length !== 0) {
@@ -234,7 +232,6 @@ export class UploadDataComponent implements OnInit {
       return false;
     }
     this.schemaService.uploadUpdateFileData(this.uploadFileStepCtrl.get('uploadFileCtrl').value, this.fileSno).subscribe(res=>{
-      console.log(res);
       this.fileSno = res;
       if(this.moduleInfo.object){
         this.uploadCorrectionHttpCall(stepper);

@@ -18,7 +18,6 @@ export class DynamicWidgetComponent extends WidgetComponent implements OnInit, O
   }
 
   ngOnInit(): void {
-    console.log('init');
   }
 
   emitDeleteEvent(): void {

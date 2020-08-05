@@ -109,7 +109,6 @@ export class SchemaCollaboratorsComponent implements OnInit {
     this.schemaDetailsService.getAllUserDetails(queryString).subscribe(response => {
       this.permissionOn = response;
       this.collaborators = this.transformResponse(response);
-      console.log(this.collaborators);
     },error=>console.error(`Error: ${error}`));
   }
 
@@ -310,7 +309,6 @@ export class SchemaCollaboratorsComponent implements OnInit {
   updatePermission(permission: SchemaDashboardPermission) {
     permission.schemaId = (this.schemaId);
     this.schemaDetailsService.createUpdateUserDetails([permission]).subscribe(res=>{
-      console.log(res);
       this.getExistingCollaboratorDetails();
     },error=> console.error(`Error : ${error}`));
   }
@@ -346,7 +344,6 @@ export class SchemaCollaboratorsComponent implements OnInit {
       coll.schemaId = this.schemaId;
     });
     this.schemaDetailsService.createUpdateUserDetails(this.selectedCollaborators).subscribe(res =>{
-      console.log(res);
       this.addCollaboratorFrmGrp.reset();
       this.selectedCollaborators = [];
       this.possibleChips = [];

@@ -2,15 +2,24 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { SchemaDatatableComponent } from './schema-datatable.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FieldExitsResponse, MetadataModeleResponse, Heirarchy, SchemaBrInfo, MetadataModel } from 'src/app/_models/schema/schemadetailstable';
+import { FieldExitsResponse, MetadataModeleResponse, Heirarchy, SchemaBrInfo, MetadataModel, SchemaCorrectionReq } from 'src/app/_models/schema/schemadetailstable';
 import { PageEvent } from '@angular/material/paginator';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SimpleChanges } from '@angular/core';
-import { SchemaStaticThresholdRes } from '@models/schema/schemalist';
+import { SchemaStaticThresholdRes, SchemaListDetails } from '@models/schema/schemalist';
+import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
+import { Any2tsService } from '@services/any2ts.service';
+import { SchemalistService } from '@services/home/schema/schemalist.service';
+import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
+import { EndpointService } from '@services/endpoint.service';
+import { SchemaDataSource } from './schema-data-source';
+import { of } from 'rxjs';
 
 describe('SchemaDatatableComponent', () => {
   let component: SchemaDatatableComponent;
   let fixture: ComponentFixture<SchemaDatatableComponent>;
+  let schemaDataSourceService: SchemaDataSource;
+  let schemaDetailsService: SchemaDetailsService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -21,7 +30,13 @@ describe('SchemaDatatableComponent', () => {
         RouterTestingModule
       ],
       declarations: [ SchemaDatatableComponent ],
-      providers:[]
+      providers:[
+        SchemalistService,
+        Any2tsService,
+        SharedServiceService,
+        EndpointService,
+        SchemaDetailsService
+      ]
     })
     .compileComponents();
   }));
@@ -29,7 +44,18 @@ describe('SchemaDatatableComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SchemaDatatableComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    // fixture.detectChanges();
+    schemaDataSourceService = new SchemaDataSource(fixture.debugElement.injector.get(SchemaDetailsService), fixture.debugElement.injector.get(Any2tsService));
+    component.dataTableDataSource = schemaDataSourceService;
+    const schemaDetails: SchemaListDetails = new SchemaListDetails();
+    schemaDetails.totalCount = 2324;
+    component.schemaDetails = schemaDetails;
+
+    schemaDetailsService = fixture.debugElement.injector.get(SchemaDetailsService);
+
+    spyOn(component.dataTableDataSource,'getTableData').and.callFake(res=>{
+      of();
+    });
   });
 
   it('should create', () => {
@@ -142,8 +168,11 @@ describe('SchemaDatatableComponent', () => {
         OBJECTNUMBER :{
           fieldData: '387632'
         }
-      }
+      };
+      const fldExit: FieldExitsResponse = component.findFieldExitsOnMetaRes('HELLO_TEST');
+      const request: SchemaCorrectionReq = {id: '387632',fldId:'HELLO_TEST', gridId: fldExit.gridId, heirerchyId: fldExit.hierarchyId, rowSno:null,vc: 'Test123', isReviewed: null};
 
+      spyOn(schemaDetailsService,'doCorrection').withArgs(component.schemaId, request).and.returnValue(of());
       expect(component.doCorrection(row, 'HELLO_TEST','Test123',0)).toEqual(undefined);
   }));
 

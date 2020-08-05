@@ -4,7 +4,7 @@ import { SchemaListComponent } from './schema-list.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SchemaTileComponent } from '../schema-tile/schema-tile.component';
-import { SchemaListModuleList, SchemaListDetails, SchemaDashboardPermission } from 'src/app/_models/schema/schemalist';
+import { SchemaListDetails, SchemaDashboardPermission } from 'src/app/_models/schema/schemalist';
 import { BreadcrumbComponent } from 'src/app/_modules/shared/_components/breadcrumb/breadcrumb.component';
 import { AddTileComponent } from 'src/app/_modules/shared/_components/add-tile/add-tile.component';
 import { Router } from '@angular/router';
@@ -39,6 +39,8 @@ describe('SchemaListComponent', () => {
     component = fixture.componentInstance;
     SchemaServiceSpy = fixture.debugElement.injector.get(SchemaService);
     schemaListServiceSpy = fixture.debugElement.injector.get(SchemalistService);
+
+    spyOn(schemaListServiceSpy,'getSchemaList').and.returnValue(of());
   });
 
   it('should create', () => {
@@ -115,9 +117,7 @@ describe('SchemaListComponent', () => {
   }));
 
   it('onLoadSchemaList(), should load the schema by schema group Id', async(() => {
-    const response: SchemaListModuleList[] = [];
     component.schemaGroupId = '732864726783';
-    spyOn(schemaListServiceSpy,'getSchemaList').and.returnValue(of(response));
     component.onLoadSchemaList();
     expect(schemaListServiceSpy.getSchemaList).toHaveBeenCalled();
   }));

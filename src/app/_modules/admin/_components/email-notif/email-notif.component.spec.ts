@@ -24,7 +24,6 @@ describe('EmailNotifComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(EmailNotifComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

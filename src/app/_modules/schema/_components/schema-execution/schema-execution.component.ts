@@ -58,7 +58,6 @@ export class SchemaExecutionComponent implements OnInit {
     schemaExecutionReq.schemaId =  this.schemaId;
     schemaExecutionReq.variantId = '0'; // 0 for run all
     this.schemaExecutionService.scheduleSChema(schemaExecutionReq).subscribe(data => {
-      alert('Successfully scheduled');
       this.router.navigate(['/home/schema']);
     }, error => {
       console.error('Error while schedule schema');

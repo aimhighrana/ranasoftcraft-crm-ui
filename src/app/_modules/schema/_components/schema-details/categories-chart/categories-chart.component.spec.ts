@@ -14,7 +14,6 @@ describe('CategoriesChartComponent', () => {
   let fixture: ComponentFixture<CategoriesChartComponent>;
   let schemaDetailsServiceSpy: jasmine.SpyObj<SchemaDetailsService>;
 
-
   beforeEach(async(() => {
     const schemaDetailsSerSpy = jasmine.createSpyObj('SchemaDetailsService',['getCategoryChartDetails', 'getAllCategoryInfo', 'getSchemaStatus']);
     const schemaListSerSpy = jasmine.createSpyObj('SchemalistService',['getSchemaDetailsBySchemaId']);

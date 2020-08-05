@@ -24,7 +24,6 @@ describe('AdvancedSettingsComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(AdvancedSettingsComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

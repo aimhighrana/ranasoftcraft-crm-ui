@@ -18,7 +18,7 @@ export class SchemaExecutionDialogComponent implements OnInit {
   showRunning = true;
   constructor(
     public dialogRef: MatDialogRef<SchemaExecutionComponent>,
-    @Inject(MAT_DIALOG_DATA) private data: any,
+    @Inject(MAT_DIALOG_DATA) public data: any,
     private schemaService: SchemaService,
     private schemaExecutionService: SchemaExecutionService,
     private router: Router

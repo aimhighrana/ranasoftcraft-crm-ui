@@ -74,6 +74,8 @@ export class ResizeableDirective implements OnInit {
   }
 
   inDragRegion(evt) {
-    return this.el.nativeElement.clientWidth - evt.clientX + this.el.nativeElement.offsetLeft < this.resizableGrabWidth;
+    if(this.el.nativeElement) {
+      return this.el.nativeElement.clientWidth - evt.clientX + this.el.nativeElement.offsetLeft < this.resizableGrabWidth;
+    }
   }
 }

@@ -472,7 +472,6 @@ export class TableColumnSettingsComponent implements OnInit{
       fldObj.push(schemaTableVMap);
     });
     schemaTableViewRequest.schemaTableViewMapping = fldObj;
-
     this.schemaDetailsService.updateSchemaTableView(schemaTableViewRequest).subscribe(response => {
       console.log(`Viewid ${response}`);
     }, error => {

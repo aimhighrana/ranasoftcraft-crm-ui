@@ -1,12 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ConnectionConditionModalComponent } from './connection-condition-modal.component';
-import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormBuilder } from '@angular/forms';
 import { WorkflowBuilderService } from '@services/workflow-builder.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 describe('ConnectionConditionModalComponent', () => {
   let component: ConnectionConditionModalComponent;
@@ -15,7 +16,7 @@ describe('ConnectionConditionModalComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ConnectionConditionModalComponent ],
-      imports : [MatDialogModule, HttpClientTestingModule],
+      imports : [AppMaterialModuleForSpec, HttpClientTestingModule],
       providers: [
         FormBuilder,
         WorkflowBuilderService,
@@ -32,7 +33,6 @@ describe('ConnectionConditionModalComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ConnectionConditionModalComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

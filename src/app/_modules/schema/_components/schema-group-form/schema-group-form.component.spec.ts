@@ -7,7 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BreadcrumbComponent } from 'src/app/_modules/shared/_components/breadcrumb/breadcrumb.component';
 import { SchemaService } from 'src/app/_services/home/schema.service';
 import { of } from 'rxjs';
-import { ObjectTypeResponse, GetAllSchemabymoduleidsReq, GetAllSchemabymoduleidsRes, SchemaGroupWithAssignSchemas, SchemaGroupMapping } from 'src/app/_models/schema/schema';
+import { ObjectTypeResponse, GetAllSchemabymoduleidsReq, GetAllSchemabymoduleidsRes, SchemaGroupWithAssignSchemas, SchemaGroupMapping, CreateSchemaGroupRequest } from 'src/app/_models/schema/schema';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatAutocompleteSelectedEvent, MatAutocomplete } from '@angular/material/autocomplete';
 import { Router } from '@angular/router';
@@ -74,6 +74,12 @@ describe('SchemaGroupFormComponent', () => {
 
   it('remove(), help to remove chips from selected array', async(() =>{
     // mock data
+    const selSchemaId: string[] = [];
+    const getAllSchemabymoduleidsReq: GetAllSchemabymoduleidsReq = new GetAllSchemabymoduleidsReq();
+    getAllSchemabymoduleidsReq.mosuleIds = selSchemaId;
+
+    spyOn(schemaServiceSpy,'getAllSchemabymoduleids').withArgs(getAllSchemabymoduleidsReq).and.returnValue(of());
+
     const objectId = '1005';
     component.groupDetails.objectId = ['1005'];
     component.remove(objectId);
@@ -88,6 +94,14 @@ describe('SchemaGroupFormComponent', () => {
   it('selected() , make the http call while select object type ', async(() =>{
     const event = {option:{value:{objectId:'1005'}}, source:null} as MatAutocompleteSelectedEvent;
     component.groupDetails.objectId = ['1005'];
+
+    const selSchemaId: string[] = ['1006', undefined];
+    const getAllSchemabymoduleidsReq: GetAllSchemabymoduleidsReq = new GetAllSchemabymoduleidsReq();
+    getAllSchemabymoduleidsReq.mosuleIds = selSchemaId;
+
+    spyOn(schemaServiceSpy,'getAllSchemabymoduleids').withArgs(getAllSchemabymoduleidsReq).and.returnValue(of());
+
+
     component.selected(event);
     expect(component.selected).toBeTruthy();
 
@@ -95,11 +109,8 @@ describe('SchemaGroupFormComponent', () => {
     component.groupDetails.objectId = ['1006'];
     component.selected(event1);
     expect(component.groupDetails.objectId.length).toEqual(2);
+    expect(schemaServiceSpy.getAllSchemabymoduleids).toHaveBeenCalledWith(getAllSchemabymoduleidsReq);
 
-    const event2 = {option:null, source:null} as MatAutocompleteSelectedEvent;
-    component.groupDetails.objectId = null;
-    component.selected(event2);
-    expect(component.groupDetails.objectId.length).toEqual(1);
   }));
 
   it('getAllModuleList(), should invoke for get all module', async(() =>{
@@ -174,10 +185,18 @@ describe('SchemaGroupFormComponent', () => {
 
   it('getSchemaGroupDetailsByGroupId(), get the activate schema by object type', async(() =>{
     component.groupId = '1005';
+    const selSchemaId: string[] = component.groupDetails.objectId;
+    const getAllSchemabymoduleidsReq: GetAllSchemabymoduleidsReq = new GetAllSchemabymoduleidsReq();
+    getAllSchemabymoduleidsReq.mosuleIds = selSchemaId;
+
+    spyOn(schemaServiceSpy,'getAllSchemabymoduleids').withArgs(getAllSchemabymoduleidsReq).and.returnValue(of());
     const response: SchemaGroupWithAssignSchemas = new SchemaGroupWithAssignSchemas();
+
     spyOn(schemaServiceSpy,'getSchemaGroupDetailsByGroupId').withArgs(component.groupId).and.returnValue(of(response));
     component.getSchemaGroupDetailsByGroupId(component.groupId);
     expect(schemaServiceSpy.getSchemaGroupDetailsByGroupId).toHaveBeenCalledWith(component.groupId);
+
+    expect(schemaServiceSpy.getAllSchemabymoduleids).toHaveBeenCalledWith(getAllSchemabymoduleidsReq);
   }));
 
   it('resetFields(), should route to schema group page', async(() =>{
@@ -203,12 +222,21 @@ describe('SchemaGroupFormComponent', () => {
   it('saveSchemaGroup, save the schema details', async(() => {
     component.groupDetails = {objectId:['1005'], groupId: 76576 ,groupName:'Material', schemaGroupMappings: [{schemaGroupId: 76576, schemaId: 263542521, updatedDate: 12212020, plantCode: '4343'} as SchemaGroupMapping]} as SchemaGroupWithAssignSchemas;
     component.groupId = '7566';
+    const createSchemaGroup: CreateSchemaGroupRequest = new CreateSchemaGroupRequest();
+    createSchemaGroup.moduleIds = component.groupDetails.objectId;
+    createSchemaGroup.schemaGroupName = component.groupDetails.groupName;
+    createSchemaGroup.schemaIds = component.groupDetails.schemaGroupMappings ? component.groupDetails.schemaGroupMappings.map(grp => grp.schemaId) : [];
+    createSchemaGroup.groupId = (component.groupId && component.groupId !== 'new') ? component.groupId : '';
+    spyOn(schemaServiceSpy,'createSchemaGroup').withArgs(createSchemaGroup).and.returnValue(of());
     component.saveSchemaGroup();
     expect(component.saveSchemaGroup).toBeTruthy();
+    expect(schemaServiceSpy.createSchemaGroup).toHaveBeenCalledWith(createSchemaGroup);
   }));
 
   it('ngoninit(), should call ngoninit', async(() => {
+    spyOn(schemaServiceSpy,'getAllObjectType').and.returnValue(of());
     component.ngOnInit();
     expect(component.ngOnInit).toBeTruthy();
+    expect(schemaServiceSpy.getAllObjectType).toHaveBeenCalled();
   }));
 });

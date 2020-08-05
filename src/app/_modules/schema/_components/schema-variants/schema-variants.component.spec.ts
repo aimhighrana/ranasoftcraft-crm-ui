@@ -65,7 +65,6 @@ describe('SchemaVariantsComponent', () => {
   it('schemaVaraint: should create', () => {
     component.variarantDetailsOb = of([mockVaraintData]);
     fixture.detectChanges();
-    console.log(htmlNative.getElementsByTagName('pros-schema-tile').length);
     expect(htmlNative.getElementsByTagName('pros-schema-tile').length).toEqual(1);
   });
 

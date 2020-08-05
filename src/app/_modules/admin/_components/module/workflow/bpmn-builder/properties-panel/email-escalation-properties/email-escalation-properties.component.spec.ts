@@ -4,10 +4,8 @@ import { EmailEscalationPropertiesComponent } from './email-escalation-propertie
 import { FormBuilder } from '@angular/forms';
 import { WorkflowBuilderService } from '@services/workflow-builder.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { RouterTestingModule } from '@angular/router/testing';
 
 
 describe('EmailEscalationPropertiesComponent', () => {
@@ -17,13 +15,8 @@ describe('EmailEscalationPropertiesComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ EmailEscalationPropertiesComponent ],
-      imports: [HttpClientTestingModule, MatAutocompleteModule],
-      providers : [FormBuilder, WorkflowBuilderService,
-        { provide: ActivatedRoute, useValue: {
-          queryParams: of({pathname: 'WF72'})
-        } }
-      ],
-      schemas: [ NO_ERRORS_SCHEMA ]
+      imports: [HttpClientTestingModule, AppMaterialModuleForSpec, RouterTestingModule],
+      providers : [FormBuilder, WorkflowBuilderService]
     })
     .compileComponents();
   }));
@@ -31,7 +24,6 @@ describe('EmailEscalationPropertiesComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(EmailEscalationPropertiesComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
