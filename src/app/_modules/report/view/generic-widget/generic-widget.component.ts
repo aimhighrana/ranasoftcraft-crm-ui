@@ -1,5 +1,5 @@
 import { Input, EventEmitter, Output } from '@angular/core';
-import { Criteria, WidgetColorPalette, ReportDashboardPermission } from '../../_models/widget';
+import { Criteria, WidgetColorPalette, ReportDashboardPermission, Widget } from '../../_models/widget';
 import { MatDialog } from '@angular/material/dialog';
 import { WidgetColorPaletteComponent } from '@modules/report/edit/widget-color-palette/widget-color-palette.component';
 import { BehaviorSubject } from 'rxjs';
@@ -17,6 +17,17 @@ export abstract class GenericWidgetComponent {
   @Input()
   permissons: ReportDashboardPermission;
 
+  /**
+   * Hold current widget info.
+   */
+  @Input()
+  widgetInfo: Widget;
+
+  /**
+   * Box size after window resize host listener
+   */
+  @Input()
+  boxSize: number;
 
   @Output()
   evtFilterCriteria: EventEmitter<Criteria[]> = new EventEmitter<Criteria[]>();
@@ -30,9 +41,7 @@ export abstract class GenericWidgetComponent {
 
   constructor(
     public matDialog?: MatDialog
-  ){
-    console.log('Permission on :' + this.permissons);
-  }
+  ){}
 
   /**
    * Emit filter criteria change

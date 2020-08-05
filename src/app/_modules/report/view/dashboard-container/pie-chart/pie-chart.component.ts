@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, ViewChild, LOCALE_ID, Inject } from '@angular/core';
+import { Component, OnInit, OnChanges, ViewChild, LOCALE_ID, Inject, SimpleChanges } from '@angular/core';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
 import { BehaviorSubject } from 'rxjs';
 import { PieChartWidget, WidgetHeader, ChartLegend, Criteria, BlockType, ConditionOperator, WidgetColorPalette } from '../../../_models/widget';
@@ -87,10 +87,13 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
     super(matDialog);
   }
 
-  ngOnChanges(): void {
+  ngOnChanges(changes: SimpleChanges): void {
     this.lablels = [];
     this.chartLegend = [];
     this.pieWidget.next(this.pieWidget.getValue());
+    if(changes && changes.boxSize && changes.boxSize.previousValue !== changes.boxSize.currentValue) {
+      this.boxSize = changes.boxSize.currentValue;
+    }
   }
 
   ngOnInit(): void {
@@ -146,7 +149,7 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
         ChartDataLables,
         datalabels: {
           align:  this.pieWidget.getValue().datalabelsPosition,
-          anchor: this.pieWidget.getValue().anchorPosition,
+          anchor: this.pieWidget.getValue().datalabelsPosition,
           display:'auto'
         }
       }

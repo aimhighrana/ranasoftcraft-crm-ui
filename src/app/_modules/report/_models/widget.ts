@@ -137,10 +137,6 @@ export enum PositionType {
 }
 
 export enum AlignPosition {
-    LEFT = 'left',
-    RIGHT = 'right',
-    TOP = 'top',
-    BOTTOM = 'bottom',
     CENTER = 'center',
     END = 'end',
     START = 'start'

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, OnDestroy, ViewChild, LOCALE_ID, Inject } from '@angular/core';
+import { Component, OnInit, OnChanges, OnDestroy, ViewChild, LOCALE_ID, Inject, SimpleChanges } from '@angular/core';
 import { ChartOptions, ChartLegendLabelItem } from 'chart.js';
 import { Label, BaseChartDirective } from 'ng2-charts';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
@@ -78,8 +78,11 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     this.stackBarWidget.complete();
     this.stackBarWidget.unsubscribe();
   }
-  ngOnChanges():void{
+  ngOnChanges(changes: SimpleChanges):void{
     this.stackBarWidget.next(this.stackBarWidget.getValue());
+    if(changes && changes.boxSize && changes.boxSize.previousValue !== changes.boxSize.currentValue) {
+      this.boxSize = changes.boxSize.currentValue;
+    }
   }
 
   ngOnInit(): void {
@@ -93,6 +96,8 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         this.barChartLabels = new Array();
         this.listxAxis2 = new Array();
         this.labels = [];
+        this.codeTextaxis1 = {};
+        this.codeTextaxis2 = {};
         this.barChartData = [{ data: [0,0,0,0,0], label: 'Loading..', stack: 'a',  barThickness: 'flex' }];
         this.getstackbarChartData(this.widgetId,this.filterCriteria);
       }
@@ -170,7 +175,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         ChartDataLables,
          datalabels: {
            align:  this.stackBarWidget.getValue().datalabelsPosition,
-           anchor: this.stackBarWidget.getValue().anchorPosition,
+           anchor: this.stackBarWidget.getValue().datalabelsPosition,
            display:'auto'
          }
        }

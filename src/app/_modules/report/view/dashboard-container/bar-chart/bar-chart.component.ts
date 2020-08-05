@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, ViewChild, LOCALE_ID, Inject } from '@angular/core';
+import { Component, OnInit, OnChanges, ViewChild, LOCALE_ID, Inject, SimpleChanges } from '@angular/core';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
 import { BarChartWidget, Criteria, WidgetHeader, ChartLegend, ConditionOperator, BlockType, Orientation, WidgetColorPalette } from '../../../_models/widget';
@@ -76,10 +76,13 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     super(matDialog);
   }
 
-  ngOnChanges(): void {
+  ngOnChanges(changes: SimpleChanges): void {
     this.lablels = [];
     this.chartLegend = [];
     this.barWidget.next(this.barWidget.getValue());
+    if(changes && changes.boxSize && changes.boxSize.previousValue !== changes.boxSize.currentValue) {
+      this.boxSize = changes.boxSize.currentValue;
+    }
   }
 
   ngOnInit(): void {
@@ -132,7 +135,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
             ChartDataLables,
             datalabels: {
               align: this.barWidget.getValue().datalabelsPosition,
-              anchor: this.barWidget.getValue().anchorPosition,
+              anchor: this.barWidget.getValue().datalabelsPosition,
               display:'auto'
             }
           }
