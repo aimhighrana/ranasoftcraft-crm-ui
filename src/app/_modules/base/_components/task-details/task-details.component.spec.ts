@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 
 import { TaskDetailsComponent } from './task-details.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
@@ -15,10 +15,18 @@ import { of } from 'rxjs/internal/observable/of';
 import { Userdetails } from '@models/userdetails';
 import { MatTabGroup, MatTabChangeEvent } from '@angular/material/tabs';
 import { By } from '@angular/platform-browser';
+import { GeneralInformationTabComponent } from '../general-information-tab/general-information-tab.component';
+import { AttachmentTabComponent } from '../attachment-tab/attachment-tab.component';
+import { HistoryTabComponent } from '../history-tab/history-tab.component';
 
 describe('TaskDetailsComponent', () => {
     let component: TaskDetailsComponent;
     let fixture: ComponentFixture<TaskDetailsComponent>;
+    let editSpy;
+    let snackbarSpy;
+    let layoutDataSpy;
+    let historyServiceSpy;
+    let getChangeAuditLogDetailsSpy;
     const responseFromServiceForTaskMetadata: TaskMetaData = {
         objectNumber: 'ERSA2528',
         objectType: '1005',
@@ -87,16 +95,22 @@ describe('TaskDetailsComponent', () => {
         ]
     }
 
-    beforeEach(async(() => {
+    beforeEach(fakeAsync(() => {
         // userSvcSpy = jasmine.createSpyObj('UserService', ['getUserDetails'])
         TestBed.configureTestingModule({
-            imports: [AppMaterialModuleForSpec,
+            imports: [
+                AppMaterialModuleForSpec,
                 RouterTestingModule,
                 SharedModule,
                 HttpClientTestingModule,
                 RouterTestingModule.withRoutes([])
             ],
-            declarations: [TaskDetailsComponent],
+            declarations: [
+                TaskDetailsComponent,
+                GeneralInformationTabComponent,
+                HistoryTabComponent,
+                AttachmentTabComponent
+            ],
             providers: [
                 HttpClientTestingModule,
                 TaskListService,
@@ -114,22 +128,36 @@ describe('TaskDetailsComponent', () => {
                 }
             ]
         }).compileComponents();
-
-    }));
-
-    beforeEach(() => {
         fixture = TestBed.createComponent(TaskDetailsComponent);
         component = fixture.componentInstance;
         component.metadataByWfid = responseFromServiceForTaskMetadata;
+        editSpy = spyOn(component.enableEditing, 'emit').and.callFake(() => {
+            return of([])
+        })
+        snackbarSpy = spyOn(component.utilities, 'showSnackBar').and.callFake(() => {
+            return of([])
+        })
+        layoutDataSpy = spyOn(component.taskListService, 'getCommonLayoutData').and.callFake(() => {
+            return of(sampleHistoryData)
+        });
+        historyServiceSpy = spyOn(component.taskListService, 'getAuditLogs').and.callFake(() => {
+            return of(sampleHistoryData)
+        })
+        getChangeAuditLogDetailsSpy = spyOn(component.taskListService, 'getChangeAuditLogDetails').and.callFake(() => {
+            return of([])
+        })
         spyOn(component.userService, 'getUserDetails').and.callFake(() => {
             return of(userDetailsobject)
-        })
-    });
+        });
+        component.userDetails = userDetailsobject;
+        tick();
+    }));
 
-    it('should call getTaskMetaData()', () => {
+    it('should call getTaskMetaData()', async () => {
+        component.userDetails = userDetailsobject
         fixture = TestBed.createComponent(TaskDetailsComponent);
         component = fixture.componentInstance;
-        component.wfid = '221322101146259092';
+        component.wfid = '585034355227355208';
         const metaDataSpy = spyOn(component.taskListService, 'getMetadataByWfid').and.callFake(() => {
             return of(responseFromServiceForTaskMetadata)
         });
@@ -138,45 +166,37 @@ describe('TaskDetailsComponent', () => {
         expect(component.metadataByWfid).toEqual(responseFromServiceForTaskMetadata)
     });
 
-    it('should call getHistoryData()', () => {
-        const historyServiceSpy = spyOn(component.taskListService, 'getAuditLogs').and.callFake(() => {
-            return of(sampleHistoryData)
-        })
+    it('should call getHistoryData()', async () => {
         component.getHistoryData();
-        fixture.detectChanges();
         expect(historyServiceSpy).toHaveBeenCalledWith(component.metadataByWfid.objectType, component.metadataByWfid.taskId, 'en')
         expect(component.auditLogData).not.toBe(null);
     });
 
-    it('should call getChangeLogDetails()', () => {
+    it('should call getChangeLogDetails()', async () => {
         const requestParams = {
             taskId: '123',
             userName: 'demoapp',
             language: 'en'
         }
-        const historyServiceSpy = spyOn(component.taskListService, 'getChangeAuditLogDetails').and.callFake(() => {
-            return of(sampleHistoryData)
-        })
-        component.getChangeLogDetails(requestParams.taskId, requestParams.userName)
-        expect(historyServiceSpy).toHaveBeenCalledWith(requestParams.taskId, requestParams.userName, requestParams.language)
+        component.getChangeLogDetails(requestParams.taskId, requestParams.userName);
+        expect(getChangeAuditLogDetailsSpy).toHaveBeenCalledWith(requestParams.taskId, requestParams.userName, requestParams.language)
     });
 
-    it('should enable editing', () => {
+    it('should enable editing', async () => {
         component.userDetails = userDetailsobject;
-        const editSpy = spyOn(component.enableEditing, 'emit');
-        const snackbarSpy = spyOn(component.utilities, 'showSnackBar')
         component.enableGIEditing(true);
         expect(editSpy).toHaveBeenCalledWith(true);
         expect(snackbarSpy).toHaveBeenCalledWith('Editing Enabled', 'Okay')
-        // test false case as well
         component.userDetails = userDetailsobject;
         component.enableGIEditing(false);
         expect(editSpy).toHaveBeenCalledWith(false);
         expect(snackbarSpy).toHaveBeenCalledWith('Editing Saved!', 'Okay')
     });
 
-    it('should call getMetaData', () => {
+    it('should call getMetaData', async () => {
+        component.userDetails = userDetailsobject;
         component.wfid = responseFromServiceForTaskMetadata.wfid;
+
         const requestObject: TaskListSummaryRequestParams = {
             plantCode: 'MDO1003',
             userRole: '663065348460318692',
@@ -188,16 +208,11 @@ describe('TaskDetailsComponent', () => {
             objecttype: '1005',
             eventCode: '5',
         }
-        const layoutDataSpy = spyOn(component.taskListService, 'getCommonLayoutData').and.callFake(() => {
-            return of(sampleHistoryData)
-        });
-        fixture.detectChanges();
-        fixture.whenStable();
         component.getMetaData();
         expect(layoutDataSpy).toHaveBeenCalledWith(requestObject);
     });
 
-    it('should change tabs', () => {
+    it('should change tabs', async () => {
         let tabGroup;
         if (fixture.debugElement.query(By.css('mat-tab-group'))) {
             tabGroup = fixture.debugElement.query(By.css('mat-tab-group')).componentInstance;
@@ -208,7 +223,7 @@ describe('TaskDetailsComponent', () => {
         expect(component.selectedTabIndex).toBe(0);
     });
 
-    it('should call ngAfterViewInit', () => {
+    it('should call ngAfterViewInit', async () => {
         const e = new MatTabChangeEvent();
         /** metadata */
         e.index = 0

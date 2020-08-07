@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { TaskListComponent } from './task-list.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -7,17 +7,18 @@ import { SharedModule } from '@modules/shared/shared.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TaskListService } from '@services/task-list.service';
 import { FormGroup, FormControl } from '@angular/forms';
-import { of } from 'rxjs';
+import { of, Subscription, Subject, BehaviorSubject } from 'rxjs';
 import { Pagination } from '@models/task-list/pagination';
 import { MatTabGroup } from '@angular/material/tabs';
 import { UserService } from '@services/user/userservice.service';
 import { By } from '@angular/platform-browser';
+import { Userdetails } from '@models/userdetails';
+import { SaveSearchDialogComponent } from '../save-search-dialog/save-search-dialog.component';
 
 
 describe('TaskListComponent', () => {
   let fixture: ComponentFixture<TaskListComponent>;
   let component: TaskListComponent;
-
   const taskListResponse = [
     {
       wfid: '239806156229368596',
@@ -90,6 +91,33 @@ describe('TaskListComponent', () => {
     ]
   }
 
+  const userDetailsobject: Userdetails = {
+    userName: 'DemoApp',
+    firstName: 'Demo',
+    lastName: 'Approver',
+    email: 'prostenant@gmail.com',
+    plantCode: 'MDO1003',
+    currentRoleId: '663065348460318692',
+    dateformat: 'dd.mm.yy',
+    fullName: 'Demo Approver',
+    assignedRoles: [
+      {
+        defaultRole: '1',
+        roleDesc: 'DemoApprover',
+        roleId: '663065348460318692',
+        sno: '521017956918018560',
+        userId: 'DemoApp'
+      },
+      {
+        defaultRole: '0',
+        roleDesc: 'DemoApprover2',
+        roleId: '143739996174018010',
+        sno: '867216031918019200',
+        userId: 'DemoApp'
+      }
+    ]
+  }
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [AppMaterialModuleForSpec, RouterTestingModule, SharedModule, HttpClientTestingModule],
@@ -107,26 +135,31 @@ describe('TaskListComponent', () => {
         }
       ]
     }).compileComponents();
-  }));
-
-  beforeEach(() => {
     fixture = TestBed.createComponent(TaskListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
     fixture.whenStable();
-  });
+    spyOn(component.userService, 'getUserDetails').and.callFake(() => {
+      return of(userDetailsobject)
+    });
+    component.taskListSubscription = new Subscription();
+    component.userDetailSubscription = new Subscription();
+    component.filterEmitter = new BehaviorSubject({});
+    component.enableDragging = new Subject();
+    component.routerSubscription = new Subscription();
+  }));
 
-  it('should create', () => {
+  it('should create', async () => {
     component = fixture.componentInstance;
     expect(component).toBeTruthy();
   });
 
-  it('should call ngOnInit', () => {
+  it('should call ngOnInit', async () => {
     component.ngOnInit();
     expect(component.filterForm.controls).not.toBe(null)
   });
 
-  it('should call service', () => {
+  it('should call service', async () => {
     component.initializeForm()
     const filter = {
       objectToLoad: ['ALL'],
@@ -156,7 +189,7 @@ describe('TaskListComponent', () => {
     expect(component.currentTask).toBe(taskListResponse[0])
   });
 
-  it('should call paginate()', () => {
+  it('should call paginate()', async () => {
     component.initializeForm()
     const filter = {
       objectToLoad: ['ALL'],
@@ -187,24 +220,24 @@ describe('TaskListComponent', () => {
     expect(taskListCountSpy).toHaveBeenCalled();
   });
 
-  it('toggleDynamicFilters() should toggle filters component', () => {
+  it('toggleDynamicFilters() should toggle filters component', async () => {
     component.dynamicFiltersVisible = false;
     component.toggleDynamicFilters();
     expect(component.dynamicFiltersVisible).toBe(true);
   });
 
-  it('should closeFilterBox', () => {
+  it('should closeFilterBox', async () => {
     component.closeFilterBox();
     expect(component.dynamicFiltersVisible).toEqual(true)
   });
 
-  it('should call toggleColumnSettingPopUp()', () => {
+  it('should call toggleColumnSettingPopUp()', async () => {
     component.showColumnSettingPopUp = false;
     component.toggleColumnSettingPopUp();
     expect(component.showColumnSettingPopUp).toBe(true);
   });
 
-  it('should call closeDetailsModal()', () => {
+  it('should call closeDetailsModal()', async () => {
     component.tableColumns = [{ visible: false }];
     component.closeDetailsModal();
     expect(component.showTaskDetails).toBe(false);
@@ -212,7 +245,7 @@ describe('TaskListComponent', () => {
   });
 
 
-  it('should call sortData()', () => {
+  it('should call sortData()', async () => {
     component.initializeForm();
     component.filterForm = new FormGroup({
       objectToLoad: new FormControl(['ALL']),
@@ -228,7 +261,7 @@ describe('TaskListComponent', () => {
   });
 
 
-  it('updateFilters() should set values', () => {
+  it('updateFilters() should set values', async () => {
     component.initializeForm();
     fixture.detectChanges();
     component.updateFilters(sampleSelectedFilters);
@@ -238,7 +271,7 @@ describe('TaskListComponent', () => {
   });
 
 
-  it('should call performOperationOnViews()', () => {
+  it('should call performOperationOnViews()', async () => {
     TestBed.createComponent(TaskListComponent); // this is the trigger of constructor method
     fixture.detectChanges();
     const operationObject = {
@@ -289,29 +322,31 @@ describe('TaskListComponent', () => {
     expect(component.taskListViews.length).toBeGreaterThanOrEqual(0);
   });
 
-  it('should call getDefaultViews()', () => {
+  it('should call getDefaultViews()', fakeAsync(() => {
     const taskListServiceObj = fixture.debugElement.injector.get(TaskListService);
-    spyOn(taskListServiceObj, 'getTasklListViews');
+    spyOn(taskListServiceObj, 'getTasklListViews').and.callFake(() => {
+      return of([])
+    });
     fixture.detectChanges();
     component.getDefaultViews();
-    fixture.detectChanges();
+    tick()
     expect(component.userDetails).not.toBe(null);
     expect(taskListServiceObj.getTasklListViews).toHaveBeenCalled();
     expect(component.taskListViews.length).toBeGreaterThanOrEqual(0);
-  });
+  }));
 
-  it('should set setActiveView', () => {
+  it('should set setActiveView', async () => {
     component.setActiveView('12');
     expect(component.activeViewId).toBe('12')
   });
 
-  it('should call getTaskDetails()', () => {
+  it('should call getTaskDetails()', async () => {
     component.tabGroup.selectedIndex = 0;
     component.getTaskDetails(taskListResponse[0]);
     expect(component.userDetails).not.toBe(null)
   });
 
-  it('should call doWildSearch()', () => {
+  it('should call doWildSearch()', async () => {
     const wildcardSearchSpy = spyOn(component, 'doWildSearch');
     const txtField = fixture.debugElement.query(By.css('#wildSearchField'));
     txtField.triggerEventHandler('keyup', {
@@ -323,15 +358,22 @@ describe('TaskListComponent', () => {
     expect(wildcardSearchSpy).toHaveBeenCalled();
   });
 
-  it('should call getFilters()', () => {
+  it('should call getFilters()', fakeAsync(() => {
     component.getFilters();
     expect(component.dynamicFiltersVisible).toBe(false);
 
     component.dynamicFiltersVisible = false;
-    const spy = spyOn(component.taskListService, 'getDynamicFilters');
+    const spy = spyOn(component.taskListService, 'getDynamicFilters').and.callFake(() => {
+      return of([])
+    })
     component.getFilters();
-    fixture.whenStable();
+    tick(); // Add this
     expect(spy).toHaveBeenCalled();
 
+  }));
+  it('shoudl call openDialog', () => {
+    const dialogSpy = spyOn(component.dialog,'open');
+    component.openDialog();
+    expect(dialogSpy).toHaveBeenCalledWith(SaveSearchDialogComponent)
   })
 })

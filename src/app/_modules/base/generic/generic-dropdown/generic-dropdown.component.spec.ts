@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GenericDropdownComponent } from './generic-dropdown.component';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 describe('GenericDropdownComponent', () => {
   let component: GenericDropdownComponent;
@@ -8,9 +9,10 @@ describe('GenericDropdownComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ GenericDropdownComponent ]
+      declarations: [GenericDropdownComponent],
+      imports: [AppMaterialModuleForSpec]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

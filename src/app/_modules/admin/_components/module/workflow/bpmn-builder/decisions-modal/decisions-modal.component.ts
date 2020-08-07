@@ -48,7 +48,6 @@ export class DecisionsModalComponent implements OnInit, OnDestroy {
     this.subscriptionsList.push(
       this.route.queryParams.subscribe(params => {
           this.fieldOptionsParams.objectType = params.moduleId;
-          console.log(params.moduleId);
       })
     )
 
@@ -69,7 +68,6 @@ export class DecisionsModalComponent implements OnInit, OnDestroy {
   }
 
   getFieldOptions(id){
-
     return this.wfService.getFieldOptions({
       ...this.fieldOptionsParams,
       fieldId: id

@@ -27,6 +27,7 @@ import { AdvanceoptionsDialogComponent } from './_components/advanceoptions-dial
 import { DuplicateDetailsComponent } from './_components/duplicate-details/duplicate-details.component';
 import { CollaboratorComponent } from './_components/collaborator/collaborator.component';
 import { CreateVariantComponent } from './_components/create-variant/create-variant.component';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 @NgModule({
   declarations: [
@@ -59,7 +60,8 @@ import { CreateVariantComponent } from './_components/create-variant/create-vari
   imports: [
     CommonModule,
     SchemaRoutingModule,
-    SharedModule
+    SharedModule,
+    AppMaterialModuleForSpec
   ]
 })
 export class SchemaModule { }

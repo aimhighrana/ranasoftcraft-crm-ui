@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MaterialEditComponent } from './material-edit.component';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 describe('MaterialEditComponent', () => {
   let component: MaterialEditComponent;
@@ -8,9 +9,10 @@ describe('MaterialEditComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MaterialEditComponent ]
+      declarations: [MaterialEditComponent],
+      imports: [AppMaterialModuleForSpec]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

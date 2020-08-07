@@ -473,7 +473,7 @@ export class TableColumnSettingsComponent implements OnInit{
     });
     schemaTableViewRequest.schemaTableViewMapping = fldObj;
     this.schemaDetailsService.updateSchemaTableView(schemaTableViewRequest).subscribe(response => {
-      console.log(`Viewid ${response}`);
+
     }, error => {
       console.error('Exception while persist table view');
     });

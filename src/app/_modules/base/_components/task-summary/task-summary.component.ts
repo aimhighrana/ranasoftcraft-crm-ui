@@ -28,7 +28,7 @@ export class TaskSummaryComponent implements OnInit {
    * Constructor of @class DetailsComponent
    * @param taskListService Tasklist service description
    */
-  constructor(private router: Router,
+  constructor(public router: Router,
     public activatedRoute: ActivatedRoute) { }
 
   /**
@@ -43,7 +43,6 @@ export class TaskSummaryComponent implements OnInit {
       this.wfid = this.activatedRoute.snapshot.params.wfid;
       this.eventCode = this.activatedRoute.snapshot.params.eventCode;
     }
-    console.log(this.wfid, this.eventCode)
   }
 
   closeDetailsModal() {

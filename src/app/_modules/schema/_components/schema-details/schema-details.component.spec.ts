@@ -88,8 +88,8 @@ describe('SchemaDetailsComponent', () => {
     expect(schemaService.getSchemaThresholdStatics).toBeTruthy();
   }));
 
-  it('getSchemaDetailsBySchemaId(), get schema details by schema id ', async(()=>{
-    const res: SchemaListDetails = {schemaDescription:'Testing schema '} as SchemaListDetails;
+  it('getSchemaDetailsBySchemaId(), get schema details by schema id ', async(() => {
+    const res: SchemaListDetails = { schemaDescription: 'Testing schema ' } as SchemaListDetails;
 
     spyOn(schemaListService,'getSchemaDetailsBySchemaId').withArgs('5432564653').and.returnValue(of(res));
     component.getSchemaDetailsBySchemaId('5432564653');

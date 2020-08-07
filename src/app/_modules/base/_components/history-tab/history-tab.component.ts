@@ -47,7 +47,6 @@ export class HistoryTabComponent implements OnInit, OnDestroy {
         return;
       }
       this.activeMoreLogs.push(...response);
-      console.log(this.activeMoreLogs)
     }, () => {
       this.utilies.showSnackBar('Some error occured, please try after sometime.')
     })

@@ -24,7 +24,7 @@ export class DashboardComponent implements OnInit {
   showClearFilterBtn = false;
   constructor(
     private activatedRouter: ActivatedRoute,
-    private reportService: ReportService
+    public reportService: ReportService
   ) { }
 
   ngOnInit(): void {
@@ -38,7 +38,6 @@ export class DashboardComponent implements OnInit {
 
   getReportInfo(reportId: number) {
     this.reportService.getReportInfo(reportId).subscribe(res=>{
-      console.log(res);
       this.breadcrumb.heading = res.reportName;
     },error=>{
       console.log(`Error ${error}`);

@@ -90,3 +90,10 @@ export interface Filter {
     tags: Tag[],
     apiRequestStructure: InnerObj[]
 }
+export interface TaskListRequest {
+    fetchCount: number,
+    fetchSize: number,
+    filtersMap: object,
+    objectToLoad: Array<string>,
+    sortField: Array<{}>
+}

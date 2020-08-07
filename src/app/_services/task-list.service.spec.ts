@@ -4,6 +4,9 @@ import { AppMaterialModuleForSpec } from '../app-material-for-spec.module';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TaskListViewObject } from '@models/task-list/columnSetting';
+import { TaskListRequest } from '@models/task-list/filter';
+import { TaskListRow } from '@models/task-list/taskListRow';
+import { CommonGridRequestObject } from '@models/task-list/taskListDetails';
 
 describe('TaskListService', () => {
   let service: TaskListService;
@@ -21,6 +24,84 @@ describe('TaskListService', () => {
     service = TestBed.inject(TaskListService)
     expect(service).toBeTruthy();
   });
+
+  it('should call getTasks()', () => {
+    service = TestBed.inject(TaskListService);
+    const filterRequest: TaskListRequest = {
+      objectToLoad: ['ALL'],
+      fetchSize: 10,
+      fetchCount: 0,
+      sortField: [],
+      filtersMap: { wildCardSearch: 'a' }
+    }
+    service.getTasks(filterRequest).subscribe((response: TaskListRow[]) => {
+      expect(response).not.toBe(null)
+    })
+    const testurl = service.endpointService.getTasksUrl()
+    const req = httpTestingController.expectOne(testurl);
+    const mockhttpData = [] as TaskListRow[];
+    expect(req.request.method).toEqual('POST');
+    req.flush(mockhttpData);
+    httpTestingController.verify();
+  })
+
+  it('should call getTaskListCount()', () => {
+    service = TestBed.inject(TaskListService);
+    const filterRequest = {
+      objectToLoad: ['ALL'],
+      fetchSize: 10,
+      fetchCount: 0,
+      sortField: [],
+      filtersMap: { wildCardSearch: 'a' }
+    }
+    service.getTaskListCount(filterRequest).subscribe((response: number) => {
+      expect(response).toBeGreaterThanOrEqual(0)
+    });
+    const testurl = service.endpointService.getTaskListCountURL()
+    const req = httpTestingController.expectOne(testurl);
+    const mockhttpData = 0 as number;
+    expect(req.request.method).toEqual('POST');
+    req.flush(mockhttpData);
+    httpTestingController.verify();
+  });
+
+  it('should call getDynamicFilters()', () => {
+    service = TestBed.inject(TaskListService);
+    const userDetails = {
+      firstName: 'Demo',
+      lastName: 'Approver',
+      currentRoleId: '663065348460318692',
+      assignedRoles: [{
+        sno: '521017956918018581',
+        roleId: '663065348460318692',
+        roleDesc: 'DemoApprover',
+        userId: 'DemoApp',
+        defaultRole: '1'
+      },
+      {
+        sno: '867216031918019215',
+        roleId: '143739996174018010',
+        roleDesc: 'DemoApprover2',
+        userId: 'DemoApp',
+        defaultRole: '0'
+      }],
+      fullName: 'Demo Approver',
+      plantCode: 'MDO1003',
+      userName: 'DemoApp',
+      email: 'prostenant@gmail.com',
+      dateformat: 'dd.mm.yy'
+    }
+    service.getDynamicFilters(userDetails).subscribe((response) => {
+      expect(response).not.toBe(null);
+    });
+
+    const testurl = service.endpointService.getFiltersUrl()
+    const req = httpTestingController.expectOne(testurl);
+    const mockhttpData = [];
+    expect(req.request.method).toEqual('POST');
+    req.flush(mockhttpData);
+    httpTestingController.verify();
+  })
 
   it('should call getTasklListViews()', fakeAsync(() => {
     service = TestBed.inject(TaskListService);
@@ -144,4 +225,147 @@ describe('TaskListService', () => {
     expect(req.request.method).toEqual('POST');
     httpTestingController.verify();
   });
+
+  it('it should call getAuditLogs()', () => {
+    service = TestBed.inject(TaskListService);
+    service.getAuditLogs('1', '1', 'en').subscribe((response) => {
+      // checking null as there can be do views as well
+      expect(response).not.toBe(null)
+    });
+
+    const testurl = service.endpointService.getAuditTrailLogsURL()
+    const req = httpTestingController.expectOne(testurl);
+    const mockhttpData = [] as TaskListViewObject[];
+    expect(req.request.method).toEqual('POST');
+    req.flush(mockhttpData);
+    // verify http
+    httpTestingController.verify();
+  })
+
+  it('it should call getGridMetaData()', () => {
+    service = TestBed.inject(TaskListService);
+    const gridRequestParams: CommonGridRequestObject = {
+      objecttype: '',
+      objectNumber: '',
+      eventCode: '',
+      plantCode: '',
+      lang: '',
+      taskId: '',
+      wfId: '',
+      userRole: '',
+      userId: '',
+      tabCode: '',
+      tabId: '',
+      fetchSize: 10,
+      fetchCount: 1,
+      gridId: ''
+    }
+    service.getGridMetaData(gridRequestParams).subscribe((response) => {
+      // checking null as there can be do views as well
+      expect(response).not.toBe(null)
+    });
+
+    const testurl = service.endpointService.getGridMetaDataURL(gridRequestParams)
+    const req = httpTestingController.expectOne(testurl);
+    const mockhttpData = [] as TaskListViewObject[];
+    expect(req.request.method).toEqual('GET');
+    req.flush(mockhttpData);
+    // verify http
+    httpTestingController.verify();
+  });
+
+  it('it should call getGridData()', () => {
+    service = TestBed.inject(TaskListService);
+    const gridRequestParams: CommonGridRequestObject = {
+      objecttype: 'ERSA1005',
+      objectNumber: '10100110',
+      eventCode: '10',
+      plantCode: 'MDO1005',
+      lang: 'en',
+      taskId: '663021653484603186921',
+      wfId: '66460318692',
+      userRole: '663065348460318692',
+      userId: '663065348460318692',
+      tabCode: 'header',
+      tabId: '1001',
+      fetchSize: 10,
+      fetchCount: 1,
+      gridId: '010101'
+    }
+    service.getGridData(gridRequestParams).subscribe((response) => {
+      // checking null as there can be do views as well
+      expect(response).not.toBe(null)
+    });
+
+    const testurl = service.endpointService.getGridDataUrl(gridRequestParams)
+    const req = httpTestingController.expectOne(testurl);
+    const mockhttpData = [] as TaskListViewObject[];
+    expect(req.request.method).toEqual('GET');
+    req.flush(mockhttpData);
+    // verify http
+    httpTestingController.verify();
+  });
+
+  it('it should call getMetadataByWfid()', () => {
+    service = TestBed.inject(TaskListService);
+    service.getMetadataByWfid('1234567890').subscribe((response) => {
+      // checking null as there can be do views as well
+      expect(response).not.toBe(null)
+    });
+    const testurl = service.endpointService.getMetadataByWfid('1234567890')
+    const req = httpTestingController.expectOne(testurl);
+    const mockhttpData = [] as TaskListViewObject[];
+    expect(req.request.method).toEqual('GET');
+    req.flush(mockhttpData);
+    // verify http
+    httpTestingController.verify();
+  });
+
+  it('it should call getCommonLayoutData()', () => {
+    service = TestBed.inject(TaskListService);
+    const taskListSummaryRequestParams = {
+      plantCode: 'MDO1005',
+      userRole: '663065348460318692',
+      taskId: '66302165348460318692',
+      userId: 'DemoApp',
+      wfId: '663065348',
+      lang: 'en',
+      objectnumber: 'ERSA1005',
+      objecttype: '91919',
+      eventCode: '5',
+      fetchSize: 10,
+      fetchCount: 1,
+      gridId: '12456'
+    }
+    service.getCommonLayoutData(taskListSummaryRequestParams).subscribe((response) => {
+      // checking null as there can be do views as well
+      expect(response).not.toBe(null)
+    });
+
+    const testurl = service.endpointService.getCommonLayoutDataUrl(taskListSummaryRequestParams)
+    const req = httpTestingController.expectOne(testurl);
+    const mockhttpData = [];
+    expect(req.request.method).toEqual('GET');
+    req.flush(mockhttpData);
+    // verify http
+    httpTestingController.verify();
+  });
+
+  it('it should call getChangeAuditLogDetails()', () => {
+    service = TestBed.inject(TaskListService);
+
+    service.getChangeAuditLogDetails('DemoApp', '663065348460318692', 'en').subscribe((response) => {
+      // checking null as there can be do views as well
+      expect(response).not.toBe(null)
+    });
+
+    const testurl = service.endpointService.getChangeLogDetails()
+    const req = httpTestingController.expectOne(testurl);
+    const mockhttpData = [];
+    expect(req.request.method).toEqual('POST');
+    req.flush(mockhttpData);
+    // verify http
+    httpTestingController.verify();
+  });
+
 });

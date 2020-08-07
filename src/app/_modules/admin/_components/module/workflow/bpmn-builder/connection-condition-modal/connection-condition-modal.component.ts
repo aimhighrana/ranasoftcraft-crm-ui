@@ -83,7 +83,6 @@ export class ConnectionConditionModalComponent implements OnInit, OnDestroy {
           this.wfParams.moduleId = params.moduleId;
           this.wfParams.pathName = params.pathname;
           this.getWfFields();
-          console.log(params.moduleId +  params.pathname );
       })
     )
 
@@ -185,7 +184,6 @@ export class ConnectionConditionModalComponent implements OnInit, OnDestroy {
         this.getFieldOptions(field.id)
             .subscribe(resp => {
               row.patchValue({options : resp.DATA || [], picklist : this.FIELD_TYPE.Select})
-              console.log('Field options ', resp);
             })
       ) ;
     }

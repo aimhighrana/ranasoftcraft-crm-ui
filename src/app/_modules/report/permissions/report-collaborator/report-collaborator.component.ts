@@ -42,7 +42,7 @@ export class ReportCollaboratorComponent implements OnInit {
   /**
    * Selected collaborators before saved
    */
-  selectedCollaborators: ReportDashboardPermission[]= [];
+  selectedCollaborators: ReportDashboardPermission[] = [];
   possibleChips: ReportDashboardPermission[] = [];
   currentPageIdx = 0;
 
@@ -56,25 +56,25 @@ export class ReportCollaboratorComponent implements OnInit {
 
   ngOnInit(): void {
     this.getCollaboratorPermission('');
-    this.activatedRouter.params.subscribe(param=>{
+    this.activatedRouter.params.subscribe(param => {
       this.reportId = param.reportId;
     });
     this.getExitingCollaborators();
 
     this.addCollaboratorFrmGrp = this.formBuilder.group({
-      addCollaboratorCtrl:[''],
-      isViewable:[false],
-      isEditable:[false],
-      isDeleteable:[false]
+      addCollaboratorCtrl: [''],
+      isViewable: [false],
+      isEditable: [false],
+      isDeleteable: [false]
     });
 
     /**
      * After value change should call http for load more collaborators
      */
-    this.addCollaboratorFrmGrp.get('addCollaboratorCtrl').valueChanges.subscribe(val=>{
-      if(val && typeof val === 'string') {
+    this.addCollaboratorFrmGrp.get('addCollaboratorCtrl').valueChanges.subscribe(val => {
+      if (val && typeof val === 'string') {
         this.getCollaboratorPermission(val);
-      } else if(typeof val === 'string' && val.trim() === ''){
+      } else if (typeof val === 'string' && val.trim() === '') {
         this.getCollaboratorPermission('');
       }
     })
@@ -82,17 +82,17 @@ export class ReportCollaboratorComponent implements OnInit {
     /**
      * Filtered added collaborators
      */
-    this.searchCollCtrl.valueChanges.subscribe(val=>{
-      this.collaboratorListOb = of(this.collaboratorList.filter(fil =>{
-        if(fil.userMdoModel && fil.userMdoModel.fullName.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !==-1) {
+    this.searchCollCtrl.valueChanges.subscribe(val => {
+      this.collaboratorListOb = of(this.collaboratorList.filter(fil => {
+        if (fil.userMdoModel && fil.userMdoModel.fullName.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !== -1) {
           return fil;
         }
 
-        if(fil.rolesModel && fil.rolesModel.roleDesc.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !==-1) {
+        if (fil.rolesModel && fil.rolesModel.roleDesc.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !== -1) {
           return fil;
         }
 
-        if(fil.groupHeaderModel && fil.groupHeaderModel.description.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !==-1) {
+        if (fil.groupHeaderModel && fil.groupHeaderModel.description.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !== -1) {
           return fil;
         }
 
@@ -105,10 +105,10 @@ export class ReportCollaboratorComponent implements OnInit {
    * @param queryString search able string
    */
   getCollaboratorPermission(queryString: string) {
-    this.reportServie.getCollaboratorPermission(queryString).subscribe(response=>{
+    this.reportServie.getCollaboratorPermission(queryString).subscribe(response => {
       this.permissionOn = response;
       this.collaborators = this.transformResponse(response);
-    },error=>console.error(`Error: ${error}`));
+    }, error => console.error(`Error: ${error}`));
   }
 
   /**
@@ -118,11 +118,11 @@ export class ReportCollaboratorComponent implements OnInit {
   transformResponse(response: PermissionOn): PermissionGroup[] {
     const grps: PermissionGroup[] = [];
     // for user
-    if(response && response.users) {
+    if (response && response.users) {
       const userGrp = new PermissionGroup();
       userGrp.childs = [];
-      response.users.forEach(user=>{
-        const permission = new  ReportDashboardPermission();
+      response.users.forEach(user => {
+        const permission = new ReportDashboardPermission();
         permission.userId = user.userName;
         permission.description = user.fullName ? user.fullName : user.email;
         permission.permissionType = PermissionType.USER;
@@ -134,11 +134,11 @@ export class ReportCollaboratorComponent implements OnInit {
     }
 
     // for roles
-    if(response && response.roles) {
+    if (response && response.roles) {
       const userGrp = new PermissionGroup();
       userGrp.childs = [];
-      response.roles.forEach(role=>{
-        const permission = new  ReportDashboardPermission();
+      response.roles.forEach(role => {
+        const permission = new ReportDashboardPermission();
         permission.roleId = role.roleId;
         permission.description = role.roleDesc;
         permission.permissionType = PermissionType.ROLE;
@@ -150,11 +150,11 @@ export class ReportCollaboratorComponent implements OnInit {
     }
 
     // groups
-    if(response && response.groups) {
+    if (response && response.groups) {
       const userGrp = new PermissionGroup();
       userGrp.childs = [];
-      response.groups.forEach(grp=>{
-        const permission = new  ReportDashboardPermission();
+      response.groups.forEach(grp => {
+        const permission = new ReportDashboardPermission();
         permission.groupId = grp.groupIdAsStr;
         permission.description = grp.description;
         permission.permissionType = PermissionType.GROUP;
@@ -172,7 +172,7 @@ export class ReportCollaboratorComponent implements OnInit {
    * @param option from mat-autocomplete
    */
   displayWith(option: ReportDashboardPermission): string {
-    return option ? option.description: null;
+    return option ? option.description : null;
   }
 
   /**
@@ -180,26 +180,26 @@ export class ReportCollaboratorComponent implements OnInit {
    * @param event after selection change on collaborators list
    */
   onSelectCollaborator(event: MatAutocompleteSelectedEvent) {
-    if(event && event.option) {
+    if (event && event.option) {
       const selVal: ReportDashboardPermission = event.option.value;
       let isAlreadyExits = false;
-      if(selVal.permissionType === PermissionType.USER) {
+      if (selVal.permissionType === PermissionType.USER) {
         const user = this.permissionOn.users.filter(fil => fil.userName === selVal.userId)[0];
         selVal.userMdoModel = user;
         isAlreadyExits = this.selectedCollaborators.filter(fil => fil.userId === selVal.userId).length ? true : false;
-      } else if(selVal.permissionType === PermissionType.GROUP) {
-        const grp  = this.permissionOn.groups.filter(fil => fil.groupIdAsStr === selVal.groupId)[0];
+      } else if (selVal.permissionType === PermissionType.GROUP) {
+        const grp = this.permissionOn.groups.filter(fil => fil.groupIdAsStr === selVal.groupId)[0];
         selVal.groupHeaderModel = grp;
         isAlreadyExits = this.selectedCollaborators.filter(fil => fil.groupId === selVal.groupId).length ? true : false;
-      } else if(selVal.permissionType === PermissionType.ROLE) {
+      } else if (selVal.permissionType === PermissionType.ROLE) {
         const role = this.permissionOn.roles.filter(fil => fil.roleId === selVal.roleId)[0];
         selVal.rolesModel = role;
         isAlreadyExits = this.selectedCollaborators.filter(fil => fil.roleId === selVal.roleId).length ? true : false;
       }
 
-      if(selVal && !isAlreadyExits) {
+      if (selVal && !isAlreadyExits) {
         this.selectedCollaborators.push(selVal);
-        if(this.currentPageIdx === 0 && this.possibleChips.length<2) {
+        if (this.currentPageIdx === 0 && this.possibleChips.length < 2) {
           this.possibleChips.push(selVal);
           this.currentPageIdx = 0;
         }
@@ -212,10 +212,10 @@ export class ReportCollaboratorComponent implements OnInit {
    * Get all exiting added collaborators
    */
   getExitingCollaborators() {
-    this.reportServie.getCollaboratorsPermisison(this.reportId).subscribe(res=>{
+    this.reportServie.getCollaboratorsPermisison(this.reportId).subscribe(res => {
       this.collaboratorList = res;
       this.collaboratorListOb = of(res);
-    },error=>console.error(`Error : ${error}`));
+    }, error => console.error(`Error : ${error}`));
   }
 
   /**
@@ -224,27 +224,27 @@ export class ReportCollaboratorComponent implements OnInit {
    */
   paginateChip(where?: string) {
     const reverseSelected = this.selectedCollaborators;
-    if(where === 'prev' && this.currentPageIdx >0) {
+    if (where === 'prev' && this.currentPageIdx > 0) {
       this.possibleChips = [];
-      if(reverseSelected[(this.currentPageIdx *2) -2])
-        this.possibleChips.push(reverseSelected[(this.currentPageIdx *2) -2]);
-      if(reverseSelected[(this.currentPageIdx *2) -1])
-        this.possibleChips.push(reverseSelected[(this.currentPageIdx *2) -1]);
-      this.currentPageIdx --;
+      if (reverseSelected[(this.currentPageIdx * 2) - 2])
+        this.possibleChips.push(reverseSelected[(this.currentPageIdx * 2) - 2]);
+      if (reverseSelected[(this.currentPageIdx * 2) - 1])
+        this.possibleChips.push(reverseSelected[(this.currentPageIdx * 2) - 1]);
+      this.currentPageIdx--;
     }
-    else if(where === 'next' && this.currentPageIdx < this.selectedCollaborators.length) {
+    else if (where === 'next' && this.currentPageIdx < this.selectedCollaborators.length) {
       this.possibleChips = [];
-      this.currentPageIdx ++;
-      if(reverseSelected[this.currentPageIdx * 2])
+      this.currentPageIdx++;
+      if (reverseSelected[this.currentPageIdx * 2])
         this.possibleChips.push(reverseSelected[this.currentPageIdx * 2]);
-      if(reverseSelected[(this.currentPageIdx * 2)+1])
-        this.possibleChips.push(reverseSelected[(this.currentPageIdx * 2)+1]);
+      if (reverseSelected[(this.currentPageIdx * 2) + 1])
+        this.possibleChips.push(reverseSelected[(this.currentPageIdx * 2) + 1]);
     } else {
       this.possibleChips = [];
-      if(reverseSelected[this.currentPageIdx * 2])
+      if (reverseSelected[this.currentPageIdx * 2])
         this.possibleChips.push(reverseSelected[this.currentPageIdx * 2]);
-      if(reverseSelected[(this.currentPageIdx * 2)+1])
-        this.possibleChips.push(reverseSelected[(this.currentPageIdx * 2)+1]);
+      if (reverseSelected[(this.currentPageIdx * 2) + 1])
+        this.possibleChips.push(reverseSelected[(this.currentPageIdx * 2) + 1]);
     }
   }
 
@@ -253,30 +253,30 @@ export class ReportCollaboratorComponent implements OnInit {
    * @param removeAble Remove able selected user / group / role
    */
   remove(removeAble: ReportDashboardPermission) {
-      let selecteItemIdx;
-      let possibleChipsIdx;
-      if(removeAble && removeAble.permissionType === PermissionType.USER) {
-        const selData = this.selectedCollaborators.filter(fil=> fil.userId === removeAble.userId)[0];
-        selecteItemIdx = this.selectedCollaborators.indexOf(selData);
-        const possibleCh = this.possibleChips.filter(fil=> fil.userId === removeAble.userId)[0];
-        possibleChipsIdx = this.possibleChips.indexOf(possibleCh);
-      } else if(removeAble && removeAble.permissionType === PermissionType.GROUP) {
-        const selData = this.selectedCollaborators.filter(fil=> fil.groupId === removeAble.groupId)[0];
-        selecteItemIdx = this.selectedCollaborators.indexOf(selData);
-        const possibleCh = this.possibleChips.filter(fil=> fil.groupId = removeAble.groupId)[0];
-        possibleChipsIdx = this.possibleChips.indexOf(possibleCh);
-      } else if(removeAble && removeAble.permissionType === PermissionType.ROLE) {
-        const selData = this.selectedCollaborators.filter(fil=> fil.roleId === removeAble.roleId)[0];
-        selecteItemIdx = this.selectedCollaborators.indexOf(selData);
-        const possibleCh = this.possibleChips.filter(fil=> fil.roleId = removeAble.roleId)[0];
-        possibleChipsIdx = this.possibleChips.indexOf(possibleCh);
-      }
+    let selecteItemIdx;
+    let possibleChipsIdx;
+    if (removeAble && removeAble.permissionType === PermissionType.USER) {
+      const selData = this.selectedCollaborators.filter(fil => fil.userId === removeAble.userId)[0];
+      selecteItemIdx = this.selectedCollaborators.indexOf(selData);
+      const possibleCh = this.possibleChips.filter(fil => fil.userId === removeAble.userId)[0];
+      possibleChipsIdx = this.possibleChips.indexOf(possibleCh);
+    } else if (removeAble && removeAble.permissionType === PermissionType.GROUP) {
+      const selData = this.selectedCollaborators.filter(fil => fil.groupId === removeAble.groupId)[0];
+      selecteItemIdx = this.selectedCollaborators.indexOf(selData);
+      const possibleCh = this.possibleChips.filter(fil => fil.groupId = removeAble.groupId)[0];
+      possibleChipsIdx = this.possibleChips.indexOf(possibleCh);
+    } else if (removeAble && removeAble.permissionType === PermissionType.ROLE) {
+      const selData = this.selectedCollaborators.filter(fil => fil.roleId === removeAble.roleId)[0];
+      selecteItemIdx = this.selectedCollaborators.indexOf(selData);
+      const possibleCh = this.possibleChips.filter(fil => fil.roleId = removeAble.roleId)[0];
+      possibleChipsIdx = this.possibleChips.indexOf(possibleCh);
+    }
 
-      if(selecteItemIdx !== undefined && possibleChipsIdx !== undefined) {
-        this.selectedCollaborators.splice(selecteItemIdx,1);
-        this.possibleChips.splice(possibleChipsIdx,1);
-        this.paginateChip();
-      }
+    if (selecteItemIdx !== undefined && possibleChipsIdx !== undefined) {
+      this.selectedCollaborators.splice(selecteItemIdx, 1);
+      this.possibleChips.splice(possibleChipsIdx, 1);
+      this.paginateChip();
+    }
   }
 
 
@@ -284,21 +284,21 @@ export class ReportCollaboratorComponent implements OnInit {
    * To check / enable previuos button
    */
   get enablePreBtn() {
-    return this.currentPageIdx <=0;
+    return this.currentPageIdx <= 0;
   }
 
   /**
    * To check / enable next button
    */
   get enableNextBtn() {
-    return ((this.currentPageIdx*2 +2) < this.selectedCollaborators.length && this.selectedCollaborators.length >2);
+    return ((this.currentPageIdx * 2 + 2) < this.selectedCollaborators.length && this.selectedCollaborators.length > 2);
   }
 
   /**
    * While click on close should be set sb outlet to null
    */
   close() {
-    this.router.navigate([{ outlets: { sb: null }}]);
+    this.router.navigate([{ outlets: { sb: null } }]);
   }
 
   /**
@@ -306,9 +306,9 @@ export class ReportCollaboratorComponent implements OnInit {
    * @param permission update able permission
    */
   updatePermission(permission: ReportDashboardPermission) {
-    this.reportServie.saveUpdateReportCollaborator([permission]).subscribe(res=>{
+    this.reportServie.saveUpdateReportCollaborator([permission]).subscribe(res => {
       this.getExitingCollaborators();
-    },error=> console.error(`Error : ${error}`));
+    }, error => console.error(`Error : ${error}`));
   }
 
   /**
@@ -316,15 +316,15 @@ export class ReportCollaboratorComponent implements OnInit {
    * @param permissionId permission id which we want to delete
    */
   deleteCollaborator(permissionId: string) {
-    this.reportServie.deleteCollaborator(permissionId).subscribe(res=>{
-      if(res) {
-        this.snackBar.open(`Successfully deleted`, 'Close',{duration:4000});
+    this.reportServie.deleteCollaborator(permissionId).subscribe(res => {
+      if (res) {
+        this.snackBar.open(`Successfully deleted`, 'Close', { duration: 4000 });
         this.getExitingCollaborators();
       } else {
-        this.snackBar.open(`Something went wrong`, 'Close',{duration:4000});
+        this.snackBar.open(`Something went wrong`, 'Close', { duration: 4000 });
       }
-    },error=>{
-      this.snackBar.open(`Something went wrong`, 'Close',{duration:4000});
+    }, error => {
+      this.snackBar.open(`Something went wrong`, 'Close', { duration: 4000 });
     });
   }
 
@@ -333,21 +333,20 @@ export class ReportCollaboratorComponent implements OnInit {
    */
   saveCollaborators() {
     const value = this.addCollaboratorFrmGrp.value;
-    this.selectedCollaborators.forEach(coll=>{
+    this.selectedCollaborators.forEach(coll => {
       coll.isEditable = value.isEditable ? value.isEditable : false;
       coll.isDeleteable = value.isDeleteable ? value.isDeleteable : false;
       coll.isViewable = value.isViewable ? value.isViewable : false;
       coll.permissionId = Math.floor(Math.random() * 1000000000);
       coll.reportId = this.reportId;
     });
-    this.reportServie.saveUpdateReportCollaborator(this.selectedCollaborators).subscribe(res=>{
-      console.log(res);
+    this.reportServie.saveUpdateReportCollaborator(this.selectedCollaborators).subscribe(res => {
       this.addCollaboratorFrmGrp.reset();
       this.selectedCollaborators = [];
       this.possibleChips = [];
       this.currentPageIdx = 0;
       this.getExitingCollaborators();
-    },error=> console.error(`Error : ${error}`));
+    }, error => { });
   }
 
 }

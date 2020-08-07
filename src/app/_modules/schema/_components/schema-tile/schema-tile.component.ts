@@ -100,13 +100,13 @@ export class SchemaTileComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach(sub=>{
+    this.subscriptions.forEach(sub => {
       sub.unsubscribe();
     });
   }
 
   ngOnInit() {
-    if(this.schemaId) {
+    if (this.schemaId) {
       this.getSchemaThresholdStatics();
     }
   }
@@ -154,13 +154,13 @@ export class SchemaTileComponent implements OnInit, OnDestroy {
    * Based on schemaId & variantId
    */
   getSchemaThresholdStatics() {
-    const staticSub = this.schemaService.getSchemaThresholdStatics(this.schemaId, this.variantId).subscribe(res=>{
+    const staticSub = this.schemaService.getSchemaThresholdStatics(this.schemaId, this.variantId).subscribe(res => {
       this.thresholdRes = res;
       this.thresholdRes.threshold = Math.round((res.threshold + Number.EPSILON) * 100) / 100;
       this.totalCount = res.totalCnt;
       this.errorValue = res.errorCnt;
       this.successValue = res.successCnt;
-    }, error=>{
+    }, error => {
       this.thresholdRes.threshold = 0;
       console.error(`Execption : ${error.message}`);
     });
@@ -176,9 +176,9 @@ export class SchemaTileComponent implements OnInit, OnDestroy {
       this.totalCount = data;
       this.state = 'readyForRun';
       this.runAllLebal = 'Run all';
-    },error=>{
+    }, error => {
       console.error(`Execption : ${error.message}`);
-      this.matSnackBar.open(`Index not found, please sync data.`, 'Close',{duration:5000});
+      this.matSnackBar.open(`Index not found, please sync data.`, 'Close', { duration: 5000 });
       this.runAllLebal = 'Run all';
     });
   }
@@ -188,14 +188,12 @@ export class SchemaTileComponent implements OnInit, OnDestroy {
    */
   scheduleSchema() {
     const schemaExecutionReq: SchemaExecutionRequest = new SchemaExecutionRequest();
-    schemaExecutionReq.schemaId =  this.schemaId;
+    schemaExecutionReq.schemaId = this.schemaId;
     schemaExecutionReq.variantId = '0'; // 0 for run all
     this.schemaExecutionService.scheduleSChema(schemaExecutionReq).subscribe(data => {
       this.state = 'inRunning';
-      console.log(`After schedule schema ${this.schemaId}  , run id  ${data}`);
     }, error => {
-      console.log('Error while schedule schema');
-      this.matSnackBar.open(`Something went wrong `, 'Close',{duration:5000});
+      this.matSnackBar.open(`Something went wrong `, 'Close', { duration: 5000 });
     });
   }
 

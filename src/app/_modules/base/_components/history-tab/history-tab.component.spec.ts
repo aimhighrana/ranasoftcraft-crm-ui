@@ -7,6 +7,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 describe('HistoryTabComponent', () => {
   let component: HistoryTabComponent;
@@ -17,7 +18,8 @@ describe('HistoryTabComponent', () => {
       imports: [
         MatSnackBarModule,
         HttpClientModule,
-        RouterTestingModule
+        RouterTestingModule,
+        AppMaterialModuleForSpec
       ],
       providers: [
         TaskDetailsComponent,
@@ -47,13 +49,13 @@ describe('HistoryTabComponent', () => {
 
   it('should call getChangeLogDetails', () => {
     const requestObj = {
-      taskId:'838851512912552577',
-      userId:'DemoInit',
+      taskId: '838851512912552577',
+      userId: 'DemoInit',
     }
     const serviceSpy = spyOn(component.taskDetailsComponent, 'getChangeLogDetails').and.callFake(() => {
       return of()
     });
-    component.getChangeLogs(requestObj.taskId,requestObj.userId);
-    expect(serviceSpy).toHaveBeenCalledWith(requestObj.taskId,requestObj.userId)
+    component.getChangeLogs(requestObj.taskId, requestObj.userId);
+    expect(serviceSpy).toHaveBeenCalledWith(requestObj.taskId, requestObj.userId)
   })
 });

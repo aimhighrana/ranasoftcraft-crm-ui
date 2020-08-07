@@ -15,23 +15,33 @@ getTestBed().initTestEnvironment(
   platformBrowserDynamicTesting()
 );
 
-///  Load only home, admin , schema ,report and test .. modules
-const adminModule = require.context('./app/_modules/admin', true, /\.spec\.ts$/);
-const homeModule = require.context('./app/_modules/home', true, /\.spec\.ts$/);
-const report = require.context('./app/_modules/report', true, /\.spec\.ts$/);
-const schemaModule = require.context('./app/_modules/schema', true, /\.spec\.ts$/);
-const sharedModule = require.context('./app/_modules/shared', true, /\.spec\.ts$/);
-const _services = require.context('./app/_services', true, /\.spec\.ts$/);
+/// Load modules for testing individually
+// const adminModule = require.context('./app/_modules/admin', true, /\.spec\.ts$/);
+// adminModule.keys().map(adminModule);
 
-// add load the modules
-adminModule.keys().map(adminModule);
-homeModule.keys().map(homeModule);
-report.keys().map(report);
-schemaModule.keys().map(schemaModule);
-sharedModule.keys().map(sharedModule);
-_services.keys().map(_services);
+// const baseModule = require.context('./app/_modules/base', true, /\.spec\.ts$/)
+// baseModule.keys().map(baseModule);
+
+// const homeModule = require.context('./app/_modules/home', true, /\.spec\.ts$/);
+// homeModule.keys().map(homeModule);
+
+// const msteams = require.context('./app/_modules/msteams', true, /\.spec\.ts$/);
+// msteams.keys().map(msteams);
+
+// const report = require.context('./app/_modules/report', true, /\.spec\.ts$/);
+// report.keys().map(report);
+
+// const schemaModule = require.context('./app/_modules/schema', true, /\.spec\.ts$/);
+// schemaModule.keys().map(schemaModule);
+
+// const sharedModule = require.context('./app/_modules/shared', true, /\.spec\.ts$/);
+// sharedModule.keys().map(sharedModule);
+
+// const _services = require.context('./app/_services', true, /\.spec\.ts$/);
+// _services.keys().map(_services);
+
 
 // // Then we find all the tests.
-// const context = require.context('./', true, /\.spec\.ts$/);
+const context = require.context('./', true, /\.spec\.ts$/);
 // // And load the modules.
-// context.keys().map(context);
+context.keys().map(context);

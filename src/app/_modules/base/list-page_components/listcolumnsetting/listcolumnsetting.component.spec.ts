@@ -11,9 +11,9 @@ describe('ListColumnsettingComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [AppMaterialModuleForSpec, RouterTestingModule],
-      declarations: [ ListColumnsettingComponent ]
+      declarations: [ListColumnsettingComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -30,6 +30,6 @@ describe('ListColumnsettingComponent', () => {
     spyOn(component.close, 'emit');
     component.closeSettingColumn();
     expect(component.close.emit).toHaveBeenCalledWith(true);
-   });
+  });
 
 });

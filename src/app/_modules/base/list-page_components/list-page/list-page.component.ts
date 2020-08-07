@@ -265,15 +265,6 @@ export class ListPageComponent implements OnInit, OnDestroy {
     this.displaylist.push('setting');
   }
 
-  /**
-   * function to show or hide column and headers
-   * @param columnName name of column
-   */
-  // columnVisible(columnName) {
-  //   console.log(columnName,"column name");
-  //     const selectedColumn = this.tableColumns.find((column) => column.fieldName === columnName);
-  //     return selectedColumn.visible;
-  // }
   getFilters() {
     this.listPageService.getFilters().subscribe(response => {
       this.filters = response;

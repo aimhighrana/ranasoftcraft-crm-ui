@@ -2,10 +2,8 @@
 // import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 // import { TableColumnSettingsComponent } from './table-column-settings.component';
 // import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
-// import { MetadataModel, SchemaTableViewRequest, SchemaTableViewFldMap } from 'src/app/_models/schema/schemadetailstable';
-// import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+// import { MetadataModel } from 'src/app/_models/schema/schemadetailstable';
 // import { RouterTestingModule } from '@angular/router/testing';
-// import { Router } from '@angular/router';
 // import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 // import { of } from 'rxjs';
 // import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
@@ -13,341 +11,436 @@
 // describe('TableColumnSettingsComponent', () => {
 //   let component: TableColumnSettingsComponent;
 //   let fixture: ComponentFixture<TableColumnSettingsComponent>;
-//   let router: Router;
-//   let schemaDetailsService: SchemaDetailsService;
-//   let sharedService: SharedServiceService;
-
-//   const mockDialogRef = {
-//     close: jasmine.createSpy('close')
-//   };
+//   let sharedServiceSpy: SharedServiceService;
 
 //   beforeEach(async(() => {
 //     TestBed.configureTestingModule({
 //       declarations: [TableColumnSettingsComponent],
-//       imports: [AppMaterialModuleForSpec, MatDialogModule, RouterTestingModule],
-//       providers: [
-//         {
-//           provide: MatDialogRef,
-//           useValue: mockDialogRef
-//         }, {
-//           provide: MAT_DIALOG_DATA, useValue: {}
-//         },
-//         SharedServiceService
-//       ]
+//       imports: [AppMaterialModuleForSpec, RouterTestingModule],
+//       providers: [SchemaDetailsService, SharedServiceService]
 //     })
 //       .compileComponents();
-//       router = TestBed.inject(Router);
 //   }));
 
 //   beforeEach(() => {
 //     fixture = TestBed.createComponent(TableColumnSettingsComponent);
 //     component = fixture.componentInstance;
-//     schemaDetailsService = fixture.debugElement.injector.get(SchemaDetailsService);
-//     sharedService = fixture.debugElement.injector.get(SharedServiceService);
+//     const schemaDetailsServiceSpy = fixture.debugElement.injector.get(SchemaDetailsService);
+//     schemaDetailsServiceSpy.getCategoryChartData
+//     sharedServiceSpy = fixture.debugElement.injector.get(SharedServiceService);
 //   });
 
 //   it('should create', () => {
 //     expect(component).toBeTruthy();
 //   });
-//   const data = { fields: { headers: { VALUE: { fieldId: 'VALUE', fieldDescri: 'Test Value' } }, hierarchyFields: { VALUE: { Test: { fieldId: 'VALUE', fieldDescri: 'Test Value' } } }, hierarchy: [{ heirarchyId: 'VALUE', heirarchyText: 'Plant' }], gridFields: { VALUE: { Test: { fieldId: 'VALUE', fieldDescri: 'Test Value' } } }, grids: { VALUE: { fieldId: 'VALUE', fieldDescri: 'Test Value' } } }, selectedFields: ['VALUE', 'VALUE12', 'VALUE1'] };
 
 //   it('ngonit creation', () => {
-//     component.data = data;
-//     spyOn(sharedService,'getChooseColumnData').and.returnValue(of(data));
+//     spyOn(sharedServiceSpy, 'getChooseColumnData').and.returnValue(of({}));
 //     component.ngOnInit();
-//     expect(component.ngOnInit).toBeTruthy();
-//     expect(sharedService.getChooseColumnData).toHaveBeenCalled();
+//     expect(sharedServiceSpy.getChooseColumnData).toHaveBeenCalledTimes(1);
+
 //   });
 
-//   it('headerDetails(), should return the header details', () => {
+//   it('headerDetails(), should return the header details', async(() => {
+//     // Mock data 1
+//     const data = {
+//       selectedFields: ['ACCOUNT_VIEW', 'SALES_VIEW'],
+//       fields: {
+//         headers: {
+//           AACR: { fieldId: 'AACR', fieldDescri: 'What is the estimated annual consumption' },
+//           ACCOUNT_VIEW: { fieldId: 'ACCOUNT_VIEW', fieldDescri: 'Account View' }
+//         }
+//       }
+//     }
 //     component.data = data;
+
 //     component.headerDetails();
-//     expect(component.header.length).toEqual(1);
-//   });
+//     expect(component.header.length).toEqual(2);
 
-//   it('hierarchyDetails(), should return the hierarchy details', () => {
+//     // mock data 2
+//     const data1 = {
+//       selectedFields: [],
+//       fields: {
+//         headers: {
+//           AACR: { fieldId: 'AACR', fieldDescri: 'What is the estimated annual consumption' },
+//           ACCOUNT_VIEW: { fieldId: 'ACCOUNT_VIEW', fieldDescri: 'Account View' }
+//         }
+//       }
+//     }
+//     component.data = data1;
+
+//     component.headerDetails();
+//     expect(component.header.length).toEqual(2);
+
+//     // mock data 3
+//     const data2 = {};
+//     component.data = data2;
+
+//     component.headerDetails();
+//     expect(component.header.length).toEqual(0);
+//   }));
+
+//   it('hierarchyDetails(), should return the hierarchy details', async(() => {
+//     // mock data 1
+//     const data = {
+//       selectedFields: ['ABC_INDIC', 'ASSY_SCRAP'],
+//       fields: {
+//         hierarchyFields: {
+//           1: {
+//             ABC_INDIC: { fieldId: 'ABC_INDIC', fieldDescri: 'ABC Indicator.' },
+//             ALTERNATIVE_BOM: { fieldId: 'ALTERNATIVE_BOM', fieldDescri: 'AltBOM' }
+//           }
+//         },
+//         hierarchy: [{ heirarchyId: '1', heirarchyText: 'Plant Data' }]
+//       },
+//       selectedHierarchyIds: ['1', '2']
+//     }
 //     component.data = data;
-//     component.data.selectedHierarchyIds = ['VALUE'];
+
 //     component.hierarchyDetails();
-//     expect(component.hierarchy.length).toEqual(1);
-//   });
+//     expect(component.hierarchy.length).toEqual(2);
 
-//   it('gridDetails(), should return the grid details', () => {
+//     // mock data 2
+//     const data1 = {
+//       selectedFields: [],
+//       fields: {
+//         hierarchyFields: {
+//           1: {
+//             ABC_INDIC: { fieldId: 'ABC_INDIC', fieldDescri: 'ABC Indicator.' },
+//             ALTERNATIVE_BOM: { fieldId: 'ALTERNATIVE_BOM', fieldDescri: 'AltBOM' }
+//           }
+//         },
+//         hierarchy: [{ heirarchyId: '1', heirarchyText: 'Plant Data' }]
+//       },
+//       selectedHierarchyIds: ['1']
+//     }
+
+//     component.data = data1;
+
+//     component.hierarchyDetails();
+//     expect(component.hierarchy.length).toEqual(2);
+
+//     // mock data 3
+//     const data2 = {};
+//     component.data = data2;
+
+//     component.hierarchyDetails();
+//     expect(component.hierarchy.length).toEqual(0);
+//   }));
+
+//   it('gridDetails(), should return the grid details', async(() => {
+//     // mock data 1
+//     const data = {
+//       selectedFields: ['ADD_HEIGHT', 'ASSY_SCRAP'],
+//       fields: {
+//         gridFields: {
+//           ADDINFO: {
+//             ADD_HEIGHT: { fieldId: 'ADD_HEIGHT', fieldDescri: 'Height' },
+//             ADD_LENGTH: { fieldId: 'ADD_LENGTH', fieldDescri: 'Length' }
+//           }
+//         },
+//         grids: {
+//           ADDINFO: { fieldId: 'ADDINFO', fieldDescri: 'Additional data for GS1' }
+//         }
+//       },
+//       selectedGridIds: ['ADDINFO', 'ADD_EANDATA']
+//     }
+
 //     component.data = data;
-//     component.data.selectedGridIds = ['VALUE'];
 //     component.gridDetails();
-//     expect(component.grid.length).toEqual(1);
-//   });
+//     expect(component.grid.length).toEqual(2);
 
-//   it('search()', () => {
+//     // mock data 2
+//     const data1 = {
+//       selectedFields: [],
+//       fields: {
+//         gridFields: {
+//           ADDINFO: {
+//             ADD_HEIGHT: { fieldId: 'ADD_HEIGHT', fieldDescri: 'Height' },
+//             ADD_LENGTH: { fieldId: 'ADD_LENGTH', fieldDescri: 'Length' }
+//           }
+//         },
+//         grids: {
+//           ADDINFO: { fieldId: 'ADDINFO', fieldDescri: 'Additional data for GS1' }
+//         }
+//       },
+//       selectedGridIds: ['ADDINFO']
+//     }
+
+//     component.data = data1;
+//     component.gridDetails();
+//     expect(component.grid.length).toEqual(2);
+
+//     // mock data 3
+//     const data2 = {};
+//     component.data = data2;
+
+//     component.gridDetails();
+//     expect(component.grid.length).toEqual(0);
+//   }));
+
+//   it('selectCheckbox(), should return the selected fields', async(() => {
+//     // mock data 1
+//     component.headerArray = ['NDCTYPE', 'PROC_RULE'];
+//     component.hierarchyArray = ['CON_DOCDT', 'INF_NO'];
+//     component.gridArray = ['ADD_LENGTH', 'ADD_WIDTH'];
+//     const data = {
+//       selectedFields: ['NDCTYPE', 'INF_NO', 'ADD_WIDTH', 'MATL_MAT_CODE']
+//     }
 //     component.data = data;
-//     const el = fixture.nativeElement.querySelector('input');
-//     el.value = 'VALUE';
-//     el.dispatchEvent(new Event('input'));
-//     component.search();
-//     expect(component.search).toBeTruthy();
+
+//     component.selectCheckbox();
+//     expect(component.allIndeterminate).toEqual(true);
+
+//     // mock data 2
+//     const data1 = {
+//       selectedFields: ['NDCTYPE', 'PROC_RULE', 'CON_DOCDT', 'INF_NO', 'ADD_LENGTH', 'ADD_WIDTH']
+//     }
+//     component.data = data1;
+
+//     component.selectCheckbox();
+//     expect(component.allIndeterminate).toEqual(false);
+
+//     // mock data 3
+//     const data2 = {
+//       selectedFields: ['NDCTYPE', 'CON_DOCDT', 'INF_NO', 'ADD_LENGTH', 'ADD_WIDTH']
+//     }
+//     component.data = data2;
+
+//     component.selectCheckbox();
+//     expect(component.allIndeterminate).toEqual(true);
+
+//     // mock data 4
+//     const data3 = {
+//       selectedFields: []
+//     }
+//     component.data = data3;
+
+//     component.selectCheckbox();
+//     expect(component.allIndeterminate).toEqual(false);
+//   }));
+
+//   it('Drop(), should emit the change in drrag & drop array ', async(() => {
+//     component.headerArray = ['NDCTYPE', 'PROC_RULE'];
+//     component.hierarchyArray = ['CON_DOCDT', 'INF_NO'];
+//     component.gridArray = ['ADD_LENGTH', 'ADD_WIDTH'];
+//     const cdkEvent = { previousIndex: 0, currentIndex: 1 } as CdkDragDrop<MetadataModel[]>;
+
+//     component.drop(cdkEvent, 'header', null);
+//     expect(component.headerArray.length).toEqual(2);
+
+//     component.drop(cdkEvent, 'grid', null);
+//     expect(component.gridArray.length).toEqual(2);
+
+//     component.drop(cdkEvent, 'hierarchy', null);
+//     expect(component.hierarchyArray.length).toEqual(2);
+
+//     component.drop(cdkEvent, 'else', null);
+//     expect(component.hierarchyArray.length).toEqual(2);
+//   }));
+
+//   it('ismarked(), should highlight the user search fields', () => {
+//     component.markedFields = ['NDCTYPE'];
+//     expect(component.isMarked('NDCTYPE')).toEqual(true);
+
+//     expect(component.isMarked('INF_NO')).toEqual(false);
 //   });
 
-//   it('Drag & Drop', () => {
-//     component.data = data;
-//     const cdkEvent: CdkDragDrop<MetadataModel[]> = {} as any;
-//     component.drop(cdkEvent, null, null);
-//     expect(cdkEvent).toBeTruthy();
-//   });
+//   it('onWindowScroll(), should scroll to initial marked element', async(() => {
+//     component.headerArray = ['NDCTYPE'];
+//     component.hierarchyArray = ['CON_DOCDT'];
+//     component.gridArray = ['ADD_WEIGHT'];
+//     component.markedFields = ['NDCTYPE', 'ADD_WEIGHT'];
+//     const dummyElement = document.createElement('div');
+//     document.getElementById = jasmine.createSpy('mat-card').and.returnValue(dummyElement);
 
-//   it('ismarked', () => {
-//     component.markedFields = ['test'];
-//     expect(component.isMarked('test')).toEqual(true);
-//     expect(component.isMarked('mock')).toEqual(false);
-//   });
+//     component.onWindowScroll();
+//     expect(component.markedFields.length).toEqual(2);
+
+//     component.markedFields = ['ADD_WEIGHT'];
+//     component.onWindowScroll();
+//     expect(component.markedFields.length).toEqual(1);
+
+//     component.markedFields = ['INF_NO'];
+//     component.onWindowScroll();
+//     expect(component.markedFields.length).toEqual(1);
+//   }));
+
+//   it('searchKeyDown(), shoud return the press key', async(() => {
+//     component.dynamicSearchVal = 'NDC';
+//     const ev = { key: 'Enter', preventDefault() { } } as KeyboardEvent;
+//     component.searchKeyDown(ev);
+//     expect(ev.key).toEqual('Enter');
+
+//     const ev1 = { key: 'ArrowRight', preventDefault() { } } as KeyboardEvent;
+//     component.searchKeyDown(ev1);
+//     expect(ev1.key).toEqual('ArrowRight');
+
+//     const ev2 = { key: 'ArrowLeft', preventDefault() { } } as KeyboardEvent;
+//     component.searchKeyDown(ev2);
+//     expect(ev2.key).toEqual('ArrowLeft');
+
+//     const ev3 = { key: 'Up', preventDefault() { } } as KeyboardEvent;
+//     component.searchKeyDown(ev3);
+//     expect(ev3.key).toEqual('Up');
+
+//     component.dynamicSearchVal = null;
+//     const ev4 = { key: 'Enter', preventDefault() { } } as KeyboardEvent;
+//     component.searchKeyDown(ev4);
+//     expect(ev4.key).toEqual('Enter');
+//   }));
 
 //   it('onTextboxChange()', () => {
-//     component.data = data;
 //     component.onTextboxChange();
-//     expect(component.onTextboxChange).toBeTruthy();
+//     expect(component.index).toEqual(0);
 //   });
 
-//   it('findprev()', () => {
+//   it('findNext(), should emit the next offset value', async(() => {
 //     component.headerArray = ['NDCTYPE'];
 //     component.hierarchyArray = ['CON_DOCDT'];
-//     component.gridArray = ['Weight'];
-//     component.markedFields = ['NDCTYPE','CON_DOCDT','Weight'];
+//     component.gridArray = ['ADD_WEIGHT'];
+//     component.markedFields = ['NDCTYPE', 'ADD_WEIGHT'];
 //     const dummyElement = document.createElement('div');
 //     document.getElementById = jasmine.createSpy('mat-card').and.returnValue(dummyElement);
-//     component.findPrev();
-//     expect(component.markedFields.length).toEqual(3);
 
-//     component.markedFields = ['CON_DOCDT','Weight'];
-//     component.findPrev();
-//     expect(component.markedFields.length).toEqual(2);
-
-//     component.markedFields = ['Weight'];
-//     component.findPrev();
-//     expect(component.markedFields.length).toEqual(1);
-
-//     component.markedFields = ['Weigt'];
-//     component.findPrev();
-//     expect(component.markedFields.length).toEqual(1);
-
-//     component.markedFields = [];
-//     component.findPrev();
-//     expect(component.markedFields.length).toEqual(0);
-//   });
-
-//   it('findNext()', () => {
-//     component.headerArray = ['NDCTYPE'];
-//     component.hierarchyArray = ['CON_DOCDT'];
-//     component.gridArray = ['Weight'];
-//     component.markedFields = ['NDCTYPE','CON_DOCDT','Weight'];
-//     const dummyElement = document.createElement('div');
-//     document.getElementById = jasmine.createSpy('mat-card').and.returnValue(dummyElement);
-//     component.findNext();
-//     expect(component.markedFields.length).toEqual(3);
-
-//     component.markedFields = ['CON_DOCDT','Weight'];
 //     component.findNext();
 //     expect(component.markedFields.length).toEqual(2);
 
-//     component.markedFields = ['Weight'];
+//     component.markedFields = ['ADD_WEIGHT'];
 //     component.findNext();
 //     expect(component.markedFields.length).toEqual(1);
 
-//     component.markedFields = ['Weigt'];
+//     component.markedFields = ['INF_NO'];
 //     component.findNext();
 //     expect(component.markedFields.length).toEqual(1);
 
 //     component.markedFields = [];
 //     component.findNext();
 //     expect(component.markedFields.length).toEqual(0);
-//   });
+//   }));
 
-//   it('canMoveHighlight() should highlight the search word', async(() => {
+
+//   it('findprev(), should emit previous offset value', async(() => {
+//     component.headerArray = ['NDCTYPE'];
+//     component.hierarchyArray = ['CON_DOCDT'];
+//     component.gridArray = ['ADD_WEIGHT'];
+//     component.markedFields = ['NDCTYPE', 'ADD_WEIGHT'];
+//     const dummyElement = document.createElement('div');
+//     document.getElementById = jasmine.createSpy('mat-card').and.returnValue(dummyElement);
+
+//     component.findPrev();
+//     expect(component.markedFields.length).toEqual(2);
+
+//     component.markedFields = ['ADD_WEIGHT'];
+//     component.findPrev();
+//     expect(component.markedFields.length).toEqual(1);
+
+//     component.markedFields = ['INF_NO'];
+//     component.findPrev();
+//     expect(component.markedFields.length).toEqual(1);
+
+//     component.markedFields = [];
+//     component.findPrev();
+//     expect(component.markedFields.length).toEqual(0);
+//   }));
+
+//   it('canMoveHighlight() should return highlight search word', async(() => {
 //     component.canMoveHighlight();
 //     expect(component.matchCount).toBeGreaterThanOrEqual(0);
-//   }))
-//   it('find() should return the index', () => {
-//     component.data = data;
-//     component.dynamicSearchVal = 'test';
-//     component.matchCount = 1;
-//     component.markedFields = ['test','mock'];
-//     component.index = 1;
-//     component.find(0);
-//     expect(component.markedFields.length).toEqual(2);
+//   }));
 
-//     component.index = -1;
-//     component.find(0);
-//     expect(component.markedFields.length).toEqual(2);
-
-//     component.index = 2;
-//     component.find(0);
-//     expect(component.markedFields.length).toEqual(2);
-
-//     component.index = 0;
-//     component.find(0);
-//     expect(component.markedFields.length).toEqual(2);
-//   });
-
-//   it('selectall()', () => {
-//     component.data = data;
-//     component.headerArray = ['VALUE'];
-//     component.hierarchyArray = ['VALUE12'];
-//     component.gridArray = ['VALUE1'];
+//   it('selectall(), return all fields is checked or not', () => {
+//     component.headerArray = ['NDCTYPE'];
+//     component.hierarchyArray = ['CON_DOCDT'];
+//     component.gridArray = ['ADD_WEIGHT'];
 //     component.allChecked = true;
+//     const data = {
+//       selectedFields: ['NDCTYPE', 'ADD_WEIGHT']
+//     }
+//     component.data = data;
+
 //     component.selectAll();
-//     expect(component.data.selectedFields.length).toEqual(3);
+//     expect(component.gridArray.length).toEqual(1);
 
 //     component.allChecked = false;
 //     component.selectAll();
-//     expect(component.gridChecked).toEqual(false);
+//     expect(component.hierarchyChecked).toEqual(false);
 //   });
 
-//   it('hierarchSelect()', () => {
-//     component.data = {selectedFields:['VAUE']};
-//     component.hierarchyChecked = true;
-//     component.hierarchyArray = ['VALUE12'];
-//     component.hierarchSelect();
-//     expect(component.data.selectedFields.length).toEqual(2);
+//   // it('hierarchSelect(), return all hierarchy fields is checked or not', () => {
+//   //   const data = {
+//   //     selectedFields: ['CON_DOCDT']
+//   //   }
+//   //   component.data = data;
+//   //   component.hierarchyChecked = true;
+//   //   component.hierarchyArray = ['CON_DOCDT', 'INF_NO'];
 
-//     component.data = {selectedFields:['VALUE']};
-//     component.hierarchyChecked = false;
-//     component.hierarchyArray = ['VALUE12'];
-//     component.hierarchSelect();
-//     expect(component.data.selectedFields.length).toEqual(1);
-//   });
+//   //   component.hierarchSelect();
+//   //   expect(component.hierarchyArray.length).toEqual(2);
 
-//   it('gridSelect()', () => {
-//     component.gridArray = ['VALE']
-//     component.gridChecked = true;
-//     component.data = {selectedFields:['VALUE']};
-//     component.gridSelect();
-//     expect(component.data.selectedFields.length).toEqual(2);
+//   //   component.hierarchyChecked = false;
+//   //   component.hierarchSelect();
+//   //   expect(component.allIndeterminate).toEqual(true);
+//   // });
 
-//     component.gridArray = ['VALUE']
-//     component.gridChecked = false;
-//     component.data = {selectedFields:['VALUE']};
-//     component.gridSelect();
-//     expect(component.data.selectedFields.length).toEqual(0);
-//   });
+//   // it('gridSelect(), return all grid fields is checked or not', () => {
+//   //   component.gridArray = ['ADD_WEIGHT', 'ADD_HEIGHT'];
+//   //   component.gridChecked = true;
+//   //   const data = {
+//   //     selectedFields: ['ADD_WEIGHT']
+//   //   }
+//   //   component.data = data;
 
-//   it('isChecked()', () => {
-//     component.data = data;
-//     component.data.fldId = ['VALUE'];
-//     component.isSelected(component.data.fldId);
-//     expect(component.isSelected).toBeTruthy();
-//   });
+//   //   component.gridSelect();
+//   //   expect(component.gridArray.length).toEqual(2);
 
-//   it('submitcolumn()', () => {
-//     component.data = data;
-//     component.data.selectedFields = ['VALUE'];
-//     const schemaTableViewRequest: SchemaTableViewRequest = new SchemaTableViewRequest();
-//     schemaTableViewRequest.schemaId = component.data.schemaId;
-//     schemaTableViewRequest.variantId = component.data.variantId;
-//     const fldObj: SchemaTableViewFldMap[] = [];
-//     let order = 0;
-//     component.data.selectedFields.forEach(fld => {
-//       const schemaTableVMap: SchemaTableViewFldMap = new SchemaTableViewFldMap();
-//       schemaTableVMap.fieldId = fld;
-//       schemaTableVMap.order = order;
-//       order ++;
-//       fldObj.push(schemaTableVMap);
-//     });
-//     schemaTableViewRequest.schemaTableViewMapping = fldObj;
-//     spyOn(router, 'navigate');
-//     spyOn(schemaDetailsService,'updateSchemaTableView').withArgs(schemaTableViewRequest).and.returnValue(of());
-//     component.submitColumn();
-//     expect(component.submitColumn).toBeTruthy();
-//     expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: null }}]);
-//     expect(schemaDetailsService.updateSchemaTableView).toHaveBeenCalledWith(schemaTableViewRequest);
-//   });
+//   //   component.gridChecked = false;
+//   //   component.gridSelect();
+//   //   expect(component.allIndeterminate).toEqual(true);
+//   // });
+
+//   // it('mangeChooseColumn(), should select and unselect the field', async(() => {
+//   //   const event = {
+//   //     option: {
+//   //       _value: { fieldId: 'NDC_TYPE' }
+//   //     },
+//   //     source: null
+//   //   }
+//   //   const data = {
+//   //     selectedFields: ['INF_NO']
+//   //   }
+//   //   component.data = data;
+//   //   component.mangeChooseColumn(event);
+//   //   expect(component.data.selectedFields.length).toEqual(2);
+
+//   //   const event1 = {
+//   //     option: {
+//   //       _value: { fieldId: 'INF_NO' }
+//   //     },
+//   //     source: null
+//   //   }
+//   //   component.mangeChooseColumn(event1);
+//   //   expect(component.data.selectedFields.length).toEqual(1);
+//   // }));
+
+//   // it('isSelected(), check field is selected or not', () => {
+//   //   const data = {
+//   //     selectedFields: ['INF_NO']
+//   //   }
+//   //   component.data = data;
+
+//   //   expect(component.isSelected('INF_NO')).toEqual(true);
+
+//   //   expect(component.isSelected('NDC_TYPE')).toEqual(false);
+
+//   //   const data1 = {};
+//   //   component.data = data1;
+
+//   //   expect(component.isSelected('NDC_TYPE')).toEqual(false);
+//   // });
 
 //   it('close()', () => {
-//     component.data = data;
-//     component.data.selectedFields = ['VALUE'];
-//     spyOn(router, 'navigate');
 //     component.close();
 //     expect(component.close).toBeTruthy();
-//     expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: null }}]);
-//   });
-
-//   it('onWindowScroll(), should scroll to initial marked element', () => {
-//     component.headerArray = ['NDCTYPE'];
-//     component.hierarchyArray = ['CON_DOCDT'];
-//     component.gridArray = ['Weight'];
-//     component.markedFields = ['NDCTYPE','CON_DOCDT','Weight'];
-//     const dummyElement = document.createElement('div');
-//     document.getElementById = jasmine.createSpy('mat-card').and.returnValue(dummyElement);
-//     component.onWindowScroll();
-//     expect(component.markedFields.length).toEqual(3);
-
-//     component.markedFields = ['CON_DOCDT','Weight'];
-//     component.onWindowScroll();
-//     expect(component.markedFields.length).toEqual(2);
-
-//     component.markedFields = ['Weight'];
-//     component.onWindowScroll();
-//     expect(component.markedFields.length).toEqual(1);
-
-//     component.markedFields = ['Weigt'];
-//     component.onWindowScroll();
-//     expect(component.markedFields.length).toEqual(1);
-//   });
-
-//   it('searchKeyDown(), shoud return the press key', async(() => {
-//     component.dynamicSearchVal = 'test';
-//     const ev = {key:'Enter',preventDefault(){}} as KeyboardEvent;
-//     component.searchKeyDown(ev);
-//     expect(component.searchKeyDown).toBeTruthy();
-
-//     const ev1 = {key:'ArrowDown',preventDefault(){}} as KeyboardEvent;
-//     component.searchKeyDown(ev1) ;
-//     expect(component.searchKeyDown).toBeTruthy();
-
-//     const ev2 = {key:'ArrowRight',preventDefault(){}} as KeyboardEvent;
-//     component.searchKeyDown(ev2);
-//     expect(component.searchKeyDown).toBeTruthy();
-
-//     const ev3 = {key:'ArrowUp',preventDefault(){}} as KeyboardEvent;
-//     component.searchKeyDown(ev3);
-//     expect(component.searchKeyDown).toBeTruthy();
-
-//     const ev4 = {key:'ArrowLeft',preventDefault(){}} as KeyboardEvent;
-//     component.searchKeyDown(ev4);
-//     expect(component.searchKeyDown).toBeTruthy();
-
-//     const ev5 = {key:'Arroweft',preventDefault(){}} as KeyboardEvent;
-//     component.searchKeyDown(ev5);
-//     expect(component.searchKeyDown).toBeTruthy();
-
-//     component.dynamicSearchVal = null;
-//     const ev6 = {key:'Enter',preventDefault(){}} as KeyboardEvent;
-//     component.searchKeyDown(ev6);
-//     expect(component.searchKeyDown).toBeTruthy();
-//   }));
-
-//   it('selectCheckbox(), should return the Indeterminate', ()=> {
-//     component.data = {selectedFields:['VALUE', 'VALUE12', 'VALUE1']};
-//     component.headerArray = ['VALUE'];
-//     component.hierarchyArray = ['VALUE12'];
-//     component.gridArray = ['VALUE1'];
-//     component.selectCheckbox();
-//     expect(component.allIndeterminate).toEqual(false);
-
-//     component.data = {selectedFields:['VALUE2', 'VALUE1']};
-//     component.hierarchyArray = ['VALUE12'];
-//     component.gridArray = ['VALUE1'];
-//     component.selectCheckbox();
-//     expect(component.allIndeterminate).toEqual(true);
-
-//     component.data = {selectedFields:['VALUE12', 'VALUE1']};
-//     component.hierarchyArray = ['VALUE12'];
-//     component.gridArray = ['VALUE1'];
-//     component.selectCheckbox();
-//     expect(component.allIndeterminate).toEqual(true);
-
-//     component.data = {selectedFields:[]};
-//     component.hierarchyArray = ['VALUE12'];
-//     component.gridArray = ['VALUE1'];
-//     component.selectCheckbox();
-//     expect(component.allIndeterminate).toEqual(false);
 //   });
 // });

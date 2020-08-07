@@ -95,13 +95,13 @@ describe('ListFiltersComponent', () => {
     record: ''
   }
 
-  const samplefilterdata : FilterListdata[] = [{
+  const samplefilterdata: FilterListdata[] = [{
     CODE: 'bara',
     TEXT: 'bara',
     checked: false,
     fieldid: 'BR103'
   }
-]
+  ]
   const sampleTags = {
     CODE: 'bara',
     TEXT: 'bara',
@@ -148,7 +148,7 @@ describe('ListFiltersComponent', () => {
     fixture.detectChanges();
     component.makeGlobalStructure(samplefilterdata);
     component.globalStateStructure[samplefilterdata[0].fieldid] = {}
-    component.globalStateStructure[samplefilterdata[0].fieldid].nextFetchCount=0;
+    component.globalStateStructure[samplefilterdata[0].fieldid].nextFetchCount = 0;
     component.globalStateStructure[samplefilterdata[0].fieldid].list = [sampleTags]
     component.getDynamicList(samplefilterdata[0]);
     expect(component.ngOnInit).toBeTruthy();
@@ -163,7 +163,7 @@ describe('ListFiltersComponent', () => {
     component.makeGlobalStructure(samplefilterdata);
 
     component.globalStateStructure[samplefilterdata[0].fieldid] = {}
-    component.globalStateStructure[samplefilterdata[0].fieldid].nextFetchCount=0;
+    component.globalStateStructure[samplefilterdata[0].fieldid].nextFetchCount = 0;
     component.globalStateStructure[samplefilterdata[0].fieldid].list = [sampleTags]
     component.getDynamicList(samplefilterdata[0]);
     component.setAutoSelectedFromTaglist();
@@ -176,7 +176,7 @@ describe('ListFiltersComponent', () => {
     component.ngOnInit();
     component.makeGlobalStructure(samplefilterdata);
     component.globalStateStructure[samplefilterdata[0].fieldid] = {}
-    component.globalStateStructure[samplefilterdata[0].fieldid].nextFetchCount=0;
+    component.globalStateStructure[samplefilterdata[0].fieldid].nextFetchCount = 0;
     component.globalStateStructure[samplefilterdata[0].fieldid].list = [sampleTags]
     component.getDynamicList(samplefilterdata[0]);
     component.getUserDetails();
@@ -194,7 +194,7 @@ describe('ListFiltersComponent', () => {
     component.makeGlobalStructure(samplefilterdata);
     component.getUserDetails();
     component.globalStateStructure[samplefilterdata[0].fieldid] = {}
-    component.globalStateStructure[samplefilterdata[0].fieldid].nextFetchCount=0;
+    component.globalStateStructure[samplefilterdata[0].fieldid].nextFetchCount = 0;
     component.globalStateStructure[samplefilterdata[0].fieldid].list = [sampleTags]
     component.getDynamicList(samplefilterdata[0]);
     component.filterListRequest.fieldId = sampleTags.fieldid;
@@ -217,7 +217,7 @@ describe('ListFiltersComponent', () => {
     fixture.detectChanges();
     component.makeGlobalStructure(samplefilterdata);
     component.globalStateStructure[samplefilterdata[0].fieldid] = {}
-    component.globalStateStructure[samplefilterdata[0].fieldid].nextFetchCount=0;
+    component.globalStateStructure[samplefilterdata[0].fieldid].nextFetchCount = 0;
     component.globalStateStructure[samplefilterdata[0].fieldid].list = [sampleTags];
     component.getDynamicList(samplefilterdata[0]);
     component.setTags(sampleTags, 0);
@@ -226,9 +226,9 @@ describe('ListFiltersComponent', () => {
 
 
   it('closeFilter() should work', () => {
-   spyOn(component.closeFilterBox, 'emit');
-   component.closeFilter();
-   expect(component.closeFilterBox.emit).toHaveBeenCalledWith(true);
+    spyOn(component.closeFilterBox, 'emit');
+    component.closeFilter();
+    expect(component.closeFilterBox.emit).toHaveBeenCalledWith(true);
   });
 
   it('updateFilter() should work', () => {
@@ -237,14 +237,14 @@ describe('ListFiltersComponent', () => {
     expect(component.updateFilters.emit).toHaveBeenCalled();
   });
 
-  it('filterStates() prepare status ',async(()=>{
+  it('filterStates() prepare status ', async(() => {
     const status = 'display';
-    component.status = [{display:'display'}as Status];
+    component.status = [{ display: 'display' } as Status];
     component.filterStates(status);
     expect(component.status.length).toEqual(1);
   }));
 
-  it('onSuperiorPlanRemoved() should remove value', async(()=>{
+  it('onSuperiorPlanRemoved() should remove value', async(() => {
     component.filters = sampledata;
     fixture.detectChanges();
     component.onSuperiorPlanRemoved('Completed');

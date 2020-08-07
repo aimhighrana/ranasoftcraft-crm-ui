@@ -37,7 +37,6 @@ export class TagsEllipsisDirective implements AfterViewInit {
     }
   }
 
-
   @HostListener('click') onClick() {
     const listItem = this.el.nativeElement.children[3] as HTMLElement;
     listItem.style.display = listItem.style.display === 'block' ? 'none' : 'block';

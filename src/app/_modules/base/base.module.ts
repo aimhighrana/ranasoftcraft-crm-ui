@@ -42,7 +42,7 @@ import { SaveSearchDialogComponent } from './_components/save-search-dialog/save
   imports: [
     CommonModule,
     BaseRoutingModule,
-    SharedModule,
+    SharedModule
   ]
 })
 export class BaseModule { }

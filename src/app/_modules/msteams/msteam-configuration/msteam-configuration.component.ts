@@ -11,40 +11,37 @@ import { MsteamsConfigService } from '../_service/msteams-config.service';
 export class MsteamConfigurationComponent implements OnInit {
 
   constructor(
-    private msteamsConfigService: MsteamsConfigService
+    public msteamsConfigService: MsteamsConfigService
   ) { }
 
-  ngOnInit(): void {
+  ngOnInit(): void { }
 
-  }
-
-  authLogin(newApiUrl: string){
+  authLogin(newApiUrl: string) {
     microsoftTeams.initialize();
-      microsoftTeams.getContext(tContext => {
-          microsoftTeams.authentication.authenticate({
-            url: newApiUrl + '/fuze/ngx-mdo/index.html#/msteams/auth',
-            width: 400,
-            height: 400,
-            successCallback (t) {
-                window.location.href =  newApiUrl + '/fuze/ngx-mdo/index.html#/msteams/report'
-            }
-        });
+    microsoftTeams.getContext(tContext => {
+      microsoftTeams.authentication.authenticate({
+        url: newApiUrl + '/fuze/ngx-mdo/index.html#/msteams/auth',
+        width: 400,
+        height: 400,
+        successCallback(t) {
+          window.location.href = newApiUrl + '/fuze/ngx-mdo/index.html#/msteams/report'
+        }
       });
+    });
   }
-
 
   // Login click opens the sign-in page in a pop-up and wait for sucessful login for further
   login() {
     const apiUrl = environment.apiurl;
     const newApiUrl = apiUrl.replace('fapi', '');
     const jwtToken = localStorage.getItem('JWT-REFRESH-TOKEN');
-    if(jwtToken){
-      this.msteamsConfigService.validateToken().subscribe(res=>{
+    if (jwtToken) {
+      this.msteamsConfigService.validateToken().subscribe(res => {
         window.location.href = newApiUrl + '/fuze/ngx-mdo/index.html#/msteams/report';
-      },error=>{
+      }, error => {
         this.authLogin(newApiUrl);
       });
-    }else{
+    } else {
       this.authLogin(newApiUrl);
     }
   }

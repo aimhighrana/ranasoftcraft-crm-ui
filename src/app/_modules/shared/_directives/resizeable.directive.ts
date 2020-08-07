@@ -1,17 +1,20 @@
-import { Directive, Input, ElementRef, OnInit } from '@angular/core';
+import { Directive, Input, ElementRef, OnInit, Injectable, OnDestroy } from '@angular/core';
 import { distinctUntilChanged } from 'rxjs/operators';
-
+import { Subscription, Observable } from 'rxjs';
+@Injectable()
 @Directive({
   selector: '[prosResizeable]'
 })
-export class ResizeableDirective implements OnInit {
+export class ResizeableDirective implements OnInit, OnDestroy {
 
-  @Input() summaryShown;
+  @Input() summaryShown: Observable<any>;
   @Input() resizableGrabWidth = 2;
   @Input() resizableMinWidth = 10;
   @Input() selectedTaskId;
 
-  dragging;
+  dragging: boolean;
+  commonSubsription: Subscription;
+
   mouseMoveG = (evt) => {
     if (!this.dragging) {
       return;
@@ -58,24 +61,32 @@ export class ResizeableDirective implements OnInit {
     }
   }
 
+
   constructor(public el: ElementRef) {
-    this.preventGlobalMouseEvents();
-    this.restoreGlobalMouseEvents();
     document.addEventListener('mousemove', this.mouseMoveG, true);
     document.addEventListener('mouseup', this.mouseUpG, true);
-    this.el.nativeElement.addEventListener('mousedown', this.mouseDown, true);
-    this.el.nativeElement.addEventListener('mousemove', this.mouseMove, true);
+    this.preventGlobalMouseEvents();
+    this.restoreGlobalMouseEvents();
   }
 
   ngOnInit(): void {
     this.summaryShown.pipe(distinctUntilChanged()).subscribe((value) => {
       this.el.nativeElement.style['border-right'] = value ? this.resizableGrabWidth + 'px solid rgba(0, 0, 0, 0.12)' : null;
+      this.el.nativeElement.addEventListener('mousedown', this.mouseDown, true);
+      this.el.nativeElement.addEventListener('mousemove', this.mouseMove, true);
     })
   }
 
   inDragRegion(evt) {
-    if(this.el.nativeElement) {
-      return this.el.nativeElement.clientWidth - evt.clientX + this.el.nativeElement.offsetLeft < this.resizableGrabWidth;
+    if (this.el.nativeElement) {
+      return (this.el.nativeElement.clientWidth - evt.clientX + this.el.nativeElement.offsetLeft) < this.resizableGrabWidth;
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.commonSubsription) {
+      this.commonSubsription.unsubscribe();
     }
   }
 }
+

@@ -218,7 +218,4 @@ describe('EndpointService', () => {
     const serviceobj = new EndpointService();
     expect(serviceobj.getSaveWfDefinitionUrl()).toContain(`restWorkflow/saveWorkFlowStepViaXml`);
   });
-
-
-
 });

@@ -63,7 +63,6 @@ export class UdrConditionOperatorsComponent implements OnInit, OnChanges {
    * @param option when option change then should emit value
    */
   operatorSelectionChng(option: MatAutocompleteSelectedEvent) {
-    console.log(option);
     if(option && option.option.value) {
       this.afterSelect.emit(option.option.value);
     }

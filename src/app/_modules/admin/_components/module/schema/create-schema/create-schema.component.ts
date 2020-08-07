@@ -37,7 +37,7 @@ export class CreateSchemaComponent implements OnInit {
   moduleId: string;
   fragment: string;
   brList: CoreSchemaBrInfo[] = [];
-  brListOb : Observable<CoreSchemaBrInfo[]> = of([]);
+  brListOb: Observable<CoreSchemaBrInfo[]> = of([]);
 
   categoryList: Category[] = [];
 
@@ -80,12 +80,12 @@ export class CreateSchemaComponent implements OnInit {
       this.schemaId = params.schemaId ? (params.schemaId.toLowerCase() === 'new' ? '' : params.schemaId) : '';
     });
 
-    this.dynCategoryFrmGrp =  this.formBuilder.group({
+    this.dynCategoryFrmGrp = this.formBuilder.group({
       categories: this.formBuilder.array([])
     });
 
 
-    this.activatedRoute.fragment.subscribe(frag=>{
+    this.activatedRoute.fragment.subscribe(frag => {
       this.fragment = frag;
     });
     this.getCategoriesData();
@@ -93,22 +93,22 @@ export class CreateSchemaComponent implements OnInit {
     this.service.getAllObjectType().subscribe(data => {
       this.moduleList = data;
       this.filteredModules = of(data);
-      if(this.moduleId) {
+      if (this.moduleId) {
         const moduleDesc = this.moduleList.filter(fill => fill.objectid === this.moduleId)[0];
-        if(moduleDesc) {
+        if (moduleDesc) {
           this.moduleInpCtrl.setValue(moduleDesc);
         }
       }
     }, error => {
-      console.error('Error while fetching modules');
+
     });
 
-    if(this.schemaId) {
+    if (this.schemaId) {
       this.getSchemaData();
     }
 
     this.moduleInpCtrl.valueChanges.subscribe(value => {
-      if (value instanceof ObjectTypeResponse) {} else if(value && value !==''){
+      if (value instanceof ObjectTypeResponse) { } else if (value && value !== '') {
         const filteredObjectTypes = this.moduleList.filter(module => (module.objectdesc.toLowerCase().indexOf(value.toLowerCase())) === 0);
         this.filteredModules = of(filteredObjectTypes);
       } else {
@@ -126,9 +126,9 @@ export class CreateSchemaComponent implements OnInit {
         this.schemaName = this.schemaDetails.schemaDescription;
         this.schemaThresholdCtrl.setValue(this.schemaDetails.schemaThreshold)
         const moduleDesc = this.moduleList.filter(fill => fill.objectid === this.schemaDetails.moduleId)[0];
-        if(moduleDesc) {
+        if (moduleDesc) {
           this.moduleInpCtrl.setValue(moduleDesc);
-          this.moduleInpCtrl.disable({onlySelf:true});
+          this.moduleInpCtrl.disable({ onlySelf: true });
         }
       }
     })
@@ -148,10 +148,10 @@ export class CreateSchemaComponent implements OnInit {
    * For fragment see router.navigate method imp..
    */
   showAddBusinessRulePage() {
-    if(this.moduleId && this.moduleId !== 'new') {
-      this.router.navigate(['/home/schema/create-schema', this.moduleId , this.schemaId], {fragment:'missing'});
+    if (this.moduleId && this.moduleId !== 'new') {
+      this.router.navigate(['/home/schema/create-schema', this.moduleId, this.schemaId], { fragment: 'missing' });
     } else {
-      this.matSnackBar.open(`Please select module`, 'Close',{duration:5000});
+      this.matSnackBar.open(`Please select module`, 'Close', { duration: 5000 });
     }
   }
 
@@ -170,7 +170,7 @@ export class CreateSchemaComponent implements OnInit {
     this.service.getAllBusinessRules(this.schemaId).subscribe(res => {
       if (res) {
         // update brids
-        res.forEach(r=>{
+        res.forEach(r => {
           r.brId = r.brIdStr;
         });
         // set to assigned brlist
@@ -181,21 +181,21 @@ export class CreateSchemaComponent implements OnInit {
         const assignedCat = res.map(map => map.categoryId);
         const distinctAssignedcat = new Set(assignedCat);
         const assinedcatObj: Category[] = [];
-        distinctAssignedcat.forEach(each=>{
-            const cat = this.categoryList.filter(fil => fil.categoryId === String(each))[0];
-            if(cat) {
-              assinedcatObj.push(cat);
-            }
+        distinctAssignedcat.forEach(each => {
+          const cat = this.categoryList.filter(fil => fil.categoryId === String(each))[0];
+          if (cat) {
+            assinedcatObj.push(cat);
+          }
         });
 
         // add to form array
         const categories = this.dynCategoryFrmGrp.controls.categories as FormArray;
-        assinedcatObj.forEach((each, index)=>{
+        assinedcatObj.forEach((each, index) => {
           categories.push(this.formBuilder.group({
             category: [each]
           }));
           const assignedBrs = res.filter(fil => String(fil.categoryId) === each.categoryId);
-          this.categoryBrMap[categories.length-1] = assignedBrs;
+          this.categoryBrMap[categories.length - 1] = assignedBrs;
         });
       }
     })
@@ -230,11 +230,11 @@ export class CreateSchemaComponent implements OnInit {
   drop(event: CdkDragDrop<any>, index, dropOutsideBr?: boolean) {
     if (event.previousContainer === event.container) {
       const inBrList = (event.container.element.nativeElement.classList).contains('inBrList');
-      if(inBrList) {
+      if (inBrList) {
         moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
         // update br execution order
-        this.brList.forEach((br, idx)=>{
-          br.order = idx +1;
+        this.brList.forEach((br, idx) => {
+          br.order = idx + 1;
         });
       } else {
         moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
@@ -243,26 +243,25 @@ export class CreateSchemaComponent implements OnInit {
     else {
       const dropAbleBr = event.previousContainer.data[event.previousIndex] as CoreSchemaBrInfo;
       const iscategoryAssign = (event.previousContainer.element.nativeElement.classList).contains('inCategory');
-      if(!iscategoryAssign) {
-        if(event.container.data.indexOf(dropAbleBr) ===-1) {
+      if (!iscategoryAssign) {
+        if (event.container.data.indexOf(dropAbleBr) === -1) {
           // check already exits on any category assigned
           let isExits = false;
-          console.log(this.categoryBrMap);
-          Object.keys(this.categoryBrMap).forEach(cat=>{
-            const afterFill = this.categoryBrMap[cat] ? this.categoryBrMap[cat].filter(fill=> fill.brIdStr === dropAbleBr.brIdStr) : [];
-            if(afterFill.length) {
+          Object.keys(this.categoryBrMap).forEach(cat => {
+            const afterFill = this.categoryBrMap[cat] ? this.categoryBrMap[cat].filter(fill => fill.brIdStr === dropAbleBr.brIdStr) : [];
+            if (afterFill.length) {
               isExits = true;
               return;
             }
           });
-          if(!isExits) {
-            copyArrayItem(event.previousContainer.data, event.container.data,event.previousIndex,  event.currentIndex);
+          if (!isExits) {
+            copyArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
           }
         }
       } else {
-        if((event.container.element.nativeElement.classList).contains('inCategory')) {
-          if(event.container.data.indexOf(dropAbleBr) ===-1) {
-            transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex,event.currentIndex);
+        if ((event.container.element.nativeElement.classList).contains('inCategory')) {
+          if (event.container.data.indexOf(dropAbleBr) === -1) {
+            transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
           }
         } else {
           event.previousContainer.data.splice(event.previousIndex, 1);
@@ -285,7 +284,7 @@ export class CreateSchemaComponent implements OnInit {
     categories.push(this.formBuilder.group({
       category: ['']
     }));
-    this.categoryBrMap[categories.length-1] = [];
+    this.categoryBrMap[categories.length - 1] = [];
   }
 
   /**
@@ -305,16 +304,16 @@ export class CreateSchemaComponent implements OnInit {
    * @param brInfo is the CoreSchemaBrInfo which is new or may be updated by add-business-rule componenet
    */
   afterSavedBrinfo(brInfo: CoreSchemaBrInfo) {
-    if(brInfo) {
+    if (brInfo) {
       const isAvailBr = this.brList.filter(fil => fil.brIdStr === brInfo.brIdStr);
-      if(isAvailBr.length) {
+      if (isAvailBr.length) {
         this.brList.splice(this.brList.indexOf(isAvailBr[0]), 1, brInfo);
       } else {
         this.brList.push(brInfo);
       }
       // update br execution order
-      this.brList.forEach((br, index)=>{
-        br.order = index +1;
+      this.brList.forEach((br, index) => {
+        br.order = index + 1;
       });
       this.brListOb = of(this.brList);
     }
@@ -333,8 +332,8 @@ export class CreateSchemaComponent implements OnInit {
    */
   checkIsEmptyCategory(): boolean {
     const categories = this.dynCategoryFrmGrp.controls.categories as FormArray;
-    for(let i =0; i< categories.length; i++) {
-      if(categories.at(0).value.category === undefined || categories.at(i).value.category === '' || (typeof categories.at(i).value.category === 'string' && categories.at(i).value.category.trim() === '')) {
+    for (let i = 0; i < categories.length; i++) {
+      if (categories.at(0).value.category === undefined || categories.at(i).value.category === '' || (typeof categories.at(i).value.category === 'string' && categories.at(i).value.category.trim() === '')) {
         return true;
       }
     }
@@ -347,14 +346,14 @@ export class CreateSchemaComponent implements OnInit {
    */
   checkIsEmptycategoryAssigned(): boolean {
     let status = false;
-    if(this.categoryBrMap) {
+    if (this.categoryBrMap) {
       const categories = this.dynCategoryFrmGrp.controls.categories as FormArray;
-      Object.keys(this.categoryBrMap).forEach((each,index)=>{
-        if(this.categoryBrMap[each] === undefined || this.categoryBrMap[each].length === 0) {
+      Object.keys(this.categoryBrMap).forEach((each, index) => {
+        if (this.categoryBrMap[each] === undefined || this.categoryBrMap[each].length === 0) {
           status = true;
         } else {
           const catId = categories.at(index).value ? categories.at(index).value.category.categoryId : '';
-          this.categoryBrMap[each].forEach(br=>{
+          this.categoryBrMap[each].forEach(br => {
             this.updateCategoryId(catId, br.brIdStr);
           });
         }
@@ -369,8 +368,8 @@ export class CreateSchemaComponent implements OnInit {
    * @param brIdStr business rule id
    */
   updateCategoryId(catId: string, brIdStr: string) {
-    this.brList.filter(fil =>{
-      if(fil.brIdStr === brIdStr) {
+    this.brList.filter(fil => {
+      if (fil.brIdStr === brIdStr) {
         fil.brId = brIdStr;
         fil.categoryId = catId;
       }
@@ -384,32 +383,32 @@ export class CreateSchemaComponent implements OnInit {
    * @param brId business rule id
    */
   deleteBr(brId: string) {
-    this.service.deleteBr(brId).subscribe(res=>{
-      if(res) {
-        this.matSnackBar.open(`Successfully deleted`, 'Close',{duration:5000});
-        const br = this.brList.filter(fil=> fil.brIdStr === brId)[0];
-        if(br) {
-          this.brList.splice(this.brList.indexOf(br),1);
+    this.service.deleteBr(brId).subscribe(res => {
+      if (res) {
+        this.matSnackBar.open(`Successfully deleted`, 'Close', { duration: 5000 });
+        const br = this.brList.filter(fil => fil.brIdStr === brId)[0];
+        if (br) {
+          this.brList.splice(this.brList.indexOf(br), 1);
           // reorder
-          this.brList.forEach((br01, index)=>{
+          this.brList.forEach((br01, index) => {
             br01.order = index++;
           });
           this.brListOb = of(this.brList);
 
           // remove from br mapped , category
-          Object.keys(this.categoryBrMap).forEach((cat, index)=>{
+          Object.keys(this.categoryBrMap).forEach((cat, index) => {
             const data = this.categoryBrMap[cat];
-            const br01 = data.filter(fil=> fil.brIdStr === brId)[0];
-            if(br01) {
-              data.splice(data.indexOf(br01),1);
+            const br01 = data.filter(fil => fil.brIdStr === brId)[0];
+            if (br01) {
+              data.splice(data.indexOf(br01), 1);
               this.categoryBrMap[index] = data;
               return false;
             }
           });
         }
       }
-    }, error=>{
-      this.matSnackBar.open(`Something went wrong`, 'Close',{duration:5000});
+    }, error => {
+      this.matSnackBar.open(`Something went wrong`, 'Close', { duration: 5000 });
     });
   }
 
@@ -419,10 +418,10 @@ export class CreateSchemaComponent implements OnInit {
    * @param index Index of category
    */
   removeMappedBr(br: CoreSchemaBrInfo, index: number) {
-    if(br && index !== undefined) {
-      const brMap =  this.categoryBrMap[index];
-      if(brMap) {
-        brMap.splice(brMap.indexOf(br),1);
+    if (br && index !== undefined) {
+      const brMap = this.categoryBrMap[index];
+      if (brMap) {
+        brMap.splice(brMap.indexOf(br), 1);
         this.categoryBrMap[index] = brMap;
       }
     }
@@ -441,8 +440,8 @@ export class CreateSchemaComponent implements OnInit {
    *  event
    */
   selectModule(event: MatAutocompleteSelectedEvent): void {
-    const selData =  event.option? event.option.value : '';
-    if(selData) {
+    const selData = event.option ? event.option.value : '';
+    if (selData) {
       this.moduleId = selData.objectid;
     }
   }
@@ -453,12 +452,12 @@ export class CreateSchemaComponent implements OnInit {
    * @param weightage number range 0-100 in percentage
    */
   brWightageChange(br: CoreSchemaBrInfo, weightage: string) {
-    if(br) {
-      const brInfo = this.brList.filter(brLst=> brLst.brIdStr === br.brIdStr)[0];
-      if(brInfo) {
-        const indx =  this.brList.indexOf(brInfo);
+    if (br) {
+      const brInfo = this.brList.filter(brLst => brLst.brIdStr === br.brIdStr)[0];
+      if (brInfo) {
+        const indx = this.brList.indexOf(brInfo);
         brInfo.brWeightage = weightage;
-        this.brList.splice(indx,1,brInfo);
+        this.brList.splice(indx, 1, brInfo);
       }
     }
   }
@@ -466,14 +465,14 @@ export class CreateSchemaComponent implements OnInit {
   /**
    * Open create business rule dialog
    */
-  createbusinessrule(brId?:string, brType?: string) {
-    if(this.moduleId) {
+  createbusinessrule(brId?: string, brType?: string) {
+    if (this.moduleId) {
       const dialogRef = this.matDialog.open(DiwCreateBusinessruleComponent, {
         height: '706px',
         width: '1100px',
         disableClose: true,
         autoFocus: false,
-        data:{
+        data: {
           moduleId: this.moduleId,
           schemaId: this.schemaId,
           brId,
@@ -481,14 +480,12 @@ export class CreateSchemaComponent implements OnInit {
         }
       });
       dialogRef.afterClosed().subscribe(result => {
-        console.log('The dialog was closed');
-        console.log(result);
-        if(result) {
+        if (result) {
           this.afterSavedBrinfo(result);
         }
       });
     } else {
-      this.matSnackBar.open(`Please select module`, 'Close',{duration:5000});
+      this.matSnackBar.open(`Please select module`, 'Close', { duration: 5000 });
     }
   }
 
@@ -498,58 +495,53 @@ export class CreateSchemaComponent implements OnInit {
    * along with goup
    */
   createUpdateSchema() {
-    console.log(this.dynCategoryFrmGrp);
-    console.log(this.categoryBrMap);
-    if(this.checkIsEmptyCategory()) {
-      this.matSnackBar.open(`Category name can't blank`, 'Close',{duration:5000});
+    if (this.checkIsEmptyCategory()) {
+      this.matSnackBar.open(`Category name can't blank`, 'Close', { duration: 5000 });
       return false;
     }
     const res = this.checkIsEmptycategoryAssigned();
-    console.log(res);
-    if(res) {
-      this.matSnackBar.open(`Please assign rule(s) in category`, 'Close',{duration:5000});
+    if (res) {
+      this.matSnackBar.open(`Please assign rule(s) in category`, 'Close', { duration: 5000 });
       return false;
     }
 
-    console.log(this.brList);
 
     const request: CreateUpdateSchema = new CreateUpdateSchema();
     request.moduleId = this.moduleId;
     request.discription = this.schemaName;
     request.schemaId = this.schemaId;
     request.brs = this.brList;
-    if(this.schemaThresholdCtrl.value <0 || this.schemaThresholdCtrl.value>100) {
-      this.matSnackBar.open(`Schema threshold in 0-100`, 'Close',{duration:5000});
+    if (this.schemaThresholdCtrl.value < 0 || this.schemaThresholdCtrl.value > 100) {
+      this.matSnackBar.open(`Schema threshold in 0-100`, 'Close', { duration: 5000 });
       return false;
     }
     request.schemaThreshold = this.schemaThresholdCtrl.value;
 
     let totalWigtage = 0;
-    this.brList.forEach(map=> {
-      if(map.brWeightage) {
+    this.brList.forEach(map => {
+      if (map.brWeightage) {
         totalWigtage += Number(map.brWeightage);
       }
     });
 
-    if(totalWigtage >100) {
-      this.matSnackBar.open(`Total Business rule weightage can't more than 100`, 'Close',{duration:5000});
+    if (totalWigtage > 100) {
+      this.matSnackBar.open(`Total Business rule weightage can't more than 100`, 'Close', { duration: 5000 });
       return false;
     }
 
-    if(totalWigtage <100) {
-      this.matSnackBar.open(`Total Business rule weightage can't less than 100`, 'Close',{duration:5000});
+    if (totalWigtage < 100) {
+      this.matSnackBar.open(`Total Business rule weightage can't less than 100`, 'Close', { duration: 5000 });
       return false;
     }
-    console.log('request : {}', request);
+
     this.service.createUpdateSchema(request).subscribe(response => {
-      console.log('create update schema Response = ', response);
-      if(response) {
+      if (response) {
         this.schemaId = response;
         this.router.navigate(['/home/schema']);
-        this.matSnackBar.open(`Successfully saved`, 'Close',{duration:5000});
+        this.matSnackBar.open(`Successfully saved`, 'Close', { duration: 5000 });
       }
-    }, error=>{
-      this.matSnackBar.open(`Something went wrong`, 'Close',{duration:5000});
+    }, error => {
+      this.matSnackBar.open(`Something went wrong`, 'Close', { duration: 5000 });
     })
   }
 

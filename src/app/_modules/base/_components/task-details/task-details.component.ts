@@ -112,7 +112,9 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     public taskListService: TaskListService,
     public utilities: Utilities,
     public router: Router,
-    public activatedRoute: ActivatedRoute) { }
+    public activatedRoute: ActivatedRoute) {
+    this.commonSubscription = new Subscription();
+  }
 
   /**
    * Angular webhooks
@@ -123,24 +125,24 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       this.eventCode = this.activatedRoute.snapshot.params.eventCode;
     }
 
-    console.log(this.wfid, this.eventCode)
-    this.userDetailSubscription = this.userService.getUserDetails().subscribe((userdetails: Userdetails) => {
+    const userDetailSubscription = this.userService.getUserDetails().subscribe((userdetails: Userdetails) => {
       this.userDetails = userdetails;
       if (this.wfid && this.eventCode && this.userDetails) {
         this.getTaskMetaData();
       }
-    })
+    });
+    this.commonSubscription.add(userDetailSubscription)
   }
 
   /**
    * This is used to get the meta dat of the task
    */
-
   getTaskMetaData() {
-    this.taskDetailsSubscription = this.taskListService.getMetadataByWfid(this.wfid).subscribe((taskMetaData: TaskMetaData) => {
+    const taskDetailsSubscription = this.taskListService.getMetadataByWfid(this.wfid).subscribe((taskMetaData: TaskMetaData) => {
       this.metadataByWfid = taskMetaData;
       this.getMetaData();
-    })
+    });
+    this.commonSubscription.add(taskDetailsSubscription)
   }
 
   toggleTabs(tabChange: MatTabChangeEvent) {
@@ -155,7 +157,6 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       case 1: this.getHistoryData(); break;
       case 2: this.getAttachmentData(); break;
     }
-    console.log(tabChange)
   }
 
 
@@ -163,11 +164,11 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
    * function get the audit logs
    */
   getHistoryData() {
-    this.historySubscription = this.taskListService.getAuditLogs(this.metadataByWfid.objectType, this.metadataByWfid.taskId, 'en').subscribe((auditLogs: AuditLog[]) => {
+    const historySubscription = this.taskListService.getAuditLogs(this.metadataByWfid.objectType, this.metadataByWfid.taskId, 'en').subscribe((auditLogs: AuditLog[]) => {
       this.auditLogData.length = 0;
       this.auditLogData.push(...auditLogs);
-      console.log(this.auditLogData);
-    })
+    });
+    this.commonSubscription.add(historySubscription)
   }
 
   /**
@@ -217,7 +218,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       gridId: ''
     }
 
-    this.commonSubscription = this.taskListService.getCommonLayoutData(requestObject).subscribe((response: TaskDetailsMetaData[]) => {
+    const tasks = this.taskListService.getCommonLayoutData(requestObject).subscribe((response: TaskDetailsMetaData[]) => {
       this.detailsData.length = 0;
       this.detailsData.push(...response);
 
@@ -240,10 +241,11 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
             }
           })
         }
-      })
+      });
     }, (err) => {
       this.utilities.showSnackBar('Some error occured, please try again after sometime', 'Okay')
-    })
+    });
+    this.commonSubscription.add(tasks)
   }
 
   /**
@@ -264,14 +266,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
    * Angular Hooks
    */
   ngOnDestroy() {
-    if (this.taskDetailsSubscription) {
-      this.taskDetailsSubscription.unsubscribe();
-    }
-    this.userDetailSubscription.unsubscribe();
     this.commonSubscription.unsubscribe();
-    if (this.historySubscription) {
-      this.historySubscription.unsubscribe();
-    }
   }
 
 }

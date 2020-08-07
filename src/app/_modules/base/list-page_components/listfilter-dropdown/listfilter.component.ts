@@ -103,7 +103,7 @@ export class ListFiltersComponent implements OnInit, AfterViewInit, OnDestroy {
     })
     if (this.funcfilters) {
       this.funcfilterscpy = {};
-      this.funcfilterscpy =  JSON.parse(JSON.stringify(this.funcfilters));
+      this.funcfilterscpy = JSON.parse(JSON.stringify(this.funcfilters));
     }
   }
 
@@ -121,7 +121,6 @@ export class ListFiltersComponent implements OnInit, AfterViewInit, OnDestroy {
         list: []
       }
     });
-    console.log(this.globalStateStructure, this.funcfilters, 'global data');
   }
 
   /**
@@ -240,7 +239,6 @@ export class ListFiltersComponent implements OnInit, AfterViewInit, OnDestroy {
       const Selectedindex = this.tagsList.findIndex((listItem) => listItem.checkBoxCode === item.CODE);
       this.tagsList.splice(Selectedindex, 1);
     }
-    console.log(item, 'checked or not');
   }
 
   removeTag(item) {

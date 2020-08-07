@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GeneralInformationTabComponent } from './general-information-tab.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { Subscription } from 'rxjs';
 
 describe('GeneralInformationTabComponent', () => {
   let component: GeneralInformationTabComponent;
@@ -13,17 +14,10 @@ describe('GeneralInformationTabComponent', () => {
       imports: [AppMaterialModuleForSpec]
     })
       .compileComponents();
-  }));
-
-  beforeEach(() => {
     fixture = TestBed.createComponent(GeneralInformationTabComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    component.editingSubscription = new Subscription();
+  }));
 
   it('should call getDOMElement', () => {
     const object = {
@@ -33,4 +27,23 @@ describe('GeneralInformationTabComponent', () => {
     object.picklist = 5;
     expect(component.getDOMElement(object)).toBe('Text');
   });
+
+
+  it('should call setDynamicHeight', () => {
+    let event = {
+      fieldsList: [{
+        picklist: 15
+      }]
+    }
+    // first case
+    expect(component.setDynamicHeight(event)).toBe('100%');
+
+    // second case
+    event = {
+      fieldsList: [{
+        picklist: 20
+      }]
+    }
+    expect(component.setDynamicHeight(event)).toBe('77px');
+  })
 });

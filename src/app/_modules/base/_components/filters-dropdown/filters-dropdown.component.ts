@@ -356,7 +356,7 @@ export class FiltersDropdownComponent implements OnInit, OnDestroy {
     if (findExisting) {
       findExisting.fieldData.filterList.splice(findExisting.fieldData.filterList.indexOf(item.checkBoxCode), 1)
     }
-    console.log(this.apiRequestStructure);
+
     if (!selectedOption) return;
     selectedOption.checked = false;
   }

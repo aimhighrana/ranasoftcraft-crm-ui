@@ -186,7 +186,6 @@ export class ColumnsettingComponent implements OnInit {
       }
     })
     view.fields = fieldOrderData;
-    console.log(view);
     this.emitOperation('update', view)
   }
 
@@ -205,7 +204,6 @@ export class ColumnsettingComponent implements OnInit {
       }
     })
     view.fields = fieldOrderData;
-    console.log(view)
     this.emitOperation('update', view)
   }
 

@@ -79,12 +79,6 @@ describe('Any2tsService', () => {
     expect(service.any2VariantFieldList(testData)).not.toBe(null)
   })
 
-  // it('any2SchemaVariantResponse()should return value', () => {
-  //   const testData = [{
-
-  //   }]
-  // })
-
   it('any2SchemaDataTableResponse() should return value', () => {
     const testData = {
       fieldList: [{

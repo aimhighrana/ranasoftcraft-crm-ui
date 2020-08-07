@@ -8,12 +8,14 @@ import { MsteamConfigurationComponent } from './msteam-configuration/msteam-conf
 import { MsteamAuthConfigurationComponent } from './msteam-auth-configuration/msteam-auth-configuration.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MsteamReportConfigurationComponent } from './msteam-report-configuration/msteam-report-configuration.component';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 @NgModule({
   declarations: [
-  MsteamConfigurationComponent,
-  MsteamAuthConfigurationComponent,
-  MsteamReportConfigurationComponent],
+    MsteamConfigurationComponent,
+    MsteamAuthConfigurationComponent,
+    MsteamReportConfigurationComponent
+  ],
   imports: [
     CommonModule,
     MSTeamsRoutingModule,
@@ -21,7 +23,8 @@ import { MsteamReportConfigurationComponent } from './msteam-report-configuratio
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    AppMaterialModuleForSpec
   ]
 })
 export class MSTeamsModule { }

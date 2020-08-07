@@ -11,7 +11,7 @@ export class MsteamsConfigService {
 
   constructor(
     private http: HttpClient,
-    private endpointService: EndpointService
+    public endpointService: EndpointService
   )
   { }
   apiUrl = environment.apiurl;

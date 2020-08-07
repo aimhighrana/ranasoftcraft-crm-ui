@@ -199,7 +199,6 @@ export class UdrConditionFormComponent implements OnInit, OnChanges {
 
   saveUpdateCondition(id?: string) {
     const frmArray = this.frmArray;
-    console.log(frmArray);
     if(!frmArray.valid) {
       this.snackBar.open(`Please enter required field(s)`,'Close',{duration:5000});
       return false;

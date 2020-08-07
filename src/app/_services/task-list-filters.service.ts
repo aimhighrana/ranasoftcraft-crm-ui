@@ -7,7 +7,8 @@ import { EndpointService } from '@services/endpoint.service';
 })
 export class TaskListFiltersService {
 
-  constructor(private http: HttpClient, private endpointService: EndpointService) { }
+  constructor(public http: HttpClient, public endpointService: EndpointService) { }
+
   getDynamicList(item) {
     return this.http.post<any>(this.endpointService.getFilterDynamicListsUrl(), item)
   }

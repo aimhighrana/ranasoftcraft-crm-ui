@@ -18,7 +18,7 @@
                     <mat-autocomplete #auto="matAutocomplete" class="option-select"
                         (optionSelected)="optionSelected($event)">
                         <mat-option *ngFor="let status of filteredlist | async" [value]="status.display">
-                            <mat-checkbox [state]="isSelected(status.display) ? 'checked' : 'unchecked'">
+                            <mat-checkbox>
                                 {{status.display}}</mat-checkbox>
                         </mat-option>
                     </mat-autocomplete>

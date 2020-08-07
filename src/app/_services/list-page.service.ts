@@ -422,7 +422,6 @@ export class ListPageService {
     return this.http.get(url, { params: params1 });
   }
 
-
   /**
    * function to get columns(optional as of now)
    */

@@ -36,7 +36,6 @@ export class CountComponent extends GenericWidgetComponent implements OnInit,OnC
 
   public getCountMetadata():void{
     this.widgetService.getCountMetadata(this.widgetId).subscribe(returndata=>{
-      console.log(returndata);
       this.countWidget = returndata;
     }, error=>{
       console.error(`Error : ${error}`);

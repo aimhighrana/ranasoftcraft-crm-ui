@@ -118,7 +118,6 @@ export class UploadDataComponent implements OnInit {
           /* save data */
           const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
           this.uploadedData = (data as UploadedDataType);
-          console.log(this.uploadedData[0]);
           this.excelHeader = this.uploadedData[0] as string[];
           // move to next step
           this.stepper.next();

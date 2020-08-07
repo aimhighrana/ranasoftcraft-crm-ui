@@ -16,7 +16,7 @@
 // import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 // import { SchemaService } from '@services/home/schema.service';
 
-// describe('ContainerComponent', () => {
+// xdescribe('ContainerComponent', () => {
 //   let component: ContainerComponent;
 //   let fixture: ComponentFixture<ContainerComponent>;
 //   let reportService: ReportService;

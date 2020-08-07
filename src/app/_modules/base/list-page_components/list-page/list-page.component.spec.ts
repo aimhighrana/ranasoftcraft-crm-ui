@@ -51,7 +51,7 @@ describe('ListPageComponent', () => {
   }))
 
   it('getFilters() should get columns', async(() => {
-    spyOn(listPageService,'getFilters').and.returnValue(of());
+    spyOn(listPageService, 'getFilters').and.returnValue(of());
     component.getFilters();
     expect(listPageService.getFilters).toHaveBeenCalledTimes(1);
   }))
@@ -67,29 +67,29 @@ describe('ListPageComponent', () => {
     expect(component.dynamicFiltersVisible).toBe(true);
   });
 
-  it('getmetacolumnlist(), get report config', async(()=>{
+  it('getmetacolumnlist(), get report config', async(() => {
     const userDetail: Userdetails = new Userdetails();
-    spyOn(listPageService,'getDynamiclistcolumn').withArgs('72523857').and.returnValue(of(userDetail));
+    spyOn(listPageService, 'getDynamiclistcolumn').withArgs('72523857').and.returnValue(of(userDetail));
     component.getmetacolumnlist('72523857');
     expect(listPageService.getDynamiclistcolumn).toHaveBeenCalledWith('72523857');
   }));
 
-  it('getDynamicFiltermeta(), get report config', async(()=>{
+  it('getDynamicFiltermeta(), get report config', async(() => {
     const userDetail: Userdetails = new Userdetails();
-    spyOn(listPageService,'getDynamicFiltermeta').withArgs('72523857').and.returnValue(of(userDetail));
+    spyOn(listPageService, 'getDynamicFiltermeta').withArgs('72523857').and.returnValue(of(userDetail));
     component.getDynamicFiltermeta('72523857');
     expect(listPageService.getDynamicFiltermeta).toHaveBeenCalledWith('72523857');
   }));
 
-  it('isSelected(), check the field is selcted or not', async(()=>{
+  it('isSelected(), check the field is selcted or not', async(() => {
     component.selection.selected.length = 1;
     component.isAllSelected();
-    expect(component.selection.selected.length).toBeGreaterThanOrEqual(1,'If the fld is exit on choose column then return true');
+    expect(component.selection.selected.length).toBeGreaterThanOrEqual(1, 'If the fld is exit on choose column then return true');
   }));
 
-  it('masterToggle(), check the field is selcted or not', async(()=>{
+  it('masterToggle(), check the field is selcted or not', async(() => {
     component.masterToggle();
-    expect(component.isAllSelected()).toBe(true,'If the fld is exit on choose column then return true');
+    expect(component.isAllSelected()).toBe(true, 'If the fld is exit on choose column then return true');
   }));
 
   it('closeFilterBox() should set value of dynamicFiltersVisible', () => {
@@ -104,7 +104,7 @@ describe('ListPageComponent', () => {
   });
 
   it('updateColumns() should changw columns', () => {
-    const tableColumns = [{visible:false}];
+    const tableColumns = [{ visible: false }];
     component.updateColumns(tableColumns);
     expect(component.tableColumns.length).toEqual(1);
   });

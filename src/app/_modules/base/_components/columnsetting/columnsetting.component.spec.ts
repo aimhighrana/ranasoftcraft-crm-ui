@@ -26,7 +26,7 @@ describe('ColumnsettingComponent', () => {
       ],
       default: true,
       active: false,
-      fields:[]
+      fields: []
     },
     {
       viewId: '736992753262805879',
@@ -44,7 +44,7 @@ describe('ColumnsettingComponent', () => {
       ],
       default: false,
       active: false,
-      fields:[]
+      fields: []
     },
     {
       viewId: '782071388208177150',
@@ -57,7 +57,7 @@ describe('ColumnsettingComponent', () => {
       ],
       default: false,
       active: false,
-      fields:[]
+      fields: []
     },
     {
       viewId: '967589022265877187',
@@ -72,7 +72,7 @@ describe('ColumnsettingComponent', () => {
       ],
       default: false,
       active: false,
-      fields:[]
+      fields: []
     },
     {
       viewId: '986965177187517263',
@@ -85,7 +85,7 @@ describe('ColumnsettingComponent', () => {
       ],
       default: false,
       active: false,
-      fields:[]
+      fields: []
     },
     {
       viewId: '999950497191809933',
@@ -102,7 +102,7 @@ describe('ColumnsettingComponent', () => {
       ],
       default: false,
       active: false,
-      fields:[]
+      fields: []
     }
   ];
 

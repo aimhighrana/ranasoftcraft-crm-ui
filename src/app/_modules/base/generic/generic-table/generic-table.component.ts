@@ -16,7 +16,6 @@ export class GenericTableComponent {
         this.tableData = tableData;
          this.displayedColumns.push(...tableData.HEADER.map(item => item.fieldId));
         this.dataSource.push(...tableData.DATA);
-        console.log(this.tableData)
       }
     }
   }

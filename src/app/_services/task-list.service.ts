@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Filter } from '@models/task-list/filter';
+import { TaskListRequest } from '@models/task-list/filter';
 import { EndpointService } from '@services/endpoint.service';
 import { of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
@@ -31,7 +31,7 @@ export class TaskListService {
    * @param filters the filter object to send to sever
    * @param pagination the pagination object to send to server
    */
-  getTasks(filters: Filter) {
+  getTasks(filters: TaskListRequest) {
     return this.http.post(this.endpointService.getTasksUrl(), filters)
   }
 
@@ -59,7 +59,7 @@ export class TaskListService {
   /**
    * Task list count
    */
-  getTaskListCount(filters: Filter) {
+  getTaskListCount(filters: TaskListRequest) {
     return this.http.post(this.endpointService.getTaskListCountURL(), filters)
   }
 
@@ -117,7 +117,7 @@ export class TaskListService {
   }
 
   getCommonLayoutData(taskListSummaryRequestParams: TaskListSummaryRequestParams) {
-     return this.http.get(this.endpointService.getCommonLayoutDataUrl(taskListSummaryRequestParams))
+    return this.http.get(this.endpointService.getCommonLayoutDataUrl(taskListSummaryRequestParams))
   }
 
   getChangeAuditLogDetails(taskId: string, userId: string, language: string) {

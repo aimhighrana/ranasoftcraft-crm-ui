@@ -199,7 +199,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
    * @param taskListService This is the object of the service
    */
   constructor(public taskListService: TaskListService, private _router: Router,
-    private _activeRouter: ActivatedRoute, private userService: UserService, private location: Location,
+    private _activeRouter: ActivatedRoute, public userService: UserService, private location: Location,
     public utilities: Utilities,
     public dialog: MatDialog) { }
 
@@ -306,9 +306,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
     if (!this.dynamicFiltersVisible) {
       this.userDetailSubscription = this.userService.getUserDetails()
-        .pipe(
-          distinctUntilChanged()
-        ).subscribe((userDetails: Userdetails) => {
+        .subscribe((userDetails: Userdetails) => {
           this.taskListSubscription = this.taskListService.getDynamicFilters(userDetails)
             .pipe(distinctUntilChanged())
             .subscribe((dynamicFilters: DynamicFilter[]) => {
@@ -348,7 +346,6 @@ export class TaskListComponent implements OnInit, OnDestroy {
     })
     const availableTagsData = filters.apiRequestStructure.filter(item => item.fieldData.filterList.length > 0);
     const selectedTagsObjectId = availableTagsData.map(item => item.objectId);
-    console.log(selectedTagsObjectId);
     if (availableTagsData.length > 0) {
       const existingSavedObjectIds = this.filterForm.controls.objectToLoad.value;
       selectedTagsObjectId.forEach((objectId) => {

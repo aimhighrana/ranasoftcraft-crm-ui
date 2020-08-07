@@ -79,6 +79,6 @@ export class GeneralInformationTabComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.editingSubscription.unsubscribe();
+    // this.editingSubscription.unsubscribe();
   }
 }

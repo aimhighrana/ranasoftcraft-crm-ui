@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GenericTextboxComponent } from './generic-textbox.component';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 describe('GenericTextboxComponent', () => {
   let component: GenericTextboxComponent;
@@ -8,9 +9,10 @@ describe('GenericTextboxComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ GenericTextboxComponent ]
+      declarations: [GenericTextboxComponent],
+      imports: [AppMaterialModuleForSpec]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

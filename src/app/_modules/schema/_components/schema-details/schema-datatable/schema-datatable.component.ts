@@ -551,7 +551,6 @@ export class SchemaDatatableComponent implements OnInit, OnChanges {
 
   submitReviewedRecords() {
     this.schemaDetailsService.submitReviewedRecords(this.schemaId).subscribe(res =>{
-      console.log(res);
       if(res.acknowledge) {
         this.snackBar.open(`Successfully submitted !`, 'Close',{duration:2000});
         this.dataTableRequest(0, 40, 'Corrections', Number(this.schemaDetails.schemaThreshold));

@@ -1,14 +1,15 @@
-import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TaskSummaryComponent } from './task-summary.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { TaskDetailsComponent } from '../task-details/task-details.component';
+import { GeneralInformationTabComponent } from '../general-information-tab/general-information-tab.component';
+import { AttachmentTabComponent } from '../attachment-tab/attachment-tab.component';
+import { HistoryTabComponent } from '../history-tab/history-tab.component';
 describe('TaskSummaryComponent', () => {
   let component: TaskSummaryComponent;
   let fixture: ComponentFixture<TaskSummaryComponent>;
-  let location;
   const currentTask = {
     wfid: '',
     uploadid: '',
@@ -55,7 +56,7 @@ describe('TaskSummaryComponent', () => {
         AppMaterialModuleForSpec,
         RouterTestingModule.withRoutes([{ path: 'home/task-details/:wfid/:eventCode', component: TaskDetailsComponent }])
       ],
-      declarations: [TaskSummaryComponent],
+      declarations: [TaskSummaryComponent, TaskDetailsComponent, GeneralInformationTabComponent, AttachmentTabComponent, HistoryTabComponent],
       providers: [Location]
     }).compileComponents();
   }));
@@ -64,31 +65,27 @@ describe('TaskSummaryComponent', () => {
     fixture = TestBed.createComponent(TaskSummaryComponent);
     component = fixture.componentInstance;
     currentTask.taskid = '123';
-    currentTask.wfid = '01919191991';
+    currentTask.wfid = '585034355227355208';
     currentTask.eventCode = '5';
     component.currentTask = currentTask;
-    fixture.detectChanges();
     component.ngOnInit();
-    TestBed.inject(Router);
-    // router = TestBed.inject(Router);
-    location = TestBed.inject(Location);
   });
 
-  it('should call ngOnInit()', () => {
+  it('should call ngOnInit()', async () => {
     expect(component.taskId).toBe('123');
-    expect(component.wfid).toBe('01919191991')
+    expect(component.wfid).toBe('585034355227355208')
     expect(component.eventCode).toBe('5')
   });
 
-  it('should call navigateToDetailsPage()', fakeAsync(() => {
+  it('should call navigateToDetailsPage()', async () => {
+    const routeSpy = spyOn(component.router, 'navigateByUrl');
     component.navigateToDetailsPage();
-    fixture.detectChanges();
-    tick();
-    expect(location.path()).toBe(`/home/task-details/${component.wfid}/${component.eventCode}`);
-  }));
+    const url = routeSpy.calls.first().args[0];
+    expect(url).toBe(`home/task-details/${component.wfid}/${component.eventCode}`);
+  });
 
-  it('should call closeDetails',()=>{
-    const emiiter = spyOn(component.closeDetails,'emit');
+  it('should call closeDetails', async () => {
+    const emiiter = spyOn(component.closeDetails, 'emit');
     component.closeDetailsModal();
     expect(emiiter).toHaveBeenCalledWith(true)
   })
