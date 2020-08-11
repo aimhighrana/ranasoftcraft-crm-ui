@@ -322,14 +322,12 @@ export class MissingruleComponent implements OnInit, OnChanges {
     this.brInfo.brInfo = this.fillDataForm.get('description').value ? this.fillDataForm.get('description').value : '';
     this.brInfo.status = '1'; // for enable
     this.brInfo.schemaId = this.schemaId !== 'new' ? this.schemaId : '';
-    console.log(this.brInfo);
     if(this.brInfo.fields === '' || this.brInfo.message === '') {
       this.snackBar.open(`Please enter description or select field(s)`, 'Close', { duration: 5000 });
       return false;
     }
 
     this.schemaService.createBusinessRule(this.brInfo).subscribe(res => {
-      console.log('Response = ', res);
       res.brId = res.brIdStr;
       this.discard(res);
     }, error => {

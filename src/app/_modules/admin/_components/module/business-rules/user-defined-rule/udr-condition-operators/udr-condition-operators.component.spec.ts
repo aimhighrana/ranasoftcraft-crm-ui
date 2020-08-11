@@ -24,7 +24,6 @@ describe('UdrConditionOperatorsComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(UdrConditionOperatorsComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

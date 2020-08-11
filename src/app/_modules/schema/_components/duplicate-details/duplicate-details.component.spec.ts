@@ -20,7 +20,6 @@ describe('DuplicateDetailsComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(DuplicateDetailsComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

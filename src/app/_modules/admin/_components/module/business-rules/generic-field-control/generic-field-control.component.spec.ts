@@ -32,8 +32,6 @@ describe('GenericFieldControlComponent', () => {
     fixture = TestBed.createComponent(GenericFieldControlComponent);
     component = fixture.componentInstance;
     schemaDetailsService = fixture.debugElement.injector.get(SchemaDetailsService);
-    fixture.detectChanges();
-
   });
 
   // mock data
@@ -148,7 +146,9 @@ describe('GenericFieldControlComponent', () => {
 
   it('ngOnChanges(), should call reset when reset filter', async(()=>{
     // mock data
-    const chnages:import('@angular/core').SimpleChanges = {moduleId:{currentValue:true, previousValue: false, firstChange:null, isFirstChange:null}};
+    const chnages:import('@angular/core').SimpleChanges = {moduleId:{currentValue:'1005', previousValue: false, firstChange:null, isFirstChange:null}};
+
+    spyOn(schemaDetailsService, 'getMetadataFields').withArgs('1005').and.returnValue(of(metadataModeleResponse));
 
     // call actual method
     component.ngOnChanges(chnages);
@@ -160,6 +160,8 @@ describe('GenericFieldControlComponent', () => {
     // call actual method
     component.ngOnChanges(chnages2);
     expect(component.ngOnChanges).toBeTruthy();
+
+    expect(schemaDetailsService.getMetadataFields).toHaveBeenCalled();
   }));
 
   it('add(), while search and enter then value should be set ', async(()=>{

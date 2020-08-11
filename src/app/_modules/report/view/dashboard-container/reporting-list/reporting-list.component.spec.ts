@@ -61,12 +61,12 @@ describe('ReportingListComponent', () => {
     expect(evnet.pageIndex).toEqual(actualData.pageIndex);
   }));
 
-  it('details(), get the url', async(() =>{
-    const data = {ObjectNumber:''};
-    component.objectType = '';
-    component.details(data);
-    expect(component.details(data)).not.toBe(null);
-  }))
+  // it('details(), get the url', async(() =>{
+  //   const data = {ObjectNumber:''};
+  //   component.objectType = '';
+  //   component.details(data);
+  //   expect(component.details(data)).not.toBe(null);
+  // }))
   it('downloadCSV, download the data', async (() => {
     component.listData = ['data'];
     spyOn(widgetServiceSpy, 'downloadCSV').withArgs('Report-List',component.listData);

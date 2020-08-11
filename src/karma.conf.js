@@ -17,7 +17,7 @@ module.exports = function (config) {
       jasmine: {
         failSpecWithNoExpectations: true
       },
-      captureConsole: false // disable console logging while ng test
+      captureConsole: true // disable console logging while ng test
     },
     coverageIstanbulReporter: {
       dir: require('path').join(__dirname, '../coverage/ngx-mdo'),
@@ -26,7 +26,7 @@ module.exports = function (config) {
       thresholds: {
         statements: 70.3,
         branches: 44.4,
-        functions: 62.76,
+        functions: 62.3,
         lines: 69.85
       }
     },
