@@ -1,6 +1,6 @@
 // Light theme
-$mdo-light-primary: mat-palette($mat-blue, 700, 300, 900);
-$mdo-light-accent:  mat-palette($mat-pink);
+$mdo-light-primary: mat-palette($mat-orange, 800, 50);
+$mdo-light-accent:  mat-palette($mat-blue-grey, 50);
 $mdo-light-warn:    mat-palette($mat-red);
 
 $mdo-light:   mat-light-theme($mdo-light-primary, $mdo-light-accent, $mdo-light-warn);

@@ -19,7 +19,8 @@ import { DuplicateDetailsComponent } from './_components/duplicate-details/dupli
 import { DiwCreateSchemaComponent } from '../admin/_components/module/schema/diw-create-schema/diw-create-schema.component';
 import { DiwCreateBusinessruleComponent } from '../admin/_components/module/schema/diw-create-businessrule/diw-create-businessrule.component';
 import { CreateVariantComponent } from './_components/create-variant/create-variant.component';
-
+import { AppHomeComponent } from './_components/app-home/app-home.component';
+import { UploadDatasetComponent } from './_components/upload-dataset/upload-dataset.component';
 
 const routes: Routes = [
   { path: '', component: SchemaListComponent },
@@ -42,6 +43,11 @@ const routes: Routes = [
   { path: 'diw-create-schema', component: DiwCreateSchemaComponent },
   { path: 'diw-create-businessrule', component: DiwCreateBusinessruleComponent },
   { path: 'schema-variants/create-variant/:moduleId/:schemaId/:variantId', component: CreateVariantComponent },
+
+  { path: 'app-home', component: AppHomeComponent },
+  { path: 'upload-dataset', component: UploadDatasetComponent },
+
+
 
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent }

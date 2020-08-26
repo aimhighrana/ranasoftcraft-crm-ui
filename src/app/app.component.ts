@@ -25,10 +25,11 @@ export class AppComponent implements OnInit, OnDestroy {
   sideNavCloseStartSub: Subscription;
 
   themes = [
-    { name: 'default-theme',  primary: '#1976d2', bg: '#fafafa'},
+    { name: 'default-theme',  primary: '#FD6329', bg: '#E4EAEF'},
     { name: 'mdo-dark',       primary: '#1976d2', bg: '#303030'},
     { name: 'ckh-light',      primary: '#4caf50', bg: '#fafafa'},
-    { name: 'ckh-dark',       primary: '#4caf50', bg: '#303030'}
+    { name: 'ckh-dark',       primary: '#4caf50', bg: '#303030'},
+    { name: 'pros-light',     primary: '#FD6329', bg: '#E4EAEF'}
   ];
 
   constructor(
