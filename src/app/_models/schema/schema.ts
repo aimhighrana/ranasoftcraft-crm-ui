@@ -71,6 +71,7 @@ export class ObjectTypeResponse {
      objectid: string;
      objectdesc: string;
 }
+
 export class GetAllSchemabymoduleidsRes {
      schemaId: number;
      discription: string;
@@ -103,4 +104,14 @@ export class CategoriesList {
 export interface ObjectType {
      objectDecsription: string;
      objectId: string;
+}
+
+export class WorkflowResponse {
+     objectid: string;
+     objectdesc: string;
+}
+
+export class WorkflowPath {
+     wfpath: string;
+     objectType: string;
 }

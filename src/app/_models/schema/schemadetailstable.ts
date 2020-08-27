@@ -289,14 +289,15 @@ export class Heirarchy {
     tableName: string;
     objectType: string;
 }
+
 export class MetadataModeleResponse {
     headers: any;
     grids: any;
     hierarchy: Heirarchy[];
     gridFields: any;
     hierarchyFields: any;
-
 }
+
 export class HeirarchyFields {
     fieldId: string;
     fieldDesc: string;

@@ -4,7 +4,7 @@ import { EndpointService } from '../endpoint.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../any2ts.service';
-import { SchemaGroupResponse, SchemaGroupDetailsResponse, SchemaGroupCountResponse, CreateSchemaGroupRequest, GetAllSchemabymoduleidsReq, ObjectTypeResponse, GetAllSchemabymoduleidsRes, SchemaGroupWithAssignSchemas } from 'src/app/_models/schema/schema';
+import { SchemaGroupResponse, SchemaGroupDetailsResponse, SchemaGroupCountResponse, CreateSchemaGroupRequest, GetAllSchemabymoduleidsReq, ObjectTypeResponse, GetAllSchemabymoduleidsRes, SchemaGroupWithAssignSchemas, WorkflowResponse, WorkflowPath } from 'src/app/_models/schema/schema';
 import { DataSource } from 'src/app/_modules/schema/_components/upload-data/upload-data.component';
 import { DropDownValue, UDRBlocksModel, UdrModel, CoreSchemaBrInfo, Category } from 'src/app/_modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaStaticThresholdRes, SchemaListModuleList, SchemaListDetails, CoreSchemaBrMap } from '@models/schema/schemalist';
@@ -189,5 +189,13 @@ export class SchemaService {
 
   public updateBrMap(req: CoreSchemaBrMap): Observable<boolean> {
     return this.http.post<boolean>(this.endpointService.updateBrMap(), req);
+  }
+
+  public getWorkflowData(): Observable<WorkflowResponse[]>{
+    return this.http.get<any>(this.endpointService.getWorkflowDataURL());
+  }
+
+  public getWorkFlowPath(ObjectType: string): Observable<WorkflowPath[]> {
+    return this.http.get<WorkflowPath[]>(this.endpointService.getWorkFlowPathUrl(ObjectType));
   }
 }

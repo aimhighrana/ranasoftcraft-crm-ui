@@ -27,6 +27,8 @@ export class Widget {
     fieldCtrl?: MetadataModel;
     groupByIdCtrl?: MetadataModel;
     dateFilterCtrl?: DateFilterCtrl;
+    isWorkflowdataSet: boolean;
+    workflowPath: string[];
 }
 
 export interface DateFilterCtrl {
@@ -255,6 +257,7 @@ export class WidgetHeader {
     plantCode: string;
     indexName: string;
     desc: string;
+    isWorkflowdataSet: boolean;
 }
 
 export interface ChartLegend{
