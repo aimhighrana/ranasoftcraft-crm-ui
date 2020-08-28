@@ -1,10 +1,11 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, OnDestroy } from '@angular/core';
-import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
+import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 import { WorkflowBuilderService } from '@services/workflow-builder.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DecisionsModalComponent } from '../../decisions-modal/decisions-modal.component';
 import { ActivatedRoute } from '@angular/router';
+import { startWith, map } from 'rxjs/operators';
 
 @Component({
   selector: 'pros-activity-step-properties',
@@ -26,6 +27,10 @@ export class ActivityStepPropertiesComponent implements OnInit, OnChanges, OnDes
   workflowFields : any = [];
   selectedWorkflowFields = [];
   connectionsList = [];
+  filteredWfFields: Observable<any>;
+  wfFieldsSearchControl = new FormControl();
+  possiblewfFields = [];
+  currentWfPageIdx = 0;
 
   subscriptionsList: Subscription[] = [];
 
@@ -53,6 +58,11 @@ export class ActivityStepPropertiesComponent implements OnInit, OnChanges, OnDes
 
   previousRecipientType = 'USER';
 
+  basicDetailsControls = ['name', 'recipientType', 'approvedBy', 'taskSubject', 'agentDeterminationType', 'stepPriority'];
+  rejectionNotifControls = ['slaHrs'];
+  expandedPanel = 1;
+
+
   constructor(private workflowBuilderService: WorkflowBuilderService,
     private fb: FormBuilder,
     public dialog: MatDialog,
@@ -76,6 +86,15 @@ export class ActivityStepPropertiesComponent implements OnInit, OnChanges, OnDes
       })
     )
 
+    // get which panel should be expanded
+    if (this.hasValidationError(this.basicDetailsControls)){
+      this.expandedPanel = 1;
+    } else if(!this.selectedRecipients.length){
+      this.expandedPanel = 2;
+    } else if (this.hasValidationError(this.rejectionNotifControls)){
+      this.expandedPanel = 3;
+    }
+
   }
 
   /**
@@ -84,16 +103,16 @@ export class ActivityStepPropertiesComponent implements OnInit, OnChanges, OnDes
   initActivityForm() {
 
     this.activityFormGroup = this.fb.group({
-      name: [''],
-      recipientType: ['USER'],
-      approvedBy: ['0'],
+      name: ['', Validators.required],
+      recipientType: ['USER', Validators.required],
+      approvedBy: ['0', Validators.required],
       roleApprovalBy: ['0'],
-      taskSubject: [''],
-      agentDeterminationType: ['DEFAULT'],
+      taskSubject: ['', Validators.required],
+      agentDeterminationType: ['DEFAULT', Validators.required],
       enhancementPoint: ['Select'],
-      stepPriority: ['Low'],
+      stepPriority: ['Low', Validators.required],
       // recipients: [''],
-      slaHrs: [''],
+      slaHrs: ['', Validators.required],
       reminderGracePeriode: [''],
       reminderInterval: [''],
       reminderOccurrences: [''],
@@ -139,6 +158,9 @@ export class ActivityStepPropertiesComponent implements OnInit, OnChanges, OnDes
         this.previousRecipientType = values.recipientType;
         this.updateStepProperties();
       });
+
+      // validation purposes
+      this.activityFormGroup.markAllAsTouched();
   }
 
   ngOnChanges(changes): void {
@@ -157,6 +179,7 @@ export class ActivityStepPropertiesComponent implements OnInit, OnChanges, OnDes
         this.paginateChip() ;
         // get the selected workflow fields
         this.selectedWorkflowFields = JSON.parse(attrs.workflowFields) ;
+        this.paginateWfChip() ;
         // get the element outgoing connections in order to populate reject to step list
         this.connectionsList = selectedBpmn.currentValue.outgoing.map(out => {
           const connections = {
@@ -322,7 +345,7 @@ export class ActivityStepPropertiesComponent implements OnInit, OnChanges, OnDes
         return;
 
       recipient.fields.forEach(field => {
-        field.value = result[field.id] || '' ;
+        field.value = field.picklist === '0' ? result[field.id] || '' : result[field.id].CODE || '' ;
       });
       console.log(this.selectedWorkflowFields ) ;
       this.updateStepProperties() ;
@@ -348,12 +371,116 @@ export class ActivityStepPropertiesComponent implements OnInit, OnChanges, OnDes
 
   getWfFileds(){
     this.subscriptionsList.push(this.workflowBuilderService.getWorkflowFields(this.wfParams)
-      .subscribe(fields => this.workflowFields = fields.allWFfield || []));
+      .subscribe(fields => {
+        this.workflowFields = fields.allWFfield || [] ;
+
+        this.filteredWfFields = this.wfFieldsSearchControl.valueChanges
+            .pipe(
+              startWith(''),
+              map(value => this.filterWfFields(value))
+          );
+
+      }));
   }
 
   isFirstStep(){
     return this.bpmnElement.incoming.some(node => node.source.type === 'bpmn:IntermediateCatchEvent');
   }
+
+  getWfFieldText(option){
+    return option ? option.label : '';
+  }
+
+  wfFieldSelected(event){
+    const selected = event.option.value;
+
+    if(!this.selectedWorkflowFields.some(field => field.id === selected.id)){
+
+      this.selectedWorkflowFields.push({...selected, value : ''}) ;
+
+      // add the selected field for all selected recipients
+      this.selectedRecipients.forEach(element => {
+        element.fields.push(Object.assign({...selected, value : ''})) ;
+      }) ;
+
+      if (this.currentWfPageIdx === 0 && this.possiblewfFields.length < 2) {
+        this.possiblewfFields.push(selected);
+        this.currentWfPageIdx = 0;
+      }
+
+      this.updateStepProperties();
+
+    }
+  }
+
+  private filterWfFields(value): string[] {
+    const filterValue = value.label ? value.label.toLowerCase() : value.toLowerCase() ;
+    return this.workflowFields.filter(option => option.label.toLowerCase().includes(filterValue));
+  }
+
+  /**
+   * To check / enable previuos button
+   */
+  get enableWfPreBtn() {
+    return this.currentWfPageIdx <= 0;
+  }
+  /**
+   * To check / enable next button
+   */
+  get enableWfNextBtn() {
+    return ((this.currentWfPageIdx * 2 + 2) < this.selectedWorkflowFields.length && this.selectedWorkflowFields.length > 2);
+  }
+
+  paginateWfChip(where?: string) {
+
+    const reverseSelected = this.selectedWorkflowFields;
+    if (where === 'prev' && this.currentWfPageIdx > 0) {
+      this.possiblewfFields = [];
+      if (reverseSelected[(this.currentWfPageIdx * 2) - 2])
+        this.possiblewfFields.push(reverseSelected[(this.currentWfPageIdx * 2) - 2]);
+      if (reverseSelected[(this.currentWfPageIdx * 2) - 1])
+        this.possiblewfFields.push(reverseSelected[(this.currentWfPageIdx * 2) - 1]);
+      this.currentWfPageIdx--;
+    }
+    else if (where === 'next' && this.currentWfPageIdx < this.selectedWorkflowFields.length) {
+      this.possiblewfFields = [];
+      this.currentWfPageIdx++;
+      if (reverseSelected[this.currentWfPageIdx * 2])
+        this.possiblewfFields.push(reverseSelected[this.currentWfPageIdx * 2]);
+      if (reverseSelected[(this.currentWfPageIdx * 2) + 1])
+        this.possiblewfFields.push(reverseSelected[(this.currentWfPageIdx * 2) + 1]);
+    } else {
+      this.possiblewfFields = [];
+      if (reverseSelected[this.currentWfPageIdx * 2])
+        this.possiblewfFields.push(reverseSelected[this.currentWfPageIdx * 2]);
+      if (reverseSelected[(this.currentWfPageIdx * 2) + 1])
+        this.possiblewfFields.push(reverseSelected[(this.currentWfPageIdx * 2) + 1]);
+    }
+
+  }
+
+  /**
+   * remove a selected wfField
+   * @param index of the field
+   */
+  removeWfField(index) {
+    this.selectedWorkflowFields = this.selectedWorkflowFields.filter(element => element.id !== this.possiblewfFields[index].id);
+
+    // remove the field from all selected recipients
+    this.selectedRecipients.forEach(element => {
+      element.fields = element.fields.filter(field => field.id !== this.possiblewfFields[index].id) ;
+    }) ;
+
+    this.updateStepProperties();
+    this.possiblewfFields.splice(index, 1);
+    this.paginateWfChip();
+  }
+
+  hasValidationError(controls : string[]){
+    return controls.some(control => this.activityFormGroup.get(control).invalid);
+  }
+
+
 
   ngOnDestroy() {
     this.subscriptionsList.forEach(sub => sub.unsubscribe());

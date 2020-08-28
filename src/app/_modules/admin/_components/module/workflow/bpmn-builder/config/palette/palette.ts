@@ -1,7 +1,7 @@
 
 
 export class CustomPalette {
-  constructor(private bpmnFactory: any, private create: any, private elementFactory: any, private palette: any, private translate, private globalConnect, private modeling, private canvas) {
+  constructor(private bpmnFactory: any, private create: any, private elementFactory: any, private palette: any, private translate, private globalConnect, private modeling, private canvas, private commandStack) {
     palette.registerProvider(this);
   }
 
@@ -11,7 +11,8 @@ export class CustomPalette {
       create,
       elementFactory,
       globalConnect,
-      modeling
+      modeling,
+      commandStack
       // palette
       // translate
     } = this;
@@ -55,6 +56,29 @@ export class CustomPalette {
     }
 
     return {
+
+      undo: {
+        group: 'tools',
+        className: 'bpmn-icon-undo',
+        title: 'undo',
+        action: {
+          click(event) {
+            commandStack.undo() ;
+          }
+        }
+      },
+
+      redo: {
+        group: 'tools',
+        className: 'bpmn-icon-redo',
+        title: 'redo',
+        action: {
+          click(event) {
+            commandStack.redo() ;
+          }
+        }
+      },
+
       'create.start-event':
         createAction('bpmn:IntermediateCatchEvent', 'event', 'bpmn-icon-intermediate-event-catch-link','add a start step',
                     {eventDefinitionType:'bpmn:LinkEventDefinition'}),
@@ -80,7 +104,7 @@ export class CustomPalette {
         createAction('bpmn:EndEvent', 'activity', 'bpmn-icon-end-event-terminate', 'Add an end step', {eventDefinitionType:'bpmn:TerminateEventDefinition'}),
 
       'forward-connection': {
-          group: 'tools',
+          group: 'activity',
           className: 'bpmn-icon-connection',
           title: 'Add a forward connection',
           action: {
@@ -91,7 +115,7 @@ export class CustomPalette {
         },
 
       'rejection-connection': {
-          group: 'tools',
+          group: 'activity',
           className: 'bpmn-icon-connection-back',
           title: 'Add a rejection connection',
           action: {
@@ -115,5 +139,6 @@ CustomPalette[inject] = [ 'bpmnFactory',
   'translate',
   'globalConnect',
   'modeling',
-  'canvas'
+  'canvas',
+  'commandStack'
 ];

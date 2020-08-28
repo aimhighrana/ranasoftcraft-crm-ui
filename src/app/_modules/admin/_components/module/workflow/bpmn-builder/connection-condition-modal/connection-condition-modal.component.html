@@ -33,15 +33,26 @@
                 <ng-container matColumnDef="field">
                     <th mat-header-cell *matHeaderCellDef> Field </th>
                     <td mat-cell *matCellDef="let row; let index = index" [formGroupName]="index">
-                        <mat-form-field>
-                            <mat-label>Field</mat-label>
-                            <!-- (selectionChange)="fieldSelected($event, row)" -->
+                        <!-- <mat-form-field>
                             <mat-select formControlName="field">
                                 <mat-option *ngFor="let field of workflowFields" [value]="field.id" #matOption
                                     (click)="fieldSelected(matOption.selected, field, row)"> {{field.label}}
                                 </mat-option>
                             </mat-select>
+                        </mat-form-field> -->
+
+                        <mat-form-field>
+                            <input type="text" placeholder="Select value" aria-label="Number" matInput
+                                [matAutocomplete]="selectField" formControlName="field">
+                            <mat-icon matSuffix>search</mat-icon>
+                            <mat-autocomplete #selectField="matAutocomplete" [displayWith]="getFieldOptionText"> <!-- [displayWith]="getFieldOptionText" -->
+                                <mat-option *ngFor="let field of filteredFields[index] | async" [value]="field.id" #matOption
+                                            (click)="fieldSelected(matOption.selected, field, row)">
+                                    {{field.label}}
+                                </mat-option>
+                            </mat-autocomplete>
                         </mat-form-field>
+
                     </td>
                 </ng-container>
 
@@ -49,7 +60,7 @@
                     <th mat-header-cell *matHeaderCellDef> Operator </th>
                     <td mat-cell *matCellDef="let row; let index = index" [formGroupName]="index">
                         <mat-form-field>
-                            <mat-label>Operator</mat-label>
+                            <!-- <mat-label>Operator</mat-label> -->
                             <mat-select formControlName="operator">
                                 <mat-option *ngFor="let op of getFieldOperators(row.value.field)" 
                                     [value]="op.value"> {{op.label}} </mat-option>
@@ -77,11 +88,13 @@
                 -->
 
                         <ng-container [ngSwitch]="row.value.picklist">
+
                             <mat-form-field *ngSwitchCase="FIELD_TYPE.Input">
-                                <mat-label> Value </mat-label>
+                                <!-- <mat-label> Value </mat-label> -->
                                 <input matInput formControlName="value">
                             </mat-form-field>
-                            <mat-form-field *ngSwitchCase="FIELD_TYPE.Select">
+
+                            <!-- <mat-form-field *ngSwitchCase="FIELD_TYPE.Select">
                                 <mat-label> Select value </mat-label>
                                 <mat-select matInput formControlName="value">
                                     <ng-container *ngIf="row.value.options">
@@ -90,10 +103,23 @@
                                         </mat-option>
                                     </ng-container>
                                 </mat-select>
+                            </mat-form-field> -->
+
+                            <mat-form-field *ngSwitchCase="FIELD_TYPE.Select">
+                                <!-- <mat-label> Select value</mat-label> -->
+                                <input type="text" placeholder="Select value" aria-label="Number" matInput
+                                    [matAutocomplete]="selectValue" formControlName="value">
+                                <mat-icon matSuffix>search</mat-icon>
+                                <mat-autocomplete #selectValue="matAutocomplete" [displayWith]="getOptionText">
+                                    <mat-option *ngFor="let option of row.value.filteredOptions | async" [value]="option">
+                                        {{option.TEXT}}
+                                    </mat-option>
+                                </mat-autocomplete>
                             </mat-form-field>
+
                             <mat-form-field *ngSwitchDefault>
-                                <mat-label> Value </mat-label>
-                                <input matInput formControlName="value">
+                                <!-- <mat-label> Value </mat-label> -->
+                                <input matInput formControlName="value" placeholder="value">
                             </mat-form-field>
                         </ng-container>
 

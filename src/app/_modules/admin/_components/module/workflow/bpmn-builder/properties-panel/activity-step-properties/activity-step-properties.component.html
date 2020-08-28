@@ -1,8 +1,9 @@
 <!-- ACTIVITY STEP PROPERTIES    -->
 <ng-container [formGroup]="activityFormGroup" *ngIf="bpmnElement && (bpmnElement.type === ELEMENT_TYPES.Activity)">
     <!-- BASIC DETAILS-->
-    <mat-accordion>
-        <mat-expansion-panel class="mat-elevation-z2" expanded="false">
+    <mat-accordion [multi]="false">
+        <mat-expansion-panel class="mat-elevation-z2" [expanded]="expandedPanel === 1" 
+                [ngClass]="{'has-errors' : hasValidationError(basicDetailsControls)}">
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     Basic Details
@@ -75,53 +76,56 @@
 
                 <mat-checkbox *ngIf="!isFirstStep()" color="primary" formControlName="addDecisions">Add Decisions</mat-checkbox>
                 <div class="f-row-spacer-half"></div>
-                <ng-container *ngIf="activityFormGroup.value.addDecisions">
-                    <h4> Workflow Field </h4>
+                <ng-container *ngIf="!isFirstStep() && activityFormGroup.value.addDecisions">
+                    
+                    <!-- <h4> Workflow Field </h4>
                     <mat-selection-list class="recipients-list" (selectionChange)="fieldSelectionChange($event)">
                         <mat-list-option *ngFor="let field of workflowFields;" [value]="field.id"
                             [selected]="isFieldSelected(field.id)" color="primary">
                             {{field.label}}
                             <mat-divider></mat-divider>
                         </mat-list-option>
-                    </mat-selection-list>
+                    </mat-selection-list> -->
 
-
-
-                    <!-- <mat-form-field class="example-chip-list">
-                                <mat-chip-list #chipList aria-label="Fruit selection">
-                                  <mat-chip
-                                    *ngFor="let fruit of fruits"
-                                    [selectable]="selectable"
-                                    [removable]="removable"
-                                    (removed)="remove(fruit)">
-                                    {{fruit}}
-                                    <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-                                  </mat-chip>
-                                  <input
-                                    placeholder="New fruit..."
-                                    #fruitInput
-                                    [formControl]="fruitCtrl"
-                                    [matAutocomplete]="auto"
-                                    [matChipInputFor]="chipList"
-                                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                                    (matChipInputTokenEnd)="add($event)">
-                                </mat-chip-list>
-                                <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-                                  <mat-option *ngFor="let fruit of filteredFruits | async" [value]="fruit">
-                                    {{fruit}}
-                                  </mat-option>
-                                </mat-autocomplete>
-                              </mat-form-field> -->
-
+                    <mat-form-field appearance="outline">
+                        <input type="text" placeholder="Search for field" aria-label="Number" matInput
+                            [formControl]="wfFieldsSearchControl" [matAutocomplete]="addWfField">
+                        <mat-icon matSuffix>search</mat-icon>
+                        <mat-autocomplete #addWfField="matAutocomplete" [displayWith]="getWfFieldText"
+                            (optionSelected)="wfFieldSelected($event)">
+                            <mat-option *ngFor="let field of filteredWfFields | async" [value]="field">
+                                {{field.label}}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+    
+                    <div class="f-row selected-coll-groups" *ngIf="selectedWorkflowFields.length">
+                        <button mat-icon-button (click)="paginateWfChip('prev')" [disabled]="enableWfPreBtn">
+                            <mat-icon>navigate_before</mat-icon>
+                        </button>
+                        <mat-chip-list aria-label="Fish selection" [selectable]="true">
+                            <ng-container *ngFor="let field of possiblewfFields; index as index">
+                                <mat-chip [selectable]="true">
+                                    
+                                    <span class="chip-content">{{ field.label }}</span>
+                                    <mat-icon mat-list-icon class="chip-icon" (click)="removeWfField(index)">
+                                        cancel</mat-icon>
+                                </mat-chip>
+                            </ng-container>
+                        </mat-chip-list>
+                        <button mat-icon-button (click)="paginateWfChip('next')" [disabled]="!enableWfNextBtn">
+                            <mat-icon>navigate_next</mat-icon>
+                        </button>
+                    </div>
+                    
                 </ng-container>
 
             </div>
         </mat-expansion-panel>
-    </mat-accordion>
 
-    <!-- Define Recipients-->
-    <mat-accordion>
-        <mat-expansion-panel class="mat-elevation-z2" expanded="false">
+        <!-- Define Recipients-->
+        <mat-expansion-panel class="mat-elevation-z2" [expanded]="expandedPanel === 2"  
+                [ngClass]="{'has-errors' : !selectedRecipients.length}">
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     Define Recipients
@@ -158,56 +162,12 @@
                         <mat-icon>navigate_next</mat-icon>
                     </button>
                 </div>
-
-                <!-- <mat-toolbar class="recipient-actions">
-                        <mat-toolbar-row>
-                            <mat-form-field class="field-divider">
-                                <mat-label> Assign new </mat-label>
-                                <input type="text" matInput [formControl]="recipientSearchControl">
-                                <mat-icon matSuffix [inline]="true">search</mat-icon>
-                            </mat-form-field>
-                            <span class="f-spacer"></span>
-                            <button mat-mini-fab color="primary" matTooltip="Assign All" (click)="checkAllRecipients()"> <mat-icon>done_all</mat-icon> </button>
-                            <span class="f-col-spacer-half"></span>
-                            <button mat-mini-fab color="warn" matTooltip="Unassign all" (click)="uncheckAllRecipients()"> <mat-icon>clear</mat-icon> </button>
-                        </mat-toolbar-row>
-                    </mat-toolbar>
-                    <mat-selection-list #recipientSelect class="recipients-list"  (selectionChange)="updateSelectedRecipients($event)">
-                        <mat-list-option *ngFor="let recipient of filteredRecipients | async" [value]="recipient"  [selected]="isRecipientSelected(recipient)" color="primary">
-                            {{recipient}}
-                            <mat-divider></mat-divider>
-                        </mat-list-option>
-                    </mat-selection-list>
-                    <ng-container *ngIf="selectedRecipients.length">
-                        <mat-toolbar class="recipient-actions">
-                            <mat-toolbar-row>
-                                <span mat-subheader> Assigned </span>
-                            </mat-toolbar-row>
-                        </mat-toolbar>
-                        <mat-list role="list" class="recipients-list">
-                            <mat-list-item  *ngFor="let recipient of selectedRecipients" role="listitem">
-                                 {{recipient}} 
-                                 <mat-divider></mat-divider>
-                            </mat-list-item>
-                        </mat-list>
-                    </ng-container> -->
-
-
-                <!-- <mat-form-field>
-                        <mat-label>Unassigned roles</mat-label>
-                        <input type="text" matInput [matAutocomplete]="auto" formControlName="recipients">
-                      </mat-form-field>
-                      
-                      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="updateSelectedRecipient($event)">
-                        <mat-option *ngFor="let recipient of filteredRecipients | async" [value]="recipient.value">{{recipient.value}}</mat-option>
-                      </mat-autocomplete> -->
             </div>
         </mat-expansion-panel>
-    </mat-accordion>
 
-    <!-- Rejection & Notification-->
-    <mat-accordion>
-        <mat-expansion-panel class="mat-elevation-z2" expanded="false">
+        <!-- Rejection & Notification-->
+        <mat-expansion-panel class="mat-elevation-z2" [expanded]="expandedPanel === 3"  
+                [ngClass]="{'has-errors' : hasValidationError(rejectionNotifControls)}">
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     Rejection & Notification
@@ -294,10 +254,8 @@
                 </mat-checkbox>
             </div>
         </mat-expansion-panel>
-    </mat-accordion>
 
-    <!-- Additional Settings -->
-    <mat-accordion>
+        <!-- Additional Settings -->
         <mat-expansion-panel class="mat-elevation-z2" expanded="false">
             <mat-expansion-panel-header>
                 <mat-panel-title>

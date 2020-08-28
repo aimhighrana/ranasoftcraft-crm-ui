@@ -57,4 +57,47 @@ describe('ConnectionConditionModalComponent', () => {
     expect(component.workflowFields.length).toEqual(0);
   });
 
+  it('should get the value option text', () => {
+    const option = {
+      TEXT : 'Standard price'
+    }
+
+    const result = component.getOptionText(option) ;
+    expect(result).toEqual('Standard price');
+  });
+
+  it('should return the value option text', () => {
+
+    const result = component.getOptionText(undefined) ;
+    expect(result).toEqual('');
+  });
+
+  it('should return the field option text', ()=> {
+
+    const option = 'PRICE_CTRL';
+    component.workflowFields = [
+      {datatype: 'CHAR', picklist: '1', checked: '0', id: 'PRICE_CTRL', label: 'Price control'}
+    ];
+
+    const result = component.getFieldOptionText(option);
+    expect(result).toEqual('Price control');
+  });
+
+  it('should return a blank field option text', ()=> {
+
+    const result = component.getFieldOptionText(undefined);
+    expect(result).toEqual('');
+  });
+
+  it('should filter the field options', () => {
+
+    component.workflowFields = [
+      {datatype: 'CHAR', picklist: '1', checked: '0', id: 'PRICE_CTRL', label: 'Price control'}
+    ];
+
+    const result = component.filterFieldOptions('price');
+    expect(result.length).toEqual(1);
+  })
+
+
 });

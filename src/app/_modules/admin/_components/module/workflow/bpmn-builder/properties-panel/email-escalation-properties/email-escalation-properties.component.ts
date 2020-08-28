@@ -1,8 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, OnDestroy } from '@angular/core';
-import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
+import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 import { WorkflowBuilderService } from '@services/workflow-builder.service';
 import { ActivatedRoute } from '@angular/router';
+
 
 @Component({
   selector: 'pros-email-escalation-properties',
@@ -36,6 +37,9 @@ export class EmailEscalationPropertiesComponent implements OnInit, OnChanges, On
     lang:'en'
   }
 
+  openedPanel = 1;
+  basicDetailsControls = ['name', 'recipientType'];
+
   constructor(private workflowBuilderService: WorkflowBuilderService,
     private fb: FormBuilder,
     private route: ActivatedRoute) {
@@ -53,6 +57,11 @@ export class EmailEscalationPropertiesComponent implements OnInit, OnChanges, On
           this.getRecipientsList();
       })
     )
+
+    // select which panel should be opened first
+    if( !this.basicDetailsErrors() && !this.selectedRecipients.length){
+      this.openedPanel = 2;
+    }
   }
 
   /**
@@ -61,8 +70,8 @@ export class EmailEscalationPropertiesComponent implements OnInit, OnChanges, On
   initForm(value?) {
 
     this.emailForm = this.fb.group({
-      name: [value && value.name ? value.name : ''],
-      recipientType: [value && value.recipientType ? value.recipientType : 'USER'],
+      name: [value && value.name ? value.name : '', Validators.required],
+      recipientType: [value && value.recipientType ? value.recipientType : 'USER', Validators.required],
     });
 
     this.selectedRecipients = [];
@@ -81,6 +90,9 @@ export class EmailEscalationPropertiesComponent implements OnInit, OnChanges, On
         // emit an update event
         this.updateStepProperties();
       });
+
+    // for validation purposes
+    this.emailForm.markAllAsTouched();
   }
 
   ngOnChanges(changes): void {
@@ -97,8 +109,15 @@ export class EmailEscalationPropertiesComponent implements OnInit, OnChanges, On
         this.initForm(attrs) ;
         this.selectedRecipients = JSON.parse(attrs.recipients);
         this.paginateChip() ;
-
       }
+
+
+      // set search control state
+      if(!this.selectedRecipients.length){
+        this.recipientSearchControl.setValidators(Validators.required);
+        this.recipientSearchControl.markAsTouched();
+      }
+
     }
 
   }
@@ -129,6 +148,12 @@ export class EmailEscalationPropertiesComponent implements OnInit, OnChanges, On
     this.updateStepProperties();
     this.possibleRecipients.splice(index, 1);
     this.paginateChip();
+
+    // set search control state
+    if(!this.selectedRecipients.length){
+      this.recipientSearchControl.setValidators(Validators.required);
+      this.recipientSearchControl.markAsTouched();
+    }
   }
 
 
@@ -200,6 +225,11 @@ export class EmailEscalationPropertiesComponent implements OnInit, OnChanges, On
 
   getOptionText(option){
     return option ? option.value : '';
+  }
+
+  basicDetailsErrors(){
+    return this.basicDetailsControls.some(cName => this.emailForm.controls[cName].invalid) ;
+    // return this.emailForm.controls['name'].invalid ||  this.emailForm.controls['recipientType'].invalid ;
   }
 
   ngOnDestroy() {

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'pros-determination-step-properties',
@@ -21,11 +21,13 @@ export class DeterminationStepPropertiesComponent implements OnInit, OnChanges {
   initForm(value?){
 
     this.determinationForm = this.fb.group({
-      name : [ value && value.name ? value.name : '']
+      name : [ value && value.name ? value.name : '', Validators.required]
     }) ;
 
     this.determinationForm.valueChanges
         .subscribe(v => this.updateStepProperties(this.determinationForm.value));
+
+    this.determinationForm.markAllAsTouched();
   }
 
 

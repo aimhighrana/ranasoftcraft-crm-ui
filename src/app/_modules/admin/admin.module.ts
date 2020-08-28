@@ -62,6 +62,7 @@ import { PropertiesPanelComponent } from './_components/module/workflow/bpmn-bui
 import { BpmnBuilderComponent } from './_components/module/workflow/bpmn-builder/bpmn-builder.component';
 import { DiwCreateBusinessruleComponent } from './_components/module/schema/diw-create-businessrule/diw-create-businessrule.component';
 import { DiwCreateSchemaComponent } from './_components/module/schema/diw-create-schema/diw-create-schema.component';
+import { ConfirmModalComponent } from './_components/module/workflow/bpmn-builder/confirm-modal/confirm-modal.component';
 
 @NgModule({
   declarations: [
@@ -125,6 +126,7 @@ import { DiwCreateSchemaComponent } from './_components/module/schema/diw-create
     BackgroundStepPropertiesComponent,
     DiwCreateBusinessruleComponent,
     DiwCreateSchemaComponent,
+    ConfirmModalComponent,
   ],
   imports: [
     CommonModule,

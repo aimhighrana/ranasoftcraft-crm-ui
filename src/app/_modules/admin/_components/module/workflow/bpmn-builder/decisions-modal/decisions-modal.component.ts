@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { WorkflowBuilderService } from '@services/workflow-builder.service';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
+import { startWith, map } from 'rxjs/operators';
 
 @Component({
   selector: 'pros-decisions-modal',
@@ -54,12 +55,23 @@ export class DecisionsModalComponent implements OnInit, OnDestroy {
     // build decision form
     this.decisionForm = this.fb.group({});
     this.data.fields.forEach(field => {
-      this.decisionForm.addControl(field.id, this.fb.control(field.value));
+    this.decisionForm.addControl(field.id, this.fb.control(field.value));
       if(field.picklist === this.FIELD_TYPE.Select){
         this.subscriptionsList.push (
           this.getFieldOptions(field.id)
               .subscribe(resp => {
                 field.options = resp.DATA || [];
+
+                field.filteredOptions = this.decisionForm.get(field.id).valueChanges
+                  .pipe(
+                    startWith(''),
+                    map(value => this.filterOptions(value, field))
+                  );
+
+                const selectedOption = field.options.find(v => v.CODE === field.value);
+                const currentValue = {};
+                currentValue[field.id] = selectedOption ;
+                this.decisionForm.patchValue(currentValue);
               })
         );
       }
@@ -72,6 +84,15 @@ export class DecisionsModalComponent implements OnInit, OnDestroy {
       ...this.fieldOptionsParams,
       fieldId: id
     }) ;
+  }
+
+  getOptionText(option){
+    return option ? option.TEXT : '';
+  }
+
+  private filterOptions(value, field) {
+    const filterValue = value.TEXT ? value.TEXT.toLowerCase() : value.toLowerCase() ;
+    return field.options.filter(option => option.TEXT.toLowerCase().includes(filterValue));
   }
 
   ngOnDestroy(){

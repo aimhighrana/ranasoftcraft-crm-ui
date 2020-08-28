@@ -1,9 +1,10 @@
 import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, Subscription, Observable } from 'rxjs';
 import { AbstractControl, FormArray, FormGroup, FormBuilder } from '@angular/forms';
 import { WorkflowBuilderService } from '@services/workflow-builder.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
+import { startWith, map } from 'rxjs/operators';
 
 @Component({
   selector: 'pros-connection-condition-modal',
@@ -18,6 +19,7 @@ export class ConnectionConditionModalComponent implements OnInit, OnDestroy {
   displayColumns = ['action', 'field', 'operator', 'value'];
   rows: FormArray = this.fb.array([]);
   conditionsForm: FormGroup = this.fb.group({ conditions: this.rows });
+  filteredFields : Observable<any>[] = [];
 
   subscriptions : Subscription[] = [] ;
 
@@ -86,17 +88,6 @@ export class ConnectionConditionModalComponent implements OnInit, OnDestroy {
       })
     )
 
-
-
-    if (this.data.length){
-      this.data.forEach(condition => {
-        this.addCondition(condition) ;
-      });
-    } else {
-      this.addCondition();
-    }
-    this.updateView();
-
   }
 
 
@@ -111,8 +102,18 @@ export class ConnectionConditionModalComponent implements OnInit, OnDestroy {
       value: [ condition && condition.value ? condition.value : ''],
       rowOperator: [ condition && condition.rowOperator ? condition.rowOperator : '&&'],
       picklist: [this.FIELD_TYPE.Input],
-      options: [[]]
+      options: [[]],
+      filteredOptions: []
     });
+
+    const filteredObs = row.get('field').valueChanges
+    .pipe(
+      startWith(''),
+      map(value => this.filterFieldOptions(value))
+    );
+
+    this.filteredFields.push(filteredObs);
+
     this.rows.push(row);
     this.updateView();
   }
@@ -143,6 +144,15 @@ export class ConnectionConditionModalComponent implements OnInit, OnDestroy {
           .subscribe(fields => {
             this.workflowFields = fields.allWFfield || [];
 
+            if (this.data.length){
+              this.data.forEach(condition => {
+                this.addCondition(condition) ;
+              });
+            } else {
+              this.addCondition();
+            }
+            this.updateView();
+
             this.rows.controls.forEach(row => {
               const fieldId = row.value.field;
               if(!fieldId)
@@ -151,10 +161,20 @@ export class ConnectionConditionModalComponent implements OnInit, OnDestroy {
               if(picklist === this.FIELD_TYPE.Select){
                 this.subscriptions.push(this.getFieldOptions(fieldId)
                   .subscribe(resp => {
+
+                    const filteredOptions = row.get('value').valueChanges
+                       .pipe(
+                          startWith(''),
+                          map(value => this.filterValueOptions(value, resp.DATA))
+                        );
+
                     row.patchValue({
                       picklist,
-                      options: resp.DATA || []
-                    })
+                      options: resp.DATA || [],
+                      value: resp.DATA.find(v => v.CODE === row.value.value),
+                      filteredOptions
+                    }) ;
+
                   })
                 )
               } else {
@@ -162,6 +182,7 @@ export class ConnectionConditionModalComponent implements OnInit, OnDestroy {
                   picklist
                 })
               }
+
             });
 
 
@@ -183,7 +204,14 @@ export class ConnectionConditionModalComponent implements OnInit, OnDestroy {
       this.subscriptions.push(
         this.getFieldOptions(field.id)
             .subscribe(resp => {
-              row.patchValue({options : resp.DATA || [], picklist : this.FIELD_TYPE.Select})
+
+              const filteredOptions = row.get('value').valueChanges
+                       .pipe(
+                          startWith(''),
+                          map(value => this.filterValueOptions(value, resp.DATA))
+                        );
+
+              row.patchValue({options : resp.DATA || [], picklist : this.FIELD_TYPE.Select, filteredOptions})
             })
       ) ;
     }
@@ -205,6 +233,28 @@ export class ConnectionConditionModalComponent implements OnInit, OnDestroy {
     } else {
       return this.STRING_OPERATORS;
     }
+  }
+
+
+  getOptionText(option){
+    return option ? option.TEXT : '';
+  }
+
+  private filterValueOptions(value, options) {
+    const filterValue = value.TEXT ? value.TEXT.toLowerCase() : value.toLowerCase() ;
+    return options.filter(option => option.TEXT.toLowerCase().includes(filterValue));
+  }
+
+  getFieldOptionText = (option) => {
+    if (option && this.workflowFields) {
+      const field = this.workflowFields.find(f => f.id === option) ;
+      return field ? field.label : '';
+    }
+    return '';
+  }
+
+  filterFieldOptions(value){
+    return this.workflowFields.filter(field => field.label.toLowerCase().includes(value.toLowerCase()));
   }
 
 
