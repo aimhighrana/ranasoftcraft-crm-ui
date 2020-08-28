@@ -100,7 +100,8 @@ describe('ContainerComponent', () => {
 
   it('ngOnInit(), check all pre require ', async(()=>{
     component.ngOnInit();
-    const initialFrmGrp = {widgetName: '', width: '', height: '', field: '', aggregrationOp: '', filterType: '', isMultiSelect: false, groupById: '', objectType: '', imageUrl: '', htmlText: '', imagesno: '', imageName: ''};
+    const initialFrmGrp = {widgetName: '', width: '', height: '', field: '', aggregrationOp: '', filterType: '', isMultiSelect: false, groupById: '', objectType: '', imageUrl: '', htmlText: '',
+     imagesno: '', imageName: '', dateSelectionType: null, startDate: '', endDate:''};
     expect(component.subscriptions.length).toEqual(4, 'Size should be 4');
     expect(component.styleCtrlGrp.value).toEqual(initialFrmGrp, 'Initial form control value should be empty');
   }));
@@ -157,13 +158,15 @@ describe('ContainerComponent', () => {
 
   it('onFieldChange(), while change value on field  id', async(()=>{
     // mock data
-    const metaData = {fieldId:'MATL_DESC', fieldDescri:'Desc'} as Metadata;
+    const metaData = {fieldId:'MATL_DESC', fieldDescri:'Desc' , fldCtrl:{
+      fieldId:'MATL_DESC'
+    } as MetadataModel} as Metadata;
     const option = {option:{value:metaData}} as MatAutocompleteSelectedEvent;
 
     // call actual method
     component.ngOnInit();
     component.onFieldChange(option);
-    expect(component.styleCtrlGrp.get('field').value).toEqual(metaData.fieldId, 'Field id should equals ${metaData.fieldId}');
+    expect(component.styleCtrlGrp.get('field').value).toEqual(metaData.fldCtrl, 'Field id should equals ${metaData.fieldId}');
   }));
 
   it('getReportConfig(), get report config', async(()=>{

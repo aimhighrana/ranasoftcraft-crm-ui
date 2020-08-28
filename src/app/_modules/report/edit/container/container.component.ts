@@ -12,11 +12,18 @@ import { ObjectTypeResponse } from 'src/app/_models/schema/schema';
 import { SchemaService } from 'src/app/_services/home/schema.service';
 import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-details.service';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import * as moment from 'moment';
+import {MAT_MOMENT_DATE_FORMATS, MomentDateAdapter} from '@angular/material-moment-adapter';
+import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
 
 @Component({
   selector: 'pros-container',
   templateUrl: './container.component.html',
-  styleUrls: ['./container.component.scss']
+  styleUrls: ['./container.component.scss'],
+  providers: [
+    {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
+    {provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS},
+  ],
 })
 export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
@@ -114,7 +121,10 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       imageUrl: [''],
       htmlText:[''],
       imagesno: [''],
-      imageName: ['']
+      imageName: [''],
+      dateSelectionType: [],
+      startDate: [''],
+      endDate: ['']
     });
 
     this.chartPropCtrlGrp = this.formBuilder.group({
@@ -144,7 +154,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         changedWidget.height = latestVal.height;
         changedWidget.width = latestVal.width;
         changedWidget.widgetTitle = latestVal.widgetName;
-        changedWidget.field = latestVal.field;
+        changedWidget.field =  typeof latestVal.field ==='string' ? latestVal.field : latestVal.field.fieldId;
         changedWidget.aggregrationOp = latestVal.aggregrationOp;
         changedWidget.filterType = latestVal.filterType;
         changedWidget.isMultiSelect = latestVal.isMultiSelect;
@@ -154,6 +164,37 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         changedWidget.htmlText = latestVal.htmlText;
         changedWidget.imagesno = latestVal.imagesno;
         changedWidget.imageName = latestVal.imageName;
+
+        // hold selected field control
+        if( typeof latestVal.field !== 'string'){
+          changedWidget.fieldCtrl = latestVal.field;
+        }
+
+        // while changing date default filter ...
+        let strtDate = latestVal.startDate;
+        if(latestVal.startDate) {
+          try {
+            strtDate = moment(latestVal.startDate, 'MM/DD/YYYY', true).toDate().getTime();
+          } catch (error) {
+            console.error( `Error :`, error);
+          }
+        }
+
+        let endDate = latestVal.endDate;
+        if(latestVal.endDate) {
+          try {
+            endDate = moment(latestVal.endDate, 'MM/DD/YYYY', true).toDate().getTime();
+          } catch (error) {
+            console.error( `Error :`, error);
+          }
+        }
+
+        changedWidget.dateFilterCtrl = {
+          dateSelectedFor: latestVal.dateSelectionType,
+          endDate,
+          startDate: strtDate
+        };
+
         this.preapreNewWidgetPosition(changedWidget);
       }
     });
@@ -281,7 +322,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       this.widgetList.push(dropableWidget);
     }
-
+    // update variable for dom control
+    this.selStyleWid = dropableWidget;
   }
 
   delete(data: Widget) {
@@ -300,6 +342,20 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     if(data) {
       this.selStyleWid = data;
       if(this.styleCtrlGrp) {
+        // convert miliis to date
+        let startDate;
+        if(data.dateFilterCtrl && data.dateFilterCtrl.startDate) {
+          try {
+            startDate = moment.unix(Number(data.dateFilterCtrl.startDate)/1000).format('MM/DD/YYYY');
+          } catch (error) {console.error(`Error : ${error}`); startDate = data.dateFilterCtrl.startDate}
+        }
+        let endDate;
+        if(data.dateFilterCtrl && data.dateFilterCtrl.endDate) {
+          try {
+            endDate = moment.unix(Number(data.dateFilterCtrl.endDate)/1000).format('MM/DD/YYYY');
+          } catch (error) {console.error(`Error : ${error}`); endDate = data.dateFilterCtrl.endDate}
+        }
+
         this.styleCtrlGrp.setValue({
           widgetName: data.widgetTitle ? data.widgetTitle : '',
           height: data.height ? data.height : '',
@@ -313,7 +369,10 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           imageUrl: data.imageUrl ? data.imageUrl : '',
           htmlText: data.htmlText ? data.htmlText : '',
           imagesno: data.imagesno ? data.imagesno : '',
-          imageName: data.imageName ? data.imageName : ''
+          imageName: data.imageName ? data.imageName : '',
+          dateSelectionType: data.dateFilterCtrl ? (data.dateFilterCtrl.dateSelectedFor ? data.dateFilterCtrl.dateSelectedFor : null) : null,
+          startDate: startDate ? moment(startDate) : '',
+          endDate: endDate ? moment(endDate) : ''
         });
 
         // set value to properties frm ctrl
@@ -420,7 +479,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   onFieldChange(fieldData: MatAutocompleteSelectedEvent) {
     if(fieldData && fieldData.option.value) {
-      this.styleCtrlGrp.get('field').setValue(fieldData.option.value.fieldId);
+      this.styleCtrlGrp.get('field').setValue(fieldData.option.value.fldCtrl ? fieldData.option.value.fldCtrl : fieldData.option.value);
     } else {
       this.styleCtrlGrp.get('field').setValue('');
     }

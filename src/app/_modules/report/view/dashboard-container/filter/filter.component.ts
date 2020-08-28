@@ -3,15 +3,23 @@ import { FormControl } from '@angular/forms';
 import { Observable, BehaviorSubject, of } from 'rxjs';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
-import { FilterWidget, DropDownValues, Criteria, BlockType, ConditionOperator, WidgetHeader, FilterResponse } from '../../../_models/widget';
+import { FilterWidget, DropDownValues, Criteria, BlockType, ConditionOperator, WidgetHeader, FilterResponse, DateFilterQuickSelect, DateBulder, DateSelectionType } from '../../../_models/widget';
 import { ReportService } from '../../../_service/report.service';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { MatSliderChange } from '@angular/material/slider';
+import { UDRBlocksModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import * as moment from 'moment';
+import { DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core';
+import { MomentDateAdapter, MAT_MOMENT_DATE_FORMATS } from '@angular/material-moment-adapter';
 
 @Component({
   selector: 'pros-filter',
   templateUrl: './filter.component.html',
-  styleUrls: ['./filter.component.scss']
+  styleUrls: ['./filter.component.scss'],
+  providers: [
+    {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
+    {provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS},
+  ],
 })
 export class FilterComponent extends GenericWidgetComponent implements OnInit, OnChanges,OnDestroy {
 
@@ -34,6 +42,29 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
    */
   @Input()
   hasFilterCriteria: boolean;
+
+  /**
+   * Date filter quick selection..
+   */
+  dateFilterQuickSelect: DateFilterQuickSelect[] =[
+    {
+      code: 'TODAY',
+      isSelected: false,
+      text: 'Today'
+    },{
+      code: 'DAY_10',
+      isSelected: false,
+      text: '10 Days'
+    },{
+      code: 'DAY_20',
+      isSelected: false,
+      text: '20 Days'
+    },{
+      code: 'DAY_30',
+      isSelected: false,
+      text:' 30 Days'
+    }
+  ];
 
   constructor(
     private widgetService : WidgetService,
@@ -136,9 +167,98 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
       if(returndata && returndata.fieldId !== (this.filterWidget.getValue() ? this.filterWidget.getValue().fieldId : null)){
         this.filterWidget.next(returndata);
       }
+
+      // check if date type field and has default filter then apply it
+      if(returndata.isGlobal
+        && ((returndata.fieldId === 'STAGE' || returndata.fieldId === 'APPDATE')
+        || (returndata.metaData && returndata.metaData.picklist === '0'
+        && (returndata.metaData.dataType === 'DATS' || returndata.metaData.dataType === 'DTMS')))) {
+
+          const dateFilterBlock: UDRBlocksModel = returndata.udrBlocks ? returndata.udrBlocks[0] : null;
+          if(dateFilterBlock && dateFilterBlock.blockDesc) {
+            const strtEndDt = new DateBulder().build(dateFilterBlock.blockDesc as DateSelectionType);
+            if(strtEndDt) {
+              dateFilterBlock.conditionFieldStartValue = strtEndDt[0];
+              dateFilterBlock.conditionFieldEndValue = strtEndDt[1];
+            }
+            const criteria: Criteria = new Criteria();
+            criteria.fieldId = returndata.fieldId;
+            criteria.blockType = dateFilterBlock.blockType;
+            criteria.conditionFieldId = dateFilterBlock.conditionFieldId;
+            criteria.conditionFieldStartValue = dateFilterBlock.conditionFieldStartValue;
+            criteria.conditionFieldEndValue = dateFilterBlock.conditionFieldEndValue;
+            criteria.conditionOperator = dateFilterBlock.conditionOperator as ConditionOperator;
+            criteria.udrid = dateFilterBlock.udrid;
+
+            // set selected value
+            this.startDateCtrl = new FormControl(moment(moment.unix(Number(dateFilterBlock.conditionFieldStartValue)/1000).format('MM/DD/YYYY')));
+            this.endDateCtrl = new FormControl(moment(moment.unix(Number(dateFilterBlock.conditionFieldEndValue)/1000).format('MM/DD/YYYY')));
+
+            this.setSelectedQuickDateFilter(dateFilterBlock.blockDesc);
+
+            this.filterCriteria.push(criteria);
+
+            // emit value for apply filter
+            this.emitEvtFilterCriteria(this.filterCriteria);
+          }
+
+      }
+
     },error=>{
       console.error(`Error : ${error}`);
     });
+  }
+
+  setSelectedQuickDateFilter(code: string) {
+    switch (code) {
+      case 'TODAY':
+        const todayFill = this.dateFilterQuickSelect.filter(f=> f.code === 'TODAY')[0];
+        todayFill.isSelected = true;
+        break;
+
+      case 'DAY_10':
+        const day10Fill = this.dateFilterQuickSelect.filter(f=> f.code === 'DAY_10')[0];
+        day10Fill.isSelected = true;
+        break;
+
+      case 'DAY_20':
+        const day20Fill = this.dateFilterQuickSelect.filter(f=> f.code === 'DAY_20')[0];
+        day20Fill.isSelected = true;
+        break;
+
+      case 'DAY_30':
+        const day30Fill = this.dateFilterQuickSelect.filter(f=> f.code === 'DAY_30')[0];
+        day30Fill.isSelected = true;
+        break;
+      default:
+        break;
+    }
+  }
+
+  selectQuickDate(code: string, isSelected: boolean) {
+
+    // unselect all
+    this.dateFilterQuickSelect.forEach(f=>{
+      f.isSelected = false;
+    });
+  if(!isSelected) {
+      const strtEndDt = new DateBulder().build(code as DateSelectionType);
+      if(strtEndDt) {
+        // set selected value
+        this.startDateCtrl = new FormControl(moment(moment.unix(Number(strtEndDt[0])/1000).format('MM/DD/YYYY')));
+        this.endDateCtrl = new FormControl(moment(moment.unix(Number(strtEndDt[1])/1000).format('MM/DD/YYYY')));
+        this.startDate = strtEndDt[0];
+        this.endDate = strtEndDt[1];
+
+        // codeTxt.isSelected = true;
+        // this.dateFilterQuickSelect[idx] = codeTxt;
+        this.setSelectedQuickDateFilter(code);
+
+        this.emitDateChangeValues();
+      }
+    } else {
+      this.clearSelectedPicker();
+    }
   }
 
   private loadAlldropData(fieldId: string, criteria: Criteria[],searchString?:string):void{
@@ -308,17 +428,27 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
 
 
   changeStartDate(event: MatDatepickerInputEvent<Date>) {
-    if(event.value && event.value.getTime()) {
-      this.startDate = `${event.value.getTime()}`;
+    if(event.value) {
+      const con = moment(event.value).valueOf();
+      this.startDate = `${con}`;
       this.emitDateChangeValues();
     }
+    // unselect all
+    this.dateFilterQuickSelect.forEach(f=>{
+      f.isSelected = false;
+    });
   }
 
   changeEndtDate(event: MatDatepickerInputEvent<Date>) {
-    if(event.value && event.value.getTime()) {
-      this.endDate = `${event.value.getTime()}`;
+    if(event.value) {
+      const con = moment(event.value).valueOf();
+      this.endDate = `${con}`;
       this.emitDateChangeValues();
     }
+    // unselect all
+    this.dateFilterQuickSelect.forEach(f=>{
+      f.isSelected = false;
+    });
   }
   emitDateChangeValues() {
     if(this.startDate && this.endDate) {
@@ -351,6 +481,11 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     this.enableClearIcon = false;
     const checkPreviousApplied = this.filterCriteria.filter(fill => fill.conditionFieldId === this.filterWidget.getValue().fieldId);
     this.removeOldFilterCriteria(checkPreviousApplied);
+
+    this.dateFilterQuickSelect.forEach(f=>{
+      f.isSelected = false;
+    });
+
     this.emitEvtFilterCriteria(this.filterCriteria);
   }
   formatMatSliderLabel(value: number) {

@@ -3,15 +3,19 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FilterComponent } from './filter.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Criteria, DropDownValues, FilterWidget, FilterResponse } from '../../../_models/widget';
+import { Criteria, DropDownValues, FilterWidget, FilterResponse, Widget } from '../../../_models/widget';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { MatSliderChange } from '@angular/material/slider';
 import { MetadataModel } from 'src/app/_models/schema/schemadetailstable';
+import * as moment from 'moment';
+import { WidgetService } from '@services/widgets/widget.service';
+import { of } from 'rxjs';
+import { UDRBlocksModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 
 describe('FilterComponent', () => {
   let component: FilterComponent;
   let fixture: ComponentFixture<FilterComponent>;
-
+  let widgetService: WidgetService;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ FilterComponent ],
@@ -21,12 +25,41 @@ describe('FilterComponent', () => {
   }));
 
   it('getFilterMetadata(), get Metadata ', async(()=>{
-        component.getFilterMetadata();
+
+      component.widgetId = 265367423;
+      component.filterCriteria = [];
+
+      spyOn(widgetService,'getFilterMetadata').withArgs(component.widgetId).and.returnValue(of({
+        fieldId:'C_DATE',
+        isGlobal:true,
+        metaData: {
+          fieldId:'C_DATE',
+          picklist:'0',
+          dataType:'DATS'
+        } as MetadataModel,
+        udrBlocks:[
+          {
+            blockDesc:'DAY_10',
+            conditionFieldId:'C_DATE',
+            conditionOperator:'RANGE'
+          } as UDRBlocksModel
+        ]
+      }));
+      component.getFilterMetadata();
+
+      expect(widgetService.getFilterMetadata).toHaveBeenCalledWith(component.widgetId);
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(FilterComponent);
     component = fixture.componentInstance;
+    widgetService = fixture.debugElement.injector.get(WidgetService);
+
+    const widget: Widget = new Widget();
+    widget.width = 120;
+    widget.height = 10;
+    component.widgetInfo = widget;
+    component.boxSize = 10;
     fixture.detectChanges();
   });
 
@@ -60,12 +93,14 @@ describe('FilterComponent', () => {
 
   it('optionClicked(), click on options ', async(()=>{
     component.optionClicked(null, {} as DropDownValues);
+    expect(component.optionClicked).toBeTruthy();
   }));
 
   it('toggleSelection(), toggle selection ', async(()=>{
     component.filterCriteria = [];
     component.filterWidget.next(new FilterWidget());
     component.toggleSelection(null);
+    expect(component.toggleSelection).toBeTruthy();
   }));
 
   it('fieldDisplayFn(), should return field desc', async(()=>{
@@ -80,10 +115,12 @@ describe('FilterComponent', () => {
     component.filterCriteria = [];
     component.filterWidget.next(new FilterWidget());
     component.remove(null);
+    expect(component.remove).toBeTruthy();
   }));
 
   it('setPositionOfDatePicker(), should set position to date pocker ', async(()=>{
     component.setPositionOfDatePicker();
+    expect(component.setPositionOfDatePicker).toBeTruthy();
   }));
 
   it('changeStartDate(), change start date',async(()=>{
@@ -92,7 +129,7 @@ describe('FilterComponent', () => {
     expect(component.startDate).toEqual(undefined);
     component.changeStartDate(event);
     const expected = Number(component.startDate);
-    expect(event.value.getTime()).toEqual(expected);
+    expect(moment(event.value).valueOf()).toEqual(expected);
   }));
 
   it('changeEndtDate(), change end date',async(()=>{
@@ -113,6 +150,7 @@ describe('FilterComponent', () => {
       filterWidget.fieldId = 'ZMRO';
       component.filterWidget.next(filterWidget);
       component.emitDateChangeValues();
+      expect(component.emitDateChangeValues).toBeTruthy();
   }));
 
   it('clearSelectedPicker(), clear selected date picker', async(()=>{
@@ -138,6 +176,7 @@ describe('FilterComponent', () => {
     component.filterWidget.next(filterWidget);
     component.filterResponse = new FilterResponse();
     component.sliderValueChange(event);
+    expect(component.sliderValueChange).toBeTruthy();
   }));
 
   it('clearFilterCriteria(), clear filter criteria', async(()=>{
@@ -148,6 +187,7 @@ describe('FilterComponent', () => {
     component.filterCriteria = [];
     component.filterResponse = new FilterResponse();
     component.clearFilterCriteria();
+    expect(component.clearFilterCriteria).toBeTruthy();
   }));
 
   it(`ngOnChanges(), should call reset when reset filter`, async(()=>{

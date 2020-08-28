@@ -1,4 +1,6 @@
-<mat-card class="mat-elevation-z4 widget">
+<mat-card class="mat-elevation-z4 widget"
+  [ngStyle]="{ 'width.px' : (widgetInfo.width * boxSize),
+  'height.px': (widgetInfo.height * boxSize)}">
 
   <mat-toolbar-row class="widgettoolbar">
     <h3 class="mat-h3">{{ widgetHeader.desc }}</h3>
@@ -98,6 +100,21 @@
   <!-- CONTROL FOR DATE PICKER -->
   <ng-template [ngIf]="filterWidget && filterWidget.getValue() && filterWidget.getValue().metaData && filterWidget.getValue().metaData.picklist === '0' && (filterWidget.getValue().metaData.dataType === 'DTMS' || filterWidget.getValue().metaData.dataType === 'DATS')">
     
+    <div class="f-row horizontal-row">
+      <ng-template ngFor let-quickDate [ngForOf]="dateFilterQuickSelect">
+        <ng-template [ngIf] ="quickDate.isSelected" [ngIfElse]="nopselect">
+          <button mat-flat-button color="primary" (click)="selectQuickDate(quickDate.code, true)" >{{ quickDate.text  }}</button>    
+        </ng-template>
+        <ng-template #nopselect>
+          <button mat-stroked-button (click)="selectQuickDate(quickDate.code, false)">{{ quickDate.text  }}</button>
+        </ng-template>
+      </ng-template>
+      <!-- <button mat-flat-button color="primary">Today</button>
+      <button mat-flat-button color="primary">10 Days</button>
+      <button mat-flat-button color="primary">20 Days</button>
+      <button mat-flat-button color="primary">30 Days</button> -->
+    </div>
+    <span class="f-row-spacer-half"></span>
     <div class="f-row">
       <div class="f-col">
         <!-- <mat-form-field class="example-full-width">
@@ -106,7 +123,7 @@
         </mat-form-field> -->
         <mat-form-field>
           <mat-label>Choose start date</mat-label>
-          <input matInput matInput [matDatepicker]="picker1" [formControl]="startDateCtrl" (dateInput)="changeStartDate($event)" (dateChange)="changeStartDate($event)">
+          <input matInput [matDatepicker]="picker1" [formControl]="startDateCtrl" (dateInput)="changeStartDate($event)" (dateChange)="changeStartDate($event)">
           <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
           <mat-datepicker #picker1></mat-datepicker>
         </mat-form-field>
@@ -119,7 +136,7 @@
         </mat-form-field> -->
         <mat-form-field>
           <mat-label>Choose end date</mat-label>
-          <input matInput matInput [matDatepicker]="picker2" [formControl]="endDateCtrl" (dateInput)="changeEndtDate($event)" (dateChange)="changeEndtDate($event)">
+          <input matInput [matDatepicker]="picker2" [formControl]="endDateCtrl" (dateInput)="changeEndtDate($event)" (dateChange)="changeEndtDate($event)">
           <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
           <mat-datepicker #picker2></mat-datepicker>
         </mat-form-field>
