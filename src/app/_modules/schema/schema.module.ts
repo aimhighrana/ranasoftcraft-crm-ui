@@ -30,6 +30,7 @@ import { CreateVariantComponent } from './_components/create-variant/create-vari
 import { DatePickerFieldComponent } from './_components/create-variant/date-picker-field/date-picker-field.component';
 import { AppHomeComponent } from './_components/app-home/app-home.component';
 import { UploadDatasetComponent } from './_components/upload-dataset/upload-dataset.component';
+import { MdoGenericComponentsComponent } from './_components/mdo-generic-components/mdo-generic-components.component';
 
 @NgModule({
   declarations: [
@@ -61,6 +62,7 @@ import { UploadDatasetComponent } from './_components/upload-dataset/upload-data
     DatePickerFieldComponent,
     AppHomeComponent,
     UploadDatasetComponent,
+    MdoGenericComponentsComponent,
 
   ],
   imports: [

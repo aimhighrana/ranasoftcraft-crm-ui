@@ -53,6 +53,8 @@ import { TagsEllipsisDirective } from './_directives/tags-ellipsis.directive';
 import { ResizeableDirective } from './_directives/resizeable.directive';
 import { BrConditionalFieldsComponent } from '@modules/admin/_components/module/business-rules/br-conditional-fields/br-conditional-fields.component';
 import { UdrConditionOperatorsComponent } from '@modules/admin/_components/module/business-rules/user-defined-rule/udr-condition-operators/udr-condition-operators.component';
+import { SearchInputComponent } from './_components/search-input/search-input.component';
+import { FormInputComponent } from './_components/form-input/form-input.component';
 
 @NgModule({
   declarations: [
@@ -71,7 +73,9 @@ import { UdrConditionOperatorsComponent } from '@modules/admin/_components/modul
     FormatTableHeadersPipe,
     ResizeableDirective,
     BrConditionalFieldsComponent,
-    UdrConditionOperatorsComponent
+    UdrConditionOperatorsComponent,
+    SearchInputComponent,
+    FormInputComponent
   ],
   imports: [
     // ng modules
@@ -190,7 +194,9 @@ import { UdrConditionOperatorsComponent } from '@modules/admin/_components/modul
     SvgIconComponent,
     TableColumnSettingsComponent,
     BrConditionalFieldsComponent,
-    UdrConditionOperatorsComponent
+    UdrConditionOperatorsComponent,
+    SearchInputComponent,
+    FormInputComponent
   ]
 })
 export class SharedModule { }

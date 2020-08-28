@@ -1,0 +1,68 @@
+<mat-card>
+
+    <!-- Search-Input -->
+    <pros-search-input></pros-search-input>
+
+    <!-- Form-Input -->
+    <pros-form-input></pros-form-input>
+
+    <!-- MDO-Tab -->
+    <mat-tab-group disableRipple="true">
+        <mat-tab>
+            <ng-template mat-tab-label>
+                Notification
+                <mat-chip-list class="mdo-tabchiplist">
+                    <mat-chip>40</mat-chip>
+                </mat-chip-list>
+            </ng-template>
+
+            Content 1
+        </mat-tab>
+
+        <mat-tab>
+            <ng-template mat-tab-label>
+                Job query
+                <mat-chip-list class="mdo-tabchiplist">
+                    <mat-chip>129</mat-chip>
+                </mat-chip-list>
+            </ng-template>
+
+            Content 2
+        </mat-tab>
+
+        <mat-tab>
+            <ng-template mat-tab-label>
+                Tasklist
+                <mat-chip-list class="mdo-tabchiplist">
+                    <mat-chip>87</mat-chip>
+                </mat-chip-list>
+            </ng-template>
+
+            Content 3
+        </mat-tab>
+    </mat-tab-group>
+
+    <!-- MDO-MatMenu -->
+    <button mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+        <mat-nav-list class="mdo-menu-nav">
+            <a mat-list-item class="mdo-menu-listitem">Material</a>
+            <a mat-list-item class="mdo-menu-listitem">Plant</a>
+            <a mat-list-item class="mdo-menu-listitem">Vendor</a>
+            <a mat-list-item class="mdo-menu-listitem">Service</a>
+            <mat-divider></mat-divider>
+            <a mat-list-item class="mdo-menu-listitem">Upload Dataset...</a>
+        </mat-nav-list>
+    </mat-menu>
+
+    <!-- MDO-ProgressBar -->
+    <mat-progress-bar mode="determinate" value="40" class="mdo-progress"></mat-progress-bar>
+
+    <!-- MDO-Toggle -->
+    <mat-slide-toggle color="primary"></mat-slide-toggle>
+
+
+    
+</mat-card>

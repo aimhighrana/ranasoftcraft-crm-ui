@@ -405,6 +405,90 @@
       }
     }
   }
+
+  // Generic Component SASS
+
+  //Search-Input
+  pros-search-input {
+    .mdo-search {
+      border-color: mat-color($foreground-palette, divider);
+    }
+  }
+
+  // Form-Input
+  pros-form-input {
+    .mdo-form-input {
+      .mat-form-field {
+        .mat-input {
+          border-color: mat-color($foreground-palette, divider);
+        }
+      }
+
+      .mat-form-field.mat-form-field-appearance-outline .mat-form-field-outline-thick > div {
+        border-width: 1px;
+      }
+    }
+  }
+
+  // Tab-Component
+  mat-tab-group {
+    .mat-tab-header {
+      border-bottom: none;
+      margin-bottom: 16px;
+
+      .mat-tab-list {
+        .mat-tab-labels {
+          .mat-tab-label {
+            padding: 0 12px;
+            min-width: 140px;
+
+            .mat-tab-label-content {
+              font-weight: normal;
+            }
+          }
+        }
+
+        .mat-ink-bar {
+          height: 3px;
+        }
+      }
+    }
+
+    .mdo-tabchiplist {
+      margin-left: 8px;
+
+      .mat-chip-list-wrapper {
+        mat-chip {
+          font-weight: normal;
+          font-size: 0.8rem;
+          padding: 4px 12px;
+          min-height: 24px;
+        }
+      }
+    }
+  }
+
+  //Mat-Menu
+  .mat-menu-panel {
+    .mat-menu-content:not(:empty) {
+      padding: 0;
+
+      .mdo-menu-nav {
+        padding-top: 0;
+
+        .mdo-menu-listitem {
+          height: 34px;
+          font-size: 14px;
+        }
+      }
+    }
+  }
+
+  //ProgressBar
+  mat-progress-bar.mdo-progress {
+    height: 6px;
+    border-radius: 10px;
+  }
 }
 
 @mixin pros-cmp-typography($config) {

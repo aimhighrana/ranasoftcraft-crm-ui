@@ -1,0 +1,25 @@
+.mdo-form-input {
+  mat-label {
+    font-weight: 500;
+    font-size: 0.8rem;
+  }
+
+  .mat-form-field {
+    .mat-input {
+      display: flex;
+      border-right-width: 1px;
+      border-right-style: solid;
+      height: 24px;
+      margin-top: -0.7em;
+    }
+
+    button {
+      margin-left: 10px;
+      margin-top: 10px;
+
+      .mat-icon {
+        font-size: 18px;
+      }
+    }
+  }
+}
