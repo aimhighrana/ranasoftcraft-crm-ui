@@ -16,6 +16,7 @@ import { VariantDetails } from '@models/schema/schemalist';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { DatePickerFieldComponent } from './date-picker-field/date-picker-field.component';
 import { BreadcrumbComponent } from '@modules/shared/_components/breadcrumb/breadcrumb.component';
+import { Router } from '@angular/router';
 
 describe('CreateVariantComponent', () => {
   let component: CreateVariantComponent;
@@ -23,6 +24,7 @@ describe('CreateVariantComponent', () => {
   let schemaService: SchemaService;
   let schemaDetailsServiceSpy: SchemaDetailsService;
   let schemaVariantServiceSpy: SchemaVariantService;
+  let router: Router;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -35,6 +37,7 @@ describe('CreateVariantComponent', () => {
       ]
     })
     .compileComponents();
+    router = TestBed.inject(Router);
   }));
 
   beforeEach(() => {
@@ -183,5 +186,34 @@ describe('CreateVariantComponent', () => {
     component.saveUpdateVariant();
     expect(component.frmArray.length).toEqual(1);
   }));
+
+  it('conditionalEndFieldChange(), after select operator selection change', async(()=>{
+    component.initFrmArray();
+    component.conditionalEndFieldChange('TEST',0);
+    expect(component.frmArray.length).toEqual(1);
+
+    component.conditionalEndFieldChange('',0);
+    expect(component.frmArray.length).toEqual(1);
+  }));
+
+  it('getdropDownValues(), should returnthe dropdown value of sekected fields', async(() => {
+    component.variantId = '8765498765';
+    const fieldId = 'MATL_DESC';
+    const index = 0;
+    const res = [{CODE:'New1'} as DropDownValue]
+    component.initFrmArray();
+    spyOn(schemaService, 'dropDownValues').withArgs(fieldId, '').and.returnValue(of(res));
+    component.getdropDownValues(fieldId,'',index);
+    expect(schemaService.dropDownValues).toHaveBeenCalledWith(fieldId, '');
+
+  }));
+
+  it('close(), should navigate variant list', () => {
+    component.moduleId = '10081',
+    component.schemaId = '876567876'
+    spyOn(router, 'navigate');
+    component.close();
+    expect(router.navigate).toHaveBeenCalledWith(['/home/schema/schema-variants', component.moduleId, component.schemaId]);
+  });
 
 });

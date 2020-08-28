@@ -375,5 +375,10 @@ describe('TaskListComponent', () => {
     const dialogSpy = spyOn(component.dialog,'open');
     component.openDialog();
     expect(dialogSpy).toHaveBeenCalledWith(SaveSearchDialogComponent)
-  })
+  });
+
+  it('closeFilters(), used to toggle filters component selector',async (()=> {
+    component.closeFilters();
+    expect(component.dynamicFiltersVisible).toEqual(false);
+  }));
 })

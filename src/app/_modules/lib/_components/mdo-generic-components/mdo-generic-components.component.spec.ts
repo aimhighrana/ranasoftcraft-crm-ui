@@ -3,6 +3,11 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MdoGenericComponentsComponent } from './mdo-generic-components.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { RouterTestingModule } from '@angular/router/testing';
+import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
+import { FormInputComponent } from '@modules/shared/_components/form-input/form-input.component';
+import { AddFilterMenuComponent } from '@modules/shared/_components/add-filter-menu/add-filter-menu.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 describe('MdoGenericComponentsComponent', () => {
   let component: MdoGenericComponentsComponent;
@@ -10,9 +15,8 @@ describe('MdoGenericComponentsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MdoGenericComponentsComponent ],
-      imports: [AppMaterialModuleForSpec,
-      RouterTestingModule]
+      declarations: [ MdoGenericComponentsComponent, SearchInputComponent, FormInputComponent, AddFilterMenuComponent ],
+      imports: [AppMaterialModuleForSpec, HttpClientTestingModule, ReactiveFormsModule, FormsModule, RouterTestingModule ]
     })
     .compileComponents();
   }));

@@ -239,4 +239,246 @@ describe('EndpointService', () => {
     expect(serObj.getSchemaDetailsBySchemaIdUrl('355555320681 ')).toContain('schema/schema-details/355555320681');
   }));
 
+  it('uploadCorrectionDataUrl(),should upload correction data', async(() => {
+    const serObj = new EndpointService();
+    const objectType = 'Material';
+    const schemaId = '7674654';
+    const runId = '87676556';
+    const plantCode = '0';
+    const fileSno = '7765';
+    expect(serObj.uploadCorrectionDataUrl(objectType, schemaId, runId, plantCode, fileSno)).toContain(`es/uploadCorrection/${objectType}/${schemaId}/${runId}/${plantCode}/${fileSno}`);
+  }));
+
+  it('getSchemaThresholdStatics(),should return schema thresholdstatics value', async(() => {
+    const serObj = new EndpointService();
+    const schemaId = '867576576';
+    expect(serObj.getSchemaThresholdStatics(schemaId)).toContain(`schema/statics/${schemaId}`);
+  }));
+
+  it('getUdrBusinessRuleInfoUrl(),should return udr details', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getUdrBusinessRuleInfoUrl('355555320681')).toContain('schema/br/udr/355555320681');
+  }));
+
+  it('getBusinessRuleInfoUrl(),should return all business rule details', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getBusinessRuleInfoUrl('355555320681')).toContain('schema/get-business-rule-info/355555320681');
+  }));
+
+  it('saveUpdateUDRUrl(),should save or update udr details', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.saveUpdateUDRUrl()).toContain('admin/schema/udr/save-update');
+  }));
+
+  it('conditionListsUrl(),should return condition list', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.conditionListsUrl('355555320681')).toContain('schema/br/udr/condition-list/355555320681');
+  }));
+
+  it('saveUpdateUdrBlockUrl(),should save or update udr details', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.saveUpdateUdrBlockUrl()).toContain('admin/schema/br/udr');
+  }));
+
+  it('getBrConditionalOperatorUrl(),should return condition operator details', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getBrConditionalOperatorUrl()).toContain('schema/br/condition-operator');
+  }));
+
+  it('saveUpdateReportCollaborator(),should save or update report collaborator details', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.saveUpdateReportCollaborator()).toContain('admin/permission/collaborators/permission/save-update');
+  }));
+
+  it('deleteReport(),should delete report details', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.deleteReport('823927')).toContain('report/delete/823927');
+  }));
+
+  it('getReportConfigUrl(),should return report config', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getReportConfigUrl('823927')).toContain('report/823927');
+  }));
+
+  it('createUpdateReportUrl(),should create or update report details', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.createUpdateReportUrl()).toContain('report/create-update');
+  }));
+
+  it('getTimeseriesWidgetInfoUrl(),should return time series widget info', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getTimeseriesWidgetInfoUrl(75687687)).toContain('report/widget/timeseries/75687687');
+  }));
+
+  it('getListTableMetaData(),should return meta data table', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getListTableMetaData(75687687)).toContain('report/widget/report-list/metadata/75687687');
+  }));
+
+  it('reportDashboardUrl(),should return report dashboard details', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.reportDashboardUrl(75687687)).toContain('report/report-info/75687687');
+  }));
+
+  it('deleteBr(),should delete businessrule', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.deleteBr(75687687)).toContain('schema/delete-business-rule/' + 75687687);
+  }));
+
+  it('createSchema(),should create schema', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.createSchema()).toContain('schema/create-update-schema');
+  }));
+
+  it('createBr(),should create business rule', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.createBr()).toContain('schema/create-update-br');
+  }));
+
+  it('getFillDataInfo(),should return fill data info', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getFillDataInfo('7564564')).toContain('schema/metadata-fileds/7564564');
+  }));
+
+  it('submitReviewedRecordsUrl(),should save reviewed records', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.submitReviewedRecordsUrl('7564564')).toContain('schema/submit-reviewed-records/7564564');
+  }));
+
+  it('getLastBrErrorRecords(),should return error records', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getLastBrErrorRecords('7564564')).toContain('schema/get-mdoerror-records/7564564');
+  }));
+
+  it('getCorrectedRecords(),should return corrected records', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getCorrectedRecords('7564564')).toContain('schema/get-corrected-records/7564564');
+  }));
+
+  it('getSchemaVariantsUrl(),should return schema variant details', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getSchemaVariantsUrl('7564564')).toContain('schema/variants/7564564');
+  }));
+
+  it('scheduleSchemaCount(),should return schema count', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.scheduleSchemaCount('7564564')).toContain('schema/record-count/7564564');
+  }));
+
+  it('categoryChartData(),should return category chart data', async(() => {
+    const serObj = new EndpointService();
+    const status = 'success';
+    const schemaId = '7674654';
+    const variantId = '87676556';
+    const categoryId = '0';
+    expect(serObj.categoryChartData(schemaId, variantId, categoryId, status)).toContain(`schema/category-chart-data/${schemaId}/${variantId}/${categoryId}/${status}`);
+  }));
+
+  it('getCategoryInfoUrl(),should return category info', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getCategoryInfoUrl()).toContain('schema/category-list');
+  }));
+
+  it('getOverviewChartDataUrl(),should return category chart data details', async(() => {
+    const serObj = new EndpointService();
+    const schemaId = '7674654';
+    const variantId = '87676556';
+    const runId = '0';
+    expect(serObj.getOverviewChartDataUrl(schemaId, variantId, runId)).toContain(`/schema/overview-chart-data/${schemaId}/${variantId}/${runId}`);
+  }));
+
+  it('getUpdateSchemaTableViewUrl(),should return count of schema table view', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getUpdateSchemaTableViewUrl()).toContain('schema/update-schema-table-view');
+  }));
+
+  it('getSchemaTableDetailsUrl(),should return table details', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getSchemaTableDetailsUrl()).toContain('schema/schema-details');
+  }));
+
+  it('groupDetailswithAssignedschemaUrl(),should return assigned schema of that particular schema group', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.groupDetailswithAssignedschemaUrl('86576534')).toContain('schema/group-detailswith-assignedschema/86576534');
+  }));
+
+  it('getAllSchemabymoduleids(),should return module details', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getAllSchemabymoduleids()).toContain('schema/get-all-schemabymoduleids');
+  }));
+
+  it('getSchemaGroupCountUrl(),should return schema group count', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getSchemaGroupCountUrl(7501564)).toContain('schema/get-schema-group-count/7501564');
+  }));
+
+  it('getUserDetailsUrl(),should return user detail', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getUserDetailsUrl('harshit')).toContain('schema/getUserDetails/harshit');
+  }));
+
+  it('getSchemaGroupDetailsByGrpIdUrl(),should return schema group details by schema groupid', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getSchemaGroupDetailsByGrpIdUrl('10097')).toContain('schema/get-group-details/10097');
+  }));
+
+  it('getScheduleSchemaUrl(),should schedule schema details', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getScheduleSchemaUrl()).toContain('schema/schedule-schema');
+  }));
+
+  it('downloadExecutionDetailsUrl(),should download execution details', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.downloadExecutionDetailsUrl('5678987','success')).toContain('schema/download/5678987/success');
+  }));
+
+  it('getShowMoreSchemaTableDataUrl(),should return schema table', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getShowMoreSchemaTableDataUrl()).toContain('showMoreSchemaTableData');
+  }));
+
+  it('getSchemaDetailsBySchemaId(),should return schema details by schemaId', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getSchemaDetailsBySchemaId('76567865')).toContain('schema/schemaCount/76567865');
+  }));
+
+  it('getSchemaDataTableColumnInfoUrl(),should return schema data table info', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getSchemaDataTableColumnInfoUrl()).toContain('getListPageLayout');
+  }));
+
+  it('deleteSchemaGroupUrl(), should delete schema group', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.deleteSchemaGroupUrl('65467801')).toContain('schema/delete-schema-group/65467801');
+  }));
+
+  it('schemaVarinatDetails(),should return schema vaiant details', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.schemaVarinatDetails()).toContain('schema/schemaVariantList');
+  }));
+
+  it('getSchemaListByGroupIdUrl(),should return schema list by groupId', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getSchemaListByGroupIdUrl()).toContain('schema/schema-list');
+  }));
+
+  it('getSchemaGroupsUrl(),should return schema group detials', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getSchemaGroupsUrl()).toContain('schema/get-all-groups');
+  }));
+
+  it('getCreateSchemaGroupUrl(),should create schema group', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getCreateSchemaGroupUrl()).toContain('schema/create-schemagroup');
+  }));
+
+  it('onLoadSchema(),should load schema', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.onLoadSchema()).toContain('restSchemaLogs');
+  }));
+
+  it('jwtRefresh(), should call jwtrefresh function', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.jwtRefresh()).toContain('jwt/refresh');
+  }));
 });

@@ -132,6 +132,96 @@ describe('UserDefinedRuleComponent', () => {
       res = component.prepareConditionDesc(condition);
 
       expect(res).toEqual('UNIT startWith("1234")');
+
+      condition.conditionOperator = 'ENDS_WITH';
+      res = component.prepareConditionDesc(condition);
+
+      expect(res).toEqual('UNIT endWith("1234")');
+
+      condition.conditionOperator = 'CONTAINS';
+      res = component.prepareConditionDesc(condition);
+
+      expect(res).toEqual('UNIT contains("1234")');
+
+      condition.conditionOperator = 'IN';
+      res = component.prepareConditionDesc(condition);
+
+      expect(res).toEqual('UNIT in("1234")');
+
+      condition.conditionOperator = 'NOT_IN';
+      res = component.prepareConditionDesc(condition);
+
+      expect(res).toEqual('UNIT notIn("1234")');
+
+      condition.conditionOperator = 'LESS_THAN';
+      res = component.prepareConditionDesc(condition);
+
+      expect(res).toEqual('UNIT < 1234');
+
+      condition.conditionOperator = 'LESS_THAN_EQUAL';
+      res = component.prepareConditionDesc(condition);
+
+      expect(res).toEqual('UNIT <= 1234');
+
+      condition.conditionOperator = 'GREATER_THAN';
+      res = component.prepareConditionDesc(condition);
+
+      expect(res).toEqual('UNIT > 1234');
+
+      condition.conditionOperator = 'GREATER_THAN_EQUAL';
+      res = component.prepareConditionDesc(condition);
+
+      expect(res).toEqual('UNIT >= 1234');
+
+      condition.conditionOperator = 'COUNT_IN';
+      res = component.prepareConditionDesc(condition);
+
+      expect(res).toEqual('UNIT countIn("1234")');
+
+      condition.conditionOperator = 'COUNT_LESS_THAN';
+      res = component.prepareConditionDesc(condition);
+
+      expect(res).toEqual('UNIT countLessThen("1234")');
+
+      condition.conditionOperator = 'COUNT_LESS_THAN_EQUAL';
+      res = component.prepareConditionDesc(condition);
+
+      expect(res).toEqual('UNIT countLessThenEqual("1234")');
+
+      condition.conditionOperator = 'COUNT_GREATER_THAN';
+      res = component.prepareConditionDesc(condition);
+
+      expect(res).toEqual('UNIT countGreaterThen("1234")');
+
+      condition.conditionOperator = 'COUNT_GREATER_THAN_EQUAL';
+      res = component.prepareConditionDesc(condition);
+
+      expect(res).toEqual('UNIT countGreaterThenEqual("1234")');
+
+      condition.conditionOperator = 'COUNT_RANGE';
+      res = component.prepareConditionDesc(condition);
+
+      expect(res).toEqual('UNIT countRange("1234")');
+
+      condition.conditionOperator = 'EMPTY';
+      res = component.prepareConditionDesc(condition);
+
+      expect(res).toEqual('UNIT is EMPTY');
+
+      condition.conditionOperator = 'NOT_EMPTY';
+      res = component.prepareConditionDesc(condition);
+
+      expect(res).toEqual('UNIT is not EMPTY');
+
+      condition.conditionOperator = 'AVG_IN';
+      res = component.prepareConditionDesc(condition);
+
+      expect(res).toEqual('UNIT averageIn()');
+
+      condition.conditionOperator = '';
+      res = component.prepareConditionDesc(condition);
+
+      expect(res).toEqual('UNIT ');
   }));
 
   it('udrBlocksModelFromChildren(), block model ', async(()=>{

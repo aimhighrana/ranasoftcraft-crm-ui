@@ -4,7 +4,7 @@ import { DiwCreateBusinessruleComponent } from './diw-create-businessrule.compon
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { ReactiveFormsModule, FormsModule, FormGroup, FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { BusinessRuleType } from '../../business-rules/business-rules.modal';
+import { BusinessRuleType, CoreSchemaBrInfo } from '../../business-rules/business-rules.modal';
 
 describe('DiwCreateBusinessruleComponent', () => {
   let component: DiwCreateBusinessruleComponent;
@@ -63,5 +63,33 @@ describe('DiwCreateBusinessruleComponent', () => {
 
     const data =  component.businessRuleTypeDef;
     expect(data).toEqual('Missing Rule');
-  }))
+  }));
+
+  it('closeDialog() should close the dialog', async(() => {
+    component.closeDialog();
+    expect(component.closeDialog).toBeTruthy();
+  }));
+
+  it('clickSaved() After click saved rule', async(() => {
+    component.clickSaved();
+    expect(component.svdClicked).toEqual(true);
+  }));
+
+  it('udrClickSaved() Call while clicked use defined rule finish process', async(() => {
+    component.udrClickSaved();
+    expect(component.finishUdrCreProcess ).toEqual(true);
+  }));
+
+  it('afterSaved(), After saved business rule', async(() => {
+    const brInfo : CoreSchemaBrInfo  = {sno:8765} as CoreSchemaBrInfo;
+
+    component.afterSaved(brInfo);
+    expect(component.closeDialog).toBeTruthy();
+  }));
+
+  it('controlStepChange() step change manage required', async(()=> {
+    const evt = {selectedIndex:2};
+    component.controlStepChange(evt);
+    expect(component.needCondRef ).toEqual(true);
+  }));
 });

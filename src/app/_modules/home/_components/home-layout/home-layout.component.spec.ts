@@ -6,7 +6,7 @@ import { BreadcrumbComponent } from '../../../shared/_components/breadcrumb/brea
 import { LoadingService } from 'src/app/_services/loading.service';
 import { UserService } from 'src/app/_services/user/userservice.service';
 import { Userdetails } from 'src/app/_models/userdetails';
-import { of } from 'rxjs';
+import { of, Subscription } from 'rxjs';
 import { EventEmitter } from '@angular/core';
 
 describe('HomeLayoutComponent', () => {
@@ -14,7 +14,32 @@ describe('HomeLayoutComponent', () => {
   let fixture: ComponentFixture<HomeLayoutComponent>;
   let userSvc: jasmine.SpyObj<UserService>;
   let loadingSvc: jasmine.SpyObj<LoadingService>;
-
+  const userDetailsobject: Userdetails = {
+    userName: 'DemoApp',
+    firstName: 'Demo',
+    lastName: 'Approver',
+    email: 'prostenant@gmail.com',
+    plantCode: 'MDO1003',
+    currentRoleId: '663065348460318692',
+    dateformat: 'dd.mm.yy',
+    fullName: 'Demo Approver',
+    assignedRoles: [
+      {
+        defaultRole: '1',
+        roleDesc: 'DemoApprover',
+        roleId: '663065348460318692',
+        sno: '521017956918018560',
+        userId: 'DemoApp'
+      },
+      {
+        defaultRole: '0',
+        roleDesc: 'DemoApprover2',
+        roleId: '143739996174018010',
+        sno: '867216031918019200',
+        userId: 'DemoApp'
+      }
+    ]
+  }
   beforeEach(async(() => {
     const userSvcSpy = jasmine.createSpyObj('UserService', ['getUserDetails']);
     const loadingSvcSpy = jasmine.createSpyObj('LoadingService', ['isLoading']);
@@ -27,9 +52,9 @@ describe('HomeLayoutComponent', () => {
         { provide: UserService, useValue: userSvcSpy },
         { provide: LoadingService, useValue: loadingSvcSpy },
       ],
-      declarations: [ HomeLayoutComponent, BreadcrumbComponent ]
+      declarations: [HomeLayoutComponent, BreadcrumbComponent]
     })
-    .compileComponents();
+      .compileComponents();
     userSvc = TestBed.inject(UserService) as jasmine.SpyObj<UserService>;
     loadingSvc = TestBed.inject(LoadingService) as jasmine.SpyObj<LoadingService>;
   }));
@@ -37,6 +62,7 @@ describe('HomeLayoutComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(HomeLayoutComponent);
     component = fixture.componentInstance;
+    component.udSub = new Subscription();
   });
 
   it('should create', () => {
@@ -56,4 +82,13 @@ describe('HomeLayoutComponent', () => {
     fixture.detectChanges();
     expect(component.isLoading()).toEqual(evtEmitter);
   });
+
+  it('should call selectedRoleDesc()', () => {
+    component.userDetails = userDetailsobject;
+    expect(component.selectedRoleDesc).toBe('DemoApprover');
+    component.userDetails.assignedRoles[0].roleId = '123';
+    expect(component.selectedRoleDesc).toBe('663065348460318692');
+    component.userDetails.currentRoleId = null;
+    expect(component.selectedRoleDesc).toBe('');
+  })
 });

@@ -17,6 +17,15 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": [
+              "chartjs-plugin-zoom",
+              "bpmnlint",
+              "object-refs",
+              "jwt-decode",
+              "chart.js",
+              "xlsx",
+              "chartjs-plugin-datalabels"
+            ],
             "aot": true,
             "outputPath": "dist/ngx-mdo",
             "index": "src/index.html",
@@ -30,8 +39,7 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": [],
-            "es5BrowserSupport": true
+            "scripts": []
           },
           "configurations": {
             "production": {

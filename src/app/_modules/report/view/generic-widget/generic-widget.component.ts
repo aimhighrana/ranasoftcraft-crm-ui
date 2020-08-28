@@ -1,5 +1,10 @@
-import { Input, EventEmitter, Output } from '@angular/core';
+import { Input, EventEmitter, Output, Component } from '@angular/core';
 import { Criteria } from '../../_models/widget';
+
+@Component({
+  selector: 'pros-generic-widget',
+  template: ''
+})
 export abstract class GenericWidgetComponent {
 
   @Input()

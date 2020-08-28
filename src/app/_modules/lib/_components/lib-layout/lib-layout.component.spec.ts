@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LibLayoutComponent } from './lib-layout.component';
+import { RouterTestingModule } from '@angular/router/testing';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 describe('LibLayoutComponent', () => {
   let component: LibLayoutComponent;
@@ -8,6 +10,10 @@ describe('LibLayoutComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [
+        RouterTestingModule,
+        AppMaterialModuleForSpec
+      ],
       declarations: [ LibLayoutComponent ]
     })
     .compileComponents();

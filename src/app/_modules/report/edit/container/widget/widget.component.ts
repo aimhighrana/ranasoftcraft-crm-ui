@@ -1,7 +1,11 @@
-import { Input, Output, EventEmitter } from '@angular/core';
+import { Input, Output, EventEmitter, Component } from '@angular/core';
 import { Widget } from '../../../_models/widget';
 
-export abstract class WidgetComponent{
+@Component({
+  selector: 'pros-widget',
+  template: ''
+})
+export abstract class WidgetComponent {
 
   @Input()
   boxSize = 0;

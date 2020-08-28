@@ -19,15 +19,9 @@ export class EndpointService {
   public onLoadSchema(): string {
     return this.apiUrl + '/restSchemaLogs';
   }
-  public getSchemaListByModuleId(): string {
-    return this.apiUrl + '/moduleCount';
-  }
 
   public getCreateSchemaGroupUrl(): string {
     return this.apiUrl + '/schema/create-schemagroup';
-  }
-  public getSchemaGroupMappingUrl(schemaGroupId: number): string {
-    return this.apiUrl + '/schemaGroupMapping/' + schemaGroupId;
   }
 
   public getSchemaGroupsUrl() {
@@ -35,12 +29,6 @@ export class EndpointService {
   }
   public getSchemaListByGroupIdUrl() {
     return this.apiUrl + '/schema/schema-list';
-  }
-  public getSchemaDescModuleIdByGroupId(groupId: string) {
-    return this.apiUrl + '/getSchemaDescModuleIdByGroupId/' + groupId;
-  }
-  public getRestFieldListBySchemaId(): string {
-    return this.apiUrl + '/getFieldListBySchema';
   }
   public schemaVarinatDetails(): string {
     return this.apiUrl + '/schema/schemaVariantList';
@@ -60,41 +48,8 @@ export class EndpointService {
   public downloadExecutionDetailsUrl(schemaId: string, status: string): string {
     return `${this.apiUrl}/schema/download/${schemaId}/${status.toLocaleLowerCase()}`;
   }
-  public getBusinessRulesBySchemaId(schemaId: string, objectId: string): string {
-    return this.apiUrl + '/getBrDetailsBySchemaId/' + schemaId + '/' + objectId;
-  }
-  public getAssignBrToSchemaUrl(): string {
-    return this.apiUrl + '/assignBrToSchema';
-  }
   public getScheduleSchemaUrl(): string {
     return this.apiUrl + '/schema/schedule-schema';
-  }
-  public getCategoriesUrl(): string {
-    return this.apiUrl + '/getCategories';
-  }
-  public getDependencyUrl(): string {
-    return this.apiUrl + '/getDependency';
-  }
-  public addCustomCategoryUrl(): string {
-    return this.apiUrl + '/addCategory';
-  }
-  public saveBusinessRuleUrl(): string {
-    return this.apiUrl + '/saveBusinessRule';
-  }
-  public getBusinessRuleApiListUrl(): string {
-    return this.apiUrl + '/getAPIList';
-  }
-  public getDuplicacySettingListUrl(): string {
-    return this.apiUrl + '/getDuplicacySettingList';
-  }
-  public getMetadataFieldsUrl(): string {
-    return this.apiUrl + '/getMetadataFields';
-  }
-  public getVariantDetailsForScheduleSchemaUrl(objectId: string): string {
-    return this.apiUrl + '/get-variants-list/' + objectId;
-  }
-  public getVariantControlByVariantIdUrl(variantId: string): string {
-    return this.apiUrl + '/get-variant-control/' + variantId;
   }
   public getSchemaGroupDetailsByGrpIdUrl(schemaGroupId: string): string {
     return this.apiUrl + '/schema/get-group-details/' + schemaGroupId;

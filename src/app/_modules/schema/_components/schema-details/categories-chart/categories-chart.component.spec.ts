@@ -7,46 +7,33 @@ import { SchemalistService } from 'src/app/_services/home/schema/schemalist.serv
 import { of } from 'rxjs';
 import { SimpleChanges } from '@angular/core';
 import { SchemaStaticThresholdRes } from '@models/schema/schemalist';
+import { CategoryInfo } from '@models/schema/schemadetailstable';
 
 
 describe('CategoriesChartComponent', () => {
   let component: CategoriesChartComponent;
   let fixture: ComponentFixture<CategoriesChartComponent>;
-  let schemaDetailsServiceSpy: jasmine.SpyObj<SchemaDetailsService>;
+  let schemaDetailsServiceSpy: SchemaDetailsService;
 
   beforeEach(async(() => {
-    const schemaDetailsSerSpy = jasmine.createSpyObj('SchemaDetailsService',['getCategoryChartDetails', 'getAllCategoryInfo', 'getSchemaStatus']);
-    const schemaListSerSpy = jasmine.createSpyObj('SchemalistService',['getSchemaDetailsBySchemaId']);
     TestBed.configureTestingModule({
       imports: [HttpClientModule, AppMaterialModuleForSpec],
       declarations: [ CategoriesChartComponent ],
-      providers: [
-        {provide: SchemaDetailsService, useValue: schemaDetailsSerSpy},
-        {provide: SchemalistService, useValue: schemaListSerSpy}
-      ]
+      providers: [ SchemaDetailsService, SchemalistService ]
     })
     .compileComponents();
-    schemaDetailsServiceSpy = TestBed.inject(SchemaDetailsService) as jasmine.SpyObj<SchemaDetailsService>;
 
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CategoriesChartComponent);
     component = fixture.componentInstance;
-    // fixture.detectChanges();
+    schemaDetailsServiceSpy = fixture.debugElement.injector.get(SchemaDetailsService);
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
-  it('categoryInfoList(), should call and return category list information', async(()=>{
-    expect(schemaDetailsServiceSpy.getAllCategoryInfo.and.returnValue(of([]))).toHaveBeenCalledTimes(0);
-  }));
-
-  it('getSchemaStatus(), will return all schema status', async(()=>{
-    expect(schemaDetailsServiceSpy.getSchemaStatus.and.returnValue(of([]))).toHaveBeenCalledTimes(0);
-  }));
 
   it('ngOnChanges(), detect value change while loaded data ', async(()=>{
     const changes: SimpleChanges = {thresholdRes:{
@@ -63,5 +50,13 @@ describe('CategoriesChartComponent', () => {
     expect(component.thresholdRes.totalCnt).toEqual(10);
   }));
 
-
+  it('ngOnInit() required pre load', async(() => {
+    const res = [{categoryId:'8765', categoryDesc:'TEST'} as CategoryInfo];
+    const data = ['test'];
+    spyOn(schemaDetailsServiceSpy,'getAllCategoryInfo').and.returnValue(of(res));
+    spyOn(schemaDetailsServiceSpy,'getSchemaStatus').and.returnValue(of(data));
+    component.ngOnInit();
+    expect(schemaDetailsServiceSpy.getAllCategoryInfo).toHaveBeenCalled();
+    expect(schemaDetailsServiceSpy.getSchemaStatus).toHaveBeenCalled();
+  }));
 });
