@@ -18,7 +18,7 @@ import { GenericDropdownComponent } from './generic/generic-dropdown/generic-dro
 import { GenericTableComponent } from './generic/generic-table/generic-table.component';
 import { AttachmentTabComponent } from './_components/attachment-tab/attachment-tab.component';
 import { SaveSearchDialogComponent } from './_components/save-search-dialog/save-search-dialog.component';
-
+import { ReactiveFormsModule } from '@angular/forms';
 @NgModule({
   declarations: [
     TaskListComponent,
@@ -42,7 +42,8 @@ import { SaveSearchDialogComponent } from './_components/save-search-dialog/save
   imports: [
     CommonModule,
     BaseRoutingModule,
-    SharedModule
+    SharedModule,
+    ReactiveFormsModule
   ]
 })
 export class BaseModule { }

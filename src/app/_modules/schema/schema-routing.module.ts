@@ -19,7 +19,6 @@ import { DuplicateDetailsComponent } from './_components/duplicate-details/dupli
 import { DiwCreateSchemaComponent } from '../admin/_components/module/schema/diw-create-schema/diw-create-schema.component';
 import { DiwCreateBusinessruleComponent } from '../admin/_components/module/schema/diw-create-businessrule/diw-create-businessrule.component';
 import { CreateVariantComponent } from './_components/create-variant/create-variant.component';
-import { MdoGenericComponentsComponent } from './_components/mdo-generic-components/mdo-generic-components.component';
 import { WelcomeMdoComponent } from './_components/welcome-mdo/welcome-mdo.component';
 import { UploadDatasetComponent } from './_components/upload-dataset/upload-dataset.component';
 
@@ -45,10 +44,7 @@ const routes: Routes = [
   { path: 'diw-create-businessrule', component: DiwCreateBusinessruleComponent },
   { path: 'schema-variants/create-variant/:moduleId/:schemaId/:variantId', component: CreateVariantComponent },
   { path: 'upload-dataset', component: UploadDatasetComponent },
-  { path: 'mdo-generic-components', component: MdoGenericComponentsComponent },
   { path: 'welcome-mdo', component: WelcomeMdoComponent },
-
-
 
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent }

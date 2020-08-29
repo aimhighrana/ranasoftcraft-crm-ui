@@ -1,13 +1,17 @@
-<mat-card>
-    <!-- Search-Input -->
-    <pros-search-input></pros-search-input>
-    <div class="row-spacer"></div>
+<!-- Search-Input -->
+<ng-template [ngIf]="componentName==='search'">
+    <pros-search-input [placeholder]="searchPlaceholder"></pros-search-input>
 
-    <!-- Form-Input -->
-    <pros-form-input></pros-form-input>
-    <div class="row-spacer"></div>
+</ng-template>
 
-    <!-- MDO-Tab -->
+<!-- Form-Input -->
+<ng-template [ngIf]="componentName==='input'">
+    <pros-form-input [type]="type" [placeholder]="placeholder" [label]="label" [value]="value" [hint]="hint"
+        [isHelpIcon]="isHelpIcon" (valueChange)=(getValue($event))></pros-form-input>
+</ng-template>
+
+<!-- MDO-Tab -->
+<ng-template [ngIf]="componentName==='tabgroup'">
     <mat-tab-group disableRipple="true">
         <mat-tab>
             <ng-template mat-tab-label>
@@ -42,26 +46,38 @@
             Content 3
         </mat-tab>
     </mat-tab-group>
-    <div class="row-spacer"></div>
+</ng-template>
 
-    <!-- MDO-MatMenu -->
-    <button mat-button [matMenuTriggerFor]="navigation">
+<!-- MDO-MatMenu -->
+<ng-template [ngIf]="componentName==='menu'">
+    <button mat-icon-button [matMenuTriggerFor]="menu">
         <mat-icon>more_vert</mat-icon>
     </button>
-    <mat-menu #navigation="matMenu">
-        <pros-navigation-dropdown></pros-navigation-dropdown>
+
+    <mat-menu #menu="matMenu">
+        <mat-nav-list class="mdo-menu-nav">
+            <a mat-list-item class="mdo-menu-listitem">Material</a>
+            <a mat-list-item class="mdo-menu-listitem">Plant</a>
+            <a mat-list-item class="mdo-menu-listitem">Vendor</a>
+            <a mat-list-item class="mdo-menu-listitem">Service</a>
+            <mat-divider></mat-divider>
+            <a mat-list-item class="mdo-menu-listitem">Upload Dataset...</a>
+        </mat-nav-list>
     </mat-menu>
-    <div class="row-spacer"></div>
+</ng-template>
 
-    <!-- MDO-ProgressBar -->
-    <mat-progress-bar mode="determinate" value="40"></mat-progress-bar>
-    <div class="row-spacer"></div>
+<!-- MDO-ProgressBar -->
+<ng-template [ngIf]="componentName==='progressbar'">
+    <mat-progress-bar mode="determinate" value="40" class="mdo-progress"></mat-progress-bar>
+</ng-template>
 
-    <!-- MDO-Toggle -->
-    <mat-slide-toggle color="primary"></mat-slide-toggle>
-    <div class="row-spacer"></div>
+<!-- MDO-Toggle -->
+<ng-template [ngIf]="componentName==='toggle'">
+    <mat-slide-toggle *ngIf="componentName==='toggle'" color="primary"></mat-slide-toggle>
+</ng-template>
 
-    <!-- MDO-Chip -->
+<!-- MDO-Chip -->
+<ng-template [ngIf]="componentName==='chip'">
     <mat-chip-list>
         <mat-chip disableRipple="true">11 warnings</mat-chip>
         <mat-chip disableRipple="true">112 success</mat-chip>
@@ -69,11 +85,13 @@
         <mat-chip disableRipple="true" class="none-stats-chip">No stats</mat-chip>
     </mat-chip-list>
     <div class="row-spacer"></div>
+</ng-template>
 
-    <!-- Applied Filter -->
+<!-- Applied Filter -->
+<ng-template [ngIf]="componentName==='applied-filter'">
     <mat-chip-list>
-        <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="appliedfiltermenu"><label>Country:</label> <span
-                class="info">All</span>
+        <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="appliedfiltermenu">
+            <label>Country:</label> <span class="info">All</span>
             <mat-icon matChipRemove>clear</mat-icon>
         </mat-chip>
         <mat-menu #appliedfiltermenu="matMenu">
@@ -81,8 +99,10 @@
         </mat-menu>
     </mat-chip-list>
     <div class="row-spacer"></div>
+</ng-template>
 
-    <!-- Add Filter -->
+<!-- Add Filter -->
+<ng-template [ngIf]="componentName==='add-filter'">
     <mat-chip-list>
         <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="addfiltermenu">
             <mat-icon>filter_list</mat-icon>
@@ -92,22 +112,30 @@
         </mat-menu>
     </mat-chip-list>
     <div class="row-spacer"></div>
+</ng-template>
 
-    <!-- Checkbox -->
+<!-- Checkbox -->
+<ng-template [ngIf]="componentName==='checkbox'">
     <mat-checkbox color="primary"> Value</mat-checkbox>
     <div class="row-spacer"></div>
+</ng-template>
 
-    <!-- Radio button -->
+<!-- Radio button -->
+<ng-template [ngIf]="componentName==='radio'">
     <mat-radio-group color="primary">
         <mat-radio-button value="1">Value</mat-radio-button>
     </mat-radio-group>
     <div class="row-spacer"></div>
+</ng-template>
 
-    <!-- Mat Slider -->
+<!-- Mat Range Slider -->
+<ng-template [ngIf]="componentName==='range-slider'">
     <mat-slider color="primary"></mat-slider>
     <div class="row-spacer"></div>
+</ng-template>
 
-    <!-- Buttons -->
+<!-- Buttons -->
+<ng-template [ngIf]="componentName==='button'">
     <div class="f-row">
         <button mat-flat-button color="accent">Configure</button>
         &nbsp;
@@ -122,8 +150,10 @@
         </button>
     </div>
     <div class="row-spacer"></div>
+</ng-template>
 
-    <!-- MDO Table -->
+<!-- MDO Table -->
+<ng-template [ngIf]="componentName==='table'">
     <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z0">
         <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef>
@@ -184,4 +214,4 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
     <div class="row-spacer"></div>
-</mat-card>
+</ng-template>
