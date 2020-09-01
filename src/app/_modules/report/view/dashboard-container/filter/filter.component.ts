@@ -52,6 +52,10 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
       isSelected: false,
       text: 'Today'
     },{
+      code: 'DAY_7',
+      isSelected: false,
+      text: '7 Days'
+    },{
       code: 'DAY_10',
       isSelected: false,
       text: '10 Days'
@@ -214,6 +218,11 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
       case 'TODAY':
         const todayFill = this.dateFilterQuickSelect.filter(f=> f.code === 'TODAY')[0];
         todayFill.isSelected = true;
+        break;
+
+      case 'DAY_7':
+        const day7Fill = this.dateFilterQuickSelect.filter(f=> f.code === 'DAY_7')[0];
+        day7Fill.isSelected = true;
         break;
 
       case 'DAY_10':

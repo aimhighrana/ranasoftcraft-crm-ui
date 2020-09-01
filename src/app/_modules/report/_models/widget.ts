@@ -37,6 +37,7 @@ export interface DateFilterCtrl {
 
 export enum DateSelectionType {
     TODAY = 'TODAY',
+    DAY_7 = 'DAY_7',
     DAY_10 = 'DAY_10',
     DAY_20 = 'DAY_20',
     DAY_30 = 'DAY_30',
@@ -423,6 +424,11 @@ export class DateBulder {
         switch (dateSelectedFor) {
             case DateSelectionType.TODAY:
                 startDate =  String(moment().startOf('day').toDate().getTime());
+                endDate = String(moment().endOf('day').toDate().getTime());
+                break;
+
+            case DateSelectionType.DAY_7:
+                startDate =  String(moment().add(-7,'days').startOf('day').toDate().getTime());
                 endDate = String(moment().endOf('day').toDate().getTime());
                 break;
 
