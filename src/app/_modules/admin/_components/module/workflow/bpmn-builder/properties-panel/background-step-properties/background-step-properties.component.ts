@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, OnDestroy } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { WorkflowBuilderService } from '@services/workflow-builder.service';
 
@@ -37,7 +37,7 @@ export class BackgroundStepPropertiesComponent implements OnInit, OnChanges, OnD
   initForm(value?){
 
     this.backgroundForm = this.fb.group({
-      name : [ value && value.name ? value.name : ''],
+      name : [ value && value.name ? value.name : '', Validators.required],
       enhancementPoint : [ value && value.enhancementPoint ? value.enhancementPoint : 'Select'],
       crossModule : [ value && value.crossModule ? value.crossModule : 'Select' ],
       customEvent : [ value && value.customEvent ? value.customEvent : '' ]
@@ -47,6 +47,9 @@ export class BackgroundStepPropertiesComponent implements OnInit, OnChanges, OnD
         .subscribe(values => {
           this.updateStepProperties()
         });
+
+    // for validation purposes
+    this.backgroundForm.markAllAsTouched();
   }
 
 

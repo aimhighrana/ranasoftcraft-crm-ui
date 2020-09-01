@@ -718,7 +718,7 @@ var activityStepValidation = function() {
 
     // ApprovedBy is required
     if (!attributes.approvedBy) {
-      reporter.report(node.id, 'Recipient type is required');
+      reporter.report(node.id, 'Approved By is required');
     }
 
     // RoleApprovalBy is required

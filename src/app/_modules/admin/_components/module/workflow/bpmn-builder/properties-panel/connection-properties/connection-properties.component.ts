@@ -69,8 +69,12 @@ export class ConnectionPropertiesComponent implements OnInit, OnChanges {
         // this.conditionsList = result.conditions;
         // delete extra keys
         this.conditionsList = result.conditions.map(row => {
+                        if (row.picklist === '1'){
+                          row.value = row.value.CODE;
+                        }
                         delete row.picklist;
                         delete row.options;
+                        delete row.filteredOptions;
                         return row;
                       });
 

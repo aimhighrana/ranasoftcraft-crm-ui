@@ -1,7 +1,9 @@
 <form [formGroup]="emailForm">
-    <!-- BASIC DETAILS-->
-    <mat-accordion>
-        <mat-expansion-panel class="mat-elevation-z2" expanded="false">
+    <mat-accordion [multi]="false">
+        
+        <!-- BASIC DETAILS-->
+        <mat-expansion-panel class="mat-elevation-z2" [expanded]="openedPanel === 1"
+            [ngClass]="{'has-errors' : basicDetailsErrors()}">
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     Basic Details
@@ -22,11 +24,10 @@
                 </mat-form-field>
             </div>
         </mat-expansion-panel>
-    </mat-accordion>
 
-    <!-- Define Recipients-->
-    <mat-accordion>
-        <mat-expansion-panel class="mat-elevation-z2" expanded="false">
+        <!-- Define Recipients-->
+        <mat-expansion-panel class="mat-elevation-z2" [ngClass]="{'has-errors' : !selectedRecipients.length}"
+                [expanded]="openedPanel === 2"> <!-- [expanded]="!basicDetailsErrors() && !selectedRecipients.length" -->
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     Define Recipients

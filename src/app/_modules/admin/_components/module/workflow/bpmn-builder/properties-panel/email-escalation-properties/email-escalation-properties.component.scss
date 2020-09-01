@@ -6,3 +6,11 @@ mat-expansion-panel {
     padding: 0 16px;
   }
 }
+
+.mat-expansion-panel.has-errors {
+  .mat-expansion-panel-header:not(.mat-expanded) {
+    border-style: solid;
+    border-width: 2px;
+    border-color: red;
+  }
+}
