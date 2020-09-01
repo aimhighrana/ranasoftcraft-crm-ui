@@ -1,0 +1,11 @@
+div.root {
+  padding: 12px;
+
+  mat-nav-list {
+    padding-top: 0;
+    margin: 8px -12px;
+    overflow: auto;
+    max-height: 240px;
+    height: 100%;
+  }
+}

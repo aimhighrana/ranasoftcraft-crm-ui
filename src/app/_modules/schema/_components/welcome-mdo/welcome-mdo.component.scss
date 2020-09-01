@@ -1,0 +1,36 @@
+mat-card.root {
+  margin: 0 auto;
+  user-select: none;
+
+  .header-toolbar {
+    align-items: center;
+    margin-bottom: 48px;
+
+    .display-heading-large {
+      font-size: 1.2rem;
+    }
+  }
+
+  mat-list-item {
+    padding: 8px 0;
+
+    .mat-list-icon {
+      width: 32px;
+      height: 32px;
+
+      mat-icon {
+        font-size: 32px;
+      }
+    }
+
+    button {
+      min-width: 100px;
+    }
+  }
+}
+
+@media (min-width: 1200px) {
+  .root {
+    width: 60%;
+  }
+}

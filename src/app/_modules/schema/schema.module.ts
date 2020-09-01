@@ -28,9 +28,9 @@ import { DuplicateDetailsComponent } from './_components/duplicate-details/dupli
 import { CollaboratorComponent } from './_components/collaborator/collaborator.component';
 import { CreateVariantComponent } from './_components/create-variant/create-variant.component';
 import { DatePickerFieldComponent } from './_components/create-variant/date-picker-field/date-picker-field.component';
-import { AppHomeComponent } from './_components/app-home/app-home.component';
-import { UploadDatasetComponent } from './_components/upload-dataset/upload-dataset.component';
 import { MdoGenericComponentsComponent } from './_components/mdo-generic-components/mdo-generic-components.component';
+import { WelcomeMdoComponent } from './_components/welcome-mdo/welcome-mdo.component';
+import { UploadDatasetComponent } from './_components/upload-dataset/upload-dataset.component';
 
 @NgModule({
   declarations: [
@@ -60,9 +60,9 @@ import { MdoGenericComponentsComponent } from './_components/mdo-generic-compone
     CollaboratorComponent,
     CreateVariantComponent,
     DatePickerFieldComponent,
-    AppHomeComponent,
     UploadDatasetComponent,
     MdoGenericComponentsComponent,
+    WelcomeMdoComponent
 
   ],
   imports: [

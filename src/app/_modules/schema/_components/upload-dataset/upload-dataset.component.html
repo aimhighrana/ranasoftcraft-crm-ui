@@ -1,489 +1,161 @@
-<mat-card class="mat-elevation-z4 mdo-constrained-alt mdo-justify" style="height: 75%;">
-
-    <!-- Step 1 -->
-    <div class="mdo-mat-card mdo-vertical" style="display: none;">
-        <div class="mdo-section">
-            <div class="mdo-text mdo-font-large">Upload dataset (step 1 of 3): choose a file</div>
-            <div class="mdo-spacer"></div>
-            <button mat-icon-button>
-                <mat-icon class="mdo-font-small mdo-icon-contained"><i class="mdo-icon-close"></i></mat-icon>
-            </button>
-        </div>
-        <div class="mdo-section mdo-padding-top-large mdo-padding-bottom-large mdo-margin-bottom-large">
-            <mat-progress-bar mode="determinate" value="25" class="mdo-progress"></mat-progress-bar>
-        </div>
-
-        <div class="mdo-section mdo-padding-all-xlarge">
-            <div class="mdo-mat-card mdo-vertical mdo-fill-width item-center">
-
-                <p><i class="mdo-icon-outbox-alt mdo-font-icon-image mdo-clickable"></i></p>
-                <p>Drag &amp; drop or <a href="#" class="link">browse</a> a file to upload</p>
-
-            </div>
-        </div>
+<mat-card class="root-upload mat-elevation-z4">
+    <div class="f-row header-toolbar">
+        <div class="display-heading-large">Upload dataset (step 1 of 3): choose a file</div>
+        <span class="f-spacer"></span>
+        <button mat-button>
+            <mat-icon>clear</mat-icon>
+        </button>
     </div>
 
-    <!-- Step 2 -->
-    <div class="mdo-mat-card mdo-vertical" style="display: none;">
-        <div class="mdo-section">
-            <div class="mdo-text mdo-font-large">Upload dataset (step 2 of 3): objecttype your dataset</div>
-            <div class="mdo-spacer"></div>
-            <button mat-icon-button>
-                <mat-icon class="mdo-font-small mdo-icon-contained"><i class="mdo-icon-close"></i></mat-icon>
-            </button>
-        </div>
+    <mat-progress-bar mode="determinate" value="40"></mat-progress-bar>
+    <div class="row-spacer"></div>
 
-        <div class="mdo-section mdo-padding-top-large mdo-padding-bottom-large mdo-margin-bottom-large">
-            <mat-progress-bar mode="determinate" value="50" class="mdo-progress"></mat-progress-bar>
-        </div>
+    <mat-horizontal-stepper [@.disabled]="true" linear #stepper>
+        <!-- step 1 -->
+        <mat-step>
+            <ng-template matStepLabel></ng-template>
 
-        <div class="mdo-section mdo-vertical">
-            <div class="mdo-mat-card">
-                <mat-form-field appearance="fill" class="mdo-fill-width mdo-margin-bottom-small">
-                    <mat-label>Dataset</mat-label>
-                    <input matInput>
-                </mat-form-field>
-            </div>
-        </div>
-
-        <div class="mdo-block mdo-margin-bottom-large">
-            <div class="mdo-content">
-                <table mat-table [dataSource]="dataSource" class="mdo-table">
-                    <ng-container matColumnDef="objectno">
-                        <th mat-header-cell *matHeaderCellDef> Your field headers </th>
-                        <td mat-cell *matCellDef="let element"> {{element.objectno}} </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="objecttype">
-                        <th mat-header-cell *matHeaderCellDef> Your field row data </th>
-                        <td mat-cell *matCellDef="let element"> {{element.objecttype}} </td>
-                    </ng-container>
-
-                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-                </table>
-            </div>
-        </div>
-
-        <div class="mdo-section">
-            <button mat-flat-button color="accent" class="mdo-fixed-button mdo-text-weight-400">Back</button>
-            <div class="mdo-spacer"></div>
-            <button mat-flat-button color="primary" class="mdo-fixed-button mdo-text-weight-400">Next</button>
-        </div>
-    </div>
-
-    <!-- Step 3 -->
-    <div class="mdo-mat-card mdo-vertical" style="display: none;">
-        <div class="mdo-section">
-            <div class="mdo-text mdo-font-large">Upload dataset (step 3 of 4): create a schema</div>
-            <div class="mdo-spacer"></div>
-            <button mat-icon-button>
-                <mat-icon class="mdo-font-small mdo-icon-contained"><i class="mdo-icon-close"></i></mat-icon>
-            </button>
-        </div>
-
-        <div class="mdo-section mdo-padding-top-large mdo-padding-bottom-large mdo-margin-bottom-large">
-            <mat-progress-bar mode="determinate" value="75" class="mdo-progress"></mat-progress-bar>
-        </div>
-
-        <div class="mdo-section mdo-vertical">
-            <div class="mdo-mat-card">
-                <mat-form-field appearance="fill" class="mdo-fill-width mdo-margin-bottom-small">
-                    <mat-label>Schema name</mat-label>
-                    <input matInput>
-                </mat-form-field>
-            </div>
-        </div>
-
-        <div class="mdo-block mdo-margin-bottom-large">
-            <div class="mdo-content">
-                <div class="mdo-section">
-                    <button mat-flat-button color="accent" class="mdo-text-weight-400"><i class="mdo-icon-plus"></i> Add
-                        business rule</button>
+            <div class="allow-overflow">
+                <div class="f-col upload-col">
+                    <mat-icon>publish</mat-icon>
+                    <p>Drag & drop or browser a file to upload</p>
                 </div>
             </div>
-        </div>
+            <div class="row-spacer"></div>
+            <div class="f-row">
+                <span class="f-spacer"></span>
+                <button mat-flat-button color="primary" matStepperNext (click)="step('next')">Next</button>
+            </div>
 
-        <div class="mdo-section">
-            <button mat-flat-button color="accent" class="mdo-fixed-button mdo-text-weight-400">Back</button>
-            <div class="mdo-spacer"></div>
-            <button mat-flat-button color="primary" class="mdo-fixed-button mdo-text-weight-400">Next</button>
-        </div>
-    </div>
+        </mat-step>
 
-    <!-- Step 4 -->
-    <div class="mdo-mat-card mdo-vertical" style="display: none;">
-        <div class="mdo-section">
-            <div class="mdo-text mdo-font-large">Upload dataset (step 3 of 4): create a schema</div>
-            <div class="mdo-spacer"></div>
-            <button mat-icon-button>
-                <mat-icon class="mdo-font-small mdo-icon-contained"><i class="mdo-icon-close"></i></mat-icon>
-            </button>
-        </div>
+        <!-- Step 2  Pending -->
 
-        <div class="mdo-section mdo-padding-top-large mdo-padding-bottom-large mdo-margin-bottom-large">
-            <mat-progress-bar mode="determinate" value="75" class="mdo-progress"></mat-progress-bar>
-        </div>
-
-        <div class="mdo-block mdo-margin-bottom-large">
-            <div class="mdo-content">
-                <div class="mdo-section">
-                    <button mat-flat-button color="accent" class="mdo-text-weight-400"><i class="mdo-icon-plus"></i> Add
-                        business rule</button>
-                </div>
-
-                <div class="mdo-section mdo-vertical mdo-margin-top-large">
-
-                    <div
-                        class="mdo-mat-card mdo-horizontal mdo-fill-width item-center mdo-padding-all-tiny mdo-border-bottom">
-                        <div class="mdo-mat-card mdo-col-1"></div>
-                        <div class="mdo-mat-card mdo-col-6 mdo-text mdo-text-weight-600">Business rule</div>
-                        <div class="mdo-mat-card mdo-col-6 mdo-text mdo-text-weight-600">Enabled</div>
-                        <div class="mdo-mat-card mdo-col-1"></div>
-                    </div>
-
-                    <div
-                        class="mdo-mat-card mdo-horizontal mdo-fill-width item-center mdo-padding-all-tiny mdo-border-bottom">
-                        <div class="mdo-mat-card mdo-col-1 justify-start"><i class="mdo-icon-two-lines"></i></div>
-                        <div class="mdo-mat-card mdo-col-6 mdo-text"><a href="#" class="link">Metadata</a></div>
-                        <div class="mdo-mat-card mdo-col-6">
-                            <mat-slide-toggle color="primary"></mat-slide-toggle>
-                        </div>
-                        <div class="mdo-mat-card mdo-col-1 justify-center"><button mat-icon-button><i
-                                    class="mdo-icon-more"></i></button></div>
-                    </div>
-
-                    <div
-                        class="mdo-mat-card mdo-horizontal mdo-fill-width item-center mdo-padding-all-tiny mdo-border-bottom">
-                        <div class="mdo-mat-card mdo-col-1 justify-start"><i class="mdo-icon-two-lines"></i></div>
-                        <div class="mdo-mat-card mdo-col-6 mdo-text"><a href="#" class="link">Missing data</a></div>
-                        <div class="mdo-mat-card mdo-col-6">
-                            <mat-slide-toggle color="primary"></mat-slide-toggle>
-                        </div>
-                        <div class="mdo-mat-card mdo-col-1 justify-center"><button mat-icon-button><i
-                                    class="mdo-icon-more"></i></button></div>
-                    </div>
-
-                    <div
-                        class="mdo-mat-card mdo-horizontal mdo-fill-width item-center mdo-padding-all-tiny mdo-border-bottom">
-                        <div class="mdo-mat-card mdo-col-1 justify-start"><i class="mdo-icon-two-lines"></i></div>
-                        <div class="mdo-mat-card mdo-col-6 mdo-text"><a href="#" class="link">User define</a></div>
-                        <div class="mdo-mat-card mdo-col-6">
-                            <mat-slide-toggle color="primary"></mat-slide-toggle>
-                        </div>
-                        <div class="mdo-mat-card mdo-col-1 justify-center"><button mat-icon-button><i
-                                    class="mdo-icon-more"></i></button></div>
-                    </div>
-
-                    <div
-                        class="mdo-mat-card mdo-horizontal mdo-fill-width item-center mdo-padding-all-tiny mdo-border-bottom">
-                        <div class="mdo-mat-card mdo-col-1 justify-start"><i class="mdo-icon-two-lines"></i></div>
-                        <div class="mdo-mat-card mdo-col-6 mdo-text"><a href="#" class="link">My custom rule</a></div>
-                        <div class="mdo-mat-card mdo-col-6">
-                            <mat-slide-toggle color="primary"></mat-slide-toggle>
-                        </div>
-                        <div class="mdo-mat-card mdo-col-1 justify-center"><button mat-icon-button><i
-                                    class="mdo-icon-more"></i></button></div>
+        <!-- Step 3 -->
+        <mat-step>
+            <ng-template matStepLabel></ng-template>
+            <div class="allow-overflow">
+                <div class="f-col">
+                    <pros-form-input></pros-form-input>
+                    <div class="row-spacer"></div>
+                    <div>
+                        <button mat-flat-button color="accent">
+                            <mat-icon>add</mat-icon> Add business rule
+                        </button>
                     </div>
                 </div>
             </div>
-        </div>
+            <div class="row-spacer"></div>
+            <div class="f-row">
+                <button mat-flat-button color="accent" matStepperNext>Back</button>
+                <span class="f-spacer"></span>
+                <button mat-flat-button color="primary" matStepperNext (click)="step('next')">Next</button>
+            </div>
+        </mat-step>
 
-        <div class="mdo-section">
-            <button mat-flat-button color="accent" class="mdo-fixed-button mdo-text-weight-400">Back</button>
-            <div class="mdo-spacer"></div>
-            <button mat-flat-button color="primary" class="mdo-fixed-button mdo-text-weight-400">Next</button>
-        </div>
-    </div>
+        <!-- Step 4  Pending -->
 
-    <!-- Step 5 -->
-    <div class="mdo-mat-card mdo-vertical" style="display: none;">
-        <div class="mdo-section">
-            <div class="mdo-text mdo-font-large">Upload dataset (step 3 of 4): add subscribe</div>
-            <div class="mdo-spacer"></div>
-            <button mat-icon-button>
-                <mat-icon class="mdo-font-small mdo-icon-contained"><i class="mdo-icon-close"></i></mat-icon>
-            </button>
-        </div>
-
-        <div class="mdo-section mdo-padding-top-large mdo-padding-bottom-large mdo-margin-bottom-large">
-            <mat-progress-bar mode="determinate" value="75" class="mdo-progress"></mat-progress-bar>
-        </div>
-
-        <div class="mdo-block mdo-margin-bottom-large">
-            <div class="mdo-content">
-                <div class="mdo-section">
-                    <button mat-flat-button color="accent" class="mdo-text-weight-400"><i class="mdo-icon-plus"></i> Add
-                        subscribe</button>
-                </div>
-
-                <div class="mdo-section mdo-vertical mdo-margin-top-large">
-                    <table class="mdo-table">
-                        <tr>
-                            <th class="mat-header-cell mdo--fixed">Subscriber</th>
-                            <th class="mat-header-cell mdo--fixed">Role</th>
-                            <th class="mat-header-cell">Data allocation</th>
-                            <th class="mat-header-cell"></th>
-                        </tr>
-
-                        <tr>
-                            <td class="mat-cell mdo--fixed">
-                                <div class="mdo-horizontal item-center">
-                                    <div class="mdo-avator">RW</div>
-                                    <div class="mdo-margin-left-small">Rick Woods</div>
-                                </div>
-                            </td>
-                            <td class="mat-cell mdo--fixed"><button mat-flat-button color="accent"
-                                    class="mdo-fixed-button mdo-text-weight-400">Editer <i
-                                        class="mdo-icon-menu-arrow mdo-font-tiny mdo-margin-left-tiny"></i></button>
-                            </td>
-                            <td class="mat-cell">
-                                <mat-chip-list class="mdo-chip-filter">
-                                    <mat-chip><label class="mdo-margin-right-tiny">Region:</label> <span
-                                            class="mdo-margin-right-small link">Sydney</span><i
-                                            class="mdo-icon-close"></i></mat-chip>
-                                    <mat-chip><label class="mdo-margin-right-tiny">Region:</label> <span
-                                            class="mdo-margin-right-small link">Brisbane</span><i
-                                            class="mdo-icon-close"></i></mat-chip>
-                                    <mat-chip><span class="mdo-margin-top-tiny"><i
-                                                class="mdo-icon-folder-filter mdo-font-small"></i></span>
-                                    </mat-chip>
-                                </mat-chip-list>
-                            </td>
-                            <td class="mat-cell mdo-text-right"><button mat-icon-button><i
-                                        class="mdo-icon-more"></i></button></td>
-                        </tr>
-
-                        <tr>
-                            <td class="mat-cell mdo--fixed">
-                                <div class="mdo-horizontal item-center">
-                                    <div class="mdo-avator">RW</div>
-                                    <div class="mdo-margin-left-small">Rick Woods</div>
-                                </div>
-                            </td>
-                            <td class="mat-cell mdo--fixed"><button mat-flat-button color="accent"
-                                    class="mdo-fixed-button mdo-text-weight-400">Editer <i
-                                        class="mdo-icon-menu-arrow mdo-font-tiny mdo-margin-left-tiny"></i></button>
-                            </td>
-                            <td class="mat-cell">
-                                <mat-chip-list class="mdo-chip-filter">
-                                    <mat-chip><label class="mdo-margin-right-tiny">Region:</label> <span
-                                            class="mdo-margin-right-small link">Sydney</span><i
-                                            class="mdo-icon-close"></i></mat-chip>
-                                    <mat-chip><label class="mdo-margin-right-tiny">Region:</label> <span
-                                            class="mdo-margin-right-small link">Brisbane</span><i
-                                            class="mdo-icon-close"></i></mat-chip>
-                                    <mat-chip><span class="mdo-margin-top-tiny"><i
-                                                class="mdo-icon-folder-filter mdo-font-small"></i></span>
-                                    </mat-chip>
-                                </mat-chip-list>
-                            </td>
-                            <td class="mat-cell mdo-text-right"><button mat-icon-button><i
-                                        class="mdo-icon-more"></i></button></td>
-                        </tr>
-
-                        <tr>
-                            <td class="mat-cell mdo--fixed">
-                                <div class="mdo-horizontal item-center">
-                                    <div class="mdo-avator">RW</div>
-                                    <div class="mdo-margin-left-small">Rick Woods</div>
-                                </div>
-                            </td>
-                            <td class="mat-cell mdo--fixed"><button mat-flat-button color="accent"
-                                    class="mdo-fixed-button mdo-text-weight-400">Editer <i
-                                        class="mdo-icon-menu-arrow mdo-font-tiny mdo-margin-left-tiny"></i></button>
-                            </td>
-                            <td class="mat-cell">
-                                <mat-chip-list class="mdo-chip-filter">
-                                    <mat-chip><label class="mdo-margin-right-tiny">Region:</label> <span
-                                            class="mdo-margin-right-small link">Sydney</span><i
-                                            class="mdo-icon-close"></i></mat-chip>
-                                    <mat-chip><label class="mdo-margin-right-tiny">Region:</label> <span
-                                            class="mdo-margin-right-small link">Brisbane</span><i
-                                            class="mdo-icon-close"></i></mat-chip>
-                                    <mat-chip><span class="mdo-margin-top-tiny"><i
-                                                class="mdo-icon-folder-filter mdo-font-small"></i></span>
-                                    </mat-chip>
-                                </mat-chip-list>
-                            </td>
-                            <td class="mat-cell mdo-text-right"><button mat-icon-button><i
-                                        class="mdo-icon-more"></i></button></td>
-                        </tr>
-
-                        <tr>
-                            <td class="mat-cell mdo--fixed">
-                                <div class="mdo-horizontal item-center">
-                                    <div class="mdo-avator">RW</div>
-                                    <div class="mdo-margin-left-small">Rick Woods</div>
-                                </div>
-                            </td>
-                            <td class="mat-cell mdo--fixed"><button mat-flat-button color="accent"
-                                    class="mdo-fixed-button mdo-text-weight-400">Editer <i
-                                        class="mdo-icon-menu-arrow mdo-font-tiny mdo-margin-left-tiny"></i></button>
-                            </td>
-                            <td class="mat-cell">
-                                <mat-chip-list class="mdo-chip-filter">
-                                    <mat-chip><label class="mdo-margin-right-tiny">Region:</label> <span
-                                            class="mdo-margin-right-small link">Sydney</span><i
-                                            class="mdo-icon-close"></i></mat-chip>
-                                    <mat-chip><label class="mdo-margin-right-tiny">Region:</label> <span
-                                            class="mdo-margin-right-small link">Brisbane</span><i
-                                            class="mdo-icon-close"></i></mat-chip>
-                                    <mat-chip><span class="mdo-margin-top-tiny"><i
-                                                class="mdo-icon-folder-filter mdo-font-small"></i></span>
-                                    </mat-chip>
-                                </mat-chip-list>
-                            </td>
-                            <td class="mat-cell mdo-text-right"><button mat-icon-button><i
-                                        class="mdo-icon-more"></i></button></td>
-                        </tr>
-                    </table>
+        <!-- Step 5 -->
+        <mat-step>
+            <ng-template matStepLabel></ng-template>
+            <div class="allow-overflow">
+                <div class="f-col">
+                    <mat-radio-group color="primary" class="f-col">
+                        <mat-radio-button value="1">Do not run the schema now</mat-radio-button>
+                        <mat-radio-button value="2">Run the schema once now</mat-radio-button>
+                        <mat-radio-button value="3">Create a schedule</mat-radio-button>
+                    </mat-radio-group>
                 </div>
             </div>
-        </div>
-
-        <div class="mdo-section">
-            <button mat-flat-button color="accent" class="mdo-fixed-button mdo-text-weight-400">Back</button>
-            <div class="mdo-spacer"></div>
-            <button mat-flat-button color="primary" class="mdo-fixed-button mdo-text-weight-400">Next</button>
-        </div>
-    </div>
-
-    <!-- Step 6 -->
-    <div class="mdo-mat-card mdo-vertical" style="display: none;">
-        <div class="mdo-section">
-            <div class="mdo-text mdo-font-large">Upload dataset (step 4 of 4): run the schema</div>
-            <div class="mdo-spacer"></div>
-            <button mat-icon-button>
-                <mat-icon class="mdo-font-small mdo-icon-contained"><i class="mdo-icon-close"></i></mat-icon>
-            </button>
-        </div>
-
-        <div class="mdo-section mdo-padding-top-large mdo-padding-bottom-large mdo-margin-bottom-large">
-            <mat-progress-bar mode="determinate" value="100" class="mdo-progress"></mat-progress-bar>
-        </div>
-
-
-        <div class="mdo-mat-card mdo-margin-bottom-large">
-            <div>
-                <mat-radio-group color="primary" class="mdo-mat-card mdo-vertical">
-                    <mat-radio-button value="1" class="mdo-margin-bottom-large">Do not run the schema
-                    </mat-radio-button>
-                    <mat-radio-button value="2" class="mdo-margin-bottom-large">Run the schema once now
-                    </mat-radio-button>
-                    <mat-radio-button value="3" class="mdo-margin-bottom-large">Create a schedule </mat-radio-button>
-                </mat-radio-group>
+            <div class="row-spacer"></div>
+            <div class="f-row">
+                <button mat-flat-button color="accent" matStepperNext>Back</button>
+                <span class="f-spacer"></span>
+                <button mat-flat-button color="primary" matStepperNext (click)="step('next')">Next</button>
             </div>
-        </div>
+        </mat-step>
 
-        <div class="mdo-section">
-            <button mat-flat-button color="accent" class="mdo-fixed-button mdo-text-weight-400">Back</button>
-            <div class="mdo-spacer"></div>
-            <button mat-flat-button color="primary" class="mdo-fixed-button mdo-text-weight-400">Next</button>
-        </div>
-    </div>
+        <!-- Step 6  Pending -->
 
-    <!-- Step 7 -->
-    <div class="mdo-mat-card mdo-vertical" style="display: flex;">
-        <div class="mdo-section">
-            <div class="mdo-text mdo-font-large">Upload dataset (step 1 of 4): select a module</div>
-            <div class="mdo-spacer"></div>
-            <button mat-icon-button>
-                <mat-icon class="mdo-font-small mdo-icon-contained"><i class="mdo-icon-close"></i></mat-icon>
-            </button>
-        </div>
+        <!-- Step 7 -->
+        <mat-step>
+            <ng-template matStepLabel></ng-template>
+            <div class="allow-overflow">
+                <div class="f-col">
+                    <pros-search-input></pros-search-input>
+                    <div class="row-spacer"></div>
+                    <mat-nav-list role="list">
 
-        <div class="mdo-section mdo-padding-top-large mdo-padding-bottom-large mdo-margin-bottom-large">
-            <mat-progress-bar mode="determinate" value="20" class="mdo-progress"></mat-progress-bar>
-        </div>
+                        <mat-list-item>
+                            <mat-icon mat-list-icon>add</mat-icon>
+                            <div mat-line>Create new from a dataset</div>
+                        </mat-list-item>
 
-        <div class="mdo-section mdo-vertical">
-            <div class="mdo-mat-card">
-                <div class="mdo-basic-search mdo-icon-basic-search mdo-fill-width mdo-margin-bottom-small">
-                    <input type="text" class="input-text" placeholder="Search attributes">
+                        <mat-divider></mat-divider>
+
+                        <mat-list-item>
+                            <mat-icon mat-list-icon>grid_on</mat-icon>
+                            <div mat-line>Customer</div>
+                            <mat-icon>arrow_right_alt</mat-icon>
+                        </mat-list-item>
+
+
+                        <mat-divider></mat-divider>
+
+                        <mat-list-item>
+                            <mat-icon mat-list-icon>grid_on</mat-icon>
+                            <div mat-line>Human resources</div>
+                            <mat-icon>arrow_right_alt</mat-icon>
+                        </mat-list-item>
+
+                        <mat-divider></mat-divider>
+
+                        <mat-list-item>
+                            <mat-icon mat-list-icon>grid_on</mat-icon>
+                            <div mat-line>Plant</div>
+                            <mat-icon>arrow_right_alt</mat-icon>
+                        </mat-list-item>
+
+                        <mat-divider></mat-divider>
+
+                        <mat-list-item>
+                            <mat-icon mat-list-icon>grid_on</mat-icon>
+                            <div mat-line>Purchase order</div>
+                            <mat-icon>arrow_right_alt</mat-icon>
+                        </mat-list-item>
+
+                        <mat-divider></mat-divider>
+
+                        <mat-list-item>
+                            <mat-icon mat-list-icon>grid_on</mat-icon>
+                            <div mat-line>Vendor</div>
+                            <mat-icon>arrow_right_alt</mat-icon>
+                        </mat-list-item>
+
+                        <mat-divider></mat-divider>
+
+                        <mat-list-item>
+                            <mat-icon mat-list-icon>grid_on</mat-icon>
+                            <div mat-line>Function Location</div>
+                            <mat-icon>arrow_right_alt</mat-icon>
+                        </mat-list-item>
+
+                        <mat-divider></mat-divider>
+
+                        <mat-list-item>
+                            <mat-icon mat-list-icon>grid_on</mat-icon>
+                            <div mat-line>Equitments</div>
+                            <mat-icon>arrow_right_alt</mat-icon>
+                        </mat-list-item>
+                    </mat-nav-list>
                 </div>
             </div>
-        </div>
-
-        <div class="mdo-block mdo-margin-bottom-large">
-            <div class="mdo-content">
-                <mat-list role="list">
-                    <mat-list-item class="mdo-clickable mdo-padding-top-small mdo-padding-bottom-tiny mdo-hover ">
-                        <div class="mdo-atom mdo-icon-contained mdo-font-small"> <i class="mdo-icon-plus"></i></div>
-                        <div class="mdo-text mdo-font-small mdo-padding-left-medium">Create new from a dataset</div>
-                    </mat-list-item>
-
-                    <mat-divider></mat-divider>
-
-                    <mat-list-item class="mdo-clickable mdo-padding-top-small mdo-padding-bottom-tiny mdo-hover">
-                        <div class="mdo-atom mdo-icon-contained mdo-font-small"> <i class="mdo-icon-form-table"></i>
-                        </div>
-                        <div class="mdo-text mdo-font-small mdo-padding-left-medium">Human resources</div>
-                        <div class="mdo-spacer"></div>
-                        <button mat-icon-button><i class="mdo-icon-arrow-right"></i></button>
-                    </mat-list-item>
-
-                    <mat-divider></mat-divider>
-
-                    <mat-list-item class="mdo-clickable mdo-padding-top-small mdo-padding-bottom-tiny mdo-hover">
-                        <div class="mdo-atom mdo-icon-contained mdo-font-small"> <i class="mdo-icon-form-table"></i>
-                        </div>
-                        <div class="mdo-text mdo-font-small mdo-padding-left-medium">Plant</div>
-                        <div class="mdo-spacer"></div>
-                        <button mat-icon-button><i class="mdo-icon-arrow-right"></i></button>
-                    </mat-list-item>
-
-                    <mat-divider></mat-divider>
-
-                    <mat-list-item class="mdo-clickable mdo-padding-top-small mdo-padding-bottom-tiny mdo-hover">
-                        <div class="mdo-atom mdo-icon-contained mdo-font-small"> <i class="mdo-icon-form-table"></i>
-                        </div>
-                        <div class="mdo-text mdo-font-small mdo-padding-left-medium">Purchase order</div>
-                        <div class="mdo-spacer"></div>
-                        <button mat-icon-button><i class="mdo-icon-arrow-right"></i></button>
-                    </mat-list-item>
-
-                    <mat-divider></mat-divider>
-
-                    <mat-list-item class="mdo-clickable mdo-padding-top-small mdo-padding-bottom-tiny mdo-hover">
-                        <div class="mdo-atom mdo-icon-contained mdo-font-small"> <i class="mdo-icon-form-table"></i>
-                        </div>
-                        <div class="mdo-text mdo-font-small mdo-padding-left-medium">Vendor</div>
-                        <div class="mdo-spacer"></div>
-                        <button mat-icon-button><i class="mdo-icon-arrow-right"></i></button>
-                    </mat-list-item>
-
-                    <mat-divider></mat-divider>
-
-                    <mat-list-item class="mdo-clickable mdo-padding-top-small mdo-padding-bottom-tiny mdo-hover">
-                        <div class="mdo-atom mdo-icon-contained mdo-font-small"> <i class="mdo-icon-form-table"></i>
-                        </div>
-                        <div class="mdo-text mdo-font-small mdo-padding-left-medium">Material</div>
-                        <div class="mdo-spacer"></div>
-                        <button mat-icon-button><i class="mdo-icon-arrow-right"></i></button>
-                    </mat-list-item>
-
-                    <mat-divider></mat-divider>
-
-                    <mat-list-item class="mdo-clickable mdo-padding-top-small mdo-padding-bottom-tiny mdo-hover">
-                        <div class="mdo-atom mdo-icon-contained mdo-font-small"> <i class="mdo-icon-form-table"></i>
-                        </div>
-                        <div class="mdo-text mdo-font-small mdo-padding-left-medium">Function Location</div>
-                        <div class="mdo-spacer"></div>
-                        <button mat-icon-button><i class="mdo-icon-arrow-right"></i></button>
-                    </mat-list-item>
-
-                    <mat-divider></mat-divider>
-
-                </mat-list>
+            <div class="row-spacer"></div>
+            <div class="f-row">
+                <button mat-flat-button color="accent" matStepperNext>Back</button>
+                <span class="f-spacer"></span>
+                <button mat-flat-button color="primary" matStepperNext (click)="step('next')">Next</button>
             </div>
-        </div>
-
-        <div class="mdo-section">
-            <button mat-flat-button color="accent" class="mdo-fixed-button mdo-text-weight-400">Back</button>
-            <div class="mdo-spacer"></div>
-            <button mat-flat-button color="primary" class="mdo-fixed-button mdo-text-weight-400">Next</button>
-        </div>
-    </div>
-
+        </mat-step>
+    </mat-horizontal-stepper>
 </mat-card>

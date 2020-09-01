@@ -55,6 +55,9 @@ import { BrConditionalFieldsComponent } from '@modules/admin/_components/module/
 import { UdrConditionOperatorsComponent } from '@modules/admin/_components/module/business-rules/user-defined-rule/udr-condition-operators/udr-condition-operators.component';
 import { SearchInputComponent } from './_components/search-input/search-input.component';
 import { FormInputComponent } from './_components/form-input/form-input.component';
+import { AddFilterMenuComponent } from './_components/add-filter-menu/add-filter-menu.component';
+import { NavigationDropdownComponent } from './_components/navigation-dropdown/navigation-dropdown.component';
+import { FilterValuesComponent } from './_components/filter-values/filter-values.component';
 
 @NgModule({
   declarations: [
@@ -75,7 +78,10 @@ import { FormInputComponent } from './_components/form-input/form-input.componen
     BrConditionalFieldsComponent,
     UdrConditionOperatorsComponent,
     SearchInputComponent,
-    FormInputComponent
+    FormInputComponent,
+    AddFilterMenuComponent,
+    NavigationDropdownComponent,
+    FilterValuesComponent
   ],
   imports: [
     // ng modules
@@ -196,7 +202,10 @@ import { FormInputComponent } from './_components/form-input/form-input.componen
     BrConditionalFieldsComponent,
     UdrConditionOperatorsComponent,
     SearchInputComponent,
-    FormInputComponent
+    FormInputComponent,
+    AddFilterMenuComponent,
+    NavigationDropdownComponent,
+    FilterValuesComponent
   ]
 })
 export class SharedModule { }

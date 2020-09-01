@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatStepper } from '@angular/material/stepper';
 
 @Component({
   selector: 'pros-upload-dataset',
@@ -6,22 +7,13 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./upload-dataset.component.scss']
 })
 export class UploadDatasetComponent implements OnInit {
-  displayedColumns: string[] = ['objectno', 'objecttype'];
-  dataSource = ELEMENT_DATA;
+  @ViewChild(MatStepper) stepper!: MatStepper;
 
   constructor() { }
 
   ngOnInit(): void {
   }
+  // ngAfterViewInit() {document.getElementsByClassName('mat-horizontal-stepper-header-container')[0].style.visibility = 'hidden'}
+  step(where: string) {this.stepper[where]();}
 
 }
-export interface PeriodicElement {
-  objecttype: string;
-  objectno: string;
-
-}
-
-const ELEMENT_DATA: PeriodicElement[] = [
-  {objectno: 'Object type', objecttype: 'Bearing ball'},
-  {objectno: 'Region', objecttype: 'Sydney'},
-];

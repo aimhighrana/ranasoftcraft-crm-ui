@@ -1,22 +1,22 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AppHomeComponent } from './app-home.component';
+import { NavigationDropdownComponent } from './navigation-dropdown.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
-describe('AppHomeComponent', () => {
-  let component: AppHomeComponent;
-  let fixture: ComponentFixture<AppHomeComponent>;
+describe('NavigationDropdownComponent', () => {
+  let component: NavigationDropdownComponent;
+  let fixture: ComponentFixture<NavigationDropdownComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AppHomeComponent ],
+      declarations: [ NavigationDropdownComponent ],
       imports: [AppMaterialModuleForSpec]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AppHomeComponent);
+    fixture = TestBed.createComponent(NavigationDropdownComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

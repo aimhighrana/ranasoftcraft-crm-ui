@@ -1,0 +1,10 @@
+mat-nav-list {
+  padding-top: 0;
+  overflow: auto;
+  max-height: 192px;
+  height: 100%;
+
+  mat-list-item {
+    font-size: 0.8rem;
+  }
+}
