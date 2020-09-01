@@ -105,7 +105,7 @@ export class EndpointService {
   }
 
   public getAllSelectedFields(): string {
-    return this.apiUrl + `/schema/get-unselected-fields`;
+    return this.apiUrl + `/schema/get-selected-fields-view`;
   }
 
   public getSchemaVariantsUrl(schemaId: string): string {

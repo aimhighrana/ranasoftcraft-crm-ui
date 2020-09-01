@@ -22,7 +22,7 @@ describe('UploadDatasetComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(UploadDatasetComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    // fixture.detectChanges();
   });
 
   it('should create', () => {

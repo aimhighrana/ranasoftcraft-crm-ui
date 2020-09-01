@@ -12,11 +12,11 @@ export class SearchInputComponent implements OnInit, OnChanges {
   constructor() { }
   control: FormControl;
 
-  @Input() label: string;
+  @Input() label = 'Search';
 
   @Input() type: string;
 
-  @Input() placeholder: string;
+  @Input() placeholder = 'Search';
   /**
    * To emit the value for parent
    */
@@ -28,6 +28,10 @@ export class SearchInputComponent implements OnInit, OnChanges {
    */
   ngOnInit(): void {
     this.control = new FormControl();
+
+    this.control.valueChanges.subscribe(value=>{
+      this.value.emit(value);
+    });
   }
 
   /**
@@ -35,6 +39,7 @@ export class SearchInputComponent implements OnInit, OnChanges {
    */
   clearSearch(){
     this.control.reset();
+    this.value.emit('');
   }
 
 

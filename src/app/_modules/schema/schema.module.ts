@@ -5,7 +5,7 @@ import { SchemaRoutingModule } from './schema-routing.module';
 import { SchemaListComponent } from 'src/app/_modules/schema/_components/schema-list/schema-list.component';
 import { SchemaGroupsComponent } from 'src/app/_modules/schema/_components/schema-groups/schema-groups.component';
 import { SchemaTileComponent } from 'src/app/_modules/schema/_components/schema-tile/schema-tile.component';
-import { SchemaDetailsComponent } from './_components/schema-details/schema-details.component';
+// import { SchemaDetailsComponent } from './_components/schema-details/schema-details.component';
 import { OverviewChartComponent } from './_components/schema-details/overview-chart/overview-chart.component';
 import { CategoriesChartComponent } from './_components/schema-details/categories-chart/categories-chart.component';
 import { BusinessRulesChartComponent } from './_components/schema-details/business-rules-chart/business-rules-chart.component';
@@ -37,6 +37,7 @@ import { DiwTilesComponent } from './_components/diw-tiles/diw-tiles.component';
 import { DuplicateCheckComponent } from './_components/duplicate-check/duplicate-check.component';
 import { SidenavUserdefinedComponent } from './_components/sidenav-userdefined/sidenav-userdefined.component';
 import { TableLoadingComponent } from './_components/table-loading/table-loading.component';
+import { SchemaDetailsComponent } from './_components/v2/schema-details/schema-details.component';
 
 @NgModule({
   declarations: [
@@ -74,7 +75,8 @@ import { TableLoadingComponent } from './_components/table-loading/table-loading
     DiwTilesComponent,
     DuplicateCheckComponent,
     SidenavUserdefinedComponent,
-    TableLoadingComponent
+    TableLoadingComponent,
+    SchemaDetailsComponent
 
   ],
   imports: [

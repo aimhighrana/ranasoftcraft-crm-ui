@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { PageNotFoundComponent } from '../shared/_components/page-not-found/page-not-found.component';
 import { SchemaGroupFormComponent } from 'src/app/_modules/schema/_components/schema-group-form/schema-group-form.component';
 import { SchemaListComponent } from 'src/app/_modules/schema/_components/schema-list/schema-list.component';
-import { SchemaDetailsComponent } from './_components/schema-details/schema-details.component';
+import { SchemaDetailsComponent } from './_components/v2/schema-details/schema-details.component';
 import { SchemaVariantsComponent } from './_components/schema-variants/schema-variants.component';
 import { SchemaExecutionComponent } from './_components/schema-execution/schema-execution.component';
 import { SchemaCollaboratorsComponent } from 'src/app/_modules/schema/_components/schema-collaborators/schema-collaborators.component';

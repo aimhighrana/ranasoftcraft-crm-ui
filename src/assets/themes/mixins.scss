@@ -929,3 +929,17 @@
     }
   }
 }
+
+// NavTab-Component
+nav.mat-tab-nav-bar,
+nav.mat-tab-header {
+  border-bottom: none;
+  margin-bottom: 16px;
+
+  .mat-tab-link-container {
+    .mat-tab-link {
+      min-width: 120px;
+      font-weight: normal;
+    }
+  }
+}

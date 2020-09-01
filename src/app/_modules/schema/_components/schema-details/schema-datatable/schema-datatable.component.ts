@@ -99,7 +99,7 @@ export class SchemaDatatableComponent implements OnInit, OnChanges {
     this.getMetadataFields();
     this.getSchemaBrInfoList();
     this.getSchemaDetails(this.schemaId);
-    this.dataTableDataSource = new SchemaDataSource(this.schemaDetailsService, this.any2TsService);
+    // this.dataTableDataSource = new SchemaDataSource(this.schemaDetailsService, this.any2TsService);
 
     this.allMetaDataFields.subscribe((allMDF) => {
       this.makeMetadataControle();
@@ -258,7 +258,7 @@ export class SchemaDatatableComponent implements OnInit, OnChanges {
     sendRequest.schemaThreshold = schemaThreshold ? schemaThreshold : 0;
 
     // send while doing pagination
-    sendRequest.afterKey = this.dataTableDataSource.afterKey;
+    // sendRequest.afterKey = this.dataTableDataSource.afterKey;
     this.dataTableDataSource.getTableData(sendRequest);
   }
 
@@ -271,7 +271,7 @@ export class SchemaDatatableComponent implements OnInit, OnChanges {
     } else {
       this.submitReviewedBtn = false;
     }
-    this.dataTableDataSource.afterKeySet(null);
+    // this.dataTableDataSource.afterKeySet(null);
     this.dataTableRequest(0, 40, this.tabs[index], Number(this.schemaDetails.schemaThreshold));
   }
 
@@ -332,7 +332,7 @@ export class SchemaDatatableComponent implements OnInit, OnChanges {
       this.selectedGridIds.push(gridId);
     }
     this.calculateDisplayFields();
-    this.dataTableDataSource.afterKeySet(null);
+    // this.dataTableDataSource.afterKeySet(null);
     this.dataTableRequest(0, 40, this.tabs[this.selectedTabIndex], Number(this.schemaDetails.schemaThreshold));
   }
 
@@ -343,7 +343,7 @@ export class SchemaDatatableComponent implements OnInit, OnChanges {
       this.selectedHierarchyIds.push(hId);
     }
     this.calculateDisplayFields();
-    this.dataTableDataSource.afterKeySet(null);
+    // this.dataTableDataSource.afterKeySet(null);
     this.dataTableRequest(0, 40, this.tabs[this.selectedTabIndex], Number(this.schemaDetails.schemaThreshold));
   }
 
@@ -530,7 +530,7 @@ export class SchemaDatatableComponent implements OnInit, OnChanges {
   }
 
   doReview(isReviewd: boolean, rowIndex: number, objnr: string) {
-    const request: SchemaCorrectionReq = {id: objnr,fldId:null, gridId: null, heirerchyId: null, rowSno:null,vc: null,isReviewed: isReviewd};
+    const request: SchemaCorrectionReq = {id: [objnr],fldId:null, gridId: null, heirerchyId: null, rowSno:null,vc: null,isReviewed: isReviewd};
       this.schemaDetailsService.doCorrection(this.schemaId, request).subscribe(res=>{
         if(res.acknowledge) {
           if(isReviewd && document.getElementById('show_reviewd_'+ rowIndex)) {

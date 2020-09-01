@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SchemaListOnLoadResponse, SchemaGroupResponse, SchemaGroupDetailsResponse, SchemaGroupCountResponse, ObjectTypeResponse, GetAllSchemabymoduleidsRes, SchemaGroupWithAssignSchemas, SchemaGroupMapping, CategoriesList } from '../_models/schema/schema';
 import { VariantFieldList, SchemaVariantResponse, SchemaBrInfoList, CategoriesResponse, DependencyResponse, VariantDetailsScheduleSchema, VariantAssignedFieldDetails, SchemaListModuleList, SchemaModuleList, SchemaListDetails, BusinessRuleExecutionDetails, VariantListDetails } from '../_models/schema/schemalist';
-import { SchemaDataTableColumnInfoResponse, ResponseFieldList, SchemaTableData, DataTableResponse, DataTableHeaderResponse, DataTableHeaderValueLang, DataTableSourceResponse, OverViewChartData, OverViewChartDataXY, OverViewChartDataSet, CategoryInfo, CategoryChartDataSet, CategoryChartData, CategoryChartDataXY, MetadataModel, RequestForSchemaDetailsWithBr, MetadataModeleResponse, Heirarchy, SchemaBrInfo } from '../_models/schema/schemadetailstable';
+import { SchemaDataTableColumnInfoResponse, ResponseFieldList, SchemaTableData, DataTableResponse, DataTableHeaderResponse, DataTableHeaderValueLang, DataTableSourceResponse, OverViewChartData, OverViewChartDataXY, OverViewChartDataSet, CategoryInfo, CategoryChartDataSet, CategoryChartData, CategoryChartDataXY, MetadataModel, RequestForSchemaDetailsWithBr, MetadataModeleResponse, Heirarchy } from '../_models/schema/schemadetailstable';
 import { Userdetails, AssignedRoles } from '../_models/userdetails';
 import * as moment from 'moment';
 @Injectable({
@@ -1030,25 +1030,6 @@ export class Any2tsService {
       });
     }
     return returnList;
-  }
-
-  public any2SchemaBrInfo(response: any): SchemaBrInfo[] {
-    const schemaBrInfo: SchemaBrInfo[] = [];
-    if (response) {
-      response.forEach(data => {
-        const brInfo: SchemaBrInfo = new SchemaBrInfo();
-        brInfo.brDescription = data.brDescription;
-        brInfo.brId = data.brInfo;
-        brInfo.brType = data.brType;
-        brInfo.dynamicMessage = data.dynamicMessage ? data.dynamicMessage : '';
-        brInfo.fields = data.fields ? data.fields.split(',') : [];
-        brInfo.refId = data.refId;
-        brInfo.schemaId = data.schemaId;
-        brInfo.schemaOrder = data.schemaOrder;
-        schemaBrInfo.push(brInfo);
-      });
-    }
-    return schemaBrInfo;
   }
 
   public any2LatestCorrectedData(record: any, fieldId: string, rowObjNum: string): string {

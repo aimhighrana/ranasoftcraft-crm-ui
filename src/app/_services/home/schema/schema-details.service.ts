@@ -67,7 +67,11 @@ export class SchemaDetailsService {
     return this.schemaBusinessRule.asObservable();
   }
 
-  public getSchemaTableDetailsByBrId(request: RequestForSchemaDetailsWithBr): Observable<any> {
+  /**
+   * Call http for table data response
+   * @param request request for table data
+   */
+  public getSchemaTableData(request: RequestForSchemaDetailsWithBr): Observable<any> {
     return this.http.post<any>(this.endpointService.getSchemaTableDetailsUrl(), request);
   }
 
@@ -115,9 +119,7 @@ export class SchemaDetailsService {
   }
 
   public getSchemaBrInfoList(schemaId: string): Observable<SchemaBrInfo[]> {
-    return this.http.get<SchemaBrInfo[]>(this.endpointService.getSchemaBrInfoList(schemaId)).pipe(map(response => {
-      return this.any2tsService.any2SchemaBrInfo(response);
-    }));
+    return this.http.get<SchemaBrInfo[]>(this.endpointService.getSchemaBrInfoList(schemaId));
   }
 
   public doCorrection(schemaId: string, request: SchemaCorrectionReq): Observable<any> {

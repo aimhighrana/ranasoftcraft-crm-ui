@@ -1,7 +1,17 @@
 <mat-nav-list>
-    <mat-list-item>Value <span class="f-spacer"></span><mat-icon>trending_flat</mat-icon></mat-list-item>
-    <mat-list-item>Due by <span class="f-spacer"></span><mat-icon>trending_flat</mat-icon></mat-list-item>
-    <mat-list-item>Request by <span class="f-spacer"></span><mat-icon>trending_flat</mat-icon></mat-list-item>
-    <mat-list-item>Priority <span class="f-spacer"></span><mat-icon>trending_flat</mat-icon></mat-list-item>
-    <mat-list-item>Priority <span class="f-spacer"></span><mat-icon>trending_flat</mat-icon></mat-list-item>
+    <mat-list-item *ngFor="let fld of metadaDrop" prosClickStopPropagation (click)="ctrlFlds(fld)">
+        {{ fld.fieldDescri ? fld.fieldDescri : fld.fieldId }} <span class="f-spacer"></span><mat-icon>trending_flat</mat-icon>
+    </mat-list-item>
+
+    <div class="f-col" id="fld_ctrl" style="display: none;" prosClickStopPropagation>
+        <span class="f-spacer"></span>
+        <button mat-icon-button (click)="prevState()">
+            <mat-icon>arrow_back</mat-icon>
+        </button>
+        <pros-filter-values
+        [fieldId]="activateElement ? activateElement.fieldId : ''"
+        (selectedValues)="emitAppliedFilter($event)">
+        </pros-filter-values>
+    </div>
+
 </mat-nav-list>

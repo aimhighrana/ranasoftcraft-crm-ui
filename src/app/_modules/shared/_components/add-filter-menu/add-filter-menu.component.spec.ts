@@ -18,7 +18,7 @@ describe('AddFilterMenuComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(AddFilterMenuComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    // fixture.detectChanges();
   });
 
   it('should create', () => {

@@ -1,3 +1,5 @@
+import { UDRBlocksModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { ReadyForApplyFilter } from '@modules/shared/_components/add-filter-menu/add-filter-menu.component';
 
 
 export interface Schemadetailstable {
@@ -56,9 +58,12 @@ export class ResponseFieldList {
 export class SchemaTableData {
     fieldId: string;
     fieldData: string;
+    oldData: string;
     isInError: boolean;
+    isCorrected: boolean;
     errorMsg: string;
     fieldDesc: string;
+    isReviewed: boolean;
 }
 export class SendDataForSchemaTableShowMore {
     constructor(public scrollId: string, public userId: string) { }
@@ -90,6 +95,15 @@ export  class RequestForSchemaDetailsWithBr {
     hierarchy: string[];
     schemaThreshold: number;
     afterKey: any;
+    filterCriterias: FilterCriteria[];
+    sort:{}
+}
+
+export class FilterCriteria {
+    fieldId: string;
+    values: string[];
+    type: string;
+    filterCtrl?: ReadyForApplyFilter;
 }
 
 export class DataTableSourceResponse {
@@ -313,9 +327,10 @@ export class SchemaBrInfo {
     brId: string;
     schemaId: string;
     refId: string;
-    fields: string[];
+    fields: string;
     schemaOrder: number;
     brDescription: string;
+    udrblocks: UDRBlocksModel[];
 }
 
 export class FieldExitsResponse {
@@ -326,7 +341,7 @@ export class FieldExitsResponse {
 }
 
 export interface SchemaCorrectionReq {
-    id: string;
+    id: string[];
     fldId: string;
     gridId: string;
     heirerchyId: string;
