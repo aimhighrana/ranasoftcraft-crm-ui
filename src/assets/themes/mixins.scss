@@ -407,7 +407,6 @@
   }
 
   // Generic Component SASS
-
   //Search-Input
   pros-search-input {
     div.root {
@@ -460,7 +459,7 @@
         mat-chip {
           font-weight: normal;
           font-size: 0.8rem;
-          padding: 4px 12px;
+          padding: 4px 6px;
           min-height: 24px;
         }
       }
@@ -479,9 +478,8 @@
 
     mat-chip.mat-chip {
       font-weight: normal;
-      font-size: 0.9rem;
-      padding: 4px 12px;
-      min-height: 24px;
+      min-height: 25px;
+      border-radius: 30px;
     }
 
     mat-chip.mat-chip.none-stats-chip {
@@ -493,15 +491,15 @@
 
     mat-chip.mat-chip.mdo-filter-matchip {
       height: 36px;
+      padding: 6px;
       border-width: 1px;
       border-style: solid;
       border-color: mat-color($foreground-palette, divider);
       background-color: mat-color($background-palette, card);
       cursor: pointer;
 
-      .link {
-        // color: #068adc;
-        margin-left: 4px;
+      label {
+        margin: 0 4px;
       }
     }
 
@@ -637,33 +635,7 @@
 
   button.mat-stroked-button {
     border-radius: 20px;
-  }
-
-  // MDO-Statics
-  .statics-col {
-    flex: 1;
-    align-items: center;
-    font-size: 1.2rem;
-    padding: 8px 0;
-    border-left: 1px solid mat-color($foreground-palette, divider);
-
-    .metric-row {
-      align-items: baseline;
-
-      .statics-count {
-        font-size: 6vw;
-        font-weight: 400;
-        line-height: 7vw;
-
-        .statics-per {
-          font-size: 1.2rem;
-        }
-      }
-    }
-  }
-
-  .statics-col:first-of-type {
-    border-left: none;
+    padding: 0 4px 0 12px;
   }
 
   //MDO-Table
@@ -685,6 +657,26 @@
 
     td.mat-cell {
       padding: 0 8px;
+    }
+
+    .error-cell {
+      border-bottom: 1px solid mat-color($primary-palette);
+      background-color: mat-color($background-palette, app-bar);
+    }
+
+    .success-cell {
+      border-bottom: 1px solid mat-color($primary-palette);
+      background-color: mat-color($background-palette, app-bar);
+    }
+
+    .review-cell {
+      border-bottom: 1px solid mat-color($primary-palette);
+      background-color: mat-color($background-palette, app-bar);
+    }
+
+    .warning-cell {
+      border-bottom: 1px solid mat-color($primary-palette);
+      background-color: mat-color($background-palette, app-bar);
     }
 
     th.mat-header-cell:first-of-type,
@@ -720,12 +712,29 @@
       text-align: center;
       border-width: 1px;
       border-style: solid;
+      background-color: mat-color($background-palette, app-bar);
+      border-color: mat-color($foreground-palette, divider);
     }
 
     mat-card-title.mat-card-title {
       margin-bottom: 0;
       font-weight: 400;
       font-size: 0.9rem;
+    }
+  }
+
+  //DIW Components
+  pros-upload-dataset {
+    mat-card.root-upload {
+      .upload-col {
+        background-color: mat-color($background-palette, app-bar);
+      }
+
+      mat-list.mat-list-upload {
+        mat-list-item {
+          border-color: mat-color($foreground-palette, divider);
+        }
+      }
     }
   }
 }
