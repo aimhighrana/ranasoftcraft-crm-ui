@@ -1,0 +1,38 @@
+.mdo-skeleton {
+  align-items: center;
+  margin: 16px 0;
+
+  > div {
+    margin: 0 16px;
+    animation: skeleton-loader-shimmer 1s linear infinite forwards;
+    background: #e4ebf3;
+    background-image: -webkit-gradient(linear, left center, right center, from(#e4ebf3), color-stop(0.2, #fafbfc), color-stop(0.4, #e4ebf3), to(#e4ebf3));
+    background-image: -webkit-linear-gradient(left, #e4ebf3 0%, #fafbfc 20%, #e4ebf3 40%, #e4ebf3 100%);
+    background-repeat: no-repeat;
+    background-size: 800px 104px;
+    border-radius: 3px;
+    position: relative;
+
+    &.skeleton-avatar {
+      height: 48px;
+      width: 48px;
+      border-radius: 50%;
+    }
+
+    &.skeleton-line {
+      flex: 1;
+      border-radius: 6px;
+      height: 10px;
+    }
+  }
+}
+
+@keyframes skeleton-loader-shimmer {
+  0% {
+    background-position: -468px 0;
+  }
+
+  100% {
+    background-position: 468px 0;
+  }
+}

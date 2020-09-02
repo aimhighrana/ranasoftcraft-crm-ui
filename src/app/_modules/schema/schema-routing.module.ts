@@ -21,6 +21,13 @@ import { DiwCreateBusinessruleComponent } from '../admin/_components/module/sche
 import { CreateVariantComponent } from './_components/create-variant/create-variant.component';
 import { WelcomeMdoComponent } from './_components/welcome-mdo/welcome-mdo.component';
 import { UploadDatasetComponent } from './_components/upload-dataset/upload-dataset.component';
+import { PrimaryNavbarComponent } from './_components/primary-navbar/primary-navbar.component';
+import { CreateRuleComponent } from './_components/create-rule/create-rule.component';
+import { SecondaryNavbarComponent } from './_components/secondary-navbar/secondary-navbar.component';
+import { DiwTilesComponent } from './_components/diw-tiles/diw-tiles.component';
+import { DuplicateCheckComponent } from './_components/duplicate-check/duplicate-check.component';
+import { SidenavUserdefinedComponent } from './_components/sidenav-userdefined/sidenav-userdefined.component';
+import { TableLoadingComponent } from './_components/table-loading/table-loading.component';
 
 const routes: Routes = [
   { path: '', component: SchemaListComponent },
@@ -43,8 +50,16 @@ const routes: Routes = [
   { path: 'diw-create-schema', component: DiwCreateSchemaComponent },
   { path: 'diw-create-businessrule', component: DiwCreateBusinessruleComponent },
   { path: 'schema-variants/create-variant/:moduleId/:schemaId/:variantId', component: CreateVariantComponent },
-  { path: 'upload-dataset', component: UploadDatasetComponent },
   { path: 'welcome-mdo', component: WelcomeMdoComponent },
+  { path: 'upload-dataset', component: UploadDatasetComponent },
+  { path: 'primary-navbar', component: PrimaryNavbarComponent },
+  { path: 'secondary-navbar', component: SecondaryNavbarComponent },
+  { path: 'create-rule', component: CreateRuleComponent },
+  { path: 'diw-tiles', component: DiwTilesComponent },
+  { path: 'duplicate-check', component: DuplicateCheckComponent },
+  { path: 'sidenav-userdefined', component: SidenavUserdefinedComponent },
+  { path: 'table-loading', component: TableLoadingComponent },
+
 
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent }

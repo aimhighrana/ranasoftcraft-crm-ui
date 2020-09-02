@@ -2,9 +2,12 @@
     <mat-label>{{label}}</mat-label>
     <mat-form-field appearance="outline">
         <input matInput class="mat-input" [type]="type" [placeholder]="placeholder" [value]="value" [formControl]="control">
-        <button mat-icon-button matSuffix *ngIf="isHelpIcon">
-            <mat-icon>help_outline</mat-icon>
-        </button>
-        <mat-hint>{{hint}}</mat-hint>
+        <div class="f-row input-actions" *ngIf="isHelpIcon">
+            <mat-divider [vertical]="true"></mat-divider>
+            <button mat-button matSuffix>
+                <mat-icon>help_outline</mat-icon>
+            </button>
+        </div>
     </mat-form-field>
+    <mat-hint>{{hint}}</mat-hint>
 </div>

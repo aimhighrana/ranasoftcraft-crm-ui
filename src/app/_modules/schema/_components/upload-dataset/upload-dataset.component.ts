@@ -7,12 +7,16 @@ import { MatStepper } from '@angular/material/stepper';
   styleUrls: ['./upload-dataset.component.scss']
 })
 export class UploadDatasetComponent implements OnInit {
-  @ViewChild(MatStepper) stepper!: MatStepper;
 
   constructor() { }
+  @ViewChild(MatStepper) stepper!: MatStepper;
+
+  datasetlabel = 'Dataset name';
+  brule = 'Schema name';
 
   ngOnInit(): void {
   }
+
   // ngAfterViewInit() {document.getElementsByClassName('mat-horizontal-stepper-header-container')[0].style.visibility = 'hidden'}
   step(where: string) {this.stepper[where]();}
 
