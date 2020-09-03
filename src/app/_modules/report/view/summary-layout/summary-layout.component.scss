@@ -1,0 +1,19 @@
+.root {
+  justify-content: flex-start;
+  align-items: flex-start;
+  align-content: flex-start;
+  height: 100%;
+  width: 850px;
+
+  mat-toolbar {
+    min-height: 50px;
+
+    mat-toolbar-row {
+      height: 50px;
+    }
+  }
+
+  pros-summary-tabs {
+    width: 100%;
+  }
+}

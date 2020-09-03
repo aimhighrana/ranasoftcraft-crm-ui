@@ -3,7 +3,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { EndpointService } from '../endpoint.service';
 import { HttpClient } from '@angular/common/http';
 import * as XLSX from 'xlsx';
-import { Criteria, BarChartWidget, WidgetHeader, TimeSeriesWidget, WidgetImageModel, WidgetHtmlEditor, ReportingWidget } from 'src/app/_modules/report/_models/widget';
+import { Criteria, BarChartWidget, WidgetHeader, TimeSeriesWidget, WidgetImageModel, WidgetHtmlEditor, ReportingWidget, LayoutTabResponse, MDORECORDESV3 } from 'src/app/_modules/report/_models/widget';
 
 @Injectable({
   providedIn: 'root'
@@ -110,4 +110,15 @@ export class WidgetService {
     } catch (e) { }
   }
 
+  getLayoutMetadata(widgetId:string,objectNumber:string):Observable<LayoutTabResponse[]>{
+    return this.http.get<any>(this.endpointService.getLayoutMetadata(widgetId,objectNumber));
+  }
+
+  getlayoutData(widgetId:string,objectNumber:string):Observable<MDORECORDESV3>{
+    return this.http.get<any>(this.endpointService.getlayoutData(widgetId,objectNumber));
+  }
+
+  getAttachmentData(snos : object):Observable<any>{
+    return this.http.post<any>(this.endpointService.getAttachmentData(),snos);
+  }
 }

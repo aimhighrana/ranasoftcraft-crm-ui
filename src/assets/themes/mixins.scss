@@ -123,6 +123,27 @@
     }
   }
 
+  pros-summary-tabs {
+    .general-container {
+      mat-accordion {
+        mat-expansion-panel {
+          mat-panel-title {
+            color: mat-color($primary-palette);
+          }
+
+          .summary-grid {
+            mat-grid-tile {
+              .mat-figure {
+                justify-content: flex-start;
+                align-items: self-start;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
   pros-container {
     .root {
       .builder-container {

@@ -370,3 +370,53 @@ export enum PermissionType {
     ROLE = 'ROLE',
     GROUP = 'GROUP'
 }
+
+export class LayoutFieldsResponse{
+      tcode : number;
+      fieldId: string;
+      fieldDescri: string;
+      dataType: string;
+      picklist: number;
+      dispCriteria: number;
+      strucId: string;
+      mandatory: boolean;
+      hidden: boolean;
+      isCheckList: boolean;
+      maxChar:number;
+      dependency : string;
+      parentField : string;
+      locType:string;
+      refField:string;
+      textAreaLength:number;
+      textAreaWidth:number;
+      value:string;
+      sno : string;
+}
+
+export class LayoutTabResponse{
+    tabCode: string;
+    tabDesc: string;
+    headerType: string;
+    helpLink: string;
+    refParentObjectId:string;
+    fieldsList : LayoutFieldsResponse[];
+}
+
+export class MDORECORDESV3{
+    id : string;
+    stat : string;
+    hdvs : {string:FieldValueV2}
+}
+
+export class FieldValueV2{
+    fId:string;
+    vc : FieldCodeText[];
+    oc : FieldCodeText[];
+    ls : string;
+}
+
+export class FieldCodeText{
+    c : string;
+    t : string;
+    p : string;
+}

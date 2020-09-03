@@ -1,0 +1,36 @@
+.general-container {
+  padding: 0;
+  overflow: auto;
+
+  mat-card-content {
+    margin-bottom: 0;
+
+    .summary-datarows {
+      padding: 0;
+
+      .data-tile {
+        flex: 3;
+        padding: 0 8px;
+
+        .summary-grid {
+          mat-grid-tile {
+            align-items: start;
+            justify-content: flex-start;
+
+            &.f-row {
+              mat-label {
+                font-weight: 500;
+                flex: 1;
+              }
+
+              p {
+                margin: 0;
+                flex: 2;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

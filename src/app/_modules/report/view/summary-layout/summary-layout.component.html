@@ -1,0 +1,16 @@
+<div class="root f-col">
+    <mat-toolbar>
+        <mat-toolbar-row>
+          <span>Summary</span>
+          <span class="f-spacer"></span>
+          <button mat-icon-button (click)="close()"><mat-icon>close</mat-icon></button>
+        </mat-toolbar-row>
+    </mat-toolbar>
+
+    <ng-template *ngIf="layoutData"  ngFor let-metadata [ngForOf]="layoutMetadata.getValue()">
+      
+    <pros-summary-tabs [metadata] ="metadata" [data] ="layoutData"></pros-summary-tabs>
+
+    </ng-template>
+
+    </div>

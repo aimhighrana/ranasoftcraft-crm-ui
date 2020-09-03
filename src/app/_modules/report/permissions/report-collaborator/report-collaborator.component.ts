@@ -58,6 +58,7 @@ export class ReportCollaboratorComponent implements OnInit {
     this.getCollaboratorPermission('');
     this.activatedRouter.params.subscribe(param => {
       this.reportId = param.reportId;
+      console.log(this.reportId);
     });
     this.getExitingCollaborators();
 

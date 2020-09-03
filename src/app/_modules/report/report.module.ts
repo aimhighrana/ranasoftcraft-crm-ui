@@ -21,6 +21,8 @@ import { PieChartComponent } from './view/dashboard-container/pie-chart/pie-char
 import { MetadatafieldControlComponent } from './edit/container/metadatafield-control/metadatafield-control.component';
 import { ReportCollaboratorComponent } from './permissions/report-collaborator/report-collaborator.component';
 import { CollaboratorComponent } from './permissions/collaborator/collaborator.component';
+import { SummaryLayoutComponent } from './view/summary-layout/summary-layout.component';
+import { SummaryTabsComponent } from './view/summary-layout/summary-tabs/summary-tabs.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +44,8 @@ import { CollaboratorComponent } from './permissions/collaborator/collaborator.c
     MetadatafieldControlComponent,
     ReportCollaboratorComponent,
     CollaboratorComponent,
+    SummaryLayoutComponent,
+    SummaryTabsComponent,
   ],
   imports: [
     CommonModule,

@@ -430,7 +430,7 @@ export class EndpointService {
     return `${this.apiUrl}/schema/variant/delete/${variantId}`;
   }
 
-  public saveNewSchemaUrl(objectId: string, runNow: boolean, variantId: string, fileSno: string): string {
+ public saveNewSchemaUrl(objectId: string, runNow: boolean, variantId: string, fileSno: string): string {
     return `${this.apiUrl}/schemamodule/create-schema?objectId=${objectId}&runNow=${runNow}&variantId=${variantId}&fileSno=${fileSno}`
   }
 
@@ -442,6 +442,7 @@ export class EndpointService {
     return  `${this.apiUrl}/schema/schema-info/${moduleId}`;
   }
 
+
   /**
    * Get schema with variants .. use for data intilligence ...
    *
@@ -449,4 +450,19 @@ export class EndpointService {
   public getSchemaWithVariantsUrl(): string  {
     return `${this.apiUrl}/schema/list-variants`;
   }
+
+  public getLayoutMetadata(widgetId,objectNumber):string{
+    return `${this.apiUrl}/report/layout-metadata/${widgetId}/${objectNumber}`;
+  }
+
+  public getlayoutData(widgetId,objectNumber):string{
+    return `${this.apiUrl}/report/layout-data/${widgetId}/${objectNumber}`;
+  }
+  public getAttachmentData():string{
+    return `${this.apiUrl}/report/attachment-data`;
+  }
+  public downloadAttachment(sno):string{
+    return `${this.apiUrl}/attachment/downloadAttachments?sno=${sno}`;
+ }
+
 }
