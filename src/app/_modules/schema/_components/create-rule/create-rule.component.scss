@@ -1,0 +1,34 @@
+mat-card.root {
+  user-select: none;
+  padding: 16px;
+  height: calc(100% - 32px);
+
+  .breadcrum-toolbar {
+    align-items: center;
+    width: 100%;
+
+    .display-heading-large {
+      font-size: 1.2rem;
+    }
+  }
+
+  .f-col > div {
+    margin: 8px 0;
+  }
+
+  mat-divider.mat-divider {
+    position: relative;
+    margin: 8px 0;
+    border-top-style: dashed;
+  }
+}
+
+@media (min-width: 1200px) {
+  .mdo-justify {
+    margin: 0 54px;
+  }
+
+  .mdo-constrained-right {
+    margin-right: 54px;
+  }
+}

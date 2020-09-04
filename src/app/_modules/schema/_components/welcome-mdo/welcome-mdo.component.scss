@@ -1,9 +1,11 @@
 mat-card.root {
   margin: 0 auto;
+  padding: 0 16px;
   user-select: none;
 
-  .header-toolbar {
+  .breadcrum-toolbar {
     align-items: center;
+    padding-top: 16px;
     margin-bottom: 48px;
 
     .display-heading-large {
@@ -11,26 +13,34 @@ mat-card.root {
     }
   }
 
-  mat-list-item {
-    padding: 8px 0;
+  mat-list {
+    position: relative;
 
-    .mat-list-icon {
-      width: 32px;
-      height: 32px;
+    mat-list-item {
+      padding: 16px 0;
 
-      mat-icon {
-        font-size: 32px;
+      .mat-list-icon {
+        width: 32px;
+        height: 32px;
+
+        mat-icon {
+          font-size: 32px;
+        }
       }
-    }
 
-    button {
-      min-width: 100px;
+      .short-line {
+        font-size: 0.8rem;
+      }
+
+      button {
+        min-width: 110px;
+      }
     }
   }
 }
 
 @media (min-width: 1200px) {
-  .root {
+  mat-card.root {
     width: 60%;
   }
 }

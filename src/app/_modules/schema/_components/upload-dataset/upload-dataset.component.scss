@@ -1,9 +1,10 @@
-mat-card.root-upload {
-  padding: 0;
+mat-card.root {
+  padding: 0 16px;
   user-select: none;
 
-  .header-toolbar {
+  .breadcrum-toolbar {
     align-items: center;
+    padding-top: 16px;
     margin-bottom: 32px;
 
     .display-heading-large {
@@ -11,9 +12,9 @@ mat-card.root-upload {
     }
   }
 
-  .allow-overflow {
-    max-height: 100%;
-    height: 516px;
+  mat-horizontal-stepper {
+    display: block;
+    height: calc(100% - 84px - 6px - 16px * 3 - 36px);
     overflow: auto;
 
     .upload-col {
@@ -21,7 +22,6 @@ mat-card.root-upload {
       align-items: center;
       height: 200px;
       border-radius: 3px;
-      margin-top: 16px;
       position: relative;
 
       mat-icon {
@@ -35,48 +35,12 @@ mat-card.root-upload {
       }
     }
 
+    div.mat-line {
+      font-size: 0.8rem;
+    }
+
     .mat-radio-button {
       margin: 8px 0;
-    }
-
-    mat-nav-list {
-      position: relative;
-
-      mat-list-item.nav-item {
-        height: 60px;
-
-        .mat-line {
-          font-size: 0.8rem;
-        }
-      }
-    }
-  }
-
-  mat-list.mat-list-upload {
-    mat-list-item.items {
-      height: auto;
-      border-bottom-width: 1px;
-      border-bottom-style: solid;
-      font-size: 0.9rem;
-
-      .mat-list-col {
-        display: flex;
-        flex: 1;
-        align-items: center;
-        min-height: 48px;
-      }
-
-      .col-x4 {
-        flex: 4;
-      }
-
-      .col-x8 {
-        flex: 8;
-      }
-
-      .col-x16 {
-        flex: 16;
-      }
     }
   }
 }

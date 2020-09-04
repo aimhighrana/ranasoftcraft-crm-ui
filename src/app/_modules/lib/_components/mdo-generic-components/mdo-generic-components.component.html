@@ -1,7 +1,6 @@
 <!-- Search-Input -->
 <ng-template [ngIf]="componentName==='search'">
     <pros-search-input [placeholder]="searchPlaceholder"></pros-search-input>
-
 </ng-template>
 
 <!-- Form-Input -->
@@ -10,7 +9,7 @@
         [isHelpIcon]="isHelpIcon" (valueChange)=(getValue($event))></pros-form-input>
 </ng-template>
 
-<!-- MDO-Tab -->
+<!-- MDO-TabGroup -->
 <ng-template [ngIf]="componentName==='tabgroup'">
     <mat-tab-group disableRipple="true">
         <mat-tab>
@@ -47,6 +46,27 @@
         </mat-tab>
     </mat-tab-group>
 </ng-template>
+
+<!-- MDO-NavTab -->
+<ng-template [ngIf]="componentName==='navtab'">
+    <nav mat-tab-nav-bar disableRipple="true">
+       <a mat-tab-link> Navbar 1 
+           <mat-chip-list class="mdo-tabchiplist">
+        <mat-chip>40</mat-chip>
+    </mat-chip-list>
+</a>
+       <a mat-tab-link> Navbar 2
+        <mat-chip-list class="mdo-tabchiplist">
+            <mat-chip>40</mat-chip>
+        </mat-chip-list>
+       </a>
+       <a mat-tab-link> Navbar 3 
+        <mat-chip-list class="mdo-tabchiplist">
+            <mat-chip>40</mat-chip>
+        </mat-chip-list>
+       </a>
+   </nav>
+</ng-template>  
 
 <!-- MDO-MatMenu -->
 <ng-template [ngIf]="componentName==='menu'">
@@ -215,3 +235,19 @@
     </table>
     <div class="row-spacer"></div>
 </ng-template>
+
+<!-- MDO Mat-Accordion -->
+<ng-template [ngIf]="componentName==='accordion'">
+    <mat-accordion>
+        <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
+          <mat-expansion-panel-header expandedHeight="36px" collapsedHeight="36px">
+            <mat-panel-title>
+              Accordion
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <p>I'm visible because I am open</p>
+        </mat-expansion-panel>
+      </mat-accordion>
+    <div class="row-spacer"></div>
+</ng-template>
+

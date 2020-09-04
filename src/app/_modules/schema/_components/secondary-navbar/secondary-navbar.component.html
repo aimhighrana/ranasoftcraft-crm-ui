@@ -1,0 +1,87 @@
+<div class="root">
+    <mat-card class="secondary-card mat-elevation-z1">
+        <div class="f-row-spacer-half"></div>
+        <div class="f-row display-heading-large">
+            <div>Schema</div>
+            <span class="f-spacer"></span>
+            <button mat-button>
+                <mat-icon>add</mat-icon>
+            </button>
+        </div>
+        <div class="row-spacer"></div>
+
+        <pros-search-input></pros-search-input>
+
+        <div class="row-spacer"></div>
+
+        <div class="nav-tree">
+            <mat-accordion>
+                <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
+                  <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
+                    <mat-panel-title>
+                      <div>Customer</div>
+                      <span class="f-spacer"></span>
+                      <label>2</label>
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+                </mat-expansion-panel>
+
+                <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
+                    <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
+                      <mat-panel-title>
+                        Material
+                        <span class="f-spacer"></span>
+                      <label>4</label>
+                      </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <mat-nav-list role="navigation">
+                        <mat-list-item><div mat-line>Duplicate check</div></mat-list-item>
+                        <mat-list-item><div mat-line>Empty fields</div></mat-list-item>
+                        <mat-list-item><div mat-line>Manufacturer check</div></mat-list-item>
+                        <mat-list-item><div mat-line>Supplier check</div></mat-list-item>
+                    </mat-nav-list>
+                  </mat-expansion-panel>
+
+                  <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
+                    <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
+                      <mat-panel-title>
+                        Order
+                        <span class="f-spacer"></span>
+                      <label>2</label>
+                      </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <mat-nav-list role="navigation">
+                        <mat-list-item><div mat-line>Duplicate check</div></mat-list-item>
+                        <mat-list-item><div mat-line>Supplier check</div></mat-list-item>
+                    </mat-nav-list>
+                  </mat-expansion-panel>
+
+                  <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
+                    <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
+                      <mat-panel-title>
+                        Vendor
+                        <span class="f-spacer"></span>
+                      <label>7</label>
+                      </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <mat-nav-list role="navigation">
+                        <mat-list-item><div mat-line>Duplicate check</div></mat-list-item>
+                        <mat-list-item><div mat-line>Empty fields</div></mat-list-item>
+                        <mat-list-item><div mat-line>Manufacturer check</div></mat-list-item>
+                        <mat-list-item><div mat-line>Supplier check</div></mat-list-item>
+                        <mat-list-item><div mat-line>Duplicate check</div></mat-list-item>
+                        <mat-list-item><div mat-line>Empty fields</div></mat-list-item>
+                        <mat-list-item><div mat-line>Manufacturer check</div></mat-list-item>
+                    </mat-nav-list>
+                  </mat-expansion-panel>
+            </mat-accordion>
+            <!-- <h1 class="section-header">Dashboards</h1>
+            <h1 class="section-header">Workflow</h1>
+            <h1 class="section-header">Data correction</h1> -->
+        </div>
+    </mat-card>
+
+    <div class="split-col">
+        <mat-icon class="split-arrow">keyboard_arrow_right</mat-icon>
+    </div>
+</div>

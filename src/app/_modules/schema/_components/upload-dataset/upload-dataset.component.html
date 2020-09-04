@@ -1,5 +1,5 @@
-<mat-card class="root-upload mat-elevation-z4">
-    <div class="f-row header-toolbar">
+<mat-card class="root mat-elevation-z0">
+    <div class="f-row breadcrum-toolbar">
         <div class="display-heading-large">Upload dataset (step 1 of 3): choose a file</div>
         <span class="f-spacer"></span>
         <button mat-button>
@@ -7,234 +7,212 @@
         </button>
     </div>
 
-    <mat-progress-bar mode="determinate" value="40"></mat-progress-bar>
+    <mat-progress-bar mode="determinate" value="80"></mat-progress-bar>
+
     <div class="row-spacer"></div>
 
     <mat-horizontal-stepper [@.disabled]="true" linear #stepper>
-        <!-- step 1 -->
+        <!-- Upload DataSet -->
         <mat-step>
             <ng-template matStepLabel></ng-template>
-
-            <div class="allow-overflow">
-                <div class="f-col upload-col">
-                    <mat-icon>publish</mat-icon>
-                    <div mat-line>Drag & drop or <a href="#" class="info">browser</a> a file to upload</div>
-                </div>
+            <div class="row-spacer"></div>
+            <div class="f-col upload-col">
+                <mat-icon>publish</mat-icon>
+                <div mat-line>Drag & drop or <a href="#" class="info">browser</a> a file to upload</div>
             </div>
         </mat-step>
-        
+
+        <!-- Step 1 -->
+        <mat-step>
+            <ng-template matStepLabel></ng-template>
+            <div class="row-spacer"></div>
+            <div class="f-col">
+                <pros-search-input></pros-search-input>
+                <div class="row-spacer"></div>
+                <mat-nav-list role="list" class="row-listing">
+                    <mat-list-item>
+                        <mat-icon mat-list-icon>add</mat-icon>
+                        <div mat-line>Create new from a dataset</div>
+                    </mat-list-item>
+
+                    <mat-list-item>
+                        <mat-icon mat-list-icon>grid_on</mat-icon>
+                        <div mat-line>Customer</div>
+                        <mat-icon>arrow_right_alt</mat-icon>
+                    </mat-list-item>
+
+                    <mat-list-item>
+                        <mat-icon mat-list-icon>grid_on</mat-icon>
+                        <div mat-line>Human resources</div>
+                        <mat-icon>arrow_right_alt</mat-icon>
+                    </mat-list-item>
+
+                    <mat-list-item>
+                        <mat-icon mat-list-icon>grid_on</mat-icon>
+                        <div mat-line>Plant</div>
+                        <mat-icon>arrow_right_alt</mat-icon>
+                    </mat-list-item>
+
+                    <mat-list-item>
+                        <mat-icon mat-list-icon>grid_on</mat-icon>
+                        <div mat-line>Purchase order</div>
+                        <mat-icon>arrow_right_alt</mat-icon>
+                    </mat-list-item>
+
+                    <mat-list-item>
+                        <mat-icon mat-list-icon>grid_on</mat-icon>
+                        <div mat-line>Vendor</div>
+                        <mat-icon>arrow_right_alt</mat-icon>
+                    </mat-list-item>
+
+                    <mat-list-item>
+                        <mat-icon mat-list-icon>grid_on</mat-icon>
+                        <div mat-line>Function Location</div>
+                        <mat-icon>arrow_right_alt</mat-icon>
+                    </mat-list-item>
+
+                    <mat-list-item>
+                        <mat-icon mat-list-icon>grid_on</mat-icon>
+                        <div mat-line>Equitments</div>
+                        <mat-icon>arrow_right_alt</mat-icon>
+                    </mat-list-item>
+                </mat-nav-list>
+            </div>
+        </mat-step>
+
         <!-- Step 2 -->
         <mat-step>
             <ng-template matStepLabel></ng-template>
+            <div class="f-col">
+                <div class="row-spacer"></div>
+                <pros-form-input [label]="datasetlabel"></pros-form-input>
+                <div class="row-spacer"></div>
+                <mat-list role="list" class="row-listing">
+                    <mat-list-item>
+                        <div class="mat-item-col col-x8"><strong>Your field headers</strong></div>
+                        <div class="mat-item-col col-x8"><strong>Your first row data</strong></div>
+                    </mat-list-item>
 
-            <div class="allow-overflow">
-                <div class="f-col">
-                    <pros-form-input></pros-form-input>
-                    <div class="row-spacer"></div>
-                    <mat-list role="list" class="mat-list-upload">
-                        <mat-list-item>
-                            <div class="mat-list-col col-x8"><b>Your field headers</b></div>
-                            <div class="mat-list-col col-x8"><b>Your first row data</b></div>
-                        </mat-list-item>
-
-                        <mat-list-item>
-                            <div class="mat-list-col col-x8">Object number</div>
-                            <div class="mat-list-col col-x8">200100</div>
-                        </mat-list-item>                       
-                    </mat-list>
-                </div>
+                    <mat-list-item>
+                        <div class="mat-item-col col-x8">Object number</div>
+                        <div class="mat-item-col col-x8">200100</div>
+                    </mat-list-item>
+                </mat-list>
             </div>
         </mat-step>
-        
+
         <!-- Step 3 -->
         <mat-step>
             <ng-template matStepLabel></ng-template>
-            <div class="allow-overflow">
-                <div class="f-col">
-                    <pros-form-input></pros-form-input>
-                    <div class="row-spacer"></div>
-                    <div>
-                        <button mat-flat-button color="accent">
-                            <mat-icon>add</mat-icon> Add business rule
-                        </button>
-                    </div>
-
-                    <mat-list role="list" class="mat-list-upload">
-                        <mat-list-item>
-                            <div class="mat-list-col"></div>
-                            <div class="mat-list-col col-x8"><b>Business rule</b></div>
-                            <div class="mat-list-col col-x8"><b>Enabled</b></div>
-                            <div class="mat-list-col"></div>
-                        </mat-list-item>
-                        <mat-list-item>
-                            <div class="mat-list-col">
-                                <mat-icon>drag_handle</mat-icon>
-                            </div>
-                            <div class="mat-list-col col-x8"><a href="#" class="info">Userdefine</a></div>
-                            <div class="mat-list-col col-x8">
-                                <mat-slide-toggle color="primary"></mat-slide-toggle>
-                            </div>
-                            <div class="mat-list-col">
-                                <button mat-button>
-                                    <mat-icon>more_vert</mat-icon>
-                                </button>
-                            </div>
-                        </mat-list-item>
-                    </mat-list>
+            <div class="row-spacer"></div>
+            <div class="f-col">
+                <pros-form-input [label]="brule"></pros-form-input>
+                <div class="row-spacer"></div>
+                <div>
+                    <button mat-flat-button color="accent">
+                        <mat-icon>add</mat-icon> Add business rule
+                    </button>
                 </div>
+
+                <mat-list role="list" class="row-listing">
+                    <mat-list-item>
+                        <div class="mat-item-col"><strong></strong></div>
+                        <div class="mat-item-col col-x8"><strong>Business rule</strong></div>
+                        <div class="mat-item-col col-x8"><strong>Enabled</strong></div>
+                        <div class="mat-item-col mat-item-end"><strong></strong></div>
+                    </mat-list-item>
+                    <mat-list-item>
+                        <div class="mat-item-col">
+                            <mat-icon>drag_handle</mat-icon>
+                        </div>
+                        <div class="mat-item-col col-x8"><a href="#" class="info">Userdefine</a></div>
+                        <div class="mat-item-col col-x8">
+                            <mat-slide-toggle color="primary"></mat-slide-toggle>
+                        </div>
+                        <div class="mat-item-col mat-item-end">
+                            <button mat-button>
+                                <mat-icon>more_vert</mat-icon>
+                            </button>
+                        </div>
+                    </mat-list-item>
+                </mat-list>
             </div>
         </mat-step>
 
         <!-- Step 4 -->
         <mat-step>
             <ng-template matStepLabel></ng-template>
-            <div class="allow-overflow">
-                <div class="f-col">
-                    <pros-form-input></pros-form-input>
-                    <div class="row-spacer"></div>
-                    <div>
-                        <button mat-flat-button color="accent">
-                            <mat-icon>add</mat-icon> Add subscribers
-                        </button>
-                    </div>
-
-                    <mat-list role="list" class="mat-list-upload">
-                        <mat-list-item>
-                            <div class="mat-list-col col-x8"><b>Subscriber</b></div>
-                            <div class="mat-list-col col-x4"><b>Rule</b></div>
-                            <div class="mat-list-col col-x16"><b>Data allocation</b></div>
-                            <div class="mat-list-col"></div>
-                        </mat-list-item>
-                        <mat-list-item>
-                            <div class="mat-list-col col-x8">
-                                <mat-card-header>
-                                    <div mat-card-avatar>RK</div>
-                                    <mat-card-title>Rahul Khurana</mat-card-title>
-                                </mat-card-header>
-                            </div>
-                            <div class="mat-list-col col-x4">
-                                <button mat-stroked-button>Editer <mat-icon>arrow_drop_down</mat-icon></button>
-                            </div>
-                            <div class="mat-list-col col-x16">
-                                <mat-chip-list>
-                                    <mat-chip class="mdo-filter-matchip" disableRipple="true"
-                                        [matMenuTriggerFor]="appliedfiltermenu"><label>Region:</label> <span class="info">sydney</span>
-                                        <mat-icon matChipRemove>clear</mat-icon>
-                                    </mat-chip>
-                                    
-                                    <mat-chip class="mdo-filter-matchip" disableRipple="true"
-                                        [matMenuTriggerFor]="addfiltermenu">
-                                        <mat-icon>filter_list</mat-icon>
-                                    </mat-chip>
-                                    <mat-menu #appliedfiltermenu="matMenu">
-                                        <pros-filter-values></pros-filter-values>
-                                    </mat-menu>
-                                    <mat-menu #addfiltermenu="matMenu">
-                                        <pros-add-filter-menu></pros-add-filter-menu>
-                                    </mat-menu>
-                                </mat-chip-list>
-                            </div>
-                            <div class="mat-list-col">
-                                <button mat-button>
-                                    <mat-icon>more_vert</mat-icon>
-                                </button>
-                            </div>
-                        </mat-list-item>
-                    </mat-list>
+            <div class="row-spacer"></div>
+            <div class="f-col">
+                <div>
+                    <button mat-flat-button color="accent">
+                        <mat-icon>add</mat-icon> Add subscribers
+                    </button>
                 </div>
+
+                <mat-list role="list" class="row-listing">
+                    <mat-list-item>
+                        <div class="mat-item-col col-x8"><strong>Subscriber</strong></div>
+                        <div class="mat-item-col col-x4"><strong>Rule</strong></div>
+                        <div class="mat-item-col col-x16"><strong>Data allocation</strong></div>
+                        <div class="mat-item-col mat-item-end"><strong></strong></div>
+                    </mat-list-item>
+                    <mat-list-item>
+                        <div class="mat-item-col col-x8">
+                            <mat-card-header>
+                                <div mat-card-avatar>RK</div>
+                                <mat-card-title>Rahul Khurana</mat-card-title>
+                            </mat-card-header>
+                        </div>
+                        <div class="mat-item-col col-x4">
+                            <button mat-stroked-button>Editer <mat-icon>arrow_drop_down</mat-icon></button>
+                        </div>
+                        <div class="mat-item-col col-x16">
+                            <mat-chip-list>
+                                <mat-chip class="mdo-filter-matchip" disableRipple="true"
+                                    [matMenuTriggerFor]="appliedfiltermenu"><label>Region:</label> <span
+                                        class="info">sydney</span>
+                                    <mat-icon matChipRemove>clear</mat-icon>
+                                </mat-chip>
+
+                                <mat-chip class="mdo-filter-matchip" disableRipple="true"
+                                    [matMenuTriggerFor]="addfiltermenu">
+                                    <mat-icon>filter_list</mat-icon>
+                                </mat-chip>
+                                <mat-menu #appliedfiltermenu="matMenu">
+                                    <pros-filter-values></pros-filter-values>
+                                </mat-menu>
+                                <mat-menu #addfiltermenu="matMenu">
+                                    <pros-add-filter-menu></pros-add-filter-menu>
+                                </mat-menu>
+                            </mat-chip-list>
+                        </div>
+                        <div class="mat-item-col mat-item-end">
+                            <button mat-button>
+                                <mat-icon>more_vert</mat-icon>
+                            </button>
+                        </div>
+                    </mat-list-item>
+                </mat-list>
             </div>
         </mat-step>
 
         <!-- Step 5 -->
         <mat-step>
             <ng-template matStepLabel></ng-template>
-            <div class="allow-overflow">
-                <div class="f-col">
-                    <mat-radio-group color="primary" class="f-col">
-                        <mat-radio-button value="1">Do not run the schema now</mat-radio-button>
-                        <mat-radio-button value="2">Run the schema once now</mat-radio-button>
-                        <mat-radio-button value="3">Create a schedule</mat-radio-button>
-                    </mat-radio-group>
-                </div>
-            </div>
-        </mat-step>
-
-        <!-- Step 6 -->
-        <mat-step>
-            <ng-template matStepLabel></ng-template>
-            <div class="allow-overflow">
-                <div class="f-col">
-                    <pros-search-input></pros-search-input>
-                    <div class="row-spacer"></div>
-                    <mat-nav-list role="list">
-
-                        <mat-list-item class="nav-item">
-                            <mat-icon mat-list-icon>add</mat-icon>
-                            <div mat-line>Create new from a dataset</div>
-                        </mat-list-item>
-
-                        <mat-divider></mat-divider>
-
-                        <mat-list-item class="nav-item">
-                            <mat-icon mat-list-icon>grid_on</mat-icon>
-                            <div mat-line>Customer</div>
-                            <mat-icon>arrow_right_alt</mat-icon>
-                        </mat-list-item>
-
-
-                        <mat-divider></mat-divider>
-
-                        <mat-list-item class="nav-item">
-                            <mat-icon mat-list-icon>grid_on</mat-icon>
-                            <div mat-line>Human resources</div>
-                            <mat-icon>arrow_right_alt</mat-icon>
-                        </mat-list-item>
-
-                        <mat-divider></mat-divider>
-
-                        <mat-list-item class="nav-item">
-                            <mat-icon mat-list-icon>grid_on</mat-icon>
-                            <div mat-line>Plant</div>
-                            <mat-icon>arrow_right_alt</mat-icon>
-                        </mat-list-item>
-
-                        <mat-divider></mat-divider>
-
-                        <mat-list-item class="nav-item">
-                            <mat-icon mat-list-icon>grid_on</mat-icon>
-                            <div mat-line>Purchase order</div>
-                            <mat-icon>arrow_right_alt</mat-icon>
-                        </mat-list-item>
-
-                        <mat-divider></mat-divider>
-
-                        <mat-list-item class="nav-item">
-                            <mat-icon mat-list-icon>grid_on</mat-icon>
-                            <div mat-line>Vendor</div>
-                            <mat-icon>arrow_right_alt</mat-icon>
-                        </mat-list-item>
-
-                        <mat-divider></mat-divider>
-
-                        <mat-list-item class="nav-item">
-                            <mat-icon mat-list-icon>grid_on</mat-icon>
-                            <div mat-line>Function Location</div>
-                            <mat-icon>arrow_right_alt</mat-icon>
-                        </mat-list-item>
-
-                        <mat-divider></mat-divider>
-
-                        <mat-list-item class="nav-item">
-                            <mat-icon mat-list-icon>grid_on</mat-icon>
-                            <div mat-line>Equitments</div>
-                            <mat-icon>arrow_right_alt</mat-icon>
-                        </mat-list-item>
-                    </mat-nav-list>
-                </div>
+            <div class="row-spacer"></div>
+            <div class="f-col">
+                <mat-radio-group color="primary" class="f-col">
+                    <mat-radio-button value="1">Do not run the schema now</mat-radio-button>
+                    <mat-radio-button value="2">Run the schema once now</mat-radio-button>
+                    <mat-radio-button value="3">Create a schedule</mat-radio-button>
+                </mat-radio-group>
             </div>
         </mat-step>
     </mat-horizontal-stepper>
+
     <div class="row-spacer"></div>
+
     <div class="f-row">
         <button mat-flat-button color="accent" (click)="step('previous')">Back</button>
         <span class="f-spacer"></span>

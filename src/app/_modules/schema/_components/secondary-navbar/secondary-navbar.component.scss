@@ -1,0 +1,98 @@
+.root {
+  display: flex;
+  height: 100%;
+
+  mat-card.secondary-card {
+    border-radius: 0;
+    padding: 0;
+    height: 100%;
+    width: 300px;
+    user-select: none;
+    overflow: hidden;
+
+    .display-heading-large {
+      font-size: 1.2rem;
+      align-items: center;
+      padding: 0 16px;
+
+      > div {
+        overflow: hidden;
+        width: 100%;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+
+    pros-search-input {
+      display: block;
+      padding: 0 16px;
+    }
+
+    .nav-tree {
+      height: calc(100% - 40px - 36px - 40px);
+      overflow: auto;
+      padding: 0 16px;
+
+      mat-accordion.mat-accordion {
+        mat-expansion-panel {
+          .mat-expansion-panel-header {
+            padding: 0 0 0 16px;
+          }
+
+          mat-nav-list {
+            mat-list-item {
+              div.mat-line {
+                padding-left: 48px;
+                font-size: 0.9rem;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .section-header {
+      font-size: 12px;
+      overflow: hidden;
+      text-align: center;
+
+      &::after,
+      &::before {
+        background-color: #e4ebf3;
+        content: "";
+        display: inline-block;
+        height: 1px;
+        position: relative;
+        vertical-align: middle;
+        width: 50%;
+      }
+
+      &::before {
+        right: 0.5em;
+        margin-left: -50%;
+      }
+
+      &::after {
+        left: 0.5em;
+        margin-right: -50%;
+      }
+    }
+  }
+
+  .split-col {
+    height: 100%;
+    width: 1px;
+    position: relative;
+    cursor: col-resize;
+
+    mat-icon.split-arrow {
+      border-width: 1px;
+      border-style: solid;
+      border-radius: 50%;
+      position: absolute;
+      left: -12px;
+      top: 12px;
+      cursor: pointer;
+    }
+  }
+}

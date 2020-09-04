@@ -1,0 +1,103 @@
+mat-card.root {
+  margin: 0 auto;
+  padding: 0 16px;
+  user-select: none;
+
+  .breadcrum-toolbar {
+    align-items: center;
+    padding-top: 16px;
+
+    .display-heading-large {
+      font-size: 1.2rem;
+    }
+  }
+
+  mat-list {
+    mat-list-item {
+      padding: 16px 0;
+      height: auto;
+      border-bottom-width: 1px;
+      border-bottom-style: solid;
+
+      .mdo-gauge.default,
+      .mdo-gauge.error,
+      .mdo-gauge.warning,
+      .mdo-gauge.success {
+        display: block;
+        width: 100px;
+
+        .circle-bg {
+          fill: none;
+          stroke: #fafbfc;
+          stroke-width: 3.8;
+        }
+
+        .circle {
+          fill: none;
+          stroke-width: 2.8;
+          stroke-linecap: round;
+          animation: progress 1s ease-out forwards;
+        }
+
+        &.error .circle {
+          stroke: #ff6b6b;
+        }
+
+        &.warning .circle {
+          stroke: #ff922b;
+        }
+
+        &.success .circle {
+          stroke: #51cf67;
+        }
+
+        @keyframes progress {
+          0% {
+            stroke-dasharray: 0 100;
+          }
+        }
+
+        .percentage {
+          font-size: 0.4em;
+          text-anchor: middle;
+        }
+      }
+
+      .tile-content {
+        flex: 1;
+
+        .f-col {
+          flex: 1;
+          margin: 0 16px;
+
+          .short-line {
+            font-size: 0.8rem;
+          }
+        }
+      }
+
+      button.mat-flat-button {
+        min-width: 110px;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+
+        mat-spinner {
+          margin: 0 auto;
+        }
+      }
+
+      button.mat-fab {
+        min-width: 40px;
+        margin-left: 1px;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+      }
+    }
+  }
+}
+
+@media (min-width: 1200px) {
+  mat-card.root {
+    width: 60%;
+  }
+}
