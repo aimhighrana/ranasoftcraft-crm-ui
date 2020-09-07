@@ -40,6 +40,13 @@
   //     color: mat-color($primary-palette, 600);
   //   }
   // }
+
+  pros-home-layout {
+    mat-sidenav-container.mat-sidenav-container {
+      background-color: mat-color($background-palette, card);
+    }
+  }
+
   pros-breadcrumb .root {
     a.link {
       color: mat-color($primary-palette);
@@ -174,72 +181,72 @@
   //     }
   //   }
   // }
-  pros-duplicate-details {
-    .custom-expansion {
-      border-color: mat-color($foreground-palette, divider);
+  // pros-duplicate-details {
+  //   .custom-expansion {
+  //     border-color: mat-color($foreground-palette, divider);
 
-      .duplicatedata-table {
-        border-color: mat-color($foreground-palette, divider);
+  //     .duplicatedata-table {
+  //       border-color: mat-color($foreground-palette, divider);
 
-        .mat-header-cell,
-        .mat-cell {
-          border-color: mat-color($foreground-palette, divider);
-        }
-      }
+  //       .mat-header-cell,
+  //       .mat-cell {
+  //         border-color: mat-color($foreground-palette, divider);
+  //       }
+  //     }
 
-      .records-labels {
-        .dropdownarrow {
-          color: mat-color($primary-palette);
-        }
-      }
-    }
+  //     .records-labels {
+  //       .dropdownarrow {
+  //         color: mat-color($primary-palette);
+  //       }
+  //     }
+  //   }
 
-    .record-cols {
-      border-color: mat-color($foreground-palette, divider);
+  //   .record-cols {
+  //     border-color: mat-color($foreground-palette, divider);
 
-      .item-list {
-        border-top-color: mat-color($foreground-palette, divider);
-      }
-    }
-  }
+  //     .item-list {
+  //       border-top-color: mat-color($foreground-palette, divider);
+  //     }
+  //   }
+  // }
 
-  pros-task-list {
-    .tasks-container {
-      mat-table {
-        .mat-header-row {
-          background-color: mat-color($background-palette, background);
-        }
+  // pros-task-list {
+  //   .tasks-container {
+  //     mat-table {
+  //       .mat-header-row {
+  //         background-color: mat-color($background-palette, background);
+  //       }
 
-        .mat-row {
-          background-color: mat-color($background-palette, card);
-          border-color: mat-color($foreground-palette, divider);
+  //       .mat-row {
+  //         background-color: mat-color($background-palette, card);
+  //         border-color: mat-color($foreground-palette, divider);
 
-          .mat-cell {
-            .additiontags {
-              color: mat-color($primary-palette);
-            }
-          }
+  //         .mat-cell {
+  //           .additiontags {
+  //             color: mat-color($primary-palette);
+  //           }
+  //         }
 
-          .taskid-link {
-            color: mat-color($primary-palette);
-          }
-        }
-      }
+  //         .taskid-link {
+  //           color: mat-color($primary-palette);
+  //         }
+  //       }
+  //     }
 
-      .null-content {
-        color: mat-color($background-palette, disabled-button);
-      }
-    }
+  //     .null-content {
+  //       color: mat-color($background-palette, disabled-button);
+  //     }
+  //   }
 
-    .split {
-      border-color: mat-color($foreground-palette, divider);
+  //   .split {
+  //     border-color: mat-color($foreground-palette, divider);
 
-      .hand-control {
-        border-color: mat-color($primary-palette);
-        background-color: mat-color($background-palette, card);
-      }
-    }
-  }
+  //     .hand-control {
+  //       border-color: mat-color($primary-palette);
+  //       background-color: mat-color($background-palette, card);
+  //     }
+  //   }
+  // }
 
   pros-columnsetting {
     .column-setting {
@@ -253,25 +260,25 @@
     }
   }
 
-  pros-duplicate-businessrule {
-    .sort-division {
-      .active-card {
-        border-color: mat-color($primary-palette);
-        color: mat-color($primary-palette);
+  // pros-duplicate-businessrule {
+  //   .sort-division {
+  //     .active-card {
+  //       border-color: mat-color($primary-palette);
+  //       color: mat-color($primary-palette);
 
-        mat-icon {
-          color: mat-color($primary-palette);
-        }
-      }
+  //       mat-icon {
+  //         color: mat-color($primary-palette);
+  //       }
+  //     }
 
-      .division-mark {
-        .circle-mark {
-          background-color: mat-color($background-palette, card);
-          border-color: mat-color($foreground-palette, divider);
-        }
-      }
-    }
-  }
+  //     .division-mark {
+  //       .circle-mark {
+  //         background-color: mat-color($background-palette, card);
+  //         border-color: mat-color($foreground-palette, divider);
+  //       }
+  //     }
+  //   }
+  // }
   // pros-upload-data {
   //   .root {
   //     .upload-process {
@@ -391,6 +398,16 @@
     }
   }
   // Generic Component SASS
+
+  .cdk-overlay-container .mat-dialog-container {
+    padding: 16px;
+  }
+
+  // .cdk-overlay-pane {
+  //   height: 100%;
+  //   margin-right: 0;
+  // }
+
   //Search-Input
   pros-search-input {
     div.root {
@@ -414,6 +431,48 @@
           display: flex;
           align-items: center;
           height: 16px;
+
+          .mat-input {
+            caret-color: mat-color($foreground-palette, text);
+          }
+        }
+      }
+    }
+
+    mat-form-field.mat-form-field.mat-form-field-appearance-outline .mat-form-field-outline-thick > div {
+      border-width: 1px;
+    }
+  }
+
+  pros-new-business-rules {
+    mat-form-field.mat-form-field {
+      .mat-form-field-wrapper {
+        padding-bottom: 0;
+        border-radius: 4px;
+        background-color: mat-color($background-palette, app-bar);
+
+        .mat-form-field-flex {
+          padding-right: 0;
+        }
+
+        .mat-form-field-infix {
+          padding: 8px 8px 8px 0;
+          display: flex;
+          align-items: center;
+
+          mat-select.mat-select {
+            margin-top: -3px;
+
+            .mat-select-trigger {
+              height: 20px;
+
+              .mat-select-arrow-wrapper {
+                .mat-select-arrow {
+                  margin-top: 2px;
+                }
+              }
+            }
+          }
 
           .mat-input {
             caret-color: mat-color($foreground-palette, text);
@@ -591,7 +650,9 @@
   //Mat-Menu
   .cdk-overlay-pane {
     .mat-menu-panel {
-      min-width: 200px;
+      max-width: 300px;
+      width: 250px;
+      min-height: auto;
       margin: 8px 0;
 
       .mat-menu-content:not(:empty) {
@@ -668,23 +729,66 @@
   }
   //MDO-Table
   .mat-table {
-    tr.mat-row:hover {
+    .mat-row:hover {
       background-color: mat-color($background-palette, app-bar);
     }
 
-    th.mat-header-cell {
-      font-size: 0.9rem;
+    .mat-header-cell,
+    .mat-cell {
+      font-size: 0.8rem;
       color: mat-color($foreground-palette, text);
       padding: 0 8px;
+      max-width: 160px;
+
+      &:nth-child(1),
+      &:nth-child(2) {
+        max-width: 40px;
+      }
+
+      &:nth-child(3),
+      &:nth-child(4) {
+        max-width: 110px;
+      }
 
       mat-icon {
         font-size: 16px;
         height: 16px;
       }
+
+      .mat-sort-header-content {
+        text-align: left;
+        align-items: start;
+      }
+
+      mat-form-field.mat-form-field {
+        .mat-form-field-wrapper {
+          padding-bottom: 0;
+          border-radius: 4px;
+          background-color: mat-color($background-palette, app-bar);
+
+          .mat-form-field-flex {
+            padding-right: 0;
+          }
+
+          .mat-form-field-infix {
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            height: 24px;
+
+            .mat-input {
+              caret-color: mat-color($foreground-palette, text);
+            }
+          }
+        }
+      }
     }
 
-    td.mat-cell {
-      padding: 0 8px;
+    .mat-header-cell:first-of-type,
+    .mat-cell:first-of-type,
+    .mat-cell:last-of-type {
+      padding-right: 8px;
+      padding-left: 8px;
     }
 
     .error-cell {
@@ -705,13 +809,6 @@
     .warning-cell {
       border-bottom: 1px solid mat-color($primary-palette);
       background-color: mat-color($background-palette, app-bar);
-    }
-
-    th.mat-header-cell:first-of-type,
-    td.mat-cell:first-of-type,
-    td.mat-cell:last-of-type {
-      padding-right: 8px;
-      padding-left: 8px;
     }
   }
   //Mat-Stepper
@@ -881,6 +978,24 @@
 
         .defined-row {
           border-color: mat-color($foreground-palette, divider);
+        }
+      }
+    }
+  }
+
+  pros-table-column-settings {
+    mat-card.root {
+      mat-card.check-list {
+        mat-nav-list {
+          mat-list-item {
+            border-top-color: mat-color($foreground-palette, divider);
+
+            mat-checkbox {
+              .mat-checkbox-inner-container {
+                margin-right: 32px;
+              }
+            }
+          }
         }
       }
     }

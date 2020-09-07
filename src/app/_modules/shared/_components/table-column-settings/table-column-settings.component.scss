@@ -1,67 +1,46 @@
-.root {
-  justify-content: flex-start;
-  align-items: flex-start;
-  align-content: flex-start;
-  max-width: 400px;
-  position: relative;
+mat-card.root {
+  user-select: none;
+  width: 600px;
   height: 100%;
-  width: 400px;
+  padding: 0 16px;
 
-  mat-form-field {
-    width: calc(100% - 32px);
-    height: 80px;
-    margin: 4px 16px;
+  .header-toolbar {
+    align-items: center;
+    width: 100%;
+
+    .display-heading-large {
+      font-size: 1.2rem;
+    }
   }
 
-  mat-card {
+  mat-card.check-list {
     padding: 0;
-    width: 100%;
-    height: calc(100% - 50px - 90px - 70px);
-    overflow-y: auto;
 
     .checkedall {
       display: block;
       padding-left: 16px;
-      padding-top: 8px;
-      background: #fff;
-      position: sticky;
-      top: 0;
-      z-index: 1;
+      padding-top: 16px;
 
       .checkboxlabel {
-        padding-left: 8px;
+        margin-left: 26px;
       }
     }
 
-    mat-selection-list {
-      padding-top: 6px;
-
-      mat-list-option {
-        font-size: 14px;
-        height: 36px;
-
-        span.highlightText {
-          font-weight: 600;
-          display: contents;
-        }
-      }
-
-      mat-expansion-panel {
-        margin: 8px 16px;
+    mat-nav-list {
+      mat-list-item {
+        border-top-width: 1px;
+        border-top-style: solid;
       }
     }
   }
+}
 
-  mat-card-actions {
-    text-align: right;
-    width: 400px;
-    height: 70px;
-    position: fixed;
-    margin-bottom: 0;
-    padding: 0;
+@media (min-width: 1200px) {
+  .mdo-justify {
+    margin: 0 54px;
+  }
 
-    button {
-      margin: 8px;
-    }
+  .mdo-constrained-right {
+    margin-right: 54px;
   }
 }

@@ -2,7 +2,7 @@
 
     <div class="f-row breadcrum-toolbar">
         <div class="display-heading-large">
-            {{toolbarHeaderText}}(step {{headerTextIndex + 1}} of {{headerText.length}})
+            {{toolbarHeaderText}} (step {{headerTextIndex + 1}} of {{headerText.length}})
         </div>
         <span class="f-spacer"></span>
         <button mat-button (click)="closeDialog()">
@@ -18,7 +18,6 @@
         <!-- Upload DataSet -->
         <mat-step>
             <ng-template matStepLabel></ng-template>
-            <div class="row-spacer"></div>
             <div class="f-col upload-col" (click)="openExplorer();$event.stopPropagation()">
                 <mat-icon>publish</mat-icon>
                 <div mat-line>Drag & drop or <a href="javascript:void(0)" class="info"
@@ -30,7 +29,6 @@
         <!-- Step 1 -->
         <mat-step>
             <ng-template matStepLabel></ng-template>
-            <div class="row-spacer"></div>
             <div class="f-col">
                 <pros-search-input [placeholder]="'Search Modules'" (value)="search($event,'module')">
                 </pros-search-input>
@@ -148,9 +146,8 @@
         <!-- Add business rules -->
         <mat-step>
             <ng-template matStepLabel></ng-template>
-            <div class="row-spacer"></div>
             <div class="f-col">
-                <pros-form-input [placeholder]="'schema name'" (valueChange)="setschemaName($event)"></pros-form-input>
+                <pros-form-input [label]="brule" [placeholder]="'Schema name'" (valueChange)="setschemaName($event)"></pros-form-input>
                 <div class="row-spacer"></div>
                 <div>
                     <button mat-flat-button color="accent" (click)="openGlobalDialog('createBR')">
@@ -190,7 +187,6 @@
         <!-- Add subscribers -->
         <mat-step>
             <ng-template matStepLabel></ng-template>
-            <div class="row-spacer"></div>
             <div class="f-col">
                 <div>
                     <button mat-flat-button color="accent" (click)="addSubscribers()">
@@ -250,7 +246,6 @@
         <!-- Run the schema -->
         <mat-step>
             <ng-template matStepLabel></ng-template>
-            <div class="row-spacer"></div>
             <div class="f-col">
                 <mat-radio-group color="primary" class="f-col" (change)="setRunningSchedule($event)">
                     <mat-radio-button value="false">Do not run the schema now</mat-radio-button>

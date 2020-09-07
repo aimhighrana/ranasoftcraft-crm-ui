@@ -4,14 +4,18 @@
     </mat-list-item>
 
     <div class="f-col" id="fld_ctrl" style="display: none;" prosClickStopPropagation>
-        <span class="f-spacer"></span>
-        <button mat-icon-button (click)="prevState()">
-            <mat-icon>arrow_back</mat-icon>
-        </button>
+       <div class="f-row filter-header">
+            <button mat-button (click)="prevState()">
+                <mat-icon>arrow_back</mat-icon>
+            </button>
+            
+             Untitled
+       </div>
+       
         <pros-filter-values
         [fieldId]="activateElement ? activateElement.fieldId : ''"
         (selectedValues)="emitAppliedFilter($event)">
         </pros-filter-values>
-    </div>
 
+    </div>
 </mat-nav-list>

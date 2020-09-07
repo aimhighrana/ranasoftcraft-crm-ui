@@ -1,3 +1,63 @@
+<mat-card class="root mat-elevation-z0">
+    <div class="row-spacer"></div>
+    <div class="f-row">
+        <button mat-button (click)="close()">
+            <mat-icon>clear</mat-icon>
+        </button>
+        <div class="col-spacer"></div>
+        <div class="f-row header-toolbar mdo-constrained-right">
+            <div class="display-heading-large">Configure table</div>
+            <span class="f-spacer"></span>
+            <button mat-flat-button color="primary" (click)="submitColumn()">Save</button>
+        </div>
+    </div>
+    <div class="row-spacer"></div>
+    <div class="f-col mdo-justify">
+        <div class="row-spacer"></div>
+        <pros-search-input label="Search" placeholder="Search fields" (value)="searchFld($event)"></pros-search-input>
+
+        <mat-card class="mat-elevation-z0 check-list">
+            <mat-checkbox class="checkedall" color="primary" (change)="selectAll()" [(ngModel)]="allChecked"
+                [indeterminate]="allIndeterminate"> <span class="checkboxlabel">All</span></mat-checkbox>
+
+            <mat-nav-list cdkDropList [cdkDropListData]="header" (cdkDropListDropped)="drop($event)">
+                <mat-list-item *ngFor="let fld of header" id="{{ fld.fieldId }}" cdkDrag class="f-row">
+                    <ng-template [ngIf]="suggestedFlds.indexOf(fld.fieldId) !==-1" [ngIfElse]="notSuggested">
+                        <mat-checkbox color="primary" (change)="selectionChange(fld)" [checked]="isChecked(fld)"> 
+                            <span style="color: red;">{{ fld.fieldDescri ? fld.fieldDescri : 'Untitled' }} </span>
+                        </mat-checkbox>
+                    </ng-template>
+
+                    <ng-template #notSuggested>
+                        <mat-checkbox color="primary" (change)="selectionChange(fld)" [checked]="isChecked(fld)">
+                            {{ fld.fieldDescri ? fld.fieldDescri : 'Untitled' }}</mat-checkbox>
+                    </ng-template>
+                    <div class="f-spacer"></div>
+                    <button mat-button>
+                        <mat-icon cdkDragHandle>drag_handle</mat-icon>
+                    </button>
+                </mat-list-item>
+            </mat-nav-list>
+        </mat-card>
+    </div>
+</mat-card>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 
 <div class="root">
     <mat-toolbar>
         <mat-toolbar-row>
@@ -13,7 +73,7 @@
         <pros-search-input
         label="Search"
         placeholder ="Search fields"
-        (value)="searchFld($event)"></pros-search-input>\
+        (value)="searchFld($event)"></pros-search-input>
     <mat-card class="mat-elevation-z0">
         <mat-checkbox class="checkedall" color="primary" (change)="selectAll()" [(ngModel)]="allChecked"
             [indeterminate]="allIndeterminate"> <span class="checkboxlabel">All</span></mat-checkbox>
@@ -34,4 +94,4 @@
         <button mat-flat-button (click)="close()">Cancel</button>
         <button mat-flat-button color="primary" (click)="submitColumn()">Submit</button>
     </mat-card-actions>
-</div>
+</div> -->
