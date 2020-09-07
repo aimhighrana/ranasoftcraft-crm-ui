@@ -1,6 +1,6 @@
 <!-- Search-Input -->
 <ng-template [ngIf]="componentName==='search'">
-    <pros-search-input [placeholder]="searchPlaceholder"></pros-search-input>
+    <pros-search-input [placeholder]="searchPlaceholder" (searchValue)=(getSearchValue($event))></pros-search-input>
 </ng-template>
 
 <!-- Form-Input -->
@@ -50,23 +50,23 @@
 <!-- MDO-NavTab -->
 <ng-template [ngIf]="componentName==='navtab'">
     <nav mat-tab-nav-bar disableRipple="true">
-       <a mat-tab-link> Navbar 1 
-           <mat-chip-list class="mdo-tabchiplist">
-        <mat-chip>40</mat-chip>
-    </mat-chip-list>
-</a>
-       <a mat-tab-link> Navbar 2
-        <mat-chip-list class="mdo-tabchiplist">
-            <mat-chip>40</mat-chip>
-        </mat-chip-list>
-       </a>
-       <a mat-tab-link> Navbar 3 
-        <mat-chip-list class="mdo-tabchiplist">
-            <mat-chip>40</mat-chip>
-        </mat-chip-list>
-       </a>
-   </nav>
-</ng-template>  
+        <a mat-tab-link> Navbar 1
+            <mat-chip-list class="mdo-tabchiplist">
+                <mat-chip>40</mat-chip>
+            </mat-chip-list>
+        </a>
+        <a mat-tab-link> Navbar 2
+            <mat-chip-list class="mdo-tabchiplist">
+                <mat-chip>40</mat-chip>
+            </mat-chip-list>
+        </a>
+        <a mat-tab-link> Navbar 3
+            <mat-chip-list class="mdo-tabchiplist">
+                <mat-chip>40</mat-chip>
+            </mat-chip-list>
+        </a>
+    </nav>
+</ng-template>
 
 <!-- MDO-MatMenu -->
 <ng-template [ngIf]="componentName==='menu'">
@@ -115,11 +115,21 @@
             <mat-icon matChipRemove>clear</mat-icon>
         </mat-chip>
         <mat-menu #appliedfiltermenu="matMenu">
-            <pros-filter-values></pros-filter-values>
+            <mat-nav-list>
+                <pros-filter-values (selectedValues)=(output($event))></pros-filter-values>
+            </mat-nav-list>
         </mat-menu>
     </mat-chip-list>
     <div class="row-spacer"></div>
 </ng-template>
+
+
+<!-- conditionally render the filter value component inside add filter -->
+<ng-template #filterValue>
+    <mat-icon (click)="show=!show">trending_flat</mat-icon>
+    <pros-filter-values></pros-filter-values>
+</ng-template>
+
 
 <!-- Add Filter -->
 <ng-template [ngIf]="componentName==='add-filter'">
@@ -127,8 +137,12 @@
         <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="addfiltermenu">
             <mat-icon>filter_list</mat-icon>
         </mat-chip>
-        <mat-menu #addfiltermenu="matMenu">
-            <pros-add-filter-menu></pros-add-filter-menu>
+        <mat-menu #addfiltermenu="matMenu">.
+            <mat-nav-list (click)="$event.stopPropagation()">
+                <ng-template [ngIf]="show" [ngIfElse]="filterValue">
+                    <pros-add-filter-menu (arrowClick)=(showHide($event))></pros-add-filter-menu>
+                </ng-template>
+            </mat-nav-list>
         </mat-menu>
     </mat-chip-list>
     <div class="row-spacer"></div>
@@ -240,14 +254,13 @@
 <ng-template [ngIf]="componentName==='accordion'">
     <mat-accordion>
         <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
-          <mat-expansion-panel-header expandedHeight="36px" collapsedHeight="36px">
-            <mat-panel-title>
-              Accordion
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <p>I'm visible because I am open</p>
+            <mat-expansion-panel-header expandedHeight="36px" collapsedHeight="36px">
+                <mat-panel-title>
+                    Accordion
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <p>I'm visible because I am open</p>
         </mat-expansion-panel>
-      </mat-accordion>
+    </mat-accordion>
     <div class="row-spacer"></div>
 </ng-template>
-

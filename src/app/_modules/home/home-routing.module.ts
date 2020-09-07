@@ -9,6 +9,10 @@ const routes: Routes = [
     path: '', component: HomeLayoutComponent,
     children: [
       {
+        path: '', redirectTo: 'dash/welcome', pathMatch: 'full',
+      },
+      {
+
         path: 'dash', children: [
           { path: 'welcome', component: WelcomeMdoComponent }
         ]

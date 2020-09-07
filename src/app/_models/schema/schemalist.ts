@@ -68,6 +68,9 @@ export class SchemaListDetails {
     isInRunning: boolean;
     schemaThreshold: string;
     collaboratorModels: SchemaDashboardPermission;
+    totalValue: number;
+    errorValue: number;
+    successValue: number;
 }
 export class BusinessRuleExecutionDetails {
     brId: string;

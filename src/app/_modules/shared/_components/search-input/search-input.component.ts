@@ -44,20 +44,15 @@ export class SearchInputComponent implements OnInit, OnChanges {
 
 
   /**
-   * Emit the value of search input on hitting enter
-   */
-  hitEnterKey(event){
-    if(event.keyCode === 13){
-      this.value.emit(this.control.value);
-      this.clearSearch();
-    }
-  }
-
-
-  /**
    * ANGULAR HOOK
    * Detect changes from parent to child
    */
   ngOnChanges(changes: SimpleChanges): void {
+    if (changes === undefined || changes.value === undefined) {
+      return;
+    }
+    if (changes.value.previousValue !== undefined && (changes.value.previousValue !== changes.value.currentValue)) {
+      this.value = changes.value.currentValue;
+    }
   }
 }

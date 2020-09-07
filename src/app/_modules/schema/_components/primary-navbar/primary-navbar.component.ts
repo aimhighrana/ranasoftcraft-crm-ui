@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'pros-primary-navbar',
@@ -7,8 +7,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PrimaryNavbarComponent implements OnInit {
 
+  @Output()
+  emitAfterSel: EventEmitter<string> = new EventEmitter<string>();
+
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+  sendToParent(val: string) {
+    this.emitAfterSel.emit(val);
   }
 }

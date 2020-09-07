@@ -52,6 +52,9 @@ export class FormInputComponent implements OnInit, OnChanges {
    */
   ngOnInit(): void {
     this.control = new FormControl();
+    if (this.value !== undefined) {
+      this.control.setValue(this.value);
+    }
     this.control.valueChanges.subscribe(
       (data) => {
         this.valueChange.emit(data);

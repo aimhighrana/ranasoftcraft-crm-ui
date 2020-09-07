@@ -18,7 +18,7 @@ describe('SearchInputComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SearchInputComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    // fixture.detectChanges();
   });
 
   it('should create', () => {

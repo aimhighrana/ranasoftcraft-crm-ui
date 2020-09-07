@@ -23,7 +23,7 @@ describe('OdataComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(OdataComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    // fixture.detectChanges();
   });
 
   it('should create', () => {

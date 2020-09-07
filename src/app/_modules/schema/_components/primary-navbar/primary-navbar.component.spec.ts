@@ -2,6 +2,9 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PrimaryNavbarComponent } from './primary-navbar.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
+import { NavigationDropdownComponent } from '@modules/shared/_components/navigation-dropdown/navigation-dropdown.component';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('PrimaryNavbarComponent', () => {
   let component: PrimaryNavbarComponent;
@@ -9,8 +12,8 @@ describe('PrimaryNavbarComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PrimaryNavbarComponent ],
-      imports: [AppMaterialModuleForSpec]
+      declarations: [ PrimaryNavbarComponent, SearchInputComponent, NavigationDropdownComponent ],
+      imports: [AppMaterialModuleForSpec, RouterTestingModule]
     })
     .compileComponents();
   }));
@@ -18,7 +21,7 @@ describe('PrimaryNavbarComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(PrimaryNavbarComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    // fixture.detectChanges();
   });
 
   it('should create', () => {

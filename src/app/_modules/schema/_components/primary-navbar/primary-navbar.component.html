@@ -26,26 +26,26 @@
     <div class="row-spacer"></div>
 
     <mat-nav-list class="primary-nav-list">
-        <mat-list-item class="selected">
+        <mat-list-item routerLink="/home/dash/welcome" [routerLinkActive]="'selected'" (click)="sendToParent('welcome')">
             <mat-icon>home</mat-icon>
             <div class="col-margin">Home</div>
         </mat-list-item>
-        <mat-list-item>
+        <!-- <mat-list-item [routerLinkActive]="'selected'">
             <mat-icon>layers</mat-icon>
             <div class="col-margin">Master Data</div>
-        </mat-list-item>
-        <mat-list-item>
+        </mat-list-item> -->
+        <mat-list-item routerLink="/home/schema" [routerLinkActive]="'selected'" (click)="sendToParent('schema')">
             <mat-icon>assessment</mat-icon>
             <div class="col-margin">Schema</div>
         </mat-list-item>
-        <mat-list-item>
+        <!-- <mat-list-item [routerLinkActive]="'selected'">
             <mat-icon>business_center</mat-icon>
             <div class="col-margin">Modules</div>
         </mat-list-item>
-        <mat-list-item>
+        <mat-list-item [routerLinkActive]="'selected'">
             <mat-icon>bar_chart</mat-icon>
             <div class="col-margin">Reports</div>
-        </mat-list-item>
+        </mat-list-item> -->
     </mat-nav-list>
 
     <div class="row-spacer"></div>

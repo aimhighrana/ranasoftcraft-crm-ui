@@ -7,7 +7,7 @@ import { Any2tsService } from '../any2ts.service';
 import { SchemaGroupResponse, SchemaGroupDetailsResponse, SchemaGroupCountResponse, CreateSchemaGroupRequest, GetAllSchemabymoduleidsReq, ObjectTypeResponse, GetAllSchemabymoduleidsRes, SchemaGroupWithAssignSchemas } from 'src/app/_models/schema/schema';
 import { DataSource } from 'src/app/_modules/schema/_components/upload-data/upload-data.component';
 import { DropDownValue, UDRBlocksModel, UdrModel, CoreSchemaBrInfo, Category } from 'src/app/_modules/admin/_components/module/business-rules/business-rules.modal';
-import { SchemaStaticThresholdRes } from '@models/schema/schemalist';
+import { SchemaStaticThresholdRes, SchemaListModuleList } from '@models/schema/schemalist';
 
 
 
@@ -106,6 +106,7 @@ export class SchemaService {
     return this.http.get<string[]>(this.endpointService.getBrConditionalOperatorUrl());
   }
 
+
   public dropDownValues(fieldId: string, queryString: string): Observable<DropDownValue[]> {
     return this.http.get<DropDownValue[]>(this.endpointService.dropDownValuesUrl(fieldId), { params: { queryString } });
   }
@@ -161,5 +162,13 @@ export class SchemaService {
    */
   public deleteSChema(schemaId: string): Observable<boolean> {
     return this.http.delete<boolean>(this.endpointService.deleteSchema(schemaId));
+  }
+
+  /**
+   * Get schema list info by moduleId
+   * @param moduleId get data based on this id
+   */
+  public getSchemaInfoByModuleId(moduleId: string): Observable<SchemaListModuleList> {
+    return this.http.get<SchemaListModuleList>(this.endpointService.getSchemaInfoByModuleIdUrl(moduleId));
   }
 }

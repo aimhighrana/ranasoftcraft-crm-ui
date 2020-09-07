@@ -58,7 +58,7 @@ const routes: Routes = [
   { path: 'primary-navbar', component: PrimaryNavbarComponent },
   { path: 'secondary-navbar', component: SecondaryNavbarComponent },
   { path: 'create-rule', component: CreateRuleComponent },
-  { path: 'diw-tiles', component: DiwTilesComponent },
+  { path: ':moduleId', component: DiwTilesComponent },
   { path: 'duplicate-check', component: DuplicateCheckComponent },
   { path: 'sidenav-userdefined', component: SidenavUserdefinedComponent },
   { path: 'table-loading', component: TableLoadingComponent },

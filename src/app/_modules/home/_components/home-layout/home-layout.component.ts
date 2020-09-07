@@ -13,6 +13,8 @@ export class HomeLayoutComponent implements OnInit, OnDestroy {
   udSub: Subscription;
   userDetails: Userdetails = new Userdetails();;
 
+  activatedPrimaryNav = 'welcome';
+
   constructor(
     private userService: UserService,
     private loadingService: LoadingService
