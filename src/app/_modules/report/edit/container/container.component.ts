@@ -307,7 +307,6 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           dataSetSize: null,blankValueAlias:null
         };
       }
-      dropableWidget.defaultFilters = [];
       this.preapreNewWidgetPosition(dropableWidget);
     }
   }

@@ -401,7 +401,7 @@
                                             <pros-metadatafield-control
                                                 [moduleId] = "selStyleWid && selStyleWid.objectType"
                                                 lebel = "Field "
-                                                [selectedFldId] = "selStyleWid && selStyleWid.defaultFilters && selStyleWid.defaultFilters[i].conditionFieldId"
+                                                [selectedFldId] = "selStyleWid && selStyleWid.defaultFilters && (selStyleWid.defaultFilters[i]).conditionFieldId"
                                                 (selectionChange) = 'onDefaultFilterChange($event,i)' class="field-divider">
                                             </pros-metadatafield-control>
 
