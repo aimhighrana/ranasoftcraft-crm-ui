@@ -7,7 +7,6 @@ import { SharedModule } from '@shared/shared.module';
 import { SchemaModule } from '@modules/schema/schema.module';
 import { MdoGenericComponentsComponent } from './_components/mdo-generic-components/mdo-generic-components.component';
 
-
 @NgModule({
   declarations: [
     LibLayoutComponent,
@@ -18,6 +17,7 @@ import { MdoGenericComponentsComponent } from './_components/mdo-generic-compone
     LibRoutingModule,
     SharedModule,
     SchemaModule
-  ]
+  ],
+  exports:[]
 })
 export class LibModule { }

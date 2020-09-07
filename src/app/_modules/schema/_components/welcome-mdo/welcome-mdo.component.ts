@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { UploadDatasetComponent } from '../upload-dataset/upload-dataset.component';
 
 @Component({
   selector: 'pros-welcome-mdo',
@@ -7,9 +9,21 @@ import { Component, OnInit } from '@angular/core';
 })
 export class WelcomeMdoComponent implements OnInit {
 
-  constructor() { }
+  constructor(public matDialog: MatDialog) { }
 
   ngOnInit(): void {
+  }
+
+  openUploadScreen() {
+    const dialogRef = this.matDialog.open(UploadDatasetComponent, {
+      height: '800px',
+      width: '700px',
+      data: {},
+      disableClose: true,
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
   }
 
 }

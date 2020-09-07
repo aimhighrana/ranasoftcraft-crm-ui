@@ -30,14 +30,15 @@ import { CreateVariantComponent } from './_components/create-variant/create-vari
 import { DatePickerFieldComponent } from './_components/create-variant/date-picker-field/date-picker-field.component';
 import { WelcomeMdoComponent } from './_components/welcome-mdo/welcome-mdo.component';
 import { UploadDatasetComponent } from './_components/upload-dataset/upload-dataset.component';
-import { PrimaryNavbarComponent } from './_components/primary-navbar/primary-navbar.component';
 import { CreateRuleComponent } from './_components/create-rule/create-rule.component';
-import { SecondaryNavbarComponent } from './_components/secondary-navbar/secondary-navbar.component';
 import { DiwTilesComponent } from './_components/diw-tiles/diw-tiles.component';
 import { DuplicateCheckComponent } from './_components/duplicate-check/duplicate-check.component';
 import { SidenavUserdefinedComponent } from './_components/sidenav-userdefined/sidenav-userdefined.component';
 import { TableLoadingComponent } from './_components/table-loading/table-loading.component';
 import { SchemaDetailsComponent } from './_components/v2/schema-details/schema-details.component';
+import { NewBusinessRulesComponent } from './_components/new-business-rules/new-business-rules.component';
+import { NewSchemaCollaboratorsComponent } from './_components/new-schema-collaborators/new-schema-collaborators.component';
+
 
 @NgModule({
   declarations: [
@@ -69,15 +70,15 @@ import { SchemaDetailsComponent } from './_components/v2/schema-details/schema-d
     DatePickerFieldComponent,
     UploadDatasetComponent,
     WelcomeMdoComponent,
-    PrimaryNavbarComponent,
     CreateRuleComponent,
-    SecondaryNavbarComponent,
     DiwTilesComponent,
     DuplicateCheckComponent,
     SidenavUserdefinedComponent,
     TableLoadingComponent,
-    SchemaDetailsComponent
-
+    SchemaDetailsComponent,
+    NewBusinessRulesComponent,
+    NewBusinessRulesComponent,
+    NewSchemaCollaboratorsComponent
   ],
   imports: [
     CommonModule,

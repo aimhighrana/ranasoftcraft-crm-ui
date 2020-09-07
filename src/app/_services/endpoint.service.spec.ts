@@ -429,7 +429,7 @@ describe('EndpointService', () => {
 
   it('downloadExecutionDetailsUrl(),should download execution details', async(() => {
     const serObj = new EndpointService();
-    expect(serObj.downloadExecutionDetailsUrl('5678987','success')).toContain('schema/download/5678987/success');
+    expect(serObj.downloadExecutionDetailsUrl('5678987', 'success')).toContain('schema/download/5678987/success');
   }));
 
   it('getShowMoreSchemaTableDataUrl(),should return schema table', async(() => {

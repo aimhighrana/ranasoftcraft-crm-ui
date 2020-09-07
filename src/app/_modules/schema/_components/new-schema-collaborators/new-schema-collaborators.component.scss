@@ -1,0 +1,30 @@
+mat-card.root {
+  .header-toolbar {
+    align-items: center;
+    width: 100%;
+
+    .display-heading-large {
+      font-size: 1.2rem;
+    }
+  }
+
+  .mdo-justify > div {
+    margin: 8px 0;
+  }
+
+  mat-divider.mat-divider {
+    position: relative;
+    margin: 8px 0;
+    border-top-style: dashed;
+  }
+}
+
+@media (min-width: 1200px) {
+  .mdo-justify {
+    margin: 0 54px;
+  }
+
+  .mdo-constrained-right {
+    margin-right: 54px;
+  }
+}

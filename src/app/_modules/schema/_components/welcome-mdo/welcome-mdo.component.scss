@@ -44,3 +44,7 @@ mat-card.root {
     width: 60%;
   }
 }
+
+.nopointers {
+  pointer-events: none;
+}

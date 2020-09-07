@@ -6,20 +6,17 @@
   $primary-palette: map-get($theme, primary);
   $accent-palette: map-get($theme, accent);
   $warn-palette: map-get($theme, warn);
-
   // fg properties
   // link https://github.com/angular/components/blob/master/src/material/core/theming/_palette.scss
   // base, divider, dividers, disabled, disabled-button, disabled-text, elevation, hint-text, secondary-text
   // icon, icons, text, slider-min, slider-off, slider-off-active
   $foreground-palette: map-get($theme, foreground);
-
   // bg properties
   // link https://github.com/angular/components/blob/master/src/material/core/theming/_palette.scss
   // status-bar, app-bar, background, hover, card, dialog, disabled-button, raised-button, focused-button
   // selected-button, selected-disabled-button, disabled-button-toggle, unselected-chip, disabled-list-option
   // tooltip
   $background-palette: map-get($theme, background);
-
   // infinite pulsing of box-shadow mimicing mat-elevation-z6 parameters
   .pulse_opacity_step_10_repeat::after {
     content: "";
@@ -35,17 +32,14 @@
       0 1px 18px 0 mat-color($primary-palette, 700, 0.24);
     opacity: 0;
   }
-
   // pros-home-layout mat-toolbar.root {
   //   button.hdrBtn {
   //     color: mat-color($primary-palette, 700);
   //   }
-
   //   button.hdrBtn:hover {
   //     color: mat-color($primary-palette, 600);
   //   }
   // }
-
   pros-breadcrumb .root {
     a.link {
       color: mat-color($primary-palette);
@@ -159,7 +153,6 @@
       }
     }
   }
-
   // pros-filters-dropdown {
   //   .filter-slider {
   //     mat-card-content {
@@ -169,12 +162,10 @@
   //         }
   //       }
   //     }
-
   //     .adv-filter-section {
   //       .material-nav {
   //         color: mat-color($primary-palette);
   //       }
-
   //       .nav-checked {
   //         .load-link {
   //           color: mat-color($primary-palette);
@@ -183,7 +174,6 @@
   //     }
   //   }
   // }
-
   pros-duplicate-details {
     .custom-expansion {
       border-color: mat-color($foreground-palette, divider);
@@ -282,25 +272,21 @@
       }
     }
   }
-
   // pros-upload-data {
   //   .root {
   //     .upload-process {
   //       .fileupload-tile {
   //         background-color: mat-color($background-palette, disabled-button);
   //         border-color: mat-color($background-palette, disabled-button);
-
   //         mat-icon {
   //           color: mat-color($background-palette, card);
   //         }
   //       }
-
   //       .field-grid {
   //         .mat-table {
   //           .mat-cell:first-of-type {
   //             background-color: mat-color($background-palette, app-bar);
   //           }
-
   //           .mat-cell:nth-child(2) {
   //             background-color: mat-color($background-palette, background);
   //           }
@@ -309,7 +295,6 @@
   //     }
   //   }
   // }
-
   pros-execution-summary {
     .execution-counts {
       mat-card {
@@ -405,7 +390,6 @@
       }
     }
   }
-
   // Generic Component SASS
   //Search-Input
   pros-search-input {
@@ -413,7 +397,6 @@
       border-color: mat-color($foreground-palette, divider);
     }
   }
-
   // Form-Input
   pros-form-input {
     mat-form-field.mat-form-field {
@@ -443,7 +426,6 @@
       border-width: 1px;
     }
   }
-
   // Tab-Component
   mat-tab-group {
     .mat-tab-header {
@@ -481,7 +463,6 @@
       }
     }
   }
-
   // NavTab-Component
   nav.mat-tab-nav-bar,
   nav.mat-tab-header {
@@ -508,13 +489,11 @@
       }
     }
   }
-
   //ProgressBar
   mat-progress-bar.mat-progress-bar {
     height: 6px;
     border-radius: 10px;
   }
-
   //MatChip
   mat-chip-list {
     outline: none;
@@ -550,7 +529,6 @@
       background: transparent;
     }
   }
-
   //MDO-Checkbox
   mat-checkbox.mat-checkbox {
     .mat-checkbox-layout {
@@ -583,7 +561,6 @@
       }
     }
   }
-
   //MDO-Radio
   mat-radio-button.mat-radio-button {
     .mat-radio-container {
@@ -611,7 +588,6 @@
   mat-radio-button.mat-radio-button.mat-primary.mat-radio-checked .mat-radio-outer-circle {
     border-color: mat-color($foreground-palette, divider);
   }
-
   //Mat-Menu
   .cdk-overlay-pane {
     .mat-menu-panel {
@@ -623,7 +599,6 @@
       }
     }
   }
-
   //Mat Slider
   mat-slider.mat-slider {
     .mat-slider-wrapper {
@@ -653,7 +628,6 @@
       }
     }
   }
-
   //MDO-Buttons
   button.mat-button,
   button.mat-stroked-button,
@@ -692,7 +666,6 @@
     display: flex;
     align-items: center;
   }
-
   //MDO-Table
   .mat-table {
     tr.mat-row:hover {
@@ -741,7 +714,6 @@
       padding-left: 8px;
     }
   }
-
   //Mat-Stepper
   mat-horizontal-stepper {
     .mat-horizontal-stepper-header-container {
@@ -752,7 +724,6 @@
       padding: 0;
     }
   }
-
   //Mat-Header with avatar
   mat-card-header.mat-card-header {
     align-items: center;
@@ -777,7 +748,6 @@
       font-size: 0.9rem;
     }
   }
-
   // Mat-List
   mat-nav-list.row-listing,
   mat-list.row-listing {
@@ -826,7 +796,6 @@
       }
     }
   }
-
   // Mat-Accordion
   mat-accordion.mat-accordion {
     .mat-expansion-panel {
@@ -843,7 +812,6 @@
       }
     }
   }
-
   //DIW Components
   pros-upload-dataset {
     mat-card.root {

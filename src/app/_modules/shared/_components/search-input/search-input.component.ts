@@ -59,6 +59,5 @@ export class SearchInputComponent implements OnInit, OnChanges {
    * Detect changes from parent to child
    */
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
   }
 }

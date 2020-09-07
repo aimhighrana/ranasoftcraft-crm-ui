@@ -99,3 +99,8 @@ export class CategoriesList {
      plantCode: string;
      businessRules: any;
 }
+
+export interface ObjectType {
+     objectDecsription: string;
+     objectId: string;
+}

@@ -28,6 +28,7 @@ import { DiwTilesComponent } from './_components/diw-tiles/diw-tiles.component';
 import { DuplicateCheckComponent } from './_components/duplicate-check/duplicate-check.component';
 import { SidenavUserdefinedComponent } from './_components/sidenav-userdefined/sidenav-userdefined.component';
 import { TableLoadingComponent } from './_components/table-loading/table-loading.component';
+import { MdoGenericComponentsComponent } from '@modules/lib/_components/mdo-generic-components/mdo-generic-components.component';
 
 const routes: Routes = [
   { path: '', component: SchemaListComponent },
@@ -50,6 +51,8 @@ const routes: Routes = [
   { path: 'diw-create-schema', component: DiwCreateSchemaComponent },
   { path: 'diw-create-businessrule', component: DiwCreateBusinessruleComponent },
   { path: 'schema-variants/create-variant/:moduleId/:schemaId/:variantId', component: CreateVariantComponent },
+  { path: 'welcome', component: WelcomeMdoComponent },
+  { path: 'upload-dataset', component: UploadDatasetComponent },
   { path: 'welcome-mdo', component: WelcomeMdoComponent },
   { path: 'upload-dataset', component: UploadDatasetComponent },
   { path: 'primary-navbar', component: PrimaryNavbarComponent },
@@ -60,6 +63,8 @@ const routes: Routes = [
   { path: 'sidenav-userdefined', component: SidenavUserdefinedComponent },
   { path: 'table-loading', component: TableLoadingComponent },
 
+  { path: 'upload-data', component: UploadDataComponent },
+  { path: 'mdo-generic-components', component: MdoGenericComponentsComponent },
 
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent }

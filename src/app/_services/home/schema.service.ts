@@ -78,7 +78,7 @@ export class SchemaService {
     return this.http.post<any>(this.endpointService.uploadDataUrl(objectType, fileSno), data);
   }
 
-  public getAllBusinessRules(schemaId): Observable<CoreSchemaBrInfo[]> {
+  public getAllBusinessRules(schemaId = ''): Observable<CoreSchemaBrInfo[]> {
     return this.http.get<CoreSchemaBrInfo[]>(this.endpointService.getBusinessRulesInfo(schemaId));
   }
 
@@ -107,7 +107,7 @@ export class SchemaService {
   }
 
   public dropDownValues(fieldId: string, queryString: string): Observable<DropDownValue[]> {
-    return this.http.get<DropDownValue[]>(this.endpointService.dropDownValuesUrl(fieldId),{params:{queryString}});
+    return this.http.get<DropDownValue[]>(this.endpointService.dropDownValuesUrl(fieldId), { params: { queryString } });
   }
 
   public saveUpdateUdrBlock(blocks: UDRBlocksModel[]): Observable<string[]> {
@@ -118,7 +118,7 @@ export class SchemaService {
     return this.http.get<UDRBlocksModel[]>(this.endpointService.conditionListsUrl(objectType));
   }
 
-  public saveUpdateUDR(udrReq: UdrModel) : Observable<string> {
+  public saveUpdateUDR(udrReq: UdrModel): Observable<string> {
     return this.http.post<string>(this.endpointService.saveUpdateUDRUrl(), udrReq);
   }
 
@@ -148,10 +148,10 @@ export class SchemaService {
    * @param schemaId schema id
    * @param variantId variant id is an option params ..
    */
-  public getSchemaThresholdStatics(schemaId: string, variantId?:string): Observable<SchemaStaticThresholdRes> {
+  public getSchemaThresholdStatics(schemaId: string, variantId?: string): Observable<SchemaStaticThresholdRes> {
     return this.http.get<SchemaStaticThresholdRes>(this.endpointService.getSchemaThresholdStatics(schemaId, variantId));
   }
-  public uploadCorrectionData(data: DataSource[], objectType: string, schemaId:string, runId: string, plantCode: string, fileSno: string): Observable<string> {
+  public uploadCorrectionData(data: DataSource[], objectType: string, schemaId: string, runId: string, plantCode: string, fileSno: string): Observable<string> {
     return this.http.post<any>(this.endpointService.uploadCorrectionDataUrl(objectType, schemaId, runId, plantCode, fileSno), data);
   }
 

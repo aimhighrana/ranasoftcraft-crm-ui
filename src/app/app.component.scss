@@ -60,3 +60,7 @@ mat-toolbar.footer {
 .palette:nth-of-type(even) {
   background-color: rgba($color: #fff, $alpha: 0.25);
 }
+
+.cdk-overlay-backdrop {
+  z-index: 0;
+}

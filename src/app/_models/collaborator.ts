@@ -54,6 +54,9 @@ export interface UserMdoModel {
     lName: string;
     fullName: string;
     email: string;
+    roleDesc?: string;
+    roleId?: string;
+    initials?: string;
 }
 export interface RolesModel {
     roleId: string;

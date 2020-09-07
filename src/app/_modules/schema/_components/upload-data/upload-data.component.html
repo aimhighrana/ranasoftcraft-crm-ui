@@ -1,7 +1,8 @@
+
 <div class="root">
   <mat-toolbar>
     <mat-toolbar-row>
-      <span>Upload new dataset for 
+      <span>Upload new dataset for
         <ng-template [ngIf]="moduleInfo.object" [ngIfElse]="elseIndex">
           <strong>Correction Value</strong>
         </ng-template>
@@ -14,7 +15,7 @@
         <mat-icon>close</mat-icon>
       </button>
     </mat-toolbar-row>
-    </mat-toolbar>
+  </mat-toolbar>
   <mat-card class="mat-elevation-z0 upload-process">
     <mat-horizontal-stepper linear #stepper (selectionChange)="controlStepChange($event);">
       <!-- <mat-step [stepControl]="moduleFormCtrl">
@@ -35,71 +36,72 @@
               </mat-card-actions>
             </form>
           </mat-step> -->
-
       <mat-step [stepControl]="uploadFileStepCtrl">
         <form [formGroup]="uploadFileStepCtrl">
           <ng-template matStepLabel>Upload dataset</ng-template>
-      
-      <!-- Upload Data Start Here... -->    
-      <div class="f-col middle-container">
-        <div class="fileupload-tile">
-          <div class="f-col parent">
-            <mat-icon class="basic-icon">backup</mat-icon>
-            <h4 class="mat-h4">Drag & Drop files here</h4>
-            <span class="or-divider">or</span>
-            <input type="file" (change)="fileChange($event)" class="child"  formControlName="uploadFileCtrl" multiple="false" id="uploadFileCtrl"/>
-            <button [disabled]="uploadDisabled" mat-flat-button color="primary" (click)="uploadFile()">{{ uploadedFile ? uploadedFile.name:'Browse file' }}</button>
-          </div>
-          <div class="f-col" style="display: none;">
-            <mat-icon class="basic-icon">loop</mat-icon>
-            <h4 class="mat-h4">Uploading...</h4>
-          </div>
 
-        </div>
-        <div class="f-col upload-note">
-          <p>Files supported: .xls, .xlsx or .csv</p>
-          <p>Max file size: 10 MB</p>
-        </div>
-
-      </div>
-      <!-- Upload Data End Here... -->
+          <!-- Upload Data Start Here... -->
+          <div class="f-col middle-container">
+            <div class="fileupload-tile">
+              <div class="f-col parent">
+                <mat-icon class="basic-icon">backup</mat-icon>
+                <h4 class="mat-h4">Drag & Drop files here</h4>
+                <span class="or-divider">or</span>
+                <input type="file" (change)="fileChange($event)" class="child" formControlName="uploadFileCtrl"
+                  multiple="false" id="uploadFileCtrl" />
+                <button [disabled]="uploadDisabled" mat-flat-button color="primary"
+                  (click)="uploadFile()">{{ uploadedFile ? uploadedFile.name:'Browse file' }}</button>
+              </div>
+              <div class="f-col" style="display: none;">
+                <mat-icon class="basic-icon">loop</mat-icon>
+                <h4 class="mat-h4">Uploading...</h4>
+              </div>
+            </div>
+            <div class="f-col upload-note">
+              <p>Files supported: .xls, .xlsx or .csv</p>
+              <p>Max file size: 10 MB</p>
+            </div>
+          </div>
+          <!-- Upload Data End Here... -->
         </form>
       </mat-step>
-
       <mat-step [stepControl]="dataTableCtrl">
         <ng-template matStepLabel>Map fields</ng-template>
-    
+
         <div class="field-grid">
           <mat-table [dataSource]="dataSource" class="mat-elevation-z0">
             <!-- Excel Field Column -->
             <ng-container matColumnDef="excel">
               <mat-header-cell *matHeaderCellDef class="col-type-first">Your file’s header fields</mat-header-cell>
-              <mat-cell *matCellDef="let row; let rowIndex = index" class="col-type-first"> {{ row.excelFld}} </mat-cell>
+              <mat-cell *matCellDef="let row; let rowIndex = index" class="col-type-first"> {{ row.excelFld}}
+              </mat-cell>
             </ng-container>
-          
+
             <!-- Excel first row data -->
             <ng-container matColumnDef="excelfrstrowdata">
               <mat-header-cell *matHeaderCellDef> Your file’s first row </mat-header-cell>
               <mat-cell *matCellDef="let row; let rowIndex = index">
-                  {{ row.excelFrstRow }}
+                {{ row.excelFrstRow }}
               </mat-cell>
             </ng-container>
-
             <!-- Map Column -->
             <ng-container matColumnDef="mapping">
-              <mat-header-cell *matHeaderCellDef class="col-type-third"> Map to<mat-icon>arrow_forward</mat-icon> </mat-header-cell>
+              <mat-header-cell *matHeaderCellDef class="col-type-third"> Map to<mat-icon>arrow_forward</mat-icon>
+              </mat-header-cell>
               <mat-cell *matCellDef="let row; let rowIndex = index" class="col-type-third"></mat-cell>
               <!-- <mat-cell *matCellDef="let row; let rowIndex = index" class="map-icon"><button mat-mini-fab disabled><mat-icon>trending_flat</mat-icon></button></mat-cell> -->
             </ng-container>
-          
+
             <!-- MDO Field Column -->
             <ng-container matColumnDef="field">
               <mat-header-cell *matHeaderCellDef>MDO fields</mat-header-cell>
               <mat-cell *matCellDef="let row; let rowIndex = index">
-                <pros-map-mdo-field [cellIndex]="rowIndex" [preSelectedFld]="getSelectedFieldId(rowIndex)" [excelField]="row.excelFld" [autoSelectedFld]="moduleInfo.object" [mdoFields]="headerFieldsList" (optionSelectedEmit)="updateMapFields($event)"></pros-map-mdo-field>
+                <pros-map-mdo-field [cellIndex]="rowIndex" [preSelectedFld]="getSelectedFieldId(rowIndex)"
+                  [excelField]="row.excelFld" [autoSelectedFld]="moduleInfo.object" [mdoFields]="headerFieldsList"
+                  (optionSelectedEmit)="updateMapFields($event)"></pros-map-mdo-field>
               </mat-cell>
             </ng-container>
-           
+
             <mat-header-row *matHeaderRowDef="displayedColumns;sticky:true"></mat-header-row>
             <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
           </mat-table>
@@ -111,24 +113,23 @@
           <button mat-flat-button color="primary" matStepperNext (click)="uploadFileData(stepper)">Begin Import</button>
         </div>
       </mat-step>
-
       <mat-step>
         <ng-template matStepLabel>Finish</ng-template>
-          <div class="f-col middle-container">
-            <div class="fileupload-tile">
-              <div class="f-col">
-                <mat-icon class="basic-icon">backup</mat-icon>
-                <h4 class="mat-h4">Uploading...</h4>
-                <p class="message-text">
-                  You will receive an email once the upload is done. <br>You can close this window.
-                </p>
-              </div>
-            </div>
-            <div class="f-col upload-note">
-              <button mat-flat-button color="primary" (click)="closeDialog()">Close</button>
+        <div class="f-col middle-container">
+          <div class="fileupload-tile">
+            <div class="f-col">
+              <mat-icon class="basic-icon">backup</mat-icon>
+              <h4 class="mat-h4">Uploading...</h4>
+              <p class="message-text">
+                You will receive an email once the upload is done. <br>You can close this window.
+              </p>
             </div>
           </div>
-          <!-- <div class="f-col finish-container">
+          <div class="f-col upload-note">
+            <button mat-flat-button color="primary" (click)="closeDialog()">Close</button>
+          </div>
+        </div>
+        <!-- <div class="f-col finish-container">
             <mat-icon class="checked-icon">check_circle</mat-icon>
             <span class="f-row-spacer-half"></span>
             <span class="title-heading">Your dataset mapping process as been completed successfully.</span>

@@ -277,7 +277,6 @@ export interface MetadataModel {
     isCompleteness: string;
     criteriaDisplay: string;
     isShoppingCartRefField: boolean;
-
 }
 export class Heirarchy {
     objnr: number;

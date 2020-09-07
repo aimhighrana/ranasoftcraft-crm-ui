@@ -429,4 +429,8 @@ export class EndpointService {
   public deleteVariantUrl(variantId: string): string {
     return `${this.apiUrl}/schema/variant/delete/${variantId}`;
   }
+
+  public saveNewSchemaUrl(objectId: string, runNow: boolean, variantId: string, fileSno: string): string {
+    return `${this.apiUrl}/schemamodule/create-schema?objectId=${objectId}&runNow=${runNow}&variantId=${variantId}&fileSno=${fileSno}`
+  }
 }

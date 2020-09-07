@@ -1,0 +1,265 @@
+<mat-card class="root mat-elevation-z0">
+    <div class="f-row">
+        <button mat-button (click)="closeDialogComponent()">
+            <mat-icon>clear</mat-icon>
+        </button>
+        <div class="col-spacer"></div>
+        <div class="f-row header-toolbar mdo-constrained-right">
+            <div class="display-heading-large">Business rule</div>
+            <span class="f-spacer"></span>
+            <button mat-flat-button color="primary" (click)="save();$event.stopPropagation()">Save</button>
+        </div>
+    </div>
+    <div class="row-spacer"></div>
+    <div class="f-col mdo-justify">
+        <form [formGroup]="form">
+            <div class="mdo-form-input f-col">
+                <mat-label>Rule Type</mat-label>
+                <mat-form-field appearance="outline">
+                    <mat-select formControlName="rule_type">
+                        <ng-container *ngFor="let rule of businessRuleTypes">
+                            <mat-option *ngIf="rule.isImplemented" [value]="rule.ruleType">{{rule.ruleDesc}}
+                            </mat-option>
+                        </ng-container>
+                    </mat-select>
+                    <mat-error
+                        *ngIf="submitted && form.controls.rule_type.errors && form.controls.rule_type.errors.required">
+                        Please enter
+                        Rule type</mat-error>
+
+                </mat-form-field>
+            </div>
+
+            <div *ngIf="!isUDR">
+                <pros-form-input (valueChange)="getFormValue($event,'rule_name')" [label]="'Rule Name(Description)'">
+                </pros-form-input>
+                <mat-error
+                    *ngIf="submitted && form.controls.rule_name.errors && form.controls.rule_name.errors.required">
+                    Please enter Rule
+                    name</mat-error>
+            </div>
+
+            <div *ngIf="!isUDR">
+                <pros-form-input (valueChange)="getFormValue($event,'error_message')"
+                    [label]="'Error Message(message)'">
+                </pros-form-input>
+                <mat-error
+                    *ngIf="submitted && form.controls.error_message.errors && form.controls.error_message.errors.required">
+                    Please
+                    enter Error message</mat-error>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <div class="mdo-form-input f-col" *ngIf="!isUDR">
+                <mat-label>Fields</mat-label>
+                <mat-form-field appearance="outline">
+                    <mat-chip-list #chipList>
+                        <mat-chip *ngFor="let field of selectedFields;let i = index" [removable]="true"
+                            (removed)="remove(field,i)">
+                            {{field.fieldText}}
+                            <mat-icon matChipRemove>.cancel</mat-icon>
+                        </mat-chip>
+                        <input matInput class="mat-input" [matAutocomplete]="auto" [matChipInputFor]="chipList"
+                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
+                    </mat-chip-list>
+                    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectedField($event)">
+                        <mat-option *ngFor="let fieldItem of filteredModules | async" [value]="fieldItem.fieldId">
+                            {{fieldItem.fieldDescri}}
+                        </mat-option>
+                    </mat-autocomplete>
+
+
+                </mat-form-field>
+
+                <mat-error *ngIf="submitted && form.controls.fields.errors && form.controls.fields.errors.required">
+                    Please select the fields
+                </mat-error>
+            </div>
+            <div *ngIf="isRegexType ">
+                <div class="mdo-form-input f-col">
+                    <mat-label>Standard function</mat-label>
+                    <mat-form-field appearance="outline">
+                        <mat-select formControlName='standard_function' (selectionChange)='setRegex($event)'>
+                            <mat-option *ngFor="let regex of preDefinedRegex" [value]="regex.FUNC_TYPE">
+                                {{regex.FUNC_NAME}}
+                            </mat-option>
+                        </mat-select>
+
+                    </mat-form-field>
+                    <mat-error
+                        *ngIf="submitted && form.controls.standard_function.errors && form.controls.standard_function.errors.required">
+                        Please select the standard function</mat-error>
+                </div>
+            </div>
+            <div *ngIf="isRegexType">
+                <pros-form-input [value]='form.value.regex' (valueChange)="getFormValue($event,'regex')"
+                    [label]="'Regex value'">
+                </pros-form-input>
+                <mat-error *ngIf="submitted && form.controls.regex.errors && form.controls.regex.errors.required">
+                    Please enter regex</mat-error>
+            </div>
+
+        </form>
+    </div>
+</mat-card>
+
+<div class="f-col user-defined-set" *ngIf="isUDR">
+
+    <ng-container *ngFor="let udrBlock of udrBlocks;let i = index">
+
+        <div class="f-row defined-row" [id]="'parent_'+udrBlock.id">
+
+            <!-- rule type -->
+            <div class="col" style="width:10%" *ngIf="i > 0">
+                <mat-select mat-stroked-button [(ngModel)]="udrBlock.blockTypeText"
+                    (selectionChange)="setParentBlockTypeText($event,i)">
+                    <mat-option *ngFor="let condition of initialConditions" [value]="condition">
+                        {{condition}}
+                    </mat-option>
+                </mat-select>
+            </div>
+
+            <div *ngIf="i === 0">
+                <button mat-flat-button color="accent">When</button>
+            </div>
+
+            <!-- field name -->
+            <div>
+                <mat-select [(ngModel)]="udrBlock.fieldId">
+                    <mat-option *ngFor="let fieldItem of fieldsList" [value]="fieldItem.fieldDescri">
+                        {{fieldItem.fieldDescri}}
+                    </mat-option>
+                </mat-select>
+            </div>
+
+            <!-- operators -->
+            <div>
+                <!-- <button mat-stroked-button>Equals <mat-icon>arrow_drop_down</mat-icon></button> -->
+                <mat-select mat-stroked-button [(ngModel)]="udrBlock.operator">
+                    <mat-option selected>-- None --</mat-option>
+                    <mat-optgroup *ngFor="let group of operators" [label]="group.desc">
+                        <mat-option *ngFor="let child of group.childs" [value]="child">
+                            {{child}}
+                        </mat-option>
+                    </mat-optgroup>
+                </mat-select>
+            </div>
+
+            <!-- Comparison value -->
+            <div *ngIf="udrBlock.operator !== 'RANGE'">
+                <pros-form-input [placeholder]="'Comparison value'" (valueChange)="setComparisonValue($event,i)">
+                </pros-form-input>
+            </div>
+
+            <div *ngIf="udrBlock.operator === 'RANGE'">
+                <pros-form-input [placeholder]="'start value'" (valueChange)="setRangeValue($event,'start',i)">
+                </pros-form-input>
+                <pros-form-input [placeholder]="'end value'" (valueChange)="setRangeValue($event,'end',i)">
+                </pros-form-input>
+            </div>
+
+            <!-- three dots -->
+            <div>
+                <button mat-button [matMenuTriggerFor]="menu">
+                    <mat-icon>more_vert</mat-icon>
+                </button>
+            </div>
+            <mat-menu #menu="matMenu">
+                <!-- give local reference and tell this is manu by assigning 'matMenu' -->
+                <button mat-menu-item (click)="addNestedBlock(udrBlock,i)">
+                    <mat-icon>add</mat-icon>
+                    <span>Add Child rule</span>
+                </button>
+
+                <button mat-menu-item *ngIf="i > 0" (click)="deleteParentBlock(i)">
+                    <mat-icon>remove</mat-icon>
+                    <span>Delete</span>
+                </button>
+            </mat-menu>
+
+        </div>
+
+        <!-- nested row -->
+
+        <ng-container *ngIf="udrBlock.children">
+            <div *ngFor="let child of udrBlock.children;let j=index">
+                <ul class="sub-defined">
+                    <div class="f-row defined-row">
+
+                        <div class="col" style="width:10%">
+                            <mat-select [(ngModel)]="child.blockTypeText">
+                                <mat-option *ngFor="let condition of initialConditions" [value]="condition"
+                                    [disabled]="condition === 'When'">
+                                    {{condition}}
+                                </mat-option>
+                            </mat-select>
+                        </div>
+
+                        <div class="col">
+                            <mat-select [(ngModel)]="child.fieldId">
+                                <mat-option *ngFor="let fieldItem of fieldsList" [value]="fieldItem.fieldDescri">
+                                    {{fieldItem.fieldDescri}}
+                                </mat-option>
+                            </mat-select>
+                        </div>
+
+                        <div class="col">
+                            <mat-select mat-stroked-button [(ngModel)]="child.operator">
+                                <mat-option selected>-- None --</mat-option>
+                                <mat-optgroup *ngFor="let group of operators" [label]="group.desc">
+                                    <mat-option *ngFor="let child of group.childs" [value]="child">
+                                        {{child}}
+                                    </mat-option>
+                                </mat-optgroup>
+                            </mat-select>
+                        </div>
+
+                        <div class="col" *ngIf="child.operator !== 'RANGE'">
+                            <pros-form-input [placeholder]="'Comparison value'"
+                                (valueChange)="setComparisonValueForChild($event,child,i)">
+                            </pros-form-input>
+                        </div>
+
+                        <div  class="col" *ngIf="child.operator === 'RANGE'">
+                            <pros-form-input [placeholder]="'start value'"
+                                (valueChange)="setRangeValueForChild($event,'start',child)">
+                            </pros-form-input>
+                            <pros-form-input [placeholder]="'end value'"
+                                (valueChange)="setRangeValueForChild($event,'end',child)">
+                            </pros-form-input>
+                        </div>
+
+                        <div class="col">
+                            <button mat-button [matMenuTriggerFor]="nestedMenu">
+                                <mat-icon>more_vert</mat-icon>
+                            </button>
+                            <mat-menu #nestedMenu="matMenu">
+                                <!-- give local reference and tell this is manu by assigning 'matMenu' -->
+                                <!-- <button mat-menu-item (click)="addNestedBlock(udrBlock,i)">
+                                    <mat-icon>add</mat-icon>
+                                    <span>Add</span>
+                                </button> -->
+
+                                <button mat-menu-item (click)="deleteFromChildArray(i,j)">
+                                    <mat-icon>remove</mat-icon>
+                                    <span>Delete</span>
+                                </button>
+                            </mat-menu>
+                        </div>
+                    </div>
+                </ul>
+            </div>
+        </ng-container>
+    </ng-container>
+
+
+    <!-- button to ad primary block -->
+    <div class="f-row defined-row add-col">
+        <div class="col">
+            <button mat-flat-button color="accent" (click)="addNewBlock('primary',false)">
+                <mat-icon>add</mat-icon>
+            </button>
+        </div>
+    </div>
+</div>

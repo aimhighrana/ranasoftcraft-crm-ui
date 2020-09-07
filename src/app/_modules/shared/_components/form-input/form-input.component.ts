@@ -16,8 +16,6 @@ export class FormInputComponent implements OnInit, OnChanges {
    */
   control: FormControl;
 
-
-
   /**
    * Getting placeholder from parent
    */
@@ -71,6 +69,7 @@ export class FormInputComponent implements OnInit, OnChanges {
    *
    */
   ngOnChanges(changes: SimpleChanges) {
+    if(!changes || !changes.value) return;
     if (changes.value.previousValue !== undefined && (changes.value.previousValue !== changes.value.currentValue)) {
       this.value = changes.value.currentValue;
     }

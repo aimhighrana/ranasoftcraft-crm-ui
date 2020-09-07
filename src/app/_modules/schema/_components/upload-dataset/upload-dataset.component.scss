@@ -1,6 +1,8 @@
 mat-card.root {
-  padding: 0 16px;
+  height: 100%;
   user-select: none;
+  padding: 0;
+  margin: -16px 0;
 
   .breadcrum-toolbar {
     align-items: center;
@@ -14,7 +16,7 @@ mat-card.root {
 
   mat-horizontal-stepper {
     display: block;
-    height: calc(100% - 84px - 6px - 16px * 3 - 36px);
+    height: calc(100% - 84px - 6px - 46px);
     overflow: auto;
 
     .upload-col {

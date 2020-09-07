@@ -1,13 +1,16 @@
 <mat-card class="root mat-elevation-z0">
+
     <div class="f-row breadcrum-toolbar">
-        <div class="display-heading-large">Upload dataset (step 1 of 3): choose a file</div>
+        <div class="display-heading-large">
+            {{toolbarHeaderText}}(step {{headerTextIndex + 1}} of {{headerText.length}})
+        </div>
         <span class="f-spacer"></span>
-        <button mat-button>
+        <button mat-button (click)="closeDialog()">
             <mat-icon>clear</mat-icon>
         </button>
     </div>
 
-    <mat-progress-bar mode="determinate" value="80"></mat-progress-bar>
+    <mat-progress-bar mode="determinate" [value]="progressBar"></mat-progress-bar>
 
     <div class="row-spacer"></div>
 
@@ -16,9 +19,11 @@
         <mat-step>
             <ng-template matStepLabel></ng-template>
             <div class="row-spacer"></div>
-            <div class="f-col upload-col">
+            <div class="f-col upload-col" (click)="openExplorer();$event.stopPropagation()">
                 <mat-icon>publish</mat-icon>
-                <div mat-line>Drag & drop or <a href="#" class="info">browser</a> a file to upload</div>
+                <div mat-line>Drag & drop or <a href="javascript:void(0)" class="info"
+                        (click)="openExplorer();$event.stopPropagation()">browser</a> a file to upload</div>
+                <input type="file" id="uploader" (change)="fileChange($event)" style="display: none;" />
             </div>
         </mat-step>
 
@@ -27,61 +32,32 @@
             <ng-template matStepLabel></ng-template>
             <div class="row-spacer"></div>
             <div class="f-col">
-                <pros-search-input></pros-search-input>
+                <pros-search-input [placeholder]="'Search Modules'" (value)="search($event,'module')">
+                </pros-search-input>
+
                 <div class="row-spacer"></div>
                 <mat-nav-list role="list" class="row-listing">
+
                     <mat-list-item>
                         <mat-icon mat-list-icon>add</mat-icon>
                         <div mat-line>Create new from a dataset</div>
                     </mat-list-item>
 
-                    <mat-list-item>
-                        <mat-icon mat-list-icon>grid_on</mat-icon>
-                        <div mat-line>Customer</div>
-                        <mat-icon>arrow_right_alt</mat-icon>
-                    </mat-list-item>
-
-                    <mat-list-item>
-                        <mat-icon mat-list-icon>grid_on</mat-icon>
-                        <div mat-line>Human resources</div>
-                        <mat-icon>arrow_right_alt</mat-icon>
-                    </mat-list-item>
-
-                    <mat-list-item>
-                        <mat-icon mat-list-icon>grid_on</mat-icon>
-                        <div mat-line>Plant</div>
-                        <mat-icon>arrow_right_alt</mat-icon>
-                    </mat-list-item>
-
-                    <mat-list-item>
-                        <mat-icon mat-list-icon>grid_on</mat-icon>
-                        <div mat-line>Purchase order</div>
-                        <mat-icon>arrow_right_alt</mat-icon>
-                    </mat-list-item>
-
-                    <mat-list-item>
-                        <mat-icon mat-list-icon>grid_on</mat-icon>
-                        <div mat-line>Vendor</div>
-                        <mat-icon>arrow_right_alt</mat-icon>
-                    </mat-list-item>
-
-                    <mat-list-item>
-                        <mat-icon mat-list-icon>grid_on</mat-icon>
-                        <div mat-line>Function Location</div>
-                        <mat-icon>arrow_right_alt</mat-icon>
-                    </mat-list-item>
-
-                    <mat-list-item>
-                        <mat-icon mat-list-icon>grid_on</mat-icon>
-                        <div mat-line>Equitments</div>
-                        <mat-icon>arrow_right_alt</mat-icon>
-                    </mat-list-item>
+                    <ng-container *ngFor="let module of modulesList">
+                        <mat-list-item class="nav-item"
+                            (click)="setModuleValueAndTakeStep(module);$event.stopPropagation()">
+                            <mat-icon mat-list-icon>grid_on</mat-icon>
+                            <div mat-line>{{module.objectdesc}}</div>
+                            <mat-icon>arrow_right_alt</mat-icon>
+                        </mat-list-item>
+                    </ng-container>
                 </mat-nav-list>
             </div>
         </mat-step>
 
         <!-- Step 2 -->
-        <mat-step>
+        <!-- Select Module-->
+        <!-- <mat-step>
             <ng-template matStepLabel></ng-template>
             <div class="f-col">
                 <div class="row-spacer"></div>
@@ -92,43 +68,115 @@
                         <div class="mat-item-col col-x8"><strong>Your field headers</strong></div>
                         <div class="mat-item-col col-x8"><strong>Your first row data</strong></div>
                     </mat-list-item>
+                     <div class="allow-overflow">
+                <div class="f-col">
+                    <pros-search-input [placeholder]="'Search Modules'" (value)="search($event,'module')">
+                    </pros-search-input>
+                    <div class="row-spacer"></div>
+                    <mat-nav-list role="list">
+                        <mat-list-item class="nav-item" (click)="setModuleValueAndTakeStep()">
+                            <mat-icon mat-list-icon>add</mat-icon>
+                            <div mat-line>Create new from a dataset</div>
+                        </mat-list-item> -->
 
-                    <mat-list-item>
+        <!-- <mat-list-item>
                         <div class="mat-item-col col-x8">Object number</div>
                         <div class="mat-item-col col-x8">200100</div>
+                    </mat-list-item>
+                </mat-list> 
+                    <ng-container *ngFor="let module of modulesList">
+                        <mat-list-item class="nav-item"
+                            (click)="setModuleValueAndTakeStep(module);$event.stopPropagation()">
+                            <mat-icon mat-list-icon>grid_on</mat-icon>
+                            <div mat-line>{{module.objectdesc}}</div>
+                            <mat-icon>arrow_right_alt</mat-icon>
+                        </mat-list-item>
+
+                        <mat-divider></mat-divider>
+                    </ng-container>
+
+                      </mat-nav-list>  
+            </div>
+
+        </mat-step> -->
+
+        <!-- Name your dataset -->
+        <mat-step>
+            <ng-template matStepLabel></ng-template>
+            <div class="f-col">
+                <div class="row-spacer"></div>
+                <pros-form-input *ngIf="!requestForm.value.objectDesc" [label]="'Dataset Name'"
+                    [placeholder]="'Dataset Name'" (value)="search($event,'headers')">
+                </pros-form-input>
+                <div class="row-spacer"></div>
+
+                <mat-list role="list" class="row-listing">
+                    <mat-list-item>
+                        <div class="mat-item-col col-x8"><strong>Your field headers</strong></div>
+                        <div class="mat-item-col col-x8"><strong>Your first row data</strong></div>
+                        <div class="mat-item-col col-x8" *ngIf="requestForm.value.objectDesc">
+                            <strong>Map to</strong>
+                            <mat-icon>
+                                arrow_forward
+                            </mat-icon>
+                        </div>
+                        <div class="mat-item-col col-x8" *ngIf="requestForm.value.objectDesc"><strong>MDO
+                                fields</strong>
+                        </div>
+                    </mat-list-item>
+
+                    <mat-list-item *ngFor="let data of dataSource;let rowIndex=index">
+                        <div class="mat-item-col col-x8">{{data.excelFld}}</div>
+                        <div class="mat-item-col col-x8">{{data.excelFrstRow}}</div>
+                        <div class="mat-item-col col-x8" *ngIf="requestForm.value.objectDesc">
+                            <mat-icon>
+                                arrow_forward
+                            </mat-icon>
+                        </div>
+                        <div class="mat-item-col col-x8" *ngIf="requestForm.value.objectDesc">
+                            <pros-map-mdo-field [cellIndex]="rowIndex" [preSelectedFld]="getSelectedFieldId(rowIndex)"
+                                [excelField]="data.excelFld" [autoSelectedFld]="moduleInfo.object"
+                                [mdoFields]="headerFieldsList" (optionSelectedEmit)="updateMapFields($event)">
+                            </pros-map-mdo-field>
+                        </div>
                     </mat-list-item>
                 </mat-list>
             </div>
         </mat-step>
 
         <!-- Step 3 -->
+        <!-- Add business rules -->
         <mat-step>
             <ng-template matStepLabel></ng-template>
             <div class="row-spacer"></div>
             <div class="f-col">
-                <pros-form-input [label]="brule"></pros-form-input>
+                <pros-form-input [placeholder]="'schema name'" (valueChange)="setschemaName($event)"></pros-form-input>
                 <div class="row-spacer"></div>
                 <div>
-                    <button mat-flat-button color="accent">
+                    <button mat-flat-button color="accent" (click)="openGlobalDialog('createBR')">
                         <mat-icon>add</mat-icon> Add business rule
                     </button>
                 </div>
 
-                <mat-list role="list" class="row-listing">
+                <mat-list role="list" class="row-listing" cdkDropList (cdkDropListDropped)="reoderBR($event)">
                     <mat-list-item>
                         <div class="mat-item-col"><strong></strong></div>
                         <div class="mat-item-col col-x8"><strong>Business rule</strong></div>
                         <div class="mat-item-col col-x8"><strong>Enabled</strong></div>
-                        <div class="mat-item-col mat-item-end"><strong></strong></div>
+                        <div class="mat-item-col"><strong></strong></div>
                     </mat-list-item>
-                    <mat-list-item>
+                    <mat-list-item *ngFor="let businessRule of businessRulesList">
                         <div class="mat-item-col">
                             <mat-icon>drag_handle</mat-icon>
                         </div>
-                        <div class="mat-item-col col-x8"><a href="#" class="info">Userdefine</a></div>
-                        <div class="mat-item-col col-x8">
-                            <mat-slide-toggle color="primary"></mat-slide-toggle>
+                        <div class="mat-item-col col-x8"><a href="#" class="info">{{businessRule.brInfo}}</a>
                         </div>
+                        <div class="mat-item-col col-x8">
+                            <mat-slide-toggle color="primary" [checked]="businessRule.status === '1'"
+                                (change)="toggleBrStatus($event,businessRule)">
+                            </mat-slide-toggle>
+                        </div>
+
                         <div class="mat-item-col mat-item-end">
                             <button mat-button>
                                 <mat-icon>more_vert</mat-icon>
@@ -139,39 +187,40 @@
             </div>
         </mat-step>
 
-        <!-- Step 4 -->
+        <!-- Add subscribers -->
         <mat-step>
             <ng-template matStepLabel></ng-template>
             <div class="row-spacer"></div>
             <div class="f-col">
                 <div>
-                    <button mat-flat-button color="accent">
+                    <button mat-flat-button color="accent" (click)="addSubscribers()">
                         <mat-icon>add</mat-icon> Add subscribers
                     </button>
                 </div>
-
                 <mat-list role="list" class="row-listing">
                     <mat-list-item>
-                        <div class="mat-item-col col-x8"><strong>Subscriber</strong></div>
-                        <div class="mat-item-col col-x4"><strong>Rule</strong></div>
-                        <div class="mat-item-col col-x16"><strong>Data allocation</strong></div>
-                        <div class="mat-item-col mat-item-end"><strong></strong></div>
+                        <div class="mat-item-col col-x8"><b>Subscriber</b></div>
+                        <div class="mat-item-col col-x4"><b>Rule</b></div>
+                        <div class="mat-item-col col-x16"><b>Data allocation</b></div>
+                        <div class="mat-item-col mat-item-end"></div>
                     </mat-list-item>
-                    <mat-list-item>
+                    <mat-list-item *ngFor="let subscriber of subscribersList;let i=index">
                         <div class="mat-item-col col-x8">
                             <mat-card-header>
-                                <div mat-card-avatar>RK</div>
-                                <mat-card-title>Rahul Khurana</mat-card-title>
+                                <div mat-card-avatar>{{subscriber.initials}}</div>
+                                <mat-card-title>{{subscriber.fullName}}</mat-card-title>
                             </mat-card-header>
                         </div>
                         <div class="mat-item-col col-x4">
-                            <button mat-stroked-button>Editer <mat-icon>arrow_drop_down</mat-icon></button>
+                            <button mat-stroked-button>{{subscriber.role}} <mat-icon>arrow_drop_down
+                                </mat-icon>
+                            </button>
                         </div>
                         <div class="mat-item-col col-x16">
                             <mat-chip-list>
                                 <mat-chip class="mdo-filter-matchip" disableRipple="true"
                                     [matMenuTriggerFor]="appliedfiltermenu"><label>Region:</label> <span
-                                        class="info">sydney</span>
+                                        class="info">Sydney</span>
                                     <mat-icon matChipRemove>clear</mat-icon>
                                 </mat-chip>
 
@@ -195,17 +244,18 @@
                     </mat-list-item>
                 </mat-list>
             </div>
+
         </mat-step>
 
-        <!-- Step 5 -->
+        <!-- Run the schema -->
         <mat-step>
             <ng-template matStepLabel></ng-template>
             <div class="row-spacer"></div>
             <div class="f-col">
-                <mat-radio-group color="primary" class="f-col">
-                    <mat-radio-button value="1">Do not run the schema now</mat-radio-button>
-                    <mat-radio-button value="2">Run the schema once now</mat-radio-button>
-                    <mat-radio-button value="3">Create a schedule</mat-radio-button>
+                <mat-radio-group color="primary" class="f-col" (change)="setRunningSchedule($event)">
+                    <mat-radio-button value="false">Do not run the schema now</mat-radio-button>
+                    <mat-radio-button value="true" selected>Run the schema once now</mat-radio-button>
+                    <mat-radio-button value="schedule">Create a schedule</mat-radio-button>
                 </mat-radio-group>
             </div>
         </mat-step>
@@ -213,9 +263,12 @@
 
     <div class="row-spacer"></div>
 
+    <!-- navigation buttons -->
     <div class="f-row">
-        <button mat-flat-button color="accent" (click)="step('previous')">Back</button>
+        <button mat-flat-button color="accent" *ngIf="headerTextIndex > 1" (click)="step('previous')">Back</button>
         <span class="f-spacer"></span>
-        <button mat-flat-button color="primary" (click)="step('next')">Next</button>
+        <button mat-flat-button color="primary" *ngIf="headerTextIndex > 1 && progressBar < 100"
+            (click)="step('next')">Next</button>
+        <button mat-flat-button color="primary" *ngIf="progressBar === 100" (click)="save()">Done</button>
     </div>
 </mat-card>

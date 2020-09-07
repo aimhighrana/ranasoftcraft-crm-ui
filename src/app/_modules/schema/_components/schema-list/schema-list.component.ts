@@ -59,8 +59,8 @@ export class SchemaListComponent implements OnInit {
   }
 
   public schemaDetails(moduleId: string, schema: SchemaListDetails) {
-    if(schema.collaboratorModels){
-      if(schema.collaboratorModels.isAdmin || schema.collaboratorModels.isViewer){
+    if (schema.collaboratorModels) {
+      if (schema.collaboratorModels.isAdmin || schema.collaboratorModels.isViewer) {
         this.router.navigate(['/home/schema/schema-details', moduleId, schema.schemaId, schema.variantId]);
       }
     }
@@ -76,14 +76,14 @@ export class SchemaListComponent implements OnInit {
     this.router.navigate(['/home/schema/schema-execution', schemaId]);
   }
   public edit(moduleId: string, schema: SchemaListDetails) {
-    this.router.navigate(['/home/schema/create-schema', moduleId , schema.schemaId]);
+    this.router.navigate(['/home/schema/create-schema', moduleId, schema.schemaId]);
   }
 
   uploadData(module: SchemaListModuleList) {
     const dialogRef = this.matDialog.open(UploadDataComponent, {
       height: '706px',
       width: '1100px',
-      data:{module},
+      data: { module },
       disableClose: true
     });
     dialogRef.afterClosed().subscribe(result => {
@@ -96,13 +96,13 @@ export class SchemaListComponent implements OnInit {
    * @param schemaId deleteable schemaid
    */
   delete(schemaId: string) {
-    this.schemaService.deleteSChema(schemaId).subscribe(res=>{
-      this.matSnackBar.open(`Successfully deleted `, 'Close',{duration:5000});
+    this.schemaService.deleteSChema(schemaId).subscribe(res => {
+      this.matSnackBar.open(`Successfully deleted `, 'Close', { duration: 5000 });
       this.router.routeReuseStrategy.shouldReuseRoute = () => false;
       this.router.onSameUrlNavigation = 'reload'
       this.router.navigate(['/home/schema']);
-    }, error=>{
-      this.matSnackBar.open(`Something went wrong `, 'Close',{duration:5000});
+    }, error => {
+      this.matSnackBar.open(`Something went wrong `, 'Close', { duration: 5000 });
     })
   }
 

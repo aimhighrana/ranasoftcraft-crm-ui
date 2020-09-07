@@ -115,7 +115,7 @@ export class SchemaDetailsService {
   }
 
   public getAllSelectedFields(schemaId: string, variantId: string): Observable<string[]> {
-    return this.http.get<string[]>(this.endpointService.getAllSelectedFields(), {params:{schemaId, variantId}});
+    return this.http.get<string[]>(this.endpointService.getAllSelectedFields(), { params: { schemaId, variantId } });
   }
 
   public getSchemaBrInfoList(schemaId: string): Observable<SchemaBrInfo[]> {
@@ -143,7 +143,7 @@ export class SchemaDetailsService {
   }
 
   public getAllUserDetails(queryString: string): Observable<PermissionOn> {
-    return this.http.get<PermissionOn>(this.endpointService.getAllUserDetailsUrl(),{params:{queryString}});
+    return this.http.get<PermissionOn>(this.endpointService.getAllUserDetailsUrl(), { params: { queryString } });
   }
 
   public getCollaboratorDetails(schemaId: string): Observable<SchemaDashboardPermission[]> {
@@ -151,10 +151,14 @@ export class SchemaDetailsService {
   }
 
   public createUpdateUserDetails(request: SchemaDashboardPermission[]): Observable<SchemaDashboardPermission[]> {
-    return this.http.post<SchemaDashboardPermission[]>(this.endpointService.createUpdateUserDetailsUrl(),request);
+    return this.http.post<SchemaDashboardPermission[]>(this.endpointService.createUpdateUserDetailsUrl(), request);
   }
 
   public deleteCollaborator(sNo: string): Observable<boolean> {
     return this.http.delete<boolean>(this.endpointService.deleteSchemaCollaboratorDetailsUrl(sNo));
+  }
+
+  public saveNewSchemaDetails(objectId: string, runNow: boolean, variantId: string, fileSno: string, requestObject: {}) {
+    return this.http.post(this.endpointService.saveNewSchemaUrl(objectId, runNow, variantId, fileSno), requestObject)
   }
 }

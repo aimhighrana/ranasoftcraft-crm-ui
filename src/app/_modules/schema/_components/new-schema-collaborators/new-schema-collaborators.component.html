@@ -1,0 +1,46 @@
+<mat-card class="root mat-elevation-z0">
+    <div class="f-row">
+        <button mat-button (click)="closeDialogComponent()">
+            <mat-icon>clear</mat-icon>
+        </button>
+        <div class="col-spacer"></div>
+        <div class="f-row header-toolbar mdo-constrained-right">
+            <div class="display-heading-large">Collaborators
+            </div>
+            <span class="f-spacer"></span>
+            <button mat-flat-button color="primary" (click)="save();$event.stopPropagation()">Save</button>
+        </div>
+    </div>
+    <div class="row-spacer"></div>
+    <div class="f-col mdo-justify">
+
+        <form [formGroup]="form">
+
+            <div class="mdo-form-input f-col">
+                <mat-label>Add Collaborators</mat-label>
+                <mat-form-field appearance="outline">
+                    <input matInput class="mat-input" [matAutocomplete]="auto" formControlName="field">
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayWith" (optionSelected)="addSelectedField($event)">
+                        <mat-option *ngFor="let user of filteredModules | async" [value]="user">
+                            {{user.fullName}}
+                        </mat-option>
+                    </mat-autocomplete>
+                    <mat-error *ngIf="form.controls.field.errors && form.controls.field.errors.required">select a subscriber</mat-error>
+                </mat-form-field>
+            </div>
+            <div class="mdo-form-input f-col">
+                <mat-label>Permissions</mat-label>
+                <mat-form-field appearance="outline">
+                    <mat-select appearance="outline" formControlName="role" (selectionChange)="setPermissions($event)">
+                        <mat-option value="isAdmin">isAdmin</mat-option>
+                        <mat-option value="isReviewer">isReviewer</mat-option>
+                        <mat-option value="isViewer">isViewer</mat-option>
+                        <mat-option value="isEditer">isEditer</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="form.controls.role.errors && form.controls.role.errors.required">select a permission</mat-error>
+
+                </mat-form-field>
+            </div>
+        </form>
+    </div>
+</mat-card>

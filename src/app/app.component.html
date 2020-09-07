@@ -1,11 +1,36 @@
 <mat-sidenav-container>
-  <mat-sidenav #rightSideNav mode="over" position="end">
-    <router-outlet name="sb"></router-outlet>
+  <mat-sidenav #rightSideNav1 mode="over" position="end" disableClose>
+    <ng-container></ng-container>
+    <router-outlet name="outer"></router-outlet>
   </mat-sidenav>
   <mat-sidenav-content>
-    <router-outlet></router-outlet>
+    <mat-sidenav-container>
+      <mat-sidenav #rightSideNav mode="over" position="end" disableClose>
+        <router-outlet name="sb"></router-outlet>
+      </mat-sidenav>
+      <mat-sidenav-content>
+        <router-outlet></router-outlet>
+      </mat-sidenav-content>
+    </mat-sidenav-container>
   </mat-sidenav-content>
 </mat-sidenav-container>
+
+<!-- 
+<ng-template #globalDialog let-data>
+  <div class="f-row">
+    <div class="col-spacer"> </div>
+    <div class="f-row header-toolbar mdo-constrained-right">
+      <button mat-button matDialogClose>
+        <mat-icon>clear</mat-icon>
+      </button>
+    </div>
+  </div>
+  <mat-dialog-content>
+    <ng-template *ngComponentOutlet="data"></ng-template>
+  </mat-dialog-content>
+</ng-template> -->
+
+
 <!-- <mat-toolbar class="footer">
   <mat-toolbar-row>
     <span class="mat-caption">© 2019 Prospecta Software Pvt. Ltd.. All Rights Reserved.</span>

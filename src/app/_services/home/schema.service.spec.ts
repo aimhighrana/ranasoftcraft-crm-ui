@@ -12,10 +12,10 @@ describe('SchemaService', () => {
   let any2tsSpy: jasmine.SpyObj<Any2tsService>;
 
   beforeEach(async(() => {
-    const epsSpy = jasmine.createSpyObj('EndpointService', [ 'getSchemaGroupsUrl', 'getSchemaGroupDetailsByGrpIdUrl', 'getCreateSchemaGroupUrl', 'getAllObjecttypeUrl','deleteConditionBlock','deleteSchema' ]);
-    const any2Spy = jasmine.createSpyObj('Any2tsService', [ 'any2SchemaGroupResponse', 'any2SchemaDetails', 'any2ObjectType' ]);
+    const epsSpy = jasmine.createSpyObj('EndpointService', ['getSchemaGroupsUrl', 'getSchemaGroupDetailsByGrpIdUrl', 'getCreateSchemaGroupUrl', 'getAllObjecttypeUrl', 'deleteConditionBlock', 'deleteSchema']);
+    const any2Spy = jasmine.createSpyObj('Any2tsService', ['any2SchemaGroupResponse', 'any2SchemaDetails', 'any2ObjectType']);
     TestBed.configureTestingModule({
-      imports: [ HttpClientTestingModule ],
+      imports: [HttpClientTestingModule],
       providers: [
         SchemaService,
         { provide: EndpointService, useValue: epsSpy },
@@ -135,7 +135,7 @@ describe('SchemaService', () => {
     const blockId = '236642364532';
 
     // mock url
-    const url = 'delete condition block/'+ blockId;
+    const url = 'delete condition block/' + blockId;
     const httpMockData = {} as any;
     endpointServiceSpy.deleteConditionBlock.withArgs(blockId).and.returnValue(url);
 
@@ -157,7 +157,7 @@ describe('SchemaService', () => {
     const schemaId = '236642364532';
 
     // mock url
-    const url = 'delete schema/'+ schemaId;
+    const url = 'delete schema/' + schemaId;
     const httpMockData = {} as any;
     endpointServiceSpy.deleteSchema.withArgs(schemaId).and.returnValue(url);
 
