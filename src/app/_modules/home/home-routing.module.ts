@@ -14,7 +14,10 @@ const routes: Routes = [
       {
 
         path: 'dash', children: [
-          { path: 'welcome', component: WelcomeMdoComponent }
+          {
+            path: 'welcome',
+            component: WelcomeMdoComponent
+          }
         ]
       },
       // { path: '', redirectTo: 'schema', pathMatch: 'full' },

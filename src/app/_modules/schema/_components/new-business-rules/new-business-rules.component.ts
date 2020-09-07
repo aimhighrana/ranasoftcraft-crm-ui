@@ -70,10 +70,10 @@ export class NewBusinessRulesComponent implements OnInit {
 
     operators = [];
     submitted = false;
-    initialConditions = ['And', 'Or']
+    initialConditions = ['And', 'Or'];
+
     udrBlocks = [{
         id: Math.floor(Math.random() * 1000000000000).toString(),
-        blockRefId: '',
         blockTypeText: 'When', // when/and/or
         fieldId: '', // field id from dropdown
         operator: '', // operator value
@@ -83,6 +83,15 @@ export class NewBusinessRulesComponent implements OnInit {
         rangeEndValue: '',
         children: []
     }];
+    allUDRBlocks = [this.udrBlocks[0]];
+    allhierarchies = [
+        {
+            parentId: '',
+            leftIndex: '',
+            blockRefId: this.udrBlocks[0].id
+        }
+    ]
+    finalResponseBlocks = [];
     /**
      * Class contructor
      * @param dialogRef refernce to matdialog
@@ -104,7 +113,7 @@ export class NewBusinessRulesComponent implements OnInit {
             standard_function: new FormControl(''),
             regex: new FormControl(''),
             fields: new FormControl('', [Validators.required]),
-            udrTreeData: new FormControl('')
+            udrTreeData: new FormControl()
         });
         if (this.data.moduleId) {
             this.getFieldsByModuleId()
@@ -123,7 +132,7 @@ export class NewBusinessRulesComponent implements OnInit {
         this.filteredModules = of(this.fieldsList);
         this.operators = this.possibleOperators();
         this.form.controls.rule_type.valueChanges.subscribe((selectedRule) => {
-            console.log(selectedRule);
+
             if (selectedRule === 'BR_CUSTOM_SCRIPT') {
 
                 this.form.get('rule_name').clearValidators()
@@ -144,7 +153,6 @@ export class NewBusinessRulesComponent implements OnInit {
                 this.form.get('regex').setErrors(null);
                 this.form.get('standard_function').setErrors(null);
 
-                console.log(this.form)
             }
             if (selectedRule === 'BR_REGEX_RULE') {
                 this.form.get('rule_name').setValidators([Validators.required])
@@ -204,7 +212,6 @@ export class NewBusinessRulesComponent implements OnInit {
      */
     filter(val: string): string[] {
         return this.fieldsList.filter(option => {
-            console.log(option)
             return option.fieldDescri.toLowerCase().indexOf(val.toLowerCase()) === 0;
         })
     }
@@ -214,7 +221,6 @@ export class NewBusinessRulesComponent implements OnInit {
      * @param event selected item eent
      */
     selectedField(event) {
-        console.log(event);
         const alreadyExists = this.selectedFields.find(item => item.fieldId === event.option.value);
         if (alreadyExists) {
             this.snackBar.open('This field is already selected', 'error');
@@ -300,14 +306,31 @@ export class NewBusinessRulesComponent implements OnInit {
             blocks.push(blockObject)
             udrHierarchies.push(udrHierarchiesObject)
         });
-        console.log('block', blocks)
+        this.finalResponseBlocks.length = 0;
+        this.allUDRBlocks.forEach((block, index) => {
+            this.finalResponseBlocks.push({
+                id: block.id,
+                conditionFieldId: block.fieldId,
+                conditionValueFieldId: null,
+                conditionFieldValue: block.comparisonValue,
+                conditionFieldStartValue: block.rangeStartValue,
+                conditionFieldEndValue: block.rangeEndValue,
+                blockType: 'COND',
+                conditionOperator: block.operator,
+                blockDesc: '',
+                plantCode: ''
+            })
+        });
+        const finalObject = {
+            blocks: this.finalResponseBlocks,
+            udrHierarchies: this.allhierarchies
+        }
 
-        console.log('udrHierarchies', udrHierarchies);
+        this.form.controls.udrTreeData.setValue(finalObject);
         this.dialogRef.close(this.form.value)
     }
 
     setRegex(event) {
-        console.log(event);
         const selectedRegex = this.preDefinedRegex.find(item => item.FUNC_TYPE === event.value);
         this.form.controls.regex.setValue(selectedRegex.FUNC_CODE);
     }
@@ -358,46 +381,9 @@ export class NewBusinessRulesComponent implements OnInit {
         child.comparisonValue = value;
     }
 
-    addNewBlock() {
-        let existingBlockType = this.udrBlocks[this.udrBlocks.length - 1].blockTypeText;
-        if (existingBlockType === 'When') {
-            existingBlockType = 'And'
-        }
-        const udrBlock = {
-            id: Math.floor(Math.random() * 1000000000000).toString(),
-            blockRefId: '',
-            blockTypeText: existingBlockType, // when/and/or
-            fieldId: '', // field id from dropdown
-            operator: '', // operator value
-            comparisonValue: '', // comparison value
-            actionDisabled: false,
-            children: [],
-            rangeStartValue: '',
-            rangeEndValue: '',
-        }
-        this.udrBlocks.push(udrBlock);
-    }
 
     setInitialCondition(event, i) {
-        console.log(event, i);
         this.udrBlocks[i].blockTypeText = event.value;
-    }
-
-    addNestedBlock(parent, index) {
-        console.log(parent, index)
-        const udrBlock = {
-            id: Math.floor(Math.random() * 1000000000000).toString(),
-            blockRefId: parent.id,
-            blockTypeText: 'And', // when/and/or
-            fieldId: '', // field id from dropdown
-            operator: '', // operator value
-            comparisonValue: '', // comparison value
-            actionDisabled: false,
-            rangeStartValue: '',
-            rangeEndValue: '',
-            children: []
-        }
-        this.udrBlocks[index].children.push(udrBlock);
     }
 
     setRangeValueForChild(value, rangeText, childObject) {
@@ -409,13 +395,19 @@ export class NewBusinessRulesComponent implements OnInit {
         }
     }
 
-
-    deleteFromChildArray(parentBlockIndex, childIndex) {
+    deleteFromChildArray(parentBlockIndex, childIndex, child) {
         this.udrBlocks[parentBlockIndex].children.splice(childIndex, 1);
+        const getBlockIndex = this.allUDRBlocks.findIndex((obj) => obj.id === child.id);
+        const getHirerchyIndex = this.allhierarchies.findIndex((obj) => obj.blockRefId === child.id);
+        this.allUDRBlocks.splice(getBlockIndex, 1);
+        this.allhierarchies.splice(getHirerchyIndex, 1);
     }
 
     deleteParentBlock(i) {
-        this.udrBlocks.splice(i, 1)
+        this.udrBlocks.splice(i, 1);
+        this.allUDRBlocks.splice(i, 1);
+        this.allhierarchies.splice(i, 1);
+        console.log(this.allUDRBlocks);
     }
 
     getConditions() {
@@ -431,12 +423,55 @@ export class NewBusinessRulesComponent implements OnInit {
         }
     }
     setParentBlockTypeText(event, i) {
-        console.log(event, i);
         this.udrBlocks.forEach((block, index) => {
             if (index > i) {
                 block.blockTypeText = event.value;
             }
         })
+    }
+
+    addBlock(nested, parent, i) {
+        const blockId = Math.floor(Math.random() * 1000000000000).toString();
+        let existingBlockType = this.udrBlocks[this.udrBlocks.length - 1].blockTypeText;
+        if (existingBlockType === 'When') {
+            existingBlockType = 'And'
+        }
+        const udrBlock = {
+            id: blockId,
+            blockTypeText: existingBlockType, // when/and/or
+            fieldId: '', // field id from dropdown
+            operator: '', // operator value
+            comparisonValue: '', // comparison value
+            actionDisabled: false,
+            children: [],
+            rangeStartValue: '',
+            rangeEndValue: ''
+        }
+
+        let UDRHierarchie = {
+            parentId: '',
+            leftIndex: '',
+            blockRefId: ''
+        }
+
+        if (!nested) {
+            this.udrBlocks.push(udrBlock);
+            UDRHierarchie = {
+                parentId: '',
+                leftIndex: '',
+                blockRefId: udrBlock.id
+            }
+        } else {
+            parent.children.push(udrBlock);
+
+            UDRHierarchie = {
+                parentId: parent.id,
+                leftIndex: '1',
+                blockRefId: udrBlock.id
+            }
+        }
+        this.allhierarchies.push(UDRHierarchie)
+        this.allUDRBlocks.push(udrBlock)
     }
 }
 

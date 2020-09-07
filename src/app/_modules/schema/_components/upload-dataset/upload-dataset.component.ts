@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, Inject, AfterViewInit } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
+import { FormGroup, FormControl } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 import { ObjectTypeResponse, ObjectType } from '@models/schema/schema';
 import { MetadataModeleResponse, MetadataModel } from '@models/schema/schemadetailstable';
@@ -18,6 +18,7 @@ import { CoreSchemaBrInfo } from '@modules/admin/_components/module/business-rul
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { NewSchemaCollaboratorsComponent } from '../new-schema-collaborators/new-schema-collaborators.component';
+import { SchemaCollaborator } from '@models/collaborator';
 
 export interface DataSource {
   excelFld: string;
@@ -35,10 +36,7 @@ type UploadedDataType = any[][];
 })
 export class UploadDatasetComponent implements OnInit, AfterViewInit {
   @ViewChild(MatStepper) stepper!: MatStepper;
-  isLinear = true;
 
-  datasetlabel = 'Dataset name';
-  brule = 'Schema name';
   dataTableCtrl: FormGroup;
   selectedMdoFldCtrl: FormControl;
   displayedColumns = ['excel', 'excelfrstrowdata', 'mapping', 'field'];
@@ -56,9 +54,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   uploadDisabled = true;
   plantCode: string;
 
-  /**
-   * New logic valiables
-   */
+  loaded = false;
 
   objectTypes: Array<ObjectType> = [];
   /**
@@ -147,7 +143,6 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
 
   dialogSubscriber = new Subscription();
 
-
   /**
    * Constructor of class
    * @param _formBuilder form builder object
@@ -159,14 +154,12 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * @param moduleInfo the current selected module
    */
   constructor(
-    private _formBuilder: FormBuilder,
     private schemaService: SchemaService,
     private schemaDetailsService: SchemaDetailsService,
     private snackBar: MatSnackBar,
     private userService: UserService,
     public dialogRef: MatDialogRef<UploadDatasetComponent>,
     private globaldialogService: GlobaldialogService,
-    private formBuilder: FormBuilder,
     @Inject(MAT_DIALOG_DATA) public moduleInfo: any,
   ) {
     this.moduleInpFrmCtrl = new FormControl();
@@ -189,12 +182,6 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       this.requestForm.controls.userId.setValue(this.userDetails.userName)
       this.requestForm.controls.plantCode.setValue(this.userDetails.plantCode)
     })
-  }
-
-  sss() {
-    this.stepper.next();
-    this.stepper.next();
-    this.stepper.next();
   }
 
   /**
@@ -227,15 +214,8 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       coreSchemaBr: new FormControl([]),
       mappedData: new FormControl([]),
       subscribers: new FormControl([]),
-      runTime: new FormControl()
+      runTime: new FormControl(true)
     });
-  }
-
-  customStep(id) {
-    this.stepper.next()
-    this.stepper.next()
-    this.stepper.next()
-    this.stepper.next()
   }
 
   /**
@@ -356,19 +336,53 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * @param where value to move to next or previous
    */
   step(where: string) {
-    this.stepper[where]();
+
     if (where === 'next') {
       if (this.progressBar === 100) {
         return;
       }
+      const currentStepIndex = this.stepper.selectedIndex
+
+      if (currentStepIndex === 2) {
+        // there should be atleast one mapping
+        const anyMapping = this.requestForm.controls.mappedData.value.length;
+        const isNewSchema = this.requestForm.controls.objectId.value;
+
+        if (anyMapping === 0 && isNewSchema) {
+          this.snackBar.open('Please select atleast one mapping', 'Okay');
+          return;
+        }
+      }
+
+      if (currentStepIndex === 3) {
+        // there should be atleast one Business rule
+        const anyBR = this.requestForm.controls.coreSchemaBr.value;
+        if (anyBR.length === 0) {
+          this.snackBar.open('Please create atleast one business rule', 'Okay');
+          return;
+        }
+      }
+
+      if (currentStepIndex === 4) {
+        const anySubscriber = this.requestForm.controls.subscribers.value;
+        if (anySubscriber.length === 0) {
+          this.snackBar.open('Please create atleast one subscriber', 'Okay');
+          return;
+        }
+      }
+
       this.progressBar = this.progressBar + 20;
     } else {
       this.progressBar = this.progressBar - 20;
     }
 
     if (this.headerTextIndex === 0) {
-      document.getElementById('uploader').setAttribute('value', '');
+      const element = document.getElementById('uploader');
+      if (element) {
+        // document.getElementById('uploader').setAttribute('value', '');
+      }
     }
+    this.stepper[where]();
   }
 
   /**
@@ -377,14 +391,19 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    */
   openGlobalDialog(componentName) {
     if (componentName === 'createBR') {
-      this.globaldialogService.toggleDialog(NewBusinessRulesComponent, { moduleId: this.requestForm.value.objectId, fields: this.excelHeader }, 'open');
+      this.globaldialogService.openDialog(NewBusinessRulesComponent, { moduleId: this.requestForm.value.objectId, fields: this.excelHeader });
 
       this.dialogSubscriber = this.globaldialogService.dialogCloseEmitter
         .pipe(
           distinctUntilChanged()
         )
-        .subscribe((response: {}) => {
-          const brObject: CoreSchemaBrInfo = this.createBrObject(response)
+        .subscribe((response: any) => {
+          let brObject: CoreSchemaBrInfo;
+          if (response.rule_type === 'BR_CUSTOM_SCRIPT') {
+            brObject = this.createBrObject(response, response.udrTreeData)
+          } else {
+            brObject = this.createBrObject(response)
+          }
           this.requestForm.controls.coreSchemaBr.value.push(brObject);
           brObject.status = '1';
           this.businessRulesList.push(brObject);
@@ -405,7 +424,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * function to create br
    * @param object newly created Br
    */
-  createBrObject(object) {
+  createBrObject(object, udrTreeData = { udrHierarchies: [], blocks: [] }) {
     return {
       sno: 0,
       brId: '',
@@ -416,7 +435,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       order: 1,
       message: object.error_message,
       script: '',
-      brInfo: object.rule_name,
+      brInfo: udrTreeData.blocks.length ? 'User Defined' : object.rule_name,
       brExpose: 0,
       status: '1',
       categoryId: '',
@@ -430,7 +449,11 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       plantCode: '0',
       percentage: 0,
       schemaId: '',
-      brIdStr: ''
+      brIdStr: '',
+      udrDto: {
+        udrHierarchies: udrTreeData.udrHierarchies,
+        blocks: udrTreeData.blocks
+      }
     }
   }
 
@@ -616,13 +639,18 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     return '';
   }
 
+  /**
+   * Function to open dialog box and set the recieved
+   * subscibers to form
+   */
   addSubscribers() {
-    this.globaldialogService.toggleDialog(NewSchemaCollaboratorsComponent, {}, 'open');
+    this.globaldialogService.openDialog(NewSchemaCollaboratorsComponent, {});
     this.dialogSubscriber = this.globaldialogService.dialogCloseEmitter
       .pipe(distinctUntilChanged())
-      .subscribe((response: {}) => {
+      .subscribe((response: SchemaCollaborator) => {
+        response.sno = Math.floor(Math.random() * 100000000000).toString();
+        response.plantCode = this.userDetails.plantCode;
         this.subscribersList.push(response);
-        console.log(response);
         this.requestForm.controls.subscribers.value.push(response);
         this.dialogSubscriber.unsubscribe();
       });
@@ -630,10 +658,10 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
 
   /**
    * function to save the form at the end
+   * and make a API request
    */
   save() {
     console.log(this.requestForm);
-
     const formObject = this.requestForm.value;
     const objectId = formObject.objectId
     const runNow = true;
@@ -642,6 +670,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     delete formObject.objectId;
     delete formObject.file;
     delete formObject.fileSerialNo;
+    delete formObject.runNow;
     delete formObject.runNow;
     this.schemaDetailsService.saveNewSchemaDetails(
       objectId,
@@ -654,104 +683,6 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         this.dialogRef.close();
       }, (err) => {
         this.snackBar.open('Schema cannot be created', 'Okay');
-
       })
   }
-
-
-  // getMetadataFields(moduleId) {
-  //   this.schemaDetailsService.getMetadataFields(moduleId).subscribe(response => {
-  //     this.metadataFields = response;
-  //     Object.keys(this.metadataFields.headers).forEach(fldid => {
-  //       this.plantCode = this.metadataFields.headers[fldid].plantCode;
-  //     });
-  //     this.uploadDisabled = false;
-  //     this.makeMetadataControle();
-  //   }, error => {
-  //     console.error(`Error ${error}`);
-  //   });
-  // }
-
-  // makeMetadataControle(): void {
-  //   const allMDF = this.metadataFields;
-  //   this.metaDataFieldList = [];
-  //   if (allMDF) {
-  //     if (allMDF.headers) {
-  //       Object.keys(allMDF.headers).forEach(header => {
-  //         this.metaDataFieldList.push(allMDF.headers[header]);
-  //         this.headerFieldsList.push(allMDF.headers[header]);
-  //       });
-  //     }
-  //     // grid
-  //     if (allMDF.grids) {
-  //       Object.keys(allMDF.grids).forEach(grid => {
-  //         if (allMDF.gridFields[grid]) {
-  //           Object.keys(allMDF.gridFields[grid]).forEach(fldId => {
-  //             this.metaDataFieldList.push(allMDF.gridFields[grid][fldId]);
-  //           });
-  //         }
-  //       });
-  //     }
-  //     // // heirerchy
-  //     if (allMDF.hierarchy) {
-  //       Object.keys(allMDF.hierarchy).forEach(heiId => {
-  //         const heId = allMDF.hierarchy[heiId].heirarchyId;
-  //         if (allMDF.hierarchyFields[heId]) {
-  //           Object.keys(allMDF.hierarchyFields[heId]).forEach(fldId => {
-  //             this.metaDataFieldList.push(allMDF.hierarchyFields[heId][fldId]);
-  //           });
-  //         }
-  //       });
-  //     }
-  //   }
-  // }
-  // controlStepChange(event: any) {
-  //   switch (event.selectedIndex) {
-  //     case 1:
-  //       this.prepareDataSource();
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // }
-  // prepareDataSource() {
-  //   const dataS: DataSource[] = [];
-  //   for (let i = 0; i < this.uploadedData[0].length; i++) {
-  //     const datS: DataSource = { excelFld: this.uploadedData[0][i], excelFrstRow: this.uploadedData[1][i], mdoFldId: '', mdoFldDesc: '', columnIndex: i };
-  //     dataS.push(datS);
-  //   }
-  //   this.dataSource = dataS;
-  // }
-
-
-  // uploadDataHttpCall(stepper: MatStepper) {
-  //   const objType = this.moduleInfo.module.moduleId;
-  //   if (objType) {
-  //     this.schemaService.uploadData(this.excelMdoFieldMappedData, objType, this.fileSno).subscribe(res => {
-  //       // remove valitor here and move to next step
-  //       this.dataTableCtrl.controls.dataTableFldCtrl.setValue('done');
-  //       stepper.next();
-  //     }, error => {
-  //       console.error(`Error ${error}`);
-  //       this.snackBar.open(`Something went wrong , please check mdo logs `, 'Close', { duration: 5000 });
-  //     });
-  //   }
-  // }
-  // uploadCorrectionHttpCall(stepper: MatStepper) {
-  //   const objType = this.moduleInfo.object;
-  //   const schemaId = this.moduleInfo.schemaId;
-  //   const runId = this.moduleInfo.runId;
-  //   if (objType) {
-  //     this.schemaService.uploadCorrectionData(this.excelMdoFieldMappedData, objType, schemaId, runId, this.plantCode, this.fileSno).subscribe(res => {
-  //       // remove valitor here and move to next step
-  //       this.dataTableCtrl.controls.dataTableFldCtrl.setValue('done');
-  //       stepper.next();
-  //     }, error => {
-  //       console.error(`Error ${error}`);
-  //       this.snackBar.open(`Something went wrong , please check mdo logs `, 'Close', { duration: 5000 });
-  //     });
-  //   }
-  // }
-
-
 }

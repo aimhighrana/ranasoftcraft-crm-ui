@@ -104,11 +104,8 @@
 </mat-card>
 
 <div class="f-col user-defined-set" *ngIf="isUDR">
-
     <ng-container *ngFor="let udrBlock of udrBlocks;let i = index">
-
-        <div class="f-row defined-row" [id]="'parent_'+udrBlock.id">
-
+        <div class="f-row defined-row" [id]="udrBlock.id">
             <!-- rule type -->
             <div class="col" style="width:10%" *ngIf="i > 0">
                 <mat-select mat-stroked-button [(ngModel)]="udrBlock.blockTypeText"
@@ -126,7 +123,7 @@
             <!-- field name -->
             <div>
                 <mat-select [(ngModel)]="udrBlock.fieldId">
-                    <mat-option *ngFor="let fieldItem of fieldsList" [value]="fieldItem.fieldDescri">
+                    <mat-option *ngFor="let fieldItem of fieldsList" [value]="fieldItem.fieldId">
                         {{fieldItem.fieldDescri}}
                     </mat-option>
                 </mat-select>
@@ -166,12 +163,12 @@
             </div>
             <mat-menu #menu="matMenu">
                 <!-- give local reference and tell this is manu by assigning 'matMenu' -->
-                <button mat-menu-item (click)="addNestedBlock(udrBlock,i)">
+                <button mat-menu-item (click)="addBlock(true,udrBlock,i)">
                     <mat-icon>add</mat-icon>
                     <span>Add Child rule</span>
                 </button>
 
-                <button mat-menu-item *ngIf="i > 0" (click)="deleteParentBlock(i)">
+                <button mat-menu-item *ngIf="i > 0" (click)="deleteParentBlock(i,udrBlock)">
                     <mat-icon>remove</mat-icon>
                     <span>Delete</span>
                 </button>
@@ -197,7 +194,7 @@
 
                         <div class="col">
                             <mat-select [(ngModel)]="child.fieldId">
-                                <mat-option *ngFor="let fieldItem of fieldsList" [value]="fieldItem.fieldDescri">
+                                <mat-option *ngFor="let fieldItem of fieldsList" [value]="fieldItem.fieldId">
                                     {{fieldItem.fieldDescri}}
                                 </mat-option>
                             </mat-select>
@@ -220,7 +217,7 @@
                             </pros-form-input>
                         </div>
 
-                        <div  class="col" *ngIf="child.operator === 'RANGE'">
+                        <div class="col" *ngIf="child.operator === 'RANGE'">
                             <pros-form-input [placeholder]="'start value'"
                                 (valueChange)="setRangeValueForChild($event,'start',child)">
                             </pros-form-input>
@@ -240,7 +237,7 @@
                                     <span>Add</span>
                                 </button> -->
 
-                                <button mat-menu-item (click)="deleteFromChildArray(i,j)">
+                                <button mat-menu-item (click)="deleteFromChildArray(i,j,child)">
                                     <mat-icon>remove</mat-icon>
                                     <span>Delete</span>
                                 </button>
@@ -256,7 +253,7 @@
     <!-- button to ad primary block -->
     <div class="f-row defined-row add-col">
         <div class="col">
-            <button mat-flat-button color="accent" (click)="addNewBlock('primary',false)">
+            <button mat-flat-button color="accent" (click)="addBlock(false,null,0)">
                 <mat-icon>add</mat-icon>
             </button>
         </div>

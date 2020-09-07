@@ -67,3 +67,14 @@ export interface GroupHeaderModel {
     groupIdAsStr: string;
     description: string;
 }
+
+export interface SchemaCollaborator {
+    sno: string,
+    isAdmin: boolean,
+    isReviewer: boolean,
+    isViewer: boolean,
+    isEditer: boolean,
+    permissionType: string,
+    userid: string,
+    plantCode: string
+}

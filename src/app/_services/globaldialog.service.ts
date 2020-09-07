@@ -6,10 +6,19 @@ import { Subject } from 'rxjs';
 })
 export class GlobaldialogService {
 
-  dialogToggleEmitter: Subject<{}> = new Subject()
+  /**
+   * Event Emitter to open dialog
+   */
+  dialogToggleEmitter: Subject<{}> = new Subject();
 
+  /**
+   * Event emitter to close dialog
+   */
   dialogCloseEmitter: Subject<{}> = new Subject();
 
+  /**
+   * constuctor of class
+   */
   constructor() { }
 
   /**
@@ -18,14 +27,20 @@ export class GlobaldialogService {
    * @param data Information that needs to be passed to the dialog component
    * @param state the state that needs to be acted upon
    */
-  public toggleDialog(componentName, data: {}, state: string) {
+  public openDialog(componentName, data: {}) {
+    if (!componentName) {
+      throw new Error('component name is required"');
+    }
     this.dialogToggleEmitter.next({
-      dialogState: state,
       componentName,
       data
     });
   }
 
+  /**
+   * Function to close modal and emit the status
+   * @param data the value to send back to parent component
+   */
   public closeModel(data) {
     this.dialogCloseEmitter.next(data);
   }

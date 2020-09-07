@@ -89,16 +89,13 @@ export class AppComponent implements OnInit, OnDestroy {
     });
 
     this.globaldialogService.dialogToggleEmitter
-      .subscribe((dialogData: { componentName: ComponentType<unknown>, data: {}, dialogState: string }) => {
-        console.log(dialogData)
-
+      .subscribe((dialogData: { componentName: ComponentType<unknown>, data: {} }) => {
         this.dialogRef = this.matDialog.open(dialogData.componentName, {
           height: '800px',
           width: '700px',
           disableClose: true,
           data: dialogData.data
-        })
-          .updatePosition({ right: '10px' });
+        }).updatePosition({ right: '10px' });
         this.dialogRef.afterClosed().subscribe(result => {
           this.globaldialogService.closeModel(result);
         });

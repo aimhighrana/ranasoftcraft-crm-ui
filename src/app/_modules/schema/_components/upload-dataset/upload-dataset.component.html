@@ -30,13 +30,15 @@
         <mat-step>
             <ng-template matStepLabel></ng-template>
             <div class="f-col">
-                <pros-search-input [placeholder]="'Search Modules'" (value)="search($event,'module')">
+
+                <pros-search-input [placeholder]="'Search Modules'" (value)="search($event,'module')" >
                 </pros-search-input>
 
                 <div class="row-spacer"></div>
                 <mat-nav-list role="list" class="row-listing">
 
-                    <mat-list-item>
+                    <mat-list-item class="nav-item"
+                        (click)="setModuleValueAndTakeStep();$event.stopPropagation()">
                         <mat-icon mat-list-icon>add</mat-icon>
                         <div mat-line>Create new from a dataset</div>
                     </mat-list-item>
@@ -53,59 +55,18 @@
             </div>
         </mat-step>
 
-        <!-- Step 2 -->
-        <!-- Select Module-->
-        <!-- <mat-step>
-            <ng-template matStepLabel></ng-template>
-            <div class="f-col">
-                <div class="row-spacer"></div>
-                <pros-form-input [label]="datasetlabel"></pros-form-input>
-                <div class="row-spacer"></div>
-                <mat-list role="list" class="row-listing">
-                    <mat-list-item>
-                        <div class="mat-item-col col-x8"><strong>Your field headers</strong></div>
-                        <div class="mat-item-col col-x8"><strong>Your first row data</strong></div>
-                    </mat-list-item>
-                     <div class="allow-overflow">
-                <div class="f-col">
-                    <pros-search-input [placeholder]="'Search Modules'" (value)="search($event,'module')">
-                    </pros-search-input>
-                    <div class="row-spacer"></div>
-                    <mat-nav-list role="list">
-                        <mat-list-item class="nav-item" (click)="setModuleValueAndTakeStep()">
-                            <mat-icon mat-list-icon>add</mat-icon>
-                            <div mat-line>Create new from a dataset</div>
-                        </mat-list-item> -->
-
-        <!-- <mat-list-item>
-                        <div class="mat-item-col col-x8">Object number</div>
-                        <div class="mat-item-col col-x8">200100</div>
-                    </mat-list-item>
-                </mat-list> 
-                    <ng-container *ngFor="let module of modulesList">
-                        <mat-list-item class="nav-item"
-                            (click)="setModuleValueAndTakeStep(module);$event.stopPropagation()">
-                            <mat-icon mat-list-icon>grid_on</mat-icon>
-                            <div mat-line>{{module.objectdesc}}</div>
-                            <mat-icon>arrow_right_alt</mat-icon>
-                        </mat-list-item>
-
-                        <mat-divider></mat-divider>
-                    </ng-container>
-
-                      </mat-nav-list>  
-            </div>
-
-        </mat-step> -->
-
-        <!-- Name your dataset -->
+        <!-- Name your dataset && map headers-->
         <mat-step>
             <ng-template matStepLabel></ng-template>
             <div class="f-col">
                 <div class="row-spacer"></div>
-                <pros-form-input *ngIf="!requestForm.value.objectDesc" [label]="'Dataset Name'"
-                    [placeholder]="'Dataset Name'" (value)="search($event,'headers')">
+                
+                <pros-form-input *ngIf="!requestForm.value.objectDesc && loaded" [label]="'Dataset Name'"
+                    [placeholder]="'Dataset Name'" (value)="search($event,'headers')" ()>
                 </pros-form-input>
+
+
+                <mat-error *ngIf="requestForm.value.core_schema.discription"></mat-error>
                 <div class="row-spacer"></div>
 
                 <mat-list role="list" class="row-listing">
@@ -147,7 +108,7 @@
         <mat-step>
             <ng-template matStepLabel></ng-template>
             <div class="f-col">
-                <pros-form-input [label]="brule" [placeholder]="'Schema name'" (valueChange)="setschemaName($event)"></pros-form-input>
+                <pros-form-input [label]="'Schema name'" [placeholder]="'Schema name'" (valueChange)="setschemaName($event)"></pros-form-input>
                 <div class="row-spacer"></div>
                 <div>
                     <button mat-flat-button color="accent" (click)="openGlobalDialog('createBR')">
@@ -247,10 +208,17 @@
         <mat-step>
             <ng-template matStepLabel></ng-template>
             <div class="f-col">
-                <mat-radio-group color="primary" class="f-col" (change)="setRunningSchedule($event)">
-                    <mat-radio-button value="false">Do not run the schema now</mat-radio-button>
-                    <mat-radio-button value="true" selected>Run the schema once now</mat-radio-button>
-                    <mat-radio-button value="schedule">Create a schedule</mat-radio-button>
+                <mat-radio-group color="primary" class="f-col" [(ngModel)]="requestForm.value.runTime"
+                    (change)="setRunningSchedule($event)">
+                    <mat-radio-button [value]="false">
+                        Do not run the schema now
+                    </mat-radio-button>
+                    <mat-radio-button [value]="true">
+                        Run the schema once now
+                    </mat-radio-button>
+                    <mat-radio-button [value]="'schedule'">
+                        Create a schedule
+                    </mat-radio-button>
                 </mat-radio-group>
             </div>
         </mat-step>
