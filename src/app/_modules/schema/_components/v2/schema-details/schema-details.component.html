@@ -3,6 +3,12 @@
         <div class="display-heading-large">Schema Details</div>
         <span class="f-spacer"></span>
         <button mat-flat-button color="accent" (click)="downloadExecutionDetails()">Download</button>
+        <ng-template [ngIf]="activeTab === 'review'">
+            <span class="f-col-spacer-half"></span>
+            <button mat-flat-button color="accent" (click)="submitReviewRec()">Submit</button>
+        </ng-template>
+        
+
     </div>
 
     <div class="row-spacer"></div>

@@ -106,6 +106,11 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
    */
   tableHeaderActBtn: string [] = [];
 
+  /**
+   *
+   */
+  fetchCount = 0;
+
 
   @ViewChild(MatSort) sort: MatSort;
 
@@ -280,15 +285,16 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
    * @param filterCriteria have default filter or apply filter as request...
    * @param sort apply some sorting on column ..
    */
-  getData(filterCriteria?: FilterCriteria[], sort?: any) {
+  getData(filterCriteria?: FilterCriteria[], sort?: any, fetchCount?: number , isLoadMore?: boolean) {
     const request: RequestForSchemaDetailsWithBr = new RequestForSchemaDetailsWithBr();
     request.schemaId = this.schemaId;
     request.variantId = this.variantId;
-    request.fetchCount = 0;
+    request.fetchCount = fetchCount ? fetchCount : 0;
     request.fetchSize = 20;
     request.requestStatus = this.activeTab;
     request.filterCriterias = filterCriteria;
     request.sort = sort;
+    request.isLoadMore = isLoadMore ? isLoadMore : false;
     this.dataSource.getTableData(request);
   }
 
@@ -298,6 +304,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
    * @param status get tab name to navigate
    */
   changeTabStatus(status: string) {
+    this.fetchCount = 0;
     if(this.activeTab === status) {
       console.log('Already loaded for tab {}', status)
       return false;
@@ -433,6 +440,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
     const limit = tableScrollHeight - tableViewHeight - buffer;
     if (scrollLocation > limit) {
        console.log('Load more data here ...');
+       this.fetchCount ++;
+       this.getData(this.filterCriteria.getValue(), this.sortOrder, this.fetchCount, true);
     }
   }
 
@@ -551,5 +560,18 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
       exitingFilterCtrl.splice(exitingFilterCtrl.indexOf(extFld), 1);
       this.filterCriteria.next(exitingFilterCtrl);
     }
+  }
+
+  /**
+   * Submit reviewed records
+   */
+  submitReviewRec() {
+    this.schemaDetailService.submitReviewedRecords(this.schemaId).subscribe(res =>{
+      if(res.acknowledge) {
+        this.snackBar.open(`Successfully submitted !`, 'Close',{duration:2000});
+      }
+    }, error=>{
+      this.snackBar.open(`${error.statusText}: Please review atleast one record(s)`, 'Close',{duration:2000});
+    });
   }
 }

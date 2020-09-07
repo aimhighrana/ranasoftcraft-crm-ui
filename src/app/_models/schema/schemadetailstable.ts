@@ -96,7 +96,8 @@ export  class RequestForSchemaDetailsWithBr {
     schemaThreshold: number;
     afterKey: any;
     filterCriterias: FilterCriteria[];
-    sort:{}
+    sort:{};
+    isLoadMore: boolean;
 }
 
 export class FilterCriteria {

@@ -106,7 +106,6 @@ export class NewBusinessRulesComponent implements OnInit {
             fields: new FormControl('', [Validators.required]),
             udrTreeData: new FormControl('')
         });
-        this.data.moduleId = '10002'
         if (this.data.moduleId) {
             this.getFieldsByModuleId()
         } else {

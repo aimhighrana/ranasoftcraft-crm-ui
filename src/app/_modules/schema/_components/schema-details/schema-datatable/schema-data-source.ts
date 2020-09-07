@@ -56,9 +56,23 @@ export class SchemaDataSource implements DataSource<SchemaTableData> {
         return this.dataSourceSubject.getValue();
     }
 
+    /**
+     * Get datatable data ....
+     * if isLoadMore then newRes should append on oldData..
+     *
+     * @param request Global table request for load datatable data
+     */
     public getTableData(request: RequestForSchemaDetailsWithBr) {
         this.schemaDetailService.getSchemaTableData(request).subscribe(res=>{
-            this.dataSourceSubject.next(this.docsTransformation(res, request.requestStatus));
+            if(request.isLoadMore) {
+                const loadedData = this.docValue();
+                const newData =  this.docsTransformation(res, request.requestStatus);
+                loadedData.push(...newData);
+                this.dataSourceSubject.next(loadedData);
+            } else {
+                this.dataSourceSubject.next(this.docsTransformation(res, request.requestStatus));
+            }
+
         }, error=>{
             console.error(`Error : ${error.message}`);
         });
