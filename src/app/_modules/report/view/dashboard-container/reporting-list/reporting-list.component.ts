@@ -100,28 +100,30 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
      this.widgetService.getListdata(String(pageSize),String(pageIndex),String(widgetId),criteria, soringMap).subscribe(returndata=>{
       this.listData =new Array();
       this.resultsLength = returndata.count;
+      if(returndata.data){
       returndata = returndata.data;
+      }
       returndata.hits.hits.forEach(element => {
         const source =element._source;
 
         const objectNumber = element._id;
         const obj = {objectNumber};
 
-      const hdvs = source.hdvs;
-      let  locale = this.locale!==''?this.locale.split('-')[0]:'EN';
-      locale = locale.toUpperCase();
-      const tblMetadata = this.reportingListWidget.value;
-      this.displayedColumnsId.forEach(column=>{
+        const hdvs = source.hdvs;
+        let  locale = this.locale!==''?this.locale.split('-')[0]:'EN';
+        locale = locale.toUpperCase();
+        const tblMetadata = this.reportingListWidget.value;
+        this.displayedColumnsId.forEach(column=>{
 
-        const metadata = tblMetadata.filter(fil=> fil.fields === column)[0];
-        const pickList = metadata ? metadata.fldMetaData.picklist : 0;
+          const metadata = tblMetadata.filter(fil=> fil.fields === column)[0];
+          const pickList = (metadata && metadata.fldMetaData) ? metadata.fldMetaData.picklist : 0;
 
-        if(column === 'action' || column === 'objectNumber'){}
-        else {
+          if(column === 'action' || column === 'objectNumber'){}
+          else {
 
-          // check for dropdown , multiselect , userselection and objectRefrence
-          if(pickList === '1') {
-            if(metadata.fldMetaData.isCheckList === 'true') {
+            // check for dropdown , multiselect , userselection and objectRefrence
+            if(pickList === '1') {
+              if(metadata.fldMetaData.isCheckList === 'true') {
               const localVal = hdvs[column].msdv ? (hdvs[column].msdv[0].msdvls ? hdvs[column].msdv[0].msdvls.filter(f=> f.lang === locale)[0] :null) : null;
               if(localVal) {
                 obj[column] = localVal.val.toString();
@@ -161,11 +163,11 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
             }
           }else{
             // case for other fields
-          if(hdvs[column] && hdvs[column].vls[locale]  && hdvs[column].vls[locale].valueTxt){
-            obj[column] = hdvs[column].vls[locale].valueTxt;
-          }else{
-            obj[column] = hdvs[column] ? hdvs[column].vc : '';
-          }
+            if(hdvs[column] && hdvs[column].vls && hdvs[column].vls[locale]  && hdvs[column].vls[locale].valueTxt){
+              obj[column] = hdvs[column].vls[locale].valueTxt;
+            }else{
+              obj[column] = hdvs[column] ? hdvs[column].vc : '';
+            }
           }
         }
       });

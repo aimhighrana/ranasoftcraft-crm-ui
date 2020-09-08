@@ -7,6 +7,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { WidgetService } from '@services/widgets/widget.service';
 import { LayoutTabResponse, LayoutFieldsResponse } from '@modules/report/_models/widget';
 import { of } from 'rxjs';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 describe('SummaryLayoutComponent', () => {
   let component: SummaryLayoutComponent;
@@ -15,7 +16,7 @@ describe('SummaryLayoutComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ SummaryLayoutComponent ],
-      imports:[HttpClientTestingModule, ReactiveFormsModule, FormsModule, RouterTestingModule]
+        imports:[HttpClientTestingModule, ReactiveFormsModule, FormsModule, AppMaterialModuleForSpec, RouterTestingModule,]
     })
     .compileComponents();
   }));

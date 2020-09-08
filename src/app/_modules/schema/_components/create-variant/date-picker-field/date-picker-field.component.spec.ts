@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DatePickerFieldComponent } from './date-picker-field.component';
-import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker/datepicker-input-base';
 
 describe('DatePickerFieldComponent', () => {
   let component: DatePickerFieldComponent;

@@ -2,7 +2,7 @@
 
 	<!-- BREADCRUMB-->
 	<div class="crumbrow f-row">
-        <pros-breadcrumb [crumbs]="breadcrumb"></pros-breadcrumb>
+        <div class="display-heading-large">Dashboard Builder</div>
         <div class="f-spacer"></div>
         <button *ngIf="collaboratorPermission && reportId"  matTooltip="Collaborator" mat-stroked-button [routerLink]="['', { outlets: { sb: 'sb/report/collaborators/' + reportId } } ]"><mat-icon>group_add</mat-icon></button>
         <div class="f-col-spacer-half"></div>
@@ -11,13 +11,9 @@
     <mat-card class="mat-elevation-z3 builder-container">
         <mat-toolbar class="builder-toolbar">
             <mat-toolbar-row>
-                <mat-form-field class="fieldtoolbar">
-                    <mat-label>Dashboard Name</mat-label>
-                    <input type="text" matInput placeholder="Untitled-1" [(ngModel)]="reportName">
-                    <button mat-button matSuffix mat-icon-button>
-                        <mat-icon>edit</mat-icon>
-                      </button>
-                </mat-form-field>
+                <pros-form-input [type]="'text'" [placeholder]="'Untitled-1'" [label]="'Dashboard Name'" [value]="reportName" 
+                    (valueChange)="(setreportname($event))">
+                </pros-form-input>
 
                 <span class="f-spacer"></span>
 
@@ -111,25 +107,27 @@
                               </mat-panel-title>
                             </mat-expansion-panel-header>
                             <div class="f-col" [formGroup] = "styleCtrlGrp">
+                                <mat-label>Widget Name</mat-label>
                                 <mat-form-field appearance="outline">
-                                    <mat-label>Widget Name</mat-label>
                                     <input matInput formControlName="widgetName">
                                 </mat-form-field>
 
                                 <div class="f-row">
+                                    <div class = "f-col">
+                                    <mat-label>Width</mat-label>
+                                </div>
                                     <mat-form-field class="field-divider" appearance="outline">
-                                        <mat-label>Width</mat-label>
                                         <input type="number" max="pixcel" min="0" matInput formControlName="width">
                                     </mat-form-field>
                                     <span class="f-col-spacer-half"></span>
+                                    <mat-label>Height</mat-label>
                                     <mat-form-field class="field-divider" appearance="outline">
-                                        <mat-label>Height</mat-label>
                                         <input type="number" min="200" matInput formControlName="height">
                                     </mat-form-field>
                                 </div>
 
+                                <mat-label>Data Set</mat-label>
                                 <mat-form-field appearance="outline">
-                                    <mat-label>Data Set</mat-label>
                                     <mat-select formControlName="objectType">
                                         <mat-option *ngFor="let object of dataSetOb | async" value="{{ object.objectid }}"> {{ object.objectdesc }} </mat-option>
                                     </mat-select>
@@ -139,8 +137,8 @@
 
                                 <!-- FOR Aggregration -->
                                 <ng-template [ngIf]="selStyleWid  && (selStyleWid.widgetType === 'COUNT' || selStyleWid.widgetType === 'BAR_CHART' || selStyleWid.widgetType === 'STACKED_BAR_CHART') ">
+                                    <mat-label>Aggregration Operator</mat-label>
                                     <mat-form-field appearance="outline">
-                                        <mat-label>Aggregration Operator</mat-label>
                                         <mat-select formControlName="aggregrationOp">
                                             <mat-option value="GROUPBY">GROUPBY</mat-option>
                                             <mat-option value="COUNT">COUNT</mat-option>
@@ -236,8 +234,8 @@
                                 
                                 <!-- FOR TABLE LIST CHOOSE COLUMNS WIDGET-->
                                 <ng-template [ngIf]="selStyleWid && selStyleWid.widgetType === 'TABLE_LIST'">
+                                    <mat-label>{{ chooseColumns ? chooseColumns.length : '0' }} Selected</mat-label>
                                     <mat-form-field appearance="outline">
-                                        <mat-label>{{ chooseColumns ? chooseColumns.length : '0' }} Selected</mat-label>
                                         <mat-select>
                                             <mat-option *ngFor="let field of headerFields | async" value="{{ field.fieldId }}" >
                                                 <div (click)="optionClicked($event, field)">
@@ -252,8 +250,8 @@
 
                                 <!-- FOR IMAGE WIDGET-->
                                 <ng-template [ngIf]="selStyleWid && selStyleWid.widgetType === 'IMAGE'">
+                                    <mat-label>Image Link</mat-label>
                                     <mat-form-field appearance="outline">
-                                        <mat-label>Image Link</mat-label>
                                         <input matInput formControlName="imageUrl">
                                     </mat-form-field>
 
@@ -310,18 +308,18 @@
                                 </mat-form-field>
 
                                 <ng-template [ngIf]="chartPropCtrlGrp && chartPropCtrlGrp.get('chartType').value === 'BAR'">
+                                    <mat-label>xAsix Lebel</mat-label>
                                     <mat-form-field appearance="outline">
-                                        <mat-label>xAsix Lebel</mat-label>
                                         <input matInput formControlName="xAxisLabel">
                                     </mat-form-field>
 
+                                    <mat-label>yAsix Lebel</mat-label>
                                     <mat-form-field appearance="outline">
-                                        <mat-label>yAsix Lebel</mat-label>
                                         <input matInput formControlName="yAxisLabel">
                                     </mat-form-field>
 
+                                    <mat-label>Count OrderBy </mat-label>
                                     <mat-form-field appearance="outline">
-                                        <mat-label>Count OrderBy </mat-label>
                                         <mat-select formControlName="orderWith">
                                             <mat-option value="asc"> Ascending </mat-option>
                                             <mat-option value="desc"> Descending  </mat-option>
@@ -329,25 +327,25 @@
                                     </mat-form-field>
 
                                     <div class="f-row">
+                                        <mat-label>Scale From</mat-label>
                                         <mat-form-field class="field-divider" appearance="outline">
-                                            <mat-label>Scale From</mat-label>
                                             <input type="number" min="0" matInput formControlName="scaleFrom">
                                         </mat-form-field>
                                         <span class="f-col-spacer-half"></span>
+                                        <mat-label>Scale To</mat-label>
                                         <mat-form-field class="field-divider" appearance="outline">
-                                            <mat-label>Scale To</mat-label>
                                             <input type="number" min="0" matInput formControlName="scaleTo">
                                         </mat-form-field>
                                     </div>
 
                                     <div class="f-row">
+                                        <mat-label>Scale Step Size</mat-label>
                                         <mat-form-field class="field-divider" appearance="outline">
-                                            <mat-label>Scale Step Size</mat-label>
                                             <input type="number" min="0" matInput formControlName="stepSize">
                                         </mat-form-field>
                                         <span class="f-col-spacer-half"></span>
+                                        <mat-label>Max dataset number</mat-label>
                                         <mat-form-field class="field-divider" appearance="outline">
-                                            <mat-label>Max dataset number</mat-label>
                                             <input type="number" min="0" matInput formControlName="dataSetSize">
                                         </mat-form-field>
                                     </div>
@@ -356,8 +354,8 @@
 
                                 <mat-checkbox color="primary" formControlName="isEnableDatalabels">Enable Datalabels</mat-checkbox>
 
+                                <mat-label>Datalabels Position</mat-label>
                                 <mat-form-field appearance="outline" *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('isEnableDatalabels').value && chartPropCtrlGrp.get('chartType').value !== 'PIE'">
-                                    <mat-label>Datalabels Position</mat-label>
                                     <mat-select formControlName="datalabelsPosition">
                                         <mat-option value="center"> Center </mat-option>
                                         <mat-option value="start"> Start </mat-option>
@@ -367,8 +365,8 @@
 
                                 <mat-checkbox color="primary" formControlName="isEnableLegend">Show Legend</mat-checkbox>
                                 
+                                <mat-label>Legend Position</mat-label>
                                 <mat-form-field appearance="outline" *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('isEnableLegend').value">
-                                    <mat-label>Legend Position</mat-label>
                                     <mat-select formControlName="legendPosition">
                                         <mat-option value="top"> Top </mat-option>
                                         <mat-option value="left"> Left </mat-option>

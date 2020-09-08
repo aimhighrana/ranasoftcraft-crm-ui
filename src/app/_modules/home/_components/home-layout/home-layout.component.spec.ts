@@ -8,6 +8,10 @@ import { UserService } from 'src/app/_services/user/userservice.service';
 import { Userdetails } from 'src/app/_models/userdetails';
 import { of, Subscription } from 'rxjs';
 import { EventEmitter } from '@angular/core';
+import { PrimaryNavbarComponent } from '@modules/schema/_components/primary-navbar/primary-navbar.component';
+import { SecondaryNavbarComponent } from '@modules/schema/_components/secondary-navbar/secondary-navbar.component';
+import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
+import { NavigationDropdownComponent } from '@modules/shared/_components/navigation-dropdown/navigation-dropdown.component';
 
 describe('HomeLayoutComponent', () => {
   let component: HomeLayoutComponent;
@@ -52,7 +56,8 @@ describe('HomeLayoutComponent', () => {
         { provide: UserService, useValue: userSvcSpy },
         { provide: LoadingService, useValue: loadingSvcSpy },
       ],
-      declarations: [HomeLayoutComponent, BreadcrumbComponent]
+      declarations: [HomeLayoutComponent, BreadcrumbComponent, PrimaryNavbarComponent, SecondaryNavbarComponent,
+        SearchInputComponent, NavigationDropdownComponent ]
     })
       .compileComponents();
     userSvc = TestBed.inject(UserService) as jasmine.SpyObj<UserService>;

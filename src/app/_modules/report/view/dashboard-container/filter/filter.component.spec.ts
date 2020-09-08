@@ -4,13 +4,13 @@ import { FilterComponent } from './filter.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Criteria, DropDownValues, FilterWidget, FilterResponse, Widget } from '../../../_models/widget';
-import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { MatSliderChange } from '@angular/material/slider';
 import { MetadataModel } from 'src/app/_models/schema/schemadetailstable';
 import * as moment from 'moment';
 import { WidgetService } from '@services/widgets/widget.service';
 import { of } from 'rxjs';
 import { UDRBlocksModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker/datepicker-input-base';
 
 describe('FilterComponent', () => {
   let component: FilterComponent;

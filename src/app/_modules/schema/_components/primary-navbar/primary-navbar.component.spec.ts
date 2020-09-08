@@ -12,7 +12,7 @@ describe('PrimaryNavbarComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PrimaryNavbarComponent, SearchInputComponent, NavigationDropdownComponent ],
+      declarations: [ PrimaryNavbarComponent, SearchInputComponent, NavigationDropdownComponent, NavigationDropdownComponent ],
       imports: [AppMaterialModuleForSpec, RouterTestingModule]
     })
     .compileComponents();

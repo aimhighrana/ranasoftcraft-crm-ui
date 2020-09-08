@@ -10,6 +10,11 @@ export class SharedServiceService {
 
   private afterBrSaveUpdate: BehaviorSubject<any> = new BehaviorSubject(null);
 
+  private reportListData: BehaviorSubject<any> = new BehaviorSubject(null);
+
+  private togglePrimaryEmit: BehaviorSubject<any> = new BehaviorSubject(null);
+
+
   constructor() { }
 
   public setChooseColumnData(data: any) {
@@ -28,4 +33,19 @@ export class SharedServiceService {
     return this.afterBrSaveUpdate.asObservable();
   }
 
+  public setReportListData() {
+    this.reportListData.next(true);
+  }
+
+  public getReportListData(): Observable<any> {
+    return this.reportListData.asObservable();
+  }
+
+  public setTogglePrimaryEmit() {
+    this.togglePrimaryEmit.next(true);
+  }
+
+  public getTogglePrimaryEmit(): Observable<any> {
+    return this.togglePrimaryEmit.asObservable();
+  }
 }

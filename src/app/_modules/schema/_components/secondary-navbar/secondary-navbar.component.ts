@@ -1,9 +1,12 @@
 import { Component, OnInit, OnChanges, SimpleChanges, Input, EventEmitter, Output } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { SchemaListModuleList, SchemaListDetails } from '@models/schema/schemalist';
 import { Location } from '@angular/common';
 import { SchemaService } from '@services/home/schema.service';
+import { ReportService } from '@modules/report/_service/report.service';
+import { ReportList } from '@modules/report/report-list/report-list.component';
+import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 
 @Component({
   selector: 'pros-secondary-navbar',
@@ -13,6 +16,7 @@ import { SchemaService } from '@services/home/schema.service';
 export class SecondaryNavbarComponent implements OnInit, OnChanges {
 
   public moduleList: SchemaListModuleList[] = [];
+  reportList: ReportList[] = [];
 
   dataIntillegences: SchemaListDetails[] = [];
 
@@ -27,15 +31,16 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
   /**
    * Emitter to emit sidebar toggleing
    */
-  @Output() toggleEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() toggleEmitter: EventEmitter<{}> = new EventEmitter<{}>();
 
   constructor(
     private router: Router,
     private schemaListService: SchemalistService,
-    private activatedRouter: ActivatedRoute,
     private location: Location,
-    private schemaService: SchemaService
-  ) { }
+    private schemaService: SchemaService,
+    private reportService: ReportService,
+    private sharedService: SharedServiceService
+    ) { }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes && changes.activatedPrimaryNav && changes.activatedPrimaryNav.previousValue !== changes.activatedPrimaryNav.currentValue) {
@@ -48,6 +53,11 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
         case 'schema':
           this.getSchemaList();
           break;
+
+        case 'report':
+          this.getreportList();
+          break;
+
         default:
           break;
       }
@@ -60,15 +70,17 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
       console.log(res);
     })
 
-    // console.log(this.activatedRouter.url);
-    // this.activatedRouter.url.subscribe(sub=>{
-    //   console.log(sub);
-    // });
+    this.sharedService.getReportListData().subscribe(res=>{
+      if(res){
+        this.getreportList();
+      }
+    });
 
-    // if (this.router.url.includes('/home/schema')) {
-    //   console.log(this.router.url);
-    //   this.getSchemaList()
-    // }
+    this.sharedService.getTogglePrimaryEmit().subscribe(res=>{
+      if(res){
+        this.toggleSideBar(true);
+      }
+    });
   }
 
   /**
@@ -105,6 +117,17 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
     this.router.navigate(['/home/schema/schema-details', module.moduleId, frstSchemaId, 0]);
   }
 
+  public getreportList() {
+    this.reportService.reportList().subscribe(reportList=>{
+      console.log(reportList);
+      this.reportList = reportList;
+      if(this.reportList){
+        const firstReportId = this.reportList[0].reportId;
+        this.router.navigate(['home/report/dashboard',firstReportId]);
+      }
+    },error=>console.error(`Error : ${error}`));
+  }
+
   /**
    * Get routed descriptions ..
    */
@@ -117,7 +140,9 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
       case 'schema':
         res = 'Schema';
         break;
-
+      case 'report':
+        res = 'Report';
+        break;
       default:
         break;
     }
@@ -134,6 +159,10 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
       case 'schema':
         this.router.navigate(['', { outlets: { sb: 'sb/schema/create-schema' } }]);
         break;
+      case 'report':
+        this.toggleSideBar(true);
+        this.router.navigate(['home/report/dashboard-builder/new']);
+        break;
       default:
         break;
     }
@@ -143,12 +172,12 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
    * function to toggle the icon
    * and emit the toggle event
    */
-  toggleSideBar() {
+  toggleSideBar(hidePrimary = false) {
     if (this.arrowIcon === 'keyboard_arrow_left') {
       this.arrowIcon = 'keyboard_arrow_right';
     } else if (this.arrowIcon === 'keyboard_arrow_right') {
       this.arrowIcon = 'keyboard_arrow_left'
     }
-    this.toggleEmitter.emit()
+    this.toggleEmitter.emit(hidePrimary)
   }
 }

@@ -79,6 +79,17 @@
           </mat-expansion-panel>
         </ng-container>
       </mat-accordion>
+
+      <ng-template *ngIf="activatedPrimaryNav === 'report'">
+        <mat-nav-list *ngFor="let report of reportList">
+          <mat-list-item [disabled]="report.permission && !report.permission.isViewable" [routerLink]="['report/dashboard', report.reportId]" [routerLinkActive]="'selected'">
+            <mat-panel-title>
+              {{report.reportName ? report.reportName : 'Untitled'}}
+            </mat-panel-title>
+          </mat-list-item>
+        </mat-nav-list>
+      </ng-template>
+
     </div>
   </mat-card>
 

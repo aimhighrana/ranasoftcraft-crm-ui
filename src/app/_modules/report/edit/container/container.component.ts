@@ -1,7 +1,6 @@
 import { Component, OnInit, AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Widget, WidgetType, ReportDashboardReq, WidgetTableModel, ChartType, Orientation, DatalabelsPosition, LegendPosition, BlockType, ConditionOperator, Criteria, OrderWith } from '../../_models/widget';
-import { Breadcrumb } from 'src/app/_models/breadcrumb';
 import { Observable, of, BehaviorSubject, Subscription } from 'rxjs';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { ReportService } from '../../_service/report.service';
@@ -15,6 +14,7 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import * as moment from 'moment';
 import {MAT_MOMENT_DATE_FORMATS, MomentDateAdapter} from '@angular/material-moment-adapter';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
+import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 
 @Component({
   selector: 'pros-container',
@@ -27,15 +27,6 @@ import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/
 })
 export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  breadcrumb: Breadcrumb = {
-    heading: 'Dashboard Builder',
-    links: [
-      {
-        link:'/home/report',
-        text:'Report List'
-      }
-    ]
-  };
   showProperty = false;
   screenWidth: number;
   pixcel = 200; // Initial 200
@@ -75,7 +66,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     private activatedRouter: ActivatedRoute,
     private elementRef: ElementRef,
     private schemaService: SchemaService,
-    private schemaDetailsService: SchemaDetailsService
+    private schemaDetailsService: SchemaDetailsService,
+    private sharedService: SharedServiceService,
   ) { }
 
 
@@ -103,6 +95,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       if(this.reportId) {
         this.getReportConfig(this.reportId);
       } else {
+        this.widgetList = [];
+        this.reportName = '';
         this.collaboratorPermission = true;
       }
     });
@@ -542,6 +536,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const createUpdateSub = this.reportService.createUpdateReport(request).subscribe(res=>{
       this.reportId = res;
+      this.sharedService.setReportListData();
       this.snackbar.open(`Successfully saved change(s)`, 'Close',{duration:5000});
     },errro=>{
       this.snackbar.open(`Something went wrong`, 'Close',{duration:5000});
@@ -550,4 +545,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   }
 
+  // To set the emitted value of form-input component
+  setreportname(data: string): void{
+    this.reportName = data;
+  }
 }

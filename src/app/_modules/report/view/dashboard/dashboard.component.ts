@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Breadcrumb } from 'src/app/_models/breadcrumb';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ReportService } from '../../_service/report.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 @Component({
   selector: 'pros-dashboard',
   templateUrl: './dashboard.component.html',
@@ -9,36 +10,38 @@ import { ReportService } from '../../_service/report.service';
 })
 export class DashboardComponent implements OnInit {
 
-  breadcrumb: Breadcrumb = {
-    heading: 'Report Dashboard',
-    links: [
-      {
-        link:'/home/report',
-        text:'Report List'
-      }
-    ]
-  };
-
   reportId: number;
   emitClearBtnEvent: boolean;
   showClearFilterBtn = false;
+  reportName: string;
+  collaboratorEditPermission: false ;
+  collaboratorDeletePermission: false ;
+  collaboratorAdminPermission: false ;
+
   constructor(
     private activatedRouter: ActivatedRoute,
-    public reportService: ReportService
+    public reportService: ReportService,
+    private snackbar: MatSnackBar,
+    private sharedService: SharedServiceService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
     this.activatedRouter.params.subscribe(params=>{
       this.reportId = params.id;
+      if(this.reportId) {
+        this.getReportInfo(this.reportId);
+      }
     });
-    if(this.reportId) {
-      this.getReportInfo(this.reportId);
-    }
   }
 
   getReportInfo(reportId: number) {
     this.reportService.getReportInfo(reportId).subscribe(res=>{
-      this.breadcrumb.heading = res.reportName;
+      this.reportName = res.reportName;
+      this.collaboratorEditPermission = res.permissons ? res.permissons.isEditable : false;
+      this.collaboratorDeletePermission = res.permissons ? res.permissons.isDeleteable : false;
+      this.collaboratorAdminPermission = res.permissons ? res.permissons.isAdmin : false;
+
     },error=>{
       console.log(`Error ${error}`);
     })
@@ -50,6 +53,20 @@ export class DashboardComponent implements OnInit {
 
   showClearBtnEmit(isTrue: boolean) {
     this.showClearFilterBtn = isTrue;
+  }
+
+  delete() {
+    this.reportService.deleteReport((this.reportId.toString())).subscribe(res=>{
+      if(res) {
+        this.sharedService.setReportListData();
+        this.snackbar.open(`Successfully Deleted`, 'Close',{duration:3000});
+      }
+    },err=>console.error(`Error: ${err}`))
+  }
+
+  editReport() {
+    this.sharedService.setTogglePrimaryEmit();
+    this.router.navigate(['/home', 'report', 'dashboard-builder', this.reportId.toString()]);
   }
 
 }

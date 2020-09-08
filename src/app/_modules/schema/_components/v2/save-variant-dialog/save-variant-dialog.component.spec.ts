@@ -5,6 +5,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { FormInputComponent } from '@modules/shared/_components/form-input/form-input.component';
 
 describe('SaveVariantDialogComponent', () => {
   let component: SaveVariantDialogComponent;
@@ -15,7 +16,7 @@ describe('SaveVariantDialogComponent', () => {
   };
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SaveVariantDialogComponent ],
+      declarations: [ SaveVariantDialogComponent, FormInputComponent ],
       providers: [
         {
           provide: MatDialogRef,

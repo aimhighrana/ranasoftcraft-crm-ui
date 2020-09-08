@@ -100,7 +100,7 @@ export class HomeLayoutComponent implements OnInit, AfterViewInit, OnDestroy {
   /**
    * function to modify the width of secondary sidebar
    */
-  toggleSecondarySideBar() {
+  toggleSecondarySideBar(hidePrimary: boolean) {
     if (this.secondarySideBarOpened) {
       document.getElementById('secondarySidenav').style.width = '16px';
       document.getElementById('secondaryContent').style.marginLeft = '73px';
@@ -109,6 +109,11 @@ export class HomeLayoutComponent implements OnInit, AfterViewInit, OnDestroy {
       document.getElementById('secondarySidenav').style.width = '264px';
       document.getElementById('secondaryContent').style.marginLeft = '199px';
       this.secondarySideBarOpened = true;
+    }
+    if(hidePrimary) {
+      if(this.primarySideBarOpened){
+        this.togglePrimarySideBar();
+      }
     }
   }
 

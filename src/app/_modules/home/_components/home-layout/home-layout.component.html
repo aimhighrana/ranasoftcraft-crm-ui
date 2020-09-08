@@ -11,9 +11,9 @@
     <mat-sidenav-container autosize>
       <mat-sidenav mode="side" opened [disableClose]="true" id="secondarySidenav" #secondarySidenav>
         <!-- secondary side nav -->
-        <pros-secondary-navbar [activatedPrimaryNav]="activatedPrimaryNav" (toggleEmitter)="toggleSecondarySideBar()"></pros-secondary-navbar>
+        <pros-secondary-navbar [activatedPrimaryNav]="activatedPrimaryNav" (toggleEmitter)="toggleSecondarySideBar($event)"></pros-secondary-navbar>
       </mat-sidenav>
-      <mat-sidenav-content #secondaryContent>
+      <mat-sidenav-content id="secondaryContent" #secondaryContent>
         <router-outlet></router-outlet>
       </mat-sidenav-content>
     </mat-sidenav-container>

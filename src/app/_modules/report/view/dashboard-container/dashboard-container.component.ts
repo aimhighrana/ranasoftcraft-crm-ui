@@ -38,6 +38,17 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit, OnCha
       this.filterCriteria = [];
       this.emitFilterApplied.emit(this.filterCriteria.length ? true : false);
     }
+
+    if(changes && changes.reportId && changes.reportId.currentValue !== changes.reportId.previousValue) {
+      this.reportId = changes.reportId.currentValue;
+      if(this.reportId) {
+        this.reportService.getReportInfo(this.reportId).subscribe(res=>{
+          this.widgetList = res.widgets;
+        },error=>{
+          console.log(`Error ${error}`);
+        })
+      }
+    }
   }
 
   ngAfterViewInit(): void {
@@ -48,6 +59,7 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit, OnCha
   }
 
   ngOnInit(): void {
+    console.log(this.reportId + ' dashboard');
     if(this.reportId) {
       this.reportService.getReportInfo(this.reportId).subscribe(res=>{
         this.widgetList = res.widgets;
