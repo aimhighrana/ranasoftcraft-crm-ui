@@ -7,7 +7,7 @@ import { Any2tsService } from '../any2ts.service';
 import { SchemaGroupResponse, SchemaGroupDetailsResponse, SchemaGroupCountResponse, CreateSchemaGroupRequest, GetAllSchemabymoduleidsReq, ObjectTypeResponse, GetAllSchemabymoduleidsRes, SchemaGroupWithAssignSchemas } from 'src/app/_models/schema/schema';
 import { DataSource } from 'src/app/_modules/schema/_components/upload-data/upload-data.component';
 import { DropDownValue, UDRBlocksModel, UdrModel, CoreSchemaBrInfo, Category } from 'src/app/_modules/admin/_components/module/business-rules/business-rules.modal';
-import { SchemaStaticThresholdRes, SchemaListModuleList } from '@models/schema/schemalist';
+import { SchemaStaticThresholdRes, SchemaListModuleList, SchemaListDetails } from '@models/schema/schemalist';
 
 
 
@@ -170,5 +170,16 @@ export class SchemaService {
    */
   public getSchemaInfoByModuleId(moduleId: string): Observable<SchemaListModuleList> {
     return this.http.get<SchemaListModuleList>(this.endpointService.getSchemaInfoByModuleIdUrl(moduleId));
+  }
+
+  /**
+   * Get schema along with variants ...
+   *
+   * @param moduleId moduleid its optional parametere if want schema on that module then send it
+   * other wise data comes based on plantcode
+   */
+  public getSchemaWithVariants(moduleId?: string): Observable<SchemaListDetails[]> {
+    return this.http.get<SchemaListDetails[]>(
+      moduleId ? `${this.endpointService.getSchemaWithVariantsUrl()}?moduleId=${moduleId}`: this.endpointService.getSchemaWithVariantsUrl());
   }
 }

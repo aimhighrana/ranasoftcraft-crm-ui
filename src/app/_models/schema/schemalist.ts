@@ -1,4 +1,5 @@
 import { UDRBlocksModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { FilterCriteria } from './schemadetailstable';
 
 export class SchemaList {
     details: SchemaListModule[];
@@ -71,6 +72,7 @@ export class SchemaListDetails {
     totalValue: number;
     errorValue: number;
     successValue: number;
+    variants: SchemaVariantsModel[];
 }
 export class BusinessRuleExecutionDetails {
     brId: string;
@@ -272,4 +274,16 @@ export class VariantDetails {
     variantName: string;
     variantId: string;
     udrBlocksModel: UDRBlocksModel[]
+}
+
+
+export interface SchemaVariantsModel {
+    variantId: string;
+    schemaId: string;
+    variantName: string;
+    createdAt: number;
+    updatedAt: number;
+    createdBy: string;
+    filterCriteria: FilterCriteria[];
+    isDefault: boolean;
 }

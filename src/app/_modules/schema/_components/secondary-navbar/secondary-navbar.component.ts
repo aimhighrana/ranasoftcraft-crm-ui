@@ -1,7 +1,9 @@
 import { Component, OnInit, OnChanges, SimpleChanges, Input } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
-import { SchemaListModuleList } from '@models/schema/schemalist';
+import { SchemaListModuleList, SchemaListDetails } from '@models/schema/schemalist';
+import { Location } from '@angular/common';
+import { SchemaService } from '@services/home/schema.service';
 
 @Component({
   selector: 'pros-secondary-navbar',
@@ -12,13 +14,17 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
 
   public moduleList: SchemaListModuleList[] = [];
 
+  dataIntillegences: SchemaListDetails[] = [];
+
   @Input()
   activatedPrimaryNav: string;
 
   constructor(
     private router: Router,
     private schemaListService: SchemalistService,
-    private activatedRouter: ActivatedRoute
+    private activatedRouter: ActivatedRoute,
+    private location: Location,
+    private schemaService: SchemaService
     ) { }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -26,7 +32,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
 
       switch (changes.activatedPrimaryNav.currentValue) {
         case 'welcome':
-          this.getSchemaList();
+          this.getDataIntilligence();
           break;
 
         case 'schema':
@@ -40,22 +46,38 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
 
-    console.log(this.activatedRouter.url);
-    this.activatedRouter.url.subscribe(sub=>{
-      console.log(sub);
-    });
+    this.location.subscribe(res=>{
+      console.log(res);
+    })
 
-    if (this.router.url.includes('/home/schema')) {
-      console.log(this.router.url);
-      this.getSchemaList()
-    }
+
+
+    // console.log(this.activatedRouter.url);
+    // this.activatedRouter.url.subscribe(sub=>{
+    //   console.log(sub);
+    // });
+
+    // if (this.router.url.includes('/home/schema')) {
+    //   console.log(this.router.url);
+    //   this.getSchemaList()
+    // }
   }
 
+  /**
+   * Get all schema along with variants ..
+   */
+  getDataIntilligence() {
+    this.schemaService.getSchemaWithVariants().subscribe(res=>{
+      this.dataIntillegences = res;
+    },error=> console.error(`Error : ${error.message}`));
+  }
+
+  /**
+   * Get all schemas ..
+   */
   public getSchemaList() {
     this.schemaListService.getSchemaList().subscribe((moduleList) => {
-      console.log(moduleList);
       this.moduleList = moduleList;
-
       if(this.moduleList){
         const firstModuleId = this.moduleList[0].moduleId;
         this.router.navigate(['/home/schema',firstModuleId]);
@@ -73,5 +95,24 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
   openSchemaDetails(module: SchemaListModuleList) {
     const frstSchemaId = module.schemaLists ? module.schemaLists[0].schemaId : '';
     this.router.navigate(['/home/schema/schema-details', module.moduleId ,frstSchemaId, 0]);
+  }
+
+  /**
+   * Get routed descriptions ..
+   */
+  get getRoutedDescription(): string {
+    let res = 'Unknown';
+    switch (this.activatedPrimaryNav) {
+      case 'welcome':
+        res = 'Home';
+        break;
+      case 'schema':
+        res = 'Schema';
+        break;
+
+      default:
+        break;
+    }
+    return res;
   }
 }

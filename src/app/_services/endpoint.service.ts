@@ -441,4 +441,12 @@ export class EndpointService {
   public getSchemaInfoByModuleIdUrl(moduleId: string): string {
     return  `${this.apiUrl}/schema/schema-info/${moduleId}`;
   }
+
+  /**
+   * Get schema with variants .. use for data intilligence ...
+   *
+   */
+  public getSchemaWithVariantsUrl(): string  {
+    return `${this.apiUrl}/schema/list-variants`;
+  }
 }

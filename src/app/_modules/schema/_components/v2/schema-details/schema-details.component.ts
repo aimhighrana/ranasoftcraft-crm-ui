@@ -142,20 +142,43 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     // get moduel , schema and variant ids from params
     this.activatedRouter.params.subscribe(params=>{
-      this.moduleId = params.moduleId;
-      this.schemaId = params.schemaId;
-      this.variantId = params.variantId;
+
+      // check if any things is change then refresh again
+      let isRefresh = false;
+      if(this.moduleId !== params.moduleId) {
+        isRefresh = true;
+        this.moduleId = params.moduleId;
+      }
+      if(this.schemaId !== params.schemaId) {
+        isRefresh = true;
+        this.schemaId = params.schemaId;
+      }
+      if(this.variantId !== params.variantId) {
+        isRefresh = true;
+        this.variantId = params.variantId;
+      }
+
+      if(isRefresh) {
+        this.getFldMetadata();
+        this.dataSource = new SchemaDataSource(this.schemaDetailService, this.endpointservice, this.schemaId);
+        this.getSchemaStatics();
+
+        /**
+         * Get all user selected fields based on default view ..
+         */
+        this.schemaDetailService.getAllSelectedFields(this.schemaId, this.variantId).subscribe(res=>{
+              this.selectedFieldsOb.next(res ? res : [])
+          }, error=> console.error(`Error : ${error}`));
+        }
+
     });
 
     // get queryParams for status ..
     this.activatedRouter.queryParams.subscribe(queryParams=> {
       this.activeTab = queryParams.status ? queryParams.status: 'error';
-
       // manage colums based on status changes
       this.manageStaticColumns();
     });
-
-    this.getFldMetadata();
 
     /**
      * After choose columns get updated columns ..
@@ -166,7 +189,6 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
         this.calculateDisplayFields();
       }
     });
-
 
     /**
      * Combine obserable for metadata and selected field by user
@@ -179,15 +201,6 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
       }
     });
 
-    this.dataSource = new SchemaDataSource(this.schemaDetailService, this.endpointservice, this.schemaId);
-
-    /**
-     * Get all user selected fields based on default view ..
-     */
-    this.schemaDetailService.getAllSelectedFields(this.schemaId, this.variantId).subscribe(res=>{
-      this.selectedFieldsOb.next(res ? res : [])
-    }, error=> console.error(`Error : ${error}`));
-
     /**
      * Get onload data ..
      */
@@ -196,9 +209,6 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
         this.getData(this.filterCriteria.getValue(), this.sortOrder);
       }
     });
-
-    this.getSchemaStatics();
-
 
     /**
      * After filter applied should call for get data

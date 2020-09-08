@@ -1,6 +1,8 @@
 <mat-card class="mat-elevation-z0 root">
     <div class="f-row breadcrum-toolbar">
-        <div class="display-heading-large">Material</div>
+        <div class="display-heading-large">
+            {{ moduleListData ? moduleListData.moduleDesc: 'Unknown'}}
+        </div>
         <span class="f-spacer"></span>
         <button mat-flat-button color="accent">Upload dataset</button>
     </div>
