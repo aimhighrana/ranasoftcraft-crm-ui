@@ -2,7 +2,7 @@
 
     <div class="f-row breadcrum-toolbar">
         <div class="display-heading-large">
-            {{toolbarHeaderText}} (step {{headerTextIndex + 1}} of {{headerText.length}})
+            {{toolbarHeaderText}}(step {{headerTextIndex + 1}} of {{headerText.length}})
         </div>
         <span class="f-spacer"></span>
         <button mat-button (click)="closeDialog()">
@@ -18,27 +18,31 @@
         <!-- Upload DataSet -->
         <mat-step>
             <ng-template matStepLabel></ng-template>
-            <div class="f-col upload-col" (click)="openExplorer();$event.stopPropagation()">
+            <div class="row-spacer"></div>
+
+            <div class="f-col upload-col">
                 <mat-icon>publish</mat-icon>
+
                 <div mat-line>Drag & drop or <a href="javascript:void(0)" class="info"
                         (click)="openExplorer();$event.stopPropagation()">browser</a> a file to upload</div>
-                <input type="file" id="uploader" (change)="fileChange($event)" style="display: none;" />
+                <input type="file" id="uploader" (change)="fileChange($event)" prosClickStopPropagation />
+
             </div>
         </mat-step>
 
         <!-- Step 1 -->
         <mat-step>
             <ng-template matStepLabel></ng-template>
+            <div class="row-spacer"></div>
             <div class="f-col">
 
-                <pros-search-input [placeholder]="'Search Modules'" (value)="search($event,'module')" >
+                <pros-search-input [placeholder]="'Search Modules'" (value)="search($event,'module')">
                 </pros-search-input>
 
                 <div class="row-spacer"></div>
                 <mat-nav-list role="list" class="row-listing">
 
-                    <mat-list-item class="nav-item"
-                        (click)="setModuleValueAndTakeStep();$event.stopPropagation()">
+                    <mat-list-item class="nav-item" (click)="setModuleValueAndTakeStep();$event.stopPropagation()">
                         <mat-icon mat-list-icon>add</mat-icon>
                         <div mat-line>Create new from a dataset</div>
                     </mat-list-item>
@@ -47,7 +51,7 @@
                         <mat-list-item class="nav-item"
                             (click)="setModuleValueAndTakeStep(module);$event.stopPropagation()">
                             <mat-icon mat-list-icon>grid_on</mat-icon>
-                            <div mat-line>{{module.objectdesc}}</div>
+                            <div mat-line>{{module.objectdesc || 'UNTITLED'}}</div>
                             <mat-icon>arrow_right_alt</mat-icon>
                         </mat-list-item>
                     </ng-container>
@@ -60,10 +64,12 @@
             <ng-template matStepLabel></ng-template>
             <div class="f-col">
                 <div class="row-spacer"></div>
-                
-                <pros-form-input *ngIf="!requestForm.value.objectDesc && loaded" [label]="'Dataset Name'"
-                    [placeholder]="'Dataset Name'" (value)="search($event,'headers')" ()>
+
+                <pros-form-input [value]="requestForm.value.objectDesc" [disabled]="requestForm.value.objectId"
+                    [label]="'Dataset Name'" [placeholder]="'Dataset Name'"
+                    (valueChange)="setObjectDescription($event)">
                 </pros-form-input>
+
 
 
                 <mat-error *ngIf="requestForm.value.core_schema.discription"></mat-error>
@@ -73,13 +79,13 @@
                     <mat-list-item>
                         <div class="mat-item-col col-x8"><strong>Your field headers</strong></div>
                         <div class="mat-item-col col-x8"><strong>Your first row data</strong></div>
-                        <div class="mat-item-col col-x8" *ngIf="requestForm.value.objectDesc">
+                        <div class="mat-item-col col-x8" *ngIf="requestForm.value.objectId">
                             <strong>Map to</strong>
                             <mat-icon>
                                 arrow_forward
                             </mat-icon>
                         </div>
-                        <div class="mat-item-col col-x8" *ngIf="requestForm.value.objectDesc"><strong>MDO
+                        <div class="mat-item-col col-x8" *ngIf="requestForm.value.objectId"><strong>MDO
                                 fields</strong>
                         </div>
                     </mat-list-item>
@@ -87,15 +93,15 @@
                     <mat-list-item *ngFor="let data of dataSource;let rowIndex=index">
                         <div class="mat-item-col col-x8">{{data.excelFld}}</div>
                         <div class="mat-item-col col-x8">{{data.excelFrstRow}}</div>
-                        <div class="mat-item-col col-x8" *ngIf="requestForm.value.objectDesc">
+                        <div class="mat-item-col col-x8" *ngIf="requestForm.value.objectId">
                             <mat-icon>
                                 arrow_forward
                             </mat-icon>
                         </div>
-                        <div class="mat-item-col col-x8" *ngIf="requestForm.value.objectDesc">
+                        <div class="mat-item-col col-x8" *ngIf="requestForm.value.objectId">
                             <pros-map-mdo-field [cellIndex]="rowIndex" [preSelectedFld]="getSelectedFieldId(rowIndex)"
-                                [excelField]="data.excelFld" [autoSelectedFld]="moduleInfo.object"
-                                [mdoFields]="headerFieldsList" (optionSelectedEmit)="updateMapFields($event)">
+                                [excelField]="data.excelFld" [mdoFields]="headerFieldsList"
+                                (optionSelectedEmit)="updateMapFields($event)">
                             </pros-map-mdo-field>
                         </div>
                     </mat-list-item>
@@ -107,8 +113,9 @@
         <!-- Add business rules -->
         <mat-step>
             <ng-template matStepLabel></ng-template>
+            <div class="row-spacer"></div>
             <div class="f-col">
-                <pros-form-input [label]="'Schema name'" [placeholder]="'Schema name'" (valueChange)="setschemaName($event)"></pros-form-input>
+                <pros-form-input [placeholder]="'schema name'" (valueChange)="setschemaName($event)"></pros-form-input>
                 <div class="row-spacer"></div>
                 <div>
                     <button mat-flat-button color="accent" (click)="openGlobalDialog('createBR')">
@@ -123,11 +130,16 @@
                         <div class="mat-item-col col-x8"><strong>Enabled</strong></div>
                         <div class="mat-item-col"><strong></strong></div>
                     </mat-list-item>
-                    <mat-list-item *ngFor="let businessRule of businessRulesList">
+                    <mat-list-item *ngFor="let businessRule of businessRulesList;let k=index" cdkDrag>
                         <div class="mat-item-col">
                             <mat-icon>drag_handle</mat-icon>
                         </div>
-                        <div class="mat-item-col col-x8"><a href="#" class="info">{{businessRule.brInfo}}</a>
+                        <div class="mat-item-col col-x8">
+
+                            <mat-card-header>
+                                <mat-card-title>{{businessRule.brInfo}}</mat-card-title>
+                            </mat-card-header>
+
                         </div>
                         <div class="mat-item-col col-x8">
                             <mat-slide-toggle color="primary" [checked]="businessRule.status === '1'"
@@ -135,10 +147,18 @@
                             </mat-slide-toggle>
                         </div>
 
-                        <div class="mat-item-col mat-item-end">
+                        <div class="mat-item-col mat-item-end" [matMenuTriggerFor]="menu">
                             <button mat-button>
                                 <mat-icon>more_vert</mat-icon>
                             </button>
+
+                            <mat-menu #menu="matMenu">
+                                <!-- give local reference and tell this is manu by assigning 'matMenu' -->
+                                <button mat-menu-item (click)="deleteBR(k)">
+                                    <mat-icon>remove</mat-icon>
+                                    <span>Delete</span>
+                                </button>
+                            </mat-menu>
                         </div>
                     </mat-list-item>
                 </mat-list>
@@ -148,6 +168,7 @@
         <!-- Add subscribers -->
         <mat-step>
             <ng-template matStepLabel></ng-template>
+            <div class="row-spacer"></div>
             <div class="f-col">
                 <div>
                     <button mat-flat-button color="accent" (click)="addSubscribers()">
@@ -157,46 +178,69 @@
                 <mat-list role="list" class="row-listing">
                     <mat-list-item>
                         <div class="mat-item-col col-x8"><b>Subscriber</b></div>
-                        <div class="mat-item-col col-x4"><b>Rule</b></div>
+                        <div class="mat-item-col col-x4"><b>Role</b></div>
                         <div class="mat-item-col col-x16"><b>Data allocation</b></div>
                         <div class="mat-item-col mat-item-end"></div>
                     </mat-list-item>
-                    <mat-list-item *ngFor="let subscriber of subscribersList;let i=index">
+                    <mat-list-item *ngFor="let subscriber of subscribersList;let l=index">
                         <div class="mat-item-col col-x8">
                             <mat-card-header>
                                 <div mat-card-avatar>{{subscriber.initials}}</div>
                                 <mat-card-title>{{subscriber.fullName}}</mat-card-title>
                             </mat-card-header>
                         </div>
-                        <div class="mat-item-col col-x4">
-                            <button mat-stroked-button>{{subscriber.role}} <mat-icon>arrow_drop_down
-                                </mat-icon>
-                            </button>
-                        </div>
-                        <div class="mat-item-col col-x16">
-                            <mat-chip-list>
-                                <mat-chip class="mdo-filter-matchip" disableRipple="true"
-                                    [matMenuTriggerFor]="appliedfiltermenu"><label>Region:</label> <span
-                                        class="info">Sydney</span>
-                                    <mat-icon matChipRemove>clear</mat-icon>
-                                </mat-chip>
 
-                                <mat-chip class="mdo-filter-matchip" disableRipple="true"
-                                    [matMenuTriggerFor]="addfiltermenu">
-                                    <mat-icon>filter_list</mat-icon>
-                                </mat-chip>
-                                <mat-menu #appliedfiltermenu="matMenu">
-                                    <pros-filter-values></pros-filter-values>
-                                </mat-menu>
-                                <mat-menu #addfiltermenu="matMenu">
-                                    <pros-add-filter-menu></pros-add-filter-menu>
-                                </mat-menu>
-                            </mat-chip-list>
+                        <div class="mat-item-col col-x4">
+
+                            <mat-form-field appearance="outline">
+                                <mat-select [(ngModel)]="subscriber.role"
+                                    (selectionChange)="updateRole($event,subscriber,l)">
+                                    <mat-option value="isAdmin">Admin</mat-option>
+                                    <mat-option value="isReviewer">Reviewer</mat-option>
+                                    <mat-option value="isViewer">Viewer</mat-option>
+                                    <mat-option value="isEditer">Editer</mat-option>
+                                </mat-select>
+                            </mat-form-field>
                         </div>
+
+                        <div class="mat-item-col col-x16">
+
+                            <mat-chip-list>
+                                <mat-chip *ngFor="let fieldId of subscriber.filterFieldIds">
+                                    <ng-container>
+                                        {{getChipSets(subscriber,fieldId)}}
+                                        <mat-icon matChipRemove (click)="removeAllocation(subscriber,fieldId)">clear
+                                        </mat-icon>
+                                    </ng-container>
+                                </mat-chip>
+                            </mat-chip-list>
+
+                        </div>
+
+                        <button mat-button class="mdo-filter-matchip" disableRipple="true"
+                            [matMenuTriggerFor]="appliedfiltermenu">
+                            <mat-icon>filter_list</mat-icon>
+                        </button>
+
+                        <mat-menu #appliedfiltermenu="matMenu">
+                            <pros-add-filter-menu [moduleId]="requestForm.value.objectId"
+                                (evtReadyForApply)="makeFilterControl($event,subscriber,l)">
+                            </pros-add-filter-menu>
+                        </mat-menu>
+
                         <div class="mat-item-col mat-item-end">
-                            <button mat-button>
+                            <button mat-button [matMenuTriggerFor]="menu">
                                 <mat-icon>more_vert</mat-icon>
                             </button>
+
+                            <mat-menu #menu="matMenu">
+                                <!-- give local reference and tell this is manu by assigning 'matMenu' -->
+                                <button mat-menu-item (click)="deleteSubscriber(l)">
+                                    <mat-icon>remove</mat-icon>
+                                    <span>Delete</span>
+                                </button>
+                            </mat-menu>
+
                         </div>
                     </mat-list-item>
                 </mat-list>
@@ -207,6 +251,7 @@
         <!-- Run the schema -->
         <mat-step>
             <ng-template matStepLabel></ng-template>
+            <div class="row-spacer"></div>
             <div class="f-col">
                 <mat-radio-group color="primary" class="f-col" [(ngModel)]="requestForm.value.runTime"
                     (change)="setRunningSchedule($event)">
@@ -223,7 +268,6 @@
             </div>
         </mat-step>
     </mat-horizontal-stepper>
-
     <div class="row-spacer"></div>
 
     <!-- navigation buttons -->

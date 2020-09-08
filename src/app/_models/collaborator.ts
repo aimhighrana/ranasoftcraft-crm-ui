@@ -1,3 +1,6 @@
+import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { FilterCriteria } from './schema/schemadetailstable';
+
 export class Collaborator {
 
 }
@@ -76,5 +79,8 @@ export interface SchemaCollaborator {
     isEditer: boolean,
     permissionType: string,
     userid: string,
-    plantCode: string
+    plantCode: string,
+    filterFieldIds?: Array<string>,
+    dataAllocation?: Array<DropDownValue>,
+    filterCriteria?: FilterCriteria
 }

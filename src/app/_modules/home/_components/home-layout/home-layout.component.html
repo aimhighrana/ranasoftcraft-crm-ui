@@ -1,13 +1,13 @@
 <mat-sidenav-container>
-  <mat-sidenav mode="side" opened>
+  <mat-sidenav mode="side" opened [disableClose]="true">
     <pros-primary-navbar opened (emitAfterSel)="activatedPrimaryNav = $event">
     </pros-primary-navbar>
   </mat-sidenav>
 
- 
+
   <mat-sidenav-content>
     <mat-sidenav-container autosize>
-      <mat-sidenav mode="side" opened>
+      <mat-sidenav mode="side" opened [disableClose]="true">
         <!-- secondary side nav -->
         <pros-secondary-navbar [activatedPrimaryNav]="activatedPrimaryNav"></pros-secondary-navbar>
       </mat-sidenav>

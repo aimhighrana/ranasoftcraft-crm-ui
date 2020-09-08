@@ -21,7 +21,7 @@
                 <mat-form-field appearance="outline">
                     <input matInput class="mat-input" [matAutocomplete]="auto" formControlName="field">
                     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayWith" (optionSelected)="addSelectedField($event)">
-                        <mat-option *ngFor="let user of filteredModules | async" [value]="user">
+                        <mat-option *ngFor="let user of subscribers" [value]="user">
                             {{user.fullName}}
                         </mat-option>
                     </mat-autocomplete>
@@ -32,10 +32,10 @@
                 <mat-label>Permissions</mat-label>
                 <mat-form-field appearance="outline">
                     <mat-select appearance="outline" formControlName="role" (selectionChange)="setPermissions($event)">
-                        <mat-option value="isAdmin">isAdmin</mat-option>
-                        <mat-option value="isReviewer">isReviewer</mat-option>
-                        <mat-option value="isViewer">isViewer</mat-option>
-                        <mat-option value="isEditer">isEditer</mat-option>
+                        <mat-option value="Admin">Admin</mat-option>
+                        <mat-option value="Reviewer">Reviewer</mat-option>
+                        <mat-option value="Viewer">Viewer</mat-option>
+                        <mat-option value="Editer">Editer</mat-option>
                     </mat-select>
                     <mat-error *ngIf="form.controls.role.errors && form.controls.role.errors.required">select a permission</mat-error>
 

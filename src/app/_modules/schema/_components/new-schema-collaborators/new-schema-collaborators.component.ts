@@ -1,19 +1,18 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { PermissionOn } from '@models/collaborator';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { startWith, map } from 'rxjs/operators';
 
 @Component({
   selector: 'pros-new-schema-collaborators',
   templateUrl: './new-schema-collaborators.component.html',
   styleUrls: ['./new-schema-collaborators.component.scss']
 })
-export class NewSchemaCollaboratorsComponent implements OnInit {
+export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
 
   /**
    * To get the list of users and perform filter
@@ -28,6 +27,8 @@ export class NewSchemaCollaboratorsComponent implements OnInit {
   subscribers = [];
 
   submitted = false;
+
+  collaboratorSubscription = new Subscription();
   /**
    * constructor of the class
    * @param dialogRef mat dialog ref object
@@ -58,27 +59,8 @@ export class NewSchemaCollaboratorsComponent implements OnInit {
       permissionType: new FormControl('USER'),
       initials: new FormControl()
     });
-
-    this.schemaDetailsService.getAllUserDetails('')
-      .subscribe((response: PermissionOn) => {
-        this.subscribers = response.users;
-        this.filteredModules = of(response.users)
-      });
-    this.filteredModules = this.form.controls.field.valueChanges.pipe(
-      startWith(''),
-      map(value => {
-        return this.subscribers.filter(item => item.startsWith(value))
-      })
-    )
-  }
-
-  /**
-   * function to filter the list
-   * @param val fitering text
-   */
-  filter(val: string): string[] {
-    return this.subscribers.filter(option => {
-      return option.fullName.toLowerCase().indexOf(val.toLowerCase()) === 0;
+    this.collaboratorSubscription = this.form.controls.field.valueChanges.subscribe((value) => {
+      this.getCollaborators(value);
     })
   }
 
@@ -91,6 +73,16 @@ export class NewSchemaCollaboratorsComponent implements OnInit {
     this.form.controls.initials.setValue(event.option.value.fName[0] + event.option.value.lName[0]);
   }
 
+  getCollaborators(queryString) {
+    this.collaboratorSubscription = this.schemaDetailsService.getAllUserDetails(queryString)
+      .subscribe((response: PermissionOn) => {
+        this.subscribers = response.users;
+      }, () => {
+        this.snackBar.open('error getting subscribers', 'okay', {
+          duration: 1000
+        })
+      });
+  }
 
   displayWith(item) {
     return item ? item.fullName : '';
@@ -108,7 +100,22 @@ export class NewSchemaCollaboratorsComponent implements OnInit {
     this.form.controls.isReviewer.setValue(false);
     this.form.controls.isViewer.setValue(false);
     this.form.controls.isEditer.setValue(false);
-    this.form.controls[permissions.value].setValue(true);
+
+    if (permissions.value === 'Admin') {
+      this.form.controls.isAdmin.setValue(true)
+    }
+
+    if (permissions.value === 'Reviewer') {
+      this.form.controls.isReviewer.setValue(true)
+    }
+
+    if (permissions.value === 'Viewer') {
+      this.form.controls.isViewer.setValue(true)
+    }
+
+    if (permissions.value === 'Editer') {
+      this.form.controls.isEditer.setValue(true)
+    }
   }
 
   /**
@@ -129,13 +136,17 @@ export class NewSchemaCollaboratorsComponent implements OnInit {
         fullName: this.form.controls.fullName.value,
         role: ''
       }
-      if (formObject.isAdmin) { formObject.role = 'Admin' }
-      if (formObject.isReviewer) { formObject.role = 'Reviewer' }
-      if (formObject.isViewer) { formObject.role = 'Viewer' }
-      if (formObject.isEditer) { formObject.role = 'Editer' }
-       this.dialogRef.close(formObject);
+      if (formObject.isAdmin) { formObject.role = 'isAdmin' }
+      if (formObject.isReviewer) { formObject.role = 'isReviewer' }
+      if (formObject.isViewer) { formObject.role = 'isViewer' }
+      if (formObject.isEditer) { formObject.role = 'isEditer' }
+      this.dialogRef.close(formObject);
     } else {
       this.snackBar.open('Please enter both the fields', 'okay')
     }
+  }
+
+  ngOnDestroy() {
+    this.collaboratorSubscription.unsubscribe();
   }
 }

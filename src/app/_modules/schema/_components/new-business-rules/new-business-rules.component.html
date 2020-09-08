@@ -57,9 +57,9 @@
                         <mat-chip *ngFor="let field of selectedFields;let i = index" [removable]="true"
                             (removed)="remove(field,i)">
                             {{field.fieldText}}
-                            <mat-icon matChipRemove>.cancel</mat-icon>
+                            <mat-icon matChipRemove>cancel</mat-icon>
                         </mat-chip>
-                        <input matInput class="mat-input" [matAutocomplete]="auto" [matChipInputFor]="chipList"
+                        <input matInput id="fieldsInput" class="mat-input" [matAutocomplete]="auto" formControlName="fields" [matChipInputFor]="chipList"
                             [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
                     </mat-chip-list>
                     <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectedField($event)">

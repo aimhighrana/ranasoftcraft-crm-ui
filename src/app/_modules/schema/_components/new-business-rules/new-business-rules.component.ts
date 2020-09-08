@@ -92,6 +92,9 @@ export class NewBusinessRulesComponent implements OnInit {
         }
     ]
     finalResponseBlocks = [];
+
+    fieldControl = new FormControl()
+
     /**
      * Class contructor
      * @param dialogRef refernce to matdialog
@@ -120,16 +123,16 @@ export class NewBusinessRulesComponent implements OnInit {
         } else {
             this.createDSByFields()
         }
-        if (this.filteredModules) {
-            this.filteredModules = this.form.controls.fields.valueChanges
-                .pipe(
-                    startWith(''),
-                    map(value => {
-                        this.filter(value)
-                    }))
-        }
-
-        this.filteredModules = of(this.fieldsList);
+        this.filteredModules = this.form.controls.fields.valueChanges
+            .pipe(
+                startWith(''),
+                map(keyword => {
+                    return keyword ?
+                        this.fieldsList.filter(item => {
+                            return item.fieldDescri.toLowerCase().indexOf(keyword) !== -1
+                        }) : this.fieldsList
+                }),
+            )
         this.operators = this.possibleOperators();
         this.form.controls.rule_type.valueChanges.subscribe((selectedRule) => {
 
@@ -174,7 +177,8 @@ export class NewBusinessRulesComponent implements OnInit {
                 this.form.get('standard_function').setErrors(null);
             }
             this.form.updateValueAndValidity();
-        })
+        });
+
     }
 
     /**
@@ -188,7 +192,6 @@ export class NewBusinessRulesComponent implements OnInit {
                 fieldDescri: field
             })
         });
-        this.filteredModules = of(this.fieldsList)
     }
 
     /**
@@ -201,19 +204,7 @@ export class NewBusinessRulesComponent implements OnInit {
                 keys.forEach((key) => {
                     this.fieldsList.push(metadataModeleResponse.headers[key])
                 });
-
-                this.filteredModules = of(this.fieldsList)
             });
-    }
-
-    /**
-     * function to filter the list
-     * @param val fitering text
-     */
-    filter(val: string): string[] {
-        return this.fieldsList.filter(option => {
-            return option.fieldDescri.toLowerCase().indexOf(val.toLowerCase()) === 0;
-        })
     }
 
     /**
@@ -223,15 +214,16 @@ export class NewBusinessRulesComponent implements OnInit {
     selectedField(event) {
         const alreadyExists = this.selectedFields.find(item => item.fieldId === event.option.value);
         if (alreadyExists) {
-            this.snackBar.open('This field is already selected', 'error');
+            this.snackBar.open('This field is already selected', 'Okay');
         } else {
             this.selectedFields.push({
                 fieldText: event.option.viewValue,
                 fieldId: event.option.value
             });
         }
-
         this.form.controls.fields.setValue('');
+        const txtfield = document.getElementById('fieldsInput') as HTMLInputElement;
+        txtfield.value = '';
     }
 
     /**

@@ -16,7 +16,7 @@ import { GlobaldialogService } from '@services/globaldialog.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { CoreSchemaBrInfo } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
-import { distinctUntilChanged } from 'rxjs/operators';
+import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { NewSchemaCollaboratorsComponent } from '../new-schema-collaborators/new-schema-collaborators.component';
 import { SchemaCollaborator } from '@models/collaborator';
 
@@ -65,7 +65,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * array of headers
    */
   headerText = [
-    'Upload DataSet: Choose a file',
+    'Upload dataset: Choose a file',
     'Select Module',
     'Name your dataset',
     'Select Business Rule',
@@ -142,7 +142,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   }
 
   dialogSubscriber = new Subscription();
-
+  inputModel = new FormControl()
   /**
    * Constructor of class
    * @param _formBuilder form builder object
@@ -160,7 +160,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     private userService: UserService,
     public dialogRef: MatDialogRef<UploadDatasetComponent>,
     private globaldialogService: GlobaldialogService,
-    @Inject(MAT_DIALOG_DATA) public moduleInfo: any,
+    @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
     this.moduleInpFrmCtrl = new FormControl();
     this.selectedMdoFldCtrl = new FormControl();
@@ -182,6 +182,12 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       this.requestForm.controls.userId.setValue(this.userDetails.userName)
       this.requestForm.controls.plantCode.setValue(this.userDetails.plantCode)
     })
+  }
+
+  setObjectDescription(moduleName) {
+    this.requestForm.controls.objectDesc.setValue(moduleName);
+    this.requestForm.controls.objectfullDesc.setValue(moduleName);
+    console.log(this.requestForm.value);
   }
 
   /**
@@ -359,14 +365,6 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         const anyBR = this.requestForm.controls.coreSchemaBr.value;
         if (anyBR.length === 0) {
           this.snackBar.open('Please create atleast one business rule', 'Okay');
-          return;
-        }
-      }
-
-      if (currentStepIndex === 4) {
-        const anySubscriber = this.requestForm.controls.subscribers.value;
-        if (anySubscriber.length === 0) {
-          this.snackBar.open('Please create atleast one subscriber', 'Okay');
           return;
         }
       }
@@ -648,10 +646,15 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     this.dialogSubscriber = this.globaldialogService.dialogCloseEmitter
       .pipe(distinctUntilChanged())
       .subscribe((response: SchemaCollaborator) => {
-        response.sno = Math.floor(Math.random() * 100000000000).toString();
-        response.plantCode = this.userDetails.plantCode;
-        this.subscribersList.push(response);
-        this.requestForm.controls.subscribers.value.push(response);
+        if (response) {
+          response.sno = Math.floor(Math.random() * 100000000000).toString();
+          response.plantCode = this.userDetails.plantCode;
+          response.dataAllocation = [];
+          response.filterFieldIds = [];
+          this.subscribersList.push(response);
+        }
+
+        console.log(response);
         this.dialogSubscriber.unsubscribe();
       });
   }
@@ -672,17 +675,134 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     delete formObject.fileSerialNo;
     delete formObject.runNow;
     delete formObject.runNow;
+    this.requestForm.controls.subscribers.setValue([]);
+    console.log(this.subscribersList);
+
+    this.subscribersList.forEach((subscriber, index) => {
+      let obj;
+      const subscriberObject = subscriber;
+
+      subscriberObject.filterFieldIds.forEach((fieldId) => {
+        const getSubsciberDataOnBasisOfFieldId = subscriber.dataAllocation.filter((sub) => sub.FIELDNAME === fieldId);
+        obj = {
+          type: 'DROPDOWN',
+          fieldId,
+          values: getSubsciberDataOnBasisOfFieldId ? getSubsciberDataOnBasisOfFieldId.map((item) => item.CODE) : ''
+        }
+        subscriberObject.filterCriteria = obj;
+      });
+      this.requestForm.controls.subscribers.setValue(this.subscribersList);
+      if (index === this.subscribersList.length - 1) {
+        this.callSaveSchemaAPI(
+          objectId,
+          runNow,
+          variantId,
+          fileSerialNo
+        )
+      }
+    });
+  }
+
+  callSaveSchemaAPI(objectId: string, runNow: boolean, variantId: string, fileSerialNo: string) {
+    this.requestForm.controls.subscribers.value.forEach((subscriber) => {
+      delete subscriber.dataAllocation;
+      delete subscriber.filterFieldIds
+    })
     this.schemaDetailsService.saveNewSchemaDetails(
       objectId,
       runNow,
       variantId,
       fileSerialNo,
-      formObject).subscribe((res) => {
-        console.log(res);
-        this.snackBar.open('Schema created successfully', 'Okay');
-        this.dialogRef.close();
-      }, (err) => {
-        this.snackBar.open('Schema cannot be created', 'Okay');
-      })
+      this.requestForm.value
+    ).subscribe((res) => {
+      console.log(res);
+      this.snackBar.open('Schema created successfully', 'Okay');
+      this.dialogRef.close();
+    }, (err) => {
+      this.snackBar.open('Schema cannot be created', 'Okay', {
+        duration: 1000
+      });
+    })
+  }
+
+  /**
+   * function to removeBR
+   * @param index index of object to be removed
+   */
+  deleteBR(index) {
+    this.businessRulesList.splice(index, 1);
+    this.requestForm.controls.coreSchemaBr.value.splice(index, 1);
+  }
+
+  /**
+   * Function to remove subscriber
+   * @param index index of object to be removed
+   */
+  deleteSubscriber(index) {
+    this.subscribersList.splice(index, 1);
+    this.requestForm.controls.subscribers.value.splice(index, 1);
+  }
+
+  updateRole(event, subscriber) {
+    const subscriberId = subscriber.sno;
+    const subscriberInList = this.subscribersList.find(subscriberItem => subscriberItem.sno === subscriberId);
+    subscriberInList.role = event.value;
+    subscriberInList.role = event.value;
+    subscriberInList.isAdmin = event.value === 'isAdmin' ? true : false;
+    subscriberInList.isReviewer = event.value === 'isReviewer' ? true : false;
+    subscriberInList.isViewer = event.value === 'isViewer' ? true : false;
+    subscriberInList.isEditer = event.value === 'isEditer' ? true : false;
+  }
+
+  makeFilterControl(event, subscriber, subscriberIndex) {
+    const allocationExists = this.subscribersList[subscriberIndex].filterFieldIds.find(item => item === event.fldCtrl.fieldId)
+    if (!allocationExists) {
+      this.subscribersList[subscriberIndex].filterFieldIds.push(event.fldCtrl.fieldId)
+    }
+
+    event.selectedValeus.forEach((selectedValue) => {
+      const mappingExists = this.subscribersList[subscriberIndex].dataAllocation.find(item => item.CODE === selectedValue.CODE);
+      if (!mappingExists) {
+        this.subscribersList[subscriberIndex].dataAllocation.push(selectedValue);
+      }
+    })
+
+    console.log(this.subscribersList[subscriberIndex]);
+
+
+    console.log(subscriber);
+  }
+
+  /**
+   * function to remove allocation
+   * @param allocationIndex data allocation index
+   * @param subscriberIndex subscriber index
+   */
+  removeAllocation(subscriber, fieldId) {
+    const fieldIdValueIndex = subscriber.filterFieldIds.findIndex(item => item === fieldId);
+    console.log(fieldIdValueIndex)
+    const allocationData = subscriber.dataAllocation.filter(item => item.FIELDNAME === fieldId);
+    allocationData.forEach((allocation) => {
+      delete subscriber.dataAllocation[allocation]
+    })
+    subscriber.filterFieldIds.splice(fieldIdValueIndex, 1);
+  }
+
+  /**
+   * Function to get the combined chipsets
+   * @param subscriber selected subscriber
+   * @param fieldId the selected field/groupid
+   */
+  getChipSets(subscriber, fieldId) {
+    const children = subscriber.dataAllocation.filter(item => item.FIELDNAME === fieldId);
+    console.log(children);
+    if (children.length && children.length > 1) {
+      return `${fieldId}:${children.length}`;
+    } else {
+      if (children.length && children.length === 0) {
+        return `${fieldId}:${children[0].TEXT}`;
+      }
+    }
+    return null;
   }
 }

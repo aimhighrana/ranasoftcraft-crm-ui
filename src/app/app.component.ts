@@ -119,7 +119,6 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   closeGlobalDialog(event) {
-    console.log(event)
     this.dialogRef.close();
   }
 

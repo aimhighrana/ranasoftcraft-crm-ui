@@ -47,6 +47,15 @@ export class FormInputComponent implements OnInit, OnChanges {
   @Output() valueChange = new EventEmitter<string>();
 
   /**
+   * Flag to get value of disabled and set readonly value
+   */
+  @Input() set disabled(value) {
+    this.readonly = value ? true : false;
+  }
+
+  readonly = false;
+
+  /**
    * ANGULAR HOOK
    *
    */
@@ -68,11 +77,9 @@ export class FormInputComponent implements OnInit, OnChanges {
    * To detect the changes from parent and update value
    * @param  changes: object contains prev and current value
    */
-  /**
-   *
-   */
+
   ngOnChanges(changes: SimpleChanges) {
-    if(!changes || !changes.value) return;
+    if (!changes || !changes.value) return;
     if (changes.value.previousValue !== undefined && (changes.value.previousValue !== changes.value.currentValue)) {
       this.value = changes.value.currentValue;
     }
