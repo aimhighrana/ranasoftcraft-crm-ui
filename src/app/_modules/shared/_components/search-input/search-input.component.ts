@@ -10,13 +10,18 @@ import { FormControl } from '@angular/forms';
 export class SearchInputComponent implements OnInit, OnChanges {
 
   constructor() { }
-  control: FormControl;
+
+  control: FormControl = new FormControl('');
 
   @Input() label = 'Search';
 
   @Input() type: string;
 
   @Input() placeholder = 'Search';
+
+  @Input()
+  preValue ='';
+
   /**
    * To emit the value for parent
    */
@@ -27,11 +32,6 @@ export class SearchInputComponent implements OnInit, OnChanges {
    * ANGULAR HOOK
    */
   ngOnInit(): void {
-    this.control = new FormControl();
-
-    this.control.valueChanges.subscribe(value=>{
-      this.value.emit(value);
-    });
   }
 
   /**
@@ -48,11 +48,16 @@ export class SearchInputComponent implements OnInit, OnChanges {
    * Detect changes from parent to child
    */
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes === undefined || changes.value === undefined) {
-      return;
-    }
-    if (changes.value.previousValue !== undefined && (changes.value.previousValue !== changes.value.currentValue)) {
+    if (changes && changes.value && changes.value.previousValue !== changes.value.currentValue) {
       this.value = changes.value.currentValue;
+    }
+
+    if(changes && changes.preValue && changes.preValue.previousValue !== changes.preValue.currentValue ) {
+      this.preValue = changes.preValue.currentValue;
+      this.control = new FormControl(this.preValue);
+      this.control.valueChanges.subscribe(value=>{
+        this.value.emit(value);
+      });
     }
   }
 }

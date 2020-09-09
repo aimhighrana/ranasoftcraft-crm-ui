@@ -1,4 +1,4 @@
-import { UDRBlocksModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { UDRBlocksModel, DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { FilterCriteria } from './schemadetailstable';
 
 export class SchemaList {
@@ -286,4 +286,15 @@ export interface SchemaVariantsModel {
     createdBy: string;
     filterCriteria: FilterCriteria[];
     isDefault: boolean;
+    variantType: VarinatType;
+}
+
+export enum VarinatType {
+    RUNFOR = 'RUNFOR',
+    DATA_FILTER = 'DATA_FILTER'
+}
+
+export interface LoadDropValueReq {
+    fieldId: string;
+    checkedValue: DropDownValue[];
 }

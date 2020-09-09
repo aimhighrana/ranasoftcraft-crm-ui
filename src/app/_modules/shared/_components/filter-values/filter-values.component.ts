@@ -22,6 +22,7 @@ export class FilterValuesComponent implements OnInit, OnChanges {
   dropValue: DropDownValue[] = [];
 
   // To have only selected dropdown values
+  @Input()
   checkedValue: DropDownValue[] = [];
 
   // To have values matches search input text
@@ -33,6 +34,11 @@ export class FilterValuesComponent implements OnInit, OnChanges {
     if(changes && changes.fieldId && changes.fieldId.previousValue !== changes.fieldId.currentValue) {
       this.fieldId = changes.fieldId.currentValue;
       this.getDropdownValues(this.fieldId, '');
+      this.checkedValue = [];
+    }
+
+    if(changes && changes.checkedValue && changes.checkedValue.previousValue !== changes.checkedValue.currentValue) {
+      this.checkedValue = changes.checkedValue.currentValue
     }
   }
 

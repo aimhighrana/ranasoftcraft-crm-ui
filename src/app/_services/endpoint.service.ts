@@ -419,7 +419,7 @@ export class EndpointService {
   }
 
   public saveUpdateVariantUrl(): string {
-    return `${this.apiUrl}/schema/variant/create-update-single`;
+    return `${this.apiUrl}/schema/data-variants`;
   }
 
   public getVariantdetailsByvariantIdUrl(variantId: string): string {

@@ -221,7 +221,7 @@ describe('EndpointService', () => {
 
   it('saveUpdateVariantUrl(), hould  create and update Variant details url', () => {
     const serviceobj = new EndpointService();
-    expect(serviceobj.saveUpdateVariantUrl()).toContain(`schema/variant/create-update-single`);
+    expect(serviceobj.saveUpdateVariantUrl()).toContain(`schema/data-variants`);
   });
 
   it('getVariantdetailsByvariantIdUrl(),should return all variant detials by variantId', async(() => {

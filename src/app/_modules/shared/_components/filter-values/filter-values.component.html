@@ -2,7 +2,7 @@
     <pros-search-input (value)="searchData($event)" prosClickStopPropagation></pros-search-input>
     <mat-nav-list prosClickStopPropagation>
         <mat-list-item *ngFor="let checkbox of searchValue;">
-            <mat-checkbox color="primary" (change)="onChange(checkbox)" > 
+            <mat-checkbox color="primary" (change)="onChange(checkbox)" [checked]="isChecked(checkbox)"> 
                 {{ checkbox.TEXT ? checkbox.TEXT : checkbox.CODE }}
             </mat-checkbox>
         </mat-list-item>

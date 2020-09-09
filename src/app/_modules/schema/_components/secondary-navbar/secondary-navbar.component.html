@@ -21,7 +21,7 @@
       <mat-accordion *ngIf="activatedPrimaryNav === 'welcome'">
         <ng-container *ngFor="let module of dataIntillegences">
           <ng-template [ngIf]="module.variants && module.variants.length >0" [ngIfElse]="noVarinats">
-            <mat-expansion-panel togglePosition="before" class="mat-elevation-z0" [routerLink]="['schema/schema-details', module.moduleId, module.schemaId,0]" [routerLinkActive]="'selected'">
+            <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
                 <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
                   <mat-panel-title>
                     <div>

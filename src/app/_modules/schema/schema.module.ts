@@ -38,6 +38,7 @@ import { TableLoadingComponent } from './_components/table-loading/table-loading
 import { SchemaDetailsComponent } from './_components/v2/schema-details/schema-details.component';
 import { NewBusinessRulesComponent } from './_components/new-business-rules/new-business-rules.component';
 import { NewSchemaCollaboratorsComponent } from './_components/new-schema-collaborators/new-schema-collaborators.component';
+import { SaveVariantDialogComponent } from './_components/v2/save-variant-dialog/save-variant-dialog.component';
 
 
 @NgModule({
@@ -78,7 +79,8 @@ import { NewSchemaCollaboratorsComponent } from './_components/new-schema-collab
     SchemaDetailsComponent,
     NewBusinessRulesComponent,
     NewBusinessRulesComponent,
-    NewSchemaCollaboratorsComponent
+    NewSchemaCollaboratorsComponent,
+    SaveVariantDialogComponent
   ],
   imports: [
     CommonModule,

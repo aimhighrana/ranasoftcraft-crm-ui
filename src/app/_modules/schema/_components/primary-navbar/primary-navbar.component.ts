@@ -1,6 +1,8 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { UploadDatasetComponent } from '../upload-dataset/upload-dataset.component';
+import { UserService } from '@services/user/userservice.service';
+import { Userdetails } from '@models/userdetails';
 
 @Component({
   selector: 'pros-primary-navbar',
@@ -10,9 +12,16 @@ import { UploadDatasetComponent } from '../upload-dataset/upload-dataset.compone
 export class PrimaryNavbarComponent implements OnInit {
   @Output() emitAfterSel: EventEmitter<string> = new EventEmitter<string>();
 
-  constructor(private matDialog: MatDialog) { }
+  userDetails: Userdetails = new Userdetails();
+  constructor(
+    private userService: UserService,
+    private matDialog: MatDialog
+  ) { }
 
   ngOnInit(): void {
+    this.userService.getUserDetails().subscribe(res=>{
+      this.userDetails = res;
+    }, error=> console.error(`Error : ${error.message}`));
   }
 
   sendToParent(val: string) {

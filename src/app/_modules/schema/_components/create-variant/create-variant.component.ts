@@ -8,7 +8,6 @@ import { DropDownValue, ConditionalOperator, UDRBlocksModel } from '@modules/adm
 import { of, Observable } from 'rxjs';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { VariantDetails } from '@models/schema/schemalist';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { BlockType } from '@modules/admin/_components/module/business-rules/user-defined-rule/udr-cdktree.service';
@@ -156,7 +155,7 @@ export class CreateVariantComponent implements OnInit {
       if(res) {
         this.frmArray.clear();
         this.variantDesc.setValue(res.variantName);
-        this.conditionList = res.udrBlocksModel;
+        // this.conditionList = res.udrBlocksModel;
         this.conditionList.forEach((each,index) => {
           const frmArray =this.frmArray;
           const field = this.metaDataFieldList.filter(fld=>
@@ -351,21 +350,21 @@ export class CreateVariantComponent implements OnInit {
       arrayReq.push(request);
     }
 
-    const data: VariantDetails = new VariantDetails();
-    data.schemaId = this.schemaId;
-    data.variantName = this.variantDesc.value;
-    data.variantId = this.variantId;
-    data.udrBlocksModel = arrayReq;
+    // const data: VariantDetails = new VariantDetails();
+    // data.schemaId = this.schemaId;
+    // data.variantName = this.variantDesc.value;
+    // data.variantId = this.variantId;
+    // data.udrBlocksModel = arrayReq;
 
-    // call service for save variant details
-    this.schemaVariantService.saveUpdateSchemaVariant(data).subscribe(res=>{
-      console.log('create update Variant Response = ', res);
-      if(res) {
-        this.variantId = res;
-        this.router.navigate(['/home/schema/schema-variants', this.moduleId, this.schemaId]);
-        this.snackBar.open(`Successfully saved`, 'Close',{duration:5000});
-      }
-    },error=>console.error(`Error ${error}`));
+    // // call service for save variant details
+    // this.schemaVariantService.saveUpdateSchemaVariant([data]).subscribe(res=>{
+    //   console.log('create update Variant Response = ', res);
+    //   if(res) {
+    //     this.variantId = res;
+    //     this.router.navigate(['/home/schema/schema-variants', this.moduleId, this.schemaId]);
+    //     this.snackBar.open(`Successfully saved`, 'Close',{duration:5000});
+    //   }
+    // },error=>console.error(`Error ${error}`));
   }
 
   /**

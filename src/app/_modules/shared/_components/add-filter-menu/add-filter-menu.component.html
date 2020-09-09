@@ -8,13 +8,14 @@
             <button mat-button (click)="prevState()">
                 <mat-icon>arrow_back</mat-icon>
             </button>
-            
-             Untitled
+            {{ activateElement ? (activateElement.fieldDescri ? activateElement.fieldDescri : activateElement.fieldId) : 'Unknow' }}
        </div>
        
         <pros-filter-values
         [fieldId]="activateElement ? activateElement.fieldId : ''"
-        (selectedValues)="emitAppliedFilter($event)">
+        (selectedValues)="emitAppliedFilter($event)"
+        [checkedValue]="[]"
+        >
         </pros-filter-values>
 
     </div>

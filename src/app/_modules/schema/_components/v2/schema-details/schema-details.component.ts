@@ -7,12 +7,17 @@ import { SchemaDataSource } from '../../schema-details/schema-datatable/schema-d
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { EndpointService } from '@services/endpoint.service';
 import { SchemaService } from '@services/home/schema.service';
-import { SchemaStaticThresholdRes } from '@models/schema/schemalist';
+import { SchemaStaticThresholdRes, LoadDropValueReq, SchemaListDetails } from '@models/schema/schemalist';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
 import { SelectionModel } from '@angular/cdk/collections';
 import { ReadyForApplyFilter } from '@modules/shared/_components/add-filter-menu/add-filter-menu.component';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { MatDialog } from '@angular/material/dialog';
+import { SaveVariantDialogComponent } from '../save-variant-dialog/save-variant-dialog.component';
+import { SchemalistService } from '@services/home/schema/schemalist.service';
+import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 
 @Component({
   selector: 'pros-schema-details',
@@ -112,6 +117,27 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
   fetchCount = 0;
 
 
+  /**
+   * Hold info about for try to load value for
+   * selected field id with preselcted ..
+   */
+  loadDopValuesFor: LoadDropValueReq;
+
+  /**
+   * Flag for re inilize filterable field ..
+   */
+  reInilize = true;
+
+  /**
+   * Input value for search by object number ..
+   */
+  preInpVal = '';
+
+  /**
+   * Current schema info ..
+   */
+  schemaInfo: SchemaListDetails;
+
   @ViewChild(MatSort) sort: MatSort;
 
   @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
@@ -123,7 +149,10 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
     private sharedServices: SharedServiceService,
     private schemaService: SchemaService,
     private endpointservice: EndpointService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private matDialog: MatDialog,
+    private schemaListService: SchemalistService,
+    private schemaVariantService: SchemaVariantService
 
   ) { }
 
@@ -162,7 +191,10 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
         this.getFldMetadata();
         this.dataSource = new SchemaDataSource(this.schemaDetailService, this.endpointservice, this.schemaId);
         this.getSchemaStatics();
-
+        this.getSchemaDetails();
+        if(this.variantId !== '0') {
+          this.getVariantDetails();
+        }
         /**
          * Get all user selected fields based on default view ..
          */
@@ -170,6 +202,20 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
               this.selectedFieldsOb.next(res ? res : [])
           }, error=> console.error(`Error : ${error}`));
         }
+
+        // reset filter and sort order
+        this.filterCriteria.next(null);
+        this.preInpVal = '';
+
+
+        /**
+         * Get onload data ..
+         */
+        this.dataSource.brMetadata.subscribe(res=>{
+          if(res) {
+            this.getData();
+          }
+        });
 
     });
 
@@ -202,19 +248,10 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
     });
 
     /**
-     * Get onload data ..
-     */
-    this.dataSource.brMetadata.subscribe(res=>{
-      if(res) {
-        this.getData(this.filterCriteria.getValue(), this.sortOrder);
-      }
-    });
-
-    /**
      * After filter applied should call for get data
      */
     this.filterCriteria.subscribe(res=>{
-       if(res) {
+       if(res !==null) {
         this.getData(res, this.sortOrder);
        }
     });
@@ -233,6 +270,16 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
   }
 
   /**
+   * Get schema info ..
+   */
+  getSchemaDetails() {
+    this.schemaListService.getSchemaDetailsBySchemaId(this.schemaId).subscribe(res=>{
+      this.schemaInfo = res;
+    },error=> console.error(`Error : ${error.message}`))
+  }
+
+
+  /**
    * Call service for get schema statics based on schemaId and latest run
    */
   getSchemaStatics() {
@@ -243,6 +290,39 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
     })
   }
 
+  /**
+   * Get schema variant details ..
+   */
+  getVariantDetails() {
+    this.schemaVariantService.getVariantdetailsByvariantId(this.variantId).subscribe(res=>{
+      if(res) {
+        const inline = res.filterCriteria.filter(fil=> fil.fieldId === 'id')[0];
+        if(inline) {
+          this.preInpVal = inline.values ? inline.values.toString() : '';
+        }
+        const finalFiletr: FilterCriteria[] = [inline];
+        res.filterCriteria.forEach(fil=>{
+          const filter: FilterCriteria = new FilterCriteria();
+          filter.fieldId = fil.fieldId;
+          filter.type = fil.type;
+          filter.values = fil.values;
+
+          const dropVal: DropDownValue[] = [];
+          filter.values.forEach(val=>{
+            const dd: DropDownValue = {CODE:val,FIELDNAME:fil.fieldId} as DropDownValue;
+            dropVal.push(dd);
+          });
+
+          filter.filterCtrl = {fldCtrl:fil.fldCtrl,selectedValeus:dropVal};
+          finalFiletr.push(filter);
+        });
+
+        this.filterCriteria.next(finalFiletr);
+      }
+    }, error=>{
+      console.error(`Error : ${error.message}`);
+    });
+  }
 
 
   /**
@@ -556,7 +636,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
         return String(sel.length);
       }
     }
-    return ((selCtrl && selCtrl.length === 1) ? selCtrl[0].TEXT : 'Unknown');
+    return ((selCtrl && selCtrl.length === 1) ? (selCtrl[0].TEXT ? selCtrl[0].TEXT: selCtrl[0].CODE) : 'Unknown');
   }
 
   /**
@@ -584,4 +664,55 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
       this.snackBar.open(`${error.statusText}: Please review atleast one record(s)`, 'Close',{duration:2000});
     });
   }
+
+
+  /**
+   * Set selected drop requet .. for load values ..
+   * @param fldC get cliked fld control
+   */
+  loadDropValues(fldC: FilterCriteria) {
+    if(fldC) {
+      const dropArray: DropDownValue[] = [];
+      fldC.values.forEach(val=>{
+        const drop: DropDownValue = {CODE: val,FIELDNAME: fldC.fieldId}  as DropDownValue;
+        dropArray.push(drop);
+      });
+      this.loadDopValuesFor = {fieldId: fldC.fieldId,checkedValue:dropArray};
+    }
+  }
+
+  /**
+   * Open dialog for save applied filters ..
+   */
+  opnDialogSaveVariant() {
+    const ref = this.matDialog.open(SaveVariantDialogComponent,{
+      width: '400px',
+      height:'300px',
+      data:{schemaInfo: this.schemaInfo , variantId: this.variantId, moduleId: this.moduleId, filterData: this.filterCriteria.getValue()}
+    });
+
+    ref.afterClosed().subscribe(res=>{
+      console.log(res);
+    });
+  }
+
+  /**
+   * Reset applied filter
+   */
+  resetAppliedFilter() {
+    this.filterCriteria.next([]);
+    this.preInpVal = '';
+  }
+
+  /**
+   * get pre selected values ..
+   */
+  // get preValue(): string {
+  //   const filtCri: FilterCriteria[] = this.filterCriteria.getValue() ? this.filterCriteria.getValue() : [];
+  //   const haveId = filtCri.find(fil=> fil.fieldId === 'id');
+  //   if(haveId) {
+  //     return '';
+  //   }
+  //   return '24421';
+  // }
 }

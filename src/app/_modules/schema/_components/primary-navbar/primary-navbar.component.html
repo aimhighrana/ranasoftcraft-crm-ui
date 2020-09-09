@@ -48,12 +48,12 @@
     </div>
     <mat-divider></mat-divider>
     <div class="f-row-spacer-half"></div>
-    <mat-card-header [matMenuTriggerFor]="navigation">
-        <div mat-card-avatar>RK</div>
-        <mat-card-title>Rahul Khurana</mat-card-title>
-        <mat-icon>arrow_drop_down</mat-icon>
-        <mat-menu #navigation="matMenu">
+    <mat-card-header>
+        <div mat-card-avatar>{{ userDetails.firstName ? userDetails.firstName.substring(0,1).toUpperCase() : ''  }}{{ userDetails.lastName ? userDetails.lastName.substring(0,1).toUpperCase() : ''  }}  </div>
+        <mat-card-title>{{ userDetails.fullName ? userDetails.fullName : userDetails.userName }}</mat-card-title>
+        <!-- <mat-icon>arrow_drop_down</mat-icon> -->
+        <!-- <mat-menu #navigation="matMenu">
             <pros-navigation-dropdown></pros-navigation-dropdown>
-        </mat-menu>
+        </mat-menu> -->
     </mat-card-header>
 </mat-card>

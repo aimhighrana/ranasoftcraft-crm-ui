@@ -1,6 +1,6 @@
 <mat-card class="mat-elevation-z0 root">
     <div class="f-row header-toolbar">
-        <div class="display-heading-large">Schema Details</div>
+        <div class="display-heading-large">{{ schemaInfo ? (schemaInfo.schemaDescription ? schemaInfo.schemaDescription : 'Untitled') : 'Schema Detail' }}</div>
         <span class="f-spacer"></span>
         <button mat-flat-button color="accent" (click)="downloadExecutionDetails()">Download</button>
         <ng-template [ngIf]="activeTab === 'review'">
@@ -37,13 +37,13 @@
     <div class="row-spacer"></div>
 
     <div class="f-row filter-container">
-        <pros-search-input placeholder="Search" (value)="inlineSearch($event)"></pros-search-input>
+        <pros-search-input placeholder="Search" (value)="inlineSearch($event)" [preValue] ="preInpVal" ></pros-search-input>
         <div class="f-col-spacer-half"></div>
         <!-- Append dynamic filter here ..-->
         <div class="f-col" *ngFor="let ctrl of filterCriteria | async">
             <ng-template [ngIf]="ctrl.type !== 'INLINE'">
                 <mat-chip-list>
-                    <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="appliedfiltermenu">
+                    <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="appliedfiltermenu" (click)="loadDropValues(ctrl)">
                         <label>
                             {{ ctrl.filterCtrl ? ctrl.filterCtrl.fldCtrl.fieldDescri : 'Unknown' }} :
                         </label>
@@ -68,17 +68,20 @@
 
         <!-- Append dynamic filter MatMenu -->
         <mat-menu #appliedfiltermenu="matMenu">
-            <pros-filter-values></pros-filter-values>
+            <pros-filter-values
+            [fieldId]="loadDopValuesFor ? loadDopValuesFor.fieldId : ''"
+            [checkedValue]= "loadDopValuesFor ? loadDopValuesFor.checkedValue : []"
+            ></pros-filter-values>
         </mat-menu>
 
         <mat-chip-list>
             <!-- Add filter control -->
-            <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="addfiltermenu">
+            <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="addfiltermenu" (click)="reInilize = !reInilize">
                 <mat-icon>filter_list</mat-icon>
             </mat-chip>
             <!-- Add filter control MatMenu -->
             <mat-menu #addfiltermenu="matMenu">
-                <pros-add-filter-menu [moduleId]="moduleId" (evtReadyForApply)="makeFilterControl($event)">
+                <pros-add-filter-menu [moduleId]="moduleId" (evtReadyForApply)="makeFilterControl($event)" [reInilize]="reInilize">
                 </pros-add-filter-menu>
             </mat-menu>
             <!-- More control -->
@@ -88,8 +91,8 @@
             <!-- More control MatMenu -->             
             <mat-menu #moreFilterMenu="matMenu">
                 <mat-nav-list>
-                    <a mat-list-item>Save as...</a>
-                    <a mat-list-item>Reset</a>
+                    <a mat-list-item (click)="opnDialogSaveVariant()">Save as...</a>
+                    <a mat-list-item (click)="resetAppliedFilter()">Reset</a>
                 </mat-nav-list>
             </mat-menu>
         </mat-chip-list>
@@ -246,20 +249,20 @@
                 <ng-container matColumnDef="review_actions_header">
                     <mat-header-cell *matHeaderCellDef [attr.colspan]="displayedFields.getValue().length" style="min-width: 400px;">
                         <div class="f-row">
-                            <button mat-button>
+                            <!-- <button mat-button>
                                 <mat-icon>reply</mat-icon>
                                 Assign to
-                            </button>
+                            </button> -->
                             <span class="f-col-spacer-half"></span>
                             <button mat-button (click)="approveRecords('all')">
                                 <mat-icon>done</mat-icon>
-                                Apoorv
+                                Approve 
                             </button>
                             <span class="f-col-spacer-half"></span>
-                            <button mat-button>
+                            <!-- <button mat-button>
                                 <mat-icon>block</mat-icon>
                                 Reject
-                            </button>
+                            </button> -->
                             <span class="f-col-spacer-half"></span>
                             <button mat-button (click)="selection.clear()">
                                 <mat-icon>close</mat-icon>

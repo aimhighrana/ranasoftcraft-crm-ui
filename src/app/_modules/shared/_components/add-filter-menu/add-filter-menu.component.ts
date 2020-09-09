@@ -20,6 +20,8 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
   @Input()
   moduleId: string;
 
+  @Input()
+  reInilize: boolean;
 
   /**
    * Hold all metada control for header , hierarchy and grid fields ..
@@ -48,7 +50,17 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
   ) { }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if(changes && changes.moduleId && changes.moduleId.previousValue !== changes.moduleId.currentValue) {
+      this.moduleId = changes.moduleId.currentValue;
+      this.getFldMetadata();
+    }
 
+    if(changes && changes.reInilize && changes.reInilize.previousValue !== changes.reInilize.currentValue) {
+      if(document.getElementById('fld_ctrl')) {
+        document.getElementById('fld_ctrl').style.display = 'none';
+        this.metadata.next(this.metadata.getValue());
+      }
+    }
   }
 
 
@@ -58,9 +70,6 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnInit(): void {
-
-    this.getFldMetadata();
-
     this.metadata.subscribe(fld=>{
        if(fld) {
          this.tarnsformMetada();
@@ -127,5 +136,6 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
    */
   emitAppliedFilter(val: DropDownValue[]) {
     this.evtReadyForApply.emit({fldCtrl: this.activateElement,selectedValeus: val});
+    // document.getElementById('fld_ctrl').style.display = 'none';
   }
 }

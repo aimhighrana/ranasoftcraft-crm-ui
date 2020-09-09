@@ -105,6 +105,7 @@ export class FilterCriteria {
     values: string[];
     type: string;
     filterCtrl?: ReadyForApplyFilter;
+    fldCtrl?: MetadataModel;
 }
 
 export class DataTableSourceResponse {
