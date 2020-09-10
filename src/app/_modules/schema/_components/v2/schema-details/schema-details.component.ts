@@ -686,8 +686,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
    */
   opnDialogSaveVariant() {
     const ref = this.matDialog.open(SaveVariantDialogComponent,{
-      width: '400px',
-      height:'300px',
+      width: '600px',
+      height:'450px',
       data:{schemaInfo: this.schemaInfo , variantId: this.variantId, moduleId: this.moduleId, filterData: this.filterCriteria.getValue()}
     });
 

@@ -1,14 +1,13 @@
 <mat-card class="mat-elevation-z0 root">
-    <div class="f-row header-toolbar">
-        <div class="display-heading-large">{{ schemaInfo ? (schemaInfo.schemaDescription ? schemaInfo.schemaDescription : 'Untitled') : 'Schema Detail' }}</div>
+    <div class="f-row breadcrum-toolbar">
+        <div class="display-heading-large">
+            {{ schemaInfo ? (schemaInfo.schemaDescription ? schemaInfo.schemaDescription : 'Untitled') : 'Schema Detail' }}
+        </div>
         <span class="f-spacer"></span>
         <button mat-flat-button color="accent" (click)="downloadExecutionDetails()">Download</button>
         <ng-template [ngIf]="activeTab === 'review'">
-            <span class="f-col-spacer-half"></span>
             <button mat-flat-button color="accent" (click)="submitReviewRec()">Submit</button>
         </ng-template>
-        
-
     </div>
 
     <div class="row-spacer"></div>
@@ -37,13 +36,16 @@
     <div class="row-spacer"></div>
 
     <div class="f-row filter-container">
-        <pros-search-input placeholder="Search" (value)="inlineSearch($event)" [preValue] ="preInpVal" ></pros-search-input>
+        <pros-search-input placeholder="Search" (value)="inlineSearch($event)" [preValue]="preInpVal">
+        </pros-search-input>
         <div class="f-col-spacer-half"></div>
         <!-- Append dynamic filter here ..-->
-        <div class="f-col" *ngFor="let ctrl of filterCriteria | async">
-            <ng-template [ngIf]="ctrl.type !== 'INLINE'">
-                <mat-chip-list>
-                    <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="appliedfiltermenu" (click)="loadDropValues(ctrl)">
+
+        <mat-chip-list>
+            <ng-template ngFor let-ctrl [ngForOf]="filterCriteria | async">
+                <ng-template [ngIf]="ctrl.type !== 'INLINE'">
+                    <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="appliedfiltermenu"
+                        (click)="loadDropValues(ctrl)">
                         <label>
                             {{ ctrl.filterCtrl ? ctrl.filterCtrl.fldCtrl.fieldDescri : 'Unknown' }} :
                         </label>
@@ -60,35 +62,36 @@
                         </ng-template>
                         <mat-icon matChipRemove (click)="removeAppliedFilter(ctrl)">clear</mat-icon>
                     </mat-chip>
-                </mat-chip-list>
+                </ng-template>
             </ng-template>
-        </div>
+
+        </mat-chip-list>
 
         <div class="f-col-spacer-half"></div>
 
         <!-- Append dynamic filter MatMenu -->
         <mat-menu #appliedfiltermenu="matMenu">
-            <pros-filter-values
-            [fieldId]="loadDopValuesFor ? loadDopValuesFor.fieldId : ''"
-            [checkedValue]= "loadDopValuesFor ? loadDopValuesFor.checkedValue : []"
-            ></pros-filter-values>
+            <pros-filter-values [fieldId]="loadDopValuesFor ? loadDopValuesFor.fieldId : ''"
+                [checkedValue]="loadDopValuesFor ? loadDopValuesFor.checkedValue : []"></pros-filter-values>
         </mat-menu>
 
         <mat-chip-list>
             <!-- Add filter control -->
-            <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="addfiltermenu" (click)="reInilize = !reInilize">
+            <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="addfiltermenu"
+                (click)="reInilize = !reInilize">
                 <mat-icon>filter_list</mat-icon>
             </mat-chip>
             <!-- Add filter control MatMenu -->
             <mat-menu #addfiltermenu="matMenu">
-                <pros-add-filter-menu [moduleId]="moduleId" (evtReadyForApply)="makeFilterControl($event)" [reInilize]="reInilize">
+                <pros-add-filter-menu [moduleId]="moduleId" (evtReadyForApply)="makeFilterControl($event)"
+                    [reInilize]="reInilize">
                 </pros-add-filter-menu>
             </mat-menu>
             <!-- More control -->
             <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="moreFilterMenu">
                 <mat-icon>more_horiz</mat-icon>
             </mat-chip>
-            <!-- More control MatMenu -->             
+            <!-- More control MatMenu -->
             <mat-menu #moreFilterMenu="matMenu">
                 <mat-nav-list>
                     <a mat-list-item (click)="opnDialogSaveVariant()">Save as...</a>
@@ -108,15 +111,14 @@
         </ng-template>
         <ng-template #showdata>
             <mat-table [dataSource]="dataSource" matSort class="mat-elevation-z0" (scroll)="onTableScroll($event)">
-
                 <ng-container matColumnDef="_select_columns" sticky>
-                    <mat-header-cell *matHeaderCellDef>
+                    <mat-header-cell *matHeaderCellDef class="fixed-width-c1">
                         <mat-checkbox color="primary" (change)="$event ? masterToggle() : null"
                             [checked]="selection.hasValue() && isAllSelected()"
                             [indeterminate]="selection.hasValue() && !isAllSelected()">
                         </mat-checkbox>
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let row">
+                    <mat-cell *matCellDef="let row" class="fixed-width-c1">
                         <mat-checkbox color="primary" (click)="$event.stopPropagation()"
                             (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)">
                         </mat-checkbox>
@@ -124,12 +126,12 @@
                 </ng-container>
 
                 <ng-container matColumnDef="row_more_action" sticky>
-                    <mat-header-cell *matHeaderCellDef>
+                    <mat-header-cell *matHeaderCellDef class="fixed-width-c1">
                         <button mat-button (click)="openTableColumnSettings()">
                             <mat-icon>settings</mat-icon>
                         </button>
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let element">
+                    <mat-cell *matCellDef="let element" class="fixed-width-c1">
                         <button mat-button>
                             <mat-icon>more_horiz</mat-icon>
                         </button>
@@ -137,8 +139,8 @@
                 </ng-container>
 
                 <ng-container matColumnDef="_assigned_buckets" sticky>
-                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
-                    <mat-cell *matCellDef="let element">
+                    <mat-header-cell *matHeaderCellDef class="fixed-width-c1"></mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="fixed-width-c1">
                         <mat-card-header>
                             <div mat-card-avatar>TD</div>
                         </mat-card-header>
@@ -146,9 +148,9 @@
                 </ng-container>
 
                 <ng-container matColumnDef="_score_weightage" sticky>
-                    <mat-header-cell *matHeaderCellDef> Score <mat-icon>help_outline</mat-icon>
+                    <mat-header-cell *matHeaderCellDef class="fixed-width-c2"> Score <mat-icon>help_outline</mat-icon>
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let element">
+                    <mat-cell *matCellDef="let element" class="fixed-width-c2">
                         <div class="f-row progress-cell">
                             <mat-progress-bar mode="determinate"
                                 value="{{ element['_score_weightage'] ? element['_score_weightage'].fieldData : '0' }} "
@@ -158,21 +160,19 @@
                                 {{ element['_score_weightage'] ? element['_score_weightage'].fieldData : '' }}%
                             </span>
                         </div>
-
                     </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="_row_actions" sticky>
-                    <mat-header-cell *matHeaderCellDef>
+                    <mat-header-cell *matHeaderCellDef class="fixed-width-c2">
                         Actions
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let element">
+                    <mat-cell *matCellDef="let element" class="fixed-width-c2">
                         <div class="f-row">
                             <button mat-button (click)="approveRecords('inline', element)"
                                 *ngIf="!element['OBJECTNUMBER'].isReviewed">
                                 <mat-icon>done</mat-icon>
                             </button>
-                            <span class="f-col-spacer-half"></span>
                             <button mat-button>
                                 <mat-icon>block</mat-icon>
                             </button>
@@ -181,8 +181,8 @@
                 </ng-container>
 
                 <ng-container matColumnDef="OBJECTNUMBER" sticky>
-                    <mat-header-cell *matHeaderCellDef mat-sort-header> Object Number</mat-header-cell>
-                    <mat-cell *matCellDef="let element">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="fixed-width-c2"> Object Number</mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="fixed-width-c2">
                         {{ element['OBJECTNUMBER'] ? element['OBJECTNUMBER'].fieldData : '' }}
                     </mat-cell>
                 </ng-container>
@@ -247,24 +247,18 @@
 
                 <!-- load header for actions-->
                 <ng-container matColumnDef="review_actions_header">
-                    <mat-header-cell *matHeaderCellDef [attr.colspan]="displayedFields.getValue().length" style="min-width: 400px;">
+                    <mat-header-cell *matHeaderCellDef [attr.colspan]="displayedFields.getValue().length"
+                        style="min-width: 400px;">
                         <div class="f-row">
-                            <!-- <button mat-button>
-                                <mat-icon>reply</mat-icon>
-                                Assign to
-                            </button> -->
                             <span class="f-col-spacer-half"></span>
-                            <button mat-button (click)="approveRecords('all')">
+                            <button mat-flat-button (click)="approveRecords('all')">
                                 <mat-icon>done</mat-icon>
-                                Approve 
+                                Approve
                             </button>
                             <span class="f-col-spacer-half"></span>
-                            <!-- <button mat-button>
-                                <mat-icon>block</mat-icon>
-                                Reject
-                            </button> -->
+                           
                             <span class="f-col-spacer-half"></span>
-                            <button mat-button (click)="selection.clear()">
+                            <button mat-flat-button (click)="selection.clear()">
                                 <mat-icon>close</mat-icon>
                                 Unselect
                             </button>

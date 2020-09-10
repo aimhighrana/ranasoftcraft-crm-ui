@@ -65,10 +65,10 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * array of headers
    */
   headerText = [
-    'Upload dataset: Choose a file',
-    'Select Module',
+    'Upload dataset: choose a file',
+    'Select module',
     'Name your dataset',
-    'Select Business Rule',
+    'Select business rule',
     'Add subscribers',
     'Run the schema'
   ];

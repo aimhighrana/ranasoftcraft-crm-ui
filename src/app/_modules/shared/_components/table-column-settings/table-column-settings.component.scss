@@ -4,13 +4,8 @@ mat-card.root {
   height: 100%;
   padding: 0 16px;
 
-  .header-toolbar {
-    align-items: center;
+  .breadcrum-toolbar {
     width: 100%;
-
-    .display-heading-large {
-      font-size: 1.2rem;
-    }
   }
 
   mat-card.check-list {

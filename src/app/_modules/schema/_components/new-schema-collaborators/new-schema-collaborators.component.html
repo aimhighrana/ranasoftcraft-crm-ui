@@ -13,10 +13,8 @@
     </div>
     <div class="row-spacer"></div>
     <div class="f-col mdo-justify">
-
         <form [formGroup]="form">
-
-            <div class="mdo-form-input f-col">
+            <div class="mdo-form-field">
                 <mat-label>Add Collaborators</mat-label>
                 <mat-form-field appearance="outline">
                     <input matInput class="mat-input" [matAutocomplete]="auto" formControlName="field">
@@ -25,10 +23,10 @@
                             {{user.fullName}}
                         </mat-option>
                     </mat-autocomplete>
-                    <mat-error *ngIf="form.controls.field.errors && form.controls.field.errors.required">select a subscriber</mat-error>
                 </mat-form-field>
+                <mat-error *ngIf="form.controls.field.errors && form.controls.field.errors.required">select a subscriber</mat-error>
             </div>
-            <div class="mdo-form-input f-col">
+            <div class="mdo-form-field">
                 <mat-label>Permissions</mat-label>
                 <mat-form-field appearance="outline">
                     <mat-select appearance="outline" formControlName="role" (selectionChange)="setPermissions($event)">
@@ -37,9 +35,8 @@
                         <mat-option value="Viewer">Viewer</mat-option>
                         <mat-option value="Editer">Editer</mat-option>
                     </mat-select>
-                    <mat-error *ngIf="form.controls.role.errors && form.controls.role.errors.required">select a permission</mat-error>
-
                 </mat-form-field>
+                <mat-error *ngIf="form.controls.role.errors && form.controls.role.errors.required">select a permission</mat-error>
             </div>
         </form>
     </div>

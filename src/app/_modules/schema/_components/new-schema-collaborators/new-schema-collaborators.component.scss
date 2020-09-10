@@ -1,4 +1,7 @@
 mat-card.root {
+  padding: 0;
+  user-select: none;
+
   .header-toolbar {
     align-items: center;
     width: 100%;
@@ -8,14 +11,12 @@ mat-card.root {
     }
   }
 
-  .mdo-justify > div {
-    margin: 8px 0;
-  }
-
-  mat-divider.mat-divider {
-    position: relative;
-    margin: 8px 0;
-    border-top-style: dashed;
+  .mdo-justify {
+    .mdo-form-field {
+      margin: 8px 0;
+      display: flex;
+      flex-direction: column;
+    }
   }
 }
 

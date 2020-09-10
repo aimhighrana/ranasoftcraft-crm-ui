@@ -1,7 +1,5 @@
-<mat-form-field>
-    <mat-label>Select Field</mat-label>
-    <input type="text" matInput [formControl]="selectedMdoFldCtrl" [matAutocomplete]="mdofieldauto" placeholder="Select Field">
-    <mat-icon matSuffix>arrow_drop_down</mat-icon>
+<mat-form-field appearance="outline">
+    <input matInput class="mat-input" placeholder="Enter field" [formControl]="selectedMdoFldCtrl" [matAutocomplete]="mdofieldauto">
     <mat-autocomplete #mdofieldauto="matAutocomplete" [displayWith]="mdoFieldDisplayWith" (optionSelected)="emitOptionSelected($event)">
       <mat-option *ngFor="let suggestedFld of suggestedMdoFldArray | async; trackBy :suggestedMdoFldTrkBy" [value]="suggestedFld">
         {{ suggestedFld.fieldDescri }}

@@ -1,28 +1,26 @@
-<div class="root">
-    <mat-toolbar>
-      <mat-toolbar-row>
-        <span>{{ data.schemaInfo ? data.schemaInfo.schemaDescription : 'Untitled' }} </span>
-        <span class="f-spacer"></span>
-        <button mat-icon-button (click)="dialogRef.close()">
-          <mat-icon>close</mat-icon>
-        </button>
-      </mat-toolbar-row>
-    </mat-toolbar>
-    <mat-card class="mat-elevation-z0 upload-process">
-        <pros-form-input label="Filter name" [isHelpIcon]="false" (valueChange)="variantNameChange($event)">
-
-        </pros-form-input>
-
-        <span class="f-row-spacer-half"></span>
-        <div class="f-row">
-            <button class="f-col" mat-flat-button (click)="dialogRef.close()">
-                Close
-            </button>
-            <span class="f-spacer"></span>
-            <button class="f-col" mat-flat-button (click)="saveUpdateSchemaVariant()">
-                Save
-            </button>
-        </div>
-    </mat-card>
+<div class="root f-col">
+  <div class="f-row breadcrum-toolbar">
+    <div class="display-heading-large">
+      {{ data.schemaInfo ? data.schemaInfo.schemaDescription : 'Untitled' }}
+    </div>
+    <span class="f-spacer"></span>
+    <button mat-button (click)="dialogRef.close()">
+      <mat-icon>clear</mat-icon>
+    </button>
   </div>
-  
+  <div class="row-spacer"></div>
+  <div class="f-col filter-fields">
+    <pros-form-input label="Filter name" [isHelpIcon]="false" (valueChange)="variantNameChange($event)">
+    </pros-form-input>
+  </div>
+
+  <div class="f-row">
+    <button mat-flat-button color="accent" (click)="dialogRef.close()">
+      Cancel
+    </button>
+    <span class="f-spacer"></span>
+    <button mat-flat-button color="primary" (click)="saveUpdateSchemaVariant()">
+      Create
+    </button>
+  </div>
+</div>

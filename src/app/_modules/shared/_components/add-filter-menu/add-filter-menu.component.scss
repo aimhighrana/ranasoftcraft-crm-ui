@@ -1,5 +1,6 @@
 .filter-header {
-  border-bottom: 1px solid;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
   align-items: center;
   padding: 8px 0;
 }
@@ -8,6 +9,7 @@ mat-nav-list {
   padding-top: 0;
   overflow: auto;
   height: 100%;
+  max-height: 430px;
 
   mat-list-item {
     font-size: 0.8rem;

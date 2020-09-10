@@ -1,15 +1,26 @@
 mat-card.root {
   user-select: none;
 
-  .header-toolbar {
-    align-items: center;
+  .breadcrum-toolbar {
+    button.mat-flat-button {
+      margin-left: 1px;
+      min-width: 80px;
 
-    .display-heading-large {
-      font-size: 1.2rem;
+      &:first-of-type {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+
+      &:last-of-type {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+      }
     }
   }
 
   .filter-container {
+    flex-wrap: wrap;
+
     pros-search-input {
       width: 210px;
     }
@@ -26,8 +37,6 @@ mat-card.root {
         align-items: center;
 
         mat-progress-bar {
-          border-radius: 10px;
-          height: 8px;
           flex: 3;
         }
 

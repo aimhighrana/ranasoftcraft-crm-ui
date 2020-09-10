@@ -1,10 +1,8 @@
 <div class="root">
-  <mat-card class="secondary-card mat-elevation-z1">
-    <div class="f-row-spacer-half"></div>
+  <mat-card class="secondary-card mat-elevation-z0">
+    <div class="row-spacer"></div>
     <div class="f-row display-heading-large">
-      <div>
         {{ getRoutedDescription }}
-      </div>
       <span class="f-spacer"></span>
       <button mat-button>
         <mat-icon>add</mat-icon>
@@ -17,106 +15,58 @@
     <div class="row-spacer"></div>
 
     <div class="nav-tree">
-      
       <mat-accordion *ngIf="activatedPrimaryNav === 'welcome'">
         <ng-container *ngFor="let module of dataIntillegences">
           <ng-template [ngIf]="module.variants && module.variants.length >0" [ngIfElse]="noVarinats">
             <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
-                <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
-                  <mat-panel-title>
-                    <div>
-                      {{ module.schemaDescription ? module.schemaDescription : 'Untitled' }}
-                    </div>
-                    <span class="f-spacer"></span>
-                    <label> {{ module.variants.length }} </label>
-                  </mat-panel-title>
-                </mat-expansion-panel-header>
-                <mat-nav-list role="navigation">
-                  <mat-list-item *ngFor="let variant of module.variants" [routerLink]="['schema/schema-details', module.moduleId, module.schemaId,variant.variantId]" [routerLinkActive]="'selected'">
-                    <div mat-line>
-                      {{ variant.variantName ? variant.variantName : 'Untitled' }}
-                    </div>
-                  </mat-list-item>
-                </mat-nav-list>
-              </mat-expansion-panel>
+              <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
+                <mat-panel-title>
+                  <div class="expand-title">
+                    {{ module.schemaDescription ? module.schemaDescription : 'Untitled' }}
+                  </div>
+                  <span class="f-spacer"></span>
+                  <div class="badge"> {{ module.variants.length }} </div>
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <mat-nav-list role="navigation">
+                <mat-list-item *ngFor="let variant of module.variants"
+                  [routerLink]="['schema/schema-details', module.moduleId, module.schemaId,variant.variantId]"
+                  [routerLinkActive]="'selected'">
+                  <div mat-line>
+                    {{ variant.variantName ? variant.variantName : 'Untitled' }}
+                  </div>
+                </mat-list-item>
+              </mat-nav-list>
+            </mat-expansion-panel>
           </ng-template>
 
           <ng-template #noVarinats>
-            <mat-expansion-panel togglePosition="before" class="mat-elevation-z0" hideToggle [routerLink]="['schema/schema-details', module.moduleId, module.schemaId,0]" [routerLinkActive]="'selected'">
+            <mat-expansion-panel togglePosition="before" class="mat-elevation-z0" hideToggle
+              [routerLink]="['schema/schema-details', module.moduleId, module.schemaId,0]"
+              [routerLinkActive]="'selected'">
               <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
                 <mat-panel-title>
-                  <div>
+                  <div class="expand-title">
                     {{ module.schemaDescription ? module.schemaDescription : 'Untitled'  }}
                   </div>
                 </mat-panel-title>
               </mat-expansion-panel-header>
             </mat-expansion-panel>
           </ng-template>
-          
-        </ng-container>        
+
+        </ng-container>
       </mat-accordion>
 
 
       <mat-accordion *ngIf="activatedPrimaryNav === 'schema'">
-        <!-- <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
-          <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
-            <mat-panel-title>
-              <div>Customer</div>
-              <span class="f-spacer"></span>
-              <label>2</label>
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-        </mat-expansion-panel>
-
-        <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
-          <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
-            <mat-panel-title>
-              Material
-              <span class="f-spacer"></span>
-              <label>4</label>
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <mat-nav-list role="navigation">
-            <mat-list-item>
-              <div mat-line>Duplicate check</div>
-            </mat-list-item>
-            <mat-list-item>
-              <div mat-line>Empty fields</div>
-            </mat-list-item>
-            <mat-list-item>
-              <div mat-line>Manufacturer check</div>
-            </mat-list-item>
-            <mat-list-item>
-              <div mat-line>Supplier check</div>
-            </mat-list-item>
-          </mat-nav-list>
-        </mat-expansion-panel>
-
-        <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
-          <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
-            <mat-panel-title>
-              Order
-              <span class="f-spacer"></span>
-              <label>2</label>
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <mat-nav-list role="navigation">
-            <mat-list-item>
-              <div mat-line>Duplicate check</div>
-            </mat-list-item>
-            <mat-list-item>
-              <div mat-line>Supplier check</div>
-            </mat-list-item>
-          </mat-nav-list>
-        </mat-expansion-panel> -->
         <ng-container *ngFor="let module of moduleList">
-          <mat-expansion-panel togglePosition="before" class="mat-elevation-z0" *ngIf="module.schemaLists && module.schemaLists.length>0"
-            [routerLink]="['schema', module.moduleId]">
+          <mat-expansion-panel togglePosition="before" class="mat-elevation-z0"
+            *ngIf="module.schemaLists && module.schemaLists.length>0" [routerLink]="['schema', module.moduleId]">
             <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
               <mat-panel-title>
-                {{module.moduleDesc ? module.moduleDesc : 'Untitled'}}
+                <div class="expand-title">{{module.moduleDesc ? module.moduleDesc : 'Untitled'}}</div>
                 <span class="f-spacer"></span>
-                <label>{{module.schemaLists.length}}</label>
+                <div class="badge">{{module.schemaLists.length}}</div>
               </mat-panel-title>
             </mat-expansion-panel-header>
             <mat-nav-list role="navigation">
@@ -131,7 +81,7 @@
     </div>
   </mat-card>
 
-  <div class="split-col">
+  <div class="split-col mat-elevation-z1">
     <mat-icon class="split-arrow">keyboard_arrow_right</mat-icon>
   </div>
 </div>

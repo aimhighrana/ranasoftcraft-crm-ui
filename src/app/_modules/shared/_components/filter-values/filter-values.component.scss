@@ -1,11 +1,12 @@
 div.root {
   padding: 12px;
+  height: 100%;
 
   mat-nav-list {
     padding-top: 0;
     margin: 8px -12px;
     overflow: auto;
-    height: 100%;
+    height: calc(100% - 36px - 16px * 2 - 8px * 2 - 36px);
     max-height: 240px;
   }
 }

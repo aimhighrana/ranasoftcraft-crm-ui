@@ -4,12 +4,7 @@ mat-card.root {
   padding: 0;
 
   .breadcrum-toolbar {
-    align-items: center;
     margin-bottom: 32px;
-
-    .display-heading-large {
-      font-size: 1.2rem;
-    }
   }
 
   mat-horizontal-stepper {
@@ -33,10 +28,23 @@ mat-card.root {
       .mat-line {
         z-index: 1;
       }
+
+      .drag-input {
+        position: absolute;
+        width: 100%;
+        height: 200px;
+        opacity: 0;
+      }
     }
 
     div.mat-line {
       font-size: 0.8rem;
+    }
+
+    .mat-item-col {
+      mat-form-field {
+        flex: 1;
+      }
     }
 
     .mat-radio-button {
