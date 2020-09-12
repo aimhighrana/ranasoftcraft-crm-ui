@@ -1,0 +1,104 @@
+mat-card.root {
+  padding: 0;
+  user-select: none;
+  width: 800px;
+
+  .breadcrum-toolbar {
+    width: 100%;
+  }
+
+  .mdo-justify {
+    .mdo-form-field {
+      margin: 8px 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    mat-divider.mat-divider {
+      position: relative;
+      margin: 8px 0;
+      border-top-style: dashed;
+    }
+
+    .user-defined-set {
+      position: relative;
+      margin-top: 8px;
+
+      ul {
+        list-style: none;
+        padding: 0%;
+      }
+
+      &::before {
+        display: block;
+        content: "";
+        height: 100%;
+        width: 1px;
+        position: absolute;
+        top: 0;
+        left: 50px;
+      }
+
+      .defined-row {
+        border-width: 1px;
+        border-style: solid;
+        align-items: center;
+        height: 54px;
+        margin: 0 0 16px 0;
+
+        div.col {
+          display: block;
+          flex: 1;
+          min-width: 0;
+          overflow: hidden;
+          padding: 0 8px;
+
+          &:first-of-type,
+          &:last-of-type {
+            min-width: auto;
+            //   flex: 0 0 auto;
+            padding: 0;
+          }
+
+          button.mat-button:hover {
+            background: transparent;
+          }
+
+          button.mat-flat-button {
+            height: 54px;
+            border-radius: 0;
+          }
+
+          &.select-col {
+            width: 68px;
+            padding: 0 16px;
+            height: 54px;
+            align-items: center;
+            display: flex;
+            z-index: 1;
+          }
+        }
+
+        &.add-col {
+          margin-bottom: 0;
+          width: 100px;
+        }
+      }
+
+      .sub-defined {
+        padding-left: 100px;
+        margin-top: -17px;
+      }
+    }
+  }
+}
+
+@media (min-width: 1200px) {
+  .mdo-justify {
+    margin: 0 54px;
+  }
+
+  .mdo-constrained-right {
+    margin-right: 54px;
+  }
+}

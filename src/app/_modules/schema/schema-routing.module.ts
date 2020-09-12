@@ -11,7 +11,6 @@ import { SchemaExecutionLogsComponent } from './_components/schema-execution-log
 import { AddbusinessruleComponent } from '../admin/_components/module/business-rules/addbusinessrule/addbusinessrule.component';
 import { TableColumnSettingsComponent } from '../shared/_components/table-column-settings/table-column-settings.component';
 import { UploadDataComponent } from './_components/upload-data/upload-data.component';
-import { CreateSchemaComponent } from '../admin/_components/module/schema/create-schema/create-schema.component';
 import { SalesforceConnectionComponent } from './_components/salesforce-connection/salesforce-connection.component';
 import { DuplicateBusinessruleComponent } from './_components/duplicate-businessrule/duplicate-businessrule.component';
 import { AdvanceoptionsDialogComponent } from './_components/advanceoptions-dialog/advanceoptions-dialog.component';
@@ -25,10 +24,12 @@ import { PrimaryNavbarComponent } from './_components/primary-navbar/primary-nav
 import { CreateRuleComponent } from './_components/create-rule/create-rule.component';
 import { SecondaryNavbarComponent } from './_components/secondary-navbar/secondary-navbar.component';
 import { DiwTilesComponent } from './_components/diw-tiles/diw-tiles.component';
-import { DuplicateCheckComponent } from './_components/duplicate-check/duplicate-check.component';
 import { SidenavUserdefinedComponent } from './_components/sidenav-userdefined/sidenav-userdefined.component';
 import { TableLoadingComponent } from './_components/table-loading/table-loading.component';
 import { MdoGenericComponentsComponent } from '@modules/lib/_components/mdo-generic-components/mdo-generic-components.component';
+import { CreateSchemaComponent } from './_components/v2/create-schema/create-schema.component';
+import { SchemaInfoComponent } from './_components/v2/schema-info/schema-info.component';
+import { BrruleSideSheetComponent } from './_components/v2/brrule-side-sheet/brrule-side-sheet.component';
 
 const routes: Routes = [
   { path: '', component: SchemaListComponent },
@@ -42,8 +43,7 @@ const routes: Routes = [
   { path: 'addbusinessrule', component: AddbusinessruleComponent },
   { path: 'table-column-settings', component: TableColumnSettingsComponent },
   { path: 'uploaddata', component: UploadDataComponent },
-  { path: 'create-schema/:moduleId', component: CreateSchemaComponent },
-  { path: 'create-schema/:moduleId/:schemaId', component: CreateSchemaComponent },
+  { path: 'create-schema', component: CreateSchemaComponent },
   { path: 'salesforce-connection', component: SalesforceConnectionComponent },
   { path: 'duplicate-businessrule', component: DuplicateBusinessruleComponent },
   { path: 'advanceoptions-dialog', component: AdvanceoptionsDialogComponent },
@@ -59,13 +59,13 @@ const routes: Routes = [
   { path: 'secondary-navbar', component: SecondaryNavbarComponent },
   { path: 'create-rule', component: CreateRuleComponent },
   { path: ':moduleId', component: DiwTilesComponent },
-  { path: 'duplicate-check', component: DuplicateCheckComponent },
   { path: 'sidenav-userdefined', component: SidenavUserdefinedComponent },
   { path: 'table-loading', component: TableLoadingComponent },
 
   { path: 'upload-data', component: UploadDataComponent },
   { path: 'mdo-generic-components', component: MdoGenericComponentsComponent },
-
+  { path: 'schema-info/:moduleId/:schemaId', component: SchemaInfoComponent },
+  { path: 'business-rule/:moduleId/:schemaId/:brId', component: BrruleSideSheetComponent},
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent }
 

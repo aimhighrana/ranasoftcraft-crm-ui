@@ -1,0 +1,36 @@
+<mat-card class="root mat-elevation-z0">
+    <div class="f-row">
+        <button mat-button (click)="close()">
+            <mat-icon>clear</mat-icon>
+        </button>
+        <div class="col-spacer"></div>
+        <div class="f-row breadcrum-toolbar mdo-constrained-right">
+            <div class="display-heading-large"> Create new schema  </div>
+            <span class="f-spacer"></span>
+            <button mat-flat-button color="primary" (click)="save()">Save</button>
+        </div>
+    </div>
+    <div class="row-spacer"></div>
+    <div class="f-col mdo-justify">
+        <form [formGroup]="form">
+            <div class="mdo-form-field">
+                <mat-form-field appearance="outline">
+                    <mat-select formControlName ="moduleId">
+                      <mat-option value="">Select module</mat-option>
+                      <mat-option *ngFor="let module of moduleList" [value]="module.objectid">
+                        {{ module.objectdesc ? module.objectdesc : module.objectid }}
+                      </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="mdo-form-field">
+                <pros-form-input label="Enter schema name" (valueChange)="changedSchemaName($event)">
+                </pros-form-input>
+            </div>
+            <div class="mdo-form-field f-row">
+                <mat-label>Schema threshold</mat-label>
+                <mat-slider color="primary" formControlName ="threshold" thumbLabel tickInterval="1" min="0" max="100" class="f-col"></mat-slider>
+            </div>
+        </form>
+    </div>
+</mat-card>

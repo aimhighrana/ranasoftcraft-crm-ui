@@ -1,0 +1,27 @@
+mat-card.root {
+  padding: 0;
+  user-select: none;
+  width: 800px;
+
+  .breadcrum-toolbar {
+    width: 100%;
+  }
+
+  .mdo-justify {
+    .mdo-form-field {
+      margin: 8px 0;
+      display: flex;
+      flex-direction: column;
+    }
+  }
+}
+
+@media (min-width: 1200px) {
+  .mdo-justify {
+    margin: 0 54px;
+  }
+
+  .mdo-constrained-right {
+    margin-right: 54px;
+  }
+}

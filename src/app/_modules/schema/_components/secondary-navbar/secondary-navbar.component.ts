@@ -115,4 +115,19 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
     }
     return res;
   }
+
+  /**
+   * Navigate to particular page ..
+   */
+  globalCreate() {
+    switch (this.activatedPrimaryNav) {
+      case 'welcome':
+        break;
+      case 'schema':
+        this.router.navigate(['', { outlets: { sb: 'sb/schema/create-schema' } } ]);
+        break;
+      default:
+        break;
+    }
+  }
 }

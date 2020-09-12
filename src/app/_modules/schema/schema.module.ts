@@ -32,13 +32,15 @@ import { WelcomeMdoComponent } from './_components/welcome-mdo/welcome-mdo.compo
 import { UploadDatasetComponent } from './_components/upload-dataset/upload-dataset.component';
 import { CreateRuleComponent } from './_components/create-rule/create-rule.component';
 import { DiwTilesComponent } from './_components/diw-tiles/diw-tiles.component';
-import { DuplicateCheckComponent } from './_components/duplicate-check/duplicate-check.component';
 import { SidenavUserdefinedComponent } from './_components/sidenav-userdefined/sidenav-userdefined.component';
 import { TableLoadingComponent } from './_components/table-loading/table-loading.component';
 import { SchemaDetailsComponent } from './_components/v2/schema-details/schema-details.component';
 import { NewBusinessRulesComponent } from './_components/new-business-rules/new-business-rules.component';
 import { NewSchemaCollaboratorsComponent } from './_components/new-schema-collaborators/new-schema-collaborators.component';
 import { SaveVariantDialogComponent } from './_components/v2/save-variant-dialog/save-variant-dialog.component';
+import { BrruleSideSheetComponent } from './_components/v2/brrule-side-sheet/brrule-side-sheet.component';
+import { SchemaInfoComponent } from './_components/v2/schema-info/schema-info.component';
+import { CreateSchemaComponent } from './_components/v2/create-schema/create-schema.component';
 
 
 @NgModule({
@@ -73,14 +75,16 @@ import { SaveVariantDialogComponent } from './_components/v2/save-variant-dialog
     WelcomeMdoComponent,
     CreateRuleComponent,
     DiwTilesComponent,
-    DuplicateCheckComponent,
     SidenavUserdefinedComponent,
     TableLoadingComponent,
     SchemaDetailsComponent,
     NewBusinessRulesComponent,
     NewBusinessRulesComponent,
     NewSchemaCollaboratorsComponent,
-    SaveVariantDialogComponent
+    SaveVariantDialogComponent,
+    BrruleSideSheetComponent,
+    SchemaInfoComponent,
+    CreateSchemaComponent
   ],
   imports: [
     CommonModule,

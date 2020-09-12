@@ -452,7 +452,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         udrHierarchies: udrTreeData.udrHierarchies,
         blocks: udrTreeData.blocks
       }
-    }
+    } as CoreSchemaBrInfo;
   }
 
   /**

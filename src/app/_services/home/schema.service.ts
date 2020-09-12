@@ -7,7 +7,7 @@ import { Any2tsService } from '../any2ts.service';
 import { SchemaGroupResponse, SchemaGroupDetailsResponse, SchemaGroupCountResponse, CreateSchemaGroupRequest, GetAllSchemabymoduleidsReq, ObjectTypeResponse, GetAllSchemabymoduleidsRes, SchemaGroupWithAssignSchemas } from 'src/app/_models/schema/schema';
 import { DataSource } from 'src/app/_modules/schema/_components/upload-data/upload-data.component';
 import { DropDownValue, UDRBlocksModel, UdrModel, CoreSchemaBrInfo, Category } from 'src/app/_modules/admin/_components/module/business-rules/business-rules.modal';
-import { SchemaStaticThresholdRes, SchemaListModuleList, SchemaListDetails } from '@models/schema/schemalist';
+import { SchemaStaticThresholdRes, SchemaListModuleList, SchemaListDetails, CoreSchemaBrMap } from '@models/schema/schemalist';
 
 
 
@@ -78,6 +78,10 @@ export class SchemaService {
     return this.http.post<any>(this.endpointService.uploadDataUrl(objectType, fileSno), data);
   }
 
+  /**
+   * API to get business rules for the schema
+   * @param schemaId ID of the schema
+   */
   public getAllBusinessRules(schemaId = ''): Observable<CoreSchemaBrInfo[]> {
     return this.http.get<CoreSchemaBrInfo[]>(this.endpointService.getBusinessRulesInfo(schemaId));
   }
@@ -181,5 +185,9 @@ export class SchemaService {
   public getSchemaWithVariants(moduleId?: string): Observable<SchemaListDetails[]> {
     return this.http.get<SchemaListDetails[]>(
       moduleId ? `${this.endpointService.getSchemaWithVariantsUrl()}?moduleId=${moduleId}`: this.endpointService.getSchemaWithVariantsUrl());
+  }
+
+  public updateBrMap(req: CoreSchemaBrMap): Observable<boolean> {
+    return this.http.post<boolean>(this.endpointService.updateBrMap(), req);
   }
 }

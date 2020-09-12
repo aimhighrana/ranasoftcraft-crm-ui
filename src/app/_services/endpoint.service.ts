@@ -465,4 +465,8 @@ export class EndpointService {
     return `${this.apiUrl}/attachment/downloadAttachments?sno=${sno}`;
  }
 
+ public updateBrMap(): string {
+  return `${this.apiUrl}/schema/br/update-br-map`;
+}
+
 }

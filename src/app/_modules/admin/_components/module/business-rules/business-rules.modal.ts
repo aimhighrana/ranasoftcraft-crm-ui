@@ -1,4 +1,4 @@
-import { MetadataModel } from 'src/app/_models/schema/schemadetailstable';
+import { MetadataModel, CategoryInfo } from 'src/app/_models/schema/schemadetailstable';
 import { BlockType } from './user-defined-rule/udr-cdktree.service';
 
 export class CoreSchemaBrInfo {
@@ -26,6 +26,8 @@ export class CoreSchemaBrInfo {
     percentage: number;
     schemaId: string
     brIdStr: string;
+    categoryInfo?: CategoryInfo;
+    udrDto?: UdrModel;
 }
 
 export enum BusinessRuleType {
@@ -83,6 +85,7 @@ export class UDRBlocksModel {
     conditionOperator: string;
     blockDesc: string;
     objectType: string;
+    childs?: UDRBlocksModel[];
 }
 
 export class UDRHierarchyModel {

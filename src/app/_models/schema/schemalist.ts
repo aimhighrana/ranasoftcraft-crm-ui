@@ -245,6 +245,8 @@ export class SchemaStaticThresholdRes {
     correctedCnt: number;
     exeStrtDate: string;
     exeEndDate: string;
+    isInRunning: boolean;
+    schemaDescription: string;
 }
 
 export class SchemaDashboardPermission {
@@ -297,4 +299,12 @@ export enum VarinatType {
 export interface LoadDropValueReq {
     fieldId: string;
     checkedValue: DropDownValue[];
+}
+
+export class CoreSchemaBrMap {
+    schemaId: string;
+    brId: string;
+    order: number;
+    status: string;
+    brWeightage: number;
 }

@@ -1,0 +1,190 @@
+<mat-card class="mat-elevation-z0 root">
+    <div class="f-row breadcrum-toolbar">
+        <div class="display-heading-large">
+            {{ schemaDetails ? schemaDetails.schemaDescription : 'Schema info' }}
+         </div>
+        <span class="f-spacer"></span>
+        <ng-template [ngIf]="schemaDetails && schemaDetails.isInRunning" [ngIfElse]="runNow">
+            <button mat-flat-button color="accent" disabled><mat-spinner diameter="16"></mat-spinner></button>
+        </ng-template>
+        <ng-template #runNow>
+            <button mat-flat-button color="accent">Run now</button>
+        </ng-template>
+        <button mat-flat-button color="accent" [matMenuTriggerFor]="navigation"><mat-icon>add</mat-icon> <mat-icon>arrow_drop_down</mat-icon></button>
+        <!-- menu to add business rule and subscriber -->
+        <mat-menu #navigation="matMenu" direction="right">
+            <mat-nav-list>
+                <mat-list-item (click)="addBusinessRule()">Business Rule</mat-list-item>
+                <mat-list-item (click)="addSubscriber()">Subscriber</mat-list-item>
+            </mat-nav-list>
+        </mat-menu>
+        <!-- <button mat-fab color="accent" class="mat-elevation-z0">
+            <mat-icon>more_horiz</mat-icon>
+        </button> -->
+    </div>
+
+    <div class="row-spacer"></div>
+
+    <div class="f-row">
+        <div class="f-col statics-col">
+            <div class="f-row metric-row">
+                <h1 class="statics-count">{{thresholdValue}}</h1><span class="statics-per">%</span>
+            </div>
+            Threshold
+        </div>
+
+        <div class="f-col statics-col">
+            <div class="f-row metric-row">
+                <h1 class="statics-count">{{errorValue}}</h1><span class="statics-per">%</span>
+            </div>
+            Error
+        </div>
+
+        <div class="f-col statics-col">
+            <div class="f-row metric-row">
+                <h1 class="statics-count">{{successValue}}</h1><span class="statics-per">%</span>
+            </div>
+            Success
+        </div>
+    </div>
+
+    <div class="row-spacer"></div>
+
+    <mat-tab-group disableRipple="true" animationDuration="0ms" (selectedTabChange)="updateFragment($event.tab.textLabel)" [selectedIndex]="selectedIndex">
+        <!-- Tab for the business rules of schema -->
+        <mat-tab label="business-rules">
+            <ng-template mat-tab-label>
+                Business rule
+            </ng-template>
+
+            <div class="mdo-body-content">
+                <mat-list role="list" class="row-listing">
+                    <mat-list-item>
+                        <div class="mat-item-col"><strong></strong></div>
+                        <div class="mat-item-col col-x8"><strong>Business rule</strong></div>
+                        <div class="mat-item-col col-x8"><strong>Category</strong> <mat-icon class="mat-head-icon">help_outline</mat-icon></div>
+                        <div class="mat-item-col col-x8"><strong>Weight</strong> <mat-icon class="mat-head-icon">help_outline</mat-icon></div>
+                        <div class="mat-item-col col-x8"><strong>Enabled</strong></div>
+                        <div class="mat-item-col mat-item-end"><strong></strong></div>
+                    </mat-list-item>
+                </mat-list>
+                <mat-list role="list" class="row-listing" cdkDropList [cdkDropListData]="businessRuleData" (cdkDropListDropped)="drop($event)">
+                        <mat-list-item *ngFor="let businessRule of businessRuleData">
+                            <div class="mat-item-col" cdkDrag>
+                                <mat-icon cdkDragHandle>drag_handle</mat-icon>
+                                
+                            </div>
+                            <div class="mat-item-col col-x8"><a class="info">{{businessRule.brInfo}}</a></div>
+                            <div class="mat-item-col col-x8">
+                                <button mat-stroked-button [matMenuTriggerFor]="businessRuleCat">
+                                    {{ businessRule.categoryInfo ?  (businessRule.categoryInfo.categoryDesc ? businessRule.categoryInfo.categoryDesc : 'Untitled') : 'Unknown' }}
+                                    <mat-icon>arrow_drop_down</mat-icon>
+                                </button>
+                                <mat-menu #businessRuleCat="matMenu" direction="right">
+                                    <mat-nav-list>
+                                        <mat-list-item *ngFor="let cat of category" (click)="updateCategory(cat, businessRule)">
+                                            {{ cat.categoryDesc ? cat.categoryDesc : cat.categoryId }}
+                                        </mat-list-item>
+                                    </mat-nav-list>
+                                </mat-menu>
+                            </div>
+                            <div class="mat-item-col col-x8">
+                                <mat-slider color="primary" [value]="businessRule.brWeightage" thumbLabel tickInterval="1" min="0" max="100" (change)="updateBr(businessRule,$event)"></mat-slider> <span class="f-col-spacer-half"></span><div>{{businessRule.brWeightage}}%</div>
+                            </div>
+                            <div class="mat-item-col col-x8">
+                                <mat-slide-toggle color="primary" [checked]="businessRule.status === '1' ? true : false" (change) = "updateBr(businessRule,$event)"></mat-slide-toggle>
+                            </div>
+                            <div class="mat-item-col mat-item-end">
+                                <button mat-button [matMenuTriggerFor]="navigation">
+                                    <mat-icon>more_vert</mat-icon>
+                                    <mat-menu #navigation="matMenu" direction="right">
+                                        <mat-nav-list>
+                                            <mat-list-item (click)="editBr(businessRule)">Edit</mat-list-item>
+                                            <mat-list-item (click)="deleteBr(businessRule)">Delete</mat-list-item>
+                                        </mat-nav-list>
+                                    </mat-menu>
+                                </button>
+                            </div>
+                        </mat-list-item>
+                     
+                    
+                </mat-list>
+            </div>
+           
+        </mat-tab>
+
+        <!-- Tab for the collaborators/subscribers of the schema -->
+        <mat-tab label="subscribers">
+            <ng-template mat-tab-label>
+                Subscribers
+            </ng-template>
+
+            <div class="mdo-body-content">
+                <mat-list role="list" class="row-listing">
+                    <mat-list-item>
+                        <div class="mat-item-col col-x8"><strong>Subscriber</strong></div>
+                        <div class="mat-item-col col-x4"><strong>Rule</strong></div>
+                        <div class="mat-item-col col-x16"><strong>Data allocation</strong></div>
+                        <div class="mat-item-col mat-item-end"><strong></strong></div>
+                    </mat-list-item>
+                    <mat-list-item *ngFor="let subscriber of subscriberData">
+                        <div class="mat-item-col col-x8">
+                            <mat-card-header>
+                                <div mat-card-avatar>{{shortName(subscriber.userMdoModel.fName, subscriber.userMdoModel.lName)}}</div>
+                                <mat-card-title>{{subscriber.userMdoModel.fName}} {{subscriber.userMdoModel.lName}}</mat-card-title>
+                            </mat-card-header>
+                        </div>
+                        <div class="mat-item-col col-x4">
+                            <button mat-stroked-button *ngIf="subscriber.isAdmin">Admin <mat-icon>arrow_drop_down</mat-icon></button>
+                            <button mat-stroked-button *ngIf="subscriber.isReviewer">Reviewer <mat-icon>arrow_drop_down</mat-icon></button>
+                            <button mat-stroked-button *ngIf="subscriber.isViewer">Viewer <mat-icon>arrow_drop_down</mat-icon></button>
+                            <button mat-stroked-button *ngIf="subscriber.isEditer">Editor <mat-icon>arrow_drop_down</mat-icon></button>
+                        </div>
+                        <div class="mat-item-col col-x16">
+                            <mat-chip-list>
+                                <mat-chip class="mdo-filter-matchip" disableRipple="true"
+                                    [matMenuTriggerFor]="appliedfiltermenu"><label>Region:</label> <span
+                                        class="info">sydney</span>
+                                    <mat-icon matChipRemove>clear</mat-icon>
+                                </mat-chip>
+            
+                                <mat-chip class="mdo-filter-matchip" disableRipple="true"
+                                    [matMenuTriggerFor]="addfiltermenu">
+                                    <mat-icon>filter_list</mat-icon>
+                                </mat-chip>
+                                <mat-menu #appliedfiltermenu="matMenu">
+                                    <pros-filter-values></pros-filter-values>
+                                </mat-menu>
+                                <mat-menu #addfiltermenu="matMenu">
+                                    <pros-add-filter-menu></pros-add-filter-menu>
+                                </mat-menu>
+                            </mat-chip-list>
+                        </div>
+                        <div class="mat-item-col mat-item-end">
+                            <button mat-button [matMenuTriggerFor]="navigation">
+                                <mat-icon>more_vert</mat-icon>
+                                <!-- Menu to open edit/delete options -->
+                                <mat-menu #navigation="matMenu" direction="right">
+                                    <mat-nav-list>
+                                        <mat-list-item>Edit</mat-list-item>
+                                        <mat-list-item>Delete</mat-list-item>
+                                    </mat-nav-list>
+                                </mat-menu>
+                            </button>
+                        </div>
+                    </mat-list-item>
+                </mat-list>
+            </div>
+        </mat-tab>
+
+        <!-- Tab for the execution logs of the schema -->
+        <mat-tab label="execution-logs">
+            <ng-template mat-tab-label>
+                Execution log
+            </ng-template>
+
+            Coming soon...
+        </mat-tab>
+
+    </mat-tab-group>
+</mat-card>

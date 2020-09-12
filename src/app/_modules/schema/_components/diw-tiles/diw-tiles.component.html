@@ -1,54 +1,51 @@
 <mat-card class="mat-elevation-z0 root">
     <div class="f-row breadcrum-toolbar">
-        <div class="display-heading-large">
-            {{ moduleListData ? moduleListData.moduleDesc: 'Unknown'}}
+        <div class="display-heading-large" >
+            {{  moduleData ? ( moduleData.moduleDesc ? moduleData.moduleDesc: 'Untitled') : 'Untitled'}}
         </div>
         <span class="f-spacer"></span>
-        <button mat-flat-button color="accent">Upload dataset</button>
+        <button mat-flat-button color="accent" (click)="openUploadScreen(moduleId, moduleData.moduleDesc)">Upload dataset</button>
     </div>
-
     <div class="row-spacer"></div>
 
-    <ng-template [ngIf]="moduleListData && moduleListData.schemaLists">
-        <mat-list *ngFor="let schema of moduleListData.schemaLists">
-
+    <ng-template [ngIf]="moduleSchemaData">
+        <mat-list *ngFor="let schemaData of moduleSchemaData">
             <mat-list-item class="f-row">
-                <svg viewBox="0 0 36 36" class="mdo-gauge warning" width="100" height="100">
+                <svg viewBox="0 0 36 36" class="mdo-gauge" [class.warning]="schemaData.thresHoldStatus==='NORMAL'" [class.success]="schemaData.thresHoldStatus==='GOOD'"  [class.error]="schemaData.thresHoldStatus==='DANGER' || schemaData.thresHoldStatus == 'undefined'">
                     <path class="circle-bg" d="M18 2.0845
                         a 15.9155 15.9155 0 0 1 0 31.831
                         a 15.9155 15.9155 0 0 1 0 -31.831"></path>
-                    <path class="circle" stroke-dasharray="60, 100" d="M18 2.0845
+                    <path class="circle" [attr.stroke-dasharray]="schemaData.threshold + ',' + 100" d="M18 2.0845
                         a 15.9155 15.9155 0 0 1 0 31.831
                         a 15.9155 15.9155 0 0 1 0 -31.831"></path>
-                    <text x="18" y="20.35" class="percentage">60%</text>
+                    <text x="18" y="20.35" class="percentage">{{schemaData.threshold}}%</text>
                 </svg>
-                <div class="f-col tile-content">
-                    <div class="f-row">
-                        <div class="f-col">
-                            <div mat-line>{{schema.schemaDescription? schema.schemaDescription: 'Untitled'}}</div>
-                            <div mat-line class="short-line">Last Run:
-                                {{ schema.executionStartTime? (schema.executionEndTime | date:'MMM d, y, h:mm:ss a'):'N/A' }}
-                            </div>
+                <div class="f-row tile-content">
+                    <div class="f-col">
+                        <div mat-line>{{schemaData.schemaDescription? schemaData.schemaDescription: 'Untitled'}}</div>
+                        <div mat-line class="short-line">Last Run:
+                            {{ schemaData.exeEndDate ? (schemaData.exeEndDate | date:'MMM d, y, h:mm:ss a'): 'N/A' }}
                         </div>
                         <div class="f-row-spacer-half"></div>
-                        <button mat-flat-button color="accent" *ngIf="schema.isInRunning===null || schema.isInRunning===false" (click)="runSchema(schema)">
-                            Run schema
-                        </button>
-                        <button mat-flat-button color="accent" *ngIf="schema.isInRunning===true">
-                            <mat-spinner diameter="16"></mat-spinner>
-                        </button>
-                        <button mat-fab color="accent" class="mat-elevation-z0">
-                            <mat-icon>more_horiz</mat-icon>
-                        </button>
+                        <mat-chip-list>
+                            <mat-chip disableRipple="true">{{schemaData.totalCnt? schemaData.totalCnt:0}} Total</mat-chip>
+                            <mat-chip disableRipple="true">{{schemaData.successCnt? schemaData.successCnt:0}} success</mat-chip>
+                            <mat-chip disableRipple="true">{{schemaData.errorCnt? schemaData.errorCnt:0}} error</mat-chip>
+                        </mat-chip-list>
                     </div>
-                    <mat-chip-list>
-                        <mat-chip disableRipple="true">{{schema.totalValue? schema.totalValue:0}} Total</mat-chip>
-                        <mat-chip disableRipple="true">{{schema.successValue? schema.successValue:0}} success</mat-chip>
-                        <mat-chip disableRipple="true">{{schema.errorValue? schema.errorValue:0}} error</mat-chip>
-                    </mat-chip-list>
+                    <button mat-flat-button color="accent" *ngIf="schemaData.isInRunning===null || schemaData.isInRunning===false" (click)="runSchema(schemaData)">
+                        Run schema
+                    </button>
+    
+                    <button mat-flat-button color="accent" *ngIf="schemaData.isInRunning===true" [disabled]="true">
+                        <mat-spinner diameter="16"></mat-spinner>
+                    </button>
+    
+                    <button mat-fab color="accent" class="mat-elevation-z0">
+                        <mat-icon>more_horiz</mat-icon>
+                    </button>
                 </div>
             </mat-list-item>
-
         </mat-list>
     </ng-template>
 </mat-card>

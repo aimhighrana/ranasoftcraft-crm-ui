@@ -4,7 +4,7 @@
     <div class="f-row display-heading-large">
         {{ getRoutedDescription }}
       <span class="f-spacer"></span>
-      <button mat-button>
+      <button mat-button (click)="globalCreate()">
         <mat-icon>add</mat-icon>
       </button>
     </div>
@@ -70,7 +70,7 @@
               </mat-panel-title>
             </mat-expansion-panel-header>
             <mat-nav-list role="navigation">
-              <mat-list-item *ngFor="let schema of module.schemaLists">
+              <mat-list-item *ngFor="let schema of module.schemaLists" [routerLink]="['schema/schema-info', schema.moduleId, schema.schemaId]" [queryParams]="{fragment:'business-rules'}">
                 <div mat-line>{{schema.schemaDescription ?  schema.schemaDescription : 'Untitled'}}</div>
               </mat-list-item>
             </mat-nav-list>
