@@ -61,8 +61,8 @@
       <mat-accordion *ngIf="activatedPrimaryNav === 'schema'">
         <ng-container *ngFor="let module of moduleList">
           <mat-expansion-panel togglePosition="before" class="mat-elevation-z0"
-            *ngIf="module.schemaLists && module.schemaLists.length>0" [routerLink]="['schema', module.moduleId]">
-            <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
+            *ngIf="module.schemaLists && module.schemaLists.length>0">
+            <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px" [routerLink]="['schema', module.moduleId]">
               <mat-panel-title>
                 <div class="expand-title">{{module.moduleDesc ? module.moduleDesc : 'Untitled'}}</div>
                 <span class="f-spacer"></span>
