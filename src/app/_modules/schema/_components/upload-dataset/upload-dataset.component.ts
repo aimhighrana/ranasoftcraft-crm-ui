@@ -19,6 +19,7 @@ import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { NewSchemaCollaboratorsComponent } from '../new-schema-collaborators/new-schema-collaborators.component';
 import { SchemaCollaborator } from '@models/collaborator';
+import { Utilities } from '@modules/base/common/utilities';
 
 export interface DataSource {
   excelFld: string;
@@ -143,6 +144,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
 
   dialogSubscriber = new Subscription();
   inputModel = new FormControl()
+
   /**
    * Constructor of class
    * @param _formBuilder form builder object
@@ -161,6 +163,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     public dialogRef: MatDialogRef<UploadDatasetComponent>,
     private globaldialogService: GlobaldialogService,
     @Inject(MAT_DIALOG_DATA) public data: any,
+    private utilties: Utilities
   ) {
     this.moduleInpFrmCtrl = new FormControl();
     this.selectedMdoFldCtrl = new FormControl();
@@ -187,7 +190,6 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   setObjectDescription(moduleName) {
     this.requestForm.controls.objectDesc.setValue(moduleName);
     this.requestForm.controls.objectfullDesc.setValue(moduleName);
-    console.log(this.requestForm.value);
   }
 
   /**
@@ -252,7 +254,9 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       let type = '';
       try {
         type = target.files[0].name.split('.')[1];
-      } catch (ex) { console.error(ex) }
+      } catch (ex) {
+        console.error(ex)
+      }
       if (type === 'xlsx' || type === 'xls' || type === 'csv') {
         // check size of file
         const size = target.files.item(0).size;
@@ -310,7 +314,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     excelHeader.forEach((field) => {
       this.requestForm.controls.fields.value.push({
         fieldDescri: field,
-        fieldId: this.requestForm.controls.objectId.value ? field.fieldId : Math.random().toString(36).slice(2),
+        fieldId: this.utilties.getRandomString(8),
         dataType: 'CHAR',
         maxChar: '200',
         mandatory: '0',
@@ -320,7 +324,6 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         isComBased: '0'
       })
     });
-    console.log(this.requestForm.controls.fields.value)
   }
 
   /**
@@ -481,9 +484,9 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       this.requestForm.controls.objectDesc.setValue('');
       this.requestForm.controls.objectfullDesc.setValue('');
       this.requestForm.controls.objectId.setValue('');
+      this.createfieldObjectForRequest(this.excelHeader)
     }
     this.step('next');
-    this.createfieldObjectForRequest(this.excelHeader)
   }
 
   /**
@@ -582,7 +585,6 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * @param whatToFilter the structure to update
    */
   search(event: string, whatToFilter: string) {
-    console.log(event, whatToFilter);
     if (whatToFilter === 'module') {
       if (!event) {
         this.modulesList.length = 0;
@@ -618,19 +620,15 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    */
   setRunningSchedule(runId) {
     this.requestForm.controls.runTime.setValue(runId.value);
-    console.log(this.requestForm.value)
   }
 
   /**
    * function to upload file to server
    */
   uploadFileData() {
-    console.log(this.requestForm.get('file'))
     this.schemaService.uploadUpdateFileData(this.requestForm.get('file').value, this.requestForm.get('fileSerialNo').value)
       .subscribe(res => {
         this.requestForm.get('fileSerialNo').setValue(res)
-      }, error => {
-        console.error(`Error ${error}`);
       });
   }
 
@@ -667,14 +665,12 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * and make a API request
    */
   save() {
-    console.log(this.requestForm);
     const formObject = this.requestForm.value;
     const objectId = formObject.objectId
     const runNow = true;
     const variantId = '0'
     const fileSerialNo = formObject.fileSerialNo;
     this.requestForm.controls.subscribers.setValue([]);
-    console.log(this.subscribersList);
 
 
     if (!this.requestForm.controls.objectId.value) {
@@ -744,7 +740,6 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       fileSerialNo,
       formObject
     ).subscribe((res) => {
-      console.log(res);
       this.snackBar.open('Schema created successfully', 'Okay');
       this.dialogRef.close();
     }, (err) => {
@@ -795,11 +790,6 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         this.subscribersList[subscriberIndex].dataAllocation.push(selectedValue);
       }
     })
-
-    console.log(this.subscribersList[subscriberIndex]);
-
-
-    console.log(subscriber);
   }
 
   /**
@@ -809,7 +799,6 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    */
   removeAllocation(subscriber, fieldId) {
     const fieldIdValueIndex = subscriber.filterFieldIds.findIndex(item => item === fieldId);
-    console.log(fieldIdValueIndex)
     const allocationData = subscriber.dataAllocation.filter(item => item.FIELDNAME === fieldId);
     allocationData.forEach((allocation) => {
       delete subscriber.dataAllocation[allocation]
@@ -824,7 +813,6 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    */
   getChipSets(subscriber, fieldId) {
     const children = subscriber.dataAllocation.filter(item => item.FIELDNAME === fieldId);
-    console.log(children);
     if (children.length && children.length > 1) {
       return `${fieldId}:${children.length}`;
     } else {

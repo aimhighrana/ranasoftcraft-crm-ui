@@ -124,4 +124,19 @@ export class Utilities {
             duration: 5000
         });
     }
+
+    /**
+     * Function to generate alpha nmeric string
+     * @param len the length of required string
+     */
+    public getRandomString(len: number) {
+        let text = '';
+        const charset = 'abcdefghijklmnopqrstuvwxyz';
+        for (let i = 0; i < len; i++)
+            text += charset.charAt(Math.floor(Math.random() * charset.length));
+
+        const suffix = (new Date().getMilliseconds() * Math.random()*10).toFixed(0);
+        return `${text}${suffix}`;
+
+    }
 }
