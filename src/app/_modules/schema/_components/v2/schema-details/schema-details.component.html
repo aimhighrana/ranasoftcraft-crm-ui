@@ -247,17 +247,12 @@
 
                 <!-- load header for actions-->
                 <ng-container matColumnDef="review_actions_header">
-                    <mat-header-cell *matHeaderCellDef [attr.colspan]="displayedFields.getValue().length"
-                        style="min-width: 400px;">
+                    <mat-header-cell *matHeaderCellDef [attr.colspan]="displayedFields.getValue().length">
                         <div class="f-row">
-                            <span class="f-col-spacer-half"></span>
                             <button mat-flat-button (click)="approveRecords('all')">
                                 <mat-icon>done</mat-icon>
                                 Approve
                             </button>
-                            <span class="f-col-spacer-half"></span>
-                           
-                            <span class="f-col-spacer-half"></span>
                             <button mat-flat-button (click)="selection.clear()">
                                 <mat-icon>close</mat-icon>
                                 Unselect

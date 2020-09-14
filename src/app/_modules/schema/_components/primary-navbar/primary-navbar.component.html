@@ -1,10 +1,10 @@
 <mat-card class="root mat-elevation-z0">
-    <div class="f-row-spacer-half"></div>
+    <div class="row-spacer"></div>
     <div class="f-row">
-        <button mat-button (click)="toggleSideBar()">
+        <button mat-icon-button (click)="toggleSideBar()">
             <mat-icon>menu</mat-icon>
         </button>
-        <div class="col-margin"><img src="/assets/images/mdo-logo-white.svg" width="70"></div>
+        <div class="col-space"><img src="/assets/images/mdo-logo-white.svg" width="70"></div>
     </div>
 
     <div class="row-spacer"></div>
@@ -17,7 +17,7 @@
         <button mat-mini-fab>
             <mat-icon>add</mat-icon>
         </button>
-        <div class="col-margin">Create new...</div>
+        <div class="col-space">Create new...</div>
         <mat-menu #navigation="matMenu" direction="right">
             <pros-navigation-dropdown (selectedModule)="selectedModule($event)">
             </pros-navigation-dropdown>
@@ -29,25 +29,25 @@
     <mat-nav-list class="primary-nav-list">
         <mat-list-item routerLink="/home/dash/welcome" [routerLinkActive]="'selected'"  (click)="sendToParent('welcome')">
             <mat-icon>home</mat-icon>
-            <div class="col-margin">Home</div>
+            <div class="col-space">Home</div>
         </mat-list-item>
         <mat-list-item routerLink="/home/schema" [routerLinkActive]="'selected'"  (click)="sendToParent('schema')">
             <mat-icon>assessment</mat-icon>
-            <div class="col-margin">Schema</div>
+            <div class="col-space">Schema</div>
         </mat-list-item>
     </mat-nav-list>
 
     <div class="row-spacer"></div>
 
-    <div class="primary-admin">
+    <div class="f-row primary-admin">
         <div class="admin-badge">
             <mat-icon>inbox</mat-icon>
             <mat-icon class="badge-icon">access_time</mat-icon>
         </div>
-        <div class="col-margin">System tray</div>
+        <div class="col-space">System tray</div>
     </div>
     <mat-divider></mat-divider>
-    <div class="f-row-spacer-half"></div>
+    <div class="row-spacer"></div>
     <mat-card-header>
         <div mat-card-avatar>{{ userDetails.firstName ? userDetails.firstName.substring(0,1).toUpperCase() : ''  }}{{ userDetails.lastName ? userDetails.lastName.substring(0,1).toUpperCase() : ''  }}  </div>
         <mat-card-title>{{ userDetails.fullName ? userDetails.fullName : userDetails.userName }}</mat-card-title>
@@ -56,4 +56,5 @@
             <pros-navigation-dropdown></pros-navigation-dropdown>
         </mat-menu> -->
     </mat-card-header>
+    <div class="row-spacer"></div>
 </mat-card>

@@ -1,9 +1,26 @@
 mat-card.root {
-  padding: 0;
   user-select: none;
+  height: 100%;
+  padding: 0;
 
   .breadcrum-toolbar {
-    width: 100%;
+    align-items: center;
+    padding-top: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+
+    .display-heading-large {
+      font-size: 1.2rem;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .mdo-constrained-right {
+      align-items: center;
+      width: 100%;
+    }
   }
 
   .mdo-justify {

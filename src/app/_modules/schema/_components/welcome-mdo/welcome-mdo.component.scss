@@ -1,12 +1,21 @@
 mat-card.root {
-  margin: 0 auto;
   padding: 0 16px;
   user-select: none;
-  height: 100%;
 
   .breadcrum-toolbar {
+    align-items: center;
     padding-top: 16px;
     margin-bottom: 48px;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+
+    .display-heading-large {
+      font-size: 1.2rem;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
   }
 
   mat-list {
@@ -35,8 +44,9 @@ mat-card.root {
   }
 }
 
-@media (min-width: 1240px) {
+@media (min-width: 1200px) {
   mat-card.root {
     width: 62%;
+    margin: 0 auto;
   }
 }

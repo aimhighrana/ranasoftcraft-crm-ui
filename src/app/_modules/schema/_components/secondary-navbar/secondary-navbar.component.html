@@ -2,7 +2,7 @@
   <mat-card class="secondary-card mat-elevation-z0">
     <div class="row-spacer"></div>
     <div class="f-row display-heading-large">
-        {{ getRoutedDescription }}
+        <div>{{ getRoutedDescription }}</div>
       <span class="f-spacer"></span>
       <button mat-button (click)="globalCreate()">
         <mat-icon>add</mat-icon>
@@ -56,9 +56,11 @@
 
         </ng-container>
       </mat-accordion>
-
-
       <mat-accordion *ngIf="activatedPrimaryNav === 'schema'">
+        <div class="section-header">
+          Data intelligence
+        </div>
+        <div class="row-spacer"></div>
         <ng-container *ngFor="let module of moduleList">
           <mat-expansion-panel togglePosition="before" class="mat-elevation-z0"
             *ngIf="module.schemaLists && module.schemaLists.length>0">
@@ -77,7 +79,6 @@
           </mat-expansion-panel>
         </ng-container>
       </mat-accordion>
-
     </div>
   </mat-card>
 

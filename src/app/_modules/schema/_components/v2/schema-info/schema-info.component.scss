@@ -6,9 +6,15 @@ mat-card.root {
   .breadcrum-toolbar {
     align-items: center;
     padding-top: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 2;
 
     .display-heading-large {
       font-size: 1.2rem;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
     }
 
     button {
@@ -25,14 +31,10 @@ mat-card.root {
       }
 
       &:nth-of-type(2) {
-        border-radius: 0;
-        padding: 0;
-        min-width: 56px;
-      }
-
-      &:nth-of-type(3) {
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
+        padding: 0;
+        min-width: 56px;
       }
     }
   }
@@ -66,7 +68,60 @@ mat-card.root {
 
   .mdo-body-content {
     height: calc(100% - 52px - 16px * 2 - 152px - 48px);
-    min-height: 100%;
     overflow: auto;
+  }
+}
+
+.colunm-box {
+  align-items: center;
+  box-sizing: border-box;
+  padding: 4px 0;
+  min-height: 48px;
+  border-bottom: 1px solid #e1e1e1;
+
+  .col {
+    display: flex;
+    flex: 1 0 auto;
+    width: 1px;
+    align-items: center;
+    margin: 0 4px;
+
+    &.col-x4 {
+      flex: 4;
+    }
+
+    &.col-x8 {
+      flex: 8;
+    }
+
+    &.col-x16 {
+      flex: 16;
+    }
+
+    &.mat-item-end {
+      justify-content: flex-end;
+      margin-right: 0;
+    }
+
+    strong {
+      font-weight: 500;
+    }
+
+    .mat-head-icon {
+      height: 16px;
+      width: 16px;
+      font-size: 16px;
+      margin-left: 5px;
+    }
+
+    .mat-line {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: pre-line;
+      word-break: break-word;
+    }
   }
 }

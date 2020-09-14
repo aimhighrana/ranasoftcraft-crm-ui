@@ -2,14 +2,15 @@ mat-card.root {
   border-radius: 0;
   padding: 0 16px;
   height: 100%;
-  width: 170px;
+  max-width: 180px;
   overflow: hidden;
   background-color: #324358;
   color: #b7bfce;
   user-select: none;
 
-  .col-margin {
-    margin-left: 16px;
+  .col-space {
+    margin-left: 20px;
+    white-space: nowrap;
   }
 
   .create-new {
@@ -18,8 +19,9 @@ mat-card.root {
   }
 
   .primary-nav-list {
-    height: calc(100% - 80px - 36px - 36px - 40px - 48px - 40px);
+    height: calc(100% - 16px * 7 - 36px - 44px - 40px - 48px - 40px);
     overflow: auto;
+    overflow-x: hidden;
     margin: 0 -16px;
     padding-top: 0;
 
@@ -46,18 +48,18 @@ mat-card.root {
   }
 
   .primary-admin {
-    display: flex;
-    height: 36px;
+    align-items: center;
+    height: 48px;
     cursor: pointer;
 
     .admin-badge {
       position: relative;
-      margin: 0 12px;
+      margin: 0 10px;
 
       mat-icon {
-        width: 16px;
-        height: 16px;
-        font-size: 16px;
+        width: 18px;
+        height: 18px;
+        font-size: 18px;
       }
 
       .badge-icon {

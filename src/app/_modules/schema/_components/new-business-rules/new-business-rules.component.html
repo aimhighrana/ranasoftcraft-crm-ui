@@ -1,10 +1,10 @@
 <mat-card class="root mat-elevation-z0">
-  <div class="f-row">
+  <div class="f-row breadcrum-toolbar">
     <button mat-button (click)="closeDialogComponent()">
       <mat-icon>clear</mat-icon>
     </button>
     <div class="col-spacer"></div>
-    <div class="f-row breadcrum-toolbar mdo-constrained-right">
+    <div class="f-row mdo-constrained-right">
       <div class="display-heading-large">Business rule</div>
       <span class="f-spacer"></span>
       <button mat-flat-button color="primary" (click)="save();$event.stopPropagation()">Save</button>
@@ -14,7 +14,6 @@
   <div class="row-spacer"></div>
 
   <div class="f-col mdo-justify">
-
     <form [formGroup]="form">
       <div class="mdo-form-field">
         <mat-label>Rule Type</mat-label>
@@ -144,10 +143,13 @@
           </div>
 
           <div class="col" *ngIf="udrBlock.operator === 'RANGE'">
-            <pros-form-input [placeholder]="'start value'" (valueChange)="setRangeValue($event,'start',i)">
-            </pros-form-input>
-            <pros-form-input [placeholder]="'end value'" (valueChange)="setRangeValue($event,'end',i)">
-            </pros-form-input>
+            <div class="f-row">
+              <pros-form-input [placeholder]="'start value'" (valueChange)="setRangeValue($event,'start',i)">
+              </pros-form-input>
+              <div class="f-col-spacer-half"></div>
+              <pros-form-input [placeholder]="'end value'" (valueChange)="setRangeValue($event,'end',i)">
+              </pros-form-input>
+            </div>
           </div>
 
           <!-- three dots -->
@@ -160,14 +162,13 @@
           <mat-menu #menu="matMenu">
             <!-- give local reference and tell this is manu by assigning 'matMenu' -->
             <button mat-menu-item (click)="addBlock(true,udrBlock,i)">
-              <mat-icon>add</mat-icon> Add child rule
+              Add child rule
             </button>
 
             <button mat-menu-item *ngIf="i > 0" (click)="deleteParentBlock(i,udrBlock)">
-              <mat-icon>remove</mat-icon> Delete
+              Delete
             </button>
           </mat-menu>
-
         </div>
 
         <!-- nested row -->
@@ -232,7 +233,7 @@
                                             </button> -->
 
                     <button mat-menu-item (click)="deleteFromChildArray(i,j,child)">
-                      <mat-icon>remove</mat-icon> Delete
+                      Delete
                     </button>
                   </mat-menu>
                 </div>
@@ -252,7 +253,5 @@
         </div>
       </div>
     </div>
-
-
   </div>
 </mat-card>

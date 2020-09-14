@@ -1,6 +1,6 @@
 <mat-nav-list>
     <mat-list-item *ngFor="let fld of metadaDrop" prosClickStopPropagation (click)="ctrlFlds(fld)">
-        {{ fld.fieldDescri ? fld.fieldDescri : fld.fieldId }} <span class="f-spacer"></span><mat-icon>trending_flat</mat-icon>
+        <div class="mat-line">{{ fld.fieldDescri ? fld.fieldDescri : fld.fieldId }}</div> <span class="f-spacer"></span><mat-icon>trending_flat</mat-icon>
     </mat-list-item>
 
     <div class="f-col" id="fld_ctrl" style="display: none;" prosClickStopPropagation>
@@ -8,7 +8,7 @@
             <button mat-button (click)="prevState()">
                 <mat-icon>arrow_back</mat-icon>
             </button>
-            {{ activateElement ? (activateElement.fieldDescri ? activateElement.fieldDescri : activateElement.fieldId) : 'Unknow' }}
+            <div class="mat-line">{{ activateElement ? (activateElement.fieldDescri ? activateElement.fieldDescri : activateElement.fieldId) : 'Unknow' }}</div>
        </div>
        
         <pros-filter-values

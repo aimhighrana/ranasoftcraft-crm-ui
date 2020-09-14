@@ -1,5 +1,4 @@
 <mat-card class="root mat-elevation-z0">
-
     <div class="f-row breadcrum-toolbar">
         <div class="display-heading-large">
             {{toolbarHeaderText}}(step {{headerTextIndex + 1}} of {{headerText.length}})
@@ -22,12 +21,10 @@
 
             <div class="f-col upload-col">
                 <mat-icon>publish</mat-icon>
-
-                <div mat-line>Drag & drop or <a href="javascript:void(0)" class="info" (click)="openExplorer()"
-                        prosClickStopPropagation>browser</a> a file to upload</div>
+                <div class="label-text">Drag & drop or <a href="javascript:void(0)" class="info"
+                        (click)="openExplorer();$event.stopPropagation()">browse</a> a file to upload</div>
                 <input class="drag-input" type="file" id="uploader" (change)="fileChange($event)"
                     prosClickStopPropagation />
-
             </div>
         </mat-step>
 
@@ -39,15 +36,14 @@
                 </pros-search-input>
                 <div class="row-spacer"></div>
 
-                <mat-nav-list role="list" class="row-listing">
-                    <mat-list-item class="nav-item" (click)="setModuleValueAndTakeStep();$event.stopPropagation()">
+                <mat-nav-list role="list">
+                    <mat-list-item (click)="setModuleValueAndTakeStep();$event.stopPropagation()">
                         <mat-icon mat-list-icon>add</mat-icon>
                         <div mat-line>Create new from a dataset</div>
                     </mat-list-item>
 
                     <ng-container *ngFor="let module of modulesList">
-                        <mat-list-item class="nav-item"
-                            (click)="setModuleValueAndTakeStep(module);$event.stopPropagation()">
+                        <mat-list-item (click)="setModuleValueAndTakeStep(module);$event.stopPropagation()">
                             <mat-icon mat-list-icon>grid_on</mat-icon>
                             <div mat-line>{{module.objectdesc || 'UNTITLED'}}</div>
                             <mat-icon>arrow_right_alt</mat-icon>
@@ -69,37 +65,39 @@
 
                 <div class="row-spacer"></div>
 
-                <mat-list role="list" class="row-listing">
-                    <mat-list-item class="f-row">
-                        <div class="mat-item-col"><strong>Your field headers</strong></div>
-                        <div class="mat-item-col"><strong>Your first row data</strong></div>
-                        <div class="mat-item-col" *ngIf="requestForm.value.objectId">
-                            <strong>Map to</strong>
+                <div class="colunm-listing">
+                    <div class="f-row colunm-box">
+                        <div class="col col-x8"><strong>Your field headers</strong></div>
+                        <div class="col col-x8"><strong>Your first row data</strong></div>
+                        <div class="col col-x4"><strong>Map to</strong>
+                            <mat-icon class="mat-head-icon">
+                                arrow_forward
+                            </mat-icon>
+                        </div>
+                        <div class="col col-x8" *ngIf="requestForm.value.objectId">
+                            <strong>MDO fields</strong>
+                        </div>
+                    </div>
+                    <div class="f-row colunm-box" *ngFor="let data of dataSource;let rowIndex=index">
+                        <div class="col col-x8">
+                            <div class="mat-line">{{data.excelFld}}</div>
+                        </div>
+                        <div class="col col-x8">
+                            <div class="mat-line">{{data.excelFrstRow}}</div>
+                        </div>
+                        <div class="col col-x4" *ngIf="requestForm.value.objectId">
                             <mat-icon>
                                 arrow_forward
                             </mat-icon>
                         </div>
-                        <div class="mat-item-col" *ngIf="requestForm.value.objectId"><strong>MDO
-                                fields</strong>
-                        </div>
-                    </mat-list-item>
-
-                    <mat-list-item class="f-row" *ngFor="let data of dataSource;let rowIndex=index">
-                        <div class="mat-item-col">{{data.excelFld}}</div>
-                        <div class="mat-item-col">{{data.excelFrstRow}}</div>
-                        <div class="mat-item-col" *ngIf="requestForm.value.objectId">
-                            <mat-icon>
-                                arrow_forward
-                            </mat-icon>
-                        </div>
-                        <div class="mat-item-col" *ngIf="requestForm.value.objectId">
+                        <div class="col col-x8" *ngIf="requestForm.value.objectId">
                             <pros-map-mdo-field [cellIndex]="rowIndex" [preSelectedFld]="getSelectedFieldId(rowIndex)"
                                 [excelField]="data.excelFld" [mdoFields]="headerFieldsList"
                                 (optionSelectedEmit)="updateMapFields($event)">
                             </pros-map-mdo-field>
                         </div>
-                    </mat-list-item>
-                </mat-list>
+                    </div>
+                </div>
             </div>
         </mat-step>
 
@@ -117,45 +115,48 @@
                     </button>
                 </div>
 
-                <mat-list role="list" class="row-listing" cdkDropList (cdkDropListDropped)="reoderBR($event)">
-                    <mat-list-item>
-                        <div class="mat-item-col"><strong></strong></div>
-                        <div class="mat-item-col col-x8"><strong>Business rule</strong></div>
-                        <div class="mat-item-col col-x8"><strong>Enabled</strong></div>
-                        <div class="mat-item-col"><strong></strong></div>
-                    </mat-list-item>
-                    <mat-list-item *ngFor="let businessRule of businessRulesList;let k=index" cdkDrag>
-                        <div class="mat-item-col">
-                            <mat-icon>drag_handle</mat-icon>
-                        </div>
-                        <div class="mat-item-col col-x8">
+                <div class="row-spacer"></div>
 
-                            <mat-card-header>
-                                <mat-card-title>{{businessRule.brInfo}}</mat-card-title>
-                            </mat-card-header>
+                <div class="colunm-listing">
+                    <div class="f-row colunm-box">
+                        <div class="col"></div>
+                        <div class="col col-x8"><strong>Business rule</strong></div>
+                        <div class="col col-x8"><strong>Enabled</strong></div>
+                        <div class="col mat-item-end"></div>
+                    </div>
 
-                        </div>
-                        <div class="mat-item-col col-x8">
-                            <mat-slide-toggle color="primary" [checked]="businessRule.status === '1'"
-                                (change)="toggleBrStatus($event,businessRule)">
-                            </mat-slide-toggle>
-                        </div>
-
-                        <div class="mat-item-col mat-item-end" [matMenuTriggerFor]="menu">
-                            <button mat-button>
-                                <mat-icon>more_vert</mat-icon>
-                            </button>
-
-                            <mat-menu #menu="matMenu">
-                                <!-- give local reference and tell this is manu by assigning 'matMenu' -->
-                                <button mat-menu-item (click)="deleteBR(k)">
-                                    <mat-icon>remove</mat-icon>
-                                    <span>Delete</span>
+                    <div cdkDropList (cdkDropListDropped)="reoderBR($event)">
+                        <div *ngFor="let businessRule of businessRulesList;let k=index" cdkDrag
+                            class="f-row colunm-box">
+                            <div class="col">
+                                <button mat-button cdkDragHandle>
+                                    <mat-icon>drag_handle</mat-icon>
                                 </button>
-                            </mat-menu>
+
+                            </div>
+                            <div class="col col-x8">
+                                <div mat-line><a class="info">{{businessRule.brInfo}}</a></div>
+                            </div>
+                            <div class="col col-x8">
+                                <mat-slide-toggle color="primary" [checked]="businessRule.status === '1'"
+                                    (change)="toggleBrStatus($event,businessRule)">
+                                </mat-slide-toggle>
+                            </div>
+                            <div class="col mat-item-end">
+                                <button mat-button [matMenuTriggerFor]="menu">
+                                    <mat-icon>more_vert</mat-icon>
+                                </button>
+
+                                <mat-menu #menu="matMenu">
+                                    <!-- give local reference and tell this is manu by assigning 'matMenu' -->
+                                    <button mat-menu-item (click)="deleteBR(k)">
+                                        <span>Delete</span>
+                                    </button>
+                                </mat-menu>
+                            </div>
                         </div>
-                    </mat-list-item>
-                </mat-list>
+                    </div>
+                </div>
             </div>
         </mat-step>
 
@@ -168,22 +169,25 @@
                         <mat-icon>add</mat-icon> Add subscribers
                     </button>
                 </div>
-                <mat-list role="list" class="row-listing">
-                    <mat-list-item>
-                        <div class="mat-item-col col-x8"><b>Subscriber</b></div>
-                        <div class="mat-item-col col-x8"><b>Role</b></div>
-                        <div class="mat-item-col col-x16"><b>Data allocation</b></div>
-                        <div class="mat-item-col mat-item-end"></div>
-                    </mat-list-item>
-                    <mat-list-item *ngFor="let subscriber of subscribersList;let l=index">
-                        <div class="mat-item-col col-x8">
+
+                <div class="row-spacer"></div>
+
+                <div class="colunm-listing">
+                    <div class="f-row colunm-box">
+                        <div class="col col-x8"><strong>Subscriber</strong></div>
+                        <div class="col col-x8"><strong>Role</strong></div>
+                        <div class="col col-x16"><strong>Data allocation</strong></div>
+                        <div class="col mat-item-end"></div>
+                    </div>
+                    <div *ngFor="let subscriber of subscribersList;let l=index"
+                        class="f-row colunm-box">
+                        <div class="col col-x8">
                             <mat-card-header>
                                 <div mat-card-avatar>{{subscriber.initials}}</div>
                                 <mat-card-title>{{subscriber.fullName}}</mat-card-title>
                             </mat-card-header>
                         </div>
-
-                        <div class="mat-item-col col-x4">
+                        <div class="col col-x8">
                             <mat-form-field appearance="outline">
                                 <mat-select [(ngModel)]="subscriber.role"
                                     (selectionChange)="updateRole($event,subscriber,l)">
@@ -194,8 +198,7 @@
                                 </mat-select>
                             </mat-form-field>
                         </div>
-
-                        <div class="mat-item-col col-x16">
+                        <div class="col col-x16">
                             <mat-chip-list>
                                 <mat-chip class="mdo-filter-matchip" *ngFor="let fieldId of subscriber.filterFieldIds">
                                     <ng-container>
@@ -217,8 +220,7 @@
                                 </pros-add-filter-menu>
                             </mat-menu>
                         </div>
-
-                        <div class="mat-item-col mat-item-end">
+                        <div class="col mat-item-end">
                             <button mat-button [matMenuTriggerFor]="menu">
                                 <mat-icon>more_vert</mat-icon>
                             </button>
@@ -226,13 +228,12 @@
                             <mat-menu #menu="matMenu">
                                 <!-- give local reference and tell this is manu by assigning 'matMenu' -->
                                 <button mat-menu-item (click)="deleteSubscriber(l)">
-                                    <mat-icon>remove</mat-icon>
                                     <span>Delete</span>
                                 </button>
                             </mat-menu>
                         </div>
-                    </mat-list-item>
-                </mat-list>
+                    </div>
+                </div>
             </div>
         </mat-step>
 

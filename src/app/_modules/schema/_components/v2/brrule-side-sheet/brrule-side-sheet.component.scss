@@ -1,10 +1,26 @@
 mat-card.root {
-  padding: 0;
+  padding: 0 16px;
   user-select: none;
   width: 800px;
 
   .breadcrum-toolbar {
-    width: 100%;
+    align-items: center;
+    padding-top: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+
+    .display-heading-large {
+      font-size: 1.2rem;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .mdo-constrained-right {
+      align-items: center;
+      width: 100%;
+    }
   }
 
   .mdo-justify {
@@ -23,11 +39,6 @@ mat-card.root {
     .user-defined-set {
       position: relative;
       margin-top: 8px;
-
-      ul {
-        list-style: none;
-        padding: 0%;
-      }
 
       &::before {
         display: block;
@@ -56,7 +67,7 @@ mat-card.root {
           &:first-of-type,
           &:last-of-type {
             min-width: auto;
-            //   flex: 0 0 auto;
+            flex: 0 0 auto;
             padding: 0;
           }
 

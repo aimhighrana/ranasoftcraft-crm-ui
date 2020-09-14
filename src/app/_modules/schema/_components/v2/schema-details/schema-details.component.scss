@@ -2,14 +2,21 @@ mat-card.root {
   user-select: none;
 
   .breadcrum-toolbar {
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+
+    .display-heading-large {
+      font-size: 1.2rem;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
     button.mat-flat-button {
       margin-left: 1px;
       min-width: 80px;
-
-      &:first-of-type {
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
-      }
 
       &:last-of-type {
         border-top-left-radius: 0;

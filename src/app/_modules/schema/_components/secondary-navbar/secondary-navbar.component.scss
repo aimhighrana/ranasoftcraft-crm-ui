@@ -1,7 +1,6 @@
 .root {
   display: flex;
   height: 100%;
-  width: auto;
 
   mat-card.secondary-card {
     border-radius: 0;
@@ -9,6 +8,7 @@
     height: 100%;
     user-select: none;
     overflow: hidden;
+    width: 100%;
 
     .display-heading-large {
       font-size: 1.2rem;
@@ -109,7 +109,7 @@
       border-radius: 50%;
       position: absolute;
       left: -10px;
-      top: 24px;
+      top: 22px;
       cursor: pointer;
       z-index: 2;
       font-size: 20px;

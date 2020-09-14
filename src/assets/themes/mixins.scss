@@ -418,37 +418,56 @@
       }
     }
   }
+
   // Generic Component SASS
 
   // Generic dailog
   .cdk-overlay-container .mat-dialog-container {
-    padding: 16px;
+    padding: 0 16px;
   }
+
   // Sidenav bar
   mat-sidenav.mat-drawer {
     overflow-y: visible;
+    transition: 0.1s;
+    transition-timing-function: linear;
   }
+
   // Generic breadcrum
   .breadcrum-toolbar {
     background-color: mat-color($background-palette, card);
-    align-items: center;
-    position: sticky;
-    top: 0;
-    z-index: 5;
-
-    .display-heading-large {
-      font-size: 1.2rem;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-    }
   }
+
   //Search-Input
   pros-search-input {
     div.root {
       border-color: mat-color($foreground-palette, divider);
     }
   }
+
+  // CDK-Dragdrop
+  .cdk-drag-preview {
+    box-sizing: border-box;
+    box-shadow:
+      0 5px 5px -3px rgba(0, 0, 0, 0.2),
+      0 8px 10px 1px rgba(0, 0, 0, 0.14),
+      0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    background-color: mat-color($background-palette, card);
+    border-radius: 3px;
+  }
+
+  .cdk-drag-placeholder {
+    opacity: 0;
+  }
+
+  .cdk-drag-animating {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+
+  .cdk-drop-list-dragging > div:not(.cdk-drag-placeholder) {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+
   // Temporary mat input
   mat-form-field.mat-form-field {
     .mat-form-field-wrapper {
@@ -552,7 +571,7 @@
             mat-chip {
               font-weight: normal;
               font-size: 0.8rem;
-              padding: 4px 6px;
+              padding: 4px 8px;
               min-height: 24px;
             }
           }
@@ -571,8 +590,9 @@
 
     mat-chip.mat-chip {
       font-weight: normal;
-      min-height: 25px;
+      min-height: 24px;
       border-radius: 30px;
+      font-size: 0.8rem;
     }
 
     mat-chip.mat-chip.none-stats-chip {
@@ -583,8 +603,8 @@
     }
 
     mat-chip.mat-chip.mdo-filter-matchip {
-      height: 36px;
-      padding: 6px;
+      height: 40px;
+      padding: 7px;
       border-width: 1px;
       border-style: solid;
       border-color: mat-color($foreground-palette, divider);
@@ -663,7 +683,7 @@
   .cdk-overlay-pane {
     .mat-menu-panel {
       max-width: 300px;
-      width: 250px;
+      width: 220px;
       min-height: auto;
       margin: 8px 0;
 
@@ -672,6 +692,7 @@
       }
     }
   }
+
   //Mat Slider
   mat-slider.mat-slider {
     .mat-slider-wrapper {
@@ -697,7 +718,12 @@
           height: 26px;
           border: 6px solid #fff;
           box-shadow: 0 0 3px rgba(108, 124, 139, 0.5);
+          background: mat-color($primary-palette);
         }
+      }
+
+      .mat-slider-ticks-container {
+        display: none;
       }
     }
   }
@@ -716,6 +742,7 @@
 
     mat-icon {
       font-size: 20px;
+      height: 20px;
     }
   }
 
@@ -743,6 +770,7 @@
     display: flex;
     align-items: center;
   }
+
   //MDO-Table
   .mat-table {
     .mat-row:hover {
@@ -779,20 +807,7 @@
 
       mat-form-field.mat-form-field {
         .mat-form-field-wrapper {
-          padding-bottom: 0;
-          border-radius: 4px;
-          background-color: mat-color($background-palette, app-bar);
-
-          .mat-form-field-flex {
-            padding-right: 0;
-          }
-
           .mat-form-field-infix {
-            padding: 8px 0;
-            display: flex;
-            align-items: center;
-            height: 24px;
-
             .mat-input {
               caret-color: mat-color($foreground-palette, text);
             }
@@ -843,10 +858,10 @@
     align-items: center;
 
     .mat-card-avatar {
-      width: 37px;
-      height: 36px;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
-      line-height: 36px;
+      line-height: 40px;
       font-size: 0.9rem;
       overflow: hidden;
       text-align: center;
@@ -860,61 +875,21 @@
       margin-bottom: 0;
       font-weight: 400;
       font-size: 0.9rem;
+      white-space: nowrap;
     }
   }
   // Mat-List
-  mat-nav-list.mat-list-base.row-listing,
-  mat-list.mat-list-base.row-listing {
-    mat-list-item {
-      height: auto;
-      font-size: 0.8rem;
-      padding: 2px 0;
-      border-bottom: 1px solid mat-color($foreground-palette, divider);
-
-      .mat-item-col {
-        display: flex;
-        flex: 1;
-        align-items: center;
-        min-width: 1px;
-        min-height: 48px;
-        margin-right: 8px;
-        font-size: 0.9rem;
-
-        &.col-x4 {
-          flex: 4;
-        }
-
-        &.col-x8 {
-          flex: 8;
-        }
-
-        &.col-x16 {
-          flex: 16;
-        }
-
-        &.mat-item-end {
-          justify-content: flex-end;
-          margin-right: 0;
-        }
-
-        strong {
-          font-weight: 500;
-        }
-      }
-
-      .mat-head-icon {
-        height: 18px;
-        width: 18px;
-        font-size: 18px;
-        margin-left: 5px;
-      }
-    }
+  mat-nav-list.mat-list-base,
+  mat-list.mat-list-base {
+    padding-top: 0;
   }
+
   // Mat-Accordion
   mat-accordion.mat-accordion {
     .mat-expansion-panel {
       &.mat-expansion-panel-spacing {
         margin: 0;
+        outline: none;
       }
 
       .mat-expansion-panel-header {
@@ -927,17 +902,29 @@
     }
   }
   //DIW Components
+  pros-add-filter-menu {
+    mat-nav-list {
+      .filter-header {
+        border-bottom-color: mat-color($foreground-palette, divider);
+      }
+    }
+  }
+
   pros-upload-dataset {
     mat-card.root {
       .upload-col {
         background-color: mat-color($background-palette, app-bar);
       }
 
-      .list-border {
+      mat-nav-list {
         mat-list-item {
-          border-bottom-color: mat-color($foreground-palette, divider);
+          border-bottom: 1px solid mat-color($foreground-palette, divider);
         }
       }
+    }
+
+    .colunm-box {
+      border-bottom: 1px solid mat-color($foreground-palette, divider);
     }
   }
 
@@ -969,16 +956,16 @@
       mat-list.mat-list {
         mat-list-item.mat-list-item {
           border-color: mat-color($foreground-palette, divider);
-        }
 
-        mat-list-item.mat-list-item .mat-list-item-content {
-          padding: 0 2px;
+          .mat-list-item-content {
+            padding: 0;
+          }
         }
       }
     }
   }
 
-  pros-duplicate-check {
+  pros-schema-info {
     mat-card.root {
       .statics-col {
         border-color: mat-color($foreground-palette, divider);
@@ -986,33 +973,31 @@
     }
   }
 
-  pros-add-filter-menu {
-    mat-nav-list {
-      .filter-header {
-        border-bottom-color: mat-color($foreground-palette, divider);
-      }
+  pros-table-column-settings {
+    .colunm-box {
+      border-top: 1px solid mat-color($foreground-palette, divider);
     }
   }
 
-  pros-table-column-settings {
-    mat-card.root {
-      mat-card.check-list {
-        mat-nav-list {
-          mat-list-item {
-            border-top-color: mat-color($foreground-palette, divider);
+  pros-new-business-rules {
+    .user-defined-set {
+      &::before {
+        background: mat-color($foreground-palette, divider);
+      }
 
-            mat-checkbox {
-              .mat-checkbox-inner-container {
-                margin-right: 32px;
-              }
-            }
+      .defined-row {
+        border-color: mat-color($foreground-palette, divider);
+
+        div.col {
+          &.select-col {
+            background: mat-color($background-palette, background);
           }
         }
       }
     }
   }
 
-  pros-new-business-rules {
+  pros-brrule-side-sheet {
     .user-defined-set {
       &::before {
         background: mat-color($foreground-palette, divider);

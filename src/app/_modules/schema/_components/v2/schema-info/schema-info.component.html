@@ -2,15 +2,20 @@
     <div class="f-row breadcrum-toolbar">
         <div class="display-heading-large">
             {{ schemaDetails ? schemaDetails.schemaDescription : 'Schema info' }}
-         </div>
+        </div>
         <span class="f-spacer"></span>
         <ng-template [ngIf]="schemaDetails && schemaDetails.isInRunning" [ngIfElse]="runNow">
-            <button mat-flat-button color="accent" disabled><mat-spinner diameter="16"></mat-spinner></button>
+            <button mat-flat-button color="accent" disabled>
+                <mat-spinner diameter="16"></mat-spinner>
+            </button>
         </ng-template>
         <ng-template #runNow>
             <button mat-flat-button color="accent">Run now</button>
         </ng-template>
-        <button mat-flat-button color="accent" [matMenuTriggerFor]="navigation"><mat-icon>add</mat-icon> <mat-icon>arrow_drop_down</mat-icon></button>
+        <button mat-flat-button color="accent" [matMenuTriggerFor]="navigation">
+            <mat-icon>add</mat-icon>
+            <mat-icon>arrow_drop_down</mat-icon>
+        </button>
         <!-- menu to add business rule and subscriber -->
         <mat-menu #navigation="matMenu" direction="right">
             <mat-nav-list>
@@ -50,7 +55,8 @@
 
     <div class="row-spacer"></div>
 
-    <mat-tab-group disableRipple="true" animationDuration="0ms" (selectedTabChange)="updateFragment($event.tab.textLabel)" [selectedIndex]="selectedIndex">
+    <mat-tab-group disableRipple="true" animationDuration="0ms"
+        (selectedTabChange)="updateFragment($event.tab.textLabel)" [selectedIndex]="selectedIndex">
         <!-- Tab for the business rules of schema -->
         <mat-tab label="business-rules">
             <ng-template mat-tab-label>
@@ -58,43 +64,57 @@
             </ng-template>
 
             <div class="mdo-body-content">
-                <mat-list role="list" class="row-listing">
-                    <mat-list-item>
-                        <div class="mat-item-col"><strong></strong></div>
-                        <div class="mat-item-col col-x8"><strong>Business rule</strong></div>
-                        <div class="mat-item-col col-x8"><strong>Category</strong> <mat-icon class="mat-head-icon">help_outline</mat-icon></div>
-                        <div class="mat-item-col col-x8"><strong>Weight</strong> <mat-icon class="mat-head-icon">help_outline</mat-icon></div>
-                        <div class="mat-item-col col-x8"><strong>Enabled</strong></div>
-                        <div class="mat-item-col mat-item-end"><strong></strong></div>
-                    </mat-list-item>
-                </mat-list>
-                <mat-list role="list" class="row-listing" cdkDropList [cdkDropListData]="businessRuleData" (cdkDropListDropped)="drop($event)">
-                        <mat-list-item *ngFor="let businessRule of businessRuleData">
-                            <div class="mat-item-col" cdkDrag>
-                                <mat-icon cdkDragHandle>drag_handle</mat-icon>
-                                
+
+                <div class="colunm-listing">
+                    <div class="f-row colunm-box">
+                        <div class="col"></div>
+                        <div class="col col-x8"><strong>Business rule</strong></div>
+                        <div class="col col-x8"><strong>Category</strong>
+                            <mat-icon class="mat-head-icon">help_outline</mat-icon>
+                        </div>
+                        <div class="col col-x8"><strong>Weight</strong>
+                            <mat-icon class="mat-head-icon">help_outline</mat-icon>
+                        </div>
+                        <div class="col col-x4"><strong>Enabled</strong></div>
+                        <div class="col mat-item-end"></div>
+                    </div>
+
+                    <div cdkDropList [cdkDropListData]="businessRuleData" (cdkDropListDropped)="drop($event)">
+                        <div *ngFor="let businessRule of businessRuleData" cdkDrag class="f-row colunm-box">
+                            <div class="col">
+                                <button mat-button cdkDragHandle>
+                                    <mat-icon>drag_handle</mat-icon>
+                                </button>
+
                             </div>
-                            <div class="mat-item-col col-x8"><a class="info">{{businessRule.brInfo}}</a></div>
-                            <div class="mat-item-col col-x8">
+                            <div class="col col-x8">
+                                <div mat-line><a class="info">{{businessRule.brInfo}}</a></div>
+                            </div>
+                            <div class="col col-x8">
                                 <button mat-stroked-button [matMenuTriggerFor]="businessRuleCat">
                                     {{ businessRule.categoryInfo ?  (businessRule.categoryInfo.categoryDesc ? businessRule.categoryInfo.categoryDesc : 'Untitled') : 'Unknown' }}
                                     <mat-icon>arrow_drop_down</mat-icon>
                                 </button>
                                 <mat-menu #businessRuleCat="matMenu" direction="right">
                                     <mat-nav-list>
-                                        <mat-list-item *ngFor="let cat of category" (click)="updateCategory(cat, businessRule)">
+                                        <mat-list-item *ngFor="let cat of category"
+                                            (click)="updateCategory(cat, businessRule)">
                                             {{ cat.categoryDesc ? cat.categoryDesc : cat.categoryId }}
                                         </mat-list-item>
                                     </mat-nav-list>
                                 </mat-menu>
                             </div>
-                            <div class="mat-item-col col-x8">
-                                <mat-slider color="primary" [value]="businessRule.brWeightage" thumbLabel tickInterval="1" min="0" max="100" (change)="updateBr(businessRule,$event)"></mat-slider> <span class="f-col-spacer-half"></span><div>{{businessRule.brWeightage}}%</div>
+                            <div class="col col-x8">
+                                <mat-slider color="primary" [value]="businessRule.brWeightage" thumbLabel
+                                    tickInterval="1" min="0" max="100" (change)="updateBr(businessRule,$event)">
+                                </mat-slider> <span class="f-col-spacer-half"></span>
+                                <div>{{businessRule.brWeightage}}%</div>
                             </div>
-                            <div class="mat-item-col col-x8">
-                                <mat-slide-toggle color="primary" [checked]="businessRule.status === '1' ? true : false" (change) = "updateBr(businessRule,$event)"></mat-slide-toggle>
+                            <div class="col col-x4">
+                                <mat-slide-toggle color="primary" [checked]="businessRule.status === '1' ? true : false"
+                                    (change)="updateBr(businessRule,$event)"></mat-slide-toggle>
                             </div>
-                            <div class="mat-item-col mat-item-end">
+                            <div class="col mat-item-end">
                                 <button mat-button [matMenuTriggerFor]="navigation">
                                     <mat-icon>more_vert</mat-icon>
                                     <mat-menu #navigation="matMenu" direction="right">
@@ -105,12 +125,12 @@
                                     </mat-menu>
                                 </button>
                             </div>
-                        </mat-list-item>
-                     
-                    
-                </mat-list>
+                        </div>
+                    </div>
+
+                </div>
             </div>
-           
+
         </mat-tab>
 
         <!-- Tab for the collaborators/subscribers of the schema -->
@@ -120,34 +140,40 @@
             </ng-template>
 
             <div class="mdo-body-content">
-                <mat-list role="list" class="row-listing">
-                    <mat-list-item>
-                        <div class="mat-item-col col-x8"><strong>Subscriber</strong></div>
-                        <div class="mat-item-col col-x4"><strong>Rule</strong></div>
-                        <div class="mat-item-col col-x16"><strong>Data allocation</strong></div>
-                        <div class="mat-item-col mat-item-end"><strong></strong></div>
-                    </mat-list-item>
-                    <mat-list-item *ngFor="let subscriber of subscriberData">
-                        <div class="mat-item-col col-x8">
+                <div class="colunm-listing">
+                    <div class="f-row colunm-box">
+                        <div class="col col-x8"><strong>Subscriber</strong></div>
+                        <div class="col col-x8"><strong>Role</strong></div>
+                        <div class="col col-x8"><strong>Data allocation</strong></div>
+                        <div class="col mat-item-end"></div>
+                    </div>
+                    <div class="f-row colunm-box" *ngFor="let subscriber of subscriberData">
+                        <div class="col col-x8">
                             <mat-card-header>
-                                <div mat-card-avatar>{{shortName(subscriber.userMdoModel.fName, subscriber.userMdoModel.lName)}}</div>
-                                <mat-card-title>{{subscriber.userMdoModel.fName}} {{subscriber.userMdoModel.lName}}</mat-card-title>
+                                <div mat-card-avatar>
+                                    {{shortName(subscriber.userMdoModel.fName, subscriber.userMdoModel.lName)}}</div>
+                                <mat-card-title>{{subscriber.userMdoModel.fName}} {{subscriber.userMdoModel.lName}}
+                                </mat-card-title>
                             </mat-card-header>
                         </div>
-                        <div class="mat-item-col col-x4">
-                            <button mat-stroked-button *ngIf="subscriber.isAdmin">Admin <mat-icon>arrow_drop_down</mat-icon></button>
-                            <button mat-stroked-button *ngIf="subscriber.isReviewer">Reviewer <mat-icon>arrow_drop_down</mat-icon></button>
-                            <button mat-stroked-button *ngIf="subscriber.isViewer">Viewer <mat-icon>arrow_drop_down</mat-icon></button>
-                            <button mat-stroked-button *ngIf="subscriber.isEditer">Editor <mat-icon>arrow_drop_down</mat-icon></button>
+                        <div class="col col-x8">
+                            <button mat-stroked-button *ngIf="subscriber.isAdmin">Admin <mat-icon>arrow_drop_down
+                                </mat-icon></button>
+                            <button mat-stroked-button *ngIf="subscriber.isReviewer">Reviewer <mat-icon>arrow_drop_down
+                                </mat-icon></button>
+                            <button mat-stroked-button *ngIf="subscriber.isViewer">Viewer <mat-icon>arrow_drop_down
+                                </mat-icon></button>
+                            <button mat-stroked-button *ngIf="subscriber.isEditer">Editor <mat-icon>arrow_drop_down
+                                </mat-icon></button>
                         </div>
-                        <div class="mat-item-col col-x16">
+                        <div class="col col-x8">
                             <mat-chip-list>
                                 <mat-chip class="mdo-filter-matchip" disableRipple="true"
                                     [matMenuTriggerFor]="appliedfiltermenu"><label>Region:</label> <span
                                         class="info">sydney</span>
                                     <mat-icon matChipRemove>clear</mat-icon>
                                 </mat-chip>
-            
+
                                 <mat-chip class="mdo-filter-matchip" disableRipple="true"
                                     [matMenuTriggerFor]="addfiltermenu">
                                     <mat-icon>filter_list</mat-icon>
@@ -160,7 +186,7 @@
                                 </mat-menu>
                             </mat-chip-list>
                         </div>
-                        <div class="mat-item-col mat-item-end">
+                        <div class="col mat-item-end">
                             <button mat-button [matMenuTriggerFor]="navigation">
                                 <mat-icon>more_vert</mat-icon>
                                 <!-- Menu to open edit/delete options -->
@@ -172,8 +198,8 @@
                                 </mat-menu>
                             </button>
                         </div>
-                    </mat-list-item>
-                </mat-list>
+                    </div>
+                </div>
             </div>
         </mat-tab>
 

@@ -87,8 +87,8 @@ export class HomeLayoutComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   togglePrimarySideBar() {
     if (this.primarySideBarOpened) {
-      document.getElementById('primarySidenav').style.width = '69px';
-      document.getElementById('primaryContent').style.marginLeft = '74px';
+      document.getElementById('primarySidenav').style.width = '73px';
+      document.getElementById('primaryContent').style.marginLeft = '73px';
       this.primarySideBarOpened = false;
     } else {
       document.getElementById('primarySidenav').style.width = '200px';
@@ -102,8 +102,8 @@ export class HomeLayoutComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   toggleSecondarySideBar() {
     if (this.secondarySideBarOpened) {
-      document.getElementById('secondarySidenav').style.width = '15px';
-      document.getElementById('secondaryContent').style.marginLeft = '74px';
+      document.getElementById('secondarySidenav').style.width = '16px';
+      document.getElementById('secondaryContent').style.marginLeft = '73px';
       this.secondarySideBarOpened = false;
     } else {
       document.getElementById('secondarySidenav').style.width = '264px';

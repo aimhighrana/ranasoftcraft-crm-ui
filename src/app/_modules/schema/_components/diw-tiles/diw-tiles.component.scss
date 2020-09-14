@@ -1,10 +1,20 @@
 mat-card.root {
-  margin: 0 auto;
   padding: 0 16px;
   user-select: none;
 
   .breadcrum-toolbar {
+    align-items: center;
     padding-top: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+
+    .display-heading-large {
+      font-size: 1.2rem;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
   }
 
   mat-list {
@@ -13,6 +23,10 @@ mat-card.root {
       height: auto;
       border-bottom-width: 1px;
       border-bottom-style: solid;
+
+      .mat-list-item-content {
+        padding: 0;
+      }
 
       .mdo-gauge.default,
       .mdo-gauge.error,
@@ -64,6 +78,7 @@ mat-card.root {
         .f-col {
           flex: 1;
           margin: 0 16px;
+          width: 100px;
 
           .short-line {
             font-size: 0.8rem;
@@ -85,7 +100,6 @@ mat-card.root {
         }
 
         button.mat-fab {
-          min-width: 40px;
           margin-left: 1px;
           border-top-left-radius: 0;
           border-bottom-left-radius: 0;
@@ -95,8 +109,9 @@ mat-card.root {
   }
 }
 
-@media (min-width: 1240px) {
+@media (min-width: 1200px) {
   mat-card.root {
     width: 62%;
+    margin: 0 auto;
   }
 }

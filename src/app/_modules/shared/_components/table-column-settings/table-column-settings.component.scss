@@ -1,32 +1,46 @@
 mat-card.root {
   user-select: none;
   width: 600px;
-  height: 100%;
   padding: 0 16px;
 
   .breadcrum-toolbar {
-    width: 100%;
+    align-items: center;
+    position: sticky;
+    padding-top: 16px;
+    top: 0;
+    z-index: 2;
+
+    .display-heading-large {
+      font-size: 1.2rem;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .mdo-constrained-right {
+      align-items: center;
+      width: 100%;
+    }
   }
 
   mat-card.check-list {
     padding: 0;
 
     .checkedall {
-      display: block;
-      padding-left: 16px;
-      padding-top: 16px;
-
-      .checkboxlabel {
-        margin-left: 26px;
-      }
+      display: flex;
+      padding: 16px 0 12px 10px;
     }
+  }
+}
 
-    mat-nav-list {
-      mat-list-item {
-        border-top-width: 1px;
-        border-top-style: solid;
-      }
-    }
+.colunm-list {
+  overflow: hidden;
+  display: block;
+
+  .colunm-box {
+    align-items: center;
+    box-sizing: border-box;
+    padding: 10px;
   }
 }
 
