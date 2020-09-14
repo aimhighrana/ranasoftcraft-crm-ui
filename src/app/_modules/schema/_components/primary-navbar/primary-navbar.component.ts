@@ -12,6 +12,11 @@ import { Userdetails } from '@models/userdetails';
 export class PrimaryNavbarComponent implements OnInit {
   @Output() emitAfterSel: EventEmitter<string> = new EventEmitter<string>();
 
+  /**
+   * Emitter to emit sidebar toggleing
+   */
+  @Output() toggleEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
+
   userDetails: Userdetails = new Userdetails();
   constructor(
     private userService: UserService,
@@ -19,9 +24,9 @@ export class PrimaryNavbarComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.userService.getUserDetails().subscribe(res=>{
+    this.userService.getUserDetails().subscribe(res => {
       this.userDetails = res;
-    }, error=> console.error(`Error : ${error.message}`));
+    }, error => console.error(`Error : ${error.message}`));
   }
 
   sendToParent(val: string) {
@@ -41,5 +46,9 @@ export class PrimaryNavbarComponent implements OnInit {
           console.log('The dialog was closed');
         });
     }
+  }
+
+  toggleSideBar() {
+    this.toggleEmitter.emit()
   }
 }

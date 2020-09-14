@@ -20,7 +20,7 @@ export class SearchInputComponent implements OnInit, OnChanges {
   @Input() placeholder = 'Search';
 
   @Input()
-  preValue ='';
+  preValue = '';
 
   /**
    * To emit the value for parent
@@ -32,12 +32,15 @@ export class SearchInputComponent implements OnInit, OnChanges {
    * ANGULAR HOOK
    */
   ngOnInit(): void {
+    this.control.valueChanges.subscribe(value => {
+      this.value.emit(value);
+    });
   }
 
   /**
    * To clear search input
    */
-  clearSearch(){
+  clearSearch() {
     this.control.reset();
     this.value.emit('');
   }
@@ -52,10 +55,10 @@ export class SearchInputComponent implements OnInit, OnChanges {
       this.value = changes.value.currentValue;
     }
 
-    if(changes && changes.preValue && changes.preValue.previousValue !== changes.preValue.currentValue ) {
+    if (changes && changes.preValue && changes.preValue.previousValue !== changes.preValue.currentValue) {
       this.preValue = changes.preValue.currentValue;
       this.control = new FormControl(this.preValue);
-      this.control.valueChanges.subscribe(value=>{
+      this.control.valueChanges.subscribe(value => {
         this.value.emit(value);
       });
     }

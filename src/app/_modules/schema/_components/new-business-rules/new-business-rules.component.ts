@@ -186,10 +186,9 @@ export class NewBusinessRulesComponent implements OnInit {
      */
     createDSByFields() {
         this.data.fields.forEach((field) => {
-            field = field.toString();
             this.fieldsList.push({
-                fieldId: typeof field === 'string' ? field.replace(' ', '_') : field.toString(),
-                fieldDescri: field
+                fieldId: field.fieldId,
+                fieldDescri: field.fieldDescri
             })
         });
     }
@@ -218,7 +217,7 @@ export class NewBusinessRulesComponent implements OnInit {
         } else {
             this.selectedFields.push({
                 fieldText: event.option.viewValue,
-                fieldId: event.option.value
+                fieldId: this.data.moduleId ? event.option.value : event.option.value.replace(' ', '_')
             });
         }
         this.form.controls.fields.setValue('');
@@ -464,6 +463,12 @@ export class NewBusinessRulesComponent implements OnInit {
         }
         this.allhierarchies.push(UDRHierarchie)
         this.allUDRBlocks.push(udrBlock)
+    }
+
+
+    displayFn(value) {
+        console.log(value);
+        return value ? value.fieldDescri : ''
     }
 }
 

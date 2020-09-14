@@ -286,7 +286,6 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
             dataS.push(datS);
           }
           this.dataSource = dataS;
-          this.createfieldObjectForRequest(this.excelHeader)
         };
 
         reader.readAsBinaryString(target.files[0]);
@@ -311,7 +310,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     excelHeader.forEach((field) => {
       this.requestForm.controls.fields.value.push({
         fieldDescri: field,
-        fieldId: field,
+        fieldId: this.requestForm.controls.objectId.value ? field.fieldId : Math.random().toString(36).slice(2),
         dataType: 'CHAR',
         maxChar: '200',
         mandatory: '0',
@@ -321,6 +320,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         isComBased: '0'
       })
     });
+    console.log(this.requestForm.controls.fields.value)
   }
 
   /**
@@ -389,7 +389,10 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    */
   openGlobalDialog(componentName) {
     if (componentName === 'createBR') {
-      this.globaldialogService.openDialog(NewBusinessRulesComponent, { moduleId: this.requestForm.value.objectId, fields: this.excelHeader });
+      this.globaldialogService.openDialog(NewBusinessRulesComponent, {
+        moduleId: this.requestForm.value.objectId,
+        fields: this.requestForm.controls.fields.value
+      });
 
       this.dialogSubscriber = this.globaldialogService.dialogCloseEmitter
         .pipe(
@@ -480,6 +483,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       this.requestForm.controls.objectId.setValue('');
     }
     this.step('next');
+    this.createfieldObjectForRequest(this.excelHeader)
   }
 
   /**
@@ -578,6 +582,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * @param whatToFilter the structure to update
    */
   search(event: string, whatToFilter: string) {
+    console.log(event, whatToFilter);
     if (whatToFilter === 'module') {
       if (!event) {
         this.modulesList.length = 0;
@@ -653,8 +658,6 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
           response.filterFieldIds = [];
           this.subscribersList.push(response);
         }
-
-        console.log(response);
         this.dialogSubscriber.unsubscribe();
       });
   }
@@ -670,40 +673,66 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     const runNow = true;
     const variantId = '0'
     const fileSerialNo = formObject.fileSerialNo;
+    this.requestForm.controls.subscribers.setValue([]);
+    console.log(this.subscribersList);
+
+
+    if (!this.requestForm.controls.objectId.value) {
+      const mappedArray = [];
+      this.requestForm.controls.fields.value.forEach((header, index) => {
+        mappedArray.push({
+          columnIndex: index,
+          excelFld: header.fieldId,
+          mdoFldId: header.fieldId,
+          mdoFldDesc: header.fieldDescri,
+          excelFrstRow: null
+        })
+      });
+      this.requestForm.controls.mappedData.setValue(mappedArray)
+    }
+
+
+    if (this.subscribersList.length === 0) {
+      this.callSaveSchemaAPI(
+        objectId,
+        runNow,
+        variantId,
+        fileSerialNo
+      )
+    } else {
+      this.subscribersList.forEach((subscriber, index) => {
+        let obj;
+        const subscriberObject = subscriber;
+
+        subscriberObject.filterFieldIds.forEach((fieldId) => {
+          const getSubsciberDataOnBasisOfFieldId = subscriber.dataAllocation.filter((sub) => sub.FIELDNAME === fieldId);
+          obj = {
+            type: 'DROPDOWN',
+            fieldId,
+            values: getSubsciberDataOnBasisOfFieldId ? getSubsciberDataOnBasisOfFieldId.map((item) => item.CODE) : ''
+          }
+          subscriberObject.filterCriteria = obj;
+        });
+        this.requestForm.controls.subscribers.setValue(this.subscribersList);
+        if (index === this.subscribersList.length - 1) {
+          this.callSaveSchemaAPI(
+            objectId,
+            runNow,
+            variantId,
+            fileSerialNo
+          )
+        }
+      });
+    }
+  }
+
+  callSaveSchemaAPI(objectId: string, runNow: boolean, variantId: string, fileSerialNo: string) {
+    const formObject = this.requestForm.value;
     delete formObject.objectId;
     delete formObject.file;
     delete formObject.fileSerialNo;
     delete formObject.runNow;
-    delete formObject.runNow;
-    this.requestForm.controls.subscribers.setValue([]);
-    console.log(this.subscribersList);
-
-    this.subscribersList.forEach((subscriber, index) => {
-      let obj;
-      const subscriberObject = subscriber;
-
-      subscriberObject.filterFieldIds.forEach((fieldId) => {
-        const getSubsciberDataOnBasisOfFieldId = subscriber.dataAllocation.filter((sub) => sub.FIELDNAME === fieldId);
-        obj = {
-          type: 'DROPDOWN',
-          fieldId,
-          values: getSubsciberDataOnBasisOfFieldId ? getSubsciberDataOnBasisOfFieldId.map((item) => item.CODE) : ''
-        }
-        subscriberObject.filterCriteria = obj;
-      });
-      this.requestForm.controls.subscribers.setValue(this.subscribersList);
-      if (index === this.subscribersList.length - 1) {
-        this.callSaveSchemaAPI(
-          objectId,
-          runNow,
-          variantId,
-          fileSerialNo
-        )
-      }
-    });
-  }
-
-  callSaveSchemaAPI(objectId: string, runNow: boolean, variantId: string, fileSerialNo: string) {
+    delete formObject.runTime;
     this.requestForm.controls.subscribers.value.forEach((subscriber) => {
       delete subscriber.dataAllocation;
       delete subscriber.filterFieldIds
@@ -713,7 +742,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       runNow,
       variantId,
       fileSerialNo,
-      this.requestForm.value
+      formObject
     ).subscribe((res) => {
       console.log(res);
       this.snackBar.open('Schema created successfully', 'Okay');

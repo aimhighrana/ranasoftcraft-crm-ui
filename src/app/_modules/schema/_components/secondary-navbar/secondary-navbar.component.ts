@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, SimpleChanges, Input } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, Input, EventEmitter, Output } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { SchemaListModuleList, SchemaListDetails } from '@models/schema/schemalist';
@@ -19,16 +19,26 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
   @Input()
   activatedPrimaryNav: string;
 
+  /**
+   * icon arrow value
+   */
+  arrowIcon = 'keyboard_arrow_left';
+
+  /**
+   * Emitter to emit sidebar toggleing
+   */
+  @Output() toggleEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
+
   constructor(
     private router: Router,
     private schemaListService: SchemalistService,
     private activatedRouter: ActivatedRoute,
     private location: Location,
     private schemaService: SchemaService
-    ) { }
+  ) { }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if(changes && changes.activatedPrimaryNav && changes.activatedPrimaryNav.previousValue !== changes.activatedPrimaryNav.currentValue) {
+    if (changes && changes.activatedPrimaryNav && changes.activatedPrimaryNav.previousValue !== changes.activatedPrimaryNav.currentValue) {
 
       switch (changes.activatedPrimaryNav.currentValue) {
         case 'welcome':
@@ -46,11 +56,9 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
 
-    this.location.subscribe(res=>{
+    this.location.subscribe(res => {
       console.log(res);
     })
-
-
 
     // console.log(this.activatedRouter.url);
     // this.activatedRouter.url.subscribe(sub=>{
@@ -67,9 +75,9 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
    * Get all schema along with variants ..
    */
   getDataIntilligence() {
-    this.schemaService.getSchemaWithVariants().subscribe(res=>{
+    this.schemaService.getSchemaWithVariants().subscribe(res => {
       this.dataIntillegences = res;
-    },error=> console.error(`Error : ${error.message}`));
+    }, error => console.error(`Error : ${error.message}`));
   }
 
   /**
@@ -78,13 +86,13 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
   public getSchemaList() {
     this.schemaListService.getSchemaList().subscribe((moduleList) => {
       this.moduleList = moduleList;
-      if(this.moduleList){
+      if (this.moduleList) {
         const firstModuleId = this.moduleList[0].moduleId;
-        this.router.navigate(['/home/schema',firstModuleId]);
+        this.router.navigate(['/home/schema', firstModuleId]);
       }
 
 
-    }, error=>{
+    }, error => {
       console.error(`Error : ${error.message}`);
     })
   }
@@ -94,7 +102,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
    */
   openSchemaDetails(module: SchemaListModuleList) {
     const frstSchemaId = module.schemaLists ? module.schemaLists[0].schemaId : '';
-    this.router.navigate(['/home/schema/schema-details', module.moduleId ,frstSchemaId, 0]);
+    this.router.navigate(['/home/schema/schema-details', module.moduleId, frstSchemaId, 0]);
   }
 
   /**
@@ -124,10 +132,23 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
       case 'welcome':
         break;
       case 'schema':
-        this.router.navigate(['', { outlets: { sb: 'sb/schema/create-schema' } } ]);
+        this.router.navigate(['', { outlets: { sb: 'sb/schema/create-schema' } }]);
         break;
       default:
         break;
     }
+  }
+
+  /**
+   * function to toggle the icon
+   * and emit the toggle event
+   */
+  toggleSideBar() {
+    if (this.arrowIcon === 'keyboard_arrow_left') {
+      this.arrowIcon = 'keyboard_arrow_right';
+    } else if (this.arrowIcon === 'keyboard_arrow_right') {
+      this.arrowIcon = 'keyboard_arrow_left'
+    }
+    this.toggleEmitter.emit()
   }
 }
