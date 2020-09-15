@@ -203,7 +203,9 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
             this.filterCriteria.push(criteria);
 
             // emit value for apply filter
-            this.emitEvtFilterCriteria(this.filterCriteria);
+            setTimeout(()=>{
+              this.emitEvtFilterCriteria(this.filterCriteria);
+            },2000);
           }
 
       }
@@ -262,7 +264,6 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
         // codeTxt.isSelected = true;
         // this.dateFilterQuickSelect[idx] = codeTxt;
         this.setSelectedQuickDateFilter(code);
-
         this.emitDateChangeValues();
       }
     } else {
