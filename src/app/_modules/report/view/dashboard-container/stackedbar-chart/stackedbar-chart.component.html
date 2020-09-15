@@ -21,7 +21,7 @@
       
   </mat-toolbar-row>
     <mat-card-content>
-      <canvas baseChart
+      <canvas baseChart #chart
       [height] = "widgetInfo.height * boxSize"
       [width] = "widgetInfo.width * boxSize"
       [datasets]="barChartData"

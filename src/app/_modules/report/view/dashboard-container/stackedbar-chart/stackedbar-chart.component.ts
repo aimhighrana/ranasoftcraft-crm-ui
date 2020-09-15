@@ -124,6 +124,14 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     }else{
       this.updateLabelsaxis1();
     }
+
+    // update chart after data sets change
+    if(this.chart) {
+      try{
+        this.chart.update();
+      }catch(ex){console.error(`Error : ${ex}`)}
+    }
+
     });
 
     // after color defined update on widget

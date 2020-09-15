@@ -183,6 +183,11 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
         backgroundColor:backgroundColorArray
         // data: this.dataSet
       }];
+
+      // update chart after data sets change
+      if(this.chart) {
+        this.chart.update();
+      }
     });
   }
 

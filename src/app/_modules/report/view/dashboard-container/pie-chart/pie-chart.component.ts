@@ -187,6 +187,11 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
         data: this.dataSet
       }];
       this.getColor();
+
+      // update chart after data sets change
+      if(this.chart) {
+        this.chart.update();
+      }
     });
   }
 
