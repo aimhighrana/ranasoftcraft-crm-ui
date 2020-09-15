@@ -143,7 +143,12 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   }
 
   dialogSubscriber = new Subscription();
-  inputModel = new FormControl()
+  inputModel = new FormControl();
+
+  /**
+   * Flag to disable back button
+   */
+  disableBack = false;
 
   /**
    * Constructor of class
@@ -184,7 +189,13 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       this.userDetails = userdetails;
       this.requestForm.controls.userId.setValue(this.userDetails.userName)
       this.requestForm.controls.plantCode.setValue(this.userDetails.plantCode)
-    })
+    });
+
+    if (this.data.objectid && this.data.objectdesc) {
+      this.requestForm.get('objectId').setValue(this.data.objectid);
+      this.requestForm.get('objectDesc').setValue(this.data.objectdesc);
+      this.requestForm.get('objectfullDesc').setValue(this.data.objectdesc);
+    }
   }
 
   setObjectDescription(moduleName) {
@@ -280,7 +291,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
           this.uploadedData = (data as UploadedDataType);
           this.excelHeader = this.uploadedData[0] as string[];
           // move to next step
-          this.stepper.next();
+
           const file = target.files[0]
           this.uploadedFile = file;
 
@@ -296,10 +307,8 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         this.excelMdoFieldMappedData = [];
         this.requestForm.get('file').setValue(target.files[0]);
         this.uploadFileData();
-
       } else {
         this.uploadedFile = null;
-
         this.snackBar.open(`Only allow .xlsx, .xls and .csv file format`, 'Close', { duration: 5000 });
       }
     }
@@ -371,10 +380,9 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
           return;
         }
       }
-
-      this.progressBar = this.progressBar + 20;
+      this.moveProgressBar('next');
     } else {
-      this.progressBar = this.progressBar - 20;
+      this.moveProgressBar('back')
     }
 
     if (this.headerTextIndex === 0) {
@@ -384,6 +392,14 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       }
     }
     this.stepper[where]();
+  }
+
+  /**
+   * Common function to update progressbar
+   * @param movementType movement type ie next or previous
+   */
+  moveProgressBar(movementType) {
+    this.progressBar = movementType === 'next' ? this.progressBar + 20 : this.progressBar - 20
   }
 
   /**
@@ -628,7 +644,22 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   uploadFileData() {
     this.schemaService.uploadUpdateFileData(this.requestForm.get('file').value, this.requestForm.get('fileSerialNo').value)
       .subscribe(res => {
-        this.requestForm.get('fileSerialNo').setValue(res)
+        this.requestForm.get('fileSerialNo').setValue(res);
+        const objectId = this.requestForm.get('objectId').value;
+        console.log(objectId)
+        if (this.requestForm.get('objectId').value) {
+          this.getModulesMetaHeaders()
+          this.stepper.next();
+          this.stepper.next();
+          this.disableBack = true;
+          this.moveProgressBar('next');
+        } else {
+          this.disableBack = false;
+
+          this.stepper.next();
+        }
+      }, () => {
+        this.snackBar.open('File could not be uploaded', 'Okay')
       });
   }
 
@@ -821,5 +852,15 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       }
     }
     return null;
+  }
+
+  /**
+   * getter function to show the back button conditionally
+   */
+  get setBackBtnVisibility() {
+    if (this.headerTextIndex === 2 && this.disableBack) {
+      return false
+    }
+    return this.headerTextIndex > 1
   }
 }

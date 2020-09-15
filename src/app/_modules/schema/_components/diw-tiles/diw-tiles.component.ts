@@ -118,7 +118,7 @@ export class DiwTilesComponent implements OnInit {
       schemaData.schemaId = schemaList.schemaId;
       schemaData.isInRunning = schemaList.isInRunning;
       schemaData.schemaDescription = schemaList.schemaDescription;
-
+      this.moduleSchemaData.length = 0;
       this.schemaService.getSchemaThresholdStatics(schemaList.schemaId).subscribe((schemaStatics) => {
         schemaData.threshold = Math.round((schemaStatics.threshold + Number.EPSILON) * 100) / 100;
         schemaData.thresHoldStatus = schemaStatics.thresHoldStatus;
@@ -154,8 +154,9 @@ export class DiwTilesComponent implements OnInit {
       },
       disableClose: true,
     });
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe(() => {
       console.log('The dialog was closed');
+      this.getSchemaList();
     });
   }
 }

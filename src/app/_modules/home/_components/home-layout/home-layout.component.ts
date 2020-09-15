@@ -1,15 +1,15 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
 import { UserService } from 'src/app/_services/user/userservice.service';
 import { Userdetails } from 'src/app/_models/userdetails';
 import { LoadingService } from 'src/app/_services/loading.service';
 import { Subscription } from 'rxjs';
-import { MatSidenav } from '@angular/material/sidenav';
+import { MatSidenav, MatSidenavContent } from '@angular/material/sidenav';
 @Component({
   selector: 'pros-home-layout',
   templateUrl: './home-layout.component.html',
   styleUrls: ['./home-layout.component.scss']
 })
-export class HomeLayoutComponent implements OnInit, OnDestroy {
+export class HomeLayoutComponent implements OnInit, AfterViewInit, OnDestroy {
 
   udSub: Subscription;
   userDetails: Userdetails = new Userdetails();;
@@ -32,9 +32,14 @@ export class HomeLayoutComponent implements OnInit, OnDestroy {
   @ViewChild('primarySidenav') primarySidenav: MatSidenav;
 
   /**
-   * child element of secondary sidebar
+   * sidebar content viewchild
    */
-  @ViewChild('secondarySidenav') secondarySidenav: MatSidenav;
+  @ViewChild('secondaryContent') secondaryContent: MatSidenavContent;
+
+  /**
+   * flag to enable/disable resizeable
+   */
+  grab = false;
 
   /**
    * constructor of class
@@ -44,8 +49,7 @@ export class HomeLayoutComponent implements OnInit, OnDestroy {
   constructor(
     private userService: UserService,
     private loadingService: LoadingService
-  ) {
-  }
+  ) { }
 
   ngOnInit() {
     this.udSub = this.userService.getUserDetails().subscribe(
@@ -53,6 +57,10 @@ export class HomeLayoutComponent implements OnInit, OnDestroy {
         this.userDetails = response;
       }
     );
+  }
+
+  ngAfterViewInit() {
+    this.enableResizeable();
   }
 
   isLoading() {
@@ -102,5 +110,56 @@ export class HomeLayoutComponent implements OnInit, OnDestroy {
       document.getElementById('secondaryContent').style.marginLeft = '199px';
       this.secondarySideBarOpened = true;
     }
+  }
+
+  /**
+   * function to enable resizeable
+   */
+  enableResizeable() {
+    const sidebar = document.getElementById('secondarySidenav')
+    const content = this.secondaryContent.getElementRef().nativeElement;
+
+    const grabberElement = document.createElement('div');
+    grabberElement.style.height = '100%';
+    grabberElement.style.width = '2px';
+    grabberElement.style.backgroundColor = '#eaeaea';
+    grabberElement.style.position = 'absolute';
+    grabberElement.style.cursor = 'col-resize';
+    grabberElement.style.resize = 'horizontal';
+    grabberElement.style.overflow = 'auto';
+
+    grabberElement.addEventListener('mousedown', () => {
+      this.grab = true;
+      sidebar.style.cursor = 'col-resize';
+    });
+
+    grabberElement.addEventListener('mouseup', () => {
+      this.grab = false;
+      sidebar.style.cursor = 'default';
+    });
+
+    sidebar.addEventListener('mouseup', () => {
+      this.grab = false;
+      sidebar.style.cursor = 'default';
+      grabberElement.style.backgroundColor = '#fff';
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (this.grab) {
+        this.grab = false;
+        sidebar.style.cursor = 'default';
+      }
+    })
+
+    document.addEventListener('mousemove', (e) => {
+      if (this.grab) {
+        const newWidth = e.clientX - 75 - (grabberElement.offsetWidth / 2);
+        const widthPercent = ((window.innerWidth - newWidth) / window.innerWidth * 100);
+        if (widthPercent > 70 && widthPercent < 94) {
+          sidebar.style.width = newWidth + 'px';
+        }
+      }
+    });
+    content.prepend(grabberElement);
   }
 }

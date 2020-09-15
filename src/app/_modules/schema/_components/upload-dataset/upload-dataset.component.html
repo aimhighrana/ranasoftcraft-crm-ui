@@ -23,8 +23,8 @@
             <div class="f-col upload-col">
                 <mat-icon>publish</mat-icon>
 
-                <div mat-line>Drag & drop or <a href="javascript:void(0)" class="info"
-                        (click)="openExplorer();$event.stopPropagation()">browser</a> a file to upload</div>
+                <div mat-line>Drag & drop or <a href="javascript:void(0)" class="info" (click)="openExplorer()"
+                        prosClickStopPropagation>browser</a> a file to upload</div>
                 <input class="drag-input" type="file" id="uploader" (change)="fileChange($event)"
                     prosClickStopPropagation />
 
@@ -108,7 +108,8 @@
         <mat-step>
             <ng-template matStepLabel></ng-template>
             <div class="f-col">
-                <pros-form-input [placeholder]="'Schema name'" (valueChange)="setschemaName($event)"></pros-form-input>
+                <pros-form-input [placeholder]="'Schema name'" [label]="'Schema name'"
+                    (valueChange)="setschemaName($event)"></pros-form-input>
                 <div class="row-spacer"></div>
                 <div>
                     <button mat-flat-button color="accent" (click)="openGlobalDialog('createBR')">
@@ -255,10 +256,9 @@
         </mat-step>
     </mat-horizontal-stepper>
     <div class="row-spacer"></div>
-
     <!-- navigation buttons -->
     <div class="f-row">
-        <button mat-flat-button color="accent" *ngIf="headerTextIndex > 1" (click)="step('previous')">Back</button>
+        <button mat-flat-button color="accent" *ngIf="setBackBtnVisibility" (click)="step('previous')">Back</button>
         <span class="f-spacer"></span>
         <button mat-flat-button color="primary" *ngIf="headerTextIndex > 1 && progressBar < 100"
             (click)="step('next')">Next</button>

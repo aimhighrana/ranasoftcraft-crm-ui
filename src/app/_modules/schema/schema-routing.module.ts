@@ -61,7 +61,6 @@ const routes: Routes = [
   { path: ':moduleId', component: DiwTilesComponent },
   { path: 'sidenav-userdefined', component: SidenavUserdefinedComponent },
   { path: 'table-loading', component: TableLoadingComponent },
-
   { path: 'upload-data', component: UploadDataComponent },
   { path: 'mdo-generic-components', component: MdoGenericComponentsComponent },
   { path: 'schema-info/:moduleId/:schemaId', component: SchemaInfoComponent },
