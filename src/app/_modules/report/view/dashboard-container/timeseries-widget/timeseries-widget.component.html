@@ -2,15 +2,40 @@
     <mat-card-header>
         <mat-card-title>{{ widgetInf.getValue() ? widgetInf.getValue().desc : 'Timeseries widget' }}</mat-card-title>
     </mat-card-header>
-    <mat-card-content>
+    <mat-toolbar-row >
+        <!-- DATE FILTERS -->
+         <button *ngFor="let dateType of dateFilters" mat-stroked-button [color]="dateType.isActive ? 'primary' : '' " (click)="updateForm('date',dateType)">{{ dateType.value }} {{this.timeseriesData.timeSeries.seriesWith}}s</button>
+         <div>
+         <mat-form-field appearance="outline">
+            <mat-date-range-input [rangePicker]="picker">
+              <input matStartDate placeholder="Start date"  [formControl]="startDateCtrl">
+              <input matEndDate placeholder="End date"  [formControl]="endDateCtrl">
+            </mat-date-range-input>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-date-range-picker #picker></mat-date-range-picker>
+          </mat-form-field>
+          </div>
+          <!-- RIGHT SIDE CONFIG -->
+          <span class="f-spacer"></span>
+          <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>get_app</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="downloadImage()">Image (.png)</button>
+            <button mat-menu-item (click)="downloadCSV()">Data (.csv)</button>
+            <button mat-menu-item (click)="openColorPalette()">Color Palette</button>
+          </mat-menu>   
+          <!-- TIME SERIES CHART -->
+    </mat-toolbar-row>
+    <mat-card-content *ngIf="dataSet">
         <canvas
         baseChart
         [datasets]="dataSet"
         class="inner-flexcol-12"
         [labels]="dataSetlabel"
-        [options]="options"
-        legend="true"
-        chartType="bar">
+        [options]="timeSeriesOption"
+        [plugins]="lineChartPlugins"
+        chartType="{{timeseriesData.timeSeries.chartType.toLowerCase()}}">
         </canvas>
     </mat-card-content>
 </mat-card>

@@ -39,6 +39,10 @@
      <ng-template [ngIf]="widget.widgetType && widget.widgetType === 'HTML'"> 
         <pros-svg-icon size="70" icon="HTML_WIDGET" class="widget-lgsvg" color="widget"></pros-svg-icon>
      </ng-template>
+
+     <ng-template [ngIf]="widget.widgetType && widget.widgetType === 'TIMESERIES'"> 
+      <pros-svg-icon size="70" icon="TIMESERIES" class="widget-lgsvg" color="widget"></pros-svg-icon>
+   </ng-template>
      
      
     </mat-card-content>

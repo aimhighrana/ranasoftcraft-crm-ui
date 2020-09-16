@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { Widget, WidgetType, ReportDashboardReq, WidgetTableModel, ChartType, Orientation, DatalabelsPosition, LegendPosition, BlockType, ConditionOperator, Criteria, OrderWith } from '../../_models/widget';
+import { Widget, WidgetType, ReportDashboardReq, WidgetTableModel, ChartType, Orientation, DatalabelsPosition, LegendPosition, BlockType,TimeseriesStartDate, ConditionOperator, Criteria, OrderWith,SeriesWith } from '../../_models/widget';
 import { Observable, of, BehaviorSubject, Subscription } from 'rxjs';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { ReportService } from '../../_service/report.service';
@@ -135,7 +135,10 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       scaleTo:[''],
       stepSize:[''],
       dataSetSize:[''],
-      blankValueAlias:['']
+      seriesWith:[SeriesWith.day],
+      seriesFormat:[''],
+      blankValueAlias:[''],
+      timeseriesStartDate:[TimeseriesStartDate.D7],
     });
 
     this.defaultFilterCtrlGrp = this.formBuilder.group({
@@ -298,7 +301,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           chartType:ChartType.BAR, orientation:Orientation.VERTICAL, isEnableDatalabels:false,
           datalabelsPosition:DatalabelsPosition.center, isEnableLegend:false, legendPosition:LegendPosition.top,
           xAxisLabel:'', yAxisLabel:'', orderWith: OrderWith.DESC, scaleFrom: null, scaleTo: null, stepSize: null,
-          dataSetSize: null,blankValueAlias:null
+          dataSetSize: null,seriesWith:SeriesWith.day,seriesFormat:null,blankValueAlias:null,timeseriesStartDate:TimeseriesStartDate.D7
         };
       }
       this.preapreNewWidgetPosition(dropableWidget);
@@ -374,7 +377,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         } else {
           this.chartPropCtrlGrp.setValue({ chartType:ChartType.BAR, orientation:Orientation.VERTICAL, isEnableDatalabels:false,
             datalabelsPosition:DatalabelsPosition.center, isEnableLegend:false, legendPosition:LegendPosition.top, xAxisLabel:'', yAxisLabel:'',
-            orderWith: OrderWith.DESC, scaleFrom:'',scaleTo:'', stepSize:'', dataSetSize:'',blankValueAlias:''
+            orderWith: OrderWith.DESC, scaleFrom:'',scaleTo:'', stepSize:'', dataSetSize:'',seriesWith:SeriesWith.day,seriesFormat:'',blankValueAlias:'',timeseriesStartDate:TimeseriesStartDate.D7
           });
         }
 

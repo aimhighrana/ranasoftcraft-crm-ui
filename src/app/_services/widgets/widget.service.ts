@@ -126,7 +126,7 @@ export class WidgetService {
    * Call http for save or define widget color palette
    * @param req define color palette request for widget
    */
-  public defineWidgetColorPalette(req: WidgetColorPalette): Observable<WidgetColorPalette> {
+   defineWidgetColorPalette(req: WidgetColorPalette): Observable<WidgetColorPalette> {
     return this.http.post<WidgetColorPalette>(this.endpointService.defineColorPaletteForWidget(), req);
   }
 

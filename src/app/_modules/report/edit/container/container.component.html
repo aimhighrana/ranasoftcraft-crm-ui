@@ -58,6 +58,8 @@
                             <mat-list-item role="listitem" cdkDrag widgetType="IMAGE"><pros-svg-icon size="20" icon="IMAGE_WIDGET" class="svg-widgetdrag" color="widget"></pros-svg-icon>Image</mat-list-item>
                             <mat-divider></mat-divider>
                             <mat-list-item role="listitem" cdkDrag widgetType="HTML"><pros-svg-icon size="20" icon="HTML_WIDGET" class="svg-widgetdrag" color="widget"></pros-svg-icon>Html Editor</mat-list-item>
+                            <mat-divider></mat-divider>
+                            <mat-list-item role="listitem" cdkDrag widgetType="TIMESERIES"><pros-svg-icon size="20" icon="TIMESERIES_WIDGET" class="svg-widgetdrag" color="widget"></pros-svg-icon>Time Series</mat-list-item>
                           </mat-list>
 
                         </mat-expansion-panel>
@@ -136,8 +138,8 @@
                                 </mat-form-field>
 
                                 <!-- FOR Aggregration -->
-                                <ng-template [ngIf]="selStyleWid  && (selStyleWid.widgetType === 'COUNT' || selStyleWid.widgetType === 'BAR_CHART' || selStyleWid.widgetType === 'STACKED_BAR_CHART') ">
                                     <mat-label>Aggregration Operator</mat-label>
+                                <ng-template [ngIf]="selStyleWid  && (selStyleWid.widgetType === 'COUNT' || selStyleWid.widgetType === 'BAR_CHART' || selStyleWid.widgetType === 'STACKED_BAR_CHART' || selStyleWid.widgetType === 'TIMESERIES') ">
                                     <mat-form-field appearance="outline">
                                         <mat-select formControlName="aggregrationOp">
                                             <mat-option value="GROUPBY">GROUPBY</mat-option>
@@ -149,7 +151,7 @@
                                     </mat-form-field>
                                 </ng-template>
 
-                                <ng-template [ngIf]="selStyleWid && (selStyleWid.widgetType === 'COUNT' || selStyleWid.widgetType === 'BAR_CHART' || selStyleWid.widgetType === 'STACKED_BAR_CHART' || selStyleWid.widgetType === 'FILTER')">
+                                <ng-template [ngIf]="selStyleWid && (selStyleWid.widgetType === 'COUNT' || selStyleWid.widgetType === 'BAR_CHART' || selStyleWid.widgetType === 'STACKED_BAR_CHART' || selStyleWid.widgetType === 'FILTER' || selStyleWid.widgetType === 'TIMESERIES')">
                                     <pros-metadatafield-control
                                     [moduleId] = "selStyleWid && selStyleWid.objectType"
                                     lebel = "Field"
@@ -160,7 +162,7 @@
                                 </ng-template>
 
                                 <!-- FOR STACKED BAR CHART WIDGET-->
-                                <ng-template [ngIf]="selStyleWid && selStyleWid.widgetType === 'STACKED_BAR_CHART'">
+                                <ng-template [ngIf]="selStyleWid && (selStyleWid.widgetType === 'STACKED_BAR_CHART' || selStyleWid.widgetType === 'TIMESERIES')">
                                     <pros-metadatafield-control
                                         [moduleId] = "selStyleWid && selStyleWid.objectType"
                                         lebel = "Group With(s)"
@@ -283,7 +285,7 @@
                     </mat-accordion>
 
                     <!-- CHART PROPERTIES -->
-                    <mat-accordion *ngIf="selStyleWid  && (selStyleWid.widgetType === 'BAR_CHART' || selStyleWid.widgetType === 'STACKED_BAR_CHART') ">
+                    <mat-accordion *ngIf="selStyleWid  && (selStyleWid.widgetType === 'BAR_CHART' || selStyleWid.widgetType === 'STACKED_BAR_CHART' || selStyleWid.widgetType === 'TIMESERIES') ">
                         <mat-expansion-panel class="mat-elevation-z2">
                             <mat-expansion-panel-header>
                               <mat-panel-title>
@@ -296,6 +298,7 @@
                                     <mat-select formControlName="chartType">
                                         <mat-option value="BAR"> BAR </mat-option>
                                         <mat-option *ngIf="selStyleWid.widgetType === 'BAR_CHART' " value="PIE"> PIE </mat-option>
+                                        <mat-option *ngIf="selStyleWid.widgetType === 'TIMESERIES' " value="LINE"> LINE </mat-option>
                                     </mat-select>
                                 </mat-form-field>
 
@@ -307,8 +310,8 @@
                                     </mat-select>
                                 </mat-form-field>
 
-                                <ng-template [ngIf]="chartPropCtrlGrp && chartPropCtrlGrp.get('chartType').value === 'BAR'">
                                     <mat-label>xAsix Lebel</mat-label>
+                                <ng-template [ngIf]="chartPropCtrlGrp && chartPropCtrlGrp.get('chartType').value === 'BAR' || chartPropCtrlGrp.get('chartType').value === 'LINE'">
                                     <mat-form-field appearance="outline">
                                         <input matInput formControlName="xAxisLabel">
                                     </mat-form-field>
@@ -375,11 +378,41 @@
                                     </mat-select>
                                 </mat-form-field>
                                 
-                                <mat-form-field appearance="outline">
+                                <mat-form-field appearance="outline" *ngIf="selStyleWid.widgetType !== 'TIMESERIES'">
                                     <mat-label>Default value alias</mat-label>
                                     <input matInput formControlName="blankValueAlias">
                                 </mat-form-field>
-                                
+                                <!-- SERIES WITH -->
+                                <mat-form-field appearance="outline" *ngIf="selStyleWid.widgetType === 'TIMESERIES'">
+                                    <mat-label>Series With</mat-label>
+                                    <mat-select formControlName="seriesWith">
+                                        <mat-option value="millisecond"> Millisecond </mat-option>
+                                        <mat-option value="second"> Second </mat-option>
+                                        <mat-option value="minute"> Minute </mat-option>
+                                        <mat-option value="hour"> Hour </mat-option>
+                                        <mat-option value="day"> Day </mat-option>
+                                        <mat-option value="week"> Week </mat-option>
+                                        <mat-option value="month"> Month </mat-option>
+                                        <mat-option value="quarter"> Quarter </mat-option>
+                                        <mat-option value="year"> Year </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <!-- SERIES FORMAT -->
+                                <mat-form-field appearance="outline" *ngIf="selStyleWid.widgetType === 'TIMESERIES'">
+                                    <mat-label>Series Format</mat-label>
+                                    <input matInput formControlName="seriesFormat">
+                                </mat-form-field>
+                                <!-- DATE RANGE FOR TIME SERIES -->
+                                <mat-form-field appearance="fill" *ngIf="selStyleWid.widgetType === 'TIMESERIES'">
+                                        <mat-label>Select Interval</mat-label>
+                                        <mat-select formControlName="timeseriesStartDate">
+                                            <mat-option value="millisecond"> Today </mat-option>
+                                            <mat-option value="7"> 7 </mat-option>
+                                            <mat-option value="10"> 10 </mat-option>
+                                            <mat-option value="20"> 20 </mat-option>
+                                            <mat-option value="30"> 30 </mat-option>
+                                        </mat-select>
+                                </mat-form-field>
                             </div>
                         </mat-expansion-panel>
                     </mat-accordion>
