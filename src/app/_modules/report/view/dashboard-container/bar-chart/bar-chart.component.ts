@@ -1,12 +1,12 @@
-import { Component, OnInit, OnChanges, ViewChild, LOCALE_ID, Inject } from '@angular/core';
+import { Component, OnInit, OnChanges, ViewChild, LOCALE_ID, Inject, SimpleChanges } from '@angular/core';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
-import { BarChartWidget, Criteria, WidgetHeader, ChartLegend, ConditionOperator, BlockType, Orientation } from '../../../_models/widget';
+import { BarChartWidget, Criteria, WidgetHeader, ChartLegend, ConditionOperator, BlockType, Orientation, WidgetColorPalette } from '../../../_models/widget';
 import { BehaviorSubject } from 'rxjs';
-import { ReportService } from '../../../_service/report.service';
 import { ChartOptions, ChartTooltipItem, ChartData } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import   ChartDataLables from 'chartjs-plugin-datalabels';
+import { MatDialog } from '@angular/material/dialog';
 
 
 @Component({
@@ -60,17 +60,6 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     }
   };
 
-  public barChartColors: Array<any> = [
-    {
-      backgroundColor: 'rgba(105,159,177,0.2)',
-      borderColor: 'rgba(105,159,177,1)',
-      pointBackgroundColor: 'rgba(105,159,177,1)',
-      pointBorderColor: '#fafafa',
-      pointHoverBackgroundColor: '#fafafa',
-      pointHoverBorderColor: 'rgba(105,159,177)'
-    }
-  ];
-
   public barChartData: any[] = [
     {
       label: 'Loding..',
@@ -81,16 +70,19 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
 
   constructor(
     private widgetService: WidgetService,
-    private reportService: ReportService,
-    @Inject(LOCALE_ID) public locale: string
+    @Inject(LOCALE_ID) public locale: string,
+    public matDialog: MatDialog
   ) {
-    super();
+    super(matDialog);
   }
 
-  ngOnChanges(): void {
+  ngOnChanges(changes: SimpleChanges): void {
     this.lablels = [];
     this.chartLegend = [];
     this.barWidget.next(this.barWidget.getValue());
+    if(changes && changes.boxSize && changes.boxSize.previousValue !== changes.boxSize.currentValue) {
+      this.boxSize = changes.boxSize.currentValue;
+    }
   }
 
   ngOnInit(): void {
@@ -99,6 +91,13 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     this.barWidget.subscribe(res => {
       if (res) {
         this.getBarChartData(this.widgetId, this.filterCriteria);
+      }
+    });
+
+    // after color defined update on widget
+    this.afterColorDefined.subscribe(res=>{
+      if(res) {
+        this.updateColorBasedOnDefined(res);
       }
     });
   }
@@ -111,6 +110,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
 
   public getBarChartMetadata(): void {
     this.widgetService.getBarChartMetadata(this.widgetId).subscribe(returndata => {
+      this.widgetColorPalette = returndata.widgetColorPalette;
       this.barWidget.next(returndata);
       this.getBarConfigurationData();
     }, error => {
@@ -135,7 +135,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
             ChartDataLables,
             datalabels: {
               align: this.barWidget.getValue().datalabelsPosition,
-              anchor: this.barWidget.getValue().anchorPosition,
+              anchor: this.barWidget.getValue().datalabelsPosition,
               display:'auto'
             }
           }
@@ -144,16 +144,17 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
         this.setChartAxisAndScaleRange();
 
         // Bar widget color
-      this.barChartColors = [{
-        backgroundColor: '#8CF5A9',
-        borderColor: '#8CF5A9',
-      }];
+      // this.barChartColors = [{
+      //   backgroundColor: this.widgetColorPalette && this.widgetColorPalette.colorPalettes ? this.widgetColorPalette.colorPalettes[0].colorCode : '#8CF5A9',
+      //   borderColor: this.widgetColorPalette && this.widgetColorPalette.colorPalettes ? this.widgetColorPalette.colorPalettes[0].colorCode : '#8CF5A9',
+      // }];
    }
 
   public getBarChartData(widgetId: number, critria: Criteria[]): void {
     this.widgetService.getWidgetData(String(widgetId), critria).subscribe(returndata => {
       const arrayBuckets = returndata.aggregations['sterms#BAR_CHART'].buckets;
       this.dataSet = [];
+      this.lablels = [];
       this.dataSet = this.transformDataSets(arrayBuckets);
       // update barchartLabels
       if(this.barWidget.getValue().metaData && (this.barWidget.getValue().metaData.picklist === '1' || this.barWidget.getValue().metaData.picklist === '37' || this.barWidget.getValue().metaData.picklist === '30')) {
@@ -162,14 +163,70 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
         } else {
           this.lablels = this.chartLegend.map(map => map.text);
         }
+      } else {
+        if (this.chartLegend.length === 0) {
+          this.getFieldsDesc(arrayBuckets);
+        } else {
+          this.lablels = this.chartLegend.map(map => map.text);
+        }
       }
+
+      const backgroundColorArray = [];
+      this.chartLegend.forEach(legend=>{
+        backgroundColorArray.push(this.getUpdatedColorCode(legend.code));
+      });
 
       this.barChartData = [{
         label: this.widgetHeader.widgetName,
         barThickness: 'flex',
-        data: this.dataSet
+        data: this.dataSet,
+        backgroundColor:backgroundColorArray
+        // data: this.dataSet
       }];
+
+      // update chart after data sets change
+      if(this.chart) {
+        this.chart.update();
+      }
     });
+  }
+
+  /**
+   * Update label based on configuration
+   * @param buckets update lable
+   */
+  getFieldsDesc(buckets: any[]) {
+    const fldid = this.barWidget.getValue().fieldId;
+    let  locale = this.locale!==''?this.locale.split('-')[0]:'EN';
+    locale = locale.toUpperCase();
+    const finalVal = {} as any;
+    buckets.forEach(bucket=>{
+      const key = bucket.key;
+      const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
+      const ddv = hits._source.hdvs[fldid] ?( hits._source.hdvs[fldid] ? hits._source.hdvs[fldid].vls[locale].valueTxt : null) : null;
+      if(ddv) {
+        finalVal[key] = ddv;
+      } else {
+        finalVal[key] = hits._source.hdvs[fldid].vc;
+      }
+    });
+
+    // update lablels
+    this.lablels.forEach(cod => {
+      let chartLegend: ChartLegend;
+      if(cod) {
+        const hasData = finalVal[cod];
+        if (hasData) {
+          chartLegend = { text: hasData, code: cod, legendIndex: this.chartLegend.length };
+        } else {
+          chartLegend = { text: cod, code: cod, legendIndex: this.chartLegend.length };
+        }
+      } else {
+         chartLegend = { text: cod, code: cod, legendIndex: this.chartLegend.length };
+      }
+      this.chartLegend.push(chartLegend);
+    });
+    this.lablels = this.chartLegend.map(map => map.text);
   }
 
   /**
@@ -218,9 +275,12 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
       const option = this.chart.chart.getElementAtEvent(event) as any;
       const clickedIndex = (option[0])._index;
       const clickedLagend = this.chartLegend[clickedIndex];
-      const drpCode = this.chartLegend[clickedIndex] ? this.chartLegend[clickedIndex].code : this.lablels[clickedIndex];
+      let drpCode = this.chartLegend[clickedIndex] ? this.chartLegend[clickedIndex].code : this.lablels[clickedIndex];
       if(drpCode === undefined) {
         return false;
+      }
+      if(drpCode === this.barWidget.value.blankValueAlias){
+        drpCode = '';
       }
       const fieldId = this.barWidget.getValue().fieldId;
       let appliedFilters = this.filterCriteria.filter(fill => fill.fieldId === fieldId);
@@ -377,11 +437,69 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
       }
     } else {
       resBuckets.forEach(bucket => {
-        this.lablels.push(bucket.key);
+        const key = bucket.key === ''?this.barWidget.value.blankValueAlias!==undefined?this.barWidget.value.blankValueAlias:'':bucket.key;
+        this.lablels.push(key);
         finalDataSet.push(bucket.doc_count);
       });
     }
     return finalDataSet;
   }
 
+  /**
+   * Open Color palette...
+   */
+  openColorPalette() {
+    console.log(this.barChartData);
+    console.log(this.chartLegend);
+    const req: WidgetColorPalette = new WidgetColorPalette();
+    req.widgetId = String(this.widgetId);
+    req.reportId = String(this.reportId);
+    req.widgetDesc = this.widgetHeader.desc;
+    req.colorPalettes = [];
+    this.chartLegend.forEach(legend=>{
+      req.colorPalettes.push({
+        code: legend.code,
+        colorCode: this.barChartData[0] ? this.barChartData[0].backgroundColor[legend.legendIndex] : this.getRandomColor(),
+        text: legend.text
+      });
+    });
+    super.openColorPalette(req);
+  }
+
+  /**
+   * Update stacked color based on color definations
+   * @param res updated color codes
+   */
+  updateColorBasedOnDefined(res: WidgetColorPalette) {
+    this.widgetColorPalette = res;
+    this.barWidget.next(this.barWidget.getValue());
+  }
+
+  /**
+   * Update color on widget based on defined
+   * If not defined the pick random color
+   * @param code resposne code
+   */
+  getUpdatedColorCode(code: string): string {
+    if(this.widgetColorPalette && this.widgetColorPalette.colorPalettes) {
+      const res = this.widgetColorPalette.colorPalettes.filter(fil => fil.code === code)[0];
+      if(res) {
+        return res.colorCode;
+      }
+
+    }
+    return this.getRandomColor();
+  }
+
+  /**
+   * Return random color in hexa
+   */
+  public getRandomColor(): string {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
 }

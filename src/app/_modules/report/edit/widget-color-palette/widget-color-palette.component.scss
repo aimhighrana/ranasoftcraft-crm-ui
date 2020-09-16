@@ -1,0 +1,36 @@
+.root {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  align-content: flex-start;
+  margin: -24px;
+
+  mat-toolbar {
+    mat-toolbar-row {
+      font-weight: 400;
+    }
+  }
+
+  mat-card {
+    width: 100%;
+
+    .color-body {
+      max-height: 478px;
+      overflow: auto;
+
+      .color-style {
+        padding: 16px;
+
+        .colorDef {
+          flex: 11;
+        }
+
+        .colorPalette {
+          flex: 1;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}

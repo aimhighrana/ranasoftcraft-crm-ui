@@ -469,4 +469,45 @@ export class EndpointService {
   return `${this.apiUrl}/schema/br/update-br-map`;
 }
 
+ public defineColorPaletteForWidget(): string {
+    return `${this.apiUrl}/report/color-palette`;
+  }
+
+  public downloadWidgetDataUrl(widgetId: string): string {
+    return `${this.apiUrl}/widget/download/${widgetId}`;
+  }
+ public getCategoriesUrl(): string {
+    return this.apiUrl + '/getCategories';
+  }
+  public getDependencyUrl(): string {
+    return this.apiUrl + '/getDependency';
+  }
+  public addCustomCategoryUrl(): string {
+    return this.apiUrl + '/addCategory';
+  }
+  public saveBusinessRuleUrl(): string {
+    return this.apiUrl + '/saveBusinessRule';
+  }
+  public getBusinessRuleApiListUrl(): string {
+    return this.apiUrl + '/getAPIList';
+  }
+  public getDuplicacySettingListUrl(): string {
+    return this.apiUrl + '/getDuplicacySettingList';
+  }
+  public getMetadataFieldsUrl(): string {
+    return this.apiUrl + '/getMetadataFields';
+  }
+  public getVariantDetailsForScheduleSchemaUrl(objectId: string): string {
+    return this.apiUrl + '/get-variants-list/' + objectId;
+  }
+  public getVariantControlByVariantIdUrl(variantId: string): string {
+    return this.apiUrl + '/get-variant-control/' + variantId;
+  }
+  public getBusinessRulesBySchemaId(schemaId: string, objectId: string): string {
+    return this.apiUrl + '/getBrDetailsBySchemaId/' + schemaId + '/' + objectId;
+  }
+  public getAssignBrToSchemaUrl(): string {
+    return this.apiUrl + '/assignBrToSchema';
+  }
 }
+

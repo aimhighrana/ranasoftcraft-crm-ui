@@ -1,10 +1,15 @@
 import { Input, EventEmitter, Output, Component } from '@angular/core';
 import { Criteria } from '../../_models/widget';
+import {WidgetColorPalette, ReportDashboardPermission, Widget } from '../../_models/widget';
+import { MatDialog } from '@angular/material/dialog';
+import { WidgetColorPaletteComponent } from '@modules/report/edit/widget-color-palette/widget-color-palette.component';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'pros-generic-widget',
   template: ''
 })
+
 export abstract class GenericWidgetComponent {
 
   @Input()
@@ -16,14 +21,58 @@ export abstract class GenericWidgetComponent {
   @Input()
   filterCriteria: Criteria[];
 
+  @Input()
+  permissons: ReportDashboardPermission;
+
+  /**
+   * Hold current widget info.
+   */
+  @Input()
+  widgetInfo: Widget;
+
+  /**
+   * Box size after window resize host listener
+   */
+  @Input()
+  boxSize: number;
 
   @Output()
   evtFilterCriteria: EventEmitter<Criteria[]> = new EventEmitter<Criteria[]>();
 
+  public afterColorDefined: BehaviorSubject<WidgetColorPalette> = new BehaviorSubject<WidgetColorPalette>(null);
+
+  /**
+   * Define colors for stacked ..
+   */
+  widgetColorPalette: WidgetColorPalette;
+
+  constructor(
+    public matDialog?: MatDialog
+  ){}
 
   /**
    * Emit filter criteria change
    */
   abstract emitEvtFilterCriteria(event: any): void;
+
+  /**
+   * Open the color palette for all widget dynamic
+   */
+  openColorPalette(req: WidgetColorPalette) {
+    const dialogRef = this.matDialog.open(WidgetColorPaletteComponent, {
+      height: '626px',
+      width: '800px',
+      disableClose: true,
+      autoFocus: false,
+      data:{
+        widgetColorPalette: req
+      }
+    });
+    if(dialogRef) {
+      dialogRef.afterClosed().subscribe(result => {
+        this.afterColorDefined.next(result);
+      });
+    }
+  }
 
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, EventEmitter, Output, OnChanges, OnDestroy } from '@angular/core';
-import { MetadataModeleResponse } from '@models/schema/schemadetailstable';
+import { MetadataModeleResponse, MetadataModel } from '@models/schema/schemadetailstable';
 import { Observable, of, Subscription } from 'rxjs';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { FormControl } from '@angular/forms';
@@ -8,6 +8,7 @@ export interface Metadata {
     fieldId: string;
     fieldDescri: string;
     isGroup: boolean;
+    fldCtrl?: MetadataModel;
     childs: Metadata[];
 }
 @Component({
@@ -72,12 +73,22 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
       fieldId:'APPDATE',
       fieldDescri:'Update Date',
       childs:[],
-      isGroup:false
+      isGroup:false,
+      fldCtrl:{
+        picklist: '0',
+        dataType: 'DTMS',
+        fieldId:'APPDATE',
+      } as MetadataModel
     },{
       fieldId:'STAGE',
       fieldDescri:'Creation Date',
       childs:[],
-      isGroup:false
+      isGroup:false,
+      fldCtrl:{
+        picklist: '0',
+        dataType: 'DTMS',
+        fieldId:'STAGE',
+      } as MetadataModel
     }
   ];
 
@@ -109,7 +120,7 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
         const groups = Array.from(this.fields.filter(fil =>fil.isGroup));
         const matchedData: Metadata[] = [];
         groups.forEach(grp=>{
-          const changeAble = {isGroup:grp.isGroup, fieldId: grp.fieldId,childs: grp.childs,fieldDescri: grp.fieldDescri};
+          const changeAble = {isGroup:grp.isGroup, fieldId: grp.fieldId,childs: grp.childs,fieldDescri: grp.fieldDescri, fldCtrl: grp.fldCtrl};
           const chld: Metadata[] = [];
           changeAble.childs.forEach(child=>{
               if(child.fieldDescri.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !==-1) {
@@ -174,6 +185,7 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
           fieldId: res.fieldId,
           fieldDescri: res.fieldDescri,
           isGroup: false,
+          fldCtrl: res,
           childs: []
         });
       });
@@ -196,6 +208,7 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
                 fieldId: fldCtrl.fieldId,
                 fieldDescri: fldCtrl.fieldDescri,
                 isGroup: false,
+                fldCtrl,
                 childs:[]
               });
           });
@@ -220,6 +233,7 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
                 fieldId: fldCtrl.fieldId,
                 fieldDescri: fldCtrl.fieldDescri,
                 isGroup: false,
+                fldCtrl,
                 childs:[]
               });
           });

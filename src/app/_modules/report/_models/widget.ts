@@ -1,4 +1,5 @@
 import { MetadataModel } from 'src/app/_models/schema/schemadetailstable';
+import * as moment from 'moment';
 
 export class Widget {
     x: number;
@@ -23,6 +24,24 @@ export class Widget {
     chartProperties: ChartProperties;
     defaultFilters: Criteria[];
 
+    fieldCtrl?: MetadataModel;
+    groupByIdCtrl?: MetadataModel;
+    dateFilterCtrl?: DateFilterCtrl;
+}
+
+export interface DateFilterCtrl {
+    dateSelectedFor: DateSelectionType;
+    startDate?: string;
+    endDate?: string;
+}
+
+export enum DateSelectionType {
+    TODAY = 'TODAY',
+    DAY_7 = 'DAY_7',
+    DAY_10 = 'DAY_10',
+    DAY_20 = 'DAY_20',
+    DAY_30 = 'DAY_30',
+    CUSTOM = 'CUSTOM'
 }
 
 export enum WidgetType {
@@ -137,10 +156,6 @@ export enum PositionType {
 }
 
 export enum AlignPosition {
-    LEFT = 'left',
-    RIGHT = 'right',
-    TOP = 'top',
-    BOTTOM = 'bottom',
     CENTER = 'center',
     END = 'end',
     START = 'start'
@@ -174,7 +189,8 @@ export class BarChartWidget {
     scaleTo: number;
     stepSize: number;
     dataSetSize: number;
-
+    blankValueAlias : string;
+    widgetColorPalette: WidgetColorPalette;
 
 
 }
@@ -200,6 +216,8 @@ export class StackBarChartWidget{
     scaleTo: number;
     stepSize: number;
     dataSetSize: number;
+    blankValueAlias : string;
+    widgetColorPalette: WidgetColorPalette;
 }
 
 export class PieChartWidget {
@@ -213,6 +231,7 @@ export class PieChartWidget {
     datalabelsPosition: AlignPosition;
     anchorPosition: AnchorAlignPosition;
     metaData: MetadataModel;
+    blankValueAlias : string;
 }
 
 export class Count{
@@ -348,6 +367,7 @@ export class ChartProperties {
     scaleTo: number;
     stepSize: number;
     dataSetSize: number;
+    blankValueAlias : string;
 }
 
 export class ReportDashboardPermission {
@@ -419,4 +439,69 @@ export class FieldCodeText{
     c : string;
     t : string;
     p : string;
+}
+export interface AssginedColor {
+    code: string;
+    text: string;
+    colorCode: string;
+}
+
+export class WidgetColorPalette {
+    reportId: string;
+    widgetId: string;
+    widgetDesc: string;
+    colorPalettes: AssginedColor[];
+}
+
+export class DateFilterQuickSelect {
+    text: string;
+    code: string;
+    isSelected: boolean;
+}
+
+export class DateBulder {
+
+    /**
+     * Help to return range of date
+     * string[0] start date
+     * string[1] end date
+     * @param dateSelectedFor param for take date selected type
+     */
+    public build(dateSelectedFor: DateSelectionType): string[]{
+        let startDate  = '';
+        let endDate = '';
+        switch (dateSelectedFor) {
+            case DateSelectionType.TODAY:
+                startDate =  String(moment().startOf('day').toDate().getTime());
+                endDate = String(moment().endOf('day').toDate().getTime());
+                break;
+
+            case DateSelectionType.DAY_7:
+                startDate =  String(moment().add(-7,'days').startOf('day').toDate().getTime());
+                endDate = String(moment().endOf('day').toDate().getTime());
+                break;
+
+            case DateSelectionType.DAY_10:
+                startDate =  String(moment().add(-10,'days').startOf('day').toDate().getTime());
+                endDate = String(moment().endOf('day').toDate().getTime());
+                break;
+
+            case DateSelectionType.DAY_20:
+                startDate =  String(moment().add(-20,'days').startOf('day').toDate().getTime());
+                endDate = String(moment().endOf('day').toDate().getTime());
+                break;
+
+            case DateSelectionType.DAY_30:
+                startDate =  String(moment().add(-30,'days').startOf('day').toDate().getTime());
+                endDate = String(moment().endOf('day').toDate().getTime());
+                break;
+
+            default:
+                break;
+        }
+        if(startDate && endDate) {
+            return [startDate, endDate];
+        }
+        return null;
+    }
 }

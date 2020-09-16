@@ -97,7 +97,6 @@
 //     expect(component.selStyleWid).toEqual(new Widget(), 'style widget variable should be new object');
 //     expect(component.showProperty).toEqual(false, 'Style property panel is hide');
 //   }));
-
 //   it('ngOnInit(), check all pre require ', async(()=>{
 //     spyOn(reportService,'getReportConfi').withArgs('').and.returnValue(of());
 //     spyOn(schemaService,'getAllObjectType').and.returnValue(of([]));
@@ -105,6 +104,7 @@
 //     const initialFrmGrp = {widgetName: '', width: '', height: '', field: '', aggregrationOp: '', filterType: '', isMultiSelect: false, groupById: '', objectType: '', imageUrl: '', htmlText: '', imagesno: '', imageName: ''};
 //     expect(component.subscriptions.length).toEqual(4, 'Size should be 4');
 //     expect(component.styleCtrlGrp.value).toEqual(initialFrmGrp, 'Initial form control value should be empty');
+
 
 //     expect(schemaService.getAllObjectType).toHaveBeenCalled();
 //   }));
@@ -176,6 +176,7 @@
 //     // mock data
 //     const reportList: ReportList = new ReportList();
 //     reportList.permission = new ReportDashboardPermission();
+
 
 //     spyOn(reportService,'getReportConfi').withArgs('72523857').and.returnValue(of(reportList));
 

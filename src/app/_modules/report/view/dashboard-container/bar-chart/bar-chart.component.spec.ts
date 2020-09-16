@@ -3,22 +3,34 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BarChartComponent } from './bar-chart.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { BarChartWidget, Orientation, OrderWith } from '../../../_models/widget';
+import { BarChartWidget, Orientation, OrderWith, WidgetHeader, WidgetColorPalette } from '../../../_models/widget';
 import { BehaviorSubject, of } from 'rxjs';
 import { MatMenuModule } from '@angular/material/menu';
 import { BaseChartDirective } from 'ng2-charts';
 import { PositionType, AlignPosition, AnchorAlignPosition } from '../../../_models/widget';
 import { WidgetService } from '@services/widgets/widget.service';
 import { MetadataModel } from '@models/schema/schemadetailstable';
+import { MatDialog } from '@angular/material/dialog';
 
 describe('BarChartComponent', () => {
   let component: BarChartComponent;
   let fixture: ComponentFixture<BarChartComponent>;
   let htmlnative: HTMLElement;
+
+  const mockMatDialogOpen = {
+    open: jasmine.createSpy('open')
+  };
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ BarChartComponent ],
-      imports:[AppMaterialModuleForSpec,HttpClientTestingModule,MatMenuModule]
+      imports:[AppMaterialModuleForSpec,HttpClientTestingModule,MatMenuModule],
+      providers:[
+        {
+          provide: MatDialog,
+          useValue:mockMatDialogOpen
+        }
+      ]
     })
     .compileComponents();
   }));
@@ -208,6 +220,34 @@ describe('BarChartComponent', () => {
     component.getBarChartData(653267432, []);
 
     expect(service.getWidgetData).toHaveBeenCalledWith('653267432', []);
+  }));
+
+  it('openColorPalette(), should open color palette dialog', async(()=>{
+    component.widgetId = 72366423;
+    component.reportId = 65631624;
+    component.widgetHeader = {desc: 'Bar Chart'} as WidgetHeader;
+    component.barChartData = [
+      {
+        fieldCode: 'HAWA',
+        backgroundColor: '#f1f1f1',
+        label: 'Hawa material'
+      }
+    ];
+    component.openColorPalette();
+    expect(mockMatDialogOpen.open).toHaveBeenCalled();
+  }));
+
+  it('updateColorBasedOnDefined(), update color based on defination ', async(()=>{
+    const req: WidgetColorPalette = new WidgetColorPalette();
+    req.widgetId = '23467283';
+    req.colorPalettes = [{
+      code: 'HAWA',
+      colorCode: '#f1f1f1',
+      text: 'Hawa material'
+    }];
+
+    component.updateColorBasedOnDefined(req);
+    expect(component.widgetColorPalette.widgetId).toEqual(req.widgetId);
   }));
 
 });

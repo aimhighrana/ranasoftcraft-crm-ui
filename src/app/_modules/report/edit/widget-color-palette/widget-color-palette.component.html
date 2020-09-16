@@ -1,0 +1,36 @@
+<div  class="root">
+  <mat-toolbar>
+    <mat-toolbar-row>
+    <span>Color Palette `{{ widgetColorPalette ? widgetColorPalette.widgetDesc : 'Unknown'}}`</span>
+    <span class="f-spacer"></span>
+    <button mat-icon-button (click)="close(true)">
+    <mat-icon>close</mat-icon>
+    </button>
+    </mat-toolbar-row>
+  </mat-toolbar>
+
+  <mat-card class="mat-elevation-z0 f-col">
+    <div *ngIf="widgetColorPalette" class="color-body">
+      <div class="f-row color-style" *ngFor="let color of widgetColorPalette.colorPalettes;let idx = index">
+          <span class="colorDef">
+               {{ color.text }}   
+          </span>
+          <div class="f-spacer"></div>
+          <span class="colorPalette" matTooltip="Choose color">
+            <input matInput type="color" value="{{ color.colorCode }}" (change)="updateColorCode(color, $event.target.value, idx)">
+          </span>
+      </div>
+  
+    </div>
+    <div class="row-spacer"></div>
+    <div class="f-row">
+      <div class="f-spacer"></div>
+      <button mat-flat-button (click)="updateColorPalette()" color="primary">Update</button>
+    </div>
+
+  </mat-card>
+</div>
+
+
+
+

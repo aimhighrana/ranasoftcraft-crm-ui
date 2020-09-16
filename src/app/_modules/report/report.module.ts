@@ -23,6 +23,8 @@ import { ReportCollaboratorComponent } from './permissions/report-collaborator/r
 import { CollaboratorComponent } from './permissions/collaborator/collaborator.component';
 import { SummaryLayoutComponent } from './view/summary-layout/summary-layout.component';
 import { SummaryTabsComponent } from './view/summary-layout/summary-tabs/summary-tabs.component';
+import { WidgetColorPaletteComponent } from './edit/widget-color-palette/widget-color-palette.component';
+import { ReportListDownloadModelComponent } from './view/dashboard-container/reporting-list/report-list-download-model/report-list-download-model.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +48,8 @@ import { SummaryTabsComponent } from './view/summary-layout/summary-tabs/summary
     CollaboratorComponent,
     SummaryLayoutComponent,
     SummaryTabsComponent,
+    WidgetColorPaletteComponent,
+    ReportListDownloadModelComponent,
   ],
   imports: [
     CommonModule,

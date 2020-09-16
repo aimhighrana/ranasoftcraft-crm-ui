@@ -13,6 +13,7 @@ export class ReportDashboardPermission {
     isEditable: boolean;
     isViewable: boolean;
     isDeleteable: boolean;
+    isAdmin: boolean;
     permissionType: PermissionType;
     description: string;
     userMdoModel: UserMdoModel;

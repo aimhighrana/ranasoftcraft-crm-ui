@@ -17,7 +17,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   timeDateFormat: TimeDisplayFormat;
   dataSet: ChartDataSets[];
   dataSetlabel: Label[] = [];
-  widgetInfo:BehaviorSubject<TimeSeriesWidget> = new BehaviorSubject<TimeSeriesWidget>(null);
+  widgetInf:BehaviorSubject<TimeSeriesWidget> = new BehaviorSubject<TimeSeriesWidget>(null);
   /**
    * Timeseries chart option config see chart.js for more details
    */
@@ -68,7 +68,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   ngOnInit(): void {
     this.dataSet = this.getDummyData().dataSet;
     this.widgetService.getTimeseriesWidgetInfo(this.widgetId).subscribe(res=>{
-      this.widgetInfo.next(res);
+      this.widgetInf.next(res);
     },error=>console.error(`Error : ${error}`));
   }
 

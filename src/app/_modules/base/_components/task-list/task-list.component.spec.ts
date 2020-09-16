@@ -271,56 +271,82 @@ describe('TaskListComponent', () => {
   });
 
 
-  it('should call performOperationOnViews()', async () => {
-    TestBed.createComponent(TaskListComponent); // this is the trigger of constructor method
+  it('should call paginate()', () => {
+    component.initializeForm();
     fixture.detectChanges();
-    const operationObject = {
-      type: 'create',
-      data: {
-        viewId: '967589022265877187',
-        viewName: 'top 6 only',
-        fieldId: [
-          'datestarted',
-          'duedate',
-          'requestorName',
-          'taskid',
-          'fname',
-          'emailtext'
-        ],
-        fields: [],
-        default: false,
-        active: false
-      }
-    };
+    component.updateFilters(sampleSelectedFilters);
+    fixture.detectChanges();
+    component.getTasks();
+    component.paginate({ previousPageIndex: 0, pageIndex: 1, pageSize: 10, length: 100 });
+    expect(component.dataSource.data.length).toBeGreaterThanOrEqual(0);
+  })
 
-    /**
-     * for Create
-     */
-    const taskListServiceSpy = spyOn(component.taskListService, 'saveTaskListView').and.callThrough();
-    component.performOperationOnViews(operationObject);
-    expect(taskListServiceSpy).toHaveBeenCalledWith(operationObject.data);
-
-    /**
-     * for Update
-     */
-    const updateListServiceSpy = spyOn(component.taskListService, 'updateTaskListView').and.callThrough();
-    operationObject.type = 'update';
-    component.performOperationOnViews(operationObject);
-    expect(updateListServiceSpy).toHaveBeenCalledWith(operationObject.data);
-
-    /**
-     * for Delete
-     */
-    const deleteListServiceSpy = spyOn(component.taskListService, 'deleteTaskListItem').and.callThrough();
-    operationObject.type = 'delete';
-    component.performOperationOnViews(operationObject);
-    expect(deleteListServiceSpy).toHaveBeenCalledWith(operationObject.data.viewId);
-    /**
-     * checking response should not be null, it can be 0 but not null
-     * because initally user may not have any views
-     */
-    expect(component.taskListViews.length).toBeGreaterThanOrEqual(0);
+  it('should call sortData()', () => {
+    component.initializeForm();
+    fixture.detectChanges();
+    component.updateFilters(sampleSelectedFilters);
+    fixture.detectChanges();
+    component.getTasks();
+    fixture.detectChanges();
+    component.sortData({ active: 'datestarted', direction: 'asc' });
+    expect(component.sortableHeaders.length).toBeGreaterThanOrEqual(1);
   });
+
+  // it('should call closeDetailsModal()', () => {
+  //   component.closeDetailsModal();
+  //   expect(component.showTaskDetails).toBe(false);
+  //   expect(component.selectedTaskId).toBe(null);
+
+  // // it('should call performOperationOnViews()', inject([TaskListService], (taskListService: TaskListService) => {
+  // //   TestBed.createComponent(TaskListComponent); // this is the trigger of constructor method
+  // //   fixture.detectChanges();
+  // //   const operationObject = {
+  // //     type: 'create',
+  // //     data: {
+  // //       viewId: '967589022265877187',
+  // //       viewName: 'top 6 only',
+  // //       fieldId: [
+  // //         'datestarted',
+  // //         'duedate',
+  // //         'requestorName',
+  // //         'taskid',
+  // //         'fname',
+  // //         'emailtext'
+  // //       ],
+  // //       fields: [],
+  // //       default: false,
+  // //       active: false
+  // //     }
+  // //   };
+
+  //   /**
+  //    * for Create
+  //    */
+  //   const taskListServiceSpy = spyOn(component.taskListService, 'saveTaskListView').and.callThrough();
+  //   component.performOperationOnViews(operationObject);
+  //   expect(taskListServiceSpy).toHaveBeenCalledWith(operationObject.data);
+
+  //   /**
+  //    * for Update
+  //    */
+  //   const updateListServiceSpy = spyOn(component.taskListService, 'updateTaskListView').and.callThrough();
+  //   operationObject.type = 'update';
+  //   component.performOperationOnViews(operationObject);
+  //   expect(updateListServiceSpy).toHaveBeenCalledWith(operationObject.data);
+
+  //   /**
+  //    * for Delete
+  //    */
+  //   const deleteListServiceSpy = spyOn(component.taskListService, 'deleteTaskListItem').and.callThrough();
+  //   operationObject.type = 'delete';
+  //   component.performOperationOnViews(operationObject);
+  //   expect(deleteListServiceSpy).toHaveBeenCalledWith(operationObject.data.viewId);
+  //   /**
+  //    * checking response should not be null, it can be 0 but not null
+  //    * because initally user may not have any views
+  //    */
+  //   expect(component.taskListViews.length).toBeGreaterThanOrEqual(0);
+  // });
 
   it('should call getDefaultViews()', fakeAsync(() => {
     const taskListServiceObj = fixture.debugElement.injector.get(TaskListService);

@@ -3,7 +3,7 @@
         <h1>{{crumbs.heading}}</h1>
     </mat-toolbar-row>
     <mat-toolbar-row class="mat-caption">
-        <mat-icon color="primary" routerLink="/home">home</mat-icon>
+        <mat-icon color="primary" (click)="homeRoutingUrl()">home</mat-icon>
         <ng-template [ngIf]="crumbs && crumbs.links">
             <ng-template ngFor let-link [ngForOf]="crumbs.links">
                 <mat-icon>keyboard_arrow_right</mat-icon>

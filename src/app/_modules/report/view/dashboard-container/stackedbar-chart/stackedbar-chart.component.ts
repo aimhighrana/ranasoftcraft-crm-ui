@@ -1,12 +1,13 @@
-import { Component, OnInit, OnChanges, OnDestroy, ViewChild, LOCALE_ID, Inject } from '@angular/core';
+import { Component, OnInit, OnChanges, OnDestroy, ViewChild, LOCALE_ID, Inject, SimpleChanges } from '@angular/core';
 import { ChartOptions, ChartLegendLabelItem } from 'chart.js';
 import { Label, BaseChartDirective } from 'ng2-charts';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
 import { BehaviorSubject } from 'rxjs';
-import { StackBarChartWidget, Criteria, WidgetHeader, BlockType, ConditionOperator, ChartLegend, Orientation, OrderWith } from '../../../_models/widget';
+import { StackBarChartWidget, Criteria, WidgetHeader, BlockType, ConditionOperator, ChartLegend, Orientation, OrderWith, WidgetColorPalette } from '../../../_models/widget';
 import { ReportService } from '../../../_service/report.service';
 import   ChartDataLables from 'chartjs-plugin-datalabels';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'pros-stackedbar-chart',
@@ -62,20 +63,26 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     }
   };
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
+
+
   constructor(
     private widgetService : WidgetService,
     private reportService: ReportService,
-    @Inject(LOCALE_ID) public locale: string
+    @Inject(LOCALE_ID) public locale: string,
+    public matDialog: MatDialog
   ) {
-    super();
+    super(matDialog);
   }
 
   ngOnDestroy(): void {
     this.stackBarWidget.complete();
     this.stackBarWidget.unsubscribe();
   }
-  ngOnChanges():void{
+  ngOnChanges(changes: SimpleChanges):void{
     this.stackBarWidget.next(this.stackBarWidget.getValue());
+    if(changes && changes.boxSize && changes.boxSize.previousValue !== changes.boxSize.currentValue) {
+      this.boxSize = changes.boxSize.currentValue;
+    }
   }
 
   ngOnInit(): void {
@@ -88,22 +95,49 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         this.stachbarAxis = [];
         this.barChartLabels = new Array();
         this.listxAxis2 = new Array();
+        this.labels = [];
+        this.codeTextaxis1 = {};
+        this.codeTextaxis2 = {};
         this.barChartData = [{ data: [0,0,0,0,0], label: 'Loading..', stack: 'a',  barThickness: 'flex' }];
         this.getstackbarChartData(this.widgetId,this.filterCriteria);
-        this.stackBardata.subscribe(data=>{
-          if(data && this.barChartData.length=== 0){
-            if(Object.keys(this.codeTextaxis1).length === 0 && (this.stackBarWidget.getValue().groupByIdMetaData.picklist === '1' || this.stackBarWidget.getValue().groupByIdMetaData.picklist === '37' || this.stackBarWidget.getValue().groupByIdMetaData.picklist === '30')){
-              this.getFieldsMetadaDescaxis1(this.stackBarWidget.getValue().groupById);
-            }else{
-              this.updateLabelsaxis1();
-            }
-            if(Object.keys(this.codeTextaxis2).length === 0 && (this.stackBarWidget.getValue().fieldIdMetaData.picklist === '1' || this.stackBarWidget.getValue().fieldIdMetaData.picklist === '37' || this.stackBarWidget.getValue().fieldIdMetaData.picklist === '30')){
-              this.getFieldsMetadaDescaxis2(this.stackBarWidget.getValue().fieldId);
-            }else{
-              this.updateLabelsaxis2();
-            }
+      }
+    });
+
+    this.stackBardata.subscribe(data=>{
+      if(data && this.barChartData.length=== 0){
+        if(Object.keys(this.codeTextaxis1).length === 0 && (this.stackBarWidget.getValue().groupByIdMetaData.picklist === '1' || this.stackBarWidget.getValue().groupByIdMetaData.picklist === '37' || this.stackBarWidget.getValue().groupByIdMetaData.picklist === '30')){
+          this.getFieldsMetadaDescaxis1(this.stackBarWidget.getValue().groupById);
+        } else if (Object.keys(this.codeTextaxis1).length === 0 && this.stackBarWidget.getValue().groupByIdMetaData.picklist === '0') {
+          this.getFieldsMetadaDescaxis1ForNonFld(this.stackBarWidget.getValue().groupById);
         }
-        });
+        else{
+          this.updateLabelsaxis1();
+        }
+
+        if(Object.keys(this.codeTextaxis2).length === 0 && (this.stackBarWidget.getValue().fieldIdMetaData.picklist === '1' || this.stackBarWidget.getValue().fieldIdMetaData.picklist === '37' || this.stackBarWidget.getValue().fieldIdMetaData.picklist === '30')){
+          this.getFieldsMetadaDescaxis2(this.stackBarWidget.getValue().fieldId);
+        }else if(Object.keys(this.codeTextaxis2).length === 0 && this.stackBarWidget.getValue().fieldIdMetaData.picklist === '0') {
+          this.getFieldsMetadaDescaxis2Nondef(this.stackBarWidget.getValue().fieldId);
+        } else{
+          this.updateLabelsaxis2();
+        }
+    }else{
+      this.updateLabelsaxis1();
+    }
+
+    // update chart after data sets change
+    if(this.chart) {
+      try{
+        this.chart.update();
+      }catch(ex){console.error(`Error : ${ex}`)}
+    }
+
+    });
+
+    // after color defined update on widget
+    this.afterColorDefined.subscribe(res=>{
+      if(res) {
+        this.updateColorBasedOnDefined(res);
       }
     });
 
@@ -118,6 +152,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
   public getStackChartMetadata():void{
     this.widgetService.getStackChartMetadata(this.widgetId).subscribe(returnData=>{
       if(returnData){
+        this.widgetColorPalette = returnData.widgetColorPalette;
           this.stackBarWidget.next(returnData);
          this.getBarConfigurationData();
          }
@@ -148,7 +183,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         ChartDataLables,
          datalabels: {
            align:  this.stackBarWidget.getValue().datalabelsPosition,
-           anchor: this.stackBarWidget.getValue().anchorPosition,
+           anchor: this.stackBarWidget.getValue().datalabelsPosition,
            display:'auto'
          }
        }
@@ -161,7 +196,8 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     this.widgetService.getWidgetData(String(widgetId),criteria).subscribe(returnData=>{
       this.arrayBuckets =  returnData.aggregations['composite#STACKED_BAR_CHART'].buckets;
        this.dataObj = new Object();
-
+       this.labels = [];
+       this.barChartLabels = new Array();
        // transform data before go for render
        this.arrayBuckets =  this.transformDataSets(this.arrayBuckets);
       this.arrayBuckets.forEach(singleBucket=>{
@@ -175,23 +211,40 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         if(this.listxAxis2.indexOf(singleBucket.key[this.stackBarWidget.getValue().fieldId]) === -1){
           const mtl = singleBucket.key[this.stackBarWidget.getValue().fieldId];
           const arr:any[]=[0];
-          this.dataObj[mtl]=arr;
+          this.dataObj[mtl === ''?this.stackBarWidget.value.blankValueAlias!==undefined?this.stackBarWidget.value.blankValueAlias:mtl:mtl]=arr;
           this.listxAxis2.push(mtl);
           this.stackbarLegend.push({code: mtl,legendIndex:this.stackbarLegend.length,text:mtl})
         }
       });
 
-      this.arrayBuckets.forEach(singleBucket=>{
-        const xval1 = singleBucket.key[this.stackBarWidget.getValue().groupById];
-        const xval2 = singleBucket.key[this.stackBarWidget.getValue().fieldId];
-          const arr=  this.dataObj[xval2];
-          const xpos1 = this.barChartLabels.indexOf(xval1);
-          const count = singleBucket.doc_count;
-          arr[xpos1] = count;
-          this.dataObj[Number(xval2)] = arr;
+       // maintaining alias here
+
+       this.stackbarLegend.forEach(legend=>{
+        if(legend.code === ''){
+          legend.code = this.stackBarWidget.value.blankValueAlias !== undefined?this.stackBarWidget.value.blankValueAlias:'';
+        }
       });
 
-      this.barChartData.splice(0,1);
+      for(let i=0;i<this.listxAxis2.length;i++){
+        if(this.listxAxis2[i] === ''){
+          this.listxAxis2[i] = this.stackBarWidget.value.blankValueAlias !== undefined?this.stackBarWidget.value.blankValueAlias:'';
+      }
+      }
+
+      if(Object.keys(this.dataObj).length!==0){
+        this.arrayBuckets.forEach(singleBucket=>{
+          const xval1 = singleBucket.key[this.stackBarWidget.getValue().groupById];
+          let xval2 = singleBucket.key[this.stackBarWidget.getValue().fieldId];
+          xval2 = xval2 === ''?this.stackBarWidget.value.blankValueAlias !== undefined?this.stackBarWidget.value.blankValueAlias:xval2:xval2;
+            const arr=  this.dataObj[xval2] ? this.dataObj[xval2] : {};
+            const xpos1 = this.barChartLabels.indexOf(xval1);
+            const count = singleBucket.doc_count;
+            arr[xpos1] = count;
+            this.dataObj[xval2] = arr;
+        });
+
+        this.barChartData.splice(0,1);
+      }
       this.stackBardata.next(returnData);
     });
   }
@@ -210,9 +263,9 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
    * legendItem
    */
   legendClick(legendItem: ChartLegendLabelItem) {
-    const clickedLegend =  this.stackbarLegend[legendItem.datasetIndex] ? this.stackbarLegend[legendItem.datasetIndex].code : '';
-    if(clickedLegend === '') {
-      return false;
+    let clickedLegend =  this.stackbarLegend[legendItem.datasetIndex] ? this.stackbarLegend[legendItem.datasetIndex].code : '';
+    if(clickedLegend === this.stackBarWidget.value.blankValueAlias){
+      clickedLegend ='';
     }
     const fieldId = this.stackBarWidget.getValue().fieldId;
     let appliedFilters = this.filterCriteria.filter(fill => fill.fieldId === fieldId);
@@ -252,6 +305,22 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     });
   }
 
+  getFieldsMetadaDescaxis1ForNonFld(fieldId: string) {
+    let  locale = this.locale!==''?this.locale.split('-')[0]:'EN';
+    locale = locale.toUpperCase();
+    this.arrayBuckets.forEach(bucket=>{
+      const key = bucket.key[fieldId];
+      const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
+      const ddv = hits._source.hdvs[fieldId] ?( hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vls[locale].valueTxt : null) : null;
+      if(ddv) {
+        this.codeTextaxis1[key] = ddv;
+      } else {
+        this.codeTextaxis1[key] = hits._source.hdvs[fieldId].vc;
+      }
+    });
+    this.updateLabelsaxis1();
+  }
+
   getFieldsMetadaDescaxis1(fieldId: string) {
     let  locale = this.locale!==''?this.locale.split('-')[0]:'EN';
     locale = locale.toUpperCase();
@@ -277,6 +346,23 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
       this.barChartLabels[i] = this.codeTextaxis1[lbl] ? this.codeTextaxis1[lbl] : lbl;
     }
 
+  }
+
+
+  getFieldsMetadaDescaxis2Nondef(fieldId: string) {
+    let  locale = this.locale!==''?this.locale.split('-')[0]:'EN';
+    locale = locale.toUpperCase();
+    this.arrayBuckets.forEach(bucket=>{
+      const key = bucket.key[fieldId];
+      const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
+      const ddv = hits._source.hdvs[fieldId] ?( hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vls[locale].valueTxt : null) : null;
+      if(ddv) {
+        this.codeTextaxis2[key] = ddv;
+      } else {
+        this.codeTextaxis2[key] = hits._source.hdvs[fieldId].vc;
+      }
+    });
+    this.updateLabelsaxis2();
   }
 
 
@@ -310,7 +396,8 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         }
         singleobj.fieldCode = singleLis;
         singleobj.stack='a';
-        singleobj.backgroundColor=this.getRandomColor();
+        // singleobj.backgroundColor=this.getRandomColor();
+        singleobj.backgroundColor=this.getUpdatedColorCode(singleobj.fieldCode);
         singleobj.borderColor=this.getRandomColor();
 
 
@@ -509,5 +596,46 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
 
   }
 
+  /**
+   * Open color palette ..
+   */
+  openColorPalette() {
+    const req: WidgetColorPalette = new WidgetColorPalette();
+    req.widgetId = String(this.widgetId);
+    req.reportId = String(this.reportId);
+    req.widgetDesc = this.widgetHeader.desc;
+    req.colorPalettes = [];
+    this.barChartData.forEach(row=>{
+      req.colorPalettes.push({code:row.fieldCode,colorCode:row.backgroundColor,text:row.label});
+    });
+    console.log(req);
+    super.openColorPalette(req);
+  }
+
+  /**
+   * Update stacked color based on color definations
+   * @param res updated color codes
+   */
+  updateColorBasedOnDefined(res: WidgetColorPalette) {
+    this.widgetColorPalette = res;
+    console.log(res);
+    this.stackBarWidget.next(this.stackBarWidget.getValue());
+  }
+
+  /**
+   * Update color on widget based on defined
+   * If not defined the pick random color
+   * @param code resposne code
+   */
+  getUpdatedColorCode(code: string): string {
+    if(this.widgetColorPalette && this.widgetColorPalette.colorPalettes) {
+      const res = this.widgetColorPalette.colorPalettes.filter(fil => fil.code === code)[0];
+      if(res) {
+        return res.colorCode;
+      }
+
+    }
+    return this.getRandomColor();
+  }
 
 }

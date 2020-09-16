@@ -3,7 +3,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { EndpointService } from '../endpoint.service';
 import { HttpClient } from '@angular/common/http';
 import * as XLSX from 'xlsx';
-import { Criteria, BarChartWidget, WidgetHeader, TimeSeriesWidget, WidgetImageModel, WidgetHtmlEditor, ReportingWidget, LayoutTabResponse, MDORECORDESV3 } from 'src/app/_modules/report/_models/widget';
+import { Criteria, BarChartWidget, WidgetHeader, TimeSeriesWidget, WidgetImageModel, WidgetHtmlEditor, ReportingWidget, LayoutTabResponse, MDORECORDESV3,WidgetColorPalette } from 'src/app/_modules/report/_models/widget';
 
 @Injectable({
   providedIn: 'root'
@@ -21,9 +21,10 @@ export class WidgetService {
    * Call this method for widget data
    * Provide widgetId , and filterCriteria
    */
-  public getWidgetData(widgetId: string, filterCriteria: Criteria[]): Observable<any> {
+  public getWidgetData(widgetId: string, filterCriteria: Criteria[],searchString?:string): Observable<any> {
+    searchString = searchString===undefined?'':searchString;
     filterCriteria = filterCriteria ? filterCriteria : [];
-    return this.http.post<any>(this.endpointService.widgetDataUrl(), filterCriteria, { params: { widgetId } });
+    return this.http.post<any>(this.endpointService.widgetDataUrl(), filterCriteria, { params: { widgetId,searchString  } });
   }
 
   public getListdata(size,from,widgetId: string, filterCriteria: Criteria[], sortMapStr: any):Observable<any>{
@@ -121,4 +122,12 @@ export class WidgetService {
   getAttachmentData(snos : object):Observable<any>{
     return this.http.post<any>(this.endpointService.getAttachmentData(),snos);
   }
+  /**
+   * Call http for save or define widget color palette
+   * @param req define color palette request for widget
+   */
+  public defineWidgetColorPalette(req: WidgetColorPalette): Observable<WidgetColorPalette> {
+    return this.http.post<WidgetColorPalette>(this.endpointService.defineColorPaletteForWidget(), req);
+  }
+
 }

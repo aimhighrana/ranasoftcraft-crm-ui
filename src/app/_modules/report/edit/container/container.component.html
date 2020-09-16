@@ -173,15 +173,65 @@
 
                                 <!-- FOR FILTERs WIDGET-->
                                 <ng-template [ngIf]="selStyleWid && selStyleWid.widgetType === 'FILTER' ">
-                                    <mat-form-field appearance="outline">
-                                        <mat-label>Filter Type</mat-label>
-                                        <mat-select formControlName="filterType">
-                                            <mat-option value="DROPDOWN_VALS">Dropdown value</mat-option>
-                                            <mat-option value="HORIZONTAL_VALS">Horizontal value</mat-option>
-                                            <mat-option value="VERTICAL_VALS">Vertical value</mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
-                                    <mat-checkbox color="primary" formControlName="isMultiSelect">Is Multiselect</mat-checkbox>
+
+                                    <!-- if date type field then , special config -->
+                                    <ng-template 
+                                    [ngIf]="selStyleWid.fieldCtrl && selStyleWid.fieldCtrl.picklist === '0' && (selStyleWid.fieldCtrl.dataType === 'DTMS' || selStyleWid.fieldCtrl.dataType === 'DATS')"
+                                    [ngIfElse]="otherCtrl">
+                                         
+                                        <mat-form-field appearance="outline">
+                                            <mat-label>Select date</mat-label>
+                                            <mat-select formControlName="dateSelectionType">
+                                                <mat-option>
+                                                    No Date 
+                                                </mat-option>
+                                                <mat-option value="TODAY">
+                                                    Today 
+                                                </mat-option>
+                                                <mat-option value="DAY_7">
+                                                    7 Days
+                                                </mat-option>
+                                                <mat-option value="DAY_10">
+                                                    10 Days
+                                                </mat-option>
+                                                <mat-option value="DAY_20">
+                                                    20 Days
+                                                </mat-option>
+                                                <mat-option value="DAY_30">
+                                                    30 Days
+                                                </mat-option>
+                                                <mat-option value="CUSTOM">Custom Date</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+
+                                        <!-- when user choose custom date then start and end date should appear -->
+                                        <ng-template [ngIf]="styleCtrlGrp && styleCtrlGrp.get('dateSelectionType').value === 'CUSTOM'">
+                                            <mat-form-field appearance="outline">
+                                                <mat-label>Choose start date</mat-label>
+                                                <input matInput matInput [matDatepicker]="startDate" disabled formControlName="startDate">
+                                                <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
+                                                <mat-datepicker #startDate disabled="false"></mat-datepicker>
+                                            </mat-form-field>
+    
+                                            <mat-form-field appearance="outline">
+                                                <mat-label>Choose end date</mat-label>
+                                                <input matInput matInput [matDatepicker]="endDate" disabled formControlName="endDate">
+                                                <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
+                                                <mat-datepicker #endDate disabled="false"></mat-datepicker>
+                                            </mat-form-field>
+                                        </ng-template>
+                                    </ng-template>
+                                    <ng-template #otherCtrl>
+                                        <mat-form-field appearance="outline">
+                                            <mat-label>Filter Type</mat-label>
+                                            <mat-select formControlName="filterType">
+                                                <mat-option value="DROPDOWN_VALS">Dropdown value</mat-option>
+                                                <mat-option value="HORIZONTAL_VALS">Horizontal value</mat-option>
+                                                <mat-option value="VERTICAL_VALS">Vertical value</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <mat-checkbox color="primary" formControlName="isMultiSelect">Is Multiselect</mat-checkbox>
+                                    </ng-template>
                                 </ng-template>
                                 
                                 <!-- FOR TABLE LIST CHOOSE COLUMNS WIDGET-->
@@ -327,6 +377,10 @@
                                     </mat-select>
                                 </mat-form-field>
                                 
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Default value alias</mat-label>
+                                    <input matInput formControlName="blankValueAlias">
+                                </mat-form-field>
                                 
                             </div>
                         </mat-expansion-panel>
@@ -347,7 +401,7 @@
                                             <pros-metadatafield-control
                                                 [moduleId] = "selStyleWid && selStyleWid.objectType"
                                                 lebel = "Field "
-                                                [selectedFldId] = "selStyleWid && selStyleWid.defaultFilters && selStyleWid.defaultFilters[i].conditionFieldId"
+                                                [selectedFldId] = "selStyleWid && selStyleWid.defaultFilters && (selStyleWid.defaultFilters[i]).conditionFieldId"
                                                 (selectionChange) = 'onDefaultFilterChange($event,i)' class="field-divider">
                                             </pros-metadatafield-control>
 

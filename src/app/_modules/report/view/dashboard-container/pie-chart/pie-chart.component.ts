@@ -1,12 +1,13 @@
-import { Component, OnInit, OnChanges, ViewChild, LOCALE_ID, Inject } from '@angular/core';
+import { Component, OnInit, OnChanges, ViewChild, LOCALE_ID, Inject, SimpleChanges } from '@angular/core';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
 import { BehaviorSubject } from 'rxjs';
-import { PieChartWidget, WidgetHeader, ChartLegend, Criteria, BlockType, ConditionOperator } from '../../../_models/widget';
+import { PieChartWidget, WidgetHeader, ChartLegend, Criteria, BlockType, ConditionOperator, WidgetColorPalette } from '../../../_models/widget';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { ReportService } from '../../../_service/report.service';
 import { ChartOptions, ChartTooltipItem, ChartData, ChartLegendLabelItem } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import   ChartDataLables from 'chartjs-plugin-datalabels';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'pros-pie-chart',
@@ -23,7 +24,6 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
   dataSet: string[] = [];
   orientation = 'pie';
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
-  randomColor = [];
 
   public pieChartOptions: ChartOptions = {
     responsive: true,
@@ -65,7 +65,7 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
 
   public pieChartColors: Array<any> = [
     {
-      backgroundColor: this.randomColor,
+      backgroundColor: [],
 
     }
   ];
@@ -81,15 +81,19 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
   constructor(
     private widgetService: WidgetService,
     private reportService: ReportService,
-    @Inject(LOCALE_ID) public locale: string
+    @Inject(LOCALE_ID) public locale: string,
+    public matDialog: MatDialog
   ) {
-    super();
+    super(matDialog);
   }
 
-  ngOnChanges(): void {
+  ngOnChanges(changes: SimpleChanges): void {
     this.lablels = [];
     this.chartLegend = [];
     this.pieWidget.next(this.pieWidget.getValue());
+    if(changes && changes.boxSize && changes.boxSize.previousValue !== changes.boxSize.currentValue) {
+      this.boxSize = changes.boxSize.currentValue;
+    }
   }
 
   ngOnInit(): void {
@@ -101,7 +105,12 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
       }
     });
 
-    this.getColor();
+    // after color defined update on widget
+    this.afterColorDefined.subscribe(res=>{
+      if(res) {
+        this.updateColorBasedOnDefined(res);
+      }
+    });
   }
 
   public getHeaderMetaData(): void {
@@ -113,6 +122,7 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
   public getPieChartMetadata(): void {
     // for time being this is getBarChartMetadata used to fetching data from API
     this.widgetService.getBarChartMetadata(this.widgetId).subscribe(returndata => {
+      this.widgetColorPalette = returndata.widgetColorPalette;
       this.pieWidget.next(returndata);
       this.getPieConfigurationData();
     }, error => {
@@ -139,7 +149,7 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
         ChartDataLables,
         datalabels: {
           align:  this.pieWidget.getValue().datalabelsPosition,
-          anchor: this.pieWidget.getValue().anchorPosition,
+          anchor: this.pieWidget.getValue().datalabelsPosition,
           display:'auto'
         }
       }
@@ -154,12 +164,19 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
       const arrayBuckets = returndata.aggregations['sterms#BAR_CHART'].buckets;
       this.dataSet = [];
       arrayBuckets.forEach(bucket => {
-        this.lablels.push(bucket.key);
+        const key = bucket.key === ''?this.pieWidget.value.blankValueAlias!==undefined?this.pieWidget.value.blankValueAlias:'':bucket.key;
+        this.lablels.push(key);
         this.dataSet.push(bucket.doc_count);
       });
       if(this.pieWidget.getValue().metaData && (this.pieWidget.getValue().metaData.picklist === '1' || this.pieWidget.getValue().metaData.picklist === '37' || this.pieWidget.getValue().metaData.picklist === '30')) {
         if (this.chartLegend.length === 0) {
           this.getFieldsMetadaDesc(arrayBuckets);
+        } else {
+          this.lablels = this.chartLegend.map(map => map.text);
+        }
+      }else {
+        if (this.chartLegend.length === 0) {
+          this.getFieldsDesc(arrayBuckets);
         } else {
           this.lablels = this.chartLegend.map(map => map.text);
         }
@@ -169,7 +186,51 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
         label: this.widgetHeader.widgetName,
         data: this.dataSet
       }];
+      this.getColor();
+
+      // update chart after data sets change
+      if(this.chart) {
+        this.chart.update();
+      }
     });
+  }
+
+  /**
+   * Update label based on configuration
+   * @param buckets update lable
+   */
+  getFieldsDesc(buckets: any[]) {
+    const fldid = this.pieWidget.getValue().fieldId;
+    let  locale = this.locale!==''?this.locale.split('-')[0]:'EN';
+    locale = locale.toUpperCase();
+    const finalVal = {} as any;
+    buckets.forEach(bucket=>{
+      const key = bucket.key;
+      const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
+      const ddv = hits._source.hdvs[fldid] ?( hits._source.hdvs[fldid] ? hits._source.hdvs[fldid].vls[locale].valueTxt : null) : null;
+      if(ddv) {
+        finalVal[key] = ddv;
+      } else {
+        finalVal[key] = hits._source.hdvs[fldid].vc;
+      }
+    });
+
+    // update lablels
+    this.lablels.forEach(cod => {
+      let chartLegend: ChartLegend;
+      if(cod) {
+        const hasData = finalVal[cod];
+        if (hasData) {
+          chartLegend = { text: hasData, code: cod, legendIndex: this.chartLegend.length };
+        } else {
+          chartLegend = { text: cod, code: cod, legendIndex: this.chartLegend.length };
+        }
+      } else {
+         chartLegend = { text: cod, code: cod, legendIndex: this.chartLegend.length };
+      }
+      this.chartLegend.push(chartLegend);
+    });
+    this.lablels = this.chartLegend.map(map => map.text);
   }
 
   /**
@@ -214,9 +275,12 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
   }
 
   legendClick(legendItem: ChartLegendLabelItem) {
-    const clickedLegend =  this.chartLegend[legendItem.index] ? this.chartLegend[legendItem.index].code : this.lablels[legendItem.index];
+    let clickedLegend =  this.chartLegend[legendItem.index] ? this.chartLegend[legendItem.index].code : this.lablels[legendItem.index];
     if(clickedLegend === undefined) {
       return false;
+    }
+    if(clickedLegend === this.pieWidget.value.blankValueAlias){
+      clickedLegend = '';
     }
     const fieldId = this.pieWidget.getValue().fieldId;
     let appliedFilters = this.filterCriteria.filter(fill => fill.fieldId === fieldId);
@@ -286,8 +350,16 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
 
 
   public getColor() : void {
-    this.pieChartData[0].data.forEach(element => {
-      this.randomColor.push(this.getRandomColor());
+    this.pieChartColors = [];
+    this.pieChartData[0].data.forEach((element,index) => {
+      const codeText = this.chartLegend.filter(fil => fil.legendIndex === index)[0];
+      if(index === 0) {
+        this.pieChartColors.push({
+          backgroundColor: [ codeText ? this.getUpdatedColorCode(codeText.code) : this.getRandomColor()]
+        });
+      } else {
+        this.pieChartColors[0].backgroundColor.push(codeText ?  this.getUpdatedColorCode(codeText.code) : this.getRandomColor());
+      }
     });
   }
 
@@ -336,4 +408,56 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
     this.evtFilterCriteria.emit(critera);
   }
 
+  /**
+   * Open Color palette...
+   */
+  openColorPalette() {
+    console.log(this.pieChartColors);
+    console.log(this.pieChartData);
+    console.log(this.lablels);
+    console.log(this.chartLegend);
+    const req: WidgetColorPalette = new WidgetColorPalette();
+    req.widgetId = String(this.widgetId);
+    req.reportId = String(this.reportId);
+    req.widgetDesc = this.widgetHeader.desc;
+    req.colorPalettes = [];
+
+    this.pieChartData[0].data.forEach((data,index)=>{
+      const colorCode = this.pieChartData[0].backgroundColor[index];
+      const codeTxtObj = this.chartLegend.filter(fil => fil.legendIndex === index)[0];
+      if(codeTxtObj) {
+        req.colorPalettes.push({
+          code: codeTxtObj.code,
+          text : codeTxtObj.text,
+          colorCode
+        });
+      }
+    });
+    super.openColorPalette(req);
+  }
+
+  /**
+   * Update stacked color based on color definations
+   * @param res updated color codes
+   */
+  updateColorBasedOnDefined(res: WidgetColorPalette) {
+    this.widgetColorPalette = res;
+    this.getColor();
+  }
+
+  /**
+   * Update color on widget based on defined
+   * If not defined the pick random color
+   * @param code resposne code
+   */
+  getUpdatedColorCode(code: string): string {
+    if(this.widgetColorPalette && this.widgetColorPalette.colorPalettes) {
+      const res = this.widgetColorPalette.colorPalettes.filter(fil => fil.code === code)[0];
+      if(res) {
+        return res.colorCode;
+      }
+
+    }
+    return this.getRandomColor();
+  }
 }
