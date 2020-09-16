@@ -1,0 +1,65 @@
+div.root {
+  padding: 0 16px;
+  user-select: none;
+  // width: 800px;
+
+  .breadcrum-toolbar {
+    align-items: center;
+    padding-top: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+
+    .display-heading-large {
+      font-size: 1.2rem;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .mdo-constrained-right {
+      align-items: center;
+      width: 100%;
+    }
+  }
+
+  mat-nav-list {
+    mat-list-item {
+      height: 52px;
+
+      .mat-line {
+        font-size: 0.9rem;
+
+        strong {
+          font-weight: 500;
+        }
+
+        &:nth-child(2) {
+          font-size: 0.8rem;
+        }
+      }
+
+      .none-stats-chip {
+        mat-icon.mat-icon {
+          font-size: 16px;
+          height: 16px;
+          width: 20px;
+        }
+      }
+
+      mat-card-header {
+        margin-left: 24px;
+      }
+    }
+  }
+}
+
+@media (min-width: 1200px) {
+  .mdo-justify {
+    margin: 0 54px;
+  }
+
+  .mdo-constrained-right {
+    margin-right: 54px;
+  }
+}
