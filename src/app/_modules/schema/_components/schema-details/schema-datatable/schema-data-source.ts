@@ -5,11 +5,6 @@ import { SchemaTableData, RequestForSchemaDetailsWithBr, SchemaBrInfo } from 'sr
 import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-details.service';
 import { EndpointService } from '@services/endpoint.service';
 
-interface ErrorCell {
-    isInError: boolean;
-    errorMessage: string[];
-}
-
 export class SchemaDataSource implements DataSource<SchemaTableData> {
 
     private dataSourceSubject = new BehaviorSubject<SchemaTableData[]>([]);
@@ -136,7 +131,8 @@ export class SchemaDataSource implements DataSource<SchemaTableData> {
                 rowData._score_weightage = score;
 
 
-                const hdvs = doc.hdvs ? doc.hdvs : {};
+                let hdvs = doc.hdvs ? doc.hdvs : {};
+                hdvs = this.checkFieldIsInError(hdvs);
                 for(const hdfld in hdvs ) {
                     if(hdvs.hasOwnProperty(hdfld)) {
                         const cell: SchemaTableData = new SchemaTableData();
@@ -150,9 +146,9 @@ export class SchemaDataSource implements DataSource<SchemaTableData> {
 
                         // check cell is in error
                         if(reqTye === 'error') {
-                            const errCell =  this.checkFieldIsInError(hdfld);
-                            cell.isInError = errCell.isInError;
-                            cell.errorMsg = errCell.errorMessage ? errCell.errorMessage.toString() : '';
+                            // const errCell =  this.checkFieldIsInError(hdfld);
+                            cell.isInError = hdvs[hdfld].isInError ? hdvs[hdfld].isInError : false;
+                            cell.errorMsg = hdvs[hdfld].message ? hdvs[hdfld].message.toString() : '';
                         }
 
                         // check for old values
@@ -174,28 +170,44 @@ export class SchemaDataSource implements DataSource<SchemaTableData> {
     }
 
     /**
-     * Check field is in error ..
-     * @param fldId checkable fields
+     * Transform data after error check .. and update mesage
+     * @param rowData checkable fields
      */
-    checkFieldIsInError(fldId: string): ErrorCell {
-        const message: string[] = [];
+    checkFieldIsInError(rowData: any) {
+
         const brMetadata = this.brMetadata.getValue();
         if(brMetadata) {
             brMetadata.forEach(br=>{
-                const brfldarray = br.fields.split(',');
-                if(brfldarray.indexOf(fldId) !==-1) {
-                    message.push(br.dynamicMessage ? br.dynamicMessage : br.brDescription);
-                }
                 // check with udr
                 if(br.udrblocks) {
                     const fields = br.udrblocks.map(map => map.conditionFieldId);
-                    if(fields.indexOf(fldId) !==-1) {
-                        message.push(br.dynamicMessage ? br.dynamicMessage : br.brDescription);
-                    }
+                    fields.forEach(brFld=>{
+                        if(rowData.hasOwnProperty(brFld)) {
+                            rowData[brFld].isInError = true;
+                            const exitingMsg =  rowData[brFld].message ? rowData[brFld].message : [];
+                            exitingMsg.push(br.dynamicMessage ? br.dynamicMessage : br.brDescription);
+                            rowData[brFld].message = exitingMsg;
+                        } else {
+                            rowData[brFld] = {fId: brFld,vc: [{c: '',t: ''}],ls: '', isInError:true,message:[br.dynamicMessage ? br.dynamicMessage : br.brDescription]};
+                        }
+                    });
+                } else {
+                    const brfldarray = br.fields.split(',');
+                    brfldarray.forEach(brFld=>{
+                        if(rowData.hasOwnProperty(brFld)) {
+                            rowData[brFld].isInError = true;
+                            const exitingMsg =  rowData[brFld].message ? rowData[brFld].message : [];
+                            exitingMsg.push(br.dynamicMessage ? br.dynamicMessage : br.brDescription);
+                            rowData[brFld].message = exitingMsg;
+                        } else {
+                            rowData[brFld] = {fId: brFld,vc: [{c: '',t: ''}],ls: '', isInError:true,message:[br.dynamicMessage ? br.dynamicMessage : br.brDescription]};
+                        }
+                    });
                 }
             });
         }
-       return {errorMessage: message,isInError: message.length >0 ? true : false};
+        console.log(rowData);
+        return rowData;
     }
 
     // private convertDataToGroupBy(response: any[]): any[] {

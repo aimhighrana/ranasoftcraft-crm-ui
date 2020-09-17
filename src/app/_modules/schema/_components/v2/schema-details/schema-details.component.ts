@@ -419,7 +419,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
   openTableColumnSettings() {
     const data ={schemaId: this.schemaId,variantId: this.variantId, fields: this.metadata.getValue(),selectedFields:this.selectedFields}
     this.sharedServices.setChooseColumnData(data);
-    this.router.navigate(['', { outlets: { sb: 'sb/schema/table-column-settings' } } ]);
+    this.router.navigate(['', { outlets: { sb: 'sb/schema/table-column-settings' }, queryParams:{status:this.activeTab} } ]);
   }
 
   /**
