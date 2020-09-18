@@ -62,9 +62,6 @@
             <ng-template mat-tab-label>
                 Business rule
             </ng-template>
-
-             
-
                 <div class="colunm-listing">
                     <div class="f-row colunm-box">
                         <div class="col"></div>
@@ -138,69 +135,66 @@
             <ng-template mat-tab-label>
                 Subscribers
             </ng-template>
-
-             
-                <div class="colunm-listing">
-                    <div class="f-row colunm-box">
-                        <div class="col col-x8"><strong>Subscriber</strong></div>
-                        <div class="col col-x8"><strong>Role</strong></div>
-                        <div class="col col-x8"><strong>Data allocation</strong></div>
-                        <div class="col mat-item-end"></div>
+            <div class="colunm-listing">
+                <div class="f-row colunm-box">
+                    <div class="col col-x8"><strong>Subscriber</strong></div>
+                    <div class="col col-x8"><strong>Role</strong></div>
+                    <div class="col col-x8"><strong>Data allocation</strong></div>
+                    <div class="col mat-item-end"></div>
+                </div>
+                <div class="f-row colunm-box" *ngFor="let subscriber of subscriberData">
+                    <div class="col col-x8">
+                        <mat-card-header>
+                            <div mat-card-avatar>
+                                {{shortName(subscriber.userMdoModel.fName, subscriber.userMdoModel.lName)}}</div>
+                            <mat-card-title>{{subscriber.userMdoModel.fName}} {{subscriber.userMdoModel.lName}}
+                            </mat-card-title>
+                        </mat-card-header>
                     </div>
-                    <div class="f-row colunm-box" *ngFor="let subscriber of subscriberData">
-                        <div class="col col-x8">
-                            <mat-card-header>
-                                <div mat-card-avatar>
-                                    {{shortName(subscriber.userMdoModel.fName, subscriber.userMdoModel.lName)}}</div>
-                                <mat-card-title>{{subscriber.userMdoModel.fName}} {{subscriber.userMdoModel.lName}}
-                                </mat-card-title>
-                            </mat-card-header>
-                        </div>
-                        <div class="col col-x8">
-                            <button mat-stroked-button *ngIf="subscriber.isAdmin">Admin <mat-icon>arrow_drop_down
-                                </mat-icon></button>
-                            <button mat-stroked-button *ngIf="subscriber.isReviewer">Reviewer <mat-icon>arrow_drop_down
-                                </mat-icon></button>
-                            <button mat-stroked-button *ngIf="subscriber.isViewer">Viewer <mat-icon>arrow_drop_down
-                                </mat-icon></button>
-                            <button mat-stroked-button *ngIf="subscriber.isEditer">Editor <mat-icon>arrow_drop_down
-                                </mat-icon></button>
-                        </div>
-                        <div class="col col-x8">
-                            <mat-chip-list>
-                                <mat-chip class="mdo-filter-matchip" disableRipple="true"
-                                    [matMenuTriggerFor]="appliedfiltermenu"><label>Region:</label> <span
-                                        class="info">sydney</span>
-                                    <mat-icon matChipRemove>clear</mat-icon>
-                                </mat-chip>
+                    <div class="col col-x8">
+                        <button mat-stroked-button *ngIf="subscriber.isAdmin">Admin <mat-icon>arrow_drop_down
+                            </mat-icon></button>
+                        <button mat-stroked-button *ngIf="subscriber.isReviewer">Reviewer <mat-icon>arrow_drop_down
+                            </mat-icon></button>
+                        <button mat-stroked-button *ngIf="subscriber.isViewer">Viewer <mat-icon>arrow_drop_down
+                            </mat-icon></button>
+                        <button mat-stroked-button *ngIf="subscriber.isEditer">Editor <mat-icon>arrow_drop_down
+                            </mat-icon></button>
+                    </div>
+                    <div class="col col-x8">
+                        <mat-chip-list>
+                            <mat-chip class="mdo-filter-matchip" disableRipple="true"
+                                [matMenuTriggerFor]="appliedfiltermenu"><label>Region:</label> <span
+                                    class="info">sydney</span>
+                                <mat-icon matChipRemove>clear</mat-icon>
+                            </mat-chip>
 
-                                <mat-chip class="mdo-filter-matchip" disableRipple="true"
-                                    [matMenuTriggerFor]="addfiltermenu">
-                                    <mat-icon>filter_list</mat-icon>
-                                </mat-chip>
-                                <mat-menu #appliedfiltermenu="matMenu">
-                                    <pros-filter-values></pros-filter-values>
-                                </mat-menu>
-                                <mat-menu #addfiltermenu="matMenu">
-                                    <pros-add-filter-menu></pros-add-filter-menu>
-                                </mat-menu>
-                            </mat-chip-list>
-                        </div>
-                        <div class="col mat-item-end">
-                            <button mat-button [matMenuTriggerFor]="navigation">
-                                <mat-icon>more_vert</mat-icon>
-                                <!-- Menu to open edit/delete options -->
-                                <mat-menu #navigation="matMenu" direction="right">
-                                    <mat-nav-list>
-                                        <mat-list-item>Edit</mat-list-item>
-                                        <mat-list-item>Delete</mat-list-item>
-                                    </mat-nav-list>
-                                </mat-menu>
-                            </button>
-                        </div>
+                            <mat-chip class="mdo-filter-matchip" disableRipple="true"
+                                [matMenuTriggerFor]="addfiltermenu">
+                                <mat-icon fontSet="mdo-icons">filter-add</mat-icon>
+                            </mat-chip>
+                            <mat-menu #appliedfiltermenu="matMenu">
+                                <pros-filter-values></pros-filter-values>
+                            </mat-menu>
+                            <mat-menu #addfiltermenu="matMenu">
+                                <pros-add-filter-menu></pros-add-filter-menu>
+                            </mat-menu>
+                        </mat-chip-list>
+                    </div>
+                    <div class="col mat-item-end">
+                        <button mat-button [matMenuTriggerFor]="navigation">
+                            <mat-icon>more_vert</mat-icon>
+                            <!-- Menu to open edit/delete options -->
+                            <mat-menu #navigation="matMenu" direction="right">
+                                <mat-nav-list>
+                                    <mat-list-item>Edit</mat-list-item>
+                                    <mat-list-item>Delete</mat-list-item>
+                                </mat-nav-list>
+                            </mat-menu>
+                        </button>
                     </div>
                 </div>
-             
+             </div>
         </mat-tab>
 
         <!-- Tab for the execution logs of the schema -->

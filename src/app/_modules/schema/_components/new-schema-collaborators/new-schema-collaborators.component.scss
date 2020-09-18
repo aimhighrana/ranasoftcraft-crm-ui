@@ -1,13 +1,23 @@
-mat-card.root {
-  padding: 0;
+div.root {
   user-select: none;
 
-  .header-toolbar {
+  .breadcrum-toolbar {
     align-items: center;
-    width: 100%;
+    padding-top: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 2;
 
     .display-heading-large {
       font-size: 1.2rem;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .mdo-constrained-right {
+      align-items: center;
+      width: 100%;
     }
   }
 

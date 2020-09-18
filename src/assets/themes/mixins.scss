@@ -615,6 +615,12 @@
       label {
         margin: 0 4px;
       }
+
+      .mat-icon.mdo-icons {
+        font-size: 18px;
+        text-align: center;
+        height: 14px;
+      }
     }
 
     mat-chip.mat-chip.mat-standard-chip::after {
@@ -628,6 +634,13 @@
 
       .mat-checkbox-label {
         font-size: 0.9rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: pre-line;
+        line-height: 16px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
       }
 
       .mat-checkbox-inner-container {

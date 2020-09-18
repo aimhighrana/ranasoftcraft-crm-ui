@@ -28,16 +28,16 @@
 
     <mat-nav-list class="primary-nav-list">
         <mat-list-item routerLink="/home/dash/welcome" [routerLinkActive]="'selected'"  (click)="sendToParent('welcome')">
-            <mat-icon>home</mat-icon>
+            <mat-icon fontSet="mdo-icons">form-address</mat-icon>
             <div class="col-space">Home</div>
         </mat-list-item>
         <mat-list-item routerLink="/home/schema" [routerLinkActive]="'selected'"  (click)="sendToParent('schema')">
-            <mat-icon>assessment</mat-icon>
+            <mat-icon fontSet="mdo-icons">board</mat-icon>
             <div class="col-space">Schema</div>
         </mat-list-item>
         <mat-list-item routerLink="/home/report" [routerLinkActive]="'selected'" (click)="sendToParent('report')">
-            <mat-icon>bar_chart</mat-icon>
-            <div class="col-margin">Reports</div>
+            <mat-icon fontSet="mdo-icons">chart-bar</mat-icon>
+            <div class="col-space">Reports</div>
         </mat-list-item>
     </mat-nav-list>
 

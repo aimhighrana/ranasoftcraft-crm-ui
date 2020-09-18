@@ -18,7 +18,7 @@ import { CoreSchemaBrInfo } from '@modules/admin/_components/module/business-rul
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { NewSchemaCollaboratorsComponent } from '../new-schema-collaborators/new-schema-collaborators.component';
-import { SchemaCollaborator } from '@models/collaborator';
+import { SchemaCollaborator} from '@models/collaborator';
 import { Utilities } from '@modules/base/common/utilities';
 
 export interface DataSource {

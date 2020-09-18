@@ -20,7 +20,7 @@
             <div class="row-spacer"></div>
 
             <div class="f-col upload-col">
-                <mat-icon>publish</mat-icon>
+                <mat-icon fontSet="mdo-icons">outbox-alt</mat-icon>
                 <div class="label-text">Drag & drop or <a href="javascript:void(0)" class="info"
                         (click)="openExplorer();$event.stopPropagation()">browse</a> a file to upload</div>
                 <input class="drag-input" type="file" id="uploader" (change)="fileChange($event)"
@@ -44,7 +44,7 @@
 
                     <ng-container *ngFor="let module of modulesList">
                         <mat-list-item (click)="setModuleValueAndTakeStep(module);$event.stopPropagation()">
-                            <mat-icon mat-list-icon>grid_on</mat-icon>
+                            <mat-icon mat-list-icon fontSet="mdo-icons">form-table</mat-icon>
                             <div mat-line>{{module.objectdesc || 'UNTITLED'}}</div>
                             <mat-icon>arrow_right_alt</mat-icon>
                         </mat-list-item>
@@ -183,7 +183,7 @@
                         <div class="col col-x8">
                             <mat-card-header>
                                 <div mat-card-avatar>{{subscriber.initials}}</div>
-                                <mat-card-title>{{subscriber.fullName}}</mat-card-title>
+                                <mat-card-title mat-line>{{subscriber.fullName}}</mat-card-title>
                             </mat-card-header>
                         </div>
                         <div class="col col-x8">
@@ -209,7 +209,7 @@
 
                                 <mat-chip class="mdo-filter-matchip" disableRipple="true"
                                     [matMenuTriggerFor]="appliedfiltermenu">
-                                    <mat-icon>filter_list</mat-icon>
+                                    <mat-icon fontSet="mdo-icons">filter-add</mat-icon>
                                 </mat-chip>
                             </mat-chip-list>
 
