@@ -23,7 +23,7 @@ describe('CreateSchemaComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CreateSchemaComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    // fixture.detectChanges();
   });
 
   it('should create', () => {

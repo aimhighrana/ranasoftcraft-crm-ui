@@ -107,10 +107,6 @@ export class CreateSchemaComponent implements OnInit, OnDestroy {
    */
   save() {
     console.log(this.form.value);
-    if(!this.form.valid) {
-      this.matSnackBar.open(`Please fill form `, `Close`,{duration:5000});
-      return;
-    }
     const request: CreateUpdateSchema = new CreateUpdateSchema();
     request.moduleId = this.form.get('moduleId').value;
     request.discription = this.form.get('schemaDescription').value;

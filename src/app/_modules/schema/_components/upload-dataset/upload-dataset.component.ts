@@ -367,7 +367,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         const isNewSchema = this.requestForm.controls.objectId.value;
 
         if (anyMapping === 0 && isNewSchema) {
-          this.snackBar.open('Please select atleast one mapping', 'Okay');
+          this.snackBar.open('Please select atleast one mapping', 'Okay', {duration: 5000});
           return;
         }
       }
@@ -376,7 +376,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         // there should be atleast one Business rule
         const anyBR = this.requestForm.controls.coreSchemaBr.value;
         if (anyBR.length === 0) {
-          this.snackBar.open('Please create atleast one business rule', 'Okay');
+          this.snackBar.open('Please create atleast one business rule', 'Okay', {duration: 5000});
           return;
         }
       }
@@ -659,7 +659,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
           this.stepper.next();
         }
       }, () => {
-        this.snackBar.open('File could not be uploaded', 'Okay')
+        this.snackBar.open('File could not be uploaded', 'Okay', {duration: 5000})
       });
   }
 
@@ -769,12 +769,12 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       formObject
     ).subscribe((res) => {
       this.snackBar.open('Schema created successfully', 'Okay', {
-        duration: 1000
+        duration: 5000
       });
       this.dialogRef.close();
     }, (err) => {
       this.snackBar.open('Schema cannot be created', 'Okay', {
-        duration: 1000
+        duration: 5000
       });
     })
   }

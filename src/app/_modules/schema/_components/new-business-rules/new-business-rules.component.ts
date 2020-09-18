@@ -224,7 +224,7 @@ export class NewBusinessRulesComponent implements OnInit {
     selectedField(event) {
         const alreadyExists = this.selectedFields.find(item => item.fieldId === event.option.value);
         if (alreadyExists) {
-            this.snackBar.open('This field is already selected', 'Okay');
+            this.snackBar.open('This field is already selected', 'Okay', {duration: 5000});
         } else {
             this.selectedFields.push({
                 fieldText: event.option.viewValue,
@@ -278,7 +278,7 @@ export class NewBusinessRulesComponent implements OnInit {
         this.form.controls.fields.setValue(this.selectedFields.map(item => item.fieldId).join(','));
         this.submitted = true;
         if (!this.form.valid) {
-            this.snackBar.open('Please enter the required fields', 'okay');
+            this.snackBar.open('Please enter the required fields', 'okay', {duration: 5000});
             return;
         }
 

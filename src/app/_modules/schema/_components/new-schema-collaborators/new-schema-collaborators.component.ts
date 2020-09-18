@@ -142,7 +142,7 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
       if (formObject.isEditer) { formObject.role = 'isEditer' }
       this.dialogRef.close(formObject);
     } else {
-      this.snackBar.open('Please enter both the fields', 'okay')
+      this.snackBar.open('Please enter both the fields', 'okay', {duration: 5000})
     }
   }
 

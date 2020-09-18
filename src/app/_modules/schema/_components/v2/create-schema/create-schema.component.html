@@ -7,7 +7,7 @@
         <div class="f-row mdo-constrained-right">
             <div class="display-heading-large"> Create new schema </div>
             <span class="f-spacer"></span>
-            <button mat-flat-button color="primary" (click)="save()">Save</button>
+            <button mat-flat-button color="primary" [disabled]="form.invalid" (click)="save()">Save</button>
         </div>
     </div>
     <div class="row-spacer"></div>
@@ -23,10 +23,12 @@
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
+                <mat-error *ngIf="form.controls.moduleId.invalid && form.controls.moduleId.touched">Please select a module</mat-error>
             </div>
             <div class="mdo-form-field">
                 <pros-form-input label="Enter schema name" (valueChange)="changedSchemaName($event)" [value]="schemaListDetails ? schemaListDetails.schemaDescription : ''">
                 </pros-form-input>
+                <mat-error *ngIf="form.controls.schemaDescription.invalid">Please enter schema name</mat-error>
             </div>
             <div class="mdo-form-field mdo-range-field">
                 <mat-label>Schema threshold</mat-label>
