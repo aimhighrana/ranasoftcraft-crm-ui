@@ -72,7 +72,7 @@
         <!-- Append dynamic filter MatMenu -->
         <mat-menu #appliedfiltermenu="matMenu">
             <pros-filter-values [fieldId]="loadDopValuesFor ? loadDopValuesFor.fieldId : ''"
-                [checkedValue]="loadDopValuesFor ? loadDopValuesFor.checkedValue : []"></pros-filter-values>
+                [checkedValue]="loadDopValuesFor ? loadDopValuesFor.checkedValue : []" (selectedValues)="updateFilterCriteria($event)"></pros-filter-values>
         </mat-menu>
 
         <mat-chip-list>

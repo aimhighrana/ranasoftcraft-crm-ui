@@ -705,14 +705,22 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * get pre selected values ..
+   * Updated selected drop values ...
+   * @param dropValue updated dropvalues
    */
-  // get preValue(): string {
-  //   const filtCri: FilterCriteria[] = this.filterCriteria.getValue() ? this.filterCriteria.getValue() : [];
-  //   const haveId = filtCri.find(fil=> fil.fieldId === 'id');
-  //   if(haveId) {
-  //     return '';
-  //   }
-  //   return '24421';
-  // }
+  updateFilterCriteria(dropValue: DropDownValue[]) {
+    console.log(dropValue);
+    const fillData = this.filterCriteria.getValue() ? this.filterCriteria.getValue() : [];
+    const filterControl = fillData.filter(fill => fill.fieldId === this.loadDopValuesFor.fieldId)[0];
+    if(filterControl) {
+      if(dropValue && dropValue.length>0) {
+        filterControl.values = dropValue.map(map=> map.CODE);
+        filterControl.filterCtrl = {fldCtrl: filterControl.filterCtrl.fldCtrl, selectedValeus: dropValue};
+      } else {
+        fillData.slice(fillData.indexOf(filterControl), 1);
+      }
+      this.filterCriteria.next(fillData);
+    }
+
+  }
 }

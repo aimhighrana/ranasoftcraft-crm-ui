@@ -6,7 +6,7 @@ import { Location } from '@angular/common';
 import { SchemaService } from '@services/home/schema.service';
 import { ReportService } from '@modules/report/_service/report.service';
 import { ReportList } from '@modules/report/report-list/report-list.component';
-import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
+import { SharedServiceService, SecondaynavType } from '@modules/shared/_services/shared-service.service';
 
 @Component({
   selector: 'pros-secondary-navbar',
@@ -85,6 +85,22 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
     this.sharedService.secondaryBarData.subscribe((res) => {
       this.getSchemaList();
     })
+    this.sharedService.isSecondaryNavRefresh().subscribe(res=>{
+      switch (res) {
+        case SecondaynavType.schema:
+          this.getSchemaList();
+          break;
+
+        case SecondaynavType.dataIntilligence:
+          this.getDataIntilligence();
+          break;
+        case SecondaynavType.report:
+          this.getreportList();
+          break;
+        default:
+          break;
+      }
+    });
   }
 
   /**
@@ -162,7 +178,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
       case 'welcome':
         break;
       case 'schema':
-        this.router.navigate(['', { outlets: { sb: 'sb/schema/create-schema' } }]);
+        this.router.navigate(['', { outlets: { sb: 'sb/schema/create-schema/new' } }]);
         break;
       case 'report':
         this.toggleSideBar(true);

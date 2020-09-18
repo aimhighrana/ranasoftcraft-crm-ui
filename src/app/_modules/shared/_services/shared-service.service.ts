@@ -1,6 +1,12 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
+export enum SecondaynavType {
+  schema = 'schema',
+  dataIntilligence = 'dataIntilligence',
+  report = 'report'
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -15,6 +21,7 @@ export class SharedServiceService {
   private togglePrimaryEmit: BehaviorSubject<any> = new BehaviorSubject(null);
 
   public secondaryBarData: BehaviorSubject<any> = new BehaviorSubject(null);
+  private refreshSecondaryNav: BehaviorSubject<SecondaynavType> = new BehaviorSubject<SecondaynavType>(null);
 
   constructor() { }
 
@@ -52,5 +59,19 @@ export class SharedServiceService {
 
   public getSecondaryNavbarList() {
     this.secondaryBarData.next('')
+  }
+  /**
+   * Use for refresh .. secondary nav bar
+   * @param type set refresh type parameters ...
+   */
+  public setRefreshSecondaryNav(type:SecondaynavType) {
+    this.refreshSecondaryNav.next(type);
+  }
+
+  /**
+   * Return the latest refresh type ..
+   */
+  public isSecondaryNavRefresh(): Observable<SecondaynavType> {
+    return this.refreshSecondaryNav.asObservable();
   }
 }

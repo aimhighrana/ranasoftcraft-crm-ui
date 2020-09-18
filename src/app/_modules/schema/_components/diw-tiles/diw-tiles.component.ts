@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SchemaListModuleList, SchemaListDetails, SchemaStaticThresholdRes } from '@models/schema/schemalist';
 import { SchemaService } from '@services/home/schema.service';
 import { SchemaExecutionRequest } from '@models/schema/schema-execution';
@@ -7,6 +7,7 @@ import { SchemaExecutionService } from '@services/home/schema/schema-execution.s
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { UploadDatasetComponent } from '../upload-dataset/upload-dataset.component';
 import { MatDialog } from '@angular/material/dialog';
+import { SharedServiceService, SecondaynavType } from '@modules/shared/_services/shared-service.service';
 
 @Component({
   selector: 'pros-diw-tiles',
@@ -42,7 +43,9 @@ export class DiwTilesComponent implements OnInit {
     private schemaService: SchemaService,
     private schemaExecutionService: SchemaExecutionService,
     private matSnackBar: MatSnackBar,
-    private matDialog: MatDialog
+    private matDialog: MatDialog,
+    private router: Router,
+    private sharedService: SharedServiceService
   ) { }
 
   /**
@@ -50,6 +53,13 @@ export class DiwTilesComponent implements OnInit {
    */
   ngOnInit(): void {
     this.getRouteParams();
+
+    this.sharedService.isSecondaryNavRefresh().subscribe(res=>{
+      if(res && res === SecondaynavType.schema) {
+        this.getSchemaList();
+      }
+    });
+
   }
 
   /**
@@ -158,5 +168,26 @@ export class DiwTilesComponent implements OnInit {
       console.log('The dialog was closed');
       this.getSchemaList();
     });
+  }
+
+  /**
+   * Edit schema by schema id
+   * @param schemaId edit schema by this schema id
+   */
+  edit(schemaId: string) {
+    this.router.navigate(['', { outlets: { sb: `sb/schema/create-schema/${schemaId}` } }]);
+  }
+
+  /**
+   * Delete schema by schema id ...
+   * @param schemaId deleteable schema id
+   */
+  delete(schemaId: string) {
+    this.schemaService.deleteSChema(schemaId).subscribe(res=>{
+      this.matSnackBar.open(`Successfully deleted `,`Close`,{duration:5000});
+      this.getSchemaList();
+    }, error=>{
+      this.matSnackBar.open(`Something went wrong `,`Close`,{duration:5000});
+    })
   }
 }

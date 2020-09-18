@@ -25,7 +25,7 @@
                 </mat-form-field>
             </div>
             <div class="mdo-form-field">
-                <pros-form-input label="Enter schema name" (valueChange)="changedSchemaName($event)">
+                <pros-form-input label="Enter schema name" (valueChange)="changedSchemaName($event)" [value]="schemaListDetails ? schemaListDetails.schemaDescription : ''">
                 </pros-form-input>
             </div>
             <div class="mdo-form-field mdo-range-field">

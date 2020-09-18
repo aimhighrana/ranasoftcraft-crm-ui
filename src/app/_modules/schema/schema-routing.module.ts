@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { PageNotFoundComponent } from '../shared/_components/page-not-found/page-not-found.component';
 import { SchemaGroupFormComponent } from 'src/app/_modules/schema/_components/schema-group-form/schema-group-form.component';
-import { SchemaListComponent } from 'src/app/_modules/schema/_components/schema-list/schema-list.component';
 import { SchemaDetailsComponent } from './_components/v2/schema-details/schema-details.component';
 import { SchemaVariantsComponent } from './_components/schema-variants/schema-variants.component';
 import { SchemaExecutionComponent } from './_components/schema-execution/schema-execution.component';
@@ -33,7 +32,7 @@ import { BrruleSideSheetComponent } from './_components/v2/brrule-side-sheet/brr
 import { SystemTrayComponent } from './_components/system-tray/system-tray.component';
 
 const routes: Routes = [
-  { path: '', component: SchemaListComponent },
+  { path: '', component: DiwTilesComponent },
   { path: 'group/:groupId', component: SchemaGroupFormComponent },
   // { path: 'schema-list/:schemaGrpId', component: SchemaListComponent },
   { path: 'schema-details/:moduleId/:schemaId/:variantId', component: SchemaDetailsComponent },
@@ -44,7 +43,7 @@ const routes: Routes = [
   { path: 'addbusinessrule', component: AddbusinessruleComponent },
   { path: 'table-column-settings', component: TableColumnSettingsComponent },
   { path: 'uploaddata', component: UploadDataComponent },
-  { path: 'create-schema', component: CreateSchemaComponent },
+  { path: 'create-schema/:schemaId', component: CreateSchemaComponent },
   { path: 'salesforce-connection', component: SalesforceConnectionComponent },
   { path: 'duplicate-businessrule', component: DuplicateBusinessruleComponent },
   { path: 'advanceoptions-dialog', component: AdvanceoptionsDialogComponent },
