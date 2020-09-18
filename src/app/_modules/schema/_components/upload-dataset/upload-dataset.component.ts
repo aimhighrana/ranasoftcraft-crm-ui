@@ -458,9 +458,9 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       brInfo: udrTreeData.blocks.length ? 'User Defined' : object.rule_name,
       brExpose: 0,
       status: '1',
-      categoryId: '',
+      categoryId: object.categoryId,
       standardFunction: object.standard_function,
-      brWeightage: null,
+      brWeightage: object.weightage,
       totalWeightage: 100,
       transformation: 0,
       tableName: '',
@@ -698,11 +698,9 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   save() {
     const formObject = this.requestForm.value;
     const objectId = formObject.objectId
-    const runNow = true;
     const variantId = '0'
     const fileSerialNo = formObject.fileSerialNo;
     this.requestForm.controls.subscribers.setValue([]);
-
 
     if (!this.requestForm.controls.objectId.value) {
       const mappedArray = [];
@@ -722,7 +720,6 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     if (this.subscribersList.length === 0) {
       this.callSaveSchemaAPI(
         objectId,
-        runNow,
         variantId,
         fileSerialNo
       )
@@ -744,7 +741,6 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         if (index === this.subscribersList.length - 1) {
           this.callSaveSchemaAPI(
             objectId,
-            runNow,
             variantId,
             fileSerialNo
           )
@@ -753,8 +749,9 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     }
   }
 
-  callSaveSchemaAPI(objectId: string, runNow: boolean, variantId: string, fileSerialNo: string) {
+  callSaveSchemaAPI(objectId: string, variantId: string, fileSerialNo: string) {
     const formObject = this.requestForm.value;
+    const runNow = formObject.runTime;
     delete formObject.objectId;
     delete formObject.file;
     delete formObject.fileSerialNo;
@@ -771,7 +768,9 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       fileSerialNo,
       formObject
     ).subscribe((res) => {
-      this.snackBar.open('Schema created successfully', 'Okay');
+      this.snackBar.open('Schema created successfully', 'Okay', {
+        duration: 1000
+      });
       this.dialogRef.close();
     }, (err) => {
       this.snackBar.open('Schema cannot be created', 'Okay', {

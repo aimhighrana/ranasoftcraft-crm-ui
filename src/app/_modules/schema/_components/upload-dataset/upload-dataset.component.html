@@ -69,7 +69,7 @@
                     <div class="f-row colunm-box">
                         <div class="col col-x8"><strong>Your field headers</strong></div>
                         <div class="col col-x8"><strong>Your first row data</strong></div>
-                        <div class="col col-x4"><strong>Map to</strong>
+                        <div class="col col-x4" *ngIf="requestForm.value.objectId"><strong>Map to</strong>
                             <mat-icon class="mat-head-icon">
                                 arrow_forward
                             </mat-icon>
@@ -179,8 +179,7 @@
                         <div class="col col-x16"><strong>Data allocation</strong></div>
                         <div class="col mat-item-end"></div>
                     </div>
-                    <div *ngFor="let subscriber of subscribersList;let l=index"
-                        class="f-row colunm-box">
+                    <div *ngFor="let subscriber of subscribersList;let l=index" class="f-row colunm-box">
                         <div class="col col-x8">
                             <mat-card-header>
                                 <div mat-card-avatar>{{subscriber.initials}}</div>
@@ -188,7 +187,7 @@
                             </mat-card-header>
                         </div>
                         <div class="col col-x8">
-                            <mat-form-field appearance="outline">
+                            <mat-form-field appearance="outline" class="mat-form-tem">
                                 <mat-select [(ngModel)]="subscriber.role"
                                     (selectionChange)="updateRole($event,subscriber,l)">
                                     <mat-option value="isAdmin">Admin</mat-option>

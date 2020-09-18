@@ -30,6 +30,31 @@
         </mat-form-field>
       </div>
 
+
+      <div class="mdo-form-field">
+        <mat-label>Weightage</mat-label>
+        <mat-slider thumbLabel formControlName="weightage" [displayWith]="formatLabel" tickInterval="1" min="0"
+          max="100"></mat-slider>
+        <mat-error *ngIf="submitted && form.controls.weightage.errors && form.controls.weightage.errors.required">
+          Please enter Weightage</mat-error>
+      </div>
+
+      <div class="mdo-form-field">
+        <mat-label>Category</mat-label>
+        <mat-form-field appearance="outline">
+          <mat-select formControlName="categoryId">
+            <ng-container *ngFor="let category of categoryList">
+              <mat-option [value]="category.categoryId">{{category.categoryDesc}}
+              </mat-option>
+            </ng-container>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-error *ngIf="submitted && form.controls.categoryId.errors && form.controls.categoryId.errors.required">
+          Please enter Category Id</mat-error>
+      </div>
+
+
       <div class="mdo-form-field" *ngIf="!isUDR">
         <pros-form-input (valueChange)="getFormValue($event,'rule_name')" [label]="'Rule name (Description)'">
         </pros-form-input>

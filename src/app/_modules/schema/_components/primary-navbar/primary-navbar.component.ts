@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { UploadDatasetComponent } from '../upload-dataset/upload-dataset.component';
 import { UserService } from '@services/user/userservice.service';
 import { Userdetails } from '@models/userdetails';
+import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 
 @Component({
   selector: 'pros-primary-navbar',
@@ -20,7 +21,8 @@ export class PrimaryNavbarComponent implements OnInit {
   userDetails: Userdetails = new Userdetails();
   constructor(
     private userService: UserService,
-    private matDialog: MatDialog
+    private matDialog: MatDialog,
+    private sharedService: SharedServiceService
   ) { }
 
   ngOnInit(): void {
@@ -44,6 +46,7 @@ export class PrimaryNavbarComponent implements OnInit {
         });
         dialogRef.afterClosed().subscribe(result => {
           console.log('The dialog was closed');
+          this.sharedService.getSecondaryNavbarList();
         });
     }
   }

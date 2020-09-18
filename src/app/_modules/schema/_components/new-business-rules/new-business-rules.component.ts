@@ -7,7 +7,7 @@ import {
 import { BusinessRules } from '@modules/admin/_components/module/schema/diw-create-businessrule/diw-create-businessrule.component';
 import { BusinessRuleType, ConditionalOperator } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
-import { MetadataModeleResponse } from '@models/schema/schemadetailstable';
+import { MetadataModeleResponse, CategoryInfo } from '@models/schema/schemadetailstable';
 import { of, Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
@@ -72,6 +72,12 @@ export class NewBusinessRulesComponent implements OnInit {
     submitted = false;
     initialConditions = ['And', 'Or'];
 
+    /**
+     * List of categories
+     */
+    categoryList: CategoryInfo[] = []
+
+
     udrBlocks = [{
         id: Math.floor(Math.random() * 1000000000000).toString(),
         blockTypeText: 'When', // when/and/or
@@ -116,7 +122,9 @@ export class NewBusinessRulesComponent implements OnInit {
             standard_function: new FormControl(''),
             regex: new FormControl(''),
             fields: new FormControl('', [Validators.required]),
-            udrTreeData: new FormControl()
+            udrTreeData: new FormControl(),
+            weightage: new FormControl(0, [Validators.required]),
+            categoryId: new FormControl('', [Validators.required]),
         });
         if (this.data.moduleId) {
             this.getFieldsByModuleId()
@@ -129,7 +137,7 @@ export class NewBusinessRulesComponent implements OnInit {
                 map(keyword => {
                     return keyword ?
                         this.fieldsList.filter(item => {
-                            return item.fieldDescri.toLowerCase().indexOf(keyword) !== -1
+                            return item.fieldDescri.toString().toLowerCase().indexOf(keyword) !== -1
                         }) : this.fieldsList
                 }),
             )
@@ -178,7 +186,10 @@ export class NewBusinessRulesComponent implements OnInit {
             }
             this.form.updateValueAndValidity();
         });
-
+        this.schemaDetailsService.getAllCategoryInfo().subscribe((response) => {
+            this.categoryList.length = 0;
+            this.categoryList.push(...response)
+        })
     }
 
     /**
@@ -469,6 +480,10 @@ export class NewBusinessRulesComponent implements OnInit {
     displayFn(value) {
         console.log(value);
         return value ? value.fieldDescri : ''
+    }
+
+    formatLabel(value) {
+        return `${value}`
     }
 }
 

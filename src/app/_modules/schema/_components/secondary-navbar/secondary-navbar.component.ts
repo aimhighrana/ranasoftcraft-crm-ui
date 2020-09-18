@@ -40,7 +40,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
     private schemaService: SchemaService,
     private reportService: ReportService,
     private sharedService: SharedServiceService
-    ) { }
+  ) { }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes && changes.activatedPrimaryNav && changes.activatedPrimaryNav.previousValue !== changes.activatedPrimaryNav.currentValue) {
@@ -70,17 +70,21 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
       console.log(res);
     })
 
-    this.sharedService.getReportListData().subscribe(res=>{
-      if(res){
+    this.sharedService.getReportListData().subscribe(res => {
+      if (res) {
         this.getreportList();
       }
     });
 
-    this.sharedService.getTogglePrimaryEmit().subscribe(res=>{
-      if(res){
+    this.sharedService.getTogglePrimaryEmit().subscribe(res => {
+      if (res) {
         this.toggleSideBar(true);
       }
     });
+
+    this.sharedService.secondaryBarData.subscribe((res) => {
+      this.getSchemaList();
+    })
   }
 
   /**
@@ -88,7 +92,8 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
    */
   getDataIntilligence() {
     this.schemaService.getSchemaWithVariants().subscribe(res => {
-      this.dataIntillegences = res;
+      this.dataIntillegences.length = 0;
+      this.dataIntillegences.push(...res)
     }, error => console.error(`Error : ${error.message}`));
   }
 
@@ -118,14 +123,14 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
   }
 
   public getreportList() {
-    this.reportService.reportList().subscribe(reportList=>{
+    this.reportService.reportList().subscribe(reportList => {
       console.log(reportList);
       this.reportList = reportList;
-      if(this.reportList){
+      if (this.reportList) {
         const firstReportId = this.reportList[0].reportId;
-        this.router.navigate(['home/report/dashboard',firstReportId]);
+        this.router.navigate(['home/report/dashboard', firstReportId]);
       }
-    },error=>console.error(`Error : ${error}`));
+    }, error => console.error(`Error : ${error}`));
   }
 
   /**

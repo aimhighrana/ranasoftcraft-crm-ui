@@ -6,7 +6,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 })
 export class SharedServiceService {
 
-  private  chooseColumnSub: BehaviorSubject<any> = new BehaviorSubject(null);
+  private chooseColumnSub: BehaviorSubject<any> = new BehaviorSubject(null);
 
   private afterBrSaveUpdate: BehaviorSubject<any> = new BehaviorSubject(null);
 
@@ -14,6 +14,7 @@ export class SharedServiceService {
 
   private togglePrimaryEmit: BehaviorSubject<any> = new BehaviorSubject(null);
 
+  public secondaryBarData: BehaviorSubject<any> = new BehaviorSubject(null);
 
   constructor() { }
 
@@ -47,5 +48,9 @@ export class SharedServiceService {
 
   public getTogglePrimaryEmit(): Observable<any> {
     return this.togglePrimaryEmit.asObservable();
+  }
+
+  public getSecondaryNavbarList() {
+    this.secondaryBarData.next('')
   }
 }

@@ -76,6 +76,10 @@ mat-card.root {
     &.col-x8 {
       flex: 8;
     }
+    // added by rahul
+    .mat-form-tem {
+      width: 100%;
+    }
 
     &.col-x16 {
       flex: 16;
