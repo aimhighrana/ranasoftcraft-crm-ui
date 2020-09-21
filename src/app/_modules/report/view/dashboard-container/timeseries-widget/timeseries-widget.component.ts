@@ -1,85 +1,581 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
-import { TimeDisplayFormat, ChartDataSets, ChartOptions } from 'chart.js';
-import { Label } from 'ng2-charts';
+import { TimeDisplayFormat, ChartDataSets, ChartOptions, ChartLegendLabelItem } from 'chart.js';
+import { BaseChartDirective, Label } from 'ng2-charts';
 import * as moment from 'moment';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { BehaviorSubject } from 'rxjs';
-import { TimeSeriesWidget } from '../../../_models/widget';
+import { ButtonArr, ChartLegend, ConditionOperator, Criteria, SeriesWith, TimeSeriesWidget, WidgetColorPalette } from '../../../_models/widget';
+import * as zoomPlugin from 'chartjs-plugin-zoom';
+import { BlockType } from '@modules/admin/_components/module/business-rules/user-defined-rule/udr-cdktree.service';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+
+const btnArray:ButtonArr[] = [
+  {id:1,value:7,isActive:false},
+  {id:2,value:10,isActive:false},
+  {id:3,value:20,isActive:false},
+  {id:4,value:30,isActive:false}
+];
 
 @Component({
   selector: 'pros-timeseries-widget',
   templateUrl: './timeseries-widget.component.html',
   styleUrls: ['./timeseries-widget.component.scss']
 })
-export class TimeseriesWidgetComponent extends GenericWidgetComponent implements OnInit {
+export class TimeseriesWidgetComponent extends GenericWidgetComponent implements OnInit,OnChanges {
+
+  constructor(
+    private widgetService: WidgetService,private fb : FormBuilder,public matDialog: MatDialog) {
+    super(matDialog);
+  }
 
   timeDateFormat: TimeDisplayFormat;
   dataSet: ChartDataSets[];
   dataSetlabel: Label[] = [];
   widgetInf:BehaviorSubject<TimeSeriesWidget> = new BehaviorSubject<TimeSeriesWidget>(null);
+  public afterColorDefined: BehaviorSubject<WidgetColorPalette> = new BehaviorSubject<WidgetColorPalette>(null);
+  timeseriesData : TimeSeriesWidget;
+  public lineChartPlugins = [zoomPlugin];
+  chartLegend: ChartLegend[] = [];
+  lablels: string[] = [];
+  formGroup : FormGroup;
+  dateFilters = btnArray;
+  startDateCtrl =new FormControl();
+  endDateCtrl =new FormControl();
+  @ViewChild(BaseChartDirective) chart: BaseChartDirective;
+
   /**
    * Timeseries chart option config see chart.js for more details
    */
-  options: ChartOptions = {
+  timeSeriesOption: ChartOptions = {
     responsive: true,
+    spanGaps:false,
+    title: {
+      display: true,
+      text: ''
+    },
+    plugins: {
+      datalabels:{
+        display:false,
+      },
+      zoom: {
+        pan: {
+          enabled: true,
+          mode: 'x',
+          speed: 10,
+          threshold: 10,
+          // onPan() {                                  /** Event handling while panning */
+          // },
+          onPanComplete: () =>{
+              this.getVisibleValues(this.chart);
+          }
+        },
+        zoom: {
+          enabled: true,
+          grag: true,
+          mode: 'x',
+          limits: { max: 10, min: 0.5 },
+          onZoom() { console.log('ONZOOM'); },
+          onZoomComplete() { console.log('ZOOM Complete'); }
+        }
+      }
+    },
     scales: {
       xAxes: [{
         type: 'time',
         time: {
           tooltipFormat: 'lll',
-          unit: 'week'
+          unit: 'month'
         },
         scaleLabel: {
-          display: true,
-          labelString: 'Date'
+          display: false,
+          labelString: ''
         },
         ticks: {
           maxRotation: 0,
-          fontSize: 12
-        }
+          fontSize: 12,
+          showLabelBackdrop:false,
+        },
+
       }],
       yAxes: [{
         scaleLabel: {
-          display: true,
-          labelString: 'Value'
-        }
+          display: false,
+          labelString: ''
+        },ticks: {
+          maxRotation: 0,
+          fontSize: 12,
+        },
+
       }]
     },
-    tooltips: {
-      mode: 'index',
-      intersect: false
-    },
-    hover: {
-      mode: 'nearest',
-      intersect: true
-    },
     legend: {
-      display: false
+      display: false,
+      onClick : (event: MouseEvent, legendItem: ChartLegendLabelItem)=>{
+        console.log('legend clicked..')
+        this.legendClick(legendItem);
+      }
     }
   };
 
-  constructor(
-    private widgetService: WidgetService
-  ) {
-    super();
+  ngOnInit(): void {
+    this.formGroup = this.fb.group({
+      date: new FormControl(''),
+    });
+
+    this.startDateCtrl.valueChanges.subscribe(data=>{
+        this.emitDateChangeValues();
+    });
+
+    this.endDateCtrl.valueChanges.subscribe(data=>{
+      this.emitDateChangeValues();
+  });
+    this.getTimeSeriesMetadata();
+    this.widgetInf.subscribe(metadata=>{
+      if(metadata){
+        this.setChartProperties();
+        this.afterColorDefined.next(metadata.timeSeries.widgetColorPalette);
+      }
+    });
+        // after color defined update on widget
+    this.afterColorDefined.subscribe(res=>{
+      if(res) {
+        this.updateColorBasedOnDefined(res);
+      }
+    });
   }
 
-  ngOnInit(): void {
-    this.dataSet = this.getDummyData().dataSet;
+  ngOnChanges(changes: SimpleChanges): void {
+    this.lablels = [];
+    this.chartLegend = [];
+    this.widgetInf.subscribe(metadata=>{
+      if(metadata){
+        this.getwidgetData(this.widgetId);
+      }
+    });
+  }
+
+  /**
+   * Method to handle pan events
+   */
+
+ getVisibleValues({chart}) {
+    const x = chart.scales['x-axis-0'];
+    const startdate = moment(moment.unix(Number(x._table[0].time)/1000).format('MM/DD/YYYY HH:mm'));
+    const enddate = moment(moment.unix(Number(x._table[1].time)/1000).format('MM/DD/YYYY HH:mm'));
+    console.log(startdate + ' --- ' +enddate);
+    const strtDate = Date.parse(startdate.toString()).toString();
+    const enDate = Date.parse(enddate.toString()).toString();
+    this.emitpanAndClickevent(strtDate,enDate);
+  }
+
+  /**
+   * Method to handle button click events
+   */
+
+  updateForm(field:string,value:ButtonArr) {
+    this.dateFilters.forEach(ele=>{
+      if(ele.id === value.id) {
+        value.isActive = true
+      } else {
+        ele.isActive = false;
+      }
+    })
+     const control = this.formGroup.get(field) as FormControl;
+     if(control != null){
+        control.patchValue(value.value);
+        console.log(this.formGroup.value);
+     }
+     let endDatemilli :string;
+     switch (this.timeseriesData.timeSeries.seriesWith) {
+      case SeriesWith.day:
+        const date = moment().subtract(value.value, 'd').format('MM/DD/YYYY HH:mm');
+        endDatemilli = Date.parse(date.toString()).toString();
+         break;
+
+      case SeriesWith.hour:
+        const hour = moment().subtract(value.value, 'hours').format('MM/DD/YYYY HH:mm');
+        endDatemilli = Date.parse(hour.toString()).toString();
+        break;
+
+      case SeriesWith.millisecond:
+        const millisecond = moment().subtract(value.value, 'h').format('MM/DD/YYYY HH:mm');
+        endDatemilli = Date.parse(millisecond.toString()).toString();
+        break;
+
+      case SeriesWith.minute:
+        const minute = moment().subtract(value.value, 'minutes').format('MM/DD/YYYY HH:mm');
+        endDatemilli = Date.parse(minute.toString()).toString();
+        break;
+
+      case SeriesWith.month:
+        const month = moment().subtract(value.value, 'M').format('MM/DD/YYYY HH:mm');
+        endDatemilli = Date.parse(month.toString()).toString();
+        break;
+
+      case SeriesWith.quarter:
+        const quarter = moment().subtract(value.value, 'quarter').format('MM/DD/YYYY HH:mm');
+        endDatemilli = Date.parse(quarter.toString()).toString();
+        break;
+
+      case SeriesWith.second:
+        const second = moment().subtract(value.value, 'seconds').format('MM/DD/YYYY HH:mm');
+        endDatemilli = Date.parse(second.toString()).toString();
+        break;
+
+      case SeriesWith.week:
+        const week = moment().subtract((value.value*7), 'd').format('MM/DD/YYYY HH:mm');
+        endDatemilli = Date.parse(week.toString()).toString();
+        break;
+      default:
+        break;
+    }
+    const strtdatemilli = Date.parse(moment().format('MM/DD/YYYY HH:mm').toString()).toString();
+       this.emitpanAndClickevent(endDatemilli,strtdatemilli);
+  }
+
+  emitpanAndClickevent(startdate:string,enddate:string):void{
+    const fieldId = this.timeseriesData.timeSeries.groupWith;
+    let appliedFilters = this.filterCriteria.filter(fill => fill.fieldId === fieldId);
+    this.removeOldFilterCriteria(appliedFilters);
+    appliedFilters =[];
+      if(appliedFilters.length >0) {
+        const cri = appliedFilters.filter(fill => fill.conditionFieldValue === fieldId);
+        if(cri.length ===0) {
+          const critera: Criteria = new Criteria();
+          critera.fieldId = fieldId;
+          critera.conditionFieldId = fieldId;
+          critera.conditionFieldEndValue = enddate;
+          critera.conditionFieldStartValue = startdate;
+          critera.blockType = BlockType.COND;
+          critera.conditionOperator = ConditionOperator.RANGE;
+          appliedFilters.push(critera);
+        }
+      } else {
+        appliedFilters = [];
+        const critera: Criteria = new Criteria();
+        critera.fieldId = fieldId;
+        critera.conditionFieldId = fieldId;
+        critera.conditionFieldEndValue = enddate;
+        critera.conditionFieldStartValue = startdate;
+        critera.blockType = BlockType.COND;
+        critera.conditionOperator = ConditionOperator.RANGE;
+        appliedFilters.push(critera);
+      }
+      appliedFilters.forEach(app => this.filterCriteria.push(app));
+      this.emitEvtFilterCriteria(this.filterCriteria);
+  }
+
+  /**
+   * Get Metadata of Time series chart
+   */
+
+  getTimeSeriesMetadata():void{
     this.widgetService.getTimeseriesWidgetInfo(this.widgetId).subscribe(res=>{
       this.widgetInf.next(res);
     },error=>console.error(`Error : ${error}`));
   }
 
-  emitEvtFilterCriteria(event: any): void {
-    throw new Error('Method not implemented.');
+  /**
+   * Set Chart properties based on metadata
+   */
+  setChartProperties():void{
+    this.timeseriesData = this.widgetInf.getValue();
+
+    /**
+     * SET TICKS HERE
+     */
+    if(this.timeseriesData.timeSeries.scaleFrom !== null && this.timeseriesData.timeSeries.scaleFrom !== undefined
+      && this.timeseriesData.timeSeries.scaleTo !== null && this.timeseriesData.timeSeries.scaleTo !== undefined
+      && this.timeseriesData.timeSeries.stepSize !== null && this.timeseriesData.timeSeries.stepSize !== undefined) {
+         const ticks = {displamin:this.timeseriesData.timeSeries.scaleFrom, max:this.timeseriesData.timeSeries.scaleTo, stepSize:this.timeseriesData.timeSeries.stepSize};
+    /**
+     * SET SCALES BASED ON CONFIG
+     */
+
+      this.timeSeriesOption.scales = {
+        xAxes: [{
+          type: 'time',
+          time: {
+            tooltipFormat: 'lll',
+            unit: this.timeseriesData.timeSeries.seriesWith
+          },
+          scaleLabel: {
+            display: true,
+            labelString: this.timeseriesData.timeSeries.xAxisLabel ? this.timeseriesData.timeSeries.xAxisLabel : ''
+          },
+        }],
+        yAxes: [{
+          scaleLabel: {
+            display: true,
+            labelString: this.timeseriesData.timeSeries.yAxisLabel ? this.timeseriesData.timeSeries.yAxisLabel : ''
+          },ticks
+        }]
+      };
+  }
+    /**
+     * NOW SET LEGEND POSITION
+     */
+
+    if (this.timeseriesData.timeSeries.isEnableLegend) {
+      this.timeSeriesOption.legend = {
+        display: true,
+        position: this.timeseriesData.timeSeries.legendPosition,
+        onClick: (event: MouseEvent, legendItem: ChartLegendLabelItem) => {
+          // call protype of stacked bar chart componenet
+          this.legendClick(legendItem);
+        }
+      }
+    }
+
+    /**
+     * SET TITLE OF CHART
+     */
+
+    this.timeSeriesOption.title = {
+      display: true,
+      text: this.timeseriesData.widgetName
+    }
+
   }
 
-  getDummyData(): any {
-    return {dataSet:[{type:'bar',label:'ZMRO',id:'ZMRO_001',backgroundColor:'rgba(249, 229, 229, 1)',borderColor:'rgba(195, 0, 0, 1)',fill:true,data:[{x:this.getDateString(2),y:90820},{x:this.getDateString(3),y:26593},{x:this.getDateString(5),y:37414},{x:this.getDateString(6),y:37414},{x:this.getDateString(9),y:2759},{x:this.getDateString(11),y:21445}]},{type:'bar',label:'HAWA',id:'HAWA_001',backgroundColor:'rgba(231, 246, 237, 1)',borderColor:'rgba(18, 164, 74, 1)',fill:true,data:[{x:this.getDateString(1),y:86789},{x:this.getDateString(2),y:1929},{x:this.getDateString(7),y:10},{x:this.getDateString(9),y:762},{x:this.getDateString(10),y:8979},{x:this.getDateString(18),y:0}]},{type:'bar',label:'SPARE_PART',id:'SPARE_PART_001',backgroundColor:'rgba(246, 244, 249, 1)',borderColor:'rgba(163, 145, 197, 1)',fill:true,data:[{x:this.getDateString(0),y:111},{x:this.getDateString(1),y:2356},{x:this.getDateString(4),y:8979},{x:this.getDateString(8),y:234},{x:this.getDateString(12),y:678},{x:this.getDateString(16),y:2356}]},{type:'bar',label:'MRO_MAT',id:'MRO_MAT_001',backgroundColor:'rgba(248, 240, 246, 1)',borderColor:'rgba(182, 104, 170, 1)',fill:true,data:[{x:this.getDateString(4),y:276},{x:this.getDateString(7),y:124},{x:this.getDateString(9),y:8962},{x:this.getDateString(10),y:7862},{x:this.getDateString(14),y:243},{x:this.getDateString(17),y:7783}]}]};
+
+  /**
+   * Remove old filter criteria for field
+   * selectedOptions as parameter
+   */
+  removeOldFilterCriteria(selectedOptions: Criteria[]) {
+    selectedOptions.forEach(option => {
+      this.filterCriteria.splice(this.filterCriteria.indexOf(option), 1);
+    });
   }
-  getDateString(days) {
-    return moment().add(days, 'd').format('MM/DD/YYYY HH:mm');
+
+  emitEvtFilterCriteria(critera: Criteria[]): void {
+    this.evtFilterCriteria.emit(critera);
   }
+
+  /**
+   * Event handle when Clicks on dot
+   */
+
+  // timeClickFilter(event?: MouseEvent, activeElements?: Array<any>) {
+  //   const option = this.chart.chart.getElementAtEvent(event) as any;
+  //   if(option.length > 0){
+  //     const clickedIndex = (option[0])._index;
+  //     const clickedLagend = this.chartLegend[clickedIndex];
+  //     const drpCode = this.chartLegend[clickedIndex] ? this.chartLegend[clickedIndex].code : this.lablels[clickedIndex];
+  //   }
+  // }
+
+  /**
+   * handled for legend click
+   */
+
+  legendClick(legendItem: ChartLegendLabelItem):void {
+    const clickedLegend =  this.chartLegend[legendItem.datasetIndex] ? this.chartLegend[legendItem.datasetIndex].code : '';
+    if(clickedLegend === '') {
+      return ;
+    }
+    const fieldId = this.timeseriesData.timeSeries.fieldId;
+    let appliedFilters = this.filterCriteria.filter(fill => fill.fieldId === fieldId);
+    this.removeOldFilterCriteria(appliedFilters);
+      if(appliedFilters.length >0) {
+        const cri = appliedFilters.filter(fill => fill.conditionFieldValue === clickedLegend);
+        if(cri.length ===0) {
+          const critera1: Criteria = new Criteria();
+          critera1.fieldId = fieldId;
+          critera1.conditionFieldId = fieldId;
+          critera1.conditionFieldValue = clickedLegend;
+          critera1.blockType = BlockType.COND;
+          critera1.conditionOperator = ConditionOperator.EQUAL;
+          appliedFilters.push(critera1);
+        }
+      } else {
+        appliedFilters = [];
+        const critera1: Criteria = new Criteria();
+        critera1.fieldId = fieldId;
+        critera1.conditionFieldId = fieldId
+        critera1.conditionFieldValue = clickedLegend;
+        critera1.blockType = BlockType.COND;
+        critera1.conditionOperator = ConditionOperator.EQUAL;
+        appliedFilters.push(critera1);
+      }
+      appliedFilters.forEach(app => this.filterCriteria.push(app));
+      this.emitEvtFilterCriteria(this.filterCriteria);
+  }
+
+  public getRandomColor():string {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+
+  getwidgetData(widgetId:number):void{
+    this.dataSet = [];
+    this.widgetService.getWidgetData(String(widgetId),this.filterCriteria).subscribe(data=>{
+      if(data !== null){
+      this.dataSet = this.transformDataSets(data);
+        if(this.filterCriteria.length === 0){
+          this.dateFilters.forEach(ele=>{
+              ele.isActive = false;
+        });
+        this.startDateCtrl.setValue(null);
+        this.endDateCtrl.setValue(null);
+      }
+    }
+    });
+  }
+
+  transformDataSets(data:any):any{
+    const finalOutput = new Object();
+    const cordKeys = ['x','y'];
+    const aggregation = data.aggregations['date_histogram#date'];
+    if(aggregation.buckets !== undefined && aggregation.buckets.length>0){
+      aggregation.buckets.forEach(singleBucket => {
+        const milliVal = singleBucket.key;
+         const arrBuckets = singleBucket['sterms#term'].buckets;
+         arrBuckets.forEach(innerBucket => {
+             const count = innerBucket.doc_count;
+             const label = innerBucket.key;
+             if(Object.keys(finalOutput).includes(label)){
+              const array = finalOutput[label];
+              const objdt = new Object();
+              objdt[cordKeys[0]] =  moment(milliVal).format('DD MMM YYYY hh:mm a');
+              objdt[cordKeys[1]] =  count;
+              array.push(objdt);
+              finalOutput[label] = array;
+             }else{
+               const objdt = new Object();
+               objdt[cordKeys[0]] =  moment(milliVal).format('DD MMM YYYY hh:mm a');
+               objdt[cordKeys[1]] =  count;
+               const array = new Array();
+               array.push(objdt);
+              finalOutput[label] = array;
+             }
+         });
+      });
+    }
+
+    /**
+     * TRANSFORM _ DATASETS
+     */
+    this.chartLegend = [];
+    const arrKeys = ['data','id','label','fill','border'];
+    const datasets = new Array();
+    Object.keys(finalOutput).forEach(status=>{
+      const dataSet = new Object();
+      dataSet[arrKeys[0]] = finalOutput[status];
+      dataSet[arrKeys[1]] = status;
+      dataSet[arrKeys[2]] = status;
+      dataSet[arrKeys[3]] = false;
+      dataSet[arrKeys[4]]= this.getUpdatedColorCode(status);
+      const chartLegend = { text: status, code: status, legendIndex: this.chartLegend.length };
+      this.chartLegend.push(chartLegend);
+      datasets.push(dataSet);
+    });
+
+    return datasets;
+  }
+
+/**
+ * EMIT EVENT WHEN DATE CHANGES
+ */
+
+  emitDateChangeValues() {
+    if(this.startDateCtrl.value && this.endDateCtrl.value) {
+      const groupwith = this.timeseriesData.timeSeries.groupWith;
+      let filterApplied = this.filterCriteria.filter(fill => fill.conditionFieldId === groupwith);
+      this.removeOldFilterCriteria(filterApplied);
+      if(filterApplied.length) {
+        filterApplied[0].conditionFieldStartValue = moment(this.startDateCtrl.value).valueOf().toString();
+        filterApplied[0].conditionFieldEndValue = moment(this.endDateCtrl.value).valueOf().toString();
+      } else {
+        filterApplied = [];
+        const critera: Criteria = new Criteria();
+        critera.fieldId = groupwith;
+        critera.conditionFieldId = groupwith;
+        critera.conditionFieldEndValue = moment(this.endDateCtrl.value).valueOf().toString();
+        critera.conditionFieldStartValue = moment(this.startDateCtrl.value).valueOf().toString();
+        critera.blockType = BlockType.COND;
+        critera.conditionOperator = ConditionOperator.RANGE;
+        filterApplied.push(critera);
+      }
+      filterApplied.forEach(op=> this.filterCriteria.push(op));
+      this.emitEvtFilterCriteria(this.filterCriteria);
+    }
+  }
+
+  /**
+   * Open Color palette...
+   */
+  openColorPalette() {
+    console.log(this.timeseriesData);
+    console.log(this.chartLegend);
+    const req: WidgetColorPalette = new WidgetColorPalette();
+    req.widgetId = String(this.widgetId);
+    req.reportId = String(this.reportId);
+    req.widgetDesc = this.timeseriesData.desc;
+    req.colorPalettes = [];
+    this.chartLegend.forEach(legend=>{
+      req.colorPalettes.push({
+        code: legend.code,
+        colorCode: this.timeseriesData[0] ? this.timeseriesData[0].backgroundColor[legend.legendIndex] : this.getRandomColor(),
+        text: legend.text
+      });
+    });
+    super.openColorPalette(req);
+  }
+
+  getUpdatedColorCode(code: string): string {
+    if(this.widgetColorPalette && this.widgetColorPalette.colorPalettes) {
+      const res = this.widgetColorPalette.colorPalettes.filter(fil => fil.code === code)[0];
+      if(res) {
+        return res.colorCode;
+      }
+
+    }
+    return this.getRandomColor();
+  }
+
+  /**
+   * Update stacked color based on color definations
+   */
+
+  updateColorBasedOnDefined(res: WidgetColorPalette) {
+    this.widgetColorPalette = res;
+  }
+
+ /*
+  * download chart data as CSV
+  */
+
+ downloadCSV(): void {
+  const excelData = [];
+  this.chartLegend.forEach(legend=>{
+    const obj = {} as any;
+    obj[this.timeseriesData.timeSeries.fieldId] = legend.code + '';
+    const key = 'id';
+    const objdataArr = this.dataSet.filter(data=>data[key] === legend.code)
+    if(objdataArr.length>0 && objdataArr[0].data.length>0){
+      objdataArr[0].data.forEach(data=>{
+        obj.time = data.x;
+        obj.count = data.y;
+        excelData.push(obj);
+      })
+    }
+    excelData.push(obj);
+  });
+  this.widgetService.downloadCSV('Time-Chart', excelData);
+}
+
+/*
+* download chart as image
+*/
+downloadImage() {
+  this.widgetService.downloadImage(this.chart.toBase64Image(), 'Time-Series.png');
+}
 }

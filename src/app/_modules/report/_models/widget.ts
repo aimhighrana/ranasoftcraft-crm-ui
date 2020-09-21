@@ -191,8 +191,6 @@ export class BarChartWidget {
     dataSetSize: number;
     blankValueAlias : string;
     widgetColorPalette: WidgetColorPalette;
-
-
 }
 
 export class StackBarChartWidget{
@@ -283,11 +281,25 @@ export interface TimeSeriesWidget {
 }
 export interface WidgetTimeseries {
     widgetId: number;
-    fieldId: number;
+    fieldId: string;
     seriesWith: SeriesWith;
     seriesFormat: string;
+    aggregationOperator: AggregationOperator;
+    chartType: ChartType;
+    isEnableDatalabels: boolean;
+    isEnableLegend: boolean;
+    legendPosition : PositionType;
+    datalabelsPosition: AlignPosition;
+    xAxisLabel : string;
+    yAxisLabel : string;
+    scaleFrom: number;
+    scaleTo: number;
+    stepSize: number;
+    dataSetSize: number;
+    groupWith : string;
+    widgetColorPalette : WidgetColorPalette;
 }
-enum SeriesWith {
+export enum SeriesWith {
     millisecond = 'millisecond',
 	second = 'second',
 	minute = 'minute',
@@ -327,7 +339,8 @@ export class WidgetImageModel {
 
 export enum ChartType {
     BAR = 'BAR',
-    PIE = 'PIE'
+    PIE = 'PIE',
+    LINE = 'LINE'
 }
 
 export enum Orientation {
@@ -367,7 +380,23 @@ export class ChartProperties {
     scaleTo: number;
     stepSize: number;
     dataSetSize: number;
+    seriesWith : SeriesWith;
+    seriesFormat:string;
     blankValueAlias : string;
+    timeseriesStartDate : TimeseriesStartDate;
+}
+
+export class ButtonArr {
+    id:number;
+    value: number;
+    isActive: boolean;
+  }
+
+export enum TimeseriesStartDate{
+    D7 = '7',
+    D10 = '10',
+    D20 = '20',
+    D30 = '30'
 }
 
 export class ReportDashboardPermission {
