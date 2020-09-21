@@ -207,7 +207,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
       if(ddv) {
         finalVal[key] = ddv;
       } else {
-        finalVal[key] = hits._source.hdvs?hits._source.hdvs[fldid].vc:null;
+        finalVal[key] = hits._source.hdvs && hits._source.hdvs[fldid] && hits._source.hdvs[fldid].vc?hits._source.hdvs[fldid].vc[0].c:null;
       }
     });
 
@@ -241,14 +241,14 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     buckets.forEach(bucket=>{
       const key = bucket.key;
       const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
-      const ddv = hits._source.hdvs[fldid] ?( hits._source.hdvs[fldid] ? hits._source.hdvs[fldid].ddv : null) : null;
+      const ddv = hits._source.hdvs?hits._source.hdvs[fldid] ?( hits._source.hdvs[fldid] ? hits._source.hdvs[fldid].ddv : null) : null:null;
       if(ddv) {
         const hasValue =  ddv.filter(fil=> fil.lang === locale)[0];
         if(hasValue) {
           finalVal[key] = hasValue.val;
         }
       } else {
-        finalVal[key] = hits._source.hdvs[fldid].vc;
+        finalVal[key] = hits._source.hdvs && hits._source.hdvs[fldid]?hits._source.hdvs[fldid].vc[0].c:null;
       }
     });
 

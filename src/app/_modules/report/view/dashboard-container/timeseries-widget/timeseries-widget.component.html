@@ -1,4 +1,4 @@
-<mat-card class="mat-elevation-z4 widget">
+<mat-card class="mat-elevation-z4 widget" *ngIf="dataSet">
     <mat-card-header>
         <mat-card-title>{{ widgetInf.getValue() ? widgetInf.getValue().desc : 'Timeseries widget' }}</mat-card-title>
     </mat-card-header>
@@ -27,7 +27,7 @@
           </mat-menu>   
           <!-- TIME SERIES CHART -->
     </mat-toolbar-row>
-    <mat-card-content *ngIf="dataSet">
+    <mat-card-content>
         <canvas
         baseChart
         [datasets]="dataSet"

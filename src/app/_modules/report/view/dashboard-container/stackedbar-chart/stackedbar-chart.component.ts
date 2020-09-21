@@ -355,11 +355,11 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     this.arrayBuckets.forEach(bucket=>{
       const key = bucket.key[fieldId];
       const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
-      const ddv = hits._source.hdvs[fieldId] ?( hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vls[locale].valueTxt : null) : null;
+      const ddv = hits._source.hdvs?hits._source.hdvs[fieldId] ?( hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vls[locale].valueTxt : null) : null:null;
       if(ddv) {
         this.codeTextaxis2[key] = ddv;
       } else {
-        this.codeTextaxis2[key] = hits._source.hdvs[fieldId].vc;
+        this.codeTextaxis2[key] = hits._source.hdvs && hits._source.hdvs[fieldId]?hits._source.hdvs[fieldId].vc[0].c:null;
       }
     });
     this.updateLabelsaxis2();
@@ -372,14 +372,14 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     this.arrayBuckets.forEach(bucket=>{
       const key = bucket.key[fieldId];
       const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
-      const ddv = hits._source.hdvs[fieldId] ?( hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].ddv : null) : null;
+      const ddv = hits._source.hdvs?hits._source.hdvs[fieldId] ?( hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].ddv : null) : null:null;
       if(ddv) {
         const hasValue =  ddv.filter(fil=> fil.lang === locale)[0];
         if(hasValue) {
           this.codeTextaxis2[key] = hasValue.val;
         }
       } else {
-        this.codeTextaxis2[key] = hits._source.hdvs[fieldId].vc;
+        this.codeTextaxis2[key] = hits._source.hdvs && hits._source.hdvs[fieldId] && hits._source.hdvs[fieldId].vc?hits._source.hdvs[fieldId].vc[0].c:null;
       }
     });
     this.updateLabelsaxis2();
@@ -390,7 +390,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         const singleobj= {} as any;
         singleobj.data=this.dataObj[singleLis];
         if(singleLis) {
-          singleobj.label=this.codeTextaxis2[singleLis] !== undefined ?this.codeTextaxis2[singleLis]:singleLis;
+          singleobj.label=this.codeTextaxis2[singleLis] !== undefined &&  this.codeTextaxis2[singleLis] !== null?this.codeTextaxis2[singleLis]:singleLis;
         } else {
           singleobj.label= singleLis;
         }
