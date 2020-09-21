@@ -10,13 +10,13 @@
     </div>
     <div class="row-spacer"></div>
 
-    <pros-search-input [placeholder]="'Search Schema'"></pros-search-input>
+    <pros-search-input [placeholder]="'Search Schema'" (value)=(searchSchema($event))></pros-search-input>
 
     <div class="row-spacer"></div>
 
     <div class="nav-tree">
       <mat-accordion *ngIf="activatedPrimaryNav === 'welcome'">
-        <ng-container *ngFor="let module of dataIntillegences">
+        <ng-container *ngFor="let module of searchSchemaResults">
           <ng-template [ngIf]="module.variants && module.variants.length >0" [ngIfElse]="noVarinats">
             <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
               <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
@@ -61,7 +61,7 @@
           Data intelligence
         </div>
         <div class="row-spacer"></div>
-        <ng-container *ngFor="let module of moduleList">
+        <ng-container *ngFor="let module of searchModuleResults">
           <mat-expansion-panel togglePosition="before" class="mat-elevation-z0"
             *ngIf="module.schemaLists && module.schemaLists.length>0">
             <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px" [routerLink]="['schema', module.moduleId]">

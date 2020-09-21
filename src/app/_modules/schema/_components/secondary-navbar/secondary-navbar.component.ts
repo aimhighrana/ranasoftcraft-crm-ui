@@ -20,6 +20,16 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
 
   dataIntillegences: SchemaListDetails[] = [];
 
+  /**
+   * schema search result array from home navigation
+   */
+  searchSchemaResults: SchemaListDetails[] = [];
+
+  /**
+   * module search result array from schema navigation
+   */
+  searchModuleResults: SchemaListModuleList[] = [];
+
   @Input()
   activatedPrimaryNav: string;
 
@@ -85,7 +95,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
     this.sharedService.secondaryBarData.subscribe((res) => {
       this.getSchemaList();
     })
-    this.sharedService.isSecondaryNavRefresh().subscribe(res=>{
+    this.sharedService.isSecondaryNavRefresh().subscribe(res => {
       switch (res) {
         case SecondaynavType.schema:
           this.getSchemaList();
@@ -109,7 +119,8 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
   getDataIntilligence() {
     this.schemaService.getSchemaWithVariants().subscribe(res => {
       this.dataIntillegences.length = 0;
-      this.dataIntillegences.push(...res)
+      this.dataIntillegences.push(...res);
+      this.searchSchemaResults = this.dataIntillegences;
     }, error => console.error(`Error : ${error.message}`));
   }
 
@@ -119,23 +130,14 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
   public getSchemaList() {
     this.schemaListService.getSchemaList().subscribe((moduleList) => {
       this.moduleList = moduleList;
+      this.searchModuleResults = this.moduleList;
       if (this.moduleList) {
         const firstModuleId = this.moduleList[0].moduleId;
         this.router.navigate(['/home/schema', firstModuleId]);
       }
-
-
     }, error => {
       console.error(`Error : ${error.message}`);
     })
-  }
-
-  /**
-   * Open schema details ..
-   */
-  openSchemaDetails(module: SchemaListModuleList) {
-    const frstSchemaId = module.schemaLists ? module.schemaLists[0].schemaId : '';
-    this.router.navigate(['/home/schema/schema-details', module.moduleId, frstSchemaId, 0]);
   }
 
   public getreportList() {
@@ -200,5 +202,67 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
       this.arrowIcon = 'keyboard_arrow_left'
     }
     this.toggleEmitter.emit(hidePrimary)
+  }
+
+  /**
+   * Function to search schema from home primary nav
+   * @param searchString schema string to be searched
+   */
+  searchSchema(searchString: string) {
+    if(this.activatedPrimaryNav==='welcome'){
+      if (searchString === null) {
+        return this.searchSchemaResults = this.dataIntillegences;
+      }
+      this.searchSchemaResults = this.dataIntillegences.filter((schema) => {
+        schema.schemaDescription = schema.schemaDescription ? schema.schemaDescription : 'untitled';
+        if (schema.schemaDescription.toLowerCase().includes(searchString.toLowerCase()) || this.searchForVarient(schema, searchString)) {
+          return schema;
+        }
+      })
+    }
+    if(this.activatedPrimaryNav==='schema'){
+      if(searchString===null){
+        return this.searchModuleResults = this.moduleList;
+      }
+      this.searchModuleResults = this.moduleList.filter((module) => {
+        module.moduleDesc = module.moduleDesc ? module.moduleDesc : 'untitled';
+        if(module.moduleDesc.toLowerCase().includes(searchString.toLowerCase()) || this.searchForSchema(module, searchString)){
+          return module;
+        }
+      })
+    }
+  }
+
+  /**
+   * function to search for varient inside schema
+   * @param schema schema obj
+   * @param searchString string to be searched
+   */
+  searchForVarient(schema: SchemaListDetails, searchString: string){
+    let flag = false;
+    schema.variants.forEach((variant) => {
+      if(variant.variantName.toLowerCase().includes(searchString.toLowerCase())){
+        return flag = true;
+      }
+    })
+    return flag;
+  }
+
+/**
+ * function to search for schema inside module
+ * @param module module obj
+ * @param searchString string to be searched
+ */
+  searchForSchema(module: SchemaListModuleList, searchString: string){
+    let flag = false;
+    if(module.schemaLists){
+      module.schemaLists.forEach((schema) => {
+        schema.schemaDescription = schema.schemaDescription ? schema.schemaDescription: 'untitled';
+        if(schema.schemaDescription.toLowerCase().includes(searchString.toLowerCase())){
+          return flag = true;
+        }
+      })
+    }
+    return flag;
   }
 }
