@@ -97,11 +97,11 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   }
 
   public getListdata(pageSize,pageIndex,widgetId:number,criteria:Criteria[],soringMap):void{
-     this.widgetService.getListdata(String(pageSize),String(pageIndex),String(widgetId),criteria, soringMap).subscribe(returndata=>{
+    this.widgetService.getListdata(String(pageSize),String(pageIndex),String(widgetId),criteria, soringMap).subscribe(returndata=>{
       this.listData =new Array();
       this.resultsLength = returndata.count;
       if(returndata.data){
-      returndata = returndata.data;
+        returndata = returndata.data;
       }
       returndata.hits.hits.forEach(element => {
         const source =element._source;
@@ -120,64 +120,65 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
 
           if(column === 'action' || column === 'objectNumber'){}
           else {
-
-            // check for dropdown , multiselect , userselection and objectRefrence
-            if(pickList === '1' && hdvs[column]) {
-              if(metadata.fldMetaData.isCheckList === 'true') {
-              const localVal = hdvs[column].msdv ? (hdvs[column].msdv[0].msdvls ? hdvs[column].msdv[0].msdvls.filter(f=> f.lang === locale)[0] :null) : null;
-              if(localVal) {
-                obj[column] = localVal.val.toString();
-              } else {
-                obj[column] = hdvs[column] ? hdvs[column].vc[0]?hdvs[column].vc[0].c : '':'';
+            if (hdvs[column]) {
+              // check for dropdown , multiselect , userselection and objectRefrence
+              if(pickList === '1' && hdvs[column]) {
+                if(metadata.fldMetaData.isCheckList === 'true') {
+                  const localVal = hdvs[column].msdv ? (hdvs[column].msdv[0].msdvls ? hdvs[column].msdv[0].msdvls.filter(f=> f.lang === locale)[0] :null) : null;
+                  if(localVal) {
+                    obj[column] = localVal.val.toString();
+                  } else {
+                    obj[column] = hdvs[column] ? hdvs[column].vc[0]?hdvs[column].vc[0].c : '':'';
+                  }
+                } else {
+                  const localVal = hdvs[column].ddv ? (hdvs[column].ddv ? hdvs[column].ddv.filter(f=> f.lang === locale)[0] :null) : null;
+                  if(localVal) {
+                    obj[column] = localVal.val ? localVal.val : '';
+                  } else {
+                    obj[column] = hdvs[column] ? hdvs[column].vc[0]?hdvs[column].vc[0].c+' -- '+hdvs[column].vc[0].t : '':'';
+                  }
+                }
+              } else if(pickList === '37' && hdvs[column]) {
+                const localVal = hdvs[column].ddv ? (hdvs[column].ddv ? hdvs[column].ddv.filter(f=> f.lang === locale)[0] :null) : null;
+                if(localVal) {
+                  obj[column] = localVal.val ? localVal.val : '';
+                } else {
+                  obj[column] = hdvs[column] ? hdvs[column].vc[0]?hdvs[column].vc[0].c : '':'';
+                }
+              } else if(pickList === '30' && hdvs[column]) {
+                if(metadata.fldMetaData.isCheckList === 'true') {
+                  const localVal = hdvs[column].msdv ? (hdvs[column].msdv[0].msdvls ? hdvs[column].msdv[0].msdvls.filter(f=> f.lang === locale)[0] :null) : null;
+                  if(localVal) {
+                    obj[column] = localVal.val.toString();
+                  } else {
+                    obj[column] = hdvs[column] ? hdvs[column].vc[0]?hdvs[column].vc[0].c : '':'';
+                  }
+                } else if(hdvs[column]){
+                  const localVal = hdvs[column].ddv ? (hdvs[column].ddv ? hdvs[column].ddv.filter(f=> f.lang === locale)[0] :null) : null;
+                  if(localVal) {
+                    obj[column] = localVal.val ? localVal.val : '';
+                  } else {
+                    obj[column] = hdvs[column] ? hdvs[column].vc[0]?hdvs[column].vc[0].c : '':'';
+                  }
+                }
+              }else if(hdvs[column]){
+                // case for other fields
+                if(hdvs[column] && hdvs[column].vls && hdvs[column].vls[locale]  && hdvs[column].vls[locale].valueTxt){
+                  obj[column] = hdvs[column].vls[locale].valueTxt;
+                }else{
+                  obj[column] = hdvs[column] ? hdvs[column].vc[0]?hdvs[column].vc[0].c : '':'';
+                }
               }
-            } else {
-              const localVal = hdvs[column].ddv ? (hdvs[column].ddv ? hdvs[column].ddv.filter(f=> f.lang === locale)[0] :null) : null;
-              if(localVal) {
-                obj[column] = localVal.val ? localVal.val : '';
-              } else {
-                obj[column] = hdvs[column] ? hdvs[column].vc[0]?hdvs[column].vc[0].c+' -- '+hdvs[column].vc[0].t : '':'';
-              }
-            }
-          } else if(pickList === '37' && hdvs[column]) {
-              const localVal = hdvs[column].ddv ? (hdvs[column].ddv ? hdvs[column].ddv.filter(f=> f.lang === locale)[0] :null) : null;
-              if(localVal) {
-                obj[column] = localVal.val ? localVal.val : '';
-              } else {
-                obj[column] = hdvs[column] ? hdvs[column].vc[0]?hdvs[column].vc[0].c : '':'';
-              }
-          } else if(pickList === '30' && hdvs[column]) {
-            if(metadata.fldMetaData.isCheckList === 'true') {
-              const localVal = hdvs[column].msdv ? (hdvs[column].msdv[0].msdvls ? hdvs[column].msdv[0].msdvls.filter(f=> f.lang === locale)[0] :null) : null;
-              if(localVal) {
-                obj[column] = localVal.val.toString();
-              } else {
-                obj[column] = hdvs[column] ? hdvs[column].vc[0]?hdvs[column].vc[0].c : '':'';
-              }
-            } else if(hdvs[column]){
-              const localVal = hdvs[column].ddv ? (hdvs[column].ddv ? hdvs[column].ddv.filter(f=> f.lang === locale)[0] :null) : null;
-              if(localVal) {
-                obj[column] = localVal.val ? localVal.val : '';
-              } else {
-                obj[column] = hdvs[column] ? hdvs[column].vc[0]?hdvs[column].vc[0].c : '':'';
-              }
-            }
-          }else if(hdvs[column]){
-            // case for other fields
-            if(hdvs[column] && hdvs[column].vls && hdvs[column].vls[locale]  && hdvs[column].vls[locale].valueTxt){
-              obj[column] = hdvs[column].vls[locale].valueTxt;
-            }else{
-              obj[column] = hdvs[column] ? hdvs[column].vc[0]?hdvs[column].vc[0].c : '':'';
             }
           }
-        }
+        });
+        this.listData.push(obj);
       });
-      this.listData.push(obj);
-      });
-     this.dataSource = new MatTableDataSource<any>(this.listData);
-     this.dataSource.sort = this.sort;
-    //  this.widgetService.count.subscribe(count=>{
-    //   this.resultsLength = count;
-    // })
+      this.dataSource = new MatTableDataSource<any>(this.listData);
+      this.dataSource.sort = this.sort;
+      //  this.widgetService.count.subscribe(count=>{
+      //   this.resultsLength = count;
+      // })
     });
   }
 

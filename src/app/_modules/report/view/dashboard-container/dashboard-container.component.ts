@@ -59,7 +59,6 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit, OnCha
   }
 
   ngOnInit(): void {
-    console.log(this.reportId + ' dashboard');
     if(this.reportId) {
       this.reportService.getReportInfo(this.reportId).subscribe(res=>{
         this.widgetList = res.widgets;

@@ -68,8 +68,10 @@ export class DiwTilesComponent implements OnInit {
   private getRouteParams() {
     this.activatedRoute.params.subscribe((params) => {
       this.moduleId = params.moduleId;
-      this.moduleSchemaData = [];
-      this.getSchemaList();
+      if(this.moduleId) {
+        this.moduleSchemaData = [];
+        this.getSchemaList();
+      }
     })
   }
 

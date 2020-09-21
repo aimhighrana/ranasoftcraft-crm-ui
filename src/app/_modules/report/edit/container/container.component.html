@@ -134,7 +134,7 @@
                                     <mat-select formControlName="objectType">
                                         <mat-optgroup label="Module">
                                             <mat-option *ngFor="let object of dataSetOb | async" value="{{ object.objectid }}">
-                                                {{ object.objectdesc }} 
+                                                {{ object.objectdesc ? object.objectdesc : 'Untitled' }} 
                                             </mat-option>
                                         </mat-optgroup>
 
@@ -497,9 +497,9 @@
                             <ng-template [ngIf]="selStyleWid  && selStyleWid.defaultFilters">
                                 <div class="f-col" [formGroup]="defaultFilterCtrlGrp">
                                     <div class="f-row" formArrayName="filters"
-                                        *ngFor="let filter of frmArray.controls; let i = index">
+                                        *ngFor="let filter of defaultFilterCtrlGrp.get('filters').controls; let i = index">
                                         <ng-container [formGroupName]="i">
-                                            <ng-template [ngIf]="styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===true" [ngIfElse]="workflowField">
+                                            <ng-template [ngIf]="styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===false" [ngIfElse]="workflowField">
                                                 <pros-metadatafield-control
                                                     [moduleId] = "selStyleWid && selStyleWid.objectType"
                                                     lebel = "Field "
@@ -509,9 +509,10 @@
                                             </ng-template>
 
                                             <ng-template #workflowField>
-                                                <pros-workflowfield-control [objectType]="selStyleWid && selStyleWid.objectType"
+                                                <pros-workflowfield-control 
+                                                    [objectType]="selStyleWid && selStyleWid.objectType"
                                                     label="Field" 
-                                                    [selectedFldId]="selStyleWid && selStyleWid.groupById"
+                                                    [selectedFldId]="selStyleWid && selStyleWid.defaultFilters && (selStyleWid.defaultFilters[i]).conditionFieldId"
                                                     (selectionChange)='onDefaultFilterChange($event,i)' class="field-divider">
                                                 </pros-workflowfield-control>
                                             </ng-template>
@@ -519,6 +520,7 @@
                                             <span class="f-col-spacer"></span>
                                             <pros-udr-condition-operators
                                                 [conditionalOperators] = "conditionalOperators"
+                                                [selecetedOperator]="selStyleWid && selStyleWid.defaultFilters && (selStyleWid.defaultFilters[i]).conditionOperator"
                                                 (afterSelect) ="operatorSelectionChng($event,i)"
                                                 class="field-divider">
                                             </pros-udr-condition-operators>
