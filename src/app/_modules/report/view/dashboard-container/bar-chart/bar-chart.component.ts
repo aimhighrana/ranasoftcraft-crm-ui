@@ -203,11 +203,11 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     buckets.forEach(bucket=>{
       const key = bucket.key;
       const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
-      const ddv = hits._source.hdvs[fldid] ?( hits._source.hdvs[fldid] ? hits._source.hdvs[fldid].vls[locale].valueTxt : null) : null;
+      const ddv = hits._source.hdvs?hits._source.hdvs[fldid] ?( hits._source.hdvs[fldid] ? hits._source.hdvs[fldid].vls[locale].valueTxt : null) : null:null;
       if(ddv) {
         finalVal[key] = ddv;
       } else {
-        finalVal[key] = hits._source.hdvs[fldid].vc;
+        finalVal[key] = hits._source.hdvs?hits._source.hdvs[fldid].vc:null;
       }
     });
 

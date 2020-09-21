@@ -114,9 +114,9 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
           this.updateLabelsaxis1();
         }
 
-        if(Object.keys(this.codeTextaxis2).length === 0 && (this.stackBarWidget.getValue().fieldIdMetaData.picklist === '1' || this.stackBarWidget.getValue().fieldIdMetaData.picklist === '37' || this.stackBarWidget.getValue().fieldIdMetaData.picklist === '30')){
+        if(Object.keys(this.codeTextaxis2).length === 0 && this.stackBarWidget.getValue().fieldIdMetaData !=null && (this.stackBarWidget.getValue().fieldIdMetaData.picklist === '1' || this.stackBarWidget.getValue().fieldIdMetaData.picklist === '37' || this.stackBarWidget.getValue().fieldIdMetaData.picklist === '30')){
           this.getFieldsMetadaDescaxis2(this.stackBarWidget.getValue().fieldId);
-        }else if(Object.keys(this.codeTextaxis2).length === 0 && this.stackBarWidget.getValue().fieldIdMetaData.picklist === '0') {
+        }else if(Object.keys(this.codeTextaxis2).length === 0 && this.stackBarWidget.getValue().fieldIdMetaData !=null && this.stackBarWidget.getValue().fieldIdMetaData.picklist === '0') {
           this.getFieldsMetadaDescaxis2Nondef(this.stackBarWidget.getValue().fieldId);
         } else{
           this.updateLabelsaxis2();
@@ -327,14 +327,14 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     this.arrayBuckets.forEach(bucket=>{
       const key = bucket.key[fieldId];
       const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
-      const ddv = hits._source.hdvs[fieldId] ?( hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].ddv : null) : null;
+      const ddv = hits._source.hdvs?hits._source.hdvs[fieldId] ?( hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].ddv : null) : null:null;
       if(ddv) {
         const hasValue =  ddv.filter(fil=> fil.lang === locale)[0];
         if(hasValue) {
           this.codeTextaxis1[key] = hasValue.val;
         }
       } else {
-        this.codeTextaxis1[key] = hits._source.hdvs[fieldId].vc;
+        this.codeTextaxis1[key] = hits._source.hdvs?hits._source.hdvs[fieldId].vc?hits._source.hdvs[fieldId].vc.c[0]:null:null;
       }
     });
     this.updateLabelsaxis1();
