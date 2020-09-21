@@ -35,7 +35,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   /**
    * Columns that need to display
    */
-  displayedColumnsId :string[]= ['objectNumber'];
+  displayedColumnsId :string[]= ['action','objectNumber'];
   /**
    * Store fieldid & description as key | value
    */
@@ -109,7 +109,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
         const objectNumber = element._id;
         const obj = {objectNumber};
 
-        const hdvs = source.hdvs;
+        const hdvs = source.hdvs !== undefined?source.hdvs:source;
         let  locale = this.locale!==''?this.locale.split('-')[0]:'EN';
         locale = locale.toUpperCase();
         const tblMetadata = this.reportingListWidget.value;
@@ -122,51 +122,51 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
           else {
 
             // check for dropdown , multiselect , userselection and objectRefrence
-            if(pickList === '1') {
+            if(pickList === '1' && hdvs[column]) {
               if(metadata.fldMetaData.isCheckList === 'true') {
               const localVal = hdvs[column].msdv ? (hdvs[column].msdv[0].msdvls ? hdvs[column].msdv[0].msdvls.filter(f=> f.lang === locale)[0] :null) : null;
               if(localVal) {
                 obj[column] = localVal.val.toString();
               } else {
-                obj[column] = hdvs[column] ? hdvs[column].vc : '';
+                obj[column] = hdvs[column] ? hdvs[column].vc[0]?hdvs[column].vc[0].c : '':'';
               }
             } else {
               const localVal = hdvs[column].ddv ? (hdvs[column].ddv ? hdvs[column].ddv.filter(f=> f.lang === locale)[0] :null) : null;
               if(localVal) {
                 obj[column] = localVal.val ? localVal.val : '';
               } else {
-                obj[column] = hdvs[column] ? hdvs[column].vc : '';
+                obj[column] = hdvs[column] ? hdvs[column].vc[0]?hdvs[column].vc[0].c+' -- '+hdvs[column].vc[0].t : '':'';
               }
             }
-          } else if(pickList === '37') {
+          } else if(pickList === '37' && hdvs[column]) {
               const localVal = hdvs[column].ddv ? (hdvs[column].ddv ? hdvs[column].ddv.filter(f=> f.lang === locale)[0] :null) : null;
               if(localVal) {
                 obj[column] = localVal.val ? localVal.val : '';
               } else {
-                obj[column] = hdvs[column] ? hdvs[column].vc : '';
+                obj[column] = hdvs[column] ? hdvs[column].vc[0]?hdvs[column].vc[0].c : '':'';
               }
-          } else if(pickList === '30') {
+          } else if(pickList === '30' && hdvs[column]) {
             if(metadata.fldMetaData.isCheckList === 'true') {
               const localVal = hdvs[column].msdv ? (hdvs[column].msdv[0].msdvls ? hdvs[column].msdv[0].msdvls.filter(f=> f.lang === locale)[0] :null) : null;
               if(localVal) {
                 obj[column] = localVal.val.toString();
               } else {
-                obj[column] = hdvs[column] ? hdvs[column].vc : '';
+                obj[column] = hdvs[column] ? hdvs[column].vc[0]?hdvs[column].vc[0].c : '':'';
               }
-            } else {
+            } else if(hdvs[column]){
               const localVal = hdvs[column].ddv ? (hdvs[column].ddv ? hdvs[column].ddv.filter(f=> f.lang === locale)[0] :null) : null;
               if(localVal) {
                 obj[column] = localVal.val ? localVal.val : '';
               } else {
-                obj[column] = hdvs[column] ? hdvs[column].vc : '';
+                obj[column] = hdvs[column] ? hdvs[column].vc[0]?hdvs[column].vc[0].c : '':'';
               }
             }
-          }else{
+          }else if(hdvs[column]){
             // case for other fields
             if(hdvs[column] && hdvs[column].vls && hdvs[column].vls[locale]  && hdvs[column].vls[locale].valueTxt){
               obj[column] = hdvs[column].vls[locale].valueTxt;
             }else{
-              obj[column] = hdvs[column] ? hdvs[column].vc : '';
+              obj[column] = hdvs[column] ? hdvs[column].vc[0]?hdvs[column].vc[0].c : '':'';
             }
           }
         }

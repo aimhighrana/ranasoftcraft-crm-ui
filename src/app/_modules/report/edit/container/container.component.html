@@ -197,7 +197,7 @@
 
                                 <!--WorkflowType-->
                                 <ng-template
-                                    [ngIf]="selStyleWid && (selStyleWid.widgetType === 'COUNT' || selStyleWid.widgetType === 'BAR_CHART' || selStyleWid.widgetType === 'STACKED_BAR_CHART' || selStyleWid.widgetType === 'FILTER') && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===true">
+                                    [ngIf]="selStyleWid && (selStyleWid.widgetType === 'COUNT' || selStyleWid.widgetType === 'BAR_CHART' || selStyleWid.widgetType === 'STACKED_BAR_CHART' || selStyleWid.widgetType === 'FILTER' || selStyleWid.widgetType === 'TIMESERIES') && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===true">
                                     <pros-workflowfield-control [objectType]="selStyleWid && selStyleWid.objectType"
                                         label="Field" [selectedFldId]="selStyleWid && selStyleWid.field"
                                         (selectionChange)='onFieldChange($event)'>
@@ -206,7 +206,7 @@
 
                                 <!-- FOR STACKED BAR CHART WIDGET-->
                                 <ng-template
-                                    [ngIf]="selStyleWid && selStyleWid.widgetType === 'STACKED_BAR_CHART' && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===true">
+                                    [ngIf]="selStyleWid && (selStyleWid.widgetType === 'STACKED_BAR_CHART'|| selStyleWid.widgetType === 'TIMESERIES') && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===true">
                                     <pros-workflowfield-control [objectType]="selStyleWid && selStyleWid.objectType"
                                         label="Group With(s)" [selectedFldId]="selStyleWid && selStyleWid.groupById"
                                         (selectionChange)='onGroupByChange($event)'>
