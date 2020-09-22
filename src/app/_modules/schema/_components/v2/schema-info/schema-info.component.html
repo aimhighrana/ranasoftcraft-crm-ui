@@ -145,9 +145,10 @@
                 <div class="f-row colunm-box" *ngFor="let subscriber of subscriberData">
                     <div class="col col-x8">
                         <mat-card-header>
-                            <div mat-card-avatar>
-                                {{shortName(subscriber.userMdoModel.fName, subscriber.userMdoModel.lName)}}</div>
-                            <mat-card-title>{{subscriber.userMdoModel.fName}} {{subscriber.userMdoModel.lName}}
+                            <div mat-card-avatar *ngIf="subscriber.userMdoModel">
+                                {{shortName(subscriber.userMdoModel.fName, subscriber.userMdoModel.lName)}}
+                            </div>
+                            <mat-card-title *ngIf="subscriber.userMdoModel!==undefined">{{subscriber.userMdoModel.fName}} {{subscriber.userMdoModel.lName}}
                             </mat-card-title>
                         </mat-card-header>
                     </div>
@@ -163,32 +164,57 @@
                     </div>
                     <div class="col col-x8">
                         <mat-chip-list>
+                            <ng-template ngFor let-ctrl [ngForOf]="subscriber.filterCriteria">
+                               
+                                    <mat-chip class="mdo-filter-matchip" disableRipple="true"
+                                        [matMenuTriggerFor]="appliedfiltermenu" (click)="loadDropValues(ctrl)">
+                                        <label>
+                                            {{ ctrl.filterCtrl ? ctrl.filterCtrl.fldCtrl.fieldDescri : 'Unknown' }}
+                                            :
+                                        </label>
+                                        <ng-template [ngIf]="ctrl.filterCtrl.selectedValeus.length > 1"
+                                            [ngIfElse]="showText">
+                                            <span class="info">
+                                                {{ prepareTextToShow(ctrl) }}
+                                            </span>
+                                        </ng-template>
+                                        <ng-template #showText>
+                                            <span class="info">
+                                                {{ prepareTextToShow(ctrl)}}
+                                            </span>
+                                        </ng-template>
+                                        <mat-icon matChipRemove (click)="removeAppliedFilter(ctrl, subscriber.sno)">clear</mat-icon>
+                                    </mat-chip>
+                                </ng-template>
+                           
+                        </mat-chip-list>
+
+                        <mat-menu #appliedfiltermenu="matMenu">
+                            <pros-filter-values (selectedValues)="fetchSelectedValues($event, subscriber.sno)" [fieldId]="loadDopValuesFor ? loadDopValuesFor.fieldId : ''"
+                                [checkedValue]="loadDopValuesFor ? loadDopValuesFor.checkedValue : []">
+                            </pros-filter-values>
+                        </mat-menu>
+
+                        <mat-chip-list>
                             <mat-chip class="mdo-filter-matchip" disableRipple="true"
-                                [matMenuTriggerFor]="appliedfiltermenu"><label>Region:</label> <span
-                                    class="info">sydney</span>
-                                <mat-icon matChipRemove>clear</mat-icon>
+                                [matMenuTriggerFor]="addfiltermenu" (click)="reInilize = !reInilize">
+                                <mat-icon>filter_list</mat-icon>
                             </mat-chip>
 
-                            <mat-chip class="mdo-filter-matchip" disableRipple="true"
-                                [matMenuTriggerFor]="addfiltermenu">
-                                <mat-icon fontSet="mdo-icons">filter-add</mat-icon>
-                            </mat-chip>
-                            <mat-menu #appliedfiltermenu="matMenu">
-                                <pros-filter-values></pros-filter-values>
-                            </mat-menu>
                             <mat-menu #addfiltermenu="matMenu">
-                                <pros-add-filter-menu></pros-add-filter-menu>
+                                <pros-add-filter-menu [moduleId]="moduleId"
+                                    (evtReadyForApply)="makeFilterControl($event, subscriber.sno)" [reInilize]="reInilize"></pros-add-filter-menu>
                             </mat-menu>
                         </mat-chip-list>
                     </div>
                     <div class="col mat-item-end">
                         <button mat-button [matMenuTriggerFor]="navigation">
                             <mat-icon>more_vert</mat-icon>
-                            <!-- Menu to open edit/delete options -->
+                            <!-- Menu to open edit/delete options for subscriber-->
                             <mat-menu #navigation="matMenu" direction="right">
                                 <mat-nav-list>
-                                    <mat-list-item>Edit</mat-list-item>
-                                    <mat-list-item>Delete</mat-list-item>
+                                    <mat-list-item (click)="editSubscriberInfo(subscriber.sno)">Edit</mat-list-item>
+                                    <mat-list-item (click)="deleteSubscriber(subscriber.sno)">Delete</mat-list-item>
                                 </mat-nav-list>
                             </mat-menu>
                         </button>

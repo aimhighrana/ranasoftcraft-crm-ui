@@ -22,7 +22,7 @@ export class ReportDashboardPermission {
 }
 
 export class SchemaDashboardPermission {
-    sno: number;
+    sno: number | string;
     schemaId: string;
     userid: string;
     roleId: string;
@@ -36,6 +36,8 @@ export class SchemaDashboardPermission {
     userMdoModel: UserMdoModel;
     rolesModel: RolesModel;
     groupHeaderModel: GroupHeaderModel;
+    plantCode: string;
+    filterCriteria: FilterCriteria[];
 }
 
 export enum PermissionType {
@@ -73,15 +75,17 @@ export interface GroupHeaderModel {
 }
 
 export interface SchemaCollaborator {
-    sno: string,
-    isAdmin: boolean,
-    isReviewer: boolean,
-    isViewer: boolean,
-    isEditer: boolean,
-    permissionType: string,
-    userid: string,
-    plantCode: string,
-    filterFieldIds?: Array<string>,
-    dataAllocation?: Array<DropDownValue>,
-    filterCriteria?: FilterCriteria
+    sno: string;
+    schemaId: string;
+    isAdmin: boolean;
+    isReviewer: boolean;
+    isViewer: boolean;
+    isEditer: boolean;
+    permissionType: string;
+    userid: string;
+    roleId: string;
+    plantCode: string;
+    filterFieldIds?: Array<string>;
+    dataAllocation?: Array<DropDownValue>;
+    filterCriteria?: FilterCriteria[];
 }

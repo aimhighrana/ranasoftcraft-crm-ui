@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SchemaService } from '@services/home/schema.service';
-import { SchemaStaticThresholdRes, CoreSchemaBrMap, SchemaListDetails } from '@models/schema/schemalist';
-import { SchemaDashboardPermission } from '@models/collaborator'
+import { SchemaStaticThresholdRes, CoreSchemaBrMap, SchemaListDetails, LoadDropValueReq } from '@models/schema/schemalist';
+import { SchemaCollaborator, SchemaDashboardPermission } from '@models/collaborator';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
-import { CoreSchemaBrInfo } from '@modules/admin/_components/module/business-rules/business-rules.modal';
-import { GlobaldialogService } from '@services/globaldialog.service';
+import { CoreSchemaBrInfo, DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
-import { CategoryInfo } from '@models/schema/schemadetailstable';
+import { CategoryInfo, FilterCriteria } from '@models/schema/schemadetailstable';
 import { MatSliderChange } from '@angular/material/slider';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -15,6 +14,7 @@ import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { SchemaExecutionRequest } from '@models/schema/schema-execution';
 import { SchemaExecutionService } from '@services/home/schema/schema-execution.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ReadyForApplyFilter } from '@modules/shared/_components/add-filter-menu/add-filter-menu.component';
 
 @Component({
   selector: 'pros-schema-info',
@@ -48,19 +48,18 @@ export class SchemaInfoComponent implements OnInit {
   subscriberData: SchemaDashboardPermission[];
 
   businessRuleData: CoreSchemaBrInfo[];
-
   activeTab: string;
-
   selectedIndex: number;
-
   category: CategoryInfo[];
-
   schemaDetails: SchemaListDetails;
+  loadDopValuesFor: LoadDropValueReq;
+  collaboratorData: SchemaCollaborator;
+
+  reInilize = true;
 
   constructor(
     private activateRoute: ActivatedRoute,
     private router: Router,
-    private globalDialogService: GlobaldialogService,
     private schemaService: SchemaService,
     private schemaDetailsService: SchemaDetailsService,
     private sharedService: SharedServiceService,
@@ -73,14 +72,19 @@ export class SchemaInfoComponent implements OnInit {
    * ANGULAR HOOK
    */
   ngOnInit(): void {
-    console.log('inside ngoninit..')
     this.getRouteParams();
     // this.getQueryParams();
-    this.sharedService.getAfterBrSave().subscribe(res=>{
-      if(res){
+    this.sharedService.getAfterBrSave().subscribe(res => {
+      if (res) {
         this.getBusinessRuleList(this.schemaId);
       }
     });
+
+    this.sharedService.getAfterSubscriberSave().subscribe(res => {
+      if (res) {
+        this.getSubscriberList(this.schemaId);
+      }
+    })
 
     this.getAllCategoryInfo();
   }
@@ -88,24 +92,23 @@ export class SchemaInfoComponent implements OnInit {
   /**
    * get params of active route to get module id and schema id
    */
-  private getRouteParams(){
+  private getRouteParams() {
     this.activateRoute.params.subscribe((params) => {
-      console.log('get params..')
       this.moduleId = params.moduleId;
       this.schemaId = params.schemaId;
       this.getSchemaStatics(this.schemaId);
       this.getSubscriberList(this.schemaId);
       this.getBusinessRuleList(this.schemaId);
 
-      this.schemaListService.getSchemaDetailsBySchemaId(this.schemaId).subscribe(res=>{
+      this.schemaListService.getSchemaDetailsBySchemaId(this.schemaId).subscribe(res => {
         this.schemaDetails = res;
-      }, error=> console.error('Error : {}', error.message));
+      }, error => console.error('Error : {}', error.message));
     })
   }
 
 
   getAllCategoryInfo() {
-    this.schemaDetailsService.getAllCategoryInfo().subscribe(res=>{
+    this.schemaDetailsService.getAllCategoryInfo().subscribe(res => {
       this.category = res;
     }, error => console.error(`Error : ${error.message}`));
   }
@@ -125,7 +128,7 @@ export class SchemaInfoComponent implements OnInit {
    * get statics of the schema
    * @param schemaId schema ID to get schema statics
    */
-  public getSchemaStatics(schemaId: string){
+  public getSchemaStatics(schemaId: string) {
     this.schemaService.getSchemaThresholdStatics(schemaId).subscribe((schemaData) => {
       this.schemaStatics = schemaData;
       this.getPercentageStatics(this.schemaStatics)
@@ -141,41 +144,39 @@ export class SchemaInfoComponent implements OnInit {
    * Convert the statics into percentage
    * @param statics object of schema statics
    */
-  public getPercentageStatics(statics: SchemaStaticThresholdRes){
+  public getPercentageStatics(statics: SchemaStaticThresholdRes) {
     this.thresholdValue = Math.round((statics.threshold + Number.EPSILON) * 100) / 100;
-    this.errorValue = Math.round(((statics.errorCnt/statics.totalCnt) + Number.EPSILON) * 100 * 100) / 100;
-    this.successValue = Math.round(((statics.successCnt/statics.totalCnt) + Number.EPSILON) * 100 * 100) / 100;
+    this.errorValue = Math.round(((statics.errorCnt / statics.totalCnt) + Number.EPSILON) * 100 * 100) / 100;
+    this.successValue = Math.round(((statics.successCnt / statics.totalCnt) + Number.EPSILON) * 100 * 100) / 100;
   }
-
 
   /**
    * update fragement of route according to the selected tab
    * @param event matTab event object
    */
-  public updateFragment(tabLabel: string){
-
-    if(tabLabel){
-      this.router.navigate(['/home/schema/schema-info', this.moduleId, this.schemaId], {queryParams:{fragment:tabLabel}})
+  public updateFragment(tabLabel: string) {
+    if (tabLabel) {
+      this.router.navigate(['/home/schema/schema-info', this.moduleId, this.schemaId], { queryParams: { fragment: tabLabel } })
     }
 
     /**
      * while business-rules tab is selected
      */
-    if(tabLabel==='business-rules'){
+    if (tabLabel === 'business-rules') {
       this.selectedIndex = 0;
     }
 
     /**
      * while subscribers tab is selected
      */
-    if(tabLabel==='subscribers'){
+    if (tabLabel === 'subscribers') {
       this.selectedIndex = 1;
     }
 
     /**
      * while execution logs tab is selected
      */
-    if(tabLabel==='execution-logs'){
+    if (tabLabel === 'execution-logs') {
       this.selectedIndex = 2;
     }
   }
@@ -187,12 +188,27 @@ export class SchemaInfoComponent implements OnInit {
    * Function to Api call to get subscribers according to schema ID
    * @param schemaId current schema id
    */
-  public getSubscriberList(schemaId: string){
+  public getSubscriberList(schemaId: string) {
     this.schemaDetailsService.getCollaboratorDetails(schemaId).subscribe((responseData) => {
-      console.log(responseData)
-      this.subscriberData = responseData;
+      responseData.forEach((subscriber) => {
+        subscriber.filterCriteria.forEach((data) => {
+          const filter: FilterCriteria = new FilterCriteria();
+          filter.fieldId = data.fieldId;
+          filter.type = data.type;
+          filter.values = data.values;
+
+          const dropVal: DropDownValue[] = [];
+          filter.values.forEach(val => {
+            const dd: DropDownValue = { CODE: val, FIELDNAME: data.fieldId } as DropDownValue;
+            dropVal.push(dd);
+          })
+          filter.filterCtrl = { fldCtrl: data.fldCtrl, selectedValeus: dropVal };
+          data.filterCtrl = filter.filterCtrl;
+        })
+      }),
+        this.subscriberData = responseData;
     }, error => {
-      console.error('Error while fetching subscribers for schema', error);
+      console.log('Error while fetching subscriber information', error.message)
     })
   }
 
@@ -200,7 +216,7 @@ export class SchemaInfoComponent implements OnInit {
    * Function to Api call to get business rules according to schema ID
    * @param schemaId current schema id
    */
-  public getBusinessRuleList(schemaId: string){
+  public getBusinessRuleList(schemaId: string) {
     this.schemaService.getAllBusinessRules(schemaId).subscribe((responseData) => {
       console.log(responseData);
       this.businessRuleData = responseData;
@@ -214,31 +230,27 @@ export class SchemaInfoComponent implements OnInit {
    * @param fname firstName of the subscriber
    * @param lname lastName of the subscriber
    */
-  public shortName(fName:string, lName:string){
-    if(fName.length>=1 && lName.length>=1)
-    {
-      return fName[0]+lName[0];
-    }else{
+  public shortName(fName: string, lName: string) {
+    if (fName.length >= 1 && lName.length >= 1) {
+      return fName[0] + lName[0];
+    } else {
       return '';
     }
   }
 
 
   /**
-   * Function to open dialog to add subscriber
+   * Function to open sidesheet to add subscriber
    */
-  public addSubscriber(){
-    // this.globalDialogService.openDialog(NewSchemaCollaboratorsComponent, {});
-    // this.router.navigate(['', { outlets: { sb: 'sb/schema/subscriber-add' } } ]);
-    this.router.navigate(['', { outlets: { sb: 'sb/schema/business-rule/new' } } ]);
+  public addSubscriber() {
+    this.router.navigate(['', { outlets: { sb: `sb/schema/subscriber/${this.moduleId}/${this.schemaId}/new` } }]);
   }
 
   /**
-   * Function to open dialog to add business rule
+   * Function to open sidesheet to add business rule
    */
-  public addBusinessRule(){
-    // this.globalDialogService.openDialog(NewBusinessRulesComponent, {});
-    this.router.navigate(['', { outlets: { sb: `sb/schema/business-rule/${this.moduleId}/${this.schemaId}/new` } } ]);
+  public addBusinessRule() {
+    this.router.navigate(['', { outlets: { sb: `sb/schema/business-rule/${this.moduleId}/${this.schemaId}/new` } }]);
   }
 
   /**
@@ -248,25 +260,25 @@ export class SchemaInfoComponent implements OnInit {
    */
   updateBr(br: CoreSchemaBrInfo, event?: any) {
     const request: CoreSchemaBrMap = new CoreSchemaBrMap();
-    if(event instanceof MatSliderChange) {
+    if (event instanceof MatSliderChange) {
       request.brWeightage = (event as MatSliderChange).value;
-    } else if(event instanceof MatSlideToggleChange) {
+    } else if (event instanceof MatSlideToggleChange) {
       request.status = (event as MatSlideToggleChange).checked ? '1' : '0';
     }
     request.schemaId = this.schemaId;
     request.brId = br.brIdStr;
     request.order = br.order;
-    if(!request.brWeightage) {
+    if (!request.brWeightage) {
       request.brWeightage = Number(br.brWeightage);
     }
-    if(!request.status) {
+    if (!request.status) {
       request.status = br.status
     }
-    this.schemaService.updateBrMap(request).subscribe(res=>{
-      if(res) {
+    this.schemaService.updateBrMap(request).subscribe(res => {
+      if (res) {
         this.getBusinessRuleList(this.schemaId);
       }
-    }, error=> console.error(`Error : ${error.message}`));
+    }, error => console.error(`Error : ${error.message}`));
   }
 
   /**
@@ -277,9 +289,9 @@ export class SchemaInfoComponent implements OnInit {
   updateCategory(cat: CategoryInfo, br: CoreSchemaBrInfo) {
     br.brId = br.brIdStr;
     br.categoryId = cat.categoryId;
-    this.schemaService.createBusinessRule(br).subscribe(res=>{
+    this.schemaService.createBusinessRule(br).subscribe(res => {
       this.getBusinessRuleList(this.schemaId);
-    }, error=>{
+    }, error => {
       console.error(`Error while updating schema .. `);
     });
   }
@@ -293,19 +305,19 @@ export class SchemaInfoComponent implements OnInit {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       const br = this.businessRuleData[event.previousIndex];
-      if(br) {
+      if (br) {
         const request: CoreSchemaBrMap = new CoreSchemaBrMap();
         request.schemaId = this.schemaId;
         request.brId = br.brIdStr;
         request.order = event.currentIndex;
         request.brWeightage = Number(br.brWeightage);
         request.status = br.status
-        this.schemaService.updateBrMap(request).subscribe(res=>{
-          if(res) {
+        this.schemaService.updateBrMap(request).subscribe(res => {
+          if (res) {
             this.getBusinessRuleList(this.schemaId);
           }
-        }, error=> console.error(`Error : ${error.message}`));
-        }
+        }, error => console.error(`Error : ${error.message}`));
+      }
     }
   }
 
@@ -314,10 +326,10 @@ export class SchemaInfoComponent implements OnInit {
    * @param br delete by br id
    */
   deleteBr(br: CoreSchemaBrInfo) {
-    if(br.brIdStr) {
-      this.schemaService.deleteBr(br.brIdStr).subscribe(res=>{
+    if (br.brIdStr) {
+      this.schemaService.deleteBr(br.brIdStr).subscribe(res => {
         this.getBusinessRuleList(this.schemaId);
-      }, error=> console.error(`Error : ${error.message}`));
+      }, error => console.error(`Error : ${error.message}`));
     }
   }
 
@@ -326,7 +338,7 @@ export class SchemaInfoComponent implements OnInit {
    * @param br editable business rule ..
    */
   editBr(br: CoreSchemaBrInfo) {
-    this.router.navigate(['', { outlets: { sb: `sb/schema/business-rule/${this.moduleId}/${this.schemaId}/${br.brIdStr}` } } ]);
+    this.router.navigate(['', { outlets: { sb: `sb/schema/business-rule/${this.moduleId}/${this.schemaId}/${br.brIdStr}` } }]);
   }
 
   /**
@@ -342,5 +354,185 @@ export class SchemaInfoComponent implements OnInit {
     }, error => {
       this.matSnackBar.open(`Something went wrong while running schema`, 'Close', { duration: 5000 });
     });
+  }
+
+
+  makeFilterControl(event: ReadyForApplyFilter, sNo: number) {
+    const exitingFilterCtrl = [];
+
+    const filterCtrl: FilterCriteria = new FilterCriteria();
+    filterCtrl.fieldId = event.fldCtrl.fieldId;
+    filterCtrl.type = 'DROPDOWN';
+    filterCtrl.values = event.selectedValeus.map(map => map.CODE);
+
+    exitingFilterCtrl.push(filterCtrl);
+
+    this.subscriberData.forEach((subscriber) => {
+      if (subscriber.sno === sNo) {
+        if (subscriber.filterCriteria.length === 0) {
+          this.updateSubscriberInfo(sNo, exitingFilterCtrl)
+          return;
+        }
+        subscriber.filterCriteria.forEach((res) => {
+          if (event.fldCtrl.fieldId === res.fieldId) {
+            res.values.push(...filterCtrl.values);
+
+            const updateSubscriber: SchemaDashboardPermission = subscriber;
+
+            delete updateSubscriber.userMdoModel;
+
+            updateSubscriber.sno = subscriber.sno.toString();
+            updateSubscriber.schemaId = this.schemaId;
+            this.schemaDetailsService.createUpdateUserDetails(Array(updateSubscriber)).subscribe(response => {
+              console.log(response);
+              this.getSubscriberList(this.schemaId);
+            })
+          } else {
+            this.updateSubscriberInfo(sNo, exitingFilterCtrl)
+          }
+        })
+      }
+    })
+  }
+
+
+  /**
+   * Function to show chips of selected filters
+   * @param ctrl Filter criteria
+   */
+  prepareTextToShow(ctrl: FilterCriteria): string {
+    const selCtrl = ctrl.filterCtrl.selectedValeus.filter(fil => fil.FIELDNAME === ctrl.fieldId);
+    if (selCtrl && selCtrl.length > 1) {
+      return String(selCtrl.length);
+    }
+    return ((selCtrl && selCtrl.length === 1) ? (selCtrl[0].TEXT ? selCtrl[0].TEXT : selCtrl[0].CODE) : 'Unknown');
+  }
+
+
+
+  /**
+   * Function to load dropdown values of already selcted filters
+   */
+  loadDropValues(fldC: FilterCriteria) {
+    if (fldC) {
+      const dropArray: DropDownValue[] = [];
+      fldC.values.forEach(val => {
+        const drop: DropDownValue = { CODE: val, FIELDNAME: fldC.fieldId } as DropDownValue;
+        dropArray.push(drop);
+      });
+      this.loadDopValuesFor = { fieldId: fldC.fieldId, checkedValue: dropArray };
+    }
+  }
+
+
+  /**
+   * Function to remove filters on clicking cross icon
+   * @param ctrl Filter criteria
+   */
+  removeAppliedFilter(ctrl: FilterCriteria, sNo: number) {
+    this.subscriberData.forEach((subscriber) => {
+      if (subscriber.sno === sNo) {
+        subscriber.filterCriteria.forEach((res) => {
+          if (res.fieldId === ctrl.fieldId) {
+            subscriber.filterCriteria.splice(subscriber.filterCriteria.indexOf(res), 1);
+          }
+        })
+        subscriber.schemaId = this.schemaId;
+        subscriber.sno = sNo.toString();
+        delete subscriber.userMdoModel;
+
+        this.schemaDetailsService.createUpdateUserDetails(Array(subscriber)).subscribe((res) => {
+          this.getSubscriberList(this.schemaId);
+        }, error => {
+          console.log('Error while removing filter from subscriber', error.message);
+        })
+      }
+    })
+  }
+
+
+  /**
+   * Function to delete subscriber from schema
+   * @param sNo serial No of the subscriber.
+   */
+  public deleteSubscriber(sNo: string) {
+    this.schemaDetailsService.deleteCollaborator(sNo).subscribe(res => {
+      this.matSnackBar.open('Subscriber deleted successfully.', 'okay', {duration: 5000});
+      this.getSubscriberList(this.schemaId);
+    })
+  }
+
+  /**
+   * Function to edit subscriber details of schema
+   * @param sNo serial Number of subscriber
+   */
+  public editSubscriberInfo(sNo: number) {
+    this.router.navigate([{ outlets: { sb: `sb/schema/subscriber/${this.moduleId}/${this.schemaId}/${sNo}` } }])
+  }
+
+
+  /**
+   * Function to update subscriber filter criteria
+   * @param sNo serial number of subscriber
+   * @param schemaId schema id
+   * @param exitingFilterCtrl array of filter criteria
+   */
+  updateSubscriberInfo(sNo: number, exitingFilterCtrl) {
+    /**
+     * Filter data according to sNo.
+     */
+    this.subscriberData.filter((data) => {
+      if (data.sno === sNo) {
+        /**
+         * Prepare the data of subscriber to send into API
+         */
+        data.schemaId = this.schemaId;
+        data.sno = data.sno.toString();
+        /**
+         * Delete not required fields for UPDATE api
+         */
+        delete data.userMdoModel;
+
+        exitingFilterCtrl.map((filter) => {
+          data.filterCriteria.push(filter);
+        })
+        const collaboratorArray = [];
+        collaboratorArray.push(data)
+        this.schemaDetailsService.createUpdateUserDetails(collaboratorArray).subscribe((res) => {
+          this.getSubscriberList(this.schemaId);
+        }, error => {
+          console.log('Error while update subscriber filter information', error.message)
+        })
+      }
+    })
+  }
+
+  /**
+   * Function to fetch selected subscriber from a dropdown
+   * @param selectedValues list of selected drop down values
+   * @param sNo serial number of subscriber
+   */
+  fetchSelectedValues(selectedValues, sNo: number) {
+    if (selectedValues.length > 0) {
+      this.subscriberData.forEach((subscriber) => {
+        console.log(subscriber.sno, sNo)
+        if (subscriber.sno === sNo) {
+          subscriber.schemaId = this.schemaId;
+          subscriber.sno = sNo.toString();
+          delete subscriber.userMdoModel;
+
+          subscriber.filterCriteria.forEach((res) => {
+            console.log(res.fieldId, selectedValues[0].FIELDNAME)
+            if (res.fieldId === selectedValues[0].FIELDNAME) {
+              res.values = [];
+              res.values = selectedValues.map((value) => value.CODE)
+            }
+          })
+          this.schemaDetailsService.createUpdateUserDetails(Array(subscriber)).subscribe(res => {
+            this.getSubscriberList(this.schemaId)
+          })
+        }
+      })
+    }
   }
 }

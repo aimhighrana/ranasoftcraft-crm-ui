@@ -42,6 +42,7 @@ import { BrruleSideSheetComponent } from './_components/v2/brrule-side-sheet/brr
 import { SchemaInfoComponent } from './_components/v2/schema-info/schema-info.component';
 import { CreateSchemaComponent } from './_components/v2/create-schema/create-schema.component';
 import { SystemTrayComponent } from './_components/system-tray/system-tray.component';
+import { SubscriberSideSheetComponent } from './_components/v2/subscriber-side-sheet/subscriber-side-sheet.component';
 
 
 @NgModule({
@@ -86,7 +87,8 @@ import { SystemTrayComponent } from './_components/system-tray/system-tray.compo
     BrruleSideSheetComponent,
     SchemaInfoComponent,
     CreateSchemaComponent,
-    SystemTrayComponent
+    SystemTrayComponent,
+    SubscriberSideSheetComponent
   ],
   imports: [
     CommonModule,

@@ -140,9 +140,11 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
     })
   }
 
+  /**
+   * Function to get report list
+   */
   public getreportList() {
     this.reportService.reportList().subscribe(reportList => {
-      console.log(reportList);
       this.reportList = reportList;
       if (this.reportList) {
         const firstReportId = this.reportList[0].reportId;
