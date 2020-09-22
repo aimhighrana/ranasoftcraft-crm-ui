@@ -1,121 +1,110 @@
-.root {
-  justify-content: flex-start;
-  align-items: flex-start;
-  align-content: flex-start;
-  max-width: 460px;
-  position: relative;
+mat-card.root {
+  user-select: none;
   height: 100%;
-  width: 460px;
+  overflow: hidden;
+  width: 600px;
+  padding: 0 16px;
 
-  mat-toolbar {
-    min-height: 50px;
+  .breadcrum-toolbar {
+    align-items: center;
+    padding-top: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 2;
 
-    mat-toolbar-row {
-      height: 50px;
-    }
-  }
-
-  mat-form-field {
-    width: calc(100% - 32px);
-    height: 60px;
-    margin: 8px 16px;
-  }
-
-  .mat-line {
-    margin: 0;
-  }
-
-  mat-slide-toggle {
-    margin: 4px 8px;
-  }
-
-  .collaborators-list {
-    height: calc(100% - 65px - 60px - 240px);
-    overflow-y: auto;
-    width: 100%;
-  }
-
-  .chip-enable-coll-list {
-    height: calc(100% - 65px - 60px - 300px);
-  }
-
-  .collaborators-add {
-    width: 428px;
-    height: 220px;
-    position: fixed;
-    bottom: 0;
-    padding: 0 16px;
-
-    .mat-h3 {
-      margin: 8px 0 0 0;
-      font-weight: 500;
+    .display-heading-large {
+      font-size: 1.2rem;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
     }
 
-    mat-form-field {
-      margin: 0;
+    .mdo-constrained-right {
+      align-items: center;
       width: 100%;
     }
+  }
 
-    .selected-coll-groups {
-      margin: 8px 0;
-      align-items: center;
-      justify-content: space-between;
+  .mdo-justify {
+    height: 100%;
 
-      mat-chip-list {
-        width: calc(100% - 80px);
+    mat-slide-toggle {
+      margin: 4px 8px;
+    }
 
-        mat-chip {
-          font-size: 12px;
-          display: flex;
-          min-width: 120px;
-          justify-content: space-between;
-          align-items: center;
-          max-width: 170px;
+    .collaborators-list {
+      height: calc(100% - 40px - 70px - 16px - 220px);
+      overflow-y: auto;
+    }
 
-          .chip-content {
-            width: calc(100% - 36px);
-            display: -webkit-box;
-            -webkit-line-clamp: 1;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: pre-line;
-            word-break: break-word;
-          }
+    .chip-enable-coll-list {
+      height: calc(100% - 40px - 70px - 16px - 264px);
+    }
 
-          .chip-icon {
-            font-size: 18px;
-            height: 18px;
-            width: 18px;
-            margin-top: 2px;
-            cursor: pointer;
-          }
+    .collaborators-add {
+      height: 236px;
 
-          .icon-user {
-            color: #0d66d0;
-          }
+      .mat-h3 {
+        margin: 8px 0 0 0;
+        font-weight: 500;
+        font-size: 0.8rem;
+      }
 
-          .icon-role {
-            color: #cb6f10;
-          }
+      .selected-coll-groups {
+        margin: 8px 0;
+        align-items: center;
+        justify-content: space-between;
 
-          .icon-group {
-            color: #12805c;
+        mat-chip-list {
+          width: calc(100% - 80px);
+
+          mat-chip {
+            min-width: 120px;
+            justify-content: space-between;
+            max-width: 170px;
+            height: 30px;
+
+            .chip-content {
+              width: calc(100% - 36px);
+              display: -webkit-box;
+              -webkit-line-clamp: 1;
+              -webkit-box-orient: vertical;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: pre-line;
+              word-break: break-word;
+              margin-left: 8px;
+            }
+
+            .icon-user {
+              color: #0d66d0;
+            }
+
+            .icon-role {
+              color: #cb6f10;
+            }
+
+            .icon-group {
+              color: #12805c;
+            }
           }
         }
       }
     }
 
-    .action {
-      justify-content: flex-end;
+    .permissions {
+      justify-content: space-between;
+      font-size: 0.8rem;
     }
   }
+}
 
-  .chip-enable-coll-add {
-    height: 276px;
+@media (min-width: 1200px) {
+  .mdo-justify {
+    margin: 0 54px;
   }
 
-  .permissions {
-    justify-content: space-between;
+  .mdo-constrained-right {
+    margin-right: 54px;
   }
 }

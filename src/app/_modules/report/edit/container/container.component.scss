@@ -1,174 +1,131 @@
-.root {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: flex-start;
-  align-items: flex-start;
-  align-content: flex-start;
+mat-card.root {
+  user-select: none;
+  padding: 0 16px;
+  height: 100%;
+  overflow: hidden;
 
-  .crumbrow {
+  .breadcrum-toolbar {
     align-items: center;
-    padding: 16px;
-    width: 100%;
+    padding-top: 16px;
 
     .display-heading-large {
       font-size: 1.2rem;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      line-height: 36px;
     }
 
-    > button {
-      min-width: 38px;
-      padding: 0 6px;
-    }
-  }
-
-  mat-card {
-    padding: 0;
-
-    mat-card-content {
-      padding: 16px;
+    button.mat-flat-button {
+      margin-left: 1px;
+      min-width: 80px;
     }
   }
 
-  .builder-container {
-    margin: 16px;
-    width: 100%;
+  .report-builder {
+    height: 100%;
 
-    .builder-toolbar {
-      .fieldtoolbar {
-        height: 56px;
-        font-size: 16px;
-      }
-
-      mat-button-toggle-group {
-        height: 36px;
-
-        mat-icon {
-          margin-top: -15px;
-        }
-      }
-    }
-
-    .container-row {
+    .builder-container {
+      height: calc(100% - 52px - 32px - 70px);
       justify-content: space-between;
-
-      mat-card {
-        border-radius: 0;
-      }
+      border-width: 1px;
+      border-style: solid;
+      margin-top: 16px;
 
       .widget-col {
-        width: 300px;
+        width: 200px;
         overflow: auto;
+        position: relative;
         border-right-width: 1px;
         border-right-style: solid;
-        border-top-width: 1px;
-        border-top-style: solid;
-        height: 600px;
+      }
 
-        mat-expansion-panel {
-          border-radius: 3px;
-          margin-bottom: 16px;
-
-          mat-expansion-panel-header {
-            padding: 0 16px;
-          }
-
-          mat-list {
-            border-width: 1px;
-            border-radius: 3px;
-            border-style: solid;
-            padding: 0;
-            position: relative;
-            margin: 0 -8px;
-
-            mat-list-item {
-              cursor: move;
-              font-size: 14px;
-
-              .svg-widgetdrag {
-                display: flex;
-                margin-right: 16px;
-              }
-            }
-          }
-        }
+      .col-heading {
+        font-weight: 500;
+        padding: 8px;
+        align-items: center;
+        line-height: 36px;
+        border-bottom-width: 1px;
+        border-bottom-style: solid;
       }
 
       .builder-board {
-        width: calc(100% - 300px);
+        width: calc(100% - 200px);
         display: flex;
         flex-wrap: wrap;
-        border-top-width: 1px;
-        border-top-style: solid;
         padding: 8px;
         position: relative;
         overflow-x: scroll;
         background: radial-gradient(#e0e0e0 1px, transparent 1px) 0 0;
         background-position: 5px 5px;
-        max-height: 700px;
+        border-radius: 0;
       }
 
       .adjust-property {
-        width: calc(100% - 600px);
+        width: calc(100% - 450px);
       }
 
       .property-col {
-        width: 300px;
+        width: 250px;
+        height: 100%;
         overflow: auto;
         border-left-width: 1px;
         border-left-style: solid;
-        border-top-width: 1px;
-        border-top-style: solid;
-        height: 600px;
 
         mat-expansion-panel {
-          border-radius: 3px;
-          margin-bottom: 16px;
+          border-radius: 0;
 
           mat-expansion-panel-header {
             padding: 0 16px;
           }
-        }
 
-        .c-toolbar-row {
-          min-height: 50px;
-
-          mat-toolbar-row {
-            height: 50px;
-
-            .mat-h3 {
-              display: -webkit-box;
-              -webkit-line-clamp: 1;
-              -webkit-box-orient: vertical;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              white-space: pre-line;
-              word-break: break-word;
-              font-weight: 400;
-              font-size: 16px;
-              margin: 0;
-            }
+          mat-expansion-panel-body {
+            padding: 0 16px;
           }
         }
 
-        mat-form-field {
-          width: 100%;
-        }
+        .fields-col {
+          padding: 0 16px;
 
-        mat-checkbox {
-          margin-bottom: 16px;
-        }
+          mat-label {
+            font-weight: 500;
+            font-size: 0.7rem;
+            line-height: 14px;
+          }
 
-        .field-divider {
-          width: 48%;
+          mat-form-field.mat-form-field {
+            margin-bottom: 8px;
+          }
+
+          mat-checkbox {
+            margin-bottom: 12px;
+          }
+
+          .def-algin {
+            align-items: center;
+          }
         }
 
         .add-button {
           justify-content: flex-end;
         }
-
-        .upload-img-inp {
-          width: 75%;
-        }
       }
     }
+  }
+}
+
+.widget-drag {
+  cursor: grab;
+  display: flex;
+  align-items: center;
+  height: 48px;
+  box-sizing: border-box;
+  padding: 8px;
+
+  .widget-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    margin-right: 16px;
   }
 }

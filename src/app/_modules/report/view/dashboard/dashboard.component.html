@@ -1,23 +1,17 @@
-<div class="root">
-
-	<!-- BREADCRUMB-->
+<mat-card class="mat-elevation-z0 root">
 	<div class="f-row breadcrum-toolbar">
-		<div class="display-heading-large">
+        <div class="display-heading-large">
             {{reportName ? reportName: 'Untitled'}}
-		</div>
-		<div class="f-spacer"></div>
+        </div>
+        <div class="f-spacer"></div>
 		<button *ngIf="showClearFilterBtn" mat-flat-button color="primary" (click)="clearFilters()">Clear Filter(s)</button>
-		<div class="f-spacer"></div>
-		<button mat-icon-button *ngIf="(collaboratorEditPermission || collaboratorDeletePermission || collaboratorAdminPermission)" [matMenuTriggerFor]="moremenu">
+		<button mat-fab color="accent" class="mat-elevation-z0" *ngIf="(collaboratorEditPermission || collaboratorDeletePermission || collaboratorAdminPermission)" [matMenuTriggerFor]="moremenu">
 			<mat-icon>more_vert</mat-icon>
 		</button>
 		<mat-menu #moremenu="matMenu">
 			<button mat-menu-item  *ngIf="(collaboratorEditPermission || collaboratorAdminPermission)" (click)="editReport()">Edit</button>
 			<button mat-menu-item  *ngIf="(collaboratorDeletePermission || collaboratorAdminPermission)" (click)="delete()">Delete</button>
 		</mat-menu>
-		<div class="col-spacer"></div>
-    </div>
-	
+	</div>
 	<pros-dashboard-container [reportId]="reportId" [emitClearBtnEvent]="emitClearBtnEvent" (emitFilterApplied)="showClearBtnEmit($event)" class="container"></pros-dashboard-container>
-	
-</div>
+</mat-card>

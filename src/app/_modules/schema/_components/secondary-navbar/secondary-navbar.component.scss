@@ -60,10 +60,13 @@
             mat-list-item {
               div.mat-line {
                 padding-left: 48px;
-                font-size: 0.9rem;
               }
             }
           }
+        }
+
+        .heading-title {
+          font-size: 0.9rem;
         }
       }
     }

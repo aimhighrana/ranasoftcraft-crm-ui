@@ -2,7 +2,7 @@
   <mat-card class="secondary-card mat-elevation-z0">
     <div class="row-spacer"></div>
     <div class="f-row display-heading-large">
-        <div>{{ getRoutedDescription }}</div>
+      <div>{{ getRoutedDescription }}</div>
       <span class="f-spacer"></span>
       <button mat-button (click)="globalCreate()">
         <mat-icon>add</mat-icon>
@@ -64,7 +64,8 @@
         <ng-container *ngFor="let module of searchModuleResults">
           <mat-expansion-panel togglePosition="before" class="mat-elevation-z0"
             *ngIf="module.schemaLists && module.schemaLists.length>0">
-            <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px" [routerLink]="['schema', module.moduleId]">
+            <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px"
+              [routerLink]="['schema', module.moduleId]">
               <mat-panel-title>
                 <div class="expand-title">{{module.moduleDesc ? module.moduleDesc : 'Untitled'}}</div>
                 <span class="f-spacer"></span>
@@ -72,7 +73,9 @@
               </mat-panel-title>
             </mat-expansion-panel-header>
             <mat-nav-list role="navigation">
-              <mat-list-item *ngFor="let schema of module.schemaLists" [routerLink]="['schema/schema-info', schema.moduleId, schema.schemaId]" [queryParams]="{fragment:'business-rules'}">
+              <mat-list-item *ngFor="let schema of module.schemaLists"
+                [routerLink]="['schema/schema-info', schema.moduleId, schema.schemaId]"
+                [queryParams]="{fragment:'business-rules'}">
                 <div mat-line>{{schema.schemaDescription ?  schema.schemaDescription : 'Untitled'}}</div>
               </mat-list-item>
             </mat-nav-list>
@@ -80,18 +83,14 @@
         </ng-container>
       </mat-accordion>
 
-      <ng-template [ngIf]="activatedPrimaryNav === 'report'">
-        <mat-accordion>
-          <mat-nav-list *ngFor="let report of reportList">
-            <mat-list-item [disabled]="report.permission && !report.permission.isViewable" [routerLink]="['report/dashboard', report.reportId]" [routerLinkActive]="'selected'">
-              <mat-panel-title>
-                {{report.reportName ? report.reportName : 'Untitled'}}
-              </mat-panel-title>
-            </mat-list-item>
-          </mat-nav-list>
-        </mat-accordion>
-      </ng-template>
-      
+      <mat-accordion *ngIf="activatedPrimaryNav === 'report'">
+        <mat-nav-list *ngFor="let report of reportList">
+          <mat-list-item [disabled]="report.permission && !report.permission.isViewable"
+            [routerLink]="['report/dashboard', report.reportId]" [routerLinkActive]="'selected'">
+            <div class="heading-title">{{report.reportName ? report.reportName : 'Untitled'}}</div>
+          </mat-list-item>
+        </mat-nav-list>
+      </mat-accordion>
     </div>
   </mat-card>
 

@@ -1,35 +1,33 @@
-.widget {
-  border-radius: 6px;
+mat-card.widget {
+  box-sizing: border-box;
   margin: 8px;
-  cursor: move;
+  cursor: grab;
   position: absolute;
-  padding: 0;
   overflow: auto;
+  z-index: 2;
 
-  .widgettoolbar {
-    height: 50px;
-    padding: 16px;
+  .breadcrum-toolbar {
+    align-items: center;
 
-    .mat-h3 {
-      display: -webkit-box;
-      -webkit-line-clamp: 1;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
+    .display-heading-large {
+      font-size: 1rem;
       text-overflow: ellipsis;
-      white-space: pre-line;
-      word-break: break-word;
-      font-weight: 400;
-      font-size: 16px;
-      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      line-height: 36px;
     }
   }
 
   mat-card-content {
-    padding: 16px;
+    height: calc(100% - 36px - 16px);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
 
-    .widget-lgsvg {
-      display: flex;
-      justify-content: space-around;
+    .widget-icon {
+      font-size: 60px;
+      height: 60px;
+      width: 60px;
     }
   }
 }

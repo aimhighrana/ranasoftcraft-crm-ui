@@ -17,11 +17,6 @@ mat-card.root {
     button.mat-flat-button {
       margin-left: 1px;
       min-width: 80px;
-
-      &:last-of-type {
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
-      }
     }
   }
 

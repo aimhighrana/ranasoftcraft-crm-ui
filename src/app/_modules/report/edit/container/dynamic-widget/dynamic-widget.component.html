@@ -1,49 +1,57 @@
-<mat-card 
-    id="{{ widget.widgetId }}" 
-    class="mat-elevation-z4 widget"
-    [ngStyle]="{'width.px': (widget.width * boxSize) , 'height.px': (widget.height * boxSize),'left.px': (widget.x * boxSize), 'top.px':(widget.y * boxSize)  }"
-    (click)="emitStyleEvent()"
-    cdkDrag>
-    <mat-toolbar-row class="widgettoolbar">
-        <h3 class="mat-h3">{{ widget.widgetTitle ? widget.widgetTitle : 'Untitled' }}</h3>
-        <span class="f-spacer"></span>
-        <button mat-icon-button (click)="emitDeleteEvent()" *ngIf="showDelete">
-            <mat-icon>delete</mat-icon>
-        </button>
-    </mat-toolbar-row>
-    <mat-card-content>
-      <ng-template [ngIf]="widget.widgetType && widget.widgetType === 'COUNT'"> 
-         <pros-svg-icon size="70" icon="COUNT_WIDGET" class="widget-lgsvg" color="widget"></pros-svg-icon>
+<mat-card id="{{ widget.widgetId }}" class="mat-elevation-z3 widget"
+   [ngStyle]="{'width.px': (widget.width * boxSize) , 'height.px': (widget.height * boxSize),'left.px': (widget.x * boxSize), 'top.px':(widget.y * boxSize)  }"
+   (click)="emitStyleEvent()" cdkDrag>
+   <div class="f-row breadcrum-toolbar">
+      <div class="display-heading-large">
+         {{ widget.widgetTitle ? widget.widgetTitle : 'Untitled' }}
+      </div>
+      <div class="f-spacer"></div>
+      <button mat-button (click)="emitDeleteEvent()" *ngIf="showDelete">
+         <mat-icon>delete</mat-icon>
+      </button>
+   </div>
+
+   <div class="row-spacer"></div>
+
+   <mat-card-content>
+      <ng-template [ngIf]="widget.widgetType && widget.widgetType === 'COUNT'">
+         <!-- <pros-svg-icon size="70" icon="COUNT_WIDGET" class="widget-lgsvg" color="widget"></pros-svg-icon> -->
+         <mat-icon fontSet="mdo-icons" class="widget-icon">context-help</mat-icon>
       </ng-template>
 
-      <ng-template [ngIf]="widget.widgetType && widget.widgetType === 'FILTER'"> 
-        <pros-svg-icon size="70" icon="FILTER_WIDGET" class="widget-lgsvg" color="widget"></pros-svg-icon>
-     </ng-template>
+      <ng-template [ngIf]="widget.widgetType && widget.widgetType === 'FILTER'">
+         <!-- <pros-svg-icon size="70" icon="FILTER_WIDGET" class="widget-lgsvg" color="widget"></pros-svg-icon> -->
+         <mat-icon fontSet="mdo-icons" class="widget-icon">filter</mat-icon>
+      </ng-template>
 
-     <ng-template [ngIf]="widget.widgetType && widget.widgetType === 'BAR_CHART'"> 
-        <pros-svg-icon size="70" icon="BAR_WIDGET" class="widget-lgsvg" color="widget"></pros-svg-icon>
-     </ng-template>
+      <ng-template [ngIf]="widget.widgetType && widget.widgetType === 'BAR_CHART'">
+         <!-- <pros-svg-icon size="70" icon="BAR_WIDGET" class="widget-lgsvg" color="widget"></pros-svg-icon> -->
+         <mat-icon fontSet="mdo-icons" class="widget-icon">chart-pie</mat-icon>
+      </ng-template>
 
-     <ng-template [ngIf]="widget.widgetType && widget.widgetType === 'STACKED_BAR_CHART'"> 
-        <pros-svg-icon size="70" icon="STACKEDBAR_WIDGET" class="widget-lgsvg" color="widget"></pros-svg-icon>
-     </ng-template>
+      <ng-template [ngIf]="widget.widgetType && widget.widgetType === 'STACKED_BAR_CHART'">
+         <!-- <pros-svg-icon size="70" icon="STACKEDBAR_WIDGET" class="widget-lgsvg" color="widget"></pros-svg-icon> -->
+         <mat-icon fontSet="mdo-icons" class="widget-icon">chart-complex</mat-icon>
+      </ng-template>
 
-     <ng-template [ngIf]="widget.widgetType && widget.widgetType === 'TABLE_LIST'"> 
-        <pros-svg-icon size="70" icon="LIST_WIDGET" class="widget-lgsvg" color="widget"></pros-svg-icon>
-     </ng-template>
+      <ng-template [ngIf]="widget.widgetType && widget.widgetType === 'TABLE_LIST'">
+         <!-- <pros-svg-icon size="70" icon="LIST_WIDGET" class="widget-lgsvg" color="widget"></pros-svg-icon> -->
+         <mat-icon fontSet="mdo-icons" class="widget-icon">form-table</mat-icon>
+      </ng-template>
 
-     <ng-template [ngIf]="widget.widgetType && widget.widgetType === 'IMAGE'"> 
-        <pros-svg-icon size="70" icon="IMAGE_WIDGET" class="widget-lgsvg" color="widget"></pros-svg-icon>
-     </ng-template>
+      <ng-template [ngIf]="widget.widgetType && widget.widgetType === 'IMAGE'">
+         <!-- <pros-svg-icon size="70" icon="IMAGE_WIDGET" class="widget-lgsvg" color="widget"></pros-svg-icon> -->
+         <mat-icon fontSet="mdo-icons" class="widget-icon">picture</mat-icon>
+      </ng-template>
 
-     <ng-template [ngIf]="widget.widgetType && widget.widgetType === 'HTML'"> 
-        <pros-svg-icon size="70" icon="HTML_WIDGET" class="widget-lgsvg" color="widget"></pros-svg-icon>
-     </ng-template>
+      <ng-template [ngIf]="widget.widgetType && widget.widgetType === 'HTML'">
+         <!-- <pros-svg-icon size="70" icon="HTML_WIDGET" class="widget-lgsvg" color="widget"></pros-svg-icon> -->
+         <mat-icon fontSet="mdo-icons" class="widget-icon">more-alt2</mat-icon>
+      </ng-template>
 
-     <ng-template [ngIf]="widget.widgetType && widget.widgetType === 'TIMESERIES'"> 
-      <pros-svg-icon size="70" icon="TIMESERIES" class="widget-lgsvg" color="widget"></pros-svg-icon>
-   </ng-template>
-     
-     
-    </mat-card-content>
+      <ng-template [ngIf]="widget.widgetType && widget.widgetType === 'TIMESERIES'">
+         <!-- <pros-svg-icon size="70" icon="TIMESERIES" class="widget-lgsvg" color="widget"></pros-svg-icon> -->
+         <mat-icon fontSet="mdo-icons" class="widget-icon">context-help</mat-icon>
+      </ng-template>
+   </mat-card-content>
 </mat-card>

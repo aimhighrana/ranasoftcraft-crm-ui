@@ -145,25 +145,21 @@
   }
 
   pros-container {
-    .root {
-      .builder-container {
-        .container-row {
-          .widget-col {
-            border-color: mat-color($foreground-palette, divider);
+    mat-card.root {
+      .report-builder {
+        .widget-col {
+          border-right-color: mat-color($foreground-palette, divider);
+        }
 
-            mat-expansion-panel {
-              mat-list {
-                border-color: mat-color($foreground-palette, divider);
-              }
-            }
-          }
+        .col-heading {
+          border-bottom-color: mat-color($foreground-palette, divider);
+        }
 
-          .builder-board {
-            border-color: mat-color($foreground-palette, divider);
-          }
+        .builder-container {
+          border-color: mat-color($foreground-palette, divider);
 
           .property-col {
-            border-color: mat-color($foreground-palette, divider);
+            border-left-color: mat-color($foreground-palette, divider);
           }
         }
       }
@@ -965,6 +961,18 @@
     }
   }
 
+  pros-collaborator {
+    .mat-list.collaborators-list {
+      mat-list-item.mat-list-item {
+        border-bottom-color: mat-color($foreground-palette, divider);
+
+        .mat-list-item-content {
+          padding: 0;
+        }
+      }
+    }
+  }
+
   pros-diw-tiles {
     mat-card.root {
       mat-list.mat-list {
@@ -1034,6 +1042,20 @@
       mat-nav-list {
         mat-list-item {
           border-bottom: 1px solid mat-color($foreground-palette, divider);
+        }
+      }
+    }
+  }
+
+  pros-report-list {
+    mat-card.root {
+      mat-list.mat-list {
+        mat-list-item.mat-list-item {
+          border-color: mat-color($foreground-palette, divider);
+
+          .mat-list-item-content {
+            padding: 0;
+          }
         }
       }
     }
