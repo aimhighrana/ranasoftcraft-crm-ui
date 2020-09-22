@@ -491,6 +491,10 @@ export class DateFilterQuickSelect {
     isSelected: boolean;
 }
 
+export class WorkflowFieldRes {
+    dynamic: MetadataModel[];
+    static: MetadataModel[];
+}
 export class DateBulder {
 
     /**

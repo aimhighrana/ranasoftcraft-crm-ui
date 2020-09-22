@@ -24,7 +24,7 @@ export class WorkflowDatasetComponent implements OnInit, OnDestroy, OnChanges {
   @Output()
   selectedWfs: EventEmitter<WorkflowResponse[]> = new EventEmitter<WorkflowResponse[]>();
 
-  dataSetsWorkFlow: WorkflowResponse[];
+  dataSetsWorkFlow: WorkflowResponse[] = [];
   dataSetWorkflow: Observable<WorkflowResponse[]> = of([]);
 
   /**

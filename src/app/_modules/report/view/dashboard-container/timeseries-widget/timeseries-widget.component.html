@@ -28,7 +28,7 @@
           <!-- TIME SERIES CHART -->
     </mat-toolbar-row>
     <mat-card-content>
-        <canvas
+        <canvas [height]="widgetInfo.height * boxSize" [width]="widgetInfo.width * boxSize"
         baseChart
         [datasets]="dataSet"
         class="inner-flexcol-12"

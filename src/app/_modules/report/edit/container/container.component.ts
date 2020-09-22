@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { Widget, WidgetType, ReportDashboardReq, WidgetTableModel, ChartType, Orientation, DatalabelsPosition, LegendPosition, BlockType,TimeseriesStartDate, Criteria, OrderWith,SeriesWith } from '../../_models/widget';
+import { Widget, WidgetType, ReportDashboardReq, WidgetTableModel, ChartType, Orientation, DatalabelsPosition, LegendPosition, BlockType,TimeseriesStartDate, Criteria, OrderWith,SeriesWith, WorkflowFieldRes } from '../../_models/widget';
 import { Observable, of, BehaviorSubject, Subscription } from 'rxjs';
 import { FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
 import { ReportService } from '../../_service/report.service';
@@ -40,9 +40,9 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   selStyleWid: Widget;
   styleCtrlGrp: FormGroup;
   fields: BehaviorSubject<MetadataModeleResponse> = new BehaviorSubject<MetadataModeleResponse>(null);
-  wfFields: BehaviorSubject<MetadataModel[]> = new BehaviorSubject<MetadataModel[]>(null);
+  wfFields: BehaviorSubject<WorkflowFieldRes> = new BehaviorSubject<WorkflowFieldRes>(null);
   headerFields: Observable<MetadataModel[]> = of([]);
-  workflowFields: Observable<MetadataModel[]> = of([]);
+  workflowFields: WorkflowFieldRes = new WorkflowFieldRes();
   reportId: string;
   reportName = '';
   chooseColumns: WidgetTableModel[] = [];
@@ -270,13 +270,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const wfldSub = this.wfFields.subscribe(flds => {
       if (flds) {
-        const workFlowFieldsArray: MetadataModel[] = [];
-        for (const obj in flds) {
-          if (flds.hasOwnProperty(obj)) {
-            workFlowFieldsArray.push(flds[obj]);
-          }
-        }
-        this.workflowFields = of(workFlowFieldsArray);
+        this.workflowFields = flds;
       }
     })
     this.subscriptions.push(fldSub);

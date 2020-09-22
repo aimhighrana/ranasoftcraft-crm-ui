@@ -329,7 +329,8 @@
                                     <mat-form-field appearance="outline">
                                         <mat-label>Choose columns</mat-label>
                                         <mat-select>
-                                            <mat-option *ngFor="let field of workflowFields | async"
+                                            <mat-optgroup label="System fileds">
+                                                <mat-option *ngFor="let field of workflowFields.static"
                                                 value="{{ field.fieldId }}">
                                                 <div (click)="optionClicked($event, field)">
                                                     <mat-checkbox prosClickStopPropagation
@@ -338,7 +339,22 @@
                                                         {{ field.fieldDescri }}
                                                     </mat-checkbox>
                                                 </div>
-                                            </mat-option>
+                                               </mat-option>
+                                            </mat-optgroup>
+
+                                            <mat-optgroup label="Module fileds">
+                                                <mat-option *ngFor="let field of workflowFields.dynamic"
+                                                value="{{ field.fieldId }}">
+                                                <div (click)="optionClicked($event, field)">
+                                                    <mat-checkbox prosClickStopPropagation
+                                                        (change)="toggleSelection(field)" [checked]="isSelected(field)"
+                                                        color="primary">
+                                                        {{ field.fieldDescri }}
+                                                    </mat-checkbox>
+                                                </div>
+                                               </mat-option>
+                                            </mat-optgroup>
+                                            
                                         </mat-select>
                                     </mat-form-field>
                                     <mat-hint>{{ chooseColumns ? chooseColumns.length : '0' }} Selected</mat-hint>

@@ -109,7 +109,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
         const objectNumber = element._id;
         const obj = {objectNumber};
 
-        const hdvs = source.hdvs !== undefined?source.hdvs:source;
+        const hdvs = source.hdvs !== undefined ? source.hdvs :(source.staticFields !== undefined ?source.staticFields:source);
         let  locale = this.locale!==''?this.locale.split('-')[0]:'EN';
         locale = locale.toUpperCase();
         const tblMetadata = this.reportingListWidget.value;

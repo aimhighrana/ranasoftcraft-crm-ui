@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, AfterViewInit, ElementRef, NgZone, HostListener, OnChanges, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit, ElementRef, HostListener, OnChanges, Output, EventEmitter, ViewChild } from '@angular/core';
 import { ReportService } from '../../_service/report.service';
 import { WidgetMapInfo, Criteria, ReportDashboardPermission } from '../../_models/widget';
 
@@ -29,9 +29,7 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit, OnCha
 
   @ViewChild('rootContainer') rootContainer: ElementRef;
   constructor(
-    private reportService: ReportService,
-    private elementRef: ElementRef,
-    private ngZone: NgZone
+    private reportService: ReportService
   ) { }
 
   ngOnChanges(changes: import('@angular/core').SimpleChanges): void {
