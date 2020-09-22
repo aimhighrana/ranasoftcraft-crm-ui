@@ -40,8 +40,12 @@ export class ReportService {
     return this.http.delete<boolean>(this.endpointService.deleteReport(reportId));
   }
 
-  public getDocCount(objectType: string): Observable<number> {
-    return this.http.get<number>(this.endpointService.docCountUrl(objectType));
+  public getDocCount(objectType: string, isWorkflowDataset?:any): Observable<number> {
+    if(isWorkflowDataset) {
+      return this.http.get<number>(this.endpointService.docCountUrl(objectType),{params:{isWorkflowDataset}});
+    } else {
+      return this.http.get<number>(this.endpointService.docCountUrl(objectType));
+    }
   }
 
   public getCollaboratorPermission(queryString: string) : Observable<PermissionOn> {

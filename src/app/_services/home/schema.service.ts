@@ -195,7 +195,7 @@ export class SchemaService {
     return this.http.get<any>(this.endpointService.getWorkflowDataURL());
   }
 
-  public getWorkFlowPath(ObjectType: string): Observable<WorkflowPath[]> {
-    return this.http.get<WorkflowPath[]>(this.endpointService.getWorkFlowPathUrl(ObjectType));
+  public getWorkFlowPath(ObjectType: string[]): Observable<WorkflowPath[]> {
+    return this.http.post<WorkflowPath[]>(this.endpointService.getWorkFlowPathUrl(),ObjectType);
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, AfterViewInit, ElementRef, NgZone, HostListener, OnChanges, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit, ElementRef, NgZone, HostListener, OnChanges, Output, EventEmitter, ViewChild } from '@angular/core';
 import { ReportService } from '../../_service/report.service';
 import { WidgetMapInfo, Criteria, ReportDashboardPermission } from '../../_models/widget';
 
@@ -27,6 +27,7 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit, OnCha
 
   permissons: ReportDashboardPermission;
 
+  @ViewChild('rootContainer') rootContainer: ElementRef;
   constructor(
     private reportService: ReportService,
     private elementRef: ElementRef,
@@ -52,8 +53,9 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit, OnCha
   }
 
   ngAfterViewInit(): void {
-    if(this.elementRef.nativeElement) {
-      this.screenWidth = this.elementRef.nativeElement.offsetWidth;
+    if(this.rootContainer) {
+      // this.screenWidth = this.elementRef.nativeElement.offsetWidth;
+      this.screenWidth = (this.rootContainer.nativeElement as HTMLDivElement).offsetWidth;
       this.boxSize = this.screenWidth / this.noOfboxes;
     }
   }

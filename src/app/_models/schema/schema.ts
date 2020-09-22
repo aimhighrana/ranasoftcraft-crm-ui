@@ -109,6 +109,7 @@ export interface ObjectType {
 export class WorkflowResponse {
      objectid: string;
      objectdesc: string;
+     isSelected?: boolean;
 }
 
 export class WorkflowPath {

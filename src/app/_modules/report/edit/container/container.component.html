@@ -118,18 +118,17 @@
                                 <mat-form-field appearance="outline">
                                     <mat-select formControlName="objectType">
                                         <mat-optgroup label="Module">
-                                            <mat-option *ngFor="let object of dataSetOb | async"
-                                                value="{{ object.objectid }}">
+                                            <mat-option *ngFor="let object of dataSetOb | async" value="{{ object.objectid }}" (click)="styleCtrlGrp.get('isWorkflowdataSet').setValue(false)">
                                                 {{ object.objectdesc ? object.objectdesc : 'Untitled' }}
                                             </mat-option>
                                         </mat-optgroup>
 
-                                        <mat-optgroup label="Workflow">
-                                            <mat-option *ngFor="let object of dataSetWorkflow | async"
-                                                value="wf_{{ object.objectid }}">
+                                        <!-- <mat-optgroup label="Workflow">
+                                            <mat-option *ngFor="let object of dataSetWorkflow | async" value="wf_{{ object.objectid }}">
                                                 {{ object.objectdesc }} WorkFlow
                                             </mat-option>
-                                        </mat-optgroup>
+                                        </mat-optgroup>   -->
+                                        <pros-workflow-dataset (selectedWfs)="afterWfSelect($event)" [preSelectedObj]="selStyleWid ? selStyleWid.objectType : ''"></pros-workflow-dataset>
                                     </mat-select>
                                 </mat-form-field>
                                 <mat-hint *ngIf="selStyleWid  && selStyleWid.objectType && recordsCount">Total
@@ -145,9 +144,8 @@
                                     <mat-label>Workflow path</mat-label>
                                     <mat-form-field appearance="outline">
                                         <mat-select formControlName="workflowPath" multiple>
-                                            <mat-option *ngFor="let workflow of workflowPathOb | async"
-                                                [value]="workflow.wfpath">
-                                                {{ workflow.wfpath }}
+                                            <mat-option *ngFor="let workflow of workflowPathOb | async" [value]="workflow.pathname">
+                                                {{ workflow.workflowdesc ? workflow.workflowdesc : 'Unknown path' }}
                                             </mat-option>
                                         </mat-select>
                                     </mat-form-field>

@@ -171,7 +171,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         changedWidget.filterType = latestVal.filterType;
         changedWidget.isMultiSelect = latestVal.isMultiSelect;
         changedWidget.groupById = latestVal.groupById;
-        changedWidget.objectType = latestVal.objectType.startsWith('wf_') ? latestVal.objectType.split('wf_')[1] : latestVal.objectType;
+        changedWidget.objectType = latestVal.objectType;
         changedWidget.imageUrl = latestVal.imageUrl;
         changedWidget.htmlText = latestVal.htmlText;
         changedWidget.imagesno = latestVal.imagesno;
@@ -230,21 +230,28 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     });
 
     const styleSub = this.styleCtrlGrp.get('objectType').valueChanges.subscribe(fillData => {
-      if (fillData && typeof fillData === 'string' && fillData.startsWith('wf_')) {
-        fillData = fillData.split('wf_')[1];
-        if (fillData !== this.styleCtrlGrp.value.objectType) {
-          this.getWorkFlowFields(fillData);
-          this.getRecordCount(fillData);
-          this.getWorkFlowPathDetails(fillData);
-          this.styleCtrlGrp.get('isWorkflowdataSet').setValue(true);
-        }
-      } else {
-        if (fillData.objectid  !== this.styleCtrlGrp.value.objectType) {
+      // if (fillData && typeof fillData === 'string' && fillData) {
+      //   fillData = fillData.split('wf_')[1];
+      //   if (fillData !== this.styleCtrlGrp.value.objectType) {
+      //     this.getWorkFlowFields(fillData);
+      //     this.getRecordCount(fillData);
+      //     this.getWorkFlowPathDetails(fillData);
+      //     this.styleCtrlGrp.get('isWorkflowdataSet').setValue(true);
+      //   }
+      // } else {
+        if (fillData.objectid  !== this.styleCtrlGrp.value.objectType && !this.styleCtrlGrp.get('isWorkflowdataSet').value) {
           this.getAllFields(fillData);
           this.getRecordCount(fillData);
           this.styleCtrlGrp.get('isWorkflowdataSet').setValue(false);
         }
-      }
+
+        if(this.styleCtrlGrp.get('isWorkflowdataSet').value) {
+          this.getWorkFlowFields(fillData.split(','));
+          this.getRecordCount(fillData, true);
+          this.getWorkFlowPathDetails(fillData.split(','));
+          this.styleCtrlGrp.get('isWorkflowdataSet').setValue(true);
+        }
+      // }
     });
 
     this.subscriptions.push(styleSub);
@@ -303,7 +310,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subscriptions.push(allfldSub);
   }
 
-  getWorkFlowFields(objectType: string) {
+  getWorkFlowFields(objectType: string[]) {
     const workflowFields = this.schemaDetailsService.getWorkflowFields(objectType).subscribe(response => {
       this.wfFields.next(response);
     }, error => {
@@ -318,12 +325,6 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.dataSetOb = of(res);
     }, error => console.error(`Error: ${error}`));
     this.subscriptions.push(objSub);
-
-    const workflowSub = this.schemaService.getWorkflowData().subscribe(res => {
-      this.dataSetsWorkFlow = res;
-      this.dataSetWorkflow = of(res);
-    }, error => console.error(`Error: ${error}`));
-    this.subscriptions.push(workflowSub);
   }
 
   drop(event: CdkDragDrop<string[]>) {
@@ -424,7 +425,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           filterType: data.filterType ? data.filterType : '',
           isMultiSelect: data.isMultiSelect ? data.isMultiSelect : false,
           groupById: data.groupById ? data.groupById : '',
-          objectType: data.isWorkflowdataSet ? 'wf_' + data.objectType : (data.objectType ? data.objectType : ''),
+          isWorkflowdataSet: data.isWorkflowdataSet ? data.isWorkflowdataSet : false,
+          objectType: data.objectType ? data.objectType : '',
           imageUrl: data.imageUrl ? data.imageUrl : '',
           htmlText: data.htmlText ? data.htmlText : '',
           imagesno: data.imagesno ? data.imagesno : '',
@@ -432,7 +434,6 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           dateSelectionType: data.dateFilterCtrl ? (data.dateFilterCtrl.dateSelectedFor ? data.dateFilterCtrl.dateSelectedFor : null) : null,
           startDate: startDate ? moment(startDate) : '',
           endDate: endDate ? moment(endDate) : '',
-          isWorkflowdataSet: data.isWorkflowdataSet ? data.isWorkflowdataSet : false,
           workflowPath: data.workflowPath ? data.workflowPath : []
         });
 
@@ -594,8 +595,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    * Should call api and get the actual records count
    * @param objectType selected object type
    */
-  getRecordCount(objectType: string) {
-    const docCountSub = this.reportService.getDocCount(objectType).subscribe(res => {
+  getRecordCount(objectType: string, isWorkflowDataset?:boolean) {
+    const docCountSub = this.reportService.getDocCount(objectType, isWorkflowDataset).subscribe(res => {
       this.recordsCount = res;
     }, error => {
       this.recordsCount = null;
@@ -609,7 +610,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param objectType selected object type
    */
 
-  getWorkFlowPathDetails(objectType: string) {
+  getWorkFlowPathDetails(objectType: string[]) {
     this.schemaService.getWorkFlowPath(objectType).subscribe(res => {
       this.workflowPath = res;
       this.workflowPathOb = of(res);
@@ -682,5 +683,24 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     specialOpe.childs.push('FIELD2FIELD_LESSTHEN');
     specialOpe.childs.push('FIELD2FIELD_LESSTHENEQUALTO');
     return [genericOp, onlyNum, specialOpe];
+  }
+
+  get frmArray() {
+    return this.defaultFilterCtrlGrp.controls.filters as FormArray;
+  }
+
+  /**
+   * After select workflow data ..
+   * @param selected selected workflow data is here
+   */
+  afterWfSelect(selected: WorkflowResponse[]) {
+    console.log(selected);
+    this.styleCtrlGrp.get('isWorkflowdataSet').setValue(true);
+    const objId = selected.map(map=> map.objectid);
+    this.getWorkFlowFields(objId);
+    this.getRecordCount(objId.toString(), true);
+    this.getWorkFlowPathDetails(objId);
+    this.selStyleWid.objectType = objId.toString();
+    this.styleCtrlGrp.get('objectType').setValue(objId.toString());
   }
 }

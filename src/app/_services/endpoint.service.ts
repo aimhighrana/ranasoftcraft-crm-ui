@@ -525,12 +525,12 @@ export class EndpointService {
     return this.apiUrl + '/schema/get-wf-module-data'
   }
 
-  public getWorkFlowFieldsUrl(objectType: string): string {
-    return this.apiUrl + `/schema/get-wffields/${objectType}`;
+  public getWorkFlowFieldsUrl(): string {
+    return this.apiUrl + `/schema/get-wffields`;
   }
 
-  public getWorkFlowPathUrl(objectType: string): string {
-    return this.apiUrl + `/schema/get-wfpath/${objectType}`;
+  public getWorkFlowPathUrl(): string {
+    return this.apiUrl + `/schema/get-wfpath`;
   }
 }
 

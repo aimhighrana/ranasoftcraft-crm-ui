@@ -69,6 +69,7 @@ export class SchemaDataSource implements DataSource<SchemaTableData> {
             }
 
         }, error=>{
+            this.dataSourceSubject.next([]);
             console.error(`Error : ${error.message}`);
         });
 

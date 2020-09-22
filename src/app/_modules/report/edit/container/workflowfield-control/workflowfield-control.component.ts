@@ -86,7 +86,7 @@ export class WorkflowfieldControlComponent implements OnInit, OnChanges, OnDestr
           const changeAble = {isGroup: grp.isGroup, fieldId: grp.fieldId, childs:grp.childs, fieldDescri: grp.fieldDescri};
           const chld: Metadata[] = [];
           changeAble.childs.forEach(child=>{
-            if(child.fieldDescri.toLocaleLowerCase().indexOf(val.toLocaleLowerCase())!== -1){
+            if(child.fieldDescri && child.fieldDescri.toLocaleLowerCase().indexOf(val.toLocaleLowerCase())!== -1){
               chld.push(child)
             }
           });
@@ -110,7 +110,7 @@ export class WorkflowfieldControlComponent implements OnInit, OnChanges, OnDestr
    */
   getField(){
     if(this.objectType){
-      const allfldSub = this.schemaDetailsService.getWorkflowFields(this.objectType).subscribe(response=>{
+      const allfldSub = this.schemaDetailsService.getWorkflowFields(this.objectType.split(',')).subscribe(response=>{
         const res = this.transformFieldRes(response);
         this.fields = res;
         this.fieldsObs = of(res);
