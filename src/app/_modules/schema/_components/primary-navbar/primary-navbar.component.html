@@ -4,7 +4,7 @@
         <button mat-icon-button (click)="toggleSideBar()">
             <mat-icon>menu</mat-icon>
         </button>
-        <div class="col-space"><img src="/assets/images/mdo-logo-white.svg" width="70"></div>
+        <div class="col-space"><img src="./assets/images/mdo-logo-white.svg" width="70"></div>
     </div>
 
     <div class="row-spacer"></div>
@@ -27,11 +27,12 @@
     <div class="row-spacer"></div>
 
     <mat-nav-list class="primary-nav-list">
-        <mat-list-item routerLink="/home/dash/welcome" [routerLinkActive]="'selected'"  (click)="sendToParent('welcome')">
+        <mat-list-item routerLink="/home/dash/welcome" [routerLinkActive]="'selected'"
+            (click)="sendToParent('welcome')">
             <mat-icon fontSet="mdo-icons">form-address</mat-icon>
             <div class="col-space">Home</div>
         </mat-list-item>
-        <mat-list-item routerLink="/home/schema" [routerLinkActive]="'selected'"  (click)="sendToParent('schema')">
+        <mat-list-item routerLink="/home/schema" [routerLinkActive]="'selected'" (click)="sendToParent('schema')">
             <mat-icon fontSet="mdo-icons">board</mat-icon>
             <div class="col-space">Schema</div>
         </mat-list-item>
@@ -53,7 +54,9 @@
     <mat-divider></mat-divider>
     <div class="row-spacer"></div>
     <mat-card-header>
-        <div mat-card-avatar>{{ userDetails.firstName ? userDetails.firstName.substring(0,1).toUpperCase() : ''  }}{{ userDetails.lastName ? userDetails.lastName.substring(0,1).toUpperCase() : ''  }}  </div>
+        <div mat-card-avatar>
+            {{ userDetails.firstName ? userDetails.firstName.substring(0,1).toUpperCase() : ''  }}{{ userDetails.lastName ? userDetails.lastName.substring(0,1).toUpperCase() : ''  }}
+        </div>
         <mat-card-title>{{ userDetails.fullName ? userDetails.fullName : userDetails.userName }}</mat-card-title>
         <!-- <mat-icon>arrow_drop_down</mat-icon> -->
         <!-- <mat-menu #navigation="matMenu">

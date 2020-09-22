@@ -18,7 +18,7 @@ import { CoreSchemaBrInfo } from '@modules/admin/_components/module/business-rul
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { NewSchemaCollaboratorsComponent } from '../new-schema-collaborators/new-schema-collaborators.component';
-import { SchemaCollaborator} from '@models/collaborator';
+import { SchemaCollaborator } from '@models/collaborator';
 import { Utilities } from '@modules/base/common/utilities';
 
 export interface DataSource {
@@ -149,6 +149,10 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * Flag to disable back button
    */
   disableBack = false;
+
+  subscriberFilterFields = [];
+
+  activeChipValue = {};
 
   /**
    * Constructor of class
@@ -367,7 +371,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         const isNewSchema = this.requestForm.controls.objectId.value;
 
         if (anyMapping === 0 && isNewSchema) {
-          this.snackBar.open('Please select atleast one mapping', 'Okay', {duration: 5000});
+          this.snackBar.open('Please select atleast one mapping', 'Okay', { duration: 5000 });
           return;
         }
       }
@@ -376,7 +380,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         // there should be atleast one Business rule
         const anyBR = this.requestForm.controls.coreSchemaBr.value;
         if (anyBR.length === 0) {
-          this.snackBar.open('Please create atleast one business rule', 'Okay', {duration: 5000});
+          this.snackBar.open('Please create atleast one business rule', 'Okay', { duration: 5000 });
           return;
         }
       }
@@ -659,7 +663,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
           this.stepper.next();
         }
       }, () => {
-        this.snackBar.open('File could not be uploaded', 'Okay', {duration: 5000})
+        this.snackBar.open('File could not be uploaded', 'Okay', { duration: 5000 })
       });
   }
 
@@ -716,37 +720,25 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       this.requestForm.controls.mappedData.setValue(mappedArray)
     }
 
-
-    if (this.subscribersList.length === 0) {
-      this.callSaveSchemaAPI(
-        objectId,
-        variantId,
-        fileSerialNo
-      )
-    } else {
-      this.subscribersList.forEach((subscriber, index) => {
-        let obj;
-        const subscriberObject = subscriber;
-
-        subscriberObject.filterFieldIds.forEach((fieldId) => {
-          const getSubsciberDataOnBasisOfFieldId = subscriber.dataAllocation.filter((sub) => sub.FIELDNAME === fieldId);
-          obj = {
-            type: 'DROPDOWN',
-            fieldId,
-            values: getSubsciberDataOnBasisOfFieldId ? getSubsciberDataOnBasisOfFieldId.map((item) => item.CODE) : ''
-          }
-          subscriberObject.filterCriteria = obj;
+    if (this.subscribersList.length > 0) {
+      this.subscribersList.forEach((subscriber) => {
+        subscriber.filterFieldIds.forEach(field => {
+          field.values = field.selectedValeus.map(item => item.CODE);
+          delete field.fldCtrl
+          delete field.selectedValeus
         });
-        this.requestForm.controls.subscribers.setValue(this.subscribersList);
-        if (index === this.subscribersList.length - 1) {
-          this.callSaveSchemaAPI(
-            objectId,
-            variantId,
-            fileSerialNo
-          )
-        }
+        subscriber.filterCriteria = subscriber.filterFieldIds;
+        delete subscriber.filterFieldIds;
       });
     }
+
+    console.log(this.subscribersList)
+    this.requestForm.controls.subscribers.setValue(this.subscribersList);
+    this.callSaveSchemaAPI(
+      objectId,
+      variantId,
+      fileSerialNo
+    )
   }
 
   callSaveSchemaAPI(objectId: string, variantId: string, fileSerialNo: string) {
@@ -757,10 +749,6 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     delete formObject.fileSerialNo;
     delete formObject.runNow;
     delete formObject.runTime;
-    this.requestForm.controls.subscribers.value.forEach((subscriber) => {
-      delete subscriber.dataAllocation;
-      delete subscriber.filterFieldIds
-    })
     this.schemaDetailsService.saveNewSchemaDetails(
       objectId,
       runNow,
@@ -809,17 +797,21 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   }
 
   makeFilterControl(event, subscriber, subscriberIndex) {
-    const allocationExists = this.subscribersList[subscriberIndex].filterFieldIds.find(item => item === event.fldCtrl.fieldId)
-    if (!allocationExists) {
-      this.subscribersList[subscriberIndex].filterFieldIds.push(event.fldCtrl.fieldId)
+    if (event.selectedValeus.length === 0)
+      return;
+    console.log(event);
+    event.fieldId = event.fldCtrl.fieldId;
+    event.fieldDescription = event.fldCtrl.fieldDescri;
+
+    const exists = this.subscribersList[subscriberIndex].filterFieldIds.find(ele => ele.fieldId === event.fieldId);
+
+    if (exists) {
+      exists.values = event.selectedValeus;
+    } else {
+      this.subscribersList[subscriberIndex].filterFieldIds.push(event)
     }
 
-    event.selectedValeus.forEach((selectedValue) => {
-      const mappingExists = this.subscribersList[subscriberIndex].dataAllocation.find(item => item.CODE === selectedValue.CODE);
-      if (!mappingExists) {
-        this.subscribersList[subscriberIndex].dataAllocation.push(selectedValue);
-      }
-    })
+    console.log(this.subscribersList[subscriberIndex])
   }
 
   /**
@@ -841,16 +833,15 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * @param subscriber selected subscriber
    * @param fieldId the selected field/groupid
    */
-  getChipSets(subscriber, fieldId) {
-    const children = subscriber.dataAllocation.filter(item => item.FIELDNAME === fieldId);
-    if (children.length && children.length > 1) {
-      return `${fieldId}:${children.length}`;
-    } else {
-      if (children.length && children.length === 0) {
-        return `${fieldId}:${children[0].TEXT}`;
-      }
-    }
-    return null;
+  getChipSets(subscriber) {
+    const fieldIds = subscriber.filterFieldIds
+      .map((field) => {
+        return {
+          fieldId: field.fieldId,
+          count: field.values.length
+        }
+      });
+    return fieldIds
   }
 
   /**
@@ -861,5 +852,19 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       return false
     }
     return this.headerTextIndex > 1
+  }
+
+  /**
+   * function to show the current selected chip
+   * @param chipData selected chip
+   */
+  setActiveChip(chipData) {
+    this.activeChipValue = chipData;
+  }
+
+  updateFilterCriteria(event, subscriberIndex) {
+    this.activeChipValue = event;
+    console.log(this.subscribersList[subscriberIndex])
+
   }
 }

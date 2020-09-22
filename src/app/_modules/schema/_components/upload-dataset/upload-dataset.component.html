@@ -199,10 +199,13 @@
                         </div>
                         <div class="col col-x16">
                             <mat-chip-list>
-                                <mat-chip class="mdo-filter-matchip" *ngFor="let fieldId of subscriber.filterFieldIds">
-                                    <ng-container>
-                                        {{getChipSets(subscriber,fieldId)}}
-                                        <mat-icon matChipRemove (click)="removeAllocation(subscriber,fieldId)">clear
+
+                                <mat-chip [matMenuTriggerFor]="existingFieldMenu" class="mdo-filter-matchip"
+                                    *ngFor="let data of subscriber.filterFieldIds" (click)="setActiveChip(data)">
+                                    <ng-container (click)="setActiveChip(data)">
+                                        {{data.fieldDescription}}:{{data.selectedValeus.length}}
+                                        <mat-icon matChipRemove (click)="removeAllocation(subscriber,fieldId)"
+                                            prosClickStopPropagation>clear
                                         </mat-icon>
                                     </ng-container>
                                 </mat-chip>
@@ -218,6 +221,15 @@
                                     (evtReadyForApply)="makeFilterControl($event,subscriber,l)">
                                 </pros-add-filter-menu>
                             </mat-menu>
+
+                            <!-- Append dynamic filter MatMenu -->
+                            <mat-menu #existingFieldMenu="matMenu">
+                                <pros-filter-values *ngIf="activeChipValue && activeChipValue.fldCtrl"
+                                    [fieldId]="activeChipValue.fldCtrl.fieldId" [checkedValue]="activeChipValue.selectedValeus"
+                                    (selectedValues)="updateFilterCriteria($event,l)">
+                                </pros-filter-values>
+                            </mat-menu>
+
                         </div>
                         <div class="col mat-item-end">
                             <button mat-button [matMenuTriggerFor]="menu">
