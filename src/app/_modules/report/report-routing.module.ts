@@ -3,14 +3,12 @@ import { Routes, RouterModule } from '@angular/router';
 import { DashboardComponent } from './view/dashboard/dashboard.component';
 import { PageNotFoundComponent } from '../shared/_components/page-not-found/page-not-found.component';
 import { ContainerComponent } from './edit/container/container.component';
-import { ReportListComponent } from './report-list/report-list.component';
 import { ReportCollaboratorComponent } from './permissions/report-collaborator/report-collaborator.component';
 import { SummaryLayoutComponent } from './view/summary-layout/summary-layout.component';
 
 
 const routes: Routes = [
-  { path: '', redirectTo: 'list', pathMatch: 'full' },
-  { path:'list', component: ReportListComponent },
+  { path: '', component: DashboardComponent },
   { path: 'dashboard/:id', component: DashboardComponent },
   { path: 'dashboard-builder/:id', component: ContainerComponent },
   { path: 'collaborators/:reportId', component: ReportCollaboratorComponent },

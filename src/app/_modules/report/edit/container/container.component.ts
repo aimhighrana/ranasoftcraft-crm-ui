@@ -59,8 +59,6 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   recordsCount: number;
 
   collaboratorPermission = false;
-  showRangeFld = false;
-
 
   conditionalOperators: ConditionalOperator[] = this.possibleOperators;
 
@@ -426,7 +424,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           filterType: data.filterType ? data.filterType : '',
           isMultiSelect: data.isMultiSelect ? data.isMultiSelect : false,
           groupById: data.groupById ? data.groupById : '',
-          objectType: data.isWorkflowdataSet ? 'wf_' + data.objectType ? 'wf_' + data.objectType : '' : data.objectType ? data.objectType : '',
+          objectType: data.isWorkflowdataSet ? 'wf_' + data.objectType : (data.objectType ? data.objectType : ''),
           imageUrl: data.imageUrl ? data.imageUrl : '',
           htmlText: data.htmlText ? data.htmlText : '',
           imagesno: data.imagesno ? data.imagesno : '',
@@ -449,7 +447,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         // add default filters
         if (data.defaultFilters) {
-          const frmArray = this.frmArray;
+          const frmArray = this.defaultFilterCtrlGrp.controls.filters as FormArray;
           const defFill: Criteria[] = [];
           data.defaultFilters.forEach(each => defFill.push(each));
           frmArray.clear();
@@ -458,7 +456,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
               conditionFieldId: [dat.conditionFieldId],
               conditionFieldValue: [dat.conditionFieldValue],
               blockType: [BlockType.COND],
-              conditionOperator: ['', Validators.required],
+              conditionOperator: [dat.conditionOperator, Validators.required],
               udrid: [data.widgetId ? data.widgetId : ''],
               showRangeFld:false
             }));
@@ -513,16 +511,6 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
 
-  operatorSelectionChng(option: string, index: number) {
-    const frmArray = this.frmArray;
-    const frmCtrl = frmArray.at(index);
-    const val = frmCtrl.value;
-    val.conditionOperator = option;
-    val.showRangeFld = option === 'RANGE' ? true : false;
-    frmCtrl.setValue(val);
-    // frmCtrl.get('showRangeFld').setValue(option.option.value === 'RANGE' ? true : false);
-  }
-
   /**
    * Use to add more default filters
    * Now blockType and conditionalOperator is static
@@ -544,7 +532,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param idx index of array element that use for remove from FormArray
    */
   removeFilter(idx: number) {
-    const frmArray = this.frmArray;
+    const frmArray = this.defaultFilterCtrlGrp.controls.filters as FormArray;
     frmArray.removeAt(idx);
   }
 
@@ -585,6 +573,20 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       frmArray.at(index).get('conditionFieldId').setValue(fieldData.option.value.fieldId);
     } else {
       frmArray.at(index).get('conditionFieldId').setValue('');
+    }
+  }
+
+  /**
+   * Use for update default filter array
+   * @param operator selected opertaor or on change dropdown data
+   * @param index row index
+   */
+  operatorSelectionChng(operator: string, index: number) {
+    const frmArray = this.defaultFilterCtrlGrp.controls.filters as FormArray;
+    if(operator) {
+      frmArray.at(index).get('conditionOperator').setValue(operator);
+    } else {
+      frmArray.at(index).get('conditionOperator').setValue('');
     }
   }
 
@@ -661,7 +663,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     const onlyNum: ConditionalOperator = new ConditionalOperator();
     onlyNum.desc = 'Numeric Operators';
     onlyNum.childs = [];
-    onlyNum.childs.push('RANGE');
+    // onlyNum.childs.push('RANGE');
     onlyNum.childs.push('LESS_THAN');
     onlyNum.childs.push('LESS_THAN_EQUAL');
     onlyNum.childs.push('GREATER_THAN');
@@ -674,10 +676,11 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     specialOpe.childs.push('REGEX');
     specialOpe.childs.push('FIELD2FIELD');
     specialOpe.childs.push('LOCATION');
+    specialOpe.childs.push('FIELD2FIELD_EQUAL');
+    specialOpe.childs.push('FIELD2FIELD_GREATETHENEQUAL');
+    specialOpe.childs.push('FIELD2FIELD_GREATETHAN');
+    specialOpe.childs.push('FIELD2FIELD_LESSTHEN');
+    specialOpe.childs.push('FIELD2FIELD_LESSTHENEQUALTO');
     return [genericOp, onlyNum, specialOpe];
-  }
-
-  get frmArray() {
-    return this.defaultFilterCtrlGrp.controls.filters as FormArray;
   }
 }
