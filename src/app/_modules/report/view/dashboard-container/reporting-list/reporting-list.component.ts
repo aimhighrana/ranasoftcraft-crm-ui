@@ -106,7 +106,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
       returndata.hits.hits.forEach(element => {
         const source =element._source;
 
-        const objectNumber = element._id;
+        const objectNumber = source.staticFields && source.staticFields.OBJECTID && source.staticFields.OBJECTID.vc?source.staticFields.OBJECTID.vc[0].c:element._id;
         const obj = {objectNumber};
 
         const hdvs = source.hdvs !== undefined ? source.hdvs :(source.staticFields !== undefined ?source.staticFields:source);

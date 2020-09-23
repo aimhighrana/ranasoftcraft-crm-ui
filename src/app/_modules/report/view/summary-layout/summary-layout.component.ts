@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { WidgetService } from '@services/widgets/widget.service';
 import { BehaviorSubject } from 'rxjs';
 import { LayoutTabResponse, MDORECORDESV3 } from '@modules/report/_models/widget';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'pros-summary-layout',
@@ -19,7 +20,8 @@ export class SummaryLayoutComponent implements OnInit {
   constructor(
     private router: Router,
     private activatedRouter: ActivatedRoute,
-    private widgetService:WidgetService
+    private widgetService:WidgetService,
+    private snackbar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
@@ -48,7 +50,10 @@ export class SummaryLayoutComponent implements OnInit {
     this.widgetService.getLayoutMetadata(widgetId,objectNumber).subscribe(data=>{
       console.log(data);
       this.layoutMetadata.next(data);
-    },error=>console.error(`Error : ${error}`));
+    },error => {
+      this.snackbar.open(`Something went wrong`, 'Close', { duration: 5000 });
+      this.router.navigate([{ outlets: { sb: null } }]);
+    })
   }
 
   /**
