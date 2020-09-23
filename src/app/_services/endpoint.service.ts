@@ -430,7 +430,7 @@ export class EndpointService {
     return `${this.apiUrl}/schema/variant/delete/${variantId}`;
   }
 
- public saveNewSchemaUrl(objectId: string, runNow: boolean, variantId: string, fileSno: string): string {
+  public saveNewSchemaUrl(objectId: string, runNow: boolean, variantId: string, fileSno: string): string {
     return `${this.apiUrl}/schemamodule/create-schema?objectId=${objectId}&runNow=${runNow}&variantId=${variantId}&fileSno=${fileSno}`
   }
 
@@ -439,7 +439,7 @@ export class EndpointService {
    * @param moduleId module id/objectId
    */
   public getSchemaInfoByModuleIdUrl(moduleId: string): string {
-    return  `${this.apiUrl}/schema/schema-info/${moduleId}`;
+    return `${this.apiUrl}/schema/schema-info/${moduleId}`;
   }
 
 
@@ -447,23 +447,23 @@ export class EndpointService {
    * Get schema with variants .. use for data intilligence ...
    *
    */
-  public getSchemaWithVariantsUrl(): string  {
+  public getSchemaWithVariantsUrl(): string {
     return `${this.apiUrl}/schema/list-variants`;
   }
 
-  public getLayoutMetadata(widgetId,objectNumber):string{
+  public getLayoutMetadata(widgetId, objectNumber): string {
     return `${this.apiUrl}/report/layout-metadata/${widgetId}/${objectNumber}`;
   }
 
-  public getlayoutData(widgetId,objectNumber):string{
+  public getlayoutData(widgetId, objectNumber): string {
     return `${this.apiUrl}/report/layout-data/${widgetId}/${objectNumber}`;
   }
-  public getAttachmentData():string{
+  public getAttachmentData(): string {
     return `${this.apiUrl}/report/attachment-data`;
   }
-  public downloadAttachment(sno):string{
+  public downloadAttachment(sno): string {
     return `${this.apiUrl}/attachment/downloadAttachments?sno=${sno}`;
- }
+  }
 
   public updateBrMap(): string {
     return `${this.apiUrl}/schema/br/update-br-map`;
@@ -531,6 +531,43 @@ export class EndpointService {
 
   public getWorkFlowPathUrl(): string {
     return this.apiUrl + `/schema/get-wfpath`;
+  }
+
+
+  /**
+   * Endpoint url to get notifications
+   * @param senderUid username of logged in user
+   */
+  public getNotificationsUrl(senderUid, from: string, to: string): string {
+    return `${this.apiUrl}/notification/getNotification/${senderUid}?from=${from}&to=${to}`
+  }
+
+  /**
+   * Endpoint to update/save notification
+   */
+  public getUpdateNotificationUrl(): string {
+    return `${this.apiUrl}/notification/saveNotification`
+  }
+
+  /**
+   * Endpoint to update/save notification
+   */
+  public getDeleteNotificationUrl(): string {
+    return `${this.apiUrl}/notification/deleteNotification`
+  }
+
+  /**
+   * Endpoint to get job queue url
+   * @param userName username of logged in user
+   * @param plantCode plantcode of logged in user
+   */
+  public getJobQueueUrl(userName: string, plantCode: string): string {
+    return `${this.apiUrl}/schema/jobs/get-all-jobs?userId=${userName}&plantCode=${plantCode}`
+  }
+
+
+  public getNotificationsCount(senderUid): string {
+    return `${this.apiUrl}/notification/getNotificationCount/${senderUid}`
   }
 }
 

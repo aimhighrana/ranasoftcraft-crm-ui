@@ -25,6 +25,10 @@ export class SharedServiceService {
   private refreshSecondaryNav: BehaviorSubject<SecondaynavType> = new BehaviorSubject<SecondaynavType>(null);
 
   private afterSubscriberSave: BehaviorSubject<any> = new BehaviorSubject(null);
+  /**
+   * obervable to signal subscriber to call api for update notification
+   */
+  public updateNotifications: BehaviorSubject<any> = new BehaviorSubject(null);
 
   constructor() { }
 
@@ -73,7 +77,7 @@ export class SharedServiceService {
    * Use for refresh .. secondary nav bar
    * @param type set refresh type parameters ...
    */
-  public setRefreshSecondaryNav(type:SecondaynavType) {
+  public setRefreshSecondaryNav(type: SecondaynavType) {
     this.refreshSecondaryNav.next(type);
   }
 
@@ -97,4 +101,11 @@ export class SharedServiceService {
   public getAfterSubscriberSave(): Observable<any> {
     return this.afterSubscriberSave.asObservable();
   }
+  /*
+   * function to call the subscriber to get notifications
+   */
+  public getNotificationCount() {
+    return this.updateNotifications.next(true)
+  }
+
 }

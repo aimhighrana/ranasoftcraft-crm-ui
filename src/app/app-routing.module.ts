@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { PageNotFoundComponent } from './_modules/shared/_components/page-not-found/page-not-found.component';
 import { NewBusinessRulesComponent } from '@modules/schema/_components/new-business-rules/new-business-rules.component';
+import { SystemTrayComponent } from '@modules/home/_components/system-tray/system-tray.component';
+
 
 
 const routes: Routes = [
@@ -14,8 +16,7 @@ const routes: Routes = [
   { path: 'lib', loadChildren: () => import('./_modules/lib/lib.module').then(m => m.LibModule) },
   { path: 'outer/add-business-rules', component: NewBusinessRulesComponent, outlet: 'outer' },
   { path: 'sb/add-business-rules', component: NewBusinessRulesComponent, outlet: 'sb' },
-
-
+  { path: 'sb/system-tray', component: SystemTrayComponent, outlet: 'sb' },
 
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent }

@@ -37,10 +37,10 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
    * @param snackBar snackbar object
    */
   constructor(
-    private dialogRef: MatDialogRef<NewSchemaCollaboratorsComponent>,
+    public dialogRef: MatDialogRef<NewSchemaCollaboratorsComponent>,
     @Inject(MAT_DIALOG_DATA) public data,
-    private schemaDetailsService: SchemaDetailsService,
-    private snackBar: MatSnackBar) { }
+    public schemaDetailsService: SchemaDetailsService,
+    public snackBar: MatSnackBar) { }
 
   /**
    * Angular Hook

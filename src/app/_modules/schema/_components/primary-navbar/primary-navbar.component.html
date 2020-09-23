@@ -44,9 +44,9 @@
 
     <div class="row-spacer"></div>
 
-    <div class="f-row primary-admin">
+    <div class="f-row primary-admin" (click)="openSystemTray()">
         <div class="admin-badge">
-            <mat-icon>inbox</mat-icon>
+            <mat-icon>inbox</mat-icon>{{notificationsCount}}
             <mat-icon class="badge-icon">access_time</mat-icon>
         </div>
         <div class="col-space">System tray</div>

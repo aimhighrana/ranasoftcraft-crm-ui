@@ -16,7 +16,7 @@ import { GlobaldialogService } from '@services/globaldialog.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { CoreSchemaBrInfo } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
-import { distinctUntilChanged, filter } from 'rxjs/operators';
+import { distinctUntilChanged } from 'rxjs/operators';
 import { NewSchemaCollaboratorsComponent } from '../new-schema-collaborators/new-schema-collaborators.component';
 import { SchemaCollaborator } from '@models/collaborator';
 import { Utilities } from '@modules/base/common/utilities';
@@ -819,13 +819,8 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * @param allocationIndex data allocation index
    * @param subscriberIndex subscriber index
    */
-  removeAllocation(subscriber, fieldId) {
-    const fieldIdValueIndex = subscriber.filterFieldIds.findIndex(item => item === fieldId);
-    const allocationData = subscriber.dataAllocation.filter(item => item.FIELDNAME === fieldId);
-    allocationData.forEach((allocation) => {
-      delete subscriber.dataAllocation[allocation]
-    })
-    subscriber.filterFieldIds.splice(fieldIdValueIndex, 1);
+  removeAllocation(chipIndex, subscriberIndex) {
+    this.subscribersList[subscriberIndex].filterFieldIds.splice(chipIndex, 1)
   }
 
   /**

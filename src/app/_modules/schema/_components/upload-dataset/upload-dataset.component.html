@@ -201,10 +201,11 @@
                             <mat-chip-list>
 
                                 <mat-chip [matMenuTriggerFor]="existingFieldMenu" class="mdo-filter-matchip"
-                                    *ngFor="let data of subscriber.filterFieldIds" (click)="setActiveChip(data)">
+                                    *ngFor="let data of subscriber.filterFieldIds;let s=index"
+                                    (click)="setActiveChip(data)">
                                     <ng-container (click)="setActiveChip(data)">
                                         {{data.fieldDescription}}:{{data.selectedValeus.length}}
-                                        <mat-icon matChipRemove (click)="removeAllocation(subscriber,fieldId)"
+                                        <mat-icon matChipRemove (click)="removeAllocation(s,l)"
                                             prosClickStopPropagation>clear
                                         </mat-icon>
                                     </ng-container>
@@ -225,7 +226,8 @@
                             <!-- Append dynamic filter MatMenu -->
                             <mat-menu #existingFieldMenu="matMenu">
                                 <pros-filter-values *ngIf="activeChipValue && activeChipValue.fldCtrl"
-                                    [fieldId]="activeChipValue.fldCtrl.fieldId" [checkedValue]="activeChipValue.selectedValeus"
+                                    [fieldId]="activeChipValue.fldCtrl.fieldId"
+                                    [checkedValue]="activeChipValue.selectedValeus"
                                     (selectedValues)="updateFilterCriteria($event,l)">
                                 </pros-filter-values>
                             </mat-menu>

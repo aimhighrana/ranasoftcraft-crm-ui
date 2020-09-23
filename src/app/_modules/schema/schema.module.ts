@@ -41,7 +41,6 @@ import { SaveVariantDialogComponent } from './_components/v2/save-variant-dialog
 import { BrruleSideSheetComponent } from './_components/v2/brrule-side-sheet/brrule-side-sheet.component';
 import { SchemaInfoComponent } from './_components/v2/schema-info/schema-info.component';
 import { CreateSchemaComponent } from './_components/v2/create-schema/create-schema.component';
-import { SystemTrayComponent } from './_components/system-tray/system-tray.component';
 import { SubscriberSideSheetComponent } from './_components/v2/subscriber-side-sheet/subscriber-side-sheet.component';
 
 
@@ -87,8 +86,8 @@ import { SubscriberSideSheetComponent } from './_components/v2/subscriber-side-s
     BrruleSideSheetComponent,
     SchemaInfoComponent,
     CreateSchemaComponent,
-    SystemTrayComponent,
-    SubscriberSideSheetComponent
+    SubscriberSideSheetComponent,
+    CreateSchemaComponent
   ],
   imports: [
     CommonModule,

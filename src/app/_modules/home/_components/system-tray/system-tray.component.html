@@ -1,0 +1,73 @@
+<div class="root">
+    <div class="f-row breadcrum-toolbar">
+        <button mat-button (click)="close()">
+            <mat-icon>clear</mat-icon>
+        </button>
+        <div class="col-spacer"></div>
+        <div class="f-row mdo-constrained-right">
+            <div class="display-heading-large">System tray</div>
+        </div>
+    </div>
+    <div class="f-col mdo-justify">
+        <mat-tab-group disableRipple="true" #matTabgroup>
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    Notifications
+                </ng-template>
+                <button mat-button (click)="paginateNotification()" *ngIf="notifications.length === 10">next</button>
+                <mat-nav-list>
+                    <mat-list-item *ngFor="let notification of notifications"
+                        (click)="updateNotification(notification)">
+                        <div mat-line><strong>{{notification.headerText}}</strong></div>
+                        <div mat-line>{{notification.contentText}}</div>
+
+                        <mat-chip-list>
+                            <mat-chip disableRipple="true" class="none-stats-chip">
+                                {{notification.sendTime | date:'dd MMM hh:mm:ss' }}</mat-chip>
+                        </mat-chip-list>
+
+                        <mat-card-header>
+                            <div mat-card-avatar>{{notification.senderUid}}</div>
+                        </mat-card-header>
+
+                        <button mat-button (click)="deleteNotification(notification.id)" prosClickStopPropagation>
+                            <mat-icon>delete_outline</mat-icon>
+                        </button>
+                    </mat-list-item>
+                </mat-nav-list>
+            </mat-tab>
+
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    Job query
+                    <mat-chip-list class="mdo-tabchiplist">
+                        <mat-chip>{{jobQueueData.length}}</mat-chip>
+                    </mat-chip-list>
+                </ng-template>
+
+                <mat-nav-list>
+                    <mat-list-item *ngFor="let job of jobQueueData">
+                        <div mat-line>{{job.logMessage}}</div>
+
+                        <mat-chip-list>
+                            <mat-chip disableRipple="true" *ngIf="job.jobPk.status === 'IN_PROGRESS'">
+                                <mat-spinner diameter="16"></mat-spinner> &nbsp; Running
+                            </mat-chip>
+                            <mat-chip disableRipple="true" *ngIf="job.jobPk.status === 'COMPLETE'">
+                                {{ job.startDate | date:'dd-MMM-yyyy hh:mm:ss' }}
+                            </mat-chip>
+                        </mat-chip-list>
+
+                        <mat-card-header>
+                            <div mat-card-avatar>{{ job.initiatedBy }}</div>
+                        </mat-card-header>
+
+                        <button mat-button>
+                            <mat-icon>more_horiz</mat-icon>
+                        </button>
+                    </mat-list-item>
+                </mat-nav-list>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+</div>

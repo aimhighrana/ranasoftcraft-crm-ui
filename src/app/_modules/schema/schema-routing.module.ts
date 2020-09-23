@@ -29,7 +29,6 @@ import { MdoGenericComponentsComponent } from '@modules/lib/_components/mdo-gene
 import { CreateSchemaComponent } from './_components/v2/create-schema/create-schema.component';
 import { SchemaInfoComponent } from './_components/v2/schema-info/schema-info.component';
 import { BrruleSideSheetComponent } from './_components/v2/brrule-side-sheet/brrule-side-sheet.component';
-import { SystemTrayComponent } from './_components/system-tray/system-tray.component';
 import { SubscriberSideSheetComponent } from './_components/v2/subscriber-side-sheet/subscriber-side-sheet.component';
 
 const routes: Routes = [
@@ -65,8 +64,7 @@ const routes: Routes = [
   { path: 'upload-data', component: UploadDataComponent },
   { path: 'mdo-generic-components', component: MdoGenericComponentsComponent },
   { path: 'schema-info/:moduleId/:schemaId', component: SchemaInfoComponent },
-  { path: 'business-rule/:moduleId/:schemaId/:brId', component: BrruleSideSheetComponent},
-  { path: 'system/system-tray', component: SystemTrayComponent },
+  { path: 'business-rule/:moduleId/:schemaId/:brId', component: BrruleSideSheetComponent },
   { path: 'subscriber/:moduleId/:schemaId/:subscriberId', component: SubscriberSideSheetComponent },
 
   // anything not mapped should go to page not found component
