@@ -635,10 +635,30 @@
                                             <span class="f-col-spacer"></span>
 
                                             <div class="f-col">
-                                                <mat-label>Value</mat-label>
-                                                <mat-form-field appearance="outline">
-                                                    <input matInput formControlName="conditionFieldValue">
-                                                </mat-form-field>
+                                                <ng-template
+                                                    [ngIf]="selStyleWid && selStyleWid.defaultFilters && (selStyleWid.defaultFilters[i]).conditionOperator==='FIELD2FIELD_EQUAL'
+                                                    || (selStyleWid.defaultFilters[i]).conditionOperator==='FIELD2FIELD'
+                                                    || (selStyleWid.defaultFilters[i]).conditionOperator==='FIELD2FIELD_GREATETHENEQUAL'
+                                                    || (selStyleWid.defaultFilters[i]).conditionOperator==='FIELD2FIELD_GREATETHAN'
+                                                    || (selStyleWid.defaultFilters[i]).conditionOperator==='FIELD2FIELD_LESSTHEN'
+                                                    || (selStyleWid.defaultFilters[i]).conditionOperator==='FIELD2FIELD_LESSTHENEQUALTO'"
+                                                    [ngIfElse]="fieldvalue">
+                                                    <pros-metadatafield-control
+                                                        [moduleId]="selStyleWid && selStyleWid.objectType"
+                                                        lebel="Field "
+                                                        [selectedFldId]="selStyleWid && selStyleWid.defaultFilters && (selStyleWid.defaultFilters[i]).conditionFieldEndValue"
+                                                        (selectionChange)='onDefaultFilterChange($event,i)'
+                                                        class="field-divider">
+                                                    </pros-metadatafield-control>
+                                                </ng-template>
+
+                                                <ng-template #fieldvalue>
+                                                    <mat-label>Value</mat-label>
+                                                    <mat-form-field appearance="outline">
+                                                        <input matInput formControlName="conditionFieldValue">
+                                                    </mat-form-field>
+                                                </ng-template>
+
                                             </div>
                                             <span class="col-spacer"></span>
 
