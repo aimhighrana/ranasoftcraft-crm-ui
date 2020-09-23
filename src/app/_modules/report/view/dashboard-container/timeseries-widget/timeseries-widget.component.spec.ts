@@ -184,4 +184,15 @@ it('transformDataSets(),  transformDataSets', async(()=>{
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it(`generatedDataBasedonMonth(), generate date data based on months `, async(()=>{
+    const mockData = [
+      {
+        key_as_string:'2019-Jan-01',
+        doc_count: 10
+      }
+    ];
+    const res =  component.generatedDataBasedonMonth(mockData);
+    expect(res.length).toEqual(12);
+  }));
 });

@@ -31,11 +31,11 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   }
 
   timeDateFormat: TimeDisplayFormat;
-  dataSet: ChartDataSets[];
+  dataSet: ChartDataSets[] = [];
   dataSetlabel: Label[] = [];
   widgetInf:BehaviorSubject<TimeSeriesWidget> = new BehaviorSubject<TimeSeriesWidget>(null);
   public afterColorDefined: BehaviorSubject<WidgetColorPalette> = new BehaviorSubject<WidgetColorPalette>(null);
-  timeseriesData : TimeSeriesWidget;
+  timeseriesData : TimeSeriesWidget = {} as TimeSeriesWidget;
   public lineChartPlugins = [zoomPlugin];
   chartLegend: ChartLegend[] = [];
   lablels: string[] = [];
@@ -44,6 +44,12 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   startDateCtrl =new FormControl();
   endDateCtrl =new FormControl();
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
+
+
+  /**
+   * Check for it is group by timeseries
+   */
+  isGroupByChart = false;
 
   /**
    * Timeseries chart option config see chart.js for more details
@@ -274,6 +280,11 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   getTimeSeriesMetadata():void{
     this.widgetService.getTimeseriesWidgetInfo(this.widgetId).subscribe(res=>{
       this.widgetInf.next(res);
+      if(res.timeSeries.fieldId === res.timeSeries.groupWith) {
+        this.isGroupByChart = true;
+      } else {
+        this.isGroupByChart = false;
+      }
     },error=>console.error(`Error : ${error}`));
   }
 
@@ -418,14 +429,18 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     this.dataSet = [];
     this.widgetService.getWidgetData(String(widgetId),this.filterCriteria).subscribe(data=>{
       if(data !== null){
-      this.dataSet = this.transformDataSets(data);
-        if(this.filterCriteria.length === 0){
-          this.dateFilters.forEach(ele=>{
-              ele.isActive = false;
-        });
-        this.startDateCtrl.setValue(null);
-        this.endDateCtrl.setValue(null);
-      }
+        if(this.isGroupByChart) {
+          this.transformForGroupBy(data);
+        } else {
+          this.dataSet = this.transformDataSets(data);
+          if(this.filterCriteria.length === 0){
+            this.dateFilters.forEach(ele=>{
+                ele.isActive = false;
+          });
+          this.startDateCtrl.setValue(null);
+          this.endDateCtrl.setValue(null);
+         }
+        }
     }
     });
   }
@@ -479,6 +494,61 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     });
 
     return datasets;
+  }
+
+  /**
+   * Transform for timeseries with grp by same fields ..
+   * @param res server response
+   */
+  transformForGroupBy(res: any) {
+    const aggregation = res ?  res.aggregations['date_histogram#date'] : [];
+    if(aggregation && aggregation.buckets) {
+      const yearDoc = {};
+      aggregation.buckets.forEach(fil=>{
+          let date = fil.key_as_string ? fil.key_as_string : [];
+          if(date) {
+            date = date.split('-');
+            if(yearDoc[date[0]]) {
+              yearDoc[date[0]].push(fil);
+            } else {
+              yearDoc[date[0]] = [fil];
+            }
+          }
+      });
+      console.log(yearDoc);
+
+      this.dataSetlabel = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const finaldata = [];
+      if(yearDoc) {
+        Object.keys(yearDoc).forEach(yr=>{
+          if(yearDoc[yr]) {
+            finaldata.push({
+              data:this.generatedDataBasedonMonth(yearDoc[yr]),
+              label: `${yr}`,
+              fill: false
+            });
+          }
+        });
+      }
+      this.dataSet = finaldata;
+      console.log(finaldata);
+
+      this.timeSeriesOption.scales = {xAxes: [{}],yAxes: [{}]};
+      this.timeSeriesOption.legend = {display: true,position:'bottom'};
+    }
+  }
+  /**
+   * Transformer helper ..
+   * @param data year data
+   */
+  generatedDataBasedonMonth(data: any): any[] {
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const finalData = [];
+    months.forEach(mon=>{
+      const hasdata = data.filter(fil=> fil.key_as_string.indexOf(mon) !==-1)[0];
+      finalData.push(hasdata ? hasdata.doc_count : 0)
+    });
+    return finalData;
   }
 
 /**
