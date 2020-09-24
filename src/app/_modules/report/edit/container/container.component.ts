@@ -72,6 +72,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   subscriptions: Subscription[] = [];
 
+  fld2FldArray = ['FIELD2FIELD','FIELD2FIELD_EQUAL','FIELD2FIELD_GREATETHENEQUAL','FIELD2FIELD_GREATETHAN','FIELD2FIELD_LESSTHEN','FIELD2FIELD_LESSTHENEQUALTO'];
+
   constructor(
     private formBuilder: FormBuilder,
     private reportService: ReportService,
@@ -208,7 +210,6 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           endDate,
           startDate: strtDate
         };
-
         this.preapreNewWidgetPosition(changedWidget);
       }
     });
@@ -374,6 +375,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       oldWidget.y = dropableWidget.y;
       this.widgetList.push(oldWidget);
     } else {
+      dropableWidget.defaultFilters = [];
       this.widgetList.push(dropableWidget);
     }
     // update variable for dom control
@@ -451,6 +453,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
               conditionFieldId: [dat.conditionFieldId],
               conditionFieldValue: [dat.conditionFieldValue],
               blockType: [BlockType.COND],
+              conditionFieldEndValue: [dat.conditionFieldEndValue],
               conditionOperator: [dat.conditionOperator, Validators.required],
               udrid: [data.widgetId ? data.widgetId : ''],
               showRangeFld:false
@@ -517,6 +520,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       conditionFieldValue: [''],
       blockType: [BlockType.COND],
       conditionOperator: ['', Validators.required],
+      conditionFieldEndValue: [''],
       udrid: [this.selStyleWid.widgetId ? this.selStyleWid.widgetId : ''],
       showRangeFld:false
     }));
@@ -564,11 +568,23 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   onDefaultFilterChange(fieldData: MatAutocompleteSelectedEvent, index: number) {
     const frmArray = this.defaultFilterCtrlGrp.controls.filters as FormArray;
-    if (fieldData && fieldData.option.value) {
-      frmArray.at(index).get('conditionFieldId').setValue(fieldData.option.value.fieldId);
-    } else {
-      frmArray.at(index).get('conditionFieldId').setValue('');
-    }
+    this.fld2FldArray.forEach(value=> {
+      if(frmArray.at(index).value.conditionOperator) {
+        if(frmArray.at(index).value.conditionOperator === value) {
+          if (fieldData && fieldData.option.value) {
+            frmArray.at(index).get('conditionFieldEndValue').setValue(fieldData.option.value.fieldId);
+          } else {
+            frmArray.at(index).get('conditionFieldEndValue').setValue('');
+          }
+        }
+      } else {
+        if (fieldData && fieldData.option.value) {
+          frmArray.at(index).get('conditionFieldId').setValue(fieldData.option.value.fieldId);
+        } else {
+          frmArray.at(index).get('conditionFieldId').setValue('');
+        }
+      }
+    });
   }
 
   /**
@@ -584,6 +600,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       frmArray.at(index).get('conditionOperator').setValue('');
     }
   }
+
 
   /**
    * Should call api and get the actual records count
