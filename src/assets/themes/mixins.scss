@@ -123,27 +123,6 @@
     }
   }
 
-  pros-summary-tabs {
-    .general-container {
-      mat-accordion {
-        mat-expansion-panel {
-          mat-panel-title {
-            color: mat-color($primary-palette);
-          }
-
-          .summary-grid {
-            mat-grid-tile {
-              .mat-figure {
-                justify-content: flex-start;
-                align-items: self-start;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
   pros-container {
     mat-card.root {
       .report-builder {
@@ -464,6 +443,22 @@
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
   }
 
+  // // Pagination field
+  // mat-form-field.mat-form-field.mat-paginator-page-size-select {
+  //   margin: 0;
+
+  //   .mat-paginator,
+  //     .mat-paginator-page-size .mat-select-trigger {
+  //       padding: 0 3px;
+
+  //       .mat-form-field-wrapper {
+  //         .mat-form-field-underline {
+  //           display: none;
+  //         }
+  //       }
+  //     }
+  // }
+
   // Temporary mat input
   mat-form-field.mat-form-field {
     .mat-form-field-wrapper {
@@ -662,6 +657,38 @@
       }
     }
   }
+
+  .mat-select-panel {
+    .mat-option {
+      .mat-pseudo-checkbox {
+        width: 30px;
+        height: 30px;
+        border: 1px solid mat-color($foreground-palette, divider);
+        border-radius: 3px;
+        background: transparent;
+
+        &.mat-pseudo-checkbox-checked,
+        &.mat-pseudo-checkbox-indeterminate {
+          border-color: mat-color($foreground-palette, divider);
+        }
+      }
+
+      .mat-pseudo-checkbox::after {
+        top: 5px;
+        left: 5px;
+        width: 18px;
+        height: 18px;
+        border-left: none;
+        background: mat-color($primary-palette);
+        transform: none;
+      }
+
+      &.mat-selected:not(.mat-option-disabled) {
+        color: mat-color($foreground-palette, text);
+      }
+    }
+  }
+
   //MDO-Radio
   mat-radio-button.mat-radio-button {
     .mat-radio-container {
@@ -781,6 +808,23 @@
     align-items: center;
   }
 
+  mat-datepicker-toggle.mat-datepicker-toggle {
+    button.mat-icon-button {
+      border-radius: 0;
+      color: mat-color($foreground-palette, text);
+
+      svg {
+        width: 18px;
+        height: 18px;
+        margin-top: -3px;
+      }
+    }
+  }
+
+  .mat-datepicker-toggle-active {
+    color: mat-color($foreground-palette, text);
+  }
+
   //MDO-Table
   .mat-table {
     .mat-row:hover {
@@ -853,6 +897,7 @@
       background-color: mat-color($background-palette, app-bar);
     }
   }
+
   //Mat-Stepper
   mat-horizontal-stepper {
     .mat-horizontal-stepper-header-container {
@@ -1056,6 +1101,30 @@
           .mat-list-item-content {
             padding: 0;
           }
+        }
+      }
+    }
+  }
+
+  pros-widget-color-palette {
+    div.root {
+      .palette-list {
+        mat-list.mat-list {
+          mat-list-item.mat-list-item {
+            border-bottom-color: mat-color($foreground-palette, divider);
+          }
+        }
+      }
+    }
+  }
+
+  pros-summary-tabs {
+    .summary-tile {
+      mat-grid-tile {
+        .mat-figure {
+          justify-content: flex-start;
+          align-items: self-start;
+          line-height: 18px;
         }
       }
     }

@@ -1,33 +1,32 @@
-.root {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: flex-start;
-  align-items: flex-start;
-  align-content: flex-start;
-  margin: -24px;
+div.root {
+  height: 100%;
+  user-select: none;
+  padding: 0;
 
-  mat-toolbar {
-    mat-toolbar-row {
-      font-weight: 400;
+  .breadcrum-toolbar {
+    align-items: center;
+    padding-top: 16px;
+
+    .display-heading-large {
+      font-size: 1.2rem;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
     }
   }
 
-  mat-card {
-    width: 100%;
+  .palette-list {
+    height: calc(100% - 52px - 16px * 3 - 36px);
+    overflow: auto;
 
-    .color-body {
-      max-height: 478px;
-      overflow: auto;
+    mat-list.mat-list {
+      mat-list-item.mat-list-item {
+        border-bottom-style: solid;
+        border-bottom-width: 1px;
 
-      .color-style {
-        padding: 16px;
-
-        .colorDef {
-          flex: 11;
-        }
-
-        .colorPalette {
-          flex: 1;
+        .colorpalettebox {
+          width: 36px;
+          height: 36px;
           cursor: pointer;
         }
       }

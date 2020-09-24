@@ -1,58 +1,48 @@
-<mat-card class="mat-elevation-z0 general-container"  *ngIf="dataAllSet">
-  <mat-accordion *ngIf = "dataAllSet">
-    <mat-expansion-panel expanded ="true" togglePosition="before" (opened)="panelOpenState = true"
-    (closed)="panelOpenState = false">
-    <mat-expansion-panel-header expandedHeight="40px" collapsedHeight="40px">
-      <mat-panel-title>
+<mat-card class="mat-elevation-z0 general-container" *ngIf="dataAllSet">
+  <mat-accordion *ngIf="dataAllSet">
+    <mat-expansion-panel expanded="true" togglePosition="before" (opened)="panelOpenState = true"
+      (closed)="panelOpenState = false" class="mat-elevation-z0">
+      <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
         {{metadata.tabDesc}}
-      </mat-panel-title>
-    </mat-expansion-panel-header>
-  <mat-card-content>
-      <mat-card class="mat-elevation-z0 summary-datarows">
-              <mat-card class="mat-elevation-z0 data-tile">
-                <mat-grid-list cols="2" [rowHeight]="setDynamicHeight()" class="summary-grid"
-                    [id]="item">
-                    <div *ngFor="let fieldData of metadata.fieldsList">
-                        <div *ngIf="fieldData && fieldData.picklist !== 2 && fieldData.picklist !== 28 && fieldData.picklist !== 31 && fieldData.dataType !== 'DTMS'">
-                            <mat-grid-tile class="f-row">
-                              <mat-label>{{fieldData.fieldDescri}}</mat-label>
-                              <p>
-                                  {{fieldData.value}}
-                              </p>
-                            </mat-grid-tile>
-                        </div>
-                        <!-- ----------------------- Check-Box Case ------------------------------------- -->
-                        <div *ngIf ="fieldData && fieldData.picklist === 2">
-                          <mat-grid-tile class="f-row">
-                            <mat-checkbox disabled="true" checked="{{fieldData.value}}"></mat-checkbox>{{fieldData.fieldDescri}}
-                        </mat-grid-tile>
-                        </div>
-                        <!-- ----------------------- Attachment Case ------------------------------------- -->
-                        <div *ngIf ="fieldData && fieldData.picklist === 28">
-                          <mat-grid-tile class="f-row">
-                            <mat-label>{{fieldData.fieldDescri}}</mat-label>
-                               <p>
-                                 <a [routerLink]="" href="" (click)="downloadAttachment(fieldData);">
-                                  {{fieldData.value}}
-                                </a>
-                              </p>
-                          </mat-grid-tile>
-                        </div> 
-                        <!-- ------------------------------ Date and Time Case------------------------------------ -->
-                        <div *ngIf ="fieldData && fieldData.picklist === 0 && fieldData.dataType === 'DTMS'">
-                          <mat-grid-tile class="f-row">
-                            <mat-label>{{fieldData.fieldDescri}}</mat-label>
-                               <p>
-                                {{fieldData.value | date:'dd/MM/yyyy hh:mm:ss'}}
-                               </p>
-                        </mat-grid-tile>
-                        </div> 
-                    </div>
-                </mat-grid-list>
-              </mat-card>
-      </mat-card>
+      </mat-expansion-panel-header>
 
-  </mat-card-content>
-</mat-expansion-panel>
-</mat-accordion>
+      <div class="summary-tile">
+        <mat-grid-list cols="2" [rowHeight]="setDynamicHeight()" [id]="item">
+          <div *ngFor="let fieldData of metadata.fieldsList">
+            <div
+              *ngIf="fieldData && fieldData.picklist !== 2 && fieldData.picklist !== 28 && fieldData.picklist !== 31 && fieldData.dataType !== 'DTMS'">
+              <mat-grid-tile class="f-row">
+                <mat-label>{{fieldData.fieldDescri}}</mat-label>
+                <div mat-line>{{fieldData.value}}</div>
+              </mat-grid-tile>
+            </div>
+            <!-- ----------------------- Check-Box Case ------------------------------------- -->
+            <div *ngIf="fieldData && fieldData.picklist === 2">
+              <mat-grid-tile class="f-row">
+                <mat-checkbox disabled="true" checked="{{fieldData.value}}">{{fieldData.fieldDescri}}</mat-checkbox>
+              </mat-grid-tile>
+            </div>
+            <!-- ----------------------- Attachment Case ------------------------------------- -->
+            <div *ngIf="fieldData && fieldData.picklist === 28">
+              <mat-grid-tile class="f-row">
+                <mat-label>{{fieldData.fieldDescri}}</mat-label>
+                <div mat-line><a [routerLink]="" href="" (click)="downloadAttachment(fieldData);">
+                    {{fieldData.value}}
+                  </a></div>
+              </mat-grid-tile>
+            </div>
+            <!-- ------------------------------ Date and Time Case------------------------------------ -->
+            <div *ngIf="fieldData && fieldData.picklist === 0 && fieldData.dataType === 'DTMS'">
+              <mat-grid-tile class="f-row">
+                <mat-label>{{fieldData.fieldDescri}}</mat-label>
+                <div mat-line>
+                  {{fieldData.value | date:'dd/MM/yyyy hh:mm:ss'}}
+                </div>
+              </mat-grid-tile>
+            </div>
+          </div>
+        </mat-grid-list>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
 </mat-card>

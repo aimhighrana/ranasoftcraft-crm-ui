@@ -1,31 +1,20 @@
+<mat-divider></mat-divider>
 <mat-accordion>
-<mat-expansion-panel togglePosition="before">
-    <mat-expansion-panel-header>
-      <mat-checkbox color="primary" prosClickStopPropagation
+<mat-expansion-panel class="mat-elevation-z0" togglePosition="before" expanded="true">
+    <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
+      <mat-panel-title>
+        <mat-checkbox color="primary" prosClickStopPropagation
       (click)="toggleAll($event)"
       [checked]="isAllSelected"
       [indeterminate]="isInInterminate()">
       Workflow
       </mat-checkbox>
+    </mat-panel-title>
     </mat-expansion-panel-header>
-     
-
       <mat-selection-list (selectionChange)="selectionChange($event)">
         <mat-list-option *ngFor="let module of dataSetWorkflow | async" checkboxPosition="before" [selected]="module.isSelected" [value]="module">
             {{ module.objectdesc ? module.objectdesc : 'Untitled'}}
         </mat-list-option>
       </mat-selection-list>
-
-
-    <!-- <ng-template matExpansionPanelContent>
-        <div class="f-row" *ngFor="let module of dataSetWorkflow | async">
-            {{ isSelected(module) }}
-          <mat-checkbox color="primary" prosClickStopPropagation [checked]="isSelected(module)"
-            (click)="selectionChange(module)" >
-            {{ module.objectdesc ? module.objectdesc : 'Untitled'}}
-        </mat-checkbox>  
-        </div>
-    </ng-template>  -->
-  
   </mat-expansion-panel>
 </mat-accordion>

@@ -5,11 +5,12 @@
         </div>
         <div class="f-spacer"></div>
 
+        <button mat-flat-button color="accent" (click)="createUpdateReport()"> Save </button>
         <button mat-fab color="accent" class="mat-elevation-z0" *ngIf="collaboratorPermission && reportId"
             [routerLink]="['', { outlets: { sb: 'sb/report/collaborators/' + reportId } } ]">
             <mat-icon>group_add</mat-icon>
         </button>
-        <button mat-flat-button color="primary" (click)="createUpdateReport()"> Save </button>
+       
     </div>
 
     <div class="row-spacer"></div>
@@ -256,10 +257,14 @@
                                                         <mat-form-field appearance="outline">
                                                             <input matInput matInput [matDatepicker]="startDate"
                                                                 disabled formControlName="startDate">
-                                                            <mat-datepicker-toggle matSuffix [for]="startDate">
-                                                            </mat-datepicker-toggle>
-                                                            <mat-datepicker #startDate disabled="false">
-                                                            </mat-datepicker>
+                                                                <div class="f-row input-actions">
+                                                                    <mat-divider [vertical]="true"></mat-divider>
+                                                                    <mat-datepicker-toggle matSuffix [for]="startDate">
+                                                                    </mat-datepicker-toggle>
+                                                                    <mat-datepicker #startDate disabled="false">
+                                                                    </mat-datepicker>
+                                                                </div>
+                                                           
                                                         </mat-form-field>
                                                     </div>
 
@@ -270,10 +275,13 @@
                                                         <mat-form-field appearance="outline">
                                                             <input matInput matInput [matDatepicker]="endDate" disabled
                                                                 formControlName="endDate">
-                                                            <mat-datepicker-toggle matSuffix [for]="endDate">
-                                                            </mat-datepicker-toggle>
-                                                            <mat-datepicker #endDate disabled="false">
-                                                            </mat-datepicker>
+                                                                <div class="f-row input-actions">
+                                                                    <mat-divider [vertical]="true"></mat-divider>
+                                                                    <mat-datepicker-toggle matSuffix [for]="endDate">
+                                                                    </mat-datepicker-toggle>
+                                                                    <mat-datepicker #endDate disabled="false">
+                                                                    </mat-datepicker>
+                                                                  </div>
                                                         </mat-form-field>
                                                     </div>
                                                 </ng-template>
@@ -379,10 +387,15 @@
                                         <span class="f-col-spacer-half"></span>
                                         <mat-form-field class="upload-img-inp" appearance="outline">
                                             <input matInput disabled readonly formControlName="imageName">
-                                            <button mat-button matSuffix mat-icon-button aria-label="Clear"
+                                            <div class="f-row input-actions">
+                                                <mat-divider [vertical]="true"></mat-divider>
+                                                <button mat-button matSuffix aria-label="Clear"
                                                 (click)="removeUploadedImage()">
                                                 <mat-icon>close</mat-icon>
                                             </button>
+                                              </div>
+
+                                           
                                         </mat-form-field>
                                     </div>
                                 </ng-template>
@@ -658,7 +671,6 @@
                                                         <input matInput formControlName="conditionFieldValue">
                                                     </mat-form-field>
                                                 </ng-template>
-
                                             </div>
                                             <span class="col-spacer"></span>
 

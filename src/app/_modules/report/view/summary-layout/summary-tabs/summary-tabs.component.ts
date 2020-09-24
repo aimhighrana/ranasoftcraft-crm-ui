@@ -134,7 +134,7 @@ export class SummaryTabsComponent implements OnInit {
   }
 
   setDynamicHeight() {
-    return '40px'
+    return '56px'
   }
 
 }

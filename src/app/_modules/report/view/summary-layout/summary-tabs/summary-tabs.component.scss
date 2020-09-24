@@ -2,33 +2,24 @@
   padding: 0;
   overflow: auto;
 
-  mat-card-content {
-    margin-bottom: 0;
+  mat-expansion-panel {
+    .mat-expansion-panel-header {
+      padding-left: 16px;
+    }
 
-    .summary-datarows {
-      padding: 0;
+    .summary-tile {
+      padding: 0 32px;
 
-      .data-tile {
-        flex: 3;
-        padding: 0 8px;
+      mat-grid-tile {
+        mat-label {
+          font-weight: 500;
+          flex: 2;
+          padding: 8px;
+        }
 
-        .summary-grid {
-          mat-grid-tile {
-            align-items: start;
-            justify-content: flex-start;
-
-            &.f-row {
-              mat-label {
-                font-weight: 500;
-                flex: 1;
-              }
-
-              p {
-                margin: 0;
-                flex: 2;
-              }
-            }
-          }
+        .mat-line {
+          flex: 3;
+          padding: 8px;
         }
       }
     }

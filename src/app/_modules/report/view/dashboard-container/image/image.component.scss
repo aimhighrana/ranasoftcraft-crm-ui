@@ -1,4 +1,12 @@
-.img-content {
-  background-size: cover;
+mat-card.widget {
+  box-sizing: border-box;
+  padding: 8px;
   height: 100%;
+  overflow: auto;
+
+  .img-content {
+    background-size: cover;
+    height: 100%;
+    width: 100%;
+  }
 }

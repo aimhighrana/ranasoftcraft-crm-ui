@@ -1,51 +1,42 @@
 mat-card.widget {
-  border-radius: 6px;
+  box-sizing: border-box;
   padding: 0;
+  height: 100%;
 
-  .widgettoolbar {
-    height: 50px;
-    padding: 16px;
+  .breadcrum-toolbar {
+    align-items: center;
+    padding: 8px;
 
-    .mat-h3 {
-      display: -webkit-box;
-      -webkit-line-clamp: 1;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
+    .display-heading-large {
+      font-size: 1rem;
       text-overflow: ellipsis;
-      white-space: pre-line;
-      word-break: break-word;
-      font-weight: 400;
-      font-size: 16px;
-      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      line-height: 36px;
     }
   }
 
   mat-card-content {
-    padding: 16px;
-  }
-
-  .root-AdminTable {
-    height: 500px;
+    height: calc(100% - 52px * 2 - 8px);
     overflow: auto;
+    padding: 0 8px 8px 8px;
 
-    table {
-      width: 100%;
-      z-index: 0;
-      position: relative;
+    .root-AdminTable {
+      table.mat-table {
+        width: 100%;
 
-      td.mat-column-star {
-        width: 22px;
-        padding-left: 8px;
+        .mat-header-cell:first-of-type,
+        .mat-cell:first-of-type {
+          max-width: 40px;
+          min-width: 40px;
+        }
       }
+    }
 
-      .mat-header-cell,
-      .mat-cell {
-        padding: 0 8px;
-      }
-
-      .mat-table-sticky:first-child {
-        border-right: 1px solid #e0e0e0;
-      }
+    mat-paginator {
+      position: absolute;
+      bottom: 0;
+      right: 0;
     }
   }
 }

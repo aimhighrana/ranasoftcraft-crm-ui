@@ -4,14 +4,15 @@
             {{reportName ? reportName: 'Untitled'}}
         </div>
         <div class="f-spacer"></div>
-		<button *ngIf="showClearFilterBtn" mat-flat-button color="primary" (click)="clearFilters()">Clear Filter(s)</button>
+		<button *ngIf="showClearFilterBtn" mat-flat-button color="accent" (click)="clearFilters()">Clear filter(s)</button>
 		<button mat-fab color="accent" class="mat-elevation-z0" *ngIf="(collaboratorEditPermission || collaboratorDeletePermission || collaboratorAdminPermission)" [matMenuTriggerFor]="moremenu">
-			<mat-icon>more_vert</mat-icon>
+			<mat-icon>more_horiz</mat-icon>
 		</button>
 		<mat-menu #moremenu="matMenu">
 			<button mat-menu-item  *ngIf="(collaboratorEditPermission || collaboratorAdminPermission)" (click)="editReport()">Edit</button>
 			<button mat-menu-item  *ngIf="(collaboratorDeletePermission || collaboratorAdminPermission)" (click)="delete()">Delete</button>
 		</mat-menu>
 	</div>
+	<div class="row-spacer"></div>
 	<pros-dashboard-container [reportId]="reportId" [emitClearBtnEvent]="emitClearBtnEvent" (emitFilterApplied)="showClearBtnEmit($event)" class="container"></pros-dashboard-container>
 </mat-card>

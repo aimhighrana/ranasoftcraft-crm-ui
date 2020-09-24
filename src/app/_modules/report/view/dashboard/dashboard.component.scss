@@ -2,6 +2,7 @@ mat-card.root {
   user-select: none;
   padding: 0 16px;
   height: 100%;
+  overflow: hidden;
 
   .breadcrum-toolbar {
     align-items: center;
@@ -19,9 +20,5 @@ mat-card.root {
       margin-right: 1px;
       min-width: 80px;
     }
-  }
-
-  pros-dashboard-container {
-    width: calc(100% - 32px);
   }
 }

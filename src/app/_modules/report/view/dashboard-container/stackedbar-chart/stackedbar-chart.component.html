@@ -1,34 +1,24 @@
-<mat-card class="mat-elevation-z4 widget">
-    <mat-toolbar-row class="widgettoolbar">
-      <h3 class="mat-h3">{{ widgetHeader.desc }}</h3>
-      <span class="f-spacer"></span>
-      <button mat-icon-button [matMenuTriggerFor]="menu">
-          <mat-icon>get_app</mat-icon>
-      </button>
-      <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="downloadImage()">Image (.png)</button>
-        <button mat-menu-item (click)="downloadCSV()">Data (.csv)</button>
-      </mat-menu>
+<mat-card class="mat-elevation-z2 widget">
+  <div class="f-row breadcrum-toolbar">
+    <div class="display-heading-large">
+      {{ widgetHeader.desc }}
+    </div>
+    <div class="f-spacer"></div>
+    <button mat-button [matMenuTriggerFor]="menu">
+      <mat-icon>more_horiz</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="downloadImage()">Image download (.png)</button>
+      <button mat-menu-item (click)="downloadCSV()">Data download (.csv)</button>
       <ng-template [ngIf]="permissons && permissons.isAdmin">
-        <span class="f-spacer-half"></span>
-        <button mat-icon-button [matMenuTriggerFor]="moreOptions">
-          <mat-icon>more_vert</mat-icon>
-        </button>
-        <mat-menu #moreOptions="matMenu">
-          <button mat-menu-item (click)="openColorPalette()">Color Palette</button>
-        </mat-menu> 
+        <button mat-menu-item (click)="openColorPalette()">Color palette</button>
       </ng-template>
-      
-  </mat-toolbar-row>
-    <mat-card-content>
-      <canvas baseChart #chart
-      [height] = "widgetInfo.height * boxSize"
-      [width] = "widgetInfo.width * boxSize"
-      [datasets]="barChartData"
-      [labels]="barChartLabels"
-      [options]="barChartOptions"
-      [colors]="barChartColors"
+    </mat-menu>
+  </div>
+  <mat-card-content>
+    <canvas baseChart #chart [height]="widgetInfo.height * boxSize" [width]="widgetInfo.width * boxSize"
+      [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions" [colors]="barChartColors"
       [chartType]="orientation">
     </canvas>
   </mat-card-content>
-  </mat-card>
+</mat-card>

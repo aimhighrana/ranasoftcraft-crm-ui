@@ -1,16 +1,19 @@
-<div class="root f-col">
-    <mat-toolbar>
-        <mat-toolbar-row>
-          <span>Summary</span>
-          <span class="f-spacer"></span>
-          <button mat-icon-button (click)="close()"><mat-icon>close</mat-icon></button>
-        </mat-toolbar-row>
-    </mat-toolbar>
-
-    <ng-template *ngIf="layoutData"  ngFor let-metadata [ngForOf]="layoutMetadata.getValue()">
-      
-    <pros-summary-tabs [metadata] ="metadata" [data] ="layoutData"></pros-summary-tabs>
-
-    </ng-template>
-
+<mat-card class="root mat-elevation-z0">
+  <div class="f-row breadcrum-toolbar">
+    <button mat-button (click)="close()">
+      <mat-icon>clear</mat-icon>
+    </button>
+    <div class="col-spacer"></div>
+    <div class="f-row mdo-constrained-right">
+      <div class="display-heading-large">Summary</div>
     </div>
+  </div>
+
+  <div class="row-spacer"></div>
+
+  <div class="f-col mdo-justify">
+    <ng-template *ngIf="layoutData" ngFor let-metadata [ngForOf]="layoutMetadata.getValue()">
+      <pros-summary-tabs [metadata]="metadata" [data]="layoutData"></pros-summary-tabs>
+    </ng-template>
+  </div>
+</mat-card>

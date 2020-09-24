@@ -1,57 +1,54 @@
-<mat-card class="mat-elevation-z4 widget" *ngIf="dataSet">
-    <mat-card-header>
-        <mat-card-title>{{ widgetInf.getValue() ? widgetInf.getValue().desc : 'Timeseries widget' }}</mat-card-title>
-    </mat-card-header>
-    <mat-toolbar-row >
-        <!-- DATE FILTERS -->
-        <ng-template [ngIf]="!isGroupByChart">
-          <button *ngFor="let dateType of dateFilters" mat-stroked-button [color]="dateType.isActive ? 'primary' : '' " (click)="updateForm('date',dateType)">{{ dateType.value }} {{ timeseriesData.timeSeries ? timeseriesData.timeSeries.seriesWith : ''}}s</button>
-         <div>
-         <mat-form-field appearance="outline">
+<mat-card class="mat-elevation-z2 widget" *ngIf="dataSet">
+  <div class="f-row breadcrum-toolbar">
+    <div class="display-heading-large">
+      {{ widgetInf.getValue() ? widgetInf.getValue().desc : 'Timeseries widget' }}
+    </div>
+    <span class="f-spacer"></span>
+    <button mat-button [matMenuTriggerFor]="menu">
+      <mat-icon>more_horiz</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="downloadImage()">Image download (.png)</button>
+      <button mat-menu-item (click)="downloadCSV()">Data download (.csv)</button>
+      <button mat-menu-item (click)="openColorPalette()">Color palette</button>
+    </mat-menu>
+  </div>
+  <mat-card-content>
+    <ng-template [ngIf]="!isGroupByChart">
+      <div class="f-row datafilter">
+
+        <button *ngFor="let dateType of dateFilters" mat-stroked-button [color]="dateType.isActive ? 'primary' : '' "
+          (click)="updateForm('date',dateType)">{{ dateType.value }}
+          {{ timeseriesData.timeSeries ? timeseriesData.timeSeries.seriesWith : ''}}s</button>
+        <div>
+          <mat-form-field appearance="outline">
             <mat-date-range-input [rangePicker]="picker">
-              <input matStartDate placeholder="Start date"  [formControl]="startDateCtrl">
-              <input matEndDate placeholder="End date"  [formControl]="endDateCtrl">
+              <input matStartDate placeholder="Start date" [formControl]="startDateCtrl">
+              <input matEndDate placeholder="End date" [formControl]="endDateCtrl">
             </mat-date-range-input>
-            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-date-range-picker #picker></mat-date-range-picker>
+            <div class="f-row input-actions">
+              <mat-divider [vertical]="true"></mat-divider>
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-date-range-picker #picker></mat-date-range-picker>
+            </div>
           </mat-form-field>
-          </div>
-          <span class="f-spacer"></span>
-        </ng-template>
-          <!-- RIGHT SIDE CONFIG -->          
-          <button mat-icon-button [matMenuTriggerFor]="menu">
-            <mat-icon>get_app</mat-icon>
-          </button>
-          <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="downloadImage()">Image (.png)</button>
-            <button mat-menu-item (click)="downloadCSV()">Data (.csv)</button>
-            <button mat-menu-item (click)="openColorPalette()">Color Palette</button>
-          </mat-menu>   
-          <!-- TIME SERIES CHART -->
-    </mat-toolbar-row>
-    <mat-card-content>
-      <ng-template [ngIf]="!isGroupByChart" [ngIfElse]="groupTimeSeries">
-          <canvas [height]="widgetInfo.height * boxSize" [width]="widgetInfo.width * boxSize"
-          baseChart
-          [datasets]="dataSet"
-          class="inner-flexcol-12"
-          [labels]="dataSetlabel"
-          [options]="timeSeriesOption"
-          [plugins]="lineChartPlugins"
-          chartType="{{timeseriesData.timeSeries.chartType.toLowerCase()}}">
-          </canvas>
-      </ng-template>
-      <ng-template #groupTimeSeries>
-          <canvas [height]="widgetInfo.height * boxSize" [width]="widgetInfo.width * boxSize"
-          baseChart
-          [datasets]="dataSet"
-          class="inner-flexcol-12"
-          [labels]="dataSetlabel"
-          [options]="timeSeriesOption"
-          [plugins]="lineChartPlugins"
-          chartType="{{timeseriesData.timeSeries.chartType.toLowerCase()}}">
-          </canvas>
-      </ng-template>
-        
-    </mat-card-content>
+        </div>
+
+      </div>
+    </ng-template>
+
+
+    <ng-template [ngIf]="!isGroupByChart" [ngIfElse]="groupTimeSeries">
+      <canvas [height]="widgetInfo.height * boxSize" [width]="widgetInfo.width * boxSize" baseChart [datasets]="dataSet"
+        class="inner-flexcol-12" [labels]="dataSetlabel" [options]="timeSeriesOption" [plugins]="lineChartPlugins"
+        chartType="{{timeseriesData.timeSeries.chartType.toLowerCase()}}">
+      </canvas>
+    </ng-template>
+    <ng-template #groupTimeSeries>
+      <canvas [height]="widgetInfo.height * boxSize" [width]="widgetInfo.width * boxSize" baseChart [datasets]="dataSet"
+        class="inner-flexcol-12" [labels]="dataSetlabel" [options]="timeSeriesOption" [plugins]="lineChartPlugins"
+        chartType="{{timeseriesData.timeSeries.chartType.toLowerCase()}}">
+      </canvas>
+    </ng-template>
+  </mat-card-content>
 </mat-card>

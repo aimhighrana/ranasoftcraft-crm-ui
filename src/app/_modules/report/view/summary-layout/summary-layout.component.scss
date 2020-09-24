@@ -1,19 +1,43 @@
-.root {
-  justify-content: flex-start;
-  align-items: flex-start;
-  align-content: flex-start;
+mat-card.root {
+  user-select: none;
   height: 100%;
-  width: 850px;
+  overflow: auto;
+  width: 900px;
+  padding: 0 16px;
 
-  mat-toolbar {
-    min-height: 50px;
+  .breadcrum-toolbar {
+    align-items: center;
+    padding-top: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 2;
 
-    mat-toolbar-row {
-      height: 50px;
+    .display-heading-large {
+      font-size: 1.2rem;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .mdo-constrained-right {
+      align-items: center;
+      width: 100%;
     }
   }
 
-  pros-summary-tabs {
-    width: 100%;
+  .mdo-justify {
+    pros-summary-tabs {
+      width: 100%;
+    }
+  }
+}
+
+@media (min-width: 1200px) {
+  .mdo-justify {
+    margin: 0 38px;
+  }
+
+  .mdo-constrained-right {
+    margin-right: 54px;
   }
 }
