@@ -21,7 +21,10 @@ export class SharedServiceService {
   private togglePrimaryEmit: BehaviorSubject<any> = new BehaviorSubject(null);
 
   public secondaryBarData: BehaviorSubject<any> = new BehaviorSubject(null);
+
   private refreshSecondaryNav: BehaviorSubject<SecondaynavType> = new BehaviorSubject<SecondaynavType>(null);
+
+  private afterSubscriberSave: BehaviorSubject<any> = new BehaviorSubject(null);
 
   constructor() { }
 
@@ -33,10 +36,16 @@ export class SharedServiceService {
     return this.chooseColumnSub.asObservable();
   }
 
+  /**
+   * Function to pass business rule data inside BehaviourSubject.
+   */
   public setAfterBrSave(data: any) {
     this.afterBrSaveUpdate.next(data);
   }
 
+  /**
+   * Function to get business rule data of a schema.
+   */
   public getAfterBrSave(): Observable<any> {
     return this.afterBrSaveUpdate.asObservable();
   }
@@ -73,5 +82,19 @@ export class SharedServiceService {
    */
   public isSecondaryNavRefresh(): Observable<SecondaynavType> {
     return this.refreshSecondaryNav.asObservable();
+  }
+
+  /**
+   * Function to pass subscriber data inside BehaviourSubject.
+   */
+  public setAfterSubscriberSave(data: any) {
+    return this.afterSubscriberSave.next(data);
+  }
+
+  /**
+   * Function to get data of subscriber
+   */
+  public getAfterSubscriberSave(): Observable<any> {
+    return this.afterSubscriberSave.asObservable();
   }
 }

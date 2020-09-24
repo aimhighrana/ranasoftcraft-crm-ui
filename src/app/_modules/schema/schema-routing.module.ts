@@ -30,6 +30,7 @@ import { CreateSchemaComponent } from './_components/v2/create-schema/create-sch
 import { SchemaInfoComponent } from './_components/v2/schema-info/schema-info.component';
 import { BrruleSideSheetComponent } from './_components/v2/brrule-side-sheet/brrule-side-sheet.component';
 import { SystemTrayComponent } from './_components/system-tray/system-tray.component';
+import { SubscriberSideSheetComponent } from './_components/v2/subscriber-side-sheet/subscriber-side-sheet.component';
 
 const routes: Routes = [
   { path: '', component: DiwTilesComponent },
@@ -66,6 +67,7 @@ const routes: Routes = [
   { path: 'schema-info/:moduleId/:schemaId', component: SchemaInfoComponent },
   { path: 'business-rule/:moduleId/:schemaId/:brId', component: BrruleSideSheetComponent},
   { path: 'system/system-tray', component: SystemTrayComponent },
+  { path: 'subscriber/:moduleId/:schemaId/:subscriberId', component: SubscriberSideSheetComponent },
 
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent }

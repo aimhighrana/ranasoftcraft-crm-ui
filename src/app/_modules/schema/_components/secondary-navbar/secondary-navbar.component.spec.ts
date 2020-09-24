@@ -40,22 +40,38 @@ describe('SecondaryNavbarComponent', () => {
   it('getDataIntilligence() should return schema with varients', async(() => {
     spyOn(schemaServiceSpy, 'getSchemaWithVariants').and.returnValue(of({} as SchemaListDetails[]));
     component.getDataIntilligence();
+
     expect(schemaServiceSpy.getSchemaWithVariants).toHaveBeenCalled();
   }))
 
-  it('should navigate according active primary nav to the report', async() => {
+  it('globalCreate(), should navigate according active primary nav to the report', async() => {
     component.activatedPrimaryNav = 'report';
     fixture.detectChanges();
     spyOn(router, 'navigate');
     component.globalCreate();
+
     expect(router.navigate).toHaveBeenCalledWith(['home/report/dashboard-builder/new'])
   })
 
-  it('should navigate according to active primary nav to schema', async() => {
+  it('globalCreate(), should navigate according to active primary nav to schema', async() => {
     component.activatedPrimaryNav = 'schema';
     fixture.detectChanges();
     spyOn(router, 'navigate');
     component.globalCreate();
+
     expect(router.navigate).toHaveBeenCalledWith(['', { outlets: { sb: 'sb/schema/create-schema/new' } }])
+  })
+
+  it('toggleSideBar(), should toggle the icon of secondary nav', () => {
+    const hidePrimary = false;
+    component.arrowIcon = 'keyboard_arrow_left';
+    component.toggleSideBar(hidePrimary);
+
+    expect(component.arrowIcon).toEqual('keyboard_arrow_right');
+
+    component.arrowIcon = 'keyboard_arrow_right';
+    component.toggleSideBar(hidePrimary);
+
+    expect(component.arrowIcon).toEqual('keyboard_arrow_left');
   })
 });
