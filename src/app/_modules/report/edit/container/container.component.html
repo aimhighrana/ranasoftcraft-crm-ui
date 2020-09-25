@@ -529,6 +529,13 @@
                                 </mat-form-field>
                             </div>
 
+                            <!-- PIE CHART PERCETAGE CONFIG -->
+                            <div class="f-col" *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('isEnableDatalabels').value && chartPropCtrlGrp.get('chartType').value === 'PIE'">
+                                <mat-checkbox color="primary" formControlName="enabledBarPerc">Show Data in %
+                                </mat-checkbox>
+                            </div>
+                                <!-- PIE CHART PERCETAGE CONFIG -->
+
                             <div class="f-col">
                                 <mat-checkbox color="primary" formControlName="isEnableLegend">Show legend
                                 </mat-checkbox>

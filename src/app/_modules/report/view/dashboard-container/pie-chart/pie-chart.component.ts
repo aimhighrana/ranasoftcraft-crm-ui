@@ -22,6 +22,7 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
   chartLegend: ChartLegend[] = [];
   lablels: string[] = [];
   dataSet: string[] = [];
+  total = 0;
   orientation = 'pie';
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
 
@@ -52,7 +53,12 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
     },
     plugins: {
       datalabels: {
-        display: false,
+        display: true,
+        formatter: (value, ctx) => {
+          if(this.total>0){
+          return (value * 100 / this.total).toFixed(2) + '%';
+          }
+        },
       }
     },
     elements : {
@@ -143,7 +149,7 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
         },
     }}
 
-   // if showCountOnStack flag will be true it show datalables on stack and position of datalables also configurable
+  //  if showCountOnStack flag will be true it show datalables on stack and position of datalables also configurable
     if (this.pieWidget.getValue().isEnableDatalabels) {
       this.pieChartOptions.plugins = {
         ChartDataLables,
@@ -182,8 +188,11 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
         }
       }
 
+      if(this.pieWidget.getValue().isEnabledBarPerc){
+        this.total = Number(this.dataSet.reduce((accumulator, currentValue) => accumulator + currentValue));
+      }
+
       this.pieChartData = [{
-        label: this.widgetHeader.widgetName,
         data: this.dataSet
       }];
       this.getColor();
@@ -192,6 +201,7 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
       if(this.chart) {
         this.chart.update();
       }
+
     });
   }
 

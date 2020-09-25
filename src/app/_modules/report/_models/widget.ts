@@ -193,6 +193,7 @@ export class BarChartWidget {
     dataSetSize: number;
     blankValueAlias : string;
     widgetColorPalette: WidgetColorPalette;
+    isEnabledBarPerc : boolean;
 }
 
 export class StackBarChartWidget{
@@ -232,6 +233,7 @@ export class PieChartWidget {
     anchorPosition: AnchorAlignPosition;
     metaData: MetadataModel;
     blankValueAlias : string;
+    isEnabledBarPerc:boolean;
 }
 
 export class Count{
@@ -387,6 +389,7 @@ export class ChartProperties {
     seriesFormat:string;
     blankValueAlias : string;
     timeseriesStartDate : TimeseriesStartDate;
+    enabledBarPerc : boolean;
 }
 
 export class ButtonArr {

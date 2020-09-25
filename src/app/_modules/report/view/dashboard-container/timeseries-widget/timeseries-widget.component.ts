@@ -427,12 +427,16 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
 
   getwidgetData(widgetId:number):void{
     this.dataSet = [];
-    this.widgetService.getWidgetData(String(widgetId),this.filterCriteria).subscribe(data=>{
-      if(data !== null){
+    this.widgetService.getWidgetData(String(widgetId),this.filterCriteria).subscribe(response=>{
+      if(response !== null){
         if(this.isGroupByChart) {
-          this.transformForGroupBy(data);
+          this.transformForGroupBy(response);
         } else {
-          this.dataSet = this.transformDataSets(data);
+          if(this.timeseriesData.timeSeries.chartType === 'BAR'){
+           this.dataSet = this.transformDataForComparison(response);
+          }else{
+            this.dataSet = this.transformDataSets(response);
+          }
           if(this.filterCriteria.length === 0){
             this.dateFilters.forEach(ele=>{
                 ele.isActive = false;
@@ -494,6 +498,58 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     });
 
     return datasets;
+  }
+
+ /**
+  * Transform datasets when need comparison year wise month wise...
+  * @param res server res
+  */
+
+  transformDataForComparison(res:any){
+    const finalOutput = new Array();
+    const aggregation = res ?  res.aggregations['date_histogram#date'] : [];
+    const arrKeys = ['data','id','label','fill','border'];
+   if(aggregation.buckets !== undefined && aggregation.buckets.length>0){
+      aggregation.buckets.forEach(singleBucket => {
+      const dataSet = new Object();
+      const milliVal = singleBucket.key_as_string;
+      const arrBuckets = singleBucket['sterms#term'].buckets;
+      const arrcount = new Array();
+      arrBuckets.forEach(innerBucket => {
+        const count = innerBucket.doc_count;
+        const label = innerBucket.key;
+        arrcount.push(count);
+        const chartLegend = { text: label, code: label, legendIndex: this.chartLegend.length };
+         const exist  = this.chartLegend.filter(map => map.text === label);
+         if(exist.length===0){
+          this.chartLegend.push(chartLegend);
+          this.dataSetlabel.push(label);
+        }
+      });
+        // Prepare datasets for comparison in timeseries
+        dataSet[arrKeys[0]] = arrcount;
+        dataSet[arrKeys[2]] =  milliVal;
+        finalOutput.push(dataSet);
+    });
+   }
+   this.timeSeriesOption.scales = {xAxes: [{}],yAxes: [{}]};
+   this.timeSeriesOption.legend = {display: true,position:'bottom'};
+   this.timeSeriesOption.animation = {
+  onComplete() {
+    // const chartInstance = this.chart;
+    // chartInstance.ctx.textAlign = 'center';
+    // chartInstance.ctx.textBaseline = 'bottom';
+
+    // this.data.datasets.forEach(function(dataset, i) {
+    //   const meta = chartInstance.controller.getDatasetMeta(i);
+    //   meta.data.forEach(function(bar, index) {
+    //     const data = dataset.data[index];
+    //     chartInstance.ctx.fillText(data, bar._model.x, bar._model.y - 5);
+    //   });
+    // });
+  }
+};
+   return finalOutput;
   }
 
   /**
