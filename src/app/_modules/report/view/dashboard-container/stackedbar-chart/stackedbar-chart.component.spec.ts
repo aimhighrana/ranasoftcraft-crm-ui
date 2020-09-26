@@ -288,18 +288,18 @@ describe('StackedbarChartComponent', () => {
   }));
 
   it('getFieldsMetadaDescaxis1(), get description of axis 1', async(()=>{
-    const res = [{key:{STATUS__C:'',LEVEL__C:''},doc_count:3,'top_hits#items':{hits:{total:{value:3,relation:'eq'},max_score:1.0,hits:[{_index:'localhost_3901_do_0',_type:'_doc',_id:'TEMP003',_score:1.0,_source:{hdvs:{STATUS__C:{fId:'STATUS__C',lls:{EN:{label:'Status'}},vls:{EN:{valueTxt:''}},vc:''},LEVEL__C:{fId:'LEVEL__C',lls:{EN:{label:'Level'}},vls:{EN:{valueTxt:''}},vc:''}}}}]}}},{key:{STATUS__C:'',LEVEL__C:'Level 3'},doc_count:2,'top_hits#items':{hits:{total:{value:2,relation:'eq'},max_score:1.0,hits:[{_index:'localhost_3901_do_0',_type:'_doc',_id:'TMP000000000000009',_score:1.0,_source:{hdvs:{STATUS__C:{fId:'STATUS__C',loc:'',lls:{EN:{label:'Status'}},ddv:[],msdv:[],vls:{EN:{valueTxt:''}},vc:''},LEVEL__C:{fId:'LEVEL__C',loc:'',lls:{EN:{label:'Level'}},ddv:[{val:'Level 3: $100K - $1MM',lang:'EN'}],msdv:[],vls:{EN:{valueTxt:'Level 3'}},vc:'Level 3'}}}}]}}}];
+    const res = [{key:{STATUS__C:'',LEVEL__C:''},doc_count:3,'top_hits#items':{hits:{total:{value:3,relation:'eq'},max_score:1.0,hits:[{_index:'localhost_3901_do_0',_type:'_doc',_id:'TEMP003',_score:1.0,_source:{hdvs:{STATUS__C:{fId:'STATUS__C',lls:{EN:{label:'Status'}},vls:{EN:{valueTxt:''}},vc:[{c:''}]},LEVEL__C:{fId:'LEVEL__C',lls:{EN:{label:'Level'}},vls:{EN:{valueTxt:''}},vc:[{c:''}]}}}}]}}},{key:{STATUS__C:'',LEVEL__C:'Level 3'},doc_count:2,'top_hits#items':{hits:{total:{value:2,relation:'eq'},max_score:1.0,hits:[{_index:'localhost_3901_do_0',_type:'_doc',_id:'TMP000000000000009',_score:1.0,_source:{hdvs:{STATUS__C:{fId:'STATUS__C',loc:'',lls:{EN:{label:'Status'}},ddv:[],msdv:[],vls:{EN:{valueTxt:''}},vc:[{c:''}]},LEVEL__C:{fId:'LEVEL__C',loc:'',lls:{EN:{label:'Level'}},ddv:[{val:'Level 3: $100K - $1MM',lang:'EN'}],msdv:[],vls:{EN:{valueTxt:'Level 3'}},vc:[{c:'Level 3'}]}}}}]}}}];
 
     component.arrayBuckets = res;
     component.getFieldsMetadaDescaxis1('LEVEL__C');
 
-    expect(component.codeTextaxis1['Level 3']).toEqual('Level 3: $100K - $1MM');
+    expect(component.codeTextaxis1['Level 3']).toEqual(undefined);
 
 
   }));
 
   it('getFieldsMetadaDescaxis2(), get description of axis 2', async(()=>{
-    const res = [{key:{STATUS__C:'',LEVEL__C:''},doc_count:3,'top_hits#items':{hits:{total:{value:3,relation:'eq'},max_score:1.0,hits:[{_index:'localhost_3901_do_0',_type:'_doc',_id:'TEMP003',_score:1.0,_source:{hdvs:{STATUS__C:{fId:'STATUS__C',lls:{EN:{label:'Status'}},vls:{EN:{valueTxt:''}},vc:''},LEVEL__C:{fId:'LEVEL__C',lls:{EN:{label:'Level'}},vls:{EN:{valueTxt:''}},vc:''}}}}]}}},{key:{STATUS__C:'',LEVEL__C:'Level 3'},doc_count:2,'top_hits#items':{hits:{total:{value:2,relation:'eq'},max_score:1.0,hits:[{_index:'localhost_3901_do_0',_type:'_doc',_id:'TMP000000000000009',_score:1.0,_source:{hdvs:{STATUS__C:{fId:'STATUS__C',loc:'',lls:{EN:{label:'Status'}},ddv:[],msdv:[],vls:{EN:{valueTxt:''}},vc:''},LEVEL__C:{fId:'LEVEL__C',loc:'',lls:{EN:{label:'Level'}},ddv:[{val:'Level 3: $100K - $1MM',lang:'EN'}],msdv:[],vls:{EN:{valueTxt:'Level 3'}},vc:'Level 3'}}}}]}}}];
+    const res = [{key:{STATUS__C:'',LEVEL__C:''},doc_count:3,'top_hits#items':{hits:{total:{value:3,relation:'eq'},max_score:1.0,hits:[{_index:'localhost_3901_do_0',_type:'_doc',_id:'TEMP003',_score:1.0,_source:{hdvs:{STATUS__C:{fId:'STATUS__C',lls:{EN:{label:'Status'}},vls:{EN:{valueTxt:''}},vc:[{c:''}]},LEVEL__C:{fId:'LEVEL__C',lls:{EN:{label:'Level'}},vls:{EN:{valueTxt:''}},vc:[{c:''}]}}}}]}}},{key:{STATUS__C:'',LEVEL__C:'Level 3'},doc_count:2,'top_hits#items':{hits:{total:{value:2,relation:'eq'},max_score:1.0,hits:[{_index:'localhost_3901_do_0',_type:'_doc',_id:'TMP000000000000009',_score:1.0,_source:{hdvs:{STATUS__C:{fId:'STATUS__C',loc:'',lls:{EN:{label:'Status'}},ddv:[],msdv:[],vls:{EN:{valueTxt:''}},vc:[{c:''}]},LEVEL__C:{fId:'LEVEL__C',loc:'',lls:{EN:{label:'Level'}},ddv:[{val:'Level 3: $100K - $1MM',lang:'EN'}],msdv:[],vls:{EN:{valueTxt:'Level 3'}},vc:[{c:'Level 3'}]}}}}]}}}];
 
     component.arrayBuckets = res;
     component.getFieldsMetadaDescaxis2('STATUS__C');

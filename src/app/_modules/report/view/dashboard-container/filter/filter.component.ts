@@ -106,21 +106,40 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     });
   }
 
-  getFieldsMetadaDesc(code: string[], fieldId: string) {
-    this.reportService.getMetaDataFldByFldIds(fieldId, code).subscribe(res=>{
-      res.forEach(data=>{
-        const valOld = this.values.filter(fill => fill.CODE === data.CODE);
+  getFieldsMetadaDesc(buckets:any[], fieldId: string) {
+    const finalVal = {} as any;
+    buckets.forEach(bucket=>{
+      const key = bucket.key;
+      const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
+      const val = hits._source.hdvs[fieldId] ?( hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vc : null) : null;
+      if(val) {
+        const valArray = [];
+        val.forEach(v=>{
+          if(v.t) {
+            valArray.push(v.t);
+          }
+        });
+        const finalText = valArray.toString();
+        if(finalText) {
+          finalVal[key] = finalText
+        } else {
+          finalVal[key] = key;
+        }
+      } else {
+        finalVal[key] = key;
+      }
+    });
+    Object.keys(finalVal).forEach(key=>{
+        const valOld = this.values.filter(fill => fill.CODE === key);
         if(valOld.length >0) {
           const index = this.values.indexOf(valOld[0]);
-          valOld[0].TEXT = data.TEXT;
-          valOld[0].FIELDNAME = data.FIELDNAME;
+          valOld[0].TEXT = finalVal[key];
+          valOld[0].FIELDNAME = fieldId;
           this.values[index] = valOld[0];
         }
-      });
-      this.filteredOptions = of(this.values);
-    },error=>{
-      console.error(`Error : ${error}`);
-    })
+    });
+    this.filteredOptions = of(this.values);
+
   }
 
   updateObjRefDescription(buckets:any[], fieldId: string) {
@@ -274,9 +293,8 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
           metadatas.push(metaData);
         });
         this.values = metadatas;
-        const fieldIds = metadatas.map(map => map.CODE);
         if(this.filterWidget.getValue().metaData.picklist === '1' || this.filterWidget.getValue().metaData.picklist === '37') {
-          this.getFieldsMetadaDesc(fieldIds, fieldId);
+          this.getFieldsMetadaDesc(buckets, fieldId);
         } else if(this.filterWidget.getValue().metaData.picklist === '30'){
           this.updateObjRefDescription(buckets, fieldId);
         } else {

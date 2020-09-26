@@ -249,23 +249,28 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
    */
   getFieldsMetadaDesc(buckets: any[]) {
     const fldid = this.pieWidget.getValue().fieldId;
-    let  locale = this.locale!==''?this.locale.split('-')[0]:'EN';
-    locale = locale.toUpperCase();
     const finalVal = {} as any;
     buckets.forEach(bucket=>{
       const key = bucket.key;
       const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
-      const ddv = hits._source.hdvs?hits._source.hdvs[fldid] ?( hits._source.hdvs[fldid] ? hits._source.hdvs[fldid].ddv : null) : null:null;
-      if(ddv) {
-        const hasValue =  ddv.filter(fil=> fil.lang === locale)[0];
-        if(hasValue) {
-          finalVal[key] = hasValue.val;
+      const val = hits._source.hdvs?hits._source.hdvs[fldid] ?( hits._source.hdvs[fldid] ? hits._source.hdvs[fldid].vc : null) : null:null;
+      if(val) {
+        const valArray = [];
+        val.forEach(v=>{
+          if(v.t) {
+            valArray.push(v.t);
+          }
+        });
+        const finalText = valArray.toString();
+        if(finalText) {
+          finalVal[key] = finalText
+        } else {
+          finalVal[key] = key;
         }
       } else {
-        finalVal[key] = hits._source.hdvs && hits._source.hdvs[fldid]?hits._source.hdvs[fldid].vc[0].c:null;
+        finalVal[key] = key;
       }
     });
-
     // update lablels
     this.lablels.forEach(cod => {
       let chartLegend: ChartLegend;

@@ -2,7 +2,6 @@ import { Component, OnInit, Input, OnDestroy, EventEmitter, Output, OnChanges, S
 import { WorkflowResponse } from '@models/schema/schema';
 import { SchemaService } from '@services/home/schema.service';
 import { Observable, of, Subscription } from 'rxjs';
-import { MatSelectionListChange } from '@angular/material/list';
 
 @Component({
   selector: 'pros-workflow-dataset',
@@ -21,6 +20,12 @@ export class WorkflowDatasetComponent implements OnInit, OnDestroy, OnChanges {
   @Input()
   preSelectedObj = '';
 
+  @Input()
+  searchText = '';
+
+  @Input()
+  isWorkFlow = false;
+
   @Output()
   selectedWfs: EventEmitter<WorkflowResponse[]> = new EventEmitter<WorkflowResponse[]>();
 
@@ -32,10 +37,8 @@ export class WorkflowDatasetComponent implements OnInit, OnDestroy, OnChanges {
    */
   subscriptions: Subscription[] = [];
 
-  /**
-   * is all selected ..
-   */
-  isAllSelected = false;
+  allChecked = false;
+  allIndeterminate = false;
 
   constructor(
     private schemaService: SchemaService
@@ -51,8 +54,30 @@ export class WorkflowDatasetComponent implements OnInit, OnDestroy, OnChanges {
          }
       });
       this.dataSetWorkflow = of(this.dataSetsWorkFlow);
-      const len = this.dataSetsWorkFlow.filter(fil=> fil.isSelected === true).length;
-      this.isAllSelected = this.dataSetsWorkFlow.length === len ? true: false;
+      this.manageStateOfCheckBox();
+    }
+
+    if(changes && changes.searchText && changes.searchText.previousValue !== changes.searchText.currentValue) {
+      if(typeof  changes.searchText.currentValue === 'string') {
+        this.searchText = changes.searchText.currentValue;
+        if(this.searchText) {
+          this.dataSetWorkflow = of(this.dataSetsWorkFlow.filter(fil=> fil.objectdesc.toLocaleLowerCase().indexOf(this.searchText.toLocaleLowerCase()) !==-1));
+        } else {
+          this.dataSetWorkflow = of(this.dataSetsWorkFlow);
+        }
+
+      }
+
+    }
+
+    if(changes && changes.isWorkFlow && changes.isWorkFlow.previousValue !== changes.isWorkFlow.currentValue) {
+      if(!changes.isWorkFlow.currentValue) {
+        this.dataSetsWorkFlow.forEach(r=>{
+          r.isSelected = false;
+       });
+       this.dataSetWorkflow = of(this.dataSetsWorkFlow);
+       this.manageStateOfCheckBox();
+      }
     }
   }
 
@@ -74,8 +99,7 @@ export class WorkflowDatasetComponent implements OnInit, OnDestroy, OnChanges {
       });
       this.dataSetsWorkFlow = res;
       this.dataSetWorkflow = of(res);
-      const len = this.dataSetsWorkFlow.filter(fil=> fil.isSelected === true).length;
-      this.isAllSelected = this.dataSetsWorkFlow.length === len ? true: false;
+      this.manageStateOfCheckBox();
     }, error => console.error(`Error: ${error}`));
     this.subscriptions.push(workflowSub);
   }
@@ -86,58 +110,73 @@ export class WorkflowDatasetComponent implements OnInit, OnDestroy, OnChanges {
    * Log while selection change ..
    * @param item chnageable selection data ...
    */
-  selectionChange(event: MatSelectionListChange) {
-    console.log(event);
-    // if(item.isSelected) {
-    //   const indx = this.selected.filter(fil=> fil.objectid === item.objectid)[0];
-    //   this.selected.splice(this.selected.indexOf(indx), 1);
-    //   const oldOne =  this.dataSetsWorkFlow.filter(fil=> fil.objectid === item.objectid)[0];
-    //   oldOne.isSelected = false;
-    //   this.dataSetWorkflow = of(this.dataSetsWorkFlow);
-    // } else {
-    //   this.selected.push(item);
-    //   const oldOne =  this.dataSetsWorkFlow.filter(fil=> fil.objectid === item.objectid)[0];
-    //   oldOne.isSelected = true;
-    //   this.dataSetWorkflow = of(this.dataSetsWorkFlow);
-    // }
-     if(event && event.source) {
-       const value = event.source._value;
-       this.isAllSelected = value.length === this.dataSetsWorkFlow.length ? true : false;
-       this.selectedWfs.emit(event.source._value as any);
-     }
+  selectionChange(fld: WorkflowResponse) {
+    const fldData = this.dataSetsWorkFlow.filter(fil => fil.objectid === fld.objectid)[0];
+    fldData.isSelected = fld.isSelected ? false : true;
+    this.dataSetWorkflow = of(this.dataSetsWorkFlow);
+    this.manageStateOfCheckBox(true);
+  }
+
+  /**
+   * Manage select all checkbox state
+   */
+  manageStateOfCheckBox(isEmit?: boolean) {
+    const selectedCnt = this.dataSetsWorkFlow.filter(fil => fil.isSelected === true);
+    if(selectedCnt.length === this.dataSetsWorkFlow.length) {
+      this.allChecked = true;
+      this.allIndeterminate = false;
+    } else if(selectedCnt.length > 0){
+      this.allIndeterminate = true;
+      this.allChecked = false;
+    } else {
+      this.allIndeterminate = false;
+      this.allChecked = false;
+    }
+    if(isEmit) {
+      this.emitValue();
+    }
   }
 
   isSelected(item: WorkflowResponse): boolean {
     return item.isSelected ? item.isSelected : false;
   }
 
+
   /**
-   * check for Interminate state ...
+   * State of select all checkbox ..
    */
-  isInInterminate(): boolean {
-    return this.selected.length > 0 && !this.isAllSelected;
+  selectAll() {
+    // this.data.selectedFields = [];
+    if(this.allChecked) {
+      this.allChecked  = true;
+      this.allIndeterminate = false;
+      // this.data.selectedFields = this.headerArray;
+    } else {
+      this.allChecked = false;
+      this.allIndeterminate = false;
+    }
+    if(this.allChecked) {
+      this.dataSetsWorkFlow.forEach(each=>{
+        each.isSelected = true;
+      });
+    } else {
+      this.dataSetsWorkFlow.forEach(each=>{
+        each.isSelected = false;
+      });
+    }
+    this.dataSetWorkflow = of(this.dataSetsWorkFlow);
+    this.emitValue();
+  }
+
+  isChecked(module: WorkflowResponse): boolean {
+    return module ? module.isSelected : false;
   }
 
   /**
-   * Help to toggle all selected or unselecte all
+   * Emit all selected values ...
    */
-  toggleAll(changedVal: boolean) {
-    console.log(changedVal);
-      if(this.isAllSelected) {
-        this.selected = [];
-        this.dataSetsWorkFlow.forEach(each=>{
-          each.isSelected = false;
-       });
-       this.isAllSelected = false;
-       this.dataSetWorkflow = of(this.dataSetsWorkFlow);
-       this.selectedWfs.emit([]);
-      } else {
-        this.dataSetsWorkFlow.forEach(each=>{
-           each.isSelected = true;
-        });
-        this.isAllSelected = true;
-        this.dataSetWorkflow = of(this.dataSetsWorkFlow);
-        this.selectedWfs.emit(this.dataSetsWorkFlow);
-      }
+  emitValue() {
+    const selectedval = this.dataSetsWorkFlow.filter(fil => fil.isSelected === true);
+    this.selectedWfs.emit(selectedval);
   }
 }

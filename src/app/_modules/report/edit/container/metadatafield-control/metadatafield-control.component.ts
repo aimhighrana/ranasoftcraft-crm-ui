@@ -68,7 +68,12 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
       fieldId:'USERMODIFIED',
       fieldDescri:'User Modified',
       childs:[],
-      isGroup:false
+      isGroup:false,
+      fldCtrl:{
+        picklist: '1',
+        dataType: 'AJAX',
+        fieldId:'USERMODIFIED',
+      } as MetadataModel
     },{
       fieldId:'APPDATE',
       fieldDescri:'Update Date',

@@ -306,35 +306,46 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
   }
 
   getFieldsMetadaDescaxis1ForNonFld(fieldId: string) {
-    let  locale = this.locale!==''?this.locale.split('-')[0]:'EN';
-    locale = locale.toUpperCase();
     this.arrayBuckets.forEach(bucket=>{
       const key = bucket.key[fieldId];
       const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
-      const ddv = hits._source.hdvs[fieldId] ?( hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vls[locale].valueTxt : null) : null;
-      if(ddv) {
-        this.codeTextaxis1[key] = ddv;
+      const val = hits._source.hdvs[fieldId] ?( hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vc : null) : null;
+      if(val) {
+        const valArray = [];
+        val.forEach(v=>{
+          if(v.t) {
+            valArray.push(v.t);
+          }
+        });
+        const finalText = valArray.toString();
+        if(finalText) {
+          this.codeTextaxis1[key] = finalText;
+        }
       } else {
-        this.codeTextaxis1[key] = hits._source.hdvs[fieldId].vc;
+        this.codeTextaxis1[key] = key;
       }
     });
     this.updateLabelsaxis1();
   }
 
   getFieldsMetadaDescaxis1(fieldId: string) {
-    let  locale = this.locale!==''?this.locale.split('-')[0]:'EN';
-    locale = locale.toUpperCase();
     this.arrayBuckets.forEach(bucket=>{
       const key = bucket.key[fieldId];
       const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
-      const ddv = hits._source.hdvs?hits._source.hdvs[fieldId] ?( hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].ddv : null) : null:null;
-      if(ddv) {
-        const hasValue =  ddv.filter(fil=> fil.lang === locale)[0];
-        if(hasValue) {
-          this.codeTextaxis1[key] = hasValue.val;
+      const val = hits._source.hdvs?hits._source.hdvs[fieldId] ?( hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vc : null) : null:null;
+      if(val !== null) {
+        const valArray = [];
+        val.forEach(v=>{
+          if(v.t) {
+            valArray.push(v.t);
+          }
+        });
+        const finalText = valArray.toString();
+        if(finalText) {
+          this.codeTextaxis1[key] = finalText;
         }
       } else {
-        this.codeTextaxis1[key] = hits._source.hdvs?hits._source.hdvs[fieldId].vc?hits._source.hdvs[fieldId].vc.c[0]:null:null;
+        this.codeTextaxis1[key] = key;
       }
     });
     this.updateLabelsaxis1();
@@ -350,16 +361,23 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
 
 
   getFieldsMetadaDescaxis2Nondef(fieldId: string) {
-    let  locale = this.locale!==''?this.locale.split('-')[0]:'EN';
-    locale = locale.toUpperCase();
     this.arrayBuckets.forEach(bucket=>{
       const key = bucket.key[fieldId];
       const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
-      const ddv = hits._source.hdvs?hits._source.hdvs[fieldId] ?( hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vls[locale].valueTxt : null) : null:null;
-      if(ddv) {
-        this.codeTextaxis2[key] = ddv;
+      const val = hits._source.hdvs?hits._source.hdvs[fieldId] ?( hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vc : null) : null:null;
+      if(val) {
+        const valArray = [];
+        val.forEach(v=>{
+            if(v.t) {
+              valArray.push(v.t);
+            }
+          });
+          const finalText = valArray.toString();
+          if(finalText) {
+            this.codeTextaxis2[key] = finalText;
+          }
       } else {
-        this.codeTextaxis2[key] = hits._source.hdvs && hits._source.hdvs[fieldId]?hits._source.hdvs[fieldId].vc[0].c:null;
+        this.codeTextaxis2[key] = key;
       }
     });
     this.updateLabelsaxis2();
@@ -372,14 +390,20 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     this.arrayBuckets.forEach(bucket=>{
       const key = bucket.key[fieldId];
       const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
-      const ddv = hits._source.hdvs?hits._source.hdvs[fieldId] ?( hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].ddv : null) : null:null;
-      if(ddv) {
-        const hasValue =  ddv.filter(fil=> fil.lang === locale)[0];
-        if(hasValue) {
-          this.codeTextaxis2[key] = hasValue.val;
-        }
+      const val = hits._source.hdvs?hits._source.hdvs[fieldId] ?( hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vc : null) : null:null;
+      if(val) {
+        const valArray = [];
+        val.forEach(v=>{
+            if(v.t) {
+              valArray.push(v.t);
+            }
+          });
+          const finalText = valArray.toString();
+          if(finalText) {
+            this.codeTextaxis2[key] = finalText;
+          }
       } else {
-        this.codeTextaxis2[key] = hits._source.hdvs && hits._source.hdvs[fieldId] && hits._source.hdvs[fieldId].vc?hits._source.hdvs[fieldId].vc[0].c:null;
+        this.codeTextaxis2[key] = key;
       }
     });
     this.updateLabelsaxis2();

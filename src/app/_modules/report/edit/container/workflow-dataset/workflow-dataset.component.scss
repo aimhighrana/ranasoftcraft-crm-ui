@@ -1,3 +1,17 @@
-mat-selection-list {
-  margin-left: 10px;
+mat-card.check-list {
+  padding: 0;
+
+  .checkedall {
+    display: flex;
+  }
+
+  .colunm-list {
+    overflow: hidden;
+    display: block;
+  }
+
+  .colunm-box {
+    align-items: center;
+    box-sizing: border-box;
+  }
 }

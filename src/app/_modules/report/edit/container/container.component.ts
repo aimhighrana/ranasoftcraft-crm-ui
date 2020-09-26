@@ -74,6 +74,11 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   fld2FldArray = ['FIELD2FIELD','FIELD2FIELD_EQUAL','FIELD2FIELD_GREATETHENEQUAL','FIELD2FIELD_GREATETHAN','FIELD2FIELD_LESSTHEN','FIELD2FIELD_LESSTHENEQUALTO'];
 
+  /**
+   * Store current search text for datasets
+   */
+  searchDataSetVal = '';
+
   constructor(
     private formBuilder: FormBuilder,
     private reportService: ReportService,
@@ -232,28 +237,22 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     });
 
     const styleSub = this.styleCtrlGrp.get('objectType').valueChanges.subscribe(fillData => {
-      // if (fillData && typeof fillData === 'string' && fillData) {
-      //   fillData = fillData.split('wf_')[1];
-      //   if (fillData !== this.styleCtrlGrp.value.objectType) {
-      //     this.getWorkFlowFields(fillData);
-      //     this.getRecordCount(fillData);
-      //     this.getWorkFlowPathDetails(fillData);
-      //     this.styleCtrlGrp.get('isWorkflowdataSet').setValue(true);
-      //   }
-      // } else {
-        if (fillData.objectid  !== this.styleCtrlGrp.value.objectType && !this.styleCtrlGrp.get('isWorkflowdataSet').value) {
+      if (fillData && typeof fillData === 'string') {
+        if (fillData  !== this.styleCtrlGrp.value.objectType && !this.styleCtrlGrp.get('isWorkflowdataSet').value) {
           this.getAllFields(fillData);
           this.getRecordCount(fillData);
           this.styleCtrlGrp.get('isWorkflowdataSet').setValue(false);
         }
+        // if(this.styleCtrlGrp.get('isWorkflowdataSet').value) {
+        //   this.getWorkFlowFields(fillData.split(','));
+        //   this.getRecordCount(fillData, true);
+        //   this.getWorkFlowPathDetails(fillData.split(','));
+        //   this.styleCtrlGrp.get('isWorkflowdataSet').setValue(true);
+        // }
 
-        if(this.styleCtrlGrp.get('isWorkflowdataSet').value) {
-          this.getWorkFlowFields(fillData.split(','));
-          this.getRecordCount(fillData, true);
-          this.getWorkFlowPathDetails(fillData.split(','));
-          this.styleCtrlGrp.get('isWorkflowdataSet').setValue(true);
-        }
-      // }
+      } else {
+        console.log(fillData);
+      }
     });
 
     this.subscriptions.push(styleSub);
@@ -279,6 +278,18 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subscriptions.push(wfldSub)
   }
 
+  /**
+   * Search data sets ..
+   * @param value searchable text
+   */
+  searchDataSet(value: string) {
+    this.searchDataSetVal = value;
+    if(value) {
+      this.dataSetOb = of(this.dataSets.filter(fil => fil.objectdesc.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !==-1));
+    } else {
+      this.dataSetOb = of(this.dataSets);
+    }
+  }
 
   getReportConfig(reportId: string) {
     const reportConfig = this.reportService.getReportConfi(reportId).subscribe(res => {
@@ -465,6 +476,16 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       }
       this.showProperty = true;
       this.chooseColumns = data.widgetTableFields ? data.widgetTableFields : [];
+
+      // make while edit widget ..
+      if(!data.isWorkflowdataSet) {
+        const hasObj = this.dataSets.filter(fil => fil.objectid === data.objectType)[0];
+        if(hasObj) {
+          setTimeout(()=>{
+            (document.getElementById('dataSets') as HTMLInputElement).value = hasObj.objectdesc;
+          },1000);
+        }
+      }
     }
   }
 
@@ -715,5 +736,25 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.getWorkFlowPathDetails(objId);
     this.selStyleWid.objectType = objId.toString();
     this.styleCtrlGrp.get('objectType').setValue(objId.toString());
+    (document.getElementById('dataSets') as HTMLInputElement).value = '';
+  }
+
+  /**
+   * Get description...
+   * @param data get current module
+   */
+  displayWithDataSet(data: ObjectTypeResponse): string {
+    return data ? data.objectdesc : '';
+  }
+
+  afterDataSetSelect(obj: ObjectTypeResponse) {
+    if(obj.objectid) {
+      this.styleCtrlGrp.get('objectType').setValue(obj.objectid);
+      this.styleCtrlGrp.get('isWorkflowdataSet').setValue(false);
+    }
+  }
+
+  get isWorkflowRefresh(): boolean {
+    return (this.selStyleWid ? this.selStyleWid.isWorkflowdataSet : false);
   }
 }

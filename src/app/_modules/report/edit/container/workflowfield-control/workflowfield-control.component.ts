@@ -145,15 +145,16 @@ export class WorkflowfieldControlComponent implements OnInit, OnChanges, OnDestr
 
       metadata.push({
         fieldId: 'static_fields',
-        fieldDescri: 'Static Fields',
+        fieldDescri: 'System fields',
         isGroup: true,
         childs: allFieldsChild
       });
     }
 
+    const allFieldsChildDyn: Metadata[] = [];
     if(response.dynamic){
       response.dynamic.forEach(fields => {
-      allFieldsChild.push({
+        allFieldsChildDyn.push({
         fieldId: fields.fieldId,
         fieldDescri: fields.fieldDescri,
         isGroup: false,
@@ -163,9 +164,9 @@ export class WorkflowfieldControlComponent implements OnInit, OnChanges, OnDestr
 
     metadata.push({
       fieldId: 'dynamic_fields',
-      fieldDescri: 'Dynamic Fields',
+      fieldDescri: 'Module fields',
       isGroup: true,
-      childs: allFieldsChild
+      childs: allFieldsChildDyn
     });
   }
     return metadata;

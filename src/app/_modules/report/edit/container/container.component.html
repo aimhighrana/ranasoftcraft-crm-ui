@@ -115,23 +115,25 @@
                             </div>
 
                             <div class="f-col">
-                                <mat-label>Data set</mat-label>
+                                <ng-template [ngIf]="styleCtrlGrp.get('isWorkflowdataSet') && styleCtrlGrp.get('isWorkflowdataSet').value" [ngIfElse]="singleSelect">
+                                    <mat-label>Data set ({{ styleCtrlGrp.get('objectType').value.split(',').length }} selected) </mat-label>
+                                </ng-template>
+                                <ng-template #singleSelect>
+                                    <mat-label>Data set</mat-label>
+                                </ng-template>
                                 <mat-form-field appearance="outline">
-                                    <mat-select formControlName="objectType">
+                                    <input matInput [formControl]="objectType" [matAutocomplete]="dataSetCtrl" (keyup)="searchDataSet($event.target.value)" id="dataSets" >
+                                    <mat-autocomplete #dataSetCtrl="matAutocomplete" [displayWith]="displayWithDataSet">
                                         <mat-optgroup label="Module">
-                                            <mat-option *ngFor="let object of dataSetOb | async" value="{{ object.objectid }}" (click)="styleCtrlGrp.get('isWorkflowdataSet').setValue(false)">
+                                            <mat-option *ngFor="let object of dataSetOb | async" [value]="object" (click)="afterDataSetSelect(object)">
                                                 {{ object.objectdesc ? object.objectdesc : 'Untitled' }}
                                             </mat-option>
                                         </mat-optgroup>
 
-                                        <!-- <mat-optgroup label="Workflow">
-                                            <mat-option *ngFor="let object of dataSetWorkflow | async" value="wf_{{ object.objectid }}">
-                                                {{ object.objectdesc }} WorkFlow
-                                            </mat-option>
-                                        </mat-optgroup>   -->
-                                        <pros-workflow-dataset (selectedWfs)="afterWfSelect($event)" [preSelectedObj]="selStyleWid ? selStyleWid.objectType : ''"></pros-workflow-dataset>
-                                    </mat-select>
+                                        <pros-workflow-dataset (selectedWfs)="afterWfSelect($event)" [preSelectedObj]="selStyleWid ? selStyleWid.objectType : ''" [isWorkFlow]="isWorkflowRefresh" [searchText]="searchDataSetVal"></pros-workflow-dataset>                                        
+                                    </mat-autocomplete>
                                 </mat-form-field>
+                                
                                 <mat-hint *ngIf="selStyleWid  && selStyleWid.objectType && recordsCount">Total
                                     {{ recordsCount }} record(s) found</mat-hint>
                                 <mat-hint *ngIf="selStyleWid  && selStyleWid.objectType && !recordsCount">Index not

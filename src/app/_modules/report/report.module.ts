@@ -53,7 +53,7 @@ import { WorkflowDatasetComponent } from './edit/container/workflow-dataset/work
     WidgetColorPaletteComponent,
     ReportListDownloadModelComponent,
     WorkflowfieldControlComponent,
-    WorkflowDatasetComponent,
+    WorkflowDatasetComponent
   ],
   imports: [
     CommonModule,
