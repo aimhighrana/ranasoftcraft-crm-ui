@@ -11,7 +11,7 @@
     </button>
   </div>
 
-  <mat-card-content>
+  <mat-card-content [ngStyle]="{ 'height.px' : ((widgetInfo.height * boxSize) - 50 )}">
     <!-- CONTROL FOR DROPDOWNS -->
     <ng-template
       [ngIf]="filterWidget && filterWidget.getValue() && filterWidget.getValue().metaData && filterWidget.getValue().metaData.picklist && (filterWidget.getValue().metaData.picklist === '1' || filterWidget.getValue().metaData.picklist === '30' || filterWidget.getValue().metaData.picklist === '37')">

@@ -8,18 +8,11 @@ import { ReportService } from '../../../_service/report.service';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { MatSliderChange } from '@angular/material/slider';
 import { UDRBlocksModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
-import * as moment from 'moment';
-import { DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core';
-import { MomentDateAdapter, MAT_MOMENT_DATE_FORMATS } from '@angular/material-moment-adapter';
 
 @Component({
   selector: 'pros-filter',
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.scss'],
-  providers: [
-    {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
-    {provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS},
-  ],
 })
 export class FilterComponent extends GenericWidgetComponent implements OnInit, OnChanges,OnDestroy {
 
@@ -195,8 +188,8 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
             criteria.udrid = dateFilterBlock.udrid;
 
             // set selected value
-            this.startDateCtrl = new FormControl(moment(moment.unix(Number(dateFilterBlock.conditionFieldStartValue)/1000).format('MM/DD/YYYY')));
-            this.endDateCtrl = new FormControl(moment(moment.unix(Number(dateFilterBlock.conditionFieldEndValue)/1000).format('MM/DD/YYYY')));
+            this.startDateCtrl = new FormControl(new Date(Number(dateFilterBlock.conditionFieldStartValue)));
+            this.endDateCtrl = new FormControl(new Date(Number(dateFilterBlock.conditionFieldEndValue)));
 
             this.setSelectedQuickDateFilter(dateFilterBlock.blockDesc);
 
@@ -256,8 +249,8 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
       const strtEndDt = new DateBulder().build(code as DateSelectionType);
       if(strtEndDt) {
         // set selected value
-        this.startDateCtrl = new FormControl(moment(moment.unix(Number(strtEndDt[0])/1000).format('MM/DD/YYYY')));
-        this.endDateCtrl = new FormControl(moment(moment.unix(Number(strtEndDt[1])/1000).format('MM/DD/YYYY')));
+        this.startDateCtrl = new FormControl(new Date(Number(strtEndDt[0])));
+        this.endDateCtrl = new FormControl(new Date(Number(strtEndDt[1])));
         this.startDate = strtEndDt[0];
         this.endDate = strtEndDt[1];
 
@@ -437,9 +430,8 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
 
 
   changeStartDate(event: MatDatepickerInputEvent<Date>) {
-    if(event.value) {
-      const con = moment(event.value).valueOf();
-      this.startDate = `${con}`;
+    if(event.value && event.value.getTime()) {
+      this.startDate = String(event.value.getTime());
       this.emitDateChangeValues();
     }
     // unselect all
@@ -449,9 +441,8 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
   }
 
   changeEndtDate(event: MatDatepickerInputEvent<Date>) {
-    if(event.value) {
-      const con = moment(event.value).valueOf();
-      this.endDate = `${con}`;
+    if(event.value && event.value.getTime()) {
+      this.endDate = String(event.value.getTime());
       this.emitDateChangeValues();
     }
     // unselect all

@@ -31,7 +31,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   }
 
   timeDateFormat: TimeDisplayFormat;
-  dataSet: ChartDataSets[] = [];
+  dataSet: ChartDataSets[] = [{data:[]}];
   dataSetlabel: Label[] = [];
   widgetInf:BehaviorSubject<TimeSeriesWidget> = new BehaviorSubject<TimeSeriesWidget>(null);
   public afterColorDefined: BehaviorSubject<WidgetColorPalette> = new BehaviorSubject<WidgetColorPalette>(null);
@@ -426,7 +426,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   }
 
   getwidgetData(widgetId:number):void{
-    this.dataSet = [];
+    this.dataSet = [{data:[]}];
     this.widgetService.getWidgetData(String(widgetId),this.filterCriteria).subscribe(response=>{
       if(response !== null){
         if(this.isGroupByChart) {
@@ -697,7 +697,6 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   });
   this.widgetService.downloadCSV('Time-Chart', excelData);
 }
-
 /*
 * download chart as image
 */

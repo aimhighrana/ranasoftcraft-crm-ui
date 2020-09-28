@@ -10,6 +10,7 @@ import { PermissionOn, UserMdoModel, RolesModel, GroupHeaderModel, ReportDashboa
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
+import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
 
 describe('ReportCollaboratorComponent', () => {
   let component: ReportCollaboratorComponent;
@@ -19,7 +20,7 @@ describe('ReportCollaboratorComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ReportCollaboratorComponent ],
+      declarations: [ ReportCollaboratorComponent, SearchInputComponent ],
       imports:[AppMaterialModuleForSpec, HttpClientTestingModule, ReactiveFormsModule, FormsModule, RouterTestingModule],
       providers:[
         ReportService
@@ -42,7 +43,7 @@ describe('ReportCollaboratorComponent', () => {
   it('transformResponse(), should help for transform data',async(()=>{
     // mock data
     const users: UserMdoModel[] = [
-      {userId:'srana',email:'srana@gmail.com'} as UserMdoModel,
+      {userId:'srana',email:'srana@gmail.com',fullName:'sandeep rana'} as UserMdoModel,
       {userId:'admin',email:'admin@gmail.com'} as UserMdoModel
     ];
 
