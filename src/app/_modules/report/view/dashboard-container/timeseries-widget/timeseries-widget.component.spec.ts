@@ -49,7 +49,7 @@ describe('TimeseriesWidgetComponent', () => {
       scaleTo: 1000,
       stepSize: 100,
       dataSetSize: 100,
-      groupWith : 'REQUESTOR_DATE',widgetColorPalette:null}
+      groupWith : 'REQUESTOR_DATE',widgetColorPalette:null,distictWith:'REGION'}
 
     timeseriesData = {widgetId:123,widgetName:'test',widgetType:null,objectType:'1005',plantCode:'0',indexName:'do_workflow',desc:'',timeSeries:widgetTimeseries}
 
@@ -79,7 +79,7 @@ it('emitpanAndClickevent(), emit after date change',async(()=>{
     scaleTo: 1000,
     stepSize: 100,
     dataSetSize: 100,
-    groupWith : 'REQUESTOR_DATE',widgetColorPalette:null}
+    groupWith : 'REQUESTOR_DATE',widgetColorPalette:null,distictWith:'REGION'}
 
   timeseriesData = {widgetId:123,widgetName:'test',widgetType:null,objectType:'1005',plantCode:'0',indexName:'do_workflow',desc:'',timeSeries:widgetTimeseries}
 
@@ -110,7 +110,7 @@ it('getTimeSeriesMetadata(), get meatadat',async(()=>{
     scaleTo: 1000,
     stepSize: 100,
     dataSetSize: 100,
-    groupWith : 'REQUESTOR_DATE',widgetColorPalette:null}
+    groupWith : 'REQUESTOR_DATE',widgetColorPalette:null,distictWith:'REGION'}
 
   timeseriesData = {widgetId:123,widgetName:'test',widgetType:null,objectType:'1005',plantCode:'0',indexName:'do_workflow',desc:'',timeSeries:widgetTimeseries}
 
@@ -145,7 +145,7 @@ it('legendclick(), emit after date change',async(()=>{
     scaleTo: 1000,
     stepSize: 100,
     dataSetSize: 100,
-    groupWith : 'REQUESTOR_DATE',widgetColorPalette:null}
+    groupWith : 'REQUESTOR_DATE',widgetColorPalette:null,distictWith:'REGION'}
 
   timeseriesData = {widgetId:123,widgetName:'test',widgetType:null,objectType:'1005',plantCode:'0',indexName:'do_workflow',desc:'',timeSeries:widgetTimeseries}
 
@@ -192,7 +192,7 @@ it('transformDataSets(),  transformDataSets', async(()=>{
         doc_count: 10
       }
     ];
-    const res =  component.generatedDataBasedonMonth(mockData);
+    const res =  component.generatedDataBasedonMonth(mockData,false);
     expect(res.length).toEqual(12);
   }));
 });

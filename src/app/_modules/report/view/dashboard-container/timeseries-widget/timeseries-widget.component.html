@@ -14,7 +14,7 @@
     </mat-menu>
   </div>
   <mat-card-content>
-    <ng-template [ngIf]="!isGroupByChart">
+    <ng-template [ngIf]="showFilterOption">
       <div class="f-row datafilter">
 
         <button *ngFor="let dateType of dateFilters" mat-stroked-button [color]="dateType.isActive ? 'primary' : '' "

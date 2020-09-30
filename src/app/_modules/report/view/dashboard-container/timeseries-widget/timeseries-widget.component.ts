@@ -52,6 +52,10 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   isGroupByChart = false;
 
   /**
+   * Flag for make filter visiable ..
+   */
+  showFilterOption = false;
+  /**
    * Timeseries chart option config see chart.js for more details
    */
   timeSeriesOption: ChartOptions = {
@@ -429,12 +433,19 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     this.dataSet = [{data:[]}];
     this.widgetService.getWidgetData(String(widgetId),this.filterCriteria).subscribe(response=>{
       if(response !== null){
+        const metadata = this.widgetInf.getValue() ? this.widgetInf.getValue() : {} as TimeSeriesWidget;
         if(this.isGroupByChart) {
           this.transformForGroupBy(response);
-        } else {
+        } else if(metadata.timeSeries && (metadata.timeSeries.fieldId && metadata.timeSeries.groupWith && metadata.timeSeries.distictWith)) {
+          this.dataSet = this.transformDataForComparison(response, true);
+        } else if(metadata.timeSeries && ((!metadata.timeSeries.fieldId || metadata.timeSeries.fieldId === '' ) && metadata.timeSeries.groupWith && metadata.timeSeries.distictWith)) {
+          this.transformForGroupBy(response, true);
+        }
+        else {
           if(this.timeseriesData.timeSeries.chartType === 'BAR'){
            this.dataSet = this.transformDataForComparison(response);
           }else{
+            this.showFilterOption = true;
             this.dataSet = this.transformDataSets(response);
           }
           if(this.filterCriteria.length === 0){
@@ -505,7 +516,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   * @param res server res
   */
 
-  transformDataForComparison(res:any){
+  transformDataForComparison(res:any, forDistinct?: boolean){
     const finalOutput = new Array();
     const aggregation = res ?  res.aggregations['date_histogram#date'] : [];
     const arrKeys = ['data','id','label','fill','border'];
@@ -516,7 +527,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       const arrBuckets = singleBucket['sterms#term'].buckets;
       const arrcount = new Array();
       arrBuckets.forEach(innerBucket => {
-        const count = innerBucket.doc_count;
+        const count = forDistinct ? (innerBucket['cardinality#count'] ? innerBucket['cardinality#count'].value : 0) : innerBucket.doc_count;
         const label = innerBucket.key;
         arrcount.push(count);
         const chartLegend = { text: label, code: label, legendIndex: this.chartLegend.length };
@@ -556,7 +567,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
    * Transform for timeseries with grp by same fields ..
    * @param res server response
    */
-  transformForGroupBy(res: any) {
+  transformForGroupBy(res: any, forDistinct?: boolean) {
     const aggregation = res ?  res.aggregations['date_histogram#date'] : [];
     if(aggregation && aggregation.buckets) {
       const yearDoc = {};
@@ -579,7 +590,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         Object.keys(yearDoc).forEach(yr=>{
           if(yearDoc[yr]) {
             finaldata.push({
-              data:this.generatedDataBasedonMonth(yearDoc[yr]),
+              data:this.generatedDataBasedonMonth(yearDoc[yr], forDistinct),
               label: `${yr}`,
               fill: false
             });
@@ -597,12 +608,12 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
    * Transformer helper ..
    * @param data year data
    */
-  generatedDataBasedonMonth(data: any): any[] {
+  generatedDataBasedonMonth(data: any, forDistinct: boolean): any[] {
     const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     const finalData = [];
     months.forEach(mon=>{
       const hasdata = data.filter(fil=> fil.key_as_string.indexOf(mon) !==-1)[0];
-      finalData.push(hasdata ? hasdata.doc_count : 0)
+      finalData.push(hasdata ?( forDistinct ? (hasdata['cardinality#count'] ? hasdata['cardinality#count'].value : 0) : hasdata.doc_count ): 0)
     });
     return finalData;
   }

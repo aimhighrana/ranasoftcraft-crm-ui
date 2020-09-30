@@ -29,6 +29,7 @@ export class Widget {
     dateFilterCtrl?: DateFilterCtrl;
     isWorkflowdataSet: boolean;
     workflowPath: string[];
+    distictWith: string;
 }
 
 export interface DateFilterCtrl {
@@ -303,6 +304,7 @@ export interface WidgetTimeseries {
     dataSetSize: number;
     groupWith : string;
     widgetColorPalette : WidgetColorPalette;
+    distictWith: string;
 }
 export enum SeriesWith {
     millisecond = 'millisecond',

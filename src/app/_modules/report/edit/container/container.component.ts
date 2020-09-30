@@ -140,7 +140,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       startDate: [''],
       endDate: [''],
       isWorkflowdataSet: [false],
-      workflowPath:['']
+      workflowPath:[''],
+      distictWith:['']
     });
 
     this.chartPropCtrlGrp = this.formBuilder.group({
@@ -186,6 +187,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         changedWidget.imageName = latestVal.imageName;
         changedWidget.isWorkflowdataSet = latestVal.isWorkflowdataSet;
         changedWidget.workflowPath = latestVal.workflowPath;
+        changedWidget.distictWith = typeof latestVal.distictWith ==='string' ? latestVal.distictWith : latestVal.distictWith.fieldId;
 
         // hold selected field control
         if( typeof latestVal.field !== 'string'){
@@ -442,7 +444,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           dateSelectionType: data.dateFilterCtrl ? (data.dateFilterCtrl.dateSelectedFor ? data.dateFilterCtrl.dateSelectedFor : null) : null,
           startDate: startDate ? moment(startDate) : '',
           endDate: endDate ? moment(endDate) : '',
-          workflowPath: data.workflowPath ? data.workflowPath : []
+          workflowPath: data.workflowPath ? data.workflowPath : [],
+          distictWith: data.distictWith ? data.distictWith : ''
         });
 
         // set value to properties frm ctrl
@@ -756,5 +759,18 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   get isWorkflowRefresh(): boolean {
     return (this.selStyleWid ? this.selStyleWid.isWorkflowdataSet : false);
+  }
+
+  /**
+   * Update field on formGroup while selection change
+   * @param fieldData option of selection change
+   */
+  onDistictWithChange(fieldData: MatAutocompleteSelectedEvent) {
+    if(fieldData && fieldData.option.value) {
+      this.styleCtrlGrp.get('distictWith').setValue(fieldData.option.value.fldCtrl ? fieldData.option.value.fldCtrl : fieldData.option.value);
+    } else {
+      this.styleCtrlGrp.get('distictWith').setValue('');
+    }
+    console.log(fieldData);
   }
 }

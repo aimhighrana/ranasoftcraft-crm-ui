@@ -214,6 +214,14 @@
                                 </ng-template>
                             </div>
 
+                            <div class="f-col" *ngIf="selStyleWid && selStyleWid.widgetType === 'TIMESERIES'">
+                                <!--WorkflowType-->
+                                <pros-workflowfield-control [objectType]="selStyleWid && selStyleWid.objectType"
+                                        label="Distict With" [selectedFldId]="selStyleWid && selStyleWid.distictWith"
+                                        (selectionChange)='onDistictWithChange($event)'>
+                                </pros-workflowfield-control>
+                            </div>
+
                             <div class="f-col">
                                 <!-- FOR FILTERs WIDGET-->
                                 <ng-template [ngIf]="selStyleWid && selStyleWid.widgetType === 'FILTER' ">
