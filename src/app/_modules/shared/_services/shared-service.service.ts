@@ -29,6 +29,10 @@ export class SharedServiceService {
    * obervable to signal subscriber to call api for update notification
    */
   public updateNotifications: BehaviorSubject<any> = new BehaviorSubject(null);
+  /**
+   * behavior subject to contain settings info of the report-data-table widget
+   */
+  public reportDataTableSetting: BehaviorSubject<any> = new BehaviorSubject(null);
 
   constructor() { }
 
@@ -106,6 +110,20 @@ export class SharedServiceService {
    */
   public getNotificationCount() {
     return this.updateNotifications.next(true)
+  }
+
+  /**
+   * function to set data of report data-table settings
+   */
+  public setReportDataTableSetting(data:any){
+    return this.reportDataTableSetting.next(data);
+  }
+
+  /**
+   * function to get data of report data-table settings
+   */
+  public getReportDataTableSetting(): Observable<any>{
+    return this.reportDataTableSetting.asObservable();
   }
 
 }

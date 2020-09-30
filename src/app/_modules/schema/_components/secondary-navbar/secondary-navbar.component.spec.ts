@@ -7,15 +7,15 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { SchemaService } from '@services/home/schema.service';
 import { of } from 'rxjs';
-import { SchemaListDetails } from '@models/schema/schemalist';
 import { Router } from '@angular/router';
+import { SchemaListDetails } from '@models/schema/schemalist';
 
 describe('SecondaryNavbarComponent', () => {
   let component: SecondaryNavbarComponent;
   let fixture: ComponentFixture<SecondaryNavbarComponent>;
   let schemaServiceSpy: SchemaService;
   let router: Router;
-  // let schemaListServiceSpy: SchemalistService;
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ SecondaryNavbarComponent, SearchInputComponent ],
@@ -29,7 +29,7 @@ describe('SecondaryNavbarComponent', () => {
     fixture = TestBed.createComponent(SecondaryNavbarComponent);
     component = fixture.componentInstance;
     schemaServiceSpy = fixture.debugElement.injector.get(SchemaService);
-    // schemaListServiceSpy = fixture.debugElement.injector.get(SchemalistService);
+
     fixture.detectChanges();
   });
 
@@ -73,5 +73,16 @@ describe('SecondaryNavbarComponent', () => {
     component.toggleSideBar(hidePrimary);
 
     expect(component.arrowIcon).toEqual('keyboard_arrow_left');
+  })
+
+  it('getRoutedDescription(), should get route desc', async() => {
+    component.activatedPrimaryNav = 'welcome';
+    expect(component.getRoutedDescription).toEqual('Home');
+
+    component.activatedPrimaryNav = 'schema';
+    expect(component.getRoutedDescription).toEqual('Schema');
+
+    component.activatedPrimaryNav = 'report';
+    expect(component.getRoutedDescription).toEqual('Report');
   })
 });

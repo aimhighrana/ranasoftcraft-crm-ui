@@ -27,6 +27,7 @@ import { WidgetColorPaletteComponent } from './edit/widget-color-palette/widget-
 import { ReportListDownloadModelComponent } from './view/dashboard-container/reporting-list/report-list-download-model/report-list-download-model.component';
 import { WorkflowfieldControlComponent } from './edit/container/workflowfield-control/workflowfield-control.component';
 import { WorkflowDatasetComponent } from './edit/container/workflow-dataset/workflow-dataset.component';
+import { ReportDatatableColumnSettingsComponent } from './view/dashboard-container/reporting-list/report-datatable-column-settings/report-datatable-column-settings.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +54,8 @@ import { WorkflowDatasetComponent } from './edit/container/workflow-dataset/work
     WidgetColorPaletteComponent,
     ReportListDownloadModelComponent,
     WorkflowfieldControlComponent,
-    WorkflowDatasetComponent
+    WorkflowDatasetComponent,
+    ReportDatatableColumnSettingsComponent
   ],
   imports: [
     CommonModule,

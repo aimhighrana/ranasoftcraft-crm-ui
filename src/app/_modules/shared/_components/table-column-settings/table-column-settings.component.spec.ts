@@ -1,46 +1,137 @@
 // import { CdkDragDrop } from '@angular/cdk/drag-drop';
-// import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-// import { TableColumnSettingsComponent } from './table-column-settings.component';
-// import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
-// import { MetadataModel } from 'src/app/_models/schema/schemadetailstable';
-// import { RouterTestingModule } from '@angular/router/testing';
-// import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
-// import { of } from 'rxjs';
-// import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { TableColumnSettingsComponent } from './table-column-settings.component';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { MetadataModel } from 'src/app/_models/schema/schemadetailstable';
+import { RouterTestingModule } from '@angular/router/testing';
+import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
+import { of } from 'rxjs';
+import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
+import { Router } from '@angular/router';
 
-// describe('TableColumnSettingsComponent', () => {
-//   let component: TableColumnSettingsComponent;
-//   let fixture: ComponentFixture<TableColumnSettingsComponent>;
-//   let sharedServiceSpy: SharedServiceService;
+describe('TableColumnSettingsComponent', () => {
+  let component: TableColumnSettingsComponent;
+  let fixture: ComponentFixture<TableColumnSettingsComponent>;
+  let sharedServiceSpy: SharedServiceService;
+  let router: Router;
 
-//   beforeEach(async(() => {
-//     TestBed.configureTestingModule({
-//       declarations: [TableColumnSettingsComponent],
-//       imports: [AppMaterialModuleForSpec, RouterTestingModule],
-//       providers: [SchemaDetailsService, SharedServiceService]
-//     })
-//       .compileComponents();
-//   }));
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [TableColumnSettingsComponent],
+      imports: [AppMaterialModuleForSpec, RouterTestingModule],
+      providers: [SchemaDetailsService, SharedServiceService]
+    })
+      .compileComponents();
+      router = TestBed.inject(Router);
+  }));
 
-//   beforeEach(() => {
-//     fixture = TestBed.createComponent(TableColumnSettingsComponent);
-//     component = fixture.componentInstance;
-//     const schemaDetailsServiceSpy = fixture.debugElement.injector.get(SchemaDetailsService);
-//     schemaDetailsServiceSpy.getCategoryChartData
-//     sharedServiceSpy = fixture.debugElement.injector.get(SharedServiceService);
-//   });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(TableColumnSettingsComponent);
+    component = fixture.componentInstance;
+    // const schemaDetailsServiceSpy = fixture.debugElement.injector.get(SchemaDetailsService);
+    // schemaDetailsServiceSpy.getCategoryChartData
+    sharedServiceSpy = fixture.debugElement.injector.get(SharedServiceService);
+  });
 
-//   it('should create', () => {
-//     expect(component).toBeTruthy();
-//   });
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 
-//   it('ngonit creation', () => {
-//     spyOn(sharedServiceSpy, 'getChooseColumnData').and.returnValue(of({}));
-//     component.ngOnInit();
-//     expect(sharedServiceSpy.getChooseColumnData).toHaveBeenCalledTimes(1);
+  it('ngonit creation', () => {
+    spyOn(sharedServiceSpy, 'getChooseColumnData').and.returnValue(of({}));
+    component.ngOnInit();
+    expect(sharedServiceSpy.getChooseColumnData).toHaveBeenCalledTimes(1);
 
-//   });
+  });
 
+  it('manageStateOfCheckbox(), should manage the state of checkboxes', async() => {
+    component.header = [
+      {
+        fieldId : 'NDCTYPE',
+        fieldDescri: 'NDC TYPE MATERIAL'
+      } as MetadataModel
+    ]
+
+    component.data = {
+        schemaId: 123365,
+        variantId: 1236544,
+        fields: [],
+        selectedFields:['NDCTYPE']
+    }
+
+    component.manageStateOfCheckBox();
+    expect(component.allIndeterminate).toEqual(false);
+
+    component.header = [
+      {
+        fieldId : 'NDCTYPE',
+        fieldDescri: 'NDC TYPE MATERIAL'
+      } as MetadataModel
+    ]
+
+    component.data = {
+        schemaId: 123365,
+        variantId: 1236544,
+        fields: [],
+        selectedFields:['NDCTYPE', 'NDCTYPEMATL']
+    }
+
+
+    component.manageStateOfCheckBox();
+    expect(component.allIndeterminate).toEqual(true);
+  })
+
+
+  it('isChecked(), should check state of select/unselect', async() => {
+      component.data = {
+        schemaId: 123365,
+        variantId: 1236544,
+        fields: [],
+        selectedFields:['NDCTYPE', 'NDCTYPEMATL']
+      }
+      const fld = {
+          fieldId: 'NDCTYPE'
+      } as MetadataModel
+
+      const res = component.isChecked(fld);
+      expect(res).toEqual(true)
+
+      component.data = {
+        schemaId: 123365,
+        variantId: 1236544,
+        fields: [],
+        selectedFields:['NDCTYPE', 'NDCTYPEMATL']
+      }
+      const fld1 = {
+          fieldId: 'TYPEMATL'
+      } as MetadataModel
+
+      const res1 = component.isChecked(fld1);
+      expect(res1).toEqual(false)
+  })
+
+  it('selectAll(), should select all', async() => {
+    component.data = {
+        schemaId: 123365,
+        variantId: 1236544,
+        fields: [],
+        selectedFields:[]
+      }
+    component.allChecked = true;
+    component.selectAll();
+    expect(component.allIndeterminate).toEqual(false);
+
+    component.allChecked = false;
+    component.selectAll();
+    expect(component.allIndeterminate).toEqual(false);
+  })
+
+
+  it('close(), should close the side sheet', () => {
+      spyOn(router, 'navigate');
+      component.close();
+      expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: null }}])
+  })
 //   it('headerDetails(), should return the header details', async(() => {
 //     // Mock data 1
 //     const data = {
@@ -367,80 +458,80 @@
 //     expect(component.hierarchyChecked).toEqual(false);
 //   });
 
-//   // it('hierarchSelect(), return all hierarchy fields is checked or not', () => {
-//   //   const data = {
-//   //     selectedFields: ['CON_DOCDT']
-//   //   }
-//   //   component.data = data;
-//   //   component.hierarchyChecked = true;
-//   //   component.hierarchyArray = ['CON_DOCDT', 'INF_NO'];
+  // it('hierarchSelect(), return all hierarchy fields is checked or not', () => {
+  //   const data = {
+  //     selectedFields: ['CON_DOCDT']
+  //   }
+  //   component.data = data;
+  //   component.hierarchyChecked = true;
+  //   component.hierarchyArray = ['CON_DOCDT', 'INF_NO'];
 
-//   //   component.hierarchSelect();
-//   //   expect(component.hierarchyArray.length).toEqual(2);
+  //   component.hierarchSelect();
+  //   expect(component.hierarchyArray.length).toEqual(2);
 
-//   //   component.hierarchyChecked = false;
-//   //   component.hierarchSelect();
-//   //   expect(component.allIndeterminate).toEqual(true);
-//   // });
+  //   component.hierarchyChecked = false;
+  //   component.hierarchSelect();
+  //   expect(component.allIndeterminate).toEqual(true);
+  // });
 
-//   // it('gridSelect(), return all grid fields is checked or not', () => {
-//   //   component.gridArray = ['ADD_WEIGHT', 'ADD_HEIGHT'];
-//   //   component.gridChecked = true;
-//   //   const data = {
-//   //     selectedFields: ['ADD_WEIGHT']
-//   //   }
-//   //   component.data = data;
+  // it('gridSelect(), return all grid fields is checked or not', () => {
+  //   component.gridArray = ['ADD_WEIGHT', 'ADD_HEIGHT'];
+  //   component.gridChecked = true;
+  //   const data = {
+  //     selectedFields: ['ADD_WEIGHT']
+  //   }
+  //   component.data = data;
 
-//   //   component.gridSelect();
-//   //   expect(component.gridArray.length).toEqual(2);
+  //   component.gridSelect();
+  //   expect(component.gridArray.length).toEqual(2);
 
-//   //   component.gridChecked = false;
-//   //   component.gridSelect();
-//   //   expect(component.allIndeterminate).toEqual(true);
-//   // });
+  //   component.gridChecked = false;
+  //   component.gridSelect();
+  //   expect(component.allIndeterminate).toEqual(true);
+  // });
 
-//   // it('mangeChooseColumn(), should select and unselect the field', async(() => {
-//   //   const event = {
-//   //     option: {
-//   //       _value: { fieldId: 'NDC_TYPE' }
-//   //     },
-//   //     source: null
-//   //   }
-//   //   const data = {
-//   //     selectedFields: ['INF_NO']
-//   //   }
-//   //   component.data = data;
-//   //   component.mangeChooseColumn(event);
-//   //   expect(component.data.selectedFields.length).toEqual(2);
+  // it('mangeChooseColumn(), should select and unselect the field', async(() => {
+  //   const event = {
+  //     option: {
+  //       _value: { fieldId: 'NDC_TYPE' }
+  //     },
+  //     source: null
+  //   }
+  //   const data = {
+  //     selectedFields: ['INF_NO']
+  //   }
+  //   component.data = data;
+  //   component.mangeChooseColumn(event);
+  //   expect(component.data.selectedFields.length).toEqual(2);
 
-//   //   const event1 = {
-//   //     option: {
-//   //       _value: { fieldId: 'INF_NO' }
-//   //     },
-//   //     source: null
-//   //   }
-//   //   component.mangeChooseColumn(event1);
-//   //   expect(component.data.selectedFields.length).toEqual(1);
-//   // }));
+  //   const event1 = {
+  //     option: {
+  //       _value: { fieldId: 'INF_NO' }
+  //     },
+  //     source: null
+  //   }
+  //   component.mangeChooseColumn(event1);
+  //   expect(component.data.selectedFields.length).toEqual(1);
+  // }));
 
-//   // it('isSelected(), check field is selected or not', () => {
-//   //   const data = {
-//   //     selectedFields: ['INF_NO']
-//   //   }
-//   //   component.data = data;
+  // it('isSelected(), check field is selected or not', () => {
+  //   const data = {
+  //     selectedFields: ['INF_NO']
+  //   }
+  //   component.data = data;
 
-//   //   expect(component.isSelected('INF_NO')).toEqual(true);
+  //   expect(component.isSelected('INF_NO')).toEqual(true);
 
-//   //   expect(component.isSelected('NDC_TYPE')).toEqual(false);
+  //   expect(component.isSelected('NDC_TYPE')).toEqual(false);
 
-//   //   const data1 = {};
-//   //   component.data = data1;
+  //   const data1 = {};
+  //   component.data = data1;
 
-//   //   expect(component.isSelected('NDC_TYPE')).toEqual(false);
-//   // });
+  //   expect(component.isSelected('NDC_TYPE')).toEqual(false);
+  // });
 
 //   it('close()', () => {
 //     component.close();
 //     expect(component.close).toBeTruthy();
 //   });
-// });
+});

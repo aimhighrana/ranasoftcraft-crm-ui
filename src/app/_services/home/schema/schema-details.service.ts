@@ -165,4 +165,8 @@ export class SchemaDetailsService {
   public saveNewSchemaDetails(objectId: string, runNow: boolean, variantId: string, fileSno: string, requestObject: {}) {
     return this.http.post(this.endpointService.saveNewSchemaUrl(objectId, runNow, variantId, fileSno), requestObject)
   }
+
+  public createUpdateReportDataTable(widgetId: string,request: object[]): Observable<boolean> {
+    return this.http.post<boolean>(this.endpointService.createUpdateReportDataTable(widgetId), request)
+  }
 }

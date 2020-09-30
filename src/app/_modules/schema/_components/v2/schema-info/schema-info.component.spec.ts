@@ -7,6 +7,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { FilterValuesComponent } from '@modules/shared/_components/filter-values/filter-values.component';
 import { AddFilterMenuComponent } from '@modules/shared/_components/add-filter-menu/add-filter-menu.component';
 import { Router } from '@angular/router';
+import { CoreSchemaBrInfo } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { SchemaStaticThresholdRes } from '@models/schema/schemalist';
 
 describe('SchemaInfoComponent', () => {
   let component: SchemaInfoComponent;
@@ -84,5 +86,29 @@ describe('SchemaInfoComponent', () => {
     tabLabel = 'execution-logs';
     component.updateFragment(tabLabel);
     expect(component.selectedIndex).toEqual(2)
+  })
+
+  it('editBr(), should open side sheet of business rules', async() => {
+    component.moduleId = '1005';
+    component.schemaId = '2563145';
+
+    const br = {
+      brIdStr: '2356'
+    } as CoreSchemaBrInfo
+    spyOn(router, 'navigate');
+    component.editBr(br);
+
+    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: { sb: `sb/schema/business-rule/${component.moduleId}/${component.schemaId}/${br.brIdStr}` } }])
+  })
+
+  it('getPercentageStatics(), should return statics', async() => {
+    const statics = {
+      threshold: 0,
+      errorCnt: 0,
+      totalCnt: 0,
+      successCnt: 0
+    } as SchemaStaticThresholdRes
+    component.getPercentageStatics(statics);
+    expect(component.thresholdValue).toEqual(0);
   })
 });

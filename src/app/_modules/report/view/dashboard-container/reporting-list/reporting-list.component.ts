@@ -11,31 +11,33 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ReportListDownloadModelComponent } from './report-list-download-model/report-list-download-model.component';
 import { EndpointService } from '@services/endpoint.service';
+import { Router } from '@angular/router';
+import { SharedServiceService } from '@shared/_services/shared-service.service';
 
 @Component({
   selector: 'pros-reporting-list',
   templateUrl: './reporting-list.component.html',
   styleUrls: ['./reporting-list.component.scss']
 })
-export class ReportingListComponent extends GenericWidgetComponent implements OnInit,OnChanges{
+export class ReportingListComponent extends GenericWidgetComponent implements OnInit, OnChanges {
 
-  resultsLength : any;
+  resultsLength: any;
   separatorKeysCodes: number[] = [ENTER, COMMA];
   visible = true;
   selectable = true;
   removable = true;
   addOnBlur = true;
-  dataSource : MatTableDataSource<any> = [] as any;
+  dataSource: MatTableDataSource<any> = [] as any;
   pageSize = 10;
-  pageIndex=0;
+  pageIndex = 0;
   sortingField = '';
   sortingDir = '';
-  listData :any[]=new Array();
+  listData: any[] = new Array();
 
   /**
    * Columns that need to display
    */
-  displayedColumnsId :string[]= ['action','objectNumber'];
+  displayedColumnsId: string[] = ['action', 'objectNumber'];
   /**
    * Store fieldid & description as key | value
    */
@@ -43,55 +45,84 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
 
   activeSorts: any = null;
 
-  headerDesc='';
+  headerDesc = '';
   objectType = '';
+  isWorkflowdataSet: boolean;
+
+  /**
+   * to store data table column meta data
+   * when to use.. we will use it when we will open column settings side-sheet to show pre selected fields..
+   */
+  tableColumnMetaData: ReportingWidget[];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort, {static: true}) sort: MatSort;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
 
-  reportingListWidget : BehaviorSubject<ReportingWidget[]> = new BehaviorSubject<ReportingWidget[]>(null);
+  reportingListWidget: BehaviorSubject<ReportingWidget[]> = new BehaviorSubject<ReportingWidget[]>(null);
 
-  constructor(public widgetService : WidgetService,
+  constructor(public widgetService: WidgetService,
     @Inject(LOCALE_ID) public locale: string,
     public matDialog: MatDialog,
     private endpointService: EndpointService,
-    private snackbar: MatSnackBar) {
+    private snackbar: MatSnackBar,
+    private router: Router,
+    private sharedService: SharedServiceService) {
     super(matDialog);
   }
 
-  ngOnChanges():void{
-    this.reportingListWidget.subscribe(res=>{
-      if(res) {
-        this.getListdata(this.pageSize,this.pageIndex,this.widgetId,this.filterCriteria, this.activeSorts);
+  ngOnChanges(): void {
+    this.reportingListWidget.subscribe(res => {
+      if (res) {
+        this.getListdata(this.pageSize, this.pageIndex, this.widgetId, this.filterCriteria, this.activeSorts);
       }
     });
   }
 
+  /**
+   * ANGULAR HOOK..
+   */
   ngOnInit(): void {
-    this.resultsLength =0;
+    this.resultsLength = 0;
     this.dataSource.paginator = this.paginator;
     // this.dataSource.sort = this.sort;
+
     this.getHeaderMetaData();
-    this.getListTableMetadata();
+    this.sharedService.getReportDataTableSetting().subscribe(response => {
+      if(response===null || response === undefined){
+        this.getListTableMetadata();
+      }
+      else if(response && response.isRefresh===true){
+          this.getListTableMetadata();
+        }
+    })
   }
 
-  public getHeaderMetaData():void{
-    this.widgetService.getHeaderMetaData(this.widgetId).subscribe(returnData=>{
+  /**
+   * function to get header meta data of widget
+   */
+  public getHeaderMetaData(): void {
+    this.widgetService.getHeaderMetaData(this.widgetId).subscribe(returnData => {
       this.headerDesc = returnData.widgetName;
       this.objectType = returnData.objectType;
+      this.isWorkflowdataSet = returnData.isWorkflowdataSet;
     });
   }
 
-
-  public getListTableMetadata():void{
-    this.widgetService.getListTableMetadata(this.widgetId).subscribe(returnData=>{
-      if(returnData !== undefined && Object.keys(returnData).length>0){
+  /**
+   * function to get meta data of the columns for data table
+   */
+  public getListTableMetadata(): void {
+    this.displayedColumnsId = ['action', 'objectNumber'];
+        // this.columnDescs = {};
+    this.widgetService.getListTableMetadata(this.widgetId).subscribe(returnData => {
+      if (returnData !== undefined && Object.keys(returnData).length > 0) {
         this.columnDescs.objectNumber = 'Object Number';
-         returnData.forEach(singlerow=>{
-          this.displayedColumnsId.push(singlerow.fields);
-          this.columnDescs[singlerow.fields] = singlerow.fieldDesc;
-       });
-       this.reportingListWidget.next(returnData);
+        returnData.forEach(singlerow => {
+            this.displayedColumnsId.push(singlerow.fields);
+            this.columnDescs[singlerow.fields] = singlerow.fieldDesc;
+        });
+        this.reportingListWidget.next(returnData);
+        this.tableColumnMetaData = returnData;
       }
     });
   }
@@ -104,7 +135,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
         returndata = returndata.data;
       }
       returndata.hits.hits.forEach(element => {
-        const source =element._source;
+        const source = element._source;
 
         const objectNumber = source.staticFields && source.staticFields.OBJECTID && source.staticFields.OBJECTID.vc?source.staticFields.OBJECTID.vc[0].c:element._id;
         const obj = {objectNumber};
@@ -185,30 +216,30 @@ downloadCSV():void{
   }
 }
 
-/**
- * Use to get sorted column and
- * call http with sorted columns
- * @param sort the event emitted by CDK table
- */
-sortTable(sort: Sort) {
-  if(sort) {
-    let fld = sort.active;
-    const dir = sort.direction as string;
-    this.activeSorts  = {} as any;
-    fld = fld === 'objectNumber' ? 'id' : fld;
-    this.activeSorts[fld] = dir;
-    if(dir === '') {
-      this.activeSorts = null;
+  /**
+   * Use to get sorted column and
+   * call http with sorted columns
+   * @param sort the event emitted by CDK table
+   */
+  sortTable(sort: Sort) {
+    if (sort) {
+      let fld = sort.active;
+      const dir = sort.direction as string;
+      this.activeSorts = {} as any;
+      fld = fld === 'objectNumber' ? 'id' : fld;
+      this.activeSorts[fld] = dir;
+      if (dir === '') {
+        this.activeSorts = null;
+      }
+      this.getListdata(this.pageSize, this.pageIndex * this.pageSize, this.widgetId, this.filterCriteria, this.activeSorts);
     }
-    this.getListdata(this.pageSize,this.pageIndex * this.pageSize,this.widgetId,this.filterCriteria,this.activeSorts);
   }
-}
 
   /**
    * Download data , call service with filter criteria and page from ...
    */
   downloadData(frm: number) {
-    frm = frm*5000;
+    frm = frm * 5000;
     const downloadLink = document.createElement('a');
     downloadLink.href = `${this.endpointService.downloadWidgetDataUrl(String(this.widgetId))}?from=${frm}&conditionList=${JSON.stringify(this.filterCriteria)}`;
     downloadLink.setAttribute('target', '_blank');
@@ -227,4 +258,18 @@ sortTable(sort: Sort) {
     return hasFld ? (hasFld.fldMetaData ?((hasFld.fldMetaData.dataType ==='DATS' || hasFld.fldMetaData.dataType ==='DTMS') ? true : false): false): false;
   }
 
+  /**
+   * function to open column setting side-sheet
+   */
+  openTableColumnSideSheet(){
+    const data = {
+      objectType: this.objectType,
+      selectedColumns: this.tableColumnMetaData.map(columnMetaData => columnMetaData.fldMetaData),
+      isWorkflowdataSet: this.isWorkflowdataSet,
+      widgetId: this.widgetId,
+      isRefresh: false
+    }
+    this.sharedService.setReportDataTableSetting(data);
+    this.router.navigate(['', {outlets: {sb: `sb/report/column-settings/${this.widgetId}`}}])
+  }
 }
