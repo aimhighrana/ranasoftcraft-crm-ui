@@ -5,7 +5,7 @@ import { PageNotFoundComponent } from '../shared/_components/page-not-found/page
 import { ContainerComponent } from './edit/container/container.component';
 import { ReportCollaboratorComponent } from './permissions/report-collaborator/report-collaborator.component';
 import { SummaryLayoutComponent } from './view/summary-layout/summary-layout.component';
-
+import { ReportDatatableColumnSettingsComponent } from './view/dashboard-container/reporting-list/report-datatable-column-settings/report-datatable-column-settings.component';
 
 const routes: Routes = [
   { path: '', component: DashboardComponent },
@@ -13,6 +13,8 @@ const routes: Routes = [
   { path: 'dashboard-builder/:id', component: ContainerComponent },
   { path: 'collaborators/:reportId', component: ReportCollaboratorComponent },
   { path: 'summary/:widgetId/:objectNumber', component: SummaryLayoutComponent },
+  // { path: 'table-column-setting/:objectNumber', component: TableColumnSettingComponent },
+  { path: 'column-settings/:widgetId', component: ReportDatatableColumnSettingsComponent },
   { path: '**', component: PageNotFoundComponent }
 ];
 

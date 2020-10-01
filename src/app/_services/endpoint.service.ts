@@ -525,6 +525,10 @@ export class EndpointService {
     return this.apiUrl + '/schema/get-wf-module-data'
   }
 
+  /**
+   * function to return API URL to get workflow fields.
+   * if isWorkFlowDataSet is true then it will be in use..
+   */
   public getWorkFlowFieldsUrl(): string {
     return this.apiUrl + `/schema/get-wffields`;
   }
@@ -568,6 +572,13 @@ export class EndpointService {
 
   public getNotificationsCount(senderUid): string {
     return `${this.apiUrl}/notification/getNotificationCount/${senderUid}`
+  }
+
+  /**
+   * endpoint to update data table column setting
+   */
+  public createUpdateReportDataTable(widgetId: string): string {
+    return this.apiUrl + `/report/table/view/create-update/${widgetId}`;
   }
 }
 

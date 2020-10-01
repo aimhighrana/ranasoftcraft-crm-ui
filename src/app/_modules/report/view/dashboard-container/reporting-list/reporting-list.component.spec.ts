@@ -9,6 +9,7 @@ import { WidgetService } from '@services/widgets/widget.service';
 import { WidgetHeader, ReportingWidget } from '@modules/report/_models/widget';
 import { of } from 'rxjs';
 import { Sort } from '@angular/material/sort';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('ReportingListComponent', () => {
   let component: ReportingListComponent;
@@ -17,7 +18,7 @@ describe('ReportingListComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ReportingListComponent ],
-      imports:[AppMaterialModuleForSpec,HttpClientTestingModule,MatMenuModule],
+      imports:[AppMaterialModuleForSpec,HttpClientTestingModule,MatMenuModule, RouterTestingModule],
       providers:[ WidgetService ]
     })
     .compileComponents();
