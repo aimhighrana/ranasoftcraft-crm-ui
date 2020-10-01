@@ -162,7 +162,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       seriesFormat:[''],
       blankValueAlias:[''],
       timeseriesStartDate:[TimeseriesStartDate.D7],
-      enabledBarPerc :[false],
+      isEnabledBarPerc :[false],
+      bucketFilter: [null]
     });
 
     this.defaultFilterCtrlGrp = this.formBuilder.group({
@@ -374,7 +375,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           chartType:ChartType.BAR, orientation:Orientation.VERTICAL, isEnableDatalabels:false,
           datalabelsPosition:DatalabelsPosition.center, isEnableLegend:false, legendPosition:LegendPosition.top,
           xAxisLabel:'', yAxisLabel:'', orderWith: OrderWith.DESC, scaleFrom: null, scaleTo: null, stepSize: null,
-          dataSetSize: null,seriesWith:SeriesWith.day,seriesFormat:null,blankValueAlias:null,timeseriesStartDate:TimeseriesStartDate.D7,enabledBarPerc:false
+          dataSetSize: null,seriesWith:SeriesWith.day,seriesFormat:null,blankValueAlias:null,timeseriesStartDate:TimeseriesStartDate.D7,isEnabledBarPerc:false,
+          bucketFilter:null
         };
       }
       this.preapreNewWidgetPosition(dropableWidget);
@@ -455,7 +457,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           this.chartPropCtrlGrp.setValue({ chartType:ChartType.BAR, orientation:Orientation.VERTICAL, isEnableDatalabels:false,
             datalabelsPosition:DatalabelsPosition.center, isEnableLegend:false, legendPosition:LegendPosition.top, xAxisLabel:'', yAxisLabel:'',
             orderWith: OrderWith.DESC, scaleFrom:'',scaleTo:'', stepSize:'', dataSetSize:'',seriesWith:SeriesWith.day,seriesFormat:'',blankValueAlias:'',timeseriesStartDate:TimeseriesStartDate.D7,
-            enabledBarPerc :false
+            isEnabledBarPerc :false,bucketFilter:null
           });
         }
         // add default filters

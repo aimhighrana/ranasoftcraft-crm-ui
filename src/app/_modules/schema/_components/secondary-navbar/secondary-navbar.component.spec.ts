@@ -84,5 +84,22 @@ describe('SecondaryNavbarComponent', () => {
 
     component.activatedPrimaryNav = 'report';
     expect(component.getRoutedDescription).toEqual('Report');
-  })
+  });
+
+
+  it('searchSchema(), global search  ', async(()=>{
+    component.activatedPrimaryNav = 'report';
+    component.reportList = [{
+      permission:null,
+      reportId:'25745218',
+      reportName:'Test',
+      widgets:null
+    }];
+
+    component.searchSchema('t');
+    component.reportOb.subscribe(res=>{
+      expect(res.length).toEqual(1);
+    });
+  }));
+
 });

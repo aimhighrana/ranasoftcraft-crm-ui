@@ -10,6 +10,7 @@ import * as zoomPlugin from 'chartjs-plugin-zoom';
 import { BlockType } from '@modules/admin/_components/module/business-rules/user-defined-rule/udr-cdktree.service';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import   ChartDataLables from 'chartjs-plugin-datalabels';
 
 const btnArray:ButtonArr[] = [
   {id:1,value:7,isActive:false},
@@ -440,6 +441,8 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
           this.dataSet = this.transformDataForComparison(response, true);
         } else if(metadata.timeSeries && ((!metadata.timeSeries.fieldId || metadata.timeSeries.fieldId === '' ) && metadata.timeSeries.groupWith && metadata.timeSeries.distictWith)) {
           this.transformForGroupBy(response, true);
+        } else if(metadata.timeSeries.fieldId === 'TIME_TAKEN' || metadata.timeSeries.bucketFilter) {
+          this.tarnsformForShowInPercentage(response, metadata.timeSeries.showInPercentage);
         }
         else {
           if(this.timeseriesData.timeSeries.chartType === 'BAR'){
@@ -604,6 +607,87 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       this.timeSeriesOption.legend = {display: true,position:'bottom'};
     }
   }
+
+
+  tarnsformForShowInPercentage(res: any, showInPercentage: boolean) {
+    const aggregation = res ?  res.aggregations['date_histogram#date'] : [];
+    if(aggregation && aggregation.buckets) {
+      const yearDoc = {};
+      aggregation.buckets.forEach(fil=>{
+          let date = fil.key_as_string ? fil.key_as_string : [];
+          if(date) {
+            date = date.split('-');
+            if(yearDoc[date[0]]) {
+              yearDoc[date[0]].push(fil);
+            } else {
+              yearDoc[date[0]] = [fil];
+            }
+          }
+      });
+      this.dataSetlabel = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const finaldata = [];
+      if(yearDoc) {
+        Object.keys(yearDoc).forEach(yr=>{
+          if(yearDoc[yr]) {
+            finaldata.push({
+              data:this.bucketModify(yearDoc[yr], showInPercentage),
+              label: `${yr}`,
+              fill: false
+            });
+          }
+        });
+      }
+      this.dataSet = finaldata;
+      console.log(finaldata);
+
+      this.timeSeriesOption.scales = {xAxes: [{}],yAxes: [{}]};
+      this.timeSeriesOption.legend = {display: true,position:'bottom'};
+
+      const metadata = this.widgetInf.getValue() ? this.widgetInf.getValue() : {} as TimeSeriesWidget;
+      if(metadata.timeSeries && metadata.timeSeries.isEnableDatalabels) {
+        this.timeSeriesOption.plugins = {
+          ChartDataLables,
+          datalabels: {
+            align: metadata.timeSeries.datalabelsPosition ? metadata.timeSeries.datalabelsPosition : 'end',
+            anchor: metadata.timeSeries.datalabelsPosition ? metadata.timeSeries.datalabelsPosition : 'end',
+            display:'auto'
+          }
+        }
+      }
+
+    }
+  }
+
+  /**
+   * Transformer helper ..
+   * @param data year data
+   */
+  bucketModify(data: any, showInPercentage: boolean): any[] {
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const finalData = [];
+    months.forEach(mon=>{
+      const hasdata = data.filter(fil=> fil.key_as_string.indexOf(mon) !==-1)[0];
+      if(hasdata) {
+        const totalInMonth = hasdata.doc_count ? hasdata.doc_count : 0;
+        const inFilterBucket = hasdata['sterms#term'] ? hasdata['sterms#term'].buckets  : [];
+        const bucket =  inFilterBucket.filter(fil=> fil.key === 'true')[0];
+        if(bucket) {
+          let val = bucket.doc_count ? bucket.doc_count : 0;
+          if(val>0 && showInPercentage) {
+            const per = (val / totalInMonth );
+            val = Math.round((per + Number.EPSILON) * 100 * 100) / 100;
+          }
+          finalData.push(val);
+        }
+      } else {
+        finalData.push(0);
+      }
+
+    });
+    return finalData;
+  }
+
+
   /**
    * Transformer helper ..
    * @param data year data

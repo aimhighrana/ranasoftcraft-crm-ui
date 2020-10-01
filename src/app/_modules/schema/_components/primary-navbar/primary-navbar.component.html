@@ -19,8 +19,8 @@
         </button>
         <div class="col-space">Create new...</div>
         <mat-menu #navigation="matMenu" direction="right">
-            <pros-navigation-dropdown (selectedModule)="selectedModule($event)">
-            </pros-navigation-dropdown>
+            <!-- <pros-navigation-dropdown (selectedModule)="selectedModule($event)">
+            </pros-navigation-dropdown> -->
         </mat-menu>
     </div>
 
@@ -32,10 +32,10 @@
             <mat-icon fontSet="mdo-icons">form-address</mat-icon>
             <div class="col-space">Home</div>
         </mat-list-item>
-        <mat-list-item routerLink="/home/schema" [routerLinkActive]="'selected'" (click)="sendToParent('schema')">
+        <!-- <mat-list-item routerLink="/home/schema" [routerLinkActive]="'selected'" (click)="sendToParent('schema')">
             <mat-icon fontSet="mdo-icons">board</mat-icon>
             <div class="col-space">Schema</div>
-        </mat-list-item>
+        </mat-list-item> -->
         <mat-list-item routerLink="/home/report" [routerLinkActive]="'selected'" (click)="sendToParent('report')">
             <mat-icon fontSet="mdo-icons">chart-bar</mat-icon>
             <div class="col-space">Reports</div>
@@ -44,13 +44,13 @@
 
     <div class="row-spacer"></div>
 
-    <div class="f-row primary-admin" (click)="openSystemTray()">
+    <!-- <div class="f-row primary-admin" (click)="openSystemTray()">
         <div class="admin-badge">
             <mat-icon>inbox</mat-icon>{{notificationsCount}}
             <mat-icon class="badge-icon">access_time</mat-icon>
         </div>
         <div class="col-space">System tray</div>
-    </div>
+    </div> -->
     <mat-divider></mat-divider>
     <div class="row-spacer"></div>
     <mat-card-header>

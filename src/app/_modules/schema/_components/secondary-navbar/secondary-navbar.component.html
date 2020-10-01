@@ -10,7 +10,7 @@
     </div>
     <div class="row-spacer"></div>
 
-    <pros-search-input [placeholder]="'Search Schema'" (value)=(searchSchema($event))></pros-search-input>
+    <pros-search-input [placeholder]="activatedPrimaryNav ==='report' ? 'Search report' : 'Search Schema'" (value)=(searchSchema($event))></pros-search-input>
 
     <div class="row-spacer"></div>
 
@@ -56,7 +56,7 @@
 
         </ng-container>
       </mat-accordion>
-      <mat-accordion *ngIf="activatedPrimaryNav === 'schema'">
+      <!-- <mat-accordion *ngIf="activatedPrimaryNav === 'schema'">
         <div class="section-header">
           Data intelligence
         </div>
@@ -81,10 +81,10 @@
             </mat-nav-list>
           </mat-expansion-panel>
         </ng-container>
-      </mat-accordion>
+      </mat-accordion> -->
 
       <mat-accordion *ngIf="activatedPrimaryNav === 'report'">
-        <mat-nav-list *ngFor="let report of reportList">
+        <mat-nav-list *ngFor="let report of reportOb | async">
           <mat-list-item [disabled]="report.permission && !report.permission.isViewable"
             [routerLink]="['report/dashboard', report.reportId]" [routerLinkActive]="'selected'">
             <div class="heading-title">{{report.reportName ? report.reportName : 'Untitled'}}</div>

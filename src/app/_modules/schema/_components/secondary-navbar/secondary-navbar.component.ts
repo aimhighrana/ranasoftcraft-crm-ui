@@ -6,7 +6,8 @@ import { Location } from '@angular/common';
 import { SchemaService } from '@services/home/schema.service';
 import { ReportService } from '@modules/report/_service/report.service';
 import { ReportList } from '@modules/report/report-list/report-list.component';
-import { SharedServiceService, SecondaynavType } from '@modules/shared/_services/shared-service.service';
+import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'pros-secondary-navbar',
@@ -29,6 +30,11 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
    * module search result array from schema navigation
    */
   searchModuleResults: SchemaListModuleList[] = [];
+
+  /**
+   * report list observal ..
+   */
+  reportOb: Observable<ReportList[]> = of([]);
 
   @Input()
   activatedPrimaryNav: string;
@@ -54,14 +60,14 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes && changes.activatedPrimaryNav && changes.activatedPrimaryNav.previousValue !== changes.activatedPrimaryNav.currentValue) {
-
+      this.activatedPrimaryNav = changes.activatedPrimaryNav.currentValue;
       switch (changes.activatedPrimaryNav.currentValue) {
         case 'welcome':
-          this.getDataIntilligence();
+          // this.getDataIntilligence();
           break;
 
         case 'schema':
-          this.getSchemaList();
+          // this.getSchemaList();
           break;
 
         case 'report':
@@ -92,25 +98,25 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
       }
     });
 
-    this.sharedService.secondaryBarData.subscribe((res) => {
-      this.getSchemaList();
-    })
-    this.sharedService.isSecondaryNavRefresh().subscribe(res => {
-      switch (res) {
-        case SecondaynavType.schema:
-          this.getSchemaList();
-          break;
+    // this.sharedService.secondaryBarData.subscribe((res) => {
+    //   this.getSchemaList();
+    // })
+    // this.sharedService.isSecondaryNavRefresh().subscribe(res => {
+    //   switch (res) {
+    //     case SecondaynavType.schema:
+    //       this.getSchemaList();
+    //       break;
 
-        case SecondaynavType.dataIntilligence:
-          this.getDataIntilligence();
-          break;
-        case SecondaynavType.report:
-          this.getreportList();
-          break;
-        default:
-          break;
-      }
-    });
+    //     case SecondaynavType.dataIntilligence:
+    //       this.getDataIntilligence();
+    //       break;
+    //     case SecondaynavType.report:
+    //       this.getreportList();
+    //       break;
+    //     default:
+    //       break;
+    //   }
+    // });
   }
 
   /**
@@ -145,6 +151,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
    */
   public getreportList() {
     this.reportService.reportList().subscribe(reportList => {
+      this.reportOb = of(reportList);
       this.reportList = reportList;
       if (this.reportList) {
         const firstReportId = this.reportList[0].reportId;
@@ -232,6 +239,13 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
           return module;
         }
       })
+    }
+    if(this.activatedPrimaryNav==='report'){
+      if(searchString) {
+        this.reportOb = of(this.reportList.filter(fil=> fil.reportName.toLocaleLowerCase().indexOf(searchString.toLocaleLowerCase()) !==-1));
+      } else {
+        this.reportOb = of(this.reportList);
+      }
     }
   }
 

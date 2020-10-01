@@ -305,6 +305,8 @@ export interface WidgetTimeseries {
     groupWith : string;
     widgetColorPalette : WidgetColorPalette;
     distictWith: string;
+    showInPercentage : boolean;
+    bucketFilter: string;
 }
 export enum SeriesWith {
     millisecond = 'millisecond',
@@ -391,7 +393,8 @@ export class ChartProperties {
     seriesFormat:string;
     blankValueAlias : string;
     timeseriesStartDate : TimeseriesStartDate;
-    enabledBarPerc : boolean;
+    isEnabledBarPerc : boolean;
+    bucketFilter: string;
 }
 
 export class ButtonArr {

@@ -49,7 +49,7 @@ describe('TimeseriesWidgetComponent', () => {
       scaleTo: 1000,
       stepSize: 100,
       dataSetSize: 100,
-      groupWith : 'REQUESTOR_DATE',widgetColorPalette:null,distictWith:'REGION'}
+      groupWith : 'REQUESTOR_DATE',widgetColorPalette:null,distictWith:'REGION',bucketFilter:null,showInPercentage:false}
 
     timeseriesData = {widgetId:123,widgetName:'test',widgetType:null,objectType:'1005',plantCode:'0',indexName:'do_workflow',desc:'',timeSeries:widgetTimeseries}
 
@@ -79,7 +79,7 @@ it('emitpanAndClickevent(), emit after date change',async(()=>{
     scaleTo: 1000,
     stepSize: 100,
     dataSetSize: 100,
-    groupWith : 'REQUESTOR_DATE',widgetColorPalette:null,distictWith:'REGION'}
+    groupWith : 'REQUESTOR_DATE',widgetColorPalette:null,distictWith:'REGION',showInPercentage:false,bucketFilter:null}
 
   timeseriesData = {widgetId:123,widgetName:'test',widgetType:null,objectType:'1005',plantCode:'0',indexName:'do_workflow',desc:'',timeSeries:widgetTimeseries}
 
@@ -110,7 +110,7 @@ it('getTimeSeriesMetadata(), get meatadat',async(()=>{
     scaleTo: 1000,
     stepSize: 100,
     dataSetSize: 100,
-    groupWith : 'REQUESTOR_DATE',widgetColorPalette:null,distictWith:'REGION'}
+    groupWith : 'REQUESTOR_DATE',widgetColorPalette:null,distictWith:'REGION',bucketFilter:null,showInPercentage:false}
 
   timeseriesData = {widgetId:123,widgetName:'test',widgetType:null,objectType:'1005',plantCode:'0',indexName:'do_workflow',desc:'',timeSeries:widgetTimeseries}
 
@@ -145,7 +145,7 @@ it('legendclick(), emit after date change',async(()=>{
     scaleTo: 1000,
     stepSize: 100,
     dataSetSize: 100,
-    groupWith : 'REQUESTOR_DATE',widgetColorPalette:null,distictWith:'REGION'}
+    groupWith : 'REQUESTOR_DATE',widgetColorPalette:null,distictWith:'REGION',showInPercentage:false,bucketFilter:null}
 
   timeseriesData = {widgetId:123,widgetName:'test',widgetType:null,objectType:'1005',plantCode:'0',indexName:'do_workflow',desc:'',timeSeries:widgetTimeseries}
 
@@ -194,5 +194,22 @@ it('transformDataSets(),  transformDataSets', async(()=>{
     ];
     const res =  component.generatedDataBasedonMonth(mockData,false);
     expect(res.length).toEqual(12);
+  }));
+
+  it('tarnsformForShowInPercentage(), transform response', async(()=>{
+    const data = {_shards:{total:1,failed:0,successful:1,skipped:0},hits:{hits:[],total:{value:1221,relation:'eq'},max_score:null},took:3,timed_out:false,aggregations:{'date_histogram#date':{buckets:[{key_as_string:'04.00.2020',doc_count:52,'sterms#term':{doc_count_error_upper_bound:0,sum_other_doc_count:0,buckets:[{doc_count:33,key:'APP'},{doc_count:19,key:'INP'}]},key:1588550400000},{key_as_string:'11.00.2020',doc_count:46,'sterms#term':{doc_count_error_upper_bound:0,sum_other_doc_count:0,buckets:[{doc_count:33,key:'APP'},{doc_count:13,key:'INP'}]},key:1589155200000},{key_as_string:'18.00.2020',doc_count:18,'sterms#term':{doc_count_error_upper_bound:0,sum_other_doc_count:0,buckets:[{doc_count:11,key:'APP'},{doc_count:6,key:'INP'},{doc_count:1,key:'REJ'}]},key:1589760000000},{key_as_string:'25.00.2020',doc_count:27,'sterms#term':{doc_count_error_upper_bound:0,sum_other_doc_count:0,buckets:[{doc_count:15,key:'APP'},{doc_count:12,key:'INP'}]},key:1590364800000},{key_as_string:'01.00.2020',doc_count:322,'sterms#term':{doc_count_error_upper_bound:0,sum_other_doc_count:0,buckets:[{doc_count:294,key:'APP'},{doc_count:28,key:'INP'}]},key:1590969600000},{key_as_string:'08.00.2020',doc_count:64,'sterms#term':{doc_count_error_upper_bound:0,sum_other_doc_count:0,buckets:[{doc_count:42,key:'APP'},{doc_count:22,key:'INP'}]},key:1591574400000},{key_as_string:'15.00.2020',doc_count:57,'sterms#term':{doc_count_error_upper_bound:0,sum_other_doc_count:0,buckets:[{doc_count:47,key:'APP'},{doc_count:10,key:'INP'}]},key:1592179200000},{key_as_string:'22.00.2020',doc_count:77,'sterms#term':{doc_count_error_upper_bound:0,sum_other_doc_count:0,buckets:[{doc_count:40,key:'INP'},{doc_count:37,key:'APP'}]},key:1592784000000},{key_as_string:'29.00.2020',doc_count:173,'sterms#term':{doc_count_error_upper_bound:0,sum_other_doc_count:0,buckets:[{doc_count:111,key:'INP'},{doc_count:62,key:'APP'}]},key:1593388800000},{key_as_string:'06.00.2020',doc_count:98,'sterms#term':{doc_count_error_upper_bound:0,sum_other_doc_count:0,buckets:[{doc_count:60,key:'INP'},{doc_count:37,key:'APP'},{doc_count:1,key:'REJ'}]},key:1593993600000},{key_as_string:'13.00.2020',doc_count:111,'sterms#term':{doc_count_error_upper_bound:0,sum_other_doc_count:0,buckets:[{doc_count:70,key:'INP'},{doc_count:39,key:'APP'},{doc_count:2,key:'CNCL'}]},key:1594598400000},{key_as_string:'20.00.2020',doc_count:149,'sterms#term':{doc_count_error_upper_bound:0,sum_other_doc_count:0,buckets:[{doc_count:111,key:'APP'},{doc_count:37,key:'INP'},{doc_count:1,key:'REJ'}]},key:1595203200000},{key_as_string:'27.00.2020',doc_count:27,'sterms#term':{doc_count_error_upper_bound:0,sum_other_doc_count:0,buckets:[{doc_count:18,key:'INP'},{doc_count:9,key:'APP'}]},key:1595808000000}]}}};
+    component.tarnsformForShowInPercentage(data, false);
+    expect(component.tarnsformForShowInPercentage).toBeTruthy();
+  }));
+
+  it('bucketModify(), modify bucket ', async(()=>{
+    const mockData = [
+      {
+        key_as_string:'2019-Jan-01',
+        doc_count: 10
+      }
+    ];
+    const res =  component.bucketModify(mockData,false);
+    expect(res.length).toEqual(11);
   }));
 });

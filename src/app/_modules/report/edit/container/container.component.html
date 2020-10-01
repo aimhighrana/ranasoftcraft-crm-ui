@@ -540,8 +540,8 @@
                             </div>
 
                             <!-- PIE CHART PERCETAGE CONFIG -->
-                            <div class="f-col" *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('isEnableDatalabels').value && chartPropCtrlGrp.get('chartType').value === 'PIE'">
-                                <mat-checkbox color="primary" formControlName="enabledBarPerc">Show Data in %
+                            <div class="f-col" *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('isEnableDatalabels').value && ( chartPropCtrlGrp.get('chartType').value === 'PIE' || (selStyleWid && selStyleWid.widgetType === 'TIMESERIES') )">
+                                <mat-checkbox color="primary" formControlName="isEnabledBarPerc">Show Data in %
                                 </mat-checkbox>
                             </div>
                                 <!-- PIE CHART PERCETAGE CONFIG -->
@@ -609,6 +609,21 @@
                                     </mat-select>
                                 </mat-form-field>
                             </div>
+
+                            <div class="f-col" *ngIf="selStyleWid && selStyleWid.widgetType === 'TIMESERIES' &&  selStyleWid.field === 'TIME_TAKEN'">
+                                <mat-label>Bucket filter</mat-label>
+                                <mat-form-field appearance="outline">
+                                    <mat-select formControlName="bucketFilter">
+                                        <mat-option value=""> No filter </mat-option>
+                                        <mat-option value="less_then_1_day"> Less then a day </mat-option>
+                                        <mat-option value="within_1_day"> Within a day </mat-option>
+                                        <mat-option value="more_then_1_day"> More then a day </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+
+
                         </div>
                     </mat-expansion-panel>
                 </mat-accordion>
