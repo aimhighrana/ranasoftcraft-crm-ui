@@ -1,4 +1,4 @@
-import { Component, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
 import { TimeDisplayFormat, ChartDataSets, ChartOptions, ChartLegendLabelItem } from 'chart.js';
 import { BaseChartDirective, Label } from 'ng2-charts';
@@ -24,7 +24,7 @@ const btnArray:ButtonArr[] = [
   templateUrl: './timeseries-widget.component.html',
   styleUrls: ['./timeseries-widget.component.scss']
 })
-export class TimeseriesWidgetComponent extends GenericWidgetComponent implements OnInit,OnChanges {
+export class TimeseriesWidgetComponent extends GenericWidgetComponent implements OnInit,OnChanges,OnDestroy {
 
   constructor(
     private widgetService: WidgetService,private fb : FormBuilder,public matDialog: MatDialog) {
@@ -130,6 +130,31 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     }
   };
 
+  /**
+   * When reset filter from main container value should be true
+   */
+  @Input()
+  hasFilterCriteria: boolean;
+
+  ngOnDestroy(): void {
+    this.widgetInf.complete();
+    this.widgetInf.unsubscribe();
+  }
+
+  ngOnChanges(changes: import('@angular/core').SimpleChanges): void {
+    if(changes && changes.hasFilterCriteria && changes.hasFilterCriteria.previousValue !== changes.hasFilterCriteria.currentValue) {
+      this.clearFilterCriteria();
+    }
+
+    this.lablels = [];
+    this.chartLegend = [];
+    this.widgetInf.subscribe(metadata=>{
+      if(metadata){
+        this.getwidgetData(this.widgetId);
+      }
+    });
+  }
+
   ngOnInit(): void {
     this.formGroup = this.fb.group({
       date: new FormControl(''),
@@ -153,16 +178,6 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     this.afterColorDefined.subscribe(res=>{
       if(res) {
         this.updateColorBasedOnDefined(res);
-      }
-    });
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    this.lablels = [];
-    this.chartLegend = [];
-    this.widgetInf.subscribe(metadata=>{
-      if(metadata){
-        this.getwidgetData(this.widgetId);
       }
     });
   }
@@ -770,32 +785,46 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     this.widgetColorPalette = res;
   }
 
- /*
-  * download chart data as CSV
-  */
+  /*
+    * download chart data as CSV
+    */
 
- downloadCSV(): void {
-  const excelData = [];
-  this.chartLegend.forEach(legend=>{
-    const obj = {} as any;
-    obj[this.timeseriesData.timeSeries.fieldId] = legend.code + '';
-    const key = 'id';
-    const objdataArr = this.dataSet.filter(data=>data[key] === legend.code)
-    if(objdataArr.length>0 && objdataArr[0].data.length>0){
-      objdataArr[0].data.forEach(data=>{
-        obj.time = data.x;
-        obj.count = data.y;
-        excelData.push(obj);
-      })
-    }
-    excelData.push(obj);
-  });
-  this.widgetService.downloadCSV('Time-Chart', excelData);
-}
-/*
-* download chart as image
-*/
-downloadImage() {
-  this.widgetService.downloadImage(this.chart.toBase64Image(), 'Time-Series.png');
-}
+  downloadCSV(): void {
+    const excelData = [];
+    this.chartLegend.forEach(legend=>{
+      const obj = {} as any;
+      obj[this.timeseriesData.timeSeries.fieldId] = legend.code + '';
+      const key = 'id';
+      const objdataArr = this.dataSet.filter(data=>data[key] === legend.code)
+      if(objdataArr.length>0 && objdataArr[0].data.length>0){
+        objdataArr[0].data.forEach(data=>{
+          obj.time = data.x;
+          obj.count = data.y;
+          excelData.push(obj);
+        })
+      }
+      excelData.push(obj);
+    });
+    this.widgetService.downloadCSV('Time-Chart', excelData);
+  }
+  /*
+    * download chart as image
+    */
+  downloadImage() {
+    this.widgetService.downloadImage(this.chart.toBase64Image(), 'Time-Series.png');
+  }
+
+  clearFilterCriteria() {
+    this.startDateCtrl = new FormControl('');
+    this.endDateCtrl = new FormControl('');
+    const fieldId = this.timeseriesData.timeSeries.groupWith;
+    const appliedFilters = this.filterCriteria.filter(fill => fill.fieldId === fieldId);
+    this.removeOldFilterCriteria(appliedFilters);
+
+    this.dateFilters.forEach(f=>{
+      f.isActive = false;
+    });
+
+    this.emitEvtFilterCriteria(this.filterCriteria);
+  }
 }

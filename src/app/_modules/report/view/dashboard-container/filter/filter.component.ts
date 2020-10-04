@@ -149,14 +149,22 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     buckets.forEach(bucket=>{
       const key = bucket.key;
       const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
-      const ddv = hits._source.hdvs[fieldId] ?( hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].ddv : null) : null;
-      if(ddv) {
-        const hasValue =  ddv.filter(fil=> fil.lang === locale)[0];
-        if(hasValue) {
-          finalVal[key] = hasValue.val;
+      const val = hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vc : null;
+      if(val) {
+        const valArray = [];
+        val.forEach(v=>{
+          if(v.t) {
+            valArray.push(v.t);
+          }
+        });
+        const finalText = valArray.toString();
+        if(finalText) {
+          finalVal[key] = finalText
+        } else {
+          finalVal[key] = key;
         }
       } else {
-        finalVal[key] = hits._source.hdvs[fieldId].vc;
+        finalVal[key] = key;
       }
     });
 
@@ -264,7 +272,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     this.dateFilterQuickSelect.forEach(f=>{
       f.isSelected = false;
     });
-  if(!isSelected) {
+    if(!isSelected) {
       const strtEndDt = new DateBulder().build(code as DateSelectionType);
       if(strtEndDt) {
         // set selected value

@@ -23,7 +23,7 @@
             <pros-reporting-list *ngIf ="widget.widgetType ==='TABLE_LIST'" [widgetInfo]="widget" [boxSize]="boxSize" [widgetId] ="widget.widgetId" [reportId]="reportId" [filterCriteria]="filterCriteria" (evtFilterCriteria)="changeFilterCriteria($event)"></pros-reporting-list>
                 
             <!-- TIMESERIES WIDGET -->
-            <pros-timeseries-widget *ngIf ="widget.widgetType ==='TIMESERIES'" [widgetInfo]="widget" [boxSize]="boxSize" [widgetId] ="widget.widgetId" [reportId]="reportId" [filterCriteria]="filterCriteria" (evtFilterCriteria)="changeFilterCriteria($event)"></pros-timeseries-widget>
+            <pros-timeseries-widget *ngIf ="widget.widgetType ==='TIMESERIES'" [widgetInfo]="widget" [boxSize]="boxSize" [widgetId] ="widget.widgetId" [reportId]="reportId" [filterCriteria]="filterCriteria" [hasFilterCriteria] = "emitClearBtnEvent" (evtFilterCriteria)="changeFilterCriteria($event)"></pros-timeseries-widget>
                 
             <!-- IMAGE WIDGET -->
             <pros-image *ngIf ="widget.widgetType ==='IMAGE'" [widgetInfo]="widget" [boxSize]="boxSize" [widgetId] ="widget.widgetId" [reportId]="reportId"></pros-image>

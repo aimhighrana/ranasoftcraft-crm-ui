@@ -675,7 +675,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     const createUpdateSub = this.reportService.createUpdateReport(request).subscribe(res => {
       this.reportId = res;
       this.sharedService.setReportListData();
-      this.snackbar.open(`Successfully saved change(s)`, 'Close',{duration:5000});
+      this.snackbar.open(`Successfully saved change(s)`, 'Close',{duration:3000});
     },errro=>{
       this.snackbar.open(`Something went wrong`, 'Close',{duration:5000});
     });

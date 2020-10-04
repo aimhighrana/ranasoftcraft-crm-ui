@@ -19,8 +19,9 @@
 
         <button *ngFor="let dateType of dateFilters" mat-stroked-button [color]="dateType.isActive ? 'primary' : '' "
           (click)="updateForm('date',dateType)">{{ dateType.value }}
-          {{ timeseriesData.timeSeries ? timeseriesData.timeSeries.seriesWith : ''}}s</button>
-        <div>
+          {{ timeseriesData.timeSeries ? timeseriesData.timeSeries.seriesWith : ''}}s
+        </button>
+      <div>
           <mat-form-field appearance="outline">
             <mat-date-range-input [rangePicker]="picker">
               <input matStartDate placeholder="Start date" [formControl]="startDateCtrl">

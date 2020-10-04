@@ -201,7 +201,7 @@ describe('FilterComponent', () => {
   }));
 
   it('updateObjRefDescription(), update description of objRef in filter', async(()=>{
-    const buckets = [{key:'200010',doc_count:10744,'top_hits#items':{hits:{total:{value:10744,relation:'eq'},max_score:1.0,hits:[{_source:{hdvs:{MATL_GROUP:{fId:'MATL_GROUP',lls:{EN:{label:'Material Group'}},vls:{EN:{valueTxt:'200010'}},vc:'200010'}}}}]}}},{key:'200030',doc_count:775,'top_hits#items':{hits:{total:{value:775,relation:'eq'},max_score:1.0,hits:[{_source:{hdvs:{MATL_GROUP:{fId:'MATL_GROUP',lls:{EN:{label:'Material Group'}},vls:{EN:{valueTxt:'200030'}},vc:'200030'}}}}]}}}];
+    const buckets = [{doc_count: 21151,key: 'KEY2','top_hits#items':{hits:{hits: [{ _source: {hdvs: {MATL_GROUP: {vc: [{c: 'KEY2',t: 'Key2'}]}}}}]}}}];
 
     component.updateObjRefDescription(buckets, 'MATL_GROUP');
 
