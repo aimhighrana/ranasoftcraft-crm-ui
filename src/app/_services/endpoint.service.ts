@@ -451,8 +451,8 @@ export class EndpointService {
     return `${this.apiUrl}/schema/list-variants`;
   }
 
-  public getLayoutMetadata(widgetId, objectNumber): string {
-    return `${this.apiUrl}/report/layout-metadata/${widgetId}/${objectNumber}`;
+  public getLayoutMetadata(widgetId, objectNumber, layoutId): string {
+    return `${this.apiUrl}/report/layout-metadata/${widgetId}/${objectNumber}/${layoutId}`;
   }
 
   public getlayoutData(widgetId, objectNumber): string {
@@ -579,6 +579,10 @@ export class EndpointService {
    */
   public createUpdateReportDataTable(widgetId: string): string {
     return this.apiUrl + `/report/table/view/create-update/${widgetId}`;
+  }
+
+  public getlayoutsUrl() {
+    return `${this.apiUrl}/report/layouts`;
   }
 }
 

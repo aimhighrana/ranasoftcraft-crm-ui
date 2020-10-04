@@ -6,13 +6,14 @@ import { ENTER, COMMA } from '@angular/cdk/keycodes';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
 import { BehaviorSubject } from 'rxjs';
-import { ReportingWidget, Criteria } from '../../../_models/widget';
+import { ReportingWidget, Criteria, LayoutConfigWorkflowModel } from '../../../_models/widget';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ReportListDownloadModelComponent } from './report-list-download-model/report-list-download-model.component';
 import { EndpointService } from '@services/endpoint.service';
 import { Router } from '@angular/router';
 import { SharedServiceService } from '@shared/_services/shared-service.service';
+import { ReportService } from '@modules/report/_service/report.service';
 
 @Component({
   selector: 'pros-reporting-list',
@@ -60,13 +61,21 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
 
   reportingListWidget: BehaviorSubject<ReportingWidget[]> = new BehaviorSubject<ReportingWidget[]>(null);
 
+
+  /**
+   * hold info about layouts ...
+   */
+  layouts: LayoutConfigWorkflowModel[] = [];
+
   constructor(public widgetService: WidgetService,
     @Inject(LOCALE_ID) public locale: string,
     public matDialog: MatDialog,
     private endpointService: EndpointService,
     private snackbar: MatSnackBar,
     private router: Router,
-    private sharedService: SharedServiceService) {
+    private sharedService: SharedServiceService,
+    private reportService: ReportService
+    ) {
     super(matDialog);
   }
 
@@ -272,4 +281,16 @@ downloadCSV():void{
     this.sharedService.setReportDataTableSetting(data);
     this.router.navigate(['', {outlets: {sb: `sb/report/column-settings/${this.widgetId}`}}])
   }
+
+  getAlllayouts(row: any) {
+    console.log(this.objectType);
+    console.log(row);
+    const WFID = row ? row.WFID : '';
+    this.reportService.getAllLayoutsForSummary(this.objectType, WFID).subscribe(res=>{
+      console.log(res);
+      this.layouts = res;
+    }, error=> console.error(`Error : ${error.message}`));
+
+  }
+
 }

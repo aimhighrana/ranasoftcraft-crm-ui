@@ -17,6 +17,12 @@ export class SummaryLayoutComponent implements OnInit {
   layoutData:MDORECORDESV3;
   layoutMetadata: BehaviorSubject<LayoutTabResponse[]> = new BehaviorSubject<LayoutTabResponse[]>(null);
 
+  /**
+   * current selected layout.. id
+   */
+  layoutId: string;
+
+
   constructor(
     private router: Router,
     private activatedRouter: ActivatedRoute,
@@ -28,9 +34,10 @@ export class SummaryLayoutComponent implements OnInit {
     this.activatedRouter.params.subscribe(param => {
       this.widgetId = param.widgetId;
       this.objectNumber = param.objectNumber;
+      this.layoutId = param.layoutId ? param.layoutId : '';
       console.log(this.widgetId,this.objectNumber);
     });
-     this.getLayoutMetadata(this.widgetId,this.objectNumber);
+     this.getLayoutMetadata(this.widgetId,this.objectNumber, this.layoutId);
       this.layoutMetadata.subscribe(data=>{
         if(data){
            this.getlayoutData(this.widgetId,this.objectNumber);
@@ -46,8 +53,8 @@ export class SummaryLayoutComponent implements OnInit {
  * Method to get layout metadata based on widgetId and objectNumber
  */
 
-  getLayoutMetadata(widgetId:string,objectNumber:string):void{
-    this.widgetService.getLayoutMetadata(widgetId,objectNumber).subscribe(data=>{
+  getLayoutMetadata(widgetId:string,objectNumber:string, layoutId: string):void{
+    this.widgetService.getLayoutMetadata(widgetId,objectNumber, layoutId).subscribe(data=>{
       console.log(data);
       this.layoutMetadata.next(data);
     },error => {

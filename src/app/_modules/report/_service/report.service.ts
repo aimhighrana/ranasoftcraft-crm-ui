@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { EndpointService } from 'src/app/_services/endpoint.service';
-import { DropDownValues, ReportDashboardReq } from '../_models/widget';
+import { DropDownValues, LayoutConfigWorkflowModel, ReportDashboardReq } from '../_models/widget';
 import { ReportList } from '../report-list/report-list.component';
 import { PermissionOn, ReportDashboardPermission } from '@models/collaborator';
 
@@ -62,5 +62,16 @@ export class ReportService {
 
   public deleteCollaborator(permissionId: string): Observable<boolean> {
     return this.http.delete<boolean>(this.endpointService.deleteCollaboratorUrl(permissionId));
+  }
+
+  /**
+   * Get all layouts ..
+   * @param objectType objecttype for summary
+   * @param wfId wfid for find layouts
+   */
+  public getAllLayoutsForSummary(objectType: string, wfId: string): Observable<LayoutConfigWorkflowModel[]> {
+    objectType = objectType ? objectType : '';
+    wfId = wfId ? wfId : '';
+    return this.http.get<LayoutConfigWorkflowModel[]>(this.endpointService.getlayoutsUrl(),{params:{objectType,wfId}});
   }
 }

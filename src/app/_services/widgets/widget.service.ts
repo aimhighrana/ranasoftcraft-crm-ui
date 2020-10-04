@@ -111,8 +111,8 @@ export class WidgetService {
     } catch (e) { }
   }
 
-  getLayoutMetadata(widgetId:string,objectNumber:string):Observable<LayoutTabResponse[]>{
-    return this.http.get<any>(this.endpointService.getLayoutMetadata(widgetId,objectNumber));
+  getLayoutMetadata(widgetId:string,objectNumber:string, layoutId: string):Observable<LayoutTabResponse[]>{
+    return this.http.get<any>(this.endpointService.getLayoutMetadata(widgetId,objectNumber, layoutId));
   }
 
   getlayoutData(widgetId:string,objectNumber:string):Observable<MDORECORDESV3>{

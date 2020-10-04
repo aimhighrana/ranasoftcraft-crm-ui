@@ -549,3 +549,15 @@ export class DateBulder {
         return null;
     }
 }
+
+
+export class LayoutConfigWorkflowModel {
+    sno: string;
+    layoutId: string;
+    workflowid: string;
+    step: string;
+    objectType: string;
+    plantCode: string;
+    initiatorLayout: string;
+    layoutDesc: string;
+}

@@ -39,13 +39,13 @@ describe('SummaryLayoutComponent', () => {
     const metadata :LayoutTabResponse = {tabCode:'123',tabDesc:'Tab',headerType:'N',helpLink:'',refParentObjectId:'',fieldsList:listofFields};
     const listofTabs :LayoutTabResponse[] = new Array();
     listofTabs.push(metadata);
-    spyOn(service,'getLayoutMetadata').withArgs('653267432','12345').and.returnValue(of(listofTabs));
+    spyOn(service,'getLayoutMetadata').withArgs('653267432','12345','72647278').and.returnValue(of(listofTabs));
 
     component.layoutMetadata.next(listofTabs);
 
-    component.getLayoutMetadata('653267432','12345');
+    component.getLayoutMetadata('653267432','12345','72647278');
 
-    expect(service.getLayoutMetadata).toHaveBeenCalledWith('653267432','12345');
+    expect(service.getLayoutMetadata).toHaveBeenCalledWith('653267432','12345','72647278');
   }));
 
   it('getlayoutData(), get layoutData', async(()=>{
