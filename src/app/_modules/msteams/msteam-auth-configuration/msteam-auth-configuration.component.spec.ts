@@ -57,6 +57,7 @@ describe('MsteamAuthConfigurationComponent', () => {
     spyOn(microsoftTeams.authentication, 'notifySuccess').and.callFake(() => {
       return '';
     });
+    component.signInForm.setValue({userName:'srana', password: 'rana'})
     msteamsConfigService.signIn.and.returnValue(of());
     component.signIn();
     expect(msteamsConfigService.signIn).toHaveBeenCalled();

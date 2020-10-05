@@ -37,7 +37,7 @@ describe('MsteamConfigurationComponent', () => {
       (() => {
         return of(true)
       })
-    component.login();
+    component.init();
     expect(authFunctionSpy).toHaveBeenCalled();
   }))
 

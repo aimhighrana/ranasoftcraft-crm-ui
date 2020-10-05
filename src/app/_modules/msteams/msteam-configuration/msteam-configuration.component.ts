@@ -14,7 +14,7 @@ export class MsteamConfigurationComponent implements OnInit {
     public msteamsConfigService: MsteamsConfigService
   ) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {}
 
   authLogin(newApiUrl: string) {
     microsoftTeams.initialize();
@@ -31,7 +31,7 @@ export class MsteamConfigurationComponent implements OnInit {
   }
 
   // Login click opens the sign-in page in a pop-up and wait for sucessful login for further
-  login() {
+  init() {
     const apiUrl = environment.apiurl;
     const newApiUrl = apiUrl.replace('fapi', '');
     const jwtToken = localStorage.getItem('JWT-REFRESH-TOKEN');

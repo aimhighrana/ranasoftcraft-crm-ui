@@ -14,11 +14,19 @@ export class MsteamAuthConfigurationComponent implements OnInit {
     password : new FormControl('', [Validators.required])
   });
 
+  /**
+   * Hold error messgae while login ..
+   */
+  errorMsg: string;
+
   constructor(
     private msteamsConfigService: MsteamsConfigService,
   ) { }
 
   ngOnInit(): void {
+    this.signInForm.valueChanges.subscribe(val=>{
+      this.errorMsg = '';
+    });
   }
 
   // Notify MS Teams app for success to return to the configuration page of app for report configuration
@@ -31,10 +39,34 @@ export class MsteamAuthConfigurationComponent implements OnInit {
   signIn(){
     const userName = this.signInForm.get('userName').value;
     const password = this.signInForm.get('password').value;
+    if(!this.signInForm.valid) {
+      this.errorMsg = 'Username or password require ';
+      return false;
+    }
     this.msteamsConfigService.signIn(userName, password).subscribe(res=>{
       localStorage.setItem('JWT-TOKEN', res.headers.get('JWT-TOKEN'));
       localStorage.setItem('JWT-REFRESH-TOKEN', res.headers.get('JWT-REFRESH-TOKEN'));
       this.notifySuccess();
-    },error=>console.error(`Error : ${error}`));;
+      this.errorMsg = '';
+    },error=>{
+      console.error(`Error : ${error}`);
+      this.errorMsg = 'Invalid username or password ';
+    });;
+  }
+
+  /**
+   * Set email or username to frmCtrl
+   * @param val update username/ email val
+   */
+  emailChange(val: string) {
+    this.signInForm.get('userName').setValue(val)
+  }
+
+  /**
+   * Update password to form control
+   * @param val changed password ..
+   */
+  passChange(val: string) {
+    this.signInForm.get('password').setValue(val);
   }
 }

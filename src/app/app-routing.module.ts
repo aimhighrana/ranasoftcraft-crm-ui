@@ -10,6 +10,7 @@ const routes: Routes = [
   { path: '', redirectTo: '/home/dash/welcome', pathMatch: 'full' },
   { path: 'admin', loadChildren: () => import('./_modules/admin/admin.module').then(m => m.AdminModule) },
   { path: 'home', loadChildren: () => import('./_modules/home/home.module').then(m => m.HomeModule) },
+  { path: 'nonav', loadChildren: () => import('./_modules/nonav/nonav.module').then(m => m.NonavModule) },
   { path: 'sb/schema', loadChildren: () => import('./_modules/schema/schema.module').then(m => m.SchemaModule), outlet: 'sb' },
   { path: 'msteams', loadChildren: () => import('./_modules/msteams/msteams.module').then(m => m.MSTeamsModule) },
   { path: 'sb/report', loadChildren: () => import('./_modules/report/report.module').then(m => m.ReportModule), outlet: 'sb' },
