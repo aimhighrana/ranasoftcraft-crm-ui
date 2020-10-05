@@ -338,9 +338,10 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   drop(event: CdkDragDrop<string[]>) {
+    const topY = document.getElementById('container').offsetTop;
     console.log(event);
     const movedX = event.distance.x;
-    const movedY = event.distance.y;
+    let movedY = event.distance.y;
     console.log(event.item.element.nativeElement);
     console.log(`Moved x: ${movedX} , and moved y : ${movedY}`);
 
@@ -354,6 +355,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       dropableWidget.y = 0;
       dropableWidget.height = 24;
       dropableWidget.width = 30;
+      movedY = topY - event.distance.y;
+
 
       // set default height to table
       if (widgetType === 'TABLE_LIST') {
