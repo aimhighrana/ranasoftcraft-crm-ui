@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmationDialogComponent, ConfirmationDialogReq } from '@modules/shared/_components/confirmation-dialog/confirmation-dialog.component';
 import { Subject } from 'rxjs';
 
 @Injectable({
@@ -19,7 +21,9 @@ export class GlobaldialogService {
   /**
    * constuctor of class
    */
-  constructor() { }
+  constructor(
+    private matDialog: MatDialog
+  ) { }
 
   /**
    * Function to toggle the dialog
@@ -45,4 +49,39 @@ export class GlobaldialogService {
     this.dialogCloseEmitter.next(data);
   }
 
+
+  /**
+   * Use this function for confirmation dialog ..
+   * @param data get request data for dialog uses ..
+   * @param callBack callback function after dilog close ...
+   */
+  public confirm = (data: ConfirmationDialogReq, callBack : (resonse) => any) => {
+    this.createCallBackFun(callBack);
+    const dialogCloseRef = this.matDialog.open(ConfirmationDialogComponent, {
+      data,
+      disableClose: true,
+      height:'200px',
+      width:'300px'
+    });
+    dialogCloseRef.afterClosed().subscribe(res=>{
+      console.log(res);
+      this.callBack(res);
+    });
+  };
+
+  /**
+   * Use for bind .. callback function
+   * @param callBack call back function ..
+   */
+  createCallBackFun = (callBack) =>{
+    this.callBack = callBack.bind();
+  };
+
+  /**
+   * Actual callback function for return data ...
+   * @param res actual response
+   */
+  callBack = (res) =>{
+    return res;
+  };
 }

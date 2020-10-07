@@ -58,6 +58,8 @@ import { FormInputComponent } from './_components/form-input/form-input.componen
 import { AddFilterMenuComponent } from './_components/add-filter-menu/add-filter-menu.component';
 import { NavigationDropdownComponent } from './_components/navigation-dropdown/navigation-dropdown.component';
 import { FilterValuesComponent } from './_components/filter-values/filter-values.component';
+import { ConfirmationDialogComponent } from './_components/confirmation-dialog/confirmation-dialog.component';
+import { ResumeSessionComponent } from './_components/resume-session/resume-session.component';
 
 @NgModule({
   declarations: [
@@ -81,7 +83,9 @@ import { FilterValuesComponent } from './_components/filter-values/filter-values
     FormInputComponent,
     AddFilterMenuComponent,
     NavigationDropdownComponent,
-    FilterValuesComponent
+    FilterValuesComponent,
+    ConfirmationDialogComponent,
+    ResumeSessionComponent
   ],
   imports: [
     // ng modules

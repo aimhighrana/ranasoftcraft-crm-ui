@@ -6,6 +6,8 @@ import { EndpointService } from '../_services/endpoint.service';
 import { Router } from '@angular/router';
 import { AccessDeniedDialogComponent } from '@modules/shared/_components/access-denied-dialog/access-denied-dialog.component';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ResumeSessionComponent } from '@modules/shared/_components/resume-session/resume-session.component';
 
 
 @Injectable({
@@ -21,7 +23,8 @@ export class JwtInterceptorService implements HttpInterceptor {
     private http: HttpClient,
     private endpointService: EndpointService,
     private accessDeniedComponent: AccessDeniedDialogComponent,
-    private sharedService: SharedServiceService
+    private sharedService: SharedServiceService,
+    private matDialog: MatDialog
   ) { }
 
   addToken(req: HttpRequest<any>, token: string): HttpRequest<any> {
@@ -119,9 +122,20 @@ export class JwtInterceptorService implements HttpInterceptor {
   }
 
   logout() {
-    localStorage.removetItem('JWT-TOKEN');
-    localStorage.removetItem('JWT-REFRESH-TOKEN');
-    this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });
+    const dialogRef = this.matDialog.open(ResumeSessionComponent, {
+      data: {},
+      disableClose: true,
+      height:'200px',
+      width:'300px'
+    });
+    dialogRef.afterClosed().subscribe(res=>{
+      const url = document.getElementsByTagName('base')[0].href.substring(0, document.getElementsByTagName('base')[0].href.indexOf('MDOSF')) + 'MDOSF';
+      window.close();
+      window.open(url , 'MDO_TAB');
+      localStorage.removetItem('JWT-TOKEN');
+      localStorage.removetItem('JWT-REFRESH-TOKEN');
+      // this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });
+    });
   }
 
   /**

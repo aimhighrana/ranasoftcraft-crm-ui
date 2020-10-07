@@ -1,0 +1,26 @@
+<mat-card class="root mat-elevation-z0">
+    <div class="f-row breadcrum-toolbar">
+        <div class="display-heading-large">
+            Confirmation
+        </div>
+        <span class="f-spacer"></span>
+        <button mat-button (click)="close(false)">
+            <mat-icon>clear</mat-icon>
+        </button>
+    </div>
+
+  
+    
+    <h3>
+        {{data ? data.label : 'Are you sure to delete ?'}}
+    </h3>
+
+
+    <div class="row-spacer"></div>
+    <!-- navigation buttons -->
+    <div class="f-row">
+        <button mat-flat-button color="accent" (click)="close(false)">No</button>
+        <span class="f-spacer"></span>
+        <button mat-flat-button color="primary" (click)="close(true)">Yes</button>
+    </div>
+</mat-card>

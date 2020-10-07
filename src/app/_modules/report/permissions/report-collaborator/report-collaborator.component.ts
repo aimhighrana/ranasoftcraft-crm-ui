@@ -6,6 +6,7 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { GlobaldialogService } from '@services/globaldialog.service';
 
 export class PermissionGroup {
   groupId: string;
@@ -51,7 +52,8 @@ export class ReportCollaboratorComponent implements OnInit {
     private formBuilder: FormBuilder,
     private activatedRouter: ActivatedRoute,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private globalDialogService: GlobaldialogService
   ) { }
 
   ngOnInit(): void {
@@ -317,15 +319,19 @@ export class ReportCollaboratorComponent implements OnInit {
    * @param permissionId permission id which we want to delete
    */
   deleteCollaborator(permissionId: string) {
-    this.reportServie.deleteCollaborator(permissionId).subscribe(res => {
-      if (res) {
-        this.snackBar.open(`Successfully deleted`, 'Close', { duration: 4000 });
-        this.getExitingCollaborators();
-      } else {
-        this.snackBar.open(`Something went wrong`, 'Close', { duration: 4000 });
+    this.globalDialogService.confirm({label:'Are you sure to remove ?'}, (response) =>{
+      if(response && response === 'yes') {
+        this.reportServie.deleteCollaborator(permissionId).subscribe(res => {
+          if (res) {
+            this.snackBar.open(`Successfully deleted`, 'Close', { duration: 4000 });
+            this.getExitingCollaborators();
+          } else {
+            this.snackBar.open(`Something went wrong`, 'Close', { duration: 4000 });
+          }
+        }, error => {
+          this.snackBar.open(`Something went wrong`, 'Close', { duration: 4000 });
+        });
       }
-    }, error => {
-      this.snackBar.open(`Something went wrong`, 'Close', { duration: 4000 });
     });
   }
 

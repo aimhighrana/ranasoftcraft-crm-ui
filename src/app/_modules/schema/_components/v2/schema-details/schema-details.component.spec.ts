@@ -12,8 +12,9 @@ import { of } from 'rxjs';
 import { SchemaListDetails, SchemaVariantsModel } from '@models/schema/schemalist';
 import { SchemaService } from '@services/home/schema.service';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
-import { FilterCriteria } from '@models/schema/schemadetailstable';
+import { FilterCriteria, MetadataModel } from '@models/schema/schemadetailstable';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
+import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 
 describe('SchemaDetailsComponent', () => {
   let component: SchemaDetailsComponent;
@@ -89,5 +90,43 @@ describe('SchemaDetailsComponent', () => {
       component.getFldMetadata();
 
       expect(schemaDetailService.getMetadataFields).toHaveBeenCalledWith(component.moduleId);
-  }))
+  }));
+
+  it('loadDropValues(), load current field .. ', async(()=>{
+      // mock data
+      const data: FilterCriteria = {fieldId:'MATL_TYPE',type:'DROPDOWN', values:['ZMRO','ALT']} as FilterCriteria;
+      component.loadDropValues(data);
+      expect(component.loadDopValuesFor.checkedValue.length).toEqual(2);
+  }));
+
+  it('updateFilterCriteria(), update filter criteria .. ', async(()=>{
+    const dropValue: DropDownValue[] = [{
+      CODE:'ZMRO',
+      FIELDNAME:'MATL_TYPE',
+      LANGU:'en',
+      PLANTCODE:'0',
+      SNO:'872372',
+      TEXT:'Zmro Text'
+    }];
+
+
+    const exitingFilter: FilterCriteria[] = [{
+      fieldId:'MATL_TYPE',
+      type:'DROPDOWN',
+      values:['TEST'],
+      fldCtrl:{fieldId:'MATL_TYPE'} as MetadataModel,
+      filterCtrl:{fldCtrl:{fieldId:'MATL_TYPE'} as MetadataModel,selectedValeus:[]}
+    }];
+
+    component.filterCriteria.next(exitingFilter);
+
+    component.loadDopValuesFor = {fieldId:'MATL_TYPE',checkedValue:[]};
+
+    component.updateFilterCriteria(dropValue);
+
+    const res = component.filterCriteria.getValue();
+
+    expect(res.values.length).toEqual(0);
+
+  }));
 });
