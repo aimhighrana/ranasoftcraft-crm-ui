@@ -4,6 +4,7 @@ import { EndpointService } from '../endpoint.service';
 import { HttpClient } from '@angular/common/http';
 import * as XLSX from 'xlsx';
 import { Criteria, BarChartWidget, WidgetHeader, TimeSeriesWidget, WidgetImageModel, WidgetHtmlEditor, ReportingWidget, LayoutTabResponse, MDORECORDESV3,WidgetColorPalette } from 'src/app/_modules/report/_models/widget';
+import { TreeModel } from '@modules/report/view/dashboard-container/filter/hierarchy-filter/hierarchy-filter.component';
 
 @Injectable({
   providedIn: 'root'
@@ -128,6 +129,13 @@ export class WidgetService {
    */
    defineWidgetColorPalette(req: WidgetColorPalette): Observable<WidgetColorPalette> {
     return this.http.post<WidgetColorPalette>(this.endpointService.defineColorPaletteForWidget(), req);
+  }
+
+  /**
+   * Call http to get location hireeachy
+   */
+  getLocationHirerachy(topLocation: string, fieldId: string, searchString: string, searchFunc: string): Observable<TreeModel[]>{
+    return this.http.get<TreeModel[]>(this.endpointService.getLocationHierarchyUrl(topLocation, fieldId, searchString, searchFunc))
   }
 
 }

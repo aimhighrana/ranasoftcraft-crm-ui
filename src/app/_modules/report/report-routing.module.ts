@@ -13,7 +13,6 @@ const routes: Routes = [
   { path: 'dashboard-builder/:id', component: ContainerComponent },
   { path: 'collaborators/:reportId', component: ReportCollaboratorComponent },
   { path: 'summary/:widgetId/:objectNumber/:layoutId', component: SummaryLayoutComponent },
-  // { path: 'table-column-setting/:objectNumber', component: TableColumnSettingComponent },
   { path: 'column-settings/:widgetId', component: ReportDatatableColumnSettingsComponent },
   { path: '**', component: PageNotFoundComponent }
 ];

@@ -8,6 +8,7 @@ import { ReportService } from '../../../_service/report.service';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { MatSliderChange } from '@angular/material/slider';
 import { UDRBlocksModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { TreeModel } from './hierarchy-filter/hierarchy-filter.component';
 
 @Component({
   selector: 'pros-filter',
@@ -570,4 +571,36 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     this.enableClearIcon = false;
   }
 
+
+  /**
+   * function to get value of location selection
+   * @param node selection change of location
+   */
+  getLocationSelection(node: TreeModel){
+    const filterCriteria = this.filterCriteria;
+    let hasCondition = this.filterCriteria.filter(fil => fil.conditionFieldId === this.filterWidget.getValue().fieldId)[0];
+    if(node) {
+      if(hasCondition) {
+        filterCriteria.splice(filterCriteria.indexOf(hasCondition),1);
+        hasCondition.conditionFieldValue = node.nodeId;
+        filterCriteria.push(hasCondition);
+      } else {
+        hasCondition = new Criteria();
+        hasCondition.conditionFieldValue = node.nodeId;
+        hasCondition.conditionOperator = ConditionOperator.EQUAL;
+        hasCondition.blockType = BlockType.COND;
+        hasCondition.conditionFieldId  = this.filterWidget.getValue().fieldId;
+        hasCondition.fieldId = this.filterWidget.getValue().fieldId;
+
+        filterCriteria.push(hasCondition);
+      }
+    } else {
+      if(hasCondition) {
+        filterCriteria.splice(filterCriteria.indexOf(hasCondition),1);
+      }
+    }
+    this.filterCriteria = filterCriteria;
+    this.emitEvtFilterCriteria(this.filterCriteria);
+    console.log(node);
+  }
 }

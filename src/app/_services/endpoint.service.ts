@@ -584,5 +584,11 @@ export class EndpointService {
   public getlayoutsUrl() {
     return `${this.apiUrl}/report/layouts`;
   }
+  /**
+   * endpoint to get location hierarchy
+   */
+  public getLocationHierarchyUrl(topLocation: string, fieldId: string, searchString: string, searchFunc: string): string {
+    return this.apiUrl + `/report/loc/searchLocationNode?topLocation=${topLocation}&fieldId=${fieldId}&searchString=${searchString}&searchFunc=${searchFunc}`
+  }
 }
 

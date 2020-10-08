@@ -92,6 +92,9 @@
       </ng-template>
     </ng-template>
 
+
+
+
     <!-- CONTROL FOR DATE PICKER -->
     <ng-template
       [ngIf]="filterWidget && filterWidget.getValue() && filterWidget.getValue().metaData && filterWidget.getValue().metaData.picklist && filterWidget.getValue().metaData.picklist === '0' && (filterWidget.getValue().metaData.dataType === 'DTMS' || filterWidget.getValue().metaData.dataType === 'DATS')">
@@ -154,6 +157,11 @@
     <!-- CONTROL FOR INPUT TYPE NUM -->
     <ng-template [ngIf]="filterWidget && filterWidget.getValue() && filterWidget.getValue().metaData && filterWidget.getValue().metaData.picklist && filterWidget.getValue().metaData.picklist === '0' && filterWidget.getValue().metaData.dataType === 'NUMC'">
       <mat-slider color="primary" thumbLabel [formControl]="numericValCtrl"   [displayWith]="formatMatSliderLabel" tickInterval="1000" [min]="filterResponse ? filterResponse.min : 0"  [max]="filterResponse ? filterResponse.max : 0" [value]="filterResponse ? filterResponse.max : 0" (change)="sliderValueChange($event)"></mat-slider>
+    </ng-template>
+
+    <!-- CONTROL FOR THE LOCATION HIRERACHY FILTER -->
+    <ng-template [ngIf]="filterWidget && filterWidget.getValue() && filterWidget.getValue().metaData && filterWidget.getValue().metaData.picklist && filterWidget.getValue().metaData.picklist === '29'">
+      <pros-hierarchy-filter (selectionChange)="getLocationSelection($event)"></pros-hierarchy-filter>
     </ng-template>
   </mat-card-content>
 </mat-card>

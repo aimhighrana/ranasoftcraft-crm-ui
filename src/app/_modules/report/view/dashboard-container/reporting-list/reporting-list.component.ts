@@ -96,13 +96,12 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
     // this.dataSource.sort = this.sort;
 
     this.getHeaderMetaData();
+    let isRefresh = true;
     this.sharedService.getReportDataTableSetting().subscribe(response => {
-      if(response===null || response === undefined){
+      if((response?.isRefresh === true) || isRefresh){
+        isRefresh = false;
         this.getListTableMetadata();
       }
-      else if(response && response.isRefresh===true){
-          this.getListTableMetadata();
-        }
     })
   }
 

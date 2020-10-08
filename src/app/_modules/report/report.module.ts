@@ -28,6 +28,7 @@ import { ReportListDownloadModelComponent } from './view/dashboard-container/rep
 import { WorkflowfieldControlComponent } from './edit/container/workflowfield-control/workflowfield-control.component';
 import { WorkflowDatasetComponent } from './edit/container/workflow-dataset/workflow-dataset.component';
 import { ReportDatatableColumnSettingsComponent } from './view/dashboard-container/reporting-list/report-datatable-column-settings/report-datatable-column-settings.component';
+import { HierarchyFilterComponent } from './view/dashboard-container/filter/hierarchy-filter/hierarchy-filter.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,8 @@ import { ReportDatatableColumnSettingsComponent } from './view/dashboard-contain
     ReportListDownloadModelComponent,
     WorkflowfieldControlComponent,
     WorkflowDatasetComponent,
-    ReportDatatableColumnSettingsComponent
+    ReportDatatableColumnSettingsComponent,
+    HierarchyFilterComponent
   ],
   imports: [
     CommonModule,
