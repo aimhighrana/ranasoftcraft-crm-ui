@@ -125,7 +125,8 @@ export enum ConditionOperator {
 	MIN_LESS_THAN_EQUAL = 'MIN_LESS_THAN_EQUAL',
 	MIN_GREATER_THAN = 'MIN_GREATER_THAN',
 	MIN_GREATER_THAN_EQUAL = 'MIN_GREATER_THAN_EQUAL',
-	MIN_RANGE = 'MIN_RANGE'
+    MIN_RANGE = 'MIN_RANGE',
+    LOCATION = 'LOCATION'
 }
 export class FilterWidget {
     widgetId: number;

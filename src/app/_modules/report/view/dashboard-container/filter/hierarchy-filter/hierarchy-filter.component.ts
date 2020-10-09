@@ -7,8 +7,8 @@ export class TreeModel {
   nodeId: string;
   nodeDesc: string;
   child: Array<TreeModel>;
-  checked: false;
-  expanded: false;
+  checked: boolean;
+  expanded: boolean;
 }
 
 @Component({
@@ -31,14 +31,29 @@ export class HierarchyFilterComponent implements OnInit {
   @Input() searchString = '';
   @Input() searchFunc = '';
 
-  @Output() selectionChange = new EventEmitter<TreeModel>();
+  /**
+   * To emit selected nodes to parent
+   */
+  @Output() selectionChange = new EventEmitter<string[]>();
 
+  /**
+   * To store selected node
+   */
+  selectedNode: string[] = [];
+
+  /**
+   * Constructor of the class
+   * @param widgetService Injecting widgetService class
+   */
   constructor(private widgetService: WidgetService) {
     /** Data Source and Tree Control used by Tree View */
     this.nestedTreeControl = new NestedTreeControl<TreeModel>(this._getChildren);
     this.nestedDataSource = new MatTreeNestedDataSource();
   }
 
+  /**
+   * ANGULAR HOOK
+   */
   ngOnInit() {
     this.getLocationData(this.topLocation, this.fieldId, this.searchString, this.searchFunc)
   }
@@ -81,13 +96,14 @@ export class HierarchyFilterComponent implements OnInit {
   clickedActive(element) {
     element.checked = !element.checked;
     if(element.checked){
-      this.selectionChange.emit(element);
+      this.selectedNode.push(element.nodeId);
     }else{
-      this.selectionChange.emit(null);
+      this.selectedNode.splice(this.selectedNode.indexOf(element.nodeId), 1);
     }
     if (element.child) {
       this.checkForChild(element.checked, element.child);
     }
+    this.selectionChange.emit(this.selectedNode);
   }
 
   /***

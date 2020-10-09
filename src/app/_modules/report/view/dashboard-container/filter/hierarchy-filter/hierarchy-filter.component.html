@@ -24,9 +24,8 @@
                     (change)="clickedActive(data)" color="primary">
                     <span>{{data.nodeDesc}}</span>
                 </mat-checkbox>
-                <!-- <pros-search-input (value)="searchForLocation(data, $event)"></pros-search-input> -->
             </div>
-            <ul [class.example-tree-invisible]="!data.expanded">
+            <ul [class.mdo-location-tree-invisible]="!data.expanded">
                 <ng-container matTreeNodeOutlet></ng-container>
             </ul>
         </li>

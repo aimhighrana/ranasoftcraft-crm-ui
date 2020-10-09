@@ -8,7 +8,6 @@ import { ReportService } from '../../../_service/report.service';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { MatSliderChange } from '@angular/material/slider';
 import { UDRBlocksModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
-import { TreeModel } from './hierarchy-filter/hierarchy-filter.component';
 
 @Component({
   selector: 'pros-filter',
@@ -576,27 +575,30 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
    * function to get value of location selection
    * @param node selection change of location
    */
-  getLocationSelection(node: TreeModel){
+  getLocationSelection(node: string[]){
+    console.log(node);
     const filterCriteria = this.filterCriteria;
-    let hasCondition = this.filterCriteria.filter(fil => fil.conditionFieldId === this.filterWidget.getValue().fieldId)[0];
+    const hasCondition = this.filterCriteria.filter(fil => fil.conditionFieldId === this.filterWidget.getValue().fieldId);
     if(node) {
       if(hasCondition) {
-        filterCriteria.splice(filterCriteria.indexOf(hasCondition),1);
-        hasCondition.conditionFieldValue = node.nodeId;
-        filterCriteria.push(hasCondition);
-      } else {
-        hasCondition = new Criteria();
-        hasCondition.conditionFieldValue = node.nodeId;
-        hasCondition.conditionOperator = ConditionOperator.EQUAL;
-        hasCondition.blockType = BlockType.COND;
-        hasCondition.conditionFieldId  = this.filterWidget.getValue().fieldId;
-        hasCondition.fieldId = this.filterWidget.getValue().fieldId;
-
-        filterCriteria.push(hasCondition);
+        hasCondition.forEach(has=>{
+          filterCriteria.splice(filterCriteria.indexOf(has),1);
+        });
       }
+      node.forEach(n=>{
+        const criteria = new Criteria();
+        criteria.conditionFieldValue = n;
+        criteria.conditionOperator = ConditionOperator.LOCATION;
+        criteria.blockType = BlockType.COND;
+        criteria.conditionFieldId  = this.filterWidget.getValue().fieldId;
+        criteria.fieldId = this.filterWidget.getValue().fieldId;
+        filterCriteria.push(criteria);
+      });
     } else {
       if(hasCondition) {
-        filterCriteria.splice(filterCriteria.indexOf(hasCondition),1);
+        hasCondition.forEach(has=>{
+          filterCriteria.splice(filterCriteria.indexOf(has),1);
+        });
       }
     }
     this.filterCriteria = filterCriteria;
