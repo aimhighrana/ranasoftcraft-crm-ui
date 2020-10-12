@@ -4,22 +4,25 @@ mat-card.root {
   padding: 0 16px;
 
   .breadcrum-toolbar {
-    align-items: center;
     position: sticky;
     padding-top: 16px;
     top: 0;
     z-index: 2;
 
-    .display-heading-large {
-      font-size: 1.2rem;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-    }
-
     .mdo-constrained-right {
-      align-items: center;
       width: 100%;
+
+      .breadcrum-head {
+        align-items: center;
+        width: 100%;
+
+        .display-heading-large {
+          font-size: 1.2rem;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+        }
+      }
     }
   }
 
@@ -28,7 +31,7 @@ mat-card.root {
 
     .checkedall {
       display: flex;
-      padding: 16px 0 12px 10px;
+      padding: 16px 0 12px 50px;
     }
   }
 }
@@ -45,11 +48,7 @@ mat-card.root {
 }
 
 @media (min-width: 1200px) {
-  .mdo-justify {
-    margin: 0 54px;
-  }
-
   .mdo-constrained-right {
-    margin-right: 54px;
+    margin-right: 52px;
   }
 }

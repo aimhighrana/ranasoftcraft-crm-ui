@@ -105,7 +105,7 @@
                                         <input type="number" max="pixcel" min="0" matInput formControlName="width">
                                     </mat-form-field>
                                 </div>
-                                <span class="f-col-spacer-half"></span>
+                                <span class="col-spacer"></span>
                                 <div class="f-col">
                                     <mat-label>Height</mat-label>
                                     <mat-form-field appearance="outline">
@@ -162,11 +162,11 @@
                                     <mat-label>Aggregration operator</mat-label>
                                     <mat-form-field appearance="outline">
                                         <mat-select formControlName="aggregrationOp">
-                                            <mat-option value="GROUPBY">GROUPBY</mat-option>
-                                            <mat-option value="COUNT">COUNT</mat-option>
-                                            <mat-option value="MIN">MIN</mat-option>
-                                            <mat-option value="MAX">MAX</mat-option>
-                                            <mat-option value="SUM">SUM</mat-option>
+                                            <mat-option value="GROUPBY">Group by</mat-option>
+                                            <mat-option value="COUNT">Count</mat-option>
+                                            <mat-option value="MIN">Min</mat-option>
+                                            <mat-option value="MAX">Max</mat-option>
+                                            <mat-option value="SUM">Sum</mat-option>
                                         </mat-select>
                                     </mat-form-field>
                                 </ng-template>
@@ -278,7 +278,7 @@
                                                         </mat-form-field>
                                                     </div>
 
-                                                    <span class="f-col-spacer-half"></span>
+                                                    <span class="col-spacer"></span>
 
                                                     <div class="f-col">
                                                         <mat-label>End date</mat-label>
@@ -394,7 +394,7 @@
                                         </button>
                                         <input type="file" (change)="fileChange($event)" style="display: none;"
                                             multiple="false" id="uploadFileCtrl" accept="image/png, image/jpeg" />
-                                        <span class="f-col-spacer-half"></span>
+                                        <span class="col-spacer"></span>
                                         <mat-form-field class="upload-img-inp" appearance="outline">
                                             <input matInput disabled readonly formControlName="imageName">
                                             <div class="f-row input-actions">
@@ -439,10 +439,10 @@
                                 <mat-label>Chart type </mat-label>
                                 <mat-form-field appearance="outline">
                                     <mat-select formControlName="chartType">
-                                        <mat-option value="BAR"> BAR </mat-option>
-                                        <mat-option *ngIf="selStyleWid.widgetType === 'BAR_CHART' " value="PIE"> PIE
+                                        <mat-option value="BAR"> Bar </mat-option>
+                                        <mat-option *ngIf="selStyleWid.widgetType === 'BAR_CHART' " value="PIE"> Pie
                                         </mat-option>
-                                        <mat-option *ngIf="selStyleWid.widgetType === 'TIMESERIES' " value="LINE"> LINE
+                                        <mat-option *ngIf="selStyleWid.widgetType === 'TIMESERIES' " value="LINE"> Line
                                         </mat-option>
                                     </mat-select>
                                 </mat-form-field>
@@ -462,21 +462,21 @@
                             <ng-template
                                 [ngIf]="chartPropCtrlGrp && chartPropCtrlGrp.get('chartType').value === 'BAR' || chartPropCtrlGrp.get('chartType').value === 'LINE'">
                                 <div class="f-col">
-                                    <mat-label>xAsix label</mat-label>
+                                    <mat-label>X-axis label</mat-label>
                                     <mat-form-field appearance="outline">
                                         <input matInput formControlName="xAxisLabel">
                                     </mat-form-field>
                                 </div>
 
                                 <div class="f-col">
-                                    <mat-label>yAsix label</mat-label>
+                                    <mat-label>Y-axis label</mat-label>
                                     <mat-form-field appearance="outline">
                                         <input matInput formControlName="yAxisLabel">
                                     </mat-form-field>
                                 </div>
 
                                 <div class="f-col">
-                                    <mat-label>Count orderby </mat-label>
+                                    <mat-label>Count order by</mat-label>
                                     <mat-form-field appearance="outline">
                                         <mat-select formControlName="orderWith">
                                             <mat-option value="asc"> Ascending </mat-option>
@@ -493,7 +493,7 @@
                                                 <input type="number" min="0" matInput formControlName="scaleFrom">
                                             </mat-form-field>
                                         </div>
-                                        <span class="f-col-spacer-half"></span>
+                                        <span class="col-spacer"></span>
                                         <div class="f-col">
                                             <mat-label>Scale to</mat-label>
                                             <mat-form-field appearance="outline">
@@ -511,7 +511,7 @@
                                                 <input type="number" min="0" matInput formControlName="stepSize">
                                             </mat-form-field>
                                         </div>
-                                        <span class="f-col-spacer-half"></span>
+                                        <span class="col-spacer"></span>
                                         <div class="f-col">
                                             <mat-label>Max dataset number</mat-label>
                                             <mat-form-field appearance="outline">
@@ -541,7 +541,7 @@
 
                             <!-- PIE CHART PERCETAGE CONFIG -->
                             <div class="f-col" *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('isEnableDatalabels').value && ( chartPropCtrlGrp.get('chartType').value === 'PIE' || (selStyleWid && selStyleWid.widgetType === 'TIMESERIES') )">
-                                <mat-checkbox color="primary" formControlName="isEnabledBarPerc">Show Data in %
+                                <mat-checkbox color="primary" formControlName="isEnabledBarPerc">Show data in %
                                 </mat-checkbox>
                             </div>
                                 <!-- PIE CHART PERCETAGE CONFIG -->
@@ -653,9 +653,10 @@
                                                         (selectionChange)='onDefaultFilterChange($event,i)'
                                                         class="field-divider">
                                                     </pros-metadatafield-control>
+                                                    <span class="col-spacer"></span>
                                                 </ng-template>
                                             </div>
-                                            <span class="f-col-spacer"></span>
+                                            
                                             <div class="f-col">
                                                 <ng-template #workflowField>
                                                     <pros-workflowfield-control
@@ -665,10 +666,10 @@
                                                         (selectionChange)='onDefaultFilterChange($event,i)'
                                                         class="field-divider">
                                                     </pros-workflowfield-control>
+                                                    <span class="col-spacer"></span>
                                                 </ng-template>
                                             </div>
-
-                                            <span class="f-col-spacer"></span>
+                                            <span class="col-spacer"></span>
                                             <div class="f-col">
                                                 <pros-udr-condition-operators
                                                     [conditionalOperators]="conditionalOperators"
@@ -677,8 +678,7 @@
                                                     class="field-divider">
                                                 </pros-udr-condition-operators>
                                             </div>
-                                            <span class="f-col-spacer"></span>
-
+                                            <span class="col-spacer"></span>
                                             <div class="f-col">
                                                 <ng-template
                                                     [ngIf]="selStyleWid && selStyleWid.defaultFilters && (selStyleWid.defaultFilters[i]).conditionOperator==='FIELD2FIELD_EQUAL'
@@ -698,15 +698,16 @@
                                                 </ng-template>
 
                                                 <ng-template #fieldvalue>
+                                                    <div class="f-col value-set">
                                                     <mat-label>Value</mat-label>
                                                     <mat-form-field appearance="outline">
                                                         <input matInput formControlName="conditionFieldValue">
                                                     </mat-form-field>
+                                                </div>
                                                 </ng-template>
                                             </div>
                                             <span class="col-spacer"></span>
-
-                                            <div class="f-col">
+                                            <div class="f-col value-set">
                                                 <button mat-button (click)="removeFilter(i)" matTooltip="Remove"
                                                     color="warn">
                                                     <mat-icon>remove_circle_outline</mat-icon>

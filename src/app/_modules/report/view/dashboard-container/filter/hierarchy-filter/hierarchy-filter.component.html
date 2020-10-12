@@ -12,7 +12,6 @@
     <mat-nested-tree-node *matTreeNodeDef="let data; when: hasNestedChild">
         <li>
             <div class="mat-tree-node">
-                
                 <button mat-icon-button [attr.aria-label]="'toggle ' + data.nodeDesc" (click)="changeState(data)">
                     <mat-icon class="mat-icon-rtl-mirror">
                         {{data.expanded ? 'expand_more' : 'chevron_right'}}

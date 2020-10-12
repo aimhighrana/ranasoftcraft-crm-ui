@@ -956,6 +956,18 @@
       }
     }
   }
+
+  // Mat Tree
+  mat-tree.mat-tree {
+    button.mat-icon-button {
+      border-radius: 3px;
+      width: 32px;
+      height: 32px;
+      line-height: 32px;
+      margin-right: 8px;
+      box-shadow: none;
+    }
+  }
   //DIW Components
   pros-add-filter-menu {
     mat-nav-list {

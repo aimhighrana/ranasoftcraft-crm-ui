@@ -1,5 +1,4 @@
-<mat-card class="mat-elevation-z2 widget" [ngStyle]="{ 'width.px' : (widgetInfo.width * boxSize),
-  'height.px': (widgetInfo.height * boxSize)}">
+<mat-card class="mat-elevation-z2 widget">
 
   <div class="f-row breadcrum-toolbar">
     <div class="display-heading-large">
@@ -11,7 +10,7 @@
     </button>
   </div>
 
-  <mat-card-content [ngStyle]="{ 'height.px' : ((widgetInfo.height * boxSize) - 50 )}">
+  <mat-card-content>
     <!-- CONTROL FOR DROPDOWNS -->
     <ng-template
       [ngIf]="filterWidget && filterWidget.getValue() && filterWidget.getValue().metaData && filterWidget.getValue().metaData.picklist && (filterWidget.getValue().metaData.picklist === '1' || filterWidget.getValue().metaData.picklist === '30' || filterWidget.getValue().metaData.picklist === '37')">
