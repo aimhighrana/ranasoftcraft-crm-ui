@@ -13,10 +13,11 @@ import { MatDialog } from '@angular/material/dialog';
 import   ChartDataLables from 'chartjs-plugin-datalabels';
 
 const btnArray:ButtonArr[] = [
-  {id:1,value:7,isActive:false},
-  {id:2,value:10,isActive:false},
-  {id:3,value:20,isActive:false},
-  {id:4,value:30,isActive:false}
+  {id:0,value:'millisecond',isActive:false},
+  {id:1,value:'7',isActive:false},
+  {id:2,value:'10',isActive:false},
+  {id:3,value:'20',isActive:false},
+  {id:4,value:'30',isActive:false}
 ];
 
 @Component({
@@ -254,7 +255,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         break;
 
       case SeriesWith.week:
-        const week = moment().subtract((value.value*7), 'd').format('MM/DD/YYYY HH:mm');
+        const week = moment().subtract((Number(value.value)*7), 'd').format('MM/DD/YYYY HH:mm');
         endDatemilli = Date.parse(week.toString()).toString();
         break;
       default:
@@ -361,6 +362,15 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
           this.legendClick(legendItem);
         }
       }
+    }
+
+    const hasBtn = this.dateFilters.filter(fil => fil.value === (this.timeseriesData.timeSeries.startDate))[0];
+    if(hasBtn) {
+      const index = this.dateFilters.indexOf(hasBtn);
+      this.dateFilters.splice(index,1);
+      hasBtn.isActive = true;
+      this.dateFilters.splice(index, 0 , hasBtn);
+      this.updateForm('date', hasBtn);
     }
 
     /**

@@ -308,6 +308,7 @@ export interface WidgetTimeseries {
     distictWith: string;
     showInPercentage : boolean;
     bucketFilter: string;
+    startDate: string;
 }
 export enum SeriesWith {
     millisecond = 'millisecond',
@@ -400,7 +401,7 @@ export class ChartProperties {
 
 export class ButtonArr {
     id:number;
-    value: number;
+    value: string;
     isActive: boolean;
   }
 

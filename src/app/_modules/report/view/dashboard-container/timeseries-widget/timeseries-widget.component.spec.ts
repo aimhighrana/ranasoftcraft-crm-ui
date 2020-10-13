@@ -12,6 +12,7 @@ import { ChartLegendLabelItem } from 'chart.js';
 describe('TimeseriesWidgetComponent', () => {
   let component: TimeseriesWidgetComponent;
   let fixture: ComponentFixture<TimeseriesWidgetComponent>;
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ TimeseriesWidgetComponent ],
@@ -48,6 +49,7 @@ describe('TimeseriesWidgetComponent', () => {
       scaleTo: 1000,
       stepSize: 100,
       dataSetSize: 100,
+      startDate: '7',
       groupWith : 'REQUESTOR_DATE',widgetColorPalette:null,distictWith:'REGION',bucketFilter:null,showInPercentage:false}
 
     timeseriesData = {widgetId:123,widgetName:'test',widgetType:null,objectType:'1005',plantCode:'0',indexName:'do_workflow',desc:'',timeSeries:widgetTimeseries}
@@ -78,6 +80,7 @@ it('emitpanAndClickevent(), emit after date change',async(()=>{
     scaleTo: 1000,
     stepSize: 100,
     dataSetSize: 100,
+    startDate: '7',
     groupWith : 'REQUESTOR_DATE',widgetColorPalette:null,distictWith:'REGION',showInPercentage:false,bucketFilter:null}
 
   timeseriesData = {widgetId:123,widgetName:'test',widgetType:null,objectType:'1005',plantCode:'0',indexName:'do_workflow',desc:'',timeSeries:widgetTimeseries}
@@ -109,6 +112,7 @@ it('getTimeSeriesMetadata(), get meatadat',async(()=>{
     scaleTo: 1000,
     stepSize: 100,
     dataSetSize: 100,
+    startDate: '7',
     groupWith : 'REQUESTOR_DATE',widgetColorPalette:null,distictWith:'REGION',bucketFilter:null,showInPercentage:false}
 
   timeseriesData = {widgetId:123,widgetName:'test',widgetType:null,objectType:'1005',plantCode:'0',indexName:'do_workflow',desc:'',timeSeries:widgetTimeseries}
@@ -144,6 +148,7 @@ it('legendclick(), emit after date change',async(()=>{
     scaleTo: 1000,
     stepSize: 100,
     dataSetSize: 100,
+    startDate: '7',
     groupWith : 'REQUESTOR_DATE',widgetColorPalette:null,distictWith:'REGION',showInPercentage:false,bucketFilter:null}
 
   timeseriesData = {widgetId:123,widgetName:'test',widgetType:null,objectType:'1005',plantCode:'0',indexName:'do_workflow',desc:'',timeSeries:widgetTimeseries}
@@ -212,6 +217,7 @@ it('transformDataSets(),  transformDataSets', async(()=>{
     expect(res.length).toEqual(11);
   }));
 
+
   it('getBucketKey(), generate bucket key ', async(()=>{
     const data = [{
       'sterms#term':{
@@ -230,7 +236,7 @@ it('transformDataSets(),  transformDataSets', async(()=>{
     component.dateFilters = [{
       id:1,
       isActive:false,
-      value:1
+      value:'1'
     }];
 
     component.formGroup = new FormGroup({
@@ -254,6 +260,7 @@ it('transformDataSets(),  transformDataSets', async(()=>{
     scaleTo: 1000,
     stepSize: 100,
     dataSetSize: 100,
+    startDate: '7',
     groupWith : 'REQUESTOR_DATE',widgetColorPalette:null,distictWith:'REGION',showInPercentage:false,bucketFilter:null}
 
   timeseriesData = {widgetId:123,widgetName:'test',widgetType:null,objectType:'1005',plantCode:'0',indexName:'do_workflow',desc:'',timeSeries:widgetTimeseries}
@@ -263,8 +270,8 @@ it('transformDataSets(),  transformDataSets', async(()=>{
   const filterWidget = new FilterWidget();
   filterWidget.fieldId = 'STATUS';
 
-  component.updateForm('MATL_TYPE', {id:1,value:7,isActive:false});
-  expect(component.updateForm('MATL_TYPE', {id:1,value:7,isActive:false})).toBe(undefined);
+  component.updateForm('MATL_TYPE', {id:1,value:'7',isActive:false});
+  expect(component.updateForm('MATL_TYPE', {id:1,value:'7',isActive:false})).toBe(undefined);
   }));
 
 });

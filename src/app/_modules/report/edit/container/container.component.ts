@@ -684,7 +684,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   createUpdateReport() {
     if (this.reportName === undefined || this.reportName.trim() === '') {
-      this.snackbar.open(`Report name can't empty`, 'Close', { duration: 2000 });
+      this.snackbar.open(`Report name can't be empty`, 'Close', { duration: 2000 });
       return false;
     }
 
