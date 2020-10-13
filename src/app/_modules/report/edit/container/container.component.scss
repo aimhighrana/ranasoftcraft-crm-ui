@@ -114,6 +114,14 @@ mat-card.root {
               margin-top: 6px;
             }
           }
+
+          .image-algin {
+            align-items: baseline;
+
+            .upload-mat-form {
+              flex: 1;
+            }
+          }
         }
 
         .add-button {

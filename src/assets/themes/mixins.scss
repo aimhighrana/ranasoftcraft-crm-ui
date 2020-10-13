@@ -443,22 +443,6 @@
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
   }
 
-  // // Pagination field
-  // mat-form-field.mat-form-field.mat-paginator-page-size-select {
-  //   margin: 0;
-
-  //   .mat-paginator,
-  //     .mat-paginator-page-size .mat-select-trigger {
-  //       padding: 0 3px;
-
-  //       .mat-form-field-wrapper {
-  //         .mat-form-field-underline {
-  //           display: none;
-  //         }
-  //       }
-  //     }
-  // }
-
   // Temporary mat input
   mat-form-field.mat-form-field {
     .mat-form-field-wrapper {
@@ -1118,6 +1102,49 @@
     }
   }
 
+  pros-reporting-list {
+    mat-paginator.mat-paginator {
+      .mat-paginator-container {
+        min-height: 40px;
+      }
+
+      mat-form-field.mat-form-field.mat-paginator-page-size-select {
+        margin: 0;
+
+        .mat-form-field-wrapper {
+          .mat-form-field-flex {
+            .mat-form-field-infix {
+              padding: 2px 0 0 0;
+              min-height: 26px;
+
+              mat-select.mat-select {
+                padding: 0 6px;
+
+                .mat-select-trigger {
+                  .mat-select-arrow-wrapper {
+                    .mat-select-arrow {
+                      margin: 0;
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+          .mat-form-field-underline {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+
+  pros-report-datatable-column-settings {
+    .colunm-box:hover {
+      background: mat-color($background-palette, app-bar);
+    }
+  }
+
   pros-widget-color-palette {
     div.root {
       .palette-list {
@@ -1139,6 +1166,19 @@
           line-height: 18px;
         }
       }
+    }
+  }
+
+  pros-bar-chart,
+  pros-count,
+  pros-filter,
+  pros-html-editor,
+  pros-image,
+  pros-reporting-list,
+  pros-timeseries-widget,
+  pros-pie-chart {
+    mat-card.widget {
+      border: 1px solid mat-color($foreground-palette, divider);
     }
   }
 }

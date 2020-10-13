@@ -29,7 +29,7 @@
                     </div>
                     <mat-divider></mat-divider>
                     <div cdkDrag cdkDragHandle widgetType="COUNT" class="widget-drag">
-                        <mat-icon fontSet="mdo-icons" class="widget-icon">filter</mat-icon> Metric
+                        <mat-icon fontSet="mdo-icons" class="widget-icon">form-number</mat-icon> Metric
                     </div>
                     <mat-divider></mat-divider>
                     <div cdkDrag cdkDragHandle widgetType="TABLE_LIST" class="widget-drag">
@@ -54,7 +54,7 @@
                     </div>
                     <mat-divider></mat-divider>
                     <div cdkDrag cdkDragHandle widgetType="TIMESERIES" class="widget-drag">
-                        <mat-icon fontSet="mdo-icons" class="widget-icon">filter</mat-icon> Time series
+                        <mat-icon fontSet="mdo-icons" class="widget-icon">form-time</mat-icon> Time series
                     </div>
                     <mat-divider></mat-divider>
                 </div>
@@ -188,7 +188,7 @@
                                 <ng-template
                                     [ngIf]="selStyleWid && (selStyleWid.widgetType === 'STACKED_BAR_CHART'  || selStyleWid.widgetType === 'TIMESERIES') && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===false">
                                     <pros-metadatafield-control [moduleId]="selStyleWid && selStyleWid.objectType"
-                                        lebel="Group with(s)" [selectedFldId]="selStyleWid && selStyleWid.groupById"
+                                        lebel="Group(s) with" [selectedFldId]="selStyleWid && selStyleWid.groupById"
                                         (selectionChange)='onGroupByChange($event)'>
                                     </pros-metadatafield-control>
                                 </ng-template>
@@ -217,7 +217,7 @@
                             <div class="f-col" *ngIf="selStyleWid && selStyleWid.widgetType === 'TIMESERIES'">
                                 <!--WorkflowType-->
                                 <pros-workflowfield-control [objectType]="selStyleWid && selStyleWid.objectType"
-                                        label="Distict With" [selectedFldId]="selStyleWid && selStyleWid.distictWith"
+                                        label="Distinct with" [selectedFldId]="selStyleWid && selStyleWid.distictWith"
                                         (selectionChange)='onDistictWithChange($event)'>
                                 </pros-workflowfield-control>
                             </div>
@@ -387,7 +387,7 @@
                                         <input matInput formControlName="imageUrl">
                                     </mat-form-field>
 
-                                    <div class="f-row">
+                                    <div class="f-row image-algin">
                                         <button mat-button matTooltip="Upload image"
                                             (click)="uploadFileChange()">
                                             <mat-icon>add_photo_alternate</mat-icon>
@@ -395,7 +395,7 @@
                                         <input type="file" (change)="fileChange($event)" style="display: none;"
                                             multiple="false" id="uploadFileCtrl" accept="image/png, image/jpeg" />
                                         <span class="col-spacer"></span>
-                                        <mat-form-field class="upload-img-inp" appearance="outline">
+                                        <mat-form-field class="upload-mat-form" appearance="outline">
                                             <input matInput disabled readonly formControlName="imageName">
                                             <div class="f-row input-actions">
                                                 <mat-divider [vertical]="true"></mat-divider>
@@ -404,8 +404,6 @@
                                                 <mat-icon>close</mat-icon>
                                             </button>
                                               </div>
-
-                                           
                                         </mat-form-field>
                                     </div>
                                 </ng-template>

@@ -4,25 +4,23 @@
             <mat-icon>clear</mat-icon>
         </button>
         <div class="col-spacer"></div>
-        <div class="f-row mdo-constrained-right">
-            <div class="display-heading-large">Collaborators</div>
+        <div class="f-col mdo-constrained-right">
+            <div class="f-row breadcrum-head">
+                <div class="display-heading-large">Collaborators</div>
+            </div>
+            <div class="row-spacer"></div>
+            <pros-search-input></pros-search-input>
+            <!-- <mat-label>Search Collaborators</mat-label>
+            <mat-form-field appearance="outline">
+                <input matInput [formControl]="searchCollCtrl">
+            </mat-form-field> -->
+            <div class="row-spacer"></div>
         </div>
     </div>
 
     <div class="row-spacer"></div>
 
     <div class="f-col mdo-justify">
-
-        <div class="f-col">
-            <pros-search-input></pros-search-input>
-            <!-- <mat-label>Search Collaborators</mat-label>
-            <mat-form-field appearance="outline">
-                <input matInput [formControl]="searchCollCtrl">
-            </mat-form-field> -->
-        </div>
-
-        <div class="row-spacer"></div>
-
         <div class="f-col collaborators-list" [class.chip-enable-coll-list]="selectedCollaborators.length">
             <ng-template ngFor let-collaborator [ngForOf]="collaboratorListOb | async">
                 <pros-collaborator [reportId]="reportId" [collaborator]="collaborator"
