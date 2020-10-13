@@ -17,7 +17,7 @@
 
     <div class="f-col report-builder">
         <pros-form-input [type]="'text'" [placeholder]="'Untitled-1'" [label]="'Dashboard name'" [value]="reportName"
-            (valueChange)="(setreportname($event))">
+          [maxLength]="maxReportNameLength"  (valueChange)="(setreportname($event))">
         </pros-form-input>
 
         <div class="f-row builder-container">
@@ -94,7 +94,7 @@
                             <div class="f-col">
                                 <mat-label>Widget name</mat-label>
                                 <mat-form-field appearance="outline">
-                                    <input matInput formControlName="widgetName">
+                                    <input matInput formControlName="widgetName" maxlength=100>
                                 </mat-form-field>
                             </div>
 
@@ -446,7 +446,7 @@
                                 </mat-form-field>
                             </div>
 
-                            <div class="f-col">
+                            <div class="f-col"  *ngIf="selStyleWid.widgetType !== 'TIMESERIES'">
                                 <mat-label>Orientation</mat-label>
                                 <mat-form-field appearance="outline"
                                     *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('chartType').value === 'BAR'">
@@ -473,7 +473,7 @@
                                     </mat-form-field>
                                 </div>
 
-                                <div class="f-col">
+                                <div class="f-col" *ngIf="selStyleWid.widgetType !== 'TIMESERIES'">
                                     <mat-label>Count order by</mat-label>
                                     <mat-form-field appearance="outline">
                                         <mat-select formControlName="orderWith">
@@ -590,7 +590,12 @@
                                 <!-- SERIES FORMAT -->
                                 <mat-label>Series format</mat-label>
                                 <mat-form-field appearance="outline">
-                                    <input matInput formControlName="seriesFormat">
+                                    <mat-select formControlName="seriesFormat">
+                                        <mat-option value="MM.dd.yy">MM.dd.yy</mat-option>
+                                        <mat-option value="dd.MM.yy">dd.MM.yy</mat-option>
+                                        <mat-option value="dd M, yy">dd M, yy</mat-option>
+                                        <mat-option value="MM d, yy">MM d, yy</mat-option>
+                                    </mat-select>
                                 </mat-form-field>
                             </div>
 

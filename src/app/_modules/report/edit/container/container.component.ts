@@ -79,6 +79,11 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   searchDataSetVal = '';
 
+  /**
+   * Maximum length of report name
+   */
+  maxReportNameLength = 100;
+
   constructor(
     private formBuilder: FormBuilder,
     private reportService: ReportService,

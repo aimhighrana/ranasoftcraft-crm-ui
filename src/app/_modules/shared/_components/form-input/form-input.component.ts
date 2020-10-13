@@ -37,10 +37,17 @@ export class FormInputComponent implements OnInit, OnChanges {
   @Input() type: string;
 
   @Input() isHelpIcon: boolean;
+
   /**
    * To get hint below the input field from parent
    */
   @Input() hint: string;
+
+  /**
+   * To get maximum length of input
+   */
+  @Input() maxLength: number;
+
   /**
    * To emit value change of input to parent
    */

@@ -26,7 +26,17 @@ export class PrimaryNavbarComponent implements OnInit {
    */
   userDetails: Userdetails = new Userdetails();
 
+
+  /**
+   * To store count of notifications
+   */
   notificationsCount = 0;
+
+  /**
+   * To apply the CSS class on selection of primary navigation
+   */
+  isNavSelected = ''
+
   constructor(
     private userService: UserService,
     private matDialog: MatDialog,
@@ -42,8 +52,16 @@ export class PrimaryNavbarComponent implements OnInit {
     this.getNotificationsCount();
   }
 
+  /**
+   * function to send navigation value to parent..
+   * @param val navigation value to be emitted..
+   */
   sendToParent(val: string) {
     this.emitAfterSel.emit(val);
+    this.isNavSelected = val;
+    if (val === 'welcome') {
+      this.router.navigate(['/home/dash/welcome'])
+    }
   }
 
   /**
