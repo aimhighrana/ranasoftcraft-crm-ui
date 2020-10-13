@@ -527,10 +527,16 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   fileChange(event: any) {
     if (event && event.target) {
-      this.schemaService.uploadUpdateFileData(event.target.files[0] as File, this.styleCtrlGrp.get('imagesno').value).subscribe(res => {
-        this.styleCtrlGrp.get('imageName').setValue(event.target.files[0] ? event.target.files[0].name : '');
-        this.styleCtrlGrp.get('imagesno').setValue(res);
-      }, error => console.error(`Error : ${error}`));
+      const file = event.target.files[0] as File;
+      if(file.name.endsWith('.png') || file.name.endsWith('.jpg') || file.name.endsWith('.jpeg')) {
+        this.schemaService.uploadUpdateFileData(event.target.files[0] as File, this.styleCtrlGrp.get('imagesno').value).subscribe(res => {
+          this.styleCtrlGrp.get('imageName').setValue(event.target.files[0] ? event.target.files[0].name : '');
+          this.styleCtrlGrp.get('imagesno').setValue(res);
+        }, error => console.error(`Error : ${error}`));
+      } else {
+        this.snackbar.open(`Only image type file supported`, `Close`, { duration: 2000 });
+      }
+
     }
   }
   uploadFileChange() {

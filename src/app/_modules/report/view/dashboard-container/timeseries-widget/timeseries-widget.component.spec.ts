@@ -4,7 +4,7 @@ import { TimeseriesWidgetComponent } from './timeseries-widget.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FilterWidget,SeriesWith,WidgetTimeseries,AggregationOperator,ChartType,TimeSeriesWidget,AssginedColor } from '@modules/report/_models/widget';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
-import {FormControl } from '@angular/forms';
+import {FormControl, FormGroup } from '@angular/forms';
 import { WidgetService } from '@services/widgets/widget.service';
 import { of } from 'rxjs';
 import { ChartLegendLabelItem } from 'chart.js';
@@ -12,7 +12,6 @@ import { ChartLegendLabelItem } from 'chart.js';
 describe('TimeseriesWidgetComponent', () => {
   let component: TimeseriesWidgetComponent;
   let fixture: ComponentFixture<TimeseriesWidgetComponent>;
-
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ TimeseriesWidgetComponent ],
@@ -212,4 +211,60 @@ it('transformDataSets(),  transformDataSets', async(()=>{
     const res =  component.bucketModify(mockData,false);
     expect(res.length).toEqual(11);
   }));
+
+  it('getBucketKey(), generate bucket key ', async(()=>{
+    const data = [{
+      'sterms#term':{
+        buckets:[{
+          key:'Test1'
+        },{
+          key:'Test2'
+        }]
+      }
+    }];
+    const res = component.getBucketKey(data);
+    expect(res.length).toEqual(2);
+  }));
+
+  it('updateForm(), update form element ', async(()=>{
+    component.dateFilters = [{
+      id:1,
+      isActive:false,
+      value:1
+    }];
+
+    component.formGroup = new FormGroup({
+      field: new FormControl('')
+    });
+
+    component.timeseriesData = {timeSeries:{seriesWith:SeriesWith.day, fieldId:'MATL_TYPE'}} as TimeSeriesWidget;
+
+  let timeseriesData : TimeSeriesWidget;
+  let widgetTimeseries : WidgetTimeseries;
+
+  widgetTimeseries = {widgetId: 123,fieldId: 'STATUS',seriesWith: SeriesWith.week,seriesFormat: 'dd.mm.yyyy',aggregationOperator: AggregationOperator.COUNT,
+    chartType: ChartType.LINE,
+    isEnableDatalabels: false,
+    isEnableLegend: false,
+    legendPosition : null,
+    datalabelsPosition: null,
+    xAxisLabel : '100',
+    yAxisLabel : '100',
+    scaleFrom: 0,
+    scaleTo: 1000,
+    stepSize: 100,
+    dataSetSize: 100,
+    groupWith : 'REQUESTOR_DATE',widgetColorPalette:null,distictWith:'REGION',showInPercentage:false,bucketFilter:null}
+
+  timeseriesData = {widgetId:123,widgetName:'test',widgetType:null,objectType:'1005',plantCode:'0',indexName:'do_workflow',desc:'',timeSeries:widgetTimeseries}
+
+  component.timeseriesData = timeseriesData;
+  component.filterCriteria = [];
+  const filterWidget = new FilterWidget();
+  filterWidget.fieldId = 'STATUS';
+
+  component.updateForm('MATL_TYPE', {id:1,value:7,isActive:false});
+  expect(component.updateForm('MATL_TYPE', {id:1,value:7,isActive:false})).toBe(undefined);
+  }));
+
 });

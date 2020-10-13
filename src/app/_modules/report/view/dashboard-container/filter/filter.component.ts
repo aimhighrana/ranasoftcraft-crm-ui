@@ -546,8 +546,8 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
   }
 
   clearFilterCriteria() {
-    const picklist = this.filterWidget.getValue() ? this.filterWidget.getValue().metaData.picklist : '';
-    const dataType = this.filterWidget.getValue() ? this.filterWidget.getValue().metaData.dataType : '';
+    const picklist = this.filterWidget.getValue() ? (this.filterWidget.getValue().metaData ? this.filterWidget.getValue().metaData.picklist : '') : '';
+    const dataType = this.filterWidget.getValue() ? (this.filterWidget.getValue().metaData ? this.filterWidget.getValue().metaData.dataType : '') : '';
     switch (picklist) {
       case '0':
         if(dataType === 'NUMC') {

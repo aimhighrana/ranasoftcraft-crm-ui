@@ -127,6 +127,9 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         console.log('legend clicked..')
         this.legendClick(legendItem);
       }
+    },
+    onClick: (event?: MouseEvent, activeElements?: Array<{}>) =>{
+      this.stackClickFilter(event, activeElements);
     }
   };
 
@@ -536,23 +539,28 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
 
   transformDataForComparison(res:any, forDistinct?: boolean){
     const finalOutput = new Array();
+    this.dataSetlabel = [];
+    this.chartLegend = [];
     const aggregation = res ?  res.aggregations['date_histogram#date'] : [];
     const arrKeys = ['data','id','label','fill','border'];
    if(aggregation.buckets !== undefined && aggregation.buckets.length>0){
+     const keys = this.getBucketKey(aggregation.buckets);
       aggregation.buckets.forEach(singleBucket => {
       const dataSet = new Object();
       const milliVal = singleBucket.key_as_string;
       const arrBuckets = singleBucket['sterms#term'].buckets;
       const arrcount = new Array();
-      arrBuckets.forEach(innerBucket => {
-        const count = forDistinct ? (innerBucket['cardinality#count'] ? innerBucket['cardinality#count'].value : 0) : innerBucket.doc_count;
-        const label = innerBucket.key;
+      keys.forEach(key =>{
+        const bucket  = arrBuckets.filter(fil=> fil.key === key)[0];
+        const count =  bucket ?( forDistinct ? (bucket['cardinality#count'] ? bucket['cardinality#count'].value : 0) : bucket.doc_count) : 0;
         arrcount.push(count);
-        const chartLegend = { text: label, code: label, legendIndex: this.chartLegend.length };
-         const exist  = this.chartLegend.filter(map => map.text === label);
+        const chartLegend = { text: key, code: key, legendIndex: this.chartLegend.length };
+         const exist  = this.chartLegend.filter(map => map.text === key);
          if(exist.length===0){
           this.chartLegend.push(chartLegend);
-          this.dataSetlabel.push(label);
+          if(this.dataSetlabel.indexOf(key) === -1) {
+            this.dataSetlabel.push(key);
+          }
         }
       });
         // Prepare datasets for comparison in timeseries
@@ -563,22 +571,20 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
    }
    this.timeSeriesOption.scales = {xAxes: [{}],yAxes: [{}]};
    this.timeSeriesOption.legend = {display: true,position:'bottom'};
-   this.timeSeriesOption.animation = {
-  onComplete() {
-    // const chartInstance = this.chart;
-    // chartInstance.ctx.textAlign = 'center';
-    // chartInstance.ctx.textBaseline = 'bottom';
-
-    // this.data.datasets.forEach(function(dataset, i) {
-    //   const meta = chartInstance.controller.getDatasetMeta(i);
-    //   meta.data.forEach(function(bar, index) {
-    //     const data = dataset.data[index];
-    //     chartInstance.ctx.fillText(data, bar._model.x, bar._model.y - 5);
-    //   });
-    // });
-  }
-};
    return finalOutput;
+  }
+
+  getBucketKey(buckets: any): string[] {
+    const res: string[] = [];
+    buckets.forEach(bucket=>{
+      const keys = bucket['sterms#term'].buckets.map(map=> map.key);
+      keys.forEach(k => {
+        if(res.indexOf(k) === -1 ) {
+          res.push(k);
+        }
+      });
+    });
+    return res;
   }
 
   /**
@@ -827,4 +833,47 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
 
     this.emitEvtFilterCriteria(this.filterCriteria);
   }
+
+
+  /**
+   * After click on stack br / line then should emit through this function ..
+   * @param event canvas evnet ..
+   * @param activeElements get active element ..
+   */
+  stackClickFilter(event?: MouseEvent, activeElements?: Array<any>) {
+    if(this.chart && activeElements.length>0) {
+     const option = this.chart.chart.getElementAtEvent(event) as any;
+     if(option && option[0] && this.chartLegend[(option[0]._index)]) {
+        const axislabel = this.chartLegend[(option[0]._index)];
+
+        const fieldId = this.timeseriesData.timeSeries.fieldId;
+        let appliedFilters = this.filterCriteria.filter(fill => fill.fieldId === fieldId);
+        this.removeOldFilterCriteria(appliedFilters);
+          if(appliedFilters.length >0) {
+            const cri = appliedFilters.filter(fill => fill.conditionFieldValue === axislabel.code);
+            if(cri.length ===0) {
+              const critera1: Criteria = new Criteria();
+              critera1.fieldId = fieldId;
+              critera1.conditionFieldId = fieldId;
+              critera1.conditionFieldValue = axislabel.code;
+              critera1.blockType = BlockType.COND;
+              critera1.conditionOperator = ConditionOperator.EQUAL;
+              appliedFilters.push(critera1);
+            }
+          } else {
+            appliedFilters = [];
+            const critera1: Criteria = new Criteria();
+            critera1.fieldId = fieldId;
+            critera1.conditionFieldId = fieldId
+            critera1.conditionFieldValue = axislabel.code;
+            critera1.blockType = BlockType.COND;
+            critera1.conditionOperator = ConditionOperator.EQUAL;
+            appliedFilters.push(critera1);
+          }
+          appliedFilters.forEach(app => this.filterCriteria.push(app));
+          this.emitEvtFilterCriteria(this.filterCriteria);
+     }
+
+   }
+ }
 }
