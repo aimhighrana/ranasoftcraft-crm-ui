@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MetadataModel } from '@models/schema/schemadetailstable';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'pros-report-datatable-column-settings',
@@ -47,6 +48,10 @@ export class ReportDatatableColumnSettingsComponent implements OnInit {
    * to store indeterminate state
    */
   allIndeterminate = false;
+
+
+  headersObs: Observable<MetadataModel[]> = of([]);
+
 
   /**
    * Constructor of class
@@ -113,6 +118,8 @@ export class ReportDatatableColumnSettingsComponent implements OnInit {
           }
         }
       }
+
+      this.headersObs = of(this.headers);
     }, error => {
       console.error('Error occur while getting meta data fields', error.message)
     })
@@ -151,7 +158,9 @@ export class ReportDatatableColumnSettingsComponent implements OnInit {
         if (this.fieldIdArray.indexOf(dynamicHeader.fieldId) === -1) {
           this.headers.push(dynamicHeader)
         }
-      })
+      });
+
+      this.headersObs = of(this.headers);
     }, error => {
       console.error('Error while getting report workflow fields', error.message);
     })
@@ -231,15 +240,11 @@ export class ReportDatatableColumnSettingsComponent implements OnInit {
    * @param value string to be searched
    */
   searchHeader(value: string) {
-    if (value.length > 0) {
+    if(value && value.trim() !== '') {
       const headers = this.headers.filter(header => header.fieldDescri.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !== -1);
-      this.suggestedHeaders = headers.map(map => map.fieldId);
-      document.getElementById('suggested').scrollIntoView(false);
-      // const data = (document.getElementById('suggested')).offsetTop;
-      // (document.getElementsByTagName('mat-card')[0]).scrollTo(0,data-40);
-    }
-    if (value === null || value === undefined || value === '') {
-      this.suggestedHeaders = [];
+      this.headersObs = of(headers);
+    } else {
+      this.headersObs = of(this.headers);
     }
   }
 

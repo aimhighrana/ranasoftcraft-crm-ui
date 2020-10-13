@@ -326,7 +326,8 @@
                                     [ngIf]="selStyleWid && selStyleWid.widgetType === 'TABLE_LIST' && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===false">
                                     <mat-label>Choose columns</mat-label>
                                     <mat-form-field appearance="outline">
-                                        <mat-select>
+                                        <input matInput [matAutocomplete]="chooseColumn" (keyup)="searchChooseColumn($event.target.value)">
+                                        <mat-autocomplete #chooseColumn="matAutocomplete" [displayWith]="chooseColumnDisWith">
                                             <mat-option *ngFor="let field of headerFields | async"
                                                 value="{{ field.fieldId }}">
                                                 <div (click)="optionClicked($event, field)">
@@ -337,18 +338,21 @@
                                                     </mat-checkbox>
                                                 </div>
                                             </mat-option>
-                                        </mat-select>
+                                        </mat-autocomplete>
+
                                     </mat-form-field>
                                     <mat-hint>{{ chooseColumns ? chooseColumns.length : '0' }} Selected</mat-hint>
                                 </ng-template>
 
                                 <ng-template
                                     [ngIf]="selStyleWid && selStyleWid.widgetType === 'TABLE_LIST' && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===true">
+                                    <mat-label>Choose columns</mat-label>
                                     <mat-form-field appearance="outline">
-                                        <mat-label>Choose columns</mat-label>
-                                        <mat-select>
+
+                                        <input matInput [matAutocomplete]="chooseColumnWF" (keyup)="searchChooseColumnWorkflow($event.target.value)">
+                                        <mat-autocomplete #chooseColumnWF="matAutocomplete" [displayWith]="chooseColumnDisWith">
                                             <mat-optgroup label="System fileds">
-                                                <mat-option *ngFor="let field of workflowFields.static"
+                                                <mat-option *ngFor="let field of (workflowFieldsObs | async).static"
                                                 value="{{ field.fieldId }}">
                                                 <div (click)="optionClicked($event, field)">
                                                     <mat-checkbox prosClickStopPropagation
@@ -361,7 +365,7 @@
                                             </mat-optgroup>
 
                                             <mat-optgroup label="Module fileds">
-                                                <mat-option *ngFor="let field of workflowFields.dynamic"
+                                                <mat-option *ngFor="let field of (workflowFieldsObs | async).dynamic"
                                                 value="{{ field.fieldId }}">
                                                 <div (click)="optionClicked($event, field)">
                                                     <mat-checkbox prosClickStopPropagation
@@ -372,8 +376,8 @@
                                                 </div>
                                                </mat-option>
                                             </mat-optgroup>
-                                            
-                                        </mat-select>
+                                        </mat-autocomplete> 
+                                         
                                     </mat-form-field>
                                     <mat-hint>{{ chooseColumns ? chooseColumns.length : '0' }} Selected</mat-hint>
                                 </ng-template>

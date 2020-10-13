@@ -84,6 +84,16 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   maxReportNameLength = 100;
 
+  /**
+   * Hold only header fields..
+   */
+  headerFls: MetadataModel[] = [];
+
+  /**
+   * For workflow data set choose column filter ...
+   */
+  workflowFieldsObs: Observable<WorkflowFieldRes> = of(new WorkflowFieldRes());
+
   constructor(
     private formBuilder: FormBuilder,
     private reportService: ReportService,
@@ -251,12 +261,12 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           this.getRecordCount(fillData);
           this.styleCtrlGrp.get('isWorkflowdataSet').setValue(false);
         }
-        // if(this.styleCtrlGrp.get('isWorkflowdataSet').value) {
-        //   this.getWorkFlowFields(fillData.split(','));
-        //   this.getRecordCount(fillData, true);
-        //   this.getWorkFlowPathDetails(fillData.split(','));
-        //   this.styleCtrlGrp.get('isWorkflowdataSet').setValue(true);
-        // }
+        if(fillData  !== this.styleCtrlGrp.value.objectType && this.styleCtrlGrp.get('isWorkflowdataSet').value) {
+          this.getWorkFlowFields(fillData.split(','));
+          this.getRecordCount(fillData, true);
+          this.getWorkFlowPathDetails(fillData.split(','));
+          this.styleCtrlGrp.get('isWorkflowdataSet').setValue(true);
+        }
 
       } else {
         console.log(fillData);
@@ -273,6 +283,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
             headerArray.push(flds.headers[obj]);
           }
         }
+        this.headerFls = headerArray;
         this.headerFields = of(headerArray);
       }
     });
@@ -280,6 +291,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     const wfldSub = this.wfFields.subscribe(flds => {
       if (flds) {
         this.workflowFields = flds;
+        this.workflowFieldsObs = of(flds);
       }
     })
     this.subscriptions.push(fldSub);
@@ -788,5 +800,39 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.styleCtrlGrp.get('distictWith').setValue('');
     }
     console.log(fieldData);
+  }
+
+  /**
+   * Should return field descriptions
+   * @param obj curret render object
+   */
+  chooseColumnDisWith(obj: MetadataModel): string {
+    return obj? obj.fieldDescri: null;
+  }
+
+  /**
+   * Search choose columns ...
+   * @param val searchable text for choose columns ..
+   */
+  searchChooseColumn(val: string) {
+    if(val && val.trim() !=='') {
+      this.headerFields = of(this.headerFls.filter(fil => fil.fieldDescri.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !==-1));
+    } else {
+      this.headerFields = of(this.headerFls);
+    }
+  }
+
+  /**
+   * Choose column searchable fields...
+   * @param val searchable string for choose column
+   */
+  searchChooseColumnWorkflow(val: string) {
+    if(val && val.trim() !=='') {
+      const sysFld = this.workflowFields.static.filter(fil => fil.fieldDescri.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !==-1);
+      const dynFld = this.workflowFields.dynamic.filter(fil => fil.fieldDescri.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !==-1);
+      this.workflowFieldsObs = of({dynamic:dynFld,static:sysFld});
+    } else {
+      this.workflowFieldsObs = of(this.workflowFields);
+    }
   }
 }

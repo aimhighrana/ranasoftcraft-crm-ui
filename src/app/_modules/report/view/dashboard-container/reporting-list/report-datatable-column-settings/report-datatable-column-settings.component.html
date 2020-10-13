@@ -24,21 +24,15 @@
                 [indeterminate]="allIndeterminate" (change)="selectAllCheckboxes()"> <span class="checkboxlabel">All</span></mat-checkbox>
 
             <div cdkDropList [cdkDropListData]="headers" (cdkDropListDropped)="drop($event)">
-                <div *ngFor="let header of headers" id="{{ header.fieldId }}" cdkDragHandle cdkDrag class="colunm-list">
+                <div *ngFor="let header of headersObs | async" id="{{ header.fieldId }}" cdkDragHandle cdkDrag class="colunm-list">
                     <div class="f-row colunm-box">
                         <mat-icon>drag_handle</mat-icon>
                         <div class="col-spacer"></div>
-                        <ng-template [ngIf]="suggestedHeaders.indexOf(header.fieldId) !==-1" [ngIfElse]="notSuggested">
-                            <mat-checkbox color="primary" (change)="selectionChange(header)" [checked]="isChecked(header)">
-                                <span id="suggested" style="color: red;">{{ header.fieldDescri ? header.fieldDescri : 'Untitled' }} </span>
-                            </mat-checkbox>
-                        </ng-template>
 
-                        <ng-template #notSuggested>
-                            <mat-checkbox color="primary" (change)="selectionChange(header)" [checked]="isChecked(header)">
-                                {{ header.fieldDescri ? header.fieldDescri : 'Untitled' }}
-                            </mat-checkbox>
-                        </ng-template>
+                        <mat-checkbox color="primary" (change)="selectionChange(header)" [checked]="isChecked(header)">
+                            {{ header.fieldDescri ? header.fieldDescri : 'Untitled' }}
+                        </mat-checkbox>
+                        
                     </div>
                 </div>
             </div>
