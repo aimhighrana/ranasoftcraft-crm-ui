@@ -6,25 +6,22 @@ mat-card.root {
   padding: 0 16px;
 
   .breadcrum-toolbar {
-    position: sticky;
+    align-items: center;
     padding-top: 16px;
+    position: sticky;
     top: 0;
     z-index: 2;
 
+    .display-heading-large {
+      font-size: 1.2rem;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
     .mdo-constrained-right {
+      align-items: center;
       width: 100%;
-
-      .breadcrum-head {
-        align-items: center;
-        width: 100%;
-
-        .display-heading-large {
-          font-size: 1.2rem;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          overflow: hidden;
-        }
-      }
     }
   }
 
@@ -36,12 +33,12 @@ mat-card.root {
     }
 
     .collaborators-list {
-      height: calc(100% - 40px - 70px - 16px - 220px);
+      height: calc(100% - 40px - 70px - 8px - 220px);
       overflow-y: auto;
     }
 
     .chip-enable-coll-list {
-      height: calc(100% - 40px - 70px - 16px - 264px);
+      height: calc(100% - 40px - 70px - 8px - 264px);
     }
 
     .collaborators-add {
@@ -103,7 +100,11 @@ mat-card.root {
 }
 
 @media (min-width: 1200px) {
+  .mdo-justify {
+    margin: 0 54px;
+  }
+
   .mdo-constrained-right {
-    margin-right: 52px;
+    margin-right: 54px;
   }
 }

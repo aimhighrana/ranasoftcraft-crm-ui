@@ -404,8 +404,6 @@
   // Sidenav bar
   mat-sidenav.mat-drawer {
     overflow-y: visible;
-    transition: 0.1s;
-    transition-timing-function: linear;
   }
 
   // Generic breadcrum
@@ -1105,7 +1103,7 @@
   pros-reporting-list {
     mat-paginator.mat-paginator {
       .mat-paginator-container {
-        min-height: 40px;
+        min-height: 50px;
       }
 
       mat-form-field.mat-form-field.mat-paginator-page-size-select {
