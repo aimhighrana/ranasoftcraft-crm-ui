@@ -41,4 +41,14 @@ describe('PrimaryNavbarComponent', () => {
     component.sendToParent(value2);
     expect(router.navigate).toHaveBeenCalledWith(['/home/dash/welcome'])
   })
+
+  it('checkNavOnReload(), should check primary navigation on page reload', async()=>{
+    let url = 'https://beta.mdoondemand.com/MDOSF/fuze/ngx-mdo/index.html#/home/dash/welcome';
+    component.checkNavOnReload(url);
+    expect(component.isNavSelected).toEqual('welcome');
+
+    url = 'https://beta.mdoondemand.com/MDOSF/fuze/ngx-mdo/index.html#/home/report/dashboard/914055233326997382';
+    component.checkNavOnReload(url);
+    expect(component.isNavSelected).toEqual('report');
+  })
 });

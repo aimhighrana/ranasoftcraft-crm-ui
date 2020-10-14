@@ -1,13 +1,12 @@
 import { Component, OnInit, OnChanges, SimpleChanges, Input, EventEmitter, Output } from '@angular/core';
-import { Router } from '@angular/router';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { SchemaListModuleList, SchemaListDetails } from '@models/schema/schemalist';
-import { Location } from '@angular/common';
 import { SchemaService } from '@services/home/schema.service';
 import { ReportService } from '@modules/report/_service/report.service';
 import { ReportList } from '@modules/report/report-list/report-list.component';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { Observable, of } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'pros-secondary-navbar',
@@ -52,7 +51,6 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
   constructor(
     private router: Router,
     private schemaListService: SchemalistService,
-    private location: Location,
     private schemaService: SchemaService,
     private reportService: ReportService,
     private sharedService: SharedServiceService
@@ -81,11 +79,6 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-
-    this.location.subscribe(res => {
-      console.log(res);
-    })
-
     this.sharedService.getReportListData().subscribe(res => {
       if (res) {
         this.getreportList();
@@ -98,25 +91,8 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
       }
     });
 
-    // this.sharedService.secondaryBarData.subscribe((res) => {
-    //   this.getSchemaList();
-    // })
-    // this.sharedService.isSecondaryNavRefresh().subscribe(res => {
-    //   switch (res) {
-    //     case SecondaynavType.schema:
-    //       this.getSchemaList();
-    //       break;
-
-    //     case SecondaynavType.dataIntilligence:
-    //       this.getDataIntilligence();
-    //       break;
-    //     case SecondaynavType.report:
-    //       this.getreportList();
-    //       break;
-    //     default:
-    //       break;
-    //   }
-    // });
+    const currentUrl = this.router.url;
+    this.checkDescOnReload(currentUrl)
   }
 
   /**
@@ -218,7 +194,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
    * @param searchString schema string to be searched
    */
   searchSchema(searchString: string) {
-    if(this.activatedPrimaryNav==='welcome'){
+    if (this.activatedPrimaryNav === 'welcome') {
       if (searchString === null) {
         return this.searchSchemaResults = this.dataIntillegences;
       }
@@ -229,20 +205,20 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
         }
       })
     }
-    if(this.activatedPrimaryNav==='schema'){
-      if(searchString===null){
+    if (this.activatedPrimaryNav === 'schema') {
+      if (searchString === null) {
         return this.searchModuleResults = this.moduleList;
       }
       this.searchModuleResults = this.moduleList.filter((module) => {
         module.moduleDesc = module.moduleDesc ? module.moduleDesc : 'untitled';
-        if(module.moduleDesc.toLowerCase().includes(searchString.toLowerCase()) || this.searchForSchema(module, searchString)){
+        if (module.moduleDesc.toLowerCase().includes(searchString.toLowerCase()) || this.searchForSchema(module, searchString)) {
           return module;
         }
       })
     }
-    if(this.activatedPrimaryNav==='report'){
-      if(searchString) {
-        this.reportOb = of(this.reportList.filter(fil=> fil.reportName.toLocaleLowerCase().indexOf(searchString.toLocaleLowerCase()) !==-1));
+    if (this.activatedPrimaryNav === 'report') {
+      if (searchString) {
+        this.reportOb = of(this.reportList.filter(fil => fil.reportName.toLocaleLowerCase().indexOf(searchString.toLocaleLowerCase()) !== -1));
       } else {
         this.reportOb = of(this.reportList);
       }
@@ -254,31 +230,48 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
    * @param schema schema obj
    * @param searchString string to be searched
    */
-  searchForVarient(schema: SchemaListDetails, searchString: string){
+  searchForVarient(schema: SchemaListDetails, searchString: string) {
     let flag = false;
     schema.variants.forEach((variant) => {
-      if(variant.variantName.toLowerCase().includes(searchString.toLowerCase())){
+      if (variant.variantName.toLowerCase().includes(searchString.toLowerCase())) {
         return flag = true;
       }
     })
     return flag;
   }
 
-/**
- * function to search for schema inside module
- * @param module module obj
- * @param searchString string to be searched
- */
-  searchForSchema(module: SchemaListModuleList, searchString: string){
+  /**
+   * function to search for schema inside module
+   * @param module module obj
+   * @param searchString string to be searched
+   */
+  searchForSchema(module: SchemaListModuleList, searchString: string) {
     let flag = false;
-    if(module.schemaLists){
+    if (module.schemaLists) {
       module.schemaLists.forEach((schema) => {
-        schema.schemaDescription = schema.schemaDescription ? schema.schemaDescription: 'untitled';
-        if(schema.schemaDescription.toLowerCase().includes(searchString.toLowerCase())){
+        schema.schemaDescription = schema.schemaDescription ? schema.schemaDescription : 'untitled';
+        if (schema.schemaDescription.toLowerCase().includes(searchString.toLowerCase())) {
           return flag = true;
         }
       })
     }
     return flag;
+  }
+
+  /**
+   * function to check for the secondary navigation description and listing
+   * @param url current url
+   */
+  checkDescOnReload(url: string){
+    if (url.includes('/home/dash/welcome')) {
+      this.activatedPrimaryNav = 'welcome'
+    }
+    if (url.includes('/home/report')) {
+      this.activatedPrimaryNav = 'report';
+      this.getreportList();
+    }
+    if (url.includes('/home/schema')) {
+      this.activatedPrimaryNav = 'schema';
+    }
   }
 }

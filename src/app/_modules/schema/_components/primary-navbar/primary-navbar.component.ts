@@ -50,6 +50,9 @@ export class PrimaryNavbarComponent implements OnInit {
       this.userDetails = res;
     }, error => console.error(`Error : ${error.message}`));
     this.getNotificationsCount();
+
+    const currentUrl = this.router.url;
+    this.checkNavOnReload(currentUrl);
   }
 
   /**
@@ -105,5 +108,21 @@ export class PrimaryNavbarComponent implements OnInit {
    */
   openSystemTray() {
     this.router.navigate([{ outlets: { sb: ['sb', 'system-tray'] } }]);
+  }
+
+  /**
+   * function to check for navigation selection on reloading page
+   * @param url current url
+   */
+  checkNavOnReload(url: string){
+    if (url.includes('/home/dash/welcome')) {
+      this.isNavSelected = 'welcome'
+    }
+    if (url.includes('/home/report')) {
+      this.isNavSelected = 'report';
+    }
+    if (url.includes('/home/schema')) {
+      this.isNavSelected = 'schema';
+    }
   }
 }
