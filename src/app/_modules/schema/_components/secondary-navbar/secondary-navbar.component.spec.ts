@@ -102,4 +102,14 @@ describe('SecondaryNavbarComponent', () => {
     });
   }));
 
+  it('checkDescOnReload(), should check Desc of secondary nav on page reload', async()=>{
+    let url = 'https://beta.mdoondemand.com/MDOSF/fuze/ngx-mdo/index.html#/home/dash/welcome';
+    component.checkDescOnReload(url);
+    expect(component.activatedPrimaryNav).toEqual('welcome');
+
+    url = 'https://beta.mdoondemand.com/MDOSF/fuze/ngx-mdo/index.html#/home/report/dashboard/914055233326997382';
+    component.checkDescOnReload(url);
+    expect(component.activatedPrimaryNav).toEqual('report');
+  })
+
 });
