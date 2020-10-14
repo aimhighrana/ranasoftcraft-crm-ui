@@ -60,6 +60,7 @@ import { NavigationDropdownComponent } from './_components/navigation-dropdown/n
 import { FilterValuesComponent } from './_components/filter-values/filter-values.component';
 import { ConfirmationDialogComponent } from './_components/confirmation-dialog/confirmation-dialog.component';
 import { ResumeSessionComponent } from './_components/resume-session/resume-session.component';
+import { ScrollingModule } from '@angular/cdk/scrolling'
 
 @NgModule({
   declarations: [
@@ -137,7 +138,8 @@ import { ResumeSessionComponent } from './_components/resume-session/resume-sess
     DragDropModule,
     OverlayModule,
     // chart module
-    ChartsModule
+    ChartsModule,
+    ScrollingModule
   ],
   exports: [
     // modules
@@ -189,6 +191,7 @@ import { ResumeSessionComponent } from './_components/resume-session/resume-sess
     OverlayModule,
     // chart module
     ChartsModule,
+    ScrollingModule,
     // directives
     ClickStopPropagationDirective,
     TagsEllipsisDirective,
