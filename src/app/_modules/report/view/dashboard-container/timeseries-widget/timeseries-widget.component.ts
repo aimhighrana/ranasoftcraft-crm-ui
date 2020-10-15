@@ -258,6 +258,12 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         const week = moment().subtract((Number(value.value)*7), 'd').format('MM/DD/YYYY HH:mm');
         endDatemilli = Date.parse(week.toString()).toString();
         break;
+
+      case SeriesWith.year:
+        const year = moment().subtract(value.value, 'y').format('MM/DD/YYYY HH:mm');
+        endDatemilli = Date.parse(year.toString()).toString();
+        break;
+
       default:
         break;
     }
