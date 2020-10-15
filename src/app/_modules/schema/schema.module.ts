@@ -42,6 +42,7 @@ import { BrruleSideSheetComponent } from './_components/v2/brrule-side-sheet/brr
 import { SchemaInfoComponent } from './_components/v2/schema-info/schema-info.component';
 import { CreateSchemaComponent } from './_components/v2/create-schema/create-schema.component';
 import { SubscriberSideSheetComponent } from './_components/v2/subscriber-side-sheet/subscriber-side-sheet.component';
+import { ScheduleTabComponent } from './_components/schedule-tab/schedule-tab.component';
 
 
 @NgModule({
@@ -87,7 +88,8 @@ import { SubscriberSideSheetComponent } from './_components/v2/subscriber-side-s
     SchemaInfoComponent,
     CreateSchemaComponent,
     SubscriberSideSheetComponent,
-    CreateSchemaComponent
+    CreateSchemaComponent,
+    ScheduleTabComponent
   ],
   imports: [
     CommonModule,

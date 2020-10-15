@@ -790,6 +790,17 @@
     align-items: center;
   }
 
+  mat-button-toggle-group.mat-button-toggle-group {
+    box-shadow: none;
+    background-color: mat-color($background-palette, app-bar);
+    overflow: visible;
+
+    .mat-button-toggle-checked {
+      background-color: mat-color($background-palette, card);
+      box-shadow: 0 0 3px rgba(108, 124, 139, 0.5);
+    }
+  }
+
   mat-datepicker-toggle.mat-datepicker-toggle {
     button.mat-icon-button {
       border-radius: 0;
@@ -1170,6 +1181,7 @@
   pros-bar-chart,
   pros-count,
   pros-filter,
+  pros-stackedbar-chart,
   pros-html-editor,
   pros-image,
   pros-reporting-list,

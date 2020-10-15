@@ -1,0 +1,40 @@
+div.root {
+  padding: 16px 0;
+
+  mat-label {
+    font-weight: 500;
+    font-size: 0.8rem;
+    padding-bottom: 5px;
+  }
+
+  mat-divider {
+    margin: 16px 0;
+
+    &.divider-dashed {
+      border-top-style: dashed;
+    }
+  }
+
+  .every-field {
+    align-items: center;
+
+    pros-form-input {
+      flex: 2;
+    }
+
+    .week-label {
+      padding-top: 20px;
+      flex: 3;
+    }
+  }
+
+  mat-radio-group {
+    display: flex;
+    flex-wrap: wrap;
+
+    mat-radio-button {
+      flex: 0 0 25%;
+      margin-bottom: 8px;
+    }
+  }
+}
