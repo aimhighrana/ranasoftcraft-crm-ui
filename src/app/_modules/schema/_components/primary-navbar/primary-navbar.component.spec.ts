@@ -50,5 +50,9 @@ describe('PrimaryNavbarComponent', () => {
     url = 'https://beta.mdoondemand.com/MDOSF/fuze/ngx-mdo/index.html#/home/report/dashboard/914055233326997382';
     component.checkNavOnReload(url);
     expect(component.isNavSelected).toEqual('report');
+
+    url = 'https://beta.mdoondemand.com/MDOSF/fuze/ngx-mdo/index.html#/home/schema/1005';
+    component.checkNavOnReload(url);
+    expect(component.isNavSelected).toEqual('schema');
   })
 });

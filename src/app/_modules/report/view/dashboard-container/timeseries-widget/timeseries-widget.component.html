@@ -19,9 +19,9 @@
 
         <button *ngFor="let dateType of dateFilters" mat-stroked-button [color]="dateType.isActive ? 'primary' : '' "
           (click)="updateForm('date',dateType)">{{ dateType.value === 'millisecond' ? 'Today' : dateType.value}}
-          <ng-teplate *ngIf = "dateType.value !== 'millisecond'">
+          <ng-template *ngIf = "dateType.value !== 'millisecond'">
             {{ timeseriesData.timeSeries ? timeseriesData.timeSeries.seriesWith : ''}}s
-          </ng-teplate>
+          </ng-template>
         </button>
       <div>
           <mat-form-field appearance="outline">

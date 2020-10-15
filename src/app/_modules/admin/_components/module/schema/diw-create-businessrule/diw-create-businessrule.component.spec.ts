@@ -47,7 +47,6 @@ describe('DiwCreateBusinessruleComponent', () => {
       component.dialogData = dialogData;
 
       component.ngOnInit();
-
       expect(component.moduleId).toEqual(dialogData.moduleId);
       expect(component.schemaId).toEqual(dialogData.schemaId);
       expect(component.brId).toEqual(dialogData.brId);
@@ -61,8 +60,57 @@ describe('DiwCreateBusinessruleComponent', () => {
       brType: new FormControl(BusinessRuleType.BR_MANDATORY_FIELDS)
     });
 
-    const data =  component.businessRuleTypeDef;
+    let data =  component.businessRuleTypeDef;
     expect(data).toEqual('Missing Rule');
+
+    component.stepOneCtrl = new FormGroup({
+      brType: new FormControl(BusinessRuleType.BR_METADATA_RULE)
+    });
+
+    data =  component.businessRuleTypeDef;
+    expect(data).toEqual('Metadata Rule');
+
+    component.stepOneCtrl = new FormGroup({
+      brType: new FormControl(BusinessRuleType.BR_CUSTOM_SCRIPT)
+    });
+
+    data =  component.businessRuleTypeDef;
+    expect(data).toEqual('User Defined Rule');
+
+    component.stepOneCtrl = new FormGroup({
+      brType: new FormControl(BusinessRuleType.BR_DEPENDANCY_RULE)
+    });
+
+    data =  component.businessRuleTypeDef;
+    expect(data).toEqual('Dependency Rule');
+
+    component.stepOneCtrl = new FormGroup({
+      brType: new FormControl(BusinessRuleType.BR_DUPLICATE_RULE)
+    });
+
+    data =  component.businessRuleTypeDef;
+    expect(data).toEqual('Duplicate Rule');
+
+    component.stepOneCtrl = new FormGroup({
+      brType: new FormControl(BusinessRuleType.BR_API_RULE)
+    });
+
+    data =  component.businessRuleTypeDef;
+    expect(data).toEqual('API Rule');
+
+    component.stepOneCtrl = new FormGroup({
+      brType: new FormControl(BusinessRuleType.BR_EXTERNALVALIDATION_RULE)
+    });
+
+    data =  component.businessRuleTypeDef;
+    expect(data).toEqual('External Validation Rule');
+
+    component.stepOneCtrl = new FormGroup({
+      brType: new FormControl(BusinessRuleType.BR_REGEX_RULE)
+    });
+
+    data =  component.businessRuleTypeDef;
+    expect(data).toEqual('Regex Rule');
   }));
 
   it('closeDialog() should close the dialog', async(() => {

@@ -110,6 +110,10 @@ describe('SecondaryNavbarComponent', () => {
     url = 'https://beta.mdoondemand.com/MDOSF/fuze/ngx-mdo/index.html#/home/report/dashboard/914055233326997382';
     component.checkDescOnReload(url);
     expect(component.activatedPrimaryNav).toEqual('report');
+
+    url = 'https://beta.mdoondemand.com/MDOSF/fuze/ngx-mdo/index.html#/home/schema/1005';
+    component.checkDescOnReload(url);
+    expect(component.activatedPrimaryNav).toEqual('schema');
   })
 
 });

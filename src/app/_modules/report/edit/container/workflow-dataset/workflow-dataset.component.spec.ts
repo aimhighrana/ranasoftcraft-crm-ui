@@ -28,4 +28,14 @@ describe('WorkflowDatasetComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('selectAll(), should select and deselect all checkboxes', async() => {
+    component.allChecked = true;
+    component.selectAll();
+    expect(component.allIndeterminate).toEqual(false);
+
+    component.allChecked = false;
+    component.selectAll();
+    expect(component.allIndeterminate).toEqual(false);
+  })
 });

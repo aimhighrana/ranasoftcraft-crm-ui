@@ -23,7 +23,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
   dataSet: string[] = [];
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
   orientation = 'bar';
-
+  total = 0;
 
   public barChartOptions: ChartOptions = {
     responsive: true,
@@ -175,7 +175,22 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
       this.chartLegend.forEach(legend=>{
         backgroundColorArray.push(this.getUpdatedColorCode(legend.code));
       });
-
+      // to convert data into percentage
+      if (this.barWidget.getValue().isEnabledBarPerc) {
+        this.total = Number(this.dataSet.reduce((accumulator, currentValue) => accumulator + currentValue));
+        this.barChartOptions = {
+          plugins: {
+            datalabels: {
+              display: true,
+              formatter: (value, ctx) => {
+                if (this.total > 0) {
+                  return (value * 100 / this.total).toFixed(2) + '%';
+                }
+              },
+            }
+          }
+        }
+      }
       this.barChartData = [{
         label: this.widgetHeader.widgetName,
         barThickness: 'flex',
@@ -203,7 +218,10 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     buckets.forEach(bucket=>{
       const key = bucket.key;
       const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
-      const val = hits._source.hdvs?hits._source.hdvs[fldid] ?( hits._source.hdvs[fldid] ? hits._source.hdvs[fldid].vc : null) : null:null;
+      const val = hits._source.hdvs?(hits._source.hdvs[fldid] ?
+        ( hits._source.hdvs[fldid] ? hits._source.hdvs[fldid].vc : null) : null):
+        (hits._source.staticFields && hits._source.staticFields[fldid]) ?
+        ( hits._source.staticFields[fldid] ? hits._source.staticFields[fldid].vc : null) : null;
       if(val) {
         const valArray = [];
         val.forEach(v=>{
@@ -250,7 +268,10 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     buckets.forEach(bucket=>{
       const key = bucket.key;
       const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
-      const val = hits._source.hdvs?hits._source.hdvs[fldid] ?( hits._source.hdvs[fldid] ? hits._source.hdvs[fldid].vc : null) : null:null;
+      const val = hits._source.hdvs?(hits._source.hdvs[fldid] ?
+        ( hits._source.hdvs[fldid] ? hits._source.hdvs[fldid].vc : null) : null):
+        (hits._source.staticFields && hits._source.staticFields[fldid]) ?
+        ( hits._source.staticFields[fldid] ? hits._source.staticFields[fldid].vc : null) : null;
       if(val) {
         const valArray = [];
         val.forEach(v=>{

@@ -111,7 +111,10 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     buckets.forEach(bucket=>{
       const key = bucket.key;
       const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
-      const val = hits._source.hdvs[fieldId] ?( hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vc : null) : null;
+      const val = hits._source.hdvs?(hits._source.hdvs[fieldId] ?
+                  ( hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vc : null) : null):
+                  (hits._source.staticFields && hits._source.staticFields[fieldId]) ?
+                  ( hits._source.staticFields[fieldId] ? hits._source.staticFields[fieldId].vc : null) : null;
       if(val) {
         const valArray = [];
         val.forEach(v=>{
@@ -149,7 +152,10 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     buckets.forEach(bucket=>{
       const key = bucket.key;
       const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
-      const val = hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vc : null;
+      const val = hits._source.hdvs?(hits._source.hdvs[fieldId] ?
+        ( hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vc : null) : null):
+        (hits._source.staticFields && hits._source.staticFields[fieldId]) ?
+        ( hits._source.staticFields[fieldId] ? hits._source.staticFields[fieldId].vc : null) : null;
       if(val) {
         const valArray = [];
         val.forEach(v=>{
