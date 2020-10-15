@@ -229,11 +229,15 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           }
         }
 
-        changedWidget.dateFilterCtrl = {
-          dateSelectedFor: latestVal.dateSelectionType,
-          endDate,
-          startDate: strtDate
-        };
+        if(latestVal.dateSelectionType && strtDate) {
+          changedWidget.dateFilterCtrl = {
+            dateSelectedFor: latestVal.dateSelectionType,
+            endDate,
+            startDate: strtDate
+          };
+        } else {
+          changedWidget.dateFilterCtrl = null;
+        }
         this.preapreNewWidgetPosition(changedWidget);
       }
     });
@@ -760,7 +764,11 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   afterWfSelect(selected: WorkflowResponse[]) {
     console.log(selected);
-    this.styleCtrlGrp.get('isWorkflowdataSet').setValue(true);
+    if(selected.length) {
+      this.styleCtrlGrp.get('isWorkflowdataSet').setValue(true);
+    } else {
+      this.styleCtrlGrp.get('isWorkflowdataSet').setValue(false);
+    }
     const objId = selected.map(map=> map.objectid);
     this.getWorkFlowFields(objId);
     this.getRecordCount(objId.toString(), true);
@@ -833,6 +841,19 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.workflowFieldsObs = of({dynamic:dynFld,static:sysFld});
     } else {
       this.workflowFieldsObs = of(this.workflowFields);
+    }
+  }
+  widthCount(event: any) {
+    const data = event? event.target.value: '';
+    if(data > 200) {
+      return this.styleCtrlGrp.get('width').setValue(200);
+    }
+  }
+
+  heightCount(event: any) {
+    const data = event? event.target.value: '';
+    if(data > 1000) {
+      return this.styleCtrlGrp.get('height').setValue(1000);
     }
   }
 }

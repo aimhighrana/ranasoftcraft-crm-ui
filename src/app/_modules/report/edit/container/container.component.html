@@ -102,14 +102,14 @@
                                 <div class="f-col">
                                     <mat-label>Width</mat-label>
                                     <mat-form-field appearance="outline">
-                                        <input type="number" max="pixcel" min="1" matInput formControlName="width">
+                                        <input type="number" max="pixcel" min="1" matInput formControlName="width" (keyup)="widthCount($event)">
                                     </mat-form-field>
                                 </div>
                                 <span class="col-spacer"></span>
                                 <div class="f-col">
                                     <mat-label>Height</mat-label>
                                     <mat-form-field appearance="outline">
-                                        <input type="number" min="0" matInput formControlName="height">
+                                        <input type="number" min="0" matInput formControlName="height" (keyup)="heightCount($event)">
                                     </mat-form-field>
                                 </div>
                             </div>
