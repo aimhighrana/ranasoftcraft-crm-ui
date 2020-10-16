@@ -13,15 +13,16 @@
 
     <div class="row-spacer"></div>
 
-    <div class="f-row create-new" [matMenuTriggerFor]="navigation">
+    <div class="f-row create-new">
+        <!-- [matMenuTriggerFor]="navigation" -->
         <button mat-mini-fab>
             <mat-icon>add</mat-icon>
         </button>
         <div class="col-space">Create new...</div>
-        <mat-menu #navigation="matMenu" direction="right">
-            <!-- <pros-navigation-dropdown (selectedModule)="selectedModule($event)">
-            </pros-navigation-dropdown> -->
-        </mat-menu>
+        <!-- <mat-menu #navigation="matMenu" direction="right">
+            <pros-navigation-dropdown (selectedModule)="selectedModule($event)">
+            </pros-navigation-dropdown>
+        </mat-menu> -->
     </div>
 
     <div class="row-spacer"></div>
@@ -56,10 +57,12 @@
             {{ userDetails.firstName ? userDetails.firstName.substring(0,1).toUpperCase() : ''  }}{{ userDetails.lastName ? userDetails.lastName.substring(0,1).toUpperCase() : ''  }}
         </div>
         <mat-card-title>{{ userDetails.fullName ? userDetails.fullName : userDetails.userName }}</mat-card-title>
-        <!-- <mat-icon>arrow_drop_down</mat-icon> -->
-        <!-- <mat-menu #navigation="matMenu">
-            <pros-navigation-dropdown></pros-navigation-dropdown>
-        </mat-menu> -->
+        <mat-icon [matMenuTriggerFor]="navigation">arrow_drop_down</mat-icon>
+        <mat-menu #navigation="matMenu">
+            <mat-nav-list class="profile-navigation">
+                <mat-list-item (click)="signOut()"> Sign out </mat-list-item>
+            </mat-nav-list>
+        </mat-menu>
     </mat-card-header>
     <div class="row-spacer"></div>
 </mat-card>

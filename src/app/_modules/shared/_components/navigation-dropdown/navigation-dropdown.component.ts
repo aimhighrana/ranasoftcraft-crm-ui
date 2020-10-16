@@ -12,6 +12,7 @@ export class NavigationDropdownComponent implements OnInit, OnChanges {
   constructor() { }
 
   ngOnInit(): void {
+    console.log('modules :: '+ this.modules);
   }
 
   emitSelection(selection) {
@@ -19,8 +20,7 @@ export class NavigationDropdownComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (!changes || !changes.value) return;
-    if (changes.value.previousValue !== undefined && (changes.value.previousValue !== changes.value.currentValue)) {
+    if (changes && changes.value && changes.value.previousValue !== changes.value.currentValue) {
       this.selectedModule.emit(changes.value)
     }
   }

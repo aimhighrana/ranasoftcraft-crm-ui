@@ -7,7 +7,6 @@ import { Router } from '@angular/router';
 import { AccessDeniedDialogComponent } from '@modules/shared/_components/access-denied-dialog/access-denied-dialog.component';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { MatDialog } from '@angular/material/dialog';
-import { ResumeSessionComponent } from '@modules/shared/_components/resume-session/resume-session.component';
 
 
 @Injectable({
@@ -95,7 +94,9 @@ export class JwtInterceptorService implements HttpInterceptor {
           ),
           catchError(
             (error, ca) => {
-              this.logout();
+              if(error && error.status === 401) {
+                this.logout();
+              }
               return throwError(error);
             }
           ));
@@ -122,20 +123,26 @@ export class JwtInterceptorService implements HttpInterceptor {
   }
 
   logout() {
-    const dialogRef = this.matDialog.open(ResumeSessionComponent, {
-      data: {},
-      disableClose: true,
-      height:'200px',
-      width:'300px'
-    });
-    dialogRef.afterClosed().subscribe(res=>{
-      const url = document.getElementsByTagName('base')[0].href.substring(0, document.getElementsByTagName('base')[0].href.indexOf('MDOSF')) + 'MDOSF';
-      window.close();
-      window.open(url , 'MDO_TAB');
+    // const dialogRef = this.matDialog.open(ResumeSessionComponent, {
+    //   data: {},
+    //   disableClose: true,
+    //   height:'200px',
+    //   width:'300px'
+    // });
+    // dialogRef.afterClosed().subscribe(res=>{
+    //   const url = document.getElementsByTagName('base')[0].href.substring(0, document.getElementsByTagName('base')[0].href.indexOf('MDOSF')) + 'MDOSF';
+    //   window.close();
+    //   window.open(url , 'MDO_TAB');
+    //   localStorage.removetItem('JWT-TOKEN');
+    //   localStorage.removetItem('JWT-REFRESH-TOKEN');
+    //   // this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });
+    // });
+    try {
       localStorage.removetItem('JWT-TOKEN');
       localStorage.removetItem('JWT-REFRESH-TOKEN');
-      // this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });
-    });
+    }finally {
+      this.router.navigate(['auth','login'], { queryParams: { returnUrl: this.router.url } });
+    }
   }
 
   /**

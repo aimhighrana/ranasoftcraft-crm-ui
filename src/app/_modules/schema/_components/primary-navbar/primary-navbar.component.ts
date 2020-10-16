@@ -37,6 +37,10 @@ export class PrimaryNavbarComponent implements OnInit {
    */
   isNavSelected = ''
 
+  /**
+   * Only information about active profile menues ..
+   */
+  profileMenu = [{id:'signout', name:'Sign out'}];
   constructor(
     private userService: UserService,
     private matDialog: MatDialog,
@@ -123,6 +127,18 @@ export class PrimaryNavbarComponent implements OnInit {
     }
     if (url.includes('/home/schema')) {
       this.isNavSelected = 'schema';
+    }
+  }
+
+  /**
+   * Signout ...
+   */
+  signOut() {
+    try {
+      delete localStorage['JWT-TOKEN'];
+      delete localStorage['JWT-REFRESH-TOKEN'];
+    }finally {
+      this.router.navigate(['auth','login']);
     }
   }
 }
