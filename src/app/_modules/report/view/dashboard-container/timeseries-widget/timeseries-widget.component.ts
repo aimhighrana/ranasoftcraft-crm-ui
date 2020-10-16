@@ -764,6 +764,11 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       }
       filterApplied.forEach(op=> this.filterCriteria.push(op));
       this.emitEvtFilterCriteria(this.filterCriteria);
+      this.dateFilters.forEach(ele=>{​​​​​​​​
+        ele.isActive = false;
+      }​​​​​​​​)
+
+
     }
   }
 
@@ -836,9 +841,9 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     this.widgetService.downloadImage(this.chart.toBase64Image(), 'Time-Series.png');
   }
 
-  clearFilterCriteria() {
-    this.startDateCtrl = new FormControl('');
-    this.endDateCtrl = new FormControl('');
+  clearFilterCriteria(){
+   this.startDateCtrl.setValue(null);
+   this.endDateCtrl.setValue(null);
     const fieldId = this.timeseriesData.timeSeries.groupWith;
     const appliedFilters = this.filterCriteria.filter(fill => fill.fieldId === fieldId);
     this.removeOldFilterCriteria(appliedFilters);
