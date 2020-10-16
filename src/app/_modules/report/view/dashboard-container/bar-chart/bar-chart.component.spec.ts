@@ -250,4 +250,18 @@ describe('BarChartComponent', () => {
     expect(component.widgetColorPalette.widgetId).toEqual(req.widgetId);
   }));
 
+  it('getDateFieldsDesc(), get description of field', async(()=>{
+    const buckets = [{key:'200010',doc_count:10744,'top_hits#items':{hits:{total:{value:10744,relation:'eq'},max_score:1.0,hits:[{_source:{hdvs:{MATL_GROUP:{fId:'MATL_GROUP',lls:{EN:{label:'Material Group'}},vls:{EN:{valueTxt:'200010'}},vc:[{c:'1600709041279'}]}}}}]}}},{key:'200030',doc_count:775,'top_hits#items':{hits:{total:{value:775,relation:'eq'},max_score:1.0,hits:[{_source:{hdvs:{MATL_GROUP:{fId:'MATL_GROUP',lls:{EN:{label:'Material Group'}},vls:{EN:{valueTxt:'200030'}},vc:[{c:'1600709041279'}]}}}}]}}}];
+
+    const data: BarChartWidget = new BarChartWidget();
+    data.fieldId = 'MATL_GROUP';
+    component.barWidget.next(data);
+    component.lablels = ['200010','200030'];
+    // call actual method
+    component.getDateFieldsDesc(buckets);
+
+    expect(component.lablels.length).toEqual(2);
+    expect(component.chartLegend.length).toEqual(2);
+  }));
+
 });

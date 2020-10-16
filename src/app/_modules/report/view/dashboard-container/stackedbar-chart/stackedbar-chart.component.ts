@@ -105,7 +105,9 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
 
     this.stackBardata.subscribe(data=>{
       if(data && this.barChartData.length=== 0){
-        if(Object.keys(this.codeTextaxis1).length === 0 && (this.stackBarWidget.getValue().groupByIdMetaData.picklist === '1' || this.stackBarWidget.getValue().groupByIdMetaData.picklist === '37' || this.stackBarWidget.getValue().groupByIdMetaData.picklist === '30')){
+        if(Object.keys(this.codeTextaxis1).length === 0 && (this.stackBarWidget.getValue().groupByIdMetaData.picklist === '0' && (this.stackBarWidget.getValue().groupByIdMetaData.dataType === 'DATS' || this.stackBarWidget.getValue().groupByIdMetaData.dataType === 'DTMS'))) {
+          this.getDateFieldsDesc1(this.stackBarWidget.getValue().groupById);
+        } else if(Object.keys(this.codeTextaxis1).length === 0 && (this.stackBarWidget.getValue().groupByIdMetaData.picklist === '1' || this.stackBarWidget.getValue().groupByIdMetaData.picklist === '37' || this.stackBarWidget.getValue().groupByIdMetaData.picklist === '30')){
           this.getFieldsMetadaDescaxis1(this.stackBarWidget.getValue().groupById);
         } else if (Object.keys(this.codeTextaxis1).length === 0 && this.stackBarWidget.getValue().groupByIdMetaData.picklist === '0') {
           this.getFieldsMetadaDescaxis1ForNonFld(this.stackBarWidget.getValue().groupById);
@@ -114,7 +116,9 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
           this.updateLabelsaxis1();
         }
 
-        if(Object.keys(this.codeTextaxis2).length === 0 && this.stackBarWidget.getValue().fieldIdMetaData !=null && (this.stackBarWidget.getValue().fieldIdMetaData.picklist === '1' || this.stackBarWidget.getValue().fieldIdMetaData.picklist === '37' || this.stackBarWidget.getValue().fieldIdMetaData.picklist === '30')){
+        if(Object.keys(this.codeTextaxis2).length === 0 && (this.stackBarWidget.getValue().fieldIdMetaData.picklist === '0' && (this.stackBarWidget.getValue().fieldIdMetaData.dataType === 'DATS' || this.stackBarWidget.getValue().fieldIdMetaData.dataType === 'DTMS'))) {
+          this.getDateFieldsDesc2(this.stackBarWidget.getValue().fieldId);
+        } else if(Object.keys(this.codeTextaxis2).length === 0 && this.stackBarWidget.getValue().fieldIdMetaData !=null && (this.stackBarWidget.getValue().fieldIdMetaData.picklist === '1' || this.stackBarWidget.getValue().fieldIdMetaData.picklist === '37' || this.stackBarWidget.getValue().fieldIdMetaData.picklist === '30')){
           this.getFieldsMetadaDescaxis2(this.stackBarWidget.getValue().fieldId);
         }else if(Object.keys(this.codeTextaxis2).length === 0 && this.stackBarWidget.getValue().fieldIdMetaData !=null && this.stackBarWidget.getValue().fieldIdMetaData.picklist === '0') {
           this.getFieldsMetadaDescaxis2Nondef(this.stackBarWidget.getValue().fieldId);
@@ -357,12 +361,37 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     this.updateLabelsaxis1();
   }
 
+  getDateFieldsDesc1(fieldId: string){
+    this.arrayBuckets.forEach(bucket=>{
+      const key = bucket.key[fieldId];
+      const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
+      const val = hits._source.hdvs?(hits._source.hdvs[fieldId] ?
+        ( hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vc : null) : null):
+        (hits._source.staticFields && hits._source.staticFields[fieldId]) ?
+        ( hits._source.staticFields[fieldId] ? hits._source.staticFields[fieldId].vc : null) : null;
+      if(val !== null) {
+        const valArray = [];
+        val.forEach(v=>{
+          if(v.c) {
+            valArray.push(v.c);
+          }
+        });
+        const finalText = Number(valArray);
+        if(finalText) {
+          this.codeTextaxis1[key] = new Date(finalText).toLocaleDateString();;
+        }
+      } else {
+        this.codeTextaxis1[key] = new Date(key).toLocaleDateString();;
+      }
+    });
+    this.updateLabelsaxis1();
+  }
+
   updateLabelsaxis1():void{
     for(let i=0;i<this.barChartLabels.length;i++){
       const lbl = this.barChartLabels[i] as any;
       this.barChartLabels[i] = this.codeTextaxis1[lbl] ? this.codeTextaxis1[lbl] : lbl;
     }
-
   }
 
 
@@ -392,6 +421,33 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     this.updateLabelsaxis2();
   }
 
+  getDateFieldsDesc2(fieldId: string) {
+    let  locale = this.locale!==''?this.locale.split('-')[0]:'EN';
+    locale = locale.toUpperCase();
+    this.arrayBuckets.forEach(bucket=>{
+      const key = bucket.key[fieldId];
+      const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
+      const val = hits._source.hdvs?(hits._source.hdvs[fieldId] ?
+        ( hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vc : null) : null):
+        (hits._source.staticFields && hits._source.staticFields[fieldId]) ?
+        ( hits._source.staticFields[fieldId] ? hits._source.staticFields[fieldId].vc : null) : null;
+      if(val) {
+        const valArray = [];
+        val.forEach(v=>{
+            if(v.c) {
+              valArray.push(v.c);
+            }
+          });
+          const finalText = Number(valArray);
+          if(finalText) {
+            this.codeTextaxis2[key] = new Date(finalText).toLocaleDateString();;
+          }
+      } else {
+        this.codeTextaxis2[key] = new Date(key).toLocaleDateString();;
+      }
+    });
+    this.updateLabelsaxis2();
+  }
 
   getFieldsMetadaDescaxis2(fieldId: string) {
     let  locale = this.locale!==''?this.locale.split('-')[0]:'EN';

@@ -157,7 +157,14 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
       this.lablels = [];
       this.dataSet = this.transformDataSets(arrayBuckets);
       // update barchartLabels
-      if(this.barWidget.getValue().metaData && (this.barWidget.getValue().metaData.picklist === '1' || this.barWidget.getValue().metaData.picklist === '37' || this.barWidget.getValue().metaData.picklist === '30')) {
+      console.log(this.barWidget.getValue().metaData);
+      if(this.barWidget.getValue().metaData && (this.barWidget.getValue().metaData.picklist === '0' && (this.barWidget.getValue().metaData.dataType === 'DTMS' || this.barWidget.getValue().metaData.dataType === 'DATS'))) {
+        if (this.chartLegend.length === 0) {
+          this.getDateFieldsDesc(arrayBuckets);
+        } else {
+          this.lablels = this.chartLegend.map(map => map.text);
+        }
+      } else if(this.barWidget.getValue().metaData && (this.barWidget.getValue().metaData.picklist === '1' || this.barWidget.getValue().metaData.picklist === '37' || this.barWidget.getValue().metaData.picklist === '30')) {
         if (this.chartLegend.length === 0) {
           this.getFieldsMetadaDesc(arrayBuckets);
         } else {
@@ -237,6 +244,56 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
         }
       } else {
         finalVal[key] = key;
+      }
+    });
+
+    // update lablels
+    this.lablels.forEach(cod => {
+      let chartLegend: ChartLegend;
+      if(cod) {
+        const hasData = finalVal[cod];
+        if (hasData) {
+          chartLegend = { text: hasData, code: cod, legendIndex: this.chartLegend.length };
+        } else {
+          chartLegend = { text: cod, code: cod, legendIndex: this.chartLegend.length };
+        }
+      } else {
+         chartLegend = { text: cod, code: cod, legendIndex: this.chartLegend.length };
+      }
+      this.chartLegend.push(chartLegend);
+    });
+    this.lablels = this.chartLegend.map(map => map.text);
+  }
+
+  /**
+   * Update label based on configuration
+   * @param buckets update lable
+   */
+  getDateFieldsDesc(buckets: any[]) {
+    const fldid = this.barWidget.getValue().fieldId;
+    const finalVal = {} as any;
+    buckets.forEach(bucket=>{
+      const key = bucket.key;
+      const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
+      const val = hits._source.hdvs?(hits._source.hdvs[fldid] ?
+        ( hits._source.hdvs[fldid] ? hits._source.hdvs[fldid].vc : null) : null):
+        (hits._source.staticFields && hits._source.staticFields[fldid]) ?
+        ( hits._source.staticFields[fldid] ? hits._source.staticFields[fldid].vc : null) : null;
+      if(val) {
+        const valArray = [];
+        val.forEach(v=>{
+          if(v.c) {
+            valArray.push(v.c);
+          }
+        });
+        const finalText = (Number(valArray));
+        if(finalText) {
+          finalVal[key] = new Date(finalText).toLocaleDateString();
+        } else {
+          finalVal[key] = new Date(Number(key)).toLocaleDateString();
+        }
+      } else {
+        finalVal[key] = new Date(Number(key)).toLocaleDateString();
       }
     });
 
