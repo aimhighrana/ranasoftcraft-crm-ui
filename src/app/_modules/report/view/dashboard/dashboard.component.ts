@@ -1,15 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReportService } from '../../_service/report.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { GlobaldialogService } from '@services/globaldialog.service';
+import { Subscription } from 'rxjs';
 @Component({
   selector: 'pros-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
 
   reportId: number;
   emitClearBtnEvent: boolean;
@@ -18,6 +19,13 @@ export class DashboardComponent implements OnInit {
   collaboratorEditPermission: false ;
   collaboratorDeletePermission: false ;
   collaboratorAdminPermission: false ;
+
+  /**
+   * If is from msteam then don't need edit and delete ..
+   */
+  isFromMsteam = false;
+
+  subscriptions: Subscription[] = [];
 
   constructor(
     private activatedRouter: ActivatedRoute,
@@ -28,6 +36,12 @@ export class DashboardComponent implements OnInit {
     private globalDialogService: GlobaldialogService
   ) { }
 
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub=>{
+      sub.unsubscribe();
+    });
+  }
+
   ngOnInit(): void {
     this.activatedRouter.params.subscribe(params=>{
       this.reportId = params.id;
@@ -35,10 +49,15 @@ export class DashboardComponent implements OnInit {
         this.getReportInfo(this.reportId);
       }
     });
+
+    const isFrmMsteam = this.sharedService.getIsFromMsTeamLogedIn().subscribe(res=>{
+      this.isFromMsteam = res;
+    });
+    this.subscriptions.push(isFrmMsteam);
   }
 
   getReportInfo(reportId: number) {
-    this.reportService.getReportInfo(reportId).subscribe(res=>{
+    const repInfo = this.reportService.getReportInfo(reportId).subscribe(res=>{
       this.reportName = res.reportName;
       this.collaboratorEditPermission = res.permissons ? res.permissons.isEditable : false;
       this.collaboratorDeletePermission = res.permissons ? res.permissons.isDeleteable : false;
@@ -46,7 +65,8 @@ export class DashboardComponent implements OnInit {
 
     },error=>{
       console.log(`Error ${error}`);
-    })
+    });
+    this.subscriptions.push(repInfo);
   }
 
   clearFilters() {

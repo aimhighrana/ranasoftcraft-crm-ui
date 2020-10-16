@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as microsoftTeams from '@microsoft/teams-js';
+import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { MsteamsConfigService } from '../_service/msteams-config.service';
 
 export class Report {
@@ -16,7 +17,8 @@ export class Report {
 export class MsteamReportConfigurationComponent implements OnInit {
 
   constructor(
-    private msteamsConfigService: MsteamsConfigService
+    private msteamsConfigService: MsteamsConfigService,
+    private sharedServices: SharedServiceService
   ) { }
   reportListSelected: string;
   customUrl: string;
@@ -50,6 +52,8 @@ export class MsteamReportConfigurationComponent implements OnInit {
       });
     // Get list of report urls from MDO
     this.getReportUrls();
+
+    this.sharedServices.setIsFromMsTeamLogedIn(true);
   }
 
  // Get list of report urls from MDO

@@ -94,9 +94,10 @@ export class JwtInterceptorService implements HttpInterceptor {
           ),
           catchError(
             (error, ca) => {
-              if(error && error.status === 401) {
-                this.logout();
-              }
+              // if(error && error.status === 401) {
+              //   this.logout();
+              // }
+              this.logout();
               return throwError(error);
             }
           ));

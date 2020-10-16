@@ -34,6 +34,12 @@ export class SharedServiceService {
    */
   public reportDataTableSetting: BehaviorSubject<any> = new BehaviorSubject(null);
 
+  /**
+   * Identify whether loged in from msteam .. or web
+   */
+  private isFromMsTeamLogedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+
   constructor() { }
 
   public setChooseColumnData(data: any) {
@@ -126,4 +132,19 @@ export class SharedServiceService {
     return this.reportDataTableSetting.asObservable();
   }
 
+
+  /**
+   * Set is from msteam loged in ..
+   * @param status updated status ...
+   */
+  public setIsFromMsTeamLogedIn(status: boolean) {
+    this.isFromMsTeamLogedIn.next(status);
+  }
+
+  /**
+   * Get flag for is from msteam ..
+   */
+  public getIsFromMsTeamLogedIn(): Observable<boolean> {
+    return this.isFromMsTeamLogedIn.asObservable();
+  }
 }

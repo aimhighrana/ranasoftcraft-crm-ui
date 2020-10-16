@@ -34,15 +34,16 @@ export class MsteamConfigurationComponent implements OnInit {
   init() {
     const apiUrl = environment.apiurl;
     const newApiUrl = apiUrl.replace('fapi', '');
-    const jwtToken = localStorage.getItem('JWT-REFRESH-TOKEN');
-    if (jwtToken) {
-      this.msteamsConfigService.validateToken().subscribe(res => {
-        window.location.href = newApiUrl + '/fuze/ngx-mdo/index.html#/msteams/report';
-      }, error => {
-        this.authLogin(newApiUrl);
-      });
-    } else {
-      this.authLogin(newApiUrl);
-    }
+    // const jwtToken = localStorage.getItem('JWT-REFRESH-TOKEN');
+    this.authLogin(newApiUrl);
+    // if (jwtToken) {
+    //   this.msteamsConfigService.validateToken().subscribe(res => {
+    //     window.location.href = newApiUrl + '/fuze/ngx-mdo/index.html#/msteams/report';
+    //   }, error => {
+    //     this.authLogin(newApiUrl);
+    //   });
+    // } else {
+    //   this.authLogin(newApiUrl);
+    // }
   }
 }

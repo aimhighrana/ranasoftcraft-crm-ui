@@ -1,5 +1,5 @@
 <div class="f-col root">
-  <mat-label>Select a report url</mat-label>
+  <mat-label>Select a dashboard</mat-label>
   <mat-form-field appearance="outline">   
       <mat-select [(ngModel)]="reportListSelected" (selectionChange)="onSelectUrlChange()">
         <mat-option *ngFor="let report of reportList" [value] = "report.reportUrl">{{ report.reportName }}</mat-option> 
