@@ -495,7 +495,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     const aggregation = data.aggregations['date_histogram#date'];
     if(aggregation.buckets !== undefined && aggregation.buckets.length>0){
       aggregation.buckets.forEach(singleBucket => {
-         const arrBuckets = singleBucket['sterms#term'].buckets;
+        const arrBuckets =  singleBucket['sterms#term'] !== undefined ?singleBucket['sterms#term'].buckets: singleBucket['lterms#term'].buckets
          arrBuckets.forEach(innerBucket => {
              const count = innerBucket.doc_count;
              const label = innerBucket.key;
