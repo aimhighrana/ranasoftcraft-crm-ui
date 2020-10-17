@@ -215,7 +215,10 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
                 }
               },
             }
-          }
+          },
+          onClick: (event?: MouseEvent, activeElements?: Array<{}>) => {
+            this.stackClickFilter(event, activeElements);
+          },
         }
       }
       this.pieChartData = [{
