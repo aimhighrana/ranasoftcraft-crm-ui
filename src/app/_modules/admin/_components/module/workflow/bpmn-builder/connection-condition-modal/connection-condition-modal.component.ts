@@ -34,7 +34,7 @@ export class ConnectionConditionModalComponent implements OnInit, OnDestroy {
   }
 
   FIELD_DATA_TYPE = {
-    NUMERIC : 'NUM',
+    NUMERIC : 'NUMC',
     STRING: 'CHAR'
   }
 

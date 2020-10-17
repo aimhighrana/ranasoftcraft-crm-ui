@@ -14,8 +14,8 @@ import contextPadProvider from './config/context_pad';
 import customRules from './config/rules';
 import bpmnlintConfig from './config/validation/lint-config';
 import { WorkflowBuilderService } from '@services/workflow-builder.service';
-import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
 import { MatDialog } from '@angular/material/dialog';
+import { ConfirmationDialogComponent } from '@modules/shared/_components/confirmation-dialog/confirmation-dialog.component';
 
 
 
@@ -240,17 +240,17 @@ export class BpmnBuilderComponent implements OnInit, OnDestroy {
       const rootElement = this.modeler.get('canvas').getRootElement();
 
       if(rootElement.children.length){
-      const dialogRef = this.dialog.open(ConfirmModalComponent, {
+      const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
         width: '400px',
         data:   {
-          title : 'Diagram clear confirmation',
-          message : 'Are you sure to clear the diagram ?'
+          // title : 'Diagram clear confirmation',
+          label : 'Are you sure to clear the diagram ?'
         }
       });
 
       dialogRef.afterClosed().subscribe(result => {
 
-        if(result){
+        if(result  === 'yes'){
           this.clearAction = true;
           this.importBlankDiagram(rootElement)
         }
@@ -443,16 +443,15 @@ export class BpmnBuilderComponent implements OnInit, OnDestroy {
       if(this.confirmModalOpened || this.clearAction)
         return ;
 
-      const dialogRef = this.dialog.open(ConfirmModalComponent, {
-        width: '400px',
-        data:   {}
+      const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+        width: '400px'
       });
 
       this.confirmModalOpened = true ;
 
       dialogRef.afterClosed().subscribe(result => {
 
-        if (!result){
+        if (result === 'no'){
           const commandStack = this.modeler.get('commandStack');
           commandStack.undo();
         }
