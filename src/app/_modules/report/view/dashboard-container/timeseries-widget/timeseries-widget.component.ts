@@ -96,10 +96,6 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     scales: {
       xAxes: [{
         type: 'time',
-        time: {
-          tooltipFormat: 'lll',
-          unit: 'month'
-        },
         scaleLabel: {
           display: false,
           labelString: ''
@@ -338,10 +334,6 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       this.timeSeriesOption.scales = {
         xAxes: [{
           type: 'time',
-          time: {
-            tooltipFormat: 'lll',
-            unit: this.timeseriesData.timeSeries.seriesWith
-          },
           scaleLabel: {
             display: true,
             labelString: this.timeseriesData.timeSeries.xAxisLabel ? this.timeseriesData.timeSeries.xAxisLabel : ''
@@ -503,7 +495,6 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     const aggregation = data.aggregations['date_histogram#date'];
     if(aggregation.buckets !== undefined && aggregation.buckets.length>0){
       aggregation.buckets.forEach(singleBucket => {
-        const milliVal = singleBucket.key;
          const arrBuckets = singleBucket['sterms#term'].buckets;
          arrBuckets.forEach(innerBucket => {
              const count = innerBucket.doc_count;
@@ -511,13 +502,13 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
              if(Object.keys(finalOutput).includes(label)){
               const array = finalOutput[label];
               const objdt = new Object();
-              objdt[cordKeys[0]] =  moment(milliVal).format('DD MMM YYYY hh:mm a');
+              objdt[cordKeys[0]] =  singleBucket.key_as_string;
               objdt[cordKeys[1]] =  count;
               array.push(objdt);
               finalOutput[label] = array;
              }else{
                const objdt = new Object();
-               objdt[cordKeys[0]] =  moment(milliVal).format('DD MMM YYYY hh:mm a');
+              objdt[cordKeys[0]] =  singleBucket.key_as_string;
                objdt[cordKeys[1]] =  count;
                const array = new Array();
                array.push(objdt);
