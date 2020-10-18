@@ -14,6 +14,7 @@ import { EndpointService } from '@services/endpoint.service';
 import { Router } from '@angular/router';
 import { SharedServiceService } from '@shared/_services/shared-service.service';
 import { ReportService } from '@modules/report/_service/report.service';
+import { UserService } from '@services/user/userservice.service';
 
 @Component({
   selector: 'pros-reporting-list',
@@ -66,6 +67,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
    * hold info about layouts ...
    */
   layouts: LayoutConfigWorkflowModel[] = [];
+  dateFormat: string;
 
   constructor(public widgetService: WidgetService,
     @Inject(LOCALE_ID) public locale: string,
@@ -74,8 +76,9 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
     private snackbar: MatSnackBar,
     private router: Router,
     private sharedService: SharedServiceService,
-    private reportService: ReportService
-    ) {
+    private reportService: ReportService,
+    private userService: UserService
+  ) {
     super(matDialog);
   }
 
@@ -94,13 +97,41 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
     this.resultsLength = 0;
     this.dataSource.paginator = this.paginator;
     // this.dataSource.sort = this.sort;
-
+    this.getUserDetails();
     this.getHeaderMetaData();
     let isRefresh = true;
     this.sharedService.getReportDataTableSetting().subscribe(response => {
-      if((response?.isRefresh === true) || isRefresh){
+      if ((response?.isRefresh === true) || isRefresh) {
         isRefresh = false;
         this.getListTableMetadata();
+      }
+    })
+  }
+
+  /**
+   * function to get logged in user details
+   */
+  public getUserDetails() {
+    this.userService.getUserDetails().subscribe(user => {
+      switch (user.dateformat) {
+        case 'MM.dd.yy':
+          this.dateFormat = 'MMM-dd-yy, h:mm:ss a';
+          break;
+
+        case 'dd.MM.yy':
+          this.dateFormat = 'dd-MMM-yy, h:mm:ss a';
+          break;
+
+        case 'dd M, yy':
+          this.dateFormat = 'dd MMM, yy, h:mm:ss a';
+          break;
+
+        case 'MM d, yy':
+          this.dateFormat = 'MMM d, yy, h:mm:ss a';
+          break;
+
+        default:
+          break;
       }
     })
   }
@@ -121,13 +152,13 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
    */
   public getListTableMetadata(): void {
     this.displayedColumnsId = ['action', 'objectNumber'];
-        // this.columnDescs = {};
+    // this.columnDescs = {};
     this.widgetService.getListTableMetadata(this.widgetId).subscribe(returnData => {
       if (returnData !== undefined && Object.keys(returnData).length > 0) {
         this.columnDescs.objectNumber = 'Object Number';
         returnData.forEach(singlerow => {
-            this.displayedColumnsId.push(singlerow.fields);
-            this.columnDescs[singlerow.fields] = singlerow.fieldDesc;
+          this.displayedColumnsId.push(singlerow.fields);
+          this.columnDescs[singlerow.fields] = singlerow.fieldDesc;
         });
         this.reportingListWidget.next(returnData);
         this.tableColumnMetaData = returnData;
@@ -135,42 +166,42 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
     });
   }
 
-  public getListdata(pageSize,pageIndex,widgetId:number,criteria:Criteria[],soringMap):void{
-    this.widgetService.getListdata(String(pageSize),String(pageIndex),String(widgetId),criteria, soringMap).subscribe(returndata=>{
-      this.listData =new Array();
+  public getListdata(pageSize, pageIndex, widgetId: number, criteria: Criteria[], soringMap): void {
+    this.widgetService.getListdata(String(pageSize), String(pageIndex), String(widgetId), criteria, soringMap).subscribe(returndata => {
+      this.listData = new Array();
       this.resultsLength = returndata.count;
-      if(returndata.data){
+      if (returndata.data) {
         returndata = returndata.data;
       }
       returndata.hits.hits.forEach(element => {
         const source = element._source;
 
-        const objectNumber = source.staticFields && source.staticFields.OBJECTID && source.staticFields.OBJECTID.vc?source.staticFields.OBJECTID.vc[0].c:element._id;
-        const obj = {objectNumber};
+        const objectNumber = source.staticFields && source.staticFields.OBJECTID && source.staticFields.OBJECTID.vc ? source.staticFields.OBJECTID.vc[0].c : element._id;
+        const obj = { objectNumber };
 
-        const hdvs = source.hdvs !== undefined ? source.hdvs :(source.staticFields !== undefined ?source.staticFields:source);
-        if(source.staticFields !== undefined){
-           Object.assign(hdvs,source.staticFields);
+        const hdvs = source.hdvs !== undefined ? source.hdvs : (source.staticFields !== undefined ? source.staticFields : source);
+        if (source.staticFields !== undefined) {
+          Object.assign(hdvs, source.staticFields);
         }
-        this.displayedColumnsId.forEach(column=>{
+        this.displayedColumnsId.forEach(column => {
 
-          if(column === 'action' || column === 'objectNumber'){}
+          if (column === 'action' || column === 'objectNumber') { }
           else {
             if (hdvs[column]) {
               // check for dropdown , multiselect , userselection and objectRefrence
               const val = hdvs[column].vc ? hdvs[column].vc : null;
-              if(val) {
+              if (val) {
                 const valArray = [];
-                val.forEach(v=>{
-                  if(v.t) {
+                val.forEach(v => {
+                  if (v.t) {
                     valArray.push(v.t);
                   }
                 });
                 const finalText = valArray.toString();
-                if(finalText) {
+                if (finalText) {
                   obj[column] = finalText;
                 } else {
-                  obj[column] = hdvs[column] ? hdvs[column].vc && hdvs[column].vc[0]?  hdvs[column].vc.map(map => map.c).toString() : '':'';
+                  obj[column] = hdvs[column] ? hdvs[column].vc && hdvs[column].vc[0] ? hdvs[column].vc.map(map => map.c).toString() : '' : '';
                 }
               }
             }
@@ -186,43 +217,43 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
     });
   }
 
-  getServerData(event):PageEvent {
-   this.pageSize = event.pageSize;
-   this.pageIndex = event.pageIndex;
-   this.getListdata(this.pageSize,this.pageIndex * this.pageSize,this.widgetId,this.filterCriteria,this.activeSorts);
+  getServerData(event): PageEvent {
+    this.pageSize = event.pageSize;
+    this.pageIndex = event.pageIndex;
+    this.getListdata(this.pageSize, this.pageIndex * this.pageSize, this.widgetId, this.filterCriteria, this.activeSorts);
     return event;
- }
-
- details(data):void{
-  const url = document.getElementsByTagName('base')[0].href.substring(0, document.getElementsByTagName('base')[0].href.indexOf('MDOSF'));
-  window.open(
-    url+'MDOSF/loginPostProcessor?to=summary&objNum='+data.objectNumber+'&objectType='+this.objectType, 'MDO_TAB');
-}
-
-/*
-* down report list data as CSV
-*If data less then 5000 then download instant
-*Otherwise open dialog and ask for page from number ..
-*
-*/
-downloadCSV():void{
-  if(this.resultsLength <=5000) {
-    this.downloadData(0);
-    // this.widgetService.downloadCSV('Report-List',this.listData);
-  } else {
-    const dialogRef = this.matDialog.open(ReportListDownloadModelComponent, {
-       width: '500px',
-       data:{
-        recCount: this.resultsLength
-       }
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      if(result !== undefined) {
-        this.downloadData(result);
-      }
-    });
   }
-}
+
+  details(data): void {
+    const url = document.getElementsByTagName('base')[0].href.substring(0, document.getElementsByTagName('base')[0].href.indexOf('MDOSF'));
+    window.open(
+      url + 'MDOSF/loginPostProcessor?to=summary&objNum=' + data.objectNumber + '&objectType=' + this.objectType, 'MDO_TAB');
+  }
+
+  /*
+  * down report list data as CSV
+  *If data less then 5000 then download instant
+  *Otherwise open dialog and ask for page from number ..
+  *
+  */
+  downloadCSV(): void {
+    if (this.resultsLength <= 5000) {
+      this.downloadData(0);
+      // this.widgetService.downloadCSV('Report-List',this.listData);
+    } else {
+      const dialogRef = this.matDialog.open(ReportListDownloadModelComponent, {
+        width: '500px',
+        data: {
+          recCount: this.resultsLength
+        }
+      });
+      dialogRef.afterClosed().subscribe(result => {
+        if (result !== undefined) {
+          this.downloadData(result);
+        }
+      });
+    }
+  }
 
   /**
    * Use to get sorted column and
@@ -262,14 +293,14 @@ downloadCSV():void{
 
   isDateType(column: string): boolean {
     const val = this.reportingListWidget.getValue() ? this.reportingListWidget.getValue() : [];
-    const hasFld = val.filter(fil=> fil.fields === column)[0];
-    return hasFld ? (hasFld.fldMetaData ?((hasFld.fldMetaData.dataType ==='DATS' || hasFld.fldMetaData.dataType ==='DTMS') ? true : false): false): false;
+    const hasFld = val.filter(fil => fil.fields === column)[0];
+    return hasFld ? (hasFld.fldMetaData ? ((hasFld.fldMetaData.dataType === 'DATS' || hasFld.fldMetaData.dataType === 'DTMS') ? true : false) : false) : false;
   }
 
   /**
    * function to open column setting side-sheet
    */
-  openTableColumnSideSheet(){
+  openTableColumnSideSheet() {
     const data = {
       objectType: this.objectType,
       selectedColumns: this.tableColumnMetaData.map(columnMetaData => columnMetaData.fldMetaData),
@@ -278,17 +309,17 @@ downloadCSV():void{
       isRefresh: false
     }
     this.sharedService.setReportDataTableSetting(data);
-    this.router.navigate(['', {outlets: {sb: `sb/report/column-settings/${this.widgetId}`}}])
+    this.router.navigate(['', { outlets: { sb: `sb/report/column-settings/${this.widgetId}` } }])
   }
 
   getAlllayouts(row: any) {
     console.log(this.objectType);
     console.log(row);
     const WFID = row ? row.WFID : '';
-    this.reportService.getAllLayoutsForSummary(this.objectType, WFID).subscribe(res=>{
+    this.reportService.getAllLayoutsForSummary(this.objectType, WFID).subscribe(res => {
       console.log(res);
       this.layouts = res;
-    }, error=> console.error(`Error : ${error.message}`));
+    }, error => console.error(`Error : ${error.message}`));
 
   }
 
