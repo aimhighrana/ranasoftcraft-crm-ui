@@ -109,6 +109,15 @@ export class SummaryTabsComponent implements OnInit {
               }else if(vcVal.c === 'off'){
                 returnValue = 'true';
               }
+              break;
+
+              case 30:
+                if(fieldMetadata.dispCriteria ===0 && vcVal.t !== undefined && vcVal.t !==''){
+                  returnValue += ' -- '+vcVal.t;
+                }else if(fieldMetadata.dispCriteria ===2 && vcVal.t !== undefined && vcVal.t !==''){
+                  returnValue = vcVal.t;
+                }
+              break;
       }
       returnValue+=' , ';
       });

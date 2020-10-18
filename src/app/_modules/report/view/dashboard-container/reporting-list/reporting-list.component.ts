@@ -179,13 +179,19 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
         const objectNumber = source.staticFields && source.staticFields.OBJECTID && source.staticFields.OBJECTID.vc ? source.staticFields.OBJECTID.vc[0].c : element._id;
         const obj = { objectNumber };
 
+        const status = source?source.stat:'';
+        if(status !=='' && status !==undefined && this.displayedColumnsId.indexOf('stat')>-1){
+         const colststus = 'stat';
+          obj[colststus]=status;
+        }
+
         const hdvs = source.hdvs !== undefined ? source.hdvs : (source.staticFields !== undefined ? source.staticFields : source);
         if (source.staticFields !== undefined) {
           Object.assign(hdvs, source.staticFields);
         }
         this.displayedColumnsId.forEach(column => {
 
-          if (column === 'action' || column === 'objectNumber') { }
+          if (column === 'action' || column === 'objectNumber' || column === 'stat') { }
           else {
             if (hdvs[column]) {
               // check for dropdown , multiselect , userselection and objectRefrence
