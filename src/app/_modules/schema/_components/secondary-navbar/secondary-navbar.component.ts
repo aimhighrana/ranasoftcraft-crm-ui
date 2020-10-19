@@ -61,11 +61,11 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
       this.activatedPrimaryNav = changes.activatedPrimaryNav.currentValue;
       switch (changes.activatedPrimaryNav.currentValue) {
         case 'welcome':
-          // this.getDataIntilligence();
+          this.getDataIntilligence();
           break;
 
         case 'schema':
-          // this.getSchemaList();
+          this.getSchemaList();
           break;
 
         case 'report':
@@ -272,6 +272,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
     }
     if (url.includes('/home/schema')) {
       this.activatedPrimaryNav = 'schema';
+      this.getSchemaList();
     }
   }
 }

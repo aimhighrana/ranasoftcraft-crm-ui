@@ -56,7 +56,7 @@
 
         </ng-container>
       </mat-accordion>
-      <!-- <mat-accordion *ngIf="activatedPrimaryNav === 'schema'">
+      <mat-accordion *ngIf="activatedPrimaryNav === 'schema'">
         <div class="section-header">
           Data intelligence
         </div>
@@ -81,7 +81,7 @@
             </mat-nav-list>
           </mat-expansion-panel>
         </ng-container>
-      </mat-accordion> -->
+      </mat-accordion>
 
       <mat-accordion *ngIf="activatedPrimaryNav === 'report'">
         <mat-nav-list *ngFor="let report of reportOb | async">
