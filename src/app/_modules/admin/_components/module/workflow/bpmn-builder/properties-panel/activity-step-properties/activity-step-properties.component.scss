@@ -1,34 +1,32 @@
-mat-expansion-panel {
+.mat-expansion-panel {
   border-radius: 3px;
   margin-bottom: 16px;
 
-  mat-expansion-panel-header {
-    padding: 0 16px;
+  .fields-col {
+    mat-label {
+      font-weight: 500;
+      font-size: 0.7rem;
+      line-height: 14px;
+    }
+
+    mat-form-field.mat-form-field {
+      margin-bottom: 8px;
+    }
   }
-}
 
-.input-group-title {
-  text-align: center;
-}
-
-mat-selection-list.recipients-list,
-mat-list.recipients-list {
-  max-height: 300px;
-  overflow-y: scroll;
-  border: solid 1px whitesmoke;
-}
-
-.recipient-actions {
-  mat-form-field.mat-form-field {
-    width: 50%;
-    font-size: 14px;
+  .pageable-chip {
+    align-items: center;
   }
-}
 
-.mat-expansion-panel.has-errors {
-  .mat-expansion-panel-header:not(.mat-expanded) {
-    border-style: solid;
-    border-width: 2px;
-    border-color: red;
+  .input-group-title {
+    text-align: center;
+  }
+
+  &.has-errors {
+    .mat-expansion-panel-header:not(.mat-expanded) {
+      border-style: solid;
+      border-width: 2px;
+      border-color: red;
+    }
   }
 }
