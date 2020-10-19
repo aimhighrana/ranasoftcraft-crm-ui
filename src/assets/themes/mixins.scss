@@ -972,10 +972,6 @@
 
   pros-upload-dataset {
     mat-card.root {
-      .upload-col {
-        background-color: mat-color($background-palette, app-bar);
-      }
-
       mat-nav-list {
         mat-list-item {
           border-bottom: 1px solid mat-color($foreground-palette, divider);
@@ -1189,6 +1185,22 @@
   pros-pie-chart {
     mat-card.widget {
       border: 1px solid mat-color($foreground-palette, divider);
+    }
+  }
+
+  pros-businessrulelibrary-sidesheet {
+    mat-card.root {
+      .businessrule-listing {
+        mat-list.rule-list {
+          mat-list-item {
+            border-bottom-color: mat-color($foreground-palette, divider);
+
+            .mat-list-item-content {
+              padding: 0;
+            }
+          }
+        }
+      }
     }
   }
 }

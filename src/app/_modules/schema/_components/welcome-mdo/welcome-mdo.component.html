@@ -1,17 +1,14 @@
 <mat-card class="mat-elevation-z0 root">
     <div class="f-row breadcrum-toolbar">
-        <div class="display-heading-large">Welcome to MDO</div>
-        <span class="f-spacer"></span>
-        <button mat-button>
-            <mat-icon>more_horiz</mat-icon>
-        </button>
+        <div class="display-heading-large">Welcome to Master Data Online</div>
     </div>
 
-    <p>Welcome to Master Data Online! Master Data Online (MDO) delivers trustworthy and reliable data to business users
-        by mediating, managing and governing core master data shared by multiple master data domains. It enables
-        business users to easily create information with standardized business rules, workflows and approval processes.
-        Available both on cloud and enterprise models MDO has the ability to integrate with SAP, Salesforce, Microsoft
-        and other leading enterprise solutions.</p>
+    <div class="f-row">
+        <p class="paragraph-text">Master Data Online (MDO) delivers trustworthy and reliable data to business users. By mediating, managing and governing master data it can be shared by multiple master data domains. It enables business users to easily create information with standardized business rules, workflows and approval processes. Available both on cloud and enterprise models, MDO can integrate with SAP, Salesforce, Microsoft and other leading enterprise solutions.</p>
+        <img src="./assets/images/mdo-logo-white.svg" width="150">
+    </div>
+
+    
     <div class="row-spacer"></div>
 
     <mat-progress-bar mode="determinate" value="40"></mat-progress-bar>
@@ -22,7 +19,7 @@
         <mat-list-item class="f-row">
             <mat-icon mat-list-icon fontSet="mdo-icons">context-help-alt</mat-icon>
             <div mat-line>Show me around</div>
-            <div mat-line class="short-line">Short description of what the show me around means </div>
+            <div mat-line class="short-line">Take a tour and discover MDO</div>
             <div class="f-row">
                 <div class="col-spacer"></div>
                 <mat-icon>done</mat-icon>
@@ -34,9 +31,16 @@
         <mat-divider></mat-divider>
 
         <mat-list-item>
-            <mat-icon mat-list-icon fontSet="mdo-icons">levels</mat-icon>
-            <div mat-line>Configure your system</div>
+            <mat-icon mat-list-icon fontSet="mdo-icons">outbox-alt</mat-icon>
+            <div mat-line>Upload a dataset</div>
             <div mat-line class="short-line">Short description of what the show me around means </div>
+            <button mat-flat-button color="accent" (click)="openUploadScreen()">Upload</button>
+        </mat-list-item>
+
+        <!-- <mat-list-item>
+            <mat-icon mat-list-icon fontSet="mdo-icons">levels</mat-icon>
+            <div mat-line>Configure your profile</div>
+            <div mat-line class="short-line">Set up your system preferences and upload your profile picture</div>
             <button mat-flat-button color="accent">Configure</button>
         </mat-list-item>
 
@@ -45,7 +49,7 @@
         <mat-list-item>
             <mat-icon mat-list-icon fontSet="mdo-icons">assign-user-alt</mat-icon>
             <div mat-line>Invite your colleagues</div>
-            <div mat-line class="short-line">Short description of what the show me around means </div>
+            <div mat-line class="short-line">Invite others to join your team in MDO and start collaborating</div>
             <button mat-flat-button color="accent">Invite</button>
         </mat-list-item>
 
@@ -62,10 +66,10 @@
 
         <mat-list-item>
             <mat-icon mat-list-icon fontSet="mdo-icons">wand</mat-icon>
-            <div mat-line>Run a schema</div>
-            <div mat-line class="short-line">Short description of what the show me around means </div>
-            <button mat-flat-button color="accent">Run <mat-icon>arrow_drop_down</mat-icon></button>
-        </mat-list-item>
+            <div mat-line>Check your data</div>
+            <div mat-line class="short-line">Validate your data by uploading a new or using existing dataset </div>
+            <button mat-flat-button color="accent">Check <mat-icon>arrow_drop_down</mat-icon></button>
+        </mat-list-item> -->
 
         <mat-divider></mat-divider>
     </mat-list>

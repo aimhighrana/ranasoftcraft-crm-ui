@@ -20,9 +20,12 @@
             <div class="row-spacer"></div>
 
             <div class="f-col upload-col">
-                <mat-icon fontSet="mdo-icons">outbox-alt</mat-icon>
-                <div class="label-text">Drag & drop or <a href="javascript:void(0)" class="info"
-                        (click)="openExplorer();$event.stopPropagation()">browse</a> a file to upload</div>
+                <div><img src="./assets/images/empty-table.svg" width="120"></div>
+                <span class="row-spacer"></span>
+                <div class="label-text">Drag & drop or select a file to upload</div>
+                <span class="row-spacer"></span>
+                <button mat-flat-button color="accent" (click)="openExplorer();$event.stopPropagation()">Select a
+                    file</button>
                 <input class="drag-input" type="file" id="uploader" (change)="fileChange($event)"
                     prosClickStopPropagation />
             </div>
@@ -32,6 +35,7 @@
         <mat-step>
             <ng-template matStepLabel></ng-template>
             <div class="f-col">
+
                 <pros-search-input [placeholder]="'Search modules'" (value)="search($event,'module')">
                 </pros-search-input>
                 <div class="row-spacer"></div>
@@ -58,8 +62,7 @@
             <ng-template matStepLabel></ng-template>
             <div class="f-col">
                 <pros-form-input [value]="requestForm.value.objectDesc" [disabled]="requestForm.value.objectId"
-                    [label]="'Dataset name'" [placeholder]="'Dataset name'"
-                    (valueChange)="setObjectDescription($event)">
+                    [label]="'Module name'" [placeholder]="'Module name'" (valueChange)="setObjectDescription($event)">
                 </pros-form-input>
                 <mat-error *ngIf="requestForm.value.core_schema.discription"></mat-error>
 
@@ -67,15 +70,15 @@
 
                 <div class="colunm-listing">
                     <div class="f-row colunm-box">
-                        <div class="col col-x8"><strong>Your field headers</strong></div>
-                        <div class="col col-x8"><strong>Your first row data</strong></div>
+                        <div class="col col-x8"><strong>Source field</strong></div>
+                        <div class="col col-x8"><strong>Source data</strong></div>
                         <div class="col col-x4" *ngIf="requestForm.value.objectId"><strong>Map to</strong>
                             <mat-icon class="mat-head-icon">
                                 arrow_forward
                             </mat-icon>
                         </div>
                         <div class="col col-x8" *ngIf="requestForm.value.objectId">
-                            <strong>MDO fields</strong>
+                            <strong>Target field</strong>
                         </div>
                     </div>
                     <div class="f-row colunm-box" *ngFor="let data of dataSource;let rowIndex=index">
@@ -109,6 +112,12 @@
                 <pros-form-input [placeholder]="'Schema name'" [label]="'Schema name'"
                     (valueChange)="setschemaName($event)"></pros-form-input>
                 <div class="row-spacer"></div>
+                <pros-form-input [placeholder]="'Data scope'" [label]="'Data scope'"></pros-form-input>
+                <div class="row-spacer"></div>
+                <div class="f-col">
+                    <mat-label>Threshold</mat-label>
+                    <mat-slider color="primary"></mat-slider>
+                </div>
                 <div>
                     <button mat-flat-button color="accent" (click)="openGlobalDialog('createBR')">
                         <mat-icon>add</mat-icon> Add business rule
@@ -272,7 +281,7 @@
     <div class="row-spacer"></div>
     <!-- navigation buttons -->
     <div class="f-row">
-        <button mat-flat-button color="accent" *ngIf="setBackBtnVisibility" (click)="step('previous')">Back</button>
+        <button mat-flat-button color="accent" *ngIf="setBackBtnVisibility" (click)="step('previous')">Cancel</button>
         <span class="f-spacer"></span>
         <button mat-flat-button color="primary" *ngIf="headerTextIndex > 1 && progressBar < 100"
             (click)="step('next')">Next</button>

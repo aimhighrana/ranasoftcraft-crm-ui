@@ -31,6 +31,7 @@ import { SchemaInfoComponent } from './_components/v2/schema-info/schema-info.co
 import { BrruleSideSheetComponent } from './_components/v2/brrule-side-sheet/brrule-side-sheet.component';
 import { SubscriberSideSheetComponent } from './_components/v2/subscriber-side-sheet/subscriber-side-sheet.component';
 import { ScheduleTabComponent } from './_components/schedule-tab/schedule-tab.component';
+import { BusinessrulelibrarySidesheetComponent } from './_components/businessrulelibrary-sidesheet/businessrulelibrary-sidesheet.component';
 
 const routes: Routes = [
   { path: '', component: DiwTilesComponent },
@@ -68,6 +69,7 @@ const routes: Routes = [
   { path: 'business-rule/:moduleId/:schemaId/:brId', component: BrruleSideSheetComponent },
   { path: 'subscriber/:moduleId/:schemaId/:subscriberId', component: SubscriberSideSheetComponent },
   { path: 'system/schedule-tab', component: ScheduleTabComponent },
+  { path: 'system/businessrulelibrary-sidesheet', component: BusinessrulelibrarySidesheetComponent },
 
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent }
