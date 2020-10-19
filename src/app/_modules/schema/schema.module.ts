@@ -43,6 +43,7 @@ import { SchemaInfoComponent } from './_components/v2/schema-info/schema-info.co
 import { CreateSchemaComponent } from './_components/v2/create-schema/create-schema.component';
 import { SubscriberSideSheetComponent } from './_components/v2/subscriber-side-sheet/subscriber-side-sheet.component';
 import { ScheduleTabComponent } from './_components/schedule-tab/schedule-tab.component';
+import { BusinessrulelibrarySidesheetComponent } from './_components/businessrulelibrary-sidesheet/businessrulelibrary-sidesheet.component';
 
 
 @NgModule({
@@ -89,7 +90,8 @@ import { ScheduleTabComponent } from './_components/schedule-tab/schedule-tab.co
     CreateSchemaComponent,
     SubscriberSideSheetComponent,
     CreateSchemaComponent,
-    ScheduleTabComponent
+    ScheduleTabComponent,
+    BusinessrulelibrarySidesheetComponent
   ],
   imports: [
     CommonModule,

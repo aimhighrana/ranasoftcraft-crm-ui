@@ -5,7 +5,7 @@ mat-card.root {
   .breadcrum-toolbar {
     align-items: center;
     padding-top: 16px;
-    margin-bottom: 48px;
+    margin-bottom: 32px;
     position: sticky;
     top: 0;
     z-index: 2;
@@ -16,6 +16,11 @@ mat-card.root {
       white-space: nowrap;
       overflow: hidden;
     }
+  }
+
+  .paragraph-text {
+    text-align: justify;
+    margin-right: 16px;
   }
 
   mat-list {

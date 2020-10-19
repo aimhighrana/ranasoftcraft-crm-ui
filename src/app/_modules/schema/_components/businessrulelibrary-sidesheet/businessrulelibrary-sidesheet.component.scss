@@ -1,0 +1,58 @@
+mat-card.root {
+  user-select: none;
+  height: 100%;
+  overflow: hidden;
+  padding: 0 16px;
+  width: 600px;
+
+  .breadcrum-toolbar {
+    position: sticky;
+    padding-top: 16px;
+    top: 0;
+    z-index: 2;
+
+    .mdo-constrained-right {
+      width: 100%;
+
+      .breadcrum-head {
+        align-items: center;
+        width: 100%;
+        min-height: 36px;
+
+        .display-heading-large {
+          font-size: 1.2rem;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+        }
+      }
+    }
+  }
+
+  .businessrule-listing {
+    height: 100%;
+    overflow: auto;
+
+    mat-list.rule-list {
+      mat-list-item {
+        border-bottom-width: 1px;
+        border-bottom-style: solid;
+        height: 52px;
+
+        button.mat-flat-button {
+          min-width: 60px;
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 1200px) {
+  .mdo-constrained-right {
+    margin-right: 52px;
+  }
+
+  .mdo-justify {
+    margin: 0 52px;
+  }
+}

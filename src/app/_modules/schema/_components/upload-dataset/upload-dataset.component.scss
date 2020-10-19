@@ -24,14 +24,10 @@ mat-card.root {
     .upload-col {
       justify-content: center;
       align-items: center;
-      height: 240px;
-      border-radius: 3px;
       position: relative;
 
-      mat-icon {
-        font-size: 8rem;
-        width: 8rem;
-        height: 10rem;
+      button.mat-flat-button {
+        z-index: 1;
       }
 
       .label-text {
@@ -60,14 +56,15 @@ mat-card.root {
   align-items: center;
   box-sizing: border-box;
   padding: 4px 0;
-  min-height: 48px;
+  min-height: 36px;
+  font-size: 13px;
 
   .col {
     display: flex;
     flex: 1 0 auto;
     width: 1px;
     align-items: center;
-    margin: 0 4px;
+    margin: 0 16px;
 
     &.col-x4 {
       flex: 4;
@@ -91,7 +88,7 @@ mat-card.root {
     }
 
     strong {
-      font-weight: 500;
+      font-weight: 400;
     }
 
     .mat-head-icon {
