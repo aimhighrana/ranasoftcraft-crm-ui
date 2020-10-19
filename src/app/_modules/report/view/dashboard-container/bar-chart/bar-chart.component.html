@@ -16,8 +16,10 @@
     </mat-menu>
  </div>
  <mat-card-content>
-  <canvas baseChart [height]="widgetInfo.height * boxSize" [width]="widgetInfo.width * boxSize"
-    [datasets]="barChartData" [labels]="lablels" [options]="barChartOptions" [chartType]="orientation">
-  </canvas>
+   <div [ngStyle]="{ 'width.px' : (widgetInfo.width * boxSize), 'overflow-x' : 'auto'}">
+     <canvas baseChart [height]="widgetInfo.height * boxSize" [width]="widgetInfo.width * boxSize"
+       [datasets]="barChartData" [labels]="lablels" [options]="barChartOptions" [chartType]="orientation">
+     </canvas>
+   </div>
 </mat-card-content>
 </mat-card>
