@@ -9,6 +9,7 @@ import   ChartDataLables from 'chartjs-plugin-datalabels';
 import { MatDialog } from '@angular/material/dialog';
 
 
+
 @Component({
   selector: 'pros-bar-chart',
   templateUrl: './bar-chart.component.html',
@@ -25,8 +26,18 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
   orientation = 'bar';
   total = 0;
 
+  minBarSizeThreshold = 5;
+  maxBarSizeThreshold = 100;
+  zoomStep = 5;
+  minBarWidth = 10 ;
+  computedSize = {
+    height : 100,
+    width : 100
+  }
+
   public barChartOptions: ChartOptions = {
     responsive: true,
+    maintainAspectRatio: false,
     tooltips: {
       callbacks: {
         label: (tooltipItem: ChartTooltipItem, data: ChartData) => {
@@ -44,6 +55,28 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     plugins: {
       datalabels: {
         display: false
+      },
+      zoom: {
+        pan: {
+          enabled: true,
+          mode: 'x',
+          speed: 10,
+          threshold: 10,
+          onPan : () =>{
+            console.log('paneed')
+          },
+          onPanComplete: () =>{
+              console.log('panned')
+          }
+        },
+        zoom: {
+          enabled: true,
+          grag: true,
+          mode: 'x',
+          limits: { max: 10, min: 0.5 },
+          onZoom() { console.log('ONZOOM'); },
+          onZoomComplete() { console.log('ZOOM Complete'); }
+        }
       }
     },
     scales : {
@@ -205,6 +238,10 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
         backgroundColor:backgroundColorArray
         // data: this.dataSet
       }];
+
+      // compute graph size
+
+      this.computeGraphSize();
 
       // update chart after data sets change
       if(this.chart) {
@@ -596,5 +633,45 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
       color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
+  }
+
+  getComputedSize(initialWidth : number){
+
+    if (!this.dataSet.length)
+      return initialWidth ;
+
+    const barWidth = initialWidth / this.dataSet.length ;
+
+    if(barWidth < this.minBarWidth){
+      return this.minBarWidth * this.dataSet.length ;
+    } else {
+      this.minBarWidth = barWidth;
+      return initialWidth ;
+    }
+
+  }
+
+  computeGraphSize(){
+    if( this.orientation === 'bar'){
+      this.computedSize.height = this.widgetInfo.height;
+      this.computedSize.width = this.getComputedSize(this.widgetInfo.width);
+    } else {
+      this.computedSize.height = this.getComputedSize(this.widgetInfo.height);
+      this.computedSize.width = this.widgetInfo.width;
+    }
+  }
+
+  zoomIn(){
+    if( this.minBarWidth + this.zoomStep < this.maxBarSizeThreshold ){
+      this.minBarWidth += this.zoomStep ;
+      this.computeGraphSize();
+    }
+  }
+
+  zoomOut(){
+    if( this.minBarWidth - this.zoomStep >= this.minBarSizeThreshold ){
+      this.minBarWidth -= this.zoomStep ;
+      this.computeGraphSize();
+    }
   }
 }

@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BarChartComponent } from './bar-chart.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { BarChartWidget, Orientation, OrderWith, WidgetHeader, WidgetColorPalette } from '../../../_models/widget';
+import { BarChartWidget, Orientation, OrderWith, WidgetHeader, WidgetColorPalette, Widget } from '../../../_models/widget';
 import { BehaviorSubject, of } from 'rxjs';
 import { MatMenuModule } from '@angular/material/menu';
 import { BaseChartDirective } from 'ng2-charts';
@@ -217,6 +217,7 @@ describe('BarChartComponent', () => {
 
     component.barWidget.next(pieWidget);
 
+    component.widgetInfo = new Widget();
     component.getBarChartData(653267432, []);
 
     expect(service.getWidgetData).toHaveBeenCalledWith('653267432', []);
