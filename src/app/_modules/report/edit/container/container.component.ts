@@ -33,6 +33,12 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   pixcel = 200; // Initial 200
   eachBoxSize = 0;
 
+  /** max width of any widget */
+  widgetMaxWidth = 200;
+
+  /** max height of any widget */
+  widgetMaxHeight = 1000;
+
   // for background-color or additinal dynamic css on main container
   containerCss: any = {};
 
@@ -843,16 +849,23 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.workflowFieldsObs = of(this.workflowFields);
     }
   }
-  widthCount(event: any) {
-    const data = event? event.target.value: '';
-    if(data > 200) {
+
+  /**
+   * function to control width of widget entered by user..
+   * @param value width entered by user..
+   */
+  widthCount(value: number) {
+    if(value > 200){
       return this.styleCtrlGrp.get('width').setValue(200);
     }
   }
 
-  heightCount(event: any) {
-    const data = event? event.target.value: '';
-    if(data > 1000) {
+  /**
+   * function to control height of widget entered by user..
+   * @param value height entered by user..
+   */
+  heightCount(value: number) {
+    if(value > 1000) {
       return this.styleCtrlGrp.get('height').setValue(1000);
     }
   }
