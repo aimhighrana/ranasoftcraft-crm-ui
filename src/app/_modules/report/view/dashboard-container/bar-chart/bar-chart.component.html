@@ -4,6 +4,13 @@
       {{ widgetHeader.desc }}
     </div>
     <div class="f-spacer"></div>
+    <button mat-button (click)="zoomIn()">
+      <mat-icon>zoom_in</mat-icon>
+    </button>
+    <button mat-button (click)="zoomOut()">
+      <mat-icon>zoom_out</mat-icon>
+    </button>
+    
     <button mat-button [matMenuTriggerFor]="menu">
        <mat-icon>more_horiz</mat-icon>
     </button>
@@ -16,10 +23,12 @@
     </mat-menu>
  </div>
  <mat-card-content>
-   <div [ngStyle]="{ 'width.px' : (widgetInfo.width * boxSize), 'overflow-x' : 'auto'}">
-     <canvas baseChart [height]="widgetInfo.height * boxSize" [width]="widgetInfo.width * boxSize"
-       [datasets]="barChartData" [labels]="lablels" [options]="barChartOptions" [chartType]="orientation">
-     </canvas>
+   <div [ngStyle]="{'width.px' : (widgetInfo.width * boxSize)}"> 
+     <div [ngStyle]="{'width.px' : (computedSize.width * boxSize), 'height.px' : (computedSize.height * boxSize), 'position' : 'relative'}">
+       <canvas baseChart [height]="computedSize.height * boxSize" [width]="computedSize.width * boxSize"
+         [datasets]="barChartData" [labels]="lablels" [options]="barChartOptions" [chartType]="orientation">
+       </canvas>
+     </div>
    </div>
 </mat-card-content>
 </mat-card>
