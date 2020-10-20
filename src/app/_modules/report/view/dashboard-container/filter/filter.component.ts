@@ -307,7 +307,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
           metadatas.push(metaData);
         });
         this.values = metadatas;
-        if(this.filterWidget.getValue().metaData.picklist === '1' || this.filterWidget.getValue().metaData.picklist === '37') {
+        if(this.filterWidget.getValue().metaData.picklist === '1' || this.filterWidget.getValue().metaData.picklist === '37' || this.filterWidget.getValue().metaData.picklist === '4' || this.filterWidget.getValue().metaData.picklist === '38') {
           this.getFieldsMetadaDesc(buckets, fieldId);
         } else if(this.filterWidget.getValue().metaData.picklist === '30'){
           this.updateObjRefDescription(buckets, fieldId);
@@ -484,6 +484,9 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
   }
   emitDateChangeValues() {
     if(this.startDate && this.endDate) {
+      if(this.startDate === this.endDate) {
+        this.endDate = String(Number(this.startDate) + 24*60*60*1000);
+      }
       this.enableClearIcon = true;
       let checkPreviousApplied = this.filterCriteria.filter(fill => fill.conditionFieldId === this.filterWidget.getValue().fieldId);
       this.removeOldFilterCriteria(checkPreviousApplied);

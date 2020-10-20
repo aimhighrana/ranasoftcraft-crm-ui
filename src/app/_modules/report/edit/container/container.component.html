@@ -636,7 +636,7 @@
                 </mat-accordion>
 
                 <!-- DEFAULT FILTERS -->
-                <mat-accordion *ngIf="selStyleWid && (selStyleWid.fieldCtrl && !(selStyleWid.fieldCtrl.dataType === 'DTMS' || selStyleWid.fieldCtrl.dataType === 'DATS') || selStyleWid.field)">
+                <mat-accordion *ngIf="selStyleWid && styleCtrlGrp.get('isWorkflowdataSet').value===false && selStyleWid.fieldCtrl && !(selStyleWid.fieldCtrl.dataType === 'DTMS' || selStyleWid.fieldCtrl.dataType === 'DATS')">
                     <mat-expansion-panel class="mat-elevation-z0" togglePosition="before" expanded="true">
                         <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
                             <mat-panel-title>
@@ -655,7 +655,7 @@
                                                     [ngIfElse]="workflowField">
                                                     <pros-metadatafield-control
                                                         [moduleId]="selStyleWid && selStyleWid.objectType"
-                                                        lebel="Field "
+                                                        lebel="Field"
                                                         [selectedFldId]="selStyleWid && selStyleWid.defaultFilters && (selStyleWid.defaultFilters[i]).conditionFieldId"
                                                         (selectionChange)='onDefaultFilterChange($event,i)'
                                                         class="field-divider">
