@@ -1,4 +1,69 @@
-<div class="root">
+<div class="root mat-elevation-z0">
+    <div class="f-row breadcrum-toolbar">
+        <button mat-button (click)="closeDialogComponent()">
+            <mat-icon>clear</mat-icon>
+        </button>
+        <div class="col-spacer"></div>
+        <div class="f-col mdo-constrained-right">
+            <div class="f-row breadcrum-head">
+                <div class="display-heading-large">Add subscribers</div>
+            </div>
+            <div class="row-spacer"></div>
+            <div class="f-row">
+                <pros-search-input></pros-search-input>
+                <span class="col-spacer"></span>
+                <mat-chip-list>
+                    <mat-chip class="mdo-filter-matchip">
+                        Role: <a href="#">All</a>
+                    </mat-chip>
+                </mat-chip-list>
+            </div>
+            <div class="row-spacer"></div>
+        </div>
+    </div>
+
+    <div class="row-spacer"></div>
+    <div class="f-col businessrule-listing">
+        <div class="f-col mdo-justify">
+            <mat-list role="list" class="rule-list">
+                <mat-list-item role="listitem">
+                    <div class="mat-line">
+                        <mat-card-header>
+                            <div mat-card-avatar>MW</div>
+                            <mat-card-title mat-line>Mark Walters</mat-card-title>
+                        </mat-card-header>
+                    </div>
+                    <span class="f-spacer"></span>
+                    <button mat-flat-button color="accent">Add</button>
+                </mat-list-item>
+                <mat-list-item role="listitem">
+                    <div class="mat-line">
+                        <mat-card-header>
+                            <div mat-card-avatar>MW</div>
+                            <mat-card-title mat-line>Mark Walters</mat-card-title>
+                        </mat-card-header>
+                    </div>
+                    <span class="f-spacer"></span>
+                    <button mat-flat-button color="accent">Add</button>
+                </mat-list-item>
+                <mat-list-item role="listitem">
+                    <div class="mat-line">
+                        <mat-card-header>
+                            <div mat-card-avatar>MW</div>
+                            <mat-card-title mat-line>Mark Walters</mat-card-title>
+                        </mat-card-header>
+                    </div>
+                    <span class="f-spacer"></span>
+                    <button mat-flat-button color="accent">Add</button>
+                </mat-list-item>
+            </mat-list>
+        </div>
+    </div>
+</div>
+
+
+<!-- old code start here -->
+<!-- <div class="root">
     <div class="f-row breadcrum-toolbar">
         <button mat-button (click)="closeDialogComponent()">
             <mat-icon>clear</mat-icon>
@@ -40,4 +105,4 @@
             </div>
         </form>
     </div>
-</div>
+</div> -->

@@ -30,9 +30,16 @@ mat-card.root {
       flex-direction: column;
     }
 
-    mat-divider.mat-divider {
+    .temp-field {
+      mat-label {
+        font-weight: 500;
+        font-size: 0.8rem;
+      }
+    }
+
+    .dashed-divider {
       position: relative;
-      margin: 8px 0;
+      margin: 16px 0;
       border-top-style: dashed;
     }
 

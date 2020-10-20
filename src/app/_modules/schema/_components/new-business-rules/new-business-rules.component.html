@@ -15,7 +15,7 @@
 
   <div class="f-col mdo-justify">
     <form [formGroup]="form">
-      <div class="mdo-form-field">
+      <div class="mdo-form-field temp-field">
         <mat-label>Rule Type</mat-label>
         <mat-form-field appearance="outline">
           <mat-select formControlName="rule_type">
@@ -26,12 +26,11 @@
           </mat-select>
           <mat-error *ngIf="submitted && form.controls.rule_type.errors && form.controls.rule_type.errors.required">
             Please enter Rule type</mat-error>
-
         </mat-form-field>
       </div>
 
 
-      <div class="mdo-form-field">
+      <div class="mdo-form-field temp-field">
         <mat-label>Weightage</mat-label>
         <mat-slider thumbLabel formControlName="weightage" [displayWith]="formatLabel" tickInterval="1" min="0"
           max="100"></mat-slider>
@@ -39,7 +38,7 @@
           Please enter Weightage</mat-error>
       </div>
 
-      <div class="mdo-form-field">
+      <div class="mdo-form-field temp-field">
         <mat-label>Category</mat-label>
         <mat-form-field appearance="outline">
           <mat-select formControlName="categoryId">
@@ -70,9 +69,9 @@
           Please enter Error message</mat-error>
       </div>
 
-      <mat-divider></mat-divider>
+      <mat-divider class="dashed-divider"></mat-divider>
 
-      <div class="mdo-form-field" *ngIf="!isUDR">
+      <div class="mdo-form-field temp-field" *ngIf="!isUDR">
         <mat-label>Fields</mat-label>
         <mat-form-field appearance="outline">
           <mat-chip-list #chipList>

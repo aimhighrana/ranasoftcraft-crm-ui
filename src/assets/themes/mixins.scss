@@ -751,6 +751,7 @@
   button.mat-stroked-button,
   button.mat-flat-button {
     font-weight: 400;
+    font-size: 0.8rem;
     border-radius: 3px;
     min-width: 100px;
     height: 36px;
@@ -970,6 +971,18 @@
     }
   }
 
+  pros-table-column-settings {
+    .colunm-box {
+      border-top: 1px solid mat-color($foreground-palette, divider);
+    }
+  }
+
+  pros-report-datatable-column-settings {
+    .colunm-box:hover {
+      background: mat-color($background-palette, app-bar);
+    }
+  }
+
   pros-upload-dataset {
     mat-card.root {
       mat-nav-list {
@@ -977,10 +990,16 @@
           border-bottom: 1px solid mat-color($foreground-palette, divider);
         }
       }
-    }
 
-    .colunm-box {
-      border-bottom: 1px solid mat-color($foreground-palette, divider);
+      .colunm-box {
+        .info-link {
+          color: mat-color($primary-palette);
+        }
+
+        &.rule-border-row {
+          border-bottom: 1px solid mat-color($foreground-palette, divider);
+        }
+      }
     }
   }
 
@@ -1038,12 +1057,6 @@
       .statics-col {
         border-color: mat-color($foreground-palette, divider);
       }
-    }
-  }
-
-  pros-table-column-settings {
-    .colunm-box {
-      border-top: 1px solid mat-color($foreground-palette, divider);
     }
   }
 
@@ -1144,12 +1157,6 @@
     }
   }
 
-  pros-report-datatable-column-settings {
-    .colunm-box:hover {
-      background: mat-color($background-palette, app-bar);
-    }
-  }
-
   pros-widget-color-palette {
     div.root {
       .palette-list {
@@ -1188,7 +1195,8 @@
     }
   }
 
-  pros-businessrulelibrary-sidesheet {
+  pros-businessrulelibrary-sidesheet,
+  pros-new-schema-collaborators {
     mat-card.root {
       .businessrule-listing {
         mat-list.rule-list {
