@@ -481,7 +481,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   transformDataSets(data: any): any {
     const finalOutput = new Object();
     const cordKeys = ['x', 'y'];
-    const aggregation = data.aggregations['date_histogram#date'];
+    const aggregation = data.aggregations['date_histogram#date'] ? data.aggregations['date_histogram#date']:data.aggregations[''];
     if (aggregation.buckets !== undefined && aggregation.buckets.length > 0) {
       aggregation.buckets.forEach(singleBucket => {
         const arrBuckets = singleBucket['sterms#term'] !== undefined ? singleBucket['sterms#term'].buckets : singleBucket['lterms#term'].buckets
@@ -544,7 +544,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       aggregation.buckets.forEach(singleBucket => {
         const dataSet = new Object();
         const milliVal = singleBucket.key_as_string;
-        const arrBuckets = singleBucket['sterms#term'].buckets;
+        const arrBuckets = singleBucket['sterms#term'] ? singleBucket['sterms#term'].buckets : singleBucket['lterms#term'].buckets;
         const arrcount = new Array();
         keys.forEach(key => {
           const bucket = arrBuckets.filter(fil => fil.key === key)[0];
@@ -573,7 +573,8 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   getBucketKey(buckets: any): string[] {
     const res: string[] = [];
     buckets.forEach(bucket => {
-      const keys = bucket['sterms#term'].buckets.map(map => map.key);
+      const arrBuckets = bucket['sterms#term'] !== undefined ? bucket['sterms#term'].buckets : bucket['lterms#term'].buckets
+      const keys = arrBuckets.map(map => map.key);
       keys.forEach(k => {
         if (res.indexOf(k) === -1) {
           res.push(k);
