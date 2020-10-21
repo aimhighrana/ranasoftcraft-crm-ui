@@ -1,0 +1,236 @@
+<div class="mat-elevation-z0 root">
+    <div class="row-spacer"></div>
+    <div class="f-row breadcrum-toolbar">
+        <div class="display-heading-large">Material / Catalog check / Entire dataset
+            <span class="f-col-spacer-half"></span>
+            <button mat-fab color="accent" class="mat-elevation-z0">
+                <mat-icon>arrow_drop_down</mat-icon>
+            </button>
+        </div>
+        <div class="f-spacer"></div>
+        <button mat-flat-button color="accent">
+            <mat-icon fontSet="mdo-icons">wand</mat-icon> Check data
+        </button>
+        <button mat-fab color="accent" class="mat-elevation-z0">
+            <mat-icon>show_chart</mat-icon>
+        </button>
+        <button mat-fab color="accent" class="mat-elevation-z0">
+            <mat-icon>more_horiz</mat-icon>
+        </button>
+    </div>
+
+    <div class="row-spacer"></div>
+    <mat-divider></mat-divider>
+    <div class="row-spacer"></div>
+
+    <div class="f-row">
+        <mat-chip-list>
+            <mat-chip disableRipple="true">112 error</mat-chip>
+            <mat-chip disableRipple="true">600 warning</mat-chip>
+            <mat-chip disableRipple="true">700 corrections</mat-chip>
+        </mat-chip-list>
+    </div>
+    <div class="row-spacer"></div>
+
+    <div class="f-col data-container">
+        <mat-tab-group disableRipple="true">
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    Material Classification
+                </ng-template>
+
+                <div class="f-row dataset-grid">
+                    <div class="f-col dataset-grid-navigation">
+                        <pros-search-input></pros-search-input>
+                        <div class="row-spacer"></div>
+                        <div class="nav-tree">
+                            <mat-accordion>
+                                <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
+                                    <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
+                                        <mat-panel-title>
+                                            <div class="expand-title">
+                                                Master library
+                                            </div>
+                                            <span class="f-spacer"></span>
+                                            <div class="badge success">22</div>
+                                        </mat-panel-title>
+                                    </mat-expansion-panel-header>
+                                    <mat-accordion>
+                                        <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
+                                            <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px"
+                                                class="undertree-expansion-panel">
+                                                <mat-panel-title>
+                                                    <div class="expand-title">
+                                                        Bearing heater
+                                                    </div>
+                                                    <span class="f-spacer"></span>
+                                                    <div class="badge success">22</div>
+                                                </mat-panel-title>
+                                            </mat-expansion-panel-header>
+
+                                            <mat-nav-list role="navigation" class="tree-nav-list">
+                                                <mat-list-item class="f-row understep-two">
+                                                    <mat-icon fontSet="mdo-icons" mat-list-icon>circle-empty</mat-icon>
+                                                    <div mat-line>Ball</div>
+                                                    <span class="f-spacer"></span>
+                                                    <div class="badge warning">110</div>
+                                                    <div class="badge success">75</div>
+                                                </mat-list-item>
+                                                <mat-list-item class="f-row understep-two">
+                                                    <mat-icon fontSet="mdo-icons" mat-list-icon>circle-empty</mat-icon>
+                                                    <div mat-line>Precision ball</div>
+                                                    <span class="f-spacer"></span>
+                                                    <div class="badge warning">110</div>
+                                                    <div class="badge success">75</div>
+                                                </mat-list-item>
+                                                <mat-list-item class="f-row understep-two">
+                                                    <mat-icon fontSet="mdo-icons" mat-list-icon>circle-empty</mat-icon>
+                                                    <div mat-line>Hex-bore ball</div>
+                                                    <span class="f-spacer"></span>
+                                                    <div class="badge warning">110</div>
+                                                    <div class="badge success">75</div>
+                                                </mat-list-item>
+                                            </mat-nav-list>
+                                        </mat-expansion-panel>
+                                    </mat-accordion>
+
+                                </mat-expansion-panel>
+                            </mat-accordion>
+
+                            <mat-accordion>
+                                <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
+                                    <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
+                                        <mat-panel-title>
+                                            <div class="expand-title">
+                                                GSN
+                                            </div>
+                                            <span class="f-spacer"></span>
+                                            <div class="badge success">22</div>
+                                        </mat-panel-title>
+                                    </mat-expansion-panel-header>
+                                    <mat-accordion>
+                                        <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
+                                            <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px"
+                                                class="undertree-expansion-panel">
+                                                <mat-panel-title>
+                                                    <div class="expand-title">
+                                                        Bearing heater
+                                                    </div>
+                                                    <span class="f-spacer"></span>
+                                                    <div class="badge success">22</div>
+                                                </mat-panel-title>
+                                            </mat-expansion-panel-header>
+
+                                            <mat-nav-list role="navigation" class="tree-nav-list">
+                                                <mat-list-item class="f-row understep-two">
+                                                    <mat-icon fontSet="mdo-icons" mat-list-icon></mat-icon>
+                                                    <div mat-line>Ball</div>
+                                                    <span class="f-spacer"></span>
+                                                    <div class="badge warning">110</div>
+                                                    <div class="badge success">75</div>
+                                                </mat-list-item>
+                                                <mat-list-item class="f-row understep-two">
+                                                    <mat-icon fontSet="mdo-icons" mat-list-icon></mat-icon>
+                                                    <div mat-line>Precision ball</div>
+                                                    <span class="f-spacer"></span>
+                                                    <div class="badge warning">110</div>
+                                                    <div class="badge success">75</div>
+                                                </mat-list-item>
+                                                <mat-list-item class="f-row understep-two">
+                                                    <mat-icon fontSet="mdo-icons" mat-list-icon></mat-icon>
+                                                    <div mat-line>Hex-bore ball</div>
+                                                    <span class="f-spacer"></span>
+                                                    <div class="badge warning">110</div>
+                                                    <div class="badge success">75</div>
+                                                </mat-list-item>
+                                            </mat-nav-list>
+                                        </mat-expansion-panel>
+                                    </mat-accordion>
+
+                                    <mat-accordion>
+                                        <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
+                                            <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px"
+                                                class="undertree-expansion-panel">
+                                                <mat-panel-title>
+                                                    <div class="expand-title">
+                                                        Bearing
+                                                    </div>
+                                                    <span class="f-spacer"></span>
+                                                    <div class="badge success">22</div>
+                                                </mat-panel-title>
+                                            </mat-expansion-panel-header>
+
+                                            <mat-nav-list role="navigation" class="tree-nav-list">
+                                                <mat-list-item class="f-row understep-two">
+                                                    <mat-icon fontSet="mdo-icons" mat-list-icon>declined</mat-icon>
+                                                    <div mat-line>Ball</div>
+                                                    <span class="f-spacer"></span>
+                                                    <div class="badge warning">110</div>
+                                                    <div class="badge success">75</div>
+                                                </mat-list-item>
+                                                <mat-list-item class="f-row understep-two">
+                                                    <mat-icon fontSet="mdo-icons" mat-list-icon>declined</mat-icon>
+                                                    <div mat-line>Precision ball</div>
+                                                    <span class="f-spacer"></span>
+                                                    <div class="badge warning">110</div>
+                                                    <div class="badge success">75</div>
+                                                </mat-list-item>
+                                                <mat-list-item class="f-row understep-two">
+                                                    <mat-icon fontSet="mdo-icons" mat-list-icon>declined</mat-icon>
+                                                    <div mat-line>Hex-bore ball</div>
+                                                    <span class="f-spacer"></span>
+                                                    <div class="badge warning">110</div>
+                                                    <div class="badge success">75</div>
+                                                </mat-list-item>
+                                            </mat-nav-list>
+                                        </mat-expansion-panel>
+                                    </mat-accordion>
+
+                                </mat-expansion-panel>
+                            </mat-accordion>
+                        </div>
+                    </div>
+                    <mat-divider [vertical]="true"></mat-divider>
+                    <div class="f-col dataset-grid-listing">
+                        <div class="f-row">
+                            <pros-search-input></pros-search-input>
+                            <div class="f-col-spacer-half"></div>
+                            <mat-chip-list>
+                                <mat-chip class="mdo-filter-matchip" disableRipple="true">
+                                    <label>Status:</label> <span class="info">All</span>
+                                    <mat-icon matChipRemove>clear</mat-icon>
+                                </mat-chip>
+                                <mat-chip class="mdo-filter-matchip" disableRipple="true">
+                                    <label>Attributes:</label> <span class="info">12mm</span>
+                                    <mat-icon matChipRemove>clear</mat-icon>
+                                </mat-chip>
+
+                                <mat-chip class="mdo-filter-matchip" disableRipple="true">
+                                    <label>Diameter:</label> <span class="info">12mm</span>
+                                    <mat-icon matChipRemove>clear</mat-icon>
+                                </mat-chip>
+                                <mat-chip class="mdo-filter-matchip" disableRipple="true">
+                                    <label>color:</label> <span class="info">All</span>
+                                    <mat-icon matChipRemove>clear</mat-icon>
+                                </mat-chip>
+                            </mat-chip-list>
+                        </div>
+                    
+                    </div>
+                </div>
+            </mat-tab>
+
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    Duplicate check
+                </ng-template>
+            </mat-tab>
+
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    Missing data
+                </ng-template>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+</div>

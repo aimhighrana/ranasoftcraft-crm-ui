@@ -761,8 +761,9 @@
     }
 
     mat-icon {
-      font-size: 20px;
-      height: 20px;
+      font-size: 16px;
+      height: 16px;
+      width: 16px;
     }
   }
 
@@ -1205,6 +1206,30 @@
 
             .mat-list-item-content {
               padding: 0;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  pros-catalog-check {
+    div.root {
+      .nav-tree {
+        mat-accordion.mat-accordion {
+          mat-expansion-panel {
+            .tree-nav-list {
+              mat-list-item.mat-list-item {
+                &.understep-two {
+                  .mat-list-item-content {
+                    padding: 0 0 0 64px;
+
+                    .mat-list-text {
+                      padding-left: 0;
+                    }
+                  }
+                }
+              }
             }
           }
         }

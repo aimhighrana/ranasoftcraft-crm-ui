@@ -44,6 +44,7 @@ import { CreateSchemaComponent } from './_components/v2/create-schema/create-sch
 import { SubscriberSideSheetComponent } from './_components/v2/subscriber-side-sheet/subscriber-side-sheet.component';
 import { ScheduleTabComponent } from './_components/schedule-tab/schedule-tab.component';
 import { BusinessrulelibrarySidesheetComponent } from './_components/businessrulelibrary-sidesheet/businessrulelibrary-sidesheet.component';
+import { CatalogCheckComponent } from './_components/catalog-check/catalog-check.component';
 
 
 @NgModule({
@@ -91,7 +92,8 @@ import { BusinessrulelibrarySidesheetComponent } from './_components/businessrul
     SubscriberSideSheetComponent,
     CreateSchemaComponent,
     ScheduleTabComponent,
-    BusinessrulelibrarySidesheetComponent
+    BusinessrulelibrarySidesheetComponent,
+    CatalogCheckComponent
   ],
   imports: [
     CommonModule,
