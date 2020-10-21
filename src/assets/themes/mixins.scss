@@ -761,9 +761,9 @@
     }
 
     mat-icon {
-      font-size: 16px;
-      height: 16px;
-      width: 16px;
+      font-size: 20px;
+      height: 20px;
+      width: 20px;
     }
   }
 
@@ -1039,6 +1039,20 @@
     }
   }
 
+  pros-summary-tab {
+    div.root {
+      .summary-rowlist {
+        mat-list-item.mat-list-item {
+          border-bottom-color: mat-color($foreground-palette, divider);
+
+          div.mat-line {
+            color: mat-color($primary-palette);
+          }
+        }
+      }
+    }
+  }
+
   pros-diw-tiles {
     mat-card.root {
       mat-list.mat-list {
@@ -1079,7 +1093,28 @@
     }
   }
 
-  pros-brrule-side-sheet {
+  pros-material-duplicatecheck-sidesheet {
+    mat-card.root {
+      .colunm-box {
+        .info-link {
+          color: mat-color($primary-palette);
+        }
+
+        mat-card-header.mat-card-header {
+          .mat-card-header-text {
+            margin: 0;
+          }
+        }
+
+        &.rule-border-row {
+          border-bottom: 1px solid mat-color($foreground-palette, divider);
+        }
+      }
+    }
+  }
+
+  pros-brrule-side-sheet,
+  pros-duplicate-datacheck-sidesheet {
     .user-defined-set {
       &::before {
         background: mat-color($foreground-palette, divider);
@@ -1091,6 +1126,15 @@
         div.col {
           &.select-col {
             background: mat-color($background-palette, background);
+          }
+
+          button.f-selected-col,
+          .range-slider {
+            background-color: mat-color($background-palette, card);
+          }
+
+          .info-link {
+            color: mat-color($primary-palette);
           }
         }
       }

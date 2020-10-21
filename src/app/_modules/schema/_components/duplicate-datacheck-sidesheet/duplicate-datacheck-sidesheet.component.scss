@@ -1,0 +1,106 @@
+mat-card.root {
+  user-select: none;
+  height: 100%;
+  padding: 0 16px;
+  width: 660px;
+
+  .breadcrum-toolbar {
+    align-items: center;
+    padding-top: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+
+    .display-heading-large {
+      font-size: 1.2rem;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .mdo-constrained-right {
+      align-items: center;
+      width: 100%;
+
+      button.mat-flat-button {
+        min-width: auto;
+      }
+    }
+  }
+
+  mat-accordion {
+    margin-bottom: 8px;
+
+    .panel-title {
+      font-weight: 500;
+    }
+
+    .user-defined-set {
+      position: relative;
+      margin-top: 8px;
+
+      &::before {
+        display: block;
+        content: "";
+        height: 100%;
+        width: 1px;
+        position: absolute;
+        top: 0;
+        left: 50px;
+      }
+
+      .defined-row {
+        border-width: 1px;
+        border-style: solid;
+        align-items: center;
+        height: 54px;
+        margin: 0 0 16px 0;
+
+        div.col {
+          display: block;
+          flex: 1;
+          min-width: 0;
+          overflow: hidden;
+          padding: 0 8px;
+
+          &:first-of-type,
+          &:last-of-type {
+            min-width: auto;
+            flex: 0 0 auto;
+            padding: 0;
+          }
+
+          button.mat-flat-button,
+          button.f-selected-col {
+            height: 54px;
+            border-radius: 0;
+            padding: 0 8px;
+          }
+
+          .range-slider {
+            height: 54px;
+          }
+
+          pros-form-input {
+            width: 100%;
+          }
+        }
+
+        &.add-col {
+          margin-bottom: 0;
+          width: 100px;
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 1200px) {
+  .mdo-justify {
+    margin: 0 54px;
+  }
+
+  .mdo-constrained-right {
+    margin-right: 54px;
+  }
+}

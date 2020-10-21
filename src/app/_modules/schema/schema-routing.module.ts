@@ -33,6 +33,9 @@ import { SubscriberSideSheetComponent } from './_components/v2/subscriber-side-s
 import { ScheduleTabComponent } from './_components/schedule-tab/schedule-tab.component';
 import { BusinessrulelibrarySidesheetComponent } from './_components/businessrulelibrary-sidesheet/businessrulelibrary-sidesheet.component';
 import { CatalogCheckComponent } from './_components/catalog-check/catalog-check.component';
+import { MaterialDuplicatecheckSidesheetComponent } from './_components/material-duplicatecheck-sidesheet/material-duplicatecheck-sidesheet.component';
+import { SummaryTabComponent } from './_components/summary-tab/summary-tab.component';
+import { DuplicateDatacheckSidesheetComponent } from './_components/duplicate-datacheck-sidesheet/duplicate-datacheck-sidesheet.component';
 
 const routes: Routes = [
   { path: '', component: DiwTilesComponent },
@@ -72,6 +75,9 @@ const routes: Routes = [
   { path: 'system/schedule-tab', component: ScheduleTabComponent },
   { path: 'system/businessrulelibrary-sidesheet', component: BusinessrulelibrarySidesheetComponent },
   { path: 'system/catalog-check', component: CatalogCheckComponent },
+  { path: 'system/duplicatecheck-sidesheet', component: MaterialDuplicatecheckSidesheetComponent },
+  { path: 'system/summary-tab', component: SummaryTabComponent },
+  { path: 'system/duplicate-datacheck-sidesheet', component: DuplicateDatacheckSidesheetComponent },
 
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent }
