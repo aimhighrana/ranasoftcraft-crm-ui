@@ -14,6 +14,7 @@
       font-size: 1.2rem;
       align-items: center;
       padding: 0 16px;
+      min-height: 40px;
 
       > div {
         overflow: hidden;
@@ -38,7 +39,6 @@
         mat-expansion-panel {
           .mat-expansion-panel-header {
             padding: 0 0 0 16px;
-            font-size: 0.9rem;
 
             mat-panel-title {
               width: 100%;
@@ -48,6 +48,7 @@
                 text-overflow: ellipsis;
                 overflow: hidden;
                 white-space: nowrap;
+                font-size: 0.9rem;
               }
 
               .badge {
@@ -60,6 +61,7 @@
             mat-list-item {
               div.mat-line {
                 padding-left: 48px;
+                font-size: 0.9rem;
               }
             }
           }
@@ -112,7 +114,7 @@
       border-radius: 50%;
       position: absolute;
       left: -10px;
-      top: 22px;
+      top: 26px;
       cursor: pointer;
       z-index: 2;
       font-size: 20px;

@@ -13,7 +13,7 @@
 
     <div class="row-spacer"></div>
 
-    <div class="f-row create-new"  [matMenuTriggerFor]="navigation">
+    <div class="f-row create-new" [matMenuTriggerFor]="navigation">
         <button mat-mini-fab>
             <mat-icon>add</mat-icon>
         </button>
@@ -25,30 +25,30 @@
     </div>
 
     <div class="row-spacer"></div>
-    <mat-nav-list class="primary-nav-list">
-        <mat-list-item [class.selected]="isNavSelected==='welcome'" (click)="sendToParent('welcome')">
-            <mat-icon fontSet="mdo-icons">form-address</mat-icon>
-            <div class="col-space">Home</div>
-        </mat-list-item>
-        <mat-list-item [class.selected]="isNavSelected==='schema'" (click)="sendToParent('schema')">
-            <mat-icon fontSet="mdo-icons">board</mat-icon>
-            <div class="col-space">Schema</div>
-        </mat-list-item>
-        <mat-list-item [class.selected]="isNavSelected==='report'" (click)="sendToParent('report')">
-            <mat-icon fontSet="mdo-icons">chart-bar</mat-icon>
-            <div class="col-space">Reports</div>
-        </mat-list-item>
-    </mat-nav-list>
-
-    <div class="row-spacer"></div>
-    <!-- CODE FOR SYSTEM TRAY -->
-    <div class="f-row primary-admin" (click)="openSystemTray()">
-        <div class="admin-badge">
-            <mat-icon>inbox</mat-icon>{{notificationsCount}}
-            <mat-icon class="badge-icon">access_time</mat-icon>
+    <div class="primary-nav-list">
+        <mat-nav-list>
+            <mat-list-item [class.selected]="isNavSelected==='welcome'" (click)="sendToParent('welcome')">
+                <mat-icon fontSet="mdo-icons">form-address</mat-icon>
+                <div class="col-space">Home</div>
+            </mat-list-item>
+            <mat-list-item [class.selected]="isNavSelected==='schema'" (click)="sendToParent('schema')">
+                <mat-icon fontSet="mdo-icons">board</mat-icon>
+                <div class="col-space">Schema</div>
+            </mat-list-item>
+            <mat-list-item [class.selected]="isNavSelected==='report'" (click)="sendToParent('report')">
+                <mat-icon fontSet="mdo-icons">chart-bar</mat-icon>
+                <div class="col-space">Reports</div>
+            </mat-list-item>
+        </mat-nav-list>
+        <div class="row-spacer"></div>
+        <div class="f-row primary-admin" (click)="openSystemTray()">
+            <div class="admin-badge">
+                <mat-icon fontSet="mdo-icons" matBadge="{{notificationsCount}}">tray</mat-icon>
+            </div>
+            <div class="col-space">System tray</div>
         </div>
-        <div class="col-space">System tray</div>
     </div>
+    <!-- CODE FOR SYSTEM TRAY -->
     <mat-divider></mat-divider>
     <div class="row-spacer"></div>
     <mat-card-header>

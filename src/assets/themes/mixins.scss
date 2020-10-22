@@ -1010,6 +1010,16 @@
           background: mat-color($primary-palette);
         }
       }
+
+      .admin-badge {
+        mat-icon {
+          .mat-badge-content {
+            background: #324358;
+            right: -14px;
+            top: -14px;
+          }
+        }
+      }
     }
   }
 
@@ -1164,18 +1174,6 @@
           mat-list-item.mat-list-item {
             border-bottom-color: mat-color($foreground-palette, divider);
           }
-        }
-      }
-    }
-  }
-
-  pros-summary-tabs {
-    .summary-tile {
-      mat-grid-tile {
-        .mat-figure {
-          justify-content: flex-start;
-          align-items: self-start;
-          line-height: 18px;
         }
       }
     }
