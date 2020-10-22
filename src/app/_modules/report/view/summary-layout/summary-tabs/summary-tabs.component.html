@@ -7,7 +7,50 @@
       </mat-expansion-panel-header>
 
       <div class="summary-tile">
-        <mat-grid-list cols="2" [rowHeight]="setDynamicHeight()" [id]="item">
+
+        <div class="item-grid-list">
+          <div *ngFor="let fieldData of metadata.fieldsList" class="grid-tile">
+            <div *ngIf="fieldData && fieldData.picklist !== 2 && fieldData.picklist !== 28 && fieldData.picklist !== 31 && fieldData.dataType !== 'DTMS'">
+              <div class="f-row item-tile">
+                <mat-label>{{fieldData.fieldDescri}}</mat-label>
+                <div mat-line>{{fieldData.value}}</div>
+              </div>
+            </div>
+
+            <!-- ----------------------- Check-Box Case ------------------------------------- -->
+            <div *ngIf="fieldData && fieldData.picklist === 2">
+              <div class="f-row item-tile">
+                <mat-checkbox color="primary" disabled="true" checked="{{fieldData.value}}">{{fieldData.fieldDescri}}</mat-checkbox>
+              </div>
+            </div>
+
+            <!-- ----------------------- Attachment Case ------------------------------------- -->
+            <div *ngIf="fieldData && fieldData.picklist === 28">
+              <div class="f-row item-tile">
+                <mat-label>{{fieldData.fieldDescri}}</mat-label>
+                <div mat-line><a [routerLink]="" href="" (click)="downloadAttachment(fieldData);">
+                    {{fieldData.value}}
+                  </a></div>
+                </div>
+            </div>
+
+            <!-- ------------------------------ Date and Time Case------------------------------------ -->
+            <div *ngIf="fieldData && fieldData.picklist === 0 && fieldData.dataType === 'DTMS'">
+              <div class="f-row item-tile">
+                <mat-label>{{fieldData.fieldDescri}}</mat-label>
+                <div mat-line>
+                  {{fieldData.value | date:'dd/MM/yyyy hh:mm:ss'}}
+                </div>
+              </div>
+            </div>
+            </div>
+        </div>
+
+
+
+
+        <!-- no use code  -->
+        <mat-grid-list class="myGridList" cols="2" [rowHeight]="fit" [id]="item" style="display: none;">
           <div *ngFor="let fieldData of metadata.fieldsList">
             <div
               *ngIf="fieldData && fieldData.picklist !== 2 && fieldData.picklist !== 28 && fieldData.picklist !== 31 && fieldData.dataType !== 'DTMS' || fieldData.dataType !== 'DATS'">

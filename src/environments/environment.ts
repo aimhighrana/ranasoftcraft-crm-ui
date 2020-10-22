@@ -4,8 +4,8 @@
 export const environment = {
   production: false,
   // apiurl: 'http://localhost:8080/MDOSF/fapi'
-  // apiurl: 'https://beta.mdoondemand.com/MDOSF/fapi'
-  apiurl: 'https://devreplica.masterdataonline.com/MDOSF/fapi'
+   apiurl: 'https://beta.mdoondemand.com/MDOSF/fapi'
+  // apiurl: 'https://devreplica.masterdataonline.com/MDOSF/fapi'
 };
 
 /*

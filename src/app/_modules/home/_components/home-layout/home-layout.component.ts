@@ -87,8 +87,8 @@ export class HomeLayoutComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   togglePrimarySideBar() {
     if (this.primarySideBarOpened) {
-      document.getElementById('primarySidenav').style.width = '73px';
-      document.getElementById('primaryContent').style.marginLeft = '73px';
+      document.getElementById('primarySidenav').style.width = '64px';
+      document.getElementById('primaryContent').style.marginLeft = '64px';
       this.primarySideBarOpened = false;
     } else {
       document.getElementById('primarySidenav').style.width = '200px';
