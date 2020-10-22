@@ -492,7 +492,6 @@
   // Tab-Component
   mat-tab-group {
     .mat-tab-header {
-      border-bottom: none;
       margin-bottom: 16px;
 
       .mat-tab-list {
@@ -577,8 +576,8 @@
     }
 
     mat-chip.mat-chip.mdo-filter-matchip {
-      height: 40px;
-      padding: 7px;
+      height: 36px;
+      padding: 5px;
       border-width: 1px;
       border-style: solid;
       border-color: mat-color($foreground-palette, divider);
@@ -589,10 +588,16 @@
         margin: 0 4px;
       }
 
+      .info {
+        color: mat-color($primary-palette);
+      }
+
       .mat-icon.mdo-icons {
-        font-size: 18px;
-        text-align: center;
+        font-size: 14px;
         height: 14px;
+        display: flex;
+        justify-content: center;
+        margin-top: 3px;
       }
     }
 

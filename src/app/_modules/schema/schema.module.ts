@@ -48,6 +48,7 @@ import { CatalogCheckComponent } from './_components/catalog-check/catalog-check
 import { MaterialDuplicatecheckSidesheetComponent } from './_components/material-duplicatecheck-sidesheet/material-duplicatecheck-sidesheet.component';
 import { SummaryTabComponent } from './_components/summary-tab/summary-tab.component';
 import { DuplicateDatacheckSidesheetComponent } from './_components/duplicate-datacheck-sidesheet/duplicate-datacheck-sidesheet.component';
+import { DatascopeSidesheetComponent } from './_components/datascope-sidesheet/datascope-sidesheet.component';
 
 
 @NgModule({
@@ -99,7 +100,8 @@ import { DuplicateDatacheckSidesheetComponent } from './_components/duplicate-da
     CatalogCheckComponent,
     MaterialDuplicatecheckSidesheetComponent,
     SummaryTabComponent,
-    DuplicateDatacheckSidesheetComponent
+    DuplicateDatacheckSidesheetComponent,
+    DatascopeSidesheetComponent
   ],
   imports: [
     CommonModule,
