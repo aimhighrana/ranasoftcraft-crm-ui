@@ -1,0 +1,45 @@
+<mat-card class="root mat-elevation-z0">
+    <div class="f-row breadcrum-toolbar">
+        <button mat-button>
+            <mat-icon>clear</mat-icon>
+        </button>
+        <div class="col-spacer"></div>
+        <div class="f-row mdo-constrained-right">
+            <div class="display-heading-large">Data scope</div>
+            <span class="f-spacer"></span>
+            <button mat-flat-button color="primary">Save</button>
+        </div>
+    </div>
+    <div class="row-spacer"></div>
+    <div class="f-col mdo-justify">
+        <div class="f-col">
+            <pros-form-input [type]="'text'" [label]="'Name'"></pros-form-input>
+            <div class="row-spacer"></div>
+            <div class="f-col temp-field">
+                <mat-label>Scope</mat-label>
+                <div class="f-row-spacer-half"></div>
+                <div class="f-row">
+                    <mat-chip-list>
+                        <mat-chip class="mdo-filter-matchip">
+                            <label>Country:</label> <span class="info">All</span>
+                            <mat-icon matChipRemove>clear</mat-icon>
+                        </mat-chip>
+
+                        <mat-chip class="mdo-filter-matchip">
+                            <mat-icon fontSet="mdo-icons">folder-filter</mat-icon>
+                        </mat-chip>
+
+                        <mat-chip class="mdo-filter-matchip" disableRipple="true">
+                            <mat-icon fontSet="mdo-icons">more</mat-icon>
+                        </mat-chip>
+                        <mat-menu>
+                            <mat-nav-list>
+                                <pros-filter-values></pros-filter-values>
+                            </mat-nav-list>
+                        </mat-menu>
+                    </mat-chip-list>
+                </div>
+            </div>
+        </div>
+    </div>
+</mat-card>
