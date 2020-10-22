@@ -34,7 +34,6 @@ import { ScheduleTabComponent } from './_components/schedule-tab/schedule-tab.co
 import { BusinessrulelibrarySidesheetComponent } from './_components/businessrulelibrary-sidesheet/businessrulelibrary-sidesheet.component';
 import { CatalogCheckComponent } from './_components/catalog-check/catalog-check.component';
 import { MaterialDuplicatecheckSidesheetComponent } from './_components/material-duplicatecheck-sidesheet/material-duplicatecheck-sidesheet.component';
-import { SummaryTabComponent } from './_components/summary-tab/summary-tab.component';
 import { DuplicateDatacheckSidesheetComponent } from './_components/duplicate-datacheck-sidesheet/duplicate-datacheck-sidesheet.component';
 import { DatascopeSidesheetComponent } from './_components/datascope-sidesheet/datascope-sidesheet.component';
 
@@ -78,9 +77,8 @@ const routes: Routes = [
   { path: 'system/businessrulelibrary-sidesheet', component: BusinessrulelibrarySidesheetComponent },
   { path: 'system/catalog-check', component: CatalogCheckComponent },
   { path: 'system/duplicatecheck-sidesheet', component: MaterialDuplicatecheckSidesheetComponent },
-  { path: 'system/summary-tab', component: SummaryTabComponent },
   { path: 'system/duplicate-datacheck-sidesheet', component: DuplicateDatacheckSidesheetComponent },
-  { path: 'system/datascope-sidesheet', component: DatascopeSidesheetComponent },
+  { path: 'data-scope/:variantId', component: DatascopeSidesheetComponent },
 
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent }

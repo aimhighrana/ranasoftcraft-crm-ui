@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'pros-datascope-sidesheet',
@@ -7,9 +8,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DatascopeSidesheetComponent implements OnInit {
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
   }
 
+  /**
+   * function to close dataScope side sheet
+   */
+  close(){
+    this.router.navigate([{outlets: {sb: null}}])
+  }
 }

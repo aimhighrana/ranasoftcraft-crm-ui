@@ -46,7 +46,6 @@ import { ScheduleTabComponent } from './_components/schedule-tab/schedule-tab.co
 import { BusinessrulelibrarySidesheetComponent } from './_components/businessrulelibrary-sidesheet/businessrulelibrary-sidesheet.component';
 import { CatalogCheckComponent } from './_components/catalog-check/catalog-check.component';
 import { MaterialDuplicatecheckSidesheetComponent } from './_components/material-duplicatecheck-sidesheet/material-duplicatecheck-sidesheet.component';
-import { SummaryTabComponent } from './_components/summary-tab/summary-tab.component';
 import { DuplicateDatacheckSidesheetComponent } from './_components/duplicate-datacheck-sidesheet/duplicate-datacheck-sidesheet.component';
 import { DatascopeSidesheetComponent } from './_components/datascope-sidesheet/datascope-sidesheet.component';
 
@@ -99,7 +98,6 @@ import { DatascopeSidesheetComponent } from './_components/datascope-sidesheet/d
     BusinessrulelibrarySidesheetComponent,
     CatalogCheckComponent,
     MaterialDuplicatecheckSidesheetComponent,
-    SummaryTabComponent,
     DuplicateDatacheckSidesheetComponent,
     DatascopeSidesheetComponent
   ],

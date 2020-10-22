@@ -159,25 +159,16 @@ export class SchemaInfoComponent implements OnInit {
       this.router.navigate(['/home/schema/schema-info', this.moduleId, this.schemaId], { queryParams: { fragment: tabLabel } })
     }
 
-    /**
-     * while business-rules tab is selected
-     */
-    if (tabLabel === 'business-rules') {
-      this.selectedIndex = 0;
-    }
-
-    /**
-     * while subscribers tab is selected
-     */
-    if (tabLabel === 'subscribers') {
-      this.selectedIndex = 1;
-    }
-
-    /**
-     * while execution logs tab is selected
-     */
-    if (tabLabel === 'execution-logs') {
-      this.selectedIndex = 2;
+    switch(tabLabel){
+      case 'business-rules':
+        this.selectedIndex = 1;
+        break;
+      case 'subscribers':
+        this.selectedIndex = 2;
+        break;
+      case 'execution-logs':
+        this.selectedIndex = 3;
+        break;
     }
   }
 
@@ -534,5 +525,12 @@ export class SchemaInfoComponent implements OnInit {
         }
       })
     }
+  }
+
+  /**
+   * function to open dataScope side sheet(Add new data scope)
+   */
+  addDataScope(){
+    this.router.navigate([{ outlets: { sb: `sb/schema/data-scope/new` } }])
   }
 }

@@ -77,15 +77,15 @@ describe('SchemaInfoComponent', () => {
     spyOn(router, 'navigate');
     component.updateFragment(tabLabel);
     expect(router.navigate).toHaveBeenCalledWith(['/home/schema/schema-info', component.moduleId, component.schemaId], { queryParams: { fragment: tabLabel } })
-    expect(component.selectedIndex).toEqual(0);
+    expect(component.selectedIndex).toEqual(1);
 
     tabLabel = 'subscribers';
     component.updateFragment(tabLabel);
-    expect(component.selectedIndex).toEqual(1);
+    expect(component.selectedIndex).toEqual(2);
 
     tabLabel = 'execution-logs';
     component.updateFragment(tabLabel);
-    expect(component.selectedIndex).toEqual(2)
+    expect(component.selectedIndex).toEqual(3)
   })
 
   it('editBr(), should open side sheet of business rules', async() => {

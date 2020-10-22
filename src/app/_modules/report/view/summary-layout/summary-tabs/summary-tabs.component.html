@@ -10,7 +10,7 @@
         <mat-grid-list cols="2" [rowHeight]="setDynamicHeight()" [id]="item">
           <div *ngFor="let fieldData of metadata.fieldsList">
             <div
-              *ngIf="fieldData && fieldData.picklist !== 2 && fieldData.picklist !== 28 && fieldData.picklist !== 31 && fieldData.dataType !== 'DTMS'">
+              *ngIf="fieldData && fieldData.picklist !== 2 && fieldData.picklist !== 28 && fieldData.picklist !== 31 && fieldData.dataType !== 'DTMS' || fieldData.dataType !== 'DATS'">
               <mat-grid-tile class="f-row">
                 <mat-label>{{fieldData.fieldDescri}}</mat-label>
                 <div mat-line>{{fieldData.value}}</div>
@@ -32,7 +32,7 @@
               </mat-grid-tile>
             </div>
             <!-- ------------------------------ Date and Time Case------------------------------------ -->
-            <div *ngIf="fieldData && fieldData.picklist === 0 && fieldData.dataType === 'DTMS'">
+            <div *ngIf="fieldData && fieldData.picklist === 0 && fieldData.dataType === 'DTMS' || fieldData.dataType === 'DATS'">
               <mat-grid-tile class="f-row">
                 <mat-label>{{fieldData.fieldDescri}}</mat-label>
                 <div mat-line>

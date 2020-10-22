@@ -30,37 +30,73 @@
 
     <div class="row-spacer"></div>
 
-    <div class="f-row">
-        <div class="f-col statics-col">
-            <div class="f-row metric-row">
-                <h1 class="statics-count">{{thresholdValue}}</h1><span class="statics-per">%</span>
-            </div>
-            Threshold
-        </div>
-
-        <div class="f-col statics-col">
-            <div class="f-row metric-row">
-                <h1 class="statics-count">{{errorValue}}</h1><span class="statics-per">%</span>
-            </div>
-            Error
-        </div>
-
-        <div class="f-col statics-col">
-            <div class="f-row metric-row">
-                <h1 class="statics-count">{{successValue}}</h1><span class="statics-per">%</span>
-            </div>
-            Success
-        </div>
-    </div>
-
-    <div class="row-spacer"></div>
-
     <mat-tab-group disableRipple="true" animationDuration="0ms"
         (selectedTabChange)="updateFragment($event.tab.textLabel)" [selectedIndex]="selectedIndex">
+        <!-- Tab for the summary of schema -->
+        <mat-tab label="summary">
+            <ng-template mat-tab-label>
+                Summary
+            </ng-template>
+                <div class="f-col root">
+                    <pros-form-input [label]="'Name'" [placeholder]="'New material schema'"></pros-form-input>
+                    <div class="row-spacer"></div>
+                    <pros-form-input [label]="'Description'"></pros-form-input>
+                    <div class="row-spacer"></div>
+                    <div class="f-col temp-field">
+                        <mat-label>Threshold</mat-label>
+                        <mat-slider color="primary"></mat-slider>
+                    </div>
+                    <div class="row-spacer"></div>
+                    <mat-accordion>
+                        <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
+                            <mat-expansion-panel-header expandedHeight="36px" collapsedHeight="36px">
+                                <mat-panel-title class="panel-title">
+                                    Data scope (4)
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                
+                            <mat-nav-list role="navigation" class="summary-rowlist">
+                                <mat-list-item (click)="addDataScope()">
+                                    <div mat-line>[Add Data Scope]</div>
+                                </mat-list-item>
+                                <mat-list-item>
+                                    <div mat-line>Adelaide plant</div>
+                                    <span class="f-spacer"></span>
+                                    <button mat-button>
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+                                </mat-list-item>
+                                <mat-list-item>
+                                    <div mat-line>Brisbane plant</div>
+                                    <span class="f-spacer"></span>
+                                    <button mat-button>
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+                                </mat-list-item>
+                                <mat-list-item>
+                                    <div mat-line>Melborne plant</div>
+                                    <span class="f-spacer"></span>
+                                    <button mat-button>
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+                                </mat-list-item>
+                                <mat-list-item>
+                                    <div mat-line>Sydney plant</div>
+                                    <span class="f-spacer"></span>
+                                    <button mat-button>
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+                                </mat-list-item>
+                            </mat-nav-list>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </div>
+        </mat-tab>
+
         <!-- Tab for the business rules of schema -->
         <mat-tab label="business-rules">
             <ng-template mat-tab-label>
-                Business rule
+                Business rules
             </ng-template>
                 <div class="colunm-listing">
                     <div class="f-row colunm-box">
