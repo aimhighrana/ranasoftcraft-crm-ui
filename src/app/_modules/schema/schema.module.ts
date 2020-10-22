@@ -45,6 +45,9 @@ import { SubscriberSideSheetComponent } from './_components/v2/subscriber-side-s
 import { ScheduleTabComponent } from './_components/schedule-tab/schedule-tab.component';
 import { BusinessrulelibrarySidesheetComponent } from './_components/businessrulelibrary-sidesheet/businessrulelibrary-sidesheet.component';
 import { CatalogCheckComponent } from './_components/catalog-check/catalog-check.component';
+import { MaterialDuplicatecheckSidesheetComponent } from './_components/material-duplicatecheck-sidesheet/material-duplicatecheck-sidesheet.component';
+import { SummaryTabComponent } from './_components/summary-tab/summary-tab.component';
+import { DuplicateDatacheckSidesheetComponent } from './_components/duplicate-datacheck-sidesheet/duplicate-datacheck-sidesheet.component';
 
 
 @NgModule({
@@ -93,7 +96,10 @@ import { CatalogCheckComponent } from './_components/catalog-check/catalog-check
     CreateSchemaComponent,
     ScheduleTabComponent,
     BusinessrulelibrarySidesheetComponent,
-    CatalogCheckComponent
+    CatalogCheckComponent,
+    MaterialDuplicatecheckSidesheetComponent,
+    SummaryTabComponent,
+    DuplicateDatacheckSidesheetComponent
   ],
   imports: [
     CommonModule,

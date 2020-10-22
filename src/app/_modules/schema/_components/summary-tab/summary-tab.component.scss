@@ -1,0 +1,29 @@
+div.root {
+  padding: 16px 0;
+
+  .temp-field {
+    mat-label {
+      font-weight: 500;
+      font-size: 0.8rem;
+    }
+  }
+
+  .panel-title {
+    font-weight: 500;
+  }
+
+  .summary-rowlist {
+    mat-list-item.mat-list-item {
+      border-bottom-width: 1px;
+      border-bottom-style: solid;
+      font-size: 0.8rem;
+    }
+  }
+}
+
+@media (min-width: 1200px) {
+  div.root {
+    width: 62%;
+    margin: 0 auto;
+  }
+}

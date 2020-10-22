@@ -1,0 +1,138 @@
+mat-card.root {
+  user-select: none;
+  height: 100%;
+  padding: 0 16px;
+
+  .breadcrum-toolbar {
+    align-items: center;
+    padding-top: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+
+    .display-heading-large {
+      font-size: 1.2rem;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .mdo-constrained-right {
+      align-items: center;
+      width: 100%;
+
+      button.mat-button {
+        mat-icon {
+          font-size: 14px;
+          width: 14px;
+          height: 14px;
+        }
+      }
+
+      button.mat-flat-button {
+        min-width: auto;
+      }
+    }
+  }
+
+  .message-alert {
+    background: #324358;
+    display: flex;
+    color: #fff;
+    padding: 8px;
+    align-items: center;
+
+    .help-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 16px;
+    }
+  }
+
+  .mdo-justify {
+    .temp-field {
+      mat-label {
+        font-weight: 500;
+        font-size: 0.8rem;
+      }
+    }
+
+    .panel-title {
+      font-weight: 500;
+    }
+
+    .colunm-box {
+      align-items: center;
+      box-sizing: border-box;
+      padding: 4px 0;
+      min-height: 48px;
+      font-size: 0.8rem;
+
+      .col {
+        display: flex;
+        flex: 1 0 auto;
+        width: 1px;
+        align-items: center;
+        margin: 0 16px;
+
+        &.col-x4 {
+          flex: 4;
+        }
+
+        &.col-x8 {
+          flex: 8;
+        }
+
+        &.text-center {
+          justify-content: center;
+        }
+
+        .info-link {
+          align-items: center;
+          font-size: 0.8rem;
+          cursor: pointer;
+        }
+
+        .mat-form-item,
+        mat-slider {
+          width: 100%;
+        }
+
+        &.col-x16 {
+          flex: 16;
+        }
+
+        strong {
+          align-items: center;
+        }
+
+        .mat-head-icon {
+          height: 12px;
+          width: 14px;
+          font-size: 14px;
+          margin-left: 6px;
+        }
+
+        .mat-line {
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: pre-line;
+          word-break: break-word;
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 1200px) {
+  .mdo-justify {
+    margin: 0 54px;
+  }
+
+  .mdo-constrained-right {
+    margin-right: 54px;
+  }
+}

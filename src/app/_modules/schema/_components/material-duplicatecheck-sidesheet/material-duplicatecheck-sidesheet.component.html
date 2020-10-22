@@ -1,0 +1,234 @@
+<mat-card class="root mat-elevation-z0">
+    <div class="f-row breadcrum-toolbar">
+        <button mat-button>
+            <mat-icon>clear</mat-icon>
+        </button>
+        <div class="col-spacer"></div>
+        <div class="f-row mdo-constrained-right">
+            <div class="display-heading-large">Material / Duplicate check</div>
+            <span class="f-col-spacer-half"></span>
+            <button mat-button>
+                <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon>
+            </button>
+            <span class="f-spacer"></span>
+            <button mat-flat-button color="primary">Run</button>
+        </div>
+    </div>
+    <div class="row-spacer"></div>
+    <div class="f-col mdo-justify">
+        <mat-card class="f-row mat-elevation-z0 message-alert">
+            <mat-icon fontSet="mdo-icons" class="help-icon">question-mark</mat-icon>
+            <span class="f-col-spacer-half"></span>
+            <p>167 out of 77543 records will be validated based on your data scope selection</p>
+        </mat-card>
+
+        <div class="row-spacer"></div>
+
+        <div class="f-col">
+            <pros-form-input [type]="'text'" [label]="'Data scope'"></pros-form-input>
+            <div class="row-spacer"></div>
+            <div class="f-col temp-field">
+                <mat-label>Threshold</mat-label>
+                <mat-slider color="primary"></mat-slider>
+            </div>
+            <div class="row-spacer"></div>
+            <mat-accordion>
+                <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
+                    <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
+                        <mat-panel-title class="panel-title">
+                            Business rules (2)
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <!-- Business rule listing latest code start here-->
+                    <div class="colunm-listing">
+                        <div class="f-row colunm-box rule-border-row">
+                            <div class="col"></div>
+                            <div class="col col-x8"><strong>Business rule</strong></div>
+                            <div class="col col-x8 text-center"><strong class="f-row">Weight
+                                    <mat-icon matTooltip="Weight" fontSet="mdo-icons" class="mat-head-icon">
+                                        question-mark</mat-icon>
+                                </strong></div>
+                            <div class="col col-x8"><strong>Enabled</strong></div>
+                        </div>
+
+                        <div class="f-row colunm-box rule-border-row">
+                            <div class="col">
+                            </div>
+
+                            <div class="col col-x8">
+                                <a class="f-row info-link">[Add business rule]</a>
+
+                            </div>
+
+                            <div class="col col-x8">
+                            </div>
+
+                            <div class="col col-x8">
+                            </div>
+                        </div>
+
+                        <div class="f-row colunm-box rule-border-row">
+                            <div class="col">
+                                <button mat-button cdkDragHandle>
+                                    <mat-icon>drag_handle</mat-icon>
+                                </button>
+                            </div>
+
+                            <div class="col col-x8">
+                                <a href="#" class="f-row info-link">User define rule</a>
+                            </div>
+
+                            <div class="col col-x8">
+                                <mat-slider color="primary"></mat-slider>
+                            </div>
+
+                            <div class="col col-x8">
+                                <mat-slide-toggle color="primary">
+                                </mat-slide-toggle>
+                                <span class="col-spacer"></span>
+                                <span class="f-spacer"></span>
+                                <button mat-button>
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="f-row colunm-box rule-border-row">
+                            <div class="col">
+                                <button mat-button cdkDragHandle>
+                                    <mat-icon>drag_handle</mat-icon>
+                                </button>
+                            </div>
+
+                            <div class="col col-x8">
+                                <a href="#" class="f-row info-link">User define rule</a>
+                            </div>
+
+                            <div class="col col-x8">
+                                <mat-slider color="primary"></mat-slider>
+                            </div>
+
+                            <div class="col col-x8">
+                                <mat-slide-toggle color="primary">
+                                </mat-slide-toggle>
+                                <span class="col-spacer"></span>
+                                <span class="f-spacer"></span>
+                                <button mat-button>
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="f-row colunm-box rule-border-row">
+                            <div class="col">
+                                <button mat-button cdkDragHandle>
+                                    <mat-icon>drag_handle</mat-icon>
+                                </button>
+                            </div>
+
+                            <div class="col col-x8">
+                                <a href="#" class="f-row info-link">Duplicate material check</a>
+                            </div>
+
+                            <div class="col col-x8">
+                                <mat-slider color="primary"></mat-slider>
+                            </div>
+
+                            <div class="col col-x8">
+                                <mat-slide-toggle color="primary">
+                                </mat-slide-toggle>
+                                <span class="col-spacer"></span>
+                                <span class="f-spacer"></span>
+                                <button mat-button>
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Business rule listing latest code end here-->
+                </mat-expansion-panel>
+            </mat-accordion>
+
+            <div class="row-spacer"></div>
+
+            <mat-accordion>
+                <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
+                    <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
+                        <mat-panel-title class="panel-title">
+                            Subscribers (2)
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <!-- Subscribers listing latest code start here-->
+                    <div class="colunm-listing">
+                        <div class="f-row colunm-box rule-border-row">
+                            <div class="col"></div>
+                            <div class="col col-x8"><strong>Subscriber</strong></div>
+                            <div class="col col-x8"><strong>Role</strong></div>
+                            <div class="col col-x16"><strong>Data allocation</strong></div>
+                        </div>
+
+                        <div class="f-row colunm-box rule-border-row">
+                            <div class="col">
+                            </div>
+
+                            <div class="col col-x8">
+                                <a class="f-row info-link">[Add Subscriber]</a>
+                            </div>
+
+                            <div class="col col-x8">
+                            </div>
+
+                            <div class="col col-x16">
+                            </div>
+                        </div>
+
+                        <div class="f-row colunm-box rule-border-row">
+                            <div class="col">
+                                <mat-card-header>
+                                    <div mat-card-avatar>RF</div>
+                                </mat-card-header>
+                            </div>
+
+                            <div class="col col-x8">
+                                <mat-card-header>
+                                    <mat-card-title mat-line>Rockford</mat-card-title>
+                                </mat-card-header>
+                            </div>
+
+                            <div class="col col-x8">
+                                <mat-form-field appearance="outline" class="mat-form-item">
+                                    <mat-select>
+                                        <mat-option value="isAdmin">Admin</mat-option>
+                                        <mat-option value="isReviewer">Reviewer</mat-option>
+                                        <mat-option value="isViewer">Viewer</mat-option>
+                                        <mat-option value="isEditer">Editer</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col col-x16">
+                                <mat-chip-list>
+                                    <mat-chip class="mdo-filter-matchip">
+                                        Region:&nbsp;&nbsp;<span class="info-link">Sydney</span>
+                                        <mat-icon matChipRemove>clear</mat-icon>
+                                    </mat-chip>
+
+                                    <mat-chip class="mdo-filter-matchip">
+                                        <mat-icon fontSet="mdo-icons">folder-filter</mat-icon>
+                                    </mat-chip>
+                                </mat-chip-list>
+
+                                <span class="col-spacer"></span>
+                                <span class="f-spacer"></span>
+                                <button mat-button>
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Subscribers listing latest code end here-->
+                </mat-expansion-panel>
+            </mat-accordion>
+        </div>
+    </div>
+</mat-card>
