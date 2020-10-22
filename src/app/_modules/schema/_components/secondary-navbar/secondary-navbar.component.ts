@@ -43,6 +43,9 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
    */
   arrowIcon = 'keyboard_arrow_left';
 
+  /** To check page reloaded or not */
+  isPageReload = true;
+
   /**
    * Emitter to emit sidebar toggleing
    */
@@ -57,8 +60,10 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
   ) { }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes && changes.activatedPrimaryNav && changes.activatedPrimaryNav.previousValue !== changes.activatedPrimaryNav.currentValue) {
+    console.log(changes);
+    if (changes && changes.activatedPrimaryNav && changes.activatedPrimaryNav.previousValue !== changes.activatedPrimaryNav.currentValue && changes.activatedPrimaryNav.previousValue !== undefined) {
       this.activatedPrimaryNav = changes.activatedPrimaryNav.currentValue;
+      this.isPageReload = false;
       switch (changes.activatedPrimaryNav.currentValue) {
         case 'welcome':
           this.getDataIntilligence();
@@ -113,7 +118,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
     this.schemaListService.getSchemaList().subscribe((moduleList) => {
       this.moduleList = moduleList;
       this.searchModuleResults = this.moduleList;
-      if (this.moduleList) {
+      if (this.moduleList && !this.isPageReload) {
         const firstModuleId = this.moduleList[0].moduleId;
         this.router.navigate(['/home/schema', firstModuleId]);
       }
@@ -129,7 +134,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
     this.reportService.reportList().subscribe(reportList => {
       this.reportOb = of(reportList);
       this.reportList = reportList;
-      if (this.reportList) {
+      if (this.reportList && !this.isPageReload) {
         const firstReportId = this.reportList[0].reportId;
         this.router.navigate(['home/report/dashboard', firstReportId]);
       }
