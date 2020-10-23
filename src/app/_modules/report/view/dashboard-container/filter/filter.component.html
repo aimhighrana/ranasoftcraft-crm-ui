@@ -160,7 +160,7 @@
 
     <!-- CONTROL FOR THE LOCATION HIRERACHY FILTER -->
     <ng-template [ngIf]="filterWidget && filterWidget.getValue() && filterWidget.getValue().metaData && filterWidget.getValue().metaData.picklist && filterWidget.getValue().metaData.picklist === '29'">
-      <pros-hierarchy-filter (selectionChange)="getLocationSelection($event)"></pros-hierarchy-filter>
+      <pros-hierarchy-filter (selectionChange)="getLocationSelection($event)" [clearFilterClicked]="isClearFilter"></pros-hierarchy-filter>
     </ng-template>
   </mat-card-content>
 </mat-card>

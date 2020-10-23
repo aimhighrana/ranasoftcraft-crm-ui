@@ -63,6 +63,12 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     }
   ];
 
+  /** To check clear filter clicked or not */
+  isClearFilter = false;
+
+  /**
+   * Constructor of Class
+   */
   constructor(
     private widgetService : WidgetService,
     private reportService: ReportService,
@@ -572,6 +578,9 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
       case '30':
       case '37':
         this.removeSingleSelectedVal(true);
+        break;
+      case '29':
+        this.isClearFilter = !this.isClearFilter;
         break;
       default:
         break;
