@@ -500,6 +500,9 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
               scaleLabel: {
                 display: true,
                 labelString: this.barWidget.getValue().yAxisLabel ? this.barWidget.getValue().yAxisLabel : ''
+              },
+              ticks : {
+                padding: this.barWidget.getValue().isEnableDatalabels && (this.barWidget.getValue().datalabelsPosition === 'start' || this.barWidget.getValue().datalabelsPosition === 'center') ?  40 : 0
               }
             }]
           }
@@ -508,7 +511,10 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
             xAxes: [{
               scaleLabel: {
                 display: true,
-                labelString: this.barWidget.getValue().xAxisLabel ? this.barWidget.getValue().xAxisLabel : ''
+                labelString: this.barWidget.getValue().xAxisLabel ? this.barWidget.getValue().xAxisLabel : '',
+              },
+              ticks : {
+                padding: this.barWidget.getValue().isEnableDatalabels && (this.barWidget.getValue().datalabelsPosition === 'start' || this.barWidget.getValue().datalabelsPosition === 'center') ?  20 : 0
               }
             }],
             yAxes: [{
@@ -525,12 +531,18 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
           scaleLabel: {
             display: true,
             labelString: this.barWidget.getValue().xAxisLabel ? this.barWidget.getValue().xAxisLabel : ''
+          },
+          ticks : {
+            padding: this.barWidget.getValue().isEnableDatalabels && (this.barWidget.getValue().orientation === Orientation.VERTICAL) && (this.barWidget.getValue().datalabelsPosition === 'start' || this.barWidget.getValue().datalabelsPosition === 'center') ?  20 : 0
           }
         }],
         yAxes: [{
           scaleLabel: {
             display: true,
             labelString: this.barWidget.getValue().yAxisLabel ? this.barWidget.getValue().yAxisLabel : ''
+          },
+          ticks : {
+            padding: this.barWidget.getValue().isEnableDatalabels && (this.barWidget.getValue().orientation === Orientation.HORIZONTAL) && (this.barWidget.getValue().datalabelsPosition === 'start' || this.barWidget.getValue().datalabelsPosition === 'center') ?  40 : 0
           }
         }]
       }

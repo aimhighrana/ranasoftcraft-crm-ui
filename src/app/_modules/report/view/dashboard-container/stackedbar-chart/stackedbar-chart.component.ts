@@ -650,6 +650,9 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
               scaleLabel: {
                 display: true,
                 labelString: this.stackBarWidget.getValue().yAxisLabel ? this.stackBarWidget.getValue().yAxisLabel : ''
+              },
+              ticks : {
+                padding: this.stackBarWidget.getValue().isEnableDatalabels && (this.stackBarWidget.getValue().datalabelsPosition === 'start' || this.stackBarWidget.getValue().datalabelsPosition === 'center') ?  40 : 0
               }
             }]
           }
@@ -659,6 +662,9 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
               scaleLabel: {
                 display: true,
                 labelString: this.stackBarWidget.getValue().xAxisLabel ? this.stackBarWidget.getValue().xAxisLabel : ''
+              },
+              ticks : {
+                padding: this.stackBarWidget.getValue().isEnableDatalabels && (this.stackBarWidget.getValue().datalabelsPosition === 'start' || this.stackBarWidget.getValue().datalabelsPosition === 'center') ?  20 : 0
               }
             }],
             yAxes: [{
@@ -675,12 +681,18 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
           scaleLabel: {
             display: true,
             labelString: this.stackBarWidget.getValue().xAxisLabel ? this.stackBarWidget.getValue().xAxisLabel : ''
+          },
+          ticks : {
+            padding: this.stackBarWidget.getValue().isEnableDatalabels && (this.stackBarWidget.getValue().orientation === Orientation.VERTICAL) && (this.stackBarWidget.getValue().datalabelsPosition === 'start' || this.stackBarWidget.getValue().datalabelsPosition === 'center') ?  20 : 0
           }
         }],
         yAxes: [{
           scaleLabel: {
             display: true,
             labelString: this.stackBarWidget.getValue().yAxisLabel ? this.stackBarWidget.getValue().yAxisLabel : ''
+          },
+          ticks : {
+            padding: this.stackBarWidget.getValue().isEnableDatalabels && (this.stackBarWidget.getValue().orientation === Orientation.HORIZONTAL) && (this.stackBarWidget.getValue().datalabelsPosition === 'start' || this.stackBarWidget.getValue().datalabelsPosition === 'center') ?  20 : 0
           }
         }]
       }
