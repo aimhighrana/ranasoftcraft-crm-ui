@@ -17,6 +17,9 @@ export class JwtInterceptorService implements HttpInterceptor {
   tokenSubject: BehaviorSubject<string> = new BehaviorSubject<string>(null);
   initialTotalRequests = 0;
   pendingRequestsCount = 0;
+
+  ignoreToAppendInterceptor: string[] = ['/fapi/jwt/validate-refresh-token'];
+
   constructor(
     private router: Router,
     private http: HttpClient,
@@ -31,36 +34,39 @@ export class JwtInterceptorService implements HttpInterceptor {
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    this.pendingRequestsCount++;
-    this.initialTotalRequests++;
-    // add authorization header with jwt token if available
-    if (request.headers.has('Skip401Interceptor')) {
-      const headers = request.headers.delete('Skip401Interceptor');
-      return next.handle(request.clone({ headers }));
-    } else {
-      const jwtToken = localStorage.getItem('JWT-TOKEN');
-      if (jwtToken && !request.headers.has('Authorization')) {
-        request = this.addToken(request, jwtToken);
-      }
-      return next.handle(request).pipe(
-        finalize(() => {
-          this.pendingRequestsCount--;
-          if (this.pendingRequestsCount === 0) {
-            this.callAPI();
-          }
-        }),
-        catchError((error: HttpErrorResponse) => {
-          switch (error.status) {
-            case 401:
-              return this.handlerFor401(request, next);
+    if (this.isValidRequestForInterceptor(request.url)) {
+      this.pendingRequestsCount++;
+      this.initialTotalRequests++;
+      // add authorization header with jwt token if available
+      if (request.headers.has('Skip401Interceptor')) {
+        const headers = request.headers.delete('Skip401Interceptor');
+        return next.handle(request.clone({ headers }));
+      } else {
+        const jwtToken = localStorage.getItem('JWT-TOKEN');
+        if (jwtToken && !request.headers.has('Authorization')) {
+          request = this.addToken(request, jwtToken);
+        }
+        return next.handle(request).pipe(
+          finalize(() => {
+            this.pendingRequestsCount--;
+            if (this.pendingRequestsCount === 0) {
+              this.callAPI();
+            }
+          }),
+          catchError((error: HttpErrorResponse) => {
+            switch (error.status) {
+              case 401:
+                return this.handlerFor401(request, next);
 
-            case 403:
-              this.handlerFor403(request, next);
-          }
-          // notify user here
-          return throwError(error);
-        }));
+              case 403:
+                this.handlerFor403(request, next);
+            }
+            // notify user here
+            return throwError(error);
+          }));
+      }
     }
+    return next.handle(request);
   }
 
   handlerFor401(req: HttpRequest<any>, next: HttpHandler) {
@@ -160,5 +166,19 @@ export class JwtInterceptorService implements HttpInterceptor {
         this.initialTotalRequests = 0;
       }, 1000);
     }
+  }
+
+  isValidRequestForInterceptor(requestUrl: string): boolean {
+    const positionIndicator = 'fapi/';
+    const position = requestUrl.indexOf(positionIndicator);
+    if (position > 0) {
+      const destination: string = requestUrl.substr(position + positionIndicator.length);
+      for (const address of this.ignoreToAppendInterceptor) {
+        if (new RegExp(address).test(destination)) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 }
