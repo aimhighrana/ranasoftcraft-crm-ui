@@ -4,6 +4,7 @@ import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { MsteamConfigurationComponent } from './msteam-configuration.component';
 import { of } from 'rxjs';
 import * as microsoftTeams from '@microsoft/teams-js';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('MsteamConfigurationComponent', () => {
   let component: MsteamConfigurationComponent;
@@ -11,7 +12,7 @@ describe('MsteamConfigurationComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [MsteamConfigurationComponent],
-      imports: [HttpClientTestingModule, AppMaterialModuleForSpec]
+      imports: [HttpClientTestingModule, AppMaterialModuleForSpec, RouterTestingModule]
     })
       .compileComponents();
   }));
