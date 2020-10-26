@@ -40,6 +40,12 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
   lebel: string;
 
   /**
+   * Widget Type
+   */
+  @Input()
+  widgetType: string;
+
+  /**
    * After option selection change event should be emit
    */
   @Output()
@@ -75,6 +81,30 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
         fieldId:'USERMODIFIED',
       } as MetadataModel
     },{
+      fieldId:'APPDATE',
+      fieldDescri:'Update Date',
+      childs:[],
+      isGroup:false,
+      fldCtrl:{
+        picklist: '0',
+        dataType: 'DTMS',
+        fieldId:'APPDATE',
+      } as MetadataModel
+    },{
+      fieldId:'STAGE',
+      fieldDescri:'Creation Date',
+      childs:[],
+      isGroup:false,
+      fldCtrl:{
+        picklist: '0',
+        dataType: 'DTMS',
+        fieldId:'STAGE',
+      } as MetadataModel
+    }
+  ];
+
+  timeseriesFields: Metadata[] = [
+    {
       fieldId:'APPDATE',
       fieldDescri:'Update Date',
       childs:[],
@@ -174,16 +204,38 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
     const metadata: Metadata[] = [];
 
     // system fields
-    metadata.push({
-      fieldId: 'system_fields',
-      fieldDescri: 'System fields',
-      isGroup: true,
-      childs: this.systemFields
-    });
+    if(this.widgetType === 'TIMESERIES') {
+      metadata.push({
+        fieldId: 'system_fields',
+        fieldDescri: 'System fields',
+        isGroup: true,
+        childs: this.timeseriesFields
+      });
+    } else {
+      metadata.push({
+        fieldId: 'system_fields',
+        fieldDescri: 'System fields',
+        isGroup: true,
+        childs: this.systemFields
+      });
+    }
 
     // for header
     const headerChilds: Metadata[] = [];
-    if(response.headers) {
+    if(response.headers && this.widgetType === 'TIMESERIES') {
+      Object.keys(response.headers).forEach(header=>{
+        const res = response.headers[header];
+        if(res.dataType === 'DATS' || res.dataType === 'DTMS') {
+          headerChilds.push({
+            fieldId: res.fieldId,
+            fieldDescri: res.fieldDescri,
+            isGroup: false,
+            fldCtrl: res,
+            childs: []
+          });
+        }
+      });
+    } else if(response.headers) {
       Object.keys(response.headers).forEach(header=>{
         const res = response.headers[header];
         headerChilds.push({
@@ -203,7 +255,31 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
     });
 
     // for grid response transformations
-    if(response && response.grids) {
+    if(response && response.grids && this.widgetType === 'TIMESERIES') {
+      Object.keys(response.grids).forEach(grid=>{
+        const childs : Metadata[] = [];
+        if(response.gridFields && response.gridFields.hasOwnProperty(grid)) {
+          Object.keys(response.gridFields[grid]).forEach(fld=>{
+            const fldCtrl = response.gridFields[grid][fld];
+            if(fldCtrl.dataType === 'DATS' || fldCtrl.dataType === 'DTMS') {
+              childs.push({
+                fieldId: fldCtrl.fieldId,
+                fieldDescri: fldCtrl.fieldDescri,
+                isGroup: false,
+                fldCtrl,
+                childs:[]
+              });
+            }
+          });
+        }
+        metadata.push({
+          fieldId: grid,
+          fieldDescri: response.grids[grid].fieldDescri,
+          isGroup: true,
+          childs
+        });
+      })
+    } else if(response && response.grids) {
       Object.keys(response.grids).forEach(grid=>{
         const childs : Metadata[] = [];
         if(response.gridFields && response.gridFields.hasOwnProperty(grid)) {
@@ -228,7 +304,31 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
     }
 
     // for hierarchy response transformations
-    if(response && response.hierarchy) {
+    if(response && response.hierarchy  && this.widgetType === 'TIMESERIES') {
+      response.hierarchy.forEach(hierarchy => {
+        const childs: Metadata[] = [];
+        if(response.hierarchyFields && response.hierarchyFields.hasOwnProperty(hierarchy.heirarchyId)) {
+          Object.keys(response.hierarchyFields[hierarchy.heirarchyId]).forEach(fld=>{
+            const fldCtrl = response.hierarchyFields[hierarchy.heirarchyId][fld];
+            if(fldCtrl.dataType === 'DATS' || fldCtrl.dataType === 'DTMS') {
+              childs.push({
+                fieldId: fldCtrl.fieldId,
+                fieldDescri: fldCtrl.fieldDescri,
+                isGroup: false,
+                fldCtrl,
+                childs:[]
+              });
+            }
+          });
+        }
+        metadata.push({
+          fieldId: hierarchy.heirarchyId,
+          fieldDescri: hierarchy.heirarchyText,
+          isGroup: true,
+          childs
+        });
+      });
+    } else if(response && response.hierarchy) {
       response.hierarchy.forEach(hierarchy => {
         const childs: Metadata[] = [];
         if(response.hierarchyFields && response.hierarchyFields.hasOwnProperty(hierarchy.heirarchyId)) {

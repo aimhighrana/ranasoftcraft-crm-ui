@@ -2,10 +2,12 @@ import { Component, OnInit, Input, Output, EventEmitter, OnChanges, OnDestroy } 
 import { Observable, of, Subscription } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
+import { MetadataModel } from '@models/schema/schemadetailstable';
 
 export interface Metadata {
   fieldId: string;
   fieldDescri: string;
+  fldCtrl?: MetadataModel;
   isGroup: boolean;
   childs: Metadata[];
 }
@@ -36,6 +38,12 @@ export class WorkflowfieldControlComponent implements OnInit, OnChanges, OnDestr
    */
   @Input()
   label: string;
+
+  /**
+   * Widget Type
+   */
+  @Input()
+  widgetType: string;
 
   /**
    * After option selection change event should be emit
@@ -133,14 +141,17 @@ export class WorkflowfieldControlComponent implements OnInit, OnChanges, OnDestr
 
     // workflow fields
     const allFieldsChild: Metadata[] = [];
-    if(response.static){
-        response.static.forEach(fields => {
-        allFieldsChild.push({
-          fieldId: fields.fieldId,
-          fieldDescri: fields.fieldDescri,
-          isGroup: false,
-          childs: []
-        });
+    if(response.static && this.widgetType === 'TIMESERIES'){
+      response.static.forEach(fields => {
+        if(fields.fieldId === 'REQUESTOR_DATE' || fields.fieldId === 'DUE_DATE' || fields.fieldId === 'DATE_STARTED' || fields.fieldId === 'FINISHDATE') {
+          allFieldsChild.push({
+            fieldId: fields.fieldId,
+            fieldDescri: fields.fieldDescri,
+            isGroup: false,
+            fldCtrl: fields,
+            childs: []
+          });
+        }
       });
 
       metadata.push({
@@ -149,26 +160,63 @@ export class WorkflowfieldControlComponent implements OnInit, OnChanges, OnDestr
         isGroup: true,
         childs: allFieldsChild
       });
+    } else if(response.static) {
+      response.static.forEach(fields => {
+        allFieldsChild.push({
+          fieldId: fields.fieldId,
+          fieldDescri: fields.fieldDescri,
+          isGroup: false,
+          fldCtrl: fields,
+          childs: []
+        });
+      });
+
+     metadata.push({
+       fieldId: 'static_fields',
+       fieldDescri: 'System fields',
+       isGroup: true,
+       childs: allFieldsChild
+     });
     }
 
     const allFieldsChildDyn: Metadata[] = [];
-    if(response.dynamic){
+    if(response.dynamic && this.widgetType === 'TIMESERIES'){
+      response.dynamic.forEach(fields => {
+        if(fields.dataType === 'DATS' || fields.dataType === 'DTMS') {
+          allFieldsChildDyn.push({
+            fieldId: fields.fieldId,
+            fieldDescri: fields.fieldDescri,
+            isGroup: false,
+            fldCtrl: fields,
+            childs: []
+          })
+        }
+      });
+
+      metadata.push({
+        fieldId: 'dynamic_fields',
+        fieldDescri: 'Module fields',
+        isGroup: true,
+        childs: allFieldsChildDyn
+      });
+    } else if(response.dynamic) {
       response.dynamic.forEach(fields => {
         allFieldsChildDyn.push({
-        fieldId: fields.fieldId,
-        fieldDescri: fields.fieldDescri,
-        isGroup: false,
-        childs: []
+          fieldId: fields.fieldId,
+          fieldDescri: fields.fieldDescri,
+          isGroup: false,
+          fldCtrl: fields,
+          childs: []
+        })
       });
-    });
 
-    metadata.push({
-      fieldId: 'dynamic_fields',
-      fieldDescri: 'Module fields',
-      isGroup: true,
-      childs: allFieldsChildDyn
-    });
-  }
+      metadata.push({
+        fieldId: 'dynamic_fields',
+        fieldDescri: 'Module fields',
+        isGroup: true,
+        childs: allFieldsChildDyn
+      });
+    }
     return metadata;
   }
 
