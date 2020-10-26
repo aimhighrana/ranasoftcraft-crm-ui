@@ -35,8 +35,19 @@ export class MsteamsConfigService {
     return this.http.get<any[]>(this.endpointService.getReportListUrlForMsTeams());
   }
 
-  public validateToken(){
-    const requestUri = this.apiUrl+'/login_4m_session';
-    return this.http.post<any>(requestUri, null);
+  /**
+   * Validate jwt refresh token ..
+   * @param refToken jwt refresh token ..
+   */
+  public validateToken(refToken: string): Observable<any>{
+    const requestUri = this.endpointService.validateRefreshjwttokenUrl();
+    const authorizationData = 'Bearer '+ refToken;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        Authorization: authorizationData
+      }),
+      observe: 'response' as const
+    };
+    return this.http.post<any>(requestUri, null, httpOptions);
   }
 }
