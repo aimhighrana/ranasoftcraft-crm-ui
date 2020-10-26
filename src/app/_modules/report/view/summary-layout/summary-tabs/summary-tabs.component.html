@@ -10,11 +10,23 @@
 
         <div class="item-grid-list">
           <div *ngFor="let fieldData of metadata.fieldsList" class="grid-tile">
-            <div *ngIf="fieldData && fieldData.picklist !== 2 && fieldData.picklist !== 28 && fieldData.picklist !== 31 && fieldData.dataType !== 'DTMS'">
-              <div class="f-row item-tile">
+            <div *ngIf="fieldData && fieldData.picklist !== 2 && fieldData.picklist !== 28 && fieldData.picklist !== 31 && fieldData.dataType !== 'DTMS' && fieldData.dataType !== 'DATS'">
+              <mat-grid-tile class="f-row">
                 <mat-label>{{fieldData.fieldDescri}}</mat-label>
-                <div mat-line>{{fieldData.value}}</div>
+                <div mat-line *ngIf="!fieldData.showMore; else withoutTruncate">
+                  {{truncateText(fieldData.value, 60)}}
+                <button mat-stroked-button color="primary" *ngIf="fieldData.value.length > 80" (click)="fieldData.showMore = !fieldData.showMore">
+                  {{ fieldData.showMore ? 'less' : 'more'}} 
+                </button>
               </div>
+              <ng-template  #withoutTruncate> 
+                <div mat-line> {{fieldData.value}} 
+                  <button mat-stroked-button color="primary" *ngIf="fieldData.value.length > 60" (click)="fieldData.showMore = !fieldData.showMore">
+                    {{ fieldData.showMore ? 'less' : 'more'}} 
+                  </button>
+                </div> 
+              </ng-template>
+            </mat-grid-tile>
             </div>
 
             <!-- ----------------------- Check-Box Case ------------------------------------- -->
@@ -39,12 +51,25 @@
               <div class="f-row item-tile">
                 <mat-label>{{fieldData.fieldDescri}}</mat-label>
                 <div mat-line>
-                  {{fieldData.value | date:'dd/MM/yyyy hh:mm:ss'}}
+                  {{fieldData.value | date: getDateTimeFormat(true)}}
                 </div>
               </div>
             </div>
             </div>
+
+            <!-- ------------------------------ Date Case------------------------------------ -->
+            <div *ngIf="fieldData && fieldData.picklist === 0 && fieldData.dataType === 'DATS'">
+              <div class="f-row item-tile">
+                <mat-label>{{fieldData.fieldDescri}}</mat-label>
+                <div mat-line>
+                  {{fieldData.value | date : getDateTimeFormat()}}
+                </div>
+              </div>
+            </div>
+
         </div>
+
+
 
 
 

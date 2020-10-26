@@ -4,6 +4,8 @@ import { MatAccordion } from '@angular/material/expansion';
 import { WidgetService } from '@services/widgets/widget.service';
 import { BehaviorSubject } from 'rxjs';
 import { EndpointService } from '@services/endpoint.service';
+import { UserService } from '@services/user/userservice.service';
+import { Userdetails } from '@models/userdetails';
 
 @Component({
   selector: 'pros-summary-tabs',
@@ -14,7 +16,8 @@ export class SummaryTabsComponent implements OnInit {
 
   constructor(
     private widgetService:WidgetService,
-    private endPointService:EndpointService
+    private endPointService:EndpointService,
+    private userService:UserService
   ) { }
 
   @Input()
@@ -48,6 +51,8 @@ export class SummaryTabsComponent implements OnInit {
 
   panelOpenState = false;
 
+  userDetails: Userdetails = new Userdetails();
+
   ngOnInit(): void {
     this.preparedata();
     this.attachmentResponse.subscribe(data=>{
@@ -63,11 +68,16 @@ export class SummaryTabsComponent implements OnInit {
       });
       }
     });
+
+    this.userService.getUserDetails().subscribe(res => {
+      this.userDetails = res;
+    }, error => console.error(`Error : ${error.message}`));
   }
 
   preparedata():void{
     this.metadata.fieldsList.forEach(fieldlist=>{
         fieldlist.value = this.findValueofField(fieldlist);
+        fieldlist.showMore = false ;
     });
     if(this.metadata && this.metadata.fieldsList.length === 1 && this.metadata.fieldsList[0].picklist===15){
         // GRID TAB NOT SHOW NOW
@@ -144,6 +154,18 @@ export class SummaryTabsComponent implements OnInit {
 
   setDynamicHeight() {
     return '56px'
+  }
+
+  truncateText(text, maxLength){
+    return text.length > maxLength ?
+           text.toString().substr(0, maxLength) + '...' :
+           text;
+  }
+
+  getDateTimeFormat(includeTime? : boolean){
+    return this.userDetails && this.userDetails.dateformat ?
+           includeTime ?  (this.userDetails.dateformat + '  hh:mm:ss') : this.userDetails.dateformat
+           : includeTime ? 'dd/MM/yyyy hh:mm:ss' : 'dd/MM/yyyy';
   }
 
 }
