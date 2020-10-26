@@ -590,5 +590,12 @@ export class EndpointService {
   public getLocationHierarchyUrl(topLocation: string, fieldId: string, searchString: string, searchFunc: string): string {
     return this.apiUrl + `/report/loc/searchLocationNode?topLocation=${topLocation}&fieldId=${fieldId}&searchString=${searchString}&searchFunc=${searchFunc}`
   }
+
+  /**
+   * Get uri for validate refresh jwt ..
+   */
+  public validateRefreshjwttokenUrl() : string {
+    return `${this.apiUrl}/jwt/validate-refresh-token`;
+  }
 }
 

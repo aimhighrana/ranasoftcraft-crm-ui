@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import * as microsoftTeams from '@microsoft/teams-js';
 import { environment } from 'src/environments/environment';
 import { MsteamsConfigService } from '../_service/msteams-config.service';
@@ -11,10 +12,22 @@ import { MsteamsConfigService } from '../_service/msteams-config.service';
 export class MsteamConfigurationComponent implements OnInit {
 
   constructor(
-    public msteamsConfigService: MsteamsConfigService
+    public msteamsConfigService: MsteamsConfigService,
+    private router: Router
   ) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    const refToken = localStorage.getItem('JWT-REFRESH-TOKEN');
+    if(refToken) {
+      this.msteamsConfigService.validateToken(refToken).subscribe(res=>{
+        if(res.headers) {
+          localStorage.setItem('JWT-TOKEN', res.headers.get('JWT-TOKEN'));
+          localStorage.setItem('JWT-REFRESH-TOKEN', res.headers.get('JWT-REFRESH-TOKEN'));
+        }
+        this.router.navigate(['msteams','report']);
+      }, error=> console.error(`Error msg : ${error.message}`));
+    }
+  }
 
   authLogin(newApiUrl: string) {
     microsoftTeams.initialize();

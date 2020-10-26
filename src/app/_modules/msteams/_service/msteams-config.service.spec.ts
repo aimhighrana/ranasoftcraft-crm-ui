@@ -42,14 +42,13 @@ describe('MsteamsConfigService', () => {
     const req = httpTestingController.expectOne(testurl);
     expect(req.request.method).toEqual('GET');
     httpTestingController.verify();
-
   }))
 
   it('validateToken(), should call valid toke api', async(() => {
-    service.validateToken().subscribe((response) => {
+    service.validateToken('').subscribe((response) => {
       expect(response).not.toBe(null)
     });
-    const testurl = `${apiUrl}/login_4m_session`;
+    const testurl = `${apiUrl}/jwt/validate-refresh-token`;
     const req = httpTestingController.expectOne(testurl);
     expect(req.request.method).toEqual('POST');
     httpTestingController.verify();
