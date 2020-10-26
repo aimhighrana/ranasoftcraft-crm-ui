@@ -66,6 +66,7 @@ export class SchemaListDetails {
     runId: string;
     brInformation: BusinessRuleExecutionDetails[];
     moduleId: string;
+    moduleDescription: string;
     isInRunning: boolean;
     schemaThreshold: string;
     collaboratorModels: SchemaDashboardPermission;

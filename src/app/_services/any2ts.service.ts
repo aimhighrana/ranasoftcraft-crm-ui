@@ -367,32 +367,33 @@ export class Any2tsService {
     return schemaListView;
   }
 
-  public any2SchemaDetailsWithCount(resposne: any): SchemaListDetails {
+  public any2SchemaDetailsWithCount(response: any): SchemaListDetails {
     const schemaDetail: SchemaListDetails = new SchemaListDetails();
-    schemaDetail.createdBy = resposne.createdBy;
-    schemaDetail.errorCount = resposne.errorValue ? resposne.errorValue : 0;
-    schemaDetail.errorPercentage = resposne.errorPercentage ? resposne.errorPercentage : 0;
-    schemaDetail.schemaDescription = resposne.schemaDescription;
-    schemaDetail.schemaId = resposne.schemaId;
-    schemaDetail.successCount = resposne.successValue ? resposne.successValue : 0;
-    schemaDetail.successPercentage = resposne.successPercentage ? resposne.successPercentage : 0;
-    schemaDetail.totalCount = resposne.totalValue ? resposne.totalValue : 0;
-    schemaDetail.skippedValue = resposne.skippedValue ? resposne.skippedValue : 0;
-    schemaDetail.correctionValue = resposne.correctionValue ? resposne.correctionValue : 0;
-    schemaDetail.duplicateValue = resposne.duplicateValue ? resposne.duplicateValue : 0;
-    schemaDetail.variantCount = resposne.variantCount ? resposne.variantCount : 0;
-    schemaDetail.executionStartTime = resposne.executionStartTime ? resposne.executionStartTime : 0;
-    schemaDetail.executionEndTime = resposne.executionEndTime ? resposne.executionEndTime : 0;
-    schemaDetail.variantId = resposne.variantId ? resposne.variantId : '';
-    schemaDetail.runId = resposne.runId ? resposne.runId : '';
+    schemaDetail.createdBy = response.createdBy;
+    schemaDetail.errorCount = response.errorValue ? response.errorValue : 0;
+    schemaDetail.errorPercentage = response.errorPercentage ? response.errorPercentage : 0;
+    schemaDetail.schemaDescription = response.schemaDescription;
+    schemaDetail.schemaId = response.schemaId;
+    schemaDetail.successCount = response.successValue ? response.successValue : 0;
+    schemaDetail.successPercentage = response.successPercentage ? response.successPercentage : 0;
+    schemaDetail.totalCount = response.totalValue ? response.totalValue : 0;
+    schemaDetail.skippedValue = response.skippedValue ? response.skippedValue : 0;
+    schemaDetail.correctionValue = response.correctionValue ? response.correctionValue : 0;
+    schemaDetail.duplicateValue = response.duplicateValue ? response.duplicateValue : 0;
+    schemaDetail.variantCount = response.variantCount ? response.variantCount : 0;
+    schemaDetail.executionStartTime = response.executionStartTime ? response.executionStartTime : 0;
+    schemaDetail.executionEndTime = response.executionEndTime ? response.executionEndTime : 0;
+    schemaDetail.variantId = response.variantId ? response.variantId : '';
+    schemaDetail.runId = response.runId ? response.runId : '';
     schemaDetail.brInformation = [];
-    schemaDetail.isInRunning = resposne.isInRunning ? resposne.isInRunning : false;
-    schemaDetail.moduleId = resposne.moduleId ? resposne.moduleId : false;
-    schemaDetail.schemaThreshold = resposne.schemaThreshold && resposne.schemaThreshold !== 'null'  ? resposne.schemaThreshold : 0;
-    schemaDetail.collaboratorModels = resposne.collaboratorModels;
+    schemaDetail.isInRunning = response.isInRunning ? response.isInRunning : false;
+    schemaDetail.moduleId = response.moduleId ? response.moduleId : false;
+    schemaDetail.schemaThreshold = response.schemaThreshold && response.schemaThreshold !== 'null'  ? response.schemaThreshold : 0;
+    schemaDetail.collaboratorModels = response.collaboratorModels;
+    schemaDetail.moduleDescription = response.moduleDescription;
 
-    if (resposne.brInformation) {
-      resposne.brInformation.forEach(br => {
+    if (response.brInformation) {
+      response.brInformation.forEach(br => {
         const brInfo: BusinessRuleExecutionDetails = new BusinessRuleExecutionDetails();
         brInfo.brId = br.brId ? br.brId : '';
         brInfo.duplicate = br.duplicate ? br.duplicate : 0;

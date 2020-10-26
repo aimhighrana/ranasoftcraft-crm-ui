@@ -19,7 +19,7 @@ describe('DatascopeSidesheetComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(DatascopeSidesheetComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    // fixture.detectChanges();
   });
 
   it('should create', () => {

@@ -33,13 +33,13 @@ import { SubscriberSideSheetComponent } from './_components/v2/subscriber-side-s
 import { ScheduleTabComponent } from './_components/schedule-tab/schedule-tab.component';
 import { BusinessrulelibrarySidesheetComponent } from './_components/businessrulelibrary-sidesheet/businessrulelibrary-sidesheet.component';
 import { CatalogCheckComponent } from './_components/catalog-check/catalog-check.component';
-import { MaterialDuplicatecheckSidesheetComponent } from './_components/material-duplicatecheck-sidesheet/material-duplicatecheck-sidesheet.component';
 import { DuplicateDatacheckSidesheetComponent } from './_components/duplicate-datacheck-sidesheet/duplicate-datacheck-sidesheet.component';
 import { DatascopeSidesheetComponent } from './_components/datascope-sidesheet/datascope-sidesheet.component';
 import { ConfigureSidesheetComponent } from './_components/configure-sidesheet/configure-sidesheet.component';
 import { AttributeMappingComponent } from './_components/attribute-mapping/attribute-mapping.component';
 import { BrClassificationSidesheetComponent } from './_components/br-classification-sidesheet/br-classification-sidesheet.component';
 import { BrDuplicatecheckSidesheetComponent } from './_components/br-duplicatecheck-sidesheet/br-duplicatecheck-sidesheet.component';
+import { SchemaSummarySidesheetComponent } from './_components/schema-summary-sidesheet/schema-summary-sidesheet.component';
 
 
 const routes: Routes = [
@@ -80,13 +80,13 @@ const routes: Routes = [
   { path: 'system/schedule-tab', component: ScheduleTabComponent },
   { path: 'system/businessrulelibrary-sidesheet', component: BusinessrulelibrarySidesheetComponent },
   { path: 'system/catalog-check', component: CatalogCheckComponent },
-  { path: 'system/duplicatecheck-sidesheet', component: MaterialDuplicatecheckSidesheetComponent },
   { path: 'system/duplicate-datacheck-sidesheet', component: DuplicateDatacheckSidesheetComponent },
   { path: 'data-scope/:variantId', component: DatascopeSidesheetComponent },
   { path: 'system/configure-sidesheet', component: ConfigureSidesheetComponent },
   { path: 'system/attribute-mapping', component: AttributeMappingComponent },
   { path: 'system/br-classification-sidesheet', component: BrClassificationSidesheetComponent },
   { path: 'system/br-duplicatecheck-sidesheet', component: BrDuplicatecheckSidesheetComponent },
+  { path: 'summary/:moduleId/:schemaId', component: SchemaSummarySidesheetComponent },
 
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent }

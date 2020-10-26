@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SchemaService } from '@services/home/schema.service';
-import { SchemaStaticThresholdRes, CoreSchemaBrMap, SchemaListDetails, LoadDropValueReq } from '@models/schema/schemalist';
+import { SchemaStaticThresholdRes, CoreSchemaBrMap, SchemaListDetails, LoadDropValueReq, VariantDetails } from '@models/schema/schemalist';
 import { SchemaCollaborator, SchemaDashboardPermission } from '@models/collaborator';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { CoreSchemaBrInfo, DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
@@ -15,13 +15,17 @@ import { SchemaExecutionRequest } from '@models/schema/schema-execution';
 import { SchemaExecutionService } from '@services/home/schema/schema-execution.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ReadyForApplyFilter } from '@modules/shared/_components/add-filter-menu/add-filter-menu.component';
+import { FormControl, FormGroup } from '@angular/forms';
+import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
+import { GlobaldialogService } from '@services/globaldialog.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'pros-schema-info',
   templateUrl: './schema-info.component.html',
   styleUrls: ['./schema-info.component.scss']
 })
-export class SchemaInfoComponent implements OnInit {
+export class SchemaInfoComponent implements OnInit, OnDestroy {
 
   /**
    * module ID of current module
@@ -54,8 +58,17 @@ export class SchemaInfoComponent implements OnInit {
   schemaDetails: SchemaListDetails;
   loadDopValuesFor: LoadDropValueReq;
   collaboratorData: SchemaCollaborator;
-
   reInilize = true;
+  /** FormGroup to have schema summary form.. */
+  schemaSummaryForm: FormGroup;
+
+  /** To have variant details of a schema */
+  variantDetails: VariantDetails[];
+
+  /**
+   * To hold all the subscriptions related to component
+   */
+  subscriptions: Subscription[] = [];
 
   constructor(
     private activateRoute: ActivatedRoute,
@@ -65,7 +78,9 @@ export class SchemaInfoComponent implements OnInit {
     private sharedService: SharedServiceService,
     private schemaListService: SchemalistService,
     private schemaExecutionService: SchemaExecutionService,
-    private matSnackBar: MatSnackBar
+    private schemaVariantService: SchemaVariantService,
+    private matSnackBar: MatSnackBar,
+    private globalDialogService: GlobaldialogService
   ) { }
 
   /**
@@ -74,6 +89,9 @@ export class SchemaInfoComponent implements OnInit {
   ngOnInit(): void {
     this.getRouteParams();
     // this.getQueryParams();
+
+    this.initializeSummaryForm();
+
     this.sharedService.getAfterBrSave().subscribe(res => {
       if (res) {
         this.getBusinessRuleList(this.schemaId);
@@ -96,21 +114,71 @@ export class SchemaInfoComponent implements OnInit {
     this.activateRoute.params.subscribe((params) => {
       this.moduleId = params.moduleId;
       this.schemaId = params.schemaId;
+
       this.getSchemaStatics(this.schemaId);
       this.getSubscriberList(this.schemaId);
       this.getBusinessRuleList(this.schemaId);
+      this.getSchemaVariants(this.schemaId);
 
       this.schemaListService.getSchemaDetailsBySchemaId(this.schemaId).subscribe(res => {
         this.schemaDetails = res;
+        console.log(this.schemaDetails);
       }, error => console.error('Error : {}', error.message));
     })
   }
 
+  /**
+   * Function to initialize schema summary tab form
+   */
+  initializeSummaryForm() {
+    this.schemaSummaryForm = new FormGroup({
+      schemaName: new FormControl(''),
+      schemaDescription: new FormControl(''),
+      schemaThreshold: new FormControl()
+    })
+  }
 
+  /**
+   * Function to get dataScope/variants of schema
+   * @param schemaId : ID of schema
+   */
+  getSchemaVariants(schemaId: string) {
+    const schemaVariantList = this.schemaVariantService.getSchemaVariantDetails(schemaId).subscribe(response => {
+      this.variantDetails = response;
+    }, error => {
+      console.log('Error while getting schema variants', error.message)
+    })
+    this.subscriptions.push(schemaVariantList);
+  }
+
+  /**
+   * Function to delete variant of a schema
+   * @param variantId : ID of variant needs to be deleted
+   */
+  deleteVariant(variantId: string) {
+    this.globalDialogService.confirm({label:'Are you sure to delete ?'}, (response) =>{
+      if(response && response === 'yes') {
+        const deleteVariant = this.schemaVariantService.deleteVariant(variantId).subscribe(res => {
+          if (res) {
+            this.getSchemaVariants(this.schemaId);
+            this.matSnackBar.open('SuccessFully Deleted!!', 'close', { duration: 3000 })
+          }
+        }, error => {
+          console.log('Error while deleting schema variant', error.message)
+        })
+        this.subscriptions.push(deleteVariant);
+      }
+    });
+  }
+
+  /**
+   * Function to get all business rule categories..
+   */
   getAllCategoryInfo() {
-    this.schemaDetailsService.getAllCategoryInfo().subscribe(res => {
+   const categoryInfo = this.schemaDetailsService.getAllCategoryInfo().subscribe(res => {
       this.category = res;
     }, error => console.error(`Error : ${error.message}`));
+    this.subscriptions.push(categoryInfo);
   }
 
   // private getQueryParams(){
@@ -159,7 +227,7 @@ export class SchemaInfoComponent implements OnInit {
       this.router.navigate(['/home/schema/schema-info', this.moduleId, this.schemaId], { queryParams: { fragment: tabLabel } })
     }
 
-    switch(tabLabel){
+    switch (tabLabel) {
       case 'business-rules':
         this.selectedIndex = 1;
         break;
@@ -168,6 +236,8 @@ export class SchemaInfoComponent implements OnInit {
         break;
       case 'execution-logs':
         this.selectedIndex = 3;
+        break;
+      default:
         break;
     }
   }
@@ -180,7 +250,7 @@ export class SchemaInfoComponent implements OnInit {
    * @param schemaId current schema id
    */
   public getSubscriberList(schemaId: string) {
-    this.schemaDetailsService.getCollaboratorDetails(schemaId).subscribe((responseData) => {
+   const subscriberData = this.schemaDetailsService.getCollaboratorDetails(schemaId).subscribe((responseData) => {
       responseData.forEach((subscriber) => {
         subscriber.filterCriteria.forEach((data) => {
           const filter: FilterCriteria = new FilterCriteria();
@@ -201,6 +271,7 @@ export class SchemaInfoComponent implements OnInit {
     }, error => {
       console.log('Error while fetching subscriber information', error.message)
     })
+    this.subscriptions.push(subscriberData);
   }
 
   /**
@@ -208,12 +279,12 @@ export class SchemaInfoComponent implements OnInit {
    * @param schemaId current schema id
    */
   public getBusinessRuleList(schemaId: string) {
-    this.schemaService.getAllBusinessRules(schemaId).subscribe((responseData) => {
-      console.log(responseData);
+   const businessRuleList = this.schemaService.getAllBusinessRules(schemaId).subscribe((responseData) => {
       this.businessRuleData = responseData;
     }, error => {
       console.log('Error while fetching business rule info for schema', error);
     })
+    this.subscriptions.push(businessRuleList);
   }
 
   /**
@@ -265,11 +336,12 @@ export class SchemaInfoComponent implements OnInit {
     if (!request.status) {
       request.status = br.status
     }
-    this.schemaService.updateBrMap(request).subscribe(res => {
+    const updateBusinessRule = this.schemaService.updateBrMap(request).subscribe(res => {
       if (res) {
         this.getBusinessRuleList(this.schemaId);
       }
     }, error => console.error(`Error : ${error.message}`));
+    this.subscriptions.push(updateBusinessRule);
   }
 
   /**
@@ -303,11 +375,12 @@ export class SchemaInfoComponent implements OnInit {
         request.order = event.currentIndex;
         request.brWeightage = Number(br.brWeightage);
         request.status = br.status
-        this.schemaService.updateBrMap(request).subscribe(res => {
+        const updateBusinessRule = this.schemaService.updateBrMap(request).subscribe(res => {
           if (res) {
             this.getBusinessRuleList(this.schemaId);
           }
         }, error => console.error(`Error : ${error.message}`));
+        this.subscriptions.push(updateBusinessRule);
       }
     }
   }
@@ -317,11 +390,16 @@ export class SchemaInfoComponent implements OnInit {
    * @param br delete by br id
    */
   deleteBr(br: CoreSchemaBrInfo) {
-    if (br.brIdStr) {
-      this.schemaService.deleteBr(br.brIdStr).subscribe(res => {
-        this.getBusinessRuleList(this.schemaId);
-      }, error => console.error(`Error : ${error.message}`));
-    }
+    this.globalDialogService.confirm({label:'Are you sure to delete ?'}, (response) =>{
+      if(response && response === 'yes') {
+        if (br.brIdStr) {
+         const deleteSubscriber = this.schemaService.deleteBr(br.brIdStr).subscribe(res => {
+            this.getBusinessRuleList(this.schemaId);
+          }, error => console.error(`Error : ${error.message}`));
+          this.subscriptions.push(deleteSubscriber);
+        }
+      }
+    });
   }
 
   /**
@@ -375,7 +453,6 @@ export class SchemaInfoComponent implements OnInit {
             updateSubscriber.sno = subscriber.sno.toString();
             updateSubscriber.schemaId = this.schemaId;
             this.schemaDetailsService.createUpdateUserDetails(Array(updateSubscriber)).subscribe(response => {
-              console.log(response);
               this.getSubscriberList(this.schemaId);
             })
           } else {
@@ -447,10 +524,17 @@ export class SchemaInfoComponent implements OnInit {
    * @param sNo serial No of the subscriber.
    */
   public deleteSubscriber(sNo: string) {
-    this.schemaDetailsService.deleteCollaborator(sNo).subscribe(res => {
-      this.matSnackBar.open('Subscriber deleted successfully.', 'okay', {duration: 5000});
-      this.getSubscriberList(this.schemaId);
-    })
+    this.globalDialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
+      if (response && response === 'yes') {
+       const deleteSubscriber = this.schemaDetailsService.deleteCollaborator(sNo).subscribe(res => {
+          this.matSnackBar.open('Subscriber deleted successfully.', 'okay', { duration: 5000 });
+          this.getSubscriberList(this.schemaId);
+        }, error => {
+          console.log('Error while deleting subscriber', error.message)
+        })
+        this.subscriptions.push(deleteSubscriber);
+      }
+    });
   }
 
   /**
@@ -506,14 +590,12 @@ export class SchemaInfoComponent implements OnInit {
   fetchSelectedValues(selectedValues, sNo: number) {
     if (selectedValues.length > 0) {
       this.subscriberData.forEach((subscriber) => {
-        console.log(subscriber.sno, sNo)
         if (subscriber.sno === sNo) {
           subscriber.schemaId = this.schemaId;
           subscriber.sno = sNo.toString();
           delete subscriber.userMdoModel;
 
           subscriber.filterCriteria.forEach((res) => {
-            console.log(res.fieldId, selectedValues[0].FIELDNAME)
             if (res.fieldId === selectedValues[0].FIELDNAME) {
               res.values = [];
               res.values = selectedValues.map((value) => value.CODE)
@@ -530,7 +612,24 @@ export class SchemaInfoComponent implements OnInit {
   /**
    * function to open dataScope side sheet(Add new data scope)
    */
-  addDataScope(){
+  addDataScope() {
     this.router.navigate([{ outlets: { sb: `sb/schema/data-scope/new` } }])
+  }
+
+  /**
+   * Function to open summary side sheet of schema
+   */
+  openSummarySideSheet(moduleId: string, schemaId: string) {
+    this.router.navigate([{ outlets: { sb: `sb/schema/summary/${moduleId}/${schemaId}` } }])
+  }
+
+  /**
+   * ANGULAR HOOK
+   * To destroy all the subscriptions
+   */
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(subscription => {
+      subscription.unsubscribe();
+    })
   }
 }

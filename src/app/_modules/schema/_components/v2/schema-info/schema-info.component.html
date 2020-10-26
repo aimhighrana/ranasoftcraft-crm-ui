@@ -1,19 +1,18 @@
 <mat-card class="mat-elevation-z0 root">
     <div class="f-row breadcrum-toolbar">
         <div class="display-heading-large">
-            {{ schemaDetails ? schemaDetails.schemaDescription : 'Schema info' }}
+            {{schemaDetails?.moduleDescription ? schemaDetails.moduleDescription : 'Untitled'}} / {{schemaDetails?.schemaDescription ? schemaDetails.schemaDescription: 'Untitled'}}
         </div>
         <span class="f-spacer"></span>
-        <ng-template [ngIf]="schemaDetails && schemaDetails.isInRunning" [ngIfElse]="runNow">
+        <!-- <ng-template [ngIf]="schemaDetails && schemaDetails.isInRunning" [ngIfElse]="runNow">
             <button mat-flat-button color="accent" disabled>
                 <mat-spinner diameter="16"></mat-spinner>
             </button>
         </ng-template>
         <ng-template #runNow>
-            <button mat-flat-button color="accent">
-                <mat-icon fontSet="mdo-icons">wand</mat-icon> Data check
-            </button>
-        </ng-template>
+            <button mat-flat-button color="accent">Run now</button>
+        </ng-template> -->
+        <button mat-flat-button color="accent" (click)="openSummarySideSheet(moduleId, schemaId)">Check Data</button>
         <button mat-flat-button color="accent" [matMenuTriggerFor]="navigation">
             <mat-icon fontSet="mdo-icons">more</mat-icon>
         </button>
@@ -24,9 +23,6 @@
                 <mat-list-item (click)="addSubscriber()">Add subscriber</mat-list-item>
             </mat-nav-list>
         </mat-menu>
-        <!-- <button mat-fab color="accent" class="mat-elevation-z0">
-            <mat-icon>more_horiz</mat-icon>
-        </button> -->
     </div>
 
     <div class="row-spacer"></div>
@@ -38,21 +34,26 @@
             <ng-template mat-tab-label>
                 Summary
             </ng-template>
-            <div class="f-col summary-root">
-                <pros-form-input [label]="'Name'" [placeholder]="'New material schema'"></pros-form-input>
+            <form class="f-col root" [formGroup]="schemaSummaryForm">
+                <pros-form-input [label]="'Name'" [placeholder]="'New material schema'" [disabled]="true"
+                    [value]="schemaDetails?.schemaDescription ? schemaDetails.schemaDescription : ''">
+                </pros-form-input>
                 <div class="row-spacer"></div>
-                <pros-form-input [label]="'Description'"></pros-form-input>
+                <pros-form-input [label]="'Description'" [disabled]="true"
+                    [value]="schemaDetails?.schemaDescription ? schemaDetails.schemaDescription : ''">
+                </pros-form-input>
                 <div class="row-spacer"></div>
                 <div class="f-col temp-field">
                     <mat-label>Threshold</mat-label>
-                    <mat-slider color="primary"></mat-slider>
+                    <mat-slider color="primary" formControlName="schemaThreshold" [disabled]="true"
+                        [value]="thresholdValue ? thresholdValue : 0"></mat-slider>
                 </div>
                 <div class="row-spacer"></div>
                 <mat-accordion>
                     <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
                         <mat-expansion-panel-header expandedHeight="36px" collapsedHeight="36px">
                             <mat-panel-title class="panel-title">
-                                Data scope (4)
+                                Data scope ({{variantDetails ?  variantDetails.length : 0}})
                             </mat-panel-title>
                         </mat-expansion-panel-header>
 
@@ -60,44 +61,23 @@
                             <mat-list-item (click)="addDataScope()">
                                 <div mat-line>[Add Data Scope]</div>
                             </mat-list-item>
-                            <mat-list-item>
-                                <div mat-line>Adelaide plant</div>
+                            <mat-list-item *ngFor="let variant of variantDetails">
+                                <div mat-line>{{variant.variantName}}</div>
                                 <span class="f-spacer"></span>
-                                <button mat-button>
-                                    <mat-icon>delete_outline</mat-icon>
-                                </button>
-                            </mat-list-item>
-                            <mat-list-item>
-                                <div mat-line>Brisbane plant</div>
-                                <span class="f-spacer"></span>
-                                <button mat-button>
-                                    <mat-icon>delete_outline</mat-icon>
-                                </button>
-                            </mat-list-item>
-                            <mat-list-item>
-                                <div mat-line>Melborne plant</div>
-                                <span class="f-spacer"></span>
-                                <button mat-button>
-                                    <mat-icon>delete_outline</mat-icon>
-                                </button>
-                            </mat-list-item>
-                            <mat-list-item>
-                                <div mat-line>Sydney plant</div>
-                                <span class="f-spacer"></span>
-                                <button mat-button>
-                                    <mat-icon>delete_outline</mat-icon>
+                                <button mat-button (click)="deleteVariant(variant.variantId)">
+                                    <mat-icon>delete</mat-icon>
                                 </button>
                             </mat-list-item>
                         </mat-nav-list>
                     </mat-expansion-panel>
                 </mat-accordion>
-            </div>
+            </form>
         </mat-tab>
 
         <!-- Tab for the business rules of schema -->
         <mat-tab label="business-rules">
             <ng-template mat-tab-label>
-                Business rules
+                Business rules {{businessRuleData ? businessRuleData.length : 0}}
             </ng-template>
             <div class="colunm-listing">
                 <div class="f-row colunm-box rule-border-row">
@@ -129,7 +109,7 @@
                                 <mat-icon>drag_handle</mat-icon>
                             </button>
                         </div>
-                        <div class="col col-x4">
+                        <div class="col col-x4" (click)="editBr(businessRule)">
                             <div mat-line><a class="info-link">{{businessRule.brInfo}}</a></div>
                         </div>
                         <div class="col col-x4">
@@ -168,7 +148,7 @@
         <!-- Tab for the collaborators/subscribers of the schema -->
         <mat-tab label="subscribers">
             <ng-template mat-tab-label>
-                Subscribers
+                Subscribers {{subscriberData ? subscriberData.length : 0}}
             </ng-template>
             <div class="colunm-listing">
                 <div class="f-row colunm-box rule-border-row">

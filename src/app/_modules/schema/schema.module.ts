@@ -45,13 +45,13 @@ import { SubscriberSideSheetComponent } from './_components/v2/subscriber-side-s
 import { ScheduleTabComponent } from './_components/schedule-tab/schedule-tab.component';
 import { BusinessrulelibrarySidesheetComponent } from './_components/businessrulelibrary-sidesheet/businessrulelibrary-sidesheet.component';
 import { CatalogCheckComponent } from './_components/catalog-check/catalog-check.component';
-import { MaterialDuplicatecheckSidesheetComponent } from './_components/material-duplicatecheck-sidesheet/material-duplicatecheck-sidesheet.component';
 import { DuplicateDatacheckSidesheetComponent } from './_components/duplicate-datacheck-sidesheet/duplicate-datacheck-sidesheet.component';
 import { DatascopeSidesheetComponent } from './_components/datascope-sidesheet/datascope-sidesheet.component';
 import { ConfigureSidesheetComponent } from './_components/configure-sidesheet/configure-sidesheet.component';
 import { AttributeMappingComponent } from './_components/attribute-mapping/attribute-mapping.component';
 import { BrClassificationSidesheetComponent } from './_components/br-classification-sidesheet/br-classification-sidesheet.component';
 import { BrDuplicatecheckSidesheetComponent } from './_components/br-duplicatecheck-sidesheet/br-duplicatecheck-sidesheet.component';
+import { SchemaSummarySidesheetComponent } from './_components/schema-summary-sidesheet/schema-summary-sidesheet.component';
 
 
 @NgModule({
@@ -101,13 +101,13 @@ import { BrDuplicatecheckSidesheetComponent } from './_components/br-duplicatech
     ScheduleTabComponent,
     BusinessrulelibrarySidesheetComponent,
     CatalogCheckComponent,
-    MaterialDuplicatecheckSidesheetComponent,
     DuplicateDatacheckSidesheetComponent,
     DatascopeSidesheetComponent,
     ConfigureSidesheetComponent,
     AttributeMappingComponent,
     BrClassificationSidesheetComponent,
-    BrDuplicatecheckSidesheetComponent
+    BrDuplicatecheckSidesheetComponent,
+    SchemaSummarySidesheetComponent
   ],
   imports: [
     CommonModule,

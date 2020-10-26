@@ -51,7 +51,6 @@ describe('SchemaInfoComponent', () => {
   it('addSubscriber(), should open the subscriber side sheet', async() => {
     component.moduleId = '1005';
     component.schemaId = '5642587452';
-    fixture.detectChanges();
     spyOn(router, 'navigate');
     component.addSubscriber();
 
@@ -61,7 +60,6 @@ describe('SchemaInfoComponent', () => {
   it('addBusinessRule(), should open the subscriber side sheet', async() => {
     component.moduleId = '1005';
     component.schemaId = '5642587452';
-    fixture.detectChanges();
     spyOn(router, 'navigate');
     component.addBusinessRule();
 
@@ -72,7 +70,6 @@ describe('SchemaInfoComponent', () => {
     component.moduleId = '1005';
     component.schemaId = '5642785215';
     let tabLabel = 'business-rules';
-    fixture.detectChanges();
 
     spyOn(router, 'navigate');
     component.updateFragment(tabLabel);
