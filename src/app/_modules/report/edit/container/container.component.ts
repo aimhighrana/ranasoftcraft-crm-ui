@@ -240,8 +240,12 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
             dateSelectedFor: latestVal.dateSelectionType,
             endDate,
             startDate: strtDate
-          };
-        } else {
+          }
+        } else if(latestVal.dateSelectionType) {
+          changedWidget.dateFilterCtrl = {
+            dateSelectedFor: latestVal.dateSelectionType,
+          }
+        } else{
           changedWidget.dateFilterCtrl = null;
         }
         this.preapreNewWidgetPosition(changedWidget);
@@ -483,7 +487,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         // set value to properties frm ctrl
         if (data.chartProperties) {
           this.chartPropCtrlGrp.setValue(data.chartProperties);
-        } else {
+        } else if(data.widgetType === WidgetType.BAR_CHART || data.widgetType === WidgetType.STACKED_BAR_CHART){
           this.chartPropCtrlGrp.setValue({ chartType:ChartType.BAR, orientation:Orientation.VERTICAL, isEnableDatalabels:false,
             datalabelsPosition:DatalabelsPosition.center, isEnableLegend:false, legendPosition:LegendPosition.top, xAxisLabel:'', yAxisLabel:'',
             orderWith: OrderWith.DESC, scaleFrom:'',scaleTo:'', stepSize:'', dataSetSize:'',seriesWith:SeriesWith.day,seriesFormat:'',blankValueAlias:'',timeseriesStartDate:TimeseriesStartDate.D7,
