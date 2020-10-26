@@ -1,7 +1,8 @@
 div.root {
   padding: 0 16px;
   user-select: none;
-  // width: 800px;
+  width: 800px;
+  height: 100%;
 
   .breadcrum-toolbar {
     align-items: center;
@@ -25,26 +26,19 @@ div.root {
 
   mat-nav-list {
     mat-list-item {
-      height: 52px;
+      height: auto;
+      font-size: 0.7rem;
+      padding: 8px 0;
 
       .mat-line {
-        font-size: 0.9rem;
-
         strong {
           font-weight: 500;
-        }
-
-        &:nth-child(2) {
           font-size: 0.8rem;
         }
       }
 
-      .none-stats-chip {
-        mat-icon.mat-icon {
-          font-size: 16px;
-          height: 16px;
-          width: 20px;
-        }
+      .notification-data {
+        align-items: flex-start;
       }
 
       mat-card-header {
