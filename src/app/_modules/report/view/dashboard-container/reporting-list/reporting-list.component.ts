@@ -175,12 +175,14 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
       }
       returndata.hits.hits.forEach(element => {
         const source = element._source;
+        let objectNumber = source.staticFields && source.staticFields.OBJECTID && source.staticFields.OBJECTID.vc ? source.staticFields.OBJECTID.vc[0].c : element._id;
 
-        const objectNumber = source.staticFields && source.staticFields.OBJECTID && source.staticFields.OBJECTID.vc ? source.staticFields.OBJECTID.vc[0].c : element._id;
+      if(source.staticFields && source.staticFields.MASSPROCESSING_ID && source.staticFields.MASSPROCESSING_ID.vc && source.staticFields.MASSPROCESSING_ID.vc.c !== undefined){
+          objectNumber = source.staticFields.OBJECT_NUMBER && source.staticFields.OBJECT_NUMBER.vc !== undefined ?source.staticFields.OBJECT_NUMBER.vc.c[0]:objectNumber;
+        }
         const obj = { objectNumber };
-
         const status = source?source.stat:'';
-        if(status !=='' && status !==undefined && this.displayedColumnsId.indexOf('stat')>-1){
+        if(status !=='' && status !== undefined && this.displayedColumnsId.indexOf('stat')>-1){
          const colststus = 'stat';
           obj[colststus]=status;
         }
