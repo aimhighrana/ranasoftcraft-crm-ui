@@ -570,8 +570,8 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     const excelData = [];
     this.arrayBuckets.forEach(singleBucket=>{
       const obj = {};
-      obj[this.stackBarWidget.getValue().fieldId] = this.codeTextaxis2[singleBucket.key[this.stackBarWidget.getValue().fieldId]];
-      obj[this.stackBarWidget.getValue().groupById] = this.codeTextaxis1[singleBucket.key[this.stackBarWidget.getValue().groupById]];
+      obj[this.stackBarWidget.getValue().fieldIdMetaData ?this.stackBarWidget.getValue().fieldIdMetaData.fieldDescri : this.stackBarWidget.getValue().fieldId] = this.codeTextaxis2 ? this.codeTextaxis2[singleBucket.key[this.stackBarWidget.getValue().fieldId]] : '';
+      obj[this.stackBarWidget.getValue().groupByIdMetaData ?this.stackBarWidget.getValue().groupByIdMetaData.fieldDescri : this.stackBarWidget.getValue().groupById] = this.codeTextaxis1 ? this.codeTextaxis1[singleBucket.key[this.stackBarWidget.getValue().groupById]] : '';
       obj[this.stackBarWidget.getValue().aggregationOperator] = singleBucket.doc_count;
       excelData.push(obj)
     });
