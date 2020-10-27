@@ -18,21 +18,33 @@
                 <mat-nav-list>
                     <mat-list-item *ngFor="let notification of notifications"
                         (click)="updateNotification(notification)">
-                        <div mat-line><strong>{{notification.headerText}}</strong></div>
-                        <div mat-line>{{notification.contentText}}</div>
+                        <div class="f-col">
+                            <div mat-line><strong>{{notification.headerText}}</strong></div>
+                            <div class="f-row">
+                                <div class="f-col">
+                                    <div class="f-row">
+                                        <!-- <p>{{notification.contentText}}</p> -->
+                                        <div mat-line>Lorem Ipsum is simply dummy text of the printing and typesetting
+                                            industry. Lorem Ipsum has been the industry's</div>
+                                        <span class="f-col-spacer-half"></span>
+                                        <mat-icon fontSet="mdo-icons" class="expandicon">chevron-right</mat-icon>
+                                    </div>
+                                    <p class="notify-content" disableRipple="true">
+                                        {{notification.sendTime | date:'dd MMM hh:mm:ss' }}</p>
+                                </div>
 
-                        <mat-chip-list>
-                            <mat-chip disableRipple="true" class="none-stats-chip">
-                                {{notification.sendTime | date:'dd MMM hh:mm:ss' }}</mat-chip>
-                        </mat-chip-list>
+                                <div class="f-row">
+                                    <mat-card-header>
+                                        <div mat-card-avatar>{{notification.senderUid}}</div>
+                                    </mat-card-header>
 
-                        <mat-card-header>
-                            <div mat-card-avatar>{{notification.senderUid}}</div>
-                        </mat-card-header>
-
-                        <button mat-button (click)="deleteNotification(notification.id)" prosClickStopPropagation>
-                            <mat-icon>delete_outline</mat-icon>
-                        </button>
+                                    <button mat-button (click)="deleteNotification(notification.id)"
+                                        prosClickStopPropagation>
+                                        <mat-icon>delete_outline</mat-icon>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </mat-list-item>
                 </mat-nav-list>
             </mat-tab>

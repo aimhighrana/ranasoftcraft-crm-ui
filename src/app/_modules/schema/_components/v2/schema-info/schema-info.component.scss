@@ -25,6 +25,12 @@ mat-card.root {
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
 
+        mat-icon {
+          font-size: 14px;
+          width: 14px;
+          height: 14px;
+        }
+
         mat-spinner {
           margin: 0 auto;
         }
@@ -34,34 +40,30 @@ mat-card.root {
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
         padding: 0;
-        min-width: 56px;
+        min-width: 40px;
       }
     }
   }
 
-  .statics-col {
-    flex: 1;
-    align-items: center;
-    font-size: 1.2rem;
-    padding: 8px 0;
-    border-left-style: solid;
-    border-left-width: 1px;
+  div.summary-root {
+    padding: 16px 0;
 
-    &:first-of-type {
-      border-left: none;
+    .temp-field {
+      mat-label {
+        font-weight: 500;
+        font-size: 0.8rem;
+      }
     }
 
-    .metric-row {
-      align-items: baseline;
+    .panel-title {
+      font-weight: 500;
+    }
 
-      .statics-count {
-        font-size: 6vw;
-        font-weight: 400;
-        line-height: 7vw;
-
-        .statics-per {
-          font-size: 1.2rem;
-        }
+    .summary-rowlist {
+      mat-list-item.mat-list-item {
+        border-bottom-width: 1px;
+        border-bottom-style: solid;
+        font-size: 0.8rem;
       }
     }
   }
@@ -72,14 +74,14 @@ mat-card.root {
   box-sizing: border-box;
   padding: 4px 0;
   min-height: 48px;
-  border-bottom: 1px solid #e1e1e1;
+  font-size: 0.8rem;
 
   .col {
     display: flex;
     flex: 1 0 auto;
     width: 1px;
     align-items: center;
-    margin: 0 4px;
+    margin: 0 16px;
 
     &.col-x4 {
       flex: 4;
@@ -89,24 +91,33 @@ mat-card.root {
       flex: 8;
     }
 
+    &.text-center {
+      justify-content: center;
+    }
+
+    .info-link {
+      align-items: center;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+
+    mat-slider {
+      width: 100%;
+    }
+
     &.col-x16 {
       flex: 16;
     }
 
-    &.mat-item-end {
-      justify-content: flex-end;
-      margin-right: 0;
-    }
-
     strong {
-      font-weight: 500;
+      align-items: center;
     }
 
     .mat-head-icon {
-      height: 16px;
-      width: 16px;
-      font-size: 16px;
-      margin-left: 5px;
+      height: 12px;
+      width: 14px;
+      font-size: 14px;
+      margin-left: 6px;
     }
 
     .mat-line {
@@ -118,28 +129,10 @@ mat-card.root {
       white-space: pre-line;
       word-break: break-word;
     }
-  }
-}
 
-div.root {
-  padding: 16px 0;
-
-  .temp-field {
-    mat-label {
-      font-weight: 500;
-      font-size: 0.8rem;
-    }
-  }
-
-  .panel-title {
-    font-weight: 500;
-  }
-
-  .summary-rowlist {
-    mat-list-item.mat-list-item {
-      border-bottom-width: 1px;
-      border-bottom-style: solid;
-      font-size: 0.8rem;
+    button.mat-stroked-button {
+      margin-right: 4px;
+      min-width: auto;
     }
   }
 }

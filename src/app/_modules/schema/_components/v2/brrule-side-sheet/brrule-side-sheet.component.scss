@@ -26,13 +26,16 @@ mat-card.root {
   .mdo-justify {
     .mdo-form-field {
       margin: 8px 0;
-      display: flex;
-      flex-direction: column;
+
+      mat-label {
+        font-weight: 500;
+        font-size: 0.8rem;
+      }
     }
 
     mat-divider.mat-divider {
       position: relative;
-      margin: 8px 0;
+      margin: 16px 0;
       border-top-style: dashed;
     }
 

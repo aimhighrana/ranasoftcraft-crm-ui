@@ -13,7 +13,7 @@
     <div class="row-spacer"></div>
     <div class="f-col mdo-justify">
         <form [formGroup]="form">
-            <div class="mdo-form-field">
+            <div class="f-col mdo-form-field">
                 <mat-label>Rule Type</mat-label>
                 <mat-form-field appearance="outline">
                     <mat-select formControlName="rule_type">
@@ -27,7 +27,7 @@
                         Please enter Rule type</mat-error>
                 </mat-form-field>
             </div>
-            <div class="mdo-form-field">
+            <div class="f-col mdo-form-field">
                 <pros-form-input (valueChange)="getFormValue($event,'rule_name')" [label]="'Rule name (Description)'"
                     [value]="form.controls.rule_name.value">
                 </pros-form-input>
@@ -35,7 +35,7 @@
                     *ngIf="submitted && form.controls.rule_name.errors && form.controls.rule_name.errors.required">
                     Please enter Rule name</mat-error>
             </div>
-            <div class="mdo-form-field">
+            <div class="f-col mdo-form-field">
                 <pros-form-input (valueChange)="getFormValue($event,'error_message')"
                     [value]="form.controls.error_message.value" [label]="'Error message (Message)'">
                 </pros-form-input>
@@ -44,7 +44,7 @@
                     Please enter Error message</mat-error>
             </div>
             <mat-divider></mat-divider>
-            <div class="mdo-form-field" *ngIf="!isUDR">
+            <div class="f-col mdo-form-field" *ngIf="!isUDR">
                 <mat-label>Fields</mat-label>
                 <mat-form-field appearance="outline">
                     <mat-chip-list #chipList>
@@ -67,9 +67,8 @@
                     Please select the fields
                 </mat-error>
             </div>
-            <div class="mdo-form-field" *ngIf="isRegexType ">
-                <div class="mdo-form-input f-col">
-                    <mat-label>Standard function</mat-label>
+            <div class="f-col mdo-form-field" *ngIf="isRegexType ">
+                <mat-label>Standard function</mat-label>
                     <mat-form-field appearance="outline">
                         <mat-select formControlName='standard_function' (selectionChange)='setRegex($event)'>
                             <mat-option *ngFor="let regex of preDefinedRegex" [value]="regex.FUNC_TYPE">
@@ -80,9 +79,8 @@
                     <mat-error
                         *ngIf="submitted && form.controls.standard_function.errors && form.controls.standard_function.errors.required">
                         Please select the standard function</mat-error>
-                </div>
             </div>
-            <div class="mdo-form-field" *ngIf="isRegexType">
+            <div class="f-col mdo-form-field" *ngIf="isRegexType">
                 <pros-form-input [value]='form.value.regex' (valueChange)="getFormValue($event,'regex')"
                     [value]="form.controls.regex.value" [label]="'Regex value'">
                 </pros-form-input>
