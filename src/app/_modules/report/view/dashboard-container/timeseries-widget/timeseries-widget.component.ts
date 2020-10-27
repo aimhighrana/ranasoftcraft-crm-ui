@@ -481,13 +481,19 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   transformDataSets(data: any): any {
     const finalOutput = new Object();
     const cordKeys = ['x', 'y'];
-    const aggregation = data.aggregations['date_histogram#date'] ? data.aggregations['date_histogram#date']:data.aggregations[''];
+    const aggregation = data.aggregations['date_histogram#date'] ? data.aggregations['date_histogram#date'] : data.aggregations[''];
     if (aggregation.buckets !== undefined && aggregation.buckets.length > 0) {
       aggregation.buckets.forEach(singleBucket => {
         const arrBuckets = singleBucket['sterms#term'] !== undefined ? singleBucket['sterms#term'].buckets : singleBucket['lterms#term'].buckets
         arrBuckets.forEach(innerBucket => {
           const count = innerBucket.doc_count;
-          const label = innerBucket.key;
+          let label = innerBucket.key;
+          const textTermBucket = innerBucket['sterms#textTerm'].buckets;
+          if(textTermBucket){
+            textTermBucket.forEach(bucket => {
+              label = bucket.key
+          })
+          }
           if (Object.keys(finalOutput).includes(label)) {
             const array = finalOutput[label];
             const objdt = new Object();
@@ -550,12 +556,19 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
           const bucket = arrBuckets.filter(fil => fil.key === key)[0];
           const count = bucket ? (forDistinct ? (bucket['cardinality#count'] ? bucket['cardinality#count'].value : 0) : bucket.doc_count) : 0;
           arrcount.push(count);
+          const textTermBucket = bucket ? bucket['sterms#textTerm'].buckets : [];
+          let label = ''
+          if(textTermBucket.length > 0){
+            textTermBucket.forEach(textBucket => {
+              label = textBucket.key;
+            })
+          }
           const chartLegend = { text: key, code: key, legendIndex: this.chartLegend.length };
           const exist = this.chartLegend.filter(map => map.text === key);
           if (exist.length === 0) {
             this.chartLegend.push(chartLegend);
             if (this.dataSetlabel.indexOf(key) === -1) {
-              this.dataSetlabel.push(key);
+              this.dataSetlabel.push(label);
             }
           }
         });
