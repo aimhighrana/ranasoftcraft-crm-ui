@@ -15,7 +15,7 @@
                 <mat-label>{{fieldData.fieldDescri}}</mat-label>
                 <div mat-line *ngIf="!fieldData.showMore; else withoutTruncate">
                   {{truncateText(fieldData.value, 60)}}
-                <button mat-stroked-button color="primary" *ngIf="fieldData.value.length > 80" (click)="fieldData.showMore = !fieldData.showMore">
+                <button mat-stroked-button color="primary" *ngIf="fieldData.value.length > 60" (click)="fieldData.showMore = !fieldData.showMore">
                   {{ fieldData.showMore ? 'less' : 'more'}} 
                 </button>
               </div>

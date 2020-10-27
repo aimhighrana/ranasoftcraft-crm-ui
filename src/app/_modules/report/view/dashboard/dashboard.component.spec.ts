@@ -44,6 +44,6 @@ describe('DashboardComponent', () => {
 
   it('should call showClearBtnEmit()', () => {
     component.showClearBtnEmit(true);
-    expect(component.showClearFilterBtn).toEqual(true);
+    expect(component.emitClearBtnEvent).toEqual(false);
   });
 });

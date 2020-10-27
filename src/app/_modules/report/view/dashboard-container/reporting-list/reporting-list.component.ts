@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnChanges, Inject, LOCALE_ID } from '@angular/core';
+import { Component, OnInit, ViewChild, OnChanges, Inject, LOCALE_ID, OnDestroy } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
@@ -21,7 +21,7 @@ import { UserService } from '@services/user/userservice.service';
   templateUrl: './reporting-list.component.html',
   styleUrls: ['./reporting-list.component.scss']
 })
-export class ReportingListComponent extends GenericWidgetComponent implements OnInit, OnChanges {
+export class ReportingListComponent extends GenericWidgetComponent implements OnInit, OnChanges, OnDestroy {
 
   resultsLength: any;
   separatorKeysCodes: number[] = [ENTER, COMMA];
@@ -329,6 +329,11 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
       this.layouts = res;
     }, error => console.error(`Error : ${error.message}`));
 
+  }
+
+  ngOnDestroy(){
+    this.reportingListWidget.complete();
+    this.reportingListWidget.unsubscribe();
   }
 
 }

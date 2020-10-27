@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, ViewChild, LOCALE_ID, Inject, SimpleChanges } from '@angular/core';
+import { Component, OnInit, OnChanges, ViewChild, LOCALE_ID, Inject, SimpleChanges, OnDestroy } from '@angular/core';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
 import { BarChartWidget, Criteria, WidgetHeader, ChartLegend, ConditionOperator, BlockType, Orientation, WidgetColorPalette } from '../../../_models/widget';
@@ -15,7 +15,7 @@ import { MatDialog } from '@angular/material/dialog';
   templateUrl: './bar-chart.component.html',
   styleUrls: ['./bar-chart.component.scss']
 })
-export class BarChartComponent extends GenericWidgetComponent implements OnInit, OnChanges {
+export class BarChartComponent extends GenericWidgetComponent implements OnInit, OnChanges, OnDestroy {
 
   barWidget: BehaviorSubject<BarChartWidget> = new BehaviorSubject<BarChartWidget>(null);
   widgetHeader: WidgetHeader = new WidgetHeader();
@@ -685,5 +685,10 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
       this.minBarWidth -= this.zoomStep ;
       this.computeGraphSize();
     }
+  }
+
+  ngOnDestroy(){
+    this.barWidget.complete();
+    this.barWidget.unsubscribe();
   }
 }

@@ -5,6 +5,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { GlobaldialogService } from '@services/globaldialog.service';
 import { Subscription } from 'rxjs';
+
 @Component({
   selector: 'pros-dashboard',
   templateUrl: './dashboard.component.html',
@@ -70,11 +71,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   clearFilters() {
-    this.emitClearBtnEvent =  this.emitClearBtnEvent ? false : true;
+    this.emitClearBtnEvent =  true;
   }
 
   showClearBtnEmit(isTrue: boolean) {
-    this.showClearFilterBtn = isTrue;
+    setTimeout(() => this.showClearFilterBtn = isTrue, 50)
+    if (isTrue){
+      this.emitClearBtnEvent = false ;
+    }
   }
 
   delete() {

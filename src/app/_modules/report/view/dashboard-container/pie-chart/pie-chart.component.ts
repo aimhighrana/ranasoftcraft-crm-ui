@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, ViewChild, LOCALE_ID, Inject, SimpleChanges } from '@angular/core';
+import { Component, OnInit, OnChanges, ViewChild, LOCALE_ID, Inject, SimpleChanges, OnDestroy } from '@angular/core';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
 import { BehaviorSubject } from 'rxjs';
 import { PieChartWidget, WidgetHeader, ChartLegend, Criteria, BlockType, ConditionOperator, WidgetColorPalette } from '../../../_models/widget';
@@ -14,7 +14,7 @@ import { MatDialog } from '@angular/material/dialog';
   templateUrl: './pie-chart.component.html',
   styleUrls: ['./pie-chart.component.scss']
 })
-export class PieChartComponent extends GenericWidgetComponent implements OnInit, OnChanges {
+export class PieChartComponent extends GenericWidgetComponent implements OnInit, OnChanges, OnDestroy {
 
 
   pieWidget: BehaviorSubject<PieChartWidget> = new BehaviorSubject<PieChartWidget>(null);
@@ -570,5 +570,10 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
 
     }
     return this.getRandomColor();
+  }
+
+  ngOnDestroy(): void {
+    this.pieWidget.complete();
+    this.pieWidget.unsubscribe();
   }
 }

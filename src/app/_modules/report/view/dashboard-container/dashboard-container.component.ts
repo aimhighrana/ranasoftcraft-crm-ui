@@ -22,10 +22,14 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit, OnCha
   noOfboxes = 200; // Initial 200
   boxSize: number;
 
-  widgetList: WidgetMapInfo[];
   filterCriteria: Criteria[] = [];
 
+  widgetList: WidgetMapInfo[];
   permissons: ReportDashboardPermission;
+
+
+
+
 
   @ViewChild('rootContainer') rootContainer: ElementRef;
   constructor(
@@ -33,9 +37,9 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit, OnCha
   ) { }
 
   ngOnChanges(changes: import('@angular/core').SimpleChanges): void {
-    if(this.emitClearBtnEvent || !this.emitClearBtnEvent) {
+
+    if (changes && changes.emitClearBtnEvent && changes && changes.emitClearBtnEvent.currentValue){
       this.filterCriteria = [];
-      this.emitFilterApplied.emit(this.filterCriteria.length ? true : false);
     }
 
     if(changes && changes.reportId && changes.reportId.currentValue !== changes.reportId.previousValue) {
@@ -43,6 +47,7 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit, OnCha
       if(this.reportId) {
         this.reportService.getReportInfo(this.reportId).subscribe(res=>{
           this.widgetList = res.widgets;
+          this.permissons = res.permissons;
         },error=>{
           console.log(`Error ${error}`);
         })
@@ -59,24 +64,22 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit, OnCha
   }
 
   ngOnInit(): void {
-    if(this.reportId) {
-      this.reportService.getReportInfo(this.reportId).subscribe(res=>{
-        this.widgetList = res.widgets;
-        this.permissons = res.permissons;
-      },error=>{
-        console.log(`Error ${error}`);
-      })
-    }
+
   }
 
   click(data: any) {
     console.log(data);
   }
 
-  changeFilterCriteria(criteria: Criteria[]) {
-    this.filterCriteria = new Array();
-    criteria.forEach(loop => this.filterCriteria.push(loop));
-    this.emitFilterApplied.emit(this.filterCriteria.length ? true : false);
+  changeFilterCriteria(criteria: Criteria[], isFilter?:boolean) {
+    if (isFilter){
+      this.filterCriteria = new Array();
+      criteria.forEach(loop => this.filterCriteria.push(loop));
+      this.emitFilterApplied.emit(this.filterCriteria.length ? true : false);
+    } else {
+      this.emitFilterApplied.emit(criteria.length ? true : false) ;
+
+    }
   }
 
   @HostListener('window:resize', ['$event'])

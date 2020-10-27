@@ -136,29 +136,31 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   @Input()
   hasFilterCriteria: boolean;
 
+  isLoading = true ;
+
   ngOnDestroy(): void {
     this.widgetInf.complete();
     this.widgetInf.unsubscribe();
   }
 
   ngOnChanges(changes: import('@angular/core').SimpleChanges): void {
-    if (changes && changes.hasFilterCriteria && changes.hasFilterCriteria.previousValue !== changes.hasFilterCriteria.currentValue) {
+
+    if (changes && changes.hasFilterCriteria && changes.hasFilterCriteria.currentValue) {
       this.clearFilterCriteria();
     }
 
-    this.lablels = [];
-    this.chartLegend = [];
-    this.widgetInf.subscribe(metadata => {
-      if (metadata) {
-        this.getwidgetData(this.widgetId);
-      }
-    });
+    if (changes && changes.filterCriteria && changes.filterCriteria.currentValue !== changes.filterCriteria.currentValue.previousValue) {
+      console.log('update from input***')
+      this.widgetInf.next(this.widgetInf.getValue());
+    }
+
   }
 
   ngOnInit(): void {
     this.formGroup = this.fb.group({
       date: new FormControl(''),
     });
+
 
     this.startDateCtrl.valueChanges.subscribe(data => {
       this.emitDateChangeValues();
@@ -167,11 +169,17 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     this.endDateCtrl.valueChanges.subscribe(data => {
       this.emitDateChangeValues();
     });
+
+
     this.getTimeSeriesMetadata();
     this.widgetInf.subscribe(metadata => {
       if (metadata) {
-        this.setChartProperties();
-        this.afterColorDefined.next(metadata.timeSeries.widgetColorPalette);
+        this.getwidgetData(this.widgetId);
+        if(this.isLoading){
+          this.isLoading = false ;
+          this.setChartProperties();
+          this.afterColorDefined.next(metadata.timeSeries.widgetColorPalette);
+        }
       }
     });
     // after color defined update on widget
@@ -199,7 +207,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
    * Method to handle button click events
    */
 
-  updateForm(field: string, value: ButtonArr) {
+  updateForm(field: string, value: ButtonArr, withoutRefresh?) {
     this.dateFilters.forEach(ele => {
       if (ele.id === value.id) {
         value.isActive = true
@@ -262,7 +270,9 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         break;
     }
     const strtdatemilli = Date.parse(moment().format('MM/DD/YYYY HH:mm').toString()).toString();
-    this.emitpanAndClickevent(endDatemilli, strtdatemilli);
+    if (!withoutRefresh){
+      this.emitpanAndClickevent(endDatemilli, strtdatemilli);
+    }
   }
 
   emitpanAndClickevent(startdate: string, enddate: string): void {
@@ -294,7 +304,8 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       appliedFilters.push(critera);
     }
     appliedFilters.forEach(app => this.filterCriteria.push(app));
-    this.emitEvtFilterCriteria(this.filterCriteria);
+
+    this.applyFilters() ;
   }
 
   /**
@@ -350,7 +361,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       this.dateFilters.splice(index, 1);
       hasBtn.isActive = true;
       this.dateFilters.splice(index, 0, hasBtn);
-      this.updateForm('date', hasBtn);
+      this.updateForm('date', hasBtn, true);
     }
 
     /**
@@ -426,7 +437,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       appliedFilters.push(critera1);
     }
     appliedFilters.forEach(app => this.filterCriteria.push(app));
-    this.emitEvtFilterCriteria(this.filterCriteria);
+    this.applyFilters();
   }
 
   /**
@@ -488,7 +499,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         arrBuckets.forEach(innerBucket => {
           const count = innerBucket.doc_count;
           let label = innerBucket.key;
-          const textTermBucket = innerBucket['sterms#textTerm'].buckets;
+          const textTermBucket = innerBucket['sterms#textTerm'] ? innerBucket['sterms#textTerm'].buckets : null;
           if(textTermBucket){
             textTermBucket.forEach(bucket => {
               label = bucket.key
@@ -556,7 +567,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
           const bucket = arrBuckets.filter(fil => fil.key === key)[0];
           const count = bucket ? (forDistinct ? (bucket['cardinality#count'] ? bucket['cardinality#count'].value : 0) : bucket.doc_count) : 0;
           arrcount.push(count);
-          const textTermBucket = bucket ? bucket['sterms#textTerm'].buckets : [];
+          const textTermBucket = bucket && bucket['sterms#textTerm'] ? bucket['sterms#textTerm'].buckets : [];
           let label = ''
           if(textTermBucket.length > 0){
             textTermBucket.forEach(textBucket => {
@@ -752,7 +763,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         filterApplied.push(critera);
       }
       filterApplied.forEach(op => this.filterCriteria.push(op));
-      this.emitEvtFilterCriteria(this.filterCriteria);
+      this.applyFilters();
       this.dateFilters.forEach(ele => {
         ele.isActive = false;
       })
@@ -879,7 +890,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
           appliedFilters.push(critera1);
         }
         appliedFilters.forEach(app => this.filterCriteria.push(app));
-        this.emitEvtFilterCriteria(this.filterCriteria);
+        this.applyFilters();
       }
 
     }
@@ -897,5 +908,12 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         this.legendClick(legendItem);
       }
     }
+  }
+
+  applyFilters(){
+    this.emitEvtFilterCriteria(this.filterCriteria);
+    this.lablels = [];
+    this.chartLegend = [];
+    this.widgetInf.next(this.widgetInf.getValue());
   }
 }

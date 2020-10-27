@@ -4,12 +4,11 @@ import { DashboardContainerComponent } from './dashboard-container.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Criteria } from '../../_models/widget';
 import { ReportService } from '@modules/report/_service/report.service';
-import { of } from 'rxjs';
+
 
 describe('DashboardContainerComponent', () => {
   let component: DashboardContainerComponent;
   let fixture: ComponentFixture<DashboardContainerComponent>;
-  let reportservicespy: ReportService;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ DashboardContainerComponent ],
@@ -22,7 +21,6 @@ describe('DashboardContainerComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(DashboardContainerComponent);
     component = fixture.componentInstance;
-    reportservicespy = fixture.debugElement.injector.get(ReportService);
   });
 
   it('should create', () => {
@@ -65,24 +63,19 @@ describe('DashboardContainerComponent', () => {
   }));
 
   it('ngOnChanges(), should call reset when reset dashboard', async(() => {
-    const chnages:import('@angular/core').SimpleChanges = {hasFilterCriteria:{currentValue:true, previousValue: false, firstChange:null, isFirstChange:null}};
-    component.emitClearBtnEvent = false;
+    const chnages:import('@angular/core').SimpleChanges = {emitClearBtnEvent:{currentValue:true, previousValue: false, firstChange:null, isFirstChange:null}};
+    // component.emitClearBtnEvent = false;
     component.filterCriteria = [{fieldId:'test'} as Criteria,{fieldId:'test1'} as Criteria];
     component.ngOnChanges(chnages);
     expect(component.filterCriteria.length).toEqual(0);
 
-    const chnages2:import('@angular/core').SimpleChanges = {hasFilterCriteria:{currentValue:true, previousValue: false, firstChange:null, isFirstChange:null}};
+    const chnages2:import('@angular/core').SimpleChanges = {emitClearBtnEvent:{currentValue:false, previousValue: false, firstChange:null, isFirstChange:null}};
+    component.filterCriteria = [{fieldId:'test'} as Criteria,{fieldId:'test1'} as Criteria];
     component.ngOnChanges(chnages2);
-    expect(component.filterCriteria.length).toEqual(0);
+    expect(component.filterCriteria.length).toEqual(2);
   }));
 
-  it('ngOnInit(), should call ngoninit', async(() => {
-    component.reportId = 654765;
-    const res = {widgets:{sno:'65'}};
-    spyOn(reportservicespy,'getReportInfo').withArgs(component.reportId).and.returnValue(of(res));
-    component.ngOnInit();
-    expect(reportservicespy.getReportInfo).toHaveBeenCalledWith(component.reportId);
-
+  it('ngOnChanges(), should update the report info', async(() => {
     component.reportId= null;
     component.ngOnInit();
     expect(component.ngOnInit).toBeTruthy();

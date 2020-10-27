@@ -62,4 +62,13 @@ describe('SummaryTabsComponent', () => {
     expect(service.getAttachmentData).toHaveBeenCalledWith(snos);
   }));
 
+  it('should truncate the text', () => {
+    const text = 'field value';
+    const result = component.truncateText(text,5);
+    expect(result.length).toEqual(8);
+
+    const result2 = component.truncateText(text,50);
+    expect(result2.length).toEqual(11);
+  })
+
 });
