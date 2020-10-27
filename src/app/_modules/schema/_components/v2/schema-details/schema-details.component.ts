@@ -39,7 +39,12 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
   /**
    * Variant id if have otherwise by default is 0 for all
    */
-  variantId: string;
+  variantId = '0';
+
+  /**
+   * Variant name if have otherwise by default is entire dataset
+   */
+  variantName = 'Entire dataset';
 
   /**
    * Hold all metada control for header , hierarchy and grid fields ..
@@ -142,6 +147,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
 
+
   constructor(
     private activatedRouter: ActivatedRoute,
     private schemaDetailService: SchemaDetailsService,
@@ -181,10 +187,6 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
       if(this.schemaId !== params.schemaId) {
         isRefresh = true;
         this.schemaId = params.schemaId;
-      }
-      if(this.variantId !== params.variantId) {
-        isRefresh = true;
-        this.variantId = params.variantId;
       }
 
       if(isRefresh) {
@@ -400,7 +402,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
       return false;
     }
     this.activeTab = status;
-    this.router.navigate(['/home/schema/schema-details', this.moduleId, this.schemaId, this.variantId ],{queryParams:{status:this.activeTab}} );
+    this.router.navigate(['/home/schema/schema-details', this.moduleId, this.schemaId],{queryParams:{status:this.activeTab}} );
 
     // update state of columns
     this.manageStaticColumns();
@@ -723,4 +725,18 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
     }
 
   }
+
+  refreshData(variantId){
+    if(this.variantId !== variantId) {
+      this.variantId = variantId;
+      this.variantName = this.variantId === '0' ? 'Entire dataset'
+                        : this.schemaInfo.variants.find(v => v.variantId === this.variantId).variantName ;
+      this.getData();
+      if(this.variantId !== '0') {
+        this.getVariantDetails();
+      }
+    }
+  }
+
+
 }

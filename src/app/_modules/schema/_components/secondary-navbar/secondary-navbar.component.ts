@@ -66,7 +66,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
       this.isPageReload = false;
       switch (changes.activatedPrimaryNav.currentValue) {
         case 'welcome':
-          this.getDataIntilligence();
+          this.getSchemaList();
           break;
 
         case 'schema':
@@ -118,7 +118,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
     this.schemaListService.getSchemaList().subscribe((moduleList) => {
       this.moduleList = moduleList;
       this.searchModuleResults = this.moduleList;
-      if (this.moduleList && !this.isPageReload) {
+      if (this.moduleList && !this.isPageReload && this.activatedPrimaryNav === 'schema') {
         const firstModuleId = this.moduleList[0].moduleId;
         this.router.navigate(['/home/schema', firstModuleId]);
       }
@@ -199,18 +199,8 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
    * @param searchString schema string to be searched
    */
   searchSchema(searchString: string) {
-    if (this.activatedPrimaryNav === 'welcome') {
-      if (searchString === null) {
-        return this.searchSchemaResults = this.dataIntillegences;
-      }
-      this.searchSchemaResults = this.dataIntillegences.filter((schema) => {
-        schema.schemaDescription = schema.schemaDescription ? schema.schemaDescription : 'untitled';
-        if (schema.schemaDescription.toLowerCase().includes(searchString.toLowerCase()) || this.searchForVarient(schema, searchString)) {
-          return schema;
-        }
-      })
-    }
-    if (this.activatedPrimaryNav === 'schema') {
+
+    if (this.activatedPrimaryNav === 'schema' || this.activatedPrimaryNav === 'welcome') {
       if (searchString === null) {
         return this.searchModuleResults = this.moduleList;
       }

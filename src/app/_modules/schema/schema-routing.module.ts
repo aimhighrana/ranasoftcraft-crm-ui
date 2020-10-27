@@ -42,7 +42,7 @@ const routes: Routes = [
   { path: '', component: DiwTilesComponent },
   { path: 'group/:groupId', component: SchemaGroupFormComponent },
   // { path: 'schema-list/:schemaGrpId', component: SchemaListComponent },
-  { path: 'schema-details/:moduleId/:schemaId/:variantId', component: SchemaDetailsComponent },
+  { path: 'schema-details/:moduleId/:schemaId', component: SchemaDetailsComponent },
   { path: 'schema-variants/:moduleId/:schemaId', component: SchemaVariantsComponent },
   { path: 'schema-execution/:schemaId', component: SchemaExecutionComponent },
   { path: 'collab/:schemaId', component: SchemaCollaboratorsComponent },

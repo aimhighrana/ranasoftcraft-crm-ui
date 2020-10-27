@@ -16,46 +16,27 @@
 
     <div class="nav-tree">
       <mat-accordion *ngIf="activatedPrimaryNav === 'welcome'">
-        <ng-container *ngFor="let module of searchSchemaResults">
-          <ng-template [ngIf]="module.variants && module.variants.length >0" [ngIfElse]="noVarinats">
-            <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
-              <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
-                <mat-panel-title>
-                  <div class="expand-title">
-                    {{ module.schemaDescription ? module.schemaDescription : 'Untitled' }}
-                  </div>
-                  <span class="f-spacer"></span>
-                  <div class="badge"> {{ module.variants.length }} </div>
-                </mat-panel-title>
-              </mat-expansion-panel-header>
-              <mat-nav-list role="navigation">
-                <mat-list-item *ngFor="let variant of module.variants"
-                  [routerLink]="['schema/schema-details', module.moduleId, module.schemaId,variant.variantId]"
-                  [routerLinkActive]="'selected'">
-                  <div mat-line>
-                    {{ variant.variantName ? variant.variantName : 'Untitled' }}
-                  </div>
-                </mat-list-item>
-              </mat-nav-list>
-            </mat-expansion-panel>
-          </ng-template>
-
-          <ng-template #noVarinats>
-            <mat-expansion-panel togglePosition="before" class="mat-elevation-z0" hideToggle
-              [routerLink]="['schema/schema-details', module.moduleId, module.schemaId,0]"
-              [routerLinkActive]="'selected'">
-              <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
-                <mat-panel-title>
-                  <div class="expand-title">
-                    {{ module.schemaDescription ? module.schemaDescription : 'Untitled'  }}
-                  </div>
-                </mat-panel-title>
-              </mat-expansion-panel-header>
-            </mat-expansion-panel>
-          </ng-template>
-
-        </ng-container>
+        <ng-container *ngFor="let module of searchModuleResults">
+          <mat-expansion-panel togglePosition="before" class="mat-elevation-z0"
+            *ngIf="module.schemaLists && module.schemaLists.length>0">
+            <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
+              <mat-panel-title>
+                <div class="expand-title">{{module.moduleDesc ? module.moduleDesc : 'Untitled'}}</div>
+                <span class="f-spacer"></span>
+                <div class="badge">{{module.schemaLists.length}}</div>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <mat-nav-list role="navigation">
+              <mat-list-item *ngFor="let schema of module.schemaLists"
+                [routerLink]="['schema/schema-details', module.moduleId, schema.schemaId]"
+                [routerLinkActive]="'selected'">
+                <div mat-line>{{schema.schemaDescription ?  schema.schemaDescription : 'Untitled'}}</div>
+              </mat-list-item>
+            </mat-nav-list>
+          </mat-expansion-panel>
+          </ng-container>
       </mat-accordion>
+      
       <mat-accordion *ngIf="activatedPrimaryNav === 'schema'">
         <div class="section-header">
           Data intelligence
