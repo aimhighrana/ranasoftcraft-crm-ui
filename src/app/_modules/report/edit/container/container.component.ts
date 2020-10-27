@@ -404,7 +404,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       dropableWidget.y = boxY;
 
       // add chart properties on widget list
-      if (event.item.element.nativeElement.id === '' && dropableWidget.widgetType === WidgetType.BAR_CHART || dropableWidget.widgetType === WidgetType.STACKED_BAR_CHART) {
+      if (event.item.element.nativeElement.id === '' && (dropableWidget.widgetType === WidgetType.BAR_CHART || dropableWidget.widgetType === WidgetType.STACKED_BAR_CHART)) {
         dropableWidget.chartProperties = {
           chartType:ChartType.BAR, orientation:Orientation.VERTICAL, isEnableDatalabels:false,
           datalabelsPosition:DatalabelsPosition.center, isEnableLegend:false, legendPosition:LegendPosition.top,
