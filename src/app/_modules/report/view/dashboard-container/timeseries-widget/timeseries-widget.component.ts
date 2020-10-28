@@ -150,7 +150,8 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     }
 
     if (changes && changes.filterCriteria && changes.filterCriteria.currentValue !== changes.filterCriteria.currentValue.previousValue) {
-      console.log('update from input***')
+      this.lablels = [];
+      this.chartLegend = [];
       this.widgetInf.next(this.widgetInf.getValue());
     }
 
@@ -912,8 +913,8 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
 
   applyFilters(){
     this.emitEvtFilterCriteria(this.filterCriteria);
-    this.lablels = [];
+    /* this.lablels = [];
     this.chartLegend = [];
-    this.widgetInf.next(this.widgetInf.getValue());
+    this.widgetInf.next(this.widgetInf.getValue()); */
   }
 }

@@ -38,8 +38,9 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit, OnCha
 
   ngOnChanges(changes: import('@angular/core').SimpleChanges): void {
 
-    if (changes && changes.emitClearBtnEvent && changes && changes.emitClearBtnEvent.currentValue){
+    if (changes && changes.emitClearBtnEvent && changes.emitClearBtnEvent.currentValue){
       this.filterCriteria = [];
+      this.emitFilterApplied.emit(false);
     }
 
     if(changes && changes.reportId && changes.reportId.currentValue !== changes.reportId.previousValue) {
@@ -72,13 +73,10 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit, OnCha
   }
 
   changeFilterCriteria(criteria: Criteria[], isFilter?:boolean) {
-    if (isFilter){
+    if (criteria.length !== 0 && this.filterCriteria.length !== 0){
       this.filterCriteria = new Array();
       criteria.forEach(loop => this.filterCriteria.push(loop));
       this.emitFilterApplied.emit(this.filterCriteria.length ? true : false);
-    } else {
-      this.emitFilterApplied.emit(criteria.length ? true : false) ;
-
     }
   }
 
