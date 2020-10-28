@@ -6,10 +6,11 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { PageEvent } from '@angular/material/paginator';
 import { MatMenuModule } from '@angular/material/menu';
 import { WidgetService } from '@services/widgets/widget.service';
-import { WidgetHeader, ReportingWidget } from '@modules/report/_models/widget';
+import { WidgetHeader, ReportingWidget, Criteria } from '@modules/report/_models/widget';
 import { of } from 'rxjs';
 import { Sort } from '@angular/material/sort';
 import { RouterTestingModule } from '@angular/router/testing';
+import { SimpleChanges } from '@angular/core';
 
 describe('ReportingListComponent', () => {
   let component: ReportingListComponent;
@@ -87,5 +88,13 @@ describe('ReportingListComponent', () => {
     expect(component.sortTable(sort1)).not.toBe(null);
 
     expect(component.sortTable(null)).not.toBe(null);
+  }));
+
+  it('ngOnChanges(), should check if there are new filter criteria', async(() => {
+    const filterCriteria = [{fieldId:'test'} as Criteria,{fieldId:'test1'} as Criteria];
+    const chnages: SimpleChanges = {filterCriteria:{currentValue:filterCriteria, previousValue: null, firstChange:null, isFirstChange:null}};
+    spyOn(component.reportingListWidget, 'next');
+    component.ngOnChanges(chnages);
+    expect(component.reportingListWidget.next).toHaveBeenCalled();
   }));
 });

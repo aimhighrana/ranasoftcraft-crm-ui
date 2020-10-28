@@ -94,9 +94,12 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.lablels = [];
-    this.chartLegend = [];
-    this.pieWidget.next(this.pieWidget.getValue());
+
+    if (changes && changes.filterCriteria && changes.filterCriteria.currentValue !== changes.filterCriteria.currentValue.previousValue) {
+      this.lablels = [];
+      this.chartLegend = [];
+      this.pieWidget.next(this.pieWidget.getValue());
+    }
     if (changes && changes.boxSize && changes.boxSize.previousValue !== changes.boxSize.currentValue) {
       this.boxSize = changes.boxSize.currentValue;
     }

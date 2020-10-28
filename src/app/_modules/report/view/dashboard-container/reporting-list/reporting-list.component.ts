@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnChanges, Inject, LOCALE_ID, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnChanges, Inject, LOCALE_ID, OnDestroy, SimpleChanges } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
@@ -82,12 +82,10 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
     super(matDialog);
   }
 
-  ngOnChanges(): void {
-    this.reportingListWidget.subscribe(res => {
-      if (res) {
-        this.getListdata(this.pageSize, this.pageIndex, this.widgetId, this.filterCriteria, this.activeSorts);
-      }
-    });
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes && changes.filterCriteria && changes.filterCriteria.currentValue !== changes.filterCriteria.currentValue.previousValue) {
+      this.reportingListWidget.next(this.reportingListWidget.getValue());
+    }
   }
 
   /**
@@ -106,6 +104,12 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
         this.getListTableMetadata();
       }
     })
+    this.reportingListWidget.subscribe(res => {
+      if (res) {
+        this.getListdata(this.pageSize, this.pageIndex, this.widgetId, this.filterCriteria, this.activeSorts);
+      }
+    });
+
   }
 
   /**
