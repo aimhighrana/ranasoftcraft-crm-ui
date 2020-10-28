@@ -56,8 +56,8 @@
             {{ userDetails.firstName ? userDetails.firstName.substring(0,1).toUpperCase() : ''  }}{{ userDetails.lastName ? userDetails.lastName.substring(0,1).toUpperCase() : ''  }}
         </div>
         <mat-card-title>{{ userDetails.fullName ? userDetails.fullName : userDetails.userName }}</mat-card-title>
-        <mat-icon [matMenuTriggerFor]="navigation">arrow_drop_down</mat-icon>
-        <mat-menu #navigation="matMenu">
+        <mat-icon [matMenuTriggerFor]="profile_navigation">arrow_drop_down</mat-icon>
+        <mat-menu #profile_navigation="matMenu">
             <mat-nav-list class="profile-navigation">
                 <mat-list-item (click)="signOut()"> Sign out </mat-list-item>
             </mat-nav-list>
