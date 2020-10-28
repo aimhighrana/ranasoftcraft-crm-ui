@@ -65,12 +65,13 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
    * Static system fields
    */
   systemFields: Metadata[] = [
+    // {
+    //   fieldId:'STATUS',
+    //   fieldDescri:'Status',
+    //   childs:[],
+    //   isGroup:false
+    // },
     {
-      fieldId:'STATUS',
-      fieldDescri:'Status',
-      childs:[],
-      isGroup:false
-    },{
       fieldId:'USERMODIFIED',
       fieldDescri:'User Modified',
       childs:[],
