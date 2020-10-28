@@ -198,7 +198,8 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
 
   public getstackbarChartData(widgetId:number,criteria:Criteria[]) : void{
     this.widgetService.getWidgetData(String(widgetId),criteria).subscribe(returnData=>{
-      this.arrayBuckets =  returnData.aggregations['composite#STACKED_BAR_CHART'].buckets;
+      const res = Object.keys(returnData.aggregations);
+      this.arrayBuckets  = returnData.aggregations[res[0]] ? returnData.aggregations[res[0]].buckets : [];
        this.dataObj = new Object();
        this.labels = [];
        this.barChartLabels = new Array();

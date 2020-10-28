@@ -306,7 +306,8 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
 
   private loadAlldropData(fieldId: string, criteria: Criteria[],searchString?:string):void{
     this.widgetService.getWidgetData(String(this.widgetId), criteria,searchString).subscribe(returnData=>{
-      const buckets  = returnData.aggregations[`sterms#FILTER`]  ? returnData.aggregations[`sterms#FILTER`].buckets : [];
+      const res = Object.keys(returnData.aggregations);
+      const buckets  = returnData.aggregations[res[0]] ? returnData.aggregations[res[0]].buckets : [];
       if(this.filterWidget.getValue().metaData &&(this.filterWidget.getValue().metaData.picklist === '1' || this.filterWidget.getValue().metaData.picklist === '30' || this.filterWidget.getValue().metaData.picklist === '37')) {
         const metadatas: DropDownValues[] = [];
         buckets.forEach(bucket => {

@@ -95,7 +95,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
 
   public barChartData: any[] = [
     {
-      label: 'Loding..',
+      label: 'Loading..',
       barThickness: 80,
       data: [0, 0, 0, 0, 0, 0, 0]
     },
@@ -185,7 +185,8 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
 
   public getBarChartData(widgetId: number, critria: Criteria[]): void {
     this.widgetService.getWidgetData(String(widgetId), critria).subscribe(returndata => {
-      const arrayBuckets = returndata.aggregations['sterms#BAR_CHART'].buckets;
+      const res = Object.keys(returndata.aggregations);
+      const arrayBuckets  = returndata.aggregations[res[0]] ? returndata.aggregations[res[0]].buckets : [];
       this.dataSet = [];
       this.lablels = [];
       this.dataSet = this.transformDataSets(arrayBuckets);
@@ -658,9 +659,8 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
       return this.minBarWidth * this.dataSet.length ;
     } else {
       // this.minBarWidth = barWidth;
-      return initialWidth ;
+      return initialWidth;
     }
-
   }
 
   computeGraphSize(){
@@ -671,6 +671,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
       this.computedSize.height = this.getComputedSize(this.widgetInfo.height);
       this.computedSize.width = this.widgetInfo.width;
     }
+
   }
 
   zoomIn(){

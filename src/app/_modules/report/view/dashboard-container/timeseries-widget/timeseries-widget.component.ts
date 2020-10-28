@@ -136,7 +136,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   @Input()
   hasFilterCriteria: boolean;
 
-  isLoading = true;
+  isLoading = true ;
 
   ngOnDestroy(): void {
     this.widgetInf.complete();
@@ -154,7 +154,6 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       this.chartLegend = [];
       this.widgetInf.next(this.widgetInf.getValue());
     }
-
   }
 
   ngOnInit(): void {
@@ -176,7 +175,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     this.widgetInf.subscribe(metadata => {
       if (metadata) {
         this.getwidgetData(this.widgetId);
-        if (this.isLoading) {
+        if(this.isLoading) {
           this.isLoading = false;
           this.setChartProperties();
           this.afterColorDefined.next(metadata.timeSeries.widgetColorPalette);
@@ -496,15 +495,19 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     const aggregation = data.aggregations['date_histogram#date'] ? data.aggregations['date_histogram#date'] : data.aggregations[''];
     if (aggregation.buckets !== undefined && aggregation.buckets.length > 0) {
       aggregation.buckets.forEach(singleBucket => {
-        const arrBuckets = singleBucket['sterms#term'] !== undefined ? singleBucket['sterms#term'].buckets : singleBucket['lterms#term'].buckets
+        const res = Object.keys(singleBucket);
+        const value = res.filter(text => {
+          return text.includes('terms#term');
+        })
+        const arrBuckets = singleBucket[value[0]] ? singleBucket[value[0]].buckets : [];
         arrBuckets.forEach(innerBucket => {
           const count = innerBucket.doc_count;
           let label = innerBucket.key;
           const textTermBucket = innerBucket['sterms#textTerm'] ? innerBucket['sterms#textTerm'].buckets : null;
-          if (textTermBucket) {
+          if(textTermBucket){
             textTermBucket.forEach(bucket => {
               label = bucket.key
-            })
+          })
           }
           if (Object.keys(finalOutput).includes(label)) {
             const array = finalOutput[label];
@@ -561,15 +564,19 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       aggregation.buckets.forEach(singleBucket => {
         const dataSet = new Object();
         const milliVal = singleBucket.key_as_string;
-        const arrBuckets = singleBucket['sterms#term'] ? singleBucket['sterms#term'].buckets : singleBucket['lterms#term'].buckets;
+        const resValue = Object.keys(singleBucket);
+        const value = resValue.filter(data => {
+          return data.includes('terms#term');
+        })
+        const arrBuckets = singleBucket[value[0]] ? singleBucket[value[0]].buckets : [];
         const arrcount = new Array();
         arrBuckets.forEach(arrBucket => {
           const bucket = arrBuckets.filter(fil => fil.key === arrBucket.key)[0];
           const count = bucket ? (forDistinct ? (bucket['cardinality#count'] ? bucket['cardinality#count'].value : 0) : bucket.doc_count) : 0;
           arrcount.push(count);
-          const textTermBucket = bucket ? bucket['sterms#textTerm'].buckets : [];
+          const textTermBucket = bucket && bucket['sterms#textTerm'] ? bucket['sterms#textTerm'].buckets : [];
           let label = ''
-          if (textTermBucket.length > 0) {
+          if(textTermBucket.length > 0){
             textTermBucket.forEach(textBucket => {
               label = textBucket.key;
             })
@@ -692,7 +699,11 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       const hasdata = data.filter(fil => fil.key_as_string.indexOf(mon) !== -1)[0];
       if (hasdata) {
         const totalInMonth = hasdata.doc_count ? hasdata.doc_count : 0;
-        const inFilterBucket = hasdata['sterms#term'] ? hasdata['sterms#term'].buckets : [];
+        const res = Object.keys(hasdata);
+        const value = res.filter(text => {
+          return text.includes('terms#term')
+        })
+        const inFilterBucket = hasdata[value[0]] ? hasdata[value[0]].buckets : [];
         const bucket = inFilterBucket.filter(fil => fil.key === 'true')[0];
         if (bucket) {
           let val = bucket.doc_count ? bucket.doc_count : 0;
@@ -799,6 +810,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   /*
     * download chart data as CSV
     */
+
 
   downloadCSV(): void {
     const excelData = [];
@@ -908,7 +920,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     }
   }
 
-  applyFilters() {
+  applyFilters(){
     this.emitEvtFilterCriteria(this.filterCriteria);
     // this.lablels = [];
     // this.chartLegend = [];

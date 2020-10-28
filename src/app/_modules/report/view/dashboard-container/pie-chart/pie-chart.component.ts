@@ -179,7 +179,8 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
    */
   public getPieChartData(widgetId: number, critria: Criteria[]): void {
     this.widgetService.getWidgetData(String(widgetId), critria).subscribe(returndata => {
-      const arrayBuckets = returndata.aggregations['sterms#BAR_CHART'].buckets;
+      const res = Object.keys(returndata.aggregations);
+      const arrayBuckets  = returndata.aggregations[res[0]] ? returndata.aggregations[res[0]].buckets : [];
       this.dataSet = [];
       arrayBuckets.forEach(bucket => {
         const key = bucket.key === '' ? this.pieWidget.value.blankValueAlias !== undefined ? this.pieWidget.value.blankValueAlias : '' : bucket.key;
