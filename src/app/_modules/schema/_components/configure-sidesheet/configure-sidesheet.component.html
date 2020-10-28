@@ -1,0 +1,279 @@
+<div class="root">
+    <div class="f-row breadcrum-toolbar">
+        <button mat-button>
+            <mat-icon>clear</mat-icon>
+        </button>
+        <div class="col-spacer"></div>
+        <div class="f-row mdo-constrained-right">
+            <div class="display-heading-large">Configure view</div>
+        </div>
+    </div>
+    <div class="row-spacer"></div>
+    <div class="f-col mdo-justify">
+        <div class="f-col temp-field">
+            <mat-label>Role</mat-label>
+            <div class="f-row">
+                <mat-button-toggle-group appearance="legacy">
+                    <mat-button-toggle>Editor</mat-button-toggle>
+                    <mat-button-toggle>Approver</mat-button-toggle>
+                    <mat-button-toggle>Reviewer</mat-button-toggle>
+                </mat-button-toggle-group>
+            </div>
+        </div>
+        <div class="row-spacer"></div>
+        <div class="f-col">
+            <mat-tab-group disableRipple="true">
+                <mat-tab>
+                    <ng-template mat-tab-label>
+                        Columns
+                    </ng-template>
+
+                    <pros-search-input></pros-search-input>
+
+                    <div class="row-spacer"></div>
+
+                    <mat-accordion>
+                        <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
+                            <mat-expansion-panel-header expandedHeight="36px" collapsedHeight="36px">
+                                <mat-panel-title class="panel-title">
+                                    Material 3/4
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <!-- material rule -->
+                            <div class="colunm-listing">
+                                <div class="f-row colunm-box rule-border-row">
+                                    <div class="col"></div>
+                                    <div class="col col-x8"><strong>Column</strong></div>
+                                    <div class="col"><strong>Visible</strong></div>
+                                    <div class="col"><strong>Editable</strong></div>
+                                </div>
+                                <div class="f-row colunm-box rule-border-row">
+                                    <div class="col">
+                                        <button mat-button cdkDragHandle>
+                                            <mat-icon>drag_handle</mat-icon>
+                                        </button>
+                                    </div>
+                                    <div class="col col-x8">
+                                        <div mat-line>Material</div>
+                                    </div>
+                                    <div class="col">
+                                        <mat-checkbox color="primary"></mat-checkbox>
+                                    </div>
+                                    <div class="col">
+                                        <mat-checkbox color="primary"></mat-checkbox>
+                                    </div>
+                                </div>
+                                <div class="f-row colunm-box rule-border-row">
+                                    <div class="col">
+                                        <button mat-button cdkDragHandle>
+                                            <mat-icon>drag_handle</mat-icon>
+                                        </button>
+                                    </div>
+                                    <div class="col col-x8">
+                                        <div mat-line>Type</div>
+                                    </div>
+                                    <div class="col">
+                                        <mat-checkbox color="primary"></mat-checkbox>
+                                    </div>
+                                    <div class="col">
+                                        <mat-checkbox color="primary"></mat-checkbox>
+                                    </div>
+                                </div>
+                                <div class="f-row colunm-box rule-border-row">
+                                    <div class="col">
+                                        <button mat-button cdkDragHandle>
+                                            <mat-icon>drag_handle</mat-icon>
+                                        </button>
+                                    </div>
+                                    <div class="col col-x8">
+                                        <div mat-line>Manufacture</div>
+                                    </div>
+                                    <div class="col">
+                                        <mat-checkbox color="primary"></mat-checkbox>
+                                    </div>
+                                    <div class="col">
+                                        <mat-checkbox color="primary"></mat-checkbox>
+                                    </div>
+                                </div>
+                                <div class="f-row colunm-box rule-border-row">
+                                    <div class="col">
+                                        <button mat-button cdkDragHandle>
+                                            <mat-icon>drag_handle</mat-icon>
+                                        </button>
+                                    </div>
+                                    <div class="col col-x8">
+                                        <div mat-line>Supplier</div>
+                                    </div>
+                                    <div class="col">
+                                        <mat-checkbox color="primary"></mat-checkbox>
+                                    </div>
+                                    <div class="col">
+                                        <mat-checkbox color="primary"></mat-checkbox>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- material rule -->
+                        </mat-expansion-panel>
+                    </mat-accordion>
+
+                    <div class="row-spacer"></div>
+
+                    <mat-accordion>
+                        <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
+                            <mat-expansion-panel-header expandedHeight="36px" collapsedHeight="36px">
+                                <mat-panel-title class="panel-title">
+                                    Plant 2/2
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <!-- Plant rule -->
+                            <div class="colunm-listing">
+                                <div class="f-row colunm-box rule-border-row">
+                                    <div class="col"></div>
+                                    <div class="col col-x8"><strong>Column</strong></div>
+                                    <div class="col"><strong>Visible</strong></div>
+                                    <div class="col"><strong>Editable</strong></div>
+                                </div>
+                                <div class="f-row colunm-box rule-border-row">
+                                    <div class="col">
+                                        <button mat-button cdkDragHandle>
+                                            <mat-icon>drag_handle</mat-icon>
+                                        </button>
+                                    </div>
+                                    <div class="col col-x8">
+                                        <div mat-line>Plant</div>
+                                    </div>
+                                    <div class="col">
+                                        <mat-checkbox color="primary"></mat-checkbox>
+                                    </div>
+                                    <div class="col">
+                                        <mat-checkbox color="primary"></mat-checkbox>
+                                    </div>
+                                </div>
+                                <div class="f-row colunm-box rule-border-row">
+                                    <div class="col">
+                                        <button mat-button cdkDragHandle>
+                                            <mat-icon>drag_handle</mat-icon>
+                                        </button>
+                                    </div>
+                                    <div class="col col-x8">
+                                        <div mat-line>Type</div>
+                                    </div>
+
+                                    <div class="col">
+                                        <mat-checkbox color="primary"></mat-checkbox>
+                                    </div>
+                                    <div class="col">
+                                        <mat-checkbox color="primary"></mat-checkbox>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- plant rule -->
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </mat-tab>
+                <mat-tab>
+                    <ng-template mat-tab-label>
+                        Actions
+                    </ng-template>
+                    <div class="f-col temp-field">
+                        <mat-label>Preview</mat-label>
+                        <div class="f-row">
+                            <button mat-fab color="accent" class="mat-elevation-z0">
+                                <mat-icon>more_horiz</mat-icon>
+                            </button>
+                            <button mat-fab color="accent" class="mat-elevation-z0">
+                                <mat-icon>check</mat-icon>
+                            </button>
+                            <button mat-flat-button color="accent" class="mat-elevation-z0">
+                                <mat-icon>block</mat-icon> Decline
+                            </button>
+                            <button mat-flat-button color="accent" class="mat-elevation-z0">Delete</button>
+                        </div>
+                    </div>
+                    <div class="row-spacer"></div>
+                    <!-- Action code start here-->
+                    <div class="colunm-listing">
+                        <div class="f-row colunm-box rule-border-row">
+                            <div class="col"></div>
+                            <div class="col col-x8"><strong>Action</strong></div>
+                            <div class="col col-x4"><strong class="f-row">Primary
+                                    <mat-icon matTooltip="Primary" fontSet="mdo-icons" class="mat-head-icon">
+                                        question-mark</mat-icon>
+                                </strong></div>
+                            <div class="col col-x16"><strong></strong></div>
+                        </div>
+                        <div class="f-row colunm-box rule-border-row">
+                            <div class="col">
+                                <button mat-button cdkDragHandle>
+                                    <mat-icon>drag_handle</mat-icon>
+                                </button>
+                            </div>
+                            <div class="col col-x8">
+                                <div mat-line>Approve</div>
+                            </div>
+
+                            <div class="col col-x4">
+                                <mat-checkbox color="primary"></mat-checkbox>
+                            </div>
+                            <div class="col col-x16">
+                                <button mat-stroked-button>Icon only <mat-icon>arrow_drop_down</mat-icon></button>
+                            </div>
+                        </div>
+                        <div class="f-row colunm-box rule-border-row">
+                            <div class="col">
+                                <button mat-button cdkDragHandle>
+                                    <mat-icon>drag_handle</mat-icon>
+                                </button>
+                            </div>
+                            <div class="col col-x8">
+                                <div mat-line>Reject</div>
+                            </div>
+
+                            <div class="col col-x4">
+                                <mat-checkbox color="primary"></mat-checkbox>
+                            </div>
+                            <div class="col col-x16">
+                                <button mat-stroked-button>Icon and text <mat-icon>arrow_drop_down</mat-icon></button>
+                            </div>
+                        </div>
+                        <div class="f-row colunm-box rule-border-row">
+                            <div class="col">
+                                <button mat-button cdkDragHandle>
+                                    <mat-icon>drag_handle</mat-icon>
+                                </button>
+                            </div>
+                            <div class="col col-x8">
+                                <div mat-line>Assign to</div>
+                            </div>
+
+                            <div class="col col-x4">
+                                <mat-checkbox color="primary"></mat-checkbox>
+                            </div>
+                            <div class="col col-x16">
+                            </div>
+                        </div>
+                        <div class="f-row colunm-box rule-border-row">
+                            <div class="col">
+                                <button mat-button cdkDragHandle>
+                                    <mat-icon>drag_handle</mat-icon>
+                                </button>
+                            </div>
+                            <div class="col col-x8">
+                                <div mat-line>Delete</div>
+                            </div>
+
+                            <div class="col col-x4">
+                                <mat-checkbox color="primary"></mat-checkbox>
+                            </div>
+                            <div class="col col-x16">
+                                <button mat-stroked-button>Text only <mat-icon>arrow_drop_down</mat-icon></button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- Action code end here-->
+                </mat-tab>
+            </mat-tab-group>
+        </div>
+    </div>
+</div>

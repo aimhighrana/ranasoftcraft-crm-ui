@@ -1,0 +1,71 @@
+<div class="root mat-elevation-z0">
+    <div class="f-row breadcrum-toolbar">
+        <button mat-button>
+            <mat-icon>clear</mat-icon>
+        </button>
+        <div class="col-spacer"></div>
+        <div class="f-row mdo-constrained-right">
+            <div class="display-heading-large">Classification rule</div>
+            <span class="f-spacer"></span>
+            <button mat-flat-button color="primary">Save</button>
+        </div>
+    </div>
+
+    <div class="row-spacer"></div>
+
+    <div class="f-col mdo-justify">
+
+        <div class="f-col temp-field">
+            <pros-form-input [type]="'text'" [label]="'Description'"></pros-form-input>
+        </div>
+
+        <div class="f-col temp-field">
+            <mat-label>Catogory <mat-icon matTooltip="field" fontSet="mdo-icons" class="mat-label-icon">
+                    question-mark</mat-icon>
+            </mat-label>
+            <mat-form-field appearance="outline">
+                <mat-select>
+                    <mat-option value="option">Option</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <div class="f-col temp-field">
+            <mat-label>Field<mat-icon matTooltip="field" fontSet="mdo-icons" class="mat-label-icon">
+                    question-mark</mat-icon>
+            </mat-label>
+            <pros-form-input [type]="'text'" [placeholder]=""></pros-form-input>
+
+        </div>
+
+        <div class="f-col temp-field">
+            <mat-nav-list role="navigation">
+                <mat-list-item class="rowlist">
+                    <div mat-line>Material ID</div>
+                    <span class="f-spacer"></span>
+                    <button mat-button>
+                        <mat-icon>delete_outline</mat-icon>
+                    </button>
+                </mat-list-item>
+                <mat-list-item class="rowlist">
+                    <div mat-line>Material Description</div>
+                    <span class="f-spacer"></span>
+                    <button mat-button>
+                        <mat-icon>delete_outline</mat-icon>
+                    </button>
+                </mat-list-item>
+            </mat-nav-list>
+        </div>
+
+        <div class="f-col temp-field">
+            <mat-label>Material</mat-label>
+            <mat-form-field appearance="outline">
+                <textarea matInput maxlength="100" class="mdo-textarea"></textarea>
+            </mat-form-field>
+        </div>
+
+        <div class="f-col temp-field">
+            <mat-checkbox color="primary">Proceed as final</mat-checkbox>
+        </div>
+    </div>
+</div>

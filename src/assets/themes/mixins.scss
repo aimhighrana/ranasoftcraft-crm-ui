@@ -477,6 +477,13 @@
         mat-chip-list.mat-chip-list {
           margin: 4px 0 6px 0;
         }
+
+        textarea.mdo-textarea {
+          height: 100px;
+          resize: none;
+          padding-top: 12px;
+          padding-bottom: 12px;
+        }
       }
     }
   }
@@ -489,6 +496,7 @@
     font-size: inherit;
     height: 42px;
   }
+
   // Tab-Component
   mat-tab-group {
     .mat-tab-header {
@@ -529,13 +537,13 @@
   // NavTab-Component
   nav.mat-tab-nav-bar,
   nav.mat-tab-header {
-    border-bottom: none;
     margin-bottom: 16px;
 
     .mat-tab-link-container {
       .mat-tab-link {
         min-width: 120px;
         font-weight: normal;
+        opacity: 1;
 
         .mdo-tabchiplist {
           margin-left: 8px;
@@ -617,7 +625,7 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: pre-line;
-        line-height: 16px;
+        line-height: 17px;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
@@ -910,6 +918,7 @@
       padding: 0;
     }
   }
+
   //Mat-Header with avatar
   mat-card-header.mat-card-header {
     align-items: center;
@@ -935,6 +944,7 @@
       white-space: nowrap;
     }
   }
+
   // Mat-List
   mat-nav-list.mat-list-base,
   mat-list.mat-list-base {
@@ -970,6 +980,7 @@
       box-shadow: none;
     }
   }
+
   //DIW Components
   pros-add-filter-menu {
     mat-nav-list {
@@ -997,6 +1008,25 @@
         mat-list-item {
           border-bottom: 1px solid mat-color($foreground-palette, divider);
         }
+      }
+
+      .colunm-box {
+        .info-link {
+          color: mat-color($primary-palette);
+        }
+
+        &.rule-border-row {
+          border-bottom: 1px solid mat-color($foreground-palette, divider);
+        }
+      }
+    }
+  }
+
+  pros-br-classification-sidesheet,
+  pros-br-duplicatecheck-sidesheet {
+    div.root {
+      .rowlist {
+        border-bottom-color: mat-color($foreground-palette, divider);
       }
 
       .colunm-box {
@@ -1267,6 +1297,46 @@
                     }
                   }
                 }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  pros-configure-sidesheet,
+  pros-attribute-mapping {
+    div.root {
+      .rule-border-row {
+        border-bottom: 1px solid mat-color($foreground-palette, divider);
+
+        .col {
+          &.error-cell {
+            border-bottom: 1px solid mat-color($primary-palette);
+            background-color: mat-color($background-palette, app-bar);
+          }
+
+          mat-form-field.customfield-dropdown {
+            width: 100%;
+            background: transparent;
+
+            .mat-form-field-wrapper {
+              .mat-form-field-flex {
+                padding-top: 0;
+                background: transparent;
+              }
+
+              .mat-form-field-infix {
+                mat-select.mat-select {
+                  .mat-select-value-text {
+                    color: mat-color($primary-palette);
+                  }
+                }
+              }
+
+              .mat-form-field-underline {
+                display: none;
               }
             }
           }

@@ -36,6 +36,10 @@ import { CatalogCheckComponent } from './_components/catalog-check/catalog-check
 import { MaterialDuplicatecheckSidesheetComponent } from './_components/material-duplicatecheck-sidesheet/material-duplicatecheck-sidesheet.component';
 import { DuplicateDatacheckSidesheetComponent } from './_components/duplicate-datacheck-sidesheet/duplicate-datacheck-sidesheet.component';
 import { DatascopeSidesheetComponent } from './_components/datascope-sidesheet/datascope-sidesheet.component';
+import { ConfigureSidesheetComponent } from './_components/configure-sidesheet/configure-sidesheet.component';
+import { AttributeMappingComponent } from './_components/attribute-mapping/attribute-mapping.component';
+import { BrClassificationSidesheetComponent } from './_components/br-classification-sidesheet/br-classification-sidesheet.component';
+import { BrDuplicatecheckSidesheetComponent } from './_components/br-duplicatecheck-sidesheet/br-duplicatecheck-sidesheet.component';
 
 
 const routes: Routes = [
@@ -79,6 +83,10 @@ const routes: Routes = [
   { path: 'system/duplicatecheck-sidesheet', component: MaterialDuplicatecheckSidesheetComponent },
   { path: 'system/duplicate-datacheck-sidesheet', component: DuplicateDatacheckSidesheetComponent },
   { path: 'data-scope/:variantId', component: DatascopeSidesheetComponent },
+  { path: 'system/configure-sidesheet', component: ConfigureSidesheetComponent },
+  { path: 'system/attribute-mapping', component: AttributeMappingComponent },
+  { path: 'system/br-classification-sidesheet', component: BrClassificationSidesheetComponent },
+  { path: 'system/br-duplicatecheck-sidesheet', component: BrDuplicatecheckSidesheetComponent },
 
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent }

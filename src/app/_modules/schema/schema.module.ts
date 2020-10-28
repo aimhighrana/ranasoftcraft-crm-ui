@@ -48,6 +48,10 @@ import { CatalogCheckComponent } from './_components/catalog-check/catalog-check
 import { MaterialDuplicatecheckSidesheetComponent } from './_components/material-duplicatecheck-sidesheet/material-duplicatecheck-sidesheet.component';
 import { DuplicateDatacheckSidesheetComponent } from './_components/duplicate-datacheck-sidesheet/duplicate-datacheck-sidesheet.component';
 import { DatascopeSidesheetComponent } from './_components/datascope-sidesheet/datascope-sidesheet.component';
+import { ConfigureSidesheetComponent } from './_components/configure-sidesheet/configure-sidesheet.component';
+import { AttributeMappingComponent } from './_components/attribute-mapping/attribute-mapping.component';
+import { BrClassificationSidesheetComponent } from './_components/br-classification-sidesheet/br-classification-sidesheet.component';
+import { BrDuplicatecheckSidesheetComponent } from './_components/br-duplicatecheck-sidesheet/br-duplicatecheck-sidesheet.component';
 
 
 @NgModule({
@@ -99,7 +103,11 @@ import { DatascopeSidesheetComponent } from './_components/datascope-sidesheet/d
     CatalogCheckComponent,
     MaterialDuplicatecheckSidesheetComponent,
     DuplicateDatacheckSidesheetComponent,
-    DatascopeSidesheetComponent
+    DatascopeSidesheetComponent,
+    ConfigureSidesheetComponent,
+    AttributeMappingComponent,
+    BrClassificationSidesheetComponent,
+    BrDuplicatecheckSidesheetComponent
   ],
   imports: [
     CommonModule,
