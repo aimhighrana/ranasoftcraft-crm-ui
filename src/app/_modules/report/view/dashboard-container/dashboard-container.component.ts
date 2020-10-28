@@ -49,6 +49,7 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit, OnCha
         this.reportService.getReportInfo(this.reportId).subscribe(res=>{
           this.widgetList = res.widgets;
           this.permissons = res.permissons;
+          this.filterCriteria = [];
         },error=>{
           console.log(`Error ${error}`);
         })

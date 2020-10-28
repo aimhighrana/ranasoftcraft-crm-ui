@@ -657,7 +657,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     if(barWidth < this.minBarWidth){
       return this.minBarWidth * this.dataSet.length ;
     } else {
-      this.minBarWidth = barWidth;
+      // this.minBarWidth = barWidth;
       return initialWidth ;
     }
 

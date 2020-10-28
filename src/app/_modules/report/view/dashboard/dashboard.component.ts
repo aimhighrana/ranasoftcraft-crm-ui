@@ -47,6 +47,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.activatedRouter.params.subscribe(params=>{
       this.reportId = params.id;
       if(this.reportId) {
+        this.emitClearBtnEvent = false ;
+        this.showClearFilterBtn = false ;
         this.getReportInfo(this.reportId);
       }
     });
