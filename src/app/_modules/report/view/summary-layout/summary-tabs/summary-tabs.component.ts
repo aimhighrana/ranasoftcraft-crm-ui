@@ -163,9 +163,24 @@ export class SummaryTabsComponent implements OnInit {
   }
 
   getDateTimeFormat(includeTime? : boolean){
-    return this.userDetails && this.userDetails.dateformat ?
-           includeTime ?  (this.userDetails.dateformat + '  hh:mm:ss') : this.userDetails.dateformat
-           : includeTime ? 'dd/MM/yyyy hh:mm:ss' : 'dd/MM/yyyy';
+    let dateFormat = 'd MMM, yyyy';
+    if (this.userDetails){
+      switch(this.userDetails.dateformat){
+        case 'MM.dd.yy' : dateFormat = 'MM.dd.yyyy';
+                          break;
+        case 'dd.MM.yy' : dateFormat = 'dd.MM.yyyy';
+                  break;
+        case 'dd M, yy' : dateFormat = 'd MMM, yyyy'
+                  break;
+        case 'MM d, yy' : dateFormat = 'MMMM d, yyyy';
+                  break;
+        default : dateFormat = 'd MMM, yyyy';
+                  break;
+      }
+    }
+
+    return includeTime ? dateFormat +  ' hh:mm:ss' : dateFormat;
+
   }
 
 }
