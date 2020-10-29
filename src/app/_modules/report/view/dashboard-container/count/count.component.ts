@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { Count, Criteria } from '../../../_models/widget';
@@ -19,8 +19,10 @@ export class CountComponent extends GenericWidgetComponent implements OnInit,OnC
   arrayBuckets :any[]
 
 
-  ngOnChanges():void{
-    this.getCountData(this.widgetId,this.filterCriteria);
+  ngOnChanges(changes: SimpleChanges):void{
+    if (changes && changes.hasFilterCriteria && changes.hasFilterCriteria.previousValue !== changes.hasFilterCriteria.currentValue) {
+      this.getCountData(this.widgetId,this.filterCriteria);
+    }
   }
 
   ngOnInit(): void {

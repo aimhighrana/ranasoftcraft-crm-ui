@@ -110,9 +110,11 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.lablels = [];
-    this.chartLegend = [];
-    this.barWidget.next(this.barWidget.getValue());
+    if (changes && changes.hasFilterCriteria && changes.hasFilterCriteria.previousValue !== changes.hasFilterCriteria.currentValue) {
+      this.lablels = [];
+      this.chartLegend = [];
+      this.barWidget.next(this.barWidget.getValue());
+    }
     if(changes && changes.boxSize && changes.boxSize.previousValue !== changes.boxSize.currentValue) {
       this.boxSize = changes.boxSize.currentValue;
     }
