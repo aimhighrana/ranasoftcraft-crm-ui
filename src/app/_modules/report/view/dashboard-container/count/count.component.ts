@@ -20,7 +20,7 @@ export class CountComponent extends GenericWidgetComponent implements OnInit,OnC
 
 
   ngOnChanges(changes: SimpleChanges):void{
-    if (changes && changes.hasFilterCriteria && changes.hasFilterCriteria.previousValue !== changes.hasFilterCriteria.currentValue) {
+    if (changes && changes.filterCriteria && changes.filterCriteria.previousValue !== changes.filterCriteria.currentValue) {
       this.getCountData(this.widgetId,this.filterCriteria);
     }
   }
