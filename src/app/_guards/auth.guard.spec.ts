@@ -2,6 +2,9 @@ import { TestBed, inject } from '@angular/core/testing';
 
 import { AuthGuard } from './auth.guard';
 import { Router } from '@angular/router';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { MsteamsConfigService } from '@modules/msteams/_service/msteams-config.service';
 // import { AuthenticationService } from '../_services/authentication.service';
 
 describe('AuthGuard', () => {
@@ -14,9 +17,11 @@ describe('AuthGuard', () => {
     TestBed.configureTestingModule({
       providers: [
         AuthGuard,
+        MsteamsConfigService,
         {provide: Router, useValue: router},
         // {provide: AuthenticationService, useValue: authenticationService}
-      ]
+      ],
+      imports: [HttpClientTestingModule, RouterTestingModule]
     });
   });
 
