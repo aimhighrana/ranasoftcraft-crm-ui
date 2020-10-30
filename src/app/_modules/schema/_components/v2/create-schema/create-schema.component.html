@@ -1,7 +1,7 @@
 <mat-card class="root mat-elevation-z0">
     <div class="f-row breadcrum-toolbar">
         <button mat-button (click)="close()">
-            <mat-icon>clear</mat-icon>
+            <mat-icon fontSet="mdo-icons">close</mat-icon>
         </button>
         <div class="col-spacer"></div>
         <div class="f-row mdo-constrained-right">
@@ -13,7 +13,7 @@
     <div class="row-spacer"></div>
     <div class="f-col mdo-justify">
         <form [formGroup]="form">
-            <div class="mdo-form-field">
+            <div class="f-col temp-field">
                 <mat-label>Select module</mat-label>
                 <mat-form-field appearance="outline">
                     <mat-select formControlName="moduleId">
@@ -23,17 +23,19 @@
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
-                <mat-error *ngIf="form.controls.moduleId.invalid && form.controls.moduleId.touched">Please select a module</mat-error>
+                <mat-error *ngIf="form.controls.moduleId.invalid && form.controls.moduleId.touched">Please select a
+                    module</mat-error>
             </div>
-            <div class="mdo-form-field">
-                <pros-form-input label="Enter schema name" (valueChange)="changedSchemaName($event)" [value]="schemaListDetails ? schemaListDetails.schemaDescription : ''">
+            <div class="f-col temp-field">
+                <pros-form-input label="Enter schema name" (valueChange)="changedSchemaName($event)"
+                    [value]="schemaListDetails ? schemaListDetails.schemaDescription : ''">
                 </pros-form-input>
                 <mat-error *ngIf="form.controls.schemaDescription.invalid">Please enter schema name</mat-error>
             </div>
-            <div class="mdo-form-field mdo-range-field">
+            <div class="f-col temp-field">
                 <mat-label>Schema threshold</mat-label>
-                <span class="col-spacer"></span>
-                <mat-slider color="primary" formControlName="threshold" thumbLabel tickInterval="1" min="0" max="100"></mat-slider>
+                <mat-slider color="primary" formControlName="threshold" thumbLabel tickInterval="1" min="0" max="100">
+                </mat-slider>
             </div>
         </form>
     </div>

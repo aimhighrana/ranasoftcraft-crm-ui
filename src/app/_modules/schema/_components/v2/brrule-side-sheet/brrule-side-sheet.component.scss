@@ -20,6 +20,10 @@ mat-card.root {
     .mdo-constrained-right {
       align-items: center;
       width: 100%;
+
+      button.mat-flat-button {
+        min-width: auto;
+      }
     }
   }
 

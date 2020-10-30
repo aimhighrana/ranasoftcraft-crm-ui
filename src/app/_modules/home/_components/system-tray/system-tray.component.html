@@ -1,7 +1,7 @@
 <div class="root">
     <div class="f-row breadcrum-toolbar">
         <button mat-button (click)="close()">
-            <mat-icon>clear</mat-icon>
+            <mat-icon fontSet="mdo-icons">close</mat-icon>
         </button>
         <div class="col-spacer"></div>
         <div class="f-row mdo-constrained-right">
@@ -14,37 +14,33 @@
                 <ng-template mat-tab-label>
                     Notifications
                 </ng-template>
-                <button mat-button (click)="paginateNotification()" *ngIf="notifications.length === 10">next</button>
+                <!-- <button mat-button (click)="paginateNotification()" *ngIf="notifications.length === 10">next</button> -->
                 <mat-nav-list>
                     <mat-list-item *ngFor="let notification of notifications"
-                        (click)="updateNotification(notification)">
-                        <div class="f-col">
-                            <div mat-line><strong>{{notification.headerText}}</strong></div>
+                    (click)="updateNotification(notification)">
+                    <div class="f-col notification-listing">
+                        <div mat-line>{{notification.headerText}}</div>
+                        <div class="f-row notify-row">
+                            <div class="f-row notify-message-row">
+                                <p class="notify-content">{{notification.contentText}}</p>
+                                <span class="f-spacer"></span>
+                                <mat-icon fontSet="mdo-icons" class="mat-expand-icon">chevron-right</mat-icon>
+                            </div>
+                            <span class="f-spacer"></span>
                             <div class="f-row">
-                                <div class="f-col">
-                                    <div class="f-row">
-                                        <!-- <p>{{notification.contentText}}</p> -->
-                                        <div mat-line>Lorem Ipsum is simply dummy text of the printing and typesetting
-                                            industry. Lorem Ipsum has been the industry's</div>
-                                        <span class="f-col-spacer-half"></span>
-                                        <mat-icon fontSet="mdo-icons" class="expandicon">chevron-right</mat-icon>
-                                    </div>
-                                    <p class="notify-content" disableRipple="true">
-                                        {{notification.sendTime | date:'dd MMM hh:mm:ss' }}</p>
-                                </div>
-
-                                <div class="f-row">
-                                    <mat-card-header>
-                                        <div mat-card-avatar>{{notification.senderUid}}</div>
-                                    </mat-card-header>
-
-                                    <button mat-button (click)="deleteNotification(notification.id)"
-                                        prosClickStopPropagation>
-                                        <mat-icon>delete_outline</mat-icon>
-                                    </button>
-                                </div>
+                                <mat-card-header>
+                                    <div mat-card-avatar>{{notification.senderUid}}</div>
+                                </mat-card-header>
+                                <span class="f-col-spacer-half"></span>
+                                <button mat-button (click)="deleteNotification(notification.id)"
+                                    prosClickStopPropagation>
+                                    <mat-icon>delete_outline</mat-icon>
+                                </button>
                             </div>
                         </div>
+                        <p class="notify-content" disableRipple="true"> {{notification.sendTime | date:'dd MMM hh:mm:ss' }}</p>
+                    </div>
+                        
                     </mat-list-item>
                 </mat-nav-list>
             </mat-tab>
@@ -59,23 +55,23 @@
 
                 <mat-nav-list>
                     <mat-list-item *ngFor="let job of jobQueueData">
-                        <div mat-line>{{job.logMessage}}</div>
-
+                        <div mat-line class="job-line">{{job.logMessage}}</div>
+                        <span class="f-spacer"></span>
                         <mat-chip-list>
                             <mat-chip disableRipple="true" *ngIf="job.jobPk.status === 'IN_PROGRESS'">
                                 <mat-spinner diameter="16"></mat-spinner> &nbsp; Running
                             </mat-chip>
                             <mat-chip disableRipple="true" *ngIf="job.jobPk.status === 'COMPLETE'">
-                                {{ job.startDate | date:'dd-MMM-yyyy hh:mm:ss' }}
+                                <mat-icon fontSet="mdo-icons" class="time-icon">form-time</mat-icon> {{ job.startDate | date:'dd-MMM-yyyy hh:mm:ss' }}
                             </mat-chip>
                         </mat-chip-list>
-
+                        <span class="col-spacer"></span>
                         <mat-card-header>
                             <div mat-card-avatar>{{ job.initiatedBy }}</div>
                         </mat-card-header>
-
+                        <span class="col-spacer"></span>
                         <button mat-button>
-                            <mat-icon>more_horiz</mat-icon>
+                            <mat-icon fontSet="mdo-icons">more</mat-icon>
                         </button>
                     </mat-list-item>
                 </mat-nav-list>

@@ -1,8 +1,7 @@
 mat-card.root {
-  user-select: none;
-  height: 100%;
-  width: 900px;
   padding: 0 16px;
+  user-select: none;
+  width: 900px;
 
   .breadcrum-toolbar {
     align-items: center;
@@ -90,7 +89,7 @@ mat-card.root {
 
         .info-link {
           align-items: center;
-          font-size: 0.8rem;
+          font-size: 0.9rem;
           cursor: pointer;
         }
 
@@ -121,8 +120,15 @@ mat-card.root {
           text-overflow: ellipsis;
           white-space: pre-line;
           word-break: break-word;
+          font-size: 0.9rem;
         }
       }
+    }
+
+    .col-inner-icon {
+      font-size: 20px;
+      height: 20px;
+      width: 20px;
     }
   }
 }
