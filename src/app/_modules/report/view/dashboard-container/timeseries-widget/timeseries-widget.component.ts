@@ -335,12 +335,12 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       && this.timeseriesData.timeSeries.scaleTo !== null && this.timeseriesData.timeSeries.scaleTo !== undefined
       && this.timeseriesData.timeSeries.stepSize !== null && this.timeseriesData.timeSeries.stepSize !== undefined) {
       const ticks = { displamin: this.timeseriesData.timeSeries.scaleFrom, max: this.timeseriesData.timeSeries.scaleTo, stepSize: this.timeseriesData.timeSeries.stepSize };
-      /**
-       * SET SCALES BASED ON CONFIG
-       */
       this.timeSeriesOption.scales = {
         xAxes: [{
           type: 'time',
+          time: {
+            unit: this.timeseriesData.timeSeries.seriesWith
+        },
           scaleLabel: {
             display: true,
             labelString: this.timeseriesData.timeSeries.xAxisLabel ? this.timeseriesData.timeSeries.xAxisLabel : ''
@@ -353,8 +353,26 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
           }, ticks
         }]
       };
+    }else{
+        this.timeSeriesOption.scales = {
+          xAxes: [{
+            type: 'time',
+            time: {
+              unit: this.timeseriesData.timeSeries.seriesWith
+          },
+            scaleLabel: {
+              display: true,
+              labelString: this.timeseriesData.timeSeries.xAxisLabel ? this.timeseriesData.timeSeries.xAxisLabel : ''
+            },
+          }],
+          yAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: this.timeseriesData.timeSeries.yAxisLabel ? this.timeseriesData.timeSeries.yAxisLabel : ''
+            },
+          }]
+        };
     }
-
     const hasBtn = this.dateFilters.filter(fil => fil.value === (this.timeseriesData.timeSeries.startDate))[0];
     if (hasBtn) {
       const index = this.dateFilters.indexOf(hasBtn);
