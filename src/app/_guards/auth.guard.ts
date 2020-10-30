@@ -48,6 +48,7 @@ export class AuthGuard implements CanActivate, CanLoad {
    * @param segments segments for child routing ..
    */
   canLoad(route: Route, segments: UrlSegment[]): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
+    console.log(window.location.hash);
     const jwtToken = localStorage.getItem('JWT-TOKEN');
       const refreshToken = localStorage.getItem('JWT-REFRESH-TOKEN');
       const decodedJWTToken = this.jwtHelper.decodeToken(jwtToken);
@@ -57,7 +58,14 @@ export class AuthGuard implements CanActivate, CanLoad {
           if(res.headers) {
             localStorage.setItem('JWT-TOKEN', res.headers.get('JWT-TOKEN'));
             localStorage.setItem('JWT-REFRESH-TOKEN', res.headers.get('JWT-REFRESH-TOKEN'));
-            this.router.navigate(['/home']);
+            if(window.location && window.location.hash && window.location.hash.indexOf('returnUrl') !==-1) {
+              try{
+                const url = unescape(window.location.hash.split('returnUrl=')[1]);
+                this.router.navigateByUrl(url);
+              }catch(ex){console.error(ex); this.router.navigate(['/home']);}
+            } else {
+              this.router.navigate(['/home']);
+            }
             return false;
           }
         }).catch(ex=>{
