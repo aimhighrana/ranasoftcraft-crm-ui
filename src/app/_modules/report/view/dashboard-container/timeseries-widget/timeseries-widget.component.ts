@@ -207,7 +207,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
    * Method to handle button click events
    */
 
-  updateForm(field: string, value: ButtonArr, withoutRefresh?) {
+  updateForm(field: string, value: ButtonArr) {
     this.dateFilters.forEach(ele => {
       if (ele.id === value.id) {
         value.isActive = true
@@ -270,9 +270,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         break;
     }
     const strtdatemilli = Date.parse(moment().format('MM/DD/YYYY HH:mm').toString()).toString();
-    if (!withoutRefresh) {
-      this.emitpanAndClickevent(endDatemilli, strtdatemilli);
-    }
+    this.emitpanAndClickevent(endDatemilli, strtdatemilli);
   }
 
   emitpanAndClickevent(startdate: string, enddate: string): void {
@@ -379,7 +377,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       this.dateFilters.splice(index, 1);
       hasBtn.isActive = true;
       this.dateFilters.splice(index, 0, hasBtn);
-      this.updateForm('date', hasBtn, true);
+      this.updateForm('date', hasBtn);
     }
 
     /**
