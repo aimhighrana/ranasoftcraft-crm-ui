@@ -59,8 +59,8 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit, OnCha
 
   ngAfterViewInit(): void {
     if(this.rootContainer) {
-      // this.screenWidth = this.elementRef.nativeElement.offsetWidth;
-      this.screenWidth = (this.rootContainer.nativeElement as HTMLDivElement).offsetWidth;
+      // this.screenWidth = (this.rootContainer.nativeElement as HTMLDivElement).offsetWidth;
+      this.screenWidth = window.innerWidth;
       this.boxSize = this.screenWidth / this.noOfboxes;
     }
   }
