@@ -823,41 +823,38 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     this.widgetColorPalette = res;
   }
 
-  /*
-    * download chart data as CSV
-    */
-
-
+  /**
+   * Download data into CSV
+   */
   downloadCSV(): void {
     const excelData = [];
-    if (this.timeseriesData.timeSeries.chartType !== 'BAR') {
-      this.chartLegend.forEach(legend => {
-        const key = 'id';
-        const objdataArr = this.dataSet.filter(data => data[key] === legend.code)
-        if (objdataArr.length > 0 && objdataArr[0].data.length > 0) {
-          objdataArr[0].data.forEach(data => {
-            const obj = {} as any;
-            obj[this.timeseriesData.timeSeries.fieldId] = legend.code + '';
-            obj.time = data.x;
-            obj.count = data.y;
-            excelData.push(obj);
-          })
-        }
-      });
-    }
-    else {
-      this.dataSet.forEach(yearData => {
-        yearData.data.forEach((data,index) => {
+      this.dataSet.forEach(dataArr => {
+        dataArr.data.forEach((dataObj,index) => {
           const obj = {} as any;
-          obj[this.timeseriesData.timeSeries.fieldId] = this.chartLegend[index].text ? this.chartLegend[index].text : this.chartLegend[index].code;
-          obj.time = yearData.label;
-          obj.count = data;
+          // In case of field ID is there..
+          if(this.timeseriesData.timeSeries.fieldId){
+            obj[this.timeseriesData.timeSeries.fieldId] = this.chartLegend[index].text ? this.chartLegend[index].text : this.chartLegend[index].code;
+          }
+          // In case of field ID is blank - groupWith and DistinctWith are there..
+          else{
+            obj[this.timeseriesData.timeSeries.distictWith] = this.chartLegend.length>0 ? (this.chartLegend[index].text ? this.chartLegend[index].text : this.chartLegend[index].code): this.dataSetlabel[index];
+          }
+          // checking format of data to be downloaded..
+          if(dataObj.x){
+            obj.time = dataObj.x;
+            obj.count = dataObj.y
+          }
+          else{
+            obj.time = dataArr.label;
+            obj.count = dataObj;
+          }
           excelData.push(obj);
         })
       })
-    }
     this.widgetService.downloadCSV('Time-Chart', excelData);
   }
+
+
   /*
     * download chart as image
     */
