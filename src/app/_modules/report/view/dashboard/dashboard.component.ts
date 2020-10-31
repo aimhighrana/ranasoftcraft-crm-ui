@@ -56,6 +56,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     const isFrmMsteam = this.sharedService.getIsFromMsTeamLogedIn().subscribe(res=>{
       this.isFromMsteam = res;
     });
+
+    if(window.location  && window.location.href && window.location.href.indexOf('nonav') !==-1) {
+      this.isFromMsteam = true;
+    }
     this.subscriptions.push(isFrmMsteam);
   }
 

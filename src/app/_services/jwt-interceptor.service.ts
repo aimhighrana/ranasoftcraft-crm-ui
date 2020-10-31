@@ -18,7 +18,7 @@ export class JwtInterceptorService implements HttpInterceptor {
   initialTotalRequests = 0;
   pendingRequestsCount = 0;
 
-  ignoreToAppendInterceptor: string[] = ['/fapi/jwt/validate-refresh-token'];
+  ignoreToAppendInterceptor: string[] = ['jwt/validate-refresh-token'];
 
   constructor(
     private router: Router,
