@@ -126,7 +126,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       }
     },
     onClick: (event?: MouseEvent, activeElements?: Array<{}>) => {
-      this.stackClickFilter(event, activeElements);
+      // this.stackClickFilter(event, activeElements);
     }
   };
 
@@ -828,28 +828,46 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
    */
   downloadCSV(): void {
     const excelData = [];
-      this.dataSet.forEach(dataArr => {
-        dataArr.data.forEach((dataObj,index) => {
-          const obj = {} as any;
-          // In case of field ID is there..
-          if(this.timeseriesData.timeSeries.fieldId){
-            obj[this.timeseriesData.timeSeries.fieldId] = this.chartLegend[index].text ? this.chartLegend[index].text : this.chartLegend[index].code;
-          }
-          // In case of field ID is blank - groupWith and DistinctWith are there..
-          else{
-            obj[this.timeseriesData.timeSeries.distictWith] = this.chartLegend.length>0 ? (this.chartLegend[index].text ? this.chartLegend[index].text : this.chartLegend[index].code): this.dataSetlabel[index];
-          }
-          // checking format of data to be downloaded..
-          if(dataObj.x){
-            obj.time = dataObj.x;
-            obj.count = dataObj.y
-          }
-          else{
-            obj.time = dataArr.label;
-            obj.count = dataObj;
-          }
-          excelData.push(obj);
-        })
+      this.dataSet.forEach((dataArr) => {
+        const key = 'id'
+        if(dataArr[key]){
+          dataArr.data.forEach((dataObj, index) => {
+            const obj = {} as any;
+            obj.field = dataArr[key];
+            if(dataObj.x){
+              obj.time = dataObj.x;
+              obj.count = dataObj.y;
+            }
+            else{
+              obj.time = dataArr.label;
+              obj.count = dataObj;
+            }
+            excelData.push(obj);
+          })
+        }
+        else{
+          dataArr.data.forEach((dataObj, index) => {
+            const obj = {} as any;
+            // In case of field ID is there..
+            if(this.timeseriesData.timeSeries.fieldId){
+              obj[this.timeseriesData.timeSeries.fieldId] = this.chartLegend.length>0 ? (this.chartLegend[index].text.length>0 ? this.chartLegend[index].text : this.chartLegend[index].code): this.dataSetlabel[index];
+            }
+            // In case of field ID is blank - groupWith and DistinctWith are there..
+            else{
+              obj[this.timeseriesData.timeSeries.distictWith] = this.chartLegend.length>0 ? (this.chartLegend[index].text.length>0 ? this.chartLegend[index].text : this.chartLegend[index].code): this.dataSetlabel[index];
+            }
+            // checking format of data to be downloaded..
+            if(dataObj.x){
+              obj.time = dataObj.x;
+              obj.count = dataObj.y
+            }
+            else{
+              obj.time = dataArr.label;
+              obj.count = dataObj;
+            }
+            excelData.push(obj);
+          })
+        }
       })
     this.widgetService.downloadCSV('Time-Chart', excelData);
   }
