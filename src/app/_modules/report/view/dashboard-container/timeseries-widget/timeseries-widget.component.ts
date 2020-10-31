@@ -122,7 +122,6 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       display: false,
       onClick: (event: MouseEvent, legendItem: ChartLegendLabelItem) => {
         console.log('legend clicked..')
-        this.legendClick(legendItem);
       }
     },
     onClick: (event?: MouseEvent, activeElements?: Array<{}>) => {
@@ -573,6 +572,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   transformDataForComparison(res: any, forDistinct?: boolean) {
     const finalOutput = new Array();
     this.dataSetlabel = [];
+    const objData = {};
     this.chartLegend = [];
     const aggregation = res ? res.aggregations['date_histogram#date'] : [];
     const arrKeys = ['data', 'id', 'label', 'fill', 'border'];
@@ -609,9 +609,26 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         // Prepare datasets for comparison in timeseries
         dataSet[arrKeys[0]] = arrcount;
         dataSet[arrKeys[2]] = milliVal;
-        finalOutput.push(dataSet);
+        if(objData[milliVal] !== undefined){
+           const oldArray = objData[milliVal];
+           const lengthOfArr = arrcount.length>oldArray.length?oldArray.length:arrcount.length;
+           for(let i=0;i<lengthOfArr.length;i++){
+             arrcount[i] = arrcount[i]+oldArray[i];
+           }
+        }
+        objData[milliVal]=arrcount;
       });
     }
+
+    const arrKeyF = ['label','data'];
+    Object.keys(objData).forEach(status => {
+      const label = {};
+      label[arrKeyF[0]] = status;
+      label[arrKeyF[1]] = objData[status];
+      finalOutput.push(label);
+    });
+
+
     this.timeSeriesOption.scales = { xAxes: [{}], yAxes: [{}] };
     this.setLegendForChart(); // calling it to set legend
     return finalOutput;
@@ -946,7 +963,9 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       position: this.timeseriesData.timeSeries.legendPosition,
       onClick: (event: MouseEvent, legendItem: ChartLegendLabelItem) => {
         // call protype of stacked bar chart componenet
+        if(this.timeseriesData.timeSeries.chartType !== 'BAR'){
         this.legendClick(legendItem);
+        }
       }
     }
   }
