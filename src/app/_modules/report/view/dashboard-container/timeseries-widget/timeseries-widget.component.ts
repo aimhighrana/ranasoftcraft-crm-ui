@@ -506,6 +506,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
 
   transformDataSets(data: any): any {
     const finalOutput = new Object();
+    const codetextObj = {};
     const cordKeys = ['x', 'y'];
     const aggregation = data.aggregations['date_histogram#date'] ? data.aggregations['date_histogram#date'] : data.aggregations[''];
     if (aggregation.buckets !== undefined && aggregation.buckets.length > 0) {
@@ -524,6 +525,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
               label = bucket.key
           })
           }
+          codetextObj[label] = innerBucket.key;
           if (Object.keys(finalOutput).includes(label)) {
             const array = finalOutput[label];
             const objdt = new Object();
@@ -556,7 +558,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       dataSet[arrKeys[2]] = status;
       dataSet[arrKeys[3]] = false;
       dataSet[arrKeys[4]] = this.getUpdatedColorCode(status);
-      const chartLegend = { text: status, code: status, legendIndex: this.chartLegend.length };
+      const chartLegend = { text: status, code: codetextObj[status], legendIndex: this.chartLegend.length };
       this.chartLegend.push(chartLegend);
       datasets.push(dataSet);
       this.setLegendForChart();
@@ -964,7 +966,9 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       onClick: (event: MouseEvent, legendItem: ChartLegendLabelItem) => {
         // call protype of stacked bar chart componenet
         if(this.timeseriesData.timeSeries.chartType !== 'BAR'){
-        this.legendClick(legendItem);
+          if(!(this.timeseriesData.timeSeries.groupWith !=='' && this.timeseriesData.timeSeries.fieldId !== '' && this.timeseriesData.timeSeries.distictWith !=='')){
+            this.legendClick(legendItem);
+          }
         }
       }
     }
