@@ -213,14 +213,14 @@
                             </mat-header-cell>
                             <mat-cell *matCellDef="let element; let rIndex = index;"
                                 [class.error-cell]="element[dynCols] ? element[dynCols].isInError : false"
-                                (click)="editCurrentCell(dynCols,element, rIndex)">
+                                (click)="editCurrentCell(dynCols,element, rIndex, containerRef)">
                                 <div class="mdo-form-input f-col" style="display: none;"
                                     id="inpctrl_{{ dynCols + '_' + rIndex }}">
-                                    <mat-form-field appearance="outline">
-                                        <input matInput class="mat-input" id="inp_{{ dynCols + '_' + rIndex }}"
-                                            (blur)="emitEditBlurChng(dynCols,$event.target.value, element, rIndex)"
-                                            [value]="element[dynCols] ? element[dynCols].fieldData : ''">
-                                    </mat-form-field>
+                                
+                                <!-- container to hold input field when cell gets edited  -->
+                                <ng-template prosContainerRef #containerRef="prosContainerRef">
+                                </ng-template>                                   
+
                                 </div>
 
                                 <ng-template [ngIf]="element[dynCols] && element[dynCols].isCorrected"
@@ -228,23 +228,23 @@
                                     <ng-template [ngIf]="element[dynCols].oldData !== element[dynCols].fieldData"
                                         [ngIfElse]="other">
                                         <span class="error-message" style="color: red;">
-                                            {{ element[dynCols] ? element[dynCols].oldData : '' }}
+                                            {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].oldData) : '' }}
                                         </span>
                                         <br>
                                         <span id="viewctrl_{{ dynCols + '_' + rIndex }}">
-                                            {{ element[dynCols] ? element[dynCols].fieldData : '' }}
+                                            {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].fieldData) : '' }}
                                         </span>
 
                                     </ng-template>
                                     <ng-template #other>
                                         <span id="viewctrl_{{ dynCols + '_' + rIndex }}">
-                                            {{ element[dynCols] ? element[dynCols].fieldData : '' }}
+                                            {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].fieldData) : '' }}
                                         </span>
                                     </ng-template>
                                 </ng-template>
                                 <ng-template #normalCell>
                                     <span id="viewctrl_{{ dynCols + '_' + rIndex }}">
-                                        {{ element[dynCols] ? element[dynCols].fieldData : '' }}
+                                        {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].fieldData) : '' }}
                                     </span>
                                     <br>
                                     <span class="error-message" style="color: red;">

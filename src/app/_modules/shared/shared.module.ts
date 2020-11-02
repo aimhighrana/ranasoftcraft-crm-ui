@@ -60,7 +60,10 @@ import { NavigationDropdownComponent } from './_components/navigation-dropdown/n
 import { FilterValuesComponent } from './_components/filter-values/filter-values.component';
 import { ConfirmationDialogComponent } from './_components/confirmation-dialog/confirmation-dialog.component';
 import { ResumeSessionComponent } from './_components/resume-session/resume-session.component';
-import { ScrollingModule } from '@angular/cdk/scrolling'
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { TableCellInputComponent } from './_components/table-cell-input/table-cell-input.component';
+import { ContainerRefDirective } from './_directives/container-ref.directive';
+
 
 @NgModule({
   declarations: [
@@ -86,7 +89,9 @@ import { ScrollingModule } from '@angular/cdk/scrolling'
     NavigationDropdownComponent,
     FilterValuesComponent,
     ConfirmationDialogComponent,
-    ResumeSessionComponent
+    ResumeSessionComponent,
+    TableCellInputComponent,
+    ContainerRefDirective
   ],
   imports: [
     // ng modules
@@ -196,6 +201,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling'
     ClickStopPropagationDirective,
     TagsEllipsisDirective,
     ResizeableDirective,
+    ContainerRefDirective,
     // pipes
     SubstringPipe,
     ThousandconvertorPipe,
@@ -212,7 +218,9 @@ import { ScrollingModule } from '@angular/cdk/scrolling'
     FormInputComponent,
     AddFilterMenuComponent,
     NavigationDropdownComponent,
-    FilterValuesComponent
-  ]
+    FilterValuesComponent,
+    TableCellInputComponent
+  ],
+  entryComponents: [TableCellInputComponent]
 })
 export class SharedModule { }
