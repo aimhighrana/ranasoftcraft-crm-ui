@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit } from '@angular
 import { UserService } from 'src/app/_services/user/userservice.service';
 import { Userdetails } from 'src/app/_models/userdetails';
 import { LoadingService } from 'src/app/_services/loading.service';
-import { Subscription } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { MatSidenav, MatSidenavContent } from '@angular/material/sidenav';
 @Component({
   selector: 'pros-home-layout',
@@ -42,6 +42,13 @@ export class HomeLayoutComponent implements OnInit, AfterViewInit, OnDestroy {
   grab = false;
 
   /**
+   * Subject for notify localstorage for mdo nav state  state ..
+   */
+  private appStateSubject: BehaviorSubject<boolean> = new BehaviorSubject(null);
+
+
+
+  /**
    * constructor of class
    * @param userService User service object
    * @param loadingService Loading service object
@@ -57,10 +64,51 @@ export class HomeLayoutComponent implements OnInit, AfterViewInit, OnDestroy {
         this.userDetails = response;
       }
     );
+
+    this.appStateSubject.subscribe(res=>{
+      if(res) {
+        const state = {
+          isPrimaryOpen: this.primarySideBarOpened,
+          isSecondaryOpen: this.secondarySideBarOpened
+        };
+        try{
+          localStorage.setItem('mdo-state',btoa(JSON.stringify(state)));
+        }catch(ex){console.error(`Error while set application state .. `)};
+      }
+    });
   }
 
   ngAfterViewInit() {
     this.enableResizeable();
+
+    /**
+     * get app state from .. localstorage and set on primary / secondary nav
+     */
+    try{
+      const appState = localStorage.getItem('mdo-state');
+      if(appState) {
+        const json = JSON.parse(atob(appState));
+        const primaryNav = json.isPrimaryOpen ? json.isPrimaryOpen  : false;
+        const secondaryNav  = json.isSecondaryOpen ? json.isSecondaryOpen : false;
+        this.primarySideBarOpened = primaryNav;
+        this.secondaryContent = secondaryNav;
+        if(primaryNav) {
+          document.getElementById('primarySidenav').style.width = '200px';
+          document.getElementById('primaryContent').style.marginLeft = '199px';
+        } else {
+          document.getElementById('primarySidenav').style.width = '64px';
+          document.getElementById('primaryContent').style.marginLeft = '64px';
+        }
+
+        if(secondaryNav) {
+          document.getElementById('secondarySidenav').style.width = '264px';
+          document.getElementById('secondaryContent').style.marginLeft = '199px';
+        } else {
+          document.getElementById('secondarySidenav').style.width = '16px';
+          document.getElementById('secondaryContent').style.marginLeft = '73px';
+        }
+      }
+    }catch(ex){console.error(`Error while getting state from localstorage .. ${ex}`)}
   }
 
   isLoading() {
@@ -69,6 +117,8 @@ export class HomeLayoutComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy() {
     this.udSub.unsubscribe();
+    this.appStateSubject.complete();
+    this.appStateSubject.unsubscribe();
   }
 
   /**
@@ -95,6 +145,7 @@ export class HomeLayoutComponent implements OnInit, AfterViewInit, OnDestroy {
       document.getElementById('primaryContent').style.marginLeft = '199px';
       this.primarySideBarOpened = true;
     }
+    this.appStateSubject.next(true);
   }
 
   /**
@@ -115,6 +166,7 @@ export class HomeLayoutComponent implements OnInit, AfterViewInit, OnDestroy {
         this.togglePrimarySideBar();
       }
     }
+    this.appStateSubject.next(true);
   }
 
   /**
