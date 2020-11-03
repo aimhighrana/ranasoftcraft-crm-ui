@@ -2,7 +2,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TableColumnSettingsComponent } from './table-column-settings.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
-import { MetadataModel, SchemaTableViewFldMap, SchemaTableViewRequest } from 'src/app/_models/schema/schemadetailstable';
+import { MetadataModel, SchemaTableViewRequest } from 'src/app/_models/schema/schemadetailstable';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { of } from 'rxjs';
@@ -41,21 +41,12 @@ describe('TableColumnSettingsComponent', () => {
 
   it('persistenceTableView(), should call http for save table column ', async(()=>{
     component.data = {schemaId:'327', variantId:'736472'};
-    const selFld = ['id','TEST','MATL_TYPE'];
+    const selFld = [{fieldId : 'id', order: 0, editable: true}];
     // mock data
     const schemaTableViewRequest: SchemaTableViewRequest = new SchemaTableViewRequest();
     schemaTableViewRequest.schemaId = component.data.schemaId;
     schemaTableViewRequest.variantId = component.data.variantId;
-    const fldObj: SchemaTableViewFldMap[] = [];
-    let order = 0;
-    selFld.forEach(fld => {
-      const schemaTableVMap: SchemaTableViewFldMap = new SchemaTableViewFldMap();
-      schemaTableVMap.fieldId = fld;
-      schemaTableVMap.order = order;
-      order ++;
-      fldObj.push(schemaTableVMap);
-    });
-    schemaTableViewRequest.schemaTableViewMapping = fldObj;
+    schemaTableViewRequest.schemaTableViewMapping = selFld;
 
     spyOn(schemaDetailsService,'updateSchemaTableView').withArgs(schemaTableViewRequest).and.returnValue(of({}));
     spyOn(router, 'navigate');
@@ -68,7 +59,7 @@ describe('TableColumnSettingsComponent', () => {
 
   it('manageStateOfCheckBox(), manage state of columns ', async(()=>{
     component.header = [{fieldId:'MATL_TYPE'} as MetadataModel];
-    component.data = {selectedFields:['MATL_TYPE']};
+    component.data = {selectedFields:[{fieldId: 'MATL_TYPE', order: 0, editable: true}]};
 
     component.manageStateOfCheckBox();
     expect(component.allChecked).toEqual(true);
@@ -76,7 +67,7 @@ describe('TableColumnSettingsComponent', () => {
   }));
 
   it('isChecked(), is checked ', async(()=>{
-    component.data = {selectedFields:['MATL_TYPE']};
+    component.data = {selectedFields:[{fieldId: 'MATL_TYPE', order: 0, editable: true}]};
     const res = component.isChecked({fieldId:'MATL_TYPE'} as MetadataModel);
     expect(res).toEqual(true);
   }));
@@ -97,24 +88,15 @@ describe('TableColumnSettingsComponent', () => {
       fieldId:'MATL_TYPE'
     } as MetadataModel];
 
-    component.data  = {selectedFields:['MATL_TYPE'], schemaId:'72356742', variantId:'67242'};
+    const selFld = [{fieldId : 'MATL_TYPE', order: 0, editable: true}];
+    component.data  = {selectedFields:selFld, schemaId:'72356742', variantId:'67242'};
 
 
-    const selFld = ['MATL_TYPE'];
     // mock data
     const schemaTableViewRequest: SchemaTableViewRequest = new SchemaTableViewRequest();
     schemaTableViewRequest.schemaId = component.data.schemaId;
     schemaTableViewRequest.variantId = component.data.variantId;
-    const fldObj: SchemaTableViewFldMap[] = [];
-    let order = 0;
-    selFld.forEach(fld => {
-      const schemaTableVMap: SchemaTableViewFldMap = new SchemaTableViewFldMap();
-      schemaTableVMap.fieldId = fld;
-      schemaTableVMap.order = order;
-      order ++;
-      fldObj.push(schemaTableVMap);
-    });
-    schemaTableViewRequest.schemaTableViewMapping = fldObj;
+    schemaTableViewRequest.schemaTableViewMapping = selFld;
 
     spyOn(schemaDetailsService,'updateSchemaTableView').withArgs(schemaTableViewRequest).and.returnValue(of({}));
     spyOn(router, 'navigate');

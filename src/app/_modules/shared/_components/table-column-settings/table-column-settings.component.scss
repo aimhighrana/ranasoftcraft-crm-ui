@@ -33,14 +33,25 @@ mat-card.root {
   }
 }
 
-.colunm-list {
-  overflow: hidden;
-  display: block;
+.colunm-box {
+  align-items: center;
+  box-sizing: border-box;
+  padding: 10px;
 
-  .colunm-box {
+  .col {
+    display: flex;
+    flex: 1 0 auto;
+    width: 1px;
     align-items: center;
-    box-sizing: border-box;
-    padding: 10px;
+    margin: 0 16px;
+
+    &.col-x4 {
+      flex: 4;
+    }
+
+    strong {
+      align-items: center;
+    }
   }
 }
 

@@ -33,7 +33,10 @@ describe('SchemaDetailsService', () => {
     // mock url
     endpointServiceSpy.getAllSelectedFields.and.returnValue(url);
     // mock data
-    const mockData = ['FIELD1','FIELD2'];
+    const mockData = [
+      {fieldId: 'FIELD1', order:0, editable: false},
+      {fieldId: 'FIELD2', order:1, editable: false}
+    ];
     // actual service call
     schemaDetaService.getAllSelectedFields(schemaId, variantId).subscribe(actualResponse => {
       expect(actualResponse).toEqual(mockData);

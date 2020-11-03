@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Input, NgZone, OnChanges, SimpleChanges } from '@angular/core';
+/* import { Component, OnInit, ViewChild, Input, NgZone, OnChanges, SimpleChanges } from '@angular/core';
 import { SchemaTableData, ResponseFieldList, RequestForSchemaDetailsWithBr, MetadataModeleResponse, Heirarchy, SchemaBrInfo, FieldExitsResponse, SchemaCorrectionReq } from 'src/app/_models/schema/schemadetailstable';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
@@ -17,7 +17,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { SharedServiceService } from 'src/app/_modules/shared/_services/shared-service.service';
 import { EndpointService } from 'src/app/_services/endpoint.service';
-import { UploadDataComponent } from '../../upload-data/upload-data.component';
+import { UploadDataComponent } from '../../upload-data/upload-data.component'; */
+
+import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+
 
 @Component({
   selector: 'pros-schema-datatable',
@@ -25,8 +28,14 @@ import { UploadDataComponent } from '../../upload-data/upload-data.component';
   styleUrls: ['./schema-datatable.component.scss']
 })
 export class SchemaDatatableComponent implements OnInit, OnChanges {
+  ngOnInit(): void {
+    throw new Error('Method not implemented.');
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    throw new Error('Method not implemented.');
+  }
 
-  tabs = ['All', 'Error', 'Success', 'Skipped', 'Corrections', 'Duplicate'];
+ /*  tabs = ['All', 'Error', 'Success', 'Skipped', 'Corrections', 'Duplicate'];
   matMenu: any[] = ['Show Details', 'Delete', 'Edit'];
   selection = new SelectionModel<SchemaTableData>(true, []);
 
@@ -579,5 +588,5 @@ export class SchemaDatatableComponent implements OnInit, OnChanges {
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
     });
-  }
+  } */
 }

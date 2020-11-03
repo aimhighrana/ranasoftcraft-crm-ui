@@ -144,6 +144,7 @@ export class SchemaTableViewRequest {
 export class SchemaTableViewFldMap {
     fieldId: string;
     order: number;
+    editable: boolean;
 }
 export class SchemaExecutionDetails {
     schemaId: string;

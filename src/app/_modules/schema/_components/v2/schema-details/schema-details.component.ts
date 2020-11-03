@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ComponentFactoryResolver, ViewContainerRef } from '@angular/core';
-import { MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaCorrectionReq, FilterCriteria, FieldInputType } from '@models/schema/schemadetailstable';
+import { MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaCorrectionReq, FilterCriteria, FieldInputType, SchemaTableViewFldMap } from '@models/schema/schemadetailstable';
 import { ActivatedRoute, Router } from '@angular/router';
 import { throwError, BehaviorSubject, combineLatest } from 'rxjs';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
@@ -56,7 +56,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
   /**
    * Store info about user selected field and order
    */
-  selectedFieldsOb: BehaviorSubject<string[]> = new BehaviorSubject(null);
+  selectedFieldsOb: BehaviorSubject<SchemaTableViewFldMap[]> = new BehaviorSubject(null);
   /**
    * Hold meta data map , fieldId as key and metadamodel as value
    */
@@ -65,7 +65,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
   /**
    * Current selected field based on schemaId , variantId and userId
    */
-  selectedFields: string[] = [];
+  selectedFields: SchemaTableViewFldMap[] = [];
 
   /**
    * Static column for actions
@@ -365,8 +365,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
       //   select.push(headerField);
       // }
       // else
-      if (fields.indexOf(headerField) < 0 && this.selectedFields.indexOf(headerField) !== -1) {
-        const index = this.selectedFields.indexOf(headerField);
+      const index = this.selectedFields.findIndex(f => f.fieldId === headerField);
+      if (fields.indexOf(headerField) < 0 &&  (index !== -1)) {
         select[index] = headerField;
       }
       metadataLst[headerField] = allMDF.headers[headerField];
@@ -451,6 +451,13 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
   editCurrentCell(fldid: string, row: any, rIndex: number, containerRef: ContainerRefDirective) {
     console.log(fldid);
     console.log(row);
+
+    const field = this.selectedFields.find(f => f.fieldId === fldid);
+    if(field && !field.editable){
+      console.log('Edit is disabled for this field ! ', fldid);
+      return ;
+    }
+
     if(document.getElementById('inpctrl_'+fldid + '_' + rIndex)) {
       const inpCtrl = document.getElementById('inpctrl_'+fldid + '_'+ rIndex) as HTMLDivElement;
       const viewCtrl = document.getElementById('viewctrl_'+fldid + '_' + rIndex) as HTMLSpanElement;

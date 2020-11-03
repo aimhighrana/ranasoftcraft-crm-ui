@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { EndpointService } from '../../endpoint.service';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { SendReqForSchemaDataTableColumnInfo, SendDataForSchemaTableShowMore, SchemaDataTableColumnInfoResponse, RequestForSchemaDetailsWithBr, SchemaTableViewRequest, OverViewChartDataSet, CategoryInfo, CategoryChartDataSet, MetadataModeleResponse, SchemaBrInfo, SchemaCorrectionReq, SchemaExecutionLog } from 'src/app/_models/schema/schemadetailstable';
+import { SendReqForSchemaDataTableColumnInfo, SendDataForSchemaTableShowMore, SchemaDataTableColumnInfoResponse, RequestForSchemaDetailsWithBr, SchemaTableViewRequest, OverViewChartDataSet, CategoryInfo, CategoryChartDataSet, MetadataModeleResponse, SchemaBrInfo, SchemaCorrectionReq, SchemaExecutionLog, SchemaTableViewFldMap } from 'src/app/_models/schema/schemadetailstable';
 import * as moment from 'moment';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../../any2ts.service';
@@ -118,8 +118,8 @@ export class SchemaDetailsService {
     return this.http.post<any>(this.endpointService.getWorkFlowFieldsUrl(), ObjectType);
   }
 
-  public getAllSelectedFields(schemaId: string, variantId: string): Observable<string[]> {
-    return this.http.get<string[]>(this.endpointService.getAllSelectedFields(), { params: { schemaId, variantId } });
+  public getAllSelectedFields(schemaId: string, variantId: string): Observable<SchemaTableViewFldMap[]> {
+    return this.http.get<SchemaTableViewFldMap[]>(this.endpointService.getAllSelectedFields(), { params: { schemaId, variantId } });
   }
 
   public getSchemaBrInfoList(schemaId: string): Observable<SchemaBrInfo[]> {

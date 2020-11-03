@@ -1,4 +1,4 @@
-<mat-card class="root mat-elevation-z3">
+<!-- <mat-card class="root mat-elevation-z3">
     <mat-toolbar class="header">
         <mat-toolbar-row>
             <h3 class="mat-h3">{{ schemaDetails.schemaDescription }} work area</h3>
@@ -46,11 +46,11 @@
                 </div>
                 <mat-divider></mat-divider>
             </ng-template>
-            <div class="f-row settings-row">
+            <div class="f-row settings-row"> -->
                 <!-- <mat-form-field>
                     <input matInput placeholder="Filter comming soon.." disabled>
                 </mat-form-field> -->
-                <span class="f-spacer"></span>
+               <!--  <span class="f-spacer"></span>
                 <ng-template [ngIf]="submitReviewedBtn">
                     <button [disabled]="collaboratorPermission" mat-flat-button color="primary"
                         (click)="submitReviewedRecords()">Submit Review</button>
@@ -117,7 +117,7 @@
                         </td>
                     </ng-container>
 
-                    <!-- SCORE COLUMN -->
+                    SCORE COLUMN
                     <ng-container matColumnDef="_score_weightage" sticky>
                         <th mat-header-cell *matHeaderCellDef mat-sort-header class="any-cell objnr-cell">
                             Score
@@ -298,7 +298,7 @@
                     <tr mat-header-row *matHeaderRowDef="displayedFields | async; sticky: true"></tr>
                     <tr mat-row *matRowDef="let row; columns: displayedFields | async"></tr>
 
-                    <!-- Group header -->
+                    Group header
                     <ng-container matColumnDef="groupHeader">
                         <td colspan="999" mat-cell *matCellDef="let groupBy">{{ groupBy.objectNumber }}</td>
                     </ng-container>
@@ -312,4 +312,4 @@
             </mat-paginator>
         </mat-card>
     </div>
-</mat-card>
+</mat-card> -->

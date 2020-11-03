@@ -38,6 +38,7 @@ export class TableColumnSettingsComponent implements OnInit{
   headerArray = [];
   gridArray = [];
   hierarchyArray = [];
+  editEnabledList = [];
 
   /**
    * Hold fields of all suggested fields
@@ -62,16 +63,16 @@ export class TableColumnSettingsComponent implements OnInit{
   public headerDetails() {
     this.header = [];
     if(this.data && this.data.selectedFields && this.data.selectedFields.length > 0){
-      for(const fldid of this.data.selectedFields) {
-        if(this.data.fields.headers[fldid]) {
-          this.header.push(this.data.fields.headers[fldid]);
+      for(const field of this.data.selectedFields) {
+        if(this.data.fields.headers[field.fieldId]) {
+          this.header.push(this.data.fields.headers[field.fieldId]);
         }
       }
     }
     if(this.data && this.data.fields && this.data.fields.headers && this.data.selectedFields){
       for(const hekey in this.data.fields.headers){
         if(this.data.selectedFields.length > 0){
-          if(this.data.selectedFields.indexOf(hekey) === -1)
+          if(this.data.selectedFields.findIndex( f => f.fieldId === hekey) === -1)
           {
             this.header.push(this.data.fields.headers[hekey]);
           }
@@ -89,20 +90,12 @@ export class TableColumnSettingsComponent implements OnInit{
     this.router.navigate([{ outlets: { sb: null }}]);
   }
 
-  public persistenceTableView(selFld: string[]) {
+  public persistenceTableView(selFld: SchemaTableViewFldMap[]) {
     const schemaTableViewRequest: SchemaTableViewRequest = new SchemaTableViewRequest();
     schemaTableViewRequest.schemaId = this.data.schemaId;
     schemaTableViewRequest.variantId = this.data.variantId;
-    const fldObj: SchemaTableViewFldMap[] = [];
-    let order = 0;
-    selFld.forEach(fld => {
-      const schemaTableVMap: SchemaTableViewFldMap = new SchemaTableViewFldMap();
-      schemaTableVMap.fieldId = fld;
-      schemaTableVMap.order = order;
-      order ++;
-      fldObj.push(schemaTableVMap);
-    });
-    schemaTableViewRequest.schemaTableViewMapping = fldObj;
+    schemaTableViewRequest.schemaTableViewMapping = selFld;
+
     this.schemaDetailsService.updateSchemaTableView(schemaTableViewRequest).subscribe(response => {
       console.log(response);
       this.sharedService.setChooseColumnData(this.data);
@@ -149,11 +142,14 @@ export class TableColumnSettingsComponent implements OnInit{
    * @param fld changeable checkbox
    */
   selectionChange(fld: MetadataModel) {
-    const selIndex =  this.data.selectedFields.indexOf(fld.fieldId);
+    const selIndex =  this.data.selectedFields.findIndex(f => f.fieldId === fld.fieldId);
     if(selIndex !==-1) {
       this.data.selectedFields.splice(selIndex, 1)
     } else {
-      this.data.selectedFields.push(fld.fieldId);
+      const fieldView = new SchemaTableViewFldMap();
+      fieldView.fieldId = fld.fieldId;
+      fieldView.editable = false;
+      this.data.selectedFields.push(fieldView);
     }
     this.manageStateOfCheckBox();
   }
@@ -163,7 +159,7 @@ export class TableColumnSettingsComponent implements OnInit{
    * @param fld field for checking is selected or not
    */
   isChecked(fld: MetadataModel): boolean {
-    const selCheck = this.data.selectedFields.indexOf(fld.fieldId);
+    const selCheck = this.data.selectedFields.findIndex(f => f.fieldId === fld.fieldId);
     return selCheck !==-1 ? true : false;
   }
 
@@ -175,7 +171,12 @@ export class TableColumnSettingsComponent implements OnInit{
     if(this.allChecked) {
       this.allChecked  = true;
       this.allIndeterminate = false;
-      this.data.selectedFields = this.headerArray;
+      this.data.selectedFields = this.headerArray.map(header => {
+        const fieldView = new SchemaTableViewFldMap();
+        fieldView.fieldId = header;
+        fieldView.editable = false;
+        return fieldView;
+      });
     } else {
       this.allChecked = false;
       this.allIndeterminate = false;
@@ -196,15 +197,31 @@ export class TableColumnSettingsComponent implements OnInit{
    * Submit selected columns ..
    */
   submitColumn() {
-    const orderFld: string[] = [];
+    const orderFld: SchemaTableViewFldMap[] = [];
     const hdlFld = this.header.map(map=> map.fieldId);
+    let choosenField ;
+    let order = 0;
     hdlFld.forEach(fld=>{
-      if(this.data.selectedFields.indexOf(fld) !==-1) {
-        orderFld.push(fld);
+      choosenField = this.data.selectedFields.find(field =>field.fieldId === fld);
+      if( choosenField ) {
+        choosenField.order = order;
+        orderFld.push(choosenField);
+        order++;
       }
     });
     this.data.selectedFields = orderFld;
     this.persistenceTableView(orderFld);
+  }
+
+  editableChange(fld: MetadataModel){
+    const field = this.data.selectedFields.find(f => f.fieldId === fld.fieldId);
+    if (field){
+      field.editable = !field.editable;
+    }
+  }
+
+  isEditEnabled(fld : MetadataModel){
+    return this.data.selectedFields.findIndex(field => (field.fieldId === fld.fieldId) && field.editable ) !== -1;
   }
 
 }
