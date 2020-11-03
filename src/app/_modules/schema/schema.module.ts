@@ -52,6 +52,7 @@ import { AttributeMappingComponent } from './_components/attribute-mapping/attri
 import { BrClassificationSidesheetComponent } from './_components/br-classification-sidesheet/br-classification-sidesheet.component';
 import { BrDuplicatecheckSidesheetComponent } from './_components/br-duplicatecheck-sidesheet/br-duplicatecheck-sidesheet.component';
 import { SchemaSummarySidesheetComponent } from './_components/schema-summary-sidesheet/schema-summary-sidesheet.component';
+import { NewDuplicateCheckComponent } from './_components/new-duplicate-check/new-duplicate-check.component';
 
 
 @NgModule({
@@ -107,7 +108,8 @@ import { SchemaSummarySidesheetComponent } from './_components/schema-summary-si
     AttributeMappingComponent,
     BrClassificationSidesheetComponent,
     BrDuplicatecheckSidesheetComponent,
-    SchemaSummarySidesheetComponent
+    SchemaSummarySidesheetComponent,
+    NewDuplicateCheckComponent
   ],
   imports: [
     CommonModule,

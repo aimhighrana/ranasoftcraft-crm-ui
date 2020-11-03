@@ -7,9 +7,24 @@
         <div class="f-row mdo-constrained-right">
             <div class="display-heading-large">Material / Duplicate check</div>
             <span class="f-col-spacer-half"></span>
-            <button mat-button>
+            <button mat-button [matMenuTriggerFor]="check">
                 <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon>
             </button>
+
+            <mat-menu #check="matMenu">
+                <button mat-menu-item [matMenuTriggerFor]="customermenu">Customer</button>
+                <button mat-menu-item>Material</button>
+                <button mat-menu-item>Order</button>
+                <button mat-menu-item>Vendor</button>
+              </mat-menu>
+
+              <mat-menu #customermenu="matMenu">
+                <button mat-menu-item>Customer one</button>
+                <button mat-menu-item>Customer two</button>
+                <button mat-menu-item>Customer three</button>
+                <button mat-menu-item>Customer four</button>
+              </mat-menu>
+
             <span class="f-spacer"></span>
             <button mat-flat-button color="primary">Run</button>
         </div>

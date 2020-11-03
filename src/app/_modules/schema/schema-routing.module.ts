@@ -40,6 +40,7 @@ import { AttributeMappingComponent } from './_components/attribute-mapping/attri
 import { BrClassificationSidesheetComponent } from './_components/br-classification-sidesheet/br-classification-sidesheet.component';
 import { BrDuplicatecheckSidesheetComponent } from './_components/br-duplicatecheck-sidesheet/br-duplicatecheck-sidesheet.component';
 import { SchemaSummarySidesheetComponent } from './_components/schema-summary-sidesheet/schema-summary-sidesheet.component';
+import { NewDuplicateCheckComponent } from './_components/new-duplicate-check/new-duplicate-check.component';
 
 
 const routes: Routes = [
@@ -87,6 +88,7 @@ const routes: Routes = [
   { path: 'system/br-classification-sidesheet', component: BrClassificationSidesheetComponent },
   { path: 'system/br-duplicatecheck-sidesheet', component: BrDuplicatecheckSidesheetComponent },
   { path: 'summary/:moduleId/:schemaId', component: SchemaSummarySidesheetComponent },
+  { path: 'system/new-duplicate-check', component: NewDuplicateCheckComponent },
 
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent }

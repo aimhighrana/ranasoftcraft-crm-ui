@@ -1,6 +1,5 @@
 div.root {
   user-select: none;
-  height: 100%;
   padding: 0 16px;
   width: 700px;
 
@@ -51,6 +50,12 @@ div.root {
         border-bottom-width: 1px;
         border-bottom-style: solid;
         font-size: 0.9rem;
+
+        .col-inner-icon {
+          font-size: 20px;
+          height: 20px;
+          width: 20px;
+        }
       }
     }
   }
