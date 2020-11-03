@@ -1,32 +1,57 @@
-mat-card.root {
-  padding: 0;
+div.root {
   user-select: none;
+  height: 100%;
   width: 800px;
+  overflow: hidden;
 
-  .header-toolbar {
-    align-items: center;
-    width: 100%;
+  .breadcrum-toolbar {
+    position: sticky;
+    padding-top: 16px;
+    top: 0;
+    z-index: 2;
 
-    .display-heading-large {
-      font-size: 1.2rem;
+    .mdo-constrained-right {
+      width: 100%;
+
+      .breadcrum-head {
+        align-items: center;
+        width: 100%;
+        min-height: 36px;
+
+        .display-heading-large {
+          font-size: 1.2rem;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+        }
+      }
     }
   }
 
-  .mdo-justify {
-    .mdo-form-field {
-      margin: 8px 0;
-      display: flex;
-      flex-direction: column;
+  .businessrule-listing {
+    height: 100%;
+    overflow: auto;
+
+    mat-list.rule-list {
+      mat-list-item {
+        border-bottom-width: 1px;
+        border-bottom-style: solid;
+        height: 52px;
+
+        button.mat-flat-button {
+          min-width: 60px;
+        }
+      }
     }
   }
 }
 
 @media (min-width: 1200px) {
-  .mdo-justify {
-    margin: 0 54px;
+  .mdo-constrained-right {
+    margin-right: 52px;
   }
 
-  .mdo-constrained-right {
-    margin-right: 54px;
+  .mdo-justify {
+    margin: 0 52px;
   }
 }

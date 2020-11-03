@@ -1,4 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { ConfigureSidesheetComponent } from './configure-sidesheet.component';
 
@@ -8,7 +10,10 @@ describe('ConfigureSidesheetComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ConfigureSidesheetComponent ]
+      declarations: [ ConfigureSidesheetComponent, SearchInputComponent ],
+      imports: [
+        AppMaterialModuleForSpec
+      ]
     })
     .compileComponents();
   }));

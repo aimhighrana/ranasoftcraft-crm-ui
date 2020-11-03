@@ -1,8 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { DatePickerFieldComponent } from './date-picker-field.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker/datepicker-input-base';
+import { DatePickerFieldComponent } from './date-picker-field.component';
 
 describe('DatePickerFieldComponent', () => {
   let component: DatePickerFieldComponent;
@@ -11,9 +10,9 @@ describe('DatePickerFieldComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ DatePickerFieldComponent ],
-      imports:[
+      imports: [
         AppMaterialModuleForSpec
-      ],
+      ]
     })
     .compileComponents();
   }));
@@ -21,6 +20,7 @@ describe('DatePickerFieldComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(DatePickerFieldComponent);
     component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
   it('should create', () => {

@@ -390,32 +390,26 @@ export class EndpointService {
 
   public getLoadRecipientsListUrl(): string {
     return `${this.apiUrl}/restWorkflow/loadRecipient`;
-    // return `https://devreplica.masterdataonline.com/MDOSF/REST/fapi/restWorkflow/loadRecipient`;
   }
 
   public getWfFieldsListUrl(): string {
     return `${this.apiUrl}/restWorkflow/loadWorkfLowField`;
-    // return `https://devreplica.masterdataonline.com/MDOSF/REST/fapi/restWorkflow/loadWorkfLowField`;
   }
 
   public getLoadApisUrl(): string {
     return `${this.apiUrl}/restWorkflow/loadAPI`;
-    // return `https://devreplica.masterdataonline.com/MDOSF/REST/fapi/restWorkflow/loadAPI`;
   }
 
   public getSaveWfDefinitionUrl(): string {
     return `${this.apiUrl}/restWorkflow/saveWorkFlowStepViaXml`;
-    // return `https://devreplica.masterdataonline.com/MDOSF/REST/fapi/restWorkflow/saveWorkFlowStepViaXml`;
   }
 
   public getFieldOptionsUrl(): string {
     return `${this.apiUrl}/restWorkflow/admin_dropdown_list_dropdown_data`;
-    // return 'https://devreplica.masterdataonline.com/MDOSF/REST/fapi/restWorkflow/admin_dropdown_list_dropdown_data';
   }
 
   public getloadWfDefinitionUrl(): string {
     return `${this.apiUrl}/restWorkflow/loadWorkFlowPathStep`;
-    // return 'https://devreplica.masterdataonline.com/MDOSF/REST/fapi/restWorkflow/loadWorkFlowPathStep';
   }
 
   public saveUpdateVariantUrl(): string {
@@ -592,10 +586,18 @@ export class EndpointService {
   }
 
   /**
-   * Get uri for validate refresh jwt ..
+   * Get uri for validate refresh jwt
    */
   public validateRefreshjwttokenUrl() : string {
     return `${this.apiUrl}/jwt/validate-refresh-token`;
+  }
+
+  /**
+   * endpoint for create/update schedule of schema
+   * @param schemaId Id of schema
+   */
+  public createUpdateScheduleUrl(schemaId: string) {
+    return `${this.apiUrl}/schema/createupdate-schema-scheduler?schemaId=${schemaId}`
   }
 }
 

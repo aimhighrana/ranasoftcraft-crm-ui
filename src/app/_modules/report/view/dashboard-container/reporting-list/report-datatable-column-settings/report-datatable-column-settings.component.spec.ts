@@ -6,6 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AppMaterialModuleForSpec } from '../../../../../../app-material-for-spec.module';
 import { Router } from '@angular/router';
 import { MetadataModel } from '../../../../../../_models/schema/schemadetailstable';
+import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
 
 
 describe('ReportDatatableColumnSettingsComponent', () => {
@@ -15,7 +16,7 @@ describe('ReportDatatableColumnSettingsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ReportDatatableColumnSettingsComponent],
+      declarations: [ReportDatatableColumnSettingsComponent, SearchInputComponent],
       imports: [AppMaterialModuleForSpec, HttpClientTestingModule, RouterTestingModule]
     })
       .compileComponents();
