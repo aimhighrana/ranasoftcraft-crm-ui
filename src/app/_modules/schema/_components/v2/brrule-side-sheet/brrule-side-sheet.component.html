@@ -35,7 +35,7 @@
                     *ngIf="submitted && form.controls.rule_name.errors && form.controls.rule_name.errors.required">
                     Please enter Rule name</mat-error>
             </div>
-            <div class="f-col mdo-form-field">
+            <div class="f-col mdo-form-field" *ngIf="!isDuplicateType">
                 <pros-form-input (valueChange)="getFormValue($event,'error_message')"
                     [value]="form.controls.error_message.value" [label]="'Error message (Message)'">
                 </pros-form-input>
@@ -44,7 +44,7 @@
                     Please enter Error message</mat-error>
             </div>
             <mat-divider></mat-divider>
-            <div class="f-col mdo-form-field" *ngIf="!isUDR">
+            <div class="f-col mdo-form-field" *ngIf="!isUDR && !isDuplicateType">
                 <mat-label>Fields</mat-label>
                 <mat-form-field appearance="outline">
                     <mat-chip-list #chipList>
@@ -69,16 +69,16 @@
             </div>
             <div class="f-col mdo-form-field" *ngIf="isRegexType ">
                 <mat-label>Standard function</mat-label>
-                    <mat-form-field appearance="outline">
-                        <mat-select formControlName='standard_function' (selectionChange)='setRegex($event)'>
-                            <mat-option *ngFor="let regex of preDefinedRegex" [value]="regex.FUNC_TYPE">
-                                {{regex.FUNC_NAME}}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                    <mat-error
-                        *ngIf="submitted && form.controls.standard_function.errors && form.controls.standard_function.errors.required">
-                        Please select the standard function</mat-error>
+                <mat-form-field appearance="outline">
+                    <mat-select formControlName='standard_function' (selectionChange)='setRegex($event)'>
+                        <mat-option *ngFor="let regex of preDefinedRegex" [value]="regex.FUNC_TYPE">
+                            {{regex.FUNC_NAME}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-error
+                    *ngIf="submitted && form.controls.standard_function.errors && form.controls.standard_function.errors.required">
+                    Please select the standard function</mat-error>
             </div>
             <div class="f-col mdo-form-field" *ngIf="isRegexType">
                 <pros-form-input [value]='form.value.regex' (valueChange)="getFormValue($event,'regex')"
@@ -135,12 +135,12 @@
                             <div class="col" *ngIf="item.value.conditionOperator !== 'RANGE'">
                                 <div class="f-row">
                                     <pros-form-input [placeholder]="'Comparison value'"
-                                    [value]="item.value.conditionFieldValue"
-                                    (valueChange)="setComparisonValue($event,i)">
-                                </pros-form-input>
-                                <div class="f-col-spacer-half"></div>
+                                        [value]="item.value.conditionFieldValue"
+                                        (valueChange)="setComparisonValue($event,i)">
+                                    </pros-form-input>
+                                    <div class="f-col-spacer-half"></div>
                                 </div>
-                               
+
                             </div>
 
                             <div class="col" *ngIf="item.value.conditionOperator  === 'RANGE'">
@@ -171,7 +171,7 @@
                                     Add child rule
                                 </button>
                                 <button mat-menu-item *ngIf="i > 0" (click)="removeParentNode(i)">
-                                  Delete
+                                    Delete
                                 </button>
                             </mat-menu>
                         </div>
@@ -217,14 +217,14 @@
                                             <div class="col" *ngIf="chldNode.value.conditionOperator  === 'RANGE'">
                                                 <div class="f-row">
                                                     <pros-form-input [placeholder]="'start value'"
-                                                    [value]="item.value.conditionFieldStartValue"
-                                                    (valueChange)="setRangeValueForChild($event,'start',childIndex, i)">
-                                                </pros-form-input>
-                                                <div class="f-col-spacer-half"></div>
-                                                <pros-form-input [placeholder]="'end value'"
-                                                    [value]="chldNode.value.conditionFieldEndValue"
-                                                    (valueChange)="setRangeValueForChild($event,'end',childIndex,i)">
-                                                </pros-form-input>
+                                                        [value]="item.value.conditionFieldStartValue"
+                                                        (valueChange)="setRangeValueForChild($event,'start',childIndex, i)">
+                                                    </pros-form-input>
+                                                    <div class="f-col-spacer-half"></div>
+                                                    <pros-form-input [placeholder]="'end value'"
+                                                        [value]="chldNode.value.conditionFieldEndValue"
+                                                        (valueChange)="setRangeValueForChild($event,'end',childIndex,i)">
+                                                    </pros-form-input>
                                                 </div>
                                             </div>
                                             <div class="col">
@@ -238,7 +238,7 @@
                                                         <span>Add</span>
                                                     </button> -->
                                                     <button mat-menu-item (click)="removeChildNode(i,childIndex)">
-                                                    Delete
+                                                        Delete
                                                     </button>
                                                 </mat-menu>
                                             </div>
@@ -261,5 +261,13 @@
                 </div>
             </div>
         </form>
+
+        <ng-container *ngIf="isDuplicateType">
+            <pros-setup-duplicate-rule [moduleId]="moduleId" [schemaId]="schemaId"
+                [coreSchemaBrInfo]="coreSchemaBrInfo" [fieldsList]="fieldsList" ></pros-setup-duplicate-rule>
+        </ng-container>
+
+        <!-- Duplicate Rule form group  -->
+        
     </div>
 </mat-card>

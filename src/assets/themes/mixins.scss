@@ -1339,25 +1339,37 @@
 
   pros-brrule-side-sheet,
   pros-duplicate-datacheck-sidesheet {
-    .user-defined-set {
-      &::before {
-        background: mat-color($foreground-palette, divider);
+    mat-card.root {
+      .user-defined-set {
+        &::before {
+          background: mat-color($foreground-palette, divider);
+        }
+
+        .defined-row {
+          border-color: mat-color($foreground-palette, divider);
+
+          div.col {
+            &.select-col {
+              background: mat-color($background-palette, background);
+            }
+
+            button.f-selected-col,
+            .range-slider {
+              background-color: mat-color($background-palette, card);
+            }
+
+            .info-link {
+              color: mat-color($primary-palette);
+            }
+          }
+        }
       }
 
-      .defined-row {
-        border-color: mat-color($foreground-palette, divider);
+      .colunm-box {
+        &.rule-border-row {
+          border-bottom: 1px solid mat-color($foreground-palette, divider);
 
-        div.col {
-          &.select-col {
-            background: mat-color($background-palette, background);
-          }
-
-          button.f-selected-col,
-          .range-slider {
-            background-color: mat-color($background-palette, card);
-          }
-
-          .info-link {
+          .f-row.info-link {
             color: mat-color($primary-palette);
           }
         }

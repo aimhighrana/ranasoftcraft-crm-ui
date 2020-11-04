@@ -29,6 +29,8 @@ export class CoreSchemaBrInfo {
     brIdStr: string;
     categoryInfo?: CategoryInfo;
     udrDto?: UdrModel;
+    duplicacyField?: any;
+    duplicacyMaster?: any;
 }
 
 export enum BusinessRuleType {
@@ -37,7 +39,7 @@ export enum BusinessRuleType {
     BR_CUSTOM_SCRIPT = 'BR_CUSTOM_SCRIPT',
     BR_API_RULE =  'BR_API_RULE',
     BR_DEPENDANCY_RULE = 'BR_DEPENDANCY_RULE',
-    BR_DUPLICATE_RULE = 'BR_DUPLICATE_RULE',
+    BR_DUPLICATE_RULE = 'BR_DUPLICATE_CHECK',
     BR_EXTERNALVALIDATION_RULE = 'BR_EXTERNALVALIDATION_RULE',
     BR_REGEX_RULE = 'BR_REGEX_RULE'
 }
@@ -126,4 +128,14 @@ export class Category {
 export class ConditionalOperator {
     desc: string;
     childs:string[];
+}
+
+export class DuplicateRuleModel {
+    coreBrInfo: CoreSchemaBrInfo;
+    // ruleName: string;
+    addFields: any[];
+    selCriteria: any[];
+    mergeRules: any[];
+    removeList: any[];
+    // objectId: string;
 }

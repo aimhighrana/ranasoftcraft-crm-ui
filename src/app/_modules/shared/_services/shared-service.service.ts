@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { CoreSchemaBrInfo } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 export enum SecondaynavType {
   schema = 'schema',
@@ -43,6 +44,16 @@ export class SharedServiceService {
    * Behavior subject to identidy that scheduler is edit/add
    */
   private afterEditSchedule: BehaviorSubject<any> = new BehaviorSubject(null);
+
+  /**
+   * Behavior subject for duplicate rule exclusion edit
+   */
+  private updateRuleFieldExclusion: BehaviorSubject<any> = new BehaviorSubject(null);
+
+  /**
+   * Subject for Business rule saving
+   */
+  private saveBr: Subject<CoreSchemaBrInfo> = new Subject();
 
 
   constructor() { }
@@ -167,4 +178,21 @@ export class SharedServiceService {
   public getScheduleInfo(): Observable<any> {
     return this.afterEditSchedule.asObservable();
   }
+
+  public setExclusionData(data) {
+    return this.updateRuleFieldExclusion.next(data);
+  }
+
+  public getExclusionData() : Observable<any>{
+    return this.updateRuleFieldExclusion.asObservable();
+  }
+
+  public emitSaveBrEvent(brInfo : CoreSchemaBrInfo){
+    this.saveBr.next(brInfo);
+  }
+
+  public getSaveBrObs() : Observable<CoreSchemaBrInfo>{
+    return this.saveBr.asObservable();
+  }
+
 }

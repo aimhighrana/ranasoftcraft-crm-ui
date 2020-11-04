@@ -607,5 +607,9 @@ export class EndpointService {
   public getScheduleUrl(schemaId: string) {
     return `${this.apiUrl}/schema/get-schema-scheduler/${schemaId}`;
   }
+
+  public saveUpdateDuplicateRule(): string {
+    return `${this.apiUrl}/duplicate/saveDuppsett`;
+  }
 }
 

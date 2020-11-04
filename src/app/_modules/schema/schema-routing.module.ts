@@ -46,12 +46,12 @@ import { RunningProgressComponent } from './_components/running-progress/running
 import { InvitePeopleComponent } from './_components/invite-people/invite-people.component';
 import { MaterialListComponent } from './_components/material-list/material-list.component';
 import { ScheduleComponent } from '@modules/shared/_components/schedule/schedule.component';
-import { ExclusionsSidesheetComponent } from './_components/exclusions-sidesheet/exclusions-sidesheet.component';
 import { NewAttributeSidesheetComponent } from './_components/new-attribute-sidesheet/new-attribute-sidesheet.component';
 import { NewModifierSidesheetComponent } from './_components/new-modifier-sidesheet/new-modifier-sidesheet.component';
 import { NewNounSidesheetComponent } from './_components/new-noun-sidesheet/new-noun-sidesheet.component';
 import { LibraryMappingSidesheetComponent } from './_components/library-mapping-sidesheet/library-mapping-sidesheet.component';
 import { PotextCatalogcheckComponent } from './_components/potext-catalogcheck/potext-catalogcheck.component';
+import { ExclusionsSidesheetComponent } from './_components/v2/brrule-side-sheet/duplicate-rule-config/exclusions-sidesheet/exclusions-sidesheet.component';
 
 
 const routes: Routes = [
@@ -88,6 +88,7 @@ const routes: Routes = [
   { path: 'mdo-generic-components', component: MdoGenericComponentsComponent },
   { path: 'schema-info/:moduleId/:schemaId', component: SchemaInfoComponent },
   { path: 'business-rule/:moduleId/:schemaId/:brId', component: BrruleSideSheetComponent },
+  { path: 'exclusion/:moduleId/:schemaId', component: ExclusionsSidesheetComponent },
   { path: 'subscriber/:moduleId/:schemaId/:subscriberId', component: SubscriberSideSheetComponent },
   { path: 'system/catalog-check', component: CatalogCheckComponent },
   { path: 'system/duplicate-datacheck-sidesheet', component: DuplicateDatacheckSidesheetComponent },

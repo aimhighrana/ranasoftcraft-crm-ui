@@ -13,6 +13,7 @@ const routes: Routes = [
   { path: 'home', loadChildren: () => import('./_modules/home/home.module').then(m => m.HomeModule), canActivate: [AuthGuard] },
   { path: 'nonav', loadChildren: () => import('./_modules/nonav/nonav.module').then(m => m.NonavModule), canActivate: [AuthGuard] },
   { path: 'sb/schema', loadChildren: () => import('./_modules/schema/schema.module').then(m => m.SchemaModule), outlet: 'sb' },
+  { path: 'outer/schema', loadChildren: () => import('./_modules/schema/schema.module').then(m => m.SchemaModule), outlet: 'outer' },
   { path: 'msteams', loadChildren: () => import('./_modules/msteams/msteams.module').then(m => m.MSTeamsModule) },
   { path: 'sb/report', loadChildren: () => import('./_modules/report/report.module').then(m => m.ReportModule), outlet: 'sb' },
   { path: 'lib', loadChildren: () => import('./_modules/lib/lib.module').then(m => m.LibModule) },

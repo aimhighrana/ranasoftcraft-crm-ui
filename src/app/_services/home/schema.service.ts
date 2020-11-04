@@ -5,7 +5,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../any2ts.service';
 import { SchemaGroupResponse, SchemaGroupDetailsResponse, SchemaGroupCountResponse, CreateSchemaGroupRequest, GetAllSchemabymoduleidsReq, ObjectTypeResponse, GetAllSchemabymoduleidsRes, SchemaGroupWithAssignSchemas, WorkflowResponse, WorkflowPath, ExcelValues, DataSource } from 'src/app/_models/schema/schema';
-import { DropDownValue, UDRBlocksModel, UdrModel, CoreSchemaBrInfo, Category } from 'src/app/_modules/admin/_components/module/business-rules/business-rules.modal';
+import { DropDownValue, UDRBlocksModel, UdrModel, CoreSchemaBrInfo, Category, DuplicateRuleModel } from 'src/app/_modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaStaticThresholdRes, SchemaListModuleList, SchemaListDetails, CoreSchemaBrMap } from '@models/schema/schemalist';
 import { SchemaScheduler } from '@models/schema/schemaScheduler';
 
@@ -256,4 +256,8 @@ export class SchemaService {
   public getSchedule(schemaId: string): Observable<SchemaScheduler>{
     return this.http.get<SchemaScheduler>(this.endpointService.getScheduleUrl(schemaId))
   }
+  public saveUpdateDuplicateRule(duplicateReq: DuplicateRuleModel, params): Observable<string> {
+    return this.http.post<string>(this.endpointService.saveUpdateDuplicateRule(), duplicateReq, {params});
+  }
+
 }

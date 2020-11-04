@@ -112,6 +112,25 @@ mat-card.root {
   }
 }
 
+.fields-menu {
+  padding: 12px;
+  height: 100%;
+
+  mat-nav-list {
+    padding-top: 0;
+    margin: 8px -12px;
+    overflow: auto;
+    // height: calc(100% - 36px - 16px * 2 - 8px * 2 - 36px);
+    max-height: 180px;
+  }
+}
+
+.col-inner-icon {
+  font-size: 20px;
+  height: 20px;
+  width: 20px;
+}
+
 @media (min-width: 1200px) {
   .mdo-justify {
     margin: 0 54px;

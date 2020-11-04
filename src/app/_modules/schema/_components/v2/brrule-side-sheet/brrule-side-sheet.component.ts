@@ -13,6 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SchemaService } from '@services/home/schema.service';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { BlockType } from '@modules/admin/_components/module/business-rules/user-defined-rule/udr-cdktree.service';
+
 @Component({
   selector: 'pros-brrule-side-sheet',
   templateUrl: './brrule-side-sheet.component.html',
@@ -25,9 +26,9 @@ export class BrruleSideSheetComponent implements OnInit {
         { ruleDesc: 'API Rule', ruleId: '', ruleType: BusinessRuleType.BR_API_RULE, isImplemented: false },
         { ruleDesc: 'Basic', ruleId: '', ruleType: null, isImplemented: false },
         { ruleDesc: 'Dependency Rule', ruleId: '', ruleType: BusinessRuleType.BR_DEPENDANCY_RULE, isImplemented: false },
-        { ruleDesc: 'Duplicate Rule', ruleId: '', ruleType: BusinessRuleType.BR_DUPLICATE_RULE, isImplemented: false },
         { ruleDesc: 'External Validation Rule', ruleId: '', ruleType: BusinessRuleType.BR_EXTERNALVALIDATION_RULE, isImplemented: false },
         { ruleDesc: 'Metadata Rule', ruleId: '', ruleType: BusinessRuleType.BR_METADATA_RULE, isImplemented: true },
+        { ruleDesc: 'Duplicate Rule', ruleId: '', ruleType: BusinessRuleType.BR_DUPLICATE_RULE, isImplemented: true },
         { ruleDesc: 'Missing Rule', ruleId: '', ruleType: BusinessRuleType.BR_MANDATORY_FIELDS, isImplemented: true },
         { ruleDesc: 'Regex Rule', ruleId: '', ruleType: BusinessRuleType.BR_REGEX_RULE, isImplemented: true },
         { ruleDesc: 'User Defined Rule', ruleId: '', ruleType: BusinessRuleType.BR_CUSTOM_SCRIPT, isImplemented: true },
@@ -94,6 +95,8 @@ export class BrruleSideSheetComponent implements OnInit {
   coreSchemaBrInfo: CoreSchemaBrInfo = new CoreSchemaBrInfo();
 
   udrNodeForm: FormGroup;
+
+
     /**
      * Class contructor
      * @param dialogRef refernce to matdialog
@@ -128,15 +131,8 @@ export class BrruleSideSheetComponent implements OnInit {
       });
 
 
-        this.form = new FormGroup({
-            rule_type: new FormControl('', [Validators.required]),
-            rule_name: new FormControl('', [Validators.required]),
-            error_message: new FormControl('', [Validators.required]),
-            standard_function: new FormControl(''),
-            regex: new FormControl(''),
-            fields: new FormControl('', [Validators.required]),
-            udrTreeData: new FormControl()
-        });
+        this.buildCommonDataForm();
+
         this.getFieldsByModuleId()
 
         if (this.filteredModules) {
@@ -192,6 +188,19 @@ export class BrruleSideSheetComponent implements OnInit {
                 this.form.get('regex').setErrors(null);
                 this.form.get('standard_function').setErrors(null);
             }
+            if (selectedRule === BusinessRuleType.BR_DUPLICATE_RULE){
+              this.form.get('rule_name').setValidators([Validators.required]) ;
+              this.form.get('error_message').clearValidators();
+              this.form.get('error_message').setErrors(null);
+              this.form.get('fields').clearValidators();
+              this.form.get('fields').setErrors(null);
+              this.form.get('regex').clearValidators();
+              this.form.get('regex').setErrors(null);
+              this.form.get('standard_function').clearValidators();
+              this.form.get('standard_function').setErrors(null);
+
+          }
+            this.submitted = false;
             this.form.updateValueAndValidity();
         });
 
@@ -217,6 +226,20 @@ export class BrruleSideSheetComponent implements OnInit {
         this.udrNodeForm.valueChanges.subscribe(res=>{
           console.log(res);
         })
+
+    }
+
+    buildCommonDataForm(){
+
+      this.form = new FormGroup({
+        rule_type: new FormControl('', [Validators.required]),
+        rule_name: new FormControl('', [Validators.required]),
+        error_message: new FormControl('', [Validators.required]),
+        standard_function: new FormControl(''),
+        regex: new FormControl(''),
+        fields: new FormControl('', [Validators.required]),
+        udrTreeData: new FormControl()
+    });
     }
 
     /**
@@ -339,6 +362,8 @@ export class BrruleSideSheetComponent implements OnInit {
     }
 
 
+
+
     /**
      * function to get the fields on basis of module
      */
@@ -350,7 +375,11 @@ export class BrruleSideSheetComponent implements OnInit {
                     this.fieldsList.push(metadataModeleResponse.headers[key])
                 });
 
+                this.fieldsList = this.fieldsList.slice();
+
                 this.filteredModules = of(this.fieldsList);
+                // this.filteredFieldList = this.fieldsList;
+                // this.duplicateFieldsObs = of(this.fieldsList);
 
                 if(this.brId) {
                   try{
@@ -372,7 +401,7 @@ export class BrruleSideSheetComponent implements OnInit {
      * function to filter the list
      * @param val fitering text
      */
-    filter(val: string): string[] {
+    filter(val: string): any[] {
         return this.fieldsList.filter(option => {
             return option.fieldDescri.toLowerCase().indexOf(val.toLowerCase()) === 0;
         })
@@ -440,24 +469,9 @@ export class BrruleSideSheetComponent implements OnInit {
 
         let brType: string = this.form.value ? this.form.value.rule_type : '';
         brType = brType ? brType : this.coreSchemaBrInfo.brType;
-        if(brType!== 'BR_CUSTOM_SCRIPT') {
-          const request: CoreSchemaBrInfo = new CoreSchemaBrInfo();
-          request.brId = this.brId ? this.brId : '';
-          request.brType = brType;
-          request.message = this.form.value.error_message;
-          request.brInfo = this.form.value.rule_name;
-          request.fields = this.form.value.fields;
-          request.regex = this.form.value.regex;
-          request.standardFunction = this.form.value.standard_function;
-          request.schemaId = this.schemaId;
-          request.categoryId = this.coreSchemaBrInfo.categoryId ? this.coreSchemaBrInfo.categoryId : null;
 
-          this.schemaService.createBusinessRule(request).subscribe(res=>{
-            console.log(res);
-            this.sharedService.setAfterBrSave(res);
-            this.router.navigate([{ outlets: { sb: null }}]);
-          }, err=> console.error(`Error : ${err.message}`));
-        } else {
+        if(brType === 'BR_CUSTOM_SCRIPT') {
+
           // for user defined rule
           console.log(this.udrNodeForm.value);
           const udrDto: UdrModel = new UdrModel();
@@ -500,6 +514,35 @@ export class BrruleSideSheetComponent implements OnInit {
           },error=> {
             this.snackBar.open(`Something went wrong `, 'Close',{duration:5000});
           });
+
+        }
+        else if (brType === BusinessRuleType.BR_DUPLICATE_RULE){
+
+          // save duplicate rule
+          const brInfo = {brId: this.brId, brIdStr: this.brId,
+            brType, brInfo:this.form.value.rule_name, message: this.form.value.error_message,
+            schemaId: this.schemaId, categoryId: this.coreSchemaBrInfo.categoryId } as CoreSchemaBrInfo;
+
+          this.sharedService.emitSaveBrEvent(brInfo)
+
+        }
+        else {
+          const request: CoreSchemaBrInfo = new CoreSchemaBrInfo();
+          request.brId = this.brId ? this.brId : '';
+          request.brType = brType;
+          request.message = this.form.value.error_message;
+          request.brInfo = this.form.value.rule_name;
+          request.fields = this.form.value.fields;
+          request.regex = this.form.value.regex;
+          request.standardFunction = this.form.value.standard_function;
+          request.schemaId = this.schemaId;
+          request.categoryId = this.coreSchemaBrInfo.categoryId ? this.coreSchemaBrInfo.categoryId : null;
+
+          this.schemaService.createBusinessRule(request).subscribe(res=>{
+            console.log(res);
+            this.sharedService.setAfterBrSave(res);
+            this.router.navigate([{ outlets: { sb: null }}]);
+          }, err=> console.error(`Error : ${err.message}`));
 
         }
 
@@ -589,5 +632,11 @@ export class BrruleSideSheetComponent implements OnInit {
       }
     }
 
+    /**
+     * getter to show field on the basis of rule type
+     */
+    get isDuplicateType() {
+      return this.form.controls.rule_type.value === BusinessRuleType.BR_DUPLICATE_RULE;
+    }
 
 }

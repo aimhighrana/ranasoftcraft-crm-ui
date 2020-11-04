@@ -57,12 +57,14 @@ import { EmptyDataComponent } from './_components/empty-data/empty-data.componen
 import { RunningProgressComponent } from './_components/running-progress/running-progress.component';
 import { InvitePeopleComponent } from './_components/invite-people/invite-people.component';
 import { MaterialListComponent } from './_components/material-list/material-list.component';
-import { ExclusionsSidesheetComponent } from './_components/exclusions-sidesheet/exclusions-sidesheet.component';
 import { NewAttributeSidesheetComponent } from './_components/new-attribute-sidesheet/new-attribute-sidesheet.component';
 import { NewModifierSidesheetComponent } from './_components/new-modifier-sidesheet/new-modifier-sidesheet.component';
 import { NewNounSidesheetComponent } from './_components/new-noun-sidesheet/new-noun-sidesheet.component';
 import { LibraryMappingSidesheetComponent } from './_components/library-mapping-sidesheet/library-mapping-sidesheet.component';
 import { PotextCatalogcheckComponent } from './_components/potext-catalogcheck/potext-catalogcheck.component';
+import { ExclusionsSidesheetComponent } from './_components/v2/brrule-side-sheet/duplicate-rule-config/exclusions-sidesheet/exclusions-sidesheet.component';
+import { SetupDuplicateRuleComponent } from './_components/v2/brrule-side-sheet/duplicate-rule-config/setup-duplicate-rule/setup-duplicate-rule.component';
+
 
 
 @NgModule({
@@ -129,7 +131,8 @@ import { PotextCatalogcheckComponent } from './_components/potext-catalogcheck/p
     NewModifierSidesheetComponent,
     NewNounSidesheetComponent,
     LibraryMappingSidesheetComponent,
-    PotextCatalogcheckComponent
+    PotextCatalogcheckComponent,
+    SetupDuplicateRuleComponent
   ],
   imports: [
     CommonModule,
