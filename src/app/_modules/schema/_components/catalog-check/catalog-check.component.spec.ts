@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { CatalogCheckComponent } from './catalog-check.component';
 
@@ -8,7 +9,8 @@ describe('CatalogCheckComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CatalogCheckComponent ]
+      declarations: [ CatalogCheckComponent ],
+      imports: [AppMaterialModuleForSpec]
     })
     .compileComponents();
   }));

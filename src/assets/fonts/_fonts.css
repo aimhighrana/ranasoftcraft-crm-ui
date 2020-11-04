@@ -83,7 +83,7 @@
 @font-face {
     font-family: 'Mdo Icons';
     font-weight: 400;
-    src:url(./mdoicons/v1/mdo.woff) format('woff');
+    src: url(./mdoicons/v1/mdo.woff) format('woff');
     font-style: normal;
     font-display: fallback;
 }

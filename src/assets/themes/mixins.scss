@@ -499,6 +499,8 @@
 
   // Tab-Component
   mat-tab-group {
+    height: 100%;
+
     .mat-tab-header {
       margin-bottom: 16px;
 
@@ -539,6 +541,7 @@
       }
     }
   }
+
   // NavTab-Component
   nav.mat-tab-nav-bar,
   nav.mat-tab-header {
@@ -565,11 +568,13 @@
       }
     }
   }
+
   //ProgressBar
   mat-progress-bar.mat-progress-bar {
     height: 6px;
     border-radius: 10px;
   }
+
   //MatChip
   mat-chip-list {
     outline: none;
@@ -579,6 +584,11 @@
       min-height: 24px;
       border-radius: 30px;
       font-size: 0.8rem;
+
+      .mat-info-icon {
+        font-size: 12px;
+        height: 10px;
+      }
     }
 
     mat-chip.mat-chip.none-stats-chip {
@@ -620,6 +630,7 @@
       background: transparent;
     }
   }
+
   //MDO-Checkbox
   mat-checkbox.mat-checkbox {
     .mat-checkbox-layout {
@@ -759,6 +770,13 @@
       .mat-menu-content:not(:empty) {
         padding: 0;
       }
+
+      &.navigation-menu {
+        button.mat-menu-item {
+          height: 36px;
+          line-height: 36px;
+        }
+      }
     }
   }
 
@@ -801,6 +819,7 @@
       display: none;
     }
   }
+
   //MDO-Buttons
   button.mat-button,
   button.mat-flat-button {
@@ -831,6 +850,12 @@
     height: 36px;
     box-shadow: none;
 
+    mat-icon.mat-icon {
+      font-size: 14px;
+      height: 14px;
+      width: 14px;
+    }
+
     .mat-button-wrapper {
       padding: 0;
     }
@@ -857,6 +882,8 @@
     box-shadow: none;
     background-color: mat-color($background-palette, app-bar);
     overflow: visible;
+    height: 40px;
+    line-height: 40px;
 
     .mat-button-toggle-checked {
       background-color: mat-color($background-palette, card);
@@ -906,9 +933,14 @@
         max-width: 120px;
       }
 
+      &.line-cut {
+        text-decoration: line-through;
+      }
+
       mat-icon {
         font-size: 16px;
         height: 16px;
+        width: 16px;
       }
 
       .mat-sort-header-content {
@@ -917,12 +949,29 @@
       }
 
       mat-form-field.mat-form-field {
+        width: 100%;
+
         .mat-form-field-wrapper {
+          background-color: transparent;
+
           .mat-form-field-infix {
+            padding: 0;
+
             .mat-input {
               caret-color: mat-color($foreground-palette, text);
             }
           }
+
+          .mat-form-field-underline {
+            display: none;
+          }
+        }
+      }
+
+      .action-iconbtns {
+        button.mat-fab {
+          margin-right: 1px;
+          box-shadow: none;
         }
       }
     }
@@ -1426,5 +1475,13 @@ nav.mat-tab-header {
       min-width: 120px;
       font-weight: normal;
     }
+  }
+}
+
+.mat-tab-body-wrapper {
+  height: 100%;
+
+  mat-tab-body.mat-tab-body {
+    height: 100%;
   }
 }

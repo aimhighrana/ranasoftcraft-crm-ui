@@ -6,13 +6,14 @@ div.root {
 
   .breadcrum-toolbar {
     align-items: center;
+    min-height: 40px;
 
     .display-heading-large {
       font-size: 1.2rem;
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden;
-      line-height: 36px;
+      line-height: 40px;
       display: flex;
       align-items: center;
     }
@@ -26,23 +27,14 @@ div.root {
   .data-container {
     height: 100%;
 
-    mat-tab-group {
+    .dataset-grid {
       height: 100%;
 
-      mat-tab {
+      .dataset-grid-navigation {
+        padding: 0 8px;
         height: 100%;
+        width: 320px;
       }
-    }
-  }
-
-  .dataset-grid {
-    height: 100%;
-
-    .dataset-grid-navigation {
-      flex: 1;
-      padding: 0 8px;
-      width: 300px;
-      height: 100%;
 
       .nav-tree {
         height: 100%;
@@ -53,7 +45,6 @@ div.root {
           mat-expansion-panel {
             .mat-expansion-panel-header {
               padding: 0 0 0 16px;
-              font-size: 0.8rem;
 
               mat-panel-title {
                 width: 100%;
@@ -63,7 +54,7 @@ div.root {
                   text-overflow: ellipsis;
                   overflow: hidden;
                   white-space: nowrap;
-                  font-size: 0.8rem;
+                  font-size: 0.9rem;
                 }
               }
             }
@@ -74,13 +65,13 @@ div.root {
 
             mat-nav-list {
               mat-list-item {
-                font-size: 0.8rem;
+                font-size: 0.9rem;
                 height: 48px;
 
                 .mat-list-icon {
-                  width: 16px;
-                  height: 14px;
-                  font-size: 14px;
+                  height: 38px;
+                  border-radius: 3px;
+                  line-height: 36px;
                 }
               }
             }
@@ -96,16 +87,26 @@ div.root {
               &.warning {
                 color: #ff922b;
               }
+
+              &.error {
+                color: #ff6b6b;
+              }
             }
           }
         }
       }
-    }
 
-    .dataset-grid-listing {
-      flex: 4;
-      padding: 0 8px;
-      height: 100%;
+      .dataset-grid-listing {
+        padding: 0 8px;
+        height: 100%;
+        width: calc(100% - 320px - 16px);
+
+        table.mat-table {
+          width: 100%;
+          max-height: 655px;
+          overflow: auto;
+        }
+      }
     }
   }
 }
