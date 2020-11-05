@@ -487,42 +487,43 @@
                                         </mat-select>
                                     </mat-form-field>
                                 </div>
-
-                                <div class="f-col">
-                                    <div class="f-row">
-                                        <div class="f-col">
-                                            <mat-label>Scale from</mat-label>
-                                            <mat-form-field appearance="outline">
-                                                <input type="number" min="0" matInput formControlName="scaleFrom">
-                                            </mat-form-field>
-                                        </div>
-                                        <span class="col-spacer"></span>
-                                        <div class="f-col">
-                                            <mat-label>Scale to</mat-label>
-                                            <mat-form-field appearance="outline">
-                                                <input type="number" min="0" matInput formControlName="scaleTo">
-                                            </mat-form-field>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="f-col">
-                                    <div class="f-row">
-                                        <div class="f-col">
-                                            <mat-label>Scale step size</mat-label>
-                                            <mat-form-field appearance="outline">
-                                                <input type="number" min="0" matInput formControlName="stepSize">
-                                            </mat-form-field>
-                                        </div>
-                                        <span class="col-spacer"></span>
-                                        <div class="f-col">
-                                            <mat-label>Max dataset number</mat-label>
-                                            <mat-form-field appearance="outline">
-                                                <input type="number" min="0" matInput formControlName="dataSetSize">
-                                            </mat-form-field>
+                                <ng-template [ngIf]="(selStyleWid && selStyleWid.widgetType !== 'TIMESERIES') || chartPropCtrlGrp.get('chartType').value === 'LINE'">
+                                    <div class="f-col">
+                                        <div class="f-row">
+                                            <div class="f-col">
+                                                <mat-label>Scale from</mat-label>
+                                                <mat-form-field appearance="outline">
+                                                    <input type="number" min="0" matInput formControlName="scaleFrom">
+                                                </mat-form-field>
+                                            </div>
+                                            <span class="col-spacer"></span>
+                                            <div class="f-col">
+                                                <mat-label>Scale to</mat-label>
+                                                <mat-form-field appearance="outline">
+                                                    <input type="number" min="0" matInput formControlName="scaleTo">
+                                                </mat-form-field>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+    
+                                    <div class="f-col">
+                                        <div class="f-row">
+                                            <div class="f-col">
+                                                <mat-label>Scale step size</mat-label>
+                                                <mat-form-field appearance="outline">
+                                                    <input type="number" min="0" matInput formControlName="stepSize">
+                                                </mat-form-field>
+                                            </div>
+                                            <span class="col-spacer"></span>
+                                            <div class="f-col">
+                                                <mat-label>Max dataset number</mat-label>
+                                                <mat-form-field appearance="outline">
+                                                    <input type="number" min="0" matInput formControlName="dataSetSize">
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-template>
                             </ng-template>
 
                             <div class="f-col">

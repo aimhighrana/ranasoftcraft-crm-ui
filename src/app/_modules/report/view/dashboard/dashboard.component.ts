@@ -90,12 +90,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
   delete() {
     this.globalDialogService.confirm({label:'Are you sure to delete ?'}, (response) =>{
       if(response && response === 'yes') {
-        this.reportService.deleteReport((this.reportId.toString())).subscribe(res=>{
+        const deletereport = this.reportService.deleteReport((this.reportId.toString())).subscribe(res=>{
           if(res) {
             this.sharedService.setReportListData();
             this.snackbar.open(`Successfully Deleted`, 'Close',{duration:3000});
           }
-        },err=>console.error(`Error: ${err}`))
+        },err=>console.error(`Error: ${err}`));
+        this.subscriptions.push(deletereport);
       }
     });
   }

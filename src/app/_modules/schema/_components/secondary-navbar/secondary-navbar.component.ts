@@ -1,11 +1,11 @@
-import { Component, OnInit, OnChanges, SimpleChanges, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, Input, EventEmitter, Output, OnDestroy } from '@angular/core';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { SchemaListModuleList, SchemaListDetails } from '@models/schema/schemalist';
 import { SchemaService } from '@services/home/schema.service';
 import { ReportService } from '@modules/report/_service/report.service';
 import { ReportList } from '@modules/report/report-list/report-list.component';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 
 @Component({
@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
   templateUrl: './secondary-navbar.component.html',
   styleUrls: ['./secondary-navbar.component.scss']
 })
-export class SecondaryNavbarComponent implements OnInit, OnChanges {
+export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
 
   public moduleList: SchemaListModuleList[] = [];
   reportList: ReportList[] = [];
@@ -48,6 +48,9 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
    */
   @Output() toggleEmitter: EventEmitter<{}> = new EventEmitter<{}>();
 
+
+  subscriptions: Subscription[] = [];
+
   constructor(
     private router: Router,
     private schemaListService: SchemalistService,
@@ -55,6 +58,12 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
     private reportService: ReportService,
     private sharedService: SharedServiceService
   ) { }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => {
+      sub.unsubscribe();
+    });
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes && changes.activatedPrimaryNav && changes.activatedPrimaryNav.previousValue !== changes.activatedPrimaryNav.currentValue) {
@@ -79,17 +88,21 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    this.sharedService.getReportListData().subscribe(res => {
+    const reportList = this.sharedService.getReportListData().subscribe(res => {
       if (res) {
         this.getreportList();
       }
     });
 
-    this.sharedService.getTogglePrimaryEmit().subscribe(res => {
+    const toggleemit = this.sharedService.getTogglePrimaryEmit().subscribe(res => {
       if (res) {
         this.toggleSideBar(true);
       }
     });
+
+    this.subscriptions.push(toggleemit);
+    this.subscriptions.push(reportList);
+
 
     const currentUrl = this.router.url;
     this.checkDescOnReload(currentUrl)
@@ -99,18 +112,19 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
    * Get all schema along with variants ..
    */
   getDataIntilligence() {
-    this.schemaService.getSchemaWithVariants().subscribe(res => {
+    const schemaVariant = this.schemaService.getSchemaWithVariants().subscribe(res => {
       this.dataIntillegences.length = 0;
       this.dataIntillegences.push(...res);
       this.searchSchemaResults = this.dataIntillegences;
     }, error => console.error(`Error : ${error.message}`));
+    this.subscriptions.push(schemaVariant);
   }
 
   /**
    * Get all schemas ..
    */
   public getSchemaList() {
-    this.schemaListService.getSchemaList().subscribe((moduleList) => {
+    const schemaList = this.schemaListService.getSchemaList().subscribe((moduleList) => {
       this.moduleList = moduleList;
       this.searchModuleResults = this.moduleList;
       if (this.moduleList) {
@@ -119,14 +133,15 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
       }
     }, error => {
       console.error(`Error : ${error.message}`);
-    })
+    });
+    this.subscriptions.push(schemaList);
   }
 
   /**
    * Function to get report list
    */
   public getreportList() {
-    this.reportService.reportList().subscribe(reportList => {
+    const reportLst = this.reportService.reportList().subscribe(reportList => {
       this.reportOb = of(reportList);
       this.reportList = reportList;
       if (this.reportList) {
@@ -134,6 +149,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
         this.router.navigate(['home/report/dashboard', firstReportId]);
       }
     }, error => console.error(`Error : ${error}`));
+    this.subscriptions.push(reportLst);
   }
 
   /**

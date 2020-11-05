@@ -173,11 +173,12 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     this.getTimeSeriesMetadata();
     this.widgetInf.subscribe(metadata => {
       if (metadata) {
-        this.getwidgetData(this.widgetId);
         if(this.isLoading) {
           this.isLoading = false;
           this.setChartProperties();
           this.afterColorDefined.next(metadata.timeSeries.widgetColorPalette);
+        } else {
+          this.getwidgetData(this.widgetId);
         }
       }
     });
@@ -592,7 +593,11 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
           const bucket = arrBuckets.filter(fil => fil.key === arrBucket.key)[0];
           const count = bucket ? (forDistinct ? (bucket['cardinality#count'] ? bucket['cardinality#count'].value : 0) : bucket.doc_count) : 0;
           arrcount.push(count);
-          const textTermBucket = bucket && bucket['sterms#textTerm'] ? bucket['sterms#textTerm'].buckets : [];
+          const txtvalue = Object.keys(bucket);
+          const txtlabel = txtvalue.filter(data => {
+            return data.includes('terms#textTerm');
+          })
+          const textTermBucket = bucket && bucket[txtlabel[0]] ? bucket[txtlabel[0]].buckets : [];
           let label = ''
           if(textTermBucket.length > 0){
             textTermBucket.forEach(textBucket => {
