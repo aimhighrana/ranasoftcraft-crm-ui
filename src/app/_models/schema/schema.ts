@@ -1,3 +1,6 @@
+import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { MetadataModel } from './schemadetailstable';
+
 export interface Schema {
      schemaId: string;
      title: string;
@@ -115,4 +118,34 @@ export class WorkflowResponse {
 export class WorkflowPath {
      wfpath: string;
      objectType: string;
+}
+
+export interface DataSource {
+     excelFld: string;
+     excelFrstRow: string;
+     mdoFldId: string;
+     mdoFldDesc: string;
+     columnIndex: number;
+}
+
+export interface ExcelValues {
+     uploadedData: any[];
+     headerData: DataSource[];
+}
+
+export interface UploadError {
+     status: boolean;
+     message: string;
+}
+
+export interface AddFilterOutput {
+     fldCtrl: MetadataModel;
+     selectedValues: DropDownValue[];
+     fieldId?: string;
+     fieldDescription?: any;
+}
+
+export interface SubscriberFields {
+     subscriberIndex: number;
+     event: AddFilterOutput;
 }

@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { EndpointService } from '../endpoint.service';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../any2ts.service';
-import { SchemaGroupResponse, SchemaGroupDetailsResponse, SchemaGroupCountResponse, CreateSchemaGroupRequest, GetAllSchemabymoduleidsReq, ObjectTypeResponse, GetAllSchemabymoduleidsRes, SchemaGroupWithAssignSchemas, WorkflowResponse, WorkflowPath } from 'src/app/_models/schema/schema';
-import { DataSource } from 'src/app/_modules/schema/_components/upload-data/upload-data.component';
+import { SchemaGroupResponse, SchemaGroupDetailsResponse, SchemaGroupCountResponse, CreateSchemaGroupRequest, GetAllSchemabymoduleidsReq, ObjectTypeResponse, GetAllSchemabymoduleidsRes, SchemaGroupWithAssignSchemas, WorkflowResponse, WorkflowPath, ExcelValues, DataSource } from 'src/app/_models/schema/schema';
 import { DropDownValue, UDRBlocksModel, UdrModel, CoreSchemaBrInfo, Category } from 'src/app/_modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaStaticThresholdRes, SchemaListModuleList, SchemaListDetails, CoreSchemaBrMap } from '@models/schema/schemalist';
 
@@ -15,11 +14,53 @@ import { SchemaStaticThresholdRes, SchemaListModuleList, SchemaListDetails, Core
   providedIn: 'root'
 })
 export class SchemaService {
+  private excelValues: BehaviorSubject<ExcelValues> = new BehaviorSubject(null);
+  private staticFieldValues: BehaviorSubject<string[]> = new BehaviorSubject(null);
   constructor(
     private http: HttpClient,
     private endpointService: EndpointService,
     private any2tsService: Any2tsService
   ) { }
+
+  /**
+   * get column data using the selected column id
+   * @param selectedElement Element that's selected currently
+   */
+  public generateColumnByFieldId(fieldId: string) {
+    if(fieldId) {
+      const excelData: ExcelValues = this.getExcelValues();
+      const column = excelData.headerData.find((header) => header.mdoFldId === fieldId);
+      const index = column.columnIndex;
+      const columnData: string[] = [];
+      excelData.uploadedData.map((row: any[], i) => {
+        const columnValue = row[index];
+        if(columnValue && i>0) {
+          columnData.push(columnValue);
+        }
+      });
+
+      this.setStaticFieldValues(Array.from(new Set(columnData)));
+    }
+  }
+
+  public setStaticFieldValues(values: string[]) {
+    this.staticFieldValues.next(values);
+  }
+
+  public getStaticFieldValues(fieldId: string): string[] {
+    if(fieldId && fieldId.trim()){
+      this.generateColumnByFieldId(fieldId);
+    }
+    return this.staticFieldValues.getValue();
+  }
+
+  public setExcelValues(values: ExcelValues) {
+    this.excelValues.next(values);
+  }
+
+  public getExcelValues(): ExcelValues {
+    return this.excelValues.getValue();
+  }
 
   public getAllSchemaGroup(): Observable<SchemaGroupResponse[]> {
     return this.http.get(this.endpointService.getSchemaGroupsUrl()).pipe(map(data => {

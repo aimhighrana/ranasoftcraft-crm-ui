@@ -115,7 +115,7 @@ describe('SchemaDetailsComponent', () => {
       type:'DROPDOWN',
       values:['TEST'],
       fldCtrl:{fieldId:'MATL_TYPE'} as MetadataModel,
-      filterCtrl:{fldCtrl:{fieldId:'MATL_TYPE'} as MetadataModel,selectedValeus:[]}
+      filterCtrl:{fldCtrl:{fieldId:'MATL_TYPE'} as MetadataModel,selectedValues:[]}
     }];
 
     component.filterCriteria.next(exitingFilter);

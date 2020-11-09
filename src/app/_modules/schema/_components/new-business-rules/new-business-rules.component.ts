@@ -99,7 +99,8 @@ export class NewBusinessRulesComponent implements OnInit {
     ]
     finalResponseBlocks = [];
 
-    fieldControl = new FormControl()
+    fieldControl = new FormControl();
+    tempRuleId: string;
 
     /**
      * Class contructor
@@ -126,11 +127,57 @@ export class NewBusinessRulesComponent implements OnInit {
             weightage: new FormControl(0, [Validators.required]),
             categoryId: new FormControl('', [Validators.required]),
         });
-        if (this.data.moduleId) {
-            this.getFieldsByModuleId()
-        } else {
-            this.createDSByFields()
+
+        // Patch data if working with existing business rule
+        if(this.data && this.data.createRuleFormValues) {
+            this.tempRuleId = (this.data && this.data.tempId)? this.data.tempId: '';
+            const {
+                rule_type,
+                rule_name,
+                error_message,
+                standard_function,
+                regex,
+                fields,
+                udrTreeData,
+                weightage,
+                categoryId} = this.data.createRuleFormValues;
+            this.form.patchValue({
+                rule_type,
+                rule_name,
+                error_message,
+                standard_function,
+                regex,
+                fields,
+                udrTreeData,
+                weightage,
+                categoryId,
+            });
         }
+
+        if (this.data.moduleId) {
+            this.getFieldsByModuleId();
+        } else {
+            // Patch selected fields here
+            this.createDSByFields().then(() => {
+                if(this.data && this.data.createRuleFormValues && this.data.createRuleFormValues.fields) {
+                    const fields = this.data.createRuleFormValues.fields;
+                    const arr = fields.split(',');
+                    if(arr && arr.length>0){
+                        arr.map((selected) => {
+                            const fieldObj = this.fieldsList.filter((field) => field.fieldId === selected);
+                            if(fieldObj && fieldObj.length>0){
+                                const tempObj = fieldObj[0];
+                                this.selectedFields.push({
+                                    fieldText: tempObj.fieldDescri,
+                                    fieldId: tempObj.fieldId
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+        }
+
         this.filteredModules = this.form.controls.fields.valueChanges
             .pipe(
                 startWith(''),
@@ -145,7 +192,6 @@ export class NewBusinessRulesComponent implements OnInit {
         this.form.controls.rule_type.valueChanges.subscribe((selectedRule) => {
 
             if (selectedRule === 'BR_CUSTOM_SCRIPT') {
-
                 this.form.get('rule_name').clearValidators()
                 this.form.get('error_message').clearValidators()
                 this.form.get('fields').clearValidators();
@@ -196,11 +242,18 @@ export class NewBusinessRulesComponent implements OnInit {
      * function to create fields on the basis of excel sheet uploaded
      */
     createDSByFields() {
-        this.data.fields.forEach((field) => {
-            this.fieldsList.push({
-                fieldId: field.fieldId,
-                fieldDescri: field.fieldDescri
-            })
+        return new Promise((resolve, reject) => {
+            try {
+                this.data.fields.forEach((field) => {
+                    this.fieldsList.push({
+                        fieldId: field.fieldId,
+                        fieldDescri: field.fieldDescri
+                    })
+                });
+                resolve();
+            } catch (error) {
+                reject(error)
+            }
         });
     }
 
@@ -267,7 +320,7 @@ export class NewBusinessRulesComponent implements OnInit {
         if (this.form.pristine) {
             this.dialogRef.close();
         } else {
-            this.dialogRef.close();
+            this.dialogRef.close({formData: this.form.value, tempId: this.tempRuleId});
         }
     }
 
@@ -329,7 +382,7 @@ export class NewBusinessRulesComponent implements OnInit {
         }
 
         this.form.controls.udrTreeData.setValue(finalObject);
-        this.dialogRef.close(this.form.value)
+        this.dialogRef.close({formData: this.form.value, tempId: this.tempRuleId})
     }
 
     setRegex(event) {
@@ -476,10 +529,9 @@ export class NewBusinessRulesComponent implements OnInit {
         this.allUDRBlocks.push(udrBlock)
     }
 
-
     displayFn(value) {
         console.log(value);
-        return value ? value.fieldDescri : ''
+        return value ? value.fieldDescri : '';
     }
 
     formatLabel(value) {

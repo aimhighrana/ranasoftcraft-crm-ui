@@ -1,5 +1,5 @@
 <mat-nav-list>
     <mat-list-item *ngFor="let module of modules" [value]="module.id" (click)="emitSelection(module.id)">{{module.name}}</mat-list-item>
-    <!-- <mat-divider></mat-divider>
-    <mat-list-item (click)="emitSelection('uploadDataset')">Upload Dataset...</mat-list-item> -->
+    <mat-divider></mat-divider>
+    <mat-list-item (click)="emitSelection('uploadDataset')">Upload Dataset...</mat-list-item>
 </mat-nav-list>

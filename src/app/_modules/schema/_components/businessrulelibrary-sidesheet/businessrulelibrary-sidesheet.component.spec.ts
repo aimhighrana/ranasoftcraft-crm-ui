@@ -1,25 +1,92 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { BusinessrulelibrarySidesheetComponent } from './businessrulelibrary-sidesheet.component';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { SchemaService } from '@services/home/schema.service';
+import { CoreSchemaBrInfo } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { of } from 'rxjs';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatListModule } from '@angular/material/list';
+import { MatChipsModule } from '@angular/material/chips';
+import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { HttpClientModule } from '@angular/common/http';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 describe('BusinessrulelibrarySidesheetComponent', () => {
   let component: BusinessrulelibrarySidesheetComponent;
   let fixture: ComponentFixture<BusinessrulelibrarySidesheetComponent>;
+  let schemaService: jasmine.SpyObj<SchemaService>;
 
   beforeEach(async(() => {
+    const model = {
+      selectedRules: [],
+    }
     TestBed.configureTestingModule({
-      declarations: [ BusinessrulelibrarySidesheetComponent ]
+      declarations: [BusinessrulelibrarySidesheetComponent, SearchInputComponent],
+      imports: [
+        MatDialogModule,
+        MatMenuModule,
+        MatListModule,
+        MatChipsModule,
+        MatIconModule,
+        MatCardModule,
+        MatProgressSpinnerModule,
+        HttpClientModule],
+      providers: [SchemaService,
+        { provide: MatDialogRef, useValue: null },
+        { provide: MAT_DIALOG_DATA, useValue: model },
+      ]
     })
-    .compileComponents();
+      .compileComponents();
+    schemaService = TestBed.inject(SchemaService) as jasmine.SpyObj<SchemaService>;
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(BusinessrulelibrarySidesheetComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    // fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it(`search(), search from available rules`, async (() => {
+    component.businessRulesList = [
+      { sno: 100295071201799440, brId: '335555169201799400', brType: 'BR_CUSTOM_SCRIPT', refId: 0, fields: '', regex: '', order: 1, message: '', script: '', brInfo: '', brExpose: 0, status: '1', categoryId: null, standardFunction: '', brWeightage: null, totalWeightage: 100, transformation: 0, tableName: '', qryScript: '', dependantStatus: 'ALL', plantCode: '0', schemaId: null, categoryInfo: null, udrDto: null, brIdStr: '335555169201799441', percentage: 0 },
+      { sno: 104024870140765550, brId: '450251510140765600', brType: 'BR_MANDATORY_FIELDS', refId: 0, fields: 'lyxsjyab4751', regex: '', order: 1, message: 'lucknow', script: '', brInfo: 'India', brExpose: 0, status: '1', categoryId: '17052018003', standardFunction: '', brWeightage: '20', totalWeightage: 100, transformation: 0, tableName: '', qryScript: '', dependantStatus: 'ALL', plantCode: '0', schemaId: null, categoryInfo: null, udrDto: null, brIdStr: '450251510140765548', percentage: 0 }
+    ];
+    const searchTerm = 'India';
+    component.search(searchTerm);
+    expect(component.filteredBusinessRulesList.length).toEqual(1);
+  }));
+
+  it('filterRuleByType(), set business rule type', async(() => {
+    component.businessRulesList = [
+      { sno: 100295071201799440, brId: '335555169201799400', brType: 'BR_CUSTOM_SCRIPT', refId: 0, fields: '', regex: '', order: 1, message: '', script: '', brInfo: '', brExpose: 0, status: '1', categoryId: null, standardFunction: '', brWeightage: null, totalWeightage: 100, transformation: 0, tableName: '', qryScript: '', dependantStatus: 'ALL', plantCode: '0', schemaId: null, categoryInfo: null, udrDto: null, brIdStr: '335555169201799441', percentage: 0 },
+      { sno: 104024870140765550, brId: '450251510140765600', brType: 'BR_MANDATORY_FIELDS', refId: 0, fields: 'lyxsjyab4751', regex: '', order: 1, message: 'lucknow', script: '', brInfo: 'India', brExpose: 0, status: '1', categoryId: '17052018003', standardFunction: '', brWeightage: '20', totalWeightage: 100, transformation: 0, tableName: '', qryScript: '', dependantStatus: 'ALL', plantCode: '0', schemaId: null, categoryInfo: null, udrDto: null, brIdStr: '450251510140765548', percentage: 0 }
+    ];
+    const selectedRuleType = component.businessRuleTypes[8];
+    component.filterRuleByType(selectedRuleType)
+    expect(component.filteredBusinessRulesList.length).toEqual(1);
+  }));
+
+  it(`getAllBusinessRules(), get business rules service`, async(() => {
+    const returnData: CoreSchemaBrInfo[] = [];
+    spyOn(schemaService, 'getAllBusinessRules').and.returnValue(of(returnData));
+    component.getBusinessRulesList();
+    expect(schemaService.getAllBusinessRules).toHaveBeenCalled();
+  }));
+
+  it(`isSelected(), check if a rule is selected`, async(() => {
+    const rules = [
+        { sno: 100295071201799440, brId: '335555169201799400', brType: 'BR_CUSTOM_SCRIPT', refId: 0, fields: '', regex: '', order: 1, message: '', script: '', brInfo: '', brExpose: 0, status: '1', categoryId: null, standardFunction: '', brWeightage: null, totalWeightage: 100, transformation: 0, tableName: '', qryScript: '', dependantStatus: 'ALL', plantCode: '0', schemaId: null, categoryInfo: null, udrDto: null, brIdStr: '335555169201799441', percentage: 0 },
+        { sno: 104024870140765550, brId: '450251510140765600', brType: 'BR_MANDATORY_FIELDS', refId: 0, fields: 'lyxsjyab4751', regex: '', order: 1, message: 'lucknow', script: '', brInfo: 'India', brExpose: 0, status: '1', categoryId: '17052018003', standardFunction: '', brWeightage: '20', totalWeightage: 100, transformation: 0, tableName: '', qryScript: '', dependantStatus: 'ALL', plantCode: '0', schemaId: null, categoryInfo: null, udrDto: null, brIdStr: '450251510140765548', percentage: 0 }
+      ];
+    component.selectedBusinessRuleCopy.push(rules[0]);
+    expect(component.isSelected(rules[0])).toBe(true);
+
+  }))
+
 });

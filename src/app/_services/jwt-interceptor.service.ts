@@ -140,13 +140,13 @@ export class JwtInterceptorService implements HttpInterceptor {
     //   const url = document.getElementsByTagName('base')[0].href.substring(0, document.getElementsByTagName('base')[0].href.indexOf('MDOSF')) + 'MDOSF';
     //   window.close();
     //   window.open(url , 'MDO_TAB');
-    //   localStorage.removetItem('JWT-TOKEN');
-    //   localStorage.removetItem('JWT-REFRESH-TOKEN');
+    //   localStorage.removeItem('JWT-TOKEN');
+    //   localStorage.removeItem('JWT-REFRESH-TOKEN');
     //   // this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });
     // });
     try {
-      localStorage.removetItem('JWT-TOKEN');
-      localStorage.removetItem('JWT-REFRESH-TOKEN');
+      localStorage.removeItem('JWT-TOKEN');
+      localStorage.removeItem('JWT-REFRESH-TOKEN');
     }finally {
       this.router.navigate(['auth','login'], { queryParams: { returnUrl: this.router.url } });
     }

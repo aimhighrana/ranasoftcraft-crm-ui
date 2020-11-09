@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChange
 import { FormGroup } from '@angular/forms';
 import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaService } from '@services/home/schema.service';
+import { debounce } from 'lodash';
 
 @Component({
   selector: 'pros-filter-values',
@@ -21,6 +22,9 @@ export class FilterValuesComponent implements OnInit, OnChanges {
   // To have All dropdown values
   dropValue: DropDownValue[] = [];
 
+  @Input()
+  staticFieldValues: string[];
+
   // To have only selected dropdown values
   @Input()
   checkedValue: DropDownValue[] = [];
@@ -28,22 +32,38 @@ export class FilterValuesComponent implements OnInit, OnChanges {
   // To have values matches search input text
   searchValue: DropDownValue[];
 
+  // Adding debounce to prevent multiple api calls when searching
+  delayedCall = debounce((fieldId: string, searchText: string) => {
+    if(this.staticFieldValues && this.staticFieldValues.length === 0) {
+      this.getDropdownValues(fieldId, searchText);
+    } else {
+      this.searchFromExistingValues(searchText);
+    }
+  }, 700)
+
   constructor(private schemaService: SchemaService) { }
 
+  /**
+   * Angular hook for detecting Input value changes
+   * @param changes Input values to watch for changes
+   */
   ngOnChanges(changes: SimpleChanges): void {
     if(changes && changes.fieldId && changes.fieldId.previousValue !== changes.fieldId.currentValue) {
       this.fieldId = changes.fieldId.currentValue;
       this.getDropdownValues(this.fieldId, '');
+      this.generateDropdownValues(this.schemaService.getStaticFieldValues(this.fieldId));
       this.checkedValue = [];
     }
 
     if(changes && changes.checkedValue && changes.checkedValue.previousValue !== changes.checkedValue.currentValue) {
-      this.checkedValue = changes.checkedValue.currentValue
+      this.checkedValue = changes.checkedValue.currentValue;
     }
   }
 
+  /**
+   * Angular hook
+   */
   ngOnInit(): void {
-
     if(this.fieldId) {
       this.getDropdownValues(this.fieldId, '');
     }
@@ -52,9 +72,27 @@ export class FilterValuesComponent implements OnInit, OnChanges {
   // Hitting API to get drop-down values
   getDropdownValues(materialId: string, query: string) {
     this.schemaService.dropDownValues(materialId, query).subscribe((data) => {
-      this.dropValue = data;
-      this.searchValue = this.dropValue;
+      if(data && data.length>0) {
+        this.dropValue = data;
+        this.searchValue = this.dropValue;
+      }
     })
+  }
+
+  // Generate static values from excel rows
+  generateDropdownValues(dropDownValues: string[]) {
+    dropDownValues.map((value, i) => {
+      this.dropValue.push({
+        CODE: value,
+        FIELDNAME: value,
+        LANGU: '',
+        PLANTCODE: '',
+        SNO: `${i+1}`,
+        TEXT: value
+      });
+    });
+
+    this.searchValue = this.dropValue;
   }
 
   /**
@@ -63,7 +101,7 @@ export class FilterValuesComponent implements OnInit, OnChanges {
    * @param value current dropdown value
    */
   onChange(value: DropDownValue) {
-    const selectedCtrl = this.checkedValue.filter(fil => fil.CODE === value.CODE)[0];
+    const selectedCtrl = this.checkedValue.find(fil => fil.CODE === value.CODE);
 
     if (selectedCtrl) {
       const index = this.checkedValue.indexOf(selectedCtrl);
@@ -77,7 +115,6 @@ export class FilterValuesComponent implements OnInit, OnChanges {
    * Check whether drop is selected
    * @param value current drop value
    */
-
   isChecked(value: DropDownValue): boolean {
     const codes = this.checkedValue.map(map => map.CODE);
     return codes.indexOf(value.CODE) !== -1 ? true : false;
@@ -91,21 +128,22 @@ export class FilterValuesComponent implements OnInit, OnChanges {
     // this.navList._stateChanges.
   }
 
-
   /**
-   * To search dropdown values according to the search field
-   * @param searchText current value of search field
+   * To search from the list of values
    */
-  searchData(searchText: string) {
-    if(searchText) {
-      setTimeout(()=>{
-        this.getDropdownValues(this.fieldId, searchText);
-      }, 1000);
+  searchFromExistingValues(searchText: string) {
+    if(searchText.trim()) {
+      this.searchValue = this.dropValue.filter((value) => value.FIELDNAME.toLowerCase().includes(searchText.toLowerCase()));
     } else {
-      setTimeout(()=>{
-        this.getDropdownValues(this.fieldId, '');
-      }, 1000);
+      this.searchValue = this.dropValue;
     }
   }
 
+  /**
+   * To search dropdown values according to the search field
+   * @param searchText string to search with
+   */
+  searchData(searchText: string = '') {
+    this.delayedCall(this.fieldId, searchText);
+  }
 }

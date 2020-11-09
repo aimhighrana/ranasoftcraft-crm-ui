@@ -55,14 +55,14 @@
 
 
       <div class="mdo-form-field" *ngIf="!isUDR">
-        <pros-form-input (valueChange)="getFormValue($event,'rule_name')" [label]="'Rule name (Description)'">
+        <pros-form-input [value]="form.get('rule_name').value" (valueChange)="getFormValue($event,'rule_name')" [label]="'Rule name (Description)'">
         </pros-form-input>
         <mat-error *ngIf="submitted && form.controls.rule_name.errors && form.controls.rule_name.errors.required">
           Please enter Rule name</mat-error>
       </div>
 
       <div class="mdo-form-field" *ngIf="!isUDR">
-        <pros-form-input (valueChange)="getFormValue($event,'error_message')" [label]="'Error message (Message)'">
+        <pros-form-input [value]="form.get('error_message').value" (valueChange)="getFormValue($event,'error_message')" [label]="'Error message (Message)'">
         </pros-form-input>
         <mat-error
           *ngIf="submitted && form.controls.error_message.errors && form.controls.error_message.errors.required">

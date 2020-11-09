@@ -14,7 +14,7 @@ import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { SchemaExecutionRequest } from '@models/schema/schema-execution';
 import { SchemaExecutionService } from '@services/home/schema/schema-execution.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ReadyForApplyFilter } from '@modules/shared/_components/add-filter-menu/add-filter-menu.component';
+import { AddFilterOutput } from '@models/schema/schema';
 import { FormControl, FormGroup } from '@angular/forms';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { GlobaldialogService } from '@services/globaldialog.service';
@@ -263,7 +263,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
             const dd: DropDownValue = { CODE: val, FIELDNAME: data.fieldId } as DropDownValue;
             dropVal.push(dd);
           })
-          filter.filterCtrl = { fldCtrl: data.fldCtrl, selectedValeus: dropVal };
+          filter.filterCtrl = { fldCtrl: data.fldCtrl, selectedValues: dropVal };
           data.filterCtrl = filter.filterCtrl;
         })
       }),
@@ -426,13 +426,13 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
   }
 
 
-  makeFilterControl(event: ReadyForApplyFilter, sNo: number) {
+  makeFilterControl(event: AddFilterOutput, sNo: number) {
     const exitingFilterCtrl = [];
 
     const filterCtrl: FilterCriteria = new FilterCriteria();
     filterCtrl.fieldId = event.fldCtrl.fieldId;
     filterCtrl.type = 'DROPDOWN';
-    filterCtrl.values = event.selectedValeus.map(map => map.CODE);
+    filterCtrl.values = event.selectedValues.map(map => map.CODE);
 
     exitingFilterCtrl.push(filterCtrl);
 
@@ -469,7 +469,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * @param ctrl Filter criteria
    */
   prepareTextToShow(ctrl: FilterCriteria): string {
-    const selCtrl = ctrl.filterCtrl.selectedValeus.filter(fil => fil.FIELDNAME === ctrl.fieldId);
+    const selCtrl = ctrl.filterCtrl.selectedValues.filter(fil => fil.FIELDNAME === ctrl.fieldId);
     if (selCtrl && selCtrl.length > 1) {
       return String(selCtrl.length);
     }

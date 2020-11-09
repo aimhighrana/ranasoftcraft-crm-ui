@@ -1,21 +1,26 @@
 <mat-nav-list>
-    <mat-list-item *ngFor="let fld of metadaDrop" prosClickStopPropagation (click)="ctrlFlds(fld)">
-        <div class="mat-line">{{ fld.fieldDescri ? fld.fieldDescri : fld.fieldId }}</div> <span class="f-spacer"></span><mat-icon>trending_flat</mat-icon>
-    </mat-list-item>
+    <ng-container *ngIf="!activateElement">
+        <mat-list-item *ngFor="let fld of metadaDrop" prosClickStopPropagation (click)="ctrlFlds(fld)">
+            <div class="mat-line" *ngIf="fld.fieldDescri !== null || fld.fieldDescri !== undefined">
+                {{ fld.fieldDescri }}
+            </div> <span class="f-spacer"></span><mat-icon>trending_flat</mat-icon>
+        </mat-list-item>
+    </ng-container>
 
-    <div class="f-col" id="fld_ctrl" style="display: none;" prosClickStopPropagation>
+    <div class="f-col" *ngIf="activateElement" prosClickStopPropagation>
        <div class="f-row filter-header">
             <button mat-button (click)="prevState()">
                 <mat-icon>arrow_back</mat-icon>
             </button>
-            <div class="mat-line">{{ activateElement ? (activateElement.fieldDescri ? activateElement.fieldDescri : activateElement.fieldId) : 'Unknow' }}</div>
+            <div class="mat-line" *ngIf="activateElement">
+                {{ (activateElement.fieldDescri !== null) ? activateElement.fieldDescri : activateElement.fieldId }}
+            </div>
        </div>
        
         <pros-filter-values
         [fieldId]="activateElement ? activateElement.fieldId : ''"
         (selectedValues)="emitAppliedFilter($event)"
-        [checkedValue]="[]"
-        >
+        [checkedValue]="selectedValues">
         </pros-filter-values>
 
     </div>

@@ -17,11 +17,11 @@ describe('ReportingListComponent', () => {
   let widgetServiceSpy: WidgetService
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ReportingListComponent ],
-      imports:[AppMaterialModuleForSpec,HttpClientTestingModule,MatMenuModule, RouterTestingModule],
-      providers:[ WidgetService ]
+      declarations: [ReportingListComponent],
+      imports: [AppMaterialModuleForSpec, HttpClientTestingModule, MatMenuModule, RouterTestingModule],
+      providers: [WidgetService]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -34,7 +34,7 @@ describe('ReportingListComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('getHeaderMetaData, return header data', async (() => {
+  it('getHeaderMetaData, return header data', async(() => {
     component.widgetId = 75656;
     const response: WidgetHeader = new WidgetHeader();
     spyOn(widgetServiceSpy, 'getHeaderMetaData').withArgs(component.widgetId).and.returnValue(of(response));
@@ -43,21 +43,21 @@ describe('ReportingListComponent', () => {
 
   }));
 
-  it('getListTableMetadata, return table data', async (() => {
+  it('getListTableMetadata, return table data', async(() => {
     component.widgetId = 75656;
-    const response: ReportingWidget[] = [{widgetId:75656, fields:'test', fieldOrder:'APPTEST', fieldDesc:'testing', sno:65467465, fldMetaData:null}];
+    const response: ReportingWidget[] = [{ widgetId: 75656, fields: 'test', fieldOrder: 'APPTEST', fieldDesc: 'testing', sno: 65467465, fldMetaData: null }];
     spyOn(widgetServiceSpy, 'getListTableMetadata').withArgs(component.widgetId).and.returnValue(of(response));
     component.getListTableMetadata();
     expect(widgetServiceSpy.getListTableMetadata).toHaveBeenCalledWith(component.widgetId);
   }));
 
-  it('getServerData(), do pagination ', async(()=>{
+  it('getServerData(), do pagination ', async(() => {
     // mock data
     const evnet = new PageEvent();
-    evnet.pageIndex= 0;
-    evnet.pageSize= 10;
+    evnet.pageIndex = 0;
+    evnet.pageSize = 10;
 
-    const actualData =  component.getServerData(evnet);
+    const actualData = component.getServerData(evnet);
     expect(evnet.pageSize).toEqual(actualData.pageSize);
     expect(evnet.pageIndex).toEqual(actualData.pageIndex);
   }));
@@ -68,24 +68,20 @@ describe('ReportingListComponent', () => {
   //   component.details(data);
   //   expect(component.details(data)).not.toBe(null);
   // }))
-  it('downloadCSV, download the data', async (() => {
+  it('downloadCSV, download the data', async(() => {
     component.listData = ['data'];
-    spyOn(widgetServiceSpy, 'downloadCSV').withArgs('Report-List',component.listData);
+    spyOn(widgetServiceSpy, 'downloadCSV').withArgs('Report-List', component.listData);
     component.downloadCSV();
     expect(component.downloadCSV).toBeTruthy();
   }));
 
-  it('sortTable(), sort the data in asc or desc ', async(() =>{
-    const sort: Sort = {active:'2',direction: 'asc'} as Sort;
+  it('sortTable(), sort the data in asc or desc ', async(() => {
+    const sort: Sort = { active: '2', direction: 'asc' } as Sort;
     component.sortTable(sort);
-
-    expect(component.sortTable(sort)).not.toBe(null);
-
-    const sort1: Sort = {active:'2', direction: ''} as Sort;
+    expect(component.sortTable(sort)).not.toBe(null)
+    const sort1: Sort = { active: '2', direction: '' } as Sort;
     component.sortTable(sort1);
-
     expect(component.sortTable(sort1)).not.toBe(null);
-
     expect(component.sortTable(null)).not.toBe(null);
   }));
 });

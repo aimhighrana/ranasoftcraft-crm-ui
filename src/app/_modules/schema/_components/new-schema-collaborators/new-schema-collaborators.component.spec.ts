@@ -9,6 +9,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { of } from 'rxjs';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { ROLENAMES } from 'src/app/_constants';
 
 const mockDialogRef = {
     close: jasmine.createSpy('close')
@@ -108,25 +109,37 @@ describe('NewSchemaCollaboratorsComponent', () => {
         expect(component.form.value.isAdmin).toEqual(true);
         expect(component.form.value.isReviewer).toEqual(false);
         expect(component.form.value.isViewer).toEqual(false);
-        expect(component.form.value.isEditer).toEqual(false);
+        expect(component.form.value.isEditor).toEqual(false);
 
         component.setPermissions({ value: 'Reviewer' });
         expect(component.form.value.isAdmin).toEqual(false);
         expect(component.form.value.isReviewer).toEqual(true);
         expect(component.form.value.isViewer).toEqual(false);
-        expect(component.form.value.isEditer).toEqual(false);
+        expect(component.form.value.isEditor).toEqual(false);
 
         component.setPermissions({ value: 'Viewer' });
         expect(component.form.value.isAdmin).toEqual(false);
         expect(component.form.value.isReviewer).toEqual(false);
         expect(component.form.value.isViewer).toEqual(true);
-        expect(component.form.value.isEditer).toEqual(false);
+        expect(component.form.value.isEditor).toEqual(false);
 
-        component.setPermissions({ value: 'Editer' });
+        component.setPermissions({ value: 'Editor' });
         expect(component.form.value.isAdmin).toEqual(false);
         expect(component.form.value.isReviewer).toEqual(false);
         expect(component.form.value.isViewer).toEqual(false);
-        expect(component.form.value.isEditer).toEqual(true);
+        expect(component.form.value.isEditor).toEqual(true);
     });
+
+    it(`selectCurrentRole(), set the current role`, async(() => {
+        const role = ROLENAMES.ADMIN;
+        component.selectCurrentRole(role);
+        expect(component.selectedRoleType).toEqual(role);
+    }))
+
+    it(`initForm(), should create the initialForm`, async(() => {
+        component.initForm();
+        expect(component.form).not.toBeUndefined();
+        expect(component.form).not.toBeNull();
+    }))
 });
 

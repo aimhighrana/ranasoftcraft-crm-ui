@@ -22,7 +22,7 @@ describe('SchemaService', () => {
         { provide: Any2tsService, useValue: any2Spy }
       ]
     }).compileComponents();
-    schemaService = TestBed.inject(SchemaService);
+    schemaService = TestBed.inject(SchemaService) as jasmine.SpyObj<SchemaService>;
     endpointServiceSpy = TestBed.inject(EndpointService) as jasmine.SpyObj<EndpointService>;
     any2tsSpy = TestBed.inject(Any2tsService) as jasmine.SpyObj<Any2tsService>;
     httpTestingController = TestBed.inject(HttpTestingController);

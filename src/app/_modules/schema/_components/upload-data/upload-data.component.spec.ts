@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UploadDataComponent, DataSource } from './upload-data.component';
+import { UploadDataComponent } from './upload-data.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -12,6 +12,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { of } from 'rxjs';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { SchemaService } from '@services/home/schema.service';
+import { DataSource } from '@models/schema/schema';
 
 describe('UploadDataComponent', () => {
   let component: UploadDataComponent;

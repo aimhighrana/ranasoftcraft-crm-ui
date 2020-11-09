@@ -3,11 +3,8 @@ import { throwError, BehaviorSubject } from 'rxjs';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { MetadataModeleResponse, MetadataModel } from '@models/schema/schemadetailstable';
 import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
-
-export interface ReadyForApplyFilter {
-  fldCtrl: MetadataModel;
-  selectedValeus: DropDownValue[];
-}
+import { AddFilterOutput } from '@models/schema/schema';
+import { SchemaService } from '@services/home/schema.service';
 
 @Component({
   selector: 'pros-add-filter-menu',
@@ -23,6 +20,12 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
   @Input()
   reInilize: boolean;
 
+  @Input()
+  fieldMetadata: any[];
+
+  selectedValues: DropDownValue[] = [];
+  staticFieldValues: string[];
+  currentFields: any[];
   /**
    * Hold all metada control for header , hierarchy and grid fields ..
    */
@@ -36,19 +39,26 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
   /**
    * Hold info about active element ..
    */
-  activateElement: MetadataModel;
+  activateElement: MetadataModel = null;
+  // activateElement clone used for shwing and hiding the filter section
+  activateElementClone: MetadataModel = null;
 
   /**
    * After applied filter value should emit with
    * fld contrl and selected values ..
    */
   @Output()
-  evtReadyForApply: EventEmitter<ReadyForApplyFilter> = new EventEmitter<ReadyForApplyFilter>(null);
+  evtReadyForApply: EventEmitter<AddFilterOutput> = new EventEmitter<AddFilterOutput>(null);
 
   constructor(
-    private schemaDetailService: SchemaDetailsService
+    private schemaDetailService: SchemaDetailsService,
+    private schemaService: SchemaService
   ) { }
 
+  /**
+   * Angular hook for detecting Input value changes
+   * @param changes Input values to watch for changes
+   */
   ngOnChanges(changes: SimpleChanges): void {
     if(changes && changes.moduleId && changes.moduleId.previousValue !== changes.moduleId.currentValue) {
       this.moduleId = changes.moduleId.currentValue;
@@ -56,19 +66,42 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     if(changes && changes.reInilize && changes.reInilize.previousValue !== changes.reInilize.currentValue) {
-      if(document.getElementById('fld_ctrl')) {
-        document.getElementById('fld_ctrl').style.display = 'none';
+      if(this.activateElement) {
         this.metadata.next(this.metadata.getValue());
       }
+      this.initMetadata(this.currentFields);
+    }
+
+    if(changes && changes.fieldMetadata && changes.fieldMetadata.previousValue !== changes.fieldMetadata.currentValue) {
+      if(changes.fieldMetadata.currentValue) {
+        this.currentFields = changes.fieldMetadata.currentValue;
+        this.initMetadata(changes.fieldMetadata.currentValue);
+       }
     }
   }
 
+  /**
+   * Clear the active element and selected values and Initialize
+   * metadata using fields from the excel row
+   * @param fields Excel first row values(Array)
+   */
+  initMetadata(fields: any[]) {
+    this.activateElement = null;
+    this.selectedValues = [];
+    this.metadaDrop = fields;
+  }
 
+  /**
+   * Angular hook
+   */
   ngOnDestroy(): void {
     this.metadata.complete();
     this.metadata.unsubscribe();
   }
 
+  /**
+   * Angular hook
+   */
   ngOnInit(): void {
     this.metadata.subscribe(fld=>{
        if(fld) {
@@ -115,18 +148,16 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
    */
   ctrlFlds(fld: MetadataModel) {
     this.activateElement = fld;
-    if(document.getElementById('fld_ctrl')) {
-      const dom = document.getElementById('fld_ctrl');
-      dom.style.display = 'block';
-      this.metadaDrop = [];
-    }
+    this.schemaService.generateColumnByFieldId(this.activateElement.fieldId);
+    this.metadaDrop = [];
   }
 
   /**
    * Move to previous state
    */
   prevState() {
-    document.getElementById('fld_ctrl').style.display = 'none';
+    this.activateElement = null;
+    this.activateElementClone = null;
     this.metadata.next(this.metadata.getValue());
   }
 
@@ -135,7 +166,9 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
    * @param val changed value ..
    */
   emitAppliedFilter(val: DropDownValue[]) {
-    this.evtReadyForApply.emit({fldCtrl: this.activateElement,selectedValeus: val});
-    // document.getElementById('fld_ctrl').style.display = 'none';
+    this.selectedValues = val;
+    this.evtReadyForApply.emit({fldCtrl: this.activateElement, selectedValues: val});
+    this.activateElement = null;
+    this.activateElementClone = null;
   }
 }

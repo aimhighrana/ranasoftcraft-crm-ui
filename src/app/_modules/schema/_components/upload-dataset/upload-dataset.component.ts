@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild, Inject, AfterViewInit } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
-import { ObjectTypeResponse, ObjectType } from '@models/schema/schema';
+import { ObjectTypeResponse, ObjectType, DataSource, UploadError, AddFilterOutput, SubscriberFields } from '@models/schema/schema';
 import { MetadataModeleResponse, MetadataModel } from '@models/schema/schemadetailstable';
 import { SchemaService } from '@services/home/schema.service';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
@@ -18,16 +18,10 @@ import { CoreSchemaBrInfo } from '@modules/admin/_components/module/business-rul
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { NewSchemaCollaboratorsComponent } from '../new-schema-collaborators/new-schema-collaborators.component';
-import { SchemaCollaborator } from '@models/collaborator';
+import { values, pick } from 'lodash';
 import { Utilities } from '@modules/base/common/utilities';
+import { BusinessrulelibrarySidesheetComponent } from '../businessrulelibrary-sidesheet/businessrulelibrary-sidesheet.component';
 
-export interface DataSource {
-  excelFld: string;
-  excelFrstRow: string;
-  mdoFldId: string;
-  mdoFldDesc: string;
-  columnIndex: number;
-}
 type UploadedDataType = any[][];
 
 @Component({
@@ -37,7 +31,6 @@ type UploadedDataType = any[][];
 })
 export class UploadDatasetComponent implements OnInit, AfterViewInit {
   @ViewChild(MatStepper) stepper!: MatStepper;
-
   dataTableCtrl: FormGroup;
   selectedMdoFldCtrl: FormControl;
   displayedColumns = ['excel', 'excelfrstrowdata', 'mapping', 'field'];
@@ -50,12 +43,17 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   headerFieldsList: MetadataModel[] = [];
   uploadedData: UploadedDataType;
   excelMdoFieldMappedData: DataSource[] = [];
-
+  triggerValue = false;
   uploadedFile: File;
   uploadDisabled = true;
+  uploadError: UploadError = {
+    status: false,
+    message: ''
+  };
   plantCode: string;
-
+  fieldsBySubscriber: SubscriberFields[] = [];
   loaded = false;
+  uploadLoader = false;
 
   objectTypes: Array<ObjectType> = [];
   /**
@@ -67,12 +65,18 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    */
   headerText = [
     'Upload dataset: choose a file',
-    'Select module',
+    // 'Select module',
     'Name your dataset',
     'Select business rule',
     'Add subscribers',
     'Run the schema'
   ];
+
+  /**
+   * to identify existing BR
+   * and differentiate from newly created ones
+   */
+  existingBRIds: string[] = [];
 
   /**
    * index of active header
@@ -105,6 +109,13 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   requestForm: FormGroup;
 
   /**
+   * form to make changes to header
+   */
+  headerForm: FormGroup;
+
+  currentRuleId: string;
+
+  /**
    * subscribers list
    */
   subscribersList = [];
@@ -120,6 +131,8 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     status: '',
     category: '',
   }
+
+  reInilize = false;
 
   /**
    * Serial no of file uploaded
@@ -144,14 +157,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
 
   dialogSubscriber = new Subscription();
   inputModel = new FormControl();
-
-  /**
-   * Flag to disable back button
-   */
-  disableBack = false;
-
   subscriberFilterFields = [];
-
   activeChipValue = {};
 
   /**
@@ -184,15 +190,17 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.createForm();
     this.schemaService.getAllObjectType().subscribe((modules: []) => {
-      this.modulesList.push(...modules);
-      this.modulesListCopy.push(...modules)
+      if (modules && modules.length > 0) {
+        this.modulesList.push(...modules);
+        this.modulesListCopy.push(...modules);
+      }
     });
 
     // get logged in user details
     this.userService.getUserDetails().subscribe((userdetails: Userdetails) => {
       this.userDetails = userdetails;
-      this.requestForm.controls.userId.setValue(this.userDetails.userName)
-      this.requestForm.controls.plantCode.setValue(this.userDetails.plantCode)
+      this.requestForm.controls.userId.setValue(this.userDetails.userName);
+      this.requestForm.controls.plantCode.setValue(this.userDetails.plantCode);
     });
 
     if (this.data.objectid && this.data.objectdesc) {
@@ -200,11 +208,14 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       this.requestForm.get('objectDesc').setValue(this.data.objectdesc);
       this.requestForm.get('objectfullDesc').setValue(this.data.objectdesc);
     }
+    this.requestForm.get('dataScope').setValue('Entire Dataset');
+    this.requestForm.get('threshold').setValue(100);
   }
 
   setObjectDescription(moduleName) {
     this.requestForm.controls.objectDesc.setValue(moduleName);
     this.requestForm.controls.objectfullDesc.setValue(moduleName);
+    this.requestForm.controls.objectDesc.markAsDirty();
   }
 
   /**
@@ -215,7 +226,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       file: new FormControl(),
       fileSerialNo: new FormControl(''),
       objectId: new FormControl(),
-      objectDesc: new FormControl(''),
+      objectDesc: new FormControl('', [Validators.required, Validators.minLength(1)]),
       objectfullDesc: new FormControl(''),
       lang: new FormControl('en'),
       parentObject: new FormControl({}),
@@ -237,7 +248,9 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       coreSchemaBr: new FormControl([]),
       mappedData: new FormControl([]),
       subscribers: new FormControl([]),
-      runTime: new FormControl(true)
+      runTime: new FormControl(true),
+      dataScope: new FormControl(),
+      threshold: new FormControl(100)
     });
   }
 
@@ -247,6 +260,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     this.stepper.selectionChange.subscribe((change) => {
       this.headerTextIndex = change.selectedIndex;
+      this.progressBar = this.headerTextIndex * 20;
     });
   }
 
@@ -263,6 +277,8 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    */
   fileChange(evt: Event) {
     if (evt !== undefined) {
+      this.uploadError.status = false;
+      this.uploadError.message = '';
       const target: DataTransfer = (evt.target) as unknown as DataTransfer;
       if (target.files.length !== 1) throw new Error('Cannot use multiple files');
       // check file type
@@ -270,7 +286,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       try {
         type = target.files[0].name.split('.')[1];
       } catch (ex) {
-        console.error(ex)
+        console.error(ex);
       }
       if (type === 'xlsx' || type === 'xls' || type === 'csv') {
         // check size of file
@@ -294,17 +310,30 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
           const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
           this.uploadedData = (data as UploadedDataType);
           this.excelHeader = this.uploadedData[0] as string[];
-          // move to next step
-
-          const file = target.files[0]
+          const file = target.files[0];
           this.uploadedFile = file;
 
           const dataS: DataSource[] = [];
           for (let i = 0; i < this.uploadedData[0].length; i++) {
-            const datS: DataSource = { excelFld: this.uploadedData[0][i], excelFrstRow: this.uploadedData[1][i], mdoFldId: '', mdoFldDesc: '', columnIndex: i };
+            const datS: DataSource = {
+              excelFld: this.uploadedData[0][i],
+              excelFrstRow: this.uploadedData[1][i],
+              mdoFldId: this.utilties.getRandomString(8),
+              mdoFldDesc: '',
+              columnIndex: i
+            };
             dataS.push(datS);
           }
-          this.dataSource = dataS;
+          // initialize excel header form here
+          this.initHeaderForm(dataS).then(() => {
+            this.dataSource = dataS;
+            if (this.uploadedData) {
+              this.schemaService.setExcelValues({ uploadedData: this.uploadedData, headerData: this.dataSource });
+            }
+          })
+            .catch((err) => {
+              console.log(err);
+            });
         };
 
         reader.readAsBinaryString(target.files[0]);
@@ -319,24 +348,56 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   }
 
   /**
+   * Initialize header form dynamically with
+   * received data from the excel file
+   */
+  initHeaderForm(dataSource: DataSource[]) {
+    return new Promise((resolve, reject) => {
+      try {
+        const formBody = {};
+        dataSource.map((data) => {
+          formBody[data.mdoFldId] = new FormControl(data.excelFld, [Validators.required]);
+        });
+        this.headerForm = new FormGroup(formBody);
+        this.headerForm.valueChanges.subscribe((value) => {
+          this.excelHeader = values(value);
+        });
+        resolve(null);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  /**
    * function to create fields from excel
    * file and create structure to send
    * to server
    */
-  createfieldObjectForRequest(excelHeader) {
-    excelHeader.forEach((field) => {
-      this.requestForm.controls.fields.value.push({
-        fieldDescri: field,
-        fieldId: this.utilties.getRandomString(8),
-        dataType: 'CHAR',
-        maxChar: '200',
-        mandatory: '0',
-        parentField: null,
-        tableName: null,
-        isCheckList: 'false',
-        isComBased: '0'
-      })
-    });
+  createfieldObjectForRequest(dataSource: DataSource[], formData = this.headerForm.value) {
+    return new Promise((resolve, reject) => {
+      const fieldValues = [];
+      try {
+        if (dataSource && dataSource.length > 0) {
+          dataSource.forEach((dataS) => {
+            fieldValues.push({
+              fieldDescri: formData[dataS.mdoFldId],
+              fieldId: dataS.mdoFldId,
+              dataType: 'CHAR',
+              maxChar: '200',
+              mandatory: '0',
+              parentField: null,
+              tableName: null,
+              isCheckList: 'false',
+              isComBased: '0'
+            });
+          });
+        }
+        resolve(fieldValues)
+      } catch (error) {
+        reject(error)
+      }
+    })
   }
 
   /**
@@ -354,17 +415,48 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   }
 
   /**
+   * check validation for each step here
+   */
+  validateStep() {
+    if (!this.headerForm.valid || !this.requestForm.valid) {
+      return false;
+    }
+    if (this.stepper.selectedIndex === 3) {
+      const schema = this.requestForm.get('core_schema').value;
+      if (!schema || !schema.description) {
+        return false;
+      }
+    }
+    if (this.stepper.selectedIndex === 3) {
+      if (this.businessRulesList && this.businessRulesList.length === 0) {
+        this.snackBar.open('Please add a Business Rule to continue', 'Okay', { duration: 5000 });
+        return false;
+      }
+    }
+    if (this.stepper.selectedIndex === 4) {
+      if (this.subscribersList && this.subscribersList.length === 0) {
+        this.snackBar.open('Please add a Subscriber to continue', 'Okay', { duration: 5000 });
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /**
    * stepping function
    * @param where value to move to next or previous
+   * @param validateForm whether to validate the data entered (optional)
    */
-  step(where: string) {
-
+  step(where: string, validateForm?: boolean) {
+    if (validateForm && !this.validateStep()) {
+      return;
+    }
     if (where === 'next') {
       if (this.progressBar === 100) {
         return;
       }
-      const currentStepIndex = this.stepper.selectedIndex
-
+      const currentStepIndex = this.stepper.selectedIndex;
       if (currentStepIndex === 2) {
         // there should be atleast one mapping
         const anyMapping = this.requestForm.controls.mappedData.value.length;
@@ -384,9 +476,6 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
           return;
         }
       }
-      this.moveProgressBar('next');
-    } else {
-      this.moveProgressBar('back')
     }
 
     if (this.headerTextIndex === 0) {
@@ -399,18 +488,10 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Common function to update progressbar
-   * @param movementType movement type ie next or previous
-   */
-  moveProgressBar(movementType) {
-    this.progressBar = movementType === 'next' ? this.progressBar + 20 : this.progressBar - 20
-  }
-
-  /**
    * Function to open global dialog
    * @param componentName name of the component that needs to be opened
    */
-  openGlobalDialog(componentName) {
+  openGlobalDialog(componentName = 'createBR') {
     if (componentName === 'createBR') {
       this.globaldialogService.openDialog(NewBusinessRulesComponent, {
         moduleId: this.requestForm.value.objectId,
@@ -421,21 +502,142 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         .pipe(
           distinctUntilChanged()
         )
-        .subscribe((response: any) => {
-          let brObject: CoreSchemaBrInfo;
-          if (response.rule_type === 'BR_CUSTOM_SCRIPT') {
-            brObject = this.createBrObject(response, response.udrTreeData)
-          } else {
-            brObject = this.createBrObject(response)
+        .subscribe((response) => {
+          this.updateCurrentRulesList(response);
+          this.dialogSubscriber.unsubscribe();
+        })
+    }
+    if (componentName === 'existingBR') {
+      this.globaldialogService.openDialog(BusinessrulelibrarySidesheetComponent, {
+        selectedRules: this.businessRulesList,
+      });
+      this.dialogSubscriber = this.globaldialogService.dialogCloseEmitter
+        .pipe(distinctUntilChanged())
+        .subscribe((response: CoreSchemaBrInfo[]) => {
+          if (response && response.length > 0) {
+            response.map((rule) => {
+              this.addRuleIdToExisting(rule.brId).then(() => {
+                const updatedObj = { ...rule, tempId: this.utilties.getRandomString(8) };
+                this.businessRulesList.push(updatedObj);
+              });
+            });
           }
-          this.requestForm.controls.coreSchemaBr.value.push(brObject);
-          brObject.status = '1';
-          this.businessRulesList.push(brObject);
-          this.dialogSubscriber.unsubscribe()
+          this.dialogSubscriber.unsubscribe();
         })
     }
   }
 
+  /**
+   * Function to add/updated rules to business rules list
+   * @param response response from the newly created rule dialog
+   * or from the existing rules selection
+   */
+  updateCurrentRulesList(response) {
+    let brObject: CoreSchemaBrInfo;
+    const tempId = (response.tempId) ? response.tempId : null;
+    const formData = (response.formData) ? response.formData : null;
+    if (formData) {
+      if (formData.rule_type === 'BR_CUSTOM_SCRIPT') {
+        brObject = this.createBrObject(formData, formData.udrTreeData);
+      } else {
+        brObject = this.createBrObject(formData);
+      }
+      if (this.requestForm.controls.coreSchemaBr.value.length > 0) {
+        this.requestForm.controls.coreSchemaBr.setValue(
+          this.requestForm.controls.coreSchemaBr.value.map((val) => {
+            if (val.tempId === tempId) {
+              return brObject;
+            } else {
+              return val;
+            }
+          }));
+      } else {
+        this.requestForm.controls.coreSchemaBr.value.push(brObject);
+      }
+      brObject.status = '1';
+      if (this.businessRulesList.length > 0) {
+        const index = this.businessRulesList.findIndex(rule => rule.tempId === tempId);
+        if (index > -1) {
+          this.businessRulesList[index] = brObject;
+        }
+      } else {
+        this.businessRulesList.push(brObject);
+      }
+    }
+  }
+
+
+  /**
+   * Function to track rule Ids, later used to identify newly created
+   * or existing rules. "Configure" option is shown based on this
+   * @param ruleId rule id
+   */
+  addRuleIdToExisting(ruleId: string) {
+    return new Promise((resolve) => {
+      this.existingBRIds.push(ruleId);
+      resolve();
+    })
+  }
+
+  /**
+   * Function to check if a rule is newly added
+   * @param ruleId rule id
+   */
+  isExistingRule(ruleId: string) {
+    return this.existingBRIds.indexOf(ruleId) > -1;
+  }
+
+  /**
+   * Function to open business rule dialog for further configuration
+   * @param rule the selected rule which is to be configured
+   */
+  configureRule(rule: CoreSchemaBrInfo) {
+    this.createfieldObjectForRequest(this.dataSource).then((finalValues) => {
+      this.requestForm.controls.fields.setValue(finalValues);
+      const {
+        tempId,
+        brType,
+        brInfo,
+        message,
+        regex,
+        udrDto,
+        brWeightage,
+        standardFunction,
+        categoryId,
+        fields } = rule;
+      this.globaldialogService.openDialog(NewBusinessRulesComponent, {
+        moduleId: '',
+        fields: this.requestForm.controls.fields.value,
+        tempId,
+        createRuleFormValues: {
+          rule_type: brType,
+          rule_name: brInfo,
+          error_message: message,
+          standard_function: standardFunction,
+          regex,
+          fields,
+          udrTreeData: udrDto,
+          weightage: brWeightage,
+          categoryId,
+        }
+      });
+    });
+
+    this.dialogSubscriber = this.globaldialogService.dialogCloseEmitter
+      .pipe(distinctUntilChanged())
+      .subscribe((response: any) => {
+        if (response && response.formData) {
+          this.updateCurrentRulesList(response);
+        }
+        this.dialogSubscriber.unsubscribe();
+      });
+  }
+
+  /**
+   * Function to toggle business rule status value
+   * @param event value for status, checked or unchecked
+   * @param Br Business rule
+   */
   toggleBrStatus(event, Br) {
     this.requestForm.controls.coreSchemaBr.value.map((br) => {
       if (br.fields === Br.fields) {
@@ -445,11 +647,20 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   }
 
   /**
+   * function to update the current schedule
+   * @param schedule selected schedule
+   */
+  updateCurrentSchedule(schedule) {
+    console.log('schedule', schedule);
+  }
+
+  /**
    * function to create br
    * @param object newly created Br
    */
-  createBrObject(object, udrTreeData = { udrHierarchies: [], blocks: [] }) {
+  createBrObject(object, udrTreeData = { udrHierarchies: [], blocks: [] }): CoreSchemaBrInfo {
     return {
+      tempId: this.utilties.getRandomString(8),
       sno: 0,
       brId: '',
       brType: object.rule_type,
@@ -499,12 +710,14 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       this.requestForm.controls.objectDesc.setValue(selectedModule.objectdesc);
       this.requestForm.controls.objectfullDesc.setValue(selectedModule.objectdesc);
       this.requestForm.controls.objectId.setValue(selectedModule.objectid);
-      this.getModulesMetaHeaders()
+      this.getModulesMetaHeaders();
     } else {
       this.requestForm.controls.objectDesc.setValue('');
       this.requestForm.controls.objectfullDesc.setValue('');
       this.requestForm.controls.objectId.setValue('');
-      this.createfieldObjectForRequest(this.excelHeader)
+      this.createfieldObjectForRequest(this.dataSource).then((finalValues) => {
+        this.requestForm.controls.fields.setValue(finalValues);
+      });
     }
     this.step('next');
   }
@@ -515,8 +728,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   getModulesMetaHeaders() {
     this.schemaDetailsService.getMetadataFields(this.requestForm.controls.objectId.value)
       .subscribe((res: MetadataModeleResponse) => {
-        if (res.headers) {
-
+        if (res && res.headers) {
           this.headerFieldsList.push({
             fieldId: 'objectnumber',
             fieldDescri: 'Module Object Number',
@@ -620,16 +832,25 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * @param event name of schema
    */
   setschemaName(event) {
-    this.requestForm.controls.core_schema.value.discription = event;
+    const updatedSchemaValue = { ...this.requestForm.controls.core_schema.value };
+    updatedSchemaValue.description = event;
+    this.requestForm.controls.core_schema.setValue(updatedSchemaValue);
+  }
+
+  isSchemaSet(value): boolean {
+    if ((value && !value.description) || !value) {
+      return false;
+    }
+    return true;
   }
 
   brDataToFormObject(event: MatSlideToggleChange, businessRule: CoreSchemaBrInfo) {
     if (event.checked) {
-      this.requestForm.controls.coreSchemaBr.value.push(businessRule)
+      this.requestForm.controls.coreSchemaBr.value.push(businessRule);
     } else {
       const index = this.requestForm.controls.coreSchemaBr.value.find(item => item.brIdStr === businessRule.brIdStr);
       if (index) {
-        this.requestForm.controls.coreSchemaBr.value.splice(index, 1)
+        this.requestForm.controls.coreSchemaBr.value.splice(index, 1);
       }
     }
   }
@@ -646,23 +867,22 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * function to upload file to server
    */
   uploadFileData() {
+    this.uploadLoader = true;
     this.schemaService.uploadUpdateFileData(this.requestForm.get('file').value, this.requestForm.get('fileSerialNo').value)
       .subscribe(res => {
+        this.uploadLoader = false;
         this.requestForm.get('fileSerialNo').setValue(res);
         const objectId = this.requestForm.get('objectId').value;
-        console.log(objectId)
-        if (this.requestForm.get('objectId').value) {
-          this.getModulesMetaHeaders()
+        if (objectId) {
+          this.getModulesMetaHeaders();
           this.stepper.next();
-          this.stepper.next();
-          this.disableBack = true;
-          this.moveProgressBar('next');
         } else {
-          this.disableBack = false;
-
-          this.stepper.next();
+          this.setModuleValueAndTakeStep();
         }
-      }, () => {
+      }, (err) => {
+        this.uploadLoader = false;
+        this.uploadError.status = true;
+        this.uploadError.message = 'File could not be uploaded';
         this.snackBar.open('File could not be uploaded', 'Okay', { duration: 5000 })
       });
   }
@@ -676,6 +896,14 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   }
 
   /**
+   * Count number of values selected for a particular field
+   */
+  getFieldValueCount(data) {
+    const fieldData = this.fieldsBySubscriber.find(field => field.event.fieldId === data.fieldId);
+    return fieldData.event.selectedValues.length;
+  }
+
+  /**
    * Function to open dialog box and set the recieved
    * subscibers to form
    */
@@ -683,14 +911,21 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     this.globaldialogService.openDialog(NewSchemaCollaboratorsComponent, {});
     this.dialogSubscriber = this.globaldialogService.dialogCloseEmitter
       .pipe(distinctUntilChanged())
-      .subscribe((response: SchemaCollaborator) => {
-        if (response) {
-          response.sno = Math.floor(Math.random() * 100000000000).toString();
-          response.plantCode = this.userDetails.plantCode;
-          response.dataAllocation = [];
-          response.filterFieldIds = [];
-          this.subscribersList.push(response);
-        }
+      .subscribe((response: any[]) => {
+        response.forEach((subscriber) => {
+          subscriber.sno = Math.floor(Math.random() * 100000000000).toString();
+          subscriber.plantCode = this.userDetails.plantCode;
+          subscriber.dataAllocation = [];
+          subscriber.filterFieldIds = [];
+          this.subscribersList.push(subscriber);
+        })
+        // if (response) {
+        //   response.sno = Math.floor(Math.random() * 100000000000).toString();
+        //   response.plantCode = this.userDetails.plantCode;
+        //   response.dataAllocation = [];
+        //   response.filterFieldIds = [];
+        //   this.subscribersList.push(response);
+        // }
         this.dialogSubscriber.unsubscribe();
       });
   }
@@ -701,8 +936,8 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    */
   save() {
     const formObject = this.requestForm.value;
-    const objectId = formObject.objectId
-    const variantId = '0'
+    const objectId = formObject.objectId;
+    const variantId = '0';
     const fileSerialNo = formObject.fileSerialNo;
     this.requestForm.controls.subscribers.setValue([]);
 
@@ -717,15 +952,15 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
           excelFrstRow: null
         })
       });
-      this.requestForm.controls.mappedData.setValue(mappedArray)
+      this.requestForm.controls.mappedData.setValue(mappedArray);
     }
 
     if (this.subscribersList.length > 0) {
       this.subscribersList.forEach((subscriber) => {
         subscriber.filterFieldIds.forEach(field => {
-          field.values = field.selectedValeus.map(item => item.CODE);
+          field.values = field.selectedValues.map(item => item.CODE);
           delete field.fldCtrl
-          delete field.selectedValeus
+          delete field.selectedValues
         });
         subscriber.filterCriteria = subscriber.filterFieldIds;
         delete subscriber.filterFieldIds;
@@ -741,8 +976,16 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     )
   }
 
+  // remove tempId from CoreSchemaBr objects
+  removeTempId(value) {
+    const modified = { ...value };
+    const rules = value.coreSchemaBr.map((rule) => pick(rule, Object.keys(rule).filter(key => key !== 'tempId')));
+    modified.coreSchemaBr = rules;
+    return modified;
+  }
+
   callSaveSchemaAPI(objectId: string, variantId: string, fileSerialNo: string) {
-    const formObject = this.requestForm.value;
+    const formObject = this.removeTempId(this.requestForm.value);
     const runNow = formObject.runTime;
     delete formObject.objectId;
     delete formObject.file;
@@ -789,29 +1032,32 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     const subscriberId = subscriber.sno;
     const subscriberInList = this.subscribersList.find(subscriberItem => subscriberItem.sno === subscriberId);
     subscriberInList.role = event.value;
-    subscriberInList.role = event.value;
     subscriberInList.isAdmin = event.value === 'isAdmin' ? true : false;
     subscriberInList.isReviewer = event.value === 'isReviewer' ? true : false;
     subscriberInList.isViewer = event.value === 'isViewer' ? true : false;
     subscriberInList.isEditer = event.value === 'isEditer' ? true : false;
   }
 
-  makeFilterControl(event, subscriber, subscriberIndex) {
-    if (event.selectedValeus.length === 0)
+  makeFilterControl(event: AddFilterOutput, subscriber, subscriberIndex) {
+    if (event.selectedValues.length === 0) {
       return;
-    console.log(event);
-    event.fieldId = event.fldCtrl.fieldId;
-    event.fieldDescription = event.fldCtrl.fieldDescri;
-
-    const exists = this.subscribersList[subscriberIndex].filterFieldIds.find(ele => ele.fieldId === event.fieldId);
-
-    if (exists) {
-      exists.values = event.selectedValeus;
-    } else {
-      this.subscribersList[subscriberIndex].filterFieldIds.push(event)
     }
 
-    console.log(this.subscribersList[subscriberIndex])
+    event.fieldId = event.fldCtrl.fieldId;
+    event.fieldDescription = event.fldCtrl.fieldDescri;
+    const exists = this.subscribersList[subscriberIndex].filterFieldIds.find(ele => ele.fieldId === event.fieldId);
+    if (exists) {
+      exists.values = event.selectedValues;
+      const fieldIndex = this.subscribersList[subscriberIndex].filterFieldIds.findIndex(ele => ele.fieldId === event.fieldId);
+      if (fieldIndex > -1) {
+        this.subscribersList[subscriberIndex].filterFieldIds[fieldIndex] = event;
+      }
+      const index = this.fieldsBySubscriber.findIndex((field) => field.subscriberIndex === subscriberIndex);
+      this.fieldsBySubscriber[index].event = event;
+    } else {
+      this.subscribersList[subscriberIndex].filterFieldIds.push(event);
+      this.fieldsBySubscriber.push({ subscriberIndex, event });
+    }
   }
 
   /**
@@ -840,16 +1086,6 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * getter function to show the back button conditionally
-   */
-  get setBackBtnVisibility() {
-    if (this.headerTextIndex === 2 && this.disableBack) {
-      return false
-    }
-    return this.headerTextIndex > 1
-  }
-
-  /**
    * function to show the current selected chip
    * @param chipData selected chip
    */
@@ -859,7 +1095,29 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
 
   updateFilterCriteria(event, subscriberIndex) {
     this.activeChipValue = event;
-    console.log(this.subscribersList[subscriberIndex])
+    console.log(this.activeChipValue);
 
+    console.log(this.subscribersList[subscriberIndex]);
+
+  }
+
+  setValueToForm(field, value) {
+    console.log(field, value);
+    console.log(typeof value);
+    if (typeof value === 'string') {
+      this.requestForm.controls[field].setValue(value);
+    } else {
+      this.requestForm.controls[field].setValue(value.value);
+    }
+    console.log(this.requestForm);
+  }
+
+  /**
+   * function to set the value in the form
+   * @param value entered value
+   * @param field the selected field of form
+   */
+  setFormValue(value: DataSource, field: string) {
+    this.headerForm.controls[field].setValue(value);
   }
 }

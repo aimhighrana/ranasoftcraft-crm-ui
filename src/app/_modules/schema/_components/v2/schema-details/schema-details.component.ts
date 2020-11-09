@@ -11,7 +11,7 @@ import { SchemaStaticThresholdRes, LoadDropValueReq, SchemaListDetails } from '@
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
 import { SelectionModel } from '@angular/cdk/collections';
-import { ReadyForApplyFilter } from '@modules/shared/_components/add-filter-menu/add-filter-menu.component';
+import { AddFilterOutput } from '@models/schema/schema';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { MatDialog } from '@angular/material/dialog';
@@ -322,7 +322,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
             dropVal.push(dd);
           });
 
-          filter.filterCtrl = {fldCtrl:fil.fldCtrl,selectedValeus:dropVal};
+          filter.filterCtrl = {fldCtrl:fil.fldCtrl,selectedValues:dropVal};
           finalFiletr.push(filter);
         });
 
@@ -620,7 +620,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
    * Make control for prepare filter for ...
    * @param fld ready for applied filter control
    */
-  makeFilterControl(fld: ReadyForApplyFilter) {
+  makeFilterControl(fld: AddFilterOutput) {
     console.log(fld);
     this.trigger.closeMenu();
 
@@ -631,7 +631,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
     filterCtrl.fieldId = fld.fldCtrl.fieldId;
     filterCtrl.type = 'DROPDOWN';
     filterCtrl.filterCtrl = fld;
-    filterCtrl.values = fld.selectedValeus.map(map=> map.CODE);
+    filterCtrl.values = fld.selectedValues.map(map=> map.CODE);
 
     if(extFld) {
       exitingFilterCtrl.splice(exitingFilterCtrl.indexOf(extFld), 1);
@@ -645,11 +645,11 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
    * @param ctrl get filter control and prepare data for view
    */
   prepareTextToShow(ctrl: FilterCriteria): string {
-    const selCtrl = ctrl.filterCtrl.selectedValeus.filter(fil => fil.FIELDNAME === ctrl.fieldId);
+    const selCtrl = ctrl.filterCtrl.selectedValues.filter(fil => fil.FIELDNAME === ctrl.fieldId);
     if(selCtrl && selCtrl.length>1) {
       const fld = this.filterCriteria.getValue().filter(fil => fil.fieldId === ctrl.fieldId);
       if(fld && fld.length>0) {
-        const sel = fld[0].filterCtrl.selectedValeus.filter(f => f.FIELDNAME === ctrl.fieldId);
+        const sel = fld[0].filterCtrl.selectedValues.filter(f => f.FIELDNAME === ctrl.fieldId);
         return String(sel.length);
       }
     }
@@ -732,7 +732,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
     if(filterControl) {
       if(dropValue && dropValue.length>0) {
         filterControl.values = dropValue.map(map=> map.CODE);
-        filterControl.filterCtrl = {fldCtrl: filterControl.filterCtrl.fldCtrl, selectedValeus: dropValue};
+        filterControl.filterCtrl = {fldCtrl: filterControl.filterCtrl.fldCtrl, selectedValues: dropValue};
       } else {
         fillData.slice(fillData.indexOf(filterControl), 1);
       }

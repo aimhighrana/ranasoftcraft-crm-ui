@@ -2,6 +2,7 @@ import { MetadataModel, CategoryInfo } from 'src/app/_models/schema/schemadetail
 import { BlockType } from './user-defined-rule/udr-cdktree.service';
 
 export class CoreSchemaBrInfo {
+    tempId?: string;
     sno: number;
     brId: string;
     brType: string;

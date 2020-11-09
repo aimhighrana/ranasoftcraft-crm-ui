@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { SchemaService } from 'src/app/_services/home/schema.service';
-import { ObjectTypeResponse } from 'src/app/_models/schema/schema';
+import { DataSource, ObjectTypeResponse } from 'src/app/_models/schema/schema';
 import { Observable } from 'rxjs';
 import * as XLSX from 'xlsx';
 import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-details.service';
@@ -10,13 +10,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatStepper } from '@angular/material/stepper';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SchemaListComponent } from '../schema-list/schema-list.component';
-export interface DataSource {
-  excelFld: string;
-  excelFrstRow: string;
-  mdoFldId: string;
-  mdoFldDesc: string;
-  columnIndex: number;
-}
+
 type UploadedDataType = any[][];
 @Component({
   selector: 'pros-upload-data',

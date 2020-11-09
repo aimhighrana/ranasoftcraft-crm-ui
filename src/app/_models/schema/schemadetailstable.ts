@@ -1,5 +1,5 @@
 import { UDRBlocksModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
-import { ReadyForApplyFilter } from '@modules/shared/_components/add-filter-menu/add-filter-menu.component';
+import { AddFilterOutput } from './schema';
 
 
 export interface Schemadetailstable {
@@ -104,7 +104,7 @@ export class FilterCriteria {
     fieldId: string;
     values: string[];
     type: string;
-    filterCtrl?: ReadyForApplyFilter;
+    filterCtrl?: AddFilterOutput;
     fldCtrl?: MetadataModel;
 }
 

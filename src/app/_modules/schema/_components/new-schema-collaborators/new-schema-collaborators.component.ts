@@ -2,10 +2,11 @@ import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { PermissionOn } from '@models/collaborator';
+import { PermissionOn, UserMdoModel } from '@models/collaborator';
 import { Observable, of, Subscription } from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { ROLENAMES } from 'src/app/_constants';
 
 @Component({
   selector: 'pros-new-schema-collaborators',
@@ -24,11 +25,21 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
    */
   form: FormGroup;
 
-  subscribers = [];
+  subscribers: UserMdoModel[] = [];
+  filteredSubscribers: UserMdoModel[] = [];
 
   submitted = false;
 
   collaboratorSubscription = new Subscription();
+
+  selectedCollaborators: Array<UserMdoModel> = [];
+  selectedRoleType: string;
+  roles = [
+    ROLENAMES.ADMIN,
+    ROLENAMES.REVIEWER,
+    ROLENAMES.VIEWER,
+    ROLENAMES.EDITOR
+  ]
   /**
    * constructor of the class
    * @param dialogRef mat dialog ref object
@@ -40,12 +51,25 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
     public dialogRef: MatDialogRef<NewSchemaCollaboratorsComponent>,
     @Inject(MAT_DIALOG_DATA) public data,
     public schemaDetailsService: SchemaDetailsService,
-    public snackBar: MatSnackBar) { }
+    public snackBar: MatSnackBar) {
+     }
 
   /**
    * Angular Hook
    */
   ngOnInit(): void {
+    this.initForm();
+    this.getCollaborators('');
+    this.collaboratorSubscription = this.form.controls.field.valueChanges
+      .subscribe((value) => {
+        this.getCollaborators(value);
+      });
+  }
+
+/**
+ * Initialize form
+ */
+  initForm(){
     this.form = new FormGroup({
       field: new FormControl('', [Validators.required]),
       fullName: new FormControl(),
@@ -55,14 +79,12 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
       isAdmin: new FormControl(false),
       isReviewer: new FormControl(false),
       isViewer: new FormControl(false),
-      isEditer: new FormControl(false),
+      isEditor: new FormControl(false),
       permissionType: new FormControl('USER'),
       initials: new FormControl()
     });
-    this.collaboratorSubscription = this.form.controls.field.valueChanges.subscribe((value) => {
-      this.getCollaborators(value);
-    })
   }
+
 
   /**
    * function to add the list of selected users
@@ -77,8 +99,14 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
     this.collaboratorSubscription = this.schemaDetailsService.getAllUserDetails(queryString)
       .subscribe((response: PermissionOn) => {
         this.subscribers = response.users;
+        this.filteredSubscribers = response.users;
+        this.filteredSubscribers.forEach((subscriber: UserMdoModel) => {
+          subscriber.initials = (subscriber.fName[0] + subscriber.lName[0]).toUpperCase();
+          subscriber.selected = false;
+          subscriber.userId = subscriber.userId ? subscriber.userId : Math.floor( Math.random() * 1000000000000 ).toString()
+        })
       }, () => {
-        this.snackBar.open('error getting subscribers', 'okay', {
+        this.snackBar.open('Error getting subscribers', 'okay', {
           duration: 1000
         })
       });
@@ -99,22 +127,22 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
     this.form.controls.isAdmin.setValue(false);
     this.form.controls.isReviewer.setValue(false);
     this.form.controls.isViewer.setValue(false);
-    this.form.controls.isEditer.setValue(false);
+    this.form.controls.isEditor.setValue(false);
 
-    if (permissions.value === 'Admin') {
+    if (permissions.value === ROLENAMES.ADMIN) {
       this.form.controls.isAdmin.setValue(true)
     }
 
-    if (permissions.value === 'Reviewer') {
+    if (permissions.value === ROLENAMES.REVIEWER) {
       this.form.controls.isReviewer.setValue(true)
     }
 
-    if (permissions.value === 'Viewer') {
+    if (permissions.value === ROLENAMES.VIEWER) {
       this.form.controls.isViewer.setValue(true)
     }
 
-    if (permissions.value === 'Editer') {
-      this.form.controls.isEditer.setValue(true)
+    if (permissions.value === ROLENAMES.EDITOR) {
+      this.form.controls.isEditor.setValue(true)
     }
   }
 
@@ -127,7 +155,7 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
         isAdmin: this.form.controls.isAdmin.value,
         isReviewer: this.form.controls.isReviewer.value,
         isViewer: this.form.controls.isViewer.value,
-        isEditer: this.form.controls.isEditer.value,
+        isEditor: this.form.controls.isEditor.value,
         groupid: '',
         roleId: '',
         userid: this.form.controls.field.value.userName,
@@ -139,14 +167,41 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
       if (formObject.isAdmin) { formObject.role = 'isAdmin' }
       if (formObject.isReviewer) { formObject.role = 'isReviewer' }
       if (formObject.isViewer) { formObject.role = 'isViewer' }
-      if (formObject.isEditer) { formObject.role = 'isEditer' }
+      if (formObject.isEditor) { formObject.role = 'isEditor' }
       this.dialogRef.close(formObject);
     } else {
-      this.snackBar.open('Please enter both the fields', 'okay', {duration: 5000})
+      this.snackBar.open('Please enter both the fields', 'okay', { duration: 5000 })
     }
+  }
+
+
+  saveSelection(){
+    this.dialogRef.close(this.selectedCollaborators);
   }
 
   ngOnDestroy() {
     this.collaboratorSubscription.unsubscribe();
+  }
+
+  addOrDeleteCollaborator(collaborator: UserMdoModel) {
+    const exists = this.selectedCollaborators.find(subscriber => subscriber.userId === collaborator.userId);
+    if (exists) {
+      this.snackBar.open('This is already selected', 'Okay', {
+        duration: 5000
+      });
+      return;
+    } else {
+      collaborator.selected = true;
+      this.selectedCollaborators.push(collaborator)
+    }
+  }
+
+  /**
+   *
+   * @param role currently selected role
+   */
+  selectCurrentRole(role: string) {
+    this.selectedRoleType = role;
+    this.filteredSubscribers = this.subscribers.filter((sub) => sub.roleId === role);
   }
 }
