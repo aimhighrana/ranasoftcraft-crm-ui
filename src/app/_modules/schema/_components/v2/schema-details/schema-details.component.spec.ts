@@ -129,4 +129,74 @@ describe('SchemaDetailsComponent', () => {
     expect(res.values.length).toEqual(0);
 
   }));
+
+  /* it('should format date to MM/DD/YYYY', () => {
+    const date = new Date(2020, 1, 15);
+    const result = component.formatDate(date);
+    expect(result).toEqual('02/15/2020');
+  }) */
+
+  it('should format cell data', () => {
+    const metadataFldLst = {
+        diw_15 : {
+          isCheckList : 'false',
+          picklist: '1',
+          value : 'USA'
+        }
+      }
+
+    component.metadataFldLst = metadataFldLst;
+    let result = component.formatCellData('diw_15', 'USA');
+    expect(result).toEqual('USA');
+
+    metadataFldLst.diw_15.isCheckList = 'true';
+    result = component.formatCellData('diw_15', ['USA', 'France']);
+    expect(result).toEqual('USA,France');
+
+  })
+
+  /* it('should filter field options', () => {
+
+    component.selectFieldOptions = [
+      {CODE : 'option1', TEXT:'first option'} as DropDownValue,
+      {CODE : 'option2', TEXT:'second option'} as DropDownValue
+    ];
+
+    const result = component.filterSelectFieldOptions('first');
+    expect(result.length).toEqual(1);
+    expect(result[0].CODE).toEqual('option1');
+  }) */
+
+  it('should get the input type', () => {
+
+    const metadataFldLst = {
+      diw_15 : {
+        isCheckList : 'false',
+        picklist: '0',
+        dataType: 'NUMC'
+      }
+    }
+
+  component.metadataFldLst = metadataFldLst;
+
+  let result = component.getFieldInputType('diw_15');
+  expect(result).toEqual(component.FIELD_TYPE.NUMBER);
+
+  metadataFldLst.diw_15.dataType = 'DATS';
+  result = component.getFieldInputType('diw_15');
+  expect(result).toEqual(component.FIELD_TYPE.DATE);
+
+
+  metadataFldLst.diw_15.picklist = '1';
+  result = component.getFieldInputType('diw_15');
+  expect(result).toEqual(component.FIELD_TYPE.SINGLE_SELECT);
+
+  metadataFldLst.diw_15.isCheckList = 'true';
+  result = component.getFieldInputType('diw_15');
+  expect(result).toEqual(component.FIELD_TYPE.MULTI_SELECT);
+
+
+  })
+
+
 });

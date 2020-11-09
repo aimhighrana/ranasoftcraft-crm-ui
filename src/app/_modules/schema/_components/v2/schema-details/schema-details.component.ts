@@ -1,5 +1,5 @@
-import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
-import { MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaCorrectionReq, FilterCriteria } from '@models/schema/schemadetailstable';
+import { Component, OnInit, AfterViewInit, ViewChild, ComponentFactoryResolver, ViewContainerRef } from '@angular/core';
+import { MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaCorrectionReq, FilterCriteria, FieldInputType } from '@models/schema/schemadetailstable';
 import { ActivatedRoute, Router } from '@angular/router';
 import { throwError, BehaviorSubject, combineLatest } from 'rxjs';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
@@ -18,6 +18,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { SaveVariantDialogComponent } from '../save-variant-dialog/save-variant-dialog.component';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
+import { ContainerRefDirective } from '@modules/shared/_directives/container-ref.directive';
+import { TableCellInputComponent } from '@modules/shared/_components/table-cell-input/table-cell-input.component';
 
 @Component({
   selector: 'pros-schema-details',
@@ -147,6 +149,10 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
 
+ FIELD_TYPE = FieldInputType;
+
+  selectFieldOptions : DropDownValue[] = [];
+
 
   constructor(
     private activatedRouter: ActivatedRoute,
@@ -158,7 +164,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
     private snackBar: MatSnackBar,
     private matDialog: MatDialog,
     private schemaListService: SchemalistService,
-    private schemaVariantService: SchemaVariantService
+    private schemaVariantService: SchemaVariantService,
+    private componentFactoryResolver: ComponentFactoryResolver
 
   ) { }
 
@@ -441,17 +448,21 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
    * @param fldid editable field id
    * @param row entire row should be here
    */
-  editCurrentCell(fldid: string, row: any, rIndex: number) {
+  editCurrentCell(fldid: string, row: any, rIndex: number, containerRef: ContainerRefDirective) {
     console.log(fldid);
     console.log(row);
     if(document.getElementById('inpctrl_'+fldid + '_' + rIndex)) {
       const inpCtrl = document.getElementById('inpctrl_'+fldid + '_'+ rIndex) as HTMLDivElement;
       const viewCtrl = document.getElementById('viewctrl_'+fldid + '_' + rIndex) as HTMLSpanElement;
-      const inpValCtrl = document.getElementById('inp_'+ fldid + '_' + rIndex) as HTMLInputElement;
+      // const inpValCtrl = document.getElementById('inp_'+ fldid + '_' + rIndex) as HTMLInputElement;
 
       inpCtrl.style.display = 'block';
-      inpValCtrl.focus();
+      // inpValCtrl.focus();
       viewCtrl.style.display = 'none';
+
+      // add a dynamic cell input component
+      this.addDynamicInput(fldid, row, rIndex,containerRef);
+
     }
   }
 
@@ -461,13 +472,17 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
    * @param value current changed value
    * @param row row data ..
    */
-  emitEditBlurChng(fldid: string, value: string, row: any, rIndex: number) {
+  emitEditBlurChng(fldid: string, value: any, row: any, rIndex: number, viewContainerRef? : ViewContainerRef) {
     console.log(value);
     if(document.getElementById('inpctrl_'+fldid + '_' + rIndex)) {
 
       // DOM control after value change ...
       const inpCtrl = document.getElementById('inpctrl_'+fldid + '_'+ rIndex) as HTMLDivElement;
       const viewCtrl = document.getElementById('viewctrl_'+fldid + '_' + rIndex) as HTMLSpanElement;
+
+      // clear the dynamic cell input component
+      viewContainerRef.clear();
+
       inpCtrl.style.display = 'none';
       viewCtrl.innerText = value;
       viewCtrl.style.display = 'block';
@@ -736,6 +751,62 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
         this.getVariantDetails();
       }
     }
+  }
+
+  /**
+   * get input type when user edits a cell
+   * @param fieldId the field id
+   */
+  getFieldInputType (fieldId){
+
+    if (this.metadataFldLst[fieldId].picklist=== '0' && this.metadataFldLst[fieldId].dataType === 'NUMC'){
+      return this.FIELD_TYPE.NUMBER ;
+    }
+    if ( this.metadataFldLst[fieldId].picklist=== '0' && (this.metadataFldLst[fieldId].dataType === 'DATS' || this.metadataFldLst[fieldId].dataType === 'DTMS')){
+      return this.FIELD_TYPE.DATE ;
+    }
+    if ((this.metadataFldLst[fieldId].isCheckList === 'false')
+      && (this.metadataFldLst[fieldId].picklist=== '1' || this.metadataFldLst[fieldId].picklist === '30' || this.metadataFldLst[fieldId].picklist === '37')){
+        return this.FIELD_TYPE.SINGLE_SELECT;
+    }
+    if ((this.metadataFldLst[fieldId].isCheckList === 'true')
+      && (this.metadataFldLst[fieldId].picklist=== '1' || this.metadataFldLst[fieldId].picklist === '30' || this.metadataFldLst[fieldId].picklist === '37')){
+        return this.FIELD_TYPE.MULTI_SELECT;
+    }
+
+    return this.FIELD_TYPE.TEXT;
+
+  }
+
+
+  /**
+   * format cell displayed value based on field type
+   * @param fieldId the field id
+   * @param value cell value
+   */
+  formatCellData(fieldId, value){
+    if (this.getFieldInputType(fieldId) === this.FIELD_TYPE.MULTI_SELECT) {
+      // console.log(value);
+      return value.toString();
+    }
+    return value ;
+  }
+
+
+  addDynamicInput(fldid: string, row: any, rIndex: number, containerRef: ContainerRefDirective){
+
+    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(
+      TableCellInputComponent
+    );
+
+    // add the input component to the cell
+    const componentRef = containerRef.viewContainerRef.createComponent(componentFactory);
+    // binding dynamic component inputs/outputs
+    componentRef.instance.fieldId = fldid;
+    componentRef.instance.inputType = this.getFieldInputType(fldid);
+    componentRef.instance.value = row[fldid] ? row[fldid].fieldData : '';
+    componentRef.instance.inputBlur.subscribe(value => this.emitEditBlurChng(fldid, value, row, rIndex, containerRef.viewContainerRef));
+
   }
 
 

@@ -391,3 +391,11 @@ export class SchemaExecutionSummary {
     exeEndDate: number;
     completeProgress: number;
 }
+
+export enum FieldInputType {
+    NUMBER,
+    TEXT,
+    DATE,
+    SINGLE_SELECT,
+    MULTI_SELECT
+}
