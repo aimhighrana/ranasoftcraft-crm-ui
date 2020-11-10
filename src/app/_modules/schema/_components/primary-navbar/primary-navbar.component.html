@@ -12,7 +12,7 @@
     <pros-search-input></pros-search-input>
 
     <div class="row-spacer"></div>
-
+    <!-- 
     <div class="f-row create-new" [matMenuTriggerFor]="navigation">
         <button mat-mini-fab>
             <mat-icon>add</mat-icon>
@@ -22,19 +22,19 @@
             <pros-navigation-dropdown (selectedModule)="selectedModule($event)">
             </pros-navigation-dropdown>
         </mat-menu>
-    </div>
+    </div> -->
 
     <div class="row-spacer"></div>
     <div class="primary-nav-list">
         <mat-nav-list>
-            <mat-list-item [class.selected]="isNavSelected==='welcome'" (click)="sendToParent('welcome')">
+            <!-- <mat-list-item [class.selected]="isNavSelected==='welcome'" (click)="sendToParent('welcome')">
                 <mat-icon fontSet="mdo-icons">form-address</mat-icon>
                 <div class="col-space">Home</div>
             </mat-list-item>
             <mat-list-item [class.selected]="isNavSelected==='schema'" (click)="sendToParent('schema')">
                 <mat-icon fontSet="mdo-icons">board</mat-icon>
                 <div class="col-space">Schema</div>
-            </mat-list-item>
+            </mat-list-item> -->
             <mat-list-item [class.selected]="isNavSelected==='report'" (click)="sendToParent('report')">
                 <mat-icon fontSet="mdo-icons">chart-bar</mat-icon>
                 <div class="col-space">Reports</div>

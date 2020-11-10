@@ -62,9 +62,9 @@ export class AuthGuard implements CanActivate, CanLoad {
               try{
                 const url = unescape(window.location.hash.split('returnUrl=')[1]);
                 this.router.navigateByUrl(url);
-              }catch(ex){console.error(ex); this.router.navigate(['/home']);}
+              }catch(ex){console.error(ex); this.router.navigate(['/home/report/']);}
             } else {
-              this.router.navigate(['/home']);
+              this.router.navigate(['/home/report/']);
             }
             return false;
           }

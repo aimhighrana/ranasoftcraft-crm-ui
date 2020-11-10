@@ -63,7 +63,7 @@ describe('LoginComponent', () => {
     component.signIn();
 
     expect(msTeamService.signIn).toHaveBeenCalledWith('srana', 'rana');
-    expect(router.navigate).toHaveBeenCalledWith(['/home']);
+    expect(router.navigate).toHaveBeenCalledWith(['/home/report']);
   }));
 
 });
