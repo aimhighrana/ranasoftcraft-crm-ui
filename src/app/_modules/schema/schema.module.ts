@@ -53,6 +53,10 @@ import { BrClassificationSidesheetComponent } from './_components/br-classificat
 import { BrDuplicatecheckSidesheetComponent } from './_components/br-duplicatecheck-sidesheet/br-duplicatecheck-sidesheet.component';
 import { SchemaSummarySidesheetComponent } from './_components/schema-summary-sidesheet/schema-summary-sidesheet.component';
 import { NewDuplicateCheckComponent } from './_components/new-duplicate-check/new-duplicate-check.component';
+import { StringReplaceComponent } from './_components/string-replace/string-replace.component';
+import { LookupComponent } from './_components/lookup/lookup.component';
+import { EmptyDataComponent } from './_components/empty-data/empty-data.component';
+import { RunningProgressComponent } from './_components/running-progress/running-progress.component';
 
 
 @NgModule({
@@ -109,7 +113,11 @@ import { NewDuplicateCheckComponent } from './_components/new-duplicate-check/ne
     BrClassificationSidesheetComponent,
     BrDuplicatecheckSidesheetComponent,
     SchemaSummarySidesheetComponent,
-    NewDuplicateCheckComponent
+    NewDuplicateCheckComponent,
+    StringReplaceComponent,
+    LookupComponent,
+    EmptyDataComponent,
+    RunningProgressComponent
   ],
   imports: [
     CommonModule,
