@@ -2,8 +2,7 @@ mat-card.root {
   user-select: none;
   height: 100%;
   overflow: hidden;
-  padding: 0 16px;
-  width: 600px;
+  padding: 0;
 
   .breadcrum-toolbar {
     position: sticky;
@@ -17,7 +16,7 @@ mat-card.root {
       .breadcrum-head {
         align-items: center;
         width: 100%;
-        min-height: 36px;
+        min-height: 40px;
 
         .display-heading-large {
           font-size: 1.2rem;
@@ -30,7 +29,7 @@ mat-card.root {
   }
 
   .businessrule-listing {
-    height: 100%;
+    height: calc(100% - 124px - 8px);
     overflow: auto;
 
     mat-list.rule-list {

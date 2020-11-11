@@ -1,42 +1,38 @@
-<div class="root mat-elevation-z0">
+<mat-card class="root mat-elevation-z0">
     <div class="f-row breadcrum-toolbar">
         <button mat-button (click)="closeDialogComponent()">
-            <mat-icon>clear</mat-icon>
+            <mat-icon fontSet="mdo-icons">close</mat-icon>
         </button>
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
                 <div class="display-heading-large">Add subscribers</div>
+                <div class="f-spacer"></div>
+                <button mat-flat-button color="primary" (click)="saveSelection()">Save</button>
             </div>
-        </div>
-        <div class="col-spacer"></div>
-        <button mat-flat-button color="primary" (click)="saveSelection()">Save</button>
-    </div>
-    <div class="f-row breadcrum-toolbar">
-        <div class="f-row">
-            <pros-search-input (value)="getCollaborators($event)"></pros-search-input>
-            <span class="col-spacer"></span>
-            <mat-chip-list>
-                <mat-chip class="mdo-filter-matchip" [matMenuTriggerFor]="roleTypes">
-                    Role: <a>{{(selectedRoleType)? selectedRoleType: 'All'}}</a>
-                </mat-chip>
-            </mat-chip-list>
-            <mat-menu #roleTypes="matMenu">
-                <!-- <mat-nav-list class="mdo-menu-nav">
+            <div class="row-spacer"></div>
+            <div class="f-row">
+                <pros-search-input (value)="getCollaborators($event)"></pros-search-input>
+                <span class="col-spacer"></span>
+                <mat-chip-list>
+                    <mat-chip class="mdo-filter-matchip">
+                        <label>Role:</label> <span class="info">{{(selectedRoleType)? selectedRoleType: 'All'}}</span>
+                    </mat-chip>
+                </mat-chip-list>
+                <!-- <mat-menu #roleTypes="matMenu" class="navigation-menu">
                     <ng-container *ngFor="let type of roles">
-                        <a mat-list-item class="mdo-menu-listitem"
-                        (click)="selectCurrentRole(type)">{{type}}</a>
+                        <button mat-menu-item 
+                        (click)="selectCurrentRole(type)">{{type}}</button>
                     </ng-container>
-                </mat-nav-list> -->
-            </mat-menu>
+                </mat-menu> -->
+            </div>
+            <div class="row-spacer"></div>
         </div>
     </div>
 
-    <div class="row-spacer"></div>
     <div class="f-col businessrule-listing">
         <div class="f-col mdo-justify">
             <mat-list role="list" class="rule-list">
-
                 <mat-list-item role="listitem" *ngFor="let subscriber of filteredSubscribers">
                     <div class="mat-line">
                         <mat-card-header>
@@ -47,23 +43,20 @@
                     <span class="f-spacer"></span>
                     <button mat-flat-button color="accent" (click)="addOrDeleteCollaborator(subscriber)">
                         <ng-container *ngIf="subscriber.selected;else addBtn">
-                            
-                            <mat-icon>
-                                checked
+                            <mat-icon fontSet="mdo-icons">
+                                check-mark
                             </mat-icon>
                         </ng-container>
 
                         <ng-template #addBtn>
                             Add
                         </ng-template>
-
                     </button>
                 </mat-list-item>
-
             </mat-list>
         </div>
     </div>
-</div>
+</mat-card>
 
 
 <!-- old code start here -->

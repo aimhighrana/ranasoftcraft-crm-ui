@@ -35,6 +35,12 @@ mat-card.root {
 
       button {
         min-width: 110px;
+
+        .mat-menu-icon {
+          font-size: 12px;
+          height: 12px;
+          width: 12px;
+        }
       }
     }
   }

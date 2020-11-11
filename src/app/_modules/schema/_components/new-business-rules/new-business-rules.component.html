@@ -1,7 +1,7 @@
 <mat-card class="root mat-elevation-z0">
   <div class="f-row breadcrum-toolbar">
     <button mat-button (click)="closeDialogComponent()">
-      <mat-icon>clear</mat-icon>
+      <mat-icon fontSet="mdo-icons">close</mat-icon>
     </button>
     <div class="col-spacer"></div>
     <div class="f-row mdo-constrained-right">
@@ -33,7 +33,7 @@
       <div class="mdo-form-field temp-field">
         <mat-label>Weightage</mat-label>
         <mat-slider thumbLabel formControlName="weightage" [displayWith]="formatLabel" tickInterval="1" min="0"
-          max="100"></mat-slider>
+          max="100" color="primary"></mat-slider>
         <mat-error *ngIf="submitted && form.controls.weightage.errors && form.controls.weightage.errors.required">
           Please enter Weightage</mat-error>
       </div>
@@ -55,14 +55,16 @@
 
 
       <div class="mdo-form-field" *ngIf="!isUDR">
-        <pros-form-input [value]="form.get('rule_name').value" (valueChange)="getFormValue($event,'rule_name')" [label]="'Rule name (Description)'">
+        <pros-form-input [value]="form.get('rule_name').value" (valueChange)="getFormValue($event,'rule_name')"
+          [label]="'Rule name (Description)'">
         </pros-form-input>
         <mat-error *ngIf="submitted && form.controls.rule_name.errors && form.controls.rule_name.errors.required">
           Please enter Rule name</mat-error>
       </div>
 
       <div class="mdo-form-field" *ngIf="!isUDR">
-        <pros-form-input [value]="form.get('error_message').value" (valueChange)="getFormValue($event,'error_message')" [label]="'Error message (Message)'">
+        <pros-form-input [value]="form.get('error_message').value" (valueChange)="getFormValue($event,'error_message')"
+          [label]="'Error message (Message)'">
         </pros-form-input>
         <mat-error
           *ngIf="submitted && form.controls.error_message.errors && form.controls.error_message.errors.required">
@@ -179,11 +181,11 @@
           <!-- three dots -->
           <div class="col">
             <button mat-button [matMenuTriggerFor]="menu">
-              <mat-icon>more_vert</mat-icon>
+              <mat-icon fontSet="mdo-icons">more</mat-icon>
             </button>
           </div>
 
-          <mat-menu #menu="matMenu">
+          <mat-menu #menu="matMenu" class="navigation-menu">
             <!-- give local reference and tell this is manu by assigning 'matMenu' -->
             <button mat-menu-item (click)="addBlock(true,udrBlock,i)">
               Add child rule
@@ -247,9 +249,9 @@
 
                 <div class="col">
                   <button mat-button [matMenuTriggerFor]="nestedMenu">
-                    <mat-icon>more_vert</mat-icon>
+                    <mat-icon fontSet="mdo-icons">more</mat-icon>
                   </button>
-                  <mat-menu #nestedMenu="matMenu">
+                  <mat-menu #nestedMenu="matMenu" class="navigation-menu">
                     <!-- give local reference and tell this is manu by assigning 'matMenu' -->
                     <!-- <button mat-menu-item (click)="addNestedBlock(udrBlock,i)">
                                                 <mat-icon>add</mat-icon>
@@ -272,7 +274,7 @@
       <div class="f-row defined-row add-col">
         <div class="col">
           <button mat-flat-button color="accent" (click)="addBlock(false,null,0)">
-            <mat-icon>add</mat-icon>
+            <mat-icon fontSet="mdo-icons">plus</mat-icon>
           </button>
         </div>
       </div>

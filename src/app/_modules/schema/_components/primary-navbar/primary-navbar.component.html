@@ -51,17 +51,18 @@
     <!-- CODE FOR SYSTEM TRAY -->
     <mat-divider></mat-divider>
     <div class="row-spacer"></div>
-    <mat-card-header>
-        <div mat-card-avatar>
-            {{ userDetails.firstName ? userDetails.firstName.substring(0,1).toUpperCase() : ''  }}{{ userDetails.lastName ? userDetails.lastName.substring(0,1).toUpperCase() : ''  }}
-        </div>
-        <mat-card-title>{{ userDetails.fullName ? userDetails.fullName : userDetails.userName }}</mat-card-title>
-        <mat-icon [matMenuTriggerFor]="profile_navigation">arrow_drop_down</mat-icon>
-        <mat-menu #profile_navigation="matMenu">
-            <mat-nav-list class="profile-navigation">
-                <mat-list-item (click)="signOut()"> Sign out </mat-list-item>
-            </mat-nav-list>
+    <div class="f-row nav-profile" [matMenuTriggerFor]="profile_navigation">
+        <mat-card-header>
+            <div mat-card-avatar>
+                {{ userDetails.firstName ? userDetails.firstName.substring(0,1).toUpperCase() : ''  }}{{ userDetails.lastName ? userDetails.lastName.substring(0,1).toUpperCase() : ''  }}
+            </div>
+            <mat-card-title>{{ userDetails.fullName ? userDetails.fullName : userDetails.userName }}</mat-card-title>
+        </mat-card-header>
+        <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon>
+        <mat-menu #profile_navigation="matMenu" class="navigation-menu">
+            <button mat-menu-item (click)="signOut()">Sign out</button>
         </mat-menu>
-    </mat-card-header>
+    </div>
+
     <div class="row-spacer"></div>
 </mat-card>
