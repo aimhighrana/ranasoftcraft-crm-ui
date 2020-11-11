@@ -658,6 +658,14 @@ export class EndpointService {
   public createUpdateCheckDataUrl() {
     return `${this.apiUrl}/schema/checkdata/save-update`;
   }
+  public duplicacyGroupsListUrl(): string {
+    return `${this.apiUrl}/duplicate/getgroupId`;
+  }
+
+  public catalogCheckRecordsUrl(): string {
+    return `${this.apiUrl}/duplicate/getContent`;
+  }
+
 
   /**
    * endpoint for getting check data for schema

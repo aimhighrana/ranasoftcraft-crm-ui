@@ -1,0 +1,66 @@
+<div class="root">
+    <mat-table [dataSource]="dataSource.data" matSort (scroll)="onScroll($event)">
+
+        <ng-container matColumnDef="check">
+            <mat-header-cell *matHeaderCellDef class="fixed-width-c1">
+                <mat-checkbox color="primary" (change)="$event ? masterToggle() : null"
+                    [checked]="selection.hasValue() && isAllSelected()"
+                    [indeterminate]="selection.hasValue() && !isAllSelected()"></mat-checkbox>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row" class="fixed-width-c1">
+                <mat-checkbox color="primary" (click)="$event.stopPropagation()"
+                    (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)">
+                </mat-checkbox>
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="settings">
+            <mat-header-cell *matHeaderCellDef class="fixed-width-c1">
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row" class="fixed-width-c1">
+                <button mat-button>
+                    <mat-icon> more_horiz </mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="avatar">
+            <mat-header-cell *matHeaderCellDef class="fixed-width-c1">
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row" class="fixed-width-c1">
+                <mat-card-header>
+                    <div mat-card-avatar> RW </div>
+                </mat-card-header>
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="groupName">
+            <mat-header-cell *matHeaderCellDef class="fixed-width-c2"> Name
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row" class="fixed-width-c2">
+                {{ row.groupId }}
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="common_actions_header">
+            <mat-header-cell *matHeaderCellDef [attr.colspan]="displayedFields.getValue().length">
+                <div class="f-row">
+                    <button mat-flat-button>
+                        <mat-icon>done</mat-icon>
+                        Action
+                    </button>
+                    <button mat-flat-button (click)="selection.clear()">
+                        <mat-icon>close</mat-icon>
+                        Unselect
+                    </button>
+                </div>
+            </mat-header-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="tableHeaderActBtn; sticky: true"></mat-header-row>
+        <mat-header-row *matHeaderRowDef="displayedFields | async; sticky: true"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedFields | async;" [ngClass]="{'active-row': activeGroupId == row.groupId}" (click)="rowGroupClicked(row)"></mat-row>
+    </mat-table>
+    <pros-null-state *ngIf="!dataSource.data.length" [button]="null"></pros-null-state>
+
+</div>

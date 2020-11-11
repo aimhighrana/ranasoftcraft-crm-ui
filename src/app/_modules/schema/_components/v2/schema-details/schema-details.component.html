@@ -61,7 +61,7 @@
                         <label>
                             {{ ctrl.filterCtrl ? ctrl.filterCtrl.fldCtrl.fieldDescri : 'Unknown' }} :
                         </label>
-                        <ng-template [ngIf]="ctrl.filterCtrl.selectedValeus.length > 1" [ngIfElse]="showText">
+                        <ng-template [ngIf]="ctrl.filterCtrl.selectedValues.length > 1" [ngIfElse]="showText">
                             <span class="info">
                                 {{ prepareTextToShow(ctrl) }}
                             </span>

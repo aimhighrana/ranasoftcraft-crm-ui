@@ -28,7 +28,6 @@ import { CreateSchemaComponent } from './_components/v2/create-schema/create-sch
 import { SchemaInfoComponent } from './_components/v2/schema-info/schema-info.component';
 import { BrruleSideSheetComponent } from './_components/v2/brrule-side-sheet/brrule-side-sheet.component';
 import { SubscriberSideSheetComponent } from './_components/v2/subscriber-side-sheet/subscriber-side-sheet.component';
-import { CatalogCheckComponent } from './_components/catalog-check/catalog-check.component';
 import { DuplicateDatacheckSidesheetComponent } from './_components/duplicate-datacheck-sidesheet/duplicate-datacheck-sidesheet.component';
 import { DatascopeSidesheetComponent } from './_components/datascope-sidesheet/datascope-sidesheet.component';
 import { ConfigureSidesheetComponent } from './_components/configure-sidesheet/configure-sidesheet.component';
@@ -88,7 +87,6 @@ const routes: Routes = [
   { path: 'exclusion/:moduleId/:schemaId', component: ExclusionsSidesheetComponent },
   { path: 'subscriber/:moduleId/:schemaId/:subscriberId', component: SubscriberSideSheetComponent },
   { path: 'subscriber/:moduleId/:schemaId/:subscriberId/:outlet', component: SubscriberSideSheetComponent },
-  { path: 'system/catalog-check', component: CatalogCheckComponent },
   { path: 'system/duplicate-datacheck-sidesheet', component: DuplicateDatacheckSidesheetComponent },
   { path: 'data-scope/:moduleId/:schemaId/:variantId', component: DatascopeSidesheetComponent },
   { path: 'system/configure-sidesheet', component: ConfigureSidesheetComponent },

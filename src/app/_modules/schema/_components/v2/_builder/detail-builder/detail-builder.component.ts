@@ -76,7 +76,7 @@ export class DetailBuilderComponent implements OnInit, OnDestroy {
         this.getSchemaDetails(this.schemaId);
       }
       if(this.variantId !== params.variantId) {
-        this.variantId = params.variantId;
+        this.variantId = params.variantId ? params.variantId : '0' ;
       }
 
     });

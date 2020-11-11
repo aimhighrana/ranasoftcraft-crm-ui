@@ -482,4 +482,20 @@ describe('EndpointService', () => {
     const serObj = new EndpointService();
     expect(serObj.jwtRefresh()).toContain('jwt/refresh');
   }));
+
+  it('duplicacyGroupsListUrl(), should call duplicacyGroupsListUrl function', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.duplicacyGroupsListUrl()).toContain('duplicate/getgroupId');
+  }));
+
+  it('saveUpdateDataScopeUrl(), should call saveUpdateDataScopeUrl function', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.saveUpdateDataScopeUrl()).toContain('schema/variant/create-update-single');
+  }));
+
+  it('getAllDataScopeUrl(), should call getAllDataScopeUrl function', async(() => {
+    const serObj = new EndpointService();
+    expect(serObj.getAllDataScopeUrl('schema1', 'type1')).toContain('schema/variants/schema1/type1');
+  }));
+
 });

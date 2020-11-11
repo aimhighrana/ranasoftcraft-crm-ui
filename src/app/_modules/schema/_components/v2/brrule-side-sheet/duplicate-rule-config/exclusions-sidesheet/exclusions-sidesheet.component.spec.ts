@@ -114,6 +114,28 @@ describe('ExclusionsSidesheetComponent', () => {
     expect(component.synonymsArray.value[0].visible).toEqual(true);
 
 
-  })
+  });
+
+  it('should update hover state for a synonym group', () => {
+
+    const data = {fId:'1',ival:'w1,w2', sval:'customer:client'} ;
+    component.initExclusionData(data);
+
+    component.groupHover(0);
+    expect(component.synonymsArray.value[0].hover).toEqual(true);
+
+    component.groupLeave(0);
+    expect(component.synonymsArray.value[0].hover).toEqual(false);
+
+
+  });
+
+  it('should enable group creation', () => {
+
+    component.enableGroupCreation();
+    expect(component.newGroupActive).toEqual(true);
+
+
+  });
 
 });

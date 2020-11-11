@@ -301,6 +301,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
     this.schemaService.getSchemaThresholdStatics(this.schemaId, this.variantId).subscribe(res=>{
       this.statics = res;
     }, error=>{
+      this.statics = new SchemaStaticThresholdRes();
       console.error(`Error : ${error}`);
     })
   }

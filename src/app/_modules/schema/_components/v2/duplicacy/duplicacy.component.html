@@ -1,26 +1,31 @@
 <div class="mat-elevation-z0 root">
     <div class="row-spacer"></div>
     <div class="f-row breadcrum-toolbar">
-        <div class="display-heading-large">Material / Catalog check / Entire dataset
-            <span class="f-col-spacer-half"></span>
-            <button mat-button [matMenuTriggerFor]="check">
-                <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon>
-            </button>
-            <mat-menu #check="matMenu" class="navigation-menu">
-                <button mat-menu-item>[New data scope]</button>
-                <button mat-menu-item>Entire dataset</button>
-                <button mat-menu-item>Sydney plant</button>
-                <button mat-menu-item>Brisbane plant</button>
-                <button mat-menu-item>Adelaide plant</button>
-                <button mat-menu-item>Melbourne plant</button>
-            </mat-menu>
+        <div class="display-heading-large">
+            <ng-template [ngIf]="schemaInfo">
+                {{ schemaInfo.moduleDescription ? schemaInfo.moduleDescription : 'Module' }} /
+                {{ schemaInfo.schemaDescription ? schemaInfo.schemaDescription : 'Untitled'}} / {{variantName}}
+                <button mat-button [matMenuTriggerFor]="menu">
+                    <mat-icon>arrow_drop_down</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                    <button mat-menu-item>[New data scope] </button>
+                    <button mat-menu-item (click)="refreshData('0')"> Entire dataset </button>
+                    <ng-container *ngIf="schemaInfo.variants && schemaInfo.variants.length">
+                        <button mat-menu-item *ngFor="let variant of schemaInfo.variants"
+                            (click)="refreshData(variant.variantId)">
+                            {{variant.variantName}}
+                        </button>
+                    </ng-container>
+                </mat-menu>
+            </ng-template>
         </div>
         <div class="f-spacer"></div>
         <button mat-flat-button color="accent">
             <mat-icon fontSet="mdo-icons">wand</mat-icon> Check data
         </button>
         <button mat-fab color="accent" class="mat-elevation-z0">
-            <mat-icon fontSet="mdo-icons">chart-line</mat-icon>
+            <mat-icon>show_chart</mat-icon>
         </button>
         <button mat-fab color="accent" class="mat-elevation-z0" [matMenuTriggerFor]="moreactionfile">
             <mat-icon fontSet="mdo-icons">more</mat-icon>
@@ -37,16 +42,23 @@
 
     <div class="f-row">
         <mat-chip-list>
-            <mat-chip disableRipple="true">112 error</mat-chip>
-            <mat-chip disableRipple="true">600 warning</mat-chip>
-            <mat-chip disableRipple="true">700 corrections</mat-chip>
+            <mat-chip (click)="changeTabStatus('error')" disableRipple="true">
+                Errors {{ (statics && statics.errorCnt) ? statics.errorCnt : 0 }}
+            </mat-chip>
+            <mat-chip (click)="changeTabStatus('success')" class="badge warning" disableRipple="true"> Warnings
+                {{ (statics && statics.successCnt) ? statics.successCnt : 0 }}
+            </mat-chip>
+            <mat-chip (click)="changeTabStatus('review')" disableRipple="true">Corrections
+                {{ (statics && statics.correctedCnt) ? statics.correctedCnt : 0 }}
+            </mat-chip>
         </mat-chip-list>
     </div>
     <div class="row-spacer"></div>
 
     <div class="f-col data-container">
-        <mat-tab-group disableRipple="true">
-            <mat-tab>
+        <mat-tab-group disableRipple="true"> <!-- selectedIndex="1" -->
+            <ng-template>
+            <mat-tab disabled>
                 <ng-template mat-tab-label>
                     Data Quality
                 </ng-template>
@@ -222,28 +234,22 @@
                         <div class="row-spacer"></div>
 
                         <!-- Data Table -->
-                        <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
+                        <table mat-table [dataSource]="qualityDataSource" class="mat-elevation-z0">
 
                             <!-- Checkbox Column -->
                             <ng-container matColumnDef="select">
                                 <th mat-header-cell *matHeaderCellDef class="fixed-width-c1">
-                                    <mat-checkbox (change)="$event ? masterToggle() : null"
-                                        [checked]="selection.hasValue() && isAllSelected()"
-                                        [indeterminate]="selection.hasValue() && !isAllSelected()"
-                                        [aria-label]="checkboxLabel()" color="primary">
+                                    <mat-checkbox [aria-label]="checkboxLabel()" color="primary">
                                     </mat-checkbox>
                                 </th>
                                 <td mat-cell class="fixed-width-c1" *matCellDef="let row">
-                                    <mat-checkbox (click)="$event.stopPropagation()"
-                                        (change)="$event ? selection.toggle(row) : null"
-                                        [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)"
-                                        color="primary">
+                                    <mat-checkbox [aria-label]="checkboxLabel(row)" color="primary">
                                     </mat-checkbox>
                                 </td>
                             </ng-container>
 
                             <!-- Name Column -->
-                            <ng-container matColumnDef="name">
+                            <ng-container matColumnDef="avatar">
                                 <th mat-header-cell *matHeaderCellDef class="fixed-width-c1"></th>
                                 <td mat-cell class="fixed-width-c1" *matCellDef="let element">
                                     <mat-card-header>
@@ -342,45 +348,214 @@
                     </div>
                 </div>
             </mat-tab>
-
+            </ng-template>
             <mat-tab>
                 <ng-template mat-tab-label>
                     Duplicate check
                 </ng-template>
                 <div class="f-row dataset-grid">
-                    <div class="f-col dataset-grid-navigation">
-                    <!-- Dulicate check pros-component-table here -->
+                    <div class="f-col dataset-grid-navigation group-table-container">
+                        <!-- Group list table -->
+                        <pros-group-data-table [schemaId]="schemaId" [variantId]="variantId" [moduleId]="moduleId"
+                            (groupChange)="updateSelectedGroup($event)">
+                        </pros-group-data-table>
                     </div>
 
                     <mat-divider [vertical]="true"></mat-divider>
                     <div class="f-col dataset-grid-listing">
                         <div class="f-row">
-                            <pros-search-input></pros-search-input>
-                            <div class="f-col-spacer-half"></div>
+                            <pros-search-input (value)="inlineSearch($event)" [preValue]="preInpVal">
+                            </pros-search-input>
+
+                            <!-- Applied filters -->
                             <mat-chip-list>
-                                <mat-chip class="mdo-filter-matchip" disableRipple="true">
-                                    <label>Status:</label> <span class="info">All</span>
-                                    <mat-icon matChipRemove>clear</mat-icon>
-                                </mat-chip>
-                                <mat-chip class="mdo-filter-matchip" disableRipple="true">
-                                    <label>Attributes:</label> <span class="info">12mm</span>
-                                    <mat-icon matChipRemove>clear</mat-icon>
+                                <ng-template ngFor let-ctrl [ngForOf]="filterCriteria | async">
+                                    <ng-template [ngIf]="ctrl.type !== 'INLINE'">
+                                        <div class="f-col-spacer-half"></div>
+                                        <mat-chip class="mdo-filter-matchip" disableRipple="true"
+                                            [matMenuTriggerFor]="appliedfiltermenu" (click)="loadDropValues(ctrl)">
+                                            <label>
+                                                {{ ctrl.filterCtrl ? ctrl.filterCtrl.fldCtrl.fieldDescri : 'Unknown' }}
+                                                :
+                                            </label>
+                                            <ng-template [ngIf]="ctrl.filterCtrl.selectedValues.length > 1"
+                                                [ngIfElse]="showText">
+                                                <span class="info">
+                                                    {{ prepareTextToShow(ctrl) }}
+                                                </span>
+                                            </ng-template>
+                                            <ng-template #showText>
+                                                <span class="info">
+                                                    {{ prepareTextToShow(ctrl)}}
+                                                </span>
+                                            </ng-template>
+                                            <mat-icon matChipRemove (click)="removeAppliedFilter(ctrl)">clear</mat-icon>
+                                        </mat-chip>
+                                    </ng-template>
+                                </ng-template>
+                            </mat-chip-list>
+
+                            <!-- Append dynamic filter MatMenu -->
+                            <mat-menu #appliedfiltermenu="matMenu">
+                                <pros-filter-values [moduleId]="moduleId"
+                                    [fieldId]="loadDopValuesFor ? loadDopValuesFor.fieldId : ''"
+                                    [checkedValue]="loadDopValuesFor ? loadDopValuesFor.checkedValue : []"
+                                    (selectedValues)="updateFilterCriteria($event)"></pros-filter-values>
+                            </mat-menu>
+
+                            <div class="f-col-spacer-half"></div>
+
+                            <mat-chip-list>
+
+                                <!-- Add filter control -->
+                                <mat-chip class="mdo-filter-matchip" disableRipple="true"
+                                    [matMenuTriggerFor]="addfiltermenu" (click)="reInilize = !reInilize">
+                                    <mat-icon fontSet="mdo-icons">filter-add</mat-icon>
                                 </mat-chip>
 
-                                <mat-chip class="mdo-filter-matchip" disableRipple="true">
-                                    <label>Diameter:</label> <span class="info">12mm</span>
-                                    <mat-icon matChipRemove>clear</mat-icon>
-                                </mat-chip>
-                                <mat-chip class="mdo-filter-matchip" disableRipple="true">
-                                    <label>Color:</label> <span class="info">All</span>
-                                    <mat-icon matChipRemove>clear</mat-icon>
-                                </mat-chip>
+                                <!-- Add filter control MatMenu -->
+                                <mat-menu #addfiltermenu="matMenu">
+                                    <pros-add-filter-menu [moduleId]="moduleId"
+                                        (evtReadyForApply)="makeFilterControl($event)" [reInilize]="reInilize">
+                                    </pros-add-filter-menu>
+                                </mat-menu>
+
                             </mat-chip-list>
+
                         </div>
 
                         <div class="row-spacer"></div>
 
-                    <!-- Dulicate check pros-component-table here -->
+
+                        <!-- Data Table -->
+                        <mat-table [dataSource]="dataSource" matSort class="mat-elevation-z0"
+                            (scroll)="onScroll($event)">
+
+                            <!-- Checkbox Column -->
+                            <ng-container matColumnDef="select" sticky>
+                                <mat-header-cell *matHeaderCellDef class="fixed-width-c1">
+                                    <mat-checkbox (change)="$event ? masterToggle() : null"
+                                        [checked]="selection.hasValue() && isAllSelected()"
+                                        [indeterminate]="selection.hasValue() && !isAllSelected()"
+                                        [aria-label]="checkboxLabel()" color="primary">
+                                    </mat-checkbox>
+                                </mat-header-cell>
+                                <mat-cell class="fixed-width-c1" *matCellDef="let row">
+                                    <mat-checkbox (click)="$event.stopPropagation()"
+                                        (change)="$event ? selection.toggle(row) : null"
+                                        [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)"
+                                        color="primary">
+                                    </mat-checkbox>
+                                </mat-cell>
+                            </ng-container>
+
+                            <!-- Avatar Column -->
+                            <ng-container matColumnDef="avatar">
+                                <mat-header-cell *matHeaderCellDef class="fixed-width-c1"></mat-header-cell>
+                                <mat-cell class="fixed-width-c1" *matCellDef="let element">
+                                    <mat-card-header>
+                                        <div mat-card-avatar>AK</div>
+                                    </mat-card-header>
+                                </mat-cell>
+                            </ng-container>
+
+                            <!-- Actions Column -->
+                            <ng-container matColumnDef="action" sticky>
+                                <mat-header-cell *matHeaderCellDef class="fixed-width-c2">
+                                    <button mat-button (click)="openTableColumnSettings()">
+                                        <mat-icon fontSet="mdo-icons">cog</mat-icon>
+                                    </button>
+                                </mat-header-cell>
+                                <mat-cell *matCellDef="let element" class="fixed-width-c2">
+                                    <div class="f-row action-iconbtns">
+                                        <button mat-fab color="accent" [matMenuTriggerFor]="moreactions">
+                                            <mat-icon fontSet="mdo-icons">more</mat-icon>
+                                        </button>
+                                        <!-- more actions -->
+
+                                        <button mat-fab color="accent" (click)="markAsMasterRecord(element)">
+                                            <mat-icon>
+                                                <!-- fontSet="mdo-icons" -->
+                                                {{ element.status === 'Master record' ? 'star' : 'star_border'}}
+                                            </mat-icon>
+                                        </button>
+                                        <button mat-fab color="accent"
+                                            *ngIf="element && (element.status === 'Can be deleted')">
+                                            <mat-icon fontSet="mdo-icons">restart</mat-icon>
+                                        </button>
+                                        <button mat-fab color="accent"
+                                            *ngIf="element && (element.status !== 'Can be deleted')"
+                                            (click)="markForDeletion(element)">
+                                            <mat-icon>delete_outline</mat-icon> <!-- fontSet="mdo-icons" -->
+                                        </button>
+                                    </div>
+                                </mat-cell>
+                            </ng-container>
+
+                            <ng-container matColumnDef="OBJECTNUMBER">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header class="fixed-width-c2"> Object Number</mat-header-cell>
+                                <mat-cell *matCellDef="let element" class="fixed-width-c2">
+                                    {{ element['OBJECTNUMBER'] ? element['OBJECTNUMBER'].fieldData : '' }}
+                                </mat-cell>
+                            </ng-container>
+
+                            <!-- Status Column -->
+                            <!-- <ng-container matColumnDef="status">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header> Status
+                                </mat-header-cell>
+                                <mat-cell *matCellDef="let element">
+                                    <mat-chip-list>
+                                        <mat-chip disableRipple="true" class="badge success"> {{element.status || 'Master record'}} <mat-icon
+                                                fontSet="mdo-icons" class="mat-info-icon">information</mat-icon>
+                                        </mat-chip>
+                                    </mat-chip-list>
+                                </mat-cell>
+                            </ng-container> -->
+
+                            <ng-template ngFor let-dynCol [ngForOf]="displayedFields | async">
+                                <ng-template [ngIf]="isStaticColumn(dynCol)" [ngIfElse]="dynamic">
+                                </ng-template>
+                                <ng-template #dynamic>
+                                    <ng-container [matColumnDef]="dynCol">
+                                        <mat-header-cell *matHeaderCellDef mat-sort-header>
+                                            {{ metadataFldLst && metadataFldLst.headers[dynCol] ? metadataFldLst.headers[dynCol].fieldDescri : 'Unkonwn' }}
+                                        </mat-header-cell>
+                                        <mat-cell *matCellDef="let element">
+                                            {{ element[dynCol] ? element[dynCol].fieldData : '' }}
+                                        </mat-cell>
+                                    </ng-container>
+                                </ng-template>
+                            </ng-template>
+
+                            <!-- load header for actions-->
+                            <ng-container matColumnDef="common_actions_header">
+                                <mat-header-cell *matHeaderCellDef [attr.colspan]="displayedFields.getValue().length">
+                                    <div class="f-row">
+                                        <button mat-flat-button>
+                                            <mat-icon>done</mat-icon>
+                                            Action
+                                        </button>
+                                        <button mat-flat-button (click)="selection.clear()">
+                                            <mat-icon>close</mat-icon>
+                                            Unselect
+                                        </button>
+                                    </div>
+                                </mat-header-cell>
+                            </ng-container>
+
+                            <mat-header-row *matHeaderRowDef="tableHeaderActBtn; sticky : true"></mat-header-row>
+                            <mat-header-row *matHeaderRowDef="displayedFields | async; sticky: true"></mat-header-row>
+                            <mat-row *matRowDef="let row; columns: displayedFields | async;"></mat-row>
+                        </mat-table>
+                        <pros-null-state *ngIf="!dataSource.docLength()" [button]="null"></pros-null-state>
+                        
+                        <mat-menu #moreactions="matMenu" class="navigation-menu">
+                            <button mat-menu-item>Create HERS</button>
+                            <button mat-menu-item>Create info record</button>
+                            <mat-divider></mat-divider>
+                            <button mat-menu-item>Assign to...</button>
+                            <button mat-menu-item>Mark for deletion</button>
+                        </mat-menu>
 
                     </div>
                 </div>

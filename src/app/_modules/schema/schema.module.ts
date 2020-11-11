@@ -5,7 +5,6 @@ import { SchemaRoutingModule } from './schema-routing.module';
 import { SchemaListComponent } from 'src/app/_modules/schema/_components/schema-list/schema-list.component';
 import { SchemaGroupsComponent } from 'src/app/_modules/schema/_components/schema-groups/schema-groups.component';
 import { SchemaTileComponent } from 'src/app/_modules/schema/_components/schema-tile/schema-tile.component';
-// import { SchemaDetailsComponent } from './_components/schema-details/schema-details.component';
 import { OverviewChartComponent } from './_components/schema-details/overview-chart/overview-chart.component';
 import { CategoriesChartComponent } from './_components/schema-details/categories-chart/categories-chart.component';
 import { SchemaDatatableComponent } from './_components/schema-details/schema-datatable/schema-datatable.component';
@@ -40,7 +39,6 @@ import { SchemaInfoComponent } from './_components/v2/schema-info/schema-info.co
 import { CreateSchemaComponent } from './_components/v2/create-schema/create-schema.component';
 import { SubscriberSideSheetComponent } from './_components/v2/subscriber-side-sheet/subscriber-side-sheet.component';
 import { BusinessrulelibraryDialogComponent } from './_components/businessrulelibrary-dialog/businessrulelibrary-dialog.component';
-import { CatalogCheckComponent } from './_components/catalog-check/catalog-check.component';
 import { DuplicateDatacheckSidesheetComponent } from './_components/duplicate-datacheck-sidesheet/duplicate-datacheck-sidesheet.component';
 import { DatascopeSidesheetComponent } from './_components/datascope-sidesheet/datascope-sidesheet.component';
 import { ConfigureSidesheetComponent } from './_components/configure-sidesheet/configure-sidesheet.component';
@@ -63,8 +61,9 @@ import { ClassificationBuilderComponent } from './_components/v2/classification/
 import { DetailBuilderComponent } from './_components/v2/_builder/detail-builder/detail-builder.component';
 import { PotextViewComponent } from './_components/v2/potext/potext-view/potext-view.component';
 import { SchemaListsComponent } from './_components/v2/schema-lists/schema-lists.component';
-
 import { BusinessrulelibrarySidesheetComponent } from './_components/businessrulelibrary-sidesheet/businessrulelibrary-sidesheet.component';
+import { GroupDataTableComponent } from './_components/v2/duplicacy/group-data-table/group-data-table.component';
+import { DuplicacyComponent } from './_components/v2/duplicacy/duplicacy.component';
 
 
 @NgModule({
@@ -109,7 +108,6 @@ import { BusinessrulelibrarySidesheetComponent } from './_components/businessrul
     SubscriberSideSheetComponent,
     CreateSchemaComponent,
     BusinessrulelibraryDialogComponent,
-    CatalogCheckComponent,
     DuplicateDatacheckSidesheetComponent,
     DatascopeSidesheetComponent,
     ConfigureSidesheetComponent,
@@ -127,13 +125,15 @@ import { BusinessrulelibrarySidesheetComponent } from './_components/businessrul
     NewModifierSidesheetComponent,
     NewNounSidesheetComponent,
     LibraryMappingSidesheetComponent,
-    SetupDuplicateRuleComponent,
     ClassificationBuilderComponent,
     DetailBuilderComponent,
     PotextViewComponent,
     SchemaListsComponent,
     SetupDuplicateRuleComponent,
-    BusinessrulelibrarySidesheetComponent
+    BusinessrulelibrarySidesheetComponent,
+    // PotextCatalogcheckComponent,
+    GroupDataTableComponent,
+    DuplicacyComponent
   ],
   imports: [
     CommonModule,
