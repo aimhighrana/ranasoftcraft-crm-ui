@@ -40,6 +40,12 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
     ROLENAMES.VIEWER,
     ROLENAMES.EDITOR
   ]
+
+  /**
+   * Fetch count for subscribers
+   */
+  fetchCount = 0;
+
   /**
    * constructor of the class
    * @param dialogRef mat dialog ref object
@@ -59,10 +65,11 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
    */
   ngOnInit(): void {
     this.initForm();
-    this.getCollaborators('');
+    this.getCollaborators('', this.fetchCount);
     this.collaboratorSubscription = this.form.controls.field.valueChanges
       .subscribe((value) => {
-        this.getCollaborators(value);
+        this.fetchCount = 0;
+        this.getCollaborators(value, this.fetchCount);
       });
   }
 
@@ -95,8 +102,8 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
     this.form.controls.initials.setValue(event.option.value.fName[0] + event.option.value.lName[0]);
   }
 
-  getCollaborators(queryString) {
-    this.collaboratorSubscription = this.schemaDetailsService.getAllUserDetails(queryString)
+  getCollaborators(queryString, fetchCount) {
+    this.collaboratorSubscription = this.schemaDetailsService.getAllUserDetails(queryString, fetchCount)
       .subscribe((response: PermissionOn) => {
         this.subscribers = response.users;
         this.filteredSubscribers = response.users;

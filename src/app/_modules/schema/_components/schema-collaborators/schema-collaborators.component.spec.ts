@@ -46,8 +46,8 @@ describe('SchemaCollaboratorsComponent', () => {
 
   it('getCollaboratorPermission(), should return for get all user details', async(() =>{
     spyOn(schemaDetailsSer,'getAllUserDetails').and.returnValue(of({} as PermissionOn));
-    component.getCollaboratorPermission('');
-    expect(schemaDetailsSer.getAllUserDetails).toHaveBeenCalledWith('');
+    component.getCollaboratorPermission('',0);
+    expect(schemaDetailsSer.getAllUserDetails).toHaveBeenCalledWith('',0);
   }));
 
   it('transformResponse(), should help for transform data',async(()=>{

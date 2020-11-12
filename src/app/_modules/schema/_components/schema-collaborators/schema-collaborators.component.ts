@@ -46,6 +46,11 @@ export class SchemaCollaboratorsComponent implements OnInit {
   possibleChips: SchemaDashboardPermission[] = [];
   currentPageIdx = 0;
 
+  /**
+   * Fetch count for collaborators
+   */
+  fetchCount = 0;
+
   constructor(
     private activatedRouter: ActivatedRoute,
     private formBuilder: FormBuilder,
@@ -55,7 +60,7 @@ export class SchemaCollaboratorsComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
-    this.getCollaboratorPermission('');
+    this.getCollaboratorPermission('', this.fetchCount);
     this.activatedRouter.params.subscribe(params => {
       this.schemaId = params.schemaId;
     });
@@ -73,10 +78,11 @@ export class SchemaCollaboratorsComponent implements OnInit {
      * After value change should call http for load more collaborators
      */
     this.addCollaboratorFrmGrp.get('addCollaboratorCtrl').valueChanges.subscribe(val=>{
+      this.fetchCount = 0;
       if(val && typeof val === 'string') {
-        this.getCollaboratorPermission(val);
+        this.getCollaboratorPermission(val, this.fetchCount);
       } else if(typeof val === 'string' && val.trim() === ''){
-        this.getCollaboratorPermission('');
+        this.getCollaboratorPermission('', this.fetchCount);
       }
     })
 
@@ -105,8 +111,8 @@ export class SchemaCollaboratorsComponent implements OnInit {
    * Get all collaborators permission
    * @param queryString search able string
    */
-  getCollaboratorPermission(queryString: string) {
-    this.schemaDetailsService.getAllUserDetails(queryString).subscribe(response => {
+  getCollaboratorPermission(queryString: string, fetchCount: number) {
+    this.schemaDetailsService.getAllUserDetails(queryString, fetchCount).subscribe(response => {
       this.permissionOn = response;
       this.collaborators = this.transformResponse(response);
     },error=>console.error(`Error: ${error}`));

@@ -11,7 +11,7 @@ import { SharedServiceService } from '@modules/shared/_services/shared-service.s
 @Component({
   selector: 'pros-subscriber-side-sheet',
   templateUrl: './subscriber-side-sheet.component.html',
-  styleUrls: ['./subscriber-side-sheet.component.scss']
+  styleUrls: ['./subscriber-side-sheet.component.scss'],
 })
 export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
 
@@ -27,8 +27,6 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
 
   subscribers = [];
 
-  submitted = false;
-
   moduleId: string;
   schemaId: string;
   subscriberId: string;
@@ -43,9 +41,9 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
   addSubscriberArr = [];
 
   /**
-   * To have subscribers those are availble to add..
+   * Variable to update get subscribers API fetch count
    */
-  availableSubscribers = [];
+  fetchCount = 0;
 
 
   /**
@@ -66,31 +64,37 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
    * Angular Hook
    */
   ngOnInit(): void {
-
     this.activatedRoute.params.subscribe((params) => {
       this.moduleId = params.moduleId;
       this.schemaId = params.schemaId;
       this.subscriberId = params.subscriberId;
 
-      this.getCollaborators('');
+      this.getSubscribersBySchemaId(this.schemaId);
     })
   }
 
   /**
    * Function to get all collaborators/subscribers list to show in drop-down
+   * @param queryString: searchString it is used when search subscribers
+   * @param fetchCount: Fetch Count to get next batch of subscribers
    */
-  getCollaborators(queryString) {
-    this.collaboratorSubscription = this.schemaDetailsService.getAllUserDetails(queryString)
+  getCollaborators(queryString: string, fetchCount: number) {
+    this.collaboratorSubscription = this.schemaDetailsService.getAllUserDetails(queryString, fetchCount)
       .subscribe((response: PermissionOn) => {
-        this.subscribers = response.users;
-        this.subscribers.forEach(subscriber => {
-          subscriber.isAdd = false;
+        if(fetchCount === 0){
+          this.subscribers = [];
+        }
+        response.users.forEach(user => {
+          user.isAdd = false;
+          this.subscribers = [...this.subscribers, user]
+          this.collaboratorData.map((collaborator) => {
+            if(collaborator.userid === user.userName){
+              user.isAdd = true;
+            }
+          })
         })
-        this.getSubscribersBySchemaId(this.schemaId)
-      }, () => {
-        this.snackBar.open('error getting subscribers', 'okay', {
-          duration: 1000
-        })
+      }, (error) => {
+        console.log('Error while fetching subscribers!!', error.message);
       });
   }
 
@@ -125,16 +129,13 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
 
   /**
    * Function to get subscribers detail according to the schema id
+   * @param schemaId: schema ID
    */
   getSubscribersBySchemaId(schemaId: string) {
     this.schemaDetailsService.getCollaboratorDetails(schemaId).subscribe((subscriberData) => {
       this.collaboratorData = subscriberData;
-      this.collaboratorData.forEach(collaborator => {
-        const user = this.subscribers.filter(subscriber => subscriber.userName === collaborator.userid)[0];
-        const index = this.subscribers.indexOf(user);
-        this.subscribers.splice(index, 1)
-      });
-      this.availableSubscribers = this.subscribers;
+
+      this.getCollaborators('', this.fetchCount);
     })
   }
 
@@ -185,6 +186,22 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
     const removeSubscriber = this.addSubscriberArr.filter(user => user.userid === subscriber.userid)[0];
     const index = this.addSubscriberArr.indexOf(removeSubscriber)
     this.addSubscriberArr.splice(index, 1);
+  }
+
+  /**
+   * Function to update fetchCount on scroll
+   * @param event: scroll event object
+   */
+  onScroll(event){
+    const viewPortHeight = event.target.offsetHeight; // height of the complete viewport
+    const scrollFromTop = event.target.scrollTop;     // height till user has scrolled
+    const sideSheetHeight = event.target.scrollHeight; // complete scrollable height of the side sheet document
+
+    const limit = sideSheetHeight - scrollFromTop;
+    if(limit === viewPortHeight){
+      this.fetchCount++;
+      this.getCollaborators('', this.fetchCount);
+    }
   }
 
   /**

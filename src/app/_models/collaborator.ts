@@ -64,6 +64,7 @@ export interface UserMdoModel {
     roleId?: string;
     initials?: string;
     selected?: boolean;
+    isAdd?: boolean;
 }
 export interface RolesModel {
     roleId: string;

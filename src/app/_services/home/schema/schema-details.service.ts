@@ -146,8 +146,8 @@ export class SchemaDetailsService {
     return this.http.post(this.endpointService.submitReviewedRecordsUrl(schemaId), null);
   }
 
-  public getAllUserDetails(queryString: string): Observable<PermissionOn> {
-    return this.http.get<PermissionOn>(this.endpointService.getAllUserDetailsUrl(), { params: { queryString } });
+  public getAllUserDetails(queryString: string, fetchCount: any): Observable<PermissionOn> {
+    return this.http.get<PermissionOn>(this.endpointService.getAllUserDetailsUrl(), { params: { queryString, fetchCount } });
   }
 
   public getCollaboratorDetails(schemaId: string): Observable<SchemaDashboardPermission[]> {

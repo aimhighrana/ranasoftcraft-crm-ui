@@ -12,13 +12,7 @@
             </div>
             <div class="row-spacer"></div>
             <div class="f-row">
-                <pros-search-input (value)="getCollaborators($event)"></pros-search-input>
-                <span class="col-spacer"></span>
-                <mat-chip-list>
-                    <mat-chip class="mdo-filter-matchip">
-                        Role: All
-                    </mat-chip>
-                </mat-chip-list>
+                <pros-search-input (value)="getCollaborators($event, 0)"></pros-search-input>
             </div>
             <div class="row-spacer"></div>
         </div>
@@ -26,9 +20,9 @@
 
     <div class="row-spacer"></div>
     <div class="f-col businessrule-listing">
-        <cdk-virtual-scroll-viewport itemSize="52" class="f-col businessrule-listing">
+        <cdk-virtual-scroll-viewport itemSize="20" class="f-col businessrule-listing" (scroll)="onScroll($event)">
         <div class="f-col mdo-justify">
-            <mat-list role="list" class="rule-list" *cdkVirtualFor="let subscriber of availableSubscribers">
+            <mat-list role="list" class="rule-list" *cdkVirtualFor="let subscriber of subscribers">
                 <mat-list-item role="listitem">
                     <div class="mat-line">
                         <mat-card-header>
