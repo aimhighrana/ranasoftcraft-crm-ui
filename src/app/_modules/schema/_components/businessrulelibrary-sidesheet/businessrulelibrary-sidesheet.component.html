@@ -1,39 +1,41 @@
 <mat-card class="root mat-elevation-z0">
     <div class="f-row breadcrum-toolbar">
         <button mat-button (click)="closeDialogComponent()">
-            <mat-icon>clear</mat-icon>
+            <mat-icon fontSet="mdo-icons">close</mat-icon>
         </button>
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
                 <div class="display-heading-large">Business rule library</div>
+                <div class="f-spacer"></div>
+                <button mat-flat-button color="primary" (click)="saveSelection()">Save</button>
             </div>
-        </div>
-        <div class="col-spacer"></div>
-        <button mat-flat-button color="primary" (click)="saveSelection()">Save</button>
-    </div>
-    <div class="f-row breadcrum-toolbar">
-        <div class="f-row">
-            <pros-search-input (value)="search($event)"></pros-search-input>
-            <span class="col-spacer"></span>
-            <mat-chip-list>
-                <mat-chip class="mdo-filter-matchip" [matMenuTriggerFor]="businessRuleType">
-                    Business rule type: <a>{{(selectedRuleType && selectedRuleType.ruleDesc)? selectedRuleType.ruleDesc: 'All'}}</a>
-                </mat-chip>
-            </mat-chip-list>
-            <mat-menu #businessRuleType="matMenu">
-                <mat-nav-list class="mdo-menu-nav">
+            <div class="row-spacer"></div>
+            <div class="f-row">
+                <pros-search-input (value)="search($event)"></pros-search-input>
+                <span class="col-spacer"></span>
+                <mat-chip-list>
+                    <mat-chip class="mdo-filter-matchip" [matMenuTriggerFor]="businessRuleType">
+                        <label>Business rule type:</label> <span
+                            class="info">{{(selectedRuleType && selectedRuleType.ruleDesc)? selectedRuleType.ruleDesc: 'All'}}
+                        </span>
+                    </mat-chip>
+                </mat-chip-list>
+                <mat-menu #businessRuleType="matMenu" class="navigation-menu">
                     <ng-container *ngFor="let type of businessRuleTypes">
-                        <a mat-list-item class="mdo-menu-listitem" *ngIf="type.isImplemented"
-                        (click)="selectCurrentRuleType(type)">{{type.ruleDesc}}</a>
+                        <button mat-menu-item *ngIf="type.isImplemented"
+                            (click)="selectCurrentRuleType(type)">{{type.ruleDesc}}</button>
                     </ng-container>
-                </mat-nav-list>
-            </mat-menu>
+                </mat-menu>
+            </div>
+            <div class="row-spacer"></div>
         </div>
     </div>
+
     <div class="f-col businessrule-listing">
         <div class="mdo-justify">
-            <mat-progress-bar *ngIf="loader" mode="indeterminate"></mat-progress-bar>
+            <!-- page loader -->
+            <mat-spinner color="primary" diameter="30" *ngIf="loader"></mat-spinner>
             <mat-list role="list" class="rule-list" *ngIf="!loader && filteredBusinessRulesList.length>0">
                 <mat-list-item role="listitem" *ngFor="let brItem of filteredBusinessRulesList; trackBy: trackByFn">
                     <div class="mat-line">{{brItem.brInfo}}</div>
@@ -42,7 +44,7 @@
                         (click)="selectBusinessRule(brItem, constants.ADD)">Add</button>
                     <ng-template #doneButton>
                         <button mat-flat-button color="accent">
-                            <mat-icon>done</mat-icon>
+                            <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
                         </button>
                     </ng-template>
                 </mat-list-item>

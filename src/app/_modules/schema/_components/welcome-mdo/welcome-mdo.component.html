@@ -4,11 +4,15 @@
     </div>
 
     <div class="f-row">
-        <p class="paragraph-text">Master Data Online (MDO) delivers trustworthy and reliable data to business users. By mediating, managing and governing master data it can be shared by multiple master data domains. It enables business users to easily create information with standardized business rules, workflows and approval processes. Available both on cloud and enterprise models, MDO can integrate with SAP, Salesforce, Microsoft and other leading enterprise solutions.</p>
+        <p class="paragraph-text">Master Data Online (MDO) delivers trustworthy and reliable data to business users. By
+            mediating, managing and governing master data it can be shared by multiple master data domains. It enables
+            business users to easily create information with standardized business rules, workflows and approval
+            processes. Available both on cloud and enterprise models, MDO can integrate with SAP, Salesforce, Microsoft
+            and other leading enterprise solutions.</p>
         <img src="./assets/images/mdo-logo-white.svg" width="150">
     </div>
 
-    
+
     <div class="row-spacer"></div>
 
     <mat-progress-bar mode="determinate" value="40"></mat-progress-bar>
@@ -52,7 +56,25 @@
             <mat-icon mat-list-icon fontSet="mdo-icons">wand</mat-icon>
             <div mat-line>Check your data</div>
             <div mat-line class="short-line">Validate your data by uploading a new or using existing dataset</div>
-            <button mat-flat-button color="accent" (click)="openUploadScreen()">Check</button>
+            <button mat-flat-button color="accent" (click)="openUploadScreen()">Check </button>
+
+                    <!-- Module dropdown start here -->
+                    <!-- <mat-icon fontSet="mdo-icons"
+                    class="mat-menu-icon">menu-arrow</mat-icon>
+                     <mat-menu #check="matMenu" class="navigation-menu">
+                        <button mat-menu-item [matMenuTriggerFor]="customermenu">Customer</button>
+                        <button mat-menu-item>Material</button>
+                        <button mat-menu-item>Order</button>
+                        <button mat-menu-item>Vendor</button>
+                        <mat-divider></mat-divider>
+                        <button mat-menu-item>
+                            <mat-icon fontSet="mdo-icons" class="mat-menu-icon">plus</mat-icon> New module...
+                        </button>
+                    </mat-menu>
+        
+                    <mat-menu #customermenu="matMenu">
+                        <button mat-menu-item>Customer link</button>
+                    </mat-menu> -->
         </mat-list-item>
 
         <mat-divider></mat-divider>
