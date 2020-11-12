@@ -107,7 +107,6 @@
                 {{regex.FUNC_NAME}}
               </mat-option>
             </mat-select>
-
           </mat-form-field>
           <mat-error
             *ngIf="submitted && form.controls.standard_function.errors && form.controls.standard_function.errors.required">
@@ -164,7 +163,8 @@
 
           <!-- Comparison value -->
           <div class="col" *ngIf="udrBlock.operator !== 'RANGE'">
-            <pros-form-input [placeholder]="'Comparison value'" (valueChange)="setComparisonValue($event,i)">
+            <pros-form-input [placeholder]="'Comparison value'" (valueChange)="setComparisonValue($event,i)"
+            [value]="udrBlock.comparisonValue">
             </pros-form-input>
           </div>
 
@@ -234,15 +234,18 @@
 
                 <div class="col" *ngIf="child.operator !== 'RANGE'">
                   <pros-form-input [placeholder]="'Comparison value'"
+                    [value]="child.comparisonValue"
                     (valueChange)="setComparisonValueForChild($event,child,i)">
                   </pros-form-input>
                 </div>
 
                 <div class="col" *ngIf="child.operator === 'RANGE'">
                   <pros-form-input [placeholder]="'start value'"
+                    [value]="child.rangeStartValue"
                     (valueChange)="setRangeValueForChild($event,'start',child)">
                   </pros-form-input>
                   <pros-form-input [placeholder]="'end value'"
+                    [value]="child.rangeEndValue"
                     (valueChange)="setRangeValueForChild($event,'end',child)">
                   </pros-form-input>
                 </div>

@@ -28,8 +28,8 @@ export class SchemaService {
    * @param selectedElement Element that's selected currently
    */
   public generateColumnByFieldId(fieldId: string) {
-    if(fieldId) {
-      const excelData: ExcelValues = this.getExcelValues();
+    const excelData: ExcelValues = this.getExcelValues();
+    if(fieldId && excelData) {
       const column = excelData.headerData.find((header) => header.mdoFldId === fieldId);
       const index = column.columnIndex;
       const columnData: string[] = [];

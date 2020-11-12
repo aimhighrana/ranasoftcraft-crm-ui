@@ -43,7 +43,7 @@
                     <button mat-flat-button color="accent" *ngIf="!isSelected(brItem); else doneButton"
                         (click)="selectBusinessRule(brItem, constants.ADD)">Add</button>
                     <ng-template #doneButton>
-                        <button mat-flat-button color="accent">
+                        <button mat-flat-button color="accent" (click)="selectBusinessRule(brItem, constants.REMOVE)">
                             <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
                         </button>
                     </ng-template>

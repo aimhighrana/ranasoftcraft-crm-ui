@@ -24,7 +24,6 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
   fieldMetadata: any[];
 
   selectedValues: DropDownValue[] = [];
-  staticFieldValues: string[];
   currentFields: any[];
   /**
    * Hold all metada control for header , hierarchy and grid fields ..
@@ -61,15 +60,19 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
    */
   ngOnChanges(changes: SimpleChanges): void {
     if(changes && changes.moduleId && changes.moduleId.previousValue !== changes.moduleId.currentValue) {
-      this.moduleId = changes.moduleId.currentValue;
-      this.getFldMetadata();
+      if(this.moduleId !== changes.moduleId.currentValue){
+        this.moduleId = changes.moduleId.currentValue;
+        this.getFldMetadata();
+      }
     }
 
     if(changes && changes.reInilize && changes.reInilize.previousValue !== changes.reInilize.currentValue) {
       if(this.activateElement) {
         this.metadata.next(this.metadata.getValue());
       }
-      this.initMetadata(this.currentFields);
+      if(!this.moduleId) {
+        this.initMetadata(this.currentFields);
+      }
     }
 
     if(changes && changes.fieldMetadata && changes.fieldMetadata.previousValue !== changes.fieldMetadata.currentValue) {
@@ -108,6 +111,9 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
          this.tarnsformMetada();
        }
     });
+    if(this.moduleId) {
+      this.getFldMetadata();
+    }
   }
 
   /**
@@ -148,8 +154,10 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
    */
   ctrlFlds(fld: MetadataModel) {
     this.activateElement = fld;
-    this.schemaService.generateColumnByFieldId(this.activateElement.fieldId);
     this.metadaDrop = [];
+    if(!this.moduleId) {
+      this.schemaService.generateColumnByFieldId(this.activateElement.fieldId);
+    }
   }
 
   /**

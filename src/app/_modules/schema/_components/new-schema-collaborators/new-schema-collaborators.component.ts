@@ -33,6 +33,7 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
   collaboratorSubscription = new Subscription();
 
   selectedCollaborators: Array<UserMdoModel> = [];
+  incomingSelectedSubscribers: Array<UserMdoModel> = [];
   selectedRoleType: string;
   roles = [
     ROLENAMES.ADMIN,
@@ -58,6 +59,9 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
     @Inject(MAT_DIALOG_DATA) public data,
     public schemaDetailsService: SchemaDetailsService,
     public snackBar: MatSnackBar) {
+      if(data && data.selectedSubscibersList && data.selectedSubscibersList.length>0){
+        this.incomingSelectedSubscribers = data.selectedSubscibersList;
+      }
      }
 
   /**
@@ -105,18 +109,29 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
   getCollaborators(queryString, fetchCount) {
     this.collaboratorSubscription = this.schemaDetailsService.getAllUserDetails(queryString, fetchCount)
       .subscribe((response: PermissionOn) => {
-        this.subscribers = response.users;
-        this.filteredSubscribers = response.users;
-        this.filteredSubscribers.forEach((subscriber: UserMdoModel) => {
+        const subscribers: UserMdoModel[] = response.users;
+        subscribers.forEach((subscriber: UserMdoModel) => {
           subscriber.initials = (subscriber.fName[0] + subscriber.lName[0]).toUpperCase();
           subscriber.selected = false;
           subscriber.userId = subscriber.userId ? subscriber.userId : Math.floor( Math.random() * 1000000000000 ).toString()
-        })
+        });
+
+        this.subscribers = this.removeSelectedSubscribers(subscribers, this.incomingSelectedSubscribers);
+        this.filteredSubscribers = this.removeSelectedSubscribers(subscribers, this.incomingSelectedSubscribers);
+
       }, () => {
         this.snackBar.open('Error getting subscribers', 'okay', {
           duration: 1000
         })
       });
+  }
+
+  removeSelectedSubscribers(allSubscribers, selectedSubscribers){
+    return allSubscribers.filter( subscriber =>
+      selectedSubscribers.every( selected =>
+          selected.userId !== subscriber.userid
+      )
+  )
   }
 
   displayWith(item) {
@@ -191,15 +206,13 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
   }
 
   addOrDeleteCollaborator(collaborator: UserMdoModel) {
-    const exists = this.selectedCollaborators.find(subscriber => subscriber.userId === collaborator.userId);
-    if (exists) {
-      this.snackBar.open('This is already selected', 'Okay', {
-        duration: 5000
-      });
-      return;
+    const index = this.selectedCollaborators.findIndex(subscriber => subscriber.userId === collaborator.userId);
+    if (index>-1) {
+      collaborator.selected = false;
+      this.selectedCollaborators.splice(index, 1);
     } else {
       collaborator.selected = true;
-      this.selectedCollaborators.push(collaborator)
+      this.selectedCollaborators.push(collaborator);
     }
   }
 

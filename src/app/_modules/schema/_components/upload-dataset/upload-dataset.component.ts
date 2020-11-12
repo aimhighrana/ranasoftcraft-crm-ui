@@ -21,6 +21,7 @@ import { NewSchemaCollaboratorsComponent } from '../new-schema-collaborators/new
 import { values, pick } from 'lodash';
 import { Utilities } from '@modules/base/common/utilities';
 import { BusinessrulelibrarySidesheetComponent } from '../businessrulelibrary-sidesheet/businessrulelibrary-sidesheet.component';
+import { PermissionOn, UserMdoModel } from '@models/collaborator';
 
 type UploadedDataType = any[][];
 
@@ -54,8 +55,13 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   fieldsBySubscriber: SubscriberFields[] = [];
   loaded = false;
   uploadLoader = false;
-
   objectTypes: Array<ObjectType> = [];
+  editableFieldIds: string[] = [];
+/**
+ * Fetch count for subscribers
+ */
+  fetchCount = 0;
+
   /**
    * progress bar value setting variable
    */
@@ -64,7 +70,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * array of headers
    */
   headerText = [
-    'Upload dataset: choose a file',
+    'Upload data',
     'Select module',
     'Name your dataset',
     'Select business rule',
@@ -94,7 +100,12 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   modulesListCopy = [];
 
   /**
-   * List of all business rules
+   * List of all selected business rules
+   */
+  selectedBusinessRules = [];
+
+  /**
+   * List of all selected business rules
    */
   businessRulesList = [];
 
@@ -119,6 +130,11 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * subscribers list
    */
   subscribersList = [];
+
+  /**
+   * subscribers list
+   */
+  allSubscribers = [];
 
   /**
    * object to store the core_schema object
@@ -184,17 +200,22 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     this.selectedMdoFldCtrl = new FormControl();
   }
 
-  /**
-   * Angular hook
-   */
-  ngOnInit(): void {
-    this.createForm();
+
+  getObjectTypes() {
     this.schemaService.getAllObjectType().subscribe((modules: []) => {
       if (modules && modules.length > 0) {
         this.modulesList.push(...modules);
         this.modulesListCopy.push(...modules);
       }
     });
+  }
+
+  /**
+   * Angular hook
+   */
+  ngOnInit(): void {
+    this.createForm();
+    this.getObjectTypes();
 
     // get logged in user details
     this.userService.getUserDetails().subscribe((userdetails: Userdetails) => {
@@ -210,6 +231,9 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     }
     this.requestForm.get('dataScope').setValue('Entire Dataset');
     this.requestForm.get('threshold').setValue(100);
+
+    this.getBusinessRulesList();
+    this.getCollaborators('', this.fetchCount);
   }
 
   setObjectDescription(moduleName) {
@@ -423,12 +447,12 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     }
     if (this.stepper.selectedIndex === 3) {
       const schema = this.requestForm.get('core_schema').value;
-      if (!schema || !schema.description) {
+      if (!schema || !schema.discription) {
         return false;
       }
     }
     if (this.stepper.selectedIndex === 3) {
-      if (this.businessRulesList && this.businessRulesList.length === 0) {
+      if (this.selectedBusinessRules && this.selectedBusinessRules.length === 0) {
         this.snackBar.open('Please add a Business Rule to continue', 'Okay', { duration: 5000 });
         return false;
       }
@@ -509,18 +533,13 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     }
     if (componentName === 'existingBR') {
       this.globaldialogService.openDialog(BusinessrulelibrarySidesheetComponent, {
-        selectedRules: this.businessRulesList,
+        selectedRules: this.selectedBusinessRules,
       });
       this.dialogSubscriber = this.globaldialogService.dialogCloseEmitter
         .pipe(distinctUntilChanged())
         .subscribe((response: CoreSchemaBrInfo[]) => {
           if (response && response.length > 0) {
-            response.map((rule) => {
-              this.addRuleIdToExisting(rule.brId).then(() => {
-                const updatedObj = { ...rule, tempId: this.utilties.getRandomString(8) };
-                this.businessRulesList.push(updatedObj);
-              });
-            });
+            this.selectBusinessRule(response);
           }
           this.dialogSubscriber.unsubscribe();
         })
@@ -555,13 +574,13 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         this.requestForm.controls.coreSchemaBr.value.push(brObject);
       }
       brObject.status = '1';
-      if (this.businessRulesList.length > 0) {
-        const index = this.businessRulesList.findIndex(rule => rule.tempId === tempId);
+      if (this.selectedBusinessRules.length > 0) {
+        const index = this.selectedBusinessRules.findIndex(rule => rule.tempId === tempId);
         if (index > -1) {
-          this.businessRulesList[index] = brObject;
+          this.selectedBusinessRules[index] = brObject;
         }
       } else {
-        this.businessRulesList.push(brObject);
+        this.selectedBusinessRules.push(brObject);
       }
     }
   }
@@ -697,8 +716,8 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * @param event the dropped element
    */
   reoderBR(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this.businessRulesList, event.previousIndex, event.currentIndex);
-    this.businessRulesList[event.currentIndex].order = event.currentIndex + 1;
+    moveItemInArray(this.selectedBusinessRules, event.previousIndex, event.currentIndex);
+    this.selectedBusinessRules[event.currentIndex].order = event.currentIndex + 1;
   }
 
   /**
@@ -833,12 +852,12 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    */
   setschemaName(event) {
     const updatedSchemaValue = { ...this.requestForm.controls.core_schema.value };
-    updatedSchemaValue.description = event;
+    updatedSchemaValue.discription = event;
     this.requestForm.controls.core_schema.setValue(updatedSchemaValue);
   }
 
   isSchemaSet(value): boolean {
-    if ((value && !value.description) || !value) {
+    if ((value && !value.discription) || !value) {
       return false;
     }
     return true;
@@ -908,26 +927,38 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * subscibers to form
    */
   addSubscribers() {
-    this.globaldialogService.openDialog(NewSchemaCollaboratorsComponent, {});
+    this.globaldialogService.openDialog(NewSchemaCollaboratorsComponent, {
+      selectedSubscibersList: this.subscribersList
+    });
     this.dialogSubscriber = this.globaldialogService.dialogCloseEmitter
       .pipe(distinctUntilChanged())
       .subscribe((response: any[]) => {
-        response.forEach((subscriber) => {
-          subscriber.sno = Math.floor(Math.random() * 100000000000).toString();
-          subscriber.plantCode = this.userDetails.plantCode;
-          subscriber.dataAllocation = [];
-          subscriber.filterFieldIds = [];
-          this.subscribersList.push(subscriber);
-        })
-        // if (response) {
-        //   response.sno = Math.floor(Math.random() * 100000000000).toString();
-        //   response.plantCode = this.userDetails.plantCode;
-        //   response.dataAllocation = [];
-        //   response.filterFieldIds = [];
-        //   this.subscribersList.push(response);
-        // }
+        this.updateSubscribersList(response);
         this.dialogSubscriber.unsubscribe();
       });
+  }
+
+
+  /**
+   * update or add subscribers in selected subscribers list
+   * @param response pass the response containing the subscribers list
+   */
+  updateSubscribersList(response) {
+    if (Array.isArray(response) && response.length > 0) {
+      response.forEach((subscriber) => {
+        subscriber.sno = Math.floor(Math.random() * 100000000000).toString();
+        subscriber.plantCode = this.userDetails.plantCode;
+        subscriber.dataAllocation = [];
+        subscriber.filterFieldIds = [];
+        this.subscribersList.push(subscriber);
+      })
+    } else if (response && typeof response === 'object') {
+      response.sno = Math.floor(Math.random() * 100000000000).toString();
+      response.plantCode = this.userDetails.plantCode;
+      response.dataAllocation = [];
+      response.filterFieldIds = [];
+      this.subscribersList.push(response);
+    }
   }
 
   /**
@@ -957,13 +988,15 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
 
     if (this.subscribersList.length > 0) {
       this.subscribersList.forEach((subscriber) => {
-        subscriber.filterFieldIds.forEach(field => {
-          field.values = field.selectedValues.map(item => item.CODE);
-          delete field.fldCtrl
-          delete field.selectedValues
-        });
-        subscriber.filterCriteria = subscriber.filterFieldIds;
-        delete subscriber.filterFieldIds;
+        if (subscriber.filterFieldIds && subscriber.filterFieldIds.length > 0) {
+          subscriber.filterFieldIds.forEach(field => {
+            field.values = field.selectedValues.map(item => item.CODE);
+            delete field.fldCtrl
+            delete field.selectedValues
+          });
+          subscriber.filterCriteria = subscriber.filterFieldIds;
+          delete subscriber.filterFieldIds;
+        }
       });
     }
 
@@ -1015,7 +1048,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * @param index index of object to be removed
    */
   deleteBR(index) {
-    this.businessRulesList.splice(index, 1);
+    this.selectedBusinessRules.splice(index, 1);
     this.requestForm.controls.coreSchemaBr.value.splice(index, 1);
   }
 
@@ -1119,5 +1152,73 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    */
   setFormValue(value: DataSource, field: string) {
     this.headerForm.controls[field].setValue(value);
+  }
+
+  /**
+   * Get business rule list from the api
+   */
+  getBusinessRulesList() {
+    this.schemaService.getAllBusinessRules().subscribe((rules: CoreSchemaBrInfo[]) => {
+      if (rules && rules.length > 0) {
+        this.businessRulesList = rules;
+      }
+    });
+  }
+
+  /**
+   * method to select business rules
+   * @param businessRules an array of businessRules or a single business rule
+   */
+  selectBusinessRule(businessRules: CoreSchemaBrInfo[] | CoreSchemaBrInfo) {
+    if (Array.isArray(businessRules)) {
+      businessRules.map((rule) => {
+        this.addRuleIdToExisting(rule.brId).then(() => {
+          const updatedObj = { ...rule, tempId: this.utilties.getRandomString(8) };
+          this.selectedBusinessRules.push(updatedObj);
+        });
+      });
+    } else {
+      this.addRuleIdToExisting(businessRules.brId).then(() => {
+        const updatedObj = { ...businessRules, tempId: this.utilties.getRandomString(8) };
+        this.selectedBusinessRules.push(updatedObj);
+      });
+    }
+  }
+
+  /**
+   * method to get collaboratos/subscribers from the api
+   * @param queryString pass query param to fetch values from the api
+   */
+  getCollaborators(queryString, fetchCount: number) {
+    this.schemaDetailsService.getAllUserDetails(queryString, fetchCount)
+      .subscribe((response: PermissionOn) => {
+          if(response && response.users){
+          const subscribers: UserMdoModel[] = response.users;
+          subscribers.forEach((subscriber: UserMdoModel) => {
+            subscriber.initials = (subscriber.fName[0] + subscriber.lName[0]).toUpperCase();
+            subscriber.selected = false;
+            subscriber.userId = subscriber.userId ? subscriber.userId : Math.floor(Math.random() * 1000000000000).toString()
+          });
+
+          this.allSubscribers = subscribers;
+        }
+      }, () => {
+        this.snackBar.open('Error getting subscribers', 'okay', {
+          duration: 1000
+        })
+      });
+  }
+
+  isEditable(data: DataSource) {
+    const exists: boolean = this.editableFieldIds.indexOf(data.mdoFldId) !== -1;
+    if(this.requestForm.controls.objectId.value){
+      return exists;
+    }
+
+    return true;
+  }
+
+  makeEditable(data: DataSource) {
+    this.editableFieldIds.push(data.mdoFldId);
   }
 }

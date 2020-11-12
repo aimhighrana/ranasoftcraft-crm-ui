@@ -1,7 +1,7 @@
 <mat-card class="root mat-elevation-z0">
     <div class="f-row breadcrum-toolbar">
         <div class="display-heading-large">
-            {{toolbarHeaderText}}(step {{headerTextIndex + 1}} of {{headerText.length}})
+            {{'Data check'}} (step {{headerTextIndex}}/{{headerText.length}}): <b>{{toolbarHeaderText}}</b>
         </div>
         <span class="f-spacer"></span>
         <button mat-button (click)="closeDialog()">
@@ -92,20 +92,22 @@
                             <strong>Target field</strong>
                         </div>
                     </div>
-                    
+
                     <form *ngIf="dataSource.length>0" [formGroup]="headerForm">
                         <ng-container *ngFor="let data of dataSource;let rowIndex=index">
                             <div class="f-row colunm-box">
                                 <div class="col col-x8">
-                                    <pros-form-input [placeholder]="'Enter a value'" [disabled]="false"
-                                        [value]="data.excelFld" (valueChange)="setFormValue($event, data.mdoFldId)">
-                                    </pros-form-input>
-                                    <mat-error *ngIf="headerForm.controls[data.mdoFldId].errors">
-                                        This field is required
-                                    </mat-error>
-                                    <!-- <div class="mat-line">
+                                    <div [style.display]="isEditable(data)? 'block': 'none'">
+                                        <pros-form-input [placeholder]="'Enter a value'" [disabled]="false"
+                                            [value]="data.excelFld" (valueChange)="setFormValue($event, data.mdoFldId)">
+                                        </pros-form-input>
+                                        <mat-error *ngIf="headerForm.controls[data.mdoFldId].errors">
+                                            This field is required
+                                        </mat-error>
+                                    </div>
+                                    <div [style.display]="isEditable(data)? 'none': 'block'" class="mat-line" (click)="makeEditable(data)">
                                         {{data.excelFld}}
-                                    </div> -->
+                                    </div>
                                 </div>
                                 <div class="col col-x8 text-end">
                                     <div class="mat-line">{{data.excelFrstRow}}</div>
@@ -148,6 +150,16 @@
                     </mat-slider>
                 </div>
             </div>
+
+            <!-- Business rule empty state latest code start here-->
+            <!-- <div class="f-col empty-state" *ngIf="selectedBusinessRules.length === 0">
+                <div><img src="./assets/images/empty-order.svg" width="140"></div>
+                <div class="empty-heading">No business rules selected</div>
+                <p class="label-text">Business rules define how your data is analysed and processed.</p>
+                <button mat-flat-button color="accent" (click)="openGlobalDialog('createBR')">Add business
+                    rules</button>
+            </div> -->
+            <!-- Business rule empty state latest code end here-->
             <div class="colunm-listing">
                 <div class="f-row colunm-box rule-border-row">
                     <div class="col"></div>
@@ -157,12 +169,16 @@
                 </div>
 
                 <ng-container>
-                    <div class="f-row colunm-box rule-border-row">
+                    <div class="f-row colunm-box">
                         <div class="col">
-                            <!-- Business rule mat-field comes here -->
+                            <pros-form-input-autoselect [fieldLabel]="'Type rule name to add'"
+                                (optionSelectedEmit)="selectBusinessRule($event)"
+                                (openCustomDialog)="openGlobalDialog($event)" [updatedOptionsList]="businessRulesList"
+                                [viewMoreAction]="'existingBR'" [extraOption]="'createBR'"
+                                [extraOptionLabel]="'Add new rule'" [valueKey]="'brId'" [labelKey]="'brInfo'">
+                            </pros-form-input-autoselect>
                         </div>
-                        <!-- After creating field remove below code -->
-                        <div class="col col-x8">
+                        <!-- <div class="col col-x8">
                             <a class="f-row info-link" [matMenuTriggerFor]="addrulenavigation">[Add business rule
                                 <mat-icon fontSet="mdo-icons" class="mat-head-icon">menu-arrow</mat-icon>]</a>
                             <mat-menu #addrulenavigation="matMenu" class="navigation-menu">
@@ -173,8 +189,14 @@
                         <div class="col col-x4">
                         </div>
                         <div class="col col-x8">
-                        </div>
-                        <!-- After creating field remove below code -->
+                        </div> -->
+                    </div>
+                    <div class="f-col empty-state" *ngIf="selectedBusinessRules.length === 0">
+                        <div><img src="./assets/images/empty-order.svg" width="140"></div>
+                        <div class="empty-heading">No business rules selected</div>
+                        <p class="label-text">Business rules define how your data is analysed and processed.</p>
+                        <button mat-flat-button color="accent" (click)="openGlobalDialog('createBR')">Add business
+                            rules</button>
                     </div>
                 </ng-container>
 
@@ -186,7 +208,7 @@
 
                 <ng-container>
                     <div cdkDropList (cdkDropListDropped)="reoderBR($event)">
-                        <div *ngFor="let businessRule of businessRulesList;let k=index" cdkDrag
+                        <div *ngFor="let businessRule of selectedBusinessRules;let k=index" cdkDrag
                             class="f-row colunm-box rule-border-row">
                             <div class="col">
                                 <button mat-button cdkDragHandle>
@@ -242,30 +264,16 @@
                 </div>
                 <div class="f-row colunm-box rule-border-row">
                     <div class="col">
-                        <!-- subscribers mat-field comes here -->
-                    </div>
-
-                    <!-- After creating field remove below code -->
-                    <div class="col col-x4">
-                        <a class="f-row info-link" (click)="addSubscribers()">[Add subscriber]</a>
-                    </div>
-
-                    <div class="col col-x4">
-                    </div>
-
-                    <div class="col col-x8 text-end">
+                        <pros-form-input-autoselect [fieldLabel]="'Select subscribers'"
+                            (optionSelectedEmit)="updateSubscribersList($event)" (openCustomDialog)="addSubscribers()"
+                            [updatedOptionsList]="allSubscribers" [viewMoreAction]="'addSubscribers'"
+                            [extraOption]="'addSubscribers'" [extraOptionLabel]="'Invite people to your team'"
+                            [valueKey]="" [labelKey]="'fullName'">
+                        </pros-form-input-autoselect>
                     </div>
                     <!-- After creating field remove below code -->
                 </div>
-
-                <div class="f-col empty-state" style="display: none;">
-                    <div><img src="./assets/images/empty-table.svg" width="140"></div>
-                    <div class="empty-heading">Nothing to see here</div>
-                    <p class="label-text">You don't have any subscribers selected. Type the user's name in the box above to add one</p>
-                </div>
-                
-                <div *ngFor="let subscriber of subscribersList;let l=index"
-                    class="f-row colunm-box rule-border-row">
+                <div *ngFor="let subscriber of subscribersList;let l=index" class="f-row colunm-box rule-border-row">
                     <div class="col">
                         <mat-card-header>
                             <div mat-card-avatar>{{subscriber.initials}}</div>
@@ -295,15 +303,14 @@
                                 <ng-container (click)="setActiveChip(data)">
                                     <!-- {{data.fieldDescription}}:{{data.selectedValues.length}} -->
                                     {{data.fieldDescription}}:{{getFieldValueCount(data)}}
-                                    <mat-icon matChipRemove (click)="removeAllocation(s,l)"
-                                        prosClickStopPropagation>
+                                    <mat-icon matChipRemove (click)="removeAllocation(s,l)" prosClickStopPropagation>
                                         clear
                                     </mat-icon>
                                 </ng-container>
                             </mat-chip>
 
-                            <mat-chip class="mdo-filter-matchip" (click)="reInilize = !reInilize"
-                                disableRipple="true" [matMenuTriggerFor]="appliedfiltermenu">
+                            <mat-chip class="mdo-filter-matchip" (click)="reInilize = !reInilize" disableRipple="true"
+                                [matMenuTriggerFor]="appliedfiltermenu">
                                 <mat-icon fontSet="mdo-icons">filter-add</mat-icon>
                             </mat-chip>
                         </mat-chip-list>
