@@ -39,11 +39,11 @@
             </ng-template>
             <div class="f-col summary-root">
                 <form [formGroup]="schemaSummaryForm">
-                    <pros-form-input [label]="'Name'" [placeholder]="'New material schema'"
+                    <pros-form-input [label]="'Name'" [placeholder]="'New material schema'" [disabled]="true"
                         [value]="schemaDetails?.schemaDescription ? schemaDetails.schemaDescription : ''">
                     </pros-form-input>
                     <div class="row-spacer"></div>
-                    <pros-form-input [label]="'Description'"
+                    <pros-form-input [label]="'Description'" [disabled]="true"
                         [value]="schemaDetails?.schemaDescription ? schemaDetails.schemaDescription : ''">
                     </pros-form-input>
                     <div class="row-spacer"></div>
@@ -209,7 +209,7 @@
                                         {{ ctrl.filterCtrl ? ctrl.filterCtrl.fldCtrl.fieldDescri : 'Unknown' }}
                                         :
                                     </label>
-                                    <ng-template [ngIf]="ctrl.filterCtrl.selectedValeus.length > 1"
+                                    <ng-template [ngIf]="ctrl.filterCtrl.selectedValues.length > 1"
                                         [ngIfElse]="showText">
                                         <span class="info">
                                             {{ prepareTextToShow(ctrl) }}

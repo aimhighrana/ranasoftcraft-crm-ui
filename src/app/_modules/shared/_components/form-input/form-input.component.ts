@@ -49,6 +49,16 @@ export class FormInputComponent implements OnInit, OnChanges {
   @Input() maxLength: number;
 
   /**
+   * To get min value in case of field type is number
+   */
+  @Input() minimum: number;
+
+  /**
+   * To get maximum value in case of field type is number
+   */
+  @Input() maximum: number;
+
+  /**
    * To emit value change of input to parent
    */
   @Output() valueChange = new EventEmitter<string>();
@@ -67,7 +77,8 @@ export class FormInputComponent implements OnInit, OnChanges {
    *
    */
   ngOnInit(): void {
-    this.control = new FormControl({disabled: this.readonly});
+    this.control = new FormControl();
+    this.readonly ? this.control.disable() : this.control.enable();
     if (this.value !== undefined) {
       this.control.setValue(this.value);
     }
