@@ -14,7 +14,6 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { VariantDetails } from '@models/schema/schemalist';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
-import { DatePickerFieldComponent } from './date-picker-field/date-picker-field.component';
 import { BreadcrumbComponent } from '@modules/shared/_components/breadcrumb/breadcrumb.component';
 import { Router } from '@angular/router';
 
@@ -28,7 +27,7 @@ describe('CreateVariantComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CreateVariantComponent, BrConditionalFieldsComponent, DatePickerFieldComponent, BreadcrumbComponent ],
+      declarations: [ CreateVariantComponent, BrConditionalFieldsComponent, BreadcrumbComponent ],
       imports:[
         AppMaterialModuleForSpec, HttpClientTestingModule, ReactiveFormsModule, FormsModule, RouterTestingModule
       ],

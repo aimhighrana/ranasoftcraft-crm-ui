@@ -6,11 +6,15 @@ import { Subscription } from 'rxjs';
 import { SchemaExecutionRequest } from '@models/schema/schema-execution';
 import { SchemaExecutionService } from '@services/home/schema/schema-execution.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+
+
 @Component({
   selector: 'pros-schema-tile',
   templateUrl: './schema-tile.component.html',
   styleUrls: ['./schema-tile.component.scss']
 })
+
+
 export class SchemaTileComponent implements OnInit, OnDestroy {
 
   @Input()

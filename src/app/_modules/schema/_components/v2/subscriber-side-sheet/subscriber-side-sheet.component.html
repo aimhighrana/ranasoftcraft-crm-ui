@@ -1,43 +1,53 @@
-<mat-card class="root mat-elevation-z0">
-    <div class="f-row">
+<div class="root mat-elevation-z0">
+    <div class="f-row breadcrum-toolbar">
         <button mat-button (click)="close()">
-            <mat-icon>clear</mat-icon>
+            <mat-icon fontSet="mdo-icons">close</mat-icon>
         </button>
         <div class="col-spacer"></div>
-        <div class="f-row header-toolbar mdo-constrained-right">
-            <div class="display-heading-large">Collaborators
+        <div class="f-col mdo-constrained-right">
+            <div class="f-row breadcrum-head">
+                <div class="display-heading-large">Add subscribers</div>
+                <span class="f-spacer"></span>
+                <button mat-flat-button color="primary" (click)="save()">Save</button>
             </div>
-            <span class="f-spacer"></span>
-            <button mat-flat-button color="primary" (click)="save()">Save</button>
+            <div class="row-spacer"></div>
+            <div class="f-row">
+                <pros-search-input (value)="getCollaborators($event)"></pros-search-input>
+                <span class="col-spacer"></span>
+                <mat-chip-list>
+                    <mat-chip class="mdo-filter-matchip">
+                        Role: All
+                    </mat-chip>
+                </mat-chip-list>
+            </div>
+            <div class="row-spacer"></div>
         </div>
     </div>
+
     <div class="row-spacer"></div>
-    <div class="f-col mdo-justify">
-        <form [formGroup]="form">
-            <div class="mdo-form-field">
-                <mat-label>Add Collaborators</mat-label>
-                <mat-form-field appearance="outline">
-                    <input matInput class="mat-input" [matAutocomplete]="auto" formControlName="field">
-                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayWith" (optionSelected)="addSelectedField($event)">
-                        <mat-option *ngFor="let user of subscribers" [value]="user">
-                            {{user.fullName}}
-                        </mat-option>
-                    </mat-autocomplete>
-                </mat-form-field>
-                <mat-error *ngIf="form.controls.field.errors && form.controls.field.errors.required">select a subscriber</mat-error>
-            </div>
-            <div class="mdo-form-field">
-                <mat-label>Permissions</mat-label>
-                <mat-form-field appearance="outline">
-                    <mat-select appearance="outline" formControlName="role" (selectionChange)="setPermissions($event)">
-                        <mat-option value="Admin">Admin</mat-option>
-                        <mat-option value="Reviewer">Reviewer</mat-option>
-                        <mat-option value="Viewer">Viewer</mat-option>
-                        <mat-option value="Editer">Editor</mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <mat-error *ngIf="form.controls.role.errors && form.controls.role.errors.required">select a permission</mat-error>
-            </div>
-        </form>
+    <div class="f-col businessrule-listing">
+        <cdk-virtual-scroll-viewport itemSize="52" class="f-col businessrule-listing">
+        <div class="f-col mdo-justify">
+            <mat-list role="list" class="rule-list" *cdkVirtualFor="let subscriber of availableSubscribers">
+                <mat-list-item role="listitem">
+                    <div class="mat-line">
+                        <mat-card-header>
+                            <div mat-card-avatar>{{shortName(subscriber.fName, subscriber.lName) | uppercase}}</div>
+                            <mat-card-title mat-line>{{subscriber.fullName}}</mat-card-title>
+                        </mat-card-header>
+                    </div>
+                    <span class="f-spacer"></span>
+                    <ng-template [ngIf]="subscriber.isAdd===false" [ngIfElse]="checkButton">
+                        <button mat-flat-button color="accent" (click)="addSubscriber(subscriber)">Add</button>
+                    </ng-template>
+                    <ng-template #checkButton>
+                        <button mat-flat-button color="accent" (click)="uncheckSubscriber(subscriber)">
+                            <mat-icon>check</mat-icon>
+                        </button>
+                    </ng-template>
+                </mat-list-item>
+            </mat-list>
+        </div>
+        </cdk-virtual-scroll-viewport>
     </div>
-</mat-card>
+</div>

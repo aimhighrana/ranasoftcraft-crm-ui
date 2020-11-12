@@ -1,17 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BusinessrulelibrarySidesheetComponent } from './businessrulelibrary-sidesheet.component';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SchemaService } from '@services/home/schema.service';
 import { CoreSchemaBrInfo } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { of } from 'rxjs';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatListModule } from '@angular/material/list';
-import { MatChipsModule } from '@angular/material/chips';
 import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
-import { MatIconModule } from '@angular/material/icon';
-import { MatCardModule } from '@angular/material/card';
 import { HttpClientModule } from '@angular/common/http';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 describe('BusinessrulelibrarySidesheetComponent', () => {
   let component: BusinessrulelibrarySidesheetComponent;
@@ -25,13 +20,7 @@ describe('BusinessrulelibrarySidesheetComponent', () => {
     TestBed.configureTestingModule({
       declarations: [BusinessrulelibrarySidesheetComponent, SearchInputComponent],
       imports: [
-        MatDialogModule,
-        MatMenuModule,
-        MatListModule,
-        MatChipsModule,
-        MatIconModule,
-        MatCardModule,
-        MatProgressSpinnerModule,
+        AppMaterialModuleForSpec,
         HttpClientModule],
       providers: [SchemaService,
         { provide: MatDialogRef, useValue: null },

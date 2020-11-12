@@ -67,7 +67,7 @@ export class FormInputComponent implements OnInit, OnChanges {
    *
    */
   ngOnInit(): void {
-    this.control = new FormControl();
+    this.control = new FormControl({disabled: this.readonly});
     if (this.value !== undefined) {
       this.control.setValue(this.value);
     }

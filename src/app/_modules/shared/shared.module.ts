@@ -63,13 +63,15 @@ import { ResumeSessionComponent } from './_components/resume-session/resume-sess
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { TableCellInputComponent } from './_components/table-cell-input/table-cell-input.component';
 import { ContainerRefDirective } from './_directives/container-ref.directive';
-
+import { ScheduleComponent } from './_components/schedule/schedule.component'
+import { DatePickerFieldComponent } from './_components/date-picker-field/date-picker-field.component';
 
 @NgModule({
   declarations: [
     // directives
     ClickStopPropagationDirective,
     TagsEllipsisDirective,
+    ContainerRefDirective,
     // pipes
     SubstringPipe,
     ThousandconvertorPipe,
@@ -90,8 +92,9 @@ import { ContainerRefDirective } from './_directives/container-ref.directive';
     FilterValuesComponent,
     ConfirmationDialogComponent,
     ResumeSessionComponent,
-    TableCellInputComponent,
-    ContainerRefDirective
+    ScheduleComponent,
+    DatePickerFieldComponent,
+    TableCellInputComponent
   ],
   imports: [
     // ng modules
@@ -219,8 +222,12 @@ import { ContainerRefDirective } from './_directives/container-ref.directive';
     AddFilterMenuComponent,
     NavigationDropdownComponent,
     FilterValuesComponent,
+    ScheduleComponent,
+    DatePickerFieldComponent,
     TableCellInputComponent
   ],
-  entryComponents: [TableCellInputComponent]
+  entryComponents: [
+    TableCellInputComponent
+  ]
 })
 export class SharedModule { }

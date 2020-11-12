@@ -8,14 +8,31 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { SchemaService } from '@services/home/schema.service';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
-import { SchemaListDetails } from '@models/schema/schemalist';
+import { SchemaListDetails, SchemaListModuleList } from '@models/schema/schemalist';
+import { SimpleChange, SimpleChanges } from '@angular/core';
+import { SchemalistService } from '@services/home/schema/schemalist.service';
+import { ReportService } from '@modules/report/_service/report.service';
+import { ReportList } from '@modules/report/report-list/report-list.component';
 
 describe('SecondaryNavbarComponent', () => {
   let component: SecondaryNavbarComponent;
   let fixture: ComponentFixture<SecondaryNavbarComponent>;
   let schemaServiceSpy: SchemaService;
+  let schemaListService: SchemalistService;
+  let reportService: ReportService;
   let router: Router;
-
+  const reportList: ReportList[] = [
+    {
+      reportId: '10023',
+      reportName: 'TimeSeries Report'
+    } as ReportList
+  ]
+  const moduleList = [
+    {
+      moduleId: '1005',
+      moduleDesc: 'Material'
+    } as SchemaListModuleList
+  ]
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ SecondaryNavbarComponent, SearchInputComponent ],
@@ -29,13 +46,50 @@ describe('SecondaryNavbarComponent', () => {
     fixture = TestBed.createComponent(SecondaryNavbarComponent);
     component = fixture.componentInstance;
     schemaServiceSpy = fixture.debugElement.injector.get(SchemaService);
-
+    schemaListService = fixture.debugElement.injector.get(SchemalistService);
+    reportService = fixture.debugElement.injector.get(ReportService);
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('ngOnchanges(), should call ngOnChanges', async() => {
+    let changes = {
+      activatedPrimaryNav: {
+        currentValue: 'welcome',
+        previousValue: 'schema',
+        firstChange: true,
+      } as SimpleChange
+    } as SimpleChanges
+    spyOn(schemaListService, 'getSchemaList').and.returnValue(of(moduleList));
+    component.ngOnChanges(changes);
+    expect(schemaListService.getSchemaList).toHaveBeenCalled();
+
+    changes = {
+      activatedPrimaryNav: {
+        currentValue: 'schema',
+        previousValue: 'welcome',
+        firstChange: true,
+      } as SimpleChange
+    } as SimpleChanges
+    component.ngOnChanges(changes);
+    expect(schemaListService.getSchemaList).toHaveBeenCalled();
+
+    changes = {
+      activatedPrimaryNav: {
+        currentValue: 'report',
+        previousValue: 'schema',
+        firstChange: true,
+      } as SimpleChange
+    } as SimpleChanges
+
+    spyOn(reportService, 'reportList').and.returnValue(of(reportList));
+    component.ngOnChanges(changes);
+    expect(reportService.reportList).toHaveBeenCalled();
+
+  })
 
   it('getDataIntilligence() should return schema with varients', async(() => {
     spyOn(schemaServiceSpy, 'getSchemaWithVariants').and.returnValue(of({} as SchemaListDetails[]));
@@ -116,4 +170,67 @@ describe('SecondaryNavbarComponent', () => {
     expect(component.activatedPrimaryNav).toEqual('schema');
   })
 
+  it('getSchemaList(), should get all schema list', async() => {
+    spyOn(schemaListService, 'getSchemaList').and.returnValue(of(moduleList));
+    spyOn(router, 'navigate');
+    component.activatedPrimaryNav = 'schema';
+    component.isPageReload = false;
+    component.getSchemaList();
+    expect(schemaListService.getSchemaList).toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalledWith(['/home/schema', '1005'])
+  })
+
+  it('getReportList(), should get all reports', async() => {
+    spyOn(reportService, 'reportList').and.returnValue(of(reportList));
+    spyOn(router, 'navigate');
+
+    component.isPageReload = false;
+    component.getreportList();
+    expect(reportService.reportList).toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalledWith(['home/report/dashboard', '10023'])
+  })
+
+  it('searchForVarient(), should search for varient', async() => {
+    const schema: SchemaListDetails =
+      {
+        schemaId: '1234545',
+        schemaDescription: 'Material',
+        variants: [
+          {
+            variantId: '123A',
+            variantName: 'USA varient'
+          },
+          {
+            variantId: 'UK',
+            variantName: 'UK variant'
+          }
+        ]
+      } as SchemaListDetails
+    const searchString = 'USA';
+    const result = component.searchForVarient(schema, searchString);
+    expect(result).toEqual(true);
+  })
+
+  it('searchForSchema(), should search for schema', () => {
+    const module = {
+      moduleId: '123654',
+      moduleDesc: 'Module1',
+      schemaLists: [
+        {
+          schemaId: '1005',
+          schemaDescription: 'CustomerDIw'
+        }
+      ]
+    } as SchemaListModuleList
+
+    let searchString = 'diw';
+    let flag = component.searchForSchema(module, searchString);
+
+    expect(flag).toEqual(true);
+
+    searchString = 'Ashish';
+    flag = component.searchForSchema(module, searchString);
+
+    expect(flag).toEqual(false);
+  })
 });

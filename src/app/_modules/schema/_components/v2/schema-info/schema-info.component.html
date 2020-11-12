@@ -39,17 +39,17 @@
             </ng-template>
             <div class="f-col summary-root">
                 <form [formGroup]="schemaSummaryForm">
-                    <pros-form-input [label]="'Name'" [placeholder]="'New material schema'" [disabled]="true"
+                    <pros-form-input [label]="'Name'" [placeholder]="'New material schema'"
                         [value]="schemaDetails?.schemaDescription ? schemaDetails.schemaDescription : ''">
                     </pros-form-input>
                     <div class="row-spacer"></div>
-                    <pros-form-input [label]="'Description'" [disabled]="true"
+                    <pros-form-input [label]="'Description'"
                         [value]="schemaDetails?.schemaDescription ? schemaDetails.schemaDescription : ''">
                     </pros-form-input>
                     <div class="row-spacer"></div>
                     <div class="f-col temp-field">
                         <mat-label>Threshold</mat-label>
-                        <mat-slider color="primary" formControlName="schemaThreshold" [disabled]="true"
+                        <mat-slider color="primary" formControlName="schemaThreshold"
                             [value]="thresholdValue ? thresholdValue : 0"></mat-slider>
                     </div>
                     <div class="row-spacer"></div>
@@ -269,78 +269,7 @@
             <ng-template mat-tab-label>
                 Schedule
             </ng-template>
-
-            <div class="f-col summary-root">
-                <div class="f-col temp-field">
-                    <mat-checkbox color="primary">Enable schedule for this schema</mat-checkbox>
-                </div>
-                
-                <div class="row-spacer"></div>
-
-                <div class="f-col temp-field">
-                    <mat-label>Repeat</mat-label>
-                    <div class="f-row">
-                        <mat-button-toggle-group appearance="legacy">
-                            <mat-button-toggle>Hourly</mat-button-toggle>
-                            <mat-button-toggle>Daily</mat-button-toggle>
-                            <mat-button-toggle>Weekly</mat-button-toggle>
-                            <mat-button-toggle>Monthly</mat-button-toggle>
-                            <mat-button-toggle>Yearly</mat-button-toggle>
-                        </mat-button-toggle-group>
-                    </div>
-                </div>
-                
-                <mat-divider class="divider-dashed"></mat-divider>
-
-                <div class="f-row temp-field every-field">
-                    <pros-form-input [type]="'text'" [placeholder]="'week'" [label]="'Every'"></pros-form-input>
-                    <div class="col-spacer"></div>
-                    <div class="week-label">weeks</div>
-                </div>
-
-                <div class="row-spacer"></div>
-
-                <div class="f-col temp-field">
-                    <mat-label>On</mat-label>
-                    <mat-radio-group aria-label="Select an option" color="primary">
-                        <mat-radio-button value="1">Monday</mat-radio-button>
-                        <mat-radio-button value="2">Tuesday</mat-radio-button>
-                        <mat-radio-button value="3">Wednesday</mat-radio-button>
-                        <mat-radio-button value="4">Thursday</mat-radio-button>
-                        <mat-radio-button value="5">Friday</mat-radio-button>
-                        <mat-radio-button value="6">Saturday</mat-radio-button>
-                        <mat-radio-button value="7">Sunday</mat-radio-button>
-                    </mat-radio-group>
-                </div>
-
-                <mat-divider class="divider-dashed"></mat-divider>
-
-                <div class="f-col temp-field">
-                    <pros-form-input [type]="'text'" [label]="'Start on'"></pros-form-input>
-                </div>
-
-                <div class="row-spacer"></div>
-
-                <div class="f-col temp-field">
-                    <div class="f-row">
-                        <mat-button-toggle-group appearance="legacy">
-                            <mat-button-toggle value="bold">Never</mat-button-toggle>
-                            <mat-button-toggle value="italic">After</mat-button-toggle>
-                            <mat-button-toggle value="underline">On</mat-button-toggle>
-                        </mat-button-toggle-group>
-                    </div>
-                </div>
-
-                <div class="row-spacer"></div>
-
-                <div class="f-col temp-field">
-                    <pros-form-input [type]="'text'" [label]="'Date'"></pros-form-input>
-                </div>
-
-                <mat-divider></mat-divider>
-
-                <strong>Occurs every 2 weeks on Monday starting from today ending after 10 occurrences</strong>
-            </div>
+            <pros-schedule></pros-schedule>
         </mat-tab>
 
         <!-- Tab for the Statistics of the schema -->

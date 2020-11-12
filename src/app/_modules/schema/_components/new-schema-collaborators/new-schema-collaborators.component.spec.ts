@@ -10,6 +10,7 @@ import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { of } from 'rxjs';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ROLENAMES } from 'src/app/_constants';
+import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
 
 const mockDialogRef = {
     close: jasmine.createSpy('close')
@@ -23,7 +24,8 @@ describe('NewSchemaCollaboratorsComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [
-                NewSchemaCollaboratorsComponent
+                NewSchemaCollaboratorsComponent,
+                SearchInputComponent
             ],
             imports: [
                 HttpClientTestingModule,

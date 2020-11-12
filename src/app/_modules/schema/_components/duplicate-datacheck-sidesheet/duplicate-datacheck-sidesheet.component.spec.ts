@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { DuplicateDatacheckSidesheetComponent } from './duplicate-datacheck-sidesheet.component';
 
@@ -8,7 +9,10 @@ describe('DuplicateDatacheckSidesheetComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DuplicateDatacheckSidesheetComponent ]
+      declarations: [ DuplicateDatacheckSidesheetComponent ],
+      imports: [
+        AppMaterialModuleForSpec
+      ]
     })
     .compileComponents();
   }));

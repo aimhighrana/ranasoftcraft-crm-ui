@@ -7,6 +7,7 @@ import { Any2tsService } from '../any2ts.service';
 import { SchemaGroupResponse, SchemaGroupDetailsResponse, SchemaGroupCountResponse, CreateSchemaGroupRequest, GetAllSchemabymoduleidsReq, ObjectTypeResponse, GetAllSchemabymoduleidsRes, SchemaGroupWithAssignSchemas, WorkflowResponse, WorkflowPath, ExcelValues, DataSource } from 'src/app/_models/schema/schema';
 import { DropDownValue, UDRBlocksModel, UdrModel, CoreSchemaBrInfo, Category } from 'src/app/_modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaStaticThresholdRes, SchemaListModuleList, SchemaListDetails, CoreSchemaBrMap } from '@models/schema/schemalist';
+import { SchemaScheduler } from '@models/schema/schemaScheduler';
 
 
 
@@ -238,5 +239,14 @@ export class SchemaService {
 
   public getWorkFlowPath(ObjectType: string[]): Observable<WorkflowPath[]> {
     return this.http.post<WorkflowPath[]>(this.endpointService.getWorkFlowPathUrl(),ObjectType);
+  }
+
+  /**
+   * function to POST Api call for create/update schedule
+   * @param schemaId Id of schema
+   * @param schedulerObject request payload contains scheduler information..
+   */
+  public createUpdateSchedule(schemaId: string, schedulerObject: SchemaScheduler): Observable<number>{
+    return this.http.post<number>(this.endpointService.createUpdateScheduleUrl(schemaId), schedulerObject)
   }
 }

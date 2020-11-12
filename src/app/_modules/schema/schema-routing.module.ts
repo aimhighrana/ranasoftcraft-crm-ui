@@ -30,7 +30,6 @@ import { CreateSchemaComponent } from './_components/v2/create-schema/create-sch
 import { SchemaInfoComponent } from './_components/v2/schema-info/schema-info.component';
 import { BrruleSideSheetComponent } from './_components/v2/brrule-side-sheet/brrule-side-sheet.component';
 import { SubscriberSideSheetComponent } from './_components/v2/subscriber-side-sheet/subscriber-side-sheet.component';
-import { ScheduleTabComponent } from './_components/schedule-tab/schedule-tab.component';
 import { BusinessrulelibrarySidesheetComponent } from './_components/businessrulelibrary-sidesheet/businessrulelibrary-sidesheet.component';
 import { CatalogCheckComponent } from './_components/catalog-check/catalog-check.component';
 import { DuplicateDatacheckSidesheetComponent } from './_components/duplicate-datacheck-sidesheet/duplicate-datacheck-sidesheet.component';
@@ -82,7 +81,6 @@ const routes: Routes = [
   { path: 'schema-info/:moduleId/:schemaId', component: SchemaInfoComponent },
   { path: 'business-rule/:moduleId/:schemaId/:brId', component: BrruleSideSheetComponent },
   { path: 'subscriber/:moduleId/:schemaId/:subscriberId', component: SubscriberSideSheetComponent },
-  { path: 'system/schedule-tab', component: ScheduleTabComponent },
   { path: 'system/businessrulelibrary-sidesheet', component: BusinessrulelibrarySidesheetComponent },
   { path: 'system/catalog-check', component: CatalogCheckComponent },
   { path: 'system/duplicate-datacheck-sidesheet', component: DuplicateDatacheckSidesheetComponent },

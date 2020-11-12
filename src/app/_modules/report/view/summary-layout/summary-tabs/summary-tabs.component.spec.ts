@@ -7,6 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { LayoutFieldsResponse, LayoutTabResponse, MDORECORDESV3, FieldValueV2, FieldCodeText } from '@modules/report/_models/widget';
 import { WidgetService } from '@services/widgets/widget.service';
 import { of } from 'rxjs';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 describe('SummaryTabsComponent', () => {
   let component: SummaryTabsComponent;
@@ -15,7 +16,7 @@ describe('SummaryTabsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ SummaryTabsComponent ],
-      imports:[HttpClientTestingModule, ReactiveFormsModule, FormsModule, RouterTestingModule]
+      imports:[HttpClientTestingModule, ReactiveFormsModule, FormsModule, RouterTestingModule, AppMaterialModuleForSpec]
     })
     .compileComponents();
   }));

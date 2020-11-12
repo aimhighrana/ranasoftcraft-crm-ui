@@ -46,4 +46,14 @@ describe('DashboardComponent', () => {
     component.showClearBtnEmit(true);
     expect(component.showClearFilterBtn).toEqual(true);
   });
+
+  it('clearFilters(), should clear filters', () => {
+    component.emitClearBtnEvent = true;
+    component.clearFilters();
+    expect(component.emitClearBtnEvent).toEqual(false);
+
+    component.emitClearBtnEvent = false;
+    component.clearFilters();
+    expect(component.emitClearBtnEvent).toEqual(true);
+  })
 });

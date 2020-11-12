@@ -71,6 +71,7 @@ describe('SchemaListComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith(['/home/schema/schema-execution', schemaId]);
   });
 
+
   it('edit(), should navigate to schema edit  page', () => {
     const schemaDetails : SchemaListDetails = new SchemaListDetails();
     schemaDetails.schemaId = '87234687264862';

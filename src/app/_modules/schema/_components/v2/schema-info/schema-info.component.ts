@@ -11,7 +11,6 @@ import { MatSliderChange } from '@angular/material/slider';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
-import { SchemaExecutionRequest } from '@models/schema/schema-execution';
 import { SchemaExecutionService } from '@services/home/schema/schema-execution.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AddFilterOutput } from '@models/schema/schema';
@@ -410,21 +409,6 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     this.router.navigate(['', { outlets: { sb: `sb/schema/business-rule/${this.moduleId}/${this.schemaId}/${br.brIdStr}` } }]);
   }
 
-  /**
-   * Run schema now ..
-   * @param schema runable schema details .
-   */
-  runSchema(schema: SchemaListDetails) {
-    const schemaExecutionReq: SchemaExecutionRequest = new SchemaExecutionRequest();
-    schemaExecutionReq.schemaId = schema.schemaId;
-    schemaExecutionReq.variantId = '0'; // 0 for run all
-    this.schemaExecutionService.scheduleSChema(schemaExecutionReq).subscribe(data => {
-      this.schemaDetails.isInRunning = true;
-    }, error => {
-      this.matSnackBar.open(`Something went wrong while running schema`, 'Close', { duration: 5000 });
-    });
-  }
-
 
   makeFilterControl(event: AddFilterOutput, sNo: number) {
     const exitingFilterCtrl = [];
@@ -610,7 +594,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * function to open dataScope side sheet(Add new data scope)
+   * function to open dataScope side sheet(Add new data scope).
    */
   addDataScope() {
     this.router.navigate([{ outlets: { sb: `sb/schema/data-scope/new` } }])
@@ -622,6 +606,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
   openSummarySideSheet(moduleId: string, schemaId: string) {
     this.router.navigate([{ outlets: { sb: `sb/schema/summary/${moduleId}/${schemaId}` } }])
   }
+
 
   /**
    * ANGULAR HOOK
