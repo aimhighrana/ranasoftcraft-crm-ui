@@ -28,13 +28,13 @@ export class TableCellInputComponent implements OnInit, AfterViewInit {
 
   @ViewChild('input') input: ElementRef;
 
-
   FIELD_TYPE = FieldInputType;
 
   selectFieldOptions: DropDownValue[] = [];
   filterdOptionsObs: Observable<DropDownValue[]>;
 
   searchControl = new FormControl();
+  dateControl = new FormControl();
 
   constructor(private schemaService: SchemaService) { }
 
@@ -42,13 +42,14 @@ export class TableCellInputComponent implements OnInit, AfterViewInit {
 
     if ((this.inputType === this.FIELD_TYPE.SINGLE_SELECT) || (this.inputType === this.FIELD_TYPE.MULTI_SELECT)) {
       this.prepareDropdownOptions();
+    } else if (this.inputType === this.FIELD_TYPE.DATE){
+      this.dateControl.setValue(this.prepareDateFormat());
     }
   }
 
   ngAfterViewInit() {
     setTimeout(() => {
       this.input.nativeElement.focus();
-      // if(this.inputType.)
     }, 10)
 
   }
@@ -61,7 +62,7 @@ export class TableCellInputComponent implements OnInit, AfterViewInit {
   }
 
   formatDate(date) {
-    return moment(date.toString()).format('MM/DD/YYYY');
+    return moment(date.toString()).format('DD/MM/YYYY');
   }
 
   emitChngSelectValue(event) {
@@ -100,6 +101,10 @@ export class TableCellInputComponent implements OnInit, AfterViewInit {
 
   emitInputBlur(value) {
     this.inputBlur.emit(value);
+  }
+
+  datePanelClosed(){
+    this.emitInputBlur(this.formatDate(this.dateControl.value));
   }
 
 }

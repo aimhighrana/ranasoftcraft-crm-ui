@@ -496,10 +496,11 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
 
       // DO correction call for data
       const objctNumber = row.OBJECTNUMBER.fieldData;
-      const oldVal = row.fldid ? row.fldid.fieldData : '';
+      const oldVal = row[fldid] ? row[fldid].fieldData : '';
       if(objctNumber && oldVal !== value) {
         const request: SchemaCorrectionReq = {id: [objctNumber],fldId:fldid,vc: value, isReviewed: null} as SchemaCorrectionReq;
         this.schemaDetailService.doCorrection(this.schemaId, request).subscribe(res=>{
+          row[fldid].fieldData = value;
           if(res.acknowledge) {
             this.statics.correctedCnt = res.count? res.count : 0;
           }

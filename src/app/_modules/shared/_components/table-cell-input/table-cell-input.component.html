@@ -10,11 +10,10 @@
     <!-- Input type Date and Date and time -->
     <mat-form-field *ngSwitchCase="FIELD_TYPE.DATE" appearance="outline" prosClickStopPropagation>
         <input matInput [matDatepicker]="picker" class="mat-input" #input
-           [value]="prepareDateFormat()"
            (focus)="picker.open()"
-           (dateChange)="emitInputBlur(formatDate($event.value))">
+           [formControl]="dateControl">
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker >
+        <mat-datepicker #picker (closed)="datePanelClosed()">
         </mat-datepicker>
     </mat-form-field> 
 
