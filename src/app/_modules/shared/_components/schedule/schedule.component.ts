@@ -51,6 +51,8 @@ export class ScheduleComponent implements OnInit {
    */
   schedulerEndOptions = Object.keys(SchemaSchedulerEnd);
 
+  today = new Date();
+
   constructor(
     private schemaService: SchemaService,
     private matSnackBar: MatSnackBar
@@ -62,7 +64,6 @@ export class ScheduleComponent implements OnInit {
     this.form.controls.schemaSchedulerRepeat.valueChanges.subscribe((repeatValue) => {
       this.form.controls.weeklyOn.setValidators(null);
       this.form.controls.monthOn.setValidators(null);
-      // console.log("repeatValue", repeatValue);
       switch (repeatValue) {
         case SchemaSchedulerRepeat.HOURLY:
           this.setValue('repeatValue', 12);
@@ -136,9 +137,7 @@ export class ScheduleComponent implements OnInit {
    * @param value value
    */
   setValue(field, value) {
-    console.log(field, value);
     this.form.controls[field].setValue(value);
-    console.log(this.form.controls[field])
   }
 
 
