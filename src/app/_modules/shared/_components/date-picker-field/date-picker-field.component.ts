@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges, OnChanges } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 
@@ -7,8 +7,16 @@ import { MatDatepickerInputEvent } from '@angular/material/datepicker';
   templateUrl: './date-picker-field.component.html',
   styleUrls: ['./date-picker-field.component.scss']
 })
-export class DatePickerFieldComponent implements OnInit {
+export class DatePickerFieldComponent implements OnInit, OnChanges {
 
+  /**
+   * Current date to set as default date
+   */
+  today = new Date();
+
+  /**
+   * Boolean to check which type of date-picker to show(Range-field/normal)
+   */
   @Input()
   showRangeFld: boolean;
 
@@ -18,8 +26,24 @@ export class DatePickerFieldComponent implements OnInit {
   @Input()
   selectedEndFld: string;
 
+  /**
+   * To get preselected date field value from parent
+   */
   @Input()
   preSelectedFld: string;
+
+  /**
+   * To set maximum valid date into date-picker
+   * By default it will be as current date
+   */
+  @Input()
+  showFutureDates = false;
+
+  /**
+   * To get minimum valid date from parent
+   */
+  @Input()
+  minimumValidDate: any;
 
   @Output()
   strtValueSelected: EventEmitter<string> = new EventEmitter();
@@ -33,13 +57,24 @@ export class DatePickerFieldComponent implements OnInit {
   conditionFieldStartValue: FormControl;
   conditionFieldEndValue: FormControl;
   conditionFieldValue: FormControl;
-  today = new Date();
 
   constructor( ) {
     this.conditionFieldStartValue = new FormControl();
     this.conditionFieldEndValue = new FormControl();
     this.conditionFieldValue = new FormControl();
    }
+
+  /**
+   * ANGULAR HOOK
+   * It will be triggerd when value of @Input will be changed
+   * @param changes: change object hold values
+   */
+  ngOnChanges(changes: SimpleChanges): void {
+    if(changes && changes.minimumValidDate && changes.minimumValidDate.currentValue !== changes.minimumValidDate.previousValue) {
+      const fld = Number(changes.minimumValidDate.currentValue);
+      this.minimumValidDate = new Date(fld);
+    }
+  }
 
   ngOnInit(): void {
     this.conditionFieldStartValue.disable({onlySelf:true,emitEvent:true})
