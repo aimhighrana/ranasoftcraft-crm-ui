@@ -2,13 +2,13 @@ export interface SchemaScheduler {
     isEnabled: boolean;
     schemaId: string;
     repeat: SchemaSchedulerRepeat;
-    repeatValue: number;
+    repeatValue: string;
     weeklyOn: WeekOn;
     monthOn: MonthOn;
-    startOn: number;
+    startOn: string;
     end: SchemaSchedulerEnd;
     occurrenceVal: number;
-    endOn: number;
+    endOn: string;
 }
 export enum SchemaSchedulerRepeat {
     HOURLY = 'HOURLY',
@@ -34,11 +34,11 @@ export enum MonthOn {
     DAY_OF_WEEK = 'DAY OF WEEK'
 }
 export enum WeekOn {
-    MONDAY = 'MON',
-    TUESDAY = 'TUE',
-    WEDNESDAY = 'WED',
-    THUSDAY = 'THU',
-    FRIDAY = 'FRI',
-    SATURDAY = 'SAT',
-    SUNDAY = 'SUSN',
+    MONDAY = 'MONDAY',
+    TUESDAY = 'TUESDAY',
+    WEDNESDAY = 'WEDNESDAY',
+    THURSDAY = 'THURSDAY',
+    FRIDAY = 'FRIDAY',
+    SATURDAY = 'SATURDAY',
+    SUNDAY = 'SUNDAY',
 }

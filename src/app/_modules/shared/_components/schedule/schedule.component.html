@@ -1,19 +1,19 @@
 <div class="root f-col summary-root">
     <form [formGroup]="form">
         <div class="f-col temp-field">
-        <mat-checkbox formControlName="isEnabled" [(checked)]='form.value.isEnabled' color="primary">Enable schedule for
+        <mat-checkbox formControlName="isEnable" [(checked)]='form.value.isEnable' color="primary">Enable schedule for
             this schema</mat-checkbox>
         </div>
         <div class="row-spacer"></div>
         <div class="f-row">
             <div class="f-col temp-field">
                 <mat-label>Repeat</mat-label>
-                <mat-button-toggle-group formControlName="repeat" appearance="legacy" name="fontStyle"
+                <mat-button-toggle-group formControlName="schemaSchedulerRepeat" appearance="legacy" name="fontStyle"
                     aria-label="Font Style">
                     <mat-button-toggle *ngFor='let repeat of repeatInterval' [value]='repeat'>{{repeat | titlecase}}
                     </mat-button-toggle>
                 </mat-button-toggle-group>
-                <mat-error *ngIf="formSubmitted && form.controls.repeat.errors && form.controls.repeat.errors.required">
+                <mat-error *ngIf="formSubmitted && form.controls.schemaSchedulerRepeat.errors && form.controls.schemaSchedulerRepeat.errors.required">
                     This is a required field
                 </mat-error>
             </div>
@@ -34,7 +34,7 @@
         </div>
         <mat-divider class="divider-dashed"></mat-divider>
         <!-- weekly repeat on -->
-        <div *ngIf="form.controls.repeat.value === 'WEEKLY'">
+        <div *ngIf="form.controls.schemaSchedulerRepeat.value === 'WEEKLY'">
             <div class="row-spacer"></div>
             <div class="f-col temp-field">
                 <mat-label>Repeat On</mat-label>
@@ -49,7 +49,7 @@
             </mat-error>
         </div>
         <!-- monthly repeat by -->
-        <div *ngIf="form.controls.repeat.value === 'MONTHLY'">
+        <div *ngIf="form.controls.schemaSchedulerRepeat.value === 'MONTHLY'">
             <div class="row-spacer"></div>
             <div class="f-col temp-field">
                 <mat-label>Repeat By</mat-label>

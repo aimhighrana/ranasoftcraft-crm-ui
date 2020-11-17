@@ -1,6 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MonthOn, SchemaSchedulerEnd, SchemaSchedulerRepeat, SchemaSchedulerRepeatMetric, WeekOn } from '@models/schema/schemaScheduler';
+import { SchemaService } from '@services/home/schema.service';
 import * as moment from 'moment';
 
 @Component({
@@ -49,12 +51,15 @@ export class ScheduleComponent implements OnInit {
    */
   schedulerEndOptions = Object.keys(SchemaSchedulerEnd);
 
-  constructor() { }
+  constructor(
+    private schemaService: SchemaService,
+    private matSnackBar: MatSnackBar
+  ) { }
 
   ngOnInit(): void {
     this.createForm();
 
-    this.form.controls.repeat.valueChanges.subscribe((repeatValue) => {
+    this.form.controls.schemaSchedulerRepeat.valueChanges.subscribe((repeatValue) => {
       this.form.controls.weeklyOn.setValidators(null);
       this.form.controls.monthOn.setValidators(null);
       // console.log("repeatValue", repeatValue);
@@ -103,16 +108,16 @@ export class ScheduleComponent implements OnInit {
    */
   createForm() {
     this.form = new FormGroup({
-      isEnabled: new FormControl(false, [Validators.required]),
+      isEnable: new FormControl(false, [Validators.required]),
       schemaId: new FormControl(this.schemaId, [Validators.required]),
-      repeat: new FormControl(SchemaSchedulerRepeat.HOURLY, [Validators.required]),
-      repeatValue: new FormControl('2', [Validators.required]),
-      weeklyOn: new FormControl(''),
-      monthOn: new FormControl(''),
-      startOn: new FormControl(moment().utc().valueOf(), [Validators.required]),
-      end: new FormControl('', [Validators.required]),
+      schemaSchedulerRepeat: new FormControl(SchemaSchedulerRepeat.HOURLY, [Validators.required]),
+      repeatValue: new FormControl(2, [Validators.required]),
+      weeklyOn: new FormControl(null),
+      monthOn: new FormControl(null),
+      startOn: new FormControl(moment().utc().valueOf().toString(), [Validators.required]),
+      end: new FormControl(null, [Validators.required]),
       occurrenceVal: new FormControl(2),
-      endOn: new FormControl('',)
+      endOn: new FormControl(null)
     })
   }
 
@@ -121,7 +126,7 @@ export class ScheduleComponent implements OnInit {
    * Getter fuinction to convert the hours text to metric
    */
   get getMetricHours() {
-    return SchemaSchedulerRepeatMetric[this.form.controls.repeat.value]
+    return SchemaSchedulerRepeatMetric[this.form.controls.schemaSchedulerRepeat.value]
   }
 
 
@@ -142,11 +147,20 @@ export class ScheduleComponent implements OnInit {
    */
   submit() {
     this.formSubmitted = true;
-    console.log(this.form.value)
+    console.log(this.form.value);
+    this.schemaService.createUpdateSchedule(this.schemaId, this.form.value).subscribe((response) => {
+      if(response){
+        this.matSnackBar.open('Schema Has Been Scheduled..', 'Okay', {
+          duration: 3000
+        })
+      }
+    },(error) => {
+      console.log('something went wrong when scheduling schema..')
+    })
   }
 
   /**
-   * Function to get refrence string for scheduler
+   * Function to get refrence string for scheduler..
    */
   get getReferenceString() {
     const startValue = this.form.controls.startOn.value

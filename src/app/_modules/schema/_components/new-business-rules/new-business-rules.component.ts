@@ -462,7 +462,6 @@ export class NewBusinessRulesComponent implements OnInit {
         this.udrBlocks.splice(i, 1);
         this.allUDRBlocks.splice(i, 1);
         this.allhierarchies.splice(i, 1);
-        console.log(this.allUDRBlocks);
     }
 
     getConditions() {
@@ -530,7 +529,6 @@ export class NewBusinessRulesComponent implements OnInit {
     }
 
     displayFn(value) {
-        console.log(value);
         return value ? value.fieldDescri : '';
     }
 
