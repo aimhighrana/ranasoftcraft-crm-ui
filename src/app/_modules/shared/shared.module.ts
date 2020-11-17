@@ -65,6 +65,7 @@ import { TableCellInputComponent } from './_components/table-cell-input/table-ce
 import { ContainerRefDirective } from './_directives/container-ref.directive';
 import { ScheduleComponent } from './_components/schedule/schedule.component'
 import { DatePickerFieldComponent } from './_components/date-picker-field/date-picker-field.component';
+import { NullStateComponent } from './_components/null-state/null-state/null-state.component';
 
 @NgModule({
   declarations: [
@@ -94,7 +95,8 @@ import { DatePickerFieldComponent } from './_components/date-picker-field/date-p
     ResumeSessionComponent,
     ScheduleComponent,
     DatePickerFieldComponent,
-    TableCellInputComponent
+    TableCellInputComponent,
+    NullStateComponent
   ],
   imports: [
     // ng modules

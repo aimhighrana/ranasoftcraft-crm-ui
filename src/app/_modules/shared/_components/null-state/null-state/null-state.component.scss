@@ -1,0 +1,17 @@
+.empty-state {
+  text-align: center;
+
+  .empty-heading {
+    font-size: 1.2rem;
+    margin-bottom: 24px;
+  }
+
+  .label-text {
+    z-index: 1;
+    margin-bottom: 24px;
+  }
+
+  .action-button {
+    justify-content: center;
+  }
+}

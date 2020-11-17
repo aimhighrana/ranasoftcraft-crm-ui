@@ -55,6 +55,8 @@ import { StringReplaceComponent } from './_components/string-replace/string-repl
 import { LookupComponent } from './_components/lookup/lookup.component';
 import { EmptyDataComponent } from './_components/empty-data/empty-data.component';
 import { RunningProgressComponent } from './_components/running-progress/running-progress.component';
+import { InvitePeopleComponent } from './_components/invite-people/invite-people.component';
+import { MaterialListComponent } from './_components/material-list/material-list.component';
 
 
 @NgModule({
@@ -113,7 +115,9 @@ import { RunningProgressComponent } from './_components/running-progress/running
     StringReplaceComponent,
     LookupComponent,
     EmptyDataComponent,
-    RunningProgressComponent
+    RunningProgressComponent,
+    InvitePeopleComponent,
+    MaterialListComponent
   ],
   imports: [
     CommonModule,

@@ -1193,6 +1193,16 @@
     }
   }
 
+  pros-invite-people {
+    mat-card.root {
+      .invite-colunm {
+        .info-link {
+          color: mat-color($primary-palette);
+        }
+      }
+    }
+  }
+
   pros-collaborator {
     .mat-list.collaborators-list {
       mat-list-item.mat-list-item {

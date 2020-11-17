@@ -1,10 +1,17 @@
 <div class="root f-col summary-root">
     <form [formGroup]="form">
-        <div class="f-col temp-field">
-        <mat-checkbox formControlName="isEnable" [(checked)]='form.value.isEnable' color="primary">Enable schedule for
-            this schema</mat-checkbox>
+        <div class="f-row temp-field">
+            <mat-slide-toggle formControlName="isEnable" [(checked)]='form.value.isEnable' color="primary">
+                Enable schedule
+      </mat-slide-toggle>
+            <span class="f-spacer"></span>
+            <button mat-flat-button color="primary">
+                <mat-icon>schedule</mat-icon> Edit schedule
+            </button>
         </div>
-        <div class="row-spacer"></div>
+        <mat-divider></mat-divider>
+
+        <!-- sidesheet content start here -->
         <div class="f-row">
             <div class="f-col temp-field">
                 <mat-label>Repeat</mat-label>
@@ -13,7 +20,8 @@
                     <mat-button-toggle *ngFor='let repeat of repeatInterval' [value]='repeat'>{{repeat | titlecase}}
                     </mat-button-toggle>
                 </mat-button-toggle-group>
-                <mat-error *ngIf="formSubmitted && form.controls.schemaSchedulerRepeat.errors && form.controls.schemaSchedulerRepeat.errors.required">
+                <mat-error
+                    *ngIf="formSubmitted && form.controls.schemaSchedulerRepeat.errors && form.controls.schemaSchedulerRepeat.errors.required">
                     This is a required field
                 </mat-error>
             </div>
@@ -21,9 +29,8 @@
         </div>
         <mat-divider class="divider-dashed"></mat-divider>
         <div class="f-row every-field temp-field">
-            <pros-form-input [type]="'number'" [maxLength]='2'
-                [value]='form.value.repeatValue' (valueChange)="setValue('repeatValue',$event)" [placeholder]="'Enter'"
-                [label]="'Every'">
+            <pros-form-input [type]="'number'" [maxLength]='2' [value]='form.value.repeatValue'
+                (valueChange)="setValue('repeatValue',$event)" [placeholder]="'Enter'" [label]="'Every'">
             </pros-form-input>
             <div class="col-spacer"></div>
             <div class="week-label">{{getMetricHours}}</div>
@@ -93,7 +100,7 @@
         <div class="row-spacer"></div>
         <div class="f-row every-field" *ngIf="form.controls.end.value === 'AFTER'">
             <pros-form-input [type]="'number'" [label]="'Occurences'" [value]="form.controls.occurrenceVal.value"
-                 [maxLength]='2' (valueChange)="setValue('occurrenceVal',$event)">
+                [maxLength]='2' (valueChange)="setValue('occurrenceVal',$event)">
             </pros-form-input>
             <mat-error
                 *ngIf="formSubmitted && form.controls.occurrenceVal.errors && form.controls.occurrenceVal.errors.required">
@@ -113,6 +120,7 @@
         <mat-divider class="divider-dashed"></mat-divider>
     </form>
     <strong>{{getReferenceString}}</strong>
+    <!-- sidesheet content End here -->
     <div class="row-spacer"></div>
     <button mat-flat-button (click)='submit()' color="primary" [disabled]="form.invalid">submit</button>
 </div>

@@ -1,0 +1,48 @@
+<div class="root">
+    <div class="f-row breadcrum-toolbar">
+        <div class="display-heading-large">Material</div>
+        <span class="f-spacer"></span>
+        <button mat-flat-button> Upload data</button>
+    </div>
+
+    <mat-card class="f-row mat-elevation-z0 message-alert">
+        <mat-icon fontSet="mdo-icons" class="help-icon">alert</mat-icon>
+        <span class="f-col-spacer-half"></span>
+        <p>New data is available since the last schema run</p>
+    </mat-card>
+
+    <mat-list>
+        <mat-list-item class="f-row">
+            <mat-icon mat-list-icon fontSet="mdo-icons">wand</mat-icon>
+            <div mat-line>Duplicate check</div>
+            <div mat-line class="short-line">Last run: Never</div>
+        </mat-list-item>
+
+        <mat-divider></mat-divider>
+
+        <mat-list-item>
+            <mat-icon mat-list-icon fontSet="mdo-icons">wand</mat-icon>
+            <div mat-line>Empty fields</div>
+            <div mat-line class="short-line">Last run: Yesterday by Rick Woods</div>
+        </mat-list-item>
+
+        <mat-divider></mat-divider>
+
+        <mat-list-item>
+            <mat-icon mat-list-icon fontSet="mdo-icons">wand</mat-icon>
+            <div mat-line>Manufacturer check</div>
+            <div mat-line class="short-line">Last run: 3 days ago by Rick Woods</div>
+        </mat-list-item>
+
+        <mat-divider></mat-divider>
+
+        <mat-list-item>
+            <mat-icon mat-list-icon fontSet="mdo-icons">wand</mat-icon>
+            <div mat-line>Supplier check</div>
+            <div mat-line class="short-line">Last run: A week ago by Rick Woods</div>
+        </mat-list-item>
+
+        <mat-divider></mat-divider>
+
+    </mat-list>
+</div>

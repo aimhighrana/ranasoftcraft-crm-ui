@@ -108,7 +108,7 @@
                                 <span class="col-spacer"></span>
                                 <span class="f-spacer"></span>
                                 <button mat-button (click)="deleteBr(businessRule)">
-                                    <mat-icon>delete</mat-icon>
+                                    <mat-icon class="col-inner-icon">delete_outline</mat-icon>
                                 </button>
                             </div>
                         </div>
@@ -173,14 +173,14 @@
                             </div>
 
                             <div class="col col-x4">
-                                <button mat-stroked-button *ngIf="subscriber.isAdmin">Admin <mat-icon>arrow_drop_down
-                                </mat-icon></button>
-                            <button mat-stroked-button *ngIf="subscriber.isReviewer">Reviewer <mat-icon>arrow_drop_down
-                                </mat-icon></button>
-                            <button mat-stroked-button *ngIf="subscriber.isViewer">Viewer <mat-icon>arrow_drop_down
-                                </mat-icon></button>
-                            <button mat-stroked-button *ngIf="subscriber.isEditer">Editor <mat-icon>arrow_drop_down
-                                </mat-icon></button>
+                                <button mat-stroked-button *ngIf="subscriber.isAdmin">Admin <mat-icon fontSet="mdo-icons">
+                                    menu-arrow</mat-icon></button>
+                            <button mat-stroked-button *ngIf="subscriber.isReviewer">Reviewer <mat-icon fontSet="mdo-icons">
+                                menu-arrow</mat-icon></button>
+                            <button mat-stroked-button *ngIf="subscriber.isViewer">Viewer <mat-icon fontSet="mdo-icons">
+                                menu-arrow</mat-icon></button>
+                            <button mat-stroked-button *ngIf="subscriber.isEditer">Editor <mat-icon fontSet="mdo-icons">
+                                menu-arrow</mat-icon></button>
                             </div>
 
                             <div class="col col-x16">
@@ -232,7 +232,7 @@
 
                             <div class="col mat-item-end">
                                 <button mat-button (click)="deleteSubscriber(subscriber.sno)">
-                                    <mat-icon>delete_outline</mat-icon>
+                                    <mat-icon class="col-inner-icon">delete_outline</mat-icon>
                                 </button>
                             </div>
                         </div>

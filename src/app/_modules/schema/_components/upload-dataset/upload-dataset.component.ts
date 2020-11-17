@@ -65,7 +65,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    */
   headerText = [
     'Upload dataset: choose a file',
-    // 'Select module',
+    'Select module',
     'Name your dataset',
     'Select business rule',
     'Add subscribers',

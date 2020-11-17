@@ -1,4 +1,4 @@
-mat-card.root {
+div.root {
   padding: 0 16px;
   user-select: none;
 
@@ -9,7 +9,6 @@ mat-card.root {
     position: sticky;
     top: 0;
     z-index: 2;
-    min-height: 40px;
 
     .display-heading-large {
       font-size: 1.2rem;
@@ -19,36 +18,35 @@ mat-card.root {
     }
   }
 
-  .paragraph-text {
-    text-align: justify;
-    margin-right: 16px;
+  .message-alert {
+    background: #324358;
+    display: flex;
+    color: #fff;
+    padding: 8px;
+    align-items: center;
+
+    .help-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+    }
   }
 
   mat-list {
     position: relative;
 
     mat-list-item {
-      padding: 16px 0;
+      padding: 8px 0;
 
       .short-line {
         font-size: 0.8rem;
-      }
-
-      button {
-        min-width: 110px;
-
-        .mat-menu-icon {
-          font-size: 12px;
-          height: 12px;
-          width: 12px;
-        }
       }
     }
   }
 }
 
 @media (min-width: 1200px) {
-  mat-card.root {
+  div.root {
     width: 62%;
     margin: 0 auto;
   }
