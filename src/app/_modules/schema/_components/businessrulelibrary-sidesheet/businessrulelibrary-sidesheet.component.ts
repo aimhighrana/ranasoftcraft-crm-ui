@@ -50,10 +50,10 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
       this.selectedBusinessRule.push(rule);
       this.selectedBusinessRuleCopy.push(rule);
     }
-    if (action === this.constants.REMOVE) {
-      this.selectedBusinessRule.splice(this.selectedBusinessRule.findIndex((bRule) => bRule.brId === rule.brId), 1);
-      this.selectedBusinessRuleCopy.splice(this.selectedBusinessRuleCopy.findIndex((bRule) => bRule.brId === rule.brId), 1);
-    }
+    // if (action === this.constants.REMOVE) {
+    //   this.selectedBusinessRule.splice(this.selectedBusinessRule.findIndex((bRule) => bRule.brId === rule.brId), 1);
+    //   this.selectedBusinessRuleCopy.splice(this.selectedBusinessRuleCopy.findIndex((bRule) => bRule.brId === rule.brId), 1);
+    // }
   }
 
   // getter for GlobalConstants

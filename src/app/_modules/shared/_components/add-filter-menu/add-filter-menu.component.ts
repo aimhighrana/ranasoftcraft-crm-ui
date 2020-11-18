@@ -24,6 +24,10 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
   fieldMetadata: any[];
 
   selectedValues: DropDownValue[] = [];
+
+  /**
+   * currently selected fields
+   */
   currentFields: any[];
   /**
    * Hold all metada control for header , hierarchy and grid fields ..
@@ -60,19 +64,19 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
    */
   ngOnChanges(changes: SimpleChanges): void {
     if(changes && changes.moduleId && changes.moduleId.previousValue !== changes.moduleId.currentValue) {
-      if(this.moduleId !== changes.moduleId.currentValue){
-        this.moduleId = changes.moduleId.currentValue;
+      this.moduleId = changes.moduleId.currentValue;
+      if(this.moduleId){
+        this.initMetadata(this.currentFields);
+      } else {
         this.getFldMetadata();
       }
     }
 
     if(changes && changes.reInilize && changes.reInilize.previousValue !== changes.reInilize.currentValue) {
-      if(this.activateElement) {
+      if(this.moduleId){
         this.metadata.next(this.metadata.getValue());
       }
-      if(!this.moduleId) {
-        this.initMetadata(this.currentFields);
-      }
+      this.initMetadata(this.currentFields);
     }
 
     if(changes && changes.fieldMetadata && changes.fieldMetadata.previousValue !== changes.fieldMetadata.currentValue) {
@@ -89,9 +93,11 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
    * @param fields Excel first row values(Array)
    */
   initMetadata(fields: any[]) {
-    this.activateElement = null;
-    this.selectedValues = [];
-    this.metadaDrop = fields;
+    if(!this.moduleId) {
+      this.activateElement = null;
+      this.selectedValues = [];
+      this.metadaDrop = fields;
+    }
   }
 
   /**
@@ -111,9 +117,7 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
          this.tarnsformMetada();
        }
     });
-    if(this.moduleId) {
-      this.getFldMetadata();
-    }
+    this.getFldMetadata();
   }
 
   /**

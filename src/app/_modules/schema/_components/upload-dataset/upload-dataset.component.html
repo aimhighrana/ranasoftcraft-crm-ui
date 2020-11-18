@@ -92,19 +92,20 @@
                     </div>
 
                     <form *ngIf="dataSource.length>0" [formGroup]="headerForm">
-                        <ng-container *ngFor="let data of dataSource;let rowIndex=index">
+                        <ng-container *ngFor="let data of dataSource;let rowIndex=index;">
                             <div class="f-row colunm-box">
                                 <div class="col col-x8">
-                                    <div [style.display]="isEditable(data)? 'block': 'none'">
+                                    <div [style.display]="isEditable(data)? 'block': 'none'" (click)="onClick($event)">
                                         <pros-form-input [placeholder]="'Enter a value'" [disabled]="false"
-                                            [value]="data.excelFld" (valueChange)="setFormValue($event, data.mdoFldId)">
+                                            [value]="data.excelFld"
+                                            [id]="data.mdoFldId"
+                                            (valueChange)="setFormValue($event, data.mdoFldId)">
                                         </pros-form-input>
                                         <mat-error *ngIf="headerForm.controls[data.mdoFldId].errors">
                                             This field is required
                                         </mat-error>
                                     </div>
-                                    <div [style.display]="isEditable(data)? 'none': 'block'" class="mat-line"
-                                        (click)="makeEditable(data)">
+                                    <div [style.display]="isEditable(data)? 'none': 'block'" class="mat-line" (click)="makeEditable(data)">
                                         {{data.excelFld}}
                                     </div>
                                 </div>
@@ -168,10 +169,11 @@
                                 (optionSelectedEmit)="selectBusinessRule($event)"
                                 (openCustomDialog)="openGlobalDialog($event)" [updatedOptionsList]="businessRulesList"
                                 [viewMoreAction]="'existingBR'" [extraOption]="'createBR'"
-                                [extraOptionLabel]="'Add new rule'" [valueKey]="'brId'" [labelKey]="'brInfo'">
+                                [extraOptionLabel]="'Add new rule'" [labelKey]="'brInfo'">
                             </pros-form-input-autoselect>
                         </div>
-                        <!-- <div class="col col-x8">
+                        <!-- 
+                            <div class="col col-x8">
                             <a class="f-row info-link" [matMenuTriggerFor]="addrulenavigation">[Add business rule
                                 <mat-icon fontSet="mdo-icons" class="mat-head-icon">menu-arrow</mat-icon>]</a>
                             <mat-menu #addrulenavigation="matMenu" class="navigation-menu">
@@ -314,6 +316,7 @@
                         <!-- Append dynamic filter MatMenu -->
                         <mat-menu #existingFieldMenu="matMenu">
                             <pros-filter-values *ngIf="activeChipValue && activeChipValue.fldCtrl"
+                                [moduleId]="requestForm.value.objectId"
                                 [fieldId]="activeChipValue.fldCtrl.fieldId"
                                 [checkedValue]="activeChipValue.selectedValues"
                                 (selectedValues)="updateFilterCriteria($event,l)">

@@ -59,6 +59,11 @@ export class FormInputComponent implements OnInit, OnChanges {
   @Input() maximum: number;
 
   /**
+   * To get id for the field
+   */
+  @Input() id: number;
+
+  /**
    * To emit value change of input to parent
    */
   @Output() valueChange = new EventEmitter<string>();

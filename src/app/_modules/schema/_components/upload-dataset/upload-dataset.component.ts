@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Inject, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject, AfterViewInit, HostListener, ElementRef } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
@@ -35,7 +35,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   dataTableCtrl: FormGroup;
   selectedMdoFldCtrl: FormControl;
   displayedColumns = ['excel', 'excelfrstrowdata', 'mapping', 'field'];
-  dataSource = [];
+  dataSource: DataSource[] = [];
   filteredModules: Observable<ObjectTypeResponse[]>;
   moduleInpFrmCtrl: FormControl;
   excelHeader: string[];
@@ -57,9 +57,9 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   uploadLoader = false;
   objectTypes: Array<ObjectType> = [];
   editableFieldIds: string[] = [];
-/**
- * Fetch count for subscribers
- */
+  /**
+   * Fetch count for subscribers
+   */
   fetchCount = 0;
 
   /**
@@ -175,6 +175,14 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   inputModel = new FormControl();
   subscriberFilterFields = [];
   activeChipValue = {};
+  @ViewChild('clickToEdit') clickToEdit: ElementRef;
+  @HostListener('document:click', ['$event'])
+  public onClick(event) {
+    const fieldId = event.target.id;
+    if(!fieldId || this.editableFieldIds.indexOf(fieldId) === -1){
+      this.editableFieldIds = [];
+    }
+  }
 
   /**
    * Constructor of class
@@ -271,7 +279,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       }),
       coreSchemaBr: new FormControl([]),
       mappedData: new FormControl([]),
-      subscribers: new FormControl([]),
+      subcribers: new FormControl([]),
       runTime: new FormControl(true),
       dataScope: new FormControl(),
       threshold: new FormControl(100)
@@ -970,7 +978,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     const objectId = formObject.objectId;
     const variantId = '0';
     const fileSerialNo = formObject.fileSerialNo;
-    this.requestForm.controls.subscribers.setValue([]);
+    this.requestForm.controls.subcribers.setValue([]);
 
     if (!this.requestForm.controls.objectId.value) {
       const mappedArray = [];
@@ -1000,8 +1008,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       });
     }
 
-    console.log(this.subscribersList)
-    this.requestForm.controls.subscribers.setValue(this.subscribersList);
+    this.requestForm.controls.subcribers.setValue(this.subscribersList);
     this.callSaveSchemaAPI(
       objectId,
       variantId,
@@ -1058,7 +1065,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    */
   deleteSubscriber(index) {
     this.subscribersList.splice(index, 1);
-    this.requestForm.controls.subscribers.value.splice(index, 1);
+    this.requestForm.controls.subcribers.value.splice(index, 1);
   }
 
   updateRole(event, subscriber) {
@@ -1150,8 +1157,14 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * @param value entered value
    * @param field the selected field of form
    */
-  setFormValue(value: DataSource, field: string) {
-    this.headerForm.controls[field].setValue(value);
+  setFormValue(value: any, field: string) {
+    if(this.headerForm.controls[field].value !== value){
+      this.headerForm.controls[field].setValue(value);
+      const index = this.dataSource.findIndex((ds) => ds.mdoFldId === field);
+      if(index > -1){
+        this.dataSource[index].excelFld = value;
+      }
+    }
   }
 
   /**
@@ -1192,7 +1205,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   getCollaborators(queryString, fetchCount: number) {
     this.schemaDetailsService.getAllUserDetails(queryString, fetchCount)
       .subscribe((response: PermissionOn) => {
-          if(response && response.users){
+        if (response && response.users) {
           const subscribers: UserMdoModel[] = response.users;
           subscribers.forEach((subscriber: UserMdoModel) => {
             subscriber.initials = (subscriber.fName[0] + subscriber.lName[0]).toUpperCase();
@@ -1211,7 +1224,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
 
   isEditable(data: DataSource) {
     const exists: boolean = this.editableFieldIds.indexOf(data.mdoFldId) !== -1;
-    if(this.requestForm.controls.objectId.value){
+    if (this.requestForm.controls.objectId.value) {
       return exists;
     }
 
@@ -1219,6 +1232,9 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   }
 
   makeEditable(data: DataSource) {
-    this.editableFieldIds.push(data.mdoFldId);
+    this.editableFieldIds = [];
+    setTimeout(() => {
+      this.editableFieldIds.push(data.mdoFldId);
+    }, 0);
   }
 }

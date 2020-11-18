@@ -53,19 +53,23 @@ export class FilterValuesComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes && changes.fieldId && changes.fieldId.previousValue !== changes.fieldId.currentValue) {
       this.fieldId = changes.fieldId.currentValue;
-      if(this.fieldId){
-        if(this.staticFieldValues && this.staticFieldValues.length>0) {
-          this.generateDropdownValues(this.schemaService.getStaticFieldValues(this.fieldId));
-        } else {
-          this.getDropdownValues(this.fieldId, '');
-        }
-      }
-      this.checkedValue = [];
+      this.updateValues();
     }
 
     if (changes && changes.checkedValue && changes.checkedValue.previousValue !== changes.checkedValue.currentValue) {
       this.checkedValue = changes.checkedValue.currentValue;
     }
+  }
+
+  updateValues() {
+    if(this.fieldId){
+      if(!this.moduleId) {
+        this.generateDropdownValues(this.schemaService.getStaticFieldValues(this.fieldId));
+      } else {
+        this.getDropdownValues(this.fieldId, '');
+      }
+    }
+    this.checkedValue = [];
   }
 
   /**

@@ -1,7 +1,7 @@
 <div class="f-col">
     <mat-label>{{label}}</mat-label>
     <mat-form-field appearance="outline">
-        <input matInput class="mat-input" [type]="type" [placeholder]="placeholder"
+        <input [id]="id" matInput class="mat-input" [type]="type" [placeholder]="placeholder"
          [value]="value" [formControl]="control" [maxlength]="maxLength" [min]="type==='number'? minimum : null" [max]="type==='number' ? maximum:null">
         <div class="f-row input-actions" *ngIf="isHelpIcon">
             <mat-divider [vertical]="true"></mat-divider>

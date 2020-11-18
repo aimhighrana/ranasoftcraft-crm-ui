@@ -40,10 +40,10 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
    */
   addSubscriberArr = [];
 
-  /**
-   * To store subscribers which need to be deleted
-   */
-  deleteSubscriberArr = [];
+ /**
+  * To store subscribers which need to be deleted
+  */
+ deleteSubscriberArr = [];
 
   /**
    * Variable to update get subscribers API fetch count
@@ -132,13 +132,13 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
    * @param subscriberInfo data array of subscriber- type is SchemaDashboardPermission
    */
   createUpdateSubscriber(subscriberInfo: SchemaDashboardPermission[]) {
-      this.schemaDetailsService.createUpdateUserDetails(subscriberInfo).subscribe(res => {
-        this.snackBar.open('Subscriber saved successfully.', 'okay', {duration: 3000});
-        this.sharedService.setAfterSubscriberSave(res);
-      }, error => {
-        console.log('Error while saving subscriber', error.message)
-      })
-  }
+    this.schemaDetailsService.createUpdateUserDetails(subscriberInfo).subscribe(res => {
+      this.snackBar.open('Subscriber saved successfully.', 'okay', {duration: 3000});
+      this.sharedService.setAfterSubscriberSave(res);
+    }, error => {
+      console.log('Error while saving subscriber', error.message)
+    })
+}
 
   /**
    * Function to get subscribers detail according to the schema id
