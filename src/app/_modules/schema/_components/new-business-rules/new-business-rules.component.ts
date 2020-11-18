@@ -5,7 +5,7 @@ import {
     MAT_DIALOG_DATA
 } from '@angular/material/dialog';
 import { BusinessRules } from '@modules/admin/_components/module/schema/diw-create-businessrule/diw-create-businessrule.component';
-import { BusinessRuleType, ConditionalOperator } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { BusinessRuleType, ConditionalOperator, UDRObject } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { MetadataModeleResponse, CategoryInfo } from '@models/schema/schemadetailstable';
 import { of, Observable } from 'rxjs';
@@ -13,6 +13,7 @@ import { startWith, map } from 'rxjs/operators';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Regex } from '@modules/admin/_components/module/business-rules/regex-rule/regex-rule.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { BlockType } from '@modules/report/_models/widget';
 
 
 @Component({
@@ -78,7 +79,7 @@ export class NewBusinessRulesComponent implements OnInit {
     categoryList: CategoryInfo[] = []
 
 
-    udrBlocks = [{
+    udrBlocks: UDRObject[] = [{
         id: Math.floor(Math.random() * 1000000000000).toString(),
         blockTypeText: 'When', // when/and/or
         fieldId: '', // field id from dropdown
@@ -89,7 +90,7 @@ export class NewBusinessRulesComponent implements OnInit {
         rangeEndValue: '',
         children: []
     }];
-    allUDRBlocks = [this.udrBlocks[0]];
+    allUDRBlocks: UDRObject[] = [this.udrBlocks[0]];
     allhierarchies = [
         {
             parentId: '',
@@ -98,7 +99,6 @@ export class NewBusinessRulesComponent implements OnInit {
         }
     ]
     finalResponseBlocks = [];
-
     fieldControl = new FormControl();
     tempRuleId: string;
 
@@ -116,6 +116,89 @@ export class NewBusinessRulesComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
+        // initialize form Object
+        this.initializeForm();
+
+        this.operators = this.possibleOperators();
+        this.getCategories();
+
+        // Patch data if working with existing business rule
+        if (this.data && this.data.createRuleFormValues) {
+            this.tempRuleId = (this.data && this.data.tempId) ? this.data.tempId : '';
+            const {
+                rule_type,
+                rule_name,
+                error_message,
+                standard_function,
+                regex,
+                fields,
+                udrTreeData,
+                weightage,
+                categoryId } = this.data.createRuleFormValues;
+            this.form.patchValue({
+                rule_type,
+                rule_name,
+                error_message,
+                standard_function,
+                regex,
+                fields,
+                weightage,
+                categoryId,
+            });
+
+            this.form.controls.rule_type.disable();
+            if (udrTreeData && udrTreeData.blocks) {
+                const temp: UDRObject[] = [];
+                udrTreeData.blocks.map((block) => {
+                    const { id, blockType, conditionFieldId, conditionOperator,
+                        conditionFieldValue, rangeStartValue, rangeEndValue,
+                        children } = block;
+
+                    temp.push({
+                        id,
+                        blockTypeText: blockType,
+                        fieldId: conditionFieldId,
+                        operator: conditionOperator,
+                        comparisonValue: conditionFieldValue,
+                        actionDisabled: false,
+                        rangeStartValue,
+                        rangeEndValue,
+                        children
+                    })
+                })
+                this.udrBlocks = [...temp];
+                this.allUDRBlocks = [...temp];
+                this.allhierarchies = [...udrTreeData.udrHierarchies]
+            }
+        }
+
+        if (this.data.moduleId) {
+            this.getFieldsByModuleId();
+        } else {
+            // Patch selected fields here
+            this.patchSelectedFields();
+        }
+
+        // Initializing autocomplete
+        this.initiateAutocomplete();
+    }
+
+
+    /**
+     * Get all categories from the api
+     */
+    getCategories() {
+        this.categoryList = [];
+        this.schemaDetailsService.getAllCategoryInfo().subscribe((response) => {
+            this.categoryList.push(...response)
+        })
+    }
+
+    /**
+     * Initialize the form object and
+     * subscribe to any required control value changes
+     */
+    initializeForm() {
         this.form = new FormGroup({
             rule_type: new FormControl('', [Validators.required]),
             rule_name: new FormControl('', [Validators.required]),
@@ -128,56 +211,40 @@ export class NewBusinessRulesComponent implements OnInit {
             categoryId: new FormControl('', [Validators.required]),
         });
 
-        // Patch data if working with existing business rule
-        if(this.data && this.data.createRuleFormValues) {
-            this.tempRuleId = (this.data && this.data.tempId)? this.data.tempId: '';
-            const {
-                rule_type,
-                rule_name,
-                error_message,
-                standard_function,
-                regex,
-                fields,
-                udrTreeData,
-                weightage,
-                categoryId} = this.data.createRuleFormValues;
-            this.form.patchValue({
-                rule_type,
-                rule_name,
-                error_message,
-                standard_function,
-                regex,
-                fields,
-                udrTreeData,
-                weightage,
-                categoryId,
-            });
-        }
+        // Apply conditional validation based on rule type
+        this.form.controls.rule_type.valueChanges.subscribe((selectedRule) => {
+            this.applyValidatorsByRuleType(selectedRule);
+        })
+    }
 
-        if (this.data.moduleId) {
-            this.getFieldsByModuleId();
-        } else {
-            // Patch selected fields here
-            this.createDSByFields().then(() => {
-                if(this.data && this.data.createRuleFormValues && this.data.createRuleFormValues.fields) {
-                    const fields = this.data.createRuleFormValues.fields;
-                    const arr = fields.split(',');
-                    if(arr && arr.length>0){
-                        arr.map((selected) => {
-                            const fieldObj = this.fieldsList.filter((field) => field.fieldId === selected);
-                            if(fieldObj && fieldObj.length>0){
-                                const tempObj = fieldObj[0];
-                                this.selectedFields.push({
-                                    fieldText: tempObj.fieldDescri,
-                                    fieldId: tempObj.fieldId
-                                });
-                            }
-                        });
-                    }
+    /**
+     * Patch the selected excel field values
+     */
+    patchSelectedFields() {
+        this.createDSByFields().then(() => {
+            if (this.data && this.data.createRuleFormValues && this.data.createRuleFormValues.fields) {
+                const fields = this.data.createRuleFormValues.fields;
+                const arr = fields.split(',');
+                if (arr && arr.length > 0) {
+                    arr.map((selected) => {
+                        const fieldObj = this.fieldsList.filter((field) => field.fieldId === selected);
+                        if (fieldObj && fieldObj.length > 0) {
+                            const tempObj = fieldObj[0];
+                            this.selectedFields.push({
+                                fieldText: tempObj.fieldDescri,
+                                fieldId: tempObj.fieldId
+                            });
+                        }
+                    });
                 }
-            });
-        }
+            }
+        });
+    }
 
+    /**
+     * Initialize autocomplete for field names
+     */
+    initiateAutocomplete() {
         this.filteredModules = this.form.controls.fields.valueChanges
             .pipe(
                 startWith(''),
@@ -188,54 +255,52 @@ export class NewBusinessRulesComponent implements OnInit {
                         }) : this.fieldsList
                 }),
             )
-        this.operators = this.possibleOperators();
-        this.form.controls.rule_type.valueChanges.subscribe((selectedRule) => {
+    }
 
-            if (selectedRule === 'BR_CUSTOM_SCRIPT') {
-                this.form.get('rule_name').clearValidators()
-                this.form.get('error_message').clearValidators()
-                this.form.get('fields').clearValidators();
-                this.form.get('regex').clearValidators();
-                this.form.get('standard_function').clearValidators();
+    /**
+     * Apply conditional form validation based on rule type
+     * @param selectedRule selected rule type
+     */
+    applyValidatorsByRuleType(selectedRule: string) {
+        if (selectedRule === 'BR_CUSTOM_SCRIPT') {
+            this.form.get('rule_name').clearValidators()
+            this.form.get('error_message').clearValidators()
+            this.form.get('fields').clearValidators();
+            this.form.get('regex').clearValidators();
+            this.form.get('standard_function').clearValidators();
 
-                this.form.get('rule_name').setValidators(null);
-                this.form.get('error_message').setValidators(null);
-                this.form.get('fields').setValidators(null);
-                this.form.get('regex').setValidators(null);
-                this.form.get('standard_function').setValidators(null);
+            this.form.get('rule_name').setValidators(null);
+            this.form.get('error_message').setValidators(null);
+            this.form.get('fields').setValidators(null);
+            this.form.get('regex').setValidators(null);
+            this.form.get('standard_function').setValidators(null);
 
-                this.form.get('rule_name').setErrors(null);
-                this.form.get('error_message').setErrors(null);
-                this.form.get('fields').setErrors(null);
-                this.form.get('regex').setErrors(null);
-                this.form.get('standard_function').setErrors(null);
+            this.form.get('rule_name').setErrors(null);
+            this.form.get('error_message').setErrors(null);
+            this.form.get('fields').setErrors(null);
+            this.form.get('regex').setErrors(null);
+            this.form.get('standard_function').setErrors(null);
+        }
+        if (selectedRule === 'BR_REGEX_RULE') {
+            this.form.get('rule_name').setValidators([Validators.required])
+            this.form.get('error_message').setValidators([Validators.required])
+            this.form.get('fields').setValidators([Validators.required]);
+            this.form.get('regex').setValidators([Validators.required]);
+            this.form.get('standard_function').setValidators([Validators.required]);
+        }
+        if (selectedRule === 'BR_MANDATORY_FIELDS' || selectedRule === 'BR_METADATA_RULE') {
+            this.form.get('rule_name').setValidators([Validators.required])
+            this.form.get('error_message').setValidators([Validators.required])
+            this.form.get('fields').setValidators([Validators.required]);
 
-            }
-            if (selectedRule === 'BR_REGEX_RULE') {
-                this.form.get('rule_name').setValidators([Validators.required])
-                this.form.get('error_message').setValidators([Validators.required])
-                this.form.get('fields').setValidators([Validators.required]);
-                this.form.get('regex').setValidators([Validators.required]);
-                this.form.get('standard_function').setValidators([Validators.required]);
-            }
-            if (selectedRule === 'BR_MANDATORY_FIELDS' || selectedRule === 'BR_METADATA_RULE') {
-                this.form.get('rule_name').setValidators([Validators.required])
-                this.form.get('error_message').setValidators([Validators.required])
-                this.form.get('fields').setValidators([Validators.required]);
-
-                this.form.get('regex').clearValidators();
-                this.form.get('standard_function').clearValidators();
-                this.form.get('regex').setValidators(null);
-                this.form.get('standard_function').setValidators(null);
-                this.form.get('regex').setErrors(null);
-                this.form.get('standard_function').setErrors(null);
-            }
-            this.form.updateValueAndValidity();
-        });
-        this.schemaDetailsService.getAllCategoryInfo().subscribe((response) => {
-            this.categoryList.length = 0;
-            this.categoryList.push(...response)
-        })
+            this.form.get('regex').clearValidators();
+            this.form.get('standard_function').clearValidators();
+            this.form.get('regex').setValidators(null);
+            this.form.get('standard_function').setValidators(null);
+            this.form.get('regex').setErrors(null);
+            this.form.get('standard_function').setErrors(null);
+        }
+        this.form.updateValueAndValidity();
     }
 
     /**
@@ -248,7 +313,7 @@ export class NewBusinessRulesComponent implements OnInit {
                     this.fieldsList.push({
                         fieldId: field.fieldId,
                         fieldDescri: field.fieldDescri
-                    })
+                    });
                 });
                 resolve();
             } catch (error) {
@@ -277,7 +342,7 @@ export class NewBusinessRulesComponent implements OnInit {
     selectedField(event) {
         const alreadyExists = this.selectedFields.find(item => item.fieldId === event.option.value);
         if (alreadyExists) {
-            this.snackBar.open('This field is already selected', 'Okay', {duration: 5000});
+            this.snackBar.open('This field is already selected', 'Okay', { duration: 5000 });
         } else {
             this.selectedFields.push({
                 fieldText: event.option.viewValue,
@@ -320,7 +385,7 @@ export class NewBusinessRulesComponent implements OnInit {
         if (this.form.pristine) {
             this.dialogRef.close();
         } else {
-            this.dialogRef.close({formData: this.form.value, tempId: this.tempRuleId});
+            this.dialogRef.close({ formData: this.form.value, tempId: this.tempRuleId });
         }
     }
 
@@ -330,12 +395,11 @@ export class NewBusinessRulesComponent implements OnInit {
     save() {
         this.form.controls.fields.setValue(this.selectedFields.map(item => item.fieldId).join(','));
         this.submitted = true;
+
         if (!this.form.valid) {
-            this.snackBar.open('Please enter the required fields', 'okay', {duration: 5000});
+            this.snackBar.open('Please enter the required fields', 'okay', { duration: 5000 });
             return;
         }
-
-        // this.dialogRef.close(this.form.value);
 
         const udrHierarchies = []
         const blocks = []
@@ -347,8 +411,9 @@ export class NewBusinessRulesComponent implements OnInit {
                 conditionFieldValue: block.comparisonValue,
                 conditionFieldStartValue: block.rangeStartValue,
                 conditionFieldEndValue: block.rangeEndValue,
-                blockType: '',
+                blockType: block.blockTypeText,
                 conditionOperator: block.operator,
+                children: block.children,
                 blockDesc: '',
                 plantCode: '0'
             }
@@ -370,10 +435,11 @@ export class NewBusinessRulesComponent implements OnInit {
                 conditionFieldValue: block.comparisonValue,
                 conditionFieldStartValue: block.rangeStartValue,
                 conditionFieldEndValue: block.rangeEndValue,
-                blockType: 'COND',
+                blockType: block.blockTypeText,
                 conditionOperator: block.operator,
                 blockDesc: '',
-                plantCode: ''
+                plantCode: '',
+                children: block.children
             })
         });
         const finalObject = {
@@ -382,7 +448,7 @@ export class NewBusinessRulesComponent implements OnInit {
         }
 
         this.form.controls.udrTreeData.setValue(finalObject);
-        this.dialogRef.close({formData: this.form.value, tempId: this.tempRuleId})
+        this.dialogRef.close({ formData: this.form.value, tempId: this.tempRuleId })
     }
 
     setRegex(event) {
@@ -391,7 +457,7 @@ export class NewBusinessRulesComponent implements OnInit {
     }
 
     get isUDR() {
-        return this.form.controls.rule_type.value === 'BR_CUSTOM_SCRIPT'
+        return this.form.controls.rule_type.value === 'BR_CUSTOM_SCRIPT';
     }
 
     /**
@@ -454,7 +520,9 @@ export class NewBusinessRulesComponent implements OnInit {
         this.udrBlocks[parentBlockIndex].children.splice(childIndex, 1);
         const getBlockIndex = this.allUDRBlocks.findIndex((obj) => obj.id === child.id);
         const getHirerchyIndex = this.allhierarchies.findIndex((obj) => obj.blockRefId === child.id);
-        this.allUDRBlocks.splice(getBlockIndex, 1);
+        if (getBlockIndex > -1) {
+            this.allUDRBlocks.splice(getBlockIndex, 1);
+        }
         this.allhierarchies.splice(getHirerchyIndex, 1);
     }
 
@@ -490,7 +558,7 @@ export class NewBusinessRulesComponent implements OnInit {
         if (existingBlockType === 'When') {
             existingBlockType = 'And'
         }
-        const udrBlock = {
+        const udrBlock: UDRObject = {
             id: blockId,
             blockTypeText: existingBlockType, // when/and/or
             fieldId: '', // field id from dropdown
@@ -524,8 +592,14 @@ export class NewBusinessRulesComponent implements OnInit {
                 blockRefId: udrBlock.id
             }
         }
-        this.allhierarchies.push(UDRHierarchie)
-        this.allUDRBlocks.push(udrBlock)
+        this.allhierarchies.push(UDRHierarchie);
+        if (!nested) {
+            this.allUDRBlocks.push(udrBlock);
+        }
+    }
+
+    getBlockType(type: string) {
+        return BlockType[type.toUpperCase()];
     }
 
     displayFn(value) {
@@ -533,7 +607,7 @@ export class NewBusinessRulesComponent implements OnInit {
     }
 
     formatLabel(value) {
-        return `${value}`
+        return `${value}`;
     }
 }
 

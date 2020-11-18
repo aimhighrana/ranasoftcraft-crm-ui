@@ -10,19 +10,20 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SchemaService } from '@services/home/schema.service';
 import { of } from 'rxjs';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { UserService } from '@services/user/userservice.service';
-import { Userdetails } from '@models/userdetails';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GlobaldialogService } from '@services/globaldialog.service';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
+import { FormInputAutoselectComponent } from '@modules/shared/_components/form-input-autoselect/form-input-autoselect.component';
+import { CoreSchemaBrInfo } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { DataSource } from '@models/schema/schema';
 
 
 describe('UploadDatasetComponent', () => {
   let component: UploadDatasetComponent;
   let fixture: ComponentFixture<UploadDatasetComponent>;
   let schemaServiceSpy: SchemaService;
-  let userServiceSpy: UserService;
-  let schemaDetailsService: SchemaDetailsService;
+  let schemadetailsService: SchemaDetailsService;
+  let usersSpy;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -31,16 +32,17 @@ describe('UploadDatasetComponent', () => {
         SearchInputComponent,
         FilterValuesComponent,
         FormInputComponent,
-        AddFilterMenuComponent],
+        AddFilterMenuComponent,
+        FormInputAutoselectComponent],
       imports: [AppMaterialModuleForSpec],
       providers: [
         SchemaDetailsService,
         GlobaldialogService,
         HttpClientTestingModule,
         FormsModule,
+        FormControl,
         ReactiveFormsModule,
         SchemaService,
-        UserService,
         { provide: MatDialogRef, useValue: {} },
         { provide: MAT_DIALOG_DATA, useValue: [] }
       ]
@@ -52,33 +54,62 @@ describe('UploadDatasetComponent', () => {
     fixture = TestBed.createComponent(UploadDatasetComponent);
     component = fixture.componentInstance;
     schemaServiceSpy = fixture.debugElement.injector.get(SchemaService);
-    userServiceSpy = fixture.debugElement.injector.get(UserService);
-    schemaDetailsService = fixture.debugElement.injector.get(SchemaDetailsService);
+    schemadetailsService = fixture.debugElement.injector.get(SchemaDetailsService);
     // fixture.detectChanges();
+    usersSpy = spyOn(schemadetailsService, 'getAllUserDetails').and.callFake(() => {
+      return of({
+        users: [{
+          userId: null,
+          userName: 'abhilash',
+          fName: 'Abhilash',
+          lName: 'Rajoria',
+          pwd: null,
+          email: 'abhilash.rajoria@prospecta.com',
+          roles: null,
+          status: null,
+          deptId: null,
+          clientId: null,
+          lang: null,
+          application: null,
+          stage: null,
+          dateFormat: null,
+          sso: null,
+          imgUrl: null,
+          ubstitueUse: null,
+          UserStartDat: null,
+          sUserEnddate: null,
+          subsActive: null,
+          keepCopy: null,
+          failedLoginAttempts: 0,
+          noOfLogins: 0,
+          passwordActiveDate: null,
+          fullName: 'Abhilash Rajoria',
+          isPasswordSet: 0,
+          refreshToken: null,
+          adminAccess: 0,
+          digiSignSNO: null,
+          password: null,
+          isServiceAccount: false,
+          selfServiceUserModel: null,
+          userMultiRoleModels: null,
+          userPasswordModel: null,
+          selfService_Remote_Ob: null
+        }],
+        roles: [],
+        groups: []
+      })
+    })
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it(`getAllObjectType(), should get all Object Types`, async(() => {
+  it(`getObjectTypes(), should call service getAllObjectTypes`, async(() => {
     const returnData = [];
-    const userDetails: Userdetails = {
-      firstName: 'test',
-      lastName: 'test',
-      currentRoleId: 'test',
-      fullName: 'test',
-      plantCode: 'test',
-      userName: 'test',
-      dateformat: 'test',
-      email: 'test',
-      assignedRoles: []
-  };
     spyOn(schemaServiceSpy, 'getAllObjectType').and.returnValue(of(returnData));
-    spyOn(userServiceSpy, 'getUserDetails').and.returnValue(of(userDetails));
-    component.ngOnInit();
+    component.getObjectTypes();
     expect(schemaServiceSpy.getAllObjectType).toHaveBeenCalled();
-    expect(userServiceSpy.getUserDetails).toHaveBeenCalled();
   }));
 
   it(`createForm(), should create requestForm`, async(() => {
@@ -99,7 +130,7 @@ describe('UploadDatasetComponent', () => {
       expect(component.headerForm.value).not.toBeNull();
       expect(component.headerForm.value).not.toBeUndefined();
     }).catch((err) => {
-      console.log('my error ',err);
+      console.log('my error ', err);
 
     });
   }));
@@ -121,35 +152,35 @@ describe('UploadDatasetComponent', () => {
 
 
   it(`createBrObject(), should create business rule object`, async(() => {
-      const formData = {
-        rule_type: 'test',
-        rule_name: 'test',
-        error_message: 'test',
-        standard_function: 'test',
-        regex:'test',
-        fields: [],
-        udrTreeData: { udrHierarchies: [], blocks: [] },
-        weightage: 10,
-        categoryId: 'test',
-      };
+    const formData = {
+      rule_type: 'test',
+      rule_name: 'test',
+      error_message: 'test',
+      standard_function: 'test',
+      regex: 'test',
+      fields: [],
+      udrTreeData: { udrHierarchies: [], blocks: [] },
+      weightage: 10,
+      categoryId: 'test',
+    };
 
-     expect(component.createBrObject(formData, formData.udrTreeData)).not.toBeUndefined();
-     expect(component.createBrObject(formData, formData.udrTreeData)).not.toBeNull();
+    expect(component.createBrObject(formData, formData.udrTreeData)).not.toBeUndefined();
+    expect(component.createBrObject(formData, formData.udrTreeData)).not.toBeNull();
   }));
 
   it(`getModulesMetaHeaders(), should be called when creating modules metadata`, async(() => {
     component.createForm();
     component.requestForm.controls.objectId.setValue('testId')
-    spyOn(schemaDetailsService, 'getMetadataFields').and.returnValue(of(null));
+    spyOn(schemadetailsService, 'getMetadataFields').and.returnValue(of(null));
     component.getModulesMetaHeaders();
-    expect(schemaDetailsService.getMetadataFields).toHaveBeenCalled();
+    expect(schemadetailsService.getMetadataFields).toHaveBeenCalled();
     expect(component.headerFieldsList.length).toEqual(0);
   }))
 
   it(`getModulesMetaHeaders(), shouldcreate headerFieldsList`, async(() => {
     component.createForm();
     component.requestForm.controls.objectId.setValue('testId')
-     const response = {
+    const response = {
       headers: {
         testHeader1: '',
         testHeader2: ''
@@ -159,9 +190,9 @@ describe('UploadDatasetComponent', () => {
       gridFields: null,
       hierarchyFields: null
     };
-    spyOn(schemaDetailsService, 'getMetadataFields').and.returnValue(of(response));
+    spyOn(schemadetailsService, 'getMetadataFields').and.returnValue(of(response));
     component.getModulesMetaHeaders();
-    expect(schemaDetailsService.getMetadataFields).toHaveBeenCalled();
+    expect(schemadetailsService.getMetadataFields).toHaveBeenCalled();
     expect(component.headerFieldsList.length).toEqual(3);
   }))
 
@@ -174,10 +205,10 @@ describe('UploadDatasetComponent', () => {
 
   it(`updateFilterCriteria(), should update current filter value`, async(() => {
     component.subscribersList.push({
-      sno : 5456667,
+      sno: 5456667,
       plantCode: 'uyuid',
-      dataAllocation : [],
-      filterFieldIds : []
+      dataAllocation: [],
+      filterFieldIds: []
     })
     component.updateFilterCriteria({}, 0);
     expect(component.activeChipValue).not.toBeNull();
@@ -186,15 +217,15 @@ describe('UploadDatasetComponent', () => {
 
   it(`updateRole(), update the current Role`, async(() => {
     const subscriber = {
-      sno : 5456667,
+      sno: 5456667,
       plantCode: 'uyuid',
-      dataAllocation : [],
-      filterFieldIds : [],
+      dataAllocation: [],
+      filterFieldIds: [],
       role: null
     };
     component.subscribersList.push(subscriber);
 
-    component.updateRole({value: 'isAdmin'}, subscriber);
+    component.updateRole({ value: 'isAdmin' }, subscriber);
     expect(component.subscribersList[0].role).toEqual('isAdmin');
   }));
 
@@ -209,4 +240,32 @@ describe('UploadDatasetComponent', () => {
     component.requestForm.controls.core_schema.setValue(component.coreSchemaObject);
     expect(component.isSchemaSet(component.requestForm.controls.core_schema.value)).toBeFalse();
   }))
+
+  it('should call service to get collaobrators', async () => {
+    component.getCollaborators('a', 0);
+    expect(usersSpy).toHaveBeenCalledWith('a', 0);
+    expect(component.allSubscribers.length).toEqual(1);
+  });
+
+  it(`getBusinessRulesList(), get business rules service`, async(() => {
+    const returnData: CoreSchemaBrInfo[] = [];
+    spyOn(schemaServiceSpy, 'getAllBusinessRules').and.returnValue(of(returnData));
+    component.getBusinessRulesList();
+    expect(schemaServiceSpy.getAllBusinessRules).toHaveBeenCalled();
+  }));
+
+  it(`isEditable(), check if the field is editable`, async(() => {
+    const data: DataSource = {
+      columnIndex: 0,
+      excelFld: '',
+      excelFrstRow: '',
+      mdoFldDesc: '',
+      mdoFldId: 'id1'
+    };
+    component.createForm();
+    component.editableFieldIds = ['id1'];
+    component.requestForm.controls.objectId.setValue('test');
+    expect(component.isEditable(data)).toBeTrue();
+  }));
+
 });

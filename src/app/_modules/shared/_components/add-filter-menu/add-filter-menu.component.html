@@ -18,6 +18,7 @@
        </div>
        
         <pros-filter-values
+        [moduleId]="moduleId"
         [fieldId]="activateElement ? activateElement.fieldId : ''"
         (selectedValues)="emitAppliedFilter($event)"
         [checkedValue]="selectedValues">

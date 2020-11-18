@@ -1,0 +1,19 @@
+<mat-form-field appearance="outline">
+    <input matInput class="mat-input" placeholder="{{fieldLabel}}" [formControl]="selectedMdoFldCtrl"
+      [matAutocomplete]="mdofieldauto">
+      <div class="f-row input-actions">
+        <mat-divider [vertical]="true"></mat-divider>
+        <button mat-button matSuffix (click)="$event.stopPropagation();emitOptionSelected(viewMoreAction)">
+          <mat-icon fontSet="mdo-icons">view-more</mat-icon>
+        </button>
+    </div>
+    <mat-autocomplete #mdofieldauto="matAutocomplete" [displayWith]="mdoFieldDisplayWith"
+      (optionSelected)="emitOptionSelected($event)">
+      <mat-option *ngFor="let option of filteredOptions | async; trackBy :suggestedMdoFldTrkBy"
+        [value]="getValue(option)" [matTooltip]="getTooltipText(option)">
+        {{ getLabel(option) }}
+      </mat-option>
+      <mat-divider></mat-divider>
+      <mat-option [value]="extraOption">{{extraOptionLabel}}</mat-option>
+    </mat-autocomplete>
+  </mat-form-field>

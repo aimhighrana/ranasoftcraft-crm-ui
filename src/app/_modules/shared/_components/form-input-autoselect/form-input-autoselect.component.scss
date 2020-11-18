@@ -1,0 +1,21 @@
+mat-form-field {
+  width: 100%;
+
+  .input-actions {
+    mat-divider.mat-divider {
+      height: 40px;
+    }
+
+    button {
+      border-radius: 0;
+      height: 40px;
+      width: 40px;
+
+      mat-icon {
+        font-size: 16px;
+        width: 16px;
+        height: 18px;
+      }
+    }
+  }
+}

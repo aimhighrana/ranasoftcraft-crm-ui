@@ -89,6 +89,18 @@ export class UDRBlocksModel {
     childs?: UDRBlocksModel[];
 }
 
+export class UDRObject {
+    id: string;
+    blockTypeText: string;
+    fieldId: string;
+    operator: string;
+    comparisonValue: string;
+    actionDisabled: boolean;
+    rangeStartValue: string;
+    rangeEndValue: string;
+    children: UDRBlocksModel[]
+}
+
 export class UDRHierarchyModel {
     id: string;
     udrId: string;

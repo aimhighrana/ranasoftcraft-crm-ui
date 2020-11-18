@@ -13,6 +13,9 @@ export class FilterValuesComponent implements OnInit, OnChanges {
 
   formGroup: FormGroup;
 
+  @Input()
+  moduleId: string;
+
   // Input for the material ID to fetch dropdown values
   @Input() fieldId: string;
 
@@ -34,7 +37,7 @@ export class FilterValuesComponent implements OnInit, OnChanges {
 
   // Adding debounce to prevent multiple api calls when searching
   delayedCall = debounce((fieldId: string, searchText: string) => {
-    if(this.staticFieldValues && this.staticFieldValues.length === 0) {
+    if (this.staticFieldValues && this.staticFieldValues.length === 0) {
       this.getDropdownValues(fieldId, searchText);
     } else {
       this.searchFromExistingValues(searchText);
@@ -48,14 +51,19 @@ export class FilterValuesComponent implements OnInit, OnChanges {
    * @param changes Input values to watch for changes
    */
   ngOnChanges(changes: SimpleChanges): void {
-    if(changes && changes.fieldId && changes.fieldId.previousValue !== changes.fieldId.currentValue) {
+    if (changes && changes.fieldId && changes.fieldId.previousValue !== changes.fieldId.currentValue) {
       this.fieldId = changes.fieldId.currentValue;
-      this.getDropdownValues(this.fieldId, '');
-      this.generateDropdownValues(this.schemaService.getStaticFieldValues(this.fieldId));
+      if(this.fieldId){
+        if(this.staticFieldValues && this.staticFieldValues.length>0) {
+          this.generateDropdownValues(this.schemaService.getStaticFieldValues(this.fieldId));
+        } else {
+          this.getDropdownValues(this.fieldId, '');
+        }
+      }
       this.checkedValue = [];
     }
 
-    if(changes && changes.checkedValue && changes.checkedValue.previousValue !== changes.checkedValue.currentValue) {
+    if (changes && changes.checkedValue && changes.checkedValue.previousValue !== changes.checkedValue.currentValue) {
       this.checkedValue = changes.checkedValue.currentValue;
     }
   }
@@ -64,7 +72,7 @@ export class FilterValuesComponent implements OnInit, OnChanges {
    * Angular hook
    */
   ngOnInit(): void {
-    if(this.fieldId) {
+    if (this.fieldId && this.moduleId) {
       this.getDropdownValues(this.fieldId, '');
     }
   }
@@ -72,7 +80,7 @@ export class FilterValuesComponent implements OnInit, OnChanges {
   // Hitting API to get drop-down values
   getDropdownValues(materialId: string, query: string) {
     this.schemaService.dropDownValues(materialId, query).subscribe((data) => {
-      if(data && data.length>0) {
+      if (data && data.length > 0) {
         this.dropValue = data;
         this.searchValue = this.dropValue;
       }
@@ -81,17 +89,18 @@ export class FilterValuesComponent implements OnInit, OnChanges {
 
   // Generate static values from excel rows
   generateDropdownValues(dropDownValues: string[]) {
-    dropDownValues.map((value, i) => {
-      this.dropValue.push({
-        CODE: value,
-        FIELDNAME: value,
-        LANGU: '',
-        PLANTCODE: '',
-        SNO: `${i+1}`,
-        TEXT: value
+    if (dropDownValues && dropDownValues.length > 0) {
+      dropDownValues.map((value, i) => {
+        this.dropValue.push({
+          CODE: value,
+          FIELDNAME: value,
+          LANGU: '',
+          PLANTCODE: '',
+          SNO: `${i + 1}`,
+          TEXT: value
+        });
       });
-    });
-
+    }
     this.searchValue = this.dropValue;
   }
 
@@ -132,7 +141,7 @@ export class FilterValuesComponent implements OnInit, OnChanges {
    * To search from the list of values
    */
   searchFromExistingValues(searchText: string) {
-    if(searchText.trim()) {
+    if (searchText.trim()) {
       this.searchValue = this.dropValue.filter((value) => value.FIELDNAME.toLowerCase().includes(searchText.toLowerCase()));
     } else {
       this.searchValue = this.dropValue;
