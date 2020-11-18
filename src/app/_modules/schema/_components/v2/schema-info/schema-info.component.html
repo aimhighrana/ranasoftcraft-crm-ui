@@ -134,7 +134,7 @@
                         </div>
                         <div class="col col-x4">
                             <mat-slider color="primary" [value]="businessRule.brWeightage" thumbLabel tickInterval="1"
-                                min="0" max="100" (change)="updateBr(businessRule,$event)">
+                                min="0" [max]="availableWeightage(businessRule.brWeightage)" (change)="updateBr(businessRule,$event)">
                             </mat-slider> <span class="f-col-spacer-half"></span>
                             <div>{{businessRule.brWeightage}}%</div>
                         </div>
