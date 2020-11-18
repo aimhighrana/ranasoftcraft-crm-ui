@@ -607,6 +607,22 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     this.router.navigate([{ outlets: { sb: `sb/schema/summary/${moduleId}/${schemaId}` } }])
   }
 
+  /**
+   * Function to check for the maximum available threshold for business rule
+   * @param weightage threshold of the business rule.
+   * @returns maximum value of slider to available.
+   */
+  availableWeightage(weightage: string): number{
+    let sumOfAllWeightage = 0; // store sum of all business rules weightage
+    let freeWeight = 0;        // store max free weightage for any business rule
+
+    this.businessRuleData.forEach((businessRule) => {
+      sumOfAllWeightage = Number(businessRule.brWeightage) + sumOfAllWeightage;
+    })
+    freeWeight = 100 - sumOfAllWeightage;
+
+    return freeWeight + Number(weightage); // max value to slide for a business rule
+  }
 
   /**
    * ANGULAR HOOK

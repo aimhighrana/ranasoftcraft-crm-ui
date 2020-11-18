@@ -41,6 +41,11 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
   addSubscriberArr = [];
 
   /**
+   * To store subscribers which need to be deleted
+   */
+  deleteSubscriberArr = [];
+
+  /**
    * Variable to update get subscribers API fetch count
    */
   fetchCount = 0;
@@ -90,6 +95,7 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
           this.collaboratorData.map((collaborator) => {
             if(collaborator.userid === user.userName){
               user.isAdd = true;
+              user.sNo = collaborator.sno;
             }
           })
         })
@@ -110,7 +116,15 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
    * function to save the subscriber's details
    */
   save() {
-    this.createUpdateSubscriber(this.addSubscriberArr);
+    if(this.addSubscriberArr.length > 0){
+      this.createUpdateSubscriber(this.addSubscriberArr);
+    }
+    if(this.deleteSubscriberArr.length > 0) {
+      this.deleteSubscriberArr.forEach((subscriber) => {
+        this.deleteSubscriber(subscriber.sNo)
+      })
+    }
+    this.router.navigate([{ outlets: { sb: null } }]);
   }
 
   /**
@@ -118,13 +132,12 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
    * @param subscriberInfo data array of subscriber- type is SchemaDashboardPermission
    */
   createUpdateSubscriber(subscriberInfo: SchemaDashboardPermission[]) {
-    this.schemaDetailsService.createUpdateUserDetails(subscriberInfo).subscribe(res => {
-      this.snackBar.open('Subscriber saved successfully.', 'okay', {duration: 3000});
-      this.sharedService.setAfterSubscriberSave(res);
-      this.router.navigate([{ outlets: { sb: null } }]);
-    }, error => {
-      console.log('Error while saving subscriber', error.message)
-    })
+      this.schemaDetailsService.createUpdateUserDetails(subscriberInfo).subscribe(res => {
+        this.snackBar.open('Subscriber saved successfully.', 'okay', {duration: 3000});
+        this.sharedService.setAfterSubscriberSave(res);
+      }, error => {
+        console.log('Error while saving subscriber', error.message)
+      })
   }
 
   /**
@@ -186,6 +199,9 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
     const removeSubscriber = this.addSubscriberArr.filter(user => user.userid === subscriber.userid)[0];
     const index = this.addSubscriberArr.indexOf(removeSubscriber)
     this.addSubscriberArr.splice(index, 1);
+    if(removeSubscriber===undefined || removeSubscriber===null) {
+      this.deleteSubscriberArr.push(subscriber);
+    }
   }
 
   /**
@@ -202,6 +218,20 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
       this.fetchCount++;
       this.getCollaborators('', this.fetchCount);
     }
+  }
+
+  /**
+   * Function to delete subscriber
+   * @param sNo: serial no of subscriber.
+   */
+  deleteSubscriber(sNo: string) {
+    this.schemaDetailsService.deleteCollaborator(sNo).subscribe((response) => {
+      console.log('Subscriber Removed..');
+      this.sharedService.setAfterSubscriberSave(response);
+      // this.router.navigate([{ outlets: { sb: null } }]);
+    }, (error) => {
+      console.log('Something went wrong while delete subscriber..');
+    })
   }
 
   /**
