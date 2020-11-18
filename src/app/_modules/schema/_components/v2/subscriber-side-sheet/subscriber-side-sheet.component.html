@@ -1,5 +1,4 @@
-<div class="root mat-elevation-z0">
-    
+<mat-card class="root mat-elevation-z0">
     <div class="f-row breadcrum-toolbar">
         <button mat-button (click)="close()">
             <mat-icon fontSet="mdo-icons">close</mat-icon>
@@ -10,6 +9,8 @@
             <div class="f-row breadcrum-head">
                 <div class="display-heading-large">Add subscribers</div>
                 <span class="f-spacer"></span>
+                <button mat-flat-button><mat-icon>group_add</mat-icon> &nbsp; Invite people to your team</button>
+                <span class="f-col-spacer-half"></span>
                 <button mat-flat-button color="primary" (click)="save()">Save</button>
             </div>
             <div class="row-spacer"></div>
@@ -22,7 +23,7 @@
 
     <div class="row-spacer"></div>
     <div class="f-col businessrule-listing">
-        <cdk-virtual-scroll-viewport itemSize="20" class="f-col businessrule-listing" (scroll)="onScroll($event)">
+        <cdk-virtual-scroll-viewport itemSize="20" (scroll)="onScroll($event)" class="viewport-scroll">
         <div class="f-col mdo-justify">
             <mat-list role="list" class="rule-list" *cdkVirtualFor="let subscriber of subscribers">
                 <mat-list-item role="listitem">
@@ -38,7 +39,7 @@
                     </ng-template>
                     <ng-template #checkButton>
                         <button mat-flat-button color="accent" (click)="uncheckSubscriber(subscriber)">
-                            <mat-icon>check</mat-icon>
+                            <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
                         </button>
                     </ng-template>
                 </mat-list-item>
@@ -46,4 +47,4 @@
         </div>
         </cdk-virtual-scroll-viewport>
     </div>
-</div>
+</mat-card>

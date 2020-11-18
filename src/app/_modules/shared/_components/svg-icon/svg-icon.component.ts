@@ -23,7 +23,8 @@ export class SvgIconComponent implements OnInit {
     'P_BR_DEPENDANCY_RULE',
     'P_BR_DUPLICATE_RULE',
     'P_BR_EXTERNALVALIDATION_RULE',
-    'P_BR_REGEX_RULE'
+    'P_BR_REGEX_RULE',
+    'MDO_LOGO'
   ];
 
   @Input()

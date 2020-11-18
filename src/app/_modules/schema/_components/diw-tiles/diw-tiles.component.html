@@ -46,14 +46,12 @@
                         </button>
 
                         <button mat-fab color="accent" class="mat-elevation-z0" [matMenuTriggerFor]="moreAction">
-                            <mat-icon>more_horiz</mat-icon>
+                            <mat-icon fontSet="mdo-icons">more</mat-icon>
                         </button>
 
-                        <mat-menu #moreAction="matMenu" direction="right">
-                            <mat-nav-list>
-                                <mat-list-item  (click)="edit(schemaData.schemaId)">Edit</mat-list-item>
-                                <mat-list-item (click)="delete(schemaData.schemaId)">Delete</mat-list-item>
-                            </mat-nav-list>
+                        <mat-menu #moreAction="matMenu" direction="right" class="navigation-menu">
+                            <button mat-menu-item (click)="edit(schemaData.schemaId)">Edit</button>
+                            <button mat-menu-item (click)="delete(schemaData.schemaId)">Delete</button>
                         </mat-menu>
                     </div>
 

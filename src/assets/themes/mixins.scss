@@ -453,7 +453,7 @@
       }
 
       .mat-form-field-infix {
-        padding: 5px 0 0 0;
+        padding: 4px 0 0 0;
         display: flex;
         align-items: center;
         border-top-width: 0;
@@ -1089,6 +1089,28 @@
   }
 
   //DIW Components
+  pros-login {
+    div.root {
+      pros-svg-icon.company-logo {
+        path {
+          fill: mat-color($background-palette, card);
+
+          &.logo-primary {
+            fill: mat-color($primary-palette);
+          }
+        }
+      }
+    }
+  }
+
+  pros-welcome-mdo {
+    pros-svg-icon.welcome-logo {
+      .logo-primary {
+        fill: mat-color($primary-palette);
+      }
+    }
+  }
+
   pros-add-filter-menu {
     mat-nav-list {
       .filter-header {
@@ -1158,6 +1180,16 @@
 
   pros-primary-navbar {
     mat-card.root {
+      pros-svg-icon.primary-nav {
+        path {
+          fill: mat-color($background-palette, card);
+
+          &.logo-primary {
+            fill: mat-color($primary-palette);
+          }
+        }
+      }
+
       .primary-nav-list {
         .mat-list-item.selected::before {
           background: mat-color($primary-palette);
@@ -1404,7 +1436,8 @@
   }
 
   pros-businessrulelibrary-sidesheet,
-  pros-new-schema-collaborators {
+  pros-new-schema-collaborators,
+  pros-subscriber-side-sheet {
     mat-card.root {
       .businessrule-listing {
         mat-list.rule-list {

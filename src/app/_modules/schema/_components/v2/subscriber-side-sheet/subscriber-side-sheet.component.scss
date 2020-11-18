@@ -1,7 +1,7 @@
-div.root {
+mat-card.root {
   user-select: none;
   height: 100%;
-  width: 700px;
+  width: 768px;
   overflow: hidden;
   padding: 0 16px;
 
@@ -33,14 +33,18 @@ div.root {
     height: calc(100% - 124px - 8px);
     overflow: auto;
 
-    mat-list.rule-list {
-      mat-list-item {
-        border-bottom-width: 1px;
-        border-bottom-style: solid;
-        height: 52px;
+    .viewport-scroll {
+      height: 100%;
 
-        button.mat-flat-button {
-          min-width: 60px;
+      mat-list.rule-list {
+        mat-list-item {
+          border-bottom-width: 1px;
+          border-bottom-style: solid;
+          height: 52px;
+
+          button.mat-flat-button {
+            min-width: 60px;
+          }
         }
       }
     }

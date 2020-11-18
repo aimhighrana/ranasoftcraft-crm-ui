@@ -14,17 +14,15 @@
             <button mat-flat-button color="accent">Run now</button>
         </ng-template> -->
         <button mat-flat-button color="accent" (click)="openSummarySideSheet(moduleId, schemaId)">
-            <mat-icon fontSet="mdo-icons">wand</mat-icon> Check Data
+            <mat-icon fontSet="mdo-icons">wand</mat-icon> Check data
         </button>
         <button mat-fab color="accent" class="mat-elevation-z0" [matMenuTriggerFor]="navigation">
             <mat-icon fontSet="mdo-icons">more</mat-icon>
         </button>
         <!-- menu to add business rule and subscriber -->
-        <mat-menu #navigation="matMenu" direction="right" class="navigation-mat-menu">
-            <mat-nav-list>
-                <mat-list-item (click)="addBusinessRule()">Add business rule</mat-list-item>
-                <mat-list-item (click)="addSubscriber()">Add subscriber</mat-list-item>
-            </mat-nav-list>
+        <mat-menu #navigation="matMenu" direction="right" class="navigation-menu">
+            <button mat-menu-item (click)="addBusinessRule()">Add business rule</button>
+            <button mat-menu-item (click)="addSubscriber()">Add subscriber</button>
         </mat-menu>
     </div>
 
@@ -63,7 +61,7 @@
 
                             <mat-nav-list role="navigation" class="summary-rowlist">
                                 <mat-list-item (click)="addDataScope()">
-                                    <div mat-line class="row-heading">[Add Data Scope]</div>
+                                    <div mat-line class="row-heading">[Add data scope]</div>
                                 </mat-list-item>
                                 <mat-list-item *ngFor="let variant of variantDetails">
                                     <div mat-line class="row-heading">{{variant.variantName}}</div>
@@ -139,8 +137,8 @@
                             <div>{{businessRule.brWeightage}}%</div>
                         </div>
                         <div class="col col-x4">
-                            <mat-slide-toggle color="primary" [checked]="businessRule.status === '1' ? true : false"
-                                (change)="updateBr(businessRule,$event)"></mat-slide-toggle>
+                            <mat-checkbox color="primary" [checked]="businessRule.status === '1' ? true : false"
+                            (change)="updateBr(businessRule,$event)"></mat-checkbox>
                             <span class="f-spacer"></span>
                             <button mat-button (click)="deleteBr(businessRule)">
                                 <mat-icon class="col-inner-icon">delete_outline</mat-icon>
@@ -167,7 +165,7 @@
 
                 <div class="f-row colunm-box rule-border-row">
                     <div class="col"></div>
-                    <div class="col col-x4"><a class="f-row info-link" (click)="addSubscriber()">[Add Subscriber]</a>
+                    <div class="col col-x4"><a class="f-row info-link" (click)="addSubscriber()">[Add subscriber]</a>
                     </div>
                     <div class="col col-x4"></div>
                     <div class="col col-x16"></div>

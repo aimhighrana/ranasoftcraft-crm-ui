@@ -3,10 +3,10 @@
         <div class="display-heading-large">
             <ng-template [ngIf]="schemaInfo">
                 {{ schemaInfo.moduleDescription ? schemaInfo.moduleDescription : 'Module' }} / {{ schemaInfo.schemaDescription ? schemaInfo.schemaDescription : 'Untitled'}} / {{variantName}}
-                <button mat-button [matMenuTriggerFor]="menu"><mat-icon>arrow_drop_down</mat-icon></button>
-                <mat-menu #menu="matMenu">
-                    <button mat-menu-item >[New data scope] </button>
-                    <button mat-menu-item (click)="refreshData('0')"> Entire dataset </button>
+                <button mat-button [matMenuTriggerFor]="menu"><mat-icon fontSet="mdo-icons">menu-arrow</mat-icon></button>
+                <mat-menu #menu="matMenu" class="navigation-menu">
+                    <button mat-menu-item>[New data scope]</button>
+                    <button mat-menu-item (click)="refreshData('0')">Entire dataset</button>
                     <ng-container *ngIf="schemaInfo.variants && schemaInfo.variants.length">
                         <button mat-menu-item *ngFor="let variant of schemaInfo.variants" (click)="refreshData(variant.variantId)">
                             {{variant.variantName}}

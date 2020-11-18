@@ -21,7 +21,11 @@ mat-card.root {
 
   .paragraph-text {
     text-align: justify;
-    margin-right: 16px;
+    margin-right: 32px;
+  }
+
+  pros-svg-icon {
+    height: 75px;
   }
 
   mat-list {

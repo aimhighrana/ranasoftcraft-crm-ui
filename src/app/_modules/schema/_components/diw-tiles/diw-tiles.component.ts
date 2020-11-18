@@ -159,7 +159,7 @@ export class DiwTilesComponent implements OnInit {
   openUploadScreen(moduleId, moduleDesc) {
     const dialogRef = this.matDialog.open(UploadDatasetComponent, {
       height: '800px',
-      width: '700px',
+      width: '800px',
       data: {
         objectid: moduleId,
         objectdesc: moduleDesc

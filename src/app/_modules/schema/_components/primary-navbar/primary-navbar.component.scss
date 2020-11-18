@@ -13,6 +13,15 @@ mat-card.root {
     white-space: nowrap;
   }
 
+  .primarynav-logo {
+    height: 40px;
+
+    pros-svg-icon {
+      height: 40px;
+      display: inline-block;
+    }
+  }
+
   .create-new {
     align-items: center;
     cursor: pointer;

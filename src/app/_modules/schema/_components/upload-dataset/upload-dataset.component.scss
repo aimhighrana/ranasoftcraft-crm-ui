@@ -13,6 +13,10 @@ mat-card.root {
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden;
+
+      .step-weight {
+        font-weight: 500;
+      }
     }
   }
 
@@ -80,6 +84,10 @@ mat-card.root {
         font-size: 0.9rem;
       }
     }
+
+    .schedule-row {
+      align-items: center;
+    }
   }
 }
 
@@ -127,6 +135,13 @@ mat-card.root {
 
     strong {
       align-items: center;
+    }
+
+    .mat-head-icon {
+      height: 12px;
+      width: 14px;
+      font-size: 14px;
+      margin-left: 4px;
     }
 
     pros-form-input,

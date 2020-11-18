@@ -1,7 +1,7 @@
 <mat-card class="root mat-elevation-z0">
     <div class="f-row breadcrum-toolbar">
         <div class="display-heading-large">
-            {{'Data check'}} (step {{headerTextIndex}}/{{headerText.length}}): <b>{{toolbarHeaderText}}</b>
+            {{'Data check'}} (step {{headerTextIndex}}/{{headerText.length}}): <b class="step-weight">{{toolbarHeaderText}}</b>
         </div>
         <span class="f-spacer"></span>
         <button mat-button (click)="closeDialog()">
@@ -32,9 +32,7 @@
                         <div><img src="./assets/images/empty-table.svg" width="140"></div>
                         <div class="empty-heading">No data file selected</div>
                         <p class="label-text">Drag & drop or select a file to upload</p>
-                        <button mat-flat-button color="accent" (click)="openExplorer();$event.stopPropagation()">Select
-                            a
-                            file</button>
+                        <button mat-flat-button color="accent" (click)="openExplorer();$event.stopPropagation()">Select a file</button>
                     </div>
 
                     <input class="drag-input" type="file" id="uploader" (change)="fileChange($event)"
@@ -105,7 +103,8 @@
                                             This field is required
                                         </mat-error>
                                     </div>
-                                    <div [style.display]="isEditable(data)? 'none': 'block'" class="mat-line" (click)="makeEditable(data)">
+                                    <div [style.display]="isEditable(data)? 'none': 'block'" class="mat-line"
+                                        (click)="makeEditable(data)">
                                         {{data.excelFld}}
                                     </div>
                                 </div>
@@ -151,25 +150,19 @@
                 </div>
             </div>
 
-            <!-- Business rule empty state latest code start here-->
-            <!-- <div class="f-col empty-state" *ngIf="selectedBusinessRules.length === 0">
-                <div><img src="./assets/images/empty-order.svg" width="140"></div>
-                <div class="empty-heading">No business rules selected</div>
-                <p class="label-text">Business rules define how your data is analysed and processed.</p>
-                <button mat-flat-button color="accent" (click)="openGlobalDialog('createBR')">Add business
-                    rules</button>
-            </div> -->
-            <!-- Business rule empty state latest code end here-->
             <div class="colunm-listing">
                 <div class="f-row colunm-box rule-border-row">
                     <div class="col"></div>
                     <div class="col col-x8"><strong>Business rule</strong></div>
-                    <div class="col col-x4"><strong>Threshold</strong></div>
-                    <div class="col col-x8"></div>
+                    <div class="col col-x4"><div class="f-row">
+                        <strong>Weight <mat-icon fontSet="mdo-icons" class="mat-head-icon">question-mark</mat-icon></strong>
+                    </div></div>
+                    <div class="col col-x8"><strong>Enabled</strong></div>
+                    <div class="col"></div>
                 </div>
 
                 <ng-container>
-                    <div class="f-row colunm-box">
+                    <div class="f-row colunm-box rule-border-row">
                         <div class="col">
                             <pros-form-input-autoselect [fieldLabel]="'Type rule name to add'"
                                 (optionSelectedEmit)="selectBusinessRule($event)"
@@ -192,19 +185,14 @@
                         </div> -->
                     </div>
                     <div class="f-col empty-state" *ngIf="selectedBusinessRules.length === 0">
-                        <div><img src="./assets/images/empty-order.svg" width="140"></div>
-                        <div class="empty-heading">No business rules selected</div>
-                        <p class="label-text">Business rules define how your data is analysed and processed.</p>
+                        <div><img src="./assets/images/empty-table.svg" width="140"></div>
+                    <div class="empty-heading">Nothing to see here</div>
+                    <p class="label-text">You don't have any business rule selected. Type the user's name in the box
+                        above to add one</p>
                         <button mat-flat-button color="accent" (click)="openGlobalDialog('createBR')">Add business
                             rules</button>
                     </div>
                 </ng-container>
-
-                <div class="f-col empty-state" style="display: none;">
-                    <div><img src="./assets/images/empty-table.svg" width="140"></div>
-                    <div class="empty-heading">Nothing to see here</div>
-                    <p class="label-text">You don't have any business rule selected. Type the user's name in the box above to add one</p>
-                </div>
 
                 <ng-container>
                     <div cdkDropList (cdkDropListDropped)="reoderBR($event)">
@@ -233,15 +221,15 @@
                                 </div>
                             </div>
 
-                            <div class="col col-x8 text-end">
-                                <mat-slide-toggle color="primary" [checked]="businessRule.status === '1'"
-                                    (change)="toggleBrStatus($event,businessRule)">
-                                </mat-slide-toggle>
+                            <div class="col col-x8">
+                                <mat-checkbox color="primary" [checked]="businessRule.status === '1'"
+                                (change)="toggleBrStatus($event,businessRule)"></mat-checkbox>
                                 <span class="f-col-spacer-half"></span>
                                 <button mat-flat-button color="accent" (click)="configureRule(businessRule)">
                                     Configure
                                 </button>
-                                <span class="f-col-spacer-half"></span>
+                            </div>
+                            <div class="col text-end">
                                 <button mat-button (click)="deleteBR(k)">
                                     <mat-icon class="col-inner-icon">delete_outline</mat-icon>
                                 </button>
@@ -357,7 +345,15 @@
 
                 <mat-divider class="dashed-divider"></mat-divider>
 
-                <mat-checkbox color="primary"> Create a schedule</mat-checkbox>
+                <div class="f-row schedule-row">
+                    <mat-slide-toggle color="primary"> Enable schedule</mat-slide-toggle>
+                    <span class="f-spacer"></span>
+                    <button mat-flat-button color="primary" disabled>
+                        <mat-icon>schedule</mat-icon> Edit schedule
+                    </button>
+                </div>
+
+                
                 <!-- <pros-schedule-tab [schemaId]="123" (updateCurrentSchedule)="updateCurrentSchedule($event)"></pros-schedule-tab> -->
             </div>
         </mat-step>
