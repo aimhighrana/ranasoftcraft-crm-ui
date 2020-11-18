@@ -207,15 +207,9 @@
                                         {{ ctrl.filterCtrl ? ctrl.filterCtrl.fldCtrl.fieldDescri : 'Unknown' }}
                                         :
                                     </label>
-                                    <ng-template [ngIf]="ctrl.filterCtrl.selectedValues.length > 1"
-                                        [ngIfElse]="showText">
+                                    <ng-template [ngIf]="ctrl.filterCtrl && ctrl.filterCtrl.selectedValues.length >= 1">
                                         <span class="info">
                                             {{ prepareTextToShow(ctrl) }}
-                                        </span>
-                                    </ng-template>
-                                    <ng-template #showText>
-                                        <span class="info">
-                                            {{ prepareTextToShow(ctrl)}}
                                         </span>
                                     </ng-template>
                                     <mat-icon matChipRemove (click)="removeAppliedFilter(ctrl, subscriber.sno)">clear
@@ -267,7 +261,31 @@
             <ng-template mat-tab-label>
                 Schedule
             </ng-template>
-            <pros-schedule [schemaId]="schemaId"></pros-schedule>
+            <div class="f-col summary-root">
+            <div class="f-row schedule-row">
+
+                <!-- in case of existing schedule, will show edit button and toggle-->
+                <ng-template [ngIf]="canEditSchedule" [ngIfElse]="addSchedule">
+                    <mat-slide-toggle color="primary" [checked]="scheduleInfo.isEnable" (change)="toggleScheduleState()">
+                        Enable schedule
+                    </mat-slide-toggle>
+                    <span class="f-spacer"></span>
+                    <button mat-flat-button color="primary" (click)="openScheduleSideSheet()">
+                        <mat-icon>schedule</mat-icon> Edit schedule
+                    </button>
+                </ng-template>
+
+                <!-- in case of there is no schedule, will show only add button -->
+                <ng-template #addSchedule>
+                    <span class="f-spacer"></span>
+                    <button mat-flat-button color="primary" (click)="openScheduleSideSheet()">
+                        <mat-icon>schedule</mat-icon> Add schedule
+                    </button>
+                </ng-template>
+            </div>
+            <mat-divider></mat-divider>
+            </div>
+            <!-- <pros-schedule [schemaId]="schemaId"></pros-schedule> -->
         </mat-tab>
 
         <!-- Tab for the Statistics of the schema -->

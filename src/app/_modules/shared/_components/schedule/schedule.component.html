@@ -1,16 +1,19 @@
-<div class="root f-col summary-root">
-    <form [formGroup]="form">
-        <div class="f-row temp-field">
-            <mat-slide-toggle formControlName="isEnable" [(checked)]='form.value.isEnable' color="primary">
-                Enable schedule
-      </mat-slide-toggle>
+<mat-card class="root mat-elevation-z0">
+    <div class="f-row breadcrum-toolbar">
+        <button mat-button (click)="close()">
+            <mat-icon fontSet="mdo-icons">close</mat-icon>
+        </button>
+        <div class="col-spacer"></div>
+        <div class="f-row mdo-constrained-right">
+            <div class="display-heading-large">Schedule</div>
             <span class="f-spacer"></span>
-            <button mat-flat-button color="primary">
-                <mat-icon>schedule</mat-icon> Edit schedule
-            </button>
+            <button mat-flat-button color="primary" (click)="submit()">Save</button>
         </div>
-        <mat-divider></mat-divider>
+    </div>
+    <div class="row-spacer"></div>
+    <div class="f-col mdo-justify">
 
+    <form [formGroup]="form">
         <!-- sidesheet content start here -->
         <div class="f-row">
             <div class="f-col temp-field">
@@ -25,7 +28,6 @@
                     This is a required field
                 </mat-error>
             </div>
-            <!-- <mat-divider class="divider-dashed"></mat-divider> -->
         </div>
         <mat-divider class="divider-dashed"></mat-divider>
         <div class="f-row every-field temp-field">
@@ -110,7 +112,7 @@
         <div class="f-row every-field" *ngIf="form.controls.end.value === 'ON'">
             <div class="f-col temp-field">
                 <mat-label>DATE</mat-label>
-                <pros-date-picker-field (strtValueSelected)="setValue('endOn',$event)" [minimumValidDate]="form.controls.startOn.value" [showFutureDates]="true">
+                <pros-date-picker-field [preSelectedFld]="form.controls.endOn.value" (strtValueSelected)="setValue('endOn',$event)" [minimumValidDate]="form.controls.startOn.value" [showFutureDates]="true">
                 </pros-date-picker-field>
                 <mat-error *ngIf="formSubmitted && form.controls.endOn.errors && form.controls.endOn.errors.required">
                     This is a required field when cycle ends is ON
@@ -121,6 +123,8 @@
     </form>
     <strong>{{getReferenceString}}</strong>
     <!-- sidesheet content End here -->
-    <div class="row-spacer"></div>
-    <button mat-flat-button (click)='submit()' color="primary" [disabled]="form.invalid">submit</button>
-</div>
+ 
+    <!-- <button mat-flat-button (click)='submit()' color="primary" [disabled]="form.invalid">submit</button> -->
+ 
+    </div>
+</mat-card>

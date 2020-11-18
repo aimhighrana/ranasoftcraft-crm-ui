@@ -249,4 +249,11 @@ export class SchemaService {
   public createUpdateSchedule(schemaId: string, schedulerObject: SchemaScheduler): Observable<number>{
     return this.http.post<number>(this.endpointService.createUpdateScheduleUrl(schemaId), schedulerObject)
   }
+
+  /**
+   * function to get Api call for schedule of a schema
+   */
+  public getSchedule(schemaId: string): Observable<SchemaScheduler>{
+    return this.http.get<SchemaScheduler>(this.endpointService.getScheduleUrl(schemaId))
+  }
 }

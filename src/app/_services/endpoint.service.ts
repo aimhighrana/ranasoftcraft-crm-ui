@@ -597,7 +597,15 @@ export class EndpointService {
    * @param schemaId Id of schema
    */
   public createUpdateScheduleUrl(schemaId: string) {
-    return `${this.apiUrl}/schema/createupdate-schema-scheduler?schemaId=${schemaId}`
+    return `${this.apiUrl}/schema/createupdate-schema-scheduler?schemaId=${schemaId}`;
+  }
+
+  /**
+   * endpoint for getting schedule information of a schema
+   * @param schemaId Id of schema
+   */
+  public getScheduleUrl(schemaId: string) {
+    return `${this.apiUrl}/schema/get-schema-scheduler/${schemaId}`;
   }
 }
 

@@ -8,16 +8,16 @@ import { CoreSchemaBrInfo, DropDownValue } from '@modules/admin/_components/modu
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { CategoryInfo, FilterCriteria } from '@models/schema/schemadetailstable';
 import { MatSliderChange } from '@angular/material/slider';
-import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
-import { SchemaExecutionService } from '@services/home/schema/schema-execution.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AddFilterOutput } from '@models/schema/schema';
 import { FormControl, FormGroup } from '@angular/forms';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { GlobaldialogService } from '@services/globaldialog.service';
 import { Subscription } from 'rxjs';
+import { SchemaScheduler } from '@models/schema/schemaScheduler';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 
 @Component({
   selector: 'pros-schema-info',
@@ -58,11 +58,23 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
   loadDopValuesFor: LoadDropValueReq;
   collaboratorData: SchemaCollaborator;
   reInilize = true;
+
   /** FormGroup to have schema summary form.. */
   schemaSummaryForm: FormGroup;
 
   /** To have variant details of a schema */
   variantDetails: VariantDetails[];
+
+  /**
+   * To have the info about schedule
+   */
+  scheduleInfo: SchemaScheduler;
+
+  /**
+   * To check whether show edit schedule or add schedule button
+   */
+  canEditSchedule: boolean;
+
 
   /**
    * To hold all the subscriptions related to component
@@ -76,7 +88,6 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     private schemaDetailsService: SchemaDetailsService,
     private sharedService: SharedServiceService,
     private schemaListService: SchemalistService,
-    private schemaExecutionService: SchemaExecutionService,
     private schemaVariantService: SchemaVariantService,
     private matSnackBar: MatSnackBar,
     private globalDialogService: GlobaldialogService
@@ -91,19 +102,30 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
 
     this.initializeSummaryForm();
 
-    this.sharedService.getAfterBrSave().subscribe(res => {
+    const getBrSubscription = this.sharedService.getAfterBrSave().subscribe(res => {
       if (res) {
         this.getBusinessRuleList(this.schemaId);
       }
     });
+    this.subscriptions.push(getBrSubscription);
 
-    this.sharedService.getAfterSubscriberSave().subscribe(res => {
+    const getSubscriberSubscription = this.sharedService.getAfterSubscriberSave().subscribe(res => {
       if (res) {
         this.getSubscriberList(this.schemaId);
       }
     })
+    this.subscriptions.push(getSubscriberSubscription);
+
+    const getScheduleSubscription = this.sharedService.getScheduleInfo().subscribe((res) => {
+      if(res){
+        this.getScheduleInfo(this.schemaId);
+      }
+    })
+    this.subscriptions.push(getScheduleSubscription);
 
     this.getAllCategoryInfo();
+
+    this.getScheduleInfo(this.schemaId);
   }
 
   /**
@@ -315,7 +337,6 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
   }
 
   /**
-   *
    * @param br updateable business rules...
    * @param event value of chnaged
    */
@@ -323,8 +344,8 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     const request: CoreSchemaBrMap = new CoreSchemaBrMap();
     if (event instanceof MatSliderChange) {
       request.brWeightage = (event as MatSliderChange).value;
-    } else if (event instanceof MatSlideToggleChange) {
-      request.status = (event as MatSlideToggleChange).checked ? '1' : '0';
+    } else if (event instanceof MatCheckboxChange) {
+      request.status = (event as MatCheckboxChange).checked ? '1' : '0';
     }
     request.schemaId = this.schemaId;
     request.brId = br.brIdStr;
@@ -622,6 +643,44 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     freeWeight = 100 - sumOfAllWeightage;
 
     return freeWeight + Number(weightage); // max value to slide for a business rule
+  }
+
+  /**
+   * function to open schedule side-sheet
+   */
+  openScheduleSideSheet(){
+    this.router.navigate([{outlets: {sb: `sb/schema/schedule/${this.schemaId}`}}])
+  }
+
+  /**
+   * function to change state of enable/disable schedule
+   */
+  toggleScheduleState() {
+    this.scheduleInfo.isEnable = !this.scheduleInfo.isEnable;
+    const updateSubscriber =  this.schemaService.createUpdateSchedule(this.schemaId, this.scheduleInfo).subscribe((response) => {
+      this.matSnackBar.open('This action has been confirmed..', 'okay', {
+        duration: 3000
+      })
+    }, (error) => {
+      this.matSnackBar.open('Something went wrong..', 'okay', {
+        duration: 3000
+      })
+    })
+    this.subscriptions.push(updateSubscriber);
+  }
+
+  /**
+   * function to get schedule information
+   * @param schemaId: Id of schema for which schedule info needed
+   */
+  getScheduleInfo(schemaId: string) {
+    const scheduleSubscription = this.schemaService.getSchedule(schemaId).subscribe((response) => {
+      this.scheduleInfo = response;
+      response ? this.canEditSchedule = true : this.canEditSchedule = false;
+    }, (error) => {
+      console.log('Something went wrong when getting schedule information.', error.message);
+    })
+    this.subscriptions.push(scheduleSubscription);
   }
 
   /**

@@ -1,65 +1,97 @@
-.summary-root {
-  padding: 16px 0;
+mat-card.root {
+  padding: 0 16px;
+  user-select: none;
+  width: 700px;
 
-  .temp-field {
-    mat-label {
-      font-weight: 500;
-      font-size: 0.8rem;
+  .breadcrum-toolbar {
+    align-items: center;
+    padding-top: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    min-height: 40px;
+
+    .display-heading-large {
+      font-size: 1.2rem;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
     }
 
-    &.every-field {
+    .mdo-constrained-right {
       align-items: center;
+      width: 100%;
 
-      pros-form-input {
-        flex: 2;
-      }
-
-      .week-label {
-        padding-top: 20px;
-        flex: 3;
-      }
-    }
-
-    mat-radio-group {
-      display: flex;
-      flex-wrap: wrap;
-
-      mat-radio-button {
-        flex: 0 0 25%;
-        margin-bottom: 8px;
+      button.mat-flat-button {
+        min-width: auto;
       }
     }
   }
 
-  .panel-title {
-    font-weight: 500;
-  }
+  .mdo-justify {
+    .temp-field {
+      mat-label {
+        font-weight: 500;
+        font-size: 0.8rem;
+      }
 
-  .summary-rowlist {
-    mat-list-item.mat-list-item {
-      border-bottom-width: 1px;
-      border-bottom-style: solid;
-      font-size: 0.8rem;
+      &.every-field {
+        align-items: center;
 
-      .row-heading {
-        font-size: 0.9rem;
+        pros-form-input {
+          flex: 2;
+        }
+
+        .week-label {
+          padding-top: 20px;
+          flex: 3;
+        }
+      }
+
+      mat-radio-group {
+        display: flex;
+        flex-wrap: wrap;
+
+        mat-radio-button {
+          flex: 0 0 25%;
+          margin-bottom: 8px;
+        }
       }
     }
-  }
 
-  mat-divider {
-    margin: 16px 0;
-    position: relative;
+    .panel-title {
+      font-weight: 500;
+    }
 
-    &.divider-dashed {
-      border-top-style: dashed;
+    .summary-rowlist {
+      mat-list-item.mat-list-item {
+        border-bottom-width: 1px;
+        border-bottom-style: solid;
+        font-size: 0.8rem;
+
+        .row-heading {
+          font-size: 0.9rem;
+        }
+      }
+    }
+
+    mat-divider {
+      margin: 16px 0;
+      position: relative;
+
+      &.divider-dashed {
+        border-top-style: dashed;
+      }
     }
   }
 }
 
 @media (min-width: 1200px) {
-  .summary-root {
-    width: 62%;
-    margin: 0 auto;
+  .mdo-justify {
+    margin: 0 54px;
+  }
+
+  .mdo-constrained-right {
+    margin-right: 54px;
   }
 }

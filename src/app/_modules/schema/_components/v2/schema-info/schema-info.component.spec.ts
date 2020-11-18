@@ -15,6 +15,7 @@ import { CategoryInfo, FilterCriteria } from '@models/schema/schemadetailstable'
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { SchemaService } from '@services/home/schema.service';
 import { AddFilterOutput } from '@models/schema/schema';
+import { SchemaScheduler } from '@models/schema/schemaScheduler';
 
 describe('SchemaInfoComponent', () => {
   let component: SchemaInfoComponent;
@@ -217,5 +218,49 @@ describe('SchemaInfoComponent', () => {
     }
     component.loadDropValues(fldc);
     expect(component.loadDopValuesFor.checkedValue.length).toEqual(2);
+  })
+
+  it('availableWeightage(), should return max avail weightage', async() => {
+    const weightage = '46';
+    component.businessRuleData = [
+      {
+        brWeightage: '46'
+      },
+      {
+        brWeightage: '33'
+      }
+    ] as CoreSchemaBrInfo[];
+    const result = component.availableWeightage(weightage);
+    expect(result).toEqual(67);
+  })
+
+  it('openScheduleSideSheet(), should open schedule component in side sheet', async() => {
+    component.schemaId = '2452141452';
+    spyOn(router, 'navigate');
+    component.openScheduleSideSheet();
+    expect(router.navigate).toHaveBeenCalledWith([{outlets: {sb: `sb/schema/schedule/2452141452`}}])
+  })
+
+  it('getScheduleInfo(), should get schedule info', async() => {
+    component.schemaId = '2452141452';
+    const mockResponse = {} as SchemaScheduler;
+    spyOn(schemaService, 'getSchedule').and.returnValue(of({} as SchemaScheduler));
+    component.getScheduleInfo(component.schemaId);
+    expect(schemaService.getSchedule).toHaveBeenCalledWith(component.schemaId);
+    schemaService.getSchedule(component.schemaId).subscribe(res => {
+      expect(res).toEqual(mockResponse);
+      expect(component.canEditSchedule).toEqual(true);
+    })
+  })
+
+  it('toggleScheduleState(), should toggle state of schedule', async() => {
+    component.scheduleInfo = {
+      isEnable: false
+    } as SchemaScheduler;
+    component.schemaId = '2561141'
+    spyOn(schemaService, 'createUpdateSchedule').and.returnValue(of());
+    component.toggleScheduleState();
+    expect(component.scheduleInfo.isEnable).toEqual(true);
+    expect(schemaService.createUpdateSchedule).toHaveBeenCalledWith(component.schemaId, component.scheduleInfo)
   })
 });

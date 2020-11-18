@@ -116,7 +116,7 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
    * function to save the subscriber's details
    */
   save() {
-    if(this.addSubscriberArr.length > 0){
+    if(this.addSubscriberArr.length > 0) {
       this.createUpdateSubscriber(this.addSubscriberArr);
     }
     if(this.deleteSubscriberArr.length > 0) {

@@ -1,7 +1,7 @@
 export interface SchemaScheduler {
-    isEnabled: boolean;
+    isEnable: boolean;
     schemaId: string;
-    repeat: SchemaSchedulerRepeat;
+    schemaSchedulerRepeat: SchemaSchedulerRepeat;
     repeatValue: string;
     weeklyOn: WeekOn;
     monthOn: MonthOn;

@@ -1,21 +1,26 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MonthOn, SchemaSchedulerEnd, SchemaSchedulerRepeat, SchemaSchedulerRepeatMetric, WeekOn } from '@models/schema/schemaScheduler';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MonthOn, SchemaScheduler, SchemaSchedulerEnd, SchemaSchedulerRepeat, SchemaSchedulerRepeatMetric, WeekOn } from '@models/schema/schemaScheduler';
+import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { SchemaService } from '@services/home/schema.service';
 import * as moment from 'moment';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'pros-schedule',
   templateUrl: './schedule.component.html',
   styleUrls: ['./schedule.component.scss']
 })
-export class ScheduleComponent implements OnInit {
+export class ScheduleComponent implements OnInit, OnDestroy {
 
   /**
    * Schema id recieved from parent
    */
   @Input() schemaId: string;
+
+  @Input() isEnable: boolean;
   /**
    * Flag to check if form is submitted
    */
@@ -53,14 +58,34 @@ export class ScheduleComponent implements OnInit {
 
   today = new Date();
 
+  /**
+   * To store the information of schedule
+   */
+  scheduleInfo: SchemaScheduler;
+
+  /**
+   * To hold all the subscriptions
+   */
+  subscriptions: Subscription[] = []
+
   constructor(
     private schemaService: SchemaService,
-    private matSnackBar: MatSnackBar
+    private matSnackBar: MatSnackBar,
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private sharedService: SharedServiceService
   ) { }
 
   ngOnInit(): void {
-    this.createForm();
 
+    this.createForm();
+    this.activatedRoute.params.subscribe((params) => {
+      // if (params.schemaId) {
+        this.schemaId = params.schemaId;
+      // }
+    })
+
+    this.getScheduleInfo(this.schemaId);
     this.form.controls.schemaSchedulerRepeat.valueChanges.subscribe((repeatValue) => {
       this.form.controls.weeklyOn.setValidators(null);
       this.form.controls.monthOn.setValidators(null);
@@ -118,7 +143,7 @@ export class ScheduleComponent implements OnInit {
       startOn: new FormControl(moment().utc().valueOf().toString(), [Validators.required]),
       end: new FormControl(null, [Validators.required]),
       occurrenceVal: new FormControl(2),
-      endOn: new FormControl(null)
+      endOn: new FormControl(moment().utc().valueOf().toString())
     })
   }
 
@@ -147,15 +172,18 @@ export class ScheduleComponent implements OnInit {
   submit() {
     this.formSubmitted = true;
     console.log(this.form.value);
-    this.schemaService.createUpdateSchedule(this.schemaId, this.form.value).subscribe((response) => {
-      if(response){
+    const updateSubscription =  this.schemaService.createUpdateSchedule(this.schemaId, this.form.value).subscribe((response) => {
+      if (response) {
+        this.close();
+        this.sharedService.setScheduleInfo(response);
         this.matSnackBar.open('Schema Has Been Scheduled..', 'Okay', {
           duration: 3000
         })
       }
-    },(error) => {
+    }, (error) => {
       console.log('something went wrong when scheduling schema..')
     })
+    this.subscriptions.push(updateSubscription);
   }
 
   /**
@@ -181,4 +209,51 @@ export class ScheduleComponent implements OnInit {
     return `Occurs every ${repeatValue} ${this.getMetricHours ? this.getMetricHours : ''} ${startStr} and ${endStr}`
   }
 
+  /**
+   * Function to close schedule side sheet
+   */
+  close() {
+    this.router.navigate([{ outlets: { sb: null } }])
+  }
+
+  /**
+   * function to get schedule information
+   * @param schemaId: Id of schema for which schedule info needed
+   */
+  getScheduleInfo(schemaId: string) {
+    const scheduleSubscription =  this.schemaService.getSchedule(schemaId).subscribe((response) => {
+      this.scheduleInfo = response;
+      if(response){
+        this.setValueForFormControl();
+      }
+    }, (error) => {
+      console.log('Something went wrong when getting schedule information.', error.message);
+    })
+    this.subscriptions.push(scheduleSubscription);
+  }
+
+  /**
+   * Function to set values into form controls
+   */
+  setValueForFormControl(){
+    this.form.get('isEnable').setValue(this.scheduleInfo.isEnable);
+    this.form.get('schemaSchedulerRepeat').setValue(this.scheduleInfo.schemaSchedulerRepeat);
+    this.form.get('repeatValue').setValue(this.scheduleInfo.repeatValue);
+    this.form.get('weeklyOn').setValue(this.scheduleInfo.weeklyOn);
+    this.form.get('monthOn').setValue(this.scheduleInfo.monthOn);
+    this.form.get('startOn').setValue(this.scheduleInfo.startOn);
+    this.form.get('end').setValue(this.scheduleInfo.end);
+    this.form.get('occurrenceVal').setValue(this.scheduleInfo.occurrenceVal);
+    this.form.get('endOn').setValue(this.scheduleInfo.endOn);
+  }
+
+  /**
+   * ANGULAR HOOK
+   * It will be called once when component will be destroyed
+   */
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe()
+    })
+  }
 }

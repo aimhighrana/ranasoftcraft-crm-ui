@@ -74,6 +74,10 @@ export class DatePickerFieldComponent implements OnInit, OnChanges {
       const fld = Number(changes.minimumValidDate.currentValue);
       this.minimumValidDate = new Date(fld);
     }
+    if(changes && changes.preSelectedFld && changes.preSelectedFld.currentValue !== changes.preSelectedFld.previousValue) {
+      const fld =  Number(this.preSelectedFld);
+      this.conditionFieldValue.setValue(new Date(fld));
+    }
   }
 
   ngOnInit(): void {

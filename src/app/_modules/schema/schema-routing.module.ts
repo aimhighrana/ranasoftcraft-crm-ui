@@ -46,6 +46,7 @@ import { EmptyDataComponent } from './_components/empty-data/empty-data.componen
 import { RunningProgressComponent } from './_components/running-progress/running-progress.component';
 import { InvitePeopleComponent } from './_components/invite-people/invite-people.component';
 import { MaterialListComponent } from './_components/material-list/material-list.component';
+import { ScheduleComponent } from '@modules/shared/_components/schedule/schedule.component';
 
 
 const routes: Routes = [
@@ -99,6 +100,7 @@ const routes: Routes = [
   { path: 'system/running-progress', component: RunningProgressComponent },
   { path: 'system/invite-people', component: InvitePeopleComponent },
   { path: 'system/material-list', component: MaterialListComponent },
+  { path: 'schedule/:schemaId', component: ScheduleComponent},
 
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent }

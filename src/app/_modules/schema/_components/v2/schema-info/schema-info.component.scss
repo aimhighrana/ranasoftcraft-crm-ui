@@ -41,29 +41,10 @@ mat-card.root {
         font-weight: 500;
         font-size: 0.8rem;
       }
+    }
 
-      &.every-field {
-        align-items: center;
-
-        pros-form-input {
-          flex: 2;
-        }
-
-        .week-label {
-          padding-top: 20px;
-          flex: 3;
-        }
-      }
-
-      mat-radio-group {
-        display: flex;
-        flex-wrap: wrap;
-
-        mat-radio-button {
-          flex: 0 0 25%;
-          margin-bottom: 8px;
-        }
-      }
+    .schedule-row {
+      align-items: center;
     }
 
     .panel-title {

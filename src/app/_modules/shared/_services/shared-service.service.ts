@@ -39,6 +39,11 @@ export class SharedServiceService {
    */
   private isFromMsTeamLogedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
+  /**
+   * Behavior subject to identidy that scheduler is edit/add
+   */
+  private afterEditSchedule: BehaviorSubject<any> = new BehaviorSubject(null);
+
 
   constructor() { }
 
@@ -146,5 +151,20 @@ export class SharedServiceService {
    */
   public getIsFromMsTeamLogedIn(): Observable<boolean> {
     return this.isFromMsTeamLogedIn.asObservable();
+  }
+
+  /**
+   * function to set schedule info
+   * @param data: data of schedule
+   */
+  public setScheduleInfo(data: any) {
+    this.afterEditSchedule.next(data);
+  }
+
+  /**
+   * function to get schedule info
+   */
+  public getScheduleInfo(): Observable<any> {
+    return this.afterEditSchedule.asObservable();
   }
 }

@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker/datepicker-input-base';
 import { DatePickerFieldComponent } from './date-picker-field.component';
+import { SimpleChange, SimpleChanges } from '@angular/core';
 
 describe('DatePickerFieldComponent', () => {
   let component: DatePickerFieldComponent;
@@ -53,4 +54,17 @@ describe('DatePickerFieldComponent', () => {
     const res = new Date(1596393000000);
     expect(component.conditionFieldEndValue.value).toEqual(res);
   }));
+
+  it('ngOnchanges(), should called on change @Input decorator value', () => {
+    const changes = {
+      minimumValidDate: {
+        currentValue: '1596393000000',
+        previousValue: '159400000000',
+        firstChange: false
+      } as SimpleChange
+    } as SimpleChanges;
+    component.ngOnChanges(changes);
+    const res = new Date(1596393000000)
+    expect(component.minimumValidDate).toEqual(res);
+  })
 });
