@@ -128,6 +128,12 @@ export class SummaryTabsComponent implements OnInit {
                   returnValue = vcVal.t;
                 }
               break;
+
+              default:
+                if(vcVal.t) {
+                  returnValue = vcVal.t;
+                }
+                break;
       }
       returnValue+=' , ';
       });
