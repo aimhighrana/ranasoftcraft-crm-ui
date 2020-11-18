@@ -119,15 +119,16 @@ export class PrimaryNavbarComponent implements OnInit {
    * @param url current url
    */
   checkNavOnReload(url: string){
-    if (url.includes('/home/dash/welcome')) {
+    if (url.includes('/home/dash/welcome') || url.includes('/home/schema/schema-details')) {
       this.isNavSelected = 'welcome'
     }
-    if (url.includes('/home/report')) {
+    else if (url.includes('/home/report')) {
       this.isNavSelected = 'report';
     }
-    if (url.includes('/home/schema')) {
+    else if (url.includes('/home/schema')) {
       this.isNavSelected = 'schema';
     }
+    this.emitAfterSel.emit(this.isNavSelected);
   }
 
   /**

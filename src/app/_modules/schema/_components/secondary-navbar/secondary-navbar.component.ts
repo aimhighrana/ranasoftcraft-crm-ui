@@ -258,14 +258,15 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
    * @param url current url
    */
   checkDescOnReload(url: string){
-    if (url.includes('/home/dash/welcome')) {
-      this.activatedPrimaryNav = 'welcome'
+    if (url.includes('/home/dash/welcome') || url.includes('/home/schema/schema-details')) {
+      this.activatedPrimaryNav = 'welcome';
+      this.getSchemaList();
     }
-    if (url.includes('/home/report')) {
+    else if (url.includes('/home/report')) {
       this.activatedPrimaryNav = 'report';
       this.getreportList();
     }
-    if (url.includes('/home/schema')) {
+    else if (url.includes('/home/schema')) {
       this.activatedPrimaryNav = 'schema';
       this.getSchemaList();
     }
