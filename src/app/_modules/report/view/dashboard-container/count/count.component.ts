@@ -56,8 +56,8 @@ export class CountComponent extends GenericWidgetComponent implements OnInit,OnC
         this.count += count ;
       });
       } else if(res[0] === 'sum#COUNT') {
-        this.arrayBuckets  = returndata.aggregations[res[0]] ? returndata.aggregations[res[0]].value : [];
-        this.count =  Math.round((this.count + Number.EPSILON)  * 100) / 100;
+        const sumCnt  = returndata.aggregations[res[0]] ? returndata.aggregations[res[0]].value : 0;
+        this.count =  Math.round((sumCnt + Number.EPSILON)  * 100) / 100;
       } else {
         console.log('Something missing on count widget !!.');
       }
