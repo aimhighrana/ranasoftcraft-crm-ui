@@ -67,6 +67,7 @@ export interface UserMdoModel {
     isAdd?: boolean;
     sNo?: string | number;
 }
+
 export interface RolesModel {
     roleId: string;
     roleDesc: string;
@@ -90,5 +91,17 @@ export interface SchemaCollaborator {
     plantCode: string;
     filterFieldIds?: Array<string>;
     dataAllocation?: Array<DropDownValue>;
+    filterCriteria?: FilterCriteria[];
+}
+
+export interface CreateSchemaSubscriber {
+    sno: number;
+    isAdmin: boolean;
+    isReviewer: boolean;
+    isViewer: boolean;
+    isEditer: boolean;
+    permissionType: string;
+    userid: string;
+    plantCode: number;
     filterCriteria?: FilterCriteria[];
 }

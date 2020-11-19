@@ -268,4 +268,48 @@ describe('UploadDatasetComponent', () => {
     expect(component.isEditable(data)).toBeTrue();
   }));
 
+  it('updateSubscribersList(), should update subscriberList', async () => {
+    component.userDetails = {
+      plantCode: '0',
+      assignedRoles: null,
+      currentRoleId: null,
+      dateformat: null,
+      email: '',
+      firstName: '',
+      fullName: '',
+      lastName: '',
+      userName: ''
+    }
+    const subscriberObject = {
+      dataAllocation: [],
+      filterFieldIds: [],
+      fullName: 'Abhilash Rajoria',
+      groupid: '',
+      initials: 'AR',
+      isAdmin: false,
+      isEditor: false,
+      isReviewer: false,
+      isViewer: false,
+      permissionType: 'USER',
+      plantCode: '0',
+      role: '',
+      roleId: '',
+      sno: '5818811898',
+      userid: 'abhilash',
+    }
+    component.subscribersList = [];
+    component.updateSubscribersList(subscriberObject);
+    expect(component.subscribersList.length).toEqual(1);
+  });
+
+  it('setProgressValue(), should update progress value based on headertext', async () => {
+    component.headerText = [
+      'Upload data',
+      'Select module',
+      'Name your dataset',
+    ];
+    component.setProgressValue();
+    expect(component.progressBar).toEqual(100 / component.headerText.length);
+  });
+
 });

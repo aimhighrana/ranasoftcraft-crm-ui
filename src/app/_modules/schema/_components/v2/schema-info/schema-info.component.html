@@ -226,6 +226,7 @@
 
                         <mat-menu #appliedfiltermenu="matMenu">
                             <pros-filter-values (selectedValues)="fetchSelectedValues($event, subscriber.sno)"
+                                [moduleId]="moduleId"
                                 [fieldId]="loadDopValuesFor ? loadDopValuesFor.fieldId : ''"
                                 [checkedValue]="loadDopValuesFor ? loadDopValuesFor.checkedValue : []">
                             </pros-filter-values>

@@ -177,7 +177,7 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
         isAdmin: this.form.controls.isAdmin.value,
         isReviewer: this.form.controls.isReviewer.value,
         isViewer: this.form.controls.isViewer.value,
-        isEditor: this.form.controls.isEditor.value,
+        isEditer: this.form.controls.isEditor.value,
         groupid: '',
         roleId: '',
         userid: this.form.controls.field.value.userName,
@@ -189,7 +189,7 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
       if (formObject.isAdmin) { formObject.role = 'isAdmin' }
       if (formObject.isReviewer) { formObject.role = 'isReviewer' }
       if (formObject.isViewer) { formObject.role = 'isViewer' }
-      if (formObject.isEditor) { formObject.role = 'isEditor' }
+      if (formObject.isEditer) { formObject.role = 'isEditor' }
       this.dialogRef.close(formObject);
     } else {
       this.snackBar.open('Please enter both the fields', 'okay', { duration: 5000 })

@@ -37,6 +37,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
   schemaId: string;
 
   thresholdValue: number;
+
   errorValue: number;
   successValue: number;
 

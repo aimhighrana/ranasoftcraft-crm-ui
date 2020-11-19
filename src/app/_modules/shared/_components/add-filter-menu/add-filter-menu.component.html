@@ -8,8 +8,8 @@
     </ng-container>
 
     <div class="f-col" *ngIf="activateElement" prosClickStopPropagation>
-       <div class="f-row filter-header">
-            <button mat-button (click)="prevState()">
+       <div class="f-row filter-header" prosClickStopPropagation>
+            <button mat-button (click)="prevState($event)">
                 <mat-icon>arrow_back</mat-icon>
             </button>
             <div class="mat-line" *ngIf="activateElement">

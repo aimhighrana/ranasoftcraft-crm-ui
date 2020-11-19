@@ -43,8 +43,6 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
    * Hold info about active element ..
    */
   activateElement: MetadataModel = null;
-  // activateElement clone used for shwing and hiding the filter section
-  activateElementClone: MetadataModel = null;
 
   /**
    * After applied filter value should emit with
@@ -167,9 +165,9 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
   /**
    * Move to previous state
    */
-  prevState() {
+  prevState(event) {
+    event.stopPropagation();
     this.activateElement = null;
-    this.activateElementClone = null;
     this.metadata.next(this.metadata.getValue());
   }
 
@@ -181,6 +179,5 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
     this.selectedValues = val;
     this.evtReadyForApply.emit({fldCtrl: this.activateElement, selectedValues: val});
     this.activateElement = null;
-    this.activateElementClone = null;
   }
 }

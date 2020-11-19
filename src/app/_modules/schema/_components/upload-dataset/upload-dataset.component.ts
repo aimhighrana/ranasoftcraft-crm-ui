@@ -65,7 +65,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   /**
    * progress bar value setting variable
    */
-  progressBar = 20;
+  progressBar = 0;
   /**
    * array of headers
    */
@@ -87,7 +87,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   /**
    * index of active header
    */
-  headerTextIndex = 0;
+  headerTextIndex = 1;
 
   /**
    * Modules list to pre-populate
@@ -179,7 +179,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   @HostListener('document:click', ['$event'])
   public onClick(event) {
     const fieldId = event.target.id;
-    if(!fieldId || this.editableFieldIds.indexOf(fieldId) === -1){
+    if (!fieldId || this.editableFieldIds.indexOf(fieldId) === -1) {
       this.editableFieldIds = [];
     }
   }
@@ -204,10 +204,19 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private utilties: Utilities
   ) {
+    this.setProgressValue();
     this.moduleInpFrmCtrl = new FormControl();
     this.selectedMdoFldCtrl = new FormControl();
   }
 
+  setProgressValue(index: number = 0) {
+    if (index > 0) {
+      this.progressBar = index * (100 / this.headerText.length);
+    } else {
+      this.progressBar = 100 / this.headerText.length;
+    }
+
+  }
 
   getObjectTypes() {
     this.schemaService.getAllObjectType().subscribe((modules: []) => {
@@ -291,8 +300,8 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    */
   ngAfterViewInit() {
     this.stepper.selectionChange.subscribe((change) => {
-      this.headerTextIndex = change.selectedIndex;
-      this.progressBar = this.headerTextIndex * 20;
+      this.headerTextIndex = change.selectedIndex + 1;
+      this.setProgressValue(this.headerTextIndex);
     });
   }
 
@@ -436,7 +445,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * function to set the header text dynamically
    */
   get toolbarHeaderText() {
-    return this.headerText[this.headerTextIndex];
+    return this.headerText[this.headerTextIndex - 1];
   }
 
   /**
@@ -1016,6 +1025,29 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     )
   }
 
+  /**
+   * method to convert subscriber object to
+   * correct format for the api
+   * @param subscriber pass the selected subscriber
+   */
+  mapAndUpdateSubscriber(subscriber) {
+    const formObject = {
+      isAdmin: false,
+      isReviewer: false,
+      isViewer: false,
+      isEditor: false,
+      groupid: '',
+      roleId: '',
+      userid: subscriber.userName,
+      permissionType: 'USER',
+      initials: subscriber.initials,
+      fullName: subscriber.fullName,
+      role: ''
+    }
+
+    this.updateSubscribersList(formObject);
+  }
+
   // remove tempId from CoreSchemaBr objects
   removeTempId(value) {
     const modified = { ...value };
@@ -1106,7 +1138,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * @param subscriberIndex subscriber index
    */
   removeAllocation(chipIndex, subscriberIndex) {
-    this.subscribersList[subscriberIndex].filterFieldIds.splice(chipIndex, 1)
+    this.subscribersList[subscriberIndex].filterFieldIds.splice(chipIndex, 1);
   }
 
   /**
@@ -1135,21 +1167,14 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
 
   updateFilterCriteria(event, subscriberIndex) {
     this.activeChipValue = event;
-    console.log(this.activeChipValue);
-
-    console.log(this.subscribersList[subscriberIndex]);
-
   }
 
   setValueToForm(field, value) {
-    console.log(field, value);
-    console.log(typeof value);
     if (typeof value === 'string') {
       this.requestForm.controls[field].setValue(value);
     } else {
       this.requestForm.controls[field].setValue(value.value);
     }
-    console.log(this.requestForm);
   }
 
   /**
@@ -1158,10 +1183,10 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * @param field the selected field of form
    */
   setFormValue(value: any, field: string) {
-    if(this.headerForm.controls[field].value !== value){
+    if (this.headerForm.controls[field].value !== value) {
       this.headerForm.controls[field].setValue(value);
       const index = this.dataSource.findIndex((ds) => ds.mdoFldId === field);
-      if(index > -1){
+      if (index > -1) {
         this.dataSource[index].excelFld = value;
       }
     }
@@ -1196,6 +1221,8 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         this.selectedBusinessRules.push(updatedObj);
       });
     }
+
+    this.requestForm.controls.coreSchemaBr.setValue(this.selectedBusinessRules);
   }
 
   /**
@@ -1222,6 +1249,10 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       });
   }
 
+  /**
+   * scheck if a field is  editable
+   * @param data pass the field value
+   */
   isEditable(data: DataSource) {
     const exists: boolean = this.editableFieldIds.indexOf(data.mdoFldId) !== -1;
     if (this.requestForm.controls.objectId.value) {
