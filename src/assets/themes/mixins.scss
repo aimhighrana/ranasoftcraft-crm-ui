@@ -492,9 +492,22 @@
     border-width: 1px;
   }
 
-  mat-option.mat-option {
-    font-size: inherit;
-    height: 42px;
+  .cdk-overlay-container {
+    .mat-autocomplete-panel {
+      .autodropdown-scroll {
+        height: 127px;
+        overflow: auto;
+      }
+
+      mat-option.mat-option {
+        font-size: inherit;
+        height: 42px;
+      }
+
+      mat-option.mat-option.info-link {
+        color: mat-color($primary-palette);
+      }
+    }
   }
 
   // Tab-Component
@@ -1305,6 +1318,16 @@
           &.select-col {
             background: mat-color($background-palette, background);
           }
+        }
+      }
+    }
+  }
+
+  pros-exclusions-sidesheet {
+    div.root {
+      .mdo-justify {
+        .info-link {
+          color: mat-color($primary-palette);
         }
       }
     }

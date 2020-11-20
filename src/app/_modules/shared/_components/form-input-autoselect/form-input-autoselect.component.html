@@ -9,11 +9,13 @@
     </div>
     <mat-autocomplete #mdofieldauto="matAutocomplete" [displayWith]="mdoFieldDisplayWith"
       (optionSelected)="emitOptionSelected($event)">
-      <mat-option *ngFor="let option of filteredOptions | async; trackBy :suggestedMdoFldTrkBy"
+      <div class="autodropdown-scroll">
+        <mat-option *ngFor="let option of filteredOptions | async; trackBy :suggestedMdoFldTrkBy"
         [value]="getValue(option)" [matTooltip]="getTooltipText(option)">
         {{ getLabel(option) }}
       </mat-option>
+      </div>
       <mat-divider></mat-divider>
-      <mat-option [value]="extraOption">{{extraOptionLabel}}</mat-option>
+      <mat-option [value]="extraOption" class="info-link">{{extraOptionLabel}}</mat-option>
     </mat-autocomplete>
   </mat-form-field>

@@ -57,6 +57,7 @@ import { EmptyDataComponent } from './_components/empty-data/empty-data.componen
 import { RunningProgressComponent } from './_components/running-progress/running-progress.component';
 import { InvitePeopleComponent } from './_components/invite-people/invite-people.component';
 import { MaterialListComponent } from './_components/material-list/material-list.component';
+import { ExclusionsSidesheetComponent } from './_components/exclusions-sidesheet/exclusions-sidesheet.component';
 
 
 @NgModule({
@@ -117,7 +118,8 @@ import { MaterialListComponent } from './_components/material-list/material-list
     EmptyDataComponent,
     RunningProgressComponent,
     InvitePeopleComponent,
-    MaterialListComponent
+    MaterialListComponent,
+    ExclusionsSidesheetComponent
   ],
   imports: [
     CommonModule,

@@ -36,14 +36,14 @@ mat-card.root {
 .colunm-box {
   align-items: center;
   box-sizing: border-box;
-  padding: 10px;
+  padding: 10px 0;
 
   .col {
     display: flex;
     flex: 1 0 auto;
     width: 1px;
     align-items: center;
-    margin: 0 16px;
+    margin: 0 8px;
 
     &.col-x4 {
       flex: 4;

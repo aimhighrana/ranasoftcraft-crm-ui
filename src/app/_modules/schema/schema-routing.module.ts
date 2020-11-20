@@ -47,6 +47,7 @@ import { RunningProgressComponent } from './_components/running-progress/running
 import { InvitePeopleComponent } from './_components/invite-people/invite-people.component';
 import { MaterialListComponent } from './_components/material-list/material-list.component';
 import { ScheduleComponent } from '@modules/shared/_components/schedule/schedule.component';
+import { ExclusionsSidesheetComponent } from './_components/exclusions-sidesheet/exclusions-sidesheet.component';
 
 
 const routes: Routes = [
@@ -101,6 +102,7 @@ const routes: Routes = [
   { path: 'system/invite-people', component: InvitePeopleComponent },
   { path: 'system/material-list', component: MaterialListComponent },
   { path: 'schedule/:schemaId', component: ScheduleComponent},
+  { path: 'system/exclusions-sidesheet', component: ExclusionsSidesheetComponent },
 
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent }

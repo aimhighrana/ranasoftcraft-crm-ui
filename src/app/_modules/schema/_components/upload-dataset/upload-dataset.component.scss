@@ -87,6 +87,10 @@ mat-card.root {
 
     .schedule-row {
       align-items: center;
+
+      mat-slide-toggle {
+        padding-left: 8px;
+      }
     }
   }
 }
@@ -164,12 +168,6 @@ mat-card.root {
     button.mat-stroked-button {
       margin-right: 4px;
       min-width: auto;
-    }
-
-    .col-inner-icon {
-      font-size: 20px;
-      height: 20px;
-      width: 20px;
     }
   }
 }
