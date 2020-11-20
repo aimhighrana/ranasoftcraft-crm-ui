@@ -111,25 +111,25 @@ describe('NewSchemaCollaboratorsComponent', () => {
         expect(component.form.value.isAdmin).toEqual(true);
         expect(component.form.value.isReviewer).toEqual(false);
         expect(component.form.value.isViewer).toEqual(false);
-        expect(component.form.value.isEditor).toEqual(false);
+        expect(component.form.value.isEditer).toEqual(false);
 
         component.setPermissions({ value: 'Reviewer' });
         expect(component.form.value.isAdmin).toEqual(false);
         expect(component.form.value.isReviewer).toEqual(true);
         expect(component.form.value.isViewer).toEqual(false);
-        expect(component.form.value.isEditor).toEqual(false);
+        expect(component.form.value.isEditer).toEqual(false);
 
         component.setPermissions({ value: 'Viewer' });
         expect(component.form.value.isAdmin).toEqual(false);
         expect(component.form.value.isReviewer).toEqual(false);
         expect(component.form.value.isViewer).toEqual(true);
-        expect(component.form.value.isEditor).toEqual(false);
+        expect(component.form.value.isEditer).toEqual(false);
 
-        component.setPermissions({ value: 'Editor' });
+        component.setPermissions({ value: 'Editer' });
         expect(component.form.value.isAdmin).toEqual(false);
         expect(component.form.value.isReviewer).toEqual(false);
         expect(component.form.value.isViewer).toEqual(false);
-        expect(component.form.value.isEditor).toEqual(true);
+        expect(component.form.value.isEditer).toEqual(true);
     });
 
     it(`selectCurrentRole(), set the current role`, async(() => {

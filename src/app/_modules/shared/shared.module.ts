@@ -67,6 +67,7 @@ import { ScheduleComponent } from './_components/schedule/schedule.component'
 import { DatePickerFieldComponent } from './_components/date-picker-field/date-picker-field.component';
 import { NullStateComponent } from './_components/null-state/null-state/null-state.component';
 import { FormInputAutoselectComponent } from './_components/form-input-autoselect/form-input-autoselect.component';
+import { ScheduleDialogComponent } from './_components/schedule-dialog/schedule-dialog.component';
 
 @NgModule({
   declarations: [
@@ -98,7 +99,8 @@ import { FormInputAutoselectComponent } from './_components/form-input-autoselec
     DatePickerFieldComponent,
     TableCellInputComponent,
     NullStateComponent,
-    FormInputAutoselectComponent
+    FormInputAutoselectComponent,
+    ScheduleDialogComponent
   ],
   imports: [
     // ng modules

@@ -22,6 +22,8 @@ import { values, pick } from 'lodash';
 import { Utilities } from '@modules/base/common/utilities';
 import { BusinessrulelibrarySidesheetComponent } from '../businessrulelibrary-sidesheet/businessrulelibrary-sidesheet.component';
 import { PermissionOn, UserMdoModel } from '@models/collaborator';
+import { ScheduleDialogComponent } from '@modules/shared/_components/schedule-dialog/schedule-dialog.component';
+import { SchemaScheduler } from '@models/schema/schemaScheduler';
 
 type UploadedDataType = any[][];
 
@@ -57,6 +59,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   uploadLoader = false;
   objectTypes: Array<ObjectType> = [];
   editableFieldIds: string[] = [];
+  currentSchedule: SchemaScheduler = null;
   /**
    * Fetch count for subscribers
    */
@@ -1071,6 +1074,10 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       fileSerialNo,
       formObject
     ).subscribe((res) => {
+      console.log(res);
+      if(this.currentSchedule){
+      // this.saveCurrentSchedule();
+      }
       this.snackBar.open('Schema created successfully', 'Okay', {
         duration: 5000
       });
@@ -1079,6 +1086,18 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       this.snackBar.open('Schema cannot be created', 'Okay', {
         duration: 5000
       });
+    })
+  }
+
+  saveCurrentSchedule(schemaId) {
+    this.schemaService.createUpdateSchedule(schemaId, this.currentSchedule).subscribe((response) => {
+      if (response) {
+        this.snackBar.open('Schema Has Been Scheduled..', 'Okay', {
+          duration: 3000
+        })
+      }
+    }, (error) => {
+      console.log('something went wrong when scheduling schema..')
     })
   }
 
@@ -1262,10 +1281,26 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     return true;
   }
 
+  /**
+   * make a field editable and update the field id in an array
+   * @param data pass the field value
+   */
   makeEditable(data: DataSource) {
     this.editableFieldIds = [];
     setTimeout(() => {
       this.editableFieldIds.push(data.mdoFldId);
     }, 0);
+  }
+
+  /**
+   * Open add schedule sidesheet for adding a schedule
+   */
+  openAddScheduleSideSheet() {
+    this.globaldialogService.openDialog(ScheduleDialogComponent, {});
+    this.dialogSubscriber = this.globaldialogService.dialogCloseEmitter
+    .pipe(distinctUntilChanged())
+    .subscribe((response: SchemaScheduler) => {
+      this.currentSchedule = response;
+    });
   }
 }

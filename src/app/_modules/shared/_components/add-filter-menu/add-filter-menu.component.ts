@@ -28,7 +28,7 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
   /**
    * currently selected fields
    */
-  currentFields: any[];
+  currentFields: BehaviorSubject<any[]> = new BehaviorSubject([]);
   /**
    * Hold all metada control for header , hierarchy and grid fields ..
    */
@@ -61,27 +61,27 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
    * @param changes Input values to watch for changes
    */
   ngOnChanges(changes: SimpleChanges): void {
-    if(changes && changes.moduleId && changes.moduleId.previousValue !== changes.moduleId.currentValue) {
+    if (changes && changes.moduleId && changes.moduleId.previousValue !== changes.moduleId.currentValue) {
       this.moduleId = changes.moduleId.currentValue;
-      if(this.moduleId){
-        this.initMetadata(this.currentFields);
-      } else {
+      if (this.moduleId) {
         this.getFldMetadata();
+      } else {
+        this.initMetadata(this.currentFields.getValue());
       }
     }
 
-    if(changes && changes.reInilize && changes.reInilize.previousValue !== changes.reInilize.currentValue) {
-      if(this.moduleId){
+    if (changes && changes.reInilize && changes.reInilize.previousValue !== changes.reInilize.currentValue) {
+      if (this.moduleId) {
         this.metadata.next(this.metadata.getValue());
       }
-      this.initMetadata(this.currentFields);
+      this.initMetadata(this.currentFields.getValue());
     }
 
-    if(changes && changes.fieldMetadata && changes.fieldMetadata.previousValue !== changes.fieldMetadata.currentValue) {
-      if(changes.fieldMetadata.currentValue) {
-        this.currentFields = changes.fieldMetadata.currentValue;
+    if (changes && changes.fieldMetadata && changes.fieldMetadata.previousValue !== changes.fieldMetadata.currentValue) {
+      if (changes.fieldMetadata.currentValue) {
+        this.currentFields.next(changes.fieldMetadata.currentValue);
         this.initMetadata(changes.fieldMetadata.currentValue);
-       }
+      }
     }
   }
 
@@ -91,10 +91,12 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
    * @param fields Excel first row values(Array)
    */
   initMetadata(fields: any[]) {
-    if(!this.moduleId) {
+    if (!this.moduleId) {
       this.activateElement = null;
       this.selectedValues = [];
-      this.metadaDrop = fields;
+      if (fields && fields.length > 0) {
+        this.metadaDrop = fields;
+      }
     }
   }
 
@@ -110,10 +112,10 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
    * Angular hook
    */
   ngOnInit(): void {
-    this.metadata.subscribe(fld=>{
-       if(fld) {
-         this.tarnsformMetada();
-       }
+    this.metadata.subscribe(fld => {
+      if (fld) {
+        this.tarnsformMetada();
+      }
     });
     this.getFldMetadata();
   }
@@ -122,7 +124,7 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
    * Get all fld metada based on module of schema
    */
   getFldMetadata() {
-    if(this.moduleId === undefined || this.moduleId.trim() === ''){
+    if (this.moduleId === undefined || this.moduleId.trim() === '') {
       throwError('Module id cant be null or empty');
     }
     this.schemaDetailService.getMetadataFields(this.moduleId).subscribe(response => {
@@ -140,9 +142,9 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
     const allMDF = this.metadata.getValue();
     const fields = [];
     for (const headerField in allMDF.headers) {
-      if(fields.indexOf(headerField)) {
+      if (fields.indexOf(headerField)) {
         const fldCtrl = allMDF.headers[headerField] as MetadataModel;
-        if(fldCtrl.picklist === '1' || fldCtrl.picklist === '30' || fldCtrl.picklist === '37') {
+        if (fldCtrl.picklist === '1' || fldCtrl.picklist === '30' || fldCtrl.picklist === '37') {
           fields.push(allMDF.headers[headerField]);
         }
       }
@@ -157,7 +159,7 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
   ctrlFlds(fld: MetadataModel) {
     this.activateElement = fld;
     this.metadaDrop = [];
-    if(!this.moduleId) {
+    if (!this.moduleId) {
       this.schemaService.generateColumnByFieldId(this.activateElement.fieldId);
     }
   }
@@ -168,7 +170,15 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
   prevState(event) {
     event.stopPropagation();
     this.activateElement = null;
-    this.metadata.next(this.metadata.getValue());
+    if (this.moduleId) {
+      const currentMetaData = this.metadata.getValue();
+      if (currentMetaData) {
+        this.metadata.next(currentMetaData);
+      }
+    } else {
+      this.metadaDrop = this.currentFields.getValue();
+    }
+
   }
 
   /**
@@ -177,7 +187,7 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
    */
   emitAppliedFilter(val: DropDownValue[]) {
     this.selectedValues = val;
-    this.evtReadyForApply.emit({fldCtrl: this.activateElement, selectedValues: val});
+    this.evtReadyForApply.emit({ fldCtrl: this.activateElement, selectedValues: val });
     this.activateElement = null;
   }
 }

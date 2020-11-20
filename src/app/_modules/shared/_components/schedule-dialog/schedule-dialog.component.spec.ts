@@ -1,40 +1,40 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
-import { SchemaService } from '@services/home/schema.service';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
-import { DatePickerFieldComponent } from '../date-picker-field/date-picker-field.component';
-import { FormInputComponent } from '../form-input/form-input.component';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { of } from 'rxjs';
 
-import { ScheduleComponent } from './schedule.component';
+import { ScheduleDialogComponent } from './schedule-dialog.component';
+import { SchemaService } from '@services/home/schema.service';
 
-describe('ScheduleComponent', () => {
-  let component: ScheduleComponent;
-  let fixture: ComponentFixture<ScheduleComponent>;
+describe('ScheduleDialogComponent', () => {
+  let component: ScheduleDialogComponent;
+  let fixture: ComponentFixture<ScheduleDialogComponent>;
   let schemaService: SchemaService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ScheduleComponent, FormInputComponent, DatePickerFieldComponent ],
+      declarations: [ ScheduleDialogComponent ],
       imports: [
         HttpClientTestingModule,
         AppMaterialModuleForSpec,
-        RouterTestingModule,
         FormsModule,
         ReactiveFormsModule
       ],
-      providers: [SchemaService]
+      providers: [
+        { provide: MatDialogRef, useValue: {} },
+        { provide: MAT_DIALOG_DATA, useValue: [] },
+      ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ScheduleComponent);
+    fixture = TestBed.createComponent(ScheduleDialogComponent);
     component = fixture.componentInstance;
     schemaService = fixture.debugElement.injector.get(SchemaService);
-    // fixture.detectChanges();
+    fixture.detectChanges();
   });
 
   it('should create', () => {

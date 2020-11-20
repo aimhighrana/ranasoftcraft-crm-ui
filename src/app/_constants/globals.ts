@@ -2,7 +2,7 @@ export enum ROLENAMES {
     ADMIN = 'Admin',
     REVIEWER = 'Reviewer',
     VIEWER = 'Viewer',
-    EDITOR = 'Editor'
+    EDITOR = 'Editer'
 }
 
 export enum GLOBALCONSTANTS{

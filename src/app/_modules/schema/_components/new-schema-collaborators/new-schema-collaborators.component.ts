@@ -90,7 +90,7 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
       isAdmin: new FormControl(false),
       isReviewer: new FormControl(false),
       isViewer: new FormControl(false),
-      isEditor: new FormControl(false),
+      isEditer: new FormControl(false),
       permissionType: new FormControl('USER'),
       initials: new FormControl()
     });
@@ -149,7 +149,7 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
     this.form.controls.isAdmin.setValue(false);
     this.form.controls.isReviewer.setValue(false);
     this.form.controls.isViewer.setValue(false);
-    this.form.controls.isEditor.setValue(false);
+    this.form.controls.isEditer.setValue(false);
 
     if (permissions.value === ROLENAMES.ADMIN) {
       this.form.controls.isAdmin.setValue(true)
@@ -164,7 +164,7 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
     }
 
     if (permissions.value === ROLENAMES.EDITOR) {
-      this.form.controls.isEditor.setValue(true)
+      this.form.controls.isEditer.setValue(true)
     }
   }
 
@@ -177,7 +177,7 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
         isAdmin: this.form.controls.isAdmin.value,
         isReviewer: this.form.controls.isReviewer.value,
         isViewer: this.form.controls.isViewer.value,
-        isEditer: this.form.controls.isEditor.value,
+        isEditer: this.form.controls.isEditer.value,
         groupid: '',
         roleId: '',
         userid: this.form.controls.field.value.userName,
@@ -189,7 +189,7 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
       if (formObject.isAdmin) { formObject.role = 'isAdmin' }
       if (formObject.isReviewer) { formObject.role = 'isReviewer' }
       if (formObject.isViewer) { formObject.role = 'isViewer' }
-      if (formObject.isEditer) { formObject.role = 'isEditor' }
+      if (formObject.isEditer) { formObject.role = 'isEditer' }
       this.dialogRef.close(formObject);
     } else {
       this.snackBar.open('Please enter both the fields', 'okay', { duration: 5000 })
