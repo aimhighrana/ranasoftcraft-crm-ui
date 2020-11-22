@@ -7,11 +7,11 @@ import { SchemaService } from '@services/home/schema.service';
 import { GLOBALCONSTANTS } from '../../../../_constants';
 
 @Component({
-  selector: 'pros-businessrulelibrary-sidesheet',
-  templateUrl: './businessrulelibrary-sidesheet.component.html',
-  styleUrls: ['./businessrulelibrary-sidesheet.component.scss']
+  selector: 'pros-businessrulelibrary-dialog',
+  templateUrl: './businessrulelibrary-dialog.component.html',
+  styleUrls: ['./businessrulelibrary-dialog.component.scss']
 })
-export class BusinessrulelibrarySidesheetComponent implements OnInit {
+export class BusinessrulelibraryDialogComponent implements OnInit {
   businessRulesList: CoreSchemaBrInfo[] = [];
   filteredBusinessRulesList: CoreSchemaBrInfo[] = [];
   selectedBusinessRule: CoreSchemaBrInfo[] = [];

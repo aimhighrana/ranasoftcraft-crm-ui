@@ -20,7 +20,7 @@ import { distinctUntilChanged } from 'rxjs/operators';
 import { NewSchemaCollaboratorsComponent } from '../new-schema-collaborators/new-schema-collaborators.component';
 import { values, pick } from 'lodash';
 import { Utilities } from '@modules/base/common/utilities';
-import { BusinessrulelibrarySidesheetComponent } from '../businessrulelibrary-sidesheet/businessrulelibrary-sidesheet.component';
+import { BusinessrulelibraryDialogComponent } from '../businessrulelibrary-dialog/businessrulelibrary-dialog.component';
 import { PermissionOn, UserMdoModel } from '@models/collaborator';
 import { ScheduleDialogComponent } from '@modules/shared/_components/schedule-dialog/schedule-dialog.component';
 import { SchemaScheduler } from '@models/schema/schemaScheduler';
@@ -552,7 +552,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         })
     }
     if (componentName === 'existingBR') {
-      this.globaldialogService.openDialog(BusinessrulelibrarySidesheetComponent, {
+      this.globaldialogService.openDialog(BusinessrulelibraryDialogComponent, {
         selectedRules: this.selectedBusinessRules,
       });
       this.dialogSubscriber = this.globaldialogService.dialogCloseEmitter

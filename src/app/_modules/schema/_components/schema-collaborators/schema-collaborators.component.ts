@@ -323,8 +323,10 @@ export class SchemaCollaboratorsComponent implements OnInit {
    * For delete assigned collaborator based on assigned permission
    * @param sno sno which we want to delete
    */
-  deleteCollaborator(sno: string) {
-    this.schemaDetailsService.deleteCollaborator(sno).subscribe(res=>{
+  deleteCollaborator(sno: number) {
+    const sNoList = [];
+    sNoList.push(sno);
+    this.schemaDetailsService.deleteCollaborator(sNoList).subscribe(res=>{
       if(res) {
         this.snackBar.open(`Successfully deleted`, 'Close',{duration:4000});
         this.getExistingCollaboratorDetails();

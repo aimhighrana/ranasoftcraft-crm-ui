@@ -109,7 +109,7 @@ describe('SubscriberSideSheetComponent', () => {
 
   it('uncheckSubscriber(), should uncheck subscriber on click tick mark button', async () => {
     const subscriber = {
-      userName: 'AshishKumar',
+      userid: 'AshishKumar',
       fName: 'Ashish',
       lName: 'Kumar',
       fullName: 'Ashish Kumar Goyal'

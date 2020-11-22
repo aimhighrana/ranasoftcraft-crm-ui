@@ -181,7 +181,7 @@ describe('EndpointService', () => {
 
   it('deleteSchemaCollaboratorDetailsUrl(),should delte the exexting collaborator derail', async(() => {
     const serObj = new EndpointService();
-    expect(serObj.deleteSchemaCollaboratorDetailsUrl('355535857155320681 ')).toContain('admin/users/collaborator-records/delete/355535857155320681');
+    expect(serObj.deleteSchemaCollaboratorDetailsUrl()).toContain('admin/users/collaborator-records/delete');
   }));
 
   it('deleteSchema(),should delte the schema', async(() => {

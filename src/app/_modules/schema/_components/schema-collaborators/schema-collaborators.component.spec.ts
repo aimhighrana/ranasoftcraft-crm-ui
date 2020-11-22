@@ -178,9 +178,9 @@ describe('SchemaCollaboratorsComponent', () => {
   }));
 
   it('deleteCollaborator(), should delete Collaborator details', async(() => {
-    spyOn(schemaDetailsSer,'deleteCollaborator').withArgs('3555358571').and.returnValue(of({} as boolean));
-    component.deleteCollaborator('3555358571');
-    expect(schemaDetailsSer.deleteCollaborator).toHaveBeenCalledWith('3555358571');
+    spyOn(schemaDetailsSer,'deleteCollaborator').withArgs([3555358571]).and.returnValue(of({} as boolean));
+    component.deleteCollaborator(3555358571);
+    expect(schemaDetailsSer.deleteCollaborator).toHaveBeenCalledWith([3555358571]);
   }));
 
   it('saveCollaborators(), should save Collaborator details', async(() => {

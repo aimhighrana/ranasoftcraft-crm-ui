@@ -45,6 +45,12 @@ export class FormInputAutoselectComponent implements OnInit, OnChanges {
   @Output()
   openCustomDialog: EventEmitter<any> = new EventEmitter(null);
 
+  /**
+   * Event emitter to emit event while searching..
+   */
+  @Output()
+  emitSearchValue: EventEmitter<any> = new EventEmitter(null);
+
   filteredOptions: Observable<any[]>;
   selectedMdoFldCtrl: FormControl;
   constructor() {
@@ -84,6 +90,9 @@ export class FormInputAutoselectComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
+    this.selectedMdoFldCtrl.valueChanges.subscribe((value) => {
+      this.emitSearchValue.emit(value);
+    })
   }
 
   initFilter() {

@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SchemaService } from '@services/home/schema.service';
 import { SchemaStaticThresholdRes, CoreSchemaBrMap, SchemaListDetails, LoadDropValueReq, VariantDetails } from '@models/schema/schemalist';
-import { SchemaCollaborator, SchemaDashboardPermission } from '@models/collaborator';
+import { PermissionOn, SchemaCollaborator, SchemaDashboardPermission, UserMdoModel } from '@models/collaborator';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { CoreSchemaBrInfo, DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
@@ -37,7 +37,6 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
   schemaId: string;
 
   thresholdValue: number;
-
   errorValue: number;
   successValue: number;
 
@@ -76,6 +75,10 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    */
   canEditSchedule: boolean;
 
+  /**
+   * To store all subscribers..
+   */
+  allSubscribers = [];
 
   /**
    * To hold all the subscriptions related to component
@@ -101,7 +104,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     this.getRouteParams();
     // this.getQueryParams();
 
-    this.initializeSummaryForm();
+    this.initializeSummaryForm(); // To initialize schema summary tab form
 
     const getBrSubscription = this.sharedService.getAfterBrSave().subscribe(res => {
       if (res) {
@@ -124,9 +127,11 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     })
     this.subscriptions.push(getScheduleSubscription);
 
-    this.getAllCategoryInfo();
+    this.getAllCategoryInfo(); // To get info of business rules categories
 
-    this.getScheduleInfo(this.schemaId);
+    this.getScheduleInfo(this.schemaId); // To get info about schedule
+
+    this.getCollaborators('', 0); // To get all the subscribers
   }
 
   /**
@@ -144,7 +149,6 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
 
       this.schemaListService.getSchemaDetailsBySchemaId(this.schemaId).subscribe(res => {
         this.schemaDetails = res;
-        console.log(this.schemaDetails);
       }, error => console.error('Error : {}', error.message));
     })
   }
@@ -264,7 +268,64 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * function to get collaboratos/subscribers from the api
+   * @param queryString: pass query param to fetch values from the api
+   * @param fetchCount: count to fetch subscribers into batches
+   */
+  getCollaborators(queryString: string, fetchCount: number) {
+    this.schemaDetailsService.getAllUserDetails(queryString, fetchCount)
+      .subscribe((response: PermissionOn) => {
+        if (response && response.users) {
+          const subscribers: UserMdoModel[] = response.users;
+          this.allSubscribers = subscribers;
+        }
+      }, (error) => {
+        console.error('Something went wrong while getting subscribers', error.message);
+        });
+  }
 
+  /**
+   * function to add subscriber from autocomplete list menu
+   * @param subscriberInfo: Object having details of subscriber
+   */
+  addSubscriber(subscriberInfo) {
+    const subscriber = {
+      sno: Math.floor(Math.random() * Math.pow(100000, 2)),
+      schemaId: this.schemaId,
+      userid: subscriberInfo.userName,
+      roleId: '',
+      groupid: '',
+      isAdmin: false,
+      isViewer: true,
+      isEditer: false,
+      isReviewer: false,
+      permissionType: 'USER',
+      description: '',
+      userMdoModel: {
+        userId: subscriberInfo.userName,
+        userName: subscriberInfo.userName,
+        fName: subscriberInfo.fName,
+        lName: subscriberInfo.lName,
+        fullName: subscriberInfo.fullName,
+        email: subscriberInfo.email
+      },
+      rolesModel: {
+        roleId:'',
+        roleDesc: ''
+      },
+      plantCode: '',
+      filterCriteria: []
+    }as SchemaDashboardPermission
+
+    this.schemaDetailsService.createUpdateUserDetails(Array(subscriber)).subscribe((response)=>{
+      if(response){
+        this.getSubscriberList(this.schemaId);
+      }
+    }, (error) => {
+      console.error('Something went wrong while adding subscriber', error.message);
+    })
+  }
 
 
   /**
@@ -326,7 +387,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
   /**
    * Function to open sidesheet to add subscriber
    */
-  public addSubscriber() {
+  public openSubscriberSideSheet() {
     this.router.navigate(['', { outlets: { sb: `sb/schema/subscriber/${this.moduleId}/${this.schemaId}/new` } }]);
   }
 
@@ -530,9 +591,12 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * @param sNo serial No of the subscriber.
    */
   public deleteSubscriber(sNo: string) {
+    console.log(sNo);
     this.globalDialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
       if (response && response === 'yes') {
-       const deleteSubscriber = this.schemaDetailsService.deleteCollaborator(sNo).subscribe(res => {
+       const sNoList = [];
+       sNoList.push(sNo);
+       const deleteSubscriber = this.schemaDetailsService.deleteCollaborator(sNoList).subscribe(res => {
           this.matSnackBar.open('Subscriber deleted successfully.', 'okay', { duration: 5000 });
           this.getSubscriberList(this.schemaId);
         }, error => {

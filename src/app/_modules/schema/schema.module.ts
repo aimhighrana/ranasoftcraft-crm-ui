@@ -41,7 +41,7 @@ import { BrruleSideSheetComponent } from './_components/v2/brrule-side-sheet/brr
 import { SchemaInfoComponent } from './_components/v2/schema-info/schema-info.component';
 import { CreateSchemaComponent } from './_components/v2/create-schema/create-schema.component';
 import { SubscriberSideSheetComponent } from './_components/v2/subscriber-side-sheet/subscriber-side-sheet.component';
-import { BusinessrulelibrarySidesheetComponent } from './_components/businessrulelibrary-sidesheet/businessrulelibrary-sidesheet.component';
+import { BusinessrulelibraryDialogComponent } from './_components/businessrulelibrary-dialog/businessrulelibrary-dialog.component';
 import { CatalogCheckComponent } from './_components/catalog-check/catalog-check.component';
 import { DuplicateDatacheckSidesheetComponent } from './_components/duplicate-datacheck-sidesheet/duplicate-datacheck-sidesheet.component';
 import { DatascopeSidesheetComponent } from './_components/datascope-sidesheet/datascope-sidesheet.component';
@@ -103,7 +103,7 @@ import { ExclusionsSidesheetComponent } from './_components/exclusions-sidesheet
     CreateSchemaComponent,
     SubscriberSideSheetComponent,
     CreateSchemaComponent,
-    BusinessrulelibrarySidesheetComponent,
+    BusinessrulelibraryDialogComponent,
     CatalogCheckComponent,
     DuplicateDatacheckSidesheetComponent,
     DatascopeSidesheetComponent,

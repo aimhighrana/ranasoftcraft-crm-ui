@@ -120,9 +120,9 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
       this.createUpdateSubscriber(this.addSubscriberArr);
     }
     if(this.deleteSubscriberArr.length > 0) {
-      this.deleteSubscriberArr.forEach((subscriber) => {
-        this.deleteSubscriber(subscriber.sNo)
-      })
+      // this.deleteSubscriberArr.forEach((subscriber) => {
+        this.deleteSubscriber(this.deleteSubscriberArr)
+      // })
     }
     this.router.navigate([{ outlets: { sb: null } }]);
   }
@@ -198,9 +198,11 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
     subscriber.isAdd = false;
     const removeSubscriber = this.addSubscriberArr.filter(user => user.userid === subscriber.userid)[0];
     const index = this.addSubscriberArr.indexOf(removeSubscriber)
-    this.addSubscriberArr.splice(index, 1);
     if(removeSubscriber===undefined || removeSubscriber===null) {
-      this.deleteSubscriberArr.push(subscriber);
+      this.deleteSubscriberArr.push(subscriber.sNo);
+    }
+    else{
+      this.addSubscriberArr.splice(index, 1);
     }
   }
 
@@ -224,8 +226,8 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
    * Function to delete subscriber
    * @param sNo: serial no of subscriber.
    */
-  deleteSubscriber(sNo: string) {
-    this.schemaDetailsService.deleteCollaborator(sNo).subscribe((response) => {
+  deleteSubscriber(sNoList: number[]) {
+    this.schemaDetailsService.deleteCollaborator(sNoList).subscribe((response) => {
       console.log('Subscriber Removed..');
       this.sharedService.setAfterSubscriberSave(response);
       // this.router.navigate([{ outlets: { sb: null } }]);

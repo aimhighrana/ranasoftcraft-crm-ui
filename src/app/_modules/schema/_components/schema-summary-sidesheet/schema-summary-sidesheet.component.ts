@@ -396,10 +396,12 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    * Function to delete subscriber from schema
    * @param sNo serial No of the subscriber.
    */
-  public deleteSubscriber(sNo: string) {
+  public deleteSubscriber(sNo: number) {
     this.globalDialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
       if (response && response === 'yes') {
-       const deleteSubscriber = this.schemaDetailsService.deleteCollaborator(sNo).subscribe(res => {
+       const sNoList = [];
+       sNoList.push(sNo);
+       const deleteSubscriber = this.schemaDetailsService.deleteCollaborator(sNoList).subscribe(res => {
           this.matSnackBar.open('Subscriber deleted successfully.', 'okay', { duration: 5000 });
           this.getSubscriberList(this.schemaId);
         }, error => {

@@ -158,8 +158,8 @@ export class SchemaDetailsService {
     return this.http.post<SchemaDashboardPermission[]>(this.endpointService.createUpdateUserDetailsUrl(), request);
   }
 
-  public deleteCollaborator(sNo: string): Observable<boolean> {
-    return this.http.delete<boolean>(this.endpointService.deleteSchemaCollaboratorDetailsUrl(sNo));
+  public deleteCollaborator(sNoList: number[]): Observable<boolean> {
+    return this.http.request<boolean>('delete', this.endpointService.deleteSchemaCollaboratorDetailsUrl(), {body: sNoList});
   }
 
   public saveNewSchemaDetails(objectId: string, runNow: boolean, variantId: string, fileSno: string, requestObject: {}) {

@@ -86,11 +86,11 @@ describe('SchemaInfoComponent', () => {
     expect(initials).toEqual('');
   })
 
-  it('addSubscriber(), should open the subscriber side sheet', async () => {
+  it('openSubscriberSideSheet(), should open the subscriber side sheet', async () => {
     component.moduleId = '1005';
     component.schemaId = '5642587452';
     spyOn(router, 'navigate');
-    component.addSubscriber();
+    component.openSubscriberSideSheet();
 
     expect(router.navigate).toHaveBeenCalledWith(['', { outlets: { sb: `sb/schema/subscriber/${component.moduleId}/${component.schemaId}/new` } }])
   })

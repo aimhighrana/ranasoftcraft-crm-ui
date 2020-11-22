@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { BusinessrulelibrarySidesheetComponent } from './businessrulelibrary-sidesheet.component';
+import { BusinessrulelibraryDialogComponent } from './businessrulelibrary-dialog.component';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SchemaService } from '@services/home/schema.service';
 import { CoreSchemaBrInfo } from '@modules/admin/_components/module/business-rules/business-rules.modal';
@@ -8,9 +8,9 @@ import { SearchInputComponent } from '@modules/shared/_components/search-input/s
 import { HttpClientModule } from '@angular/common/http';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
-describe('BusinessrulelibrarySidesheetComponent', () => {
-  let component: BusinessrulelibrarySidesheetComponent;
-  let fixture: ComponentFixture<BusinessrulelibrarySidesheetComponent>;
+describe('BusinessrulelibraryDialogComponent', () => {
+  let component: BusinessrulelibraryDialogComponent;
+  let fixture: ComponentFixture<BusinessrulelibraryDialogComponent>;
   let schemaService: jasmine.SpyObj<SchemaService>;
 
   beforeEach(async(() => {
@@ -18,7 +18,7 @@ describe('BusinessrulelibrarySidesheetComponent', () => {
       selectedRules: [],
     }
     TestBed.configureTestingModule({
-      declarations: [BusinessrulelibrarySidesheetComponent, SearchInputComponent],
+      declarations: [BusinessrulelibraryDialogComponent, SearchInputComponent],
       imports: [
         AppMaterialModuleForSpec,
         HttpClientModule],
@@ -32,7 +32,7 @@ describe('BusinessrulelibrarySidesheetComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(BusinessrulelibrarySidesheetComponent);
+    fixture = TestBed.createComponent(BusinessrulelibraryDialogComponent);
     component = fixture.componentInstance;
     // fixture.detectChanges();
   });
