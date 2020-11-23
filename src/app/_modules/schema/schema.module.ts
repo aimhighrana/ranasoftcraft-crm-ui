@@ -58,6 +58,10 @@ import { RunningProgressComponent } from './_components/running-progress/running
 import { InvitePeopleComponent } from './_components/invite-people/invite-people.component';
 import { MaterialListComponent } from './_components/material-list/material-list.component';
 import { ExclusionsSidesheetComponent } from './_components/exclusions-sidesheet/exclusions-sidesheet.component';
+import { NewAttributeSidesheetComponent } from './_components/new-attribute-sidesheet/new-attribute-sidesheet.component';
+import { NewModifierSidesheetComponent } from './_components/new-modifier-sidesheet/new-modifier-sidesheet.component';
+import { NewNounSidesheetComponent } from './_components/new-noun-sidesheet/new-noun-sidesheet.component';
+import { LibraryMappingSidesheetComponent } from './_components/library-mapping-sidesheet/library-mapping-sidesheet.component';
 
 
 @NgModule({
@@ -119,7 +123,12 @@ import { ExclusionsSidesheetComponent } from './_components/exclusions-sidesheet
     RunningProgressComponent,
     InvitePeopleComponent,
     MaterialListComponent,
-    ExclusionsSidesheetComponent
+    ExclusionsSidesheetComponent,
+    NewAttributeSidesheetComponent,
+    NewModifierSidesheetComponent,
+    NewNounSidesheetComponent,
+    LibraryMappingSidesheetComponent,
+
   ],
   imports: [
     CommonModule,

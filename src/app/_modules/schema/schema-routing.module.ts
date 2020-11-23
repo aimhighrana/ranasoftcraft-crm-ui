@@ -47,7 +47,10 @@ import { InvitePeopleComponent } from './_components/invite-people/invite-people
 import { MaterialListComponent } from './_components/material-list/material-list.component';
 import { ScheduleComponent } from '@modules/shared/_components/schedule/schedule.component';
 import { ExclusionsSidesheetComponent } from './_components/exclusions-sidesheet/exclusions-sidesheet.component';
-
+import { NewAttributeSidesheetComponent } from './_components/new-attribute-sidesheet/new-attribute-sidesheet.component';
+import { NewModifierSidesheetComponent } from './_components/new-modifier-sidesheet/new-modifier-sidesheet.component';
+import { NewNounSidesheetComponent } from './_components/new-noun-sidesheet/new-noun-sidesheet.component';
+import { LibraryMappingSidesheetComponent } from './_components/library-mapping-sidesheet/library-mapping-sidesheet.component';
 
 const routes: Routes = [
   { path: '', component: DiwTilesComponent },
@@ -101,6 +104,12 @@ const routes: Routes = [
   { path: 'system/material-list', component: MaterialListComponent },
   { path: 'schedule/:schemaId', component: ScheduleComponent},
   { path: 'system/exclusions-sidesheet', component: ExclusionsSidesheetComponent },
+  { path: 'system/new-attribute-sidesheet', component: NewAttributeSidesheetComponent },
+  { path: 'system/new-modifier-sidesheet', component: NewModifierSidesheetComponent },
+  { path: 'system/new-noun-sidesheet', component: NewNounSidesheetComponent },
+  { path: 'system/library-mapping-sidesheet', component: LibraryMappingSidesheetComponent },
+
+
 
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent }
