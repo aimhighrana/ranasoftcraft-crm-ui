@@ -62,6 +62,7 @@ import { NewAttributeSidesheetComponent } from './_components/new-attribute-side
 import { NewModifierSidesheetComponent } from './_components/new-modifier-sidesheet/new-modifier-sidesheet.component';
 import { NewNounSidesheetComponent } from './_components/new-noun-sidesheet/new-noun-sidesheet.component';
 import { LibraryMappingSidesheetComponent } from './_components/library-mapping-sidesheet/library-mapping-sidesheet.component';
+import { PotextCatalogcheckComponent } from './_components/potext-catalogcheck/potext-catalogcheck.component';
 
 
 @NgModule({
@@ -128,7 +129,7 @@ import { LibraryMappingSidesheetComponent } from './_components/library-mapping-
     NewModifierSidesheetComponent,
     NewNounSidesheetComponent,
     LibraryMappingSidesheetComponent,
-
+    PotextCatalogcheckComponent
   ],
   imports: [
     CommonModule,

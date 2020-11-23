@@ -962,6 +962,10 @@
         text-decoration: line-through;
       }
 
+      &.numeric-cell-right {
+        text-align: right;
+      }
+
       mat-icon {
         font-size: 16px;
         height: 16px;
@@ -1501,7 +1505,8 @@
   }
 
   pros-configure-sidesheet,
-  pros-attribute-mapping {
+  pros-attribute-mapping,
+  pros-lookup {
     div.root {
       .rule-border-row {
         border-bottom: 1px solid mat-color($foreground-palette, divider);

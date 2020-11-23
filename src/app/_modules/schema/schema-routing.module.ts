@@ -51,6 +51,8 @@ import { NewAttributeSidesheetComponent } from './_components/new-attribute-side
 import { NewModifierSidesheetComponent } from './_components/new-modifier-sidesheet/new-modifier-sidesheet.component';
 import { NewNounSidesheetComponent } from './_components/new-noun-sidesheet/new-noun-sidesheet.component';
 import { LibraryMappingSidesheetComponent } from './_components/library-mapping-sidesheet/library-mapping-sidesheet.component';
+import { PotextCatalogcheckComponent } from './_components/potext-catalogcheck/potext-catalogcheck.component';
+
 
 const routes: Routes = [
   { path: '', component: DiwTilesComponent },
@@ -108,8 +110,7 @@ const routes: Routes = [
   { path: 'system/new-modifier-sidesheet', component: NewModifierSidesheetComponent },
   { path: 'system/new-noun-sidesheet', component: NewNounSidesheetComponent },
   { path: 'system/library-mapping-sidesheet', component: LibraryMappingSidesheetComponent },
-
-
+  { path: 'system/potext-catalogcheck', component: PotextCatalogcheckComponent },
 
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent }

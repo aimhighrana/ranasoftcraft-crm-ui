@@ -1,0 +1,46 @@
+div.root {
+  padding: 0 16px;
+  user-select: none;
+  height: 100%;
+  overflow: hidden;
+
+  .breadcrum-toolbar {
+    align-items: center;
+    min-height: 40px;
+
+    .display-heading-large {
+      font-size: 1.2rem;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      line-height: 40px;
+      display: flex;
+      align-items: center;
+    }
+
+    button.mat-flat-button,
+    button.mat-fab {
+      margin-left: 1px;
+    }
+  }
+
+  .data-container {
+    height: 100%;
+
+    .dataset-grid {
+      height: 100%;
+
+      .dataset-grid-listing {
+        padding: 0 8px;
+        height: 100%;
+        width: calc(100% - 16px);
+
+        table.mat-table {
+          width: 100%;
+          max-height: 655px;
+          overflow: auto;
+        }
+      }
+    }
+  }
+}
