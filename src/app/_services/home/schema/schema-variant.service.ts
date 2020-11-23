@@ -55,4 +55,12 @@ export class SchemaVariantService {
   public getAllDataScopeList(schemaId: string, type: string): Observable<any> {
     return this.http.get<any>(this.endPointService.getAllDataScopeUrl(schemaId, type));
   }
+  /**
+   * Get all data scopes / variants ...
+   * @param schemaId append in params
+   * @param type should be RUNFOR while get all data scope
+   */
+  public getDataScope(schemaId: string, type: string): Observable<SchemaVariantsModel[]> {
+    return this.http.get<SchemaVariantsModel[]>(this.endPointService.getAllDataScopesUri(schemaId, type));
+  }
 }

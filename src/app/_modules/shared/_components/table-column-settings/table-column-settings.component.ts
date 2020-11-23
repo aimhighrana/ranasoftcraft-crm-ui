@@ -93,7 +93,7 @@ export class TableColumnSettingsComponent implements OnInit{
   public persistenceTableView(selFld: SchemaTableViewFldMap[]) {
     const schemaTableViewRequest: SchemaTableViewRequest = new SchemaTableViewRequest();
     schemaTableViewRequest.schemaId = this.data.schemaId;
-    schemaTableViewRequest.variantId = this.data.variantId;
+    schemaTableViewRequest.variantId = this.data.variantId ? this.data.variantId: '0';
     schemaTableViewRequest.schemaTableViewMapping = selFld;
 
     this.schemaDetailsService.updateSchemaTableView(schemaTableViewRequest).subscribe(response => {
@@ -159,7 +159,7 @@ export class TableColumnSettingsComponent implements OnInit{
    * @param fld field for checking is selected or not
    */
   isChecked(fld: MetadataModel): boolean {
-    const selCheck = this.data.selectedFields.findIndex(f => f.fieldId === fld.fieldId);
+    const selCheck = this.data.selectedFields.findIndex(f => f.fieldId ? f.fieldId : f === fld.fieldId);
     return selCheck !==-1 ? true : false;
   }
 

@@ -441,3 +441,21 @@ export interface NewBrDialogResponse {
     tempId: string;
     lookupData: LookupFields[];
 }
+export interface ClassificationNounMod {
+    gsn: {doc_cnt: number, info : Noun[]};
+    BR_MRO_LIBRARY: {doc_cnt: number, info : Noun[]};
+    unmatched: {doc_count: number};
+}
+
+export interface Noun {
+    doc_cnt?: number;
+    nounCode: string;
+    nounId: string;
+    nounSortDesc: string;
+    modifier: Modifier[];
+}
+export interface Modifier {
+    doc_cnt?: number;
+    modCode: string;
+    modText: string;
+}

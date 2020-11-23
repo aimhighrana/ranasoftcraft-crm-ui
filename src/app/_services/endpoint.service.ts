@@ -630,5 +630,28 @@ export class EndpointService {
   public getAllDataScopeUrl(schemaId: string, type: string): string {
     return `${this.apiUrl}/schema/variants/${schemaId}/${type}`;
   }
+  /**
+   * Get all noun and modifiers uri ..
+   * @param schemaId append on request ..
+   * @param runId append on request
+   * @param variantId optional param if not there use 0 as Entire dataset ..
+   */
+  public getClassificationNounMod(schemaId: string, runId: string, variantId?: string) {
+    return `${this.apiUrl}/schema/getnounsAndModfiers/${schemaId}/${runId}`;
+  }
+
+  public getClassificationDataTableUrl(schemaId: string, runId: string, variantId?: string) {
+    return `${this.apiUrl}/schema/getClassificationListData/${schemaId}/${runId}`;
+  }
+
+  public getAllDataScopesUri(schemaId: string, type: string ) {
+    return `${this.apiUrl}/schema/variants/${schemaId}/${type}`;
+  }
+
+  public generateCrossEntryUri(schemaId: string, objectType: string, objectNumber: string): string {
+    return `${this.apiUrl}/schema/generateCrossmodule/${schemaId}/${objectType}/${objectNumber}`;
+  }
+
+
 }
 

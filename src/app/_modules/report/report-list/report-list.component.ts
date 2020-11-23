@@ -50,13 +50,14 @@ export class ReportListComponent implements OnInit {
     },error=>console.error(`Error : ${error}`));
   }
 
-  delete(reportId: string) {
-    this.reportService.deleteReport(reportId).subscribe(res=>{
-      if(res) {
-        this.snackbar.open(`Successfully Deleted`, 'Close',{duration:3000});
-        this.reportsList();
-      }
-    },err=>console.error(`Error: ${err}`))
-  }
+  // no longer use ..
+  // delete(reportId: string) {
+  //   this.reportService.deleteReport(reportId).subscribe(res=>{
+  //     if(res) {
+  //       this.snackbar.open(`Successfully Deleted`, 'Close',{duration:3000});
+  //       this.reportsList();
+  //     }
+  //   },err=>console.error(`Error: ${err}`))
+  // }
 
 }

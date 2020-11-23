@@ -1,0 +1,37 @@
+
+<!-- This component is only for decide view perspective ,, 
+     
+     Don't write any html code here ..
+-->
+
+<ng-container>
+
+    <!-- DATA QUALITI VIEW -->
+    <pros-schema-details *ngIf="displayFormat === 'DATAQUALITY_VIEW'"
+        [schemaId] ="schemaId"
+        [moduleId] = "moduleId"
+        [variantId] = "variantId"
+        [activeTab] = "activeTab"
+    ></pros-schema-details>
+    
+    
+    <!-- DUPLICATE VIEW -->
+
+
+    <!-- POTEXT VIEW -->
+    <pros-potext-view *ngIf="displayFormat === 'POTEXT_VIEW'"
+        [schemaId] ="schemaId"
+        [moduleId] = "moduleId"
+        [variantId] = "variantId"
+        [activeTab] = "activeTab">
+    </pros-potext-view>
+
+    <!-- CLASSIFICATION VIEW -->
+    <pros-classification-builder *ngIf="displayFormat === 'MRO_CLASSIFICATION_VIEW'"
+        [schemaId] ="schemaId"
+        [moduleId] = "moduleId"
+        [variantId] = "variantId"
+        [activeTab] = "activeTab">
+    </pros-classification-builder>
+
+</ng-container>

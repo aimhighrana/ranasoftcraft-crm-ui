@@ -38,10 +38,10 @@ describe('ReportListComponent', () => {
     expect(reportService.reportList).toHaveBeenCalled();
   }));
 
-  it('delete(), should delete the report', async(() => {
-    const reportId = '8756787'
-    spyOn(reportService,'deleteReport').withArgs(reportId).and.returnValue(of(true));
-    component.delete(reportId);
-    expect(reportService.deleteReport).toHaveBeenCalledWith(reportId);
-  }));
+  // it('delete(), should delete the report', async(() => {
+  //   const reportId = '8756787'
+  //   spyOn(reportService,'deleteReport').withArgs(reportId).and.returnValue(of(true));
+  //   component.delete(reportId);
+  //   expect(reportService.deleteReport).toHaveBeenCalledWith(reportId);
+  // }));
 });

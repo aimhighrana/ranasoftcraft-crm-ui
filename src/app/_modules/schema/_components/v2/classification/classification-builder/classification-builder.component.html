@@ -1,0 +1,324 @@
+<div class="mat-elevation-z0 root">
+    <div class="row-spacer"></div>
+    <div class="f-row breadcrum-toolbar">
+        <div class="display-heading-large">
+            {{ schemaInfo ? schemaInfo.moduleDescription : 'Unknown' }} / 
+            {{ schemaInfo ? schemaInfo.schemaDescription : 'Unknown' }} /
+
+            {{ (!variantId) ? 'Entire dataset' : 'Unknown'  }}
+
+            
+            <span class="f-col-spacer-half"></span>
+            <button mat-button [matMenuTriggerFor]="check">
+                <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon>
+            </button>
+            <mat-menu #check="matMenu" class="navigation-menu">
+                <button mat-menu-item>[New data scope]</button>
+                <button mat-menu-item *ngFor="let scope of dataScope">
+                    {{ 
+                        scope.variantName ? scope.variantName : 'Unknown'
+                    }}
+                </button>
+            </mat-menu>
+        </div>
+        <div class="f-spacer"></div>
+        <button mat-flat-button color="accent">
+            <mat-icon fontSet="mdo-icons">wand</mat-icon> Check data
+        </button>
+        <button mat-fab color="accent" class="mat-elevation-z0">
+            <mat-icon fontSet="mdo-icons">chart-line</mat-icon>
+        </button>
+        <button mat-fab color="accent" class="mat-elevation-z0" [matMenuTriggerFor]="moreactionfile">
+            <mat-icon fontSet="mdo-icons">more</mat-icon>
+        </button>
+        <mat-menu #moreactionfile="matMenu" class="navigation-menu">
+            <button mat-menu-item>Export to CSV</button>
+            <button mat-menu-item>Import from CSV</button>
+        </mat-menu>
+    </div>
+
+    <div class="row-spacer"></div>
+    <mat-divider></mat-divider>
+    <div class="row-spacer"></div>
+
+    <div class="f-row">
+        <mat-chip-list>
+            <mat-chip disableRipple="true">
+                {{ statics ? statics.errorCnt : 0 }} error</mat-chip>
+            <mat-chip disableRipple="true">0 warning</mat-chip>
+            <mat-chip disableRipple="true">
+                {{ statics ? statics.correctedCnt : 0 }} corrections</mat-chip>
+        </mat-chip-list>
+    </div>
+    <div class="row-spacer"></div>
+
+    <div class="f-col data-container">
+        <mat-tab-group disableRipple="true">
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    Mro classification
+                </ng-template>
+
+                <div class="f-row dataset-grid">
+                    <div class="f-col dataset-grid-navigation">
+                        <pros-search-input></pros-search-input>
+                        <div class="row-spacer"></div>
+                        <div class="nav-tree">
+                            <mat-accordion>
+                                <mat-expansion-panel togglePosition="before" class="mat-elevation-z0" expanded="expanded">
+                                    <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
+                                        <mat-panel-title>
+                                            <div class="expand-title">
+                                                Master library
+                                            </div>
+                                            <span class="f-spacer"></span>
+                                            <div class="badge success">
+                                                {{ rulesNounMods && rulesNounMods.BR_MRO_LIBRARY ? rulesNounMods.BR_MRO_LIBRARY.doc_cnt : 0 }}
+                                            </div>
+                                        </mat-panel-title>
+                                    </mat-expansion-panel-header>
+
+                                    <ng-template ngFor let-noun [ngForOf]="rulesNounMods.BR_MRO_LIBRARY.info">
+                                        <mat-accordion>
+                                            <mat-expansion-panel togglePosition="before" class="mat-elevation-z0" expanded="expanded">
+                                                <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px"
+                                                    class="undertree-expansion-panel">
+                                                    <mat-panel-title>
+                                                        <div class="expand-title">
+                                                            {{
+                                                                noun.nounDesc ? noun.nounDesc : 'Unknown'
+                                                            }}
+                                                        </div>
+                                                        <span class="f-spacer"></span>
+                                                        <div class="badge success">
+                                                            {{ noun.doc_count ? noun.doc_count : 0 }}
+                                                        </div>
+                                                    </mat-panel-title>
+                                                </mat-expansion-panel-header>
+    
+                                                <mat-nav-list role="navigation" class="tree-nav-list">
+                                                    <mat-list-item class="f-row understep-two" *ngFor="let modifier of noun.modifier" (click)="applyFilter(noun.nounCode, modifier.modCode, 'BR_MRO_LIBRARY')">
+                                                        <mat-icon fontSet="mdo-icons" mat-list-icon></mat-icon>
+                                                        <div mat-line>
+                                                            {{ modifier.modDesc ? modifier.modDesc : 'Unknown' }}
+                                                        </div>
+                                                        <span class="f-spacer"></span>
+                                                        <div class="badge warning">
+                                                           0
+                                                        </div>
+                                                        <div class="badge success">
+                                                            {{ modifier.doc_count ? modifier.doc_count : 0  }}
+                                                        </div>
+                                                    </mat-list-item>
+                                                </mat-nav-list>
+                                            </mat-expansion-panel>
+                                        </mat-accordion>
+                                    </ng-template>
+                                    
+                                </mat-expansion-panel>
+                            </mat-accordion>
+
+                            <mat-accordion>
+                                <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
+                                    <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
+                                        <mat-panel-title>
+                                            <div class="expand-title">
+                                                GSN
+                                            </div>
+                                            <span class="f-spacer"></span>
+                                            <div class="badge success">
+                                                {{ rulesNounMods && rulesNounMods.gsn ? rulesNounMods.gsn.doc_cnt : 0 }}
+                                            </div>
+                                        </mat-panel-title>
+                                    </mat-expansion-panel-header>
+
+                                    <ng-template ngFor let-noun [ngForOf]="rulesNounMods.gsn.info">
+                                        <mat-accordion>
+                                            <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
+                                                <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px"
+                                                    class="undertree-expansion-panel">
+                                                    <mat-panel-title>
+                                                        <div class="expand-title">
+                                                            {{
+                                                                noun.nounDesc ? noun.nounDesc : 'Unknown'
+                                                            }}
+                                                        </div>
+                                                        <span class="f-spacer"></span>
+                                                        <div class="badge success">
+                                                            {{ noun.doc_count ? noun.doc_count : 0 }}
+                                                        </div>
+                                                    </mat-panel-title>
+                                                </mat-expansion-panel-header>
+    
+                                                <mat-nav-list role="navigation" class="tree-nav-list">
+                                                    <mat-list-item class="f-row understep-two" *ngFor="let modifier of noun.modifier" (click)="applyFilter(noun.nounCode, modifier.modCode, 'gsn')">
+                                                        <mat-icon fontSet="mdo-icons" mat-list-icon></mat-icon>
+                                                        <div mat-line>
+                                                            {{ modifier.modDesc ? modifier.modDesc : 'Unknown' }}
+                                                        </div>
+                                                        <span class="f-spacer"></span>
+                                                        <div class="badge warning">
+                                                            0
+                                                        </div>
+                                                        <div class="badge success">
+                                                            {{ modifier.doc_count ? modifier.doc_count : 0  }}
+                                                        </div>
+                                                    </mat-list-item>
+                                                </mat-nav-list>
+                                            </mat-expansion-panel>
+                                        </mat-accordion>
+
+                                    </ng-template>
+
+                                </mat-expansion-panel>
+                            </mat-accordion>
+
+                            <mat-accordion>
+                                <mat-expansion-panel hideToggle class="mat-elevation-z0">
+                                    <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
+                                        <mat-panel-title>
+                                            <div class="expand-title">
+                                                Unmatched
+                                            </div>
+                                            <span class="f-spacer"></span>
+                                            <div class="badge error">
+                                                {{
+                                                    rulesNounMods.unmatched ? rulesNounMods.unmatched.doc_count : 0
+                                                }}
+                                            </div>
+                                        </mat-panel-title>
+                                    </mat-expansion-panel-header>
+                                </mat-expansion-panel>
+                            </mat-accordion>
+
+                        </div>
+                    </div>
+                    <mat-divider [vertical]="true"></mat-divider>
+                    <div class="f-col dataset-grid-listing">
+                        <!-- Filters  -->
+                        <div class="f-row">
+                            <pros-search-input></pros-search-input>
+                            <div class="f-col-spacer-half"></div>
+                            <!-- <mat-chip-list>
+                                <mat-chip class="mdo-filter-matchip" disableRipple="true">
+                                    <label>Status:</label> <span class="info">All</span>
+                                    <mat-icon matChipRemove>clear</mat-icon>
+                                </mat-chip>
+                                <mat-chip class="mdo-filter-matchip" disableRipple="true">
+                                    <label>Attributes:</label> <span class="info">12mm</span>
+                                    <mat-icon matChipRemove>clear</mat-icon>
+                                </mat-chip>
+
+                                <mat-chip class="mdo-filter-matchip" disableRipple="true">
+                                    <label>Diameter:</label> <span class="info">12mm</span>
+                                    <mat-icon matChipRemove>clear</mat-icon>
+                                </mat-chip>
+                                <mat-chip class="mdo-filter-matchip" disableRipple="true">
+                                    <label>Color:</label> <span class="info">All</span>
+                                    <mat-icon matChipRemove>clear</mat-icon>
+                                </mat-chip>
+                            </mat-chip-list> -->
+                        </div>
+
+                        <div class="row-spacer"></div>
+
+                        <!-- Data Table -->
+                        <mat-table [dataSource]="dataSource" class="mat-elevation-z0">
+
+                            <!-- Checkbox Column -->
+                            <ng-container matColumnDef="checkbox_select">
+                                <mat-header-cell *matHeaderCellDef class="fixed-width-c1">
+                                    <mat-checkbox (change)="$event ? masterToggle() : null"
+                                        [checked]="selection.hasValue() && isAllSelected()"
+                                        [indeterminate]="selection.hasValue() && !isAllSelected()"
+                                        [aria-label]="checkboxLabel()" color="primary">
+                                    </mat-checkbox>
+                                </mat-header-cell>
+                                <mat-cell class="fixed-width-c1" *matCellDef="let row">
+                                    <mat-checkbox (click)="$event.stopPropagation()"
+                                        (change)="$event ? selection.toggle(row) : null"
+                                        [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)"
+                                        color="primary">
+                                    </mat-checkbox>
+                                </mat-cell>
+                            </ng-container>
+
+                            <!-- Name Column -->
+                            <ng-container matColumnDef="assigned_bucket">
+                                <mat-header-cell *matHeaderCellDef class="fixed-width-c1"></mat-header-cell>
+                                <mat-cell class="fixed-width-c1" *matCellDef="let element">
+                                    <mat-card-header>
+                                        <div mat-card-avatar>AK</div>
+                                    </mat-card-header>
+                                </mat-cell>
+                            </ng-container>
+
+                            <!-- Action Column -->
+                            <ng-container matColumnDef="action">
+                                <mat-header-cell *matHeaderCellDef class="fixed-width-c2">
+                                    <button mat-button>
+                                        <!-- (click)="openTableColumnSettings()" -->
+                                        <mat-icon fontSet="mdo-icons">cog</mat-icon>
+                                    </button>
+                                </mat-header-cell>
+                                <mat-cell *matCellDef="let element" class="fixed-width-c2">
+                                    <div class="f-row action-iconbtns">
+                                        <button mat-fab color="accent" [matMenuTriggerFor]="moreactions">
+                                            <mat-icon fontSet="mdo-icons">more</mat-icon>
+                                        </button>
+                                        <mat-menu #moreactions="matMenu" class="navigation-menu">
+                                            <!-- <button mat-menu-item>Create HERS</button>
+                                            <button mat-menu-item>Create info record</button>
+                                            <mat-divider></mat-divider> -->
+                                            <button mat-menu-item>Assign to...</button>
+                                            <button mat-menu-item>Mark for deletion</button>
+                                        </mat-menu>
+
+                                        <button mat-fab color="accent">
+                                            <mat-icon fontSet="mdo-icons">recycle-bin</mat-icon>
+                                        </button>
+                                        <button mat-fab color="accent">
+                                            <mat-icon fontSet="mdo-icons">form-map</mat-icon>
+                                        </button>
+                                    </div>
+                                </mat-cell>
+                            </ng-container>
+
+                            
+                            <!-- Material number Column -->
+                            <ng-container matColumnDef="OBJECTNUMBER">
+                                <mat-header-cell *matHeaderCellDef> Material number </mat-header-cell>
+                                <mat-cell *matCellDef="let element"> 
+                                    {{ element['OBJECTNUMBER'] ? element['OBJECTNUMBER'].fieldValue : '' }}
+                                </mat-cell>
+                            </ng-container>
+
+                             <!-- load dynamic columns-->
+                            <ng-template ngFor let-dynCols [ngForOf]="(displayedColumns | async)">
+                                <ng-template
+                                    [ngIf]="(dynCols === 'checkbox_select') || (dynCols === 'assigned_bucket') 
+                                    || (dynCols === 'action') || (dynCols === 'OBJECTNUMBER')" [ngIfElse]="other">
+                                    <!-- skip all static columns -->
+                                </ng-template>
+                                <ng-template #other>
+                                    <ng-container [matColumnDef]="dynCols">
+                                        <mat-header-cell *matHeaderCellDef>
+                                            {{ columnName(dynCols) }}
+                                        </mat-header-cell>
+                                        <mat-cell *matCellDef="let element; let rIndex = index;">
+                                            {{ element[dynCols] ? element[dynCols].fieldValue : '' }}
+                                        </mat-cell>
+                                    </ng-container>
+                                </ng-template>
+                            </ng-template>
+
+                            <mat-header-row *matHeaderRowDef="displayedColumns | async; sticky: true"></mat-header-row>
+                            <mat-row *matRowDef="let row; columns: displayedColumns | async;">
+                            </mat-row>
+                        </mat-table>
+                    </div>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+</div>

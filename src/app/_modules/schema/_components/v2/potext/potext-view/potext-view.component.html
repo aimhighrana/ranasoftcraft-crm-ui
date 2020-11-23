@@ -1,0 +1,221 @@
+<div class="mat-elevation-z0 root">
+    <div class="row-spacer"></div>
+    <div class="f-row breadcrum-toolbar">
+        <div class="display-heading-large">
+            
+            {{ schemaInfo ? schemaInfo.moduleDescription : 'Unknown' }} / 
+            {{ schemaInfo ? schemaInfo.schemaDescription : 'Unknown' }} /
+
+            {{ (!variantId) ? 'Entire dataset' : 'Unknown'  }}
+
+
+            <span class="f-col-spacer-half"></span>
+            <button mat-button [matMenuTriggerFor]="check">
+                <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon>
+            </button>
+            <mat-menu #check="matMenu" class="navigation-menu">
+                <button mat-menu-item>[New data scope]</button>
+                <button mat-menu-item *ngFor="let scope of dataScope">
+                    {{ 
+                        scope.variantName ? scope.variantName : 'Unknown'
+                    }}
+                </button>
+            </mat-menu>
+        </div>
+        <div class="f-spacer"></div>
+        <button mat-flat-button color="accent">
+            <mat-icon fontSet="mdo-icons">wand</mat-icon> Check data
+        </button>
+        <button mat-fab color="accent" class="mat-elevation-z0">
+            <mat-icon fontSet="mdo-icons"> chart-line</mat-icon>
+        </button>
+        <button mat-fab color="accent" class="mat-elevation-z0" [matMenuTriggerFor]="moreactionfile">
+            <mat-icon fontSet="mdo-icons">more</mat-icon>
+        </button>
+        <mat-menu #moreactionfile="matMenu" class="navigation-menu">
+            <button mat-menu-item>Export to CSV</button>
+            <button mat-menu-item>Import from CSV</button>
+        </mat-menu>
+    </div>
+
+    <div class="row-spacer"></div>
+    <mat-divider></mat-divider>
+    <div class="row-spacer"></div>
+    <div class="f-row">
+        <mat-chip-list>
+            <mat-chip disableRipple="true">
+                {{ statics ? statics.errorCnt : 0 }} error</mat-chip>
+            <mat-chip disableRipple="true">0 warning</mat-chip>
+            <mat-chip disableRipple="true">
+                {{ statics ? statics.correctedCnt : 0 }} corrections</mat-chip>
+        </mat-chip-list>
+    </div>
+    <div class="row-spacer"></div>
+    <mat-divider></mat-divider>
+    <div class="row-spacer"></div>
+    <div class="f-col data-container">
+        <div class="f-row dataset-grid">
+            <div class="f-col dataset-grid-listing">
+                <!-- Filters  -->
+                <div class="f-row">
+                    <pros-search-input></pros-search-input>
+                    <div class="f-col-spacer-half"></div>
+                    <!-- <mat-chip-list>
+                        <mat-chip class="mdo-filter-matchip" disableRipple="true">
+                            <label>Status:</label> <span class="info">All</span>
+                            <mat-icon matChipRemove>clear</mat-icon>
+                        </mat-chip>
+                        <mat-chip class="mdo-filter-matchip" disableRipple="true">
+                            <label>Attributes:</label> <span class="info">12mm</span>
+                            <mat-icon matChipRemove>clear</mat-icon>
+                        </mat-chip>
+
+                        <mat-chip class="mdo-filter-matchip" disableRipple="true">
+                            <label>Diameter:</label> <span class="info">12mm</span>
+                            <mat-icon matChipRemove>clear</mat-icon>
+                        </mat-chip>
+                        <mat-chip class="mdo-filter-matchip" disableRipple="true">
+                            <label>Color:</label> <span class="info">All</span>
+                            <mat-icon matChipRemove>clear</mat-icon>
+                        </mat-chip>
+
+                        <mat-chip class="mdo-filter-matchip" disableRipple="true">
+                                <mat-icon fontSet="mdo-icons">folder-filter</mat-icon>
+                        </mat-chip>
+
+                        <mat-chip class="mdo-filter-matchip" disableRipple="true">
+                            <mat-icon fontSet="mdo-icons">more</mat-icon>
+                    </mat-chip>
+                    </mat-chip-list> -->
+                </div>
+
+                <div class="row-spacer"></div>
+
+                <!-- Data Table -->
+                <mat-table matSort [dataSource]="dataSource" class="mat-elevation-z0" style="overflow: auto;">
+
+                    <!-- Checkbox Column -->
+                    <ng-container matColumnDef="checkbox_select">
+                        <mat-header-cell *matHeaderCellDef class="fixed-width-c1">
+                            <mat-checkbox color="primary">
+                            </mat-checkbox>
+                        </mat-header-cell>
+                        <mat-cell  class="fixed-width-c1" *matCellDef="let row">
+                            <mat-checkbox color="primary">
+                            </mat-checkbox>
+                        </mat-cell>
+                    </ng-container>
+
+                    <!-- Name Column -->
+                    <ng-container matColumnDef="bucket_assigned">
+                        <mat-header-cell *matHeaderCellDef class="fixed-width-c1"></mat-header-cell>
+                        <mat-cell class="fixed-width-c1" *matCellDef="let element">
+                            <mat-card-header>
+                                <div mat-card-avatar>AK</div>
+                            </mat-card-header>
+                        </mat-cell>
+                    </ng-container>
+
+                    <!-- Action Column -->
+                    <ng-container matColumnDef="action">
+                        <mat-header-cell *matHeaderCellDef class="fixed-width-c2">
+                            <button mat-button (click)="openTableColumnSettings()">
+                                <mat-icon>settings</mat-icon>
+                            </button>
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element" class="fixed-width-c2">
+                            <div class="f-row action-iconbtns">
+                                <button mat-fab color="accent" [matMenuTriggerFor]="moreactions">
+                                    <mat-icon fontSet="mdo-icons">more</mat-icon>
+                                </button>
+                                <mat-menu #moreactions="matMenu" class="navigation-menu">
+                                    <button mat-menu-item>Assign to...</button>
+                                    <button mat-menu-item>Ignore</button>
+                                </mat-menu>
+
+                                <button mat-fab color="accent" *ngIf="element['CATALOG_ID'] === undefined ||  !element['CATALOG_ID'].fieldData"
+                                (click)="generateCrossEntry(element)">
+                                    <mat-icon fontSet="mdo-icons">plus</mat-icon>
+                                </button>
+                            </div>
+                        </mat-cell>
+                    </ng-container>
+
+                    <!-- Name Column -->
+                    <ng-container matColumnDef="catalog_id">
+                        <mat-header-cell *matHeaderCellDef> Catalog ID </mat-header-cell>
+                        <mat-cell mat-cell *matCellDef="let element">
+                            {{ element['CATALOG_ID'] ? ( element['CATALOG_ID'].fieldData ? element['CATALOG_ID'].fieldData : '?') : '?' }}
+
+                        </mat-cell>
+                    </ng-container>
+
+                    <!-- load dynamic columns-->
+                <ng-template ngFor let-dynCols [ngForOf]="(displayedFields | async)">
+                    <ng-template
+                        [ngIf]="(dynCols === 'catalog_id') || (dynCols === 'action') || (dynCols === 'checkbox_select') || (dynCols === 'bucket_assigned')" [ngIfElse]="other">
+                        <!-- skip all static columns -->
+                    </ng-template>
+                    <ng-template #other>
+                        <ng-container [matColumnDef]="dynCols">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header>
+                                {{ metadataFldLst[dynCols] ? metadataFldLst[dynCols].fieldDescri : 'Unknown' }}
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let element; let rIndex = index;"
+                                [class.error-cell]="element[dynCols] ? element[dynCols].isInError : false"
+                                (click)="editCurrentCell(dynCols,element, rIndex, containerRef)">
+                                <div class="mdo-form-input f-col" style="display: none;"
+                                    id="inpctrl_{{ dynCols + '_' + rIndex }}">
+                                
+                                <!-- container to hold input field when cell gets edited  -->
+                                <ng-template prosContainerRef #containerRef="prosContainerRef">
+                                </ng-template>                                   
+
+                                </div>
+
+                                {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].fieldData) : '' }}
+
+                                <!-- <ng-template [ngIf]="element[dynCols] && element[dynCols].isCorrected"
+                                    [ngIfElse]="normalCell">
+                                    <ng-template [ngIf]="element[dynCols].oldData !== element[dynCols].fieldData"
+                                        [ngIfElse]="other">
+                                        <span class="error-message" style="color: red;">
+                                            {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].oldData) : '' }}
+                                        </span>
+                                        <br>
+                                        <span id="viewctrl_{{ dynCols + '_' + rIndex }}">
+                                            {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].fieldData) : '' }}
+                                        </span>
+
+                                    </ng-template>
+                                    <ng-template #other>
+                                        <span id="viewctrl_{{ dynCols + '_' + rIndex }}">
+                                            {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].fieldData) : '' }}
+                                        </span>
+                                    </ng-template>
+                                </ng-template>
+                                <ng-template #normalCell>
+                                    <span id="viewctrl_{{ dynCols + '_' + rIndex }}">
+                                        {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].fieldData) : '' }}
+                                    </span>
+                                    <br>
+                                    <span class="error-message" style="color: red;">
+                                        {{ element[dynCols] ? element[dynCols].errorMsg : '' }}
+                                    </span>
+                                </ng-template> -->
+
+                            </mat-cell>
+                        </ng-container>
+                    </ng-template>
+                </ng-template>
+
+                    <mat-header-row   *matHeaderRowDef="displayedFields | async; sticky: true"></mat-header-row >
+                    <mat-row  *matRowDef="let row; columns: displayedFields | async;"
+                        (click)="selection.toggle(row)">
+                    </mat-row >
+                </mat-table>
+            </div>
+            
+        </div>
+    </div>
+</div>

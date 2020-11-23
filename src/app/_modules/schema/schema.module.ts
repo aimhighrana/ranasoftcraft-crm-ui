@@ -8,7 +8,6 @@ import { SchemaTileComponent } from 'src/app/_modules/schema/_components/schema-
 // import { SchemaDetailsComponent } from './_components/schema-details/schema-details.component';
 import { OverviewChartComponent } from './_components/schema-details/overview-chart/overview-chart.component';
 import { CategoriesChartComponent } from './_components/schema-details/categories-chart/categories-chart.component';
-import { BusinessRulesChartComponent } from './_components/schema-details/business-rules-chart/business-rules-chart.component';
 import { SchemaDatatableComponent } from './_components/schema-details/schema-datatable/schema-datatable.component';
 import { SchemaVariantsComponent } from './_components/schema-variants/schema-variants.component';
 import { SchemaStatusinfoDialogComponent } from './_components/schema-details/schema-statusinfo-dialog/schema-statusinfo-dialog.component';
@@ -60,9 +59,11 @@ import { NewAttributeSidesheetComponent } from './_components/new-attribute-side
 import { NewModifierSidesheetComponent } from './_components/new-modifier-sidesheet/new-modifier-sidesheet.component';
 import { NewNounSidesheetComponent } from './_components/new-noun-sidesheet/new-noun-sidesheet.component';
 import { LibraryMappingSidesheetComponent } from './_components/library-mapping-sidesheet/library-mapping-sidesheet.component';
-import { PotextCatalogcheckComponent } from './_components/potext-catalogcheck/potext-catalogcheck.component';
 import { ExclusionsSidesheetComponent } from './_components/v2/brrule-side-sheet/duplicate-rule-config/exclusions-sidesheet/exclusions-sidesheet.component';
 import { SetupDuplicateRuleComponent } from './_components/v2/brrule-side-sheet/duplicate-rule-config/setup-duplicate-rule/setup-duplicate-rule.component';
+import { ClassificationBuilderComponent } from './_components/v2/classification/classification-builder/classification-builder.component';
+import { DetailBuilderComponent } from './_components/v2/_builder/detail-builder/detail-builder.component';
+import { PotextViewComponent } from './_components/v2/potext/potext-view/potext-view.component';
 
 
 
@@ -74,7 +75,6 @@ import { SetupDuplicateRuleComponent } from './_components/v2/brrule-side-sheet/
     SchemaDetailsComponent,
     OverviewChartComponent,
     CategoriesChartComponent,
-    BusinessRulesChartComponent,
     SchemaDatatableComponent,
     SchemaVariantsComponent,
     SchemaStatusinfoDialogComponent,
@@ -129,8 +129,10 @@ import { SetupDuplicateRuleComponent } from './_components/v2/brrule-side-sheet/
     NewModifierSidesheetComponent,
     NewNounSidesheetComponent,
     LibraryMappingSidesheetComponent,
-    PotextCatalogcheckComponent,
-    SetupDuplicateRuleComponent
+    SetupDuplicateRuleComponent,
+    ClassificationBuilderComponent,
+    DetailBuilderComponent,
+    PotextViewComponent
   ],
   imports: [
     CommonModule,

@@ -1,0 +1,701 @@
+import { Component, OnInit, ViewChild, ComponentFactoryResolver, Input, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
+import { MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaCorrectionReq, FilterCriteria, FieldInputType, SchemaTableViewFldMap } from '@models/schema/schemadetailstable';
+import { ActivatedRoute, Router } from '@angular/router';
+import { throwError, BehaviorSubject, combineLatest, Subscription } from 'rxjs';
+import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
+import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
+import { EndpointService } from '@services/endpoint.service';
+import { SchemaService } from '@services/home/schema.service';
+import { SchemaStaticThresholdRes, LoadDropValueReq, SchemaListDetails, SchemaVariantsModel } from '@models/schema/schemalist';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSort } from '@angular/material/sort';
+import { SelectionModel } from '@angular/cdk/collections';
+import { MatMenuTrigger } from '@angular/material/menu';
+import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { MatDialog } from '@angular/material/dialog';
+import { SchemalistService } from '@services/home/schema/schemalist.service';
+import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
+import { SchemaDataSource } from '@modules/schema/_components/schema-details/schema-datatable/schema-data-source';
+
+@Component({
+  selector: 'pros-potext-view',
+  templateUrl: './potext-view.component.html',
+  styleUrls: ['./potext-view.component.scss']
+})
+export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
+
+
+  /**
+   * Module / dataset id
+   */
+  @Input()
+  moduleId: string;
+
+  /**
+   * Schema id
+   */
+  @Input()
+  schemaId: string;
+
+  /**
+   * Variant id if have otherwise by default is 0 for all
+   */
+  @Input()
+  variantId = '0';
+
+  /**
+   * Variant name if have otherwise by default is entire dataset
+   */
+  variantName = 'Entire dataset';
+
+  /**
+   * Hold all metada control for header , hierarchy and grid fields ..
+   */
+  metadata: BehaviorSubject<MetadataModeleResponse> = new BehaviorSubject<MetadataModeleResponse>(null);
+
+  /**
+   * Store info about user selected field and order
+   */
+  selectedFieldsOb: BehaviorSubject<SchemaTableViewFldMap[]> = new BehaviorSubject(null);
+  /**
+   * Hold meta data map , fieldId as key and metadamodel as value
+   */
+  metadataFldLst: any = {};
+
+  /**
+   * Current selected field based on schemaId , variantId and userId
+   */
+  selectedFields: SchemaTableViewFldMap[] = [];
+
+  /**
+   * Static column for actions
+   */
+  startColumns = ['checkbox_select', 'bucket_assigned', 'action', 'catalog_id'];
+
+  /**
+   * All display column fieldid should be here
+   */
+  displayedFields: BehaviorSubject<string[]> = new BehaviorSubject(this.startColumns);
+
+  /**
+   * Datasource for data table data
+   */
+  dataSource: SchemaDataSource;
+
+  /**
+   * Store info about active tab..
+   */
+  @Input()
+  activeTab = 'error';
+
+  /**
+   * Executed statics of schema
+   */
+  statics: SchemaStaticThresholdRes;
+
+  /**
+   * Use only for fiter criteria while filtering data ...
+   * why subject .. when value change then should send request for table data...
+   */
+  filterCriteria: BehaviorSubject<FilterCriteria[]> = new BehaviorSubject<FilterCriteria[]>(null);
+
+  /**
+   * Contains sort order here ..
+   */
+  sortOrder: any = {};
+
+  /**
+   * Show table loading ...
+   */
+  showTableLoading = false;
+
+  /**
+   * Conatins all selected rows ..
+   */
+  selection = new SelectionModel<any>(true, []);
+
+  /**
+   * Make table header row visiable
+   */
+  tableHeaderActBtn: string [] = [];
+
+  /**
+   *
+   */
+  fetchCount = 0;
+
+
+  /**
+   * Hold info about for try to load value for
+   * selected field id with preselcted ..
+   */
+  loadDopValuesFor: LoadDropValueReq;
+
+  /**
+   * Flag for re inilize filterable field ..
+   */
+  reInilize = true;
+
+  /**
+   * Input value for search by object number ..
+   */
+  preInpVal = '';
+
+  /**
+   * Store all data scopes ...  as a variants
+   */
+  dataScope: SchemaVariantsModel[] = [];
+
+
+  /**
+   * Current schema info ..
+   */
+  schemaInfo: SchemaListDetails;
+
+  @ViewChild(MatSort) sort: MatSort;
+
+  @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
+
+ FIELD_TYPE = FieldInputType;
+
+  selectFieldOptions : DropDownValue[] = [];
+
+
+  subscribers: Subscription[] = [];
+
+  constructor(
+    private activatedRouter: ActivatedRoute,
+    private schemaDetailService: SchemaDetailsService,
+    private router: Router,
+    private sharedServices: SharedServiceService,
+    private schemaService: SchemaService,
+    private endpointservice: EndpointService,
+    private snackBar: MatSnackBar,
+    private matDialog: MatDialog,
+    private schemaListService: SchemalistService,
+    private schemaVariantService: SchemaVariantService,
+    private componentFactoryResolver: ComponentFactoryResolver,
+    private schemavariantService: SchemaVariantService
+
+  ) { }
+
+  ngOnDestroy(): void {
+    this.subscribers.forEach(s=>{
+      s.unsubscribe();
+    });
+  }
+
+
+  ngOnChanges(changes: SimpleChanges): void {
+    // check if any things is change then refresh again
+    let isRefresh = false;
+
+    if(changes && changes.moduleId && changes.moduleId.currentValue !== changes.moduleId.previousValue) {
+      this.moduleId = changes.moduleId.currentValue;
+      isRefresh = true;
+    }
+
+    if(changes && changes.schemaId && changes.schemaId.currentValue !== changes.schemaId.previousValue) {
+      this.schemaId = changes.schemaId.currentValue;
+      isRefresh = true;
+    }
+
+    if(changes && changes.variantId && changes.variantId.currentValue !== changes.variantId.previousValue) {
+      this.variantId = changes.variantId.currentValue ? changes.variantId.currentValue : 0;
+      isRefresh = true;
+    }
+
+    if(isRefresh) {
+      this.getFldMetadata();
+      this.dataSource = new SchemaDataSource(this.schemaDetailService, this.endpointservice, this.schemaId);
+      this.getSchemaStatics();
+      this.getSchemaDetails();
+      if(this.variantId !== '0') {
+        this.getVariantDetails();
+      }
+      /**
+       * Get all user selected fields based on default view ..
+       */
+      this.schemaDetailService.getAllSelectedFields(this.schemaId, this.variantId ? this.variantId : '0').subscribe(res=>{
+            this.selectedFieldsOb.next(res ? res : [])
+        }, error=> console.error(`Error : ${error}`));
+      }
+
+      // reset filter and sort order
+      this.filterCriteria.next(null);
+      this.preInpVal = '';
+
+      if(changes && changes.activeTab && changes.activeTab.currentValue !== changes.activeTab.previousValue) {
+        this.activeTab = changes.activeTab.currentValue;
+      }
+  }
+
+  ngOnInit(): void {
+      /**
+       * Get onload data ..
+       */
+      this.dataSource.brMetadata.subscribe(res=>{
+        if(res) {
+          this.getData();
+        }
+      });
+
+    /**
+     * After choose columns get updated columns ..
+     */
+    this.sharedServices.getChooseColumnData().subscribe(result=> {
+      if(result){
+        this.selectedFields = result.selectedFields ? result.selectedFields : [];
+        this.calculateDisplayFields();
+      }
+    });
+
+    /**
+     * Combine obserable for metadata and selected field by user
+     * And calcute display field amd order
+     */
+    combineLatest([this.metadata, this.selectedFieldsOb]).subscribe(res=>{
+      if(res[0]) {
+        this.selectedFields = res[1] ? res[1] : [];
+        this.calculateDisplayFields();
+      }
+    });
+
+    /**
+     * After filter applied should call for get data
+     */
+    this.filterCriteria.subscribe(res=>{
+       if(res !==null) {
+        this.getData(res, this.sortOrder);
+       }
+    });
+
+    /**
+     * While row selection change then control the header actions..
+     */
+    this.selection.changed.subscribe(res=>{
+      if(res.source.selected.length >0) {
+        this.tableHeaderActBtn = ['review_actions_header'];
+      } else {
+        this.tableHeaderActBtn = [];
+      }
+    });
+
+  }
+
+  /**
+   * Get schema info ..
+   */
+  getSchemaDetails() {
+    const sub =  this.schemaListService.getSchemaDetailsBySchemaId(this.schemaId).subscribe(res=>{
+      this.schemaInfo = res;
+    },error=> console.error(`Error : ${error.message}`));
+    this.subscribers.push(sub);
+  }
+
+
+  /**
+   * Call service for get schema statics based on schemaId and latest run
+   */
+  getSchemaStatics() {
+    const sub = this.schemaService.getSchemaThresholdStatics(this.schemaId, this.variantId).subscribe(res=>{
+      this.statics = res;
+    }, error=>{
+      console.error(`Error : ${error}`);
+    });
+    this.subscribers.push(sub);
+  }
+
+  /**
+   * Get schema variant details ..
+   */
+  getVariantDetails() {
+    const sub = this.schemaVariantService.getVariantdetailsByvariantId(this.variantId).subscribe(res=>{
+      if(res) {
+        const inline = res.filterCriteria.filter(fil=> fil.fieldId === 'id')[0];
+        if(inline) {
+          this.preInpVal = inline.values ? inline.values.toString() : '';
+        }
+        const finalFiletr: FilterCriteria[] = [inline];
+        res.filterCriteria.forEach(fil=>{
+          const filter: FilterCriteria = new FilterCriteria();
+          filter.fieldId = fil.fieldId;
+          filter.type = fil.type;
+          filter.values = fil.values;
+
+          const dropVal: DropDownValue[] = [];
+          filter.values.forEach(val=>{
+            const dd: DropDownValue = {CODE:val,FIELDNAME:fil.fieldId} as DropDownValue;
+            dropVal.push(dd);
+          });
+
+          filter.filterCtrl = {fldCtrl:fil.fldCtrl,selectedValues:dropVal};
+          finalFiletr.push(filter);
+        });
+
+        this.filterCriteria.next(finalFiletr);
+      }
+    }, error=>{
+      console.error(`Error : ${error.message}`);
+    });
+    this.subscribers.push(sub);
+  }
+
+
+  /**
+   * Get all fld metada based on module of schema
+   */
+  getFldMetadata() {
+    if(this.moduleId === undefined || this.moduleId.trim() === ''){
+      throwError('Module id cant be null or empty');
+    }
+    const sub =  this.schemaDetailService.getMetadataFields(this.moduleId).subscribe(response => {
+      this.metadata.next(response);
+    }, error => {
+      console.error(`Error : ${error.message}`);
+    });
+    this.subscribers.push(sub);
+  }
+
+  /**
+   * Calculate fields based on user view ..
+   *
+   */
+  calculateDisplayFields(): void {
+    const allMDF = this.metadata.getValue();
+    const fields = [];
+    const select = [];
+    const metadataLst: any = {};
+    this.startColumns.forEach(col => fields.push(col));
+    for (const headerField in allMDF.headers) {
+      if(allMDF.headers.hasOwnProperty(headerField)) {
+         // if selectedFields is blank then load all fields
+      // if(fields.indexOf(headerField) < 0 && this.selectedFields.length === 0) {
+      //   select.push(headerField);
+      // }
+      // else
+      const index = this.selectedFields.findIndex(f => f.fieldId === headerField);
+      if (fields.indexOf(headerField) < 0 &&  (index !== -1)) {
+        select[index] = headerField;
+      }
+      metadataLst[headerField] = allMDF.headers[headerField];
+      }
+    }
+    // TODO for hierarchy and grid logic ..
+    this.metadataFldLst = metadataLst;
+    select.forEach(fldId =>fields.push(fldId));
+    this.displayedFields.next(fields);
+  }
+
+
+  /**
+   * Get table data from service ..
+   * @param filterCriteria have default filter or apply filter as request...
+   * @param sort apply some sorting on column ..
+   */
+  getData(filterCriteria?: FilterCriteria[], sort?: any, fetchCount?: number , isLoadMore?: boolean) {
+    const request: RequestForSchemaDetailsWithBr = new RequestForSchemaDetailsWithBr();
+    request.schemaId = this.schemaId;
+    request.variantId = this.variantId;
+    request.fetchCount = fetchCount ? fetchCount : 0;
+    request.fetchSize = 20;
+    request.requestStatus = 'success';
+    request.filterCriterias = filterCriteria;
+    request.sort = sort;
+    request.isLoadMore = isLoadMore ? isLoadMore : false;
+    this.dataSource.getTableData(request);
+  }
+
+
+  /**
+   * Navigate particular tab by tab status
+   * @param status get tab name to navigate
+   */
+  changeTabStatus(status: string) {
+    this.fetchCount = 0;
+    if(this.activeTab === status) {
+      console.log('Already loaded for tab {}', status)
+      return false;
+    }
+    this.activeTab = status;
+    this.router.navigate(['/home/schema/schema-details', this.moduleId, this.schemaId],{queryParams:{status:this.activeTab}} );
+
+    // update state of columns
+    this.calculateDisplayFields();
+
+    if(status === 'error' || status === 'success') {
+      this.getData(this.filterCriteria.getValue(), this.sortOrder);
+    } else {
+      this.getData();
+    }
+  }
+
+  /**
+   * Oen choose column side sheet ..
+   */
+  openTableColumnSettings() {
+    const data ={schemaId: this.schemaId,variantId: this.variantId, fields: this.metadata.getValue(),selectedFields:this.selectedFields}
+    this.sharedServices.setChooseColumnData(data);
+    this.router.navigate(['', { outlets: { sb: 'sb/schema/table-column-settings' }, queryParams:{status:this.activeTab} } ]);
+  }
+
+  /**
+   * Method for download error or execution logs
+   */
+  downloadExecutionDetails() {
+    const downloadLink = document.createElement('a');
+    downloadLink.href = this.endpointservice.downloadExecutionDetailsUrl(this.schemaId, this.activeTab) + '?runId=';
+    downloadLink.setAttribute('target', '_blank');
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+
+  }
+
+
+
+  /**
+   * After value change on text input
+   * @param value current value after change on
+   */
+  inlineSearch(value: string) {
+    const filterCValue = this.filterCriteria.getValue() ? this.filterCriteria.getValue() : [];
+    const haveInline = filterCValue.filter(fil => fil.type === 'INLINE')[0];
+    if(value && value.trim() !== '') {
+      if(haveInline) {
+        const idx = filterCValue.indexOf(haveInline);
+        filterCValue.splice(idx, 1);
+        haveInline.values = [value];
+        filterCValue.push(haveInline);
+     } else {
+      const filterC = new FilterCriteria();
+      filterC.fieldId = 'id';
+      filterC.type = 'INLINE';
+      filterC.values = [value];
+      filterCValue.push(filterC);
+     }
+    } else {
+      const idx = filterCValue.indexOf(haveInline);
+      filterCValue.splice(idx, 1);
+    }
+    this.filterCriteria.next(filterCValue);
+  }
+
+  // @HostListener('window:scroll', ['$event'])
+  onTableScroll(e) {
+    console.log('colled');
+    const tableViewHeight = e.target.offsetHeight // viewport: ~500px
+    const tableScrollHeight = e.target.scrollHeight // length of all table
+    const scrollLocation = e.target.scrollTop; // how far user scrolled
+
+    // If the user has scrolled within 200px of the bottom, add more data
+    const buffer = 200;
+    const limit = tableScrollHeight - tableViewHeight - buffer;
+    if (scrollLocation > limit) {
+       console.log('Load more data here ...');
+       this.fetchCount ++;
+       this.getData(this.filterCriteria.getValue(), this.sortOrder, this.fetchCount, true);
+    }
+  }
+
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.docLength();
+    return numSelected === numRows;
+  }
+
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  masterToggle() {
+    this.isAllSelected() ?
+        this.selection.clear() :
+        this.dataSource.docValue().forEach(row => this.selection.select(row));
+  }
+
+
+  /**
+   *
+   * @param type type of request is inline or submit all
+   * @param row if request  type is inline then submit single rec ..
+   */
+  approveRecords(type: string , row?: any) {
+    const id: string[] = [];
+    if(type === 'inline') {
+      const docId = row ? row.OBJECTNUMBER.fieldData : '';
+      if(docId) {
+        id.push(docId);
+      }
+    } else {
+        if(this.selection.selected.length) {
+          const selected = this.selection.selected;
+          selected.forEach(sel=>{
+            const docId = sel.OBJECTNUMBER.fieldData;
+            id.push(docId);
+          });
+
+        }
+    }
+    const request: SchemaCorrectionReq = {id,fldId:null,vc: null, isReviewed: true} as SchemaCorrectionReq;
+    this.schemaDetailService.doCorrection(this.schemaId, request).subscribe(res=>{
+      if(res.acknowledge) {
+            this.getData();
+            this.selection.clear();
+        }
+    }, error=>{
+        this.snackBar.open(`Error :: ${error}`, 'Close',{duration:2000});
+        console.error(`Error :: ${error.message}`);
+    });
+  }
+
+  /**
+   * Remove applied filter ..
+   * @param ctrl control for remove applied filter
+   */
+  removeAppliedFilter(ctrl: FilterCriteria) {
+    const exitingFilterCtrl = this.filterCriteria.getValue() ? this.filterCriteria.getValue() : [];
+    const extFld =  exitingFilterCtrl.filter(fil=> fil.fieldId === ctrl.fieldId)[0];
+    if(extFld) {
+      exitingFilterCtrl.splice(exitingFilterCtrl.indexOf(extFld), 1);
+      this.filterCriteria.next(exitingFilterCtrl);
+    }
+  }
+
+  /**
+   * Submit reviewed records
+   */
+  submitReviewRec() {
+    this.schemaDetailService.submitReviewedRecords(this.schemaId).subscribe(res =>{
+      if(res.acknowledge) {
+        this.snackBar.open(`Successfully submitted !`, 'Close',{duration:2000});
+      }
+    }, error=>{
+      this.snackBar.open(`${error.statusText}: Please review atleast one record(s)`, 'Close',{duration:2000});
+    });
+  }
+
+
+  /**
+   * Set selected drop requet .. for load values ..
+   * @param fldC get cliked fld control
+   */
+  loadDropValues(fldC: FilterCriteria) {
+    if(fldC) {
+      const dropArray: DropDownValue[] = [];
+      fldC.values.forEach(val=>{
+        const drop: DropDownValue = {CODE: val,FIELDNAME: fldC.fieldId}  as DropDownValue;
+        dropArray.push(drop);
+      });
+      this.loadDopValuesFor = {fieldId: fldC.fieldId,checkedValue:dropArray};
+    }
+  }
+
+
+  /**
+   * Reset applied filter
+   */
+  resetAppliedFilter() {
+    this.filterCriteria.next([]);
+    this.preInpVal = '';
+  }
+
+  /**
+   * Updated selected drop values ...
+   * @param dropValue updated dropvalues
+   */
+  updateFilterCriteria(dropValue: DropDownValue[]) {
+    console.log(dropValue);
+    const fillData = this.filterCriteria.getValue() ? this.filterCriteria.getValue() : [];
+    const filterControl = fillData.filter(fill => fill.fieldId === this.loadDopValuesFor.fieldId)[0];
+    if(filterControl) {
+      if(dropValue && dropValue.length>0) {
+        filterControl.values = dropValue.map(map=> map.CODE);
+        filterControl.filterCtrl = {fldCtrl: filterControl.filterCtrl.fldCtrl, selectedValues: dropValue};
+      } else {
+        fillData.slice(fillData.indexOf(filterControl), 1);
+      }
+      this.filterCriteria.next(fillData);
+    }
+
+  }
+
+  refreshData(variantId){
+    if(this.variantId !== variantId) {
+      this.variantId = variantId;
+      this.variantName = this.variantId === '0' ? 'Entire dataset'
+                        : this.schemaInfo.variants.find(v => v.variantId === this.variantId).variantName ;
+      this.getData();
+      if(this.variantId !== '0') {
+        this.getVariantDetails();
+      }
+    }
+  }
+
+  /**
+   * Get data scopes .. or variats ...
+   */
+  getDataScope() {
+    const sub = this.schemavariantService.getDataScope(this.schemaId, 'RUNFOR').subscribe(res=>{
+      this.dataScope = res;
+    }, err=> console.error(`Exception : ${err.message}`));
+    this.subscribers.push(sub);
+  }
+
+  /**
+   * get input type when user edits a cell
+   * @param fieldId the field id
+   */
+  getFieldInputType (fieldId){
+
+    if (this.metadataFldLst[fieldId].picklist=== '0' && this.metadataFldLst[fieldId].dataType === 'NUMC'){
+      return this.FIELD_TYPE.NUMBER ;
+    }
+    if ( this.metadataFldLst[fieldId].picklist=== '0' && (this.metadataFldLst[fieldId].dataType === 'DATS' || this.metadataFldLst[fieldId].dataType === 'DTMS')){
+      return this.FIELD_TYPE.DATE ;
+    }
+    if ((this.metadataFldLst[fieldId].isCheckList === 'false')
+      && (this.metadataFldLst[fieldId].picklist=== '1' || this.metadataFldLst[fieldId].picklist === '30' || this.metadataFldLst[fieldId].picklist === '37')){
+        return this.FIELD_TYPE.SINGLE_SELECT;
+    }
+    if ((this.metadataFldLst[fieldId].isCheckList === 'true')
+      && (this.metadataFldLst[fieldId].picklist=== '1' || this.metadataFldLst[fieldId].picklist === '30' || this.metadataFldLst[fieldId].picklist === '37')){
+        return this.FIELD_TYPE.MULTI_SELECT;
+    }
+
+    return this.FIELD_TYPE.TEXT;
+
+  }
+
+
+  /**
+   * format cell displayed value based on field type
+   * @param fieldId the field id
+   * @param value cell value
+   */
+  formatCellData(fieldId, value){
+    if (this.getFieldInputType(fieldId) === this.FIELD_TYPE.MULTI_SELECT) {
+      // console.log(value);
+      return value.toString();
+    }
+    return value && value !=='null' ? value : '' ;
+  }
+
+
+  /**
+   * Help to generate / create cross module ..
+   * @param row get selected row data
+   */
+  generateCrossEntry(row: any) {
+    const objNr = row && row.OBJECTNUMBER ? row.OBJECTNUMBER.fieldData : '';
+    if(!objNr)  {
+      throwError(`Objectnumber must be required !!!`);
+    }
+    const sub = this.schemaDetailService.generateCrossEntry(this.schemaId, this.moduleId, objNr).subscribe(res=>{
+      console.log(res);
+      const oldData = this.dataSource.docValue();
+      const sameDoc = oldData.filter(fil => (fil as any).OBJECTNUMBER.fieldData === objNr)[0];
+      (sameDoc as any).CATALOG_ID.fieldData = res;
+      this.dataSource.setDocValue(oldData);
+    }, error=>{console.error(`Exception while generating coss module .. ${error.message}`)});
+    this.subscribers.push(sub);
+  }
+
+}

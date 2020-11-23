@@ -74,6 +74,7 @@ export class SchemaListDetails {
     errorValue: number;
     successValue: number;
     variants: SchemaVariantsModel[];
+    schemaCategory: string;
 }
 export class BusinessRuleExecutionDetails {
     brId: string;

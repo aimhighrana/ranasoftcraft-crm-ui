@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { PageNotFoundComponent } from '../shared/_components/page-not-found/page-not-found.component';
 import { SchemaGroupFormComponent } from 'src/app/_modules/schema/_components/schema-group-form/schema-group-form.component';
-import { SchemaDetailsComponent } from './_components/v2/schema-details/schema-details.component';
 import { SchemaVariantsComponent } from './_components/schema-variants/schema-variants.component';
 import { SchemaExecutionComponent } from './_components/schema-execution/schema-execution.component';
 import { SchemaCollaboratorsComponent } from 'src/app/_modules/schema/_components/schema-collaborators/schema-collaborators.component';
@@ -49,15 +48,15 @@ import { NewAttributeSidesheetComponent } from './_components/new-attribute-side
 import { NewModifierSidesheetComponent } from './_components/new-modifier-sidesheet/new-modifier-sidesheet.component';
 import { NewNounSidesheetComponent } from './_components/new-noun-sidesheet/new-noun-sidesheet.component';
 import { LibraryMappingSidesheetComponent } from './_components/library-mapping-sidesheet/library-mapping-sidesheet.component';
-import { PotextCatalogcheckComponent } from './_components/potext-catalogcheck/potext-catalogcheck.component';
 import { ExclusionsSidesheetComponent } from './_components/v2/brrule-side-sheet/duplicate-rule-config/exclusions-sidesheet/exclusions-sidesheet.component';
+import { DetailBuilderComponent } from './_components/v2/_builder/detail-builder/detail-builder.component';
 
 
 const routes: Routes = [
   { path: '', component: DiwTilesComponent },
   { path: 'group/:groupId', component: SchemaGroupFormComponent },
   // { path: 'schema-list/:schemaGrpId', component: SchemaListComponent },
-  { path: 'schema-details/:moduleId/:schemaId', component: SchemaDetailsComponent },
+  { path: 'schema-details/:moduleId/:schemaId', component: DetailBuilderComponent },
   { path: 'schema-variants/:moduleId/:schemaId', component: SchemaVariantsComponent },
   { path: 'schema-execution/:schemaId', component: SchemaExecutionComponent },
   { path: 'collab/:schemaId', component: SchemaCollaboratorsComponent },
@@ -109,7 +108,6 @@ const routes: Routes = [
   { path: 'system/new-modifier-sidesheet', component: NewModifierSidesheetComponent },
   { path: 'system/new-noun-sidesheet', component: NewNounSidesheetComponent },
   { path: 'system/library-mapping-sidesheet', component: LibraryMappingSidesheetComponent },
-  { path: 'system/potext-catalogcheck', component: PotextCatalogcheckComponent },
 
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent }

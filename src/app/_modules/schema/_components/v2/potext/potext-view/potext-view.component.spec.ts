@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SchemaDetailsComponent } from './schema-details.component';
+import { PotextViewComponent } from './potext-view.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -15,26 +15,26 @@ import { SchemaVariantService } from '@services/home/schema/schema-variant.servi
 import { FilterCriteria, MetadataModel, MetadataModeleResponse, RequestForSchemaDetailsWithBr } from '@models/schema/schemadetailstable';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
-import { SchemaDataSource } from '../../schema-details/schema-datatable/schema-data-source';
+import { SchemaDataSource } from '@modules/schema/_components/schema-details/schema-datatable/schema-data-source';
 import { Router } from '@angular/router';
 import { SimpleChanges } from '@angular/core';
-
-describe('SchemaDetailsComponent', () => {
-  let component: SchemaDetailsComponent;
-  let fixture: ComponentFixture<SchemaDetailsComponent>;
+describe('PotextViewComponent', () => {
+  let component: PotextViewComponent;
+  let fixture: ComponentFixture<PotextViewComponent>;
   let schemaListService: SchemalistService;
   let schemaService: SchemaService;
   let schemaVariantService: SchemaVariantService;
   let schemaDetailService: SchemaDetailsService;
   let router: Router;
 
-  const dataSourceSpy= {
+  const mockSchemaDataSource = {
+    docValue: jasmine.createSpy('docValue'),
+    setDocValue: jasmine.createSpy('setDocValue'),
     getTableData: jasmine.createSpy('getTableData')
   };
-
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SchemaDetailsComponent, FilterValuesComponent, SearchInputComponent, AddFilterMenuComponent ],
+      declarations: [ PotextViewComponent, FilterValuesComponent, SearchInputComponent, AddFilterMenuComponent ],
       imports:[
         AppMaterialModuleForSpec,
         HttpClientTestingModule,
@@ -42,7 +42,7 @@ describe('SchemaDetailsComponent', () => {
       ],providers:[
         {
           provide: SchemaDataSource,
-          useValue: dataSourceSpy
+          useValue: mockSchemaDataSource
         }
       ]
     })
@@ -51,13 +51,12 @@ describe('SchemaDetailsComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SchemaDetailsComponent);
+    fixture = TestBed.createComponent(PotextViewComponent);
     component = fixture.componentInstance;
     schemaListService = fixture.debugElement.injector.get(SchemalistService);
     schemaService = fixture.debugElement.injector.get(SchemaService);
     schemaVariantService = fixture.debugElement.injector.get(SchemaVariantService);
     schemaDetailService = fixture.debugElement.injector.get(SchemaDetailsService);
-
     // fixture.detectChanges();
 
     component.schemaId = '274751';
@@ -212,6 +211,18 @@ describe('SchemaDetailsComponent', () => {
 
   });
 
+  it('generateCrossEntry() , generate cross module / create cross module ', async(()=>{
+    // mock data
+    const row = {
+      OBJECTNUMBER:{
+        fieldData:'TMP001'
+      }
+    }
+    spyOn(schemaDetailService, 'generateCrossEntry').withArgs(component.schemaId, component.moduleId, row.OBJECTNUMBER.fieldData).and.returnValue(of());
+    component.generateCrossEntry(row);
+    expect(schemaDetailService.generateCrossEntry).toHaveBeenCalledWith(component.schemaId, component.moduleId, row.OBJECTNUMBER.fieldData);
+  }));
+
   it('getData(), get data ', async(()=>{
     // mock data
     const request: RequestForSchemaDetailsWithBr = new RequestForSchemaDetailsWithBr();
@@ -226,7 +237,7 @@ describe('SchemaDetailsComponent', () => {
     component.dataSource = new SchemaDataSource(schemaDetailService, null, component.schemaId);
     component.getData([], null, 0, true);
 
-    expect(dataSourceSpy.getTableData).toBeTruthy();
+    expect(mockSchemaDataSource.getTableData).toBeTruthy();
   }));
 
   it('calculateDisplayFields(), calculate display fields based on user view', async(()=>{
@@ -288,5 +299,4 @@ describe('SchemaDetailsComponent', () => {
     component.ngOnChanges(changes);
     expect(component.ngOnChanges).toBeTruthy();
   }));
-
 });

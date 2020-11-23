@@ -41,11 +41,11 @@
 
                         <div class="col col-x4">
                             <ng-template [ngIf]="suggestedFlds.indexOf(fld.fieldId) !==-1" [ngIfElse]="notSuggested">
-                                <span style="color: red;">{{ fld.fieldDescri ? fld.fieldDescri : 'Untitled' }} </span>
+                                <span style="color: red;">{{ fld.fieldDescri ? fld.fieldDescri :  (fld.fieldDesc ? fld.fieldDesc : 'Untitled') }} </span>
                             </ng-template>
 
                             <ng-template #notSuggested>
-                                <span>{{ fld.fieldDescri ? fld.fieldDescri : 'Untitled' }} </span>
+                                <span>{{ fld.fieldDescri ? fld.fieldDescri : (fld.fieldDesc ? fld.fieldDesc : 'Untitled') }} </span>
                             </ng-template>
                         </div>
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ComponentFactoryResolver, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ComponentFactoryResolver, ViewContainerRef, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaCorrectionReq, FilterCriteria, FieldInputType, SchemaTableViewFldMap } from '@models/schema/schemadetailstable';
 import { ActivatedRoute, Router } from '@angular/router';
 import { throwError, BehaviorSubject, combineLatest } from 'rxjs';
@@ -26,21 +26,24 @@ import { TableCellInputComponent } from '@modules/shared/_components/table-cell-
   templateUrl: './schema-details.component.html',
   styleUrls: ['./schema-details.component.scss']
 })
-export class SchemaDetailsComponent implements OnInit, AfterViewInit {
+export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges {
 
   /**
    * Module / dataset id
    */
+  @Input()
   moduleId: string;
 
   /**
    * Schema id
    */
+  @Input()
   schemaId: string;
 
   /**
    * Variant id if have otherwise by default is 0 for all
    */
+  @Input()
   variantId = '0';
 
   /**
@@ -85,6 +88,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
   /**
    * Store info about active tab..
    */
+  @Input()
   activeTab = 'error';
 
   /**
@@ -169,6 +173,52 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
 
   ) { }
 
+
+  ngOnChanges(changes: SimpleChanges): void {
+    // check if any things is change then refresh again
+    let isRefresh = false;
+
+    if(changes && changes.moduleId && changes.moduleId.currentValue !== changes.moduleId.previousValue) {
+      this.moduleId = changes.moduleId.currentValue;
+      isRefresh = true;
+    }
+
+    if(changes && changes.schemaId && changes.schemaId.currentValue !== changes.schemaId.previousValue) {
+      this.schemaId = changes.schemaId.currentValue;
+      isRefresh = true;
+    }
+
+    if(changes && changes.variantId && changes.variantId.currentValue !== changes.variantId.previousValue) {
+      this.variantId = changes.variantId.currentValue;
+      isRefresh = true;
+    }
+
+    if(isRefresh) {
+      this.getFldMetadata();
+      this.dataSource = new SchemaDataSource(this.schemaDetailService, this.endpointservice, this.schemaId);
+      this.getSchemaStatics();
+      this.getSchemaDetails();
+      if(this.variantId !== '0') {
+        this.getVariantDetails();
+      }
+      /**
+       * Get all user selected fields based on default view ..
+       */
+      this.schemaDetailService.getAllSelectedFields(this.schemaId, this.variantId).subscribe(res=>{
+            this.selectedFieldsOb.next(res ? res : [])
+        }, error=> console.error(`Error : ${error}`));
+      }
+
+      // reset filter and sort order
+      this.filterCriteria.next(null);
+      this.preInpVal = '';
+
+      if(changes && changes.activeTab && changes.activeTab.currentValue !== changes.activeTab.previousValue) {
+        this.activeTab = changes.activeTab.currentValue;
+        this.manageStaticColumns();
+      }
+  }
+
   ngAfterViewInit(): void {
     this.sort.sortChange.subscribe(res=>{
       if(res.direction) {
@@ -182,58 +232,14 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    // get moduel , schema and variant ids from params
-    this.activatedRouter.params.subscribe(params=>{
-
-      // check if any things is change then refresh again
-      let isRefresh = false;
-      if(this.moduleId !== params.moduleId) {
-        isRefresh = true;
-        this.moduleId = params.moduleId;
-      }
-      if(this.schemaId !== params.schemaId) {
-        isRefresh = true;
-        this.schemaId = params.schemaId;
-      }
-
-      if(isRefresh) {
-        this.getFldMetadata();
-        this.dataSource = new SchemaDataSource(this.schemaDetailService, this.endpointservice, this.schemaId);
-        this.getSchemaStatics();
-        this.getSchemaDetails();
-        if(this.variantId !== '0') {
-          this.getVariantDetails();
+      /**
+       * Get onload data ..
+       */
+      this.dataSource.brMetadata.subscribe(res=>{
+        if(res) {
+          this.getData();
         }
-        /**
-         * Get all user selected fields based on default view ..
-         */
-        this.schemaDetailService.getAllSelectedFields(this.schemaId, this.variantId).subscribe(res=>{
-              this.selectedFieldsOb.next(res ? res : [])
-          }, error=> console.error(`Error : ${error}`));
-        }
-
-        // reset filter and sort order
-        this.filterCriteria.next(null);
-        this.preInpVal = '';
-
-
-        /**
-         * Get onload data ..
-         */
-        this.dataSource.brMetadata.subscribe(res=>{
-          if(res) {
-            this.getData();
-          }
-        });
-
-    });
-
-    // get queryParams for status ..
-    this.activatedRouter.queryParams.subscribe(queryParams=> {
-      this.activeTab = queryParams.status ? queryParams.status: 'error';
-      // manage colums based on status changes
-      this.manageStaticColumns();
-    });
+      });
 
     /**
      * After choose columns get updated columns ..

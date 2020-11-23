@@ -52,6 +52,14 @@ export class SchemaDataSource implements DataSource<SchemaTableData> {
     }
 
     /**
+     * Set row data .
+     * @param rows set rows..
+     */
+    setDocValue(rows: any) {
+        this.dataSourceSubject.next(rows);
+    }
+
+    /**
      * Get datatable data ....
      * if isLoadMore then newRes should append on oldData..
      *

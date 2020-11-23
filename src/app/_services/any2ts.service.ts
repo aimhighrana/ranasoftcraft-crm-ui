@@ -391,6 +391,7 @@ export class Any2tsService {
     schemaDetail.schemaThreshold = response.schemaThreshold && response.schemaThreshold !== 'null'  ? response.schemaThreshold : 0;
     schemaDetail.collaboratorModels = response.collaboratorModels;
     schemaDetail.moduleDescription = response.moduleDescription;
+    schemaDetail.schemaCategory = response.schemaCategory ? response.schemaCategory : 'DATAQUALITY_VIEW';
 
     if (response.brInformation) {
       response.brInformation.forEach(br => {
