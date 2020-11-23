@@ -424,7 +424,8 @@ describe('EndpointService', () => {
 
   it('getScheduleSchemaUrl(),should schedule schema details', async(() => {
     const serObj = new EndpointService();
-    expect(serObj.getScheduleSchemaUrl()).toContain('schema/schedule-schema');
+    const isRunWithCheckedData = true;
+    expect(serObj.getScheduleSchemaUrl(isRunWithCheckedData)).toContain('schema/schedule-schema');
   }));
 
   it('downloadExecutionDetailsUrl(),should download execution details', async(() => {

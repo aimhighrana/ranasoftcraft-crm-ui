@@ -13,7 +13,7 @@ export class SchemaExecutionService {
     private endpointService: EndpointService
   ) { }
 
-  public scheduleSChema(schemaExecutionReq: SchemaExecutionRequest) {
-    return this.http.post<any>(this.endpointService.getScheduleSchemaUrl(), schemaExecutionReq);
+  public scheduleSChema(schemaExecutionReq: SchemaExecutionRequest, isRunWithCheckedData: boolean) {
+    return this.http.post<any>(this.endpointService.getScheduleSchemaUrl(isRunWithCheckedData), schemaExecutionReq);
   }
 }

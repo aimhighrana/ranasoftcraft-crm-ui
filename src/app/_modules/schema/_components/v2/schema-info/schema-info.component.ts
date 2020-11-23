@@ -80,6 +80,13 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    */
   allSubscribers = [];
 
+  allBusinessRulesList: CoreSchemaBrInfo[] = [];
+
+  /**
+   * outlet name in which sheets to be opened
+   */
+  outlet = 'sb';
+
   /**
    * To hold all the subscriptions related to component
    */
@@ -139,6 +146,8 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     this.getScheduleInfo(this.schemaId); // To get info about schedule
 
     this.getCollaborators('', 0); // To get all the subscribers
+
+    this.getAllBusinessRulesList(); // To get all business rules list
   }
 
   /**
@@ -149,14 +158,11 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       this.moduleId = params.moduleId;
       this.schemaId = params.schemaId;
 
+      this.getSchemaDetails(this.schemaId);
       this.getSchemaStatics(this.schemaId);
       this.getSubscriberList(this.schemaId);
       this.getBusinessRuleList(this.schemaId);
       this.getSchemaVariants(this.schemaId, 'RUNFOR');
-
-      this.schemaListService.getSchemaDetailsBySchemaId(this.schemaId).subscribe(res => {
-        this.schemaDetails = res;
-      }, error => console.error('Error : {}', error.message));
     })
   }
 
@@ -169,6 +175,16 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       schemaDescription: new FormControl(''),
       schemaThreshold: new FormControl()
     })
+  }
+
+  /**
+   * function to get schema details
+   * @param schemaId: Id of schema
+   */
+  getSchemaDetails(schemaId: string) {
+    this.schemaListService.getSchemaDetailsBySchemaId(schemaId).subscribe(res => {
+      this.schemaDetails = res;
+    }, (error) => console.error('Error : {}', error.message));
   }
 
   /**
@@ -403,13 +419,13 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * Function to open sidesheet to add subscriber
    */
   public openSubscriberSideSheet() {
-    this.router.navigate(['', { outlets: { sb: `sb/schema/subscriber/${this.moduleId}/${this.schemaId}/new` } }]);
+    this.router.navigate(['', { outlets: { sb: `sb/schema/subscriber/${this.moduleId}/${this.schemaId}/new/${this.outlet}` } }]);
   }
 
   /**
    * Function to open sidesheet to add business rule
    */
-  public addBusinessRule() {
+  public openBusinessRuleSideSheet() {
     this.router.navigate(['', { outlets: { sb: `sb/schema/business-rule/${this.moduleId}/${this.schemaId}/new` } }]);
   }
 
@@ -447,9 +463,16 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * @param br business rule which is going for update
    */
   updateCategory(cat: CategoryInfo, br: CoreSchemaBrInfo) {
-    br.brId = br.brIdStr;
-    br.categoryId = cat.categoryId;
-    this.schemaService.createBusinessRule(br).subscribe(res => {
+    const request: CoreSchemaBrInfo = new CoreSchemaBrInfo();
+    request.brId = br.brIdStr;
+    request.schemaId = this.schemaId;
+    request.categoryId = cat.categoryId;
+    request.brInfo = br.brInfo;
+    request.brType = br.brType;
+    request.fields = br.fields;
+    request.message = br.message;
+
+    this.schemaService.createBusinessRule(request).subscribe(res => {
       this.getBusinessRuleList(this.schemaId);
     }, error => {
       console.error(`Error while updating schema .. `);
@@ -704,8 +727,8 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
   /**
    * Function to open summary side sheet of schema
    */
-  openSummarySideSheet(moduleId: string, schemaId: string) {
-    this.router.navigate([{ outlets: { sb: `sb/schema/summary/${moduleId}/${schemaId}` } }])
+  openSummarySideSheet() {
+    this.router.navigate([{ outlets: { sb: `sb/schema/summary/${this.moduleId}/${this.schemaId}` } }])
   }
 
   /**
@@ -726,14 +749,14 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * function to open schedule side-sheet
+   * Function to open schedule side-sheet
    */
   openScheduleSideSheet(){
     this.router.navigate([{outlets: {sb: `sb/schema/schedule/${this.schemaId}`}}])
   }
 
   /**
-   * function to change state of enable/disable schedule
+   * Function to change state of enable/disable schedule
    */
   toggleScheduleState() {
     this.scheduleInfo.isEnable = !this.scheduleInfo.isEnable;
@@ -750,7 +773,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * function to get schedule information
+   * Function to get schedule information
    * @param schemaId: Id of schema for which schedule info needed
    */
   getScheduleInfo(schemaId: string) {
@@ -761,6 +784,51 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       console.log('Something went wrong when getting schedule information.', error.message);
     })
     this.subscriptions.push(scheduleSubscription);
+  }
+
+  /**
+   * Function to open business rule library side sheet
+   * It holds all the business rules inside it.
+   */
+  openBrLibrarySideSheet() {
+    this.router.navigate([{outlets: {sb: `sb/schema/businessrule-library/${this.schemaId}/${this.outlet}`}}])
+  }
+
+  /**
+   * Function to get info of all business rules.
+   */
+  getAllBusinessRulesList() {
+    const getAllBrSubscription =  this.schemaService.getAllBusinessRules().subscribe((rules: CoreSchemaBrInfo[]) => {
+      if (rules && rules.length > 0) {
+        this.allBusinessRulesList = rules;
+      }
+    }, (error) => {
+      console.error('Error while getting all business rules list', error.message);
+    });
+    this.subscriptions.push(getAllBrSubscription);
+  }
+
+  /**
+   * Function to add business rule to schema
+   * @param brInfo: business rule information for schema
+   */
+  addBusinessRule(brInfo) {
+    console.log(brInfo);
+    const request: CoreSchemaBrInfo = new CoreSchemaBrInfo();
+
+    request.brId = brInfo.brIdStr;
+    request.schemaId = this.schemaId;
+    request.brInfo = brInfo.brInfo;
+    request.brType = brInfo.brType;
+    request.fields = brInfo.fields;
+    request.message = brInfo.message;
+
+    this.schemaService.createBusinessRule(request).subscribe((response) => {
+      console.log(response);
+      this.getBusinessRuleList(this.schemaId);
+    }, (error) => {
+      console.log('Error while adding business rule', error.message);
+    })
   }
 
   /**

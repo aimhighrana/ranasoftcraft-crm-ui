@@ -39,9 +39,10 @@ describe('SubscriberSideSheetComponent', () => {
   });
 
   it('close(), should close the sidesheet', () => {
+    component.outlet = 'sb';
     spyOn(router, 'navigate');
     component.close();
-    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: null } }])
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { [component.outlet]: null } }])
   })
 
   it('getSubscribersBySchemaId(), should get subscriber details according to schema id', async () => {
@@ -96,6 +97,7 @@ describe('SubscriberSideSheetComponent', () => {
   })
 
   it('addSubscriber(), should add subscriber while click on ADD button', async () => {
+    component.outlet = 'sb';
     const subscriber = {
       userName: 'AshishKumar',
       fName: 'Ashish',

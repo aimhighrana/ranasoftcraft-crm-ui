@@ -13,7 +13,7 @@
         <ng-template #runNow>
             <button mat-flat-button color="accent">Run now</button>
         </ng-template> -->
-        <button mat-flat-button color="accent" (click)="openSummarySideSheet(moduleId, schemaId)">
+        <button mat-flat-button color="accent" (click)="openSummarySideSheet()">
             <mat-icon fontSet="mdo-icons">wand</mat-icon> Check data
         </button>
         <button mat-fab color="accent" class="mat-elevation-z0">
@@ -24,7 +24,7 @@
         </button>
         <!-- menu to add business rule and subscriber -->
         <mat-menu #navigation="matMenu" direction="right" class="navigation-menu">
-            <button mat-menu-item (click)="addBusinessRule()">Add business rule</button>
+            <button mat-menu-item (click)="openBusinessRuleSideSheet()">Add business rule</button>
             <button mat-menu-item (click)="openSubscriberSideSheet()">Add subscriber</button>
         </mat-menu>
     </div>
@@ -100,21 +100,18 @@
                     <div class="col col-x4"><strong>Enabled</strong></div>
                 </div>
                 <div class="f-row colunm-box rule-border-row">
-                    <div class="col"></div>
-                    <div class="col col-x4">
-                        <div mat-line><a class="info-link" (click)="addBusinessRule()">[Add business rule <mat-icon fontSet="mdo-icons">
-                            menu-arrow</mat-icon>]</a></div>
+                    <div class="mdo-auto-complete">
+                        <pros-form-input-autoselect [fieldLabel]="'Type rule name to add'" (openCustomDialog)="openBrLibrarySideSheet()"
+                        [updatedOptionsList]="allBusinessRulesList" [labelKey]="'brInfo'" (emitExtraLabelClick)="openBusinessRuleSideSheet()"
+                         [extraOptionLabel]="'Add new rule'" (optionSelectedEmit)="addBusinessRule($event)"></pros-form-input-autoselect>
                     </div>
-                    <div class="col col-x4"></div>
-                    <div class="col col-x4"></div>
-                    <div class="col col-x4"></div>
                 </div>
                 <div cdkDropList [cdkDropListData]="businessRuleData" (cdkDropListDropped)="drop($event)">
                     <div *ngFor="let businessRule of businessRuleData" cdkDrag class="f-row colunm-box rule-border-row">
                         <div class="col">
-                            <button mat-button cdkDragHandle>
+                            <!-- <button mat-button cdkDragHandle> -->
                                 <mat-icon fontSet="mdo-icons"> two-lines</mat-icon>
-                            </button>
+                            <!-- </button> -->
                         </div>
                         <div class="col col-x4" (click)="editBr(businessRule)">
                             <div mat-line><a class="info-link">{{businessRule.brInfo}}</a></div>
@@ -278,7 +275,6 @@
             </div>
             <mat-divider></mat-divider>
             </div>
-            <!-- <pros-schedule [schemaId]="schemaId"></pros-schedule> -->
         </mat-tab>
 
         <!-- Tab for the Statistics of the schema -->

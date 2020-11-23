@@ -8,7 +8,7 @@ import { FilterValuesComponent } from '@modules/shared/_components/filter-values
 import { AddFilterMenuComponent } from '@modules/shared/_components/add-filter-menu/add-filter-menu.component';
 import { Router } from '@angular/router';
 import { CoreSchemaBrInfo, DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
-import { SchemaStaticThresholdRes } from '@models/schema/schemalist';
+import { SchemaListDetails, SchemaStaticThresholdRes } from '@models/schema/schemalist';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { of } from 'rxjs';
 import { CategoryInfo, FilterCriteria } from '@models/schema/schemadetailstable';
@@ -19,6 +19,8 @@ import { SchemaScheduler } from '@models/schema/schemaScheduler';
 import { FormInputComponent } from '@modules/shared/_components/form-input/form-input.component';
 import { ScheduleComponent } from '@modules/shared/_components/schedule/schedule.component';
 import { DatePickerFieldComponent } from '@modules/shared/_components/date-picker-field/date-picker-field.component';
+import { PermissionOn } from '@models/collaborator';
+import { SchemalistService } from '@services/home/schema/schemalist.service';
 
 describe('SchemaInfoComponent', () => {
   let component: SchemaInfoComponent;
@@ -27,6 +29,7 @@ describe('SchemaInfoComponent', () => {
   let schemaDetailsService: SchemaDetailsService;
   let schemaVariantService: SchemaVariantService;
   let schemaService: SchemaService;
+  let schemaListService: SchemalistService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -45,6 +48,7 @@ describe('SchemaInfoComponent', () => {
     schemaDetailsService = fixture.debugElement.injector.get(SchemaDetailsService);
     schemaVariantService = fixture.debugElement.injector.get(SchemaVariantService);
     schemaService = fixture.debugElement.injector.get(SchemaService);
+    schemaListService = fixture.debugElement.injector.get(SchemalistService);
     fixture.detectChanges();
   });
 
@@ -92,17 +96,18 @@ describe('SchemaInfoComponent', () => {
   it('openSubscriberSideSheet(), should open the subscriber side sheet', async () => {
     component.moduleId = '1005';
     component.schemaId = '5642587452';
+    component.outlet = 'sb'
     spyOn(router, 'navigate');
     component.openSubscriberSideSheet();
 
-    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: { sb: `sb/schema/subscriber/${component.moduleId}/${component.schemaId}/new` } }])
+    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: { sb: `sb/schema/subscriber/${component.moduleId}/${component.schemaId}/new/${component.outlet}` } }])
   })
 
-  it('addBusinessRule(), should open the subscriber side sheet', async () => {
+  it('openBusinessRuleSideSheet(), should open the Business rule side sheet', async () => {
     component.moduleId = '1005';
     component.schemaId = '5642587452';
     spyOn(router, 'navigate');
-    component.addBusinessRule();
+    component.openBusinessRuleSideSheet();
 
     expect(router.navigate).toHaveBeenCalledWith(['', { outlets: { sb: `sb/schema/business-rule/${component.moduleId}/${component.schemaId}/new` } }])
   })
@@ -115,11 +120,26 @@ describe('SchemaInfoComponent', () => {
 
     const br = {
       brIdStr: '36572',
+      brInfo: 'Missing Rule',
+      brType: 'Meta data',
+      fields: 'NDC',
+      message: 'Test should passed..'
     } as CoreSchemaBrInfo;
 
-    spyOn(schemaService, 'createBusinessRule').withArgs(br).and.returnValue(of({} as CoreSchemaBrInfo));
+    component.schemaId = '44514235';
+
+    const request: CoreSchemaBrInfo = new CoreSchemaBrInfo();
+    request.brId = br.brIdStr;
+    request.schemaId = component.schemaId;
+    request.categoryId = cat.categoryId;
+    request.brInfo = br.brInfo;
+    request.brType = br.brType;
+    request.fields = br.fields;
+    request.message = br.message;
+
+    spyOn(schemaService, 'createBusinessRule').withArgs(request).and.returnValue(of({} as CoreSchemaBrInfo));
     component.updateCategory(cat, br);
-    expect(schemaService.createBusinessRule).toHaveBeenCalledWith(br);
+    expect(schemaService.createBusinessRule).toHaveBeenCalledWith(request);
   })
 
   it('updateFragment(), should update tab selection', async () => {
@@ -167,7 +187,7 @@ describe('SchemaInfoComponent', () => {
     component.schemaId = '2563145';
 
     spyOn(router, 'navigate');
-    component.openSummarySideSheet(component.moduleId, component.schemaId);
+    component.openSummarySideSheet();
     expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/summary/${component.moduleId}/${component.schemaId}` } }])
   })
 
@@ -276,5 +296,56 @@ describe('SchemaInfoComponent', () => {
     spyOn(router, 'navigate');
     component.editDataScope(variantId);
     expect(router.navigate).toHaveBeenCalledWith([{outlets: {sb: `sb/schema/data-scope/${component.moduleId}/${component.schemaId}/${variantId}`}}])
+  });
+
+  it('getAllBusinessRulesList(), should get all business rules', async() => {
+    spyOn(schemaService, 'getAllBusinessRules').and.returnValue(of({} as CoreSchemaBrInfo[]));
+    component.getAllBusinessRulesList();
+    expect(schemaService.getAllBusinessRules).toHaveBeenCalled();
+  })
+
+  it('getCollaborators(), should get all subscribers', async() => {
+    spyOn(schemaDetailsService, 'getAllUserDetails').and.returnValue(of({} as PermissionOn));
+    component.getCollaborators('', 0);
+    expect(schemaDetailsService.getAllUserDetails).toHaveBeenCalled();
+  })
+
+  it('openBrLibrarySideSheet(), should navigate to business rule library side sheet', () => {
+    component.schemaId = '2145214';
+    component.outlet = 'sb';
+    spyOn(router, 'navigate');
+    component.openBrLibrarySideSheet();
+    expect(router.navigate).toHaveBeenCalledWith([{outlets: {sb: `sb/schema/businessrule-library/${component.schemaId}/${component.outlet}`}}])
+  })
+
+  it('addBusinessRule(), should add business rule from auto-complete', async() => {
+    const brInfo = {
+      brIdStr: '2452',
+      brType: 'Meta Data',
+      brInfo: 'Missing data',
+      fields: 'Region',
+      message: 'Region should be Asia'
+    } as CoreSchemaBrInfo;
+    component.schemaId = '245521';
+
+    const request: CoreSchemaBrInfo = new CoreSchemaBrInfo();
+
+    request.brId = brInfo.brIdStr;
+    request.schemaId = component.schemaId;
+    request.brInfo = brInfo.brInfo;
+    request.brType = brInfo.brType;
+    request.fields = brInfo.fields;
+    request.message = brInfo.message;
+
+    spyOn(schemaService, 'createBusinessRule').withArgs(request).and.returnValue(of());
+    component.addBusinessRule(brInfo);
+    expect(schemaService.createBusinessRule).toHaveBeenCalledWith(request);
+  })
+
+  it('getSchemaDetails(), should get schema details', async() => {
+    component.schemaId = '12545';
+    spyOn(schemaListService, 'getSchemaDetailsBySchemaId').withArgs(component.schemaId).and.returnValue(of({} as SchemaListDetails))
+    component.getSchemaDetails(component.schemaId);
+    expect(schemaListService.getSchemaDetailsBySchemaId).toHaveBeenCalledWith(component.schemaId);
   })
 });

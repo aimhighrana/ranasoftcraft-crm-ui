@@ -84,13 +84,13 @@ describe('SchemaTileComponent', () => {
     schemaExecutionReq.schemaId =  component.schemaId;
     schemaExecutionReq.variantId = '0'; // 0 for run all
     const expactedRunId = 32254;
-
-    spyOn(schemaExecutionService,'scheduleSChema').withArgs(schemaExecutionReq).and.returnValue(of(expactedRunId));
+    const isRunWithCheckedData = false;
+    spyOn(schemaExecutionService,'scheduleSChema').withArgs(schemaExecutionReq, isRunWithCheckedData).and.returnValue(of(expactedRunId));
 
     component.scheduleSchema();
 
     expect(component.state).toEqual('inRunning');
-    expect(schemaExecutionService.scheduleSChema).toHaveBeenCalledWith(schemaExecutionReq);
+    expect(schemaExecutionService.scheduleSChema).toHaveBeenCalledWith(schemaExecutionReq, isRunWithCheckedData);
 
   }));
 

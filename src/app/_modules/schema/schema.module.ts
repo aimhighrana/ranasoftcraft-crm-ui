@@ -64,6 +64,7 @@ import { DetailBuilderComponent } from './_components/v2/_builder/detail-builder
 import { PotextViewComponent } from './_components/v2/potext/potext-view/potext-view.component';
 import { SchemaListsComponent } from './_components/v2/schema-lists/schema-lists.component';
 
+import { BusinessrulelibrarySidesheetComponent } from './_components/businessrulelibrary-sidesheet/businessrulelibrary-sidesheet.component';
 
 
 @NgModule({
@@ -130,7 +131,9 @@ import { SchemaListsComponent } from './_components/v2/schema-lists/schema-lists
     ClassificationBuilderComponent,
     DetailBuilderComponent,
     PotextViewComponent,
-    SchemaListsComponent
+    SchemaListsComponent,
+    SetupDuplicateRuleComponent,
+    BusinessrulelibrarySidesheetComponent
   ],
   imports: [
     CommonModule,

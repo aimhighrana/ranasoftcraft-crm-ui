@@ -51,6 +51,12 @@ export class FormInputAutoselectComponent implements OnInit, OnChanges {
   @Output()
   emitSearchValue: EventEmitter<any> = new EventEmitter(null);
 
+  /**
+   * Event emitter to emit event on click extra label
+   */
+  @Output()
+  emitExtraLabelClick: EventEmitter<any> = new EventEmitter(null);
+
   filteredOptions: Observable<any[]>;
   selectedMdoFldCtrl: FormControl;
   constructor() {
@@ -162,6 +168,13 @@ export class FormInputAutoselectComponent implements OnInit, OnChanges {
     } else {
       this.optionSelectedEmit.emit(action);
     }
+  }
+
+  /**
+   * Function to emit event on click extra label
+   */
+  emitClickEvent() {
+    this.emitExtraLabelClick.emit();
   }
 
   ngOnChanges(changes: SimpleChanges) {

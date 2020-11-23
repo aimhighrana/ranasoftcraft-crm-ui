@@ -69,6 +69,10 @@ mat-card.root {
       min-height: 48px;
       font-size: 0.8rem;
 
+      .mdo-auto-select {
+        width: 100%;
+      }
+
       .col {
         display: flex;
         flex: 1 0 auto;

@@ -5,8 +5,8 @@ import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { MatSliderChange } from '@angular/material/slider';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SchemaCollaborator, SchemaDashboardPermission } from '@models/collaborator';
-import { AddFilterOutput } from '@models/schema/schema';
+import { PermissionOn, SchemaCollaborator, SchemaDashboardPermission, UserMdoModel } from '@models/collaborator';
+import { AddFilterOutput, CheckDataBrs, CheckDataRequest, CheckDataSubscriber } from '@models/schema/schema';
 import { SchemaExecutionRequest } from '@models/schema/schema-execution';
 import { CategoryInfo, FilterCriteria } from '@models/schema/schemadetailstable';
 import { CoreSchemaBrMap, LoadDropValueReq, SchemaListDetails, SchemaStaticThresholdRes, VariantDetails } from '@models/schema/schemalist';
@@ -49,7 +49,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
   /**
    * to have subscribers data of schema
    */
-  subscriberData: SchemaDashboardPermission[];
+  subscriberData: SchemaDashboardPermission[] = [];
 
   businessRuleData: CoreSchemaBrInfo[];
   activeTab: string;
@@ -64,6 +64,36 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
 
   /** To have variant details of a schema */
   variantDetails: VariantDetails[];
+
+  /**
+   * Outlet name in which side sheet to be opened
+   */
+  outlet = 'outer';
+
+  /**
+   * To hold all business rules information
+   */
+  allBusinessRulesList: CoreSchemaBrInfo[] = [];
+
+  /**
+   * To hold all subscriber information
+   */
+  allSubscribers: UserMdoModel[] = [];
+
+  /**
+   * To hold fetchCount for getting subscriber api
+   */
+  fetchCount = 0;
+
+  /**
+   * To hold check data subscribers details
+   */
+  checkDataSubscribersData = [];
+
+  /**
+   * To hold check data busines rules details
+   */
+  checkDataBRsData = [];
 
   /**
    * To hold all the subscriptions related to component
@@ -88,19 +118,21 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    */
   ngOnInit(): void {
     this.getRouteParams();
-    // this.getQueryParams();
 
     this.sharedService.getAfterBrSave().subscribe(res => {
       if (res) {
-        this.getBusinessRuleList(this.schemaId);
+        this.businessRuleData.push(...res);
       }
     });
 
     this.sharedService.getAfterSubscriberSave().subscribe(res => {
       if (res) {
-        this.getSubscriberList(this.schemaId);
+        this.subscriberData.push(...res);
       }
     })
+
+    this.getCollaborators('', this.fetchCount); // To fetch all users details (will use to show in auto complete)
+    this.getAllBusinessRulesList(); // To fetch all BRs details (will use to show in auto complete)
   }
 
   /**
@@ -111,15 +143,26 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
       this.moduleId = params.moduleId;
       this.schemaId = params.schemaId;
 
-      this.getSubscriberList(this.schemaId);
-      this.getBusinessRuleList(this.schemaId);
       this.getSchemaVariants(this.schemaId);
-
-      this.schemaListService.getSchemaDetailsBySchemaId(this.schemaId).subscribe(res => {
-        this.schemaDetails = res;
-        console.log(this.schemaDetails);
-      }, error => console.error('Error : {}', error.message));
+      this.getSchemaDetails(this.schemaId);
     })
+  }
+
+
+  /**
+   * Function to get schema details
+   * @param schemaId: Id of schema
+   */
+  getSchemaDetails(schemaId: string) {
+    this.schemaListService.getSchemaDetailsBySchemaId(schemaId).subscribe(res => {
+      this.schemaDetails = res;
+      if(this.schemaDetails.runId) {
+        this.getCheckDataDetails(this.schemaId, this.schemaDetails.runId);
+      } else {
+        this.getSubscriberList(this.schemaId);
+        this.getBusinessRuleList(this.schemaId);
+      }
+    }, (error) => console.error('Error : {}', error.message));
   }
 
 
@@ -136,17 +179,6 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
     this.subscriptions.push(schemaVariantList);
   }
 
-  // private getQueryParams(){
-  //   this.activateRoute.queryParams.subscribe(Queryparams => {
-  //     console.log('Inside query params',Queryparams);
-
-  //     this.activeTab = Queryparams.fragment;
-  //     // this.updateFragment(this.activeTab);
-
-  //     console.log(this.activeTab);
-  //   })
-  // }
-
 
   /**
    * Function to Api call to get subscribers according to schema ID
@@ -154,22 +186,6 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    */
   public getSubscriberList(schemaId: string) {
    const subscriberData = this.schemaDetailsService.getCollaboratorDetails(schemaId).subscribe((responseData) => {
-      responseData.forEach((subscriber) => {
-        subscriber.filterCriteria.forEach((data) => {
-          const filter: FilterCriteria = new FilterCriteria();
-          filter.fieldId = data.fieldId;
-          filter.type = data.type;
-          filter.values = data.values;
-
-          const dropVal: DropDownValue[] = [];
-          filter.values.forEach(val => {
-            const dd: DropDownValue = { CODE: val, FIELDNAME: data.fieldId } as DropDownValue;
-            dropVal.push(dd);
-          })
-          filter.filterCtrl = { fldCtrl: data.fldCtrl, selectedValues: dropVal };
-          data.filterCtrl = filter.filterCtrl;
-        })
-      }),
         this.subscriberData = responseData;
     }, error => {
       console.log('Error while fetching subscriber information', error.message)
@@ -263,16 +279,13 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    * @param br delete by br id
    */
   deleteBr(br: CoreSchemaBrInfo) {
-    this.globalDialogService.confirm({label:'Are you sure to delete ?'}, (response) =>{
-      if(response && response === 'yes') {
-        if (br.brIdStr) {
-         const deleteSubscriber = this.schemaService.deleteBr(br.brIdStr).subscribe(res => {
-            this.getBusinessRuleList(this.schemaId);
-          }, error => console.error(`Error : ${error.message}`));
-          this.subscriptions.push(deleteSubscriber);
+    this.globalDialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
+      if (response && response === 'yes') {
+        const brToBeDelete = this.businessRuleData.filter((businessRule) => businessRule.brId === br.brId)[0];
+        const index = this.businessRuleData.indexOf(brToBeDelete);
+        this.businessRuleData.splice(index, 1);
         }
-      }
-    });
+      })
   }
 
   /**
@@ -287,14 +300,14 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    * Run schema now ..
    * @param schema runable schema details .
    */
-  runSchema(schema: SchemaListDetails) {
+  runSchema() {
     const schemaExecutionReq: SchemaExecutionRequest = new SchemaExecutionRequest();
-    schemaExecutionReq.schemaId = schema.schemaId;
+    schemaExecutionReq.schemaId = this.schemaId;
     schemaExecutionReq.variantId = '0'; // 0 for run all
-    this.schemaExecutionService.scheduleSChema(schemaExecutionReq).subscribe(data => {
+    this.schemaExecutionService.scheduleSChema(schemaExecutionReq, true).subscribe(data => {
       this.schemaDetails.isInRunning = true;
-    }, error => {
-      this.matSnackBar.open(`Something went wrong while running schema`, 'Close', { duration: 5000 });
+    }, (error) => {
+      console.log('Something went wrong while running schema', error.message);
     });
   }
 
@@ -305,33 +318,32 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
     const filterCtrl: FilterCriteria = new FilterCriteria();
     filterCtrl.fieldId = event.fldCtrl.fieldId;
     filterCtrl.type = 'DROPDOWN';
-    filterCtrl.values = event.selectedValues.map(map => map.CODE);
+    filterCtrl.values = [];
+    event.selectedValues.forEach((value) => {
+      if(value.FIELDNAME === filterCtrl.fieldId) {
+        filterCtrl.values.push(value.CODE)
+      }
+    })
+    filterCtrl.fldCtrl = event.fldCtrl;
 
     exitingFilterCtrl.push(filterCtrl);
-
+    let flag = false;
     this.subscriberData.forEach((subscriber) => {
       if (subscriber.sno === sNo) {
         if (subscriber.filterCriteria.length === 0) {
-          this.updateSubscriberInfo(sNo, exitingFilterCtrl)
+          subscriber.filterCriteria = [];
+          subscriber.filterCriteria.push(filterCtrl);
           return;
         }
         subscriber.filterCriteria.forEach((res) => {
           if (event.fldCtrl.fieldId === res.fieldId) {
             res.values.push(...filterCtrl.values);
-
-            const updateSubscriber: SchemaDashboardPermission = subscriber;
-
-            delete updateSubscriber.userMdoModel;
-
-            updateSubscriber.sno = subscriber.sno.toString();
-            updateSubscriber.schemaId = this.schemaId;
-            this.schemaDetailsService.createUpdateUserDetails(Array(updateSubscriber)).subscribe(response => {
-              this.getSubscriberList(this.schemaId);
-            })
-          } else {
-            this.updateSubscriberInfo(sNo, exitingFilterCtrl)
+            flag = true;
           }
         })
+        if(flag === false) {
+          subscriber.filterCriteria.push(filterCtrl);
+        }
       }
     })
   }
@@ -341,12 +353,12 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    * Function to show chips of selected filters
    * @param ctrl Filter criteria
    */
-  prepareTextToShow(ctrl: FilterCriteria): string {
-    const selCtrl = ctrl.filterCtrl.selectedValues.filter(fil => fil.FIELDNAME === ctrl.fieldId);
-    if (selCtrl && selCtrl.length > 1) {
-      return String(selCtrl.length);
+  prepareTextToShow(ctrl: FilterCriteria) {
+    if(ctrl.values.length > 1) {
+      return ctrl.values.length;
+    }else {
+      return ctrl.values[0];
     }
-    return ((selCtrl && selCtrl.length === 1) ? (selCtrl[0].TEXT ? selCtrl[0].TEXT : selCtrl[0].CODE) : 'Unknown');
   }
 
 
@@ -378,15 +390,6 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
             subscriber.filterCriteria.splice(subscriber.filterCriteria.indexOf(res), 1);
           }
         })
-        subscriber.schemaId = this.schemaId;
-        subscriber.sno = sNo.toString();
-        delete subscriber.userMdoModel;
-
-        this.schemaDetailsService.createUpdateUserDetails(Array(subscriber)).subscribe((res) => {
-          this.getSubscriberList(this.schemaId);
-        }, error => {
-          console.log('Error while removing filter from subscriber', error.message);
-        })
       }
     })
   }
@@ -399,18 +402,12 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
   public deleteSubscriber(sNo: number) {
     this.globalDialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
       if (response && response === 'yes') {
-       const sNoList = [];
-       sNoList.push(sNo);
-       const deleteSubscriber = this.schemaDetailsService.deleteCollaborator(sNoList).subscribe(res => {
-          this.matSnackBar.open('Subscriber deleted successfully.', 'okay', { duration: 5000 });
-          this.getSubscriberList(this.schemaId);
-        }, error => {
-          console.log('Error while deleting subscriber', error.message)
-        })
-        this.subscriptions.push(deleteSubscriber);
-      }
-    });
-  }
+       const subscriberToBeDel = this.subscriberData.filter((subscriber => subscriber.sno === sNo))[0];
+       const index = this.subscriberData.indexOf(subscriberToBeDel);
+       this.subscriberData.splice(index, 1);
+        }
+      })
+    }
 
   /**
    * Function to edit subscriber details of schema
@@ -418,43 +415,6 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    */
   public editSubscriberInfo(sNo: number) {
     this.router.navigate([{ outlets: { sb: `sb/schema/subscriber/${this.moduleId}/${this.schemaId}/${sNo}` } }])
-  }
-
-
-  /**
-   * Function to update subscriber filter criteria
-   * @param sNo serial number of subscriber
-   * @param schemaId schema id
-   * @param exitingFilterCtrl array of filter criteria
-   */
-  updateSubscriberInfo(sNo: number, exitingFilterCtrl) {
-    /**
-     * Filter data according to sNo.
-     */
-    this.subscriberData.filter((data) => {
-      if (data.sno === sNo) {
-        /**
-         * Prepare the data of subscriber to send into API
-         */
-        data.schemaId = this.schemaId;
-        data.sno = data.sno.toString();
-        /**
-         * Delete not required fields for UPDATE api
-         */
-        delete data.userMdoModel;
-
-        exitingFilterCtrl.map((filter) => {
-          data.filterCriteria.push(filter);
-        })
-        const collaboratorArray = [];
-        collaboratorArray.push(data)
-        this.schemaDetailsService.createUpdateUserDetails(collaboratorArray).subscribe((res) => {
-          this.getSubscriberList(this.schemaId);
-        }, error => {
-          console.log('Error while update subscriber filter information', error.message)
-        })
-      }
-    })
   }
 
   /**
@@ -466,18 +426,11 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
     if (selectedValues.length > 0) {
       this.subscriberData.forEach((subscriber) => {
         if (subscriber.sno === sNo) {
-          subscriber.schemaId = this.schemaId;
-          subscriber.sno = sNo.toString();
-          delete subscriber.userMdoModel;
-
           subscriber.filterCriteria.forEach((res) => {
             if (res.fieldId === selectedValues[0].FIELDNAME) {
               res.values = [];
               res.values = selectedValues.map((value) => value.CODE)
             }
-          })
-          this.schemaDetailsService.createUpdateUserDetails(Array(subscriber)).subscribe(res => {
-            this.getSubscriberList(this.schemaId)
           })
         }
       })
@@ -493,6 +446,23 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
       subscription.unsubscribe();
     })
   }
+  /**
+   * Function to check for the maximum available threshold for business rule
+   * @param weightage threshold of the business rule.
+   * @returns maximum value of slider to available.
+   */
+  availableWeightage(weightage: string): number{
+    let sumOfAllWeightage = 0; // store sum of all business rules weightage
+    let freeWeight = 0;        // store max free weightage for any business rule
+
+    this.businessRuleData.forEach((businessRule) => {
+      sumOfAllWeightage = Number(businessRule.brWeightage) + sumOfAllWeightage;
+    })
+    freeWeight = 100 - sumOfAllWeightage;
+
+    return freeWeight + Number(weightage); // max value to slide for a business rule
+  }
+
 
   /**
    * Function to close summary sidesheet on click
@@ -501,4 +471,134 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
     this.router.navigate([{outlets: {sb: null}}])
   }
 
+  /**
+   * Function to open business rule library side sheet
+   */
+  openBusinessRuleSideSheet() {
+    this.router.navigate(['', {outlets : {outer: `outer/schema/businessrule-library/${this.schemaId}/${this.outlet}`}}])
+  }
+
+  /**
+   * Function to open subscriber side sheet
+   */
+  openSubscriberSideSheet() {
+    this.router.navigate(['', {outlets: {outer: `outer/schema/subscriber/${this.moduleId}/${this.schemaId}/new/${this.outlet}`}}])
+  }
+
+  /**
+   * Function to get all business rules information
+   */
+  getAllBusinessRulesList() {
+    const getAllBrSubscription =  this.schemaService.getAllBusinessRules().subscribe((rules: CoreSchemaBrInfo[]) => {
+      if (rules && rules.length > 0) {
+        this.allBusinessRulesList = rules;
+      }
+    }, (error) => {
+      console.error('Error while getting all business rules list', error.message);
+    });
+    this.subscriptions.push(getAllBrSubscription);
+  }
+
+  /**
+   * function to get collaboratos/subscribers from the api
+   * @param queryString: pass query param to fetch values from the api
+   * @param fetchCount: count to fetch subscribers into batches
+   */
+  getCollaborators(queryString: string, fetchCount: number) {
+    this.schemaDetailsService.getAllUserDetails(queryString, fetchCount)
+      .subscribe((response: PermissionOn) => {
+        if (response && response.users) {
+          const subscribers: UserMdoModel[] = response.users;
+          this.allSubscribers = subscribers;
+        }
+      }, (error) => {
+        console.error('Something went wrong while getting subscribers', error.message);
+        });
+  }
+
+  /**
+   * Function to add business rule from autocomplete
+   * @param brInfo: object contains business rule info
+   */
+  addBusinessRule(brInfo) {
+    this.businessRuleData.push(brInfo); // Push it into current Business rule listing array..
+  }
+
+  /**
+   * Function to add subscriber from autocomplete
+   * @param subscriberInfo: object contains subscriber info
+   */
+  addSubscriber(subscriberInfo) {
+    const subscriber = {
+      sno: Math.floor(Math.random() * Math.pow(100000, 2)),
+      userMdoModel: subscriberInfo,
+      filterCriteria: [],
+      isViewer: true
+    } as SchemaDashboardPermission;
+
+    this.subscriberData.push(subscriber); // Push it into current Subscribers listing array..
+  }
+
+  /**
+   * Function to get schema check data information
+   * @param schemaId: Schema Id
+   * @param runId: run Id of schema
+   */
+  getCheckDataDetails(schemaId: string, runId: string) {
+    this.schemaService.getCheckData(schemaId, runId).subscribe((res) => {
+      console.log(res);
+      this.subscriberData = res.CollaboratorModel;
+      this.businessRuleData = res.BrModel;
+      if(this.subscriberData.length === 0 && this.businessRuleData.length === 0) {
+        this.getSubscriberList(this.schemaId);
+        this.getBusinessRuleList(this.schemaId);
+      }
+    }, (error) => {
+      console.log('Something went wrong while getting check data details', error.message);
+    })
+  }
+
+  /**
+   * Function to save check data
+   */
+  saveCheckData() {
+    const checkDataSubscriber = [];
+    const checkDataBrs = [];
+
+    this.subscriberData.forEach((subscriber) => {
+      const subscriberObj = {
+        collaboratorId: subscriber.sno
+      } as CheckDataSubscriber;
+      checkDataSubscriber.push(subscriberObj);
+    });
+
+    this.businessRuleData.forEach((businessRule) => {
+      const businessRuleObj = {
+        brId: Number(businessRule.brId),
+        brExecutionOrder: businessRule.order
+      } as CheckDataBrs;
+      checkDataBrs.push(businessRuleObj);
+    })
+
+
+    const checkDataObj: CheckDataRequest = {
+      schemaId: Number(this.schemaId),
+      runId: this.schemaDetails.runId ? Number(this.schemaDetails.runId) : null,
+      brs: checkDataBrs,
+      collaborators: checkDataSubscriber
+    }
+    console.log(checkDataObj)
+
+    this.schemaService.createUpdateCheckData(checkDataObj).subscribe((res) => {
+      console.log(res);
+      // this.createSchedule();
+      this.runSchema();
+      this.close();
+      this.matSnackBar.open('This action has been confirmed..', 'Okay', {
+        duration: 2000
+      })
+    }, (error) => {
+      console.log('Something went wrong while checking data', error.message);
+    });
+  }
 }
