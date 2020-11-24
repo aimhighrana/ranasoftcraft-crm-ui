@@ -64,10 +64,12 @@ describe('ExclusionsSidesheetComponent', () => {
 
   it('should add synonym group', () => {
 
+    component.editText = 'customer\nsupplier'
+
     component.addSynonymGroup();
     expect(component.synonymsArray.length).toEqual(1);
-    expect(component.synonymsArray.value[0].text).toEqual('');
-    expect(component.synonymsArray.value[0].editActive).toEqual(true);
+    expect(component.synonymsArray.value[0].text).toEqual('customer supplier');
+    expect(component.synonymsArray.value[0].editActive).toEqual(false);
 
     component.removeSynonymGroup(0);
     expect(component.synonymsArray.length).toEqual(0);
@@ -78,12 +80,11 @@ describe('ExclusionsSidesheetComponent', () => {
     const data = {fId:'1',ival:'w1,w2', sval:'customer:client'} ;
     component.initExclusionData(data);
 
-    console.log(component.synonymsArray.value);
     component.editSynonymGroup(0);
     expect(component.synonymsArray.value[0].editActive).toEqual(true);
-    expect(component.synonymsArray.value[0].text).toEqual('customer\nclient');
+    // expect(component.synonymsArray.value[0].text).toEqual('customer\nclient');
 
-    component.saveSynonymGroup(0);
+    component.saveSynonymGroup(0, 'customer\nclient');
     expect(component.synonymsArray.value[0].editActive).toEqual(false);
     expect(component.synonymsArray.value[0].text).toEqual('customer client');
 

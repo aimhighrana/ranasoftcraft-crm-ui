@@ -38,9 +38,16 @@
                     </div>
 
                     <div class="temp-field">
-                        <a (click)="addSynonymGroup()" class="info-link">
+                        <a (click)="enableGroupCreation()" class="info-link">
                             <mat-icon fontSet="mdo-icons" class="mat-custom-icon">plus</mat-icon> Add Synonyms group
                         </a>
+                    </div>
+
+                    <div class="f-col temp-field">
+                        <mat-form-field *ngIf="newGroupActive" appearance="outline">
+                            <textarea matInput class="mdo-textarea" #input [(ngModel)]="editText"
+                                (blur)="addSynonymGroup(input.value)"></textarea>
+                        </mat-form-field>
                     </div>
 
                     <form [formGroup]="synonymsForm">
@@ -48,36 +55,26 @@
                             <div *ngFor="let synonym of synonymsArray.controls; let index = index"
                                 class="f-col temp-field">
                                 <ng-container [formGroupName]="index">
-                                    <mat-form-field [ngClass]="{'cdk-visually-hidden': !synonym.value.editActive && !synonym.value.visible}" appearance="outline">
-                                        <ng-template [ngIf]="synonym.value.editActive" 
-                                                     [ngIfElse]="noEdit">
-                                            <textarea matInput class="mdo-textarea" 
-                                                formControlName="text"
-                                                (blur)="saveSynonymGroup(index)"></textarea>
-                                        </ng-template>
-                                        <ng-template #noEdit>
-                                                <input matInput formControlName="text"
-                                                    (click)="editSynonymGroup(index)" />
-                                                <mat-icon matSuffix (click)="removeSynonymGroup(index)">delete_outline
-                                                </mat-icon>
-                                        </ng-template>
-                                    </mat-form-field>
-                                    <!-- <ng-container *ngIf="synonym.value.editActive; else noEdit">
+
+                                    <ng-template [ngIf]="synonym.value.editActive" [ngIfElse]="noEdit">
                                         <mat-form-field appearance="outline">
-                                                <textarea matInput class="mdo-textarea" 
-                                                    autofocus
-                                                    formControlName="text"
-                                                    (blur)="saveSynonymGroup(index)"></textarea>
+                                            <textarea matInput class="mdo-textarea" #editInput="matInput" 
+                                                [value]="splitStringLines(synonym.value.text)"
+                                                (blur)="saveSynonymGroup(index, editInput.value)"></textarea>
                                         </mat-form-field>
-                                    </ng-container>
+                                    </ng-template>
+
                                     <ng-template #noEdit>
-                                        <mat-form-field  [ngClass]="{'cdk-visually-hidden': !synonym.value.visible}" appearance="outline">
-                                            <input matInput formControlName="text"
-                                                (click)="editSynonymGroup(index)" />
+                                        <mat-form-field
+                                            [ngClass]="{'cdk-visually-hidden': !synonym.value.editActive && !synonym.value.visible}"
+                                            (click)="editSynonymGroup(index)" 
+                                            appearance="outline"> <!--  -->
+                                            <input matInput formControlName="text" (focus)="editSynonymGroup(index)"/>
                                             <mat-icon matSuffix (click)="removeSynonymGroup(index)">delete_outline
                                             </mat-icon>
                                         </mat-form-field>
-                                    </ng-template> -->
+                                    </ng-template>
+
                                 </ng-container>
                             </div>
                         </ng-container>

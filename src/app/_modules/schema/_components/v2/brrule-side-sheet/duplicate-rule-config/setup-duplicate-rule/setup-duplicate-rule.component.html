@@ -70,17 +70,17 @@
                                     <div class="col col-x4">
                                         <div class="f-col">
                                         <button mat-stroked-button [matMenuTriggerFor]="fieldMatchMenu">
-                                            {{ getDuppCriteriaDesc(item.value.duppCriteria) }}
+                                            {{ getDuppCriteriaDesc(item.value.criteria) }}
                                             <mat-icon>arrow_drop_down</mat-icon></button>
                                         <mat-menu #fieldMatchMenu="matMenu" class="hidden-arrow">
                                             <button mat-menu-item
-                                                (click)="setControlValue('addFields', 'duppCriteria', 'Exact_Match', i)">
+                                                (click)="setControlValue('addFields', 'criteria', 'Exact_Match', i)">
                                                 Exact Match</button>
                                             <button mat-menu-item
-                                                (click)="setControlValue('addFields', 'duppCriteria', 'Fuzzy', i)">
+                                                (click)="setControlValue('addFields', 'criteria', 'Fuzzy', i)">
                                                 Fuzzy </button>
                                         </mat-menu>
-                                        <mat-error *ngIf="submitted && item.get('duppCriteria').errors && item.get('duppCriteria').errors.required">
+                                        <mat-error *ngIf="submitted && item.get('criteria').errors && item.get('criteria').errors.required">
                                             Please select value</mat-error>
                                         </div>
                                     </div>
@@ -138,19 +138,19 @@
 
                             <ng-container [formGroupName]="i">
                                 <div class="col col-x4">
-                                    <div mat-line> {{ getMergeRuleTypeDesc(item.value.RuleType) }} </div>
+                                    <div mat-line> {{ getMergeRuleTypeDesc(item.value.ruleType) }} </div>
                                 </div>
                                 <div class="col col-x4">
                                     <div class="f-col">
                                     <ng-template
-                                        [ngIf]="(item.value.RuleType === 'NEWEST') || (item.value.RuleType === 'OLDEST')"
+                                        [ngIf]="(item.value.ruleType === 'NEWEST') || (item.value.ruleType === 'OLDEST')"
                                         [ngIfElse]="others">
                                         <button mat-stroked-button [matMenuTriggerFor]="fieldMatchMenu">
                                             {{ getMergeRuleFieldDesc(item.value.fieldId) }}
                                             <mat-icon>arrow_drop_down</mat-icon></button>
                                         <mat-menu #fieldMatchMenu="matMenu" class="hidden-arrow">
                                             <button mat-menu-item *ngFor="let field of MERGE_RULE_FIELDS"
-                                                (click)="setFieldValue(item.value.RuleType, field.value, i)">
+                                                (click)="setFieldValue(item.value.ruleType, field.value, i)">
                                                 {{ field.label }} </button>
                                         </mat-menu>
                                     </ng-template>
@@ -167,7 +167,7 @@
                                                     <input #input hidden />
                                                 <mat-nav-list>
                                                     <mat-list-item *ngFor="let fieldItem of filterNumFields(input.value)"
-                                                        (click)="setFieldValue(item.value.RuleType, fieldItem.fieldId, i)">
+                                                        (click)="setFieldValue(item.value.ruleType, fieldItem.fieldId, i)">
                                                         {{fieldItem.fieldDescri}}
                                                     </mat-list-item>
                                                 </mat-nav-list>
