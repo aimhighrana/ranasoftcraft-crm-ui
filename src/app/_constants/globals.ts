@@ -7,5 +7,6 @@ export enum ROLENAMES {
 
 export enum GLOBALCONSTANTS{
     ADD = 'add',
-    REMOVE = 'remove'
+    REMOVE = 'remove',
+    SCHEMA_SCHEDULER = 'schema_scheduler'
 }

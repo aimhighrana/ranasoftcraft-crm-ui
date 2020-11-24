@@ -232,7 +232,7 @@
                                 </button>
                             </div>
                             <div class="col text-end">
-                                <button mat-button (click)="deleteBR(k)">
+                                <button mat-button (click)="deleteBR(businessRule)">
                                     <mat-icon fontSet="mdo-icons"> recycle-bin</mat-icon>
                                 </button>
                             </div>
@@ -348,25 +348,20 @@
 
                 <mat-divider class="dashed-divider"></mat-divider>
 
-                <div class="f-row schedule-row" *ngIf="requestForm.controls.objectId.value; else addSchedule">
-                    <mat-slide-toggle color="primary"> Enable schedule</mat-slide-toggle>
+                <div class="f-row schedule-row">
+                    <mat-slide-toggle color="primary" (change)="toggleScheduleStatus($event)"> Enable schedule</mat-slide-toggle>
                     <span class="f-spacer"></span>
-                    <button mat-flat-button color="primary">
-                        <mat-icon>schedule</mat-icon> Edit schedule
-                    </button>
-                </div>
-
-                <ng-template #addSchedule>
-                    <div class="f-row schedule-row">
-                        <mat-slide-toggle color="primary"> Enable schedule</mat-slide-toggle>
-                        <span class="f-spacer"></span>
+                    <ng-container *ngIf="requestForm.controls.objectId.value; else addSchedule">
+                        <button mat-flat-button color="primary">
+                            <mat-icon>schedule</mat-icon> Edit schedule
+                        </button>
+                    </ng-container>
+                    <ng-template #addSchedule>
                         <button mat-flat-button color="primary" (click)="openAddScheduleSideSheet()">
                             <mat-icon>schedule</mat-icon> Add schedule
                         </button>
-                    </div>
-                </ng-template>
-
-                
+                    </ng-template>
+                </div>
                 <!-- <pros-schedule-tab [schemaId]="123" (updateCurrentSchedule)="updateCurrentSchedule($event)"></pros-schedule-tab> -->
             </div>
         </mat-step>

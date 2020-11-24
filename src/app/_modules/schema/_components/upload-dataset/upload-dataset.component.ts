@@ -24,6 +24,7 @@ import { BusinessrulelibraryDialogComponent } from '../businessrulelibrary-dialo
 import { PermissionOn, UserMdoModel } from '@models/collaborator';
 import { ScheduleDialogComponent } from '@modules/shared/_components/schedule-dialog/schedule-dialog.component';
 import { SchemaScheduler } from '@models/schema/schemaScheduler';
+import { GLOBALCONSTANTS } from '../../../../_constants';
 
 type UploadedDataType = any[][];
 
@@ -631,6 +632,8 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * @param rule the selected rule which is to be configured
    */
   configureRule(rule: CoreSchemaBrInfo) {
+    console.log(rule);
+
     this.createfieldObjectForRequest(this.dataSource).then((finalValues) => {
       this.requestForm.controls.fields.setValue(finalValues);
       const {
@@ -973,6 +976,13 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         this.subscribersList.push(subscriber);
       })
     } else if (response && typeof response === 'object') {
+      const index = this.subscribersList.findIndex(sub => sub.userid === response.userid);
+      if (index > -1) {
+        this.snackBar.open('Subscriber already selected', 'Okay', {
+          duration: 3000
+        });
+        return;
+      }
       response.sno = Math.floor(Math.random() * 100000000000).toString();
       response.plantCode = this.userDetails.plantCode;
       response.dataAllocation = [];
@@ -1067,6 +1077,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     delete formObject.fileSerialNo;
     delete formObject.runNow;
     delete formObject.runTime;
+    formObject[GLOBALCONSTANTS.SCHEMA_SCHEDULER] = this.currentSchedule;
     this.schemaDetailsService.saveNewSchemaDetails(
       objectId,
       runNow,
@@ -1074,10 +1085,6 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       fileSerialNo,
       formObject
     ).subscribe((res) => {
-      console.log(res);
-      if(this.currentSchedule){
-      // this.saveCurrentSchedule();
-      }
       this.snackBar.open('Schema created successfully', 'Okay', {
         duration: 5000
       });
@@ -1089,25 +1096,15 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     })
   }
 
-  saveCurrentSchedule(schemaId) {
-    this.schemaService.createUpdateSchedule(schemaId, this.currentSchedule).subscribe((response) => {
-      if (response) {
-        this.snackBar.open('Schema Has Been Scheduled..', 'Okay', {
-          duration: 3000
-        })
-      }
-    }, (error) => {
-      console.log('something went wrong when scheduling schema..')
-    })
-  }
-
   /**
    * function to removeBR
    * @param index index of object to be removed
    */
-  deleteBR(index) {
+  deleteBR(rule: CoreSchemaBrInfo) {
+    const index = this.selectedBusinessRules.findIndex((brule) => brule.brId === rule.brId);
     this.selectedBusinessRules.splice(index, 1);
-    this.requestForm.controls.coreSchemaBr.value.splice(index, 1);
+    this.requestForm.controls.coreSchemaBr.setValue(this.selectedBusinessRules);
+    this.existingBRIds = [...this.selectedBusinessRules.map(brule => brule.brId)];
   }
 
   /**
@@ -1127,6 +1124,16 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     subscriberInList.isReviewer = event.value === 'isReviewer' ? true : false;
     subscriberInList.isViewer = event.value === 'isViewer' ? true : false;
     subscriberInList.isEditer = event.value === 'isEditer' ? true : false;
+  }
+
+  /**
+   * Toggle isEnable value for schedule using slide toggle
+   * @param event toggle event
+   */
+  toggleScheduleStatus(event){
+    if(this.currentSchedule){
+      this.currentSchedule.isEnable = event.checked;
+    }
   }
 
   makeFilterControl(event: AddFilterOutput, subscriber, subscriberIndex) {
@@ -1235,6 +1242,12 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         });
       });
     } else {
+      if (this.existingBRIds.indexOf(businessRules.brId) > -1) {
+        this.snackBar.open('This rule is already added', 'okay', {
+          duration: 2000
+        });
+        return;
+      }
       this.addRuleIdToExisting(businessRules.brId).then(() => {
         const updatedObj = { ...businessRules, tempId: this.utilties.getRandomString(8) };
         this.selectedBusinessRules.push(updatedObj);
@@ -1298,9 +1311,9 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   openAddScheduleSideSheet() {
     this.globaldialogService.openDialog(ScheduleDialogComponent, {});
     this.dialogSubscriber = this.globaldialogService.dialogCloseEmitter
-    .pipe(distinctUntilChanged())
-    .subscribe((response: SchemaScheduler) => {
-      this.currentSchedule = response;
-    });
+      .pipe(distinctUntilChanged())
+      .subscribe((response: SchemaScheduler) => {
+        this.currentSchedule = response;
+      });
   }
 }

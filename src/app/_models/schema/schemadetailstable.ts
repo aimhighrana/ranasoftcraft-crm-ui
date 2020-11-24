@@ -400,3 +400,17 @@ export enum FieldInputType {
     SINGLE_SELECT,
     MULTI_SELECT
 }
+
+export interface FieldConfiguration{
+    list: any[];
+    labelKey: string;
+    valueKey: string;
+}
+
+export interface TransformationFormData{
+    sourceFields: string;
+    targetFields: string;
+    excludeScript: string;
+    includeScript: string;
+    selectedTargetFields?: any[];
+}

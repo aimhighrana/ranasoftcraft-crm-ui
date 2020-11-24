@@ -40,7 +40,6 @@ import { BrDuplicatecheckSidesheetComponent } from './_components/br-duplicatech
 import { SchemaSummarySidesheetComponent } from './_components/schema-summary-sidesheet/schema-summary-sidesheet.component';
 import { NewDuplicateCheckComponent } from './_components/new-duplicate-check/new-duplicate-check.component';
 import { StringReplaceComponent } from './_components/string-replace/string-replace.component';
-import { LookupComponent } from './_components/lookup/lookup.component';
 import { EmptyDataComponent } from './_components/empty-data/empty-data.component';
 import { RunningProgressComponent } from './_components/running-progress/running-progress.component';
 import { InvitePeopleComponent } from './_components/invite-people/invite-people.component';
@@ -100,7 +99,6 @@ const routes: Routes = [
   { path: 'summary/:moduleId/:schemaId', component: SchemaSummarySidesheetComponent },
   { path: 'system/new-duplicate-check', component: NewDuplicateCheckComponent },
   { path: 'system/string-replace', component: StringReplaceComponent },
-  { path: 'system/lookup', component: LookupComponent },
   { path: 'system/empty-data', component: EmptyDataComponent },
   { path: 'system/running-progress', component: RunningProgressComponent },
   { path: 'system/invite-people', component: InvitePeopleComponent },

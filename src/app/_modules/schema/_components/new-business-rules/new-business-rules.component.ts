@@ -5,16 +5,15 @@ import {
     MAT_DIALOG_DATA
 } from '@angular/material/dialog';
 import { BusinessRules } from '@modules/admin/_components/module/schema/diw-create-businessrule/diw-create-businessrule.component';
-import { BusinessRuleType, ConditionalOperator, UDRObject } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { BusinessRuleType, ConditionalOperator, PRE_DEFINED_REGEX, RULE_TYPES, UDRObject } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
-import { MetadataModeleResponse, CategoryInfo } from '@models/schema/schemadetailstable';
+import { MetadataModeleResponse, CategoryInfo, FieldConfiguration, TransformationFormData } from '@models/schema/schemadetailstable';
 import { of, Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Regex } from '@modules/admin/_components/module/business-rules/regex-rule/regex-rule.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BlockType } from '@modules/report/_models/widget';
-
 
 @Component({
     selector: 'pros-new-business-rules',
@@ -24,31 +23,9 @@ import { BlockType } from '@modules/report/_models/widget';
 export class NewBusinessRulesComponent implements OnInit {
 
     form: FormGroup;
-    businessRuleTypes: BusinessRules[] = [
-        { ruleDesc: 'API Rule', ruleId: '', ruleType: BusinessRuleType.BR_API_RULE, isImplemented: false },
-        { ruleDesc: 'Basic', ruleId: '', ruleType: null, isImplemented: false },
-        { ruleDesc: 'Dependency Rule', ruleId: '', ruleType: BusinessRuleType.BR_DEPENDANCY_RULE, isImplemented: false },
-        { ruleDesc: 'Duplicate Rule', ruleId: '', ruleType: BusinessRuleType.BR_DUPLICATE_RULE, isImplemented: false },
-        { ruleDesc: 'External Validation Rule', ruleId: '', ruleType: BusinessRuleType.BR_EXTERNALVALIDATION_RULE, isImplemented: false },
-        { ruleDesc: 'Metadata Rule', ruleId: '', ruleType: BusinessRuleType.BR_METADATA_RULE, isImplemented: true },
-        { ruleDesc: 'Missing Rule', ruleId: '', ruleType: BusinessRuleType.BR_MANDATORY_FIELDS, isImplemented: true },
-        { ruleDesc: 'Regex Rule', ruleId: '', ruleType: BusinessRuleType.BR_REGEX_RULE, isImplemented: true },
-        { ruleDesc: 'User Defined Rule', ruleId: '', ruleType: BusinessRuleType.BR_CUSTOM_SCRIPT, isImplemented: true },
-    ];
-
-    preDefinedRegex: Regex[] = [
-        { FUNC_NAME: 'EMAIL', FUNC_TYPE: 'EMAIL', FUNC_CODE: '^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}' },
-        { FUNC_NAME: 'PANCARD', FUNC_TYPE: 'PANCARD', FUNC_CODE: '^[A-Z]{5}[0-9]{4}[A-Z]{1}$' },
-        { FUNC_NAME: 'PHONE NUMBER(IN)', FUNC_TYPE: 'PHONE_NUMBER_IN', FUNC_CODE: '^(\\+91[\\-\\s]?)?[0]?(91)?[7896]\\d{9}$' },
-        { FUNC_NAME: 'PHONE NUMBER(AUS)', FUNC_TYPE: 'PHONE_NUMBER_AUS', FUNC_CODE: '^\\({0,1}((0|\\+61)(2|4|3|7|8)){0,1}\\){0,1}(\\ |-){0,1}[0-9]{2}(\\ |-){0,1}[0-9]{2}(\\ |-){0,1}[0-9]{1}(\\ |-){0,1}[0-9]{3}$' },
-        { FUNC_NAME: 'PHONE NUMBER(US)', FUNC_TYPE: 'PHONE_NUMBER_US', FUNC_CODE: '^\\(?([0-9]{3})\\)?[-.\\s]?([0-9]{3})[-.\\s]?([0-9]{4})$' },
-        { FUNC_NAME: 'AADHAAR NUMBER', FUNC_TYPE: 'AADHAAR_NUMBER', FUNC_CODE: '^\\d{4}\\s\\d{4}\\s\\d{4}$' },
-        { FUNC_NAME: 'ABN', FUNC_TYPE: 'ABN_NUMBER', FUNC_CODE: '^\\d{2}\\s*\\d{3}\\s*\\d{3}\\s*\\d{3}' },
-        { FUNC_NAME: 'SSN(US)', FUNC_TYPE: 'SSN_US', FUNC_CODE: '^(?!000|666)[0-8][0-9]{2}-(?!00)[0-9]{2}-(?!0000)[0-9]{4}$' },
-        { FUNC_NAME: 'GSTIN', FUNC_TYPE: 'GSTIN', FUNC_CODE: '^[0-9]{2}\\s*[A-Z]{5}[0-9]{4}[A-Z]{1}\\s*[1-9A-Z]{1}Z[0-9A-Z]{1}$' },
-        { FUNC_NAME: 'ECN', FUNC_TYPE: 'ECN', FUNC_CODE: '^CN[0-9]{9}' }
-    ];
-
+    businessRuleTypes: BusinessRules[] = RULE_TYPES;
+    preDefinedRegex: Regex[] = PRE_DEFINED_REGEX;
+    currentSelectedRule: string;
     /**
      * List of fields
      */
@@ -63,6 +40,18 @@ export class NewBusinessRulesComponent implements OnInit {
      * array to save the selected fields
      */
     selectedFields = [];
+
+    targetFieldsObject: FieldConfiguration = {
+        list: [],
+        labelKey: '',
+        valueKey: ''
+    }
+
+    sourceFieldsObject: FieldConfiguration = {
+        list: [],
+        labelKey: '',
+        valueKey: ''
+    }
 
     /**
      * list of event to consider as selection
@@ -102,6 +91,7 @@ export class NewBusinessRulesComponent implements OnInit {
     fieldControl = new FormControl();
     tempRuleId: string;
 
+    transformationData: TransformationFormData;
     /**
      * Class contructor
      * @param dialogRef refernce to matdialog
@@ -183,7 +173,6 @@ export class NewBusinessRulesComponent implements OnInit {
         this.initiateAutocomplete();
     }
 
-
     /**
      * Get all categories from the api
      */
@@ -205,10 +194,14 @@ export class NewBusinessRulesComponent implements OnInit {
             error_message: new FormControl('', [Validators.required]),
             standard_function: new FormControl(''),
             regex: new FormControl(''),
-            fields: new FormControl('', [Validators.required]),
+            fields: new FormControl(''),
+            sourceFields: new FormControl(''),
+            targetFields: new FormControl(''),
+            excludeScript: new FormControl(''),
+            includeScript: new FormControl(''),
             udrTreeData: new FormControl(),
             weightage: new FormControl(0, [Validators.required]),
-            categoryId: new FormControl('', [Validators.required]),
+            categoryId: new FormControl(''),
         });
 
         // Apply conditional validation based on rule type
@@ -262,7 +255,9 @@ export class NewBusinessRulesComponent implements OnInit {
      * @param selectedRule selected rule type
      */
     applyValidatorsByRuleType(selectedRule: string) {
-        if (selectedRule === 'BR_CUSTOM_SCRIPT') {
+        this.currentSelectedRule = selectedRule;
+        if (selectedRule === BusinessRuleType.BR_CUSTOM_SCRIPT) {
+            this.form.get('categoryId').setValidators([Validators.required]);
             this.form.get('rule_name').clearValidators()
             this.form.get('error_message').clearValidators()
             this.form.get('fields').clearValidators();
@@ -281,14 +276,16 @@ export class NewBusinessRulesComponent implements OnInit {
             this.form.get('regex').setErrors(null);
             this.form.get('standard_function').setErrors(null);
         }
-        if (selectedRule === 'BR_REGEX_RULE') {
+        if (selectedRule === BusinessRuleType.BR_REGEX_RULE) {
+            this.form.get('categoryId').setValidators([Validators.required]);
             this.form.get('rule_name').setValidators([Validators.required])
             this.form.get('error_message').setValidators([Validators.required])
             this.form.get('fields').setValidators([Validators.required]);
             this.form.get('regex').setValidators([Validators.required]);
             this.form.get('standard_function').setValidators([Validators.required]);
         }
-        if (selectedRule === 'BR_MANDATORY_FIELDS' || selectedRule === 'BR_METADATA_RULE') {
+        if (selectedRule === BusinessRuleType.BR_MANDATORY_FIELDS || selectedRule === BusinessRuleType.BR_METADATA_RULE) {
+            this.form.get('categoryId').setValidators([Validators.required]);
             this.form.get('rule_name').setValidators([Validators.required])
             this.form.get('error_message').setValidators([Validators.required])
             this.form.get('fields').setValidators([Validators.required]);
@@ -299,6 +296,24 @@ export class NewBusinessRulesComponent implements OnInit {
             this.form.get('standard_function').setValidators(null);
             this.form.get('regex').setErrors(null);
             this.form.get('standard_function').setErrors(null);
+        }
+        if(selectedRule === BusinessRuleType.BR_TRANSFORMATION_RULE){
+            this.form.get('categoryId').setValidators(null);
+            this.form.get('standard_function').setValidators(null);
+
+            this.form.get('rule_name').setValidators([Validators.required]);
+            this.form.get('error_message').setValidators([Validators.required]);
+            this.form.get('sourceFields').setValidators([Validators.required]);
+            this.form.get('excludeScript').setValidators([Validators.required]);
+            this.form.get('includeScript').setValidators([Validators.required]);
+        }
+        if(selectedRule === BusinessRuleType.BR_TRANSFORMATION_LOOKUP_RULE){
+            this.form.get('categoryId').clearValidators();
+            this.form.get('categoryId').setValidators(null);
+            this.form.get('rule_name').setValidators([Validators.required]);
+            this.form.get('error_message').setValidators([Validators.required]);
+            this.form.get('sourceFields').setValidators([Validators.required]);
+            this.form.get('standard_function').setValidators([Validators.required]);
         }
         this.form.updateValueAndValidity();
     }
@@ -315,6 +330,16 @@ export class NewBusinessRulesComponent implements OnInit {
                         fieldDescri: field.fieldDescri
                     });
                 });
+                this.targetFieldsObject = {
+                    labelKey: 'fieldDescri',
+                    valueKey: 'fieldId',
+                    list: this.fieldsList
+                }
+                this.sourceFieldsObject = {
+                    labelKey: 'fieldDescri',
+                    valueKey: 'fieldId',
+                    list: this.fieldsList
+                }
                 resolve();
             } catch (error) {
                 reject(error)
@@ -332,6 +357,17 @@ export class NewBusinessRulesComponent implements OnInit {
                 keys.forEach((key) => {
                     this.fieldsList.push(metadataModeleResponse.headers[key])
                 });
+
+                this.targetFieldsObject = {
+                    labelKey: 'fieldDescri',
+                    valueKey: 'fieldId',
+                    list: this.fieldsList
+                }
+                this.sourceFieldsObject = {
+                    labelKey: 'fieldDescri',
+                    valueKey: 'fieldId',
+                    list: this.fieldsList
+                }
             });
     }
 
@@ -353,6 +389,7 @@ export class NewBusinessRulesComponent implements OnInit {
         const txtfield = document.getElementById('fieldsInput') as HTMLInputElement;
         txtfield.value = '';
     }
+
 
     /**
      * function to remove the value
@@ -448,6 +485,8 @@ export class NewBusinessRulesComponent implements OnInit {
         }
 
         this.form.controls.udrTreeData.setValue(finalObject);
+        console.log(this.form.value);
+
         this.dialogRef.close({ formData: this.form.value, tempId: this.tempRuleId })
     }
 
@@ -457,7 +496,15 @@ export class NewBusinessRulesComponent implements OnInit {
     }
 
     get isUDR() {
-        return this.form.controls.rule_type.value === 'BR_CUSTOM_SCRIPT';
+        return this.form.controls.rule_type.value === BusinessRuleType.BR_CUSTOM_SCRIPT;
+    }
+
+    get isTransformationRule() {
+        return this.form.controls.rule_type.value === BusinessRuleType.BR_TRANSFORMATION_RULE;
+    }
+
+    get isTransformationLookupRule() {
+        return this.form.controls.rule_type.value === BusinessRuleType.BR_TRANSFORMATION_LOOKUP_RULE;
     }
 
     /**
@@ -608,6 +655,21 @@ export class NewBusinessRulesComponent implements OnInit {
 
     formatLabel(value) {
         return `${value}`;
+    }
+
+    setTransformationFormData(transformationData: TransformationFormData) {
+        const {
+            targetFields,
+            sourceFields,
+            excludeScript,
+            includeScript,
+            selectedTargetFields
+        } = transformationData;
+        this.form.controls.targetFields.setValue(selectedTargetFields.map(item => item[this.targetFieldsObject.valueKey]).join(','));
+        this.form.controls.targetFields.setValue(targetFields);
+        this.form.controls.sourceFields.setValue(sourceFields);
+        this.form.controls.excludeScript.setValue(excludeScript);
+        this.form.controls.includeScript.setValue(includeScript);
     }
 }
 
