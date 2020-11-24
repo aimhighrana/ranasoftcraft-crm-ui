@@ -11,23 +11,20 @@ import { AddTileComponent } from '@modules/shared/_components/add-tile/add-tile.
 describe('ReportListComponent', () => {
   let component: ReportListComponent;
   let fixture: ComponentFixture<ReportListComponent>;
-  let reportService: jasmine.SpyObj<ReportService>;
+  let reportService: ReportService;
   beforeEach(async(() => {
-    const spyObj = jasmine.createSpyObj('ReportService',['reportList']);
     TestBed.configureTestingModule({
       declarations: [ ReportListComponent, BreadcrumbComponent, AddTileComponent ],
       imports:[ HttpClientModule, AppMaterialModuleForSpec],
-      providers: [
-        {provide: ReportService, useValue: spyObj}
-      ]
+      providers: [ ReportService ]
     })
     .compileComponents();
-    reportService = TestBed.inject(ReportService) as jasmine.SpyObj<ReportService>;
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ReportListComponent);
     component = fixture.componentInstance;
+    reportService = fixture.debugElement.injector.get(ReportService);
   });
 
   it('should create', () => {
@@ -36,9 +33,15 @@ describe('ReportListComponent', () => {
 
   it(`reportsList(), get report service`,async(()=>{
     const returnData: ReportList[] = [];
-    reportService.reportList.and.returnValue(of(returnData));
+    spyOn(reportService,'reportList').and.returnValue(of(returnData));
     component.reportsList();
     expect(reportService.reportList).toHaveBeenCalled();
   }));
 
+  it('delete(), should delete the report', async(() => {
+    const reportId = '8756787'
+    spyOn(reportService,'deleteReport').withArgs(reportId).and.returnValue(of(true));
+    component.delete(reportId);
+    expect(reportService.deleteReport).toHaveBeenCalledWith(reportId);
+  }));
 });

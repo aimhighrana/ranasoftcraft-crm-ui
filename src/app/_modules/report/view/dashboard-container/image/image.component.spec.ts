@@ -3,16 +3,20 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ImageComponent } from './image.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { WidgetImageModel } from '../../../_models/widget';
+import { WidgetHeader, WidgetImageModel } from '../../../_models/widget';
+import { WidgetService } from '@services/widgets/widget.service';
+import { of } from 'rxjs';
 
 describe('ImageComponent', () => {
   let component: ImageComponent;
   let fixture: ComponentFixture<ImageComponent>;
   let htmlnative: HTMLElement;
+  let widgetServiceSpy : WidgetService;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ImageComponent ],
       imports:[AppMaterialModuleForSpec,HttpClientTestingModule],
+      providers: [ WidgetService ]
     })
     .compileComponents();
   }));
@@ -21,6 +25,7 @@ describe('ImageComponent', () => {
     fixture = TestBed.createComponent(ImageComponent);
     component = fixture.componentInstance;
     htmlnative = fixture.nativeElement;
+    widgetServiceSpy = fixture.debugElement.injector.get(WidgetService);
   });
 
   it('should create', () => {
@@ -45,5 +50,21 @@ describe('ImageComponent', () => {
     fixture.detectChanges();
     expect(htmlnative.getElementsByClassName('img-content').length).toEqual(1, 'Img tag should be create');
     // expect((htmlnative.getElementsByClassName('img-content').item(0) as HTMLDivElement).style.background).toContain(mockUrl, `Img src should be containt equal to ${mockUrl}`);
+  }));
+
+  it('getImageMetadata(), should return image meta data', async(() => {
+    const res = {widgetId:76556454} as WidgetImageModel;
+    component.widgetId = 76556454;
+    spyOn(widgetServiceSpy,'getimageMetadata').withArgs(component.widgetId).and.returnValue(of(res));
+    component.getImageMetadata();
+    expect(widgetServiceSpy.getimageMetadata).toHaveBeenCalledWith(component.widgetId);
+  }));
+
+  it('getHeaderMetaData(), should return header meta data', async(() => {
+    const res = {widgetId:87876765} as WidgetHeader;
+    component.widgetId = 87876765;
+    spyOn(widgetServiceSpy,'getHeaderMetaData').withArgs(component.widgetId).and.returnValue(of(res));
+    component.getHeaderMetaData();
+    expect(widgetServiceSpy.getHeaderMetaData).toHaveBeenCalledWith(component.widgetId);
   }));
 });

@@ -42,7 +42,7 @@
         </mat-step>
 
         <!-- Step 1 -->
-        <mat-step>
+        <!-- <mat-step>
             <ng-template matStepLabel></ng-template>
             <div class="f-col">
                 <pros-search-input [placeholder]="'Search modules'" (value)="search($event,'module')">
@@ -64,13 +64,13 @@
                     </ng-container>
                 </mat-nav-list>
             </div>
-        </mat-step>
+        </mat-step> -->
 
         <!-- Name your dataset && map headers-->
         <mat-step>
             <ng-template matStepLabel></ng-template>
             <div class="f-col">
-                <pros-form-input [value]="requestForm.value.objectDesc" [disabled]="requestForm.value.objectId"
+                <pros-form-input [value]="requestForm.controls.objectDesc.value"
                     [label]="'Module name'" [placeholder]="'Module name'" (valueChange)="setObjectDescription($event)"
                     [hint]="'In MDO module is a dataset'">
                 </pros-form-input>
@@ -130,8 +130,8 @@
         <mat-step>
             <ng-template matStepLabel></ng-template>
             <div class="f-col">
-                <pros-form-input [placeholder]="'Schema name'" [label]="'Schema name'"
-                    (valueChange)="setschemaName($event)" [hint]="'Scehma is a collection of business rules'">
+                <pros-form-input [value]="requestForm.get('core_schema').value.discription" [placeholder]="'Schema name'" [label]="'Schema name'"
+                    (valueChange)="setschemaName($event)" [hint]="'Scehma is a collection of business rules'" [disabled]="isdisabled(requestForm.controls.schemaId.value)">
                 </pros-form-input>
                 <mat-error *ngIf="!isSchemaSet(requestForm.get('core_schema').value)">
                     Schema name is required
@@ -146,7 +146,8 @@
                 <div class="f-col temp-field">
                     <mat-label>Threshold</mat-label>
                     <mat-slider color="primary" [thumbLabel]="requestForm.controls.threshold.value"
-                        [value]="requestForm.controls.threshold.value" (change)="setValueToForm('threshold',$event)">
+                        [value]="requestForm.controls.threshold.value" [disabled] = "isdisabled(requestForm.get('core_schema').value.discription)"
+                        (change)="setValueToForm('threshold',$event)">
                     </mat-slider>
                 </div>
             </div>
@@ -251,7 +252,9 @@
                 <div *ngFor="let subscriber of subscribersList;let l=index" class="f-row colunm-box rule-border-row">
                     <div class="col">
                         <mat-card-header>
-                            <div mat-card-avatar>{{subscriber.initials}}</div>
+                            <div mat-card-avatar>
+                                {{shortName(subscriber.fName, subscriber.lName)}}
+                            </div>
                         </mat-card-header>
                     </div>
                     <div class="col col-x4">
@@ -259,56 +262,72 @@
                             <mat-card-title mat-line>{{subscriber.fullName}}</mat-card-title>
                         </mat-card-header>
                     </div>
-                    <div class="col col-x4">
-                        <mat-form-field appearance="outline" class="mat-form-item">
-                            <mat-select [(ngModel)]="subscriber.role"
-                                (selectionChange)="updateRole($event,subscriber,l)">
-                                <mat-option value="isAdmin">Admin</mat-option>
-                                <mat-option value="isReviewer">Reviewer</mat-option>
-                                <mat-option value="isViewer">Viewer</mat-option>
-                                <mat-option value="isEditer">Editer</mat-option>
-                            </mat-select>
-                        </mat-form-field>
+
+                    <div class="col col-x4" [matMenuTriggerFor]="subscriberlist">
+                        <button mat-stroked-button *ngIf="subscriber.isAdmin">Admin <mat-icon fontSet="mdo-icons">
+                            menu-arrow</mat-icon></button>
+                        <button mat-stroked-button *ngIf="subscriber.isReviewer">Reviewer <mat-icon fontSet="mdo-icons">
+                            menu-arrow</mat-icon></button>
+                        <button mat-stroked-button *ngIf="subscriber.isViewer">Viewer <mat-icon fontSet="mdo-icons">
+                            menu-arrow</mat-icon></button>
+                        <button mat-stroked-button *ngIf="subscriber.isEditer">Editer <mat-icon fontSet="mdo-icons">
+                            menu-arrow</mat-icon></button>
+
                     </div>
+
+                    <mat-menu #subscriberlist="matMenu" direction="right">
+                        <mat-nav-list>
+                            <mat-list-item *ngFor="let role of roles"
+                                (click)="updateRole(role, subscriber,l)">
+                                {{ role }}
+                            </mat-list-item>
+                        </mat-nav-list>
+                    </mat-menu>
+
                     <div class="col col-x8 text-end">
                         <mat-chip-list>
-                            <mat-chip [matMenuTriggerFor]="existingFieldMenu" class="mdo-filter-matchip"
-                                *ngFor="let data of subscriber.filterFieldIds;let s=index"
-                                (click)="setActiveChip(data)">
-                                <ng-container (click)="setActiveChip(data)">
-                                    <!-- {{data.fieldDescription}}:{{data.selectedValues.length}} -->
-                                    {{data.fieldDescription}}:{{getFieldValueCount(data)}}
-                                    <mat-icon matChipRemove (click)="removeAllocation(s,l)" prosClickStopPropagation>
-                                        clear
+                            <ng-template ngFor let-ctrl [ngForOf]="subscriber.filterCriteria">
+                                <mat-chip class="mdo-filter-matchip" disableRipple="true"
+                                    [matMenuTriggerFor]="appliedfiltermenu" (click)="loadDropValues(ctrl)">
+                                    <label>
+                                        {{ ctrl.filterCtrl ? ctrl.filterCtrl.fldCtrl.fieldDescri : 'Unknown' }}
+                                        :
+                                    </label>
+                                    <ng-template [ngIf]="ctrl.filterCtrl && ctrl.filterCtrl.selectedValues.length >= 1">
+                                        <span class="info">
+                                            {{ prepareTextToShow(ctrl) }}
+                                        </span>
+                                    </ng-template>
+                                    <mat-icon matChipRemove (click)="removeAllocation(ctrl, subscriber.sno)">clear
                                     </mat-icon>
-                                </ng-container>
-                            </mat-chip>
+                                </mat-chip>
+                            </ng-template>
 
-                            <mat-chip class="mdo-filter-matchip" (click)="reInilize = !reInilize" disableRipple="true"
-                                [matMenuTriggerFor]="appliedfiltermenu">
+                            <mat-chip class="mdo-filter-matchip" disableRipple="true"
+                                [matMenuTriggerFor]="addfiltermenu" (click)="reInilize = !reInilize">
                                 <mat-icon fontSet="mdo-icons">filter-add</mat-icon>
                             </mat-chip>
+
                         </mat-chip-list>
 
-                        <mat-menu #appliedfiltermenu="matMenu">
-                            <pros-add-filter-menu [reInilize]="reInilize"
-                                [fieldMetadata]="requestForm.controls.fields.value"
-                                [moduleId]="requestForm.value.objectId"
-                                (evtReadyForApply)="makeFilterControl($event,subscriber,l)">
-                            </pros-add-filter-menu>
-                        </mat-menu>
-
                         <!-- Append dynamic filter MatMenu -->
-                        <mat-menu #existingFieldMenu="matMenu">
-                            <pros-filter-values *ngIf="activeChipValue && activeChipValue.fldCtrl"
-                                [moduleId]="requestForm.value.objectId"
-                                [fieldId]="activeChipValue.fldCtrl.fieldId"
-                                [checkedValue]="activeChipValue.selectedValues"
-                                (selectedValues)="updateFilterCriteria($event,l)">
+ 
+                        <mat-menu #appliedfiltermenu="matMenu">
+                            <pros-filter-values (selectedValues)="updateFilterCriteria($event, subscriber.sno)"
+                                [moduleId]="requestForm.controls.objectId.value"
+                                [fieldId]="loadDopValuesFor ? loadDopValuesFor.fieldId : ''"
+                                [checkedValue]="loadDopValuesFor ? loadDopValuesFor.checkedValue : []">
                             </pros-filter-values>
                         </mat-menu>
-                        <span class="f-col-spacer-half"></span>
-                        <span class="f-spacer"></span>
+
+                        <mat-menu #addfiltermenu="matMenu">
+                            <pros-add-filter-menu [moduleId]="requestForm.controls.objectId.value"
+                                (evtReadyForApply)="makeFilterControl($event, l)" [reInilize]="reInilize">
+                            </pros-add-filter-menu>
+                        </mat-menu>
+                    </div>
+
+                    <div class="col mat-item-end">
                         <button mat-button (click)="deleteSubscriber(l)">
                             <mat-icon fontSet="mdo-icons"> recycle-bin</mat-icon>
                         </button>
@@ -333,25 +352,35 @@
 
                 <mat-divider class="dashed-divider"></mat-divider>
 
+                <!-- Schedule schema -->
                 <div class="f-row schedule-row">
+                    <!-- in case of existing schedule, will show edit button and toggle-->
+                <ng-template [ngIf]="canEditSchedule" [ngIfElse]="addSchedule">
+                    <mat-slide-toggle color="primary" [checked]="currentSchedule.isEnable" (change)="toggleScheduleStatus($event)">
+                        Enable schedule
+                    </mat-slide-toggle>
                     <span class="f-spacer"></span>
-                    <ng-container *ngIf="currentSchedule; else addSchedule">
-                        <button mat-flat-button color="primary" (click)="openAddScheduleSideSheet()">
-                            <mat-icon>schedule</mat-icon> Edit schedule
-                        </button>
-                    </ng-container>
-                    <ng-template #addSchedule>
-                        <button mat-flat-button color="primary" (click)="openAddScheduleSideSheet()">
-                            <mat-icon>schedule</mat-icon> Add schedule
-                        </button>
-                    </ng-template>
+                    <button mat-flat-button color="primary" (click)="openScheduleSideSheet()">
+                        <mat-icon fontSet="mdo-icons"> form-time</mat-icon> Edit schedule
+                    </button>
+                </ng-template>
+
+                <!-- in case of there is no schedule, will show only add button -->
+                <ng-template #addSchedule>
+                    <span class="f-spacer"></span>
+                    <button mat-flat-button color="primary" (click)="openScheduleSideSheet()">
+                        <mat-icon fontSet="mdo-icons"> form-time</mat-icon> Add schedule
+                    </button>
+                </ng-template>
                 </div>
-                <!-- <pros-schedule-tab [schemaId]="123" (updateCurrentSchedule)="updateCurrentSchedule($event)"></pros-schedule-tab> -->
+
             </div>
         </mat-step>
     </mat-horizontal-stepper>
     <div class="row-spacer"></div>
+
     <!-- navigation buttons -->
+
     <div class="f-row">
         <button mat-flat-button (click)="closeDialog()">Cancel</button>
 

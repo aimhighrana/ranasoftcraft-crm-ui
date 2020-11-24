@@ -14,8 +14,9 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GlobaldialogService } from '@services/globaldialog.service';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { FormInputAutoselectComponent } from '@modules/shared/_components/form-input-autoselect/form-input-autoselect.component';
-import { CoreSchemaBrInfo } from '@modules/admin/_components/module/business-rules/business-rules.modal';
-import { DataSource } from '@models/schema/schema';
+import { CoreSchemaBrInfo, DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { AddFilterOutput, DataSource } from '@models/schema/schema';
+import { FilterCriteria } from '@models/schema/schemadetailstable';
 
 
 describe('UploadDatasetComponent', () => {
@@ -196,13 +197,6 @@ describe('UploadDatasetComponent', () => {
     expect(component.headerFieldsList.length).toEqual(3);
   }))
 
-
-  it(`setActiveChip(), should set current chip data as active`, async(() => {
-    component.setActiveChip({});
-    expect(component.activeChipValue).not.toBeNull();
-    expect(component.activeChipValue).not.toBeUndefined();
-  }));
-
   it(`updateFilterCriteria(), should update current filter value`, async(() => {
     component.subscribersList.push({
       sno: 5456667,
@@ -226,7 +220,7 @@ describe('UploadDatasetComponent', () => {
     component.subscribersList.push(subscriber);
 
     component.updateRole({ value: 'isAdmin' }, subscriber);
-    expect(component.subscribersList[0].role).toEqual('isAdmin');
+    expect(component.subscribersList[0].sno).toEqual(5456667);
   }));
 
   it(`setValueToForm(), should set requestform values`, async(() => {
@@ -312,4 +306,51 @@ describe('UploadDatasetComponent', () => {
     expect(component.progressBar).toEqual(100 / component.headerText.length);
   });
 
+  it('prepateTextToShow(), should prepare text to show over mat-chips', async () => {
+    const ctrl: FilterCriteria = {
+      fieldId: 'MaterialType',
+      values: ['123', '456'],
+      type: 'DROPDOWN',
+      filterCtrl: {
+        selectedValues: [
+          {
+            CODE: 'ABC',
+            FIELDNAME: 'MaterialType'
+          } as DropDownValue
+        ]
+      } as AddFilterOutput
+    }
+    const result = component.prepareTextToShow(ctrl);
+    expect(result).toEqual('ABC');
+  })
+
+  it('loadDropValues(), should load dropdown values of selected filters', async() => {
+    const fldc: FilterCriteria = {
+      fieldId: 'MaterialType',
+      values: ['123', '456'],
+      type: 'DROPDOWN',
+      filterCtrl: {
+        selectedValues: [
+          {
+            CODE: 'ABC',
+            FIELDNAME: 'MaterialType'
+          } as DropDownValue
+        ]
+      } as AddFilterOutput
+    }
+    component.loadDropValues(fldc);
+    expect(component.loadDopValuesFor.checkedValue.length).toEqual(2);
+  });
+
+  it('shortName(), should return initals', () => {
+    let fName = 'Ashish';
+    let lName = 'Goyal';
+    let initials = component.shortName(fName, lName);
+    expect(initials).toEqual('AG');
+
+    fName = 'Ashish';
+    lName = '';
+    initials = component.shortName(fName, lName);
+    expect(initials).toEqual('');
+  })
 });

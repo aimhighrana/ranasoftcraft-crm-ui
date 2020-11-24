@@ -6,11 +6,14 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { FormInputComponent } from '@modules/shared/_components/form-input/form-input.component';
+import { SchemaVariantsModel } from '@models/schema/schemalist';
+import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
+import { of } from 'rxjs';
 
 describe('SaveVariantDialogComponent', () => {
   let component: SaveVariantDialogComponent;
   let fixture: ComponentFixture<SaveVariantDialogComponent>;
-
+  let schemaVariantServiceSpy : SchemaVariantService;
   const mockDialogRef = {
     close: jasmine.createSpy('close')
   };
@@ -22,7 +25,8 @@ describe('SaveVariantDialogComponent', () => {
           provide: MatDialogRef,
           useValue: mockDialogRef
         }, { provide: MAT_DIALOG_DATA, useValue: {}
-        }
+        },
+        SchemaVariantService
       ],
       imports:[
         HttpClientTestingModule, RouterTestingModule, AppMaterialModuleForSpec
@@ -34,10 +38,23 @@ describe('SaveVariantDialogComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SaveVariantDialogComponent);
     component = fixture.componentInstance;
-    // fixture.detectChanges();
-  });
-
+    schemaVariantServiceSpy = fixture.debugElement.injector.get(SchemaVariantService);  });
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('variantNameChange(), changed variant name', async(() => {
+    component.schemaVarInfo = {variantId:'876564', variantName:'test'} as SchemaVariantsModel;
+    component.variantNameChange('Test');
+    expect(component.schemaVarInfo.variantName).toEqual('Test');
+  }));
+
+  it('saveUpdateSchemaVariant(), Save update variants', async(() => {
+    component.schemaVarInfo = {variantId:'876564', variantName:'test'} as SchemaVariantsModel;
+    const res = '98675433';
+    spyOn(schemaVariantServiceSpy,'saveUpdateSchemaVariant').withArgs([component.schemaVarInfo]).and.returnValue(of(res));
+    component.saveUpdateSchemaVariant();
+    expect(schemaVariantServiceSpy.saveUpdateSchemaVariant).toHaveBeenCalledWith([component.schemaVarInfo]);
+  }));
+
 });

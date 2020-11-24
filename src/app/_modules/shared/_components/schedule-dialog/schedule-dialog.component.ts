@@ -77,11 +77,6 @@ export class ScheduleDialogComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
 
     this.createForm();
-    if (this.schemaId) {
-      this.getScheduleInfo(this.schemaId);
-    } else if(this.data.currentSchedule) {
-      this.setValueForFormControl(this.data.currentSchedule);
-    }
 
     this.form.controls.schemaSchedulerRepeat.valueChanges.subscribe((repeatValue) => {
       this.form.controls.weeklyOn.setValidators(null);
@@ -124,6 +119,11 @@ export class ScheduleDialogComponent implements OnInit, OnDestroy {
       this.form.controls.occurrenceVal.updateValueAndValidity();
       this.form.controls.endOn.updateValueAndValidity();
     });
+
+    if(this.data.currentScheduler) {
+      this.scheduleInfo = this.data.currentScheduler
+      this.setValueForFormControl(this.scheduleInfo);
+    }
   }
 
   /**
@@ -144,7 +144,6 @@ export class ScheduleDialogComponent implements OnInit, OnDestroy {
     })
   }
 
-
   /**
    * Getter fuinction to convert the hours text to metric
    */
@@ -161,7 +160,6 @@ export class ScheduleDialogComponent implements OnInit, OnDestroy {
   setValue(field, value) {
     this.form.controls[field].setValue(value);
   }
-
 
   /**
    * Function to submit form for scheduler..

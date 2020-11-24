@@ -21,25 +21,18 @@
                         <label>Role:</label> <span class="info">{{(selectedRoleType)? selectedRoleType: 'All'}}</span>
                     </mat-chip>
                 </mat-chip-list>
-                <!-- <mat-menu #roleTypes="matMenu" class="navigation-menu">
-                    <ng-container *ngFor="let type of roles">
-                        <button mat-menu-item 
-                        (click)="selectCurrentRole(type)">{{type}}</button>
-                    </ng-container>
-                </mat-menu> -->
             </div>
             <div class="row-spacer"></div>
         </div>
     </div>
-
     <div class="f-col businessrule-listing">
         <div class="f-col mdo-justify">
             <mat-list role="list" class="rule-list">
                 <mat-list-item role="listitem" *ngFor="let subscriber of filteredSubscribers">
                     <div class="mat-line">
                         <mat-card-header>
-                            <div mat-card-avatar>{{subscriber.initials}}</div>
-                            <mat-card-title mat-line>{{subscriber.fName}} {{subscriber.lName}} </mat-card-title>
+                            <div mat-card-avatar>{{shortName(subscriber.fName, subscriber.lName) | uppercase}}</div>
+                            <mat-card-title mat-line>{{subscriber.fullName}} </mat-card-title>
                         </mat-card-header>
                     </div>
                     <span class="f-spacer"></span>
@@ -49,7 +42,6 @@
                                 check-mark
                             </mat-icon>
                         </ng-container>
-
                         <ng-template #addBtn>
                             Add
                         </ng-template>
@@ -59,49 +51,3 @@
         </div>
     </div>
 </mat-card>
-
-
-<!-- old code start here -->
-<!-- <div class="root">
-    <div class="f-row breadcrum-toolbar">
-        <button mat-button (click)="closeDialogComponent()">
-            <mat-icon>clear</mat-icon>
-        </button>
-        <div class="col-spacer"></div>
-        <div class="f-row mdo-constrained-right">
-            <div class="display-heading-large">Collaborators
-            </div>
-            <span class="f-spacer"></span>
-            <button mat-flat-button color="primary" (click)="save();$event.stopPropagation()">Save</button>
-        </div>
-    </div>
-    <div class="row-spacer"></div>
-    <div class="f-col mdo-justify">
-        <form [formGroup]="form">
-            <div class="mdo-form-field">
-                <mat-label>Add Collaborators</mat-label>
-                <mat-form-field appearance="outline">
-                    <input matInput class="mat-input" [matAutocomplete]="auto" formControlName="field">
-                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayWith" (optionSelected)="addSelectedField($event)">
-                        <mat-option *ngFor="let user of subscribers" [value]="user">
-                            {{user.fullName}}
-                        </mat-option>
-                    </mat-autocomplete>
-                </mat-form-field>
-                <mat-error *ngIf="form.controls.field.errors && form.controls.field.errors.required">select a subscriber</mat-error>
-            </div>
-            <div class="mdo-form-field">
-                <mat-label>Permissions</mat-label>
-                <mat-form-field appearance="outline">
-                    <mat-select appearance="outline" formControlName="role" (selectionChange)="setPermissions($event)">
-                        <mat-option value="Admin">Admin</mat-option>
-                        <mat-option value="Reviewer">Reviewer</mat-option>
-                        <mat-option value="Viewer">Viewer</mat-option>
-                        <mat-option value="Editer">Editor</mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <mat-error *ngIf="form.controls.role.errors && form.controls.role.errors.required">select a permission</mat-error>
-            </div>
-        </form>
-    </div>
-</div> -->

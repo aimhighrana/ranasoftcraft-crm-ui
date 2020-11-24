@@ -190,53 +190,17 @@ describe('GenericTableComponent', () => {
   it('should set table data', () => {
     component.gridData = sampleTableData;
     expect(component.displayedColumns.length).toBeGreaterThanOrEqual(0);
-    expect(component.dataSource.length).toBeGreaterThanOrEqual(0)
+    expect(component.dataSource.length).toBeGreaterThanOrEqual(0);
+
+    component.gridData = { DATA: [ ]};
+    expect(component.displayedColumns.length).toBeGreaterThanOrEqual(0);
+
+    component.gridData = null;
+    expect(component.gridData).toBeUndefined();
   });
 
   it('should call getText()', () => {
     const sampleData = {
-      MATERIALNO: {
-        valueCode: null,
-        textdisplay: 'ERSA2279',
-        multiSelect: false,
-        imgPath: null,
-        allMultiselectvalues: null
-      },
-      objnr: {
-        valueCode: null,
-        textdisplay: '991426058912542910',
-        multiSelect: false,
-        imgPath: null,
-        allMultiselectvalues: null
-      },
-      PARENTOBJNO: {
-        valueCode: null,
-        textdisplay: null,
-        multiSelect: false,
-        imgPath: null,
-        allMultiselectvalues: null
-      },
-      LANGUAGE_G: {
-        valueCode: 'CS',
-        textdisplay: 'Czech',
-        multiSelect: false,
-        imgPath: null,
-        allMultiselectvalues: null
-      },
-      OBJECTTYPE: {
-        valueCode: null,
-        textdisplay: '1005',
-        multiSelect: false,
-        imgPath: null,
-        allMultiselectvalues: null
-      },
-      D12121: {
-        valueCode: null,
-        textdisplay: null,
-        multiSelect: false,
-        imgPath: null,
-        allMultiselectvalues: null
-      },
       MSGFN: {
         valueCode: null,
         textdisplay: '009',
@@ -251,19 +215,12 @@ describe('GenericTableComponent', () => {
         imgPath: null,
         allMultiselectvalues: null
       },
-      MATERIALDESCRIPTION: {
-        valueCode: null,
-        textdisplay: 'ABRASIVE',
-        multiSelect: false,
-        imgPath: null,
-        allMultiselectvalues: null
-      }
     }
 
     expect(component.getText(sampleData, 'MSGFN')).toBe('009');
     expect(component.getText(sampleData, 'sample')).toBe('');
+    expect(component.getText(sampleData, 'AV1')).toBe('-');
   });
-
 
   it('should call getColumnDescription()', () => {
     component.gridData = sampleTableData;

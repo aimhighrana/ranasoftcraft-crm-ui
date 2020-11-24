@@ -154,6 +154,7 @@ export class NewBusinessRulesComponent implements OnInit {
             });
 
             this.form.controls.rule_type.disable();
+            this.form.controls.weightage.disable();
             if (udrTreeData && udrTreeData.blocks) {
                 const temp: UDRObject[] = [];
                 udrTreeData.blocks.map((block) => {

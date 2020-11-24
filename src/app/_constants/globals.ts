@@ -5,7 +5,8 @@ export enum ROLENAMES {
     EDITOR = 'Editer'
 }
 
-export enum GLOBALCONSTANTS{
+
+export enum GLOBALCONSTANTS {
     ADD = 'add',
     REMOVE = 'remove',
     SCHEMA_SCHEDULER = 'schema_scheduler'

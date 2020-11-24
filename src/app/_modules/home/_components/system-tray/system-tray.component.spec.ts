@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
@@ -13,12 +14,14 @@ describe('SystemTrayComponent', () => {
   let updateNotiticationSpy;
   let deleteNotificationSpy;
   let jobqueueSpy;
+  let router: Router;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [SystemTrayComponent],
       imports: [AppMaterialModuleForSpec, RouterTestingModule]
     })
       .compileComponents();
+      router = TestBed.inject(Router);
   }));
 
   beforeEach(() => {
@@ -99,6 +102,10 @@ describe('SystemTrayComponent', () => {
     component.ngOnInit();
     expect(userSpy).toHaveBeenCalled();
     expect(notificationSpy).toHaveBeenCalled();
+
+    component.userDetails = null;
+    component.ngOnInit();
+    expect(component.ngOnInit).toBeTruthy();
   });
 
   it('should call updateNotification', async () => {
@@ -142,5 +149,12 @@ describe('SystemTrayComponent', () => {
     expect(jobqueueSpy).toHaveBeenCalled();
     expect(component.jobQueueData[0].initiatedBy).toEqual('A');
     expect(component.jobQueueData.length).toEqual(1)
+  });
+
+  it('close(), should close the current router' , () => {
+    spyOn(router, 'navigate');
+    component.close();
+    expect(component.close).toBeTruthy();
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: null }}]);
   });
 });

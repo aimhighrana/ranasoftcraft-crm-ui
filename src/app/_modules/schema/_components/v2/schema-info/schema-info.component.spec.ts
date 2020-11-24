@@ -16,6 +16,9 @@ import { SchemaVariantService } from '@services/home/schema/schema-variant.servi
 import { SchemaService } from '@services/home/schema.service';
 import { AddFilterOutput } from '@models/schema/schema';
 import { SchemaScheduler } from '@models/schema/schemaScheduler';
+import { FormInputComponent } from '@modules/shared/_components/form-input/form-input.component';
+import { ScheduleComponent } from '@modules/shared/_components/schedule/schedule.component';
+import { DatePickerFieldComponent } from '@modules/shared/_components/date-picker-field/date-picker-field.component';
 
 describe('SchemaInfoComponent', () => {
   let component: SchemaInfoComponent;
@@ -27,7 +30,7 @@ describe('SchemaInfoComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [SchemaInfoComponent, FilterValuesComponent, AddFilterMenuComponent],
+      declarations: [SchemaInfoComponent, FilterValuesComponent, AddFilterMenuComponent, FormInputComponent, ScheduleComponent, DatePickerFieldComponent ],
       imports: [
         AppMaterialModuleForSpec, HttpClientTestingModule, RouterTestingModule
       ]
@@ -238,7 +241,7 @@ describe('SchemaInfoComponent', () => {
     component.schemaId = '2452141452';
     spyOn(router, 'navigate');
     component.openScheduleSideSheet();
-    expect(router.navigate).toHaveBeenCalledWith([{outlets: {sb: `sb/schema/schedule/2452141452`}}])
+    expect(router.navigate).toHaveBeenCalledWith([{outlets: {sb: `sb/schema/schedule/${component.schemaId}`}}]);
   })
 
   it('getScheduleInfo(), should get schedule info', async() => {
