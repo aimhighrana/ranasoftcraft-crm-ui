@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { LookupComponent } from './lookup.component';
 
@@ -8,7 +9,8 @@ describe('LookupComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LookupComponent ]
+      declarations: [ LookupComponent ],
+      imports: [AppMaterialModuleForSpec]
     })
     .compileComponents();
   }));

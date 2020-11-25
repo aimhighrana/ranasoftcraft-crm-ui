@@ -3,14 +3,14 @@
         <mat-list-item *ngFor="let fld of metadaDrop" prosClickStopPropagation (click)="ctrlFlds(fld)">
             <div class="mat-line" *ngIf="fld.fieldDescri !== null || fld.fieldDescri !== undefined">
                 {{ fld.fieldDescri }}
-            </div> <span class="f-spacer"></span><mat-icon>trending_flat</mat-icon>
+            </div> <span class="f-spacer"></span><mat-icon fontSet="mdo-icons"> arrow-right-alt</mat-icon>
         </mat-list-item>
     </ng-container>
 
     <div class="f-col" *ngIf="activateElement" prosClickStopPropagation>
        <div class="f-row filter-header" prosClickStopPropagation>
             <button mat-button (click)="prevState($event)">
-                <mat-icon>arrow_back</mat-icon>
+                <mat-icon fontSet="mdo-icons"> arrow-back</mat-icon>
             </button>
             <div class="mat-line" *ngIf="activateElement">
                 {{ (activateElement.fieldDescri !== null) ? activateElement.fieldDescri : activateElement.fieldId }}

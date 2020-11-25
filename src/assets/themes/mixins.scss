@@ -548,7 +548,7 @@
         mat-chip {
           font-weight: normal;
           font-size: 0.8rem;
-          padding: 4px 8px;
+          padding: 2px 8px;
           min-height: 24px;
         }
       }
@@ -597,6 +597,13 @@
       min-height: 24px;
       border-radius: 30px;
       font-size: 0.8rem;
+      text-overflow: ellipsis;
+      white-space: pre-line;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      padding: 3px 12px;
 
       .mat-info-icon {
         font-size: 12px;
@@ -613,6 +620,7 @@
     }
 
     mat-chip.mat-chip.mdo-filter-matchip {
+      display: flex;
       height: 36px;
       width: auto;
       padding: 5px;
@@ -632,10 +640,11 @@
       }
 
       .mat-icon.mdo-icons {
-        font-size: 14px;
-        height: 12px;
         display: flex;
         justify-content: center;
+        align-items: center;
+        padding-top: 4px;
+        font-size: 14px;
       }
     }
 
@@ -795,6 +804,37 @@
             width: 12px;
             color: mat-color($foreground-palette, text);
             margin-right: 4px;
+          }
+        }
+      }
+
+      &.tooltip-fields-menu {
+        padding: 8px;
+        border: 1px solid;
+        max-width: 180px;
+
+        .top-tiparrow {
+          display: flex;
+          justify-content: center;
+        }
+
+        .top-tiparrow::before {
+          content: '';
+          border-bottom: 10px solid;
+          border-left: 10px solid transparent;
+          border-right: 10px solid transparent;
+          position: absolute;
+          top: -1px;
+        }
+
+        .mdo-field-tooltip {
+          margin-bottom: 8px;
+          display: flex;
+          flex-direction: column;
+
+          mat-label {
+            font-weight: 500;
+            font-size: 0.8rem;
           }
         }
       }
@@ -1085,6 +1125,11 @@
 
       .mat-expansion-panel-header {
         padding: 0 2px;
+
+        .mat-expansion-indicator::after {
+          padding: 5px;
+          vertical-align: top;
+        }
       }
 
       .mat-expansion-panel-body {
@@ -1231,6 +1276,12 @@
 
   pros-secondary-navbar {
     .root {
+      .nav-tree {
+        .badge {
+          color: mat-color($foreground-palette, secondary-text);
+        }
+      }
+
       .split-col {
         background: mat-color($foreground-palette, divider);
 
