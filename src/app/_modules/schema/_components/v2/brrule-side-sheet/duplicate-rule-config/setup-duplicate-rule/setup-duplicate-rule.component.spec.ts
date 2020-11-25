@@ -90,8 +90,8 @@ describe('SetupDuplicateRuleComponent', () => {
     component.addFieldRecord('fid');
     expect(component.fieldRecords.length).toEqual(1);
 
-    component.setControlValue('addFields', 'duppCriteria', 'Fuzzy', 0);
-    expect(component.fieldRecords.value[0].duppCriteria).toEqual('Fuzzy');
+    component.setControlValue('addFields', 'criteria', 'Fuzzy', 0);
+    expect(component.fieldRecords.value[0].criteria).toEqual('Fuzzy');
 
     component.removeFormArrayRow('addFields', 0);
     expect(component.fieldRecords.length).toEqual(0);
@@ -162,7 +162,7 @@ describe('SetupDuplicateRuleComponent', () => {
 
     const duplicacyField = [{
       fieldId: 'fid',
-      duppCriteria: 'Exact_Match',
+      criteria: 'Exact_Match',
       exclusion: '0',
       inverse: '0',
       weightage: '0',
@@ -171,7 +171,7 @@ describe('SetupDuplicateRuleComponent', () => {
     }];
 
     const duplicacyMaster = [{
-      RuleType: 'OLDEST',
+      ruleType: 'OLDEST',
       fieldId: 'USERMODIFIED',
       RuleId: 'OLDEST1',
       sno: ''
@@ -188,7 +188,7 @@ describe('SetupDuplicateRuleComponent', () => {
 
 
     expect(component.fieldRecords.value[0].sval).toEqual('vendor:supplier');
-    expect(component.masterRecords.value[0].RuleType).toEqual('OLDEST');
+    expect(component.masterRecords.value[0].ruleType).toEqual('OLDEST');
 
     component.initDuplicateRuleForm();
     br.duplicacyField = [];

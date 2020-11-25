@@ -1,5 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { MatInput } from '@angular/material/input';
 import { Router } from '@angular/router';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { Subscription } from 'rxjs';
@@ -13,10 +14,14 @@ export class ExclusionsSidesheetComponent implements OnInit, OnDestroy {
 
   fId: string;
   serachText = '';
+  newGroupActive = false;
+  editText = '';
 
   exclusionControl = new FormControl('');
   synonymsForm: FormGroup ;
   subscription: Subscription;
+
+  @ViewChild('editInput', {static: false}) editInput: MatInput;
 
   constructor(private router: Router,
     private sharedService: SharedServiceService,
@@ -38,6 +43,10 @@ export class ExclusionsSidesheetComponent implements OnInit, OnDestroy {
           this.router.navigate([{ outlets: { outer: null } }]);
         }
       })
+  }
+
+  enableGroupCreation(){
+    this.newGroupActive = true;
   }
 
 
@@ -71,11 +80,18 @@ export class ExclusionsSidesheetComponent implements OnInit, OnDestroy {
    */
   addSynonymGroup() {
 
-    this.synonymsArray.insert(0, this.formBuilder.group({
-      text: '',
-      editActive: true,
-      visible: true
-    }))
+    const newValue = this.editText.replace(/[:, ]/g,'');
+
+    if(newValue){
+     this.synonymsArray.insert(0, this.formBuilder.group({
+       text: this.concatStringLines(newValue),
+       editActive: false,
+       visible: true
+     }));
+
+     this.editText = '';
+     this.newGroupActive = false;
+    }
   }
 
 
@@ -88,9 +104,16 @@ export class ExclusionsSidesheetComponent implements OnInit, OnDestroy {
     const group = this.synonymsArray.at(index);
 
     group.patchValue({
-      text: this.splitStringLines(group.value.text),
       editActive: true
-    })
+    });
+
+    this.newGroupActive = false;
+
+    setTimeout(() => {
+      if(this.editInput){
+        this.editInput.focus()
+      }
+    }, 100);
   }
 
 
@@ -123,16 +146,22 @@ export class ExclusionsSidesheetComponent implements OnInit, OnDestroy {
    * @param value new value
    * @param index synonym index
    */
-  saveSynonymGroup(index) {
+  saveSynonymGroup(index, value) {
 
     const group = this.synonymsArray.at(index);
-    const groupText = this.concatStringLines(group.value.text.replace(/[:,]/g,''));
+    const newValue = value.replace(/[:, ]/g,'');
 
-    group.patchValue({
-        text: groupText,
-        editActive: false,
-        visible: groupText.toLowerCase().indexOf(this.serachText) !== -1
-      })
+    if(newValue) {
+      group.patchValue({
+          text: this.concatStringLines(newValue.replace(/[:,]/g,'')),
+          editActive: false
+        });
+    } else {
+      group.patchValue({
+        editActive: false
+      });
+    }
+
   }
 
   searchWords(searchText){
@@ -163,7 +192,7 @@ export class ExclusionsSidesheetComponent implements OnInit, OnDestroy {
     const exclusionArray = this.exclusionControl.value ? this.exclusionControl.value.trim().replace(/[ ,:]/g,'').split('\n') : [];
     result.ival = exclusionArray.join(',');
     result.exclusion = exclusionArray.length;
-    result.sval = this.synonymsArray.value.map(e => e.text.replace(/[ ]/g, ':')).join(',');
+    result.sval = this.synonymsArray.value.map(e => e.text.trim().replace(/[ ]/g, ':')).join(',');
     console.log(result);
     this.subscription.unsubscribe();
     this.sharedService.setExclusionData(result);

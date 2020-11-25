@@ -85,7 +85,7 @@ export class SetupDuplicateRuleComponent implements OnInit, OnChanges, OnDestroy
 
     this.subscriptions.push(this.sharedService.getExclusionData()
       .subscribe(data => {
-        if (data) {
+        if (data && !data.editActive) {
           this.updateFieldExclusion(data);
         }
       })
@@ -118,7 +118,7 @@ export class SetupDuplicateRuleComponent implements OnInit, OnChanges, OnDestroy
     console.log('duplicacy Master ', duplicacyMaster);
 
     duplicacyField.forEach(field => this.addFieldRecord(field.fieldId, field));
-    duplicacyMaster.forEach(master => this.addMasterRecord(master.RuleType, master));
+    duplicacyMaster.forEach(master => this.addMasterRecord(master.ruleType, master));
 
   }
 
@@ -176,7 +176,7 @@ export class SetupDuplicateRuleComponent implements OnInit, OnChanges, OnDestroy
   createFieldRecord(fId, row?) {
     return this.formBuilder.group({
       fId: [row ? row.fieldId : fId, Validators.required],
-      duppCriteria: [row && row.duppCriteria ? row.duppCriteria : '', Validators.required],
+      criteria: [row && row.criteria ? row.criteria : '', Validators.required],
       exclusion: [row ? row.exclusion : '0'],
       inverse: [row ? row.inverse : '0'],
       weightage: [row ? row.weightage : '0'],
@@ -196,7 +196,7 @@ export class SetupDuplicateRuleComponent implements OnInit, OnChanges, OnDestroy
 
   createMasterRecord(ruleType, row?) {
     return this.formBuilder.group({
-      RuleType: [row ? row.RuleType : ruleType],
+      ruleType: [row ? row.ruleType : ruleType],
       fieldId: [row ? row.fieldId : '', Validators.required],
       RuleId: [row ? row.RuleId : ruleType + (this.masterRecords.value.length + 1)],
       sno: [row ? row.sno : '']
@@ -209,7 +209,7 @@ export class SetupDuplicateRuleComponent implements OnInit, OnChanges, OnDestroy
    */
   addMasterRecord(ruleType, row?) {
 
-    if (!ruleType && !row.RuleType) {
+    if (!ruleType && !row.ruleType) {
       return;
     }
 
@@ -318,7 +318,7 @@ export class SetupDuplicateRuleComponent implements OnInit, OnChanges, OnDestroy
    * @param item selected field details
    */
   exclusionConf(item: FormGroup) {
-    const data = { fId: item.value.fId, exclusion: item.value.exclusion, ival: item.value.ival, sval: item.value.sval };
+    const data = { fId: item.value.fId, exclusion: item.value.exclusion, ival: item.value.ival, sval: item.value.sval, editActive: true };
     this.sharedService.setExclusionData(data)
     this.router.navigate(['', { outlets: { outer: `outer/schema/exclusion/${this.moduleId}/${this.schemaId}` } }]);
   }
@@ -336,7 +336,9 @@ export class SetupDuplicateRuleComponent implements OnInit, OnChanges, OnDestroy
         exclusion: data.exclusion,
         ival: data.ival,
         sval: data.sval
-      })
+      });
+
+      this.sharedService.setExclusionData(null);
 
     }
   }
@@ -348,7 +350,7 @@ export class SetupDuplicateRuleComponent implements OnInit, OnChanges, OnDestroy
 
   setFieldValue(ruleType, fieldId, index) {
     const rulesValue = this.masterRecords.value;
-    if (!rulesValue.some((rule, position) => (position !== index) && (rule.fieldId === fieldId) && (rule.RuleType === ruleType))) {
+    if (!rulesValue.some((rule, position) => (position !== index) && (rule.fieldId === fieldId) && (rule.ruleType === ruleType))) {
       this.setControlValue('mergeRules', 'fieldId', fieldId, index);
     } else {
       this.snackBar.open('Field already added !', 'okay', { duration: 3000 });
