@@ -5,7 +5,7 @@ import {
     MAT_DIALOG_DATA
 } from '@angular/material/dialog';
 import { BusinessRules } from '@modules/admin/_components/module/schema/diw-create-businessrule/diw-create-businessrule.component';
-import { BusinessRuleType, ConditionalOperator, PRE_DEFINED_REGEX, RULE_TYPES, UDRObject } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { BusinessRuleType, ConditionalOperator, PRE_DEFINED_REGEX, RULE_TYPES, TransformationModel, TransformationRuleType, UDRObject } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { MetadataModeleResponse, CategoryInfo, FieldConfiguration, TransformationFormData } from '@models/schema/schemadetailstable';
 import { of, Observable } from 'rxjs';
@@ -23,6 +23,7 @@ import { BlockType } from '@modules/report/_models/widget';
 export class NewBusinessRulesComponent implements OnInit {
 
     form: FormGroup;
+    currentControls: any = {};
     businessRuleTypes: BusinessRules[] = RULE_TYPES;
     preDefinedRegex: Regex[] = PRE_DEFINED_REGEX;
     currentSelectedRule: string;
@@ -92,8 +93,10 @@ export class NewBusinessRulesComponent implements OnInit {
     tempRuleId: string;
 
     transformationData: TransformationFormData;
+    transformationSchema: TransformationModel;
     /**
      * Class contructor
+     * @param snackBar refernce to matSnackbar
      * @param dialogRef refernce to matdialog
      * @param data data recieved from parent
      * @param schemaDetailsService service class
@@ -104,6 +107,18 @@ export class NewBusinessRulesComponent implements OnInit {
         private schemaDetailsService: SchemaDetailsService,
         private snackBar: MatSnackBar
     ) { }
+
+
+    get transformationType() {
+        return TransformationRuleType;
+    }
+
+    get selectedTransformationType() {
+        if(this.form && this.form.controls) {
+            return this.form.controls.transformationRuleType.value;
+        }
+        return '';
+    }
 
     ngOnInit(): void {
         // initialize form Object
@@ -124,7 +139,9 @@ export class NewBusinessRulesComponent implements OnInit {
                 fields,
                 udrTreeData,
                 weightage,
-                categoryId } = this.data.createRuleFormValues;
+                categoryId,
+                transFormationSchema } = this.data.createRuleFormValues;
+            this.patchTransformationFormData(transFormationSchema)
             this.form.patchValue({
                 rule_type,
                 rule_name,
@@ -173,6 +190,26 @@ export class NewBusinessRulesComponent implements OnInit {
         this.initiateAutocomplete();
     }
 
+
+    /**
+     * Patch transformation form data
+     * @param transformationSchema transformation rule details to be passed
+     */
+    patchTransformationFormData(transformationSchema: TransformationModel[]){
+        if(transformationSchema && transformationSchema.length>0){
+            const data: TransformationModel  = transformationSchema[0];
+            const {excludeScript, includeScript, sourceFld, targetFld, transformationRuleType} = data;
+            this.transformationData = {
+                excludeScript,
+                includeScript,
+                sourceFld,
+                targetFld,
+                // selectedTargetFields: []
+            }
+            this.form.controls.transformationRuleType.setValue(transformationRuleType);
+        }
+    }
+
     /**
      * Get all categories from the api
      */
@@ -188,27 +225,31 @@ export class NewBusinessRulesComponent implements OnInit {
      * subscribe to any required control value changes
      */
     initializeForm() {
-        this.form = new FormGroup({
+        const controls = {
             rule_type: new FormControl('', [Validators.required]),
             rule_name: new FormControl('', [Validators.required]),
             error_message: new FormControl('', [Validators.required]),
             standard_function: new FormControl(''),
             regex: new FormControl(''),
             fields: new FormControl(''),
-            sourceFields: new FormControl(''),
-            targetFields: new FormControl(''),
+            sourceFld: new FormControl(''),
+            targetFld: new FormControl(''),
             excludeScript: new FormControl(''),
             includeScript: new FormControl(''),
             udrTreeData: new FormControl(),
             weightage: new FormControl(0, [Validators.required]),
             categoryId: new FormControl(''),
-        });
+            transformationRuleType: new FormControl('')
+        };
 
+        this.currentControls = controls;
+        this.form = new FormGroup(controls);
         // Apply conditional validation based on rule type
         this.form.controls.rule_type.valueChanges.subscribe((selectedRule) => {
             this.applyValidatorsByRuleType(selectedRule);
-        })
+        });
     }
+
 
     /**
      * Patch the selected excel field values
@@ -252,69 +293,36 @@ export class NewBusinessRulesComponent implements OnInit {
 
     /**
      * Apply conditional form validation based on rule type
+     * keep the required field updated based on a selected rule type
+     * loop through the required keys and add validators to all required fields
+     * also nullify validators for all not required fields at the same time
      * @param selectedRule selected rule type
      */
     applyValidatorsByRuleType(selectedRule: string) {
         this.currentSelectedRule = selectedRule;
+        const controlKeys: any[] = Object.keys(this.currentControls);
+        let requiredKeys: string[] = [];
         if (selectedRule === BusinessRuleType.BR_CUSTOM_SCRIPT) {
-            this.form.get('categoryId').setValidators([Validators.required]);
-            this.form.get('rule_name').clearValidators()
-            this.form.get('error_message').clearValidators()
-            this.form.get('fields').clearValidators();
-            this.form.get('regex').clearValidators();
-            this.form.get('standard_function').clearValidators();
-
-            this.form.get('rule_name').setValidators(null);
-            this.form.get('error_message').setValidators(null);
-            this.form.get('fields').setValidators(null);
-            this.form.get('regex').setValidators(null);
-            this.form.get('standard_function').setValidators(null);
-
-            this.form.get('rule_name').setErrors(null);
-            this.form.get('error_message').setErrors(null);
-            this.form.get('fields').setErrors(null);
-            this.form.get('regex').setErrors(null);
-            this.form.get('standard_function').setErrors(null);
+            requiredKeys = ['categoryId'];
         }
         if (selectedRule === BusinessRuleType.BR_REGEX_RULE) {
-            this.form.get('categoryId').setValidators([Validators.required]);
-            this.form.get('rule_name').setValidators([Validators.required])
-            this.form.get('error_message').setValidators([Validators.required])
-            this.form.get('fields').setValidators([Validators.required]);
-            this.form.get('regex').setValidators([Validators.required]);
-            this.form.get('standard_function').setValidators([Validators.required]);
+            requiredKeys = ['categoryId', 'rule_name', 'error_message', 'fields', 'regex', 'standard_function'];
         }
         if (selectedRule === BusinessRuleType.BR_MANDATORY_FIELDS || selectedRule === BusinessRuleType.BR_METADATA_RULE) {
-            this.form.get('categoryId').setValidators([Validators.required]);
-            this.form.get('rule_name').setValidators([Validators.required])
-            this.form.get('error_message').setValidators([Validators.required])
-            this.form.get('fields').setValidators([Validators.required]);
-
-            this.form.get('regex').clearValidators();
-            this.form.get('standard_function').clearValidators();
-            this.form.get('regex').setValidators(null);
-            this.form.get('standard_function').setValidators(null);
-            this.form.get('regex').setErrors(null);
-            this.form.get('standard_function').setErrors(null);
+            requiredKeys = ['categoryId', 'rule_name', 'error_message', 'fields'];
         }
         if(selectedRule === BusinessRuleType.BR_TRANSFORMATION_RULE){
-            this.form.get('categoryId').setValidators(null);
-            this.form.get('standard_function').setValidators(null);
+            requiredKeys = ['rule_name', 'transformationRuleType', 'error_message', 'sourceFld', 'targetFld', 'excludeScript', 'includeScript'];
+        }
 
-            this.form.get('rule_name').setValidators([Validators.required]);
-            this.form.get('error_message').setValidators([Validators.required]);
-            this.form.get('sourceFields').setValidators([Validators.required]);
-            this.form.get('excludeScript').setValidators([Validators.required]);
-            this.form.get('includeScript').setValidators([Validators.required]);
-        }
-        if(selectedRule === BusinessRuleType.BR_TRANSFORMATION_LOOKUP_RULE){
-            this.form.get('categoryId').clearValidators();
-            this.form.get('categoryId').setValidators(null);
-            this.form.get('rule_name').setValidators([Validators.required]);
-            this.form.get('error_message').setValidators([Validators.required]);
-            this.form.get('sourceFields').setValidators([Validators.required]);
-            this.form.get('standard_function').setValidators([Validators.required]);
-        }
+        controlKeys.map((key) => {
+            const index = requiredKeys.findIndex(reqKey => reqKey === key);
+            if(index === -1){
+                this.form.get(key).setValidators(null);
+            } else {
+                this.form.get(key).setValidators([Validators.required]);
+            }
+        })
         this.form.updateValueAndValidity();
     }
 
@@ -485,8 +493,6 @@ export class NewBusinessRulesComponent implements OnInit {
         }
 
         this.form.controls.udrTreeData.setValue(finalObject);
-        console.log(this.form.value);
-
         this.dialogRef.close({ formData: this.form.value, tempId: this.tempRuleId })
     }
 
@@ -501,10 +507,6 @@ export class NewBusinessRulesComponent implements OnInit {
 
     get isTransformationRule() {
         return this.form.controls.rule_type.value === BusinessRuleType.BR_TRANSFORMATION_RULE;
-    }
-
-    get isTransformationLookupRule() {
-        return this.form.controls.rule_type.value === BusinessRuleType.BR_TRANSFORMATION_LOOKUP_RULE;
     }
 
     /**
@@ -659,15 +661,14 @@ export class NewBusinessRulesComponent implements OnInit {
 
     setTransformationFormData(transformationData: TransformationFormData) {
         const {
-            targetFields,
-            sourceFields,
+            targetFld,
+            sourceFld,
             excludeScript,
             includeScript,
             selectedTargetFields
         } = transformationData;
-        this.form.controls.targetFields.setValue(selectedTargetFields.map(item => item[this.targetFieldsObject.valueKey]).join(','));
-        this.form.controls.targetFields.setValue(targetFields);
-        this.form.controls.sourceFields.setValue(sourceFields);
+        this.form.controls.targetFld.setValue(selectedTargetFields.map(item => item[this.targetFieldsObject.valueKey]).join(','));
+        this.form.controls.sourceFld.setValue(sourceFld);
         this.form.controls.excludeScript.setValue(excludeScript);
         this.form.controls.includeScript.setValue(includeScript);
     }

@@ -1,4 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { LookupRuleComponent } from './lookup.component';
 
@@ -8,7 +10,9 @@ describe('LookupRuleComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LookupRuleComponent ]
+      declarations: [ LookupRuleComponent ],
+      imports: [AppMaterialModuleForSpec],
+      providers: [MatSnackBarModule]
     })
     .compileComponents();
   }));

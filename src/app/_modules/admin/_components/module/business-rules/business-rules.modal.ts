@@ -1,6 +1,21 @@
 import { MetadataModel, CategoryInfo } from 'src/app/_models/schema/schemadetailstable';
 import { BlockType } from './user-defined-rule/udr-cdktree.service';
 
+
+export enum TransformationRuleType {
+    LOOKUP = 'LOOKUP',
+    REGEX = 'REGEX'
+}
+export interface TransformationModel {
+    brId: string;
+    sourceFld: string;
+    targetFld: string;
+    excludeScript?: string;
+    includeScript?: string;
+    lookUptable?: string;
+    transformationRuleType: TransformationRuleType.LOOKUP | TransformationRuleType.REGEX;
+    lookUpObjectType?: string;
+}
 export class CoreSchemaBrInfo {
     tempId?: string;
     sno: number;
@@ -31,19 +46,19 @@ export class CoreSchemaBrInfo {
     udrDto?: UdrModel;
     duplicacyField?: any;
     duplicacyMaster?: any;
+    transFormationSchema?: TransformationModel[]
 }
 
 export enum BusinessRuleType {
     BR_MANDATORY_FIELDS = 'BR_MANDATORY_FIELDS',
     BR_METADATA_RULE = 'BR_METADATA_RULE',
     BR_CUSTOM_SCRIPT = 'BR_CUSTOM_SCRIPT',
-    BR_API_RULE =  'BR_API_RULE',
+    BR_API_RULE = 'BR_API_RULE',
     BR_DEPENDANCY_RULE = 'BR_DEPENDANCY_RULE',
     BR_DUPLICATE_RULE = 'BR_DUPLICATE_CHECK',
     BR_EXTERNALVALIDATION_RULE = 'BR_EXTERNALVALIDATION_RULE',
     BR_REGEX_RULE = 'BR_REGEX_RULE',
     BR_TRANSFORMATION_RULE = 'BR_TRANSFORMATION_RULE',
-    BR_TRANSFORMATION_LOOKUP_RULE = 'BR_TRANSFORMATION_LOOKUP_RULE',
 }
 
 export const RULE_TYPES = [
@@ -57,7 +72,6 @@ export const RULE_TYPES = [
     { ruleDesc: 'Regex Rule', ruleId: '', ruleType: BusinessRuleType.BR_REGEX_RULE, isImplemented: true },
     { ruleDesc: 'User Defined Rule', ruleId: '', ruleType: BusinessRuleType.BR_CUSTOM_SCRIPT, isImplemented: true },
     { ruleDesc: 'Transformation Rule', ruleId: '', ruleType: BusinessRuleType.BR_TRANSFORMATION_RULE, isImplemented: true },
-    { ruleDesc: 'Transformation Loopkup Rule', ruleId: '', ruleType: BusinessRuleType.BR_TRANSFORMATION_LOOKUP_RULE, isImplemented: true },
 ];
 
 export const PRE_DEFINED_REGEX = [
@@ -156,7 +170,7 @@ export class Category {
 
 export class ConditionalOperator {
     desc: string;
-    childs:string[];
+    childs: string[];
 }
 
 export class DuplicateRuleModel {

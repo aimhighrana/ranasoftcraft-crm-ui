@@ -172,28 +172,8 @@
                                 [extraOptionLabel]="'Add new rule'" [labelKey]="'brInfo'">
                             </pros-form-input-autoselect>
                         </div>
-                        <!-- 
-                            <div class="col col-x8">
-                            <a class="f-row info-link" [matMenuTriggerFor]="addrulenavigation">[Add business rule
-                                <mat-icon fontSet="mdo-icons" class="mat-head-icon">menu-arrow</mat-icon>]</a>
-                            <mat-menu #addrulenavigation="matMenu" class="navigation-menu">
-                                <button mat-menu-item (click)="openGlobalDialog('existingBR')">Select existing</button>
-                                <button mat-menu-item (click)="openGlobalDialog('createBR')">Create new</button>
-                            </mat-menu>
-                        </div>
-                        <div class="col col-x4">
-                        </div>
-                        <div class="col col-x8">
-                        </div> -->
                     </div>
-                    <div class="f-col empty-state" *ngIf="selectedBusinessRules.length === 0">
-                        <div><img src="./assets/images/empty-table.svg" width="140"></div>
-                    <div class="empty-heading">Nothing to see here</div>
-                    <p class="label-text">You don't have any business rule selected. Type the user's name in the box
-                        above to add one</p>
-                        <button mat-flat-button color="accent" (click)="openGlobalDialog('createBR')">Add business
-                            rules</button>
-                    </div>
+                    <pros-null-state (action)="openGlobalDialog('createBR')" *ngIf="selectedBusinessRules.length === 0"></pros-null-state>
                 </ng-container>
 
                 <ng-container>
@@ -261,8 +241,13 @@
                             [valueKey]="" [labelKey]="'fullName'">
                         </pros-form-input-autoselect>
                     </div>
-                    <!-- After creating field remove below code -->
                 </div>
+                <pros-null-state 
+                    [button]="{text: 'Add subscribers'}"
+                    [message]="'No subscribers found, please add subscribers to continue'"
+                    (action)="addSubscribers()" 
+                    *ngIf="subscribersList.length === 0">
+                </pros-null-state>
                 <div *ngFor="let subscriber of subscribersList;let l=index" class="f-row colunm-box rule-border-row">
                     <div class="col">
                         <mat-card-header>
@@ -349,10 +334,9 @@
                 <mat-divider class="dashed-divider"></mat-divider>
 
                 <div class="f-row schedule-row">
-                    <mat-slide-toggle color="primary" (change)="toggleScheduleStatus($event)"> Enable schedule</mat-slide-toggle>
                     <span class="f-spacer"></span>
-                    <ng-container *ngIf="requestForm.controls.objectId.value; else addSchedule">
-                        <button mat-flat-button color="primary">
+                    <ng-container *ngIf="currentSchedule; else addSchedule">
+                        <button mat-flat-button color="primary" (click)="openAddScheduleSideSheet()">
                             <mat-icon>schedule</mat-icon> Edit schedule
                         </button>
                     </ng-container>

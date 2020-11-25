@@ -1,12 +1,12 @@
 <div class="f-col empty-state">
-    <div><img src="./assets/images/empty-table.svg" width="400"></div>
-    <div class="empty-heading">Nothing to see here</div>
+    <div><img [src]="iconPath" [width]="iconWidth"></div>
+    <div class="empty-heading">{{subtext}}</div>
     <p class="label-text">
-        Your data check did not return any results. Please modify your parameters and try again.
+       {{message}}
     </p>
-    <div class="f-row action-button">
-        <button mat-flat-button color="accent">
-            <mat-icon fontSet="mdo-icons">wand</mat-icon> Check Data
+    <div class="f-row action-button" *ngIf="button">
+        <button mat-flat-button color="accent" (click)="emitAction()">
+            <mat-icon *ngIf="button && button.icon" fontSet="mdo-icons">{{button.icon}}</mat-icon> {{button.text}}
         </button>
     </div>
 </div>

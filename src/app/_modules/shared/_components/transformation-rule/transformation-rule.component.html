@@ -1,21 +1,5 @@
 <!-- transformation rule start -->
 <form [formGroup]="form" class="root">
-        <!-- <div class="mdo-form-field temp-field">
-            <mat-label>Source Fields</mat-label>
-            <mat-form-field appearance="outline">
-                <mat-select formControlName="sourceFields">
-                    <mat-option *ngFor="let field of sourceFieldsObject.list"
-                        [value]="field[sourceFieldsObject.valueKey]">
-                        {{field[sourceFieldsObject.labelKey]}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-            <mat-error
-                *ngIf="submitted && form.controls.sourceFields.errors && form.controls.sourceFields.errors.required">
-                Please select the fields
-            </mat-error>
-        </div> -->
-
         <div class="mdo-form-field temp-field">
             <mat-label>Source Field</mat-label>
             <mat-form-field appearance="outline">
@@ -25,7 +9,7 @@
                         {{selectedSourceField[sourceFieldsObject.labelKey]}}
                         <mat-icon matChipRemove>cancel</mat-icon>
                     </mat-chip>
-                    <input matInput class="mat-input" [matAutocomplete]="autoSource" formControlName="sourceFields"
+                    <input matInput class="mat-input" [matAutocomplete]="autoSource" formControlName="sourceFld"
                         [matChipInputFor]="sourceChips" [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
                 </mat-chip-list>
                 <mat-autocomplete #autoSource="matAutocomplete" [displayWith]="displayFnSource.bind(this)"
@@ -52,7 +36,7 @@
                         {{field[targetFieldsObject.labelKey]}}
                         <mat-icon matChipRemove>cancel</mat-icon>
                     </mat-chip>
-                    <input matInput class="mat-input" [matAutocomplete]="autoTarget" formControlName="targetFields"
+                    <input matInput class="mat-input" [matAutocomplete]="autoTarget" formControlName="targetFld"
                         [matChipInputFor]="targetChips" [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
                 </mat-chip-list>
                 <mat-autocomplete #autoTarget="matAutocomplete" [displayWith]="displayFnTarget.bind(this)"
