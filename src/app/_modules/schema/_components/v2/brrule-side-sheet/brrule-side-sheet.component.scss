@@ -1,7 +1,7 @@
 mat-card.root {
   padding: 0 16px;
   user-select: none;
-  width: 700px;
+  width: 768px;
 
   .breadcrum-toolbar {
     align-items: center;
@@ -123,12 +123,6 @@ mat-card.root {
     // height: calc(100% - 36px - 16px * 2 - 8px * 2 - 36px);
     max-height: 180px;
   }
-}
-
-.col-inner-icon {
-  font-size: 20px;
-  height: 20px;
-  width: 20px;
 }
 
 @media (min-width: 1200px) {

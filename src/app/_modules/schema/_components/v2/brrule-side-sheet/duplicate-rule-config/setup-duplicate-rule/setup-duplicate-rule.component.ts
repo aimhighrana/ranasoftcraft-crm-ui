@@ -359,9 +359,9 @@ export class SetupDuplicateRuleComponent implements OnInit, OnChanges, OnDestroy
 
   getDuppCriteriaDesc(criteria) {
     if (!criteria) {
-      return 'select';
+      return 'Select';
     }
-    return (criteria === 'Exact_Match') ? 'Exact Match'
+    return (criteria === 'Exact_Match') ? 'Exact match'
            : criteria === 'Fuzzy' ? 'Fuzzy' : '';
   }
 

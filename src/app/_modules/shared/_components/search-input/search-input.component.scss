@@ -4,12 +4,13 @@ div.root {
   border-radius: 20px;
   padding: 8px 10px;
   min-width: 18px;
+  align-items: center;
 
   mat-icon {
-    font-size: 18px;
-    width: 18px;
-    height: 18px;
     cursor: pointer;
+    font-size: 12px;
+    width: 12px;
+    height: 12px;
   }
 
   .mat-input {

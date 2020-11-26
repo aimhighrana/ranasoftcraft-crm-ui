@@ -5,17 +5,10 @@
         </div>
         <span class="f-spacer"></span>
         <button mat-button (click)="close(false)">
-            <mat-icon>clear</mat-icon>
+            <mat-icon fontSet="mdo-icons">close</mat-icon>
         </button>
     </div>
-
-  
-    
-    <h3>
-        {{data ? data.label : 'Are you sure to delete ?'}}
-    </h3>
-
-
+    <p>{{data ? data.label : 'Are you sure to delete ?'}}</p>
     <div class="row-spacer"></div>
     <!-- navigation buttons -->
     <div class="f-row">

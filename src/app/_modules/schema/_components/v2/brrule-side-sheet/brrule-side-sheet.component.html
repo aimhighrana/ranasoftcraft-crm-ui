@@ -46,12 +46,10 @@
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
-
                 <mat-error
                     *ngIf="submitted && form.controls.categoryId.errors && form.controls.categoryId.errors.required">
                     Please enter Category Id</mat-error>
             </div>
-
             <div class="f-col mdo-form-field">
                 <pros-form-input (valueChange)="getFormValue($event,'rule_name')" [label]="'Rule name (Description)'"
                     [value]="form.controls.rule_name.value">
@@ -71,14 +69,14 @@
             <mat-divider></mat-divider>
 
             <div class="mdo-form-field temp-field" *ngIf="isTransformationRule">
-                <mat-radio-group formControlName="transformationRuleType">
+                <mat-radio-group formControlName="transformationRuleType" class="f-row">
                     <mat-radio-button [value]="transformationType.REGEX" color="primary">{{transformationType.REGEX}}
                     </mat-radio-button>
+                    <span class="col-spacer"></span>
                     <mat-radio-button [value]="transformationType.LOOKUP" color="primary">{{transformationType.LOOKUP}}
                     </mat-radio-button>
                 </mat-radio-group>
             </div>
-
             <!-- transformation rule -->
             <pros-transformation-rule
                 *ngIf="isTransformationRule && selectedTransformationType === transformationType.REGEX"
@@ -87,13 +85,11 @@
                 [initialTransformationData]="transformationData"
                 (transformationFormOutput)="setTransformationFormData($event)">
             </pros-transformation-rule>
-
             <!-- transformation lookup rule -->
             <pros-lookup-rule *ngIf="isTransformationRule && selectedTransformationType === transformationType.LOOKUP"
                 [fieldsObject]="sourceFieldsObject" [initialLookupData]="transformationLookUpData"
                 (lookupRuleOutput)="setLookupData($event)">
             </pros-lookup-rule>
-
             <div class="f-col mdo-form-field" *ngIf="!isUDR && !isDuplicateType && !isTransformationRule">
                 <mat-label>Fields</mat-label>
                 <mat-form-field appearance="outline">
@@ -138,8 +134,8 @@
                 <mat-error *ngIf="submitted && form.controls.regex.errors && form.controls.regex.errors.required">
                     Please enter regex</mat-error>
             </div>
-
         </form>
+
 
         <form [formGroup]="udrNodeForm" *ngIf="isUDR">
             <div class="f-col user-defined-set" formArrayName="frmArray">
@@ -191,9 +187,7 @@
                                     </pros-form-input>
                                     <div class="f-col-spacer-half"></div>
                                 </div>
-
                             </div>
-
                             <div class="col" *ngIf="item.value.conditionOperator  === 'RANGE'">
                                 <div class="f-row">
                                     <pros-form-input [placeholder]="'start value'"
@@ -207,16 +201,14 @@
                                     </pros-form-input>
                                     <div class="f-col-spacer-half"></div>
                                 </div>
-
                             </div>
                             <!-- three dots -->
                             <div class="col" *ngIf="i !== 0">
                                 <button mat-button [matMenuTriggerFor]="menu">
-                                    <mat-icon>more_vert</mat-icon>
+                                    <mat-icon fontSet="mdo-icons">list-item-drag</mat-icon>
                                 </button>
                             </div>
-
-                            <mat-menu #menu="matMenu">
+                            <mat-menu #menu="matMenu" class="navigation-menu">
                                 <!-- give local reference and tell this is manu by assigning 'matMenu' -->
                                 <button mat-menu-item (click)="addChildBlock(i)">
                                     Add child rule
@@ -280,9 +272,9 @@
                                             </div>
                                             <div class="col">
                                                 <button mat-button [matMenuTriggerFor]="nestedMenu">
-                                                    <mat-icon>more_vert</mat-icon>
+                                                    <mat-icon fontSet="mdo-icons">list-item-drag</mat-icon>
                                                 </button>
-                                                <mat-menu #nestedMenu="matMenu">
+                                                <mat-menu #nestedMenu="matMenu" class="navigation-menu">
                                                     <!-- give local reference and tell this is manu by assigning 'matMenu' -->
                                                     <!-- <button mat-menu-item (click)="addNestedBlock(udrBlock,i)">
                                                         <mat-icon>add</mat-icon>
@@ -296,29 +288,24 @@
                                         </div>
                                     </ul>
                                 </ng-container>
-
                             </div>
                         </ng-container>
                     </ng-container>
                 </ng-container>
-
                 <!-- button to ad primary block -->
                 <div class="f-row defined-row add-col">
                     <div class="col">
                         <button mat-flat-button color="accent" (click)="addParentBlock()">
-                            <mat-icon>add</mat-icon>
+                            <mat-icon fontSet="mdo-icons">plus</mat-icon>
                         </button>
                     </div>
                 </div>
             </div>
         </form>
-
         <ng-container *ngIf="isDuplicateType">
             <pros-setup-duplicate-rule [moduleId]="moduleId" [schemaId]="schemaId" [coreSchemaBrInfo]="coreSchemaBrInfo"
                 [fieldsList]="fieldsList"></pros-setup-duplicate-rule>
         </ng-container>
-
         <!-- Duplicate Rule form group  -->
-
     </div>
 </mat-card>

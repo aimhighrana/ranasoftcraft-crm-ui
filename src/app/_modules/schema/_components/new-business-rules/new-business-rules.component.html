@@ -15,7 +15,7 @@
 
   <div class="f-col mdo-justify">
     <form [formGroup]="form">
-      <div class="mdo-form-field temp-field">
+      <div class="f-col mdo-form-field">
         <mat-label>Rule Type</mat-label>
         <mat-form-field appearance="outline">
           <mat-select formControlName="rule_type">
@@ -30,7 +30,7 @@
       </div>
 
 
-      <div class="mdo-form-field temp-field">
+      <div class="f-col mdo-form-field">
         <mat-label>Weightage</mat-label>
         <mat-slider thumbLabel formControlName="weightage" [displayWith]="formatLabel" tickInterval="1" min="0"
           max="100" color="primary"></mat-slider>
@@ -38,7 +38,7 @@
           Please enter Weightage</mat-error>
       </div>
 
-      <div class="mdo-form-field temp-field" *ngIf="!isUDR && !isTransformationRule">
+      <div class="f-col mdo-form-field" *ngIf="!isUDR && !isTransformationRule">
         <mat-label>Category</mat-label>
         <mat-form-field appearance="outline">
           <mat-select formControlName="categoryId">
@@ -53,7 +53,7 @@
           Please enter Category Id</mat-error>
       </div>
 
-      <div class="mdo-form-field" *ngIf="!isUDR">
+      <div class="f-col mdo-form-field" *ngIf="!isUDR">
         <pros-form-input [value]="form.get('rule_name').value" (valueChange)="getFormValue($event,'rule_name')"
           [label]="'Rule name (Description)'">
         </pros-form-input>
@@ -61,7 +61,7 @@
           Please enter Rule name</mat-error>
       </div>
 
-      <div class="mdo-form-field" *ngIf="!isUDR">
+      <div class="f-col mdo-form-field" *ngIf="!isUDR">
         <pros-form-input [value]="form.get('error_message').value" (valueChange)="getFormValue($event,'error_message')"
           [label]="'Error message (Message)'">
         </pros-form-input>
@@ -72,9 +72,10 @@
 
       <mat-divider class="dashed-divider"></mat-divider>
 
-      <div class="mdo-form-field temp-field" *ngIf="isTransformationRule">
-         <mat-radio-group formControlName="transformationRuleType">
+      <div class="f-row mdo-form-field" *ngIf="isTransformationRule">
+         <mat-radio-group formControlName="transformationRuleType" class="f-row">
           <mat-radio-button [value]="transformationType.REGEX" color="primary">{{transformationType.REGEX}}</mat-radio-button>
+          <span class="col-spacer"></span>
           <mat-radio-button [value]="transformationType.LOOKUP" color="primary">{{transformationType.LOOKUP}}</mat-radio-button>
         </mat-radio-group>
       </div>
@@ -95,7 +96,7 @@
         [initialLookupData]="transformationLookUpData" (lookupRuleOutput)="setLookupData($event)">
       </pros-lookup-rule>
 
-      <div class="mdo-form-field temp-field" *ngIf="!isUDR && !isTransformationRule">
+      <div class="f-col mdo-form-field" *ngIf="!isUDR && !isTransformationRule">
         <mat-label>Fields</mat-label>
         <mat-form-field appearance="outline">
           <mat-chip-list #chipList>
@@ -118,9 +119,8 @@
         </mat-error>
       </div>
 
-      <div class="mdo-form-field" *ngIf="isRegexType">
-        <div class="mdo-form-input f-col">
-          <mat-label>Standard function</mat-label>
+      <div class="f-col mdo-form-field" *ngIf="isRegexType">
+        <mat-label>Standard function</mat-label>
           <mat-form-field appearance="outline">
             <mat-select formControlName='standard_function' (selectionChange)='setRegex($event)'>
               <mat-option *ngFor="let regex of preDefinedRegex" [value]="regex.FUNC_TYPE">
@@ -131,10 +131,9 @@
           <mat-error
             *ngIf="submitted && form.controls.standard_function.errors && form.controls.standard_function.errors.required">
             Please select the standard function</mat-error>
-        </div>
       </div>
 
-      <div class="mdo-form-field" *ngIf="isRegexType">
+      <div class="f-col mdo-form-field" *ngIf="isRegexType">
         <pros-form-input [value]='form.value.regex' (valueChange)="getFormValue($event,'regex')"
           [label]="'Regex value'">
         </pros-form-input>
@@ -201,7 +200,7 @@
           <!-- three dots -->
           <div class="col">
             <button mat-button [matMenuTriggerFor]="menu">
-              <mat-icon fontSet="mdo-icons">more</mat-icon>
+              <mat-icon fontSet="mdo-icons">list-item-drag</mat-icon>
             </button>
           </div>
 
@@ -269,7 +268,7 @@
 
                 <div class="col">
                   <button mat-button [matMenuTriggerFor]="nestedMenu">
-                    <mat-icon fontSet="mdo-icons">more</mat-icon>
+                    <mat-icon fontSet="mdo-icons">list-item-drag</mat-icon>
                   </button>
                   <mat-menu #nestedMenu="matMenu" class="navigation-menu">
                     <!-- give local reference and tell this is manu by assigning 'matMenu' -->
@@ -288,8 +287,6 @@
           </div>
         </ng-container>
       </ng-container>
-
-
       <!-- button to ad primary block -->
       <div class="f-row defined-row add-col">
         <div class="col">

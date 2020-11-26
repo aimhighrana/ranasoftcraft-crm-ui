@@ -1,7 +1,7 @@
 <!-- transformation rule start -->
 <form [formGroup]="form" class="root">
-        <div class="mdo-form-field temp-field">
-            <mat-label>Source Field</mat-label>
+        <div class="mdo-form-field">
+            <mat-label>Source field</mat-label>
             <mat-form-field appearance="outline">
                 <mat-chip-list #sourceChips>
                     <mat-chip *ngIf="selectedSourceField" [removable]="true"
@@ -27,8 +27,8 @@
             </mat-error>
         </div>
 
-        <div class="mdo-form-field temp-field">
-            <mat-label>Target Fields</mat-label>
+        <div class="mdo-form-field">
+            <mat-label>Target fields</mat-label>
             <mat-form-field appearance="outline">
                 <mat-chip-list #targetChips>
                     <mat-chip *ngFor="let field of selectedTargetFields;let i = index" [removable]="true"
@@ -56,7 +56,7 @@
 
         <div class="mdo-form-field">
             <pros-form-input [value]='form.value.excludeScript' (valueChange)="getFormValue($event,'excludeScript')"
-                [label]="'Exclude script(Regex)'">
+                [label]="'Exclude script (Regex)'">
             </pros-form-input>
             <mat-error
                 *ngIf="submitted && form.controls.excludeScript.errors && form.controls.excludeScript.errors.required">
@@ -65,7 +65,7 @@
 
         <div class="mdo-form-field">
             <pros-form-input [value]='form.value.includeScript' (valueChange)="getFormValue($event,'includeScript')"
-                [label]="'Include script(Regex)'">
+                [label]="'Include script (Regex)'">
             </pros-form-input>
             <mat-error
                 *ngIf="submitted && form.controls.includeScript.errors && form.controls.includeScript.errors.required">

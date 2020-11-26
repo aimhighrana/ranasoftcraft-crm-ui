@@ -1,6 +1,5 @@
 <form [formGroup]="duplicateRuleForm">
-    <div class="f-col temp-field">
-
+    <div class="f-col">
         <mat-accordion>
             <mat-expansion-panel togglePosition="before" class="mat-elevation-z0" expanded>
                 <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
@@ -10,23 +9,22 @@
                 </mat-expansion-panel-header>
 
                 <div class="colunm-listing">
-
                     <div class="f-row colunm-box rule-border-row">
                         <div class="col"></div>
                         <div class="col col-x4">
-                            <mat-label>Field</mat-label>
+                            <strong>Field</strong>
                         </div>
                         <div class="col col-x4">
-                            <mat-label> Match
-                                <mat-icon matTooltip="match" fontSet="mdo-icons" class="mat-label-icon">
+                            <strong> Match
+                                <mat-icon matTooltip="match" fontSet="mdo-icons" class="mat-head-icon">
                                     question-mark</mat-icon>
-                            </mat-label>
+                            </strong>
                         </div>
                         <div class="col col-x4">
-                            <mat-label>Exclusions
-                                <mat-icon matTooltip="exclusions" fontSet="mdo-icons" class="mat-label-icon">
+                            <strong>Exclusions
+                                <mat-icon matTooltip="exclusions" fontSet="mdo-icons" class="mat-head-icon">
                                     question-mark</mat-icon>
-                            </mat-label>
+                            </strong>
                         </div>
                         <div class="col"></div>
                     </div>
@@ -52,7 +50,7 @@
                                 <ng-container [formGroupName]="i">
                                     <div class="col">
                                         <button mat-button cdkDragHandle>
-                                            <mat-icon class="col-inner-icon">drag_handle</mat-icon>
+                                            <mat-icon fontSet="mdo-icons">two-lines</mat-icon>
                                         </button>
                                     </div>
                                     <div class="col col-x4">
@@ -62,8 +60,8 @@
                                         <div class="f-col">
                                             <button mat-stroked-button [matMenuTriggerFor]="fieldMatchMenu">
                                                 {{ getDuppCriteriaDesc(item.value.criteria) }}
-                                                <mat-icon>arrow_drop_down</mat-icon></button>
-                                            <mat-menu #fieldMatchMenu="matMenu" class="hidden-arrow">
+                                                <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon></button>
+                                        <mat-menu #fieldMatchMenu="matMenu" class="navigation-menu">
                                                 <button mat-menu-item
                                                     (click)="setControlValue('addFields', 'criteria', 'Exact_Match', i)">
                                                     Exact Match</button>
@@ -80,7 +78,7 @@
                                             {{ item.value.exclusion }} </a> </div>
                                     <div class="col">
                                         <button mat-button (click)="removeFormArrayRow('addFields', i)">
-                                            <mat-icon>delete_outline</mat-icon>
+                                            <mat-icon fontSet="mdo-icons">recycle-bin</mat-icon>
                                         </button>
                                     </div>
                                 </ng-container>
@@ -93,9 +91,7 @@
                 </div>
             </mat-expansion-panel>
         </mat-accordion>
-    </div>
 
-    <div class="f-col temp-field">
         <mat-accordion>
             <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
                 <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
@@ -108,12 +104,12 @@
 
                     <div class="f-row colunm-box rule-border-row">
                         <div class="col col-x4">
-                            <mat-label>Parameter</mat-label>
+                            <strong>Parameter</strong>
                         </div>
                         <div class="col col-x4">
-                            <mat-label> Attribute </mat-label>
+                            <strong>Attribute</strong>
                         </div>
-                        <div class="col"></div>
+                        <div class="col mat-item-end"></div>
                     </div>
 
                     <div class="f-col mdo-form-field">
@@ -141,8 +137,8 @@
                                             [ngIfElse]="others">
                                             <button mat-stroked-button [matMenuTriggerFor]="fieldMatchMenu">
                                                 {{ getMergeRuleFieldDesc(item.value.fieldId) }}
-                                                <mat-icon>arrow_drop_down</mat-icon></button>
-                                            <mat-menu #fieldMatchMenu="matMenu" class="hidden-arrow">
+                                                <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon></button>
+                                        <mat-menu #fieldMatchMenu="matMenu" class="navigation-menu">
                                                 <button mat-menu-item *ngFor="let field of MERGE_RULE_FIELDS"
                                                     (click)="setFieldValue(item.value.ruleType, field.value, i)">
                                                     {{ field.label }} </button>
@@ -152,9 +148,9 @@
                                         <ng-template #others>
                                             <button mat-stroked-button [matMenuTriggerFor]="searchFieldMenu">
                                                 {{ item.value.fieldId ? getFieldDesc(item.value.fieldId) : 'select' }}
-                                                <mat-icon>arrow_drop_down</mat-icon></button>
-                                            <!-- field search menu -->
-                                            <mat-menu #searchFieldMenu="matMenu" class="hidden-arrow">
+                                                <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon></button>
+                                                <!-- field search menu -->
+                                                <mat-menu #searchFieldMenu="matMenu" class="navigation-menu">
                                                 <div class="fields-menu">
                                                     <pros-search-input (value)="input.value = $event"
                                                         prosClickStopPropagation></pros-search-input>
@@ -190,9 +186,9 @@
                                             Please select field</mat-error>
                                     </div>
                                 </div>
-                                <div class="col">
+                                <div class="col mat-item-end">
                                     <button mat-button (click)="removeFormArrayRow('mergeRules', i)">
-                                        <mat-icon>delete_outline</mat-icon>
+                                        <mat-icon fontSet="mdo-icons">recycle-bin</mat-icon>
                                     </button>
                                 </div>
                             </ng-container>

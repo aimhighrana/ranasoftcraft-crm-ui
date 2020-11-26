@@ -1,5 +1,5 @@
 <div class="root f-row">
-    <mat-icon>search</mat-icon>
+    <mat-icon fontSet="mdo-icons">search</mat-icon>
     <input class="mat-input" [type]="type" [placeholder]="placeholder" [formControl]="control">
-    <mat-icon class="mdo-clickable" *ngIf="control && control.value"(click)="clearSearch()">clear</mat-icon>
+    <mat-icon class="mdo-clickable" *ngIf="control && control.value"(click)="clearSearch()" fontSet="mdo-icons">close</mat-icon>
 </div>

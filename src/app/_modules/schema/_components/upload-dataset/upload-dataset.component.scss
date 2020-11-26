@@ -7,6 +7,7 @@ mat-card.root {
     align-items: center;
     margin-bottom: 24px;
     padding-top: 16px;
+    min-height: 40px;
 
     .display-heading-large {
       font-size: 1.2rem;
@@ -22,7 +23,7 @@ mat-card.root {
 
   mat-horizontal-stepper {
     display: block;
-    height: calc(100% - 76px - 6px - 16px * 5);
+    height: calc(100% - 76px - 6px - 16px * 5 - 8px);
     overflow: auto;
 
     .upload-col {
@@ -73,18 +74,6 @@ mat-card.root {
       }
     }
 
-    .module-listing {
-      mat-icon.mat-list-icon {
-        font-size: 18px;
-        width: 18px;
-        height: 18px;
-      }
-
-      .module-line {
-        font-size: 0.9rem;
-      }
-    }
-
     .schedule-row {
       align-items: center;
 
@@ -121,7 +110,7 @@ mat-card.root {
       flex: 16;
     }
 
-    &.text-end {
+    &.mat-item-end {
       justify-content: flex-end;
     }
 
@@ -142,9 +131,6 @@ mat-card.root {
     }
 
     .mat-head-icon {
-      height: 12px;
-      width: 14px;
-      font-size: 14px;
       margin-left: 4px;
     }
 

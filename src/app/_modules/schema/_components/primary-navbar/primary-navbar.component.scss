@@ -43,7 +43,6 @@ mat-card.root {
         font-size: 0.9rem;
 
         mat-icon {
-          font-size: 14px;
           width: 16px;
           height: 16px;
           margin: 0 10px;
@@ -59,12 +58,6 @@ mat-card.root {
 
       .admin-badge {
         margin: 0 10px;
-
-        mat-icon {
-          width: 16px;
-          height: 16px;
-          font-size: 14px;
-        }
       }
     }
 
@@ -81,11 +74,5 @@ mat-card.root {
   .nav-profile {
     cursor: pointer;
     align-items: center;
-
-    mat-icon.mat-icon {
-      font-size: 14px;
-      height: 14px;
-      width: 14px;
-    }
   }
 }

@@ -32,14 +32,6 @@
       0 1px 18px 0 mat-color($primary-palette, 700, 0.24);
     opacity: 0;
   }
-  // pros-home-layout mat-toolbar.root {
-  //   button.hdrBtn {
-  //     color: mat-color($primary-palette, 700);
-  //   }
-  //   button.hdrBtn:hover {
-  //     color: mat-color($primary-palette, 600);
-  //   }
-  // }
 
   pros-home-layout {
     mat-sidenav-container.mat-sidenav-container {
@@ -401,6 +393,12 @@
     padding: 0 16px;
   }
 
+  // Mat Icon
+  mat-icon.mat-icon {
+    width: 14px;
+    height: 14px;
+  }
+
   // Sidenav bar
   mat-sidenav.mat-drawer {
     overflow-y: visible;
@@ -573,7 +571,7 @@
             mat-chip {
               font-weight: normal;
               font-size: 0.8rem;
-              padding: 4px 8px;
+              padding: 2px 8px;
               min-height: 24px;
             }
           }
@@ -600,7 +598,7 @@
       text-overflow: ellipsis;
       white-space: pre-line;
       overflow: hidden;
-      display: -webkit-box;
+      // display: -webkit-box;
       -webkit-line-clamp: 1;
       -webkit-box-orient: vertical;
       padding: 3px 12px;
@@ -623,7 +621,7 @@
       display: flex;
       height: 36px;
       width: auto;
-      padding: 5px;
+      padding: 5px 10px;
       border-width: 1px;
       border-style: solid;
       border-color: mat-color($foreground-palette, divider);
@@ -637,14 +635,6 @@
       .info {
         color: mat-color($primary-palette);
         margin-right: 3px;
-      }
-
-      .mat-icon.mdo-icons {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding-top: 4px;
-        font-size: 14px;
       }
     }
 
@@ -794,6 +784,16 @@
       }
 
       &.navigation-menu {
+        .menu-customdropdown {
+          max-height: 180px;
+          min-height: auto;
+          overflow: auto;
+        }
+
+        .field-mat-menu {
+          padding: 8px;
+        }
+
         button.mat-menu-item {
           height: 36px;
           line-height: 36px;
@@ -892,11 +892,11 @@
     &.mat-button.mat-primary .mat-button-focus-overlay {
       background: transparent;
     }
+  }
 
-    mat-icon {
-      font-size: 14px;
-      height: 14px;
-      width: 14px;
+  button.mat-icon-button {
+    .mat-icon {
+      line-height: normal;
     }
   }
 
@@ -910,12 +910,6 @@
     width: 38px;
     height: 36px;
     box-shadow: none;
-
-    mat-icon.mat-icon {
-      font-size: 14px;
-      height: 14px;
-      width: 14px;
-    }
 
     .mat-button-wrapper {
       padding: 0;
@@ -935,7 +929,6 @@
     mat-icon {
       font-size: 10px;
       height: 10px;
-      width: 18px;
     }
   }
 
@@ -961,6 +954,8 @@
     button.mat-icon-button {
       border-radius: 0;
       color: mat-color($foreground-palette, text);
+      width: 44px;
+      height: 44px;
 
       svg {
         width: 18px;
@@ -1028,6 +1023,7 @@
 
             .mat-input {
               caret-color: mat-color($foreground-palette, text);
+              padding-top: 4px;
             }
           }
 
@@ -1262,7 +1258,7 @@
         mat-icon {
           .mat-badge-content {
             background: #324358;
-            right: -14px;
+            letter-spacing: 0;
             top: -14px;
           }
         }
@@ -1525,9 +1521,9 @@
     }
   }
 
-  pros-businessrulelibrary-sidesheet,
   pros-new-schema-collaborators,
-  pros-subscriber-side-sheet {
+  pros-subscriber-side-sheet,
+  pros-businessrulelibrary-dialog {
     mat-card.root {
       .businessrule-listing {
         mat-list.rule-list {
@@ -1569,7 +1565,7 @@
 
   pros-configure-sidesheet,
   pros-attribute-mapping,
-  pros-lookup {
+  pros-lookup-rule {
     div.root {
       .rule-border-row {
         border-bottom: 1px solid mat-color($foreground-palette, divider);

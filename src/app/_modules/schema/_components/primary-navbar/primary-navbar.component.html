@@ -2,7 +2,7 @@
     <div class="row-spacer"></div>
     <div class="f-row">
         <button mat-icon-button (click)="toggleSideBar()">
-            <mat-icon>menu</mat-icon>
+            <mat-icon fontSet="mdo-icons">menu</mat-icon>
         </button>
         <div class="col-space primarynav-logo">
             <pros-svg-icon size="70" icon="MDO_LOGO" class="primary-nav"></pros-svg-icon>
@@ -17,7 +17,7 @@
 
     <div class="f-row create-new" [matMenuTriggerFor]="navigation">
         <button mat-mini-fab>
-            <mat-icon>add</mat-icon>
+            <mat-icon fontSet="mdo-icons">plus</mat-icon>
         </button>
         <div class="col-space">Create new...</div>
         <mat-menu #navigation="matMenu" direction="right">
@@ -65,6 +65,5 @@
             <button mat-menu-item (click)="signOut()">Sign out</button>
         </mat-menu>
     </div>
-
     <div class="row-spacer"></div>
 </mat-card>

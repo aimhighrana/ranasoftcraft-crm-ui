@@ -25,7 +25,6 @@
                     </mat-form-field>
                     <mat-hint>Type one word per line</mat-hint>
                 </div>
-
             </mat-tab>
 
             <mat-tab>
@@ -41,7 +40,7 @@
 
                     <div class="temp-field">
                         <a (click)="enableGroupCreation()" class="info-link">
-                            <mat-icon fontSet="mdo-icons" class="mat-custom-icon">plus</mat-icon> Add Synonyms group
+                            <mat-icon fontSet="mdo-icons">plus</mat-icon> Add Synonyms group
                         </a>
                     </div>
 
@@ -76,12 +75,14 @@
                                             (click)="editSynonymGroup(index)" (mouseenter)="groupHover(index)"
                                             (mouseleave)="groupLeave(index)">
                                             <input matInput formControlName="text" (focus)="editSynonymGroup(index)" />
-                                            <mat-icon matSuffix (click)="removeSynonymGroup(index)">delete_outline
-                                            </mat-icon>
+                                            <div class="f-row input-actions">
+                                                <button mat-button matSuffix>
+                                                    <mat-icon fontSet="mdo-icons" (click)="removeSynonymGroup(index)">recycle-bin</mat-icon>
+                                                </button>
+                                            </div>
                                         </mat-form-field>
                                         <mat-hint *ngIf="synonym.value.hover">Click on text to edit</mat-hint>
                                     </ng-template>
-
                                 </ng-container>
                             </div>
                         </ng-container>
@@ -89,7 +90,6 @@
                             message="Click on add synonym group to configure groups" [button]="null">
                         </pros-null-state>
                     </form>
-
                 </div>
             </mat-tab>
         </mat-tab-group>

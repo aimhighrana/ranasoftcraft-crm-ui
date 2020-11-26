@@ -24,12 +24,6 @@ mat-card.root {
       &:first-of-type {
         min-width: 100px;
       }
-
-      mat-icon {
-        font-size: 14px;
-        width: 14px;
-        height: 14px;
-      }
     }
   }
 
@@ -104,16 +98,14 @@ mat-card.root {
       justify-content: center;
     }
 
+    &.mat-item-end {
+      justify-content: flex-end;
+    }
+
     .info-link {
       align-items: center;
       font-size: 0.9rem;
       cursor: pointer;
-
-      mat-icon {
-        font-size: 12px;
-        width: 16px;
-        height: 12px;
-      }
     }
 
     mat-slider {
@@ -129,9 +121,6 @@ mat-card.root {
     }
 
     .mat-head-icon {
-      height: 12px;
-      width: 14px;
-      font-size: 14px;
       margin-left: 4px;
     }
 
