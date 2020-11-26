@@ -6,6 +6,8 @@
         <div class="col-spacer"></div>
         <div class="f-row mdo-constrained-right">
             <div class="display-heading-large">Exclusions</div>
+            <span class="f-spacer"></span>
+            <button mat-flat-button color="primary" (click)="save();$event.stopPropagation()">Save</button>
         </div>
     </div>
 
@@ -43,11 +45,13 @@
                         </a>
                     </div>
 
-                    <div class="f-col temp-field">
-                        <mat-form-field *ngIf="newGroupActive" appearance="outline">
+                    <div *ngIf="newGroupActive" class="f-col temp-field">
+                        <mat-form-field appearance="outline">
                             <textarea matInput class="mdo-textarea" #input [(ngModel)]="editText"
                                 (blur)="addSynonymGroup(input.value)"></textarea>
                         </mat-form-field>
+                        <mat-hint>Type one word per line.Click outside the box when done-your changes are saved
+                            automatically</mat-hint>
                     </div>
 
                     <form [formGroup]="synonymsForm">
@@ -58,26 +62,32 @@
 
                                     <ng-template [ngIf]="synonym.value.editActive" [ngIfElse]="noEdit">
                                         <mat-form-field appearance="outline">
-                                            <textarea matInput class="mdo-textarea" #editInput="matInput" 
+                                            <textarea matInput class="mdo-textarea" #editInput="matInput"
                                                 [value]="splitStringLines(synonym.value.text)"
                                                 (blur)="saveSynonymGroup(index, editInput.value)"></textarea>
                                         </mat-form-field>
+                                        <mat-hint>Type one word per line.Click outside the box when done-your changes
+                                            are saved automatically</mat-hint>
                                     </ng-template>
 
                                     <ng-template #noEdit>
-                                        <mat-form-field
+                                        <mat-form-field appearance="outline"
                                             [ngClass]="{'cdk-visually-hidden': !synonym.value.editActive && !synonym.value.visible}"
-                                            (click)="editSynonymGroup(index)" 
-                                            appearance="outline"> <!--  -->
-                                            <input matInput formControlName="text" (focus)="editSynonymGroup(index)"/>
+                                            (click)="editSynonymGroup(index)" (mouseenter)="groupHover(index)"
+                                            (mouseleave)="groupLeave(index)">
+                                            <input matInput formControlName="text" (focus)="editSynonymGroup(index)" />
                                             <mat-icon matSuffix (click)="removeSynonymGroup(index)">delete_outline
                                             </mat-icon>
                                         </mat-form-field>
+                                        <mat-hint *ngIf="synonym.value.hover">Click on text to edit</mat-hint>
                                     </ng-template>
 
                                 </ng-container>
                             </div>
                         </ng-container>
+                        <pros-null-state *ngIf="synonymsArray.controls.length === 0"
+                            message="Click on add synonym group to configure groups" [button]="null">
+                        </pros-null-state>
                     </form>
 
                 </div>

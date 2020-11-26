@@ -68,7 +68,8 @@ export class ExclusionsSidesheetComponent implements OnInit, OnDestroy {
         this.formBuilder.group({
           text: synonym,
           editActive: false,
-          visible: true
+          visible: true,
+          hover: false
         })
       )
     })
@@ -86,7 +87,8 @@ export class ExclusionsSidesheetComponent implements OnInit, OnDestroy {
      this.synonymsArray.insert(0, this.formBuilder.group({
        text: this.concatStringLines(newValue),
        editActive: false,
-       visible: true
+       visible: true,
+       hover: false
      }));
 
      this.editText = '';
@@ -182,11 +184,10 @@ export class ExclusionsSidesheetComponent implements OnInit, OnDestroy {
     this.serachText = searchText;
   }
 
-
   /**
-   * function to emit data and close the dialog
+   * save the configured exclusion data
    */
-  close() {
+  save(){
 
     const result = { fId: this.fId, exclusion: 0, ival: '', sval: '' };
     const exclusionArray = this.exclusionControl.value ? this.exclusionControl.value.trim().replace(/[ ,:]/g,'').split('\n') : [];
@@ -197,11 +198,29 @@ export class ExclusionsSidesheetComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
     this.sharedService.setExclusionData(result);
 
+    this.close();
+  }
+
+
+  /**
+   * function to emit data and close the dialog
+   */
+  close() {
     this.router.navigate([{ outlets: { outer: null } }]);
   }
 
   get synonymsArray(){
     return this.synonymsForm.get('synonymsArray') as FormArray;
+  }
+
+  groupHover(index){
+    this.synonymsArray.at(index)
+      .patchValue({hover:true});
+  }
+
+  groupLeave(index){
+    this.synonymsArray.at(index)
+      .patchValue({hover:false});
   }
 
   ngOnDestroy() {

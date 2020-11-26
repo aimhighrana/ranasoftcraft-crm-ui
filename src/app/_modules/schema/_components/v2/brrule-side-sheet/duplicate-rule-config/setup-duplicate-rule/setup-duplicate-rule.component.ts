@@ -180,8 +180,8 @@ export class SetupDuplicateRuleComponent implements OnInit, OnChanges, OnDestroy
       exclusion: [row ? row.exclusion : '0'],
       inverse: [row ? row.inverse : '0'],
       weightage: [row ? row.weightage : '0'],
-      ival: [row ? row.ival : ''],
-      sval: [row ? row.sval : '']
+      ival: [row && row.ival ? row.ival : ''],
+      sval: [row && row.sval ? row.sval : '']
     });
   }
 

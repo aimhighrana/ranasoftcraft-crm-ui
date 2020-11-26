@@ -43,14 +43,6 @@
                                     {{ field.fieldDescri }}
                                 </mat-option>
                             </mat-autocomplete>
-                            <!-- <input matInput placeholder="Type field name to add" #input
-                                [matAutocomplete]="auto" />
-                            <mat-autocomplete #auto="matAutocomplete">
-                                <mat-option *ngFor="let field of filter(input.value)"
-                                    (click)="addFieldsRow(field.fieldId)">
-                                    {{ field.fieldDescri }}
-                                </mat-option>
-                            </mat-autocomplete> -->
                         </mat-form-field>
                     </div>
                     <ng-container formArrayName="addFields">
@@ -95,6 +87,10 @@
                             </div>
                         </div>
                     </ng-container>
+
+                    <pros-null-state *ngIf="fieldRecords.controls.length === 0"
+                        message="Type inside the search box to find fields"
+                        [button]="null"></pros-null-state>
                 </div>
             </mat-expansion-panel>
         </mat-accordion>
@@ -196,6 +192,9 @@
                             </ng-container>
                         </div>
                     </ng-container>
+                    <pros-null-state *ngIf="masterRecords.controls.length === 0"
+                            message="Type inside the search box to find master records"
+                            [button]="null"></pros-null-state>
                 </div>
             </mat-expansion-panel>
         </mat-accordion>
