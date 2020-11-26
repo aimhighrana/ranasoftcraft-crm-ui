@@ -79,6 +79,8 @@ export class ScheduleDialogComponent implements OnInit, OnDestroy {
     this.createForm();
     if (this.schemaId) {
       this.getScheduleInfo(this.schemaId);
+    } else if(this.data.currentSchedule) {
+      this.setValueForFormControl(this.data.currentSchedule);
     }
 
     this.form.controls.schemaSchedulerRepeat.valueChanges.subscribe((repeatValue) => {
@@ -208,7 +210,7 @@ export class ScheduleDialogComponent implements OnInit, OnDestroy {
     const scheduleSubscription = this.schemaService.getSchedule(schemaId).subscribe((response) => {
       this.scheduleInfo = response;
       if (response) {
-        this.setValueForFormControl();
+        this.setValueForFormControl(response);
       }
     }, (error) => {
       console.log('Something went wrong when getting schedule information.', error.message);
@@ -219,16 +221,16 @@ export class ScheduleDialogComponent implements OnInit, OnDestroy {
   /**
    * Function to set values into form controls
    */
-  setValueForFormControl() {
-    this.form.get('isEnable').setValue(this.scheduleInfo.isEnable);
-    this.form.get('schemaSchedulerRepeat').setValue(this.scheduleInfo.schemaSchedulerRepeat);
-    this.form.get('repeatValue').setValue(this.scheduleInfo.repeatValue);
-    this.form.get('weeklyOn').setValue(this.scheduleInfo.weeklyOn);
-    this.form.get('monthOn').setValue(this.scheduleInfo.monthOn);
-    this.form.get('startOn').setValue(this.scheduleInfo.startOn);
-    this.form.get('end').setValue(this.scheduleInfo.end);
-    this.form.get('occurrenceVal').setValue(this.scheduleInfo.occurrenceVal);
-    this.form.get('endOn').setValue(this.scheduleInfo.endOn);
+  setValueForFormControl(response) {
+    this.form.get('isEnable').setValue(response.isEnable);
+    this.form.get('schemaSchedulerRepeat').setValue(response.schemaSchedulerRepeat);
+    this.form.get('repeatValue').setValue(response.repeatValue);
+    this.form.get('weeklyOn').setValue(response.weeklyOn);
+    this.form.get('monthOn').setValue(response.monthOn);
+    this.form.get('startOn').setValue(response.startOn);
+    this.form.get('end').setValue(response.end);
+    this.form.get('occurrenceVal').setValue(response.occurrenceVal);
+    this.form.get('endOn').setValue(response.endOn);
   }
 
   /**

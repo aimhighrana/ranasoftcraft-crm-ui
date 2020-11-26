@@ -58,8 +58,8 @@ describe('TransformationRuleComponent', () => {
     component.initialTransformationData = {
       excludeScript: 'test_excludeScript',
       includeScript: 'test_includeScript',
-      sourceFields: 'test_sourceFields',
-      targetFields: 'test, test2',
+      sourceFld: 'test_sourceFields',
+      targetFld: 'test, test2',
       selectedTargetFields: [{
         fieldId: 'testId',
         fieldDescri: 'Test field'
@@ -68,8 +68,8 @@ describe('TransformationRuleComponent', () => {
     component.initializeForm();
     expect(component.form.controls.excludeScript.value).toEqual('test_excludeScript');
     expect(component.form.controls.includeScript.value).toEqual('test_includeScript');
-    expect(component.form.controls.sourceFields.value).toEqual('test_sourceFields');
-    expect(component.form.controls.targetFields.value).toEqual('test, test2');
+    expect(component.form.controls.sourceFld.value).toEqual('test_sourceFields');
+    expect(component.form.controls.targetFld.value).toEqual('test, test2');
   });
 
   it('updateTargetValue(), target value should update', () => {
@@ -121,7 +121,6 @@ describe('TransformationRuleComponent', () => {
   it('isTransformationRule, isTransformationLookupRule, should check selected rule and return boolean', () => {
     component.selectedRuleType = BusinessRuleType.BR_TRANSFORMATION_RULE;
     expect(component.isTransformationRule).toBeTrue();
-    expect(component.isTransformationLookupRule).toBeFalse();
   });
 
   it('displayFnTarget(), should return a display value', () => {

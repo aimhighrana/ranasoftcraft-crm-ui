@@ -71,8 +71,8 @@ export class TransformationRuleComponent implements OnInit, OnChanges {
    */
   initializeForm() {
     this.form = new FormGroup({
-      sourceFields: new FormControl('', [Validators.required]),
-      targetFields: new FormControl(''),
+      sourceFld: new FormControl('', [Validators.required]),
+      targetFld: new FormControl(''),
       excludeScript: new FormControl('', [Validators.required]),
       includeScript: new FormControl('', [Validators.required]),
     });
@@ -97,8 +97,12 @@ export class TransformationRuleComponent implements OnInit, OnChanges {
   patchFormValues(initialData: TransformationFormData) {
     if (initialData) {
       this.form.patchValue(initialData);
-      if (initialData.selectedTargetFields.length > 0) {
-        this.selectedTargetFields = initialData.selectedTargetFields;
+      if (initialData.sourceFld && this.sourceFieldsObject.list.length>0) {
+        this.selectedSourceField = this.sourceFieldsObject.list.find(field => field[this.sourceFieldsObject.valueKey] === initialData.sourceFld );
+      }
+      if (initialData.targetFld && this.targetFieldsObject.list.length>0) {
+        const fields: string[] = initialData.targetFld.split(',');
+        this.selectedTargetFields = this.targetFieldsObject.list.filter(field => fields.indexOf(field[this.sourceFieldsObject.valueKey]) > -1);
       }
     }
   }
@@ -108,14 +112,14 @@ export class TransformationRuleComponent implements OnInit, OnChanges {
    */
   removeSourceField() {
     this.selectedSourceField = null;
-    this.form.controls.sourceFields.setValue('');
+    this.form.controls.sourceFld.setValue('');
   }
 
   /**
    * Initialize autocomplete for targetfield values
    */
   initTargetAutocomplete() {
-    this.filteredTargetFields = this.form.controls.targetFields.valueChanges
+    this.filteredTargetFields = this.form.controls.targetFld.valueChanges
       .pipe(
         startWith(''),
         map(keyword => {
@@ -131,7 +135,7 @@ export class TransformationRuleComponent implements OnInit, OnChanges {
    * Initialize autocomplete for targetfield values
    */
   initSourceAutocomplete() {
-    this.filteredSourceFields = this.form.controls.sourceFields.valueChanges
+    this.filteredSourceFields = this.form.controls.sourceFld.valueChanges
       .pipe(
         startWith(''),
         map(keyword => {
@@ -182,7 +186,7 @@ export class TransformationRuleComponent implements OnInit, OnChanges {
         [valueKey]: event.option.value
       });
     }
-    this.form.controls.targetFields.setValue('');
+    this.form.controls.targetFld.setValue('');
   }
 
   /**
@@ -197,7 +201,7 @@ export class TransformationRuleComponent implements OnInit, OnChanges {
       [labelKey]: event.option.viewValue,
       [valueKey]: event.option.value
     };
-    this.form.controls.sourceFields.setValue(event.option.value);
+    this.form.controls.sourceFld.setValue(event.option.value);
   }
 
   /**
@@ -211,11 +215,6 @@ export class TransformationRuleComponent implements OnInit, OnChanges {
   // Getter to check if the rule is TransformationRule
   get isTransformationRule() {
     return this.selectedRuleType === BusinessRuleType.BR_TRANSFORMATION_RULE;
-  }
-
-  // Getter to check if the rule is TransformationLookupRule
-  get isTransformationLookupRule() {
-    return this.selectedRuleType === BusinessRuleType.BR_TRANSFORMATION_LOOKUP_RULE;
   }
 
   /**

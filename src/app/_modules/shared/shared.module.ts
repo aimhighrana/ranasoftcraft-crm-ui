@@ -237,7 +237,8 @@ import { LookupRuleComponent } from './_components/lookup/lookup.component';
     DatePickerFieldComponent,
     TableCellInputComponent,
     TransformationRuleComponent,
-    LookupRuleComponent
+    LookupRuleComponent,
+    NullStateComponent
 
   ],
   entryComponents: [

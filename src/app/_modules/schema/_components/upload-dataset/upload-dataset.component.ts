@@ -14,7 +14,7 @@ import { UserService } from '@services/user/userservice.service';
 import { NewBusinessRulesComponent } from '../new-business-rules/new-business-rules.component';
 import { GlobaldialogService } from '@services/globaldialog.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { CoreSchemaBrInfo } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { CoreSchemaBrInfo, TransformationModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { NewSchemaCollaboratorsComponent } from '../new-schema-collaborators/new-schema-collaborators.component';
@@ -646,7 +646,8 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         brWeightage,
         standardFunction,
         categoryId,
-        fields } = rule;
+        fields,
+        transFormationSchema } = rule;
       this.globaldialogService.openDialog(NewBusinessRulesComponent, {
         moduleId: '',
         fields: this.requestForm.controls.fields.value,
@@ -661,6 +662,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
           udrTreeData: udrDto,
           weightage: brWeightage,
           categoryId,
+          transFormationSchema
         }
       });
     });
@@ -701,6 +703,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * @param object newly created Br
    */
   createBrObject(object, udrTreeData = { udrHierarchies: [], blocks: [] }): CoreSchemaBrInfo {
+    const transformationData: TransformationModel[] = [{ ...this.mapTransformationData(object) }];
     return {
       tempId: this.utilties.getRandomString(8),
       sno: 0,
@@ -730,8 +733,24 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       udrDto: {
         udrHierarchies: udrTreeData.udrHierarchies,
         blocks: udrTreeData.blocks
-      }
+      },
+      transFormationSchema: transformationData
     } as CoreSchemaBrInfo;
+  }
+
+  mapTransformationData(data) {
+    const { sourceFld, targetFld, includeScript, excludeScript, transformationRuleType } = data;
+    const transformationObject: TransformationModel = {
+      brId: '',
+      sourceFld,
+      targetFld,
+      includeScript,
+      excludeScript,
+      transformationRuleType,
+      lookUpObjectType: '',
+      lookUptable: ''
+    }
+    return transformationObject;
   }
 
   /**
@@ -1101,10 +1120,14 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * @param index index of object to be removed
    */
   deleteBR(rule: CoreSchemaBrInfo) {
-    const index = this.selectedBusinessRules.findIndex((brule) => brule.brId === rule.brId);
-    this.selectedBusinessRules.splice(index, 1);
-    this.requestForm.controls.coreSchemaBr.setValue(this.selectedBusinessRules);
-    this.existingBRIds = [...this.selectedBusinessRules.map(brule => brule.brId)];
+    this.globaldialogService.confirm({ label: 'Are you sure to delete?' }, (response) => {
+      if (response && response === 'yes') {
+        const index = this.selectedBusinessRules.findIndex((brule) => brule.brId === rule.brId);
+        this.selectedBusinessRules.splice(index, 1);
+        this.requestForm.controls.coreSchemaBr.setValue(this.selectedBusinessRules);
+        this.existingBRIds = [...this.selectedBusinessRules.map(brule => brule.brId)];
+      }
+    });
   }
 
   /**
@@ -1112,8 +1135,12 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * @param index index of object to be removed
    */
   deleteSubscriber(index) {
-    this.subscribersList.splice(index, 1);
-    this.requestForm.controls.subcribers.value.splice(index, 1);
+    this.globaldialogService.confirm({ label: 'Are you sure to delete?' }, (response) => {
+      if (response && response === 'yes') {
+        this.subscribersList.splice(index, 1);
+        this.requestForm.controls.subcribers.value.splice(index, 1);
+      }
+    });
   }
 
   updateRole(event, subscriber) {
@@ -1130,8 +1157,8 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * Toggle isEnable value for schedule using slide toggle
    * @param event toggle event
    */
-  toggleScheduleStatus(event){
-    if(this.currentSchedule){
+  toggleScheduleStatus(event) {
+    if (this.currentSchedule) {
       this.currentSchedule.isEnable = event.checked;
     }
   }
@@ -1309,7 +1336,9 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * Open add schedule sidesheet for adding a schedule
    */
   openAddScheduleSideSheet() {
-    this.globaldialogService.openDialog(ScheduleDialogComponent, {});
+    this.globaldialogService.openDialog(ScheduleDialogComponent, {
+      currentSchedule: this.currentSchedule
+    });
     this.dialogSubscriber = this.globaldialogService.dialogCloseEmitter
       .pipe(distinctUntilChanged())
       .subscribe((response: SchemaScheduler) => {

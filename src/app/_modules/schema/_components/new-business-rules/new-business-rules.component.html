@@ -38,7 +38,7 @@
           Please enter Weightage</mat-error>
       </div>
 
-      <div class="mdo-form-field temp-field" *ngIf="!isUDR && !isTransformationRule && !isTransformationLookupRule">
+      <div class="mdo-form-field temp-field" *ngIf="!isUDR && !isTransformationRule">
         <mat-label>Category</mat-label>
         <mat-form-field appearance="outline">
           <mat-select formControlName="categoryId">
@@ -72,20 +72,29 @@
 
       <mat-divider class="dashed-divider"></mat-divider>
 
+      <div class="mdo-form-field temp-field" *ngIf="isTransformationRule">
+         <mat-radio-group formControlName="transformationRuleType">
+          <mat-radio-button [value]="transformationType.REGEX" color="primary">{{transformationType.REGEX}}</mat-radio-button>
+          <mat-radio-button [value]="transformationType.LOOKUP" color="primary">{{transformationType.LOOKUP}}</mat-radio-button>
+        </mat-radio-group>
+      </div>
+
       <!-- transformation rule -->
-      <pros-transformation-rule *ngIf="isTransformationRule" 
+      <pros-transformation-rule *ngIf="isTransformationRule && selectedTransformationType === transformationType.REGEX" 
         [selectedRuleType]="currentSelectedRule"
-        [targetFieldsObject]="targetFieldsObject"
-        [sourceFieldsObject]="sourceFieldsObject"
+        [targetFieldsObject]="targetFieldsObject" 
+        [sourceFieldsObject]="sourceFieldsObject" 
         [submitted]="submitted"
+        [initialTransformationData]="transformationData"
         (transformationFormOutput)="setTransformationFormData($event)">
       </pros-transformation-rule>
 
       <!-- transformation lookup rule -->
-      <!-- <pros-lookup-rule *ngIf="isTransformationLookupRule">
-      </pros-lookup-rule> -->
+      <pros-lookup-rule *ngIf="isTransformationRule && selectedTransformationType === transformationType.LOOKUP"
+      [fieldsObject]="sourceFieldsObject">
+      </pros-lookup-rule>
 
-      <div class="mdo-form-field temp-field" *ngIf="!isUDR && !isTransformationRule && !isTransformationLookupRule">
+      <div class="mdo-form-field temp-field" *ngIf="!isUDR && !isTransformationRule">
         <mat-label>Fields</mat-label>
         <mat-form-field appearance="outline">
           <mat-chip-list #chipList>

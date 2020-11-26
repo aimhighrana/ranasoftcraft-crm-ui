@@ -408,8 +408,8 @@ export interface FieldConfiguration{
 }
 
 export interface TransformationFormData{
-    sourceFields: string;
-    targetFields: string;
+    sourceFld: string;
+    targetFld: string;
     excludeScript: string;
     includeScript: string;
     selectedTargetFields?: any[];
