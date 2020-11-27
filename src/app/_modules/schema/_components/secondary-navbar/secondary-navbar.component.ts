@@ -31,6 +31,11 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
   searchModuleResults: SchemaListModuleList[] = [];
 
   /**
+   * filtered modules for schema create menu
+   */
+  filteredModulesMenu: SchemaListModuleList[] = [];
+
+  /**
    * report list observal ..
    */
   reportOb: Observable<ReportList[]> = of([]);
@@ -118,6 +123,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
     this.schemaListService.getSchemaList().subscribe((moduleList) => {
       this.moduleList = moduleList;
       this.searchModuleResults = this.moduleList;
+      this.filteredModulesMenu = this.moduleList;
       if (this.moduleList && !this.isPageReload && this.activatedPrimaryNav === 'schema') {
         const firstModuleId = this.moduleList[0].moduleId;
         this.router.navigate(['/home/schema', firstModuleId]);
@@ -270,5 +276,21 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
       this.activatedPrimaryNav = 'schema';
       this.getSchemaList();
     }
+  }
+
+  openSchemaCreationSidesheet(moduleId){
+    console.log(moduleId);
+    this.router.navigate(['', { outlets: { sb: `sb/schema/create-schema/${moduleId}/new` } }]);
+  }
+
+  filterModulesMenu(searchString){
+    if (!searchString){
+      this.filteredModulesMenu = this.moduleList;
+      return;
+    }
+    this.filteredModulesMenu = this.moduleList.filter(module => {
+      module.moduleDesc = module.moduleDesc ? module.moduleDesc : 'untitled';
+      return module.moduleDesc.toLowerCase().includes(searchString.toLowerCase());
+    })
   }
 }
