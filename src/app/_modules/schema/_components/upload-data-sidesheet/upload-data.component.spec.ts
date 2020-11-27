@@ -13,6 +13,7 @@ import { of } from 'rxjs';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { SchemaService } from '@services/home/schema.service';
 import { DataSource } from '@models/schema/schema';
+import { SchemaListModuleList } from '@models/schema/schemalist';
 
 describe('UploadDataComponent', () => {
   let component: UploadDataComponent;
@@ -104,14 +105,13 @@ describe('UploadDataComponent', () => {
   }));
 
   it('uploadFile(), should click on uploadFile input ', async(()=>{
-    component.moduleInfo = {module:'1005'};
+    component.moduleInfo = {moduleId:'1005'} as SchemaListModuleList;
     component.uploadFile();
     expect(component.uploadFile).toBeTruthy();
   }));
 
   it('ngOnint()', (() => {
-    component.moduleInfo = {module:'1005'};
-    component.moduleInfo.object = '1005';
+    component.moduleInfo = {moduleId:'1005'} as SchemaListModuleList;;
     spyOn(schemaDetailsServiceSpy,'getMetadataFields').withArgs(undefined).and.returnValue(of());
     component.ngOnInit();
     expect(component.ngOnInit).toBeTruthy();
@@ -124,7 +124,7 @@ describe('UploadDataComponent', () => {
 
   it('uploadDataHttpCall()  ', ()=>{
     const stepper: MatStepper = {next:null} as MatStepper;
-    component.moduleInfo = {module:{moduleId:'1005'}};
+    component.moduleInfo = {moduleId:'1005'} as SchemaListModuleList;
     component.excelMdoFieldMappedData = [{excelFld:'id',excelFrstRow:'3',mdoFldId:'1005',mdoFldDesc:'Material',columnIndex:1}];
 
     spyOn(schemaService,'uploadData').withArgs(component.excelMdoFieldMappedData,'1005', component.fileSno).and.returnValue(of());
@@ -153,20 +153,4 @@ describe('UploadDataComponent', () => {
     expect('').toEqual(component.getSelectedFieldId(0));
   }));
 
-  it('closeDialog() should close the dialog', async(() => {
-    component.closeDialog();
-    expect(component.closeDialog).toBeTruthy();
-  }));
-
-  it('uploadCorrectionHttpCall()  ', ()=>{
-    const stepper: MatStepper = {next:null} as MatStepper;
-    component.moduleInfo = {object:'1005',schemaId:'7867576',runId:'786'};
-    component.plantCode = '0';
-    component.fileSno = '1';
-    component.excelMdoFieldMappedData = [{excelFld:'id',excelFrstRow:'3',mdoFldId:'1005',mdoFldDesc:'Material',columnIndex:1}];
-
-    spyOn(schemaService,'uploadCorrectionData').withArgs(component.excelMdoFieldMappedData,'1005', '7867576', '786', component.plantCode, component.fileSno).and.returnValue(of());
-    component.uploadCorrectionHttpCall(stepper);
-    expect(component.uploadCorrectionHttpCall).toBeTruthy();
-  });
 });

@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 import { SchemaListModuleList, SchemaListDetails } from 'src/app/_models/schema/schemalist';
 import { Userdetails } from 'src/app/_models/userdetails';
 import { MatDialog } from '@angular/material/dialog';
-import { UploadDataComponent } from '../upload-data/upload-data.component';
+import { UploadDataComponent } from '../upload-data-sidesheet/upload-data.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({

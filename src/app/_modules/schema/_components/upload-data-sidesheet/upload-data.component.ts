@@ -1,15 +1,14 @@
-import { Component, OnInit, Inject, ViewChild } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { SchemaService } from 'src/app/_services/home/schema.service';
-import { DataSource, ObjectTypeResponse } from 'src/app/_models/schema/schema';
-import { Observable } from 'rxjs';
+import { DataSource } from 'src/app/_models/schema/schema';
 import * as XLSX from 'xlsx';
 import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-details.service';
 import { MetadataModeleResponse, MetadataModel } from 'src/app/_models/schema/schemadetailstable';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatStepper } from '@angular/material/stepper';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { SchemaListComponent } from '../schema-list/schema-list.component';
+import { ActivatedRoute, Router } from '@angular/router';
+import { SchemaListModuleList } from '@models/schema/schemalist';
 
 type UploadedDataType = any[][];
 @Component({
@@ -18,14 +17,11 @@ type UploadedDataType = any[][];
   styleUrls: ['./upload-data.component.scss']
 })
 export class UploadDataComponent implements OnInit {
-  isLinear = true;
+
   uploadFileStepCtrl: FormGroup;
   dataTableCtrl: FormGroup;
-  selectedMdoFldCtrl: FormControl;
-  displayedColumns = ['excel', 'excelfrstrowdata', 'mapping', 'field'];
+  displayedColumns = ['excel', 'excelfrstrowdata', 'field'];
   dataSource = [];
-  filteredModules: Observable<ObjectTypeResponse[]>;
-  moduleInpFrmCtrl: FormControl;
   excelHeader: string[];
   metadataFields: MetadataModeleResponse;
   metaDataFieldList: MetadataModel[] = [];
@@ -37,24 +33,31 @@ export class UploadDataComponent implements OnInit {
   uploadDisabled = true;
   plantCode: string;
   @ViewChild(MatStepper) stepper!: MatStepper;
+
+  /**
+   * module ID of current module
+   */
+  moduleId: string;
+
+  /**
+   * store module Info and schemalist of current moduleId
+   */
+  moduleInfo: SchemaListModuleList;
+
   constructor(
     private _formBuilder: FormBuilder,
     private schemaService: SchemaService,
     private schemaDetailsService: SchemaDetailsService,
     private snackBar: MatSnackBar,
-    public dialogRef: MatDialogRef<SchemaListComponent>,
-    @Inject(MAT_DIALOG_DATA) public moduleInfo: any,
-  ) {
-    this.moduleInpFrmCtrl = new FormControl();
-    this.selectedMdoFldCtrl = new FormControl();
-  }
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+  ) { }
   ngOnInit(): void {
-    // get all field of module
-    if (this.moduleInfo.module) {
-      this.getMetadataFields(this.moduleInfo.module.moduleId);
-    } else {
-      this.getMetadataFields(this.moduleInfo.object);
-    }
+    this.activatedRoute.params.subscribe((params) => {
+      this.moduleId = params.moduleId;
+      this.getSchemaList();
+    })
+
     this.uploadFileStepCtrl = this._formBuilder.group({
       uploadFileCtrl: ['', Validators.required]
     });
@@ -63,27 +66,35 @@ export class UploadDataComponent implements OnInit {
     });
     this.headerFieldsList.push({ fieldId: 'objectnumber', fieldDescri: 'Module Object Number' } as MetadataModel);
   }
+
   uploadFile() {
     if (document.getElementById('uploadFileCtrl')) {
       document.getElementById('uploadFileCtrl').click();
     }
   }
-  fileChange(evt) {
+
+  /**
+   * Function to get the excel file and get fields and data
+   * @param evt file uploaded event
+   */
+  fileChange(evt: Event) {
     if (evt !== undefined) {
-      const target: DataTransfer = (evt.target) as DataTransfer;
+      const target: DataTransfer = (evt.target) as unknown as DataTransfer;
       if (target.files.length !== 1) throw new Error('Cannot use multiple files');
       // check file type
       let type = '';
       try {
         type = target.files[0].name.split('.')[1];
-      } catch (ex) { console.error(ex) }
+      } catch (ex) {
+        console.error(ex)
+      }
       if (type === 'xlsx' || type === 'xls' || type === 'csv') {
         // check size of file
         const size = target.files.item(0).size;
         const sizeKb = Math.round((size / 1024));
         if (sizeKb > (10 * 1024)) {
           this.uploadedFile = null;
-          this.uploadFileStepCtrl.setValue({ uploadFileCtrl: '' });
+
           this.snackBar.open(`File size too large , upload less then 10 MB`, 'Close', { duration: 5000 });
           return false;
         }
@@ -101,19 +112,22 @@ export class UploadDataComponent implements OnInit {
           this.excelHeader = this.uploadedData[0] as string[];
           // move to next step
           this.stepper.next();
-          const file = evt.target.files[0]
+          const file = target.files[0]
           this.uploadedFile = file;
-          this.uploadFileStepCtrl.get('uploadFileCtrl').setValue(file);
         };
         reader.readAsBinaryString(target.files[0]);
         this.excelMdoFieldMappedData = [];
       } else {
         this.uploadedFile = null;
-        this.uploadFileStepCtrl.setValue({ uploadFileCtrl: '' });
         this.snackBar.open(`Only allow .xlsx, .xls and .csv file format`, 'Close', { duration: 5000 });
       }
     }
   }
+
+  /**
+   * get all fields of module
+   * @param moduleId the value of module
+   */
   getMetadataFields(moduleId) {
     this.schemaDetailsService.getMetadataFields(moduleId).subscribe(response => {
       this.metadataFields = response;
@@ -126,6 +140,10 @@ export class UploadDataComponent implements OnInit {
       console.error(`Error ${error}`);
     });
   }
+
+  /**
+   * make metadata fields
+   */
   makeMetadataControle(): void {
     const allMDF = this.metadataFields;
     this.metaDataFieldList = [];
@@ -159,6 +177,11 @@ export class UploadDataComponent implements OnInit {
       }
     }
   }
+
+  /**
+   * change step when click on next
+   * @param event value of event
+   */
   controlStepChange(event: any) {
     switch (event.selectedIndex) {
       case 1:
@@ -168,6 +191,10 @@ export class UploadDataComponent implements OnInit {
         break;
     }
   }
+
+  /**
+   * prepare data to show from excel file
+   */
   prepareDataSource() {
     const dataS: DataSource[] = [];
     for (let i = 0; i < this.uploadedData[0].length; i++) {
@@ -176,6 +203,11 @@ export class UploadDataComponent implements OnInit {
     }
     this.dataSource = dataS;
   }
+
+  /**
+   * map excel field to meta data field
+   * @param data value of fields
+   */
   updateMapFields(data) {
     if (data && data.fieldId !== '') {
       const mapData = { columnIndex: data.index, excelFld: data.execlFld, mdoFldId: data.fieldId, mdoFldDesc: data.fieldDesc, excelFrstRow: null };
@@ -196,6 +228,11 @@ export class UploadDataComponent implements OnInit {
       }
     }
   }
+
+  /**
+   * function to upload data on server
+   * @param stepper value of step
+   */
   uploadFileData(stepper: MatStepper) {
     if (this.excelMdoFieldMappedData.length <= 0) {
       this.snackBar.open(`Please map atleast one field `, 'Close', { duration: 2000 });
@@ -204,17 +241,14 @@ export class UploadDataComponent implements OnInit {
     }
     this.schemaService.uploadUpdateFileData(this.uploadFileStepCtrl.get('uploadFileCtrl').value, this.fileSno).subscribe(res => {
       this.fileSno = res;
-      if (this.moduleInfo.object) {
-        this.uploadCorrectionHttpCall(stepper);
-      } else {
-        this.uploadDataHttpCall(stepper);
-      }
+      this.uploadDataHttpCall(stepper);
     }, error => {
       console.error(`Error ${error}`);
     });
   }
+
   uploadDataHttpCall(stepper: MatStepper) {
-    const objType = this.moduleInfo.module.moduleId;
+    const objType = this.moduleInfo.moduleId;
     if (objType) {
       this.schemaService.uploadData(this.excelMdoFieldMappedData, objType, this.fileSno).subscribe(res => {
         // remove valitor here and move to next step
@@ -226,21 +260,11 @@ export class UploadDataComponent implements OnInit {
       });
     }
   }
-  uploadCorrectionHttpCall(stepper: MatStepper) {
-    const objType = this.moduleInfo.object;
-    const schemaId = this.moduleInfo.schemaId;
-    const runId = this.moduleInfo.runId;
-    if (objType) {
-      this.schemaService.uploadCorrectionData(this.excelMdoFieldMappedData, objType, schemaId, runId, this.plantCode, this.fileSno).subscribe(res => {
-        // remove valitor here and move to next step
-        this.dataTableCtrl.controls.dataTableFldCtrl.setValue('done');
-        stepper.next();
-      }, error => {
-        console.error(`Error ${error}`);
-        this.snackBar.open(`Something went wrong , please check mdo logs `, 'Close', { duration: 5000 });
-      });
-    }
-  }
+
+  /**
+   * update map excel field to meta data field
+   * @param columnInde value of column index
+   */
   getSelectedFieldId(columnInde: number): string {
     const availmap = this.excelMdoFieldMappedData.filter(fill => fill.columnIndex === columnInde);
     if (availmap.length > 0) {
@@ -248,10 +272,25 @@ export class UploadDataComponent implements OnInit {
     }
     return '';
   }
+
   /**
-   * Close dialog after saved or click close
+   * function to close the sidesheet
    */
-  closeDialog() {
-    this.dialogRef.close();
+  close() {
+    this.router.navigate([{ outlets: { sb: null } }]);
   }
+
+  /**
+   * get schema list according to module ID
+   */
+  public getSchemaList() {
+    this.schemaService.getSchemaInfoByModuleId(this.moduleId).subscribe((moduleData) => {
+      if(moduleData) {
+        this.moduleInfo = moduleData;
+        this.getMetadataFields(this.moduleInfo.moduleId);
+      }
+    }, error => {
+      console.error('Error: {}', error.message);
+    });
+ }
 }

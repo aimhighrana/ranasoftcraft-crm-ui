@@ -8,7 +8,7 @@ import { SchemaCollaboratorsComponent } from 'src/app/_modules/schema/_component
 import { SchemaExecutionLogsComponent } from './_components/schema-execution-logs/schema-execution-logs.component';
 import { AddbusinessruleComponent } from '../admin/_components/module/business-rules/addbusinessrule/addbusinessrule.component';
 import { TableColumnSettingsComponent } from '../shared/_components/table-column-settings/table-column-settings.component';
-import { UploadDataComponent } from './_components/upload-data/upload-data.component';
+import { UploadDataComponent } from './_components/upload-data-sidesheet/upload-data.component';
 import { SalesforceConnectionComponent } from './_components/salesforce-connection/salesforce-connection.component';
 import { DuplicateBusinessruleComponent } from './_components/duplicate-businessrule/duplicate-businessrule.component';
 import { AdvanceoptionsDialogComponent } from './_components/advanceoptions-dialog/advanceoptions-dialog.component';
@@ -21,7 +21,6 @@ import { UploadDatasetComponent } from './_components/upload-dataset/upload-data
 import { PrimaryNavbarComponent } from './_components/primary-navbar/primary-navbar.component';
 import { CreateRuleComponent } from './_components/create-rule/create-rule.component';
 import { SecondaryNavbarComponent } from './_components/secondary-navbar/secondary-navbar.component';
-import { DiwTilesComponent } from './_components/diw-tiles/diw-tiles.component';
 import { SidenavUserdefinedComponent } from './_components/sidenav-userdefined/sidenav-userdefined.component';
 import { TableLoadingComponent } from './_components/table-loading/table-loading.component';
 import { MdoGenericComponentsComponent } from '@modules/lib/_components/mdo-generic-components/mdo-generic-components.component';
@@ -42,7 +41,6 @@ import { StringReplaceComponent } from './_components/string-replace/string-repl
 import { EmptyDataComponent } from './_components/empty-data/empty-data.component';
 import { RunningProgressComponent } from './_components/running-progress/running-progress.component';
 import { InvitePeopleComponent } from './_components/invite-people/invite-people.component';
-import { MaterialListComponent } from './_components/material-list/material-list.component';
 import { ScheduleComponent } from '@modules/shared/_components/schedule/schedule.component';
 import { NewAttributeSidesheetComponent } from './_components/new-attribute-sidesheet/new-attribute-sidesheet.component';
 import { NewModifierSidesheetComponent } from './_components/new-modifier-sidesheet/new-modifier-sidesheet.component';
@@ -50,10 +48,9 @@ import { NewNounSidesheetComponent } from './_components/new-noun-sidesheet/new-
 import { LibraryMappingSidesheetComponent } from './_components/library-mapping-sidesheet/library-mapping-sidesheet.component';
 import { ExclusionsSidesheetComponent } from './_components/v2/brrule-side-sheet/duplicate-rule-config/exclusions-sidesheet/exclusions-sidesheet.component';
 import { DetailBuilderComponent } from './_components/v2/_builder/detail-builder/detail-builder.component';
-
+import { SchemaListsComponent } from './_components/v2/schema-lists/schema-lists.component';
 
 const routes: Routes = [
-  { path: '', component: DiwTilesComponent },
   { path: 'group/:groupId', component: SchemaGroupFormComponent },
   // { path: 'schema-list/:schemaGrpId', component: SchemaListComponent },
   { path: 'schema-details/:moduleId/:schemaId', component: DetailBuilderComponent },
@@ -79,10 +76,10 @@ const routes: Routes = [
   { path: 'primary-navbar', component: PrimaryNavbarComponent },
   { path: 'secondary-navbar', component: SecondaryNavbarComponent },
   { path: 'create-rule', component: CreateRuleComponent },
-  { path: ':moduleId', component: DiwTilesComponent },
+  { path: ':moduleId', component: SchemaListsComponent },
   { path: 'sidenav-userdefined', component: SidenavUserdefinedComponent },
   { path: 'table-loading', component: TableLoadingComponent },
-  { path: 'upload-data', component: UploadDataComponent },
+  { path: 'upload-data/:moduleId', component: UploadDataComponent },
   { path: 'mdo-generic-components', component: MdoGenericComponentsComponent },
   { path: 'schema-info/:moduleId/:schemaId', component: SchemaInfoComponent },
   { path: 'business-rule/:moduleId/:schemaId/:brId', component: BrruleSideSheetComponent },
@@ -101,7 +98,6 @@ const routes: Routes = [
   { path: 'system/empty-data', component: EmptyDataComponent },
   { path: 'system/running-progress', component: RunningProgressComponent },
   { path: 'system/invite-people', component: InvitePeopleComponent },
-  { path: 'system/material-list', component: MaterialListComponent },
   { path: 'schedule/:schemaId', component: ScheduleComponent},
   { path: 'system/exclusions-sidesheet', component: ExclusionsSidesheetComponent },
   { path: 'system/new-attribute-sidesheet', component: NewAttributeSidesheetComponent },

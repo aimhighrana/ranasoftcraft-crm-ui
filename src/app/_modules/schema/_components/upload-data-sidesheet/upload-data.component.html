@@ -2,40 +2,17 @@
 <div class="root">
   <mat-toolbar>
     <mat-toolbar-row>
-      <span>Upload new dataset for
-        <ng-template [ngIf]="moduleInfo.object" [ngIfElse]="elseIndex">
-          <strong>Correction Value</strong>
-        </ng-template>
-        <ng-template #elseIndex>
-          <strong>{{ moduleInfo.module.moduleDesc }}</strong>
-        </ng-template>
-      </span>
+        <strong>{{moduleInfo ? ( moduleInfo.moduleDesc ? moduleInfo.moduleDesc: 'Untitled') : 'Untitled'}}</strong>
       <span class="f-spacer"></span>
-      <button mat-icon-button (click)="closeDialog()">
+      <button mat-icon-button (click)="close()">
         <mat-icon>close</mat-icon>
       </button>
     </mat-toolbar-row>
   </mat-toolbar>
+
   <mat-card class="mat-elevation-z0 upload-process">
     <mat-horizontal-stepper linear #stepper (selectionChange)="controlStepChange($event);">
-      <!-- <mat-step [stepControl]="moduleFormCtrl">
-            <form [formGroup]="moduleFormCtrl">
-              <ng-template matStepLabel>Select Module</ng-template>
-              <mat-form-field>
-                <mat-label>Module Name</mat-label>
-                <input type="text" matInput formControlName="moduleInpFrmCtrl" [matAutocomplete]="moduleInpAutoCmp" required>
-                <mat-autocomplete #moduleInpAutoCmp="matAutocomplete" [displayWith]="moduleDisplayFn">
-                  <mat-option *ngFor="let module of filteredModules | async" [value]="module">
-                    {{ module.objectdesc }}
-                  </mat-option>
-                </mat-autocomplete>                  
-              </mat-form-field>
-              <mat-checkbox disabled matTooltip="Coming soon..">Create new module</mat-checkbox>
-              <mat-card-actions>
-        <button mat-button matStepperNext>Next</button>
-              </mat-card-actions>
-            </form>
-          </mat-step> -->
+      <!-- Upload data -->
       <mat-step [stepControl]="uploadFileStepCtrl">
         <form [formGroup]="uploadFileStepCtrl">
           <ng-template matStepLabel>Upload dataset</ng-template>
@@ -52,19 +29,13 @@
                 <button [disabled]="uploadDisabled" mat-flat-button color="primary"
                   (click)="uploadFile()">{{ uploadedFile ? uploadedFile.name:'Browse file' }}</button>
               </div>
-              <div class="f-col" style="display: none;">
-                <mat-icon class="basic-icon">loop</mat-icon>
-                <h4 class="mat-h4">Uploading...</h4>
-              </div>
-            </div>
-            <div class="f-col upload-note">
-              <p>Files supported: .xls, .xlsx or .csv</p>
-              <p>Max file size: 10 MB</p>
             </div>
           </div>
           <!-- Upload Data End Here... -->
         </form>
       </mat-step>
+
+      <!-- map headers -->
       <mat-step [stepControl]="dataTableCtrl">
         <ng-template matStepLabel>Map fields</ng-template>
 
@@ -113,6 +84,8 @@
           <button mat-flat-button color="primary" matStepperNext (click)="uploadFileData(stepper)">Begin Import</button>
         </div>
       </mat-step>
+
+      <!-- notification -->
       <mat-step>
         <ng-template matStepLabel>Finish</ng-template>
         <div class="f-col middle-container">
@@ -126,17 +99,9 @@
             </div>
           </div>
           <div class="f-col upload-note">
-            <button mat-flat-button color="primary" (click)="closeDialog()">Close</button>
+            <button mat-flat-button color="primary" (click)="close()">Close</button>
           </div>
         </div>
-        <!-- <div class="f-col finish-container">
-            <mat-icon class="checked-icon">check_circle</mat-icon>
-            <span class="f-row-spacer-half"></span>
-            <span class="title-heading">Your dataset mapping process as been completed successfully.</span>
-            <span class="row-spacer"></span>
-            <p>We’re sending you a success email</p>
-            <button mat-flat-button color="primary" (click)="closeDialog()">Close</button>
-          </div> -->
       </mat-step>
     </mat-horizontal-stepper>
   </mat-card>

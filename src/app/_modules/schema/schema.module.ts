@@ -16,9 +16,9 @@ import { SchemaCollaboratorsComponent } from 'src/app/_modules/schema/_component
 import { SchemaExecutionComponent } from './_components/schema-execution/schema-execution.component';
 import { SchemaExecutionDialogComponent } from './_components/schema-execution/schema-execution-dialog/schema-execution-dialog.component';
 import { SchemaExecutionLogsComponent } from './_components/schema-execution-logs/schema-execution-logs.component';
-import { UploadDataComponent } from './_components/upload-data/upload-data.component';
+import { UploadDataComponent } from './_components/upload-data-sidesheet/upload-data.component';
 import { ExecutionSummaryComponent } from './_components/schema-details/execution-summary/execution-summary.component';
-import { MapMdoFieldComponent } from './_components/upload-data/map-mdo-field/map-mdo-field.component';
+import { MapMdoFieldComponent } from './_components/upload-data-sidesheet/map-mdo-field/map-mdo-field.component';
 import { SalesforceConnectionComponent } from './_components/salesforce-connection/salesforce-connection.component';
 import { AccessDeniedDialogComponent } from '@modules/shared/_components/access-denied-dialog/access-denied-dialog.component';
 import { DuplicateBusinessruleComponent } from './_components/duplicate-businessrule/duplicate-businessrule.component';
@@ -29,7 +29,6 @@ import { CreateVariantComponent } from './_components/create-variant/create-vari
 import { WelcomeMdoComponent } from './_components/welcome-mdo/welcome-mdo.component';
 import { UploadDatasetComponent } from './_components/upload-dataset/upload-dataset.component';
 import { CreateRuleComponent } from './_components/create-rule/create-rule.component';
-import { DiwTilesComponent } from './_components/diw-tiles/diw-tiles.component';
 import { SidenavUserdefinedComponent } from './_components/sidenav-userdefined/sidenav-userdefined.component';
 import { TableLoadingComponent } from './_components/table-loading/table-loading.component';
 import { SchemaDetailsComponent } from './_components/v2/schema-details/schema-details.component';
@@ -54,7 +53,6 @@ import { StringReplaceComponent } from './_components/string-replace/string-repl
 import { EmptyDataComponent } from './_components/empty-data/empty-data.component';
 import { RunningProgressComponent } from './_components/running-progress/running-progress.component';
 import { InvitePeopleComponent } from './_components/invite-people/invite-people.component';
-import { MaterialListComponent } from './_components/material-list/material-list.component';
 import { NewAttributeSidesheetComponent } from './_components/new-attribute-sidesheet/new-attribute-sidesheet.component';
 import { NewModifierSidesheetComponent } from './_components/new-modifier-sidesheet/new-modifier-sidesheet.component';
 import { NewNounSidesheetComponent } from './_components/new-noun-sidesheet/new-noun-sidesheet.component';
@@ -64,6 +62,7 @@ import { SetupDuplicateRuleComponent } from './_components/v2/brrule-side-sheet/
 import { ClassificationBuilderComponent } from './_components/v2/classification/classification-builder/classification-builder.component';
 import { DetailBuilderComponent } from './_components/v2/_builder/detail-builder/detail-builder.component';
 import { PotextViewComponent } from './_components/v2/potext/potext-view/potext-view.component';
+import { SchemaListsComponent } from './_components/v2/schema-lists/schema-lists.component';
 
 
 
@@ -96,7 +95,6 @@ import { PotextViewComponent } from './_components/v2/potext/potext-view/potext-
     UploadDatasetComponent,
     WelcomeMdoComponent,
     CreateRuleComponent,
-    DiwTilesComponent,
     SidenavUserdefinedComponent,
     TableLoadingComponent,
     SchemaDetailsComponent,
@@ -123,7 +121,6 @@ import { PotextViewComponent } from './_components/v2/potext/potext-view/potext-
     EmptyDataComponent,
     RunningProgressComponent,
     InvitePeopleComponent,
-    MaterialListComponent,
     ExclusionsSidesheetComponent,
     NewAttributeSidesheetComponent,
     NewModifierSidesheetComponent,
@@ -132,7 +129,8 @@ import { PotextViewComponent } from './_components/v2/potext/potext-view/potext-
     SetupDuplicateRuleComponent,
     ClassificationBuilderComponent,
     DetailBuilderComponent,
-    PotextViewComponent
+    PotextViewComponent,
+    SchemaListsComponent
   ],
   imports: [
     CommonModule,
