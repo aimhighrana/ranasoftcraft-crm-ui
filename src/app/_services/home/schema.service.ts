@@ -4,7 +4,7 @@ import { EndpointService } from '../endpoint.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../any2ts.service';
-import { SchemaGroupResponse, SchemaGroupDetailsResponse, SchemaGroupCountResponse, CreateSchemaGroupRequest, GetAllSchemabymoduleidsReq, ObjectTypeResponse, GetAllSchemabymoduleidsRes, SchemaGroupWithAssignSchemas, WorkflowResponse, WorkflowPath, ExcelValues, DataSource } from 'src/app/_models/schema/schema';
+import { SchemaGroupResponse, SchemaGroupDetailsResponse, SchemaGroupCountResponse, CreateSchemaGroupRequest, GetAllSchemabymoduleidsReq, ObjectTypeResponse, GetAllSchemabymoduleidsRes, SchemaGroupWithAssignSchemas, WorkflowResponse, WorkflowPath, ExcelValues, DataSource, SchemaVariantReq } from 'src/app/_models/schema/schema';
 import { DropDownValue, UDRBlocksModel, UdrModel, CoreSchemaBrInfo, Category, DuplicateRuleModel } from 'src/app/_modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaStaticThresholdRes, SchemaListModuleList, SchemaListDetails, CoreSchemaBrMap } from '@models/schema/schemalist';
 import { SchemaScheduler } from '@models/schema/schemaScheduler';
@@ -251,13 +251,22 @@ export class SchemaService {
   }
 
   /**
-   * function to get Api call for schedule of a schema
+   * function to GET Api call for schedule of a schema
+   * @param schemaId Id of schema
    */
   public getSchedule(schemaId: string): Observable<SchemaScheduler>{
     return this.http.get<SchemaScheduler>(this.endpointService.getScheduleUrl(schemaId))
   }
+
   public saveUpdateDuplicateRule(duplicateReq: DuplicateRuleModel, params): Observable<string> {
     return this.http.post<string>(this.endpointService.saveUpdateDuplicateRule(), duplicateReq, {params});
   }
 
+  /**
+   * Function to POST Api call for save/update schema data scope
+   * @param dataScopeReq datascope details req object
+   */
+  public saveUpdateDataScope(dataScopeReq: SchemaVariantReq): Observable<any>{
+    return this.http.post<any>(this.endpointService.saveUpdateDataScopeUrl(), dataScopeReq)
+  }
 }

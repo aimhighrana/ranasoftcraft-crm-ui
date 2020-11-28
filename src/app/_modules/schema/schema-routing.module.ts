@@ -91,7 +91,7 @@ const routes: Routes = [
   { path: 'subscriber/:moduleId/:schemaId/:subscriberId', component: SubscriberSideSheetComponent },
   { path: 'system/catalog-check', component: CatalogCheckComponent },
   { path: 'system/duplicate-datacheck-sidesheet', component: DuplicateDatacheckSidesheetComponent },
-  { path: 'data-scope/:variantId', component: DatascopeSidesheetComponent },
+  { path: 'data-scope/:moduleId/:schemaId/:variantId', component: DatascopeSidesheetComponent },
   { path: 'system/configure-sidesheet', component: ConfigureSidesheetComponent },
   { path: 'system/attribute-mapping', component: AttributeMappingComponent },
   { path: 'system/br-classification-sidesheet', component: BrClassificationSidesheetComponent },

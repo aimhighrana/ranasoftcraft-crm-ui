@@ -7,37 +7,48 @@
         <div class="f-row mdo-constrained-right">
             <div class="display-heading-large">Data scope</div>
             <span class="f-spacer"></span>
-            <button mat-flat-button color="primary">Save</button>
+            <button mat-flat-button color="primary" (click)="saveVarient()">Save</button>
         </div>
     </div>
     <div class="row-spacer"></div>
     <div class="f-col mdo-justify">
         <div class="f-col">
-            <pros-form-input [type]="'text'" [label]="'Name'"></pros-form-input>
+            <pros-form-input [type]="'text'" [label]="'Name'" (valueChange)="getValue($event)" [value]="variantInfo.variantName"></pros-form-input>
             <div class="row-spacer"></div>
             <div class="f-col temp-field">
                 <mat-label>Scope</mat-label>
                 <div class="f-row-spacer-half"></div>
                 <div class="f-row">
                     <mat-chip-list>
-                        <mat-chip class="mdo-filter-matchip">
-                            <label>Country:</label> <span class="info">All</span>
-                            <mat-icon matChipRemove>clear</mat-icon>
-                        </mat-chip>
+                        <ng-container *ngIf="variantInfo">
+                            <ng-template ngFor let-ctrl [ngForOf]="variantInfo.filterCriteria">
+                                <mat-chip class="mdo-filter-matchip" [matMenuTriggerFor]="appliedfiltermenu"
+                                    (click)="loadDropValues(ctrl)">
+                                    <label>{{ctrl.fldCtrl ? ctrl.fldCtrl.fieldDescri : 'Unknown'}}:</label>
+                                    <span class="info">{{prepareTextToShow(ctrl)}}</span>
+                                    <mat-icon matChipRemove (click)="removeFilter(ctrl)">clear</mat-icon>
+                                </mat-chip>
+                            </ng-template>
+                        </ng-container>
 
-                        <mat-chip class="mdo-filter-matchip">
+
+                        <mat-chip class="mdo-filter-matchip" [matMenuTriggerFor]="addFilterMenu"
+                            (click)="reInilize = !reInilize">
                             <mat-icon fontSet="mdo-icons">folder-filter</mat-icon>
                         </mat-chip>
 
-                        <mat-chip class="mdo-filter-matchip" disableRipple="true">
-                            <mat-icon fontSet="mdo-icons">more</mat-icon>
-                        </mat-chip>
-                        <mat-menu>
-                            <mat-nav-list>
-                                <pros-filter-values></pros-filter-values>
-                            </mat-nav-list>
+                        <mat-menu #addFilterMenu="matMenu">
+                            <pros-add-filter-menu [moduleId]="moduleId" (evtReadyForApply)="makeFilterCtrl($event)"
+                                [reInilize]="reInilize"></pros-add-filter-menu>
                         </mat-menu>
                     </mat-chip-list>
+
+                    <mat-menu #appliedfiltermenu="matMenu">
+                        <pros-filter-values [moduleId]="moduleId" (selectedValues)="updateChipFilter($event, loadDropValuesFor.fieldId)"
+                            [fieldId]="loadDropValuesFor ? loadDropValuesFor.fieldId : ''"
+                            [checkedValue]="loadDropValuesFor ? loadDropValuesFor.checkedValue : []">
+                        </pros-filter-values>
+                    </mat-menu>
                 </div>
             </div>
         </div>

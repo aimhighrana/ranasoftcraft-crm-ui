@@ -127,6 +127,13 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     })
     this.subscriptions.push(getScheduleSubscription);
 
+    const getDataScopeSubscription = this.sharedService.getDataScope().subscribe((res) => {
+      if(res){
+        this.getSchemaVariants(this.schemaId, 'RUNFOR');
+      }
+    })
+    this.subscriptions.push(getDataScopeSubscription);
+
     this.getAllCategoryInfo(); // To get info of business rules categories
 
     this.getScheduleInfo(this.schemaId); // To get info about schedule
@@ -145,7 +152,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       this.getSchemaStatics(this.schemaId);
       this.getSubscriberList(this.schemaId);
       this.getBusinessRuleList(this.schemaId);
-      this.getSchemaVariants(this.schemaId);
+      this.getSchemaVariants(this.schemaId, 'RUNFOR');
 
       this.schemaListService.getSchemaDetailsBySchemaId(this.schemaId).subscribe(res => {
         this.schemaDetails = res;
@@ -168,8 +175,8 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * Function to get dataScope/variants of schema
    * @param schemaId : ID of schema
    */
-  getSchemaVariants(schemaId: string) {
-    const schemaVariantList = this.schemaVariantService.getSchemaVariantDetails(schemaId).subscribe(response => {
+  getSchemaVariants(schemaId: string, type: string) {
+    const schemaVariantList = this.schemaVariantService.getAllDataScopeList(schemaId, type).subscribe(response => {
       this.variantDetails = response;
     }, error => {
       console.log('Error while getting schema variants', error.message)
@@ -186,7 +193,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       if(response && response === 'yes') {
         const deleteVariant = this.schemaVariantService.deleteVariant(variantId).subscribe(res => {
           if (res) {
-            this.getSchemaVariants(this.schemaId);
+            this.getSchemaVariants(this.schemaId, 'RUNFOR');
             this.matSnackBar.open('SuccessFully Deleted!!', 'close', { duration: 3000 })
           }
         }, error => {
@@ -195,6 +202,14 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
         this.subscriptions.push(deleteVariant);
       }
     });
+  }
+
+  /**
+   * Function to open data scope side sheet in edit mode
+   * @param variantId: ID of variant/data-scope
+   */
+  editDataScope(variantId: string) {
+    this.router.navigate([{outlets: {sb: `sb/schema/data-scope/${this.moduleId}/${this.schemaId}/${variantId}`}}])
   }
 
   /**
@@ -683,7 +698,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * function to open dataScope side sheet(Add new data scope).
    */
   addDataScope() {
-    this.router.navigate([{ outlets: { sb: `sb/schema/data-scope/new` } }])
+    this.router.navigate([{ outlets: { sb: `sb/schema/data-scope/${this.moduleId}/${this.schemaId}/new` } }])
   }
 
   /**

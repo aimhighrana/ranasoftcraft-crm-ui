@@ -8,7 +8,7 @@ import { FilterValuesComponent } from '@modules/shared/_components/filter-values
 import { AddFilterMenuComponent } from '@modules/shared/_components/add-filter-menu/add-filter-menu.component';
 import { Router } from '@angular/router';
 import { CoreSchemaBrInfo, DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
-import { SchemaStaticThresholdRes, VariantDetails } from '@models/schema/schemalist';
+import { SchemaStaticThresholdRes } from '@models/schema/schemalist';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { of } from 'rxjs';
 import { CategoryInfo, FilterCriteria } from '@models/schema/schemadetailstable';
@@ -59,10 +59,10 @@ describe('SchemaInfoComponent', () => {
   })
 
   it('getSchemaVariants(), should return all variants of a schema', async () => {
-    component.schemaId = '1005'
-    spyOn(schemaVariantService, 'getSchemaVariantDetails').withArgs(component.schemaId).and.returnValue(of({} as VariantDetails[]))
-    component.getSchemaVariants(component.schemaId);
-    expect(schemaVariantService.getSchemaVariantDetails).toHaveBeenCalledWith(component.schemaId);
+    component.schemaId = '1005';
+    spyOn(schemaVariantService, 'getAllDataScopeList').withArgs(component.schemaId, 'RUNFOR').and.returnValue(of())
+    component.getSchemaVariants(component.schemaId, 'RUNFOR');
+    expect(schemaVariantService.getAllDataScopeList).toHaveBeenCalledWith(component.schemaId, 'RUNFOR');
   })
 
   it('getSchemaStatics(), should get stats of schema', async () => {
@@ -155,9 +155,11 @@ describe('SchemaInfoComponent', () => {
   })
 
   it('addDataScope(), should navigate to add datascope side sheet', () => {
+    component.moduleId = '1005';
+    component.schemaId = '2563145';
     spyOn(router, 'navigate');
     component.addDataScope();
-    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/data-scope/new` } }])
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/data-scope/${component.moduleId}/${component.schemaId}/new` } }])
   })
 
   it('openSummarySideSheet(), should navigate to schema summary side sheet', () => {
@@ -265,5 +267,14 @@ describe('SchemaInfoComponent', () => {
     component.toggleScheduleState();
     expect(component.scheduleInfo.isEnable).toEqual(true);
     expect(schemaService.createUpdateSchedule).toHaveBeenCalledWith(component.schemaId, component.scheduleInfo)
+  })
+
+  it('editDataScope(), should open data scope side sheet in edit mode', async() => {
+    component.moduleId = '1005';
+    component.schemaId = '12550524553';
+    const variantId = '125A';
+    spyOn(router, 'navigate');
+    component.editDataScope(variantId);
+    expect(router.navigate).toHaveBeenCalledWith([{outlets: {sb: `sb/schema/data-scope/${component.moduleId}/${component.schemaId}/${variantId}`}}])
   })
 });

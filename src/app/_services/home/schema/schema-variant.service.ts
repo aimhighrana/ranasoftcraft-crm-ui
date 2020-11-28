@@ -36,7 +36,7 @@ export class SchemaVariantService {
   }
 
   /**
-   * Get variants by variants id ..
+   * Get variant detail by variant id ..
    * @param variantId queryParam for getting variants ..
    */
   public getVariantdetailsByvariantId(variantId: string): Observable<SchemaVariantsModel> {
@@ -45,5 +45,14 @@ export class SchemaVariantService {
 
   public deleteVariant(variantId: string): Observable<boolean> {
     return this.http.delete<boolean>(this.endPointService.deleteVariantUrl(variantId));
+  }
+
+  /**
+   * Function to GET Api call for fetching data scope list
+   * @param schemaId: ID of schema
+   * @param type: variant type
+   */
+  public getAllDataScopeList(schemaId: string, type: string): Observable<any> {
+    return this.http.get<any>(this.endPointService.getAllDataScopeUrl(schemaId, type));
   }
 }

@@ -608,8 +608,27 @@ export class EndpointService {
     return `${this.apiUrl}/schema/get-schema-scheduler/${schemaId}`;
   }
 
+  /**
+   * endpoint for saving and updating duplicate rule
+   */
   public saveUpdateDuplicateRule(): string {
     return `${this.apiUrl}/duplicate/saveDuppsett`;
+  }
+
+  /**
+   * endpoint for save/update schema data scope
+   */
+  public saveUpdateDataScopeUrl(): string {
+    return `${this.apiUrl}/schema/variant/create-update-single`;
+  }
+
+  /**
+   * endpoint for get schema data scope
+   * @param schemaId: ID of schema
+   * @param type: type of variants
+   */
+  public getAllDataScopeUrl(schemaId: string, type: string): string {
+    return `${this.apiUrl}/schema/variants/${schemaId}/${type}`;
   }
 }
 

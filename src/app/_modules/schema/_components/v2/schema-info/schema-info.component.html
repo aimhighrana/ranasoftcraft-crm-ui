@@ -66,7 +66,7 @@
                                 <mat-list-item (click)="addDataScope()">
                                     <div mat-line class="row-heading">[Add data scope]</div>
                                 </mat-list-item>
-                                <mat-list-item *ngFor="let variant of variantDetails">
+                                <mat-list-item *ngFor="let variant of variantDetails" (click)="editDataScope(variant.variantId)">
                                     <div mat-line class="row-heading">{{variant.variantName}}</div>
                                     <span class="f-spacer"></span>
                                     <button mat-button (click)="deleteVariant(variant.variantId)">

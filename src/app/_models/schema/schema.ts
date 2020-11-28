@@ -1,5 +1,5 @@
 import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
-import { MetadataModel } from './schemadetailstable';
+import { FilterCriteria, MetadataModel } from './schemadetailstable';
 
 export interface Schema {
      schemaId: string;
@@ -148,4 +148,15 @@ export interface AddFilterOutput {
 export interface SubscriberFields {
      subscriberIndex: number;
      event: AddFilterOutput;
+}
+
+/**
+ * schema variant request object model
+ */
+export interface SchemaVariantReq {
+     variantId: string;
+     schemaId: string;
+     variantName: string;
+     variantType: string;
+     filterCriteria: FilterCriteria[]
 }

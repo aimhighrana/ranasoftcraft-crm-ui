@@ -55,6 +55,11 @@ export class SharedServiceService {
    */
   private saveBr: Subject<CoreSchemaBrInfo> = new Subject();
 
+  /**
+   * Behavior subject for data scope saving
+   */
+  private afterSaveDataScope: BehaviorSubject<any> = new BehaviorSubject(null);
+
 
   constructor() { }
 
@@ -195,4 +200,18 @@ export class SharedServiceService {
     return this.saveBr.asObservable();
   }
 
+  /**
+   * Function to set data scope info after saving
+   * @param data: dataScope object
+   */
+  public setDataScope(data){
+    this.afterSaveDataScope.next(data)
+  }
+
+  /**
+   * Function to get data scope info after saving
+   */
+  public getDataScope(): Observable<any> {
+    return this.afterSaveDataScope.asObservable();
+  }
 }
