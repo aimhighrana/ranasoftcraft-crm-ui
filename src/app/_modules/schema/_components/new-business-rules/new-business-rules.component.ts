@@ -7,7 +7,7 @@ import {
 import { BusinessRules } from '@modules/admin/_components/module/schema/diw-create-businessrule/diw-create-businessrule.component';
 import { BusinessRuleType, ConditionalOperator, PRE_DEFINED_REGEX, RULE_TYPES, TransformationModel, TransformationRuleType, UDRObject } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
-import { MetadataModeleResponse, CategoryInfo, FieldConfiguration, TransformationFormData } from '@models/schema/schemadetailstable';
+import { MetadataModeleResponse, CategoryInfo, FieldConfiguration, TransformationFormData, LookupFields, NewBrDialogResponse } from '@models/schema/schemadetailstable';
 import { of, Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
@@ -22,11 +22,36 @@ import { BlockType } from '@modules/report/_models/widget';
 })
 export class NewBusinessRulesComponent implements OnInit {
 
+    /**
+     * main rule form
+     */
     form: FormGroup;
+
+    /**
+     * hold the form controls in this variable
+     */
     currentControls: any = {};
+
+    /**
+     * all available business rules
+     */
     businessRuleTypes: BusinessRules[] = RULE_TYPES;
+
+    /**
+     * Pre defined regex for regex rule
+     */
     preDefinedRegex: Regex[] = PRE_DEFINED_REGEX;
+
+    /**
+     * current rule
+     */
     currentSelectedRule: string;
+
+    /**
+     * Lookup data from transformation rule component
+     */
+    lookupData: LookupFields[] = [];
+
     /**
      * List of fields
      */
@@ -42,12 +67,18 @@ export class NewBusinessRulesComponent implements OnInit {
      */
     selectedFields = [];
 
+    /**
+     * target fields for transformation rule
+     */
     targetFieldsObject: FieldConfiguration = {
         list: [],
         labelKey: '',
         valueKey: ''
     }
 
+    /**
+     * source fields for transformation rule
+     */
     sourceFieldsObject: FieldConfiguration = {
         list: [],
         labelKey: '',
@@ -60,7 +91,16 @@ export class NewBusinessRulesComponent implements OnInit {
     separatorKeysCodes: number[] = [ENTER, COMMA];
 
     operators = [];
+
+    /**
+     * hold the form submitted state in order
+     * to share it with another child component
+     */
     submitted = false;
+
+    /**
+     * Available conditions
+     */
     initialConditions = ['And', 'Or'];
 
     /**
@@ -68,7 +108,9 @@ export class NewBusinessRulesComponent implements OnInit {
      */
     categoryList: CategoryInfo[] = []
 
-
+    /**
+     * UDR object model
+     */
     udrBlocks: UDRObject[] = [{
         id: Math.floor(Math.random() * 1000000000000).toString(),
         blockTypeText: 'When', // when/and/or
@@ -80,7 +122,15 @@ export class NewBusinessRulesComponent implements OnInit {
         rangeEndValue: '',
         children: []
     }];
+
+    /**
+     * Hold the ist of UDR blocks
+     */
     allUDRBlocks: UDRObject[] = [this.udrBlocks[0]];
+
+    /**
+     * Hold the hierarchy
+     */
     allhierarchies = [
         {
             parentId: '',
@@ -92,8 +142,22 @@ export class NewBusinessRulesComponent implements OnInit {
     fieldControl = new FormControl();
     tempRuleId: string;
 
+    /**
+     * Transformation Data model
+     */
     transformationData: TransformationFormData;
+
+    /**
+     * Existing transformation schema used to
+     * patch transformation rule for Regex
+     */
     transformationSchema: TransformationModel;
+
+    /**
+     * Existing transformation schema used to
+     * patch transformation rule for Lookup
+     */
+    transformationLookUpData: LookupFields[] = [];
     /**
      * Class contructor
      * @param snackBar refernce to matSnackbar
@@ -114,7 +178,7 @@ export class NewBusinessRulesComponent implements OnInit {
     }
 
     get selectedTransformationType() {
-        if(this.form && this.form.controls) {
+        if (this.form && this.form.controls) {
             return this.form.controls.transformationRuleType.value;
         }
         return '';
@@ -196,18 +260,57 @@ export class NewBusinessRulesComponent implements OnInit {
      * Patch transformation form data
      * @param transformationSchema transformation rule details to be passed
      */
-    patchTransformationFormData(transformationSchema: TransformationModel[]){
-        if(transformationSchema && transformationSchema.length>0){
-            const data: TransformationModel  = transformationSchema[0];
-            const {excludeScript, includeScript, sourceFld, targetFld, transformationRuleType} = data;
-            this.transformationData = {
-                excludeScript,
-                includeScript,
-                sourceFld,
-                targetFld,
-                // selectedTargetFields: []
+    patchTransformationFormData(transformationSchema: TransformationModel[]) {
+        const currentType = this.getTrRuleType(transformationSchema);
+        this.form.controls.transformationRuleType.setValue(currentType);
+        if (currentType === this.transformationType.REGEX) {
+            if (transformationSchema && transformationSchema.length > 0) {
+                const data: TransformationModel = transformationSchema[0];
+                const { excludeScript, includeScript, sourceFld, targetFld, transformationRuleType, parameter } = data;
+                this.transformationData = {
+                    excludeScript,
+                    includeScript,
+                    sourceFld,
+                    targetFld,
+                    parameter
+                    // selectedTargetFields: []
+                }
+                this.form.controls.transformationRuleType.setValue(transformationRuleType);
             }
-            this.form.controls.transformationRuleType.setValue(transformationRuleType);
+        }
+        if (currentType === this.transformationType.LOOKUP) {
+            if (transformationSchema.length > 0) {
+                const lookupFields: LookupFields[] = [];
+                transformationSchema.map((schema) => {
+                    lookupFields.push({
+                        enableUserField: false,
+                        fieldDescri: '',
+                        fieldId: schema.sourceFld,
+                        fieldLookupConfig: {
+                            lookupColumn: schema.parameter.conditionFieldId,
+                            lookupColumnResult: schema.parameter.conditionValueFieldId,
+                            moduleId: schema.parameter.objectType
+                        },
+                        lookupTargetField: schema.targetFld,
+                        lookupTargetText: ''
+                    })
+                });
+
+                this.transformationLookUpData = lookupFields;
+            }
+        }
+    }
+
+
+    getTrRuleType(transformationSchema: TransformationModel[]) {
+        if (transformationSchema && transformationSchema.length > 0) {
+            const schema = transformationSchema[0];
+            if (schema.transformationRuleType === this.transformationType.LOOKUP) {
+                return this.transformationType.LOOKUP;
+            }
+            if (schema.transformationRuleType === this.transformationType.REGEX) {
+                return this.transformationType.REGEX;
+            }
         }
     }
 
@@ -249,6 +352,38 @@ export class NewBusinessRulesComponent implements OnInit {
         this.form.controls.rule_type.valueChanges.subscribe((selectedRule) => {
             this.applyValidatorsByRuleType(selectedRule);
         });
+
+        this.form.controls.transformationRuleType.valueChanges.subscribe((type) => {
+            if (this.currentSelectedRule) {
+                this.applyValidatorsByRuleType(this.currentSelectedRule, type);
+            }
+        })
+    }
+
+ /**
+  * function to get the fields on basis of module
+  */
+    getFieldsByModuleId() {
+        this.schemaDetailsService.getMetadataFields(this.data.moduleId)
+            .subscribe((metadataModeleResponse: MetadataModeleResponse) => {
+                const keys = Object.keys(metadataModeleResponse.headers);
+                keys.forEach((key) => {
+                    this.fieldsList.push(metadataModeleResponse.headers[key])
+                });
+                if (this.data && this.data.createRuleFormValues && this.data.createRuleFormValues.fields) {
+                    this.patchFieldvalues(this.data.createRuleFormValues.fields);
+                 }
+                this.targetFieldsObject = {
+                    labelKey: 'fieldDescri',
+                    valueKey: 'fieldId',
+                    list: this.fieldsList
+                }
+                this.sourceFieldsObject = {
+                    labelKey: 'fieldDescri',
+                    valueKey: 'fieldId',
+                    list: this.fieldsList
+                }
+            });
     }
 
 
@@ -258,22 +393,30 @@ export class NewBusinessRulesComponent implements OnInit {
     patchSelectedFields() {
         this.createDSByFields().then(() => {
             if (this.data && this.data.createRuleFormValues && this.data.createRuleFormValues.fields) {
-                const fields = this.data.createRuleFormValues.fields;
-                const arr = fields.split(',');
-                if (arr && arr.length > 0) {
-                    arr.map((selected) => {
-                        const fieldObj = this.fieldsList.filter((field) => field.fieldId === selected);
-                        if (fieldObj && fieldObj.length > 0) {
-                            const tempObj = fieldObj[0];
-                            this.selectedFields.push({
-                                fieldText: tempObj.fieldDescri,
-                                fieldId: tempObj.fieldId
-                            });
-                        }
-                    });
-                }
+               this.patchFieldvalues(this.data.createRuleFormValues.fields);
             }
         });
+    }
+
+    /**
+     * patch selected field values, common function to be used with
+     * excel and mudule fields
+     * @param fields pass the comma separated fields
+     */
+    patchFieldvalues(fields) {
+        const arr = fields.split(',');
+        if (arr && arr.length > 0) {
+            arr.map((selected) => {
+                const fieldObj = this.fieldsList.filter((field) => field.fieldId === selected);
+                if (fieldObj && fieldObj.length > 0) {
+                    const tempObj = fieldObj[0];
+                    this.selectedFields.push({
+                        fieldDescri: tempObj.fieldDescri,
+                        fieldId: tempObj.fieldId
+                    });
+                }
+            });
+        }
     }
 
     /**
@@ -299,7 +442,7 @@ export class NewBusinessRulesComponent implements OnInit {
      * also nullify validators for all not required fields at the same time
      * @param selectedRule selected rule type
      */
-    applyValidatorsByRuleType(selectedRule: string) {
+    applyValidatorsByRuleType(selectedRule: string, transformationRuleType: string = '') {
         this.currentSelectedRule = selectedRule;
         const controlKeys: any[] = Object.keys(this.currentControls);
         let requiredKeys: string[] = [];
@@ -312,13 +455,17 @@ export class NewBusinessRulesComponent implements OnInit {
         if (selectedRule === BusinessRuleType.BR_MANDATORY_FIELDS || selectedRule === BusinessRuleType.BR_METADATA_RULE) {
             requiredKeys = ['categoryId', 'rule_name', 'error_message', 'fields'];
         }
-        if(selectedRule === BusinessRuleType.BR_TRANSFORMATION_RULE){
-            requiredKeys = ['rule_name', 'transformationRuleType', 'error_message', 'sourceFld', 'targetFld', 'excludeScript', 'includeScript'];
+        if (selectedRule === BusinessRuleType.BR_TRANSFORMATION_RULE) {
+            if (transformationRuleType === this.transformationType.REGEX) {
+                requiredKeys = ['rule_name', 'transformationRuleType', 'error_message', 'sourceFld', 'targetFld', 'excludeScript', 'includeScript'];
+            } else if (transformationRuleType === this.transformationType.LOOKUP) {
+                requiredKeys = ['rule_name', 'transformationRuleType', 'error_message'];
+            }
         }
 
         controlKeys.map((key) => {
             const index = requiredKeys.findIndex(reqKey => reqKey === key);
-            if(index === -1){
+            if (index === -1) {
                 this.form.get(key).setValidators(null);
             } else {
                 this.form.get(key).setValidators([Validators.required]);
@@ -356,29 +503,7 @@ export class NewBusinessRulesComponent implements OnInit {
         });
     }
 
-    /**
-     * function to get the fields on basis of module
-     */
-    getFieldsByModuleId() {
-        this.schemaDetailsService.getMetadataFields(this.data.moduleId)
-            .subscribe((metadataModeleResponse: MetadataModeleResponse) => {
-                const keys = Object.keys(metadataModeleResponse.headers);
-                keys.forEach((key) => {
-                    this.fieldsList.push(metadataModeleResponse.headers[key])
-                });
 
-                this.targetFieldsObject = {
-                    labelKey: 'fieldDescri',
-                    valueKey: 'fieldId',
-                    list: this.fieldsList
-                }
-                this.sourceFieldsObject = {
-                    labelKey: 'fieldDescri',
-                    valueKey: 'fieldId',
-                    list: this.fieldsList
-                }
-            });
-    }
 
     /**
      * function to save the array of ids of selected fields
@@ -390,7 +515,7 @@ export class NewBusinessRulesComponent implements OnInit {
             this.snackBar.open('This field is already selected', 'Okay', { duration: 5000 });
         } else {
             this.selectedFields.push({
-                fieldText: event.option.viewValue,
+                fieldDescri: event.option.viewValue,
                 fieldId: this.data.moduleId ? event.option.value : event.option.value.replace(' ', '_')
             });
         }
@@ -428,11 +553,7 @@ export class NewBusinessRulesComponent implements OnInit {
      * function to close the dialog
      */
     closeDialogComponent() {
-        if (this.form.pristine) {
-            this.dialogRef.close();
-        } else {
-            this.dialogRef.close({ formData: this.form.value, tempId: this.tempRuleId });
-        }
+        this.dialogRef.close();
     }
 
     /**
@@ -494,7 +615,11 @@ export class NewBusinessRulesComponent implements OnInit {
         }
 
         this.form.controls.udrTreeData.setValue(finalObject);
-        this.dialogRef.close({ formData: this.form.value, tempId: this.tempRuleId })
+        let data: NewBrDialogResponse = null;
+        if (!this.form.pristine) {
+            data = { formData: this.form.value, tempId: this.tempRuleId, lookupData: this.lookupData };
+        }
+        this.dialogRef.close(data);
     }
 
     setRegex(event) {
@@ -548,6 +673,7 @@ export class NewBusinessRulesComponent implements OnInit {
     setComparisonValue(value, index) {
         this.udrBlocks[index].comparisonValue = value
     }
+
     setComparisonValueForChild(value, child) {
         child.comparisonValue = value;
     }
@@ -672,6 +798,10 @@ export class NewBusinessRulesComponent implements OnInit {
         this.form.controls.sourceFld.setValue(sourceFld);
         this.form.controls.excludeScript.setValue(excludeScript);
         this.form.controls.includeScript.setValue(includeScript);
+    }
+
+    setLookupData(lookupData: LookupFields[]) {
+        this.lookupData = lookupData;
     }
 }
 

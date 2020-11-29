@@ -1,0 +1,29 @@
+<div class="f-col">
+    <form [formGroup]="lookupForm">
+        <div class="mdo-field-tooltip" (click)="$event.stopPropagation()">
+            <mat-label>Lookup table</mat-label>
+            <mat-form-field appearance="outline">
+                <mat-select formControlName="moduleId">
+                    <mat-option [value]="module.objectid" *ngFor="let module of availableModules">{{module.objectdesc}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="mdo-field-tooltip" (click)="$event.stopPropagation()">
+            <mat-label>Lookup colunm</mat-label>
+            <mat-form-field appearance="outline">
+                <mat-select formControlName="lookupColumn">
+                    <mat-option [value]="field.fieldId" *ngFor="let field of moduleHeaderFields">{{field.fieldDescri}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="mdo-field-tooltip" (click)="$event.stopPropagation()">
+            <mat-label>Result lookup colunm</mat-label>
+            <mat-form-field appearance="outline">
+                <mat-select formControlName="lookupColumnResult">
+                    <mat-option [value]="field.fieldId" *ngFor="let field of moduleHeaderFields">{{field.fieldDescri}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </form>
+    <button mat-flat-button type="button" color="primary" (click)="saveConfig()">Save</button>
+</div>

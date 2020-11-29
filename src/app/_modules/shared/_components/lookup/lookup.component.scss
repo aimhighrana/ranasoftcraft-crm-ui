@@ -20,6 +20,10 @@ div.root {
 
         &.col-x16 {
           flex: 16;
+
+          .divided-matfield {
+            flex: 0 0 47%;
+          }
         }
 
         &.text-end {
@@ -45,9 +49,9 @@ div.root {
         }
 
         .col-inner-icon {
-          font-size: 20px;
-          height: 20px;
-          width: 20px;
+          font-size: 18px;
+          height: 14px;
+          width: 18px;
         }
       }
     }

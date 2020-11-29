@@ -63,7 +63,8 @@ describe('TransformationRuleComponent', () => {
       selectedTargetFields: [{
         fieldId: 'testId',
         fieldDescri: 'Test field'
-      }]
+      }],
+      parameter: null
     }
     component.initializeForm();
     expect(component.form.controls.excludeScript.value).toEqual('test_excludeScript');
@@ -95,7 +96,7 @@ describe('TransformationRuleComponent', () => {
     expect(component.selectedTargetFields.length).toEqual(1);
   });
 
-  it('selectSourceField() with argument event, should add passed value to selectedSourceField ', () => {
+  it('selectSourceField() with argument event, should add passed value to sourceFld ', () => {
     component.sourceFieldsObject = dummyValue;
     component.initializeForm();
     const mockEvent = {
@@ -109,7 +110,7 @@ describe('TransformationRuleComponent', () => {
       val: 'newVal'
     }
     component.selectSourceField(mockEvent);
-    expect(component.selectedSourceField).toEqual(result);
+    expect(component.form.controls.sourceFld.value).toEqual(result.val);
   });
 
   it('removeTargetField(), remove from target field array', () => {
@@ -125,6 +126,6 @@ describe('TransformationRuleComponent', () => {
 
   it('displayFnTarget(), should return a display value', () => {
     component.targetFieldsObject = dummyValue;
-    expect(component.displayFnTarget(dummyValue.list[0])).toEqual('Test Field')
+    expect(component.displayFnTarget(dummyValue.list[0])).toEqual('Test Field');
   })
 });

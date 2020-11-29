@@ -80,7 +80,7 @@ export class SchemaDataTableResponse {
     data: SchemaTableData[];
 }
 
-export  class RequestForSchemaDetailsWithBr {
+export class RequestForSchemaDetailsWithBr {
     schemaId: string;
     runId: string;
     brId: string;
@@ -96,7 +96,7 @@ export  class RequestForSchemaDetailsWithBr {
     schemaThreshold: number;
     afterKey: any;
     filterCriterias: FilterCriteria[];
-    sort:{};
+    sort: {};
     isLoadMore: boolean;
 }
 
@@ -401,16 +401,43 @@ export enum FieldInputType {
     MULTI_SELECT
 }
 
-export interface FieldConfiguration{
+export interface FieldConfiguration {
     list: any[];
     labelKey: string;
     valueKey: string;
 }
 
-export interface TransformationFormData{
+export interface TransformationFormData {
     sourceFld: string;
     targetFld: string;
     excludeScript: string;
     includeScript: string;
     selectedTargetFields?: any[];
+    parameter: UDRBlocksModel;
+}
+
+export interface LookupData {
+    objectdesc: string;
+    objectid: string;
+}
+
+export interface LookupFormData {
+    moduleId: string;
+    lookupColumnResult: string;
+    lookupColumn: string;
+}
+
+export interface LookupFields {
+    fieldDescri: string;
+    fieldId: string;
+    fieldLookupConfig: LookupFormData;
+    lookupTargetField: string;
+    lookupTargetText: string;
+    enableUserField: boolean;
+  }
+
+export interface NewBrDialogResponse {
+    formData: any;
+    tempId: string;
+    lookupData: LookupFields[];
 }

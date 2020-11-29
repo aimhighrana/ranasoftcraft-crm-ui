@@ -3,7 +3,7 @@ import { MatStepper } from '@angular/material/stepper';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 import { ObjectTypeResponse, ObjectType, DataSource, UploadError, AddFilterOutput, SubscriberFields } from '@models/schema/schema';
-import { MetadataModeleResponse, MetadataModel, FilterCriteria } from '@models/schema/schemadetailstable';
+import { MetadataModeleResponse, MetadataModel, FilterCriteria, NewBrDialogResponse, LookupFields } from '@models/schema/schemadetailstable';
 import { SchemaService } from '@services/home/schema.service';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -14,7 +14,7 @@ import { UserService } from '@services/user/userservice.service';
 import { NewBusinessRulesComponent } from '../new-business-rules/new-business-rules.component';
 import { GlobaldialogService } from '@services/globaldialog.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { CoreSchemaBrInfo, DropDownValue, TransformationModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { CoreSchemaBrInfo, TransformationModel, DropDownValue, UDRBlocksModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { NewSchemaCollaboratorsComponent } from '../new-schema-collaborators/new-schema-collaborators.component';
 import { values, pick } from 'lodash';
@@ -25,6 +25,7 @@ import { ScheduleDialogComponent } from '@modules/shared/_components/schedule-di
 import { SchemaScheduler } from '@models/schema/schemaScheduler';
 import { GLOBALCONSTANTS } from '../../../../_constants';
 import { LoadDropValueReq } from '@models/schema/schemalist';
+import { BlockType } from '@modules/admin/_components/module/business-rules/user-defined-rule/udr-cdktree.service';
 
 type UploadedDataType = any[][];
 
@@ -569,7 +570,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         .pipe(
           distinctUntilChanged()
         )
-        .subscribe((response) => {
+        .subscribe((response: NewBrDialogResponse) => {
           this.updateCurrentRulesList(response);
           this.dialogSubscriber.unsubscribe();
         })
@@ -597,7 +598,9 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   updateCurrentRulesList(response) {
     let brObject: CoreSchemaBrInfo;
     const tempId = (response.tempId) ? response.tempId : null;
-    const formData = (response.formData) ? response.formData : response;
+    let formData = (response.formData) ? response.formData : null;
+    const transformationData = this.mapTransformationData(response);
+    formData = {...formData, transformationData};
     if (formData) {
       if (formData.rule_type === 'BR_CUSTOM_SCRIPT') {
         brObject = this.createBrObject(formData, formData.udrTreeData);
@@ -630,6 +633,26 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     }
   }
 
+  /**
+   * create UDR block data from lookup field
+   * @param lookupData lookup data to be passed here
+   */
+  createUDRBlockFromLookup(lookupData: LookupFields): UDRBlocksModel {
+    return {
+      id: '',
+      udrid: '',
+      conditionFieldId: lookupData.fieldLookupConfig.lookupColumn,
+      conditionValueFieldId: lookupData.fieldLookupConfig.lookupColumnResult,
+      conditionFieldValue: '',
+      conditionFieldStartValue: '',
+      conditionFieldEndValue: '',
+      blockType: BlockType.COND,
+      conditionOperator: 'EQUAL',
+      blockDesc: '',
+      objectType: lookupData.fieldLookupConfig.moduleId,
+      childs: []
+    }
+  }
 
   /**
    * Function to track rule Ids, later used to identify newly created
@@ -663,8 +686,6 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * @param rule the selected rule which is to be configured
    */
   configureRule(rule: CoreSchemaBrInfo) {
-    console.log(rule);
-
     this.createfieldObjectForRequest(this.dataSource).then((finalValues) => {
       this.requestForm.controls.fields.setValue(finalValues);
       const {
@@ -700,7 +721,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
 
     this.dialogSubscriber = this.globaldialogService.dialogCloseEmitter
       .pipe(distinctUntilChanged())
-      .subscribe((response: any) => {
+      .subscribe((response: NewBrDialogResponse) => {
         if (response && response.formData) {
           this.updateCurrentRulesList(response);
         }
@@ -726,7 +747,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * @param object newly created Br
    */
   createBrObject(object, udrTreeData = { udrHierarchies: [], blocks: [] }): CoreSchemaBrInfo {
-    const transformationData: TransformationModel[] = [{ ...this.mapTransformationData(object) }];
+
     return {
       tempId: object.tempId ? object.tempId : this.utilties.getRandomString(8),
       sno: object.sno ? object.sno : 0,
@@ -757,23 +778,43 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         udrHierarchies: object.udrHierarchies ? object.udrHierarchies : udrTreeData.udrHierarchies,
         blocks: object.blocks ? object.object : udrTreeData.blocks
       },
-      transFormationSchema: transformationData
+      transFormationSchema: object.transformationData
     } as CoreSchemaBrInfo;
   }
 
-  mapTransformationData(data) {
-    const { sourceFld, targetFld, includeScript, excludeScript, transformationRuleType } = data;
-    const transformationObject: TransformationModel = {
-      brId: '',
-      sourceFld,
-      targetFld,
-      includeScript,
-      excludeScript,
-      transformationRuleType,
-      lookUpObjectType: '',
-      lookUptable: ''
+  mapTransformationData(response) {
+    const { sourceFld, targetFld, includeScript, excludeScript, transformationRuleType } = response.formData;
+    const transformationList: TransformationModel[] = [];
+
+    if(response.lookupData && response.lookupData.length>0){
+      response.lookupData.map((param: LookupFields) => {
+      transformationList.push({
+        brId: '',
+        sourceFld: param.fieldId,
+        targetFld: param.lookupTargetField,
+        includeScript,
+        excludeScript,
+        transformationRuleType,
+        lookUpObjectType: '',
+        lookUptable: '',
+        parameter: this.createUDRBlockFromLookup(param)
+      })
+    })
+    } else {
+      transformationList.push({
+        brId: '',
+        sourceFld,
+        targetFld,
+        includeScript,
+        excludeScript,
+        transformationRuleType,
+        lookUpObjectType: '',
+        lookUptable: '',
+        parameter: null
+      });
     }
-    return transformationObject;
+
+    return transformationList;
   }
 
   /**
@@ -1451,6 +1492,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       });
     });
   }
+
 
   /**
    * function to get Subscriber information
