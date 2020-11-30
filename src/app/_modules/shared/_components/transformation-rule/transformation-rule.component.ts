@@ -47,19 +47,34 @@ export class TransformationRuleComponent implements OnInit, OnChanges {
     list: []
   };
 
+  /**
+   * Input property to check if the parent form has been submitted
+   */
   @Input()
   submitted = false;
 
+  /**
+   * Hold the selected rule type e.g. Regex or Lookup
+   */
   @Input()
   selectedRuleType: string;
 
+  /**
+   * existing transformation data, used to patch values in case of edit
+   */
   @Input()
   initialTransformationData: TransformationFormData;
 
+  /**
+   * Output property to emit transformation rule data back to parent component
+   */
   @Output()
   transformationFormOutput: EventEmitter<TransformationFormData> = new EventEmitter(null);
   constructor(private snackBar: MatSnackBar) {}
 
+  /**
+   * Angular hook for on init
+   */
   ngOnInit(): void {
     this.initializeForm();
   }

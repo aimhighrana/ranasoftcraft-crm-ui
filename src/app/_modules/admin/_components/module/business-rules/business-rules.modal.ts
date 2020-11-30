@@ -15,6 +15,7 @@ export interface TransformationModel {
     lookUptable?: string;
     transformationRuleType: TransformationRuleType.LOOKUP | TransformationRuleType.REGEX;
     lookUpObjectType?: string;
+    parameter: UDRBlocksModel;
 }
 export class CoreSchemaBrInfo {
     tempId?: string;
@@ -46,7 +47,7 @@ export class CoreSchemaBrInfo {
     udrDto?: UdrModel;
     duplicacyField?: any;
     duplicacyMaster?: any;
-    transFormationSchema?: TransformationModel[]
+    transFormationSchema?: TransformationModel[];
 }
 
 export enum BusinessRuleType {

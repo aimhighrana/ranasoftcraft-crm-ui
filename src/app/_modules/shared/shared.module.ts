@@ -70,6 +70,7 @@ import { FormInputAutoselectComponent } from './_components/form-input-autoselec
 import { ScheduleDialogComponent } from './_components/schedule-dialog/schedule-dialog.component';
 import { TransformationRuleComponent } from './_components/transformation-rule/transformation-rule.component';
 import { LookupRuleComponent } from './_components/lookup/lookup.component';
+import { LookupConfigComponent } from './_components/lookup/lookup-config/lookup-config.component';
 
 @NgModule({
   declarations: [
@@ -104,7 +105,8 @@ import { LookupRuleComponent } from './_components/lookup/lookup.component';
     FormInputAutoselectComponent,
     ScheduleDialogComponent,
     TransformationRuleComponent,
-    LookupRuleComponent
+    LookupRuleComponent,
+    LookupConfigComponent
   ],
   imports: [
     // ng modules
@@ -238,6 +240,7 @@ import { LookupRuleComponent } from './_components/lookup/lookup.component';
     TableCellInputComponent,
     TransformationRuleComponent,
     LookupRuleComponent,
+    LookupConfigComponent,
     NullStateComponent
 
   ],

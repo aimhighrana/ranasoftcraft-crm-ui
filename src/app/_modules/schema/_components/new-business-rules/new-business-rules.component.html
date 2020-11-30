@@ -91,7 +91,8 @@
 
       <!-- transformation lookup rule -->
       <pros-lookup-rule *ngIf="isTransformationRule && selectedTransformationType === transformationType.LOOKUP"
-      [fieldsObject]="sourceFieldsObject">
+        [fieldsObject]="sourceFieldsObject"
+        [initialLookupData]="transformationLookUpData" (lookupRuleOutput)="setLookupData($event)">
       </pros-lookup-rule>
 
       <div class="mdo-form-field temp-field" *ngIf="!isUDR && !isTransformationRule">
@@ -99,7 +100,7 @@
         <mat-form-field appearance="outline">
           <mat-chip-list #chipList>
             <mat-chip *ngFor="let field of selectedFields;let i = index" [removable]="true" (removed)="remove(field,i)">
-              {{field.fieldText}}
+              {{field.fieldDescri}}
               <mat-icon matChipRemove>cancel</mat-icon>
             </mat-chip>
             <input matInput id="fieldsInput" class="mat-input" [matAutocomplete]="auto" formControlName="fields"
