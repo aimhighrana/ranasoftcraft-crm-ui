@@ -86,7 +86,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * to identify existing BR
    * and differentiate from newly created ones
    */
-  existingBRIds: string[] = [];
+  existingTempIds: string[] = [];
 
   /**
    * index of active header
@@ -571,7 +571,9 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
           distinctUntilChanged()
         )
         .subscribe((response: NewBrDialogResponse) => {
-          this.updateCurrentRulesList(response);
+          if (response && response.formData) {
+            this.updateCurrentRulesList(response);
+          }
           this.dialogSubscriber.unsubscribe();
         })
     }
@@ -596,40 +598,42 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * or from the existing rules selection
    */
   updateCurrentRulesList(response) {
+    if (!response || !response.formData) { return; };
     let brObject: CoreSchemaBrInfo;
     const tempId = (response.tempId) ? response.tempId : null;
-    let formData = (response.formData) ? response.formData : null;
-    const transformationData = this.mapTransformationData(response);
-    formData = {...formData, transformationData};
-    if (formData) {
-      if (formData.rule_type === 'BR_CUSTOM_SCRIPT') {
-        brObject = this.createBrObject(formData, formData.udrTreeData);
-      } else {
-        brObject = this.createBrObject(formData);
-      }
-      if (this.requestForm.controls.coreSchemaBr.value.length > 0) {
-        this.requestForm.controls.coreSchemaBr.setValue(
-          this.requestForm.controls.coreSchemaBr.value.map((val) => {
-            if (val.tempId === tempId) {
-              return brObject;
-            } else {
-              return val;
-            }
-          }));
-      } else {
-        this.requestForm.controls.coreSchemaBr.value.push(brObject);
-      }
-      brObject.status = '1';
-      if (this.selectedBusinessRules.length > 0) {
-        const index = this.selectedBusinessRules.findIndex(rule => rule.tempId === tempId);
-        if (index > -1) {
-          this.selectedBusinessRules[index] = brObject;
-        } else if(brObject.brId && brObject.brId !=='') {
-          this.selectedBusinessRules.push(brObject);
-        }
+    let formData = response.formData;
+
+    formData = { ...formData, transFormationSchema: this.mapTransformationData(response) };
+    if (formData.rule_type === 'BR_CUSTOM_SCRIPT') {
+      brObject = this.createBrObject(formData, formData.udrTreeData);
+    } else {
+      brObject = this.createBrObject(formData);
+    }
+
+    if (this.requestForm.controls.coreSchemaBr.value.length > 0) {
+      this.requestForm.controls.coreSchemaBr.setValue(
+        this.requestForm.controls.coreSchemaBr.value.map((val) => {
+          if (val.tempId === tempId) {
+            return brObject;
+          } else {
+            return val;
+          }
+        }));
+    } else {
+      this.requestForm.controls.coreSchemaBr.value.push(brObject);
+    }
+
+    brObject.status = '1';
+
+    if (this.selectedBusinessRules.length > 0) {
+      const index = this.selectedBusinessRules.findIndex(rule => rule.tempId === tempId);
+      if (index > -1) {
+        this.selectedBusinessRules[index] = brObject;
       } else {
         this.selectedBusinessRules.push(brObject);
       }
+    } else {
+      this.selectedBusinessRules.push(brObject);
     }
   }
 
@@ -657,28 +661,21 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   /**
    * Function to track rule Ids, later used to identify newly created
    * or existing rules. "Configure" option is shown based on this
-   * @param ruleId rule id
+   * @param tempId rule id
    */
-  addRuleIdToExisting(ruleId: string) {
+  addTempIdToExisting(tempId: string) {
     return new Promise((resolve) => {
-      this.existingBRIds.push(ruleId);
+      this.existingTempIds.push(tempId);
       resolve();
     })
   }
 
   /**
    * Function to check if a rule is newly added
-   * @param ruleId rule id
+   * @param tempId rule id
    */
-  isExistingRule(ruleId: string) {
-    if(this.existSchemaBrList.length > 0 ) {
-      this.existSchemaBrList.forEach(existBr => {
-        if(existBr.brId === ruleId) {
-          return false;
-        }
-      });
-    }
-    return this.existingBRIds.indexOf(ruleId) > -1;
+  isExistingRule(tempId: string) {
+    return this.existingTempIds.indexOf(tempId) > -1;
   }
 
   /**
@@ -769,16 +766,16 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       transformation: object.transformation ? object.transformation : 0,
       tableName: object.tableName ? object.tableName : '',
       qryScript: object.qryScript ? object.qryScript : '',
-      dependantStatus: object.dependantStatus ? object.dependantStatus :'ALL',
+      dependantStatus: object.dependantStatus ? object.dependantStatus : 'ALL',
       plantCode: object.plantCode ? object.plantCode : '0',
       percentage: object.percentage ? object.percentage : 0,
       schemaId: object.schemaId ? object.schemaId : '',
-      brIdStr: object.brIdStr ? object.brIdStr :'',
+      brIdStr: object.brIdStr ? object.brIdStr : '',
       udrDto: {
         udrHierarchies: object.udrHierarchies ? object.udrHierarchies : udrTreeData.udrHierarchies,
         blocks: object.blocks ? object.object : udrTreeData.blocks
       },
-      transFormationSchema: object.transformationData
+      transFormationSchema: object.transFormationSchema
     } as CoreSchemaBrInfo;
   }
 
@@ -786,20 +783,20 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     const { sourceFld, targetFld, includeScript, excludeScript, transformationRuleType } = response.formData;
     const transformationList: TransformationModel[] = [];
 
-    if(response.lookupData && response.lookupData.length>0){
+    if (response.lookupData && response.lookupData.length > 0) {
       response.lookupData.map((param: LookupFields) => {
-      transformationList.push({
-        brId: '',
-        sourceFld: param.fieldId,
-        targetFld: param.lookupTargetField,
-        includeScript,
-        excludeScript,
-        transformationRuleType,
-        lookUpObjectType: '',
-        lookUptable: '',
-        parameter: this.createUDRBlockFromLookup(param)
+        transformationList.push({
+          brId: '',
+          sourceFld: param.fieldId,
+          targetFld: param.lookupTargetField,
+          includeScript,
+          excludeScript,
+          transformationRuleType,
+          lookUpObjectType: '',
+          lookUptable: '',
+          parameter: this.createUDRBlockFromLookup(param)
+        })
       })
-    })
     } else {
       transformationList.push({
         brId: '',
@@ -830,12 +827,12 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * @param selectedModule selected module data
    */
   setModuleValueAndTakeStep(selectedModule?) {
-    if (selectedModule && Object.keys(selectedModule).length > 0){
+    if (selectedModule && Object.keys(selectedModule).length > 0) {
       this.requestForm.controls.objectDesc.setValue(selectedModule.objectdesc);
       this.requestForm.controls.objectfullDesc.setValue(selectedModule.objectdesc);
       this.requestForm.controls.objectId.setValue(selectedModule.objectid);
       this.getModulesMetaHeaders();
-      if(selectedModule.schemaId) {
+      if (selectedModule.schemaId) {
         this.getScheduleInfo(selectedModule.schemaId);
         this.getSchemaBrInfo(selectedModule);
         this.getSchemaCollaboratorInfo(selectedModule.schemaId);
@@ -1096,19 +1093,19 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     const formObject = {
       sno: subscriber.sno ? subscriber.sno : '',
       isAdmin: subscriber.isAdmin ? subscriber.isAdmin : false,
-      isReviewer: subscriber.isReviewer ? subscriber.isReviewer :false,
-      isViewer: subscriber.isViewer ? subscriber.isViewer :true,
-      isEditer: subscriber.isEditer ? subscriber.isEditer :false,
+      isReviewer: subscriber.isReviewer ? subscriber.isReviewer : false,
+      isViewer: subscriber.isViewer ? subscriber.isViewer : true,
+      isEditer: subscriber.isEditer ? subscriber.isEditer : false,
       groupid: subscriber.groupid ? subscriber.groupid : '',
       roleId: subscriber.roleId ? subscriber.roleId : '',
       userid: subscriber.userid ? subscriber.userid : subscriber.userName,
       permissionType: 'USER',
       fName: subscriber.fName ? subscriber.fName : subscriber.userMdoModel.fName,
       lName: subscriber.lName ? subscriber.lName : subscriber.userMdoModel.lName,
-      fullName: subscriber.fullName ? subscriber.fullName :  subscriber.userMdoModel.fullName,
-      filterCriteria : subscriber.filterCriteria ? subscriber.filterCriteria : []
+      fullName: subscriber.fullName ? subscriber.fullName : subscriber.userMdoModel.fullName,
+      filterCriteria: subscriber.filterCriteria ? subscriber.filterCriteria : []
     }
-    if(subscriber.sno) {
+    if (subscriber.sno) {
       this.subscribersList.push(formObject);
     } else {
       this.updateSubscribersList(formObject);
@@ -1156,13 +1153,16 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * @param index index of object to be removed
    */
   deleteBR(rule: CoreSchemaBrInfo) {
-    this.globalDialogService.confirm({label:'Are you sure to delete ?'}, (response) =>{
-      if(response && response === 'yes') {
-        if (rule.brIdStr) {
-          const index = this.selectedBusinessRules.findIndex((brule) => brule.brId === rule.brId);
+    this.globalDialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
+      if (response && response === 'yes') {
+        if (rule.tempId) {
+          const existingruleIndex = this.existingTempIds.indexOf(rule.tempId);
+          if(existingruleIndex > -1){
+            this.existingTempIds.splice(existingruleIndex, 1);
+          }
+          const index = this.selectedBusinessRules.findIndex((brule) => brule.tempId === rule.tempId);
           this.selectedBusinessRules.splice(index, 1);
           this.requestForm.controls.coreSchemaBr.setValue(this.selectedBusinessRules);
-          this.existingBRIds = [...this.selectedBusinessRules.map(brule => brule.brId)];
         }
       }
     });
@@ -1194,8 +1194,8 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * Toggle isEnable value for schedule using slide toggle
    * @param event toggle event
    */
-  toggleScheduleStatus(event){
-    if(this.currentSchedule){
+  toggleScheduleStatus(event) {
+    if (this.currentSchedule) {
       this.currentSchedule.isEnable = event.checked;
     }
   }
@@ -1212,7 +1212,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     exitingFilterCtrl.push(filterCtrl);
 
     const filterCriteria = this.subscribersList[subscriberIndex].filterCriteria;
-    if(filterCriteria.length === 0) {
+    if (filterCriteria.length === 0) {
       exitingFilterCtrl.forEach(data => {
         this.updatesubscriber(data);
         this.subscribersList[subscriberIndex].filterCriteria.push(data);
@@ -1224,7 +1224,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         res.values.push(...filterCtrl.values);
         this.updatesubscriber(res);
         this.subscribersList[subscriberIndex].filterCriteria.forEach(filterobject => {
-          if(filterobject.fieldId === res.fieldId) {
+          if (filterobject.fieldId === res.fieldId) {
             filterobject = res;
           }
         });
@@ -1254,6 +1254,11 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     })
   }
 
+  /**
+   * method to Update the filter criteria
+   * @param selectedValues pass the selected values
+   * @param sNo pass the subscriber serial number
+   */
   updateFilterCriteria(selectedValues, sNo: number) {
     if (selectedValues.length > 0) {
       this.subscribersList.forEach((subscriber) => {
@@ -1269,6 +1274,11 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     }
   }
 
+  /**
+   * set the selected value to form Object
+   * @param field name of the field
+   * @param value value of the field
+   */
   setValueToForm(field, value) {
     if (typeof value === 'string') {
       this.requestForm.controls[field].setValue(value);
@@ -1310,20 +1320,20 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   selectBusinessRule(businessRules: CoreSchemaBrInfo[] | CoreSchemaBrInfo) {
     if (Array.isArray(businessRules)) {
       businessRules.map((rule) => {
-        this.addRuleIdToExisting(rule.brId).then(() => {
-          const updatedObj = { ...rule, tempId: this.utilties.getRandomString(8) };
+        const updatedObj = { ...rule, tempId: this.utilties.getRandomString(8) };
+        this.addTempIdToExisting(updatedObj.tempId).then(() => {
           this.selectedBusinessRules.push(updatedObj);
         });
       });
     } else {
-      if (this.existingBRIds.indexOf(businessRules.brId) > -1) {
+      if (this.existingTempIds.indexOf(businessRules.tempId) > -1) {
         this.snackBar.open('This rule is already added', 'okay', {
           duration: 2000
         });
         return;
       }
-      this.addRuleIdToExisting(businessRules.brId).then(() => {
-        const updatedObj = { ...businessRules, tempId: this.utilties.getRandomString(8) };
+      const updatedObj = { ...businessRules, tempId: this.utilties.getRandomString(8) };
+      this.addTempIdToExisting(updatedObj.tempId).then(() => {
         this.selectedBusinessRules.push(updatedObj);
       });
     }
@@ -1382,14 +1392,14 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    */
   openScheduleSideSheet() {
     this.globaldialogService.openDialog(ScheduleDialogComponent, {
-      currentScheduler : this.currentSchedule
+      currentScheduler: this.currentSchedule
     });
     this.dialogSubscriber = this.globaldialogService.dialogCloseEmitter
-    .pipe(distinctUntilChanged())
-    .subscribe((response: SchemaScheduler) => {
-      this.currentSchedule = response;
-      this.dialogSubscriber.unsubscribe();
-    });
+      .pipe(distinctUntilChanged())
+      .subscribe((response: SchemaScheduler) => {
+        this.currentSchedule = response;
+        this.dialogSubscriber.unsubscribe();
+      });
     this.dialogSubscriber = this.globaldialogService.dialogCloseEmitter
       .pipe(distinctUntilChanged())
       .subscribe((response: SchemaScheduler) => {
@@ -1414,7 +1424,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * to return true or false to disable input values
    */
   isdisabled(value: string | number): boolean {
-    if(value !== '' && value) {
+    if (value !== '' && value) {
       return true;
     }
     else return false;
@@ -1493,18 +1503,17 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     });
   }
 
-
   /**
    * function to get Subscriber information
    * @param schemaId: Id of schema for which Subscriber info needed
    */
   getSchemaCollaboratorInfo(schemaId: string) {
-    this.schemaDetailsService.getCollaboratorDetails(schemaId).subscribe(responseData =>{
+    this.schemaDetailsService.getCollaboratorDetails(schemaId).subscribe(responseData => {
       responseData.forEach((subscriber) => {
         subscriber.filterCriteria.forEach((data) => {
           this.updatesubscriber(data);
         }),
-        this.mapAndUpdateSubscriber(subscriber);
+          this.mapAndUpdateSubscriber(subscriber);
       });
     });
   }

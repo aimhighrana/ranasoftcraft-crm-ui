@@ -9,7 +9,7 @@ import { BusinessRuleType, ConditionalOperator, PRE_DEFINED_REGEX, RULE_TYPES, T
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { MetadataModeleResponse, CategoryInfo, FieldConfiguration, TransformationFormData, LookupFields, NewBrDialogResponse } from '@models/schema/schemadetailstable';
 import { of, Observable } from 'rxjs';
-import { startWith, map } from 'rxjs/operators';
+import { startWith, map, distinctUntilChanged } from 'rxjs/operators';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Regex } from '@modules/admin/_components/module/business-rules/regex-rule/regex-rule.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -301,7 +301,10 @@ export class NewBusinessRulesComponent implements OnInit {
         }
     }
 
-
+    /**
+     * get transformation sub type
+     * @param transformationSchema pass the transformation schema Object
+     */
     getTrRuleType(transformationSchema: TransformationModel[]) {
         if (transformationSchema && transformationSchema.length > 0) {
             const schema = transformationSchema[0];
@@ -349,20 +352,21 @@ export class NewBusinessRulesComponent implements OnInit {
         this.currentControls = controls;
         this.form = new FormGroup(controls);
         // Apply conditional validation based on rule type
-        this.form.controls.rule_type.valueChanges.subscribe((selectedRule) => {
+        this.form.controls.rule_type.valueChanges
+        .pipe(distinctUntilChanged())
+        .subscribe((selectedRule) => {
             this.applyValidatorsByRuleType(selectedRule);
         });
-
-        this.form.controls.transformationRuleType.valueChanges.subscribe((type) => {
-            if (this.currentSelectedRule) {
-                this.applyValidatorsByRuleType(this.currentSelectedRule, type);
-            }
-        })
+        this.form.controls.transformationRuleType.valueChanges
+        .pipe(distinctUntilChanged())
+        .subscribe(() => {
+            this.applyValidatorsByRuleType(this.form.controls.rule_type.value);
+        });
     }
 
- /**
-  * function to get the fields on basis of module
-  */
+    /**
+     * function to get the fields on basis of module
+     */
     getFieldsByModuleId() {
         this.schemaDetailsService.getMetadataFields(this.data.moduleId)
             .subscribe((metadataModeleResponse: MetadataModeleResponse) => {
@@ -372,7 +376,7 @@ export class NewBusinessRulesComponent implements OnInit {
                 });
                 if (this.data && this.data.createRuleFormValues && this.data.createRuleFormValues.fields) {
                     this.patchFieldvalues(this.data.createRuleFormValues.fields);
-                 }
+                }
                 this.targetFieldsObject = {
                     labelKey: 'fieldDescri',
                     valueKey: 'fieldId',
@@ -393,7 +397,7 @@ export class NewBusinessRulesComponent implements OnInit {
     patchSelectedFields() {
         this.createDSByFields().then(() => {
             if (this.data && this.data.createRuleFormValues && this.data.createRuleFormValues.fields) {
-               this.patchFieldvalues(this.data.createRuleFormValues.fields);
+                this.patchFieldvalues(this.data.createRuleFormValues.fields);
             }
         });
     }
@@ -442,24 +446,24 @@ export class NewBusinessRulesComponent implements OnInit {
      * also nullify validators for all not required fields at the same time
      * @param selectedRule selected rule type
      */
-    applyValidatorsByRuleType(selectedRule: string, transformationRuleType: string = '') {
+    applyValidatorsByRuleType(selectedRule: string) {
         this.currentSelectedRule = selectedRule;
         const controlKeys: any[] = Object.keys(this.currentControls);
         let requiredKeys: string[] = [];
         if (selectedRule === BusinessRuleType.BR_CUSTOM_SCRIPT) {
-            requiredKeys = ['categoryId'];
+            requiredKeys = ['rule_type', 'categoryId'];
         }
         if (selectedRule === BusinessRuleType.BR_REGEX_RULE) {
-            requiredKeys = ['categoryId', 'rule_name', 'error_message', 'fields', 'regex', 'standard_function'];
+            requiredKeys = ['rule_type','categoryId', 'rule_name', 'error_message', 'fields', 'regex', 'standard_function'];
         }
         if (selectedRule === BusinessRuleType.BR_MANDATORY_FIELDS || selectedRule === BusinessRuleType.BR_METADATA_RULE) {
-            requiredKeys = ['categoryId', 'rule_name', 'error_message', 'fields'];
+            requiredKeys = ['rule_type', 'categoryId', 'rule_name', 'error_message', 'fields'];
         }
         if (selectedRule === BusinessRuleType.BR_TRANSFORMATION_RULE) {
-            if (transformationRuleType === this.transformationType.REGEX) {
-                requiredKeys = ['rule_name', 'transformationRuleType', 'error_message', 'sourceFld', 'targetFld', 'excludeScript', 'includeScript'];
-            } else if (transformationRuleType === this.transformationType.LOOKUP) {
-                requiredKeys = ['rule_name', 'transformationRuleType', 'error_message'];
+            if (this.selectedTransformationType === this.transformationType.REGEX) {
+                requiredKeys = ['rule_type', 'rule_name', 'transformationRuleType', 'error_message', 'sourceFld', 'targetFld', 'excludeScript', 'includeScript'];
+            } else if (this.selectedTransformationType === this.transformationType.LOOKUP) {
+                requiredKeys = ['rule_type', 'rule_name', 'transformationRuleType', 'error_message'];
             }
         }
 
@@ -467,10 +471,15 @@ export class NewBusinessRulesComponent implements OnInit {
             const index = requiredKeys.findIndex(reqKey => reqKey === key);
             if (index === -1) {
                 this.form.get(key).setValidators(null);
+                this.form.get(key).clearValidators();
+                if(key !== 'rule_type' && key !== 'weightage' && !this.data.createRuleFormValues){
+                    this.form.get(key).setValue('');
+                }
             } else {
                 this.form.get(key).setValidators([Validators.required]);
             }
-        })
+        });
+
         this.form.updateValueAndValidity();
     }
 

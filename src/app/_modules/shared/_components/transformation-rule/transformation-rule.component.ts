@@ -262,16 +262,16 @@ export class TransformationRuleComponent implements OnInit, OnChanges {
    * @param changes check for change using changes variable
    */
   ngOnChanges(changes: SimpleChanges) {
-    if (!isEqual(changes.targetFieldsObject.previousValue, changes.targetFieldsObject.currentValue)) {
+    if (changes.targetFieldsObject && !isEqual(changes.targetFieldsObject.previousValue, changes.targetFieldsObject.currentValue)) {
       this.updateTargetValue(changes.targetFieldsObject.currentValue);
     }
-    if (!isEqual(changes.sourceFieldsObject.previousValue, changes.sourceFieldsObject.currentValue)) {
+    if (changes.sourceFieldsObject && !isEqual(changes.sourceFieldsObject.previousValue, changes.sourceFieldsObject.currentValue)) {
       this.updateSourceValue(changes.sourceFieldsObject.currentValue);
     }
-    if (!isEqual(changes.selectedRuleType.previousValue, changes.selectedRuleType.currentValue)) {
+    if (changes.selectedRuleType && !isEqual(changes.selectedRuleType.previousValue, changes.selectedRuleType.currentValue)) {
       this.selectedRuleType = changes.selectedRuleType.currentValue;
     }
-    if (!isEqual(changes.submitted.previousValue, changes.submitted.currentValue)) {
+    if (changes.submitted && !isEqual(changes.submitted.previousValue, changes.submitted.currentValue)) {
       this.submitted = changes.submitted.currentValue;
     }
   }

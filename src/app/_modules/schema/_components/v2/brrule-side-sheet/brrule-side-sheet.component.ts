@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { BusinessRules } from '@modules/admin/_components/module/schema/diw-create-businessrule/diw-create-businessrule.component';
-import { BusinessRuleType, ConditionalOperator, CoreSchemaBrInfo, UDRBlocksModel, UdrModel, UDRHierarchyModel, RULE_TYPES, PRE_DEFINED_REGEX } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { BusinessRuleType, ConditionalOperator, CoreSchemaBrInfo, UDRBlocksModel, UdrModel, UDRHierarchyModel, RULE_TYPES, PRE_DEFINED_REGEX, TransformationRuleType, TransformationModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
-import { MetadataModeleResponse } from '@models/schema/schemadetailstable';
+import { CategoryInfo, LookupFields, MetadataModeleResponse, TransformationFormData } from '@models/schema/schemadetailstable';
 import { of, Observable } from 'rxjs';
-import { startWith, map } from 'rxjs/operators';
+import { startWith, map, distinctUntilChanged } from 'rxjs/operators';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Regex } from '@modules/admin/_components/module/business-rules/regex-rule/regex-rule.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -25,33 +25,54 @@ export class BrruleSideSheetComponent implements OnInit {
   businessRuleTypes: BusinessRules[] = RULE_TYPES;
   preDefinedRegex: Regex[] = PRE_DEFINED_REGEX;
 
-    /**
-     * List of fields
-     */
-    fieldsList = [];
+  /**
+   * Existing transformation schema used to
+   * patch transformation rule for Lookup
+   */
+  transformationLookUpData: LookupFields[] = [];
 
-    /**
-     * observable for autocomplete
-     */
-    filteredModules: Observable<{} | string | void> = of([]);
+  /**
+   * Transformation Data model
+   */
+  transformationData: TransformationFormData;
 
-    /**
-     * array to save the selected fields
-     */
-    selectedFields = [];
+  /**
+   * current rule
+   */
+  currentSelectedRule: string;
 
-    /**
-     * list of event to consider as selection
-     */
-    separatorKeysCodes: number[] = [ENTER, COMMA];
+  /**
+   * List of categories
+   */
+  categoryList: CategoryInfo[] = []
+
+  /**
+   * List of fields
+   */
+  fieldsList = [];
+
+  /**
+   * observable for autocomplete
+   */
+  filteredModules: Observable<{} | string | void> = of([]);
+
+  /**
+   * array to save the selected fields
+   */
+  selectedFields = [];
+
+  /**
+   * list of event to consider as selection
+   */
+  separatorKeysCodes: number[] = [ENTER, COMMA];
 
 
-    udrForm: FormGroup;
+  udrForm: FormGroup;
 
 
-    operators = [];
-    submitted = false;
-    initialConditions = ['And', 'Or'];
+  operators = [];
+  submitted = false;
+  initialConditions = ['And', 'Or'];
   /**
    * Current schema id which is from activated router ..
    */
@@ -74,547 +95,682 @@ export class BrruleSideSheetComponent implements OnInit {
 
   udrNodeForm: FormGroup;
 
+  /**
+   * hold the form controls in this variable
+   */
+  currentControls: any = {};
 
-    /**
-     * Class contructor
-     * @param dialogRef refernce to matdialog
-     * @param data data recieved from parent
-     * @param schemaDetailsService service class
-     */
-    constructor(
-        private schemaDetailsService: SchemaDetailsService,
-        private snackBar: MatSnackBar,
-        private activatedRouter: ActivatedRoute,
-        private schemaService: SchemaService,
-        private router: Router,
-        private sharedService: SharedServiceService,
-        private formBuilder: FormBuilder
-    ) { }
-
-    ngOnInit(): void {
-
-      this.activatedRouter.params.subscribe(res=>{
-        this.moduleId = res.moduleId;
-        this.schemaId = res.schemaId;
-        this.brId = res.brId ? (res.brId !== 'new' ? res.brId : '') : '';
-        if(this.brId) {
-          this.schemaService.getBusinessRuleInfo(this.brId).subscribe(resp=>{
-            this.coreSchemaBrInfo = resp;
-            this.setValueToElement(resp);
-            if(res.brType === BusinessRuleType.BR_CUSTOM_SCRIPT) {
-              this.editUdr(resp);
-            }
-          }, error=> console.error(`Error : ${error.message}`));
-        }
-      });
+  /**
+   * Class contructor
+   * @param dialogRef refernce to matdialog
+   * @param data data recieved from parent
+   * @param schemaDetailsService service class
+   */
+  constructor(
+    private schemaDetailsService: SchemaDetailsService,
+    private snackBar: MatSnackBar,
+    private activatedRouter: ActivatedRoute,
+    private schemaService: SchemaService,
+    private router: Router,
+    private sharedService: SharedServiceService,
+    private formBuilder: FormBuilder
+  ) { }
 
 
-        this.buildCommonDataForm();
+  get transformationType() {
+    return TransformationRuleType;
+  }
 
-        this.getFieldsByModuleId()
-
-        if (this.filteredModules) {
-            this.filteredModules = this.form.controls.fields.valueChanges
-                .pipe(
-                    startWith(''),
-                    map(value => {
-                        this.filter(value)
-                    }))
-        }
-
-        this.filteredModules = of(this.fieldsList);
-        this.operators = this.possibleOperators();
-        this.form.controls.rule_type.valueChanges.subscribe((selectedRule) => {
-
-            if (selectedRule === 'BR_CUSTOM_SCRIPT') {
-
-                this.form.get('rule_name').clearValidators()
-                this.form.get('error_message').clearValidators()
-                this.form.get('fields').clearValidators();
-                this.form.get('regex').clearValidators();
-                this.form.get('standard_function').clearValidators();
-
-                this.form.get('rule_name').setValidators(null);
-                this.form.get('error_message').setValidators(null);
-                this.form.get('fields').setValidators(null);
-                this.form.get('regex').setValidators(null);
-                this.form.get('standard_function').setValidators(null);
-
-                this.form.get('rule_name').setErrors(null);
-                this.form.get('error_message').setErrors(null);
-                this.form.get('fields').setErrors(null);
-                this.form.get('regex').setErrors(null);
-                this.form.get('standard_function').setErrors(null);
-
-            }
-            if (selectedRule === 'BR_REGEX_RULE') {
-                this.form.get('rule_name').setValidators([Validators.required])
-                this.form.get('error_message').setValidators([Validators.required])
-                this.form.get('fields').setValidators([Validators.required]);
-                this.form.get('regex').setValidators([Validators.required]);
-                this.form.get('standard_function').setValidators([Validators.required]);
-            }
-            if (selectedRule === 'BR_MANDATORY_FIELDS' || selectedRule === 'BR_METADATA_RULE') {
-                this.form.get('rule_name').setValidators([Validators.required])
-                this.form.get('error_message').setValidators([Validators.required])
-                this.form.get('fields').setValidators([Validators.required]);
-
-                this.form.get('regex').clearValidators();
-                this.form.get('standard_function').clearValidators();
-                this.form.get('regex').setValidators(null);
-                this.form.get('standard_function').setValidators(null);
-                this.form.get('regex').setErrors(null);
-                this.form.get('standard_function').setErrors(null);
-            }
-            if (selectedRule === BusinessRuleType.BR_DUPLICATE_RULE){
-              this.form.get('rule_name').setValidators([Validators.required]) ;
-              this.form.get('error_message').clearValidators();
-              this.form.get('error_message').setErrors(null);
-              this.form.get('fields').clearValidators();
-              this.form.get('fields').setErrors(null);
-              this.form.get('regex').clearValidators();
-              this.form.get('regex').setErrors(null);
-              this.form.get('standard_function').clearValidators();
-              this.form.get('standard_function').setErrors(null);
-
-          }
-            this.submitted = false;
-            this.form.updateValueAndValidity();
-        });
-
-
-        this.udrNodeForm = this.formBuilder.group({
-          frmArray: this.formBuilder.array([ this.formBuilder.group({
-            blockDesc: new FormControl('When'),
-            blockType: new FormControl(BlockType.AND),
-            conditionFieldEndValue: new FormControl(''),
-            conditionFieldId: new FormControl(''),
-            conditionFieldStartValue: new FormControl(''),
-            conditionFieldValue: new FormControl(''),
-            conditionOperator: new FormControl(''),
-            conditionValueFieldId: new FormControl(''),
-            id: new FormControl(Math.floor(Math.random() * 1000000000000).toString()),
-            objectType: new FormControl(this.moduleId),
-            udrid: new FormControl(this.brId),
-            childs: this.formBuilder.array([])
-          })
-          ])
-        });
-
-        this.udrNodeForm.valueChanges.subscribe(res=>{
-          console.log(res);
-        })
-
+  get selectedTransformationType() {
+    if (this.form && this.form.controls) {
+      return this.form.controls.transformationRuleType.value;
     }
+    return '';
+  }
 
-    buildCommonDataForm(){
-
-      this.form = new FormGroup({
-        rule_type: new FormControl('', [Validators.required]),
-        rule_name: new FormControl('', [Validators.required]),
-        error_message: new FormControl('', [Validators.required]),
-        standard_function: new FormControl(''),
-        regex: new FormControl(''),
-        fields: new FormControl('', [Validators.required]),
-        udrTreeData: new FormControl()
+  ngOnInit(): void {
+    this.activatedRouter.params.subscribe(res => {
+      this.moduleId = res.moduleId;
+      this.schemaId = res.schemaId;
+      this.brId = res.brId ? (res.brId !== 'new' ? res.brId : '') : '';
+      if (this.brId) {
+        this.schemaService.getBusinessRuleInfo(this.brId).subscribe(resp => {
+          this.coreSchemaBrInfo = resp;
+          this.setValueToElement(resp);
+          if (res.brType === BusinessRuleType.BR_CUSTOM_SCRIPT) {
+            this.editUdr(resp);
+          }
+        }, error => console.error(`Error : ${error.message}`));
+      }
     });
-    }
 
-    /**
-     * Set br inf to form while editing ..
-     */
-    setValueToElement(br: CoreSchemaBrInfo) {
-      this.form.get('rule_type').setValue(br.brType);
-      this.form.get('rule_type').disable({onlySelf:true,emitEvent:true});
-      this.form.get('rule_name').setValue(br.brInfo);
-      this.form.get('error_message').setValue(br.message);
-      this.form.get('standard_function').setValue(br.standardFunction);
-      this.form.get('regex').setValue(br.regex);
-      // this.form.get('fields').setValue(br.regex);
-    }
+    this.buildCommonDataForm();
+    this.getFieldsByModuleId();
 
+    this.filteredModules = of(this.fieldsList);
+    this.operators = this.possibleOperators();
 
-    /**
-     * Initilize form while edit ..
-     * @param br initilize form while edit ..
-     */
-    editUdr(br: CoreSchemaBrInfo) {
-      const blocks: UDRBlocksModel[] = br.udrDto ? (br.udrDto.blocks ? br.udrDto.blocks : []) : [];
-      const blockHierarchy: UDRHierarchyModel[] = br.udrDto ? (br.udrDto.udrHierarchies ? br.udrDto.udrHierarchies : []) : [];
-      blockHierarchy.forEach((hie, idx)=>{
-        const blck = blocks.filter(fil=> fil.id === hie.blockRefId)[0];
-        if(blck) {
-          if(idx === 0) {
-            this.udrNodeForm.get('frmArray').setValue([{
-              blockDesc: blck.blockDesc,
-              blockType: blck.blockType,
-              conditionFieldEndValue: blck.conditionFieldEndValue,
-              conditionFieldId: blck.conditionFieldId,
-              conditionFieldStartValue: blck.conditionFieldStartValue,
-              conditionFieldValue: blck.conditionFieldValue,
-              conditionOperator: blck.conditionOperator,
-              conditionValueFieldId: blck.conditionValueFieldId,
-              id: blck.id,
-              objectType: blck.blockType,
-              udrid: blck.udrid,
-              childs: []
-            }]);
-          } else {
-            if(!hie.parentId) {
-              this.addParentBlock(blck);
-            } else {
-              const parentBlock = blocks.filter(fil => fil.id === hie.parentId)[0];
-              const pIndex = blocks.indexOf(parentBlock);
-              this.addChildBlock(pIndex, blck);
-            }
-          }
-        }
-
-
-      })
-    }
-
-    addParentBlock(udr?: UDRBlocksModel) {
-      const parentArray = (this.udrNodeForm.get('frmArray') as  FormArray);
-      parentArray.push(this.blockCtrl(udr));
-    }
-
-    blockCtrl(udr?: UDRBlocksModel): FormGroup {
-      return this.formBuilder.group({
-        blockDesc:  new FormControl( udr ? udr.blockDesc : 'And'),
-        blockType: new FormControl(udr ? udr.blockType :  BlockType.COND),
-        conditionFieldEndValue: new FormControl(udr ? udr.conditionFieldEndValue : ''),
-        conditionFieldId: new FormControl(udr ? udr.conditionFieldId : ''),
-        conditionFieldStartValue: new FormControl(udr ? udr.conditionFieldStartValue : ''),
-        conditionFieldValue: new FormControl(udr ? udr.conditionFieldValue : ''),
-        conditionOperator: new FormControl(udr ? udr.conditionOperator : ''),
-        conditionValueFieldId: new FormControl(udr ? udr.conditionValueFieldId : ''),
-        id: new FormControl(udr ? udr.id : Math.floor(Math.random() * 1000000000000).toString()),
+    this.udrNodeForm = this.formBuilder.group({
+      frmArray: this.formBuilder.array([this.formBuilder.group({
+        blockDesc: new FormControl('When'),
+        blockType: new FormControl(BlockType.AND),
+        conditionFieldEndValue: new FormControl(''),
+        conditionFieldId: new FormControl(''),
+        conditionFieldStartValue: new FormControl(''),
+        conditionFieldValue: new FormControl(''),
+        conditionOperator: new FormControl(''),
+        conditionValueFieldId: new FormControl(''),
+        id: new FormControl(Math.floor(Math.random() * 1000000000000).toString()),
         objectType: new FormControl(this.moduleId),
         udrid: new FormControl(this.brId),
         childs: this.formBuilder.array([])
+      })
+      ])
+    });
+
+    this.udrNodeForm.valueChanges.subscribe(res => {
+      console.log(res);
+    });
+
+    this.initiateAutocomplete();
+  }
+
+  /**
+   * Initialize autocomplete for field names
+   */
+  initiateAutocomplete() {
+    this.filteredModules = this.form.controls.fields.valueChanges
+      .pipe(
+        startWith(''),
+        map(keyword => {
+          return keyword ?
+            this.fieldsList.filter(item => {
+              return item.fieldDescri.toString().toLowerCase().indexOf(keyword) !== -1
+            }) : this.fieldsList
+        }),
+      )
+  }
+
+  /**
+   * Initialize the form object and
+   * subscribe to any required control value changes
+   */
+  buildCommonDataForm() {
+    const controls = {
+      rule_type: new FormControl('', [Validators.required]),
+      rule_name: new FormControl('', [Validators.required]),
+      error_message: new FormControl('', [Validators.required]),
+      standard_function: new FormControl(''),
+      regex: new FormControl(''),
+      fields: new FormControl(''),
+      sourceFld: new FormControl(''),
+      targetFld: new FormControl(''),
+      excludeScript: new FormControl(''),
+      includeScript: new FormControl(''),
+      udrTreeData: new FormControl(),
+      weightage: new FormControl(0, [Validators.required]),
+      categoryId: new FormControl(''),
+      transformationRuleType: new FormControl('')
+    };
+
+    this.currentControls = controls;
+    this.form = new FormGroup(controls);
+
+    // Apply conditional validation based on rule type
+    this.form.controls.rule_type.valueChanges
+      .pipe(distinctUntilChanged())
+      .subscribe((selectedRule) => {
+        this.applyValidatorsByRuleType(selectedRule);
+      });
+    this.form.controls.transformationRuleType.valueChanges
+      .pipe(distinctUntilChanged())
+      .subscribe(() => {
+        this.applyValidatorsByRuleType(this.form.controls.rule_type.value);
+      });
+  }
+
+  /**
+   * Apply conditional form validation based on rule type
+   * keep the required field updated based on a selected rule type
+   * loop through the required keys and add validators to all required fields
+   * also nullify validators for all not required fields at the same time
+   * @param selectedRule selected rule type
+   */
+  applyValidatorsByRuleType(selectedRule: string) {
+    this.currentSelectedRule = selectedRule;
+    const controlKeys: any[] = Object.keys(this.currentControls);
+    let requiredKeys: string[] = [];
+    if (selectedRule === BusinessRuleType.BR_CUSTOM_SCRIPT) {
+      requiredKeys = ['categoryId'];
+    }
+    if (selectedRule === BusinessRuleType.BR_REGEX_RULE) {
+      requiredKeys = ['categoryId', 'rule_name', 'error_message', 'fields', 'regex', 'standard_function'];
+    }
+    if (selectedRule === BusinessRuleType.BR_MANDATORY_FIELDS || selectedRule === BusinessRuleType.BR_METADATA_RULE) {
+      requiredKeys = ['categoryId', 'rule_name', 'error_message', 'fields'];
+    }
+    if (selectedRule === BusinessRuleType.BR_TRANSFORMATION_RULE) {
+      if (this.selectedTransformationType === this.transformationType.REGEX) {
+        requiredKeys = ['rule_name', 'transformationRuleType', 'error_message', 'sourceFld', 'targetFld', 'excludeScript', 'includeScript'];
+      } else if (this.selectedTransformationType === this.transformationType.LOOKUP) {
+        requiredKeys = ['rule_name', 'transformationRuleType', 'error_message'];
+      }
+    } else {
+      if (this.form.controls.transformationRuleType.value) {
+        this.form.controls.transformationRuleType.setValue('');
+      }
+    }
+    if (selectedRule === BusinessRuleType.BR_DUPLICATE_RULE) {
+      requiredKeys = ['rule_name', 'error_message'];
+    }
+
+    controlKeys.map((key) => {
+      const index = requiredKeys.findIndex(reqKey => reqKey === key);
+      if (index === -1) {
+        this.form.get(key).setValidators(null);
+        this.form.get(key).clearValidators();
+        if (key !== 'rule_type' && key !== 'weightage') {
+          this.form.get(key).setValue('');
+        }
+      } else {
+        this.form.get(key).setValidators([Validators.required]);
+      }
+    });
+
+    this.form.updateValueAndValidity();
+  }
+
+  /**
+   * Set br inf to form while editing ..
+   */
+  setValueToElement(br: CoreSchemaBrInfo) {
+    console.log('business rule data', br);
+
+    this.form.get('rule_type').setValue(br.brType);
+    this.form.get('rule_type').disable({ onlySelf: true, emitEvent: true });
+    this.form.get('rule_name').setValue(br.brInfo);
+    this.form.get('error_message').setValue(br.message);
+    this.form.get('standard_function').setValue(br.standardFunction);
+    this.form.get('regex').setValue(br.regex);
+    if (br.transFormationSchema) {
+      this.patchTransformationFormData(br.transFormationSchema);
+    }
+    // this.form.get('fields').setValue(br.regex);
+  }
+
+  /**
+   * Patch transformation form data
+   * @param transformationSchema transformation rule details to be passed
+   */
+  patchTransformationFormData(transformationSchema: TransformationModel[]) {
+    const currentType = this.getTrRuleType(transformationSchema);
+    this.form.controls.transformationRuleType.setValue(currentType);
+    if (currentType === this.transformationType.REGEX) {
+      if (transformationSchema && transformationSchema.length > 0) {
+        const data: TransformationModel = transformationSchema[0];
+        const { excludeScript, includeScript, sourceFld, targetFld, transformationRuleType, parameter } = data;
+        this.transformationData = {
+          excludeScript,
+          includeScript,
+          sourceFld,
+          targetFld,
+          parameter
+          // selectedTargetFields: []
+        }
+        this.form.controls.transformationRuleType.setValue(transformationRuleType);
+      }
+    }
+    if (currentType === this.transformationType.LOOKUP) {
+      if (transformationSchema.length > 0) {
+        const lookupFields: LookupFields[] = [];
+        transformationSchema.map((schema) => {
+          lookupFields.push({
+            enableUserField: false,
+            fieldDescri: '',
+            fieldId: schema.sourceFld,
+            fieldLookupConfig: {
+              lookupColumn: schema.parameter.conditionFieldId,
+              lookupColumnResult: schema.parameter.conditionValueFieldId,
+              moduleId: schema.parameter.objectType
+            },
+            lookupTargetField: schema.targetFld,
+            lookupTargetText: ''
+          })
+        });
+
+        this.transformationLookUpData = lookupFields;
+      }
+    }
+  }
+
+  /**
+   * get transformation sub type
+   * @param transformationSchema pass the transformation schema Object
+   */
+  getTrRuleType(transformationSchema: TransformationModel[]) {
+    if (transformationSchema && transformationSchema.length > 0) {
+      const schema = transformationSchema[0];
+      if (schema.transformationRuleType === this.transformationType.LOOKUP) {
+        return this.transformationType.LOOKUP;
+      }
+      if (schema.transformationRuleType === this.transformationType.REGEX) {
+        return this.transformationType.REGEX;
+      }
+    }
+  }
+
+  /**
+   * Initilize form while edit ..
+   * @param br initilize form while edit ..
+   */
+  editUdr(br: CoreSchemaBrInfo) {
+    const blocks: UDRBlocksModel[] = br.udrDto ? (br.udrDto.blocks ? br.udrDto.blocks : []) : [];
+    const blockHierarchy: UDRHierarchyModel[] = br.udrDto ? (br.udrDto.udrHierarchies ? br.udrDto.udrHierarchies : []) : [];
+    blockHierarchy.forEach((hie, idx) => {
+      const blck = blocks.filter(fil => fil.id === hie.blockRefId)[0];
+      if (blck) {
+        if (idx === 0) {
+          this.udrNodeForm.get('frmArray').setValue([{
+            blockDesc: blck.blockDesc,
+            blockType: blck.blockType,
+            conditionFieldEndValue: blck.conditionFieldEndValue,
+            conditionFieldId: blck.conditionFieldId,
+            conditionFieldStartValue: blck.conditionFieldStartValue,
+            conditionFieldValue: blck.conditionFieldValue,
+            conditionOperator: blck.conditionOperator,
+            conditionValueFieldId: blck.conditionValueFieldId,
+            id: blck.id,
+            objectType: blck.blockType,
+            udrid: blck.udrid,
+            childs: []
+          }]);
+        } else {
+          if (!hie.parentId) {
+            this.addParentBlock(blck);
+          } else {
+            const parentBlock = blocks.filter(fil => fil.id === hie.parentId)[0];
+            const pIndex = blocks.indexOf(parentBlock);
+            this.addChildBlock(pIndex, blck);
+          }
+        }
+      }
+    })
+  }
+
+  /**
+   * Add parent UDR object
+   * @param udr pass the udr block object
+   */
+  addParentBlock(udr?: UDRBlocksModel) {
+    const parentArray = (this.udrNodeForm.get('frmArray') as FormArray);
+    parentArray.push(this.blockCtrl(udr));
+  }
+
+  /**
+   * Initialize block formgroup
+   * @param udr pass the udr block object
+   */
+  blockCtrl(udr?: UDRBlocksModel): FormGroup {
+    return this.formBuilder.group({
+      blockDesc: new FormControl(udr ? udr.blockDesc : 'And'),
+      blockType: new FormControl(udr ? udr.blockType : BlockType.COND),
+      conditionFieldEndValue: new FormControl(udr ? udr.conditionFieldEndValue : ''),
+      conditionFieldId: new FormControl(udr ? udr.conditionFieldId : ''),
+      conditionFieldStartValue: new FormControl(udr ? udr.conditionFieldStartValue : ''),
+      conditionFieldValue: new FormControl(udr ? udr.conditionFieldValue : ''),
+      conditionOperator: new FormControl(udr ? udr.conditionOperator : ''),
+      conditionValueFieldId: new FormControl(udr ? udr.conditionValueFieldId : ''),
+      id: new FormControl(udr ? udr.id : Math.floor(Math.random() * 1000000000000).toString()),
+      objectType: new FormControl(this.moduleId),
+      udrid: new FormControl(this.brId),
+      childs: this.formBuilder.array([])
+    });
+  }
+
+  /**
+   * Add childs block..
+   * @param parentBlockIndx parent index item where add childs ..
+   */
+  addChildBlock(parentBlockIndx: number, udr?: UDRBlocksModel) {
+    const chldArray = this.getChildAsControl(parentBlockIndx);
+    chldArray.push(this.blockCtrl(udr));
+  }
+
+  /**
+   * Get parent node array .
+   */
+  udrNodeArray(): FormArray {
+    return this.udrNodeForm.get('frmArray') as FormArray
+  }
+
+  /**
+   * Get childs form array ..
+   * @param index get childs node by parent id
+   */
+  getChildAsControl(index: number): FormArray {
+    return this.udrNodeArray().at(index).get('childs') as FormArray
+  }
+
+  /**
+   * Remove parent node..
+   * @param index removeable index
+   */
+  removeParentNode(index: number) {
+    const frmArray = this.udrNodeArray();
+    frmArray.removeAt(index);
+  }
+
+  /**
+   * Remove child node element
+   * @param parentNodeId parent node id ..
+   * @param childNodeId child node id ..
+   */
+  removeChildNode(parentNodeId: number, childNodeId: number) {
+    const chldArray = this.getChildAsControl(parentNodeId);
+    chldArray.removeAt(childNodeId);
+  }
+
+  /**
+   * function to get the fields on basis of module
+   */
+  getFieldsByModuleId() {
+    this.schemaDetailsService.getMetadataFields(this.moduleId)
+      .subscribe((metadataModeleResponse: MetadataModeleResponse) => {
+        const keys = Object.keys(metadataModeleResponse.headers);
+        keys.forEach((key) => {
+          this.fieldsList.push(metadataModeleResponse.headers[key])
+        });
+
+        this.fieldsList = this.fieldsList.slice();
+
+        this.filteredModules = of(this.fieldsList);
+        // this.filteredFieldList = this.fieldsList;
+        // this.duplicateFieldsObs = of(this.fieldsList);
+
+        if (this.brId) {
+          try {
+            const fldIds = this.coreSchemaBrInfo.fields ? this.coreSchemaBrInfo.fields.split(',') : [];
+            this.selectedFields = [];
+            fldIds.forEach(fld => {
+              const fldCtrl = this.fieldsList.filter(fil => fil.fieldId === fld)[0];
+              if (fldCtrl) {
+                this.selectedFields.push({ fieldDescri: fldCtrl.fieldDescri, fieldId: fld });
+              }
+            });
+          } catch (ex) { console.error(ex) }
+        }
+
+      });
+  }
+
+  /**
+   * function to filter the list
+   * @param val fitering text
+   */
+  filter(val: string): any[] {
+    return this.fieldsList.filter(option => {
+      return option.fieldDescri.toLowerCase().indexOf(val.toLowerCase()) === 0;
+    })
+  }
+
+  /**
+   * function to save the array of ids of selected fields
+   * @param event selected item eent
+   */
+  selectedField(event) {
+    const alreadyExists = this.selectedFields.find(item => item.fieldId === event.option.value);
+    if (alreadyExists) {
+      this.snackBar.open('This field is already selected', 'error', { duration: 5000 });
+    } else {
+      this.selectedFields.push({
+        fieldText: event.option.viewValue,
+        fieldId: event.option.value
       });
     }
 
-    /**
-     * Add childs block..
-     * @param parentBlockIndx parent index item where add childs ..
-     */
-    addChildBlock(parentBlockIndx: number, udr?: UDRBlocksModel) {
-      const chldArray = this.getChildAsControl(parentBlockIndx);
-      chldArray.push(this.blockCtrl(udr));
+    this.form.controls.fields.setValue('');
+  }
+
+  /**
+   * function to remove the value
+   * @param field the field to be removed
+   */
+  remove(field, i) {
+    this.selectedFields.splice(i, 1);
+  }
+
+  /**
+   * getter to show field on the basis of rule type
+   */
+  get isRegexType() {
+    return this.form.controls.rule_type.value === BusinessRuleType.BR_REGEX_RULE
+  }
+
+  /**
+   * function to set the value in the form
+   * @param value entered value
+   * @param field the selected field of form
+   */
+  getFormValue(value, field) {
+    this.form.controls[field].setValue(value);
+  }
+
+  /**
+   * function to close the dialog
+   */
+  close() {
+    this.router.navigate([{ outlets: { sb: null } }]);
+  }
+
+  /**
+   * function to save the form data
+   */
+  save() {
+    this.form.controls.fields.setValue(this.selectedFields.map(item => item.fieldId).join(','));
+    this.submitted = true;
+    if (!this.form.valid) {
+      this.snackBar.open('Please enter the required fields', 'okay', { duration: 5000 });
+      return;
     }
 
-    /**
-     * Get parent node array .
-     */
-    udrNodeArray(): FormArray {
-      return this.udrNodeForm.get('frmArray') as FormArray
-    }
+    let brType: string = this.form.value ? this.form.value.rule_type : '';
+    brType = brType ? brType : this.coreSchemaBrInfo.brType;
 
-    /**
-     * Get childs form array ..
-     * @param index get childs node by parent id
-     */
-    getChildAsControl(index: number): FormArray {
-      return this.udrNodeArray().at(index).get('childs') as FormArray
-    }
+    if (brType === 'BR_CUSTOM_SCRIPT') {
 
-    /**
-     * Remove parent node..
-     * @param index removeable index
-     */
-    removeParentNode(index: number) {
-      const frmArray = this.udrNodeArray();
-      frmArray.removeAt(index);
-    }
+      // for user defined rule
+      console.log(this.udrNodeForm.value);
+      const udrDto: UdrModel = new UdrModel();
+      udrDto.brInfo = {
+        brId: this.brId, brIdStr: this.brId,
+        brType, brInfo: this.form.value.rule_name, message: this.form.value.error_message,
+        schemaId: this.schemaId, categoryId: this.coreSchemaBrInfo.categoryId
+      } as CoreSchemaBrInfo;
 
-    /**
-     * Remove child node element
-     * @param parentNodeId parent node id ..
-     * @param childNodeId child node id ..
-     */
-    removeChildNode(parentNodeId: number, childNodeId: number) {
-      const chldArray = this.getChildAsControl(parentNodeId);
-      chldArray.removeAt(childNodeId);
-    }
-
-
-
-
-    /**
-     * function to get the fields on basis of module
-     */
-    getFieldsByModuleId() {
-        this.schemaDetailsService.getMetadataFields(this.moduleId)
-            .subscribe((metadataModeleResponse: MetadataModeleResponse) => {
-                const keys = Object.keys(metadataModeleResponse.headers);
-                keys.forEach((key) => {
-                    this.fieldsList.push(metadataModeleResponse.headers[key])
-                });
-
-                this.fieldsList = this.fieldsList.slice();
-
-                this.filteredModules = of(this.fieldsList);
-                // this.filteredFieldList = this.fieldsList;
-                // this.duplicateFieldsObs = of(this.fieldsList);
-
-                if(this.brId) {
-                  try{
-                    const fldIds = this.coreSchemaBrInfo.fields ? this.coreSchemaBrInfo.fields.split(',') : [];
-                    this.selectedFields = [];
-                    fldIds.forEach(fld=>{
-                      const fldCtrl = this.fieldsList.filter(fil=> fil.fieldId === fld)[0];
-                      if(fldCtrl) {
-                        this.selectedFields.push({fieldText: fldCtrl.fieldDescri, fieldId: fld});
-                      }
-                    });
-                  }catch(ex){console.error(ex)}
-                }
-
-            });
-    }
-
-    /**
-     * function to filter the list
-     * @param val fitering text
-     */
-    filter(val: string): any[] {
-        return this.fieldsList.filter(option => {
-            return option.fieldDescri.toLowerCase().indexOf(val.toLowerCase()) === 0;
-        })
-    }
-
-    /**
-     * function to save the array of ids of selected fields
-     * @param event selected item eent
-     */
-    selectedField(event) {
-        const alreadyExists = this.selectedFields.find(item => item.fieldId === event.option.value);
-        if (alreadyExists) {
-            this.snackBar.open('This field is already selected', 'error', {duration: 5000});
-        } else {
-            this.selectedFields.push({
-                fieldText: event.option.viewValue,
-                fieldId: event.option.value
-            });
-        }
-
-        this.form.controls.fields.setValue('');
-    }
-
-    /**
-     * function to remove the value
-     * @param field the field to be removed
-     */
-    remove(field, i) {
-        this.selectedFields.splice(i, 1);
-    }
-
-    /**
-     * getter to show field on the basis of rule type
-     */
-    get isRegexType() {
-        return this.form.controls.rule_type.value === BusinessRuleType.BR_REGEX_RULE
-    }
-
-    /**
-     * function to set the value in the form
-     * @param value entered value
-     * @param field the selected field of form
-     */
-    getFormValue(value, field) {
-        this.form.controls[field].setValue(value);
-    }
-
-    /**
-     * function to close the dialog
-     */
-    close() {
-      this.router.navigate([{ outlets: { sb: null }}]);
-    }
-
-    /**
-     * function to save the form data
-     */
-    save() {
-        this.form.controls.fields.setValue(this.selectedFields.map(item => item.fieldId).join(','));
-        this.submitted = true;
-        if (!this.form.valid) {
-            this.snackBar.open('Please enter the required fields', 'okay', {duration:5000});
-            return;
-        }
-
-        let brType: string = this.form.value ? this.form.value.rule_type : '';
-        brType = brType ? brType : this.coreSchemaBrInfo.brType;
-
-        if(brType === 'BR_CUSTOM_SCRIPT') {
-
-          // for user defined rule
-          console.log(this.udrNodeForm.value);
-          const udrDto: UdrModel = new UdrModel();
-          udrDto.brInfo = {brId: this.brId, brIdStr: this.brId,
-            brType, brInfo:this.form.value.rule_name, message: this.form.value.error_message,
-            schemaId: this.schemaId, categoryId: this.coreSchemaBrInfo.categoryId } as CoreSchemaBrInfo;
-
-          const blocks: UDRBlocksModel[] = [];
-          const frm = this.udrNodeArray();
-          for(let i =0; i<frm.length; i++) {
-            blocks.push(frm.at(i).value as UDRBlocksModel)
-          }
-          const blockHierarchy: UDRHierarchyModel[] = [];
-          blocks.forEach(block=>{
-            const hie: UDRHierarchyModel = new UDRHierarchyModel();
-            hie.blockRefId = block.id;
-            hie.leftIndex = 0;
-            blockHierarchy.push(hie);
-
-            block.childs.forEach(bb=>{
-              bb.blockType = BlockType.COND;
-              blocks.push(bb);
-              const chldHie: UDRHierarchyModel = new UDRHierarchyModel();
-              chldHie.blockRefId = bb.id;
-              chldHie.leftIndex = 1;
-              chldHie.parentId = block.id;
-              blockHierarchy.push(chldHie);
-            });
-
-          });
-          udrDto.blocks = blocks;
-          udrDto.objectType = this.moduleId;
-          udrDto.udrHierarchies = blockHierarchy;
-
-          this.schemaService.saveUpdateUDR(udrDto).subscribe(res=>{
-            this.snackBar.open(`Successfully saved !`, 'Close',{duration:5000});
-            console.log(res);
-            this.sharedService.setAfterBrSave(res);
-            this.router.navigate([{ outlets: { sb: null }}]);
-          },error=> {
-            this.snackBar.open(`Something went wrong `, 'Close',{duration:5000});
-          });
-
-        }
-        else if (brType === BusinessRuleType.BR_DUPLICATE_RULE){
-
-          // save duplicate rule
-          const brInfo = {brId: this.brId, brIdStr: this.brId,
-            brType, brInfo:this.form.value.rule_name, message: this.form.value.error_message,
-            schemaId: this.schemaId, categoryId: this.coreSchemaBrInfo.categoryId } as CoreSchemaBrInfo;
-
-          this.sharedService.emitSaveBrEvent(brInfo)
-
-        }
-        else {
-          const request: CoreSchemaBrInfo = new CoreSchemaBrInfo();
-          request.brId = this.brId ? this.brId : '';
-          request.brType = brType;
-          request.message = this.form.value.error_message;
-          request.brInfo = this.form.value.rule_name;
-          request.fields = this.form.value.fields;
-          request.regex = this.form.value.regex;
-          request.standardFunction = this.form.value.standard_function;
-          request.schemaId = this.schemaId;
-          request.categoryId = this.coreSchemaBrInfo.categoryId ? this.coreSchemaBrInfo.categoryId : null;
-
-          this.schemaService.createBusinessRule(request).subscribe(res=>{
-            console.log(res);
-            this.sharedService.setAfterBrSave(res);
-            this.router.navigate([{ outlets: { sb: null }}]);
-          }, err=> console.error(`Error : ${err.message}`));
-
-        }
-
-
-
-    }
-
-    setRegex(event) {
-        const selectedRegex = this.preDefinedRegex.find(item => item.FUNC_TYPE === event.value);
-        this.form.controls.regex.setValue(selectedRegex.FUNC_CODE);
-    }
-
-    get isUDR() {
-        return this.form.controls.rule_type.value === 'BR_CUSTOM_SCRIPT'
-    }
-
-    /**
-     * Return all possible operators
-     */
-    possibleOperators(): ConditionalOperator[] {
-        // get generic operators
-        const genericOp: ConditionalOperator = new ConditionalOperator();
-        genericOp.desc = 'Common Operator';
-        genericOp.childs = [];
-        genericOp.childs.push('EQUAL');
-        genericOp.childs.push('STARTS_WITH');
-        genericOp.childs.push('ENDS_WITH');
-        genericOp.childs.push('CONTAINS');
-        genericOp.childs.push('EMPTY');
-        genericOp.childs.push('NOT_EMPTY');
-
-        // for numeric number field
-        const onlyNum: ConditionalOperator = new ConditionalOperator();
-        onlyNum.desc = 'Numeric Operators';
-        onlyNum.childs = [];
-        onlyNum.childs.push('RANGE');
-        onlyNum.childs.push('LESS_THAN');
-        onlyNum.childs.push('LESS_THAN_EQUAL');
-        onlyNum.childs.push('GREATER_THAN');
-        onlyNum.childs.push('GREATER_THAN_EQUAL');
-
-        // for special operators
-        const specialOpe: ConditionalOperator = new ConditionalOperator();
-        specialOpe.desc = 'Special Operators';
-        specialOpe.childs = [];
-        specialOpe.childs.push('REGEX');
-        specialOpe.childs.push('FIELD2FIELD');
-        specialOpe.childs.push('LOCATION');
-        return [genericOp, onlyNum, specialOpe];
-    }
-
-    setComparisonValue(value: string, index: number) {
-      const array = this.udrNodeArray().at(index);
-      array.get('conditionFieldValue').setValue(value);
-    }
-
-    setComparisonValueForChild(value, chldNode: number , parentNode: number) {
-        const childArray = this.getChildAsControl(parentNode).at(chldNode);
-        childArray.get('conditionFieldValue').setValue(value);
-    }
-
-
-
-    setRangeValueForChild(value, rangeText, childObject, parentIndex) {
-      const childArray = this.getChildAsControl(parentIndex).at(childObject);
-      if (rangeText === 'start') {
-        childArray.get('conditionFieldStartValue').setValue(value);
+      const blocks: UDRBlocksModel[] = [];
+      const frm = this.udrNodeArray();
+      for (let i = 0; i < frm.length; i++) {
+        blocks.push(frm.at(i).value as UDRBlocksModel)
       }
-      if (rangeText === 'end') {
-        childArray.get('conditionFieldEndValue').setValue(value);
-      }
+      const blockHierarchy: UDRHierarchyModel[] = [];
+      blocks.forEach(block => {
+        const hie: UDRHierarchyModel = new UDRHierarchyModel();
+        hie.blockRefId = block.id;
+        hie.leftIndex = 0;
+        blockHierarchy.push(hie);
+
+        block.childs.forEach(bb => {
+          bb.blockType = BlockType.COND;
+          blocks.push(bb);
+          const chldHie: UDRHierarchyModel = new UDRHierarchyModel();
+          chldHie.blockRefId = bb.id;
+          chldHie.leftIndex = 1;
+          chldHie.parentId = block.id;
+          blockHierarchy.push(chldHie);
+        });
+
+      });
+      udrDto.blocks = blocks;
+      udrDto.objectType = this.moduleId;
+      udrDto.udrHierarchies = blockHierarchy;
+
+      this.schemaService.saveUpdateUDR(udrDto).subscribe(res => {
+        this.snackBar.open(`Successfully saved !`, 'Close', { duration: 5000 });
+        console.log(res);
+        this.sharedService.setAfterBrSave(res);
+        this.router.navigate([{ outlets: { sb: null } }]);
+      }, error => {
+        this.snackBar.open(`Something went wrong `, 'Close', { duration: 5000 });
+      });
+
     }
+    else if (brType === BusinessRuleType.BR_DUPLICATE_RULE) {
 
+      // save duplicate rule
+      const brInfo = {
+        brId: this.brId, brIdStr: this.brId,
+        brType, brInfo: this.form.value.rule_name, message: this.form.value.error_message,
+        schemaId: this.schemaId, categoryId: this.coreSchemaBrInfo.categoryId
+      } as CoreSchemaBrInfo;
 
+      this.sharedService.emitSaveBrEvent(brInfo)
 
-    getConditions() {
-        return ['And', 'Or']
     }
+    else {
+      const request: CoreSchemaBrInfo = new CoreSchemaBrInfo();
+      request.brId = this.brId ? this.brId : '';
+      request.brType = brType;
+      request.message = this.form.value.error_message;
+      request.brInfo = this.form.value.rule_name;
+      request.fields = this.form.value.fields;
+      request.regex = this.form.value.regex;
+      request.standardFunction = this.form.value.standard_function;
+      request.schemaId = this.schemaId;
+      request.categoryId = this.coreSchemaBrInfo.categoryId ? this.coreSchemaBrInfo.categoryId : null;
 
-    setRangeValue(value, rangeText, parentBlockIndex) {
-      const control = this.udrNodeArray().at(parentBlockIndex);
-      if (rangeText === 'start') {
-        control.get('conditionFieldStartValue').setValue(value);
-      }
-      if (rangeText === 'end') {
-        control.get('conditionFieldEndValue').setValue(value);
-      }
-    }
+      this.schemaService.createBusinessRule(request).subscribe(res => {
+        console.log(res);
+        this.sharedService.setAfterBrSave(res);
+        this.router.navigate([{ outlets: { sb: null } }]);
+      }, err => console.error(`Error : ${err.message}`));
 
-    /**
-     * getter to show field on the basis of rule type
-     */
-    get isDuplicateType() {
-      return this.form.controls.rule_type.value === BusinessRuleType.BR_DUPLICATE_RULE;
     }
+  }
+
+  setRegex(event) {
+    const selectedRegex = this.preDefinedRegex.find(item => item.FUNC_TYPE === event.value);
+    this.form.controls.regex.setValue(selectedRegex.FUNC_CODE);
+  }
+
+  get isUDR() {
+    return this.form.controls.rule_type.value === 'BR_CUSTOM_SCRIPT'
+  }
+
+  /**
+   * Return all possible operators
+   */
+  possibleOperators(): ConditionalOperator[] {
+    // get generic operators
+    const genericOp: ConditionalOperator = new ConditionalOperator();
+    genericOp.desc = 'Common Operator';
+    genericOp.childs = [];
+    genericOp.childs.push('EQUAL');
+    genericOp.childs.push('STARTS_WITH');
+    genericOp.childs.push('ENDS_WITH');
+    genericOp.childs.push('CONTAINS');
+    genericOp.childs.push('EMPTY');
+    genericOp.childs.push('NOT_EMPTY');
+
+    // for numeric number field
+    const onlyNum: ConditionalOperator = new ConditionalOperator();
+    onlyNum.desc = 'Numeric Operators';
+    onlyNum.childs = [];
+    onlyNum.childs.push('RANGE');
+    onlyNum.childs.push('LESS_THAN');
+    onlyNum.childs.push('LESS_THAN_EQUAL');
+    onlyNum.childs.push('GREATER_THAN');
+    onlyNum.childs.push('GREATER_THAN_EQUAL');
+
+    // for special operators
+    const specialOpe: ConditionalOperator = new ConditionalOperator();
+    specialOpe.desc = 'Special Operators';
+    specialOpe.childs = [];
+    specialOpe.childs.push('REGEX');
+    specialOpe.childs.push('FIELD2FIELD');
+    specialOpe.childs.push('LOCATION');
+    return [genericOp, onlyNum, specialOpe];
+  }
+
+  setComparisonValue(value: string, index: number) {
+    const array = this.udrNodeArray().at(index);
+    array.get('conditionFieldValue').setValue(value);
+  }
+
+  setComparisonValueForChild(value, chldNode: number, parentNode: number) {
+    const childArray = this.getChildAsControl(parentNode).at(chldNode);
+    childArray.get('conditionFieldValue').setValue(value);
+  }
+
+  setRangeValueForChild(value, rangeText, childObject, parentIndex) {
+    const childArray = this.getChildAsControl(parentIndex).at(childObject);
+    if (rangeText === 'start') {
+      childArray.get('conditionFieldStartValue').setValue(value);
+    }
+    if (rangeText === 'end') {
+      childArray.get('conditionFieldEndValue').setValue(value);
+    }
+  }
+
+  /**
+   * get available condition string
+   */
+  getConditions() {
+    return ['And', 'Or']
+  }
+
+  /**
+   * method to set range values
+   * @param value pass the value
+   * @param rangeText pass the range text
+   * @param parentBlockIndex Pass the parent block index
+   */
+  setRangeValue(value, rangeText, parentBlockIndex) {
+    const control = this.udrNodeArray().at(parentBlockIndex);
+    if (rangeText === 'start') {
+      control.get('conditionFieldStartValue').setValue(value);
+    }
+    if (rangeText === 'end') {
+      control.get('conditionFieldEndValue').setValue(value);
+    }
+  }
+
+  /**
+   * getter to show field on the basis of rule type
+   */
+  get isDuplicateType() {
+    return this.form.controls.rule_type.value === BusinessRuleType.BR_DUPLICATE_RULE;
+  }
+
+  /**
+   * Get all categories from the api
+   */
+  getCategories() {
+    this.categoryList = [];
+    this.schemaDetailsService.getAllCategoryInfo().subscribe((response) => {
+      this.categoryList.push(...response)
+    })
+  }
+
+  get isTransformationRule(): boolean {
+    return this.form.controls.rule_type.value === BusinessRuleType.BR_TRANSFORMATION_RULE;
+  }
+
+  /**
+   * format label for autoselect
+   * @param value pass the selected value
+   */
+  formatLabel(value) {
+    return `${value}`;
+  }
 
 }

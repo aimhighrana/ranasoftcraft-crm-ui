@@ -14,7 +14,7 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GlobaldialogService } from '@services/globaldialog.service';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { FormInputAutoselectComponent } from '@modules/shared/_components/form-input-autoselect/form-input-autoselect.component';
-import { CoreSchemaBrInfo, DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { CoreSchemaBrInfo, DropDownValue, TransformationModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { AddFilterOutput, DataSource } from '@models/schema/schema';
 import { FilterCriteria } from '@models/schema/schemadetailstable';
 
@@ -25,6 +25,46 @@ describe('UploadDatasetComponent', () => {
   let schemaServiceSpy: SchemaService;
   let schemadetailsService: SchemaDetailsService;
   let usersSpy;
+  const transformationRule = {
+    formData: {
+      rule_type: 'BR_TRANSFORMATION_RULE',
+      rule_name: 'test rule',
+      error_message: 'no data',
+      standard_function: '',
+      regex: '',
+      fields: '',
+      sourceFld: 'pgwtbfdr1629',
+      targetFld: 'lyijfvxk6656',
+      excludeScript: 'rwrewreew',
+      includeScript: 'grfgsregr',
+      udrTreeData: {
+        blocks: [
+          {
+            id: '288171383289',
+            conditionFieldId: '',
+            conditionValueFieldId: null,
+            conditionFieldValue: '',
+            conditionFieldStartValue: '',
+            conditionFieldEndValue: '',
+            blockType: 'When',
+            conditionOperator: '',
+            blockDesc: '',
+            plantCode: '',
+            children: []
+          }],
+          udrHierarchies: [
+            {
+              parentId: '',
+              leftIndex: '',
+              blockRefId: '288171383289'
+            }]
+      },
+      weightage: 54,
+      categoryId: '',
+      transformationRuleType: 'REGEX'
+    },
+    lookupData: []
+  };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -324,7 +364,7 @@ describe('UploadDatasetComponent', () => {
     expect(result).toEqual('ABC');
   })
 
-  it('loadDropValues(), should load dropdown values of selected filters', async() => {
+  it('loadDropValues(), should load dropdown values of selected filters', async () => {
     const fldc: FilterCriteria = {
       fieldId: 'MaterialType',
       values: ['123', '456'],
@@ -352,5 +392,12 @@ describe('UploadDatasetComponent', () => {
     lName = '';
     initials = component.shortName(fName, lName);
     expect(initials).toEqual('');
+  });
+
+  it('mapTransformationData(), should create transformation data', () => {
+    const transFormationSchema: TransformationModel[] = component.mapTransformationData(transformationRule);
+    expect(transFormationSchema.length).toEqual(1);
+    expect(transFormationSchema[0].excludeScript).toEqual('rwrewreew');
+    expect(transFormationSchema[0].includeScript).toEqual('grfgsregr');
   })
 });

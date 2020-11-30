@@ -25,5 +25,5 @@
             </mat-form-field>
         </div>
     </form>
-    <button mat-flat-button type="button" color="primary" (click)="saveConfig()">Save</button>
+    <button mat-flat-button type="button" color="primary" [disabled]="!lookupForm.valid" (click)="saveConfig()">Save</button>
 </div>

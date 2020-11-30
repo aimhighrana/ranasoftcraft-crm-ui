@@ -35,8 +35,8 @@ describe('LookupConfigComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('getFieldsByModuleId() should call getMetadataFields', () => {
-    spyOn(schemadetailsService, 'getMetadataFields').and.callFake(() => of(null))
+  it('getFieldsByModuleId() should call getMetadataFields', async() => {
+    spyOn(schemadetailsService, 'getMetadataFields').withArgs('test').and.callFake(() => of(null));
     component.getFieldsByModuleId('test');
     expect(schemadetailsService.getMetadataFields).toHaveBeenCalled();
   });

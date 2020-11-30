@@ -7,6 +7,7 @@ import { SchemaDetailsService } from '@services/home/schema/schema-details.servi
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { MetadataModeleResponse } from '@models/schema/schemadetailstable';
 import { of } from 'rxjs';
+import { BusinessRuleType, ConditionalOperator } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 
 describe('NewBusinessRulesComponent', () => {
     let component: NewBusinessRulesComponent;
@@ -74,5 +75,46 @@ describe('NewBusinessRulesComponent', () => {
         component.udrBlocks = [{ id: '76675675', blockTypeText: 'or', fieldId: 'NDC_TYPE', operator: 'EQUAL', comparisonValue: '78', actionDisabled: false, rangeStartValue: '', rangeEndValue: '', children: [] }, { id: '76675685', blockTypeText: 'When', fieldId: 'ND_TYPE', operator: 'EQUAL', comparisonValue: '78', actionDisabled: false, rangeStartValue: '', rangeEndValue: '', children: [] }]
         component.addBlock(false, {}, 2);
         expect(component.udrBlocks.length).toEqual(3);
+    }));
+
+    it('getCategories(), should call getAllCategoryInfo', () => {
+        spyOn(schemaDetailsServicespy, 'getAllCategoryInfo').and.callFake(() => of(null));
+        component.getCategories();
+        expect(schemaDetailsServicespy.getAllCategoryInfo).toHaveBeenCalled();
+    });
+
+    it('createDSByFields(), should add fields to target and source fields', () => {
+        component.data.fields = [
+            {
+                fieldDescri: 'test',
+                fieldId: '123'
+            }
+        ];
+        component.createDSByFields();
+        expect(component.targetFieldsObject.list.length).toEqual(1);
+        expect(component.sourceFieldsObject.list.length).toEqual(1);
+    });
+
+    it('isRegexType, sould return true if selected rule is regex type', (() => {
+        component.initializeForm();
+        component.form.controls.rule_type.setValue(BusinessRuleType.BR_REGEX_RULE);
+        expect(component.isRegexType).toBeTrue();
+    }));
+
+    it('isTransformationRule, sould return true if selected rule is transformation type', (() => {
+        component.initializeForm();
+        component.form.controls.rule_type.setValue(BusinessRuleType.BR_TRANSFORMATION_RULE);
+        expect(component.isTransformationRule).toBeTrue();
+    }));
+
+    it('isUDR, sould return true if selected rule is custom script type', (() => {
+        component.initializeForm();
+        component.form.controls.rule_type.setValue(BusinessRuleType.BR_CUSTOM_SCRIPT);
+        expect(component.isUDR).toBeTrue();
+    }));
+
+    it('possibleOperators(), sould return array of all possible operators', (() => {
+        const operators: ConditionalOperator[] = component.possibleOperators();
+        expect(operators.length).toEqual(3);
     }));
 });

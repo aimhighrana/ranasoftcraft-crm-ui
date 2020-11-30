@@ -192,7 +192,7 @@
 
                             <div class="col col-x4">
                                 <div>
-                                    <mat-slider *ngIf="!isExistingRule(businessRule.brId); else notConfigured"
+                                    <mat-slider *ngIf="!isExistingRule(businessRule.tempId); else notConfigured"
                                         color="primary" [thumbLabel]="businessRule.brWeightage"
                                         [value]="businessRule.brWeightage" [(ngModel)]="businessRule.brWeightage">
                                     </mat-slider>
@@ -311,7 +311,6 @@
                         </mat-chip-list>
 
                         <!-- Append dynamic filter MatMenu -->
- 
                         <mat-menu #appliedfiltermenu="matMenu">
                             <pros-filter-values (selectedValues)="updateFilterCriteria($event, subscriber.sno)"
                                 [moduleId]="requestForm.controls.objectId.value"
