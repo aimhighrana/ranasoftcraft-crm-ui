@@ -107,7 +107,7 @@ const routes: Routes = [
   { path: 'system/new-modifier-sidesheet', component: NewModifierSidesheetComponent },
   { path: 'system/new-noun-sidesheet', component: NewNounSidesheetComponent },
   { path: 'system/library-mapping-sidesheet', component: LibraryMappingSidesheetComponent },
-  { path: 'businessrule-library/:schemaId/:outlet', component: BusinessrulelibrarySidesheetComponent},
+  { path: 'businessrule-library/:moduleId/:schemaId/:outlet', component: BusinessrulelibrarySidesheetComponent},
   { path: ':moduleId/statics/:schemaId', component: StaticsComponent },
 
   // anything not mapped should go to page not found component

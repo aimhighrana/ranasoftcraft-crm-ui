@@ -144,8 +144,12 @@ export class EndpointService {
     return `${this.apiUrl}/schema/upload-data/${objectType}/${fileSno}`;
   }
 
-  public getBusinessRulesInfo(id) {
-    return this.apiUrl + '/schema/get-business-rules/' + id
+  public getBusinessRulesInfoByModuleIdUrl() {
+    return this.apiUrl + `/schema/get-business-rules/`
+  }
+
+  public getBusinessRulesInfoBySchemaIdUrl(schemaId: string) {
+    return this.apiUrl + `/schema/get-business-rules/${schemaId}`;
   }
 
   public getCategoriesInfo() {

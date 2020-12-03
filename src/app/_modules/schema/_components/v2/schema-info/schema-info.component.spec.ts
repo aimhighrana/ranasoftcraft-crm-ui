@@ -76,9 +76,9 @@ describe('SchemaInfoComponent', () => {
   })
 
   it('getBusinessRuleList(), should get business rule list of schema', async () => {
-    spyOn(schemaService, 'getAllBusinessRules').withArgs(component.schemaId).and.returnValue(of({} as CoreSchemaBrInfo[]));
+    spyOn(schemaService, 'getBusinessRulesBySchemaId').withArgs(component.schemaId).and.returnValue(of({} as CoreSchemaBrInfo[]));
     component.getBusinessRuleList(component.schemaId);
-    expect(schemaService.getAllBusinessRules).toHaveBeenCalledWith(component.schemaId);
+    expect(schemaService.getBusinessRulesBySchemaId).toHaveBeenCalledWith(component.schemaId);
   })
 
   it('shortName(), should return initals', () => {
@@ -299,9 +299,10 @@ describe('SchemaInfoComponent', () => {
   });
 
   it('getAllBusinessRulesList(), should get all business rules', async() => {
-    spyOn(schemaService, 'getAllBusinessRules').and.returnValue(of({} as CoreSchemaBrInfo[]));
-    component.getAllBusinessRulesList();
-    expect(schemaService.getAllBusinessRules).toHaveBeenCalled();
+    spyOn(schemaService, 'getBusinessRulesByModuleId').and.returnValue(of({} as CoreSchemaBrInfo[]));
+    component.moduleId = '1004';
+    component.getAllBusinessRulesList(component.moduleId, '', '', '0');
+    expect(schemaService.getBusinessRulesByModuleId).toHaveBeenCalled();
   })
 
   it('getCollaborators(), should get all subscribers', async() => {
@@ -311,11 +312,12 @@ describe('SchemaInfoComponent', () => {
   })
 
   it('openBrLibrarySideSheet(), should navigate to business rule library side sheet', () => {
+    component.moduleId = '1004';
     component.schemaId = '2145214';
     component.outlet = 'sb';
     spyOn(router, 'navigate');
     component.openBrLibrarySideSheet();
-    expect(router.navigate).toHaveBeenCalledWith([{outlets: {sb: `sb/schema/businessrule-library/${component.schemaId}/${component.outlet}`}}])
+    expect(router.navigate).toHaveBeenCalledWith([{outlets: {sb: `sb/schema/businessrule-library/${component.moduleId}/${component.schemaId}/${component.outlet}`}}])
   })
 
   it('addBusinessRule(), should add business rule from auto-complete', async() => {

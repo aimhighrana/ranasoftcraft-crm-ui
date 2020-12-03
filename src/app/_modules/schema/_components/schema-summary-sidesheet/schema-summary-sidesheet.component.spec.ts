@@ -58,9 +58,9 @@ describe('SchemaSummarySidesheetComponent', () => {
   })
 
   it('getBusinessRuleList(), should get business rule list of schema', async () => {
-    spyOn(schemaService, 'getAllBusinessRules').withArgs(component.schemaId).and.returnValue(of({} as CoreSchemaBrInfo[]));
+    spyOn(schemaService, 'getBusinessRulesBySchemaId').withArgs(component.schemaId).and.returnValue(of({} as CoreSchemaBrInfo[]));
     component.getBusinessRuleList(component.schemaId);
-    expect(schemaService.getAllBusinessRules).toHaveBeenCalledWith(component.schemaId);
+    expect(schemaService.getBusinessRulesBySchemaId).toHaveBeenCalledWith(component.schemaId);
   })
 
   it('shortName(), should return initials of subscriber', () => {
@@ -118,12 +118,13 @@ describe('SchemaSummarySidesheetComponent', () => {
   });
 
   it('openBusinessRuleSideSheet(), should open business rule side sheet', () => {
+    component.moduleId = '1004';
     component.schemaId = '15125412';
     component.outlet = 'outer';
 
     spyOn(router, 'navigate');
     component.openBusinessRuleSideSheet();
-    expect(router.navigate).toHaveBeenCalledWith(['', {outlets : {outer: `outer/schema/businessrule-library/${component.schemaId}/${component.outlet}`}}])
+    expect(router.navigate).toHaveBeenCalledWith(['', {outlets : {outer: `outer/schema/businessrule-library/${component.moduleId}/${component.schemaId}/${component.outlet}`}}])
   });
 
   it('openSubscriberSideSheet(), should open subscriber side sheet', () => {
@@ -136,9 +137,10 @@ describe('SchemaSummarySidesheetComponent', () => {
   })
 
   it('getAllBusinessRulesList(), should get all business rules', async() => {
-    spyOn(schemaService, 'getAllBusinessRules').and.returnValue(of({} as CoreSchemaBrInfo[]));
-    component.getAllBusinessRulesList();
-    expect(schemaService.getAllBusinessRules).toHaveBeenCalled();
+    spyOn(schemaService, 'getBusinessRulesByModuleId').and.returnValue(of({} as CoreSchemaBrInfo[]));
+    component.moduleId = '1005';
+    component.getAllBusinessRulesList(component.moduleId, '', '', '0');
+    expect(schemaService.getBusinessRulesByModuleId).toHaveBeenCalled();
   })
 
   it('getCollaborators(), should get all subscribers', async() => {

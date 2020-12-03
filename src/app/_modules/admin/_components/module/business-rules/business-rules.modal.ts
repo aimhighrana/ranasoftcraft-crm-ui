@@ -41,7 +41,7 @@ export class CoreSchemaBrInfo {
     dependantStatus: string;
     plantCode: string;
     percentage: number;
-    schemaId: string
+    schemaId: string;
     brIdStr: string;
     categoryInfo?: CategoryInfo;
     udrDto?: UdrModel;

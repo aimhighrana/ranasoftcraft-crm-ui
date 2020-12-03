@@ -147,7 +147,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
 
     this.getCollaborators('', 0); // To get all the subscribers
 
-    this.getAllBusinessRulesList(); // To get all business rules list
+    this.getAllBusinessRulesList(this.moduleId, '', '', '0'); // To get all business rules list
   }
 
   /**
@@ -346,7 +346,8 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
         roleDesc: ''
       },
       plantCode: '',
-      filterCriteria: []
+      filterCriteria: [],
+      isCopied: false
     }as SchemaDashboardPermission
 
     this.schemaDetailsService.createUpdateUserDetails(Array(subscriber)).subscribe((response)=>{
@@ -393,7 +394,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * @param schemaId current schema id
    */
   public getBusinessRuleList(schemaId: string) {
-   const businessRuleList = this.schemaService.getAllBusinessRules(schemaId).subscribe((responseData) => {
+   const businessRuleList = this.schemaService.getBusinessRulesBySchemaId(schemaId).subscribe((responseData) => {
       this.businessRuleData = responseData;
     }, error => {
       console.log('Error while fetching business rule info for schema', error);
@@ -791,14 +792,18 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * It holds all the business rules inside it.
    */
   openBrLibrarySideSheet() {
-    this.router.navigate([{outlets: {sb: `sb/schema/businessrule-library/${this.schemaId}/${this.outlet}`}}])
+    this.router.navigate([{outlets: {sb: `sb/schema/businessrule-library/${this.moduleId}/${this.schemaId}/${this.outlet}`}}])
   }
 
   /**
    * Function to get info of all business rules.
+   * @param moduleId ID of module
+   * @param searchString string to be searched
+   * @param brType type of business rule
+   * @param fetchCount count to be fetched data
    */
-  getAllBusinessRulesList() {
-    const getAllBrSubscription =  this.schemaService.getAllBusinessRules().subscribe((rules: CoreSchemaBrInfo[]) => {
+  getAllBusinessRulesList(moduleId: string, searchString: string, brType: string, fetchCount: string) {
+    const getAllBrSubscription =  this.schemaService.getBusinessRulesByModuleId(moduleId, searchString, brType, fetchCount).subscribe((rules: CoreSchemaBrInfo[]) => {
       if (rules && rules.length > 0) {
         this.allBusinessRulesList = rules;
       }

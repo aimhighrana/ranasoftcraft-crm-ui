@@ -81,11 +81,11 @@ describe('CreateSchemaComponent', () => {
       categories: new FormArray([])
     });
 
-    spyOn(service, 'getAllBusinessRules').withArgs(schemaId).and.returnValue(of([]));
+    spyOn(service, 'getBusinessRulesBySchemaId').withArgs(schemaId).and.returnValue(of([]));
 
     component.getBusinessRulesData();
 
-    expect(service.getAllBusinessRules).toHaveBeenCalledWith(schemaId);
+    expect(service.getBusinessRulesBySchemaId).toHaveBeenCalledWith(schemaId);
   }));
 
   it('checkIsEmptycategoryAssigned(), check is category empty', async(()=>{

@@ -103,7 +103,7 @@
                     <div class="mdo-auto-complete">
                         <pros-form-input-autoselect [fieldLabel]="'Type rule name to add'" (openCustomDialog)="openBrLibrarySideSheet()"
                         [updatedOptionsList]="allBusinessRulesList" [labelKey]="'brInfo'" (emitExtraLabelClick)="openBusinessRuleSideSheet()"
-                         [extraOptionLabel]="'Add new rule'" (optionSelectedEmit)="addBusinessRule($event)"></pros-form-input-autoselect>
+                         [extraOptionLabel]="'Add new rule'" (optionSelectedEmit)="addBusinessRule($event)" (emitSearchValue)="getAllBusinessRulesList(moduleId, $event, '', '0')"></pros-form-input-autoselect>
                     </div>
                 </div>
                 <div cdkDropList [cdkDropListData]="businessRuleData" (cdkDropListDropped)="drop($event)">

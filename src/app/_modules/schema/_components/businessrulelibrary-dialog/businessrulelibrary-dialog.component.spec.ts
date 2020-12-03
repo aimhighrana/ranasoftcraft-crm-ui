@@ -63,9 +63,12 @@ describe('BusinessrulelibraryDialogComponent', () => {
 
   it(`getAllBusinessRules(), get business rules service`, async(() => {
     const returnData: CoreSchemaBrInfo[] = [];
-    spyOn(schemaService, 'getAllBusinessRules').and.returnValue(of(returnData));
-    component.getBusinessRulesList();
-    expect(schemaService.getAllBusinessRules).toHaveBeenCalled();
+    spyOn(schemaService, 'getBusinessRulesByModuleId').and.returnValue(of(returnData));
+    component.data = {
+      moduleId : '1005'
+    }
+    component.getBusinessRulesList(component.data.moduleId, '', '', '0');
+    expect(schemaService.getBusinessRulesByModuleId).toHaveBeenCalled();
   }));
 
   it(`isSelected(), check if a rule is selected`, async(() => {

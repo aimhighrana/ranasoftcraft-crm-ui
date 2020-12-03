@@ -14,6 +14,7 @@ import { SharedServiceService } from '@modules/shared/_services/shared-service.s
 })
 export class BusinessrulelibrarySidesheetComponent implements OnInit {
   schemaId: string;
+  moduleId: string;
   businessRulesList: CoreSchemaBrInfo[] = [];
   filteredBusinessRulesList: CoreSchemaBrInfo[] = [];
   selectedBusinessRule: CoreSchemaBrInfo[] = [];
@@ -26,6 +27,11 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
    * To hold the outlet name.
    */
   outlet: string;
+
+  /**
+   * fetch count to fetch business rule data.
+   */
+  fetchCount = 0;
 
   businessRuleTypes: BusinessRules[] = RULE_TYPES;
 
@@ -41,12 +47,13 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
    * Angular hook
    */
   ngOnInit(): void {
-    this.getBusinessRulesList();
     console.log(this.router);
     this.activatedRoute.params.subscribe((params) => {
       this.outlet = params.outlet;
       this.schemaId = params.schemaId;
+      this.moduleId = params.moduleId;
     })
+    this.getBusinessRulesList(this.moduleId, '', '', String(this.fetchCount));
   }
 
   // function to select a business rule from the list
@@ -96,9 +103,9 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
   /**
    * Get business rule list from the api
    */
-  getBusinessRulesList() {
+  getBusinessRulesList(moduleId: string, searchString: string, brType: string, fetchCount: string) {
     this.loader = true;
-    this.schemaService.getAllBusinessRules().subscribe((rules: CoreSchemaBrInfo[]) => {
+    this.schemaService.getBusinessRulesByModuleId(moduleId, searchString, brType, fetchCount).subscribe((rules: CoreSchemaBrInfo[]) => {
       this.loader = false;
       if (rules && rules.length > 0) {
         this.businessRulesList = rules;

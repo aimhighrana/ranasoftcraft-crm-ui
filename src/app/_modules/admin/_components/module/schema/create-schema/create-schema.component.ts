@@ -167,7 +167,7 @@ export class CreateSchemaComponent implements OnInit {
    * Should return all business rules that assigned to schema
    */
   getBusinessRulesData() {
-    this.service.getAllBusinessRules(this.schemaId).subscribe(res => {
+    this.service.getBusinessRulesBySchemaId(this.schemaId).subscribe(res => {
       if (res) {
         // update brids
         res.forEach(r => {

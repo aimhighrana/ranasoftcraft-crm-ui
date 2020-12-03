@@ -276,7 +276,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     this.requestForm.get('dataScope').setValue('Entire Dataset');
     this.requestForm.get('threshold').setValue(100);
 
-    this.getBusinessRulesList();
+    this.getBusinessRulesList(this.moduleId, '', '', '0');
     this.getCollaborators('', this.fetchCount);
   }
 
@@ -1296,8 +1296,8 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   /**
    * Get business rule list from the api
    */
-  getBusinessRulesList() {
-    this.schemaService.getAllBusinessRules().subscribe((rules: CoreSchemaBrInfo[]) => {
+  getBusinessRulesList(moduleId: string, searchString: string, brType: string, fetchCount: string) {
+    this.schemaService.getBusinessRulesByModuleId(moduleId, searchString, brType, fetchCount).subscribe((rules: CoreSchemaBrInfo[]) => {
       if (rules && rules.length > 0) {
         this.businessRulesList = rules;
       }
@@ -1486,7 +1486,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   getSchemaBrInfo(SelectedData) {
     this.requestForm.controls.core_schema.value.discription = SelectedData.schemadesc;
     this.requestForm.controls.schemaId.setValue(SelectedData.schemaId);
-    this.schemaService.getAllBusinessRules(SelectedData.schemaId).subscribe((rules: CoreSchemaBrInfo[]) => {
+    this.schemaService.getBusinessRulesBySchemaId(SelectedData.schemaId).subscribe((rules: CoreSchemaBrInfo[]) => {
       this.existSchemaBrList = rules;
       rules.forEach(rule => {
         this.updateCurrentRulesList(rule);

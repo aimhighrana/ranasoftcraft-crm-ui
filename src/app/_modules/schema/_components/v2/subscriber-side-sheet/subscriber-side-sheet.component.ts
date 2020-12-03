@@ -192,7 +192,8 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
         initials: this.shortName(subscriber.fName, subscriber.lName),
         fullName: subscriber.fullName,
         role: '',
-        plantCode: ''
+        plantCode: '',
+        isCopied: false
       }
     }
     else {

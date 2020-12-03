@@ -132,7 +132,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
     })
 
     this.getCollaborators('', this.fetchCount); // To fetch all users details (will use to show in auto complete)
-    this.getAllBusinessRulesList(); // To fetch all BRs details (will use to show in auto complete)
+    this.getAllBusinessRulesList(this.moduleId, '', '', '0'); // To fetch all BRs details (will use to show in auto complete)
   }
 
   /**
@@ -198,7 +198,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    * @param schemaId current schema id
    */
   public getBusinessRuleList(schemaId: string) {
-   const businessRuleList = this.schemaService.getAllBusinessRules(schemaId).subscribe((responseData) => {
+   const businessRuleList = this.schemaService.getBusinessRulesBySchemaId(schemaId).subscribe((responseData) => {
       this.businessRuleData = responseData;
     }, error => {
       console.log('Error while fetching business rule info for schema', error);
@@ -475,7 +475,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    * Function to open business rule library side sheet
    */
   openBusinessRuleSideSheet() {
-    this.router.navigate(['', {outlets : {outer: `outer/schema/businessrule-library/${this.schemaId}/${this.outlet}`}}])
+    this.router.navigate(['', {outlets : {outer: `outer/schema/businessrule-library/${this.moduleId}/${this.schemaId}/${this.outlet}`}}])
   }
 
   /**
@@ -488,8 +488,8 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
   /**
    * Function to get all business rules information
    */
-  getAllBusinessRulesList() {
-    const getAllBrSubscription =  this.schemaService.getAllBusinessRules().subscribe((rules: CoreSchemaBrInfo[]) => {
+  getAllBusinessRulesList(moduleId: string, searchString: string, brType: string, fetchCount: string) {
+    const getAllBrSubscription =  this.schemaService.getBusinessRulesByModuleId(moduleId, searchString, brType, fetchCount).subscribe((rules: CoreSchemaBrInfo[]) => {
       if (rules && rules.length > 0) {
         this.allBusinessRulesList = rules;
       }

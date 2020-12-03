@@ -124,8 +124,19 @@ export class SchemaService {
    * API to get business rules for the schema
    * @param schemaId ID of the schema
    */
-  public getAllBusinessRules(schemaId = ''): Observable<CoreSchemaBrInfo[]> {
-    return this.http.get<CoreSchemaBrInfo[]>(this.endpointService.getBusinessRulesInfo(schemaId));
+  public getBusinessRulesBySchemaId(schemaId = ''): Observable<CoreSchemaBrInfo[]> {
+    return this.http.get<CoreSchemaBrInfo[]>(this.endpointService.getBusinessRulesInfoBySchemaIdUrl(schemaId));
+  }
+
+  /**
+   * API to get all business rules according to module ID
+   * @param moduleId ID of module
+   * @param searchString value to be searched
+   * @param brType type of business rule
+   * @param fetchCount fetchCount..
+   */
+  public getBusinessRulesByModuleId(moduleId: string, searchString: string, brType: string, fetchCount: string): Observable<CoreSchemaBrInfo[]> {
+    return this.http.get<CoreSchemaBrInfo[]>(this.endpointService.getBusinessRulesInfoByModuleIdUrl(), {params: {moduleId, searchString, brType, fetchCount}});
   }
 
   public getAllCategoriesList(): Observable<Category[]> {

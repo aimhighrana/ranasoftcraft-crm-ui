@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CoreSchemaBrInfo } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { BusinessRules } from '@modules/admin/_components/module/schema/diw-create-businessrule/diw-create-businessrule.component';
-import { BusinessRuleType } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { RULE_TYPES } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaService } from '@services/home/schema.service';
 import { GLOBALCONSTANTS } from '../../../../_constants';
 
@@ -19,17 +19,15 @@ export class BusinessrulelibraryDialogComponent implements OnInit {
   selectedBusinessRuleIds: string[] = [];
   loader = false;
   selectedRuleType: BusinessRules;
-  businessRuleTypes: BusinessRules[] = [
-    { ruleDesc: 'API Rule', ruleId: '', ruleType: BusinessRuleType.BR_API_RULE, isImplemented: false },
-    { ruleDesc: 'Basic', ruleId: '', ruleType: null, isImplemented: false },
-    { ruleDesc: 'Dependency Rule', ruleId: '', ruleType: BusinessRuleType.BR_DEPENDANCY_RULE, isImplemented: false },
-    { ruleDesc: 'Duplicate Rule', ruleId: '', ruleType: BusinessRuleType.BR_DUPLICATE_RULE, isImplemented: false },
-    { ruleDesc: 'External Validation Rule', ruleId: '', ruleType: BusinessRuleType.BR_EXTERNALVALIDATION_RULE, isImplemented: false },
-    { ruleDesc: 'Metadata Rule', ruleId: '', ruleType: BusinessRuleType.BR_METADATA_RULE, isImplemented: true },
-    { ruleDesc: 'Missing Rule', ruleId: '', ruleType: BusinessRuleType.BR_MANDATORY_FIELDS, isImplemented: true },
-    { ruleDesc: 'Regex Rule', ruleId: '', ruleType: BusinessRuleType.BR_REGEX_RULE, isImplemented: true },
-    { ruleDesc: 'User Defined Rule', ruleId: '', ruleType: BusinessRuleType.BR_CUSTOM_SCRIPT, isImplemented: true },
-  ];
+
+  /**
+   * FetchCount to fetch business rules data..
+   */
+  fetchCount = 0;
+
+  businessRuleTypes: BusinessRules[] = RULE_TYPES;
+
+
   constructor(
     private dialogRef: MatDialogRef<Component>,
     @Inject(MAT_DIALOG_DATA) public data,
@@ -41,7 +39,7 @@ export class BusinessrulelibraryDialogComponent implements OnInit {
    * Angular hook
    */
   ngOnInit(): void {
-    this.getBusinessRulesList();
+    this.getBusinessRulesList(this.data.moduleId, '', '', String(this.fetchCount));
   }
 
   // function to select a business rule from the list
@@ -91,9 +89,9 @@ export class BusinessrulelibraryDialogComponent implements OnInit {
   /**
    * Get business rule list from the api
    */
-  getBusinessRulesList() {
+  getBusinessRulesList(moduleId: string, searchString: string, brType: string, fetchCount: string) {
     this.loader = true;
-    this.schemaService.getAllBusinessRules().subscribe((rules: CoreSchemaBrInfo[]) => {
+    this.schemaService.getBusinessRulesByModuleId(moduleId, searchString, brType, fetchCount).subscribe((rules: CoreSchemaBrInfo[]) => {
       this.loader = false;
       if (rules && rules.length > 0) {
         this.businessRulesList = rules;
