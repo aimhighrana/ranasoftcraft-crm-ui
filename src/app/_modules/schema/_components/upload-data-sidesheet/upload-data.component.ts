@@ -44,6 +44,11 @@ export class UploadDataComponent implements OnInit {
    */
   moduleInfo: SchemaListModuleList;
 
+  /**
+   * To hold the outlet name.
+   */
+  outlet: string;
+
   constructor(
     private _formBuilder: FormBuilder,
     private schemaService: SchemaService,
@@ -55,6 +60,7 @@ export class UploadDataComponent implements OnInit {
   ngOnInit(): void {
     this.activatedRoute.params.subscribe((params) => {
       this.moduleId = params.moduleId;
+      this.outlet = params.outlet;
       this.getSchemaList();
     })
 
@@ -277,7 +283,7 @@ export class UploadDataComponent implements OnInit {
    * function to close the sidesheet
    */
   close() {
-    this.router.navigate([{ outlets: { sb: null } }]);
+    this.router.navigate([{ outlets: { [`${this.outlet}`]: null } }]);
   }
 
   /**

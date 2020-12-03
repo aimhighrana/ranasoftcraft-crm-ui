@@ -82,7 +82,7 @@ const routes: Routes = [
   { path: ':moduleId', component: SchemaListsComponent },
   { path: 'sidenav-userdefined', component: SidenavUserdefinedComponent },
   { path: 'table-loading', component: TableLoadingComponent },
-  { path: 'upload-data/:moduleId', component: UploadDataComponent },
+  { path: 'upload-data/:moduleId/:outlet', component: UploadDataComponent },
   { path: 'mdo-generic-components', component: MdoGenericComponentsComponent },
   { path: 'schema-info/:moduleId/:schemaId', component: SchemaInfoComponent },
   { path: 'business-rule/:moduleId/:schemaId/:brId', component: BrruleSideSheetComponent },

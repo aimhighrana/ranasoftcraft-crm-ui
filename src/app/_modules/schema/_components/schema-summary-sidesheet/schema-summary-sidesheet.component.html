@@ -28,7 +28,9 @@
               </mat-menu> -->
 
             <span class="f-spacer"></span>
-            <button mat-flat-button><mat-icon fontSet="mdo-icons"> outbox-alt</mat-icon> Upload data</button>
+            <button mat-flat-button (click)="openUploadSideSheet()">
+                <mat-icon fontSet="mdo-icons"> outbox-alt</mat-icon> Upload data
+            </button>
                 <span class="f-col-spacer-half"></span>
             <button mat-flat-button color="primary" (click)="saveCheckData()">Check</button>
         </div>

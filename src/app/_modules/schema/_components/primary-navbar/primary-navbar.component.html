@@ -20,7 +20,7 @@
             <mat-icon fontSet="mdo-icons">plus</mat-icon>
         </button>
         <div class="col-space">Create new...</div>
-        <mat-menu #navigation="matMenu" direction="right">
+        <mat-menu #navigation="matMenu" direction="right" class="navigation-menu">
             <pros-navigation-dropdown (selectedModule)="selectedModule($event)">
             </pros-navigation-dropdown>
         </mat-menu>

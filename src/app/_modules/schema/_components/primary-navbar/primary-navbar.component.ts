@@ -75,19 +75,16 @@ export class PrimaryNavbarComponent implements OnInit {
    * Function to show dialog
    */
   selectedModule(event) {
-    switch (event) {
-      case 'uploadDataset':
-        const dialogRef = this.matDialog.open(UploadDatasetComponent, {
-          height: '800px',
-          width: '800px',
-          data: {},
-          disableClose: true,
-        });
-        dialogRef.afterClosed().subscribe(result => {
-          console.log('The dialog was closed');
-          this.sharedService.getSecondaryNavbarList();
-        });
-    }
+    const dialogRef = this.matDialog.open(UploadDatasetComponent, {
+      height: '800px',
+      width: '800px',
+      data: {selecteddata:event},
+      disableClose: true,
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      this.sharedService.getSecondaryNavbarList();
+    });
   }
 
   toggleSideBar() {

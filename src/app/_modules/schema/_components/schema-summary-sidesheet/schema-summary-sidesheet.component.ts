@@ -601,4 +601,11 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
       console.log('Something went wrong while checking data', error.message);
     });
   }
+
+  /**
+   * Function to open sidesheet to Upload data
+   */
+  public openUploadSideSheet() {
+    this.router.navigate(['', {outlets: { outer: `outer/schema/upload-data/${this.moduleId}/${this.outlet}`}}]);
+  }
 }

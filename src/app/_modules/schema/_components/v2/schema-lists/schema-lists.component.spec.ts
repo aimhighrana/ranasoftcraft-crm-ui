@@ -51,8 +51,9 @@ describe('SchemaListsComponent', () => {
 
   it('openUploadSideSheet(), should open the Upload data side sheet', async () => {
     component.moduleId = '1005';
+    component.outlet = 'sb'
     spyOn(router, 'navigate');
     component.openUploadSideSheet();
-    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/upload-data/${component.moduleId}` } }])
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/upload-data/${component.moduleId}/${component.outlet}` } }])
   });
 });

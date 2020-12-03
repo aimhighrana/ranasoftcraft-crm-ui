@@ -28,6 +28,11 @@ export class SchemaListsComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
 
   /**
+   * outlet name in which sheets to be opened
+   */
+  outlet = 'sb';
+
+  /**
    * constructor of class
    * @param activatedRoute Instance the ActivatedRoute class
    * @param schemaService Instance of schema service class
@@ -89,7 +94,7 @@ export class SchemaListsComponent implements OnInit, OnDestroy {
    * Function to open sidesheet to Upload data
    */
   public openUploadSideSheet() {
-    this.router.navigate([{outlets: { sb: `sb/schema/upload-data/${this.moduleId}`}}]);
+    this.router.navigate([{outlets: { sb: `sb/schema/upload-data/${this.moduleId}/${this.outlet}`}}]);
   }
 
   /**
