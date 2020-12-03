@@ -20,11 +20,11 @@ import { NewSchemaCollaboratorsComponent } from '../new-schema-collaborators/new
 import { values, pick } from 'lodash';
 import { Utilities } from '@modules/base/common/utilities';
 import { BusinessrulelibraryDialogComponent } from '../businessrulelibrary-dialog/businessrulelibrary-dialog.component';
-import { PermissionOn, UserMdoModel } from '@models/collaborator';
+import { PermissionOn, UserMdoModel, SchemaDashboardPermission } from '@models/collaborator';
 import { ScheduleDialogComponent } from '@modules/shared/_components/schedule-dialog/schedule-dialog.component';
 import { SchemaScheduler } from '@models/schema/schemaScheduler';
 import { GLOBALCONSTANTS } from '../../../../_constants';
-import { LoadDropValueReq } from '@models/schema/schemalist';
+import { LoadDropValueReq, PermissionType } from '@models/schema/schemalist';
 import { BlockType } from '@modules/admin/_components/module/business-rules/user-defined-rule/udr-cdktree.service';
 
 type UploadedDataType = any[][];
@@ -603,38 +603,27 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     const tempId = (response.tempId) ? response.tempId : null;
     let formData = response.formData;
 
+    // Add transformation schema details from response to formData
     formData = { ...formData, transFormationSchema: this.mapTransformationData(response) };
-    if (formData.rule_type === 'BR_CUSTOM_SCRIPT') {
-      brObject = this.createBrObject(formData, formData.udrTreeData);
-    } else {
-      brObject = this.createBrObject(formData);
-    }
 
-    if (this.requestForm.controls.coreSchemaBr.value.length > 0) {
-      this.requestForm.controls.coreSchemaBr.setValue(
-        this.requestForm.controls.coreSchemaBr.value.map((val) => {
-          if (val.tempId === tempId) {
-            return brObject;
-          } else {
-            return val;
-          }
-        }));
-    } else {
-      this.requestForm.controls.coreSchemaBr.value.push(brObject);
-    }
+    // Check if the selected rule type is user defined i.e. custom
+    brObject = this.createBrObject(formData, (formData.rule_type === 'BR_CUSTOM_SCRIPT') ? formData.udrTreeData : null);
 
+    // Set default status to 1
     brObject.status = '1';
 
     if (this.selectedBusinessRules.length > 0) {
       const index = this.selectedBusinessRules.findIndex(rule => rule.tempId === tempId);
       if (index > -1) {
-        this.selectedBusinessRules[index] = brObject;
+        this.selectedBusinessRules[index] = { ...brObject };
       } else {
         this.selectedBusinessRules.push(brObject);
       }
     } else {
       this.selectedBusinessRules.push(brObject);
     }
+
+    this.requestForm.controls.coreSchemaBr.setValue(this.selectedBusinessRules);
   }
 
   /**
@@ -772,13 +761,20 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       schemaId: object.schemaId ? object.schemaId : '',
       brIdStr: object.brIdStr ? object.brIdStr : '',
       udrDto: {
-        udrHierarchies: object.udrHierarchies ? object.udrHierarchies : udrTreeData.udrHierarchies,
-        blocks: object.blocks ? object.object : udrTreeData.blocks
+        udrHierarchies: object.udrHierarchies ? object.udrHierarchies : udrTreeData ? udrTreeData.udrHierarchies : [],
+        blocks: object.blocks ? object.object : udrTreeData ? udrTreeData.blocks : []
       },
-      transFormationSchema: object.transFormationSchema
+      transFormationSchema: object.transFormationSchema,
+      isCopied: object.isCopied? object.isCopied: false
     } as CoreSchemaBrInfo;
   }
 
+
+/**
+ * method to map transformation rule data from form
+ * object to transformationschema format
+ * @param response pass the response with formData and lookup object
+ */
   mapTransformationData(response) {
     const { sourceFld, targetFld, includeScript, excludeScript, transformationRuleType } = response.formData;
     const transformationList: TransformationModel[] = [];
@@ -1014,7 +1010,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     });
     this.dialogSubscriber = this.globaldialogService.dialogCloseEmitter
       .pipe(distinctUntilChanged())
-      .subscribe((response: any[]) => {
+      .subscribe((response: UserMdoModel) => {
         this.updateSubscribersList(response);
         this.dialogSubscriber.unsubscribe();
       });
@@ -1022,33 +1018,52 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
 
   /**
    * update or add subscribers in selected subscribers list
-   * @param response pass the response containing the subscribers list
+   * @param response pass the response containing the subscribers list or Object
    */
-  updateSubscribersList(response) {
+  updateSubscribersList(response: any) {
     if (Array.isArray(response) && response.length > 0) {
-      response.forEach((subscriber) => {
-        subscriber.sno = Math.floor(Math.random() * 100000000000).toString();
-        subscriber.plantCode = this.userDetails.plantCode;
-        subscriber.dataAllocation = [];
-        subscriber.filterCriteria = [];
-        this.subscribersList.push(subscriber);
-        subscriber.isViewer = true;
+      const receivedData: UserMdoModel[] = response;
+      receivedData.forEach((subscriber: UserMdoModel) => {
+        this.subscribersList.push(this.mapSubscriberInfo(subscriber));
       })
     } else if (response && typeof response === 'object') {
-      const index = this.subscribersList.findIndex(sub => sub.userid === response.userid);
+      const receivedData: UserMdoModel = response;
+      const index = this.subscribersList.findIndex(sub => sub.userid === receivedData.userId);
       if (index > -1) {
         this.snackBar.open('Subscriber already selected', 'Okay', {
           duration: 3000
         });
         return;
       }
-      response.sno = Math.floor(Math.random() * 100000000000).toString();
-      response.plantCode = this.userDetails.plantCode;
-      response.dataAllocation = [];
-      response.filterCriteria = [];
-      response.isViewer = true;
-      this.subscribersList.push(response);
+      this.subscribersList.push(this.mapSubscriberInfo(receivedData));
     }
+  }
+
+  /**
+   * Method to map subscriber to correct format
+   */
+  mapSubscriberInfo(subscriber, permissions = null) {
+    const mappedData = {
+      userid: subscriber.userName ? subscriber.userName : '',
+      groupid: subscriber.groupid ? subscriber.groupid : '',
+      isAdmin: permissions ? permissions.isAdmin : subscriber.roleDesc === 'Admin',
+      isReviewer: permissions ? permissions.isReviewer : subscriber.roleDesc === 'Reviewer',
+      isViewer: permissions ? permissions.isViewer : true,
+      isEditer: permissions ? permissions.isEditer : subscriber.roleDesc === 'Editer',
+      permissionType: PermissionType.USER,
+      roleId: subscriber.roleId,
+      schemaId: '',
+      sno: subscriber.sNo ? subscriber.sNo : Math.floor(Math.random() * 100000000000).toString(),
+      description: '',
+      plantCode: this.userDetails.plantCode,
+      fName: subscriber.fName ? subscriber.fName : (subscriber.userMdoModel) ? subscriber.userMdoModel.fName : '',
+      lName: subscriber.lName ? subscriber.lName : (subscriber.userMdoModel) ? subscriber.userMdoModel.lName : '',
+      fullName: subscriber.fullName ? subscriber.fullName : (subscriber.userMdoModel) ? subscriber.userMdoModel.fullName : '',
+      filterCriteria: (subscriber.filterCriteria) ? subscriber.filterCriteria : [],
+      dataAllocation: (subscriber.dataAllocation) ? subscriber.dataAllocation : [],
+    };
+
+    return mappedData;
   }
 
   /**
@@ -1082,34 +1097,6 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       variantId,
       fileSerialNo
     )
-  }
-
-  /**
-   * method to convert subscriber object to
-   * correct format for the api
-   * @param subscriber pass the selected subscriber
-   */
-  mapAndUpdateSubscriber(subscriber) {
-    const formObject = {
-      sno: subscriber.sno ? subscriber.sno : '',
-      isAdmin: subscriber.isAdmin ? subscriber.isAdmin : false,
-      isReviewer: subscriber.isReviewer ? subscriber.isReviewer : false,
-      isViewer: subscriber.isViewer ? subscriber.isViewer : true,
-      isEditer: subscriber.isEditer ? subscriber.isEditer : false,
-      groupid: subscriber.groupid ? subscriber.groupid : '',
-      roleId: subscriber.roleId ? subscriber.roleId : '',
-      userid: subscriber.userid ? subscriber.userid : subscriber.userName,
-      permissionType: 'USER',
-      fName: subscriber.fName ? subscriber.fName : subscriber.userMdoModel.fName,
-      lName: subscriber.lName ? subscriber.lName : subscriber.userMdoModel.lName,
-      fullName: subscriber.fullName ? subscriber.fullName : subscriber.userMdoModel.fullName,
-      filterCriteria: subscriber.filterCriteria ? subscriber.filterCriteria : []
-    }
-    if (subscriber.sno) {
-      this.subscribersList.push(formObject);
-    } else {
-      this.updateSubscribersList(formObject);
-    }
   }
 
   // remove tempId from CoreSchemaBr objects
@@ -1157,12 +1144,12 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       if (response && response === 'yes') {
         if (rule.tempId) {
           const existingruleIndex = this.existingTempIds.indexOf(rule.tempId);
-          if(existingruleIndex > -1){
+          if (existingruleIndex > -1) {
             this.existingTempIds.splice(existingruleIndex, 1);
           }
           const index = this.selectedBusinessRules.findIndex((brule) => brule.tempId === rule.tempId);
           this.selectedBusinessRules.splice(index, 1);
-          this.requestForm.controls.coreSchemaBr.setValue(this.selectedBusinessRules);
+          this.requestForm.controls.coreSchemaBr.setValue([...this.selectedBusinessRules]);
         }
       }
     });
@@ -1320,19 +1307,19 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   selectBusinessRule(businessRules: CoreSchemaBrInfo[] | CoreSchemaBrInfo) {
     if (Array.isArray(businessRules)) {
       businessRules.map((rule) => {
-        const updatedObj = { ...rule, tempId: this.utilties.getRandomString(8) };
+        const updatedObj = { ...rule, tempId: this.utilties.getRandomString(8), isCopied: true };
         this.addTempIdToExisting(updatedObj.tempId).then(() => {
           this.selectedBusinessRules.push(updatedObj);
         });
       });
     } else {
-      if (this.existingTempIds.indexOf(businessRules.tempId) > -1) {
+      if (businessRules && businessRules.tempId && this.existingTempIds.indexOf(businessRules.tempId) > -1) {
         this.snackBar.open('This rule is already added', 'okay', {
           duration: 2000
         });
         return;
       }
-      const updatedObj = { ...businessRules, tempId: this.utilties.getRandomString(8) };
+      const updatedObj = { ...businessRules, tempId: this.utilties.getRandomString(8), isCopied: true };
       this.addTempIdToExisting(updatedObj.tempId).then(() => {
         this.selectedBusinessRules.push(updatedObj);
       });
@@ -1508,12 +1495,21 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * @param schemaId: Id of schema for which Subscriber info needed
    */
   getSchemaCollaboratorInfo(schemaId: string) {
-    this.schemaDetailsService.getCollaboratorDetails(schemaId).subscribe(responseData => {
+    this.schemaDetailsService.getCollaboratorDetails(schemaId).subscribe((responseData: SchemaDashboardPermission[]) => {
       responseData.forEach((subscriber) => {
         subscriber.filterCriteria.forEach((data) => {
           this.updatesubscriber(data);
-        }),
-          this.mapAndUpdateSubscriber(subscriber);
+          if (subscriber) {
+            const permission = {
+              isAdmin: subscriber.isAdmin ? subscriber.isAdmin : false,
+              isReviewer: subscriber.isReviewer ? subscriber.isReviewer : false,
+              isViewer: subscriber.isViewer ? subscriber.isViewer : true,
+              isEditer: subscriber.isEditer ? subscriber.isEditer : false,
+            };
+            this.mapSubscriberInfo(subscriber, permission);
+          }
+        });
+
       });
     });
   }

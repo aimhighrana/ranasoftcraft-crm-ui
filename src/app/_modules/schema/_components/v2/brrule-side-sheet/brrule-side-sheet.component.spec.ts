@@ -87,7 +87,7 @@ describe('BrruleSideSheetComponent', () => {
 
   it('isTransformationRule, sould return true if selected rule is transformation type', (() => {
     component.buildCommonDataForm();
-    component.form.controls.rule_type.setValue(BusinessRuleType.BR_TRANSFORMATION_RULE);
+    component.form.controls.rule_type.setValue(BusinessRuleType.BR_TRANSFORMATION);
     expect(component.isTransformationRule).toBeTrue();
   }));
 
@@ -100,6 +100,25 @@ describe('BrruleSideSheetComponent', () => {
   it('possibleOperators(), sould return array of all possible operators', (() => {
     const operators: ConditionalOperator[] = component.possibleOperators();
     expect(operators.length).toEqual(3);
+  }));
+
+  it(`createBrObject(), should create business rule object`, async(() => {
+    const formData = {
+      rule_type: 'test',
+      rule_name: 'test',
+      error_message: 'test',
+      standard_function: 'test',
+      regex: 'test',
+      fields: [],
+      udrTreeData: { udrHierarchies: [], blocks: [] },
+      weightage: 10,
+      categoryId: 'test',
+    };
+
+    const brObject = component.createBrObject(formData, formData.udrTreeData);
+    expect(brObject).not.toBeUndefined();
+    expect(brObject).not.toBeNull();
+    expect(brObject.brType).toEqual('test');
   }));
 
 });

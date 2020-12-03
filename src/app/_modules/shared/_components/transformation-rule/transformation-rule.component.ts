@@ -70,7 +70,7 @@ export class TransformationRuleComponent implements OnInit, OnChanges {
    */
   @Output()
   transformationFormOutput: EventEmitter<TransformationFormData> = new EventEmitter(null);
-  constructor(private snackBar: MatSnackBar) {}
+  constructor(private snackBar: MatSnackBar) { }
 
   /**
    * Angular hook for on init
@@ -112,10 +112,10 @@ export class TransformationRuleComponent implements OnInit, OnChanges {
   patchFormValues(initialData: TransformationFormData) {
     if (initialData) {
       this.form.patchValue(initialData);
-      if (initialData.sourceFld && this.sourceFieldsObject.list.length>0) {
-        this.selectedSourceField = this.sourceFieldsObject.list.find(field => field[this.sourceFieldsObject.valueKey] === initialData.sourceFld );
+      if (initialData.sourceFld && this.sourceFieldsObject.list.length > 0) {
+        this.selectedSourceField = this.sourceFieldsObject.list.find(field => field[this.sourceFieldsObject.valueKey] === initialData.sourceFld);
       }
-      if (initialData.targetFld && this.targetFieldsObject.list.length>0) {
+      if (initialData.targetFld && this.targetFieldsObject.list.length > 0) {
         const fields: string[] = initialData.targetFld.split(',');
         this.selectedTargetFields = this.targetFieldsObject.list.filter(field => fields.indexOf(field[this.sourceFieldsObject.valueKey]) > -1);
       }
@@ -229,7 +229,7 @@ export class TransformationRuleComponent implements OnInit, OnChanges {
 
   // Getter to check if the rule is TransformationRule
   get isTransformationRule() {
-    return this.selectedRuleType === BusinessRuleType.BR_TRANSFORMATION_RULE;
+    return this.selectedRuleType === BusinessRuleType.BR_TRANSFORMATION;
   }
 
   /**
@@ -264,9 +264,15 @@ export class TransformationRuleComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (changes.targetFieldsObject && !isEqual(changes.targetFieldsObject.previousValue, changes.targetFieldsObject.currentValue)) {
       this.updateTargetValue(changes.targetFieldsObject.currentValue);
+      if (this.form) {
+        this.patchFormValues(this.initialTransformationData);
+      }
     }
     if (changes.sourceFieldsObject && !isEqual(changes.sourceFieldsObject.previousValue, changes.sourceFieldsObject.currentValue)) {
       this.updateSourceValue(changes.sourceFieldsObject.currentValue);
+      if (this.form) {
+        this.patchFormValues(this.initialTransformationData);
+      }
     }
     if (changes.selectedRuleType && !isEqual(changes.selectedRuleType.previousValue, changes.selectedRuleType.currentValue)) {
       this.selectedRuleType = changes.selectedRuleType.currentValue;

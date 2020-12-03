@@ -275,7 +275,6 @@ export class NewBusinessRulesComponent implements OnInit {
                     parameter
                     // selectedTargetFields: []
                 }
-                this.form.controls.transformationRuleType.setValue(transformationRuleType);
             }
         }
         if (currentType === this.transformationType.LOOKUP) {
@@ -353,15 +352,15 @@ export class NewBusinessRulesComponent implements OnInit {
         this.form = new FormGroup(controls);
         // Apply conditional validation based on rule type
         this.form.controls.rule_type.valueChanges
-        .pipe(distinctUntilChanged())
-        .subscribe((selectedRule) => {
-            this.applyValidatorsByRuleType(selectedRule);
-        });
+            .pipe(distinctUntilChanged())
+            .subscribe((selectedRule) => {
+                this.applyValidatorsByRuleType(selectedRule);
+            });
         this.form.controls.transformationRuleType.valueChanges
-        .pipe(distinctUntilChanged())
-        .subscribe(() => {
-            this.applyValidatorsByRuleType(this.form.controls.rule_type.value);
-        });
+            .pipe(distinctUntilChanged())
+            .subscribe(() => {
+                this.applyValidatorsByRuleType(this.form.controls.rule_type.value);
+            });
     }
 
     /**
@@ -454,12 +453,12 @@ export class NewBusinessRulesComponent implements OnInit {
             requiredKeys = ['rule_type', 'categoryId'];
         }
         if (selectedRule === BusinessRuleType.BR_REGEX_RULE) {
-            requiredKeys = ['rule_type','categoryId', 'rule_name', 'error_message', 'fields', 'regex', 'standard_function'];
+            requiredKeys = ['rule_type', 'categoryId', 'rule_name', 'error_message', 'fields', 'regex', 'standard_function'];
         }
         if (selectedRule === BusinessRuleType.BR_MANDATORY_FIELDS || selectedRule === BusinessRuleType.BR_METADATA_RULE) {
             requiredKeys = ['rule_type', 'categoryId', 'rule_name', 'error_message', 'fields'];
         }
-        if (selectedRule === BusinessRuleType.BR_TRANSFORMATION_RULE) {
+        if (selectedRule === BusinessRuleType.BR_TRANSFORMATION) {
             if (this.selectedTransformationType === this.transformationType.REGEX) {
                 requiredKeys = ['rule_type', 'rule_name', 'transformationRuleType', 'error_message', 'sourceFld', 'targetFld', 'excludeScript', 'includeScript'];
             } else if (this.selectedTransformationType === this.transformationType.LOOKUP) {
@@ -472,7 +471,7 @@ export class NewBusinessRulesComponent implements OnInit {
             if (index === -1) {
                 this.form.get(key).setValidators(null);
                 this.form.get(key).clearValidators();
-                if(key !== 'rule_type' && key !== 'weightage' && !this.data.createRuleFormValues){
+                if (key !== 'rule_type' && key !== 'weightage' && !this.data.createRuleFormValues) {
                     this.form.get(key).setValue('');
                 }
             } else {
@@ -641,7 +640,7 @@ export class NewBusinessRulesComponent implements OnInit {
     }
 
     get isTransformationRule() {
-        return this.form.controls.rule_type.value === BusinessRuleType.BR_TRANSFORMATION_RULE;
+        return this.form.controls.rule_type.value === BusinessRuleType.BR_TRANSFORMATION;
     }
 
     /**
@@ -795,6 +794,10 @@ export class NewBusinessRulesComponent implements OnInit {
         return `${value}`;
     }
 
+    /**
+     * Set transformation data output from Transformation rule to business rule form
+     * @param transformationData pass transformation data
+     */
     setTransformationFormData(transformationData: TransformationFormData) {
         const {
             targetFld,
@@ -809,6 +812,10 @@ export class NewBusinessRulesComponent implements OnInit {
         this.form.controls.includeScript.setValue(includeScript);
     }
 
+    /**
+     * Set lookup data output to business rule form
+     * @param lookupData pass lookup data
+     */
     setLookupData(lookupData: LookupFields[]) {
         this.lookupData = lookupData;
     }

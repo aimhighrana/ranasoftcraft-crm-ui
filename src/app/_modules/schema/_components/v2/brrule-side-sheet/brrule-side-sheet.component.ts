@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BusinessRules } from '@modules/admin/_components/module/schema/diw-create-businessrule/diw-create-businessrule.component';
 import { BusinessRuleType, ConditionalOperator, CoreSchemaBrInfo, UDRBlocksModel, UdrModel, UDRHierarchyModel, RULE_TYPES, PRE_DEFINED_REGEX, TransformationRuleType, TransformationModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
-import { CategoryInfo, LookupFields, MetadataModeleResponse, TransformationFormData } from '@models/schema/schemadetailstable';
+import { CategoryInfo, FieldConfiguration, LookupFields, MetadataModeleResponse, TransformationFormData } from '@models/schema/schemadetailstable';
 import { of, Observable } from 'rxjs';
 import { startWith, map, distinctUntilChanged } from 'rxjs/operators';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
@@ -24,6 +24,29 @@ export class BrruleSideSheetComponent implements OnInit {
   form: FormGroup;
   businessRuleTypes: BusinessRules[] = RULE_TYPES;
   preDefinedRegex: Regex[] = PRE_DEFINED_REGEX;
+
+/**
+ * source fields for transformation rule
+ */
+  sourceFieldsObject: FieldConfiguration = {
+    list: [],
+    labelKey: '',
+    valueKey: ''
+  }
+
+/**
+ * target fields for transformation rule
+ */
+  targetFieldsObject: FieldConfiguration = {
+    list: [],
+    labelKey: '',
+    valueKey: ''
+  }
+
+  /**
+   * Lookup data from transformation rule component
+   */
+  lookupData: LookupFields[] = [];
 
   /**
    * Existing transformation schema used to
@@ -101,6 +124,11 @@ export class BrruleSideSheetComponent implements OnInit {
   currentControls: any = {};
 
   /**
+   * hold data from the route event for further use
+   */
+  routeData: any;
+
+  /**
    * Class contructor
    * @param dialogRef refernce to matdialog
    * @param data data recieved from parent
@@ -129,24 +157,8 @@ export class BrruleSideSheetComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.activatedRouter.params.subscribe(res => {
-      this.moduleId = res.moduleId;
-      this.schemaId = res.schemaId;
-      this.brId = res.brId ? (res.brId !== 'new' ? res.brId : '') : '';
-      if (this.brId) {
-        this.schemaService.getBusinessRuleInfo(this.brId).subscribe(resp => {
-          this.coreSchemaBrInfo = resp;
-          this.setValueToElement(resp);
-          if (res.brType === BusinessRuleType.BR_CUSTOM_SCRIPT) {
-            this.editUdr(resp);
-          }
-        }, error => console.error(`Error : ${error.message}`));
-      }
-    });
-
     this.buildCommonDataForm();
-    this.getFieldsByModuleId();
-
+    this.getCategories();
     this.filteredModules = of(this.fieldsList);
     this.operators = this.possibleOperators();
 
@@ -173,6 +185,34 @@ export class BrruleSideSheetComponent implements OnInit {
     });
 
     this.initiateAutocomplete();
+
+    this.activatedRouter.params.subscribe(res => {
+      this.routeData = res;
+      this.moduleId = res.moduleId;
+      this.schemaId = res.schemaId;
+      this.brId = res.brId ? (res.brId !== 'new' ? res.brId : '') : '';
+      if (this.brId) {
+        this.getBusinessRuleInfo(this.brId);
+      }
+      if (this.moduleId) {
+        this.getFieldsByModuleId();
+      }
+    });
+  }
+
+  /**
+   * get businessrule data from api to patch in sidesheet
+   */
+  getBusinessRuleInfo(brId) {
+    this.schemaService.getBusinessRuleInfo(brId).subscribe(resp => {
+      this.coreSchemaBrInfo = resp;
+
+      // Patch received data
+      this.setValueToElement(this.coreSchemaBrInfo);
+      if (this.routeData.brType === BusinessRuleType.BR_CUSTOM_SCRIPT) {
+        this.editUdr(resp);
+      }
+    }, error => console.error(`Error : ${error.message}`));
   }
 
   /**
@@ -224,7 +264,7 @@ export class BrruleSideSheetComponent implements OnInit {
       });
     this.form.controls.transformationRuleType.valueChanges
       .pipe(distinctUntilChanged())
-      .subscribe(() => {
+      .subscribe((type) => {
         this.applyValidatorsByRuleType(this.form.controls.rule_type.value);
       });
   }
@@ -249,15 +289,10 @@ export class BrruleSideSheetComponent implements OnInit {
     if (selectedRule === BusinessRuleType.BR_MANDATORY_FIELDS || selectedRule === BusinessRuleType.BR_METADATA_RULE) {
       requiredKeys = ['categoryId', 'rule_name', 'error_message', 'fields'];
     }
-    if (selectedRule === BusinessRuleType.BR_TRANSFORMATION_RULE) {
+    if (selectedRule === BusinessRuleType.BR_TRANSFORMATION) {
+      requiredKeys = ['rule_name', 'transformationRuleType', 'error_message'];
       if (this.selectedTransformationType === this.transformationType.REGEX) {
         requiredKeys = ['rule_name', 'transformationRuleType', 'error_message', 'sourceFld', 'targetFld', 'excludeScript', 'includeScript'];
-      } else if (this.selectedTransformationType === this.transformationType.LOOKUP) {
-        requiredKeys = ['rule_name', 'transformationRuleType', 'error_message'];
-      }
-    } else {
-      if (this.form.controls.transformationRuleType.value) {
-        this.form.controls.transformationRuleType.setValue('');
       }
     }
     if (selectedRule === BusinessRuleType.BR_DUPLICATE_RULE) {
@@ -284,18 +319,58 @@ export class BrruleSideSheetComponent implements OnInit {
    * Set br inf to form while editing ..
    */
   setValueToElement(br: CoreSchemaBrInfo) {
-    console.log('business rule data', br);
+    const dataToPatch = {
+      rule_type: br.brType,
+      rule_name: br.brInfo,
+      error_message: br.message,
+      standard_function: br.standardFunction,
+      regex: br.regex,
+      fields: br.fields,
+      sourceFld: '',
+      targetFld: '',
+      excludeScript: '',
+      includeScript: '',
+      udrTreeData: '',
+      weightage: br.brWeightage,
+      categoryId: br.categoryId,
+      transformationRuleType: '',
+    };
 
-    this.form.get('rule_type').setValue(br.brType);
-    this.form.get('rule_type').disable({ onlySelf: true, emitEvent: true });
-    this.form.get('rule_name').setValue(br.brInfo);
-    this.form.get('error_message').setValue(br.message);
-    this.form.get('standard_function').setValue(br.standardFunction);
-    this.form.get('regex').setValue(br.regex);
-    if (br.transFormationSchema) {
+    let patchList = [];
+
+    if (br.brType === BusinessRuleType.BR_METADATA_RULE) {
+      patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId', 'fields'];
+    }
+    if (br.brType === BusinessRuleType.BR_CUSTOM_SCRIPT) {
+      patchList = ['rule_type', 'weightage'];
+    }
+    if (br.brType === BusinessRuleType.BR_TRANSFORMATION) {
+      patchList = ['rule_type', 'rule_name', 'error_message', 'weightage'];
       this.patchTransformationFormData(br.transFormationSchema);
     }
-    // this.form.get('fields').setValue(br.regex);
+    if (br.brType === BusinessRuleType.BR_REGEX_RULE) {
+      patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId', 'fields', 'standard_function', 'regex'];
+    }
+    if (br.brType === BusinessRuleType.BR_MANDATORY_FIELDS) {
+      patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId', 'fields'];
+    }
+
+    if (patchList && patchList.length > 0) {
+      patchList.map((key) => {
+        this.form.get(key).setValue(dataToPatch[key]);
+      });
+    }
+
+    this.form.get('rule_type').disable({ onlySelf: true, emitEvent: true });
+    this.form.get('weightage').disable({ onlySelf: true, emitEvent: true });
+
+    // this.form.get('rule_type').setValue(br.brType);
+    // this.form.get('rule_type').disable({ onlySelf: true, emitEvent: true });
+    // this.form.get('rule_name').setValue(br.brInfo);
+    // this.form.get('error_message').setValue(br.message);
+
+    // this.form.get('standard_function').setValue(br.standardFunction);
+    // this.form.get('regex').setValue(br.regex);
   }
 
   /**
@@ -304,11 +379,13 @@ export class BrruleSideSheetComponent implements OnInit {
    */
   patchTransformationFormData(transformationSchema: TransformationModel[]) {
     const currentType = this.getTrRuleType(transformationSchema);
-    this.form.controls.transformationRuleType.setValue(currentType);
+    setTimeout(() => {
+      this.form.controls.transformationRuleType.setValue(currentType);
+    }, 300);
     if (currentType === this.transformationType.REGEX) {
       if (transformationSchema && transformationSchema.length > 0) {
         const data: TransformationModel = transformationSchema[0];
-        const { excludeScript, includeScript, sourceFld, targetFld, transformationRuleType, parameter } = data;
+        const { excludeScript, includeScript, sourceFld, targetFld, parameter } = data;
         this.transformationData = {
           excludeScript,
           includeScript,
@@ -317,7 +394,6 @@ export class BrruleSideSheetComponent implements OnInit {
           parameter
           // selectedTargetFields: []
         }
-        this.form.controls.transformationRuleType.setValue(transformationRuleType);
       }
     }
     if (currentType === this.transformationType.LOOKUP) {
@@ -357,6 +433,7 @@ export class BrruleSideSheetComponent implements OnInit {
         return this.transformationType.REGEX;
       }
     }
+    return '';
   }
 
   /**
@@ -481,6 +558,16 @@ export class BrruleSideSheetComponent implements OnInit {
           this.fieldsList.push(metadataModeleResponse.headers[key])
         });
 
+        this.sourceFieldsObject = {
+          labelKey: 'fieldDescri',
+          valueKey: 'fieldId',
+          list: this.fieldsList
+        }
+        this.targetFieldsObject = {
+          labelKey: 'fieldDescri',
+          valueKey: 'fieldId',
+          list: this.fieldsList
+        }
         this.fieldsList = this.fieldsList.slice();
 
         this.filteredModules = of(this.fieldsList);
@@ -623,9 +710,7 @@ export class BrruleSideSheetComponent implements OnInit {
         this.snackBar.open(`Something went wrong `, 'Close', { duration: 5000 });
       });
 
-    }
-    else if (brType === BusinessRuleType.BR_DUPLICATE_RULE) {
-
+    } else if (brType === BusinessRuleType.BR_DUPLICATE_RULE) {
       // save duplicate rule
       const brInfo = {
         brId: this.brId, brIdStr: this.brId,
@@ -633,10 +718,23 @@ export class BrruleSideSheetComponent implements OnInit {
         schemaId: this.schemaId, categoryId: this.coreSchemaBrInfo.categoryId
       } as CoreSchemaBrInfo;
 
-      this.sharedService.emitSaveBrEvent(brInfo)
+      this.sharedService.emitSaveBrEvent(brInfo);
 
-    }
-    else {
+    } else if (brType === BusinessRuleType.BR_TRANSFORMATION) {
+      const response = { formData: this.form.value, tempId: '', lookupData: this.lookupData };
+      const finalFormData = {
+        ...this.form.value,
+        brId: this.brId ? this.brId : '',
+        brType,
+        transFormationSchema: this.mapTransformationData(response),
+      }
+      const brObject = this.createBrObject(finalFormData);
+      this.schemaService.createBusinessRule(brObject).subscribe(res => {
+        this.sharedService.setAfterBrSave(res);
+        this.router.navigate([{ outlets: { sb: null } }]);
+      }, err => console.error(`Error : ${err.message}`));
+
+    } else {
       const request: CoreSchemaBrInfo = new CoreSchemaBrInfo();
       request.brId = this.brId ? this.brId : '';
       request.brType = brType;
@@ -649,7 +747,6 @@ export class BrruleSideSheetComponent implements OnInit {
       request.categoryId = this.coreSchemaBrInfo.categoryId ? this.coreSchemaBrInfo.categoryId : null;
 
       this.schemaService.createBusinessRule(request).subscribe(res => {
-        console.log(res);
         this.sharedService.setAfterBrSave(res);
         this.router.navigate([{ outlets: { sb: null } }]);
       }, err => console.error(`Error : ${err.message}`));
@@ -657,11 +754,118 @@ export class BrruleSideSheetComponent implements OnInit {
     }
   }
 
+  /**
+   * function to create br
+   * @param object newly created Br
+   */
+  createBrObject(object, udrTreeData = { udrHierarchies: [], blocks: [] }): CoreSchemaBrInfo {
+
+    return {
+      sno: object.sno ? object.sno : 0,
+      brId: object.brId ? object.brId : '',
+      brType: object.brType ? object.brType : object.rule_type,
+      refId: object.refId ? object.refid : 0,
+      fields: object.fields,
+      regex: object.regex,
+      order: 1,
+      message: object.message ? object.message : object.error_message,
+      script: object.script ? object.script : '',
+      brInfo: object.brInfo ? object.brInfo : object.rule_name,
+      brExpose: object.brExpose ? object.brExpose : 0,
+      status: object.status ? object.status : '1',
+      categoryId: object.categoryId,
+      standardFunction: object.standardFunction ? object.standardFunction : object.standard_function,
+      brWeightage: object.brWeightage ? object.brWeightage : object.weightage,
+      totalWeightage: 100,
+      transformation: object.transformation ? object.transformation : 0,
+      tableName: object.tableName ? object.tableName : '',
+      qryScript: object.qryScript ? object.qryScript : '',
+      dependantStatus: object.dependantStatus ? object.dependantStatus : 'ALL',
+      plantCode: object.plantCode ? object.plantCode : '0',
+      percentage: object.percentage ? object.percentage : 0,
+      schemaId: object.schemaId ? object.schemaId : '',
+      brIdStr: object.brIdStr ? object.brIdStr : '',
+      udrDto: {
+        udrHierarchies: object.udrHierarchies ? object.udrHierarchies : udrTreeData ? udrTreeData.udrHierarchies : [],
+        blocks: object.blocks ? object.object : udrTreeData ? udrTreeData.blocks : []
+      },
+      transFormationSchema: object.transFormationSchema
+    } as CoreSchemaBrInfo;
+  }
+
+  /**
+   * method to map transformation rule data from form
+   * object to transformationschema format
+   * @param response pass the response with formData and lookup object
+   */
+  mapTransformationData(response) {
+    const { sourceFld, targetFld, includeScript, excludeScript, transformationRuleType } = response.formData;
+    const transformationList: TransformationModel[] = [];
+
+    if (response.lookupData && response.lookupData.length > 0) {
+      response.lookupData.map((param: LookupFields) => {
+        transformationList.push({
+          brId: '',
+          sourceFld: param.fieldId,
+          targetFld: param.lookupTargetField,
+          includeScript,
+          excludeScript,
+          transformationRuleType,
+          lookUpObjectType: '',
+          lookUptable: '',
+          parameter: this.createUDRBlockFromLookup(param)
+        })
+      })
+    } else {
+      transformationList.push({
+        brId: '',
+        sourceFld,
+        targetFld,
+        includeScript,
+        excludeScript,
+        transformationRuleType,
+        lookUpObjectType: '',
+        lookUptable: '',
+        parameter: null
+      });
+    }
+
+    return transformationList;
+  }
+
+  /**
+   * create UDR block data from lookup field
+   * @param lookupData lookup data to be passed here
+   */
+  createUDRBlockFromLookup(lookupData: LookupFields): UDRBlocksModel {
+    return {
+      id: '',
+      udrid: '',
+      conditionFieldId: lookupData.fieldLookupConfig.lookupColumn,
+      conditionValueFieldId: lookupData.fieldLookupConfig.lookupColumnResult,
+      conditionFieldValue: '',
+      conditionFieldStartValue: '',
+      conditionFieldEndValue: '',
+      blockType: BlockType.COND,
+      conditionOperator: 'EQUAL',
+      blockDesc: '',
+      objectType: lookupData.fieldLookupConfig.moduleId,
+      childs: []
+    }
+  }
+
+  /**
+   * Method to set the regex value in form control
+   * @param event pass the event
+   */
   setRegex(event) {
     const selectedRegex = this.preDefinedRegex.find(item => item.FUNC_TYPE === event.value);
     this.form.controls.regex.setValue(selectedRegex.FUNC_CODE);
   }
 
+  /**
+   * Check if rule type is User defined rule
+   */
   get isUDR() {
     return this.form.controls.rule_type.value === 'BR_CUSTOM_SCRIPT'
   }
@@ -762,7 +966,7 @@ export class BrruleSideSheetComponent implements OnInit {
   }
 
   get isTransformationRule(): boolean {
-    return this.form.controls.rule_type.value === BusinessRuleType.BR_TRANSFORMATION_RULE;
+    return this.form.controls.rule_type.value === BusinessRuleType.BR_TRANSFORMATION;
   }
 
   /**
@@ -771,6 +975,32 @@ export class BrruleSideSheetComponent implements OnInit {
    */
   formatLabel(value) {
     return `${value}`;
+  }
+
+  /**
+   * Set transformation data output from Transformation rule to business rule form
+   * @param transformationData pass transformation data
+   */
+  setTransformationFormData(transformationData: TransformationFormData) {
+    const {
+      targetFld,
+      sourceFld,
+      excludeScript,
+      includeScript,
+      selectedTargetFields
+    } = transformationData;
+    this.form.controls.targetFld.setValue(selectedTargetFields.map(item => item.fieldId).join(','));
+    this.form.controls.sourceFld.setValue(sourceFld);
+    this.form.controls.excludeScript.setValue(excludeScript);
+    this.form.controls.includeScript.setValue(includeScript);
+  }
+
+  /**
+   * Set lookup dtaa output to business rule form
+   * @param lookupData pass lookup data
+   */
+  setLookupData(lookupData: LookupFields[]) {
+    this.lookupData = lookupData;
   }
 
 }
