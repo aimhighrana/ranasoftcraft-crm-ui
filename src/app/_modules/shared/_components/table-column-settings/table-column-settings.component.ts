@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { MetadataModel, MetadataModeleResponse, SchemaTableViewRequest, SchemaTableViewFldMap } from 'src/app/_models/schema/schemadetailstable';
@@ -44,6 +44,8 @@ export class TableColumnSettingsComponent implements OnInit{
    * Hold fields of all suggested fields
    */
   suggestedFlds: string[] = [];
+
+  @ViewChild('scrollableContainer', {read: ElementRef}) scrollable : ElementRef<any>;
 
   constructor(
     private sharedService: SharedServiceService,
@@ -126,14 +128,15 @@ export class TableColumnSettingsComponent implements OnInit{
   searchFld(value: string) {
     if(value) {
       const sugg = this.header.filter(fill=> fill.fieldDescri.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !==-1);
-      // this.headerFieldObs = of(sugg);
       this.suggestedFlds = sugg.map(map => map.fieldId);
-      const data = document.getElementById(this.suggestedFlds[0]).offsetTop;
-      (document.getElementsByTagName('mat-card')[0]).scrollTo(0,data-40);
+      if (this.suggestedFlds.length){
+        const item = document.getElementById(this.suggestedFlds[0]);
+        this.scrollable.nativeElement.scrollTo(0, item.offsetTop - item.scrollHeight);
+      }
     } else {
       this.headerFieldObs = of(this.header);
       this.suggestedFlds = [];
-      (document.getElementsByTagName('mat-card')[0]).scrollTo(0,0);
+      this.scrollable.nativeElement.scrollTo(0, 0);
     }
   }
 
@@ -159,7 +162,7 @@ export class TableColumnSettingsComponent implements OnInit{
    * @param fld field for checking is selected or not
    */
   isChecked(fld: MetadataModel): boolean {
-    const selCheck = this.data.selectedFields.findIndex(f => f.fieldId ? f.fieldId : f === fld.fieldId);
+    const selCheck = this.data.selectedFields.findIndex(f => f.fieldId && f.fieldId === fld.fieldId);
     return selCheck !==-1 ? true : false;
   }
 

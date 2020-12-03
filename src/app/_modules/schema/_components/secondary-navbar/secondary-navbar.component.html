@@ -27,7 +27,9 @@
 
     <div class="row-spacer"></div>
 
-    <pros-search-input [placeholder]="activatedPrimaryNav ==='report' ? 'Search report' : 'Search Schema'" (value)=(searchSchema($event))></pros-search-input>
+    <pros-search-input [placeholder]="activatedPrimaryNav ==='report' ? 'Search report' : 'Search Schema'" 
+        #schemaSearchInput
+        (value)=(searchSchema($event))></pros-search-input>
 
     <div class="row-spacer"></div>
 
