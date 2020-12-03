@@ -49,6 +49,8 @@ import { LibraryMappingSidesheetComponent } from './_components/library-mapping-
 import { ExclusionsSidesheetComponent } from './_components/v2/brrule-side-sheet/duplicate-rule-config/exclusions-sidesheet/exclusions-sidesheet.component';
 import { DetailBuilderComponent } from './_components/v2/_builder/detail-builder/detail-builder.component';
 import { SchemaListsComponent } from './_components/v2/schema-lists/schema-lists.component';
+import { BusinessrulelibrarySidesheetComponent } from './_components/businessrulelibrary-sidesheet/businessrulelibrary-sidesheet.component';
+
 
 const routes: Routes = [
   { path: 'group/:groupId', component: SchemaGroupFormComponent },
@@ -85,6 +87,7 @@ const routes: Routes = [
   { path: 'business-rule/:moduleId/:schemaId/:brId', component: BrruleSideSheetComponent },
   { path: 'exclusion/:moduleId/:schemaId', component: ExclusionsSidesheetComponent },
   { path: 'subscriber/:moduleId/:schemaId/:subscriberId', component: SubscriberSideSheetComponent },
+  { path: 'subscriber/:moduleId/:schemaId/:subscriberId/:outlet', component: SubscriberSideSheetComponent },
   { path: 'system/catalog-check', component: CatalogCheckComponent },
   { path: 'system/duplicate-datacheck-sidesheet', component: DuplicateDatacheckSidesheetComponent },
   { path: 'data-scope/:moduleId/:schemaId/:variantId', component: DatascopeSidesheetComponent },
@@ -104,6 +107,7 @@ const routes: Routes = [
   { path: 'system/new-modifier-sidesheet', component: NewModifierSidesheetComponent },
   { path: 'system/new-noun-sidesheet', component: NewNounSidesheetComponent },
   { path: 'system/library-mapping-sidesheet', component: LibraryMappingSidesheetComponent },
+  { path: 'businessrule-library/:schemaId/:outlet', component: BusinessrulelibrarySidesheetComponent},
 
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent }

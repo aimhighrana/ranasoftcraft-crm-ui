@@ -1,9 +1,8 @@
-import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatSelectModule } from '@angular/material/select';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { of } from 'rxjs';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { LookupConfigComponent } from './lookup-config.component';
 
@@ -14,11 +13,10 @@ describe('LookupConfigComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientModule, MatSelectModule],
+      imports: [ HttpClientTestingModule, AppMaterialModuleForSpec],
       declarations: [ LookupConfigComponent ],
       providers: [
         SchemaDetailsService,
-        HttpClientTestingModule
       ]
     })
     .compileComponents();

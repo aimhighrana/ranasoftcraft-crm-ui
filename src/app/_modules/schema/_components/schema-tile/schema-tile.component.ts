@@ -196,7 +196,8 @@ export class SchemaTileComponent implements OnInit, OnDestroy {
     const schemaExecutionReq: SchemaExecutionRequest = new SchemaExecutionRequest();
     schemaExecutionReq.schemaId = this.schemaId;
     schemaExecutionReq.variantId = '0'; // 0 for run all
-    this.schemaExecutionService.scheduleSChema(schemaExecutionReq).subscribe(data => {
+    const isRunWithCheckedData = false;
+    this.schemaExecutionService.scheduleSChema(schemaExecutionReq, isRunWithCheckedData).subscribe(data => {
       this.state = 'inRunning';
     }, error => {
       this.matSnackBar.open(`Something went wrong `, 'Close', { duration: 5000 });

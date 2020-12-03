@@ -54,11 +54,12 @@ describe('SchemaExecutionDialogComponent', () => {
     const schemaExecutionReq: SchemaExecutionRequest = new SchemaExecutionRequest();
     schemaExecutionReq.schemaId =  component.data.schemaId;
     schemaExecutionReq.variantId = '0'; // 0 for run all
-    spyOn(schemaExecutionService,'scheduleSChema').withArgs(schemaExecutionReq).and.returnValue(of());
+    const isRunWithCheckedData = false;
+    spyOn(schemaExecutionService,'scheduleSChema').withArgs(schemaExecutionReq, isRunWithCheckedData).and.returnValue(of());
 
     component.scheduleSchema();
     expect(component.scheduleSchema).toBeTruthy();
-    expect(schemaExecutionService.scheduleSChema).toHaveBeenCalledWith(schemaExecutionReq);
+    expect(schemaExecutionService.scheduleSChema).toHaveBeenCalledWith(schemaExecutionReq, isRunWithCheckedData);
   });
 
   it('ngOnit(), init preloaded', async(()=>{

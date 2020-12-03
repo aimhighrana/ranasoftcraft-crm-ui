@@ -1,4 +1,5 @@
-import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { SchemaDashboardPermission } from '@models/collaborator';
+import { CoreSchemaBrInfo, DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { FilterCriteria, MetadataModel } from './schemadetailstable';
 
 export interface Schema {
@@ -159,4 +160,32 @@ export interface SchemaVariantReq {
      variantName: string;
      variantType: string;
      filterCriteria: FilterCriteria[]
+}
+
+/**
+ * Request of POST check data details API..
+ */
+export interface CheckDataRequest {
+     schemaId: number;
+     runId: number;
+     brs: CheckDataBrs[];
+     collaborators: CheckDataSubscriber[];
+}
+
+/**
+ * Response of GET check data details API..
+ */
+export interface CheckDataResponse {
+     CollaboratorModel: SchemaDashboardPermission[];
+     BrModel: CoreSchemaBrInfo[];
+}
+
+
+export interface CheckDataBrs{
+     brId: number;
+     brExecutionOrder: number;
+}
+
+export interface CheckDataSubscriber {
+     collaboratorId: number;
 }

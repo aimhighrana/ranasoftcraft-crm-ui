@@ -4,7 +4,7 @@ import { EndpointService } from '../endpoint.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../any2ts.service';
-import { SchemaGroupResponse, SchemaGroupDetailsResponse, SchemaGroupCountResponse, CreateSchemaGroupRequest, GetAllSchemabymoduleidsReq, ObjectTypeResponse, GetAllSchemabymoduleidsRes, SchemaGroupWithAssignSchemas, WorkflowResponse, WorkflowPath, ExcelValues, DataSource, SchemaVariantReq } from 'src/app/_models/schema/schema';
+import { SchemaGroupResponse, SchemaGroupDetailsResponse, SchemaGroupCountResponse, CreateSchemaGroupRequest, GetAllSchemabymoduleidsReq, ObjectTypeResponse, GetAllSchemabymoduleidsRes, SchemaGroupWithAssignSchemas, WorkflowResponse, WorkflowPath, ExcelValues, DataSource, SchemaVariantReq, CheckDataResponse } from 'src/app/_models/schema/schema';
 import { DropDownValue, UDRBlocksModel, UdrModel, CoreSchemaBrInfo, Category, DuplicateRuleModel } from 'src/app/_modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaStaticThresholdRes, SchemaListModuleList, SchemaListDetails, CoreSchemaBrMap } from '@models/schema/schemalist';
 import { SchemaScheduler } from '@models/schema/schemaScheduler';
@@ -252,7 +252,7 @@ export class SchemaService {
 
   /**
    * function to GET Api call for schedule of a schema
-   * @param schemaId Id of schema
+   * @param schemaId: schema Id for which scheduler information will be fetched
    */
   public getSchedule(schemaId: string): Observable<SchemaScheduler>{
     return this.http.get<SchemaScheduler>(this.endpointService.getScheduleUrl(schemaId))
@@ -268,5 +268,22 @@ export class SchemaService {
    */
   public saveUpdateDataScope(dataScopeReq: SchemaVariantReq): Observable<any>{
     return this.http.post<any>(this.endpointService.saveUpdateDataScopeUrl(), dataScopeReq)
+  }
+
+  /**
+   * function to POST Api call for create/update schema check-data
+   * @param checkDataObject: Object having check data details
+   */
+  public createUpdateCheckData(checkDataObject): Observable<string> {
+    return this.http.post<string>(this.endpointService.createUpdateCheckDataUrl(), checkDataObject)
+  }
+
+  /**
+   * function to GET Api call to get schema check-data
+   * @param schemaId: Id of schema
+   * @param runId: runId of schema
+   */
+  public getCheckData(schemaId: string, runId: string): Observable<CheckDataResponse> {
+    return this.http.get<CheckDataResponse>(this.endpointService.getCheckDataUrl(schemaId, runId));
   }
 }

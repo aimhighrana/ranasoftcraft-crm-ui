@@ -43,7 +43,8 @@ export class SchemaExecutionDialogComponent implements OnInit {
     const schemaExecutionReq: SchemaExecutionRequest = new SchemaExecutionRequest();
     schemaExecutionReq.schemaId =  this.data.schemaId;
     schemaExecutionReq.variantId = '0'; // 0 for run all
-    this.schemaExecutionService.scheduleSChema(schemaExecutionReq).subscribe(data => {
+    const isRunWithCheckedData = false;
+    this.schemaExecutionService.scheduleSChema(schemaExecutionReq, isRunWithCheckedData).subscribe(data => {
       console.log('Successfully scheduled');
       this.router.navigate(['/home/schema']);
       this.dialogRef.close();

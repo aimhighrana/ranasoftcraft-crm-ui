@@ -40,16 +40,20 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
    */
   addSubscriberArr = [];
 
- /**
-  * To store subscribers which need to be deleted
-  */
- deleteSubscriberArr = [];
+  /**
+   * To store subscribers which need to be deleted
+   */
+  deleteSubscriberArr = [];
 
   /**
    * Variable to update get subscribers API fetch count
    */
   fetchCount = 0;
 
+  /**
+   * To store the name of outlet
+   */
+  outlet: string;
 
   /**
    * constructor of the class
@@ -73,7 +77,7 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
       this.moduleId = params.moduleId;
       this.schemaId = params.schemaId;
       this.subscriberId = params.subscriberId;
-
+      this.outlet = params.outlet;
       this.getSubscribersBySchemaId(this.schemaId);
     })
   }
@@ -86,14 +90,14 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
   getCollaborators(queryString: string, fetchCount: number) {
     this.collaboratorSubscription = this.schemaDetailsService.getAllUserDetails(queryString, fetchCount)
       .subscribe((response: PermissionOn) => {
-        if(fetchCount === 0){
+        if (fetchCount === 0) {
           this.subscribers = [];
         }
         response.users.forEach(user => {
           user.isAdd = false;
           this.subscribers = [...this.subscribers, user]
           this.collaboratorData.map((collaborator) => {
-            if(collaborator.userid === user.userName){
+            if (collaborator.userid === user.userName) {
               user.isAdd = true;
               user.sNo = collaborator.sno;
             }
@@ -108,7 +112,7 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
    * function to close the sidesheet
    */
   close() {
-    this.router.navigate([{ outlets: { sb: null } }]);
+    this.router.navigate([{ outlets: { [`${this.outlet}`]: null } }]);
   }
 
 
@@ -116,15 +120,16 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
    * function to save the subscriber's details
    */
   save() {
-    if(this.addSubscriberArr.length > 0) {
+    if (this.addSubscriberArr.length > 0 && this.outlet === 'sb') {
       this.createUpdateSubscriber(this.addSubscriberArr);
     }
-    if(this.deleteSubscriberArr.length > 0) {
-      // this.deleteSubscriberArr.forEach((subscriber) => {
-        this.deleteSubscriber(this.deleteSubscriberArr)
-      // })
+    else if (this.addSubscriberArr.length > 0 && this.outlet === 'outer') {
+      this.sharedService.setAfterSubscriberSave(this.addSubscriberArr);
     }
-    this.router.navigate([{ outlets: { sb: null } }]);
+    if (this.deleteSubscriberArr.length > 0) {
+      this.deleteSubscriber(this.deleteSubscriberArr)
+    }
+    this.close();
   }
 
   /**
@@ -133,12 +138,12 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
    */
   createUpdateSubscriber(subscriberInfo: SchemaDashboardPermission[]) {
     this.schemaDetailsService.createUpdateUserDetails(subscriberInfo).subscribe(res => {
-      this.snackBar.open('Subscriber saved successfully.', 'okay', {duration: 3000});
+      this.snackBar.open('Subscriber saved successfully.', 'okay', { duration: 3000 });
       this.sharedService.setAfterSubscriberSave(res);
     }, error => {
       console.log('Error while saving subscriber', error.message)
     })
-}
+  }
 
   /**
    * Function to get subscribers detail according to the schema id
@@ -169,9 +174,11 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
    * Function to add subscriber
    * @param subscriber subscriber object
    */
-  addSubscriber(subscriber: any){
+  addSubscriber(subscriber: any) {
     subscriber.isAdd = true;
-    const subscriberData = {
+    let subscriberData = {};
+    if(this.outlet === 'sb') {
+      subscriberData = {
         sno: this.subscriberId === 'new' ? (Math.floor(Math.random() * Math.pow(100000, 2))) : this.subscriberId,
         schemaId: this.schemaId,
         isAdmin: false,
@@ -186,6 +193,15 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
         fullName: subscriber.fullName,
         role: '',
         plantCode: ''
+      }
+    }
+    else {
+      subscriberData = {
+        sno: Math.floor(Math.random() * Math.pow(100000, 2)),
+        userMdoModel: subscriber,
+        filterCriteria: [],
+        isViewer: true
+      } as SchemaDashboardPermission
     }
     this.addSubscriberArr.push(subscriberData);
   }
@@ -194,14 +210,14 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
    * Function to remove subscriber
    * @param subscriber subscriber object
    */
-  uncheckSubscriber(subscriber: any){
+  uncheckSubscriber(subscriber: any) {
     subscriber.isAdd = false;
     const removeSubscriber = this.addSubscriberArr.filter(user => user.userid === subscriber.userid)[0];
     const index = this.addSubscriberArr.indexOf(removeSubscriber)
-    if(removeSubscriber===undefined || removeSubscriber===null) {
+    if (removeSubscriber === undefined || removeSubscriber === null) {
       this.deleteSubscriberArr.push(subscriber.sNo);
     }
-    else{
+    else {
       this.addSubscriberArr.splice(index, 1);
     }
   }
@@ -210,13 +226,13 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
    * Function to update fetchCount on scroll
    * @param event: scroll event object
    */
-  onScroll(event){
+  onScroll(event) {
     const viewPortHeight = event.target.offsetHeight; // height of the complete viewport
     const scrollFromTop = event.target.scrollTop;     // height till user has scrolled
     const sideSheetHeight = event.target.scrollHeight; // complete scrollable height of the side sheet document
 
     const limit = sideSheetHeight - scrollFromTop;
-    if(limit === viewPortHeight){
+    if (limit === viewPortHeight) {
       this.fetchCount++;
       this.getCollaborators('', this.fetchCount);
     }

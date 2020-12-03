@@ -48,8 +48,8 @@ export class EndpointService {
   public downloadExecutionDetailsUrl(schemaId: string, status: string): string {
     return `${this.apiUrl}/schema/download/${schemaId}/${status.toLocaleLowerCase()}`;
   }
-  public getScheduleSchemaUrl(): string {
-    return this.apiUrl + '/schema/schedule-schema';
+  public getScheduleSchemaUrl(isRunWithCheckedData: boolean): string {
+    return this.apiUrl + `/schema/schedule-schema?isRunWithCheckedData=${isRunWithCheckedData}`;
   }
   public getSchemaGroupDetailsByGrpIdUrl(schemaGroupId: string): string {
     return this.apiUrl + '/schema/get-group-details/' + schemaGroupId;
@@ -652,6 +652,20 @@ export class EndpointService {
     return `${this.apiUrl}/schema/generateCrossmodule/${schemaId}/${objectType}/${objectNumber}`;
   }
 
+  /**
+   * endpoint for create/update check data for schema
+   */
+  public createUpdateCheckDataUrl() {
+    return `${this.apiUrl}/schema/checkdata/save-update`;
+  }
 
+  /**
+   * endpoint for getting check data for schema
+   * @param schemaId: schema ID
+   * @param runId: run ID of schema
+   */
+  public getCheckDataUrl(schemaId: string, runId: string) {
+    return `${this.apiUrl}/schema/checkdata/get-all-br-collaborator-details/${schemaId}/${runId}`;
+  }
 }
 

@@ -56,10 +56,11 @@ describe('SchemaExecutionComponent', () => {
     schemaExecutionReq.schemaId = component.schemaId;
     schemaExecutionReq.variantId = '0';
     const data = {} as any;
-    spyOn(schenaexecutionSpy, 'scheduleSChema').withArgs(schemaExecutionReq).and.returnValue(of(data));
+    const isRunWithCheckedData = false;
+    spyOn(schenaexecutionSpy, 'scheduleSChema').withArgs(schemaExecutionReq, isRunWithCheckedData).and.returnValue(of(data));
     spyOn(router, 'navigate');
     component.scheduleSchema();
-    expect(schenaexecutionSpy.scheduleSChema).toHaveBeenCalledWith(schemaExecutionReq);
+    expect(schenaexecutionSpy.scheduleSChema).toHaveBeenCalledWith(schemaExecutionReq, isRunWithCheckedData);
     expect(router.navigate).toHaveBeenCalledWith(['/home/schema']);
   }));
 
