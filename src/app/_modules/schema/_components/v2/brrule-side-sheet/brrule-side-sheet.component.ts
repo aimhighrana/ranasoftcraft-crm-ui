@@ -789,7 +789,8 @@ export class BrruleSideSheetComponent implements OnInit {
         udrHierarchies: object.udrHierarchies ? object.udrHierarchies : udrTreeData ? udrTreeData.udrHierarchies : [],
         blocks: object.blocks ? object.object : udrTreeData ? udrTreeData.blocks : []
       },
-      transFormationSchema: object.transFormationSchema
+      transFormationSchema: object.transFormationSchema,
+      isCopied: object.isCopied? object.isCopied: false
     } as CoreSchemaBrInfo;
   }
 
