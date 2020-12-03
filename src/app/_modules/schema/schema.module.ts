@@ -64,6 +64,9 @@ import { SchemaListsComponent } from './_components/v2/schema-lists/schema-lists
 import { BusinessrulelibrarySidesheetComponent } from './_components/businessrulelibrary-sidesheet/businessrulelibrary-sidesheet.component';
 import { GroupDataTableComponent } from './_components/v2/duplicacy/group-data-table/group-data-table.component';
 import { DuplicacyComponent } from './_components/v2/duplicacy/duplicacy.component';
+import { StaticsComponent } from './_components/v2/statics/statics.component';
+import { ExecutionResultComponent } from './_components/v2/statics/execution-result/execution-result.component';
+import { ExecutionTrendComponent } from './_components/v2/statics/execution-trend/execution-trend.component';
 
 
 @NgModule({
@@ -133,7 +136,10 @@ import { DuplicacyComponent } from './_components/v2/duplicacy/duplicacy.compone
     BusinessrulelibrarySidesheetComponent,
     // PotextCatalogcheckComponent,
     GroupDataTableComponent,
-    DuplicacyComponent
+    DuplicacyComponent,
+    StaticsComponent,
+    ExecutionResultComponent,
+    ExecutionTrendComponent
   ],
   imports: [
     CommonModule,
