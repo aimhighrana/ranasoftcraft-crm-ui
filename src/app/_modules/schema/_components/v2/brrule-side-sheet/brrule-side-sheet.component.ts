@@ -296,7 +296,7 @@ export class BrruleSideSheetComponent implements OnInit {
       }
     }
     if (selectedRule === BusinessRuleType.BR_DUPLICATE_RULE) {
-      requiredKeys = ['rule_name', 'error_message'];
+      requiredKeys = ['rule_name'];
     }
 
     controlKeys.map((key) => {
@@ -353,6 +353,10 @@ export class BrruleSideSheetComponent implements OnInit {
     }
     if (br.brType === BusinessRuleType.BR_MANDATORY_FIELDS) {
       patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId', 'fields'];
+    }
+
+    if (br.brType === BusinessRuleType.BR_DUPLICATE_RULE) {
+      patchList = ['rule_type', 'rule_name'];
     }
 
     if (patchList && patchList.length > 0) {

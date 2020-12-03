@@ -34,10 +34,9 @@
                     <div class="f-col mdo-form-field">
 
                         <mat-form-field appearance="outline">
-                            <input matInput placeholder="Type field name to add"
-                                formControlName="fieldSearch"
+                            <input matInput placeholder="Type field name to add" formControlName="fieldSearch"
                                 [matAutocomplete]="auto" />
-                            <mat-autocomplete #auto="matAutocomplete" [displayWith]="getFieldDesc" >
+                            <mat-autocomplete #auto="matAutocomplete" [displayWith]="getFieldDesc">
                                 <mat-option *ngFor="let field of duplicateFieldsObs | async"
                                     (click)="addFieldRecord(field.fieldId)" [value]="field.fieldId">
                                     {{ field.fieldDescri }}
@@ -61,23 +60,24 @@
                                     </div>
                                     <div class="col col-x4">
                                         <div class="f-col">
-                                        <button mat-stroked-button [matMenuTriggerFor]="fieldMatchMenu">
-                                            {{ getDuppCriteriaDesc(item.value.criteria) }}
-                                            <mat-icon>arrow_drop_down</mat-icon></button>
-                                        <mat-menu #fieldMatchMenu="matMenu" class="hidden-arrow">
-                                            <button mat-menu-item
-                                                (click)="setControlValue('addFields', 'criteria', 'Exact_Match', i)">
-                                                Exact Match</button>
-                                            <button mat-menu-item
-                                                (click)="setControlValue('addFields', 'criteria', 'Fuzzy', i)">
-                                                Fuzzy </button>
-                                        </mat-menu>
-                                        <mat-error *ngIf="submitted && item.get('criteria').errors && item.get('criteria').errors.required">
-                                            Please select value</mat-error>
+                                            <button mat-stroked-button [matMenuTriggerFor]="fieldMatchMenu">
+                                                {{ getDuppCriteriaDesc(item.value.criteria) }}
+                                                <mat-icon>arrow_drop_down</mat-icon></button>
+                                            <mat-menu #fieldMatchMenu="matMenu" class="hidden-arrow">
+                                                <button mat-menu-item
+                                                    (click)="setControlValue('addFields', 'criteria', 'Exact_Match', i)">
+                                                    Exact Match</button>
+                                                <button mat-menu-item
+                                                    (click)="setControlValue('addFields', 'criteria', 'Fuzzy', i)">
+                                                    Fuzzy </button>
+                                            </mat-menu>
+                                            <mat-error
+                                                *ngIf="submitted && item.get('criteria').errors && item.get('criteria').errors.required">
+                                                Please select value</mat-error>
                                         </div>
                                     </div>
-                                    <div class="col col-x4"> <a class="f-row info-link"
-                                            (click)="exclusionConf(item)"> {{ item.value.exclusion }} </a> </div>
+                                    <div class="col col-x4"> <a class="f-row info-link" (click)="exclusionConf(item)">
+                                            {{ item.value.exclusion }} </a> </div>
                                     <div class="col">
                                         <button mat-button (click)="removeFormArrayRow('addFields', i)">
                                             <mat-icon>delete_outline</mat-icon>
@@ -89,8 +89,7 @@
                     </ng-container>
 
                     <pros-null-state *ngIf="fieldRecords.controls.length === 0"
-                        message="Type inside the search box to find fields"
-                        [button]="null"></pros-null-state>
+                        message="Type inside the search box to find fields" [button]="null"></pros-null-state>
                 </div>
             </mat-expansion-panel>
         </mat-accordion>
@@ -119,8 +118,7 @@
 
                     <div class="f-col mdo-form-field">
                         <mat-form-field appearance="outline">
-                            <input matInput placeholder="Type parameter name to add"
-                                [matAutocomplete]="paramAuto" />
+                            <input matInput placeholder="Type parameter name to add" [matAutocomplete]="paramAuto" />
                             <mat-autocomplete #paramAuto="matAutocomplete">
                                 <mat-option *ngFor="let ruleType of MERGE_RULE_TYPES"
                                     (click)="addMasterRecord(ruleType.value)"> {{ ruleType.label }}
@@ -138,38 +136,45 @@
                                 </div>
                                 <div class="col col-x4">
                                     <div class="f-col">
-                                    <ng-template
-                                        [ngIf]="(item.value.ruleType === 'NEWEST') || (item.value.ruleType === 'OLDEST')"
-                                        [ngIfElse]="others">
-                                        <button mat-stroked-button [matMenuTriggerFor]="fieldMatchMenu">
-                                            {{ getMergeRuleFieldDesc(item.value.fieldId) }}
-                                            <mat-icon>arrow_drop_down</mat-icon></button>
-                                        <mat-menu #fieldMatchMenu="matMenu" class="hidden-arrow">
-                                            <button mat-menu-item *ngFor="let field of MERGE_RULE_FIELDS"
-                                                (click)="setFieldValue(item.value.ruleType, field.value, i)">
-                                                {{ field.label }} </button>
-                                        </mat-menu>
-                                    </ng-template>
+                                        <ng-template
+                                            [ngIf]="(item.value.ruleType === 'NEWEST') || (item.value.ruleType === 'OLDEST')"
+                                            [ngIfElse]="others">
+                                            <button mat-stroked-button [matMenuTriggerFor]="fieldMatchMenu">
+                                                {{ getMergeRuleFieldDesc(item.value.fieldId) }}
+                                                <mat-icon>arrow_drop_down</mat-icon></button>
+                                            <mat-menu #fieldMatchMenu="matMenu" class="hidden-arrow">
+                                                <button mat-menu-item *ngFor="let field of MERGE_RULE_FIELDS"
+                                                    (click)="setFieldValue(item.value.ruleType, field.value, i)">
+                                                    {{ field.label }} </button>
+                                            </mat-menu>
+                                        </ng-template>
 
-                                    <ng-template #others>
-                                        <button mat-stroked-button [matMenuTriggerFor]="searchFieldMenu">
-                                            {{ item.value.fieldId ? getFieldDesc(item.value.fieldId) : 'select' }}
-                                            <mat-icon>arrow_drop_down</mat-icon></button>
-                                        <!-- field search menu -->
-                                        <mat-menu #searchFieldMenu="matMenu" class="hidden-arrow">
-                                            <div class="fields-menu">
-                                                <pros-search-input (value)="input.value = $event"
-                                                    prosClickStopPropagation></pros-search-input>
+                                        <ng-template #others>
+                                            <button mat-stroked-button [matMenuTriggerFor]="searchFieldMenu">
+                                                {{ item.value.fieldId ? getFieldDesc(item.value.fieldId) : 'select' }}
+                                                <mat-icon>arrow_drop_down</mat-icon></button>
+                                            <!-- field search menu -->
+                                            <mat-menu #searchFieldMenu="matMenu" class="hidden-arrow">
+                                                <div class="fields-menu">
+                                                    <pros-search-input (value)="input.value = $event"
+                                                        prosClickStopPropagation></pros-search-input>
                                                     <input #input hidden />
-                                                <mat-nav-list>
-                                                    <mat-list-item *ngFor="let fieldItem of filterNumFields(input.value)"
-                                                        (click)="setFieldValue(item.value.ruleType, fieldItem.fieldId, i)">
-                                                        {{fieldItem.fieldDescri}}
-                                                    </mat-list-item>
-                                                </mat-nav-list>
-                                            </div>
-                                        </mat-menu>
-                                        <!-- <mat-form-field appearance="outline">
+                                                    <mat-nav-list>
+                                                        <ng-template [ngIf]="filterNumFields(input.value).length"
+                                                            [ngIfElse]="noNumeric">
+                                                            <mat-list-item
+                                                                *ngFor="let fieldItem of filterNumFields(input.value)"
+                                                                (click)="setFieldValue(item.value.ruleType, fieldItem.fieldId, i)">
+                                                                {{fieldItem.fieldDescri}}
+                                                            </mat-list-item>
+                                                        </ng-template>
+                                                        <ng-template #noNumeric>
+                                                            <pros-null-state message="" [button]="null"></pros-null-state>
+                                                        </ng-template>
+                                                    </mat-nav-list>
+                                                </div>
+                                            </mat-menu>
+                                            <!-- <mat-form-field appearance="outline">
                                             <input matInput placeholder="Type field name to add" #input
                                                    formControlName="fieldId"
                                                    [matAutocomplete]="auto" />
@@ -179,10 +184,11 @@
                                                 </mat-option>
                                               </mat-autocomplete>
                                         </mat-form-field> -->
-                                    </ng-template>
-                                    <mat-error *ngIf="submitted && item.get('fieldId').errors && item.get('fieldId').errors.required">
-                                        Please select field</mat-error>
-                                </div>
+                                        </ng-template>
+                                        <mat-error
+                                            *ngIf="submitted && item.get('fieldId').errors && item.get('fieldId').errors.required">
+                                            Please select field</mat-error>
+                                    </div>
                                 </div>
                                 <div class="col">
                                     <button mat-button (click)="removeFormArrayRow('mergeRules', i)">
@@ -193,8 +199,7 @@
                         </div>
                     </ng-container>
                     <pros-null-state *ngIf="masterRecords.controls.length === 0"
-                            message="Type inside the search box to find master records"
-                            [button]="null"></pros-null-state>
+                        message="Type inside the search box to find master records" [button]="null"></pros-null-state>
                 </div>
             </mat-expansion-panel>
         </mat-accordion>

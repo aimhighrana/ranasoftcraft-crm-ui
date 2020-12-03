@@ -57,3 +57,16 @@
     }
   }
 }
+
+.fields-menu {
+  padding: 12px;
+  height: 100%;
+
+  mat-nav-list {
+    padding-top: 0;
+    margin: 8px -12px;
+    overflow: auto;
+    min-height: 100px;
+    max-height: 180px;
+  }
+}

@@ -28,7 +28,7 @@
                 </mat-form-field>
             </div>
 
-            <div class="f-col mdo-form-field">
+            <div class="f-col mdo-form-field" *ngIf="!isDuplicateType">
                 <mat-label>Weightage</mat-label>
                 <mat-slider thumbLabel formControlName="weightage" [displayWith]="formatLabel" tickInterval="1" min="0"
                     max="100" color="primary"></mat-slider>
@@ -37,7 +37,7 @@
                     Please enter Weightage</mat-error>
             </div>
 
-            <div class="f-col mdo-form-field" *ngIf="!isUDR && !isTransformationRule">
+            <div class="f-col mdo-form-field" *ngIf="!isUDR && !isTransformationRule && !isDuplicateType">
                 <mat-label>Category</mat-label>
                 <mat-form-field appearance="outline">
                     <mat-select formControlName="categoryId">
