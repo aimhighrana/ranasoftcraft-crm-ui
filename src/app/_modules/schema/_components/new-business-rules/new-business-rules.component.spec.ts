@@ -103,7 +103,7 @@ describe('NewBusinessRulesComponent', () => {
 
     it('isTransformationRule, sould return true if selected rule is transformation type', (() => {
         component.initializeForm();
-        component.form.controls.rule_type.setValue(BusinessRuleType.BR_TRANSFORMATION_RULE);
+        component.form.controls.rule_type.setValue(BusinessRuleType.BR_TRANSFORMATION);
         expect(component.isTransformationRule).toBeTrue();
     }));
 

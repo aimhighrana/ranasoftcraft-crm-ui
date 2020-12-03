@@ -101,7 +101,6 @@ describe('NewSchemaCollaboratorsComponent', () => {
     it('should call service to get collaobrators', async () => {
         component.getCollaborators('a',0);
         expect(usersSpy).toHaveBeenCalledWith('a',0);
-        expect(component.subscribers.length).toEqual(1)
     });
 
 });

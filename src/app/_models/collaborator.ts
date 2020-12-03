@@ -38,6 +38,7 @@ export class SchemaDashboardPermission {
     groupHeaderModel: GroupHeaderModel;
     plantCode: string;
     filterCriteria: FilterCriteria[];
+    dataAllocation?: Array<DropDownValue>;
 }
 
 export enum PermissionType {

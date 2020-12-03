@@ -48,6 +48,7 @@ export class CoreSchemaBrInfo {
     duplicacyField?: any;
     duplicacyMaster?: any;
     transFormationSchema?: TransformationModel[];
+    isCopied?: boolean;
 }
 
 export enum BusinessRuleType {
@@ -59,7 +60,7 @@ export enum BusinessRuleType {
     BR_DUPLICATE_RULE = 'BR_DUPLICATE_CHECK',
     BR_EXTERNALVALIDATION_RULE = 'BR_EXTERNALVALIDATION_RULE',
     BR_REGEX_RULE = 'BR_REGEX_RULE',
-    BR_TRANSFORMATION_RULE = 'BR_TRANSFORMATION_RULE',
+    BR_TRANSFORMATION = 'BR_TRANSFORMATION',
 }
 
 export const RULE_TYPES = [
@@ -72,7 +73,7 @@ export const RULE_TYPES = [
     { ruleDesc: 'Missing Rule', ruleId: '', ruleType: BusinessRuleType.BR_MANDATORY_FIELDS, isImplemented: true },
     { ruleDesc: 'Regex Rule', ruleId: '', ruleType: BusinessRuleType.BR_REGEX_RULE, isImplemented: true },
     { ruleDesc: 'User Defined Rule', ruleId: '', ruleType: BusinessRuleType.BR_CUSTOM_SCRIPT, isImplemented: true },
-    { ruleDesc: 'Transformation Rule', ruleId: '', ruleType: BusinessRuleType.BR_TRANSFORMATION_RULE, isImplemented: true },
+    { ruleDesc: 'Transformation Rule', ruleId: '', ruleType: BusinessRuleType.BR_TRANSFORMATION, isImplemented: true },
 ];
 
 export const PRE_DEFINED_REGEX = [

@@ -120,7 +120,7 @@ describe('TransformationRuleComponent', () => {
   });
 
   it('isTransformationRule, isTransformationLookupRule, should check selected rule and return boolean', () => {
-    component.selectedRuleType = BusinessRuleType.BR_TRANSFORMATION_RULE;
+    component.selectedRuleType = BusinessRuleType.BR_TRANSFORMATION;
     expect(component.isTransformationRule).toBeTrue();
   });
 

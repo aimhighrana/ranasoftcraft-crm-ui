@@ -39,10 +39,10 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
     @Inject(MAT_DIALOG_DATA) public data,
     public schemaDetailsService: SchemaDetailsService,
     public snackBar: MatSnackBar) {
-      if(data && data.selectedSubscibersList && data.selectedSubscibersList.length>0){
-        this.incomingSelectedSubscribers = data.selectedSubscibersList;
-      }
-     }
+    if (data && data.selectedSubscibersList && data.selectedSubscibersList.length > 0) {
+      this.incomingSelectedSubscribers = data.selectedSubscibersList;
+    }
+  }
   /**
    * Angular Hook
    */
@@ -57,8 +57,8 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
         subscribers.forEach((subscriber: UserMdoModel) => {
           subscriber.selected = false;
         });
-        this.subscribers = this.removeSelectedSubscribers(subscribers, this.incomingSelectedSubscribers);
-        this.filteredSubscribers = this.removeSelectedSubscribers(subscribers, this.incomingSelectedSubscribers);
+        this.subscribers = this.markSelectedSubscribers(subscribers, this.incomingSelectedSubscribers);
+        this.filteredSubscribers = this.markSelectedSubscribers(subscribers, this.incomingSelectedSubscribers);
       }, () => {
         this.snackBar.open('Error getting subscribers', 'okay', {
           duration: 1000
@@ -66,12 +66,17 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
       });
   }
 
-  removeSelectedSubscribers(allSubscribers, selectedSubscribers){
-    return allSubscribers.filter( subscriber =>
-      selectedSubscribers.every( selected =>
-        selected.userid !== subscriber.userName
-      )
-    )
+  markSelectedSubscribers(allSubscribers: UserMdoModel[], selectedSubscribers: UserMdoModel[]) {
+    const list = [];
+    allSubscribers.map(subscriber =>
+      selectedSubscribers.map(selected => {
+        if (selected.userName === subscriber.userName) {
+          subscriber.selected = true;
+        }
+        list.push(subscriber);
+      })
+    );
+    return list;
   }
 
   /**
@@ -84,7 +89,7 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
   /**
    * function to save the subscriber's details
    */
-  saveSelection(){
+  saveSelection() {
     this.dialogRef.close(this.selectedCollaborators);
   }
 
@@ -94,7 +99,7 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
 
   addOrDeleteCollaborator(collaborator: UserMdoModel) {
     const index = this.selectedCollaborators.findIndex(subscriber => subscriber.userId === collaborator.userId);
-    if (index>-1) {
+    if (index > -1) {
       collaborator.selected = false;
       this.selectedCollaborators.splice(index, 1);
     } else {

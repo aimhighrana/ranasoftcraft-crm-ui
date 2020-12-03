@@ -27,7 +27,7 @@ describe('UploadDatasetComponent', () => {
   let usersSpy;
   const transformationRule = {
     formData: {
-      rule_type: 'BR_TRANSFORMATION_RULE',
+      rule_type: 'BR_TRANSFORMATION',
       rule_name: 'test rule',
       error_message: 'no data',
       standard_function: '',
