@@ -1,5 +1,7 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { of } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
@@ -17,6 +19,10 @@ describe('LookupConfigComponent', () => {
       declarations: [ LookupConfigComponent ],
       providers: [
         SchemaDetailsService,
+        HttpClientTestingModule,
+        MatSelectModule,
+        FormsModule,
+        ReactiveFormsModule
       ]
     })
     .compileComponents();

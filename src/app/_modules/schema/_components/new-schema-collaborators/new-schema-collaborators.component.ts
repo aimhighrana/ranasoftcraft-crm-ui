@@ -41,6 +41,7 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
     public snackBar: MatSnackBar) {
     if (data && data.selectedSubscibersList && data.selectedSubscibersList.length > 0) {
       this.incomingSelectedSubscribers = data.selectedSubscibersList;
+      this.selectedCollaborators = data.selectedSubscibersList;
     }
   }
   /**
@@ -66,16 +67,18 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
       });
   }
 
-  markSelectedSubscribers(allSubscribers: UserMdoModel[], selectedSubscribers: UserMdoModel[]) {
-    const list = [];
-    allSubscribers.map(subscriber =>
-      selectedSubscribers.map(selected => {
-        if (selected.userName === subscriber.userName) {
-          subscriber.selected = true;
-        }
-        list.push(subscriber);
-      })
-    );
+  markSelectedSubscribers(allSubscribers: UserMdoModel[], selectedSubscribers: any[]) {
+    let list = [];
+    if(selectedSubscribers && selectedSubscribers.length>0){
+      allSubscribers.map(subscriber => {
+          if(selectedSubscribers.find(selected => selected.userName === subscriber.userName)){
+            subscriber.selected = true;
+          }
+          list.push(subscriber);
+        });
+    } else {
+      list = allSubscribers;
+    }
     return list;
   }
 
@@ -98,13 +101,14 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
   }
 
   addOrDeleteCollaborator(collaborator: UserMdoModel) {
-    const index = this.selectedCollaborators.findIndex(subscriber => subscriber.userId === collaborator.userId);
+    const selected = [...this.selectedCollaborators];
+    const index = selected.findIndex(subscriber => subscriber.userName === collaborator.userName);
     if (index > -1) {
-      collaborator.selected = false;
       this.selectedCollaborators.splice(index, 1);
+      collaborator.selected = false;
     } else {
       collaborator.selected = true;
-      this.selectedCollaborators.push(collaborator);
+      this.selectedCollaborators.push({...collaborator});
     }
   }
 

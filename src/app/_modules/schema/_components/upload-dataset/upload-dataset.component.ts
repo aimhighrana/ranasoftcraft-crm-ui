@@ -632,7 +632,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    */
   createUDRBlockFromLookup(lookupData: LookupFields): UDRBlocksModel {
     return {
-      id: '',
+      id: Math.floor(Math.random() * 100000000000).toString(),
       udrid: '',
       conditionFieldId: lookupData.fieldLookupConfig.lookupColumn,
       conditionValueFieldId: lookupData.fieldLookupConfig.lookupColumnResult,
@@ -1023,12 +1023,13 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   updateSubscribersList(response: any) {
     if (Array.isArray(response) && response.length > 0) {
       const receivedData: UserMdoModel[] = response;
+      this.subscribersList = [];
       receivedData.forEach((subscriber: UserMdoModel) => {
         this.subscribersList.push(this.mapSubscriberInfo(subscriber));
       })
     } else if (response && typeof response === 'object') {
       const receivedData: UserMdoModel = response;
-      const index = this.subscribersList.findIndex(sub => sub.userid === receivedData.userId);
+      const index = this.subscribersList.findIndex(sub => sub.userName === receivedData.userName);
       if (index > -1) {
         this.snackBar.open('Subscriber already selected', 'Okay', {
           duration: 3000
@@ -1044,6 +1045,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    */
   mapSubscriberInfo(subscriber, permissions = null) {
     const mappedData = {
+      userName: subscriber.userName ? subscriber.userName : '',
       userid: subscriber.userName ? subscriber.userName : '',
       groupid: subscriber.groupid ? subscriber.groupid : '',
       isAdmin: permissions ? permissions.isAdmin : subscriber.roleDesc === 'Admin',
@@ -1061,6 +1063,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       fullName: subscriber.fullName ? subscriber.fullName : (subscriber.userMdoModel) ? subscriber.userMdoModel.fullName : '',
       filterCriteria: (subscriber.filterCriteria) ? subscriber.filterCriteria : [],
       dataAllocation: (subscriber.dataAllocation) ? subscriber.dataAllocation : [],
+      isCopied: true
     };
 
     return mappedData;
