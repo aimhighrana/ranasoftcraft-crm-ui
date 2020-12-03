@@ -4,11 +4,27 @@
     <div class="f-row display-heading-large">
       <div>{{ getRoutedDescription }}</div>
       <span class="f-spacer"></span>
-      <button mat-button (click)="globalCreate()">
+      <button mat-button *ngIf="activatedPrimaryNav !== 'schema'; else isSchema" (click)="globalCreate()">
         <mat-icon fontSet="mdo-icons">plus</mat-icon>
       </button>
-      
+      <ng-template #isSchema>
+        <button mat-button [matMenuTriggerFor]="moduleMenu">
+          <mat-icon fontSet="mdo-icons">plus</mat-icon>
+        </button>
+        <mat-menu #moduleMenu="matMenu" xPosition="before" (closed)="searchInput.clearSearch()">
+          <div class="add-schema-menu">
+          <pros-search-input placeholder="Search for module" (value)="filterModulesMenu($event)" #searchInput prosClickStopPropagation></pros-search-input>
+          <mat-nav-list>
+            <mat-list-item *ngFor="let module of filteredModulesMenu"
+              (click)="openSchemaCreationSidesheet(module.moduleId)">
+                  {{module.moduleDesc ? module.moduleDesc : 'Untitled'}}
+            </mat-list-item>
+          </mat-nav-list>
+          </div>
+        </mat-menu>
+      </ng-template>
     </div>
+
     <div class="row-spacer"></div>
 
     <pros-search-input [placeholder]="activatedPrimaryNav ==='report' ? 'Search report' : 'Search Schema'" (value)=(searchSchema($event))></pros-search-input>

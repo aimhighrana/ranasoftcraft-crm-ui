@@ -22,6 +22,8 @@ export class CreateSchemaComponent implements OnInit, OnDestroy {
 
   schemaId: string;
 
+  moduleId: string;
+
   form: FormGroup;
 
   subscriptions: Subscription[] = [];
@@ -42,7 +44,7 @@ export class CreateSchemaComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach(sub=>{
+    this.subscriptions.forEach(sub => {
       sub.unsubscribe();
     });
     this.moduleListOb.complete();
@@ -53,8 +55,9 @@ export class CreateSchemaComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    this.activatedRouter.params.subscribe(res=>{
+    this.activatedRouter.params.subscribe(res => {
       this.schemaId = res.schemaId && res.schemaId === 'new' ? '' : res.schemaId;
+      this.moduleId = res.moduleId ? res.moduleId : '';
     });
 
     this.form = this.formBuilder.group({
@@ -64,24 +67,29 @@ export class CreateSchemaComponent implements OnInit, OnDestroy {
     });
 
 
-    const sub = this.schemaSrevice.getAllObjectType().subscribe(res=>{
-      this.moduleList = res;
-      this.moduleListOb.next(res);
-    }, error=> console.error('Error : {}', error.message));
-    this.subscriptions.push(sub);
+    if (this.moduleId) {
+      this.form.patchValue({ moduleId: this.moduleId });
+      this.form.get('moduleId').disable({ emitEvent: true, onlySelf: true });
+    } else {
+      const sub = this.schemaSrevice.getAllObjectType().subscribe(res => {
+        this.moduleList = res;
+        this.moduleListOb.next(res);
+      }, error => console.error('Error : {}', error.message));
+      this.subscriptions.push(sub);
+    }
 
-    if(this.schemaId) {
-      const subs = this.schemaListService.getSchemaDetailsBySchemaId(this.schemaId).subscribe(res=>{
+    if (this.schemaId) {
+      const subs = this.schemaListService.getSchemaDetailsBySchemaId(this.schemaId).subscribe(res => {
         this.schemaListDetails = res;
         this.schemaInfo.next(res);
-      }, error=> console.error(`Error : ${error}`));
+      }, error => console.error(`Error : ${error}`));
       this.subscriptions.push(subs);
     }
 
-    combineLatest([this.moduleListOb, this.schemaInfo]).subscribe(res=>{
-      if(res[0] && res[1]) {
-        this.form.setValue({moduleId: this.schemaListDetails.moduleId, schemaDescription: this.schemaListDetails.schemaDescription, threshold: this.schemaListDetails.schemaThreshold});
-        this.form.get('moduleId').disable({emitEvent:true,onlySelf:true});
+    combineLatest([this.moduleListOb, this.schemaInfo]).subscribe(res => {
+      if (res[0] && res[1]) {
+        this.form.setValue({ moduleId: this.schemaListDetails.moduleId, schemaDescription: this.schemaListDetails.schemaDescription, threshold: this.schemaListDetails.schemaThreshold });
+        this.form.get('moduleId').disable({ emitEvent: true, onlySelf: true });
       }
     });
 
@@ -99,7 +107,7 @@ export class CreateSchemaComponent implements OnInit, OnDestroy {
    * Close create schema side sheet
    */
   close() {
-    this.router.navigate([{ outlets: { sb: null }}]);
+    this.router.navigate([{ outlets: { sb: null } }]);
   }
 
   /**
@@ -109,14 +117,16 @@ export class CreateSchemaComponent implements OnInit, OnDestroy {
     console.log(this.form.value);
     const request: CreateUpdateSchema = new CreateUpdateSchema();
     request.moduleId = this.form.get('moduleId').value;
+    console.log(this.form.get('moduleId').value);
     request.discription = this.form.get('schemaDescription').value;
     request.schemaThreshold = this.form.get('threshold').value;
     request.schemaId = this.schemaId;
-    const sub = this.schemaSrevice.createUpdateSchema(request).subscribe(res=>{
+    const sub = this.schemaSrevice.createUpdateSchema(request).subscribe(res => {
+      this.matSnackBar.open(`Successfully saved`, `Close`, { duration: 5000 });
       this.close();
       this.sharedService.setRefreshSecondaryNav(SecondaynavType.schema);
-    }, error=>{
-      this.matSnackBar.open(`Something went wrong`, `Close`,{duration:5000});
+    }, error => {
+      this.matSnackBar.open(`Something went wrong`, `Close`, { duration: 5000 });
       console.error(`Error : ${error.message}`)
     });
     this.subscriptions.push(sub);

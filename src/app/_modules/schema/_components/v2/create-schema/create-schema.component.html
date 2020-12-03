@@ -13,7 +13,7 @@
     <div class="row-spacer"></div>
     <div class="f-col mdo-justify">
         <form [formGroup]="form">
-            <div class="f-col temp-field">
+            <div *ngIf="!moduleId" class="f-col temp-field">
                 <mat-label>Select module</mat-label>
                 <mat-form-field appearance="outline">
                     <mat-select formControlName="moduleId">
