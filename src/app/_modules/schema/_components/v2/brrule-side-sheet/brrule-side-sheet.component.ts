@@ -25,18 +25,18 @@ export class BrruleSideSheetComponent implements OnInit {
   businessRuleTypes: BusinessRules[] = RULE_TYPES;
   preDefinedRegex: Regex[] = PRE_DEFINED_REGEX;
 
-/**
- * source fields for transformation rule
- */
+  /**
+   * source fields for transformation rule
+   */
   sourceFieldsObject: FieldConfiguration = {
     list: [],
     labelKey: '',
     valueKey: ''
   }
 
-/**
- * target fields for transformation rule
- */
+  /**
+   * target fields for transformation rule
+   */
   targetFieldsObject: FieldConfiguration = {
     list: [],
     labelKey: '',
@@ -255,6 +255,7 @@ export class BrruleSideSheetComponent implements OnInit {
 
     this.currentControls = controls;
     this.form = new FormGroup(controls);
+    this.form.valueChanges.subscribe((data) => console.log(data))
 
     // Apply conditional validation based on rule type
     this.form.controls.rule_type.valueChanges
@@ -339,7 +340,7 @@ export class BrruleSideSheetComponent implements OnInit {
     let patchList = [];
 
     if (br.brType === BusinessRuleType.BR_METADATA_RULE) {
-      patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId', 'fields'];
+      patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId'];
     }
     if (br.brType === BusinessRuleType.BR_CUSTOM_SCRIPT) {
       patchList = ['rule_type', 'weightage'];
@@ -349,10 +350,10 @@ export class BrruleSideSheetComponent implements OnInit {
       this.patchTransformationFormData(br.transFormationSchema);
     }
     if (br.brType === BusinessRuleType.BR_REGEX_RULE) {
-      patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId', 'fields', 'standard_function', 'regex'];
+      patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId', 'standard_function', 'regex'];
     }
     if (br.brType === BusinessRuleType.BR_MANDATORY_FIELDS) {
-      patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId', 'fields'];
+      patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId'];
     }
 
     if (br.brType === BusinessRuleType.BR_DUPLICATE_RULE) {
@@ -361,20 +362,18 @@ export class BrruleSideSheetComponent implements OnInit {
 
     if (patchList && patchList.length > 0) {
       patchList.map((key) => {
-        this.form.get(key).setValue(dataToPatch[key]);
+        if(dataToPatch[key]){
+          if(key === 'categoryId') {
+            this.form.controls[key].setValue(`${dataToPatch[key]}`);
+          } else {
+            this.form.controls[key].setValue(dataToPatch[key]);
+          }
+        }
       });
     }
 
     this.form.get('rule_type').disable({ onlySelf: true, emitEvent: true });
     this.form.get('weightage').disable({ onlySelf: true, emitEvent: true });
-
-    // this.form.get('rule_type').setValue(br.brType);
-    // this.form.get('rule_type').disable({ onlySelf: true, emitEvent: true });
-    // this.form.get('rule_name').setValue(br.brInfo);
-    // this.form.get('error_message').setValue(br.message);
-
-    // this.form.get('standard_function').setValue(br.standardFunction);
-    // this.form.get('regex').setValue(br.regex);
   }
 
   /**
@@ -389,13 +388,13 @@ export class BrruleSideSheetComponent implements OnInit {
     if (currentType === this.transformationType.REGEX) {
       if (transformationSchema && transformationSchema.length > 0) {
         const data: TransformationModel = transformationSchema[0];
-        const { excludeScript, includeScript, sourceFld, targetFld, parameter } = data;
+        const { excludeScript, includeScript, sourceFld, targetFld, udrBlockModel } = data;
         this.transformationData = {
           excludeScript,
           includeScript,
           sourceFld,
           targetFld,
-          parameter
+          parameter: udrBlockModel
           // selectedTargetFields: []
         }
       }
@@ -409,9 +408,9 @@ export class BrruleSideSheetComponent implements OnInit {
             fieldDescri: '',
             fieldId: schema.sourceFld,
             fieldLookupConfig: {
-              lookupColumn: schema.parameter.conditionFieldId,
-              lookupColumnResult: schema.parameter.conditionValueFieldId,
-              moduleId: schema.parameter.objectType
+              lookupColumn: schema.udrBlockModel.conditionFieldId,
+              lookupColumnResult: schema.udrBlockModel.conditionValueFieldId,
+              moduleId: schema.udrBlockModel.objectType
             },
             lookupTargetField: schema.targetFld,
             lookupTargetText: ''
@@ -572,8 +571,6 @@ export class BrruleSideSheetComponent implements OnInit {
           valueKey: 'fieldId',
           list: this.fieldsList
         }
-        this.fieldsList = this.fieldsList.slice();
-
         this.filteredModules = of(this.fieldsList);
         // this.filteredFieldList = this.fieldsList;
         // this.duplicateFieldsObs = of(this.fieldsList);
@@ -608,13 +605,13 @@ export class BrruleSideSheetComponent implements OnInit {
    * function to save the array of ids of selected fields
    * @param event selected item eent
    */
-  selectedField(event) {
+  selectField(event) {
     const alreadyExists = this.selectedFields.find(item => item.fieldId === event.option.value);
     if (alreadyExists) {
       this.snackBar.open('This field is already selected', 'error', { duration: 5000 });
     } else {
       this.selectedFields.push({
-        fieldText: event.option.viewValue,
+        fieldDescri: event.option.viewValue,
         fieldId: event.option.value
       });
     }
@@ -707,7 +704,6 @@ export class BrruleSideSheetComponent implements OnInit {
 
       this.schemaService.saveUpdateUDR(udrDto).subscribe(res => {
         this.snackBar.open(`Successfully saved !`, 'Close', { duration: 5000 });
-        console.log(res);
         this.sharedService.setAfterBrSave(res);
         this.router.navigate([{ outlets: { sb: null } }]);
       }, error => {
@@ -717,9 +713,13 @@ export class BrruleSideSheetComponent implements OnInit {
     } else if (brType === BusinessRuleType.BR_DUPLICATE_RULE) {
       // save duplicate rule
       const brInfo = {
-        brId: this.brId, brIdStr: this.brId,
-        brType, brInfo: this.form.value.rule_name, message: this.form.value.error_message,
-        schemaId: this.schemaId, categoryId: this.coreSchemaBrInfo.categoryId
+        brId: this.brId,
+        brIdStr: this.brId,
+        brType,
+        brInfo: this.form.value.rule_name,
+        message: this.form.value.error_message,
+        schemaId: this.schemaId,
+        categoryId: this.coreSchemaBrInfo.categoryId
       } as CoreSchemaBrInfo;
 
       this.sharedService.emitSaveBrEvent(brInfo);
@@ -730,7 +730,7 @@ export class BrruleSideSheetComponent implements OnInit {
         ...this.form.value,
         brId: this.brId ? this.brId : '',
         brType,
-        transFormationSchema: this.mapTransformationData(response),
+        transFormationSchema: this.mapTransformationData(response, brType),
       }
       const brObject = this.createBrObject(finalFormData);
       this.schemaService.createBusinessRule(brObject).subscribe(res => {
@@ -748,7 +748,9 @@ export class BrruleSideSheetComponent implements OnInit {
       request.regex = this.form.value.regex;
       request.standardFunction = this.form.value.standard_function;
       request.schemaId = this.schemaId;
-      request.categoryId = this.coreSchemaBrInfo.categoryId ? this.coreSchemaBrInfo.categoryId : null;
+      request.moduleId = this.moduleId;
+      request.brWeightage = this.form.value.weightage;
+      request.categoryId = this.coreSchemaBrInfo.categoryId ? this.coreSchemaBrInfo.categoryId : this.form.value.categoryId;
 
       this.schemaService.createBusinessRule(request).subscribe(res => {
         this.sharedService.setAfterBrSave(res);
@@ -787,14 +789,15 @@ export class BrruleSideSheetComponent implements OnInit {
       dependantStatus: object.dependantStatus ? object.dependantStatus : 'ALL',
       plantCode: object.plantCode ? object.plantCode : '0',
       percentage: object.percentage ? object.percentage : 0,
-      schemaId: object.schemaId ? object.schemaId : '',
+      schemaId: this.schemaId,
       brIdStr: object.brIdStr ? object.brIdStr : '',
       udrDto: {
         udrHierarchies: object.udrHierarchies ? object.udrHierarchies : udrTreeData ? udrTreeData.udrHierarchies : [],
         blocks: object.blocks ? object.object : udrTreeData ? udrTreeData.blocks : []
       },
       transFormationSchema: object.transFormationSchema,
-      isCopied: object.isCopied? object.isCopied: false
+      isCopied: object.isCopied ? object.isCopied : false,
+      moduleId: this.moduleId
     } as CoreSchemaBrInfo;
   }
 
@@ -803,39 +806,41 @@ export class BrruleSideSheetComponent implements OnInit {
    * object to transformationschema format
    * @param response pass the response with formData and lookup object
    */
-  mapTransformationData(response) {
+  mapTransformationData(response, ruleType) {
     const { sourceFld, targetFld, includeScript, excludeScript, transformationRuleType } = response.formData;
     const transformationList: TransformationModel[] = [];
 
-    if (response.lookupData && response.lookupData.length > 0) {
-      response.lookupData.map((param: LookupFields) => {
+    if(ruleType === BusinessRuleType.BR_TRANSFORMATION){
+      if (response.lookupData && response.lookupData.length > 0) {
+        response.lookupData.map((param: LookupFields) => {
+          transformationList.push({
+            brId: '',
+            sourceFld: param.fieldId,
+            targetFld: param.lookupTargetField,
+            includeScript,
+            excludeScript,
+            transformationRuleType,
+            lookUpObjectType: '',
+            lookUptable: '',
+            udrBlockModel: this.createUDRBlockFromLookup(param)
+          })
+        })
+      } else {
         transformationList.push({
           brId: '',
-          sourceFld: param.fieldId,
-          targetFld: param.lookupTargetField,
+          sourceFld,
+          targetFld,
           includeScript,
           excludeScript,
           transformationRuleType,
           lookUpObjectType: '',
           lookUptable: '',
-          parameter: this.createUDRBlockFromLookup(param)
-        })
-      })
-    } else {
-      transformationList.push({
-        brId: '',
-        sourceFld,
-        targetFld,
-        includeScript,
-        excludeScript,
-        transformationRuleType,
-        lookUpObjectType: '',
-        lookUptable: '',
-        parameter: null
-      });
+          udrBlockModel: null
+        });
+      }
+      return transformationList;
     }
-
-    return transformationList;
+    return null;
   }
 
   /**
@@ -964,9 +969,10 @@ export class BrruleSideSheetComponent implements OnInit {
    * Get all categories from the api
    */
   getCategories() {
-    this.categoryList = [];
-    this.schemaDetailsService.getAllCategoryInfo().subscribe((response) => {
-      this.categoryList.push(...response)
+    this.schemaDetailsService.getAllCategoryInfo().subscribe((response: CategoryInfo[]) => {
+      if(response && response.length>0){
+        this.categoryList = response;
+      }
     })
   }
 
@@ -1006,6 +1012,10 @@ export class BrruleSideSheetComponent implements OnInit {
    */
   setLookupData(lookupData: LookupFields[]) {
     this.lookupData = lookupData;
+  }
+
+  displayFn(value) {
+    return value ? value.fieldDescri : '';
   }
 
 }

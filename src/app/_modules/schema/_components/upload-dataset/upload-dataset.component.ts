@@ -14,7 +14,7 @@ import { UserService } from '@services/user/userservice.service';
 import { NewBusinessRulesComponent } from '../new-business-rules/new-business-rules.component';
 import { GlobaldialogService } from '@services/globaldialog.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { CoreSchemaBrInfo, TransformationModel, DropDownValue, UDRBlocksModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { CoreSchemaBrInfo, TransformationModel, DropDownValue, UDRBlocksModel, BusinessRuleType } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { NewSchemaCollaboratorsComponent } from '../new-schema-collaborators/new-schema-collaborators.component';
 import { values, pick } from 'lodash';
@@ -776,38 +776,39 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
  * @param response pass the response with formData and lookup object
  */
   mapTransformationData(response) {
-    const { sourceFld, targetFld, includeScript, excludeScript, transformationRuleType } = response.formData;
+    const { sourceFld, targetFld, includeScript, excludeScript, transformationRuleType, rule_type } = response.formData;
     const transformationList: TransformationModel[] = [];
-
-    if (response.lookupData && response.lookupData.length > 0) {
-      response.lookupData.map((param: LookupFields) => {
+    if(rule_type === BusinessRuleType.BR_TRANSFORMATION){
+      if (response.lookupData && response.lookupData.length > 0) {
+        response.lookupData.map((param: LookupFields) => {
+          transformationList.push({
+            brId: '',
+            sourceFld: param.fieldId,
+            targetFld: param.lookupTargetField,
+            includeScript,
+            excludeScript,
+            transformationRuleType,
+            lookUpObjectType: '',
+            lookUptable: '',
+            udrBlockModel: this.createUDRBlockFromLookup(param)
+          })
+        })
+      } else {
         transformationList.push({
           brId: '',
-          sourceFld: param.fieldId,
-          targetFld: param.lookupTargetField,
+          sourceFld,
+          targetFld,
           includeScript,
           excludeScript,
           transformationRuleType,
           lookUpObjectType: '',
           lookUptable: '',
-          parameter: this.createUDRBlockFromLookup(param)
-        })
-      })
-    } else {
-      transformationList.push({
-        brId: '',
-        sourceFld,
-        targetFld,
-        includeScript,
-        excludeScript,
-        transformationRuleType,
-        lookUpObjectType: '',
-        lookUptable: '',
-        parameter: null
-      });
+          udrBlockModel: null
+        });
+      }
+      return transformationList;
     }
-
-    return transformationList;
+    return null;
   }
 
   /**

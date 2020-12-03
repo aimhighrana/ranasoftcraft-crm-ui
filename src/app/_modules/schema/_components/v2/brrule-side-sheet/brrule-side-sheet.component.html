@@ -41,10 +41,9 @@
                 <mat-label>Category</mat-label>
                 <mat-form-field appearance="outline">
                     <mat-select formControlName="categoryId">
-                        <ng-container *ngFor="let category of categoryList">
-                            <mat-option [value]="category.categoryId">{{category.categoryDesc}}
-                            </mat-option>
-                        </ng-container>
+                        <mat-option *ngFor="let category of categoryList" [value]="category.categoryId">
+                            {{category.categoryDesc}}
+                        </mat-option>
                     </mat-select>
                 </mat-form-field>
 
@@ -101,14 +100,15 @@
                     <mat-chip-list #chipList>
                         <mat-chip *ngFor="let field of selectedFields;let i = index" [removable]="true"
                             (removed)="remove(field,i)">
-                            {{field.fieldText}}
+                            {{field.fieldDescri}}
                             <mat-icon matChipRemove>cancel</mat-icon>
                         </mat-chip>
                         <input matInput id="fieldsInput" class="mat-input" [matAutocomplete]="auto"
                             formControlName="fields" [matChipInputFor]="chipList"
                             [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
                     </mat-chip-list>
-                    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectedField($event)">
+                    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectField($event)"
+                        [displayWith]="displayFn.bind(this)">
                         <mat-option *ngFor="let fieldItem of filteredModules | async" [value]="fieldItem.fieldId">
                             {{fieldItem.fieldDescri}}
                         </mat-option>

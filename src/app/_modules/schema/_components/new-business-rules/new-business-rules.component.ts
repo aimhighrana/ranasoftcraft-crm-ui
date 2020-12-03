@@ -266,13 +266,13 @@ export class NewBusinessRulesComponent implements OnInit {
         if (currentType === this.transformationType.REGEX) {
             if (transformationSchema && transformationSchema.length > 0) {
                 const data: TransformationModel = transformationSchema[0];
-                const { excludeScript, includeScript, sourceFld, targetFld, transformationRuleType, parameter } = data;
+                const { excludeScript, includeScript, sourceFld, targetFld, transformationRuleType, udrBlockModel } = data;
                 this.transformationData = {
                     excludeScript,
                     includeScript,
                     sourceFld,
                     targetFld,
-                    parameter
+                    parameter: udrBlockModel
                     // selectedTargetFields: []
                 }
             }
@@ -286,9 +286,9 @@ export class NewBusinessRulesComponent implements OnInit {
                         fieldDescri: '',
                         fieldId: schema.sourceFld,
                         fieldLookupConfig: {
-                            lookupColumn: schema.parameter.conditionFieldId,
-                            lookupColumnResult: schema.parameter.conditionValueFieldId,
-                            moduleId: schema.parameter.objectType
+                            lookupColumn: schema.udrBlockModel.conditionFieldId,
+                            lookupColumnResult: schema.udrBlockModel.conditionValueFieldId,
+                            moduleId: schema.udrBlockModel.objectType
                         },
                         lookupTargetField: schema.targetFld,
                         lookupTargetText: ''
