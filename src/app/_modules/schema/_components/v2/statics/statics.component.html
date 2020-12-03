@@ -1,0 +1,66 @@
+<div class="root">
+    <div class="row-spacer"></div>
+    <div class="f-row">
+        <mat-chip-list>
+            <!------------------------1------------------------>
+            <mat-chip class="mdo-filter-matchip" [matMenuTriggerFor]="addfilter" disableRipple="true">
+                <label>Subset filter:</label> <span class="info">All</span>
+                <mat-icon matChipRemove>clear</mat-icon>
+            </mat-chip>
+            <mat-menu #addfilter="matMenu" class="navigation-menu">
+                <div class="f-col">
+                    <pros-search-input></pros-search-input>
+                    <mat-nav-list role="navigation">
+                        <mat-list-item>
+                            <mat-checkbox color="primary"> Customer</mat-checkbox>
+                        </mat-list-item>
+                        <mat-list-item>
+                            <mat-checkbox color="primary"> Order</mat-checkbox>
+                        </mat-list-item>
+                        <mat-list-item>
+                            <mat-checkbox color="primary"> Value</mat-checkbox>
+                        </mat-list-item>
+                    </mat-nav-list>
+                    <button mat-flat-button="" color="accent"> Apply</button>
+                </div>
+            </mat-menu>
+
+            <!------------------------2---------------------->
+            <mat-chip class="mdo-filter-matchip" [matMenuTriggerFor]="addfilters" disableRipple="true">
+                <label>Run by:</label> <span class="info">Rick Woods</span>
+                <mat-icon matChipRemove>clear</mat-icon>
+            </mat-chip>
+            <mat-menu #addfilters="matMenu" class="navigation-menu">
+                <div class="f-col">
+                    <pros-search-input></pros-search-input>
+                    <mat-nav-list role="navigation">
+                        <mat-list-item>
+                            <div mat-line>Customer</div>
+                        </mat-list-item>
+                        <mat-list-item>
+                            <div mat-line>Order</div>
+                        </mat-list-item>
+                        <mat-list-item>
+                            <div mat-line>Vender</div>
+                        </mat-list-item>
+                        <mat-list-item>
+                            <div mat-line>Unit of measure</div>
+                        </mat-list-item>
+                    </mat-nav-list>
+                </div>
+            </mat-menu>
+
+            <!----------------------3----------------------->
+            <mat-chip class="mdo-filter-matchip" disableRipple="true">
+                <label>Date:</label> <span class="info">This month</span>
+                <mat-icon matChipRemove>clear</mat-icon>
+            </mat-chip>
+        </mat-chip-list>
+    </div>
+    <div class="row-spacer"></div>
+
+    <pros-execution-result></pros-execution-result>
+    <div class="row-spacer"></div>
+    <pros-execution-trend></pros-execution-trend>
+
+</div>

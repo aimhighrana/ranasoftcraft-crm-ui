@@ -1,0 +1,20 @@
+<div class="root">
+  <div class="f-row breadcrum-toolbar">
+    <div class="display-heading-large">Schema execution results</div>
+    <span class="f-spacer"></span>
+     <button mat-button>
+       <mat-icon fontSet="mdo-icons">more</mat-icon>
+     </button>
+    <div class="row-spacer"></div>
+  </div>
+  <div class="f-col">
+    <canvas baseChart
+      [datasets]="barChartData"
+      [labels]="barChartLabels"
+      [options]="barChartOptions"
+      [plugins]="barChartPlugins"
+      [legend]="barChartLegend"
+      [chartType]="barChartType">
+    </canvas>
+  </div>
+</div>

@@ -49,6 +49,7 @@ import { ExclusionsSidesheetComponent } from './_components/v2/brrule-side-sheet
 import { DetailBuilderComponent } from './_components/v2/_builder/detail-builder/detail-builder.component';
 import { SchemaListsComponent } from './_components/v2/schema-lists/schema-lists.component';
 import { BusinessrulelibrarySidesheetComponent } from './_components/businessrulelibrary-sidesheet/businessrulelibrary-sidesheet.component';
+import { StaticsComponent } from './_components/v2/statics/statics.component';
 
 
 const routes: Routes = [
@@ -107,6 +108,7 @@ const routes: Routes = [
   { path: 'system/new-noun-sidesheet', component: NewNounSidesheetComponent },
   { path: 'system/library-mapping-sidesheet', component: LibraryMappingSidesheetComponent },
   { path: 'businessrule-library/:schemaId/:outlet', component: BusinessrulelibrarySidesheetComponent},
+  { path: ':moduleId/statics/:schemaId', component: StaticsComponent },
 
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent }
