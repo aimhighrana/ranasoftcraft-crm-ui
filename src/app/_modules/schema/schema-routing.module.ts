@@ -50,7 +50,8 @@ import { DetailBuilderComponent } from './_components/v2/_builder/detail-builder
 import { SchemaListsComponent } from './_components/v2/schema-lists/schema-lists.component';
 import { BusinessrulelibrarySidesheetComponent } from './_components/businessrulelibrary-sidesheet/businessrulelibrary-sidesheet.component';
 import { StaticsComponent } from './_components/v2/statics/statics.component';
-
+import { BusinessCaseRuleComponent } from './_components/business-case-rule/business-case-rule.component';
+import { BusinessConcatenationComponent } from './_components/business-concatenation/business-concatenation.component';
 
 const routes: Routes = [
   { path: 'group/:groupId', component: SchemaGroupFormComponent },
@@ -109,6 +110,8 @@ const routes: Routes = [
   { path: 'system/library-mapping-sidesheet', component: LibraryMappingSidesheetComponent },
   { path: 'businessrule-library/:moduleId/:schemaId/:outlet', component: BusinessrulelibrarySidesheetComponent},
   { path: ':moduleId/statics/:schemaId', component: StaticsComponent },
+  { path: 'system/business-case-rule', component: BusinessCaseRuleComponent },
+  { path: 'system/business-concatenation', component: BusinessConcatenationComponent },
 
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent }
