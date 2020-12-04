@@ -17,6 +17,8 @@ export class SchemaDataSource implements DataSource<SchemaTableData> {
 
     public brMetadata: BehaviorSubject<SchemaBrInfo[]> = new BehaviorSubject<SchemaBrInfo[]>(null);
 
+    public targetField = '';
+
     constructor(
         private schemaDetailService: SchemaDetailsService,
         private endpointService: EndpointService,
@@ -24,6 +26,13 @@ export class SchemaDataSource implements DataSource<SchemaTableData> {
     ) {
         this.schemaDetailService.getSchemaBrInfoList(this.schemaId).subscribe(res=>{
             this.brMetadata.next(res);
+            // if rule type is transformation then should have tragetField
+            const lookupTransformation = res.filter(r=> r.brType === 'BR_TRANSFORMATION');
+            if(lookupTransformation && lookupTransformation.length>0) {
+                const lastBr = lookupTransformation[lookupTransformation.length-1];
+                const lookUpInfo = lastBr.transformationModel.filter(t=> t.transformationRuleType === 'LOOKUP')[0];
+                this.targetField = lookUpInfo ? lookUpInfo.targetFld : '';
+            }
         }, error=>{
             console.error('Error : ', error.message);
         })

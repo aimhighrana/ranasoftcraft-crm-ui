@@ -13,7 +13,7 @@
     <div class="row-spacer"></div>
     <div class="f-col mdo-justify">
         <form [formGroup]="form">
-            <div *ngIf="!moduleId" class="f-col temp-field">
+            <div class="f-col temp-field" *ngIf="!moduleId">
                 <mat-label>Select module</mat-label>
                 <mat-form-field appearance="outline">
                     <mat-select formControlName="moduleId">
@@ -26,6 +26,20 @@
                 <mat-error *ngIf="form.controls.moduleId.invalid && form.controls.moduleId.touched">Please select a
                     module</mat-error>
             </div>
+
+            <div class="f-col temp-field">
+                <mat-label>Select output view</mat-label>
+                <mat-form-field appearance="outline">
+                    <mat-select formControlName="schemaCategory">
+                        <mat-option value="DATAQUALITY_VIEW">Data quality view</mat-option>
+                        <mat-option value="POTEXT_VIEW">Po text / Catalog view</mat-option>
+                        <mat-option value="MRO_CLASSIFICATION_VIEW">Mro classification view</mat-option>
+                        <mat-option value="DUPLICACY_VIEW">Duplicacy view </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+
             <div class="f-col temp-field">
                 <pros-form-input label="Enter schema name" (valueChange)="changedSchemaName($event)"
                     [value]="schemaListDetails ? schemaListDetails.schemaDescription : ''">

@@ -23,6 +23,11 @@
             </mat-menu>
         </div>
         <div class="f-spacer"></div>
+        <ng-template [ngIf]="activeTab === 'review'">
+            <button mat-flat-button color="accent" class="mat-elevation-z0" (click)="submitReviewRec()">
+                Submit
+            </button>
+        </ng-template>
         <button mat-flat-button color="accent">
             <mat-icon fontSet="mdo-icons">wand</mat-icon> Check data
         </button>
@@ -43,10 +48,10 @@
     <div class="row-spacer"></div>
     <div class="f-row">
         <mat-chip-list>
-            <mat-chip disableRipple="true">
+            <mat-chip disableRipple="true" (click)="changeTabStatus('success')">
                 {{ statics ? statics.errorCnt : 0 }} error</mat-chip>
-            <mat-chip disableRipple="true">0 warning</mat-chip>
-            <mat-chip disableRipple="true">
+            <!-- <mat-chip disableRipple="true">0 warning</mat-chip> -->
+            <mat-chip disableRipple="true" (click)="changeTabStatus('review')">
                 {{ statics ? statics.correctedCnt : 0 }} corrections</mat-chip>
         </mat-chip-list>
     </div>
@@ -58,35 +63,72 @@
             <div class="f-col dataset-grid-listing">
                 <!-- Filters  -->
                 <div class="f-row">
-                    <pros-search-input></pros-search-input>
+                    
+                    <pros-search-input placeholder="Search" (value)="inlineSearch($event)" [preValue]="preInpVal">
+                    </pros-search-input>
                     <div class="f-col-spacer-half"></div>
-                    <!-- <mat-chip-list>
-                        <mat-chip class="mdo-filter-matchip" disableRipple="true">
-                            <label>Status:</label> <span class="info">All</span>
-                            <mat-icon matChipRemove>clear</mat-icon>
+                    <!-- Append dynamic filter here ..-->
+            
+                    <mat-chip-list>
+                        <ng-template ngFor let-ctrl [ngForOf]="filterCriteria | async">
+                            <ng-template [ngIf]="ctrl.type !== 'INLINE'">
+                                <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="appliedfiltermenu"
+                                    (click)="loadDropValues(ctrl)">
+                                    <label>
+                                        {{ ctrl.filterCtrl ? ctrl.filterCtrl.fldCtrl.fieldDescri : 'Unknown' }} :
+                                    </label>
+                                    <ng-template [ngIf]="ctrl.filterCtrl.selectedValeus.length > 1" [ngIfElse]="showText">
+                                        <span class="info">
+                                            {{ prepareTextToShow(ctrl) }}
+                                        </span>
+                                    </ng-template>
+                                    <ng-template #showText>
+                                        <span class="info">
+                                            <!-- {{ ctrl.filterCtrl ? (ctrl.filterCtrl.selectedValeus[0].TEXT ? ctrl.filterCtrl.selectedValeus[0].TEXT : ctrl.filterCtrl.selectedValeus[0].CODE) : ''}} -->
+                                            {{ prepareTextToShow(ctrl)}}
+                                        </span>
+                                    </ng-template>
+                                    <mat-icon matChipRemove (click)="removeAppliedFilter(ctrl)">clear</mat-icon>
+                                </mat-chip>
+                            </ng-template>
+                        </ng-template>
+            
+                    </mat-chip-list>
+            
+                    <div class="f-col-spacer-half"></div>
+            
+                    <!-- Append dynamic filter MatMenu -->
+                    <mat-menu #appliedfiltermenu="matMenu">
+                        <pros-filter-values [fieldId]="loadDopValuesFor ? loadDopValuesFor.fieldId : ''"
+                            [checkedValue]="loadDopValuesFor ? loadDopValuesFor.checkedValue : []" (selectedValues)="updateFilterCriteria($event)"></pros-filter-values>
+                    </mat-menu>
+            
+                    <mat-chip-list>
+                        <!-- Add filter control -->
+                        <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="addfiltermenu"
+                            (click)="reInilize = !reInilize">
+                            <mat-icon fontSet="mdo-icons">filter-add</mat-icon>
                         </mat-chip>
-                        <mat-chip class="mdo-filter-matchip" disableRipple="true">
-                            <label>Attributes:</label> <span class="info">12mm</span>
-                            <mat-icon matChipRemove>clear</mat-icon>
+                        <!-- Add filter control MatMenu -->
+                        <mat-menu #addfiltermenu="matMenu">
+                            <pros-add-filter-menu [moduleId]="moduleId" (evtReadyForApply)="makeFilterControl($event)"
+                                [reInilize]="reInilize">
+                            </pros-add-filter-menu>
+                        </mat-menu>
+                        <!-- More control -->
+                        <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="moreFilterMenu">
+                            <mat-icon>more_horiz</mat-icon>
                         </mat-chip>
+                        <!-- More control MatMenu -->
+                        <mat-menu #moreFilterMenu="matMenu">
+                            <mat-nav-list>
+                                <a mat-list-item (click)="opnDialogSaveVariant()">Save as...</a>
+                                <a mat-list-item (click)="resetAppliedFilter()">Reset</a>
+                            </mat-nav-list>
+                        </mat-menu>
+                    </mat-chip-list>
 
-                        <mat-chip class="mdo-filter-matchip" disableRipple="true">
-                            <label>Diameter:</label> <span class="info">12mm</span>
-                            <mat-icon matChipRemove>clear</mat-icon>
-                        </mat-chip>
-                        <mat-chip class="mdo-filter-matchip" disableRipple="true">
-                            <label>Color:</label> <span class="info">All</span>
-                            <mat-icon matChipRemove>clear</mat-icon>
-                        </mat-chip>
 
-                        <mat-chip class="mdo-filter-matchip" disableRipple="true">
-                                <mat-icon fontSet="mdo-icons">folder-filter</mat-icon>
-                        </mat-chip>
-
-                        <mat-chip class="mdo-filter-matchip" disableRipple="true">
-                            <mat-icon fontSet="mdo-icons">more</mat-icon>
-                    </mat-chip>
-                    </mat-chip-list> -->
                 </div>
 
                 <div class="row-spacer"></div>
@@ -125,38 +167,46 @@
                         </mat-header-cell>
                         <mat-cell *matCellDef="let element" class="fixed-width-c2">
                             <div class="f-row action-iconbtns">
-                                <button mat-fab color="accent" [matMenuTriggerFor]="moreactions">
+                                <!-- <button mat-fab color="accent" [matMenuTriggerFor]="moreactions">
                                     <mat-icon fontSet="mdo-icons">more</mat-icon>
                                 </button>
                                 <mat-menu #moreactions="matMenu" class="navigation-menu">
                                     <button mat-menu-item>Assign to...</button>
                                     <button mat-menu-item>Ignore</button>
-                                </mat-menu>
+                                </mat-menu> -->
 
                                 <button mat-fab color="accent" *ngIf="element['CATALOG_ID'] === undefined ||  !element['CATALOG_ID'].fieldData"
                                 (click)="generateCrossEntry(element)">
                                     <mat-icon fontSet="mdo-icons">plus</mat-icon>
                                 </button>
+
+                                <ng-template [ngIf]="activeTab === 'review'">
+                                    <button mat-button (click)="approveRecords('inline', element)"
+                                        *ngIf="!element['OBJECTNUMBER'].isReviewed">
+                                        <mat-icon>done</mat-icon>
+                                    </button>
+                                </ng-template>
                             </div>
                         </mat-cell>
                     </ng-container>
 
                     <!-- Name Column -->
-                    <ng-container matColumnDef="catalog_id">
+                    <!-- <ng-container matColumnDef="catalog_id">
                         <mat-header-cell *matHeaderCellDef> Catalog ID </mat-header-cell>
                         <mat-cell mat-cell *matCellDef="let element">
                             {{ element['CATALOG_ID'] ? ( element['CATALOG_ID'].fieldData ? element['CATALOG_ID'].fieldData : '?') : '?' }}
 
                         </mat-cell>
-                    </ng-container>
+                    </ng-container> -->
 
                     <!-- load dynamic columns-->
                 <ng-template ngFor let-dynCols [ngForOf]="(displayedFields | async)">
                     <ng-template
-                        [ngIf]="(dynCols === 'catalog_id') || (dynCols === 'action') || (dynCols === 'checkbox_select') || (dynCols === 'bucket_assigned')" [ngIfElse]="other">
+                        [ngIf]="(dynCols === 'action') || (dynCols === 'checkbox_select') || (dynCols === 'bucket_assigned')" [ngIfElse]="other">
                         <!-- skip all static columns -->
                     </ng-template>
                     <ng-template #other>
+
                         <ng-container [matColumnDef]="dynCols">
                             <mat-header-cell *matHeaderCellDef mat-sort-header>
                                 {{ metadataFldLst[dynCols] ? metadataFldLst[dynCols].fieldDescri : 'Unknown' }}
@@ -173,9 +223,7 @@
 
                                 </div>
 
-                                {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].fieldData) : '' }}
-
-                                <!-- <ng-template [ngIf]="element[dynCols] && element[dynCols].isCorrected"
+                                <ng-template [ngIf]="element[dynCols] && element[dynCols].isCorrected"
                                     [ngIfElse]="normalCell">
                                     <ng-template [ngIf]="element[dynCols].oldData !== element[dynCols].fieldData"
                                         [ngIfElse]="other">
@@ -202,10 +250,11 @@
                                     <span class="error-message" style="color: red;">
                                         {{ element[dynCols] ? element[dynCols].errorMsg : '' }}
                                     </span>
-                                </ng-template> -->
+                                </ng-template>
 
                             </mat-cell>
                         </ng-container>
+                        
                     </ng-template>
                 </ng-template>
 

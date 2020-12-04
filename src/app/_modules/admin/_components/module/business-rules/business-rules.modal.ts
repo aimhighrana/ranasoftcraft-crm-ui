@@ -62,6 +62,7 @@ export enum BusinessRuleType {
     BR_EXTERNALVALIDATION_RULE = 'BR_EXTERNALVALIDATION_RULE',
     BR_REGEX_RULE = 'BR_REGEX_RULE',
     BR_TRANSFORMATION = 'BR_TRANSFORMATION',
+    BR_CLASSIFICATION = 'BR_CLASSIFICATION',
 }
 
 export const RULE_TYPES = [
@@ -75,6 +76,7 @@ export const RULE_TYPES = [
     { ruleDesc: 'Regex Rule', ruleId: '', ruleType: BusinessRuleType.BR_REGEX_RULE, isImplemented: true },
     { ruleDesc: 'User Defined Rule', ruleId: '', ruleType: BusinessRuleType.BR_CUSTOM_SCRIPT, isImplemented: true },
     { ruleDesc: 'Transformation Rule', ruleId: '', ruleType: BusinessRuleType.BR_TRANSFORMATION, isImplemented: true },
+    { ruleDesc: 'Mro Classification Rule', ruleId: '', ruleType: BusinessRuleType.BR_CLASSIFICATION, isImplemented: true },
 ];
 
 export const PRE_DEFINED_REGEX = [
@@ -96,6 +98,7 @@ export class CreateUpdateSchema {
     schemaId: string;
     schemaGroupId: string;
     schemaThreshold: string;
+    schemaCategory: string;
     brs: CoreSchemaBrInfo[];
 }
 

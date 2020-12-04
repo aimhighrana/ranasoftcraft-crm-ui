@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ComponentFactoryResolver, Input, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, ComponentFactoryResolver, Input, OnChanges, SimpleChanges, OnDestroy, ViewContainerRef } from '@angular/core';
 import { MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaCorrectionReq, FilterCriteria, FieldInputType, SchemaTableViewFldMap } from '@models/schema/schemadetailstable';
 import { ActivatedRoute, Router } from '@angular/router';
 import { throwError, BehaviorSubject, combineLatest, Subscription } from 'rxjs';
@@ -16,6 +16,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { SchemaDataSource } from '@modules/schema/_components/schema-details/schema-datatable/schema-data-source';
+import { ContainerRefDirective } from '@modules/shared/_directives/container-ref.directive';
+import { TableCellInputComponent } from '@modules/shared/_components/table-cell-input/table-cell-input.component';
+import { SaveVariantDialogComponent } from '../../save-variant-dialog/save-variant-dialog.component';
+import { AddFilterOutput } from '@models/schema/schema';
 
 @Component({
   selector: 'pros-potext-view',
@@ -70,7 +74,7 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Static column for actions
    */
-  startColumns = ['checkbox_select', 'bucket_assigned', 'action', 'catalog_id'];
+  startColumns = ['checkbox_select', 'bucket_assigned', 'action'];
 
   /**
    * All display column fieldid should be here
@@ -86,7 +90,7 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
    * Store info about active tab..
    */
   @Input()
-  activeTab = 'error';
+  activeTab = 'success';
 
   /**
    * Executed statics of schema
@@ -177,6 +181,7 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
     private componentFactoryResolver: ComponentFactoryResolver,
     private schemavariantService: SchemaVariantService
 
+
   ) { }
 
   ngOnDestroy(): void {
@@ -193,26 +198,27 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
     if(changes && changes.moduleId && changes.moduleId.currentValue !== changes.moduleId.previousValue) {
       this.moduleId = changes.moduleId.currentValue;
       isRefresh = true;
+      this.getFldMetadata();
     }
 
     if(changes && changes.schemaId && changes.schemaId.currentValue !== changes.schemaId.previousValue) {
       this.schemaId = changes.schemaId.currentValue;
       isRefresh = true;
+      this.getSchemaStatics();
+      this.getSchemaDetails();
     }
 
     if(changes && changes.variantId && changes.variantId.currentValue !== changes.variantId.previousValue) {
       this.variantId = changes.variantId.currentValue ? changes.variantId.currentValue : 0;
       isRefresh = true;
-    }
-
-    if(isRefresh) {
-      this.getFldMetadata();
-      this.dataSource = new SchemaDataSource(this.schemaDetailService, this.endpointservice, this.schemaId);
-      this.getSchemaStatics();
-      this.getSchemaDetails();
       if(this.variantId !== '0') {
         this.getVariantDetails();
       }
+    }
+
+    if(isRefresh) {
+      this.dataSource = new SchemaDataSource(this.schemaDetailService, this.endpointservice, this.schemaId);
+
       /**
        * Get all user selected fields based on default view ..
        */
@@ -226,19 +232,15 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
       this.preInpVal = '';
 
       if(changes && changes.activeTab && changes.activeTab.currentValue !== changes.activeTab.previousValue) {
-        this.activeTab = changes.activeTab.currentValue;
+        this.activeTab = changes.activeTab.currentValue &&  changes.activeTab.currentValue === 'error'? 'success' : changes.activeTab.currentValue;
       }
-  }
-
-  ngOnInit(): void {
       /**
        * Get onload data ..
        */
-      this.dataSource.brMetadata.subscribe(res=>{
-        if(res) {
-          this.getData();
-        }
-      });
+      this.getData();
+  }
+
+  ngOnInit(): void {
 
     /**
      * After choose columns get updated columns ..
@@ -399,7 +401,7 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
     request.variantId = this.variantId;
     request.fetchCount = fetchCount ? fetchCount : 0;
     request.fetchSize = 20;
-    request.requestStatus = 'success';
+    request.requestStatus = this.activeTab ? this.activeTab : 'success';
     request.filterCriterias = filterCriteria;
     request.sort = sort;
     request.isLoadMore = isLoadMore ? isLoadMore : false;
@@ -423,11 +425,11 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
     // update state of columns
     this.calculateDisplayFields();
 
-    if(status === 'error' || status === 'success') {
-      this.getData(this.filterCriteria.getValue(), this.sortOrder);
-    } else {
-      this.getData();
-    }
+    // if(status === 'error' || status === 'success') {
+    //   this.getData(this.filterCriteria.getValue(), this.sortOrder);
+    // } else {
+    //   this.getData();
+    // }
   }
 
   /**
@@ -547,6 +549,47 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   /**
+   * Make control for prepare filter for ...
+   * @param fld ready for applied filter control
+   */
+  makeFilterControl(fld: AddFilterOutput) {
+    console.log(fld);
+    this.trigger.closeMenu();
+
+    const exitingFilterCtrl = this.filterCriteria.getValue() ? this.filterCriteria.getValue() : [];
+    const extFld =  exitingFilterCtrl.filter(fil=> fil.fieldId === fld.fldCtrl.fieldId)[0];
+
+    const filterCtrl: FilterCriteria = new FilterCriteria();
+    filterCtrl.fieldId = fld.fldCtrl.fieldId;
+    filterCtrl.type = 'DROPDOWN';
+    filterCtrl.filterCtrl = fld;
+    filterCtrl.values = fld.selectedValues.map(map=> map.CODE);
+
+    if(extFld) {
+      exitingFilterCtrl.splice(exitingFilterCtrl.indexOf(extFld), 1);
+    }
+    exitingFilterCtrl.push(filterCtrl);
+    this.filterCriteria.next(exitingFilterCtrl);
+  }
+
+
+  /**
+   * Preapare data to show as a labal ..
+   * @param ctrl get filter control and prepare data for view
+   */
+  prepareTextToShow(ctrl: FilterCriteria): string {
+    const selCtrl = ctrl.filterCtrl.selectedValues.filter(fil => fil.FIELDNAME === ctrl.fieldId);
+    if(selCtrl && selCtrl.length>1) {
+      const fld = this.filterCriteria.getValue().filter(fil => fil.fieldId === ctrl.fieldId);
+      if(fld && fld.length>0) {
+        const sel = fld[0].filterCtrl.selectedValues.filter(f => f.FIELDNAME === ctrl.fieldId);
+        return String(sel.length);
+      }
+    }
+    return ((selCtrl && selCtrl.length === 1) ? (selCtrl[0].TEXT ? selCtrl[0].TEXT: selCtrl[0].CODE) : 'Unknown');
+  }
+
+  /**
    * Remove applied filter ..
    * @param ctrl control for remove applied filter
    */
@@ -558,6 +601,7 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
       this.filterCriteria.next(exitingFilterCtrl);
     }
   }
+
 
   /**
    * Submit reviewed records
@@ -588,7 +632,20 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  /**
+   * Open dialog for save applied filters ..
+   */
+  opnDialogSaveVariant() {
+    const ref = this.matDialog.open(SaveVariantDialogComponent,{
+      width: '600px',
+      height:'450px',
+      data:{schemaInfo: this.schemaInfo , variantId: this.variantId, moduleId: this.moduleId, filterData: this.filterCriteria.getValue()}
+    });
 
+    ref.afterClosed().subscribe(res=>{
+      console.log(res);
+    });
+  }
   /**
    * Reset applied filter
    */
@@ -684,6 +741,10 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
    * @param row get selected row data
    */
   generateCrossEntry(row: any) {
+    const tragetFld = this.dataSource.targetField;
+    if(!tragetFld) {
+      throwError('Tragetfield cant be null or empty ');
+    }
     const objNr = row && row.OBJECTNUMBER ? row.OBJECTNUMBER.fieldData : '';
     if(!objNr)  {
       throwError(`Objectnumber must be required !!!`);
@@ -692,10 +753,112 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
       console.log(res);
       const oldData = this.dataSource.docValue();
       const sameDoc = oldData.filter(fil => (fil as any).OBJECTNUMBER.fieldData === objNr)[0];
-      (sameDoc as any).CATALOG_ID.fieldData = res;
+      sameDoc[tragetFld].fieldData = res;
       this.dataSource.setDocValue(oldData);
+
+      // put into correction tab
+      const request: SchemaCorrectionReq = {id: [objNr],fldId:tragetFld,vc: res, isReviewed: null} as SchemaCorrectionReq;
+        this.schemaDetailService.doCorrection(this.schemaId, request).subscribe(r=>{
+          if(r.acknowledge) {
+            this.statics.correctedCnt = r.count? r.count : 0;
+          }
+        }, error=>{
+          this.snackBar.open(`Something went wrong `, 'Close',{duration:2000});
+          console.error(`Error :: ${error.message}`);
+        });
     }, error=>{console.error(`Exception while generating coss module .. ${error.message}`)});
     this.subscribers.push(sub);
   }
+
+
+
+  /**
+   *
+   * @param fldid editable field id
+   * @param row entire row should be here
+   */
+  editCurrentCell(fldid: string, row: any, rIndex: number, containerRef: ContainerRefDirective) {
+    console.log(fldid);
+    console.log(row);
+
+    const field = this.selectedFields.find(f => f.fieldId === fldid);
+    if(field && !field.editable){
+      console.log('Edit is disabled for this field ! ', fldid);
+      return ;
+    }
+
+    if(document.getElementById('inpctrl_'+fldid + '_' + rIndex)) {
+      const inpCtrl = document.getElementById('inpctrl_'+fldid + '_'+ rIndex) as HTMLDivElement;
+      const viewCtrl = document.getElementById('viewctrl_'+fldid + '_' + rIndex) as HTMLSpanElement;
+      // const inpValCtrl = document.getElementById('inp_'+ fldid + '_' + rIndex) as HTMLInputElement;
+
+      inpCtrl.style.display = 'block';
+      // inpValCtrl.focus();
+      viewCtrl.style.display = 'none';
+
+      // add a dynamic cell input component
+      this.addDynamicInput(fldid, row, rIndex,containerRef);
+
+    }
+  }
+
+  /**
+   * After value change on & also call service for do correction
+   * @param fldid fieldid that have blur triggered
+   * @param value current changed value
+   * @param row row data ..
+   */
+  emitEditBlurChng(fldid: string, value: any, row: any, rIndex: number, viewContainerRef? : ViewContainerRef) {
+    console.log(value);
+    if(document.getElementById('inpctrl_'+fldid + '_' + rIndex)) {
+
+      // DOM control after value change ...
+      const inpCtrl = document.getElementById('inpctrl_'+fldid + '_'+ rIndex) as HTMLDivElement;
+      const viewCtrl = document.getElementById('viewctrl_'+fldid + '_' + rIndex) as HTMLSpanElement;
+
+      // clear the dynamic cell input component
+      viewContainerRef.clear();
+
+      inpCtrl.style.display = 'none';
+      viewCtrl.innerText = value;
+      viewCtrl.style.display = 'block';
+
+      // DO correction call for data
+      const objctNumber = row.OBJECTNUMBER.fieldData;
+      const oldVal = row[fldid] ? row[fldid].fieldData : '';
+      if(objctNumber && oldVal !== value) {
+        const request: SchemaCorrectionReq = {id: [objctNumber],fldId:fldid,vc: value, isReviewed: null} as SchemaCorrectionReq;
+        this.schemaDetailService.doCorrection(this.schemaId, request).subscribe(res=>{
+          row[fldid].fieldData = value;
+          if(res.acknowledge) {
+            this.statics.correctedCnt = res.count? res.count : 0;
+          }
+        }, error=>{
+          this.snackBar.open(`Error :: ${error}`, 'Close',{duration:2000});
+          console.error(`Error :: ${error.message}`);
+        });
+      } else {
+        console.error(`Wrong with object number or can't change if old and new same  ... `);
+      }
+    }
+
+  }
+
+  addDynamicInput(fldid: string, row: any, rIndex: number, containerRef: ContainerRefDirective){
+
+    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(
+      TableCellInputComponent
+    );
+
+    // add the input component to the cell
+    const componentRef = containerRef.viewContainerRef.createComponent(componentFactory);
+    // binding dynamic component inputs/outputs
+    componentRef.instance.fieldId = fldid;
+    componentRef.instance.inputType = this.getFieldInputType(fldid);
+    componentRef.instance.value = row[fldid] ? row[fldid].fieldData : '';
+    componentRef.instance.inputBlur.subscribe(value => this.emitEditBlurChng(fldid, value, row, rIndex, containerRef.viewContainerRef));
+
+  }
+
 
 }

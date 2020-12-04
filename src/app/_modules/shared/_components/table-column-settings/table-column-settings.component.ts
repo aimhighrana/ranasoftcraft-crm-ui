@@ -162,7 +162,7 @@ export class TableColumnSettingsComponent implements OnInit{
    * @param fld field for checking is selected or not
    */
   isChecked(fld: MetadataModel): boolean {
-    const selCheck = this.data.selectedFields.findIndex(f => f.fieldId && f.fieldId === fld.fieldId);
+    const selCheck = this.data.selectedFields.findIndex(f => (f.fieldId ? f.fieldId : f) === fld.fieldId);
     return selCheck !==-1 ? true : false;
   }
 

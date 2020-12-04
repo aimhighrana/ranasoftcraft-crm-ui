@@ -334,6 +334,7 @@ export class SchemaBrInfo {
     schemaOrder: number;
     brDescription: string;
     udrblocks: UDRBlocksModel[];
+    transformationModel: TransformationFormData[];
 }
 
 export class FieldExitsResponse {
@@ -413,6 +414,7 @@ export interface TransformationFormData {
     excludeScript: string;
     includeScript: string;
     selectedTargetFields?: any[];
+    transformationRuleType?:string;
     parameter: UDRBlocksModel;
 }
 

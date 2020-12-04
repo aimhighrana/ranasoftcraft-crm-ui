@@ -203,6 +203,11 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    */
   canEditSchedule: boolean;
 
+  /**
+   * Define schema execution final view
+   */
+  schemaCategory: FormControl;
+
   dialogSubscriber = new Subscription();
   inputModel = new FormControl();
   subscriberFilterFields = [];
@@ -321,6 +326,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       threshold: new FormControl(100),
       schemaId: new FormControl()
     });
+    this.schemaCategory =  new FormControl('DATAQUALITY_VIEW');
   }
 
   /**
@@ -1075,6 +1081,11 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    */
   save() {
     const formObject = this.requestForm.value;
+    // add schema view control variable value here
+    if(formObject.core_schema) {
+      formObject.core_schema.schemaCategory = this.schemaCategory.value;
+    }
+
     const objectId = formObject.objectId;
     const variantId = '0';
     const fileSerialNo = formObject.fileSerialNo;

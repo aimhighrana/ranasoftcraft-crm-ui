@@ -139,6 +139,19 @@
 
                 <div class="row-spacer"></div>
 
+                <mat-label>Select output view</mat-label>
+                <mat-form-field appearance="outline">
+                    <mat-select [formControl]="schemaCategory">
+                        <mat-option value="DATAQUALITY_VIEW">Data quality view</mat-option>
+                        <mat-option value="POTEXT_VIEW">Po text / Catalog view</mat-option>
+                        <mat-option value="MRO_CLASSIFICATION_VIEW">Mro classification view</mat-option>
+                        <mat-option value="DUPLICACY_VIEW">Duplicacy view </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <div class="row-spacer"></div>
+
+
                 <pros-form-input [placeholder]="'Data scope'" [label]="'Data scope'" [disabled]="true"
                     [value]="requestForm.controls.dataScope.value"></pros-form-input>
                 <div class="row-spacer"></div>

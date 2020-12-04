@@ -62,6 +62,7 @@ export class CreateSchemaComponent implements OnInit, OnDestroy {
 
     this.form = this.formBuilder.group({
       moduleId: new FormControl('', Validators.required),
+      schemaCategory:new FormControl('DATAQUALITY_VIEW',Validators.required),
       schemaDescription: new FormControl('', Validators.required),
       threshold: new FormControl(0, Validators.required)
     });
@@ -120,6 +121,7 @@ export class CreateSchemaComponent implements OnInit, OnDestroy {
     console.log(this.form.get('moduleId').value);
     request.discription = this.form.get('schemaDescription').value;
     request.schemaThreshold = this.form.get('threshold').value;
+    request.schemaCategory = this.form.get('schemaCategory').value;
     request.schemaId = this.schemaId;
     const sub = this.schemaSrevice.createUpdateSchema(request).subscribe(res => {
       this.matSnackBar.open(`Successfully saved`, `Close`, { duration: 5000 });

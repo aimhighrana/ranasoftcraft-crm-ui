@@ -185,6 +185,7 @@ export class BrruleSideSheetComponent implements OnInit {
     });
 
     this.initiateAutocomplete();
+    this.getCategories();
 
     this.activatedRouter.params.subscribe(res => {
       this.routeData = res;
