@@ -1063,8 +1063,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       lName: subscriber.lName ? subscriber.lName : (subscriber.userMdoModel) ? subscriber.userMdoModel.lName : '',
       fullName: subscriber.fullName ? subscriber.fullName : (subscriber.userMdoModel) ? subscriber.userMdoModel.fullName : '',
       filterCriteria: (subscriber.filterCriteria) ? subscriber.filterCriteria : [],
-      dataAllocation: (subscriber.dataAllocation) ? subscriber.dataAllocation : [],
-      isCopied: true
+      isCopied: false
     };
 
     return mappedData;
@@ -1388,13 +1387,13 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     this.dialogSubscriber = this.globaldialogService.dialogCloseEmitter
       .pipe(distinctUntilChanged())
       .subscribe((response: SchemaScheduler) => {
-        this.currentSchedule = response;
+        if(response){
+          this.currentSchedule = response;
+          this.canEditSchedule = true;
+        } else {
+          this.canEditSchedule = false;
+        }
         this.dialogSubscriber.unsubscribe();
-      });
-    this.dialogSubscriber = this.globaldialogService.dialogCloseEmitter
-      .pipe(distinctUntilChanged())
-      .subscribe((response: SchemaScheduler) => {
-        this.currentSchedule = response;
       });
   }
 

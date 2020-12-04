@@ -322,7 +322,9 @@
                         </mat-menu>
 
                         <mat-menu #addfiltermenu="matMenu">
-                            <pros-add-filter-menu [moduleId]="requestForm.controls.objectId.value"
+                            <pros-add-filter-menu 
+                            [fieldMetadata]="requestForm.controls.fields.value"
+                            [moduleId]="requestForm.controls.objectId.value"
                                 (evtReadyForApply)="makeFilterControl($event, l)" [reInilize]="reInilize">
                             </pros-add-filter-menu>
                         </mat-menu>
@@ -357,7 +359,7 @@
                 <div class="f-row schedule-row">
                     <!-- in case of existing schedule, will show edit button and toggle-->
                 <ng-template [ngIf]="canEditSchedule" [ngIfElse]="addSchedule">
-                    <mat-slide-toggle color="primary" [checked]="currentSchedule.isEnable" (change)="toggleScheduleStatus($event)">
+                    <mat-slide-toggle color="primary" [checked]="currentSchedule && currentSchedule.isEnable" (change)="toggleScheduleStatus($event)">
                         Enable schedule
                     </mat-slide-toggle>
                     <span class="f-spacer"></span>
