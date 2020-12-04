@@ -14,7 +14,7 @@
                 <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon>
             </button>
             <mat-menu #check="matMenu" class="navigation-menu">
-                <button mat-menu-item>[New data scope]</button>
+                <button mat-menu-item (click)="openDataScopeSideSheet()">[New data scope]</button>
                 <button mat-menu-item *ngFor="let scope of dataScope">
                     {{ 
                         scope.variantName ? scope.variantName : 'Unknown'
@@ -28,11 +28,11 @@
                 Submit
             </button>
         </ng-template>
-        <button mat-flat-button color="accent">
+        <button mat-flat-button color="accent" (click)="openSummarySideSheet()">
             <mat-icon fontSet="mdo-icons">wand</mat-icon> Check data
         </button>
         <button mat-fab color="accent" class="mat-elevation-z0">
-            <mat-icon fontSet="mdo-icons"> chart-line</mat-icon>
+            <mat-icon fontSet="mdo-icons">chart-line</mat-icon>
         </button>
         <button mat-fab color="accent" class="mat-elevation-z0" [matMenuTriggerFor]="moreactionfile">
             <mat-icon fontSet="mdo-icons">more</mat-icon>

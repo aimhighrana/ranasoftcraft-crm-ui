@@ -61,6 +61,7 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
    * Store info about user selected field and order
    */
   selectedFieldsOb: BehaviorSubject<SchemaTableViewFldMap[]> = new BehaviorSubject(null);
+
   /**
    * Hold meta data map , fieldId as key and metadamodel as value
    */
@@ -204,6 +205,7 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
     if(changes && changes.schemaId && changes.schemaId.currentValue !== changes.schemaId.previousValue) {
       this.schemaId = changes.schemaId.currentValue;
       isRefresh = true;
+      this.getDataScope();
       this.getSchemaStatics();
       this.getSchemaDetails();
     }
@@ -241,6 +243,11 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.sharedServices.getDataScope().subscribe(res => {
+      if(res) {
+        this.getDataScope();
+      }
+    })
 
     /**
      * After choose columns get updated columns ..
@@ -860,5 +867,18 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
 
   }
 
+  /**
+   * Function to open data scope side sheet
+   */
+  openDataScopeSideSheet() {
+    this.router.navigate([{ outlets: { sb: `sb/schema/data-scope/${this.moduleId}/${this.schemaId}/new` } }])
+  }
+
+  /**
+   * Function to open summary side sheet of schema
+   */
+  openSummarySideSheet() {
+    this.router.navigate([{ outlets: { sb: `sb/schema/check-data/${this.moduleId}/${this.schemaId}` } }])
+  }
 
 }

@@ -168,7 +168,7 @@ describe('SchemaCollaboratorsComponent', () => {
     const permission: SchemaDashboardPermission = new SchemaDashboardPermission();
     permission.userid='harshit';
     permission.isAdmin=true;
-    const response: SchemaDashboardPermission[] = [];
+    const response: number[] = [];
 
     spyOn(schemaDetailsSer,'createUpdateUserDetails').and.returnValue(of(response));
 

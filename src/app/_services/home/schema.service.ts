@@ -292,9 +292,8 @@ export class SchemaService {
   /**
    * function to GET Api call to get schema check-data
    * @param schemaId: Id of schema
-   * @param runId: runId of schema
    */
-  public getCheckData(schemaId: string, runId: string): Observable<CheckDataResponse> {
-    return this.http.get<CheckDataResponse>(this.endpointService.getCheckDataUrl(schemaId, runId));
+  public getCheckData(schemaId: string): Observable<CheckDataResponse> {
+    return this.http.get<CheckDataResponse>(this.endpointService.getCheckDataUrl(schemaId));
   }
 }

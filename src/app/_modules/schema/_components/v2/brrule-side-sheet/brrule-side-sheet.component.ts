@@ -667,7 +667,6 @@ export class BrruleSideSheetComponent implements OnInit {
     if (brType === 'BR_CUSTOM_SCRIPT') {
 
       // for user defined rule
-      console.log(this.udrNodeForm.value);
       const udrDto: UdrModel = new UdrModel();
       udrDto.brInfo = {
         brId: this.brId, brIdStr: this.brId,
@@ -756,7 +755,7 @@ export class BrruleSideSheetComponent implements OnInit {
       request.moduleId = this.moduleId;
       request.brWeightage = this.form.value.weightage;
       request.categoryId = this.coreSchemaBrInfo.categoryId ? this.coreSchemaBrInfo.categoryId : this.form.value.categoryId;
-
+      request.isCopied = false;
       this.schemaService.createBusinessRule(request).subscribe(res => {
         this.sharedService.setAfterBrSave(res);
         this.router.navigate([{ outlets: { sb: null } }]);

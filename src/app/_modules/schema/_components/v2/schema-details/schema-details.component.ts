@@ -7,7 +7,7 @@ import { SchemaDataSource } from '../../schema-details/schema-datatable/schema-d
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { EndpointService } from '@services/endpoint.service';
 import { SchemaService } from '@services/home/schema.service';
-import { SchemaStaticThresholdRes, LoadDropValueReq, SchemaListDetails } from '@models/schema/schemalist';
+import { SchemaStaticThresholdRes, LoadDropValueReq, SchemaListDetails, SchemaVariantsModel } from '@models/schema/schemalist';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -120,7 +120,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
   /**
    * Make table header row visiable
    */
-  tableHeaderActBtn: string [] = [];
+  tableHeaderActBtn: string[] = [];
 
   /**
    *
@@ -145,6 +145,16 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
   preInpVal = '';
 
   /**
+   * Outlet in which side sheet will be opened..
+   */
+  outlet = 'sb';
+
+  /**
+   * Store all data scopes ...  as a variants
+   */
+  dataScope: SchemaVariantsModel[] = [];
+
+  /**
    * Current schema info ..
    */
   schemaInfo: SchemaListDetails;
@@ -153,9 +163,9 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
 
   @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
 
- FIELD_TYPE = FieldInputType;
+  FIELD_TYPE = FieldInputType;
 
-  selectFieldOptions : DropDownValue[] = [];
+  selectFieldOptions: DropDownValue[] = [];
 
 
   constructor(
@@ -178,74 +188,82 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
     // check if any things is change then refresh again
     let isRefresh = false;
 
-    if(changes && changes.moduleId && changes.moduleId.currentValue !== changes.moduleId.previousValue) {
+    if (changes && changes.moduleId && changes.moduleId.currentValue !== changes.moduleId.previousValue) {
       this.moduleId = changes.moduleId.currentValue;
       isRefresh = true;
     }
 
-    if(changes && changes.schemaId && changes.schemaId.currentValue !== changes.schemaId.previousValue) {
+    if (changes && changes.schemaId && changes.schemaId.currentValue !== changes.schemaId.previousValue) {
       this.schemaId = changes.schemaId.currentValue;
       isRefresh = true;
     }
 
-    if(changes && changes.variantId && changes.variantId.currentValue !== changes.variantId.previousValue) {
+    if (changes && changes.variantId && changes.variantId.currentValue !== changes.variantId.previousValue) {
       this.variantId = changes.variantId.currentValue;
       isRefresh = true;
     }
 
-    if(isRefresh) {
+    if (isRefresh) {
+      this.getDataScope();
       this.getFldMetadata();
       this.dataSource = new SchemaDataSource(this.schemaDetailService, this.endpointservice, this.schemaId);
       this.getSchemaStatics();
       this.getSchemaDetails();
-      if(this.variantId !== '0') {
+      if (this.variantId !== '0') {
         this.getVariantDetails();
       }
       /**
        * Get all user selected fields based on default view ..
        */
-      this.schemaDetailService.getAllSelectedFields(this.schemaId, this.variantId).subscribe(res=>{
-            this.selectedFieldsOb.next(res ? res : [])
-        }, error=> console.error(`Error : ${error}`));
-      }
+      this.schemaDetailService.getAllSelectedFields(this.schemaId, this.variantId).subscribe(res => {
+        this.selectedFieldsOb.next(res ? res : [])
+      }, error => console.error(`Error : ${error}`));
+    }
 
-      // reset filter and sort order
-      this.filterCriteria.next(null);
-      this.preInpVal = '';
+    // reset filter and sort order
+    this.filterCriteria.next(null);
+    this.preInpVal = '';
 
-      if(changes && changes.activeTab && changes.activeTab.currentValue !== changes.activeTab.previousValue) {
-        this.activeTab = changes.activeTab.currentValue;
-        this.manageStaticColumns();
-      }
+    if (changes && changes.activeTab && changes.activeTab.currentValue !== changes.activeTab.previousValue) {
+      this.activeTab = changes.activeTab.currentValue;
+      this.manageStaticColumns();
+    }
   }
 
   ngAfterViewInit(): void {
-    this.sort.sortChange.subscribe(res=>{
-      if(res.direction) {
+    this.sort.sortChange.subscribe(res => {
+      if (res.direction) {
         const fldId = res.active ? res.active : '';
         const order = res.direction ? res.direction : '';
         this.sortOrder = {};
         this.sortOrder[fldId] = order;
-        this.getData(this.filterCriteria.getValue() , this.sortOrder);
+        this.getData(this.filterCriteria.getValue(), this.sortOrder);
       }
     });
   }
 
   ngOnInit(): void {
-      /**
-       * Get onload data ..
-       */
-      this.dataSource.brMetadata.subscribe(res=>{
-        if(res) {
-          this.getData();
-        }
-      });
+
+    this.sharedServices.getDataScope().subscribe(res => {
+      if (res) {
+        this.getDataScope(); // Get Data scope..
+      }
+    })
+
+    /**
+     * Get onload data ..
+     */
+    this.dataSource.brMetadata.subscribe(res => {
+      if (res) {
+        this.getData();
+      }
+    });
 
     /**
      * After choose columns get updated columns ..
      */
-    this.sharedServices.getChooseColumnData().subscribe(result=> {
-      if(result){
+    this.sharedServices.getChooseColumnData().subscribe(result => {
+      if (result) {
         this.selectedFields = result.selectedFields ? result.selectedFields : [];
         this.calculateDisplayFields();
       }
@@ -255,8 +273,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
      * Combine obserable for metadata and selected field by user
      * And calcute display field amd order
      */
-    combineLatest([this.metadata, this.selectedFieldsOb]).subscribe(res=>{
-      if(res[0]) {
+    combineLatest([this.metadata, this.selectedFieldsOb]).subscribe(res => {
+      if (res[0]) {
         this.selectedFields = res[1] ? res[1] : [];
         this.calculateDisplayFields();
       }
@@ -265,17 +283,17 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
     /**
      * After filter applied should call for get data
      */
-    this.filterCriteria.subscribe(res=>{
-       if(res !==null) {
+    this.filterCriteria.subscribe(res => {
+      if (res !== null) {
         this.getData(res, this.sortOrder);
-       }
+      }
     });
 
     /**
      * While row selection change then control the header actions..
      */
-    this.selection.changed.subscribe(res=>{
-      if(res.source.selected.length >0) {
+    this.selection.changed.subscribe(res => {
+      if (res.source.selected.length > 0) {
         this.tableHeaderActBtn = ['review_actions_header'];
       } else {
         this.tableHeaderActBtn = [];
@@ -288,9 +306,9 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
    * Get schema info ..
    */
   getSchemaDetails() {
-    this.schemaListService.getSchemaDetailsBySchemaId(this.schemaId).subscribe(res=>{
+    this.schemaListService.getSchemaDetailsBySchemaId(this.schemaId).subscribe(res => {
       this.schemaInfo = res;
-    },error=> console.error(`Error : ${error.message}`))
+    }, error => console.error(`Error : ${error.message}`))
   }
 
 
@@ -298,9 +316,9 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
    * Call service for get schema statics based on schemaId and latest run
    */
   getSchemaStatics() {
-    this.schemaService.getSchemaThresholdStatics(this.schemaId, this.variantId).subscribe(res=>{
+    this.schemaService.getSchemaThresholdStatics(this.schemaId, this.variantId).subscribe(res => {
       this.statics = res;
-    }, error=>{
+    }, error => {
       this.statics = new SchemaStaticThresholdRes();
       console.error(`Error : ${error}`);
     })
@@ -310,32 +328,32 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
    * Get schema variant details ..
    */
   getVariantDetails() {
-    this.schemaVariantService.getVariantdetailsByvariantId(this.variantId).subscribe(res=>{
-      if(res) {
-        const inline = res.filterCriteria.filter(fil=> fil.fieldId === 'id')[0];
-        if(inline) {
+    this.schemaVariantService.getVariantdetailsByvariantId(this.variantId).subscribe(res => {
+      if (res) {
+        const inline = res.filterCriteria.filter(fil => fil.fieldId === 'id')[0];
+        if (inline) {
           this.preInpVal = inline.values ? inline.values.toString() : '';
         }
         const finalFiletr: FilterCriteria[] = [inline];
-        res.filterCriteria.forEach(fil=>{
+        res.filterCriteria.forEach(fil => {
           const filter: FilterCriteria = new FilterCriteria();
           filter.fieldId = fil.fieldId;
           filter.type = fil.type;
           filter.values = fil.values;
 
           const dropVal: DropDownValue[] = [];
-          filter.values.forEach(val=>{
-            const dd: DropDownValue = {CODE:val,FIELDNAME:fil.fieldId} as DropDownValue;
+          filter.values.forEach(val => {
+            const dd: DropDownValue = { CODE: val, FIELDNAME: fil.fieldId } as DropDownValue;
             dropVal.push(dd);
           });
 
-          filter.filterCtrl = {fldCtrl:fil.fldCtrl,selectedValues:dropVal};
+          filter.filterCtrl = { fldCtrl: fil.fldCtrl, selectedValues: dropVal };
           finalFiletr.push(filter);
         });
 
         this.filterCriteria.next(finalFiletr);
       }
-    }, error=>{
+    }, error => {
       console.error(`Error : ${error.message}`);
     });
   }
@@ -345,7 +363,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
    * Get all fld metada based on module of schema
    */
   getFldMetadata() {
-    if(this.moduleId === undefined || this.moduleId.trim() === ''){
+    if (this.moduleId === undefined || this.moduleId.trim() === '') {
       throwError('Module id cant be null or empty');
     }
     this.schemaDetailService.getMetadataFields(this.moduleId).subscribe(response => {
@@ -366,22 +384,22 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
     const metadataLst: any = {};
     this.startColumns.forEach(col => fields.push(col));
     for (const headerField in allMDF.headers) {
-      if(allMDF.headers.hasOwnProperty(headerField)) {
-         // if selectedFields is blank then load all fields
-      // if(fields.indexOf(headerField) < 0 && this.selectedFields.length === 0) {
-      //   select.push(headerField);
-      // }
-      // else
-      const index = this.selectedFields.findIndex(f => f.fieldId === headerField);
-      if (fields.indexOf(headerField) < 0 &&  (index !== -1)) {
-        select[index] = headerField;
-      }
-      metadataLst[headerField] = allMDF.headers[headerField];
+      if (allMDF.headers.hasOwnProperty(headerField)) {
+        // if selectedFields is blank then load all fields
+        // if(fields.indexOf(headerField) < 0 && this.selectedFields.length === 0) {
+        //   select.push(headerField);
+        // }
+        // else
+        const index = this.selectedFields.findIndex(f => f.fieldId === headerField);
+        if (fields.indexOf(headerField) < 0 && (index !== -1)) {
+          select[index] = headerField;
+        }
+        metadataLst[headerField] = allMDF.headers[headerField];
       }
     }
     // TODO for hierarchy and grid logic ..
     this.metadataFldLst = metadataLst;
-    select.forEach(fldId =>fields.push(fldId));
+    select.forEach(fldId => fields.push(fldId));
     this.displayedFields.next(fields);
   }
 
@@ -391,7 +409,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
    * @param filterCriteria have default filter or apply filter as request...
    * @param sort apply some sorting on column ..
    */
-  getData(filterCriteria?: FilterCriteria[], sort?: any, fetchCount?: number , isLoadMore?: boolean) {
+  getData(filterCriteria?: FilterCriteria[], sort?: any, fetchCount?: number, isLoadMore?: boolean) {
     const request: RequestForSchemaDetailsWithBr = new RequestForSchemaDetailsWithBr();
     request.schemaId = this.schemaId;
     request.variantId = this.variantId;
@@ -411,18 +429,18 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
    */
   changeTabStatus(status: string) {
     this.fetchCount = 0;
-    if(this.activeTab === status) {
+    if (this.activeTab === status) {
       console.log('Already loaded for tab {}', status)
       return false;
     }
     this.activeTab = status;
-    this.router.navigate(['/home/schema/schema-details', this.moduleId, this.schemaId],{queryParams:{status:this.activeTab}} );
+    this.router.navigate(['/home/schema/schema-details', this.moduleId, this.schemaId], { queryParams: { status: this.activeTab } });
 
     // update state of columns
     this.manageStaticColumns();
     this.calculateDisplayFields();
 
-    if(status === 'error' || status === 'success') {
+    if (status === 'error' || status === 'success') {
       this.getData(this.filterCriteria.getValue(), this.sortOrder);
     } else {
       this.getData();
@@ -433,9 +451,9 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
    * Oen choose column side sheet ..
    */
   openTableColumnSettings() {
-    const data ={schemaId: this.schemaId,variantId: this.variantId, fields: this.metadata.getValue(),selectedFields:this.selectedFields}
+    const data = { schemaId: this.schemaId, variantId: this.variantId, fields: this.metadata.getValue(), selectedFields: this.selectedFields }
     this.sharedServices.setChooseColumnData(data);
-    this.router.navigate(['', { outlets: { sb: 'sb/schema/table-column-settings' }, queryParams:{status:this.activeTab} } ]);
+    this.router.navigate(['', { outlets: { sb: 'sb/schema/table-column-settings' }, queryParams: { status: this.activeTab } }]);
   }
 
   /**
@@ -460,14 +478,14 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
     console.log(row);
 
     const field = this.selectedFields.find(f => f.fieldId === fldid);
-    if(field && !field.editable){
+    if (field && !field.editable) {
       console.log('Edit is disabled for this field ! ', fldid);
-      return ;
+      return;
     }
 
-    if(document.getElementById('inpctrl_'+fldid + '_' + rIndex)) {
-      const inpCtrl = document.getElementById('inpctrl_'+fldid + '_'+ rIndex) as HTMLDivElement;
-      const viewCtrl = document.getElementById('viewctrl_'+fldid + '_' + rIndex) as HTMLSpanElement;
+    if (document.getElementById('inpctrl_' + fldid + '_' + rIndex)) {
+      const inpCtrl = document.getElementById('inpctrl_' + fldid + '_' + rIndex) as HTMLDivElement;
+      const viewCtrl = document.getElementById('viewctrl_' + fldid + '_' + rIndex) as HTMLSpanElement;
       // const inpValCtrl = document.getElementById('inp_'+ fldid + '_' + rIndex) as HTMLInputElement;
 
       inpCtrl.style.display = 'block';
@@ -475,7 +493,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
       viewCtrl.style.display = 'none';
 
       // add a dynamic cell input component
-      this.addDynamicInput(fldid, row, rIndex,containerRef);
+      this.addDynamicInput(fldid, row, rIndex, containerRef);
 
     }
   }
@@ -486,13 +504,13 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
    * @param value current changed value
    * @param row row data ..
    */
-  emitEditBlurChng(fldid: string, value: any, row: any, rIndex: number, viewContainerRef? : ViewContainerRef) {
+  emitEditBlurChng(fldid: string, value: any, row: any, rIndex: number, viewContainerRef?: ViewContainerRef) {
     console.log(value);
-    if(document.getElementById('inpctrl_'+fldid + '_' + rIndex)) {
+    if (document.getElementById('inpctrl_' + fldid + '_' + rIndex)) {
 
       // DOM control after value change ...
-      const inpCtrl = document.getElementById('inpctrl_'+fldid + '_'+ rIndex) as HTMLDivElement;
-      const viewCtrl = document.getElementById('viewctrl_'+fldid + '_' + rIndex) as HTMLSpanElement;
+      const inpCtrl = document.getElementById('inpctrl_' + fldid + '_' + rIndex) as HTMLDivElement;
+      const viewCtrl = document.getElementById('viewctrl_' + fldid + '_' + rIndex) as HTMLSpanElement;
 
       // clear the dynamic cell input component
       viewContainerRef.clear();
@@ -504,15 +522,15 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
       // DO correction call for data
       const objctNumber = row.OBJECTNUMBER.fieldData;
       const oldVal = row[fldid] ? row[fldid].fieldData : '';
-      if(objctNumber && oldVal !== value) {
-        const request: SchemaCorrectionReq = {id: [objctNumber],fldId:fldid,vc: value, isReviewed: null} as SchemaCorrectionReq;
-        this.schemaDetailService.doCorrection(this.schemaId, request).subscribe(res=>{
+      if (objctNumber && oldVal !== value) {
+        const request: SchemaCorrectionReq = { id: [objctNumber], fldId: fldid, vc: value, isReviewed: null } as SchemaCorrectionReq;
+        this.schemaDetailService.doCorrection(this.schemaId, request).subscribe(res => {
           row[fldid].fieldData = value;
-          if(res.acknowledge) {
-            this.statics.correctedCnt = res.count? res.count : 0;
+          if (res.acknowledge) {
+            this.statics.correctedCnt = res.count ? res.count : 0;
           }
-        }, error=>{
-          this.snackBar.open(`Error :: ${error}`, 'Close',{duration:2000});
+        }, error => {
+          this.snackBar.open(`Error :: ${error}`, 'Close', { duration: 2000 });
           console.error(`Error :: ${error.message}`);
         });
       } else {
@@ -530,19 +548,19 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
   inlineSearch(value: string) {
     const filterCValue = this.filterCriteria.getValue() ? this.filterCriteria.getValue() : [];
     const haveInline = filterCValue.filter(fil => fil.type === 'INLINE')[0];
-    if(value && value.trim() !== '') {
-      if(haveInline) {
+    if (value && value.trim() !== '') {
+      if (haveInline) {
         const idx = filterCValue.indexOf(haveInline);
         filterCValue.splice(idx, 1);
         haveInline.values = [value];
         filterCValue.push(haveInline);
-     } else {
-      const filterC = new FilterCriteria();
-      filterC.fieldId = 'id';
-      filterC.type = 'INLINE';
-      filterC.values = [value];
-      filterCValue.push(filterC);
-     }
+      } else {
+        const filterC = new FilterCriteria();
+        filterC.fieldId = 'id';
+        filterC.type = 'INLINE';
+        filterC.values = [value];
+        filterCValue.push(filterC);
+      }
     } else {
       const idx = filterCValue.indexOf(haveInline);
       filterCValue.splice(idx, 1);
@@ -561,9 +579,9 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
     const buffer = 200;
     const limit = tableScrollHeight - tableViewHeight - buffer;
     if (scrollLocation > limit) {
-       console.log('Load more data here ...');
-       this.fetchCount ++;
-       this.getData(this.filterCriteria.getValue(), this.sortOrder, this.fetchCount, true);
+      console.log('Load more data here ...');
+      this.fetchCount++;
+      this.getData(this.filterCriteria.getValue(), this.sortOrder, this.fetchCount, true);
     }
   }
 
@@ -572,7 +590,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
    */
   manageStaticColumns() {
     let dispCols: string[] = [];
-    if(this.activeTab === 'success' || this.activeTab === 'error') {
+    if (this.activeTab === 'success' || this.activeTab === 'error') {
       dispCols = ['row_more_action', '_assigned_buckets', '_score_weightage', 'OBJECTNUMBER'];
       this.tableHeaderActBtn = [];
     } else {
@@ -592,8 +610,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
   /** Selects all rows if they are not all selected; otherwise clear selection. */
   masterToggle() {
     this.isAllSelected() ?
-        this.selection.clear() :
-        this.dataSource.docValue().forEach(row => this.selection.select(row));
+      this.selection.clear() :
+      this.dataSource.docValue().forEach(row => this.selection.select(row));
   }
 
 
@@ -602,32 +620,32 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
    * @param type type of request is inline or submit all
    * @param row if request  type is inline then submit single rec ..
    */
-  approveRecords(type: string , row?: any) {
+  approveRecords(type: string, row?: any) {
     const id: string[] = [];
-    if(type === 'inline') {
+    if (type === 'inline') {
       const docId = row ? row.OBJECTNUMBER.fieldData : '';
-      if(docId) {
+      if (docId) {
         id.push(docId);
       }
     } else {
-        if(this.selection.selected.length) {
-          const selected = this.selection.selected;
-          selected.forEach(sel=>{
-            const docId = sel.OBJECTNUMBER.fieldData;
-            id.push(docId);
-          });
+      if (this.selection.selected.length) {
+        const selected = this.selection.selected;
+        selected.forEach(sel => {
+          const docId = sel.OBJECTNUMBER.fieldData;
+          id.push(docId);
+        });
 
-        }
+      }
     }
-    const request: SchemaCorrectionReq = {id,fldId:null,vc: null, isReviewed: true} as SchemaCorrectionReq;
-    this.schemaDetailService.doCorrection(this.schemaId, request).subscribe(res=>{
-      if(res.acknowledge) {
-            this.getData();
-            this.selection.clear();
-        }
-    }, error=>{
-        this.snackBar.open(`Error :: ${error}`, 'Close',{duration:2000});
-        console.error(`Error :: ${error.message}`);
+    const request: SchemaCorrectionReq = { id, fldId: null, vc: null, isReviewed: true } as SchemaCorrectionReq;
+    this.schemaDetailService.doCorrection(this.schemaId, request).subscribe(res => {
+      if (res.acknowledge) {
+        this.getData();
+        this.selection.clear();
+      }
+    }, error => {
+      this.snackBar.open(`Error :: ${error}`, 'Close', { duration: 2000 });
+      console.error(`Error :: ${error.message}`);
     });
   }
 
@@ -640,15 +658,15 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
     this.trigger.closeMenu();
 
     const exitingFilterCtrl = this.filterCriteria.getValue() ? this.filterCriteria.getValue() : [];
-    const extFld =  exitingFilterCtrl.filter(fil=> fil.fieldId === fld.fldCtrl.fieldId)[0];
+    const extFld = exitingFilterCtrl.filter(fil => fil.fieldId === fld.fldCtrl.fieldId)[0];
 
     const filterCtrl: FilterCriteria = new FilterCriteria();
     filterCtrl.fieldId = fld.fldCtrl.fieldId;
     filterCtrl.type = 'DROPDOWN';
     filterCtrl.filterCtrl = fld;
-    filterCtrl.values = fld.selectedValues.map(map=> map.CODE);
+    filterCtrl.values = fld.selectedValues.map(map => map.CODE);
 
-    if(extFld) {
+    if (extFld) {
       exitingFilterCtrl.splice(exitingFilterCtrl.indexOf(extFld), 1);
     }
     exitingFilterCtrl.push(filterCtrl);
@@ -661,14 +679,14 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
    */
   prepareTextToShow(ctrl: FilterCriteria): string {
     const selCtrl = ctrl.filterCtrl.selectedValues.filter(fil => fil.FIELDNAME === ctrl.fieldId);
-    if(selCtrl && selCtrl.length>1) {
+    if (selCtrl && selCtrl.length > 1) {
       const fld = this.filterCriteria.getValue().filter(fil => fil.fieldId === ctrl.fieldId);
-      if(fld && fld.length>0) {
+      if (fld && fld.length > 0) {
         const sel = fld[0].filterCtrl.selectedValues.filter(f => f.FIELDNAME === ctrl.fieldId);
         return String(sel.length);
       }
     }
-    return ((selCtrl && selCtrl.length === 1) ? (selCtrl[0].TEXT ? selCtrl[0].TEXT: selCtrl[0].CODE) : 'Unknown');
+    return ((selCtrl && selCtrl.length === 1) ? (selCtrl[0].TEXT ? selCtrl[0].TEXT : selCtrl[0].CODE) : 'Unknown');
   }
 
   /**
@@ -677,8 +695,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
    */
   removeAppliedFilter(ctrl: FilterCriteria) {
     const exitingFilterCtrl = this.filterCriteria.getValue() ? this.filterCriteria.getValue() : [];
-    const extFld =  exitingFilterCtrl.filter(fil=> fil.fieldId === ctrl.fieldId)[0];
-    if(extFld) {
+    const extFld = exitingFilterCtrl.filter(fil => fil.fieldId === ctrl.fieldId)[0];
+    if (extFld) {
       exitingFilterCtrl.splice(exitingFilterCtrl.indexOf(extFld), 1);
       this.filterCriteria.next(exitingFilterCtrl);
     }
@@ -688,12 +706,12 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
    * Submit reviewed records
    */
   submitReviewRec() {
-    this.schemaDetailService.submitReviewedRecords(this.schemaId).subscribe(res =>{
-      if(res.acknowledge) {
-        this.snackBar.open(`Successfully submitted !`, 'Close',{duration:2000});
+    this.schemaDetailService.submitReviewedRecords(this.schemaId).subscribe(res => {
+      if (res.acknowledge) {
+        this.snackBar.open(`Successfully submitted !`, 'Close', { duration: 2000 });
       }
-    }, error=>{
-      this.snackBar.open(`${error.statusText}: Please review atleast one record(s)`, 'Close',{duration:2000});
+    }, error => {
+      this.snackBar.open(`${error.statusText}: Please review atleast one record(s)`, 'Close', { duration: 2000 });
     });
   }
 
@@ -703,13 +721,13 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
    * @param fldC get cliked fld control
    */
   loadDropValues(fldC: FilterCriteria) {
-    if(fldC) {
+    if (fldC) {
       const dropArray: DropDownValue[] = [];
-      fldC.values.forEach(val=>{
-        const drop: DropDownValue = {CODE: val,FIELDNAME: fldC.fieldId}  as DropDownValue;
+      fldC.values.forEach(val => {
+        const drop: DropDownValue = { CODE: val, FIELDNAME: fldC.fieldId } as DropDownValue;
         dropArray.push(drop);
       });
-      this.loadDopValuesFor = {fieldId: fldC.fieldId,checkedValue:dropArray};
+      this.loadDopValuesFor = { fieldId: fldC.fieldId, checkedValue: dropArray };
     }
   }
 
@@ -717,13 +735,13 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
    * Open dialog for save applied filters ..
    */
   opnDialogSaveVariant() {
-    const ref = this.matDialog.open(SaveVariantDialogComponent,{
+    const ref = this.matDialog.open(SaveVariantDialogComponent, {
       width: '600px',
-      height:'450px',
-      data:{schemaInfo: this.schemaInfo , variantId: this.variantId, moduleId: this.moduleId, filterData: this.filterCriteria.getValue()}
+      height: '450px',
+      data: { schemaInfo: this.schemaInfo, variantId: this.variantId, moduleId: this.moduleId, filterData: this.filterCriteria.getValue() }
     });
 
-    ref.afterClosed().subscribe(res=>{
+    ref.afterClosed().subscribe(res => {
       console.log(res);
     });
   }
@@ -744,10 +762,10 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
     console.log(dropValue);
     const fillData = this.filterCriteria.getValue() ? this.filterCriteria.getValue() : [];
     const filterControl = fillData.filter(fill => fill.fieldId === this.loadDopValuesFor.fieldId)[0];
-    if(filterControl) {
-      if(dropValue && dropValue.length>0) {
-        filterControl.values = dropValue.map(map=> map.CODE);
-        filterControl.filterCtrl = {fldCtrl: filterControl.filterCtrl.fldCtrl, selectedValues: dropValue};
+    if (filterControl) {
+      if (dropValue && dropValue.length > 0) {
+        filterControl.values = dropValue.map(map => map.CODE);
+        filterControl.filterCtrl = { fldCtrl: filterControl.filterCtrl.fldCtrl, selectedValues: dropValue };
       } else {
         fillData.slice(fillData.indexOf(filterControl), 1);
       }
@@ -756,13 +774,13 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
 
   }
 
-  refreshData(variantId){
-    if(this.variantId !== variantId) {
+  refreshData(variantId) {
+    if (this.variantId !== variantId) {
       this.variantId = variantId;
       this.variantName = this.variantId === '0' ? 'Entire dataset'
-                        : this.schemaInfo.variants.find(v => v.variantId === this.variantId).variantName ;
+        : this.schemaInfo.variants.find(v => v.variantId === this.variantId).variantName;
       this.getData();
-      if(this.variantId !== '0') {
+      if (this.variantId !== '0') {
         this.getVariantDetails();
       }
     }
@@ -772,21 +790,21 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
    * get input type when user edits a cell
    * @param fieldId the field id
    */
-  getFieldInputType (fieldId){
+  getFieldInputType(fieldId) {
 
-    if (this.metadataFldLst[fieldId].picklist=== '0' && this.metadataFldLst[fieldId].dataType === 'NUMC'){
-      return this.FIELD_TYPE.NUMBER ;
+    if (this.metadataFldLst[fieldId].picklist === '0' && this.metadataFldLst[fieldId].dataType === 'NUMC') {
+      return this.FIELD_TYPE.NUMBER;
     }
-    if ( this.metadataFldLst[fieldId].picklist=== '0' && (this.metadataFldLst[fieldId].dataType === 'DATS' || this.metadataFldLst[fieldId].dataType === 'DTMS')){
-      return this.FIELD_TYPE.DATE ;
+    if (this.metadataFldLst[fieldId].picklist === '0' && (this.metadataFldLst[fieldId].dataType === 'DATS' || this.metadataFldLst[fieldId].dataType === 'DTMS')) {
+      return this.FIELD_TYPE.DATE;
     }
     if ((this.metadataFldLst[fieldId].isCheckList === 'false')
-      && (this.metadataFldLst[fieldId].picklist=== '1' || this.metadataFldLst[fieldId].picklist === '30' || this.metadataFldLst[fieldId].picklist === '37')){
-        return this.FIELD_TYPE.SINGLE_SELECT;
+      && (this.metadataFldLst[fieldId].picklist === '1' || this.metadataFldLst[fieldId].picklist === '30' || this.metadataFldLst[fieldId].picklist === '37')) {
+      return this.FIELD_TYPE.SINGLE_SELECT;
     }
     if ((this.metadataFldLst[fieldId].isCheckList === 'true')
-      && (this.metadataFldLst[fieldId].picklist=== '1' || this.metadataFldLst[fieldId].picklist === '30' || this.metadataFldLst[fieldId].picklist === '37')){
-        return this.FIELD_TYPE.MULTI_SELECT;
+      && (this.metadataFldLst[fieldId].picklist === '1' || this.metadataFldLst[fieldId].picklist === '30' || this.metadataFldLst[fieldId].picklist === '37')) {
+      return this.FIELD_TYPE.MULTI_SELECT;
     }
 
     return this.FIELD_TYPE.TEXT;
@@ -799,16 +817,16 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
    * @param fieldId the field id
    * @param value cell value
    */
-  formatCellData(fieldId, value){
+  formatCellData(fieldId, value) {
     if (this.getFieldInputType(fieldId) === this.FIELD_TYPE.MULTI_SELECT) {
       // console.log(value);
       return value.toString();
     }
-    return value ;
+    return value;
   }
 
 
-  addDynamicInput(fldid: string, row: any, rIndex: number, containerRef: ContainerRefDirective){
+  addDynamicInput(fldid: string, row: any, rIndex: number, containerRef: ContainerRefDirective) {
 
     const componentFactory = this.componentFactoryResolver.resolveComponentFactory(
       TableCellInputComponent
@@ -822,6 +840,29 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
     componentRef.instance.value = row[fldid] ? row[fldid].fieldData : '';
     componentRef.instance.inputBlur.subscribe(value => this.emitEditBlurChng(fldid, value, row, rIndex, containerRef.viewContainerRef));
 
+  }
+
+  /**
+   * Get data scopes .. or variants ...
+   */
+  getDataScope() {
+    this.schemaVariantService.getDataScope(this.schemaId, 'RUNFOR').subscribe(res => {
+      this.dataScope = res;
+    }, (error) => console.error(`Something went wrong while getting variants. : ${error.message}`));
+  }
+
+  /**
+   * Function to open data scope side sheet
+   */
+  openDataScopeSideSheet() {
+    this.router.navigate([{ outlets: { sb: `sb/schema/data-scope/${this.moduleId}/${this.schemaId}/new` } }])
+  }
+
+  /**
+   * Function to open summary side sheet of schema
+   */
+  openSummarySideSheet() {
+    this.router.navigate([{ outlets: { sb: `sb/schema/check-data/${this.moduleId}/${this.schemaId}` } }])
   }
 
 

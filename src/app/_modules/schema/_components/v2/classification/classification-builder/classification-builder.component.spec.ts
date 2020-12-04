@@ -1,6 +1,7 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { SimpleChanges } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SchemaListDetails } from '@models/schema/schemalist';
 import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
@@ -21,6 +22,7 @@ describe('ClassificationBuilderComponent', () => {
   let schemaService: SchemaService;
   let schemaDetailService: SchemaDetailsService;
   let schemavariantService: SchemaVariantService;
+  let router: Router;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -42,6 +44,7 @@ describe('ClassificationBuilderComponent', () => {
     schemaService = fixture.debugElement.injector.get(SchemaService);
     schemaDetailService = fixture.debugElement.injector.get(SchemaDetailsService);
     schemavariantService = fixture.debugElement.injector.get(SchemaVariantService);
+    router = TestBed.inject(Router);
 
     component.schemaId = '274751';
     component.variantId = '0';
@@ -114,4 +117,23 @@ it('ngOnChanges(), ngonchange component hooks ', async(()=>{
     expect(res.length).toEqual(1);
 
   }));
+
+  it('getDataScope(), should return all variants of a schema', async () => {
+    component.schemaId = '1005';
+    spyOn(schemavariantService, 'getDataScope').withArgs(component.schemaId, 'RUNFOR').and.returnValue(of())
+    component.getDataScope();
+    expect(schemavariantService.getDataScope).toHaveBeenCalledWith(component.schemaId, 'RUNFOR');
+  })
+
+  it('openSummarySideSheet(), should navigate to schema summary side sheet', () => {
+    spyOn(router, 'navigate');
+    component.openSummarySideSheet();
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/check-data/${component.moduleId}/${component.schemaId}` } }])
+  })
+
+  it('openDataScopeSideSheet(), should navigate to data scope side sheet', () => {
+    spyOn(router, 'navigate');
+    component.openDataScopeSideSheet();
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/data-scope/${component.moduleId}/${component.schemaId}/new` } }])
+  })
 });

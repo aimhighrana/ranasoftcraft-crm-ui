@@ -20,6 +20,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { DuplicacyDataSource } from './duplicacy-data-source';
 
 import { DuplicacyComponent } from './duplicacy.component';
+import { Router } from '@angular/router';
 
 describe('DuplicacyComponent', () => {
   let component: DuplicacyComponent;
@@ -30,6 +31,7 @@ describe('DuplicacyComponent', () => {
   let schemaDetailService: SchemaDetailsService;
   let catalogService: CatalogCheckService;
   let snackBar : MatSnackBar;
+  let router: Router
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -42,7 +44,7 @@ describe('DuplicacyComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(DuplicacyComponent);
     component = fixture.componentInstance;
-
+    router = TestBed.inject(Router);
     schemaListService = fixture.debugElement.injector.get(SchemalistService);
     schemaService = fixture.debugElement.injector.get(SchemaService);
     component.schemaId = '1';
@@ -335,4 +337,31 @@ describe('DuplicacyComponent', () => {
     expect(component.checkboxLabel()).toContain('select');
   });
 
+  it('openSummarySideSheet(), should navigate to schema summary side sheet', () => {
+    component.moduleId = '1005';
+    component.schemaId = '2563145';
+
+    spyOn(router, 'navigate');
+    component.openSummarySideSheet();
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/check-data/${component.moduleId}/${component.schemaId}` } }])
+  })
+
+  it('getDataScope(), should return all variants of a schema', async () => {
+    component.schemaId = '1005';
+    spyOn(schemaVariantService, 'getDataScope').withArgs(component.schemaId, 'RUNFOR').and.returnValue(of())
+    component.getDataScope();
+    expect(schemaVariantService.getDataScope).toHaveBeenCalledWith(component.schemaId, 'RUNFOR');
+  })
+
+  it('openSummarySideSheet(), should navigate to schema summary side sheet', () => {
+    spyOn(router, 'navigate');
+    component.openSummarySideSheet();
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/check-data/${component.moduleId}/${component.schemaId}` } }])
+  })
+
+  it('openDataScopeSideSheet(), should navigate to data scope side sheet', () => {
+    spyOn(router, 'navigate');
+    component.openDataScopeSideSheet();
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/data-scope/${component.moduleId}/${component.schemaId}/new` } }])
+  })
 });

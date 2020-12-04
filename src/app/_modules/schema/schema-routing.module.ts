@@ -96,7 +96,7 @@ const routes: Routes = [
   { path: 'system/attribute-mapping', component: AttributeMappingComponent },
   { path: 'system/br-classification-sidesheet', component: BrClassificationSidesheetComponent },
   { path: 'system/br-duplicatecheck-sidesheet', component: BrDuplicatecheckSidesheetComponent },
-  { path: 'summary/:moduleId/:schemaId', component: SchemaSummarySidesheetComponent },
+  { path: 'check-data/:moduleId/:schemaId', component: SchemaSummarySidesheetComponent },
   { path: 'system/new-duplicate-check', component: NewDuplicateCheckComponent },
   { path: 'system/string-replace', component: StringReplaceComponent },
   { path: 'system/empty-data', component: EmptyDataComponent },

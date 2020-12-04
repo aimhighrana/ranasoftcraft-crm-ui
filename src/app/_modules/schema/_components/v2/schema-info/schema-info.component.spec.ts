@@ -123,10 +123,13 @@ describe('SchemaInfoComponent', () => {
       brInfo: 'Missing Rule',
       brType: 'Meta data',
       fields: 'NDC',
-      message: 'Test should passed..'
+      message: 'Test should passed..',
+      moduleId: '1005',
+      isCopied: false,
     } as CoreSchemaBrInfo;
 
     component.schemaId = '44514235';
+    component.moduleId = '1004'
 
     const request: CoreSchemaBrInfo = new CoreSchemaBrInfo();
     request.brId = br.brIdStr;
@@ -136,6 +139,8 @@ describe('SchemaInfoComponent', () => {
     request.brType = br.brType;
     request.fields = br.fields;
     request.message = br.message;
+    request.moduleId = component.moduleId;
+    request.isCopied = br.isCopied;
 
     spyOn(schemaService, 'createBusinessRule').withArgs(request).and.returnValue(of({} as CoreSchemaBrInfo));
     component.updateCategory(cat, br);
@@ -188,7 +193,7 @@ describe('SchemaInfoComponent', () => {
 
     spyOn(router, 'navigate');
     component.openSummarySideSheet();
-    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/summary/${component.moduleId}/${component.schemaId}` } }])
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/check-data/${component.moduleId}/${component.schemaId}` } }])
   })
 
   it('editSubscriberInfo(), should open edit subscriber sidesheet', async () => {
@@ -326,7 +331,8 @@ describe('SchemaInfoComponent', () => {
       brType: 'Meta Data',
       brInfo: 'Missing data',
       fields: 'Region',
-      message: 'Region should be Asia'
+      message: 'Region should be Asia',
+      isCopied: false
     } as CoreSchemaBrInfo;
     component.schemaId = '245521';
 
@@ -338,6 +344,7 @@ describe('SchemaInfoComponent', () => {
     request.brType = brInfo.brType;
     request.fields = brInfo.fields;
     request.message = brInfo.message;
+    request.isCopied = brInfo.isCopied;
 
     spyOn(schemaService, 'createBusinessRule').withArgs(request).and.returnValue(of());
     component.addBusinessRule(brInfo);

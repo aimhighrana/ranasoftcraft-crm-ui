@@ -176,6 +176,12 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
 
+    this.sharedServices.getDataScope().subscribe(res => {
+      if (res) {
+        this.getDataScope();
+      }
+    })
+
     const definedColumnOrder = Object.keys(definedColumnsMetadata);
     const previousCls = this.displayedColumns.getValue();
     definedColumnOrder.forEach(e => previousCls.push(e));
@@ -484,4 +490,17 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges {
     return definedColumnsMetadata[columnId] ? definedColumnsMetadata[columnId].fieldDesc : columnId;
   }
 
+  /**
+   * Function to open data scope side sheet
+   */
+  openDataScopeSideSheet() {
+    this.router.navigate([{ outlets: { sb: `sb/schema/data-scope/${this.moduleId}/${this.schemaId}/new` } }])
+  }
+
+  /**
+   * Function to open summary side sheet of schema
+   */
+  openSummarySideSheet() {
+    this.router.navigate([{ outlets: { sb: `sb/schema/check-data/${this.moduleId}/${this.schemaId}` } }])
+  }
 }

@@ -472,6 +472,8 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     request.brType = br.brType;
     request.fields = br.fields;
     request.message = br.message;
+    request.moduleId = this.moduleId;
+    request.isCopied = false;
 
     this.schemaService.createBusinessRule(request).subscribe(res => {
       this.getBusinessRuleList(this.schemaId);
@@ -729,7 +731,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * Function to open summary side sheet of schema
    */
   openSummarySideSheet() {
-    this.router.navigate([{ outlets: { sb: `sb/schema/summary/${this.moduleId}/${this.schemaId}` } }])
+    this.router.navigate([{ outlets: { sb: `sb/schema/check-data/${this.moduleId}/${this.schemaId}` } }])
   }
 
   /**
@@ -827,6 +829,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     request.brType = brInfo.brType;
     request.fields = brInfo.fields;
     request.message = brInfo.message;
+    request.isCopied = false;
 
     this.schemaService.createBusinessRule(request).subscribe((response) => {
       console.log(response);

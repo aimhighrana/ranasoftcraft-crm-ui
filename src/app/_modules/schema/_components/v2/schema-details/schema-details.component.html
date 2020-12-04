@@ -2,21 +2,38 @@
     <div class="f-row breadcrum-toolbar">
         <div class="display-heading-large">
             <ng-template [ngIf]="schemaInfo">
-                {{ schemaInfo.moduleDescription ? schemaInfo.moduleDescription : 'Module' }} / {{ schemaInfo.schemaDescription ? schemaInfo.schemaDescription : 'Untitled'}} / {{variantName}}
-                <button mat-button [matMenuTriggerFor]="menu"><mat-icon fontSet="mdo-icons">menu-arrow</mat-icon></button>
+                {{ schemaInfo.moduleDescription ? schemaInfo.moduleDescription : 'Module' }} /
+                {{ schemaInfo.schemaDescription ? schemaInfo.schemaDescription : 'Untitled'}} / {{variantName}}
+                <button mat-button [matMenuTriggerFor]="menu">
+                    <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon>
+                </button>
                 <mat-menu #menu="matMenu" class="navigation-menu">
-                    <button mat-menu-item>[New data scope]</button>
+                    <button mat-menu-item (click)="openDataScopeSideSheet()">[New data scope]</button>
                     <button mat-menu-item (click)="refreshData('0')">Entire dataset</button>
-                    <ng-container *ngIf="schemaInfo.variants && schemaInfo.variants.length">
-                        <button mat-menu-item *ngFor="let variant of schemaInfo.variants" (click)="refreshData(variant.variantId)">
-                            {{variant.variantName}}
+
+                    <ng-container *ngIf="dataScope && dataScope.length">
+                        <button mat-menu-item *ngFor="let scope of dataScope" (click)="refreshData(scope.variantId)">
+                            {{ scope.variantName ? scope.variantName : 'Unknown'}}
                         </button>
                     </ng-container>
                 </mat-menu>
             </ng-template>
         </div>
         <span class="f-spacer"></span>
-        <button mat-flat-button color="accent" (click)="downloadExecutionDetails()">Download</button>
+        <div class="f-spacer"></div>
+        <button mat-flat-button color="accent" (click)="openSummarySideSheet()">
+            <mat-icon fontSet="mdo-icons">wand</mat-icon> Check data
+        </button>
+        <button mat-fab color="accent" class="mat-elevation-z0">
+            <mat-icon fontSet="mdo-icons">chart-line</mat-icon>
+        </button>
+        <button mat-fab color="accent" class="mat-elevation-z0" [matMenuTriggerFor]="moreactionfile">
+            <mat-icon fontSet="mdo-icons">more</mat-icon>
+        </button>
+        <mat-menu #moreactionfile="matMenu" class="navigation-menu">
+            <button mat-menu-item (click)="downloadExecutionDetails()">Download</button>
+        </mat-menu>
+        <!-- <button mat-flat-button color="accent" (click)="downloadExecutionDetails()">Download</button> -->
         <ng-template [ngIf]="activeTab === 'review'">
             <button mat-flat-button color="accent" (click)="submitReviewRec()">Submit</button>
         </ng-template>
@@ -84,7 +101,8 @@
         <!-- Append dynamic filter MatMenu -->
         <mat-menu #appliedfiltermenu="matMenu">
             <pros-filter-values [fieldId]="loadDopValuesFor ? loadDopValuesFor.fieldId : ''"
-                [checkedValue]="loadDopValuesFor ? loadDopValuesFor.checkedValue : []" (selectedValues)="updateFilterCriteria($event)"></pros-filter-values>
+                [checkedValue]="loadDopValuesFor ? loadDopValuesFor.checkedValue : []"
+                (selectedValues)="updateFilterCriteria($event)"></pros-filter-values>
         </mat-menu>
 
         <mat-chip-list>
@@ -193,7 +211,8 @@
                 </ng-container>
 
                 <ng-container matColumnDef="OBJECTNUMBER" sticky>
-                    <mat-header-cell *matHeaderCellDef mat-sort-header class="fixed-width-c2"> Object Number</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="fixed-width-c2"> Object Number
+                    </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="fixed-width-c2">
                         {{ element['OBJECTNUMBER'] ? element['OBJECTNUMBER'].fieldData : '' }}
                     </mat-cell>
@@ -216,10 +235,10 @@
                                 (click)="editCurrentCell(dynCols,element, rIndex, containerRef)">
                                 <div class="mdo-form-input f-col" style="display: none;"
                                     id="inpctrl_{{ dynCols + '_' + rIndex }}">
-                                
-                                <!-- container to hold input field when cell gets edited  -->
-                                <ng-template prosContainerRef #containerRef="prosContainerRef">
-                                </ng-template>                                   
+
+                                    <!-- container to hold input field when cell gets edited  -->
+                                    <ng-template prosContainerRef #containerRef="prosContainerRef">
+                                    </ng-template>
 
                                 </div>
 

@@ -7,7 +7,7 @@ import { SchemaDetailsService } from '@services/home/schema/schema-details.servi
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { EndpointService } from '@services/endpoint.service';
 import { SchemaService } from '@services/home/schema.service';
-import { SchemaStaticThresholdRes, LoadDropValueReq, SchemaListDetails } from '@models/schema/schemalist';
+import { SchemaStaticThresholdRes, LoadDropValueReq, SchemaListDetails, SchemaVariantsModel } from '@models/schema/schemalist';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -30,17 +30,17 @@ import { DuplicacyDataSource } from './duplicacy-data-source';
 })
 export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
 
-  dataSource : DuplicacyDataSource;
+  dataSource: DuplicacyDataSource;
 
   /**
    * Selected group id, 0 for all groups
    */
-  groupId : string;
+  groupId: string;
 
   /**
    * Selected group key
    */
-  groupKey : string;
+  groupKey: string;
 
 
 
@@ -90,7 +90,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
   /**
    * Make table header row visiable
    */
-  tableHeaderActBtn: string [] = [];
+  tableHeaderActBtn: string[] = [];
 
 
   /**
@@ -142,6 +142,11 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
   preInpVal = '';
 
   /**
+   * Store all data scopes ...  as a variants
+   */
+  dataScope: SchemaVariantsModel[] = [];
+
+  /**
    * Current schema info ..
    */
   schemaInfo: SchemaListDetails;
@@ -177,12 +182,12 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
 
     let isRefresh = false;
 
-    if(changes && changes.moduleId && changes.moduleId.currentValue !== changes.moduleId.previousValue) {
+    if (changes && changes.moduleId && changes.moduleId.currentValue !== changes.moduleId.previousValue) {
       this.moduleId = changes.moduleId.currentValue;
       isRefresh = true;
     }
 
-    if(changes && changes.schemaId && changes.schemaId.currentValue !== changes.schemaId.previousValue) {
+    if (changes && changes.schemaId && changes.schemaId.currentValue !== changes.schemaId.previousValue) {
       this.schemaId = changes.schemaId.currentValue;
       isRefresh = true;
     }
@@ -197,6 +202,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
       this.groupKey = null;
       this.variantId = '0';
       this.variantName = 'Entire dataset';
+      this.getDataScope();
       this.getSchemaStatics();
       this.getSchemaDetails();
       // this.getData();
@@ -232,6 +238,12 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
 
   ngOnInit(): void {
 
+    this.sharedServices.getDataScope().subscribe(res => {
+      if (res) {
+        this.getDataScope();
+      }
+    })
+
     /**
      * After choose columns get updated columns ..
      */
@@ -254,8 +266,8 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     /**
      * While row selection change then control the header actions..
      */
-    this.selection.changed.subscribe(res=>{
-      if(res.source.selected.length >0) {
+    this.selection.changed.subscribe(res => {
+      if (res.source.selected.length > 0) {
         this.tableHeaderActBtn = ['common_actions_header'];
       } else {
         this.tableHeaderActBtn = [];
@@ -270,7 +282,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
    */
   getSchemaDetails() {
     this.schemaListService.getSchemaDetailsBySchemaId(this.schemaId).subscribe(res => {
-      this.schemaInfo = res ;
+      this.schemaInfo = res;
     }, error => console.error(`Error : ${error.message}`))
   }
 
@@ -394,18 +406,18 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     // const metadataLst: any = {};
     this.startColumns.forEach(col => fields.push(col));
     for (const headerField in allMDF.headers) {
-      if(allMDF.headers.hasOwnProperty(headerField)) {
+      if (allMDF.headers.hasOwnProperty(headerField)) {
 
-      const index = this.selectedFields.findIndex( f => f.fieldId === headerField);
-      if (fields.indexOf(headerField) < 0 &&  (index !== -1)) {
-        select[index] = headerField;
-      }
-      // metadataLst[headerField] = allMDF.headers[headerField];
+        const index = this.selectedFields.findIndex(f => f.fieldId === headerField);
+        if (fields.indexOf(headerField) < 0 && (index !== -1)) {
+          select[index] = headerField;
+        }
+        // metadataLst[headerField] = allMDF.headers[headerField];
       }
     }
     // TODO for hierarchy and grid logic ..
     // this.metadataFldLst = metadataLst;
-    select.forEach(fldId =>fields.push(fldId));
+    select.forEach(fldId => fields.push(fldId));
     this.displayedFields.next(fields);
   }
 
@@ -475,36 +487,36 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
    * @param value current changed value
    * @param row row data ..
    */
-/*   emitEditBlurChng(fldid: string, value: string, row: any, rIndex: number) {
-    console.log(value);
-    if (document.getElementById('inpctrl_' + fldid + '_' + rIndex)) {
+  /*   emitEditBlurChng(fldid: string, value: string, row: any, rIndex: number) {
+      console.log(value);
+      if (document.getElementById('inpctrl_' + fldid + '_' + rIndex)) {
 
-      // DOM control after value change ...
-      const inpCtrl = document.getElementById('inpctrl_' + fldid + '_' + rIndex) as HTMLDivElement;
-      const viewCtrl = document.getElementById('viewctrl_' + fldid + '_' + rIndex) as HTMLSpanElement;
-      inpCtrl.style.display = 'none';
-      viewCtrl.innerText = value;
-      viewCtrl.style.display = 'block';
+        // DOM control after value change ...
+        const inpCtrl = document.getElementById('inpctrl_' + fldid + '_' + rIndex) as HTMLDivElement;
+        const viewCtrl = document.getElementById('viewctrl_' + fldid + '_' + rIndex) as HTMLSpanElement;
+        inpCtrl.style.display = 'none';
+        viewCtrl.innerText = value;
+        viewCtrl.style.display = 'block';
 
-      // DO correction call for data
-      const objctNumber = row.OBJECTNUMBER.fieldData;
-      const oldVal = row.fldid ? row.fldid.fieldData : '';
-      if (objctNumber && oldVal !== value) {
-        const request: SchemaCorrectionReq = { id: [objctNumber], fldId: fldid, vc: value, isReviewed: null } as SchemaCorrectionReq;
-        this.schemaDetailService.doCorrection(this.schemaId, request).subscribe(res => {
-          if (res.acknowledge) {
-            this.statics.correctedCnt = res.count ? res.count : 0;
-          }
-        }, error => {
-          this.snackBar.open(`Error :: ${error}`, 'Close', { duration: 2000 });
-          console.error(`Error :: ${error.message}`);
-        });
-      } else {
-        console.error(`Wrong with object number or can't change if old and new same  ... `);
+        // DO correction call for data
+        const objctNumber = row.OBJECTNUMBER.fieldData;
+        const oldVal = row.fldid ? row.fldid.fieldData : '';
+        if (objctNumber && oldVal !== value) {
+          const request: SchemaCorrectionReq = { id: [objctNumber], fldId: fldid, vc: value, isReviewed: null } as SchemaCorrectionReq;
+          this.schemaDetailService.doCorrection(this.schemaId, request).subscribe(res => {
+            if (res.acknowledge) {
+              this.statics.correctedCnt = res.count ? res.count : 0;
+            }
+          }, error => {
+            this.snackBar.open(`Error :: ${error}`, 'Close', { duration: 2000 });
+            console.error(`Error :: ${error.message}`);
+          });
+        } else {
+          console.error(`Wrong with object number or can't change if old and new same  ... `);
+        }
       }
-    }
 
-  } */
+    } */
 
 
   /**
@@ -723,14 +735,14 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     }
   }
 
-  markAsMasterRecord(row){
+  markAsMasterRecord(row) {
     this.catalogService.markAsMasterRecord(row.id)
-        .subscribe(resp => row.status = 'Master record');
+      .subscribe(resp => row.status = 'Master record');
   }
 
-  markForDeletion(row){
+  markForDeletion(row) {
     this.catalogService.markAsMasterRecord(row.id)
-        .subscribe(resp => row.status = 'Can be deleted');
+      .subscribe(resp => row.status = 'Can be deleted');
   }
 
 
@@ -744,7 +756,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   updateSelectedGroup(event) {
-    if(event.groupId === this.groupId){
+    if (event.groupId === this.groupId) {
       return;
     }
     this.groupId = event.groupId;
@@ -756,16 +768,39 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     return this.startColumns.includes(dynCol);
   }
 
-  onScroll(event){
+  onScroll(event) {
 
     if (event.target.clientHeight + event.target.scrollTop >= event.target.scrollHeight) {
-      if( event.target.scrollTop > this.lastScrollTop){
+      if (event.target.scrollTop > this.lastScrollTop) {
         console.log('End ', event.target.scrollTop);
         this.getData(true);
       }
 
     }
     this.lastScrollTop = event.target.scrollTop;
+  }
+
+  /**
+   * Get data scopes .. or variants ...
+   */
+  getDataScope() {
+    this.schemaVariantService.getDataScope(this.schemaId, 'RUNFOR').subscribe(res => {
+      this.dataScope = res;
+    }, (error) => console.error(`Something went wrong while getting variants : ${error.message}`));
+  }
+
+  /**
+   * Function to open data scope side sheet
+   */
+  openDataScopeSideSheet() {
+    this.router.navigate([{ outlets: { sb: `sb/schema/data-scope/${this.moduleId}/${this.schemaId}/new` } }])
+  }
+
+  /**
+   * Function to open summary side sheet of schema
+   */
+  openSummarySideSheet() {
+    this.router.navigate([{ outlets: { sb: `sb/schema/check-data/${this.moduleId}/${this.schemaId}` } }])
   }
 
 }

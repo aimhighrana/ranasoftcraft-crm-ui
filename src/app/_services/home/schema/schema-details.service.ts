@@ -127,8 +127,8 @@ export class SchemaDetailsService {
     return this.http.get<SchemaDashboardPermission[]>(this.endpointService.getCollaboratorDetailsUrl(schemaId));
   }
 
-  public createUpdateUserDetails(request: SchemaDashboardPermission[]): Observable<SchemaDashboardPermission[]> {
-    return this.http.post<SchemaDashboardPermission[]>(this.endpointService.createUpdateUserDetailsUrl(), request);
+  public createUpdateUserDetails(request: SchemaDashboardPermission[]): Observable<number[]> {
+    return this.http.post<number[]>(this.endpointService.createUpdateUserDetailsUrl(), request);
   }
 
   public deleteCollaborator(sNoList: number[]): Observable<boolean> {

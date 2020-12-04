@@ -9,23 +9,23 @@
                     <mat-icon>arrow_drop_down</mat-icon>
                 </button>
                 <mat-menu #menu="matMenu">
-                    <button mat-menu-item>[New data scope] </button>
+                    <button mat-menu-item (click)="openDataScopeSideSheet()">[New data scope] </button>
                     <button mat-menu-item (click)="refreshData('0')"> Entire dataset </button>
-                    <ng-container *ngIf="schemaInfo.variants && schemaInfo.variants.length">
-                        <button mat-menu-item *ngFor="let variant of schemaInfo.variants"
-                            (click)="refreshData(variant.variantId)">
-                            {{variant.variantName}}
+                    <ng-container *ngIf="dataScope && dataScope.length">
+                        <button mat-menu-item *ngFor="let scope of dataScope"
+                            (click)="refreshData(scope.variantId)">
+                            {{scope.variantName}}
                         </button>
                     </ng-container>
                 </mat-menu>
             </ng-template>
         </div>
         <div class="f-spacer"></div>
-        <button mat-flat-button color="accent">
+        <button mat-flat-button color="accent" (click)="openSummarySideSheet()">
             <mat-icon fontSet="mdo-icons">wand</mat-icon> Check data
         </button>
         <button mat-fab color="accent" class="mat-elevation-z0">
-            <mat-icon>show_chart</mat-icon>
+            <mat-icon fontSet="mdo-icons">chart-line</mat-icon>
         </button>
         <button mat-fab color="accent" class="mat-elevation-z0" [matMenuTriggerFor]="moreactionfile">
             <mat-icon fontSet="mdo-icons">more</mat-icon>

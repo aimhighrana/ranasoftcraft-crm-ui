@@ -166,7 +166,7 @@ export interface SchemaVariantReq {
  * Request of POST check data details API..
  */
 export interface CheckDataRequest {
-     schemaId: number;
+     schemaId: number | string;
      runId: number;
      brs: CheckDataBrs[];
      collaborators: CheckDataSubscriber[];

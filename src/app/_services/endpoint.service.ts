@@ -674,10 +674,9 @@ export class EndpointService {
   /**
    * endpoint for getting check data for schema
    * @param schemaId: schema ID
-   * @param runId: run ID of schema
    */
-  public getCheckDataUrl(schemaId: string, runId: string) {
-    return `${this.apiUrl}/schema/checkdata/get-all-br-collaborator-details/${schemaId}/${runId}`;
+  public getCheckDataUrl(schemaId: string) {
+    return `${this.apiUrl}/schema/checkdata/get-all-br-collaborator-details/${schemaId}`;
   }
 }
 

@@ -353,4 +353,23 @@ describe('SchemaDetailsComponent', () => {
     expect(component.ngOnChanges).toBeTruthy();
   }));
 
+  it('openSummarySideSheet(), should navigate to schema summary side sheet', () => {
+    spyOn(router, 'navigate');
+    component.openSummarySideSheet();
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/check-data/${component.moduleId}/${component.schemaId}` } }])
+  })
+
+  it('openDataScopeSideSheet(), should navigate to data scope side sheet', () => {
+    spyOn(router, 'navigate');
+    component.openDataScopeSideSheet();
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/data-scope/${component.moduleId}/${component.schemaId}/new` } }])
+  })
+
+  it('getDataScope(), should return all variants of a schema', async () => {
+    component.schemaId = '1005';
+    spyOn(schemaVariantService, 'getDataScope').withArgs(component.schemaId, 'RUNFOR').and.returnValue(of())
+    component.getDataScope();
+    expect(schemaVariantService.getDataScope).toHaveBeenCalledWith(component.schemaId, 'RUNFOR');
+  })
+
 });
