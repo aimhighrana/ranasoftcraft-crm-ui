@@ -30,6 +30,11 @@ mat-card.root {
       display: flex;
       padding: 16px 0 12px 10px;
     }
+
+    .scroll-container {
+      max-height: 450px;
+      overflow-y: auto;
+    }
   }
 }
 

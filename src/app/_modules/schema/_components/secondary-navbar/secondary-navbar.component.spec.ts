@@ -224,13 +224,13 @@ describe('SecondaryNavbarComponent', () => {
     } as SchemaListModuleList
 
     let searchString = 'diw';
-    let flag = component.searchForSchema(module, searchString);
+    let filteredSchemas = component.searchForSchema(module, searchString);
 
-    expect(flag).toEqual(true);
+    expect(filteredSchemas.length).toEqual(1);
 
     searchString = 'Ashish';
-    flag = component.searchForSchema(module, searchString);
+    filteredSchemas = component.searchForSchema(module, searchString);
 
-    expect(flag).toEqual(false);
+    expect(filteredSchemas.length).toEqual(0);
   })
 });

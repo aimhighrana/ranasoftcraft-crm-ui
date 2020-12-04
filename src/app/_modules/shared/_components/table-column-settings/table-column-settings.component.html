@@ -11,6 +11,7 @@
         </div>
     </div>
     <div class="row-spacer"></div>
+
     <div class="f-col mdo-justify">
         <div class="row-spacer"></div>
         <pros-search-input label="Search" placeholder="Search fields" (value)="searchFld($event)"></pros-search-input>
@@ -29,7 +30,7 @@
                 <span class="f-col-spacer-half"></span>
                 <div class="col"><strong> Editable </strong></div>
             </div>
-            <div cdkDropList [cdkDropListData]="header" (cdkDropListDropped)="drop($event)">
+            <div cdkDropList [cdkDropListData]="header" (cdkDropListDropped)="drop($event)" #scrollableContainer class="scroll-container">
                 <div *ngFor="let fld of header" id="{{ fld.fieldId }}" cdkDrag class="colunm-list">
                     <div class="f-row colunm-box">
 

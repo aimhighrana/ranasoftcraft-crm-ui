@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, SimpleChanges, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, Input, EventEmitter, Output, ViewChild } from '@angular/core';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { SchemaListModuleList, SchemaListDetails } from '@models/schema/schemalist';
 import { SchemaService } from '@services/home/schema.service';
@@ -7,6 +7,7 @@ import { ReportList } from '@modules/report/report-list/report-list.component';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { Observable, of } from 'rxjs';
 import { Router } from '@angular/router';
+import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
 
 @Component({
   selector: 'pros-secondary-navbar',
@@ -56,6 +57,8 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
    */
   @Output() toggleEmitter: EventEmitter<{}> = new EventEmitter<{}>();
 
+  @ViewChild('schemaSearchInput') schemaSearchInput : SearchInputComponent;
+
   constructor(
     private router: Router,
     private schemaListService: SchemalistService,
@@ -69,6 +72,9 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
     if (changes && changes.activatedPrimaryNav && changes.activatedPrimaryNav.previousValue !== changes.activatedPrimaryNav.currentValue && changes.activatedPrimaryNav.previousValue !== undefined) {
       this.activatedPrimaryNav = changes.activatedPrimaryNav.currentValue;
       this.isPageReload = false;
+      if (this.schemaSearchInput){
+        this.schemaSearchInput.clearSearch();
+      }
       switch (changes.activatedPrimaryNav.currentValue) {
         case 'welcome':
           this.getSchemaList();
@@ -210,10 +216,14 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
       if (searchString === null) {
         return this.searchModuleResults = this.moduleList;
       }
-      this.searchModuleResults = this.moduleList.filter((module) => {
+      this.searchModuleResults = [];
+      this.moduleList.forEach((module) => {
         module.moduleDesc = module.moduleDesc ? module.moduleDesc : 'untitled';
-        if (module.moduleDesc.toLowerCase().includes(searchString.toLowerCase()) || this.searchForSchema(module, searchString)) {
-          return module;
+        if (module.moduleDesc.toLowerCase().includes(searchString.toLowerCase())) {
+          this.searchModuleResults.push(module);
+        } else {
+          const schemaLists = this.searchForSchema(module, searchString);
+          if (schemaLists.length) this.searchModuleResults.push({...module, schemaLists}) ;
         }
       })
     }
@@ -246,17 +256,17 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
    * @param module module obj
    * @param searchString string to be searched
    */
-  searchForSchema(module: SchemaListModuleList, searchString: string) {
-    let flag = false;
+  searchForSchema(module: SchemaListModuleList, searchString: string) : SchemaListDetails[] {
+    const searchResult : SchemaListDetails[] = [];
     if (module.schemaLists) {
       module.schemaLists.forEach((schema) => {
         schema.schemaDescription = schema.schemaDescription ? schema.schemaDescription : 'untitled';
         if (schema.schemaDescription.toLowerCase().includes(searchString.toLowerCase())) {
-          return flag = true;
+          searchResult.push(schema);
         }
       })
     }
-    return flag;
+    return searchResult;
   }
 
   /**
