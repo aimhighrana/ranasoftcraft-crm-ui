@@ -255,7 +255,6 @@ export class BrruleSideSheetComponent implements OnInit {
 
     this.currentControls = controls;
     this.form = new FormGroup(controls);
-    this.form.valueChanges.subscribe((data) => console.log(data))
 
     // Apply conditional validation based on rule type
     this.form.controls.rule_type.valueChanges
@@ -293,7 +292,7 @@ export class BrruleSideSheetComponent implements OnInit {
     if (selectedRule === BusinessRuleType.BR_TRANSFORMATION) {
       requiredKeys = ['rule_name', 'transformationRuleType', 'error_message'];
       if (this.selectedTransformationType === this.transformationType.REGEX) {
-        requiredKeys = ['rule_name', 'transformationRuleType', 'error_message', 'sourceFld', 'targetFld', 'excludeScript', 'includeScript'];
+        requiredKeys = ['rule_name', 'transformationRuleType', 'error_message', 'sourceFld', 'excludeScript', 'includeScript'];
       }
     }
     if (selectedRule === BusinessRuleType.BR_DUPLICATE_RULE) {
@@ -408,9 +407,9 @@ export class BrruleSideSheetComponent implements OnInit {
             fieldDescri: '',
             fieldId: schema.sourceFld,
             fieldLookupConfig: {
-              lookupColumn: schema.udrBlockModel.conditionFieldId,
-              lookupColumnResult: schema.udrBlockModel.conditionValueFieldId,
-              moduleId: schema.udrBlockModel.objectType
+              lookupColumn: schema.udrBlockModel? schema.udrBlockModel.conditionFieldId: '',
+              lookupColumnResult: schema.udrBlockModel? schema.udrBlockModel.conditionValueFieldId: '',
+              moduleId: schema.udrBlockModel? schema.udrBlockModel.objectType: ''
             },
             lookupTargetField: schema.targetFld,
             lookupTargetText: ''
@@ -725,7 +724,12 @@ export class BrruleSideSheetComponent implements OnInit {
       this.sharedService.emitSaveBrEvent(brInfo);
 
     } else if (brType === BusinessRuleType.BR_TRANSFORMATION) {
-      const response = { formData: this.form.value, tempId: '', lookupData: this.lookupData };
+      const response = {
+        formData: this.form.value,
+        tempId: '',
+        lookupData: this.lookupData,
+        transformationData: this.transformationData
+       };
       const finalFormData = {
         ...this.form.value,
         brId: this.brId ? this.brId : '',
@@ -994,7 +998,6 @@ export class BrruleSideSheetComponent implements OnInit {
    */
   setTransformationFormData(transformationData: TransformationFormData) {
     const {
-      targetFld,
       sourceFld,
       excludeScript,
       includeScript,

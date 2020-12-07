@@ -119,6 +119,10 @@ export class TransformationRuleComponent implements OnInit, OnChanges {
         const fields: string[] = initialData.targetFld.split(',');
         this.selectedTargetFields = this.targetFieldsObject.list.filter(field => fields.indexOf(field[this.sourceFieldsObject.valueKey]) > -1);
       }
+      this.transformationFormOutput.emit({
+        ...this.form.value,
+        selectedTargetFields: this.selectedTargetFields
+      });
     }
   }
 

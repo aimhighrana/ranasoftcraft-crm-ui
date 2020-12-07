@@ -7,6 +7,7 @@ import { FormControl } from '@angular/forms';
 import { map, startWith } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SchemaService } from '@services/home/schema.service';
+import { GlobaldialogService } from '@services/globaldialog.service';
 
 @Component({
   selector: 'pros-lookup-rule',
@@ -46,7 +47,8 @@ export class LookupRuleComponent implements OnInit, OnChanges {
 
   constructor(
     private snackBar: MatSnackBar,
-    private schemaService: SchemaService) { }
+    private schemaService: SchemaService,
+    private globalDialogService: GlobaldialogService) { }
 
   ngOnInit(): void {
     this.initForm();
@@ -67,8 +69,9 @@ export class LookupRuleComponent implements OnInit, OnChanges {
    * Method to set selected fields for lookup data
    */
   patchLookupData() {
-   this.selectedFieldsCopy = [...this.initialLookupData];
-   this.selectedFields = [...this.initialLookupData];
+    this.selectedFieldsCopy = [...this.initialLookupData];
+    this.selectedFields = [...this.initialLookupData];
+    this.emitLookupRuleData(this.selectedFieldsCopy);
   }
 
   /**
@@ -76,8 +79,12 @@ export class LookupRuleComponent implements OnInit, OnChanges {
    * @param index pass index of the item to be removed
    */
   removeField(index) {
-    this.selectedFields.splice(index, 1);
-    this.selectedFieldsCopy.splice(index, 1);
+    this.globalDialogService.confirm({ label: 'Are you sure you wisht to delete this field?' }, (res) => {
+      if (res === 'yes') {
+        this.selectedFields.splice(index, 1);
+        this.selectedFieldsCopy.splice(index, 1);
+      }
+    })
   }
 
 
@@ -223,13 +230,13 @@ export class LookupRuleComponent implements OnInit, OnChanges {
    * if not present find the label using field id
    * @param field pass the field object
    */
-  getFieldLabel(field: LookupFields){
-    if(field && field.fieldDescri){
+  getFieldLabel(field: LookupFields) {
+    if (field && field.fieldDescri) {
       return field.fieldDescri;
     } else {
-      if(field.fieldId){
+      if (field.fieldId) {
         const fieldObj = this.fieldsObject.list.find((fld) => fld.fieldId === field.fieldId);
-        return fieldObj ? fieldObj.fieldDescri: '';
+        return fieldObj ? fieldObj.fieldDescri : '';
       }
     }
   }
@@ -239,7 +246,7 @@ export class LookupRuleComponent implements OnInit, OnChanges {
    * @param index pass the field index to check that particular field
    */
   isEnabled(index: number) {
-    if(this.selectedFieldsCopy.length>0) {
+    if (this.selectedFieldsCopy.length > 0) {
       const data: LookupFields = this.selectedFieldsCopy[index];
       return data.enableUserField;
     }
