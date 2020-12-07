@@ -1296,7 +1296,9 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * Get business rule list from the api
    */
   getBusinessRulesList(moduleId: string, searchString: string, brType: string, fetchCount: string) {
-    this.schemaService.getBusinessRulesByModuleId(moduleId, searchString, brType, fetchCount).subscribe((rules: CoreSchemaBrInfo[]) => {
+    const modId = moduleId? moduleId: '';
+    this.schemaService.getBusinessRulesByModuleId(modId, searchString, brType, fetchCount)
+    .subscribe((rules: CoreSchemaBrInfo[]) => {
       if (rules && rules.length > 0) {
         this.businessRulesList = rules;
       }

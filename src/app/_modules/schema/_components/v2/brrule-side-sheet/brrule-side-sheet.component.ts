@@ -849,7 +849,7 @@ export class BrruleSideSheetComponent implements OnInit {
    */
   createUDRBlockFromLookup(lookupData: LookupFields): UDRBlocksModel {
     return {
-      id: '',
+      id: Math.floor(Math.random() * 100000000000).toString(),
       udrid: '',
       conditionFieldId: lookupData.fieldLookupConfig.lookupColumn,
       conditionValueFieldId: lookupData.fieldLookupConfig.lookupColumnResult,
