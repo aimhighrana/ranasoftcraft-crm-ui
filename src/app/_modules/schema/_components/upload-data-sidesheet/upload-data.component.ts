@@ -120,6 +120,7 @@ export class UploadDataComponent implements OnInit {
           this.stepper.next();
           const file = target.files[0]
           this.uploadedFile = file;
+          this.uploadFileStepCtrl.get('uploadFileCtrl').setValue(this.uploadedFile);
         };
         reader.readAsBinaryString(target.files[0]);
         this.excelMdoFieldMappedData = [];
