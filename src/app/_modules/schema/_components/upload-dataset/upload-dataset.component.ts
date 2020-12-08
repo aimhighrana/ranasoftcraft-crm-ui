@@ -326,7 +326,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       threshold: new FormControl(100),
       schemaId: new FormControl()
     });
-    this.schemaCategory =  new FormControl('DATAQUALITY_VIEW');
+    this.schemaCategory = new FormControl('DATAQUALITY_VIEW');
   }
 
   /**
@@ -771,20 +771,20 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         blocks: object.blocks ? object.object : udrTreeData ? udrTreeData.blocks : []
       },
       transFormationSchema: object.transFormationSchema,
-      isCopied: object.isCopied? object.isCopied: false
+      isCopied: object.isCopied ? object.isCopied : false
     } as CoreSchemaBrInfo;
   }
 
 
-/**
- * method to map transformation rule data from form
- * object to transformationschema format
- * @param response pass the response with formData and lookup object
- */
+  /**
+   * method to map transformation rule data from form
+   * object to transformationschema format
+   * @param response pass the response with formData and lookup object
+   */
   mapTransformationData(response) {
     const { sourceFld, targetFld, includeScript, excludeScript, transformationRuleType, rule_type } = response.formData;
     const transformationList: TransformationModel[] = [];
-    if(rule_type === BusinessRuleType.BR_TRANSFORMATION){
+    if (rule_type === BusinessRuleType.BR_TRANSFORMATION) {
       if (response.lookupData && response.lookupData.length > 0) {
         response.lookupData.map((param: LookupFields) => {
           transformationList.push({
@@ -1082,7 +1082,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   save() {
     const formObject = this.requestForm.value;
     // add schema view control variable value here
-    if(formObject.core_schema) {
+    if (formObject.core_schema) {
       formObject.core_schema.schemaCategory = this.schemaCategory.value;
     }
 
@@ -1307,13 +1307,22 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * Get business rule list from the api
    */
   getBusinessRulesList(moduleId: string, searchString: string, brType: string, fetchCount: string) {
-    const modId = moduleId? moduleId: '';
-    this.schemaService.getBusinessRulesByModuleId(modId, searchString, brType, fetchCount)
-    .subscribe((rules: CoreSchemaBrInfo[]) => {
-      if (rules && rules.length > 0) {
-        this.businessRulesList = rules;
-      }
-    });
+    const modId = moduleId ? moduleId : '';
+    if (modId) {
+      this.schemaService.getBusinessRulesByModuleId(modId, searchString, brType, fetchCount)
+        .subscribe((rules: CoreSchemaBrInfo[]) => {
+          if (rules && rules.length > 0) {
+            this.businessRulesList = rules;
+          }
+        });
+    } else {
+      this.schemaService.getAllBusinessRules()
+        .subscribe((rules: CoreSchemaBrInfo[]) => {
+          if (rules && rules.length > 0) {
+            this.businessRulesList = rules;
+          }
+        });
+    }
   }
 
   /**
@@ -1400,7 +1409,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     this.dialogSubscriber = this.globaldialogService.dialogCloseEmitter
       .pipe(distinctUntilChanged())
       .subscribe((response: SchemaScheduler) => {
-        if(response){
+        if (response) {
           this.currentSchedule = response;
           this.canEditSchedule = true;
         } else {

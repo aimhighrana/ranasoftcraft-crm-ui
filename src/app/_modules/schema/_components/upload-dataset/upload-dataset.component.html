@@ -159,7 +159,7 @@
                 <div class="f-col temp-field">
                     <mat-label>Threshold</mat-label>
                     <mat-slider color="primary" [thumbLabel]="requestForm.controls.threshold.value"
-                        [value]="requestForm.controls.threshold.value" [disabled] = "isdisabled(requestForm.get('core_schema').value.discription)"
+                        [value]="requestForm.controls.threshold.value" 
                         (change)="setValueToForm('threshold',$event)">
                     </mat-slider>
                 </div>

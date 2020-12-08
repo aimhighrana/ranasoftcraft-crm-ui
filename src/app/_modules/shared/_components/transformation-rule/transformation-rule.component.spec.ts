@@ -115,6 +115,7 @@ describe('TransformationRuleComponent', () => {
 
   it('removeTargetField(), remove from target field array', () => {
     component.selectedTargetFields = [...dummyValue.list];
+    component.initializeForm();
     component.removeTargetField(0)
     expect(component.selectedTargetFields.length).toEqual(2);
   });

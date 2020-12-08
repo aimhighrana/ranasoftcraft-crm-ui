@@ -33,6 +33,9 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
    */
   fetchCount = 0;
 
+  /**
+   * hold the business rule types
+   */
   businessRuleTypes: BusinessRules[] = RULE_TYPES;
 
   constructor(
@@ -105,13 +108,23 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
    */
   getBusinessRulesList(moduleId: string, searchString: string, brType: string, fetchCount: string) {
     this.loader = true;
-    this.schemaService.getBusinessRulesByModuleId(moduleId, searchString, brType, fetchCount).subscribe((rules: CoreSchemaBrInfo[]) => {
-      this.loader = false;
-      if (rules && rules.length > 0) {
-        this.businessRulesList = rules;
-        this.filteredBusinessRulesList = rules;
-      }
-    });
+    if(moduleId){
+      this.schemaService.getBusinessRulesByModuleId(moduleId, searchString, brType, fetchCount).subscribe((rules: CoreSchemaBrInfo[]) => {
+        this.loader = false;
+        if (rules && rules.length > 0) {
+          this.businessRulesList = rules;
+          this.filteredBusinessRulesList = rules;
+        }
+      });
+    } else {
+      this.schemaService.getAllBusinessRules()
+      .subscribe((rules: CoreSchemaBrInfo[]) => {
+        if (rules && rules.length > 0) {
+          this.businessRulesList = rules;
+          this.filteredBusinessRulesList = rules;
+        }
+      });
+    }
   }
 
   /**

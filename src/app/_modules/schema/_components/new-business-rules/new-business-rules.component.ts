@@ -7,7 +7,7 @@ import {
 import { BusinessRules } from '@modules/admin/_components/module/schema/diw-create-businessrule/diw-create-businessrule.component';
 import { BusinessRuleType, ConditionalOperator, PRE_DEFINED_REGEX, RULE_TYPES, TransformationModel, TransformationRuleType, UDRObject } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
-import { MetadataModeleResponse, CategoryInfo, FieldConfiguration, TransformationFormData, LookupFields, NewBrDialogResponse } from '@models/schema/schemadetailstable';
+import { MetadataModeleResponse, CategoryInfo, FieldConfiguration, TransformationFormData, LookupFields } from '@models/schema/schemadetailstable';
 import { of, Observable } from 'rxjs';
 import { startWith, map, distinctUntilChanged } from 'rxjs/operators';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
@@ -205,7 +205,7 @@ export class NewBusinessRulesComponent implements OnInit {
                 weightage,
                 categoryId,
                 transFormationSchema } = this.data.createRuleFormValues;
-            this.patchTransformationFormData(transFormationSchema)
+            this.patchTransformationFormData(transFormationSchema);
             this.form.patchValue({
                 rule_type,
                 rule_name,
@@ -215,10 +215,10 @@ export class NewBusinessRulesComponent implements OnInit {
                 fields,
                 weightage,
                 categoryId,
+                transformationRuleType: this.getTrRuleType(transFormationSchema),
             });
 
             this.form.controls.rule_type.disable();
-            this.form.controls.weightage.disable();
             if (udrTreeData && udrTreeData.blocks) {
                 const temp: UDRObject[] = [];
                 udrTreeData.blocks.map((block) => {
@@ -623,11 +623,11 @@ export class NewBusinessRulesComponent implements OnInit {
         }
 
         this.form.controls.udrTreeData.setValue(finalObject);
-        let data: NewBrDialogResponse = null;
-        if (!this.form.pristine) {
-            data = { formData: this.form.value, tempId: this.tempRuleId, lookupData: this.lookupData };
-        }
-        this.dialogRef.close(data);
+        this.dialogRef.close({
+            formData: {...this.form.value, rule_type: this.currentSelectedRule},
+            tempId: this.tempRuleId,
+            lookupData: this.lookupData
+        });
     }
 
     setRegex(event) {

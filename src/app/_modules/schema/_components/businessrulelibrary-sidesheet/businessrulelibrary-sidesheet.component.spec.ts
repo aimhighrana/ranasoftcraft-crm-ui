@@ -2,6 +2,8 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CoreSchemaBrInfo } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { SchemaService } from '@services/home/schema.service';
+import { of } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { BusinessrulelibrarySidesheetComponent } from './businessrulelibrary-sidesheet.component';
@@ -9,6 +11,7 @@ import { BusinessrulelibrarySidesheetComponent } from './businessrulelibrary-sid
 describe('BusinessrulelibrarySidesheetComponent', () => {
   let component: BusinessrulelibrarySidesheetComponent;
   let fixture: ComponentFixture<BusinessrulelibrarySidesheetComponent>;
+  let schemaService: SchemaService;
 
 
   beforeEach(async(() => {
@@ -18,7 +21,8 @@ describe('BusinessrulelibrarySidesheetComponent', () => {
         AppMaterialModuleForSpec,
         HttpClientTestingModule,
         RouterTestingModule
-      ]
+      ],
+      providers: [SchemaService]
     })
       .compileComponents();
   }));
@@ -26,7 +30,8 @@ describe('BusinessrulelibrarySidesheetComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(BusinessrulelibrarySidesheetComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    schemaService = fixture.debugElement.injector.get(SchemaService);
+    // fixture.detectChanges();
   });
 
   it('should create', () => {
@@ -114,4 +119,14 @@ describe('BusinessrulelibrarySidesheetComponent', () => {
     res = component.isSelected(rule);
     expect(res).toEqual(false);
   })
+  it('getBusinessRulesList', async() => {
+      // call without module Id
+      spyOn(schemaService, 'getAllBusinessRules').and.callFake(() => of([]));
+      component.getBusinessRulesList(null, null, null, null);
+      expect(schemaService.getAllBusinessRules).toHaveBeenCalled();
+      // call with module Id
+      spyOn(schemaService, 'getBusinessRulesByModuleId').and.callFake(() => of([]));
+      component.getBusinessRulesList('testId', null, null, null);
+      expect(schemaService.getBusinessRulesByModuleId).toHaveBeenCalled();
+  });
 });

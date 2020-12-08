@@ -119,10 +119,7 @@ export class TransformationRuleComponent implements OnInit, OnChanges {
         const fields: string[] = initialData.targetFld.split(',');
         this.selectedTargetFields = this.targetFieldsObject.list.filter(field => fields.indexOf(field[this.sourceFieldsObject.valueKey]) > -1);
       }
-      this.transformationFormOutput.emit({
-        ...this.form.value,
-        selectedTargetFields: this.selectedTargetFields
-      });
+      this.emitTransformationOutput();
     }
   }
 
@@ -205,7 +202,19 @@ export class TransformationRuleComponent implements OnInit, OnChanges {
         [valueKey]: event.option.value
       });
     }
+
+    this.emitTransformationOutput();
     this.form.controls.targetFld.setValue('');
+  }
+
+  /**
+   * method to emit the form and target field data
+   */
+  emitTransformationOutput(){
+    this.transformationFormOutput.emit({
+      ...this.form.value,
+      selectedTargetFields: this.selectedTargetFields
+    });
   }
 
   /**
@@ -229,6 +238,7 @@ export class TransformationRuleComponent implements OnInit, OnChanges {
    */
   removeTargetField(id) {
     this.selectedTargetFields.splice(id, 1);
+    this.emitTransformationOutput();
   }
 
   // Getter to check if the rule is TransformationRule

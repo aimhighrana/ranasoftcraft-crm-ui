@@ -67,8 +67,15 @@ describe('BusinessrulelibraryDialogComponent', () => {
     component.data = {
       moduleId : '1005'
     }
+
+    // call with module Id
     component.getBusinessRulesList(component.data.moduleId, '', '', '0');
     expect(schemaService.getBusinessRulesByModuleId).toHaveBeenCalled();
+
+    // call without module Id
+    spyOn(schemaService, 'getAllBusinessRules').and.returnValue(of([]));
+    component.getBusinessRulesList(null, '', '', '0');
+    expect(schemaService.getAllBusinessRules).toHaveBeenCalled();
   }));
 
   it(`isSelected(), check if a rule is selected`, async(() => {

@@ -285,8 +285,15 @@ describe('UploadDatasetComponent', () => {
     const returnData: CoreSchemaBrInfo[] = [];
     spyOn(schemaServiceSpy, 'getBusinessRulesByModuleId').and.returnValue(of(returnData));
     component.moduleId = '1005';
+
+    // With module id
     component.getBusinessRulesList(component.moduleId, '', '', '0');
     expect(schemaServiceSpy.getBusinessRulesByModuleId).toHaveBeenCalledWith(component.moduleId, '', '', '0');
+
+    // without module id
+    spyOn(schemaServiceSpy, 'getAllBusinessRules').and.callFake(() => of([]));
+    component.getBusinessRulesList(null, '', '', '0');
+    expect(schemaServiceSpy.getAllBusinessRules).toHaveBeenCalled();
   }));
 
   it(`isEditable(), check if the field is editable`, async(() => {

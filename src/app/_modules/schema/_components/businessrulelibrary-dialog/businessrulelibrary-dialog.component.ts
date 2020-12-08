@@ -91,16 +91,30 @@ export class BusinessrulelibraryDialogComponent implements OnInit {
    */
   getBusinessRulesList(moduleId: string, searchString: string, brType: string, fetchCount: string) {
     this.loader = true;
-    this.schemaService.getBusinessRulesByModuleId(moduleId, searchString, brType, fetchCount).subscribe((rules: CoreSchemaBrInfo[]) => {
-      this.loader = false;
-      if (rules && rules.length > 0) {
-        this.businessRulesList = rules;
-        this.filteredBusinessRulesList = rules;
-        if (this.data && this.data.selectedRules && this.data.selectedRules.length > 0) {
-          this.selectedBusinessRuleCopy = [...this.data.selectedRules];
+    if (moduleId) {
+      this.schemaService.getBusinessRulesByModuleId(moduleId, searchString, brType, fetchCount).subscribe((rules: CoreSchemaBrInfo[]) => {
+        this.loader = false;
+        if (rules && rules.length > 0) {
+          this.businessRulesList = rules;
+          this.filteredBusinessRulesList = rules;
+          if (this.data && this.data.selectedRules && this.data.selectedRules.length > 0) {
+            this.selectedBusinessRuleCopy = [...this.data.selectedRules];
+          }
         }
-      }
-    });
+      });
+    } else {
+      this.schemaService.getAllBusinessRules()
+        .subscribe((rules: CoreSchemaBrInfo[]) => {
+          this.loader = false;
+          if (rules && rules.length > 0) {
+            this.businessRulesList = rules;
+            this.filteredBusinessRulesList = rules;
+            if (this.data && this.data.selectedRules && this.data.selectedRules.length > 0) {
+              this.selectedBusinessRuleCopy = [...this.data.selectedRules];
+            }
+          }
+        });
+    }
   }
 
   /**
@@ -117,9 +131,9 @@ export class BusinessrulelibraryDialogComponent implements OnInit {
     this.dialogRef.close(this.selectedBusinessRule);
   }
 
- /**
-  * select a business rule type
-  */
+  /**
+   * select a business rule type
+   */
   selectCurrentRuleType(ruleType: BusinessRules) {
     this.selectedRuleType = ruleType;
     this.filterRuleByType(ruleType);

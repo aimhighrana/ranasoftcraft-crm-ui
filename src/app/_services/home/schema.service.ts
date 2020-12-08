@@ -139,6 +139,10 @@ export class SchemaService {
     return this.http.get<CoreSchemaBrInfo[]>(this.endpointService.getBusinessRulesInfoByModuleIdUrl(), {params: {moduleId, searchString, brType, fetchCount}});
   }
 
+  public getAllBusinessRules(): Observable<CoreSchemaBrInfo[]> {
+    return this.http.get<CoreSchemaBrInfo[]>(this.endpointService.getAllBusinessRulesUrl());
+  }
+
   public getAllCategoriesList(): Observable<Category[]> {
     return this.http.get<Category[]>(this.endpointService.getCategoriesInfo());
   }

@@ -919,16 +919,34 @@ export class BrruleSideSheetComponent implements OnInit {
     return [genericOp, onlyNum, specialOpe];
   }
 
+  /**
+   * method to set the comparison value
+   * @param value pass the value to set
+   * @param index pass the index
+   */
   setComparisonValue(value: string, index: number) {
     const array = this.udrNodeArray().at(index);
     array.get('conditionFieldValue').setValue(value);
   }
 
+  /**
+   * method to set the comparison value for child
+   * @param value pass the value
+   * @param chldNode pass the child node
+   * @param parentNode pass the parent node
+   */
   setComparisonValueForChild(value, chldNode: number, parentNode: number) {
     const childArray = this.getChildAsControl(parentNode).at(chldNode);
     childArray.get('conditionFieldValue').setValue(value);
   }
 
+  /**
+   * Method to set range for child values for custom rule
+   * @param value range value
+   * @param rangeText range text
+   * @param childObject pass the child object
+   * @param parentIndex pas sthe parent's index
+   */
   setRangeValueForChild(value, rangeText, childObject, parentIndex) {
     const childArray = this.getChildAsControl(parentIndex).at(childObject);
     if (rangeText === 'start') {
@@ -980,6 +998,9 @@ export class BrruleSideSheetComponent implements OnInit {
     })
   }
 
+  /**
+   * getter to check if a rule is transformation rule
+   */
   get isTransformationRule(): boolean {
     return this.form.controls.rule_type.value === BusinessRuleType.BR_TRANSFORMATION;
   }
@@ -1017,6 +1038,10 @@ export class BrruleSideSheetComponent implements OnInit {
     this.lookupData = lookupData;
   }
 
+  /**
+   * modified the value to show
+   * @param value pass the value object
+   */
   displayFn(value) {
     return value ? value.fieldDescri : '';
   }

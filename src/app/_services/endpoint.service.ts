@@ -148,6 +148,10 @@ export class EndpointService {
     return this.apiUrl + `/schema/get-business-rules/`
   }
 
+  public getAllBusinessRulesUrl() {
+    return this.apiUrl + `/schema/get-all-business-rules/`
+  }
+
   public getBusinessRulesInfoBySchemaIdUrl(schemaId: string) {
     return this.apiUrl + `/schema/get-business-rules/${schemaId}`;
   }
