@@ -50,7 +50,7 @@
                     <div class="row-spacer"></div>
                     <div class="f-col temp-field">
                         <mat-label>Threshold</mat-label>
-                        <mat-slider color="primary" formControlName="schemaThreshold"
+                        <mat-slider color="primary" formControlName="schemaThreshold" [disabled]="true"
                             [value]="thresholdValue ? thresholdValue : 0"></mat-slider>
                     </div>
                     <div class="row-spacer"></div>
@@ -183,7 +183,7 @@
                             </mat-card-title>
                         </mat-card-header>
                     </div>
-                    <div class="col col-x4">
+                    <div class="col col-x4" [matMenuTriggerFor]="subscriberRole">
                         <button mat-stroked-button *ngIf="subscriber.isAdmin">Admin <mat-icon fontSet="mdo-icons">
                                 menu-arrow</mat-icon></button>
                         <button mat-stroked-button *ngIf="subscriber.isReviewer">Reviewer <mat-icon fontSet="mdo-icons">
@@ -193,6 +193,10 @@
                         <button mat-stroked-button *ngIf="subscriber.isEditer">Editor <mat-icon fontSet="mdo-icons">
                                 menu-arrow</mat-icon></button>
                     </div>
+                    <mat-menu #subscriberRole="matMenu">
+                        <button mat-menu-item *ngFor="let role of roles" (click)="updateRole(subscriber, role.code)">{{role.text}}</button>
+                    </mat-menu>
+
                     <div class="col col-x16">
                         <mat-chip-list>
                             <ng-template ngFor let-ctrl [ngForOf]="subscriber.filterCriteria">

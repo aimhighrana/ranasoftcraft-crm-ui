@@ -19,7 +19,7 @@ import { SchemaScheduler } from '@models/schema/schemaScheduler';
 import { FormInputComponent } from '@modules/shared/_components/form-input/form-input.component';
 import { ScheduleComponent } from '@modules/shared/_components/schedule/schedule.component';
 import { DatePickerFieldComponent } from '@modules/shared/_components/date-picker-field/date-picker-field.component';
-import { PermissionOn } from '@models/collaborator';
+import { PermissionOn, SchemaDashboardPermission } from '@models/collaborator';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 
 describe('SchemaInfoComponent', () => {
@@ -356,5 +356,23 @@ describe('SchemaInfoComponent', () => {
     spyOn(schemaListService, 'getSchemaDetailsBySchemaId').withArgs(component.schemaId).and.returnValue(of({} as SchemaListDetails))
     component.getSchemaDetails(component.schemaId);
     expect(schemaListService.getSchemaDetailsBySchemaId).toHaveBeenCalledWith(component.schemaId);
+  })
+
+  it('updateRole(), should update role of subscriber', async() => {
+    component.schemaId = '125556221415'
+    const subscriber = {
+      isAdmin: false,
+      isViewer: true,
+      isReviewer: false,
+      isEditer: false,
+      schemaId: component.schemaId,
+      permissionType : 'USER',
+      sno: '22551',
+      userid: 'ASHSH'
+    } as SchemaDashboardPermission;
+    const role = 'isAdmin';
+    spyOn(schemaDetailsService, 'createUpdateUserDetails').withArgs(Array(subscriber)).and.returnValue(of())
+    component.updateRole(subscriber, role);
+    expect(schemaDetailsService.createUpdateUserDetails).toHaveBeenCalledWith(Array(subscriber));
   })
 });

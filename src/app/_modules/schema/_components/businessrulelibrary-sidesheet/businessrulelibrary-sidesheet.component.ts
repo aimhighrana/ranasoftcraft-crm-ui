@@ -56,7 +56,7 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
     this.getBusinessRulesList(this.moduleId, '', '', String(this.fetchCount));
   }
 
-  // function to select a business rule from the list
+  // function to select a business rule from the list.
   selectBusinessRule(rule: CoreSchemaBrInfo, action: string) {
     if (action === this.constants.ADD) {
       this.selectedBusinessRule.push(rule);

@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SchemaService } from '@services/home/schema.service';
 import { SchemaStaticThresholdRes, CoreSchemaBrMap, SchemaListDetails, LoadDropValueReq, VariantDetails } from '@models/schema/schemalist';
-import { PermissionOn, SchemaCollaborator, SchemaDashboardPermission, UserMdoModel } from '@models/collaborator';
+import { PermissionOn, ROLES, SchemaCollaborator, SchemaDashboardPermission, UserMdoModel } from '@models/collaborator';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { CoreSchemaBrInfo, DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
@@ -86,6 +86,11 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * outlet name in which sheets to be opened
    */
   outlet = 'sb';
+
+  /**
+   * To hold all roles of suscribers
+   */
+  roles = ROLES;
 
   /**
    * To hold all the subscriptions related to component
@@ -836,6 +841,26 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       this.getBusinessRuleList(this.schemaId);
     }, (error) => {
       console.log('Error while adding business rule', error.message);
+    })
+  }
+
+  /**
+   * Function to change role of subscriber
+   * @param subscriber information of subscriber
+   * @param role updated role
+   */
+  updateRole(subscriber, role) {
+    this.roles.forEach((r) => {
+      subscriber[r.code] = false;
+    })
+
+    subscriber[role] = true;
+    subscriber.schemaId = this.schemaId;
+
+    this.schemaDetailsService.createUpdateUserDetails(Array(subscriber)).subscribe(res => {
+      this.getSubscriberList(this.schemaId)
+    }, (error) => {
+      console.log('Something went wrong while update role..', error.message);
     })
   }
 
