@@ -166,10 +166,12 @@ describe('DuplicacyComponent', () => {
     request.schemaId = component.schemaId;
     request.groupId = component.groupId;
     request.from = 1;
-    request.size = 20;
+    request.to = 20;
     request.key = component.groupKey;
     request.runId = '';
-    // request.runId = component.schemaInfo.runId;
+    request.filterCriterias = [];
+    request.plantCode = '0';
+    request.sort = {};
 
 
     spyOn(catalogService, 'getCatalogCheckRecords').withArgs(request)
@@ -208,10 +210,12 @@ describe('DuplicacyComponent', () => {
     request.schemaId = component.schemaId;
     request.groupId = component.groupId;
     request.from = 1;
-    request.size = 20;
+    request.to = 20;
     request.key = component.groupKey;
     request.runId = '';
-    // request.runId = component.schemaInfo.runId;
+    request.filterCriterias = [];
+    request.plantCode = '0';
+    request.sort = {};
 
     spyOn(catalogService, 'getCatalogCheckRecords').withArgs(request)
       .and.returnValue(of());

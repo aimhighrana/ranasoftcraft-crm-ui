@@ -1,3 +1,5 @@
+import { FilterCriteria } from './schemadetailstable';
+
 export interface GroupDetails {
     groupId: string;
     groupName: string;
@@ -28,17 +30,15 @@ export class RequestForCatalogCheckData {
     groupId: string;
     key: string;
     from: number;
-    size: number;
-    /*
+    to: number;
     plantCode: string;
-    variantId: string;
+    /* variantId: string;
     requestStatus: string;
     executionStartDate: string;
     pageSize: number;
-    pageIndex: number;
+    pageIndex: number; */
     filterCriterias: FilterCriteria[];
     sort: {};
-    */
 }
 
 export class TableDataSource<T> {

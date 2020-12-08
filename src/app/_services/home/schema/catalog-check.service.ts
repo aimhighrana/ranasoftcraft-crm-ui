@@ -38,7 +38,7 @@ export class CatalogCheckService {
   }
 
   getCatalogCheckRecords(params): Observable<any>{
-    return this.http.post<any>(this.endpointService.catalogCheckRecordsUrl(), null , { params });
+    return this.http.post<any>(this.endpointService.catalogCheckRecordsUrl(), params);
   }
 
 }

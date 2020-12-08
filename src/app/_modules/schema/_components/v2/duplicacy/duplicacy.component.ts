@@ -228,7 +228,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
       if (res.direction) {
         const fldId = res.active ? res.active : '';
         const order = res.direction ? res.direction : '';
-        this.sortOrder = {};
+        // this.sortOrder = {};
         this.sortOrder[fldId] = order;
       }
       this.getData();
@@ -362,37 +362,16 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     request.schemaId = this.schemaId;
     request.groupId = this.groupId;
     request.from = isLoadingMore ? this.dataSource.docLength() + 1 : 1;
-    request.size = 20;
+    request.to = isLoadingMore ? this.dataSource.docLength() + 20 : 20;
     request.key = this.groupKey;
     request.runId = '';
+    request.filterCriterias = this.filterCriteria.getValue() || [];
+    request.plantCode = '0';
+    request.sort = this.sortOrder;
     // request.runId = this.schemaInfo && this.schemaInfo.runId ?  this.schemaInfo.runId : '';
 
     this.dataSource.getTableData(request, isLoadingMore);
 
-    /* this.catalogService.getCatalogCheckRecords(request)
-        .subscribe(resp => console.log(resp)); */
-
-    /* const request = new RequestForCatalogCheckData();
-    request.schemaId = this.schemaId;
-    request.variantId = this.variantId;
-    request.groupId = this.groupId;
-    request.pageSize = this.paginator ? this.paginator.pageSize : 10;
-    request.pageIndex = this.paginator ? this.paginator.pageIndex : 0;
-    request.requestStatus = this.activeTab;
-    request.filterCriterias = this.filterCriteria.getValue();
-    request.sort = this.sortOrder;
-
-    this.dataTableSource.isLoading = true;
-    this.catalogService.getCatalogCheckData(request)
-      .subscribe(resp => {
-        this.dataTableSource.data = resp.data;
-        this.dataTableSource.totalCount = resp.totalCount;
-        this.dataTableSource.isLoading = false;
-      },
-        error => {
-          console.log(error);
-          this.dataTableSource.isLoading = false;
-        }); */
   }
 
   /**

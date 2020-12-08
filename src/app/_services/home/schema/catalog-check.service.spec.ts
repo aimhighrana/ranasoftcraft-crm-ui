@@ -71,7 +71,7 @@ describe('CatalogCheckService', () => {
     request.schemaId = 'schema1';
     request.groupId = 'group1';
     request.from = 1;
-    request.size = 20;
+    request.to = 20;
     request.key = 'exactGroupId';
     request.runId = '123';
 
@@ -93,7 +93,7 @@ describe('CatalogCheckService', () => {
     });
 
     // mock http call
-    const mockRequest = httpTestingController.expectOne(`${url}?schemaId=${request.schemaId}&groupId=${request.groupId}&from=${request.from}&size=${request.size}&key=${request.key}&runId=${request.runId}`);
+    const mockRequest = httpTestingController.expectOne(`${url}`);
     expect(mockRequest.request.method).toEqual('POST');
     expect(mockRequest.request.responseType).toEqual('json');
     mockRequest.flush(mockData);

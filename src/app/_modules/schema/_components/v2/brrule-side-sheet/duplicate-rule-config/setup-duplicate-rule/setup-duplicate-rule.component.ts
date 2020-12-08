@@ -1,9 +1,11 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { BusinessRuleType, CoreSchemaBrInfo, DuplicateRuleModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
+import { GlobaldialogService } from '@services/globaldialog.service';
 import { SchemaService } from '@services/home/schema.service';
 import { Observable, of, Subscription } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
@@ -55,7 +57,9 @@ export class SetupDuplicateRuleComponent implements OnInit, OnChanges, OnDestroy
     private snackBar: MatSnackBar,
     private sharedService: SharedServiceService,
     private router: Router,
-    private schemaService: SchemaService) {
+    private schemaService: SchemaService,
+    private dialog: MatDialog,
+    private glocalDialogService: GlobaldialogService) {
 
     this.initDuplicateRuleForm();
 
@@ -248,9 +252,16 @@ export class SetupDuplicateRuleComponent implements OnInit, OnChanges, OnDestroy
    * @param index row index to be removed
    */
   removeFormArrayRow(formArrayName, index) {
-    (this.duplicateRuleForm.get(formArrayName) as FormArray)
-      .removeAt(index)
+
+    this.glocalDialogService.confirm({label:'Are you sure to delete ?'}, (resp) => {
+      if (resp && resp === 'yes') {
+        (this.duplicateRuleForm.get(formArrayName) as FormArray)
+          .removeAt(index)
+      }
+    })
+
   }
+
 
   searchField(searchText) {
     this.filteredFieldList = this.filter(searchText);
@@ -362,7 +373,7 @@ export class SetupDuplicateRuleComponent implements OnInit, OnChanges, OnDestroy
       return 'Select';
     }
     return (criteria === 'Exact_Match') ? 'Exact match'
-           : criteria === 'Fuzzy' ? 'Fuzzy' : '';
+      : criteria === 'Fuzzy' ? 'Fuzzy' : '';
   }
 
   ngOnDestroy() {

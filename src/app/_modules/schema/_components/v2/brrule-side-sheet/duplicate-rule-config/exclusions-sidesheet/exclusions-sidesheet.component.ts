@@ -3,6 +3,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatInput } from '@angular/material/input';
 import { Router } from '@angular/router';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
+import { GlobaldialogService } from '@services/globaldialog.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -26,6 +27,7 @@ export class ExclusionsSidesheetComponent implements OnInit, OnDestroy {
   constructor(private router: Router,
     private sharedService: SharedServiceService,
     private formBuilder: FormBuilder,
+    private glocalDialogService: GlobaldialogService
     ) { }
 
 
@@ -140,7 +142,13 @@ export class ExclusionsSidesheetComponent implements OnInit, OnDestroy {
    * @param index element to remove
    */
   removeSynonymGroup(index) {
-    this.synonymsArray.removeAt(index);
+
+    this.glocalDialogService.confirm({label:'Are you sure to delete ?'}, (resp) => {
+      if (resp && resp === 'yes') {
+        this.synonymsArray.removeAt(index);
+      }
+    })
+
   }
 
   /**
