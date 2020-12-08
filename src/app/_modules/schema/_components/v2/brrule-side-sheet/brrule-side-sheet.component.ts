@@ -293,7 +293,7 @@ export class BrruleSideSheetComponent implements OnInit {
     if (selectedRule === BusinessRuleType.BR_TRANSFORMATION) {
       requiredKeys = ['rule_name', 'transformationRuleType', 'error_message'];
       if (this.selectedTransformationType === this.transformationType.REGEX) {
-        requiredKeys = ['rule_name', 'transformationRuleType', 'error_message', 'sourceFld', 'excludeScript', 'includeScript'];
+        requiredKeys = ['rule_name', 'transformationRuleType', 'error_message', 'sourceFld'];
       }
     }
     if (selectedRule === BusinessRuleType.BR_DUPLICATE_RULE) {

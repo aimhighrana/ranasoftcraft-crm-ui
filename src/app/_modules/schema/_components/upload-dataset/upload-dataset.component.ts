@@ -794,7 +794,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
             includeScript,
             excludeScript,
             transformationRuleType,
-            lookUpObjectType: '',
+            lookUpObjectType: param.fieldLookupConfig.moduleId,
             lookUptable: '',
             udrBlockModel: this.createUDRBlockFromLookup(param)
           })

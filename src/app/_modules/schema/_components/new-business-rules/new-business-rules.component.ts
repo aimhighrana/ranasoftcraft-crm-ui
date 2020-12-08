@@ -460,7 +460,7 @@ export class NewBusinessRulesComponent implements OnInit {
         }
         if (selectedRule === BusinessRuleType.BR_TRANSFORMATION) {
             if (this.selectedTransformationType === this.transformationType.REGEX) {
-                requiredKeys = ['rule_type', 'rule_name', 'transformationRuleType', 'error_message', 'sourceFld', 'targetFld', 'excludeScript', 'includeScript'];
+                requiredKeys = ['rule_type', 'rule_name', 'transformationRuleType', 'error_message', 'sourceFld', 'targetFld'];
             } else if (this.selectedTransformationType === this.transformationType.LOOKUP) {
                 requiredKeys = ['rule_type', 'rule_name', 'transformationRuleType', 'error_message'];
             }
