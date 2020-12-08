@@ -2,6 +2,7 @@ mat-card.root {
   user-select: none;
   height: 100%;
   padding: 0 16px;
+  overflow: hidden;
 
   .breadcrum-toolbar {
     align-items: center;
@@ -65,6 +66,10 @@ mat-card.root {
         border-top-style: dashed;
       }
     }
+  }
+
+  .colunm-listing {
+    overflow: hidden;
   }
 }
 

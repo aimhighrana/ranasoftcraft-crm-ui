@@ -9,6 +9,7 @@ mat-card.root {
     padding-top: 16px;
     top: 0;
     z-index: 2;
+    min-height: 40px;
 
     .display-heading-large {
       font-size: 1.2rem;
@@ -25,16 +26,6 @@ mat-card.root {
 
   mat-card.check-list {
     padding: 0;
-
-    .checkedall {
-      display: flex;
-      padding: 16px 0 12px 10px;
-    }
-
-    .scroll-container {
-      max-height: 450px;
-      overflow-y: auto;
-    }
   }
 }
 

@@ -34,7 +34,7 @@
                     <pros-form-input [value]="getInputValue(getValue(i))" [type]="'text'" [placeholder]="'parameter...'"
                         [matMenuTriggerFor]="parameter" (menuOpened)="reload = !reload"></pros-form-input>
                     <mat-menu #parameter="matMenu" direction="center" class="mat-elevation-z0 tooltip-fields-menu">
-                        <div class="top-tiparrow"></div>
+                        <!-- <div class="top-tiparrow"></div> -->
                         <pros-lookup-config [reload]="reload" [availableModules]="modulesList" [initialData]="getValue(i)"
                             (saveData)="setLookupConfig($event, i)"></pros-lookup-config>
                     </mat-menu>
