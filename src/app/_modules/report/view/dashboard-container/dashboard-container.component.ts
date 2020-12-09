@@ -1,6 +1,8 @@
 import { Component, OnInit, Input, AfterViewInit, ElementRef, HostListener, OnChanges, Output, EventEmitter, ViewChild } from '@angular/core';
 import { ReportService } from '../../_service/report.service';
 import { WidgetMapInfo, Criteria, ReportDashboardPermission } from '../../_models/widget';
+import { UserService } from '@services/user/userservice.service';
+import { distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'pros-dashboard-container',
@@ -29,7 +31,8 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit, OnCha
 
   @ViewChild('rootContainer') rootContainer: ElementRef;
   constructor(
-    private reportService: ReportService
+    private reportService: ReportService,
+    private userService: UserService
   ) { }
 
   ngOnChanges(changes: import('@angular/core').SimpleChanges): void {
@@ -41,11 +44,7 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit, OnCha
     if(changes && changes.reportId && changes.reportId.currentValue !== changes.reportId.previousValue) {
       this.reportId = changes.reportId.currentValue;
       if(this.reportId) {
-        this.reportService.getReportInfo(this.reportId).subscribe(res=>{
-          this.widgetList = res.widgets;
-        },error=>{
-          console.log(`Error ${error}`);
-        })
+        this.getReportInfo(this.reportId);
       }
     }
   }
@@ -60,12 +59,7 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit, OnCha
 
   ngOnInit(): void {
     if(this.reportId) {
-      this.reportService.getReportInfo(this.reportId).subscribe(res=>{
-        this.widgetList = res.widgets;
-        this.permissons = res.permissons;
-      },error=>{
-        console.log(`Error ${error}`);
-      })
+      this.getReportInfo(this.reportId);
     }
   }
 
@@ -87,4 +81,14 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit, OnCha
     }
   }
 
+  getReportInfo(reportId: number) {
+    this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user=>{
+      this.reportService.getReportInfo(reportId, user.plantCode).subscribe(res=>{
+        this.widgetList = res.widgets;
+        this.permissons = res.permissons;
+      },error=>{
+        console.log(`Error ${error}`);
+      });
+    });
+  }
 }

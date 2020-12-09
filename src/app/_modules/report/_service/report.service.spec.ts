@@ -2,23 +2,28 @@ import { TestBed, async } from '@angular/core/testing';
 
 import { ReportService } from './report.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { EndpointService } from 'src/app/_services/endpoint.service';
+import { EndpointsAnalyticsService } from '@services/_endpoints/endpoints-analytics.service';
+import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 
 describe('ReportService', () => {
   let service: ReportService;
-  let endpointServiceSpy: jasmine.SpyObj<EndpointService>;
+  let endpointServiceSpy: jasmine.SpyObj<EndpointsClassicService>;
   let httpTestingController: HttpTestingController;
+  let analyticsServiceSpy: jasmine.SpyObj<EndpointsAnalyticsService>
   beforeEach(() => {
-    const epsSpy = jasmine.createSpyObj('EndpointService', [ 'reportDashboardUrl','docCountUrl','getPermissionUrl','returnCollaboratorsPermisisonUrl','saveUpdateReportCollaborator','deleteCollaboratorUrl']);
+    const epsSpy = jasmine.createSpyObj('EndpointsClassicService', [ 'getPermissionUrl','returnCollaboratorsPermisisonUrl','saveUpdateReportCollaborator','deleteCollaboratorUrl']);
+    const ansSpy = jasmine.createSpyObj('EndpointsAnalyticsService', [ 'reportDashboardUrl', 'docCountUrl',]);
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule ],
       providers: [
         ReportService,
-        { provide: EndpointService, useValue: epsSpy }
+        { provide: EndpointsClassicService, useValue: epsSpy },
+        { provide: EndpointsAnalyticsService, useValue: ansSpy}
       ]
     }).compileComponents();
     service = TestBed.inject(ReportService);
-    endpointServiceSpy = TestBed.inject(EndpointService) as jasmine.SpyObj<EndpointService>;
+    endpointServiceSpy = TestBed.inject(EndpointsClassicService) as jasmine.SpyObj<EndpointsClassicService>;
+    analyticsServiceSpy = TestBed.inject(EndpointsAnalyticsService) as jasmine.SpyObj<EndpointsAnalyticsService>;
     httpTestingController = TestBed.inject(HttpTestingController);
   });
 
@@ -28,16 +33,17 @@ describe('ReportService', () => {
 
   it('getReportInfo() : be able to retrive report information', async(() => {
     const testurl = 'dummy url to test';
+    const plantCode = '0';
     // mocking url
-    endpointServiceSpy.reportDashboardUrl.withArgs(265623).and.returnValue(testurl);
+    analyticsServiceSpy.reportDashboardUrl.withArgs(265623).and.returnValue(testurl);
     // mock data
     const mockhttpData = {} as any;
     // actual call
-    service.getReportInfo(265623).subscribe(actualData => {
+    service.getReportInfo(265623,plantCode).subscribe(actualData => {
       expect(actualData).toEqual(mockhttpData);
     });
     // mocking http
-    const req = httpTestingController.expectOne(testurl);
+    const req = httpTestingController.expectOne(`${testurl}?plantCode=${plantCode}`);
     expect(req.request.method).toEqual('GET');
     req.flush(mockhttpData);
     // verify http
@@ -48,16 +54,17 @@ describe('ReportService', () => {
   it('getDocCount() : should be return count', async(() => {
     const testurl = 'count testing url';
     const objectType = '1005';
+    const plantCode = '0';
     // mocking url
-    endpointServiceSpy.docCountUrl.withArgs(objectType).and.returnValue(testurl);
+    analyticsServiceSpy.docCountUrl.withArgs(objectType).and.returnValue(testurl);
     // mock data
     const mockhttpData = {} as any;
     // actual call
-    service.getDocCount(objectType).subscribe(actualData => {
+    service.getDocCount(objectType, plantCode).subscribe(actualData => {
       expect(actualData).toEqual(mockhttpData);
     });
     // mocking http
-    const req = httpTestingController.expectOne(testurl);
+    const req = httpTestingController.expectOne(`${testurl}?plantCode=${plantCode}`);
     expect(req.request.method).toEqual('GET');
     req.flush(mockhttpData);
     // verify http

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { EndpointService } from 'src/app/_services/endpoint.service';
 import { Observable } from 'rxjs';
-
+import { EndpointsAnalyticsService } from '@services/_endpoints/endpoints-analytics.service';
+import { EndpointsAuthService } from '@services/_endpoints/endpoints-auth.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -11,28 +11,21 @@ export class MsteamsConfigService {
 
   constructor(
     private http: HttpClient,
-    public endpointService: EndpointService
+    public analyticsEndpointService: EndpointsAnalyticsService,
+    public authEndpointService: EndpointsAuthService
   )
   { }
   apiUrl = environment.apiurl;
 
   // Send user credentials to login api of MDO
   public signIn(userName: string, password: string){
-    const requestUri = this.apiUrl+'/login_4m_session';
-    const authorizationData = 'Basic '+ btoa(`${userName}:${password}`);
-    const httpOptions = {
-      headers: new HttpHeaders({
-        Authorization: authorizationData
-      }),
-      observe: 'response' as const
-    };
-    return this.http.post<any>(requestUri, null, httpOptions);
+    return this.http.post<any>(this.authEndpointService.signIn(), null, {params : {username:userName, password }});
   }
 
 
   // Get report url list from MDO to shown in dropdwon of MS Teams app configuration page
   public getReportUrlList(): Observable<any[]>{
-    return this.http.get<any[]>(this.endpointService.getReportListUrlForMsTeams());
+    return this.http.get<any[]>(this.analyticsEndpointService.getReportListUrlForMsTeams());
   }
 
   /**
@@ -40,7 +33,7 @@ export class MsteamsConfigService {
    * @param refToken jwt refresh token ..
    */
   public validateToken(refToken: string): Observable<any>{
-    const requestUri = this.endpointService.validateRefreshjwttokenUrl();
+    const requestUri = this.authEndpointService.validateRefreshjwttokenUrl();
     const authorizationData = 'Bearer '+ refToken;
     const httpOptions = {
       headers: new HttpHeaders({

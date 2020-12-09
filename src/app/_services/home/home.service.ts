@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { EndpointService } from '@services/endpoint.service';
 import { Observable } from 'rxjs';
 import { CustomNotification } from '@models/customNotification';
+import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -10,7 +10,7 @@ export class HomeService {
 
   constructor(
     private http: HttpClient,
-    public endpointService: EndpointService
+    public endpointService: EndpointsClassicService
   ) { }
 
   /**

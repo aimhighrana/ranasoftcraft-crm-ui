@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { TokenPayLoadData, Userdetails } from 'src/app/_models/userdetails';
 import * as jwt_decode from 'jwt-decode';
-import { EndpointService } from '../endpoint.service';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../any2ts.service';
+import { EndpointsAuthService } from '@services/_endpoints/endpoints-auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +15,7 @@ export class UserService {
   private userDetailsBehaviorSubject = new BehaviorSubject<Userdetails>(new Userdetails());
 
   constructor(
-    private endpointService: EndpointService,
+    private endpointService: EndpointsAuthService,
     private http: HttpClient,
     private any2tsService: Any2tsService
   ) { }
@@ -27,7 +27,7 @@ export class UserService {
       const afterDecode: any = jwt_decode(jwtToken);
       if (afterDecode.hasOwnProperty('sub')) {
         const subData: any = JSON.parse(afterDecode.sub);
-        tokenPayLoadData.userName = subData.userId;
+        tokenPayLoadData.userName = subData.username;
         tokenPayLoadData.fullName = subData.fullname;
       }
       tokenPayLoadData.iat = afterDecode.iat;

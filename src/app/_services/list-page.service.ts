@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { of, Observable } from 'rxjs';
 import { ListFilters, ListPageRow } from '@models/list-page/listpage';
-import { EndpointService } from './endpoint.service';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { EndpointsClassicService } from './_endpoints/endpoints-classic.service';
 
 @Injectable({
   providedIn: 'root'
@@ -378,7 +378,7 @@ export class ListPageService {
    * Constructor of @class ListPageService
    */
   constructor(
-    public endpointService: EndpointService,
+    public endpointService: EndpointsClassicService,
     private http: HttpClient
   ) { }
 

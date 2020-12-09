@@ -3,7 +3,7 @@ import { LayoutTabResponse, MDORECORDESV3, LayoutFieldsResponse, FieldValueV2 } 
 import { MatAccordion } from '@angular/material/expansion';
 import { WidgetService } from '@services/widgets/widget.service';
 import { BehaviorSubject } from 'rxjs';
-import { EndpointService } from '@services/endpoint.service';
+import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 
 @Component({
   selector: 'pros-summary-tabs',
@@ -14,7 +14,7 @@ export class SummaryTabsComponent implements OnInit {
 
   constructor(
     private widgetService:WidgetService,
-    private endPointService:EndpointService
+    private endPointService:EndpointsClassicService
   ) { }
 
   @Input()

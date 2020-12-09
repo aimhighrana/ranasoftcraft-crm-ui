@@ -3,27 +3,27 @@ import { TestBed, async } from '@angular/core/testing';
 import { SchemaService } from './schema.service';
 import { SchemaGroupResponse, SchemaGroupDetailsResponse, CreateSchemaGroupRequest, ObjectTypeResponse } from 'src/app/_models/schema/schema';
 import { HttpTestingController, HttpClientTestingModule } from '@angular/common/http/testing';
-import { EndpointService } from '../endpoint.service';
 import { Any2tsService } from '../any2ts.service';
+import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 describe('SchemaService', () => {
   let schemaService: SchemaService;
   let httpTestingController: HttpTestingController;
-  let endpointServiceSpy: jasmine.SpyObj<EndpointService>;
+  let endpointServiceSpy: jasmine.SpyObj<EndpointsClassicService>;
   let any2tsSpy: jasmine.SpyObj<Any2tsService>;
 
   beforeEach(async(() => {
-    const epsSpy = jasmine.createSpyObj('EndpointService', ['getSchemaGroupsUrl', 'getSchemaGroupDetailsByGrpIdUrl', 'getCreateSchemaGroupUrl', 'getAllObjecttypeUrl', 'deleteConditionBlock', 'deleteSchema']);
+    const epsSpy = jasmine.createSpyObj('EndpointsClassicService', ['getSchemaGroupsUrl', 'getSchemaGroupDetailsByGrpIdUrl', 'getCreateSchemaGroupUrl', 'getAllObjecttypeUrl', 'deleteConditionBlock', 'deleteSchema']);
     const any2Spy = jasmine.createSpyObj('Any2tsService', ['any2SchemaGroupResponse', 'any2SchemaDetails', 'any2ObjectType']);
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
         SchemaService,
-        { provide: EndpointService, useValue: epsSpy },
+        { provide: EndpointsClassicService, useValue: epsSpy },
         { provide: Any2tsService, useValue: any2Spy }
       ]
     }).compileComponents();
     schemaService = TestBed.inject(SchemaService) as jasmine.SpyObj<SchemaService>;
-    endpointServiceSpy = TestBed.inject(EndpointService) as jasmine.SpyObj<EndpointService>;
+    endpointServiceSpy = TestBed.inject(EndpointsClassicService) as jasmine.SpyObj<EndpointsClassicService>;
     any2tsSpy = TestBed.inject(Any2tsService) as jasmine.SpyObj<Any2tsService>;
     httpTestingController = TestBed.inject(HttpTestingController);
   }));

@@ -4,7 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { throwError, BehaviorSubject, combineLatest, Subscription } from 'rxjs';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
-import { EndpointService } from '@services/endpoint.service';
 import { SchemaService } from '@services/home/schema.service';
 import { SchemaStaticThresholdRes, LoadDropValueReq, SchemaListDetails, SchemaVariantsModel } from '@models/schema/schemalist';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -20,6 +19,7 @@ import { ContainerRefDirective } from '@modules/shared/_directives/container-ref
 import { TableCellInputComponent } from '@modules/shared/_components/table-cell-input/table-cell-input.component';
 import { SaveVariantDialogComponent } from '../../save-variant-dialog/save-variant-dialog.component';
 import { AddFilterOutput } from '@models/schema/schema';
+import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 
 @Component({
   selector: 'pros-potext-view',
@@ -174,7 +174,7 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
     private router: Router,
     private sharedServices: SharedServiceService,
     private schemaService: SchemaService,
-    private endpointservice: EndpointService,
+    private endpointservice: EndpointsClassicService,
     private snackBar: MatSnackBar,
     private matDialog: MatDialog,
     private schemaListService: SchemalistService,

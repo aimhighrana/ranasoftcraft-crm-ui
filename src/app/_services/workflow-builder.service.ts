@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { EndpointService } from './endpoint.service';
 import { Observable } from 'rxjs';
+import { EndpointsClassicService } from './_endpoints/endpoints-classic.service';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +26,7 @@ export class WorkflowBuilderService {
   ];
 
   constructor(private http: HttpClient,
-    public endpointService: EndpointService) { }
+    public endpointService: EndpointsClassicService) { }
 
 
   getRecipientList(data): Observable<any> {

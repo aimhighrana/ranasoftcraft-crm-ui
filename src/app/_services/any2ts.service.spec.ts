@@ -213,14 +213,18 @@ describe('Any2tsService', () => {
   it('any2UserDetails() should return value', () => {
     const testData = {
       userName: 'avm',
-      firstName: 'apoorv',
-      lastName: 'mittal',
+      fname: 'apoorv',
+      lname: 'mittal',
       email: 'apoorv.mittal@prospecta.com',
       plantCode: '001',
       currentRoleId: '01',
-      dateformat: '19 may 2020',
+      dateFormat: '19 may 2020',
       fullName: 'apoorv',
-      assignedRoles: [{
+      rolesModel: {
+        plantCode: '001',
+        roleId: '01',
+      },
+      userMultiRoleModels: [{
         defaultRole: 'GUEST ROLE',
         roleDesc: 'GUEST',
         roleId: 'ROLE12',

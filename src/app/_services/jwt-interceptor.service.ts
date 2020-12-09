@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpHandler, HttpEvent, HttpRequest, HttpErrorResponse, HttpHeaders, HttpClient } from '@angular/common/http';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { catchError, filter, take, switchMap, finalize } from 'rxjs/operators';
-import { EndpointService } from '../_services/endpoint.service';
 import { Router } from '@angular/router';
 import { AccessDeniedDialogComponent } from '@modules/shared/_components/access-denied-dialog/access-denied-dialog.component';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { MatDialog } from '@angular/material/dialog';
+import { EndpointsAuthService } from './_endpoints/endpoints-auth.service';
 
 
 @Injectable({
@@ -23,7 +23,7 @@ export class JwtInterceptorService implements HttpInterceptor {
   constructor(
     private router: Router,
     private http: HttpClient,
-    private endpointService: EndpointService,
+    private endpointService: EndpointsAuthService,
     private accessDeniedComponent: AccessDeniedDialogComponent,
     private sharedService: SharedServiceService,
     private matDialog: MatDialog
@@ -86,8 +86,8 @@ export class JwtInterceptorService implements HttpInterceptor {
           finalize(() => this.isRefreshingToken = false),
           switchMap(
             resp => {
-              const jwtToken = resp.headers.get('JWT-TOKEN');
-              const newRefreshToken = resp.headers.get('JWT-REFRESH-TOKEN');
+              const jwtToken =  (resp['JWT-TOKEN'] ? resp['JWT-TOKEN'] : '');
+              const newRefreshToken = (resp['JWT-REFRESH-TOKEN'] ? resp['JWT-REFRESH-TOKEN'] : '');
               if (jwtToken && newRefreshToken) {
                 localStorage.setItem('JWT-TOKEN', jwtToken);
                 localStorage.setItem('JWT-REFRESH-TOKEN', newRefreshToken);

@@ -18,7 +18,7 @@ import { DropDownValue } from '@modules/admin/_components/module/business-rules/
 import { SchemaDataSource } from '../../schema-details/schema-datatable/schema-data-source';
 import { Router } from '@angular/router';
 import { SimpleChanges } from '@angular/core';
-import { EndpointService } from '@services/endpoint.service';
+import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 
 describe('SchemaDetailsComponent', () => {
   let component: SchemaDetailsComponent;
@@ -32,7 +32,7 @@ describe('SchemaDetailsComponent', () => {
   const dataSourceSpy= {
     getTableData: jasmine.createSpy('getTableData')
   };
-  let endpointService: EndpointService;
+  let endpointService: EndpointsClassicService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -59,7 +59,7 @@ describe('SchemaDetailsComponent', () => {
     schemaService = fixture.debugElement.injector.get(SchemaService);
     schemaVariantService = fixture.debugElement.injector.get(SchemaVariantService);
     schemaDetailService = fixture.debugElement.injector.get(SchemaDetailsService);
-    endpointService = fixture.debugElement.injector.get(EndpointService);
+    endpointService = fixture.debugElement.injector.get(EndpointsClassicService);
     component.dataSource = new SchemaDataSource(schemaDetailService, endpointService, '274751');
 
     // fixture.detectChanges();

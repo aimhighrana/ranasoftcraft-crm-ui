@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { EndpointService } from '@services/endpoint.service';
+import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -9,7 +9,7 @@ import { map } from 'rxjs/operators';
 })
 export class CatalogCheckService {
 
-  constructor(private endpointService: EndpointService,
+  constructor(private endpointService: EndpointsClassicService,
     private http: HttpClient) { }
 
 

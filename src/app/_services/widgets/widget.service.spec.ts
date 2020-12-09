@@ -2,23 +2,23 @@ import { TestBed, async } from '@angular/core/testing';
 
 import { WidgetService } from './widget.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { EndpointService } from '../endpoint.service';
+import { EndpointsAnalyticsService } from '@services/_endpoints/endpoints-analytics.service';
 
 describe('WidgetService', () => {
   let service: WidgetService;
-  let endpointServiceSpy: jasmine.SpyObj<EndpointService>;
+  let endpointServiceSpy: jasmine.SpyObj<EndpointsAnalyticsService>;
   let httpTestingController: HttpTestingController;
   beforeEach(() => {
-    const epsSpy = jasmine.createSpyObj('EndpointService', [ 'widgetDataUrl']);
+    const epsSpy = jasmine.createSpyObj('EndpointsAnalyticsService', [ 'widgetDataUrl']);
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule ],
       providers: [
         WidgetService,
-        { provide: EndpointService, useValue: epsSpy }
+        { provide: EndpointsAnalyticsService, useValue: epsSpy }
       ]
     }).compileComponents();
     service = TestBed.inject(WidgetService);
-    endpointServiceSpy = TestBed.inject(EndpointService) as jasmine.SpyObj<EndpointService>;
+    endpointServiceSpy = TestBed.inject(EndpointsAnalyticsService) as jasmine.SpyObj<EndpointsAnalyticsService>;
     httpTestingController = TestBed.inject(HttpTestingController);
   });
 

@@ -5,7 +5,6 @@ import { BehaviorSubject, combineLatest } from 'rxjs';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
-import { EndpointService } from '@services/endpoint.service';
 import { SchemaService } from '@services/home/schema.service';
 import { SchemaStaticThresholdRes, LoadDropValueReq, SchemaListDetails, SchemaVariantsModel } from '@models/schema/schemalist';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -22,6 +21,7 @@ import { RequestForCatalogCheckData } from '@models/schema/duplicacy';
 import { CatalogCheckService } from '@services/home/schema/catalog-check.service';
 import { MatPaginator } from '@angular/material/paginator';
 import { DuplicacyDataSource } from './duplicacy-data-source';
+import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 
 @Component({
   selector: 'pros-duplicacy',
@@ -167,7 +167,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     private router: Router,
     private sharedServices: SharedServiceService,
     private schemaService: SchemaService,
-    private endpointservice: EndpointService,
+    private endpointservice: EndpointsClassicService,
     private snackBar: MatSnackBar,
     private matDialog: MatDialog,
     private schemaListService: SchemalistService,

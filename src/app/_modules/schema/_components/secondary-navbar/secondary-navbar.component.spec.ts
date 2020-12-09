@@ -11,22 +11,13 @@ import { Router } from '@angular/router';
 import { SchemaListDetails, SchemaListModuleList } from '@models/schema/schemalist';
 import { SimpleChange, SimpleChanges } from '@angular/core';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
-import { ReportService } from '@modules/report/_service/report.service';
-import { ReportList } from '@modules/report/report-list/report-list.component';
 
 describe('SecondaryNavbarComponent', () => {
   let component: SecondaryNavbarComponent;
   let fixture: ComponentFixture<SecondaryNavbarComponent>;
   let schemaServiceSpy: SchemaService;
   let schemaListService: SchemalistService;
-  let reportService: ReportService;
   let router: Router;
-  const reportList: ReportList[] = [
-    {
-      reportId: '10023',
-      reportName: 'TimeSeries Report'
-    } as ReportList
-  ]
   const moduleList = [
     {
       moduleId: '1005',
@@ -47,7 +38,6 @@ describe('SecondaryNavbarComponent', () => {
     component = fixture.componentInstance;
     schemaServiceSpy = fixture.debugElement.injector.get(SchemaService);
     schemaListService = fixture.debugElement.injector.get(SchemalistService);
-    reportService = fixture.debugElement.injector.get(ReportService);
     fixture.detectChanges();
   });
 
@@ -77,17 +67,19 @@ describe('SecondaryNavbarComponent', () => {
     component.ngOnChanges(changes);
     expect(schemaListService.getSchemaList).toHaveBeenCalled();
 
-    changes = {
-      activatedPrimaryNav: {
-        currentValue: 'report',
-        previousValue: 'schema',
-        firstChange: true,
-      } as SimpleChange
-    } as SimpleChanges
+    // changes = {
+    //   activatedPrimaryNav: {
+    //     currentValue: 'report',
+    //     previousValue: 'schema',
+    //     firstChange: true,
+    //   } as SimpleChange
+    // } as SimpleChanges
 
-    spyOn(reportService, 'reportList').and.returnValue(of(reportList));
-    component.ngOnChanges(changes);
-    expect(reportService.reportList).toHaveBeenCalled();
+    // const plantCode = '0';
+    // const roleId = 'AD';
+    // spyOn(reportService, 'reportList').withArgs(plantCode, roleId).and.returnValue(of(reportList));
+    // component.ngOnChanges(changes);
+    // expect(reportService.reportList).toHaveBeenCalledWith(plantCode, roleId);
 
   })
 
@@ -180,15 +172,17 @@ describe('SecondaryNavbarComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith(['/home/schema', '1005'])
   })
 
-  it('getReportList(), should get all reports', async() => {
-    spyOn(reportService, 'reportList').and.returnValue(of(reportList));
-    spyOn(router, 'navigate');
+  // it('getReportList(), should get all reports', async() => {
+  //   const plantCode = '0';
+  //   const roleId = 'AD';
+  //   spyOn(reportService, 'reportList').withArgs(plantCode, roleId).and.returnValue(of(reportList));
+  //   spyOn(router, 'navigate');
 
-    component.isPageReload = false;
-    component.getreportList();
-    expect(reportService.reportList).toHaveBeenCalled();
-    expect(router.navigate).toHaveBeenCalledWith(['home/report/dashboard', '10023'])
-  })
+  //   component.isPageReload = false;
+  //   component.getreportList();
+  //   expect(reportService.reportList).toHaveBeenCalledWith(plantCode, roleId);
+  //   expect(router.navigate).toHaveBeenCalledWith(['home/report/dashboard', '10023'])
+  // })
 
   it('searchForVarient(), should search for varient', async() => {
     const schema: SchemaListDetails =

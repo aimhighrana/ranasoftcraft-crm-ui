@@ -3,7 +3,7 @@ import { CollectionViewer } from '@angular/cdk/collections/collection-viewer';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { SchemaTableData, RequestForSchemaDetailsWithBr, SchemaBrInfo } from 'src/app/_models/schema/schemadetailstable';
 import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-details.service';
-import { EndpointService } from '@services/endpoint.service';
+import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 
 export class SchemaDataSource implements DataSource<SchemaTableData> {
 
@@ -21,7 +21,7 @@ export class SchemaDataSource implements DataSource<SchemaTableData> {
 
     constructor(
         private schemaDetailService: SchemaDetailsService,
-        private endpointService: EndpointService,
+        private endpointService: EndpointsClassicService,
         private schemaId: string
     ) {
         this.schemaDetailService.getSchemaBrInfoList(this.schemaId).subscribe(res=>{

@@ -44,8 +44,8 @@ export class MsteamAuthConfigurationComponent implements OnInit {
       return false;
     }
     this.msteamsConfigService.signIn(userName, password).subscribe(res=>{
-      localStorage.setItem('JWT-TOKEN', res.headers.get('JWT-TOKEN'));
-      localStorage.setItem('JWT-REFRESH-TOKEN', res.headers.get('JWT-REFRESH-TOKEN'));
+      localStorage.setItem('JWT-TOKEN', (res['JWT-TOKEN'] ? res['JWT-TOKEN'] : ''));
+      localStorage.setItem('JWT-REFRESH-TOKEN', (res['JWT-REFRESH-TOKEN'] ? res['JWT-REFRESH-TOKEN'] :''));
       this.notifySuccess();
       this.errorMsg = '';
     },error=>{

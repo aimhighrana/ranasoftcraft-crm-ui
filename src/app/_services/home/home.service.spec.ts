@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { HomeService } from './home.service';
 import { HttpClientModule } from '@angular/common/http';
-import { EndpointService } from '@services/endpoint.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 
 describe('HomeService', () => {
   let service: HomeService;
@@ -27,7 +27,7 @@ describe('HomeService', () => {
 
   beforeEach(() => TestBed.configureTestingModule({
     imports: [HttpClientModule, HttpClientTestingModule],
-    providers: [EndpointService, HttpClientTestingModule]
+    providers: [EndpointsClassicService, HttpClientTestingModule]
   }));
 
   beforeEach(() => {

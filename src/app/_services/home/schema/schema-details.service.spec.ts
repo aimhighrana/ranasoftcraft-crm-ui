@@ -1,24 +1,24 @@
 import { TestBed, async } from '@angular/core/testing';
 
 import { SchemaDetailsService } from './schema-details.service';
-import { EndpointService } from '../../endpoint.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 describe('SchemaDetailsService', () => {
-  let endpointServiceSpy: jasmine.SpyObj<EndpointService>;
+  let endpointServiceSpy: jasmine.SpyObj<EndpointsClassicService>;
   let schemaDetaService: SchemaDetailsService;
   let httpTestingController: HttpTestingController;
   beforeEach(() => {
-    const endpointSpy = jasmine.createSpyObj('EndpointService', ['getAllSelectedFields']);
+    const endpointSpy = jasmine.createSpyObj('EndpointsClassicService', ['getAllSelectedFields']);
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
         SchemaDetailsService,
-        { provide: EndpointService, useValue: endpointSpy }
+        { provide: EndpointsClassicService, useValue: endpointSpy }
       ]
     }).compileComponents();
     schemaDetaService = TestBed.inject(SchemaDetailsService);
     httpTestingController = TestBed.inject(HttpTestingController);
-    endpointServiceSpy = TestBed.inject(EndpointService) as jasmine.SpyObj<EndpointService>;
+    endpointServiceSpy = TestBed.inject(EndpointsClassicService) as jasmine.SpyObj<EndpointsClassicService>;
   });
 
   it('should be created', () => {

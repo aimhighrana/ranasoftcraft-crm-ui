@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { EndpointService } from '../endpoint.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../any2ts.service';
@@ -8,8 +7,7 @@ import { SchemaGroupResponse, SchemaGroupDetailsResponse, SchemaGroupCountRespon
 import { DropDownValue, UDRBlocksModel, UdrModel, CoreSchemaBrInfo, Category, DuplicateRuleModel } from 'src/app/_modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaStaticThresholdRes, SchemaListModuleList, SchemaListDetails, CoreSchemaBrMap } from '@models/schema/schemalist';
 import { SchemaScheduler } from '@models/schema/schemaScheduler';
-
-
+import { EndpointsClassicService } from '../_endpoints/endpoints-classic.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,8 +17,8 @@ export class SchemaService {
   private staticFieldValues: BehaviorSubject<string[]> = new BehaviorSubject(null);
   constructor(
     private http: HttpClient,
-    private endpointService: EndpointService,
-    private any2tsService: Any2tsService
+    private endpointService: EndpointsClassicService,
+    private any2tsService: Any2tsService,
   ) { }
 
   /**

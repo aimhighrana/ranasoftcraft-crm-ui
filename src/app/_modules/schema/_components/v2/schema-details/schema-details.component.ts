@@ -5,7 +5,6 @@ import { throwError, BehaviorSubject, combineLatest } from 'rxjs';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { SchemaDataSource } from '../../schema-details/schema-datatable/schema-data-source';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
-import { EndpointService } from '@services/endpoint.service';
 import { SchemaService } from '@services/home/schema.service';
 import { SchemaStaticThresholdRes, LoadDropValueReq, SchemaListDetails, SchemaVariantsModel } from '@models/schema/schemalist';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -20,6 +19,7 @@ import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { ContainerRefDirective } from '@modules/shared/_directives/container-ref.directive';
 import { TableCellInputComponent } from '@modules/shared/_components/table-cell-input/table-cell-input.component';
+import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 
 @Component({
   selector: 'pros-schema-details',
@@ -174,7 +174,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
     private router: Router,
     private sharedServices: SharedServiceService,
     private schemaService: SchemaService,
-    private endpointservice: EndpointService,
+    private endpointservice: EndpointsClassicService,
     private snackBar: MatSnackBar,
     private matDialog: MatDialog,
     private schemaListService: SchemalistService,

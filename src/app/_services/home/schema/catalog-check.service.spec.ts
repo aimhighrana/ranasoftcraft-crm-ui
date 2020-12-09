@@ -1,25 +1,25 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed, async } from '@angular/core/testing';
 import { RequestForCatalogCheckData, RequestForGroupList } from '@models/schema/duplicacy';
-import { EndpointService } from '@services/endpoint.service';
+import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 
 import { CatalogCheckService } from './catalog-check.service';
 
 describe('CatalogCheckService', () => {
   let catalogService: CatalogCheckService;
-  let endpointServiceSpy: jasmine.SpyObj<EndpointService>;
-  const endpointSpy = jasmine.createSpyObj('EndpointService', ['duplicacyGroupsListUrl', 'catalogCheckRecordsUrl']);
+  let endpointServiceSpy: jasmine.SpyObj<EndpointsClassicService>;
+  const endpointSpy = jasmine.createSpyObj('EndpointsClassicService', ['duplicacyGroupsListUrl', 'catalogCheckRecordsUrl']);
   let httpTestingController: HttpTestingController;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
-        { provide: EndpointService, useValue: endpointSpy }
+        { provide: EndpointsClassicService, useValue: endpointSpy }
       ]
     });
     catalogService = TestBed.inject(CatalogCheckService);
-    endpointServiceSpy = TestBed.inject(EndpointService) as jasmine.SpyObj<EndpointService>;
+    endpointServiceSpy = TestBed.inject(EndpointsClassicService) as jasmine.SpyObj<EndpointsClassicService>;
     httpTestingController = TestBed.inject(HttpTestingController);
   });
 

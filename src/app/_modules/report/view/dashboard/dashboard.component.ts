@@ -5,6 +5,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { GlobaldialogService } from '@services/globaldialog.service';
 import { Subscription } from 'rxjs';
+import { UserService } from '@services/user/userservice.service';
+import { distinctUntilChanged } from 'rxjs/operators';
 @Component({
   selector: 'pros-dashboard',
   templateUrl: './dashboard.component.html',
@@ -33,7 +35,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private snackbar: MatSnackBar,
     private sharedService: SharedServiceService,
     private router: Router,
-    private globalDialogService: GlobaldialogService
+    private globalDialogService: GlobaldialogService,
+    private userService: UserService
   ) { }
 
   ngOnDestroy(): void {
@@ -57,16 +60,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   getReportInfo(reportId: number) {
-    const repInfo = this.reportService.getReportInfo(reportId).subscribe(res=>{
-      this.reportName = res.reportName;
-      this.collaboratorEditPermission = res.permissons ? res.permissons.isEditable : false;
-      this.collaboratorDeletePermission = res.permissons ? res.permissons.isDeleteable : false;
-      this.collaboratorAdminPermission = res.permissons ? res.permissons.isAdmin : false;
+    const usub = this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user=>{
+      const repInfo = this.reportService.getReportInfo(reportId, user.plantCode).subscribe(res=>{
+        this.reportName = res.reportName;
+        this.collaboratorEditPermission = res.permissons ? res.permissons.isEditable : false;
+        this.collaboratorDeletePermission = res.permissons ? res.permissons.isDeleteable : false;
+        this.collaboratorAdminPermission = res.permissons ? res.permissons.isAdmin : false;
 
-    },error=>{
-      console.log(`Error ${error}`);
+      },error=>{
+        console.log(`Error ${error}`);
+      });
+      this.subscriptions.push(repInfo);
     });
-    this.subscriptions.push(repInfo);
+    this.subscriptions.push(usub);
   }
 
   clearFilters() {

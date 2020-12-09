@@ -8,13 +8,12 @@ import { GenericWidgetComponent } from '../../generic-widget/generic-widget.comp
 import { BehaviorSubject } from 'rxjs';
 import { ReportingWidget, Criteria, LayoutConfigWorkflowModel } from '../../../_models/widget';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { ReportListDownloadModelComponent } from './report-list-download-model/report-list-download-model.component';
-import { EndpointService } from '@services/endpoint.service';
 import { Router } from '@angular/router';
 import { SharedServiceService } from '@shared/_services/shared-service.service';
 import { ReportService } from '@modules/report/_service/report.service';
 import { UserService } from '@services/user/userservice.service';
+import { EndpointsAnalyticsService } from '@services/_endpoints/endpoints-analytics.service';
 
 @Component({
   selector: 'pros-reporting-list',
@@ -69,11 +68,13 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   layouts: LayoutConfigWorkflowModel[] = [];
   dateFormat: string;
 
+  plantCode: string;
+  roleId: string;
+
   constructor(public widgetService: WidgetService,
     @Inject(LOCALE_ID) public locale: string,
     public matDialog: MatDialog,
-    private endpointService: EndpointService,
-    private snackbar: MatSnackBar,
+    private endpointService: EndpointsAnalyticsService,
     private router: Router,
     private sharedService: SharedServiceService,
     private reportService: ReportService,
@@ -113,6 +114,8 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
    */
   public getUserDetails() {
     this.userService.getUserDetails().subscribe(user => {
+      this.plantCode = user.plantCode;
+      this.roleId = user.currentRoleId;
       switch (user.dateformat) {
         case 'MM.dd.yy':
           this.dateFormat = 'MMM-dd-yy, h:mm:ss a';
@@ -322,8 +325,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
     console.log(this.objectType);
     console.log(row);
     const WFID = row ? row.WFID : '';
-    this.reportService.getAllLayoutsForSummary(this.objectType, WFID).subscribe(res => {
-      console.log(res);
+    this.reportService.getAllLayoutsForSummary(this.objectType, WFID, this.roleId, this.plantCode).subscribe(res => {
       this.layouts = res;
     }, error => console.error(`Error : ${error.message}`));
 
