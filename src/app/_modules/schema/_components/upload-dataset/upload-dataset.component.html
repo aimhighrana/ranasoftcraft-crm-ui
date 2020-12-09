@@ -72,7 +72,8 @@
             <div class="f-col">
                 <pros-form-input [value]="requestForm.controls.objectDesc.value"
                     [label]="'Module name'" [placeholder]="'Module name'" (valueChange)="setObjectDescription($event)"
-                    [hint]="'In MDO module is a dataset'">
+                    [hint]="'In MDO module is a dataset'" 
+                    [disabled]="requestForm.controls.objectId.value !== '' && requestForm.controls.objectId.value !== null">
                 </pros-form-input>
                 <!-- <mat-error *ngIf="requestForm.value.core_schema.discription"> -->
                 <mat-error
@@ -187,7 +188,12 @@
                             </pros-form-input-autoselect>
                         </div>
                     </div>
-                    <pros-null-state (action)="openGlobalDialog('createBR')" *ngIf="selectedBusinessRules.length === 0"></pros-null-state>
+                    <pros-null-state 
+                    [button]="{text: 'Add Business Rule'}"
+                    [message]="'No business rule added, please add at least one business rule to continue'"
+                    (action)="openGlobalDialog('createBR')" 
+                    *ngIf="selectedBusinessRules.length === 0">
+                    </pros-null-state>
                 </ng-container>
 
                 <ng-container>
@@ -207,6 +213,8 @@
                                 <div>
                                     <mat-slider *ngIf="!isExistingRule(businessRule.tempId); else notConfigured"
                                         color="primary" [thumbLabel]="businessRule.brWeightage"
+                                        min="0"
+                                        [max]="getCurrentWeightageLimit()? getCurrentWeightageLimit(): businessRule.brWeightage"
                                         [value]="businessRule.brWeightage" [(ngModel)]="businessRule.brWeightage">
                                     </mat-slider>
                                     <ng-template #notConfigured>

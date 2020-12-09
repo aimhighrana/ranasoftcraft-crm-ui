@@ -158,6 +158,8 @@ export class NewBusinessRulesComponent implements OnInit {
      * patch transformation rule for Lookup
      */
     transformationLookUpData: LookupFields[] = [];
+    maxWeightageLimit: number;
+
     /**
      * Class contructor
      * @param snackBar refernce to matSnackbar
@@ -191,6 +193,9 @@ export class NewBusinessRulesComponent implements OnInit {
         this.operators = this.possibleOperators();
         this.getCategories();
 
+        if(this.data){
+            this.maxWeightageLimit = this.data.maxWeightageLimit;
+        }
         // Patch data if working with existing business rule
         if (this.data && this.data.createRuleFormValues) {
             this.tempRuleId = (this.data && this.data.tempId) ? this.data.tempId : '';
@@ -511,8 +516,6 @@ export class NewBusinessRulesComponent implements OnInit {
         });
     }
 
-
-
     /**
      * function to save the array of ids of selected fields
      * @param event selected item eent
@@ -531,7 +534,6 @@ export class NewBusinessRulesComponent implements OnInit {
         const txtfield = document.getElementById('fieldsInput') as HTMLInputElement;
         txtfield.value = '';
     }
-
 
     /**
      * function to remove the value

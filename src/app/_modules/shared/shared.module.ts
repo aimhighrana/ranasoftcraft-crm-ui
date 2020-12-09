@@ -71,6 +71,7 @@ import { ScheduleDialogComponent } from './_components/schedule-dialog/schedule-
 import { TransformationRuleComponent } from './_components/transformation-rule/transformation-rule.component';
 import { LookupRuleComponent } from './_components/lookup/lookup.component';
 import { LookupConfigComponent } from './_components/lookup/lookup-config/lookup-config.component';
+import { SubscriberInviteComponent } from './_components/subscriber-invite/subscriber-invite.component';
 
 @NgModule({
   declarations: [
@@ -106,7 +107,8 @@ import { LookupConfigComponent } from './_components/lookup/lookup-config/lookup
     ScheduleDialogComponent,
     TransformationRuleComponent,
     LookupRuleComponent,
-    LookupConfigComponent
+    LookupConfigComponent,
+    SubscriberInviteComponent
   ],
   imports: [
     // ng modules
@@ -241,8 +243,8 @@ import { LookupConfigComponent } from './_components/lookup/lookup-config/lookup
     TransformationRuleComponent,
     LookupRuleComponent,
     LookupConfigComponent,
-    NullStateComponent
-
+    NullStateComponent,
+    SubscriberInviteComponent
   ],
   entryComponents: [
     TableCellInputComponent

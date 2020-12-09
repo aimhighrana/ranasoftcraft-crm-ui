@@ -210,7 +210,8 @@ export class BrruleSideSheetComponent implements OnInit {
 
       // Patch received data
       this.setValueToElement(this.coreSchemaBrInfo);
-      if (this.routeData.brType === BusinessRuleType.BR_CUSTOM_SCRIPT) {
+
+      if (this.coreSchemaBrInfo.brType === BusinessRuleType.BR_CUSTOM_SCRIPT) {
         this.editUdr(resp);
       }
     }, error => console.error(`Error : ${error.message}`));
@@ -343,7 +344,7 @@ export class BrruleSideSheetComponent implements OnInit {
       patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId'];
     }
     if (br.brType === BusinessRuleType.BR_CUSTOM_SCRIPT) {
-      patchList = ['rule_type', 'weightage'];
+      patchList = ['rule_type', 'rule_name', 'weightage', 'error_message'];
     }
     if (br.brType === BusinessRuleType.BR_TRANSFORMATION) {
       patchList = ['rule_type', 'rule_name', 'error_message', 'weightage'];
@@ -670,8 +671,9 @@ export class BrruleSideSheetComponent implements OnInit {
       const udrDto: UdrModel = new UdrModel();
       udrDto.brInfo = {
         brId: this.brId, brIdStr: this.brId,
-        brType, brInfo: this.form.value.rule_name, message: this.form.value.error_message,
-        schemaId: this.schemaId, categoryId: this.coreSchemaBrInfo.categoryId
+        brType, brInfo: this.form.value.rule_name,
+        message: this.form.value.error_message,
+        schemaId: this.schemaId
       } as CoreSchemaBrInfo;
 
       const blocks: UDRBlocksModel[] = [];

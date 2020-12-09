@@ -44,9 +44,12 @@ export class MapMdoFieldComponent implements OnInit {
 
   ngOnInit(): void {
     this.suggestedMdoFldArray = this.selectedMdoFldCtrl.valueChanges
-      .pipe(startWith(''), map(value => typeof value === 'string' ? value : value.fieldId),
-        map(name => name ? (this.mdoFields.filter(fill => fill.fieldDescri.toLocaleLowerCase().indexOf(name.toLocaleLowerCase()) !== -1)) : this.mdoFields.slice())
-      );
+      .pipe(startWith(''),
+        map(value => typeof value === 'string' ? value : value.fieldId),
+        map(name => name ?
+          (this.mdoFields.filter(fill => fill.fieldDescri.toLocaleLowerCase().indexOf(name.toLocaleLowerCase()) !== -1)) :
+          this.mdoFields));
+
     this.selectedMdoFldCtrl.valueChanges.subscribe(val => {
       if (typeof val === 'string' && val === '') {
         this.optionSelectedEmit.emit({ fieldDesc: '', fieldId: '', index: this.cellIndex, execlFld: this.excelField });

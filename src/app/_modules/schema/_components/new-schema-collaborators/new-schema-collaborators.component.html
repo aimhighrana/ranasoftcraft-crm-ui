@@ -8,7 +8,7 @@
             <div class="f-row breadcrum-head">
                 <div class="display-heading-large">Add subscribers</div>
                 <div class="f-spacer"></div>
-                <button mat-flat-button><mat-icon fontSet="mdo-icons"> add-group</mat-icon> Invite people to your team</button>
+                <button mat-flat-button (click)="openSubscriberInviteDialog()"><mat-icon fontSet="mdo-icons"> add-group</mat-icon> Invite people to your team</button>
                 <span class="f-col-spacer-half"></span>
                 <button mat-flat-button color="primary" (click)="saveSelection()">Save</button>
             </div>
@@ -16,11 +16,11 @@
             <div class="f-row">
                 <pros-search-input (value)="getCollaborators($event, 0)"></pros-search-input>
                 <span class="col-spacer"></span>
-                <mat-chip-list>
+                <!-- <mat-chip-list>
                     <mat-chip class="mdo-filter-matchip">
                         <label>Role:</label> <span class="info">{{(selectedRoleType)? selectedRoleType: 'All'}}</span>
                     </mat-chip>
-                </mat-chip-list>
+                </mat-chip-list> -->
             </div>
             <div class="row-spacer"></div>
         </div>

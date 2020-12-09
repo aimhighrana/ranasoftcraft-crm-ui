@@ -1,0 +1,99 @@
+<mat-card class="root mat-elevation-z0">
+    <div class="f-row breadcrum-toolbar">
+        <button mat-button (click)="closeDialog()">
+            <mat-icon fontSet="mdo-icons">close</mat-icon>
+        </button>
+        <div class="col-spacer"></div>
+        <div class="f-row mdo-constrained-right">
+            <div class="display-heading-large">Invite people to your team</div>
+            <span class="f-spacer"></span>
+            <button mat-flat-button color="primary">Invite</button>
+        </div>
+    </div>
+    <div class="row-spacer"></div>
+    <div class="f-col mdo-justify">
+        <div class="f-row invite-colunm">
+            <div class="col-x2">
+                <a class="f-row info-link" (click)="addFormRow()">
+                    <mat-icon fontSet="mdo-icons">plus</mat-icon>Add user
+                </a>
+            </div>
+        </div>
+        <form [formGroup]="invitationForm">
+            <div formArrayName="invites">
+                <ng-container *ngFor="let item of invites().controls; let i=index">
+                    <div class="f-row invite-colunm" [formGroupName]="i">
+                        <div class="col-x2">
+                            <pros-form-input [type]="'text'" [placeholder]="'Email address'"
+                            (valueChange)="setFormValue($event, 'email', i)"></pros-form-input>
+                        </div>
+                        <div class="col-x2">
+                            <mat-form-field appearance="outline" class="divided-matfield">
+                                <mat-select formControlName="role">
+                                    <mat-option value="option">Option</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-x1">
+                            <button mat-button>
+                                <mat-icon fontSet="mdo-icons"> recycle-bin</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                </ng-container>
+
+            </div>
+        </form>
+        <!-- <div class="f-row invite-colunm">
+            <div class="col-x2">
+                <pros-form-input [type]="'text'" [placeholder]="'Email address'"></pros-form-input>
+            </div>
+            <div class="col-x2">
+                <mat-form-field appearance="outline" class="divided-matfield">
+                    <mat-select>
+                        <mat-option value="option">Option</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-x1">
+                <button mat-button>
+                    <mat-icon fontSet="mdo-icons"> recycle-bin</mat-icon>
+                </button>
+            </div>
+        </div>
+        <div class="f-row invite-colunm">
+            <div class="col-x2">
+                <pros-form-input [type]="'text'" [placeholder]="'Email address'"></pros-form-input>
+            </div>
+            <div class="col-x2">
+                <mat-form-field appearance="outline" class="divided-matfield">
+                    <mat-select>
+                        <mat-option value="option">Option</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-x1">
+                <button mat-button>
+                    <mat-icon fontSet="mdo-icons"> recycle-bin</mat-icon>
+                </button>
+            </div>
+        </div> -->
+        <!-- <div class="f-row invite-colunm">
+            <div class="col-x2">
+                <pros-form-input [type]="'text'" [placeholder]="'Email address'"></pros-form-input>
+            </div>
+            <div class="col-x2">
+                <mat-form-field appearance="outline" class="divided-matfield">
+                    <mat-select>
+                        <mat-option value="option">Option</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-x1">
+                <button mat-button>
+                    <mat-icon fontSet="mdo-icons"> recycle-bin</mat-icon>
+                </button>
+            </div>
+        </div> -->
+    </div>
+</mat-card>

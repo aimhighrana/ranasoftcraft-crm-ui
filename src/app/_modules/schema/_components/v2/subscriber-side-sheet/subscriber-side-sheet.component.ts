@@ -7,6 +7,9 @@ import { PermissionOn } from '@models/collaborator';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SchemaDashboardPermission } from '@models/collaborator';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
+import { GlobaldialogService } from '@services/globaldialog.service';
+import { SubscriberInviteComponent } from '@modules/shared/_components/subscriber-invite/subscriber-invite.component';
+import { distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'pros-subscriber-side-sheet',
@@ -30,6 +33,7 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
   moduleId: string;
   schemaId: string;
   subscriberId: string;
+  dialogSubscriber: any;
 
   collaboratorData: SchemaDashboardPermission[] = [];
 
@@ -67,7 +71,8 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private schemaDetailsService: SchemaDetailsService,
     private sharedService: SharedServiceService,
-    private snackBar: MatSnackBar) { }
+    private snackBar: MatSnackBar,
+    private globalDialogService: GlobaldialogService) { }
 
   /**
    * Angular Hook
@@ -251,6 +256,21 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
     }, (error) => {
       console.log('Something went wrong while delete subscriber..');
     })
+  }
+
+  /**
+   * Open the invitaion sidesheet
+   */
+  openSubscriberInviteDialog() {
+    this.globalDialogService.openDialog(SubscriberInviteComponent, {
+    });
+
+    this.dialogSubscriber = this.globalDialogService.dialogCloseEmitter
+    .pipe(distinctUntilChanged())
+    .subscribe((response) => {
+
+      this.dialogSubscriber.unsubscribe();
+    });
   }
 
   /**

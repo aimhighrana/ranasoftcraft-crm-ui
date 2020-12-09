@@ -569,13 +569,12 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     if (componentName === 'createBR') {
       this.globaldialogService.openDialog(NewBusinessRulesComponent, {
         moduleId: this.requestForm.controls.objectId.value,
-        fields: this.requestForm.controls.fields.value
+        fields: this.requestForm.controls.fields.value,
+        maxWeightageLimit: this.getCurrentWeightageLimit()
       });
 
       this.dialogSubscriber = this.globaldialogService.dialogCloseEmitter
-        .pipe(
-          distinctUntilChanged()
-        )
+        .pipe(distinctUntilChanged())
         .subscribe((response: NewBrDialogResponse) => {
           if (response && response.formData) {
             this.updateCurrentRulesList(response);
@@ -596,6 +595,18 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
           this.dialogSubscriber.unsubscribe();
         })
     }
+  }
+
+  getCurrentWeightageLimit() {
+    let weightage = 100;
+
+    if(this.selectedBusinessRules && this.selectedBusinessRules.length>0){
+      this.selectedBusinessRules.map((rule) => {
+        weightage = weightage - rule.brWeightage;
+      });
+    }
+
+    return weightage;
   }
 
   /**
@@ -693,6 +704,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         fields,
         transFormationSchema } = rule;
       this.globaldialogService.openDialog(NewBusinessRulesComponent, {
+        maxWeightageLimit: this.getCurrentWeightageLimit(),
         moduleId: this.requestForm.controls.objectId.value ? this.requestForm.controls.objectId.value : '',
         fields: this.requestForm.controls.fields.value,
         tempId,

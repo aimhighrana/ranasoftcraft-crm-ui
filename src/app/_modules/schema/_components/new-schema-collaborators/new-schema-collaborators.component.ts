@@ -4,6 +4,9 @@ import { SchemaDetailsService } from '@services/home/schema/schema-details.servi
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { PermissionOn, UserMdoModel } from '@models/collaborator';
 import { Observable, of, Subscription } from 'rxjs';
+import { GlobaldialogService } from '@services/globaldialog.service';
+import { SubscriberInviteComponent } from '@modules/shared/_components/subscriber-invite/subscriber-invite.component';
+import { distinctUntilChanged } from 'rxjs/operators';
 @Component({
   selector: 'pros-new-schema-collaborators',
   templateUrl: './new-schema-collaborators.component.html',
@@ -15,14 +18,31 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
    */
   filteredModules: Observable<{}> = of([]);
 
+  /**
+   * hold list of subscribers
+   */
   subscribers: UserMdoModel[] = [];
+
+  /**
+   * Hold the filtered subscriber list
+   */
   filteredSubscribers: UserMdoModel[] = [];
+
+  /**
+   * keep the form state as boolean
+   */
   submitted = false;
+
   collaboratorSubscription = new Subscription();
   selectedCollaborators: Array<UserMdoModel> = [];
   incomingSelectedSubscribers: Array<UserMdoModel> = [];
+
+  /**
+   * Hold the current rule type
+   */
   selectedRoleType: string;
 
+  dialogSubscriber: any;
   /**
    * Fetch count for subscribers
    */
@@ -38,7 +58,8 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
     public dialogRef: MatDialogRef<NewSchemaCollaboratorsComponent>,
     @Inject(MAT_DIALOG_DATA) public data,
     public schemaDetailsService: SchemaDetailsService,
-    public snackBar: MatSnackBar) {
+    public snackBar: MatSnackBar,
+    private globalDialogService: GlobaldialogService) {
     if (data && data.selectedSubscibersList && data.selectedSubscibersList.length > 0) {
       this.incomingSelectedSubscribers = data.selectedSubscibersList;
       this.selectedCollaborators = data.selectedSubscibersList;
@@ -69,13 +90,13 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
 
   markSelectedSubscribers(allSubscribers: UserMdoModel[], selectedSubscribers: any[]) {
     let list = [];
-    if(selectedSubscribers && selectedSubscribers.length>0){
+    if (selectedSubscribers && selectedSubscribers.length > 0) {
       allSubscribers.map(subscriber => {
-          if(selectedSubscribers.find(selected => selected.userName === subscriber.userName)){
-            subscriber.selected = true;
-          }
-          list.push(subscriber);
-        });
+        if (selectedSubscribers.find(selected => selected.userName === subscriber.userName)) {
+          subscriber.selected = true;
+        }
+        list.push(subscriber);
+      });
     } else {
       list = allSubscribers;
     }
@@ -108,7 +129,7 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
       collaborator.selected = false;
     } else {
       collaborator.selected = true;
-      this.selectedCollaborators.push({...collaborator});
+      this.selectedCollaborators.push({ ...collaborator });
     }
   }
 
@@ -123,6 +144,21 @@ export class NewSchemaCollaboratorsComponent implements OnInit, OnDestroy {
     } else {
       return '';
     }
+  }
+
+  /**
+   * Open the invitaion sidesheet
+   */
+  openSubscriberInviteDialog() {
+    this.globalDialogService.openDialog(SubscriberInviteComponent, {
+    });
+
+    this.dialogSubscriber = this.globalDialogService.dialogCloseEmitter
+      .pipe(distinctUntilChanged())
+      .subscribe((response) => {
+
+        this.dialogSubscriber.unsubscribe();
+      });
   }
 
 }
