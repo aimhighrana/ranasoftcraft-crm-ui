@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SchemaService } from '@services/home/schema.service';
-import { SchemaStaticThresholdRes, CoreSchemaBrMap, SchemaListDetails, LoadDropValueReq, VariantDetails } from '@models/schema/schemalist';
+import { CoreSchemaBrMap, SchemaListDetails, LoadDropValueReq, VariantDetails } from '@models/schema/schemalist';
 import { PermissionOn, ROLES, SchemaCollaborator, SchemaDashboardPermission, UserMdoModel } from '@models/collaborator';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { CoreSchemaBrInfo, DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
@@ -35,15 +35,6 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * schema ID of current schema
    */
   schemaId: string;
-
-  thresholdValue: number;
-  errorValue: number;
-  successValue: number;
-
-  /**
-   * complete statics of schema
-   */
-  schemaStatics: SchemaStaticThresholdRes;
 
   /**
    * to have subscribers data of schema
@@ -164,7 +155,6 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       this.schemaId = params.schemaId;
 
       this.getSchemaDetails(this.schemaId);
-      this.getSchemaStatics(this.schemaId);
       this.getSubscriberList(this.schemaId);
       this.getBusinessRuleList(this.schemaId);
       this.getSchemaVariants(this.schemaId, 'RUNFOR');
@@ -254,31 +244,6 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
   //   })
   // }
 
-  /**
-   * get statics of the schema
-   * @param schemaId schema ID to get schema statics
-   */
-  public getSchemaStatics(schemaId: string) {
-    this.schemaService.getSchemaThresholdStatics(schemaId).subscribe((schemaData) => {
-      this.schemaStatics = schemaData;
-      this.getPercentageStatics(this.schemaStatics)
-    }, error => {
-      console.log('Error when get schema statics', error);
-      this.thresholdValue = 0;
-      this.successValue = 0;
-      this.errorValue = 0;
-    })
-  }
-
-  /**
-   * Convert the statics into percentage
-   * @param statics object of schema statics
-   */
-  public getPercentageStatics(statics: SchemaStaticThresholdRes) {
-    this.thresholdValue = Math.round((statics.threshold + Number.EPSILON) * 100) / 100;
-    this.errorValue = Math.round(((statics.errorCnt / statics.totalCnt) + Number.EPSILON) * 100 * 100) / 100;
-    this.successValue = Math.round(((statics.successCnt / statics.totalCnt) + Number.EPSILON) * 100 * 100) / 100;
-  }
 
   /**
    * update fragement of route according to the selected tab

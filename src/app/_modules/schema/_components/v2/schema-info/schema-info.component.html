@@ -50,8 +50,8 @@
                     <div class="row-spacer"></div>
                     <div class="f-col temp-field">
                         <mat-label>Threshold</mat-label>
-                        <mat-slider color="primary" formControlName="schemaThreshold" [disabled]="true"
-                            [value]="thresholdValue ? thresholdValue : 0"></mat-slider>
+                        <mat-slider color="primary" formControlName="schemaThreshold"
+                            [value]="schemaDetails?.schemaThreshold ? schemaDetails.schemaThreshold : 0"></mat-slider>
                     </div>
                     <div class="row-spacer"></div>
                     <mat-accordion>

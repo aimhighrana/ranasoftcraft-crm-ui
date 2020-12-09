@@ -8,7 +8,7 @@ import { FilterValuesComponent } from '@modules/shared/_components/filter-values
 import { AddFilterMenuComponent } from '@modules/shared/_components/add-filter-menu/add-filter-menu.component';
 import { Router } from '@angular/router';
 import { CoreSchemaBrInfo, DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
-import { SchemaListDetails, SchemaStaticThresholdRes } from '@models/schema/schemalist';
+import { SchemaListDetails } from '@models/schema/schemalist';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { of } from 'rxjs';
 import { CategoryInfo, FilterCriteria } from '@models/schema/schemadetailstable';
@@ -76,12 +76,6 @@ describe('SchemaInfoComponent', () => {
     spyOn(schemaVariantService, 'getAllDataScopeList').withArgs(component.schemaId, 'RUNFOR').and.returnValue(of())
     component.getSchemaVariants(component.schemaId, 'RUNFOR');
     expect(schemaVariantService.getAllDataScopeList).toHaveBeenCalledWith(component.schemaId, 'RUNFOR');
-  })
-
-  it('getSchemaStatics(), should get stats of schema', async () => {
-    spyOn(schemaService, 'getSchemaThresholdStatics').withArgs(component.schemaId).and.returnValue(of({} as SchemaStaticThresholdRes));
-    component.getSchemaStatics(component.schemaId);
-    expect(schemaService.getSchemaThresholdStatics).toHaveBeenCalledWith(component.schemaId);
   })
 
   it('getBusinessRuleList(), should get business rule list of schema', async () => {
@@ -210,17 +204,6 @@ describe('SchemaInfoComponent', () => {
     spyOn(router, 'navigate');
     component.editSubscriberInfo(sNo);
     expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/subscriber/${component.moduleId}/${component.schemaId}/${sNo}` } }])
-  })
-
-  it('getPercentageStatics(), should return statics', async () => {
-    const statics = {
-      threshold: 0,
-      errorCnt: 0,
-      totalCnt: 0,
-      successCnt: 0
-    } as SchemaStaticThresholdRes
-    component.getPercentageStatics(statics);
-    expect(component.thresholdValue).toEqual(0);
   })
 
   it('prepateTextToShow(), should prepare text to show over mat-chips', async () => {
