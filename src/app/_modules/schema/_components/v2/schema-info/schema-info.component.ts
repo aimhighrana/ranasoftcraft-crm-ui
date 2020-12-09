@@ -355,13 +355,21 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       isCopied: false
     }as SchemaDashboardPermission
 
-    this.schemaDetailsService.createUpdateUserDetails(Array(subscriber)).subscribe((response)=>{
-      if(response){
-        this.getSubscriberList(this.schemaId);
-      }
-    }, (error) => {
-      console.error('Something went wrong while adding subscriber', error.message);
-    })
+    const existSubscriber = this.subscriberData.filter((sub) => sub.userid === subscriber.userid)[0];
+    if(existSubscriber){
+      this.matSnackBar.open('This subscriber is already added.', 'Okay', {
+        duration: 2000
+      })
+    }
+    else{
+      this.schemaDetailsService.createUpdateUserDetails(Array(subscriber)).subscribe((response)=>{
+        if(response){
+          this.getSubscriberList(this.schemaId);
+        }
+      }, (error) => {
+        console.error('Something went wrong while adding subscriber', error.message);
+      })
+    }
   }
 
 
@@ -836,12 +844,20 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     request.message = brInfo.message;
     request.isCopied = false;
 
-    this.schemaService.createBusinessRule(request).subscribe((response) => {
-      console.log(response);
-      this.getBusinessRuleList(this.schemaId);
-    }, (error) => {
-      console.log('Error while adding business rule', error.message);
-    })
+    const existBr = this.businessRuleData.filter((businessRule) => businessRule.brIdStr === request.brId)[0];
+    if(existBr) {
+      this.matSnackBar.open('This business rule is already added.', 'Okay', {
+        duration: 2000
+      })
+    }
+    else {
+      this.schemaService.createBusinessRule(request).subscribe((response) => {
+        console.log(response);
+        this.getBusinessRuleList(this.schemaId);
+      }, (error) => {
+        console.log('Error while adding business rule', error.message);
+      })
+    }
   }
 
   /**

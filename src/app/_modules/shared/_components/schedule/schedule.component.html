@@ -32,7 +32,8 @@
         <mat-divider class="divider-dashed"></mat-divider>
         <div class="f-row every-field temp-field">
             <pros-form-input [type]="'number'" [maxLength]='2' [value]='form.value.repeatValue'
-                (valueChange)="setValue('repeatValue',$event)" [placeholder]="'Enter'" [label]="'Every'">
+                (valueChange)="setValue('repeatValue',$event)" [placeholder]="'Enter'" [label]="'Every'"
+                [minimum]='1'>
             </pros-form-input>
             <div class="col-spacer"></div>
             <div class="week-label">{{getMetricHours}}</div>
@@ -102,7 +103,8 @@
         <div class="row-spacer"></div>
         <div class="f-row every-field" *ngIf="form.controls.end.value === 'AFTER'">
             <pros-form-input [type]="'number'" [label]="'Occurences'" [value]="form.controls.occurrenceVal.value"
-                [maxLength]='2' (valueChange)="setValue('occurrenceVal',$event)">
+                [maxLength]='2' (valueChange)="setValue('occurrenceVal',$event)"
+                [minimum]='1'>
             </pros-form-input>
             <mat-error
                 *ngIf="formSubmitted && form.controls.occurrenceVal.errors && form.controls.occurrenceVal.errors.required">

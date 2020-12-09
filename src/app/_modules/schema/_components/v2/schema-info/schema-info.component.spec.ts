@@ -33,9 +33,18 @@ describe('SchemaInfoComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [SchemaInfoComponent, FilterValuesComponent, AddFilterMenuComponent, FormInputComponent, ScheduleComponent, DatePickerFieldComponent ],
+      declarations: [
+        SchemaInfoComponent,
+        FilterValuesComponent,
+        AddFilterMenuComponent,
+        FormInputComponent,
+        ScheduleComponent,
+        DatePickerFieldComponent
+      ],
       imports: [
-        AppMaterialModuleForSpec, HttpClientTestingModule, RouterTestingModule
+        AppMaterialModuleForSpec,
+        HttpClientTestingModule,
+        RouterTestingModule
       ]
     })
       .compileComponents();
@@ -345,6 +354,13 @@ describe('SchemaInfoComponent', () => {
     request.fields = brInfo.fields;
     request.message = brInfo.message;
     request.isCopied = brInfo.isCopied;
+
+    component.businessRuleData = [
+      {
+        brId: '2123243',
+        brIdStr: '212343'
+      }
+    ] as CoreSchemaBrInfo[]
 
     spyOn(schemaService, 'createBusinessRule').withArgs(request).and.returnValue(of());
     component.addBusinessRule(brInfo);

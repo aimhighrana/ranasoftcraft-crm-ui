@@ -80,9 +80,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
 
     this.createForm();
     this.activatedRoute.params.subscribe((params) => {
-      // if (params.schemaId) {
-        this.schemaId = params.schemaId;
-      // }
+      this.schemaId = params.schemaId;
     })
 
     this.getScheduleInfo(this.schemaId);
@@ -172,7 +170,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
   submit() {
     this.formSubmitted = true;
     console.log(this.form.value);
-    const updateSubscription =  this.schemaService.createUpdateSchedule(this.schemaId, this.form.value).subscribe((response) => {
+    const updateSubscription = this.schemaService.createUpdateSchedule(this.schemaId, this.form.value).subscribe((response) => {
       if (response) {
         this.close();
         this.sharedService.setScheduleInfo(response);
@@ -221,9 +219,9 @@ export class ScheduleComponent implements OnInit, OnDestroy {
    * @param schemaId: Id of schema for which schedule info needed
    */
   getScheduleInfo(schemaId: string) {
-    const scheduleSubscription =  this.schemaService.getSchedule(schemaId).subscribe((response) => {
+    const scheduleSubscription = this.schemaService.getSchedule(schemaId).subscribe((response) => {
       this.scheduleInfo = response;
-      if(response){
+      if (response) {
         this.setValueForFormControl();
       }
     }, (error) => {
@@ -235,7 +233,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
   /**
    * Function to set values into form controls
    */
-  setValueForFormControl(){
+  setValueForFormControl() {
     this.form.get('isEnable').setValue(this.scheduleInfo.isEnable);
     this.form.get('schemaSchedulerRepeat').setValue(this.scheduleInfo.schemaSchedulerRepeat);
     this.form.get('repeatValue').setValue(this.scheduleInfo.repeatValue);
