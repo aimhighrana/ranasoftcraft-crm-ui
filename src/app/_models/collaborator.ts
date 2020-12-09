@@ -107,3 +107,10 @@ export interface CreateSchemaSubscriber {
     plantCode: number;
     filterCriteria?: FilterCriteria[];
 }
+
+export const ROLES = [
+    { code: 'isAdmin', text: 'Admin', value: false },
+    { code: 'isViewer', text: 'Viewer', value: false },
+    { code: 'isEditer', text: 'Editor', value: false },
+    { code: 'isReviewer', text: 'Reviewer', value: false }
+]
