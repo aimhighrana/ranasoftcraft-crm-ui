@@ -6,9 +6,9 @@
                 {{ schemaInfo.moduleDescription ? schemaInfo.moduleDescription : 'Module' }} /
                 {{ schemaInfo.schemaDescription ? schemaInfo.schemaDescription : 'Untitled'}} / {{variantName}}
                 <button mat-button [matMenuTriggerFor]="menu">
-                    <mat-icon>arrow_drop_down</mat-icon>
+                    <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon>
                 </button>
-                <mat-menu #menu="matMenu">
+                <mat-menu #menu="matMenu" class="navigation-menu">
                     <button mat-menu-item (click)="openDataScopeSideSheet()">[New data scope] </button>
                     <button mat-menu-item (click)="refreshData('0')"> Entire dataset </button>
                     <ng-container *ngIf="dataScope && dataScope.length">
@@ -419,15 +419,13 @@
                                         (evtReadyForApply)="makeFilterControl($event)" [reInilize]="reInilize">
                                     </pros-add-filter-menu>
                                 </mat-menu>
-
                             </mat-chip-list>
-
                         </div>
 
                         <div class="row-spacer"></div>
 
-
                         <!-- Data Table -->
+                        <div class="data">
                         <mat-table [dataSource]="dataSource" matSort class="mat-elevation-z0"
                             (scroll)="onScroll($event)">
 
@@ -474,9 +472,8 @@
                                         <!-- more actions -->
 
                                         <button mat-fab color="accent" (click)="markAsMasterRecord(element)">
-                                            <mat-icon>
-                                                <!-- fontSet="mdo-icons" -->
-                                                {{ element.status === 'Master record' ? 'star' : 'star_border'}}
+                                            <mat-icon fontSet="mdo-icons">
+                                                {{ element.status === 'Master record' ? 'star' : 'star-outline'}}
                                             </mat-icon>
                                         </button>
                                         <button mat-fab color="accent"
@@ -486,7 +483,7 @@
                                         <button mat-fab color="accent"
                                             *ngIf="element && (element.status !== 'Can be deleted')"
                                             (click)="markForDeletion(element)">
-                                            <mat-icon>delete_outline</mat-icon> <!-- fontSet="mdo-icons" -->
+                                            <mat-icon fontSet="mdo-icons">recycle-bin</mat-icon>
                                         </button>
                                     </div>
                                 </mat-cell>
@@ -532,11 +529,11 @@
                                 <mat-header-cell *matHeaderCellDef [attr.colspan]="displayedFields.getValue().length">
                                     <div class="f-row">
                                         <button mat-flat-button>
-                                            <mat-icon>done</mat-icon>
+                                            <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
                                             Action
                                         </button>
                                         <button mat-flat-button (click)="selection.clear()">
-                                            <mat-icon>close</mat-icon>
+                                            <mat-icon fontSet="mdo-icons">close</mat-icon>
                                             Unselect
                                         </button>
                                     </div>
@@ -556,7 +553,7 @@
                             <button mat-menu-item>Assign to...</button>
                             <button mat-menu-item>Mark for deletion</button>
                         </mat-menu>
-
+                        </div>
                     </div>
                 </div>
             </mat-tab>

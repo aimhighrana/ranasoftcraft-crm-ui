@@ -972,11 +972,6 @@
 
   //MDO-Table
   .mat-table {
-    mat-header-row.mat-header-row,
-    .mat-row {
-      display: table-row;
-    }
-
     .mat-row:hover {
       background-color: mat-color($background-palette, app-bar);
     }
@@ -988,9 +983,6 @@
       padding: 0 8px;
       min-width: 160px;
       max-width: 200px;
-      display: table-cell;
-      width: fit-content;
-      vertical-align: middle;
 
       &.fixed-width-c1 {
         min-width: 38px;
