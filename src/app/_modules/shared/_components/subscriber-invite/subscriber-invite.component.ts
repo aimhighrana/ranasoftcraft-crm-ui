@@ -1,7 +1,10 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { PermissionType, SchemaDashboardPermission } from '@models/collaborator';
 import { GlobaldialogService } from '@services/globaldialog.service';
+import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 
 @Component({
   selector: 'pros-subscriber-invite',
@@ -14,18 +17,22 @@ export class SubscriberInviteComponent implements OnInit {
    * Form object for Invitation
    */
   invitationForm: FormGroup;
-
+  submitted = false;
   /**
    * constructor of the class
    * @param dialogRef mat dialog ref object
    * @param data data from parent component
    * @param globalDialogService global dialog service object
+   * @param schemaDetailsService schema details service
+   * @param snackBar mat snackbar for notifications
    */
   constructor(
     public dialogRef: MatDialogRef<SubscriberInviteComponent>,
     @Inject(MAT_DIALOG_DATA) public data,
     private _formBuilder: FormBuilder,
-    private globalDialogService: GlobaldialogService) { }
+    private globalDialogService: GlobaldialogService,
+    private schemaDetailsService: SchemaDetailsService,
+    private snackBar: MatSnackBar) { }
 
   /**
    * Angular hook
@@ -53,8 +60,8 @@ export class SubscriberInviteComponent implements OnInit {
    */
   newInvite(): FormGroup {
     return this._formBuilder.group({
-      email: '',
-      role: ''
+      email: ['', [Validators.required, Validators.email]],
+      role: ['', Validators.required]
     });
   }
 
@@ -70,8 +77,8 @@ export class SubscriberInviteComponent implements OnInit {
    * @param inviteIndex pass the row index to remove
    */
   removeInvite(inviteIndex: number) {
-    this.globalDialogService.confirm({label: 'Sure to delete ?'}, (res) => {
-      if(res === 'yes'){
+    this.globalDialogService.confirm({ label: 'Sure to delete ?' }, (res) => {
+      if (res === 'yes') {
         this.invites().removeAt(inviteIndex);
       }
     });
@@ -92,13 +99,63 @@ export class SubscriberInviteComponent implements OnInit {
   }
 
   /**
+   * Call api to send invite
+   */
+  sendInvitation() {
+    this.submitted = true;
+    if(!this.invitationForm.valid){
+      this.snackBar.open('Please enter the required fields', 'Dismiss');
+      return;
+    }
+    const body: SchemaDashboardPermission[] = []
+    const formData = this.invitationForm.value.invites;
+    formData.map((data) => {
+      if(data.email){
+        body.push(this.mapSubscribers(data));
+      }
+    });
+
+    this.schemaDetailsService.createUpdateUserDetails(body)
+      .subscribe((res) => {
+        this.invitationForm.reset();
+      })
+  }
+
+  /**
+   * map subscribers data to correct format for api call
+   * @param param pass the form data
+   */
+  mapSubscribers({email, role}): SchemaDashboardPermission {
+    return {
+       description: '',
+       filterCriteria: [],
+       groupHeaderModel: null,
+       groupid: '',
+       isAdmin: role === 'admin',
+       isEditer: role === 'editer',
+       isReviewer: role === 'reviewer',
+       isViewer: role === 'viewer',
+       permissionType: PermissionType.USER,
+       plantCode: '',
+       roleId: '',
+       rolesModel: null,
+       schemaId: '',
+       sno: Math.floor(Math.random() * 100000000000).toString(),
+       userMdoModel: null,
+       userid: email,
+       dataAllocation: null,
+       isCopied: false
+    }
+  }
+
+  /**
    * method to set value manually to inviteForm
    * @param val Pass the value
    * @param key Pass the form key
    * @param index Pass the index
    */
   setFormValue(val: any, key: string, index: number) {
-    const availableControls:any = this.invites().controls[index];
+    const availableControls: any = this.invites().controls[index];
     availableControls.controls[key].setValue(val);
   }
 }
