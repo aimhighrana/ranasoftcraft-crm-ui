@@ -4,6 +4,8 @@ import { WidgetService } from '@services/widgets/widget.service';
 import { BehaviorSubject } from 'rxjs';
 import { LayoutTabResponse, MDORECORDESV3 } from '@modules/report/_models/widget';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { UserService } from '@services/user/userservice.service';
+import { distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'pros-summary-layout',
@@ -22,12 +24,12 @@ export class SummaryLayoutComponent implements OnInit {
    */
   layoutId: string;
 
-
   constructor(
     private router: Router,
     private activatedRouter: ActivatedRoute,
     private widgetService:WidgetService,
-    private snackbar: MatSnackBar
+    private snackbar: MatSnackBar,
+    private userService: UserService
   ) { }
 
   ngOnInit(): void {
@@ -54,13 +56,15 @@ export class SummaryLayoutComponent implements OnInit {
  */
 
   getLayoutMetadata(widgetId:string,objectNumber:string, layoutId: string):void{
-    this.widgetService.getLayoutMetadata(widgetId,objectNumber, layoutId).subscribe(data=>{
-      console.log(data);
-      this.layoutMetadata.next(data);
-    },error => {
-      this.snackbar.open(`Something went wrong`, 'Close', { duration: 5000 });
-      this.router.navigate([{ outlets: { sb: null } }]);
-    })
+    this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user=>{
+      this.widgetService.getLayoutMetadata(widgetId,objectNumber, layoutId, user.currentRoleId).subscribe(data=>{
+        console.log(data);
+        this.layoutMetadata.next(data);
+      },error => {
+        this.snackbar.open(`Something went wrong`, 'Close', { duration: 5000 });
+        this.router.navigate([{ outlets: { sb: null } }]);
+      })
+    });
   }
 
   /**

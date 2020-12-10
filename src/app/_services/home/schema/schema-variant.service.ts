@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { EndpointService } from '../../endpoint.service';
 import { SendSchemavariantRequest, SchemaVariantResponse, VariantDetails, SchemaVariantsModel } from 'src/app/_models/schema/schemalist';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../../any2ts.service';
+import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +13,7 @@ export class SchemaVariantService {
 
   constructor(
     private http: HttpClient,
-    private endPointService: EndpointService,
+    private endPointService: EndpointsClassicService,
     private any2tsService: Any2tsService
   ) { }
 

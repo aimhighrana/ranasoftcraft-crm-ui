@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { EndpointService } from 'src/app/_services/endpoint.service';
 import { DropDownValues, LayoutConfigWorkflowModel, ReportDashboardReq } from '../_models/widget';
 import { ReportList } from '../report-list/report-list.component';
 import { PermissionOn, ReportDashboardPermission } from '@models/collaborator';
+import { EndpointsAnalyticsService } from 'src/app/_services/_endpoints/endpoints-analytics.service';
+import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,38 +14,39 @@ export class ReportService {
 
   constructor(
     private http: HttpClient,
-    private endpointService: EndpointService
+    private endpointService: EndpointsClassicService,
+    private endpointAnalyticService: EndpointsAnalyticsService
   ) { }
 
-  public getReportInfo(reportId: number): Observable<any> {
-    return this.http.get<any>(this.endpointService.reportDashboardUrl(reportId));
+  public getReportInfo(reportId: number, plantCode: string): Observable<any> {
+    return this.http.get<any>(this.endpointAnalyticService.reportDashboardUrl(reportId), {params: {plantCode}});
   }
 
-  public getMetaDataFldByFldIds(fieldId: string, code: string[]): Observable<DropDownValues[]> {
-    return this.http.post<DropDownValues[]>(this.endpointService.getFieldMetadatByFldUrl(fieldId), code);
+  public getMetaDataFldByFldIds(fieldId: string, code: string[], plantCode: string): Observable<DropDownValues[]> {
+    return this.http.post<DropDownValues[]>(this.endpointAnalyticService.getFieldMetadatByFldUrl(fieldId), code, {params: {plantCode}});
   }
 
-  public createUpdateReport(request: ReportDashboardReq): Observable<string> {
-    return this.http.post<string>(this.endpointService.createUpdateReportUrl(), request);
+  public createUpdateReport(request: ReportDashboardReq, plantCode: string): Observable<string> {
+    return this.http.post<string>(this.endpointAnalyticService.createUpdateReportUrl(), request, {params: {plantCode}});
   }
 
-  public reportList(): Observable<ReportList[]> {
-    return this.http.get<ReportList[]>(this.endpointService.getReportListUrl());
+  public reportList(plantCode: string, roleId:string): Observable<ReportList[]> {
+    return this.http.get<ReportList[]>(this.endpointAnalyticService.getReportListUrl(), {params: {plantCode, roleId}});
   }
 
-  public getReportConfi(reportId: string): Observable<ReportList> {
-    return this.http.get<ReportList>(this.endpointService.getReportConfigUrl(reportId));
+  public getReportConfi(reportId: string, roleId:string): Observable<ReportList> {
+    return this.http.get<ReportList>(this.endpointAnalyticService.getReportConfigUrl(reportId), {params: {roleId}});
   }
 
   public deleteReport(reportId: string): Observable<boolean> {
-    return this.http.delete<boolean>(this.endpointService.deleteReport(reportId));
+    return this.http.delete<boolean>(this.endpointAnalyticService.deleteReport(reportId));
   }
 
-  public getDocCount(objectType: string, isWorkflowDataset?:any): Observable<number> {
+  public getDocCount(objectType: string, plantCode:string, isWorkflowDataset?:any): Observable<number> {
     if(isWorkflowDataset) {
-      return this.http.get<number>(this.endpointService.docCountUrl(objectType),{params:{isWorkflowDataset}});
+      return this.http.get<number>(this.endpointAnalyticService.docCountUrl(objectType),{params:{plantCode, isWorkflowDataset}});
     } else {
-      return this.http.get<number>(this.endpointService.docCountUrl(objectType));
+      return this.http.get<number>(this.endpointAnalyticService.docCountUrl(objectType), {params:{plantCode}});
     }
   }
 
@@ -69,9 +71,9 @@ export class ReportService {
    * @param objectType objecttype for summary
    * @param wfId wfid for find layouts
    */
-  public getAllLayoutsForSummary(objectType: string, wfId: string): Observable<LayoutConfigWorkflowModel[]> {
+  public getAllLayoutsForSummary(objectType: string, wfId: string, roleId: string, plantCode: string): Observable<LayoutConfigWorkflowModel[]> {
     objectType = objectType ? objectType : '';
     wfId = wfId ? wfId : '';
-    return this.http.get<LayoutConfigWorkflowModel[]>(this.endpointService.getlayoutsUrl(),{params:{objectType,wfId}});
+    return this.http.get<LayoutConfigWorkflowModel[]>(this.endpointAnalyticService.getlayoutsUrl(),{params:{objectType,wfId, roleId, plantCode}});
   }
 }

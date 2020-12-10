@@ -5,6 +5,8 @@ import { FormControl } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { Widget, ReportDashboardPermission } from '../_models/widget';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { UserService } from '@services/user/userservice.service';
+import { distinctUntilChanged } from 'rxjs/operators';
 export class ReportList {
   reportId: string;
   reportName: string;
@@ -29,7 +31,8 @@ export class ReportListComponent implements OnInit {
 
   constructor(
     private reportService: ReportService,
-    private snackbar: MatSnackBar
+    private snackbar: MatSnackBar,
+    private userService: UserService
   ) { }
 
   ngOnInit(): void {
@@ -44,10 +47,12 @@ export class ReportListComponent implements OnInit {
   }
 
   reportsList() {
-    this.reportService.reportList().subscribe(res=>{
-      this.reportList = res;
-      this.reportListOb = of(res);
-    },error=>console.error(`Error : ${error}`));
+    this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user=>{
+      this.reportService.reportList(user.plantCode, user.currentRoleId).subscribe(res=>{
+        this.reportList = res;
+        this.reportListOb = of(res);
+      },error=>console.error(`Error : ${error}`));
+    });
   }
 
   // no longer use ..

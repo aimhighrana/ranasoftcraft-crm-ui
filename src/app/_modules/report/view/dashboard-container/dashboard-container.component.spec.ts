@@ -3,18 +3,14 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DashboardContainerComponent } from './dashboard-container.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Criteria } from '../../_models/widget';
-import { ReportService } from '@modules/report/_service/report.service';
-import { of } from 'rxjs';
 
 describe('DashboardContainerComponent', () => {
   let component: DashboardContainerComponent;
   let fixture: ComponentFixture<DashboardContainerComponent>;
-  let reportservicespy: ReportService;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ DashboardContainerComponent ],
-      imports:[HttpClientTestingModule],
-      providers:[ReportService]
+      imports:[HttpClientTestingModule]
     })
     .compileComponents();
   }));
@@ -22,7 +18,6 @@ describe('DashboardContainerComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(DashboardContainerComponent);
     component = fixture.componentInstance;
-    reportservicespy = fixture.debugElement.injector.get(ReportService);
   });
 
   it('should create', () => {
@@ -47,8 +42,6 @@ describe('DashboardContainerComponent', () => {
     critera.conditionFieldValue = 'HERS';
     component.changeFilterCriteria([critera]);
     expect(critera.conditionFieldValue).toEqual(component.filterCriteria[0].conditionFieldValue);
-
-
   }));
 
   it('onResize(), on resize ', async(()=>{
@@ -74,17 +67,5 @@ describe('DashboardContainerComponent', () => {
     const chnages2:import('@angular/core').SimpleChanges = {hasFilterCriteria:{currentValue:true, previousValue: false, firstChange:null, isFirstChange:null}};
     component.ngOnChanges(chnages2);
     expect(component.filterCriteria.length).toEqual(0);
-  }));
-
-  it('ngOnInit(), should call ngoninit', async(() => {
-    component.reportId = 654765;
-    const res = {widgets:{sno:'65'}};
-    spyOn(reportservicespy,'getReportInfo').withArgs(component.reportId).and.returnValue(of(res));
-    component.ngOnInit();
-    expect(reportservicespy.getReportInfo).toHaveBeenCalledWith(component.reportId);
-
-    component.reportId= null;
-    component.ngOnInit();
-    expect(component.ngOnInit).toBeTruthy();
   }));
 });

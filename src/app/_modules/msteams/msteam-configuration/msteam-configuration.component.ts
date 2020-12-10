@@ -21,8 +21,8 @@ export class MsteamConfigurationComponent implements OnInit {
     if(refToken) {
       this.msteamsConfigService.validateToken(refToken).subscribe(res=>{
         if(res.headers) {
-          localStorage.setItem('JWT-TOKEN', res.headers.get('JWT-TOKEN'));
-          localStorage.setItem('JWT-REFRESH-TOKEN', res.headers.get('JWT-REFRESH-TOKEN'));
+          localStorage.setItem('JWT-TOKEN', (res['JWT-TOKEN'] ? res['JWT-TOKEN'] : ''));
+          localStorage.setItem('JWT-REFRESH-TOKEN', (res['JWT-REFRESH-TOKEN'] ? res['JWT-REFRESH-TOKEN'] :''));
         }
         this.router.navigate(['msteams','report']);
       }, error=> console.error(`Error msg : ${error.message}`));

@@ -8,6 +8,8 @@ import { SharedServiceService } from '@modules/shared/_services/shared-service.s
 import { Observable, of } from 'rxjs';
 import { Router } from '@angular/router';
 import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
+import { UserService } from '@services/user/userservice.service';
+import { distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'pros-secondary-navbar',
@@ -64,7 +66,8 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
     private schemaListService: SchemalistService,
     private schemaService: SchemaService,
     private reportService: ReportService,
-    private sharedService: SharedServiceService
+    private sharedService: SharedServiceService,
+    private userService: UserService
   ) { }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -143,14 +146,17 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
    * Function to get report list
    */
   public getreportList() {
-    this.reportService.reportList().subscribe(reportList => {
-      this.reportOb = of(reportList);
-      this.reportList = reportList;
-      if (this.reportList && !this.isPageReload) {
-        const firstReportId = this.reportList[0].reportId;
-        this.router.navigate(['home/report/dashboard', firstReportId]);
-      }
-    }, error => console.error(`Error : ${error}`));
+    this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user=>{
+      this.reportService.reportList(user.plantCode, user.currentRoleId).subscribe(reportList => {
+        this.reportOb = of(reportList);
+        this.reportList = reportList;
+        if (this.reportList && !this.isPageReload) {
+          const firstReportId = this.reportList[0].reportId;
+          this.router.navigate(['home/report/dashboard', firstReportId]);
+        }
+      }, error => console.error(`Error : ${error}`));
+    });
+
   }
 
   /**

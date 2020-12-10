@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { TaskListRequest } from '@models/task-list/filter';
-import { EndpointService } from '@services/endpoint.service';
 import { of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { TaskListSummaryRequestParams, CommonGridRequestObject } from '@models/task-list/taskListDetails';
 import { TaskListViewObject } from '@models/task-list/columnSetting';
+import { EndpointsClassicService } from './_endpoints/endpoints-classic.service';
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +22,7 @@ export class TaskListService {
    * Constructor of @class TaskListService
    */
   constructor(
-    public endpointService: EndpointService,
+    public endpointService: EndpointsClassicService,
     private http: HttpClient
   ) { }
 

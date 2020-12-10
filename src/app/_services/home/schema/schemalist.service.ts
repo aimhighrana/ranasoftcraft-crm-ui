@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
-import { EndpointService } from '../../endpoint.service';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { SchemaListModuleList, SchemaListDetails } from 'src/app/_models/schema/schemalist';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../../any2ts.service';
+import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SchemalistService {
   constructor(
-    private endpointService: EndpointService,
+    private endpointService: EndpointsClassicService,
     private http: HttpClient,
     private any2tsService: Any2tsService
   ) { }

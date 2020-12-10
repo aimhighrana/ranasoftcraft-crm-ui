@@ -83,24 +83,24 @@ describe('HomeLayoutComponent', () => {
     expect(component.selectedRoleDesc).toBe('');
   })
 
-  it('togglePrimarySideBar(), should toggle primary navigation bar', async() => {
-    component.primarySideBarOpened = true;
-    component.togglePrimarySideBar();
-    expect(component.primarySideBarOpened).toEqual(false);
+  // it('togglePrimarySideBar(), should toggle primary navigation bar', async() => {
+  //   component.primarySideBarOpened = true;
+  //   component.togglePrimarySideBar();
+  //   expect(component.primarySideBarOpened).toEqual(false);
 
-    component.primarySideBarOpened = false;
-    component.togglePrimarySideBar();
-    expect(component.primarySideBarOpened).toEqual(true);
-  })
+  //   component.primarySideBarOpened = false;
+  //   component.togglePrimarySideBar();
+  //   expect(component.primarySideBarOpened).toEqual(true);
+  // })
 
-  it('toggleSecondarySideBar(), should toggle secondary nav bar', ()=>{
-    component.secondarySideBarOpened = true;
-    const hidePrimary = true;
-    component.toggleSecondarySideBar(hidePrimary);
-    expect(component.secondarySideBarOpened).toEqual(false);
+  // it('toggleSecondarySideBar(), should toggle secondary nav bar', ()=>{
+  //   component.secondarySideBarOpened = true;
+  //   const hidePrimary = true;
+  //   component.toggleSecondarySideBar(hidePrimary);
+  //   expect(component.secondarySideBarOpened).toEqual(false);
 
-    component.secondarySideBarOpened = false;
-    component.toggleSecondarySideBar(hidePrimary);
-    expect(component.secondarySideBarOpened).toEqual(true);
-  })
+  //   component.secondarySideBarOpened = false;
+  //   component.toggleSecondarySideBar(hidePrimary);
+  //   expect(component.secondarySideBarOpened).toEqual(true);
+  // })
 });

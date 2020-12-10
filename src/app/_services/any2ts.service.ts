@@ -246,15 +246,15 @@ export class Any2tsService {
     const userDetails: Userdetails = new Userdetails();
     if (response) {
       userDetails.userName = response.userName;
-      userDetails.firstName = response.firstName;
-      userDetails.lastName = response.lastName;
+      userDetails.firstName = response.fname;
+      userDetails.lastName = response.lname;
       userDetails.email = response.email;
-      userDetails.plantCode = response.plantCode;
-      userDetails.currentRoleId = response.currentRoleId;
-      userDetails.dateformat = response.dateformat;
+      userDetails.plantCode = response.rolesModel.plantCode;
+      userDetails.currentRoleId = response.rolesModel.roleId;
+      userDetails.dateformat = response.dateFormat;
       userDetails.fullName = response.fullName;
       const assignedRoles: AssignedRoles[] = [];
-      response.assignedRoles.forEach(role => {
+      response.userMultiRoleModels.forEach(role => {
         const assignedRole: AssignedRoles = new AssignedRoles();
         assignedRole.defaultRole = role.defaultRole;
         assignedRole.roleDesc = role.roleDesc;

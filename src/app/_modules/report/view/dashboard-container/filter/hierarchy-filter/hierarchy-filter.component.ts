@@ -2,6 +2,8 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angu
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTree, MatTreeNestedDataSource } from '@angular/material/tree';
 import { WidgetService } from '@services/widgets/widget.service';
+import { UserService } from '@services/user/userservice.service';
+import { distinctUntilChanged } from 'rxjs/operators';
 
 export class TreeModel {
   nodeId: string;
@@ -45,7 +47,10 @@ export class HierarchyFilterComponent implements OnInit {
    * Constructor of the class
    * @param widgetService Injecting widgetService class
    */
-  constructor(private widgetService: WidgetService) {
+  constructor(
+    private widgetService: WidgetService,
+    private userService: UserService
+    ) {
     /** Data Source and Tree Control used by Tree View */
     this.nestedTreeControl = new NestedTreeControl<TreeModel>(this._getChildren);
     this.nestedDataSource = new MatTreeNestedDataSource();
@@ -66,13 +71,15 @@ export class HierarchyFilterComponent implements OnInit {
    * @param searchFunc .
    */
   public getLocationData(topLocation, fieldId, searchString, searchFunc){
-    this.widgetService.getLocationHirerachy(topLocation, fieldId, searchString, searchFunc).subscribe(data =>{
-      data.map(d => {
-        d.checked = false;
-        d.expanded = false;
-        return d;
+    this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user=>{
+      this.widgetService.getLocationHirerachy(topLocation, fieldId, searchString, searchFunc, user.plantCode).subscribe(data =>{
+        data.map(d => {
+          d.checked = false;
+          d.expanded = false;
+          return d;
+        });
+        this.nestedDataSource.data = data;
       });
-      this.nestedDataSource.data = data;
     });
   }
 

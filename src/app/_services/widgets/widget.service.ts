@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { EndpointService } from '../endpoint.service';
 import { HttpClient } from '@angular/common/http';
 import * as XLSX from 'xlsx';
 import { Criteria, BarChartWidget, WidgetHeader, TimeSeriesWidget, WidgetImageModel, WidgetHtmlEditor, ReportingWidget, LayoutTabResponse, MDORECORDESV3,WidgetColorPalette } from 'src/app/_modules/report/_models/widget';
 import { TreeModel } from '@modules/report/view/dashboard-container/filter/hierarchy-filter/hierarchy-filter.component';
+import { EndpointsAnalyticsService } from '@services/_endpoints/endpoints-analytics.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +14,8 @@ export class WidgetService {
   public count: BehaviorSubject<any> = new BehaviorSubject<any>(0);
 
   constructor(
-    private endpointService: EndpointService,
     private http: HttpClient,
+    private endpointAnalyticService: EndpointsAnalyticsService
   ) { }
 
   /**
@@ -25,54 +25,54 @@ export class WidgetService {
   public getWidgetData(widgetId: string, filterCriteria: Criteria[],searchString?:string): Observable<any> {
     searchString = searchString===undefined?'':searchString;
     filterCriteria = filterCriteria ? filterCriteria : [];
-    return this.http.post<any>(this.endpointService.widgetDataUrl(), filterCriteria, { params: { widgetId,searchString  } });
+    return this.http.post<any>(this.endpointAnalyticService.widgetDataUrl(), filterCriteria, { params: { widgetId,searchString  } });
   }
 
   public getListdata(size,from,widgetId: string, filterCriteria: Criteria[], sortMapStr: any):Observable<any>{
     filterCriteria = filterCriteria ? filterCriteria : [];
     if(sortMapStr) {
       sortMapStr = JSON.stringify(sortMapStr);
-      return this.http.post<any>(this.endpointService.widgetDataUrl(), filterCriteria, {params:{widgetId,size,from, sortMapStr}});
+      return this.http.post<any>(this.endpointAnalyticService.widgetDataUrl(), filterCriteria, {params:{widgetId,size,from, sortMapStr}});
     } else {
-      return this.http.post<any>(this.endpointService.widgetDataUrl(), filterCriteria, {params:{widgetId,size,from}});
+      return this.http.post<any>(this.endpointAnalyticService.widgetDataUrl(), filterCriteria, {params:{widgetId,size,from}});
     }
 
   }
 
   public getStackChartMetadata(widgetId): Observable<any> {
-    return this.http.get<any>(this.endpointService.getStackBarChartMetaData(widgetId));
+    return this.http.get<any>(this.endpointAnalyticService.getStackBarChartMetaData(widgetId));
   }
 
   public getFilterMetadata(widgetId): Observable<any> {
-    return this.http.get<any>(this.endpointService.getFiltertMetaData(widgetId));
+    return this.http.get<any>(this.endpointAnalyticService.getFiltertMetaData(widgetId));
   }
 
   public getListTableMetadata(widgetId): Observable<ReportingWidget[]> {
-    return this.http.get<ReportingWidget[]>(this.endpointService.getListTableMetaData(widgetId));
+    return this.http.get<ReportingWidget[]>(this.endpointAnalyticService.getListTableMetaData(widgetId));
   }
 
   public getBarChartMetadata(widgetId): Observable<BarChartWidget> {
-    return this.http.get<BarChartWidget>(this.endpointService.getBarChartMetaData(widgetId));
+    return this.http.get<BarChartWidget>(this.endpointAnalyticService.getBarChartMetaData(widgetId));
   }
 
   public getCountMetadata(widgetId): Observable<any> {
-    return this.http.get<any>(this.endpointService.getCountMetadata(widgetId));
+    return this.http.get<any>(this.endpointAnalyticService.getCountMetadata(widgetId));
   }
 
   public getHeaderMetaData(widgetId): Observable<WidgetHeader> {
-    return this.http.get<WidgetHeader>(this.endpointService.getHeaderMetaData(widgetId));
+    return this.http.get<WidgetHeader>(this.endpointAnalyticService.getHeaderMetaData(widgetId));
   }
 
   public getTimeseriesWidgetInfo(widgetId: number): Observable<TimeSeriesWidget> {
-    return this.http.get<TimeSeriesWidget>(this.endpointService.getTimeseriesWidgetInfoUrl(widgetId));
+    return this.http.get<TimeSeriesWidget>(this.endpointAnalyticService.getTimeseriesWidgetInfoUrl(widgetId));
   }
 
   public getimageMetadata(widgetId): Observable<WidgetImageModel> {
-    return this.http.get<WidgetImageModel>(this.endpointService.getimageMetadata(widgetId));
+    return this.http.get<WidgetImageModel>(this.endpointAnalyticService.getimageMetadata(widgetId));
   }
 
   public getHTMLMetadata(widgetId): Observable<WidgetHtmlEditor> {
-    return this.http.get<WidgetHtmlEditor>(this.endpointService.getHTMLMetadata(widgetId));
+    return this.http.get<WidgetHtmlEditor>(this.endpointAnalyticService.getHTMLMetadata(widgetId));
   }
 
   public updateCount(count) {
@@ -112,30 +112,30 @@ export class WidgetService {
     } catch (e) { }
   }
 
-  getLayoutMetadata(widgetId:string,objectNumber:string, layoutId: string):Observable<LayoutTabResponse[]>{
-    return this.http.get<any>(this.endpointService.getLayoutMetadata(widgetId,objectNumber, layoutId));
+  getLayoutMetadata(widgetId:string,objectNumber:string, layoutId: string, roleId: string):Observable<LayoutTabResponse[]>{
+    return this.http.get<any>(this.endpointAnalyticService.getLayoutMetadata(widgetId,objectNumber, layoutId), {params:{roleId}});
   }
 
   getlayoutData(widgetId:string,objectNumber:string):Observable<MDORECORDESV3>{
-    return this.http.get<any>(this.endpointService.getlayoutData(widgetId,objectNumber));
+    return this.http.get<any>(this.endpointAnalyticService.getlayoutData(widgetId,objectNumber));
   }
 
   getAttachmentData(snos : object):Observable<any>{
-    return this.http.post<any>(this.endpointService.getAttachmentData(),snos);
+    return this.http.post<any>(this.endpointAnalyticService.getAttachmentData(),snos);
   }
   /**
    * Call http for save or define widget color palette
    * @param req define color palette request for widget
    */
    defineWidgetColorPalette(req: WidgetColorPalette): Observable<WidgetColorPalette> {
-    return this.http.post<WidgetColorPalette>(this.endpointService.defineColorPaletteForWidget(), req);
+    return this.http.post<WidgetColorPalette>(this.endpointAnalyticService.defineColorPaletteForWidget(), req);
   }
 
   /**
    * Call http to get location hireeachy
    */
-  getLocationHirerachy(topLocation: string, fieldId: string, searchString: string, searchFunc: string): Observable<TreeModel[]>{
-    return this.http.get<TreeModel[]>(this.endpointService.getLocationHierarchyUrl(topLocation, fieldId, searchString, searchFunc))
+  getLocationHirerachy(topLocation: string, fieldId: string, searchString: string, searchFunc: string, plantCode: string): Observable<TreeModel[]>{
+    return this.http.get<TreeModel[]>(this.endpointAnalyticService.getLocationHierarchyUrl(topLocation, fieldId, searchString, searchFunc), {params:{plantCode}})
   }
 
 }

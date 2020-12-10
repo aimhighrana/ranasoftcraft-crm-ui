@@ -16,6 +16,8 @@ import {MAT_MOMENT_DATE_FORMATS, MomentDateAdapter} from '@angular/material-mome
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { DropDownValue, ConditionalOperator } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { UserService } from '@services/user/userservice.service';
+import { distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'pros-container',
@@ -109,6 +111,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     private schemaService: SchemaService,
     private schemaDetailsService: SchemaDetailsService,
     private sharedService: SharedServiceService,
+    private userService: UserService
   ) { }
 
 
@@ -322,13 +325,16 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getReportConfig(reportId: string) {
-    const reportConfig = this.reportService.getReportConfi(reportId).subscribe(res => {
+    const userSub = this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user=>{
+    const reportConfig = this.reportService.getReportConfi(reportId, user.currentRoleId).subscribe(res => {
       this.widgetList = res.widgets;
       this.reportId = res.reportId;
       this.reportName = res.reportName;
       this.collaboratorPermission = res.permission ? res.permission.isAdmin : false;
     }, error => console.error(`Error: ${error}`));
     this.subscriptions.push(reportConfig);
+    });
+    this.subscriptions.push(userSub);
   }
 
   getdropDownValues(fieldId: string, queryString: string) {
@@ -671,13 +677,16 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param objectType selected object type
    */
   getRecordCount(objectType: string, isWorkflowDataset?:boolean) {
-    const docCountSub = this.reportService.getDocCount(objectType, isWorkflowDataset).subscribe(res => {
-      this.recordsCount = res;
-    }, error => {
-      this.recordsCount = null;
-      console.error(`Error: ${error}`);
+    const userSub = this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user=>{
+      const docCountSub = this.reportService.getDocCount(objectType, user.plantCode, isWorkflowDataset).subscribe(res => {
+        this.recordsCount = res;
+      }, error => {
+        this.recordsCount = null;
+        console.error(`Error: ${error}`);
+      });
+      this.subscriptions.push(docCountSub);
     });
-    this.subscriptions.push(docCountSub);
+    this.subscriptions.push(userSub);
   }
 
   /**
@@ -708,7 +717,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     request.reportName = this.reportName;
     request.widgetReqList = this.widgetList;
 
-    const createUpdateSub = this.reportService.createUpdateReport(request).subscribe(res => {
+    const userSub = this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user=>{
+      const createUpdateSub = this.reportService.createUpdateReport(request, user.plantCode).subscribe(res => {
       this.reportId = res;
       this.sharedService.setReportListData();
       this.snackbar.open(`Successfully saved change(s)`, 'Close',{duration:3000});
@@ -716,6 +726,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.snackbar.open(`Something went wrong`, 'Close',{duration:5000});
     });
     this.subscriptions.push(createUpdateSub);
+    });
+    this.subscriptions.push(userSub);
   }
 
   // To set the emitted value of form-input component

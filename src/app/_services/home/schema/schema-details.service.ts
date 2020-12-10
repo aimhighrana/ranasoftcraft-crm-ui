@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { EndpointService } from '../../endpoint.service';
 import { Observable } from 'rxjs';
 import { SendReqForSchemaDataTableColumnInfo, SendDataForSchemaTableShowMore, SchemaDataTableColumnInfoResponse, RequestForSchemaDetailsWithBr, SchemaTableViewRequest, OverViewChartDataSet, CategoryInfo, CategoryChartDataSet, MetadataModeleResponse, SchemaBrInfo, SchemaCorrectionReq, SchemaExecutionLog, SchemaTableViewFldMap, ClassificationNounMod } from 'src/app/_models/schema/schemadetailstable';
 import * as moment from 'moment';
@@ -8,6 +7,8 @@ import { map } from 'rxjs/operators';
 import { Any2tsService } from '../../any2ts.service';
 import { SchemaListDetails } from 'src/app/_models/schema/schemalist';
 import { PermissionOn, SchemaDashboardPermission } from '@models/collaborator';
+import { EndpointsAnalyticsService } from '@services/_endpoints/endpoints-analytics.service';
+import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,8 +17,9 @@ export class SchemaDetailsService {
 
   constructor(
     private http: HttpClient,
-    public endpointService: EndpointService,
-    private any2tsService: Any2tsService
+    public endpointService: EndpointsClassicService,
+    private any2tsService: Any2tsService,
+    private analyticsEndpointService: EndpointsAnalyticsService
   ) { }
 
   private getDateString(days) {
@@ -140,7 +142,7 @@ export class SchemaDetailsService {
   }
 
   public createUpdateReportDataTable(widgetId: string,request: object[]): Observable<boolean> {
-    return this.http.post<boolean>(this.endpointService.createUpdateReportDataTable(widgetId), request)
+    return this.http.post<boolean>(this.analyticsEndpointService.createUpdateReportDataTable(widgetId), request)
   }
 
   public getClassificationNounMod(schemaId: string, runId: string, variantId?: string, queryString?: string, scrollId?: string): Observable<ClassificationNounMod> {

@@ -3,29 +3,29 @@ import { TestBed, async } from '@angular/core/testing';
 import { SchemalistService } from './schemalist.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { Any2tsService } from '../../any2ts.service';
-import { EndpointService } from '../../endpoint.service';
 import { SchemaListModuleList, SchemaListDetails } from 'src/app/_models/schema/schemalist';
+import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 
 describe('SchemalistService', () => {
   let schemalistService: SchemalistService;
   let httpTestingController: HttpTestingController;
   let any2tsServiceSpy: jasmine.SpyObj<Any2tsService>;
-  let endpointServiceSpy: jasmine.SpyObj<EndpointService>;
+  let endpointServiceSpy: jasmine.SpyObj<EndpointsClassicService>;
   beforeEach(() => {
     const any2tsSpy = jasmine.createSpyObj('Any2tsService', ['any2SchemaListView', 'any2SchemaDetailsWithCount']);
-    const endpointSpy = jasmine.createSpyObj('EndpointService', ['getSchemaListByGroupIdUrl', 'getSchemaDetailsBySchemaIdUrl']);
+    const endpointSpy = jasmine.createSpyObj('EndpointsClassicService', ['getSchemaListByGroupIdUrl', 'getSchemaDetailsBySchemaIdUrl']);
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
         SchemalistService,
         { provide: Any2tsService, useValue: any2tsSpy },
-        { provide: EndpointService, useValue: endpointSpy }
+        { provide: EndpointsClassicService, useValue: endpointSpy }
       ]
     }).compileComponents();
     schemalistService = TestBed.inject(SchemalistService);
     httpTestingController = TestBed.inject(HttpTestingController);
     any2tsServiceSpy = TestBed.inject(Any2tsService) as jasmine.SpyObj<Any2tsService>;
-    endpointServiceSpy = TestBed.inject(EndpointService) as jasmine.SpyObj<EndpointService>;
+    endpointServiceSpy = TestBed.inject(EndpointsClassicService) as jasmine.SpyObj<EndpointsClassicService>;
   });
 
   it('should be created', () => {
