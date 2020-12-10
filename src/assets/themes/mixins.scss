@@ -792,6 +792,7 @@
 
         .field-mat-menu {
           padding: 8px;
+          display: block;
         }
 
         button.mat-menu-item {
@@ -971,6 +972,11 @@
 
   //MDO-Table
   .mat-table {
+    mat-header-row.mat-header-row,
+    .mat-row {
+      display: table-row;
+    }
+
     .mat-row:hover {
       background-color: mat-color($background-palette, app-bar);
     }
@@ -982,6 +988,9 @@
       padding: 0 8px;
       min-width: 160px;
       max-width: 200px;
+      display: table-cell;
+      width: fit-content;
+      vertical-align: middle;
 
       &.fixed-width-c1 {
         min-width: 38px;
@@ -999,12 +1008,6 @@
 
       &.numeric-cell-right {
         text-align: right;
-      }
-
-      mat-icon {
-        font-size: 16px;
-        height: 16px;
-        width: 16px;
       }
 
       .mat-sort-header-content {
@@ -1523,7 +1526,8 @@
 
   pros-new-schema-collaborators,
   pros-subscriber-side-sheet,
-  pros-businessrulelibrary-dialog {
+  pros-businessrulelibrary-dialog,
+  pros-businessrulelibrary-sidesheet {
     mat-card.root {
       .businessrule-listing {
         mat-list.rule-list {

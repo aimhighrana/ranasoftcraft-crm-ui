@@ -35,10 +35,21 @@ div.root {
         height: 100%;
         width: calc(100% - 16px);
 
-        table.mat-table {
-          width: 100%;
-          max-height: 655px;
+        .data {
           overflow: auto;
+        }
+
+        mat-table.mat-table {
+          overflow-x: auto;
+          width: 100vw;
+          max-width: 100%;
+          display: table;
+          border-collapse: collapse;
+
+          .text-correction {
+            text-decoration: line-through;
+            display: flex;
+          }
         }
       }
     }

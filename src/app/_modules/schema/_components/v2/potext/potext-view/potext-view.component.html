@@ -2,13 +2,9 @@
     <div class="row-spacer"></div>
     <div class="f-row breadcrum-toolbar">
         <div class="display-heading-large">
-            
             {{ schemaInfo ? schemaInfo.moduleDescription : 'Unknown' }} / 
             {{ schemaInfo ? schemaInfo.schemaDescription : 'Unknown' }} /
-
             {{ (!variantId) ? 'Entire dataset' : 'Unknown'  }}
-
-
             <span class="f-col-spacer-half"></span>
             <button mat-button [matMenuTriggerFor]="check">
                 <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon>
@@ -117,154 +113,146 @@
                         </mat-menu>
                         <!-- More control -->
                         <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="moreFilterMenu">
-                            <mat-icon>more_horiz</mat-icon>
+                            <mat-icon fontSet="mdo-icons">more</mat-icon>
                         </mat-chip>
                         <!-- More control MatMenu -->
-                        <mat-menu #moreFilterMenu="matMenu">
-                            <mat-nav-list>
-                                <a mat-list-item (click)="opnDialogSaveVariant()">Save as...</a>
-                                <a mat-list-item (click)="resetAppliedFilter()">Reset</a>
-                            </mat-nav-list>
+                        <mat-menu #moreFilterMenu="matMenu" class="navigation-menu">
+                            <button mat-menu-item (click)="opnDialogSaveVariant()">Save as...</button>
+                            <button mat-menu-item (click)="resetAppliedFilter()">Reset</button>
                         </mat-menu>
                     </mat-chip-list>
-
-
                 </div>
 
                 <div class="row-spacer"></div>
 
                 <!-- Data Table -->
-                <mat-table matSort [dataSource]="dataSource" class="mat-elevation-z0" style="overflow: auto;">
+                <div class="data">
+                    <mat-table matSort [dataSource]="dataSource" class="mat-elevation-z0">
 
-                    <!-- Checkbox Column -->
-                    <ng-container matColumnDef="checkbox_select">
-                        <mat-header-cell *matHeaderCellDef class="fixed-width-c1">
-                            <mat-checkbox color="primary">
-                            </mat-checkbox>
-                        </mat-header-cell>
-                        <mat-cell  class="fixed-width-c1" *matCellDef="let row">
-                            <mat-checkbox color="primary">
-                            </mat-checkbox>
-                        </mat-cell>
-                    </ng-container>
-
-                    <!-- Name Column -->
-                    <ng-container matColumnDef="bucket_assigned">
-                        <mat-header-cell *matHeaderCellDef class="fixed-width-c1"></mat-header-cell>
-                        <mat-cell class="fixed-width-c1" *matCellDef="let element">
-                            <mat-card-header>
-                                <div mat-card-avatar>AK</div>
-                            </mat-card-header>
-                        </mat-cell>
-                    </ng-container>
-
-                    <!-- Action Column -->
-                    <ng-container matColumnDef="action">
-                        <mat-header-cell *matHeaderCellDef class="fixed-width-c2">
-                            <button mat-button (click)="openTableColumnSettings()">
-                                <mat-icon>settings</mat-icon>
-                            </button>
-                        </mat-header-cell>
-                        <mat-cell *matCellDef="let element" class="fixed-width-c2">
-                            <div class="f-row action-iconbtns">
-                                <!-- <button mat-fab color="accent" [matMenuTriggerFor]="moreactions">
-                                    <mat-icon fontSet="mdo-icons">more</mat-icon>
-                                </button>
-                                <mat-menu #moreactions="matMenu" class="navigation-menu">
-                                    <button mat-menu-item>Assign to...</button>
-                                    <button mat-menu-item>Ignore</button>
-                                </mat-menu> -->
-
-                                <button mat-fab color="accent" *ngIf="element['CATALOG_ID'] === undefined ||  !element['CATALOG_ID'].fieldData"
-                                (click)="generateCrossEntry(element)">
-                                    <mat-icon fontSet="mdo-icons">plus</mat-icon>
-                                </button>
-
-                                <ng-template [ngIf]="activeTab === 'review'">
-                                    <button mat-button (click)="approveRecords('inline', element)"
-                                        *ngIf="!element['OBJECTNUMBER'].isReviewed">
-                                        <mat-icon>done</mat-icon>
-                                    </button>
-                                </ng-template>
-                            </div>
-                        </mat-cell>
-                    </ng-container>
-
-                    <!-- Name Column -->
-                    <!-- <ng-container matColumnDef="catalog_id">
-                        <mat-header-cell *matHeaderCellDef> Catalog ID </mat-header-cell>
-                        <mat-cell mat-cell *matCellDef="let element">
-                            {{ element['CATALOG_ID'] ? ( element['CATALOG_ID'].fieldData ? element['CATALOG_ID'].fieldData : '?') : '?' }}
-
-                        </mat-cell>
-                    </ng-container> -->
-
-                    <!-- load dynamic columns-->
-                <ng-template ngFor let-dynCols [ngForOf]="(displayedFields | async)">
-                    <ng-template
-                        [ngIf]="(dynCols === 'action') || (dynCols === 'checkbox_select') || (dynCols === 'bucket_assigned')" [ngIfElse]="other">
-                        <!-- skip all static columns -->
-                    </ng-template>
-                    <ng-template #other>
-
-                        <ng-container [matColumnDef]="dynCols">
-                            <mat-header-cell *matHeaderCellDef mat-sort-header>
-                                {{ metadataFldLst[dynCols] ? metadataFldLst[dynCols].fieldDescri : 'Unknown' }}
+                        <!-- Checkbox Column -->
+                        <ng-container matColumnDef="checkbox_select">
+                            <mat-header-cell *matHeaderCellDef class="fixed-width-c1">
+                                <mat-checkbox color="primary">
+                                </mat-checkbox>
                             </mat-header-cell>
-                            <mat-cell *matCellDef="let element; let rIndex = index;"
-                                [class.error-cell]="element[dynCols] ? element[dynCols].isInError : false"
-                                (click)="editCurrentCell(dynCols,element, rIndex, containerRef)">
-                                <div class="mdo-form-input f-col" style="display: none;"
-                                    id="inpctrl_{{ dynCols + '_' + rIndex }}">
-                                
-                                <!-- container to hold input field when cell gets edited  -->
-                                <ng-template prosContainerRef #containerRef="prosContainerRef">
-                                </ng-template>                                   
-
-                                </div>
-
-                                <ng-template [ngIf]="element[dynCols] && element[dynCols].isCorrected"
-                                    [ngIfElse]="normalCell">
-                                    <ng-template [ngIf]="element[dynCols].oldData !== element[dynCols].fieldData"
-                                        [ngIfElse]="other">
-                                        <span class="error-message" style="color: red;">
-                                            {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].oldData) : '' }}
-                                        </span>
-                                        <br>
-                                        <span id="viewctrl_{{ dynCols + '_' + rIndex }}">
-                                            {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].fieldData) : '' }}
-                                        </span>
-
-                                    </ng-template>
-                                    <ng-template #other>
-                                        <span id="viewctrl_{{ dynCols + '_' + rIndex }}">
-                                            {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].fieldData) : '' }}
-                                        </span>
-                                    </ng-template>
-                                </ng-template>
-                                <ng-template #normalCell>
-                                    <span id="viewctrl_{{ dynCols + '_' + rIndex }}">
-                                        {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].fieldData) : '' }}
-                                    </span>
-                                    <br>
-                                    <span class="error-message" style="color: red;">
-                                        {{ element[dynCols] ? element[dynCols].errorMsg : '' }}
-                                    </span>
-                                </ng-template>
-
+                            <mat-cell  class="fixed-width-c1" *matCellDef="let row">
+                                <mat-checkbox color="primary">
+                                </mat-checkbox>
                             </mat-cell>
                         </ng-container>
-                        
+    
+                        <!-- Name Column -->
+                        <ng-container matColumnDef="bucket_assigned">
+                            <mat-header-cell *matHeaderCellDef class="fixed-width-c1"></mat-header-cell>
+                            <mat-cell class="fixed-width-c1" *matCellDef="let element">
+                                <mat-card-header>
+                                    <div mat-card-avatar>AK</div>
+                                </mat-card-header>
+                            </mat-cell>
+                        </ng-container>
+    
+                        <!-- Action Column -->
+                        <ng-container matColumnDef="action">
+                            <mat-header-cell *matHeaderCellDef class="fixed-width-c2">
+                                <button mat-button (click)="openTableColumnSettings()">
+                                    <mat-icon fontSet="mdo-icons">cog</mat-icon>
+                                </button>
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let element" class="fixed-width-c2">
+                                <div class="f-row action-iconbtns">
+                                    <!-- <button mat-fab color="accent" [matMenuTriggerFor]="moreactions">
+                                        <mat-icon fontSet="mdo-icons">more</mat-icon>
+                                    </button>
+                                    <mat-menu #moreactions="matMenu" class="navigation-menu">
+                                        <button mat-menu-item>Assign to...</button>
+                                        <button mat-menu-item>Ignore</button>
+                                    </mat-menu> -->
+    
+                                    <button mat-fab color="accent" *ngIf="element['CATALOG_ID'] === undefined ||  !element['CATALOG_ID'].fieldData"
+                                    (click)="generateCrossEntry(element)">
+                                        <mat-icon fontSet="mdo-icons">plus</mat-icon>
+                                    </button>
+    
+                                    <ng-template [ngIf]="activeTab === 'review'">
+                                        <button mat-fab (click)="approveRecords('inline', element)"
+                                            *ngIf="!element['OBJECTNUMBER'].isReviewed">
+                                            <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
+                                        </button>
+                                    </ng-template>
+                                </div>
+                            </mat-cell>
+                        </ng-container>
+    
+                        <!-- Name Column -->
+                        <!-- <ng-container matColumnDef="catalog_id">
+                            <mat-header-cell *matHeaderCellDef> Catalog ID </mat-header-cell>
+                            <mat-cell mat-cell *matCellDef="let element">
+                                {{ element['CATALOG_ID'] ? ( element['CATALOG_ID'].fieldData ? element['CATALOG_ID'].fieldData : '?') : '?' }}
+    
+                            </mat-cell>
+                        </ng-container> -->
+    
+                        <!-- load dynamic columns-->
+                    <ng-template ngFor let-dynCols [ngForOf]="(displayedFields | async)">
+                        <ng-template
+                            [ngIf]="(dynCols === 'action') || (dynCols === 'checkbox_select') || (dynCols === 'bucket_assigned')" [ngIfElse]="other">
+                            <!-- skip all static columns -->
+                        </ng-template>
+                        <ng-template #other>
+    
+                            <ng-container [matColumnDef]="dynCols">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header>
+                                    {{ metadataFldLst[dynCols] ? metadataFldLst[dynCols].fieldDescri : 'Unknown' }}
+                                </mat-header-cell>
+                                <mat-cell *matCellDef="let element; let rIndex = index;"
+                                    [class.error-cell]="element[dynCols] ? element[dynCols].isInError : false"
+                                    (click)="editCurrentCell(dynCols,element, rIndex, containerRef)">
+                                    <div class="mdo-form-input f-col" style="display: none;"
+                                        id="inpctrl_{{ dynCols + '_' + rIndex }}">
+                                    
+                                    <!-- container to hold input field when cell gets edited  -->
+                                    <ng-template prosContainerRef #containerRef="prosContainerRef">
+                                    </ng-template>                                   
+                                    </div>
+    
+                                    <ng-template [ngIf]="element[dynCols] && element[dynCols].isCorrected"
+                                        [ngIfElse]="normalCell">
+                                        <ng-template [ngIf]="element[dynCols].oldData !== element[dynCols].fieldData"
+                                            [ngIfElse]="other">
+                                            <span class="text-correction">
+                                                {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].oldData) : '' }}
+                                            </span>
+                                            <span id="viewctrl_{{ dynCols + '_' + rIndex }}">
+                                                {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].fieldData) : '' }}
+                                            </span>
+    
+                                        </ng-template>
+                                        <ng-template #other>
+                                            <span id="viewctrl_{{ dynCols + '_' + rIndex }}">
+                                                {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].fieldData) : '' }}
+                                            </span>
+                                        </ng-template>
+                                    </ng-template>
+                                    <ng-template #normalCell>
+                                        <span id="viewctrl_{{ dynCols + '_' + rIndex }}">
+                                            {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].fieldData) : '' }}
+                                        </span>
+                                        <span class="text-correction">
+                                            {{ element[dynCols] ? element[dynCols].errorMsg : '' }}
+                                        </span>
+                                    </ng-template>
+                                </mat-cell>
+                            </ng-container>
+                        </ng-template>
                     </ng-template>
-                </ng-template>
-
-                    <mat-header-row   *matHeaderRowDef="displayedFields | async; sticky: true"></mat-header-row >
-                    <mat-row  *matRowDef="let row; columns: displayedFields | async;"
-                        (click)="selection.toggle(row)">
-                    </mat-row >
-                </mat-table>
+    
+                        <mat-header-row *matHeaderRowDef="displayedFields | async; sticky: true"></mat-header-row >
+                        <mat-row *matRowDef="let row; columns: displayedFields | async;"
+                            (click)="selection.toggle(row)">
+                        </mat-row>
+                    </mat-table>
+                </div>
             </div>
-            
         </div>
     </div>
 </div>
