@@ -187,7 +187,7 @@
                                 <!-- FOR STACKED BAR CHART WIDGET-->
                                 <ng-template
                                     [ngIf]="selStyleWid && (selStyleWid.widgetType === 'STACKED_BAR_CHART'  || selStyleWid.widgetType === 'TIMESERIES') && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===false">
-                                    <pros-metadatafield-control [moduleId]="selStyleWid && selStyleWid.objectType"
+                                    <pros-metadatafield-control [moduleId]="selStyleWid && selStyleWid.objectType" [widgetType]="selStyleWid && selStyleWid.widgetType"
                                         lebel="Group(s) with" [selectedFldId]="selStyleWid && selStyleWid.groupById"
                                         (selectionChange)='onGroupByChange($event)'>
                                     </pros-metadatafield-control>
@@ -196,7 +196,7 @@
                                 <!-- FOR STACKED BAR CHART WIDGET-->
                                 <ng-template
                                     [ngIf]="selStyleWid && (selStyleWid.widgetType === 'STACKED_BAR_CHART'|| selStyleWid.widgetType === 'TIMESERIES') && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===true">
-                                    <pros-workflowfield-control [objectType]="selStyleWid && selStyleWid.objectType"
+                                    <pros-workflowfield-control [objectType]="selStyleWid && selStyleWid.objectType" [widgetType]="selStyleWid && selStyleWid.widgetType"
                                         label="Group with(s)" [selectedFldId]="selStyleWid && selStyleWid.groupById"
                                         (selectionChange)='onGroupByChange($event)'>
                                     </pros-workflowfield-control>
@@ -227,11 +227,12 @@
                                 <ng-template [ngIf]="selStyleWid && selStyleWid.widgetType === 'FILTER' ">
                                     <!-- if date type field then , special config -->
                                     <ng-template
-                                        [ngIf]="selStyleWid.fieldCtrl && selStyleWid.fieldCtrl.picklist === '0' && (selStyleWid.fieldCtrl.dataType === 'DTMS' || selStyleWid.fieldCtrl.dataType === 'DATS')"
-                                        [ngIfElse]="otherCtrl">
+                                    [ngIf]="selStyleWid.fieldCtrl && ((selStyleWid.fieldCtrl.picklist === '0' && (selStyleWid.fieldCtrl.dataType === 'DTMS' || selStyleWid.fieldCtrl.dataType === 'DATS')) || selStyleWid.fieldCtrl.fieldId === 'REQUESTOR_DATE' 
+                                        || selStyleWid.fieldCtrl.fieldId === 'DUE_DATE' || selStyleWid.fieldCtrl.fieldId === 'DATE_STARTED' || selStyleWid.fieldCtrl.fieldId === 'FINISHDATE')"
+                                    [ngIfElse]="otherCtrl">
 
                                         <div class="f-col">
-                                            <mat-label>Select date</mat-label>
+                                            <mat-label>Select default days</mat-label>
                                             <mat-form-field appearance="outline">
                                                 <mat-select formControlName="dateSelectionType">
                                                     <mat-option>
@@ -486,42 +487,43 @@
                                         </mat-select>
                                     </mat-form-field>
                                 </div>
-
-                                <div class="f-col">
-                                    <div class="f-row">
-                                        <div class="f-col">
-                                            <mat-label>Scale from</mat-label>
-                                            <mat-form-field appearance="outline">
-                                                <input type="number" min="0" matInput formControlName="scaleFrom">
-                                            </mat-form-field>
-                                        </div>
-                                        <span class="col-spacer"></span>
-                                        <div class="f-col">
-                                            <mat-label>Scale to</mat-label>
-                                            <mat-form-field appearance="outline">
-                                                <input type="number" min="0" matInput formControlName="scaleTo">
-                                            </mat-form-field>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="f-col">
-                                    <div class="f-row">
-                                        <div class="f-col">
-                                            <mat-label>Scale step size</mat-label>
-                                            <mat-form-field appearance="outline">
-                                                <input type="number" min="0" matInput formControlName="stepSize">
-                                            </mat-form-field>
-                                        </div>
-                                        <span class="col-spacer"></span>
-                                        <div class="f-col">
-                                            <mat-label>Max dataset number</mat-label>
-                                            <mat-form-field appearance="outline">
-                                                <input type="number" min="0" matInput formControlName="dataSetSize">
-                                            </mat-form-field>
+                                <ng-template [ngIf]="(selStyleWid && selStyleWid.widgetType !== 'TIMESERIES') || chartPropCtrlGrp.get('chartType').value === 'LINE'">
+                                    <div class="f-col">
+                                        <div class="f-row">
+                                            <div class="f-col">
+                                                <mat-label>Scale from</mat-label>
+                                                <mat-form-field appearance="outline">
+                                                    <input type="number" min="0" matInput formControlName="scaleFrom">
+                                                </mat-form-field>
+                                            </div>
+                                            <span class="col-spacer"></span>
+                                            <div class="f-col">
+                                                <mat-label>Scale to</mat-label>
+                                                <mat-form-field appearance="outline">
+                                                    <input type="number" min="0" matInput formControlName="scaleTo">
+                                                </mat-form-field>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+    
+                                    <div class="f-col">
+                                        <div class="f-row">
+                                            <div class="f-col">
+                                                <mat-label>Scale step size</mat-label>
+                                                <mat-form-field appearance="outline">
+                                                    <input type="number" min="0" matInput formControlName="stepSize">
+                                                </mat-form-field>
+                                            </div>
+                                            <span class="col-spacer"></span>
+                                            <div class="f-col">
+                                                <mat-label>Max dataset number</mat-label>
+                                                <mat-form-field appearance="outline">
+                                                    <input type="number" min="0" matInput formControlName="dataSetSize">
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-template>
                             </ng-template>
 
                             <div class="f-col">
@@ -577,10 +579,6 @@
                                 <mat-label>Series with</mat-label>
                                 <mat-form-field appearance="outline">
                                     <mat-select formControlName="seriesWith">
-                                        <mat-option value="millisecond"> Millisecond </mat-option>
-                                        <mat-option value="second"> Second </mat-option>
-                                        <mat-option value="minute"> Minute </mat-option>
-                                        <mat-option value="hour"> Hour </mat-option>
                                         <mat-option value="day"> Day </mat-option>
                                         <mat-option value="week"> Week </mat-option>
                                         <mat-option value="month"> Month </mat-option>

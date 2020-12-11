@@ -8,7 +8,7 @@
             <pros-count *ngIf ="widget.widgetType ==='COUNT'" [widgetInfo]="widget" [boxSize]="boxSize" [widgetId] ="widget.widgetId" [reportId]="reportId" [filterCriteria]="filterCriteria" (evtFilterCriteria)="changeFilterCriteria($event)"></pros-count>
                 
             <!-- FILTER WIDGET -->
-            <pros-filter *ngIf ="widget.widgetType ==='FILTER'" [widgetInfo]="widget" [boxSize]="boxSize" [widgetId] ="widget.widgetId" [reportId]="reportId" [filterCriteria]="filterCriteria" [hasFilterCriteria] = "emitClearBtnEvent" (evtFilterCriteria)="changeFilterCriteria($event)"></pros-filter>
+            <pros-filter *ngIf ="widget.widgetType ==='FILTER'" [widgetInfo]="widget" [boxSize]="boxSize" [widgetId] ="widget.widgetId" [reportId]="reportId" [filterCriteria]="filterCriteria" [hasFilterCriteria] = "emitClearBtnEvent" (evtFilterCriteria)="changeFilterCriteria($event, true)"></pros-filter>
                 
             <!-- BARCHART WIDGET -->
             <pros-bar-chart *ngIf ="widget.widgetType ==='BAR_CHART'" [widgetInfo]="widget" [boxSize]="boxSize" [widgetId] ="widget.widgetId" [reportId]="reportId" [filterCriteria]="filterCriteria" [permissons]="permissons" (evtFilterCriteria)="changeFilterCriteria($event)"></pros-bar-chart>

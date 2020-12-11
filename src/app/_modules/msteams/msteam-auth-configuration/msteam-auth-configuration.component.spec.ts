@@ -5,6 +5,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { MsteamAuthConfigurationComponent } from './msteam-auth-configuration.component';
 import { of } from 'rxjs';
+import { FormInputComponent } from '@modules/shared/_components/form-input/form-input.component';
 
 describe('MsteamAuthConfigurationComponent', () => {
   let component: MsteamAuthConfigurationComponent;
@@ -14,7 +15,7 @@ describe('MsteamAuthConfigurationComponent', () => {
   beforeEach(async(() => {
     const spyObj = jasmine.createSpyObj('MsteamsConfigService', ['signIn']);
     TestBed.configureTestingModule({
-      declarations: [ MsteamAuthConfigurationComponent ],
+      declarations: [ MsteamAuthConfigurationComponent, FormInputComponent ],
       imports: [HttpClientTestingModule, AppMaterialModuleForSpec],
       providers:[
         {provide: MsteamsConfigService, useValue: spyObj}

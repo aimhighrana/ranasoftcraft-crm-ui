@@ -453,6 +453,7 @@ export class LayoutFieldsResponse{
       textAreaWidth:number;
       value:string;
       sno : string;
+      showMore? : boolean;
 }
 
 export class LayoutTabResponse{

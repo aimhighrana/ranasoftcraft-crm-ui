@@ -81,26 +81,6 @@ export class ReportCollaboratorComponent implements OnInit {
         this.getCollaboratorPermission('');
       }
     })
-
-    /**
-     * Filtered added collaborators
-     */
-    this.searchCollCtrl.valueChanges.subscribe(val => {
-      this.collaboratorListOb = of(this.collaboratorList.filter(fil => {
-        if (fil.userMdoModel && fil.userMdoModel.fullName.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !== -1) {
-          return fil;
-        }
-
-        if (fil.rolesModel && fil.rolesModel.roleDesc.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !== -1) {
-          return fil;
-        }
-
-        if (fil.groupHeaderModel && fil.groupHeaderModel.description.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !== -1) {
-          return fil;
-        }
-
-      }));
-    })
   }
 
   /**
@@ -356,4 +336,26 @@ export class ReportCollaboratorComponent implements OnInit {
     }, error => { });
   }
 
+  /**
+   * Search field by value change
+   * @param value changed input value
+   */
+  searchFld(value: string) {
+    if(value) {
+      this.collaboratorListOb = of(this.collaboratorList.filter(fil => {
+        if (fil.userMdoModel && fil.userMdoModel.fullName.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !== -1) {
+          return fil;
+        }
+
+        if (fil.rolesModel && fil.rolesModel.roleDesc.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !== -1) {
+          return fil;
+        }
+
+        if (fil.groupHeaderModel && fil.groupHeaderModel.description.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !== -1) {
+          return fil;
+        }
+
+      }));
+    }
+  }
 }

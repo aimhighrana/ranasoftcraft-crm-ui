@@ -91,7 +91,7 @@ describe('MetadatafieldControlComponent', () => {
 
     // asserts
     expect(actualResonse.length).toEqual(5, 'length should be equlas to 5 including groups');
-    expect(actualResonse[0].childs.length).toEqual(4, '4 static system fields');
+    expect(actualResonse[0].childs.length).toEqual(3, '3 static system fields');
 
     const grd = actualResonse.filter(fil=> fil.fieldId === 'LANGUAGE_GRID');
     expect(grd.length).toEqual(1, 'Grid shoud have on dropdown part');

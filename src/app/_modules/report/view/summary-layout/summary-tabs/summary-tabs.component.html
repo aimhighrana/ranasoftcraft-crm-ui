@@ -10,11 +10,23 @@
 
         <div class="item-grid-list">
           <div *ngFor="let fieldData of metadata.fieldsList" class="grid-tile">
-            <div *ngIf="fieldData && fieldData.picklist !== 2 && fieldData.picklist !== 28 && fieldData.picklist !== 31 && fieldData.dataType !== 'DTMS'">
+            <div *ngIf="fieldData && fieldData.picklist !== 2 && fieldData.picklist !== 28 && fieldData.picklist !== 31 && fieldData.dataType !== 'DTMS' && fieldData.dataType !== 'DATS'">
               <div class="f-row item-tile">
                 <mat-label>{{fieldData.fieldDescri}}</mat-label>
-                <div mat-line>{{fieldData.value}}</div>
+                <div mat-line *ngIf="!fieldData.showMore; else withoutTruncate">
+                  {{truncateText(fieldData.value, 60)}}
+                <button mat-stroked-button color="primary" *ngIf="fieldData.value.length > 60" (click)="fieldData.showMore = !fieldData.showMore">
+                  {{ fieldData.showMore ? 'less' : 'more'}} 
+                </button>
               </div>
+              <ng-template  #withoutTruncate> 
+                <div mat-line> {{fieldData.value}} 
+                  <button mat-stroked-button color="primary" *ngIf="fieldData.value.length > 60" (click)="fieldData.showMore = !fieldData.showMore">
+                    {{ fieldData.showMore ? 'less' : 'more'}} 
+                  </button>
+                </div> 
+              </ng-template>
+            </div>
             </div>
 
             <!-- ----------------------- Check-Box Case ------------------------------------- -->
@@ -39,52 +51,23 @@
               <div class="f-row item-tile">
                 <mat-label>{{fieldData.fieldDescri}}</mat-label>
                 <div mat-line>
-                  {{fieldData.value | date:'dd/MM/yyyy hh:mm:ss'}}
+                  {{fieldData.value | date: getDateTimeFormat(true)}}
                 </div>
               </div>
             </div>
-            </div>
-        </div>
 
-
-
-
-        <!-- no use code  -->
-        <mat-grid-list class="myGridList" cols="2" [rowHeight]="fit" [id]="item" style="display: none;">
-          <div *ngFor="let fieldData of metadata.fieldsList">
-            <div
-              *ngIf="fieldData && fieldData.picklist !== 2 && fieldData.picklist !== 28 && fieldData.picklist !== 31 && fieldData.dataType !== 'DTMS' || fieldData.dataType !== 'DATS'">
-              <mat-grid-tile class="f-row">
-                <mat-label>{{fieldData.fieldDescri}}</mat-label>
-                <div mat-line>{{fieldData.value}}</div>
-              </mat-grid-tile>
-            </div>
-            <!-- ----------------------- Check-Box Case ------------------------------------- -->
-            <div *ngIf="fieldData && fieldData.picklist === 2">
-              <mat-grid-tile class="f-row">
-                <mat-checkbox disabled="true" checked="{{fieldData.value}}">{{fieldData.fieldDescri}}</mat-checkbox>
-              </mat-grid-tile>
-            </div>
-            <!-- ----------------------- Attachment Case ------------------------------------- -->
-            <div *ngIf="fieldData && fieldData.picklist === 28">
-              <mat-grid-tile class="f-row">
-                <mat-label>{{fieldData.fieldDescri}}</mat-label>
-                <div mat-line><a [routerLink]="" href="" (click)="downloadAttachment(fieldData);">
-                    {{fieldData.value}}
-                  </a></div>
-              </mat-grid-tile>
-            </div>
-            <!-- ------------------------------ Date and Time Case------------------------------------ -->
-            <div *ngIf="fieldData && fieldData.picklist === 0 && fieldData.dataType === 'DTMS' || fieldData.dataType === 'DATS'">
-              <mat-grid-tile class="f-row">
+            <!-- ------------------------------ Date Case------------------------------------ -->
+            <div *ngIf="fieldData && fieldData.picklist === 0 && fieldData.dataType === 'DATS'">
+              <div class="f-row item-tile">
                 <mat-label>{{fieldData.fieldDescri}}</mat-label>
                 <div mat-line>
-                  {{fieldData.value | date:'dd/MM/yyyy hh:mm:ss'}}
+                  {{fieldData.value | date : getDateTimeFormat()}}
                 </div>
-              </mat-grid-tile>
+              </div>
             </div>
           </div>
-        </mat-grid-list>
+        </div>
+
       </div>
     </mat-expansion-panel>
   </mat-accordion>

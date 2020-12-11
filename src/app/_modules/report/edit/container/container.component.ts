@@ -243,8 +243,12 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
             dateSelectedFor: latestVal.dateSelectionType,
             endDate,
             startDate: strtDate
-          };
-        } else {
+          }
+        } else if(latestVal.dateSelectionType) {
+          changedWidget.dateFilterCtrl = {
+            dateSelectedFor: latestVal.dateSelectionType,
+          }
+        } else{
           changedWidget.dateFilterCtrl = null;
         }
         this.preapreNewWidgetPosition(changedWidget);
@@ -285,7 +289,6 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         console.log(fillData);
       }
     });
-
     this.subscriptions.push(styleSub);
 
     const fldSub = this.fields.subscribe(flds => {
@@ -338,10 +341,11 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getdropDownValues(fieldId: string, queryString: string) {
-    this.schemaService.dropDownValues(fieldId, queryString).subscribe(res => {
+    const dropDown = this.schemaService.dropDownValues(fieldId, queryString).subscribe(res => {
       this.dropValues = res;
       this.dropValuesOb = of(res);
-    }, error => console.error(`Error: ${error}`))
+    }, error => console.error(`Error: ${error}`));
+    this.subscriptions.push(dropDown)
   }
 
   getAllFields(objNum: string) {
@@ -406,7 +410,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       dropableWidget.y = boxY;
 
       // add chart properties on widget list
-      if (dropableWidget.widgetType === WidgetType.BAR_CHART || dropableWidget.widgetType === WidgetType.STACKED_BAR_CHART) {
+      if (event.item.element.nativeElement.id === '' && (dropableWidget.widgetType === WidgetType.BAR_CHART || dropableWidget.widgetType === WidgetType.STACKED_BAR_CHART)) {
         dropableWidget.chartProperties = {
           chartType:ChartType.BAR, orientation:Orientation.VERTICAL, isEnableDatalabels:false,
           datalabelsPosition:DatalabelsPosition.center, isEnableLegend:false, legendPosition:LegendPosition.top,
@@ -489,7 +493,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         // set value to properties frm ctrl
         if (data.chartProperties) {
           this.chartPropCtrlGrp.setValue(data.chartProperties);
-        } else {
+        } else if(data.widgetType === WidgetType.BAR_CHART || data.widgetType === WidgetType.STACKED_BAR_CHART){
           this.chartPropCtrlGrp.setValue({ chartType:ChartType.BAR, orientation:Orientation.VERTICAL, isEnableDatalabels:false,
             datalabelsPosition:DatalabelsPosition.center, isEnableLegend:false, legendPosition:LegendPosition.top, xAxisLabel:'', yAxisLabel:'',
             orderWith: OrderWith.DESC, scaleFrom:'',scaleTo:'', stepSize:'', dataSetSize:'',seriesWith:SeriesWith.day,seriesFormat:'',blankValueAlias:'',timeseriesStartDate:TimeseriesStartDate.D7,
@@ -557,10 +561,11 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     if (event && event.target) {
       const file = event.target.files[0] as File;
       if(file.name.endsWith('.png') || file.name.endsWith('.jpg') || file.name.endsWith('.jpeg')) {
-        this.schemaService.uploadUpdateFileData(event.target.files[0] as File, this.styleCtrlGrp.get('imagesno').value).subscribe(res => {
+        const uploadUpdateFile = this.schemaService.uploadUpdateFileData(event.target.files[0] as File, this.styleCtrlGrp.get('imagesno').value).subscribe(res => {
           this.styleCtrlGrp.get('imageName').setValue(event.target.files[0] ? event.target.files[0].name : '');
           this.styleCtrlGrp.get('imagesno').setValue(res);
         }, error => console.error(`Error : ${error}`));
+        this.subscriptions.push(uploadUpdateFile);
       } else {
         this.snackbar.open(`Only image type file supported`, `Close`, { duration: 2000 });
       }
@@ -695,10 +700,11 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    */
 
   getWorkFlowPathDetails(objectType: string[]) {
-    this.schemaService.getWorkFlowPath(objectType).subscribe(res => {
+    const workflowPath = this.schemaService.getWorkFlowPath(objectType).subscribe(res => {
       this.workflowPath = res;
       this.workflowPathOb = of(res);
     }, error => console.error(`Error: ${error}`));
+    this.subscriptions.push(workflowPath);
   }
 
   createUpdateReport() {

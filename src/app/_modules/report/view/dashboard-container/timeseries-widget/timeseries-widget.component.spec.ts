@@ -225,21 +225,6 @@ describe('TimeseriesWidgetComponent', () => {
     expect(res.length).toEqual(11);
   }));
 
-
-  it('getBucketKey(), generate bucket key ', async(() => {
-    const data = [{
-      'sterms#term': {
-        buckets: [{
-          key: 'Test1'
-        }, {
-          key: 'Test2'
-        }]
-      }
-    }];
-    const res = component.getBucketKey(data);
-    expect(res.length).toEqual(2);
-  }));
-
   it('updateForm(), update form element ', async(() => {
     component.dateFilters = [{
       id: 1,

@@ -58,6 +58,12 @@ mat-card.root {
 
       .admin-badge {
         margin: 0 10px;
+
+        mat-icon {
+          width: 16px;
+          height: 16px;
+          font-size: 14px;
+        }
       }
     }
 

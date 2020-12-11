@@ -197,4 +197,11 @@ describe('ReportCollaboratorComponent', () => {
     component.ngOnInit();
     expect(component.ngOnInit).toBeTruthy();
   }));
+
+  it('searchFld(), search the collaborator', async(() => {
+    component.collaboratorList = [{userMdoModel:{fullName:'akash'}as UserMdoModel}as ReportDashboardPermission, {rolesModel:{roleDesc:'admin'}as RolesModel}as ReportDashboardPermission, {groupHeaderModel:{description:'a'}as GroupHeaderModel}as ReportDashboardPermission];
+    const value = 'a';
+    component.searchFld(value);
+    expect(component.collaboratorList.length).toEqual(3);
+  }));
 });

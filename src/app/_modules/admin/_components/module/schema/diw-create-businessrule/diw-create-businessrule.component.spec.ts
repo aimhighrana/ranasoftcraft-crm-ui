@@ -53,6 +53,21 @@ describe('DiwCreateBusinessruleComponent', () => {
       expect(component.selectedBrType).toEqual(dialogData.brType);
 
       expect(component.possibleBrs.length).toEqual(9,'Total brs is 9');
+
+      const dialogData1 = {
+        moduleId : '1004',
+        schemaId: '35343',
+        brId: '32535',
+        brType: null
+      };
+
+      component.dialogData = dialogData1;
+      component.ngOnInit();
+      expect(component.brId).toEqual(dialogData1.brId);
+
+      component.dialogData = null;
+      component.ngOnInit();
+      expect(component.ngOnInit).toBeTruthy();
   }));
 
   it('businessRuleTypeDef(), get busines rule definations', async(()=>{
@@ -121,11 +136,19 @@ describe('DiwCreateBusinessruleComponent', () => {
   it('clickSaved() After click saved rule', async(() => {
     component.clickSaved();
     expect(component.svdClicked).toEqual(true);
+
+    component.svdClicked = true;
+    component.clickSaved();
+    expect(component.svdClicked).toEqual(false);
   }));
 
   it('udrClickSaved() Call while clicked use defined rule finish process', async(() => {
     component.udrClickSaved();
     expect(component.finishUdrCreProcess ).toEqual(true);
+
+    component.finishUdrCreProcess = true;
+    component.udrClickSaved();
+    expect(component.finishUdrCreProcess ).toEqual(false);
   }));
 
   it('afterSaved(), After saved business rule', async(() => {
@@ -133,11 +156,23 @@ describe('DiwCreateBusinessruleComponent', () => {
 
     component.afterSaved(brInfo);
     expect(component.closeDialog).toBeTruthy();
+
+    const brInfo1 = null;
+    component.afterSaved(brInfo1);
+    expect(component.afterSaved(brInfo1)).toBeFalsy();
   }));
 
   it('controlStepChange() step change manage required', async(()=> {
     const evt = {selectedIndex:2};
     component.controlStepChange(evt);
     expect(component.needCondRef ).toEqual(true);
+
+    component.svdClicked = true;
+    component.controlStepChange(evt);
+    expect(component.needCondRef ).toEqual(false);
+
+    const evt1 = {selectedIndex:1};
+    component.controlStepChange(evt1);
+    expect(component.needCondRef ).toEqual(false);
   }));
 });

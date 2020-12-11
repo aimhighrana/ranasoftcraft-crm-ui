@@ -198,7 +198,8 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
 
   public getstackbarChartData(widgetId:number,criteria:Criteria[]) : void{
     this.widgetService.getWidgetData(String(widgetId),criteria).subscribe(returnData=>{
-      this.arrayBuckets =  returnData.aggregations['composite#STACKED_BAR_CHART'].buckets;
+      const res = Object.keys(returnData.aggregations);
+      this.arrayBuckets  = returnData.aggregations[res[0]] ? returnData.aggregations[res[0]].buckets : [];
        this.dataObj = new Object();
        this.labels = [];
        this.barChartLabels = new Array();
@@ -570,8 +571,8 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     const excelData = [];
     this.arrayBuckets.forEach(singleBucket=>{
       const obj = {};
-      obj[this.stackBarWidget.getValue().fieldId] = singleBucket.key[this.stackBarWidget.getValue().fieldId];
-      obj[this.stackBarWidget.getValue().groupById] = singleBucket.key[this.stackBarWidget.getValue().groupById];
+      obj[this.stackBarWidget.getValue().fieldIdMetaData ?this.stackBarWidget.getValue().fieldIdMetaData.fieldDescri : this.stackBarWidget.getValue().fieldId] = this.codeTextaxis2 ? this.codeTextaxis2[singleBucket.key[this.stackBarWidget.getValue().fieldId]] : '';
+      obj[this.stackBarWidget.getValue().groupByIdMetaData ?this.stackBarWidget.getValue().groupByIdMetaData.fieldDescri : this.stackBarWidget.getValue().groupById] = this.codeTextaxis1 ? this.codeTextaxis1[singleBucket.key[this.stackBarWidget.getValue().groupById]] : '';
       obj[this.stackBarWidget.getValue().aggregationOperator] = singleBucket.doc_count;
       excelData.push(obj)
     });
@@ -650,6 +651,9 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
               scaleLabel: {
                 display: true,
                 labelString: this.stackBarWidget.getValue().yAxisLabel ? this.stackBarWidget.getValue().yAxisLabel : ''
+              },
+              ticks : {
+                padding: this.stackBarWidget.getValue().isEnableDatalabels && (this.stackBarWidget.getValue().datalabelsPosition === 'start' || this.stackBarWidget.getValue().datalabelsPosition === 'center') ?  40 : 0
               }
             }]
           }
@@ -659,6 +663,9 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
               scaleLabel: {
                 display: true,
                 labelString: this.stackBarWidget.getValue().xAxisLabel ? this.stackBarWidget.getValue().xAxisLabel : ''
+              },
+              ticks : {
+                padding: this.stackBarWidget.getValue().isEnableDatalabels && (this.stackBarWidget.getValue().datalabelsPosition === 'start' || this.stackBarWidget.getValue().datalabelsPosition === 'center') ?  20 : 0
               }
             }],
             yAxes: [{
@@ -675,12 +682,18 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
           scaleLabel: {
             display: true,
             labelString: this.stackBarWidget.getValue().xAxisLabel ? this.stackBarWidget.getValue().xAxisLabel : ''
+          },
+          ticks : {
+            padding: this.stackBarWidget.getValue().isEnableDatalabels && (this.stackBarWidget.getValue().orientation === Orientation.VERTICAL) && (this.stackBarWidget.getValue().datalabelsPosition === 'start' || this.stackBarWidget.getValue().datalabelsPosition === 'center') ?  20 : 0
           }
         }],
         yAxes: [{
           scaleLabel: {
             display: true,
             labelString: this.stackBarWidget.getValue().yAxisLabel ? this.stackBarWidget.getValue().yAxisLabel : ''
+          },
+          ticks : {
+            padding: this.stackBarWidget.getValue().isEnableDatalabels && (this.stackBarWidget.getValue().orientation === Orientation.HORIZONTAL) && (this.stackBarWidget.getValue().datalabelsPosition === 'start' || this.stackBarWidget.getValue().datalabelsPosition === 'center') ?  20 : 0
           }
         }]
       }
