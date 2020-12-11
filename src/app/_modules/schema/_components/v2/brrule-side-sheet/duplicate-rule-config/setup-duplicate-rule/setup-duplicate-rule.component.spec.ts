@@ -1,3 +1,4 @@
+import { SimpleChanges } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CoreSchemaBrInfo } from '@modules/admin/_components/module/business-rules/business-rules.modal';
@@ -181,7 +182,7 @@ describe('SetupDuplicateRuleComponent', () => {
     br.duplicacyField = duplicacyField;
     br.duplicacyMaster = duplicacyMaster;
 
-    component.editDuplicateRule(br);
+    component.patchDuplicateForm(br);
 
     expect(component.fieldRecords.value.length).toEqual(1);
     expect(component.masterRecords.value.length).toEqual(1);
@@ -193,7 +194,7 @@ describe('SetupDuplicateRuleComponent', () => {
     component.initDuplicateRuleForm();
     br.duplicacyField = [];
     br.duplicacyMaster = [];
-    component.editDuplicateRule(br);
+    component.patchDuplicateForm(br);
 
     expect(component.fieldRecords.value.length).toEqual(0);
     expect(component.masterRecords.value.length).toEqual(0);
@@ -209,6 +210,40 @@ describe('SetupDuplicateRuleComponent', () => {
     component.setFieldValue('OLDEST','USERCREATED', 0);
 
     expect(component.masterRecords.value[0].fieldId).toEqual('USERCREATED');
+
+  });
+
+  it('should patch duplicate form on change', () => {
+
+    spyOn(component, 'patchDuplicateForm');
+
+    const duplicacyField = [{
+      fieldId: 'fid',
+      criteria: 'Exact_Match',
+      exclusion: '0',
+      inverse: '0',
+      weightage: '0',
+      ival: 'customer',
+      sval: 'vendor:supplier'
+    }];
+
+    const duplicacyMaster = [{
+      ruleType: 'OLDEST',
+      fieldId: 'USERMODIFIED',
+      RuleId: 'OLDEST1',
+      sno: ''
+    }];
+
+    const coreSchemaBrInfo = new CoreSchemaBrInfo();
+    coreSchemaBrInfo.duplicacyField = duplicacyField;
+    coreSchemaBrInfo.duplicacyMaster = duplicacyMaster;
+
+    component.coreSchemaBrInfo = coreSchemaBrInfo;
+
+    const changes: SimpleChanges = {coreSchemaBrInfo:{currentValue: coreSchemaBrInfo, previousValue: '', firstChange:null, isFirstChange:null}};
+    component.ngOnChanges(changes);
+
+    expect(component.patchDuplicateForm).toHaveBeenCalled();
 
   });
 

@@ -630,7 +630,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     let formData = response.formData;
 
     // Add transformation schema details from response to formData
-    formData = { ...formData, transFormationSchema: this.mapTransformationData(response) };
+    formData = { ...formData, transFormationSchema: this.mapTransformationData(response), duplicacyRuleData: response.duplicacyRuleData };
 
     // Check if the selected rule type is user defined i.e. custom
     brObject = this.createBrObject(formData, (formData.rule_type === 'BR_CUSTOM_SCRIPT') ? formData.udrTreeData : null);
@@ -711,7 +711,12 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         standardFunction,
         categoryId,
         fields,
-        transFormationSchema } = rule;
+        transFormationSchema,
+        duplicacyField,
+        duplicacyMaster } = rule;
+
+        const duplicacyRuleData = {duplicacyField, duplicacyMaster};
+
       this.globaldialogService.openDialog(NewBusinessRulesComponent, {
         maxWeightageLimit: this.getCurrentWeightageLimit(),
         moduleId: this.requestForm.controls.objectId.value ? this.requestForm.controls.objectId.value : '',
@@ -727,7 +732,8 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
           udrTreeData: udrDto,
           weightage: brWeightage,
           categoryId,
-          transFormationSchema
+          transFormationSchema,
+          duplicacyRuleData
         }
       });
     });
@@ -792,7 +798,9 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         blocks: object.blocks ? object.object : udrTreeData ? udrTreeData.blocks : []
       },
       transFormationSchema: object.transFormationSchema,
-      isCopied: object.isCopied ? object.isCopied : false
+      isCopied: object.isCopied ? object.isCopied : false,
+      duplicacyField: object.duplicacyRuleData.duplicacyField || [],
+      duplicacyMaster: object.duplicacyRuleData.duplicacyMaster || []
     } as CoreSchemaBrInfo;
   }
 

@@ -5,7 +5,7 @@ import {
     MAT_DIALOG_DATA
 } from '@angular/material/dialog';
 import { BusinessRules } from '@modules/admin/_components/module/schema/diw-create-businessrule/diw-create-businessrule.component';
-import { BusinessRuleType, ConditionalOperator, PRE_DEFINED_REGEX, RULE_TYPES, TransformationModel, TransformationRuleType, UDRObject } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { BusinessRuleType, ConditionalOperator, CoreSchemaBrInfo, PRE_DEFINED_REGEX, RULE_TYPES, TransformationModel, TransformationRuleType, UDRObject } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { MetadataModeleResponse, CategoryInfo, FieldConfiguration, TransformationFormData, LookupFields } from '@models/schema/schemadetailstable';
 import { of, Observable } from 'rxjs';
@@ -161,6 +161,13 @@ export class NewBusinessRulesComponent implements OnInit {
     maxWeightageLimit: number;
 
     /**
+     * hold duplicate rule form reference
+     */
+    duplicateFormRef: FormGroup;
+
+    duplicacyRuleData: CoreSchemaBrInfo = new CoreSchemaBrInfo();
+
+    /**
      * Class contructor
      * @param snackBar refernce to matSnackbar
      * @param dialogRef refernce to matdialog
@@ -209,8 +216,10 @@ export class NewBusinessRulesComponent implements OnInit {
                 udrTreeData,
                 weightage,
                 categoryId,
-                transFormationSchema } = this.data.createRuleFormValues;
+                transFormationSchema,
+                duplicacyRuleData } = this.data.createRuleFormValues;
             this.patchTransformationFormData(transFormationSchema);
+            this.patchDuplicacyData(duplicacyRuleData);
             this.form.patchValue({
                 rule_type,
                 rule_name,
@@ -350,7 +359,8 @@ export class NewBusinessRulesComponent implements OnInit {
             udrTreeData: new FormControl(),
             weightage: new FormControl(0, [Validators.required]),
             categoryId: new FormControl(''),
-            transformationRuleType: new FormControl('')
+            transformationRuleType: new FormControl(''),
+
         };
 
         this.currentControls = controls;
@@ -470,6 +480,9 @@ export class NewBusinessRulesComponent implements OnInit {
                 requiredKeys = ['rule_type', 'rule_name', 'transformationRuleType', 'error_message'];
             }
         }
+        if (selectedRule === BusinessRuleType.BR_DUPLICATE_RULE) {
+            requiredKeys = ['rule_name'];
+        }
 
         controlKeys.map((key) => {
             const index = requiredKeys.findIndex(reqKey => reqKey === key);
@@ -578,6 +591,23 @@ export class NewBusinessRulesComponent implements OnInit {
             return;
         }
 
+        // validation and value for duplicate rule type
+        if (this.currentSelectedRule === BusinessRuleType.BR_DUPLICATE_RULE) {
+            if (!this.duplicateFormRef.valid) {
+                this.snackBar.open('Please enter the required fields', 'okay', { duration: 3000 });
+                return;
+            }
+
+            if (!this.duplicateFormRef.get('addFields').value.length) {
+                this.snackBar.open('At least one field should be selected !', 'okay', { duration: 3000 });
+                return;
+            }
+
+            this.duplicacyRuleData.duplicacyField = this.duplicateFormRef.value.addFields;
+            this.duplicacyRuleData.duplicacyMaster = this.duplicateFormRef.value.mergeRules;
+
+        }
+
         const udrHierarchies = []
         const blocks = []
         this.udrBlocks.forEach((block) => {
@@ -626,9 +656,10 @@ export class NewBusinessRulesComponent implements OnInit {
 
         this.form.controls.udrTreeData.setValue(finalObject);
         this.dialogRef.close({
-            formData: {...this.form.value, rule_type: this.currentSelectedRule},
+            formData: { ...this.form.value, rule_type: this.currentSelectedRule },
             tempId: this.tempRuleId,
-            lookupData: this.lookupData
+            lookupData: this.lookupData,
+            duplicacyRuleData: this.duplicacyRuleData
         });
     }
 
@@ -821,5 +852,24 @@ export class NewBusinessRulesComponent implements OnInit {
     setLookupData(lookupData: LookupFields[]) {
         this.lookupData = lookupData;
     }
+
+    /**
+     * getter to show field on the basis of rule type
+     */
+    get isDuplicateType() {
+        return this.form.controls.rule_type.value === BusinessRuleType.BR_DUPLICATE_RULE;
+    }
+
+    setDuplicateFormRef(formRef: FormGroup) {
+        console.log(formRef);
+        this.duplicateFormRef = formRef;
+    }
+
+    patchDuplicacyData(data) {
+        if( data ){
+            this.duplicacyRuleData = data as CoreSchemaBrInfo;
+        }
+    }
+
 }
 

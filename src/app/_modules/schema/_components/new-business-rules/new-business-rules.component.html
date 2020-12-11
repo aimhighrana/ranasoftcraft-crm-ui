@@ -30,7 +30,7 @@
       </div>
 
 
-      <div class="f-col mdo-form-field">
+      <div class="f-col mdo-form-field" *ngIf="!isDuplicateType">
         <mat-label>Weightage</mat-label>
         <mat-slider thumbLabel formControlName="weightage" [displayWith]="formatLabel" tickInterval="1" min="0"
           [max]="maxWeightageLimit" color="primary"></mat-slider>
@@ -38,7 +38,7 @@
           Please enter Weightage</mat-error>
       </div>
 
-      <div class="f-col mdo-form-field" *ngIf="!isUDR && !isTransformationRule">
+      <div class="f-col mdo-form-field" *ngIf="!isUDR && !isTransformationRule && !isDuplicateType">
         <mat-label>Category</mat-label>
         <mat-form-field appearance="outline">
           <mat-select formControlName="categoryId">
@@ -61,7 +61,7 @@
           Please enter Rule name</mat-error>
       </div>
 
-      <div class="f-col mdo-form-field" *ngIf="!isUDR">
+      <div class="f-col mdo-form-field" *ngIf="!isUDR && !isDuplicateType">
         <pros-form-input [value]="form.get('error_message').value" (valueChange)="getFormValue($event,'error_message')"
           [label]="'Error message (Message)'">
         </pros-form-input>
@@ -96,7 +96,14 @@
         [initialLookupData]="transformationLookUpData" (lookupRuleOutput)="setLookupData($event)">
       </pros-lookup-rule>
 
-      <div class="f-col mdo-form-field" *ngIf="!isUDR && !isTransformationRule">
+      <!-- Duplicate Rule form group  -->
+        <pros-setup-duplicate-rule *ngIf="isDuplicateType"
+            [coreSchemaBrInfo]="duplicacyRuleData"
+            [fieldsList]="fieldsList"
+            [submitted]="submitted"
+            (formChange)="setDuplicateFormRef($event)"></pros-setup-duplicate-rule>
+
+      <div class="f-col mdo-form-field" *ngIf="!isUDR && !isTransformationRule && !isDuplicateType">
         <mat-label>Fields</mat-label>
         <mat-form-field appearance="outline">
           <mat-chip-list #chipList>

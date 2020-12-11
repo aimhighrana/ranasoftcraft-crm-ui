@@ -17,6 +17,7 @@ import { FormInputAutoselectComponent } from '@modules/shared/_components/form-i
 import { CoreSchemaBrInfo, DropDownValue, TransformationModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { AddFilterOutput, DataSource } from '@models/schema/schema';
 import { FilterCriteria } from '@models/schema/schemadetailstable';
+import { SchemaScheduler } from '@models/schema/schemaScheduler';
 
 
 describe('UploadDatasetComponent', () => {
@@ -203,6 +204,7 @@ describe('UploadDatasetComponent', () => {
       udrTreeData: { udrHierarchies: [], blocks: [] },
       weightage: 10,
       categoryId: 'test',
+      duplicacyRuleData: new CoreSchemaBrInfo()
     };
 
     expect(component.createBrObject(formData, formData.udrTreeData)).not.toBeUndefined();
@@ -407,5 +409,20 @@ describe('UploadDatasetComponent', () => {
     expect(transFormationSchema.length).toEqual(1);
     expect(transFormationSchema[0].excludeScript).toEqual('rwrewreew');
     expect(transFormationSchema[0].includeScript).toEqual('grfgsregr');
-  })
+  });
+
+  it('should getScheduleInfo', async(() => {
+
+    const response = { isEnable: true, schemaId: 'test schema', repeatValue: '5'} as SchemaScheduler;
+
+    spyOn(schemaServiceSpy, 'getSchedule').withArgs('test schema')
+      .and.returnValue(of(response));
+
+    component.getScheduleInfo('test schema');
+
+    expect(schemaServiceSpy.getSchedule).toHaveBeenCalledWith('test schema');
+    expect(component.canEditSchedule).toEqual(true);
+
+  }));
+
 });

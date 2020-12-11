@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BusinessRules } from '@modules/admin/_components/module/schema/diw-create-businessrule/diw-create-businessrule.component';
-import { BusinessRuleType, ConditionalOperator, CoreSchemaBrInfo, UDRBlocksModel, UdrModel, UDRHierarchyModel, RULE_TYPES, PRE_DEFINED_REGEX, TransformationRuleType, TransformationModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { BusinessRuleType, ConditionalOperator, CoreSchemaBrInfo, UDRBlocksModel, UdrModel, UDRHierarchyModel, RULE_TYPES, PRE_DEFINED_REGEX, TransformationRuleType, TransformationModel, DuplicateRuleModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { CategoryInfo, FieldConfiguration, LookupFields, MetadataModeleResponse, TransformationFormData } from '@models/schema/schemadetailstable';
 import { of, Observable } from 'rxjs';
@@ -127,6 +127,11 @@ export class BrruleSideSheetComponent implements OnInit {
    * hold data from the route event for further use
    */
   routeData: any;
+
+  /**
+   * hold duplicate rule form reference
+   */
+  duplicateFormRef: FormGroup;
 
   /**
    * Class contructor
@@ -713,17 +718,8 @@ export class BrruleSideSheetComponent implements OnInit {
 
     } else if (brType === BusinessRuleType.BR_DUPLICATE_RULE) {
       // save duplicate rule
-      const brInfo = {
-        brId: this.brId,
-        brIdStr: this.brId,
-        brType,
-        brInfo: this.form.value.rule_name,
-        message: this.form.value.error_message,
-        schemaId: this.schemaId,
-        categoryId: this.coreSchemaBrInfo.categoryId
-      } as CoreSchemaBrInfo;
-
-      this.sharedService.emitSaveBrEvent(brInfo);
+        this.saveDuplicateRule();
+      // this.sharedService.emitSaveBrEvent(brInfo);
 
     } else if (brType === BusinessRuleType.BR_TRANSFORMATION) {
       const response = {
@@ -1046,6 +1042,57 @@ export class BrruleSideSheetComponent implements OnInit {
    */
   displayFn(value) {
     return value ? value.fieldDescri : '';
+  }
+
+  setDuplicateFormRef(formRef: FormGroup) {
+    console.log(formRef);
+    this.duplicateFormRef = formRef;
+  }
+
+  saveDuplicateRule() {
+
+    const brInfo = {
+      brId: this.brId,
+      brIdStr: this.brId,
+      brType: BusinessRuleType.BR_DUPLICATE_RULE,
+      brInfo: this.form.value.rule_name,
+      message: this.form.value.error_message,
+      schemaId: this.schemaId,
+      categoryId: this.coreSchemaBrInfo.categoryId
+    } as CoreSchemaBrInfo;
+
+    if (!this.duplicateFormRef.valid) {
+      this.snackBar.open('Please enter the required fields', 'okay', { duration: 5000 });
+      return;
+    }
+
+    if (!this.duplicateFormRef.get('addFields').value.length) {
+      this.snackBar.open('At least one field should be selected !', 'okay', { duration: 5000 });
+      return;
+    }
+
+
+    const model = new DuplicateRuleModel();
+    model.coreBrInfo = { ...brInfo, brType: BusinessRuleType.BR_DUPLICATE_RULE };
+
+    model.addFields = this.duplicateFormRef.value.addFields;
+    model.mergeRules = this.duplicateFormRef.value.mergeRules;
+    model.selCriteria = this.duplicateFormRef.value.selCriteria;
+    model.removeList = this.duplicateFormRef.value.removeList;
+
+    const params = { objectId: this.moduleId, autoMerge: '', groupId: '' };
+
+    console.log(model);
+
+    this.schemaService.saveUpdateDuplicateRule(model, params).subscribe(res => {
+      this.snackBar.open(`Successfully saved !`, 'Close', { duration: 5000 });
+      console.log(res);
+      this.sharedService.setAfterBrSave(res);
+      this.router.navigate([{ outlets: { sb: null } }]);
+    }, error => {
+      this.snackBar.open(`Something went wrong `, 'Close', { duration: 5000 });
+    });
+
   }
 
 }

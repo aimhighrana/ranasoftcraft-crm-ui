@@ -45,8 +45,8 @@ export class CoreSchemaBrInfo {
     brIdStr: string;
     categoryInfo?: CategoryInfo;
     udrDto?: UdrModel;
-    duplicacyField?: any;
-    duplicacyMaster?: any;
+    duplicacyField? = [];
+    duplicacyMaster? = [];
     transFormationSchema?: TransformationModel[];
     isCopied?: boolean;
     moduleId?: string;

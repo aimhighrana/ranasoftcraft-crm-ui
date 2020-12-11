@@ -301,10 +301,14 @@
                 </div>
             </div>
         </form>
-        <ng-container *ngIf="isDuplicateType">
-            <pros-setup-duplicate-rule [moduleId]="moduleId" [schemaId]="schemaId" [coreSchemaBrInfo]="coreSchemaBrInfo"
-                [fieldsList]="fieldsList"></pros-setup-duplicate-rule>
-        </ng-container>
+        
         <!-- Duplicate Rule form group  -->
+        <ng-container *ngIf="isDuplicateType">
+            <pros-setup-duplicate-rule 
+                [coreSchemaBrInfo]="coreSchemaBrInfo"
+                [fieldsList]="fieldsList"
+                [submitted]="submitted"
+                (formChange)="setDuplicateFormRef($event)"></pros-setup-duplicate-rule>
+        </ng-container>
     </div>
 </mat-card>
