@@ -394,11 +394,11 @@
 
                                     <div class="f-row image-algin">
                                         <button mat-button matTooltip="Upload image"
-                                            (click)="uploadFileChange()">
+                                            (click)="uploadFileChange()" prosClickStopPropagation>
                                             <mat-icon>add_photo_alternate</mat-icon>
                                         </button>
                                         <input type="file" (change)="fileChange($event)" style="display: none;"
-                                            multiple="false" id="uploadFileCtrl" accept="image/png, image/jpeg" />
+                                            id="uploadFileCtrl" accept="image/png, image/jpeg" prosClickStopPropagation />
                                         <span class="col-spacer"></span>
                                         <mat-form-field class="upload-mat-form" appearance="outline">
                                             <input matInput disabled readonly formControlName="imageName">
@@ -634,7 +634,7 @@
                 </mat-accordion>
 
                 <!-- DEFAULT FILTERS -->
-                <mat-accordion *ngIf="selStyleWid && styleCtrlGrp.get('isWorkflowdataSet').value===false && (selStyleWid.fieldCtrl && !(selStyleWid.fieldCtrl.dataType === 'DTMS' || selStyleWid.fieldCtrl.dataType === 'DATS') || selStyleWid.widgetType === 'TABLE_LIST')">
+                <mat-accordion *ngIf="selStyleWid && (selStyleWid.field || (selStyleWid.fieldCtrl && !(selStyleWid.fieldCtrl.dataType === 'DTMS' || selStyleWid.fieldCtrl.dataType === 'DATS') || selStyleWid.widgetType === 'TABLE_LIST'))">
                     <mat-expansion-panel class="mat-elevation-z0" togglePosition="before" expanded="true">
                         <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
                             <mat-panel-title>
