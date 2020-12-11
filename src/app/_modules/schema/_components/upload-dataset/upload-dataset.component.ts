@@ -208,11 +208,20 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    */
   schemaCategory: FormControl;
 
+  /**
+   * keep the dialog subscriptions
+   */
   dialogSubscriber = new Subscription();
   inputModel = new FormControl();
   subscriberFilterFields = [];
   activeChipValue = {};
   @ViewChild('clickToEdit') clickToEdit: ElementRef;
+
+  /**
+   * Track the click event
+   * in order to detect outside cick
+   * @param event pass the event
+   */
   @HostListener('document:click', ['$event'])
   public onClick(event) {
     const fieldId = event.target.id;

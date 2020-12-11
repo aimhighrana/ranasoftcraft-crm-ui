@@ -28,12 +28,12 @@
 
             <ng-container *ngIf="!uploadLoader && !uploadError.status">
                 <div class="f-col upload-col">
-                    <div class="f-col empty-state">
-                        <div><img src="./assets/images/empty-table.svg" width="140"></div>
-                        <div class="empty-heading">No data file selected</div>
-                        <p class="label-text">Drag & drop or select a file to upload</p>
-                        <button mat-flat-button color="accent" (click)="openExplorer();$event.stopPropagation()">Select a file</button>
-                    </div>
+                    <pros-null-state 
+                    [button]="{text: 'Select a file'}"
+                    [subtext]="'No data file selected'"
+                    [message]="'Drag & drop or select a file to upload'"
+                    (action)="openExplorer()">
+                    </pros-null-state>
 
                     <input class="drag-input" type="file" id="uploader" (change)="fileChange($event)"
                         prosClickStopPropagation />
