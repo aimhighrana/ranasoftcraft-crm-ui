@@ -59,9 +59,20 @@ export class ScheduleComponent implements OnInit, OnDestroy {
   today = new Date();
 
   /**
-   * To store the information of schedule
+   * To store the information of schedule (while getting)
    */
   scheduleInfo: SchemaScheduler;
+
+  /**
+   * To store scheduler id (if exist)
+   */
+  schedulerId: string;
+
+  /**
+   * To store schedule request information (while creating/updating)
+   */
+  scheduleReq: SchemaScheduler;
+
 
   /**
    * To hold all the subscriptions
@@ -81,9 +92,13 @@ export class ScheduleComponent implements OnInit, OnDestroy {
     this.createForm();
     this.activatedRoute.params.subscribe((params) => {
       this.schemaId = params.schemaId;
+      this.schedulerId = params.scheduleId;
     })
 
-    this.getScheduleInfo(this.schemaId);
+    if(this.schedulerId) {
+      this.getScheduleInfo(this.schemaId);
+    }
+
     this.form.controls.schemaSchedulerRepeat.valueChanges.subscribe((repeatValue) => {
       this.form.controls.weeklyOn.setValidators(null);
       this.form.controls.monthOn.setValidators(null);
@@ -133,7 +148,6 @@ export class ScheduleComponent implements OnInit, OnDestroy {
   createForm() {
     this.form = new FormGroup({
       isEnable: new FormControl(false, [Validators.required]),
-      schemaId: new FormControl(this.schemaId, [Validators.required]),
       schemaSchedulerRepeat: new FormControl(SchemaSchedulerRepeat.HOURLY, [Validators.required]),
       repeatValue: new FormControl(2, [Validators.required]),
       weeklyOn: new FormControl(null),
@@ -170,7 +184,10 @@ export class ScheduleComponent implements OnInit, OnDestroy {
   submit() {
     this.formSubmitted = true;
     console.log(this.form.value);
-    const updateSubscription = this.schemaService.createUpdateSchedule(this.schemaId, this.form.value).subscribe((response) => {
+    this.scheduleInfo = this.form.value;
+    this.scheduleInfo.schemaId = this.schemaId;
+    this.scheduleInfo.schedulerId = this.schedulerId !== 'new' ? Number(this.schedulerId) : null;
+    const updateSubscription = this.schemaService.createUpdateSchedule(this.schemaId, this.scheduleInfo).subscribe((response) => {
       if (response) {
         this.close();
         this.sharedService.setScheduleInfo(response);

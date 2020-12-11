@@ -5,10 +5,14 @@ import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { ScheduleDialogComponent } from './schedule-dialog.component';
+import { SchemaScheduler } from '@models/schema/schemaScheduler';
+import { SchemaService } from '@services/home/schema.service';
+import { of } from 'rxjs';
 
 describe('ScheduleDialogComponent', () => {
   let component: ScheduleDialogComponent;
   let fixture: ComponentFixture<ScheduleDialogComponent>;
+  let schemaService: SchemaService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -30,6 +34,7 @@ describe('ScheduleDialogComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ScheduleDialogComponent);
     component = fixture.componentInstance;
+    schemaService = fixture.debugElement.injector.get(SchemaService)
     fixture.detectChanges();
   });
 
@@ -41,5 +46,21 @@ describe('ScheduleDialogComponent', () => {
     component.createForm();
     component.setValue('isEnable', true);
     expect(component.form.controls.isEnable.value).toBeTrue();
+  });
+
+  it('setValueForFormControl(), should set values into form fields', async() => {
+    const response = {
+      isEnable: false
+    } as SchemaScheduler;
+    component.createForm();
+    component.setValueForFormControl(response);
+    expect(component.form.controls.isEnable.value).toEqual(false)
+  })
+
+  it('getScheduleInfo(), should call getSchedule service', () => {
+    component.schemaId = '12564';
+    spyOn(schemaService, 'getSchedule').and.returnValue(of(null));
+    component.getScheduleInfo(component.schemaId);
+    expect(schemaService.getSchedule).toHaveBeenCalledWith(component.schemaId);
   });
 });

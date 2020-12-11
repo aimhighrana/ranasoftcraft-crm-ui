@@ -102,7 +102,7 @@ const routes: Routes = [
   { path: 'system/empty-data', component: EmptyDataComponent },
   { path: 'system/running-progress', component: RunningProgressComponent },
   { path: 'system/invite-people', component: InvitePeopleComponent },
-  { path: 'schedule/:schemaId', component: ScheduleComponent},
+  { path: 'schedule/:schemaId/:scheduleId', component: ScheduleComponent},
   { path: 'system/exclusions-sidesheet', component: ExclusionsSidesheetComponent },
   { path: 'system/new-attribute-sidesheet', component: NewAttributeSidesheetComponent },
   { path: 'system/new-modifier-sidesheet', component: NewModifierSidesheetComponent },

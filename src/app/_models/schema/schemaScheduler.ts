@@ -1,4 +1,5 @@
 export interface SchemaScheduler {
+    schedulerId: number;
     isEnable: boolean;
     schemaId: string;
     schemaSchedulerRepeat: SchemaSchedulerRepeat;

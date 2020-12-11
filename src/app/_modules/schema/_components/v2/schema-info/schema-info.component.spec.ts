@@ -258,9 +258,13 @@ describe('SchemaInfoComponent', () => {
 
   it('openScheduleSideSheet(), should open schedule component in side sheet', async() => {
     component.schemaId = '2452141452';
+    const scheduleId = '323344';
     spyOn(router, 'navigate');
+    component.openScheduleSideSheet(scheduleId);
+    expect(router.navigate).toHaveBeenCalledWith([{outlets: {sb: `sb/schema/schedule/${component.schemaId}/${scheduleId}`}}]);
+
     component.openScheduleSideSheet();
-    expect(router.navigate).toHaveBeenCalledWith([{outlets: {sb: `sb/schema/schedule/${component.schemaId}`}}]);
+    expect(router.navigate).toHaveBeenCalledWith([{outlets: {sb: `sb/schema/schedule/${component.schemaId}/new`}}]);
   })
 
   it('getScheduleInfo(), should get schedule info', async() => {

@@ -124,14 +124,14 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     this.subscriptions.push(getSubscriberSubscription);
 
     const getScheduleSubscription = this.sharedService.getScheduleInfo().subscribe((res) => {
-      if(res){
+      if (res) {
         this.getScheduleInfo(this.schemaId);
       }
     })
     this.subscriptions.push(getScheduleSubscription);
 
     const getDataScopeSubscription = this.sharedService.getDataScope().subscribe((res) => {
-      if(res){
+      if (res) {
         this.getSchemaVariants(this.schemaId, 'RUNFOR');
       }
     })
@@ -200,8 +200,8 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * @param variantId : ID of variant needs to be deleted
    */
   deleteVariant(variantId: string) {
-    this.globalDialogService.confirm({label:'Are you sure to delete ?'}, (response) =>{
-      if(response && response === 'yes') {
+    this.globalDialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
+      if (response && response === 'yes') {
         const deleteVariant = this.schemaVariantService.deleteVariant(variantId).subscribe(res => {
           if (res) {
             this.getSchemaVariants(this.schemaId, 'RUNFOR');
@@ -220,14 +220,14 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * @param variantId: ID of variant/data-scope
    */
   editDataScope(variantId: string) {
-    this.router.navigate([{outlets: {sb: `sb/schema/data-scope/${this.moduleId}/${this.schemaId}/${variantId}`}}])
+    this.router.navigate([{ outlets: { sb: `sb/schema/data-scope/${this.moduleId}/${this.schemaId}/${variantId}` } }])
   }
 
   /**
    * Function to get all business rule categories..
    */
   getAllCategoryInfo() {
-   const categoryInfo = this.schemaDetailsService.getAllCategoryInfo().subscribe(res => {
+    const categoryInfo = this.schemaDetailsService.getAllCategoryInfo().subscribe(res => {
       this.category = res;
     }, error => console.error(`Error : ${error.message}`));
     this.subscriptions.push(categoryInfo);
@@ -283,7 +283,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
         }
       }, (error) => {
         console.error('Something went wrong while getting subscribers', error.message);
-        });
+      });
   }
 
   /**
@@ -312,23 +312,23 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
         email: subscriberInfo.email
       },
       rolesModel: {
-        roleId:'',
+        roleId: '',
         roleDesc: ''
       },
       plantCode: '',
       filterCriteria: [],
       isCopied: false
-    }as SchemaDashboardPermission
+    } as SchemaDashboardPermission
 
     const existSubscriber = this.subscriberData.filter((sub) => sub.userid === subscriber.userid)[0];
-    if(existSubscriber){
+    if (existSubscriber) {
       this.matSnackBar.open('This subscriber is already added.', 'Okay', {
         duration: 2000
       })
     }
-    else{
-      this.schemaDetailsService.createUpdateUserDetails(Array(subscriber)).subscribe((response)=>{
-        if(response){
+    else {
+      this.schemaDetailsService.createUpdateUserDetails(Array(subscriber)).subscribe((response) => {
+        if (response) {
           this.getSubscriberList(this.schemaId);
         }
       }, (error) => {
@@ -343,7 +343,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * @param schemaId current schema id
    */
   public getSubscriberList(schemaId: string) {
-   const subscriberData = this.schemaDetailsService.getCollaboratorDetails(schemaId).subscribe((responseData) => {
+    const subscriberData = this.schemaDetailsService.getCollaboratorDetails(schemaId).subscribe((responseData) => {
       responseData.forEach((subscriber) => {
         subscriber.filterCriteria.forEach((data) => {
           const filter: FilterCriteria = new FilterCriteria();
@@ -372,7 +372,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * @param schemaId current schema id
    */
   public getBusinessRuleList(schemaId: string) {
-   const businessRuleList = this.schemaService.getBusinessRulesBySchemaId(schemaId).subscribe((responseData) => {
+    const businessRuleList = this.schemaService.getBusinessRulesBySchemaId(schemaId).subscribe((responseData) => {
       this.businessRuleData = responseData;
     }, error => {
       console.log('Error while fetching business rule info for schema', error);
@@ -491,10 +491,10 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * @param br delete by br id
    */
   deleteBr(br: CoreSchemaBrInfo) {
-    this.globalDialogService.confirm({label:'Are you sure to delete ?'}, (response) =>{
-      if(response && response === 'yes') {
+    this.globalDialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
+      if (response && response === 'yes') {
         if (br.brIdStr) {
-         const deleteSubscriber = this.schemaService.deleteBr(br.brIdStr).subscribe(res => {
+          const deleteSubscriber = this.schemaService.deleteBr(br.brIdStr).subscribe(res => {
             this.getBusinessRuleList(this.schemaId);
           }, error => console.error(`Error : ${error.message}`));
           this.subscriptions.push(deleteSubscriber);
@@ -613,9 +613,9 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     console.log(sNo);
     this.globalDialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
       if (response && response === 'yes') {
-       const sNoList = [];
-       sNoList.push(sNo);
-       const deleteSubscriber = this.schemaDetailsService.deleteCollaborator(sNoList).subscribe(res => {
+        const sNoList = [];
+        sNoList.push(sNo);
+        const deleteSubscriber = this.schemaDetailsService.deleteCollaborator(sNoList).subscribe(res => {
           this.matSnackBar.open('Subscriber deleted successfully.', 'okay', { duration: 5000 });
           this.getSubscriberList(this.schemaId);
         }, error => {
@@ -717,7 +717,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * @param weightage threshold of the business rule.
    * @returns maximum value of slider to available.
    */
-  availableWeightage(weightage: string): number{
+  availableWeightage(weightage: string): number {
     let sumOfAllWeightage = 0; // store sum of all business rules weightage
     let freeWeight = 0;        // store max free weightage for any business rule
 
@@ -731,9 +731,15 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
 
   /**
    * Function to open schedule side-sheet
+   * @param scheduleId: schedule Id
    */
-  openScheduleSideSheet(){
-    this.router.navigate([{outlets: {sb: `sb/schema/schedule/${this.schemaId}`}}])
+  openScheduleSideSheet(scheduleId?: string) {
+    if (!scheduleId) {
+      this.router.navigate([{ outlets: { sb: `sb/schema/schedule/${this.schemaId}/new` } }])
+    }
+    else {
+      this.router.navigate([{outlets: {sb: `sb/schema/schedule/${this.schemaId}/${scheduleId}`}}])
+    }
   }
 
   /**
@@ -741,11 +747,12 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    */
   toggleScheduleState() {
     this.scheduleInfo.isEnable = !this.scheduleInfo.isEnable;
-    const updateSubscriber =  this.schemaService.createUpdateSchedule(this.schemaId, this.scheduleInfo).subscribe((response) => {
+    const updateSubscriber = this.schemaService.createUpdateSchedule(this.schemaId, this.scheduleInfo).subscribe((response) => {
       this.matSnackBar.open('This action has been confirmed..', 'okay', {
         duration: 3000
       })
     }, (error) => {
+      console.log('Error while updating scheduler..', error.message);
       this.matSnackBar.open('Something went wrong..', 'okay', {
         duration: 3000
       })
@@ -772,7 +779,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * It holds all the business rules inside it.
    */
   openBrLibrarySideSheet() {
-    this.router.navigate([{outlets: {sb: `sb/schema/businessrule-library/${this.moduleId}/${this.schemaId}/${this.outlet}`}}])
+    this.router.navigate([{ outlets: { sb: `sb/schema/businessrule-library/${this.moduleId}/${this.schemaId}/${this.outlet}` } }])
   }
 
   /**
@@ -783,7 +790,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * @param fetchCount count to be fetched data
    */
   getAllBusinessRulesList(moduleId: string, searchString: string, brType: string, fetchCount: string) {
-    const getAllBrSubscription =  this.schemaService.getBusinessRulesByModuleId(moduleId, searchString, brType, fetchCount).subscribe((rules: CoreSchemaBrInfo[]) => {
+    const getAllBrSubscription = this.schemaService.getBusinessRulesByModuleId(moduleId, searchString, brType, fetchCount).subscribe((rules: CoreSchemaBrInfo[]) => {
       if (rules && rules.length > 0) {
         this.allBusinessRulesList = rules;
       }
@@ -810,7 +817,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     request.isCopied = false;
 
     const existBr = this.businessRuleData.filter((businessRule) => businessRule.brIdStr === request.brId)[0];
-    if(existBr) {
+    if (existBr) {
       this.matSnackBar.open('This business rule is already added.', 'Okay', {
         duration: 2000
       })

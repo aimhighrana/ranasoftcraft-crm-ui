@@ -180,17 +180,11 @@
                                                 {{ ctrl.fldCtrl ? ctrl.fldCtrl.fieldDescri : 'Unknown' }}
                                                 :
                                             </label>
-                                            <!-- <ng-template [ngIf]="ctrl.filterCtrl.selectedValues.length > 1"
-                                                [ngIfElse]="showText"> -->
+                                            
                                                 <span class="info">
                                                     {{ prepareTextToShow(ctrl) }}
                                                 </span>
-                                            <!-- </ng-template> -->
-                                            <!-- <ng-template #showText>
-                                                <span class="info">
-                                                    {{ prepareTextToShow(ctrl)}}
-                                                </span>
-                                            </ng-template> -->
+                                            
                                             <mat-icon matChipRemove (click)="removeAppliedFilter(ctrl, subscriber.sno)">clear
                                             </mat-icon>
                                         </mat-chip>
