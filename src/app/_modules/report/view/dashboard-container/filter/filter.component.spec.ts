@@ -11,6 +11,7 @@ import { WidgetService } from '@services/widgets/widget.service';
 import { of } from 'rxjs';
 import { UDRBlocksModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker/datepicker-input-base';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
 describe('FilterComponent', () => {
   let component: FilterComponent;
@@ -92,7 +93,8 @@ describe('FilterComponent', () => {
   }));
 
   it('optionClicked(), click on options ', async(()=>{
-    component.optionClicked(null, {} as DropDownValues);
+    const event = {option:null} as MatAutocompleteSelectedEvent;
+    component.optionClicked(event);
     expect(component.optionClicked).toBeTruthy();
   }));
 

@@ -150,9 +150,11 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
       this.reportService.reportList(user.plantCode, user.currentRoleId).subscribe(reportList => {
         this.reportOb = of(reportList);
         this.reportList = reportList;
-        if (this.reportList && !this.isPageReload) {
+        if (this.reportList.length > 0 && !this.isPageReload) {
           const firstReportId = this.reportList[0].reportId;
           this.router.navigate(['home/report/dashboard', firstReportId]);
+        } else {
+          this.router.navigate(['home/report/dashboard/new']);
         }
       }, error => console.error(`Error : ${error}`));
     });

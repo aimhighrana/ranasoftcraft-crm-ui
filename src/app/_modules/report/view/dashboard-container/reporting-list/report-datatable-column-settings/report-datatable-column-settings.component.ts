@@ -1,10 +1,10 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MetadataModel } from '@models/schema/schemadetailstable';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 
 @Component({
   selector: 'pros-report-datatable-column-settings',
@@ -13,7 +13,7 @@ import { Observable, of } from 'rxjs';
 })
 
 
-export class ReportDatatableColumnSettingsComponent implements OnInit {
+export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy {
   /**
    * object number/module id of the report
    */
@@ -52,6 +52,10 @@ export class ReportDatatableColumnSettingsComponent implements OnInit {
 
   headersObs: Observable<MetadataModel[]> = of([]);
 
+  /**
+   * All the http or normal subscription will store in this array
+   */
+  subscriptions: Subscription[] = [];
 
   /**
    * Constructor of class
@@ -61,12 +65,17 @@ export class ReportDatatableColumnSettingsComponent implements OnInit {
     private schemaDetailsService: SchemaDetailsService,
     private sharedService: SharedServiceService) { }
 
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => {
+      sub.unsubscribe();
+    });
+  }
 
   /**
    * ANGULAR HOOK
    */
   ngOnInit(): void {
-    this.sharedService.getReportDataTableSetting().subscribe(data => {
+    const reportDataTable = this.sharedService.getReportDataTableSetting().subscribe(data => {
         if(data.isRefresh === false){
           this.data = data;
 
@@ -84,7 +93,8 @@ export class ReportDatatableColumnSettingsComponent implements OnInit {
         }
         this.manageStateOfCheckbox()
         }
-    })
+    });
+    this.subscriptions.push(reportDataTable);
   }
 
   /**
@@ -99,7 +109,7 @@ export class ReportDatatableColumnSettingsComponent implements OnInit {
    * @param objectNumber object number of widget
    */
   getAllMetaDataFields(objectNumber: string) {
-    this.schemaDetailsService.getMetadataFields(objectNumber).subscribe(data => {
+    const metadataFields = this.schemaDetailsService.getMetadataFields(objectNumber).subscribe(data => {
       if (this.data && this.data.selectedColumns && this.data.selectedColumns.length > 0) {
         this.data.selectedColumns.forEach(selectedColumn => {
           this.headers.push(selectedColumn);
@@ -122,7 +132,8 @@ export class ReportDatatableColumnSettingsComponent implements OnInit {
       this.headersObs = of(this.headers);
     }, error => {
       console.error('Error occur while getting meta data fields', error.message)
-    })
+    });
+    this.subscriptions.push(metadataFields);
   }
 
   /**
@@ -130,7 +141,7 @@ export class ReportDatatableColumnSettingsComponent implements OnInit {
    * @param objectNumber object number of widget
    */
   getWorkFlowFields(objectNumber: string[]) {
-    this.schemaDetailsService.getWorkflowFields(objectNumber).subscribe(data => {
+    const workflowFields = this.schemaDetailsService.getWorkflowFields(objectNumber).subscribe(data => {
       if (this.data && this.data.selectedColumns && this.data.selectedColumns.length > 0) {
         this.data.selectedColumns.forEach(selectedColumn => {
           this.headers.push(selectedColumn);
@@ -146,8 +157,12 @@ export class ReportDatatableColumnSettingsComponent implements OnInit {
        * check and push static headers
        */
       staticHeaders.forEach((staticHeader) => {
-        if (this.fieldIdArray.indexOf(staticHeader.fieldId) === -1) {
+        const index = this.fieldIdArray.indexOf(staticHeader.fieldId);
+        if (index === -1) {
           this.headers.push(staticHeader);
+        }
+        if(index !== -1) {
+          this.headers[index] = staticHeader;
         }
       })
       const dynamicHeaders = data.dynamic;
@@ -163,7 +178,8 @@ export class ReportDatatableColumnSettingsComponent implements OnInit {
       this.headersObs = of(this.headers);
     }, error => {
       console.error('Error while getting report workflow fields', error.message);
-    })
+    });
+    this.subscriptions.push(workflowFields);
   }
 
   /**
@@ -279,12 +295,13 @@ export class ReportDatatableColumnSettingsComponent implements OnInit {
       }
       prepareData.push(obj);
     })
-    this.schemaDetailsService.createUpdateReportDataTable(this.data.widgetId, prepareData).subscribe(response => {
+    const reportDataTable = this.schemaDetailsService.createUpdateReportDataTable(this.data.widgetId, prepareData).subscribe(response => {
       this.close();
       this.data.isRefresh = true;
       this.sharedService.setReportDataTableSetting(this.data);
     }, error => {
       console.error('Error while updating report data table column settings', error.message)
-    })
+    });
+    this.subscriptions.push(reportDataTable);
   }
 }

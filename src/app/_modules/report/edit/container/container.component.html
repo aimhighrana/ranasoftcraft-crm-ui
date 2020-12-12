@@ -1,3 +1,4 @@
+<div cdkScrollable>
 <mat-card class="mat-elevation-z0 root">
     <div class="f-row breadcrum-toolbar">
         <div class="display-heading-large">
@@ -129,7 +130,7 @@
                                                 {{ object.objectdesc ? object.objectdesc : 'Untitled' }}
                                             </mat-option>
                                         </mat-optgroup>
-
+                                        
                                         <pros-workflow-dataset (selectedWfs)="afterWfSelect($event)" [preSelectedObj]="selStyleWid ? selStyleWid.objectType : ''" [isWorkFlow]="isWorkflowRefresh" [searchText]="searchDataSetVal"></pros-workflow-dataset>                                        
                                     </mat-autocomplete>
                                 </mat-form-field>
@@ -467,14 +468,14 @@
                                 <div class="f-col">
                                     <mat-label>X-axis label</mat-label>
                                     <mat-form-field appearance="outline">
-                                        <input matInput formControlName="xAxisLabel">
+                                        <input matInput formControlName="xAxisLabel" [maxLength]="maxReportNameLength">
                                     </mat-form-field>
                                 </div>
 
                                 <div class="f-col">
                                     <mat-label>Y-axis label</mat-label>
                                     <mat-form-field appearance="outline">
-                                        <input matInput formControlName="yAxisLabel">
+                                        <input matInput formControlName="yAxisLabel" [maxLength]="maxReportNameLength">
                                     </mat-form-field>
                                 </div>
 
@@ -634,7 +635,7 @@
                 </mat-accordion>
 
                 <!-- DEFAULT FILTERS -->
-                <mat-accordion *ngIf="selStyleWid && styleCtrlGrp.get('isWorkflowdataSet').value===false && selStyleWid.fieldCtrl && !(selStyleWid.fieldCtrl.dataType === 'DTMS' || selStyleWid.fieldCtrl.dataType === 'DATS')">
+                <mat-accordion *ngIf="selStyleWid && (selStyleWid.field || (selStyleWid.fieldCtrl && !(selStyleWid.fieldCtrl.dataType === 'DTMS' || selStyleWid.fieldCtrl.dataType === 'DATS')))">
                     <mat-expansion-panel class="mat-elevation-z0" togglePosition="before" expanded="true">
                         <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
                             <mat-panel-title>
@@ -735,3 +736,4 @@
         </div>
     </div>
 </mat-card>
+</div>>

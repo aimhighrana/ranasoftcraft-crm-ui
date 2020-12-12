@@ -40,20 +40,16 @@
           </mat-form-field>
         </ng-template>
 
-        <mat-autocomplete #auto="matAutocomplete" [displayWith]="fieldDisplayFn">
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="fieldDisplayFn" (optionSelected) = "optionClicked($event)">
           <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
             <ng-template [ngIf]="filterWidget.getValue().isMultiSelect" [ngIfElse]="singleSelection">
-              <div (click)="optionClicked($event, option)">
-                <mat-checkbox prosClickStopPropagation (change)="toggleSelection(option)" [checked]="isSelected(option)"
-                  color="primary">
-                  {{ option.TEXT }}
-                </mat-checkbox>
-              </div>
+              <mat-checkbox prosClickStopPropagation (change)="toggleSelection(option)" [checked]="isSelected(option)"
+                color="primary">
+                {{ option.TEXT }}
+              </mat-checkbox>
             </ng-template>
             <ng-template #singleSelection>
-              <div (click)="optionClicked($event, option)">
-                {{ option.TEXT }}
-              </div>
+              {{ option.TEXT }}
             </ng-template>
           </mat-option>
         </mat-autocomplete>
@@ -155,6 +151,9 @@
 
     <!-- CONTROL FOR INPUT TYPE NUM -->
     <ng-template [ngIf]="filterWidget && filterWidget.getValue() && filterWidget.getValue().metaData && filterWidget.getValue().metaData.picklist && filterWidget.getValue().metaData.picklist === '0' && filterWidget.getValue().metaData.dataType === 'NUMC'">
+      <mat-form-field appearance="outline">
+        <input matInput placeholder="Enter maximum value" [formControl]="sliderval" (input)="slidervalue($event.target)">
+      </mat-form-field>
       <mat-slider color="primary" thumbLabel [formControl]="numericValCtrl"   [displayWith]="formatMatSliderLabel" tickInterval="1000" [min]="filterResponse ? filterResponse.min : 0"  [max]="filterResponse ? filterResponse.max : 0" [value]="filterResponse ? filterResponse.max : 0" (change)="sliderValueChange($event)"></mat-slider>
     </ng-template>
 

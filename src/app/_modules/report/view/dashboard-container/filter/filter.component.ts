@@ -4,10 +4,10 @@ import { Observable, BehaviorSubject, of, Subscription } from 'rxjs';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
 import { FilterWidget, DropDownValues, Criteria, BlockType, ConditionOperator, WidgetHeader, FilterResponse, DateFilterQuickSelect, DateBulder, DateSelectionType } from '../../../_models/widget';
-import { ReportService } from '../../../_service/report.service';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { MatSliderChange } from '@angular/material/slider';
 import { UDRBlocksModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
 @Component({
   selector: 'pros-filter',
@@ -29,6 +29,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
   endDateCtrl: FormControl = new FormControl();
   numericValCtrl: FormControl = new FormControl();
   filterResponse: FilterResponse;
+  sliderval: FormControl = new FormControl();
 
   /**
    * When reset filter from main container value should be true
@@ -73,7 +74,6 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
    */
   constructor(
     private widgetService : WidgetService,
-    private reportService: ReportService,
     @Inject(LOCALE_ID) public locale: string
   ) {
     super();
@@ -140,6 +140,36 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
         }
       } else {
         finalVal[key] = key;
+      }
+      if(fieldId === 'OVERDUE' || fieldId === 'FORWARDENABLED' || fieldId === 'TIME_TAKEN') {
+        if(fieldId === 'TIME_TAKEN') {
+          const seconds = Math.floor((key % (1000*60)) / 1000);
+          const minutes = Math.floor((key % (1000*60*60)) / (1000*60));
+          const hours = Math.floor((key % (1000*60*60*24)) / (1000*60*60));
+          const days = Math.floor(key / (1000*60*60*24));
+
+          let timeString = '';
+          if (days !== 0) {
+            timeString += (days + ' d ');
+          }
+          if (hours !== 0) {
+            timeString += (hours + ' h ');
+          }
+          if (minutes !== 0) {
+            timeString += (minutes + ' m ');
+          }
+          if (seconds !== 0 || key < 1000) {
+            timeString += (seconds + ' s ');
+          }
+          finalVal[key] = timeString;
+        } else {
+          if(key === '1' || key === 'y') {
+            finalVal[key] = 'Yes';
+          }
+          if(key === '0' || key === 'n') {
+            finalVal[key] = 'No';
+          }
+        }
       }
     });
     Object.keys(finalVal).forEach(key=>{
@@ -353,10 +383,9 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     this.evtFilterCriteria.emit(criteria);
   }
 
-  optionClicked(event: Event, option: DropDownValues) {
-    if(event) {
-      event.stopPropagation();
-      this.toggleSelection(option);
+  optionClicked(event: MatAutocompleteSelectedEvent) {
+    if(event.option) {
+      this.toggleSelection(event.option.value);
     }
   }
 
@@ -546,6 +575,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
 
   sliderValueChange(event: MatSliderChange) {
     if(event && event.value) {
+      this.sliderval.setValue(event.value);
       this.enableClearIcon = true;
       let checkPreviousApplied = this.filterCriteria.filter(fill => fill.conditionFieldId === this.filterWidget.getValue().fieldId);
       this.removeOldFilterCriteria(checkPreviousApplied);
@@ -578,6 +608,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
           this.removeOldFilterCriteria(checkPreviousApplied);
           this.emitEvtFilterCriteria(this.filterCriteria);
           this.numericValCtrl.setValue(this.filterResponse.max);
+          this.sliderval.setValue(this.filterResponse.max);
         } else if(dataType === 'DTMS' || dataType === 'DATS') {
           this.clearSelectedPicker();
         }
@@ -630,5 +661,20 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     this.filterCriteria = filterCriteria;
     this.emitEvtFilterCriteria(this.filterCriteria);
     console.log(node);
+  }
+
+  /**
+   * function to control slider value entered by user..
+   */
+  slidervalue(event) {
+    const value = event.value;
+    if(this.filterResponse.min <= value && value <= this.filterResponse.max) {
+      this.numericValCtrl.setValue(value);
+    } else if(value > this.filterResponse.max) {
+      this.numericValCtrl.setValue(this.filterResponse.max);
+    } else if(value < this.filterResponse.min){
+      this.numericValCtrl.setValue(this.filterResponse.min);
+    }
+    this.sliderValueChange(event);
   }
 }

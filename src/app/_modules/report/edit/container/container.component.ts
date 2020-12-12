@@ -787,9 +787,9 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param selected selected workflow data is here
    */
   afterWfSelect(selected: WorkflowResponse[]) {
-    console.log(selected);
     if(selected.length) {
       this.styleCtrlGrp.get('isWorkflowdataSet').setValue(true);
+      this.dataSetOb = of(this.dataSets);
     } else {
       this.styleCtrlGrp.get('isWorkflowdataSet').setValue(false);
     }
@@ -812,8 +812,11 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   afterDataSetSelect(obj: ObjectTypeResponse) {
     if(obj.objectid) {
+      this.dataSetOb = of(this.dataSets);
       this.styleCtrlGrp.get('objectType').setValue(obj.objectid);
       this.styleCtrlGrp.get('isWorkflowdataSet').setValue(false);
+      this.searchDataSetVal = '';
+      this.chooseColumns = [];
     }
   }
 

@@ -57,26 +57,26 @@ export class WorkflowDatasetComponent implements OnInit, OnDestroy, OnChanges {
         this.dataSetWorkflow = of(this.dataSetsWorkFlow);
         this.manageStateOfCheckBox();
       }
+    }
 
-      if(changes && changes.searchText && changes.searchText.previousValue !== changes.searchText.currentValue) {
-        if(typeof  changes.searchText.currentValue === 'string') {
-          this.searchText = changes.searchText.currentValue;
-          if(this.searchText) {
-            this.dataSetWorkflow = of(this.dataSetsWorkFlow.filter(fil=> fil.objectdesc.toLocaleLowerCase().indexOf(this.searchText.toLocaleLowerCase()) !==-1));
-          } else {
-            this.dataSetWorkflow = of(this.dataSetsWorkFlow);
-          }
+    if(changes && changes.searchText && changes.searchText.previousValue !== changes.searchText.currentValue) {
+      if(typeof  changes.searchText.currentValue === 'string') {
+        this.searchText = changes.searchText.currentValue;
+        if(this.searchText) {
+          this.dataSetWorkflow = of(this.dataSetsWorkFlow.filter(fil=> fil.objectdesc.toLocaleLowerCase().indexOf(this.searchText.toLocaleLowerCase()) !==-1));
+        } else {
+          this.dataSetWorkflow = of(this.dataSetsWorkFlow);
         }
       }
+    }
 
-      if(changes && changes.isWorkFlow && changes.isWorkFlow.previousValue !== changes.isWorkFlow.currentValue) {
-        if(!changes.isWorkFlow.currentValue) {
-          this.dataSetsWorkFlow.forEach(r=>{
-            r.isSelected = false;
-         });
-         this.dataSetWorkflow = of(this.dataSetsWorkFlow);
-         this.manageStateOfCheckBox();
-        }
+    if(changes && changes.isWorkFlow && changes.isWorkFlow.previousValue !== changes.isWorkFlow.currentValue) {
+      if(!changes.isWorkFlow.currentValue) {
+        this.dataSetsWorkFlow.forEach(r=>{
+          r.isSelected = false;
+        });
+        this.dataSetWorkflow = of(this.dataSetsWorkFlow);
+        this.manageStateOfCheckBox();
       }
     }
   }
@@ -89,14 +89,14 @@ export class WorkflowDatasetComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnInit(): void {
     const workflowSub = this.schemaService.getWorkflowData().subscribe(res => {
-
-      console.log(this.preSelectedObj);
-      const preSelVal = this.preSelectedObj.split(',');
-      res.forEach(r=>{
-         if(preSelVal.indexOf(r.objectid) !==-1) {
-           r.isSelected = true;
-         }
-      });
+      if(this.isWorkFlow) {
+        const preSelVal = this.preSelectedObj.split(',');
+        res.forEach(r=>{
+          if(preSelVal.indexOf(r.objectid) !==-1) {
+            r.isSelected = true;
+          }
+       });
+      }
       this.dataSetsWorkFlow = res;
       this.dataSetWorkflow = of(res);
       this.manageStateOfCheckBox();

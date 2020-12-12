@@ -48,7 +48,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.activatedRouter.params.subscribe(params=>{
       this.reportId = params.id;
-      if(this.reportId) {
+      if(params.id === 'new') {
+        this.reportName = ' ';
+      } else if(this.reportId) {
+        this.emitClearBtnEvent = false ;
+        this.showClearFilterBtn = false ;
         this.getReportInfo(this.reportId);
       }
     });
@@ -100,5 +104,4 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.sharedService.setTogglePrimaryEmit();
     this.router.navigate(['/home', 'report', 'dashboard-builder', this.reportId.toString()]);
   }
-
 }
