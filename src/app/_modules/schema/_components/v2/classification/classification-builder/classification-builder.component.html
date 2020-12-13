@@ -143,7 +143,8 @@
     
                                                 <mat-nav-list role="navigation" class="tree-nav-list">
                                                     <mat-list-item class="f-row understep-two" *ngFor="let modifier of noun.modifier" (click)="applyFilter(noun.nounCode, modifier.modCode, 'mro_gsn_lib')">
-                                                        <mat-icon fontSet="mdo-icons" mat-list-icon></mat-icon>
+                                                        <mat-icon mat-list-icon
+                                                            (click)="openAttributeMapping(noun.nounCode,modifier.modCode)">settings_ethernet</mat-icon>
                                                         <div mat-line>
                                                             {{ modifier.modDesc ? modifier.modDesc : 'Unknown' }}
                                                         </div>

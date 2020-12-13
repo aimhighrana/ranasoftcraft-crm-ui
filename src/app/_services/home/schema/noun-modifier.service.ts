@@ -4,9 +4,10 @@ import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.
 import { EndpointsDataplayService } from '@services/_endpoints/endpoints-dataplay.service';
 import { Observable, throwError } from 'rxjs';
 
-import {NounModifier} from '@models/schema/noun-modifier.ts';
+import {AttributesDoc, NounModifier} from '@models/schema/noun-modifier.ts';
 import { HttpClient } from '@angular/common/http';
 import { Modifier } from '@models/schema/schemadetailstable';
+import { Attribute, AttributesMapping, CreateNounModRequest } from '@models/schema/classification';
 
 @Injectable({
   providedIn: 'root'
@@ -46,7 +47,7 @@ export class NounModifierService {
       throwError('Nouncode must be required ');
     }
     searchString = searchString ? searchString : '';
-    return this.http.get<Modifier[]>(this.endpointClassic.getAvailableNounsUri(), {params:{nounCode, searchString, plantCode}})
+    return this.http.get<Modifier[]>(this.endpointClassic.getAvailableModifierUri(), {params:{nounCode, searchString, plantCode}})
   }
 
   /**
@@ -55,7 +56,7 @@ export class NounModifierService {
    * @param nounCode nounCode must be required while getting modifier ..
    * @param searchString seach modifier based on the values ..
    */
-  public getLocalAttribute(nounCode: string,  modifierCode: string, plantCode : string , searchString?: string): Observable<Modifier[]> {
+  public getLocalAttribute(nounCode: string,  modifierCode: string, plantCode : string , searchString?: string): Observable<AttributesDoc[]> {
     if(!nounCode) {
       throwError('Nouncode must be required ');
     }
@@ -65,7 +66,7 @@ export class NounModifierService {
     }
 
     searchString = searchString ? searchString : '';
-    return this.http.get<Modifier[]>(this.endpointClassic.getAvailableNounsUri(), {params:{nounCode, modifierCode, searchString, plantCode}})
+    return this.http.get<AttributesDoc[]>(this.endpointClassic.getAvailableAttributeUri(), {params:{nounCode, modifierCode, searchString, plantCode}})
   }
 
 
@@ -174,4 +175,21 @@ export class NounModifierService {
     searchString = searchString ? searchString : '';
     return this.http.get<Modifier[]>(this.endpointClassic.getSuggestedAttributeUri(schemaId, runid), {params:{nounCode, modCode, searchString, brType, objNr}})
   }
+
+  public createNounModifier(request: CreateNounModRequest, matlGroup): Observable<any> {
+    return this.http.post<any>(this.endpointClassic.getCreateNounModUrl(), request, {params: {matlGroup}});
+  }
+
+  public addAttribute(request: Attribute[], nounSno): Observable<any> {
+    return this.http.post(this.endpointClassic.getCreateAttributeUrl(nounSno), request)
+  }
+
+  public saveAttributesMapping(request: AttributesMapping): Observable<any> {
+    return this.http.post<any>(this.endpointClassic.getSaveAttributesMappingUrl(), request);
+  }
+
+  public getAttributesMapping(libnounSno, libmodSno): Observable<AttributesMapping> {
+    return this.http.post<any>(this.endpointClassic.getFetchAttributesMappingUrl(), null, {params: {libnounSno, libmodSno}});
+  }
+
 }

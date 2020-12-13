@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
+
 @Component({
   selector: 'pros-new-modifier-sidesheet',
   templateUrl: './new-modifier-sidesheet.component.html',
@@ -7,9 +8,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NewModifierSidesheetComponent implements OnInit {
 
+
   constructor() { }
 
   ngOnInit(): void {
+
   }
+
 
 }

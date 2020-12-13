@@ -44,7 +44,7 @@ import { ScheduleComponent } from '@modules/shared/_components/schedule/schedule
 import { NewAttributeSidesheetComponent } from './_components/new-attribute-sidesheet/new-attribute-sidesheet.component';
 import { NewModifierSidesheetComponent } from './_components/new-modifier-sidesheet/new-modifier-sidesheet.component';
 import { NewNounSidesheetComponent } from './_components/new-noun-sidesheet/new-noun-sidesheet.component';
-import { LibraryMappingSidesheetComponent } from './_components/library-mapping-sidesheet/library-mapping-sidesheet.component';
+import { LibraryMappingSidesheetComponent } from './_components/v2/library-mapping-sidesheet/library-mapping-sidesheet.component';
 import { ExclusionsSidesheetComponent } from './_components/v2/brrule-side-sheet/duplicate-rule-config/exclusions-sidesheet/exclusions-sidesheet.component';
 import { DetailBuilderComponent } from './_components/v2/_builder/detail-builder/detail-builder.component';
 import { SchemaListsComponent } from './_components/v2/schema-lists/schema-lists.component';
@@ -53,6 +53,9 @@ import { StaticsComponent } from './_components/v2/statics/statics.component';
 import { BusinessCaseRuleComponent } from './_components/business-case-rule/business-case-rule.component';
 import { BusinessConcatenationComponent } from './_components/business-concatenation/business-concatenation.component';
 import { SubscriberInviteSidesheetComponent } from '@modules/shared/_components/subscriber-invite-sidesheet/subscriber-invite-sidesheet.component';
+import { AttributeComponent } from './_components/v2/library-mapping-sidesheet/attribute/attribute.component';
+import { NounComponent } from './_components/v2/library-mapping-sidesheet/noun/noun.component';
+import { ModifierComponent } from './_components/v2/library-mapping-sidesheet/modifier/modifier.component';
 
 const routes: Routes = [
   { path: 'group/:groupId', component: SchemaGroupFormComponent },
@@ -64,6 +67,10 @@ const routes: Routes = [
   { path: 'execution-logs/:schemaId', component: SchemaExecutionLogsComponent },
   { path: 'addbusinessrule', component: AddbusinessruleComponent },
   { path: 'table-column-settings', component: TableColumnSettingsComponent },
+  { path: 'attribute-mapping/:moduleId/:nounCode/:modCode', component: LibraryMappingSidesheetComponent },
+  { path: 'attribute/:nounSno', component: AttributeComponent },
+  { path: 'noun/:moduleId/:matlGroup', component: NounComponent },
+  { path: 'modifier/:moduleId/:matlGroup/:nounCode', component: ModifierComponent },
   { path: 'uploaddata', component: UploadDataComponent },
   { path: 'create-schema/:schemaId', component: CreateSchemaComponent },
   { path: 'create-schema/:moduleId/:schemaId', component: CreateSchemaComponent },

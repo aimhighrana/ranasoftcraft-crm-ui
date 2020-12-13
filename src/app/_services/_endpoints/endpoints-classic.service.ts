@@ -632,5 +632,20 @@ export class EndpointsClassicService {
   public doClassificationCorrectionUri(): string {
     return `${this.apiUrl}/schema/do-mro-correction`;
   }
+  public getCreateNounModUrl() : string{
+    return this.apiUrl + '/schema/create-noun';
+  }
+
+  public getCreateAttributeUrl(nounSno: string) : string{
+    return this.apiUrl + `/schema/add-attributes/${nounSno}`;
+  }
+
+  public getSaveAttributesMappingUrl() : string{
+    return this.apiUrl + `/schema/save-mappings`;
+  }
+
+  public getFetchAttributesMappingUrl() : string{
+    return this.apiUrl + `/schema/get-mappings`;
+  }
 
 }

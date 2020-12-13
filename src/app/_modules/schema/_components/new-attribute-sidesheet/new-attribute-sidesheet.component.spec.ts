@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+
 import { NewAttributeSidesheetComponent } from './new-attribute-sidesheet.component';
 
 describe('NewAttributeSidesheetComponent', () => {
@@ -16,10 +17,11 @@ describe('NewAttributeSidesheetComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(NewAttributeSidesheetComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    // fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
 });

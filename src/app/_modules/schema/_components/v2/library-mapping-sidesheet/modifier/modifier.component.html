@@ -1,0 +1,71 @@
+<div class="root mat-elevation-z0">
+    <div class="f-row breadcrum-toolbar">
+        <button mat-button (click)="close()">
+            <mat-icon fontSet="mdo-icons">close</mat-icon>
+        </button>
+        <div class="col-spacer"></div>
+        <div class="f-row mdo-constrained-right">
+            <div class="display-heading-large">Create new modifier</div>
+            <span class="f-spacer"></span>
+            <button (click)="save()" mat-flat-button color="primary">Save</button>
+        </div>
+    </div>
+
+    <div class="row-spacer"></div>
+
+    <div class="f-col mdo-justify">
+
+        <form [formGroup]="modifierForm">
+            <div class="temp-field">
+                <pros-form-input [type]="'text'" [placeholder]="'Modifier Code'"
+                    (valueChange)="setControlValue('modeCode', $event)"
+                    [label]="'Modifier Code'"></pros-form-input>
+                <mat-error *ngIf="submitted && modifierForm.controls.modeCode.errors && modifierForm.controls.modeCode.errors.required">
+                    Please enter modifier code
+                </mat-error>
+            </div>
+    
+            <div class="temp-field">
+                <pros-form-input [type]="'text'" [placeholder]="'Modifier long Code'" 
+                    (valueChange)="setControlValue('modLong', $event)" 
+                    [label]="'Modifier long Code'"></pros-form-input>
+            </div>
+    
+            <div class="temp-field">
+                <pros-form-input [type]="'text'" [placeholder]="'Modifier numeric Code'" 
+                    (valueChange)="setControlValue('modNumCode', $event)"  
+                    [label]="'Modifier numeric Code'">
+                </pros-form-input>
+            </div>
+    
+            <div class="temp-field">
+                <mat-slide-toggle formControlName="shortDescActive" color="primary">Short Description active</mat-slide-toggle>
+                <div class="row-spacer"></div>
+                <mat-slide-toggle formControlName="active" color="primary">Modifier active</mat-slide-toggle>
+            </div>
+    
+            <div class="temp-field">
+                <pros-form-input [type]="'text'" [placeholder]="'Target class'" 
+                    (valueChange)="setControlValue('targetClass', $event)" 
+                    [label]="'Target class'">
+                </pros-form-input>
+            </div>
+    
+            <div class="temp-field">
+                <pros-form-input [type]="'text'" [placeholder]="'UNSPSC code'" 
+                    (valueChange)="setControlValue('unspcCode', $event)" 
+                    [label]="'UNSPSC code'">
+                </pros-form-input>
+            </div>
+    
+            <div class="temp-field">
+                <pros-form-input [type]="'text'" [placeholder]="'GS1 code'" 
+                    (valueChange)="setControlValue('gs1Code', $event)"  
+                    [label]="'GS1 code'">
+                </pros-form-input>
+            </div>
+        </form>
+
+
+    </div>
+</div>

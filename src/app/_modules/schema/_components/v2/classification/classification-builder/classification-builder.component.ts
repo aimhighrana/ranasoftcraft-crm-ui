@@ -652,4 +652,11 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
   openSummarySideSheet() {
     this.router.navigate([{ outlets: { sb: `sb/schema/check-data/${this.moduleId}/${this.schemaId}` } }])
   }
+
+  /**
+   * open attribute mapping side sheet
+   */
+  openAttributeMapping(nounCode, modCode) {
+    this.router.navigate(['', { outlets: { sb: `sb/schema/attribute-mapping/${this.moduleId}/${nounCode}/${modCode}` } }])
+  }
 }

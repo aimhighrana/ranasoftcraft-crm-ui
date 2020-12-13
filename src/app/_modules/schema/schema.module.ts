@@ -54,7 +54,7 @@ import { InvitePeopleComponent } from './_components/invite-people/invite-people
 import { NewAttributeSidesheetComponent } from './_components/new-attribute-sidesheet/new-attribute-sidesheet.component';
 import { NewModifierSidesheetComponent } from './_components/new-modifier-sidesheet/new-modifier-sidesheet.component';
 import { NewNounSidesheetComponent } from './_components/new-noun-sidesheet/new-noun-sidesheet.component';
-import { LibraryMappingSidesheetComponent } from './_components/library-mapping-sidesheet/library-mapping-sidesheet.component';
+import { LibraryMappingSidesheetComponent } from './_components/v2/library-mapping-sidesheet/library-mapping-sidesheet.component';
 import { ExclusionsSidesheetComponent } from './_components/v2/brrule-side-sheet/duplicate-rule-config/exclusions-sidesheet/exclusions-sidesheet.component';
 import { SetupDuplicateRuleComponent } from './_components/v2/brrule-side-sheet/duplicate-rule-config/setup-duplicate-rule/setup-duplicate-rule.component';
 import { ClassificationBuilderComponent } from './_components/v2/classification/classification-builder/classification-builder.component';
@@ -69,6 +69,9 @@ import { ExecutionResultComponent } from './_components/v2/statics/execution-res
 import { ExecutionTrendComponent } from './_components/v2/statics/execution-trend/execution-trend.component';
 import { BusinessCaseRuleComponent } from './_components/business-case-rule/business-case-rule.component';
 import { BusinessConcatenationComponent } from './_components/business-concatenation/business-concatenation.component';
+import { NounComponent } from './_components/v2/library-mapping-sidesheet/noun/noun.component';
+import { ModifierComponent } from './_components/v2/library-mapping-sidesheet/modifier/modifier.component';
+import { AttributeComponent } from './_components/v2/library-mapping-sidesheet/attribute/attribute.component';
 
 
 @NgModule({
@@ -143,7 +146,10 @@ import { BusinessConcatenationComponent } from './_components/business-concatena
     ExecutionResultComponent,
     ExecutionTrendComponent,
     BusinessCaseRuleComponent,
-    BusinessConcatenationComponent
+    BusinessConcatenationComponent,
+    NounComponent,
+    ModifierComponent,
+    AttributeComponent
   ],
   imports: [
     CommonModule,

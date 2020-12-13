@@ -21,4 +21,40 @@ describe('EndpointsClassicService', () => {
     const serObj = new EndpointsClassicService();
     expect(serObj.onLoadSchema()).toContain('restSchemaLogs');
   }));
+
+  it('getCreateNounModUrl(),should return create noun url', async(() => {
+    const serObj =new EndpointsClassicService();
+    expect(serObj.getCreateNounModUrl()).toContain('create-noun');
+  }));
+
+  it('getCreateAttributeUrl(), should return create-attribute url', async(() => {
+    const serObj =new EndpointsClassicService();
+    expect(serObj.getCreateAttributeUrl('17021')).toContain('add-attributes/17021');
+  }));
+
+  it('getSaveAttributesMappingUrl(),should return save-mappings url', async(() => {
+    const serObj =new EndpointsClassicService();
+    expect(serObj.getSaveAttributesMappingUrl()).toContain('save-mappings');
+  }));
+
+  it('getFetchAttributesMappingUrl(),should return getFetchAttributesMapping url', async(() => {
+    const serObj =new EndpointsClassicService();
+    expect(serObj.getFetchAttributesMappingUrl()).toContain('get-mappings');
+  }));
+
+  it('getAvailableNounsUri(),should return getAvailableNounsUri url', async(() => {
+    const serObj =new EndpointsClassicService();
+    expect(serObj.getAvailableNounsUri()).toContain('mro/noun');
+  }));
+
+  it('getAvailableModifierUri(),should return getAvailableModifierUri url', async(() => {
+    const serObj =new EndpointsClassicService();
+    expect(serObj.getAvailableModifierUri()).toContain('mro/modifier');
+  }));
+
+  it('getAvailableAttributeUri(),should return getAvailableAttributeUri url', async(() => {
+    const serObj =new EndpointsClassicService();
+    expect(serObj.getAvailableAttributeUri()).toContain('mro/attribute');
+  }));
+
 });
