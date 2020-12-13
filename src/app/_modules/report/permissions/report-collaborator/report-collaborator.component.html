@@ -14,11 +14,8 @@
     <div class="f-col mdo-justify">
 
         <div class="f-col">
-            <pros-search-input></pros-search-input>
-            <!-- <mat-label>Search Collaborators</mat-label>
-            <mat-form-field appearance="outline">
-                <input matInput [formControl]="searchCollCtrl">
-            </mat-form-field> -->
+            <pros-search-input (value)="searchFld($event)"></pros-search-input>
+            
         </div>
 
         <div class="row-spacer"></div>

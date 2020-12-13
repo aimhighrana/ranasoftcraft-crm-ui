@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTree, MatTreeNestedDataSource } from '@angular/material/tree';
 import { WidgetService } from '@services/widgets/widget.service';
@@ -19,7 +19,7 @@ export class TreeModel {
   styleUrls: ['./hierarchy-filter.component.scss']
 })
 
-export class HierarchyFilterComponent implements OnInit {
+export class HierarchyFilterComponent implements OnInit, OnChanges {
 
 
   @ViewChild('tree') tree: MatTree<any>;
@@ -32,6 +32,7 @@ export class HierarchyFilterComponent implements OnInit {
   @Input() topLocation = '';
   @Input() searchString = '';
   @Input() searchFunc = '';
+  @Input() clearFilterClicked: boolean;
 
   /**
    * To emit selected nodes to parent
@@ -56,7 +57,15 @@ export class HierarchyFilterComponent implements OnInit {
     this.nestedDataSource = new MatTreeNestedDataSource();
   }
 
-  /**
+  ngOnChanges(changes: SimpleChanges): void {
+    if(changes && changes.clearFilterClicked && changes.clearFilterClicked.previousValue !== changes.clearFilterClicked.currentValue && changes.clearFilterClicked.previousValue !== undefined){
+      this.getLocationData(this.topLocation, this.fieldId, this.searchString, this.searchFunc);
+      this.selectedNode = [];
+      this.selectionChange.emit(this.selectedNode);
+    }
+  }
+
+  /***
    * ANGULAR HOOK
    */
   ngOnInit() {

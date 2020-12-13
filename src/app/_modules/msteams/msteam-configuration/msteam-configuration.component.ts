@@ -11,6 +11,11 @@ import { MsteamsConfigService } from '../_service/msteams-config.service';
 })
 export class MsteamConfigurationComponent implements OnInit {
 
+  /**
+   * Hold info about loading ..
+   */
+  isLoading = true;
+
   constructor(
     public msteamsConfigService: MsteamsConfigService,
     private router: Router
@@ -25,7 +30,13 @@ export class MsteamConfigurationComponent implements OnInit {
           localStorage.setItem('JWT-REFRESH-TOKEN', (res['JWT-REFRESH-TOKEN'] ? res['JWT-REFRESH-TOKEN'] :''));
         }
         this.router.navigate(['msteams','report']);
-      }, error=> console.error(`Error msg : ${error.message}`));
+        this.isLoading = false;
+      }, error=> {
+        console.error(`Error msg : ${error.message}`);
+        this.isLoading = false;
+      });
+    } else {
+      this.isLoading = false;
     }
   }
 

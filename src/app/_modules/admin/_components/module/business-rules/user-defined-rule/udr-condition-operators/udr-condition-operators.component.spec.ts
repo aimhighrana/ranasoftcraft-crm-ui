@@ -37,11 +37,22 @@ describe('UdrConditionOperatorsComponent', () => {
     component.conditionalOperatorsOb.subscribe(res=>  data = res);
     expect(data.length).toEqual(2);
 
+    const changes1: SimpleChanges = {conditionalOperators:{currentValue:'NOT_EQUAL',firstChange:true,isFirstChange:null,previousValue:'NOT_EQUAL'}};
+    component.ngOnChanges(changes1);
+    expect(changes1.conditionalOperators.currentValue.length).toEqual(9);
   }));
 
   it('ngOnInit(), test prerequired things', async(()=>{
     component.selecetedOperator ='RANGE';
     component.conditionalOperators = [{desc:'Common Operator', childs:['RANGE']}];
+    component.ngOnInit();
+    expect(component.operator.value).toEqual('RANGE');
+
+    component.conditionalOperators = [{desc:'Common Operator', childs:['EQUAL']}];
+    component.ngOnInit();
+    expect(component.operator.value).toEqual('RANGE');
+
+    component.selecetedOperator = '';
     component.ngOnInit();
     expect(component.operator.value).toEqual('RANGE');
   }));

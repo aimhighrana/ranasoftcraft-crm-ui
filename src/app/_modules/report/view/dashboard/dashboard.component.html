@@ -4,7 +4,7 @@
             {{reportName ? reportName: 'Untitled'}}
         </div>
         <div class="f-spacer"></div>
-		<button *ngIf="showClearFilterBtn" mat-flat-button color="accent" (click)="clearFilters()">Clear filter(s)</button>
+		<button *ngIf="showClearFilterBtn" mat-flat-button color="accent" (mouseup)="clearFilters()">Clear filter(s)</button>
 		<ng-template [ngIf]="!isFromMsteam">
 			<button mat-fab color="accent" class="mat-elevation-z0" *ngIf="(collaboratorEditPermission || collaboratorDeletePermission || collaboratorAdminPermission)" [matMenuTriggerFor]="moremenu">
 				<mat-icon>more_horiz</mat-icon>

@@ -7,7 +7,6 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { LayoutFieldsResponse, LayoutTabResponse, MDORECORDESV3, FieldValueV2, FieldCodeText } from '@modules/report/_models/widget';
 import { WidgetService } from '@services/widgets/widget.service';
 import { of } from 'rxjs';
-import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 describe('SummaryTabsComponent', () => {
   let component: SummaryTabsComponent;
@@ -16,7 +15,7 @@ describe('SummaryTabsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ SummaryTabsComponent ],
-      imports:[HttpClientTestingModule, ReactiveFormsModule, FormsModule, RouterTestingModule, AppMaterialModuleForSpec]
+      imports:[HttpClientTestingModule, ReactiveFormsModule, FormsModule, RouterTestingModule]
     })
     .compileComponents();
   }));
@@ -62,5 +61,14 @@ describe('SummaryTabsComponent', () => {
 
     expect(service.getAttachmentData).toHaveBeenCalledWith(snos);
   }));
+
+  it('should truncate the text', () => {
+    const text = 'field value';
+    const result = component.truncateText(text,5);
+    expect(result.length).toEqual(8);
+
+    const result2 = component.truncateText(text,50);
+    expect(result2.length).toEqual(11);
+  })
 
 });

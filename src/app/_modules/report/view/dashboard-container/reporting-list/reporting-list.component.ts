@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnChanges, Inject, LOCALE_ID } from '@angular/core';
+import { Component, OnInit, ViewChild, OnChanges, Inject, LOCALE_ID, OnDestroy, SimpleChanges } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
@@ -8,19 +8,20 @@ import { GenericWidgetComponent } from '../../generic-widget/generic-widget.comp
 import { BehaviorSubject } from 'rxjs';
 import { ReportingWidget, Criteria, LayoutConfigWorkflowModel } from '../../../_models/widget';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ReportListDownloadModelComponent } from './report-list-download-model/report-list-download-model.component';
+import { EndpointService } from '@services/endpoint.service';
 import { Router } from '@angular/router';
 import { SharedServiceService } from '@shared/_services/shared-service.service';
 import { ReportService } from '@modules/report/_service/report.service';
 import { UserService } from '@services/user/userservice.service';
-import { EndpointsAnalyticsService } from '@services/_endpoints/endpoints-analytics.service';
 
 @Component({
   selector: 'pros-reporting-list',
   templateUrl: './reporting-list.component.html',
   styleUrls: ['./reporting-list.component.scss']
 })
-export class ReportingListComponent extends GenericWidgetComponent implements OnInit, OnChanges {
+export class ReportingListComponent extends GenericWidgetComponent implements OnInit, OnChanges, OnDestroy {
 
   resultsLength: any;
   separatorKeysCodes: number[] = [ENTER, COMMA];
@@ -50,6 +51,9 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   objectType = '';
   isWorkflowdataSet: boolean;
 
+  plantCode: string;
+  roleId: string;
+
   /**
    * to store data table column meta data
    * when to use.. we will use it when we will open column settings side-sheet to show pre selected fields..
@@ -68,13 +72,11 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   layouts: LayoutConfigWorkflowModel[] = [];
   dateFormat: string;
 
-  plantCode: string;
-  roleId: string;
-
   constructor(public widgetService: WidgetService,
     @Inject(LOCALE_ID) public locale: string,
     public matDialog: MatDialog,
-    private endpointService: EndpointsAnalyticsService,
+    private endpointService: EndpointService,
+    private snackbar: MatSnackBar,
     private router: Router,
     private sharedService: SharedServiceService,
     private reportService: ReportService,
@@ -83,12 +85,10 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
     super(matDialog);
   }
 
-  ngOnChanges(): void {
-    this.reportingListWidget.subscribe(res => {
-      if (res) {
-        this.getListdata(this.pageSize, this.pageIndex, this.widgetId, this.filterCriteria, this.activeSorts);
-      }
-    });
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes && changes.filterCriteria && changes.filterCriteria.currentValue !== changes.filterCriteria.currentValue.previousValue) {
+      this.reportingListWidget.next(this.reportingListWidget.getValue());
+    }
   }
 
   /**
@@ -107,6 +107,12 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
         this.getListTableMetadata();
       }
     })
+    this.reportingListWidget.subscribe(res => {
+      if (res) {
+        this.getListdata(this.pageSize, this.pageIndex, this.widgetId, this.filterCriteria, this.activeSorts);
+      }
+    });
+
   }
 
   /**
@@ -178,12 +184,14 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
       }
       returndata.hits.hits.forEach(element => {
         const source = element._source;
+        let objectNumber = source.staticFields && source.staticFields.OBJECTID && source.staticFields.OBJECTID.vc ? source.staticFields.OBJECTID.vc[0].c : element._id;
 
-        const objectNumber = source.staticFields && source.staticFields.OBJECTID && source.staticFields.OBJECTID.vc ? source.staticFields.OBJECTID.vc[0].c : element._id;
+      if(source.staticFields && source.staticFields.MASSPROCESSING_ID && source.staticFields.MASSPROCESSING_ID.vc && source.staticFields.MASSPROCESSING_ID.vc !== undefined){
+          objectNumber = source.staticFields.OBJECT_NUMBER && source.staticFields.OBJECT_NUMBER.vc !== undefined ?source.staticFields.OBJECT_NUMBER.vc[0].c:objectNumber;
+        }
         const obj = { objectNumber };
-
         const status = source?source.stat:'';
-        if(status !=='' && status !==undefined && this.displayedColumnsId.indexOf('stat')>-1){
+        if(status !=='' && status !== undefined && this.displayedColumnsId.indexOf('stat')>-1){
          const colststus = 'stat';
           obj[colststus]=status;
         }
@@ -326,9 +334,15 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
     console.log(row);
     const WFID = row ? row.WFID : '';
     this.reportService.getAllLayoutsForSummary(this.objectType, WFID, this.roleId, this.plantCode).subscribe(res => {
+      console.log(res);
       this.layouts = res;
     }, error => console.error(`Error : ${error.message}`));
 
+  }
+
+  ngOnDestroy(){
+    this.reportingListWidget.complete();
+    this.reportingListWidget.unsubscribe();
   }
 
 }

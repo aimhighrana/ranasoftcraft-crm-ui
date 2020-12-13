@@ -1,6 +1,6 @@
 import { Component, OnInit, OnChanges, OnDestroy, Input, LOCALE_ID, Inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Observable, BehaviorSubject, of } from 'rxjs';
+import { Observable, BehaviorSubject, of, Subscription } from 'rxjs';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
 import { FilterWidget, DropDownValues, Criteria, BlockType, ConditionOperator, WidgetHeader, FilterResponse, DateFilterQuickSelect, DateBulder, DateSelectionType } from '../../../_models/widget';
@@ -63,6 +63,14 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     }
   ];
 
+  /** To check clear filter clicked or not */
+  isClearFilter = false;
+
+  subscriptions: Subscription[] = [];
+
+  /**
+   * Constructor of Class
+   */
   constructor(
     private widgetService : WidgetService,
     private reportService: ReportService,
@@ -72,8 +80,9 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
   }
 
   ngOnDestroy(): void {
-    this.filterWidget.complete();
-    this.filterWidget.unsubscribe();
+    this.subscriptions.forEach(sub => {
+      sub.unsubscribe();
+    });
   }
 
   /**
@@ -81,7 +90,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
    *
    */
   ngOnChanges(changes: import('@angular/core').SimpleChanges): void {
-    if(changes && changes.hasFilterCriteria && changes.hasFilterCriteria.previousValue !== changes.hasFilterCriteria.currentValue) {
+    if(changes && changes.hasFilterCriteria && changes.hasFilterCriteria.currentValue && changes.hasFilterCriteria.previousValue !== undefined) {
       this.clearFilterCriteria();
     }
   }
@@ -99,11 +108,12 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
       	   }
       	 }
     });
-    this.filterWidget.subscribe(widget=>{
+    const filterWid = this.filterWidget.subscribe(widget=>{
       if(widget) {
         this.loadAlldropData(widget.fieldId, this.filterCriteria);
       }
     });
+    this.subscriptions.push(filterWid);
   }
 
   getFieldsMetadaDesc(buckets:any[], fieldId: string) {
@@ -187,13 +197,14 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
   }
 
   public getHeaderMetaData():void{
-    this.widgetService.getHeaderMetaData(this.widgetId).subscribe(returnData=>{
+    const headetData = this.widgetService.getHeaderMetaData(this.widgetId).subscribe(returnData=>{
       this.widgetHeader = returnData;
     },error=> console.error(`Error : ${error}`));
+    this.subscriptions.push(headetData);
   }
 
   public getFilterMetadata():void{
-    this.widgetService.getFilterMetadata(this.widgetId).subscribe(returndata=>{
+    const filtereData = this.widgetService.getFilterMetadata(this.widgetId).subscribe(returndata=>{
       if(returndata && returndata.fieldId !== (this.filterWidget.getValue() ? this.filterWidget.getValue().fieldId : null)){
         this.filterWidget.next(returndata);
       }
@@ -239,6 +250,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     },error=>{
       console.error(`Error : ${error}`);
     });
+    this.subscriptions.push(filtereData);
   }
 
   setSelectedQuickDateFilter(code: string) {
@@ -298,8 +310,9 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
   }
 
   private loadAlldropData(fieldId: string, criteria: Criteria[],searchString?:string):void{
-    this.widgetService.getWidgetData(String(this.widgetId), criteria,searchString).subscribe(returnData=>{
-      const buckets  = returnData.aggregations[`sterms#FILTER`]  ? returnData.aggregations[`sterms#FILTER`].buckets : [];
+    const widgetData = this.widgetService.getWidgetData(String(this.widgetId), criteria,searchString).subscribe(returnData=>{
+      const res = Object.keys(returnData.aggregations);
+      const buckets  = returnData.aggregations[res[0]] ? returnData.aggregations[res[0]].buckets : [];
       if(this.filterWidget.getValue().metaData &&(this.filterWidget.getValue().metaData.picklist === '1' || this.filterWidget.getValue().metaData.picklist === '30' || this.filterWidget.getValue().metaData.picklist === '37')) {
         const metadatas: DropDownValues[] = [];
         buckets.forEach(bucket => {
@@ -326,6 +339,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     }, error=>{
       console.error(`Error : ${error}`);
     });
+    this.subscriptions.push(widgetData);
   }
 
   fieldDisplayFn(data): string {
@@ -572,6 +586,9 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
       case '30':
       case '37':
         this.removeSingleSelectedVal(true);
+        break;
+      case '29':
+        this.isClearFilter = !this.isClearFilter;
         break;
       default:
         break;

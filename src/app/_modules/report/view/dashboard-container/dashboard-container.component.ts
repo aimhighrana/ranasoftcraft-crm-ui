@@ -1,15 +1,16 @@
-import { Component, OnInit, Input, AfterViewInit, ElementRef, HostListener, OnChanges, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit, ElementRef, HostListener, OnChanges, Output, EventEmitter, ViewChild, OnDestroy } from '@angular/core';
 import { ReportService } from '../../_service/report.service';
 import { WidgetMapInfo, Criteria, ReportDashboardPermission } from '../../_models/widget';
 import { UserService } from '@services/user/userservice.service';
 import { distinctUntilChanged } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'pros-dashboard-container',
   templateUrl: './dashboard-container.component.html',
   styleUrls: ['./dashboard-container.component.scss']
 })
-export class DashboardContainerComponent implements OnInit, AfterViewInit, OnChanges {
+export class DashboardContainerComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
 
   @Input()
   reportId: number;
@@ -24,10 +25,12 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit, OnCha
   noOfboxes = 200; // Initial 200
   boxSize: number;
 
-  widgetList: WidgetMapInfo[];
   filterCriteria: Criteria[] = [];
 
+  widgetList: WidgetMapInfo[];
   permissons: ReportDashboardPermission;
+
+  subscriptions: Subscription[] = [];
 
   @ViewChild('rootContainer') rootContainer: ElementRef;
   constructor(
@@ -35,10 +38,17 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit, OnCha
     private userService: UserService
   ) { }
 
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub=>{
+      sub.unsubscribe();
+    });
+  }
+
   ngOnChanges(changes: import('@angular/core').SimpleChanges): void {
-    if(this.emitClearBtnEvent || !this.emitClearBtnEvent) {
+
+    if (changes && changes.emitClearBtnEvent && changes.emitClearBtnEvent.currentValue){
       this.filterCriteria = [];
-      this.emitFilterApplied.emit(this.filterCriteria.length ? true : false);
+      this.emitFilterApplied.emit(false);
     }
 
     if(changes && changes.reportId && changes.reportId.currentValue !== changes.reportId.previousValue) {
@@ -51,8 +61,8 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit, OnCha
 
   ngAfterViewInit(): void {
     if(this.rootContainer) {
-      // this.screenWidth = this.elementRef.nativeElement.offsetWidth;
-      this.screenWidth = (this.rootContainer.nativeElement as HTMLDivElement).offsetWidth;
+      // this.screenWidth = (this.rootContainer.nativeElement as HTMLDivElement).offsetWidth;
+      this.screenWidth = window.innerWidth;
       this.boxSize = this.screenWidth / this.noOfboxes;
     }
   }
@@ -67,10 +77,12 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit, OnCha
     console.log(data);
   }
 
-  changeFilterCriteria(criteria: Criteria[]) {
-    this.filterCriteria = new Array();
-    criteria.forEach(loop => this.filterCriteria.push(loop));
-    this.emitFilterApplied.emit(this.filterCriteria.length ? true : false);
+  changeFilterCriteria(criteria: Criteria[], isFilter?:boolean) {
+    if (criteria.length !== 0 && this.filterCriteria.length !== 0){
+      this.filterCriteria = new Array();
+      criteria.forEach(loop => this.filterCriteria.push(loop));
+      this.emitFilterApplied.emit(this.filterCriteria.length ? true : false);
+    }
   }
 
   @HostListener('window:resize', ['$event'])

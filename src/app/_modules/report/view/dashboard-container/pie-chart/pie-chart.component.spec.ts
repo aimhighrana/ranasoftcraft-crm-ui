@@ -11,6 +11,7 @@ import { ChartLegendLabelItem } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import { MetadataModel } from '@models/schema/schemadetailstable';
 import { MatDialog } from '@angular/material/dialog';
+import { SimpleChanges } from '@angular/core';
 
 describe('PieChartComponent', () => {
   let component: PieChartComponent;
@@ -269,6 +270,14 @@ it('legendClick(), should show paticular stack , after click on stack',async(()=
     const actualRes = component.getUpdatedColorCode('HAWA');
     expect(actualRes).toEqual('#f1f1f1');
 
+  }));
+
+  it('ngOnChanges(), should check if there are new filter criteria', async(() => {
+    const filterCriteria = [{fieldId:'test'} as Criteria,{fieldId:'test1'} as Criteria];
+    const chnages: SimpleChanges = {filterCriteria:{currentValue:filterCriteria, previousValue: null, firstChange:null, isFirstChange:null}};
+    spyOn(component.pieWidget, 'next');
+    component.ngOnChanges(chnages);
+    expect(component.pieWidget.next).toHaveBeenCalled();
   }));
 
 });

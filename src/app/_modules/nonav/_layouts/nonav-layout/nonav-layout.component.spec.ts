@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { NonavLayoutComponent } from './nonav-layout.component';
 
@@ -8,7 +9,8 @@ describe('NonavLayoutComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NonavLayoutComponent ]
+      declarations: [ NonavLayoutComponent ],
+      imports: [ RouterTestingModule ]
     })
     .compileComponents();
   }));

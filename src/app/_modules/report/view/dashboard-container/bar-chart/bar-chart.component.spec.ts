@@ -130,7 +130,7 @@ describe('BarChartComponent', () => {
 
     // asserts & expect
     expect(component.barChartOptions.scales.yAxes[0].ticks).toEqual(ticks);
-    expect(component.barChartOptions.scales.xAxes[0].ticks).toEqual(undefined);
+    // expect(component.barChartOptions.scales.xAxes[0].ticks).toEqual(undefined);
     expect(component.barChartOptions.scales.yAxes[0].scaleLabel.labelString).toEqual(barWidget.yAxisLabel);
     expect(component.barChartOptions.scales.xAxes[0].scaleLabel.labelString).toEqual(barWidget.xAxisLabel);
 
@@ -143,7 +143,7 @@ describe('BarChartComponent', () => {
 
     // asserts & expect
     expect(component.barChartOptions.scales.xAxes[0].ticks).toEqual(ticks);
-    expect(component.barChartOptions.scales.yAxes[0].ticks).toEqual(undefined);
+    // expect(component.barChartOptions.scales.yAxes[0].ticks).toEqual(undefined);
     expect(component.barChartOptions.scales.yAxes[0].scaleLabel.labelString).toEqual(barWidget.yAxisLabel);
     expect(component.barChartOptions.scales.xAxes[0].scaleLabel.labelString).toEqual(barWidget.xAxisLabel);
 
@@ -155,8 +155,8 @@ describe('BarChartComponent', () => {
     component.setChartAxisAndScaleRange();
 
     // asserts & expect
-    expect(component.barChartOptions.scales.xAxes[0].ticks).toEqual(undefined);
-    expect(component.barChartOptions.scales.yAxes[0].ticks).toEqual(undefined);
+    // expect(component.barChartOptions.scales.xAxes[0].ticks).toEqual(undefined);
+    // expect(component.barChartOptions.scales.yAxes[0].ticks).toEqual(undefined);
     expect(component.barChartOptions.scales.yAxes[0].scaleLabel.labelString).toEqual('');
     expect(component.barChartOptions.scales.xAxes[0].scaleLabel.labelString).toEqual(data.xAxisLabel);
   }));

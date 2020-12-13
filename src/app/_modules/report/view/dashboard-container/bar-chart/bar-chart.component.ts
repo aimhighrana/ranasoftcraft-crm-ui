@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, ViewChild, LOCALE_ID, Inject, SimpleChanges } from '@angular/core';
+import { Component, OnInit, OnChanges, ViewChild, LOCALE_ID, Inject, SimpleChanges, OnDestroy } from '@angular/core';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
 import { BarChartWidget, Criteria, WidgetHeader, ChartLegend, ConditionOperator, BlockType, Orientation, WidgetColorPalette } from '../../../_models/widget';
@@ -15,7 +15,7 @@ import { MatDialog } from '@angular/material/dialog';
   templateUrl: './bar-chart.component.html',
   styleUrls: ['./bar-chart.component.scss']
 })
-export class BarChartComponent extends GenericWidgetComponent implements OnInit, OnChanges {
+export class BarChartComponent extends GenericWidgetComponent implements OnInit, OnChanges, OnDestroy {
 
   barWidget: BehaviorSubject<BarChartWidget> = new BehaviorSubject<BarChartWidget>(null);
   widgetHeader: WidgetHeader = new WidgetHeader();
@@ -95,7 +95,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
 
   public barChartData: any[] = [
     {
-      label: 'Loding..',
+      label: 'Loading..',
       barThickness: 80,
       data: [0, 0, 0, 0, 0, 0, 0]
     },
@@ -110,9 +110,11 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.lablels = [];
-    this.chartLegend = [];
-    this.barWidget.next(this.barWidget.getValue());
+    if (changes && changes.filterCriteria && changes.filterCriteria.previousValue !== changes.filterCriteria.currentValue) {
+      this.lablels = [];
+      this.chartLegend = [];
+      this.barWidget.next(this.barWidget.getValue());
+    }
     if(changes && changes.boxSize && changes.boxSize.previousValue !== changes.boxSize.currentValue) {
       this.boxSize = changes.boxSize.currentValue;
     }
@@ -185,7 +187,8 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
 
   public getBarChartData(widgetId: number, critria: Criteria[]): void {
     this.widgetService.getWidgetData(String(widgetId), critria).subscribe(returndata => {
-      const arrayBuckets = returndata.aggregations['sterms#BAR_CHART'].buckets;
+      const res = Object.keys(returndata.aggregations);
+      const arrayBuckets  = returndata.aggregations[res[0]] ? returndata.aggregations[res[0]].buckets : [];
       this.dataSet = [];
       this.lablels = [];
       this.dataSet = this.transformDataSets(arrayBuckets);
@@ -500,6 +503,9 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
               scaleLabel: {
                 display: true,
                 labelString: this.barWidget.getValue().yAxisLabel ? this.barWidget.getValue().yAxisLabel : ''
+              },
+              ticks : {
+                padding: this.barWidget.getValue().isEnableDatalabels && (this.barWidget.getValue().datalabelsPosition === 'start' || this.barWidget.getValue().datalabelsPosition === 'center') ?  40 : 0
               }
             }]
           }
@@ -508,7 +514,10 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
             xAxes: [{
               scaleLabel: {
                 display: true,
-                labelString: this.barWidget.getValue().xAxisLabel ? this.barWidget.getValue().xAxisLabel : ''
+                labelString: this.barWidget.getValue().xAxisLabel ? this.barWidget.getValue().xAxisLabel : '',
+              },
+              ticks : {
+                padding: this.barWidget.getValue().isEnableDatalabels && (this.barWidget.getValue().datalabelsPosition === 'start' || this.barWidget.getValue().datalabelsPosition === 'center') ?  20 : 0
               }
             }],
             yAxes: [{
@@ -525,12 +534,18 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
           scaleLabel: {
             display: true,
             labelString: this.barWidget.getValue().xAxisLabel ? this.barWidget.getValue().xAxisLabel : ''
+          },
+          ticks : {
+            padding: this.barWidget.getValue().isEnableDatalabels && (this.barWidget.getValue().orientation === Orientation.VERTICAL) && (this.barWidget.getValue().datalabelsPosition === 'start' || this.barWidget.getValue().datalabelsPosition === 'center') ?  20 : 0
           }
         }],
         yAxes: [{
           scaleLabel: {
             display: true,
             labelString: this.barWidget.getValue().yAxisLabel ? this.barWidget.getValue().yAxisLabel : ''
+          },
+          ticks : {
+            padding: this.barWidget.getValue().isEnableDatalabels && (this.barWidget.getValue().orientation === Orientation.HORIZONTAL) && (this.barWidget.getValue().datalabelsPosition === 'start' || this.barWidget.getValue().datalabelsPosition === 'center') ?  40 : 0
           }
         }]
       }
@@ -645,10 +660,9 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     if(barWidth < this.minBarWidth){
       return this.minBarWidth * this.dataSet.length ;
     } else {
-      this.minBarWidth = barWidth;
-      return initialWidth ;
+      // this.minBarWidth = barWidth;
+      return initialWidth;
     }
-
   }
 
   computeGraphSize(){
@@ -659,6 +673,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
       this.computedSize.height = this.getComputedSize(this.widgetInfo.height);
       this.computedSize.width = this.widgetInfo.width;
     }
+
   }
 
   zoomIn(){
@@ -673,5 +688,10 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
       this.minBarWidth -= this.zoomStep ;
       this.computeGraphSize();
     }
+  }
+
+  ngOnDestroy(){
+    this.barWidget.complete();
+    this.barWidget.unsubscribe();
   }
 }

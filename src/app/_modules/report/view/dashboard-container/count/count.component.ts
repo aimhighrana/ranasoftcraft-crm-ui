@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { Count, Criteria } from '../../../_models/widget';
@@ -19,8 +19,10 @@ export class CountComponent extends GenericWidgetComponent implements OnInit,OnC
   arrayBuckets :any[]
 
 
-  ngOnChanges():void{
-    this.getCountData(this.widgetId,this.filterCriteria);
+  ngOnChanges(changes: SimpleChanges):void{
+    if (changes && changes.filterCriteria && changes.filterCriteria.previousValue !== changes.filterCriteria.currentValue) {
+      this.getCountData(this.widgetId,this.filterCriteria);
+    }
   }
 
   ngOnInit(): void {
@@ -45,15 +47,16 @@ export class CountComponent extends GenericWidgetComponent implements OnInit,OnC
   public getCountData(widgetid:number,creiteria:Criteria[]):void{
     this.widgetService.getWidgetData(String(widgetid),creiteria).subscribe(returndata=>{
       this.count = 0;
-      if(returndata.aggregations['sterms#COUNT'] || returndata.aggregations['lterms#COUNT']) {
-        this.arrayBuckets = returndata.aggregations['sterms#COUNT'] ? returndata.aggregations['sterms#COUNT'].buckets : returndata.aggregations['lterms#COUNT'].buckets;
+      const res = Object.keys(returndata.aggregations);
+      if(res[0] === 'sterms#COUNT' || res[0] === 'lterms#COUNT' || res[0] === 'dterms#COUNT') {
+        this.arrayBuckets  = returndata.aggregations[res[0]] ? returndata.aggregations[res[0]].buckets : [];
         this.arrayBuckets.forEach(bucket=>{
           const key = bucket.key;
           const count = bucket.doc_count;
         this.count += count ;
       });
-      } else if(returndata.aggregations['sum#COUNT']) {
-        this.count = returndata.aggregations['sum#COUNT'].value;
+      } else if(res[0] === 'sum#COUNT') {
+        this.arrayBuckets  = returndata.aggregations[res[0]] ? returndata.aggregations[res[0]].value : [];
         this.count =  Math.round((this.count + Number.EPSILON)  * 100) / 100;
       } else {
         console.log('Something missing on count widget !!.');
