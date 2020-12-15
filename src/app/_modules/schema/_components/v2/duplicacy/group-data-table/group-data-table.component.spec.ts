@@ -54,8 +54,9 @@ describe('GroupDataTableComponent', () => {
     request.schemaId = component.schemaId;
     request.plantCode = '0';
     request.runId = component.runId;
-    request.from = 1;
-    request.size = 20;
+    request.from = 0;
+    request.to = 20;
+    request.requestStatus = component.activeTab;
 
     /* const groups : GroupDetails[] = [
       {groupDescription: 'duplicate', groupId: '135085134163377216'} as GroupDetails,

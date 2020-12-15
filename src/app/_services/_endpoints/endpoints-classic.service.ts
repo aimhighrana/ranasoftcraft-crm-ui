@@ -662,4 +662,7 @@ export class EndpointsClassicService {
     return `${this.apiUrl}/schema/mro/reset`;
   }
 
+  public masterRecordChangeUrl(): string {
+    return `${this.apiUrl}/duplicate/updatemasterRecord`;
+  }
 }

@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { MasterRecordChangeRequest } from '@models/schema/duplicacy';
 import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -13,8 +14,8 @@ export class CatalogCheckService {
     private http: HttpClient) { }
 
 
-  markAsMasterRecord(recordId) {
-    return of(true);
+  markAsMasterRecord(request: MasterRecordChangeRequest): Observable<any> {
+    return this.http.post<any>(this.endpointService.masterRecordChangeUrl(), request);
   }
 
   markForDeletion(recordId) {

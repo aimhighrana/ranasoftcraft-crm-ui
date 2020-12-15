@@ -13,9 +13,9 @@ import { SchemaVariantService } from '@services/home/schema/schema-variant.servi
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { CatalogCheckService } from '@services/home/schema/catalog-check.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { FilterCriteria, MetadataModel } from '@models/schema/schemadetailstable';
+import { FieldInputType, FilterCriteria, MetadataModel } from '@models/schema/schemadetailstable';
 import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
-import { RequestForCatalogCheckData } from '@models/schema/duplicacy';
+import { MasterRecordChangeRequest, RECORD_STATUS, RECORD_STATUS_KEY, RequestForCatalogCheckData } from '@models/schema/duplicacy';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DuplicacyDataSource } from './duplicacy-data-source';
 
@@ -30,15 +30,15 @@ describe('DuplicacyComponent', () => {
   let schemaVariantService: SchemaVariantService;
   let schemaDetailService: SchemaDetailsService;
   let catalogService: CatalogCheckService;
-  let snackBar : MatSnackBar;
+  let snackBar: MatSnackBar;
   let router: Router
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DuplicacyComponent, SearchInputComponent, GroupDataTableComponent ],
+      declarations: [DuplicacyComponent, SearchInputComponent, GroupDataTableComponent],
       imports: [AppMaterialModuleForSpec, RouterTestingModule, HttpClientTestingModule]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -50,7 +50,7 @@ describe('DuplicacyComponent', () => {
     component.schemaId = '1';
     component.variantId = '0';
     component.moduleId = '1';
-    component.schemaInfo = {runId: '123'} as SchemaListDetails;
+    component.schemaInfo = { runId: '123' } as SchemaListDetails;
 
     schemaVariantService = fixture.debugElement.injector.get(SchemaVariantService);
     schemaDetailService = fixture.debugElement.injector.get(SchemaDetailsService);
@@ -144,14 +144,14 @@ describe('DuplicacyComponent', () => {
   }));
 
 
-  it('should get data table headers', (async() => {
+  it('should get data table headers', (async () => {
 
 
     spyOn(schemaDetailService, 'getMetadataFields').withArgs(component.moduleId)
       .and.returnValue(of());
 
     spyOn(schemaDetailService, 'getAllSelectedFields').withArgs(component.schemaId, component.variantId)
-        .and.returnValue(of([]));
+      .and.returnValue(of([]));
 
     component.getTableHeaders();
 
@@ -165,13 +165,14 @@ describe('DuplicacyComponent', () => {
     const request = new RequestForCatalogCheckData();
     request.schemaId = component.schemaId;
     request.groupId = component.groupId;
-    request.from = 1;
+    request.from = 0;
     request.to = 20;
     request.key = component.groupKey;
     request.runId = '';
     request.filterCriterias = [];
     request.plantCode = '0';
     request.sort = {};
+    request.requestStatus = component.activeTab;
 
 
     spyOn(catalogService, 'getCatalogCheckRecords').withArgs(request)
@@ -186,7 +187,7 @@ describe('DuplicacyComponent', () => {
     expect(component.isStaticColumn('select')).toEqual(true);
   });
 
-  it('should refresh table data on new variantId', (async() => {
+  it('should refresh table data on new variantId', (async () => {
 
     spyOn(schemaVariantService, 'getVariantdetailsByvariantId').withArgs('1').and.returnValue(of({
       schemaId: component.schemaId,
@@ -200,8 +201,8 @@ describe('DuplicacyComponent', () => {
     } as SchemaVariantsModel));
 
     component.schemaInfo = {
-      schemaId: component.schemaId, runId:'123',
-      variants: [{variantId: '1', schemaId: component.schemaId, variantName: 'first variant'} as SchemaVariantsModel]
+      schemaId: component.schemaId, runId: '123',
+      variants: [{ variantId: '1', schemaId: component.schemaId, variantName: 'first variant' } as SchemaVariantsModel]
     } as SchemaListDetails;
 
     const request = new RequestForCatalogCheckData();
@@ -209,13 +210,14 @@ describe('DuplicacyComponent', () => {
     request.groupId = component.groupId;
     request.schemaId = component.schemaId;
     request.groupId = component.groupId;
-    request.from = 1;
+    request.from = 0;
     request.to = 20;
     request.key = component.groupKey;
     request.runId = '';
     request.filterCriterias = [];
     request.plantCode = '0';
     request.sort = {};
+    request.requestStatus = component.activeTab;
 
     spyOn(catalogService, 'getCatalogCheckRecords').withArgs(request)
       .and.returnValue(of());
@@ -262,10 +264,10 @@ describe('DuplicacyComponent', () => {
     component.inlineSearch('material');
 
     const filterCriteria = {
-        fieldId: 'id',
-        type: 'INLINE',
-        values: ['material']
-      } as FilterCriteria ;
+      fieldId: 'id',
+      type: 'INLINE',
+      values: ['material']
+    } as FilterCriteria;
 
 
     component.removeAppliedFilter(filterCriteria);
@@ -296,9 +298,9 @@ describe('DuplicacyComponent', () => {
   it('should load more data on table scroll end', () => {
 
     const event = {
-      target : {
-        clientHeight : 20,
-        scrollTop : 70,
+      target: {
+        clientHeight: 20,
+        scrollTop: 70,
         scrollHeight: 100
       }
     }
@@ -367,5 +369,92 @@ describe('DuplicacyComponent', () => {
     spyOn(router, 'navigate');
     component.openDataScopeSideSheet();
     expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/data-scope/${component.moduleId}/${component.schemaId}/new` } }])
-  })
+  });
+
+  it('should get input type', () => {
+
+    const metadataField = {
+      headers: {
+        MATL_TYPE: {
+          picklist: '0',
+          dataType: 'NUMC',
+          isCheckList: 'false'
+        }
+      }
+    }
+
+    component.metadataFldLst = metadataField;
+    expect(component.getFieldInputType('MATL_TYPE')).toEqual(FieldInputType.NUMBER);
+
+    component.metadataFldLst.headers.MATL_TYPE.dataType = 'DATS';
+    expect(component.getFieldInputType('MATL_TYPE')).toEqual(FieldInputType.DATE);
+
+    component.metadataFldLst.headers.MATL_TYPE = { picklist: '1', isCheckList: 'false' };
+    expect(component.getFieldInputType('MATL_TYPE')).toEqual(FieldInputType.SINGLE_SELECT);
+
+    component.metadataFldLst.headers.MATL_TYPE = { picklist: '1', isCheckList: 'true' };
+    expect(component.getFieldInputType('MATL_TYPE')).toEqual(FieldInputType.MULTI_SELECT);
+
+  });
+
+  it('should get record status class', () => {
+
+    const record = {};
+    record[RECORD_STATUS_KEY] = { fieldData: RECORD_STATUS.MASTER };
+
+    expect(component.getRecordStatusClass(record)).toEqual('success');
+
+    record[RECORD_STATUS_KEY].fieldData = RECORD_STATUS.NOT_DELETABLE;
+    expect(component.getRecordStatusClass(record)).toEqual('warning');
+
+  });
+
+  it('should format cell data', () => {
+    const metadataFldLst = {
+      headers: {
+        diw_15: {
+          isCheckList: 'false',
+          picklist: '1',
+          value: 'USA'
+        }
+      }
+    }
+
+    component.metadataFldLst = metadataFldLst;
+    let result = component.formatCellData('diw_15', 'USA');
+    expect(result).toEqual('USA');
+
+    metadataFldLst.headers.diw_15.isCheckList = 'true';
+    result = component.formatCellData('diw_15', ['USA', 'France']);
+    expect(result).toEqual('USA,France');
+
+  });
+
+  it('openTableColumnSettings(), open table column setting ', async(() => {
+    spyOn(router, 'navigate');
+    component.openTableColumnSettings();
+    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: { sb: 'sb/schema/table-column-settings' }, queryParams: { status: component.activeTab } }]);
+  }));
+
+  it('markAsMasterRecord(), markAsMasterRecord ', async(() => {
+
+    const row = {
+      OBJECTNUMBER: { fieldData: 'diw_15' }
+    };
+
+    const request = new MasterRecordChangeRequest();
+    request.id = row.OBJECTNUMBER.fieldData;
+    request.schemaId = component.schemaId;
+    request.runId = component.schemaInfo.runId;
+    request.oldId = '';
+
+    spyOn(catalogService, 'markAsMasterRecord').withArgs(request)
+      .and.returnValue(of());
+
+    component.markAsMasterRecord(row);
+    expect(catalogService.markAsMasterRecord).toHaveBeenCalledWith(request);
+
+
+  }));
+
 });

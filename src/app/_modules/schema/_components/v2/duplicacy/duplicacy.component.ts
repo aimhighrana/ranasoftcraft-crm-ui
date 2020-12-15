@@ -1,7 +1,7 @@
-import { Component, OnInit, AfterViewInit, ViewChild, OnChanges, SimpleChanges, Input } from '@angular/core';
-import { FilterCriteria, SchemaTableViewFldMap } from '@models/schema/schemadetailstable';
+import { Component, OnInit, AfterViewInit, ViewChild, OnChanges, SimpleChanges, Input, ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
+import { FieldInputType, FilterCriteria, SchemaTableViewFldMap } from '@models/schema/schemadetailstable';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, combineLatest } from 'rxjs';
+import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
@@ -17,11 +17,14 @@ import { MatDialog } from '@angular/material/dialog';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 
-import { RequestForCatalogCheckData } from '@models/schema/duplicacy';
+import { MasterRecordChangeRequest, RECORD_STATUS, RECORD_STATUS_KEY, RequestForCatalogCheckData } from '@models/schema/duplicacy';
 import { CatalogCheckService } from '@services/home/schema/catalog-check.service';
 import { MatPaginator } from '@angular/material/paginator';
 import { DuplicacyDataSource } from './duplicacy-data-source';
 import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { ContainerRefDirective } from '@modules/shared/_directives/container-ref.directive';
+import { TableCellInputComponent } from '@modules/shared/_components/table-cell-input/table-cell-input.component';
 
 @Component({
   selector: 'pros-duplicacy',
@@ -79,7 +82,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
   /**
    * Static column for actions
    */
-  startColumns = ['select', 'action', 'OBJECTNUMBER'];
+  startColumns = ['select', 'action', 'OBJECTNUMBER', RECORD_STATUS_KEY];
   // 'avatar',
 
   /**
@@ -159,6 +162,14 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
 
   lastScrollTop: number;
 
+  inlineSearchSubject: Subject<string> = new Subject();
+
+  RECORD_STATUS = RECORD_STATUS;
+
+  RECORD_STATUS_KEY = RECORD_STATUS_KEY ;
+
+  FIELD_TYPE = FieldInputType;
+
 
 
   constructor(
@@ -172,7 +183,8 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     private matDialog: MatDialog,
     private schemaListService: SchemalistService,
     private schemaVariantService: SchemaVariantService,
-    private catalogService: CatalogCheckService
+    private catalogService: CatalogCheckService,
+    private componentFactoryResolver: ComponentFactoryResolver
 
   ) { }
 
@@ -202,6 +214,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
       this.groupKey = null;
       this.variantId = '0';
       this.variantName = 'Entire dataset';
+      this.sortOrder = {};
       this.getDataScope();
       this.getSchemaStatics();
       this.getSchemaDetails();
@@ -273,6 +286,14 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
         this.tableHeaderActBtn = [];
       }
     });
+
+    /**
+     * inline search changes
+     */
+    this.inlineSearchSubject.pipe(
+          debounceTime(100),
+          distinctUntilChanged()
+      ).subscribe(value => this.inlineSearch(value));
 
 
   }
@@ -361,13 +382,14 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     const request = new RequestForCatalogCheckData();
     request.schemaId = this.schemaId;
     request.groupId = this.groupId;
-    request.from = isLoadingMore ? this.dataSource.docLength() + 1 : 1;
+    request.from = isLoadingMore ? this.dataSource.docLength() : 0;
     request.to = isLoadingMore ? this.dataSource.docLength() + 20 : 20;
     request.key = this.groupKey;
     request.runId = '';
     request.filterCriterias = this.filterCriteria.getValue() || [];
     request.plantCode = '0';
     request.sort = this.sortOrder;
+    request.requestStatus = this.activeTab;
     // request.runId = this.schemaInfo && this.schemaInfo.runId ?  this.schemaInfo.runId : '';
 
     this.dataSource.getTableData(request, isLoadingMore);
@@ -412,6 +434,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
       return false;
     }
     this.activeTab = status;
+    this.dataSource.reset();
     this.getData();
     this.router.navigate(['/home/schema/schema-details', this.moduleId, this.schemaId], { queryParams: { status: this.activeTab } });
 
@@ -438,64 +461,6 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     downloadLink.setAttribute('target', '_blank');
     document.body.appendChild(downloadLink);
     downloadLink.click();
-
-  } */
-
-  /**
-   *
-   * @param fldid editable field id
-   * @param row entire row should be here
-   */
-  /* editCurrentCell(fldid: string, row: any, rIndex: number) {
-    console.log(fldid);
-    console.log(row);
-    if (document.getElementById('inpctrl_' + fldid + '_' + rIndex)) {
-      const inpCtrl = document.getElementById('inpctrl_' + fldid + '_' + rIndex) as HTMLDivElement;
-      const viewCtrl = document.getElementById('viewctrl_' + fldid + '_' + rIndex) as HTMLSpanElement;
-      const inpValCtrl = document.getElementById('inp_' + fldid + '_' + rIndex) as HTMLInputElement;
-
-      inpCtrl.style.display = 'block';
-      inpValCtrl.focus();
-      viewCtrl.style.display = 'none';
-    }
-  } */
-
-  /**
-   * After value change on & also call service for do correction
-   * @param fldid fieldid that have blur triggered
-   * @param value current changed value
-   * @param row row data ..
-   */
-  /*   emitEditBlurChng(fldid: string, value: string, row: any, rIndex: number) {
-      console.log(value);
-      if (document.getElementById('inpctrl_' + fldid + '_' + rIndex)) {
-
-        // DOM control after value change ...
-        const inpCtrl = document.getElementById('inpctrl_' + fldid + '_' + rIndex) as HTMLDivElement;
-        const viewCtrl = document.getElementById('viewctrl_' + fldid + '_' + rIndex) as HTMLSpanElement;
-        inpCtrl.style.display = 'none';
-        viewCtrl.innerText = value;
-        viewCtrl.style.display = 'block';
-
-        // DO correction call for data
-        const objctNumber = row.OBJECTNUMBER.fieldData;
-        const oldVal = row.fldid ? row.fldid.fieldData : '';
-        if (objctNumber && oldVal !== value) {
-          const request: SchemaCorrectionReq = { id: [objctNumber], fldId: fldid, vc: value, isReviewed: null } as SchemaCorrectionReq;
-          this.schemaDetailService.doCorrection(this.schemaId, request).subscribe(res => {
-            if (res.acknowledge) {
-              this.statics.correctedCnt = res.count ? res.count : 0;
-            }
-          }, error => {
-            this.snackBar.open(`Error :: ${error}`, 'Close', { duration: 2000 });
-            console.error(`Error :: ${error.message}`);
-          });
-        } else {
-          console.error(`Wrong with object number or can't change if old and new same  ... `);
-        }
-      }
-
-    } */
 
 
   /**
@@ -714,14 +679,27 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     }
   }
 
+  /**
+   * Mark a record as master
+   * @param row record details
+   */
   markAsMasterRecord(row) {
-    this.catalogService.markAsMasterRecord(row.id)
-      .subscribe(resp => row.status = 'Master record');
+
+    const request = new MasterRecordChangeRequest();
+    request.id = row.OBJECTNUMBER.fieldData;
+    request.schemaId = this.schemaId;
+    request.runId = this.schemaInfo.runId;
+    request.oldId = '';
+
+    this.catalogService.markAsMasterRecord(request)
+      .subscribe(resp => {
+        console.log(resp);
+      });
   }
 
   markForDeletion(row) {
-    this.catalogService.markAsMasterRecord(row.id)
-      .subscribe(resp => row.status = 'Can be deleted');
+    /* this.catalogService.markAsMasterRecord(row.id)
+      .subscribe(resp => row[RECORD_STATUS_KEY].fieldData = RECORD_STATUS.DELETABLE); */
   }
 
 
@@ -747,6 +725,10 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     return this.startColumns.includes(dynCol);
   }
 
+  /**
+   * load more records on scroll end
+   * @param event scrol details
+   */
   onScroll(event) {
 
     if (event.target.clientHeight + event.target.scrollTop >= event.target.scrollHeight) {
@@ -781,5 +763,158 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
   openSummarySideSheet() {
     this.router.navigate([{ outlets: { sb: `sb/schema/check-data/${this.moduleId}/${this.schemaId}` } }])
   }
+
+  /**
+   * inline search input changes
+   */
+  newInlineSearchText(value) {
+    this.inlineSearchSubject.next(value);
+  }
+
+  getRecordStatusClass(row) {
+    return row[RECORD_STATUS_KEY].fieldData === RECORD_STATUS.MASTER ? 'success'
+          : row[RECORD_STATUS_KEY].fieldData === RECORD_STATUS.NOT_DELETABLE ? 'warning'
+          : 'deletable' ;
+  }
+
+  getTableRowClass(row) {
+    const classList = [];
+    if (row[RECORD_STATUS_KEY].fieldData !== RECORD_STATUS.MASTER) {
+      classList.push('not-master-row')
+    }
+    if (row[RECORD_STATUS_KEY].fieldData === RECORD_STATUS.DELETABLE) {
+      classList.push('row-deletable')
+    }
+    return classList;
+  }
+
+  /**
+   *
+   * @param fldid editable field id
+   * @param row entire row should be here
+   */
+  editCurrentCell(fldid: string, row: any, rIndex: number, containerRef: ContainerRefDirective) {
+    console.log(fldid);
+    console.log(row);
+
+    const field = this.selectedFields.find(f => f.fieldId === fldid);
+    if (field && !field.editable) {
+      console.log('Edit is disabled for this field ! ', fldid);
+      return;
+    }
+
+    if (document.getElementById('inpctrl_' + fldid + '_' + rIndex)) {
+      const inpCtrl = document.getElementById('inpctrl_' + fldid + '_' + rIndex) as HTMLDivElement;
+      const viewCtrl = document.getElementById('viewctrl_' + fldid + '_' + rIndex) as HTMLSpanElement;
+      // const inpValCtrl = document.getElementById('inp_'+ fldid + '_' + rIndex) as HTMLInputElement;
+
+      inpCtrl.style.display = 'block';
+      // inpValCtrl.focus();
+      viewCtrl.style.display = 'none';
+
+      // add a dynamic cell input component
+      this.addDynamicInput(fldid, row, rIndex, containerRef);
+
+    }
+  }
+
+  /**
+   * After value change on & also call service for do correction
+   * @param fldid fieldid that have blur triggered
+   * @param value current changed value
+   * @param row row data ..
+   */
+  emitEditBlurChng(fldid: string, value: any, row: any, rIndex: number, viewContainerRef?: ViewContainerRef) {
+    console.log(value);
+    if (document.getElementById('inpctrl_' + fldid + '_' + rIndex)) {
+
+      // DOM control after value change ...
+      const inpCtrl = document.getElementById('inpctrl_' + fldid + '_' + rIndex) as HTMLDivElement;
+      const viewCtrl = document.getElementById('viewctrl_' + fldid + '_' + rIndex) as HTMLSpanElement;
+
+      // clear the dynamic cell input component
+      viewContainerRef.clear();
+
+      inpCtrl.style.display = 'none';
+      viewCtrl.innerText = value;
+      viewCtrl.style.display = 'block';
+
+      // DO correction call for data
+      /* const objctNumber = row.OBJECTNUMBER.fieldData;
+      const oldVal = row[fldid] ? row[fldid].fieldData : '';
+      if (objctNumber && oldVal !== value) {
+        console.log('correction request....')
+        const request: SchemaCorrectionReq = { id: [objctNumber], fldId: fldid, vc: value, isReviewed: null } as SchemaCorrectionReq;
+        this.schemaDetailService.doCorrection(this.schemaId, request).subscribe(res => {
+          row[fldid].fieldData = value;
+          if (res.acknowledge) {
+            this.statics.correctedCnt = res.count ? res.count : 0;
+          }
+        }, error => {
+          this.snackBar.open(`Error :: ${error}`, 'Close', { duration: 2000 });
+          console.error(`Error :: ${error.message}`);
+        });
+      } else {
+        console.error(`Wrong with object number or can't change if old and new same  ... `);
+      } */
+    }
+
+  }
+
+  addDynamicInput(fldid: string, row: any, rIndex: number, containerRef: ContainerRefDirective) {
+
+    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(
+      TableCellInputComponent
+    );
+
+    // add the input component to the cell
+    const componentRef = containerRef.viewContainerRef.createComponent(componentFactory);
+    // binding dynamic component inputs/outputs
+    componentRef.instance.fieldId = fldid;
+    componentRef.instance.inputType = this.getFieldInputType(fldid);
+    componentRef.instance.value = row[fldid] ? row[fldid].fieldData : '';
+    componentRef.instance.inputBlur.subscribe(value => this.emitEditBlurChng(fldid, value, row, rIndex, containerRef.viewContainerRef));
+
+  }
+
+  /**
+   * get input type when user edits a cell
+   * @param fieldId the field id
+   */
+  getFieldInputType(fieldId) {
+
+    if (this.metadataFldLst.headers[fieldId].picklist === '0' && this.metadataFldLst.headers[fieldId].dataType === 'NUMC') {
+      return this.FIELD_TYPE.NUMBER;
+    }
+    if (this.metadataFldLst.headers[fieldId].picklist === '0' && (this.metadataFldLst.headers[fieldId].dataType === 'DATS' || this.metadataFldLst.headers[fieldId].dataType === 'DTMS')) {
+      return this.FIELD_TYPE.DATE;
+    }
+    if ((this.metadataFldLst.headers[fieldId].isCheckList === 'false')
+      && (this.metadataFldLst.headers[fieldId].picklist === '1' || this.metadataFldLst.headers[fieldId].picklist === '30' || this.metadataFldLst.headers[fieldId].picklist === '37')) {
+      return this.FIELD_TYPE.SINGLE_SELECT;
+    }
+    if ((this.metadataFldLst.headers[fieldId].isCheckList === 'true')
+      && (this.metadataFldLst.headers[fieldId].picklist === '1' || this.metadataFldLst.headers[fieldId].picklist === '30' || this.metadataFldLst.headers[fieldId].picklist === '37')) {
+      return this.FIELD_TYPE.MULTI_SELECT;
+    }
+
+    return this.FIELD_TYPE.TEXT;
+
+  }
+
+  /**
+   * format cell displayed value based on field type
+   * @param fieldId the field id
+   * @param value cell value
+   */
+  formatCellData(fieldId, value) {
+    if (this.getFieldInputType(fieldId) === this.FIELD_TYPE.MULTI_SELECT) {
+      // console.log(value);
+      return value.toString();
+    }
+    return value;
+  }
+
+
 
 }

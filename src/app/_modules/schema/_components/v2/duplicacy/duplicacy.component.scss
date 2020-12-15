@@ -84,6 +84,24 @@ div.root {
       .badge {
         margin: 0 6px;
         font-size: 0.8rem;
+
+        &.success {
+          color: #51cf67;
+          background-color: #ebfcee;
+        }
+
+        &.warning {
+          color: #ff922b;
+          background-color: #fff4e6;
+        }
+
+        &.error {
+          color: #ff6b6b;
+        }
+
+        &.deletable {
+          background-color: white;
+        }
       }
 
       .dataset-grid-listing {
@@ -101,6 +119,14 @@ div.root {
             max-width: 100%;
             display: table;
             border-collapse: collapse;
+
+            .row-deletable {
+              text-decoration: line-through;
+            }
+
+            .not-master-row {
+              background-color: #fafafa;
+            }
           }
         }
       }

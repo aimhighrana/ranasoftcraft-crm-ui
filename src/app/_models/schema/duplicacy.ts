@@ -20,7 +20,8 @@ export class RequestForGroupList {
     plantCode: string;
     runId: string;
     from: number;
-    size: number;
+    to: number;
+    requestStatus: string;
 
 }
 
@@ -39,10 +40,26 @@ export class RequestForCatalogCheckData {
     pageIndex: number; */
     filterCriterias: FilterCriteria[];
     sort: {};
+    requestStatus: string;
 }
 
 export class TableDataSource<T> {
-    isLoading : boolean;
-    totalCount : number;
+    isLoading: boolean;
+    totalCount: number;
     data: T[] = [];
+}
+
+export enum RECORD_STATUS {
+    MASTER = 'Master record',
+    DELETABLE = 'Can be deleted',
+    NOT_DELETABLE = 'Cannot be deleted'
+}
+
+export const RECORD_STATUS_KEY = 'record_status';
+
+export class MasterRecordChangeRequest {
+    schemaId: string;
+    runId: string;
+    id: string;
+    oldId: string;
 }

@@ -67,4 +67,14 @@ describe('EndpointsClassicService', () => {
     expect(serObj.rejectClassificationUri()).toContain('mro/reset');
   }));
 
+  it('doClassificationCorrectionUri(),should return doClassificationCorrectionUri url', async(() => {
+    const serObj =new EndpointsClassicService();
+    expect(serObj.doClassificationCorrectionUri()).toContain('schema/do-mro-correction');
+  }));
+
+  it('masterRecordChangeUrl(),should return masterRecordChangeUrl url', async(() => {
+    const serObj =new EndpointsClassicService();
+    expect(serObj.masterRecordChangeUrl()).toContain('duplicate/updatemasterRecord');
+  }));
+
 });

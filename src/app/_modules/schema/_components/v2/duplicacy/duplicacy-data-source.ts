@@ -2,7 +2,7 @@ import { CollectionViewer } from '@angular/cdk/collections';
 import { DataSource } from '@angular/cdk/table';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { CatalogCheckService } from '@services/home/schema/catalog-check.service';
-import { RequestForCatalogCheckData } from '@models/schema/duplicacy';
+import { RequestForCatalogCheckData, RECORD_STATUS, RECORD_STATUS_KEY } from '@models/schema/duplicacy';
 import { SchemaTableData } from '@models/schema/schemadetailstable';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -66,6 +66,13 @@ export class DuplicacyDataSource implements DataSource<SchemaTableData> {
                 objnr.isReviewed = doc.isReviewed ? doc.isReviewed : false;
                 rowData.OBJECTNUMBER = objnr;
 
+                // record status
+                const status: SchemaTableData = new SchemaTableData();
+                status.fieldData = doc.masterRecord ? RECORD_STATUS.MASTER : RECORD_STATUS.NOT_DELETABLE;
+                status.fieldId = RECORD_STATUS_KEY ;
+                status.fieldDesc = 'Status';
+                rowData[RECORD_STATUS_KEY] = status;
+
                 const hdvs = doc.hdvs ? doc.hdvs : {};
                 for (const hdfld in hdvs) {
                     if (hdvs.hasOwnProperty(hdfld)) {
@@ -126,6 +133,13 @@ export class DuplicacyDataSource implements DataSource<SchemaTableData> {
      */
     docValue() {
         return this.dataSourceSubject.getValue();
+    }
+
+    /**
+     * reset data source
+     */
+    reset() {
+        this.dataSourceSubject.next([]);
     }
 
 

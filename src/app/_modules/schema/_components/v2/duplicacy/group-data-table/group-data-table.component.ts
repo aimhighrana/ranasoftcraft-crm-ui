@@ -27,6 +27,9 @@ export class GroupDataTableComponent implements OnInit, OnChanges, AfterViewInit
   @Input()
   runId: string;
 
+  @Input()
+  activeTab: string;
+
   @Output()
   groupChange: EventEmitter<any> = new EventEmitter();
 
@@ -69,9 +72,9 @@ export class GroupDataTableComponent implements OnInit, OnChanges, AfterViewInit
       refresh = true;
     }
 
-    /* if (changes && changes.runId && changes.runId.previousValue !== changes.runId.currentValue) {
+    if (changes && changes.activeTab && changes.activeTab.previousValue !== changes.activeTab.currentValue) {
       refresh = true;
-    } */
+    }
 
     if (refresh) {
       this.getDuplicacyGroupsList();
@@ -116,8 +119,10 @@ export class GroupDataTableComponent implements OnInit, OnChanges, AfterViewInit
     request.schemaId = this.schemaId;
     request.plantCode = '0';
     request.runId = this.runId || '';
-    request.from = isLoadingMore ? this.dataSource.data.length + 1: 1;
-    request.size = 20;
+    request.from = isLoadingMore ? this.dataSource.data.length : 0;
+    request.to = isLoadingMore ? this.dataSource.data.length + 20 : 20;
+    // request.to = 20;
+    request.requestStatus = this.activeTab;
 
     this.catalogService.getAllGroupIds(request)
       .subscribe(groups => {
