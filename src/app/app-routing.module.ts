@@ -8,7 +8,7 @@ import { AuthGuard } from './_guards/auth.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home/dash/welcome', pathMatch: 'full' },
-  { path: 'auth', loadChildren: () => import('./_modules/auth/auth.module').then(m => m.AuthModule), canLoad: [AuthGuard] },
+  { path: 'auth', loadChildren: () => import('./_modules/auth/auth.module').then(m => m.AuthModule) },
   { path: 'admin', loadChildren: () => import('./_modules/admin/admin.module').then(m => m.AdminModule), canActivate: [AuthGuard] },
   { path: 'home', loadChildren: () => import('./_modules/home/home.module').then(m => m.HomeModule), canActivate: [AuthGuard] },
   { path: 'nonav', loadChildren: () => import('./_modules/nonav/nonav.module').then(m => m.NonavModule), canActivate: [AuthGuard] },

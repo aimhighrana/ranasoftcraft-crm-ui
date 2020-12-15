@@ -14,7 +14,7 @@ export class EndpointsAuthService {
    * Get uri for validate refresh jwt
    */
   public validateRefreshjwttokenUrl() : string {
-    return `${this.apiUrl}/jwt/validate-refresh-token`;
+    return `${this.apiUrl}/validate-refresh-token`;
   }
 
   public signIn() : string{

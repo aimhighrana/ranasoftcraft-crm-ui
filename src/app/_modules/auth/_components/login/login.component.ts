@@ -28,7 +28,8 @@ export class LoginComponent implements OnInit {
   constructor(
     private msteamsConfigService: MsteamsConfigService,
     private activatedRouter: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private msteamServices: MsteamsConfigService
   ) { }
 
   ngOnInit(): void {
@@ -39,6 +40,35 @@ export class LoginComponent implements OnInit {
     this.activatedRouter.queryParams.subscribe(param=>{
       this.returnUrl = param.returnUrl ? param.returnUrl : '';
     });
+
+    try{
+      const jwtToken = localStorage.getItem('JWT-REFRESH-TOKEN');
+      if(jwtToken) {
+        this.validateToken(jwtToken).then(res=>{
+          if(res.body) {
+            res = res.body;
+            localStorage.setItem('JWT-TOKEN', (res['JWT-TOKEN'] ? res['JWT-TOKEN'] : ''));
+            localStorage.setItem('JWT-REFRESH-TOKEN', (res['JWT-REFRESH-TOKEN'] ? res['JWT-REFRESH-TOKEN'] :''));
+
+            this.router.navigate(['/home']);
+          }
+        }).catch(ex=>{
+          console.error(`Exception : ${ex.messgae}`);
+        });
+      }
+
+    }catch(ex){
+      console.error(`Exception ${ex.messgae}`);
+    }
+  }
+
+
+  /**
+   * Call service as promise for get sync token validation ..
+   * @param token get for validation token ..
+   */
+  async validateToken(token: string): Promise<any> {
+    return await this.msteamServices.validateToken(token).toPromise()
   }
 
   /**
