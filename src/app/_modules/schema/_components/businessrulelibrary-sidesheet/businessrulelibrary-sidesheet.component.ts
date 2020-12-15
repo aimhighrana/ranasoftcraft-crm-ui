@@ -18,9 +18,6 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
   businessRulesList: CoreSchemaBrInfo[] = [];
   filteredBusinessRulesList: CoreSchemaBrInfo[] = [];
   selectedBusinessRule: CoreSchemaBrInfo[] = [];
-  selectedBusinessRuleCopy: CoreSchemaBrInfo[] = [];
-  selectedBusinessRuleIds: string[] = [];
-  loader = false;
   selectedRuleType: BusinessRules;
 
   /**
@@ -37,6 +34,18 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
    * hold the business rule types
    */
   businessRuleTypes: BusinessRules[] = RULE_TYPES;
+
+  /**
+   * To hold schema business rule details
+   */
+  schemaBusinessRulesList: CoreSchemaBrInfo[] = [];
+
+  /**
+   * To store bRs info which should be deleted
+   */
+  BusinessRulesToBeDelete: CoreSchemaBrInfo[] = [];
+
+  alreadySelectedBrs: CoreSchemaBrInfo[] = [];
 
   constructor(
     private schemaService: SchemaService,
@@ -56,75 +65,72 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
       this.schemaId = params.schemaId;
       this.moduleId = params.moduleId;
     })
+    this.getBusinessRulesBySchemaId(this.schemaId);
     this.getBusinessRulesList(this.moduleId, '', '', String(this.fetchCount));
   }
 
-  // function to select a business rule from the list.
+
+  /**
+   * Function to get business rules according to schema Id
+   * @param schemaId : schema ID
+   */
+  getBusinessRulesBySchemaId(schemaId: string) {
+    this.schemaService.getBusinessRulesBySchemaId(schemaId).subscribe((response) => {
+      this.schemaBusinessRulesList = response;
+      // this.selectedBusinessRule = [...this.schemaBusinessRulesList]
+      this.alreadySelectedBrs = [...this.schemaBusinessRulesList];
+    }, (error) => {
+      console.log('Something went wrong while getting schema Brs', error.message);
+    })
+  }
+
+  /**
+   * function to select a business rule from the list.
+   */
   selectBusinessRule(rule: CoreSchemaBrInfo, action: string) {
     if (action === this.constants.ADD) {
       this.selectedBusinessRule.push(rule);
-      this.selectedBusinessRuleCopy.push(rule);
     } else {
-      const br = this.selectedBusinessRuleCopy.filter((businessRule) => businessRule.brId === rule.brId)[0];
-      const index = this.selectedBusinessRuleCopy.indexOf(br);
-      this.selectedBusinessRuleCopy.splice(index, 1)
+      const br = this.selectedBusinessRule.filter((businessRule) => businessRule.brId === rule.brId)[0];
+      const index = this.selectedBusinessRule.indexOf(br);
+      this.selectedBusinessRule.splice(index, 1)
     }
   }
 
-  // getter for GlobalConstants
+  /**
+   * Function to get constants(ADD/REMOVE)
+   */
   get constants() {
     return GLOBALCONSTANTS;
   }
 
-  /**
-   * Method to search through a rule from a list
-   * using the ruleInfo as searchTerm
-   */
-  search(searchTerm: string) {
-    if (searchTerm && searchTerm.trim()) {
-      this.filteredBusinessRulesList =
-        this.businessRulesList.filter((rule: CoreSchemaBrInfo) => {
-          if (rule.brInfo) {
-            return rule.brInfo.toLowerCase().includes(searchTerm.toLowerCase());
-          }
-        }
-        );
-    } else {
-      this.filteredBusinessRulesList = this.businessRulesList;
-    }
-  }
 
   /**
    * Check if a particular rule is selected
    */
   isSelected(rule: CoreSchemaBrInfo): boolean {
-    const selected: CoreSchemaBrInfo[] =
-      this.selectedBusinessRuleCopy.filter((selectedRule: CoreSchemaBrInfo) => selectedRule.brId === rule.brId);
-    return (selected.length > 0);
+    const selected = this.selectedBusinessRule.filter((selectedRule: CoreSchemaBrInfo) => selectedRule.brId === rule.brId);
+    const alreadySelected = this.alreadySelectedBrs.filter((selectedRule: CoreSchemaBrInfo) => selectedRule.brId === rule.brId);
+    return (selected.length > 0 || alreadySelected.length > 0);
   }
 
   /**
    * Get business rule list from the api
+   * @param moduleId moduleId
+   * @param searchString string to be searched
+   * @param brType type of busiess rule
+   * @param fetchCount count of batch to be fetched
    */
   getBusinessRulesList(moduleId: string, searchString: string, brType: string, fetchCount: string) {
-    this.loader = true;
-    if(moduleId){
-      this.schemaService.getBusinessRulesByModuleId(moduleId, searchString, brType, fetchCount).subscribe((rules: CoreSchemaBrInfo[]) => {
-        this.loader = false;
-        if (rules && rules.length > 0) {
-          this.businessRulesList = rules;
-          this.filteredBusinessRulesList = rules;
-        }
-      });
-    } else {
-      this.schemaService.getAllBusinessRules()
-      .subscribe((rules: CoreSchemaBrInfo[]) => {
-        if (rules && rules.length > 0) {
-          this.businessRulesList = rules;
-          this.filteredBusinessRulesList = rules;
-        }
-      });
-    }
+    this.schemaService.getBusinessRulesByModuleId(moduleId, searchString, brType, fetchCount).subscribe((rules: CoreSchemaBrInfo[]) => {
+      this.businessRulesList = rules;
+      if(this.fetchCount === 0) {
+        this.filteredBusinessRulesList = rules;
+      }
+      else {
+        this.filteredBusinessRulesList = [...this.filteredBusinessRulesList, ...rules];
+      }
+    });
   }
 
   /**
@@ -138,9 +144,9 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
    * save data and close the dialog
    */
   saveSelection() {
-    console.log(this.selectedBusinessRuleCopy);
+    console.log(this.selectedBusinessRule);
     if (this.outlet === 'sb') {
-      this.selectedBusinessRuleCopy.forEach(businessRule => {
+      this.selectedBusinessRule.forEach(businessRule => {
         const request: CoreSchemaBrInfo = new CoreSchemaBrInfo();
 
         request.brId = businessRule.brIdStr;
@@ -149,6 +155,7 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
         request.brType = businessRule.brType;
         request.fields = businessRule.fields;
         request.message = businessRule.message;
+        request.isCopied = false;
 
         this.schemaService.createBusinessRule(request).subscribe((response) => {
           console.log(response);
@@ -159,7 +166,12 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
       this.sharedService.setAfterBrSave(true);
     }
     else {
-      this.sharedService.setAfterBrSave(this.selectedBusinessRuleCopy);
+      this.selectedBusinessRule.forEach((businessRule) => {
+        businessRule.isCopied = true;
+        businessRule.schemaId = null;
+        businessRule.copiedFrom = null;
+      })
+      this.sharedService.setAfterBrSave(this.selectedBusinessRule);
     }
     this.closeDialogComponent();
   }
@@ -185,6 +197,22 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
    */
   trackByFn(index: number) {
     return index; // or item.id
+  }
+
+  /**
+   * Function to update fetchCount on scroll
+   * @param event: scroll event object
+   */
+  onScroll(event) {
+    const viewPortHeight = event.target.offsetHeight; // height of the complete viewport
+    const scrollFromTop = event.target.scrollTop;     // height till user has scrolled
+    const sideSheetHeight = event.target.scrollHeight; // complete scrollable height of the side sheet document
+
+    const limit = sideSheetHeight - scrollFromTop;
+    if (limit === viewPortHeight) {
+      this.fetchCount++;
+      this.getBusinessRulesList(this.moduleId, '', '', String(this.fetchCount))
+    }
   }
 
 }

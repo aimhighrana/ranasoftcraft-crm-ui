@@ -33,6 +33,10 @@ mat-card.root {
     height: calc(100% - 124px - 8px);
     overflow: auto;
 
+    .viewport-scroll {
+      height: 100%;
+    }
+
     mat-spinner {
       margin: 0 auto;
     }

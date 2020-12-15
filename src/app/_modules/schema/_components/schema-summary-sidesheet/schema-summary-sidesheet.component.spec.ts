@@ -52,9 +52,9 @@ describe('SchemaSummarySidesheetComponent', () => {
 
   it('getSchemaVariants(), should return all variants of a schema', async () => {
     component.schemaId = '1005'
-    spyOn(schemaVariantService, 'getSchemaVariantDetails').withArgs(component.schemaId).and.returnValue(of({} as VariantDetails[]))
-    component.getSchemaVariants(component.schemaId);
-    expect(schemaVariantService.getSchemaVariantDetails).toHaveBeenCalledWith(component.schemaId);
+    spyOn(schemaVariantService, 'getAllDataScopeList').withArgs(component.schemaId, 'RUNFOR').and.returnValue(of({} as VariantDetails[]))
+    component.getSchemaVariants(component.schemaId, 'RUNFOR');
+    expect(schemaVariantService.getAllDataScopeList).toHaveBeenCalledWith(component.schemaId, 'RUNFOR');
   })
 
   it('getBusinessRuleList(), should get business rule list of schema', async () => {

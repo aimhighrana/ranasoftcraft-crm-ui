@@ -50,6 +50,7 @@ export class CoreSchemaBrInfo {
     transFormationSchema?: TransformationModel[];
     isCopied?: boolean;
     moduleId?: string;
+    copiedFrom? : string;
 }
 
 export enum BusinessRuleType {

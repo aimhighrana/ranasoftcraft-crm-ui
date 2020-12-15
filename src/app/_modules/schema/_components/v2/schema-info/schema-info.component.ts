@@ -39,9 +39,9 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
   /**
    * to have subscribers data of schema
    */
-  subscriberData: SchemaDashboardPermission[];
+  subscriberData: SchemaDashboardPermission[] = [];
 
-  businessRuleData: CoreSchemaBrInfo[];
+  businessRuleData: CoreSchemaBrInfo[] = [];
   activeTab: string;
   selectedIndex: number;
   category: CategoryInfo[];
@@ -84,6 +84,16 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
   roles = ROLES;
 
   /**
+   * Null state message to show when schema does not have any business rule
+   */
+  brsNullMessage = `You don't have any business rules selected. Type the business rule in the box above to add one.`;
+
+  /**
+   * Null state message to show when schema does not have any subscriber
+   */
+  subscribersNullMessage = `You don't have any subscribers selected. Type the user's name in the box above to add one.`;
+
+  /**
    * To hold all the subscriptions related to component
    */
   subscriptions: Subscription[] = [];
@@ -112,6 +122,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     const getBrSubscription = this.sharedService.getAfterBrSave().subscribe(res => {
       if (res) {
         this.getBusinessRuleList(this.schemaId);
+        this.getAllBusinessRulesList(this.moduleId, '', '', '0')
       }
     });
     this.subscriptions.push(getBrSubscription);
@@ -170,6 +181,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       schemaDescription: new FormControl(''),
       schemaThreshold: new FormControl()
     })
+    // this.schemaSummaryForm.get('schemaThreshold').disable(); // disable threshold slider..
   }
 
   /**
@@ -808,16 +820,19 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     console.log(brInfo);
     const request: CoreSchemaBrInfo = new CoreSchemaBrInfo();
 
-    request.brId = brInfo.brIdStr;
+    request.brId = '';
     request.schemaId = this.schemaId;
     request.brInfo = brInfo.brInfo;
     request.brType = brInfo.brType;
     request.fields = brInfo.fields;
     request.message = brInfo.message;
-    request.isCopied = false;
+    request.moduleId = this.moduleId;
+    request.isCopied = true;
+    request.copiedFrom = brInfo.brIdStr;
 
-    const existBr = this.businessRuleData.filter((businessRule) => businessRule.brIdStr === request.brId)[0];
-    if (existBr) {
+    const checkExistBr = this.businessRuleData.filter((businessRule) => businessRule.brIdStr === brInfo.brIdStr)[0];
+    const checkExistCopiedBr = this.businessRuleData.filter((businessRule) => businessRule.copiedFrom === brInfo.brIdStr)[0];
+    if (checkExistBr || checkExistCopiedBr) {
       this.matSnackBar.open('This business rule is already added.', 'Okay', {
         duration: 2000
       })

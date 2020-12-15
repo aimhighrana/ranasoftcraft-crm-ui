@@ -182,33 +182,21 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
   addSubscriber(subscriber: any) {
     subscriber.isAdd = true;
     let subscriberData = {};
-    if(this.outlet === 'sb') {
-      subscriberData = {
-        sno: this.subscriberId === 'new' ? (Math.floor(Math.random() * Math.pow(100000, 2))) : this.subscriberId,
-        schemaId: this.schemaId,
-        isAdmin: false,
-        isReviewer: false,
-        isViewer: false,
-        isEditer: false,
-        groupid: '',
-        roleId: '',
-        userid: subscriber.userName,
-        permissionType: 'USER',
-        initials: this.shortName(subscriber.fName, subscriber.lName),
-        fullName: subscriber.fullName,
-        role: '',
-        plantCode: '',
-        isCopied: false
-      }
-    }
-    else {
-      subscriberData = {
-        sno: Math.floor(Math.random() * Math.pow(100000, 2)),
-        userMdoModel: subscriber,
-        filterCriteria: [],
-        isViewer: true
-      } as SchemaDashboardPermission
-    }
+    subscriberData = {
+      sno: Math.floor(Math.random() * Math.pow(100000, 2)),
+      userMdoModel: subscriber,
+      filterCriteria: [],
+      isViewer: true,
+      schemaId: this.schemaId,
+      isAdmin: false,
+      isReviewer: false,
+      isEditer: false,
+      groupid: '',
+      roleId: '',
+      userid: subscriber.userName,
+      permissionType: 'USER',
+      isCopied: this.outlet === 'sb' ? false : true
+    } as SchemaDashboardPermission
     this.addSubscriberArr.push(subscriberData);
   }
 
@@ -266,11 +254,11 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
     });
 
     this.dialogSubscriber = this.globalDialogService.dialogCloseEmitter
-    .pipe(distinctUntilChanged())
-    .subscribe((response) => {
+      .pipe(distinctUntilChanged())
+      .subscribe((response) => {
 
-      this.dialogSubscriber.unsubscribe();
-    });
+        this.dialogSubscriber.unsubscribe();
+      });
   }
 
   /**

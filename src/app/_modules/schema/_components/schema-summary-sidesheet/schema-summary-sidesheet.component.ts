@@ -1,7 +1,7 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { FormControl } from '@angular/forms';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatSliderChange } from '@angular/material/slider';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,7 +9,7 @@ import { PermissionOn, SchemaCollaborator, SchemaDashboardPermission, UserMdoMod
 import { AddFilterOutput, CheckDataBrs, CheckDataRequest, CheckDataSubscriber } from '@models/schema/schema';
 import { SchemaExecutionRequest } from '@models/schema/schema-execution';
 import { CategoryInfo, FilterCriteria } from '@models/schema/schemadetailstable';
-import { CoreSchemaBrMap, LoadDropValueReq, SchemaListDetails, SchemaStaticThresholdRes, VariantDetails } from '@models/schema/schemalist';
+import { CoreSchemaBrMap, LoadDropValueReq, SchemaListDetails, VariantDetails } from '@models/schema/schemalist';
 import { CoreSchemaBrInfo, DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { GlobaldialogService } from '@services/globaldialog.service';
@@ -37,21 +37,15 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    */
   schemaId: string;
 
-  thresholdValue: number;
-  errorValue: number;
-  successValue: number;
-
-  /**
-   * complete statics of schema
-   */
-  schemaStatics: SchemaStaticThresholdRes;
-
   /**
    * to have subscribers data of schema
    */
   subscriberData: SchemaDashboardPermission[] = [];
 
-  businessRuleData: CoreSchemaBrInfo[];
+  /**
+   * To have business rule data of schema
+   */
+  businessRuleData: CoreSchemaBrInfo[] = [];
   activeTab: string;
   selectedIndex: number;
   category: CategoryInfo[];
@@ -59,10 +53,10 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
   loadDopValuesFor: LoadDropValueReq;
   collaboratorData: SchemaCollaborator;
   reInilize = true;
-  /** FormGroup to have schema summary form.. */
-  schemaSummaryForm: FormGroup;
 
-  /** To have variant details of a schema */
+  /**
+   * To have variant details of a schema
+   */
   variantDetails: VariantDetails[];
 
   /**
@@ -96,6 +90,21 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
   checkDataBRsData = [];
 
   /**
+   * Null state message to show when schema does not have any business rule added
+   */
+  brsNullMessage = `You don't have any business rules selected. Type the business rule in the box above to add one.`;
+
+  /**
+   * Null state message to show when schema does not have any subscriber added
+   */
+  subscribersNullMessage = `You don't have any subscribers selected. Type the user's name in the box above to add one.`;
+
+  /**
+   * formcontrol for data scope
+   */
+  dataScopeControl: FormControl;
+
+  /**
    * To hold all the subscriptions related to component
    */
   subscriptions: Subscription[] = [];
@@ -119,11 +128,14 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.getRouteParams();
 
-    this.sharedService.getAfterBrSave().subscribe(res => {
+    this.dataScopeControl = new FormControl('');
+
+    const brSave = this.sharedService.getAfterBrSave().subscribe(res => {
       if (res) {
         this.businessRuleData.push(...res);
       }
     });
+    this.subscriptions.push(brSave);
 
     this.sharedService.getAfterSubscriberSave().subscribe(res => {
       if (res) {
@@ -143,7 +155,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
       this.moduleId = params.moduleId;
       this.schemaId = params.schemaId;
 
-      this.getSchemaVariants(this.schemaId);
+      this.getSchemaVariants(this.schemaId, 'RUNFOR');
       this.getSchemaDetails(this.schemaId);
     })
   }
@@ -170,8 +182,8 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    * Function to get dataScope/variants of schema
    * @param schemaId : ID of schema
    */
-  getSchemaVariants(schemaId: string) {
-    const schemaVariantList = this.schemaVariantService.getSchemaVariantDetails(schemaId).subscribe(response => {
+  getSchemaVariants(schemaId: string, type: string) {
+    const schemaVariantList = this.schemaVariantService.getAllDataScopeList(schemaId, type).subscribe(response => {
       this.variantDetails = response;
     }, error => {
       console.log('Error while getting schema variants', error.message)
@@ -200,6 +212,11 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
   public getBusinessRuleList(schemaId: string) {
     const businessRuleList = this.schemaService.getBusinessRulesBySchemaId(schemaId).subscribe((responseData) => {
       this.businessRuleData = responseData;
+      this.businessRuleData.forEach((businessRule) => {
+        businessRule.isCopied = true;
+        businessRule.copiedFrom = null;
+        businessRule.schemaId = null;
+      })
     }, error => {
       console.log('Error while fetching business rule info for schema', error);
     })
@@ -225,27 +242,14 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    * @param event value of chnaged
    */
   updateBr(br: CoreSchemaBrInfo, event?: any) {
-    const request: CoreSchemaBrMap = new CoreSchemaBrMap();
+    const businessRule: CoreSchemaBrInfo = this.businessRuleData.filter((rule) => rule.brIdStr === br.brIdStr)[0];
     if (event instanceof MatSliderChange) {
-      request.brWeightage = (event as MatSliderChange).value;
-    } else if (event instanceof MatSlideToggleChange) {
-      request.status = (event as MatSlideToggleChange).checked ? '1' : '0';
+      businessRule.brWeightage = String((event as MatSliderChange).value);
     }
-    request.schemaId = this.schemaId;
-    request.brId = br.brIdStr;
-    request.order = br.order;
-    if (!request.brWeightage) {
-      request.brWeightage = Number(br.brWeightage);
+    else if (event instanceof MatCheckboxChange) {
+      console.log(event.checked);
+      businessRule.status = (event as MatCheckboxChange).checked ? '1' : '0';
     }
-    if (!request.status) {
-      request.status = br.status
-    }
-    const updateBusinessRule = this.schemaService.updateBrMap(request).subscribe(res => {
-      if (res) {
-        this.getBusinessRuleList(this.schemaId);
-      }
-    }, error => console.error(`Error : ${error.message}`));
-    this.subscriptions.push(updateBusinessRule);
   }
 
   /**
@@ -263,13 +267,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
         request.brId = br.brIdStr;
         request.order = event.currentIndex;
         request.brWeightage = Number(br.brWeightage);
-        request.status = br.status
-        const updateBusinessRule = this.schemaService.updateBrMap(request).subscribe(res => {
-          if (res) {
-            this.getBusinessRuleList(this.schemaId);
-          }
-        }, error => console.error(`Error : ${error.message}`));
-        this.subscriptions.push(updateBusinessRule);
+        request.status = br.status;
       }
     }
   }
@@ -301,9 +299,10 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    * @param schema runable schema details .
    */
   runSchema() {
+    console.log(this.dataScopeControl.value);
     const schemaExecutionReq: SchemaExecutionRequest = new SchemaExecutionRequest();
     schemaExecutionReq.schemaId = this.schemaId;
-    schemaExecutionReq.variantId = '0'; // 0 for run all
+    schemaExecutionReq.variantId = this.dataScopeControl.value ? this.dataScopeControl.value : '0'; // 0 for run all
     this.schemaExecutionService.scheduleSChema(schemaExecutionReq, true).subscribe(data => {
       this.schemaDetails.isInRunning = true;
     }, (error) => {
@@ -521,6 +520,9 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    * @param brInfo: object contains business rule info
    */
   addBusinessRule(brInfo) {
+    brInfo.isCopied = false;
+    brInfo.schemaId = null;
+    brInfo.copiedFrom = null;
     this.businessRuleData.push(brInfo); // Push it into current Business rule listing array..
   }
 
@@ -595,7 +597,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
       businessRule.moduleId = this.moduleId;
       businessRule.schemaId = this.schemaId;
 
-      forkObj[index] = this.schemaService.createBusinessRule(businessRule)
+      forkObj[index] = this.schemaService.createCheckDataBusinessRule(businessRule)
     })
 
     const subscriberSnos = this.schemaDetailsService.createUpdateUserDetails(this.subscriberData)
