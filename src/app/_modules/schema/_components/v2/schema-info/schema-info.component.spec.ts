@@ -328,19 +328,22 @@ describe('SchemaInfoComponent', () => {
       brInfo: 'Missing data',
       fields: 'Region',
       message: 'Region should be Asia',
-      isCopied: false
+      isCopied: true
     } as CoreSchemaBrInfo;
     component.schemaId = '245521';
+    component.moduleId = '1005';
 
     const request: CoreSchemaBrInfo = new CoreSchemaBrInfo();
 
-    request.brId = brInfo.brIdStr;
+    request.brId = '';
     request.schemaId = component.schemaId;
     request.brInfo = brInfo.brInfo;
     request.brType = brInfo.brType;
     request.fields = brInfo.fields;
     request.message = brInfo.message;
     request.isCopied = brInfo.isCopied;
+    request.moduleId = component.moduleId;
+    request.copiedFrom = brInfo.brIdStr;
 
     component.businessRuleData = [
       {

@@ -298,4 +298,12 @@ export class SchemaService {
   public getCheckData(schemaId: string): Observable<CheckDataResponse> {
     return this.http.get<CheckDataResponse>(this.endpointService.getCheckDataUrl(schemaId));
   }
+
+  /**
+   * function to POST Api call to create business rule for saving brs into check data.
+   * @param brRequest: req object contains business rule info.
+   */
+  public createCheckDataBusinessRule(brRequest: CoreSchemaBrInfo): Observable<CoreSchemaBrInfo> {
+    return this.http.post<CoreSchemaBrInfo>(this.endpointService.createCheckDataBusinessRuleUrl(), brRequest);
+  }
 }

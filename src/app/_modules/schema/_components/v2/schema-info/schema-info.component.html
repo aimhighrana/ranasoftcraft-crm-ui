@@ -106,43 +106,53 @@
                          [extraOptionLabel]="'Add new rule'" (optionSelectedEmit)="addBusinessRule($event)" (emitSearchValue)="getAllBusinessRulesList(moduleId, $event, '', '0')"></pros-form-input-autoselect>
                     </div>
                 </div>
-                <div cdkDropList [cdkDropListData]="businessRuleData" (cdkDropListDropped)="drop($event)">
-                    <div *ngFor="let businessRule of businessRuleData" cdkDrag class="f-row colunm-box rule-border-row">
-                        <div class="col">
-                            <!-- <button mat-button cdkDragHandle> -->
-                                <mat-icon fontSet="mdo-icons">two-lines</mat-icon>
-                            <!-- </button> -->
-                        </div>
-                        <div class="col col-x4" (click)="editBr(businessRule)">
-                            <div mat-line><a class="info-link">{{businessRule.brInfo}}</a></div>
-                        </div>
-                        <div class="col col-x4">
-                            <button mat-stroked-button [matMenuTriggerFor]="businessRuleCat">
-                                {{ businessRule.categoryInfo ?  (businessRule.categoryInfo.categoryDesc ? businessRule.categoryInfo.categoryDesc : 'Untitled') : 'Unknown' }}
-                                <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon>
-                            </button>
-                            <mat-menu #businessRuleCat="matMenu" class="navigation-menu">
-                                <button mat-menu-item *ngFor="let cat of category"
-                                (click)="updateCategory(cat, businessRule)">
-                                {{ cat.categoryDesc ? cat.categoryDesc : cat.categoryId }}</button>
-                            </mat-menu>
-                        </div>
-                        <div class="col col-x4">
-                            <mat-slider color="primary" [value]="businessRule.brWeightage" thumbLabel tickInterval="1"
-                                min="0" [max]="availableWeightage(businessRule.brWeightage)" (change)="updateBr(businessRule,$event)">
-                            </mat-slider> <span class="f-col-spacer-half"></span>
-                            <div>{{businessRule.brWeightage}}%</div>
-                        </div>
-                        <div class="col col-x4">
-                            <mat-checkbox color="primary" [checked]="businessRule.status === '1' ? true : false"
-                            (change)="updateBr(businessRule,$event)"></mat-checkbox>
-                            <span class="f-spacer"></span>
-                            <button mat-button (click)="deleteBr(businessRule)">
-                                <mat-icon fontSet="mdo-icons">recycle-bin</mat-icon>
-                            </button>
+
+                <ng-template [ngIf]="businessRuleData.length>0" [ngIfElse]="nullState">
+                    <div cdkDropList [cdkDropListData]="businessRuleData" (cdkDropListDropped)="drop($event)">
+                        <div *ngFor="let businessRule of businessRuleData" cdkDrag class="f-row colunm-box rule-border-row">
+                            <div class="col" cdkDragHandle>
+                                <button mat-button cdkDragHandle>
+                                    <mat-icon fontSet="mdo-icons">two-lines</mat-icon>
+                                </button>
+                            </div>
+                            <div class="col col-x4" (click)="editBr(businessRule)">
+                                <div mat-line><a class="info-link">{{businessRule.brInfo}}</a></div>
+                            </div>
+                            <div class="col col-x4">
+                                <button mat-stroked-button [matMenuTriggerFor]="businessRuleCat">
+                                    {{ businessRule.categoryInfo ?  (businessRule.categoryInfo.categoryDesc ? businessRule.categoryInfo.categoryDesc : 'Untitled') : 'Unknown' }}
+                                    <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon>
+                                </button>
+                                <mat-menu #businessRuleCat="matMenu" class="navigation-menu">
+                                    <button mat-menu-item *ngFor="let cat of category"
+                                    (click)="updateCategory(cat, businessRule)">
+                                    {{ cat.categoryDesc ? cat.categoryDesc : cat.categoryId }}</button>
+                                </mat-menu>
+                            </div>
+                            <div class="col col-x4">
+                                <mat-slider color="primary" [value]="businessRule.brWeightage" thumbLabel tickInterval="1"
+                                    min="0" [max]="availableWeightage(businessRule.brWeightage)" (change)="updateBr(businessRule,$event)">
+                                </mat-slider> <span class="f-col-spacer-half"></span>
+                                <div>{{businessRule.brWeightage}}%</div>
+                            </div>
+                            <div class="col col-x4">
+                                <mat-checkbox color="primary" [checked]="businessRule.status === '1' ? true : false"
+                                (change)="updateBr(businessRule,$event)"></mat-checkbox>
+                                <span class="f-spacer"></span>
+                                <button mat-button (click)="deleteBr(businessRule)">
+                                    <mat-icon fontSet="mdo-icons">recycle-bin</mat-icon>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </ng-template>
+
+                <ng-template #nullState>
+                    <pros-null-state [message]="brsNullMessage"
+                    [button]="false">
+                    </pros-null-state>
+                </ng-template>
+               
             </div>
         </mat-tab>
 
@@ -168,82 +178,91 @@
                     </div>
                 </div>
 
-                <div class="f-row colunm-box rule-border-row" *ngFor="let subscriber of subscriberData">
-                    <div class="col">
-                        <mat-card-header>
-                            <div mat-card-avatar *ngIf="subscriber.userMdoModel">
-                                {{shortName(subscriber.userMdoModel.fName, subscriber.userMdoModel.lName)}}
-                            </div>
-                        </mat-card-header>
-                    </div>
-                    <div class="col col-x4">
-                        <mat-card-header>
-                            <mat-card-title *ngIf="subscriber.userMdoModel">
-                                {{subscriber.userMdoModel.fName}} {{subscriber.userMdoModel.lName}}
-                            </mat-card-title>
-                        </mat-card-header>
-                    </div>
-                    <div class="col col-x4" [matMenuTriggerFor]="subscriberRole">
-                        <button mat-stroked-button *ngIf="subscriber.isAdmin">Admin <mat-icon fontSet="mdo-icons">
-                                menu-arrow</mat-icon></button>
-                        <button mat-stroked-button *ngIf="subscriber.isReviewer">Reviewer <mat-icon fontSet="mdo-icons">
-                                menu-arrow</mat-icon></button>
-                        <button mat-stroked-button *ngIf="subscriber.isViewer">Viewer <mat-icon fontSet="mdo-icons">
-                                menu-arrow</mat-icon></button>
-                        <button mat-stroked-button *ngIf="subscriber.isEditer">Editor <mat-icon fontSet="mdo-icons">
-                                menu-arrow</mat-icon></button>
-                    </div>
-                    <mat-menu #subscriberRole="matMenu">
-                        <button mat-menu-item *ngFor="let role of roles" (click)="updateRole(subscriber, role.code)">{{role.text}}</button>
-                    </mat-menu>
-
-                    <div class="col col-x16">
-                        <mat-chip-list>
-                            <ng-template ngFor let-ctrl [ngForOf]="subscriber.filterCriteria">
-
+                <ng-template [ngIf]="subscriberData.length>0" [ngIfElse]="subscriberNullState">
+                    <div class="f-row colunm-box rule-border-row" *ngFor="let subscriber of subscriberData">
+                        <div class="col">
+                            <mat-card-header>
+                                <div mat-card-avatar *ngIf="subscriber.userMdoModel">
+                                    {{shortName(subscriber.userMdoModel.fName, subscriber.userMdoModel.lName)}}
+                                </div>
+                            </mat-card-header>
+                        </div>
+                        <div class="col col-x4">
+                            <mat-card-header>
+                                <mat-card-title *ngIf="subscriber.userMdoModel">
+                                    {{subscriber.userMdoModel.fName}} {{subscriber.userMdoModel.lName}}
+                                </mat-card-title>
+                            </mat-card-header>
+                        </div>
+                        <div class="col col-x4" [matMenuTriggerFor]="subscriberRole">
+                            <button mat-stroked-button *ngIf="subscriber.isAdmin">Admin <mat-icon fontSet="mdo-icons">
+                                    menu-arrow</mat-icon></button>
+                            <button mat-stroked-button *ngIf="subscriber.isReviewer">Reviewer <mat-icon fontSet="mdo-icons">
+                                    menu-arrow</mat-icon></button>
+                            <button mat-stroked-button *ngIf="subscriber.isViewer">Viewer <mat-icon fontSet="mdo-icons">
+                                    menu-arrow</mat-icon></button>
+                            <button mat-stroked-button *ngIf="subscriber.isEditer">Editor <mat-icon fontSet="mdo-icons">
+                                    menu-arrow</mat-icon></button>
+                        </div>
+                        <mat-menu #subscriberRole="matMenu">
+                            <button mat-menu-item *ngFor="let role of roles" (click)="updateRole(subscriber, role.code)">{{role.text}}</button>
+                        </mat-menu>
+    
+                        <div class="col col-x16">
+                            <mat-chip-list>
+                                <ng-template ngFor let-ctrl [ngForOf]="subscriber.filterCriteria">
+    
+                                    <mat-chip class="mdo-filter-matchip" disableRipple="true"
+                                        [matMenuTriggerFor]="appliedfiltermenu" (click)="loadDropValues(ctrl)">
+                                        <label>
+                                            {{ ctrl.filterCtrl ? ctrl.filterCtrl.fldCtrl.fieldDescri : 'Unknown' }}
+                                            :
+                                        </label>
+                                        <ng-template [ngIf]="ctrl.filterCtrl && ctrl.filterCtrl.selectedValues.length >= 1">
+                                            <span class="info">
+                                                {{ prepareTextToShow(ctrl) }}
+                                            </span>
+                                        </ng-template>
+                                        <mat-icon matChipRemove (click)="removeAppliedFilter(ctrl, subscriber.sno)">clear
+                                        </mat-icon>
+                                    </mat-chip>
+                                </ng-template>
+    
                                 <mat-chip class="mdo-filter-matchip" disableRipple="true"
-                                    [matMenuTriggerFor]="appliedfiltermenu" (click)="loadDropValues(ctrl)">
-                                    <label>
-                                        {{ ctrl.filterCtrl ? ctrl.filterCtrl.fldCtrl.fieldDescri : 'Unknown' }}
-                                        :
-                                    </label>
-                                    <ng-template [ngIf]="ctrl.filterCtrl && ctrl.filterCtrl.selectedValues.length >= 1">
-                                        <span class="info">
-                                            {{ prepareTextToShow(ctrl) }}
-                                        </span>
-                                    </ng-template>
-                                    <mat-icon matChipRemove (click)="removeAppliedFilter(ctrl, subscriber.sno)">clear
-                                    </mat-icon>
+                                    [matMenuTriggerFor]="addfiltermenu" (click)="reInilize = !reInilize">
+                                    <mat-icon fontSet="mdo-icons">folder-filter</mat-icon>
                                 </mat-chip>
-                            </ng-template>
-
-                            <mat-chip class="mdo-filter-matchip" disableRipple="true"
-                                [matMenuTriggerFor]="addfiltermenu" (click)="reInilize = !reInilize">
-                                <mat-icon fontSet="mdo-icons">folder-filter</mat-icon>
-                            </mat-chip>
-
-                        </mat-chip-list>
-
-                        <mat-menu #appliedfiltermenu="matMenu">
-                            <pros-filter-values (selectedValues)="fetchSelectedValues($event, subscriber.sno)"
-                                [moduleId]="moduleId"
-                                [fieldId]="loadDopValuesFor ? loadDopValuesFor.fieldId : ''"
-                                [checkedValue]="loadDopValuesFor ? loadDopValuesFor.checkedValue : []">
-                            </pros-filter-values>
-                        </mat-menu>
-
-                        <mat-menu #addfiltermenu="matMenu">
-                            <pros-add-filter-menu [moduleId]="moduleId"
-                                (evtReadyForApply)="makeFilterControl($event, subscriber.sno)" [reInilize]="reInilize">
-                            </pros-add-filter-menu>
-                        </mat-menu>
+    
+                            </mat-chip-list>
+    
+                            <mat-menu #appliedfiltermenu="matMenu">
+                                <pros-filter-values (selectedValues)="fetchSelectedValues($event, subscriber.sno)"
+                                    [moduleId]="moduleId"
+                                    [fieldId]="loadDopValuesFor ? loadDopValuesFor.fieldId : ''"
+                                    [checkedValue]="loadDopValuesFor ? loadDopValuesFor.checkedValue : []">
+                                </pros-filter-values>
+                            </mat-menu>
+    
+                            <mat-menu #addfiltermenu="matMenu">
+                                <pros-add-filter-menu [moduleId]="moduleId"
+                                    (evtReadyForApply)="makeFilterControl($event, subscriber.sno)" [reInilize]="reInilize">
+                                </pros-add-filter-menu>
+                            </mat-menu>
+                        </div>
+                        <div class="col mat-item-end">
+                            <button mat-button (click)="deleteSubscriber(subscriber.sno)">
+                                <mat-icon fontSet="mdo-icons">recycle-bin</mat-icon>
+                            </button>
+                        </div>
                     </div>
-                    <div class="col mat-item-end">
-                        <button mat-button (click)="deleteSubscriber(subscriber.sno)">
-                            <mat-icon fontSet="mdo-icons">recycle-bin</mat-icon>
-                        </button>
-                    </div>
-                </div>
+                </ng-template>
+
+                <ng-template #subscriberNullState>
+                    <pros-null-state
+                    [button]="false"
+                    [message]="subscribersNullMessage">
+                    </pros-null-state>
+                </ng-template>
             </div>
         </mat-tab>
 

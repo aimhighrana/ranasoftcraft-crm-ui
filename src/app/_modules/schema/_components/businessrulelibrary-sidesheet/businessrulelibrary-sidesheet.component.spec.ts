@@ -14,6 +14,7 @@ describe('BusinessrulelibrarySidesheetComponent', () => {
   let schemaService: SchemaService;
 
 
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [BusinessrulelibrarySidesheetComponent],
@@ -50,7 +51,7 @@ describe('BusinessrulelibrarySidesheetComponent', () => {
     component.selectBusinessRule(rule, action);
     expect(component.selectedBusinessRule.length).toEqual(1);
 
-    component.selectedBusinessRuleCopy = [
+    component.selectedBusinessRule = [
       {
         brId: '13454556',
         brIdStr: '134545566',
@@ -65,34 +66,7 @@ describe('BusinessrulelibrarySidesheetComponent', () => {
     action = component.constants.REMOVE;
     component.selectBusinessRule(rule, action);
 
-    expect(component.selectedBusinessRuleCopy.length).toEqual(1);
-  })
-
-  it('search(), should search for business rules', async() => {
-    let searchTerm = 'Business rule - 1';
-    component.businessRulesList = [
-      {
-        brId: '13454556',
-        brIdStr: '134545566',
-        brInfo: 'regex rule'
-      },
-      {
-        brId: '13454552',
-        brIdStr: '134545563',
-        brInfo: 'missing rule'
-      }
-  ] as CoreSchemaBrInfo[];
-
-  component.search(searchTerm);
-  expect(component.filteredBusinessRulesList.length).toEqual(0);
-
-  searchTerm = '';
-  component.search(searchTerm);
-  expect(component.filteredBusinessRulesList.length).toEqual(2);
-
-  searchTerm = 'Reg';
-  component.search(searchTerm);
-  expect(component.filteredBusinessRulesList.length).toEqual(1);
+    expect(component.selectedBusinessRule.length).toEqual(1);
   })
 
   it('isSelected(), should check selection of business rule', async() => {
@@ -100,7 +74,7 @@ describe('BusinessrulelibrarySidesheetComponent', () => {
       brId: '2566241'
     } as CoreSchemaBrInfo;
 
-    component.selectedBusinessRuleCopy = [
+    component.selectedBusinessRule = [
       {
         brId: '2566241'
       },
@@ -119,11 +93,8 @@ describe('BusinessrulelibrarySidesheetComponent', () => {
     res = component.isSelected(rule);
     expect(res).toEqual(false);
   })
-  it('getBusinessRulesList', async() => {
-      // call without module Id
-      spyOn(schemaService, 'getAllBusinessRules').and.callFake(() => of([]));
-      component.getBusinessRulesList(null, null, null, null);
-      expect(schemaService.getAllBusinessRules).toHaveBeenCalled();
+
+  it('getBusinessRulesList(), Should get business rules list according to module Id', async() => {
       // call with module Id
       spyOn(schemaService, 'getBusinessRulesByModuleId').and.callFake(() => of([]));
       component.getBusinessRulesList('testId', null, null, null);

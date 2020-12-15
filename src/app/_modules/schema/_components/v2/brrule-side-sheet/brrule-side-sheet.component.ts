@@ -754,6 +754,7 @@ export class BrruleSideSheetComponent implements OnInit {
       request.brWeightage = this.form.value.weightage;
       request.categoryId = this.coreSchemaBrInfo.categoryId ? this.coreSchemaBrInfo.categoryId : this.form.value.categoryId;
       request.isCopied = false;
+      request.copiedFrom = '';
       this.schemaService.createBusinessRule(request).subscribe(res => {
         this.sharedService.setAfterBrSave(res);
         this.router.navigate([{ outlets: { sb: null } }]);

@@ -567,4 +567,11 @@ export class EndpointsClassicService {
   public getAllBusinessRulesUrl() {
     return this.apiUrl + `/schema/get-all-business-rules/`
   }
+
+  /**
+   * endpoint for creating business rules at the time of check data..
+   */
+  public createCheckDataBusinessRuleUrl(): string {
+    return `${this.apiUrl}/schema/create-br`;
+  }
 }
