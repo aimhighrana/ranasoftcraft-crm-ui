@@ -29,7 +29,7 @@ describe('EndpointsAuthService', () => {
 
   it('validateRefreshjwttokenUrl(), should validate Token', async(() => {
     const serObj = new EndpointsAuthService();
-    expect(serObj.validateRefreshjwttokenUrl()).toContain('jwt/validate-refresh-token');
+    expect(serObj.validateRefreshjwttokenUrl()).toContain('refresh');
   }));
 
   it('jwtRefresh(), should call jwtrefresh function', async(() => {

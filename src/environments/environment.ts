@@ -1,12 +1,26 @@
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
+
+/**
+ * analyticsUrl for analytics microservices ..
+ * apiurl for classic mdo
+ * coreUrl for core apis from microservices ..
+ * syncUrl for sync / job related  from microservices ..
+ * authUrl for authentication from microservices ...
+ *
+ * Note : use only in development mode ... not required on environment.prod.ts ..
+ */
+
 export const environment = {
   production: false,
-  // apiurl: 'http://localhost:8080/MDOSF/fapi'
-   apiurl: 'https://beta.mdoondemand.com'
-  //  apiurl: 'https://transport-dev.masterdataonline.com/MDOSF/fapi'
-  // apiurl: 'https://devreplica.masterdataonline.com/MDOSF/fapi'
+  analyticsUrl: 'http://localhost:8081',
+  apiurl: 'https://beta.mdoondemand.com',
+  coreUrl:'http://localhost:8084',
+  syncUrl:'http://localhost:8085',
+  authUrl:'http://localhost:8081',
+
+
 };
 
 /*

@@ -18,7 +18,7 @@ export class JwtInterceptorService implements HttpInterceptor {
   initialTotalRequests = 0;
   pendingRequestsCount = 0;
 
-  ignoreToAppendInterceptor: string[] = ['jwt/validate-refresh-token'];
+  ignoreToAppendInterceptor: string[] = ['auth/signin'];
 
   constructor(
     private router: Router,
@@ -76,12 +76,12 @@ export class JwtInterceptorService implements HttpInterceptor {
       // Reset here so that the following requests wait until the token
       // comes back from the refreshToken call.
       this.tokenSubject.next(null);
-
-      const headers: HttpHeaders = new HttpHeaders({
-        Skip401Interceptor: ''
-      });
       const refreshToken = localStorage.getItem('JWT-REFRESH-TOKEN');
-      return this.http.post<any>(this.endpointService.jwtRefresh(), refreshToken, { observe: 'response', headers })
+      const headers: HttpHeaders = new HttpHeaders({
+        Skip401Interceptor: '',
+        Authorization: `Bearer ${refreshToken}`
+      });
+      return this.http.post<any>(this.endpointService.jwtRefresh(), '', { observe: 'response', headers })
         .pipe(
           finalize(() => this.isRefreshingToken = false),
           switchMap(
@@ -169,16 +169,21 @@ export class JwtInterceptorService implements HttpInterceptor {
   }
 
   isValidRequestForInterceptor(requestUrl: string): boolean {
-    const positionIndicator = 'fapi/';
-    const position = requestUrl.indexOf(positionIndicator);
-    if (position > 0) {
-      const destination: string = requestUrl.substr(position + positionIndicator.length);
-      for (const address of this.ignoreToAppendInterceptor) {
-        if (new RegExp(address).test(destination)) {
-          return false;
-        }
+    for (const address of this.ignoreToAppendInterceptor) {
+      if(requestUrl.indexOf(address) !==-1) {
+        return false;
       }
     }
+    // const positionIndicator = 'fapi/';
+    // const position = requestUrl.indexOf(positionIndicator);
+    // if (position > 0) {
+    //   const destination: string = requestUrl.substr(position + positionIndicator.length);
+    //   for (const address of this.ignoreToAppendInterceptor) {
+    //     if (new RegExp(address).test(destination)) {
+    //       return false;
+    //     }
+    //   }
+    // }
     return true;
   }
 }

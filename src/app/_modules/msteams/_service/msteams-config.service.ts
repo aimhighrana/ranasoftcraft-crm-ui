@@ -33,7 +33,7 @@ export class MsteamsConfigService {
    * @param refToken jwt refresh token ..
    */
   public validateToken(refToken: string): Observable<any>{
-    const requestUri = this.authEndpointService.validateRefreshjwttokenUrl();
+    const requestUri = this.authEndpointService.jwtRefresh();
     const authorizationData = 'Bearer '+ refToken;
     const httpOptions = {
       headers: new HttpHeaders({
