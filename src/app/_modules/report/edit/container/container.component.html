@@ -395,11 +395,11 @@
 
                                     <div class="f-row image-algin">
                                         <button mat-button matTooltip="Upload image"
-                                            (click)="uploadFileChange()">
+                                            (click)="uploadFileChange()"  prosClickStopPropagation>
                                             <mat-icon>add_photo_alternate</mat-icon>
                                         </button>
                                         <input type="file" (change)="fileChange($event)" style="display: none;"
-                                            multiple="false" id="uploadFileCtrl" accept="image/png, image/jpeg" />
+                                             id="uploadFileCtrl" accept="image/png, image/jpeg" prosClickStopPropagation />
                                         <span class="col-spacer"></span>
                                         <mat-form-field class="upload-mat-form" appearance="outline">
                                             <input matInput disabled readonly formControlName="imageName">
