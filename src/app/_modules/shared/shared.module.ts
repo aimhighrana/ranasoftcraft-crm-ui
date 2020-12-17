@@ -72,6 +72,7 @@ import { TransformationRuleComponent } from './_components/transformation-rule/t
 import { LookupRuleComponent } from './_components/lookup/lookup.component';
 import { LookupConfigComponent } from './_components/lookup/lookup-config/lookup-config.component';
 import { SubscriberInviteComponent } from './_components/subscriber-invite/subscriber-invite.component';
+import { ClassificationDatatableCellEditableComponent } from './_components/classification-datatable-cell-editable/classification-datatable-cell-editable.component';
 
 @NgModule({
   declarations: [
@@ -108,7 +109,8 @@ import { SubscriberInviteComponent } from './_components/subscriber-invite/subsc
     TransformationRuleComponent,
     LookupRuleComponent,
     LookupConfigComponent,
-    SubscriberInviteComponent
+    SubscriberInviteComponent,
+    ClassificationDatatableCellEditableComponent
   ],
   imports: [
     // ng modules

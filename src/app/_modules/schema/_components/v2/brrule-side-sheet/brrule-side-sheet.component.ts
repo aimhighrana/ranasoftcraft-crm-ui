@@ -250,6 +250,7 @@ export class BrruleSideSheetComponent implements OnInit {
       standard_function: new FormControl(''),
       regex: new FormControl(''),
       fields: new FormControl(''),
+      apiKey: new FormControl(''),
       sourceFld: new FormControl(''),
       targetFld: new FormControl(''),
       excludeScript: new FormControl(''),
@@ -333,6 +334,7 @@ export class BrruleSideSheetComponent implements OnInit {
       standard_function: br.standardFunction,
       regex: br.regex,
       fields: br.fields,
+      apiKey: br.apiKey,
       sourceFld: '',
       targetFld: '',
       excludeScript: '',
@@ -747,6 +749,7 @@ export class BrruleSideSheetComponent implements OnInit {
       request.message = this.form.value.error_message;
       request.brInfo = this.form.value.rule_name;
       request.fields = this.form.value.fields;
+      request.apiKey = this.form.value.apiKey;
       request.regex = this.form.value.regex;
       request.standardFunction = this.form.value.standard_function;
       request.schemaId = this.schemaId;
@@ -775,6 +778,7 @@ export class BrruleSideSheetComponent implements OnInit {
       brType: object.brType ? object.brType : object.rule_type,
       refId: object.refId ? object.refid : 0,
       fields: object.fields,
+      apiKey: object.apiKey,
       regex: object.regex,
       order: 1,
       message: object.message ? object.message : object.error_message,

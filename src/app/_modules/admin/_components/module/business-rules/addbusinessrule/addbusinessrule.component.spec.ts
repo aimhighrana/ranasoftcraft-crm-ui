@@ -99,7 +99,7 @@ describe('AddbusinessruleComponent', () => {
   }));
 
   it('afterSaved(), should navigate', async (() =>{
-    const evt = {sno:765756, brId:'77656', brType: 'TEST', refId: 6566, fields: '',
+    const evt = {sno:765756, brId:'77656', brType: 'TEST', refId: 6566, fields: '',apiKey:'',
       regex: '', order: 765, message: '', script: '', brInfo: '', brExpose: 765, status: '', categoryId: '',
       standardFunction: '', brWeightage: '', totalWeightage: 98765, transformation: 76, tableName: '',
       qryScript: '', dependantStatus: '', plantCode: '', percentage: 876, schemaId: '', brIdStr: ''

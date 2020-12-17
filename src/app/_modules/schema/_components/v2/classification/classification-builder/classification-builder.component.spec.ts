@@ -113,7 +113,7 @@ it('ngOnChanges(), ngonchange component hooks ', async(()=>{
       {OBJECTNUMBER:'236462'},
       {LONG_DESC:'8234762187'}
     ]};
-    const res = component.transformData(row);
+    const res = component.transformData(row,'mro_local_lib');
     expect(res.length).toEqual(1);
 
   }));

@@ -196,7 +196,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
         })
       }
     }, (error) => {
-      console.log('something went wrong when scheduling schema..', error.message)
+      console.log('something went wrong when scheduling schema..')
     })
     this.subscriptions.push(updateSubscription);
   }

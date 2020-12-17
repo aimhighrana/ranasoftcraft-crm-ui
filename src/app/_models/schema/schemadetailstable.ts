@@ -444,8 +444,8 @@ export interface NewBrDialogResponse {
     lookupData: LookupFields[];
 }
 export interface ClassificationNounMod {
-    gsn: {doc_cnt: number, info : Noun[]};
-    BR_MRO_LIBRARY: {doc_cnt: number, info : Noun[]};
+    mro_gsn_lib: {doc_cnt: number, info : Noun[]};
+    mro_local_lib: {doc_cnt: number, info : Noun[]};
     unmatched: {doc_count: number};
 }
 
@@ -461,3 +461,25 @@ export interface Modifier {
     modCode: string;
     modText: string;
 }
+
+export class SchemaMROCorrectionReq {
+    id: string;
+    nounCodevc: string;
+    nounCodeoc: string;
+    modCodevc: string;
+    modCodeoc: string;
+    attributeCorReq: AttributeCoorectionReq[];
+    isReviewed: boolean;
+    reviewedBy: string;
+    isSubmitted: string;
+    masterLibrary: boolean;
+
+}
+
+export interface AttributeCoorectionReq {
+    attributeCodevc: string;
+    attributeCodeoc: string;
+    attributeValvc: string;
+    attributeValoc: string;
+}
+

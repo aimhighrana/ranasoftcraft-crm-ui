@@ -70,6 +70,17 @@
           Please enter Error message</mat-error>
       </div>
 
+
+      <div class="f-col mdo-form-field" *ngIf="form.controls.rule_type.value === 'BR_CLASSIFICATION'">
+        <pros-form-input [value]="form.get('apiKey').value" (valueChange)="getFormValue($event,'apiKey')"
+          [label]="'Enter access token'">
+        </pros-form-input>
+        <mat-error
+          *ngIf="submitted && form.controls.apiKey.errors && form.controls.apiKey.errors.required">
+          Please enter access token</mat-error>
+      </div>
+
+
       <mat-divider class="dashed-divider"></mat-divider>
 
       <div class="f-row mdo-form-field" *ngIf="isTransformationRule">

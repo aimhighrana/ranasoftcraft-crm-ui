@@ -574,4 +574,63 @@ export class EndpointsClassicService {
   public createCheckDataBusinessRuleUrl(): string {
     return `${this.apiUrl}/schema/create-br`;
   }
+
+  /**
+   * URI for get all available nouns ..from local library
+   */
+  public getAvailableNounsUri(): string {
+    return `${this.apiUrl}/mro/noun`;
+  }
+
+  /**
+   * URI for get all available modifiers  ..from local library
+   */
+  public getAvailableModifierUri(): string {
+    return `${this.apiUrl}/mro/modifier`;
+  }
+
+  /**
+   * URI for get all available attributes  ..from local library
+   */
+  public getAvailableAttributeUri(): string {
+    return `${this.apiUrl}/mro/attribute`;
+  }
+
+
+  /**
+   * Get uri for suggested noun ..
+   * @param schemaId executed schema
+   * @param runid get it from this runid
+   */
+  public getSuggestedNounUri(schemaId: string, runid: string): string {
+    return `${this.apiUrl}/schema/noun/${schemaId}/${runid}`;
+  }
+
+  /**
+   * Get uri for suggested modifier ..
+   * @param schemaId executed schema
+   * @param runid get it from this runid
+   */
+  public getSuggestedModifierUri(schemaId: string, runid: string): string {
+    return `${this.apiUrl}/schema/modifier/${schemaId}/${runid}`;
+  }
+
+
+  /**
+   * Get uri for suggested attribute ..
+   *
+   * @param schemaId executed schema
+   * @param runid executed on this run
+   */
+  public getSuggestedAttributeUri(schemaId: string, runid: string): string {
+    return `${this.apiUrl}/schema/attribute/${schemaId}/${runid}`;
+  }
+
+  /**
+   * Get doing correction uri ..
+   */
+  public doClassificationCorrectionUri(): string {
+    return `${this.apiUrl}/schema/do-mro-correction`;
+  }
+
 }

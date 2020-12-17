@@ -51,6 +51,7 @@ export class CoreSchemaBrInfo {
     isCopied?: boolean;
     moduleId?: string;
     copiedFrom? : string;
+    apiKey: string;
 }
 
 export enum BusinessRuleType {
@@ -124,6 +125,7 @@ export interface DropDownValue {
     FIELDNAME: string;
     TEXT: string;
     LANGU: string;
+    isSugested?: boolean;
 }
 
 export class UDRBlocksModel {

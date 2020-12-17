@@ -1,10 +1,14 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, ComponentFactoryResolver, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewContainerRef } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ClassificationNounMod, MetadataModeleResponse, SchemaTableViewFldMap } from '@models/schema/schemadetailstable';
+import { ClassificationNounMod, MetadataModeleResponse, SchemaMROCorrectionReq, SchemaTableViewFldMap } from '@models/schema/schemadetailstable';
 import { SchemaListDetails, SchemaStaticThresholdRes, SchemaVariantsModel } from '@models/schema/schemalist';
+import { CellDataFor, ClassificationDatatableCellEditableComponent } from '@modules/shared/_components/classification-datatable-cell-editable/classification-datatable-cell-editable.component';
+import { ContainerRefDirective } from '@modules/shared/_directives/container-ref.directive';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
+import { GlobaldialogService } from '@services/globaldialog.service';
 import { SchemaService } from '@services/home/schema.service';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
@@ -20,11 +24,13 @@ const definedColumnsMetadata = {
     fieldId: 'SHORT_DESC',
     fieldDesc: 'Short description',
     fieldValue: ''
-  }, LONG_DESC: {
-    fieldId: 'LONG_DESC',
-    fieldDesc: 'Long description',
-    fieldValue: ''
-  }, MANUFACTURER: {
+  },
+  // LONG_DESC: {
+  //   fieldId: 'LONG_DESC',
+  //   fieldDesc: 'Long description',
+  //   fieldValue: ''
+  // },
+   MANUFACTURER: {
     fieldId: 'MANUFACTURER',
     fieldDesc: 'Manufacturer',
     fieldValue: ''
@@ -35,7 +41,8 @@ const definedColumnsMetadata = {
   }, MODE_CODE: {
     fieldId: 'MODE_CODE',
     fieldDesc: 'Modifier code',
-    fieldValue: ''
+    fieldValue: '',
+    isEditable: true
   }, MOD_LONG: {
     fieldId: 'MOD_LONG',
     fieldDesc: 'Modifier description',
@@ -47,7 +54,8 @@ const definedColumnsMetadata = {
   }, NOUN_CODE: {
     fieldId: 'NOUN_CODE',
     fieldDesc: 'Noun code',
-    fieldValue: ''
+    fieldValue: '',
+    isEditable: true
   }, NOUN_ID: {
     fieldId: 'NOUN_ID',
     fieldDesc: 'Noun id',
@@ -83,7 +91,7 @@ const definedColumnsMetadata = {
   templateUrl: './classification-builder.component.html',
   styleUrls: ['./classification-builder.component.scss']
 })
-export class ClassificationBuilderComponent implements OnInit, OnChanges {
+export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDestroy {
 
 
   @Input()
@@ -121,7 +129,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges {
   /**
    * Store information about noun and modifier ..
    */
-  rulesNounMods: ClassificationNounMod = { BR_MRO_LIBRARY: { info: [] }, gsn: { info: [] } } as ClassificationNounMod;
+  rulesNounMods: ClassificationNounMod = { mro_local_lib: { info: [] }, mro_gsn_lib: { info: [] } } as ClassificationNounMod;
 
   /**
    * Store info about user selected field and order
@@ -136,8 +144,22 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges {
   /**
    * Static column for actions
    */
-  startColumns = ['checkbox_select', 'assigned_bucket', 'action'];
+  startColumns = ['checkbox_select', 'assigned_bucket'];
 
+
+  dataFrm: string = 'mro_local_lib' || 'mro_gsn_lib';
+
+  /**
+   * Store data of table for next suggestion
+   */
+  tableData: any;
+
+
+  /**
+   * Store info about views ..
+   * if has correction loaded then value should be correction
+   */
+  viewOf: BehaviorSubject<string> = new BehaviorSubject<string>(null);
 
   displayedColumns: BehaviorSubject<string[]> = new BehaviorSubject(this.startColumns);
 
@@ -150,8 +172,22 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges {
     private schemaListService: SchemalistService,
     private schemavariantService: SchemaVariantService,
     private sharedServices: SharedServiceService,
-    private router: Router
+    private router: Router,
+    private componentFactoryResolver: ComponentFactoryResolver,
+    private snackBar: MatSnackBar,
+    private globalDialogService: GlobaldialogService
   ) { }
+
+
+  ngOnDestroy(): void {
+    this.subsribers.forEach(sub=>{
+      sub.unsubscribe();
+    });
+    this.displayedColumns.complete();
+    this.displayedColumns.unsubscribe();
+    this.viewOf.complete();
+    this.viewOf.unsubscribe();
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes && changes.moduleId && changes.moduleId.previousValue !== changes.moduleId.currentValue) {
@@ -187,27 +223,11 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges {
     definedColumnOrder.forEach(e => previousCls.push(e));
     this.displayedColumns.next(previousCls);
 
-    /**
-     * Combine obserable for metadata and selected field by user
-     * And calcute display field amd order
-     */
-    // combineLatest([this.metadata, this.selectedFieldsOb]).subscribe(res => {
-    //   if (res[0]) {
-    //     const userSelectedFields = this.selectedFieldsOb.getValue();
-    //     if (userSelectedFields) {
-    //       const defaultCols = this.displayedColumns.getValue();
-    //       const cols = []; defaultCols.forEach(f=> cols.push(f));
-    //       const rr = userSelectedFields.map(map => map.fieldId); cols.push(...rr);
-    //       this.displayedColumns.next(cols);
-    //     } else {
-    //       const definedColumnOrder = Object.keys(definedColumnsMetadata);
-    //       const previousCls = this.displayedColumns.getValue();
-    //       definedColumnOrder.forEach(e => previousCls.push(e));
-    //       this.displayedColumns.next(previousCls);
-    //     }
-    //   }
-    // });
-
+    this.viewOf.subscribe(res=>{
+      if(res !== null) {
+        this.getClassificationNounMod();
+      }
+    });
   }
 
   /**
@@ -261,14 +281,16 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges {
   /**
    * Get classification nouns and modifiers .
    */
-  getClassificationNounMod() {
-    const sub = this.schemaDetailService.getClassificationNounMod(this.schemaId, this.schemaInfo.runId, this.variantId).subscribe(res => {
+  getClassificationNounMod(searchStrng?: string) {
+    const viewFor: string = this.viewOf.getValue();
+    const sub = this.schemaDetailService.getClassificationNounMod(this.schemaId, this.schemaInfo.runId,viewFor, this.variantId, searchStrng).subscribe(res => {
       this.rulesNounMods = res;
-      if (this.rulesNounMods.BR_MRO_LIBRARY && this.rulesNounMods.BR_MRO_LIBRARY.info) {
-        const fisrtNoun = this.rulesNounMods.BR_MRO_LIBRARY.info[0];
+      if (this.rulesNounMods.mro_local_lib && this.rulesNounMods.mro_local_lib.info) {
+        const fisrtNoun = this.rulesNounMods.mro_local_lib.info[0];
         const modifierCode = fisrtNoun.modifier[0] ? fisrtNoun.modifier[0].modCode : '';
         if (modifierCode && fisrtNoun.nounCode) {
-          this.applyFilter(fisrtNoun.nounCode, modifierCode, 'BR_MRO_LIBRARY');
+          this.dataFrm = 'mro_local_lib';
+          this.applyFilter(fisrtNoun.nounCode, modifierCode, 'mro_local_lib');
         }
       }
     }, err => console.error(`Execption while fetching .. classification noun and mod. ${err.message}`));
@@ -286,29 +308,32 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges {
   }
 
   applyFilter(nounCode: string, modifierCode: string, brType: string) {
-    const sub = this.schemaDetailService.getClassificationData(this.schemaId, this.schemaInfo.runId, nounCode, modifierCode, brType, '').subscribe(res => {
-      console.log(res);
-      // TODO ..
-      console.log(`---After transformation --`);
-      const actualData = this.transformData(res);
-      const columns = Object.keys(actualData[0]);
-      const disPlayedCols = this.displayedColumns.getValue();
-      columns.forEach(key => {
-        if (disPlayedCols.indexOf(key) === -1) {
-          disPlayedCols.push(key);
-        }
-        definedColumnsMetadata[key] = actualData[0][key];
-      });
-      this.displayedColumns.next(disPlayedCols);
-      this.dataSource = new MatTableDataSource<any>(actualData);
-      console.log(this.transformData(res));
+    this.dataFrm = brType;
+    const sub = this.schemaDetailService.getClassificationData(this.schemaId, this.schemaInfo.runId, nounCode, modifierCode, brType,this.viewOf.getValue(), '').subscribe(res => {
+      this.tableData = res ? res : [];
+      if(res) {
+        this.tableData = res;
+        const actualData = this.transformData(res, brType);
+        const columns = Object.keys(actualData[0]);
+        const disPlayedCols = this.displayedColumns.getValue();
+        columns.forEach(key => {
+          if (disPlayedCols.indexOf(key) === -1) {
+            disPlayedCols.push(key);
+          }
+          definedColumnsMetadata[key] = actualData[0][key];
+        });
+        this.displayedColumns.next(disPlayedCols);
+        this.dataSource = new MatTableDataSource<any>(actualData);
+      } else {
+        this.dataSource = new MatTableDataSource<any>([]);
+      }
     }, err => console.error(`Exception while getting data : ${err.message}`));
     this.subsribers.push(sub);
     console.log(`nounCode : ${nounCode} and modifier ${modifierCode}`)
   }
 
 
-  transformData(res: any): any {
+  transformData(res: any, brType: string): any {
     const row = [];
     if (res) {
       console.log(res);
@@ -320,58 +345,58 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges {
         Object.keys(columns).forEach(col => {
           switch (col) {
             case 'OBJECTNUMBER':
-              const ob = definedColumnsMetadata[col];
-              ob.fieldValue = columns[col] ? columns[col] : '';
+              const ob = { fieldId: col, fieldDesc: { fieldId: col, fieldDesc: definedColumnsMetadata[col].fieldDesc,fieldValue: ''}.fieldDesc,fieldValue: ''};
+              ob.fieldValue = objNr ? objNr : '';
               rowData.OBJECTNUMBER = ob;
               break;
 
-            case 'LONG_DESC':
-              const longDesc = definedColumnsMetadata[col];
-              longDesc.fieldValue = columns[col] ? columns[col] : '';
-              rowData.LONG_DESC = longDesc;
-              break;
+            // case 'LONG_DESC':
+            //   const longDesc = { fieldId: col, fieldDesc: definedColumnsMetadata[col].fieldDesc,fieldValue: ''};
+            //   longDesc.fieldValue = columns[col] ? columns[col] : '';
+            //   rowData.LONG_DESC = longDesc;
+            //   break;
 
             case 'MANUFACTURER':
-              const manufacturer = definedColumnsMetadata[col];
+              const manufacturer = { fieldId: col, fieldDesc: { fieldId: col, fieldDesc: definedColumnsMetadata[col].fieldDesc,fieldValue: ''}.fieldDesc,fieldValue: ''};
               manufacturer.fieldValue = columns[col] ? columns[col] : '';
               rowData.MANUFACTURER = manufacturer;
               break;
 
             case 'MGROUP':
-              const mggroup = definedColumnsMetadata[col];
+              const mggroup = { fieldId: col, fieldDesc: definedColumnsMetadata[col].fieldDesc,fieldValue: ''};
               mggroup.fieldValue = columns[col] ? columns[col] : '';
               rowData.MGROUP = mggroup;
               break;
 
             case 'MODE_CODE':
-              const modeCode = definedColumnsMetadata[col];
+              const modeCode = { fieldId: col, fieldDesc: definedColumnsMetadata[col].fieldDesc,fieldValue: '', isEditable: true};
               modeCode.fieldValue = columns[col] ? columns[col] : '';
               rowData.MODE_CODE = modeCode;
               break;
 
             case 'MOD_LONG':
-              const modLong = definedColumnsMetadata[col];
+              const modLong = { fieldId: col, fieldDesc: definedColumnsMetadata[col].fieldDesc,fieldValue: ''};
               modLong.fieldValue = columns[col] ? columns[col] : '';
               rowData.MOD_LONG = modLong;
               break;
 
 
             case 'MRO_STATUS':
-              const mroStatus = definedColumnsMetadata[col];
+              const mroStatus = { fieldId: col, fieldDesc: definedColumnsMetadata[col].fieldDesc,fieldValue: ''};
               mroStatus.fieldValue = columns[col] ? columns[col] : '';
               rowData.MRO_STATUS = mroStatus;
               break;
 
 
             case 'MRO_LIBRARY':
-              const mroLib = definedColumnsMetadata[col];
+              const mroLib = { fieldId: col, fieldDesc: definedColumnsMetadata[col].fieldDesc,fieldValue: ''};
               mroLib.fieldValue = columns[col] ? columns[col] : '';
               rowData.MRO_LIBRARY = mroLib;
               break;
 
 
             case 'NOUN_CODE':
-              const nounCode = definedColumnsMetadata[col];
+              const nounCode = { fieldId: col, fieldDesc: definedColumnsMetadata[col].fieldDesc,fieldValue: '', isEditable: true};
               nounCode.fieldValue = columns[col] ? columns[col] : '';
               rowData.NOUN_CODE = nounCode;
               break;
@@ -379,7 +404,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges {
 
 
             case 'NOUN_ID':
-              const nounId = definedColumnsMetadata[col];
+              const nounId = { fieldId: col, fieldDesc: definedColumnsMetadata[col].fieldDesc,fieldValue: ''};
               nounId.fieldValue = columns[col] ? columns[col] : '';
               rowData.NOUN_ID = nounId;
               break;
@@ -387,21 +412,21 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges {
 
 
             case 'NOUN_LONG':
-              const nounLong = definedColumnsMetadata[col];
+              const nounLong = { fieldId: col, fieldDesc: definedColumnsMetadata[col].fieldDesc,fieldValue: ''};
               nounLong.fieldValue = columns[col] ? columns[col] : '';
               rowData.NOUN_LONG = nounLong;
               break;
 
 
             case 'PARTNO':
-              const partNo = definedColumnsMetadata[col];
+              const partNo = { fieldId: col, fieldDesc: definedColumnsMetadata[col].fieldDesc,fieldValue: ''};
               partNo.fieldValue = columns[col] ? columns[col] : '';
               rowData.PARTNO = partNo;
               break;
 
 
             case 'SHORT_DESC':
-              const shortDesc = definedColumnsMetadata[col];
+              const shortDesc = { fieldId: col, fieldDesc: definedColumnsMetadata[col].fieldDesc,fieldValue: ''};
               shortDesc.fieldValue = columns[col] ? columns[col] : '';
               rowData.SHORT_DESC = shortDesc;
               break;
@@ -409,7 +434,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges {
 
 
             case 'UNSPSC':
-              const unspsc = definedColumnsMetadata[col];
+              const unspsc = { fieldId: col, fieldDesc: definedColumnsMetadata[col].fieldDesc,fieldValue: ''};
               unspsc.fieldValue = columns[col] ? columns[col] : '';
               rowData.UNSPSC = unspsc;
               break;
@@ -417,7 +442,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges {
 
 
             case 'UNSPSC_DESC':
-              const unspscDesc = definedColumnsMetadata[col];
+              const unspscDesc = { fieldId: col, fieldDesc: definedColumnsMetadata[col].fieldDesc,fieldValue: ''};
               unspscDesc.fieldValue = columns[col] ? columns[col] : '';
               rowData.UNSPSC_DESC = unspscDesc;
               break;
@@ -430,11 +455,11 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges {
                 const attrDesc = att.ATTR_DESC;
                 const attrVal = att.ATTRIBUTES_VALUES ? att.ATTRIBUTES_VALUES : [];
                 let attrValue = '';
-                if (attrVal[0]) {
+                if (attrVal[0] && brType!== 'mro_local_lib') {
                   attrValue = attrVal[0].SHORT_VALUE;
                 }
 
-                rowData[attrCode] = { fieldId: attrCode, fieldDesc: attrDesc, fieldValue: attrValue };
+                rowData[attrCode] = { fieldId: attrCode, fieldDesc: attrDesc, fieldValue: attrValue, isEditable: true };
               });
               break;
 
@@ -470,6 +495,130 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges {
       return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
     }
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'}`;
+  }
+
+
+
+  /**
+   *
+   * @param fldid editable field id
+   * @param row entire row should be here
+   */
+  editCurrentCell(fldid: string, row: any, rIndex: number,containerRef: ContainerRefDirective) {
+    const objNr = row.OBJECTNUMBER ? row.OBJECTNUMBER.fieldValue : '';
+
+    const selcFldCtrl = row[fldid] ? row[fldid].isEditable : null;
+    if(selcFldCtrl === null || !selcFldCtrl) {
+      console.log(`Can\'t edit not editable `);
+      return false;
+    }
+
+    if(document.getElementById('inpctrl_'+fldid + '_' + rIndex)) {
+      const inpCtrl = document.getElementById('inpctrl_'+fldid + '_'+ rIndex) as HTMLDivElement;
+      const viewCtrl = document.getElementById('viewctrl_'+fldid + '_' + rIndex) as HTMLSpanElement;
+      // const inpValCtrl = document.getElementById('inp_'+ fldid + '_' + rIndex) as HTMLInputElement;
+
+      inpCtrl.style.display = 'block';
+      // inpValCtrl.focus();
+      viewCtrl.style.display = 'none';
+
+      const nounCode = row.NOUN_CODE ? row.NOUN_CODE.fieldValue : '';
+      const modCode = row.MODE_CODE ? row.MODE_CODE.fieldValue : '';
+
+      // add a dynamic cell input component
+      this.addDynamicInput(fldid, row, rIndex,objNr,containerRef, nounCode, modCode);
+
+    }
+  }
+
+  /**
+   * After value change on & also call service for do correction
+   * @param fldid fieldid that have blur triggered
+   * @param value current changed value
+   * @param row row data ..
+   */
+  emitEditBlurChng(fldid: string, value: any, row: any, rIndex: number,celldataFor: CellDataFor, viewContainerRef? : ViewContainerRef) {
+
+    if(document.getElementById('inpctrl_'+fldid + '_' + rIndex)) {
+
+      // DOM control after value change ...
+      const inpCtrl = document.getElementById('inpctrl_'+fldid + '_'+ rIndex) as HTMLDivElement;
+      const viewCtrl = document.getElementById('viewctrl_'+fldid + '_' + rIndex) as HTMLSpanElement;
+
+      // clear the dynamic cell input component
+      viewContainerRef.clear();
+
+      inpCtrl.style.display = 'none';
+      viewCtrl.innerText = value;
+      viewCtrl.style.display = 'block';
+
+      // DO correction call for data
+      const objctNumber = row.OBJECTNUMBER.fieldValue;
+
+      const oldVal = row[fldid] ? row[fldid].fieldValue : '';
+      if(objctNumber && oldVal !== value) {
+        const correctionReq: SchemaMROCorrectionReq = {id: objctNumber,masterLibrary: (this.dataFrm === 'mro_local_lib' ? true : false)} as SchemaMROCorrectionReq;
+        if(fldid === 'NOUN_CODE') {
+          correctionReq.nounCodeoc = oldVal;
+          correctionReq.nounCodevc = value;
+        } else if(fldid === 'MODE_CODE') {
+          correctionReq.modCodeoc = oldVal;
+          correctionReq.modCodevc = value;
+        }
+
+        this.schemaDetailService.doCorrectionForClassification(this.schemaId, fldid, correctionReq).subscribe(res=>{
+          row[fldid].fieldValue = value;
+          if(res.acknowledge) {
+            this.statics.correctedCnt = res.count? res.count : 0;
+          }
+        }, error=>{
+          this.snackBar.open(`${error.message}`, 'Close',{duration:2000});
+          console.error(`Error :: ${error.message}`);
+        });
+      } else {
+        console.error(`Wrong with object number or can't change if old and new same  ... `);
+      }
+    }
+
+  }
+
+  addDynamicInput(fldid: string, row: any, rIndex: number,objectNumber: string, containerRef: ContainerRefDirective, nounCode?: string, modCode?: string){
+
+    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(
+      ClassificationDatatableCellEditableComponent
+    );
+
+
+      let celldataFor = CellDataFor.LOCAL_NOUN;
+      if(fldid === 'NOUN_CODE' && this.dataFrm === 'mro_local_lib') {
+        celldataFor = CellDataFor.LOCAL_NOUN;
+      } else if(fldid === 'MODE_CODE' && this.dataFrm === 'mro_local_lib') {
+        celldataFor = CellDataFor.LOCAL_MODIFIER;
+      } else if(fldid === 'ATTR_CODE' && this.dataFrm === 'mro_local_lib') {
+        celldataFor = CellDataFor.LOCAL_ATTRIBUTE;
+      } else if(fldid === 'NOUN_CODE' && this.dataFrm === 'mro_gsn_lib') {
+        celldataFor = CellDataFor.GSN_NOUN;
+      } else if(fldid === 'MODE_CODE' && this.dataFrm === 'mro_gsn_lib') {
+        celldataFor = CellDataFor.GSN_MODIFIER;
+      } else if(fldid === 'ATTR_CODE' && this.dataFrm === 'mro_gsn_lib') {
+        celldataFor = CellDataFor.GSN_ATTRIBUTE;
+      }
+
+
+
+    // add the input component to the cell
+    const componentRef = containerRef.viewContainerRef.createComponent(componentFactory);
+    // binding dynamic component inputs/outputs
+    componentRef.instance.fieldId = fldid;
+    componentRef.instance.cellDataFor = celldataFor;
+    componentRef.instance.schemaId = this.schemaId;
+    componentRef.instance.rundId = this.schemaInfo.runId;
+    componentRef.instance.objectNumber = objectNumber;
+    componentRef.instance.nounCode = nounCode;
+    componentRef.instance.modCode = modCode;
+    componentRef.instance.brType = this.dataFrm;
+    componentRef.instance.inputBlur.subscribe(value => this.emitEditBlurChng(fldid, value, row, rIndex, celldataFor, containerRef.viewContainerRef));
+
   }
 
   /**

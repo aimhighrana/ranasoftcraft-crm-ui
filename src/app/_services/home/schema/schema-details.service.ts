@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { SendReqForSchemaDataTableColumnInfo, SendDataForSchemaTableShowMore, SchemaDataTableColumnInfoResponse, RequestForSchemaDetailsWithBr, SchemaTableViewRequest, OverViewChartDataSet, CategoryInfo, CategoryChartDataSet, MetadataModeleResponse, SchemaBrInfo, SchemaCorrectionReq, SchemaExecutionLog, SchemaTableViewFldMap, ClassificationNounMod } from 'src/app/_models/schema/schemadetailstable';
+import { SendReqForSchemaDataTableColumnInfo, SendDataForSchemaTableShowMore, SchemaDataTableColumnInfoResponse, RequestForSchemaDetailsWithBr, SchemaTableViewRequest, OverViewChartDataSet, CategoryInfo, CategoryChartDataSet, MetadataModeleResponse, SchemaBrInfo, SchemaCorrectionReq, SchemaExecutionLog, SchemaTableViewFldMap, ClassificationNounMod, SchemaMROCorrectionReq } from 'src/app/_models/schema/schemadetailstable';
 import * as moment from 'moment';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../../any2ts.service';
@@ -145,21 +145,19 @@ export class SchemaDetailsService {
     return this.http.post<boolean>(this.analyticsEndpointService.createUpdateReportDataTable(widgetId), request)
   }
 
-  public getClassificationNounMod(schemaId: string, runId: string, variantId?: string, queryString?: string, scrollId?: string): Observable<ClassificationNounMod> {
-    if(queryString) {
+  public getClassificationNounMod(schemaId: string, runId: string,requestStatus: string, variantId?: string, searchString?: string, scrollId?: string): Observable<ClassificationNounMod> {
+    searchString = searchString ? searchString : '';
+    requestStatus = requestStatus ? requestStatus : '';
+    return this.http.get<any>(this.endpointService.getClassificationNounMod(schemaId, runId, variantId), {params:{searchString, requestStatus}}).pipe(map(res=>{
+      const  finalRes = {} as ClassificationNounMod;
+      const mro = res.filter(fil => fil.ruleType === 'mro_local_lib');
+      finalRes.mro_local_lib = {doc_cnt:mro[0] ?mro[0].doc_count : 0, info: mro[0] ? mro[0].info : []};
 
-    } else {
-      return this.http.get<any>(this.endpointService.getClassificationNounMod(schemaId, runId, variantId)).pipe(map(res=>{
-        const  finalRes = {} as ClassificationNounMod;
-        const mro = res.filter(fil => fil.ruleType === 'BR_MRO_LIBRARY');
-        finalRes.BR_MRO_LIBRARY = {doc_cnt:mro[0] ?mro[0].doc_count : 0, info: mro[0] ? mro[0].info : []};
+      const gsn = res.filter(fil => fil.ruleType === 'mro_gsn_lib');
+      finalRes.mro_gsn_lib = {doc_cnt:gsn[0] ?gsn[0].doc_count : 0, info: gsn[0] ? gsn[0].info : []};;
 
-        const gsn = res.filter(fil => fil.ruleType === 'gsn');
-        finalRes.gsn = {doc_cnt:gsn[0] ?gsn[0].doc_count : 0, info: gsn[0] ? gsn[0].info : []};;
-
-        return finalRes;
-      }));
-    }
+      return finalRes;
+    }));
   }
 
   /**
@@ -172,8 +170,8 @@ export class SchemaDetailsService {
    * @param ruleType append on requet params
    * @param objectNumberAfter append on requet params
    */
-  public getClassificationData(schemaId: string, runid: string, nounCode: string, modifierCode: string, ruleType: string, objectNumberAfter?: string): Observable<any> {
-    return this.http.get<any>(this.endpointService.getClassificationDataTableUrl(schemaId, runid), {params:{nounCode, modifierCode, ruleType, objectNumberAfter}});
+  public getClassificationData(schemaId: string, runid: string, nounCode: string, modifierCode: string, ruleType: string,requestStatus: string, objectNumberAfter?: string): Observable<any> {
+    return this.http.get<any>(this.endpointService.getClassificationDataTableUrl(schemaId, runid), {params:{nounCode, modifierCode, ruleType,requestStatus, objectNumberAfter}});
   }
 
   /**
@@ -184,6 +182,16 @@ export class SchemaDetailsService {
    */
   public generateCrossEntry(schemaId: string, objectType: string, objectNumber: string) {
     return this.http.get<string>(this.endpointService.generateCrossEntryUri(schemaId, objectType, objectNumber));
+  }
+
+  /**
+   * Do correction in schema classification output ..
+   * @param schemaId append in request parametere ..
+   * @param request append in request body ..
+   */
+  public doCorrectionForClassification(schemaId: string ,fieldId: string,  request: SchemaMROCorrectionReq): Observable<any>{
+    fieldId = fieldId ? fieldId : '';
+    return this.http.post<any>(this.endpointService.doClassificationCorrectionUri(), request , {params:{schemaId, fieldId}});
   }
 
 }

@@ -43,10 +43,10 @@
 
     <div class="f-row">
         <mat-chip-list>
-            <mat-chip disableRipple="true">
-                {{ statics ? statics.errorCnt : 0 }} error</mat-chip>
-            <mat-chip disableRipple="true">0 warning</mat-chip>
-            <mat-chip disableRipple="true">
+            <mat-chip disableRipple="true" (click)="viewOf.next('')">
+                {{ statics ? statics.errorCnt : 0 }} All</mat-chip>
+            <!-- <mat-chip disableRipple="true">0 warning</mat-chip> -->
+            <mat-chip disableRipple="true" (click)="viewOf.next('correction')">
                 {{ statics ? statics.correctedCnt : 0 }} corrections</mat-chip>
         </mat-chip-list>
     </div>
@@ -61,7 +61,7 @@
 
                 <div class="f-row dataset-grid">
                     <div class="f-col dataset-grid-navigation">
-                        <pros-search-input></pros-search-input>
+                        <pros-search-input (value)="getClassificationNounMod($event)"></pros-search-input>
                         <div class="row-spacer"></div>
                         <div class="nav-tree">
                             <mat-accordion>
@@ -73,12 +73,12 @@
                                             </div>
                                             <span class="f-spacer"></span>
                                             <div class="badge success">
-                                                {{ rulesNounMods && rulesNounMods.BR_MRO_LIBRARY ? rulesNounMods.BR_MRO_LIBRARY.doc_cnt : 0 }}
+                                                {{ rulesNounMods && rulesNounMods.mro_local_lib ? rulesNounMods.mro_local_lib.doc_cnt : 0 }}
                                             </div>
                                         </mat-panel-title>
                                     </mat-expansion-panel-header>
 
-                                    <ng-template ngFor let-noun [ngForOf]="rulesNounMods.BR_MRO_LIBRARY.info">
+                                    <ng-template ngFor let-noun [ngForOf]="rulesNounMods.mro_local_lib.info">
                                         <mat-accordion>
                                             <mat-expansion-panel togglePosition="before" class="mat-elevation-z0" expanded="expanded">
                                                 <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px"
@@ -97,7 +97,7 @@
                                                 </mat-expansion-panel-header>
     
                                                 <mat-nav-list role="navigation" class="tree-nav-list">
-                                                    <mat-list-item class="f-row understep-two" *ngFor="let modifier of noun.modifier" (click)="applyFilter(noun.nounCode, modifier.modCode, 'BR_MRO_LIBRARY')">
+                                                    <mat-list-item class="f-row understep-two" *ngFor="let modifier of noun.modifier" (click)="applyFilter(noun.nounCode, modifier.modCode, 'mro_local_lib')">
                                                         <mat-icon fontSet="mdo-icons" mat-list-icon></mat-icon>
                                                         <div mat-line>
                                                             {{ modifier.modDesc ? modifier.modDesc : 'Unknown' }}
@@ -127,12 +127,12 @@
                                             </div>
                                             <span class="f-spacer"></span>
                                             <div class="badge success">
-                                                {{ rulesNounMods && rulesNounMods.gsn ? rulesNounMods.gsn.doc_cnt : 0 }}
+                                                {{ rulesNounMods && rulesNounMods.mro_gsn_lib ? rulesNounMods.mro_gsn_lib.doc_cnt : 0 }}
                                             </div>
                                         </mat-panel-title>
                                     </mat-expansion-panel-header>
 
-                                    <ng-template ngFor let-noun [ngForOf]="rulesNounMods.gsn.info">
+                                    <ng-template ngFor let-noun [ngForOf]="rulesNounMods.mro_gsn_lib.info">
                                         <mat-accordion>
                                             <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
                                                 <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px"
@@ -151,7 +151,7 @@
                                                 </mat-expansion-panel-header>
     
                                                 <mat-nav-list role="navigation" class="tree-nav-list">
-                                                    <mat-list-item class="f-row understep-two" *ngFor="let modifier of noun.modifier" (click)="applyFilter(noun.nounCode, modifier.modCode, 'gsn')">
+                                                    <mat-list-item class="f-row understep-two" *ngFor="let modifier of noun.modifier" (click)="applyFilter(noun.nounCode, modifier.modCode, 'mro_gsn_lib')">
                                                         <mat-icon fontSet="mdo-icons" mat-list-icon></mat-icon>
                                                         <div mat-line>
                                                             {{ modifier.modDesc ? modifier.modDesc : 'Unknown' }}
@@ -245,7 +245,12 @@
 
                             <!-- Name Column -->
                             <ng-container matColumnDef="assigned_bucket">
-                                <mat-header-cell *matHeaderCellDef class="fixed-width-c1"></mat-header-cell>
+                                <mat-header-cell *matHeaderCellDef class="fixed-width-c1">
+                                    <button mat-button>
+                                        <!-- (click)="openTableColumnSettings()" -->
+                                        <mat-icon fontSet="mdo-icons">cog</mat-icon>
+                                    </button>
+                                </mat-header-cell>
                                 <mat-cell class="fixed-width-c1" *matCellDef="let element">
                                     <mat-card-header>
                                         <div mat-card-avatar>AK</div>
@@ -305,8 +310,20 @@
                                         <mat-header-cell *matHeaderCellDef>
                                             {{ columnName(dynCols) }}
                                         </mat-header-cell>
-                                        <mat-cell *matCellDef="let element; let rIndex = index;">
-                                            {{ element[dynCols] ? element[dynCols].fieldValue : '' }}
+                                        <mat-cell *matCellDef="let element; let rIndex = index;" 
+                                        (click)="editCurrentCell(dynCols,element, rIndex, containerRef)">
+                                            <div class="mdo-form-input f-col" style="display: none;"
+                                            id="inpctrl_{{ dynCols + '_' + rIndex }}">
+
+                                            <!-- container to hold input field when cell gets edited  -->
+                                            <ng-template prosContainerRef #containerRef="prosContainerRef">
+                                            </ng-template>                                   
+                                            </div>
+            
+                                            <span id="viewctrl_{{ dynCols + '_' + rIndex }}">
+                                                {{ element[dynCols] ? element[dynCols].fieldValue : '' }}
+                                            </span>
+
                                         </mat-cell>
                                     </ng-container>
                                 </ng-template>

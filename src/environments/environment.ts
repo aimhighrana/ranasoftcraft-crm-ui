@@ -18,8 +18,8 @@ export const environment = {
   apiurl: 'https://beta.mdoondemand.com',
   coreUrl:'http://localhost:8084',
   syncUrl:'http://localhost:8085',
-  authUrl:'http://localhost:8081',
-
+  authUrl:'http://localhost:8082',
+  dataPlalyUri:'http://dataplay.connekthub.com/api/v1.0',
 
 };
 

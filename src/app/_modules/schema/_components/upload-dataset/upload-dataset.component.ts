@@ -711,6 +711,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         standardFunction,
         categoryId,
         fields,
+        apiKey,
         transFormationSchema,
         duplicacyField,
         duplicacyMaster } = rule;
@@ -729,6 +730,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
           standard_function: standardFunction,
           regex,
           fields,
+          apiKey,
           udrTreeData: udrDto,
           weightage: brWeightage,
           categoryId,
@@ -776,6 +778,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       fields: object.fields,
       regex: object.regex,
       order: 1,
+      apiKey: object.apiKey,
       message: object.message ? object.message : object.error_message,
       script: object.script ? object.script : '',
       brInfo: object.brInfo ? object.brInfo : object.rule_name,
