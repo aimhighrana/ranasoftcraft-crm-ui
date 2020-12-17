@@ -30,6 +30,7 @@ export class Widget {
     isWorkflowdataSet: boolean;
     workflowPath: string[];
     distictWith: string;
+    isCustomdataSet: boolean;
 }
 
 export interface DateFilterCtrl {

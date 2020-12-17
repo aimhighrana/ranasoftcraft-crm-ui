@@ -118,4 +118,12 @@ export class EndpointsAnalyticsService {
   public widgetDataUrl(): string {
     return `${this.apiUrl}/widgetData`;
   }
+
+  public getCustomDataUrl(): string {
+    return `${this.apiUrl}/report/custom-data`;
+  }
+
+  public getCustomDatasetFieldsUrl(objectId: string): string {
+    return `${this.apiUrl}/report/custom-dataset/fields/${objectId}`
+  }
 }

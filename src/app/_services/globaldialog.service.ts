@@ -33,7 +33,7 @@ export class GlobaldialogService {
    */
   public openDialog(componentName, data: {}) {
     if (!componentName) {
-      throw new Error('component name is required"');
+      throw new Error('component name is required');
     }
     this.dialogToggleEmitter.next({
       componentName,

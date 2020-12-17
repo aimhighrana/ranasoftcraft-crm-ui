@@ -6,6 +6,7 @@ import { ReportList } from '../report-list/report-list.component';
 import { PermissionOn, ReportDashboardPermission } from '@models/collaborator';
 import { EndpointsAnalyticsService } from 'src/app/_services/_endpoints/endpoints-analytics.service';
 import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
+import { ObjectTypeResponse } from '@models/schema/schema';
 
 @Injectable({
   providedIn: 'root'
@@ -42,9 +43,11 @@ export class ReportService {
     return this.http.delete<boolean>(this.endpointAnalyticService.deleteReport(reportId));
   }
 
-  public getDocCount(objectType: string, plantCode:string, isWorkflowDataset?:any): Observable<number> {
+  public getDocCount(objectType: string, plantCode:string, isWorkflowDataset?:any, isCustomdataSet?:any): Observable<number> {
     if(isWorkflowDataset) {
       return this.http.get<number>(this.endpointAnalyticService.docCountUrl(objectType),{params:{plantCode, isWorkflowDataset}});
+    } else if(isCustomdataSet) {
+      return this.http.get<number>(this.endpointAnalyticService.docCountUrl(objectType),{params:{plantCode, isCustomdataSet}});
     } else {
       return this.http.get<number>(this.endpointAnalyticService.docCountUrl(objectType), {params:{plantCode}});
     }
@@ -75,5 +78,13 @@ export class ReportService {
     objectType = objectType ? objectType : '';
     wfId = wfId ? wfId : '';
     return this.http.get<LayoutConfigWorkflowModel[]>(this.endpointAnalyticService.getlayoutsUrl(),{params:{objectType,wfId, roleId, plantCode}});
+  }
+
+  public getCustomData(): Observable<ObjectTypeResponse[]> {
+    return this.http.get<ObjectTypeResponse[]>(this.endpointAnalyticService.getCustomDataUrl());
+  }
+
+  public getCustomDatasetFields(objectId: string): Observable<any> {
+    return this.http.get<any>(this.endpointAnalyticService.getCustomDatasetFieldsUrl(objectId));
   }
 }

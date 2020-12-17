@@ -3,13 +3,14 @@ import { MetadataModeleResponse, MetadataModel } from '@models/schema/schemadeta
 import { Observable, of, Subscription } from 'rxjs';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { FormControl } from '@angular/forms';
+import { ReportService } from '@modules/report/_service/report.service';
 
 export interface Metadata {
-    fieldId: string;
-    fieldDescri: string;
-    isGroup: boolean;
-    fldCtrl?: MetadataModel;
-    childs: Metadata[];
+  fieldId: string;
+  fieldDescri: string;
+  isGroup: boolean;
+  fldCtrl?: MetadataModel;
+  childs: Metadata[];
 }
 @Component({
   selector: 'pros-metadatafield-control',
@@ -46,6 +47,12 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
   widgetType: string;
 
   /**
+   * Check Custom data-set is true or not
+   */
+  @Input()
+  isCustomdataset: boolean;
+
+  /**
    * After option selection change event should be emit
    */
   @Output()
@@ -54,7 +61,10 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
   fields: Metadata[] = [];
   fieldsObs: Observable<Metadata[]> = of([]);
   fieldFrmCtrl: FormControl = new FormControl('');
-  preSelectedCtrl: Metadata;
+  preSelectedCtrl: Metadata | MetadataModel;
+
+  customFields: MetadataModel[];
+  customFieldsObs: Observable<MetadataModel[]> = of([]);
 
   /**
    * All the http or normal subscription will store in this array
@@ -129,7 +139,8 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
   ];
 
   constructor(
-    private schemaDetailsService: SchemaDetailsService
+    private schemaDetailsService: SchemaDetailsService,
+    private reportService: ReportService
   ) { }
 
 
@@ -152,27 +163,36 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
 
   ngOnInit(): void {
     this.fieldFrmCtrl.valueChanges.subscribe(val=>{
-      if(val && typeof val === 'string' && val.trim() !== '') {
-        const groups = Array.from(this.fields.filter(fil =>fil.isGroup));
-        const matchedData: Metadata[] = [];
-        groups.forEach(grp=>{
-          const changeAble = {isGroup:grp.isGroup, fieldId: grp.fieldId,childs: grp.childs,fieldDescri: grp.fieldDescri, fldCtrl: grp.fldCtrl};
-          const chld: Metadata[] = [];
-          changeAble.childs.forEach(child=>{
-              if(child.fieldDescri.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !==-1) {
-                chld.push(child);
-              }
-            });
-            if(chld.length) {
-              changeAble.childs = chld;
-              matchedData.push(changeAble);
-            }
-        });
-        this.fieldsObs = of(matchedData);
-      } else {
-        this.fieldsObs = of(this.fields);
-        if(typeof val === 'string' && val.trim() === '') {
+      if(this.isCustomdataset) {
+        if(val && typeof val === 'string' && val.trim() !== '') {
+          this.customFieldsObs = of(this.customFields.filter(fil => fil.fieldDescri.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !==-1));
+        } else {
+          this.customFieldsObs = of(this.customFields);
           this.selected(null);
+        }
+      } else {
+        if(val && typeof val === 'string' && val.trim() !== '') {
+          const groups = Array.from(this.fields.filter(fil =>fil.isGroup));
+          const matchedData: Metadata[] = [];
+          groups.forEach(grp=>{
+            const changeAble = {isGroup:grp.isGroup, fieldId: grp.fieldId,childs: grp.childs,fieldDescri: grp.fieldDescri, fldCtrl: grp.fldCtrl};
+            const chld: Metadata[] = [];
+            changeAble.childs.forEach(child=>{
+                if(child.fieldDescri.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !==-1) {
+                  chld.push(child);
+                }
+              });
+              if(chld.length) {
+                changeAble.childs = chld;
+                matchedData.push(changeAble);
+              }
+          });
+          this.fieldsObs = of(matchedData);
+        } else {
+          this.fieldsObs = of(this.fields);
+          if(typeof val === 'string' && val.trim() === '') {
+            this.selected(null);
+          }
         }
       }
     })
@@ -183,17 +203,30 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
    */
   getFields() {
     if(this.moduleId) {
-      const allfldSub = this.schemaDetailsService.getMetadataFields(this.moduleId).subscribe(response => {
-        const res = this.transformFieldRes(response);
-        this.fields = res;
-        this.fieldsObs = of(res);
-        if(this.selectedFldId) {
-          this.preSelectedCtrl = this.returnSelectedFldCtrl(this.selectedFldId);
-        }
-      }, error => {
-        console.error(`Error : ${error}`);
-      });
-      this.subscriptions.push(allfldSub);
+      if(this.isCustomdataset) {
+        const allfldSub = this.reportService.getCustomDatasetFields(this.moduleId).subscribe(response => {
+          this.customFields = response;
+          this.customFieldsObs = of(response);
+          if(this.selectedFldId) {
+            this.preSelectedCtrl = this.returnSelectedFldCtrl(this.selectedFldId);
+          }
+        }, error => {
+          console.error(`Error : ${error}`);
+        });
+        this.subscriptions.push(allfldSub);
+      } else {
+        const allfldSub = this.schemaDetailsService.getMetadataFields(this.moduleId).subscribe(response => {
+          const res = this.transformFieldRes(response);
+          this.fields = res;
+          this.fieldsObs = of(res);
+          if(this.selectedFldId) {
+            this.preSelectedCtrl = this.returnSelectedFldCtrl(this.selectedFldId);
+          }
+        }, error => {
+          console.error(`Error : ${error}`);
+        });
+        this.subscriptions.push(allfldSub);
+      }
     }
   }
 
@@ -359,14 +392,22 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
    * Should return selected field control
    * @param fieldId seldcted field id
    */
-  returnSelectedFldCtrl(fieldId: string): Metadata {
+  returnSelectedFldCtrl(fieldId: string): Metadata | MetadataModel {
     let returnCtrl;
-    this.fields.forEach(fld=>{
-      const match = fld.childs.filter(fil=> fil.fieldId === fieldId);
-      if(match.length) {
-        returnCtrl = match[0];
-      }
-    });
+    if(this.isCustomdataset) {
+      this.customFields.forEach(fld=>{
+        if(fld.fieldId === fieldId) {
+          returnCtrl = fld;
+        }
+      });
+    } else {
+      this.fields.forEach(fld=>{
+        const match = fld.childs.filter(fil=> fil.fieldId === fieldId);
+        if(match.length) {
+          returnCtrl = match[0];
+        }
+      });
+    }
     return returnCtrl;
   }
 
@@ -374,7 +415,7 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
    * Should return field descriptions
    * @param obj curret render object
    */
-  displayFn(obj: Metadata): string {
+  displayFn(obj: Metadata | MetadataModel): string {
     return obj? obj.fieldDescri: null;
   }
 
@@ -382,7 +423,7 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
    * Should emit after value change
    * @param option selected option from ui
    */
-  selected(option:Metadata) {
+  selected(option:any) {
     this.selectionChange.emit(option);
   }
 }

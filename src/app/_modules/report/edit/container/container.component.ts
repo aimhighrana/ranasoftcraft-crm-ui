@@ -102,6 +102,18 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   workflowFieldsObs: Observable<WorkflowFieldRes> = of(new WorkflowFieldRes());
 
+  /**
+   * store custom data set object
+   */
+  customDataSets: ObjectTypeResponse[] = [];
+  customDataSetob: Observable<ObjectTypeResponse[]> = of([]);
+
+  /**
+   * store custom data set fields
+   */
+  Customfields: MetadataModel[];
+  CustomfieldsObs: Observable<MetadataModel[]> = of([]);
+
   constructor(
     private formBuilder: FormBuilder,
     private reportService: ReportService,
@@ -133,7 +145,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     this.getAllObjectType();
-
+    this.getCustomObjectType();
     const sub = this.activatedRouter.params.subscribe(params => {
       this.reportId = params.id ? ((params.id).toLowerCase() === 'new' ? '' : params.id) : '';
       if (this.reportId) {
@@ -165,7 +177,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       endDate: [''],
       isWorkflowdataSet: [false],
       workflowPath:[''],
-      distictWith:['']
+      distictWith:[''],
+      isCustomdataSet: [false]
     });
 
     this.chartPropCtrlGrp = this.formBuilder.group({
@@ -213,6 +226,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         changedWidget.isWorkflowdataSet = latestVal.isWorkflowdataSet;
         changedWidget.workflowPath = latestVal.workflowPath;
         changedWidget.distictWith = typeof latestVal.distictWith ==='string' ? latestVal.distictWith : latestVal.distictWith.fieldId;
+        changedWidget.isCustomdataSet = latestVal.isCustomdataSet;
 
         // hold selected field control
         if( typeof latestVal.field !== 'string'){
@@ -273,18 +287,25 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const styleSub = this.styleCtrlGrp.get('objectType').valueChanges.subscribe(fillData => {
       if (fillData && typeof fillData === 'string') {
-        if (fillData  !== this.styleCtrlGrp.value.objectType && !this.styleCtrlGrp.get('isWorkflowdataSet').value) {
+        if (fillData  !== this.styleCtrlGrp.value.objectType && !this.styleCtrlGrp.get('isWorkflowdataSet').value && !this.styleCtrlGrp.get('isCustomdataSet').value ) {
           this.getAllFields(fillData);
           this.getRecordCount(fillData);
           this.styleCtrlGrp.get('isWorkflowdataSet').setValue(false);
+          this.styleCtrlGrp.get('isCustomdataSet').setValue(false);
         }
-        if(fillData  !== this.styleCtrlGrp.value.objectType && this.styleCtrlGrp.get('isWorkflowdataSet').value) {
+        if(fillData  !== this.styleCtrlGrp.value.objectType && this.styleCtrlGrp.get('isWorkflowdataSet').value && !this.styleCtrlGrp.get('isCustomdataSet').value) {
           this.getWorkFlowFields(fillData.split(','));
           this.getRecordCount(fillData, true);
           this.getWorkFlowPathDetails(fillData.split(','));
           this.styleCtrlGrp.get('isWorkflowdataSet').setValue(true);
+          this.styleCtrlGrp.get('isCustomdataSet').setValue(false);
         }
-
+        if(fillData !== this.styleCtrlGrp.value.objectType && this.styleCtrlGrp.get('isCustomdataSet').value) {
+          this.getCustomFields(fillData);
+          this.getRecordCount(fillData, false, true);
+          this.styleCtrlGrp.get('isWorkflowdataSet').setValue(false);
+          this.styleCtrlGrp.get('isCustomdataSet').setValue(true);
+        }
       } else {
         console.log(fillData);
       }
@@ -322,8 +343,10 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.searchDataSetVal = value;
     if(value) {
       this.dataSetOb = of(this.dataSets.filter(fil => fil.objectdesc.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !==-1));
+      this.customDataSetob = of(this.customDataSets.filter(fil => fil.objectdesc.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !==-1));
     } else {
       this.dataSetOb = of(this.dataSets);
+      this.customDataSetob = of(this.customDataSets);
     }
   }
 
@@ -372,6 +395,14 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.dataSetOb = of(res);
     }, error => console.error(`Error: ${error}`));
     this.subscriptions.push(objSub);
+  }
+
+  getCustomObjectType() {
+    const CustomSub = this.reportService.getCustomData().subscribe(res => {
+      this.customDataSets = res;
+      this.customDataSetob = of(res);
+    }, error => console.error(`Error: ${error}`));
+    this.subscriptions.push(CustomSub);
   }
 
   drop(event: CdkDragDrop<string[]>) {
@@ -459,7 +490,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           startDate: startDate ? moment(startDate) : '',
           endDate: endDate ? moment(endDate) : '',
           workflowPath: data.workflowPath ? data.workflowPath : [],
-          distictWith: data.distictWith ? data.distictWith : ''
+          distictWith: data.distictWith ? data.distictWith : '',
+          isCustomdataSet: data.isCustomdataSet ? data.isCustomdataSet : false
         });
 
         // set value to properties frm ctrl
@@ -496,11 +528,20 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
       // make while edit widget ..
       if(!data.isWorkflowdataSet) {
-        const hasObj = this.dataSets.filter(fil => fil.objectid === data.objectType)[0];
-        if(hasObj) {
-          setTimeout(()=>{
-            (document.getElementById('dataSets') as HTMLInputElement).value = hasObj.objectdesc;
-          },1000);
+        if(!data.isCustomdataSet) {
+          const hasObj = this.dataSets.filter(fil => fil.objectid === data.objectType)[0];
+          if(hasObj) {
+            setTimeout(()=>{
+              (document.getElementById('dataSets') as HTMLInputElement).value = hasObj.objectdesc;
+            },1000);
+          }
+        } else {
+          const hasObj = this.customDataSets.filter(fil => fil.objectid === data.objectType)[0];
+          if(hasObj) {
+            setTimeout(()=>{
+              (document.getElementById('dataSets') as HTMLInputElement).value = hasObj.objectdesc;
+            },1000);
+          }
         }
       }
     }
@@ -653,9 +694,9 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    * Should call api and get the actual records count
    * @param objectType selected object type
    */
-  getRecordCount(objectType: string, isWorkflowDataset?:boolean) {
+  getRecordCount(objectType: string, isWorkflowDataset?:boolean, isCustomdataSet?:boolean) {
     const userSub = this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user=>{
-      const docCountSub = this.reportService.getDocCount(objectType, user.plantCode, isWorkflowDataset).subscribe(res => {
+      const docCountSub = this.reportService.getDocCount(objectType, user.plantCode, isWorkflowDataset, isCustomdataSet).subscribe(res => {
         this.recordsCount = res;
       }, error => {
         this.recordsCount = null;
@@ -762,9 +803,11 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     if(selected.length) {
       this.styleCtrlGrp.get('isWorkflowdataSet').setValue(true);
       this.dataSetOb = of(this.dataSets);
+      this.customDataSetob = of(this.customDataSets);
     } else {
       this.styleCtrlGrp.get('isWorkflowdataSet').setValue(false);
     }
+    this.styleCtrlGrp.get('isCustomdataSet').setValue(false);
     const objId = selected.map(map=> map.objectid);
     this.getWorkFlowFields(objId);
     this.getRecordCount(objId.toString(), true);
@@ -785,8 +828,10 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   afterDataSetSelect(obj: ObjectTypeResponse) {
     if(obj.objectid) {
       this.dataSetOb = of(this.dataSets);
+      this.customDataSetob = of(this.customDataSets);
       this.styleCtrlGrp.get('objectType').setValue(obj.objectid);
       this.styleCtrlGrp.get('isWorkflowdataSet').setValue(false);
+      this.styleCtrlGrp.get('isCustomdataSet').setValue(false);
       this.searchDataSetVal = '';
       this.chooseColumns = [];
     }
@@ -830,6 +875,18 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
+   * Search choose columns ...
+   * @param val searchable text for choose columns ..
+   */
+  searchCustomChooseColumn(val: string) {
+    if(val && val.trim() !=='') {
+      this.CustomfieldsObs = of(this.Customfields.filter(fil => fil.fieldDescri.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !==-1));
+    } else {
+      this.CustomfieldsObs = of(this.Customfields);
+    }
+  }
+
+  /**
    * Choose column searchable fields...
    * @param val searchable string for choose column
    */
@@ -840,6 +897,18 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.workflowFieldsObs = of({dynamic:dynFld,static:sysFld});
     } else {
       this.workflowFieldsObs = of(this.workflowFields);
+    }
+  }
+
+  /**
+   * Search choose columns ...
+   * @param val searchable text for choose columns ..
+   */
+  searchChooseCustomColumn(val: string) {
+    if(val && val.trim() !=='') {
+      this.headerFields = of(this.headerFls.filter(fil => fil.fieldDescri.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !==-1));
+    } else {
+      this.headerFields = of(this.headerFls);
     }
   }
 
@@ -913,6 +982,48 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         };
       }
       this.preapreNewWidgetPosition(dropableWidget);
+    }
+  }
+
+  /**
+   * After select cuatom data ..
+   * @param selected selected custom data is here
+   */
+  afterCustomSelect(obj: ObjectTypeResponse) {
+    if(obj.objectid) {
+      this.styleCtrlGrp.get('isWorkflowdataSet').setValue(false);
+      this.styleCtrlGrp.get('isCustomdataSet').setValue(true);
+      this.styleCtrlGrp.get('objectType').setValue(obj.objectid);
+      this.searchDataSetVal = '';
+      this.chooseColumns = [];
+      this.getRecordCount(obj.objectid, false, true);
+    }
+  }
+
+  getCustomFields(objNum: string) {
+    const CustomfldSub = this.reportService.getCustomDatasetFields(objNum).subscribe(response => {
+      this.Customfields = response;
+      this.CustomfieldsObs = of(response);
+      console.log(this.Customfields);
+    }, error => {
+      console.error(`Error : ${error}`);
+    });
+    this.subscriptions.push(CustomfldSub);
+  }
+
+  get isCustomRefresh(): boolean {
+    return (this.selStyleWid ? this.selStyleWid.isCustomdataSet : false);
+  }
+
+  /**
+   * Update field on formGroup while selection change
+   * @param fieldData option of selection change
+   */
+  onCustomFieldChange(fieldData: MatAutocompleteSelectedEvent) {
+    if(fieldData && fieldData.option.value) {
+      this.styleCtrlGrp.get('field').setValue(fieldData.option.value ? fieldData.option.value : '');
+    } else {
+      this.styleCtrlGrp.get('field').setValue('');
     }
   }
 }
