@@ -217,6 +217,8 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   activeChipValue = {};
   @ViewChild('clickToEdit') clickToEdit: ElementRef;
 
+  stepSubmitted = false;
+
   /**
    * Track the click event
    * in order to detect outside cick
@@ -517,12 +519,12 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         return false;
       }
     }
-    if (this.stepper.selectedIndex === 3) {
+    /* if (this.stepper.selectedIndex === 3) {
       if (this.subscribersList && this.subscribersList.length === 0) {
         this.snackBar.open('Please add a Subscriber to continue', 'Okay', { duration: 5000 });
         return false;
       }
-    }
+    } */
     return true;
   }
 
@@ -532,6 +534,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * @param validateForm whether to validate the data entered (optional)
    */
   step(where: string, validateForm?: boolean) {
+    this.stepSubmitted = true;
     if (validateForm && !this.validateStep()) {
       return;
     }
@@ -567,6 +570,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         // document.getElementById('uploader').setAttribute('value', '');
       }
     }
+    this.stepSubmitted = false;
     this.stepper[where]();
   }
 

@@ -72,12 +72,13 @@
             <div class="f-col">
                 <pros-form-input [value]="requestForm.controls.objectDesc.value"
                     [label]="'Module name'" [placeholder]="'Module name'" (valueChange)="setObjectDescription($event)"
-                    [hint]="'In MDO module is a dataset'" 
+                    [hint]="!stepSubmitted || !requestForm.controls['objectDesc'].errors ? 'In MDO module is a dataset' : ''" 
                     [disabled]="requestForm.controls.objectId.value !== '' && requestForm.controls.objectId.value !== null">
                 </pros-form-input>
-                <!-- <mat-error *ngIf="requestForm.value.core_schema.discription"> -->
+                <!-- <mat-error *ngIf="requestForm.value.core_schema.discription"> 
+                    requestForm.controls['objectDesc'].errors && !requestForm.controls.objectDesc.pristine ? 'In MDO module is a dataset' : ''-->
                 <mat-error
-                    *ngIf="requestForm.controls['objectDesc'].errors && !requestForm.controls.objectDesc.pristine">
+                    *ngIf="stepSubmitted && requestForm.controls['objectDesc'].errors">
                     Module name is required
                 </mat-error>
 
@@ -132,15 +133,17 @@
             <ng-template matStepLabel></ng-template>
             <div class="f-col">
                 <pros-form-input [value]="requestForm.get('core_schema').value.discription" [placeholder]="'Schema name'" [label]="'Schema name'"
-                    (valueChange)="setschemaName($event)" [hint]="'Scehma is a collection of business rules'" [disabled]="isdisabled(requestForm.controls.schemaId.value)">
+                    (valueChange)="setschemaName($event)" 
+                    [hint]="!stepSubmitted || isSchemaSet(requestForm.get('core_schema').value) ? 'Schema is a collection of business rules' : ''" 
+                    [disabled]="isdisabled(requestForm.controls.schemaId.value)">
                 </pros-form-input>
-                <mat-error *ngIf="!isSchemaSet(requestForm.get('core_schema').value)">
+                <mat-error *ngIf="stepSubmitted && !isSchemaSet(requestForm.get('core_schema').value)">
                     Schema name is required
                 </mat-error>
 
                 <div class="row-spacer"></div>
 
-                <mat-label>Select output view</mat-label>
+                <!-- <mat-label>Select output view</mat-label>
                 <mat-form-field appearance="outline">
                     <mat-select [formControl]="schemaCategory">
                         <mat-option value="DATAQUALITY_VIEW">Data quality view</mat-option>
@@ -155,7 +158,7 @@
 
                 <pros-form-input [placeholder]="'Data scope'" [label]="'Data scope'" [disabled]="true"
                     [value]="requestForm.controls.dataScope.value"></pros-form-input>
-                <div class="row-spacer"></div>
+                <div class="row-spacer"></div> -->
 
                 <div class="f-col temp-field">
                     <mat-label>Threshold</mat-label>
@@ -226,9 +229,9 @@
                             </div>
 
                             <div class="col col-x8">
-                                <mat-checkbox color="primary" [checked]="businessRule.status === '1'"
+                                <!-- <mat-checkbox color="primary" [checked]="businessRule.status === '1'"
                                 (change)="toggleBrStatus($event,businessRule)"></mat-checkbox>
-                                <span class="f-col-spacer-half"></span>
+                                <span class="f-col-spacer-half"></span> -->
                                 <button mat-flat-button color="accent" (click)="configureRule(businessRule)">
                                     Configure
                                 </button>
