@@ -4,7 +4,6 @@
             {{ schemaInfo ? schemaInfo.moduleDescription : 'Unknown' }} / 
             {{ schemaInfo ? schemaInfo.schemaDescription : 'Unknown' }} /
             {{ (!variantId) ? 'Entire dataset' : 'Unknown'  }}
-            <span class="f-col-spacer-half"></span>
             <button mat-button [matMenuTriggerFor]="check">
                 <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon>
             </button>
@@ -42,7 +41,7 @@
     <div class="f-row">
         <mat-chip-list>
             <mat-chip disableRipple="true" (click)="changeTabStatus('success')" class="error-status">
-                {{ statics ? statics.errorCnt : 0 }} error</mat-chip>
+                {{ statics ? statics.errorCnt : 0 }} errors</mat-chip>
             <!-- <mat-chip disableRipple="true" class="warning-status">0 warning</mat-chip> -->
             <mat-chip disableRipple="true" (click)="changeTabStatus('review')" class="info-status">
                 {{ statics ? statics.correctedCnt : 0 }} corrections</mat-chip>
@@ -56,8 +55,7 @@
             <div class="f-col dataset-grid-listing">
                 <!-- Filters  -->
                 <div class="f-row">
-                    
-                    <pros-search-input placeholder="Search" (value)="inlineSearch($event)" [preValue]="preInpVal">
+                    <pros-search-input placeholder="Search text" (value)="inlineSearch($event)" [preValue]="preInpVal">
                     </pros-search-input>
                     <div class="f-col-spacer-half"></div>
                     <!-- Append dynamic filter here ..-->
@@ -100,7 +98,7 @@
                         <!-- Add filter control -->
                         <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="addfiltermenu"
                             (click)="reInilize = !reInilize">
-                            <mat-icon fontSet="mdo-icons">filter-add</mat-icon>
+                            <mat-icon fontSet="mdo-icons">folder-filter</mat-icon>
                         </mat-chip>
                         <!-- Add filter control MatMenu -->
                         <mat-menu #addfiltermenu="matMenu">
@@ -127,7 +125,7 @@
                     <mat-table matSort [dataSource]="dataSource" class="mat-elevation-z0">
 
                         <!-- Checkbox Column -->
-                        <ng-container matColumnDef="checkbox_select">
+                        <ng-container matColumnDef="checkbox_select" sticky>
                             <mat-header-cell *matHeaderCellDef class="fixed-width-c1">
                                 <mat-checkbox color="primary">
                                 </mat-checkbox>
@@ -139,7 +137,7 @@
                         </ng-container>
     
                         <!-- Name Column -->
-                        <ng-container matColumnDef="bucket_assigned">
+                        <ng-container matColumnDef="bucket_assigned" sticky>
                             <mat-header-cell *matHeaderCellDef class="fixed-width-c1"></mat-header-cell>
                             <mat-cell class="fixed-width-c1" *matCellDef="let element">
                                 <mat-card-header>
@@ -149,7 +147,7 @@
                         </ng-container>
     
                         <!-- Action Column -->
-                        <ng-container matColumnDef="action">
+                        <ng-container matColumnDef="action" sticky>
                             <mat-header-cell *matHeaderCellDef class="fixed-width-c2">
                                 <button mat-button (click)="openTableColumnSettings()">
                                     <mat-icon fontSet="mdo-icons">cog</mat-icon>

@@ -82,6 +82,7 @@ mat-card.root {
     width: 1px;
     align-items: center;
     margin: 0 16px;
+    word-break: break-word;
 
     &.col-x4 {
       flex: 4;
@@ -91,7 +92,7 @@ mat-card.root {
       flex: 8;
     }
 
-    &.text-center {
+    &.mat-item-center {
       justify-content: center;
     }
 
@@ -106,7 +107,7 @@ mat-card.root {
     }
 
     mat-slider {
-      width: 100%;
+      flex: 1;
     }
 
     &.col-x16 {

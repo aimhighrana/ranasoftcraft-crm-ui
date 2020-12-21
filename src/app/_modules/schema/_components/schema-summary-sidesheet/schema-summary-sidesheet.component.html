@@ -9,7 +9,6 @@
                 {{schemaDetails?.moduleDescription ? schemaDetails.moduleDescription : 'Untitled'}} /
                 {{schemaDetails?.schemaDescription ? schemaDetails.schemaDescription: 'Untitled'}}
             </div>
-            <span class="f-col-spacer-half"></span>
             <!-- <button mat-button [matMenuTriggerFor]="check">
                 <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon>
             </button> -->
@@ -38,17 +37,15 @@
     </div>
     <div class="row-spacer"></div>
     <div class="f-col mdo-justify">
-        <!-- <mat-card class="f-row mat-elevation-z0 message-alert">
+        <!-- <mat-card class="f-row mat-elevation-z0 message info-alert">
             <mat-icon fontSet="mdo-icons">question-mark</mat-icon>
             <span class="f-col-spacer-half"></span>
             <p>167 out of 77543 records will be validated based on your data scope selection</p>
         </mat-card> -->
-
-        <div class="row-spacer"></div>
-
         <div class="f-col">
             <!-- <pros-form-input [type]="'text'" [label]="'Data scope'"></pros-form-input> -->
-            <mat-label>Data Scope</mat-label>
+            <div class="f-col mdo-form-field">
+                <mat-label>Data Scope</mat-label>
                 <mat-form-field appearance="outline">
                     <mat-select [formControl]="dataScopeControl">
                         <mat-option *ngFor="let variant of variantDetails" [value]="variant.variantId">
@@ -56,13 +53,12 @@
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
-            <div class="row-spacer"></div>
-            <div class="f-col temp-field">
+            </div>
+            <div class="f-col mdo-form-field">
                 <mat-label>Threshold</mat-label>
                 <mat-slider color="primary" [disabled]="false" [value]="schemaDetails?.schemaThreshold ? schemaDetails.schemaThreshold : 0">
                 </mat-slider>
-            </div>
-            <div class="row-spacer"></div>
+            </div>  
             <mat-accordion>
                 <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
                     <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
@@ -134,9 +130,7 @@
                     <!-- Business rule listing latest code end here-->
                 </mat-expansion-panel>
             </mat-accordion>
-
             <div class="row-spacer"></div>
-
             <mat-accordion>
                 <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
                     <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">

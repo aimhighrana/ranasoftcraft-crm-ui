@@ -1,4 +1,4 @@
-<mat-card class="mat-elevation-z0 root">
+<div class="mat-elevation-z0 root">
     <div class="f-row breadcrum-toolbar">
         <div class="display-heading-large">
             <ng-template [ngIf]="schemaInfo">
@@ -38,10 +38,24 @@
             <button mat-flat-button color="accent" (click)="submitReviewRec()">Submit</button>
         </ng-template>
     </div>
-
+    <mat-divider></mat-divider>
     <div class="row-spacer"></div>
-
-    <nav mat-tab-nav-bar>
+    <div class="f-row">
+        <mat-chip-list>
+            <mat-chip disableRipple="true" class="error-status" (click)="changeTabStatus('error')">
+                {{ (statics && statics.errorCnt) ? statics.errorCnt : 0 }} errors
+            </mat-chip>
+            <mat-chip disableRipple="true" class="success-status" (click)="changeTabStatus('success')">
+                {{ (statics && statics.successCnt) ? statics.successCnt : 0 }} success
+            </mat-chip>
+            <mat-chip disableRipple="true" class="info-status" (click)="changeTabStatus('review')">
+                {{ (statics && statics.correctedCnt) ? statics.correctedCnt : 0 }} corrections
+            </mat-chip>
+        </mat-chip-list>
+    </div>
+    <div class="row-spacer"></div>
+    <mat-divider></mat-divider>
+    <!-- <nav mat-tab-nav-bar>
         <a mat-tab-link [active]="activeTab === 'error'" (click)="changeTabStatus('error')">
             Error
             <mat-chip-list class="mdo-tabchiplist">
@@ -60,16 +74,12 @@
                 <mat-chip>{{ (statics && statics.correctedCnt) ? statics.correctedCnt : 0 }}</mat-chip>
             </mat-chip-list>
         </a>
-    </nav>
-
-    <div class="row-spacer"></div>
-
+    </nav> -->
     <div class="f-row filter-container">
-        <pros-search-input placeholder="Search" (value)="inlineSearch($event)" [preValue]="preInpVal">
+        <pros-search-input placeholder="Search text" (value)="inlineSearch($event)" [preValue]="preInpVal">
         </pros-search-input>
         <div class="f-col-spacer-half"></div>
         <!-- Append dynamic filter here ..-->
-
         <mat-chip-list>
             <ng-template ngFor let-ctrl [ngForOf]="filterCriteria | async">
                 <ng-template [ngIf]="ctrl.type !== 'INLINE'">
@@ -93,9 +103,7 @@
                     </mat-chip>
                 </ng-template>
             </ng-template>
-
         </mat-chip-list>
-
         <div class="f-col-spacer-half"></div>
 
         <!-- Append dynamic filter MatMenu -->
@@ -109,7 +117,7 @@
             <!-- Add filter control -->
             <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="addfiltermenu"
                 (click)="reInilize = !reInilize">
-                <mat-icon fontSet="mdo-icons">filter-add</mat-icon>
+                <mat-icon fontSet="mdo-icons">folder-filter</mat-icon>
             </mat-chip>
             <!-- Add filter control MatMenu -->
             <mat-menu #addfiltermenu="matMenu">
@@ -128,9 +136,6 @@
             </mat-menu>
         </mat-chip-list>
     </div>
-
-    <div class="row-spacer"></div>
-
     <div class="data">
         <!-- if have data then render table -->
         <ng-template [ngIf]="showTableLoading" [ngIfElse]="showdata">
@@ -176,7 +181,8 @@
                 </ng-container>
 
                 <ng-container matColumnDef="_score_weightage" sticky>
-                    <mat-header-cell *matHeaderCellDef class="fixed-width-c2"> Score <mat-icon fontSet="mdo-icons">question-mark</mat-icon>
+                    <mat-header-cell *matHeaderCellDef class="fixed-width-c2"> Score &nbsp;<mat-icon fontSet="mdo-icons">
+                            question-mark</mat-icon>
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="fixed-width-c2">
                         <div class="f-row progress-cell">
@@ -209,9 +215,9 @@
                 </ng-container>
 
                 <ng-container matColumnDef="OBJECTNUMBER" sticky>
-                    <mat-header-cell *matHeaderCellDef mat-sort-header class="fixed-width-c2"> Object Number
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Object Number
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let element" class="fixed-width-c2">
+                    <mat-cell *matCellDef="let element">
                         {{ element['OBJECTNUMBER'] ? element['OBJECTNUMBER'].fieldData : '' }}
                     </mat-cell>
                 </ng-container>
@@ -296,4 +302,4 @@
             </mat-table>
         </ng-template>
     </div>
-</mat-card>
+</div>

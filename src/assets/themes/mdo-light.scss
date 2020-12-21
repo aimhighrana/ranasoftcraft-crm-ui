@@ -1,4 +1,4 @@
-// define color
+// Define color
 $mdo-light-blue: (
   50: #e4ebf3,
   500: #10aeef,
@@ -55,3 +55,7 @@ $mdo-light:   mat-light-theme($mdo-light-primary, $mdo-light-accent, $mdo-light-
 @include angular-material-theme($mdo-light);
 @include pros-cmp-theme($mdo-light);
 @include pros-cmp-typography(mat-typography-config());
+
+$custom-typography: mat-typography-config($font-family: '"lato"');
+
+@include mat-core($custom-typography);

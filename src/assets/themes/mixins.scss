@@ -132,6 +132,10 @@
         color: $color-text-secondary;
         opacity: 1;
       }
+
+      mat-icon.mat-icon {
+        color: $color-text-secondary;
+      }
     }
   }
 
@@ -209,7 +213,7 @@
       }
 
       .mat-form-field-infix {
-        padding: 3px 0 0 0;
+        padding: 4px 0 0 0;
         display: flex;
         align-items: center;
         border-top-width: 0;
@@ -236,7 +240,7 @@
         }
 
         mat-chip-list.mat-chip-list {
-          margin: 4px 0 6px 0;
+          margin: 6px 0 6px 0;
         }
 
         textarea.mdo-textarea {
@@ -445,6 +449,7 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: pre-line;
+        word-break: break-word;
         line-height: 17px;
         display: -webkit-box;
         -webkit-line-clamp: 2;
@@ -686,6 +691,7 @@
     font-weight: 400;
     border-radius: 3px;
     height: 36px;
+    line-height: 34px;
 
     // &.mat-button.mat-primary .mat-button-focus-overlay {
     //   background: transparent;
@@ -825,6 +831,8 @@
       padding: 0 8px;
       min-width: 160px;
       max-width: 200px;
+      word-break: break-word;
+      align-self: stretch;
 
       &.fixed-width-c1 {
         min-width: 38px;
@@ -1077,7 +1085,8 @@
     }
   }
 
-  pros-welcome-mdo {
+  pros-welcome-mdo,
+  pros-schema-lists {
     pros-svg-icon.welcome-logo {
       .logo-primary {
         fill: mat-color($primary-palette);
@@ -1171,6 +1180,18 @@
   pros-schema-summary-sidesheet,
   pros-schema-info {
     mat-card.root {
+      .message {
+        color: $color-text-canvas;
+
+        &.error-alert {
+          background-color: $color-status-error;
+        }
+
+        &.info-alert {
+          background-color: $color-app-offcanvas;
+        }
+      }
+
       .colunm-box {
         mat-card-header.mat-card-header {
           .mat-card-header-text {
@@ -1406,6 +1427,34 @@
                 display: none;
               }
             }
+          }
+        }
+      }
+    }
+  }
+
+  pros-classification-builder {
+    div.root {
+      .dataset-grid-navigation {
+        .nav-tree {
+          mat-nav-list.mat-nav-list.tree-nav-list {
+            .understep-two {
+              .mat-list-item-content {
+                padding: 0 0 0 72px;
+              }
+            }
+          }
+
+          .error-badge {
+            color: $color-status-error;
+          }
+
+          .success-badge {
+            color: $color-status-success;
+          }
+
+          .warning-badge {
+            color: $color-status-warning;
           }
         }
       }

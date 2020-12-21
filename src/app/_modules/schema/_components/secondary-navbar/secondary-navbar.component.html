@@ -1,6 +1,6 @@
 <div class="root">
   <mat-card class="secondary-card mat-elevation-z0">
-    <div class="row-spacer"></div>
+    <div class="f-row-spacer-half"></div>
     <div class="f-row display-heading-large">
       <div>{{ getRoutedDescription }}</div>
       <span class="f-spacer"></span>
@@ -12,9 +12,9 @@
           <mat-icon fontSet="mdo-icons">plus</mat-icon>
         </button>
         <mat-menu #moduleMenu="matMenu" xPosition="before" (closed)="searchInput.clearSearch()" class="navigation-menu">
+          <pros-search-input class="field-mat-menu" placeholder="Search for module" (value)="filterModulesMenu($event)"
+            #searchInput prosClickStopPropagation></pros-search-input>
           <div class="menu-customdropdown">
-            <pros-search-input class="field-mat-menu" placeholder="Search for module"
-              (value)="filterModulesMenu($event)" #searchInput prosClickStopPropagation></pros-search-input>
             <button mat-menu-item *ngFor="let module of filteredModulesMenu"
               (click)="createNewSchema(module.moduleId)">{{module.moduleDesc ? module.moduleDesc : 'Untitled'}}
             </button>
@@ -43,7 +43,7 @@
                 <div class="badge">{{module.schemaLists.length}}</div>
               </mat-panel-title>
             </mat-expansion-panel-header>
-            <mat-nav-list role="navigation">
+            <mat-nav-list role="navigation" [disableRipple]="true">
               <mat-list-item *ngFor="let schema of module.schemaLists"
                 [routerLink]="['schema/schema-details', module.moduleId, schema.schemaId]"
                 [routerLinkActive]="'selected'">
@@ -70,7 +70,7 @@
                 <div class="badge">{{module.schemaLists.length}}</div>
               </mat-panel-title>
             </mat-expansion-panel-header>
-            <mat-nav-list role="navigation">
+            <mat-nav-list role="navigation" [disableRipple]="true">
               <mat-list-item *ngFor="let schema of module.schemaLists"
                 [routerLink]="['schema/schema-info', schema.moduleId, schema.schemaId]"
                 [queryParams]="{fragment:'business-rules'}">
@@ -82,7 +82,7 @@
       </mat-accordion>
 
       <mat-accordion *ngIf="activatedPrimaryNav === 'report'">
-        <mat-nav-list *ngFor="let report of reportOb | async">
+        <mat-nav-list *ngFor="let report of reportOb | async" [disableRipple]="true">
           <mat-list-item [disabled]="report.permission && !report.permission.isViewable"
             [routerLink]="['report/dashboard', report.reportId]" [routerLinkActive]="'selected'">
             <div class="heading-title">{{report.reportName ? report.reportName : 'Untitled'}}</div>

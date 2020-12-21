@@ -1,17 +1,15 @@
 <ng-container>
-
     <!-- Input type single select -->
     <mat-form-field appearance="outline" prosClickStopPropagation>
-        <input matInput [matAutocomplete]="auto" class="mat-input" #input [formControl]="searchControl"
-               placeholder="search...">
-            <mat-icon matSuffix> search </mat-icon>
-        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="emitChngSelectValue($event)">  
-            <mat-option *ngFor="let option of filterdOptionsObs | async" 
-                        [value]="option.CODE"
-                        [ngStyle]="{'color': option.isSugested ? 'primary' : null }"
-                        > {{ option.TEXT }} </mat-option>
+        <input matInput class="mat-input" [matAutocomplete]="auto" #input [formControl]="searchControl"
+            placeholder="Search">
+            <div class="f-row input-actions">
+                <mat-icon fontSet="mdo-icons">search</mat-icon>
+            </div>
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="emitChngSelectValue($event)">
+            <mat-option *ngFor="let option of filterdOptionsObs | async" [value]="option.CODE"
+                [ngStyle]="{'color': option.isSugested ? 'primary' : null }"> {{ option.TEXT }} </mat-option>
         </mat-autocomplete>
-    </mat-form-field> 
+    </mat-form-field>
 
 </ng-container>
-

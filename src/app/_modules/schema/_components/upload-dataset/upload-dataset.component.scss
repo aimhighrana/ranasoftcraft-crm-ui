@@ -114,6 +114,10 @@ mat-card.root {
       flex: 16;
     }
 
+    &.mat-item-center {
+      justify-content: center;
+    }
+
     &.mat-item-end {
       justify-content: flex-end;
     }
@@ -132,10 +136,6 @@ mat-card.root {
 
     strong {
       align-items: center;
-    }
-
-    .mat-head-icon {
-      margin-left: 4px;
     }
 
     pros-form-input,
@@ -159,5 +159,9 @@ mat-card.root {
       margin-right: 4px;
       min-width: auto;
     }
+  }
+
+  .mdo-auto-complete {
+    width: 100%;
   }
 }

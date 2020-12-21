@@ -1,12 +1,10 @@
 
-<div class="mat-elevation-z0 root">
+<div class="root">
     <div class="f-row breadcrum-toolbar">
         <div class="display-heading-large">
             {{ schemaInfo ? schemaInfo.moduleDescription : 'Unknown' }} / 
             {{ schemaInfo ? schemaInfo.schemaDescription : 'Unknown' }} /
             {{ (!variantId) ? 'Entire dataset' : 'Unknown'  }}
-            
-            <span class="f-col-spacer-half"></span>
             <button mat-button [matMenuTriggerFor]="check">
                 <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon>
             </button>
@@ -40,13 +38,13 @@
     <div class="f-row">
         <mat-chip-list>
             <mat-chip disableRipple="true" (click)="viewOf.next('')" class="none-stats-chip">
-                {{ statics ? statics.errorCnt : 0 }} All</mat-chip>
-            <!-- <mat-chip disableRipple="true" class="warning-status">0 warning</mat-chip> -->
+                {{ statics ? statics.errorCnt : 0 }} all</mat-chip>
+            <!-- <mat-chip disableRipple="true" class="warning-status">0 warnings</mat-chip> -->
             <mat-chip disableRipple="true" (click)="viewOf.next('correction')" class="info-status">
                 {{ statics ? statics.correctedCnt : 0 }} corrections</mat-chip>
         </mat-chip-list>
     </div>
-    <div class="f-row-spacer-half"></div>
+    <div class="row-spacer"></div>
     <div class="f-col data-container">
         <mat-tab-group disableRipple="true">
             <mat-tab>
@@ -55,7 +53,7 @@
                 </ng-template>
                 <div class="f-row dataset-grid">
                     <div class="f-col dataset-grid-navigation">
-                        <pros-search-input (value)="getClassificationNounMod($event)"></pros-search-input>
+                        <pros-search-input placeholder="Search nouns and modifiers" (value)="getClassificationNounMod($event)"></pros-search-input>
                         <div class="row-spacer"></div>
                         <div class="nav-tree">
                             <mat-accordion>
@@ -185,7 +183,7 @@
                     <div class="f-col dataset-grid-listing">
                         <!-- Filters  -->
                         <div class="f-row">
-                            <pros-search-input></pros-search-input>
+                            <pros-search-input placeholder="Search spare parts"></pros-search-input>
                             <div class="f-col-spacer-half"></div>
                             <!-- <mat-chip-list>
                                 <mat-chip class="mdo-filter-matchip" disableRipple="true">
@@ -211,7 +209,7 @@
                         <div class="data">
                         <mat-table [dataSource]="dataSource" class="mat-elevation-z0">
                             <!-- Checkbox Column -->
-                            <ng-container matColumnDef="checkbox_select">
+                            <ng-container matColumnDef="checkbox_select" sticky>
                                 <mat-header-cell *matHeaderCellDef class="fixed-width-c1">
                                     <mat-checkbox (change)="$event ? masterToggle() : null"
                                         [checked]="selection.hasValue() && isAllSelected()"
@@ -228,12 +226,8 @@
                                 </mat-cell>
                             </ng-container>
                             <!-- Name Column -->
-                            <ng-container matColumnDef="assigned_bucket">
+                            <ng-container matColumnDef="assigned_bucket" sticky>
                                 <mat-header-cell *matHeaderCellDef class="fixed-width-c1">
-                                    <button mat-button>
-                                        <!-- (click)="openTableColumnSettings()" -->
-                                        <mat-icon fontSet="mdo-icons">cog</mat-icon>
-                                    </button>
                                 </mat-header-cell>
                                 <mat-cell class="fixed-width-c1" *matCellDef="let element">
                                     <mat-card-header>
@@ -242,7 +236,7 @@
                                 </mat-cell>
                             </ng-container>
                             <!-- Action Column -->
-                            <ng-container matColumnDef="action">
+                            <ng-container matColumnDef="action" sticky>
                                 <mat-header-cell *matHeaderCellDef class="fixed-width-c2">
                                     <button mat-button>
                                         <!-- (click)="openTableColumnSettings()" -->

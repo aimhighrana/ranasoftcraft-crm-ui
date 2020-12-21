@@ -46,31 +46,32 @@
 
 
 @font-face {
-    font-family: 'Roboto'; 
+    font-family: 'lato'; 
     font-style: normal;
     font-weight: 300;
     src: 
         local('Roboto Light'), 
         local('Roboto-Light'), 
-        url(./roboto/v18/KFOlCnqEu92Fr1MmSU5fBBc-.woff) format('woff');
+        url(./lato/v1/Lato-Light.woff) format('woff');
 }
 @font-face {      
-    font-family: 'Roboto';
+    font-family: 'lato';
     font-style: normal;
     font-weight: 400;
     src: 
-        local('Roboto'), 
-        local('Roboto-Regular'), 
-        url(./roboto/v18/KFOmCnqEu92Fr1Mu4mxM.woff) format('woff');
+        local('Lato Regular'), 
+        local('Lato-Regular'), 
+        url(./lato/v1/Lato-Regular.woff) format('woff');
 }
+
 @font-face {      
-    font-family: 'Roboto';
+    font-family: 'lato';
     font-style: normal;
     font-weight: 500;
     src: 
-        local('Roboto Medium'), 
-        local('Roboto-Medium'), 
-        url(./roboto/v18/KFOlCnqEu92Fr1MmEU9fBBc-.woff) format('woff');
+        local('Lato Semibold'), 
+        local('Lato-Semibold'), 
+        url(./lato/v1/Lato-Semibold.woff) format('woff');
 }
 
 /** 

@@ -25,16 +25,16 @@ mat-card.root {
     }
   }
 
-  .message-alert {
-    background: #324358;
+  .message {
     display: flex;
-    color: #fff;
     padding: 8px;
     align-items: center;
   }
 
   .mdo-justify {
-    .temp-field {
+    .mdo-form-field {
+      margin: 8px 0;
+
       mat-label {
         font-weight: 500;
         font-size: 0.8rem;
