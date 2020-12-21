@@ -8,8 +8,6 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { SchemaDashboardPermission } from '@models/collaborator';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { GlobaldialogService } from '@services/globaldialog.service';
-import { SubscriberInviteComponent } from '@modules/shared/_components/subscriber-invite/subscriber-invite.component';
-import { distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'pros-subscriber-side-sheet',
@@ -250,15 +248,7 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
    * Open the invitaion sidesheet
    */
   openSubscriberInviteDialog() {
-    this.globalDialogService.openDialog(SubscriberInviteComponent, {
-    });
-
-    this.dialogSubscriber = this.globalDialogService.dialogCloseEmitter
-      .pipe(distinctUntilChanged())
-      .subscribe((response) => {
-
-        this.dialogSubscriber.unsubscribe();
-      });
+    this.router.navigate([{outlets: {outer: `outer/schema/invite-subscriber/${this.moduleId}/${this.schemaId}`}}])
   }
 
   /**

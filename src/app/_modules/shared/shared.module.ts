@@ -73,6 +73,7 @@ import { LookupRuleComponent } from './_components/lookup/lookup.component';
 import { LookupConfigComponent } from './_components/lookup/lookup-config/lookup-config.component';
 import { SubscriberInviteComponent } from './_components/subscriber-invite/subscriber-invite.component';
 import { ClassificationDatatableCellEditableComponent } from './_components/classification-datatable-cell-editable/classification-datatable-cell-editable.component';
+import { SubscriberInviteSidesheetComponent } from './_components/subscriber-invite-sidesheet/subscriber-invite-sidesheet.component';
 
 @NgModule({
   declarations: [
@@ -110,7 +111,8 @@ import { ClassificationDatatableCellEditableComponent } from './_components/clas
     LookupRuleComponent,
     LookupConfigComponent,
     SubscriberInviteComponent,
-    ClassificationDatatableCellEditableComponent
+    ClassificationDatatableCellEditableComponent,
+    SubscriberInviteSidesheetComponent
   ],
   imports: [
     // ng modules
@@ -246,7 +248,8 @@ import { ClassificationDatatableCellEditableComponent } from './_components/clas
     LookupRuleComponent,
     LookupConfigComponent,
     NullStateComponent,
-    SubscriberInviteComponent
+    SubscriberInviteComponent,
+    SubscriberInviteSidesheetComponent
   ],
   entryComponents: [
     TableCellInputComponent

@@ -10,6 +10,8 @@ import { Router } from '@angular/router';
 import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
 import { UserService } from '@services/user/userservice.service';
 import { distinctUntilChanged } from 'rxjs/operators';
+import { CreateUpdateSchema } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'pros-secondary-navbar',
@@ -67,7 +69,8 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
     private schemaService: SchemaService,
     private reportService: ReportService,
     private sharedService: SharedServiceService,
-    private userService: UserService
+    private userService: UserService,
+    private matSnackBar: MatSnackBar
   ) { }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -103,6 +106,10 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
         this.getreportList();
       }
     });
+
+    this.sharedService.isSecondaryNavRefresh().subscribe(res => {
+      this.getSchemaList();
+    })
 
     this.sharedService.getTogglePrimaryEmit().subscribe(res => {
       if (res) {
@@ -296,11 +303,10 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
     }
   }
 
-  openSchemaCreationSidesheet(moduleId){
-    console.log(moduleId);
-    this.router.navigate(['', { outlets: { sb: `sb/schema/create-schema/${moduleId}/new` } }]);
-  }
-
+  /**
+   * Function to search modules from global search
+   * @param searchString: string to be searched for modules.
+   */
   filterModulesMenu(searchString){
     if (!searchString){
       this.filteredModulesMenu = this.moduleList;
@@ -310,5 +316,43 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
       module.moduleDesc = module.moduleDesc ? module.moduleDesc : 'untitled';
       return module.moduleDesc.toLowerCase().includes(searchString.toLowerCase());
     })
+  }
+
+  /**
+   * Function to create new schema
+   * @param moduleId: ID of module for which schema needs to be created.
+   */
+  createNewSchema(moduleId: string) {
+    const schemaReq: CreateUpdateSchema = new CreateUpdateSchema();
+    schemaReq.schemaId = '';
+    schemaReq.moduleId = moduleId;
+    schemaReq.schemaThreshold = '0';
+    schemaReq.discription = this.checkNewSchemaCount(moduleId);
+
+    this.schemaService.createUpdateSchema(schemaReq).subscribe((response) => {
+      const schemaId: string = response;
+      this.matSnackBar.open('Schema created successfully.', 'Okay', {
+        duration: 2000
+      })
+      this.isPageReload = true; // true as it won't navigate to module detail page;
+      this.getSchemaList(); // get schema list after creating schema;
+
+      // navigate to the schema-info page of new-schema;
+      this.router.navigate([`home/schema/schema-info/${moduleId}/${schemaId}`]);
+    }, (error) => {
+      this.matSnackBar.open('Something went wrong.', 'Okay', {
+        duration: 2000
+      })
+    })
+  }
+
+  /**
+   * Function to check new schema count
+   * @param moduleId module id
+   */
+  checkNewSchemaCount(moduleId: string) {
+    const findModule:SchemaListModuleList = this.moduleList.filter((module) => module.moduleId === moduleId)[0];
+    const newSchemaArr = findModule.schemaLists.filter((module) => module.schemaDescription.toLocaleLowerCase().startsWith('new schema'));
+    return newSchemaArr.length>0 ? `New schema ${newSchemaArr.length + 1}` : `New schema`;
   }
 }

@@ -39,7 +39,8 @@ export class SchemaDashboardPermission {
     plantCode: string;
     filterCriteria: FilterCriteria[];
     dataAllocation?: Array<DropDownValue>;
-    isCopied?: boolean
+    isCopied?: boolean;
+    isInvited?: boolean;
 }
 
 export enum PermissionType {
