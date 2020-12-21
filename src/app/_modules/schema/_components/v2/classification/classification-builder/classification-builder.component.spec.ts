@@ -135,5 +135,34 @@ it('ngOnChanges(), ngonchange component hooks ', async(()=>{
     spyOn(router, 'navigate');
     component.openDataScopeSideSheet();
     expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/data-scope/${component.moduleId}/${component.schemaId}/new` } }])
-  })
+  });
+
+
+  it(`approveRec(), approve mro classification data `, async(()=>{
+    // mock data
+    const row = {OBJECTNUMBER:{fieldValue:'MAT001'}};
+    component.schemaId = '234238';
+    component.schemaInfo = {runId:'32423432'} as SchemaListDetails;
+
+    spyOn(schemaDetailService,'approveClassification').withArgs(component.schemaId, component.schemaInfo.runId, ['MAT001']).and.returnValue(of(true));
+
+    component.approveRec(row, 0);
+
+    expect(component.approveRec).toBeTruthy();
+
+  }));
+
+  it(`rejectRec(), reset or reject mro classification data `, async(()=>{
+    // mock data
+    const row = {OBJECTNUMBER:{fieldValue:'MAT001'}};
+    component.schemaId = '234238';
+    component.schemaInfo = {runId:'32423432'} as SchemaListDetails;
+
+    spyOn(schemaDetailService,'rejectClassification').withArgs(component.schemaId, component.schemaInfo.runId, 'MAT001').and.returnValue(of(true));
+
+    component.rejectRec(row, 0);
+
+    expect(component.rejectRec).toBeTruthy();
+
+  }));
 });

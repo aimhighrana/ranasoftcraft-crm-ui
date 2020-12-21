@@ -194,4 +194,26 @@ export class SchemaDetailsService {
     return this.http.post<any>(this.endpointService.doClassificationCorrectionUri(), request , {params:{schemaId, fieldId}});
   }
 
+  /**
+   * Approve mro classification .. records ..
+   *
+   * @param schemaId append as required parameter ..
+   * @param runId append as optional param..
+   * @param objNr required parameter ..
+   */
+  public approveClassification(schemaId: string, runId: string, objNr: string[]): Observable<boolean> {
+    return this.http.put<boolean>(this.endpointService.approveClassificationUri(), objNr, {params:{schemaId, runId}});
+  }
+
+  /**
+   * Reject mro classification data ..
+   *
+   * @param schemaId as request
+   * @param runId as optional request
+   * @param objNr as required parameter ..
+   */
+  public rejectClassification(schemaId: string, runId: string, objNr: string): Observable<boolean> {
+    return this.http.delete<boolean>(this.endpointService.rejectClassificationUri(), {params:{schemaId, runId, objNr}});
+  }
+
 }

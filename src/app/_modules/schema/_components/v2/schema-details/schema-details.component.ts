@@ -20,6 +20,8 @@ import { SchemaVariantService } from '@services/home/schema/schema-variant.servi
 import { ContainerRefDirective } from '@modules/shared/_directives/container-ref.directive';
 import { TableCellInputComponent } from '@modules/shared/_components/table-cell-input/table-cell-input.component';
 import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
+import { Userdetails } from '@models/userdetails';
+import { UserService } from '@services/user/userservice.service';
 
 @Component({
   selector: 'pros-schema-details',
@@ -167,6 +169,11 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
 
   selectFieldOptions: DropDownValue[] = [];
 
+  /**
+   * Hold info about current user
+   */
+  userDetails: Userdetails;
+
 
   constructor(
     private activatedRouter: ActivatedRoute,
@@ -179,7 +186,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
     private matDialog: MatDialog,
     private schemaListService: SchemalistService,
     private schemaVariantService: SchemaVariantService,
-    private componentFactoryResolver: ComponentFactoryResolver
+    private componentFactoryResolver: ComponentFactoryResolver,
+    private userService: UserService
 
   ) { }
 
@@ -299,6 +307,10 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
         this.tableHeaderActBtn = [];
       }
     });
+
+    this.userService.getUserDetails().subscribe(res=>{
+      this.userDetails  = res;
+    }, err=> console.log(`Error ${err}`));
 
   }
 

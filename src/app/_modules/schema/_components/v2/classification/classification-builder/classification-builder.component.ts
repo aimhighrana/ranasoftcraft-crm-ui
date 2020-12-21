@@ -5,6 +5,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { ClassificationNounMod, MetadataModeleResponse, SchemaMROCorrectionReq, SchemaTableViewFldMap } from '@models/schema/schemadetailstable';
 import { SchemaListDetails, SchemaStaticThresholdRes, SchemaVariantsModel } from '@models/schema/schemalist';
+import { Userdetails } from '@models/userdetails';
 import { CellDataFor, ClassificationDatatableCellEditableComponent } from '@modules/shared/_components/classification-datatable-cell-editable/classification-datatable-cell-editable.component';
 import { ContainerRefDirective } from '@modules/shared/_directives/container-ref.directive';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
@@ -13,6 +14,7 @@ import { SchemaService } from '@services/home/schema.service';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
+import { UserService } from '@services/user/userservice.service';
 import { BehaviorSubject, Subscription, throwError } from 'rxjs';
 
 const definedColumnsMetadata = {
@@ -166,6 +168,11 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
   selection = new SelectionModel<any>(true, []);
 
+  /**
+   * Hold logedin user details
+   */
+  userDetails: Userdetails;
+
   constructor(
     private schemaDetailService: SchemaDetailsService,
     private schemaService: SchemaService,
@@ -175,7 +182,8 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     private router: Router,
     private componentFactoryResolver: ComponentFactoryResolver,
     private snackBar: MatSnackBar,
-    private globalDialogService: GlobaldialogService
+    private globalDialogService: GlobaldialogService,
+    private userService: UserService
   ) { }
 
 
@@ -225,9 +233,23 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
 
     this.viewOf.subscribe(res=>{
       if(res !== null) {
+        const columns = this.displayedColumns.getValue();
+        if(res === 'correction' && columns.indexOf('row_action') === -1) {
+          columns.splice(2,2,'row_action');
+          this.displayedColumns.next(columns);
+          this.dataSource = new MatTableDataSource<any>([]);
+        } else if(!res && columns.indexOf('row_action') !== -1) {
+          columns.splice(columns.indexOf('row_action'),1);
+          this.displayedColumns.next(columns);
+        }
         this.getClassificationNounMod();
+
       }
     });
+
+    this.userService.getUserDetails().subscribe(res=>{
+      this.userDetails = res;
+    }, err=> console.error(`Error ${err.message}`));
   }
 
   /**
@@ -311,13 +333,13 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     this.dataFrm = brType;
     const sub = this.schemaDetailService.getClassificationData(this.schemaId, this.schemaInfo.runId, nounCode, modifierCode, brType,this.viewOf.getValue(), '').subscribe(res => {
       this.tableData = res ? res : [];
-      if(res) {
+      if(res && Object.keys(res).length >0) {
         this.tableData = res;
         const actualData = this.transformData(res, brType);
         const columns = Object.keys(actualData[0]);
         const disPlayedCols = this.displayedColumns.getValue();
         columns.forEach(key => {
-          if (disPlayedCols.indexOf(key) === -1) {
+          if (disPlayedCols.indexOf(key) === -1 && key !== '__aditionalProp') {
             disPlayedCols.push(key);
           }
           definedColumnsMetadata[key] = actualData[0][key];
@@ -448,6 +470,12 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
               break;
 
 
+            case '__aditionalProp':
+              const aditionalProp = columns[col];
+              rowData.__aditionalProp = {fieldId: col, fieldDesc: 'Is reviewed',fieldValue: aditionalProp.isReviewed ? aditionalProp.isReviewed : false};
+              break;
+
+
             case 'ATTRIBUTES':
               const attributest = columns[col] ? columns[col] : [];
               attributest.forEach(att => {
@@ -545,15 +573,10 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
       const inpCtrl = document.getElementById('inpctrl_'+fldid + '_'+ rIndex) as HTMLDivElement;
       const viewCtrl = document.getElementById('viewctrl_'+fldid + '_' + rIndex) as HTMLSpanElement;
 
-      // clear the dynamic cell input component
-      viewContainerRef.clear();
-
-      inpCtrl.style.display = 'none';
-      viewCtrl.innerText = value;
-      viewCtrl.style.display = 'block';
-
       // DO correction call for data
       const objctNumber = row.OBJECTNUMBER.fieldValue;
+
+      const nounCode = row.NOUN_CODE.fieldValue ? row.NOUN_CODE.fieldValue : '';
 
       const oldVal = row[fldid] ? row[fldid].fieldValue : '';
       if(objctNumber && oldVal !== value) {
@@ -562,18 +585,27 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
           correctionReq.nounCodeoc = oldVal;
           correctionReq.nounCodevc = value;
         } else if(fldid === 'MODE_CODE') {
+          correctionReq.nounCodevc = nounCode;
           correctionReq.modCodeoc = oldVal;
           correctionReq.modCodevc = value;
         }
 
+        // clear the dynamic cell input component
+        viewContainerRef.clear();
+        inpCtrl.style.display = 'none';
+        viewCtrl.style.display = 'block';
+
         this.schemaDetailService.doCorrectionForClassification(this.schemaId, fldid, correctionReq).subscribe(res=>{
+
+          viewCtrl.innerText = value;
           row[fldid].fieldValue = value;
           if(res.acknowledge) {
             this.statics.correctedCnt = res.count? res.count : 0;
           }
         }, error=>{
-          this.snackBar.open(`${error.message}`, 'Close',{duration:2000});
-          console.error(`Error :: ${error.message}`);
+          viewCtrl.innerText = oldVal;
+          this.snackBar.open(`${error.error ? error.error.err_msg : 'Something went wrong'}`, 'Close',{duration:2000});
+          console.error(`Error :: ${error.error}`);
         });
       } else {
         console.error(`Wrong with object number or can't change if old and new same  ... `);
@@ -632,6 +664,51 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     const data = { schemaId: this.schemaId, variantId: this.variantId, fields: metadadata, selectedFields: array }
     this.sharedServices.setChooseColumnData(data);
     this.router.navigate(['', { outlets: { sb: 'sb/schema/table-column-settings' }, queryParams: { status: this.activeTab } }]);
+  }
+
+  /**
+   * Approve rec ...
+   * @param row Row which are going to approve
+   * @param rIndex row index
+   */
+  approveRec(row: any, rIndex: number) {
+    const objNr = row.OBJECTNUMBER ? row.OBJECTNUMBER.fieldValue : '';
+    if(!objNr) {
+      throwError(`Objectnumber is required`);
+    }
+
+    this.schemaDetailService.approveClassification(this.schemaId,this.schemaInfo.runId,[objNr]).subscribe(res=>{
+      if(document.getElementById('approveBtn_'+rIndex))
+        document.getElementById('approveBtn_'+rIndex).remove();
+      this.snackBar.open(`Successfully approved`,'Close',{duration:5000});
+    }, err=>{
+      console.error(`Error ${err.message}`);
+      this.snackBar.open(`${err.message}`,'Close',{duration:5000});
+    });
+  }
+
+  /**
+   * Reject mro classification records ..
+   * @param row current row which are going to reject ..
+   * @param rIndex row index ..
+   */
+  rejectRec(row: any, rIndex: number) {
+    const objNr = row.OBJECTNUMBER ? row.OBJECTNUMBER.fieldValue : '';
+    if(!objNr) {
+      throwError(`Objectnumber is required`);
+    }
+    const nounCode = row.NOUN_CODE ? row.NOUN_CODE.fieldValue : '';
+    const modCode = row.MODE_CODE ? row.MODE_CODE.fieldValue : '';
+
+    this.schemaDetailService.rejectClassification(this.schemaId,this.schemaInfo.runId,objNr).subscribe(res=>{
+      setTimeout(()=>{
+        this.applyFilter(nounCode, modCode, this.dataFrm);
+      },1000);
+      this.snackBar.open(`Successfully approved`,'Close',{duration:5000});
+    }, err=>{
+      console.error(`Error ${err.message}`);
+      this.snackBar.open(`${err.message}`,'Close',{duration:5000});
+    });
   }
 
 

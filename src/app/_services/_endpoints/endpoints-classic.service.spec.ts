@@ -57,4 +57,14 @@ describe('EndpointsClassicService', () => {
     expect(serObj.getAvailableAttributeUri()).toContain('mro/attribute');
   }));
 
+  it('approveClassificationUri(),should return approveClassification url', async(() => {
+    const serObj =new EndpointsClassicService();
+    expect(serObj.approveClassificationUri()).toContain('mro/approve');
+  }));
+
+  it('rejectClassificationUri(),should return rejectClassification url', async(() => {
+    const serObj =new EndpointsClassicService();
+    expect(serObj.rejectClassificationUri()).toContain('mro/reset');
+  }));
+
 });

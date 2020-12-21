@@ -648,4 +648,18 @@ export class EndpointsClassicService {
     return this.apiUrl + `/schema/get-mappings`;
   }
 
+  /**
+   * Get approve classification records uri ..
+   */
+  public approveClassificationUri(): string {
+    return `${this.apiUrl}/schema/mro/approve`;
+  }
+
+  /**
+   * Use this uri for reject or reset mro classification records ..
+   */
+  public rejectClassificationUri(): string {
+    return `${this.apiUrl}/schema/mro/reset`;
+  }
+
 }

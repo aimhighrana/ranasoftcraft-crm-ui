@@ -175,7 +175,9 @@
                     <mat-header-cell *matHeaderCellDef class="fixed-width-c1"></mat-header-cell>
                     <mat-cell *matCellDef="let element" class="fixed-width-c1">
                         <mat-card-header>
-                            <div mat-card-avatar>TD</div>
+                            <div mat-card-avatar>
+                                {{ userDetails ? (userDetails.firstName ? userDetails.firstName.substring(0,1).toUpperCase() : '') : ''  }}{{ userDetails ? ( userDetails.lastName ? userDetails.lastName.substring(0,1).toUpperCase() : '') : ''  }}
+                            </div>
                         </mat-card-header>
                     </mat-cell>
                 </ng-container>
