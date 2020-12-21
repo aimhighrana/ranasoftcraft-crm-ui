@@ -1,8 +1,16 @@
 <div class="f-col">
     <mat-label>{{label}}</mat-label>
     <mat-form-field appearance="outline">
-        <input [id]="id" matInput class="mat-input" [type]="type" [placeholder]="placeholder" autocomplete="off"
-         [value]="value" [formControl]="control" [maxlength]="maxLength" [min]="type==='number'? minimum : null" [max]="type==='number' ? maximum:null">
+        <input [id]="id" matInput class="mat-input"
+         [type]="type"
+         [placeholder]="placeholder"
+         autocomplete="off"
+         [value]="value" 
+         [formControl]="control" 
+         [maxlength]="maxLength" 
+         [min]="type==='number'? minimum : null"
+         [max]="type==='number' ? maximum:null"
+         (blur)="onBlur($event.target.value)">
         <div class="f-row input-actions" *ngIf="isHelpIcon">
             <button mat-button matSuffix>
                 <mat-icon fontSet="mdo-icons">help_outline</mat-icon>

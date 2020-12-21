@@ -4,8 +4,8 @@ import { SchemaService } from '@services/home/schema.service';
 import { CoreSchemaBrMap, SchemaListDetails, LoadDropValueReq, VariantDetails } from '@models/schema/schemalist';
 import { PermissionOn, ROLES, SchemaCollaborator, SchemaDashboardPermission, UserMdoModel } from '@models/collaborator';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
-import { CoreSchemaBrInfo, DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
-import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
+import { CoreSchemaBrInfo, CreateUpdateSchema, DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { SecondaynavType, SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { CategoryInfo, FilterCriteria } from '@models/schema/schemadetailstable';
 import { MatSliderChange } from '@angular/material/slider';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -865,6 +865,35 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     }, (error) => {
       console.log('Something went wrong while update role..', error.message);
     })
+  }
+
+  /**
+   * Function to update schema name and desc
+   * @param schemaDescription: updated schema description.
+   * @param event: event of mat slider(for schema threshold).
+   */
+  updateSchemaInfo(schemaDescription: string, event?:any) {
+    console.log(event);
+    if(schemaDescription !== this.schemaDetails.schemaDescription || event){
+      const schemaReq: CreateUpdateSchema = new CreateUpdateSchema();
+      schemaReq.moduleId = this.moduleId;
+      schemaReq.schemaId = this.schemaId;
+      schemaReq.discription = schemaDescription;
+      schemaReq.schemaThreshold = event ? event.value : this.schemaDetails.schemaThreshold;
+
+      this.schemaService.createUpdateSchema(schemaReq).subscribe((response) => {
+        this.sharedService.setRefreshSecondaryNav(SecondaynavType.schema);
+        this.matSnackBar.open('Schema description updated successfully.', 'ok', {
+          duration: 2000
+        })
+        this.getSchemaDetails(this.schemaId);
+      }, (error) =>  {
+        this.matSnackBar.open('Something went wrong', 'ok', {
+          duration: 2000
+        })
+        console.error('Something went wrong while updating schema info', error.message);
+      })
+    }
   }
 
   /**
