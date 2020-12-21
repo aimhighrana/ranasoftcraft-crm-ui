@@ -1,5 +1,4 @@
 <div class="mat-elevation-z0 root">
-    <div class="row-spacer"></div>
     <div class="f-row breadcrum-toolbar">
         <div class="display-heading-large">
             {{ schemaInfo ? schemaInfo.moduleDescription : 'Unknown' }} / 
@@ -24,13 +23,13 @@
                 Submit
             </button>
         </ng-template>
-        <button mat-flat-button color="accent" (click)="openSummarySideSheet()">
+        <button mat-flat-button color="accent" (click)="openSummarySideSheet()" class="rightradius">
             <mat-icon fontSet="mdo-icons">wand</mat-icon> Check data
         </button>
-        <button mat-fab color="accent" class="mat-elevation-z0">
+        <button mat-fab color="accent" class="mat-elevation-z0 middleradius">
             <mat-icon fontSet="mdo-icons">chart-line</mat-icon>
         </button>
-        <button mat-fab color="accent" class="mat-elevation-z0" [matMenuTriggerFor]="moreactionfile">
+        <button mat-fab color="accent" class="mat-elevation-z0 leftradius" [matMenuTriggerFor]="moreactionfile">
             <mat-icon fontSet="mdo-icons">more</mat-icon>
         </button>
         <mat-menu #moreactionfile="matMenu" class="navigation-menu">
@@ -38,16 +37,14 @@
             <button mat-menu-item>Import from CSV</button>
         </mat-menu>
     </div>
-
-    <div class="row-spacer"></div>
     <mat-divider></mat-divider>
     <div class="row-spacer"></div>
     <div class="f-row">
         <mat-chip-list>
-            <mat-chip disableRipple="true" (click)="changeTabStatus('success')">
+            <mat-chip disableRipple="true" (click)="changeTabStatus('success')" class="error-status">
                 {{ statics ? statics.errorCnt : 0 }} error</mat-chip>
-            <!-- <mat-chip disableRipple="true">0 warning</mat-chip> -->
-            <mat-chip disableRipple="true" (click)="changeTabStatus('review')">
+            <!-- <mat-chip disableRipple="true" class="warning-status">0 warning</mat-chip> -->
+            <mat-chip disableRipple="true" (click)="changeTabStatus('review')" class="info-status">
                 {{ statics ? statics.correctedCnt : 0 }} corrections</mat-chip>
         </mat-chip-list>
     </div>
@@ -219,13 +216,13 @@
                                         [ngIfElse]="normalCell">
                                         <ng-template [ngIf]="element[dynCols].oldData !== element[dynCols].fieldData"
                                             [ngIfElse]="other">
-                                            <span class="text-correction">
-                                                {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].oldData) : '' }}
-                                            </span>
                                             <span id="viewctrl_{{ dynCols + '_' + rIndex }}">
                                                 {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].fieldData) : '' }}
                                             </span>
-    
+                                            <span class="text-correction">
+                                                {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].oldData) : '' }}
+                                            </span>
+                                            
                                         </ng-template>
                                         <ng-template #other>
                                             <span id="viewctrl_{{ dynCols + '_' + rIndex }}">

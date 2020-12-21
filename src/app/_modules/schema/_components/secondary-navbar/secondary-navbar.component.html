@@ -1,6 +1,6 @@
 <div class="root">
   <mat-card class="secondary-card mat-elevation-z0">
-    <div class="row-spacer"></div>
+    <div class="f-row-spacer-half"></div>
     <div class="f-row display-heading-large">
       <div>{{ getRoutedDescription }}</div>
       <span class="f-spacer"></span>
@@ -11,14 +11,13 @@
         <button mat-button [matMenuTriggerFor]="moduleMenu">
           <mat-icon fontSet="mdo-icons">plus</mat-icon>
         </button>
-        <mat-menu #moduleMenu="matMenu" xPosition="before" (closed)="searchInput.clearSearch()" class="navigation-menu">
+        <mat-menu #moduleMenu="matMenu" (closed)="searchInput.clearSearch()" class="navigation-menu">
+          <pros-search-input class="field-mat-menu" placeholder="Search for module" (value)="filterModulesMenu($event)" #searchInput prosClickStopPropagation></pros-search-input>
           <div class="menu-customdropdown">
-            <pros-search-input class="field-mat-menu" placeholder="Search for module" (value)="filterModulesMenu($event)" #searchInput prosClickStopPropagation></pros-search-input>
             <button mat-menu-item *ngFor="let module of filteredModulesMenu"
-            (click)="openSchemaCreationSidesheet(module.moduleId)">{{module.moduleDesc ? module.moduleDesc : 'Untitled'}}
+            (click)="openSchemaCreationSidesheet(module.moduleId)" [disableRipple]="true">{{module.moduleDesc ? module.moduleDesc : 'Untitled'}}
           </button>
           </div>
-          
         </mat-menu>
       </ng-template>
     </div>
@@ -43,7 +42,7 @@
                 <div class="badge">{{module.schemaLists.length}}</div>
               </mat-panel-title>
             </mat-expansion-panel-header>
-            <mat-nav-list role="navigation">
+            <mat-nav-list role="navigation" [disableRipple]="true">
               <mat-list-item *ngFor="let schema of module.schemaLists"
                 [routerLink]="['schema/schema-details', module.moduleId, schema.schemaId]"
                 [routerLinkActive]="'selected'">
@@ -70,7 +69,7 @@
                 <div class="badge">{{module.schemaLists.length}}</div>
               </mat-panel-title>
             </mat-expansion-panel-header>
-            <mat-nav-list role="navigation">
+            <mat-nav-list role="navigation" [disableRipple]="true">
               <mat-list-item *ngFor="let schema of module.schemaLists"
                 [routerLink]="['schema/schema-info', schema.moduleId, schema.schemaId]"
                 [queryParams]="{fragment:'business-rules'}">
@@ -82,7 +81,7 @@
       </mat-accordion>
 
       <mat-accordion *ngIf="activatedPrimaryNav === 'report'">
-        <mat-nav-list *ngFor="let report of reportOb | async">
+        <mat-nav-list *ngFor="let report of reportOb | async" [disableRipple]="true">
           <mat-list-item [disabled]="report.permission && !report.permission.isViewable"
             [routerLink]="['report/dashboard', report.reportId]" [routerLinkActive]="'selected'">
             <div class="heading-title">{{report.reportName ? report.reportName : 'Untitled'}}</div>
@@ -92,7 +91,9 @@
     </div>
   </mat-card>
 
-  <div class="split-col mat-elevation-z1" (click)="toggleSideBar()">
-    <mat-icon class="split-arrow">{{arrowIcon}}</mat-icon>
+  <div class="split-col" (click)="toggleSideBar()">
+    <div class="split-arrow">
+      <mat-icon fontSet="mdo-icons">{{arrowIcon}}</mat-icon>
+    </div>
   </div>
 </div>

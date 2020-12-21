@@ -94,15 +94,15 @@ export class HomeLayoutComponent implements OnInit, AfterViewInit, OnDestroy {
         this.secondaryContent = secondaryNav;
         if(primaryNav) {
           document.getElementById('primarySidenav').style.width = '200px';
-          document.getElementById('primaryContent').style.marginLeft = '199px';
+          document.getElementById('primaryContent').style.marginLeft = '200px';
         } else {
-          document.getElementById('primarySidenav').style.width = '64px';
-          document.getElementById('primaryContent').style.marginLeft = '64px';
+          document.getElementById('primarySidenav').style.width = '60px';
+          document.getElementById('primaryContent').style.marginLeft = '60px';
         }
 
         if(secondaryNav) {
-          document.getElementById('secondarySidenav').style.width = '264px';
-          document.getElementById('secondaryContent').style.marginLeft = '199px';
+          document.getElementById('secondarySidenav').style.width = '260px';
+          document.getElementById('secondaryContent').style.marginLeft = '200px';
         } else {
           document.getElementById('secondarySidenav').style.width = '16px';
           document.getElementById('secondaryContent').style.marginLeft = '73px';
@@ -137,12 +137,12 @@ export class HomeLayoutComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   togglePrimarySideBar() {
     if (this.primarySideBarOpened) {
-      document.getElementById('primarySidenav').style.width = '64px';
-      document.getElementById('primaryContent').style.marginLeft = '64px';
+      document.getElementById('primarySidenav').style.width = '60px';
+      document.getElementById('primaryContent').style.marginLeft = '60px';
       this.primarySideBarOpened = false;
     } else {
       document.getElementById('primarySidenav').style.width = '200px';
-      document.getElementById('primaryContent').style.marginLeft = '199px';
+      document.getElementById('primaryContent').style.marginLeft = '200px';
       this.primarySideBarOpened = true;
     }
     this.appStateSubject.next(true);
@@ -157,8 +157,8 @@ export class HomeLayoutComponent implements OnInit, AfterViewInit, OnDestroy {
       document.getElementById('secondaryContent').style.marginLeft = '73px';
       this.secondarySideBarOpened = false;
     } else {
-      document.getElementById('secondarySidenav').style.width = '264px';
-      document.getElementById('secondaryContent').style.marginLeft = '199px';
+      document.getElementById('secondarySidenav').style.width = '260px';
+      document.getElementById('secondaryContent').style.marginLeft = '200px';
       this.secondarySideBarOpened = true;
     }
     if(hidePrimary) {
@@ -179,7 +179,7 @@ export class HomeLayoutComponent implements OnInit, AfterViewInit, OnDestroy {
     const grabberElement = document.createElement('div');
     grabberElement.style.height = '100%';
     grabberElement.style.width = '2px';
-    grabberElement.style.backgroundColor = '#eaeaea';
+    grabberElement.style.backgroundColor = '#ffffff';
     grabberElement.style.position = 'absolute';
     grabberElement.style.cursor = 'col-resize';
     grabberElement.style.resize = 'horizontal';

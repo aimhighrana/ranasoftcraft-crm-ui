@@ -1,11 +1,10 @@
 mat-card.root {
-  padding: 0 16px;
+  padding: 0;
   user-select: none;
-  width: 700px;
 
   .breadcrum-toolbar {
     align-items: center;
-    padding-top: 16px;
+    padding-top: 8px;
     position: sticky;
     top: 0;
     z-index: 2;
@@ -21,15 +20,13 @@ mat-card.root {
     .mdo-constrained-right {
       align-items: center;
       width: 100%;
-
-      button.mat-flat-button {
-        min-width: auto;
-      }
     }
   }
 
   .mdo-justify {
-    .temp-field {
+    .mdo-form-field {
+      padding: 8px 0;
+
       mat-label {
         font-weight: 500;
         font-size: 0.8rem;
@@ -76,8 +73,8 @@ mat-card.root {
     }
 
     mat-divider {
-      margin: 16px 0;
       position: relative;
+      margin: 16px 0;
 
       &.divider-dashed {
         border-top-style: dashed;

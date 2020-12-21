@@ -6,7 +6,7 @@ mat-card.root {
 
   .breadcrum-toolbar {
     position: sticky;
-    padding-top: 16px;
+    padding-top: 8px;
     top: 0;
     z-index: 2;
 
@@ -29,7 +29,7 @@ mat-card.root {
   }
 
   .businessrule-listing {
-    height: calc(100% - 124px - 8px);
+    height: calc(100% - 124px);
     overflow: auto;
 
     mat-list.rule-list {

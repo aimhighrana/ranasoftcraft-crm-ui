@@ -1,12 +1,10 @@
+
 <div class="mat-elevation-z0 root">
-    <div class="row-spacer"></div>
     <div class="f-row breadcrum-toolbar">
         <div class="display-heading-large">
             {{ schemaInfo ? schemaInfo.moduleDescription : 'Unknown' }} / 
             {{ schemaInfo ? schemaInfo.schemaDescription : 'Unknown' }} /
-
             {{ (!variantId) ? 'Entire dataset' : 'Unknown'  }}
-
             
             <span class="f-col-spacer-half"></span>
             <button mat-button [matMenuTriggerFor]="check">
@@ -22,13 +20,13 @@
             </mat-menu>
         </div>
         <div class="f-spacer"></div>
-        <button mat-flat-button color="accent" (click)="openSummarySideSheet()">
+        <button mat-flat-button color="accent" (click)="openSummarySideSheet()" class="rightradius">
             <mat-icon fontSet="mdo-icons">wand</mat-icon> Check data
         </button>
-        <button mat-fab color="accent" class="mat-elevation-z0">
+        <button mat-fab color="accent" class="mat-elevation-z0 middleradius">
             <mat-icon fontSet="mdo-icons">chart-line</mat-icon>
         </button>
-        <button mat-fab color="accent" class="mat-elevation-z0" [matMenuTriggerFor]="moreactionfile">
+        <button mat-fab color="accent" class="mat-elevation-z0 leftradius" [matMenuTriggerFor]="moreactionfile">
             <mat-icon fontSet="mdo-icons">more</mat-icon>
         </button>
         <mat-menu #moreactionfile="matMenu" class="navigation-menu">
@@ -36,29 +34,25 @@
             <button mat-menu-item>Import from CSV</button>
         </mat-menu>
     </div>
-
-    <div class="row-spacer"></div>
+   
     <mat-divider></mat-divider>
     <div class="row-spacer"></div>
-
     <div class="f-row">
         <mat-chip-list>
-            <mat-chip disableRipple="true" (click)="viewOf.next('')">
+            <mat-chip disableRipple="true" (click)="viewOf.next('')" class="none-stats-chip">
                 {{ statics ? statics.errorCnt : 0 }} All</mat-chip>
-            <!-- <mat-chip disableRipple="true">0 warning</mat-chip> -->
-            <mat-chip disableRipple="true" (click)="viewOf.next('correction')">
+            <!-- <mat-chip disableRipple="true" class="warning-status">0 warning</mat-chip> -->
+            <mat-chip disableRipple="true" (click)="viewOf.next('correction')" class="info-status">
                 {{ statics ? statics.correctedCnt : 0 }} corrections</mat-chip>
         </mat-chip-list>
     </div>
-    <div class="row-spacer"></div>
-
+    <div class="f-row-spacer-half"></div>
     <div class="f-col data-container">
         <mat-tab-group disableRipple="true">
             <mat-tab>
                 <ng-template mat-tab-label>
-                    Mro classification
+                    MRO classification
                 </ng-template>
-
                 <div class="f-row dataset-grid">
                     <div class="f-col dataset-grid-navigation">
                         <pros-search-input (value)="getClassificationNounMod($event)"></pros-search-input>
@@ -72,12 +66,11 @@
                                                 Master library
                                             </div>
                                             <span class="f-spacer"></span>
-                                            <div class="badge success">
+                                            <div class="badge success-badge">
                                                 {{ rulesNounMods && rulesNounMods.mro_local_lib ? rulesNounMods.mro_local_lib.doc_cnt : 0 }}
                                             </div>
                                         </mat-panel-title>
                                     </mat-expansion-panel-header>
-
                                     <ng-template ngFor let-noun [ngForOf]="rulesNounMods.mro_local_lib.info">
                                         <mat-accordion>
                                             <mat-expansion-panel togglePosition="before" class="mat-elevation-z0" expanded="expanded">
@@ -90,7 +83,7 @@
                                                             }}
                                                         </div>
                                                         <span class="f-spacer"></span>
-                                                        <div class="badge success">
+                                                        <div class="badge success-badge">
                                                             {{ noun.doc_count ? noun.doc_count : 0 }}
                                                         </div>
                                                     </mat-panel-title>
@@ -103,10 +96,10 @@
                                                             {{ modifier.modDesc ? modifier.modDesc : 'Unknown' }}
                                                         </div>
                                                         <span class="f-spacer"></span>
-                                                        <div class="badge warning">
+                                                        <div class="badge warning-badge">
                                                            0
                                                         </div>
-                                                        <div class="badge success">
+                                                        <div class="badge success-badge">
                                                             {{ modifier.doc_count ? modifier.doc_count : 0  }}
                                                         </div>
                                                     </mat-list-item>
@@ -117,7 +110,6 @@
                                     
                                 </mat-expansion-panel>
                             </mat-accordion>
-
                             <mat-accordion>
                                 <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
                                     <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
@@ -126,12 +118,11 @@
                                                 GSN
                                             </div>
                                             <span class="f-spacer"></span>
-                                            <div class="badge success">
+                                            <div class="badge success-badge">
                                                 {{ rulesNounMods && rulesNounMods.mro_gsn_lib ? rulesNounMods.mro_gsn_lib.doc_cnt : 0 }}
                                             </div>
                                         </mat-panel-title>
                                     </mat-expansion-panel-header>
-
                                     <ng-template ngFor let-noun [ngForOf]="rulesNounMods.mro_gsn_lib.info">
                                         <mat-accordion>
                                             <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
@@ -144,7 +135,7 @@
                                                             }}
                                                         </div>
                                                         <span class="f-spacer"></span>
-                                                        <div class="badge success">
+                                                        <div class="badge success-badge">
                                                             {{ noun.doc_count ? noun.doc_count : 0 }}
                                                         </div>
                                                     </mat-panel-title>
@@ -157,22 +148,19 @@
                                                             {{ modifier.modDesc ? modifier.modDesc : 'Unknown' }}
                                                         </div>
                                                         <span class="f-spacer"></span>
-                                                        <div class="badge warning">
+                                                        <div class="badge warning-badge">
                                                             0
                                                         </div>
-                                                        <div class="badge success">
+                                                        <div class="badge success-badge">
                                                             {{ modifier.doc_count ? modifier.doc_count : 0  }}
                                                         </div>
                                                     </mat-list-item>
                                                 </mat-nav-list>
                                             </mat-expansion-panel>
                                         </mat-accordion>
-
                                     </ng-template>
-
                                 </mat-expansion-panel>
                             </mat-accordion>
-
                             <mat-accordion>
                                 <mat-expansion-panel hideToggle class="mat-elevation-z0">
                                     <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
@@ -181,7 +169,7 @@
                                                 Unmatched
                                             </div>
                                             <span class="f-spacer"></span>
-                                            <div class="badge error">
+                                            <div class="badge error-badge">
                                                 {{
                                                     rulesNounMods.unmatched ? rulesNounMods.unmatched.doc_count : 0
                                                 }}
@@ -190,7 +178,6 @@
                                     </mat-expansion-panel-header>
                                 </mat-expansion-panel>
                             </mat-accordion>
-
                         </div>
                     </div>
                     <mat-divider [vertical]="true"></mat-divider>
@@ -208,7 +195,6 @@
                                     <label>Attributes:</label> <span class="info">12mm</span>
                                     <mat-icon matChipRemove>clear</mat-icon>
                                 </mat-chip>
-
                                 <mat-chip class="mdo-filter-matchip" disableRipple="true">
                                     <label>Diameter:</label> <span class="info">12mm</span>
                                     <mat-icon matChipRemove>clear</mat-icon>
@@ -219,12 +205,10 @@
                                 </mat-chip>
                             </mat-chip-list> -->
                         </div>
-
                         <div class="row-spacer"></div>
-
                         <!-- Data Table -->
+                        <div class="data">
                         <mat-table [dataSource]="dataSource" class="mat-elevation-z0">
-
                             <!-- Checkbox Column -->
                             <ng-container matColumnDef="checkbox_select">
                                 <mat-header-cell *matHeaderCellDef class="fixed-width-c1">
@@ -242,7 +226,6 @@
                                     </mat-checkbox>
                                 </mat-cell>
                             </ng-container>
-
                             <!-- Name Column -->
                             <ng-container matColumnDef="assigned_bucket">
                                 <mat-header-cell *matHeaderCellDef class="fixed-width-c1">
@@ -257,7 +240,6 @@
                                     </mat-card-header>
                                 </mat-cell>
                             </ng-container>
-
                             <!-- Action Column -->
                             <ng-container matColumnDef="action">
                                 <mat-header-cell *matHeaderCellDef class="fixed-width-c2">
@@ -278,17 +260,15 @@
                                             <button mat-menu-item>Assign to...</button>
                                             <button mat-menu-item>Mark for deletion</button>
                                         </mat-menu>
-
-                                        <button mat-fab color="accent">
+                                        <button mat-fab color="accent" class="middleradius">
                                             <mat-icon fontSet="mdo-icons">recycle-bin</mat-icon>
                                         </button>
-                                        <button mat-fab color="accent">
+                                        <button mat-fab color="accent" class="leftradius">
                                             <mat-icon fontSet="mdo-icons">form-map</mat-icon>
                                         </button>
                                     </div>
                                 </mat-cell>
                             </ng-container>
-
                             
                             <!-- Material number Column -->
                             <ng-container matColumnDef="OBJECTNUMBER">
@@ -297,7 +277,6 @@
                                     {{ element['OBJECTNUMBER'] ? element['OBJECTNUMBER'].fieldValue : '' }}
                                 </mat-cell>
                             </ng-container>
-
                              <!-- load dynamic columns-->
                             <ng-template ngFor let-dynCols [ngForOf]="(displayedColumns | async)">
                                 <ng-template
@@ -314,7 +293,6 @@
                                         (click)="editCurrentCell(dynCols,element, rIndex, containerRef)">
                                             <div class="mdo-form-input f-col" style="display: none;"
                                             id="inpctrl_{{ dynCols + '_' + rIndex }}">
-
                                             <!-- container to hold input field when cell gets edited  -->
                                             <ng-template prosContainerRef #containerRef="prosContainerRef">
                                             </ng-template>                                   
@@ -323,16 +301,15 @@
                                             <span id="viewctrl_{{ dynCols + '_' + rIndex }}">
                                                 {{ element[dynCols] ? element[dynCols].fieldValue : '' }}
                                             </span>
-
                                         </mat-cell>
                                     </ng-container>
                                 </ng-template>
                             </ng-template>
-
                             <mat-header-row *matHeaderRowDef="displayedColumns | async; sticky: true"></mat-header-row>
                             <mat-row *matRowDef="let row; columns: displayedColumns | async;">
                             </mat-row>
                         </mat-table>
+                    </div>
                     </div>
                 </div>
             </mat-tab>

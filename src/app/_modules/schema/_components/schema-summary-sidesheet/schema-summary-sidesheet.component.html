@@ -30,7 +30,7 @@
 
             <span class="f-spacer"></span>
             <button mat-flat-button (click)="openUploadSideSheet()">
-                <mat-icon fontSet="mdo-icons"> outbox-alt</mat-icon> Upload data
+                <mat-icon fontSet="mdo-icons">outbox-alt</mat-icon> Upload data
             </button>
             <span class="f-col-spacer-half"></span>
             <button mat-flat-button color="primary" (click)="saveCheckData()">Check</button>
@@ -39,7 +39,7 @@
     <div class="row-spacer"></div>
     <div class="f-col mdo-justify">
         <!-- <mat-card class="f-row mat-elevation-z0 message-alert">
-            <mat-icon fontSet="mdo-icons" class="help-icon">question-mark</mat-icon>
+            <mat-icon fontSet="mdo-icons">question-mark</mat-icon>
             <span class="f-col-spacer-half"></span>
             <p>167 out of 77543 records will be validated based on your data scope selection</p>
         </mat-card> -->
@@ -80,6 +80,7 @@
                                         question-mark</mat-icon>
                                 </strong></div>
                             <div class="col col-x8"><strong>Enabled</strong></div>
+                            <div class="col"></div>
                         </div>
 
                         <div class="f-row colunm-box rule-border-row">
@@ -95,7 +96,7 @@
                             <div *ngFor="let businessRule of businessRuleData" class="f-row colunm-box rule-border-row">
                                 <div class="col">
                                     <!-- <button mat-button cdkDragHandle> -->
-                                    <mat-icon fontSet="mdo-icons"> two-lines</mat-icon>
+                                    <mat-icon fontSet="mdo-icons">two-lines</mat-icon>
                                     <!-- </button> -->
                                 </div>
 
@@ -114,11 +115,12 @@
 
                                 <div class="col col-x8">
                                     <mat-checkbox color="primary" [checked]="businessRule.status === '1' ? true : false"
-                                        (change)="updateBr(businessRule,$event)"></mat-checkbox>
-                                    <span class="col-spacer"></span>
-                                    <span class="f-spacer"></span>
+                                        (change)="updateBr(businessRule,$event)"></mat-checkbox> 
+                                </div>
+
+                                <div class="col">
                                     <button mat-button (click)="deleteBr(businessRule)">
-                                        <mat-icon fontSet="mdo-icons"> recycle-bin</mat-icon>
+                                        <mat-icon fontSet="mdo-icons">recycle-bin</mat-icon>
                                     </button>
                                 </div>
                             </div>
@@ -149,7 +151,7 @@
                             <div class="col col-x8"><strong>Subscriber</strong></div>
                             <div class="col col-x4"><strong>Role</strong></div>
                             <div class="col col-x16"><strong>Data allocation</strong></div>
-                            <div class="col mat-item-end">
+                            <div class="col">
                             </div>
                         </div>
 
@@ -239,9 +241,9 @@
                                     </mat-menu>
                                 </div>
     
-                                <div class="col mat-item-end">
+                                <div class="col">
                                     <button mat-button (click)="deleteSubscriber(subscriber.sno)">
-                                        <mat-icon fontSet="mdo-icons"> recycle-bin</mat-icon>
+                                        <mat-icon fontSet="mdo-icons">recycle-bin</mat-icon>
                                     </button>
                                 </div>
                             </div>

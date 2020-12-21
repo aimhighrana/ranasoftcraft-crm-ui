@@ -7,6 +7,7 @@ div.root {
   .breadcrum-toolbar {
     align-items: center;
     min-height: 40px;
+    padding: 8px 0;
 
     .display-heading-large {
       font-size: 1.2rem;
@@ -26,13 +27,15 @@ div.root {
 
   .data-container {
     height: 100%;
+    overflow: hidden;
 
     .dataset-grid {
       height: 100%;
 
       .dataset-grid-navigation {
         height: 100%;
-        width: 310px;
+        width: 308px;
+        padding-right: 12px;
       }
 
       .nav-tree {
@@ -81,29 +84,16 @@ div.root {
       .badge {
         margin: 0 6px;
         font-size: 0.8rem;
-
-        &.success {
-          color: #51cf67;
-          background-color: #ebfcee;
-        }
-
-        &.warning {
-          color: #ff922b;
-        }
-
-        &.error {
-          color: #ff6b6b;
-        }
       }
 
       .dataset-grid-listing {
-        padding: 0 8px;
+        padding: 0 12px;
         height: 100%;
-        width: calc(100% - 310px - 1px);
+        width: calc(100% - 320px - 1px);
 
         .data {
           overflow: auto;
-          height: calc(91% - 36px - 16px * 4);
+          height: calc(91% - 36px - 16px * 2 - 8px);
 
           mat-table.mat-table {
             overflow-x: auto;

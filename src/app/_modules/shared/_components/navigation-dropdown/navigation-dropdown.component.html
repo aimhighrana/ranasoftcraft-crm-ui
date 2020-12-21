@@ -1,35 +1,39 @@
-<button mat-menu-item [matMenuTriggerFor]="check" prosClickStopPropagation>
+<button mat-menu-item [matMenuTriggerFor]="check" prosClickStopPropagation [disableRipple]="true">
     Check
 </button>
 
 <!-- module-menu -->
 <mat-menu #check="matMenu" class="navigation-menu">
+    <!-- Deploy input search in dropdown -->
+    <!-- <pros-search-input class="field-mat-menu" placeholder="Search"></pros-search-input> -->
     <div class="menu-customdropdown">
         <ng-container *ngFor="let module of modulesList">
-            <button mat-menu-item [matMenuTriggerFor]="schemaMenu" (click)="schemaList(module.moduleId);">
+            <button mat-menu-item [matMenuTriggerFor]="schemaMenu" (click)="schemaList(module.moduleId);" [disableRipple]="true">
                 {{ module.moduleDesc || 'UNTITLED'}}
             </button>
         </ng-container>    
     </div>
     <mat-divider></mat-divider>
-    <button mat-menu-item (click)="emitSelection()">
+    <button mat-menu-item (click)="emitSelection()" [disableRipple]="true">
         <mat-icon fontSet="mdo-icons" class="mat-menu-icon">plus</mat-icon> New module...
     </button>
 </mat-menu>
 
 <!-- schema-menu -->
 <mat-menu #schemaMenu="matMenu" class="navigation-menu">
-    <button mat-menu-item (click)="selectschema()">
-        <mat-icon fontSet="mdo-icons" class="mat-menu-icon">plus</mat-icon> New schema...
-    </button>
-    <mat-divider></mat-divider>
+    <!-- Deploy input search in dropdown -->
+    <!-- <pros-search-input class="field-mat-menu" placeholder="Search"></pros-search-input> -->
     <div class="menu-customdropdown">
         <ng-container *ngFor="let schema of schemaLists">
-            <button mat-menu-item (click)="selectschema(schema)">
+            <button mat-menu-item (click)="selectschema(schema)" [disableRipple]="true">
                 {{ schema.schemaDescription || 'UNTITLED'}}
             </button>
         </ng-container>
     </div>
+    <mat-divider></mat-divider>
+    <button mat-menu-item (click)="selectschema()" [disableRipple]="true">
+        <mat-icon fontSet="mdo-icons" class="mat-menu-icon">plus</mat-icon> New schema...
+    </button>
 </mat-menu>
 
 

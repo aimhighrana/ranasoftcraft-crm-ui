@@ -1,11 +1,16 @@
 mat-card.root {
   user-select: none;
+  height: 100%;
+  padding: 0 16px;
+  overflow: hidden;
 
   .breadcrum-toolbar {
     align-items: center;
     position: sticky;
+    padding-top: 8px;
     top: 0;
     z-index: 2;
+    min-height: 40px;
 
     .display-heading-large {
       font-size: 1.2rem;
@@ -14,9 +19,8 @@ mat-card.root {
       overflow: hidden;
     }
 
-    button.mat-flat-button {
+    button {
       margin-left: 1px;
-      min-width: 80px;
     }
   }
 
@@ -28,11 +32,16 @@ mat-card.root {
     }
   }
 
-  .table-container {
-    .mat-table {
-      width: 100%;
-      max-height: 655px;
-      overflow: auto;
+  .data {
+    overflow: auto;
+    height: calc(91% - 36px - 16px * 4);
+
+    mat-table.mat-table {
+      overflow-x: auto;
+      width: 100vw;
+      max-width: 100%;
+      display: table;
+      border-collapse: collapse;
 
       .progress-cell {
         width: 136px;
