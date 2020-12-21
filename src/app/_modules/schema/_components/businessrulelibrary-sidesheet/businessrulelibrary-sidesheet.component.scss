@@ -1,13 +1,13 @@
 mat-card.root {
   user-select: none;
   height: 100%;
-  width: 800px;
+  width: 568px;
   overflow: hidden;
   padding: 0 16px;
 
   .breadcrum-toolbar {
     position: sticky;
-    padding-top: 16px;
+    padding-top: 8px;
     top: 0;
     z-index: 2;
 
@@ -45,7 +45,6 @@ mat-card.root {
       mat-list-item {
         border-bottom-width: 1px;
         border-bottom-style: solid;
-        min-height: 52px;
 
         button.mat-flat-button {
           min-width: 60px;

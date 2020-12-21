@@ -110,15 +110,15 @@ describe('SecondaryNavbarComponent', () => {
 
   it('toggleSideBar(), should toggle the icon of secondary nav', () => {
     const hidePrimary = false;
-    component.arrowIcon = 'keyboard_arrow_left';
+    component.arrowIcon = 'chevron-left';
     component.toggleSideBar(hidePrimary);
 
-    expect(component.arrowIcon).toEqual('keyboard_arrow_right');
+    expect(component.arrowIcon).toEqual('chevron-right');
 
-    component.arrowIcon = 'keyboard_arrow_right';
+    component.arrowIcon = 'chevron-right';
     component.toggleSideBar(hidePrimary);
 
-    expect(component.arrowIcon).toEqual('keyboard_arrow_left');
+    expect(component.arrowIcon).toEqual('chevron-left');
   })
 
   it('getRoutedDescription(), should get route desc', async() => {

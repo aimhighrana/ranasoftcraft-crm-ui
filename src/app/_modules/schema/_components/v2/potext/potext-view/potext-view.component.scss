@@ -7,6 +7,7 @@ div.root {
   .breadcrum-toolbar {
     align-items: center;
     min-height: 40px;
+    padding: 8px 0;
 
     .display-heading-large {
       font-size: 1.2rem;
@@ -37,6 +38,7 @@ div.root {
 
         .data {
           overflow: auto;
+          height: calc(100% - 16px * 4 - 36px - 24px - 56px - 2px);
         }
 
         mat-table.mat-table {
@@ -46,9 +48,16 @@ div.root {
           display: table;
           border-collapse: collapse;
 
-          .text-correction {
-            text-decoration: line-through;
+          .mat-cell {
             display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+
+            .text-correction {
+              text-decoration: line-through;
+              display: flex;
+            }
           }
         }
       }

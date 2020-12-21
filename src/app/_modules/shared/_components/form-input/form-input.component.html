@@ -4,7 +4,6 @@
         <input [id]="id" matInput class="mat-input" [type]="type" [placeholder]="placeholder" autocomplete="off"
          [value]="value" [formControl]="control" [maxlength]="maxLength" [min]="type==='number'? minimum : null" [max]="type==='number' ? maximum:null">
         <div class="f-row input-actions" *ngIf="isHelpIcon">
-            <mat-divider [vertical]="true"></mat-divider>
             <button mat-button matSuffix>
                 <mat-icon fontSet="mdo-icons">help_outline</mat-icon>
             </button>

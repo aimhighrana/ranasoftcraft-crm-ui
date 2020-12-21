@@ -2,7 +2,6 @@
     <input matInput class="mat-input" placeholder="{{fieldLabel}}" [formControl]="selectedMdoFldCtrl"
       [matAutocomplete]="mdofieldauto">
       <div class="f-row input-actions">
-        <mat-divider [vertical]="true"></mat-divider>
         <button mat-button matSuffix (click)="$event.stopPropagation();emitOptionSelected(viewMoreAction)">
           <mat-icon fontSet="mdo-icons">view-more</mat-icon>
         </button>

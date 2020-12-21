@@ -21,13 +21,13 @@
         </div>
         <span class="f-spacer"></span>
         <div class="f-spacer"></div>
-        <button mat-flat-button color="accent" (click)="openSummarySideSheet()">
+        <button mat-flat-button color="accent" (click)="openSummarySideSheet()" class="rightradius">
             <mat-icon fontSet="mdo-icons">wand</mat-icon> Check data
         </button>
-        <button mat-fab color="accent" class="mat-elevation-z0">
+        <button mat-fab color="accent" class="mat-elevation-z0 middleradius">
             <mat-icon fontSet="mdo-icons">chart-line</mat-icon>
         </button>
-        <button mat-fab color="accent" class="mat-elevation-z0" [matMenuTriggerFor]="moreactionfile">
+        <button mat-fab color="accent" class="mat-elevation-z0 leftradius" [matMenuTriggerFor]="moreactionfile">
             <mat-icon fontSet="mdo-icons">more</mat-icon>
         </button>
         <mat-menu #moreactionfile="matMenu" class="navigation-menu">
@@ -119,21 +119,19 @@
             </mat-menu>
             <!-- More control -->
             <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="moreFilterMenu">
-                <mat-icon>more_horiz</mat-icon>
+                <mat-icon fontSet="mdo-icons">more</mat-icon>
             </mat-chip>
             <!-- More control MatMenu -->
-            <mat-menu #moreFilterMenu="matMenu">
-                <mat-nav-list>
-                    <a mat-list-item (click)="opnDialogSaveVariant()">Save as...</a>
-                    <a mat-list-item (click)="resetAppliedFilter()">Reset</a>
-                </mat-nav-list>
+            <mat-menu #moreFilterMenu="matMenu" class="navigation-menu">
+                <button mat-menu-item (click)="opnDialogSaveVariant()">Save as...</button>
+                <button mat-menu-item (click)="resetAppliedFilter()">Reset</button>
             </mat-menu>
         </mat-chip-list>
     </div>
 
     <div class="row-spacer"></div>
 
-    <div class="table-container">
+    <div class="data">
         <!-- if have data then render table -->
         <ng-template [ngIf]="showTableLoading" [ngIfElse]="showdata">
             <pros-table-loading [columnCount]="displayedFields.length">
@@ -158,12 +156,12 @@
                 <ng-container matColumnDef="row_more_action" sticky>
                     <mat-header-cell *matHeaderCellDef class="fixed-width-c1">
                         <button mat-button (click)="openTableColumnSettings()">
-                            <mat-icon>settings</mat-icon>
+                            <mat-icon fontSet="mdo-icons">cog</mat-icon>
                         </button>
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="fixed-width-c1">
                         <button mat-button>
-                            <mat-icon>more_horiz</mat-icon>
+                            <mat-icon fontSet="mdo-icons">more</mat-icon>
                         </button>
                     </mat-cell>
                 </ng-container>
@@ -178,7 +176,7 @@
                 </ng-container>
 
                 <ng-container matColumnDef="_score_weightage" sticky>
-                    <mat-header-cell *matHeaderCellDef class="fixed-width-c2"> Score <mat-icon>help_outline</mat-icon>
+                    <mat-header-cell *matHeaderCellDef class="fixed-width-c2"> Score <mat-icon fontSet="mdo-icons">question-mark</mat-icon>
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="fixed-width-c2">
                         <div class="f-row progress-cell">

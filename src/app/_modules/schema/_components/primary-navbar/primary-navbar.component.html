@@ -1,5 +1,5 @@
-<mat-card class="root mat-elevation-z0">
-    <div class="row-spacer"></div>
+<div class="root">
+    <div class="f-row-spacer-half"></div>
     <div class="f-row">
         <button mat-icon-button (click)="toggleSideBar()">
             <mat-icon fontSet="mdo-icons">menu</mat-icon>
@@ -11,9 +11,6 @@
 
     <div class="row-spacer"></div>
 
-    <pros-search-input></pros-search-input>
-
-    <div class="row-spacer"></div>
     <div class="f-row create-new" [matMenuTriggerFor]="navigation">
         <button mat-mini-fab>
             <mat-icon fontSet="mdo-icons">plus</mat-icon>
@@ -25,7 +22,6 @@
         </mat-menu>
     </div>
 
-    <div class="row-spacer"></div>
     <div class="primary-nav-list">
         <mat-nav-list>
             <mat-list-item [class.selected]="isNavSelected==='welcome'" (click)="sendToParent('welcome')">
@@ -50,7 +46,6 @@
         </div>
     </div>
     <!-- CODE FOR SYSTEM TRAY -->
-    <mat-divider></mat-divider>
     <div class="row-spacer"></div>
     <div class="f-row nav-profile" [matMenuTriggerFor]="profile_navigation">
         <mat-card-header>
@@ -65,4 +60,4 @@
         </mat-menu>
     </div>
     <div class="row-spacer"></div>
-</mat-card>
+</div>

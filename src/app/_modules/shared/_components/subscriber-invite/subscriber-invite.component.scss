@@ -1,11 +1,10 @@
 mat-card.root {
   user-select: none;
-  padding: 0 16px;
-  width: 700px;
+  padding: 0;
 
   .breadcrum-toolbar {
     align-items: center;
-    padding-top: 16px;
+    padding-top: 8px;
     position: sticky;
     top: 0;
     z-index: 2;
@@ -21,10 +20,6 @@ mat-card.root {
     .mdo-constrained-right {
       align-items: center;
       width: 100%;
-
-      button.mat-flat-button {
-        min-width: auto;
-      }
     }
   }
 

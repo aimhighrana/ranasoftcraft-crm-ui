@@ -184,7 +184,7 @@
                                 (optionSelectedEmit)="selectBusinessRule($event)"
                                 (openCustomDialog)="openGlobalDialog($event)" [updatedOptionsList]="businessRulesList"
                                 [viewMoreAction]="'existingBR'" [extraOption]="'createBR'"
-                                [extraOptionLabel]="'Add new rule'" [labelKey]="'brInfo'">
+                                [extraOptionLabel]="'Add new business rule'" [labelKey]="'brInfo'">
                             </pros-form-input-autoselect>
                         </div>
                     </div>
@@ -219,7 +219,7 @@
                                     </mat-slider>
                                     <ng-template #notConfigured>
                                         <mat-chip-list>
-                                            <mat-chip disableRipple="true">Not configured</mat-chip>
+                                            <mat-chip disableRipple="true" class="error-status">Not configured</mat-chip>
                                         </mat-chip-list>
                                     </ng-template>
                                 </div>
@@ -233,7 +233,7 @@
                                     Configure
                                 </button>
                             </div>
-                            <div class="col text-end">
+                            <div class="col">
                                 <button mat-button (click)="deleteBR(businessRule)">
                                     <mat-icon fontSet="mdo-icons">recycle-bin</mat-icon>
                                 </button>
@@ -409,12 +409,12 @@
         <button mat-flat-button (click)="closeDialog()">Cancel</button>
 
         <span class="f-spacer"></span>
-        <div class="f-row">
+        <div class="f-row bottom-actions">
             <button mat-raised-button *ngIf="headerTextIndex > 2" (click)="step('previous')"
                 class="mat-elevation-z0">Back</button>
             <ng-container *ngIf="progressBar < 100">
-                <button mat-button *ngIf="headerTextIndex === 2" color="primary" (click)="step('previous')">Choose a
-                    different file</button>
+                <a *ngIf="headerTextIndex === 2" (click)="step('previous')" class="info-link">Choose a
+                    different file</a>
                 <span class="f-col-spacer-half"></span>
                 <button mat-flat-button color="primary" [disabled]="headerTextIndex === 1"
                     (click)="step('next', true)">Next</button>

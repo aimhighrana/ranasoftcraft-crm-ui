@@ -49,7 +49,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
   /**
    * icon arrow value
    */
-  arrowIcon = 'keyboard_arrow_left';
+  arrowIcon = 'chevron-left';
 
   /** To check page reloaded or not */
   isPageReload = true;
@@ -206,10 +206,10 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
    * and emit the toggle event
    */
   toggleSideBar(hidePrimary = false) {
-    if (this.arrowIcon === 'keyboard_arrow_left') {
-      this.arrowIcon = 'keyboard_arrow_right';
-    } else if (this.arrowIcon === 'keyboard_arrow_right') {
-      this.arrowIcon = 'keyboard_arrow_left'
+    if (this.arrowIcon === 'chevron-left') {
+      this.arrowIcon = 'chevron-right';
+    } else if (this.arrowIcon === 'chevron-right') {
+      this.arrowIcon = 'chevron-left'
     }
     this.toggleEmitter.emit(hidePrimary)
   }

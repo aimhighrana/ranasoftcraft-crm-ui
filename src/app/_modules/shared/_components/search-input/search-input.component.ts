@@ -22,6 +22,8 @@ export class SearchInputComponent implements OnInit, OnChanges {
   @Input()
   preValue = '';
 
+  hasFocus = false;
+
   /**
    * To emit the value for parent
    */

@@ -1,5 +1,4 @@
 <div class="mat-elevation-z0 root">
-    <div class="row-spacer"></div>
     <div class="f-row breadcrum-toolbar">
         <div class="display-heading-large">
             <ng-template [ngIf]="schemaInfo">
@@ -21,13 +20,13 @@
             </ng-template>
         </div>
         <div class="f-spacer"></div>
-        <button mat-flat-button color="accent" (click)="openSummarySideSheet()">
+        <button mat-flat-button color="accent" (click)="openSummarySideSheet()" class="rightradius">
             <mat-icon fontSet="mdo-icons">wand</mat-icon> Check data
         </button>
-        <button mat-fab color="accent" class="mat-elevation-z0">
+        <button mat-fab color="accent" class="mat-elevation-z0 middleradius">
             <mat-icon fontSet="mdo-icons">chart-line</mat-icon>
         </button>
-        <button mat-fab color="accent" class="mat-elevation-z0" [matMenuTriggerFor]="moreactionfile">
+        <button mat-fab color="accent" class="mat-elevation-z0 leftradius" [matMenuTriggerFor]="moreactionfile">
             <mat-icon fontSet="mdo-icons">more</mat-icon>
         </button>
         <mat-menu #moreactionfile="matMenu" class="navigation-menu">
@@ -35,26 +34,23 @@
             <button mat-menu-item>Import from CSV</button>
         </mat-menu>
     </div>
-
-    <div class="row-spacer"></div>
     <mat-divider></mat-divider>
     <div class="row-spacer"></div>
-
     <div class="f-row">
         <mat-chip-list>
-            <mat-chip (click)="changeTabStatus('error')" disableRipple="true">
-                Errors {{ (statics && statics.errorCnt) ? statics.errorCnt : 0 }}
+            <mat-chip (click)="changeTabStatus('error')" disableRipple="true" class="error-status">
+                {{ (statics && statics.errorCnt) ? statics.errorCnt : 0 }}  errors 
             </mat-chip>
-            <mat-chip (click)="changeTabStatus('success')" class="badge warning" disableRipple="true"> Warnings
-                {{ (statics && statics.successCnt) ? statics.successCnt : 0 }}
+            <mat-chip (click)="changeTabStatus('success')" disableRipple="true" class="warning-status"> 
+                {{ (statics && statics.successCnt) ? statics.successCnt : 0 }} warnings
             </mat-chip>
-            <mat-chip (click)="changeTabStatus('review')" disableRipple="true">Corrections
-                {{ (statics && statics.correctedCnt) ? statics.correctedCnt : 0 }}
+            <mat-chip (click)="changeTabStatus('review')" disableRipple="true" class="info-status">
+                {{ (statics && statics.correctedCnt) ? statics.correctedCnt : 0 }} corrections
+                
             </mat-chip>
         </mat-chip-list>
     </div>
-    <div class="row-spacer"></div>
-
+    <div class="f-row-spacer-half"></div>
     <div class="f-col data-container">
         <mat-tab-group disableRipple="true"> <!-- selectedIndex="1" -->
             <ng-template>
@@ -360,7 +356,6 @@
                             (groupChange)="updateSelectedGroup($event)">
                         </pros-group-data-table>
                     </div>
-
                     <mat-divider [vertical]="true"></mat-divider>
                     <div class="f-col dataset-grid-listing">
                         <div class="f-row">
@@ -421,9 +416,7 @@
                                 </mat-menu>
                             </mat-chip-list>
                         </div>
-
                         <div class="row-spacer"></div>
-
                         <!-- Data Table -->
                         <div class="data">
                         <mat-table [dataSource]="dataSource" matSort class="mat-elevation-z0"
@@ -466,23 +459,22 @@
                                 </mat-header-cell>
                                 <mat-cell *matCellDef="let element" class="fixed-width-c2">
                                     <div class="f-row action-iconbtns">
-                                        <button mat-fab color="accent" [matMenuTriggerFor]="moreactions">
+                                        <button mat-fab color="accent" [matMenuTriggerFor]="moreactions" class="rightradius">
                                             <mat-icon fontSet="mdo-icons">more</mat-icon>
                                         </button>
-                                        <!-- more actions -->
-
-                                        <button mat-fab color="accent" (click)="markAsMasterRecord(element)">
+                                        <button mat-fab color="accent" (click)="markAsMasterRecord(element)" class="middleradius">
                                             <mat-icon fontSet="mdo-icons">
                                                 {{ element.status === 'Master record' ? 'star' : 'star-outline'}}
                                             </mat-icon>
                                         </button>
                                         <button mat-fab color="accent"
-                                            *ngIf="element && (element.status === 'Can be deleted')">
+                                            *ngIf="element && (element.status === 'Can be deleted')" class="leftradius">
                                             <mat-icon fontSet="mdo-icons">restart</mat-icon>
                                         </button>
+
                                         <button mat-fab color="accent"
                                             *ngIf="element && (element.status !== 'Can be deleted')"
-                                            (click)="markForDeletion(element)">
+                                            (click)="markForDeletion(element)" class="leftradius">
                                             <mat-icon fontSet="mdo-icons">recycle-bin</mat-icon>
                                         </button>
                                     </div>
@@ -490,8 +482,8 @@
                             </ng-container>
 
                             <ng-container matColumnDef="OBJECTNUMBER">
-                                <mat-header-cell *matHeaderCellDef mat-sort-header class="fixed-width-c2"> Object Number</mat-header-cell>
-                                <mat-cell *matCellDef="let element" class="fixed-width-c2">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header> Object Number</mat-header-cell>
+                                <mat-cell *matCellDef="let element">
                                     {{ element['OBJECTNUMBER'] ? element['OBJECTNUMBER'].fieldData : '' }}
                                 </mat-cell>
                             </ng-container>
