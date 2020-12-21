@@ -189,7 +189,6 @@ export class BrruleSideSheetComponent implements OnInit {
       console.log(res);
     });
 
-    this.initiateAutocomplete();
     this.getCategories();
 
     this.activatedRouter.params.subscribe(res => {
@@ -580,6 +579,8 @@ export class BrruleSideSheetComponent implements OnInit {
           list: this.fieldsList
         }
         this.filteredModules = of(this.fieldsList);
+
+        this.initiateAutocomplete();
         // this.filteredFieldList = this.fieldsList;
         // this.duplicateFieldsObs = of(this.fieldsList);
 

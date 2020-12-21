@@ -525,7 +525,7 @@ export class NewBusinessRulesComponent implements OnInit {
                     valueKey: 'fieldId',
                     list: this.fieldsList
                 }
-                resolve();
+                resolve(null);
             } catch (error) {
                 reject(error)
             }
