@@ -375,50 +375,22 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   drop(event: CdkDragDrop<string[]>) {
-    const topY = document.getElementById('container').offsetTop;
     console.log(event);
     const movedX = event.distance.x;
-    let movedY = event.distance.y;
+    const movedY = event.distance.y;
     console.log(event.item.element.nativeElement);
     console.log(`Moved x: ${movedX} , and moved y : ${movedY}`);
 
     // drop added widget
     let dropableWidget = new Widget();
-    if (event.item.element.nativeElement.id) {
-      dropableWidget = this.widgetList.filter(wid => (String(wid.widgetId) === event.item.element.nativeElement.id))[0];
-    } else {
-      const widgetType = event.item.element.nativeElement.getAttribute('widgetType');
-      dropableWidget.x = 0;
-      dropableWidget.y = 0;
-      dropableWidget.height = 24;
-      dropableWidget.width = 30;
-      movedY = topY - event.distance.y;
+    dropableWidget = this.widgetList.filter(wid => (String(wid.widgetId) === event.item.element.nativeElement.id))[0];
 
-
-      // set default height to table
-      if (widgetType === 'TABLE_LIST') {
-        dropableWidget.height = 500 / this.eachBoxSize;
-        dropableWidget.width = 500 / this.eachBoxSize;
-      }
-      dropableWidget.widgetId = String(new Date().getTime());
-      dropableWidget.widgetType = widgetType as WidgetType;
-    }
     const boxX = Math.round(((dropableWidget.x * this.eachBoxSize) + movedX) / this.eachBoxSize);
     const boxY = Math.round(((dropableWidget.y * this.eachBoxSize) + movedY) / this.eachBoxSize);
     if ((boxX >= 0 && (boxX * this.eachBoxSize) <= this.screenWidth) && (boxY >= 0)) {
       dropableWidget.x = boxX;
       dropableWidget.y = boxY;
 
-      // add chart properties on widget list
-      if (event.item.element.nativeElement.id === '' && (dropableWidget.widgetType === WidgetType.BAR_CHART || dropableWidget.widgetType === WidgetType.STACKED_BAR_CHART)) {
-        dropableWidget.chartProperties = {
-          chartType:ChartType.BAR, orientation:Orientation.VERTICAL, isEnableDatalabels:false,
-          datalabelsPosition:DatalabelsPosition.center, isEnableLegend:false, legendPosition:LegendPosition.top,
-          xAxisLabel:'', yAxisLabel:'', orderWith: OrderWith.DESC, scaleFrom: null, scaleTo: null, stepSize: null,
-          dataSetSize: null,seriesWith:SeriesWith.day,seriesFormat:null,blankValueAlias:null,timeseriesStartDate:TimeseriesStartDate.D7,isEnabledBarPerc:false,
-          bucketFilter:null
-        };
-      }
       this.preapreNewWidgetPosition(dropableWidget);
     }
   }
@@ -888,6 +860,59 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   heightCount(value: number) {
     if(value > 1000) {
       return this.styleCtrlGrp.get('height').setValue(1000);
+    }
+  }
+
+  /**
+   * function to add widget on dashboard
+   * @param event mouseEvent value is visible
+   * @param id widget type choose by user
+   */
+  addWidget(event: MouseEvent, id) {
+    const movedX = event.movementX;
+    const movedY = event.movementY;
+
+    console.log(`Moved x: ${movedX} , and moved y : ${movedY}`);
+
+    // drop added widget
+    const dropableWidget = new Widget();
+    const widgetType = id;
+    dropableWidget.x = 0;
+    dropableWidget.y = 0;
+    dropableWidget.height = 24;
+    dropableWidget.width = 30;
+
+    // set default height to table
+    if (widgetType === 'TABLE_LIST') {
+      dropableWidget.height = 500 / this.eachBoxSize;
+      dropableWidget.width = 500 / this.eachBoxSize;
+    }
+    dropableWidget.widgetId = String(new Date().getTime());
+    dropableWidget.widgetType = widgetType as WidgetType;
+
+    const boxX = Math.round(((dropableWidget.x * this.eachBoxSize) + movedX) / this.eachBoxSize);
+    const boxY = Math.round(((dropableWidget.y * this.eachBoxSize) + movedY) / this.eachBoxSize);
+    if ((boxX >= 0 && (boxX * this.eachBoxSize) <= this.screenWidth) && (boxY >= 0)) {
+      if(this.widgetList.length > 0) {
+        const lastWidget = this.widgetList[this.widgetList.length -1];
+        dropableWidget.x = boxX + lastWidget.x + 2;
+        dropableWidget.y = boxY + lastWidget.y + 2;
+      } else {
+        dropableWidget.x = boxX;
+        dropableWidget.y = boxY;
+      }
+
+      // add chart properties on widget list
+      if ((dropableWidget.widgetType === WidgetType.BAR_CHART || dropableWidget.widgetType === WidgetType.STACKED_BAR_CHART)) {
+        dropableWidget.chartProperties = {
+          chartType:ChartType.BAR, orientation:Orientation.VERTICAL, isEnableDatalabels:false,
+          datalabelsPosition:DatalabelsPosition.center, isEnableLegend:false, legendPosition:LegendPosition.top,
+          xAxisLabel:'', yAxisLabel:'', orderWith: OrderWith.DESC, scaleFrom: null, scaleTo: null, stepSize: null,
+          dataSetSize: null,seriesWith:SeriesWith.day,seriesFormat:null,blankValueAlias:null,timeseriesStartDate:TimeseriesStartDate.D7,isEnabledBarPerc:false,
+          bucketFilter:null
+        };
+      }
+      this.preapreNewWidgetPosition(dropableWidget);
     }
   }
 }

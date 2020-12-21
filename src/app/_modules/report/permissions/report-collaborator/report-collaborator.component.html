@@ -55,14 +55,14 @@
                 </button>
                 <mat-chip-list aria-label="Fish selection">
                     <ng-template ngFor let-selcoll [ngForOf]="possibleChips">
-                        <mat-chip *ngIf="selcoll.permissionType === 'USER'"
+                        <mat-chip *ngIf="selcoll.permissionType === 'USER'" matTooltipPosition="right"
                             matTooltip="{{ selcoll.userMdoModel ? selcoll.userMdoModel.fullName : 'Unknown'}}">
                             <mat-icon mat-list-icon class="chip-icon icon-user">person</mat-icon>
                             <span  class="chip-content">{{ selcoll.userMdoModel ? selcoll.userMdoModel.fullName : 'Unknown'}}</span>
                             <mat-icon matChipRemove class="chip-icon" (click)="remove(selcoll)">cancel</mat-icon>
                         </mat-chip>
 
-                        <mat-chip *ngIf="selcoll.permissionType === 'ROLE'"
+                        <mat-chip *ngIf="selcoll.permissionType === 'ROLE'" matTooltipPosition="right"
                             matTooltip="{{ selcoll.rolesModel ? selcoll.rolesModel.roleDesc : 'Unknown'}}">
                             <mat-icon mat-list-icon class="chip-icon icon-role">how_to_reg</mat-icon>
                             <span
@@ -70,7 +70,7 @@
                             <mat-icon matChipRemove class="chip-icon" (click)="remove(selcoll)">cancel</mat-icon>
                         </mat-chip>
 
-                        <mat-chip *ngIf="selcoll.permissionType === 'GROUP'"
+                        <mat-chip *ngIf="selcoll.permissionType === 'GROUP'" matTooltipPosition="right"
                             matTooltip="{{ selcoll.groupHeaderModel ? selcoll.groupHeaderModel.description : 'Unknown'}}">
                             <mat-icon mat-list-icon class="chip-icon icon-group">group</mat-icon>
                             <span

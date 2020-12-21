@@ -24,38 +24,69 @@
         <div class="f-row builder-container">
             <div class="widget-col">
                 <div class="col-heading">Widgets</div>
-                <div cdkDropList cdkDropListConnectedTo="container">
-                    <div cdkDrag cdkDragHandle widgetType="FILTER" class="widget-drag">
+                <div class="container">
+                    <div widgetType="FILTER" class="widget-drag">
                         <mat-icon fontSet="mdo-icons" class="widget-icon">filter</mat-icon> Filter
+                        <div class="f-spacer"></div>
+                        <button mat-button (click) = "addWidget($event, 'FILTER')">
+                            <mat-icon fontSet="mdo-icons" class="plus-icon">plus</mat-icon>
+                        </button>
                     </div>
                     <mat-divider></mat-divider>
-                    <div cdkDrag cdkDragHandle widgetType="COUNT" class="widget-drag">
+                    <div widgetType="COUNT" class="widget-drag">
                         <mat-icon fontSet="mdo-icons" class="widget-icon">form-number</mat-icon> Metric
+                        <div class="f-spacer"></div>
+                        <button mat-button (click) = "addWidget($event, 'COUNT')">
+                            <mat-icon fontSet="mdo-icons" class="plus-icon">plus</mat-icon>
+                        </button>
                     </div>
                     <mat-divider></mat-divider>
-                    <div cdkDrag cdkDragHandle widgetType="TABLE_LIST" class="widget-drag">
+                    <div widgetType="TABLE_LIST" class="widget-drag">
                         <mat-icon fontSet="mdo-icons" class="widget-icon">form-table</mat-icon> Table list
+                        <div class="f-spacer"></div>
+                        <button mat-button (click) = "addWidget($event, 'TABLE_LIST')">
+                            <mat-icon fontSet="mdo-icons" class="plus-icon">plus</mat-icon>
+                        </button>
                     </div>
                     <mat-divider></mat-divider>
-                    <div cdkDrag cdkDragHandle widgetType="BAR_CHART" class="widget-drag">
+                    <div widgetType="BAR_CHART" class="widget-drag">
                         <mat-icon fontSet="mdo-icons" class="widget-icon">chart-pie</mat-icon> Bar/pie chart
+                        <div class="f-spacer"></div>
+                        <button mat-button (click) = "addWidget($event, 'BAR_CHART')">
+                            <mat-icon fontSet="mdo-icons" class="plus-icon">plus</mat-icon>
+                        </button>
                     </div>
                     <mat-divider></mat-divider>
-                    <div cdkDrag cdkDragHandle widgetType="STACKED_BAR_CHART" class="widget-drag">
-                        <mat-icon fontSet="mdo-icons" class="widget-icon">chart-complex</mat-icon> Stacked bar
-                        chart
+                    <div widgetType="STACKED_BAR_CHART" class="widget-drag">
+                        <mat-icon fontSet="mdo-icons" class="widget-icon">chart-complex</mat-icon> Stacked bar chart
+                        <div class="f-spacer"></div>
+                        <button mat-button (click) = "addWidget($event, 'STACKED_BAR_CHART')">
+                            <mat-icon fontSet="mdo-icons" class="plus-icon">plus</mat-icon>
+                        </button>
                     </div>
                     <mat-divider></mat-divider>
-                    <div cdkDrag cdkDragHandle widgetType="IMAGE" class="widget-drag">
+                    <div widgetType="IMAGE" class="widget-drag">
                         <mat-icon fontSet="mdo-icons" class="widget-icon">picture</mat-icon> Image
+                        <div class="f-spacer"></div>
+                        <button mat-button (click) = "addWidget($event, 'IMAGE')">
+                            <mat-icon fontSet="mdo-icons" class="plus-icon">plus</mat-icon>
+                        </button>
                     </div>
                     <mat-divider></mat-divider>
-                    <div cdkDrag cdkDragHandle widgetType="HTML" class="widget-drag">
+                    <div widgetType="HTML" class="widget-drag">
                         <mat-icon fontSet="mdo-icons" class="widget-icon">more-alt2</mat-icon> HTML editor
+                        <div class="f-spacer"></div>
+                        <button mat-button (click) = "addWidget($event, 'HTML')">
+                            <mat-icon fontSet="mdo-icons" class="plus-icon">plus</mat-icon>
+                        </button>
                     </div>
                     <mat-divider></mat-divider>
-                    <div cdkDrag cdkDragHandle widgetType="TIMESERIES" class="widget-drag">
+                    <div widgetType="TIMESERIES" class="widget-drag">
                         <mat-icon fontSet="mdo-icons" class="widget-icon">form-time</mat-icon> Time series
+                        <div class="f-spacer"></div>
+                        <button mat-button (click) = "addWidget($event, 'TIMESERIES')">
+                            <mat-icon fontSet="mdo-icons" class="plus-icon">plus</mat-icon>
+                        </button>
                     </div>
                     <mat-divider></mat-divider>
                 </div>
@@ -116,29 +147,31 @@
                             </div>
 
                             <div class="f-col">
-                                <ng-template [ngIf]="styleCtrlGrp.get('isWorkflowdataSet') && styleCtrlGrp.get('isWorkflowdataSet').value" [ngIfElse]="singleSelect">
-                                    <mat-label>Data set ({{ styleCtrlGrp.get('objectType').value.split(',').length }} selected) </mat-label>
+                                <ng-template [ngIf]="selStyleWid && !(selStyleWid.widgetType === 'IMAGE' || selStyleWid.widgetType === 'HTML')">
+                                    <ng-template [ngIf]="styleCtrlGrp.get('isWorkflowdataSet') && styleCtrlGrp.get('isWorkflowdataSet').value" [ngIfElse]="singleSelect">
+                                        <mat-label>Data set ({{ styleCtrlGrp.get('objectType').value.split(',').length }} selected) </mat-label>
+                                    </ng-template>
+                                    <ng-template #singleSelect>
+                                        <mat-label>Data set</mat-label>
+                                    </ng-template>
+                                    <mat-form-field appearance="outline">
+                                        <input matInput [formControl]="objectType" [matAutocomplete]="dataSetCtrl" (keyup)="searchDataSet($event.target.value)" id="dataSets" >
+                                        <mat-autocomplete #dataSetCtrl="matAutocomplete" [displayWith]="displayWithDataSet">
+                                            <mat-optgroup label="Module">
+                                                <mat-option *ngFor="let object of dataSetOb | async" [value]="object" (click)="afterDataSetSelect(object)">
+                                                    {{ object.objectdesc ? object.objectdesc : 'Untitled' }}
+                                                </mat-option>
+                                            </mat-optgroup>
+                                            
+                                            <pros-workflow-dataset (selectedWfs)="afterWfSelect($event)" [preSelectedObj]="selStyleWid ? selStyleWid.objectType : ''" [isWorkFlow]="isWorkflowRefresh" [searchText]="searchDataSetVal"></pros-workflow-dataset>                                        
+                                        </mat-autocomplete>
+                                    </mat-form-field>
+                                    
+                                    <mat-hint *ngIf="selStyleWid  && selStyleWid.objectType && recordsCount">Total
+                                        {{ recordsCount }} record(s) found</mat-hint>
+                                    <mat-hint *ngIf="selStyleWid  && selStyleWid.objectType && !recordsCount">Index not
+                                        found , please sync data</mat-hint>
                                 </ng-template>
-                                <ng-template #singleSelect>
-                                    <mat-label>Data set</mat-label>
-                                </ng-template>
-                                <mat-form-field appearance="outline">
-                                    <input matInput [formControl]="objectType" [matAutocomplete]="dataSetCtrl" (keyup)="searchDataSet($event.target.value)" id="dataSets" >
-                                    <mat-autocomplete #dataSetCtrl="matAutocomplete" [displayWith]="displayWithDataSet">
-                                        <mat-optgroup label="Module">
-                                            <mat-option *ngFor="let object of dataSetOb | async" [value]="object" (click)="afterDataSetSelect(object)">
-                                                {{ object.objectdesc ? object.objectdesc : 'Untitled' }}
-                                            </mat-option>
-                                        </mat-optgroup>
-                                        
-                                        <pros-workflow-dataset (selectedWfs)="afterWfSelect($event)" [preSelectedObj]="selStyleWid ? selStyleWid.objectType : ''" [isWorkFlow]="isWorkflowRefresh" [searchText]="searchDataSetVal"></pros-workflow-dataset>                                        
-                                    </mat-autocomplete>
-                                </mat-form-field>
-                                
-                                <mat-hint *ngIf="selStyleWid  && selStyleWid.objectType && recordsCount">Total
-                                    {{ recordsCount }} record(s) found</mat-hint>
-                                <mat-hint *ngIf="selStyleWid  && selStyleWid.objectType && !recordsCount">Index not
-                                    found , please sync data</mat-hint>
                             </div>
 
                             <div class="f-col">
@@ -394,7 +427,7 @@
                                     </mat-form-field>
 
                                     <div class="f-row image-algin">
-                                        <button mat-button matTooltip="Upload image"
+                                        <button mat-button matTooltip="Upload image" matTooltipPosition="right"
                                             (click)="uploadFileChange()"  prosClickStopPropagation>
                                             <mat-icon>add_photo_alternate</mat-icon>
                                         </button>

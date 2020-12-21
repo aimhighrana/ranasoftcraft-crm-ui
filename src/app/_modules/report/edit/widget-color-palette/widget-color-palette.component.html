@@ -12,7 +12,7 @@
   <div class="f-col palette-list">
     <mat-list *ngIf="widgetColorPalette">
       <mat-list-item *ngFor="let color of widgetColorPalette.colorPalettes;let idx = index">
-        <div matTooltip="Choose color">
+        <div matTooltip="Choose color" matTooltipPosition="right">
           <input class="colorpalettebox" matInput type="color" value="{{ color.colorCode }}"
             (change)="updateColorCode(color, $event.target.value, idx)">
         </div>
