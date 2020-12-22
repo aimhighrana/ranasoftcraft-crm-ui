@@ -9,11 +9,13 @@ import { SchemaDetailsService } from '@services/home/schema/schema-details.servi
 import { MetadataModeleResponse } from '@models/schema/schemadetailstable';
 import { of } from 'rxjs';
 import { BusinessRuleType, ConditionalOperator } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { SchemaService } from '@services/home/schema.service';
 
 describe('BrruleSideSheetComponent', () => {
   let component: BrruleSideSheetComponent;
   let fixture: ComponentFixture<BrruleSideSheetComponent>;
   let schemaDetailsServicespy: SchemaDetailsService;
+  let schemaServiceSpy: SchemaService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -33,6 +35,7 @@ describe('BrruleSideSheetComponent', () => {
       { fieldId: '1', fieldDescri: 'first name' }
     ];
     schemaDetailsServicespy = fixture.debugElement.injector.get(SchemaDetailsService);
+    schemaServiceSpy = fixture.debugElement.injector.get(SchemaService);
     // fixture.detectChanges();
   });
 
@@ -119,6 +122,18 @@ describe('BrruleSideSheetComponent', () => {
     expect(brObject).not.toBeUndefined();
     expect(brObject).not.toBeNull();
     expect(brObject.brType).toEqual('test');
+  }));
+
+  it(`initUDRForm(), should create UDR form object`, async(() => {
+    component.initUDRForm();
+    expect(component.udrNodeForm).not.toBeUndefined();
+    expect(component.udrNodeForm).not.toBeNull();
+  }));
+
+  it(`getBusinessRuleInfo(), should call getBusinessRuleInfo service`, async(() => {
+    spyOn(schemaServiceSpy, 'getBusinessRuleInfo').withArgs('testId').and.returnValue(of(null));
+    component.getBusinessRuleInfo('testId');
+    expect(schemaServiceSpy.getBusinessRuleInfo).toHaveBeenCalledWith('testId');
   }));
 
 });

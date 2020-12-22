@@ -149,11 +149,16 @@ export class BrruleSideSheetComponent implements OnInit {
     private formBuilder: FormBuilder
   ) { }
 
-
+  /**
+   * getter for transformation types
+   */
   get transformationType() {
     return TransformationRuleType;
   }
 
+  /**
+   * Getter for selected transformation type
+   */
   get selectedTransformationType() {
     if (this.form && this.form.controls) {
       return this.form.controls.transformationRuleType.value;
@@ -161,12 +166,33 @@ export class BrruleSideSheetComponent implements OnInit {
     return '';
   }
 
+  /**
+   * Angular hook
+   */
   ngOnInit(): void {
-    this.buildCommonDataForm();
     this.getCategories();
     this.filteredModules = of(this.fieldsList);
     this.operators = this.possibleOperators();
 
+    this.getCategories();
+    this.activatedRouter.params.subscribe(res => {
+      this.routeData = res;
+      this.moduleId = res.moduleId;
+      this.schemaId = res.schemaId;
+      this.brId = res.brId ? (res.brId !== 'new' ? res.brId : '') : '';
+      this.buildCommonDataForm().then(() => {
+        this.initUDRForm();
+        if (this.brId) {
+          this.getBusinessRuleInfo(this.brId);
+        }
+      });
+    });
+  }
+
+  /**
+   * Initialize UDR form
+   */
+  initUDRForm() {
     this.udrNodeForm = this.formBuilder.group({
       frmArray: this.formBuilder.array([this.formBuilder.group({
         blockDesc: new FormControl('When'),
@@ -188,35 +214,30 @@ export class BrruleSideSheetComponent implements OnInit {
     this.udrNodeForm.valueChanges.subscribe(res => {
       console.log(res);
     });
+  }
 
-    this.getCategories();
-
-    this.activatedRouter.params.subscribe(res => {
-      this.routeData = res;
-      this.moduleId = res.moduleId;
-      this.schemaId = res.schemaId;
-      this.brId = res.brId ? (res.brId !== 'new' ? res.brId : '') : '';
-      if (this.brId) {
-        this.getBusinessRuleInfo(this.brId);
-      }
-      if (this.moduleId) {
-        this.getFieldsByModuleId();
-      }
-    });
+  /**
+   * get the current weightage value
+   */
+  get currentweightageValue() {
+    return this.schemaService.currentweightageValue;
   }
 
   /**
    * get businessrule data from api to patch in sidesheet
    */
   getBusinessRuleInfo(brId) {
-    this.schemaService.getBusinessRuleInfo(brId).subscribe(resp => {
-      this.coreSchemaBrInfo = resp;
-
-      // Patch received data
-      this.setValueToElement(this.coreSchemaBrInfo);
-
-      if (this.coreSchemaBrInfo.brType === BusinessRuleType.BR_CUSTOM_SCRIPT) {
-        this.editUdr(resp);
+    this.schemaService.getBusinessRuleInfo(brId).subscribe((businessRuleInfo: CoreSchemaBrInfo) => {
+      this.coreSchemaBrInfo = businessRuleInfo;
+      if (this.coreSchemaBrInfo) {
+        // Patch received data
+        this.setValueToElement(this.coreSchemaBrInfo);
+        if (this.moduleId) {
+          this.getFieldsByModuleId();
+        }
+        if (this.coreSchemaBrInfo.brType === BusinessRuleType.BR_CUSTOM_SCRIPT) {
+          this.editUdr(businessRuleInfo);
+        }
       }
     }, error => console.error(`Error : ${error.message}`));
   }
@@ -242,38 +263,43 @@ export class BrruleSideSheetComponent implements OnInit {
    * subscribe to any required control value changes
    */
   buildCommonDataForm() {
-    const controls = {
-      rule_type: new FormControl('', [Validators.required]),
-      rule_name: new FormControl('', [Validators.required]),
-      error_message: new FormControl('', [Validators.required]),
-      standard_function: new FormControl(''),
-      regex: new FormControl(''),
-      fields: new FormControl(''),
-      apiKey: new FormControl(''),
-      sourceFld: new FormControl(''),
-      targetFld: new FormControl(''),
-      excludeScript: new FormControl(''),
-      includeScript: new FormControl(''),
-      udrTreeData: new FormControl(),
-      weightage: new FormControl(0, [Validators.required]),
-      categoryId: new FormControl(''),
-      transformationRuleType: new FormControl('')
-    };
+    return new Promise((resolve, reject) => {
+      const controls = {
+        rule_type: new FormControl('', [Validators.required]),
+        rule_name: new FormControl('', [Validators.required]),
+        error_message: new FormControl('', [Validators.required]),
+        standard_function: new FormControl(''),
+        regex: new FormControl(''),
+        fields: new FormControl(''),
+        apiKey: new FormControl(''),
+        sourceFld: new FormControl(''),
+        targetFld: new FormControl(''),
+        excludeScript: new FormControl(''),
+        includeScript: new FormControl(''),
+        udrTreeData: new FormControl(),
+        weightage: new FormControl(0, [Validators.required]),
+        categoryId: new FormControl(''),
+        transformationRuleType: new FormControl('')
+      };
 
-    this.currentControls = controls;
-    this.form = new FormGroup(controls);
+      this.currentControls = controls;
+      this.form = new FormGroup(controls);
 
-    // Apply conditional validation based on rule type
-    this.form.controls.rule_type.valueChanges
-      .pipe(distinctUntilChanged())
-      .subscribe((selectedRule) => {
-        this.applyValidatorsByRuleType(selectedRule);
-      });
-    this.form.controls.transformationRuleType.valueChanges
-      .pipe(distinctUntilChanged())
-      .subscribe((type) => {
-        this.applyValidatorsByRuleType(this.form.controls.rule_type.value);
-      });
+      // Apply conditional validation based on rule type
+      this.form.controls.rule_type.valueChanges
+        .pipe(distinctUntilChanged())
+        .subscribe((selectedRule) => {
+          this.applyValidatorsByRuleType(selectedRule);
+        });
+      this.form.controls.transformationRuleType.valueChanges
+        .pipe(distinctUntilChanged())
+        .subscribe((type) => {
+          this.applyValidatorsByRuleType(this.form.controls.rule_type.value);
+        });
+
+      resolve(null);
+    })
+
   }
 
   /**
@@ -369,8 +395,8 @@ export class BrruleSideSheetComponent implements OnInit {
 
     if (patchList && patchList.length > 0) {
       patchList.map((key) => {
-        if(dataToPatch[key]){
-          if(key === 'categoryId') {
+        if (dataToPatch[key]) {
+          if (key === 'categoryId') {
             this.form.controls[key].setValue(`${dataToPatch[key]}`);
           } else {
             this.form.controls[key].setValue(dataToPatch[key]);
@@ -380,7 +406,6 @@ export class BrruleSideSheetComponent implements OnInit {
     }
 
     this.form.get('rule_type').disable({ onlySelf: true, emitEvent: true });
-    this.form.get('weightage').disable({ onlySelf: true, emitEvent: true });
   }
 
   /**
@@ -415,9 +440,9 @@ export class BrruleSideSheetComponent implements OnInit {
             fieldDescri: '',
             fieldId: schema.sourceFld,
             fieldLookupConfig: {
-              lookupColumn: schema.udrBlockModel? schema.udrBlockModel.conditionFieldId: '',
-              lookupColumnResult: schema.udrBlockModel? schema.udrBlockModel.conditionValueFieldId: '',
-              moduleId: schema.udrBlockModel? schema.udrBlockModel.objectType: ''
+              lookupColumn: schema.udrBlockModel ? schema.udrBlockModel.conditionFieldId : '',
+              lookupColumnResult: schema.udrBlockModel ? schema.udrBlockModel.conditionValueFieldId : '',
+              moduleId: schema.udrBlockModel ? schema.udrBlockModel.objectType : ''
             },
             lookupTargetField: schema.targetFld,
             lookupTargetText: ''
@@ -589,14 +614,13 @@ export class BrruleSideSheetComponent implements OnInit {
             const fldIds = this.coreSchemaBrInfo.fields ? this.coreSchemaBrInfo.fields.split(',') : [];
             this.selectedFields = [];
             fldIds.forEach(fld => {
-              const fldCtrl = this.fieldsList.filter(fil => fil.fieldId === fld)[0];
+              const fldCtrl = this.fieldsList.find(fil => fil.fieldId === fld);
               if (fldCtrl) {
                 this.selectedFields.push({ fieldDescri: fldCtrl.fieldDescri, fieldId: fld });
               }
             });
           } catch (ex) { console.error(ex) }
         }
-
       });
   }
 
@@ -721,7 +745,7 @@ export class BrruleSideSheetComponent implements OnInit {
 
     } else if (brType === BusinessRuleType.BR_DUPLICATE_RULE) {
       // save duplicate rule
-        this.saveDuplicateRule();
+      this.saveDuplicateRule();
       // this.sharedService.emitSaveBrEvent(brInfo);
 
     } else if (brType === BusinessRuleType.BR_TRANSFORMATION) {
@@ -730,7 +754,7 @@ export class BrruleSideSheetComponent implements OnInit {
         tempId: '',
         lookupData: this.lookupData,
         transformationData: this.transformationData
-       };
+      };
       const finalFormData = {
         ...this.form.value,
         brId: this.brId ? this.brId : '',
@@ -818,7 +842,7 @@ export class BrruleSideSheetComponent implements OnInit {
     const { sourceFld, targetFld, includeScript, excludeScript, transformationRuleType } = response.formData;
     const transformationList: TransformationModel[] = [];
 
-    if(ruleType === BusinessRuleType.BR_TRANSFORMATION){
+    if (ruleType === BusinessRuleType.BR_TRANSFORMATION) {
       if (response.lookupData && response.lookupData.length > 0) {
         response.lookupData.map((param: LookupFields) => {
           transformationList.push({
@@ -996,7 +1020,7 @@ export class BrruleSideSheetComponent implements OnInit {
    */
   getCategories() {
     this.schemaDetailsService.getAllCategoryInfo().subscribe((response: CategoryInfo[]) => {
-      if(response && response.length>0){
+      if (response && response.length > 0) {
         this.categoryList = response;
       }
     })
