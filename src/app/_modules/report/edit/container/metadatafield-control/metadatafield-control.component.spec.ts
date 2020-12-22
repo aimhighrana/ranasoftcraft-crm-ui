@@ -10,8 +10,10 @@ describe('MetadatafieldControlComponent', () => {
   let component: MetadatafieldControlComponent;
   let fixture: ComponentFixture<MetadatafieldControlComponent>;
   let schemaDetailsService: jasmine.SpyObj<SchemaDetailsService>;
+
   beforeEach(async(() => {
     const schemaDetailsServiceSp = jasmine.createSpyObj(SchemaDetailsService,['getMetadataFields']);
+
     TestBed.configureTestingModule({
       declarations: [ MetadatafieldControlComponent ],
       imports:[AppMaterialModuleForSpec],
@@ -72,6 +74,7 @@ describe('MetadatafieldControlComponent', () => {
     // mock data
     component.moduleId = '1005';
     component.selectedFldId = 'NDC_TYPE'
+    component.isCustomdataset = false;
     // call actual component method
     spyOn(schemaDetailsService,'getMetadataFields').withArgs(component.moduleId).and.returnValue(of(metadataModeleResponse));
     component.getFields();
@@ -108,14 +111,16 @@ describe('MetadatafieldControlComponent', () => {
     const fieldId  ='MATL_TYPE';
     const fields = component.transformFieldRes(metadataModeleResponse);
     component.fields = fields;
-
+    component.isCustomdataset = false;
     // call actual componenet function
     let actualRes =  component.returnSelectedFldCtrl(fieldId);
     expect(actualRes.fieldId).toEqual(fieldId,`When return data then field id should equals ${fieldId}`);
 
     // call with unknown fields
-    actualRes =  component.returnSelectedFldCtrl('TEST0001');
-    expect(actualRes).toBe(undefined,`When call with uknown field  should equals undefined !`);
+    component.isCustomdataset = true;
+    component.customFields = [{fieldId: 'MATL_TYPE'} as MetadataModel]
+    actualRes =  component.returnSelectedFldCtrl(fieldId);
+    expect(actualRes.fieldId).toBe(fieldId,`When return data then field id should equals ${fieldId}`);
 
 
   }));

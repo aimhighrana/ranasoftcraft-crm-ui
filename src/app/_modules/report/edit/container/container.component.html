@@ -148,7 +148,7 @@
 
                             <div class="f-col">
                                 <ng-template [ngIf]="selStyleWid && !(selStyleWid.widgetType === 'IMAGE' || selStyleWid.widgetType === 'HTML')">
-                                    <ng-template [ngIf]="styleCtrlGrp.get('isWorkflowdataSet') && styleCtrlGrp.get('isWorkflowdataSet').value" [ngIfElse]="singleSelect">
+                                    <ng-template [ngIf]="styleCtrlGrp.get('isWorkflowdataSet') && styleCtrlGrp.get('isWorkflowdataSet').value " [ngIfElse]="singleSelect">
                                         <mat-label>Data set ({{ styleCtrlGrp.get('objectType').value.split(',').length }} selected) </mat-label>
                                     </ng-template>
                                     <ng-template #singleSelect>
@@ -162,8 +162,14 @@
                                                     {{ object.objectdesc ? object.objectdesc : 'Untitled' }}
                                                 </mat-option>
                                             </mat-optgroup>
+
+                                            <mat-optgroup label="Custom">
+                                                <mat-option *ngFor="let object of customDataSetob | async" [value]="object" (click)="afterCustomSelect(object)">
+                                                    {{ object.objectdesc ? object.objectdesc : 'Untitled' }}
+                                                </mat-option>
+                                            </mat-optgroup>
                                             
-                                            <pros-workflow-dataset (selectedWfs)="afterWfSelect($event)" [preSelectedObj]="selStyleWid ? selStyleWid.objectType : ''" [isWorkFlow]="isWorkflowRefresh" [searchText]="searchDataSetVal"></pros-workflow-dataset>                                        
+                                            <pros-workflow-dataset (selectedWfs)="afterWfSelect($event)" [preSelectedObj]="selStyleWid ? selStyleWid.objectType : ''" [isWorkFlow]="isWorkflowRefresh" [searchText]="searchDataSetVal"></pros-workflow-dataset>    
                                         </mat-autocomplete>
                                     </mat-form-field>
                                     
@@ -177,7 +183,7 @@
                             <div class="f-col">
                                 <!-- <For WorkFlow Path> -->
                                 <ng-template
-                                    [ngIf]="styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===true">
+                                    [ngIf]="styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===true  && styleCtrlGrp.get('isCustomdataSet').value===false">
                                     <mat-label>Workflow path</mat-label>
                                     <mat-form-field appearance="outline">
                                         <mat-select formControlName="workflowPath" multiple>
@@ -211,25 +217,34 @@
                                 <ng-template
                                     [ngIf]="selStyleWid && (selStyleWid.widgetType === 'COUNT' || selStyleWid.widgetType === 'BAR_CHART' || selStyleWid.widgetType === 'STACKED_BAR_CHART' || selStyleWid.widgetType === 'FILTER'  || selStyleWid.widgetType === 'TIMESERIES') && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===false">
                                     <pros-metadatafield-control [moduleId]="selStyleWid && selStyleWid.objectType"
-                                        lebel="Field" [selectedFldId]="selStyleWid && selStyleWid.field"
+                                        lebel="Field" [selectedFldId]="selStyleWid && selStyleWid.field" [isCustomdataset]="selStyleWid && selStyleWid.isCustomdataSet"
                                         (selectionChange)='onFieldChange($event)'>
                                     </pros-metadatafield-control>
+                                </ng-template>
+
+                                <!--WorkflowType-->
+                                <ng-template
+                                    [ngIf]="selStyleWid && (selStyleWid.widgetType === 'COUNT' || selStyleWid.widgetType === 'BAR_CHART' || selStyleWid.widgetType === 'STACKED_BAR_CHART' || selStyleWid.widgetType === 'FILTER' || selStyleWid.widgetType === 'TIMESERIES') && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===true && styleCtrlGrp.get('isCustomdataSet').value===false">
+                                    <pros-workflowfield-control [objectType]="selStyleWid && selStyleWid.objectType"
+                                        label="Field" [selectedFldId]="selStyleWid && selStyleWid.field"
+                                        (selectionChange)='onFieldChange($event)'>
+                                    </pros-workflowfield-control>
                                 </ng-template>
                             </div>
 
                             <div class="f-col">
-                                <!-- FOR STACKED BAR CHART WIDGET-->
+                                <!-- FOR  Modules STACKED BAR CHART WIDGET-->
                                 <ng-template
                                     [ngIf]="selStyleWid && (selStyleWid.widgetType === 'STACKED_BAR_CHART'  || selStyleWid.widgetType === 'TIMESERIES') && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===false">
                                     <pros-metadatafield-control [moduleId]="selStyleWid && selStyleWid.objectType" [widgetType]="selStyleWid && selStyleWid.widgetType"
-                                        lebel="Group(s) with" [selectedFldId]="selStyleWid && selStyleWid.groupById"
+                                        lebel="Group(s) with" [selectedFldId]="selStyleWid && selStyleWid.groupById" [isCustomdataset]="selStyleWid && selStyleWid.isCustomdataSet"
                                         (selectionChange)='onGroupByChange($event)'>
                                     </pros-metadatafield-control>
                                 </ng-template>
 
-                                <!-- FOR STACKED BAR CHART WIDGET-->
+                                <!-- FOR Workflow STACKED BAR CHART WIDGET-->
                                 <ng-template
-                                    [ngIf]="selStyleWid && (selStyleWid.widgetType === 'STACKED_BAR_CHART'|| selStyleWid.widgetType === 'TIMESERIES') && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===true">
+                                    [ngIf]="selStyleWid && (selStyleWid.widgetType === 'STACKED_BAR_CHART'|| selStyleWid.widgetType === 'TIMESERIES') && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===true && styleCtrlGrp.get('isCustomdataSet').value===false">
                                     <pros-workflowfield-control [objectType]="selStyleWid && selStyleWid.objectType" [widgetType]="selStyleWid && selStyleWid.widgetType"
                                         label="Group with(s)" [selectedFldId]="selStyleWid && selStyleWid.groupById"
                                         (selectionChange)='onGroupByChange($event)'>
@@ -238,22 +253,23 @@
                             </div>
 
                             <div class="f-col">
+                                <!--TransitionalType-->
+                                <ng-template
+                                    [ngIf]="selStyleWid && selStyleWid.widgetType === 'TIMESERIES' && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===false">
+                                    <pros-metadatafield-control [moduleId]="selStyleWid && selStyleWid.objectType"
+                                        lebel="Distinct with" [selectedFldId]="selStyleWid && selStyleWid.distictWith"
+                                        (selectionChange)='onDistictWithChange($event)' [isCustomdataset]="selStyleWid && selStyleWid.isCustomdataSet">
+                                    </pros-metadatafield-control>
+                                </ng-template>
+
                                 <!--WorkflowType-->
                                 <ng-template
-                                    [ngIf]="selStyleWid && (selStyleWid.widgetType === 'COUNT' || selStyleWid.widgetType === 'BAR_CHART' || selStyleWid.widgetType === 'STACKED_BAR_CHART' || selStyleWid.widgetType === 'FILTER' || selStyleWid.widgetType === 'TIMESERIES') && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===true">
+                                    [ngIf]="selStyleWid && selStyleWid.widgetType === 'TIMESERIES' && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===true  && styleCtrlGrp.get('isCustomdataSet').value===false">
                                     <pros-workflowfield-control [objectType]="selStyleWid && selStyleWid.objectType"
-                                        label="Field" [selectedFldId]="selStyleWid && selStyleWid.field"
-                                        (selectionChange)='onFieldChange($event)'>
-                                    </pros-workflowfield-control>
-                                </ng-template>
-                            </div>
-
-                            <div class="f-col" *ngIf="selStyleWid && selStyleWid.widgetType === 'TIMESERIES'">
-                                <!--WorkflowType-->
-                                <pros-workflowfield-control [objectType]="selStyleWid && selStyleWid.objectType"
                                         label="Distinct with" [selectedFldId]="selStyleWid && selStyleWid.distictWith"
                                         (selectionChange)='onDistictWithChange($event)'>
-                                </pros-workflowfield-control>
+                                    </pros-workflowfield-control>
+                                </ng-template>
                             </div>
 
                             <div class="f-col">
@@ -357,8 +373,9 @@
 
                             <div class="f-col">
                                 <!-- FOR TABLE LIST CHOOSE COLUMNS WIDGET-->
+                                <!-- For Modules -->
                                 <ng-template
-                                    [ngIf]="selStyleWid && selStyleWid.widgetType === 'TABLE_LIST' && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===false">
+                                    [ngIf]="selStyleWid && selStyleWid.widgetType === 'TABLE_LIST' && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===false  && styleCtrlGrp.get('isCustomdataSet').value===false">
                                     <mat-label>Choose columns</mat-label>
                                     <mat-form-field appearance="outline">
                                         <input matInput [matAutocomplete]="chooseColumn" (keyup)="searchChooseColumn($event.target.value)">
@@ -379,8 +396,9 @@
                                     <mat-hint>{{ chooseColumns ? chooseColumns.length : '0' }} Selected</mat-hint>
                                 </ng-template>
 
+                                <!-- For WorkFlow Modules -->
                                 <ng-template
-                                    [ngIf]="selStyleWid && selStyleWid.widgetType === 'TABLE_LIST' && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===true">
+                                    [ngIf]="selStyleWid && selStyleWid.widgetType === 'TABLE_LIST' && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===true  && styleCtrlGrp.get('isCustomdataSet').value===false">
                                     <mat-label>Choose columns</mat-label>
                                     <mat-form-field appearance="outline">
 
@@ -413,6 +431,29 @@
                                             </mat-optgroup>
                                         </mat-autocomplete> 
                                          
+                                    </mat-form-field>
+                                    <mat-hint>{{ chooseColumns ? chooseColumns.length : '0' }} Selected</mat-hint>
+                                </ng-template>
+
+                                <!-- For Custom Modules -->
+                                <ng-template
+                                    [ngIf]="selStyleWid && selStyleWid.widgetType === 'TABLE_LIST' && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===false  && styleCtrlGrp.get('isCustomdataSet').value===true">
+                                    <mat-label>Choose columns</mat-label>
+                                    <mat-form-field appearance="outline">
+                                        <input matInput [matAutocomplete]="chooseColumn" (keyup)="searchCustomChooseColumn($event.target.value)">
+                                        <mat-autocomplete #chooseColumn="matAutocomplete" [displayWith]="chooseColumnDisWith">
+                                            <mat-option  *ngFor="let fld of CustomfieldsObs | async"
+                                                value="{{ fld.fieldId }}">
+                                                <div (click)="optionClicked($event, fld)">
+                                                    <mat-checkbox prosClickStopPropagation
+                                                        (change)="toggleSelection(fld)" [checked]="isSelected(fld)"
+                                                        color="primary">
+                                                        {{ fld.fieldDescri }}
+                                                    </mat-checkbox>
+                                                </div>
+                                            </mat-option>
+                                        </mat-autocomplete>
+
                                     </mat-form-field>
                                     <mat-hint>{{ chooseColumns ? chooseColumns.length : '0' }} Selected</mat-hint>
                                 </ng-template>
@@ -660,9 +701,6 @@
                                     </mat-select>
                                 </mat-form-field>
                             </div>
-
-
-
                         </div>
                     </mat-expansion-panel>
                 </mat-accordion>
@@ -681,23 +719,23 @@
                                     <div class="f-row def-algin" formArrayName="filters"
                                         *ngFor="let filter of defaultFilterCtrlGrp.get('filters').controls; let i = index">
                                         <ng-container [formGroupName]="i">
+                                                <!-- For Modules -->
                                             <div class="f-col">
                                                 <ng-template
-                                                    [ngIf]="styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===false"
-                                                    [ngIfElse]="workflowField">
+                                                [ngIf]="styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===false">
                                                     <pros-metadatafield-control
                                                         [moduleId]="selStyleWid && selStyleWid.objectType"
                                                         lebel="Field"
                                                         [selectedFldId]="selStyleWid && selStyleWid.defaultFilters && (selStyleWid.defaultFilters[i]).conditionFieldId"
                                                         (selectionChange)='onDefaultFilterChange($event,i)'
+                                                        [isCustomdataset]="selStyleWid && selStyleWid.isCustomdataSet"
                                                         class="field-divider">
                                                     </pros-metadatafield-control>
                                                     <span class="col-spacer"></span>
                                                 </ng-template>
-                                            </div>
                                             
-                                            <div class="f-col">
-                                                <ng-template #workflowField>
+                                                <!-- For WorkFlow Modules -->
+                                                <ng-template [ngIf]="styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===true  && styleCtrlGrp.get('isCustomdataSet').value===false">
                                                     <pros-workflowfield-control
                                                         [objectType]="selStyleWid && selStyleWid.objectType"
                                                         label="Field"
@@ -708,7 +746,9 @@
                                                     <span class="col-spacer"></span>
                                                 </ng-template>
                                             </div>
+
                                             <span class="col-spacer"></span>
+                                            <!-- select Operators -->
                                             <div class="f-col">
                                                 <pros-udr-condition-operators
                                                     [conditionalOperators]="conditionalOperators"
@@ -717,7 +757,8 @@
                                                     class="field-divider">
                                                 </pros-udr-condition-operators>
                                             </div>
-                                            <span class="col-spacer"></span>
+
+                                            <span class="col-spacer"></span>                                            
                                             <div class="f-col">
                                                 <ng-template
                                                     [ngIf]="selStyleWid && selStyleWid.defaultFilters && (selStyleWid.defaultFilters[i]).conditionOperator==='FIELD2FIELD_EQUAL'
@@ -727,13 +768,13 @@
                                                     || (selStyleWid.defaultFilters[i]).conditionOperator==='FIELD2FIELD_LESSTHEN'
                                                     || (selStyleWid.defaultFilters[i]).conditionOperator==='FIELD2FIELD_LESSTHENEQUALTO'"
                                                     [ngIfElse]="fieldvalue">
-                                                    <pros-metadatafield-control
-                                                        [moduleId]="selStyleWid && selStyleWid.objectType"
-                                                        lebel="Field "
+                                                    <pros-workflowfield-control
+                                                        [objectType]="selStyleWid && selStyleWid.objectType"
+                                                        label="Field "
                                                         [selectedFldId]="selStyleWid && selStyleWid.defaultFilters && (selStyleWid.defaultFilters[i]).conditionFieldEndValue"
                                                         (selectionChange)='onDefaultFilterChange($event,i)'
                                                         class="field-divider">
-                                                    </pros-metadatafield-control>
+                                                    </pros-workflowfield-control>
                                                 </ng-template>
 
                                                 <ng-template #fieldvalue>
@@ -748,7 +789,7 @@
                                             <span class="col-spacer"></span>
                                             <div class="f-col value-set">
                                                 <button mat-button (click)="removeFilter(i)" matTooltip="Remove"
-                                                    color="warn">
+                                                    color="warn" matTooltipPosition="right">
                                                     <mat-icon>remove_circle_outline</mat-icon>
                                                 </button>
                                             </div>
@@ -769,4 +810,4 @@
         </div>
     </div>
 </mat-card>
-</div>>
+</div>

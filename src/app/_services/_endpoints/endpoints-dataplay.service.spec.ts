@@ -1,19 +1,35 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
+import { inject, TestBed } from '@angular/core/testing';
 
 import { EndpointsDataplayService } from './endpoints-dataplay.service';
 
 describe('EndpointsDataplayService', () => {
-  let service: EndpointsDataplayService;
 
   beforeEach(() => {
+    const endPointProvider = jasmine.createSpyObj('EndpointsDataplayService', ['getAvailableNounsUri']);
+
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule]
+      providers: [
+        { provide: EndpointsDataplayService, useValue: endPointProvider }
+      ]
     });
-    service = TestBed.inject(EndpointsDataplayService);
   });
 
-  it('should be created', () => {
+  it('should be created', inject([EndpointsDataplayService], (service: EndpointsDataplayService) => {
     expect(service).toBeTruthy();
+  }));
+
+  it('getAvailableNounsUri(), all available nouns ..from local library', () => {
+    const serviceobj = new EndpointsDataplayService();
+    expect(serviceobj.getAvailableNounsUri()).toContain(`mro/noun`);
+  });
+
+  it('getAvailableModifierUri(), all available modifiers ..from local library', () => {
+    const serviceobj = new EndpointsDataplayService();
+    expect(serviceobj.getAvailableModifierUri()).toContain(`mro/modifier`);
+  });
+
+  it('getAvailableAttributeUri(), all available attributes ..from local library', () => {
+    const serviceobj = new EndpointsDataplayService();
+    expect(serviceobj.getAvailableAttributeUri()).toContain(`mro/attribute`);
   });
 });
