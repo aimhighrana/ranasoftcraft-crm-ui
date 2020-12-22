@@ -31,7 +31,7 @@
             <div class="f-col mdo-form-field" *ngIf="!isDuplicateType">
                 <mat-label>Weightage</mat-label>
                 <mat-slider thumbLabel formControlName="weightage" [displayWith]="formatLabel" tickInterval="1" min="0"
-                    max="100" color="primary"></mat-slider>
+                    [max]="currentweightageValue" color="primary"></mat-slider>
                 <mat-error
                     *ngIf="submitted && form.controls.weightage.errors && form.controls.weightage.errors.required">
                     Please enter Weightage</mat-error>

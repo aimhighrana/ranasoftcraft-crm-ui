@@ -685,7 +685,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   addTempIdToExisting(tempId: string) {
     return new Promise((resolve) => {
       this.existingTempIds.push(tempId);
-      resolve();
+      resolve(null);
     })
   }
 

@@ -417,7 +417,8 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * Function to open sidesheet to add business rule
    */
   public openBusinessRuleSideSheet() {
-    this.router.navigate(['', { outlets: { sb: `sb/schema/business-rule/${this.moduleId}/${this.schemaId}/new` } }]);
+    this.schemaService.currentweightage = this.availableWeightage('0');
+    this.router.navigate(['', { outlets: { sb: `sb/schema/business-rule/${this.moduleId}/${this.schemaId}/new`} }]);
   }
 
   /**
@@ -520,9 +521,9 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * @param br editable business rule ..
    */
   editBr(br: CoreSchemaBrInfo) {
+    this.schemaService.currentweightage = this.availableWeightage('0');
     this.router.navigate(['', { outlets: { sb: `sb/schema/business-rule/${this.moduleId}/${this.schemaId}/${br.brIdStr}` } }]);
   }
-
 
   makeFilterControl(event: AddFilterOutput, sNo: number) {
     const exitingFilterCtrl = [];
@@ -714,14 +715,14 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * function to open dataScope side sheet(Add new data scope).
    */
   addDataScope() {
-    this.router.navigate([{ outlets: { sb: `sb/schema/data-scope/${this.moduleId}/${this.schemaId}/new` } }])
+    this.router.navigate([{ outlets: { sb: `sb/schema/data-scope/${this.moduleId}/${this.schemaId}/new` } }]);
   }
 
   /**
    * Function to open summary side sheet of schema
    */
   openSummarySideSheet() {
-    this.router.navigate([{ outlets: { sb: `sb/schema/check-data/${this.moduleId}/${this.schemaId}` } }])
+    this.router.navigate([{ outlets: { sb: `sb/schema/check-data/${this.moduleId}/${this.schemaId}` } }]);
   }
 
   /**

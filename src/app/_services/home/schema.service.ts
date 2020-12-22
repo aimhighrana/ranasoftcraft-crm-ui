@@ -15,11 +15,26 @@ import { EndpointsClassicService } from '../_endpoints/endpoints-classic.service
 export class SchemaService {
   private excelValues: BehaviorSubject<ExcelValues> = new BehaviorSubject(null);
   private staticFieldValues: BehaviorSubject<string[]> = new BehaviorSubject(null);
+  private availableWeightage: BehaviorSubject<number> = new BehaviorSubject(null);
   constructor(
     private http: HttpClient,
     private endpointService: EndpointsClassicService,
     private any2tsService: Any2tsService,
   ) { }
+
+  /**
+   * Setter for available weightage value
+   */
+  public set currentweightage(value: number) {
+    this.availableWeightage.next(value);
+  }
+
+  /**
+   * get the current vaailable weightage
+   */
+  public get currentweightageValue() {
+    return this.availableWeightage.getValue();
+  }
 
   /**
    * get column data using the selected column id
