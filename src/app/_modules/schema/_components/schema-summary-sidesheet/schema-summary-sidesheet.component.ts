@@ -10,7 +10,7 @@ import { AddFilterOutput, CheckDataBrs, CheckDataRequest, CheckDataSubscriber } 
 import { SchemaExecutionRequest } from '@models/schema/schema-execution';
 import { CategoryInfo, FilterCriteria } from '@models/schema/schemadetailstable';
 import { CoreSchemaBrMap, LoadDropValueReq, SchemaListDetails, VariantDetails } from '@models/schema/schemalist';
-import { CoreSchemaBrInfo, DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { CoreSchemaBrInfo, CreateUpdateSchema, DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { GlobaldialogService } from '@services/globaldialog.service';
 import { SchemaService } from '@services/home/schema.service';
@@ -49,7 +49,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
   activeTab: string;
   selectedIndex: number;
   category: CategoryInfo[];
-  schemaDetails: SchemaListDetails;
+  schemaDetails: SchemaListDetails = new SchemaListDetails();
   loadDopValuesFor: LoadDropValueReq;
   collaboratorData: SchemaCollaborator;
   reInilize = true;
@@ -105,6 +105,16 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
   dataScopeControl: FormControl;
 
   /**
+   * formcontrol for schema threshold
+   */
+  schemaThresholdControl: FormControl;
+
+  /**
+   * To hold updated schema name
+   */
+  updatedSchemaName: string;
+
+  /**
    * To hold all the subscriptions related to component
    */
   subscriptions: Subscription[] = [];
@@ -128,7 +138,9 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.getRouteParams();
 
-    this.dataScopeControl = new FormControl('');
+    this.dataScopeControl = new FormControl('0');
+
+    this.schemaThresholdControl = new FormControl(this.schemaDetails.schemaThreshold);
 
     const brSave = this.sharedService.getAfterBrSave().subscribe(res => {
       if (res) {
@@ -168,6 +180,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
   getSchemaDetails(schemaId: string) {
     this.schemaListService.getSchemaDetailsBySchemaId(schemaId).subscribe(res => {
       this.schemaDetails = res;
+      this.schemaThresholdControl.setValue(this.schemaDetails.schemaThreshold);
       if (this.schemaDetails.runId) {
         this.getCheckDataDetails(this.schemaId);
       } else {
@@ -520,6 +533,14 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    * @param brInfo: object contains business rule info
    */
   addBusinessRule(brInfo) {
+    const checkExistence = this.businessRuleData.filter((businessRule) => businessRule.brIdStr === brInfo.brIdStr)[0];
+    if(checkExistence) {
+      this.matSnackBar.open('Business rule already added.', 'ok', {
+        duration: 2000,
+      });
+      return;
+    }
+
     brInfo.isCopied = false;
     brInfo.schemaId = null;
     brInfo.copiedFrom = null;
@@ -531,6 +552,15 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    * @param subscriberInfo: object contains subscriber info
    */
   addSubscriber(subscriberInfo) {
+
+    const checkExistence = this.subscriberData.filter((sub) => sub.userid === subscriberInfo.userName)[0];
+    if(checkExistence) {
+      this.matSnackBar.open('Subscriber already added.', 'ok', {
+        duration: 2000
+      });
+      return;
+    }
+
     const subscriber = {
       sno: Math.floor(Math.random() * Math.pow(100000, 2)),
       userMdoModel: subscriberInfo,
@@ -576,6 +606,20 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
   saveCheckData() {
     const checkDataSubscriber = [];
     const checkDataBrs = [];
+
+    if(this.schemaDetails.schemaDescription !== this.updatedSchemaName || this.schemaDetails.schemaThreshold !== this.schemaThresholdControl.value) {
+      const schemaReq: CreateUpdateSchema = new CreateUpdateSchema();
+      schemaReq.schemaId = this.schemaId;
+      schemaReq.moduleId = this.moduleId;
+      schemaReq.discription = this.updatedSchemaName ? this.updatedSchemaName : this.schemaDetails.schemaDescription;
+      schemaReq.schemaThreshold = this.schemaThresholdControl.value;
+
+      this.schemaService.createUpdateSchema(schemaReq).subscribe((response) => {
+        console.log('Schema updated successfully.');
+      },(error) => {
+        console.error('Something went wrong while updating schema.', error.message);
+      })
+    }
 
     this.subscriberData.forEach((subscriber) => {
       subscriber.sno = Math.floor(Math.random() * Math.pow(100000, 2));
@@ -644,5 +688,12 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    */
   public openUploadSideSheet() {
     this.router.navigate(['', { outlets: { outer: `outer/schema/upload-data/${this.moduleId}/${this.outlet}` } }]);
+  }
+
+  /**
+   * Function to get change in schema name
+   */
+  getSchemaName(value: string) {
+    this.updatedSchemaName = value;
   }
 }

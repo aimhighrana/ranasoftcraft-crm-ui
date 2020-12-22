@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SecondaryNavbarComponent } from './secondary-navbar.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
@@ -226,5 +225,23 @@ describe('SecondaryNavbarComponent', () => {
     filteredSchemas = component.searchForSchema(module, searchString);
 
     expect(filteredSchemas.length).toEqual(0);
+  })
+
+  it('checkNewSchemaCount(), shoule check existing count of new schema', async() => {
+    const moduleId = '1005';
+    component.moduleList = [
+      {
+        moduleId: '1004',
+        moduleDesc: 'Ashish Mode',
+        schemaLists: []
+      },
+      {
+        moduleId: '1005',
+        moduleDesc: 'Ashish testing',
+        schemaLists: []
+      }
+    ];
+    const res = component.checkNewSchemaCount(moduleId);
+    expect(res).toEqual('New schema')
   })
 });

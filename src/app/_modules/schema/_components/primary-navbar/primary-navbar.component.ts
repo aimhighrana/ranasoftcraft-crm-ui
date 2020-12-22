@@ -6,6 +6,8 @@ import { Userdetails } from '@models/userdetails';
 import { Router } from '@angular/router';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { HomeService } from '@services/home/home.service';
+import { SchemaService } from '@services/home/schema.service';
+import { CreateUpdateSchema } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 
 
 @Component({
@@ -46,7 +48,8 @@ export class PrimaryNavbarComponent implements OnInit {
     private matDialog: MatDialog,
     private sharedService: SharedServiceService,
     private router: Router,
-    public homeService: HomeService
+    public homeService: HomeService,
+    private schemaService: SchemaService
   ) { }
 
   ngOnInit(): void {
@@ -75,6 +78,10 @@ export class PrimaryNavbarComponent implements OnInit {
    * Function to show dialog
    */
   selectedModule(event) {
+    if(event && !event.schemaId) {
+      this.createSchema(event.objectid);
+      return;
+    }
     const dialogRef = this.matDialog.open(UploadDatasetComponent, {
       height: '800px',
       width: '800px',
@@ -138,5 +145,21 @@ export class PrimaryNavbarComponent implements OnInit {
     }finally {
       this.router.navigate(['auth','login']);
     }
+  }
+
+  /**
+   * Function to create new schema
+   * @param moduleId: module Id
+   */
+  createSchema(moduleId: string) {
+    const schemaReq: CreateUpdateSchema = new CreateUpdateSchema();
+    schemaReq.moduleId = moduleId;
+    schemaReq.discription = 'New schema';
+    this.schemaService.createUpdateSchema(schemaReq).subscribe((response) => {
+      const schemaId:string = response;
+      this.router.navigate([{outlets: {sb: `sb/schema/check-data/${moduleId}/${schemaId}`}}])
+    }, (error)=>{
+      console.log('Something went wrong while creating schema', error.message);
+    })
   }
 }

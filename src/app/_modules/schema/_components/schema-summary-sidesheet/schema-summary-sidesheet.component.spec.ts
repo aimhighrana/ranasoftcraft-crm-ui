@@ -3,10 +3,12 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PermissionOn, SchemaDashboardPermission } from '@models/collaborator';
-import { AddFilterOutput } from '@models/schema/schema';
+import { AddFilterOutput, CheckDataResponse } from '@models/schema/schema';
 import { FilterCriteria } from '@models/schema/schemadetailstable';
 import { SchemaListDetails, VariantDetails } from '@models/schema/schemalist';
 import { CoreSchemaBrInfo, DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { FormInputAutoselectComponent } from '@modules/shared/_components/form-input-autoselect/form-input-autoselect.component';
+import { FormInputComponent } from '@modules/shared/_components/form-input/form-input.component';
 import { SchemaService } from '@services/home/schema.service';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
@@ -29,10 +31,14 @@ describe('SchemaSummarySidesheetComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SchemaSummarySidesheetComponent ],
+      declarations: [
+        SchemaSummarySidesheetComponent,
+        FormInputAutoselectComponent,
+        FormInputComponent
+      ],
       imports: [AppMaterialModuleForSpec, RouterTestingModule, HttpClientTestingModule]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -93,7 +99,7 @@ describe('SchemaSummarySidesheetComponent', () => {
     expect(result).toEqual(2);
   })
 
-  it('loadDropValues(), should load dropdown values of selected filters', async() => {
+  it('loadDropValues(), should load dropdown values of selected filters', async () => {
     const fldc: FilterCriteria = {
       fieldId: 'MaterialType',
       values: ['123', '456'],
@@ -114,7 +120,7 @@ describe('SchemaSummarySidesheetComponent', () => {
   it('close(), should close the summary side sheet', () => {
     spyOn(router, 'navigate');
     component.close();
-    expect(router.navigate).toHaveBeenCalledWith([{outlets: {sb: null}}]);
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: null } }]);
   });
 
   it('openBusinessRuleSideSheet(), should open business rule side sheet', () => {
@@ -124,7 +130,7 @@ describe('SchemaSummarySidesheetComponent', () => {
 
     spyOn(router, 'navigate');
     component.openBusinessRuleSideSheet();
-    expect(router.navigate).toHaveBeenCalledWith(['', {outlets : {outer: `outer/schema/businessrule-library/${component.moduleId}/${component.schemaId}/${component.outlet}`}}])
+    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: { outer: `outer/schema/businessrule-library/${component.moduleId}/${component.schemaId}/${component.outlet}` } }])
   });
 
   it('openSubscriberSideSheet(), should open subscriber side sheet', () => {
@@ -133,17 +139,17 @@ describe('SchemaSummarySidesheetComponent', () => {
     component.moduleId = '1005';
     spyOn(router, 'navigate');
     component.openSubscriberSideSheet();
-    expect(router.navigate).toHaveBeenCalledWith(['', {outlets: {outer: `outer/schema/subscriber/${component.moduleId}/${component.schemaId}/new/${component.outlet}`}}])
+    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: { outer: `outer/schema/subscriber/${component.moduleId}/${component.schemaId}/new/${component.outlet}` } }])
   })
 
-  it('getAllBusinessRulesList(), should get all business rules', async() => {
+  it('getAllBusinessRulesList(), should get all business rules', async () => {
     spyOn(schemaService, 'getBusinessRulesByModuleId').and.returnValue(of({} as CoreSchemaBrInfo[]));
     component.moduleId = '1005';
     component.getAllBusinessRulesList(component.moduleId, '', '', '0');
     expect(schemaService.getBusinessRulesByModuleId).toHaveBeenCalled();
   })
 
-  it('getCollaborators(), should get all subscribers', async() => {
+  it('getCollaborators(), should get all subscribers', async () => {
     spyOn(schemaDetailsService, 'getAllUserDetails').and.returnValue(of({} as PermissionOn));
     component.getCollaborators('', 0);
     expect(schemaDetailsService.getAllUserDetails).toHaveBeenCalled();
@@ -157,21 +163,38 @@ describe('SchemaSummarySidesheetComponent', () => {
     } as CoreSchemaBrInfo;
     component.addBusinessRule(brInfo);
     expect(component.businessRuleData.length).toEqual(1);
+
+    component.businessRuleData = [
+      {
+        brIdStr: '12254'
+      } as CoreSchemaBrInfo
+    ];
+    component.addBusinessRule(brInfo);
+    expect(component.businessRuleData.length).toEqual(1);
   })
 
-  it('addSubscriber(), should add subscriber', async() => {
+  it('addSubscriber(), should add subscriber', async () => {
     component.subscriberData = [];
     const subscriber = {
+      userName: 'AshishGoyal',
       userMdoModel: {
         fullName: 'Ashish Goyal',
         email: 'ashish.goyal@prospecta.com'
       }
-    } as SchemaDashboardPermission;
+    };
+    component.addSubscriber(subscriber);
+    expect(component.subscriberData.length).toEqual(1);
+
+    component.subscriberData = [
+      {
+        userid: 'AshishGoyal'
+      } as SchemaDashboardPermission
+    ]
     component.addSubscriber(subscriber);
     expect(component.subscriberData.length).toEqual(1);
   });
 
-  it('availableWeightage(), should return max avail weightage', async() => {
+  it('availableWeightage(), should return max avail weightage', async () => {
     const weightage = '46';
     component.businessRuleData = [
       {
@@ -185,10 +208,31 @@ describe('SchemaSummarySidesheetComponent', () => {
     expect(result).toEqual(67);
   })
 
-  it('getSchemaDetails(), should get schema details', async() => {
+  it('getSchemaDetails(), should get schema details', async () => {
     component.schemaId = '12545';
     spyOn(schemaListService, 'getSchemaDetailsBySchemaId').withArgs(component.schemaId).and.returnValue(of({} as SchemaListDetails))
     component.getSchemaDetails(component.schemaId);
     expect(schemaListService.getSchemaDetailsBySchemaId).toHaveBeenCalledWith(component.schemaId);
+  })
+
+  it('getCheckDataDetails(), should get info about check data', async () => {
+    component.schemaId = '1224552';
+    spyOn(schemaService, 'getCheckData').withArgs(component.schemaId).and.returnValue(of({} as CheckDataResponse));
+    component.getCheckDataDetails(component.schemaId);
+    expect(schemaService.getCheckData).toHaveBeenCalledWith(component.schemaId);
+  });
+
+  it('getSchemaName(), should get name of schema', async () => {
+    const value = 'schemaAshish';
+    component.getSchemaName(value);
+    expect(component.updatedSchemaName).toEqual('schemaAshish');
+  });
+
+  it('openUploadSideSheet(), should open upload dataset side sheet', async () => {
+    component.moduleId = '1001';
+    component.outlet = 'outer';
+    spyOn(router, 'navigate');
+    component.openUploadSideSheet();
+    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: { outer: `outer/schema/upload-data/${component.moduleId}/${component.outlet}` } }])
   })
 });

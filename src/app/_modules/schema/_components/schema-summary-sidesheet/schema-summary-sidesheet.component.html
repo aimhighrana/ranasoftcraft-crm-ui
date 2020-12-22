@@ -37,17 +37,14 @@
     </div>
     <div class="row-spacer"></div>
     <div class="f-col mdo-justify">
-        <!-- <mat-card class="f-row mat-elevation-z0 message info-alert">
-            <mat-icon fontSet="mdo-icons">question-mark</mat-icon>
-            <span class="f-col-spacer-half"></span>
-            <p>167 out of 77543 records will be validated based on your data scope selection</p>
-        </mat-card> -->
         <div class="f-col">
-            <!-- <pros-form-input [type]="'text'" [label]="'Data scope'"></pros-form-input> -->
             <div class="f-col mdo-form-field">
-                <mat-label>Data Scope</mat-label>
+            <pros-form-input [type]="'text'" [label]="'Name'" [value]="schemaDetails.schemaDescription"
+            (valueChange)="getSchemaName($event)"></pros-form-input>
+            <mat-label>Data Scope</mat-label>
                 <mat-form-field appearance="outline">
                     <mat-select [formControl]="dataScopeControl">
+                        <mat-option value='0'>Entire datascope</mat-option>
                         <mat-option *ngFor="let variant of variantDetails" [value]="variant.variantId">
                             {{variant.variantName}}
                         </mat-option>
@@ -56,7 +53,7 @@
             </div>
             <div class="f-col mdo-form-field">
                 <mat-label>Threshold</mat-label>
-                <mat-slider color="primary" [disabled]="false" [value]="schemaDetails?.schemaThreshold ? schemaDetails.schemaThreshold : 0">
+                <mat-slider color="primary" [formControl]="schemaThresholdControl">
                 </mat-slider>
             </div>  
             <mat-accordion>

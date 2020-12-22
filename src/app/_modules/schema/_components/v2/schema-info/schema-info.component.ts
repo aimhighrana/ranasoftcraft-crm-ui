@@ -839,12 +839,13 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       })
     }
     else {
-      this.schemaService.createBusinessRule(request).subscribe((response) => {
+      const subscription = this.schemaService.createBusinessRule(request).subscribe((response) => {
         console.log(response);
         this.getBusinessRuleList(this.schemaId);
       }, (error) => {
         console.log('Error while adding business rule', error.message);
       })
+      this.subscriptions.push(subscription);
     }
   }
 
@@ -861,11 +862,12 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     subscriber[role] = true;
     subscriber.schemaId = this.schemaId;
 
-    this.schemaDetailsService.createUpdateUserDetails(Array(subscriber)).subscribe(res => {
+    const subscription = this.schemaDetailsService.createUpdateUserDetails(Array(subscriber)).subscribe(res => {
       this.getSubscriberList(this.schemaId)
     }, (error) => {
       console.log('Something went wrong while update role..', error.message);
     })
+    this.subscriptions.push(subscription);
   }
 
   /**
@@ -882,7 +884,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       schemaReq.discription = schemaDescription;
       schemaReq.schemaThreshold = event ? event.value : this.schemaDetails.schemaThreshold;
 
-      this.schemaService.createUpdateSchema(schemaReq).subscribe((response) => {
+      const subscription = this.schemaService.createUpdateSchema(schemaReq).subscribe((response) => {
         this.sharedService.setRefreshSecondaryNav(SecondaynavType.schema);
         this.matSnackBar.open('Schema description updated successfully.', 'ok', {
           duration: 2000
@@ -894,6 +896,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
         })
         console.error('Something went wrong while updating schema info', error.message);
       })
+      this.subscriptions.push(subscription);
     }
   }
 

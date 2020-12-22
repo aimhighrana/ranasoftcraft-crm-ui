@@ -1,11 +1,11 @@
-import { Component, OnInit, OnChanges, SimpleChanges, Input, EventEmitter, Output, ViewChild } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, Input, EventEmitter, Output, ViewChild, OnDestroy } from '@angular/core';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { SchemaListModuleList, SchemaListDetails } from '@models/schema/schemalist';
 import { SchemaService } from '@services/home/schema.service';
 import { ReportService } from '@modules/report/_service/report.service';
 import { ReportList } from '@modules/report/report-list/report-list.component';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
 import { UserService } from '@services/user/userservice.service';
@@ -18,7 +18,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './secondary-navbar.component.html',
   styleUrls: ['./secondary-navbar.component.scss']
 })
-export class SecondaryNavbarComponent implements OnInit, OnChanges {
+export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
 
   public moduleList: SchemaListModuleList[] = [];
   reportList: ReportList[] = [];
@@ -63,6 +63,11 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
 
   @ViewChild('schemaSearchInput') schemaSearchInput : SearchInputComponent;
 
+  /**
+   * subscription array to hold all services subscriptions
+   */
+  subscriptions: Subscription[] = [];
+
   constructor(
     private router: Router,
     private schemaListService: SchemalistService,
@@ -74,7 +79,6 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
   ) { }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
     if (changes && changes.activatedPrimaryNav && changes.activatedPrimaryNav.previousValue !== changes.activatedPrimaryNav.currentValue && changes.activatedPrimaryNav.previousValue !== undefined) {
       this.activatedPrimaryNav = changes.activatedPrimaryNav.currentValue;
       this.isPageReload = false;
@@ -125,18 +129,19 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
    * Get all schema along with variants ..
    */
   getDataIntilligence() {
-    this.schemaService.getSchemaWithVariants().subscribe(res => {
+    const subscription = this.schemaService.getSchemaWithVariants().subscribe(res => {
       this.dataIntillegences.length = 0;
       this.dataIntillegences.push(...res);
       this.searchSchemaResults = this.dataIntillegences;
     }, error => console.error(`Error : ${error.message}`));
+    this.subscriptions.push(subscription);
   }
 
   /**
    * Get all schemas ..
    */
   public getSchemaList() {
-    this.schemaListService.getSchemaList().subscribe((moduleList) => {
+    const subscription = this.schemaListService.getSchemaList().subscribe((moduleList) => {
       this.moduleList = moduleList;
       this.searchModuleResults = this.moduleList;
       this.filteredModulesMenu = this.moduleList;
@@ -147,14 +152,15 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
     }, error => {
       console.error(`Error : ${error.message}`);
     })
+    this.subscriptions.push(subscription);
   }
 
   /**
    * Function to get report list
    */
   public getreportList() {
-    this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user=>{
-      this.reportService.reportList(user.plantCode, user.currentRoleId).subscribe(reportList => {
+    const subscription = this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user=>{
+      const subs = this.reportService.reportList(user.plantCode, user.currentRoleId).subscribe(reportList => {
         this.reportOb = of(reportList);
         this.reportList = reportList;
         if (this.reportList.length > 0 && !this.isPageReload) {
@@ -164,8 +170,9 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
           this.router.navigate(['home/report/dashboard/new']);
         }
       }, error => console.error(`Error : ${error}`));
+      this.subscriptions.push(subs);
     });
-
+    this.subscriptions.push(subscription);
   }
 
   /**
@@ -329,7 +336,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
     schemaReq.schemaThreshold = '0';
     schemaReq.discription = this.checkNewSchemaCount(moduleId);
 
-    this.schemaService.createUpdateSchema(schemaReq).subscribe((response) => {
+    const subscription = this.schemaService.createUpdateSchema(schemaReq).subscribe((response) => {
       const schemaId: string = response;
       this.matSnackBar.open('Schema created successfully.', 'Okay', {
         duration: 2000
@@ -344,6 +351,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
         duration: 2000
       })
     })
+    this.subscriptions.push(subscription);
   }
 
   /**
@@ -354,5 +362,15 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges {
     const findModule:SchemaListModuleList = this.moduleList.filter((module) => module.moduleId === moduleId)[0];
     const newSchemaArr = findModule.schemaLists.filter((module) => module.schemaDescription.toLocaleLowerCase().startsWith('new schema'));
     return newSchemaArr.length>0 ? `New schema ${newSchemaArr.length + 1}` : `New schema`;
+  }
+
+  /**
+   * ANGULAR LIFECYCLE HOOK
+   * Called once, before the instance is destroyed.
+   */
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    })
   }
 }
