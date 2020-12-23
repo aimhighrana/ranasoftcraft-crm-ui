@@ -59,7 +59,7 @@
                                 </mat-option>
                                 <mat-option *ngFor="let noun of localNounsList" 
                                     [value]="noun.NOUN_CODE"> 
-                                    {{ noun.NOUN_CODE }}
+                                    {{ noun.NOUN_CODE || 'Unknown'}}
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
@@ -84,7 +84,7 @@
                                 </mat-option>
                                 <mat-option *ngFor="let modifier of LocalModifiersList" 
                                     [value]="modifier.MODE_CODE"> <!-- modifier code should be used instead -->
-                                    {{ modifier.MODE_CODE }} </mat-option>
+                                    {{ modifier.MODE_CODE || 'Unknown' }} </mat-option>
                             </mat-select>
                         </mat-form-field>
                     </div>
@@ -111,7 +111,7 @@
                                         <mat-icon>plus</mat-icon> Create new attribute
                                     </mat-option>
                                     <mat-option *ngFor="let attribute of LocalAttributesList" [value]="attribute.ATTR_CODE">
-                                        {{ attribute.ATTR_CODE }}
+                                        {{ attribute.ATTR_CODE || 'Unknown' }}
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>
