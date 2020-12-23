@@ -39,7 +39,6 @@ div.root {
       overflow: auto;
 
       .upload-col {
-        padding: 6rem 0;
         align-items: center;
         position: relative;
 
@@ -54,14 +53,9 @@ div.root {
       .empty-state {
         align-items: center;
 
-        .empty-heading {
-          font-size: 1.2rem;
-          margin-bottom: 24px;
-        }
-
         .label-text {
           z-index: 1;
-          margin-bottom: 24px;
+          margin: 12px 0 24px;
         }
 
         button.mat-flat-button {

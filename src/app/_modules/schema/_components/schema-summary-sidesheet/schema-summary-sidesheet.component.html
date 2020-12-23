@@ -41,7 +41,10 @@
             <div class="f-col mdo-form-field">
             <pros-form-input [type]="'text'" [label]="'Name'" [value]="schemaDetails.schemaDescription"
             (valueChange)="getSchemaName($event)"></pros-form-input>
-            <mat-label>Data Scope</mat-label>
+            </div>
+
+            <div class="f-col mdo-form-field">
+                <mat-label>Data Scope</mat-label>
                 <mat-form-field appearance="outline">
                     <mat-select [formControl]="dataScopeControl">
                         <mat-option value='0'>Entire datascope</mat-option>

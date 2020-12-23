@@ -16,17 +16,17 @@
     <div class="f-col mdo-justify">
         <div class="colunm-listing">
             <div class="f-row">
-                <pros-search-input></pros-search-input>
+                <pros-search-input placeholder="Search attributes"></pros-search-input>
                 <div class="f-col-spacer-half"></div>
                 <mat-chip-list>
-                    <mat-chip class="mdo-filter-matchip" disableRipple="true">
+                    <mat-chip class="mdo-filter-matchip">
                         <label>Matched</label>
                     </mat-chip>
-                    <mat-chip class="mdo-filter-matchip" disableRipple="true">
+                    <mat-chip class="mdo-filter-matchip">
                         <label>Suggest</label>
                     </mat-chip>
 
-                    <mat-chip class="mdo-filter-matchip" disableRipple="true">
+                    <mat-chip class="mdo-filter-matchip">
                         <label>Unmapped</label>
                     </mat-chip>
                 </mat-chip-list>
@@ -42,7 +42,7 @@
                 <form [formGroup]="mappingForm">
                 <div class="f-row colunm-box rule-border-row">
                     <div class="col col-x4">
-                        <div mat-line><strong>Noun</strong></div>
+                        <div mat-line>Noun</div>
                     </div>
                     <div class="col col-x8">
                         <div mat-line> {{ libraryNounCode }} </div>
@@ -68,7 +68,7 @@
 
                 <div class="f-row colunm-box rule-border-row">
                     <div class="col col-x4">
-                        <div mat-line><strong>Modifier</strong></div>
+                        <div mat-line>Modifier</div>
                     </div>
                     <div class="col col-x8">
                         <div mat-line> {{ libraryModifierCode }} </div>
@@ -77,7 +77,7 @@
                         <mat-form-field appearance="outline">
                             <mat-select formControlName="localModCode">
                                 <mat-option (click)="openModifierSidesheet()">
-                                    <mat-icon>plus</mat-icon> Create new modifier
+                                    <mat-icon fontSet="mdo-icons">plus</mat-icon> Create new modifier
                                 </mat-option>
                                 <mat-option value="" >
                                     Unmapped
@@ -96,7 +96,7 @@
                         *ngFor="let attributeRow of attributeMapData.controls; let i=index; let isFirst=first">
                     <ng-container [formGroupName]="i">
                         <div class="col col-x4">
-                            <div mat-line><strong *ngIf="isFirst">Attribute</strong></div>
+                            <div mat-line><span *ngIf="isFirst">Attribute</span></div>
                         </div>
                         <div class="col col-x8">
                             <div mat-line> {{ attributeRow.value.libraryAttributeCode }} </div>
@@ -108,7 +108,7 @@
                                         Unmapped
                                     </mat-option>
                                     <mat-option (click)="openAttributeSidesheet()">
-                                        <mat-icon>plus</mat-icon> Create new attribute
+                                        <mat-icon fontSet="mdo-icons">plus</mat-icon> Create new attribute
                                     </mat-option>
                                     <mat-option *ngFor="let attribute of LocalAttributesList" [value]="attribute.ATTR_CODE">
                                         {{ attribute.ATTR_CODE || 'Unknown' }}

@@ -62,6 +62,7 @@ mat-card.root {
         width: 1px;
         align-items: center;
         margin: 0 16px;
+        flex-wrap: wrap;
 
         &.col-x4 {
           flex: 4;

@@ -71,9 +71,9 @@ div.root {
                 height: 48px;
 
                 .mat-list-icon {
-                  line-height: 24px;
                   font-size: 14px;
-                  width: 14px;
+                  border-radius: 3px;
+                  height: 36px;
                 }
               }
             }
@@ -83,6 +83,8 @@ div.root {
 
       .badge {
         margin: 0 8px;
+        min-width: 24px;
+        text-align: right;
       }
 
       .dataset-grid-listing {
@@ -96,7 +98,7 @@ div.root {
 
         .data {
           overflow: auto;
-          height: calc(100% - 56px - 24px - 48px - 16px * 2 - 8px);
+          height: calc(100% - 56px - 24px - 48px - 16px * 2);
 
           mat-table.mat-table {
             overflow-x: auto;

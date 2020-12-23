@@ -54,7 +54,7 @@
                 </ng-template>
                 <div class="f-row dataset-grid">
                     <div class="f-col dataset-grid-navigation">
-                        <pros-search-input (value)="getClassificationNounMod($event)" placeholder="'Search nouns and modifiers'"></pros-search-input>
+                        <pros-search-input (value)="getClassificationNounMod($event)" placeholder="Search nouns and modifiers"></pros-search-input>
                         <div class="row-spacer"></div>
                         <div class="nav-tree">
                             <mat-accordion>
@@ -142,8 +142,10 @@
     
                                                 <mat-nav-list role="navigation" class="tree-nav-list">
                                                     <mat-list-item class="f-row understep-two" *ngFor="let modifier of noun.modifier" (click)="applyFilter(noun.nounCode, modifier.modCode, 'mro_gsn_lib')">
-                                                        <mat-icon mat-list-icon
-                                                            (click)="openAttributeMapping(noun.nounCode,modifier.modCode)">settings_ethernet</mat-icon>
+                                                        <button mat-button  mat-list-icon  (click)="openAttributeMapping(noun.nounCode,modifier.modCode)">
+                                                            <mat-icon fontSet="mdo-icons">mapping</mat-icon>
+                                                        </button>
+                                                       
                                                         <div mat-line>
                                                             {{ modifier.modDesc ? modifier.modDesc : 'Unknown' }}
                                                         </div>
@@ -184,7 +186,7 @@
                     <div class="f-col dataset-grid-listing">
                         <!-- Filters  -->
                         <div class="f-row">
-                            <pros-search-input placeholder="'Search spare parts'"></pros-search-input>
+                            <pros-search-input placeholder="Search spare parts"></pros-search-input>
                             <div class="f-col-spacer-half"></div>
                             <!-- <mat-chip-list>
                                 <mat-chip class="mdo-filter-matchip" disableRipple="true">

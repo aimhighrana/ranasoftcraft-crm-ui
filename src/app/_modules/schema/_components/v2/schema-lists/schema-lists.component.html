@@ -9,11 +9,11 @@
         </button>
     </div>
 
-    <!-- <mat-card class="f-row mat-elevation-z0 message-alert">
-        <mat-icon fontSet="mdo-icons" class="help-icon">alert</mat-icon>
-        <span class="f-col-spacer-half"></span>
-        <p>New data is available since the last schema run</p>
-    </mat-card> -->
+    <!-- <mat-card class="f-row mat-elevation-z0 message info-alert">
+            <mat-icon fontSet="mdo-icons">question-mark</mat-icon>
+            <span class="f-col-spacer-half"></span>
+            <p>New data is available since the last schema run</p>
+        </mat-card> -->
 
     <ng-template [ngIf]="moduleData">
         <mat-list *ngFor="let schemalist of moduleData.schemaLists">

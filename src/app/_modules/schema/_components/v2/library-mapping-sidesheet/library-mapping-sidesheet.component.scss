@@ -1,11 +1,11 @@
 div.root {
   user-select: none;
   padding: 0 16px;
-  width: 800px;
+  width: 768px;
 
   .breadcrum-toolbar {
     align-items: center;
-    padding-top: 16px;
+    padding-top: 8px;
     position: sticky;
     top: 0;
     z-index: 2;
@@ -34,7 +34,6 @@ div.root {
       box-sizing: border-box;
       padding: 4px 0;
       min-height: 48px;
-      font-size: 0.8rem;
 
       .col {
         display: flex;
@@ -42,6 +41,7 @@ div.root {
         width: 1px;
         align-items: center;
         margin: 0 16px;
+        flex-wrap: wrap;
 
         &.col-x4 {
           flex: 4;

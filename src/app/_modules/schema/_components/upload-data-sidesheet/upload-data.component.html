@@ -9,7 +9,7 @@
         <span class="f-spacer"></span>
 
         <!-- its comes after file upload step -->
-        <button mat-button color="primary">Choose another file</button>
+        <a class="info-link">Choose another file</a>
         <span class="f-col-spacer-half"></span>
         <button mat-flat-button color="primary" (click)="uploadFileData(stepper)">Upload</button>
         <!-- its comes after file upload step -->
@@ -27,8 +27,7 @@
 
             <div class="f-col upload-col">
               <div class="f-col empty-state">
-                  <div><img src="./assets/images/empty-table.svg" width="140"></div>
-                  <div class="empty-heading">No data file selected</div>
+                  <div><img src="./assets/images/empty-table.svg" width="120"></div>
                   <p class="label-text">Drag & drop or select a file to upload</p>
                   <button mat-flat-button [disabled]="uploadDisabled" color="accent"
                   (click)="uploadFile()">{{ uploadedFile ? uploadedFile.name:'Select a file' }}</button>

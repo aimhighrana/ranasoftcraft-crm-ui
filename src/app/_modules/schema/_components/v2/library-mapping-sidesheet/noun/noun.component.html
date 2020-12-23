@@ -15,7 +15,7 @@
 
     <div class="f-col mdo-justify">
         <form [formGroup]="nounForm">
-            <div class="temp-field">
+            <div class="mdo-form-field">
                 <pros-form-input [type]="'text'" [placeholder]="'Noun code'"
                     (valueChange)="setControlValue('nounCode', $event)" [label]="'Noun code'"></pros-form-input>
                 <mat-error *ngIf="submitted && nounForm.controls.nounCode.errors && nounForm.controls.nounCode.errors.required">
@@ -23,25 +23,25 @@
                 </mat-error>
             </div>
 
-            <div class="temp-field">
+            <div class="mdo-form-field">
                 <pros-form-input [type]="'text'" [placeholder]="'Noun text'"
                     (valueChange)="setControlValue('nounText', $event)" [label]="'Noun text'">
                 </pros-form-input>
             </div>
 
-            <div class="temp-field">
+            <div class="mdo-form-field">
                 <pros-form-input [type]="'text'" [placeholder]="'Noun numeric Code'"
                     (valueChange)="setControlValue('nounNumCode', $event)" [label]="'Noun numeric Code'">
                 </pros-form-input>
             </div>
 
-            <div class="temp-field">
+            <div class="mdo-form-field">
                 <pros-form-input [type]="'text'" [placeholder]="'Noun modifier separator'"
                     (valueChange)="setControlValue('nounModeSep', $event)" [label]="'Noun modifier separator'">
                 </pros-form-input>
             </div>
 
-            <div class="temp-field">
+            <div class="mdo-form-field">
                 <mat-slide-toggle formControlName="shortDescActive" color="primary">Short description active</mat-slide-toggle>
                 <div class="row-spacer"></div>
                 <mat-slide-toggle formControlName="active" color="primary">Noun active</mat-slide-toggle>

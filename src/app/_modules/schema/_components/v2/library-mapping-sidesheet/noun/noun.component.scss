@@ -5,7 +5,7 @@ div.root {
 
   .breadcrum-toolbar {
     align-items: center;
-    padding-top: 16px;
+    padding-top: 8px;
     position: sticky;
     top: 0;
     z-index: 2;
@@ -29,8 +29,8 @@ div.root {
   }
 
   .mdo-justify {
-    .temp-field {
-      margin-bottom: 16px;
+    .mdo-form-field {
+      margin: 8px 0;
     }
   }
 }
