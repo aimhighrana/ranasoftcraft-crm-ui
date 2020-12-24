@@ -478,9 +478,9 @@ export class NewBusinessRulesComponent implements OnInit {
         }
         if (selectedRule === BusinessRuleType.BR_TRANSFORMATION) {
             if (this.selectedTransformationType === this.transformationType.REGEX) {
-                requiredKeys = ['rule_type', 'rule_name', 'transformationRuleType', 'error_message', 'sourceFld', 'targetFld'];
+                requiredKeys = ['rule_type', 'rule_name', 'categoryId', 'transformationRuleType', 'error_message', 'sourceFld', 'targetFld'];
             } else if (this.selectedTransformationType === this.transformationType.LOOKUP) {
-                requiredKeys = ['rule_type', 'rule_name', 'transformationRuleType', 'error_message'];
+                requiredKeys = ['rule_type', 'rule_name', 'categoryId', 'transformationRuleType', 'error_message'];
             }
         }
         if (selectedRule === BusinessRuleType.BR_DUPLICATE_RULE) {

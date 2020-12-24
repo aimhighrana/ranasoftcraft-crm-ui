@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, OnInit, Output, OnChanges, SimpleChange
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { LookupData, LookupFields, LookupFormData, MetadataModeleResponse } from '@models/schema/schemadetailstable';
 import { isEqual } from 'lodash';
-import { distinctUntilChanged } from 'rxjs/operators';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 
 @Component({
@@ -10,6 +9,11 @@ import { SchemaDetailsService } from '@services/home/schema/schema-details.servi
   templateUrl: './lookup-config.component.html'
 })
 export class LookupConfigComponent implements OnInit, OnChanges {
+
+  /**
+   * hold the current module Id
+   */
+  initialModuleId: string;
 
   /**
    * Lookup form
@@ -61,11 +65,16 @@ export class LookupConfigComponent implements OnInit, OnChanges {
       lookupColumn: new FormControl('', [Validators.required]),
     });
 
-    this.lookupForm.valueChanges
-      .pipe(distinctUntilChanged(isEqual))
-      .subscribe((data: LookupFormData) => {
-        if (data && data.moduleId) {
-          this.getFieldsByModuleId(data.moduleId);
+    this.lookupForm.controls.moduleId.valueChanges
+      .subscribe((moduleId: string) => {
+        if (moduleId) {
+          if(this.initialModuleId && this.initialModuleId !== moduleId) {
+            this.lookupForm.controls.lookupColumnResult.reset();
+            this.lookupForm.controls.lookupColumn.reset();
+            this.initialModuleId = moduleId;
+          }
+
+          this.getFieldsByModuleId(moduleId);
         }
       });
 
@@ -84,8 +93,9 @@ export class LookupConfigComponent implements OnInit, OnChanges {
    * @param moduleId Pass module ID
    */
   getFieldsByModuleId(moduleId: string) {
-    this.schemaDetailsService.getMetadataFields(moduleId)
+    const subscriber = this.schemaDetailsService.getMetadataFields(moduleId)
       .subscribe((metadataModeleResponse: MetadataModeleResponse) => {
+        this.moduleHeaderFields = [];
         if (metadataModeleResponse && metadataModeleResponse.headers) {
           const keys = Object.keys(metadataModeleResponse.headers);
           if (keys && keys.length > 0) {
@@ -94,6 +104,7 @@ export class LookupConfigComponent implements OnInit, OnChanges {
             });
           }
         }
+        subscriber.unsubscribe();
       });
   }
 
@@ -103,6 +114,7 @@ export class LookupConfigComponent implements OnInit, OnChanges {
   patchInitialData() {
     const data: LookupFormData = this.initialData && this.initialData.fieldLookupConfig ? this.initialData.fieldLookupConfig : null;
     if (data) {
+      this.initialModuleId = data.moduleId;
       this.lookupForm.patchValue(data);
     }
   }

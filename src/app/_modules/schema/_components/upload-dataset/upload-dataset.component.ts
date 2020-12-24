@@ -610,16 +610,16 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     }
   }
 
-  getCurrentWeightageLimit() {
+  getCurrentWeightageLimit(brWeightage = null) {
     let weightage = 100;
-
-    if(this.selectedBusinessRules && this.selectedBusinessRules.length>0){
+    const existingBrWeightage = Number(brWeightage);
+    if(this.selectedBusinessRules && this.selectedBusinessRules.length>0) {
       this.selectedBusinessRules.map((rule) => {
         weightage = weightage - rule.brWeightage;
       });
     }
 
-    return weightage;
+    return existingBrWeightage? weightage - existingBrWeightage: weightage;
   }
 
   /**
@@ -723,7 +723,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         const duplicacyRuleData = {duplicacyField, duplicacyMaster};
 
       this.globaldialogService.openDialog(NewBusinessRulesComponent, {
-        maxWeightageLimit: this.getCurrentWeightageLimit(),
+        maxWeightageLimit: this.getCurrentWeightageLimit(brWeightage),
         moduleId: this.requestForm.controls.objectId.value ? this.requestForm.controls.objectId.value : '',
         fields: this.requestForm.controls.fields.value,
         tempId,
