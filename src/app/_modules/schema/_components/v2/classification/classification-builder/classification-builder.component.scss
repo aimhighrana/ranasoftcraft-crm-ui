@@ -39,7 +39,7 @@ div.root {
       }
 
       .nav-tree {
-        height: 100%;
+        height: calc(100% - 56px - 24px - 48px - 16px * 2);
         overflow-y: auto;
         overflow-x: hidden;
 

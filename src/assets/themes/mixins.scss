@@ -265,7 +265,7 @@
   .cdk-overlay-container {
     .mat-autocomplete-panel {
       .autodropdown-scroll {
-        height: 127px;
+        max-height: 127px;
         overflow: auto;
       }
 
@@ -831,6 +831,7 @@
     .mat-header-cell,
     .mat-cell {
       font-size: 0.8rem;
+      line-height: 1rem;
       color: mat-color($foreground-palette, text);
       padding: 0 8px;
       min-width: 160px;
@@ -1253,7 +1254,7 @@
     mat-card.root {
       .user-defined-set {
         &::before {
-          background: $color-app-border;
+          background: $color-accent;
         }
 
         .defined-row {
@@ -1261,7 +1262,7 @@
 
           div.col {
             &.select-col {
-              background: mat-color($background-palette, background);
+              background: $color-accent;
             }
 
             button.f-selected-col,

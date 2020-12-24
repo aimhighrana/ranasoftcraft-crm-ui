@@ -231,10 +231,10 @@
                             <!-- Name Column -->
                             <ng-container matColumnDef="assigned_bucket" sticky>
                                 <mat-header-cell *matHeaderCellDef class="fixed-width-c1">
-                                    <button mat-button>
-                                        <!-- (click)="openTableColumnSettings()" -->
+                                    <!-- <button mat-button>
+                                        (click)="openTableColumnSettings()" 
                                         <mat-icon fontSet="mdo-icons">cog</mat-icon>
-                                    </button>
+                                    </button> -->
                                 </mat-header-cell>
                                 <mat-cell class="fixed-width-c1" *matCellDef="let element">
                                     <mat-card-header>
@@ -252,10 +252,10 @@
                                     <div class="f-row action-iconbtns">
                                         <button mat-fab color="accent" class="middleradius" *ngIf="row['__aditionalProp'] && !row['__aditionalProp'].fieldValue"
                                         (click)="approveRec(row, rIndex)" id="approveBtn_{{ rIndex }}">
-                                            <mat-icon>done</mat-icon>
+                                            <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
                                         </button>
                                         <button mat-fab color="accent" class="leftradius" (click)="rejectRec(row, rIndex)" id="rejectBtn_{{ rIndex }}">
-                                            <mat-icon>block</mat-icon>
+                                            <mat-icon fontSet="mdo-icons">declined</mat-icon>
                                         </button>
                                     </div>
                                 </mat-cell>
