@@ -173,7 +173,6 @@ export class BrruleSideSheetComponent implements OnInit {
     this.getCategories();
     this.filteredModules = of(this.fieldsList);
     this.operators = this.possibleOperators();
-
     this.activatedRouter.params.subscribe(res => {
       this.routeData = res;
       this.moduleId = res.moduleId;
@@ -183,8 +182,7 @@ export class BrruleSideSheetComponent implements OnInit {
         this.initUDRForm();
         if (this.brId) {
           this.getBusinessRuleInfo(this.brId);
-        }
-        if (this.moduleId) {
+        } else {
           this.getFieldsByModuleId();
         }
       });
@@ -234,9 +232,7 @@ export class BrruleSideSheetComponent implements OnInit {
       if (this.coreSchemaBrInfo) {
         // Patch received data
         this.setValueToElement(this.coreSchemaBrInfo);
-        if (this.moduleId) {
-          this.getFieldsByModuleId();
-        }
+        this.getFieldsByModuleId();
         if (this.coreSchemaBrInfo.brType === BusinessRuleType.BR_CUSTOM_SCRIPT) {
           this.editUdr(businessRuleInfo);
         }
@@ -595,6 +591,7 @@ export class BrruleSideSheetComponent implements OnInit {
    * function to get the fields on basis of module
    */
   getFieldsByModuleId() {
+    if(!this.moduleId) { return };
     this.schemaDetailsService.getMetadataFields(this.moduleId)
       .subscribe((metadataModeleResponse: MetadataModeleResponse) => {
         const keys = Object.keys(metadataModeleResponse.headers);
@@ -615,10 +612,8 @@ export class BrruleSideSheetComponent implements OnInit {
         this.filteredModules = of(this.fieldsList);
 
         this.initiateAutocomplete();
-        // this.filteredFieldList = this.fieldsList;
-        // this.duplicateFieldsObs = of(this.fieldsList);
 
-        if (this.brId) {
+        if (this.brId && this.coreSchemaBrInfo) {
           try {
             const fldIds = this.coreSchemaBrInfo.fields ? this.coreSchemaBrInfo.fields.split(',') : [];
             this.selectedFields = [];
@@ -1133,5 +1128,4 @@ export class BrruleSideSheetComponent implements OnInit {
     });
 
   }
-
 }
