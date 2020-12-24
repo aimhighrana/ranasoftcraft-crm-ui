@@ -174,7 +174,6 @@ export class BrruleSideSheetComponent implements OnInit {
     this.filteredModules = of(this.fieldsList);
     this.operators = this.possibleOperators();
 
-    this.getCategories();
     this.activatedRouter.params.subscribe(res => {
       this.routeData = res;
       this.moduleId = res.moduleId;
@@ -184,6 +183,9 @@ export class BrruleSideSheetComponent implements OnInit {
         this.initUDRForm();
         if (this.brId) {
           this.getBusinessRuleInfo(this.brId);
+        }
+        if (this.moduleId) {
+          this.getFieldsByModuleId();
         }
       });
     });
@@ -298,8 +300,7 @@ export class BrruleSideSheetComponent implements OnInit {
         });
 
       resolve(null);
-    })
-
+    });
   }
 
   /**
@@ -330,6 +331,10 @@ export class BrruleSideSheetComponent implements OnInit {
     }
     if (selectedRule === BusinessRuleType.BR_DUPLICATE_RULE) {
       requiredKeys = ['rule_name'];
+    }
+
+    if (selectedRule === BusinessRuleType.BR_CLASSIFICATION) {
+      requiredKeys = ['rule_name', 'error_message', 'categoryId', 'apiKey'];
     }
 
     controlKeys.map((key) => {
@@ -391,6 +396,10 @@ export class BrruleSideSheetComponent implements OnInit {
 
     if (br.brType === BusinessRuleType.BR_DUPLICATE_RULE) {
       patchList = ['rule_type', 'rule_name'];
+    }
+
+    if (br.brType === BusinessRuleType.BR_CLASSIFICATION) {
+      patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId', 'apiKey'];
     }
 
     if (patchList && patchList.length > 0) {
