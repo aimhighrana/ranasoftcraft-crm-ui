@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { MasterRecordChangeRequest } from '@models/schema/duplicacy';
+import { DoCorrectionRequest, MasterRecordChangeRequest } from '@models/schema/duplicacy';
 import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable({
@@ -18,8 +18,8 @@ export class CatalogCheckService {
     return this.http.post<any>(this.endpointService.masterRecordChangeUrl(), request);
   }
 
-  markForDeletion(recordId) {
-    return of(true);
+  markForDeletion(objctNumber, moduleId) {
+    return this.http.post<any>(this.endpointService.markForDeletionUrl(objctNumber, moduleId), null);
   }
 
   getAllGroupIds(params) : Observable<any> {
@@ -40,6 +40,10 @@ export class CatalogCheckService {
 
   getCatalogCheckRecords(params): Observable<any>{
     return this.http.post<any>(this.endpointService.catalogCheckRecordsUrl(), params);
+  }
+
+  doCorrection(schemaId, runId, request: DoCorrectionRequest): Observable<any> {
+    return this.http.post<any>(this.endpointService.doDuplicacyCorrectionUrl(schemaId, runId), request);
   }
 
 }

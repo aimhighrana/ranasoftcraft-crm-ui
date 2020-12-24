@@ -40,12 +40,11 @@
             <mat-chip (click)="changeTabStatus('error')" disableRipple="true" class="error-status">
                 {{ (statics && statics.errorCnt) ? statics.errorCnt : 0 }}  errors 
             </mat-chip>
-            <mat-chip disableRipple="true" class="warning-status"> <!-- (click)="changeTabStatus('success')" -->
+            <mat-chip (click)="changeTabStatus('success')" disableRipple="true" class="warning-status">
                 {{ (statics && statics.successCnt) ? statics.successCnt : 0 }} warnings
             </mat-chip>
-            <mat-chip disableRipple="true" class="info-status"> <!-- (click)="changeTabStatus('review')"  -->
+            <mat-chip (click)="changeTabStatus('review')" disableRipple="true" class="info-status">
                 {{ (statics && statics.correctedCnt) ? statics.correctedCnt : 0 }} corrections
-                
             </mat-chip>
         </mat-chip-list>
     </div>
@@ -169,7 +168,14 @@
                                             <button mat-fab color="accent" [matMenuTriggerFor]="moreactions" class="rightradius">
                                                 <mat-icon fontSet="mdo-icons">more</mat-icon>
                                             </button>
-                                            <!-- more actions -->
+                                            <!-- more actions menu -->
+                                            <mat-menu #moreactions="matMenu" class="navigation-menu">
+                                                <button mat-menu-item>Create HERS</button>
+                                                <button mat-menu-item>Create info record</button>
+                                                <mat-divider></mat-divider>
+                                                <button mat-menu-item>Assign to...</button>
+                                                <button mat-menu-item (click)="markForDeletion(element)">Mark for deletion</button>
+                                            </mat-menu>
 
                                             <button mat-fab color="accent" class="middleradius">
                                                 <mat-icon fontSet="mdo-icons" 
@@ -311,13 +317,6 @@
                             </mat-table>
                             <pros-null-state *ngIf="!dataSource.docLength()" [button]="null"></pros-null-state>
 
-                            <mat-menu #moreactions="matMenu" class="navigation-menu">
-                                <button mat-menu-item>Create HERS</button>
-                                <button mat-menu-item>Create info record</button>
-                                <mat-divider></mat-divider>
-                                <button mat-menu-item>Assign to...</button>
-                                <button mat-menu-item>Mark for deletion</button>
-                            </mat-menu>
                         </div>
                     </div>
                 </div>

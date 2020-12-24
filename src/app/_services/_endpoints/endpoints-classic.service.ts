@@ -662,7 +662,28 @@ export class EndpointsClassicService {
     return `${this.apiUrl}/schema/mro/reset`;
   }
 
+  /**
+   * mark duplicacy record as master record
+   */
   public masterRecordChangeUrl(): string {
     return `${this.apiUrl}/duplicate/updatemasterRecord`;
+  }
+
+  /**
+   * mark duplicacy record for deletion
+   * @param objctNumber record object number
+   * @param moduleId object type
+   */
+  public markForDeletionUrl(objctNumber, moduleId): string {
+    return `${this.apiUrl}/schema/update-delFlag/${objctNumber}/${moduleId}`;
+  }
+
+  /**
+   * do duplicacy result field correction
+   * @param schemaId  schema id
+   * @param runId run id
+   */
+  public doDuplicacyCorrectionUrl(schemaId, runId): string {
+    return `${this.apiUrl}/duplicate/do-correction/${schemaId}/${runId}`;
   }
 }
