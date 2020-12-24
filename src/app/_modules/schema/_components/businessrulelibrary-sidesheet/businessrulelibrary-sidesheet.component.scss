@@ -27,8 +27,17 @@ mat-card.root {
         }
       }
 
-      pros-search-input {
-        min-width: 213px;
+      .fliter-rows {
+        flex-wrap: wrap;
+
+        pros-search-input {
+          min-width: 213px;
+          margin-bottom: 4px;
+        }
+
+        mat-chip-list.mat-chip-list {
+          margin-bottom: 4px;
+        }
       }
     }
   }
