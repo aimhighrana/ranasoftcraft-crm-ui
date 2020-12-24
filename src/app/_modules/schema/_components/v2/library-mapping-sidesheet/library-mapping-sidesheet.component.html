@@ -16,19 +16,35 @@
     <div class="f-col mdo-justify">
         <div class="colunm-listing">
             <div class="f-row">
-                <pros-search-input placeholder="Search attributes"></pros-search-input>
+                <pros-search-input placeholder="Search attributes" (value)="searchAttributeVal($event)" [preValue] ="preInpVal"></pros-search-input>
                 <div class="f-col-spacer-half"></div>
                 <mat-chip-list>
-                    <mat-chip class="mdo-filter-matchip">
-                        <label>Matched</label>
-                    </mat-chip>
-                    <mat-chip class="mdo-filter-matchip">
-                        <label>Suggest</label>
-                    </mat-chip>
 
-                    <mat-chip class="mdo-filter-matchip">
-                        <label>Unmapped</label>
-                    </mat-chip>
+                    <ng-template ngFor let-chip [ngForOf]="statas">
+                        <ng-template [ngIf]="chip.code === 'matched'">
+                            <mat-chip class="mdo-filter-matchip" (click)="filterAsStatus(chip.code)" [class.color]="chip.isSeleted">
+                                <label>
+                                    {{ chip.text }}
+                                </label>
+                            </mat-chip>
+                        </ng-template>
+
+                        <ng-template [ngIf]="chip.code === 'suggest'">
+                            <mat-chip class="mdo-filter-matchip" (click)="filterAsStatus(chip.code)" [class.color]="chip.isSeleted">
+                                <label>
+                                    {{ chip.text }}
+                                </label>
+                            </mat-chip>
+                        </ng-template>
+
+                        <ng-template [ngIf]="chip.code === 'unmapped'">
+                            <mat-chip class="mdo-filter-matchip" (click)="filterAsStatus(chip.code)" [class.color]="chip.isSeleted">
+                                <label>
+                                    {{ chip.text }}
+                                </label>
+                            </mat-chip>
+                        </ng-template>
+                    </ng-template>
                 </mat-chip-list>
             </div>
             <div class="row-spacer"></div>
@@ -48,8 +64,8 @@
                         <div mat-line> {{ libraryNounCode }} </div>
                     </div>
                     <div class="col col-x16">
-                        <!-- <div mat-line><strong>Ball</strong></div> -->
-                        <mat-form-field appearance="outline">
+                        
+                        <!-- <mat-form-field appearance="outline">
                             <mat-select formControlName="localNounCode">
                                 <mat-option (click)="openNounSidesheet()">
                                     <mat-icon>plus</mat-icon> Create new noun
@@ -62,7 +78,16 @@
                                     {{ noun.NOUN_CODE || 'Unknown'}}
                                 </mat-option>
                             </mat-select>
-                        </mat-form-field>
+                        </mat-form-field> -->
+
+                        <!-- <pros-form-input-autoselect [selectedMdoFldCtrl]="mappingForm.get('localNounCode')" [updatedOptionsList]="localNounsList"
+                            [labelKey]="'NOUN_CODE'">
+                        </pros-form-input-autoselect> -->
+
+                        <pros-noun-modifier-autocomplete [formCtrl]="mappingForm.get('localNounCode')" [data]="localNounsList" 
+                        [requestFor]="'noun'" (clickAddNew)="createNewWidgetFor($event)">
+                        </pros-noun-modifier-autocomplete>
+
                     </div>
                 </div>
 
@@ -74,7 +99,7 @@
                         <div mat-line> {{ libraryModifierCode }} </div>
                     </div>
                     <div class="col col-x16">
-                        <mat-form-field appearance="outline">
+                        <!-- <mat-form-field appearance="outline">
                             <mat-select formControlName="localModCode">
                                 <mat-option (click)="openModifierSidesheet()">
                                     <mat-icon fontSet="mdo-icons">plus</mat-icon> Create new modifier
@@ -83,10 +108,13 @@
                                     Unmapped
                                 </mat-option>
                                 <mat-option *ngFor="let modifier of LocalModifiersList" 
-                                    [value]="modifier.MODE_CODE"> <!-- modifier code should be used instead -->
+                                    [value]="modifier.MODE_CODE"> 
                                     {{ modifier.MODE_CODE || 'Unknown' }} </mat-option>
                             </mat-select>
-                        </mat-form-field>
+                        </mat-form-field> -->
+                        <pros-noun-modifier-autocomplete [formCtrl]="mappingForm.get('localModCode')" 
+                        [data]="LocalModifiersList" [requestFor]="'modifier'" [selectedNoun]="mappingForm.get('localNounCode').value" (clickAddNew)="createNewWidgetFor($event)">
+                        </pros-noun-modifier-autocomplete>
                     </div>
                 </div>
 
@@ -99,10 +127,10 @@
                             <div mat-line><span *ngIf="isFirst">Attribute</span></div>
                         </div>
                         <div class="col col-x8">
-                            <div mat-line> {{ attributeRow.value.libraryAttributeCode }} </div>
+                            <div mat-line> {{ attributeRow.value.libraryAttributeText ? attributeRow.value.libraryAttributeText  : attributeRow.value.libraryAttributeCode }} </div>
                         </div>
                         <div class="col col-x16">
-                            <mat-form-field appearance="outline">
+                            <!-- <mat-form-field appearance="outline">
                                 <mat-select formControlName="localAttributeCode">
                                     <mat-option value="" >
                                         Unmapped
@@ -114,7 +142,15 @@
                                         {{ attribute.ATTR_CODE || 'Unknown' }}
                                     </mat-option>
                                 </mat-select>
-                            </mat-form-field>
+                            </mat-form-field> -->
+                            <!-- <pros-form-input-autoselect [selectedMdoFldCtrl]="localAttributeCode" [updatedOptionsList]="LocalAttributesList"
+                            [labelKey]="'ATTR_CODE'">
+                            </pros-form-input-autoselect> -->
+
+                            <pros-noun-modifier-autocomplete [formCtrl]="attributeRow.get('localAttributeCode')" 
+                            [data]="LocalAttributesList" [requestFor]="'attribute'" [selectedNoun]="mappingForm.get('localNounCode').value"
+                            [selectedModifier] = "mappingForm.get('localModCode').value" (clickAddNew)="createNewWidgetFor($event)">
+                            </pros-noun-modifier-autocomplete>
                         </div>
                     </ng-container>
                     </div>

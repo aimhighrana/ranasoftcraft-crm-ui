@@ -3,7 +3,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AttributesDoc, NounModifier } from '@models/schema/noun-modifier';
-import { Modifier } from '@models/schema/schemadetailstable';
 import { NounModifierService } from '@services/home/schema/noun-modifier.service';
 import { of } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
@@ -69,7 +68,7 @@ describe('LibraryMappingSidesheetComponent', () => {
   it('should get local modifiers list', () => {
 
     const result = [
-      {modCode: 'Ball', modText: 'Ball'} as Modifier
+      {MODE_CODE: 'Ball', MOD_LONG: 'Ball'} as NounModifier
     ]
 
     spyOn(nounModifierService, 'getLocalModifier').withArgs('0', 'Bearing').and.returnValue(of(result));
@@ -119,7 +118,7 @@ describe('LibraryMappingSidesheetComponent', () => {
   it('should openNounSidesheet', () => {
     spyOn(router, 'navigate');
     component.openNounSidesheet();
-    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: { outer: `outer/schema/noun/module/40142300` } }])
+    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: { outer: `outer/schema/noun/module/${component.mgroup}` } }])
   });
 
 

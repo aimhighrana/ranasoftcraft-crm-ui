@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
@@ -22,7 +22,7 @@ export enum CellDataFor {
   templateUrl: './classification-datatable-cell-editable.component.html',
   styleUrls: ['./classification-datatable-cell-editable.component.scss']
 })
-export class ClassificationDatatableCellEditableComponent implements OnInit, AfterViewInit {
+export class ClassificationDatatableCellEditableComponent implements OnInit, AfterViewInit, OnChanges {
 
   @Input()
   fieldId: string;
@@ -52,6 +52,9 @@ export class ClassificationDatatableCellEditableComponent implements OnInit, Aft
   @Input()
   brType: string;
 
+  @Input()
+  controlType: string;
+
   @Output()
   inputBlur = new EventEmitter<any>();
 
@@ -69,7 +72,15 @@ export class ClassificationDatatableCellEditableComponent implements OnInit, Aft
     private userService: UserService
   ) { }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if(changes && changes.controlType && changes.controlType.previousValue !== changes.controlType.currentValue) {
+      this.controlType = changes.controlType.currentValue;
+    }
+  }
+
   ngOnInit(): void {
+
+    console.log(this.controlType);
 
     if(this.fieldId === 'NOUN_CODE') {
       this.getSuggestedNouns();

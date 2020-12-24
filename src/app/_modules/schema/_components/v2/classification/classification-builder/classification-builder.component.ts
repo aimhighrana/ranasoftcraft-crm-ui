@@ -3,7 +3,7 @@ import { Component, ComponentFactoryResolver, Input, OnChanges, OnDestroy, OnIni
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { ClassificationNounMod, MetadataModeleResponse, SchemaMROCorrectionReq, SchemaTableViewFldMap } from '@models/schema/schemadetailstable';
+import { AttributeCoorectionReq, ClassificationNounMod, MetadataModeleResponse, SchemaMROCorrectionReq, SchemaTableViewFldMap } from '@models/schema/schemadetailstable';
 import { SchemaListDetails, SchemaStaticThresholdRes, SchemaVariantsModel } from '@models/schema/schemalist';
 import { Userdetails } from '@models/userdetails';
 import { CellDataFor, ClassificationDatatableCellEditableComponent } from '@modules/shared/_components/classification-datatable-cell-editable/classification-datatable-cell-editable.component';
@@ -32,58 +32,62 @@ const definedColumnsMetadata = {
   //   fieldDesc: 'Long description',
   //   fieldValue: ''
   // },
-   MANUFACTURER: {
-    fieldId: 'MANUFACTURER',
-    fieldDesc: 'Manufacturer',
-    fieldValue: ''
-  }, MGROUP: {
+  //  MANUFACTURER: {
+  //   fieldId: 'MANUFACTURER',
+  //   fieldDesc: 'Manufacturer',
+  //   fieldValue: ''
+  // },
+   MGROUP: {
     fieldId: 'MGROUP',
     fieldDesc: 'Material group',
-    fieldValue: ''
-  }, MODE_CODE: {
-    fieldId: 'MODE_CODE',
-    fieldDesc: 'Modifier code',
-    fieldValue: '',
-    isEditable: true
-  }, MOD_LONG: {
-    fieldId: 'MOD_LONG',
-    fieldDesc: 'Modifier description',
-    fieldValue: ''
-  }, MRO_STATUS: {
-    fieldId: 'MRO_STATUS',
-    fieldDesc: 'Status',
     fieldValue: ''
   }, NOUN_CODE: {
     fieldId: 'NOUN_CODE',
     fieldDesc: 'Noun code',
     fieldValue: '',
     isEditable: true
-  }, NOUN_ID: {
-    fieldId: 'NOUN_ID',
-    fieldDesc: 'Noun id',
-    fieldValue: ''
-  }, NOUN_LONG: {
-    fieldId: 'NOUN_LONG',
-    fieldDesc: 'Noun long description',
-    fieldValue: ''
-  }, PARTNO: {
+  } ,MODE_CODE: {
+    fieldId: 'MODE_CODE',
+    fieldDesc: 'Modifier code',
+    fieldValue: '',
+    isEditable: true
+  },
+  // MOD_LONG: {
+  //   fieldId: 'MOD_LONG',
+  //   fieldDesc: 'Modifier description',
+  //   fieldValue: ''
+  // }, MRO_STATUS: {
+  //   fieldId: 'MRO_STATUS',
+  //   fieldDesc: 'Status',
+  //   fieldValue: ''
+  // }, NOUN_ID: {
+  //   fieldId: 'NOUN_ID',
+  //   fieldDesc: 'Noun id',
+  //   fieldValue: ''
+  // }, NOUN_LONG: {
+  //   fieldId: 'NOUN_LONG',
+  //   fieldDesc: 'Noun long description',
+  //   fieldValue: ''
+  // },
+  PARTNO: {
     fieldId: 'PARTNO',
     fieldDesc: 'Part number',
     fieldValue: ''
-  }, UNSPSC: {
-    fieldId: 'UNSPSC',
-    fieldDesc: 'UNSPSC',
-    fieldValue: ''
-  }, UNSPSC_DESC: {
-    fieldId: 'UNSPSC_DESC',
-    fieldDesc: 'UNSPSC description',
-    fieldValue: ''
-  },
-  MRO_LIBRARY: {
-    fieldId: 'MRO_LIBRARY',
-    fieldDesc: 'Mro library',
-    fieldValue: ''
   }
+  // ,  UNSPSC: {
+  //   fieldId: 'UNSPSC',
+  //   fieldDesc: 'UNSPSC',
+  //   fieldValue: ''
+  // }, UNSPSC_DESC: {
+  //   fieldId: 'UNSPSC_DESC',
+  //   fieldDesc: 'UNSPSC description',
+  //   fieldValue: ''
+  // },
+  // MRO_LIBRARY: {
+  //   fieldId: 'MRO_LIBRARY',
+  //   fieldDesc: 'Mro library',
+  //   fieldValue: ''
+  // }
 }
 
 
@@ -235,7 +239,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
       if(res !== null) {
         const columns = this.displayedColumns.getValue();
         if(res === 'correction' && columns.indexOf('row_action') === -1) {
-          columns.splice(2,2,'row_action');
+          columns.splice(2,0,'row_action');
           this.displayedColumns.next(columns);
           this.dataSource = new MatTableDataSource<any>([]);
         } else if(!res && columns.indexOf('row_action') !== -1) {
@@ -309,10 +313,12 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
       this.rulesNounMods = res;
       if (this.rulesNounMods.mro_local_lib && this.rulesNounMods.mro_local_lib.info) {
         const fisrtNoun = this.rulesNounMods.mro_local_lib.info[0];
-        const modifierCode = fisrtNoun.modifier[0] ? fisrtNoun.modifier[0].modCode : '';
-        if (modifierCode && fisrtNoun.nounCode) {
-          this.dataFrm = 'mro_local_lib';
-          this.applyFilter(fisrtNoun.nounCode, modifierCode, 'mro_local_lib');
+        if(fisrtNoun) {
+          const modifierCode = fisrtNoun.modifier[0] ? fisrtNoun.modifier[0].modCode : '';
+          if (modifierCode && fisrtNoun.nounCode) {
+            this.dataFrm = 'mro_local_lib';
+            this.applyFilter(fisrtNoun.nounCode, modifierCode, 'mro_local_lib');
+          }
         }
       }
     }, err => console.error(`Execption while fetching .. classification noun and mod. ${err.message}`));
@@ -337,7 +343,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
         this.tableData = res;
         const actualData = this.transformData(res, brType);
         const columns = Object.keys(actualData[0]);
-        const disPlayedCols = this.displayedColumns.getValue();
+        const disPlayedCols = ['checkbox_select', 'assigned_bucket', 'OBJECTNUMBER', 'SHORT_DESC', 'MGROUP', 'NOUN_CODE', 'MODE_CODE', 'PARTNO'];
         columns.forEach(key => {
           if (disPlayedCols.indexOf(key) === -1 && key !== '__aditionalProp') {
             disPlayedCols.push(key);
@@ -378,11 +384,11 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
             //   rowData.LONG_DESC = longDesc;
             //   break;
 
-            case 'MANUFACTURER':
-              const manufacturer = { fieldId: col, fieldDesc: { fieldId: col, fieldDesc: definedColumnsMetadata[col].fieldDesc,fieldValue: ''}.fieldDesc,fieldValue: ''};
-              manufacturer.fieldValue = columns[col] ? columns[col] : '';
-              rowData.MANUFACTURER = manufacturer;
-              break;
+            // case 'MANUFACTURER':
+            //   const manufacturer = { fieldId: col, fieldDesc: { fieldId: col, fieldDesc: definedColumnsMetadata[col].fieldDesc,fieldValue: ''}.fieldDesc,fieldValue: ''};
+            //   manufacturer.fieldValue = columns[col] ? columns[col] : '';
+            //   rowData.MANUFACTURER = manufacturer;
+            //   break;
 
             case 'MGROUP':
               const mggroup = { fieldId: col, fieldDesc: definedColumnsMetadata[col].fieldDesc,fieldValue: ''};
@@ -396,25 +402,25 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
               rowData.MODE_CODE = modeCode;
               break;
 
-            case 'MOD_LONG':
-              const modLong = { fieldId: col, fieldDesc: definedColumnsMetadata[col].fieldDesc,fieldValue: ''};
-              modLong.fieldValue = columns[col] ? columns[col] : '';
-              rowData.MOD_LONG = modLong;
-              break;
+            // case 'MOD_LONG':
+            //   const modLong = { fieldId: col, fieldDesc: definedColumnsMetadata[col].fieldDesc,fieldValue: ''};
+            //   modLong.fieldValue = columns[col] ? columns[col] : '';
+            //   rowData.MOD_LONG = modLong;
+            //   break;
 
 
-            case 'MRO_STATUS':
-              const mroStatus = { fieldId: col, fieldDesc: definedColumnsMetadata[col].fieldDesc,fieldValue: ''};
-              mroStatus.fieldValue = columns[col] ? columns[col] : '';
-              rowData.MRO_STATUS = mroStatus;
-              break;
+            // case 'MRO_STATUS':
+            //   const mroStatus = { fieldId: col, fieldDesc: definedColumnsMetadata[col].fieldDesc,fieldValue: ''};
+            //   mroStatus.fieldValue = columns[col] ? columns[col] : '';
+            //   rowData.MRO_STATUS = mroStatus;
+            //   break;
 
 
-            case 'MRO_LIBRARY':
-              const mroLib = { fieldId: col, fieldDesc: definedColumnsMetadata[col].fieldDesc,fieldValue: ''};
-              mroLib.fieldValue = columns[col] ? columns[col] : '';
-              rowData.MRO_LIBRARY = mroLib;
-              break;
+            // case 'MRO_LIBRARY':
+            //   const mroLib = { fieldId: col, fieldDesc: definedColumnsMetadata[col].fieldDesc,fieldValue: ''};
+            //   mroLib.fieldValue = columns[col] ? columns[col] : '';
+            //   rowData.MRO_LIBRARY = mroLib;
+            //   break;
 
 
             case 'NOUN_CODE':
@@ -425,19 +431,19 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
 
 
 
-            case 'NOUN_ID':
-              const nounId = { fieldId: col, fieldDesc: definedColumnsMetadata[col].fieldDesc,fieldValue: ''};
-              nounId.fieldValue = columns[col] ? columns[col] : '';
-              rowData.NOUN_ID = nounId;
-              break;
+            // case 'NOUN_ID':
+            //   const nounId = { fieldId: col, fieldDesc: definedColumnsMetadata[col].fieldDesc,fieldValue: ''};
+            //   nounId.fieldValue = columns[col] ? columns[col] : '';
+            //   rowData.NOUN_ID = nounId;
+            //   break;
 
 
 
-            case 'NOUN_LONG':
-              const nounLong = { fieldId: col, fieldDesc: definedColumnsMetadata[col].fieldDesc,fieldValue: ''};
-              nounLong.fieldValue = columns[col] ? columns[col] : '';
-              rowData.NOUN_LONG = nounLong;
-              break;
+            // case 'NOUN_LONG':
+            //   const nounLong = { fieldId: col, fieldDesc: definedColumnsMetadata[col].fieldDesc,fieldValue: ''};
+            //   nounLong.fieldValue = columns[col] ? columns[col] : '';
+            //   rowData.NOUN_LONG = nounLong;
+            //   break;
 
 
             case 'PARTNO':
@@ -455,19 +461,19 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
 
 
 
-            case 'UNSPSC':
-              const unspsc = { fieldId: col, fieldDesc: definedColumnsMetadata[col].fieldDesc,fieldValue: ''};
-              unspsc.fieldValue = columns[col] ? columns[col] : '';
-              rowData.UNSPSC = unspsc;
-              break;
+            // case 'UNSPSC':
+            //   const unspsc = { fieldId: col, fieldDesc: definedColumnsMetadata[col].fieldDesc,fieldValue: ''};
+            //   unspsc.fieldValue = columns[col] ? columns[col] : '';
+            //   rowData.UNSPSC = unspsc;
+            //   break;
 
 
 
-            case 'UNSPSC_DESC':
-              const unspscDesc = { fieldId: col, fieldDesc: definedColumnsMetadata[col].fieldDesc,fieldValue: ''};
-              unspscDesc.fieldValue = columns[col] ? columns[col] : '';
-              rowData.UNSPSC_DESC = unspscDesc;
-              break;
+            // case 'UNSPSC_DESC':
+            //   const unspscDesc = { fieldId: col, fieldDesc: definedColumnsMetadata[col].fieldDesc,fieldValue: ''};
+            //   unspscDesc.fieldValue = columns[col] ? columns[col] : '';
+            //   rowData.UNSPSC_DESC = unspscDesc;
+            //   break;
 
 
             case '__aditionalProp':
@@ -577,8 +583,15 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
       const objctNumber = row.OBJECTNUMBER.fieldValue;
 
       const nounCode = row.NOUN_CODE.fieldValue ? row.NOUN_CODE.fieldValue : '';
+      const modeCode = row.MODE_CODE.fieldValue ? row.MODE_CODE.fieldValue : '';
 
       const oldVal = row[fldid] ? row[fldid].fieldValue : '';
+
+      // clear the dynamic cell input component
+      viewContainerRef.clear();
+      inpCtrl.style.display = 'none';
+      viewCtrl.style.display = 'block';
+
       if(objctNumber && oldVal !== value) {
         const correctionReq: SchemaMROCorrectionReq = {id: objctNumber,masterLibrary: (this.dataFrm === 'mro_local_lib' ? true : false)} as SchemaMROCorrectionReq;
         if(fldid === 'NOUN_CODE') {
@@ -588,12 +601,16 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
           correctionReq.nounCodevc = nounCode;
           correctionReq.modCodeoc = oldVal;
           correctionReq.modCodevc = value;
+        } else {
+          correctionReq.nounCodevc = nounCode;
+          correctionReq.modCodevc = modeCode;
+          correctionReq.attributeCorReq = [{
+            attributeCodeoc:fldid,
+            attributeCodevc:fldid,
+            attributeValoc:oldVal,
+            attributeValvc: value
+          } as AttributeCoorectionReq];
         }
-
-        // clear the dynamic cell input component
-        viewContainerRef.clear();
-        inpCtrl.style.display = 'none';
-        viewCtrl.style.display = 'block';
 
         this.schemaDetailService.doCorrectionForClassification(this.schemaId, fldid, correctionReq).subscribe(res=>{
 
@@ -608,6 +625,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
           console.error(`Error :: ${error.error}`);
         });
       } else {
+        viewCtrl.innerText = oldVal;
         console.error(`Wrong with object number or can't change if old and new same  ... `);
       }
     }
@@ -649,6 +667,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     componentRef.instance.nounCode = nounCode;
     componentRef.instance.modCode = modCode;
     componentRef.instance.brType = this.dataFrm;
+    componentRef.instance.controlType = ['NOUN_CODE','MODE_CODE'].indexOf(fldid) !==-1 ? 'dropdown' : 'inputText';
     componentRef.instance.inputBlur.subscribe(value => this.emitEditBlurChng(fldid, value, row, rIndex, celldataFor, containerRef.viewContainerRef));
 
   }
@@ -733,7 +752,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
   /**
    * open attribute mapping side sheet
    */
-  openAttributeMapping(nounCode, modCode) {
+  openAttributeMapping(nounCode: string, modCode: string) {
     this.router.navigate(['', { outlets: { sb: `sb/schema/attribute-mapping/${this.moduleId}/${nounCode}/${modCode}` } }])
   }
 }

@@ -72,6 +72,7 @@ import { BusinessConcatenationComponent } from './_components/business-concatena
 import { NounComponent } from './_components/v2/library-mapping-sidesheet/noun/noun.component';
 import { ModifierComponent } from './_components/v2/library-mapping-sidesheet/modifier/modifier.component';
 import { AttributeComponent } from './_components/v2/library-mapping-sidesheet/attribute/attribute.component';
+import { NounModifierAutocompleteComponent } from './_components/v2/library-mapping-sidesheet/noun-modifier-autocomplete/noun-modifier-autocomplete.component';
 
 
 @NgModule({
@@ -149,7 +150,8 @@ import { AttributeComponent } from './_components/v2/library-mapping-sidesheet/a
     BusinessConcatenationComponent,
     NounComponent,
     ModifierComponent,
-    AttributeComponent
+    AttributeComponent,
+    NounModifierAutocompleteComponent
   ],
   imports: [
     CommonModule,

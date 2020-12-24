@@ -1,6 +1,12 @@
-<ng-container>
+<ng-container [ngSwitch]="controlType">
     <!-- Input type single select -->
-    <mat-form-field appearance="outline" prosClickStopPropagation>
+
+    <mat-form-field *ngSwitchCase="'inputText'" appearance="outline" prosClickStopPropagation>
+        <input matInput #input [formControl]="searchControl" placeholder="Attribute value" (blur)="emitInputBlur($event.target.value)">
+    </mat-form-field>
+    
+
+    <mat-form-field *ngSwitchCase="'dropdown'"  appearance="outline" prosClickStopPropagation>
         <input matInput class="mat-input" [matAutocomplete]="auto" #input [formControl]="searchControl"
             placeholder="Search">
             <div class="f-row input-actions">
@@ -11,5 +17,12 @@
                 [ngStyle]="{'color': option.isSugested ? 'primary' : null }"> {{ option.TEXT }} </mat-option>
         </mat-autocomplete>
     </mat-form-field>
+
+
+    <mat-form-field *ngSwitchDefault appearance="outline" prosClickStopPropagation>
+        <input matInput #input [formControl]="searchControl" placeholder="Attribute value" (blur)="emitInputBlur($event.target.value)">
+    </mat-form-field>
+    
+
 
 </ng-container>

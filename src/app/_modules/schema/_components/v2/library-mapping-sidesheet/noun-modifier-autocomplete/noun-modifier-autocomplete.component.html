@@ -1,0 +1,42 @@
+<mat-form-field appearance="outline">
+    <input matInput class="mat-input" placeholder="Unmatched" [formControl]="formCtrl" #autoCompleteInput 
+      [matAutocomplete]="mdofieldauto">
+      <div class="f-row input-actions">
+      <mat-icon matSuffix fontSet="mdo-icons" class="info-arrow">menu-arrow1</mat-icon>
+    </div>
+   
+    <mat-autocomplete #mdofieldauto="matAutocomplete">
+      <div class="autodropdown-scroll">
+        <mat-option *ngFor="let option of filteredOptions | async; trackBy :suggestedMdoFldTrkBy" [value]="getOptionVal(option)">
+            {{
+              displayDroptext(option)
+            }}
+      </mat-option>
+      </div>
+      <mat-divider></mat-divider>
+      <ng-template [ngIf] ="requestFor && requestFor === 'noun'">
+        <div class="info-link action-option" (click)="emitForCreateNew('noun');">
+          <span>
+            Add new noun
+          </span>
+        </div>
+      </ng-template>
+
+      <ng-template [ngIf] ="requestFor && requestFor === 'modifier' && selectedNoun">
+        <div class="info-link action-option" (click)="emitForCreateNew('modifier');">
+          <span>
+            Add new modifier
+          </span>
+        </div>
+      </ng-template>
+
+      <ng-template [ngIf] ="requestFor && requestFor === 'attribute' && selectedNoun">
+        <div class="info-link action-option" (click)="emitForCreateNew('attribute');">
+          <span>
+            Add new attribute
+          </span>
+        </div>
+      </ng-template>
+
+    </mat-autocomplete>
+  </mat-form-field>

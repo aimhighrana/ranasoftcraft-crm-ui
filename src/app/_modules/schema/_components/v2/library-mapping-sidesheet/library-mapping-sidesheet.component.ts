@@ -2,9 +2,19 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AttributesMapping } from '@models/schema/classification';
+import { AttributeMapData, AttributesMapping } from '@models/schema/classification';
+import { AttributesDoc, NounModifier } from '@models/schema/noun-modifier';
+import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { NounModifierService } from '@services/home/schema/noun-modifier.service';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
+import { UserService } from '@services/user/userservice.service';
+import { debounceTime } from 'rxjs/operators';
+
+interface Status {
+  text: string;
+  code: string;
+  isSeleted: boolean;
+}
 
 @Component({
   selector: 'pros-library-mapping-sidesheet',
@@ -20,13 +30,13 @@ export class LibraryMappingSidesheetComponent implements OnInit {
   libraryModifierCode: string;
 
 
-  localNounsList: any[] = [];
+  localNounsList: NounModifier[] = [];
 
 
-  LocalModifiersList: any[] = [];
+  LocalModifiersList: NounModifier[] = [];
 
 
-  LocalAttributesList: any[] = [];
+  LocalAttributesList: AttributesDoc[] = [];
 
   /**
    * form to hold mapping data
@@ -38,17 +48,35 @@ export class LibraryMappingSidesheetComponent implements OnInit {
    */
   submitted = false;
 
-  STATIC_ATTRIBUTES = ['Color', 'Diameter', 'Length', 'Load limit'];
+  /**
+   * Get gsn attributes ..
+   */
+  gsnAttributes: AttributesDoc[] = [];
+
+  preInpVal = '';
+
+  /**
+   * Store material group info ..
+   */
+  mgroup: string;
+
+  statas: Status[] = [
+    {code:'matched', text:'Matched', isSeleted: false},
+    {code:'suggest', text:'Suggest', isSeleted: false},
+    {code:'unmapped', text:'Unmapped', isSeleted: false},
+  ];
 
   constructor(private router: Router,
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
     private schemaDetailsService: SchemaDetailsService,
     private nounModifierService: NounModifierService,
-    private snackBar: MatSnackBar) { }
+    private snackBar: MatSnackBar,
+    private sharedServices: SharedServiceService,
+    private userDetails: UserService
+    ) { }
 
   ngOnInit(): void {
-
     this.activatedRoute.params.subscribe(params => {
       this.moduleId = params.moduleId;
       this.libraryNounCode = params.nounCode;
@@ -56,11 +84,11 @@ export class LibraryMappingSidesheetComponent implements OnInit {
 
       this.buildMappingForm();
 
-      this.getAttributesMapping();
     });
 
     this.getLocalNouns();
 
+    this.getAttributesFromGsn(this.libraryNounCode, this.libraryModifierCode);
   }
 
   /**
@@ -87,28 +115,25 @@ export class LibraryMappingSidesheetComponent implements OnInit {
     });
 
     this.mappingForm.get('localNounCode').valueChanges.subscribe(nounCode => {
-        this.getLocalModifiers(nounCode);
-        // TODO reset form controls
+      const loadForThisNn = typeof nounCode === 'string' ? nounCode : nounCode.NOUN_CODE;
+      this.getLocalModifiers(loadForThisNn);
+      this.mappingForm.get('localModCode').setValue('');
     });
 
     this.mappingForm.get('localModCode').valueChanges.subscribe(modCode => {
-        const nounCode = this.mappingForm.get('localNounCode').value;
-        if(nounCode && modCode) {
-          this.getLocalAttributes(nounCode, modCode);
-        }
+      const nnCode = this.mappingForm.get('localNounCode').value;
+      const loadForThisNn = typeof nnCode === 'string' ? nnCode : '';
+      const modeCode =  typeof modCode === 'string' ? modCode : '';
+      this.getLocalAttributes(loadForThisNn, modeCode);
     });
 
-
-
-    this.STATIC_ATTRIBUTES.forEach(attr => {
-
-      this.addAttributeMappingRow({
-        libraryAttributeCode: attr,
-        localAttributeCode: ''
+    (this.mappingForm.get('attributeMapData') as FormArray).valueChanges.subscribe(values => {
+      values.forEach(v=>{
+        const exAttr = this.gsnAttributes.filter(fil => fil.ATTRIBUTE_ID === v.libraryAttributeCode)[0];
+        exAttr.localAttributeCode = v.localAttributeCode ? v.localAttributeCode.ATTRIBUTE_ID : '';
+        exAttr.localAttributeText = v.localAttributeCode ? v.localAttributeCode.ATTR_CODE : '';
       });
-
     });
-
   }
 
   patchMappingForm(attributesMapping: AttributesMapping) {
@@ -150,15 +175,33 @@ export class LibraryMappingSidesheetComponent implements OnInit {
       })
   }
 
+  getAttributesFromGsn(nounCode: string , modCode: string) {
+    this.userDetails.getUserDetails().subscribe(user=>{
+      this.nounModifierService.getGsnAttribute(nounCode, modCode, user.plantCode).subscribe(res=>{
+        this.gsnAttributes = res.ATTRIBUTES ? res.ATTRIBUTES : [];
+        this.mgroup = res.MGROUP ? res.MGROUP : '';
+        // create form ..
+        this.gsnAttributes.forEach(att=>{
+          this.addAttributeMappingRow(att);
+        });
+
+        this.getAttributesMapping();
+      });
+    });
+  }
+
   /**
    * Add attribute mapping row
    */
-  addAttributeMappingRow(row?) {
+  addAttributeMappingRow(attr: AttributesDoc) {
 
     this.attributeMapData.push(
       this.formBuilder.group({
-        libraryAttributeCode: [row && row.libraryAttributeCode ? row.libraryAttributeCode : ''],
-        localAttributeCode: [row && row.localAttributeCode ? row.localAttributeCode : '']
+        libraryAttributeCode: [attr && attr.ATTR_CODE ? attr.ATTR_CODE : ''],
+        libraryAttributeText: [attr && (attr.ATTR_DESC ? attr.ATTR_DESC :  attr.ATTR_CODE) ? attr.ATTR_CODE : ''],
+        localAttributeCode: [attr && attr.localAttributeCode ? attr.localAttributeCode : ''],
+        localAttributeText: [attr && attr.localAttributeText ? attr.localAttributeText : ''],
+        status: [attr && attr.status ? attr.status : 'unmapped']
       })
     );
 
@@ -173,11 +216,25 @@ export class LibraryMappingSidesheetComponent implements OnInit {
       return;
     }
 
-    console.log(this.mappingForm.value);
+    const mappings = this.mappingForm.value;
+    const attrMapRequest: AttributesMapping = {} as AttributesMapping;
+    attrMapRequest.localNounCode = mappings.localNounCode ?  mappings.localNounCode : '';
+    attrMapRequest.localModCode = mappings.localModCode ? mappings.localModCode : '';
+    attrMapRequest.libraryNounCode = this.libraryNounCode ? this.libraryNounCode : '';
+    attrMapRequest.libraryModCode = this.libraryModifierCode ? this.libraryModifierCode : '';
 
-    const request: AttributesMapping = { ...this.mappingForm.value } as AttributesMapping;
+    attrMapRequest.attributeMapData = [];
 
-    this.nounModifierService.saveAttributesMapping(request)
+    mappings.attributeMapData.forEach(mm=>{
+      const attr:AttributeMapData = {} as AttributeMapData;
+      attr.libraryAttributeCode = mm.libraryAttributeCode;
+      attr.localAttributeCode = typeof mm.localAttributeCode === 'string' ? mm.localAttributeCode : mm.localAttributeCode.ATTRIBUTE_ID;
+      attrMapRequest.attributeMapData.push(attr);
+    });
+
+    console.log(attrMapRequest);
+
+    this.nounModifierService.saveAttributesMapping(attrMapRequest)
       .subscribe(resp => {
         this.snackBar.open('Successfully created!', 'close', { duration: 3000 });
         this.close();
@@ -218,35 +275,113 @@ export class LibraryMappingSidesheetComponent implements OnInit {
     }
   } */
 
-  get selectedNoun() {
-    return this.localNounsList.find(noun => noun.NOUN_CODE === this.mappingForm.value.localNounCode);
+  get selectedNounCode() {
+    return this.mappingForm.get('localNounCode').value ? this.mappingForm.get('localNounCode').value : '';
   }
 
   openNounSidesheet() {
     // need material group
-    this.router.navigate(['', { outlets: { outer: `outer/schema/noun/${this.moduleId}/40142300` } }])
+    this.router.navigate(['', { outlets: { outer: `outer/schema/noun/${this.moduleId}/${this.mgroup}` } }])
   }
 
   openModifierSidesheet() {
-    // need material group and library noun code
-    if (!this.selectedNoun) {
-      this.snackBar.open('You must select a noun first !', 'close', { duration: 3000 });
-      return;
-    }
-    this.router.navigate(['', { outlets: { outer: `outer/schema/modifier/${this.moduleId}/40142300/${this.selectedNoun.NOUN_CODE}` } }])
+    this.router.navigate(['', { outlets: { outer: `outer/schema/modifier/${this.moduleId}/${this.mgroup}/${this.selectedNounCode.NOUN_CODE}` } }])
   }
 
   openAttributeSidesheet() {
-    // need library nounSno
-    if (!this.selectedNoun) {
-      this.snackBar.open('You must select a noun first !', 'close', { duration: 3000 });
-      return;
-    }
-    this.router.navigate(['', { outlets: { outer: `outer/schema/attribute/${this.selectedNoun.noun_ID}` } }])
+    this.router.navigate(['', { outlets: { outer: `outer/schema/attribute/${this.selectedNounCode.NOUN_ID}` } }])
   }
 
   close() {
     this.router.navigate([{ outlets: { sb: null } }]);
   }
+
+  /**
+   * Filte attributes based on status or serach ..
+   * @param sta status ..
+   */
+  filterAsStatus(sta: string) {
+    const preVState = this.statas.filter(f=> f.code === sta)[0];
+    const index = this.statas.indexOf(preVState);
+    if(preVState.isSeleted) {
+      this.statas.splice(index, 1);
+      preVState.isSeleted = false;
+      this.statas.splice(index,0,preVState);
+    } else {
+      this.statas.splice(index, 1);
+      preVState.isSeleted = true;
+      this.statas.splice(index,0,preVState);
+    }
+    this.preInpVal = '';
+    this.filterAttribute('',this.statas.filter(f=> f.isSeleted === true).map(map=> map.code));
+  }
+
+  /**
+   * Search attribute from global serach ...
+   * @param val text for search attributes ..
+   */
+  searchAttributeVal(val: string) {
+    debounceTime(1000);
+    this.filterAttribute(val);
+  }
+
+  /**
+   * filter attribute fuzzy search ..
+   * @param serachString search able string ..
+   * @param status search for what ..
+   */
+  filterAttribute(serachString?: string, status?: string []) {
+    let filterAttr = this.gsnAttributes;
+    if(serachString && serachString.trim()) {
+      filterAttr = this.gsnAttributes.filter(fil=> (fil.ATTR_CODE.toLocaleLowerCase().indexOf(serachString.toLocaleLowerCase()) !==-1 ||
+                            fil.ATTR_DESC.toLocaleLowerCase().indexOf(serachString.toLocaleLowerCase()) !==-1));
+    }
+    if(status) {
+      status.forEach(st=>{
+        const ft = filterAttr.filter(f => f.status === st);
+        filterAttr.push(...ft);
+      });
+
+    }
+    const frmAray = this.mappingForm.get('attributeMapData') as FormArray;
+    frmAray.clear();
+    filterAttr.forEach(att=>{
+      this.addAttributeMappingRow(att);
+    });
+  }
+
+  /**
+   *
+   * @param gsnNounCode gdnNounCode ...
+   */
+  nounSuggestion(gsnNounCode: string): NounModifier {
+    const nnn = this.localNounsList.filter(f=> f.NOUN_ID.toLocaleLowerCase().indexOf(gsnNounCode.toLocaleLowerCase()))[0];
+    return nnn;
+  }
+
+
+  modifierSuggestion(gsnModeCode: string): NounModifier{
+    const nnn = this.LocalModifiersList.filter(f=> f.MODE_CODE.toLocaleLowerCase().indexOf(gsnModeCode.toLocaleLowerCase()))[0];
+    return nnn;
+  }
+
+
+  attributeSuggestion(gsnAttributeCode: string): AttributesDoc {
+    const nnn = this.LocalAttributesList.filter(f=> f.ATTR_CODE.toLocaleLowerCase().indexOf(gsnAttributeCode.toLocaleLowerCase()))[0];
+    return nnn;
+  }
+
+
+
+  createNewWidgetFor(f: string) {
+    if(f === 'noun') {
+      this.openNounSidesheet();
+    } else if(f === 'modifier') {
+      this.openModifierSidesheet();
+    } else if(f === 'attribute') {
+      this.openAttributeSidesheet();
+    }
+  }
+
 
 }

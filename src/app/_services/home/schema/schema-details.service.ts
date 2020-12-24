@@ -154,7 +154,10 @@ export class SchemaDetailsService {
       finalRes.mro_local_lib = {doc_cnt:mro[0] ?mro[0].doc_count : 0, info: mro[0] ? mro[0].info : []};
 
       const gsn = res.filter(fil => fil.ruleType === 'mro_gsn_lib');
-      finalRes.mro_gsn_lib = {doc_cnt:gsn[0] ?gsn[0].doc_count : 0, info: gsn[0] ? gsn[0].info : []};;
+      finalRes.mro_gsn_lib = {doc_cnt:gsn[0] ?gsn[0].doc_count : 0, info: gsn[0] ? gsn[0].info : []};
+
+      const unmatched = res.filter(fil => fil.ruleType === 'unmatched');
+      finalRes.unmatched = {doc_count: unmatched[0].doc_count ? unmatched[0].doc_count : 0};
 
       return finalRes;
     }));

@@ -22,6 +22,9 @@ export class AttributesDoc {
     TEXT_FIELD: string;
     DROPDOWN_FIELD: string;
     ATTRIBUTES_VALUES: AttributesValuesDoc[];
+    localAttributeCode?: string;
+    localAttributeText?: string;
+    status?: string;
 
 }
 
