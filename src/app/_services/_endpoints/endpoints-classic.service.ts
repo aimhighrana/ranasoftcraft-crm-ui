@@ -674,8 +674,8 @@ export class EndpointsClassicService {
    * @param objctNumber record object number
    * @param moduleId object type
    */
-  public markForDeletionUrl(objctNumber, moduleId): string {
-    return `${this.apiUrl}/schema/update-delFlag/${objctNumber}/${moduleId}`;
+  public markForDeletionUrl(objctNumber, moduleId, schemaId, runId): string {
+    return `${this.apiUrl}/schema/update-delFlag/${objctNumber}/${moduleId}/${schemaId}/${runId}`;
   }
 
   /**
@@ -685,5 +685,25 @@ export class EndpointsClassicService {
    */
   public doDuplicacyCorrectionUrl(schemaId, runId): string {
     return `${this.apiUrl}/duplicate/do-correction/${schemaId}/${runId}`;
+  }
+
+  /**
+   * approve corrected duplicacy records uri
+   * @param schemaId schema id
+   * @param runId run id
+   * @param userName username
+   */
+  public approveDuplicacyCorrectionUrl(schemaId, runId, userName): string {
+    return `${this.apiUrl}/approveDuplicateRecords/${schemaId}/${runId}?userName=${userName}`;
+  }
+
+  /**
+   * approve corrected duplicacy records uri
+   * @param schemaId schema id
+   * @param runId run id
+   * @param userName user name
+   */
+  public rejectDuplicacyCorrectionUrl(schemaId, runId, userName): string {
+    return `${this.apiUrl}/rejectDuplicateRecords/${schemaId}/${runId}?userName=${userName}`;
   }
 }

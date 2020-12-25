@@ -68,7 +68,7 @@ export class DuplicacyDataSource implements DataSource<SchemaTableData> {
 
                 // record status
                 const status: SchemaTableData = new SchemaTableData();
-                status.fieldData = doc.masterRecord ? RECORD_STATUS.MASTER : RECORD_STATUS.NOT_DELETABLE;
+                status.fieldData = doc.masterRecord ? RECORD_STATUS.MASTER : doc.DEL_FLAG ? RECORD_STATUS.DELETABLE : RECORD_STATUS.NOT_DELETABLE;
                 status.fieldId = RECORD_STATUS_KEY ;
                 status.fieldDesc = 'Status';
                 rowData[RECORD_STATUS_KEY] = status;
@@ -94,7 +94,8 @@ export class DuplicacyDataSource implements DataSource<SchemaTableData> {
 
                         // check for old values
                         if (hdvs[hdfld].oc && hdvs[hdfld].oc.length > 0) {
-                            const oldVal = hdvs[hdfld].oc ? hdvs[hdfld].oc.map(map => map.c).toString() : '';
+                            const oldVal = hdvs[hdfld].oc ? hdvs[hdfld].oc : '';
+                            // .map(map => map.c).toString() : '';
                             cell.oldData = oldVal;
                             // cell.isCorrected = cell.oldData === cell.fieldData ? false : true;
                             cell.isCorrected = true;

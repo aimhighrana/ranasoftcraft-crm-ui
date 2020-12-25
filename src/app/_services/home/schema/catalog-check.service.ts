@@ -18,8 +18,8 @@ export class CatalogCheckService {
     return this.http.post<any>(this.endpointService.masterRecordChangeUrl(), request);
   }
 
-  markForDeletion(objctNumber, moduleId) {
-    return this.http.post<any>(this.endpointService.markForDeletionUrl(objctNumber, moduleId), null);
+  markForDeletion(objctNumber, moduleId, schemaId, runId) {
+    return this.http.post<any>(this.endpointService.markForDeletionUrl(objctNumber, moduleId, schemaId, runId), null);
   }
 
   getAllGroupIds(params) : Observable<any> {
@@ -44,6 +44,14 @@ export class CatalogCheckService {
 
   doCorrection(schemaId, runId, request: DoCorrectionRequest): Observable<any> {
     return this.http.post<any>(this.endpointService.doDuplicacyCorrectionUrl(schemaId, runId), request);
+  }
+
+  approveDuplicacyCorrection(schemaId, runId, objNums, userName): Observable<any> {
+    return this.http.post<any>(this.endpointService.approveDuplicacyCorrectionUrl(schemaId, runId, userName), objNums);
+  }
+
+  rejectDuplicacyCorrection(schemaId, runId, objNums, userName): Observable<any> {
+    return this.http.post<any>(this.endpointService.rejectDuplicacyCorrectionUrl(schemaId, runId, userName), objNums);
   }
 
 }

@@ -79,7 +79,7 @@ describe('EndpointsClassicService', () => {
 
   it('markForDeletionUrl(),should return markForDeletionUrl url', async(() => {
     const serObj =new EndpointsClassicService();
-    expect(serObj.markForDeletionUrl('diw_15','mod1')).toContain('/schema/update-delFlag/diw_15/mod1');
+    expect(serObj.markForDeletionUrl('diw_15','mod1','schema','run')).toContain('/schema/update-delFlag/diw_15/mod1/schema/run');
   }));
 
   it('doDuplicacyCorrectionUrl(),should return doDuplicacyCorrectionUrl url', async(() => {
@@ -120,6 +120,16 @@ describe('EndpointsClassicService', () => {
   it('getUpdateNotificationUrl(),should return getUpdateNotificationUrl url', async(() => {
     const serObj =new EndpointsClassicService();
     expect(serObj.getUpdateNotificationUrl()).toContain('notification/saveNotification');
+  }));
+
+  it('approveDuplicacyCorrectionUrl(),should return approveDuplicacyCorrectionUrl url', async(() => {
+    const serObj =new EndpointsClassicService();
+    expect(serObj.approveDuplicacyCorrectionUrl('schema','run','user')).toContain('approveDuplicateRecords/schema/run?userName=user');
+  }));
+
+  it('rejectDuplicacyCorrectionUrl(),should return rejectDuplicacyCorrectionUrl url', async(() => {
+    const serObj =new EndpointsClassicService();
+    expect(serObj.rejectDuplicacyCorrectionUrl('schema','run','user')).toContain('rejectDuplicateRecords/schema/run?userName=user');
   }));
 
 });

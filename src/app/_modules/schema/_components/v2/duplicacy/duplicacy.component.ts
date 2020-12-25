@@ -25,6 +25,8 @@ import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ContainerRefDirective } from '@modules/shared/_directives/container-ref.directive';
 import { TableCellInputComponent } from '@modules/shared/_components/table-cell-input/table-cell-input.component';
+import { Userdetails } from '@models/userdetails';
+import { UserService } from '@services/user/userservice.service';
 
 @Component({
   selector: 'pros-duplicacy',
@@ -58,6 +60,11 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
    */
   @Input()
   schemaId: string;
+
+  /**
+   * Current active tab..
+   */
+  activeTab = 'error';
 
   /**
    * Variant id if have otherwise by default is 0 for all
@@ -95,11 +102,6 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
    */
   tableHeaderActBtn: string[] = [];
 
-
-  /**
-   * Store info about active tab..
-   */
-  activeTab = 'error';
 
   /**
    * Executed statics of schema
@@ -166,9 +168,11 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
 
   RECORD_STATUS = RECORD_STATUS;
 
-  RECORD_STATUS_KEY = RECORD_STATUS_KEY ;
+  RECORD_STATUS_KEY = RECORD_STATUS_KEY;
 
   FIELD_TYPE = FieldInputType;
+
+  userDetails: Userdetails;
 
 
 
@@ -184,7 +188,8 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     private schemaListService: SchemalistService,
     private schemaVariantService: SchemaVariantService,
     private catalogService: CatalogCheckService,
-    private componentFactoryResolver: ComponentFactoryResolver
+    private componentFactoryResolver: ComponentFactoryResolver,
+    private userService: UserService
 
   ) { }
 
@@ -291,9 +296,13 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
      * inline search changes
      */
     this.inlineSearchSubject.pipe(
-          debounceTime(100),
-          distinctUntilChanged()
-      ).subscribe(value => this.inlineSearch(value));
+      debounceTime(100),
+      distinctUntilChanged()
+    ).subscribe(value => this.inlineSearch(value));
+
+    this.userService.getUserDetails().subscribe(res => {
+      this.userDetails = res;
+    }, error => console.error(`Error : ${error.message}`));
 
 
   }
@@ -433,10 +442,11 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
       console.log('Already loaded for tab {}', status)
       return false;
     }
-    this.activeTab = status;
     this.dataSource.reset();
-    this.getData();
-    this.router.navigate(['/home/schema/schema-details', this.moduleId, this.schemaId], { queryParams: { status: this.activeTab } });
+    this.activeTab = status;
+    this.groupId = null;
+    // this.getData();
+    this.router.navigate(['/home/schema/schema-details', this.moduleId, this.schemaId], { queryParams: { status} });
 
   }
 
@@ -513,34 +523,85 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
    * @param type type of request is inline or submit all
    * @param row if request  type is inline then submit single rec ..
    */
-  /* approveRecords(type: string, row?: any) {
-    const id: string[] = [];
+  approveRecords(type: string, row?: any) {
+    const objNumbs: string[] = [];
     if (type === 'inline') {
       const docId = row ? row.OBJECTNUMBER.fieldData : '';
       if (docId) {
-        id.push(docId);
+        objNumbs.push(docId);
       }
     } else {
       if (this.selection.selected.length) {
         const selected = this.selection.selected;
         selected.forEach(sel => {
           const docId = sel.OBJECTNUMBER.fieldData;
-          id.push(docId);
+          objNumbs.push(docId);
         });
 
       }
     }
-    const request: SchemaCorrectionReq = { id, fldId: null, vc: null, isReviewed: true } as SchemaCorrectionReq;
-    this.schemaDetailService.doCorrection(this.schemaId, request).subscribe(res => {
+    console.log(objNumbs);
+
+    this.catalogService.approveDuplicacyCorrection(this.schemaId, this.schemaInfo.runId, objNumbs,this.userDetails.userName)
+    .subscribe(res => {
+        // this.getData();
+        this.snackBar.open('Successfully approved !', 'close', {duration: 1500});
+
+        if (type === 'inline') {
+          row.OBJECTNUMBER.isReviewed = true;
+        } else {
+          this.selection.selected.forEach(record => {
+            record.OBJECTNUMBER.isReviewed = true;
+          })
+        }
+        this.selection.clear();
+    }, error => {
+      this.snackBar.open(`Something went wrong !`, 'Close', { duration: 2000 });
+      console.error(`Error :: ${error.message}`);
+    });
+  }
+
+  /**
+   *
+   * @param type type of request is inline or submit all
+   * @param row if request  type is inline then submit single rec ..
+   */
+  rejectRecords(type: string, row?: any) {
+    const objNumbs: string[] = [];
+    if (type === 'inline') {
+      const docId = row ? row.OBJECTNUMBER.fieldData : '';
+      if (docId) {
+        objNumbs.push(docId);
+      }
+    } else {
+      if (this.selection.selected.length) {
+        const selected = this.selection.selected;
+        selected.forEach(sel => {
+          const docId = sel.OBJECTNUMBER.fieldData;
+          objNumbs.push(docId);
+        });
+
+      }
+    }
+    console.log(objNumbs);
+
+    this.catalogService.rejectDuplicacyCorrection(this.schemaId, this.schemaInfo.runId, objNumbs,this.userDetails.userName)
+    .subscribe(res => {
       if (res.acknowledge) {
-        this.getData();
+        if (type === 'inline') {
+          row.OBJECTNUMBER.isReviewed = false;
+        } else {
+          this.selection.selected.forEach(record => {
+            record.OBJECTNUMBER.isReviewed = false;
+          })
+        }
         this.selection.clear();
       }
     }, error => {
-      this.snackBar.open(`Error :: ${error}`, 'Close', { duration: 2000 });
+      this.snackBar.open(`Something went wrong !`, 'Close', { duration: 2000 });
       console.error(`Error :: ${error.message}`);
     });
-  } */
+  }
 
   /**
    * Make control for prepare filter for ...
@@ -703,11 +764,13 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
    */
   markForDeletion(row) {
     const objectNumber = row.OBJECTNUMBER.fieldData;
-    if(!objectNumber) {
-      return ;
+    if (!objectNumber || row[RECORD_STATUS_KEY].fieldData === RECORD_STATUS.DELETABLE) {
+      return;
     }
-    this.catalogService.markForDeletion(objectNumber, this.moduleId)
+    this.catalogService.markForDeletion(objectNumber, this.moduleId, this.schemaId, this.schemaInfo.runId)
       .subscribe(resp => {
+        this.snackBar.open('Successfully marked for deletion !', 'close', {duration: 1500});
+        row[RECORD_STATUS_KEY].fieldData = RECORD_STATUS.DELETABLE;
         console.log(resp);
       }, error => {
         console.log(error);
@@ -785,8 +848,8 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
 
   getRecordStatusClass(row) {
     return row[RECORD_STATUS_KEY].fieldData === RECORD_STATUS.MASTER ? 'success'
-          : row[RECORD_STATUS_KEY].fieldData === RECORD_STATUS.NOT_DELETABLE ? 'warning'
-          : 'deletable' ;
+      : row[RECORD_STATUS_KEY].fieldData === RECORD_STATUS.NOT_DELETABLE ? 'warning'
+        : 'deletable';
   }
 
   getTableRowClass(row) {
@@ -856,13 +919,15 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
       const oldVal = row[fldid] ? row[fldid].fieldData : '';
       if (objctNumber && oldVal !== value) {
         console.log('correction request....')
-        const request: DoCorrectionRequest = { id: objctNumber, fldId: fldid, vc: value, oc: oldVal,
-              groupIdold: this.groupId, groupIdnew:'',isReviewed: 'false' } as DoCorrectionRequest;
+        const request: DoCorrectionRequest = {
+          id: objctNumber, fldId: fldid, vc: value, oc: oldVal,
+          groupIdold: this.groupId, groupIdnew: '', isReviewed: 'false', groupField: this.groupKey
+        } as DoCorrectionRequest;
         this.catalogService.doCorrection(this.schemaId, this.schemaInfo.runId, request).subscribe(res => {
           // row[fldid].fieldData = value;
           console.log(res);
         }, error => {
-          this.snackBar.open(`Error :: ${error}`, 'Close', { duration: 2000 });
+          this.snackBar.open(`Something went wrong !`, 'Close', { duration: 2000 });
           console.error(`Error :: ${error.message}`);
         });
       } else {

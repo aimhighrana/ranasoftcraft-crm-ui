@@ -72,4 +72,5 @@ export class DoCorrectionRequest {
     isReviewed: string;
     groupIdold: string;
     groupIdnew: string;
+    groupField: string;
 }

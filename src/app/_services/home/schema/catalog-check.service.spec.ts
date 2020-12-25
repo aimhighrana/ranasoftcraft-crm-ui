@@ -8,7 +8,8 @@ import { CatalogCheckService } from './catalog-check.service';
 describe('CatalogCheckService', () => {
   let catalogService: CatalogCheckService;
   let endpointServiceSpy: jasmine.SpyObj<EndpointsClassicService>;
-  const endpointSpy = jasmine.createSpyObj('EndpointsClassicService', ['duplicacyGroupsListUrl', 'catalogCheckRecordsUrl', 'markForDeletionUrl', 'masterRecordChangeUrl','doDuplicacyCorrectionUrl']);
+  const endpointSpy = jasmine.createSpyObj('EndpointsClassicService', ['duplicacyGroupsListUrl', 'catalogCheckRecordsUrl', 'markForDeletionUrl',
+  'masterRecordChangeUrl','doDuplicacyCorrectionUrl','approveDuplicacyCorrectionUrl', 'rejectDuplicacyCorrectionUrl']);
   let httpTestingController: HttpTestingController;
 
   beforeEach(() => {
@@ -147,7 +148,7 @@ describe('CatalogCheckService', () => {
 
 
     // actual service call
-    catalogService.markForDeletion('Diw_15','module1').subscribe(actualResponse => {
+    catalogService.markForDeletion('Diw_15','module1','schema','run').subscribe(actualResponse => {
       expect(actualResponse).toEqual(mockData);
     });
 
@@ -177,6 +178,58 @@ describe('CatalogCheckService', () => {
 
     // actual service call
     catalogService.doCorrection('schema1','run1', request).subscribe(actualResponse => {
+      expect(actualResponse).toEqual(mockData);
+    });
+
+    // mock http call
+    const mockRequest = httpTestingController.expectOne(`${url}`);
+    expect(mockRequest.request.method).toEqual('POST');
+    expect(mockRequest.request.responseType).toEqual('json');
+    mockRequest.flush(mockData);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('should approve record correction ', async(() => {
+
+    const url = 'approve-correction url';
+
+    // mock url
+    endpointServiceSpy.approveDuplicacyCorrectionUrl.and.returnValue(url);
+    // mock data
+    const mockData = {
+      message: 'success'
+    }
+
+
+    // actual service call
+    catalogService.approveDuplicacyCorrection('schema1','run1', ['diw_15'], 'user').subscribe(actualResponse => {
+      expect(actualResponse).toEqual(mockData);
+    });
+
+    // mock http call
+    const mockRequest = httpTestingController.expectOne(`${url}`);
+    expect(mockRequest.request.method).toEqual('POST');
+    expect(mockRequest.request.responseType).toEqual('json');
+    mockRequest.flush(mockData);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('should reject record correction ', async(() => {
+
+    const url = 'reject-correction url';
+
+    // mock url
+    endpointServiceSpy.rejectDuplicacyCorrectionUrl.and.returnValue(url);
+    // mock data
+    const mockData = {
+      message: 'success'
+    }
+
+
+    // actual service call
+    catalogService.rejectDuplicacyCorrection('schema1','run1', ['diw_15'], 'user').subscribe(actualResponse => {
       expect(actualResponse).toEqual(mockData);
     });
 

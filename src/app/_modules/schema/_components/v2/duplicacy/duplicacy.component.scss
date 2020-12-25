@@ -120,6 +120,10 @@ div.root {
             display: table;
             border-collapse: collapse;
 
+            .text-correction {
+              color: red;
+            }
+
             .row-deletable {
               text-decoration: line-through;
             }
