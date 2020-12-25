@@ -122,7 +122,7 @@ export class GroupDataTableComponent implements OnInit, OnChanges, AfterViewInit
     request.from = isLoadingMore ? this.dataSource.data.length : 0;
     request.to = isLoadingMore ? this.dataSource.data.length + 20 : 20;
     // request.to = 20;
-    request.requestStatus = this.activeTab;
+    request.responseStatus = this.activeTab;
 
     this.catalogService.getAllGroupIds(request)
       .subscribe(groups => {

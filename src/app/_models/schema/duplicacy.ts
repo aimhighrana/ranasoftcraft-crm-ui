@@ -21,7 +21,7 @@ export class RequestForGroupList {
     runId: string;
     from: number;
     to: number;
-    requestStatus: string;
+    responseStatus: string;
 
 }
 
@@ -62,4 +62,14 @@ export class MasterRecordChangeRequest {
     runId: string;
     id: string;
     oldId: string;
+}
+
+export class DoCorrectionRequest {
+    id: string;
+    fldId: string;
+    vc: string;
+    oc: string;
+    isReviewed: string;
+    groupIdold: string;
+    groupIdnew: string;
 }

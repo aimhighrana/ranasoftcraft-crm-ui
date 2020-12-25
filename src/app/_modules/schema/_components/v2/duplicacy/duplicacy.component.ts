@@ -17,7 +17,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 
-import { MasterRecordChangeRequest, RECORD_STATUS, RECORD_STATUS_KEY, RequestForCatalogCheckData } from '@models/schema/duplicacy';
+import { DoCorrectionRequest, MasterRecordChangeRequest, RECORD_STATUS, RECORD_STATUS_KEY, RequestForCatalogCheckData } from '@models/schema/duplicacy';
 import { CatalogCheckService } from '@services/home/schema/catalog-check.service';
 import { MatPaginator } from '@angular/material/paginator';
 import { DuplicacyDataSource } from './duplicacy-data-source';
@@ -697,9 +697,21 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
       });
   }
 
+  /**
+   * mark record for deletion
+   * @param row record to be marked for deletion
+   */
   markForDeletion(row) {
-    /* this.catalogService.markAsMasterRecord(row.id)
-      .subscribe(resp => row[RECORD_STATUS_KEY].fieldData = RECORD_STATUS.DELETABLE); */
+    const objectNumber = row.OBJECTNUMBER.fieldData;
+    if(!objectNumber) {
+      return ;
+    }
+    this.catalogService.markForDeletion(objectNumber, this.moduleId)
+      .subscribe(resp => {
+        console.log(resp);
+      }, error => {
+        console.log(error);
+      });
   }
 
 
@@ -840,23 +852,22 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
       viewCtrl.style.display = 'block';
 
       // DO correction call for data
-      /* const objctNumber = row.OBJECTNUMBER.fieldData;
+      const objctNumber = row.OBJECTNUMBER.fieldData;
       const oldVal = row[fldid] ? row[fldid].fieldData : '';
       if (objctNumber && oldVal !== value) {
         console.log('correction request....')
-        const request: SchemaCorrectionReq = { id: [objctNumber], fldId: fldid, vc: value, isReviewed: null } as SchemaCorrectionReq;
-        this.schemaDetailService.doCorrection(this.schemaId, request).subscribe(res => {
-          row[fldid].fieldData = value;
-          if (res.acknowledge) {
-            this.statics.correctedCnt = res.count ? res.count : 0;
-          }
+        const request: DoCorrectionRequest = { id: objctNumber, fldId: fldid, vc: value, oc: oldVal,
+              groupIdold: this.groupId, groupIdnew:'',isReviewed: 'false' } as DoCorrectionRequest;
+        this.catalogService.doCorrection(this.schemaId, this.schemaInfo.runId, request).subscribe(res => {
+          // row[fldid].fieldData = value;
+          console.log(res);
         }, error => {
           this.snackBar.open(`Error :: ${error}`, 'Close', { duration: 2000 });
           console.error(`Error :: ${error.message}`);
         });
       } else {
         console.error(`Wrong with object number or can't change if old and new same  ... `);
-      } */
+      }
     }
 
   }

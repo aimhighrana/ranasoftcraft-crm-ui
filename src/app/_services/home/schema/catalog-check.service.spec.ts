@@ -1,6 +1,6 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed, async } from '@angular/core/testing';
-import { RequestForCatalogCheckData, RequestForGroupList } from '@models/schema/duplicacy';
+import { DoCorrectionRequest, MasterRecordChangeRequest, RequestForCatalogCheckData, RequestForGroupList } from '@models/schema/duplicacy';
 import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 
 import { CatalogCheckService } from './catalog-check.service';
@@ -8,7 +8,7 @@ import { CatalogCheckService } from './catalog-check.service';
 describe('CatalogCheckService', () => {
   let catalogService: CatalogCheckService;
   let endpointServiceSpy: jasmine.SpyObj<EndpointsClassicService>;
-  const endpointSpy = jasmine.createSpyObj('EndpointsClassicService', ['duplicacyGroupsListUrl', 'catalogCheckRecordsUrl']);
+  const endpointSpy = jasmine.createSpyObj('EndpointsClassicService', ['duplicacyGroupsListUrl', 'catalogCheckRecordsUrl', 'markForDeletionUrl', 'masterRecordChangeUrl','doDuplicacyCorrectionUrl']);
   let httpTestingController: HttpTestingController;
 
   beforeEach(() => {
@@ -21,6 +21,7 @@ describe('CatalogCheckService', () => {
     catalogService = TestBed.inject(CatalogCheckService);
     endpointServiceSpy = TestBed.inject(EndpointsClassicService) as jasmine.SpyObj<EndpointsClassicService>;
     httpTestingController = TestBed.inject(HttpTestingController);
+
   });
 
   it('should be created', () => {
@@ -90,6 +91,93 @@ describe('CatalogCheckService', () => {
     catalogService.getCatalogCheckRecords(request).subscribe(actualResponse => {
       expect(actualResponse).toEqual(mockData);
       // expect(actualResponse.length).toEqual(2);
+    });
+
+    // mock http call
+    const mockRequest = httpTestingController.expectOne(`${url}`);
+    expect(mockRequest.request.method).toEqual('POST');
+    expect(mockRequest.request.responseType).toEqual('json');
+    mockRequest.flush(mockData);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('mark a record as master record ', async(() => {
+
+    const request = new MasterRecordChangeRequest();
+    request.id = 'Diw_15';
+    request.schemaId = 'schema123';
+    request.runId = 'run123';
+    request.oldId = '';
+
+    const url = 'catalog master record url';
+
+    // mock url
+    endpointServiceSpy.masterRecordChangeUrl.and.returnValue(url);
+    // mock data
+    const mockData = {
+      message: 'success'
+    }
+
+
+    // actual service call
+    catalogService.markAsMasterRecord(request).subscribe(actualResponse => {
+      expect(actualResponse).toEqual(mockData);
+    });
+
+    // mock http call
+    const mockRequest = httpTestingController.expectOne(`${url}`);
+    expect(mockRequest.request.method).toEqual('POST');
+    expect(mockRequest.request.responseType).toEqual('json');
+    mockRequest.flush(mockData);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('should mark a record for deletion ', async(() => {
+
+    const url = 'catalog deletion record url';
+
+    // mock url
+    endpointServiceSpy.markForDeletionUrl.and.returnValue(url);
+    // mock data
+    const mockData = {
+      message: 'success'
+    }
+
+
+    // actual service call
+    catalogService.markForDeletion('Diw_15','module1').subscribe(actualResponse => {
+      expect(actualResponse).toEqual(mockData);
+    });
+
+    // mock http call
+    const mockRequest = httpTestingController.expectOne(`${url}`);
+    expect(mockRequest.request.method).toEqual('POST');
+    expect(mockRequest.request.responseType).toEqual('json');
+    mockRequest.flush(mockData);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('should do record correction ', async(() => {
+
+    const url = 'do-correction url';
+
+    // mock url
+    endpointServiceSpy.doDuplicacyCorrectionUrl.and.returnValue(url);
+    // mock data
+    const mockData = {
+      message: 'success'
+    }
+
+    const request: DoCorrectionRequest = { id: 'Diw_15', fldId: 'MATL_GRP', vc: 'newValue', oc: 'oldVal',
+      groupIdold: 'fuzzy1', groupIdnew:'',isReviewed: 'false' } as DoCorrectionRequest;
+
+
+    // actual service call
+    catalogService.doCorrection('schema1','run1', request).subscribe(actualResponse => {
+      expect(actualResponse).toEqual(mockData);
     });
 
     // mock http call

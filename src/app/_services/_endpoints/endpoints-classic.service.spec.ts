@@ -77,4 +77,49 @@ describe('EndpointsClassicService', () => {
     expect(serObj.masterRecordChangeUrl()).toContain('duplicate/updatemasterRecord');
   }));
 
+  it('markForDeletionUrl(),should return markForDeletionUrl url', async(() => {
+    const serObj =new EndpointsClassicService();
+    expect(serObj.markForDeletionUrl('diw_15','mod1')).toContain('/schema/update-delFlag/diw_15/mod1');
+  }));
+
+  it('doDuplicacyCorrectionUrl(),should return doDuplicacyCorrectionUrl url', async(() => {
+    const serObj =new EndpointsClassicService();
+    expect(serObj.doDuplicacyCorrectionUrl('schema1','run1')).toContain('duplicate/do-correction/schema1/run1');
+  }));
+
+  it('saveUpdateDuplicateRule(),should return saveUpdateDuplicateRule url', async(() => {
+    const serObj =new EndpointsClassicService();
+    expect(serObj.saveUpdateDuplicateRule()).toContain('duplicate/saveDuppsett');
+  }));
+
+  it('saveUpdateDataScopeUrl(),should return saveUpdateDataScopeUrl url', async(() => {
+    const serObj =new EndpointsClassicService();
+    expect(serObj.saveUpdateDataScopeUrl()).toContain('schema/variant/create-update-single');
+  }));
+
+  it('getAllDataScopeUrl(),should return getAllDataScopeUrl url', async(() => {
+    const serObj =new EndpointsClassicService();
+    expect(serObj.getAllDataScopeUrl('schema1','type1')).toContain('schema/variants/schema1/type1');
+  }));
+
+  it('getWorkFlowFieldsUrl(),should return getWorkFlowFieldsUrl url', async(() => {
+    const serObj =new EndpointsClassicService();
+    expect(serObj.getWorkFlowFieldsUrl()).toContain('schema/get-wffields');
+  }));
+
+  it('getWorkFlowPathUrl(),should return getWorkFlowPathUrl url', async(() => {
+    const serObj =new EndpointsClassicService();
+    expect(serObj.getWorkFlowPathUrl()).toContain('schema/get-wfpath');
+  }));
+
+  it('getNotificationsUrl(),should return getNotificationsUrl url', async(() => {
+    const serObj =new EndpointsClassicService();
+    expect(serObj.getNotificationsUrl('uid','from','to')).toContain('/notification/getNotification/uid?from=from&to=to');
+  }));
+
+  it('getUpdateNotificationUrl(),should return getUpdateNotificationUrl url', async(() => {
+    const serObj =new EndpointsClassicService();
+    expect(serObj.getUpdateNotificationUrl()).toContain('notification/saveNotification');
+  }));
+
 });
