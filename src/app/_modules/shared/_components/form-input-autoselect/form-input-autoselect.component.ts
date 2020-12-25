@@ -10,38 +10,82 @@ import { isEqual } from 'lodash';
   styleUrls: ['./form-input-autoselect.component.scss']
 })
 export class FormInputAutoselectComponent implements OnInit, OnChanges {
+
+  /**
+   * array of options to show in the dropdown
+   */
   @Input()
   updatedOptionsList: any[] = [];
 
+  /**
+   * local variable for holding the filtered options
+   */
   optionList: any[] = [];
 
+  /**
+   * this key is used to get the value from the selected item
+   * if the item is an object
+   */
   @Input()
   valueKey: string;
 
+  /**
+   * this key is used to get the tooltip from the selected item
+   * if the item is an object
+   */
   @Input()
   tooltipKey: string;
 
+  /**
+   * this key is used to get the label from the selected item
+   * if the item is an object
+   */
   @Input()
   labelKey: string;
 
+  /**
+   * hold or pass the preselected values
+   */
   @Input()
   preSelectedValue: any;
 
+  /**
+   * Define the action that will happen when
+   * selecting the extra option in the list
+   */
   @Input()
   viewMoreAction: string;
 
+  /**
+   * Define the action that will happen when
+   * the extra button at the end of the input
+   * gets clicked
+   */
   @Input()
   extraOption: string;
 
+  /**
+   * Define the label show for the extra option at
+   * the end of the list
+   */
   @Input()
   extraOptionLabel: string;
 
+  /**
+   * Define the field label
+   */
   @Input()
   fieldLabel: string;
 
+  /**
+   * Event emitter for the selected option
+   */
   @Output()
   optionSelectedEmit: EventEmitter<any> = new EventEmitter(null);
 
+  /**
+   * Event emitter for extra button at the end of the input
+   */
   @Output()
   openCustomDialog: EventEmitter<any> = new EventEmitter(null);
 
@@ -57,8 +101,21 @@ export class FormInputAutoselectComponent implements OnInit, OnChanges {
   @Output()
   emitExtraLabelClick: EventEmitter<any> = new EventEmitter(null);
 
+  /**
+   * Observable for filtered option
+   * used to filter results as a search term is typed
+   */
   filteredOptions: Observable<any[]>;
+
+  /**
+   * Form control for the input field
+   */
   selectedMdoFldCtrl: FormControl;
+
+  /**
+   * option that holds a value to identify if the results array is empty
+   */
+  hasResult: boolean;
   constructor() {
     this.selectedMdoFldCtrl = new FormControl();
    }
@@ -114,13 +171,14 @@ export class FormInputAutoselectComponent implements OnInit, OnChanges {
    * @param value pass the value to be looked up in the list of values
    */
   private _filter(value: any): any[] {
+    let availableOptions = this.optionList;
     if(value){
       const filterValue = (isNaN(value))? value.toLowerCase(): value;
 
-      return this.optionList.filter(option => this.getLowerCaseLabel(option[this.labelKey]).indexOf(filterValue) === 0);
+      availableOptions = this.optionList.filter(option => this.getLowerCaseLabel(option[this.labelKey]).indexOf(filterValue) === 0);
     }
-
-    return this.optionList;
+    this.hasResult = availableOptions.length>0;
+    return availableOptions;
   }
 
   /**

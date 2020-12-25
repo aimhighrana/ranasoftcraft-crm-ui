@@ -320,9 +320,9 @@ export class BrruleSideSheetComponent implements OnInit {
       requiredKeys = ['categoryId', 'rule_name', 'error_message', 'fields'];
     }
     if (selectedRule === BusinessRuleType.BR_TRANSFORMATION) {
-      requiredKeys = ['rule_name', 'transformationRuleType', 'error_message'];
+      requiredKeys = ['rule_name', 'categoryId', 'transformationRuleType', 'error_message'];
       if (this.selectedTransformationType === this.transformationType.REGEX) {
-        requiredKeys = ['rule_name', 'transformationRuleType', 'error_message', 'sourceFld'];
+        requiredKeys = ['rule_name', 'categoryId', 'transformationRuleType', 'error_message', 'sourceFld'];
       }
     }
     if (selectedRule === BusinessRuleType.BR_DUPLICATE_RULE) {
@@ -350,7 +350,10 @@ export class BrruleSideSheetComponent implements OnInit {
   }
 
   /**
-   * Set br inf to form while editing ..
+   * method to patch initial data when editing a business rule
+   * There's a patchlist array that decides what value to patch
+   * based on the business rule type received
+   * @param br Pass the business rule data to be patched
    */
   setValueToElement(br: CoreSchemaBrInfo) {
     const dataToPatch = {
@@ -380,8 +383,9 @@ export class BrruleSideSheetComponent implements OnInit {
       patchList = ['rule_type', 'rule_name', 'weightage', 'error_message'];
     }
     if (br.brType === BusinessRuleType.BR_TRANSFORMATION) {
-      patchList = ['rule_type', 'rule_name', 'error_message', 'weightage'];
-      this.patchTransformationFormData(br.transFormationSchema);
+      dataToPatch.transformationRuleType = this.getTrRuleType(br.transFormationSchema);
+      patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId', 'transformationRuleType'];
+      this.patchTransformationFormData(dataToPatch.transformationRuleType, br.transFormationSchema);
     }
     if (br.brType === BusinessRuleType.BR_REGEX_RULE) {
       patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId', 'standard_function', 'regex'];
@@ -411,17 +415,14 @@ export class BrruleSideSheetComponent implements OnInit {
     }
 
     this.form.get('rule_type').disable({ onlySelf: true, emitEvent: true });
+    this.form.get('transformationRuleType').disable({ onlySelf: true, emitEvent: true });
   }
 
   /**
    * Patch transformation form data
    * @param transformationSchema transformation rule details to be passed
    */
-  patchTransformationFormData(transformationSchema: TransformationModel[]) {
-    const currentType = this.getTrRuleType(transformationSchema);
-    setTimeout(() => {
-      this.form.controls.transformationRuleType.setValue(currentType);
-    }, 300);
+  patchTransformationFormData(currentType: string, transformationSchema: TransformationModel[]) {
     if (currentType === this.transformationType.REGEX) {
       if (transformationSchema && transformationSchema.length > 0) {
         const data: TransformationModel = transformationSchema[0];
@@ -754,13 +755,13 @@ export class BrruleSideSheetComponent implements OnInit {
 
     } else if (brType === BusinessRuleType.BR_TRANSFORMATION) {
       const response = {
-        formData: this.form.value,
+        formData: this.form.getRawValue(),
         tempId: '',
         lookupData: this.lookupData,
         transformationData: this.transformationData
       };
       const finalFormData = {
-        ...this.form.value,
+        ...this.form.getRawValue(),
         brId: this.brId ? this.brId : '',
         brType,
         transFormationSchema: this.mapTransformationData(response, brType),
