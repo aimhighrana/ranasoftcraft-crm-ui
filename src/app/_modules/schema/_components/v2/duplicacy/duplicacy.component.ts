@@ -174,6 +174,11 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
 
   userDetails: Userdetails;
 
+  /**
+   * data fetch page index
+   */
+  pageIndex = 0;
+
 
 
   constructor(
@@ -388,11 +393,17 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
    */
   getData(isLoadingMore?) {
 
+    if (isLoadingMore) {
+      this.pageIndex++;
+    } else {
+      this.pageIndex = 0;
+    }
+
     const request = new RequestForCatalogCheckData();
     request.schemaId = this.schemaId;
     request.groupId = this.groupId;
-    request.from = isLoadingMore ? this.dataSource.docLength() : 0;
-    request.to = isLoadingMore ? this.dataSource.docLength() + 20 : 20;
+    request.page = this.pageIndex ;
+    request.size = 20;
     request.key = this.groupKey;
     request.runId = '';
     request.filterCriterias = this.filterCriteria.getValue() || [];

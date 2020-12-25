@@ -57,6 +57,11 @@ export class GroupDataTableComponent implements OnInit, OnChanges, AfterViewInit
 
   activeGroupId: string;
 
+  /**
+   * data fetch page index
+   */
+  pageIndex = 0;
+
   constructor(private catalogService: CatalogCheckService,
     private sharedServices: SharedServiceService,
     private router: Router) { }
@@ -115,13 +120,18 @@ export class GroupDataTableComponent implements OnInit, OnChanges, AfterViewInit
 
   getDuplicacyGroupsList(isLoadingMore?){
 
+    if (isLoadingMore) {
+      this.pageIndex++;
+    } else {
+      this.pageIndex = 0;
+    }
+
     const request = new RequestForGroupList();
     request.schemaId = this.schemaId;
     request.plantCode = '0';
     request.runId = this.runId || '';
-    request.from = isLoadingMore ? this.dataSource.data.length : 0;
-    request.to = isLoadingMore ? this.dataSource.data.length + 20 : 20;
-    // request.to = 20;
+    request.page = this.pageIndex;
+    request.size = 20;
     request.responseStatus = this.activeTab;
 
     this.catalogService.getAllGroupIds(request)

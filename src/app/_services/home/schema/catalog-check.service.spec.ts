@@ -72,8 +72,8 @@ describe('CatalogCheckService', () => {
     const request = new RequestForCatalogCheckData();
     request.schemaId = 'schema1';
     request.groupId = 'group1';
-    request.from = 1;
-    request.to = 20;
+    request.page = 0;
+    request.size = 20;
     request.key = 'exactGroupId';
     request.runId = '123';
 
