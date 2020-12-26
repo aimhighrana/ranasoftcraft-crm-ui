@@ -158,7 +158,7 @@ it('ngOnChanges(), ngonchange component hooks ', async(()=>{
     component.schemaId = '234238';
     component.schemaInfo = {runId:'32423432'} as SchemaListDetails;
 
-    spyOn(schemaDetailService,'rejectClassification').withArgs(component.schemaId, component.schemaInfo.runId, 'MAT001').and.returnValue(of(true));
+    spyOn(schemaDetailService,'rejectClassification').withArgs(component.schemaId, component.schemaInfo.runId, ['MAT001']).and.returnValue(of(true));
 
     component.rejectRec(row, 0);
 

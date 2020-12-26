@@ -20,6 +20,9 @@ import { TableCellInputComponent } from '@modules/shared/_components/table-cell-
 import { SaveVariantDialogComponent } from '../../save-variant-dialog/save-variant-dialog.component';
 import { AddFilterOutput } from '@models/schema/schema';
 import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
+import { Userdetails } from '@models/userdetails';
+import { UserService } from '@services/user/userservice.service';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'pros-potext-view',
@@ -75,7 +78,7 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Static column for actions
    */
-  startColumns = ['checkbox_select', 'bucket_assigned', 'action'];
+  startColumns = ['checkbox_select', 'bucket_assigned', 'action','OBJECTNUMBER'];
 
   /**
    * All display column fieldid should be here
@@ -168,6 +171,11 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
 
   subscribers: Subscription[] = [];
 
+  /**
+   * Hold current user informations ..
+   */
+  userDetails: Userdetails;
+
   constructor(
     private activatedRouter: ActivatedRoute,
     private schemaDetailService: SchemaDetailsService,
@@ -180,7 +188,8 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
     private schemaListService: SchemalistService,
     private schemaVariantService: SchemaVariantService,
     private componentFactoryResolver: ComponentFactoryResolver,
-    private schemavariantService: SchemaVariantService
+    private schemavariantService: SchemaVariantService,
+    private userService: UserService
 
 
   ) { }
@@ -290,6 +299,9 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
       }
     });
 
+    this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(re=>{
+      this.userDetails = re;
+    }, err=> console.error(`Error ${err.error}`));
   }
 
   /**
@@ -453,7 +465,7 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
    */
   downloadExecutionDetails() {
     const downloadLink = document.createElement('a');
-    downloadLink.href = this.endpointservice.downloadExecutionDetailsUrl(this.schemaId, this.activeTab) + '?runId=';
+    downloadLink.href = this.endpointservice.downloadExecutionDetailsUrl(this.schemaId, this.activeTab ==='review' ? this.activeTab : 'all') + '?runId=';
     downloadLink.setAttribute('target', '_blank');
     document.body.appendChild(downloadLink);
     downloadLink.click();
@@ -467,6 +479,7 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
    * @param value current value after change on
    */
   inlineSearch(value: string) {
+    debounceTime(1000);
     const filterCValue = this.filterCriteria.getValue() ? this.filterCriteria.getValue() : [];
     const haveInline = filterCValue.filter(fil => fil.type === 'INLINE')[0];
     if(value && value.trim() !== '') {
@@ -760,14 +773,19 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
       console.log(res);
       const oldData = this.dataSource.docValue();
       const sameDoc = oldData.filter(fil => (fil as any).OBJECTNUMBER.fieldData === objNr)[0];
-      sameDoc[tragetFld].fieldData = res;
+      if(sameDoc[tragetFld]) {
+        sameDoc[tragetFld].fieldData = res;
+      } else {
+        sameDoc[tragetFld] = {fieldData: res,fieldDesc: '',fieldId: tragetFld};
+      }
+
       this.dataSource.setDocValue(oldData);
 
       // put into correction tab
       const request: SchemaCorrectionReq = {id: [objNr],fldId:tragetFld,vc: res, isReviewed: null} as SchemaCorrectionReq;
         this.schemaDetailService.doCorrection(this.schemaId, request).subscribe(r=>{
           if(r.acknowledge) {
-            this.statics.correctedCnt = r.count? r.count : 0;
+            this.schemaInfo.correctionValue = this.schemaInfo.correctionValue ? this.schemaInfo.correctionValue ++ : 0;
           }
         }, error=>{
           this.snackBar.open(`Something went wrong `, 'Close',{duration:2000});
