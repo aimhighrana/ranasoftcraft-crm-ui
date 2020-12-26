@@ -62,7 +62,7 @@ export class LibraryMappingSidesheetComponent implements OnInit {
 
   statas: Status[] = [
     {code:'matched', text:'Matched', isSeleted: false},
-    {code:'suggest', text:'Suggest', isSeleted: false},
+    {code:'suggest', text:'Suggested', isSeleted: false},
     {code:'unmapped', text:'Unmapped', isSeleted: false},
   ];
 

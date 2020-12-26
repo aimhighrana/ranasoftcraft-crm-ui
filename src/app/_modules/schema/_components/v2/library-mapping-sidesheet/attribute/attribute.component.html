@@ -14,42 +14,45 @@
 
     <div class="f-col mdo-justify">
         <form [formGroup]="attributeForm">
-            <div class="temp-field">
-                <pros-form-input [type]="'text'" [placeholder]="'Name'" (valueChange)="setControlValue('attrCode', $event)">
+            <div class="mdo-form-field">
+                <pros-form-input [type]="'text'" [placeholder]="'Name'" [label]="'Name'" (valueChange)="setControlValue('attrCode', $event)">
                 </pros-form-input>
                 <mat-error
                     *ngIf="submitted && attributeForm.controls.attrCode.errors && attributeForm.controls.attrCode.errors.required">
                     Please enter name
                 </mat-error>
             </div>
-            <div class="temp-field">
-                <pros-form-input [type]="'text'" [placeholder]="'Description'"
+            <div class="mdo-form-field">
+                <pros-form-input [type]="'text'" [placeholder]="'Description'" [label]="'Description'"
                     (valueChange)="setControlValue('attrDesc', $event)"></pros-form-input>
                 <mat-error
                     *ngIf="submitted && attributeForm.controls.attrDesc.errors && attributeForm.controls.attrDesc.errors.required">
                     Please enter description
                 </mat-error>
             </div>
-            <div class="f-col temp-field">
+            <div class="f-col mdo-form-field">
+                <div class="f-row-spacer-half"></div>
                 <div class="f-row">
                     <mat-button-toggle-group formControlName="type" appearance="legacy">
                         <mat-button-toggle [value]="ATTRIBUTE_DATA_TYPE.TEXT">Text</mat-button-toggle>
                         <mat-button-toggle [value]="ATTRIBUTE_DATA_TYPE.NUMBER">Number</mat-button-toggle>
                         <mat-button-toggle [value]="ATTRIBUTE_DATA_TYPE.LIST">List</mat-button-toggle>
                     </mat-button-toggle-group>
+                    <div class="f-col-spacer-half"></div>
                     <a class="info-link"> Default value (4)</a>
                 </div>
+                <div class="f-row-spacer-half"></div>
             </div>
-            <div class="temp-field">
-                <pros-form-input type="number" [placeholder]="'Field length'"
+            <div class="mdo-form-field">
+                <pros-form-input type="number" [placeholder]="'Field length'" [label]="'Field length'"
                     (valueChange)="setControlValue('attFieldLen', $event)"></pros-form-input>
                 <mat-error
                     *ngIf="submitted && attributeForm.controls.attFieldLen.errors && attributeForm.controls.attFieldLen.errors.required">
                     Please enter field length
                 </mat-error>
             </div>
-            <div class="temp-field">
-                <pros-form-input [type]="'text'" [placeholder]="'Prefix'"
+            <div class="mdo-form-field">
+                <pros-form-input [type]="'text'" [placeholder]="'Prefix'" [label]="'Prefix'"
                     (valueChange)="setControlValue('prefix', $event)"></pros-form-input>
                 <mat-error
                     *ngIf="submitted && attributeForm.controls.prefix.errors && attributeForm.controls.prefix.errors.required">

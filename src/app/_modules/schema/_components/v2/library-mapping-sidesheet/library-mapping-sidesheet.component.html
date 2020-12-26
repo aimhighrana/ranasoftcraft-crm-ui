@@ -22,7 +22,7 @@
 
                     <ng-template ngFor let-chip [ngForOf]="statas">
                         <ng-template [ngIf]="chip.code === 'matched'">
-                            <mat-chip class="mdo-filter-matchip" (click)="filterAsStatus(chip.code)" [class.color]="chip.isSeleted">
+                            <mat-chip class="mdo-filter-matchip" (click)="filterAsStatus(chip.code)" [class.selected]="chip.isSeleted">
                                 <label>
                                     {{ chip.text }}
                                 </label>
@@ -30,7 +30,7 @@
                         </ng-template>
 
                         <ng-template [ngIf]="chip.code === 'suggest'">
-                            <mat-chip class="mdo-filter-matchip" (click)="filterAsStatus(chip.code)" [class.color]="chip.isSeleted">
+                            <mat-chip class="mdo-filter-matchip" (click)="filterAsStatus(chip.code)" [class.selected]="chip.isSeleted">
                                 <label>
                                     {{ chip.text }}
                                 </label>
@@ -38,7 +38,7 @@
                         </ng-template>
 
                         <ng-template [ngIf]="chip.code === 'unmapped'">
-                            <mat-chip class="mdo-filter-matchip" (click)="filterAsStatus(chip.code)" [class.color]="chip.isSeleted">
+                            <mat-chip class="mdo-filter-matchip" (click)="filterAsStatus(chip.code)" [class.selected]="chip.isSeleted">
                                 <label>
                                     {{ chip.text }}
                                 </label>
@@ -51,19 +51,19 @@
             <div class="f-row colunm-box rule-border-row">
                 <div class="col col-x4"><strong>Type</strong></div>
                 <div class="col col-x8"><strong>GSN</strong></div>
-                <div class="col col-x16"><strong>Master library</strong></div>
+                <div class="col col-x8"><strong>Master library</strong></div>
             </div>
 
             <div>
                 <form [formGroup]="mappingForm">
                 <div class="f-row colunm-box rule-border-row">
                     <div class="col col-x4">
-                        <div mat-line>Noun</div>
+                        <div mat-line><strong>Noun</strong></div>
                     </div>
                     <div class="col col-x8">
                         <div mat-line> {{ libraryNounCode }} </div>
                     </div>
-                    <div class="col col-x16">
+                    <div class="col col-x8">
                         
                         <!-- <mat-form-field appearance="outline">
                             <mat-select formControlName="localNounCode">
@@ -93,12 +93,12 @@
 
                 <div class="f-row colunm-box rule-border-row">
                     <div class="col col-x4">
-                        <div mat-line>Modifier</div>
+                        <div mat-line><strong>Modifier</strong></div>
                     </div>
                     <div class="col col-x8">
                         <div mat-line> {{ libraryModifierCode }} </div>
                     </div>
-                    <div class="col col-x16">
+                    <div class="col col-x8">
                         <!-- <mat-form-field appearance="outline">
                             <mat-select formControlName="localModCode">
                                 <mat-option (click)="openModifierSidesheet()">
@@ -124,12 +124,12 @@
                         *ngFor="let attributeRow of attributeMapData.controls; let i=index; let isFirst=first">
                     <ng-container [formGroupName]="i">
                         <div class="col col-x4">
-                            <div mat-line><span *ngIf="isFirst">Attribute</span></div>
+                            <div mat-line><strong *ngIf="isFirst">Attribute</strong></div>
                         </div>
                         <div class="col col-x8">
                             <div mat-line> {{ attributeRow.value.libraryAttributeText ? attributeRow.value.libraryAttributeText  : attributeRow.value.libraryAttributeCode }} </div>
                         </div>
-                        <div class="col col-x16">
+                        <div class="col col-x8">
                             <!-- <mat-form-field appearance="outline">
                                 <mat-select formControlName="localAttributeCode">
                                     <mat-option value="" >

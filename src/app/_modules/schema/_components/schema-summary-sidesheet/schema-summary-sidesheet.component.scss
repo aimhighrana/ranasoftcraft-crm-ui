@@ -108,6 +108,19 @@ mat-card.root {
           word-break: break-word;
           font-size: 0.9rem;
         }
+
+        .slider-row {
+          align-items: center;
+          flex-wrap: wrap;
+
+          mat-slider.mat-slider {
+            flex: 10;
+          }
+
+          .percent-count {
+            flex: 1;
+          }
+        }
       }
     }
   }

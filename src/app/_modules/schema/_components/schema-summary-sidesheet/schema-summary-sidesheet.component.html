@@ -101,12 +101,14 @@
                                 </div>
 
                                 <div class="col col-x8">
+                                    <div class="f-row slider-row">
                                     <mat-slider color="primary" [value]="businessRule.brWeightage" thumbLabel
                                         tickInterval="1" min="0" [max]="availableWeightage(businessRule.brWeightage)"
                                         (change)="updateBr(businessRule,$event)">
                                     </mat-slider>
                                     <span class="f-col-spacer-half"></span>
-                                    <div>{{businessRule.brWeightage}}%</div>
+                                    <div class="percent-count">{{businessRule.brWeightage}}%</div>
+                                </div>
                                 </div>
 
                                 <div class="col col-x8">

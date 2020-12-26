@@ -82,7 +82,7 @@ mat-card.root {
     width: 1px;
     align-items: center;
     margin: 0 16px;
-    word-break: break-word;
+    flex-wrap: wrap;
 
     &.col-x4 {
       flex: 4;
@@ -130,6 +130,19 @@ mat-card.root {
       text-overflow: ellipsis;
       white-space: pre-line;
       word-break: break-word;
+    }
+
+    .slider-row {
+      align-items: center;
+      flex-wrap: wrap;
+
+      mat-slider.mat-slider {
+        flex: 10;
+      }
+
+      .percent-count {
+        flex: 1;
+      }
     }
 
     button.mat-stroked-button {

@@ -109,6 +109,10 @@ div.root {
         height: 100%;
         width: calc(100% - 320px - 1px);
 
+        pros-search-input {
+          min-width: 213px;
+        }
+
         .data {
           overflow: auto;
           height: calc(91% - 36px - 16px * 2 - 8px);

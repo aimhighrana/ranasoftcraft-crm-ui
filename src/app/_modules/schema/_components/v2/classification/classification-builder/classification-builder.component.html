@@ -247,10 +247,7 @@
                             <!-- Name Column -->
                             <ng-container matColumnDef="assigned_bucket" sticky>
                                 <mat-header-cell *matHeaderCellDef class="fixed-width-c1">
-                                    <!-- <button mat-button>
-                                        (click)="openTableColumnSettings()" 
-                                        <mat-icon fontSet="mdo-icons">cog</mat-icon>
-                                    </button> -->
+                                    
                                 </mat-header-cell>
                                 <mat-cell class="fixed-width-c1" *matCellDef="let element">
                                     <mat-card-header>
@@ -263,14 +260,18 @@
                             <!-- Action Column -->
                             <ng-container matColumnDef="row_action" sticky>
                                 <mat-header-cell *matHeaderCellDef class="fixed-width-c2">
+                                  <button mat-button>
+                                        <!-- (click)="openTableColumnSettings()"  -->
+                                        <mat-icon fontSet="mdo-icons">cog</mat-icon>
+                                    </button>
                                 </mat-header-cell>
                                 <mat-cell *matCellDef="let row; let rIndex = index;" class="fixed-width-c2">
                                     <div class="f-row action-iconbtns">
-                                        <button mat-fab color="accent" class="middleradius" *ngIf="row['__aditionalProp'] && !row['__aditionalProp'].fieldValue"
+                                        <button mat-fab color="accent" *ngIf="row['__aditionalProp'] && !row['__aditionalProp'].fieldValue"
                                         (click)="approveRec(row, rIndex)" id="approveBtn_{{ rIndex }}">
                                             <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
                                         </button>
-                                        <button mat-fab color="accent" class="leftradius" (click)="rejectRec(row, rIndex)" id="rejectBtn_{{ rIndex }}">
+                                        <button mat-fab color="accent" (click)="rejectRec(row, rIndex)" id="rejectBtn_{{ rIndex }}">
                                             <mat-icon fontSet="mdo-icons">declined</mat-icon>
                                         </button>
                                     </div>
