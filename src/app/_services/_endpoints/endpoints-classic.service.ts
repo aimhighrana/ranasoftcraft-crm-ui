@@ -694,7 +694,7 @@ export class EndpointsClassicService {
    * @param userName username
    */
   public approveDuplicacyCorrectionUrl(schemaId, runId, userName): string {
-    return `${this.apiUrl}/approveDuplicateRecords/${schemaId}/${runId}?userName=${userName}`;
+    return `${this.apiUrl}/schema/approveDuplicateRecords/${schemaId}/${runId}?userName=${userName}`;
   }
 
   /**
@@ -704,6 +704,6 @@ export class EndpointsClassicService {
    * @param userName user name
    */
   public rejectDuplicacyCorrectionUrl(schemaId, runId, userName): string {
-    return `${this.apiUrl}/rejectDuplicateRecords/${schemaId}/${runId}?userName=${userName}`;
+    return `${this.apiUrl}/schema/rejectDuplicateRecords/${schemaId}/${runId}?userName=${userName}`;
   }
 }
