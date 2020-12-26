@@ -39,10 +39,10 @@
     <div class="f-row">
         <mat-chip-list>
             <mat-chip disableRipple="true" (click)="viewOf.next('')" class="none-stats-chip">
-                {{ statics ? statics.errorCnt : 0 }} all</mat-chip>
+                {{ schemaInfo ? schemaInfo.totalCount : 0 }} all</mat-chip>
             <!-- <mat-chip disableRipple="true" class="warning-status">0 warning</mat-chip> -->
             <mat-chip disableRipple="true" (click)="viewOf.next('correction')" class="info-status">
-                {{ statics ? statics.correctedCnt : 0 }} corrections</mat-chip>
+                {{ schemaInfo ? schemaInfo.correctionValue : 0 }} corrections</mat-chip>
         </mat-chip-list>
     </div>
     <div class="f-row-spacer-half"></div>

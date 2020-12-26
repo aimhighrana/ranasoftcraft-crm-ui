@@ -343,7 +343,10 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
         this.tableData = res;
         const actualData = this.transformData(res, brType);
         const columns = Object.keys(actualData[0]);
-        const disPlayedCols = ['checkbox_select', 'assigned_bucket', 'OBJECTNUMBER', 'SHORT_DESC', 'MGROUP', 'NOUN_CODE', 'MODE_CODE', 'PARTNO'];
+
+        const disPlayedCols = this.viewOf.getValue() === 'correction'?
+                              ['checkbox_select', 'assigned_bucket', 'row_action', 'OBJECTNUMBER', 'SHORT_DESC', 'MGROUP', 'NOUN_CODE', 'MODE_CODE', 'PARTNO'] :
+                              ['checkbox_select', 'assigned_bucket', 'OBJECTNUMBER', 'SHORT_DESC', 'MGROUP', 'NOUN_CODE', 'MODE_CODE', 'PARTNO'] ;
         columns.forEach(key => {
           if (disPlayedCols.indexOf(key) === -1 && key !== '__aditionalProp') {
             disPlayedCols.push(key);
@@ -593,7 +596,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
       viewCtrl.style.display = 'block';
 
       if(objctNumber && oldVal !== value) {
-        const correctionReq: SchemaMROCorrectionReq = {id: objctNumber,masterLibrary: (this.dataFrm === 'mro_local_lib' ? true : false)} as SchemaMROCorrectionReq;
+        const correctionReq: SchemaMROCorrectionReq = {id: objctNumber,masterLibrary: ((this.dataFrm === 'mro_local_lib' || this.dataFrm === 'unmatched') ? true : false)} as SchemaMROCorrectionReq;
         if(fldid === 'NOUN_CODE') {
           correctionReq.nounCodeoc = oldVal;
           correctionReq.nounCodevc = value;
@@ -617,7 +620,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
           viewCtrl.innerText = value;
           row[fldid].fieldValue = value;
           if(res.acknowledge) {
-            this.statics.correctedCnt = res.count? res.count : 0;
+            this.schemaInfo.correctionValue = this.schemaInfo.correctionValue ? this.schemaInfo.correctionValue ++  : 0;
           }
         }, error=>{
           viewCtrl.innerText = oldVal;
