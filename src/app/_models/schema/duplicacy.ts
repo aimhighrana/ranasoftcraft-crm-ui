@@ -19,8 +19,8 @@ export class RequestForGroupList {
     variantId: string;
     plantCode: string;
     runId: string;
-    from: number;
-    to: number;
+    page: number;
+    size: number;
     responseStatus: string;
 
 }
@@ -30,8 +30,8 @@ export class RequestForCatalogCheckData {
     runId: string;
     groupId: string;
     key: string;
-    from: number;
-    to: number;
+    page: number;
+    size: number;
     plantCode: string;
     /* variantId: string;
     requestStatus: string;

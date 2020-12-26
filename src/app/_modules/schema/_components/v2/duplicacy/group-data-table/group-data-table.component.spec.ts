@@ -54,14 +54,10 @@ describe('GroupDataTableComponent', () => {
     request.schemaId = component.schemaId;
     request.plantCode = '0';
     request.runId = component.runId;
-    request.from = 0;
-    request.to = 20;
+    request.page = 0;
+    request.size = 20;
     request.responseStatus = component.activeTab;
 
-    /* const groups : GroupDetails[] = [
-      {groupDescription: 'duplicate', groupId: '135085134163377216'} as GroupDetails,
-      {groupDescription: 'duplicate', groupId: '293123118969692319'} as GroupDetails
-    ] */
 
     spyOn(catalogService, 'getAllGroupIds').withArgs(request)
       .and.returnValue(of([]));
