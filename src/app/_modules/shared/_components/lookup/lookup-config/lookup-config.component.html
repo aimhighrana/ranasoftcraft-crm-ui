@@ -20,6 +20,7 @@
             <mat-label>Result lookup colunm</mat-label>
             <mat-form-field appearance="outline">
                 <mat-select formControlName="lookupColumnResult">
+                    <mat-option [value]="'id'">Module object number</mat-option>
                     <mat-option [value]="field.fieldId" *ngFor="let field of moduleHeaderFields">{{field.fieldDescri}}</mat-option>
                 </mat-select>
             </mat-form-field>

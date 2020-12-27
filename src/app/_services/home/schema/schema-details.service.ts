@@ -215,8 +215,8 @@ export class SchemaDetailsService {
    * @param runId as optional request
    * @param objNr as required parameter ..
    */
-  public rejectClassification(schemaId: string, runId: string, objNr: string): Observable<boolean> {
-    return this.http.delete<boolean>(this.endpointService.rejectClassificationUri(), {params:{schemaId, runId, objNr}});
+  public rejectClassification(schemaId: string, runId: string, objNr: string[]): Observable<boolean> {
+    return this.http.put<boolean>(this.endpointService.rejectClassificationUri(), objNr, {params:{schemaId, runId}});
   }
 
 }

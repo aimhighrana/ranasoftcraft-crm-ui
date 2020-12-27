@@ -850,6 +850,7 @@ export class BrruleSideSheetComponent implements OnInit {
     if (ruleType === BusinessRuleType.BR_TRANSFORMATION) {
       if (response.lookupData && response.lookupData.length > 0) {
         response.lookupData.map((param: LookupFields) => {
+          const udr = this.createUDRBlockFromLookup(param);
           transformationList.push({
             brId: '',
             sourceFld: param.fieldId,
@@ -857,9 +858,9 @@ export class BrruleSideSheetComponent implements OnInit {
             includeScript,
             excludeScript,
             transformationRuleType,
-            lookUpObjectType: '',
+            lookUpObjectType: udr.objectType,
             lookUptable: '',
-            udrBlockModel: this.createUDRBlockFromLookup(param)
+            udrBlockModel: udr
           })
         })
       } else {

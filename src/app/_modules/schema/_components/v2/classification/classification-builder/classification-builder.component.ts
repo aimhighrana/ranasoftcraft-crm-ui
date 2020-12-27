@@ -177,6 +177,26 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
    */
   userDetails: Userdetails;
 
+  /**
+   * Store active noun code
+   */
+  activeNounCode: string;
+
+  /**
+   * Store active mode code
+   */
+  activeModeCode: string;
+
+  /**
+   * Store all pre loaded table format data ..
+   */
+  loadedTableTransData: any;
+
+  /**
+   * Store info about last loaded object number
+   */
+  isLoadMoreEnabled: boolean;
+
   constructor(
     private schemaDetailService: SchemaDetailsService,
     private schemaService: SchemaService,
@@ -335,28 +355,46 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     this.subsribers.push(sub);
   }
 
-  applyFilter(nounCode: string, modifierCode: string, brType: string) {
+  applyFilter(nounCode: string, modifierCode: string, brType: string,objectNumberAfter?: string,fromShowMore?: boolean) {
     this.dataFrm = brType;
-    const sub = this.schemaDetailService.getClassificationData(this.schemaId, this.schemaInfo.runId, nounCode, modifierCode, brType,this.viewOf.getValue(), '').subscribe(res => {
-      this.tableData = res ? res : [];
-      if(res && Object.keys(res).length >0) {
-        this.tableData = res;
-        const actualData = this.transformData(res, brType);
-        const columns = Object.keys(actualData[0]);
+    this.activeNounCode = nounCode; this.activeModeCode = modifierCode;
+    this.selection.clear();
+    const sub = this.schemaDetailService.getClassificationData(this.schemaId, this.schemaInfo.runId, nounCode, modifierCode, brType,this.viewOf.getValue(), objectNumberAfter ? objectNumberAfter : '').subscribe(res => {
 
-        const disPlayedCols = this.viewOf.getValue() === 'correction'?
-                              ['checkbox_select', 'assigned_bucket', 'row_action', 'OBJECTNUMBER', 'SHORT_DESC', 'MGROUP', 'NOUN_CODE', 'MODE_CODE', 'PARTNO'] :
-                              ['checkbox_select', 'assigned_bucket', 'OBJECTNUMBER', 'SHORT_DESC', 'MGROUP', 'NOUN_CODE', 'MODE_CODE', 'PARTNO'] ;
-        columns.forEach(key => {
-          if (disPlayedCols.indexOf(key) === -1 && key !== '__aditionalProp') {
-            disPlayedCols.push(key);
-          }
-          definedColumnsMetadata[key] = actualData[0][key];
-        });
-        this.displayedColumns.next(disPlayedCols);
-        this.dataSource = new MatTableDataSource<any>(actualData);
+      if(!fromShowMore) {
+        this.tableData = res ? res : [];
+        const r = Object.keys(res);
+        this.isLoadMoreEnabled = r.length !==20 ? false : true;
+        if(res && r.length >0) {
+          this.tableData = res;
+          const actualData = this.transformData(res, brType);
+          this.loadedTableTransData = actualData;
+          const columns = Object.keys(actualData[0]);
+
+          const disPlayedCols = this.viewOf.getValue() === 'correction'?
+                                ['checkbox_select', 'assigned_bucket', 'row_action', 'OBJECTNUMBER', 'SHORT_DESC', 'MGROUP', 'NOUN_CODE', 'MODE_CODE', 'PARTNO'] :
+                                ['checkbox_select', 'assigned_bucket', 'OBJECTNUMBER', 'SHORT_DESC', 'MGROUP', 'NOUN_CODE', 'MODE_CODE', 'PARTNO'] ;
+          columns.forEach(key => {
+            if (disPlayedCols.indexOf(key) === -1 && key !== '__aditionalProp') {
+              disPlayedCols.push(key);
+            }
+            definedColumnsMetadata[key] = actualData[0][key];
+          });
+          this.displayedColumns.next(disPlayedCols);
+          this.dataSource = new MatTableDataSource<any>(actualData);
+        } else {
+          this.dataSource = new MatTableDataSource<any>([]);
+        }
       } else {
-        this.dataSource = new MatTableDataSource<any>([]);
+        const rows = Object.keys(res);
+        rows.forEach(r=>{
+          this.tableData[r] = res[r];
+        });
+        this.isLoadMoreEnabled = rows.length !==20 ? false : true;
+        console.log(this.loadedTableTransData);
+        const actualData = this.transformData(res, brType);
+        this.loadedTableTransData.push(...actualData)
+        this.dataSource = new MatTableDataSource<any>(this.loadedTableTransData);
       }
     }, err => console.error(`Exception while getting data : ${err.message}`));
     this.subsribers.push(sub);
@@ -693,13 +731,21 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
    * @param row Row which are going to approve
    * @param rIndex row index
    */
-  approveRec(row: any, rIndex: number) {
-    const objNr = row.OBJECTNUMBER ? row.OBJECTNUMBER.fieldValue : '';
-    if(!objNr) {
+  approveRec(row: any, rIndex: number, fromWhere?:string) {
+    const objNrs: string[] = [];
+    if(fromWhere === 'all') {
+      const selectedDocs = this.selection.selected;
+      const objs = selectedDocs.map(map => map.OBJECTNUMBER);
+      objNrs.push(...objs.map(m=> m.fieldValue));
+    } else {
+      objNrs.push(row.OBJECTNUMBER ? row.OBJECTNUMBER.fieldValue : '');
+    }
+    if(!objNrs) {
       throwError(`Objectnumber is required`);
     }
 
-    this.schemaDetailService.approveClassification(this.schemaId,this.schemaInfo.runId,[objNr]).subscribe(res=>{
+    this.schemaDetailService.approveClassification(this.schemaId,this.schemaInfo.runId,objNrs).subscribe(res=>{
+      this.selection.clear();
       if(document.getElementById('approveBtn_'+rIndex))
         document.getElementById('approveBtn_'+rIndex).remove();
       this.snackBar.open(`Successfully approved`,'Close',{duration:5000});
@@ -714,15 +760,22 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
    * @param row current row which are going to reject ..
    * @param rIndex row index ..
    */
-  rejectRec(row: any, rIndex: number) {
-    const objNr = row.OBJECTNUMBER ? row.OBJECTNUMBER.fieldValue : '';
-    if(!objNr) {
+  rejectRec(row: any, rIndex: number, fromWhere?: string) {
+    const objNrs: string[] = [];
+    if(fromWhere === 'all') {
+      const selectedDocs = this.selection.selected;
+      const objs = selectedDocs.map(map => map.OBJECTNUMBER);
+      objNrs.push(...objs.map(m=> m.fieldValue));
+    } else {
+      objNrs.push(row.OBJECTNUMBER ? row.OBJECTNUMBER.fieldValue : '');
+    }
+    if(!objNrs) {
       throwError(`Objectnumber is required`);
     }
     const nounCode = row.NOUN_CODE ? row.NOUN_CODE.fieldValue : '';
     const modCode = row.MODE_CODE ? row.MODE_CODE.fieldValue : '';
 
-    this.schemaDetailService.rejectClassification(this.schemaId,this.schemaInfo.runId,objNr).subscribe(res=>{
+    this.schemaDetailService.rejectClassification(this.schemaId,this.schemaInfo.runId,objNrs).subscribe(res=>{
       setTimeout(()=>{
         this.applyFilter(nounCode, modCode, this.dataFrm);
       },1000);
@@ -731,6 +784,27 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
       console.error(`Error ${err.message}`);
       this.snackBar.open(`${err.message}`,'Close',{duration:5000});
     });
+  }
+
+
+  onTableScroll(e) {
+    console.log('colled');
+    const tableViewHeight = e.target.offsetHeight // viewport: ~500px
+    const tableScrollHeight = e.target.scrollHeight // length of all table
+    const scrollLocation = e.target.scrollTop; // how far user scrolled
+
+    // If the user has scrolled within 200px of the bottom, add more data
+    const buffer = 200;
+    const limit = tableScrollHeight - tableViewHeight - buffer;
+    if (scrollLocation > limit) {
+       console.log('Load more data here ...');
+       if(this.isLoadMoreEnabled) {
+        const keys =  Object.keys(this.tableData);
+        const objAfter = keys[keys.length -1] ? keys[keys.length -1] : '';
+        this.applyFilter(this.activeNounCode, this.activeModeCode, this.dataFrm,objAfter,true);
+       }
+
+    }
   }
 
 

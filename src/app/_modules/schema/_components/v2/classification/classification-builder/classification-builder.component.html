@@ -208,8 +208,24 @@
                             </mat-chip-list> -->
                         </div>
                         <div class="row-spacer"></div>
+
+                        <div class="f-row" *ngIf="viewOf && viewOf.getValue() === 'correction' && selection.selected.length !== 0">
+                            <button mat-flat-button (click)="approveRec('',0,'all')">
+                                <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
+                                Approve
+                            </button>
+                            <button mat-flat-button (click)="rejectRec('',0,'all')">
+                                <mat-icon fontSet="mdo-icons">block</mat-icon>
+                                Reject
+                            </button>
+                            <button mat-flat-button (click)="selection.clear()">
+                                <mat-icon fontSet="mdo-icons">close</mat-icon>
+                                Unselect
+                            </button>
+                        </div>
+
                         <!-- Data Table -->
-                        <div class="data">
+                        <div class="data" (scroll)="onTableScroll($event)">
                         <mat-table [dataSource]="dataSource" class="mat-elevation-z0">
                             <!-- Checkbox Column -->
                             <ng-container matColumnDef="checkbox_select" sticky>

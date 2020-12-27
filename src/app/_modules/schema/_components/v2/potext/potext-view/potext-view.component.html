@@ -32,8 +32,7 @@
             <mat-icon fontSet="mdo-icons">more</mat-icon>
         </button>
         <mat-menu #moreactionfile="matMenu" class="navigation-menu">
-            <button mat-menu-item>Export to CSV</button>
-            <button mat-menu-item>Import from CSV</button>
+            <button mat-menu-item (click)="downloadExecutionDetails()">Download</button>
         </mat-menu>
     </div>
     <mat-divider></mat-divider>
@@ -41,10 +40,10 @@
     <div class="f-row">
         <mat-chip-list>
             <mat-chip disableRipple="true" (click)="changeTabStatus('success')" class="error-status">
-                {{ statics ? statics.errorCnt : 0 }} errors</mat-chip>
+                {{ schemaInfo ? schemaInfo.totalCount : 0 }} all</mat-chip>
             <!-- <mat-chip disableRipple="true" class="warning-status">0 warning</mat-chip> -->
             <mat-chip disableRipple="true" (click)="changeTabStatus('review')" class="info-status">
-                {{ statics ? statics.correctedCnt : 0 }} corrections</mat-chip>
+                {{ schemaInfo ? schemaInfo.correctionValue : 0 }} corrections</mat-chip>
         </mat-chip-list>
     </div>
     <div class="row-spacer"></div>
@@ -121,9 +120,8 @@
                 <div class="row-spacer"></div>
 
                 <!-- Data Table -->
-                <div class="data">
+                <div class="data" (scroll)="onTableScroll($event)">
                     <mat-table matSort [dataSource]="dataSource" class="mat-elevation-z0">
-
                         <!-- Checkbox Column -->
                         <ng-container matColumnDef="checkbox_select" sticky>
                             <mat-header-cell *matHeaderCellDef class="fixed-width-c1">
@@ -141,7 +139,9 @@
                             <mat-header-cell *matHeaderCellDef class="fixed-width-c1"></mat-header-cell>
                             <mat-cell class="fixed-width-c1" *matCellDef="let element">
                                 <mat-card-header>
-                                    <div mat-card-avatar>AK</div>
+                                    <div mat-card-avatar>
+                                        {{ userDetails ? (userDetails.firstName ? userDetails.firstName.substring(0,1).toUpperCase() : '') : ''  }}{{ userDetails ? ( userDetails.lastName ? userDetails.lastName.substring(0,1).toUpperCase() : '') : ''  }}
+                                    </div>
                                 </mat-card-header>
                             </mat-cell>
                         </ng-container>
@@ -178,19 +178,19 @@
                             </mat-cell>
                         </ng-container>
     
-                        <!-- Name Column -->
-                        <!-- <ng-container matColumnDef="catalog_id">
-                            <mat-header-cell *matHeaderCellDef> Catalog ID </mat-header-cell>
+                        <!-- Object number -->
+                        <ng-container matColumnDef="OBJECTNUMBER" sticky>
+                            <mat-header-cell *matHeaderCellDef> Module object number </mat-header-cell>
                             <mat-cell mat-cell *matCellDef="let element">
-                                {{ element['CATALOG_ID'] ? ( element['CATALOG_ID'].fieldData ? element['CATALOG_ID'].fieldData : '?') : '?' }}
+                                {{ element['OBJECTNUMBER'] &&  element['OBJECTNUMBER'].fieldData ? element['OBJECTNUMBER'].fieldData : '' }}
     
                             </mat-cell>
-                        </ng-container> -->
+                        </ng-container>
     
                         <!-- load dynamic columns-->
                     <ng-template ngFor let-dynCols [ngForOf]="(displayedFields | async)">
                         <ng-template
-                            [ngIf]="(dynCols === 'action') || (dynCols === 'checkbox_select') || (dynCols === 'bucket_assigned')" [ngIfElse]="other">
+                            [ngIf]="(dynCols === 'action') || (dynCols === 'checkbox_select') || (dynCols === 'bucket_assigned') || (dynCols === 'OBJECTNUMBER')" [ngIfElse]="other">
                             <!-- skip all static columns -->
                         </ng-template>
                         <ng-template #other>
