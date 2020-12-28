@@ -4,26 +4,32 @@ div.root {
   width: 768px;
 
   .breadcrum-toolbar {
-    align-items: center;
     padding-top: 8px;
     position: sticky;
     top: 0;
     z-index: 2;
     min-height: 40px;
 
-    .display-heading-large {
-      font-size: 1.2rem;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-    }
-
     .mdo-constrained-right {
-      align-items: center;
       width: 100%;
 
-      button.mat-flat-button {
-        min-width: auto;
+      .f-row {
+        align-items: center;
+
+        .display-heading-large {
+          font-size: 1.2rem;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+        }
+
+        button.mat-flat-button {
+          min-width: auto;
+        }
+
+        pros-search-input {
+          min-width: 213px;
+        }
       }
     }
   }

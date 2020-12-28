@@ -210,16 +210,16 @@
                         <div class="row-spacer"></div>
 
                         <div class="f-row" *ngIf="viewOf && viewOf.getValue() === 'correction' && selection.selected.length !== 0">
-                            <button mat-flat-button (click)="approveRec('',0,'all')">
-                                <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
+                            <button mat-flat-button (click)="approveRec('',0,'all')" color="accent" class="rightradius">
+                                <!-- <mat-icon fontSet="mdo-icons">check-mark</mat-icon> -->
                                 Approve
                             </button>
-                            <button mat-flat-button (click)="rejectRec('',0,'all')">
-                                <mat-icon fontSet="mdo-icons">block</mat-icon>
+                            <button mat-flat-button (click)="rejectRec('',0,'all')" color="accent" class="middleradius">
+                                <!-- <mat-icon fontSet="mdo-icons">block</mat-icon> -->
                                 Reject
                             </button>
-                            <button mat-flat-button (click)="selection.clear()">
-                                <mat-icon fontSet="mdo-icons">close</mat-icon>
+                            <button mat-flat-button (click)="selection.clear()" color="accent" class="leftradius">
+                                <!-- <mat-icon fontSet="mdo-icons">close</mat-icon> -->
                                 Unselect
                             </button>
                         </div>
@@ -260,10 +260,10 @@
                             <!-- Action Column -->
                             <ng-container matColumnDef="row_action" sticky>
                                 <mat-header-cell *matHeaderCellDef class="fixed-width-c2">
-                                  <button mat-button>
-                                        <!-- (click)="openTableColumnSettings()"  -->
+                                  <!-- <button mat-button>
+                                       (click)="openTableColumnSettings()" 
                                         <mat-icon fontSet="mdo-icons">cog</mat-icon>
-                                    </button>
+                                    </button> -->
                                 </mat-header-cell>
                                 <mat-cell *matCellDef="let row; let rIndex = index;" class="fixed-width-c2">
                                     <div class="f-row action-iconbtns">

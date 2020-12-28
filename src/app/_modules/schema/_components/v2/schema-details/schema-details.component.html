@@ -136,14 +136,14 @@
             </mat-menu>
         </mat-chip-list>
     </div>
-    <div class="data">
+    <div class="data" (scroll)="onTableScroll($event)">
         <!-- if have data then render table -->
         <ng-template [ngIf]="showTableLoading" [ngIfElse]="showdata">
             <pros-table-loading [columnCount]="displayedFields.length">
             </pros-table-loading>
         </ng-template>
         <ng-template #showdata>
-            <mat-table [dataSource]="dataSource" matSort class="mat-elevation-z0" (scroll)="onTableScroll($event)">
+            <mat-table [dataSource]="dataSource" matSort class="mat-elevation-z0">
                 <ng-container matColumnDef="_select_columns" sticky>
                     <mat-header-cell *matHeaderCellDef class="fixed-width-c1">
                         <mat-checkbox color="primary" (change)="$event ? masterToggle() : null"
@@ -204,13 +204,13 @@
                         Actions
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="fixed-width-c2">
-                        <div class="f-row">
-                            <button mat-button (click)="approveRecords('inline', element)"
+                        <div class="f-row action-iconbtns">
+                            <button mat-fab color="accent" (click)="approveRecords('inline', element)"
                                 *ngIf="!element['OBJECTNUMBER'].isReviewed">
-                                <mat-icon>done</mat-icon>
+                                <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
                             </button>
-                            <button mat-button>
-                                <mat-icon>block</mat-icon>
+                            <button mat-fab color="accent">
+                                <mat-icon fontSet="mdo-icons">declined</mat-icon>
                             </button>
                         </div>
                     </mat-cell>
@@ -252,14 +252,14 @@
                                     [ngIfElse]="normalCell">
                                     <ng-template [ngIf]="element[dynCols].oldData !== element[dynCols].fieldData"
                                         [ngIfElse]="other">
-                                        <span class="error-message" style="color: red;">
-                                            {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].oldData) : '' }}
-                                        </span>
-                                        <br>
-                                        <span id="viewctrl_{{ dynCols + '_' + rIndex }}">
-                                            {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].fieldData) : '' }}
-                                        </span>
-
+                                        <div class="f-col">
+                                            <span class="error-message" style="color: red;">
+                                                {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].oldData) : '' }}
+                                            </span>
+                                            <span id="viewctrl_{{ dynCols + '_' + rIndex }}">
+                                                {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].fieldData) : '' }}
+                                            </span>
+                                        </div>
                                     </ng-template>
                                     <ng-template #other>
                                         <span id="viewctrl_{{ dynCols + '_' + rIndex }}">
@@ -268,13 +268,14 @@
                                     </ng-template>
                                 </ng-template>
                                 <ng-template #normalCell>
-                                    <span id="viewctrl_{{ dynCols + '_' + rIndex }}">
-                                        {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].fieldData) : '' }}
-                                    </span>
-                                    <br>
-                                    <span class="error-message" style="color: red;">
-                                        {{ element[dynCols] ? element[dynCols].errorMsg : '' }}
-                                    </span>
+                                    <div class="f-col">
+                                        <span id="viewctrl_{{ dynCols + '_' + rIndex }}">
+                                            {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].fieldData) : '' }}
+                                        </span>
+                                        <span class="error-message" style="color: red;">
+                                            {{ element[dynCols] ? element[dynCols].errorMsg : '' }}
+                                        </span>
+                                    </div>
                                 </ng-template>
 
                             </mat-cell>
@@ -286,12 +287,12 @@
                 <ng-container matColumnDef="review_actions_header">
                     <mat-header-cell *matHeaderCellDef [attr.colspan]="displayedFields.getValue().length">
                         <div class="f-row">
-                            <button mat-flat-button (click)="approveRecords('all')">
-                                <mat-icon>done</mat-icon>
+                            <button mat-flat-button color="accent" (click)="approveRecords('all')" class="rightradius">
+                                <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
                                 Approve
                             </button>
-                            <button mat-flat-button (click)="selection.clear()">
-                                <mat-icon>close</mat-icon>
+                            <button mat-flat-button color="accent" (click)="selection.clear()" class="leftradius">
+                                <mat-icon fontSet="mdo-icons">close</mat-icon>
                                 Unselect
                             </button>
                         </div>

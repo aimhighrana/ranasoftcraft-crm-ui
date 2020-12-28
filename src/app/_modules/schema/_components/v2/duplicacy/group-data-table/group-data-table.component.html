@@ -35,9 +35,9 @@
         </ng-container>
 
         <ng-container matColumnDef="groupName">
-            <mat-header-cell *matHeaderCellDef class="fixed-width-c2"> Name
+            <mat-header-cell *matHeaderCellDef> Name
             </mat-header-cell>
-            <mat-cell *matCellDef="let row" class="fixed-width-c2">
+            <mat-cell *matCellDef="let row">
                 {{ row.groupId }}
             </mat-cell>
         </ng-container>
@@ -45,11 +45,11 @@
         <ng-container matColumnDef="common_actions_header">
             <mat-header-cell *matHeaderCellDef [attr.colspan]="displayedFields.getValue().length">
                 <div class="f-row">
-                    <button mat-flat-button>
+                    <button mat-flat-button color="accent" class="rightradius">
                         <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
                         Action
                     </button>
-                    <button mat-flat-button (click)="selection.clear()">
+                    <button mat-flat-button (click)="selection.clear()" color="accent" class="rightradius">
                         <mat-icon fontSet="mdo-icons">close</mat-icon>
                         Unselect
                     </button>

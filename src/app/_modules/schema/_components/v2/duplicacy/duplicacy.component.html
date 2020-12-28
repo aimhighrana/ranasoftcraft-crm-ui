@@ -126,16 +126,16 @@
                         <div class="row-spacer"></div>
 
                         <div class="f-row" *ngIf="tableHeaderActBtn.length && activeTab === 'review'">
-                            <button mat-flat-button (click)="approveRecords('global')">
-                                <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
+                            <button mat-flat-button (click)="approveRecords('global')" color="accent" class="rightradius">
+                                <!-- <mat-icon fontSet="mdo-icons">check-mark</mat-icon> -->
                                 Approve
                             </button>
-                            <button mat-flat-button (click)="rejectRecords('global')">
-                                <mat-icon fontSet="mdo-icons">block</mat-icon>
+                            <button mat-flat-button (click)="rejectRecords('global')" color="accent" class="middleradius">
+                                <!-- <mat-icon fontSet="mdo-icons">block</mat-icon> -->
                                 Reject
                             </button>
-                            <button mat-flat-button (click)="selection.clear()">
-                                <mat-icon fontSet="mdo-icons">close</mat-icon>
+                            <button mat-flat-button (click)="selection.clear()" color="accent" class="leftradius">
+                                <!-- <mat-icon fontSet="mdo-icons">close</mat-icon> -->
                                 Unselect
                             </button>
                         </div>
@@ -143,7 +143,6 @@
                         <!-- Data Table -->
                         <div class="data" (scroll)="onScroll($event)">
                             <mat-table [dataSource]="dataSource" matSort class="mat-elevation-z0">
-
                                 <!-- Checkbox Column -->
                                 <ng-container matColumnDef="select" sticky>
                                     <mat-header-cell *matHeaderCellDef class="fixed-width-c1">
@@ -216,19 +215,19 @@
                                             </button>
                                           </ng-template>
                                           <ng-template #review>
-                                              <button mat-button (click)="rejectRecords('inline', element)">
-                                                  <mat-icon>block</mat-icon>
+                                              <button mat-fab color="accent" (click)="rejectRecords('inline', element)">
+                                                  <mat-icon fontSet="mdo-icons">declined</mat-icon>
                                               </button>
-                                              <button mat-button (click)="approveRecords('inline', element)"
+                                              <button mat-fab color="accent" (click)="approveRecords('inline', element)"
                                                   *ngIf="!element['OBJECTNUMBER'].isReviewed">
-                                                  <mat-icon>done</mat-icon>
+                                                  <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
                                               </button>
                                           </ng-template>
                                         </div>
                                     </mat-cell>
                                 </ng-container>
 
-                                <ng-container matColumnDef="OBJECTNUMBER">
+                                <ng-container matColumnDef="OBJECTNUMBER" sticky>
                                     <mat-header-cell *matHeaderCellDef mat-sort-header> Object Number</mat-header-cell>
                                     <mat-cell *matCellDef="let element">
                                         {{ element['OBJECTNUMBER'] ? element['OBJECTNUMBER'].fieldData : '' }}
@@ -333,7 +332,7 @@
                                 <mat-row *matRowDef="let row; columns: displayedFields | async;"
                                     [ngClass]="getTableRowClass(row)"></mat-row>
                             </mat-table>
-                            <pros-null-state *ngIf="!dataSource.docLength()" [button]="null"></pros-null-state>
+                            <pros-null-state *ngIf="!dataSource.docLength()" [button]="null" [iconWidth]="400"></pros-null-state>
 
                         </div>
                     </div>

@@ -4,17 +4,13 @@
             <mat-icon fontSet="mdo-icons">close</mat-icon>
         </button>
         <div class="col-spacer"></div>
-        <div class="f-row mdo-constrained-right">
-            <div class="display-heading-large">Master Library mapping</div>
-            <span class="f-spacer"></span>
-            <button (click)="save()" mat-flat-button color="primary">Save</button>
-        </div>
-    </div>
-
-    <div class="row-spacer"></div>
-
-    <div class="f-col mdo-justify">
-        <div class="colunm-listing">
+        <div class="f-col mdo-constrained-right">
+            <div class="f-row">
+                <div class="display-heading-large">Master Library mapping</div>
+                <span class="f-spacer"></span>
+                <button (click)="save()" mat-flat-button color="primary">Save</button>
+            </div>
+            <div class="row-spacer"></div>
             <div class="f-row">
                 <pros-search-input placeholder="Search attributes" (value)="searchAttributeVal($event)" [preValue] ="preInpVal"></pros-search-input>
                 <div class="f-col-spacer-half"></div>
@@ -47,7 +43,13 @@
                     </ng-template>
                 </mat-chip-list>
             </div>
-            <div class="row-spacer"></div>
+        </div>
+    </div>
+
+    <div class="row-spacer"></div>
+
+    <div class="f-col mdo-justify">
+        <div class="colunm-listing">
             <div class="f-row colunm-box rule-border-row">
                 <div class="col col-x4"><strong>Type</strong></div>
                 <div class="col col-x8"><strong>GSN</strong></div>

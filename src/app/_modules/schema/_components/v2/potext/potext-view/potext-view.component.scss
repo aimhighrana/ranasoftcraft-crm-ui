@@ -1,3 +1,4 @@
+
 div.root {
   padding: 0 16px;
   user-select: none;
@@ -35,6 +36,10 @@ div.root {
         padding: 0 8px;
         height: 100%;
         width: calc(100% - 16px);
+
+        pros-search-input {
+          min-width: 213px;
+        }
 
         .data {
           overflow: auto;

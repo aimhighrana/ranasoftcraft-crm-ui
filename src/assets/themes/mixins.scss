@@ -368,6 +368,29 @@
         color: $color-text-link;
       }
     }
+
+    &.null-cell {
+      .mat-form-field-wrapper {
+        background-color: mat-color($background-palette, card);
+        border-radius: 0;
+        margin: 0;
+
+        .mat-form-field-infix {
+          .mat-input {
+            caret-color: $color-text-secondary;
+            color: $color-text-primary;
+          }
+
+          .mat-input::placeholder {
+            color: $color-text-secondary;
+          }
+        }
+      }
+
+      .info-arrow {
+        color: $color-text-primary;
+      }
+    }
   }
 
   .cdk-overlay-container {
@@ -525,10 +548,11 @@
 
       &.mdo-filter-matchip {
         display: flex;
-        height: 36px;
+        height: 35px;
         width: auto;
         cursor: pointer;
         padding: 5px 10px;
+        line-height: 0.9em;
         border: 1px solid $color-app-border;
         background-color: mat-color($background-palette, card);
 
@@ -970,21 +994,25 @@
       border-color: $color-app-border;
     }
 
-    .mat-row:hover {
-      background-color: $color-app-hover;
-    }
-
-    .mat-header-cell {
-      font-size: 14px;
-      font-weight: 600;
-    }
-
     .mat-cell {
       border-right: 1px solid $color-app-border;
 
       &.mat-table-sticky {
         background: $color-app-accent;
       }
+    }
+
+    .mat-row:hover {
+      background-color: $color-app-hover;
+
+      .mat-cell.mat-table-sticky {
+        background: inherit;
+      }
+    }
+
+    .mat-header-cell {
+      font-size: 14px;
+      font-weight: 600;
     }
 
     .mat-header-cell,
@@ -1057,6 +1085,10 @@
     .mat-cell:last-of-type {
       padding-right: 8px;
       padding-left: 8px;
+    }
+
+    .mat-cell:last-of-type {
+      border-right: none;
     }
   }
 
@@ -1307,6 +1339,20 @@
       mat-nav-list {
         mat-list-item {
           border-bottom: 1px solid $color-app-border;
+        }
+      }
+    }
+  }
+
+  pros-upload-data {
+    div.root {
+      .field-grid {
+        mat-table.mat-table {
+          .mat-header-cell,
+          .mat-cell {
+            border-right: none;
+            min-width: 130px;
+          }
         }
       }
     }

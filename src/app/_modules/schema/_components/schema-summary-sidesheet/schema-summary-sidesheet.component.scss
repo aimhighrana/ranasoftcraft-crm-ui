@@ -112,6 +112,7 @@ mat-card.root {
         .slider-row {
           align-items: center;
           flex-wrap: wrap;
+          width: 100%;
 
           mat-slider.mat-slider {
             flex: 10;
