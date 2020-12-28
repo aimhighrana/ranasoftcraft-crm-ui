@@ -285,11 +285,11 @@ export class LibraryMappingSidesheetComponent implements OnInit {
   }
 
   openModifierSidesheet() {
-    this.router.navigate(['', { outlets: { outer: `outer/schema/modifier/${this.moduleId}/${this.mgroup}/${this.selectedNounCode.NOUN_CODE}` } }])
+    this.router.navigate(['', { outlets: { outer: `outer/schema/modifier/${this.moduleId}/${this.mgroup}/${this.selectedNounCode}` } }])
   }
 
   openAttributeSidesheet() {
-    this.router.navigate(['', { outlets: { outer: `outer/schema/attribute/${this.selectedNounCode.NOUN_ID}` } }])
+    this.router.navigate(['', { outlets: { outer: `outer/schema/attribute/${this.selectedNounCode}` } }])
   }
 
   close() {
