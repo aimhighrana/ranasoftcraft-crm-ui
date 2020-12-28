@@ -610,7 +610,11 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     }
   }
 
-  getCurrentWeightageLimit(brWeightage = null) {
+  /**
+   * Get the available weightage value
+   * @param brWeightage pass the current business rule weightage value
+   */
+  getCurrentWeightageLimit(brWeightage: any = 0) {
     let weightage = 100;
     const existingBrWeightage = Number(brWeightage);
     if(this.selectedBusinessRules && this.selectedBusinessRules.length>0) {
@@ -619,7 +623,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       });
     }
 
-    return existingBrWeightage? weightage - existingBrWeightage: weightage;
+    return existingBrWeightage? weightage + existingBrWeightage: weightage;
   }
 
   /**
@@ -1368,7 +1372,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   selectBusinessRule(businessRules: CoreSchemaBrInfo[] | CoreSchemaBrInfo) {
     if (Array.isArray(businessRules)) {
       businessRules.map((rule) => {
-        const updatedObj = { ...rule, tempId: this.utilties.getRandomString(8), isCopied: true };
+        const updatedObj = { ...rule, tempId: this.utilties.getRandomString(8), brWeightage: 0, isCopied: true };
         this.addTempIdToExisting(updatedObj.tempId).then(() => {
           this.selectedBusinessRules.push(updatedObj);
         });
@@ -1380,7 +1384,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         });
         return;
       }
-      const updatedObj = { ...businessRules, tempId: this.utilties.getRandomString(8), isCopied: true };
+      const updatedObj = { ...businessRules, tempId: this.utilties.getRandomString(8), brWeightage: 0, isCopied: true };
       this.addTempIdToExisting(updatedObj.tempId).then(() => {
         this.selectedBusinessRules.push(updatedObj);
       });

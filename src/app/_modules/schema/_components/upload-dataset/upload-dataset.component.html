@@ -217,8 +217,8 @@
                                     <mat-slider *ngIf="!isExistingRule(businessRule.tempId); else notConfigured"
                                         color="primary" [thumbLabel]="businessRule.brWeightage"
                                         min="0"
-                                        [max]="getCurrentWeightageLimit()? getCurrentWeightageLimit(): businessRule.brWeightage"
-                                        [value]="businessRule.brWeightage" [(ngModel)]="businessRule.brWeightage">
+                                        [max]="getCurrentWeightageLimit(businessRule.brWeightage)? getCurrentWeightageLimit(businessRule.brWeightage): businessRule.brWeightage"
+                                        [(ngModel)]="businessRule.brWeightage">
                                     </mat-slider>
                                     <ng-template #notConfigured>
                                         <mat-chip-list>
