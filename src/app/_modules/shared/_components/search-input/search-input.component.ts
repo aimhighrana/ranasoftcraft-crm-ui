@@ -41,10 +41,11 @@ export class SearchInputComponent implements OnInit, OnChanges {
 
   /**
    * To clear search input
+   * @param skipEmit disable form control emitEvent
    */
-  clearSearch() {
-    this.control.reset();
-    this.value.emit('');
+  clearSearch(skipEmit?) {
+    this.control.reset('', {emitEvent: !skipEmit});
+    // this.value.emit('');
   }
 
 

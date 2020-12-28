@@ -186,7 +186,8 @@
                     <div class="f-col dataset-grid-listing">
                         <!-- Filters  -->
                         <div class="f-row">
-                            <pros-search-input placeholder="Search spare parts"></pros-search-input>
+                            <pros-search-input #tableSearchInput placeholder="Search spare parts"
+                                (value)="tableSearchSubject.next($event)"></pros-search-input>
                             <div class="f-col-spacer-half"></div>
                             <!-- <mat-chip-list>
                                 <mat-chip class="mdo-filter-matchip" disableRipple="true">
