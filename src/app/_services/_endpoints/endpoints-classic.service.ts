@@ -531,7 +531,7 @@ export class EndpointsClassicService {
   }
 
   public getClassificationDataTableUrl(schemaId: string, runId: string, variantId?: string) {
-    return `${this.apiUrl}/schema/getClassificationListData/${schemaId}/${runId}`;
+    return `${this.apiUrl}/schema/getClassificationFilterListData/${schemaId}/${runId}`;
   }
 
   public getAllDataScopesUri(schemaId: string, type: string ) {

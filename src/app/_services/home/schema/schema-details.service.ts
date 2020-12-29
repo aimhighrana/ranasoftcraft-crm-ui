@@ -173,8 +173,8 @@ export class SchemaDetailsService {
    * @param ruleType append on requet params
    * @param objectNumberAfter append on requet params
    */
-  public getClassificationData(schemaId: string, runid: string, nounCode: string, modifierCode: string, ruleType: string,requestStatus: string, objectNumberAfter?: string): Observable<any> {
-    return this.http.get<any>(this.endpointService.getClassificationDataTableUrl(schemaId, runid), {params:{nounCode, modifierCode, ruleType,requestStatus, objectNumberAfter}});
+  public getClassificationData(schemaId: string, runid: string, nounCode: string, modifierCode: string, ruleType: string,requestStatus: string, searchString, objectNumberAfter?: string): Observable<any> {
+    return this.http.get<any>(this.endpointService.getClassificationDataTableUrl(schemaId, runid), {params:{nounCode, modifierCode, ruleType,requestStatus, searchString, objectNumberAfter}});
   }
 
   /**

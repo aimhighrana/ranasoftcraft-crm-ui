@@ -1,5 +1,5 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, ComponentFactoryResolver, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewContainerRef } from '@angular/core';
+import { Component, ComponentFactoryResolver, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -7,6 +7,7 @@ import { AttributeCoorectionReq, ClassificationNounMod, MetadataModeleResponse, 
 import { SchemaListDetails, SchemaStaticThresholdRes, SchemaVariantsModel } from '@models/schema/schemalist';
 import { Userdetails } from '@models/userdetails';
 import { CellDataFor, ClassificationDatatableCellEditableComponent } from '@modules/shared/_components/classification-datatable-cell-editable/classification-datatable-cell-editable.component';
+import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
 import { ContainerRefDirective } from '@modules/shared/_directives/container-ref.directive';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { GlobaldialogService } from '@services/globaldialog.service';
@@ -15,7 +16,8 @@ import { SchemaDetailsService } from '@services/home/schema/schema-details.servi
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { UserService } from '@services/user/userservice.service';
-import { BehaviorSubject, Subscription, throwError } from 'rxjs';
+import { BehaviorSubject, Subject, Subscription, throwError } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 const definedColumnsMetadata = {
   OBJECTNUMBER: {
@@ -197,6 +199,26 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
    */
   isLoadMoreEnabled: boolean;
 
+  /**
+   * Data table container scroll end
+   */
+  scrollLimitReached = false;
+
+  /**
+   * data table search input
+   */
+  @ViewChild('tableSearchInput') tableSearchInput: SearchInputComponent;
+
+  /**
+   * Inline data table search text
+   */
+  tableSearchString = '';
+
+  /**
+   * data table search input subject
+   */
+  tableSearchSubject: Subject<string> = new Subject();
+
   constructor(
     private schemaDetailService: SchemaDetailsService,
     private schemaService: SchemaService,
@@ -274,6 +296,14 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     this.userService.getUserDetails().subscribe(res=>{
       this.userDetails = res;
     }, err=> console.error(`Error ${err.message}`));
+
+
+    this.tableSearchSubject.pipe(
+      debounceTime(500),
+      distinctUntilChanged()
+    ).subscribe(value => {
+        this.filterTableData(value);
+    })
   }
 
   /**
@@ -339,6 +369,11 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
             this.dataFrm = 'mro_local_lib';
             this.applyFilter(fisrtNoun.nounCode, modifierCode, 'mro_local_lib');
           }
+          else {
+            this.activeNounCode = '';
+            this.activeModeCode = '';
+            this.dataFrm = '';
+          }
         }
       }
     }, err => console.error(`Execption while fetching .. classification noun and mod. ${err.message}`));
@@ -355,13 +390,19 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     this.subsribers.push(sub);
   }
 
-  applyFilter(nounCode: string, modifierCode: string, brType: string,objectNumberAfter?: string,fromShowMore?: boolean) {
+  applyFilter(nounCode: string, modifierCode: string, brType: string, isSearchActive?: boolean, objectNumberAfter?: string,fromShowMore?: boolean) {
     this.dataFrm = brType;
     this.activeNounCode = nounCode; this.activeModeCode = modifierCode;
-    this.selection.clear();
-    const sub = this.schemaDetailService.getClassificationData(this.schemaId, this.schemaInfo.runId, nounCode, modifierCode, brType,this.viewOf.getValue(), objectNumberAfter ? objectNumberAfter : '').subscribe(res => {
+
+    if(!isSearchActive && this.tableSearchInput) {
+      this.tableSearchString = '';
+      this.tableSearchInput.clearSearch(true);
+    }
+
+    const sub = this.schemaDetailService.getClassificationData(this.schemaId, this.schemaInfo.runId, nounCode, modifierCode, brType,this.viewOf.getValue(), this.tableSearchString, objectNumberAfter ? objectNumberAfter : '').subscribe(res => {
 
       if(!fromShowMore) {
+        this.selection.clear();
         this.tableData = res ? res : [];
         const r = Object.keys(res);
         this.isLoadMoreEnabled = r.length !==20 ? false : true;
@@ -399,6 +440,13 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     }, err => console.error(`Exception while getting data : ${err.message}`));
     this.subsribers.push(sub);
     console.log(`nounCode : ${nounCode} and modifier ${modifierCode}`)
+  }
+
+  filterTableData(searchText) {
+    if((this.activeNounCode &&  this.activeModeCode) || this.dataFrm) {
+      this.tableSearchString = searchText || '';
+      this.applyFilter(this.activeNounCode,this.activeModeCode, this.dataFrm, true);
+    }
   }
 
 
@@ -796,14 +844,16 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     // If the user has scrolled within 200px of the bottom, add more data
     const buffer = 200;
     const limit = tableScrollHeight - tableViewHeight - buffer;
-    if (scrollLocation > limit) {
+    if ((scrollLocation > limit) && !this.scrollLimitReached) {
        console.log('Load more data here ...');
+       this.scrollLimitReached = true;
        if(this.isLoadMoreEnabled) {
         const keys =  Object.keys(this.tableData);
         const objAfter = keys[keys.length -1] ? keys[keys.length -1] : '';
-        this.applyFilter(this.activeNounCode, this.activeModeCode, this.dataFrm,objAfter,true);
+        this.applyFilter(this.activeNounCode, this.activeModeCode, this.dataFrm,true,objAfter,true);
        }
-
+    } else {
+      this.scrollLimitReached = false;
     }
   }
 
