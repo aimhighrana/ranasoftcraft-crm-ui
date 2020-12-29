@@ -439,6 +439,7 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
       return false;
     }
     this.activeTab = status;
+    this.selection.clear();
     this.router.navigate(['/home/schema/schema-details', this.moduleId, this.schemaId],{queryParams:{status:this.activeTab}} );
 
     // update state of columns
@@ -533,6 +534,14 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
         this.dataSource.docValue().forEach(row => this.selection.select(row));
   }
 
+  /** The label for the checkbox on the passed row */
+  checkboxLabel(row?: any): string {
+    if (!row) {
+      return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
+    }
+    return `${this.selection.isSelected(row) ? 'deselect' : 'select'}`;
+  }
+
 
   /**
    *
@@ -556,9 +565,8 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
 
         }
     }
-    const request: SchemaCorrectionReq = {id,fldId:null,vc: null, isReviewed: true} as SchemaCorrectionReq;
-    this.schemaDetailService.doCorrection(this.schemaId, request).subscribe(res=>{
-      if(res.acknowledge) {
+    this.schemaDetailService.approveCorrectedRecords(this.schemaId, id , this.userDetails.currentRoleId).subscribe(res=>{
+      if(res && res.acknowledge) {
             this.getData();
             this.selection.clear();
         }
@@ -566,6 +574,41 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
         this.snackBar.open(`Error :: ${error}`, 'Close',{duration:2000});
         console.error(`Error :: ${error.message}`);
     });
+  }
+
+  /**
+   * Reset schema corrected records ..
+   * @param row which are going to reset ..
+   * @param type from where ..
+   */
+  resetRec(row: any, type: string) {
+    const id: string[] = [];
+    if(type === 'inline') {
+      const docId = row ? row.OBJECTNUMBER.fieldData : '';
+      if(docId) {
+        id.push(docId);
+      }
+    } else {
+        if(this.selection.selected.length) {
+          const selected = this.selection.selected;
+          selected.forEach(sel=>{
+            const docId = sel.OBJECTNUMBER.fieldData;
+            id.push(docId);
+          });
+
+        }
+    }
+    this.schemaDetailService.resetCorrectionRecords(this.schemaId, this.schemaInfo.runId , id).subscribe(res=>{
+      if(res && res.acknowledge) {
+            this.schemaInfo.correctionValue = res.count ? res.count : 0;
+            this.getData();
+            this.selection.clear();
+        }
+    }, error=>{
+        this.snackBar.open(`Error :: ${error}`, 'Close',{duration:2000});
+        console.error(`Error :: ${error.message}`);
+    });
+
   }
 
   /**
@@ -621,21 +664,6 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
       this.filterCriteria.next(exitingFilterCtrl);
     }
   }
-
-
-  /**
-   * Submit reviewed records
-   */
-  submitReviewRec() {
-    this.schemaDetailService.submitReviewedRecords(this.schemaId).subscribe(res =>{
-      if(res.acknowledge) {
-        this.snackBar.open(`Successfully submitted !`, 'Close',{duration:2000});
-      }
-    }, error=>{
-      this.snackBar.open(`${error.statusText}: Please review atleast one record(s)`, 'Close',{duration:2000});
-    });
-  }
-
 
   /**
    * Set selected drop requet .. for load values ..
@@ -785,7 +813,7 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
       const request: SchemaCorrectionReq = {id: [objNr],fldId:tragetFld,vc: res, isReviewed: null} as SchemaCorrectionReq;
         this.schemaDetailService.doCorrection(this.schemaId, request).subscribe(r=>{
           if(r.acknowledge) {
-            this.schemaInfo.correctionValue = this.schemaInfo.correctionValue ? this.schemaInfo.correctionValue ++ : 0;
+            this.schemaInfo.correctionValue = r.count ? r.count : 0;
           }
         }, error=>{
           this.snackBar.open(`Something went wrong `, 'Close',{duration:2000});

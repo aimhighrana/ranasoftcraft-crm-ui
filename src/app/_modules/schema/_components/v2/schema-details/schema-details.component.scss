@@ -4,6 +4,10 @@ div.root {
   padding: 0 16px;
   overflow: hidden;
 
+  button.mat-flat-button {
+    margin-left: 1px;
+  }
+
   .breadcrum-toolbar {
     align-items: center;
     min-height: 40px;

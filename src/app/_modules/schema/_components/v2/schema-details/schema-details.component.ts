@@ -649,8 +649,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
 
       }
     }
-    const request: SchemaCorrectionReq = { id, fldId: null, vc: null, isReviewed: true } as SchemaCorrectionReq;
-    this.schemaDetailService.doCorrection(this.schemaId, request).subscribe(res => {
+    this.schemaDetailService.approveCorrectedRecords(this.schemaId, id, this.userDetails.currentRoleId).subscribe(res => {
       if (res.acknowledge) {
         this.getData();
         this.selection.clear();
@@ -660,6 +659,42 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
       console.error(`Error :: ${error.message}`);
     });
   }
+
+  /**
+   * Reset schema corrected records ..
+   * @param row which are going to reset ..
+   * @param type from where ..
+   */
+  resetRec(row: any, type: string) {
+    const id: string[] = [];
+    if(type === 'inline') {
+      const docId = row ? row.OBJECTNUMBER.fieldData : '';
+      if(docId) {
+        id.push(docId);
+      }
+    } else {
+        if(this.selection.selected.length) {
+          const selected = this.selection.selected;
+          selected.forEach(sel=>{
+            const docId = sel.OBJECTNUMBER.fieldData;
+            id.push(docId);
+          });
+
+        }
+    }
+    this.schemaDetailService.resetCorrectionRecords(this.schemaId, this.schemaInfo.runId , id).subscribe(res=>{
+      if(res && res.acknowledge) {
+            this.statics.correctedCnt = res.count ? res.count : 0;
+            this.getData();
+            this.selection.clear();
+        }
+    }, error=>{
+        this.snackBar.open(`Error :: ${error}`, 'Close',{duration:2000});
+        console.error(`Error :: ${error.message}`);
+    });
+
+  }
+
 
   /**
    * Make control for prepare filter for ...
@@ -713,20 +748,6 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
       this.filterCriteria.next(exitingFilterCtrl);
     }
   }
-
-  /**
-   * Submit reviewed records
-   */
-  submitReviewRec() {
-    this.schemaDetailService.submitReviewedRecords(this.schemaId).subscribe(res => {
-      if (res.acknowledge) {
-        this.snackBar.open(`Successfully submitted !`, 'Close', { duration: 2000 });
-      }
-    }, error => {
-      this.snackBar.open(`${error.statusText}: Please review atleast one record(s)`, 'Close', { duration: 2000 });
-    });
-  }
-
 
   /**
    * Set selected drop requet .. for load values ..
@@ -830,6 +851,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
    * @param value cell value
    */
   formatCellData(fieldId, value) {
+    value = !value || value === 'null' ? '' : value;
     if (this.getFieldInputType(fieldId) === this.FIELD_TYPE.MULTI_SELECT) {
       // console.log(value);
       return value.toString();

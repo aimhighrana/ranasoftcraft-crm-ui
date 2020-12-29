@@ -18,6 +18,7 @@ import { DropDownValue } from '@modules/admin/_components/module/business-rules/
 import { SchemaDataSource } from '@modules/schema/_components/schema-details/schema-datatable/schema-data-source';
 import { Router } from '@angular/router';
 import { SimpleChanges } from '@angular/core';
+import { Userdetails } from '@models/userdetails';
 describe('PotextViewComponent', () => {
   let component: PotextViewComponent;
   let fixture: ComponentFixture<PotextViewComponent>;
@@ -318,5 +319,35 @@ describe('PotextViewComponent', () => {
     spyOn(router, 'navigate');
     component.openDataScopeSideSheet();
     expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/data-scope/${component.moduleId}/${component.schemaId}/new` } }])
-  })
+  });
+
+  it(`approveRecords(), approve corrected records `, async(()=>{
+    // mock data
+    const row = {OBJECTNUMBER:{fieldData:'MAT001'}};
+    component.schemaId = '246726532';
+    component.userDetails  = {currentRoleId:'123'} as Userdetails;
+
+    spyOn(schemaDetailService,'approveCorrectedRecords').withArgs(component.schemaId, ['MAT001'] , component.userDetails.currentRoleId).and.returnValue(of({acknowledge:false}));
+
+    component.approveRecords('inline', row);
+
+    expect(schemaDetailService.approveCorrectedRecords).toHaveBeenCalledWith(component.schemaId, ['MAT001'] , component.userDetails.currentRoleId);
+
+
+  }));
+
+  it(`resetRec(), reset corrected records `, async(()=>{
+    // mock data
+    const row = {OBJECTNUMBER:{fieldData:'MAT001'}};
+    component.schemaId = '246726532';
+    component.schemaInfo  = {runId:'889321'} as SchemaListDetails;
+
+    spyOn(schemaDetailService,'resetCorrectionRecords').withArgs(component.schemaId, component.schemaInfo.runId,  ['MAT001']).and.returnValue(of({acknowledge:false}));
+
+    component.resetRec(row, 'inline');
+
+    expect(schemaDetailService.resetCorrectionRecords).toHaveBeenCalledWith(component.schemaId, component.schemaInfo.runId,  ['MAT001']);
+
+
+  }));
 });

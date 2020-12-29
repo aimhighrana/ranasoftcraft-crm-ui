@@ -34,9 +34,6 @@
             <button mat-menu-item (click)="downloadExecutionDetails()">Download</button>
         </mat-menu>
         <!-- <button mat-flat-button color="accent" (click)="downloadExecutionDetails()">Download</button> -->
-        <ng-template [ngIf]="activeTab === 'review'">
-            <button mat-flat-button color="accent" (click)="submitReviewRec()">Submit</button>
-        </ng-template>
     </div>
     <mat-divider></mat-divider>
     <div class="row-spacer"></div>
@@ -136,6 +133,22 @@
             </mat-menu>
         </mat-chip-list>
     </div>
+
+    <div class="row-spacer"></div>
+
+    <div class="f-row" *ngIf="activeTab && activeTab === 'review' && selection.selected.length !== 0">
+        <button mat-flat-button (click)="approveRecords('all')" color="accent" class="rightradius">
+            Approve
+        </button>
+        <button mat-flat-button (click)="resetRec('','all')" color="accent" class="middleradius">
+            Reject
+        </button>
+        <button mat-flat-button (click)="selection.clear()" color="accent" class="leftradius">
+            Unselect
+        </button>
+    </div>
+
+
     <div class="data" (scroll)="onTableScroll($event)">
         <!-- if have data then render table -->
         <ng-template [ngIf]="showTableLoading" [ngIfElse]="showdata">
@@ -205,11 +218,11 @@
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="fixed-width-c2">
                         <div class="f-row action-iconbtns">
-                            <button mat-fab color="accent" (click)="approveRecords('inline', element)"
+                            <button mat-fab color="accent" prosClickStopPropagation (click)="approveRecords('inline', element)"
                                 *ngIf="!element['OBJECTNUMBER'].isReviewed">
                                 <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
                             </button>
-                            <button mat-fab color="accent">
+                            <button mat-fab color="accent" prosClickStopPropagation (click)="resetRec(element,'row')" *ngIf="!element['OBJECTNUMBER'].isReviewed">
                                 <mat-icon fontSet="mdo-icons">declined</mat-icon>
                             </button>
                         </div>
@@ -299,7 +312,7 @@
                     </mat-header-cell>
                 </ng-container>
 
-                <mat-header-row *matHeaderRowDef="tableHeaderActBtn; sticky: true"></mat-header-row>
+                <!-- <mat-header-row *matHeaderRowDef="tableHeaderActBtn; sticky: true"></mat-header-row> -->
                 <mat-header-row *matHeaderRowDef="displayedFields | async; sticky: true"></mat-header-row>
                 <mat-row *matRowDef="let row; columns: displayedFields | async;"></mat-row>
             </mat-table>

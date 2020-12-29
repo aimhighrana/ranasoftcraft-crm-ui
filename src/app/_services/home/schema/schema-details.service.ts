@@ -117,8 +117,24 @@ export class SchemaDetailsService {
     return this.http.get<SchemaExecutionLog[]>(this.endpointService.getSchemaExecutionLogUrl(schemaId));
   }
 
-  public submitReviewedRecords(schemaId: string): Observable<any> {
-    return this.http.post(this.endpointService.submitReviewedRecordsUrl(schemaId), null);
+  /**
+   * Approve corrected records ..
+   * @param schemaId append as request path
+   * @param objNrs send as request body
+   * @param roleId append as request params
+   */
+  public approveCorrectedRecords(schemaId: string, objNrs: string[], roleId?: string): Observable<any> {
+    return this.http.post(this.endpointService.approveCorrectedRecords(schemaId), objNrs, {params:{roleId}});
+  }
+
+  /**
+   * Reset scheama corrected records ..
+   * @param schemaId append as request path ..
+   * @param runId append as request query ..
+   * @param objNrs append as request body
+   */
+  public resetCorrectionRecords(schemaId: string, runId: string, objNrs: string[]): Observable<any> {
+    return this.http.put<any>(this.endpointService.resetCorrectionRecords(schemaId), objNrs, {params:{runId}});
   }
 
   public getAllUserDetails(queryString: string, fetchCount: any): Observable<PermissionOn> {

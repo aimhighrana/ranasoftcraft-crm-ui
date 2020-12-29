@@ -41,6 +41,10 @@ div.root {
           min-width: 213px;
         }
 
+        button.mat-flat-button {
+          margin-right: 1px;
+        }
+
         .data {
           overflow: auto;
           height: calc(100% - 16px * 4 - 36px - 24px - 56px - 2px);

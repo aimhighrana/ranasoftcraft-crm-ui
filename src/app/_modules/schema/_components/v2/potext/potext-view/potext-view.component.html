@@ -17,11 +17,6 @@
             </mat-menu>
         </div>
         <div class="f-spacer"></div>
-        <ng-template [ngIf]="activeTab === 'review'">
-            <button mat-flat-button color="accent" class="mat-elevation-z0" (click)="submitReviewRec()">
-                Submit
-            </button>
-        </ng-template>
         <button mat-flat-button color="accent" (click)="openSummarySideSheet()" class="rightradius">
             <mat-icon fontSet="mdo-icons">wand</mat-icon> Check data
         </button>
@@ -119,17 +114,38 @@
 
                 <div class="row-spacer"></div>
 
+                <div class="f-row" *ngIf="activeTab && activeTab === 'review' && selection.selected.length !== 0">
+                    <button mat-flat-button (click)="approveRecords('all')" color="accent" class="rightradius">
+                        <!-- <mat-icon fontSet="mdo-icons">check-mark</mat-icon> -->
+                        Approve
+                    </button>
+                    <button mat-flat-button (click)="resetRec('','all')" color="accent" class="middleradius">
+                        <!-- <mat-icon fontSet="mdo-icons">block</mat-icon> -->
+                        Reject
+                    </button>
+                    <button mat-flat-button (click)="selection.clear()" color="accent" class="leftradius">
+                        <!-- <mat-icon fontSet="mdo-icons">close</mat-icon> -->
+                        Unselect
+                    </button>
+                </div>
+
                 <!-- Data Table -->
                 <div class="data" (scroll)="onTableScroll($event)">
                     <mat-table matSort [dataSource]="dataSource" class="mat-elevation-z0">
                         <!-- Checkbox Column -->
                         <ng-container matColumnDef="checkbox_select" sticky>
                             <mat-header-cell *matHeaderCellDef class="fixed-width-c1">
-                                <mat-checkbox color="primary">
+                                <mat-checkbox (change)="$event ? masterToggle() : null"
+                                    [checked]="selection.hasValue() && isAllSelected()"
+                                    [indeterminate]="selection.hasValue() && !isAllSelected()"
+                                    [aria-label]="checkboxLabel()" color="primary">
                                 </mat-checkbox>
                             </mat-header-cell>
-                            <mat-cell  class="fixed-width-c1" *matCellDef="let row">
-                                <mat-checkbox color="primary">
+                            <mat-cell class="fixed-width-c1" *matCellDef="let row">
+                                <mat-checkbox (click)="$event.stopPropagation()"
+                                    (change)="$event ? selection.toggle(row) : null"
+                                    [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)"
+                                    color="primary">
                                 </mat-checkbox>
                             </mat-cell>
                         </ng-container>
@@ -163,17 +179,23 @@
                                         <button mat-menu-item>Ignore</button>
                                     </mat-menu> -->
     
-                                    <button mat-fab color="accent" *ngIf="element['CATALOG_ID'] === undefined ||  !element['CATALOG_ID'].fieldData"
+                                    <button mat-fab prosClickStopPropagation color="accent" *ngIf="element['CATALOG_ID'] === undefined ||  !element['CATALOG_ID'].fieldData"
                                     (click)="generateCrossEntry(element)">
                                         <mat-icon fontSet="mdo-icons">plus</mat-icon>
                                     </button>
-    
+
                                     <ng-template [ngIf]="activeTab === 'review'">
-                                        <button mat-fab (click)="approveRecords('inline', element)"
+                                        <button mat-fab prosClickStopPropagation (click)="approveRecords('inline', element)"
                                             *ngIf="!element['OBJECTNUMBER'].isReviewed">
                                             <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
                                         </button>
+
+                                        <button mat-fab prosClickStopPropagation color="accent" *ngIf="!element['OBJECTNUMBER'].isReviewed" (click)="resetRec(element,'row')">
+                                            <mat-icon fontSet="mdo-icons">declined</mat-icon>
+                                        </button>
+
                                     </ng-template>
+
                                 </div>
                             </mat-cell>
                         </ng-container>
@@ -242,8 +264,7 @@
                     </ng-template>
     
                         <mat-header-row *matHeaderRowDef="displayedFields | async; sticky: true"></mat-header-row >
-                        <mat-row *matRowDef="let row; columns: displayedFields | async;"
-                            (click)="selection.toggle(row)">
+                        <mat-row *matRowDef="let row; columns: displayedFields | async;">
                         </mat-row>
                     </mat-table>
                 </div>

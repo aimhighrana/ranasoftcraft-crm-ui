@@ -128,8 +128,8 @@ export class EndpointsClassicService {
     return `${this.apiUrl}/schema/get-execution-logs/${schemaId}`;
   }
 
-  public submitReviewedRecordsUrl(schemaId: string): string {
-    return `${this.apiUrl}/schema/submit-reviewed-records/${schemaId}`;
+  public approveCorrectedRecords(schemaId: string): string {
+    return `${this.apiUrl}/schema/approve-corrected-records/${schemaId}`;
   }
 
   public uploadFileDataUrl(): string {
@@ -705,5 +705,13 @@ export class EndpointsClassicService {
    */
   public rejectDuplicacyCorrectionUrl(schemaId, runId, userName): string {
     return `${this.apiUrl}/schema/rejectDuplicateRecords/${schemaId}/${runId}?userName=${userName}`;
+  }
+
+  /**
+   * Uri for reset schema execution correction data ..
+   * @param schemaId append as request path
+   */
+  public resetCorrectionRecords(schemaId: string): string {
+    return `${this.apiUrl}/schema/reset-corrected-records/${schemaId}`;
   }
 }

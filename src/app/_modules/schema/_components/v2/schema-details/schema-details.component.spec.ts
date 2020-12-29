@@ -19,6 +19,7 @@ import { SchemaDataSource } from '../../schema-details/schema-datatable/schema-d
 import { Router } from '@angular/router';
 import { SimpleChanges } from '@angular/core';
 import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
+import { Userdetails } from '@models/userdetails';
 
 describe('SchemaDetailsComponent', () => {
   let component: SchemaDetailsComponent;
@@ -370,6 +371,51 @@ describe('SchemaDetailsComponent', () => {
     spyOn(schemaVariantService, 'getDataScope').withArgs(component.schemaId, 'RUNFOR').and.returnValue(of())
     component.getDataScope();
     expect(schemaVariantService.getDataScope).toHaveBeenCalledWith(component.schemaId, 'RUNFOR');
-  })
+  });
+
+  it(`approveRecords(), approve corrected records `, async(()=>{
+    // mock data
+    const row = {OBJECTNUMBER:{fieldData:'MAT001'}};
+    component.schemaId = '246726532';
+    component.userDetails  = {currentRoleId:'123'} as Userdetails;
+
+    spyOn(schemaDetailService,'approveCorrectedRecords').withArgs(component.schemaId, ['MAT001'] , component.userDetails.currentRoleId).and.returnValue(of({acknowledge:false}));
+
+    component.approveRecords('inline', row);
+
+    expect(schemaDetailService.approveCorrectedRecords).toHaveBeenCalledWith(component.schemaId, ['MAT001'] , component.userDetails.currentRoleId);
+
+
+  }));
+
+  it(`approveRecords(), approve corrected records `, async(()=>{
+    // mock data
+    const row = {OBJECTNUMBER:{fieldData:'MAT001'}};
+    component.schemaId = '246726532';
+    component.userDetails  = {currentRoleId:'123'} as Userdetails;
+
+    spyOn(schemaDetailService,'approveCorrectedRecords').withArgs(component.schemaId, ['MAT001'] , component.userDetails.currentRoleId).and.returnValue(of({acknowledge:false}));
+
+    component.approveRecords('inline', row);
+
+    expect(schemaDetailService.approveCorrectedRecords).toHaveBeenCalledWith(component.schemaId, ['MAT001'] , component.userDetails.currentRoleId);
+
+
+  }));
+
+  it(`resetRec(), reset corrected records `, async(()=>{
+    // mock data
+    const row = {OBJECTNUMBER:{fieldData:'MAT001'}};
+    component.schemaId = '246726532';
+    component.schemaInfo  = {runId:'889321'} as SchemaListDetails;
+
+    spyOn(schemaDetailService,'resetCorrectionRecords').withArgs(component.schemaId, component.schemaInfo.runId,  ['MAT001']).and.returnValue(of({acknowledge:false}));
+
+    component.resetRec(row, 'inline');
+
+    expect(schemaDetailService.resetCorrectionRecords).toHaveBeenCalledWith(component.schemaId, component.schemaInfo.runId,  ['MAT001']);
+
+
+  }));
 
 });
