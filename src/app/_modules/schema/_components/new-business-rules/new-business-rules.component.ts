@@ -662,6 +662,7 @@ export class NewBusinessRulesComponent implements OnInit {
             formData: { ...this.form.value, rule_type: this.currentSelectedRule },
             tempId: this.tempRuleId,
             lookupData: this.lookupData,
+            brId: this.data.brId,
             duplicacyRuleData: this.duplicacyRuleData
         });
     }

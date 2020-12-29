@@ -635,7 +635,8 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     if (!response || !response.formData) { return; };
     let brObject: CoreSchemaBrInfo;
     const tempId = (response.tempId) ? response.tempId : null;
-    let formData = response.formData;
+    const brId = (response.brId) ? response.brId : '';
+    let formData = {...response.formData, brId};
 
     // Add transformation schema details from response to formData
     formData = { ...formData, transFormationSchema: this.mapTransformationData(response), duplicacyRuleData: response.duplicacyRuleData };
@@ -647,7 +648,12 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     brObject.status = '1';
 
     if (this.selectedBusinessRules.length > 0) {
-      const index = this.selectedBusinessRules.findIndex(rule => rule.tempId === tempId);
+      let index = null;
+      if(brId){
+        index = this.selectedBusinessRules.findIndex(rule => rule.brId === brId);
+      } else {
+        index = this.selectedBusinessRules.findIndex(rule => rule.tempId === tempId);
+      }
       if (index > -1) {
         this.selectedBusinessRules[index] = { ...brObject };
       } else {
@@ -709,6 +715,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     this.createfieldObjectForRequest(this.dataSource).then((finalValues) => {
       this.requestForm.controls.fields.setValue(finalValues);
       const {
+        brId,
         tempId,
         brType,
         brInfo,
@@ -731,6 +738,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         moduleId: this.requestForm.controls.objectId.value ? this.requestForm.controls.objectId.value : '',
         fields: this.requestForm.controls.fields.value,
         tempId,
+        brId,
         createRuleFormValues: {
           rule_type: brType,
           rule_name: brInfo,
@@ -1196,15 +1204,20 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   deleteBR(rule: CoreSchemaBrInfo) {
     this.globalDialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
       if (response && response === 'yes') {
+        let index = null;
         if (rule.tempId) {
           const existingruleIndex = this.existingTempIds.indexOf(rule.tempId);
           if (existingruleIndex > -1) {
             this.existingTempIds.splice(existingruleIndex, 1);
           }
-          const index = this.selectedBusinessRules.findIndex((brule) => brule.tempId === rule.tempId);
-          this.selectedBusinessRules.splice(index, 1);
-          this.requestForm.controls.coreSchemaBr.setValue([...this.selectedBusinessRules]);
         }
+        if(rule.brId){
+          index = this.selectedBusinessRules.findIndex((brule) => brule.brId === rule.brId);
+        } else {
+          index = this.selectedBusinessRules.findIndex((brule) => brule.tempId === rule.tempId);
+        }
+        this.selectedBusinessRules.splice(index, 1);
+        this.requestForm.controls.coreSchemaBr.setValue([...this.selectedBusinessRules]);
       }
     });
   }
@@ -1352,14 +1365,14 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       this.schemaService.getBusinessRulesByModuleId(modId, searchString, brType, fetchCount)
         .subscribe((rules: CoreSchemaBrInfo[]) => {
           if (rules && rules.length > 0) {
-            this.businessRulesList = rules;
+            this.businessRulesList = rules.map((rule) => { return {...rule, tempId: this.utilties.getRandomString(8) }});
           }
         });
     } else {
       this.schemaService.getAllBusinessRules()
         .subscribe((rules: CoreSchemaBrInfo[]) => {
           if (rules && rules.length > 0) {
-            this.businessRulesList = rules;
+            this.businessRulesList = rules.map((rule) => { return {...rule, tempId: this.utilties.getRandomString(8) }});
           }
         });
     }
@@ -1372,25 +1385,41 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   selectBusinessRule(businessRules: CoreSchemaBrInfo[] | CoreSchemaBrInfo) {
     if (Array.isArray(businessRules)) {
       businessRules.map((rule) => {
-        const updatedObj = { ...rule, tempId: this.utilties.getRandomString(8), brWeightage: 0, isCopied: true };
+        const updatedObj = { ...rule, brWeightage: 0, isCopied: true };
         this.addTempIdToExisting(updatedObj.tempId).then(() => {
           this.selectedBusinessRules.push(updatedObj);
         });
       });
     } else {
-      if (businessRules && businessRules.tempId && this.existingTempIds.indexOf(businessRules.tempId) > -1) {
+      if(!this.checkIfExist(businessRules)){
+        const updatedObj = { ...businessRules, brWeightage: 0, isCopied: true };
+        this.addTempIdToExisting(updatedObj.tempId).then(() => {
+          this.selectedBusinessRules.push(updatedObj);
+        });
+      } else {
         this.snackBar.open('This rule is already added', 'okay', {
           duration: 2000
         });
         return;
       }
-      const updatedObj = { ...businessRules, tempId: this.utilties.getRandomString(8), brWeightage: 0, isCopied: true };
-      this.addTempIdToExisting(updatedObj.tempId).then(() => {
-        this.selectedBusinessRules.push(updatedObj);
-      });
     }
 
     this.requestForm.controls.coreSchemaBr.setValue(this.selectedBusinessRules);
+  }
+
+  /**
+   * Check if rule already exists
+   * @param rule pass the rule to be checked
+   */
+  checkIfExist(rule) {
+    let isExist: boolean;
+    if (rule && rule.tempId) {
+      const hasExistingTempId = this.existingTempIds.indexOf(rule.tempId) > -1;
+      const hasExistingBrId = this.selectedBusinessRules.find((br) => br.brId === rule.brId) !== undefined;
+      isExist = hasExistingBrId || hasExistingTempId
+    }
+
+    return isExist;
   }
 
   /**
