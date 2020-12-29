@@ -120,13 +120,19 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
        * why...because with this we can restrict duplicate entries
        */
       this.fieldIdArray = this.headers.map(header => header.fieldId);
-
       for (const metaData in data.headers) {
         if (data.headers[metaData]) {
           if (this.fieldIdArray.indexOf(data.headers[metaData].fieldId) === -1) {
             this.headers.push(data.headers[metaData])
           }
+
         }
+
+      }
+      const inarray = this.fieldIdArray.find(dt => dt === 'objectNumber')
+      if (inarray === undefined) {
+        const objectnumber: any = { fieldId: 'objectNumber', fieldDescri: 'Object Number' };
+        this.headers.unshift(objectnumber)
       }
 
       this.headersObs = of(this.headers);

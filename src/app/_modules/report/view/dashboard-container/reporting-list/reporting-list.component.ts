@@ -35,6 +35,9 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   sortingField = '';
   sortingDir = '';
   listData: any[] = new Array();
+  tablepageSize = 100;
+
+  pageSizeOption=[100, 200, 300, 400];
 
   /**
    * Columns that need to display
@@ -154,6 +157,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
       this.headerDesc = returnData.widgetName;
       this.objectType = returnData.objectType;
       this.isWorkflowdataSet = returnData.isWorkflowdataSet;
+      this.tablepageSize=returnData.pageDefaultSize || 100
     });
   }
 
@@ -161,14 +165,14 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
    * function to get meta data of the columns for data table
    */
   public getListTableMetadata(): void {
-    this.displayedColumnsId = ['action', 'objectNumber'];
+    this.displayedColumnsId = ['action'];
     // this.columnDescs = {};
     this.widgetService.getListTableMetadata(this.widgetId).subscribe(returnData => {
       if (returnData !== undefined && Object.keys(returnData).length > 0) {
-        this.columnDescs.objectNumber = 'Object Number';
+        // this.columnDescs.objectNumber = 'Object Number';
         returnData.forEach(singlerow => {
           this.displayedColumnsId.push(singlerow.fields);
-          this.columnDescs[singlerow.fields] = singlerow.fieldDesc;
+          this.columnDescs[singlerow.fields] = singlerow.fieldDesc ? singlerow.fieldDesc :singlerow.fldMetaData.fieldDescri;
         });
         this.reportingListWidget.next(returnData);
         this.tableColumnMetaData = returnData;
@@ -207,8 +211,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
             if(column === 'objectNumber') {
               obj[column]=objectNumber;
             }
-          }
-          else {
+          } else {
             if (hdvs[column]) {
               // check for dropdown , multiselect , userselection and objectRefrence
               const val = hdvs[column].vc ? hdvs[column].vc : null;

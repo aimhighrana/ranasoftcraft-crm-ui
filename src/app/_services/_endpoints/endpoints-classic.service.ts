@@ -733,5 +733,4 @@ export class EndpointsClassicService {
   public generateMroClassificationDescriptionUri(): string {
     return `${this.apiUrl}/schema/mro/generate-description`;
   }
-
 }

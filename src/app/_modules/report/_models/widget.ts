@@ -31,6 +31,7 @@ export class Widget {
     workflowPath: string[];
     distictWith: string;
     isCustomdataSet: boolean;
+    pageDefaultSize:number
 }
 
 export interface DateFilterCtrl {
@@ -263,6 +264,7 @@ export class WidgetHeader {
     indexName: string;
     desc: string;
     isWorkflowdataSet: boolean;
+    pageDefaultSize: number
 }
 
 export interface ChartLegend{

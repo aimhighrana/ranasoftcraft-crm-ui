@@ -93,17 +93,16 @@ describe('MetadatafieldControlComponent', () => {
     const actualResonse =  component.transformFieldRes(metadataModeleResponse);
 
     // asserts
-    expect(actualResonse.length).toEqual(5, 'length should be equlas to 5 including groups');
-    expect(actualResonse[0].childs.length).toEqual(3, '3 static system fields');
+    expect(actualResonse.length).toEqual(2, 'length should be equlas to 2 including groups');
+    expect(actualResonse[0].childs.length).toEqual(4, '4 static system fields');
 
-    const grd = actualResonse.filter(fil=> fil.fieldId === 'LANGUAGE_GRID');
-    expect(grd.length).toEqual(1, 'Grid shoud have on dropdown part');
-    expect(grd[0].childs.length).toEqual(2, '2 fields assigned on grid LANGUAGE_GRID');
+    // const grd = actualResonse.filter(fil=> fil.fieldId === 'LANGUAGE_GRID');
+    // expect(grd.length).toEqual(1, 'Grid shoud have on dropdown part');
+    // expect(grd[0].childs.length).toEqual(2, '2 fields assigned on grid LANGUAGE_GRID');
 
-    const hie = actualResonse.filter(fil=> fil.fieldId === '1');
-    expect(hie.length).toEqual(1, 'Plant group shoud have on dropdown part');
-    expect(hie[0].childs.length).toEqual(1, '1 fields assigned on plant 1');
-
+    // const hie = actualResonse.filter(fil=> fil.fieldId === '1');
+    // expect(hie.length).toEqual(1, 'Plant group shoud have on dropdown part');
+    // expect(hie[0].childs.length).toEqual(1, '1 fields assigned on plant 1');
   }));
 
   it(`returnSelectedFldCtrl(), should return selected field control`, async(()=>{

@@ -195,22 +195,7 @@
                                 </ng-template>
                             </div>
 
-                            <div class="f-col">
-                                <!-- FOR Aggregration -->
-                                <ng-template
-                                    [ngIf]="selStyleWid  && (selStyleWid.widgetType === 'COUNT' || selStyleWid.widgetType === 'BAR_CHART' || selStyleWid.widgetType === 'STACKED_BAR_CHART' || selStyleWid.widgetType === 'TIMESERIES') ">
-                                    <mat-label>Aggregration operator</mat-label>
-                                    <mat-form-field appearance="outline">
-                                        <mat-select formControlName="aggregrationOp">
-                                            <mat-option value="GROUPBY">Group by</mat-option>
-                                            <mat-option value="COUNT">Count</mat-option>
-                                            <mat-option value="MIN">Min</mat-option>
-                                            <mat-option value="MAX">Max</mat-option>
-                                            <mat-option value="SUM">Sum</mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
-                                </ng-template>
-                            </div>
+                           
 
                             <div class="f-col">
                                 <!--Modules-->
@@ -231,7 +216,22 @@
                                     </pros-workflowfield-control>
                                 </ng-template>
                             </div>
-
+                            <div class="f-col">
+                                <!-- FOR Aggregration -->
+                                <ng-template
+                                    [ngIf]="selStyleWid  && (selStyleWid.widgetType === 'COUNT' || selStyleWid.widgetType === 'BAR_CHART' || selStyleWid.widgetType === 'STACKED_BAR_CHART' || selStyleWid.widgetType === 'TIMESERIES') ">
+                                    <mat-label>Aggregration operator</mat-label>
+                                    <mat-form-field appearance="outline">
+                                        <mat-select formControlName="aggregrationOp">
+                                            <mat-option value="GROUPBY" *ngIf="(selStyleWid.widgetType === 'BAR_CHART' || selStyleWid.widgetType === 'STACKED_BAR_CHART' || selStyleWid.widgetType === 'TIMESERIES')">Group by</mat-option>
+                                            <mat-option value="COUNT">Count</mat-option>
+                                            <!-- <mat-option value="MIN" >Min</mat-option>
+                                            <mat-option value="MAX" >Max</mat-option> -->
+                                            <mat-option value="SUM" *ngIf="(selStyleWid.widgetType === 'COUNT' && checkFieldDataType)">Sum</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </ng-template>
+                            </div>
                             <div class="f-col">
                                 <!-- FOR  Modules STACKED BAR CHART WIDGET-->
                                 <ng-template
@@ -458,6 +458,17 @@
                                     <mat-hint>{{ chooseColumns ? chooseColumns.length : '0' }} Selected</mat-hint>
                                 </ng-template>
                             </div>
+                            <div class="f-col">
+                                <!-- FOR TABLE LIST CHOOSE Default Page Size-->
+                                <!-- For Modules -->
+                                <ng-template
+                                    [ngIf]="selStyleWid && selStyleWid.widgetType === 'TABLE_LIST' ">
+                                    <mat-label>Default page Size </mat-label>
+                                    <mat-form-field appearance="outline">
+                                        <input  matInput type="number" min="1"  (input)="checkNumLength($event.target.value)"  formControlName="pageDefaultSize"  placeholder="Default page size">
+                                    </mat-form-field>
+                                </ng-template>
+                            </div>
 
                             <div class="f-col">
                                 <!-- FOR IMAGE WIDGET-->
@@ -516,7 +527,7 @@
                             <div class="f-col">
                                 <mat-label>Chart type </mat-label>
                                 <mat-form-field appearance="outline">
-                                    <mat-select formControlName="chartType">
+                                    <mat-select formControlName="chartType" [disabled]="selStyleWid.widgetType === 'STACKED_BAR_CHART'">
                                         <mat-option value="BAR"> Bar </mat-option>
                                         <mat-option *ngIf="selStyleWid.widgetType === 'BAR_CHART' " value="PIE"> Pie
                                         </mat-option>
@@ -653,11 +664,11 @@
                                 <!-- SERIES WITH -->
                                 <mat-label>Series with</mat-label>
                                 <mat-form-field appearance="outline">
-                                    <mat-select formControlName="seriesWith">
-                                        <mat-option value="day"> Day </mat-option>
-                                        <mat-option value="week"> Week </mat-option>
-                                        <mat-option value="month"> Month </mat-option>
-                                        <mat-option value="quarter"> Quarter </mat-option>
+                                    <mat-select formControlName="seriesWith" [disabled]="isSerieswithDisabled"  [(value)]="selectedOption">
+                                        <mat-option value="day" *ngIf="isSriesWithVisibile"> Day </mat-option>
+                                        <mat-option value="week" *ngIf="isSriesWithVisibile"> Week </mat-option>
+                                        <mat-option value="month" *ngIf="isSriesWithVisibile"> Month </mat-option>
+                                        <mat-option value="quarter" *ngIf="isSriesWithVisibile"> Quarter </mat-option>
                                         <mat-option value="year"> Year </mat-option>
                                     </mat-select>
                                 </mat-form-field>

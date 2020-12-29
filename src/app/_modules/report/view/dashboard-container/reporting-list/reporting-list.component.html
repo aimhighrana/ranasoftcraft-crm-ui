@@ -64,7 +64,7 @@
                 <tr mat-row *matRowDef="let row; columns: displayedColumnsId;"></tr>
             </table>
         </div>
-        <mat-paginator [length]="resultsLength" [pageSizeOptions]="[10, 15, 20, 25]" (page)="getServerData($event)">
+        <mat-paginator [pageSize]="tablepageSize" [length]="resultsLength" [pageSizeOptions]="pageSizeOption" (page)="getServerData($event)">
         </mat-paginator>
     </mat-card-content>
 </mat-card>

@@ -75,12 +75,12 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
    * Static system fields
    */
   systemFields: Metadata[] = [
-    // {
-    //   fieldId:'STATUS',
-    //   fieldDescri:'Status',
-    //   childs:[],
-    //   isGroup:false
-    // },
+    {
+      fieldId:'STATUS',
+      fieldDescri:'Status',
+      childs:[],
+      isGroup:false
+    },
     {
       fieldId:'USERMODIFIED',
       fieldDescri:'User Modified',
@@ -289,102 +289,103 @@ export class MetadatafieldControlComponent implements OnInit, OnChanges, OnDestr
     });
 
     // for grid response transformations
-    if(response && response.grids && this.widgetType === 'TIMESERIES') {
-      Object.keys(response.grids).forEach(grid=>{
-        const childs : Metadata[] = [];
-        if(response.gridFields && response.gridFields.hasOwnProperty(grid)) {
-          Object.keys(response.gridFields[grid]).forEach(fld=>{
-            const fldCtrl = response.gridFields[grid][fld];
-            if(fldCtrl.dataType === 'DATS' || fldCtrl.dataType === 'DTMS') {
-              childs.push({
-                fieldId: fldCtrl.fieldId,
-                fieldDescri: fldCtrl.fieldDescri,
-                isGroup: false,
-                fldCtrl,
-                childs:[]
-              });
-            }
-          });
-        }
-        metadata.push({
-          fieldId: grid,
-          fieldDescri: response.grids[grid].fieldDescri,
-          isGroup: true,
-          childs
-        });
-      })
-    } else if(response && response.grids) {
-      Object.keys(response.grids).forEach(grid=>{
-        const childs : Metadata[] = [];
-        if(response.gridFields && response.gridFields.hasOwnProperty(grid)) {
-          Object.keys(response.gridFields[grid]).forEach(fld=>{
-            const fldCtrl = response.gridFields[grid][fld];
-              childs.push({
-                fieldId: fldCtrl.fieldId,
-                fieldDescri: fldCtrl.fieldDescri,
-                isGroup: false,
-                fldCtrl,
-                childs:[]
-              });
-          });
-        }
-        metadata.push({
-          fieldId: grid,
-          fieldDescri: response.grids[grid].fieldDescri,
-          isGroup: true,
-          childs
-        });
-      })
-    }
+    // if(response && response.grids && this.widgetType === 'TIMESERIES') {
+    //   Object.keys(response.grids).forEach(grid=>{
+    //     const childs : Metadata[] = [];
+    //     if(response.gridFields && response.gridFields.hasOwnProperty(grid)) {
+    //       Object.keys(response.gridFields[grid]).forEach(fld=>{
+    //         const fldCtrl = response.gridFields[grid][fld];
+    //         if(fldCtrl.dataType === 'DATS' || fldCtrl.dataType === 'DTMS') {
+    //           childs.push({
+    //             fieldId: fldCtrl.fieldId,
+    //             fieldDescri: fldCtrl.fieldDescri,
+    //             isGroup: false,
+    //             fldCtrl,
+    //             childs:[]
+    //           });
+    //         }
+    //       });
+    //     }
+    //     metadata.push({
+    //       fieldId: grid,
+    //       fieldDescri: response.grids[grid].fieldDescri,
+    //       isGroup: true,
+    //       childs
+    //     });
+    //   })
+    // } else if(response && response.grids) {
+    //   Object.keys(response.grids).forEach(grid=>{
+    //     const childs : Metadata[] = [];
+    //     if(response.gridFields && response.gridFields.hasOwnProperty(grid)) {
+    //       Object.keys(response.gridFields[grid]).forEach(fld=>{
+    //         const fldCtrl = response.gridFields[grid][fld];
+    //           childs.push({
+    //             fieldId: fldCtrl.fieldId,
+    //             fieldDescri: fldCtrl.fieldDescri,
+    //             isGroup: false,
+    //             fldCtrl,
+    //             childs:[]
+    //           });
+    //       });
+    //     }
+    //     metadata.push({
+    //       fieldId: grid,
+    //       fieldDescri: response.grids[grid].fieldDescri,
+    //       isGroup: true,
+    //       childs
+    //     });
+    //   })
+    // }
 
     // for hierarchy response transformations
-    if(response && response.hierarchy  && this.widgetType === 'TIMESERIES') {
-      response.hierarchy.forEach(hierarchy => {
-        const childs: Metadata[] = [];
-        if(response.hierarchyFields && response.hierarchyFields.hasOwnProperty(hierarchy.heirarchyId)) {
-          Object.keys(response.hierarchyFields[hierarchy.heirarchyId]).forEach(fld=>{
-            const fldCtrl = response.hierarchyFields[hierarchy.heirarchyId][fld];
-            if(fldCtrl.dataType === 'DATS' || fldCtrl.dataType === 'DTMS') {
-              childs.push({
-                fieldId: fldCtrl.fieldId,
-                fieldDescri: fldCtrl.fieldDescri,
-                isGroup: false,
-                fldCtrl,
-                childs:[]
-              });
-            }
-          });
-        }
-        metadata.push({
-          fieldId: hierarchy.heirarchyId,
-          fieldDescri: hierarchy.heirarchyText,
-          isGroup: true,
-          childs
-        });
-      });
-    } else if(response && response.hierarchy) {
-      response.hierarchy.forEach(hierarchy => {
-        const childs: Metadata[] = [];
-        if(response.hierarchyFields && response.hierarchyFields.hasOwnProperty(hierarchy.heirarchyId)) {
-          Object.keys(response.hierarchyFields[hierarchy.heirarchyId]).forEach(fld=>{
-            const fldCtrl = response.hierarchyFields[hierarchy.heirarchyId][fld];
-              childs.push({
-                fieldId: fldCtrl.fieldId,
-                fieldDescri: fldCtrl.fieldDescri,
-                isGroup: false,
-                fldCtrl,
-                childs:[]
-              });
-          });
-        }
-        metadata.push({
-          fieldId: hierarchy.heirarchyId,
-          fieldDescri: hierarchy.heirarchyText,
-          isGroup: true,
-          childs
-        });
-      });
-    }
+    // if(response && response.hierarchy  && this.widgetType === 'TIMESERIES') {
+    //   response.hierarchy.forEach(hierarchy => {
+    //     const childs: Metadata[] = [];
+    //     if(response.hierarchyFields && response.hierarchyFields.hasOwnProperty(hierarchy.heirarchyId)) {
+    //       Object.keys(response.hierarchyFields[hierarchy.heirarchyId]).forEach(fld=>{
+    //         const fldCtrl = response.hierarchyFields[hierarchy.heirarchyId][fld];
+    //         if(fldCtrl.dataType === 'DATS' || fldCtrl.dataType === 'DTMS') {
+    //           childs.push({
+    //             fieldId: fldCtrl.fieldId,
+    //             fieldDescri: fldCtrl.fieldDescri,
+    //             isGroup: false,
+    //             fldCtrl,
+    //             childs:[]
+    //           });
+    //         }
+    //       });
+    //     }
+    //     metadata.push({
+    //       fieldId: hierarchy.heirarchyId,
+    //       fieldDescri: hierarchy.heirarchyText,
+    //       isGroup: true,
+    //       childs
+    //     });
+    //   });
+    // }
+    // else if(response && response.hierarchy) {
+    //   response.hierarchy.forEach(hierarchy => {
+    //     const childs: Metadata[] = [];
+    //     if(response.hierarchyFields && response.hierarchyFields.hasOwnProperty(hierarchy.heirarchyId)) {
+    //       Object.keys(response.hierarchyFields[hierarchy.heirarchyId]).forEach(fld=>{
+    //         const fldCtrl = response.hierarchyFields[hierarchy.heirarchyId][fld];
+    //           childs.push({
+    //             fieldId: fldCtrl.fieldId,
+    //             fieldDescri: fldCtrl.fieldDescri,
+    //             isGroup: false,
+    //             fldCtrl,
+    //             childs:[]
+    //           });
+    //       });
+    //     }
+    //     metadata.push({
+    //       fieldId: hierarchy.heirarchyId,
+    //       fieldDescri: hierarchy.heirarchyText,
+    //       isGroup: true,
+    //       childs
+    //     });
+    //   });
+    // }
     return metadata;
   }
 

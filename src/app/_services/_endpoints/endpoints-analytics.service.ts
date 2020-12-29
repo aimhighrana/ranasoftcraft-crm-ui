@@ -100,10 +100,6 @@ export class EndpointsAnalyticsService {
     return this.apiUrl + `/report/table/view/create-update/${widgetId}`;
   }
 
-  public getlayoutsUrl() {
-    return `${this.apiUrl}/report/layouts`;
-  }
-
   /**
    * endpoint to get location hierarchy
    */

@@ -107,11 +107,6 @@ describe('EndpointsAnalyticsService', () => {
     expect(serviceobj.createUpdateReportDataTable(widgetId)).toContain(`report/table/view/create-update/65433567`);
   }));
 
-  it('getlayoutsUrl(), should return layout data', async(() => {
-    const serviceobj = new EndpointsAnalyticsService();
-    expect(serviceobj.getlayoutsUrl()).toContain(`report/layouts`);
-  }));
-
   it('getFieldMetadatByFldUrl(), should return field meta data', async(() => {
     const serviceobj = new EndpointsAnalyticsService();
     const fieldId = 'NDC_TYPE'

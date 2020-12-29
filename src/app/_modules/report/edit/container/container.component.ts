@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { Widget, WidgetType, ReportDashboardReq, WidgetTableModel, ChartType, Orientation, DatalabelsPosition, LegendPosition, BlockType,TimeseriesStartDate, Criteria, OrderWith,SeriesWith, WorkflowFieldRes } from '../../_models/widget';
+import { Widget, WidgetType, ReportDashboardReq, WidgetTableModel, ChartType, Orientation, DatalabelsPosition, LegendPosition, BlockType, TimeseriesStartDate, Criteria, OrderWith, SeriesWith, WorkflowFieldRes } from '../../_models/widget';
 import { Observable, of, BehaviorSubject, Subscription } from 'rxjs';
 import { FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
 import { ReportService } from '../../_service/report.service';
@@ -12,8 +12,8 @@ import { SchemaService } from 'src/app/_services/home/schema.service';
 import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-details.service';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import * as moment from 'moment';
-import {MAT_MOMENT_DATE_FORMATS, MomentDateAdapter} from '@angular/material-moment-adapter';
-import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
+import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { DropDownValue, ConditionalOperator } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { UserService } from '@services/user/userservice.service';
@@ -24,8 +24,8 @@ import { distinctUntilChanged } from 'rxjs/operators';
   templateUrl: './container.component.html',
   styleUrls: ['./container.component.scss'],
   providers: [
-    {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
-    {provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS},
+    { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
+    { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
   ],
 })
 export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -40,7 +40,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /** max height of any widget */
   widgetMaxHeight = 1000;
-
+  fieldDataType: string;
   // for background-color or additinal dynamic css on main container
   containerCss: any = {};
 
@@ -79,8 +79,9 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    * All the http or normal subscription will store in this array
    */
   subscriptions: Subscription[] = [];
-
-  fld2FldArray = ['FIELD2FIELD','FIELD2FIELD_EQUAL','FIELD2FIELD_GREATETHENEQUAL','FIELD2FIELD_GREATETHAN','FIELD2FIELD_LESSTHEN','FIELD2FIELD_LESSTHENEQUALTO'];
+  isSerieswithDisabled = false;
+  selectedOption: string;
+  fld2FldArray = ['FIELD2FIELD', 'FIELD2FIELD_EQUAL', 'FIELD2FIELD_GREATETHENEQUAL', 'FIELD2FIELD_GREATETHAN', 'FIELD2FIELD_LESSTHEN', 'FIELD2FIELD_LESSTHENEQUALTO'];
 
   /**
    * Store current search text for datasets
@@ -148,6 +149,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.getCustomObjectType();
     const sub = this.activatedRouter.params.subscribe(params => {
       this.reportId = params.id ? ((params.id).toLowerCase() === 'new' ? '' : params.id) : '';
+      this.showProperty = false;
       if (this.reportId) {
         this.getReportConfig(this.reportId);
       } else {
@@ -176,9 +178,10 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       startDate: [''],
       endDate: [''],
       isWorkflowdataSet: [false],
-      workflowPath:[''],
-      distictWith:[''],
-      isCustomdataSet: [false]
+      workflowPath: [''],
+      distictWith: [''],
+      isCustomdataSet: [false],
+      pageDefaultSize: ['']
     });
 
     this.chartPropCtrlGrp = this.formBuilder.group({
@@ -192,14 +195,14 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       yAxisLabel: [''],
       orderWith: [OrderWith.DESC],
       scaleFrom: [''],
-      scaleTo:[''],
-      stepSize:[''],
-      dataSetSize:[''],
-      seriesWith:[SeriesWith.day],
-      seriesFormat:[''],
-      blankValueAlias:[''],
-      timeseriesStartDate:[TimeseriesStartDate.D7],
-      isEnabledBarPerc :[false],
+      scaleTo: [''],
+      stepSize: [''],
+      dataSetSize: [''],
+      seriesWith: [SeriesWith.day],
+      seriesFormat: [''],
+      blankValueAlias: [''],
+      timeseriesStartDate: [TimeseriesStartDate.D7],
+      isEnabledBarPerc: [false],
       bucketFilter: [null]
     });
 
@@ -213,7 +216,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         changedWidget.height = latestVal.height;
         changedWidget.width = latestVal.width;
         changedWidget.widgetTitle = latestVal.widgetName;
-        changedWidget.field =  typeof latestVal.field ==='string' ? latestVal.field : latestVal.field.fieldId;
+        changedWidget.field = typeof latestVal.field === 'string' ? latestVal.field : latestVal.field.fieldId;
         changedWidget.aggregrationOp = latestVal.aggregrationOp;
         changedWidget.filterType = latestVal.filterType;
         changedWidget.isMultiSelect = latestVal.isMultiSelect;
@@ -225,44 +228,45 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         changedWidget.imageName = latestVal.imageName;
         changedWidget.isWorkflowdataSet = latestVal.isWorkflowdataSet;
         changedWidget.workflowPath = latestVal.workflowPath;
-        changedWidget.distictWith = typeof latestVal.distictWith ==='string' ? latestVal.distictWith : latestVal.distictWith.fieldId;
+        changedWidget.distictWith = typeof latestVal.distictWith === 'string' ? latestVal.distictWith : latestVal.distictWith.fieldId;
         changedWidget.isCustomdataSet = latestVal.isCustomdataSet;
+        changedWidget.pageDefaultSize = latestVal.pageDefaultSize;
 
         // hold selected field control
-        if( typeof latestVal.field !== 'string'){
+        if (typeof latestVal.field !== 'string') {
           changedWidget.fieldCtrl = latestVal.field;
         }
 
         // while changing date default filter ...
         let strtDate = latestVal.startDate;
-        if(latestVal.startDate) {
+        if (latestVal.startDate) {
           try {
             strtDate = moment(latestVal.startDate, 'MM/DD/YYYY', true).toDate().getTime();
           } catch (error) {
-            console.error( `Error :`, error);
+            console.error(`Error :`, error);
           }
         }
 
         let endDate = latestVal.endDate;
-        if(latestVal.endDate) {
+        if (latestVal.endDate) {
           try {
             endDate = moment(latestVal.endDate, 'MM/DD/YYYY', true).toDate().getTime();
           } catch (error) {
-            console.error( `Error :`, error);
+            console.error(`Error :`, error);
           }
         }
 
-        if(latestVal.dateSelectionType && strtDate) {
+        if (latestVal.dateSelectionType && strtDate) {
           changedWidget.dateFilterCtrl = {
             dateSelectedFor: latestVal.dateSelectionType,
             endDate,
             startDate: strtDate
           }
-        } else if(latestVal.dateSelectionType) {
+        } else if (latestVal.dateSelectionType) {
           changedWidget.dateFilterCtrl = {
             dateSelectedFor: latestVal.dateSelectionType,
           }
-        } else{
+        } else {
           changedWidget.dateFilterCtrl = null;
         }
         this.preapreNewWidgetPosition(changedWidget);
@@ -287,20 +291,20 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const styleSub = this.styleCtrlGrp.get('objectType').valueChanges.subscribe(fillData => {
       if (fillData && typeof fillData === 'string') {
-        if (fillData  !== this.styleCtrlGrp.value.objectType && !this.styleCtrlGrp.get('isWorkflowdataSet').value && !this.styleCtrlGrp.get('isCustomdataSet').value ) {
+        if (fillData !== this.styleCtrlGrp.value.objectType && !this.styleCtrlGrp.get('isWorkflowdataSet').value && !this.styleCtrlGrp.get('isCustomdataSet').value) {
           this.getAllFields(fillData);
           this.getRecordCount(fillData);
           this.styleCtrlGrp.get('isWorkflowdataSet').setValue(false);
           this.styleCtrlGrp.get('isCustomdataSet').setValue(false);
         }
-        if(fillData  !== this.styleCtrlGrp.value.objectType && this.styleCtrlGrp.get('isWorkflowdataSet').value && !this.styleCtrlGrp.get('isCustomdataSet').value) {
+        if (fillData !== this.styleCtrlGrp.value.objectType && this.styleCtrlGrp.get('isWorkflowdataSet').value && !this.styleCtrlGrp.get('isCustomdataSet').value) {
           this.getWorkFlowFields(fillData.split(','));
           this.getRecordCount(fillData, true);
           this.getWorkFlowPathDetails(fillData.split(','));
           this.styleCtrlGrp.get('isWorkflowdataSet').setValue(true);
           this.styleCtrlGrp.get('isCustomdataSet').setValue(false);
         }
-        if(fillData !== this.styleCtrlGrp.value.objectType && this.styleCtrlGrp.get('isCustomdataSet').value) {
+        if (fillData !== this.styleCtrlGrp.value.objectType && this.styleCtrlGrp.get('isCustomdataSet').value) {
           this.getCustomFields(fillData);
           this.getRecordCount(fillData, false, true);
           this.styleCtrlGrp.get('isWorkflowdataSet').setValue(false);
@@ -341,9 +345,9 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   searchDataSet(value: string) {
     this.searchDataSetVal = value;
-    if(value) {
-      this.dataSetOb = of(this.dataSets.filter(fil => fil.objectdesc.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !==-1));
-      this.customDataSetob = of(this.customDataSets.filter(fil => fil.objectdesc.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !==-1));
+    if (value) {
+      this.dataSetOb = of(this.dataSets.filter(fil => fil.objectdesc.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !== -1));
+      this.customDataSetob = of(this.customDataSets.filter(fil => fil.objectdesc.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !== -1));
     } else {
       this.dataSetOb = of(this.dataSets);
       this.customDataSetob = of(this.customDataSets);
@@ -351,14 +355,14 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getReportConfig(reportId: string) {
-    const userSub = this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user=>{
-    const reportConfig = this.reportService.getReportConfi(reportId, user.currentRoleId).subscribe(res => {
-      this.widgetList = res.widgets;
-      this.reportId = res.reportId;
-      this.reportName = res.reportName;
-      this.collaboratorPermission = res.permission ? res.permission.isAdmin : false;
-    }, error => console.error(`Error: ${error}`));
-    this.subscriptions.push(reportConfig);
+    const userSub = this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user => {
+      const reportConfig = this.reportService.getReportConfi(reportId, user.currentRoleId).subscribe(res => {
+        this.widgetList = res.widgets;
+        this.reportId = res.reportId;
+        this.reportName = res.reportName;
+        this.collaboratorPermission = res.permission ? res.permission.isAdmin : false;
+      }, error => console.error(`Error: ${error}`));
+      this.subscriptions.push(reportConfig);
     });
     this.subscriptions.push(userSub);
   }
@@ -456,19 +460,19 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   showStyle(data: Widget) {
     if (data) {
       this.selStyleWid = data;
-      if(this.styleCtrlGrp) {
+      if (this.styleCtrlGrp) {
         // convert miliis to date
         let startDate;
-        if(data.dateFilterCtrl && data.dateFilterCtrl.startDate) {
+        if (data.dateFilterCtrl && data.dateFilterCtrl.startDate) {
           try {
-            startDate = moment.unix(Number(data.dateFilterCtrl.startDate)/1000).format('MM/DD/YYYY');
-          } catch (error) {console.error(`Error : ${error}`); startDate = data.dateFilterCtrl.startDate}
+            startDate = moment.unix(Number(data.dateFilterCtrl.startDate) / 1000).format('MM/DD/YYYY');
+          } catch (error) { console.error(`Error : ${error}`); startDate = data.dateFilterCtrl.startDate }
         }
         let endDate;
-        if(data.dateFilterCtrl && data.dateFilterCtrl.endDate) {
+        if (data.dateFilterCtrl && data.dateFilterCtrl.endDate) {
           try {
-            endDate = moment.unix(Number(data.dateFilterCtrl.endDate)/1000).format('MM/DD/YYYY');
-          } catch (error) {console.error(`Error : ${error}`); endDate = data.dateFilterCtrl.endDate}
+            endDate = moment.unix(Number(data.dateFilterCtrl.endDate) / 1000).format('MM/DD/YYYY');
+          } catch (error) { console.error(`Error : ${error}`); endDate = data.dateFilterCtrl.endDate }
         }
 
         this.styleCtrlGrp.setValue({
@@ -491,17 +495,20 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           endDate: endDate ? moment(endDate) : '',
           workflowPath: data.workflowPath ? data.workflowPath : [],
           distictWith: data.distictWith ? data.distictWith : '',
-          isCustomdataSet: data.isCustomdataSet ? data.isCustomdataSet : false
+          isCustomdataSet: data.isCustomdataSet ? data.isCustomdataSet : false,
+          pageDefaultSize: data.pageDefaultSize ? data.pageDefaultSize : ''
         });
 
         // set value to properties frm ctrl
         if (data.chartProperties) {
-          this.chartPropCtrlGrp.setValue(data.chartProperties);
-        } else if(data.widgetType === WidgetType.BAR_CHART || data.widgetType === WidgetType.STACKED_BAR_CHART){
-          this.chartPropCtrlGrp.setValue({ chartType:ChartType.BAR, orientation:Orientation.VERTICAL, isEnableDatalabels:false,
-            datalabelsPosition:DatalabelsPosition.center, isEnableLegend:false, legendPosition:LegendPosition.top, xAxisLabel:'', yAxisLabel:'',
-            orderWith: OrderWith.DESC, scaleFrom:'',scaleTo:'', stepSize:'', dataSetSize:'',seriesWith:SeriesWith.day,seriesFormat:'',blankValueAlias:'',timeseriesStartDate:TimeseriesStartDate.D7,
-            isEnabledBarPerc :false,bucketFilter:null
+          console.log(data)
+          this.chartPropCtrlGrp.patchValue(data.chartProperties);
+        } else if (data.widgetType === WidgetType.BAR_CHART || data.widgetType === WidgetType.STACKED_BAR_CHART) {
+          this.chartPropCtrlGrp.setValue({
+            chartType: ChartType.BAR, orientation: Orientation.VERTICAL, isEnableDatalabels: false,
+            datalabelsPosition: DatalabelsPosition.center, isEnableLegend: false, legendPosition: LegendPosition.top, xAxisLabel: '', yAxisLabel: '',
+            orderWith: OrderWith.DESC, scaleFrom: '', scaleTo: '', stepSize: '', dataSetSize: '', seriesWith: SeriesWith.day, seriesFormat: '', blankValueAlias: '', timeseriesStartDate: TimeseriesStartDate.D7,
+            isEnabledBarPerc: false, bucketFilter: null
           });
         }
         // add default filters
@@ -518,7 +525,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
               conditionFieldEndValue: [dat.conditionFieldEndValue],
               conditionOperator: [dat.conditionOperator, Validators.required],
               udrid: [data.widgetId ? data.widgetId : ''],
-              showRangeFld:false
+              showRangeFld: false
             }));
           });
         }
@@ -527,20 +534,20 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.chooseColumns = data.widgetTableFields ? data.widgetTableFields : [];
 
       // make while edit widget ..
-      if(!data.isWorkflowdataSet) {
-        if(!data.isCustomdataSet) {
+      if (!data.isWorkflowdataSet) {
+        if (!data.isCustomdataSet) {
           const hasObj = this.dataSets.filter(fil => fil.objectid === data.objectType)[0];
-          if(hasObj) {
-            setTimeout(()=>{
+          if (hasObj) {
+            setTimeout(() => {
               (document.getElementById('dataSets') as HTMLInputElement).value = hasObj.objectdesc;
-            },1000);
+            }, 1000);
           }
         } else {
           const hasObj = this.customDataSets.filter(fil => fil.objectid === data.objectType)[0];
-          if(hasObj) {
-            setTimeout(()=>{
+          if (hasObj) {
+            setTimeout(() => {
               (document.getElementById('dataSets') as HTMLInputElement).value = hasObj.objectdesc;
-            },1000);
+            }, 1000);
           }
         }
       }
@@ -573,7 +580,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   fileChange(event: any) {
     if (event && event.target) {
       const file = event.target.files[0] as File;
-      if(file.name.endsWith('.png') || file.name.endsWith('.jpg') || file.name.endsWith('.jpeg')) {
+      if (file.name.endsWith('.png') || file.name.endsWith('.jpg') || file.name.endsWith('.jpeg')) {
         const uploadUpdateFile = this.schemaService.uploadUpdateFileData(event.target.files[0] as File, this.styleCtrlGrp.get('imagesno').value).subscribe(res => {
           this.styleCtrlGrp.get('imageName').setValue(event.target.files[0] ? event.target.files[0].name : '');
           this.styleCtrlGrp.get('imagesno').setValue(res);
@@ -610,7 +617,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       conditionOperator: ['', Validators.required],
       conditionFieldEndValue: [''],
       udrid: [this.selStyleWid.widgetId ? this.selStyleWid.widgetId : ''],
-      showRangeFld:false
+      showRangeFld: false
     }));
   }
 
@@ -628,12 +635,20 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param fieldData option of selection change
    */
   onFieldChange(fieldData: MatAutocompleteSelectedEvent) {
-    if(fieldData && fieldData.option.value) {
+    if (fieldData && fieldData.option.value) {
       this.styleCtrlGrp.get('field').setValue(fieldData.option.value.fldCtrl ? fieldData.option.value.fldCtrl : fieldData.option.value);
     } else {
       this.styleCtrlGrp.get('field').setValue('');
     }
     console.log(fieldData);
+    this.fieldDataType = fieldData.option.value.fldCtrl.dataType;
+  }
+
+  /**
+   * To check the Field Datatype
+   */
+  get checkFieldDataType(): boolean {
+    return ['NUMC', 'DESC'].indexOf(this.fieldDataType) >= 0 ? true : false;
   }
 
   /**
@@ -656,9 +671,9 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   onDefaultFilterChange(fieldData: MatAutocompleteSelectedEvent, index: number) {
     const frmArray = this.defaultFilterCtrlGrp.controls.filters as FormArray;
-    this.fld2FldArray.forEach(value=> {
-      if(frmArray.at(index).value.conditionOperator) {
-        if(frmArray.at(index).value.conditionOperator === value) {
+    this.fld2FldArray.forEach(value => {
+      if (frmArray.at(index).value.conditionOperator) {
+        if (frmArray.at(index).value.conditionOperator === value) {
           if (fieldData && fieldData.option.value) {
             frmArray.at(index).get('conditionFieldEndValue').setValue(fieldData.option.value.fieldId);
           } else {
@@ -682,7 +697,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   operatorSelectionChng(operator: string, index: number) {
     const frmArray = this.defaultFilterCtrlGrp.controls.filters as FormArray;
-    if(operator) {
+    if (operator) {
       frmArray.at(index).get('conditionOperator').setValue(operator);
     } else {
       frmArray.at(index).get('conditionOperator').setValue('');
@@ -694,8 +709,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    * Should call api and get the actual records count
    * @param objectType selected object type
    */
-  getRecordCount(objectType: string, isWorkflowDataset?:boolean, isCustomdataSet?:boolean) {
-    const userSub = this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user=>{
+  getRecordCount(objectType: string, isWorkflowDataset?: boolean, isCustomdataSet?: boolean) {
+    const userSub = this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user => {
       const docCountSub = this.reportService.getDocCount(objectType, user.plantCode, isWorkflowDataset, isCustomdataSet).subscribe(res => {
         this.recordsCount = res;
       }, error => {
@@ -736,21 +751,21 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     request.reportName = this.reportName;
     request.widgetReqList = this.widgetList;
 
-    const userSub = this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user=>{
+    const userSub = this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user => {
       const createUpdateSub = this.reportService.createUpdateReport(request, user.plantCode).subscribe(res => {
-      this.reportId = res;
-      this.sharedService.setReportListData();
-      this.snackbar.open(`Successfully saved change(s)`, 'Close',{duration:3000});
-    },errro=>{
-      this.snackbar.open(`Something went wrong`, 'Close',{duration:5000});
-    });
-    this.subscriptions.push(createUpdateSub);
+        this.reportId = res;
+        this.sharedService.setReportListData();
+        this.snackbar.open(`Successfully saved change(s)`, 'Close', { duration: 3000 });
+      }, errro => {
+        this.snackbar.open(`Something went wrong`, 'Close', { duration: 5000 });
+      });
+      this.subscriptions.push(createUpdateSub);
     });
     this.subscriptions.push(userSub);
   }
 
   // To set the emitted value of form-input component
-  setreportname(data: string): void{
+  setreportname(data: string): void {
     this.reportName = data;
   }
 
@@ -800,7 +815,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param selected selected workflow data is here
    */
   afterWfSelect(selected: WorkflowResponse[]) {
-    if(selected.length) {
+    if (selected.length) {
       this.styleCtrlGrp.get('isWorkflowdataSet').setValue(true);
       this.dataSetOb = of(this.dataSets);
       this.customDataSetob = of(this.customDataSets);
@@ -808,7 +823,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.styleCtrlGrp.get('isWorkflowdataSet').setValue(false);
     }
     this.styleCtrlGrp.get('isCustomdataSet').setValue(false);
-    const objId = selected.map(map=> map.objectid);
+    const objId = selected.map(map => map.objectid);
     this.getWorkFlowFields(objId);
     this.getRecordCount(objId.toString(), true);
     this.getWorkFlowPathDetails(objId);
@@ -826,7 +841,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   afterDataSetSelect(obj: ObjectTypeResponse) {
-    if(obj.objectid) {
+    if (obj.objectid) {
       this.dataSetOb = of(this.dataSets);
       this.customDataSetob = of(this.customDataSets);
       this.styleCtrlGrp.get('objectType').setValue(obj.objectid);
@@ -846,7 +861,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param fieldData option of selection change
    */
   onDistictWithChange(fieldData: MatAutocompleteSelectedEvent) {
-    if(fieldData && fieldData.option.value) {
+    if (fieldData && fieldData.option.value) {
       this.styleCtrlGrp.get('distictWith').setValue(fieldData.option.value.fldCtrl ? fieldData.option.value.fldCtrl : fieldData.option.value);
     } else {
       this.styleCtrlGrp.get('distictWith').setValue('');
@@ -859,7 +874,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param obj curret render object
    */
   chooseColumnDisWith(obj: MetadataModel): string {
-    return obj? obj.fieldDescri: null;
+    return obj ? obj.fieldDescri : null;
   }
 
   /**
@@ -867,8 +882,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param val searchable text for choose columns ..
    */
   searchChooseColumn(val: string) {
-    if(val && val.trim() !=='') {
-      this.headerFields = of(this.headerFls.filter(fil => fil.fieldDescri.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !==-1));
+    if (val && val.trim() !== '') {
+      this.headerFields = of(this.headerFls.filter(fil => fil.fieldDescri.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !== -1));
     } else {
       this.headerFields = of(this.headerFls);
     }
@@ -879,8 +894,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param val searchable text for choose columns ..
    */
   searchCustomChooseColumn(val: string) {
-    if(val && val.trim() !=='') {
-      this.CustomfieldsObs = of(this.Customfields.filter(fil => fil.fieldDescri.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !==-1));
+    if (val && val.trim() !== '') {
+      this.CustomfieldsObs = of(this.Customfields.filter(fil => fil.fieldDescri.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !== -1));
     } else {
       this.CustomfieldsObs = of(this.Customfields);
     }
@@ -891,10 +906,10 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param val searchable string for choose column
    */
   searchChooseColumnWorkflow(val: string) {
-    if(val && val.trim() !=='') {
-      const sysFld = this.workflowFields.static.filter(fil => fil.fieldDescri.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !==-1);
-      const dynFld = this.workflowFields.dynamic.filter(fil => fil.fieldDescri.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !==-1);
-      this.workflowFieldsObs = of({dynamic:dynFld,static:sysFld});
+    if (val && val.trim() !== '') {
+      const sysFld = this.workflowFields.static.filter(fil => fil.fieldDescri.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !== -1);
+      const dynFld = this.workflowFields.dynamic.filter(fil => fil.fieldDescri.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !== -1);
+      this.workflowFieldsObs = of({ dynamic: dynFld, static: sysFld });
     } else {
       this.workflowFieldsObs = of(this.workflowFields);
     }
@@ -905,8 +920,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param val searchable text for choose columns ..
    */
   searchChooseCustomColumn(val: string) {
-    if(val && val.trim() !=='') {
-      this.headerFields = of(this.headerFls.filter(fil => fil.fieldDescri.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !==-1));
+    if (val && val.trim() !== '') {
+      this.headerFields = of(this.headerFls.filter(fil => fil.fieldDescri.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !== -1));
     } else {
       this.headerFields = of(this.headerFls);
     }
@@ -917,7 +932,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param value width entered by user..
    */
   widthCount(value: number) {
-    if(value > 200){
+    if (value > 200) {
       return this.styleCtrlGrp.get('width').setValue(200);
     }
   }
@@ -927,7 +942,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param value height entered by user..
    */
   heightCount(value: number) {
-    if(value > 1000) {
+    if (value > 1000) {
       return this.styleCtrlGrp.get('height').setValue(1000);
     }
   }
@@ -962,8 +977,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     const boxX = Math.round(((dropableWidget.x * this.eachBoxSize) + movedX) / this.eachBoxSize);
     const boxY = Math.round(((dropableWidget.y * this.eachBoxSize) + movedY) / this.eachBoxSize);
     if ((boxX >= 0 && (boxX * this.eachBoxSize) <= this.screenWidth) && (boxY >= 0)) {
-      if(this.widgetList.length > 0) {
-        const lastWidget = this.widgetList[this.widgetList.length -1];
+      if (this.widgetList.length > 0) {
+        const lastWidget = this.widgetList[this.widgetList.length - 1];
         dropableWidget.x = boxX + lastWidget.x + 2;
         dropableWidget.y = boxY + lastWidget.y + 2;
       } else {
@@ -974,13 +989,14 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       // add chart properties on widget list
       if ((dropableWidget.widgetType === WidgetType.BAR_CHART || dropableWidget.widgetType === WidgetType.STACKED_BAR_CHART)) {
         dropableWidget.chartProperties = {
-          chartType:ChartType.BAR, orientation:Orientation.VERTICAL, isEnableDatalabels:false,
-          datalabelsPosition:DatalabelsPosition.center, isEnableLegend:false, legendPosition:LegendPosition.top,
-          xAxisLabel:'', yAxisLabel:'', orderWith: OrderWith.DESC, scaleFrom: null, scaleTo: null, stepSize: null,
-          dataSetSize: null,seriesWith:SeriesWith.day,seriesFormat:null,blankValueAlias:null,timeseriesStartDate:TimeseriesStartDate.D7,isEnabledBarPerc:false,
-          bucketFilter:null
+          chartType: ChartType.BAR, orientation: Orientation.VERTICAL, isEnableDatalabels: false,
+          datalabelsPosition: DatalabelsPosition.center, isEnableLegend: false, legendPosition: LegendPosition.top,
+          xAxisLabel: '', yAxisLabel: '', orderWith: OrderWith.DESC, scaleFrom: null, scaleTo: null, stepSize: null,
+          dataSetSize: null, seriesWith: SeriesWith.day, seriesFormat: null, blankValueAlias: null, timeseriesStartDate: TimeseriesStartDate.D7, isEnabledBarPerc: false,
+          bucketFilter: null
         };
       }
+      this.isSerieswithDisabled = false;
       this.preapreNewWidgetPosition(dropableWidget);
     }
   }
@@ -990,7 +1006,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param selected selected custom data is here
    */
   afterCustomSelect(obj: ObjectTypeResponse) {
-    if(obj.objectid) {
+    if (obj.objectid) {
       this.styleCtrlGrp.get('isWorkflowdataSet').setValue(false);
       this.styleCtrlGrp.get('isCustomdataSet').setValue(true);
       this.styleCtrlGrp.get('objectType').setValue(obj.objectid);
@@ -1020,10 +1036,30 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param fieldData option of selection change
    */
   onCustomFieldChange(fieldData: MatAutocompleteSelectedEvent) {
-    if(fieldData && fieldData.option.value) {
+    if (fieldData && fieldData.option.value) {
       this.styleCtrlGrp.get('field').setValue(fieldData.option.value ? fieldData.option.value : '');
     } else {
       this.styleCtrlGrp.get('field').setValue('');
+    }
+  }
+
+  get isSriesWithVisibile() :boolean {
+    if (this.styleCtrlGrp.get('field').value && this.styleCtrlGrp.get('groupById').value && this.styleCtrlGrp.get('distictWith').value) {
+      this.selectedOption = 'year';
+      this.isSerieswithDisabled = true;
+      return false;
+    }
+    else {
+      this.isSerieswithDisabled = false;
+      return true;
+    }
+
+  }
+  checkNumLength(value :number){
+    if (value > 1000) {
+      return this.styleCtrlGrp.get('pageDefaultSize').setValue(1000);
+    } else if(value<1){
+      return this.styleCtrlGrp.get('pageDefaultSize').setValue('');
     }
   }
 }
