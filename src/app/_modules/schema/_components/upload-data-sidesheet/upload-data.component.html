@@ -1,23 +1,21 @@
 <div class="root">
   <div class="f-row breadcrum-toolbar">
     <button mat-button (click)="close()">
-        <mat-icon fontSet="mdo-icons">close</mat-icon>
+      <mat-icon fontSet="mdo-icons">close</mat-icon>
     </button>
-    <div class="col-spacer"></div>
-    <div class="f-row mdo-constrained-right">
-        <div class="display-heading-large">{{moduleInfo ? ( moduleInfo.moduleDesc ? moduleInfo.moduleDesc: 'Untitled') : 'Untitled'}}</div>
-        <span class="f-spacer"></span>
+      <div class="col-spacer"></div>
+      <div class="f-col mdo-constrained-right">
+          <div class="f-row breadcrum-head">
+            <div class="display-heading-large">{{moduleInfo ? ( moduleInfo.moduleDesc ? moduleInfo.moduleDesc: 'Untitled') : 'Untitled'}}</div>
+              <div class="f-spacer"></div>
+              <a class="info-link">Choose another file</a>
+              <span class="f-col-spacer-half"></span>
+              <button mat-flat-button color="primary" (click)="uploadFileData(stepper)">Upload</button>
+          </div>
+      </div>
+  </div>
 
-        <!-- its comes after file upload step -->
-        <a class="info-link">Choose another file</a>
-        <span class="f-col-spacer-half"></span>
-        <button mat-flat-button color="primary" (click)="uploadFileData(stepper)">Upload</button>
-        <!-- its comes after file upload step -->
-    </div>
-</div>
-
-<div class="row-spacer"></div>
-
+  <div class="f-col sidesheetcontent-listing">
     <div class="f-col mdo-justify">
       <mat-horizontal-stepper linear #stepper (selectionChange)="controlStepChange($event);">
         <!-- Upload data -->
@@ -101,4 +99,5 @@
         </mat-step>
       </mat-horizontal-stepper>
     </div>
+  </div>
 </div>

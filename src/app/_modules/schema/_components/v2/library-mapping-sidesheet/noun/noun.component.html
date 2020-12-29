@@ -1,51 +1,55 @@
-<div class="root mat-elevation-z0">
+<div class="root">
     <div class="f-row breadcrum-toolbar">
         <button mat-button (click)="close()">
             <mat-icon fontSet="mdo-icons">close</mat-icon>
         </button>
         <div class="col-spacer"></div>
-        <div class="f-row mdo-constrained-right">
-            <div class="display-heading-large">Create new noun</div>
-            <span class="f-spacer"></span>
-            <button (click)="save()" mat-flat-button color="primary">Save</button>
+        <div class="f-col mdo-constrained-right">
+            <div class="f-row breadcrum-head">
+                <div class="display-heading-large">Create new noun</div>
+                <span class="f-spacer"></span>
+                <button (click)="save()" mat-flat-button color="primary">Save</button>
+            </div>
         </div>
     </div>
 
-    <div class="row-spacer"></div>
-
-    <div class="f-col mdo-justify">
-        <form [formGroup]="nounForm">
-            <div class="mdo-form-field">
-                <pros-form-input [type]="'text'" [placeholder]="'Noun code'"
-                    (valueChange)="setControlValue('nounCode', $event)" [label]="'Noun code'"></pros-form-input>
-                <mat-error *ngIf="submitted && nounForm.controls.nounCode.errors && nounForm.controls.nounCode.errors.required">
-                    Please enter noun code
-                </mat-error>
-            </div>
-
-            <div class="mdo-form-field">
-                <pros-form-input [type]="'text'" [placeholder]="'Noun text'"
-                    (valueChange)="setControlValue('nounText', $event)" [label]="'Noun text'">
-                </pros-form-input>
-            </div>
-
-            <div class="mdo-form-field">
-                <pros-form-input [type]="'text'" [placeholder]="'Noun numeric Code'"
-                    (valueChange)="setControlValue('nounNumCode', $event)" [label]="'Noun numeric Code'">
-                </pros-form-input>
-            </div>
-
-            <div class="mdo-form-field">
-                <pros-form-input [type]="'text'" [placeholder]="'Noun modifier separator'"
-                    (valueChange)="setControlValue('nounModeSep', $event)" [label]="'Noun modifier separator'">
-                </pros-form-input>
-            </div>
-
-            <div class="mdo-form-field">
-                <mat-slide-toggle formControlName="shortDescActive" color="primary">Short description active</mat-slide-toggle>
-                <div class="row-spacer"></div>
-                <mat-slide-toggle formControlName="active" color="primary">Noun active</mat-slide-toggle>
-            </div>
-        </form>
+    <div class="f-col sidesheetcontent-listing">
+        <div class="f-col mdo-justify">
+            <form [formGroup]="nounForm">
+                <div class="mdo-form-field">
+                    <pros-form-input [type]="'text'" [placeholder]="'Noun code'"
+                        (valueChange)="setControlValue('nounCode', $event)" [label]="'Noun code'"></pros-form-input>
+                    <mat-error *ngIf="submitted && nounForm.controls.nounCode.errors && nounForm.controls.nounCode.errors.required">
+                        Please enter noun code
+                    </mat-error>
+                </div>
+    
+                <div class="mdo-form-field">
+                    <pros-form-input [type]="'text'" [placeholder]="'Noun text'"
+                        (valueChange)="setControlValue('nounText', $event)" [label]="'Noun text'">
+                    </pros-form-input>
+                </div>
+    
+                <div class="mdo-form-field">
+                    <pros-form-input [type]="'text'" [placeholder]="'Noun numeric Code'"
+                        (valueChange)="setControlValue('nounNumCode', $event)" [label]="'Noun numeric Code'">
+                    </pros-form-input>
+                </div>
+    
+                <div class="mdo-form-field">
+                    <pros-form-input [type]="'text'" [placeholder]="'Noun modifier separator'"
+                        (valueChange)="setControlValue('nounModeSep', $event)" [label]="'Noun modifier separator'">
+                    </pros-form-input>
+                </div>
+    
+                <div class="mdo-form-field">
+                    <div class="f-row-spacer-half"></div>
+                    <mat-slide-toggle formControlName="shortDescActive" color="primary">Short description active</mat-slide-toggle>
+                    <div class="row-spacer"></div>
+                    <mat-slide-toggle formControlName="active" color="primary">Noun active</mat-slide-toggle>
+                    <div class="f-row-spacer-half"></div>
+                </div>
+            </form>
+        </div>
     </div>
 </div>

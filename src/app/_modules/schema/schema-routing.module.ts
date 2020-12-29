@@ -39,11 +39,7 @@ import { NewDuplicateCheckComponent } from './_components/new-duplicate-check/ne
 import { StringReplaceComponent } from './_components/string-replace/string-replace.component';
 import { EmptyDataComponent } from './_components/empty-data/empty-data.component';
 import { RunningProgressComponent } from './_components/running-progress/running-progress.component';
-import { InvitePeopleComponent } from './_components/invite-people/invite-people.component';
 import { ScheduleComponent } from '@modules/shared/_components/schedule/schedule.component';
-import { NewAttributeSidesheetComponent } from './_components/new-attribute-sidesheet/new-attribute-sidesheet.component';
-import { NewModifierSidesheetComponent } from './_components/new-modifier-sidesheet/new-modifier-sidesheet.component';
-import { NewNounSidesheetComponent } from './_components/new-noun-sidesheet/new-noun-sidesheet.component';
 import { LibraryMappingSidesheetComponent } from './_components/v2/library-mapping-sidesheet/library-mapping-sidesheet.component';
 import { ExclusionsSidesheetComponent } from './_components/v2/brrule-side-sheet/duplicate-rule-config/exclusions-sidesheet/exclusions-sidesheet.component';
 import { DetailBuilderComponent } from './_components/v2/_builder/detail-builder/detail-builder.component';
@@ -109,12 +105,8 @@ const routes: Routes = [
   { path: 'system/string-replace', component: StringReplaceComponent },
   { path: 'system/empty-data', component: EmptyDataComponent },
   { path: 'system/running-progress', component: RunningProgressComponent },
-  { path: 'system/invite-people', component: InvitePeopleComponent },
   { path: 'schedule/:schemaId/:scheduleId', component: ScheduleComponent},
   { path: 'system/exclusions-sidesheet', component: ExclusionsSidesheetComponent },
-  { path: 'system/new-attribute-sidesheet', component: NewAttributeSidesheetComponent },
-  { path: 'system/new-modifier-sidesheet', component: NewModifierSidesheetComponent },
-  { path: 'system/new-noun-sidesheet', component: NewNounSidesheetComponent },
   { path: 'system/library-mapping-sidesheet', component: LibraryMappingSidesheetComponent },
   { path: 'businessrule-library/:moduleId/:schemaId/:outlet', component: BusinessrulelibrarySidesheetComponent},
   { path: ':moduleId/statics/:schemaId', component: StaticsComponent },

@@ -1,4 +1,4 @@
-<mat-card class="root mat-elevation-z0">
+<div class="root">
     <div class="f-row breadcrum-toolbar">
         <button mat-button (click)="closeDialogComponent()">
             <mat-icon fontSet="mdo-icons">close</mat-icon>
@@ -12,7 +12,7 @@
             </div>
             <div class="row-spacer"></div>
             <div class="f-row">
-                <pros-search-input (value)="search($event)"></pros-search-input>
+                <pros-search-input (value)="search($event)" placeholder="Search business rules"></pros-search-input>
                 <span class="col-spacer"></span>
                 <mat-chip-list>
                     <mat-chip class="mdo-filter-matchip" [matMenuTriggerFor]="businessRuleType">
@@ -28,14 +28,13 @@
                     </ng-container>
                 </mat-menu>
             </div>
-            <div class="row-spacer"></div>
         </div>
     </div>
 
-    <div class="f-col businessrule-listing">
+    <div class="f-col sidesheetcontent-listing">
         <div class="mdo-justify">
             <!-- page loader -->
-            <mat-spinner color="primary" diameter="30" *ngIf="loader"></mat-spinner>
+            <div class="loading-spinner"><mat-spinner color="accent" diameter="30" *ngIf="loader"></mat-spinner></div>
             <mat-list role="list" class="rule-list" *ngIf="!loader && filteredBusinessRulesList.length>0">
                 <mat-list-item role="listitem" *ngFor="let brItem of filteredBusinessRulesList; trackBy: trackByFn">
                     <div class="mat-line">{{brItem.brInfo}}</div>
@@ -51,4 +50,4 @@
             </mat-list>
         </div>
     </div>
-</mat-card>
+</div>

@@ -1,47 +1,53 @@
-mat-card.root {
+div.root {
   user-select: none;
-  padding: 0 16px;
+  height: 100%;
+  overflow: hidden;
   width: 668px;
 
   .breadcrum-toolbar {
-    align-items: center;
-    padding-top: 8px;
-    position: sticky;
-    top: 0;
+    padding: 8px 16px;
     z-index: 2;
-    min-height: 40px;
-
-    .display-heading-large {
-      font-size: 1.2rem;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-    }
 
     .mdo-constrained-right {
-      align-items: center;
       width: 100%;
+
+      .breadcrum-head {
+        align-items: center;
+        width: 100%;
+
+        .display-heading-large {
+          font-size: 1.2rem;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+        }
+      }
     }
   }
 
-  .mdo-justify {
-    .mdo-form-field {
-      padding: 8px 0;
+  .sidesheetcontent-listing {
+    height: calc(100% - 103px);
+    overflow: auto;
 
-      mat-label {
-        font-weight: 500;
-        font-size: 0.8rem;
+    .mdo-justify {
+      .mdo-form-field {
+        padding: 8px 0;
+
+        mat-label {
+          font-weight: 500;
+          font-size: 0.8rem;
+        }
       }
     }
   }
 }
 
 @media (min-width: 1200px) {
-  .mdo-justify {
-    margin: 0 54px;
+  .mdo-constrained-right {
+    margin-right: 50px;
   }
 
-  .mdo-constrained-right {
-    margin-right: 54px;
+  .mdo-justify {
+    margin: 0 66px;
   }
 }

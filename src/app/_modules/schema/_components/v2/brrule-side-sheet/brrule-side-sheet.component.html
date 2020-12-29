@@ -1,324 +1,324 @@
-<mat-card class="root mat-elevation-z0">
+<div class="root">
     <div class="f-row breadcrum-toolbar">
         <button mat-button (click)="close()">
             <mat-icon fontSet="mdo-icons">close</mat-icon>
         </button>
         <div class="col-spacer"></div>
-        <div class="f-row mdo-constrained-right">
-            <div class="display-heading-large">Business rule</div>
-            <span class="f-spacer"></span>
-            <button mat-flat-button color="primary" (click)="save();$event.stopPropagation()">Save</button>
+        <div class="f-col mdo-constrained-right">
+            <div class="f-row breadcrum-head">
+                <div class="display-heading-large">Business rule</div>
+                <span class="f-spacer"></span>
+                <button mat-flat-button color="primary" (click)="save();$event.stopPropagation()">Save</button>
+            </div>
         </div>
     </div>
-    <div class="row-spacer"></div>
-    <div class="f-col mdo-justify">
-        <form [formGroup]="form">
-            <div class="f-col mdo-form-field">
-                <mat-label>Rule Type</mat-label>
-                <mat-form-field appearance="outline">
-                    <mat-select formControlName="rule_type">
-                        <ng-container *ngFor="let rule of businessRuleTypes">
-                            <mat-option *ngIf="rule.isImplemented" [value]="rule.ruleType">{{rule.ruleDesc}}
-                            </mat-option>
-                        </ng-container>
-                    </mat-select>
+
+    <div class="f-col sidesheetcontent-listing">
+        <div class="f-col mdo-justify">
+            <form [formGroup]="form">
+                <div class="f-col mdo-form-field">
+                    <mat-label>Rule Type</mat-label>
+                    <mat-form-field appearance="outline">
+                        <mat-select formControlName="rule_type">
+                            <ng-container *ngFor="let rule of businessRuleTypes">
+                                <mat-option *ngIf="rule.isImplemented" [value]="rule.ruleType">{{rule.ruleDesc}}
+                                </mat-option>
+                            </ng-container>
+                        </mat-select>
+                        <mat-error
+                            *ngIf="submitted && form.controls.rule_type.errors && form.controls.rule_type.errors.required">
+                            Please enter Rule type</mat-error>
+                    </mat-form-field>
+                </div>
+    
+                <div class="f-col mdo-form-field" *ngIf="!isDuplicateType">
+                    <mat-label>Weightage</mat-label>
+                    <mat-slider thumbLabel formControlName="weightage" [displayWith]="formatLabel" tickInterval="1" min="0"
+                        [max]="currentweightageValue" color="primary"></mat-slider>
                     <mat-error
-                        *ngIf="submitted && form.controls.rule_type.errors && form.controls.rule_type.errors.required">
-                        Please enter Rule type</mat-error>
-                </mat-form-field>
-            </div>
-
-            <div class="f-col mdo-form-field" *ngIf="!isDuplicateType">
-                <mat-label>Weightage</mat-label>
-                <mat-slider thumbLabel formControlName="weightage" [displayWith]="formatLabel" tickInterval="1" min="0"
-                    [max]="currentweightageValue" color="primary"></mat-slider>
-                <mat-error
-                    *ngIf="submitted && form.controls.weightage.errors && form.controls.weightage.errors.required">
-                    Please enter Weightage</mat-error>
-            </div>
-
-            <div class="f-col mdo-form-field" *ngIf="!isUDR && !isDuplicateType">
-                <mat-label>Category</mat-label>
-                <mat-form-field appearance="outline">
-                    <mat-select formControlName="categoryId">
-                        <mat-option *ngFor="let category of categoryList" [value]="category.categoryId">
-                            {{category.categoryDesc}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <mat-error
-                    *ngIf="submitted && form.controls.categoryId.errors && form.controls.categoryId.errors.required">
-                    Please enter Category Id</mat-error>
-            </div>
-            <div class="f-col mdo-form-field">
-                <pros-form-input (valueChange)="getFormValue($event,'rule_name')" [label]="'Rule name (Description)'"
-                    [value]="form.controls.rule_name.value">
-                </pros-form-input>
-                <mat-error
-                    *ngIf="submitted && form.controls.rule_name.errors && form.controls.rule_name.errors.required">
-                    Please enter Rule name</mat-error>
-            </div>
-            <div class="f-col mdo-form-field" *ngIf="!isDuplicateType">
-                <pros-form-input (valueChange)="getFormValue($event,'error_message')"
-                    [value]="form.controls.error_message.value" [label]="'Error message (Message)'">
-                </pros-form-input>
-                <mat-error
-                    *ngIf="submitted && form.controls.error_message.errors && form.controls.error_message.errors.required">
-                    Please enter Error message</mat-error>
-            </div>
-
-            <div class="f-col mdo-form-field" *ngIf="form.controls.rule_type.value === 'BR_CLASSIFICATION'">
-                <pros-form-input (valueChange)="getFormValue($event,'apiKey')"
-                    [value]="form.controls.apiKey.value" [label]="'Enter access token'">
-                </pros-form-input>
-                <mat-error
-                    *ngIf="submitted && form.controls.apiKey.errors && form.controls.apiKey.errors.required">
-                    Please enter access token</mat-error>
-            </div>
-
-            <mat-divider></mat-divider>
-
-            <div class="mdo-form-field temp-field" *ngIf="isTransformationRule">
-                <mat-radio-group formControlName="transformationRuleType" class="f-row">
-                    <mat-radio-button [value]="transformationType.REGEX" color="primary">{{transformationType.REGEX}}
-                    </mat-radio-button>
-                    <span class="col-spacer"></span>
-                    <mat-radio-button [value]="transformationType.LOOKUP" color="primary">{{transformationType.LOOKUP}}
-                    </mat-radio-button>
-                </mat-radio-group>
-            </div>
-            <!-- transformation rule -->
-            <pros-transformation-rule
-                *ngIf="isTransformationRule && selectedTransformationType === transformationType.REGEX"
-                [selectedRuleType]="currentSelectedRule" [targetFieldsObject]="targetFieldsObject"
-                [sourceFieldsObject]="sourceFieldsObject" [submitted]="submitted"
-                [initialTransformationData]="transformationData"
-                (transformationFormOutput)="setTransformationFormData($event)">
-            </pros-transformation-rule>
-            <!-- transformation lookup rule -->
-            <pros-lookup-rule *ngIf="isTransformationRule && selectedTransformationType === transformationType.LOOKUP"
-                [fieldsObject]="sourceFieldsObject" [initialLookupData]="transformationLookUpData"
-                (lookupRuleOutput)="setLookupData($event)">
-            </pros-lookup-rule>
-            <div class="f-col mdo-form-field" *ngIf="!isUDR && !isDuplicateType && !isTransformationRule">
-                <mat-label>Fields</mat-label>
-                <mat-form-field appearance="outline">
-                    <mat-chip-list #chipList>
-                        <mat-chip *ngFor="let field of selectedFields;let i = index" [removable]="true"
-                            (removed)="remove(field,i)">
-                            {{field.fieldDescri}}
-                            <mat-icon matChipRemove>cancel</mat-icon>
-                        </mat-chip>
-                        <input matInput id="fieldsInput" class="mat-input" [matAutocomplete]="auto"
-                            formControlName="fields" [matChipInputFor]="chipList"
-                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
-                    </mat-chip-list>
-                    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectField($event)"
-                        [displayWith]="displayFn.bind(this)">
-                        <mat-option *ngFor="let fieldItem of filteredModules | async" [value]="fieldItem.fieldId">
-                            {{fieldItem.fieldDescri}}
-                        </mat-option>
-                    </mat-autocomplete>
-                </mat-form-field>
-                <mat-error *ngIf="submitted && form.controls.fields.errors && form.controls.fields.errors.required">
-                    Please select the fields
-                </mat-error>
-            </div>
-            <div class="f-col mdo-form-field" *ngIf="isRegexType ">
-                <mat-label>Standard function</mat-label>
-                <mat-form-field appearance="outline">
-                    <mat-select formControlName='standard_function' (selectionChange)='setRegex($event)'>
-                        <mat-option *ngFor="let regex of preDefinedRegex" [value]="regex.FUNC_TYPE">
-                            {{regex.FUNC_NAME}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <mat-error
-                    *ngIf="submitted && form.controls.standard_function.errors && form.controls.standard_function.errors.required">
-                    Please select the standard function</mat-error>
-            </div>
-            <div class="f-col mdo-form-field" *ngIf="isRegexType">
-                <pros-form-input [value]='form.value.regex' (valueChange)="getFormValue($event,'regex')"
-                    [value]="form.controls.regex.value" [label]="'Regex value'">
-                </pros-form-input>
-                <mat-error *ngIf="submitted && form.controls.regex.errors && form.controls.regex.errors.required">
-                    Please enter regex</mat-error>
-            </div>
-        </form>
-
-
-        <form [formGroup]="udrNodeForm" *ngIf="isUDR">
-            <div class="f-col user-defined-set" formArrayName="frmArray">
-                <ng-container *ngFor="let item of udrNodeForm.get('frmArray').controls; let i = index">
-                    <ng-container [formGroupName]="i">
-                        <div class="f-row defined-row" [id]="item.value.id">
-                            <!-- rule type -->
-                            <div class="col select-col" *ngIf="i > 0">
-                                <mat-select mat-stroked-button formControlName="blockType">
-                                    <mat-option value="AND">
-                                        AND
-                                    </mat-option>
-                                    <mat-option value="OR">
-                                        OR
-                                    </mat-option>
-                                </mat-select>
-                            </div>
-                            <div class="col" *ngIf="i === 0">
-                                <button mat-flat-button color="accent">When</button>
-                            </div>
-                            <!-- field name -->
-                            <div class="col">
-                                <mat-select formControlName="conditionFieldId">
-                                    <mat-option value="">Select field </mat-option>
-                                    <mat-option *ngFor="let fieldItem of fieldsList" [value]="fieldItem.fieldId">
-                                        {{fieldItem.fieldDescri}}
-                                    </mat-option>
-                                </mat-select>
-                            </div>
-                            <!-- operators -->
-                            <div class="col">
-                                <!-- <button mat-stroked-button>Equals <mat-icon>arrow_drop_down</mat-icon></button> -->
-                                <mat-select mat-stroked-button formControlName="conditionOperator">
-                                    <mat-option selected value="">Select operator</mat-option>
-                                    <mat-optgroup *ngFor="let group of operators" [label]="group.desc">
-                                        <mat-option *ngFor="let child of group.childs" [value]="child">
-                                            {{child}}
+                        *ngIf="submitted && form.controls.weightage.errors && form.controls.weightage.errors.required">
+                        Please enter Weightage</mat-error>
+                </div>
+    
+                <div class="f-col mdo-form-field" *ngIf="!isUDR && !isDuplicateType">
+                    <mat-label>Category</mat-label>
+                    <mat-form-field appearance="outline">
+                        <mat-select formControlName="categoryId">
+                            <mat-option *ngFor="let category of categoryList" [value]="category.categoryId">
+                                {{category.categoryDesc}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-error
+                        *ngIf="submitted && form.controls.categoryId.errors && form.controls.categoryId.errors.required">
+                        Please enter Category Id</mat-error>
+                </div>
+                <div class="f-col mdo-form-field">
+                    <pros-form-input (valueChange)="getFormValue($event,'rule_name')" [label]="'Rule name (Description)'"
+                        [value]="form.controls.rule_name.value">
+                    </pros-form-input>
+                    <mat-error
+                        *ngIf="submitted && form.controls.rule_name.errors && form.controls.rule_name.errors.required">
+                        Please enter Rule name</mat-error>
+                </div>
+                <div class="f-col mdo-form-field" *ngIf="!isDuplicateType">
+                    <pros-form-input (valueChange)="getFormValue($event,'error_message')"
+                        [value]="form.controls.error_message.value" [label]="'Error message (Message)'">
+                    </pros-form-input>
+                    <mat-error
+                        *ngIf="submitted && form.controls.error_message.errors && form.controls.error_message.errors.required">
+                        Please enter Error message</mat-error>
+                </div>
+    
+                <div class="f-col mdo-form-field" *ngIf="form.controls.rule_type.value === 'BR_CLASSIFICATION'">
+                    <pros-form-input (valueChange)="getFormValue($event,'apiKey')" [value]="form.controls.apiKey.value"
+                        [label]="'Enter access token'">
+                    </pros-form-input>
+                    <mat-error *ngIf="submitted && form.controls.apiKey.errors && form.controls.apiKey.errors.required">
+                        Please enter access token</mat-error>
+                </div>
+    
+                <mat-divider></mat-divider>
+    
+                <div class="mdo-form-field temp-field" *ngIf="isTransformationRule">
+                    <mat-radio-group formControlName="transformationRuleType" class="f-row">
+                        <mat-radio-button [value]="transformationType.REGEX" color="primary">{{transformationType.REGEX}}
+                        </mat-radio-button>
+                        <span class="col-spacer"></span>
+                        <mat-radio-button [value]="transformationType.LOOKUP" color="primary">{{transformationType.LOOKUP}}
+                        </mat-radio-button>
+                    </mat-radio-group>
+                </div>
+                <!-- transformation rule -->
+                <pros-transformation-rule
+                    *ngIf="isTransformationRule && selectedTransformationType === transformationType.REGEX"
+                    [selectedRuleType]="currentSelectedRule" [targetFieldsObject]="targetFieldsObject"
+                    [sourceFieldsObject]="sourceFieldsObject" [submitted]="submitted"
+                    [initialTransformationData]="transformationData"
+                    (transformationFormOutput)="setTransformationFormData($event)">
+                </pros-transformation-rule>
+                <!-- transformation lookup rule -->
+                <pros-lookup-rule *ngIf="isTransformationRule && selectedTransformationType === transformationType.LOOKUP"
+                    [fieldsObject]="sourceFieldsObject" [initialLookupData]="transformationLookUpData"
+                    (lookupRuleOutput)="setLookupData($event)">
+                </pros-lookup-rule>
+                <div class="f-col mdo-form-field" *ngIf="!isUDR && !isDuplicateType && !isTransformationRule">
+                    <mat-label>Fields</mat-label>
+                    <mat-form-field appearance="outline">
+                        <mat-chip-list #chipList>
+                            <mat-chip *ngFor="let field of selectedFields;let i = index" [removable]="true"
+                                (removed)="remove(field,i)">
+                                {{field.fieldDescri}}
+                                <mat-icon matChipRemove>cancel</mat-icon>
+                            </mat-chip>
+                            <input matInput id="fieldsInput" class="mat-input" [matAutocomplete]="auto"
+                                formControlName="fields" [matChipInputFor]="chipList"
+                                [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
+                        </mat-chip-list>
+                        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectField($event)"
+                            [displayWith]="displayFn.bind(this)">
+                            <mat-option *ngFor="let fieldItem of filteredModules | async" [value]="fieldItem.fieldId">
+                                {{fieldItem.fieldDescri}}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+                    <mat-error *ngIf="submitted && form.controls.fields.errors && form.controls.fields.errors.required">
+                        Please select the fields
+                    </mat-error>
+                </div>
+                <div class="f-col mdo-form-field" *ngIf="isRegexType ">
+                    <mat-label>Standard function</mat-label>
+                    <mat-form-field appearance="outline">
+                        <mat-select formControlName='standard_function' (selectionChange)='setRegex($event)'>
+                            <mat-option *ngFor="let regex of preDefinedRegex" [value]="regex.FUNC_TYPE">
+                                {{regex.FUNC_NAME}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-error
+                        *ngIf="submitted && form.controls.standard_function.errors && form.controls.standard_function.errors.required">
+                        Please select the standard function</mat-error>
+                </div>
+                <div class="f-col mdo-form-field" *ngIf="isRegexType">
+                    <pros-form-input [value]='form.value.regex' (valueChange)="getFormValue($event,'regex')"
+                        [value]="form.controls.regex.value" [label]="'Regex value'">
+                    </pros-form-input>
+                    <mat-error *ngIf="submitted && form.controls.regex.errors && form.controls.regex.errors.required">
+                        Please enter regex</mat-error>
+                </div>
+            </form>
+    
+    
+            <form [formGroup]="udrNodeForm" *ngIf="isUDR">
+                <div class="f-col user-defined-set" formArrayName="frmArray">
+                    <ng-container *ngFor="let item of udrNodeForm.get('frmArray').controls; let i = index">
+                        <ng-container [formGroupName]="i">
+                            <div class="f-row defined-row" [id]="item.value.id">
+                                <!-- rule type -->
+                                <div class="col select-col" *ngIf="i > 0">
+                                    <mat-select mat-stroked-button formControlName="blockType">
+                                        <mat-option value="AND">
+                                            AND
                                         </mat-option>
-                                    </mat-optgroup>
-                                </mat-select>
-                            </div>
-                            <!-- Comparison value -->
-                            <div class="col" *ngIf="item.value.conditionOperator !== 'RANGE'">
-                                <div class="f-row">
-                                    <pros-form-input [placeholder]="'Comparison value'"
-                                        [value]="item.value.conditionFieldValue"
-                                        (valueChange)="setComparisonValue($event,i)">
-                                    </pros-form-input>
-                                    <div class="f-col-spacer-half"></div>
+                                        <mat-option value="OR">
+                                            OR
+                                        </mat-option>
+                                    </mat-select>
                                 </div>
-                            </div>
-                            <div class="col" *ngIf="item.value.conditionOperator  === 'RANGE'">
-                                <div class="f-row">
-                                    <pros-form-input [placeholder]="'start value'"
-                                        [value]="item.value.conditionFieldStartValue"
-                                        (valueChange)="setRangeValue($event,'start',i)">
-                                    </pros-form-input>
-                                    <div class="f-col-spacer-half"></div>
-                                    <pros-form-input [placeholder]="'end value'"
-                                        [value]="item.value.conditionFieldEndValue"
-                                        (valueChange)="setRangeValue($event,'end',i)">
-                                    </pros-form-input>
-                                    <div class="f-col-spacer-half"></div>
+                                <div class="col" *ngIf="i === 0">
+                                    <button mat-flat-button color="accent">When</button>
                                 </div>
+                                <!-- field name -->
+                                <div class="col">
+                                    <mat-select formControlName="conditionFieldId">
+                                        <mat-option value="">Select field </mat-option>
+                                        <mat-option *ngFor="let fieldItem of fieldsList" [value]="fieldItem.fieldId">
+                                            {{fieldItem.fieldDescri}}
+                                        </mat-option>
+                                    </mat-select>
+                                </div>
+                                <!-- operators -->
+                                <div class="col">
+                                    <!-- <button mat-stroked-button>Equals <mat-icon>arrow_drop_down</mat-icon></button> -->
+                                    <mat-select mat-stroked-button formControlName="conditionOperator">
+                                        <mat-option selected value="">Select operator</mat-option>
+                                        <mat-optgroup *ngFor="let group of operators" [label]="group.desc">
+                                            <mat-option *ngFor="let child of group.childs" [value]="child">
+                                                {{child}}
+                                            </mat-option>
+                                        </mat-optgroup>
+                                    </mat-select>
+                                </div>
+                                <!-- Comparison value -->
+                                <div class="col" *ngIf="item.value.conditionOperator !== 'RANGE'">
+                                    <div class="f-row">
+                                        <pros-form-input [placeholder]="'Comparison value'"
+                                            [value]="item.value.conditionFieldValue"
+                                            (valueChange)="setComparisonValue($event,i)">
+                                        </pros-form-input>
+                                        <div class="f-col-spacer-half"></div>
+                                    </div>
+                                </div>
+                                <div class="col" *ngIf="item.value.conditionOperator  === 'RANGE'">
+                                    <div class="f-row">
+                                        <pros-form-input [placeholder]="'start value'"
+                                            [value]="item.value.conditionFieldStartValue"
+                                            (valueChange)="setRangeValue($event,'start',i)">
+                                        </pros-form-input>
+                                        <div class="f-col-spacer-half"></div>
+                                        <pros-form-input [placeholder]="'end value'"
+                                            [value]="item.value.conditionFieldEndValue"
+                                            (valueChange)="setRangeValue($event,'end',i)">
+                                        </pros-form-input>
+                                        <div class="f-col-spacer-half"></div>
+                                    </div>
+                                </div>
+                                <!-- three dots -->
+                                <div class="col" *ngIf="i !== 0">
+                                    <button mat-button [matMenuTriggerFor]="menu">
+                                        <mat-icon fontSet="mdo-icons">list-item-drag</mat-icon>
+                                    </button>
+                                </div>
+                                <mat-menu #menu="matMenu" class="navigation-menu">
+                                    <!-- give local reference and tell this is manu by assigning 'matMenu' -->
+                                    <button mat-menu-item (click)="addChildBlock(i)">
+                                        Add child rule
+                                    </button>
+                                    <button mat-menu-item *ngIf="i > 0" (click)="removeParentNode(i)">
+                                        Delete
+                                    </button>
+                                </mat-menu>
                             </div>
-                            <!-- three dots -->
-                            <div class="col" *ngIf="i !== 0">
-                                <button mat-button [matMenuTriggerFor]="menu">
-                                    <mat-icon fontSet="mdo-icons">list-item-drag</mat-icon>
-                                </button>
-                            </div>
-                            <mat-menu #menu="matMenu" class="navigation-menu">
-                                <!-- give local reference and tell this is manu by assigning 'matMenu' -->
-                                <button mat-menu-item (click)="addChildBlock(i)">
-                                    Add child rule
-                                </button>
-                                <button mat-menu-item *ngIf="i > 0" (click)="removeParentNode(i)">
-                                    Delete
-                                </button>
-                            </mat-menu>
-                        </div>
-                        <!-- nested row -->
-                        <ng-container formArrayName="childs">
-                            <div *ngFor="let chldNode of getChildAsControl(i).controls; let childIndex=index">
-                                <ng-container [formGroupName]="childIndex">
-                                    <ul class="sub-defined">
-                                        <div class="f-row defined-row">
-                                            <div class="col select-col">
-                                                <mat-select formControlName="blockDesc">
-                                                    <mat-option *ngFor="let condition of initialConditions"
-                                                        [value]="condition" [disabled]="condition === 'When'">
-                                                        {{condition}}
-                                                    </mat-option>
-                                                </mat-select>
-                                            </div>
-                                            <div class="col">
-                                                <mat-select formControlName="conditionFieldId">
-                                                    <mat-option value="">Select field </mat-option>
-                                                    <mat-option *ngFor="let fieldItem of fieldsList"
-                                                        [value]="fieldItem.fieldId">
-                                                        {{fieldItem.fieldDescri}}
-                                                    </mat-option>
-                                                </mat-select>
-                                            </div>
-                                            <div class="col">
-                                                <mat-select mat-stroked-button formControlName="conditionOperator">
-                                                    <mat-option selected value="">Select operator</mat-option>
-                                                    <mat-optgroup *ngFor="let group of operators" [label]="group.desc">
-                                                        <mat-option *ngFor="let child of group.childs" [value]="child">
-                                                            {{child}}
+                            <!-- nested row -->
+                            <ng-container formArrayName="childs">
+                                <div *ngFor="let chldNode of getChildAsControl(i).controls; let childIndex=index">
+                                    <ng-container [formGroupName]="childIndex">
+                                        <ul class="sub-defined">
+                                            <div class="f-row defined-row">
+                                                <div class="col select-col">
+                                                    <mat-select formControlName="blockDesc">
+                                                        <mat-option *ngFor="let condition of initialConditions"
+                                                            [value]="condition" [disabled]="condition === 'When'">
+                                                            {{condition}}
                                                         </mat-option>
-                                                    </mat-optgroup>
-                                                </mat-select>
-                                            </div>
-                                            <div class="col" *ngIf="chldNode.value.conditionOperator !== 'RANGE'">
-                                                <pros-form-input [placeholder]="'Comparison value'"
-                                                    [value]="chldNode.value.conditionFieldValue"
-                                                    (valueChange)="setComparisonValueForChild($event,childIndex,i)">
-                                                </pros-form-input>
-                                            </div>
-                                            <div class="col" *ngIf="chldNode.value.conditionOperator  === 'RANGE'">
-                                                <div class="f-row">
-                                                    <pros-form-input [placeholder]="'start value'"
-                                                        [value]="item.value.conditionFieldStartValue"
-                                                        (valueChange)="setRangeValueForChild($event,'start',childIndex, i)">
-                                                    </pros-form-input>
-                                                    <div class="f-col-spacer-half"></div>
-                                                    <pros-form-input [placeholder]="'end value'"
-                                                        [value]="chldNode.value.conditionFieldEndValue"
-                                                        (valueChange)="setRangeValueForChild($event,'end',childIndex,i)">
+                                                    </mat-select>
+                                                </div>
+                                                <div class="col">
+                                                    <mat-select formControlName="conditionFieldId">
+                                                        <mat-option value="">Select field </mat-option>
+                                                        <mat-option *ngFor="let fieldItem of fieldsList"
+                                                            [value]="fieldItem.fieldId">
+                                                            {{fieldItem.fieldDescri}}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </div>
+                                                <div class="col">
+                                                    <mat-select mat-stroked-button formControlName="conditionOperator">
+                                                        <mat-option selected value="">Select operator</mat-option>
+                                                        <mat-optgroup *ngFor="let group of operators" [label]="group.desc">
+                                                            <mat-option *ngFor="let child of group.childs" [value]="child">
+                                                                {{child}}
+                                                            </mat-option>
+                                                        </mat-optgroup>
+                                                    </mat-select>
+                                                </div>
+                                                <div class="col" *ngIf="chldNode.value.conditionOperator !== 'RANGE'">
+                                                    <pros-form-input [placeholder]="'Comparison value'"
+                                                        [value]="chldNode.value.conditionFieldValue"
+                                                        (valueChange)="setComparisonValueForChild($event,childIndex,i)">
                                                     </pros-form-input>
                                                 </div>
-                                            </div>
-                                            <div class="col">
-                                                <button mat-button [matMenuTriggerFor]="nestedMenu">
-                                                    <mat-icon fontSet="mdo-icons">list-item-drag</mat-icon>
-                                                </button>
-                                                <mat-menu #nestedMenu="matMenu" class="navigation-menu">
-                                                    <!-- give local reference and tell this is manu by assigning 'matMenu' -->
-                                                    <!-- <button mat-menu-item (click)="addNestedBlock(udrBlock,i)">
-                                                        <mat-icon>add</mat-icon>
-                                                        <span>Add</span>
-                                                    </button> -->
-                                                    <button mat-menu-item (click)="removeChildNode(i,childIndex)">
-                                                        Delete
+                                                <div class="col" *ngIf="chldNode.value.conditionOperator  === 'RANGE'">
+                                                    <div class="f-row">
+                                                        <pros-form-input [placeholder]="'start value'"
+                                                            [value]="item.value.conditionFieldStartValue"
+                                                            (valueChange)="setRangeValueForChild($event,'start',childIndex, i)">
+                                                        </pros-form-input>
+                                                        <div class="f-col-spacer-half"></div>
+                                                        <pros-form-input [placeholder]="'end value'"
+                                                            [value]="chldNode.value.conditionFieldEndValue"
+                                                            (valueChange)="setRangeValueForChild($event,'end',childIndex,i)">
+                                                        </pros-form-input>
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <button mat-button [matMenuTriggerFor]="nestedMenu">
+                                                        <mat-icon fontSet="mdo-icons">list-item-drag</mat-icon>
                                                     </button>
-                                                </mat-menu>
+                                                    <mat-menu #nestedMenu="matMenu" class="navigation-menu">
+                                                        <!-- give local reference and tell this is manu by assigning 'matMenu' -->
+                                                        <!-- <button mat-menu-item (click)="addNestedBlock(udrBlock,i)">
+                                                            <mat-icon>add</mat-icon>
+                                                            <span>Add</span>
+                                                        </button> -->
+                                                        <button mat-menu-item (click)="removeChildNode(i,childIndex)">
+                                                            Delete
+                                                        </button>
+                                                    </mat-menu>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </ul>
-                                </ng-container>
-                            </div>
+                                        </ul>
+                                    </ng-container>
+                                </div>
+                            </ng-container>
                         </ng-container>
                     </ng-container>
-                </ng-container>
-                <!-- button to ad primary block -->
-                <div class="f-row defined-row add-col">
-                    <div class="col">
-                        <button mat-flat-button color="accent" (click)="addParentBlock()">
-                            <mat-icon fontSet="mdo-icons">plus</mat-icon>
-                        </button>
+                    <!-- button to ad primary block -->
+                    <div class="f-row defined-row add-col">
+                        <div class="col">
+                            <button mat-flat-button color="accent" (click)="addParentBlock()">
+                                <mat-icon fontSet="mdo-icons">plus</mat-icon>
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </form>
-        
-        <!-- Duplicate Rule form group  -->
-        <ng-container *ngIf="isDuplicateType">
-            <pros-setup-duplicate-rule 
-                [coreSchemaBrInfo]="coreSchemaBrInfo"
-                [fieldsList]="fieldsList"
-                [submitted]="submitted"
-                (formChange)="setDuplicateFormRef($event)"></pros-setup-duplicate-rule>
-        </ng-container>
+            </form>
+    
+            <!-- Duplicate Rule form group  -->
+            <ng-container *ngIf="isDuplicateType">
+                <pros-setup-duplicate-rule [coreSchemaBrInfo]="coreSchemaBrInfo" [fieldsList]="fieldsList"
+                    [submitted]="submitted" (formChange)="setDuplicateFormRef($event)"></pros-setup-duplicate-rule>
+            </ng-container>
+        </div>
     </div>
-</mat-card>
+</div>

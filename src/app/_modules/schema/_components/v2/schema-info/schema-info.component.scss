@@ -1,4 +1,4 @@
-mat-card.root {
+div.root {
   user-select: none;
   height: 100%;
   padding: 0 16px;
@@ -135,6 +135,7 @@ mat-card.root {
     .slider-row {
       align-items: center;
       flex-wrap: wrap;
+      flex: 1;
 
       mat-slider.mat-slider {
         flex: 10;

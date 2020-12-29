@@ -396,7 +396,7 @@
   .cdk-overlay-container {
     .mat-autocomplete-panel {
       .autodropdown-scroll {
-        max-height: 180px;
+        max-height: 181px;
         overflow: auto;
 
         .sticky-actions {
@@ -1316,6 +1316,14 @@
     }
   }
 
+  pros-setup-duplicate-rule {
+    .colunm-box {
+      &.rule-border-row {
+        border-bottom: 1px solid $color-app-border;
+      }
+    }
+  }
+
   pros-report-datatable-column-settings {
     .colunm-box:hover {
       background: mat-color($background-palette, app-bar);
@@ -1389,7 +1397,7 @@
 
   pros-schema-summary-sidesheet,
   pros-schema-info {
-    mat-card.root {
+    div.root {
       .message {
         color: $color-text-canvas;
 
@@ -1456,7 +1464,7 @@
 
   pros-brrule-side-sheet,
   pros-duplicate-datacheck-sidesheet {
-    mat-card.root {
+    div.root {
       .user-defined-set {
         &::before {
           background: $color-accent;
@@ -1587,8 +1595,8 @@
   pros-subscriber-side-sheet,
   pros-businessrulelibrary-dialog,
   pros-businessrulelibrary-sidesheet {
-    mat-card.root {
-      .businessrule-listing {
+    div.root {
+      .sidesheetcontent-listing {
         mat-list.rule-list {
           mat-list-item {
             border-bottom-color: $color-app-border;

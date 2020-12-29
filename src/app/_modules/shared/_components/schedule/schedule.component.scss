@@ -1,95 +1,101 @@
-mat-card.root {
-  padding: 0 16px;
+div.root {
   user-select: none;
+  height: 100%;
+  overflow: hidden;
   width: 668px;
 
   .breadcrum-toolbar {
-    align-items: center;
-    padding-top: 8px;
-    position: sticky;
-    top: 0;
+    padding: 8px 16px;
     z-index: 2;
-    min-height: 40px;
-
-    .display-heading-large {
-      font-size: 1.2rem;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-    }
 
     .mdo-constrained-right {
-      align-items: center;
       width: 100%;
+
+      .breadcrum-head {
+        align-items: center;
+        width: 100%;
+
+        .display-heading-large {
+          font-size: 1.2rem;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+        }
+      }
     }
   }
 
-  .mdo-justify {
-    .mdo-form-field {
-      padding: 8px 0;
+  .sidesheetcontent-listing {
+    height: calc(100% - 52px);
+    overflow: auto;
 
-      mat-label {
+    .mdo-justify {
+      .mdo-form-field {
+        padding: 8px 0;
+
+        mat-label {
+          font-weight: 500;
+          font-size: 0.8rem;
+        }
+
+        &.every-field {
+          align-items: center;
+
+          pros-form-input {
+            flex: 2;
+          }
+
+          .week-label {
+            padding-top: 20px;
+            flex: 3;
+          }
+        }
+
+        mat-radio-group {
+          display: flex;
+          flex-wrap: wrap;
+
+          mat-radio-button {
+            flex: 0 0 25%;
+            margin-bottom: 8px;
+          }
+        }
+      }
+
+      .panel-title {
         font-weight: 500;
-        font-size: 0.8rem;
       }
 
-      &.every-field {
-        align-items: center;
+      .summary-rowlist {
+        mat-list-item.mat-list-item {
+          border-bottom-width: 1px;
+          border-bottom-style: solid;
+          font-size: 0.8rem;
 
-        pros-form-input {
-          flex: 2;
-        }
-
-        .week-label {
-          padding-top: 20px;
-          flex: 3;
+          .row-heading {
+            font-size: 0.9rem;
+          }
         }
       }
 
-      mat-radio-group {
-        display: flex;
-        flex-wrap: wrap;
+      mat-divider {
+        position: relative;
+        margin: 16px 0;
 
-        mat-radio-button {
-          flex: 0 0 25%;
-          margin-bottom: 8px;
+        &.divider-dashed {
+          border-top-style: dashed;
         }
-      }
-    }
-
-    .panel-title {
-      font-weight: 500;
-    }
-
-    .summary-rowlist {
-      mat-list-item.mat-list-item {
-        border-bottom-width: 1px;
-        border-bottom-style: solid;
-        font-size: 0.8rem;
-
-        .row-heading {
-          font-size: 0.9rem;
-        }
-      }
-    }
-
-    mat-divider {
-      position: relative;
-      margin: 16px 0;
-
-      &.divider-dashed {
-        border-top-style: dashed;
       }
     }
   }
 }
 
 @media (min-width: 1200px) {
-  .mdo-justify {
-    margin: 0 54px;
+  .mdo-constrained-right {
+    margin-right: 50px;
   }
 
-  .mdo-constrained-right {
-    margin-right: 54px;
+  .mdo-justify {
+    margin: 0 66px;
   }
 }

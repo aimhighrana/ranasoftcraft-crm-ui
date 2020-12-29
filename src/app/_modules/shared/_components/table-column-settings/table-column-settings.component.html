@@ -1,65 +1,71 @@
-<mat-card class="root mat-elevation-z0">
+<div class="root">
     <div class="f-row breadcrum-toolbar">
         <button mat-button (click)="close()">
             <mat-icon fontSet="mdo-icons">close</mat-icon>
         </button>
         <div class="col-spacer"></div>
-        <div class="f-row mdo-constrained-right">
-            <div class="display-heading-large">Configure table</div>
-            <span class="f-spacer"></span>
-            <button mat-flat-button color="primary" (click)="submitColumn()">Save</button>
+        <div class="f-col mdo-constrained-right">
+            <div class="f-row breadcrum-head">
+                <div class="display-heading-large">Configure table</div>
+                <span class="f-spacer"></span>
+                <button mat-flat-button color="primary" (click)="submitColumn()">Save</button>
+            </div>
+            <div class="row-spacer"></div>
+            <div class="f-row">
+                <pros-search-input label="Search" placeholder="Search fields" (value)="searchFld($event)"></pros-search-input>
+            </div>
+            <div class="row-spacer"></div>
         </div>
     </div>
-    <div class="row-spacer"></div>
 
-    <div class="f-col mdo-justify">
-        <pros-search-input label="Search" placeholder="Search fields" (value)="searchFld($event)"></pros-search-input>
-        <div class="row-spacer"></div>
-        <mat-card class="mat-elevation-z0 check-list">
-            <!-- <mat-checkbox class="checkedall" color="primary" (change)="selectAll()" [(ngModel)]="allChecked"
-                [indeterminate]="allIndeterminate"> <span class="checkboxlabel">All</span></mat-checkbox> -->
-            <div class="f-row colunm-box">
-                <div class="col"></div>
-                <div class="col col-x4"><strong> Column </strong></div>
-                <span class="f-spacer"></span>
-                <div class="col"><strong> Visible </strong></div>
-                <span class="f-col-spacer-half"></span>
-                <div class="col"><strong> Editable </strong></div>
-            </div>
-            <div cdkDropList [cdkDropListData]="header" (cdkDropListDropped)="drop($event)" #scrollableContainer>
-                <div *ngFor="let fld of header" id="{{ fld.fieldId }}" cdkDrag class="colunm-list">
-                    <div class="f-row colunm-box">
-                        <div class="col">
-                            <button mat-button cdkDragHandle>
-                                <mat-icon fontSet="mdo-icons">two-lines</mat-icon>
-                            </button>
-                        </div>
+    <div class="f-col sidesheetcontent-listing">
+        <div class="f-col mdo-justify">
+            <div class="check-list">
+                <!-- <mat-checkbox class="checkedall" color="primary" (change)="selectAll()" [(ngModel)]="allChecked"
+                    [indeterminate]="allIndeterminate"> <span class="checkboxlabel">All</span></mat-checkbox> -->
+                <div class="f-row colunm-box">
+                    <div class="col"></div>
+                    <div class="col col-x4"><strong> Column </strong></div>
+                    <span class="f-spacer"></span>
+                    <div class="col"><strong> Visible </strong></div>
+                    <span class="f-col-spacer-half"></span>
+                    <div class="col"><strong> Editable </strong></div>
+                </div>
+                <div cdkDropList [cdkDropListData]="header" (cdkDropListDropped)="drop($event)" #scrollableContainer>
+                    <div *ngFor="let fld of header" id="{{ fld.fieldId }}" cdkDrag class="colunm-list">
+                        <div class="f-row colunm-box">
+                            <div class="col">
+                                <button mat-button cdkDragHandle>
+                                    <mat-icon fontSet="mdo-icons">two-lines</mat-icon>
+                                </button>
+                            </div>
 
-                        <div class="col col-x4">
-                            <ng-template [ngIf]="suggestedFlds.indexOf(fld.fieldId) !==-1" [ngIfElse]="notSuggested">
-                                <span style="background-color: #FFFF00">{{ fld.fieldDescri ? fld.fieldDescri :  (fld.fieldDesc ? fld.fieldDesc : 'Untitled') }} </span>
-                            </ng-template>
+                            <div class="col col-x4">
+                                <ng-template [ngIf]="suggestedFlds.indexOf(fld.fieldId) !==-1" [ngIfElse]="notSuggested">
+                                    <span style="background-color: #FFFF00">{{ fld.fieldDescri ? fld.fieldDescri :  (fld.fieldDesc ? fld.fieldDesc : 'Untitled') }} </span>
+                                </ng-template>
 
-                            <ng-template #notSuggested>
-                                <span>{{ fld.fieldDescri ? fld.fieldDescri : (fld.fieldDesc ? fld.fieldDesc : 'Untitled') }} </span>
-                            </ng-template>
-                        </div>
+                                <ng-template #notSuggested>
+                                    <span>{{ fld.fieldDescri ? fld.fieldDescri : (fld.fieldDesc ? fld.fieldDesc : 'Untitled') }} </span>
+                                </ng-template>
+                            </div>
 
-                        <div class="f-spacer"></div>
+                            <div class="f-spacer"></div>
 
-                        <div class="col">
-                            <mat-checkbox color="primary" (change)="selectionChange(fld)" [checked]="isChecked(fld)">
-                            </mat-checkbox>
-                        </div>
-                        <span class="f-col-spacer-half"></span>
+                            <div class="col">
+                                <mat-checkbox color="primary" (change)="selectionChange(fld)" [checked]="isChecked(fld)">
+                                </mat-checkbox>
+                            </div>
+                            <span class="f-col-spacer-half"></span>
 
-                        <div class="col">
-                            <mat-checkbox color="primary" (change)="editableChange(fld)" [disabled]="!isChecked(fld)" [checked]="isEditEnabled(fld)">
-                            </mat-checkbox>
+                            <div class="col">
+                                <mat-checkbox color="primary" (change)="editableChange(fld)" [disabled]="!isChecked(fld)" [checked]="isEditEnabled(fld)">
+                                </mat-checkbox>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </mat-card>
+        </div>
     </div>
-</mat-card>
+</div>

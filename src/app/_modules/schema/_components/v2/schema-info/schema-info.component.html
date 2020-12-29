@@ -1,4 +1,4 @@
-<mat-card class="mat-elevation-z0 root">
+<div class="root">
     <div class="f-row breadcrum-toolbar">
         <div class="display-heading-large">
             {{schemaDetails?.moduleDescription ? schemaDetails.moduleDescription : 'Untitled'}} /
@@ -122,7 +122,7 @@
                                     {{ cat.categoryDesc ? cat.categoryDesc : cat.categoryId }}</button>
                                 </mat-menu>
                             </div>
-                            <div class="col col-x4">
+                            <div class="col col-x4 mat-item-center">
                                 <div class="f-row slider-row">
                                 <mat-slider color="primary" [value]="businessRule.brWeightage" thumbLabel tickInterval="1"
                                     min="0" [max]="availableWeightage(businessRule.brWeightage)" (change)="updateBr(businessRule,$event)">
@@ -325,4 +325,4 @@
         </mat-tab>
 
     </mat-tab-group>
-</mat-card>
+</div>

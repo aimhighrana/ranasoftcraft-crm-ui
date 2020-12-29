@@ -1,4 +1,4 @@
-<mat-card class="root mat-elevation-z0">
+<div class="root">
     <div class="f-row breadcrum-toolbar">
         <button mat-button (click)="closeDialogComponent()">
             <mat-icon fontSet="mdo-icons">close</mat-icon>
@@ -14,7 +14,7 @@
             </div>
             <div class="row-spacer"></div>
             <div class="f-row">
-                <pros-search-input (value)="getCollaborators($event, 0)"></pros-search-input>
+                <pros-search-input (value)="getCollaborators($event, 0)" placeholder="Search subscribers"></pros-search-input>
                 <span class="col-spacer"></span>
                 <!-- <mat-chip-list>
                     <mat-chip class="mdo-filter-matchip">
@@ -22,10 +22,9 @@
                     </mat-chip>
                 </mat-chip-list> -->
             </div>
-            <div class="row-spacer"></div>
         </div>
     </div>
-    <div class="f-col businessrule-listing">
+    <div class="f-col sidesheetcontent-listing">
         <div class="f-col mdo-justify">
             <mat-list role="list" class="rule-list">
                 <mat-list-item role="listitem" *ngFor="let subscriber of filteredSubscribers">
@@ -50,4 +49,4 @@
             </mat-list>
         </div>
     </div>
-</mat-card>
+</div>

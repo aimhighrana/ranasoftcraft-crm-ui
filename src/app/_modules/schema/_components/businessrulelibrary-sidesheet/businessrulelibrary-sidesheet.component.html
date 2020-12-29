@@ -1,4 +1,4 @@
-<mat-card class="root mat-elevation-z0">
+<div class="root">
     <div class="f-row breadcrum-toolbar">
         <button mat-button (click)="closeDialogComponent()">
             <mat-icon fontSet="mdo-icons">close</mat-icon>
@@ -11,7 +11,7 @@
                 <button mat-flat-button color="primary" (click)="saveSelection()">Save</button>
             </div>
             <div class="row-spacer"></div>
-            <div class="f-row fliter-rows">
+            <div class="f-row">
                 <pros-search-input (value)="getBusinessRulesList(moduleId, $event, '', '0')"></pros-search-input>
                 <span class="col-spacer"></span>
                 <mat-chip-list>
@@ -28,15 +28,11 @@
                     </ng-container>
                 </mat-menu>
             </div>
-            <div class="row-spacer"></div>
         </div>
     </div>
-
-    <div class="f-col businessrule-listing">
+    <div class="f-col sidesheetcontent-listing">
         <cdk-virtual-scroll-viewport itemSize="10" (scroll)="onScroll($event)" class="viewport-scroll">
         <div class="mdo-justify">
-            <!-- page loader -->
-
             <mat-list role="list" class="rule-list" filteredBusinessRulesList.length>
                 <mat-list-item role="listitem" *cdkVirtualFor="let brItem of filteredBusinessRulesList; trackBy: trackByFn">
                     <div class="mat-line">{{brItem.brInfo}}</div>
@@ -53,4 +49,4 @@
         </div>
     </cdk-virtual-scroll-viewport>
     </div>
-</mat-card>
+</div>

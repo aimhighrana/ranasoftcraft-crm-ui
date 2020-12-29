@@ -1,56 +1,58 @@
-mat-card.root {
+div.root {
   user-select: none;
-  padding: 0 16px;
+  height: 100%;
+  overflow: hidden;
   width: 668px;
 
   .breadcrum-toolbar {
-    align-items: center;
-    padding-top: 8px;
-    position: sticky;
-    top: 0;
+    padding: 8px 16px;
     z-index: 2;
-    line-height: 40px;
-
-    .display-heading-large {
-      font-size: 1.2rem;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-    }
 
     .mdo-constrained-right {
-      align-items: center;
       width: 100%;
 
-      button.mat-flat-button {
-        min-width: auto;
+      .breadcrum-head {
+        align-items: center;
+        width: 100%;
+
+        .display-heading-large {
+          font-size: 1.2rem;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+        }
       }
     }
   }
 
-  .mdo-justify {
-    .invite-colunm {
-      align-items: center;
-      margin-bottom: 8px;
+  .sidesheetcontent-listing {
+    height: calc(100% - 68px);
+    overflow: auto;
 
-      .col-x2 {
-        flex: 2;
-        margin-right: 16px;
-
-        mat-form-field {
-          width: 100%;
-        }
-      }
-
-      .info-link {
+    .mdo-justify {
+      .invite-colunm {
         align-items: center;
-        font-size: 0.9rem;
-        cursor: pointer;
+        margin-bottom: 8px;
 
-        mat-icon {
-          font-size: 12px;
-          width: 16px;
-          height: 12px;
+        .col-x2 {
+          flex: 2;
+          margin-right: 16px;
+
+          mat-form-field {
+            width: 100%;
+          }
+        }
+
+        .info-link {
+          align-items: center;
+          font-size: 0.9rem;
+          cursor: pointer;
+
+          mat-icon {
+            font-size: 12px;
+            width: 16px;
+            height: 12px;
+          }
         }
       }
     }
@@ -58,11 +60,11 @@ mat-card.root {
 }
 
 @media (min-width: 1200px) {
-  .mdo-justify {
-    margin: 0 54px;
+  .mdo-constrained-right {
+    margin-right: 50px;
   }
 
-  .mdo-constrained-right {
-    margin-right: 54px;
+  .mdo-justify {
+    margin: 0 66px;
   }
 }
