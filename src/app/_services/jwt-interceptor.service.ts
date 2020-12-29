@@ -86,8 +86,8 @@ export class JwtInterceptorService implements HttpInterceptor {
           finalize(() => this.isRefreshingToken = false),
           switchMap(
             resp => {
-              const jwtToken =  (resp['JWT-TOKEN'] ? resp['JWT-TOKEN'] : '');
-              const newRefreshToken = (resp['JWT-REFRESH-TOKEN'] ? resp['JWT-REFRESH-TOKEN'] : '');
+              const jwtToken =  (resp.body['JWT-TOKEN'] ? resp.body['JWT-TOKEN'] : '');
+              const newRefreshToken = (resp.body['JWT-REFRESH-TOKEN'] ? resp.body['JWT-REFRESH-TOKEN'] : '');
               if (jwtToken && newRefreshToken) {
                 localStorage.setItem('JWT-TOKEN', jwtToken);
                 localStorage.setItem('JWT-REFRESH-TOKEN', newRefreshToken);
