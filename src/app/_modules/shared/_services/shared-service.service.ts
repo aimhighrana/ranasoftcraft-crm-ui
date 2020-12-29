@@ -1,12 +1,8 @@
 import { Injectable } from '@angular/core';
 import { CoreSchemaBrInfo } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { SecondaryNavRefresh, SecondaynavType } from '@models/menu-navigation';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
-export enum SecondaynavType {
-  schema = 'schema',
-  dataIntilligence = 'dataIntilligence',
-  report = 'report'
-}
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +19,7 @@ export class SharedServiceService {
 
   public secondaryBarData: BehaviorSubject<any> = new BehaviorSubject(null);
 
-  private refreshSecondaryNav: BehaviorSubject<SecondaynavType> = new BehaviorSubject<SecondaynavType>(null);
+  private refreshSecondaryNav: Subject<SecondaryNavRefresh> = new Subject<SecondaryNavRefresh>();
 
   private afterSubscriberSave: BehaviorSubject<any> = new BehaviorSubject(null);
   /**
@@ -106,16 +102,17 @@ export class SharedServiceService {
   }
   /**
    * Use for refresh .. secondary nav bar
-   * @param type set refresh type parameters ...
+   * @param activeMenu set refresh type parameters ...
+   * @param activeMenuItemId active item inside selected menu
    */
-  public setRefreshSecondaryNav(type: SecondaynavType) {
-    this.refreshSecondaryNav.next(type);
+  public setRefreshSecondaryNav(activeMenu: SecondaynavType, isPageReload, activeMenuItemId?: string) {
+    this.refreshSecondaryNav.next({activeMenu, isPageReload, activeMenuItemId});
   }
 
   /**
-   * Return the latest refresh type ..
+   * Return the latest refresh details ..
    */
-  public isSecondaryNavRefresh(): Observable<SecondaynavType> {
+  public isSecondaryNavRefresh(): Observable<SecondaryNavRefresh> {
     return this.refreshSecondaryNav.asObservable();
   }
 

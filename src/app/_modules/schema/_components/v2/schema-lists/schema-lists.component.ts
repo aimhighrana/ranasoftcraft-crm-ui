@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SchemaListModuleList } from '@models/schema/schemalist';
-import { SecondaynavType, SharedServiceService } from '@modules/shared/_services/shared-service.service';
+import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { SchemaService } from '@services/home/schema.service';
 import { Subscription } from 'rxjs';
 
@@ -58,11 +58,11 @@ export class SchemaListsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.getRouteParams();
 
-    this.sharedService.isSecondaryNavRefresh().subscribe(res=>{
-      if(res && res === SecondaynavType.schema) {
+    /* this.sharedService.isSecondaryNavRefresh().subscribe(res=>{
+      if(res && res.activeMenu === SecondaynavType.schema) {
         this.getSchemaList();
       }
-    });
+    }); */
   }
 
   /**

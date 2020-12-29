@@ -31,8 +31,12 @@
 
     <div class="row-spacer"></div>
 
-    <div class="nav-tree">
+    <div class="nav-tree" id="nav-tree">
       <mat-accordion *ngIf="activatedPrimaryNav === 'welcome'">
+        <div class="section-header">
+          Data intelligence
+        </div>
+        <div class="row-spacer"></div>
         <ng-container *ngFor="let module of searchModuleResults">
           <mat-expansion-panel togglePosition="before" class="mat-elevation-z0"
             *ngIf="module.schemaLists && module.schemaLists.length>0">
@@ -55,13 +59,11 @@
       </mat-accordion>
 
       <mat-accordion *ngIf="activatedPrimaryNav === 'schema'">
-        <div class="section-header">
-          Data intelligence
-        </div>
-        <div class="row-spacer"></div>
         <ng-container *ngFor="let module of searchModuleResults">
           <mat-expansion-panel togglePosition="before" class="mat-elevation-z0"
-            *ngIf="module.schemaLists && module.schemaLists.length>0">
+            [expanded]="activeMenuItemId === module.moduleId"
+            *ngIf="module.schemaLists && module.schemaLists.length>0"
+            [id]="module.moduleId">
             <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px"
               [routerLink]="['schema', module.moduleId]">
               <mat-panel-title>
@@ -73,6 +75,7 @@
             <mat-nav-list role="navigation" [disableRipple]="true">
               <mat-list-item *ngFor="let schema of module.schemaLists"
                 [routerLink]="['schema/schema-info', schema.moduleId, schema.schemaId]"
+                [ngClass]="{'selected' : isActiveLink('schema/schema-info/' + schema.moduleId + '/' + schema.schemaId)}"
                 [queryParams]="{fragment:'business-rules'}">
                 <div mat-line>{{schema.schemaDescription ?  schema.schemaDescription : 'Untitled'}}</div>
               </mat-list-item>

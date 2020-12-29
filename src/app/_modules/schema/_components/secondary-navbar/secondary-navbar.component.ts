@@ -12,6 +12,7 @@ import { UserService } from '@services/user/userservice.service';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { CreateUpdateSchema } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { SecondaynavType } from '@models/menu-navigation';
 
 @Component({
   selector: 'pros-secondary-navbar',
@@ -68,6 +69,8 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
    */
   subscriptions: Subscription[] = [];
 
+  activeMenuItemId = '';
+
   constructor(
     private router: Router,
     private schemaListService: SchemalistService,
@@ -111,8 +114,12 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
       }
     });
 
-    this.sharedService.isSecondaryNavRefresh().subscribe(res => {
-      this.getSchemaList();
+    this.sharedService.isSecondaryNavRefresh().subscribe(refreshDetails => {
+      if (refreshDetails.activeMenu === SecondaynavType.schema) {
+        this.activeMenuItemId = refreshDetails.activeMenuItemId || '';
+        this.isPageReload = refreshDetails.isPageReload;
+        this.getSchemaList();
+      }
     })
 
     this.sharedService.getTogglePrimaryEmit().subscribe(res => {
@@ -145,10 +152,20 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
       this.moduleList = moduleList;
       this.searchModuleResults = this.moduleList;
       this.filteredModulesMenu = this.moduleList;
-      if (this.moduleList && !this.isPageReload && this.activatedPrimaryNav === 'schema') {
-        const firstModuleId = this.moduleList[0].moduleId;
-        this.router.navigate(['/home/schema', firstModuleId]);
+      if (this.moduleList && this.activatedPrimaryNav === 'schema') {
+        if ( !this.isPageReload ) {
+          const firstModuleId = this.moduleList[0].moduleId;
+          this.router.navigate(['/home/schema', firstModuleId]);
+        }
+        else {
+          const activeModule = this.moduleList.find(module => this.router.url.includes(module.moduleId));
+          if (activeModule) {
+            this.activeMenuItemId = activeModule.moduleId;
+            this.scrollPanelToTop(activeModule.moduleId);
+          }
+        }
       }
+
     }, error => {
       console.error(`Error : ${error.message}`);
     })
@@ -341,8 +358,8 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
       this.matSnackBar.open('Schema created successfully.', 'Okay', {
         duration: 2000
       })
-      this.isPageReload = true; // true as it won't navigate to module detail page;
-      this.getSchemaList(); // get schema list after creating schema;
+
+      this.sharedService.setRefreshSecondaryNav(SecondaynavType.schema, true, moduleId);
 
       // navigate to the schema-info page of new-schema;
       this.router.navigate([`home/schema/schema-info/${moduleId}/${schemaId}`]);
@@ -365,6 +382,18 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
         return schema.schemaDescription.toLocaleLowerCase().startsWith('new schema');
     });
     return newSchemaArr.length>0 ? `New schema ${newSchemaArr.length + 1}` : `New schema`;
+  }
+
+  scrollPanelToTop(panelId) {
+
+    setTimeout(() => {
+      const activeMenuItem = document.getElementById(panelId);
+      activeMenuItem.scrollIntoView();
+    }, 300)
+  }
+
+  isActiveLink(link) {
+    return this.router.url.includes(link);
   }
 
   /**

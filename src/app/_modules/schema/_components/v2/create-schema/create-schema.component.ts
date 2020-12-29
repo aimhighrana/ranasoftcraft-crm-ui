@@ -8,7 +8,8 @@ import { CreateUpdateSchema } from '@modules/admin/_components/module/business-r
 import { Subscription, combineLatest, BehaviorSubject } from 'rxjs';
 import { SchemaListDetails } from '@models/schema/schemalist';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
-import { SharedServiceService, SecondaynavType } from '@modules/shared/_services/shared-service.service';
+import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
+import { SecondaynavType } from '@models/menu-navigation';
 
 @Component({
   selector: 'pros-create-schema',
@@ -126,7 +127,7 @@ export class CreateSchemaComponent implements OnInit, OnDestroy {
     const sub = this.schemaSrevice.createUpdateSchema(request).subscribe(res => {
       this.matSnackBar.open(`Successfully saved`, `Close`, { duration: 5000 });
       this.close();
-      this.sharedService.setRefreshSecondaryNav(SecondaynavType.schema);
+      this.sharedService.setRefreshSecondaryNav(SecondaynavType.schema, true, request.moduleId);
     }, error => {
       this.matSnackBar.open(`Something went wrong`, `Close`, { duration: 5000 });
       console.error(`Error : ${error.message}`)

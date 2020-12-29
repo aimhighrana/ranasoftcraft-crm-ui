@@ -5,7 +5,8 @@ import { CoreSchemaBrMap, SchemaListDetails, LoadDropValueReq, VariantDetails } 
 import { PermissionOn, ROLES, SchemaCollaborator, SchemaDashboardPermission, UserMdoModel } from '@models/collaborator';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { CoreSchemaBrInfo, CreateUpdateSchema, DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
-import { SecondaynavType, SharedServiceService } from '@modules/shared/_services/shared-service.service';
+import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
+import { SecondaynavType } from '@models/menu-navigation';
 import { CategoryInfo, FilterCriteria } from '@models/schema/schemadetailstable';
 import { MatSliderChange } from '@angular/material/slider';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -885,7 +886,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       schemaReq.schemaThreshold = event ? event.value : this.schemaDetails.schemaThreshold;
 
       const subscription = this.schemaService.createUpdateSchema(schemaReq).subscribe((response) => {
-        this.sharedService.setRefreshSecondaryNav(SecondaynavType.schema);
+        this.sharedService.setRefreshSecondaryNav(SecondaynavType.schema, true, this.moduleId);
         this.matSnackBar.open('Schema description updated successfully.', 'ok', {
           duration: 2000
         })
@@ -898,6 +899,17 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       })
       this.subscriptions.push(subscription);
     }
+  }
+
+  deleteSchema() {
+    this.schemaService.deleteSChema(this.schemaId)
+      .subscribe(resp => {
+        this.router.navigate(['home', 'schema', this.moduleId]);
+        this.sharedService.setRefreshSecondaryNav(SecondaynavType.schema, true, this.moduleId);
+        this.matSnackBar.open('Schema deleted successfully.', 'ok', { duration: 2000 });
+      }, error => {
+        this.matSnackBar.open('Something went wrong', 'ok', { duration: 2000 });
+      })
   }
 
   /**
