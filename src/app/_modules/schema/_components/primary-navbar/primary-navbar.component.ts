@@ -1,6 +1,5 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { UploadDatasetComponent } from '../upload-dataset/upload-dataset.component';
 import { UserService } from '@services/user/userservice.service';
 import { Userdetails } from '@models/userdetails';
 import { Router } from '@angular/router';
@@ -8,6 +7,7 @@ import { SharedServiceService } from '@modules/shared/_services/shared-service.s
 import { HomeService } from '@services/home/home.service';
 import { SchemaService } from '@services/home/schema.service';
 import { CreateUpdateSchema } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { UploadDatasetComponent } from '../upload-dataset/upload-dataset.component';
 
 
 @Component({
@@ -78,20 +78,24 @@ export class PrimaryNavbarComponent implements OnInit {
    * Function to show dialog
    */
   selectedModule(event) {
-    if(event && !event.schemaId) {
-      this.createSchema(event.objectid);
-      return;
+    if(!event) {
+      const dialogRef = this.matDialog.open(UploadDatasetComponent, {
+        height: '800px',
+        width: '800px',
+        data: {selecteddata:event},
+        disableClose: true,
+      });
+      dialogRef.afterClosed().subscribe(result => {
+        console.log('The dialog was closed');
+        this.sharedService.getSecondaryNavbarList();
+      });
+    } else {
+      const param = {
+        moduleId: event.objectid,
+        schemaId: event.schemaId? event.schemaId: null
+      }
+      this.createSchema(param);
     }
-    const dialogRef = this.matDialog.open(UploadDatasetComponent, {
-      height: '800px',
-      width: '800px',
-      data: {selecteddata:event},
-      disableClose: true,
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-      this.sharedService.getSecondaryNavbarList();
-    });
   }
 
   toggleSideBar() {
@@ -151,15 +155,22 @@ export class PrimaryNavbarComponent implements OnInit {
    * Function to create new schema
    * @param moduleId: module Id
    */
-  createSchema(moduleId: string) {
-    const schemaReq: CreateUpdateSchema = new CreateUpdateSchema();
-    schemaReq.moduleId = moduleId;
-    schemaReq.discription = 'New schema';
-    this.schemaService.createUpdateSchema(schemaReq).subscribe((response) => {
-      const schemaId:string = response;
+  createSchema({moduleId, schemaId}) {
+    if(moduleId && schemaId){
       this.router.navigate([{outlets: {sb: `sb/schema/check-data/${moduleId}/${schemaId}`}}])
-    }, (error)=>{
-      console.log('Something went wrong while creating schema', error.message);
-    })
+    }
+    if(moduleId && !schemaId){
+      const schemaReq: CreateUpdateSchema = new CreateUpdateSchema();
+      schemaReq.moduleId = moduleId;
+      schemaReq.discription = 'New schema';
+      this.schemaService.createUpdateSchema(schemaReq).subscribe((response) => {
+        if(response) {
+          schemaId = response;
+          this.router.navigate([{outlets: {sb: `sb/schema/check-data/${moduleId}/${schemaId}`}}]);
+        }
+      }, (error)=>{
+        console.log('Something went wrong while creating schema', error.message);
+      })
+    }
   }
 }

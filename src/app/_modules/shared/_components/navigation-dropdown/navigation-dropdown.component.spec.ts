@@ -1,10 +1,11 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import { NavigationDropdownComponent } from './navigation-dropdown.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { SchemaListModuleList } from '@models/schema/schemalist';
 import { of } from 'rxjs';
+import { SearchInputComponent } from '../search-input/search-input.component';
 
 describe('NavigationDropdownComponent', () => {
   let component: NavigationDropdownComponent;
@@ -13,9 +14,9 @@ describe('NavigationDropdownComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NavigationDropdownComponent ],
+      declarations: [ NavigationDropdownComponent, SearchInputComponent ],
       imports: [AppMaterialModuleForSpec],
-      providers:[ SchemalistService ]
+      providers:[ SchemalistService]
     })
     .compileComponents();
   }));
@@ -40,6 +41,8 @@ describe('NavigationDropdownComponent', () => {
   }));
 
   it('schemaList(), should open schemalist by using that objectId', async(() => {
+    const searchInputfixture = TestBed.createComponent(SearchInputComponent);
+    component.searchInput = searchInputfixture.componentInstance;
     component.modulesList = [{moduleId:'1005',objectdesc:'material',schemaLists:[{}]}];
     const objectId = '1005';
     component.schemaList(objectId);
@@ -50,5 +53,62 @@ describe('NavigationDropdownComponent', () => {
     spyOn(schemaListServiceSpy,'getSchemaList').and.returnValue(of({} as SchemaListModuleList[]));
     component.getObjectTypes();
     expect(schemaListServiceSpy.getSchemaList).toHaveBeenCalled();
+  }));
+
+  it('searchModule() with args searchTerm, should call searchFilter', fakeAsync(() => {
+    component.modulesList = [
+      {
+        moduleId: '1',
+        moduleDesc: 'One'
+      },
+      {
+        moduleId: '2',
+        moduleDesc: 'Two'
+      },
+      {
+        moduleId: '3',
+        moduleDesc: 'Three'
+      },
+    ];
+    component.filteredModulesList = component.modulesList;
+    component.searchModule('three');
+    tick(100);
+    expect(component.filteredModulesList.length).toEqual(1);
+
+    component.filteredModulesList = component.modulesList;
+    component.searchModule('');
+    tick(100);
+    expect(component.filteredModulesList.length).toEqual(3);
+  }));
+
+  it('searchSchema() with args searchTerm, should call searchFilter', fakeAsync(() => {
+    component.schemaLists = [
+      {
+        schemaId: '1',
+        schemaDescription: 'One'
+      },
+      {
+        schemaId: '2',
+        schemaDescription: 'Two'
+      },
+      {
+        schemaId: '3',
+        schemaDescription: 'Three'
+      },
+    ];
+    component.filteredSchemaList = component.schemaLists;
+    component.searchSchema('three');
+    tick(100);
+    expect(component.filteredSchemaList.length).toEqual(1);
+
+    component.filteredSchemaList = component.schemaLists;
+    component.searchSchema('');
+    tick(100);
+    expect(component.filteredSchemaList.length).toEqual(3);
+
+    component.filteredSchemaList = component.schemaLists;
+    component.searchSchema('t');
+    tick(100);
+    expect(component.filteredSchemaList.length).toEqual(2);
   }));
 });

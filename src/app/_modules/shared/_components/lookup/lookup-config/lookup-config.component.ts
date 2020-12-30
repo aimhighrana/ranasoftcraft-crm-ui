@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { LookupData, LookupFields, LookupFormData, MetadataModeleResponse } from '@models/schema/schemadetailstable';
 import { isEqual } from 'lodash';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'pros-lookup-config',
@@ -93,7 +94,8 @@ export class LookupConfigComponent implements OnInit, OnChanges {
    * @param moduleId Pass module ID
    */
   getFieldsByModuleId(moduleId: string) {
-    const subscriber = this.schemaDetailsService.getMetadataFields(moduleId)
+    let subscriber = new Subscription();
+    subscriber = this.schemaDetailsService.getMetadataFields(moduleId)
       .subscribe((metadataModeleResponse: MetadataModeleResponse) => {
         this.moduleHeaderFields = [];
         if (metadataModeleResponse && metadataModeleResponse.headers) {

@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { SchemaService } from 'src/app/_services/home/schema.service';
-import { DataSource } from 'src/app/_models/schema/schema';
+import { DataSource, UploadError } from 'src/app/_models/schema/schema';
 import * as XLSX from 'xlsx';
 import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-details.service';
 import { MetadataModeleResponse, MetadataModel } from 'src/app/_models/schema/schemadetailstable';
@@ -16,8 +16,8 @@ type UploadedDataType = any[][];
   templateUrl: './upload-data.component.html',
   styleUrls: ['./upload-data.component.scss']
 })
-export class UploadDataComponent implements OnInit {
-
+export class UploadDataComponent implements OnInit, AfterViewInit {
+  currentStep: number;
   uploadFileStepCtrl: FormGroup;
   dataTableCtrl: FormGroup;
   displayedColumns = ['excel', 'excelfrstrowdata', 'field'];
@@ -49,6 +49,14 @@ export class UploadDataComponent implements OnInit {
    */
   outlet: string;
 
+  /**
+   * Hold upload error message and status
+   */
+  uploadError: UploadError = {
+    status: false,
+    message: ''
+  };
+
   constructor(
     private _formBuilder: FormBuilder,
     private schemaService: SchemaService,
@@ -74,6 +82,10 @@ export class UploadDataComponent implements OnInit {
   }
 
   uploadFile() {
+    this.uploadError = {
+      status: false,
+      message: ''
+    }
     if (document.getElementById('uploadFileCtrl')) {
       document.getElementById('uploadFileCtrl').click();
     }
@@ -84,7 +96,10 @@ export class UploadDataComponent implements OnInit {
    * @param evt file uploaded event
    */
   fileChange(evt: Event) {
+    let errorText = '';
     if (evt !== undefined) {
+      this.uploadError.status = false;
+      this.uploadError.message = '';
       const target: DataTransfer = (evt.target) as unknown as DataTransfer;
       if (target.files.length !== 1) throw new Error('Cannot use multiple files');
       // check file type
@@ -100,9 +115,12 @@ export class UploadDataComponent implements OnInit {
         const sizeKb = Math.round((size / 1024));
         if (sizeKb > (10 * 1024)) {
           this.uploadedFile = null;
-
-          this.snackBar.open(`File size too large , upload less then 10 MB`, 'Close', { duration: 5000 });
-          return false;
+          errorText = `File size too large , upload less then 10 MB`;
+          this.uploadError = {
+            status: true,
+            message: errorText
+          }
+          this.snackBar.open(errorText, 'Close', { duration: 5000 });
         }
         const reader: FileReader = new FileReader();
         reader.onload = (e: any) => {
@@ -125,10 +143,23 @@ export class UploadDataComponent implements OnInit {
         reader.readAsBinaryString(target.files[0]);
         this.excelMdoFieldMappedData = [];
       } else {
+        errorText = `Unsupported file format, allowed file formats are .xlsx, .xls and .csv`;
         this.uploadedFile = null;
-        this.snackBar.open(`Only allow .xlsx, .xls and .csv file format`, 'Close', { duration: 5000 });
+        this.uploadError = {
+          status: true,
+          message: errorText
+        }
+        this.snackBar.open(errorText, 'Close', { duration: 5000 });
       }
     }
+  }
+
+  /**
+   * method to maually control step
+   * @param value pass step Index
+   */
+  step(value: number) {
+    this.stepper.selectedIndex = value;
   }
 
   /**
@@ -299,5 +330,11 @@ export class UploadDataComponent implements OnInit {
     }, error => {
       console.error('Error: {}', error.message);
     });
+ }
+
+ ngAfterViewInit() {
+  this.stepper.selectionChange.subscribe((change) => {
+    this.currentStep = change.selectedIndex;
+  });
  }
 }

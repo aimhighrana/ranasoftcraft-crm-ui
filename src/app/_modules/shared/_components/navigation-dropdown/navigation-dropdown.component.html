@@ -4,15 +4,22 @@
 
 <!-- module-menu -->
 <mat-menu #check="matMenu" class="navigation-menu">
-    <!-- Deploy input search in dropdown -->
-    <!-- <pros-search-input class="field-mat-menu" placeholder="Search"></pros-search-input> -->
+
+    <div class="row-spacer"></div>
+    <pros-search-input [placeholder]="'Search Modules'" prosClickStopPropagation
+      (value)="searchModule($event)"></pros-search-input>
+    <div class="row-spacer"></div>
+
     <div class="menu-customdropdown">
-        <ng-container *ngFor="let module of modulesList">
-            <button mat-menu-item [matMenuTriggerFor]="schemaMenu" (click)="schemaList(module.moduleId);" [disableRipple]="true">
+        <ng-container *ngFor="let module of filteredModulesList;let i=index; trackBy:moduleTrackBy">
+            <button mat-menu-item [matMenuTriggerFor]="schemaMenu"
+                (mouseenter)="schemaList(module.moduleId);"
+                [disableRipple]="true">
                 {{ module.moduleDesc || 'UNTITLED'}}
             </button>
-        </ng-container>    
+        </ng-container>
     </div>
+
     <mat-divider></mat-divider>
     <button mat-menu-item (click)="emitSelection()" [disableRipple]="true">
         <mat-icon fontSet="mdo-icons" class="mat-menu-icon">plus</mat-icon> New module...
@@ -21,25 +28,27 @@
 
 <!-- schema-menu -->
 <mat-menu #schemaMenu="matMenu" class="navigation-menu">
-    <!-- Deploy input search in dropdown -->
-    <!-- <pros-search-input class="field-mat-menu" placeholder="Search"></pros-search-input> -->
+    
+    <div class="row-spacer"></div>
+    <pros-search-input [placeholder]="'Search Schemas'" prosClickStopPropagation
+      #searchInput (value)="searchSchema($event)"></pros-search-input>
+    <div class="row-spacer"></div>
+
     <div class="menu-customdropdown">
-        <ng-container *ngFor="let schema of schemaLists">
-            <button mat-menu-item (click)="selectschema(schema)" [disableRipple]="true">
+        <ng-container *ngFor="let schema of filteredSchemaList;let i=index; trackBy:schemaTrackBy">
+            <button mat-menu-item
+                (click)="selectschema(schema)"
+                [disableRipple]="true">
                 {{ schema.schemaDescription || 'UNTITLED'}}
             </button>
         </ng-container>
     </div>
+
     <mat-divider></mat-divider>
     <button mat-menu-item (click)="selectschema()" [disableRipple]="true">
         <mat-icon fontSet="mdo-icons" class="mat-menu-icon">plus</mat-icon> New schema...
     </button>
 </mat-menu>
-
-
-
-
-
 
 
 
@@ -49,7 +58,6 @@
         
     </mat-list-item>
     
-
     <mat-divider></mat-divider>
 
 

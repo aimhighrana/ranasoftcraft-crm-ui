@@ -8,7 +8,7 @@
           <div class="f-row breadcrum-head">
             <div class="display-heading-large">{{moduleInfo ? ( moduleInfo.moduleDesc ? moduleInfo.moduleDesc: 'Untitled') : 'Untitled'}}</div>
               <div class="f-spacer"></div>
-              <a class="info-link">Choose another file</a>
+              <a class="info-link" *ngIf="currentStep>0" (click)="step(0); uploadedFile = null;">Choose another file</a>
               <span class="f-col-spacer-half"></span>
               <button mat-flat-button color="primary" (click)="uploadFileData(stepper)">Upload</button>
           </div>
@@ -22,6 +22,10 @@
         <mat-step [stepControl]="uploadFileStepCtrl">
           <form [formGroup]="uploadFileStepCtrl">
             <ng-template matStepLabel>Upload dataset</ng-template>
+
+            <div class="f-col upload-error" *ngIf="uploadError.status && uploadError.status">
+              {{uploadError.message}}
+            </div>
 
             <div class="f-col upload-col">
               <div class="f-col empty-state">

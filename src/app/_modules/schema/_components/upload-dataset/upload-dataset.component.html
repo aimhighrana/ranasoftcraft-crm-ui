@@ -22,23 +22,21 @@
                 <mat-spinner color="primary" diameter="30"></mat-spinner>
             </div>
 
-            <div class="f-col upload-col" *ngIf="!uploadLoader && uploadError.status">
+            <div class="f-col upload-error" *ngIf="!uploadLoader && uploadError.status">
                 {{uploadError.message}}
             </div>
 
-            <ng-container *ngIf="!uploadLoader && !uploadError.status">
-                <div class="f-col upload-col">
-                    <pros-null-state 
-                    [button]="{text: 'Select a file'}"
-                    [subtext]="'No data file selected'"
-                    [message]="'Drag & drop or select a file to upload'"
-                    (action)="openExplorer()">
-                    </pros-null-state>
+            <div class="f-col upload-col">
+                <pros-null-state 
+                [button]="{text: 'Select a file'}"
+                [subtext]="'No data file selected'"
+                [message]="'Drag & drop or select a file to upload'"
+                (action)="openExplorer()">
+                </pros-null-state>
 
-                    <input class="drag-input" type="file" id="uploader" (change)="fileChange($event)"
-                        prosClickStopPropagation />
-                </div>
-            </ng-container>
+                <input class="drag-input" type="file" id="uploader" (change)="fileChange($event)"
+                    prosClickStopPropagation />
+            </div>
         </mat-step>
 
         <!-- Step 1 -->

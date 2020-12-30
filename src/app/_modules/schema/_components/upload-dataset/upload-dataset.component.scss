@@ -39,6 +39,15 @@ mat-card.root {
       }
     }
 
+    .upload-error {
+      border-radius: 3px;
+      width: calc(100% - 30px);
+      padding: 14px 15px;
+      background-color: #ff6b6b;
+      color: #fff;
+      font-size: 14px;
+    }
+
     .mat-radio-button {
       margin: 8px 0;
     }

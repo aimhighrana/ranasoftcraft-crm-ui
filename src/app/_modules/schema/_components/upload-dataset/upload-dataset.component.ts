@@ -354,6 +354,10 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * function to open explorer to select file to upload
    */
   openExplorer() {
+    this.uploadError = {
+      status: false,
+      message: ''
+    }
     document.getElementById('uploader').click();
   }
 
@@ -362,6 +366,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * @param evt file uploaded event
    */
   fileChange(evt: Event) {
+    let errorText = '';
     if (evt !== undefined) {
       this.uploadError.status = false;
       this.uploadError.message = '';
@@ -380,8 +385,12 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         const sizeKb = Math.round((size / 1024));
         if (sizeKb > (10 * 1024)) {
           this.uploadedFile = null;
-
-          this.snackBar.open(`File size too large , upload less then 10 MB`, 'Close', { duration: 5000 });
+          errorText = `File size too large , upload less then 10 MB`;
+          this.uploadError = {
+            status: true,
+            message: errorText
+          }
+          this.snackBar.open(errorText, 'Close', { duration: 5000 });
           return false;
         }
         const reader: FileReader = new FileReader();
@@ -427,8 +436,13 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         this.requestForm.get('file').setValue(target.files[0]);
         this.uploadFileData();
       } else {
+        errorText = `Unsupported file format, allowed file formats are .xlsx, .xls and .csv`;
         this.uploadedFile = null;
-        this.snackBar.open(`Only allow .xlsx, .xls and .csv file format`, 'Close', { duration: 5000 });
+        this.uploadError = {
+          status: true,
+          message: errorText
+        }
+        this.snackBar.open(errorText, 'Close', { duration: 5000 });
       }
     }
   }
