@@ -1,0 +1,64 @@
+div.root {
+  padding: 0 12px;
+  height: 48px;
+  overflow: hidden;
+  user-select: none;
+
+  .primary-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 176px;
+  }
+
+  .primarynav-logo {
+    pros-svg-icon {
+      height: 40px;
+      display: inline-block;
+    }
+  }
+
+  .primary-nav-list {
+    display: flex;
+    flex: 1;
+
+    mat-nav-list.list-horizontal {
+      display: flex;
+      flex-direction: row;
+    }
+  }
+
+  .primary-plus-icon {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding-right: 24px;
+  }
+
+  .primary-search-field {
+    display: flex;
+    align-items: center;
+  }
+
+  .primary-admin {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding-left: 8px;
+  }
+
+  .nav-profile {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .mat-list-item::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 3px;
+    left: 0;
+    bottom: 0;
+  }
+}
