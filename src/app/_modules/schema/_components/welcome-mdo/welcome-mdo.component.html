@@ -73,7 +73,7 @@
 
                 <div class="menu-customdropdown">
                     <ng-container *ngFor="let module of filteredModulesList; let i=index; trackBy:moduleTrackBy">
-                        <button mat-menu-item [matMenuTriggerFor]="schemaMenu" (mouseenter)="schemaList(module.moduleId);">
+                        <button [focus]="false" mat-menu-item [matMenuTriggerFor]="schemaMenu" (mouseenter)="schemaList(module.moduleId);">
                             {{ module.moduleDesc || 'UNTITLED'}}
                         </button>
                     </ng-container>
@@ -94,7 +94,7 @@
 
                 <div class="menu-customdropdown">
                     <ng-container *ngFor="let schema of filteredSchemaList;let i=index; trackBy:schemaTrackBy">
-                        <button mat-menu-item (click)="selectschema(schema)">
+                        <button mat-menu-item [focus]="false" (click)="selectschema(schema)">
                             {{ schema.schemaDescription || 'UNTITLED'}}
                         </button>
                     </ng-container>

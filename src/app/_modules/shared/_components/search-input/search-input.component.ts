@@ -1,5 +1,6 @@
 import { Component, OnInit, SimpleChanges, Output, Input, OnChanges, ChangeDetectionStrategy, EventEmitter } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'pros-search-input',
@@ -34,9 +35,11 @@ export class SearchInputComponent implements OnInit, OnChanges {
    * ANGULAR HOOK
    */
   ngOnInit(): void {
-    this.control.valueChanges.subscribe(value => {
-      this.value.emit(value);
-    });
+    this.control.valueChanges
+      .pipe(debounceTime(300))
+      .subscribe(value => {
+        this.value.emit(value);
+      });
   }
 
   /**
@@ -44,7 +47,7 @@ export class SearchInputComponent implements OnInit, OnChanges {
    * @param skipEmit disable form control emitEvent
    */
   clearSearch(skipEmit?) {
-    this.control.reset('', {emitEvent: !skipEmit});
+    this.control.reset('', { emitEvent: !skipEmit });
     // this.value.emit('');
   }
 

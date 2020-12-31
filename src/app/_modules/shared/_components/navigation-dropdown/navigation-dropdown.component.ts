@@ -1,7 +1,6 @@
 import { Component, OnInit, Output, EventEmitter, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { Observable, Subscriber } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
 import { SearchInputComponent } from '../search-input/search-input.component';
 
 @Component({
@@ -116,7 +115,6 @@ export class NavigationDropdownComponent implements OnInit, OnChanges {
   searchModule(searchTerm: string) {
     if (this.modulesList && this.modulesList.length > 0) {
       this.searchFilter(this.modulesList, searchTerm, 'moduleDesc')
-      .pipe(debounceTime(100))
       .subscribe((filteredresult) => {
         this.filteredModulesList = filteredresult;
       });
@@ -130,7 +128,6 @@ export class NavigationDropdownComponent implements OnInit, OnChanges {
   searchSchema(searchTerm: string) {
     if (this.schemaLists && this.schemaLists.length > 0) {
       this.searchFilter(this.schemaLists, searchTerm, 'schemaDescription')
-      .pipe(debounceTime(100))
       .subscribe((filteredresult) => {
         this.filteredSchemaList = filteredresult;
       });

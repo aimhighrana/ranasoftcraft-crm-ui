@@ -10,7 +10,7 @@
               <div class="f-spacer"></div>
               <a class="info-link" *ngIf="currentStep>0" (click)="step(0); uploadedFile = null;">Choose another file</a>
               <span class="f-col-spacer-half"></span>
-              <button mat-flat-button color="primary" (click)="uploadFileData(stepper)">Upload</button>
+              <button mat-flat-button color="primary" *ngIf="currentStep>0" (click)="uploadFileData(stepper)">Upload</button>
           </div>
       </div>
   </div>
@@ -43,7 +43,15 @@
         <!-- map headers -->
         <mat-step [stepControl]="dataTableCtrl">
           <ng-template matStepLabel>Map fields</ng-template>
-  
+          <div class="f-col upload-error" *ngIf="uploadError.status && uploadError.status">
+            {{uploadError.message}}
+          </div>
+          <div class="f-col upload-col" *ngIf="isUploaded && currentStep>0">
+            <div class="f-col empty-state"> 
+              <div class="empty-heading">Uploading...</div>
+                <p class="label-text">You will receive an email once the upload is done. You can close this window.</p>
+            </div>
+          </div>
           <div class="field-grid">
             <mat-table [dataSource]="dataSource" class="mat-elevation-z0">
               <!-- Excel Field Column -->
@@ -88,18 +96,6 @@
             <span class="f-spacer"></span>
             <button mat-flat-button color="primary" matStepperNext (click)="uploadFileData(stepper)">Begin Import</button>
           </div> -->
-        </mat-step>
-  
-        <!-- Finish -->
-        <mat-step>
-          <ng-template matStepLabel>Finish</ng-template>
-
-          <div class="f-col upload-col">
-            <div class="f-col empty-state"> 
-              <div class="empty-heading">Uploading...</div>
-                <p class="label-text">You will receive an email once the upload is done. You can close this window.</p>
-            </div>
-          </div>
         </mat-step>
       </mat-horizontal-stepper>
     </div>

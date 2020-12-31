@@ -1,4 +1,4 @@
-import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { async, ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 
 import { WelcomeMdoComponent } from './welcome-mdo.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
@@ -98,12 +98,10 @@ describe('WelcomeMdoComponent', () => {
     ];
     component.filteredModulesList = component.modulesList;
     component.searchModule('three');
-    tick(100);
     expect(component.filteredModulesList.length).toEqual(1);
 
     component.filteredModulesList = component.modulesList;
     component.searchModule('');
-    tick(100);
     expect(component.filteredModulesList.length).toEqual(3);
   }));
 
@@ -124,17 +122,14 @@ describe('WelcomeMdoComponent', () => {
     ];
     component.filteredSchemaList = component.schemaLists;
     component.searchSchema('three');
-    tick(100);
     expect(component.filteredSchemaList.length).toEqual(1);
 
     component.filteredSchemaList = component.schemaLists;
     component.searchSchema('');
-    tick(100);
     expect(component.filteredSchemaList.length).toEqual(3);
 
     component.filteredSchemaList = component.schemaLists;
     component.searchSchema('t');
-    tick(100);
     expect(component.filteredSchemaList.length).toEqual(2);
   }));
 

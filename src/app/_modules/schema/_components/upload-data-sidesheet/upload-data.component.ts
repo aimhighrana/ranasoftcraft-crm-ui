@@ -32,6 +32,7 @@ export class UploadDataComponent implements OnInit, AfterViewInit {
   uploadedFile: File;
   uploadDisabled = true;
   plantCode: string;
+  isUploaded: boolean;
   @ViewChild(MatStepper) stepper!: MatStepper;
 
   /**
@@ -86,6 +87,7 @@ export class UploadDataComponent implements OnInit, AfterViewInit {
       status: false,
       message: ''
     }
+    this.isUploaded = false;
     if (document.getElementById('uploadFileCtrl')) {
       document.getElementById('uploadFileCtrl').click();
     }
@@ -101,7 +103,14 @@ export class UploadDataComponent implements OnInit, AfterViewInit {
       this.uploadError.status = false;
       this.uploadError.message = '';
       const target: DataTransfer = (evt.target) as unknown as DataTransfer;
-      if (target.files.length !== 1) throw new Error('Cannot use multiple files');
+      if (target.files.length !== 1) {
+        errorText = 'Cannot use multiple files';
+        this.uploadError = {
+          status: true,
+          message: errorText
+        }
+        return;
+      }
       // check file type
       let type = '';
       try {
@@ -120,7 +129,6 @@ export class UploadDataComponent implements OnInit, AfterViewInit {
             status: true,
             message: errorText
           }
-          this.snackBar.open(errorText, 'Close', { duration: 5000 });
         }
         const reader: FileReader = new FileReader();
         reader.onload = (e: any) => {
@@ -149,7 +157,6 @@ export class UploadDataComponent implements OnInit, AfterViewInit {
           status: true,
           message: errorText
         }
-        this.snackBar.open(errorText, 'Close', { duration: 5000 });
       }
     }
   }
@@ -160,6 +167,7 @@ export class UploadDataComponent implements OnInit, AfterViewInit {
    */
   step(value: number) {
     this.stepper.selectedIndex = value;
+    this.isUploaded = false;
   }
 
   /**
@@ -265,6 +273,13 @@ export class UploadDataComponent implements OnInit, AfterViewInit {
         this.excelMdoFieldMappedData.splice(this.excelMdoFieldMappedData.indexOf(availmap[0], 1));
       }
     }
+
+    if(this.excelMdoFieldMappedData.length>0){
+      this.uploadError = {
+        status: false,
+        message: ''
+      }
+    }
   }
 
   /**
@@ -272,10 +287,13 @@ export class UploadDataComponent implements OnInit, AfterViewInit {
    * @param stepper value of step
    */
   uploadFileData(stepper: MatStepper) {
-    if (this.excelMdoFieldMappedData.length <= 0) {
-      this.snackBar.open(`Please map atleast one field `, 'Close', { duration: 2000 });
+    if (this.excelMdoFieldMappedData.length === 0) {
+      this.uploadError = {
+        status: true,
+        message: `Please map atleast one field`
+      }
       this.dataTableCtrl.controls.dataTableFldCtrl.setValue(''); // set valitor here
-      return false;
+      return;
     }
     this.schemaService.uploadUpdateFileData(this.uploadFileStepCtrl.get('uploadFileCtrl').value, this.fileSno).subscribe(res => {
       this.fileSno = res;
@@ -291,7 +309,7 @@ export class UploadDataComponent implements OnInit, AfterViewInit {
       this.schemaService.uploadData(this.excelMdoFieldMappedData, objType, this.fileSno).subscribe(res => {
         // remove valitor here and move to next step
         this.dataTableCtrl.controls.dataTableFldCtrl.setValue('done');
-        stepper.next();
+        this.isUploaded = true;
       }, error => {
         console.error(`Error ${error}`);
         this.snackBar.open(`Something went wrong , please check mdo logs `, 'Close', { duration: 5000 });

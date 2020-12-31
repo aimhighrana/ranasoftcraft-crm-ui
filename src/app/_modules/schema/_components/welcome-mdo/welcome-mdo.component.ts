@@ -6,7 +6,6 @@ import { SchemaService } from '@services/home/schema.service';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { Observable, Subscriber, Subscription } from 'rxjs';
 import { UploadDatasetComponent } from '../upload-dataset/upload-dataset.component';
-import { debounceTime } from 'rxjs/operators';
 import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
 
 @Component({
@@ -171,7 +170,6 @@ export class WelcomeMdoComponent implements OnInit, OnDestroy {
   searchModule(searchTerm: string) {
     if (this.modulesList && this.modulesList.length > 0) {
       this.searchFilter(this.modulesList, searchTerm, 'moduleDesc')
-      .pipe(debounceTime(100))
       .subscribe((filteredresult) => {
         this.filteredModulesList = filteredresult;
       });
@@ -185,7 +183,6 @@ export class WelcomeMdoComponent implements OnInit, OnDestroy {
   searchSchema(searchTerm: string) {
     if (this.schemaLists && this.schemaLists.length > 0) {
       this.searchFilter(this.schemaLists, searchTerm, 'schemaDescription')
-      .pipe(debounceTime(100))
       .subscribe((filteredresult) => {
         this.filteredSchemaList = filteredresult;
       });
