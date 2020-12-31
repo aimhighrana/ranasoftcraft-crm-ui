@@ -235,4 +235,8 @@ export class SchemaDetailsService {
     return this.http.put<boolean>(this.endpointService.rejectClassificationUri(), objNr, {params:{schemaId, runId}});
   }
 
+  public getExecutionOverviewChartData(schemaId: string, variantId: string): Observable<SchemaExecutionLog[]> {
+    return this.http.get<any>(this.endpointService.getExecutionOverviewChartDataUrl(schemaId, variantId));
+  }
+
 }

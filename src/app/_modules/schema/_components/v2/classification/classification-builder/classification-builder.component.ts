@@ -882,4 +882,11 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
   openAttributeMapping(nounCode: string, modCode: string) {
     this.router.navigate(['', { outlets: { sb: `sb/schema/attribute-mapping/${this.moduleId}/${nounCode}/${modCode}` } }])
   }
+
+  /**
+   * Function to open trend execution side sheet
+   */
+  openExecutionTrendSideSheet() {
+    this.router.navigate(['', { outlets: { sb: `sb/schema/execution-trend/${this.moduleId}/${this.schemaId}/${this.variantId}` } }])
+  }
 }

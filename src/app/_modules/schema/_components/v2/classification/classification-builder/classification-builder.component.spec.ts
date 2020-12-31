@@ -165,4 +165,11 @@ it('ngOnChanges(), ngonchange component hooks ', async(()=>{
     expect(component.rejectRec).toBeTruthy();
 
   }));
+
+  it('openExecutionTrendSideSheet ', async(() => {
+    spyOn(router, 'navigate');
+    component.openExecutionTrendSideSheet();
+    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: { sb: `sb/schema/execution-trend/${component.moduleId}/${component.schemaId}/${component.variantId}` } }]);
+  }));
+
 });

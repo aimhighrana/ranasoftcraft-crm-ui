@@ -1,0 +1,24 @@
+<mat-card class="root mat-elevation-z0">
+    <div class="f-row breadcrum-toolbar">
+        <button mat-button (click)="close()">
+            <mat-icon fontSet="mdo-icons">close</mat-icon>
+        </button>
+        <div class="col-spacer"></div>
+        <div class="f-row mdo-constrained-right">
+            <div class="display-heading-large">
+                <ng-template [ngIf]="schemaInfo" [ngIfElse]="loading">
+                    {{ schemaInfo.moduleDescription ? schemaInfo.moduleDescription : 'Module' }} /
+                    {{ schemaInfo.schemaDescription ? schemaInfo.schemaDescription : 'Untitled'}} / Statistics
+                </ng-template>
+                <ng-template #loading>
+                    Statistics
+                </ng-template>
+            </div>
+        </div>
+    </div>
+    <div class="row-spacer"></div>
+    <div class="f-col mdo-justify">
+        <pros-schema-execution-trend [moduleId]="moduleId" [schemaId]="schemaId" [variantId]="variantId">
+        </pros-schema-execution-trend>
+    </div>
+</mat-card>

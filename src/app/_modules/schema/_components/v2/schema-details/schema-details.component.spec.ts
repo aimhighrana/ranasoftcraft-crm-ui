@@ -418,4 +418,10 @@ describe('SchemaDetailsComponent', () => {
 
   }));
 
+  it('openExecutionTrendSideSheet ', async(() => {
+    spyOn(router, 'navigate');
+    component.openExecutionTrendSideSheet();
+    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: { sb: `sb/schema/execution-trend/${component.moduleId}/${component.schemaId}/${component.variantId}` } }]);
+  }));
+
 });

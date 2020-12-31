@@ -54,6 +54,7 @@ import { NounComponent } from './_components/v2/library-mapping-sidesheet/noun/n
 import { ModifierComponent } from './_components/v2/library-mapping-sidesheet/modifier/modifier.component';
 import { NewPrimaryNavbarComponent } from './_components/new-primary-navbar/new-primary-navbar.component';
 import { CheckdataProgressComponent } from './_components/checkdata-progress/checkdata-progress.component';
+import { ExecutionTrendSidesheetComponent } from './_components/v2/statistics/execution-trend-sidesheet/execution-trend-sidesheet.component';
 
 const routes: Routes = [
   { path: 'group/:groupId', component: SchemaGroupFormComponent },
@@ -98,6 +99,7 @@ const routes: Routes = [
   { path: 'subscriber/:moduleId/:schemaId/:subscriberId/:outlet', component: SubscriberSideSheetComponent },
   { path: 'system/duplicate-datacheck-sidesheet', component: DuplicateDatacheckSidesheetComponent },
   { path: 'data-scope/:moduleId/:schemaId/:variantId', component: DatascopeSidesheetComponent },
+  { path: 'execution-trend/:moduleId/:schemaId/:variantId', component: ExecutionTrendSidesheetComponent },
   { path: 'system/configure-sidesheet', component: ConfigureSidesheetComponent },
   { path: 'system/attribute-mapping', component: AttributeMappingComponent },
   { path: 'system/br-classification-sidesheet', component: BrClassificationSidesheetComponent },

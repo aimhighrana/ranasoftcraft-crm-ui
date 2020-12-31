@@ -927,4 +927,11 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
     this.router.navigate([{ outlets: { sb: `sb/schema/check-data/${this.moduleId}/${this.schemaId}` } }])
   }
 
+  /**
+   * Function to open trend execution side sheet
+   */
+  openExecutionTrendSideSheet() {
+    this.router.navigate(['', { outlets: { sb: `sb/schema/execution-trend/${this.moduleId}/${this.schemaId}/${this.variantId}` } }])
+  }
+
 }

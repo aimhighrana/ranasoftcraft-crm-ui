@@ -71,6 +71,7 @@ import { AttributeComponent } from './_components/v2/library-mapping-sidesheet/a
 import { NounModifierAutocompleteComponent } from './_components/v2/library-mapping-sidesheet/noun-modifier-autocomplete/noun-modifier-autocomplete.component';
 import { NewPrimaryNavbarComponent } from './_components/new-primary-navbar/new-primary-navbar.component';
 import { CheckdataProgressComponent } from './_components/checkdata-progress/checkdata-progress.component';
+import { ExecutionTrendSidesheetComponent } from './_components/v2/statistics/execution-trend-sidesheet/execution-trend-sidesheet.component';
 
 
 @NgModule({
@@ -147,7 +148,8 @@ import { CheckdataProgressComponent } from './_components/checkdata-progress/che
     AttributeComponent,
     NounModifierAutocompleteComponent,
     NewPrimaryNavbarComponent,
-    CheckdataProgressComponent
+    CheckdataProgressComponent,
+    ExecutionTrendSidesheetComponent
   ],
   imports: [
     CommonModule,

@@ -20,7 +20,8 @@
         <button mat-flat-button color="accent" (click)="openSummarySideSheet()" class="rightradius">
             <mat-icon fontSet="mdo-icons">wand</mat-icon> Check data
         </button>
-        <button mat-fab color="accent" class="mat-elevation-z0 middleradius">
+        <button mat-fab color="accent" class="mat-elevation-z0 middleradius"
+            (click)="openExecutionTrendSideSheet()">
             <mat-icon fontSet="mdo-icons">chart-line</mat-icon>
         </button>
         <button mat-fab color="accent" class="mat-elevation-z0 leftradius" [matMenuTriggerFor]="moreactionfile">

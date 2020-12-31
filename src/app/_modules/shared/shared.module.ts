@@ -74,6 +74,7 @@ import { LookupConfigComponent } from './_components/lookup/lookup-config/lookup
 import { SubscriberInviteComponent } from './_components/subscriber-invite/subscriber-invite.component';
 import { ClassificationDatatableCellEditableComponent } from './_components/classification-datatable-cell-editable/classification-datatable-cell-editable.component';
 import { SubscriberInviteSidesheetComponent } from './_components/subscriber-invite-sidesheet/subscriber-invite-sidesheet.component';
+import { SchemaExecutionTrendComponent } from './_components/statistics/schema-execution-trend/schema-execution-trend.component';
 
 @NgModule({
   declarations: [
@@ -112,7 +113,8 @@ import { SubscriberInviteSidesheetComponent } from './_components/subscriber-inv
     LookupConfigComponent,
     SubscriberInviteComponent,
     ClassificationDatatableCellEditableComponent,
-    SubscriberInviteSidesheetComponent
+    SubscriberInviteSidesheetComponent,
+    SchemaExecutionTrendComponent
   ],
   imports: [
     // ng modules
@@ -249,7 +251,8 @@ import { SubscriberInviteSidesheetComponent } from './_components/subscriber-inv
     LookupConfigComponent,
     NullStateComponent,
     SubscriberInviteComponent,
-    SubscriberInviteSidesheetComponent
+    SubscriberInviteSidesheetComponent,
+    SchemaExecutionTrendComponent
   ],
   entryComponents: [
     TableCellInputComponent

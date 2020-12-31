@@ -1002,6 +1002,13 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     return value;
   }
 
+  /**
+   * Function to open trend execution side sheet
+   */
+  openExecutionTrendSideSheet() {
+    this.router.navigate(['', { outlets: { sb: `sb/schema/execution-trend/${this.moduleId}/${this.schemaId}/${this.variantId}` } }])
+  }
+
 
 
 }
