@@ -1,11 +1,17 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Observable, of } from 'rxjs';
-import { MetadataModel, MetadataModeleResponse, SchemaTableViewRequest, SchemaTableViewFldMap } from 'src/app/_models/schema/schemadetailstable';
+import { MetadataModel, MetadataModeleResponse, SchemaTableViewRequest, SchemaTableViewFldMap, TableActionViewType, SchemaTableAction, CrossMappingRule, DetailView } from 'src/app/_models/schema/schemadetailstable';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Router } from '@angular/router';
 import { SharedServiceService } from '../../_services/shared-service.service';
 import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-details.service';
+import { Userdetails } from '@models/userdetails';
+import { UserService } from '@services/user/userservice.service';
+import { SchemaListDetails } from '@models/schema/schemalist';
+import { SchemalistService } from '@services/home/schema/schemalist.service';
+import { take } from 'rxjs/operators';
+
 
 @Component({
   selector: 'pros-table-column-settings',
@@ -47,18 +53,61 @@ export class TableColumnSettingsComponent implements OnInit{
 
   @ViewChild('scrollableContainer', {read: ElementRef}) scrollable : ElementRef<any>;
 
+  userDetails = new Userdetails();
+
+  /**
+   * Current schema info ..
+   */
+  schemaInfo: SchemaListDetails;
+
+  actionsForm: FormGroup;
+
+  actionsList: SchemaTableAction[] = [];
+
+  COMMON_ACTIONS = {
+    Approve: {text: 'Approve', icon: 'check-mark', schemaCategories: [DetailView.DATAQUALITY_VIEW, DetailView.DUPLICACY_VIEW, DetailView.MRO_CLASSIFICATION_VIEW, DetailView.POTEXT_VIEW] },
+    Reject: {text: 'Reject', icon: 'declined', schemaCategories: [DetailView.DATAQUALITY_VIEW, DetailView.DUPLICACY_VIEW, DetailView.MRO_CLASSIFICATION_VIEW, DetailView.POTEXT_VIEW]},
+    Delete: {text: 'Delete', icon: 'recycle-bin', schemaCategories: [DetailView.DUPLICACY_VIEW]},
+    Generate_description: {text : 'Generate description', icon:'form-file', schemaCategories: [DetailView.MRO_CLASSIFICATION_VIEW]}
+  };
+
+  TableActionViewType = TableActionViewType;
+
+  crossMappingRules: CrossMappingRule[]= [];
+
+  /**
+   * hold initial selected fields
+   */
+  initialSelectedFields: SchemaTableViewFldMap[] = [];
+
   constructor(
     private sharedService: SharedServiceService,
     private router: Router,
-    private schemaDetailsService: SchemaDetailsService
+    private schemaDetailsService: SchemaDetailsService,
+    private userService: UserService,
+    private schemaListService: SchemalistService
   ){}
 
   ngOnInit() {
-    this.sharedService.getChooseColumnData().subscribe(data=>{
-      this.data = data;
-      this.headerDetails();
-      this.manageStateOfCheckBox();
+
+    this.sharedService.getChooseColumnData().pipe(take(1)).subscribe(data=>{
+      if (data) {
+        if (data.editActive) {
+          this.data = data;
+          this.getSchemaDetails();
+          this.initialSelectedFields = data.selectedFields;
+          this.headerDetails();
+          this.manageStateOfCheckBox();
+        }
+      } else {
+        this.close();
+      }
     });
+
+    this.userService.getUserDetails().subscribe(res => {
+      this.userDetails = res;
+    }, error => console.error(`Error : ${error.message}`));
+
   }
 
   // header
@@ -89,7 +138,8 @@ export class TableColumnSettingsComponent implements OnInit{
   }
   close()
   {
-    this.router.navigate([{ outlets: { sb: null }}]);
+    // this.sharedService.setChooseColumnData({...this.data, tableActionsList: this.actionsList, editActive: false});
+    this.router.navigate([{ outlets: { sb: null }}],  { preserveQueryParams: true });
   }
 
   public persistenceTableView(selFld: SchemaTableViewFldMap[]) {
@@ -100,7 +150,8 @@ export class TableColumnSettingsComponent implements OnInit{
 
     this.schemaDetailsService.updateSchemaTableView(schemaTableViewRequest).subscribe(response => {
       console.log(response);
-      this.sharedService.setChooseColumnData(this.data);
+      // this.sharedService.setChooseColumnData(this.data);
+      this.sharedService.setChooseColumnData({...this.data, tableActionsList: this.actionsList, editActive: false});
       this.close();
     }, error => {
       console.error('Exception while persist table view');
@@ -154,6 +205,7 @@ export class TableColumnSettingsComponent implements OnInit{
       fieldView.editable = false;
       this.data.selectedFields.push(fieldView);
     }
+    // this.submitColumn();
     this.manageStateOfCheckBox();
   }
 
@@ -221,10 +273,165 @@ export class TableColumnSettingsComponent implements OnInit{
     if (field){
       field.editable = !field.editable;
     }
+    // this.submitColumn();
   }
 
   isEditEnabled(fld : MetadataModel){
     return this.data.selectedFields.findIndex(field => (field.fieldId === fld.fieldId) && field.editable ) !== -1;
+  }
+
+  /**
+   * Get schema info ..
+   */
+  getSchemaDetails() {
+    this.schemaListService.getSchemaDetailsBySchemaId(this.data.schemaId).subscribe(res => {
+      this.schemaInfo = res;
+      if(this.isActionConfigAllowed) {
+        this.getSchemaActions();
+        this.getCrossMappingRules();
+      }
+    }, error => console.error(`Error : ${error.message}`))
+  }
+
+  getCrossMappingRules() {
+    this.schemaDetailsService.getCrossMappingRules('0')
+      .subscribe(rules => this.crossMappingRules = rules);
+  }
+
+  /**
+   * get already saved schema actions
+   */
+  getSchemaActions() {
+    this.schemaDetailsService.getTableActionsBySchemaId(this.data.schemaId).subscribe(actions => {
+      console.log(actions);
+      if(actions && actions.length) {
+        this.actionsList = actions;
+      } else {
+        this.addCommonActions();
+      }
+    });
+  }
+
+  /**
+   * create common actions if table actions list is empty
+   */
+  addCommonActions() {
+    Object.keys(this.COMMON_ACTIONS).forEach(key => {
+      if(this.COMMON_ACTIONS[key].schemaCategories.includes(this.schemaInfo.schemaCategory)) {
+        const action = { schemaId: this.data.schemaId, isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT,
+          actionText:this.COMMON_ACTIONS[key].text, createdBy: this.userDetails.userName } as SchemaTableAction;
+        this.createUpdateAction(action);
+      }
+    })
+  }
+
+
+
+  /**
+   * update action on change
+   * @param rowIndex action index
+   * @param attributeKey changed key
+   * @param attributeValue new value
+   */
+  actionChanged(rowIndex: number, attributeKey: string, attributeValue) {
+   /*  this.actionsList[rowIndex][attributeKey] = attributeValue;
+    console.log(this.actionsList[rowIndex]); */
+    const action = {...this.actionsList[rowIndex], [`${attributeKey}`]: attributeValue };
+    this.createUpdateAction(action, rowIndex);
+  }
+
+  /**
+   * create update a schema action
+   * @param action to be updated
+   * @param rowIndex inside the actions list
+   */
+  createUpdateAction(action: SchemaTableAction, rowIndex?: number) {
+    this.schemaDetailsService.createUpdateSchemaAction(action).subscribe(resp => {
+      console.log(resp);
+      rowIndex !== undefined ? this.actionsList[rowIndex] = resp : this.actionsList.splice(0, 0, resp);
+      this.sharedService.setChooseColumnData({selectedFields: this.initialSelectedFields, tableActionsList: this.actionsList, editActive: false});
+    })
+  }
+
+  /**
+   * add a new custom action
+   */
+  addCustomAction() {
+    const action = {schemaId: this.data.schemaId, actionText: `My custom action ${this.actionsList.length}`, isPrimaryAction: false,
+      actionViewType: TableActionViewType.TEXT, isCustomAction: true, createdBy: this.userDetails.userName} as SchemaTableAction;
+
+    this.createUpdateAction(action);
+  }
+
+  /**
+   * remove an existing custom action
+   * @param rowIndex custom action index
+   */
+  removeCustomAction(rowIndex: number) {
+    const actionCode = this.actionsList[rowIndex] && this.actionsList[rowIndex].actionCode;
+    if (!actionCode) {
+      return;
+    }
+    this.schemaDetailsService.deleteSchemaTableAction(this.data.schemaId, actionCode)
+      .subscribe(resp =>  {
+        this.actionsList.splice(rowIndex, 1);
+        this.sharedService.setChooseColumnData({selectedFields: this.initialSelectedFields, tableActionsList: this.actionsList, editActive: false});
+      });
+  }
+
+  /**
+   * check if current user has actions config permission
+   */
+  get isActionConfigAllowed() {
+    return this.schemaInfo && (this.schemaInfo.createdBy === this.userDetails.userName);
+  }
+
+
+  get primaryActions() {
+    return this.actionsList.filter(action => action.isPrimaryAction);
+  }
+
+  get secondaryActions() {
+    return this.actionsList.filter(action => !action.isPrimaryAction);
+  }
+
+  editActionText(rowIndex: number) {
+    console.log(rowIndex);
+
+    if (!this.actionsList[rowIndex].isCustomAction) {
+      console.log('Only custom actions can be renamed');
+      return;
+    }
+
+    if (document.getElementById('inpctrl_' + rowIndex)) {
+      const inpCtrl = document.getElementById('inpctrl_' + rowIndex) as HTMLDivElement;
+      const viewCtrl = document.getElementById('viewctrl_'+ rowIndex) as HTMLSpanElement;
+      inpCtrl.style.display = 'block';
+      // inpValCtrl.focus();
+      viewCtrl.style.display = 'none';
+    }
+  }
+
+  emitActionTextBlur(rowIndex: number, value) {
+    if (document.getElementById('inpctrl_' + rowIndex)) {
+      const inpCtrl = document.getElementById('inpctrl_' + rowIndex) as HTMLDivElement;
+      const viewCtrl = document.getElementById('viewctrl_'+ rowIndex) as HTMLSpanElement;
+      inpCtrl.style.display = 'none';
+      viewCtrl.style.display = 'block';
+      this.actionChanged(rowIndex, 'actionText', value);
+    }
+  }
+
+  getActionViewTypeDesc(viewType: TableActionViewType) {
+    if (viewType === TableActionViewType.ICON) {
+      return 'Icon only';
+    }
+    else if (viewType === TableActionViewType.ICON_TEXT) {
+      return 'Icon and Text';
+    }
+    else {
+      return 'Text only';
+    }
   }
 
 }

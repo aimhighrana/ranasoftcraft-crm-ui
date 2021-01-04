@@ -8,7 +8,7 @@
             <div class="f-row breadcrum-head">
                 <div class="display-heading-large">Configure view</div>
                 <span class="f-spacer"></span>
-                <button mat-flat-button color="primary" (click)="submitColumn()">Save</button>
+                <button *ngIf="columnsTab.isActive" mat-flat-button color="primary" (click)="submitColumn()">Save</button>
             </div>
         </div>
     </div>
@@ -17,7 +17,7 @@
         <div class="f-col mdo-justify">
             <div class="f-col">
                 <mat-tab-group disableRipple="true">
-                    <mat-tab>
+                    <mat-tab #columnsTab>
                         <ng-template mat-tab-label>
                             Columns
                         </ng-template>
@@ -80,12 +80,12 @@
                             </div>
                         </div>
                     </mat-tab>
-                    <mat-tab>
+                    <mat-tab *ngIf="isActionConfigAllowed">
                         <ng-template mat-tab-label>
                             Actions
                         </ng-template>
-                        <div class="f-col mdo-form-field">
-                            <mat-label>Role</mat-label>
+                        <!-- <div class="f-col mdo-form-field">
+                            <mat-label><strong>Role</strong></mat-label>
                             <div class="f-row">
                                 <mat-button-toggle-group appearance="legacy" name="fontStyle" aria-label="Font Style">
                                     <mat-button-toggle value="Editor">Editor</mat-button-toggle>
@@ -93,20 +93,41 @@
                                     <mat-button-toggle value="Reviewer">Reviewer</mat-button-toggle>
                                 </mat-button-toggle-group>
                             </div>
-                        </div>
-                        <div class="f-col mdo-form-field">
-                            <mat-label>Preview</mat-label>
+                        </div> -->
+                        <div class="f-col  mdo-form-field">
+                            <mat-label><strong>Preview</strong></mat-label>
                             <div class="f-row">
-                                <button mat-fab color="accent" class="mat-elevation-z0 rightradius">
-                                    <mat-icon fontSet="mdo-icons">more1</mat-icon>
+                                <!-- Secondary actions -->
+                                <button mat-fab color="accent" class="mat-elevation-z0 rightradius"
+                                    *ngIf="secondaryActions.length" [matMenuTriggerFor]="secondaryActionsMenu">
+                                    <mat-icon fontSet="mdo-icons">more</mat-icon>
                                 </button>
-                                <button mat-fab color="accent" class="mat-elevation-z0 middleradius">
-                                    <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
+                                <mat-menu #secondaryActionsMenu="matMenu">
+                                    <button mat-menu-item *ngFor="let sAction of secondaryActions">
+                                        <mat-icon
+                                            *ngIf="!sAction.isCustomAction && COMMON_ACTIONS[sAction.actionText] && (sAction.actionViewType=== TableActionViewType.ICON || sAction.actionViewType=== TableActionViewType.ICON_TEXT)"
+                                            fontSet="mdo-icons">
+                                            {{ COMMON_ACTIONS[sAction.actionText].icon }}
+                                        </mat-icon>
+                                        <ng-template
+                                            [ngIf]="(sAction.actionViewType === TableActionViewType.TEXT) || (sAction.actionViewType === TableActionViewType.ICON_TEXT)">
+                                            {{ sAction.actionText }}
+                                        </ng-template>
+                                    </button>
+                                </mat-menu>
+                                <!-- Primary actions -->
+                                <button *ngFor="let pAction of primaryActions" mat-flat-button color="accent"
+                                    class="mat-elevation-z0 middleradius">
+                                    <mat-icon
+                                        *ngIf="COMMON_ACTIONS[pAction.actionText] && (pAction.actionViewType=== TableActionViewType.ICON || pAction.actionViewType=== TableActionViewType.ICON_TEXT)"
+                                        fontSet="mdo-icons">
+                                        {{ COMMON_ACTIONS[pAction.actionText].icon }}
+                                    </mat-icon>
+                                    <ng-template
+                                        [ngIf]="pAction.actionViewType=== TableActionViewType.TEXT || pAction.actionViewType=== TableActionViewType.ICON_TEXT">
+                                        {{ pAction.actionText }}
+                                    </ng-template>
                                 </button>
-                                <button mat-flat-button color="accent" class="middleradius">
-                                    <mat-icon fontSet="mdo-icons">declined</mat-icon> Decline
-                                </button>
-                                <button mat-flat-button color="accent" class="leftradius">Delete</button>
                             </div>
                         </div>
                         <div class="row-spacer"></div>
@@ -124,160 +145,84 @@
                             <div class="f-row colunm-box rule-border-row">
                                 <div class="col"></div>
                                 <div class="col col-x8">
-                                    <a class="mat-line info-link">New custom action</a>
+                                    <a (click)="addCustomAction()" class="mat-line info-link">New Custom action</a>
                                 </div>
                                 <div class="col col-x4"></div>
                                 <div class="col col-x4 text-end"></div>
                             </div>
-                            <div class="f-row colunm-box rule-border-row">
-                                <div class="col">
-                                    <button mat-button cdkDragHandle>
-                                        <mat-icon fontSet="mdo-icons">two-lines</mat-icon>
-                                    </button>
-                                </div>
-                                <div class="col col-x8">
-                                    <div mat-line>Approve</div>
-                                </div>
+                            <div cdkDropList [cdkDropListData]="actionsList" (cdkDropListDropped)="drop($event)">
+                                <div *ngFor="let action of actionsList; let index=index"
+                                    class="f-row colunm-box rule-border-row" cdkDrag>
+                                    <div class="col">
+                                        <button mat-button cdkDragHandle>
+                                            <mat-icon fontSet="mdo-icons">two-lines</mat-icon>
+                                        </button>
+                                    </div>
+                                    <div class="col col-x8">
+                                        <div mat-line (click)="editActionText(index)">
+                                            <span id="viewctrl_{{ index }}"> {{ action.actionText }} </span>
+                                            <div id="inpctrl_{{ index }}" style="display: none;">
+                                                <pros-form-input type="text" [value]="action.actionText"
+                                                    (emitBlurEvent)="emitActionTextBlur(index, $event)">
+                                                </pros-form-input>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                                <div class="col col-x4">
-                                    <mat-checkbox color="primary"></mat-checkbox>
-                                </div>
-                                <div class="col col-x4">
-                                    <button mat-stroked-button>Icon only <mat-icon fontSet="mdo-icons">menu-arrow
-                                        </mat-icon></button>
-                                </div>
-                                <div class="col col-x4 text-end"></div>
-                            </div>
-                            <div class="f-row colunm-box rule-border-row">
-                                <div class="col">
-                                    <button mat-button cdkDragHandle>
-                                        <mat-icon fontSet="mdo-icons">two-lines</mat-icon>
-                                    </button>
-                                </div>
-                                <div class="col col-x8">
-                                    <div mat-line>Reject</div>
-                                </div>
-
-                                <div class="col col-x4">
-                                    <mat-checkbox color="primary"></mat-checkbox>
-                                </div>
-                                <div class="col col-x4">
-                                    <button mat-stroked-button>Icon and text <mat-icon fontSet="mdo-icons">menu-arrow
-                                        </mat-icon>
-                                    </button>
-                                </div>
-                                <div class="col col-x4 text-end"></div>
-                            </div>
-                            <div class="f-row colunm-box rule-border-row">
-                                <div class="col">
-                                    <button mat-button cdkDragHandle>
-                                        <mat-icon fontSet="mdo-icons">two-lines</mat-icon>
-                                    </button>
-                                </div>
-                                <div class="col col-x8">
-                                    <div mat-line>Assign to...</div>
-                                </div>
-
-                                <div class="col col-x4">
-                                    <mat-checkbox color="primary"></mat-checkbox>
-                                </div>
-
-                                <div class="col col-x4">
-                                </div>
-                                <div class="col col-x4 text-end"></div>
-
-                            </div>
-                            <div class="f-row colunm-box rule-border-row">
-                                <div class="col">
-                                    <button mat-button cdkDragHandle>
-                                        <mat-icon fontSet="mdo-icons">two-lines</mat-icon>
-                                    </button>
-                                </div>
-                                <div class="col col-x8">
-                                    <div mat-line>Delete</div>
-                                </div>
-
-                                <div class="col col-x4">
-                                    <mat-checkbox color="primary"></mat-checkbox>
-                                </div>
-
-                                <div class="col col-x4">
-                                    <button mat-stroked-button [matMenuTriggerFor]="actionvalue">Text only <mat-icon fontSet="mdo-icons">menu-arrow
-                                    </mat-icon></button>
-                                    <mat-menu #actionvalue="matMenu" direction="right" class="navigation-menu">
-                                        <button mat-menu-item>Text only</button>
-                                        <button mat-menu-item>Icon only</button>
-                                        <button mat-menu-item>Icon and text</button>
-                                    </mat-menu>
-                                </div>
-                                <div class="col col-x4 text-end"></div>
-
-                            </div>
-                            <div class="f-row colunm-box rule-border-row">
-                                <div class="col">
-                                    <button mat-button cdkDragHandle>
-                                        <mat-icon fontSet="mdo-icons">two-lines</mat-icon>
-                                    </button>
-                                </div>
-                                <div class="col col-x8">
-                                    <pros-form-input [type]="'text'" [placeholder]="'Custom action'"
-                                        [value]="'My custom action 1'">
-                                    </pros-form-input>
-                                </div>
-
-                                <div class="col col-x4">
-                                    <mat-checkbox color="primary"></mat-checkbox>
-                                </div>
-
-                                <div class="col col-x4">
-                                    <button mat-stroked-button>Text only</button>
-                                </div>
-                                <div class="col col-x4 text-end">
-                                    <button mat-button [matMenuTriggerFor]="mappingvalue">
-                                        <mat-icon fontSet="mdo-icons" matBadge="8" matBadgeOverlap="false"
-                                            matBadgeColor="accent" class="badge-background">mapping</mat-icon>
-                                    </button>
-                                    <mat-menu #mappingvalue="matMenu" direction="right" class="navigation-menu">
-                                        <button mat-menu-item>Rule A</button>
-                                        <button mat-menu-item>Rule B</button>
-                                        <button mat-menu-item>Rule C</button>
-                                        <button mat-menu-item>Rule D</button>
-                                    </mat-menu>
-                                    <div class="col-spacer"></div>
-                                    <button mat-button>
-                                        <mat-icon fontSet="mdo-icons">recycle-bin</mat-icon>
-                                    </button>
-                                </div>
-
-                                
-                            </div>
-                            <div class="f-row colunm-box rule-border-row">
-                                <div class="col">
-                                    <button mat-button cdkDragHandle>
-                                        <mat-icon fontSet="mdo-icons">two-lines</mat-icon>
-                                    </button>
-                                </div>
-                                <div class="col col-x8">
-                                    <div mat-line class="editablevalue">My custom action 2</div>
-                                </div>
-
-                                <div class="col col-x4">
-                                    <mat-checkbox color="primary"></mat-checkbox>
-                                </div>
-                                <div class="col col-x4">
-                                    <button mat-stroked-button>Text only</button>
-                                </div>
-                                <div class="col col-x4 text-end">
-                                    <button mat-button [matMenuTriggerFor]="mappingvalue">
-                                        <mat-icon fontSet="mdo-icons" matBadge="?" matBadgeOverlap="false" class="badge-background badge-error-value">mapping</mat-icon>
-                                    </button>
-                                    <div class="col-spacer"></div>
-                                    <button mat-button>
-                                        <mat-icon fontSet="mdo-icons">recycle-bin</mat-icon>
-                                    </button>
+                                    <div class="col col-x4">
+                                        <mat-checkbox color="primary"
+                                            [disabled]="!action.isPrimaryAction && primaryActions.length === 3"
+                                            [checked]="action.isPrimaryAction"
+                                            (change)="actionChanged(index, 'isPrimaryAction', $event.checked)">
+                                        </mat-checkbox>
+                                    </div>
+                                    <div class="col col-x8">
+                                        <ng-template [ngIf]="action.isCustomAction" [ngIfElse]="commonAction">
+                                            <button mat-stroked-button>
+                                                {{ getActionViewTypeDesc(action.actionViewType) }}
+                                            </button>
+                                        </ng-template>
+                                        <ng-template #commonAction>
+                                            <button mat-stroked-button [matMenuTriggerFor]="displayMenu">
+                                                {{ getActionViewTypeDesc(action.actionViewType) }}
+                                                <mat-icon fontSet="mdo-icons">menu-arrow </mat-icon>
+                                            </button>
+                                            <mat-menu #displayMenu="matMenu">
+                                                <button
+                                                    (click)="actionChanged(index, 'actionViewType', TableActionViewType.TEXT)"
+                                                    mat-menu-item> Text only </button>
+                                                <button
+                                                    (click)="actionChanged(index, 'actionViewType', TableActionViewType.ICON_TEXT)"
+                                                    mat-menu-item> Text and icon </button>
+                                                <button
+                                                    (click)="actionChanged(index, 'actionViewType', TableActionViewType.ICON)"
+                                                    mat-menu-item> Icon only </button>
+                                            </mat-menu>
+                                        </ng-template>
+                                    </div>
+                                    <div class="col col-x4 text-end">
+                                        <button mat-button [matMenuTriggerFor]="mappingMenu"
+                                            *ngIf="action.isCustomAction">
+                                            <mat-icon fontSet="mdo-icons" [matBadge]="action.refBrId ? '1' : '?'"
+                                                matBadgeOverlap="false" matBadgeColor="accent">mapping</mat-icon>
+                                        </button>
+                                        <mat-menu #mappingMenu="matMenu">
+                                            <button mat-menu-item *ngFor="let rule of crossMappingRules"
+                                                (click)="actionChanged(index, 'refBrId', rule.sno)">
+                                                <mat-icon *ngIf="rule.sno === action.refBrId" fontSet="mdo-icons">
+                                                    check-mark</mat-icon>
+                                                {{ rule.desc }}
+                                            </button>
+                                        </mat-menu>
+                                    </div>
+                                    <div class="col text-end">
+                                        <button mat-button *ngIf="action.isCustomAction"
+                                            (click)="removeCustomAction(index)">
+                                            <mat-icon fontSet="mdo-icons"> recycle-bin </mat-icon>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-
                         </div>
                         <!-- Action code end here-->
                     </mat-tab>

@@ -9,7 +9,7 @@ import { SearchInputComponent } from '@modules/shared/_components/search-input/s
 import { AddFilterMenuComponent } from '@modules/shared/_components/add-filter-menu/add-filter-menu.component';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { BehaviorSubject, of } from 'rxjs';
-import { SchemaListDetails, SchemaVariantsModel } from '@models/schema/schemalist';
+import { SchemaDashboardPermission, SchemaListDetails, SchemaVariantsModel } from '@models/schema/schemalist';
 import { SchemaService } from '@services/home/schema.service';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { FilterCriteria, MetadataModel, MetadataModeleResponse, RequestForSchemaDetailsWithBr } from '@models/schema/schemadetailstable';
@@ -319,7 +319,7 @@ describe('SchemaDetailsComponent', () => {
   it('openTableColumnSettings(), open table column setting ', async(()=>{
     spyOn(router, 'navigate');
     component.openTableColumnSettings();
-    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: { sb: 'sb/schema/table-column-settings' }, queryParams:{status:component.activeTab} } ]);
+    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: { sb: 'sb/schema/table-column-settings' } }], { preserveQueryParams: true });
   }));
 
   it('inlineSearch(), inline search ', async(()=>{
@@ -683,5 +683,41 @@ describe('SchemaDetailsComponent', () => {
     expect(component.getData).toHaveBeenCalledWith(component.filterCriteria.getValue(), component.sortOrder, component.fetchCount, true);
 
   }))
+  it('should get schema permissions', () => {
+
+    component.schemaInfo  = {schemaId: 'schema1', runId:'889321'} as SchemaListDetails;
+    expect(component.isEditer).toBeFalsy();
+    expect(component.isReviewer).toBeFalsy();
+    expect(component.isApprover).toBeFalsy();
+
+  });
+
+  it('should filter primary and secondary actions', () => {
+    expect(component.primaryActions.length).toEqual(2);
+    expect(component.secondaryActions.length).toEqual(0);
+
+  });
+
+  it('should do table action', () => {
+
+    component.schemaInfo  = {schemaId: 'schema1', runId:'889321',
+      collaboratorModels: {isReviewer: true} as SchemaDashboardPermission} as SchemaListDetails;
+
+    spyOn(component, 'approveRecords');
+    spyOn(component, 'resetRec');
+
+    component.doAction(component.tableActionsList[0], {});
+    expect(component.approveRecords).toHaveBeenCalledWith('inline', {});
+
+    component.doAction(component.tableActionsList[1], {});
+    expect(component.resetRec).toHaveBeenCalledWith({}, 'inline');
+
+  });
+
+  it('should get table action icon', () => {
+    expect(component.getActionIcon('Approve')).toEqual('check-mark');
+    expect(component.getActionIcon('Reject')).toEqual('declined')
+    expect(component.getActionIcon('Delete')).toEqual('recycle-bin');
+  });
 
 });

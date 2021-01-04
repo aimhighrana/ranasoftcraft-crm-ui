@@ -483,3 +483,52 @@ export interface AttributeCoorectionReq {
     attributeValoc: string;
 }
 
+export class SchemaTableAction {
+    sno: string;
+    schemaId : string;
+    role:  SchemaActionRole;
+    actionCode: string;
+    actionText: string;
+    actionViewType: TableActionViewType;
+    actionOrder : number;
+    actionIconLigature : string;
+    isPrimaryAction: boolean;
+    isCustomAction: boolean;
+    refBrId: string;
+    createdBy: string;
+}
+
+export enum SchemaActionRole {
+    EDITOR = 'EDITOR',
+    REVEIWER = 'REVEIWER',
+    APPROVER = 'APPROVER'
+}
+
+export enum TableActionViewType {
+    TEXT = 'TEXT',
+    ICON = 'ICON',
+    ICON_TEXT = 'ICON_TEXT'
+}
+
+export interface CrossMappingRule {
+    sno: string;
+    desc: string;
+    parentModule: string;
+    childModule: string,
+    linkingField: string,
+    type: number,
+    plantCode: string,
+    userid: string,
+    datemodified: Date,
+    crReq: string;
+    validateReq: string;
+    schemaId: string;
+}
+
+export enum DetailView {
+    DATAQUALITY_VIEW = 'DATAQUALITY_VIEW',
+    DUPLICACY_VIEW = 'DUPLICACY_VIEW',
+    MRO_CLASSIFICATION_VIEW = 'MRO_CLASSIFICATION_VIEW',
+    POTEXT_VIEW = 'POTEXT_VIEW'
+  }
+

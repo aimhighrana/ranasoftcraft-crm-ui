@@ -261,6 +261,7 @@ export class SchemaDashboardPermission {
     isViewer: boolean;
     isEditer: boolean;
     isReviewer: boolean;
+    isApprover: boolean;
     permissionType: PermissionType;
     createdAt: number;
     updatedAt: number;

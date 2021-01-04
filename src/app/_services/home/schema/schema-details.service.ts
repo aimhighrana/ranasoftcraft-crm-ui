@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { SendReqForSchemaDataTableColumnInfo, SendDataForSchemaTableShowMore, SchemaDataTableColumnInfoResponse, RequestForSchemaDetailsWithBr, SchemaTableViewRequest, OverViewChartDataSet, CategoryInfo, CategoryChartDataSet, MetadataModeleResponse, SchemaBrInfo, SchemaCorrectionReq, SchemaExecutionLog, SchemaTableViewFldMap, ClassificationNounMod, SchemaMROCorrectionReq } from 'src/app/_models/schema/schemadetailstable';
+import { SendReqForSchemaDataTableColumnInfo, SendDataForSchemaTableShowMore, SchemaDataTableColumnInfoResponse, RequestForSchemaDetailsWithBr, SchemaTableViewRequest, OverViewChartDataSet, CategoryInfo, CategoryChartDataSet, MetadataModeleResponse, SchemaBrInfo, SchemaCorrectionReq, SchemaExecutionLog, SchemaTableViewFldMap, ClassificationNounMod, SchemaMROCorrectionReq, SchemaTableAction, CrossMappingRule } from 'src/app/_models/schema/schemadetailstable';
 import * as moment from 'moment';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../../any2ts.service';
@@ -273,6 +273,28 @@ export class SchemaDetailsService {
   public generateMroClassificationDescription(schemaId: string, runId: string, objNrs: string[], isFromMasterLib?: boolean): Observable<any> {
     return this.http.put<any>(this.endpointService.generateMroClassificationDescriptionUri(), objNrs, {params:{schemaId, runId}});
   }
+
+
+  public createUpdateSchemaAction(action: SchemaTableAction): Observable<any> {
+    return this.http.post<any>(this.endpointService.getCreateUpdateSchemaActionUrl(), action);
+  }
+
+  public getTableActionsBySchemaId(schemaId: string): Observable<SchemaTableAction[]> {
+    return this.http.get<SchemaTableAction[]>(this.endpointService.getFindActionsBySchemaUrl(schemaId));
+  }
+
+  public getTableActionsBySchemaAndRole(schemaId: string, role: string): Observable<SchemaTableAction[]> {
+    return this.http.get<SchemaTableAction[]>(this.endpointService.getFindActionsBySchemaAndRoleUrl(schemaId, role));
+  }
+
+  public deleteSchemaTableAction(schemaId: string, actionCode: string): Observable<any> {
+    return this.http.delete<any>(this.endpointService.getDeleteSchemaActionUrl(schemaId, actionCode));
+  }
+
+  public getCrossMappingRules(plantCode): Observable<CrossMappingRule[]> {
+    return this.http.get<CrossMappingRule[]>(this.endpointService.getCrossMappingUrl(plantCode));
+  }
+
 
 
 }

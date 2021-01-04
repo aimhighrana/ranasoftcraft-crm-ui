@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, ViewChild, OnChanges, SimpleChanges, Input, ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
-import { FieldInputType, FilterCriteria, SchemaTableViewFldMap } from '@models/schema/schemadetailstable';
+import { FieldInputType, FilterCriteria, SchemaTableAction, SchemaTableViewFldMap, TableActionViewType } from '@models/schema/schemadetailstable';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
@@ -22,7 +22,7 @@ import { CatalogCheckService } from '@services/home/schema/catalog-check.service
 import { MatPaginator } from '@angular/material/paginator';
 import { DuplicacyDataSource } from './duplicacy-data-source';
 import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, skip } from 'rxjs/operators';
 import { ContainerRefDirective } from '@modules/shared/_directives/container-ref.directive';
 import { TableCellInputComponent } from '@modules/shared/_components/table-cell-input/table-cell-input.component';
 import { Userdetails } from '@models/userdetails';
@@ -179,6 +179,14 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
    */
   pageIndex = 0;
 
+  TableActionViewType = TableActionViewType;
+
+  tableActionsList: SchemaTableAction[] = [
+    { actionText: 'Approve', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT },
+    { actionText: 'Reject', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT },
+    { actionText: 'Delete', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT }
+  ] as SchemaTableAction[];
+
 
 
   constructor(
@@ -228,6 +236,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
       this.getDataScope();
       this.getSchemaStatics();
       this.getSchemaDetails();
+      this.getSchemaTableActions();
       // this.getData();
       if (this.variantId !== '0') {
         this.getVariantDetails();
@@ -270,10 +279,13 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     /**
      * After choose columns get updated columns ..
      */
-    this.sharedServices.getChooseColumnData().subscribe(result => {
-      if (result && !result.isGroupTable) {
+    this.sharedServices.getChooseColumnData().pipe(skip(1)).subscribe(result => {
+      if (result && !result.editActive) {
         this.selectedFields = result.selectedFields;
         this.calculateDisplayFields();
+        if (result.tableActionsList && result.tableActionsList.length) {
+          this.tableActionsList = result.tableActionsList
+        }
       }
     });
 
@@ -467,10 +479,10 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
   openTableColumnSettings() {
     const data = {
       schemaId: this.schemaId, variantId: this.variantId, fields: this.metadataFldLst,
-      selectedFields: this.selectedFields
+      selectedFields: this.selectedFields, editActive: true
     }
     this.sharedServices.setChooseColumnData(data);
-    this.router.navigate(['', { outlets: { sb: 'sb/schema/table-column-settings' }, queryParams: { status: this.activeTab } }]);
+    this.router.navigate(['', { outlets: { sb: 'sb/schema/table-column-settings' } }], { preserveQueryParams: true });
   }
 
   /**
@@ -598,16 +610,16 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
 
     this.catalogService.rejectDuplicacyCorrection(this.schemaId, this.schemaInfo.runId, objNumbs,this.userDetails.userName)
     .subscribe(res => {
-      if (res.acknowledge) {
-        if (type === 'inline') {
+        this.selection.clear();
+        this.getData();
+        /* if (type === 'inline') {
           row.OBJECTNUMBER.isReviewed = false;
         } else {
           this.selection.selected.forEach(record => {
             record.OBJECTNUMBER.isReviewed = false;
           })
-        }
-        this.selection.clear();
-      }
+        } */
+
     }, error => {
       this.snackBar.open(`Something went wrong !`, 'Close', { duration: 2000 });
       console.error(`Error :: ${error.message}`);
@@ -840,7 +852,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
    * Function to open data scope side sheet
    */
   openDataScopeSideSheet() {
-    this.router.navigate([{ outlets: { sb: `sb/schema/data-scope/${this.moduleId}/${this.schemaId}/new/sb` } }])
+    this.router.navigate([{ outlets: { sb: `sb/schema/data-scope/${this.moduleId}/${this.schemaId}/new` } }])
   }
 
   /**
@@ -1009,6 +1021,64 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     this.router.navigate(['', { outlets: { sb: `sb/schema/execution-trend/${this.moduleId}/${this.schemaId}/${this.variantId}` } }])
   }
 
+  /**
+   * get already saved schema actions
+   */
+  getSchemaTableActions() {
+    this.schemaDetailService.getTableActionsBySchemaId(this.schemaId).subscribe(actions => {
+      console.log(actions);
+      if(actions && actions.length) {
+        this.tableActionsList = actions;
+      }
+    });
+  }
 
+  get primaryActions() {
+    return this.tableActionsList.filter(action => action.isPrimaryAction);
+  }
+
+  get secondaryActions() {
+    return this.tableActionsList.filter(action => !action.isPrimaryAction);
+  }
+
+
+  get isEditer() {
+    return this.schemaInfo
+      && this.schemaInfo.collaboratorModels
+      && this.schemaInfo.collaboratorModels.isEditer;
+  }
+
+  get isReviewer() {
+    return this.schemaInfo
+      && this.schemaInfo.collaboratorModels
+      && this.schemaInfo.collaboratorModels.isReviewer;
+  }
+
+  get isApprover() {
+    return this.schemaInfo
+      && this.schemaInfo.collaboratorModels
+      && (this.schemaInfo.collaboratorModels.isReviewer || this.schemaInfo.collaboratorModels.isApprover);
+  }
+
+  getActionIcon(actionText) {
+    if (actionText === 'Approve') {
+      return 'check-mark';
+    } else if (actionText === 'Reject') {
+      return 'declined';
+    } else if (actionText === 'Delete') {
+      return 'recycle-bin';
+    }
+
+    return '';
+  }
+
+  doAction(action: SchemaTableAction, row) {
+    console.log('Action selected ', action);
+    if (!action.isCustomAction && action.actionText === 'Approve' && (this.isReviewer || this.isApprover)) {
+      this.approveRecords('inline', row);
+    } else if (!action.isCustomAction && action.actionText === 'Reject' && (this.isReviewer || this.isApprover)) {
+      this.rejectRecords('inline', row);
+    }
+  }
 
 }

@@ -24,8 +24,7 @@
         <button mat-flat-button color="accent" (click)="openSummarySideSheet()" class="rightradius">
             <mat-icon fontSet="mdo-icons">wand</mat-icon> Check data
         </button>
-        <button mat-fab color="accent" class="mat-elevation-z0 middleradius"
-            (click)="openExecutionTrendSideSheet()">
+        <button mat-fab color="accent" class="mat-elevation-z0 middleradius" (click)="openExecutionTrendSideSheet()">
             <mat-icon fontSet="mdo-icons">chart-line</mat-icon>
         </button>
         <button mat-fab color="accent" class="mat-elevation-z0 leftradius" [matMenuTriggerFor]="moreactionfile">
@@ -135,12 +134,14 @@
     </div>
 
     <div class="f-row" *ngIf="activeTab && activeTab === 'review' && selection.selected.length !== 0">
-        <button mat-flat-button (click)="approveRecords('all')" color="accent" class="rightradius">
-            Approve
-        </button>
-        <button mat-flat-button (click)="resetRec('','all')" color="accent" class="middleradius">
-            Reject
-        </button>
+        <ng-template [ngIf]="isReviewer || isApprover">
+            <button mat-flat-button (click)="approveRecords('all')" color="accent" class="rightradius">
+                Approve
+            </button>
+            <button mat-flat-button (click)="resetRec('','all')" color="accent" class="middleradius">
+                Reject
+            </button>
+        </ng-template>
         <button mat-flat-button (click)="selection.clear()" color="accent" class="leftradius">
             Unselect
         </button>
@@ -187,14 +188,17 @@
                     <mat-cell *matCellDef="let element" class="fixed-width-c1">
                         <mat-card-header>
                             <div mat-card-avatar>
-                                {{ userDetails ? (userDetails.firstName ? userDetails.firstName.substring(0,1).toUpperCase() : '') : ''  }}{{ userDetails ? ( userDetails.lastName ? userDetails.lastName.substring(0,1).toUpperCase() : '') : ''  }}
+                                {{ userDetails ? (userDetails.firstName ?
+                                userDetails.firstName.substring(0,1).toUpperCase() : '') : '' }}{{ userDetails ? (
+                                userDetails.lastName ? userDetails.lastName.substring(0,1).toUpperCase() : '') : '' }}
                             </div>
                         </mat-card-header>
                     </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="_score_weightage" sticky>
-                    <mat-header-cell *matHeaderCellDef class="fixed-width-c2"> Score &nbsp;<mat-icon fontSet="mdo-icons">
+                    <mat-header-cell *matHeaderCellDef class="fixed-width-c2"> Score &nbsp;<mat-icon
+                            fontSet="mdo-icons">
                             question-mark</mat-icon>
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="fixed-width-c2">
@@ -211,18 +215,53 @@
                 </ng-container>
 
                 <ng-container matColumnDef="_row_actions" sticky>
-                    <mat-header-cell *matHeaderCellDef class="fixed-width-c2">
+                    <mat-header-cell *matHeaderCellDef>
                         Actions
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let element" class="fixed-width-c2">
+                    <mat-cell *matCellDef="let element">
                         <div class="f-row action-iconbtns">
-                            <button mat-fab color="accent" prosClickStopPropagation (click)="approveRecords('inline', element)"
+                            <!-- Secondary actions -->
+                            <ng-template [ngIf]="true"> <!-- !isReviewer -->
+                            <button mat-fab color="accent" class="mat-elevation-z0 rightradius"
+                                *ngIf="secondaryActions.length" [matMenuTriggerFor]="secondaryActionsMenu">
+                                <mat-icon fontSet="mdo-icons">more</mat-icon>
+                            </button>
+                            <mat-menu #secondaryActionsMenu="matMenu">
+                                <button mat-menu-item *ngFor="let sAction of secondaryActions"
+                                    (click)="doAction(sAction, element)">
+                                    <mat-icon
+                                        *ngIf="!sAction.isCustomAction && (sAction.actionViewType=== TableActionViewType.ICON || sAction.actionViewType=== TableActionViewType.ICON_TEXT)"
+                                        fontSet="mdo-icons">
+                                        {{ getActionIcon(sAction.actionText) }}
+                                    </mat-icon>
+                                    <ng-template
+                                        [ngIf]="(sAction.actionViewType === TableActionViewType.TEXT) || (sAction.actionViewType === TableActionViewType.ICON_TEXT)">
+                                        {{ sAction.actionText }}
+                                    </ng-template>
+                                </button>
+                            </mat-menu>
+                            </ng-template>
+                            <!-- Primary actions -->
+                            <button *ngFor="let pAction of primaryActions" mat-flat-button color="accent"
+                                class="mat-elevation-z0 middleradius" (click)="doAction(pAction, element)">
+                                <mat-icon
+                                    *ngIf="(pAction.actionViewType=== TableActionViewType.ICON || pAction.actionViewType=== TableActionViewType.ICON_TEXT)"
+                                    fontSet="mdo-icons">
+                                    {{ getActionIcon(pAction.actionText) }}
+                                </mat-icon>
+                                <ng-template
+                                    [ngIf]="pAction.actionViewType=== TableActionViewType.TEXT || pAction.actionViewType=== TableActionViewType.ICON_TEXT">
+                                    {{ pAction.actionText }}
+                                </ng-template>
+                            </button>
+
+                            <!-- <button mat-fab color="accent" prosClickStopPropagation (click)="approveRecords('inline', element)"
                                 *ngIf="!element['OBJECTNUMBER'].isReviewed">
                                 <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
                             </button>
                             <button mat-fab color="accent" prosClickStopPropagation (click)="resetRec(element,'row')" *ngIf="!element['OBJECTNUMBER'].isReviewed">
                                 <mat-icon fontSet="mdo-icons">declined</mat-icon>
-                            </button>
+                            </button> -->
                         </div>
                     </mat-cell>
                 </ng-container>
@@ -265,7 +304,8 @@
                                         [ngIfElse]="other">
                                         <div class="f-col">
                                             <span id="viewctrl_{{ dynCols + '_' + rIndex }}">
-                                                {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].fieldData) : '' }}
+                                                {{ element[dynCols] ? formatCellData(dynCols,
+                                                element[dynCols].fieldData) : '' }}
                                             </span>
                                             <span>
                                                 {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].oldData) : '' }}
@@ -274,14 +314,16 @@
                                     </ng-template>
                                     <ng-template #other>
                                         <span id="viewctrl_{{ dynCols + '_' + rIndex }}">
-                                            {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].fieldData) : '' }}
+                                            {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].fieldData) :
+                                            '' }}
                                         </span>
                                     </ng-template>
                                 </ng-template>
                                 <ng-template #normalCell>
                                     <div class="f-col">
                                         <span id="viewctrl_{{ dynCols + '_' + rIndex }}">
-                                            {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].fieldData) : '' }}
+                                            {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].fieldData) :
+                                            '' }}
                                         </span>
                                         <span class="error-message">
                                             {{ element[dynCols] ? element[dynCols].errorMsg : '' }}

@@ -1,15 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { DetailView } from '@models/schema/schemadetailstable';
 import { SchemaListDetails } from '@models/schema/schemalist';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { Subscription } from 'rxjs';
 
-export enum DetailView {
-  DATAQUALITY_VIEW = 'DATAQUALITY_VIEW',
-  DUPLICACY_VIEW = 'DUPLICACY_VIEW',
-  MRO_CLASSIFICATION_VIEW = 'MRO_CLASSIFICATION_VIEW',
-  POTEXT_VIEW = 'POTEXT_VIEW'
-}
 
 @Component({
   selector: 'pros-detail-builder',
@@ -17,6 +12,8 @@ export enum DetailView {
   styleUrls: ['./detail-builder.component.scss']
 })
 export class DetailBuilderComponent implements OnInit, OnDestroy {
+
+  DetailView = DetailView;
 
 
   /**

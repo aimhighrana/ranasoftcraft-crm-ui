@@ -178,4 +178,30 @@ describe('EndpointsClassicService', () => {
     expect(serObj.saveUpdateUDRUrl()).toContain('admin/schema/udr/save-update');
   }));
 
+  it('getCreateUpdateSchemaActionUrl(), getCreateUpdateSchemaActionUrl', async(() => {
+    const serObj =new EndpointsClassicService();
+    expect(serObj.getCreateUpdateSchemaActionUrl()).toContain('/schema/actions/create-update');
+  }));
+
+  it('getFindActionsBySchemaUrl(), getFindActionsBySchemaUrl', async(() => {
+    const serObj =new EndpointsClassicService();
+    expect(serObj.getFindActionsBySchemaUrl('schema1')).toContain('/schema/actions/schema1');
+  }));
+
+  it('getFindActionsBySchemaAndRoleUrl(), getFindActionsBySchemaAndRoleUrl', async(() => {
+    const serObj =new EndpointsClassicService();
+    expect(serObj.getFindActionsBySchemaAndRoleUrl('schema1', 'admin')).toContain('/schema/actions/schema1/admin');
+  }));
+
+  it('getDeleteSchemaActionUrl(), getDeleteSchemaActionUrl', async(() => {
+    const serObj =new EndpointsClassicService();
+    expect(serObj.getDeleteSchemaActionUrl('schema1', '1701')).toContain('schema/actions/deleteCustomAction/schema1/1701');
+  }));
+
+  it('getCrossMappingUrl(), getCrossMappingUrl', async(() => {
+    const serObj =new EndpointsClassicService();
+    expect(serObj.getCrossMappingUrl('0')).toContain('/schema/actions/getCrossMapping?plantCode=0');
+  }));
+
+
 });

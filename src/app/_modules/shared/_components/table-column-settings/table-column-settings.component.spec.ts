@@ -2,19 +2,18 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TableColumnSettingsComponent } from './table-column-settings.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
-import { MetadataModel, SchemaTableViewRequest } from 'src/app/_models/schema/schemadetailstable';
+import { MetadataModel, SchemaTableAction, SchemaTableViewRequest, TableActionViewType } from 'src/app/_models/schema/schemadetailstable';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { of } from 'rxjs';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
-import { Router } from '@angular/router';
 import { SearchInputComponent } from '../search-input/search-input.component';
+import { SchemaListDetails } from '@models/schema/schemalist';
 
 describe('TableColumnSettingsComponent', () => {
   let component: TableColumnSettingsComponent;
   let fixture: ComponentFixture<TableColumnSettingsComponent>;
   let schemaDetailsService: SchemaDetailsService;
-  let router: Router;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -29,13 +28,22 @@ describe('TableColumnSettingsComponent', () => {
       providers: [SchemaDetailsService, SharedServiceService]
     })
       .compileComponents();
-      router = TestBed.inject(Router);
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(TableColumnSettingsComponent);
     component = fixture.componentInstance;
     schemaDetailsService = fixture.debugElement.injector.get(SchemaDetailsService);
+
+    component.userDetails.userName = 'admin';
+    component.schemaInfo = new SchemaListDetails();
+    component.schemaInfo.createdBy = 'admin';
+    component.data = {
+      schemaId: 'schema'
+    }
+
+    spyOn(schemaDetailsService, 'createUpdateSchemaAction').and.returnValue(of(new SchemaTableAction()));
+    spyOn(schemaDetailsService, 'deleteSchemaTableAction').and.returnValue(of());
   });
 
 
@@ -49,11 +57,11 @@ describe('TableColumnSettingsComponent', () => {
     schemaTableViewRequest.schemaTableViewMapping = selFld;
 
     spyOn(schemaDetailsService,'updateSchemaTableView').withArgs(schemaTableViewRequest).and.returnValue(of({}));
-    spyOn(router, 'navigate');
+    // spyOn(router, 'navigate');
 
     component.persistenceTableView(selFld);
     expect(schemaDetailsService.updateSchemaTableView).toHaveBeenCalledWith(schemaTableViewRequest);
-    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: null }}]);
+    // expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: null }}]);
   }));
 
 
@@ -99,15 +107,52 @@ describe('TableColumnSettingsComponent', () => {
     schemaTableViewRequest.schemaTableViewMapping = selFld;
 
     spyOn(schemaDetailsService,'updateSchemaTableView').withArgs(schemaTableViewRequest).and.returnValue(of({}));
-    spyOn(router, 'navigate');
+    // spyOn(router, 'navigate');
 
 
     component.submitColumn();
 
     expect(schemaDetailsService.updateSchemaTableView).toHaveBeenCalledWith(schemaTableViewRequest);
-    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: null }}]);
-
-
+    // expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: null }}]);
 
   }));
+
+  it('should check if user has action config permission', () => {
+    expect(component.isActionConfigAllowed).toEqual(true);
+  });
+
+  it('should get action view type description', () => {
+    expect(component.getActionViewTypeDesc(TableActionViewType.ICON)).toEqual('Icon only');
+    expect(component.getActionViewTypeDesc(TableActionViewType.ICON_TEXT)).toEqual('Icon and Text');
+    expect(component.getActionViewTypeDesc(TableActionViewType.TEXT)).toEqual('Text only');
+  });
+
+  it('should get primary actions', () => {
+    component.actionsList = [
+      {isPrimaryAction: true},
+      {isPrimaryAction: false},
+    ] as SchemaTableAction[];
+
+    expect(component.primaryActions.length).toEqual(1);
+    expect(component.secondaryActions.length).toEqual(1);
+  });
+
+  it('should add/remove custom action', async(() => {
+
+    const action = {schemaId: component.data.schemaId, actionText: `My custom action ${component.actionsList.length}`, isPrimaryAction: false,
+      actionViewType: TableActionViewType.TEXT, isCustomAction: true, createdBy: component.userDetails.userName} as SchemaTableAction;
+
+    component.addCustomAction();
+    // expect(component.actionsList.length).toEqual(1);
+    expect(schemaDetailsService.createUpdateSchemaAction).toHaveBeenCalledWith(action);
+
+
+    component.actionsList[0].actionCode = 'code1701';
+
+    component.removeCustomAction(0);
+    expect(schemaDetailsService.deleteSchemaTableAction).toHaveBeenCalledWith(component.data.schemaId, 'code1701');
+
+  }));
+
+
 });

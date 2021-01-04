@@ -3,7 +3,7 @@ import { SimpleChanges } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { SchemaListDetails } from '@models/schema/schemalist';
+import { SchemaDashboardPermission, SchemaListDetails } from '@models/schema/schemalist';
 import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
 import { SchemaService } from '@services/home/schema.service';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
@@ -187,5 +187,41 @@ it('ngOnChanges(), ngonchange component hooks ', async(()=>{
     expect(component.generateDesc).toBeTruthy();
 
   }));
+  it('should get schema permissions', () => {
+
+    component.schemaInfo  = {schemaId: 'schema1', runId:'889321'} as SchemaListDetails;
+    expect(component.isEditer).toBeFalsy();
+    expect(component.isReviewer).toBeFalsy();
+    expect(component.isApprover).toBeFalsy();
+
+  });
+
+  it('should filter primary and secondary actions', () => {
+    expect(component.primaryActions.length).toEqual(2);
+    expect(component.secondaryActions.length).toEqual(0);
+
+  });
+
+  it('should do table action', () => {
+
+    component.schemaInfo  = {schemaId: 'schema1', runId:'889321',
+      collaboratorModels: {isReviewer: true} as SchemaDashboardPermission} as SchemaListDetails;
+
+    spyOn(component, 'approveRec');
+    spyOn(component, 'rejectRec');
+
+    component.doAction(component.tableActionsList[0], {}, 0);
+    expect(component.approveRec).toHaveBeenCalledWith({}, 0);
+
+    component.doAction(component.tableActionsList[1], {}, 0);
+    expect(component.rejectRec).toHaveBeenCalledWith({}, 0);
+
+  });
+
+  it('should get table action icon', () => {
+    expect(component.getActionIcon('Approve')).toEqual('check-mark');
+    expect(component.getActionIcon('Reject')).toEqual('declined')
+    expect(component.getActionIcon('Delete')).toEqual('recycle-bin');
+  });
 
 });

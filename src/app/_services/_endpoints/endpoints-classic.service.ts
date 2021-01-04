@@ -733,4 +733,24 @@ export class EndpointsClassicService {
   public generateMroClassificationDescriptionUri(): string {
     return `${this.apiUrl}/schema/mro/generate-description`;
   }
+  public getCreateUpdateSchemaActionUrl(): string {
+    return this.apiUrl + `/schema/actions/create-update`;
+  }
+
+  public getFindActionsBySchemaUrl(schemaId: string): string {
+    return this.apiUrl + `/schema/actions/${schemaId}`;
+  }
+
+  public getFindActionsBySchemaAndRoleUrl(schemaId: string, role: string): string {
+    return this.apiUrl + `/schema/actions/${schemaId}/${role}`;
+  }
+
+  public getDeleteSchemaActionUrl(schemaId: string, actionCode: string): string {
+    return this.apiUrl + `/schema/actions/deleteCustomAction/${schemaId}/${actionCode}`;
+  }
+
+  public getCrossMappingUrl(plantCode: string): string {
+    return this.apiUrl + `/schema/actions/getCrossMapping?plantCode=${plantCode}`;
+  }
+
 }

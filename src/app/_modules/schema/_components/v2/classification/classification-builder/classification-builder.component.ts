@@ -3,7 +3,7 @@ import { Component, ComponentFactoryResolver, Input, OnChanges, OnDestroy, OnIni
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { AttributeCoorectionReq, ClassificationNounMod, MetadataModeleResponse, SchemaMROCorrectionReq, SchemaTableViewFldMap } from '@models/schema/schemadetailstable';
+import { AttributeCoorectionReq, ClassificationNounMod, MetadataModeleResponse, SchemaMROCorrectionReq, SchemaTableAction, SchemaTableViewFldMap, TableActionViewType } from '@models/schema/schemadetailstable';
 import { SchemaListDetails, SchemaStaticThresholdRes, SchemaVariantsModel } from '@models/schema/schemalist';
 import { Userdetails } from '@models/userdetails';
 import { CellDataFor, ClassificationDatatableCellEditableComponent } from '@modules/shared/_components/classification-datatable-cell-editable/classification-datatable-cell-editable.component';
@@ -220,6 +220,13 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
    */
   tableSearchSubject: Subject<string> = new Subject();
 
+  TableActionViewType = TableActionViewType;
+
+  tableActionsList: SchemaTableAction[] = [
+    { actionText: 'Approve', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT },
+    { actionText: 'Reject', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT }
+  ] as SchemaTableAction[];
+
   constructor(
     private schemaDetailService: SchemaDetailsService,
     private schemaService: SchemaService,
@@ -255,6 +262,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
       this.getDataScope();
       this.getSchemaStatics();
       this.getSchemaDetails();
+      this.getSchemaTableActions();
       // this.getFieldsByUserView();
     }
 
@@ -772,7 +780,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     fields.forEach(f => array.push(f));
     const data = { schemaId: this.schemaId, variantId: this.variantId, fields: metadadata, selectedFields: array }
     this.sharedServices.setChooseColumnData(data);
-    this.router.navigate(['', { outlets: { sb: 'sb/schema/table-column-settings' }, queryParams: { status: this.activeTab } }]);
+    this.router.navigate(['', { outlets: { sb: 'sb/schema/table-column-settings' } }], { preserveQueryParams: true });
   }
 
   /**
@@ -958,5 +966,65 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
    */
   openExecutionTrendSideSheet() {
     this.router.navigate(['', { outlets: { sb: `sb/schema/execution-trend/${this.moduleId}/${this.schemaId}/${this.variantId}` } }])
+  }
+
+  /**
+   * get already saved schema actions
+   */
+  getSchemaTableActions() {
+    this.schemaDetailService.getTableActionsBySchemaId(this.schemaId).subscribe(actions => {
+      console.log(actions);
+      if(actions && actions.length) {
+        this.tableActionsList = actions;
+      }
+    });
+  }
+
+  get primaryActions() {
+    return this.tableActionsList.filter(action => action.isPrimaryAction);
+  }
+
+  get secondaryActions() {
+    return this.tableActionsList.filter(action => !action.isPrimaryAction);
+  }
+
+
+  get isEditer() {
+    return this.schemaInfo
+      && this.schemaInfo.collaboratorModels
+      && this.schemaInfo.collaboratorModels.isEditer;
+  }
+
+  get isReviewer() {
+    return this.schemaInfo
+      && this.schemaInfo.collaboratorModels
+      && this.schemaInfo.collaboratorModels.isReviewer;
+  }
+
+  get isApprover() {
+    return this.schemaInfo
+      && this.schemaInfo.collaboratorModels
+      && (this.schemaInfo.collaboratorModels.isReviewer || this.schemaInfo.collaboratorModels.isApprover);
+  }
+
+  getActionIcon(actionText) {
+    if (actionText === 'Approve') {
+      return 'check-mark';
+    } else if (actionText === 'Reject') {
+      return 'declined';
+    } else if (actionText === 'Delete') {
+      return 'recycle-bin';
+    }
+
+    return '';
+  }
+
+  doAction(action: SchemaTableAction, row, rowIndex) {
+    console.log('Action selected ', action);
+    if (!action.isCustomAction && action.actionText === 'Approve' && (this.isReviewer || this.isApprover)) {
+      this.approveRec(row, rowIndex);
+    } else if (!action.isCustomAction && action.actionText === 'Reject' && (this.isReviewer || this.isApprover)) {
+      this.rejectRec(row, rowIndex);
+    }
   }
 }
