@@ -11,60 +11,301 @@
                 <button mat-flat-button color="primary" (click)="submitColumn()">Save</button>
             </div>
             <div class="row-spacer"></div>
-            <div class="f-row">
-                <pros-search-input label="Search" placeholder="Search fields" (value)="searchFld($event)"></pros-search-input>
-            </div>
-            <div class="row-spacer"></div>
         </div>
     </div>
 
     <div class="f-col sidesheetcontent-listing">
         <div class="f-col mdo-justify">
-            <div class="check-list">
-                <!-- <mat-checkbox class="checkedall" color="primary" (change)="selectAll()" [(ngModel)]="allChecked"
-                    [indeterminate]="allIndeterminate"> <span class="checkboxlabel">All</span></mat-checkbox> -->
-                <div class="f-row colunm-box">
-                    <div class="col"></div>
-                    <div class="col col-x4"><strong> Column </strong></div>
-                    <span class="f-spacer"></span>
-                    <div class="col"><strong> Visible </strong></div>
-                    <span class="f-col-spacer-half"></span>
-                    <div class="col"><strong> Editable </strong></div>
-                </div>
-                <div cdkDropList [cdkDropListData]="header" (cdkDropListDropped)="drop($event)" #scrollableContainer>
-                    <div *ngFor="let fld of header" id="{{ fld.fieldId }}" cdkDrag class="colunm-list">
-                        <div class="f-row colunm-box">
-                            <div class="col">
-                                <button mat-button cdkDragHandle>
-                                    <mat-icon fontSet="mdo-icons">two-lines</mat-icon>
-                                </button>
-                            </div>
+            <div class="f-col">
+                <mat-tab-group disableRipple="true">
+                    <mat-tab>
+                        <ng-template mat-tab-label>
+                            Columns
+                        </ng-template>
+                        <div class="f-col">
+                            <div class="check-list">
+                                <!-- <mat-checkbox class="checkedall" color="primary" (change)="selectAll()" [(ngModel)]="allChecked"
+                                    [indeterminate]="allIndeterminate"> <span class="checkboxlabel">All</span></mat-checkbox> -->
+                                <div class="f-row colunm-box">
+                                    <pros-search-input label="Search" placeholder="Search fields"
+                                        (value)="searchFld($event)">
+                                    </pros-search-input>
+                                </div>
+                                <div class="f-row colunm-box">
+                                    <div class="col"></div>
+                                    <div class="col col-x4"><strong> Column </strong></div>
+                                    <span class="f-spacer"></span>
+                                    <div class="col"><strong> Visible </strong></div>
+                                    <span class="f-col-spacer-half"></span>
+                                    <div class="col"><strong> Editable </strong></div>
+                                </div>
+                                <div cdkDropList [cdkDropListData]="header" (cdkDropListDropped)="drop($event)"
+                                    #scrollableContainer>
+                                    <div *ngFor="let fld of header" id="{{ fld.fieldId }}" cdkDrag class="colunm-list">
+                                        <div class="f-row colunm-box">
+                                            <div class="col">
+                                                <button mat-button cdkDragHandle>
+                                                    <mat-icon fontSet="mdo-icons">two-lines</mat-icon>
+                                                </button>
+                                            </div>
 
-                            <div class="col col-x4">
-                                <ng-template [ngIf]="suggestedFlds.indexOf(fld.fieldId) !==-1" [ngIfElse]="notSuggested">
-                                    <span style="background-color: #FFFF00">{{ fld.fieldDescri ? fld.fieldDescri :  (fld.fieldDesc ? fld.fieldDesc : 'Untitled') }} </span>
-                                </ng-template>
+                                            <div class="col col-x4">
+                                                <ng-template [ngIf]="suggestedFlds.indexOf(fld.fieldId) !==-1"
+                                                    [ngIfElse]="notSuggested">
+                                                    <span style="background-color: #FFFF00">{{ fld.fieldDescri ?
+                                                        fld.fieldDescri : (fld.fieldDesc ? fld.fieldDesc : 'Untitled')
+                                                        }} </span>
+                                                </ng-template>
 
-                                <ng-template #notSuggested>
-                                    <span>{{ fld.fieldDescri ? fld.fieldDescri : (fld.fieldDesc ? fld.fieldDesc : 'Untitled') }} </span>
-                                </ng-template>
-                            </div>
+                                                <ng-template #notSuggested>
+                                                    <span>{{ fld.fieldDescri ? fld.fieldDescri : (fld.fieldDesc ?
+                                                        fld.fieldDesc : 'Untitled') }} </span>
+                                                </ng-template>
+                                            </div>
 
-                            <div class="f-spacer"></div>
+                                            <div class="f-spacer"></div>
 
-                            <div class="col">
-                                <mat-checkbox color="primary" (change)="selectionChange(fld)" [checked]="isChecked(fld)">
-                                </mat-checkbox>
-                            </div>
-                            <span class="f-col-spacer-half"></span>
+                                            <div class="col">
+                                                <mat-checkbox color="primary" (change)="selectionChange(fld)"
+                                                    [checked]="isChecked(fld)">
+                                                </mat-checkbox>
+                                            </div>
+                                            <span class="f-col-spacer-half"></span>
 
-                            <div class="col">
-                                <mat-checkbox color="primary" (change)="editableChange(fld)" [disabled]="!isChecked(fld)" [checked]="isEditEnabled(fld)">
-                                </mat-checkbox>
+                                            <div class="col">
+                                                <mat-checkbox color="primary" (change)="editableChange(fld)"
+                                                    [disabled]="!isChecked(fld)" [checked]="isEditEnabled(fld)">
+                                                </mat-checkbox>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
+                    </mat-tab>
+                    <mat-tab>
+                        <ng-template mat-tab-label>
+                            Actions
+                        </ng-template>
+                        <div class="f-col temp-field">
+                            <mat-label><strong>Role</strong></mat-label>
+                            <div class="f-row">
+                                <mat-button-toggle-group appearance="legacy" name="fontStyle" aria-label="Font Style">
+                                    <mat-button-toggle value="Editor">Editor</mat-button-toggle>
+                                    <mat-button-toggle value="Approver">Approver</mat-button-toggle>
+                                    <mat-button-toggle value="Reviewer">Reviewer</mat-button-toggle>
+                                </mat-button-toggle-group>
+                            </div>
+                        </div>
+                        <div class="f-col temp-field">
+                            <mat-label><strong>Preview</strong></mat-label>
+                            <div class="f-row">
+                                <button mat-fab color="accent" class="mat-elevation-z0 rightradius">
+                                    <mat-icon fontSet="mdo-icons">more_horiz</mat-icon>
+                                </button>
+                                <button mat-fab color="accent" class="mat-elevation-z0 middleradius">
+                                    <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
+                                </button>
+                                <button mat-flat-button color="accent" class="mat-elevation-z0 middleradius">
+                                    <mat-icon fontSet="mdo-icons">declined</mat-icon> Decline
+                                </button>
+                                <button mat-flat-button color="accent"
+                                    class="mat-elevation-z0 leftradius">Delete</button>
+                            </div>
+                        </div>
+                        <div class="row-spacer"></div>
+                        <!-- Action code start here-->
+                        <div class="colunm-listing">
+                            <div class="f-row colunm-box rule-border-row">
+                                <div class="col"></div>
+                                <div class="col col-x8"><strong>Action</strong></div>
+                                <div class="col col-x4"><strong class="f-row">Primary
+                                        <mat-icon matTooltip="Primary" fontSet="mdo-icons" class="mat-head-icon">
+                                            question-mark</mat-icon>
+                                    </strong></div>
+                                <div class="col col-x4"><strong></strong></div>
+                                <div class="col col-x8"><strong></strong></div>
+                                <div class="col col-x4"><strong></strong></div>
+                            </div>
+                            <div class="f-row colunm-box rule-border-row">
+                                <div class="col"></div>
+                                <div class="col col-x16">
+                                    <a class="mat-line info-link">New Custom action</a>
+                                </div>
+                                <div class="col col-x8"></div>
+                                <div class="col col-x4 text-end">
+                                </div>
+                                <div class="col text-end">
+                                </div>
+                            </div>
+                            <div class="f-row colunm-box rule-border-row">
+                                <div class="col">
+                                    <button mat-button cdkDragHandle>
+                                        <mat-icon fontSet="mdo-icons">two-lines</mat-icon>
+                                    </button>
+                                </div>
+                                <div class="col col-x8">
+                                    <div mat-line>Approve</div>
+                                </div>
+
+                                <div class="col col-x4">
+                                    <mat-checkbox color="primary"></mat-checkbox>
+                                </div>
+                                <div class="col col-x8">
+                                    <button mat-stroked-button>Icon only <mat-icon fontSet="mdo-icons">menu-arrow
+                                        </mat-icon></button>
+                                </div>
+                                <div class="col col-x4 text-end">
+                                </div>
+                                <div class="col text-end">
+                                </div>
+                            </div>
+                            <div class="f-row colunm-box rule-border-row">
+                                <div class="col">
+                                    <button mat-button cdkDragHandle>
+                                        <mat-icon fontSet="mdo-icons">two-lines</mat-icon>
+                                    </button>
+                                </div>
+                                <div class="col col-x8">
+                                    <div mat-line>Reject</div>
+                                </div>
+
+                                <div class="col col-x4">
+                                    <mat-checkbox color="primary"></mat-checkbox>
+                                </div>
+                                <div class="col col-x8">
+                                    <button mat-stroked-button>Icon and text <mat-icon fontSet="mdo-icons">menu-arrow
+                                        </mat-icon>
+                                    </button>
+                                </div>
+                                <div class="col col-x4 text-end">
+                                </div>
+                                <div class="col text-end">
+                                </div>
+                            </div>
+                            <div class="f-row colunm-box rule-border-row">
+                                <div class="col">
+                                    <button mat-button cdkDragHandle>
+                                        <mat-icon fontSet="mdo-icons">two-lines</mat-icon>
+                                    </button>
+                                </div>
+                                <div class="col col-x8">
+                                    <div mat-line>Assign to</div>
+                                </div>
+
+                                <div class="col col-x4">
+                                    <mat-checkbox color="primary"></mat-checkbox>
+                                </div>
+                                <div class="col col-x8">
+                                </div>
+                                <div class="col col-x4 text-end">
+                                </div>
+                                <div class="col text-end">
+                                </div>
+                            </div>
+                            <div class="f-row colunm-box rule-border-row">
+                                <div class="col">
+                                    <button mat-button cdkDragHandle>
+                                        <mat-icon fontSet="mdo-icons">two-lines</mat-icon>
+                                    </button>
+                                </div>
+                                <div class="col col-x8">
+                                    <div mat-line>Delete</div>
+                                </div>
+
+                                <div class="col col-x4">
+                                    <mat-checkbox color="primary"></mat-checkbox>
+                                </div>
+                                <div class="col col-x8">
+                                    <button mat-stroked-button>Text only <mat-icon fontSet="mdo-icons">menu-arrow
+                                        </mat-icon></button>
+                                </div>
+                                <div class="col col-x4 text-end">
+                                </div>
+                                <div class="col text-end">
+                                </div>
+                            </div>
+                            <div class="f-row colunm-box rule-border-row">
+                                <div class="col">
+                                    <button mat-button cdkDragHandle>
+                                        <mat-icon fontSet="mdo-icons">two-lines</mat-icon>
+                                    </button>
+                                </div>
+                                <div class="col col-x8">
+                                    <pros-form-input [type]="'text'" [placeholder]="'placeholder'"
+                                        [value]="'My Custom action 1'">
+                                    </pros-form-input>
+                                </div>
+
+                                <div class="col col-x4">
+                                    <mat-checkbox color="primary"></mat-checkbox>
+                                </div>
+                                <div class="col col-x8">
+                                    <button mat-stroked-button [matMenuTriggerFor]="dropdown">Text only</button>
+                                    <mat-menu #dropdown="matMenu" direction="right">
+                                        <mat-nav-list>
+                                            <mat-list-item>Rule A</mat-list-item>
+                                            <mat-list-item>Rule B</mat-list-item>
+                                            <mat-list-item>Rule C</mat-list-item>
+                                            <mat-list-item>Rule D</mat-list-item>
+                                        </mat-nav-list>
+                                    </mat-menu>
+                                </div>
+                                <div class="col col-x4 text-end">
+                                    <button mat-button>
+                                        <mat-icon fontSet="mdo-icons" matBadge="?" matBadgeOverlap="false"
+                                            matBadgeColor="accent">mapping</mat-icon>
+                                    </button>
+                                </div>
+                                <div class="col text-end">
+                                    <button mat-button>
+                                        <mat-icon fontSet="mdo-icons"> recycle-bin</mat-icon>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="f-row colunm-box rule-border-row">
+                                <div class="col">
+                                    <button mat-button cdkDragHandle>
+                                        <mat-icon fontSet="mdo-icons">two-lines</mat-icon>
+                                    </button>
+                                </div>
+                                <div class="col col-x8">
+                                    <pros-form-input [type]="'text'" [placeholder]="'placeholder'"
+                                        [value]="'My Custom action 2'">
+                                    </pros-form-input>
+                                </div>
+
+                                <div class="col col-x4">
+                                    <mat-checkbox color="primary"></mat-checkbox>
+                                </div>
+                                <div class="col col-x8">
+                                    <button mat-stroked-button [matMenuTriggerFor]="dropdown">Text only</button>
+                                    <mat-menu #dropdown="matMenu" direction="right">
+                                        <mat-nav-list>
+                                            <mat-list-item>Rule A</mat-list-item>
+                                            <mat-list-item>Rule B</mat-list-item>
+                                            <mat-list-item>Rule C</mat-list-item>
+                                            <mat-list-item>Rule D</mat-list-item>
+                                        </mat-nav-list>
+                                    </mat-menu>
+                                </div>
+                                <div class="col col-x4 text-end">
+                                    <button mat-button>
+                                        <mat-icon fontSet="mdo-icons" matBadge="?" matBadgeOverlap="false"
+                                            matBadgeColor="accent">mapping</mat-icon>
+                                    </button>
+                                </div>
+                                <div class="col text-end">
+                                    <button mat-button>
+                                        <mat-icon fontSet="mdo-icons"> recycle-bin</mat-icon>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                        <!-- Action code end here-->
+                    </mat-tab>
+                </mat-tab-group>
             </div>
         </div>
     </div>
