@@ -147,8 +147,8 @@ describe('ReportCollaboratorComponent', () => {
 
   it('getCollaboratorPermission(), should return for get all user details', async(() =>{
     spyOn(reportServieSpy,'getCollaboratorPermission').and.returnValue(of({} as PermissionOn));
-    component.getCollaboratorPermission('');
-    expect(reportServieSpy.getCollaboratorPermission).toHaveBeenCalledWith('');
+    component.getCollaboratorPermission('',0);
+    expect(reportServieSpy.getCollaboratorPermission).toHaveBeenCalledWith('',0);
   }));
 
   it('getExitingCollaborators() , should return all collaborator detail by using schemaId ', async(()=>{

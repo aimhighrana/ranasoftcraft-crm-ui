@@ -110,6 +110,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
   ngOnInit(): void {
     this.sharedService.getReportListData().subscribe(res => {
       if (res) {
+        this.isPageReload = false;
         this.getreportList();
       }
     });

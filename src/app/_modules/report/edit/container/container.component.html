@@ -25,66 +25,66 @@
             <div class="widget-col">
                 <div class="col-heading">Widgets</div>
                 <div class="container">
-                    <div widgetType="FILTER" class="widget-drag">
+                    <div widgetType="FILTER" class="widget-drag" (click) = "addWidget($event, 'FILTER')">
                         <mat-icon fontSet="mdo-icons" class="widget-icon">filter</mat-icon> Filter
                         <div class="f-spacer"></div>
-                        <button mat-button (click) = "addWidget($event, 'FILTER')">
+                        <button mat-button>
                             <mat-icon fontSet="mdo-icons" class="plus-icon">plus</mat-icon>
                         </button>
                     </div>
                     <mat-divider></mat-divider>
-                    <div widgetType="COUNT" class="widget-drag">
+                    <div widgetType="COUNT" class="widget-drag" (click) = "addWidget($event, 'COUNT')">
                         <mat-icon fontSet="mdo-icons" class="widget-icon">form-number</mat-icon> Metric
                         <div class="f-spacer"></div>
-                        <button mat-button (click) = "addWidget($event, 'COUNT')">
+                        <button mat-button>
                             <mat-icon fontSet="mdo-icons" class="plus-icon">plus</mat-icon>
                         </button>
                     </div>
                     <mat-divider></mat-divider>
-                    <div widgetType="TABLE_LIST" class="widget-drag">
+                    <div widgetType="TABLE_LIST" class="widget-drag" (click) = "addWidget($event, 'TABLE_LIST')">
                         <mat-icon fontSet="mdo-icons" class="widget-icon">form-table</mat-icon> Table list
                         <div class="f-spacer"></div>
-                        <button mat-button (click) = "addWidget($event, 'TABLE_LIST')">
+                        <button mat-button>
                             <mat-icon fontSet="mdo-icons" class="plus-icon">plus</mat-icon>
                         </button>
                     </div>
                     <mat-divider></mat-divider>
-                    <div widgetType="BAR_CHART" class="widget-drag">
+                    <div widgetType="BAR_CHART" class="widget-drag" (click) = "addWidget($event, 'BAR_CHART')">
                         <mat-icon fontSet="mdo-icons" class="widget-icon">chart-pie</mat-icon> Bar/pie chart
                         <div class="f-spacer"></div>
-                        <button mat-button (click) = "addWidget($event, 'BAR_CHART')">
+                        <button mat-button>
                             <mat-icon fontSet="mdo-icons" class="plus-icon">plus</mat-icon>
                         </button>
                     </div>
                     <mat-divider></mat-divider>
-                    <div widgetType="STACKED_BAR_CHART" class="widget-drag">
+                    <div widgetType="STACKED_BAR_CHART" class="widget-drag" (click) = "addWidget($event, 'STACKED_BAR_CHART')">
                         <mat-icon fontSet="mdo-icons" class="widget-icon">chart-complex</mat-icon> Stacked bar chart
                         <div class="f-spacer"></div>
-                        <button mat-button (click) = "addWidget($event, 'STACKED_BAR_CHART')">
+                        <button mat-button>
                             <mat-icon fontSet="mdo-icons" class="plus-icon">plus</mat-icon>
                         </button>
                     </div>
                     <mat-divider></mat-divider>
-                    <div widgetType="IMAGE" class="widget-drag">
+                    <div widgetType="IMAGE" class="widget-drag" (click) = "addWidget($event, 'IMAGE')">
                         <mat-icon fontSet="mdo-icons" class="widget-icon">picture</mat-icon> Image
                         <div class="f-spacer"></div>
-                        <button mat-button (click) = "addWidget($event, 'IMAGE')">
+                        <button mat-button>
                             <mat-icon fontSet="mdo-icons" class="plus-icon">plus</mat-icon>
                         </button>
                     </div>
                     <mat-divider></mat-divider>
-                    <div widgetType="HTML" class="widget-drag">
+                    <div widgetType="HTML" class="widget-drag" (click) = "addWidget($event, 'HTML')">
                         <mat-icon fontSet="mdo-icons" class="widget-icon">more-alt2</mat-icon> HTML editor
                         <div class="f-spacer"></div>
-                        <button mat-button (click) = "addWidget($event, 'HTML')">
+                        <button mat-button>
                             <mat-icon fontSet="mdo-icons" class="plus-icon">plus</mat-icon>
                         </button>
                     </div>
                     <mat-divider></mat-divider>
-                    <div widgetType="TIMESERIES" class="widget-drag">
+                    <div widgetType="TIMESERIES" class="widget-drag" (click) = "addWidget($event, 'TIMESERIES')">
                         <mat-icon fontSet="mdo-icons" class="widget-icon">form-time</mat-icon> Time series
                         <div class="f-spacer"></div>
-                        <button mat-button (click) = "addWidget($event, 'TIMESERIES')">
+                        <button mat-button>
                             <mat-icon fontSet="mdo-icons" class="plus-icon">plus</mat-icon>
                         </button>
                     </div>

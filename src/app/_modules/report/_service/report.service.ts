@@ -53,8 +53,8 @@ export class ReportService {
     }
   }
 
-  public getCollaboratorPermission(queryString: string) : Observable<PermissionOn> {
-    return this.http.get<PermissionOn>(this.endpointService.getPermissionUrl(),{params:{queryString}});
+  public getCollaboratorPermission(queryString: string, fetchCount: any) : Observable<PermissionOn> {
+    return this.http.get<PermissionOn>(this.endpointService.getAllUserDetailsUrl(),{params:{ queryString, fetchCount }});
   }
 
   public getCollaboratorsPermisison(reportId: string): Observable<ReportDashboardPermission[]> {
@@ -77,7 +77,7 @@ export class ReportService {
   public getAllLayoutsForSummary(objectType: string, wfId: string, roleId: string, plantCode: string): Observable<LayoutConfigWorkflowModel[]> {
     objectType = objectType ? objectType : '';
     wfId = wfId ? wfId : '';
-    return this.http.get<LayoutConfigWorkflowModel[]>(this.endpointAnalyticService.getlayoutsUrl(),{params:{objectType,wfId, roleId, plantCode}});
+    return this.http.get<LayoutConfigWorkflowModel[]>(this.endpointService.getlayoutsUrl(),{params:{objectType,wfId, roleId, plantCode}});
   }
 
   public getCustomData(): Observable<ObjectTypeResponse[]> {

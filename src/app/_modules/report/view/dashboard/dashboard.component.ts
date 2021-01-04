@@ -21,6 +21,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   collaboratorEditPermission: false ;
   collaboratorDeletePermission: false ;
   collaboratorAdminPermission: false ;
+  reportExist = true;
 
   /**
    * If is from msteam then don't need edit and delete ..
@@ -49,10 +50,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.activatedRouter.params.subscribe(params=>{
       this.reportId = params.id;
       if(params.id === 'new') {
-        this.reportName = ' ';
+        this.reportExist = false;
       } else if(this.reportId) {
         this.emitClearBtnEvent = false ;
         this.showClearFilterBtn = false ;
+        this.reportExist = true;
         this.getReportInfo(this.reportId);
       }
     });

@@ -187,10 +187,6 @@ export class EndpointsClassicService {
     return `${this.apiUrl}/tasklist/taskListData`;
   }
 
-  public getPermissionUrl(): string {
-    return `${this.apiUrl}/admin/permission/collaborators`;
-  }
-
   public returnCollaboratorsPermisisonUrl(reportId: string): string {
     return `${this.apiUrl}/admin/permission/collaborators/permission/${reportId}`;
   }
@@ -705,6 +701,10 @@ export class EndpointsClassicService {
    */
   public rejectDuplicacyCorrectionUrl(schemaId, runId, userName): string {
     return `${this.apiUrl}/schema/rejectDuplicateRecords/${schemaId}/${runId}?userName=${userName}`;
+  }
+
+  public getlayoutsUrl() {
+    return `${this.apiUrl}/report/layouts`;
   }
 
   /**

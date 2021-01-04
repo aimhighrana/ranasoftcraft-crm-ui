@@ -173,12 +173,11 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     this.getTimeSeriesMetadata();
     this.widgetInf.subscribe(metadata => {
       if (metadata) {
+        this.getwidgetData(this.widgetId);
         if(this.isLoading) {
           this.isLoading = false;
           this.setChartProperties();
           this.afterColorDefined.next(metadata.timeSeries.widgetColorPalette);
-        } else {
-          this.getwidgetData(this.widgetId);
         }
       }
     });

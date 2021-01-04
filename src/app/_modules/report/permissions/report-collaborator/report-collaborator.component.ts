@@ -57,7 +57,7 @@ export class ReportCollaboratorComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.getCollaboratorPermission('');
+    this.getCollaboratorPermission('', 0);
     this.activatedRouter.params.subscribe(param => {
       this.reportId = param.reportId;
       console.log(this.reportId);
@@ -76,9 +76,9 @@ export class ReportCollaboratorComponent implements OnInit {
      */
     this.addCollaboratorFrmGrp.get('addCollaboratorCtrl').valueChanges.subscribe(val => {
       if (val && typeof val === 'string') {
-        this.getCollaboratorPermission(val);
+        this.getCollaboratorPermission(val, 0);
       } else if (typeof val === 'string' && val.trim() === '') {
-        this.getCollaboratorPermission('');
+        this.getCollaboratorPermission('', 0);
       }
     })
   }
@@ -87,8 +87,8 @@ export class ReportCollaboratorComponent implements OnInit {
    * Get all collaborators permission
    * @param queryString search able string
    */
-  getCollaboratorPermission(queryString: string) {
-    this.reportServie.getCollaboratorPermission(queryString).subscribe(response => {
+  getCollaboratorPermission(queryString: string, fetchCount: number) {
+    this.reportServie.getCollaboratorPermission(queryString, fetchCount).subscribe(response => {
       this.permissionOn = response;
       this.collaborators = this.transformResponse(response);
     }, error => console.error(`Error: ${error}`));
