@@ -18,11 +18,12 @@ import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { UserService } from '@services/user/userservice.service';
 import { BehaviorSubject, Subject, Subscription, throwError } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import * as XLSX from 'xlsx';
 
 const definedColumnsMetadata = {
   OBJECTNUMBER: {
     fieldId: 'OBJECTNUMBER',
-    fieldDesc: 'Catalog id',
+    fieldDesc: 'Material number',
     fieldValue: ''
   }, SHORT_DESC: {
     fieldId: 'SHORT_DESC',
@@ -567,7 +568,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
 
             case '__aditionalProp':
               const aditionalProp = columns[col];
-              rowData.__aditionalProp = {fieldId: col, fieldDesc: 'Is reviewed',fieldValue: aditionalProp.isReviewed ? aditionalProp.isReviewed : false};
+              rowData.__aditionalProp = {isReviewed : aditionalProp.isReviewed ? aditionalProp.isReviewed : false, isSubmitted: aditionalProp.isSubmitted ? aditionalProp.isSubmitted : false, hasLatestDescGenerated : aditionalProp.hasLatestDescGenerated ? aditionalProp.hasLatestDescGenerated : false};
               break;
 
 
@@ -834,6 +835,43 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     });
   }
 
+  /**
+   * Generate mro description ...
+   * @param row current row selected ...
+   * @param rIndex row index ...
+   * @param fromWhere from whare ...
+   */
+  generateDesc(row: any, rIndex: number, fromWhere?: string) {
+    console.log(row);
+    const objNrs: string[] = [];
+    if(fromWhere === 'all') {
+      const selectedDocs = this.selection.selected;
+      const objs = selectedDocs.map(map => map.OBJECTNUMBER);
+      objNrs.push(...objs.map(m=> m.fieldValue));
+    } else {
+      objNrs.push(row.OBJECTNUMBER ? row.OBJECTNUMBER.fieldValue : '');
+    }
+    if(!objNrs) {
+      throwError(`Objectnumber is required`);
+      return;
+    }
+
+    this.schemaDetailService.generateMroClassificationDescription(this.schemaId, this.schemaInfo.runId, objNrs).subscribe(res=>{
+      console.log(res);
+      if(res)  {
+        setTimeout(()=>{
+          this.applyFilter(this.activeNounCode, this.activeModeCode, this.dataFrm);
+        },1000);
+      }
+    }, err=>{
+      console.error(`Error : ${err.message}`);
+      this.snackBar.open(`Something went wrong `, 'Close', {duration:5000});
+    });
+
+
+    // generateMroClassificationDescription
+  }
+
 
   onTableScroll(e) {
     console.log('colled');
@@ -855,6 +893,38 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     } else {
       this.scrollLimitReached = false;
     }
+  }
+
+  getDownloadAbledataforMroExecution() {
+    this.schemaDetailService.getDownloadAbledataforMroExecution(this.schemaId, this.schemaInfo.runId, this.activeNounCode, this.activeModeCode,
+      this.dataFrm, this.viewOf.getValue(), this.tableSearchString).subscribe(res=>{
+        console.log(res);
+        const actualData = this.transformData(res, this.dataFrm);
+        console.log(actualData);
+        const exportAbleData = [];
+
+        const actualColumnsOrde = this.displayedColumns.getValue();
+        const applicableFlds = []; actualColumnsOrde.forEach(f=> applicableFlds.push(f));
+        applicableFlds.splice(0, actualColumnsOrde.indexOf('OBJECTNUMBER'));
+        actualData.forEach(dd=>{
+          const rowData = {};
+          applicableFlds.forEach(or=>{
+            rowData[definedColumnsMetadata[or] ?  definedColumnsMetadata[or].fieldDesc : or] =  dd[or] && dd[or].fieldValue ? `${dd[or].fieldValue}` : '';
+          });
+          exportAbleData.push(rowData);
+        });
+        try {
+          const wb = XLSX.utils.book_new()
+          const ws = XLSX.utils.json_to_sheet(exportAbleData);
+          XLSX.utils.book_append_sheet(wb, ws, 'Data')
+          XLSX.writeFile(wb, 'mro - execution data.csv')
+        } catch (e) { }
+
+
+      }, err=>{
+        console.error(`Error : ${err}`);
+        this.snackBar.open(`Something went wrong `, 'Close', {duration:5000});
+      });
   }
 
 

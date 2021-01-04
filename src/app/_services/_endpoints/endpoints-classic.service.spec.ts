@@ -132,4 +132,14 @@ describe('EndpointsClassicService', () => {
     expect(serObj.rejectDuplicacyCorrectionUrl('schema','run','user')).toContain('rejectDuplicateRecords/schema/run?userName=user');
   }));
 
+  it('downloadMroExceutionUri(),should return downloadMroExceutionUri url', async(() => {
+    const serObj =new EndpointsClassicService();
+    expect(serObj.downloadMroExceutionUri('schema')).toContain('schema/download/mro');
+  }));
+
+  it('generateMroClassificationDescriptionUri(),should return generateMroClassificationDescriptionUri url', async(() => {
+    const serObj =new EndpointsClassicService();
+    expect(serObj.generateMroClassificationDescriptionUri()).toContain('schema/mro/generate-description');
+  }));
+
 });

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { SendReqForSchemaDataTableColumnInfo, SendDataForSchemaTableShowMore, SchemaDataTableColumnInfoResponse, RequestForSchemaDetailsWithBr, SchemaTableViewRequest, OverViewChartDataSet, CategoryInfo, CategoryChartDataSet, MetadataModeleResponse, SchemaBrInfo, SchemaCorrectionReq, SchemaExecutionLog, SchemaTableViewFldMap, ClassificationNounMod, SchemaMROCorrectionReq } from 'src/app/_models/schema/schemadetailstable';
 import * as moment from 'moment';
 import { map } from 'rxjs/operators';
@@ -238,5 +238,40 @@ export class SchemaDetailsService {
   public getExecutionOverviewChartData(schemaId: string, variantId: string): Observable<SchemaExecutionLog[]> {
     return this.http.get<any>(this.endpointService.getExecutionOverviewChartDataUrl(schemaId, variantId));
   }
+  /**
+   * Get downloadable data for mro execution ..
+   * @param schemaId append on path request ..
+   * @param runid append on request
+   * @param nounCode append on request
+   * @param modifierCode append on request params ..
+   * @param ruleType append on request params ..
+   * @param requestStatus append on request ..
+   * @param searchString append on request ..
+   */
+  public getDownloadAbledataforMroExecution(schemaId: string, runid: string, nounCode: string, modifierCode: string, ruleType: string,requestStatus: string, searchString): Observable<any> {
+    if(nounCode === undefined) {
+      throwError(`Nouncode must be required !`);
+      return;
+    }
+
+    if(modifierCode === undefined) {
+      throwError(`Modifiercode must be required !`);
+      return;
+    }
+
+    searchString = searchString ? searchString : '';
+    return this.http.get<any>(this.endpointService.downloadMroExceutionUri(schemaId), {params:{runId : runid, dataFor: requestStatus , ruleType, nounCode , modifierCode, searchString}})
+  }
+
+  /**
+   * Put request for mro generate description ..
+   * @param schemaId append on request .. mand.. params
+   * @param runId append on request runid
+   * @param objNrs send as request body ..
+   */
+  public generateMroClassificationDescription(schemaId: string, runId: string, objNrs: string[]): Observable<any> {
+    return this.http.put<any>(this.endpointService.generateMroClassificationDescriptionUri(), objNrs, {params:{schemaId, runId}});
+  }
+
 
 }

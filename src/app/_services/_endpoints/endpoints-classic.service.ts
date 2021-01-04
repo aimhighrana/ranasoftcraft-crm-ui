@@ -531,7 +531,7 @@ export class EndpointsClassicService {
   }
 
   public getClassificationDataTableUrl(schemaId: string, runId: string, variantId?: string) {
-    return `${this.apiUrl}/schema/getClassificationFilterListData/${schemaId}/${runId}`;
+    return `${this.apiUrl}/schema/getClassificationListData/${schemaId}/${runId}`;
   }
 
   public getAllDataScopesUri(schemaId: string, type: string ) {
@@ -714,8 +714,24 @@ export class EndpointsClassicService {
   public resetCorrectionRecords(schemaId: string): string {
     return `${this.apiUrl}/schema/reset-corrected-records/${schemaId}`;
   }
+
   public getExecutionOverviewChartDataUrl(schemaId: string, variantId: string): string {
     return this.apiUrl + `/schema/overview-chart-data/${schemaId}/${variantId}`;
+  }
+
+  /**
+   * Uri for mro execution output download ..
+   * @param schemaid append on request path ..
+   */
+  public downloadMroExceutionUri(schemaid: string): string {
+    return `${this.apiUrl}/schema/download/mro/${schemaid}`;
+  }
+
+  /**
+   * Uri for generate mro classification description ..
+   */
+  public generateMroClassificationDescriptionUri(): string {
+    return `${this.apiUrl}/schema/mro/generate-description`;
   }
 
 }

@@ -172,4 +172,19 @@ it('ngOnChanges(), ngonchange component hooks ', async(()=>{
     expect(router.navigate).toHaveBeenCalledWith(['', { outlets: { sb: `sb/schema/execution-trend/${component.moduleId}/${component.schemaId}/${component.variantId}` } }]);
   }));
 
+  it(`generateDesc(), generate description mro classification data `, async(()=>{
+    // mock data
+    const row = {OBJECTNUMBER:{fieldValue:'MAT001'}};
+    component.schemaId = '234238';
+    component.schemaInfo = {runId:'32423432'} as SchemaListDetails;
+
+    spyOn(schemaDetailService,'generateMroClassificationDescription').withArgs(component.schemaId, component.schemaInfo.runId, ['MAT001']).and.returnValue(of(null));
+
+    component.generateDesc(row, 0);
+
+    expect(schemaDetailService.generateMroClassificationDescription).toHaveBeenCalledWith(component.schemaId, component.schemaInfo.runId, ['MAT001']);
+    expect(component.generateDesc).toBeTruthy();
+
+  }));
+
 });
