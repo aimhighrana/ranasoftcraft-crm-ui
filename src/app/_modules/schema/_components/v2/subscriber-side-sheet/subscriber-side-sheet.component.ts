@@ -57,6 +57,8 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
    */
   outlet: string;
 
+  showInviteTemplate = false;
+
   /**
    * constructor of the class
    * @param dialogRef mat dialog ref object
@@ -120,7 +122,7 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
 
 
   /**
-   * function to save the subscriber's details
+   * function to save the subscriber's details.
    */
   save() {
     if (this.addSubscriberArr.length > 0 && this.outlet === 'sb') {
@@ -238,7 +240,6 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
     this.schemaDetailsService.deleteCollaborator(sNoList).subscribe((response) => {
       console.log('Subscriber Removed..');
       this.sharedService.setAfterSubscriberSave(response);
-      // this.router.navigate([{ outlets: { sb: null } }]);
     }, (error) => {
       console.log('Something went wrong while delete subscriber..');
     })
@@ -248,7 +249,12 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
    * Open the invitaion sidesheet
    */
   openSubscriberInviteDialog() {
-    this.router.navigate([{outlets: {outer: `outer/schema/invite-subscriber/${this.moduleId}/${this.schemaId}`}}])
+    if (this.outlet === 'outer') {
+      this.showInviteTemplate = true;
+    }
+    else {
+      this.router.navigate([{ outlets: { outer: `outer/schema/invite-subscriber/${this.moduleId}/${this.schemaId}/outer` } }])
+    }
   }
 
   /**

@@ -25,6 +25,11 @@ export class SubscriberInviteSidesheetComponent implements OnInit {
    */
   schemaId: string;
 
+  /**
+   * To hold outlet in which component exists
+   */
+  outlet: string;
+
 
   /**
    * constructor of the class
@@ -47,6 +52,7 @@ export class SubscriberInviteSidesheetComponent implements OnInit {
   ngOnInit(): void {
     this.activatedRoute.params.subscribe((params) => {
       this.schemaId = params.schemaId;
+      this.outlet = params.outlet;
     })
 
     this.initInviteForm();
@@ -126,12 +132,18 @@ export class SubscriberInviteSidesheetComponent implements OnInit {
       }
     });
 
-    this.schemaDetailsService.createUpdateUserDetails(body)
+    if(this.outlet === 'outer') {
+      this.schemaDetailsService.createUpdateUserDetails(body)
       .subscribe((res) => {
         this.sharedService.setAfterSubscriberSave(res);
         this.closeDialog();
         this.invitationForm.reset();
       })
+    }
+    else {
+      this.sharedService.setAfterSubscriberSave(body);
+      this.closeDialog();
+    }
   }
 
   /**

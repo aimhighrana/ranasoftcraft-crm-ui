@@ -1,53 +1,60 @@
-<div class="root">
-    <div class="f-row breadcrum-toolbar">
-        <button mat-button (click)="close()">
-            <mat-icon fontSet="mdo-icons">close</mat-icon>
-        </button>
-        <div class="col-spacer"></div>
-        <div class="f-col mdo-constrained-right">
-            <div class="f-row breadcrum-head">
-                <div class="display-heading-large">Add subscribers</div>
-                <div class="f-spacer"></div>
-                <button mat-flat-button (click)="openSubscriberInviteDialog()"><mat-icon fontSet="mdo-icons"> add-group</mat-icon> Invite people to your team</button>
-                <span class="f-col-spacer-half"></span>
-                <button mat-flat-button color="primary" (click)="save()">Save</button>
-            </div>
-            <div class="row-spacer"></div>
-            <div class="f-row">
-                <pros-search-input (value)="getCollaborators($event, 0)" placeholder="Search subscribers"></pros-search-input>
-                <span class="col-spacer"></span>
-                <!-- <mat-chip-list>
-                    <mat-chip class="mdo-filter-matchip">
-                        <label>Role:</label> <span class="info">{{(selectedRoleType)? selectedRoleType: 'All'}}</span>
-                    </mat-chip>
-                </mat-chip-list> -->
+<ng-template [ngIf]="!showInviteTemplate" [ngIfElse]="inviteTemplate">
+    <div class="root">
+        <div class="f-row breadcrum-toolbar">
+            <button mat-button (click)="close()">
+                <mat-icon fontSet="mdo-icons">close</mat-icon>
+            </button>
+            <div class="col-spacer"></div>
+            <div class="f-col mdo-constrained-right">
+                <div class="f-row breadcrum-head">
+                    <div class="display-heading-large">Add subscribers</div>
+                    <div class="f-spacer"></div>
+                    <button mat-flat-button (click)="openSubscriberInviteDialog()"><mat-icon fontSet="mdo-icons"> add-group</mat-icon> Invite people to your team</button>
+                    <span class="f-col-spacer-half"></span>
+                    <button mat-flat-button color="primary" (click)="save()">Save</button>
+                </div>
+                <div class="row-spacer"></div>
+                <div class="f-row">
+                    <pros-search-input (value)="getCollaborators($event, 0)" placeholder="Search subscribers"></pros-search-input>
+                    <span class="col-spacer"></span>
+                    <!-- <mat-chip-list>
+                        <mat-chip class="mdo-filter-matchip">
+                            <label>Role:</label> <span class="info">{{(selectedRoleType)? selectedRoleType: 'All'}}</span>
+                        </mat-chip>
+                    </mat-chip-list> -->
+                </div>
             </div>
         </div>
+    
+        <div class="f-col sidesheetcontent-listing">
+            <cdk-virtual-scroll-viewport itemSize="20" (scroll)="onScroll($event)" class="viewport-scroll">
+            <div class="f-col mdo-justify">
+                <mat-list role="list" class="rule-list" *cdkVirtualFor="let subscriber of subscribers">
+                    <mat-list-item role="listitem">
+                        <div class="mat-line">
+                            <mat-card-header>
+                                <div mat-card-avatar>{{shortName(subscriber.fName, subscriber.lName) | uppercase}}</div>
+                                <mat-card-title mat-line>{{subscriber.fullName}}</mat-card-title>
+                            </mat-card-header>
+                        </div>
+                        <span class="f-spacer"></span>
+                        <ng-template [ngIf]="subscriber.isAdd===false" [ngIfElse]="checkButton">
+                            <button mat-flat-button color="accent" (click)="addSubscriber(subscriber)">Add</button>
+                        </ng-template>
+                        <ng-template #checkButton>
+                            <button mat-flat-button color="accent" (click)="uncheckSubscriber(subscriber)">
+                                <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
+                            </button>
+                        </ng-template>
+                    </mat-list-item>
+                </mat-list>
+            </div>
+            </cdk-virtual-scroll-viewport>
+        </div>
     </div>
+</ng-template>
 
-    <div class="f-col sidesheetcontent-listing">
-        <cdk-virtual-scroll-viewport itemSize="20" (scroll)="onScroll($event)" class="viewport-scroll">
-        <div class="f-col mdo-justify">
-            <mat-list role="list" class="rule-list" *cdkVirtualFor="let subscriber of subscribers">
-                <mat-list-item role="listitem">
-                    <div class="mat-line">
-                        <mat-card-header>
-                            <div mat-card-avatar>{{shortName(subscriber.fName, subscriber.lName) | uppercase}}</div>
-                            <mat-card-title mat-line>{{subscriber.fullName}}</mat-card-title>
-                        </mat-card-header>
-                    </div>
-                    <span class="f-spacer"></span>
-                    <ng-template [ngIf]="subscriber.isAdd===false" [ngIfElse]="checkButton">
-                        <button mat-flat-button color="accent" (click)="addSubscriber(subscriber)">Add</button>
-                    </ng-template>
-                    <ng-template #checkButton>
-                        <button mat-flat-button color="accent" (click)="uncheckSubscriber(subscriber)">
-                            <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
-                        </button>
-                    </ng-template>
-                </mat-list-item>
-            </mat-list>
-        </div>
-        </cdk-virtual-scroll-viewport>
-    </div>
-</div>
+
+<ng-template #inviteTemplate>
+    <pros-subscriber-invite-sidesheet></pros-subscriber-invite-sidesheet>
+</ng-template>

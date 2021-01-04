@@ -116,7 +116,7 @@ const routes: Routes = [
   { path: ':moduleId/statics/:schemaId', component: StaticsComponent },
   { path: 'system/business-case-rule', component: BusinessCaseRuleComponent },
   { path: 'system/business-concatenation', component: BusinessConcatenationComponent },
-  { path: 'invite-subscriber/:moduleId/:schemaId', component: SubscriberInviteSidesheetComponent},
+  { path: 'invite-subscriber/:moduleId/:schemaId/:outlet', component: SubscriberInviteSidesheetComponent},
   { path: 'system/new-primary-navbar', component: NewPrimaryNavbarComponent },
   { path: 'system/checkdata-progress', component: CheckdataProgressComponent },
 
