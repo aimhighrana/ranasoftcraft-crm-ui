@@ -134,6 +134,11 @@ export class BrruleSideSheetComponent implements OnInit {
   duplicateFormRef: FormGroup;
 
   /**
+   * Store current active outlet
+   */
+  activeOutlet = 'sb';
+
+  /**
    * Class contructor
    * @param dialogRef refernce to matdialog
    * @param data data recieved from parent
@@ -177,6 +182,7 @@ export class BrruleSideSheetComponent implements OnInit {
       this.routeData = res;
       this.moduleId = res.moduleId;
       this.schemaId = res.schemaId;
+      this.activeOutlet = res.outlet || 'sb';
       this.brId = res.brId ? (res.brId !== 'new' ? res.brId : '') : '';
       this.buildCommonDataForm().then(() => {
         this.initUDRForm();
@@ -685,7 +691,7 @@ export class BrruleSideSheetComponent implements OnInit {
    * function to close the dialog
    */
   close() {
-    this.router.navigate([{ outlets: { sb: null } }]);
+    this.router.navigate([{ outlets: { [`${this.activeOutlet}`]: null } }]);
   }
 
   /**
@@ -743,7 +749,7 @@ export class BrruleSideSheetComponent implements OnInit {
       this.schemaService.saveUpdateUDR(udrDto).subscribe(res => {
         this.snackBar.open(`Successfully saved !`, 'Close', { duration: 5000 });
         this.sharedService.setAfterBrSave(res);
-        this.router.navigate([{ outlets: { sb: null } }]);
+        this.close();
       }, error => {
         this.snackBar.open(`Something went wrong `, 'Close', { duration: 5000 });
       });
@@ -769,7 +775,7 @@ export class BrruleSideSheetComponent implements OnInit {
       const brObject = this.createBrObject(finalFormData);
       this.schemaService.createBusinessRule(brObject).subscribe(res => {
         this.sharedService.setAfterBrSave(res);
-        this.router.navigate([{ outlets: { sb: null } }]);
+        this.close();
       }, err => console.error(`Error : ${err.message}`));
 
     } else {
@@ -790,7 +796,7 @@ export class BrruleSideSheetComponent implements OnInit {
       request.copiedFrom = '';
       this.schemaService.createBusinessRule(request).subscribe(res => {
         this.sharedService.setAfterBrSave(res);
-        this.router.navigate([{ outlets: { sb: null } }]);
+        this.close();
       }, err => console.error(`Error : ${err.message}`));
 
     }
@@ -1124,7 +1130,7 @@ export class BrruleSideSheetComponent implements OnInit {
       this.snackBar.open(`Successfully saved !`, 'Close', { duration: 5000 });
       console.log(res);
       this.sharedService.setAfterBrSave(res);
-      this.router.navigate([{ outlets: { sb: null } }]);
+      this.close();
     }, error => {
       this.snackBar.open(`Something went wrong `, 'Close', { duration: 5000 });
     });
