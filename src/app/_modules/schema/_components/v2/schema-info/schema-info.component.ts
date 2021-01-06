@@ -716,7 +716,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * function to open dataScope side sheet(Add new data scope).
    */
   addDataScope() {
-    this.router.navigate([{ outlets: { sb: `sb/schema/data-scope/${this.moduleId}/${this.schemaId}/new` } }]);
+    this.router.navigate([{ outlets: { sb: `sb/schema/data-scope/${this.moduleId}/${this.schemaId}/new/sb` } }]);
   }
 
   /**

@@ -917,7 +917,7 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
    * Function to open data scope side sheet
    */
   openDataScopeSideSheet() {
-    this.router.navigate([{ outlets: { sb: `sb/schema/data-scope/${this.moduleId}/${this.schemaId}/new` } }])
+    this.router.navigate([{ outlets: { sb: `sb/schema/data-scope/${this.moduleId}/${this.schemaId}/new/sb` } }])
   }
 
   /**

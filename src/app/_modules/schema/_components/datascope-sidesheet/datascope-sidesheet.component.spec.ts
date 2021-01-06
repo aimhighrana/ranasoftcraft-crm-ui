@@ -48,9 +48,10 @@ describe('DatascopeSidesheetComponent', () => {
   })
 
   it('close(), should close side sheet', async() => {
+    component.outlet = 'sb';
     spyOn(router, 'navigate');
     component.close();
-    expect(router.navigate).toHaveBeenCalledWith([{outlets: {sb:null}}]);
+    expect(router.navigate).toHaveBeenCalledWith([{outlets: {[component.outlet]:null}}]);
   })
 
   it('getValue(), should get value from form-input', async() => {

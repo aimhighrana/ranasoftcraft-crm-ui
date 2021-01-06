@@ -246,7 +246,7 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Open the invitaion sidesheet
+   * Function to Open the invitaion sidesheet
    */
   openSubscriberInviteDialog() {
     if (this.outlet === 'outer') {

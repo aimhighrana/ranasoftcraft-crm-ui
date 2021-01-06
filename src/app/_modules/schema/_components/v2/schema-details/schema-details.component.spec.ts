@@ -363,7 +363,7 @@ describe('SchemaDetailsComponent', () => {
   it('openDataScopeSideSheet(), should navigate to data scope side sheet', () => {
     spyOn(router, 'navigate');
     component.openDataScopeSideSheet();
-    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/data-scope/${component.moduleId}/${component.schemaId}/new` } }])
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/data-scope/${component.moduleId}/${component.schemaId}/new/sb` } }])
   })
 
   it('getDataScope(), should return all variants of a schema', async () => {
