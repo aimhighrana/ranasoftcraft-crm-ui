@@ -153,7 +153,6 @@
 
                 <div class="row-spacer"></div>
 
-
                 <pros-form-input [placeholder]="'Data scope'" [label]="'Data scope'" [disabled]="true"
                     [value]="requestForm.controls.dataScope.value"></pros-form-input>
                 <div class="row-spacer"></div> -->
@@ -227,12 +226,18 @@
                             </div>
 
                             <div class="col col-x8">
-                                <!-- <mat-checkbox color="primary" [checked]="businessRule.status === '1'"
-                                (change)="toggleBrStatus($event,businessRule)"></mat-checkbox>
-                                <span class="f-col-spacer-half"></span> -->
+                                <mat-checkbox color="primary" 
+                                    *ngIf="!isExistingRule(businessRule.tempId); else configure"
+                                    [checked]="businessRule.status === '1'"
+                                    (change)="toggleBrStatus($event,businessRule)"></mat-checkbox>
+
+                                <span class="f-col-spacer-half"></span>
+
+                               <ng-template #configure>
                                 <button mat-flat-button color="accent" (click)="configureRule(businessRule)">
                                     Configure
                                 </button>
+                               </ng-template>
                             </div>
                             <div class="col">
                                 <button mat-button (click)="deleteBR(businessRule)">
