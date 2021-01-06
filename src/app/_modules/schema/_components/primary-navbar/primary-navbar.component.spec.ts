@@ -6,20 +6,16 @@ import { SearchInputComponent } from '@modules/shared/_components/search-input/s
 import { NavigationDropdownComponent } from '@modules/shared/_components/navigation-dropdown/navigation-dropdown.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
-import { SchemaService } from '@services/home/schema.service';
-import { of } from 'rxjs';
 
 describe('PrimaryNavbarComponent', () => {
   let component: PrimaryNavbarComponent;
   let fixture: ComponentFixture<PrimaryNavbarComponent>;
-  let schemaServiceSpy: SchemaService;
   let router: Router;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ PrimaryNavbarComponent, SearchInputComponent, NavigationDropdownComponent, NavigationDropdownComponent ],
       imports: [AppMaterialModuleForSpec, RouterTestingModule],
-      providers: [SchemaService]
     })
     .compileComponents();
     router = TestBed.inject(Router);
@@ -28,7 +24,6 @@ describe('PrimaryNavbarComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(PrimaryNavbarComponent);
     component = fixture.componentInstance;
-    schemaServiceSpy = fixture.debugElement.injector.get(SchemaService);
     // fixture.detectChanges();
   });
 
@@ -62,12 +57,11 @@ describe('PrimaryNavbarComponent', () => {
   })
 
   it(`createSchema() with args {moduleId: '123', schemaId: null}, should call createUpdateSchema`, async(() => {
-      spyOn(schemaServiceSpy, 'createUpdateSchema').and.returnValue(of(null));
-      component.createSchema({moduleId: '123', schemaId: null});
-      expect(schemaServiceSpy.createUpdateSchema).toHaveBeenCalled();
-
       spyOn(router, 'navigate')
-      component.createSchema({moduleId: '123', schemaId: '456'});
-      expect(router.navigate).toHaveBeenCalledWith([{outlets: {sb: `sb/schema/check-data/123/456`}}])
+      component.createSchema({moduleId: '123', schemaId: '456', moduleDesc: 'Material'});
+      expect(router.navigate).toHaveBeenCalledWith([{outlets: {sb: `sb/schema/check-data/123/456`}}], {queryParams: {name: 'Material'}});
+
+      component.createSchema({moduleId: '1002', schemaId: null, moduleDesc: 'Material'});
+      expect(router.navigate).toHaveBeenCalledWith([{outlets: {sb: `sb/schema/check-data/1002/new`}}], {queryParams: {name: 'Material'}});
   }));
 });

@@ -5,7 +5,7 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatSliderChange } from '@angular/material/slider';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PermissionOn, SchemaCollaborator, SchemaDashboardPermission, UserMdoModel } from '@models/collaborator';
+import { PermissionOn, SchemaCollaborator, SchemaDashboardPermission, UserMdoModel, ROLES } from '@models/collaborator';
 import { AddFilterOutput, CheckDataBrs, CheckDataRequest, CheckDataSubscriber } from '@models/schema/schema';
 import { SchemaExecutionRequest } from '@models/schema/schema-execution';
 import { CategoryInfo, FilterCriteria } from '@models/schema/schemadetailstable';
@@ -115,6 +115,18 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
   updatedSchemaName: string;
 
   /**
+   * To hold all the roles of subscriber
+   */
+  roles = ROLES;
+
+  /**
+   * To check whether to show schema name input field
+   */
+  isFromCheckData = false;
+
+  moduleDesc: string;
+
+  /**
    * To hold all the subscriptions related to component
    */
   subscriptions: Subscription[] = [];
@@ -163,13 +175,23 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    * get params of active route to get module id and schema id
    */
   private getRouteParams() {
+
+    this.activateRoute.queryParams.subscribe((params) => {
+      console.log(params);
+      this.isFromCheckData = params.name ? false : true;
+      this.moduleDesc = params.name;
+    })
+
+
     this.activateRoute.params.subscribe((params) => {
       this.moduleId = params.moduleId;
       this.schemaId = params.schemaId;
 
+      // this.isNewSchema = this.schemaId === 'new' ? true : false;
+
       this.getSchemaVariants(this.schemaId, 'RUNFOR');
       this.getSchemaDetails(this.schemaId);
-    })
+    });
   }
 
 
@@ -181,7 +203,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
     this.schemaListService.getSchemaDetailsBySchemaId(schemaId).subscribe(res => {
       this.schemaDetails = res;
       this.schemaThresholdControl.setValue(this.schemaDetails.schemaThreshold);
-      if (this.schemaDetails.runId) {
+      if (this.schemaDetails.runId && this.isFromCheckData) {
         this.getCheckDataDetails(this.schemaId);
       } else {
         this.getSubscriberList(this.schemaId);
@@ -543,7 +565,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
 
     brInfo.isCopied = false;
     brInfo.schemaId = null;
-    brInfo.copiedFrom = null;
+    brInfo.copiedFrom = brInfo.brIdStr;
     this.businessRuleData.push(brInfo); // Push it into current Business rule listing array..
   }
 
@@ -562,7 +584,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
     }
 
     const subscriber = {
-      sno: Math.floor(Math.random() * Math.pow(100000, 2)),
+      sno: subscriberInfo.sno ? subscriberInfo.sno : Math.floor(Math.random() * Math.pow(100000, 2)),
       userMdoModel: subscriberInfo,
       filterCriteria: [],
       schemaId: this.schemaId,
@@ -600,48 +622,65 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
     })
   }
 
+
   /**
    * Function to save check data
    */
   saveCheckData() {
-    const checkDataSubscriber = [];
-    const checkDataBrs = [];
-
-    if(this.schemaDetails.schemaDescription !== this.updatedSchemaName || this.schemaDetails.schemaThreshold !== this.schemaThresholdControl.value) {
+    if((this.schemaDetails.schemaDescription !== this.updatedSchemaName ||
+        this.schemaDetails.schemaThreshold !== this.schemaThresholdControl.value)||
+        this.schemaId === 'new'
+    ) {
       const schemaReq: CreateUpdateSchema = new CreateUpdateSchema();
-      schemaReq.schemaId = this.schemaId;
+      schemaReq.schemaId = this.schemaId === 'new' ? '' : this.schemaId;
       schemaReq.moduleId = this.moduleId;
       schemaReq.discription = this.updatedSchemaName ? this.updatedSchemaName : this.schemaDetails.schemaDescription;
       schemaReq.schemaThreshold = this.schemaThresholdControl.value;
 
       this.schemaService.createUpdateSchema(schemaReq).subscribe((response) => {
         console.log('Schema updated successfully.');
+        this.prepareData(response);
       },(error) => {
         console.error('Something went wrong while updating schema.', error.message);
       })
     }
+    else {
+      this.prepareData(this.schemaId);
+    }
+  }
+
+
+  /**
+   * Function to add business rules and subscribers
+   * @param schemaId Schema Id
+   */
+  prepareData(schemaId) {
+    const checkDataSubscriber = [];
+    const checkDataBrs = [];
 
     this.subscriberData.forEach((subscriber) => {
-      subscriber.sno = Math.floor(Math.random() * Math.pow(100000, 2));
-      subscriber.isCopied = true;
-      subscriber.schemaId = this.schemaId;
+      subscriber.sno = subscriber.sno ? subscriber.sno : Math.floor(Math.random() * Math.pow(100000, 2));
+      subscriber.isCopied = this.isFromCheckData ? true : false;
+      subscriber.schemaId = schemaId;
 
       const subscriberObj = {} as CheckDataSubscriber;
 
 
-      subscriberObj.collaboratorId = subscriber.sno;
+      subscriberObj.collaboratorId = Number(subscriber.sno);
       checkDataSubscriber.push(subscriberObj);
     });
 
     const forkObj = {};
     this.businessRuleData.forEach((businessRule, index) => {
       businessRule.isCopied = true;
-      businessRule.brId = null;
-      businessRule.brIdStr = null;
+      businessRule.brId = businessRule.brIdStr ? businessRule.brIdStr : null;
+      businessRule.brIdStr = businessRule.brIdStr ? businessRule.brIdStr : null;
       businessRule.moduleId = this.moduleId;
-      businessRule.schemaId = this.schemaId;
+      businessRule.schemaId = schemaId;
 
-      forkObj[index] = this.schemaService.createCheckDataBusinessRule(businessRule)
+      forkObj[index] = this.isFromCheckData ?
+                       this.schemaService.createCheckDataBusinessRule(businessRule):
+                       this.schemaService.createBusinessRule(businessRule)
     })
 
     const subscriberSnos = this.schemaDetailsService.createUpdateUserDetails(this.subscriberData)
@@ -661,7 +700,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
         })
 
         const checkDataObj: CheckDataRequest = {
-          schemaId: this.schemaId,
+          schemaId,
           runId:  null,
           brs: checkDataBrs,
           collaborators: checkDataSubscriber
@@ -670,7 +709,6 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
 
         this.schemaService.createUpdateCheckData(checkDataObj).subscribe((result) => {
           console.log(result);
-          // this.createSchedule();
           this.runSchema();
           this.close();
           this.matSnackBar.open('This action has been confirmed..', 'Okay', {
@@ -679,6 +717,9 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
         }, (error) => {
           console.log('Something went wrong while checking data', error.message);
         });
+      }
+      else {
+        this.close();
       }
     })
   }
@@ -695,5 +736,23 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    */
   getSchemaName(value: string) {
     this.updatedSchemaName = value;
+  }
+
+  /**
+   * Function to update role of subscriber
+   * @param subscriber subscriber object
+   * @param role new role of subscriber
+   */
+  updateRole(subscriber, role) {
+    this.roles.forEach((r) => {
+      subscriber[r.code] = false;
+    });
+
+    this.subscriberData.forEach((subs) => {
+      if(subs.userid === subscriber.userid) {
+        subs[role] = true;
+        return;
+      }
+    })
   }
 }

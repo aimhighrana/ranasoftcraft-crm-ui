@@ -223,7 +223,7 @@
                         <mat-menu #subscriberRole="matMenu" class="navigation-menu">
                             <button mat-menu-item *ngFor="let role of roles" (click)="updateRole(subscriber, role.code)">{{role.text}}</button>
                         </mat-menu>
-    
+
                         <div class="col col-x16">
                             <mat-chip-list>
                                 <ng-template ngFor let-ctrl [ngForOf]="subscriber.filterCriteria">

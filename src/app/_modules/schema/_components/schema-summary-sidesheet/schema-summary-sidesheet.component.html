@@ -6,10 +6,18 @@
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
-                <div class="display-heading-large">
+                <div class="display-heading-large" *ngIf="isFromCheckData; else fromPrimaryNav">
                     {{schemaDetails?.moduleDescription ? schemaDetails.moduleDescription : 'Untitled'}} /
                     {{schemaDetails?.schemaDescription ? schemaDetails.schemaDescription: 'Untitled'}}
                 </div>
+
+                <ng-template #fromPrimaryNav>
+                    <div class="display-heading-large">
+                        {{moduleDesc ? moduleDesc : 'Untitled'}} /
+                        {{schemaDetails?.schemaDescription ? schemaDetails.schemaDescription: 'Untitled'}}
+                    </div>
+                </ng-template>
+
                 <!-- <button mat-button [matMenuTriggerFor]="check">
                     <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon>
                 </button> -->
@@ -40,16 +48,16 @@
     <div class="f-col sidesheetcontent-listing">
         <div class="f-col mdo-justify">
             <div class="f-col">
-                <div class="f-col mdo-form-field">
+                <div class="f-col mdo-form-field" *ngIf="!isFromCheckData">
                 <pros-form-input [type]="'text'" [label]="'Name'" [value]="schemaDetails.schemaDescription"
                 (valueChange)="getSchemaName($event)"></pros-form-input>
                 </div>
 
                 <div class="f-col mdo-form-field">
-                    <mat-label>Data Scope</mat-label>
+                    <mat-label>Data scope</mat-label>
                     <mat-form-field appearance="outline">
                         <mat-select [formControl]="dataScopeControl">
-                            <mat-option value='0'>Entire datascope</mat-option>
+                            <mat-option value='0'>Entire data scope</mat-option>
                             <mat-option *ngFor="let variant of variantDetails" [value]="variant.variantId">
                                 {{variant.variantName}}
                             </mat-option>
@@ -85,17 +93,20 @@
                                 <div class="mdo-auto-select">
                                     <pros-form-input-autoselect [fieldLabel]="'Type rule name to add'"
                                         (openCustomDialog)="openBusinessRuleSideSheet()"
-                                        [updatedOptionsList]="allBusinessRulesList" [labelKey]="'brInfo'"
-                                        (optionSelectedEmit)="addBusinessRule($event)"></pros-form-input-autoselect>
+                                        [updatedOptionsList]="allBusinessRulesList" 
+                                        [labelKey]="'brInfo'"
+                                        (optionSelectedEmit)="addBusinessRule($event)"
+                                        [extraOptionLabel]="'Add new business rule'"></pros-form-input-autoselect>
                                 </div>
                             </div>
 
                             <ng-template [ngIf]="businessRuleData.length>0" [ngIfElse]="brsNullState">
-                                <div *ngFor="let businessRule of businessRuleData" class="f-row colunm-box rule-border-row">
+                            <div cdkDropList [cdkDropListData]="businessRuleData" (cdkDropListDropped)="drop($event)">
+                                <div cdkDrag *ngFor="let businessRule of businessRuleData" class="f-row colunm-box rule-border-row">
                                     <div class="col">
-                                        <!-- <button mat-button cdkDragHandle> -->
+                                        <button mat-button cdkDragHandle>
                                         <mat-icon fontSet="mdo-icons">two-lines</mat-icon>
-                                        <!-- </button> -->
+                                        </button>
                                     </div>
 
                                     <div class="col col-x8">
@@ -124,6 +135,7 @@
                                         </button>
                                     </div>
                                 </div>
+                            </div>
                             </ng-template>
 
                             <ng-template #brsNullState>
@@ -155,9 +167,13 @@
 
                             <div class="f-row colunm-box rule-border-row">
                                 <div class="mdo-auto-select">
-                                    <pros-form-input-autoselect [fieldLabel]="'Type subscriber name to add'"
-                                        (openCustomDialog)="openSubscriberSideSheet()" [updatedOptionsList]="allSubscribers"
-                                        [labelKey]="'fullName'" (optionSelectedEmit)="addSubscriber($event)">
+                                    <pros-form-input-autoselect
+                                        [fieldLabel]="'Type subscriber name to add'"
+                                        (openCustomDialog)="openSubscriberSideSheet()" 
+                                        [updatedOptionsList]="allSubscribers"
+                                        [labelKey]="'fullName'"
+                                        (optionSelectedEmit)="addSubscriber($event)"
+                                        [extraOptionLabel]="'Invite people to your team'">
                                     </pros-form-input-autoselect>
                                 </div>
                             </div>
@@ -165,22 +181,40 @@
                             <ng-template [ngIf]="subscriberData.length>0" [ngIfElse]="subscriberNullState">
                                 <div class="f-row colunm-box rule-border-row" *ngFor="let subscriber of subscriberData">
                                     <div class="col">
+                                    <ng-template [ngIf]="subscriber.userMdoModel && subscriber.isInvited!==true" [ngIfElse]="invitedUserProfile">
                                         <mat-card-header>
                                             <div mat-card-avatar *ngIf="subscriber.userMdoModel">
                                                 {{shortName(subscriber.userMdoModel.fName, subscriber.userMdoModel.lName)}}
                                             </div>
                                         </mat-card-header>
+                                    </ng-template>
+
+                                    <ng-template #invitedUserProfile>
+                                        <mat-card-header>
+                                            <div mat-card-avatar>
+                                                <mat-icon fontSet="mdo-icons">home-channel2</mat-icon>
+                                            </div>
+                                        </mat-card-header>
+                                    </ng-template>
                                     </div>
         
                                     <div class="col col-x8">
                                         <mat-card-header>
+                                            <ng-template [ngIf]="subscriber.userMdoModel && subscriber.isInvited!==true" [ngIfElse]="isInvited">
                                             <mat-card-title *ngIf="subscriber.userMdoModel!==undefined">
                                                 {{subscriber.userMdoModel.fName}} {{subscriber.userMdoModel.lName}}
                                             </mat-card-title>
+                                            </ng-template>
+
+                                            <ng-template #isInvited>
+                                                <mat-card-title>
+                                                    {{subscriber.userid}}
+                                                </mat-card-title>
+                                            </ng-template>
                                         </mat-card-header>
                                     </div>
         
-                                    <div class="col col-x4">
+                                    <div class="col col-x4" [matMenuTriggerFor]="subscriberRole">
                                         <button mat-stroked-button *ngIf="subscriber.isAdmin">Admin <mat-icon
                                                 fontSet="mdo-icons">
                                                 menu-arrow</mat-icon></button>
@@ -194,6 +228,9 @@
                                                 fontSet="mdo-icons">
                                                 menu-arrow</mat-icon></button>
                                     </div>
+                                    <mat-menu #subscriberRole="matMenu" class="navigation-menu">
+                                        <button mat-menu-item *ngFor="let role of roles" (click)="updateRole(subscriber, role.code)">{{role.text}}</button>
+                                    </mat-menu>
         
                                     <div class="col col-x16">
                                         <mat-chip-list>
@@ -217,7 +254,8 @@
                                             </ng-template>
         
                                             <mat-chip class="mdo-filter-matchip" disableRipple="true"
-                                                [matMenuTriggerFor]="addfiltermenu" (click)="reInilize = !reInilize">
+                                                [matMenuTriggerFor]="addfiltermenu" (click)="reInilize = !reInilize"
+                                                *ngIf="subscriber.isInvited!==true">
                                                 <mat-icon fontSet="mdo-icons">folder-filter</mat-icon>
                                             </mat-chip>
         
