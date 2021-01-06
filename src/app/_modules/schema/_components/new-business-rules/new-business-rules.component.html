@@ -53,7 +53,7 @@
             Please enter Category Id</mat-error>
         </div>
 
-        <div class="f-col mdo-form-field" *ngIf="!isUDR">
+        <div class="f-col mdo-form-field">
           <pros-form-input [value]="form.get('rule_name').value" (valueChange)="getFormValue($event,'rule_name')"
             [label]="'Rule name (Description)'">
           </pros-form-input>
