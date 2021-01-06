@@ -49,8 +49,8 @@
         <div class="f-col mdo-justify">
             <div class="f-col">
                 <div class="f-col mdo-form-field" *ngIf="!isFromCheckData">
-                <pros-form-input [type]="'text'" [label]="'Name'" [value]="schemaDetails.schemaDescription"
-                (valueChange)="getSchemaName($event)"></pros-form-input>
+                <pros-form-input [type]="'text'" [label]="'Schema name'" [value]="schemaDetails.schemaDescription"
+                (valueChange)="getSchemaName($event)" placeholder="Schema name" ></pros-form-input>
                 </div>
 
                 <div class="f-col mdo-form-field">
@@ -68,8 +68,12 @@
                 </div>
                 <div class="f-col mdo-form-field">
                     <mat-label>Threshold</mat-label>
-                    <mat-slider color="primary" [formControl]="schemaThresholdControl">
+                    <div class="f-row slider-row">
+                    <mat-slider thumbLabel color="primary" [formControl]="schemaThresholdControl">
                     </mat-slider>
+                    <span class="f-col-spacer-half"></span>
+                    <div class="percent-count">{{schemaThresholdControl.value}}%</div>
+                    </div>
                 </div>  
                 <mat-accordion>
                     <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
@@ -87,7 +91,7 @@
                                         <mat-icon matTooltip="Weight" fontSet="mdo-icons" class="mat-head-icon">
                                             question-mark</mat-icon>
                                     </strong></div>
-                                <div class="col col-x8"><strong>Enabled</strong></div>
+                                <div class="col col-x4"><strong>Enabled</strong></div>
                                 <div class="col"></div>
                             </div>
 
@@ -127,7 +131,7 @@
                                     </div>
                                     </div>
 
-                                    <div class="col col-x8">
+                                    <div class="col col-x4">
                                         <mat-checkbox color="primary" [checked]="businessRule.status === '1' ? true : false"
                                             (change)="updateBr(businessRule,$event)"></mat-checkbox> 
                                     </div>

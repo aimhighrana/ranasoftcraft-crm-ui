@@ -38,11 +38,15 @@
                         (emitBlurEvent)="updateSchemaInfo($event)">
                     </pros-form-input>
                     <div class="row-spacer"></div>
-                    <div class="f-col temp-field">
+                    <div class="f-col mdo-form-field">
                         <mat-label>Threshold</mat-label>
-                        <mat-slider color="primary" formControlName="schemaThreshold"
+                        <div class="f-row slider-row">
+                            <mat-slider color="primary" thumbLabel formControlName="schemaThreshold"
                             [value]="schemaDetails?.schemaThreshold ? schemaDetails.schemaThreshold : 0"
                             (change)="updateSchemaInfo(schemaDetails.schemaDescription, $event)"></mat-slider>
+                            <span class="f-col-spacer-half"></span>
+                            <div class="percent-count">{{schemaSummaryForm.controls.schemaThreshold.value}}%</div>
+                            </div>
                     </div>
                     <div class="row-spacer"></div>
                     <mat-accordion>
@@ -81,11 +85,11 @@
                     <div class="col"></div>
                     <div class="col col-x4"><strong>Business rule</strong></div>
                     <div class="col col-x4"><strong class="f-row">Category
-                            <mat-icon matTooltip="Dimension of data quality to be measured" fontSet="mdo-icons" class="mat-head-icon">
+                            <mat-icon matTooltip="Category" fontSet="mdo-icons" class="mat-head-icon">
                                 question-mark</mat-icon>
                         </strong></div>
                     <div class="col col-x4 mat-item-center"><strong class="f-row">Weight
-                            <mat-icon matTooltip="Score assigned to a record upon successful validation of a business rule.For a schema total weightage of all the business rules must not exceed 100" fontSet="mdo-icons" class="mat-head-icon">
+                            <mat-icon matTooltip="Weight" fontSet="mdo-icons" class="mat-head-icon">
                                 question-mark</mat-icon>
                         </strong></div>
                     <div class="col col-x4"><strong>Enabled</strong></div>
@@ -215,7 +219,7 @@
                                     menu-arrow</mat-icon></button>
                             <button mat-stroked-button *ngIf="subscriber.isReviewer">Reviewer <mat-icon fontSet="mdo-icons">
                                     menu-arrow</mat-icon></button>
-                            <button mat-stroked-button *ngIf="subscriber.isViewer && !( subscriber.isAdmin || subscriber.isReviewer || subscriber.isEditer)">Viewer <mat-icon fontSet="mdo-icons">
+                            <button mat-stroked-button *ngIf="subscriber.isViewer">Viewer <mat-icon fontSet="mdo-icons">
                                     menu-arrow</mat-icon></button>
                             <button mat-stroked-button *ngIf="subscriber.isEditer">Editor <mat-icon fontSet="mdo-icons">
                                     menu-arrow</mat-icon></button>

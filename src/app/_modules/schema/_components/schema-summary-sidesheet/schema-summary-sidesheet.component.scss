@@ -112,20 +112,20 @@ div.root {
             word-break: break-word;
             font-size: 0.9rem;
           }
+        }
+      }
 
-          .slider-row {
-            align-items: center;
-            flex-wrap: wrap;
-            width: 100%;
+      .slider-row {
+        align-items: center;
+        flex-wrap: wrap;
+        width: 100%;
 
-            mat-slider.mat-slider {
-              flex: 10;
-            }
+        mat-slider.mat-slider {
+          flex: 30;
+        }
 
-            .percent-count {
-              flex: 1;
-            }
-          }
+        .percent-count {
+          flex: 1;
         }
       }
     }

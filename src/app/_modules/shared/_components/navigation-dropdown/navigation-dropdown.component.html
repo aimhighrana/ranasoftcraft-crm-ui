@@ -4,12 +4,8 @@
 
 <!-- module-menu -->
 <mat-menu #check="matMenu" class="navigation-menu">
-
-    <div class="row-spacer"></div>
-    <pros-search-input [placeholder]="'Search Modules'" prosClickStopPropagation
+    <pros-search-input  class="field-mat-menu" [placeholder]="'Search Modules'" prosClickStopPropagation
       (value)="searchModule($event)"></pros-search-input>
-    <div class="row-spacer"></div>
-
     <div class="menu-customdropdown">
         <ng-container *ngFor="let module of filteredModulesList;let i=index; trackBy:moduleTrackBy">
             <button mat-menu-item [focus]="false" [matMenuTriggerFor]="schemaMenu"
@@ -19,7 +15,6 @@
             </button>
         </ng-container>
     </div>
-
     <mat-divider></mat-divider>
     <button mat-menu-item (click)="emitSelection()" [disableRipple]="true">
         <mat-icon fontSet="mdo-icons" class="mat-menu-icon">plus</mat-icon> New module...
@@ -28,12 +23,8 @@
 
 <!-- schema-menu -->
 <mat-menu #schemaMenu="matMenu" class="navigation-menu">
-    
-    <div class="row-spacer"></div>
-    <pros-search-input [placeholder]="'Search Schemas'" prosClickStopPropagation
+    <pros-search-input  class="field-mat-menu" [placeholder]="'Search Schemas'" prosClickStopPropagation
       #searchInput (value)="searchSchema($event)"></pros-search-input>
-    <div class="row-spacer"></div>
-
     <div class="menu-customdropdown">
         <ng-container *ngFor="let schema of filteredSchemaList;let i=index; trackBy:schemaTrackBy">
             <button mat-menu-item
@@ -50,16 +41,3 @@
         <mat-icon fontSet="mdo-icons" class="mat-menu-icon">plus</mat-icon> New schema...
     </button>
 </mat-menu>
-
-
-
-<mat-nav-list style="display: none;">
-    
-    <mat-list-item>
-        
-    </mat-list-item>
-    
-    <mat-divider></mat-divider>
-
-
-</mat-nav-list>

@@ -27,7 +27,7 @@ div.root {
   .summary-root {
     padding: 16px 0;
 
-    .temp-field {
+    .mdo-form-field {
       mat-label {
         font-weight: 500;
         font-size: 0.8rem;
@@ -106,10 +106,6 @@ div.root {
       cursor: pointer;
     }
 
-    mat-slider {
-      flex: 1;
-    }
-
     &.col-x16 {
       flex: 16;
     }
@@ -132,24 +128,24 @@ div.root {
       word-break: break-word;
     }
 
-    .slider-row {
-      align-items: center;
-      flex-wrap: wrap;
-      flex: 1;
-
-      mat-slider.mat-slider {
-        flex: 10;
-      }
-
-      .percent-count {
-        flex: 1;
-      }
-    }
-
     button.mat-stroked-button {
       margin-right: 4px;
       min-width: auto;
     }
+  }
+}
+
+.slider-row {
+  align-items: center;
+  flex-wrap: wrap;
+  flex: 1;
+
+  mat-slider.mat-slider {
+    flex: 30;
+  }
+
+  .percent-count {
+    flex: 1;
   }
 }
 

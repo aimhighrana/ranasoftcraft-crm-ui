@@ -23,9 +23,9 @@
           <form [formGroup]="uploadFileStepCtrl">
             <ng-template matStepLabel>Upload dataset</ng-template>
 
-            <div class="f-col upload-error" *ngIf="uploadError.status && uploadError.status">
+            <mat-card class="mat-elevation-z0 upload-error" *ngIf="uploadError.status && uploadError.status">
               {{uploadError.message}}
-            </div>
+            </mat-card>
 
             <div class="f-col upload-col">
               <div class="f-col empty-state">
@@ -43,9 +43,9 @@
         <!-- map headers -->
         <mat-step [stepControl]="dataTableCtrl">
           <ng-template matStepLabel>Map fields</ng-template>
-          <div class="f-col upload-error" *ngIf="uploadError.status && uploadError.status">
+          <mat-card class="mat-elevation-z0 upload-error" *ngIf="uploadError.status && uploadError.status">
             {{uploadError.message}}
-          </div>
+          </mat-card>
           <div class="f-col upload-col" *ngIf="isUploaded && currentStep>0">
             <div class="f-col empty-state"> 
               <div class="empty-heading">Uploading...</div>

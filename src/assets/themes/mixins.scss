@@ -174,6 +174,7 @@
   // Status colors
   .info-link {
     color: $color-text-link;
+    cursor: pointer;
   }
 
   .info-status {
@@ -444,7 +445,7 @@
         .mat-tab-labels {
           .mat-tab-label {
             padding: 0 12px;
-            min-width: 120px;
+            min-width: 100px;
             opacity: 1;
 
             .mat-tab-label-content {
@@ -612,6 +613,7 @@
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
+        line-height: 1rem;
       }
 
       .mat-checkbox-inner-container {
@@ -747,6 +749,10 @@
           overflow: auto;
         }
 
+        mat-divider.mat-divider {
+          margin: 4px 0;
+        }
+
         .field-mat-menu {
           padding: 8px;
           display: block;
@@ -876,7 +882,7 @@
 
   button.mat-fab {
     border-radius: 3px;
-    width: 36px;
+    width: 38px;
     height: 36px;
     box-shadow: none;
 
@@ -1190,6 +1196,26 @@
     }
   }
 
+  pros-table-column-settings {
+    .colunm-box {
+      border-bottom: 1px solid $color-app-border;
+
+      .badge-background {
+        .mat-badge-content {
+          background: transparent;
+        }
+      }
+
+      .badge-error-value {
+        color: $color-status-error;
+
+        .mat-badge-content {
+          color: $color-status-error;
+        }
+      }
+    }
+  }
+
   pros-primary-navbar {
     div.root {
       background-color: $color-app-offcanvas;
@@ -1310,12 +1336,6 @@
     }
   }
 
-  pros-table-column-settings {
-    .colunm-box {
-      border-top: 1px solid $color-app-border;
-    }
-  }
-
   pros-setup-duplicate-rule {
     .colunm-box {
       &.rule-border-row {
@@ -1354,6 +1374,11 @@
 
   pros-upload-data {
     div.root {
+      .upload-error {
+        background-color: $color-status-error;
+        color: $color-text-canvas;
+      }
+
       .field-grid {
         mat-table.mat-table {
           .mat-header-cell,
@@ -1683,8 +1708,9 @@
     }
   }
 
-  pros-null-state {
-    .empty-state {
+  pros-null-state,
+  pros-schema-progress {
+    .state-container {
       .label-text {
         color: $color-text-secondary;
       }

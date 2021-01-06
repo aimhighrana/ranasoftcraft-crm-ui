@@ -14,6 +14,7 @@ div.root {
       .breadcrum-head {
         align-items: center;
         width: 100%;
+        min-height: 36px;
 
         .display-heading-large {
           font-size: 1.2rem;
@@ -30,19 +31,15 @@ div.root {
     overflow: auto;
 
     .mdo-justify {
+      .upload-error {
+        padding: 12px;
+        margin: 8px 0;
+      }
+
       .field-grid {
         pros-map-mdo-field {
           flex: 1;
         }
-      }
-
-      .upload-error {
-        border-radius: 3px;
-        width: calc(100% - 30px);
-        padding: 14px 15px;
-        background-color: #ff6b6b;
-        color: #fff;
-        font-size: 14px;
       }
 
       .upload-col {

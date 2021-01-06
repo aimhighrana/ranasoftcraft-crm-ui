@@ -53,8 +53,8 @@ import { AttributeComponent } from './_components/v2/library-mapping-sidesheet/a
 import { NounComponent } from './_components/v2/library-mapping-sidesheet/noun/noun.component';
 import { ModifierComponent } from './_components/v2/library-mapping-sidesheet/modifier/modifier.component';
 import { NewPrimaryNavbarComponent } from './_components/new-primary-navbar/new-primary-navbar.component';
-import { CheckdataProgressComponent } from './_components/checkdata-progress/checkdata-progress.component';
 import { ExecutionTrendSidesheetComponent } from './_components/v2/statistics/execution-trend-sidesheet/execution-trend-sidesheet.component';
+import { SchemaProgressComponent } from './_components/schema-progress/schema-progress.component';
 
 const routes: Routes = [
   { path: 'group/:groupId', component: SchemaGroupFormComponent },
@@ -119,7 +119,7 @@ const routes: Routes = [
   { path: 'system/business-concatenation', component: BusinessConcatenationComponent },
   { path: 'invite-subscriber/:moduleId/:schemaId/:outlet', component: SubscriberInviteSidesheetComponent},
   { path: 'system/new-primary-navbar', component: NewPrimaryNavbarComponent },
-  { path: 'system/checkdata-progress', component: CheckdataProgressComponent },
+  { path: 'system/schema-progress', component: SchemaProgressComponent },
 
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent }

@@ -6,11 +6,10 @@
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
-                <div class="display-heading-large">Configure table</div>
+                <div class="display-heading-large">Configure view</div>
                 <span class="f-spacer"></span>
                 <button mat-flat-button color="primary" (click)="submitColumn()">Save</button>
             </div>
-            <div class="row-spacer"></div>
         </div>
     </div>
 
@@ -23,14 +22,12 @@
                             Columns
                         </ng-template>
                         <div class="f-col">
+                            <pros-search-input label="Search" placeholder="Search columns" (value)="searchFld($event)">
+                            </pros-search-input>
+                            <div class="row-spacer"></div>
                             <div class="check-list">
                                 <!-- <mat-checkbox class="checkedall" color="primary" (change)="selectAll()" [(ngModel)]="allChecked"
                                     [indeterminate]="allIndeterminate"> <span class="checkboxlabel">All</span></mat-checkbox> -->
-                                <div class="f-row colunm-box">
-                                    <pros-search-input label="Search" placeholder="Search fields"
-                                        (value)="searchFld($event)">
-                                    </pros-search-input>
-                                </div>
                                 <div class="f-row colunm-box">
                                     <div class="col"></div>
                                     <div class="col col-x4"><strong> Column </strong></div>
@@ -87,8 +84,8 @@
                         <ng-template mat-tab-label>
                             Actions
                         </ng-template>
-                        <div class="f-col temp-field">
-                            <mat-label><strong>Role</strong></mat-label>
+                        <div class="f-col mdo-form-field">
+                            <mat-label>Role</mat-label>
                             <div class="f-row">
                                 <mat-button-toggle-group appearance="legacy" name="fontStyle" aria-label="Font Style">
                                     <mat-button-toggle value="Editor">Editor</mat-button-toggle>
@@ -97,20 +94,19 @@
                                 </mat-button-toggle-group>
                             </div>
                         </div>
-                        <div class="f-col temp-field">
-                            <mat-label><strong>Preview</strong></mat-label>
+                        <div class="f-col mdo-form-field">
+                            <mat-label>Preview</mat-label>
                             <div class="f-row">
                                 <button mat-fab color="accent" class="mat-elevation-z0 rightradius">
-                                    <mat-icon fontSet="mdo-icons">more_horiz</mat-icon>
+                                    <mat-icon fontSet="mdo-icons">more1</mat-icon>
                                 </button>
                                 <button mat-fab color="accent" class="mat-elevation-z0 middleradius">
                                     <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
                                 </button>
-                                <button mat-flat-button color="accent" class="mat-elevation-z0 middleradius">
+                                <button mat-flat-button color="accent" class="middleradius">
                                     <mat-icon fontSet="mdo-icons">declined</mat-icon> Decline
                                 </button>
-                                <button mat-flat-button color="accent"
-                                    class="mat-elevation-z0 leftradius">Delete</button>
+                                <button mat-flat-button color="accent" class="leftradius">Delete</button>
                             </div>
                         </div>
                         <div class="row-spacer"></div>
@@ -119,24 +115,19 @@
                             <div class="f-row colunm-box rule-border-row">
                                 <div class="col"></div>
                                 <div class="col col-x8"><strong>Action</strong></div>
-                                <div class="col col-x4"><strong class="f-row">Primary
-                                        <mat-icon matTooltip="Primary" fontSet="mdo-icons" class="mat-head-icon">
-                                            question-mark</mat-icon>
+                                <div class="col col-x4"><strong class="f-row">Primary &nbsp;
+                                        <mat-icon matTooltip="Primary" fontSet="mdo-icons">question-mark</mat-icon>
                                     </strong></div>
-                                <div class="col col-x4"><strong></strong></div>
-                                <div class="col col-x8"><strong></strong></div>
-                                <div class="col col-x4"><strong></strong></div>
+                                <div class="col col-x4"></div>
+                                <div class="col col-x4 text-end"></div>
                             </div>
                             <div class="f-row colunm-box rule-border-row">
                                 <div class="col"></div>
-                                <div class="col col-x16">
-                                    <a class="mat-line info-link">New Custom action</a>
+                                <div class="col col-x8">
+                                    <a class="mat-line info-link">New custom action</a>
                                 </div>
-                                <div class="col col-x8"></div>
-                                <div class="col col-x4 text-end">
-                                </div>
-                                <div class="col text-end">
-                                </div>
+                                <div class="col col-x4"></div>
+                                <div class="col col-x4 text-end"></div>
                             </div>
                             <div class="f-row colunm-box rule-border-row">
                                 <div class="col">
@@ -151,14 +142,11 @@
                                 <div class="col col-x4">
                                     <mat-checkbox color="primary"></mat-checkbox>
                                 </div>
-                                <div class="col col-x8">
+                                <div class="col col-x4">
                                     <button mat-stroked-button>Icon only <mat-icon fontSet="mdo-icons">menu-arrow
                                         </mat-icon></button>
                                 </div>
-                                <div class="col col-x4 text-end">
-                                </div>
-                                <div class="col text-end">
-                                </div>
+                                <div class="col col-x4 text-end"></div>
                             </div>
                             <div class="f-row colunm-box rule-border-row">
                                 <div class="col">
@@ -173,15 +161,12 @@
                                 <div class="col col-x4">
                                     <mat-checkbox color="primary"></mat-checkbox>
                                 </div>
-                                <div class="col col-x8">
+                                <div class="col col-x4">
                                     <button mat-stroked-button>Icon and text <mat-icon fontSet="mdo-icons">menu-arrow
                                         </mat-icon>
                                     </button>
                                 </div>
-                                <div class="col col-x4 text-end">
-                                </div>
-                                <div class="col text-end">
-                                </div>
+                                <div class="col col-x4 text-end"></div>
                             </div>
                             <div class="f-row colunm-box rule-border-row">
                                 <div class="col">
@@ -190,18 +175,17 @@
                                     </button>
                                 </div>
                                 <div class="col col-x8">
-                                    <div mat-line>Assign to</div>
+                                    <div mat-line>Assign to...</div>
                                 </div>
 
                                 <div class="col col-x4">
                                     <mat-checkbox color="primary"></mat-checkbox>
                                 </div>
-                                <div class="col col-x8">
+
+                                <div class="col col-x4">
                                 </div>
-                                <div class="col col-x4 text-end">
-                                </div>
-                                <div class="col text-end">
-                                </div>
+                                <div class="col col-x4 text-end"></div>
+
                             </div>
                             <div class="f-row colunm-box rule-border-row">
                                 <div class="col">
@@ -216,14 +200,18 @@
                                 <div class="col col-x4">
                                     <mat-checkbox color="primary"></mat-checkbox>
                                 </div>
-                                <div class="col col-x8">
-                                    <button mat-stroked-button>Text only <mat-icon fontSet="mdo-icons">menu-arrow
-                                        </mat-icon></button>
+
+                                <div class="col col-x4">
+                                    <button mat-stroked-button [matMenuTriggerFor]="actionvalue">Text only <mat-icon fontSet="mdo-icons">menu-arrow
+                                    </mat-icon></button>
+                                    <mat-menu #actionvalue="matMenu" direction="right" class="navigation-menu">
+                                        <button mat-menu-item>Text only</button>
+                                        <button mat-menu-item>Icon only</button>
+                                        <button mat-menu-item>Icon and text</button>
+                                    </mat-menu>
                                 </div>
-                                <div class="col col-x4 text-end">
-                                </div>
-                                <div class="col text-end">
-                                </div>
+                                <div class="col col-x4 text-end"></div>
+
                             </div>
                             <div class="f-row colunm-box rule-border-row">
                                 <div class="col">
@@ -232,36 +220,36 @@
                                     </button>
                                 </div>
                                 <div class="col col-x8">
-                                    <pros-form-input [type]="'text'" [placeholder]="'placeholder'"
-                                        [value]="'My Custom action 1'">
+                                    <pros-form-input [type]="'text'" [placeholder]="'Custom action'"
+                                        [value]="'My custom action 1'">
                                     </pros-form-input>
                                 </div>
 
                                 <div class="col col-x4">
                                     <mat-checkbox color="primary"></mat-checkbox>
                                 </div>
-                                <div class="col col-x8">
-                                    <button mat-stroked-button [matMenuTriggerFor]="dropdown">Text only</button>
-                                    <mat-menu #dropdown="matMenu" direction="right">
-                                        <mat-nav-list>
-                                            <mat-list-item>Rule A</mat-list-item>
-                                            <mat-list-item>Rule B</mat-list-item>
-                                            <mat-list-item>Rule C</mat-list-item>
-                                            <mat-list-item>Rule D</mat-list-item>
-                                        </mat-nav-list>
-                                    </mat-menu>
+
+                                <div class="col col-x4">
+                                    <button mat-stroked-button>Text only</button>
                                 </div>
                                 <div class="col col-x4 text-end">
+                                    <button mat-button [matMenuTriggerFor]="mappingvalue">
+                                        <mat-icon fontSet="mdo-icons" matBadge="8" matBadgeOverlap="false"
+                                            matBadgeColor="accent" class="badge-background">mapping</mat-icon>
+                                    </button>
+                                    <mat-menu #mappingvalue="matMenu" direction="right" class="navigation-menu">
+                                        <button mat-menu-item>Rule A</button>
+                                        <button mat-menu-item>Rule B</button>
+                                        <button mat-menu-item>Rule C</button>
+                                        <button mat-menu-item>Rule D</button>
+                                    </mat-menu>
+                                    <div class="col-spacer"></div>
                                     <button mat-button>
-                                        <mat-icon fontSet="mdo-icons" matBadge="?" matBadgeOverlap="false"
-                                            matBadgeColor="accent">mapping</mat-icon>
+                                        <mat-icon fontSet="mdo-icons">recycle-bin</mat-icon>
                                     </button>
                                 </div>
-                                <div class="col text-end">
-                                    <button mat-button>
-                                        <mat-icon fontSet="mdo-icons"> recycle-bin</mat-icon>
-                                    </button>
-                                </div>
+
+                                
                             </div>
                             <div class="f-row colunm-box rule-border-row">
                                 <div class="col">
@@ -270,34 +258,22 @@
                                     </button>
                                 </div>
                                 <div class="col col-x8">
-                                    <pros-form-input [type]="'text'" [placeholder]="'placeholder'"
-                                        [value]="'My Custom action 2'">
-                                    </pros-form-input>
+                                    <div mat-line class="editablevalue">My custom action 2</div>
                                 </div>
 
                                 <div class="col col-x4">
                                     <mat-checkbox color="primary"></mat-checkbox>
                                 </div>
-                                <div class="col col-x8">
-                                    <button mat-stroked-button [matMenuTriggerFor]="dropdown">Text only</button>
-                                    <mat-menu #dropdown="matMenu" direction="right">
-                                        <mat-nav-list>
-                                            <mat-list-item>Rule A</mat-list-item>
-                                            <mat-list-item>Rule B</mat-list-item>
-                                            <mat-list-item>Rule C</mat-list-item>
-                                            <mat-list-item>Rule D</mat-list-item>
-                                        </mat-nav-list>
-                                    </mat-menu>
+                                <div class="col col-x4">
+                                    <button mat-stroked-button>Text only</button>
                                 </div>
                                 <div class="col col-x4 text-end">
-                                    <button mat-button>
-                                        <mat-icon fontSet="mdo-icons" matBadge="?" matBadgeOverlap="false"
-                                            matBadgeColor="accent">mapping</mat-icon>
+                                    <button mat-button [matMenuTriggerFor]="mappingvalue">
+                                        <mat-icon fontSet="mdo-icons" matBadge="?" matBadgeOverlap="false" class="badge-background badge-error-value">mapping</mat-icon>
                                     </button>
-                                </div>
-                                <div class="col text-end">
+                                    <div class="col-spacer"></div>
                                     <button mat-button>
-                                        <mat-icon fontSet="mdo-icons"> recycle-bin</mat-icon>
+                                        <mat-icon fontSet="mdo-icons">recycle-bin</mat-icon>
                                     </button>
                                 </div>
                             </div>
