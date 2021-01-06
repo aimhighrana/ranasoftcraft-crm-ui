@@ -936,7 +936,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
    * Function to open data scope side sheet
    */
   openDataScopeSideSheet() {
-    this.router.navigate([{ outlets: { sb: `sb/schema/data-scope/${this.moduleId}/${this.schemaId}/new` } }])
+    this.router.navigate([{ outlets: { sb: `sb/schema/data-scope/${this.moduleId}/${this.schemaId}/new/sb` } }])
   }
 
   /**

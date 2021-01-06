@@ -187,7 +187,7 @@ describe('SchemaInfoComponent', () => {
     component.schemaId = '2563145';
     spyOn(router, 'navigate');
     component.addDataScope();
-    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/data-scope/${component.moduleId}/${component.schemaId}/new` } }])
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/data-scope/${component.moduleId}/${component.schemaId}/new/sb` } }])
   })
 
   it('openSummarySideSheet(), should navigate to schema summary side sheet', () => {

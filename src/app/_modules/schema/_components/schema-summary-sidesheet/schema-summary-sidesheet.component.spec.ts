@@ -235,4 +235,13 @@ describe('SchemaSummarySidesheetComponent', () => {
     component.openUploadSideSheet();
     expect(router.navigate).toHaveBeenCalledWith(['', { outlets: { outer: `outer/schema/upload-data/${component.moduleId}/${component.outlet}` } }])
   })
+
+  it('openDataScopeSideSheet(), should open data scope side sheet', async () => {
+    component.moduleId = '1001';
+    component.schemaId = '15423'
+    component.outlet = 'outer';
+    spyOn(router, 'navigate');
+    component.openDataScopeSideSheet();
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { outer: `outer/schema/data-scope/${component.moduleId}/${component.schemaId}/new/${component.outlet}` } }])
+  })
 });

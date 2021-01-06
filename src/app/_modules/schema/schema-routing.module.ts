@@ -98,7 +98,7 @@ const routes: Routes = [
   { path: 'subscriber/:moduleId/:schemaId/:subscriberId', component: SubscriberSideSheetComponent },
   { path: 'subscriber/:moduleId/:schemaId/:subscriberId/:outlet', component: SubscriberSideSheetComponent },
   { path: 'system/duplicate-datacheck-sidesheet', component: DuplicateDatacheckSidesheetComponent },
-  { path: 'data-scope/:moduleId/:schemaId/:variantId', component: DatascopeSidesheetComponent },
+  { path: 'data-scope/:moduleId/:schemaId/:variantId/:outlet', component: DatascopeSidesheetComponent },
   { path: 'execution-trend/:moduleId/:schemaId/:variantId', component: ExecutionTrendSidesheetComponent },
   { path: 'system/configure-sidesheet', component: ConfigureSidesheetComponent },
   { path: 'system/attribute-mapping', component: AttributeMappingComponent },

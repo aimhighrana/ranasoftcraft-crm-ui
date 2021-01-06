@@ -165,6 +165,13 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
       if (res) {
         this.subscriberData.push(...res);
       }
+    });
+
+    this.sharedService.getDataScope().subscribe(res => {
+      if(res) {
+        this.dataScopeControl.setValue(res);
+        this.getSchemaVariants(this.schemaId, 'RUNFOR');
+      }
     })
 
     this.getCollaborators('', this.fetchCount); // To fetch all users details (will use to show in auto complete)
@@ -754,5 +761,12 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
         return;
       }
     })
+  }
+
+  /**
+   * Function to open data scope side sheet
+   */
+  openDataScopeSideSheet() {
+    this.router.navigate([ { outlets: { outer: `outer/schema/data-scope/${this.moduleId}/${this.schemaId}/new/${this.outlet}` } }]);
   }
 }

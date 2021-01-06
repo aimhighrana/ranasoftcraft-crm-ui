@@ -136,5 +136,19 @@ describe('SubscriberSideSheetComponent', () => {
     ]
     component.uncheckSubscriber(subscriber);
     expect(component.addSubscriberArr.length).toEqual(0);
+  });
+
+  it('openSubscriberInviteDialog(), should open subscriber invite component', async() => {
+    component.outlet = 'outer';
+    component.showInviteTemplate = false;
+    component.openSubscriberInviteDialog();
+    expect(component.showInviteTemplate).toEqual(true);
+
+    component.outlet = 'sb';
+    component.moduleId = '1005';
+    component.schemaId = '25631';
+    spyOn(router, 'navigate');
+    component.openSubscriberInviteDialog();
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { outer: `outer/schema/invite-subscriber/${component.moduleId}/${component.schemaId}/outer` } }])
   })
 });

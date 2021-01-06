@@ -42,6 +42,8 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
    */
   loadDropValuesFor: LoadDropValueReq;
 
+  outlet: string;
+
   /**
    * To hold all subscriptions
    */
@@ -67,6 +69,7 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
       this.schemaId = params.schemaId;
       this.moduleId = params.moduleId;
       this.variantId = params.variantId;
+      this.outlet = params.outlet;
 
       if(this.variantId !== 'new') {
         this.getDataScopeDetails(this.variantId);
@@ -93,7 +96,7 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
    * function to close dataScope side sheet
    */
   close(){
-    this.router.navigate([{outlets: {sb: null}}])
+    this.router.navigate([{ outlets: { [`${this.outlet}`]: null } }]);
   }
 
   /**
