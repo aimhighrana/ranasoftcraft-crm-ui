@@ -36,7 +36,7 @@ export class SearchInputComponent implements OnInit, OnChanges {
    */
   ngOnInit(): void {
     this.control.valueChanges
-      .pipe(debounceTime(300))
+      .pipe(debounceTime(1000))
       .subscribe(value => {
         this.value.emit(value);
       });
@@ -64,9 +64,6 @@ export class SearchInputComponent implements OnInit, OnChanges {
     if (changes && changes.preValue && changes.preValue.previousValue !== changes.preValue.currentValue) {
       this.preValue = changes.preValue.currentValue;
       this.control = new FormControl(this.preValue);
-      this.control.valueChanges.subscribe(value => {
-        this.value.emit(value);
-      });
     }
   }
 }

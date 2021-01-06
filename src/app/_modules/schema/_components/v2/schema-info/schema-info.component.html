@@ -81,11 +81,11 @@
                     <div class="col"></div>
                     <div class="col col-x4"><strong>Business rule</strong></div>
                     <div class="col col-x4"><strong class="f-row">Category
-                            <mat-icon matTooltip="Category" fontSet="mdo-icons" class="mat-head-icon">
+                            <mat-icon matTooltip="Dimension of data quality to be measured" fontSet="mdo-icons" class="mat-head-icon">
                                 question-mark</mat-icon>
                         </strong></div>
                     <div class="col col-x4 mat-item-center"><strong class="f-row">Weight
-                            <mat-icon matTooltip="Weight" fontSet="mdo-icons" class="mat-head-icon">
+                            <mat-icon matTooltip="Score assigned to a record upon successful validation of a business rule.For a schema total weightage of all the business rules must not exceed 100" fontSet="mdo-icons" class="mat-head-icon">
                                 question-mark</mat-icon>
                         </strong></div>
                     <div class="col col-x4"><strong>Enabled</strong></div>
@@ -215,7 +215,7 @@
                                     menu-arrow</mat-icon></button>
                             <button mat-stroked-button *ngIf="subscriber.isReviewer">Reviewer <mat-icon fontSet="mdo-icons">
                                     menu-arrow</mat-icon></button>
-                            <button mat-stroked-button *ngIf="subscriber.isViewer">Viewer <mat-icon fontSet="mdo-icons">
+                            <button mat-stroked-button *ngIf="subscriber.isViewer && !( subscriber.isAdmin || subscriber.isReviewer || subscriber.isEditer)">Viewer <mat-icon fontSet="mdo-icons">
                                     menu-arrow</mat-icon></button>
                             <button mat-stroked-button *ngIf="subscriber.isEditer">Editor <mat-icon fontSet="mdo-icons">
                                     menu-arrow</mat-icon></button>
