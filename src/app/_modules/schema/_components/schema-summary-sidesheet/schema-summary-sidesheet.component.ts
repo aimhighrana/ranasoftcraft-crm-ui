@@ -20,6 +20,7 @@ import { SchemaVariantService } from '@services/home/schema/schema-variant.servi
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { forkJoin, Subscription } from 'rxjs';
 
+
 @Component({
   selector: 'pros-schema-summary-sidesheet',
   templateUrl: './schema-summary-sidesheet.component.html',
@@ -156,7 +157,9 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
 
     const brSave = this.sharedService.getAfterBrSave().subscribe(res => {
       if (res) {
-        this.businessRuleData.push(...res);
+        console.log(res);
+        this.businessRuleData = this.businessRuleData.concat(res);
+        console.log(this.businessRuleData);
       }
     });
     this.subscriptions.push(brSave);
@@ -515,7 +518,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
   /**
    * Function to open business rule library side sheet
    */
-  openBusinessRuleSideSheet() {
+  openBrLibrarySideSheet() {
     this.router.navigate(['', { outlets: { outer: `outer/schema/businessrule-library/${this.moduleId}/${this.schemaId}/${this.outlet}` } }])
   }
 
@@ -768,5 +771,11 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    */
   openDataScopeSideSheet() {
     this.router.navigate([ { outlets: { outer: `outer/schema/data-scope/${this.moduleId}/${this.schemaId}/new/${this.outlet}` } }]);
+  }
+  /**
+   * Function to open new br sidesheet
+   */
+  openBusinessRuleSideSheet() {
+    this.router.navigate(['', { outlets: { outer: `outer/schema/business-rule/${this.moduleId}/${this.schemaId}/new/outer`} }]);
   }
 }

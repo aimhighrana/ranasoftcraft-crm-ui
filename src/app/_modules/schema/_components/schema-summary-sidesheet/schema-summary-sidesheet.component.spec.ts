@@ -123,13 +123,13 @@ describe('SchemaSummarySidesheetComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: null } }]);
   });
 
-  it('openBusinessRuleSideSheet(), should open business rule side sheet', () => {
+  it('openBrLibrarySideSheet(), should open business rule side sheet', () => {
     component.moduleId = '1004';
     component.schemaId = '15125412';
     component.outlet = 'outer';
 
     spyOn(router, 'navigate');
-    component.openBusinessRuleSideSheet();
+    component.openBrLibrarySideSheet();
     expect(router.navigate).toHaveBeenCalledWith(['', { outlets: { outer: `outer/schema/businessrule-library/${component.moduleId}/${component.schemaId}/${component.outlet}` } }])
   });
 
@@ -243,5 +243,13 @@ describe('SchemaSummarySidesheetComponent', () => {
     spyOn(router, 'navigate');
     component.openDataScopeSideSheet();
     expect(router.navigate).toHaveBeenCalledWith([{ outlets: { outer: `outer/schema/data-scope/${component.moduleId}/${component.schemaId}/new/${component.outlet}` } }])
+  })
+
+  it('openBusinessRuleSideSheet(), should openBusinessRuleSideSheet', async () => {
+    component.moduleId = '1001';
+    component.schemaId = '15423'
+    spyOn(router, 'navigate');
+    component.openBusinessRuleSideSheet();
+    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: { outer: `outer/schema/business-rule/${component.moduleId}/${component.schemaId}/new/outer`} }])
   })
 });
