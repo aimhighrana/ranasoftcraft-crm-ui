@@ -12,7 +12,7 @@
       <div class="autodropdown-scroll">
         <mat-option *ngFor="let option of filteredOptions | async; trackBy :suggestedMdoFldTrkBy"
           [value]="getValue(option)" [matTooltip]="getTooltipText(option)">
-          {{ getLabel(option) }}
+          {{ getLabel(option) || 'UNTITLED' }}
         </mat-option>
         <div class="f-row no-result" *ngIf="!hasResult">
           <mat-icon class="mdo-icons">search</mat-icon>

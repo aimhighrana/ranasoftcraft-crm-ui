@@ -12,17 +12,35 @@ export class SearchInputComponent implements OnInit, OnChanges {
 
   constructor() { }
 
+  /**
+   * form control declaration
+   */
   control: FormControl = new FormControl('');
 
+  /**
+   * The label to show in the search input field
+   */
   @Input() label = 'Search';
 
+  /**
+   * The type of input
+   */
   @Input() type: string;
 
+  /**
+   * placeholder for input
+   */
   @Input() placeholder = 'Search';
 
+  /**
+   * Pass the preselected value if needed
+   */
   @Input()
   preValue = '';
 
+  /**
+   * toggle to handle focus class
+   */
   hasFocus = false;
 
   /**

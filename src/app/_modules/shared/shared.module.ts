@@ -47,6 +47,7 @@ import { ChartsModule } from 'ng2-charts';
 import { TableColumnSettingsComponent } from './_components/table-column-settings/table-column-settings.component';
 import { ClickStopPropagationDirective } from './_directives/click-stop-propagation.directive';
 import { SubstringPipe } from './_pipes/substringpipe.pipe';
+import { ReplaceUnderscorePipe } from './_pipes/replaceUnderscore.pipe';
 import { ThousandconvertorPipe } from './_pipes/thousandconvertor.pipe';
 import { FormatTableHeadersPipe } from './_pipes/format-table-headers.pipe';
 import { TagsEllipsisDirective } from './_directives/tags-ellipsis.directive';
@@ -84,6 +85,7 @@ import { SchemaExecutionTrendComponent } from './_components/statistics/schema-e
     ContainerRefDirective,
     // pipes
     SubstringPipe,
+    ReplaceUnderscorePipe,
     ThousandconvertorPipe,
     // shared components
     PageNotFoundComponent,
@@ -227,6 +229,7 @@ import { SchemaExecutionTrendComponent } from './_components/statistics/schema-e
     ContainerRefDirective,
     // pipes
     SubstringPipe,
+    ReplaceUnderscorePipe,
     ThousandconvertorPipe,
     FormatTableHeadersPipe,
     // components

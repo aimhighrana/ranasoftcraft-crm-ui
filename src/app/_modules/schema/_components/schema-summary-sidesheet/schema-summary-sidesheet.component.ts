@@ -274,7 +274,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    * @param lname lastName of the subscriber
    */
   public shortName(fName: string, lName: string) {
-    if (fName.length >= 1 && lName.length >= 1) {
+    if (fName && lName && fName.length >= 1 && lName.length >= 1) {
       return fName[0] + lName[0];
     } else {
       return '';

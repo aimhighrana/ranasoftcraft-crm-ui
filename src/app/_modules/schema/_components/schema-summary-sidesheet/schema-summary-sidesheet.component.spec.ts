@@ -1,5 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PermissionOn, SchemaDashboardPermission } from '@models/collaborator';
@@ -210,6 +211,7 @@ describe('SchemaSummarySidesheetComponent', () => {
 
   it('getSchemaDetails(), should get schema details', async () => {
     component.schemaId = '12545';
+    component.schemaThresholdControl = new FormControl(null);
     spyOn(schemaListService, 'getSchemaDetailsBySchemaId').withArgs(component.schemaId).and.returnValue(of({} as SchemaListDetails))
     component.getSchemaDetails(component.schemaId);
     expect(schemaListService.getSchemaDetailsBySchemaId).toHaveBeenCalledWith(component.schemaId);

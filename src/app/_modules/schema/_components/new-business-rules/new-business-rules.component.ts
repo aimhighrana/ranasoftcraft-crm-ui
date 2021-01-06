@@ -14,6 +14,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Regex } from '@modules/admin/_components/module/business-rules/regex-rule/regex-rule.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BlockType } from '@modules/report/_models/widget';
+import { CONDITIONS } from 'src/app/_constants';
 
 @Component({
     selector: 'pros-new-business-rules',
@@ -613,6 +614,7 @@ export class NewBusinessRulesComponent implements OnInit {
 
         const udrHierarchies = []
         const blocks = []
+
         this.udrBlocks.forEach((block) => {
             const blockObject = {
                 id: block.id,
@@ -621,10 +623,10 @@ export class NewBusinessRulesComponent implements OnInit {
                 conditionFieldValue: block.comparisonValue,
                 conditionFieldStartValue: block.rangeStartValue,
                 conditionFieldEndValue: block.rangeEndValue,
-                blockType: block.blockTypeText,
+                blockType: this.getBlockType(block.blockTypeText),
                 conditionOperator: block.operator,
                 children: block.children,
-                blockDesc: '',
+                blockDesc: block.blockTypeText,
                 plantCode: '0'
             }
 
@@ -645,9 +647,9 @@ export class NewBusinessRulesComponent implements OnInit {
                 conditionFieldValue: block.comparisonValue,
                 conditionFieldStartValue: block.rangeStartValue,
                 conditionFieldEndValue: block.rangeEndValue,
-                blockType: block.blockTypeText,
+                blockType: this.getBlockType(block.blockTypeText),
                 conditionOperator: block.operator,
-                blockDesc: '',
+                blockDesc: block.blockTypeText,
                 plantCode: '',
                 children: block.children
             })
@@ -686,32 +688,19 @@ export class NewBusinessRulesComponent implements OnInit {
     possibleOperators(): ConditionalOperator[] {
         // get generic operators
         const genericOp: ConditionalOperator = new ConditionalOperator();
-        genericOp.desc = 'Common Operator';
-        genericOp.childs = [];
-        genericOp.childs.push('EQUAL');
-        genericOp.childs.push('STARTS_WITH');
-        genericOp.childs.push('ENDS_WITH');
-        genericOp.childs.push('CONTAINS');
-        genericOp.childs.push('EMPTY');
-        genericOp.childs.push('NOT_EMPTY');
+        genericOp.desc = CONDITIONS.common.desc;
+        genericOp.childs = CONDITIONS.common.operators;
 
         // for numeric number field
         const onlyNum: ConditionalOperator = new ConditionalOperator();
-        onlyNum.desc = 'Numeric Operators';
-        onlyNum.childs = [];
-        onlyNum.childs.push('RANGE');
-        onlyNum.childs.push('LESS_THAN');
-        onlyNum.childs.push('LESS_THAN_EQUAL');
-        onlyNum.childs.push('GREATER_THAN');
-        onlyNum.childs.push('GREATER_THAN_EQUAL');
+        onlyNum.desc = CONDITIONS.numeric.desc;
+        onlyNum.childs = CONDITIONS.numeric.operators;
 
         // for special operators
         const specialOpe: ConditionalOperator = new ConditionalOperator();
-        specialOpe.desc = 'Special Operators';
-        specialOpe.childs = [];
-        specialOpe.childs.push('REGEX');
-        specialOpe.childs.push('FIELD2FIELD');
-        specialOpe.childs.push('LOCATION');
+        specialOpe.desc = CONDITIONS.special.desc;
+        specialOpe.childs = CONDITIONS.special.operators;
+
         return [genericOp, onlyNum, specialOpe];
     }
 
@@ -820,7 +809,11 @@ export class NewBusinessRulesComponent implements OnInit {
     }
 
     getBlockType(type: string) {
-        return BlockType[type.toUpperCase()];
+        if(type.toLowerCase() === 'when') {
+            return BlockType.AND;
+        } else {
+            return BlockType[type.toUpperCase()];
+        }
     }
 
     displayFn(value) {

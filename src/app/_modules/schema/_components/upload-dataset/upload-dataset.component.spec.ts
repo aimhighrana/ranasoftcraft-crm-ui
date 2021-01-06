@@ -425,4 +425,39 @@ describe('UploadDatasetComponent', () => {
 
   }));
 
+  it('getWeightage(), should return weightage', async() => {
+    const br: CoreSchemaBrInfo = {
+      sno: 1299484,
+      brId: '22',
+      brType: 'TRANSFORMATION',
+      refId: 1,
+      fields: '',
+      regex: '',
+      order: 1,
+      apiKey: '',
+      message: 'Invalid',
+      script: '',
+      brInfo: 'Test Rule',
+      brExpose: 0,
+      status: '1',
+      categoryId: '21474',
+      standardFunction: '',
+      brWeightage: '10',
+      totalWeightage: 100,
+      transformation: 0,
+      tableName: '',
+      qryScript: '',
+      dependantStatus: 'ALL',
+      plantCode:'0',
+      percentage:  0,
+      schemaId: '',
+      brIdStr: '',
+      udrDto: null,
+      transFormationSchema: null,
+      isCopied: false,
+      duplicacyField: [],
+      duplicacyMaster: []
+    };
+    expect(component.getWeightage(br)).toEqual(10);
+  })
 });

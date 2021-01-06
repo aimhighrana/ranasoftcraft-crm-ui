@@ -13,6 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SchemaService } from '@services/home/schema.service';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { BlockType } from '@modules/admin/_components/module/business-rules/user-defined-rule/udr-cdktree.service';
+import { CONDITIONS } from 'src/app/_constants';
 
 @Component({
   selector: 'pros-brrule-side-sheet',
@@ -930,34 +931,21 @@ export class BrruleSideSheetComponent implements OnInit {
   possibleOperators(): ConditionalOperator[] {
     // get generic operators
     const genericOp: ConditionalOperator = new ConditionalOperator();
-    genericOp.desc = 'Common Operator';
-    genericOp.childs = [];
-    genericOp.childs.push('EQUAL');
-    genericOp.childs.push('STARTS_WITH');
-    genericOp.childs.push('ENDS_WITH');
-    genericOp.childs.push('CONTAINS');
-    genericOp.childs.push('EMPTY');
-    genericOp.childs.push('NOT_EMPTY');
+    genericOp.desc = CONDITIONS.common.desc;
+    genericOp.childs = CONDITIONS.common.operators;
 
     // for numeric number field
     const onlyNum: ConditionalOperator = new ConditionalOperator();
-    onlyNum.desc = 'Numeric Operators';
-    onlyNum.childs = [];
-    onlyNum.childs.push('RANGE');
-    onlyNum.childs.push('LESS_THAN');
-    onlyNum.childs.push('LESS_THAN_EQUAL');
-    onlyNum.childs.push('GREATER_THAN');
-    onlyNum.childs.push('GREATER_THAN_EQUAL');
+    onlyNum.desc = CONDITIONS.numeric.desc;
+    onlyNum.childs = CONDITIONS.numeric.operators;
 
     // for special operators
     const specialOpe: ConditionalOperator = new ConditionalOperator();
-    specialOpe.desc = 'Special Operators';
-    specialOpe.childs = [];
-    specialOpe.childs.push('REGEX');
-    specialOpe.childs.push('FIELD2FIELD');
-    specialOpe.childs.push('LOCATION');
+    specialOpe.desc = CONDITIONS.special.desc;
+    specialOpe.childs = CONDITIONS.special.operators;
+
     return [genericOp, onlyNum, specialOpe];
-  }
+}
 
   /**
    * method to set the comparison value

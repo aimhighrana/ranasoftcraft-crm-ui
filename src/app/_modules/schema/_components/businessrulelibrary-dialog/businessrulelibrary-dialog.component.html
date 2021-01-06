@@ -37,7 +37,7 @@
             <div class="loading-spinner"><mat-spinner color="accent" diameter="30" *ngIf="loader"></mat-spinner></div>
             <mat-list role="list" class="rule-list" *ngIf="!loader && filteredBusinessRulesList.length>0">
                 <mat-list-item role="listitem" *ngFor="let brItem of filteredBusinessRulesList; trackBy: trackByFn">
-                    <div class="mat-line">{{brItem.brInfo}}</div>
+                    <div class="mat-line">{{brItem.brInfo || 'UNTITLED'}}</div>
                     <span class="f-spacer"></span>
                     <button mat-flat-button color="accent" *ngIf="!isSelected(brItem); else doneButton"
                         (click)="selectBusinessRule(brItem, constants.ADD)">Add</button>

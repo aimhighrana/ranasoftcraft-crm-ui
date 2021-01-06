@@ -1617,8 +1617,30 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
             this.mapSubscriberInfo(subscriber, permission);
           }
         });
-
       });
     });
+  }
+
+  /**
+   * handle weightage change
+   * @param event pass the change event
+   * @param i pass the business rule index
+   */
+  weightageChange(event, i) {
+    const availableWeight: number = this.getCurrentWeightageLimit(this.selectedBusinessRules[i].brWeightage);
+
+    if(event.value <= availableWeight) {
+      this.selectedBusinessRules[i].brWeightage = event.value;
+    } else {
+      this.selectedBusinessRules[i].brWeightage = availableWeight;
+    }
+  }
+
+  /**
+   * get brrule weightage
+   * @param rule pass the business rule
+   */
+  getWeightage(rule:CoreSchemaBrInfo): number {
+    return Number(rule.brWeightage);
   }
 }
