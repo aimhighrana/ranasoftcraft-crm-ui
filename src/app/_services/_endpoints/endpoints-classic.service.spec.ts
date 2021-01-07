@@ -138,8 +138,44 @@ describe('EndpointsClassicService', () => {
   }));
 
   it('generateMroClassificationDescriptionUri(),should return generateMroClassificationDescriptionUri url', async(() => {
-    const serObj =new EndpointsClassicService();
+    const serObj = new EndpointsClassicService();
     expect(serObj.generateMroClassificationDescriptionUri()).toContain('schema/mro/generate-description');
+  }));
+
+  it('getExecutionOverviewChartDataUrl(),should return getExecutionOverviewChartDataUrl url', async(() => {​​​​​​​​​
+    const serObj = new EndpointsClassicService();
+    expect(serObj.getExecutionOverviewChartDataUrl('schema1', '0')).toContain('schema/overview-chart-data/schema1/0');
+  }​​​​​​​​​​​​​​​​));
+
+  it('getlayoutsUrl(),should return getlayoutsUrl url', async(() => {​​​​​​​​​​​​​​​​
+    const serObj = new EndpointsClassicService();
+    expect(serObj.getlayoutsUrl()).toContain('/report/layouts');
+  }​​​​​​​​​​​​​​​​));
+
+   it('generateCrossEntryUri(),should return generateCrossEntryUri url', async(() => {​​​​​​​​​​​​​​​​
+    const serObj = new EndpointsClassicService();
+    expect(serObj.generateCrossEntryUri('schemaId', 'objectType', 'objectNumber' )).toContain('schema/generateCrossmodule/schemaId/objectType/objectNumber');
+  }​​​​​​​​​​​​​​​​));
+
+  it('resetCorrectionRecords(), return Uri for reset schema execution correction data ',async(() => {
+    const serObj =new EndpointsClassicService();
+    expect(serObj.resetCorrectionRecords('654567879')).toContain('schema/reset-corrected-records/654567879');
+  }));
+
+  it('getNotificationsCount(), return count of notification',async(() => {
+    const serObj =new EndpointsClassicService();
+    const senderUid = '654567879';
+    expect(serObj.getNotificationsCount(senderUid)).toContain(`notification/getNotificationCount/${senderUid}`);
+  }));
+
+  it('getSaveTaskListViewUrl(), should save task list view', async(() => {
+    const serObj =new EndpointsClassicService();
+    expect(serObj.getSaveTaskListViewUrl()).toContain('tasklist/taskListUserView');
+  }));
+
+  it('saveUpdateUDRUrl(), should saveudr rule', async(() => {
+    const serObj =new EndpointsClassicService();
+    expect(serObj.saveUpdateUDRUrl()).toContain('admin/schema/udr/save-update');
   }));
 
 });

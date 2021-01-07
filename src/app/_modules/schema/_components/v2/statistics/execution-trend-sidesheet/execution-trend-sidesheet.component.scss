@@ -1,15 +1,11 @@
-mat-card.root {
+div.root {
   user-select: none;
   height: 100%;
-  padding: 0 16px;
-  width: 660px;
+  overflow: hidden;
+  width: 668px;
 
   .breadcrum-toolbar {
-    align-items: center;
-    padding-top: 16px;
-    position: sticky;
-    top: 0;
-    z-index: 2;
+    padding: 8px 16px;
 
     .display-heading-large {
       font-size: 1.2rem;
@@ -26,6 +22,11 @@ mat-card.root {
         min-width: auto;
       }
     }
+  }
+
+  .sidesheetcontent-listing {
+    height: calc(100% - 52px);
+    overflow: auto;
   }
 }
 
