@@ -342,7 +342,8 @@ describe('SchemaDetailsComponent', () => {
         firstChange:true,
         isFirstChange:null,
         previousValue:null
-      },varinatId:{
+      },
+      varinatId:{
         currentValue:'0',
         firstChange:true,
         isFirstChange:null,
@@ -350,8 +351,247 @@ describe('SchemaDetailsComponent', () => {
       }
     } as SimpleChanges;
 
+    spyOn(component, 'getDataScope');
+    spyOn(component, 'getFldMetadata');
+    spyOn(component, 'getSchemaStatics');
+    spyOn(component, 'getSchemaDetails');
+    spyOn(component, 'manageStaticColumns');
+    spyOn(component, 'getData');
     component.ngOnChanges(changes);
-    expect(component.ngOnChanges).toBeTruthy();
+    expect(component.getDataScope).toHaveBeenCalled();
+    expect(component.getFldMetadata).toHaveBeenCalled();
+    expect(component.getSchemaStatics).toHaveBeenCalled();
+    expect(component.getSchemaDetails).toHaveBeenCalled();
+    expect(component.manageStaticColumns).toHaveBeenCalled();
+    component.dataSource.brMetadata.subscribe(res=> {
+      if(res) {
+        expect(component.getData).toHaveBeenCalled();
+      }
+    });
+
+    const changes1 = {
+      moduleId:{
+        currentValue:'1005',
+        firstChange:undefined,
+        isFirstChange:null,
+        previousValue:null
+      },
+      schemaId:{
+        currentValue:'28467126471',
+        firstChange:true,
+        isFirstChange:null,
+        previousValue:null
+      },
+      varinatId:{
+        currentValue:'0',
+        firstChange:true,
+        isFirstChange:null,
+        previousValue:null
+      }
+    } as SimpleChanges;
+    component.ngOnChanges(changes1);
+    expect(component.getDataScope).toHaveBeenCalled();
+    expect(component.getFldMetadata).toHaveBeenCalled();
+    expect(component.getSchemaStatics).toHaveBeenCalled();
+    expect(component.getSchemaDetails).toHaveBeenCalled();
+    expect(component.manageStaticColumns).toHaveBeenCalled();
+    component.dataSource.brMetadata.subscribe(res2=> {
+      if(res2) {
+        expect(component.getData).toHaveBeenCalled();
+      }
+    });
+
+    const changes2 = {
+      moduleId:{
+        currentValue:'1005',
+        firstChange:true,
+        isFirstChange:null,
+        previousValue:null
+      },
+      schemaId:{
+        currentValue:'28467126471',
+        firstChange:undefined,
+        isFirstChange:null,
+        previousValue:null
+      },
+      varinatId:{
+        currentValue:'0',
+        firstChange:true,
+        isFirstChange:null,
+        previousValue:null
+      }
+    } as SimpleChanges;
+    component.ngOnChanges(changes2);
+    expect(component.getDataScope).toHaveBeenCalled();
+    expect(component.getFldMetadata).toHaveBeenCalled();
+    expect(component.getSchemaStatics).toHaveBeenCalled();
+    expect(component.getSchemaDetails).toHaveBeenCalled();
+    expect(component.manageStaticColumns).toHaveBeenCalled();
+    component.dataSource.brMetadata.subscribe(res2=> {
+      if(res2) {
+        expect(component.getData).toHaveBeenCalled();
+      }
+    });
+
+    const changes3 = {
+      moduleId:{
+        currentValue:'1005',
+        firstChange:true,
+        isFirstChange:null,
+        previousValue:null
+      },
+      schemaId:{
+        currentValue:'28467126471',
+        firstChange:true,
+        isFirstChange:null,
+        previousValue:null
+      },
+      varinatId:{
+        currentValue:'0',
+        firstChange:undefined,
+        isFirstChange:null,
+        previousValue:null
+      }
+    } as SimpleChanges;
+    component.ngOnChanges(changes3);
+    expect(component.getDataScope).toHaveBeenCalled();
+    expect(component.getFldMetadata).toHaveBeenCalled();
+    expect(component.getSchemaStatics).toHaveBeenCalled();
+    expect(component.getSchemaDetails).toHaveBeenCalled();
+    expect(component.manageStaticColumns).toHaveBeenCalled();
+    component.dataSource.brMetadata.subscribe(res3=> {
+      if(res3) {
+        expect(component.getData).toHaveBeenCalled();
+      }
+    });
+
+    const changes4 = {
+      moduleId:{
+        currentValue:'1005',
+        firstChange:undefined,
+        isFirstChange:null,
+        previousValue:null
+      },
+      schemaId:{
+        currentValue:'28467126471',
+        firstChange:undefined,
+        isFirstChange:null,
+        previousValue:null
+      },
+      varinatId:{
+        currentValue:'0',
+        firstChange:true,
+        isFirstChange:null,
+        previousValue:null
+      }
+    } as SimpleChanges;
+    component.ngOnChanges(changes4);
+    expect(component.getDataScope).toHaveBeenCalled();
+    expect(component.getFldMetadata).toHaveBeenCalled();
+    expect(component.getSchemaStatics).toHaveBeenCalled();
+    expect(component.getSchemaDetails).toHaveBeenCalled();
+    expect(component.manageStaticColumns).toHaveBeenCalled();
+    component.dataSource.brMetadata.subscribe(res4=> {
+      if(res4) {
+        expect(component.getData).toHaveBeenCalled();
+      }
+    });
+
+    const changes5 = {
+      moduleId:{
+        currentValue:'1005',
+        firstChange:undefined,
+        isFirstChange:null,
+        previousValue:null
+      },
+      schemaId:{
+        currentValue:'28467126471',
+        firstChange:true,
+        isFirstChange:null,
+        previousValue:null
+      },
+      varinatId:{
+        currentValue:'0',
+        firstChange:undefined,
+        isFirstChange:null,
+        previousValue:null
+      }
+    } as SimpleChanges;
+    component.ngOnChanges(changes5);
+    expect(component.getDataScope).toHaveBeenCalled();
+    expect(component.getFldMetadata).toHaveBeenCalled();
+    expect(component.getSchemaStatics).toHaveBeenCalled();
+    expect(component.getSchemaDetails).toHaveBeenCalled();
+    expect(component.manageStaticColumns).toHaveBeenCalled();
+    component.dataSource.brMetadata.subscribe(res5=> {
+      if(res5) {
+        expect(component.getData).toHaveBeenCalled();
+      }
+    });
+
+    const changes6 = {
+      moduleId:{
+        currentValue:'1005',
+        firstChange:undefined,
+        isFirstChange:null,
+        previousValue:null
+      },
+      schemaId:{
+        currentValue:'28467126471',
+        firstChange:undefined,
+        isFirstChange:null,
+        previousValue:null
+      },
+      varinatId:{
+        currentValue:'0',
+        firstChange:true,
+        isFirstChange:null,
+        previousValue:null
+      }
+    } as SimpleChanges;
+    component.ngOnChanges(changes6);
+    expect(component.getDataScope).toHaveBeenCalled();
+    expect(component.getFldMetadata).toHaveBeenCalled();
+    expect(component.getSchemaStatics).toHaveBeenCalled();
+    expect(component.getSchemaDetails).toHaveBeenCalled();
+    expect(component.manageStaticColumns).toHaveBeenCalled();
+    component.dataSource.brMetadata.subscribe(res6=> {
+      if(res6) {
+        expect(component.getData).toHaveBeenCalled();
+      }
+    });
+
+    const changes7 = {
+      moduleId:{
+        currentValue:'1005',
+        firstChange:true,
+        isFirstChange:null,
+        previousValue:null
+      },
+      schemaId:{
+        currentValue:'28467126471',
+        firstChange:undefined,
+        isFirstChange:null,
+        previousValue:null
+      },
+      varinatId:{
+        currentValue:'0',
+        firstChange:undefined,
+        isFirstChange:null,
+        previousValue:null
+      }
+    } as SimpleChanges;
+    component.ngOnChanges(changes7);
+    expect(component.getDataScope).toHaveBeenCalled();
+    expect(component.getFldMetadata).toHaveBeenCalled();
+    expect(component.getSchemaStatics).toHaveBeenCalled();
+    expect(component.getSchemaDetails).toHaveBeenCalled();
+    expect(component.manageStaticColumns).toHaveBeenCalled();
+    component.dataSource.brMetadata.subscribe(res7=> {
+      if(res7) {
+        expect(component.getData).toHaveBeenCalled();
+      }
+    });
   }));
 
   it('openSummarySideSheet(), should navigate to schema summary side sheet', () => {
