@@ -85,11 +85,11 @@
                     <div class="col"></div>
                     <div class="col col-x4"><strong>Business rule</strong></div>
                     <div class="col col-x4"><strong class="f-row">Category
-                            <mat-icon matTooltip="Category" fontSet="mdo-icons" class="mat-head-icon">
+                            <mat-icon matTooltip="Dimension of data quality to be measured" fontSet="mdo-icons" class="mat-head-icon">
                                 question-mark</mat-icon>
                         </strong></div>
                     <div class="col col-x4 mat-item-center"><strong class="f-row">Weight
-                            <mat-icon matTooltip="Weight" fontSet="mdo-icons" class="mat-head-icon">
+                            <mat-icon matTooltip="Score assigned to a record upon successful validation of a business rule.For a schema total weightage of all the business rules must not exceed 100" fontSet="mdo-icons" class="mat-head-icon">
                                 question-mark</mat-icon>
                         </strong></div>
                     <div class="col col-x4"><strong>Enabled</strong></div>
@@ -231,9 +231,9 @@
                         <div class="col col-x16">
                             <mat-chip-list>
                                 <ng-template ngFor let-ctrl [ngForOf]="subscriber.filterCriteria">
-    
-                                    <mat-chip class="mdo-filter-matchip" disableRipple="true"
-                                        [matMenuTriggerFor]="appliedfiltermenu" (click)="loadDropValues(ctrl)">
+                                
+                                    <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="appliedfiltermenu"
+                                        (click)="loadDropValues(ctrl)">
                                         <label>
                                             {{ ctrl.filterCtrl ? ctrl.filterCtrl.fldCtrl.fieldDescri : 'Unknown' }}
                                             :
