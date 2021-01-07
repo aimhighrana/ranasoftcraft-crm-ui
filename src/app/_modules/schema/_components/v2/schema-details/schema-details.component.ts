@@ -212,6 +212,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
     }
 
     if (isRefresh) {
+      this.activeTab='error';
       this.getDataScope();
       this.getFldMetadata();
       this.dataSource = new SchemaDataSource(this.schemaDetailService, this.endpointservice, this.schemaId);
@@ -226,6 +227,12 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
       this.schemaDetailService.getAllSelectedFields(this.schemaId, this.variantId).subscribe(res => {
         this.selectedFieldsOb.next(res ? res : [])
       }, error => console.error(`Error : ${error}`));
+      this.manageStaticColumns();
+      this.dataSource.brMetadata.subscribe(res => {
+        if (res) {
+          this.getData();
+        }
+      });
     }
 
     // reset filter and sort order
