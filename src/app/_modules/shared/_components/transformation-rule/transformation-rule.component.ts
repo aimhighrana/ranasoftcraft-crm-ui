@@ -1,5 +1,5 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Component, OnInit, OnChanges, SimpleChanges, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BusinessRuleType } from '@modules/admin/_components/module/business-rules/business-rules.modal';
@@ -14,12 +14,30 @@ import { FieldConfiguration, TransformationFormData } from '@models/schema/schem
   styleUrls: ['./transformation-rule.component.scss']
 })
 export class TransformationRuleComponent implements OnInit, OnChanges {
+
+  /**
+   * create a form instance
+   */
   form: FormGroup;
 
+  /**
+   * hold filtered target fields
+   */
   filteredTargetFields: Observable<any[]> = of([]);
+
+  /**
+   * hold selected target fields
+   */
   selectedTargetFields: any[] = [];
 
+  /**
+   * hold filtered source fields
+   */
   filteredSourceFields: Observable<any[]> = of([]);
+
+  /**
+   * hold selected source fields
+   */
   selectedSourceField: any = null;
 
   /**
@@ -66,6 +84,16 @@ export class TransformationRuleComponent implements OnInit, OnChanges {
   initialTransformationData: TransformationFormData;
 
   /**
+   * reference to source input element
+   */
+  @ViewChild('sourceFieldInput') sourceFieldInput: ElementRef;
+
+  /**
+   * reference to target input element
+   */
+  @ViewChild('targetFieldInput') targetFieldInput: ElementRef;
+
+  /**
    * Output property to emit transformation rule data back to parent component
    */
   @Output()
@@ -86,7 +114,7 @@ export class TransformationRuleComponent implements OnInit, OnChanges {
    */
   initializeForm() {
     this.form = new FormGroup({
-      sourceFld: new FormControl('', [Validators.required]),
+      sourceFld: new FormControl(''),
       targetFld: new FormControl(''),
       excludeScript: new FormControl('', [Validators.required]),
       includeScript: new FormControl('', [Validators.required]),
@@ -158,7 +186,7 @@ export class TransformationRuleComponent implements OnInit, OnChanges {
           return keyword ?
             this.sourceFieldsObject.list.filter(item => {
               return item[this.sourceFieldsObject.labelKey].toString().toLowerCase().indexOf(keyword) !== -1
-            }) : this.sourceFieldsObject.list
+            }) : this.sourceFieldsObject.list;
         }),
       )
   }
@@ -205,6 +233,9 @@ export class TransformationRuleComponent implements OnInit, OnChanges {
 
     this.emitTransformationOutput();
     this.form.controls.targetFld.setValue('');
+    if(this.targetFieldInput){
+      this.targetFieldInput.nativeElement.blur();
+    }
   }
 
   /**
@@ -229,7 +260,10 @@ export class TransformationRuleComponent implements OnInit, OnChanges {
       [labelKey]: event.option.viewValue,
       [valueKey]: event.option.value
     };
-    this.form.controls.sourceFld.setValue(event.option.value);
+    this.form.controls.sourceFld.setValue('');
+    if(this.sourceFieldInput) {
+      this.sourceFieldInput.nativeElement.blur();
+    }
   }
 
   /**

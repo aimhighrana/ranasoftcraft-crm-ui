@@ -105,12 +105,10 @@ describe('TransformationRuleComponent', () => {
         viewValue: 'New Value'
       }
     }
-    const result = {
-      label: 'New Value',
-      val: 'newVal'
-    }
+
     component.selectSourceField(mockEvent);
-    expect(component.form.controls.sourceFld.value).toEqual(result.val);
+    expect(component.form.controls.sourceFld.value).toEqual('');
+    expect(component.selectedSourceField).not.toBeNull();
   });
 
   it('removeTargetField(), remove from target field array', () => {

@@ -9,7 +9,7 @@
                         {{selectedSourceField[sourceFieldsObject.labelKey]}}
                         <mat-icon matChipRemove>cancel</mat-icon>
                     </mat-chip>
-                    <input matInput class="mat-input" [matAutocomplete]="autoSource" formControlName="sourceFld"
+                    <input matInput class="mat-input" #sourceFieldInput [matAutocomplete]="autoSource" formControlName="sourceFld"
                         [matChipInputFor]="sourceChips" [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
                 </mat-chip-list>
                 <mat-autocomplete #autoSource="matAutocomplete" [displayWith]="displayFnSource.bind(this)"
@@ -36,7 +36,7 @@
                         {{field[targetFieldsObject.labelKey]}}
                         <mat-icon matChipRemove>cancel</mat-icon>
                     </mat-chip>
-                    <input matInput class="mat-input" [matAutocomplete]="autoTarget" formControlName="targetFld"
+                    <input matInput class="mat-input" #targetFieldInput [matAutocomplete]="autoTarget" formControlName="targetFld"
                         [matChipInputFor]="targetChips" [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
                 </mat-chip-list>
                 <mat-autocomplete #autoTarget="matAutocomplete" [displayWith]="displayFnTarget.bind(this)"

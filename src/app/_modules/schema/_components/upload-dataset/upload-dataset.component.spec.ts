@@ -9,7 +9,7 @@ import { AddFilterMenuComponent } from '@modules/shared/_components/add-filter-m
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SchemaService } from '@services/home/schema.service';
-import { of } from 'rxjs';
+import { of, Subscription } from 'rxjs';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GlobaldialogService } from '@services/globaldialog.service';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
@@ -25,6 +25,7 @@ describe('UploadDatasetComponent', () => {
   let fixture: ComponentFixture<UploadDatasetComponent>;
   let schemaServiceSpy: SchemaService;
   let schemadetailsService: SchemaDetailsService;
+  let globaldialogService: GlobaldialogService;
   let usersSpy;
   const transformationRule = {
     formData: {
@@ -53,12 +54,12 @@ describe('UploadDatasetComponent', () => {
             plantCode: '',
             children: []
           }],
-          udrHierarchies: [
-            {
-              parentId: '',
-              leftIndex: '',
-              blockRefId: '288171383289'
-            }]
+        udrHierarchies: [
+          {
+            parentId: '',
+            leftIndex: '',
+            blockRefId: '288171383289'
+          }]
       },
       weightage: 54,
       categoryId: '',
@@ -97,6 +98,7 @@ describe('UploadDatasetComponent', () => {
     component = fixture.componentInstance;
     schemaServiceSpy = fixture.debugElement.injector.get(SchemaService);
     schemadetailsService = fixture.debugElement.injector.get(SchemaDetailsService);
+    globaldialogService = fixture.debugElement.injector.get(GlobaldialogService);
     // fixture.detectChanges();
     usersSpy = spyOn(schemadetailsService, 'getAllUserDetails').and.callFake(() => {
       return of({
@@ -413,7 +415,7 @@ describe('UploadDatasetComponent', () => {
 
   it('should getScheduleInfo', async(() => {
 
-    const response = { isEnable: true, schemaId: 'test schema', repeatValue: '5'} as SchemaScheduler;
+    const response = { isEnable: true, schemaId: 'test schema', repeatValue: '5' } as SchemaScheduler;
 
     spyOn(schemaServiceSpy, 'getSchedule').withArgs('test schema')
       .and.returnValue(of(response));
@@ -425,7 +427,7 @@ describe('UploadDatasetComponent', () => {
 
   }));
 
-  it('getWeightage(), should return weightage', async() => {
+  it('getWeightage(), should return weightage', async () => {
     const br: CoreSchemaBrInfo = {
       sno: 1299484,
       brId: '22',
@@ -448,8 +450,8 @@ describe('UploadDatasetComponent', () => {
       tableName: '',
       qryScript: '',
       dependantStatus: 'ALL',
-      plantCode:'0',
-      percentage:  0,
+      plantCode: '0',
+      percentage: 0,
       schemaId: '',
       brIdStr: '',
       udrDto: null,
@@ -459,5 +461,18 @@ describe('UploadDatasetComponent', () => {
       duplicacyMaster: []
     };
     expect(component.getWeightage(br)).toEqual(10);
+  });
+
+  it('setRunningSchedule(), should set runTime value in request form', async () => {
+    component.createForm();
+    component.setRunningSchedule({value: '2234'});
+    expect(component.requestForm.controls.runTime.value).toEqual('2234');
+  })
+
+  it('addSubscribers(), should call openDialog', async () => {
+    component.dialogSubscriber =  new Subscription();
+    spyOn(globaldialogService, 'openDialog').and.returnValue(null);
+    component.addSubscribers();
+    expect(globaldialogService.openDialog).toHaveBeenCalled();
   })
 });

@@ -256,12 +256,14 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    */
   public getBusinessRuleList(schemaId: string) {
     const businessRuleList = this.schemaService.getBusinessRulesBySchemaId(schemaId).subscribe((responseData) => {
-      this.businessRuleData = responseData;
-      this.businessRuleData.forEach((businessRule) => {
-        businessRule.isCopied = true;
-        businessRule.copiedFrom = null;
-        businessRule.schemaId = null;
-      })
+      if(responseData && responseData.length>0){
+        this.businessRuleData = responseData;
+        this.businessRuleData.forEach((businessRule) => {
+          businessRule.isCopied = true;
+          businessRule.copiedFrom = null;
+          businessRule.schemaId = null;
+        })
+      }
     }, error => {
       console.log('Error while fetching business rule info for schema', error);
     })

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { BrruleSideSheetComponent } from './brrule-side-sheet.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
@@ -57,12 +57,14 @@ describe('BrruleSideSheetComponent', () => {
 
   });
 
-  it('getFieldsByModuleId(), get the fields on basis of module', (() => {
+  it('getFieldsByModuleId(), get the fields on basis of module', fakeAsync(() => {
+    component.buildCommonDataForm();
+    tick(100);
     component.moduleId = '1005';
     const metadataModeleResponse = { headers: [{ fieldId: 'MATL', fieldDescri: 'material location' }] } as MetadataModeleResponse;
-    spyOn(schemaDetailsServicespy, 'getMetadataFields').withArgs(component.moduleId).and.returnValue(of(metadataModeleResponse))
-    component.getFieldsByModuleId();
-    expect(schemaDetailsServicespy.getMetadataFields).toHaveBeenCalledWith(component.moduleId);
+    spyOn(schemaDetailsServicespy, 'getMetadataFields').withArgs(component.moduleId).and.returnValue(of(metadataModeleResponse));
+      component.getFieldsByModuleId();
+      expect(schemaDetailsServicespy.getMetadataFields).toHaveBeenCalledWith(component.moduleId);
   }));
 
   it('formatLabel(), return value in string', async(() => {

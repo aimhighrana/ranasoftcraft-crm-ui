@@ -9,7 +9,7 @@
                 <div class="f-row breadcrum-head">
                     <div class="display-heading-large">Add subscribers</div>
                     <div class="f-spacer"></div>
-                    <button mat-flat-button (click)="openSubscriberInviteDialog()"><mat-icon fontSet="mdo-icons"> add-group</mat-icon> Invite people to your team</button>
+                    <button mat-flat-button [disabled]="true" (click)="openSubscriberInviteDialog()"><mat-icon fontSet="mdo-icons"> add-group</mat-icon> Invite people to your team</button>
                     <span class="f-col-spacer-half"></span>
                     <button mat-flat-button color="primary" (click)="save()">Save</button>
                 </div>

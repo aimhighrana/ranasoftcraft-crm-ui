@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter, OnChanges, SimpleChanges, ViewChild, ElementRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith, debounceTime } from 'rxjs/operators';
@@ -100,6 +100,11 @@ export class FormInputAutoselectComponent implements OnInit, OnChanges {
    */
   @Output()
   emitExtraLabelClick: EventEmitter<any> = new EventEmitter(null);
+
+  /**
+   * reference to the input
+   */
+  @ViewChild('textInput') textInput: ElementRef;
 
   /**
    * Observable for filtered option
@@ -215,6 +220,7 @@ export class FormInputAutoselectComponent implements OnInit, OnChanges {
   emitOptionSelected(event: any) {
     let action: string;
     this.initFilter();
+    this.textInput.nativeElement.blur();
     if(event && event.option){
       action = event.option.value
     } else {

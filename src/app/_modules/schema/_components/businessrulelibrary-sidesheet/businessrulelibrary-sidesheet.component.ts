@@ -13,11 +13,34 @@ import { SharedServiceService } from '@modules/shared/_services/shared-service.s
   styleUrls: ['./businessrulelibrary-sidesheet.component.scss']
 })
 export class BusinessrulelibrarySidesheetComponent implements OnInit {
+  /**
+   * selected schema id
+   */
   schemaId: string;
+
+  /**
+   * selected module id
+   */
   moduleId: string;
+
+  /**
+   * hold the business rules list
+   */
   businessRulesList: CoreSchemaBrInfo[] = [];
+
+  /**
+   * hold the filtered business rules
+   */
   filteredBusinessRulesList: CoreSchemaBrInfo[] = [];
+
+  /**
+   * hold the selected rules
+   */
   selectedBusinessRule: CoreSchemaBrInfo[] = [];
+
+  /**
+   * selected business rule type
+   */
   selectedRuleType: BusinessRules;
 
   /**
@@ -45,6 +68,9 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
    */
   BusinessRulesToBeDelete: CoreSchemaBrInfo[] = [];
 
+  /**
+   * pre selected business rules
+   */
   alreadySelectedBrs: CoreSchemaBrInfo[] = [];
 
   constructor(
