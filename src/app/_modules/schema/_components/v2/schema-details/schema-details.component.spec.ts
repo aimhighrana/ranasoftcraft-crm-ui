@@ -664,4 +664,24 @@ describe('SchemaDetailsComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith(['', { outlets: { sb: `sb/schema/execution-trend/${component.moduleId}/${component.schemaId}/${component.variantId}` } }]);
   }));
 
+  it('should load more data on table scroll', async(() => {
+
+    const scrollEvent = {
+      target: {
+        offsetHeight: 500,
+        scrollHeight: 1000,
+        scrollTop: 350
+      }
+    }
+
+    spyOn(component, 'getData');
+
+    component.onTableScroll(scrollEvent);
+
+    expect(component.scrollLimitReached).toEqual(true);
+    expect(component.fetchCount).toEqual(1);
+    expect(component.getData).toHaveBeenCalledWith(component.filterCriteria.getValue(), component.sortOrder, component.fetchCount, true);
+
+  }))
+
 });

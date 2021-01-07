@@ -174,6 +174,11 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
    */
   userDetails: Userdetails;
 
+  /**
+   * hold scroll limit reached edge
+   */
+  scrollLimitReached = false;
+
 
   constructor(
     private activatedRouter: ActivatedRoute,
@@ -598,9 +603,14 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
     const buffer = 200;
     const limit = tableScrollHeight - tableViewHeight - buffer;
     if (scrollLocation > limit) {
-      console.log('Load more data here ...');
-      this.fetchCount++;
-      this.getData(this.filterCriteria.getValue(), this.sortOrder, this.fetchCount, true);
+      if(!this.scrollLimitReached) {
+        console.log('Load more data here ...');
+        this.scrollLimitReached = true;
+        this.fetchCount++;
+        this.getData(this.filterCriteria.getValue(), this.sortOrder, this.fetchCount, true);
+      }
+    } else {
+      this.scrollLimitReached = false;
     }
   }
 
