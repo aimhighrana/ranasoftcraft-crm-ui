@@ -225,39 +225,47 @@
                                 <mat-cell *matCellDef="let element; let rIndex = index;"
                                     [class.error-cell]="element[dynCols] ? element[dynCols].isInError : false"
                                     (click)="editCurrentCell(dynCols,element, rIndex, containerRef)">
-                                    <div class="mdo-form-input f-col" style="display: none;"
+
+                                    <div class="f-col grid-cell-editable">
+                                        <div class="mdo-form-input f-col" style="display: none;"
                                         id="inpctrl_{{ dynCols + '_' + rIndex }}">
                                     
-                                    <!-- container to hold input field when cell gets edited  -->
-                                    <ng-template prosContainerRef #containerRef="prosContainerRef">
-                                    </ng-template>                                   
+                                            <!-- container to hold input field when cell gets edited  -->
+                                            <ng-template prosContainerRef #containerRef="prosContainerRef">
+                                            </ng-template>  
+                                        </div>
                                     </div>
-    
+
                                     <ng-template [ngIf]="element[dynCols] && element[dynCols].isCorrected"
                                         [ngIfElse]="normalCell">
                                         <ng-template [ngIf]="element[dynCols].oldData !== element[dynCols].fieldData"
                                             [ngIfElse]="other">
+                                            <div class="f-col">
+                                                <span id="viewctrl_{{ dynCols + '_' + rIndex }}">
+                                                    {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].fieldData) : '' }}
+                                                </span>
+                                                <span class="text-correction">
+                                                    {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].oldData) : '' }}
+                                                </span>
+                                            </div>
+                                        </ng-template>
+                                        <ng-template #other>
+                                            <div class="f-col">
+                                                <span id="viewctrl_{{ dynCols + '_' + rIndex }}">
+                                                    {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].fieldData) : '' }}
+                                                </span>
+                                            </div>
+                                        </ng-template>
+                                    </ng-template>
+                                    <ng-template #normalCell>
+                                        <div class="f-col">
                                             <span id="viewctrl_{{ dynCols + '_' + rIndex }}">
                                                 {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].fieldData) : '' }}
                                             </span>
                                             <span class="text-correction">
-                                                {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].oldData) : '' }}
+                                                {{ element[dynCols] ? element[dynCols].errorMsg : '' }}
                                             </span>
-                                            
-                                        </ng-template>
-                                        <ng-template #other>
-                                            <span id="viewctrl_{{ dynCols + '_' + rIndex }}">
-                                                {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].fieldData) : '' }}
-                                            </span>
-                                        </ng-template>
-                                    </ng-template>
-                                    <ng-template #normalCell>
-                                        <span id="viewctrl_{{ dynCols + '_' + rIndex }}">
-                                            {{ element[dynCols] ? formatCellData(dynCols, element[dynCols].fieldData) : '' }}
-                                        </span>
-                                        <span class="text-correction">
-                                            {{ element[dynCols] ? element[dynCols].errorMsg : '' }}
-                                        </span>
+                                        </div>
                                     </ng-template>
                                 </mat-cell>
                             </ng-container>

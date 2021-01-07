@@ -267,13 +267,16 @@
                                             <mat-cell *matCellDef="let element; let rIndex = index;"
                                                 [class.error-cell]="element[dynCol] ? element[dynCol].isInError : false"
                                                 (click)="editCurrentCell(dynCol,element, rIndex, containerRef)">
-                                                <div class="mdo-form-input f-col" style="display: none;"
+                                                <div class="f-col grid-cell-editable">
+                                                    <div class="mdo-form-input f-col" style="display: none;"
                                                     id="inpctrl_{{ dynCol + '_' + rIndex }}">
 
                                                     <!-- container to hold input field when cell gets edited  -->
                                                     <ng-template prosContainerRef #containerRef="prosContainerRef">
                                                     </ng-template>
                                                 </div>
+                                                </div>
+                                                
 
                                                 <ng-template [ngIf]="element[dynCol] && element[dynCol].isCorrected"
                                                     [ngIfElse]="normalCell">
@@ -291,18 +294,22 @@
 
                                                     </ng-template>
                                                     <ng-template #other>
-                                                        <span id="viewctrl_{{ dynCol + '_' + rIndex }}">
-                                                            {{ element[dynCol] ? formatCellData(dynCol, element[dynCol].fieldData) : '' }}
-                                                        </span>
+                                                        <div class="f-col">
+                                                            <span id="viewctrl_{{ dynCol + '_' + rIndex }}">
+                                                                {{ element[dynCol] ? formatCellData(dynCol, element[dynCol].fieldData) : '' }}
+                                                            </span>
+                                                        </div>
                                                     </ng-template>
                                                 </ng-template>
                                                 <ng-template #normalCell>
-                                                    <span id="viewctrl_{{ dynCol + '_' + rIndex }}">
-                                                        {{ element[dynCol] ? formatCellData(dynCol, element[dynCol].fieldData) : '' }}
-                                                    </span>
-                                                    <span class="text-correction">
-                                                        {{ element[dynCol] ? element[dynCol].errorMsg : '' }}
-                                                    </span>
+                                                    <div class="f-col">
+                                                        <span id="viewctrl_{{ dynCol + '_' + rIndex }}">
+                                                            {{ element[dynCol] ? formatCellData(dynCol, element[dynCol].fieldData) : '' }}
+                                                        </span>
+                                                        <span class="text-correction">
+                                                            {{ element[dynCol] ? element[dynCol].errorMsg : '' }}
+                                                        </span>
+                                                    </div>
                                                 </ng-template>
                                             </mat-cell>
 

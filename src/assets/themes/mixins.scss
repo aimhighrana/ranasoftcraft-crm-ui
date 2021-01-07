@@ -1006,6 +1006,26 @@
       &.mat-table-sticky {
         background: $color-app-accent;
       }
+
+      .grid-cell-editable {
+        width: 100%;
+      }
+
+      .error-message {
+        color: $color-status-error;
+      }
+
+      &.correction-gridcell {
+        background: $color-status-info-accent;
+        border-bottom: 1px solid $color-status-info;
+        color: $color-status-info;
+      }
+
+      &.error-gridcell {
+        background: $color-status-error-accent;
+        border-bottom: 1px solid $color-status-error;
+        color: $color-status-error;
+      }
     }
 
     .mat-row:hover {
@@ -1027,7 +1047,7 @@
       line-height: 1rem;
       color: mat-color($foreground-palette, text);
       padding: 0 8px;
-      min-width: 160px;
+      min-width: 200px;
       max-width: 200px;
       word-break: break-word;
       align-self: stretch;
@@ -1041,6 +1061,12 @@
       &.fixed-width-c2 {
         min-width: 120px;
         max-width: 120px;
+        border: none;
+      }
+
+      &.fixed-width-c3 {
+        min-width: 140px;
+        max-width: 140px;
         border: none;
       }
 

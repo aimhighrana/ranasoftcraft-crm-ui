@@ -312,16 +312,17 @@
                                         </mat-header-cell>
                                         <mat-cell *matCellDef="let element; let rIndex = index;" 
                                         (click)="editCurrentCell(dynCols,element, rIndex, containerRef)">
+                                        <div class="f-col grid-cell-editable">
                                             <div class="mdo-form-input f-col" style="display: none;"
                                             id="inpctrl_{{ dynCols + '_' + rIndex }}">
                                             <!-- container to hold input field when cell gets edited  -->
                                             <ng-template prosContainerRef #containerRef="prosContainerRef">
                                             </ng-template>                                   
                                             </div>
-            
-                                            <span id="viewctrl_{{ dynCols + '_' + rIndex }}">
-                                                {{ element[dynCols] ? element[dynCols].fieldValue : '' }}
-                                            </span>
+                                        </div>
+                                        <span id="viewctrl_{{ dynCols + '_' + rIndex }}">
+                                            {{ element[dynCols] ? element[dynCols].fieldValue : '' }}
+                                        </span>
                                         </mat-cell>
                                     </ng-container>
                                 </ng-template>
