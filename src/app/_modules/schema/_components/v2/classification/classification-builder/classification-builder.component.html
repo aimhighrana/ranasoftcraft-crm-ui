@@ -276,7 +276,7 @@
                                     <div class="f-row action-iconbtns">
 
                                         <button mat-fab color="accent" *ngIf="row['__aditionalProp'] && !row['__aditionalProp'].hasLatestDescGenerated" (click)="generateDesc(row, rIndex)" id="descriptonGeneratorBtn_{{ rIndex }}">
-                                            <mat-icon>description</mat-icon>
+                                            <mat-icon fontSet="mdo-icons">form-file</mat-icon>
                                         </button>
 
                                         <button mat-fab color="accent" *ngIf="row['__aditionalProp'] && row['__aditionalProp'].hasLatestDescGenerated && !row['__aditionalProp'].isReviewed"
@@ -319,10 +319,11 @@
                                             <ng-template prosContainerRef #containerRef="prosContainerRef">
                                             </ng-template>                                   
                                             </div>
+                                            <span id="viewctrl_{{ dynCols + '_' + rIndex }}">
+                                                {{ element[dynCols] ? element[dynCols].fieldValue : '' }}
+                                            </span>
                                         </div>
-                                        <span id="viewctrl_{{ dynCols + '_' + rIndex }}">
-                                            {{ element[dynCols] ? element[dynCols].fieldValue : '' }}
-                                        </span>
+                                        
                                         </mat-cell>
                                     </ng-container>
                                 </ng-template>

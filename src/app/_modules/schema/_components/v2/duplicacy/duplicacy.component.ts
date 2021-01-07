@@ -858,9 +858,9 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   getRecordStatusClass(row) {
-    return row[RECORD_STATUS_KEY].fieldData === RECORD_STATUS.MASTER ? 'success'
-      : row[RECORD_STATUS_KEY].fieldData === RECORD_STATUS.NOT_DELETABLE ? 'warning'
-        : 'deletable';
+    return row[RECORD_STATUS_KEY].fieldData === RECORD_STATUS.MASTER ? 'success-status'
+      : row[RECORD_STATUS_KEY].fieldData === RECORD_STATUS.NOT_DELETABLE ? 'warning-status'
+        : 'unselected';
   }
 
   getTableRowClass(row) {

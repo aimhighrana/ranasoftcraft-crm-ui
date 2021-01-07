@@ -402,10 +402,10 @@ describe('DuplicacyComponent', () => {
     const record = {};
     record[RECORD_STATUS_KEY] = { fieldData: RECORD_STATUS.MASTER };
 
-    expect(component.getRecordStatusClass(record)).toEqual('success');
+    expect(component.getRecordStatusClass(record)).toEqual('success-status');
 
     record[RECORD_STATUS_KEY].fieldData = RECORD_STATUS.NOT_DELETABLE;
-    expect(component.getRecordStatusClass(record)).toEqual('warning');
+    expect(component.getRecordStatusClass(record)).toEqual('warning-status');
 
   });
 

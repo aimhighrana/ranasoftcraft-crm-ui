@@ -20,9 +20,13 @@
     <!-- Input type single select -->
     <mat-form-field *ngSwitchCase="FIELD_TYPE.SINGLE_SELECT" appearance="outline" prosClickStopPropagation>
         <input matInput [matAutocomplete]="auto" class="mat-input" #input [formControl]="searchControl"
-               placeholder="search..."
+               placeholder="Search"
                (blur)="emitChngSelectValue($event)">
-            <mat-icon matSuffix> search </mat-icon>
+               <div class="input-actions">
+                <mat-icon fontSet="mdo-icons">search</mat-icon>
+                <!-- <mat-icon fontSet="mdo-icons" class="info-arrow">menu-arrow1</mat-icon> -->
+            </div>
+            
         <mat-autocomplete #auto="matAutocomplete">  
             <mat-option *ngFor="let option of filterdOptionsObs | async" 
                         [value]="option.CODE"> {{ option.TEXT }} </mat-option>

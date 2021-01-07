@@ -17,7 +17,7 @@
     <div class="f-col mdo-justify">
       <form [formGroup]="form">
         <div class="f-col mdo-form-field">
-          <mat-label>Rule Type</mat-label>
+          <mat-label>Rule type</mat-label>
           <mat-form-field appearance="outline">
             <mat-select formControlName="rule_type">
               <ng-container *ngFor="let rule of businessRuleTypes">
@@ -26,7 +26,7 @@
               </ng-container>
             </mat-select>
             <mat-error *ngIf="submitted && form.controls.rule_type.errors && form.controls.rule_type.errors.required">
-              Please enter Rule type</mat-error>
+              Please enter rule type</mat-error>
           </mat-form-field>
         </div>
 
@@ -35,7 +35,7 @@
           <mat-slider thumbLabel formControlName="weightage" [displayWith]="formatLabel" tickInterval="1" min="0"
             [max]="maxWeightageLimit" color="primary"></mat-slider>
           <mat-error *ngIf="submitted && form.controls.weightage.errors && form.controls.weightage.errors.required">
-            Please enter Weightage</mat-error>
+            Please enter weightage</mat-error>
         </div>
 
         <div class="f-col mdo-form-field" *ngIf="!isUDR && !isDuplicateType">
@@ -50,7 +50,7 @@
           </mat-form-field>
 
           <mat-error *ngIf="submitted && form.controls.categoryId.errors && form.controls.categoryId.errors.required">
-            Please enter Category Id</mat-error>
+            Please enter category id</mat-error>
         </div>
 
         <div class="f-col mdo-form-field">
@@ -58,7 +58,7 @@
             [label]="'Rule name (Description)'">
           </pros-form-input>
           <mat-error *ngIf="submitted && form.controls.rule_name.errors && form.controls.rule_name.errors.required">
-            Please enter Rule name</mat-error>
+            Please enter rule name</mat-error>
         </div>
 
         <div class="f-col mdo-form-field" *ngIf="!isDuplicateType">
@@ -67,7 +67,7 @@
           </pros-form-input>
           <mat-error
             *ngIf="submitted && form.controls.error_message.errors && form.controls.error_message.errors.required">
-            Please enter Error message</mat-error>
+            Please enter error message</mat-error>
         </div>
 
         <div class="f-col mdo-form-field" *ngIf="form.controls.rule_type.value === 'BR_CLASSIFICATION'">

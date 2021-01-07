@@ -49,69 +49,59 @@
         <div class="f-row dataset-grid">
             <div class="f-col dataset-grid-listing">
                 <!-- Filters  -->
-                <div class="f-row">
+                <mat-chip-list>
                     <pros-search-input placeholder="Search text" (value)="inlineSearch($event)" [preValue]="preInpVal">
                     </pros-search-input>
                     <div class="f-col-spacer-half"></div>
-                    <!-- Append dynamic filter here ..-->
-            
-                    <mat-chip-list>
-                        <ng-template ngFor let-ctrl [ngForOf]="filterCriteria | async">
-                            <ng-template [ngIf]="ctrl.type !== 'INLINE'">
-                                <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="appliedfiltermenu"
-                                    (click)="loadDropValues(ctrl)">
-                                    <label>
-                                        {{ ctrl.filterCtrl ? ctrl.filterCtrl.fldCtrl.fieldDescri : 'Unknown' }} :
-                                    </label>
-                                    <ng-template [ngIf]="ctrl.filterCtrl.selectedValeus.length > 1" [ngIfElse]="showText">
-                                        <span class="info">
-                                            {{ prepareTextToShow(ctrl) }}
-                                        </span>
-                                    </ng-template>
-                                    <ng-template #showText>
-                                        <span class="info">
-                                            <!-- {{ ctrl.filterCtrl ? (ctrl.filterCtrl.selectedValeus[0].TEXT ? ctrl.filterCtrl.selectedValeus[0].TEXT : ctrl.filterCtrl.selectedValeus[0].CODE) : ''}} -->
-                                            {{ prepareTextToShow(ctrl)}}
-                                        </span>
-                                    </ng-template>
-                                    <mat-icon matChipRemove (click)="removeAppliedFilter(ctrl)">clear</mat-icon>
-                                </mat-chip>
-                            </ng-template>
+                     <!-- Append dynamic filter here...-->
+                    <ng-template ngFor let-ctrl [ngForOf]="filterCriteria | async">
+                        <ng-template [ngIf]="ctrl.type !== 'INLINE'">
+                            <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="appliedfiltermenu"
+                                (click)="loadDropValues(ctrl)">
+                                <label>
+                                    {{ ctrl.filterCtrl ? ctrl.filterCtrl.fldCtrl.fieldDescri : 'Unknown' }} :
+                                </label>
+                                <ng-template [ngIf]="ctrl.filterCtrl.selectedValeus.length > 1" [ngIfElse]="showText">
+                                    <span class="info">
+                                        {{ prepareTextToShow(ctrl) }}
+                                    </span>
+                                </ng-template>
+                                <ng-template #showText>
+                                    <span class="info">
+                                        <!-- {{ ctrl.filterCtrl ? (ctrl.filterCtrl.selectedValeus[0].TEXT ? ctrl.filterCtrl.selectedValeus[0].TEXT : ctrl.filterCtrl.selectedValeus[0].CODE) : ''}} -->
+                                        {{ prepareTextToShow(ctrl)}}
+                                    </span>
+                                </ng-template>
+                                <mat-icon matChipRemove (click)="removeAppliedFilter(ctrl)">clear</mat-icon>
+                            </mat-chip>
+                            <!-- Append dynamic filter MatMenu -->
+                            <mat-menu #appliedfiltermenu="matMenu">
+                                <pros-filter-values [fieldId]="loadDopValuesFor ? loadDopValuesFor.fieldId : ''"
+                                    [checkedValue]="loadDopValuesFor ? loadDopValuesFor.checkedValue : []" (selectedValues)="updateFilterCriteria($event)"></pros-filter-values>
+                            </mat-menu>
                         </ng-template>
-            
-                    </mat-chip-list>
-            
-                    <div class="f-col-spacer-half"></div>
-            
-                    <!-- Append dynamic filter MatMenu -->
-                    <mat-menu #appliedfiltermenu="matMenu">
-                        <pros-filter-values [fieldId]="loadDopValuesFor ? loadDopValuesFor.fieldId : ''"
-                            [checkedValue]="loadDopValuesFor ? loadDopValuesFor.checkedValue : []" (selectedValues)="updateFilterCriteria($event)"></pros-filter-values>
+                    </ng-template>
+                    <!-- Add filter control -->
+                    <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="addfiltermenu"
+                        (click)="reInilize = !reInilize">
+                        <mat-icon fontSet="mdo-icons">folder-filter</mat-icon>
+                    </mat-chip>
+                    <!-- Add filter control MatMenu -->
+                    <mat-menu #addfiltermenu="matMenu">
+                        <pros-add-filter-menu [moduleId]="moduleId" (evtReadyForApply)="makeFilterControl($event)"
+                            [reInilize]="reInilize">
+                        </pros-add-filter-menu>
                     </mat-menu>
-            
-                    <mat-chip-list>
-                        <!-- Add filter control -->
-                        <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="addfiltermenu"
-                            (click)="reInilize = !reInilize">
-                            <mat-icon fontSet="mdo-icons">folder-filter</mat-icon>
-                        </mat-chip>
-                        <!-- Add filter control MatMenu -->
-                        <mat-menu #addfiltermenu="matMenu">
-                            <pros-add-filter-menu [moduleId]="moduleId" (evtReadyForApply)="makeFilterControl($event)"
-                                [reInilize]="reInilize">
-                            </pros-add-filter-menu>
-                        </mat-menu>
-                        <!-- More control -->
-                        <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="moreFilterMenu">
-                            <mat-icon fontSet="mdo-icons">more</mat-icon>
-                        </mat-chip>
-                        <!-- More control MatMenu -->
-                        <mat-menu #moreFilterMenu="matMenu" class="navigation-menu">
-                            <button mat-menu-item (click)="opnDialogSaveVariant()">Save as...</button>
-                            <button mat-menu-item (click)="resetAppliedFilter()">Reset</button>
-                        </mat-menu>
-                    </mat-chip-list>
-                </div>
+                    <!-- More control -->
+                    <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="moreFilterMenu">
+                        <mat-icon fontSet="mdo-icons">more</mat-icon>
+                    </mat-chip>
+                    <!-- More control MatMenu -->
+                    <mat-menu #moreFilterMenu="matMenu" class="navigation-menu">
+                        <button mat-menu-item (click)="opnDialogSaveVariant()">Save as...</button>
+                        <button mat-menu-item (click)="resetAppliedFilter()">Reset</button>
+                    </mat-menu>
+                </mat-chip-list>
 
                 <div class="row-spacer"></div>
 

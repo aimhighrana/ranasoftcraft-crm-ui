@@ -66,11 +66,10 @@
                     <mat-divider [vertical]="true"></mat-divider>
                     <div class="f-col dataset-grid-listing">
                         <div class="f-row">
-                            <pros-search-input (value)="newInlineSearchText($event)" [preValue]="preInpVal">
-                            </pros-search-input>
-
-                            <!-- Applied filters -->
                             <mat-chip-list>
+                                 <!-- Applied filters -->
+                                <pros-search-input (value)="newInlineSearchText($event)" [preValue]="preInpVal">
+                                </pros-search-input>
                                 <ng-template ngFor let-ctrl [ngForOf]="filterCriteria | async">
                                     <ng-template [ngIf]="ctrl.type !== 'INLINE'">
                                         <div class="f-col-spacer-half"></div>
@@ -93,26 +92,20 @@
                                             </ng-template>
                                             <mat-icon matChipRemove (click)="removeAppliedFilter(ctrl)">clear</mat-icon>
                                         </mat-chip>
+                                        <!-- Append dynamic filter MatMenu -->
+                                        <mat-menu #appliedfiltermenu="matMenu">
+                                            <pros-filter-values [moduleId]="moduleId"
+                                                [fieldId]="loadDopValuesFor ? loadDopValuesFor.fieldId : ''"
+                                                [checkedValue]="loadDopValuesFor ? loadDopValuesFor.checkedValue : []"
+                                                (selectedValues)="updateFilterCriteria($event)"></pros-filter-values>
+                                        </mat-menu>
                                     </ng-template>
                                 </ng-template>
-                            </mat-chip-list>
-
-                            <!-- Append dynamic filter MatMenu -->
-                            <mat-menu #appliedfiltermenu="matMenu">
-                                <pros-filter-values [moduleId]="moduleId"
-                                    [fieldId]="loadDopValuesFor ? loadDopValuesFor.fieldId : ''"
-                                    [checkedValue]="loadDopValuesFor ? loadDopValuesFor.checkedValue : []"
-                                    (selectedValues)="updateFilterCriteria($event)"></pros-filter-values>
-                            </mat-menu>
-
-                            <div class="f-col-spacer-half"></div>
-
-                            <mat-chip-list>
 
                                 <!-- Add filter control -->
                                 <mat-chip class="mdo-filter-matchip" disableRipple="true"
                                     [matMenuTriggerFor]="addfiltermenu" (click)="reInilize = !reInilize">
-                                    <mat-icon fontSet="mdo-icons">filter-add</mat-icon>
+                                    <mat-icon fontSet="mdo-icons">folder-filter</mat-icon>
                                 </mat-chip>
 
                                 <!-- Add filter control MatMenu -->
@@ -274,21 +267,18 @@
                                                     <!-- container to hold input field when cell gets edited  -->
                                                     <ng-template prosContainerRef #containerRef="prosContainerRef">
                                                     </ng-template>
-                                                </div>
-                                                </div>
-                                                
-
-                                                <ng-template [ngIf]="element[dynCol] && element[dynCol].isCorrected"
+                                                    </div>
+                                                    <ng-template [ngIf]="element[dynCol] && element[dynCol].isCorrected"
                                                     [ngIfElse]="normalCell">
                                                     <ng-template
                                                         [ngIf]="element[dynCol].oldData !== element[dynCol].fieldData"
                                                         [ngIfElse]="other">
                                                         <div class="f-col">
-                                                            <span class="text-correction">
-                                                                {{ element[dynCol] ? formatCellData(dynCol, element[dynCol].oldData) : '' }}
-                                                            </span>
                                                             <span id="viewctrl_{{ dynCol + '_' + rIndex }}">
                                                                 {{ element[dynCol] ? formatCellData(dynCol, element[dynCol].fieldData) : '' }}
+                                                            </span>
+                                                            <span class="text-correction">
+                                                                {{ element[dynCol] ? formatCellData(dynCol, element[dynCol].oldData) : '' }}
                                                             </span>
                                                         </div>
 
@@ -311,6 +301,7 @@
                                                         </span>
                                                     </div>
                                                 </ng-template>
+                                                </div>
                                             </mat-cell>
 
                                         </ng-container>

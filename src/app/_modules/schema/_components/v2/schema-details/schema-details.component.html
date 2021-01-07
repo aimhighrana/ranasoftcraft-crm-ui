@@ -74,11 +74,13 @@
         </a>
     </nav> -->
     <div class="f-row filter-container">
-        <pros-search-input placeholder="Search text" (value)="inlineSearch($event)" [preValue]="preInpVal">
-        </pros-search-input>
-        <div class="f-col-spacer-half"></div>
-        <!-- Append dynamic filter here ..-->
+        <!-- Filter here...-->
         <mat-chip-list>
+            <pros-search-input placeholder="Search text" (value)="inlineSearch($event)" [preValue]="preInpVal">
+            </pros-search-input>
+
+            <div class="f-col-spacer-half"></div>
+
             <ng-template ngFor let-ctrl [ngForOf]="filterCriteria | async">
                 <ng-template [ngIf]="ctrl.type !== 'INLINE'">
                     <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="appliedfiltermenu"
@@ -99,19 +101,15 @@
                         </ng-template>
                         <mat-icon matChipRemove (click)="removeAppliedFilter(ctrl)">clear</mat-icon>
                     </mat-chip>
+                     <!-- Append dynamic filter MatMenu -->
+                    <mat-menu #appliedfiltermenu="matMenu">
+                        <pros-filter-values [fieldId]="loadDopValuesFor ? loadDopValuesFor.fieldId : ''"
+                            [checkedValue]="loadDopValuesFor ? loadDopValuesFor.checkedValue : []"
+                            (selectedValues)="updateFilterCriteria($event)"></pros-filter-values>
+                    </mat-menu>
                 </ng-template>
             </ng-template>
-        </mat-chip-list>
-        <div class="f-col-spacer-half"></div>
-
-        <!-- Append dynamic filter MatMenu -->
-        <mat-menu #appliedfiltermenu="matMenu">
-            <pros-filter-values [fieldId]="loadDopValuesFor ? loadDopValuesFor.fieldId : ''"
-                [checkedValue]="loadDopValuesFor ? loadDopValuesFor.checkedValue : []"
-                (selectedValues)="updateFilterCriteria($event)"></pros-filter-values>
-        </mat-menu>
-
-        <mat-chip-list>
+           
             <!-- Add filter control -->
             <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="addfiltermenu"
                 (click)="reInilize = !reInilize">
@@ -123,6 +121,7 @@
                     [reInilize]="reInilize">
                 </pros-add-filter-menu>
             </mat-menu>
+
             <!-- More control -->
             <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="moreFilterMenu">
                 <mat-icon fontSet="mdo-icons">more</mat-icon>

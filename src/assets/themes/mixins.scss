@@ -592,6 +592,12 @@
         border-color: $color-app-selected;
         color: $color-text-canvas;
       }
+
+      &.unselected {
+        background: mat-color($background-palette, card);
+        border-color: $color-app-border;
+        color: $color-text-primary;
+      }
     }
 
     mat-chip.mat-chip.mat-standard-chip::after {
@@ -824,6 +830,10 @@
         .mat-slider-track-fill {
           height: 6px;
         }
+
+        .mat-slider-track-background {
+          background-color: $color-accent;
+        }
       }
 
       .mat-slider-thumb-container {
@@ -1034,6 +1044,10 @@
       .mat-cell.mat-table-sticky {
         background: inherit;
       }
+    }
+
+    .not-master-row {
+      background-color: $color-app-row;
     }
 
     .mat-header-cell {
