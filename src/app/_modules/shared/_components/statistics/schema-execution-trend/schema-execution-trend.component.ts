@@ -39,17 +39,33 @@ export class SchemaExecutionTrendComponent implements OnInit, OnChanges {
     {
       data: [],
       label: 'Error',
+      stack : 'a' ,
       fill: 'red',
+      borderColor: 'red',
+      borderDash:[5],
+      /* lineTension: 0.1,
       backgroundColor: 'red',
-      // borderDash: [10,5]
+      borderDash:[5],
+      pointBorderColor: 'rgba(75,192,192,1)',
+      pointBackgroundColor: '#fff',
+      borderColor: 'orange',
+      borderCapStyle: 'butt',
+      borderJoinStyle: 'miter',
+      pointBorderWidth: 0,
+      pointHoverRadius: 0,
+      pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+      pointHoverBorderColor: 'rgba(220,220,220,1)',
+      pointHoverBorderWidth: 0,
+      pointRadius: 0,
+      pointHitRadius: 0, */
     },
     {
       data: [],
       label: 'Success',
-      stack: 'a',
+      stack:'a' ,
       fill: 'rgba(187,205,151,0.5)',
-      // borderDash: [10,5]
-
+      borderColor: 'green',
+      borderDash:[5]
     }
   ];
 
@@ -61,11 +77,24 @@ export class SchemaExecutionTrendComponent implements OnInit, OnChanges {
           let label = data.datasets[tooltipItem.datasetIndex].label || '';
           label += ': ';
           const sum = data.datasets.reduce((total, dataSet) => total + +dataSet.data[tooltipItem.index], 0);
-          const perc = `${Math.round((+tooltipItem.yLabel / sum) * 100)} %`;
-          label += perc;
+          const perc = Math.round((+tooltipItem.yLabel / sum) * 100);
+          label += `${perc || 0} %`;
           return label;
         }
-      }
+      },
+      backgroundColor: 'rgba(255,255,255,0.9)',
+      bodyFontColor: '#999',
+      borderColor: '#999',
+      borderWidth: 1,
+      caretPadding: 15,
+      displayColors: true,
+      enabled: true,
+      intersect: true,
+      mode: 'x',
+      titleFontColor: '#999',
+      titleMarginBottom: 10,
+      xPadding: 15,
+      yPadding: 15,
     },
     scales: {
       xAxes: [{
@@ -75,7 +104,7 @@ export class SchemaExecutionTrendComponent implements OnInit, OnChanges {
         },
         scaleLabel: {
           display: true,
-          // labelString: 'Weeks',
+          labelString: 'Weeks',
         },
         ticks: {
           fontColor: '#000',
@@ -83,22 +112,22 @@ export class SchemaExecutionTrendComponent implements OnInit, OnChanges {
       }],
       yAxes: [{
         scaleLabel: {
-          display: true
+          display: true,
+          labelString: 'Values'
         },
         ticks: {
           fontColor: '#000',
         }
       }]
     },
-    /* legend: {
-      display: true,
-      position: 'top',
+    legend: {
+      position: 'bottom',
       labels: {
         fontSize: 12,
         usePointStyle: false,
         boxWidth: 30,
       }
-    } */
+    }
 
   };
 
@@ -115,6 +144,10 @@ export class SchemaExecutionTrendComponent implements OnInit, OnChanges {
 
 
   ngOnChanges(changes: SimpleChanges): void {
+    this.dataSetLabels = [];
+    this.dataSet.forEach(d => {
+      d.data = [];
+    })
     this.getExecutionTrendData(this.schemaId, this.variantId);
   }
 

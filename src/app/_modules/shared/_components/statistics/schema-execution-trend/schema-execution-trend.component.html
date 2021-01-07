@@ -1,12 +1,16 @@
-<mat-card class="mat-elevation-z0 widget">
-    <!-- <div class="f-row breadcrum-toolbar">
-        <div class="display-heading-large">
-            {{ title || 'Schema execution trend' }}
-        </div>
-    </div> -->
-    <mat-card-content> <!-- height="400" width="400"  -->
+<div class="root">
+    <div class="f-row breadcrum-toolbar">
+        <div class="display-heading-large">Schema execution trends</div>
+        <span class="f-spacer"></span>
+        <button mat-button>
+            <mat-icon fontSet="mdo-icons">more</mat-icon>
+        </button>
+        <div class="row-spacer"></div>
+    </div>
+    <div class="row-spacer"></div>
+    <div class="f-col">
         <canvas baseChart height="400" width="500" [datasets]="dataSet" [labels]="dataSetLabels"
             [options]="chartOptions" [plugins]="chartPlugins" [chartType]="chartType">
         </canvas>
-    </mat-card-content>
-</mat-card>
+    </div>
+</div>
