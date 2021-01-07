@@ -15,15 +15,27 @@ import { map, startWith } from 'rxjs/operators';
 })
 export class SetupDuplicateRuleComponent implements OnInit, OnChanges, OnDestroy {
 
+  /**
+   * input property for moduleId
+   */
   @Input()
   moduleId: string;
 
+  /**
+   * input property for schemaId
+   */
   @Input()
   schemaId: string;
 
+  /**
+   * input property for business rule
+   */
   @Input()
   coreSchemaBrInfo: CoreSchemaBrInfo;
 
+  /**
+   * input property for fields list
+   */
   @Input()
   fieldsList = [];
 
@@ -38,6 +50,9 @@ export class SetupDuplicateRuleComponent implements OnInit, OnChanges, OnDestroy
 
   filteredFieldList = [];
 
+  /**
+   * Available merge rule types
+   */
   MERGE_RULE_TYPES = [
     { label: 'Newest Record', value: 'NEWEST' },
     { label: 'Oldest Record', value: 'OLDEST' },
@@ -45,6 +60,9 @@ export class SetupDuplicateRuleComponent implements OnInit, OnChanges, OnDestroy
     { label: 'Minimum value in the field', value: 'MIN' }
   ];
 
+  /**
+   * available merge rule fields
+   */
   MERGE_RULE_FIELDS = [
     { label: 'User created', value: 'USERCREATED' },
     { label: 'User modified', value: 'USERMODIFIED' },
@@ -67,9 +85,11 @@ export class SetupDuplicateRuleComponent implements OnInit, OnChanges, OnDestroy
   }
 
 
-
+  /**
+   * angular hook to detect input value chnages
+   * @param changes changes object to detect value changes
+   */
   ngOnChanges(changes: SimpleChanges) {
-
     if (changes && changes.coreSchemaBrInfo && changes.coreSchemaBrInfo.currentValue !== changes.coreSchemaBrInfo.previousValue) {
       this.patchDuplicateForm(this.coreSchemaBrInfo);
     }
@@ -84,7 +104,9 @@ export class SetupDuplicateRuleComponent implements OnInit, OnChanges, OnDestroy
   }
 
 
-
+  /**
+   * Angular hook
+   */
   ngOnInit() {
 
     // emit duplicate form ref to parent component for validation and value
@@ -100,6 +122,9 @@ export class SetupDuplicateRuleComponent implements OnInit, OnChanges, OnDestroy
 
   }
 
+  /**
+   * Initialize duplicate rule form
+   */
   initDuplicateRuleForm() {
 
     this.duplicateRuleForm = this.formBuilder.group({
@@ -112,6 +137,10 @@ export class SetupDuplicateRuleComponent implements OnInit, OnChanges, OnDestroy
 
   }
 
+  /**
+   * Patch existing duplicate data
+   * @param br pass the business rule data
+   */
   patchDuplicateForm(br: CoreSchemaBrInfo) {
 
     const duplicacyField = br.duplicacyField || [];

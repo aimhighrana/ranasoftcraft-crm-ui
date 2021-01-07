@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { PermissionOn, SchemaDashboardPermission } from '@models/collaborator';
+import { PermissionOn, ROLES, SchemaDashboardPermission } from '@models/collaborator';
 import { AddFilterOutput, CheckDataResponse } from '@models/schema/schema';
 import { FilterCriteria } from '@models/schema/schemadetailstable';
 import { SchemaListDetails, VariantDetails } from '@models/schema/schemalist';
@@ -254,4 +254,23 @@ describe('SchemaSummarySidesheetComponent', () => {
     component.openBusinessRuleSideSheet();
     expect(router.navigate).toHaveBeenCalledWith(['', { outlets: { outer: `outer/schema/business-rule/${component.moduleId}/${component.schemaId}/new/outer`} }])
   })
+
+  it('updateRole(), should update subscriber role', async() => {
+    component.roles = ROLES;
+    component.schemaId = '125556221415';
+    const subscriber = {
+      isAdmin: false,
+      isViewer: true,
+      isReviewer: false,
+      isEditer: false,
+      schemaId: component.schemaId,
+      permissionType : 'USER',
+      sno: '22551',
+      userid: 'ASHSH'
+    } as SchemaDashboardPermission;
+
+    component.subscriberData = [subscriber];
+    component.updateRole(subscriber, 'isAdmin');
+    expect(subscriber.isAdmin).toEqual(true);
+  });
 });

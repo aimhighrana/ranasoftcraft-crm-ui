@@ -35,27 +35,91 @@ type UploadedDataType = any[][];
   styleUrls: ['./upload-dataset.component.scss']
 })
 export class UploadDatasetComponent implements OnInit, AfterViewInit {
+  /**
+   * mat stepper element reference
+   */
   @ViewChild(MatStepper) stepper!: MatStepper;
+
+  /**
+   * form instance for dataTableCtrl
+   */
   dataTableCtrl: FormGroup;
+
+  /**
+   * form instance for slected field control
+   */
   selectedMdoFldCtrl: FormControl;
+
+  /**
+   * Displayed columns list for table
+   */
   displayedColumns = ['excel', 'excelfrstrowdata', 'mapping', 'field'];
+
+  /**
+   * Table data source
+   */
   dataSource: DataSource[] = [];
+
+  /**
+   * Filtered modules list
+   */
   filteredModules: Observable<ObjectTypeResponse[]>;
+
+  /**
+   * form instance for module input
+   */
   moduleInpFrmCtrl: FormControl;
+
+  /**
+   * List for excel headers
+   */
   excelHeader: string[];
+
+  /**
+   * hold the metadata fields
+   */
   metadataFields: MetadataModeleResponse;
+
+  /**
+   * hold metadata fields list
+   */
   metaDataFieldList: MetadataModel[] = [];
+
+  /**
+   * Hold the header fields
+   */
   headerFieldsList: MetadataModel[] = [];
+
+  /**
+   * Hold the uploaded file data
+   */
   uploadedData: UploadedDataType;
   excelMdoFieldMappedData: DataSource[] = [];
   triggerValue = false;
+
+  /**
+   * File to be uploaded
+   */
   uploadedFile: File;
+
+  /**
+   * Status for upload button
+   */
   uploadDisabled = true;
+
+  /**
+   * error object for upload
+   */
   uploadError: UploadError = {
     status: false,
     message: ''
   };
+
+  /**
+   * hold the plantcode
+   */
   plantCode: string;
+
   fieldsBySubscriber: SubscriberFields[] = [];
   loaded = false;
   uploadLoader = false;
@@ -212,11 +276,30 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * keep the dialog subscriptions
    */
   dialogSubscriber = new Subscription();
+
+  /**
+   * form instance for input
+   */
   inputModel = new FormControl();
+
+  /**
+   * Subscriber filtered fields list
+   */
   subscriberFilterFields = [];
+
+  /**
+   * active chip value
+   */
   activeChipValue = {};
+
+  /**
+   * reference to editable fields on click
+   */
   @ViewChild('clickToEdit') clickToEdit: ElementRef;
 
+  /**
+   * Hold the final step after submissiion
+   */
   stepSubmitted = false;
 
   /**
@@ -250,8 +333,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     public dialogRef: MatDialogRef<UploadDatasetComponent>,
     private globaldialogService: GlobaldialogService,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private utilties: Utilities,
-    private globalDialogService: GlobaldialogService
+    private utilties: Utilities
   ) {
     this.setProgressValue();
     this.moduleInpFrmCtrl = new FormControl();
@@ -594,6 +676,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    */
   openGlobalDialog(componentName = 'createBR') {
     if (componentName === 'createBR') {
+      // Open dialog for new business rule creation
       this.globaldialogService.openDialog(NewBusinessRulesComponent, {
         moduleId: this.requestForm.controls.objectId.value,
         fields: this.requestForm.controls.fields.value,
@@ -610,6 +693,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         })
     }
     if (componentName === 'existingBR') {
+       // Open dialog for existing business rule
       this.globaldialogService.openDialog(BusinessrulelibraryDialogComponent, {
         selectedRules: this.selectedBusinessRules,
       });
@@ -728,6 +812,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   configureRule(rule: CoreSchemaBrInfo) {
     this.createfieldObjectForRequest(this.dataSource).then((finalValues) => {
       this.requestForm.controls.fields.setValue(finalValues);
+      // destructure the business rule object
       const {
         brId,
         tempId,
@@ -745,8 +830,10 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         duplicacyField,
         duplicacyMaster } = rule;
 
+        // Handle duplicacy rule data
         const duplicacyRuleData = {duplicacyField, duplicacyMaster};
 
+      // Open business rule configuration dialog
       this.globaldialogService.openDialog(NewBusinessRulesComponent, {
         maxWeightageLimit: this.getCurrentWeightageLimit(brWeightage),
         moduleId: this.requestForm.controls.objectId.value ? this.requestForm.controls.objectId.value : '',
@@ -770,6 +857,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       });
     });
 
+    // Subscribe the dialog close event
     this.dialogSubscriber = this.globaldialogService.dialogCloseEmitter
       .pipe(distinctUntilChanged())
       .subscribe((response: NewBrDialogResponse) => {
@@ -1061,6 +1149,10 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       });
   }
 
+  /**
+   * method to find the selected field ID
+   * @param columnInde pass the column index
+   */
   getSelectedFieldId(columnInde: number): string {
     const availmap = this.excelMdoFieldMappedData.filter(fill => fill.columnIndex === columnInde);
     if (availmap.length > 0) {
@@ -1111,6 +1203,8 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
 
   /**
    * Method to map subscriber to correct format
+   * @param subscriber pass the subscriber object
+   * @param permissions pass the permissions object
    */
   mapSubscriberInfo(subscriber, permissions = null) {
     const mappedData = {
@@ -1175,7 +1269,10 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     )
   }
 
-  // remove tempId from CoreSchemaBr objects
+  /**
+   * remove tempId from CoreSchemaBr objects
+   * @param value pass the value to modify
+   */
   removeTempId(value) {
     const modified = { ...value };
     const rules = value.coreSchemaBr.map((rule) => pick(rule, Object.keys(rule).filter(key => key !== 'tempId')));
@@ -1183,6 +1280,12 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     return modified;
   }
 
+  /**
+   * method to create schema
+   * @param objectId pass the object ID
+   * @param variantId pass the variant ID
+   * @param fileSerialNo Pass the file serial number
+   */
   callSaveSchemaAPI(objectId: string, variantId: string, fileSerialNo: string) {
     const formObject = this.removeTempId(this.requestForm.value);
     const runNow = formObject.runTime;
@@ -1216,7 +1319,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * @param index index of object to be removed
    */
   deleteBR(rule: CoreSchemaBrInfo) {
-    this.globalDialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
+    this.globaldialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
       if (response && response === 'yes') {
         let index = null;
         if (rule.tempId) {
@@ -1241,7 +1344,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * @param index index of object to be removed
    */
   deleteSubscriber(index) {
-    this.globalDialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
+    this.globaldialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
       if (response && response === 'yes') {
         this.subscribersList.splice(index, 1);
         this.requestForm.controls.subcribers.value.splice(index, 1);
@@ -1249,6 +1352,11 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     });
   }
 
+  /**
+   * Update the subscriber Role
+   * @param value pass the updated Role
+   * @param subscriber Pass the subscriber object
+   */
   updateRole(value, subscriber) {
     const subscriberId = subscriber.sno;
     const subscriberInList = this.subscribersList.find(subscriberItem => subscriberItem.sno === subscriberId);
@@ -1268,6 +1376,12 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     }
   }
 
+  /**
+   * method to create filter control for dropdown values
+   * @param event Pass the filter output value
+   * @param subscriberIndex pass index of the susbscriber
+   * @param subscriber pass the subscriber object
+   */
   makeFilterControl(event: AddFilterOutput, subscriberIndex, subscriber) {
     const exitingFilterCtrl = [];
 

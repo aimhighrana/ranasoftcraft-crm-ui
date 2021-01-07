@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild, ElementRef } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import {
     MatDialogRef,
@@ -91,6 +91,9 @@ export class NewBusinessRulesComponent implements OnInit {
      */
     separatorKeysCodes: number[] = [ENTER, COMMA];
 
+    /**
+     * Hold the list of UDR conditional Operators
+     */
     operators = [];
 
     /**
@@ -166,6 +169,14 @@ export class NewBusinessRulesComponent implements OnInit {
      */
     duplicateFormRef: FormGroup;
 
+    /**
+     * reference to the input
+     */
+    @ViewChild('fieldsInput') fieldsInput: ElementRef;
+
+    /**
+     * Hold the duplicacy rule data here
+     */
     duplicacyRuleData: CoreSchemaBrInfo = new CoreSchemaBrInfo();
 
     /**
@@ -182,11 +193,16 @@ export class NewBusinessRulesComponent implements OnInit {
         private snackBar: MatSnackBar
     ) { }
 
-
+    /**
+     * get transformation type
+     */
     get transformationType() {
         return TransformationRuleType;
     }
 
+    /**
+     * get selected transformation type
+     */
     get selectedTransformationType() {
         if (this.form && this.form.controls) {
             return this.form.controls.transformationRuleType.value;
@@ -194,6 +210,9 @@ export class NewBusinessRulesComponent implements OnInit {
         return '';
     }
 
+    /**
+     * Angular hook
+     */
     ngOnInit(): void {
         // initialize form Object
         this.initializeForm();
@@ -201,12 +220,14 @@ export class NewBusinessRulesComponent implements OnInit {
         this.operators = this.possibleOperators();
         this.getCategories();
 
-        if(this.data){
+        if (this.data) {
             this.maxWeightageLimit = this.data.maxWeightageLimit;
         }
         // Patch data if working with existing business rule
         if (this.data && this.data.createRuleFormValues) {
             this.tempRuleId = (this.data && this.data.tempId) ? this.data.tempId : '';
+
+            // destructure the received business rule data for patching
             const {
                 rule_type,
                 rule_name,
@@ -220,8 +241,14 @@ export class NewBusinessRulesComponent implements OnInit {
                 categoryId,
                 transFormationSchema,
                 duplicacyRuleData } = this.data.createRuleFormValues;
+
+            // handle existing transformation data separately
             this.patchTransformationFormData(transFormationSchema);
+
+            // handle existing Duplicacy data separately
             this.patchDuplicacyData(duplicacyRuleData);
+
+            // Path the form object with existing values
             this.form.patchValue({
                 rule_type,
                 rule_name,
@@ -235,7 +262,10 @@ export class NewBusinessRulesComponent implements OnInit {
                 transformationRuleType: this.getTrRuleType(transFormationSchema),
             });
 
+            // Disable the rule type field on patch
             this.form.controls.rule_type.disable();
+
+            // Handle existing UDR data
             if (udrTreeData && udrTreeData.blocks) {
                 const temp: UDRObject[] = [];
                 udrTreeData.blocks.map((block) => {
@@ -469,7 +499,7 @@ export class NewBusinessRulesComponent implements OnInit {
         const controlKeys: any[] = Object.keys(this.currentControls);
         let requiredKeys: string[] = [];
         if (selectedRule === BusinessRuleType.BR_CUSTOM_SCRIPT) {
-            requiredKeys = ['rule_type', 'categoryId'];
+            requiredKeys = ['rule_type', 'categoryId', 'rule_name'];
         }
         if (selectedRule === BusinessRuleType.BR_REGEX_RULE) {
             requiredKeys = ['rule_type', 'categoryId', 'rule_name', 'error_message', 'fields', 'regex', 'standard_function'];
@@ -550,6 +580,9 @@ export class NewBusinessRulesComponent implements OnInit {
         this.form.controls.fields.setValue('');
         const txtfield = document.getElementById('fieldsInput') as HTMLInputElement;
         txtfield.value = '';
+        if(this.fieldsInput) {
+            this.fieldsInput.nativeElement.blur();
+        }
     }
 
     /**
@@ -704,19 +737,39 @@ export class NewBusinessRulesComponent implements OnInit {
         return [genericOp, onlyNum, specialOpe];
     }
 
+    /**
+     * Set the value for key ComparisonValue
+     * @param value pass the value
+     * @param index pass the block index
+     */
     setComparisonValue(value, index) {
         this.udrBlocks[index].comparisonValue = value
     }
 
+    /**
+     * Set the value for key ComparisonValue for child
+     * @param value pass the value
+     * @param child pass the child object
+     */
     setComparisonValueForChild(value, child) {
         child.comparisonValue = value;
     }
 
-
+    /**
+     * Set initial condition
+     * @param event pass the event
+     * @param i pass the block index
+     */
     setInitialCondition(event, i) {
         this.udrBlocks[i].blockTypeText = event.value;
     }
 
+    /**
+     * Set range data for child here
+     * @param value value of the range
+     * @param rangeText text for the range
+     * @param childObject pass the child object
+     */
     setRangeValueForChild(value, rangeText, childObject) {
         if (rangeText === 'start') {
             childObject.rangeStartValue = value;
@@ -726,6 +779,12 @@ export class NewBusinessRulesComponent implements OnInit {
         }
     }
 
+    /**
+     * Delete udr block from child array
+     * @param parentBlockIndex pass the parent blocks index
+     * @param childIndex pass the child block index
+     * @param child pass the child object
+     */
     deleteFromChildArray(parentBlockIndex, childIndex, child) {
         this.udrBlocks[parentBlockIndex].children.splice(childIndex, 1);
         const getBlockIndex = this.allUDRBlocks.findIndex((obj) => obj.id === child.id);
@@ -736,16 +795,29 @@ export class NewBusinessRulesComponent implements OnInit {
         this.allhierarchies.splice(getHirerchyIndex, 1);
     }
 
+    /**
+     * method to delete the parend UDR block
+     * @param i pass the index for the particular block
+     */
     deleteParentBlock(i) {
         this.udrBlocks.splice(i, 1);
         this.allUDRBlocks.splice(i, 1);
         this.allhierarchies.splice(i, 1);
     }
 
+    /**
+     * get the basic conditions type
+     */
     getConditions() {
         return ['And', 'Or']
     }
 
+    /**
+     * Set range data here
+     * @param value value of the range
+     * @param rangeText text for the range
+     * @param parentBlockIndex pass the index for parentBlock
+     */
     setRangeValue(value, rangeText, parentBlockIndex) {
         if (rangeText === 'start') {
             this.udrBlocks[parentBlockIndex].rangeStartValue = value
@@ -754,6 +826,12 @@ export class NewBusinessRulesComponent implements OnInit {
             this.udrBlocks[parentBlockIndex].rangeEndValue = value
         }
     }
+
+    /**
+     * Set the parent block type
+     * @param event pass the select event
+     * @param i pass the index for the block
+     */
     setParentBlockTypeText(event, i) {
         this.udrBlocks.forEach((block, index) => {
             if (index > i) {
@@ -762,6 +840,12 @@ export class NewBusinessRulesComponent implements OnInit {
         })
     }
 
+    /**
+     * Method to add a UDR block
+     * @param nested Whether the block is a nested node
+     * @param parent pass the parent block data in case the current block is a child
+     * @param i pass the index for current block
+     */
     addBlock(nested, parent, i) {
         const blockId = Math.floor(Math.random() * 1000000000000).toString();
         let existingBlockType = this.udrBlocks[this.udrBlocks.length - 1].blockTypeText;
@@ -808,18 +892,30 @@ export class NewBusinessRulesComponent implements OnInit {
         }
     }
 
+    /**
+     * Get the type of Block for UDR conditions
+     * @param type pass the type string
+     */
     getBlockType(type: string) {
-        if(type.toLowerCase() === 'when') {
+        if (type.toLowerCase() === 'when') {
             return BlockType.AND;
         } else {
             return BlockType[type.toUpperCase()];
         }
     }
 
+    /**
+     * method to get display values
+     * @param value pass the value object
+     */
     displayFn(value) {
         return value ? value.fieldDescri : '';
     }
 
+    /**
+     * method to format label data and convert it to string
+     * @param value pass the label
+     */
     formatLabel(value) {
         return `${value}`;
     }
@@ -830,16 +926,16 @@ export class NewBusinessRulesComponent implements OnInit {
      */
     setTransformationFormData(transformationData: TransformationFormData) {
         const {
-            targetFld,
             sourceFld,
             excludeScript,
             includeScript,
             selectedTargetFields
         } = transformationData;
+
         this.form.controls.targetFld.setValue(selectedTargetFields.map(item => item[this.targetFieldsObject.valueKey]).join(','));
-        this.form.controls.sourceFld.setValue(sourceFld);
-        this.form.controls.excludeScript.setValue(excludeScript);
-        this.form.controls.includeScript.setValue(includeScript);
+        if(sourceFld) { this.form.controls.sourceFld.setValue(sourceFld); };
+        if(excludeScript) { this.form.controls.excludeScript.setValue(excludeScript); };
+        if(includeScript) { this.form.controls.includeScript.setValue(includeScript); };
     }
 
     /**
@@ -857,13 +953,21 @@ export class NewBusinessRulesComponent implements OnInit {
         return this.form.controls.rule_type.value === BusinessRuleType.BR_DUPLICATE_RULE;
     }
 
+    /**
+     * Setting the duplicate form reference
+     * @param formRef pass the form referene
+     */
     setDuplicateFormRef(formRef: FormGroup) {
         console.log(formRef);
         this.duplicateFormRef = formRef;
     }
 
+    /**
+     * Patch data for duplicacy rule
+     * @param data pass the data to be patched
+     */
     patchDuplicacyData(data) {
-        if( data ){
+        if (data) {
             this.duplicacyRuleData = data as CoreSchemaBrInfo;
         }
     }

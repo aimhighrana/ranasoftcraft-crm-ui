@@ -61,7 +61,7 @@
             Please enter Rule name</mat-error>
         </div>
 
-        <div class="f-col mdo-form-field" *ngIf="!isUDR && !isDuplicateType">
+        <div class="f-col mdo-form-field" *ngIf="!isDuplicateType">
           <pros-form-input [value]="form.get('error_message').value"
             (valueChange)="getFormValue($event,'error_message')" [label]="'Error message (Message)'">
           </pros-form-input>
@@ -119,7 +119,7 @@
                 {{field.fieldDescri}}
                 <mat-icon matChipRemove>cancel</mat-icon>
               </mat-chip>
-              <input matInput id="fieldsInput" class="mat-input" [matAutocomplete]="auto" formControlName="fields"
+              <input matInput id="fieldsInput" #fieldsInput class="mat-input" [matAutocomplete]="auto" formControlName="fields"
                 [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
             </mat-chip-list>
             <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn.bind(this)"
@@ -175,7 +175,7 @@
 
             <!-- field name -->
             <div class="col">
-              <mat-select [(ngModel)]="udrBlock.fieldId">
+              <mat-select [(ngModel)]="udrBlock.fieldId" placeholder="Select Field">
                 <mat-option *ngFor="let fieldItem of fieldsList" [value]="fieldItem.fieldId">
                   {{fieldItem.fieldDescri}}
                 </mat-option>
@@ -185,7 +185,7 @@
             <!-- operators -->
             <div class="col">
               <!-- <button mat-stroked-button>Equals <mat-icon>arrow_drop_down</mat-icon></button> -->
-              <mat-select mat-stroked-button [(ngModel)]="udrBlock.operator">
+              <mat-select mat-stroked-button [(ngModel)]="udrBlock.operator" placeholder="Select Operator">
                 <mat-option selected>-- None --</mat-option>
                 <mat-optgroup *ngFor="let group of operators" [label]="group.desc">
                   <mat-option *ngFor="let child of group.childs" [value]="child">
@@ -256,7 +256,7 @@
                   </div>
 
                   <div class="col">
-                    <mat-select [(ngModel)]="child.fieldId">
+                    <mat-select [(ngModel)]="child.fieldId" placeholder="Select Field">
                       <mat-option *ngFor="let fieldItem of fieldsList" [value]="fieldItem.fieldId">
                         {{fieldItem.fieldDescri}}
                       </mat-option>
@@ -264,7 +264,7 @@
                   </div>
 
                   <div class="col">
-                    <mat-select mat-stroked-button [(ngModel)]="child.operator">
+                    <mat-select mat-stroked-button [(ngModel)]="child.operator" placeholder="Select Operator">
                       <mat-option selected>-- None --</mat-option>
                       <mat-optgroup *ngFor="let group of operators" [label]="group.desc">
                         <mat-option *ngFor="let child of group.childs" [value]="child">

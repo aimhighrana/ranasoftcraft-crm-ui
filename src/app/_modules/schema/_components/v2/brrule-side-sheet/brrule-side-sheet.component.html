@@ -111,7 +111,7 @@
                                 {{field.fieldDescri}}
                                 <mat-icon matChipRemove>cancel</mat-icon>
                             </mat-chip>
-                            <input matInput id="fieldsInput" class="mat-input" [matAutocomplete]="auto"
+                            <input matInput id="fieldsInput" #fieldsInput class="mat-input" [matAutocomplete]="auto"
                                 formControlName="fields" [matChipInputFor]="chipList"
                                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
                         </mat-chip-list>
@@ -170,8 +170,7 @@
                                 </div>
                                 <!-- field name -->
                                 <div class="col">
-                                    <mat-select formControlName="conditionFieldId">
-                                        <mat-option value="">Select field </mat-option>
+                                    <mat-select formControlName="conditionFieldId" placeholder="Select field">
                                         <mat-option *ngFor="let fieldItem of fieldsList" [value]="fieldItem.fieldId">
                                             {{fieldItem.fieldDescri}}
                                         </mat-option>
@@ -180,8 +179,7 @@
                                 <!-- operators -->
                                 <div class="col">
                                     <!-- <button mat-stroked-button>Equals <mat-icon>arrow_drop_down</mat-icon></button> -->
-                                    <mat-select mat-stroked-button formControlName="conditionOperator">
-                                        <mat-option selected value="">Select operator</mat-option>
+                                    <mat-select mat-stroked-button formControlName="conditionOperator" placeholder="Select Operator">
                                         <mat-optgroup *ngFor="let group of operators" [label]="group.desc">
                                             <mat-option *ngFor="let child of group.childs" [value]="child">
                                                 <ng-container *ngIf="child !== 'EQUAL' && child !== 'FIELD2FIELD'">
@@ -252,8 +250,7 @@
                                                     </mat-select>
                                                 </div>
                                                 <div class="col">
-                                                    <mat-select formControlName="conditionFieldId">
-                                                        <mat-option value="">Select field </mat-option>
+                                                    <mat-select formControlName="conditionFieldId" placeholder="Select field">
                                                         <mat-option *ngFor="let fieldItem of fieldsList"
                                                             [value]="fieldItem.fieldId">
                                                             {{fieldItem.fieldDescri}}
@@ -261,8 +258,7 @@
                                                     </mat-select>
                                                 </div>
                                                 <div class="col">
-                                                    <mat-select mat-stroked-button formControlName="conditionOperator">
-                                                        <mat-option selected value="">Select operator</mat-option>
+                                                    <mat-select mat-stroked-button formControlName="conditionOperator" placeholder="Select operator">
                                                         <mat-optgroup *ngFor="let group of operators" [label]="group.desc">
                                                             <mat-option *ngFor="let child of group.childs" [value]="child">
                                                                 <ng-container *ngIf="child !== 'EQUAL' && child !== 'FIELD2FIELD'">

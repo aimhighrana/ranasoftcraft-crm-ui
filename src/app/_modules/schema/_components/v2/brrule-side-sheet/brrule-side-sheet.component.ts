@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { BusinessRules } from '@modules/admin/_components/module/schema/diw-create-businessrule/diw-create-businessrule.component';
 import { BusinessRuleType, ConditionalOperator, CoreSchemaBrInfo, UDRBlocksModel, UdrModel, UDRHierarchyModel, RULE_TYPES, PRE_DEFINED_REGEX, TransformationRuleType, TransformationModel, DuplicateRuleModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
@@ -138,6 +138,11 @@ export class BrruleSideSheetComponent implements OnInit {
    * Store current active outlet
    */
   activeOutlet = 'sb';
+
+  /**
+   * reference to the input
+   */
+  @ViewChild('fieldsInput') fieldsInput: ElementRef;
 
   /**
    * Class contructor
@@ -599,7 +604,7 @@ export class BrruleSideSheetComponent implements OnInit {
    * function to get the fields on basis of module
    */
   getFieldsByModuleId() {
-    if(!this.moduleId) { return };
+    if (!this.moduleId) { return };
     this.schemaDetailsService.getMetadataFields(this.moduleId)
       .subscribe((metadataModeleResponse: MetadataModeleResponse) => {
         const keys = Object.keys(metadataModeleResponse.headers);
@@ -662,6 +667,9 @@ export class BrruleSideSheetComponent implements OnInit {
     }
 
     this.form.controls.fields.setValue('');
+    if(this.fieldsInput) {
+      this.fieldsInput.nativeElement.blur();
+    }
   }
 
   /**
@@ -853,7 +861,6 @@ export class BrruleSideSheetComponent implements OnInit {
   mapTransformationData(response, ruleType) {
     const { sourceFld, targetFld, includeScript, excludeScript, transformationRuleType } = response.formData;
     const transformationList: TransformationModel[] = [];
-
     if (ruleType === BusinessRuleType.BR_TRANSFORMATION) {
       if (response.lookupData && response.lookupData.length > 0) {
         response.lookupData.map((param: LookupFields) => {
@@ -945,7 +952,7 @@ export class BrruleSideSheetComponent implements OnInit {
     specialOpe.childs = CONDITIONS.special.operators;
 
     return [genericOp, onlyNum, specialOpe];
-}
+  }
 
   /**
    * method to set the comparison value
@@ -1053,9 +1060,9 @@ export class BrruleSideSheetComponent implements OnInit {
       selectedTargetFields
     } = transformationData;
     this.form.controls.targetFld.setValue(selectedTargetFields.map(item => item.fieldId).join(','));
-    this.form.controls.sourceFld.setValue(sourceFld);
-    this.form.controls.excludeScript.setValue(excludeScript);
-    this.form.controls.includeScript.setValue(includeScript);
+    if (sourceFld) { this.form.controls.sourceFld.setValue(sourceFld); };
+    if (excludeScript) { this.form.controls.excludeScript.setValue(excludeScript); };
+    if (includeScript) { this.form.controls.includeScript.setValue(includeScript); };
   }
 
   /**
@@ -1074,13 +1081,19 @@ export class BrruleSideSheetComponent implements OnInit {
     return value ? value.fieldDescri : '';
   }
 
+  /**
+   * Setting form reference for duplicate rule
+   * @param formRef pass th form reference
+   */
   setDuplicateFormRef(formRef: FormGroup) {
     console.log(formRef);
     this.duplicateFormRef = formRef;
   }
 
+  /**
+   * Save the created suplicate rule
+   */
   saveDuplicateRule() {
-
     const brInfo = {
       brId: this.brId,
       brIdStr: this.brId,

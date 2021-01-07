@@ -1,5 +1,5 @@
 <mat-form-field appearance="outline">
-    <input matInput class="mat-input" placeholder="{{fieldLabel}}" [formControl]="selectedMdoFldCtrl"
+    <input matInput class="mat-input" #textInput placeholder="{{fieldLabel}}" [formControl]="selectedMdoFldCtrl"
       [matAutocomplete]="mdofieldauto" #trigger="matAutocompleteTrigger">
       <div class="f-row input-actions">
         <button mat-button matSuffix (click)="$event.stopPropagation(); trigger.closePanel(); emitOptionSelected(viewMoreAction)">
