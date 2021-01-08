@@ -511,7 +511,7 @@ export class BrruleSideSheetComponent implements OnInit {
             conditionValueFieldId: blck.conditionValueFieldId,
             id: blck.id,
             objectType: blck.blockType,
-            udrid: blck.udrid,
+            udrid: br.brIdStr,
             childs: []
           }]);
         } else {
@@ -725,7 +725,11 @@ export class BrruleSideSheetComponent implements OnInit {
         brId: this.brId, brIdStr: this.brId,
         brType, brInfo: this.form.value.rule_name,
         message: this.form.value.error_message,
-        schemaId: this.schemaId
+        schemaId: this.schemaId,
+        moduleId: this.moduleId,
+        brWeightage: this.form.value.weightage,
+        isCopied: false,
+        copiedFrom: '',
       } as CoreSchemaBrInfo;
 
       const blocks: UDRBlocksModel[] = [];

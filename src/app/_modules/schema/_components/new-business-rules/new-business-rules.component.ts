@@ -639,10 +639,25 @@ export class NewBusinessRulesComponent implements OnInit {
                 this.snackBar.open('At least one field should be selected !', 'okay', { duration: 3000 });
                 return;
             }
+            const modifiedDuplicacyField = [];
+            const duplicacyField = [...this.duplicateFormRef.value.addFields];
+            if(duplicacyField && duplicacyField.length>0) {
+                duplicacyField.map((field) => {
+                    const { fId, criteria, exclusion, inverse, weightage, ival, sval } = field;
+                    modifiedDuplicacyField.push({
+                        fieldId : fId,
+                        criteria,
+                        exclusion,
+                        inverse,
+                        weightage,
+                        ival,
+                        sval,
+                    })
+                })
+            }
 
-            this.duplicacyRuleData.duplicacyField = this.duplicateFormRef.value.addFields;
+            this.duplicacyRuleData.duplicacyField = modifiedDuplicacyField;
             this.duplicacyRuleData.duplicacyMaster = this.duplicateFormRef.value.mergeRules;
-
         }
 
         const udrHierarchies = []
