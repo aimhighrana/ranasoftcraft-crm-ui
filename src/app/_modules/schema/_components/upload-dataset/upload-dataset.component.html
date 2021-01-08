@@ -34,7 +34,7 @@
                 (action)="openExplorer()">
                 </pros-null-state>
 
-                <input class="drag-input" type="file" id="uploader" (change)="fileChange($event)"
+                <input class="drag-input" type="file" id="uploader" #uploadInput (change)="fileChange($event)"
                     prosClickStopPropagation />
             </div>
         </mat-step>
@@ -420,7 +420,7 @@
             <button mat-raised-button *ngIf="headerTextIndex > 2" (click)="step('previous')"
                 class="mat-elevation-z0">Back</button>
             <ng-container *ngIf="progressBar < 100">
-                <a *ngIf="headerTextIndex === 2" (click)="step('previous')" class="info-link">Choose a
+                <a *ngIf="headerTextIndex === 2" (click)="step('previous'); clearFileInput()" class="info-link">Choose a
                     different file</a>
                 <span class="f-col-spacer-half"></span>
                 <button mat-flat-button color="primary" [disabled]="headerTextIndex === 1"

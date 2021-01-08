@@ -298,6 +298,11 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   @ViewChild('clickToEdit') clickToEdit: ElementRef;
 
   /**
+   * reference to upload input element
+   */
+  @ViewChild('uploadInput') uploadInput: ElementRef;
+
+  /**
    * Hold the final step after submissiion
    */
   stepSubmitted = false;
@@ -1129,6 +1134,16 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    */
   setRunningSchedule(runId) {
     this.requestForm.controls.runTime.setValue(runId.value);
+  }
+
+  /**
+   * Clear the file input so new file can be detected
+   */
+  clearFileInput() {
+    if(this.uploadInput) {
+      this.uploadedData = null;
+      this.uploadInput.nativeElement.value = '';
+    }
   }
 
   /**
