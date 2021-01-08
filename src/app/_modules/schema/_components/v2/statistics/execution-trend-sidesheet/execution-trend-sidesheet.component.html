@@ -1,4 +1,4 @@
-<mat-card class="root mat-elevation-z0">
+<div class="root">
     <div class="f-row breadcrum-toolbar">
         <button mat-button (click)="close()">
             <mat-icon fontSet="mdo-icons">close</mat-icon>
@@ -17,8 +17,10 @@
         </div>
     </div>
     <div class="row-spacer"></div>
-    <div class="f-col mdo-justify">
-        <pros-schema-execution-trend [moduleId]="moduleId" [schemaId]="schemaId" [variantId]="variantId">
-        </pros-schema-execution-trend>
+    <div class="f-col sidesheetcontent-listing">
+        <div class="f-col mdo-justify">
+            <pros-schema-execution-trend [moduleId]="moduleId" [schemaId]="schemaId" [variantId]="variantId">
+            </pros-schema-execution-trend>
+        </div>
     </div>
-</mat-card>
+</div>

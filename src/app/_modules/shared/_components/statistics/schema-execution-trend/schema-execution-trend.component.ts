@@ -40,9 +40,9 @@ export class SchemaExecutionTrendComponent implements OnInit, OnChanges {
       data: [],
       label: 'Error',
       stack : 'a' ,
-      fill: 'red',
-      borderColor: 'red',
-      borderDash:[5],
+      fill: ' #ff6b6b',
+      borderColor: ' #ff6b6b',
+      backgroundColor: '#ff6b6b',
       /* lineTension: 0.1,
       backgroundColor: 'red',
       borderDash:[5],
@@ -63,9 +63,14 @@ export class SchemaExecutionTrendComponent implements OnInit, OnChanges {
       data: [],
       label: 'Success',
       stack:'a' ,
-      fill: 'rgba(187,205,151,0.5)',
-      borderColor: 'green',
-      borderDash:[5]
+      fill: '#51cf67',
+      borderColor: '#51cf67',
+      borderDash:[2],
+      backgroundColor: '#51cf67',
+      pointBackgroundColor: '#51cf67',
+      pointBorderColor: '#fff',
+
+
     }
   ];
 
@@ -105,6 +110,7 @@ export class SchemaExecutionTrendComponent implements OnInit, OnChanges {
         scaleLabel: {
           display: true,
           labelString: 'Weeks',
+
         },
         ticks: {
           fontColor: '#000',
@@ -113,7 +119,7 @@ export class SchemaExecutionTrendComponent implements OnInit, OnChanges {
       yAxes: [{
         scaleLabel: {
           display: true,
-          labelString: 'Values'
+          labelString: 'Values',
         },
         ticks: {
           fontColor: '#000',
