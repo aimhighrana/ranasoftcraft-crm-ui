@@ -8,6 +8,7 @@ import { DropDownValue, UDRBlocksModel, UdrModel, CoreSchemaBrInfo, Category, Du
 import { SchemaStaticThresholdRes, SchemaListModuleList, SchemaListDetails, CoreSchemaBrMap } from '@models/schema/schemalist';
 import { SchemaScheduler } from '@models/schema/schemaScheduler';
 import { EndpointsClassicService } from '../_endpoints/endpoints-classic.service';
+import { SchemaExecutionProgressResponse } from '@models/schema/schema-execution';
 
 @Injectable({
   providedIn: 'root'
@@ -320,5 +321,13 @@ export class SchemaService {
    */
   public createCheckDataBusinessRule(brRequest: CoreSchemaBrInfo): Observable<CoreSchemaBrInfo> {
     return this.http.post<CoreSchemaBrInfo>(this.endpointService.createCheckDataBusinessRuleUrl(), brRequest);
+  }
+
+  /**
+   * function to GET Api call to get details for schema execution progress
+   * @param schemaId: ID of schema for which details needed
+   */
+  public getSchemaExecutionProgressDetails(schemaId: string): Observable<SchemaExecutionProgressResponse> {
+    return this.http.get<SchemaExecutionProgressResponse>(this.endpointService.schemaExecutionProgressDetailUrl(schemaId));
   }
 }

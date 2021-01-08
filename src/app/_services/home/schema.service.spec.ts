@@ -5,6 +5,7 @@ import { SchemaGroupResponse, SchemaGroupDetailsResponse, CreateSchemaGroupReque
 import { HttpTestingController, HttpClientTestingModule } from '@angular/common/http/testing';
 import { Any2tsService } from '../any2ts.service';
 import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
+import { SchemaExecutionProgressResponse } from '@models/schema/schema-execution';
 describe('SchemaService', () => {
   let schemaService: SchemaService;
   let httpTestingController: HttpTestingController;
@@ -12,7 +13,7 @@ describe('SchemaService', () => {
   let any2tsSpy: jasmine.SpyObj<Any2tsService>;
 
   beforeEach(async(() => {
-    const epsSpy = jasmine.createSpyObj('EndpointsClassicService', ['getSchemaGroupsUrl', 'getSchemaGroupDetailsByGrpIdUrl', 'getCreateSchemaGroupUrl', 'getAllObjecttypeUrl', 'deleteConditionBlock', 'deleteSchema']);
+    const epsSpy = jasmine.createSpyObj('EndpointsClassicService', ['getSchemaGroupsUrl', 'getSchemaGroupDetailsByGrpIdUrl', 'getCreateSchemaGroupUrl', 'getAllObjecttypeUrl', 'deleteConditionBlock', 'deleteSchema', 'schemaExecutionProgressDetailUrl']);
     const any2Spy = jasmine.createSpyObj('Any2tsService', ['any2SchemaGroupResponse', 'any2SchemaDetails', 'any2ObjectType']);
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
@@ -173,4 +174,23 @@ describe('SchemaService', () => {
     // verify http
     httpTestingController.verify();
   }));
+
+  it('getSchemaExecutionProgressDetails(), should call http get to get execution progress details', async() => {
+    const schemaId = '145246';
+
+    const url = `schema-progress/${schemaId}`;
+    const httpMockData = {} as SchemaExecutionProgressResponse;
+
+    endpointServiceSpy.schemaExecutionProgressDetailUrl.withArgs(schemaId).and.returnValue(url);
+
+    schemaService.getSchemaExecutionProgressDetails(schemaId).subscribe(data => {
+      expect(data).toEqual({} as SchemaExecutionProgressResponse);
+    });
+
+    const httpReq = httpTestingController.expectOne(url);
+    expect(httpReq.request.method).toEqual('GET');
+    httpReq.flush(httpMockData);
+
+    httpTestingController.verify();
+  })
 });

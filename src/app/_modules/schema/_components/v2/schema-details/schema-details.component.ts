@@ -186,6 +186,12 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
     { actionText: 'Reject', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT }
   ] as SchemaTableAction[];
 
+  /**
+   * To hold running value of schema
+   */
+  @Input()
+  isInRunning: boolean;
+
 
   constructor(
     private activatedRouter: ActivatedRoute,
@@ -223,7 +229,11 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
       isRefresh = true;
     }
 
-    if (isRefresh) {
+    if(changes && changes.isInRunning && changes.isInRunning.currentValue !== changes.isInRunning.previousValue) {
+      this.isInRunning = changes.isInRunning.currentValue;
+    }
+
+    if (isRefresh && !this.isInRunning) {
       this.activeTab='error';
       this.getDataScope();
       this.getFldMetadata();

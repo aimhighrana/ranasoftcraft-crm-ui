@@ -203,5 +203,11 @@ describe('EndpointsClassicService', () => {
     expect(serObj.getCrossMappingUrl('0')).toContain('/schema/actions/getCrossMapping?plantCode=0');
   }));
 
+  it('getSchemaExecutionProgressDetailUrl(), should return URL for getting execution progress', async() => {
+    const serviceObj = new EndpointsClassicService();
+    const schemaId = '25634';
+    const URL = serviceObj.schemaExecutionProgressDetailUrl(schemaId);
+    expect(URL).toContain(`schema/getSchemaProgeress/${schemaId}`);
+  })
 
 });

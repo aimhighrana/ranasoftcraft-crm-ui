@@ -227,6 +227,9 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     { actionText: 'Reject', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT }
   ] as SchemaTableAction[];
 
+  @Input()
+  isInRunning: boolean;
+
   constructor(
     private schemaDetailService: SchemaDetailsService,
     private schemaService: SchemaService,
@@ -252,6 +255,10 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if(changes && changes.isInRunning && changes.isInRunning.currentValue !== changes.isInRunning.previousValue) {
+      this.isInRunning = changes.isInRunning.currentValue;
+    }
+
     if (changes && changes.moduleId && changes.moduleId.previousValue !== changes.moduleId.currentValue) {
       this.moduleId = changes.moduleId.currentValue;
       this.getFldMetadata();
@@ -259,11 +266,13 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
 
     if (changes && changes.schemaId && changes.schemaId.currentValue !== changes.schemaId.previousValue) {
       this.schemaId = changes.schemaId.currentValue;
-      this.getDataScope();
-      this.getSchemaStatics();
-      this.getSchemaDetails();
-      this.getSchemaTableActions();
-      // this.getFieldsByUserView();
+      if(!this.isInRunning) {
+        this.getDataScope();
+        this.getSchemaStatics();
+        this.getSchemaDetails();
+        this.getSchemaTableActions();
+        // this.getFieldsByUserView();
+      }
     }
 
     if (changes && changes.variantId && changes.variantId.currentValue !== changes.variantId.previousValue) {

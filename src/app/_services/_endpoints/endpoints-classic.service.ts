@@ -753,4 +753,12 @@ export class EndpointsClassicService {
     return this.apiUrl + `/schema/actions/getCrossMapping?plantCode=${plantCode}`;
   }
 
+
+  /**
+   * URL for schema execution progress details
+   * @param schemaId: schema id for which execution details needed.
+   */
+  public schemaExecutionProgressDetailUrl(schemaId: string) {
+    return `${this.apiUrl}/schema/getSchemaProgeress/${schemaId}`;
+  }
 }

@@ -187,6 +187,9 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     { actionText: 'Delete', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT }
   ] as SchemaTableAction[];
 
+  @Input()
+  isInRunning: boolean;
+
 
 
   constructor(
@@ -212,6 +215,10 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
 
     let isRefresh = false;
 
+    if(changes && changes.isInRunning && changes.isInRunning.currentValue !== changes.isInRunning.previousValue) {
+      this.isInRunning = changes.isInRunning.currentValue;
+    }
+
     if (changes && changes.moduleId && changes.moduleId.currentValue !== changes.moduleId.previousValue) {
       this.moduleId = changes.moduleId.currentValue;
       isRefresh = true;
@@ -226,7 +233,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
       this.variantId = changes.variantId.currentValue ? changes.variantId.currentValue : '0';
     } */
 
-    if (isRefresh) {
+    if (isRefresh && !this.isInRunning) {
       this.dataSource = new DuplicacyDataSource(this.catalogService, this.snackBar);
       this.groupId = null;
       this.groupKey = null;

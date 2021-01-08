@@ -31,6 +31,11 @@
             <button mat-menu-item (click)="downloadExecutionDetails()">Export to CSV</button>
         </mat-menu>
     </div>
+    <ng-template [ngIf]="schemaInfo?.isInRunning" [ngIfElse]="schemaInfoTemplate">
+        <pros-schema-progress [schemaId]="schemaId"></pros-schema-progress>
+    </ng-template>
+
+    <ng-template #schemaInfoTemplate>
     <mat-divider></mat-divider>
     <div class="row-spacer"></div>
     <div class="f-row">
@@ -102,9 +107,7 @@
                         <button mat-menu-item (click)="resetAppliedFilter()">Reset</button>
                     </mat-menu>
                 </mat-chip-list>
-
                 <div class="row-spacer"></div>
-
                 <div class="f-row" *ngIf="activeTab && activeTab === 'review' && selection.selected.length !== 0">
                     <ng-template [ngIf]="isReviewer || isApprover">
                         <button mat-flat-button (click)="approveRecords('all')" color="accent" class="rightradius">
@@ -121,7 +124,6 @@
                         Unselect
                     </button>
                 </div>
-
                 <!-- Data Table -->
                 <div class="data" (scroll)="onTableScroll($event)">
                     <mat-table matSort [dataSource]="dataSource" class="mat-elevation-z0">
@@ -176,7 +178,6 @@
                                     (click)="generateCrossEntry(element)">
                                         <mat-icon fontSet="mdo-icons">plus</mat-icon>
                                     </button>
-
                                     <ng-template [ngIf]="activeTab === 'review'">
                                         <!-- Secondary actions -->
                                         <ng-template [ngIf]="true"> <!-- !isReviewer -->
@@ -210,18 +211,14 @@
                                             {{ pAction.actionText }}
                                         </ng-template>
                                         </button>
-
                                         <!-- <button mat-fab prosClickStopPropagation (click)="approveRecords('inline', element)"
                                             *ngIf="!element['OBJECTNUMBER'].isReviewed">
                                             <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
                                         </button>
-
                                         <button mat-fab prosClickStopPropagation color="accent" *ngIf="!element['OBJECTNUMBER'].isReviewed" (click)="resetRec(element,'row')">
                                             <mat-icon fontSet="mdo-icons">declined</mat-icon>
                                         </button> -->
-
                                     </ng-template>
-
                                 </div>
                             </mat-cell>
                         </ng-container>
@@ -250,7 +247,6 @@
                                 <mat-cell *matCellDef="let element; let rIndex = index;"
                                     [class.error-cell]="element[dynCols] ? element[dynCols].isInError : false"
                                     (click)="editCurrentCell(dynCols,element, rIndex, containerRef)">
-
                                     <div class="f-col grid-cell-editable">
                                         <div class="mdo-form-input f-col" style="display: none;"
                                         id="inpctrl_{{ dynCols + '_' + rIndex }}">
@@ -260,7 +256,6 @@
                                             </ng-template>  
                                         </div>
                                     </div>
-
                                     <ng-template [ngIf]="element[dynCols] && element[dynCols].isCorrected"
                                         [ngIfElse]="normalCell">
                                         <ng-template [ngIf]="element[dynCols].oldData !== element[dynCols].fieldData"
@@ -305,4 +300,5 @@
             </div>
         </div>
     </div>
+    </ng-template>
 </div>

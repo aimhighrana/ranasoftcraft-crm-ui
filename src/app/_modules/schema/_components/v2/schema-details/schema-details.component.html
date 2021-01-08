@@ -10,7 +10,6 @@
                 <mat-menu #menu="matMenu" class="navigation-menu">
                     <button mat-menu-item (click)="openDataScopeSideSheet()">[New data scope]</button>
                     <button mat-menu-item (click)="refreshData('0')">Entire dataset</button>
-
                     <ng-container *ngIf="dataScope && dataScope.length">
                         <button mat-menu-item *ngFor="let scope of dataScope" (click)="refreshData(scope.variantId)">
                             {{ scope.variantName ? scope.variantName : 'Unknown'}}
@@ -35,6 +34,11 @@
         </mat-menu>
         <!-- <button mat-flat-button color="accent" (click)="downloadExecutionDetails()">Download</button> -->
     </div>
+    <ng-template [ngIf]="schemaInfo?.isInRunning" [ngIfElse]="schemaInfoTemplate">
+        <pros-schema-progress [schemaId]="schemaId"></pros-schema-progress>
+    </ng-template>
+
+    <ng-template #schemaInfoTemplate>
     <mat-divider></mat-divider>
     <div class="row-spacer"></div>
     <div class="f-row">
@@ -77,9 +81,7 @@
         <mat-chip-list>
             <pros-search-input placeholder="Search text" (value)="inlineSearch($event)" [preValue]="preInpVal">
             </pros-search-input>
-
             <div class="f-col-spacer-half"></div>
-
             <ng-template ngFor let-ctrl [ngForOf]="filterCriteria | async">
                 <ng-template [ngIf]="ctrl.type !== 'INLINE'">
                     <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="appliedfiltermenu"
@@ -120,7 +122,6 @@
                     [reInilize]="reInilize">
                 </pros-add-filter-menu>
             </mat-menu>
-
             <!-- More control -->
             <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="moreFilterMenu">
                 <mat-icon fontSet="mdo-icons">more</mat-icon>
@@ -132,7 +133,6 @@
             </mat-menu>
         </mat-chip-list>
     </div>
-
     <div class="f-row" *ngIf="activeTab && activeTab === 'review' && selection.selected.length !== 0">
         <ng-template [ngIf]="isReviewer || isApprover">
             <button mat-flat-button (click)="approveRecords('all')" color="accent" class="rightradius">
@@ -146,8 +146,6 @@
             Unselect
         </button>
     </div>
-
-
     <div class="data" (scroll)="onTableScroll($event)">
         <!-- if have data then render table -->
         <ng-template [ngIf]="showTableLoading" [ngIfElse]="showdata">
@@ -169,7 +167,6 @@
                         </mat-checkbox>
                     </mat-cell>
                 </ng-container>
-
                 <ng-container matColumnDef="row_more_action" sticky>
                     <mat-header-cell *matHeaderCellDef class="fixed-width-c1">
                         <button mat-button (click)="openTableColumnSettings()">
@@ -182,7 +179,6 @@
                         </button>
                     </mat-cell>
                 </ng-container>
-
                 <ng-container matColumnDef="_assigned_buckets" sticky>
                     <mat-header-cell *matHeaderCellDef class="fixed-width-c1"></mat-header-cell>
                     <mat-cell *matCellDef="let element" class="fixed-width-c1">
@@ -195,7 +191,6 @@
                         </mat-card-header>
                     </mat-cell>
                 </ng-container>
-
                 <ng-container matColumnDef="_score_weightage" sticky>
                     <mat-header-cell *matHeaderCellDef class="fixed-width-c2"> Score &nbsp;<mat-icon
                             fontSet="mdo-icons">
@@ -213,7 +208,6 @@
                         </div>
                     </mat-cell>
                 </ng-container>
-
                 <ng-container matColumnDef="_row_actions" sticky>
                     <mat-header-cell *matHeaderCellDef>
                         Actions
@@ -254,7 +248,6 @@
                                     {{ pAction.actionText }}
                                 </ng-template>
                             </button>
-
                             <!-- <button mat-fab color="accent" prosClickStopPropagation (click)="approveRecords('inline', element)"
                                 *ngIf="!element['OBJECTNUMBER'].isReviewed">
                                 <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
@@ -265,7 +258,6 @@
                         </div>
                     </mat-cell>
                 </ng-container>
-
                 <ng-container matColumnDef="OBJECTNUMBER" sticky>
                     <mat-header-cell *matHeaderCellDef mat-sort-header class="fixed-width-c3"> Object Number
                     </mat-header-cell>
@@ -273,7 +265,6 @@
                         {{ element['OBJECTNUMBER'] ? element['OBJECTNUMBER'].fieldData : '' }}
                     </mat-cell>
                 </ng-container>
-
                 <!-- load dynamic columns-->
                 <ng-template ngFor let-dynCols [ngForOf]="(displayedFields | async)">
                     <ng-template
@@ -292,12 +283,10 @@
                                 <div class="f-col grid-cell-editable">
                                     <div class="mdo-form-input f-col" style="display: none;"
                                     id="inpctrl_{{ dynCols + '_' + rIndex }}">
-
                                     <!-- container to hold input field when cell gets edited  -->
                                     <ng-template prosContainerRef #containerRef="prosContainerRef">
                                     </ng-template>
                                 </div>
-
                                 <ng-template [ngIf]="element[dynCols] && element[dynCols].isCorrected"
                                     [ngIfElse]="normalCell">
                                     <ng-template [ngIf]="element[dynCols].oldData !== element[dynCols].fieldData"
@@ -335,7 +324,6 @@
                         </ng-container>
                     </ng-template>
                 </ng-template>
-
                 <!-- load header for actions-->
                 <ng-container matColumnDef="review_actions_header">
                     <mat-header-cell *matHeaderCellDef [attr.colspan]="displayedFields.getValue().length">
@@ -351,11 +339,11 @@
                         </div>
                     </mat-header-cell>
                 </ng-container>
-
                 <!-- <mat-header-row *matHeaderRowDef="tableHeaderActBtn; sticky: true"></mat-header-row> -->
                 <mat-header-row *matHeaderRowDef="displayedFields | async; sticky: true"></mat-header-row>
                 <mat-row *matRowDef="let row; columns: displayedFields | async;"></mat-row>
             </mat-table>
         </ng-template>
     </div>
+    </ng-template>
 </div>

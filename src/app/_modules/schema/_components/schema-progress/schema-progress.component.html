@@ -1,7 +1,7 @@
 <div class="f-col state-container">
     <div class="heading-text">Running data check...</div>
     <p class="label-text">
-        Running business rule 1 of 2 - Metadata
+        Running business rule {{schemaProgress?.completedRules}} of {{schemaProgress?.totalRules}} 
     </p>
-    <mat-progress-bar mode="determinate" value="20"></mat-progress-bar>
+    <mat-progress-bar mode="determinate" [value]="schemaProgress?.percentage"></mat-progress-bar>
 </div>

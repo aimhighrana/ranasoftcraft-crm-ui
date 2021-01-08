@@ -32,6 +32,7 @@
     <div class="row-spacer"></div>
 
     <div class="nav-tree" id="nav-tree">
+      <!-- Tree to show when navigation is on HOME -->
       <mat-accordion *ngIf="activatedPrimaryNav === 'welcome'">
         <div class="section-header">
           Data intelligence
@@ -51,13 +52,16 @@
               <mat-list-item *ngFor="let schema of module.schemaLists"
                 [routerLink]="['schema/schema-details', module.moduleId, schema.schemaId]"
                 [routerLinkActive]="'selected'">
-                <div mat-line>{{schema.schemaDescription ?  schema.schemaDescription : 'Untitled'}}</div>
+                <div mat-line>{{schema.schemaDescription ?  schema.schemaDescription : 'Untitled'}}
+                  <mat-spinner *ngIf="schema.isInRunning" color="primary" diameter="15"></mat-spinner>
+                </div>
               </mat-list-item>
             </mat-nav-list>
           </mat-expansion-panel>
         </ng-container>
       </mat-accordion>
 
+      <!-- Tree to show when navigation is on schema -->
       <mat-accordion *ngIf="activatedPrimaryNav === 'schema'">
         <ng-container *ngFor="let module of searchModuleResults">
           <mat-expansion-panel togglePosition="before" class="mat-elevation-z0"
@@ -84,6 +88,7 @@
         </ng-container>
       </mat-accordion>
 
+      <!-- Tree to show when navigation is on report -->
       <mat-accordion *ngIf="activatedPrimaryNav === 'report'">
         <mat-nav-list *ngFor="let report of reportOb | async" [disableRipple]="true">
           <mat-list-item [disabled]="report.permission && !report.permission.isViewable"

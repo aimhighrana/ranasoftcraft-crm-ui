@@ -78,7 +78,7 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Static column for actions
    */
-  startColumns = ['checkbox_select', 'bucket_assigned', 'action','OBJECTNUMBER'];
+  startColumns = ['checkbox_select', 'bucket_assigned', 'action', 'OBJECTNUMBER'];
 
   /**
    * All display column fieldid should be here
@@ -125,7 +125,7 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Make table header row visiable
    */
-  tableHeaderActBtn: string [] = [];
+  tableHeaderActBtn: string[] = [];
 
   /**
    *
@@ -164,9 +164,9 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
 
   @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
 
- FIELD_TYPE = FieldInputType;
+  FIELD_TYPE = FieldInputType;
 
-  selectFieldOptions : DropDownValue[] = [];
+  selectFieldOptions: DropDownValue[] = [];
 
 
   subscribers: Subscription[] = [];
@@ -183,6 +183,12 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
     { actionText: 'Reject', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON },
     { actionText: 'Generate cross entry', isPrimaryAction: true, isCustomAction: true, actionViewType: TableActionViewType.ICON }
   ] as SchemaTableAction[];
+
+  /**
+   * To check whether schema is running or not.
+   */
+  @Input()
+  isInRunning: boolean;
 
   constructor(
     private activatedRouter: ActivatedRoute,
@@ -203,7 +209,7 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
   ) { }
 
   ngOnDestroy(): void {
-    this.subscribers.forEach(s=>{
+    this.subscribers.forEach(s => {
       s.unsubscribe();
     });
   }
@@ -213,55 +219,61 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
     // check if any things is change then refresh again
     let isRefresh = false;
 
-    if(changes && changes.moduleId && changes.moduleId.currentValue !== changes.moduleId.previousValue) {
+    if (changes && changes.isInRunning && changes.isInRunning.currentValue !== changes.isInRunning.previousValue) {
+      this.isInRunning = changes.isInRunning.currentValue;
+    }
+
+    if (changes && changes.moduleId && changes.moduleId.currentValue !== changes.moduleId.previousValue) {
       this.moduleId = changes.moduleId.currentValue;
       isRefresh = true;
       this.getFldMetadata();
     }
 
-    if(changes && changes.schemaId && changes.schemaId.currentValue !== changes.schemaId.previousValue) {
+    if (changes && changes.schemaId && changes.schemaId.currentValue !== changes.schemaId.previousValue) {
       this.schemaId = changes.schemaId.currentValue;
       isRefresh = true;
-      this.getDataScope();
-      this.getSchemaStatics();
-      this.getSchemaDetails();
+      if (!this.isInRunning) {
+        this.getDataScope();
+        this.getSchemaStatics();
+        this.getSchemaDetails();
+      }
     }
 
-    if(changes && changes.variantId && changes.variantId.currentValue !== changes.variantId.previousValue) {
+    if (changes && changes.variantId && changes.variantId.currentValue !== changes.variantId.previousValue) {
       this.variantId = changes.variantId.currentValue ? changes.variantId.currentValue : 0;
       isRefresh = true;
-      if(this.variantId !== '0') {
+      if (this.variantId !== '0') {
         this.getVariantDetails();
       }
     }
 
-    if(isRefresh) {
+    if (isRefresh) {
       this.dataSource = new SchemaDataSource(this.schemaDetailService, this.endpointservice, this.schemaId);
 
       /**
        * Get all user selected fields based on default view ..
        */
-      this.schemaDetailService.getAllSelectedFields(this.schemaId, this.variantId ? this.variantId : '0').subscribe(res=>{
-            this.selectedFieldsOb.next(res ? res : [])
-        }, error=> console.error(`Error : ${error}`));
-      }
+      this.schemaDetailService.getAllSelectedFields(this.schemaId, this.variantId ? this.variantId : '0').subscribe(res => {
+        this.selectedFieldsOb.next(res ? res : [])
+      }, error => console.error(`Error : ${error}`));
+    }
 
-      // reset filter and sort order
-      this.filterCriteria.next(null);
-      this.preInpVal = '';
+    // reset filter and sort order
+    this.filterCriteria.next(null);
+    this.preInpVal = '';
 
-      if(changes && changes.activeTab && changes.activeTab.currentValue !== changes.activeTab.previousValue) {
-        this.activeTab = changes.activeTab.currentValue &&  changes.activeTab.currentValue === 'error'? 'success' : changes.activeTab.currentValue;
-      }
-      /**
-       * Get onload data ..
-       */
-      this.getData();
+    if (changes && changes.activeTab && changes.activeTab.currentValue !== changes.activeTab.previousValue) {
+      this.activeTab = changes.activeTab.currentValue && changes.activeTab.currentValue === 'error' ? 'success' : changes.activeTab.currentValue;
+    }
+    /**
+     * Get onload data ..
+     */
+    this.getData();
   }
 
   ngOnInit(): void {
     this.sharedServices.getDataScope().subscribe(res => {
-      if(res) {
+      if (res) {
         this.getDataScope();
       }
     })
@@ -284,8 +296,8 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
      * Combine obserable for metadata and selected field by user
      * And calcute display field amd order
      */
-    combineLatest([this.metadata, this.selectedFieldsOb]).subscribe(res=>{
-      if(res[0]) {
+    combineLatest([this.metadata, this.selectedFieldsOb]).subscribe(res => {
+      if (res[0]) {
         this.selectedFields = res[1] ? res[1] : [];
         this.calculateDisplayFields();
       }
@@ -294,35 +306,35 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
     /**
      * After filter applied should call for get data
      */
-    this.filterCriteria.subscribe(res=>{
-       if(res !==null) {
+    this.filterCriteria.subscribe(res => {
+      if (res !== null) {
         this.getData(res, this.sortOrder);
-       }
+      }
     });
 
     /**
      * While row selection change then control the header actions..
      */
-    this.selection.changed.subscribe(res=>{
-      if(res.source.selected.length >0) {
+    this.selection.changed.subscribe(res => {
+      if (res.source.selected.length > 0) {
         this.tableHeaderActBtn = ['review_actions_header'];
       } else {
         this.tableHeaderActBtn = [];
       }
     });
 
-    this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(re=>{
+    this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(re => {
       this.userDetails = re;
-    }, err=> console.error(`Error ${err.error}`));
+    }, err => console.error(`Error ${err.error}`));
   }
 
   /**
    * Get schema info ..
    */
   getSchemaDetails() {
-    const sub =  this.schemaListService.getSchemaDetailsBySchemaId(this.schemaId).subscribe(res=>{
+    const sub = this.schemaListService.getSchemaDetailsBySchemaId(this.schemaId).subscribe(res => {
       this.schemaInfo = res;
-    },error=> console.error(`Error : ${error.message}`));
+    }, error => console.error(`Error : ${error.message}`));
     this.subscribers.push(sub);
   }
 
@@ -331,9 +343,9 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
    * Call service for get schema statics based on schemaId and latest run
    */
   getSchemaStatics() {
-    const sub = this.schemaService.getSchemaThresholdStatics(this.schemaId, this.variantId).subscribe(res=>{
+    const sub = this.schemaService.getSchemaThresholdStatics(this.schemaId, this.variantId).subscribe(res => {
       this.statics = res;
-    }, error=>{
+    }, error => {
       console.error(`Error : ${error}`);
     });
     this.subscribers.push(sub);
@@ -343,32 +355,32 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
    * Get schema variant details ..
    */
   getVariantDetails() {
-    const sub = this.schemaVariantService.getVariantdetailsByvariantId(this.variantId).subscribe(res=>{
-      if(res) {
-        const inline = res.filterCriteria.filter(fil=> fil.fieldId === 'id')[0];
-        if(inline) {
+    const sub = this.schemaVariantService.getVariantdetailsByvariantId(this.variantId).subscribe(res => {
+      if (res) {
+        const inline = res.filterCriteria.filter(fil => fil.fieldId === 'id')[0];
+        if (inline) {
           this.preInpVal = inline.values ? inline.values.toString() : '';
         }
         const finalFiletr: FilterCriteria[] = [inline];
-        res.filterCriteria.forEach(fil=>{
+        res.filterCriteria.forEach(fil => {
           const filter: FilterCriteria = new FilterCriteria();
           filter.fieldId = fil.fieldId;
           filter.type = fil.type;
           filter.values = fil.values;
 
           const dropVal: DropDownValue[] = [];
-          filter.values.forEach(val=>{
-            const dd: DropDownValue = {CODE:val,FIELDNAME:fil.fieldId} as DropDownValue;
+          filter.values.forEach(val => {
+            const dd: DropDownValue = { CODE: val, FIELDNAME: fil.fieldId } as DropDownValue;
             dropVal.push(dd);
           });
 
-          filter.filterCtrl = {fldCtrl:fil.fldCtrl,selectedValues:dropVal};
+          filter.filterCtrl = { fldCtrl: fil.fldCtrl, selectedValues: dropVal };
           finalFiletr.push(filter);
         });
 
         this.filterCriteria.next(finalFiletr);
       }
-    }, error=>{
+    }, error => {
       console.error(`Error : ${error.message}`);
     });
     this.subscribers.push(sub);
@@ -379,10 +391,10 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
    * Get all fld metada based on module of schema
    */
   getFldMetadata() {
-    if(this.moduleId === undefined || this.moduleId.trim() === ''){
+    if (this.moduleId === undefined || this.moduleId.trim() === '') {
       throwError('Module id cant be null or empty');
     }
-    const sub =  this.schemaDetailService.getMetadataFields(this.moduleId).subscribe(response => {
+    const sub = this.schemaDetailService.getMetadataFields(this.moduleId).subscribe(response => {
       this.metadata.next(response);
     }, error => {
       console.error(`Error : ${error.message}`);
@@ -401,22 +413,22 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
     const metadataLst: any = {};
     this.startColumns.forEach(col => fields.push(col));
     for (const headerField in allMDF.headers) {
-      if(allMDF.headers.hasOwnProperty(headerField)) {
-         // if selectedFields is blank then load all fields
-      // if(fields.indexOf(headerField) < 0 && this.selectedFields.length === 0) {
-      //   select.push(headerField);
-      // }
-      // else
-      const index = this.selectedFields.findIndex(f => f.fieldId === headerField);
-      if (fields.indexOf(headerField) < 0 &&  (index !== -1)) {
-        select[index] = headerField;
-      }
-      metadataLst[headerField] = allMDF.headers[headerField];
+      if (allMDF.headers.hasOwnProperty(headerField)) {
+        // if selectedFields is blank then load all fields
+        // if(fields.indexOf(headerField) < 0 && this.selectedFields.length === 0) {
+        //   select.push(headerField);
+        // }
+        // else
+        const index = this.selectedFields.findIndex(f => f.fieldId === headerField);
+        if (fields.indexOf(headerField) < 0 && (index !== -1)) {
+          select[index] = headerField;
+        }
+        metadataLst[headerField] = allMDF.headers[headerField];
       }
     }
     // TODO for hierarchy and grid logic ..
     this.metadataFldLst = metadataLst;
-    select.forEach(fldId =>fields.push(fldId));
+    select.forEach(fldId => fields.push(fldId));
     this.displayedFields.next(fields);
   }
 
@@ -426,7 +438,7 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
    * @param filterCriteria have default filter or apply filter as request...
    * @param sort apply some sorting on column ..
    */
-  getData(filterCriteria?: FilterCriteria[], sort?: any, fetchCount?: number , isLoadMore?: boolean) {
+  getData(filterCriteria?: FilterCriteria[], sort?: any, fetchCount?: number, isLoadMore?: boolean) {
     const request: RequestForSchemaDetailsWithBr = new RequestForSchemaDetailsWithBr();
     request.schemaId = this.schemaId;
     request.variantId = this.variantId;
@@ -446,13 +458,13 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
    */
   changeTabStatus(status: string) {
     this.fetchCount = 0;
-    if(this.activeTab === status) {
+    if (this.activeTab === status) {
       console.log('Already loaded for tab {}', status)
       return false;
     }
     this.activeTab = status;
     this.selection.clear();
-    this.router.navigate(['/home/schema/schema-details', this.moduleId, this.schemaId],{queryParams:{status:this.activeTab}} );
+    this.router.navigate(['/home/schema/schema-details', this.moduleId, this.schemaId], { queryParams: { status: this.activeTab } });
 
     // update state of columns
     this.calculateDisplayFields();
@@ -479,7 +491,7 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
    */
   downloadExecutionDetails() {
     const downloadLink = document.createElement('a');
-    downloadLink.href = this.endpointservice.downloadExecutionDetailsUrl(this.schemaId, this.activeTab ==='review' ? this.activeTab : 'all') + '?runId=';
+    downloadLink.href = this.endpointservice.downloadExecutionDetailsUrl(this.schemaId, this.activeTab === 'review' ? this.activeTab : 'all') + '?runId=';
     downloadLink.setAttribute('target', '_blank');
     document.body.appendChild(downloadLink);
     downloadLink.click();
@@ -496,19 +508,19 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
     debounceTime(1000);
     const filterCValue = this.filterCriteria.getValue() ? this.filterCriteria.getValue() : [];
     const haveInline = filterCValue.filter(fil => fil.type === 'INLINE')[0];
-    if(value && value.trim() !== '') {
-      if(haveInline) {
+    if (value && value.trim() !== '') {
+      if (haveInline) {
         const idx = filterCValue.indexOf(haveInline);
         filterCValue.splice(idx, 1);
         haveInline.values = [value];
         filterCValue.push(haveInline);
-     } else {
-      const filterC = new FilterCriteria();
-      filterC.fieldId = 'id';
-      filterC.type = 'INLINE';
-      filterC.values = [value];
-      filterCValue.push(filterC);
-     }
+      } else {
+        const filterC = new FilterCriteria();
+        filterC.fieldId = 'id';
+        filterC.type = 'INLINE';
+        filterC.values = [value];
+        filterCValue.push(filterC);
+      }
     } else {
       const idx = filterCValue.indexOf(haveInline);
       filterCValue.splice(idx, 1);
@@ -527,9 +539,9 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
     const buffer = 200;
     const limit = tableScrollHeight - tableViewHeight - buffer;
     if (scrollLocation > limit) {
-       console.log('Load more data here ...');
-       this.fetchCount ++;
-       this.getData(this.filterCriteria.getValue(), this.sortOrder, this.fetchCount, true);
+      console.log('Load more data here ...');
+      this.fetchCount++;
+      this.getData(this.filterCriteria.getValue(), this.sortOrder, this.fetchCount, true);
     }
   }
 
@@ -543,8 +555,8 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
   /** Selects all rows if they are not all selected; otherwise clear selection. */
   masterToggle() {
     this.isAllSelected() ?
-        this.selection.clear() :
-        this.dataSource.docValue().forEach(row => this.selection.select(row));
+      this.selection.clear() :
+      this.dataSource.docValue().forEach(row => this.selection.select(row));
   }
 
   /** The label for the checkbox on the passed row */
@@ -561,31 +573,31 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
    * @param type type of request is inline or submit all
    * @param row if request  type is inline then submit single rec ..
    */
-  approveRecords(type: string , row?: any) {
+  approveRecords(type: string, row?: any) {
     const id: string[] = [];
-    if(type === 'inline') {
+    if (type === 'inline') {
       const docId = row ? row.OBJECTNUMBER.fieldData : '';
-      if(docId) {
+      if (docId) {
         id.push(docId);
       }
     } else {
-        if(this.selection.selected.length) {
-          const selected = this.selection.selected;
-          selected.forEach(sel=>{
-            const docId = sel.OBJECTNUMBER.fieldData;
-            id.push(docId);
-          });
+      if (this.selection.selected.length) {
+        const selected = this.selection.selected;
+        selected.forEach(sel => {
+          const docId = sel.OBJECTNUMBER.fieldData;
+          id.push(docId);
+        });
 
-        }
+      }
     }
-    this.schemaDetailService.approveCorrectedRecords(this.schemaId, id , this.userDetails.currentRoleId).subscribe(res=>{
-      if(res && res.acknowledge) {
-            this.getData();
-            this.selection.clear();
-        }
-    }, error=>{
-        this.snackBar.open(`Error :: ${error}`, 'Close',{duration:2000});
-        console.error(`Error :: ${error.message}`);
+    this.schemaDetailService.approveCorrectedRecords(this.schemaId, id, this.userDetails.currentRoleId).subscribe(res => {
+      if (res && res.acknowledge) {
+        this.getData();
+        this.selection.clear();
+      }
+    }, error => {
+      this.snackBar.open(`Error :: ${error}`, 'Close', { duration: 2000 });
+      console.error(`Error :: ${error.message}`);
     });
   }
 
@@ -596,30 +608,30 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
    */
   resetRec(row: any, type: string) {
     const id: string[] = [];
-    if(type === 'inline') {
+    if (type === 'inline') {
       const docId = row ? row.OBJECTNUMBER.fieldData : '';
-      if(docId) {
+      if (docId) {
         id.push(docId);
       }
     } else {
-        if(this.selection.selected.length) {
-          const selected = this.selection.selected;
-          selected.forEach(sel=>{
-            const docId = sel.OBJECTNUMBER.fieldData;
-            id.push(docId);
-          });
+      if (this.selection.selected.length) {
+        const selected = this.selection.selected;
+        selected.forEach(sel => {
+          const docId = sel.OBJECTNUMBER.fieldData;
+          id.push(docId);
+        });
 
-        }
+      }
     }
-    this.schemaDetailService.resetCorrectionRecords(this.schemaId, this.schemaInfo.runId , id).subscribe(res=>{
-      if(res && res.acknowledge) {
-            this.schemaInfo.correctionValue = res.count ? res.count : 0;
-            this.getData();
-            this.selection.clear();
-        }
-    }, error=>{
-        this.snackBar.open(`Error :: ${error}`, 'Close',{duration:2000});
-        console.error(`Error :: ${error.message}`);
+    this.schemaDetailService.resetCorrectionRecords(this.schemaId, this.schemaInfo.runId, id).subscribe(res => {
+      if (res && res.acknowledge) {
+        this.schemaInfo.correctionValue = res.count ? res.count : 0;
+        this.getData();
+        this.selection.clear();
+      }
+    }, error => {
+      this.snackBar.open(`Error :: ${error}`, 'Close', { duration: 2000 });
+      console.error(`Error :: ${error.message}`);
     });
 
   }
@@ -633,15 +645,15 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
     this.trigger.closeMenu();
 
     const exitingFilterCtrl = this.filterCriteria.getValue() ? this.filterCriteria.getValue() : [];
-    const extFld =  exitingFilterCtrl.filter(fil=> fil.fieldId === fld.fldCtrl.fieldId)[0];
+    const extFld = exitingFilterCtrl.filter(fil => fil.fieldId === fld.fldCtrl.fieldId)[0];
 
     const filterCtrl: FilterCriteria = new FilterCriteria();
     filterCtrl.fieldId = fld.fldCtrl.fieldId;
     filterCtrl.type = 'DROPDOWN';
     filterCtrl.filterCtrl = fld;
-    filterCtrl.values = fld.selectedValues.map(map=> map.CODE);
+    filterCtrl.values = fld.selectedValues.map(map => map.CODE);
 
-    if(extFld) {
+    if (extFld) {
       exitingFilterCtrl.splice(exitingFilterCtrl.indexOf(extFld), 1);
     }
     exitingFilterCtrl.push(filterCtrl);
@@ -655,14 +667,14 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
    */
   prepareTextToShow(ctrl: FilterCriteria): string {
     const selCtrl = ctrl.filterCtrl.selectedValues.filter(fil => fil.FIELDNAME === ctrl.fieldId);
-    if(selCtrl && selCtrl.length>1) {
+    if (selCtrl && selCtrl.length > 1) {
       const fld = this.filterCriteria.getValue().filter(fil => fil.fieldId === ctrl.fieldId);
-      if(fld && fld.length>0) {
+      if (fld && fld.length > 0) {
         const sel = fld[0].filterCtrl.selectedValues.filter(f => f.FIELDNAME === ctrl.fieldId);
         return String(sel.length);
       }
     }
-    return ((selCtrl && selCtrl.length === 1) ? (selCtrl[0].TEXT ? selCtrl[0].TEXT: selCtrl[0].CODE) : 'Unknown');
+    return ((selCtrl && selCtrl.length === 1) ? (selCtrl[0].TEXT ? selCtrl[0].TEXT : selCtrl[0].CODE) : 'Unknown');
   }
 
   /**
@@ -671,8 +683,8 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
    */
   removeAppliedFilter(ctrl: FilterCriteria) {
     const exitingFilterCtrl = this.filterCriteria.getValue() ? this.filterCriteria.getValue() : [];
-    const extFld =  exitingFilterCtrl.filter(fil=> fil.fieldId === ctrl.fieldId)[0];
-    if(extFld) {
+    const extFld = exitingFilterCtrl.filter(fil => fil.fieldId === ctrl.fieldId)[0];
+    if (extFld) {
       exitingFilterCtrl.splice(exitingFilterCtrl.indexOf(extFld), 1);
       this.filterCriteria.next(exitingFilterCtrl);
     }
@@ -683,13 +695,13 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
    * @param fldC get cliked fld control
    */
   loadDropValues(fldC: FilterCriteria) {
-    if(fldC) {
+    if (fldC) {
       const dropArray: DropDownValue[] = [];
-      fldC.values.forEach(val=>{
-        const drop: DropDownValue = {CODE: val,FIELDNAME: fldC.fieldId}  as DropDownValue;
+      fldC.values.forEach(val => {
+        const drop: DropDownValue = { CODE: val, FIELDNAME: fldC.fieldId } as DropDownValue;
         dropArray.push(drop);
       });
-      this.loadDopValuesFor = {fieldId: fldC.fieldId,checkedValue:dropArray};
+      this.loadDopValuesFor = { fieldId: fldC.fieldId, checkedValue: dropArray };
     }
   }
 
@@ -697,13 +709,13 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
    * Open dialog for save applied filters ..
    */
   opnDialogSaveVariant() {
-    const ref = this.matDialog.open(SaveVariantDialogComponent,{
+    const ref = this.matDialog.open(SaveVariantDialogComponent, {
       width: '600px',
-      height:'450px',
-      data:{schemaInfo: this.schemaInfo , variantId: this.variantId, moduleId: this.moduleId, filterData: this.filterCriteria.getValue()}
+      height: '450px',
+      data: { schemaInfo: this.schemaInfo, variantId: this.variantId, moduleId: this.moduleId, filterData: this.filterCriteria.getValue() }
     });
 
-    ref.afterClosed().subscribe(res=>{
+    ref.afterClosed().subscribe(res => {
       console.log(res);
     });
   }
@@ -723,10 +735,10 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
     console.log(dropValue);
     const fillData = this.filterCriteria.getValue() ? this.filterCriteria.getValue() : [];
     const filterControl = fillData.filter(fill => fill.fieldId === this.loadDopValuesFor.fieldId)[0];
-    if(filterControl) {
-      if(dropValue && dropValue.length>0) {
-        filterControl.values = dropValue.map(map=> map.CODE);
-        filterControl.filterCtrl = {fldCtrl: filterControl.filterCtrl.fldCtrl, selectedValues: dropValue};
+    if (filterControl) {
+      if (dropValue && dropValue.length > 0) {
+        filterControl.values = dropValue.map(map => map.CODE);
+        filterControl.filterCtrl = { fldCtrl: filterControl.filterCtrl.fldCtrl, selectedValues: dropValue };
       } else {
         fillData.slice(fillData.indexOf(filterControl), 1);
       }
@@ -735,13 +747,13 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
 
   }
 
-  refreshData(variantId){
-    if(this.variantId !== variantId) {
+  refreshData(variantId) {
+    if (this.variantId !== variantId) {
       this.variantId = variantId;
       this.variantName = this.variantId === '0' ? 'Entire dataset'
-                        : this.schemaInfo.variants.find(v => v.variantId === this.variantId).variantName ;
+        : this.schemaInfo.variants.find(v => v.variantId === this.variantId).variantName;
       this.getData();
-      if(this.variantId !== '0') {
+      if (this.variantId !== '0') {
         this.getVariantDetails();
       }
     }
@@ -751,9 +763,9 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
    * Get data scopes .. or variats ...
    */
   getDataScope() {
-    const sub = this.schemavariantService.getDataScope(this.schemaId, 'RUNFOR').subscribe(res=>{
+    const sub = this.schemavariantService.getDataScope(this.schemaId, 'RUNFOR').subscribe(res => {
       this.dataScope = res;
-    }, err=> console.error(`Exception : ${err.message}`));
+    }, err => console.error(`Exception : ${err.message}`));
     this.subscribers.push(sub);
   }
 
@@ -761,21 +773,21 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
    * get input type when user edits a cell
    * @param fieldId the field id
    */
-  getFieldInputType (fieldId){
+  getFieldInputType(fieldId) {
 
-    if (this.metadataFldLst[fieldId].picklist=== '0' && this.metadataFldLst[fieldId].dataType === 'NUMC'){
-      return this.FIELD_TYPE.NUMBER ;
+    if (this.metadataFldLst[fieldId].picklist === '0' && this.metadataFldLst[fieldId].dataType === 'NUMC') {
+      return this.FIELD_TYPE.NUMBER;
     }
-    if ( this.metadataFldLst[fieldId].picklist=== '0' && (this.metadataFldLst[fieldId].dataType === 'DATS' || this.metadataFldLst[fieldId].dataType === 'DTMS')){
-      return this.FIELD_TYPE.DATE ;
+    if (this.metadataFldLst[fieldId].picklist === '0' && (this.metadataFldLst[fieldId].dataType === 'DATS' || this.metadataFldLst[fieldId].dataType === 'DTMS')) {
+      return this.FIELD_TYPE.DATE;
     }
     if ((this.metadataFldLst[fieldId].isCheckList === 'false')
-      && (this.metadataFldLst[fieldId].picklist=== '1' || this.metadataFldLst[fieldId].picklist === '30' || this.metadataFldLst[fieldId].picklist === '37')){
-        return this.FIELD_TYPE.SINGLE_SELECT;
+      && (this.metadataFldLst[fieldId].picklist === '1' || this.metadataFldLst[fieldId].picklist === '30' || this.metadataFldLst[fieldId].picklist === '37')) {
+      return this.FIELD_TYPE.SINGLE_SELECT;
     }
     if ((this.metadataFldLst[fieldId].isCheckList === 'true')
-      && (this.metadataFldLst[fieldId].picklist=== '1' || this.metadataFldLst[fieldId].picklist === '30' || this.metadataFldLst[fieldId].picklist === '37')){
-        return this.FIELD_TYPE.MULTI_SELECT;
+      && (this.metadataFldLst[fieldId].picklist === '1' || this.metadataFldLst[fieldId].picklist === '30' || this.metadataFldLst[fieldId].picklist === '37')) {
+      return this.FIELD_TYPE.MULTI_SELECT;
     }
 
     return this.FIELD_TYPE.TEXT;
@@ -788,12 +800,12 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
    * @param fieldId the field id
    * @param value cell value
    */
-  formatCellData(fieldId, value){
+  formatCellData(fieldId, value) {
     if (this.getFieldInputType(fieldId) === this.FIELD_TYPE.MULTI_SELECT) {
       // console.log(value);
       return value.toString();
     }
-    return value && value !=='null' ? value : '' ;
+    return value && value !== 'null' ? value : '';
   }
 
 
@@ -803,36 +815,36 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
    */
   generateCrossEntry(row: any, crossbrId?) {
     const tragetFld = this.dataSource.targetField;
-    if(!tragetFld) {
+    if (!tragetFld) {
       throwError('Tragetfield cant be null or empty ');
     }
     const objNr = row && row.OBJECTNUMBER ? row.OBJECTNUMBER.fieldData : '';
-    if(!objNr)  {
+    if (!objNr) {
       throwError(`Objectnumber must be required !!!`);
     }
     const sub = this.schemaDetailService.generateCrossEntry(this.schemaId, this.moduleId, objNr, crossbrId || '').subscribe(res=>{
       console.log(res);
       const oldData = this.dataSource.docValue();
       const sameDoc = oldData.filter(fil => (fil as any).OBJECTNUMBER.fieldData === objNr)[0];
-      if(sameDoc[tragetFld]) {
+      if (sameDoc[tragetFld]) {
         sameDoc[tragetFld].fieldData = res;
       } else {
-        sameDoc[tragetFld] = {fieldData: res,fieldDesc: '',fieldId: tragetFld};
+        sameDoc[tragetFld] = { fieldData: res, fieldDesc: '', fieldId: tragetFld };
       }
 
       this.dataSource.setDocValue(oldData);
 
       // put into correction tab
-      const request: SchemaCorrectionReq = {id: [objNr],fldId:tragetFld,vc: res, isReviewed: null} as SchemaCorrectionReq;
-        this.schemaDetailService.doCorrection(this.schemaId, request).subscribe(r=>{
-          if(r.acknowledge) {
-            this.schemaInfo.correctionValue = r.count ? r.count : 0;
-          }
-        }, error=>{
-          this.snackBar.open(`Something went wrong `, 'Close',{duration:2000});
-          console.error(`Error :: ${error.message}`);
-        });
-    }, error=>{console.error(`Exception while generating coss module .. ${error.message}`)});
+      const request: SchemaCorrectionReq = { id: [objNr], fldId: tragetFld, vc: res, isReviewed: null } as SchemaCorrectionReq;
+      this.schemaDetailService.doCorrection(this.schemaId, request).subscribe(r => {
+        if (r.acknowledge) {
+          this.schemaInfo.correctionValue = r.count ? r.count : 0;
+        }
+      }, error => {
+        this.snackBar.open(`Something went wrong `, 'Close', { duration: 2000 });
+        console.error(`Error :: ${error.message}`);
+      });
+    }, error => { console.error(`Exception while generating coss module .. ${error.message}`) });
     this.subscribers.push(sub);
   }
 
@@ -848,14 +860,14 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
     console.log(row);
 
     const field = this.selectedFields.find(f => f.fieldId === fldid);
-    if(field && !field.editable){
+    if (field && !field.editable) {
       console.log('Edit is disabled for this field ! ', fldid);
-      return ;
+      return;
     }
 
-    if(document.getElementById('inpctrl_'+fldid + '_' + rIndex)) {
-      const inpCtrl = document.getElementById('inpctrl_'+fldid + '_'+ rIndex) as HTMLDivElement;
-      const viewCtrl = document.getElementById('viewctrl_'+fldid + '_' + rIndex) as HTMLSpanElement;
+    if (document.getElementById('inpctrl_' + fldid + '_' + rIndex)) {
+      const inpCtrl = document.getElementById('inpctrl_' + fldid + '_' + rIndex) as HTMLDivElement;
+      const viewCtrl = document.getElementById('viewctrl_' + fldid + '_' + rIndex) as HTMLSpanElement;
       // const inpValCtrl = document.getElementById('inp_'+ fldid + '_' + rIndex) as HTMLInputElement;
 
       inpCtrl.style.display = 'block';
@@ -863,7 +875,7 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
       viewCtrl.style.display = 'none';
 
       // add a dynamic cell input component
-      this.addDynamicInput(fldid, row, rIndex,containerRef);
+      this.addDynamicInput(fldid, row, rIndex, containerRef);
 
     }
   }
@@ -874,13 +886,13 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
    * @param value current changed value
    * @param row row data ..
    */
-  emitEditBlurChng(fldid: string, value: any, row: any, rIndex: number, viewContainerRef? : ViewContainerRef) {
+  emitEditBlurChng(fldid: string, value: any, row: any, rIndex: number, viewContainerRef?: ViewContainerRef) {
     console.log(value);
-    if(document.getElementById('inpctrl_'+fldid + '_' + rIndex)) {
+    if (document.getElementById('inpctrl_' + fldid + '_' + rIndex)) {
 
       // DOM control after value change ...
-      const inpCtrl = document.getElementById('inpctrl_'+fldid + '_'+ rIndex) as HTMLDivElement;
-      const viewCtrl = document.getElementById('viewctrl_'+fldid + '_' + rIndex) as HTMLSpanElement;
+      const inpCtrl = document.getElementById('inpctrl_' + fldid + '_' + rIndex) as HTMLDivElement;
+      const viewCtrl = document.getElementById('viewctrl_' + fldid + '_' + rIndex) as HTMLSpanElement;
 
       // clear the dynamic cell input component
       viewContainerRef.clear();
@@ -892,15 +904,15 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
       // DO correction call for data
       const objctNumber = row.OBJECTNUMBER.fieldData;
       const oldVal = row[fldid] ? row[fldid].fieldData : '';
-      if(objctNumber && oldVal !== value) {
-        const request: SchemaCorrectionReq = {id: [objctNumber],fldId:fldid,vc: value, isReviewed: null} as SchemaCorrectionReq;
-        this.schemaDetailService.doCorrection(this.schemaId, request).subscribe(res=>{
+      if (objctNumber && oldVal !== value) {
+        const request: SchemaCorrectionReq = { id: [objctNumber], fldId: fldid, vc: value, isReviewed: null } as SchemaCorrectionReq;
+        this.schemaDetailService.doCorrection(this.schemaId, request).subscribe(res => {
           row[fldid].fieldData = value;
-          if(res.acknowledge) {
-            this.statics.correctedCnt = res.count? res.count : 0;
+          if (res.acknowledge) {
+            this.statics.correctedCnt = res.count ? res.count : 0;
           }
-        }, error=>{
-          this.snackBar.open(`Error :: ${error}`, 'Close',{duration:2000});
+        }, error => {
+          this.snackBar.open(`Error :: ${error}`, 'Close', { duration: 2000 });
           console.error(`Error :: ${error.message}`);
         });
       } else {
@@ -910,7 +922,7 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
 
   }
 
-  addDynamicInput(fldid: string, row: any, rIndex: number, containerRef: ContainerRefDirective){
+  addDynamicInput(fldid: string, row: any, rIndex: number, containerRef: ContainerRefDirective) {
 
     const componentFactory = this.componentFactoryResolver.resolveComponentFactory(
       TableCellInputComponent

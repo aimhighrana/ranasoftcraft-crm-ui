@@ -33,7 +33,11 @@
             <button mat-menu-item (click)="getDownloadAbledataforMroExecution()">Export to CSV</button>
         </mat-menu>
     </div>
-   
+    <ng-template [ngIf]="schemaInfo?.isInRunning" [ngIfElse]="schemaInfoTemplate">
+        <pros-schema-progress [schemaId]="schemaId"></pros-schema-progress>
+    </ng-template>
+
+    <ng-template #schemaInfoTemplate>
     <mat-divider></mat-divider>
     <div class="row-spacer"></div>
     <div class="f-row">
@@ -339,4 +343,5 @@
             </mat-tab>
         </mat-tab-group>
     </div>
+</ng-template>
 </div>

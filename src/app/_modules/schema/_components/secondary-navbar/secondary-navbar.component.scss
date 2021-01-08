@@ -68,6 +68,10 @@
               &.selected {
                 background-color: #f2f5f8;
               }
+
+              mat-spinner {
+                display: inline;
+              }
             }
           }
         }
