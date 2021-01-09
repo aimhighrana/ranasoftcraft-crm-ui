@@ -268,8 +268,9 @@ export class SchemaDetailsService {
    * @param schemaId append on request .. mand.. params
    * @param runId append on request runid
    * @param objNrs send as request body ..
+   * @param isFromMasterLib use to make identify the request from ..
    */
-  public generateMroClassificationDescription(schemaId: string, runId: string, objNrs: string[]): Observable<any> {
+  public generateMroClassificationDescription(schemaId: string, runId: string, objNrs: string[], isFromMasterLib?: boolean): Observable<any> {
     return this.http.put<any>(this.endpointService.generateMroClassificationDescriptionUri(), objNrs, {params:{schemaId, runId}});
   }
 
