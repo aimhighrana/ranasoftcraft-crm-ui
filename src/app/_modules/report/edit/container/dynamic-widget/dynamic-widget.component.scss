@@ -5,6 +5,7 @@ mat-card.widget {
   position: absolute;
   overflow: auto;
   z-index: 2;
+  padding: 8px;
 
   .breadcrum-toolbar {
     align-items: center;
@@ -19,7 +20,7 @@ mat-card.widget {
   }
 
   mat-card-content {
-    height: calc(100% - 36px - 16px);
+    height: calc(100% - 36px);
     display: flex;
     align-items: center;
     justify-content: space-around;

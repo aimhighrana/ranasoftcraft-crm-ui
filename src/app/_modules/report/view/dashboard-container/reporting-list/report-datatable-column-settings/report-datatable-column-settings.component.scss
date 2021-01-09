@@ -1,12 +1,11 @@
-mat-card.root {
+div.root {
   user-select: none;
-  width: 600px;
-  padding: 0 16px;
+  height: 100%;
+  overflow: hidden;
+  width: 700px;
 
   .breadcrum-toolbar {
-    position: sticky;
-    padding-top: 16px;
-    top: 0;
+    padding: 8px 16px;
     z-index: 2;
 
     .mdo-constrained-right {
@@ -26,12 +25,15 @@ mat-card.root {
     }
   }
 
-  mat-card.check-list {
-    padding: 0;
+  .sidesheetcontent-listing {
+    height: calc(100% - 103px);
+    overflow: auto;
 
     .checkedall {
-      display: flex;
-      padding: 16px 0 12px 50px;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      padding: 8px 0 8px 38px;
     }
   }
 }
@@ -43,12 +45,16 @@ mat-card.root {
   .colunm-box {
     align-items: center;
     box-sizing: border-box;
-    padding: 10px;
+    padding: 8px;
   }
 }
 
 @media (min-width: 1200px) {
   .mdo-constrained-right {
-    margin-right: 52px;
+    margin-right: 50px;
+  }
+
+  .mdo-justify {
+    margin: 0 66px;
   }
 }

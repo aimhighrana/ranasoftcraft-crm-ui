@@ -1,4 +1,4 @@
-mat-card.root {
+div.root {
   user-select: none;
   padding: 0 16px;
   height: 100%;
@@ -6,7 +6,7 @@ mat-card.root {
 
   .breadcrum-toolbar {
     align-items: center;
-    padding-top: 16px;
+    padding-top: 8px;
 
     .display-heading-large {
       font-size: 1.2rem;

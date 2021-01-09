@@ -76,6 +76,7 @@ export class SchemaExecutionTrendComponent implements OnInit, OnChanges {
 
   chartOptions: ChartOptions = {
     responsive: true,
+    maintainAspectRatio: false,
     tooltips: {
       callbacks: {
         label: (tooltipItem, data) => {

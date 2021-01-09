@@ -65,14 +65,10 @@
   }
 
   pros-container {
-    mat-card.root {
+    div.root {
       .report-builder {
         .widget-col {
           border-right-color: $color-app-border;
-        }
-
-        .col-heading {
-          border-bottom-color: $color-app-border;
         }
 
         .builder-container {
@@ -1031,7 +1027,7 @@
         color: $color-status-info;
       }
 
-      &.error-gridcell {
+      &.error-cell {
         background: $color-status-error-accent;
         border-bottom: 1px solid $color-status-error;
         color: $color-status-error;
@@ -1385,8 +1381,12 @@
   }
 
   pros-report-datatable-column-settings {
+    .checkedall {
+      background: mat-color($background-palette, card);
+    }
+
     .colunm-box:hover {
-      background: mat-color($background-palette, app-bar);
+      background: $color-app-hover;
     }
   }
 

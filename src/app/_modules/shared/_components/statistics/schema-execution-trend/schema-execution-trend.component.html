@@ -3,8 +3,8 @@
         <div class="display-heading-large">Schema execution trends</div>
     </div>
     <div class="row-spacer"></div>
-    <div class="f-col">
-        <canvas baseChart  [datasets]="dataSet" [labels]="dataSetLabels"
+    <div class="f-col excution-chart">
+        <canvas baseChart [datasets]="dataSet" [labels]="dataSetLabels" 
             [options]="chartOptions" [plugins]="chartPlugins" [chartType]="chartType">
         </canvas>
     </div>

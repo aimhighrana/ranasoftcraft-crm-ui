@@ -7,11 +7,9 @@
       </div>
       <div class="f-spacer"></div>
       <button mat-button (click)="emitDeleteEvent()" *ngIf="showDelete">
-         <mat-icon>delete</mat-icon>
+         <mat-icon fontSet="mdo-icons">recycle-bin</mat-icon>
       </button>
    </div>
-
-   <div class="row-spacer"></div>
 
    <mat-card-content>
       <ng-template [ngIf]="widget.widgetType && widget.widgetType === 'COUNT'">

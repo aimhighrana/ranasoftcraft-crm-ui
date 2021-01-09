@@ -5,27 +5,27 @@
         </div>
         <div class="f-spacer"></div>
         <button mat-button [matMenuTriggerFor]="menu">
-            <mat-icon>more_horiz</mat-icon>
+            <mat-icon fontSet="mdo-icons">more1</mat-icon>
         </button>
-        <mat-menu #menu="matMenu">
+        <mat-menu #menu="matMenu" class="navigation-menu">
             <button mat-menu-item (click)="downloadCSV()">Data download (.csv)</button>
         </mat-menu>
     </div>
     <mat-card-content>
-        <div class="root-AdminTable">
+        <div class="root-table">
             <table mat-table [dataSource]="dataSource" matSort (matSortChange)="sortTable($event)">
                 <ng-container matColumnDef="action" stickyEnd>
                     <!-- <th mat-header-cell *matHeaderCellDef></th> -->
                     <th mat-header-cell *matHeaderCellDef>
                         <button mat-button (click)="openTableColumnSideSheet()">
-                        <mat-icon>settings</mat-icon>
+                        <mat-icon fontSet="mdo-icons">cog</mat-icon>
                         </button>
                     </th>
                     <td mat-cell *matCellDef="let element">
                         <button mat-fab color="accent" class="mat-elevation-z0" [matMenuTriggerFor]="actiontable" (click)="getAlllayouts(element)">
-                            <mat-icon>more_horiz</mat-icon>
+                            <mat-icon fontSet="mdo-icons">more1</mat-icon>
                         </button>
-                        <mat-menu #actiontable="matMenu">
+                        <mat-menu #actiontable="matMenu" class="navigation-menu">
                             <ng-container *ngIf="layouts &&  layouts.length > 1;else singleLayout">
                                 <button mat-menu-item *ngFor="let layout of layouts"
                                 [routerLink]="['', { outlets: { sb: 'sb/report/summary/' + widgetId+'/'+element.objectNumber + '/' + layout.layoutId } } ]">{{ layout.layoutDesc ? layout.layoutDesc : 'Untitled layout' }}</button>
@@ -40,7 +40,6 @@
                                 <button mat-menu-item
                                 [routerLink]="['', { outlets: { sb: 'sb/report/summary/' + widgetId+'/'+element.objectNumber } } ]">Details</button>
                             </ng-template> -->
-                            
                         </mat-menu>
                     </td>
                 </ng-container>
@@ -56,7 +55,6 @@
                         <ng-template #normalText>
                             {{element[column]}}
                         </ng-template>
-                        
                     </td>
                 </ng-container>
                 </ng-container>

@@ -1,7 +1,7 @@
 <mat-card class="root mat-elevation-z0">
     <div class="f-row breadcrum-toolbar">
         <button mat-button (click)="close()">
-            <mat-icon>clear</mat-icon>
+            <mat-icon fontSet="mdo-icons">close</mat-icon>
         </button>
         <div class="col-spacer"></div>
         <div class="f-row mdo-constrained-right">
@@ -15,7 +15,6 @@
 
         <div class="f-col">
             <pros-search-input (value)="searchFld($event)"></pros-search-input>
-            
         </div>
 
         <div class="row-spacer"></div>
@@ -33,7 +32,7 @@
         <div class="f-col collaborators-add" [formGroup]="addCollaboratorFrmGrp"
             [class.chip-enable-coll-add]="selectedCollaborators.length">
             <mat-divider></mat-divider>
-            <h3 class="mat-h3">Add Collaborators</h3>
+            <h3 class="mat-h3">Add collaborators</h3>
 
             <mat-form-field appearance="outline">
                 <input type="text" placeholder="Search users , roles and groups" aria-label="Number" matInput
@@ -51,7 +50,7 @@
             <!-- FOR CHIPS -->
             <div class="f-row selected-coll-groups" *ngIf="selectedCollaborators.length">
                 <button mat-button  (click)="paginateChip('prev')" [disabled]="enablePreBtn">
-                    <mat-icon>navigate_before</mat-icon>
+                    <mat-icon fontSet="mdo-icons">chevron-left</mat-icon>
                 </button>
                 <mat-chip-list aria-label="Fish selection">
                     <ng-template ngFor let-selcoll [ngForOf]="possibleChips">
@@ -81,19 +80,18 @@
                     </ng-template>
                 </mat-chip-list>
                 <button mat-button  (click)="paginateChip('next')" [disabled]="!enableNextBtn">
-                    <mat-icon>navigate_next</mat-icon>
+                    <mat-icon fontSet="mdo-icons">chevron-right</mat-icon>
                 </button>
             </div>
 
             <div class="f-row-spacer-half"></div>
             
             <div class="f-col">
-                
                 <div>Permissions</div>
                 <div class="f-row permissions">
-                    <mat-slide-toggle color="primary" formControlName="isViewable">Can View</mat-slide-toggle>
-                    <mat-slide-toggle color="primary" formControlName="isEditable">Can Edit</mat-slide-toggle>
-                    <mat-slide-toggle color="primary" formControlName="isDeleteable">Can Delete</mat-slide-toggle>
+                    <mat-slide-toggle color="primary" formControlName="isViewable">Can view</mat-slide-toggle>
+                    <mat-slide-toggle color="primary" formControlName="isEditable">Can edit</mat-slide-toggle>
+                    <mat-slide-toggle color="primary" formControlName="isDeleteable">Can delete</mat-slide-toggle>
                 </div>
                 
             </div>

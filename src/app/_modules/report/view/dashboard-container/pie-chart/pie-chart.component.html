@@ -5,9 +5,9 @@
     </div>
     <div class="f-spacer"></div>
     <button mat-button [matMenuTriggerFor]="menu">
-      <mat-icon>more_horiz</mat-icon>
+      <mat-icon fontSet="mdo-icons">more1</mat-icon>
     </button>
-    <mat-menu #menu="matMenu">
+    <mat-menu #menu="matMenu" class="navigation-menu"> 
       <button mat-menu-item (click)="downloadImage()">Image download (.png)</button>
       <button mat-menu-item (click)="downloadCSV()">Data download (.csv)</button>
       <ng-template [ngIf]="permissons && permissons.isAdmin">
@@ -15,6 +15,7 @@
       </ng-template>
     </mat-menu>
   </div>
+  <div class="row-spacer"></div>
   <mat-card-content>
     <canvas baseChart [height]="widgetInfo.height * boxSize" [width]="widgetInfo.width * boxSize"
       [datasets]="pieChartData" [labels]="lablels" [options]="pieChartOptions" [colors]="pieChartColors"

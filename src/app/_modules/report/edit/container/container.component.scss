@@ -1,4 +1,4 @@
-mat-card.root {
+div.root {
   user-select: none;
   padding: 0 16px;
   height: 100%;
@@ -6,7 +6,7 @@ mat-card.root {
 
   .breadcrum-toolbar {
     align-items: center;
-    padding-top: 16px;
+    padding-top: 8px;
 
     .display-heading-large {
       font-size: 1.2rem;
@@ -17,7 +17,7 @@ mat-card.root {
     }
 
     button.mat-flat-button {
-      margin-right: 1px;
+      margin-left: 1px;
       min-width: 80px;
     }
   }
@@ -30,7 +30,6 @@ mat-card.root {
       justify-content: space-between;
       border-width: 1px;
       border-style: solid;
-      margin-top: 16px;
 
       .widget-col {
         width: 200px;
@@ -43,10 +42,7 @@ mat-card.root {
       .col-heading {
         font-weight: 500;
         padding: 8px;
-        align-items: center;
         line-height: 36px;
-        border-bottom-width: 1px;
-        border-bottom-style: solid;
       }
 
       .builder-board {
@@ -77,6 +73,10 @@ mat-card.root {
 
           mat-expansion-panel-header {
             padding: 0 16px;
+
+            .panel-title {
+              font-weight: 500;
+            }
           }
 
           mat-expansion-panel-body {
@@ -86,6 +86,10 @@ mat-card.root {
 
         .fields-col {
           padding: 0 16px;
+
+          .f-col {
+            flex: 1;
+          }
 
           mat-label {
             font-weight: 500;
@@ -135,7 +139,6 @@ mat-card.root {
 .widget-drag {
   display: flex;
   align-items: center;
-  height: 48px;
   box-sizing: border-box;
   padding: 8px;
 
@@ -144,12 +147,5 @@ mat-card.root {
     width: 16px;
     height: 16px;
     margin-right: 16px;
-  }
-
-  .plus-icon {
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    padding: 10px;
   }
 }

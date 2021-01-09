@@ -1,4 +1,4 @@
-<mat-card class="mat-elevation-z0 root">
+<div class="root">
 	<ng-template [ngIf]="reportExist">
 		<div class="f-row breadcrum-toolbar">
 			<div class="display-heading-large">
@@ -8,9 +8,9 @@
 			<button *ngIf="showClearFilterBtn" mat-flat-button color="accent" (mouseup)="clearFilters()">Clear filter(s)</button>
 			<ng-template [ngIf]="!isFromMsteam">
 				<button mat-fab color="accent" class="mat-elevation-z0" *ngIf="(collaboratorEditPermission || collaboratorDeletePermission || collaboratorAdminPermission)" [matMenuTriggerFor]="moremenu">
-					<mat-icon>more_horiz</mat-icon>
+					<mat-icon fontSet="mdo-icons">more1</mat-icon>
 				</button>
-				<mat-menu #moremenu="matMenu">
+				<mat-menu #moremenu="matMenu" class="navigation-menu">
 					<button mat-menu-item  *ngIf="(collaboratorEditPermission || collaboratorAdminPermission)" (click)="editReport()">Edit</button>
 					<button mat-menu-item  *ngIf="(collaboratorDeletePermission || collaboratorAdminPermission)" (click)="delete()">Delete</button>
 				</mat-menu>
@@ -19,4 +19,4 @@
 		<div class="row-spacer"></div>
 		<pros-dashboard-container [reportId]="reportId" [emitClearBtnEvent]="emitClearBtnEvent" (emitFilterApplied)="showClearBtnEmit($event)" class="container"></pros-dashboard-container>	
 	</ng-template>
-</mat-card>
+</div>

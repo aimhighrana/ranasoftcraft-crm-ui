@@ -5,7 +5,7 @@ div.root {
 
   .breadcrum-toolbar {
     align-items: center;
-    padding-top: 16px;
+    padding: 16px 0;
 
     .display-heading-large {
       font-size: 1.2rem;
@@ -16,7 +16,7 @@ div.root {
   }
 
   .palette-list {
-    height: calc(100% - 52px - 16px * 3 - 36px);
+    height: calc(100% - 36px - 16px * 4 - 36px);
     overflow: auto;
 
     mat-list.mat-list {

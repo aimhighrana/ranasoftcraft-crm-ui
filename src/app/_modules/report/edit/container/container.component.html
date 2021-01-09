@@ -1,17 +1,15 @@
-<div cdkScrollable>
-<mat-card class="mat-elevation-z0 root">
+<div cdkScrollable class="root">
     <div class="f-row breadcrum-toolbar">
         <div class="display-heading-large">
             Dashboard builder
         </div>
         <div class="f-spacer"></div>
-
-        <button mat-flat-button color="accent" (click)="createUpdateReport()"> Save </button>
-        <button mat-fab color="accent" class="mat-elevation-z0" *ngIf="collaboratorPermission && reportId"
-            [routerLink]="['', { outlets: { sb: 'sb/report/collaborators/' + reportId } } ]">
-            <mat-icon>group_add</mat-icon>
+        <button mat-flat-button color="accent" class="mat-elevation-z0" *ngIf="collaboratorPermission && reportId"
+        [routerLink]="['', { outlets: { sb: 'sb/report/collaborators/' + reportId } } ]">
+        <mat-icon fontSet="mdo-icons">add-group</mat-icon>  Add collaborators
         </button>
-       
+        <span class="f-col-spacer-half"></span>
+        <button mat-flat-button color="primary" (click)="createUpdateReport()"> Save </button>
     </div>
 
     <div class="row-spacer"></div>
@@ -20,7 +18,7 @@
         <pros-form-input [type]="'text'" [placeholder]="'Untitled-1'" [label]="'Dashboard name'" [value]="reportName"
           [maxLength]="maxReportNameLength"  (valueChange)="(setreportname($event))">
         </pros-form-input>
-
+        <div class="row-spacer"></div>
         <div class="f-row builder-container">
             <div class="widget-col">
                 <div class="col-heading">Widgets</div>
@@ -29,7 +27,7 @@
                         <mat-icon fontSet="mdo-icons" class="widget-icon">filter</mat-icon> Filter
                         <div class="f-spacer"></div>
                         <button mat-button>
-                            <mat-icon fontSet="mdo-icons" class="plus-icon">plus</mat-icon>
+                            <mat-icon fontSet="mdo-icons">plus</mat-icon>
                         </button>
                     </div>
                     <mat-divider></mat-divider>
@@ -37,7 +35,7 @@
                         <mat-icon fontSet="mdo-icons" class="widget-icon">form-number</mat-icon> Metric
                         <div class="f-spacer"></div>
                         <button mat-button>
-                            <mat-icon fontSet="mdo-icons" class="plus-icon">plus</mat-icon>
+                            <mat-icon fontSet="mdo-icons">plus</mat-icon>
                         </button>
                     </div>
                     <mat-divider></mat-divider>
@@ -45,7 +43,7 @@
                         <mat-icon fontSet="mdo-icons" class="widget-icon">form-table</mat-icon> Table list
                         <div class="f-spacer"></div>
                         <button mat-button>
-                            <mat-icon fontSet="mdo-icons" class="plus-icon">plus</mat-icon>
+                            <mat-icon fontSet="mdo-icons">plus</mat-icon>
                         </button>
                     </div>
                     <mat-divider></mat-divider>
@@ -53,7 +51,7 @@
                         <mat-icon fontSet="mdo-icons" class="widget-icon">chart-pie</mat-icon> Bar/pie chart
                         <div class="f-spacer"></div>
                         <button mat-button>
-                            <mat-icon fontSet="mdo-icons" class="plus-icon">plus</mat-icon>
+                            <mat-icon fontSet="mdo-icons">plus</mat-icon>
                         </button>
                     </div>
                     <mat-divider></mat-divider>
@@ -61,7 +59,7 @@
                         <mat-icon fontSet="mdo-icons" class="widget-icon">chart-complex</mat-icon> Stacked bar chart
                         <div class="f-spacer"></div>
                         <button mat-button>
-                            <mat-icon fontSet="mdo-icons" class="plus-icon">plus</mat-icon>
+                            <mat-icon fontSet="mdo-icons">plus</mat-icon>
                         </button>
                     </div>
                     <mat-divider></mat-divider>
@@ -69,7 +67,7 @@
                         <mat-icon fontSet="mdo-icons" class="widget-icon">picture</mat-icon> Image
                         <div class="f-spacer"></div>
                         <button mat-button>
-                            <mat-icon fontSet="mdo-icons" class="plus-icon">plus</mat-icon>
+                            <mat-icon fontSet="mdo-icons">plus</mat-icon>
                         </button>
                     </div>
                     <mat-divider></mat-divider>
@@ -77,7 +75,7 @@
                         <mat-icon fontSet="mdo-icons" class="widget-icon">more-alt2</mat-icon> HTML editor
                         <div class="f-spacer"></div>
                         <button mat-button>
-                            <mat-icon fontSet="mdo-icons" class="plus-icon">plus</mat-icon>
+                            <mat-icon fontSet="mdo-icons">plus</mat-icon>
                         </button>
                     </div>
                     <mat-divider></mat-divider>
@@ -85,7 +83,7 @@
                         <mat-icon fontSet="mdo-icons" class="widget-icon">form-time</mat-icon> Time series
                         <div class="f-spacer"></div>
                         <button mat-button>
-                            <mat-icon fontSet="mdo-icons" class="plus-icon">plus</mat-icon>
+                            <mat-icon fontSet="mdo-icons">plus</mat-icon>
                         </button>
                     </div>
                     <mat-divider></mat-divider>
@@ -110,7 +108,7 @@
                     </div>
                     <div class="f-spacer"></div>
                     <button mat-button (click)="showProperty=false">
-                        <mat-icon>clear</mat-icon>
+                        <mat-icon fontSet="mdo-icons">close</mat-icon>
                     </button>
                 </div>
 
@@ -118,7 +116,7 @@
                 <mat-accordion>
                     <mat-expansion-panel class="mat-elevation-z0" togglePosition="before" expanded="true">
                         <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
-                            <mat-panel-title>
+                            <mat-panel-title class="panel-title">
                                 Basic configuration
                             </mat-panel-title>
                         </mat-expansion-panel-header>
@@ -519,7 +517,7 @@
                     *ngIf="selStyleWid  && (selStyleWid.widgetType === 'BAR_CHART' || selStyleWid.widgetType === 'STACKED_BAR_CHART' || selStyleWid.widgetType === 'TIMESERIES') ">
                     <mat-expansion-panel class="mat-elevation-z0" togglePosition="before" expanded="true">
                         <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
-                            <mat-panel-title>
+                            <mat-panel-title class="panel-title">
                                 Chart properties
                             </mat-panel-title>
                         </mat-expansion-panel-header>
@@ -720,7 +718,7 @@
                 <mat-accordion *ngIf="selStyleWid && (selStyleWid.field || (selStyleWid.fieldCtrl && !(selStyleWid.fieldCtrl.dataType === 'DTMS' || selStyleWid.fieldCtrl.dataType === 'DATS')))">
                     <mat-expansion-panel class="mat-elevation-z0" togglePosition="before" expanded="true">
                         <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
-                            <mat-panel-title>
+                            <mat-panel-title class="panel-title">
                                 Default filters
                             </mat-panel-title>
                         </mat-expansion-panel-header>
@@ -820,5 +818,4 @@
             </div>
         </div>
     </div>
-</mat-card>
 </div>

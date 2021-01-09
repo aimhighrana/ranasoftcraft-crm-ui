@@ -59,7 +59,7 @@
                         <mat-select [formControl]="dataScopeControl">
                             <mat-option (click)="openDataScopeSideSheet()">Add data scope</mat-option>
                             <mat-divider></mat-divider>
-                            <mat-option value='0'>Entire datascope</mat-option>
+                            <mat-option value='0'>Entire data scope</mat-option>
                             <mat-option *ngFor="let variant of variantDetails" [value]="variant.variantId">
                                 {{variant.variantName}}
                             </mat-option>

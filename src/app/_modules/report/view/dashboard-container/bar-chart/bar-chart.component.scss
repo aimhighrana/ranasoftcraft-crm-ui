@@ -1,12 +1,10 @@
 mat-card.widget {
   box-sizing: border-box;
-  padding: 0;
+  padding: 8px;
   height: 100%;
 
   .breadcrum-toolbar {
     align-items: center;
-    padding: 8px;
-    border-radius: 3px;
 
     .display-heading-large {
       font-size: 1rem;
@@ -18,8 +16,7 @@ mat-card.widget {
   }
 
   mat-card-content {
-    height: calc(100% - 52px - 16px);
+    height: calc(100% - 36px - 16px);
     overflow: auto;
-    padding: 8px;
   }
 }
