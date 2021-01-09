@@ -26,7 +26,7 @@
                 {{uploadError.message}}
             </div>
 
-            <div class="f-col upload-col">
+            <div class="f-col upload-col" *ngIf="!uploadLoader">
                 <pros-null-state 
                 [button]="{text: 'Select a file'}"
                 [subtext]="'No data file selected'"
