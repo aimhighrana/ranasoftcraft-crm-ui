@@ -32,7 +32,7 @@
             <mat-icon fontSet="mdo-icons">more</mat-icon>
         </button>
         <mat-menu #moreactionfile="matMenu" class="navigation-menu">
-            <button mat-menu-item (click)="downloadExecutionDetails()">Download</button>
+            <button mat-menu-item (click)="downloadExecutionDetails()" *ngIf="activeTab !== 'error'">Download</button>
         </mat-menu>
         <!-- <button mat-flat-button color="accent" (click)="downloadExecutionDetails()">Download</button> -->
     </div>
