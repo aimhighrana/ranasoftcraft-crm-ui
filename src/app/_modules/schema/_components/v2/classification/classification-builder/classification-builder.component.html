@@ -211,19 +211,21 @@
                         <div class="row-spacer"></div>
 
                         <div class="f-row" *ngIf="viewOf && viewOf.getValue() === 'correction' && selection.selected.length !== 0">
-                            <button mat-flat-button (click)="generateDesc('',0,'all')" color="accent" class="rightradius">
-                                <!-- <mat-icon fontSet="mdo-icons">check-mark</mat-icon> -->
-                                Generate description
-                            </button>
-
-                            <button mat-flat-button (click)="approveRec('',0,'all')" color="accent" class="middleradius">
-                                <!-- <mat-icon fontSet="mdo-icons">block</mat-icon> -->
-                                Approve
-                            </button>
-
-                            <button mat-flat-button (click)="rejectRec('',0,'all')" color="accent" class="middleradius">
-                                Reject
-                            </button>
+                            <ng-template [ngIf]="isReviewer || isApprover">
+                                <button mat-flat-button (click)="generateDesc('',0,'all')" color="accent" class="rightradius">
+                                    <!-- <mat-icon fontSet="mdo-icons">check-mark</mat-icon> -->
+                                    Generate description
+                                </button>
+    
+                                <button mat-flat-button (click)="approveRec('',0,'all')" color="accent" class="middleradius">
+                                    <!-- <mat-icon fontSet="mdo-icons">block</mat-icon> -->
+                                    Approve
+                                </button>
+    
+                                <button mat-flat-button (click)="rejectRec('',0,'all')" color="accent" class="middleradius">
+                                    Reject
+                                </button>
+                            </ng-template>
                             <button mat-flat-button (click)="selection.clear()" color="accent" class="leftradius">
                                 <!-- <mat-icon fontSet="mdo-icons">close</mat-icon> -->
                                 Unselect
@@ -272,19 +274,20 @@
                                 </mat-header-cell>
                                 <mat-cell *matCellDef="let row; let rIndex = index;" class="fixed-width-c2">
                                     <div class="f-row action-iconbtns">
-
-                                        <button mat-fab color="accent" *ngIf="row['__aditionalProp'] && !row['__aditionalProp'].hasLatestDescGenerated" (click)="generateDesc(row, rIndex)" id="descriptonGeneratorBtn_{{ rIndex }}">
-                                            <mat-icon fontSet="mdo-icons">form-file</mat-icon>
-                                        </button>
-
-                                        <button mat-fab color="accent" *ngIf="row['__aditionalProp'] && row['__aditionalProp'].hasLatestDescGenerated && !row['__aditionalProp'].isReviewed"
-                                        (click)="approveRec(row, rIndex)" id="approveBtn_{{ rIndex }}">
-                                            <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
-                                        </button>
-
-                                        <button mat-fab color="accent" (click)="rejectRec(row, rIndex)" id="rejectBtn_{{ rIndex }}">
-                                            <mat-icon fontSet="mdo-icons">declined</mat-icon>
-                                        </button>
+                                        <ng-template [ngIf]="isReviewer || isApprover">
+                                            <button mat-fab color="accent" *ngIf="row['__aditionalProp'] && !row['__aditionalProp'].hasLatestDescGenerated" (click)="generateDesc(row, rIndex)" id="descriptonGeneratorBtn_{{ rIndex }}">
+                                                <mat-icon fontSet="mdo-icons">form-file</mat-icon>
+                                            </button>
+    
+                                            <button mat-fab color="accent" *ngIf="row['__aditionalProp'] && row['__aditionalProp'].hasLatestDescGenerated && !row['__aditionalProp'].isReviewed"
+                                            (click)="approveRec(row, rIndex)" id="approveBtn_{{ rIndex }}">
+                                                <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
+                                            </button>
+    
+                                            <button mat-fab color="accent" (click)="rejectRec(row, rIndex)" id="rejectBtn_{{ rIndex }}">
+                                                <mat-icon fontSet="mdo-icons">declined</mat-icon>
+                                            </button>
+                                        </ng-template>
                                     </div>
                                 </mat-cell>
                             </ng-container>

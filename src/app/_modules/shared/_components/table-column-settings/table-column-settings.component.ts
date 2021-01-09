@@ -91,9 +91,10 @@ export class TableColumnSettingsComponent implements OnInit{
   ngOnInit() {
 
     this.sharedService.getChooseColumnData().pipe(take(1)).subscribe(data=>{
+      console.log(data);
       if (data) {
         if (data.editActive) {
-          this.data = data;
+          this.data = JSON.parse(JSON.stringify(data));
           this.getSchemaDetails();
           this.initialSelectedFields = data.selectedFields;
           this.headerDetails();
