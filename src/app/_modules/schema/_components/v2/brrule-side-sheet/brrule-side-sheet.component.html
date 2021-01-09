@@ -33,8 +33,16 @@
     
                 <div class="f-col mdo-form-field" *ngIf="!isDuplicateType">
                     <mat-label>Weightage</mat-label>
-                    <mat-slider thumbLabel formControlName="weightage" [displayWith]="formatLabel" tickInterval="1" min="0"
+                    
+
+                        <div class="f-row slider-row">
+                            <mat-slider thumbLabel formControlName="weightage" [displayWith]="formatLabel" tickInterval="1" min="0"
                         [max]="currentweightageValue" color="primary"></mat-slider>
+                            <span class="f-col-spacer-half"></span>
+                            <div class="percent-count">{{form.controls.weightage.value}}%</div>
+                          </div>
+
+
                     <mat-error
                         *ngIf="submitted && form.controls.weightage.errors && form.controls.weightage.errors.required">
                         Please enter Weightage</mat-error>

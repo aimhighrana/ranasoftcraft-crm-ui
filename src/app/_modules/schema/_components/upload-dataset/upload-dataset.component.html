@@ -1,7 +1,8 @@
 <mat-card class="root mat-elevation-z0">
     <div class="f-row breadcrum-toolbar">
         <div class="display-heading-large">
-            {{'Data check'}} (step {{headerTextIndex}}/{{headerText.length}}): <b class="step-weight">{{toolbarHeaderText}}</b>
+            {{'Data check'}} (step {{headerTextIndex}}/{{headerText.length}}): <b
+                class="step-weight">{{toolbarHeaderText}}</b>
         </div>
         <span class="f-spacer"></span>
         <button mat-button (click)="closeDialog()">
@@ -22,9 +23,9 @@
                 <mat-spinner color="primary" diameter="30"></mat-spinner>
             </div>
 
-            <div class="f-col upload-error" *ngIf="!uploadLoader && uploadError.status">
+            <mat-card class="mat-elevation-z0 upload-error" *ngIf="!uploadLoader && uploadError.status">
                 {{uploadError.message}}
-            </div>
+            </mat-card>
 
             <div class="f-col upload-col" *ngIf="!uploadLoader">
                 <pros-null-state 
@@ -68,15 +69,14 @@
         <mat-step>
             <ng-template matStepLabel></ng-template>
             <div class="f-col">
-                <pros-form-input [value]="requestForm.controls.objectDesc.value"
-                    [label]="'Module name'" [placeholder]="'Module name'" (valueChange)="setObjectDescription($event)"
-                    [hint]="!stepSubmitted || !requestForm.controls['objectDesc'].errors ? 'In MDO module is a dataset' : ''" 
+                <pros-form-input [value]="requestForm.controls.objectDesc.value" [label]="'Module name'"
+                    [placeholder]="'Module name'" (valueChange)="setObjectDescription($event)"
+                    [hint]="!stepSubmitted || !requestForm.controls['objectDesc'].errors ? 'In MDO module is a dataset' : ''"
                     [disabled]="requestForm.controls.objectId.value !== '' && requestForm.controls.objectId.value !== null">
                 </pros-form-input>
                 <!-- <mat-error *ngIf="requestForm.value.core_schema.discription"> 
                     requestForm.controls['objectDesc'].errors && !requestForm.controls.objectDesc.pristine ? 'In MDO module is a dataset' : ''-->
-                <mat-error
-                    *ngIf="stepSubmitted && requestForm.controls['objectDesc'].errors">
+                <mat-error *ngIf="stepSubmitted && requestForm.controls['objectDesc'].errors">
                     Module name is required
                 </mat-error>
 
@@ -97,15 +97,15 @@
                                 <div class="col col-x8">
                                     <div [style.display]="isEditable(data)? 'block': 'none'" (click)="onClick($event)">
                                         <pros-form-input [placeholder]="'Enter a value'" [disabled]="false"
-                                            [value]="data.excelFld"
-                                            [id]="data.mdoFldId"
+                                            [value]="data.excelFld" [id]="data.mdoFldId"
                                             (valueChange)="setFormValue($event, data.mdoFldId)">
                                         </pros-form-input>
                                         <mat-error *ngIf="headerForm.controls[data.mdoFldId].errors">
                                             This field is required
                                         </mat-error>
                                     </div>
-                                    <div [style.display]="isEditable(data)? 'none': 'block'" class="mat-line" (click)="makeEditable(data)">
+                                    <div [style.display]="isEditable(data)? 'none': 'block'" class="mat-line"
+                                        (click)="makeEditable(data)">
                                         {{data.excelFld}}
                                     </div>
                                 </div>
@@ -130,9 +130,9 @@
         <mat-step>
             <ng-template matStepLabel></ng-template>
             <div class="f-col">
-                <pros-form-input [value]="requestForm.get('core_schema').value.discription" [placeholder]="'Schema name'" [label]="'Schema name'"
-                    (valueChange)="setschemaName($event)" 
-                    [hint]="!stepSubmitted || isSchemaSet(requestForm.get('core_schema').value) ? 'Schema is a collection of business rules' : ''" 
+                <pros-form-input [value]="requestForm.get('core_schema').value.discription"
+                    [placeholder]="'Schema name'" [label]="'Schema name'" (valueChange)="setschemaName($event)"
+                    [hint]="!stepSubmitted || isSchemaSet(requestForm.get('core_schema').value) ? 'Schema is a collection of business rules' : ''"
                     [disabled]="isdisabled(requestForm.controls.schemaId.value)">
                 </pros-form-input>
                 <mat-error *ngIf="stepSubmitted && !isSchemaSet(requestForm.get('core_schema').value)">
@@ -157,12 +157,16 @@
                     [value]="requestForm.controls.dataScope.value"></pros-form-input>
                 <div class="row-spacer"></div> -->
 
-                <div class="f-col temp-field">
+                <div class="f-col mdo-form-field">
                     <mat-label>Threshold</mat-label>
-                    <mat-slider color="primary" [thumbLabel]="requestForm.controls.threshold.value"
-                        [value]="requestForm.controls.threshold.value" 
-                        (change)="setValueToForm('threshold',$event)">
-                    </mat-slider>
+                    <div class="f-row slider-row">
+                        <mat-slider color="primary" [thumbLabel]="requestForm.controls.threshold.value"
+                            [value]="requestForm.controls.threshold.value"
+                            (change)="setValueToForm('threshold',$event)">
+                        </mat-slider>
+                        <span class="f-col-spacer-half"></span>
+                        <div class="percent-count">{{requestForm.controls.threshold.value}}%</div>
+                    </div>
                 </div>
             </div>
 
@@ -170,10 +174,12 @@
                 <div class="f-row colunm-box rule-border-row">
                     <div class="col"></div>
                     <div class="col col-x8"><strong>Business rule</strong></div>
-                    <div class="col col-x8 mat-item-center"><div class="f-row">
-                        <strong>Weight &nbsp;<mat-icon fontSet="mdo-icons">question-mark</mat-icon></strong>
-                    </div></div>
-                    <div class="col col-x8"><strong>Enabled</strong></div>
+                    <div class="col col-x8 mat-item-center">
+                        <div class="f-row">
+                            <strong>Weight &nbsp;<mat-icon fontSet="mdo-icons" matTooltip="Score assigned to a record upon successful validation of a business rule. For a schema total weightage of all the business rules must not exceed 100">question-mark</mat-icon></strong>
+                        </div>
+                    </div>
+                    <div class="col col-x4"><strong>Enabled</strong></div>
                     <div class="col"></div>
                 </div>
 
@@ -188,11 +194,9 @@
                             </pros-form-input-autoselect>
                         </div>
                     </div>
-                    <pros-null-state 
-                    [button]="{text: 'Add Business Rule'}"
-                    [message]="'No business rule added, please add at least one business rule to continue'"
-                    (action)="openGlobalDialog('createBR')" 
-                    *ngIf="selectedBusinessRules.length === 0">
+                    <pros-null-state [button]="{text: 'Add Business Rule'}"
+                        [message]="'No business rule added, please add at least one business rule to continue'"
+                        (action)="openGlobalDialog('createBR')" *ngIf="selectedBusinessRules.length === 0">
                     </pros-null-state>
                 </ng-container>
 
@@ -210,35 +214,35 @@
                             </div>
 
                             <div class="col col-x8 mat-item-center">
-                                <div class="f-row slider-row">
-                                    <mat-slider *ngIf="!isExistingRule(businessRule.tempId); else notConfigured"
-                                        color="primary" [thumbLabel]="getWeightage(businessRule)"
-                                        min="0"
-                                        [max]="100"
-                                        [value]="getWeightage(businessRule)"
+                                <div class="f-row slider-row"
+                                    *ngIf="!isExistingRule(businessRule.tempId); else notConfigured">
+                                    <mat-slider color="primary" [thumbLabel]="getWeightage(businessRule)" min="0"
+                                        [max]="100" [value]="getWeightage(businessRule)"
                                         (change)="weightageChange($event, k)">
                                     </mat-slider>
-                                    <ng-template #notConfigured>
-                                        <mat-chip-list>
-                                            <mat-chip disableRipple="true" class="error-status">Not configured</mat-chip>
-                                        </mat-chip-list>
-                                    </ng-template>
+                                    <span class="f-col-spacer-half"></span>
+                                    <div class="percent-count">{{getWeightage(businessRule)}}%</div>
                                 </div>
+                                <ng-template #notConfigured>
+                                    <mat-chip-list>
+                                        <mat-chip disableRipple="true" class="error-status">Not configured</mat-chip>
+                                    </mat-chip-list>
+                                </ng-template>
                             </div>
 
-                            <div class="col col-x8">
-                                <mat-checkbox color="primary" 
+                            <div class="col col-x4">
+                                <mat-checkbox color="primary"
                                     *ngIf="!isExistingRule(businessRule.tempId); else configure"
                                     [checked]="businessRule.status === '1'"
                                     (change)="toggleBrStatus($event,businessRule)"></mat-checkbox>
 
                                 <span class="f-col-spacer-half"></span>
 
-                               <ng-template #configure>
-                                <button mat-flat-button color="accent" (click)="configureRule(businessRule)">
-                                    Configure
-                                </button>
-                               </ng-template>
+                                <ng-template #configure>
+                                    <button mat-flat-button color="accent" (click)="configureRule(businessRule)">
+                                        Configure
+                                    </button>
+                                </ng-template>
                             </div>
                             <div class="col">
                                 <button mat-button (click)="deleteBR(businessRule)">
@@ -272,10 +276,8 @@
                         </pros-form-input-autoselect>
                     </div>
                 </div>
-                <pros-null-state 
-                    [button]="{text: 'Add subscribers'}"
-                    [message]="'No subscribers found, please add subscribers to continue'"
-                    (action)="addSubscribers()" 
+                <pros-null-state [button]="{text: 'Add subscribers'}"
+                    [message]="'No subscribers found, please add subscribers to continue'" (action)="addSubscribers()"
                     *ngIf="subscribersList.length === 0">
                 </pros-null-state>
                 <div *ngFor="let subscriber of subscribersList;let l=index" class="f-row colunm-box rule-border-row">
@@ -294,18 +296,17 @@
 
                     <div class="col col-x4" [matMenuTriggerFor]="subscriberlist">
                         <button mat-stroked-button *ngIf="subscriber.isAdmin">Admin <mat-icon fontSet="mdo-icons">
-                            menu-arrow</mat-icon></button>
+                                menu-arrow</mat-icon></button>
                         <button mat-stroked-button *ngIf="subscriber.isReviewer">Reviewer <mat-icon fontSet="mdo-icons">
-                            menu-arrow</mat-icon></button>
+                                menu-arrow</mat-icon></button>
                         <button mat-stroked-button *ngIf="subscriber.isViewer">Viewer <mat-icon fontSet="mdo-icons">
-                            menu-arrow</mat-icon></button>
-                        <button mat-stroked-button *ngIf="subscriber.isEditer">Editer <mat-icon fontSet="mdo-icons">
-                            menu-arrow</mat-icon></button>
+                                menu-arrow</mat-icon></button>
+                        <button mat-stroked-button *ngIf="subscriber.isEditer">Editor <mat-icon fontSet="mdo-icons">
+                                menu-arrow</mat-icon></button>
                     </div>
                     <mat-menu #subscriberlist="matMenu" direction="right" class="navigation-menu">
-                        <button mat-menu-item *ngFor="let role of roles"
-                        (click)="updateRole(role, subscriber,l)">
-                        {{ role }}</button>
+                        <button mat-menu-item *ngFor="let role of roles" (click)="updateRole(role, subscriber,l)">
+                            {{ role }}</button>
                         <!-- <mat-nav-list>
                             <mat-list-item *ngFor="let role of roles"
                                 (click)="updateRole(role, subscriber,l)">
@@ -313,7 +314,7 @@
                             </mat-list-item>
                         </mat-nav-list> -->
                     </mat-menu>
-                    
+
                     <div class="col col-x8">
                         <mat-chip-list>
                             <ng-template ngFor let-ctrl [ngForOf]="subscriber.filterCriteria">
@@ -350,9 +351,8 @@
                         </mat-menu>
 
                         <mat-menu #addfiltermenu="matMenu">
-                            <pros-add-filter-menu 
-                            [fieldMetadata]="requestForm.controls.fields.value"
-                            [moduleId]="requestForm.controls.objectId.value"
+                            <pros-add-filter-menu [fieldMetadata]="requestForm.controls.fields.value"
+                                [moduleId]="requestForm.controls.objectId.value"
                                 (evtReadyForApply)="makeFilterControl($event, l)" [reInilize]="reInilize">
                             </pros-add-filter-menu>
                         </mat-menu>
@@ -386,23 +386,24 @@
                 <!-- Schedule schema -->
                 <div class="f-row schedule-row">
                     <!-- in case of existing schedule, will show edit button and toggle-->
-                <ng-template [ngIf]="canEditSchedule" [ngIfElse]="addSchedule">
-                    <mat-slide-toggle color="primary" [checked]="currentSchedule && currentSchedule.isEnable" (change)="toggleScheduleStatus($event)">
-                        Enable schedule
-                    </mat-slide-toggle>
-                    <span class="f-spacer"></span>
-                    <button mat-flat-button color="primary" (click)="openScheduleSideSheet()">
-                        <mat-icon fontSet="mdo-icons">form-time</mat-icon> Edit schedule
-                    </button>
-                </ng-template>
+                    <ng-template [ngIf]="canEditSchedule" [ngIfElse]="addSchedule">
+                        <mat-slide-toggle color="primary" [checked]="currentSchedule && currentSchedule.isEnable"
+                            (change)="toggleScheduleStatus($event)">
+                            Enable schedule
+                        </mat-slide-toggle>
+                        <span class="f-spacer"></span>
+                        <button mat-flat-button color="primary" (click)="openScheduleSideSheet()">
+                            <mat-icon fontSet="mdo-icons">form-time</mat-icon> Edit schedule
+                        </button>
+                    </ng-template>
 
-                <!-- in case of there is no schedule, will show only add button -->
-                <ng-template #addSchedule>
-                    <span class="f-spacer"></span>
-                    <button mat-flat-button color="primary" (click)="openScheduleSideSheet()">
-                        <mat-icon fontSet="mdo-icons">form-time</mat-icon> Add schedule
-                    </button>
-                </ng-template>
+                    <!-- in case of there is no schedule, will show only add button -->
+                    <ng-template #addSchedule>
+                        <span class="f-spacer"></span>
+                        <button mat-flat-button color="primary" (click)="openScheduleSideSheet()">
+                            <mat-icon fontSet="mdo-icons">form-time</mat-icon> Add schedule
+                        </button>
+                    </ng-template>
                 </div>
 
             </div>

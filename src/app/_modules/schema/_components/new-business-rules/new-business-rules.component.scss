@@ -37,6 +37,17 @@ div.root {
           font-weight: 500;
           font-size: 0.8rem;
         }
+
+        .slider-row {
+          align-items: center;
+          flex-wrap: wrap;
+          justify-content: center;
+          flex: 1;
+
+          mat-slider.mat-slider {
+            flex: 1;
+          }
+        }
       }
 
       .dashed-divider {

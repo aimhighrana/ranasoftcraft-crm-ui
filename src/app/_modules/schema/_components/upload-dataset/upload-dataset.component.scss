@@ -40,12 +40,8 @@ mat-card.root {
     }
 
     .upload-error {
-      border-radius: 3px;
-      width: calc(100% - 30px);
-      padding: 14px 15px;
-      background-color: #ff6b6b;
-      color: #fff;
-      font-size: 14px;
+      padding: 12px;
+      margin: 8px 0;
     }
 
     .mat-radio-button {
@@ -58,7 +54,7 @@ mat-card.root {
       border-top-style: dashed;
     }
 
-    .temp-field {
+    .mdo-form-field {
       mat-label {
         font-weight: 500;
         font-size: 0.8rem;
@@ -164,17 +160,6 @@ mat-card.root {
       word-break: break-word;
     }
 
-    .slider-row {
-      align-items: center;
-      flex-wrap: wrap;
-      justify-content: center;
-      flex: 1;
-
-      mat-slider.mat-slider {
-        flex: 1;
-      }
-    }
-
     button.mat-stroked-button {
       margin-right: 4px;
       min-width: auto;
@@ -183,5 +168,16 @@ mat-card.root {
 
   .mdo-auto-complete {
     width: 100%;
+  }
+}
+
+.slider-row {
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  flex: 1;
+
+  mat-slider.mat-slider {
+    flex: 1;
   }
 }

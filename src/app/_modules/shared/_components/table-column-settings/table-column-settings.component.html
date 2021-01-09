@@ -94,7 +94,7 @@
                                 </mat-button-toggle-group>
                             </div>
                         </div> -->
-                        <div class="f-col  mdo-form-field">
+                        <div class="f-col mdo-form-field">
                             <mat-label><strong>Preview</strong></mat-label>
                             <div class="f-row">
                                 <!-- Secondary actions -->
@@ -102,7 +102,7 @@
                                     *ngIf="secondaryActions.length" [matMenuTriggerFor]="secondaryActionsMenu">
                                     <mat-icon fontSet="mdo-icons">more</mat-icon>
                                 </button>
-                                <mat-menu #secondaryActionsMenu="matMenu">
+                                <mat-menu #secondaryActionsMenu="matMenu" class="navigation-menu">
                                     <button mat-menu-item *ngFor="let sAction of secondaryActions">
                                         <mat-icon
                                             *ngIf="!sAction.isCustomAction && COMMON_ACTIONS[sAction.actionText] && (sAction.actionViewType=== TableActionViewType.ICON || sAction.actionViewType=== TableActionViewType.ICON_TEXT)"
@@ -134,19 +134,20 @@
                         <!-- Action code start here-->
                         <div class="colunm-listing">
                             <div class="f-row colunm-box rule-border-row">
-                                <div class="col"></div>
+                                <div class="col">&nbsp;</div>
                                 <div class="col col-x8"><strong>Action</strong></div>
                                 <div class="col col-x4"><strong class="f-row">Primary &nbsp;
                                         <mat-icon matTooltip="Primary" fontSet="mdo-icons">question-mark</mat-icon>
                                     </strong></div>
-                                <div class="col col-x4"></div>
+                                <div class="col col-x4">&nbsp;</div>
                                 <div class="col col-x4 text-end"></div>
                             </div>
                             <div class="f-row colunm-box rule-border-row">
-                                <div class="col"></div>
+                                <div class="col">&nbsp;</div>
                                 <div class="col col-x8">
-                                    <a (click)="addCustomAction()" class="mat-line info-link">New Custom action</a>
+                                    <a (click)="addCustomAction()" class="mat-line info-link">New custom action</a>
                                 </div>
+                                <div class="col col-x4"></div>
                                 <div class="col col-x4"></div>
                                 <div class="col col-x4 text-end"></div>
                             </div>
@@ -160,7 +161,7 @@
                                     </div>
                                     <div class="col col-x8">
                                         <div mat-line (click)="editActionText(index)">
-                                            <span id="viewctrl_{{ index }}"> {{ action.actionText }} </span>
+                                            <span id="viewctrl_{{ index }}" class="editablevalue"> {{ action.actionText }} </span>
                                             <div id="inpctrl_{{ index }}" style="display: none;">
                                                 <pros-form-input type="text" [value]="action.actionText"
                                                     (emitBlurEvent)="emitActionTextBlur(index, $event)">
@@ -176,7 +177,8 @@
                                             (change)="actionChanged(index, 'isPrimaryAction', $event.checked)">
                                         </mat-checkbox>
                                     </div>
-                                    <div class="col col-x8">
+                                    
+                                    <div class="col col-x4">
                                         <ng-template [ngIf]="action.isCustomAction" [ngIfElse]="commonAction">
                                             <button mat-stroked-button>
                                                 {{ getActionViewTypeDesc(action.actionViewType) }}
@@ -187,16 +189,17 @@
                                                 {{ getActionViewTypeDesc(action.actionViewType) }}
                                                 <mat-icon fontSet="mdo-icons">menu-arrow </mat-icon>
                                             </button>
-                                            <mat-menu #displayMenu="matMenu">
-                                                <button
-                                                    (click)="actionChanged(index, 'actionViewType', TableActionViewType.TEXT)"
-                                                    mat-menu-item> Text only </button>
-                                                <button
-                                                    (click)="actionChanged(index, 'actionViewType', TableActionViewType.ICON_TEXT)"
-                                                    mat-menu-item> Text and icon </button>
+                                            <mat-menu #displayMenu="matMenu" class="navigation-menu">
                                                 <button
                                                     (click)="actionChanged(index, 'actionViewType', TableActionViewType.ICON)"
                                                     mat-menu-item> Icon only </button>
+                                                <button
+                                                    (click)="actionChanged(index, 'actionViewType', TableActionViewType.ICON_TEXT)"
+                                                    mat-menu-item> Icon and text </button>
+                                                    <button
+                                                    (click)="actionChanged(index, 'actionViewType', TableActionViewType.TEXT)"
+                                                    mat-menu-item> Text only </button>
+                                                
                                             </mat-menu>
                                         </ng-template>
                                     </div>
@@ -204,9 +207,9 @@
                                         <button mat-button [matMenuTriggerFor]="mappingMenu"
                                             *ngIf="action.isCustomAction">
                                             <mat-icon fontSet="mdo-icons" [matBadge]="action.refBrId ? '1' : '?'"
-                                                matBadgeOverlap="false" matBadgeColor="accent">mapping</mat-icon>
+                                                matBadgeOverlap="false" matBadgeColor="accent" class="badge-background badge-error-value">mapping</mat-icon>
                                         </button>
-                                        <mat-menu #mappingMenu="matMenu">
+                                        <mat-menu #mappingMenu="matMenu" class="navigation-menu">
                                             <button mat-menu-item *ngFor="let rule of crossMappingRules"
                                                 (click)="actionChanged(index, 'refBrId', rule.sno)">
                                                 <mat-icon *ngIf="rule.sno === action.refBrId" fontSet="mdo-icons">
@@ -214,11 +217,10 @@
                                                 {{ rule.desc }}
                                             </button>
                                         </mat-menu>
-                                    </div>
-                                    <div class="col text-end">
+                                        <div class="col-spacer"></div>
                                         <button mat-button *ngIf="action.isCustomAction"
                                             (click)="removeCustomAction(index)">
-                                            <mat-icon fontSet="mdo-icons"> recycle-bin </mat-icon>
+                                            <mat-icon fontSet="mdo-icons">recycle-bin</mat-icon>
                                         </button>
                                     </div>
                                 </div>

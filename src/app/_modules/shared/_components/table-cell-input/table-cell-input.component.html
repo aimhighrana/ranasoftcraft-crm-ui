@@ -1,14 +1,14 @@
 <ng-container [ngSwitch]="inputType">
 
     <!-- Input type number -->
-    <mat-form-field *ngSwitchCase="FIELD_TYPE.NUMBER" appearance="outline" prosClickStopPropagation>
+    <mat-form-field *ngSwitchCase="FIELD_TYPE.NUMBER" appearance="outline" prosClickStopPropagation class="edit-cell">
         <input matInput type="number" step="any" class="mat-input" #input
             (blur)="emitInputBlur($event.target.value)"
             [value]="value">
     </mat-form-field>
 
     <!-- Input type Date and Date and time -->
-    <mat-form-field *ngSwitchCase="FIELD_TYPE.DATE" appearance="outline" prosClickStopPropagation>
+    <mat-form-field *ngSwitchCase="FIELD_TYPE.DATE" appearance="outline" prosClickStopPropagation class="edit-cell">
         <input matInput [matDatepicker]="picker" class="mat-input" #input
            (focus)="picker.open()"
            [formControl]="dateControl">
@@ -18,7 +18,7 @@
     </mat-form-field> 
 
     <!-- Input type single select -->
-    <mat-form-field *ngSwitchCase="FIELD_TYPE.SINGLE_SELECT" appearance="outline" prosClickStopPropagation>
+    <mat-form-field *ngSwitchCase="FIELD_TYPE.SINGLE_SELECT" appearance="outline" prosClickStopPropagation class="edit-cell">
         <input matInput [matAutocomplete]="auto" class="mat-input" #input [formControl]="searchControl"
                placeholder="Search"
                (blur)="emitChngSelectValue($event)">
@@ -44,7 +44,7 @@
     </mat-form-field>
 
     <!-- Default input type text -->
-    <mat-form-field *ngSwitchDefault appearance="outline" prosClickStopPropagation>
+    <mat-form-field *ngSwitchDefault appearance="outline" prosClickStopPropagation class="edit-cell">
         <input matInput class="mat-input" #input
             (blur)="emitInputBlur($event.target.value)"
             [value]="value">

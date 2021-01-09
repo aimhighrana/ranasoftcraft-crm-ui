@@ -44,6 +44,12 @@ div.root {
         }
       }
     }
+
+    .loading-spinner {
+      display: flex;
+      justify-content: center;
+      padding: 64px 0;
+    }
   }
 }
 

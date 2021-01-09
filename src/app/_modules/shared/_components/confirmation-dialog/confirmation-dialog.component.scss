@@ -1,12 +1,10 @@
 mat-card.root {
   height: 100%;
   user-select: none;
-  padding: 0;
+  padding: 16px 0;
 
   .breadcrum-toolbar {
     align-items: center;
-    margin-bottom: 32px;
-    padding-top: 16px;
 
     .display-heading-large {
       font-size: 1.2rem;
@@ -14,5 +12,9 @@ mat-card.root {
       white-space: nowrap;
       overflow: hidden;
     }
+  }
+
+  .content-text {
+    margin-bottom: 42px;
   }
 }
