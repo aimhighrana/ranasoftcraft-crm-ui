@@ -707,7 +707,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
           viewCtrl.innerText = value;
           row[fldid].fieldValue = value;
           if(res.acknowledge) {
-            this.schemaInfo.correctionValue = this.schemaInfo.correctionValue ? this.schemaInfo.correctionValue ++  : 0;
+            this.schemaInfo.correctionValue = res.count ? res.count : this.schemaInfo.correctionValue;
           }
         }, error=>{
           viewCtrl.innerText = oldVal;
@@ -856,7 +856,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
       return;
     }
 
-    this.schemaDetailService.generateMroClassificationDescription(this.schemaId, this.schemaInfo.runId, objNrs).subscribe(res=>{
+    this.schemaDetailService.generateMroClassificationDescription(this.schemaId, this.schemaInfo.runId, objNrs, this.dataFrm === 'mro_local_lib' ? true : false).subscribe(res=>{
       console.log(res);
       if(res)  {
         setTimeout(()=>{

@@ -177,12 +177,13 @@ it('ngOnChanges(), ngonchange component hooks ', async(()=>{
     const row = {OBJECTNUMBER:{fieldValue:'MAT001'}};
     component.schemaId = '234238';
     component.schemaInfo = {runId:'32423432'} as SchemaListDetails;
+    component.dataFrm ='mro_local_lib';
 
-    spyOn(schemaDetailService,'generateMroClassificationDescription').withArgs(component.schemaId, component.schemaInfo.runId, ['MAT001']).and.returnValue(of(null));
+    spyOn(schemaDetailService,'generateMroClassificationDescription').withArgs(component.schemaId, component.schemaInfo.runId, ['MAT001'], true).and.returnValue(of(null));
 
     component.generateDesc(row, 0);
 
-    expect(schemaDetailService.generateMroClassificationDescription).toHaveBeenCalledWith(component.schemaId, component.schemaInfo.runId, ['MAT001']);
+    expect(schemaDetailService.generateMroClassificationDescription).toHaveBeenCalledWith(component.schemaId, component.schemaInfo.runId, ['MAT001'], true);
     expect(component.generateDesc).toBeTruthy();
 
   }));
