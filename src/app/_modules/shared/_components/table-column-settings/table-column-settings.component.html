@@ -207,7 +207,8 @@
                                         <button mat-button [matMenuTriggerFor]="mappingMenu"
                                             *ngIf="action.isCustomAction">
                                             <mat-icon fontSet="mdo-icons" [matBadge]="action.refBrId ? '1' : '?'"
-                                                matBadgeOverlap="false" matBadgeColor="accent" class="badge-background badge-error-value">mapping</mat-icon>
+                                                matBadgeOverlap="false" matBadgeColor="accent" class="badge-background" 
+                                                [ngClass]="{'badge-error-value' : !action.refBrId}">mapping</mat-icon>
                                         </button>
                                         <mat-menu #mappingMenu="matMenu" class="navigation-menu">
                                             <button mat-menu-item *ngFor="let rule of crossMappingRules"
