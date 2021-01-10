@@ -174,7 +174,7 @@
                                             <mat-icon fontSet="mdo-icons">cog</mat-icon>
                                         </button>
                                     </mat-header-cell>
-                                    <mat-cell *matCellDef="let element" class="fixed-width-c2">
+                                    <mat-cell *matCellDef="let element" class="fixed-width-c2 no-text-decoration">
                                         <div class="f-row action-iconbtns">
                                           <ng-template [ngIf]="activeTab !== 'review'" [ngIfElse]="review">
                                             <button mat-fab color="accent" [matMenuTriggerFor]="moreactions" class="rightradius">
@@ -266,7 +266,7 @@
                                 <ng-container [matColumnDef]="RECORD_STATUS_KEY">
                                     <mat-header-cell *matHeaderCellDef mat-sort-header> Status
                                     </mat-header-cell>
-                                    <mat-cell *matCellDef="let element">
+                                    <mat-cell *matCellDef="let element" class="no-text-decoration">
                                         <mat-chip-list>
                                             <mat-chip disableRipple="true" class="badge"
                                                 [ngClass]="getRecordStatusClass(element)">

@@ -74,7 +74,9 @@ div.root {
             }
 
             .row-deletable {
-              text-decoration: line-through;
+              .mat-cell:not(.no-text-decoration) {
+                text-decoration: line-through;
+              }
             }
           }
 
