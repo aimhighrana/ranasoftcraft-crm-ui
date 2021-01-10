@@ -1076,7 +1076,7 @@
       color: mat-color($foreground-palette, text);
       padding: 0 8px;
       min-width: 200px;
-      max-width: 200px;
+      // max-width: 200px;
       word-break: break-word;
       align-self: stretch;
 
@@ -1086,17 +1086,17 @@
         border: none;
       }
 
-      &.fixed-width-c2 {
-        min-width: 120px;
-        max-width: 120px;
-        border: none;
-      }
+      // &.fixed-width-c2 {
+      //   min-width: 120px;
+      //   max-width: 120px;
+      //   border: none;
+      // }
 
-      &.fixed-width-c3 {
-        min-width: 140px;
-        max-width: 140px;
-        border: none;
-      }
+      // &.fixed-width-c3 {
+      //   min-width: 140px;
+      //   max-width: 140px;
+      //   border: none;
+      // }
 
       &.line-cut {
         text-decoration: line-through;
@@ -1388,6 +1388,16 @@
     mat-nav-list {
       .filter-header {
         border-bottom-color: $color-app-border;
+      }
+    }
+  }
+
+  pros-group-data-table {
+    div.root {
+      .mat-table {
+        .active-row {
+          background: $color-app-hover;
+        }
       }
     }
   }

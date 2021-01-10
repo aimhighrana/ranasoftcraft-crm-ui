@@ -111,6 +111,15 @@ div.root {
             max-width: 100%;
             display: table;
             border-collapse: collapse;
+
+            .action-iconbtns {
+              flex-wrap: wrap;
+
+              button {
+                margin-top: 2px;
+                margin-bottom: 2px;
+              }
+            }
           }
         }
       }
