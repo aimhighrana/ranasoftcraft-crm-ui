@@ -192,6 +192,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
   getSchemaDetails(schemaId: string) {
     this.schemaListService.getSchemaDetailsBySchemaId(schemaId).subscribe(res => {
       this.schemaDetails = res;
+      this.schemaSummaryForm.controls.schemaThreshold.setValue(this.schemaDetails.schemaThreshold);
     }, (error) => console.error('Error : {}', error.message));
   }
 
