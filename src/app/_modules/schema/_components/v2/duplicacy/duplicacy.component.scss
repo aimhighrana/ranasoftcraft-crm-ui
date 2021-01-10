@@ -78,6 +78,15 @@ div.root {
                 text-decoration: line-through;
               }
             }
+
+            .action-iconbtns {
+              flex-wrap: wrap;
+
+              button {
+                margin-top: 2px;
+                margin-bottom: 2px;
+              }
+            }
           }
 
           pros-null-state {
