@@ -231,8 +231,8 @@ export class SchemaDetailsService {
    * @param runId as optional request
    * @param objNr as required parameter ..
    */
-  public rejectClassification(schemaId: string, runId: string, objNr: string[]): Observable<boolean> {
-    return this.http.put<boolean>(this.endpointService.rejectClassificationUri(), objNr, {params:{schemaId, runId}});
+  public rejectClassification(schemaId: string, runId: string, objNr: string[]): Observable<any> {
+    return this.http.put<any>(this.endpointService.rejectClassificationUri(), objNr, {params:{schemaId, runId}});
   }
 
   public getExecutionOverviewChartData(schemaId: string, variantId: string): Observable<SchemaExecutionLog[]> {
@@ -270,8 +270,8 @@ export class SchemaDetailsService {
    * @param objNrs send as request body ..
    * @param isFromMasterLib use to make identify the request from ..
    */
-  public generateMroClassificationDescription(schemaId: string, runId: string, objNrs: string[], isFromMasterLib?: boolean): Observable<any> {
-    return this.http.put<any>(this.endpointService.generateMroClassificationDescriptionUri(), objNrs, {params:{schemaId, runId}});
+  public generateMroClassificationDescription(schemaId: string, runId: string, objNrs: string[], isFromMasterLib?: any): Observable<any> {
+    return this.http.put<any>(this.endpointService.generateMroClassificationDescriptionUri(), objNrs, {params:{schemaId, runId, isFromMasterLib}});
   }
 
 

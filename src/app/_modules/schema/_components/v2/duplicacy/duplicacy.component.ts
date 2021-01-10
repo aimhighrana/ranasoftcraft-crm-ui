@@ -948,7 +948,9 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
         } as DoCorrectionRequest;
         this.catalogService.doCorrection(this.schemaId, this.schemaInfo.runId, request).subscribe(res => {
           // row[fldid].fieldData = value;
-          console.log(res);
+          if(res && res.count) {
+            this.statics.correctedCnt = res.count;
+          }
         }, error => {
           this.snackBar.open(`Something went wrong !`, 'Close', { duration: 2000 });
           console.error(`Error :: ${error.message}`);

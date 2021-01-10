@@ -833,10 +833,14 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     const modCode = row.MODE_CODE ? row.MODE_CODE.fieldValue : '';
 
     this.schemaDetailService.rejectClassification(this.schemaId,this.schemaInfo.runId,objNrs).subscribe(res=>{
-      setTimeout(()=>{
-        this.applyFilter(nounCode, modCode, this.dataFrm);
-      },1000);
-      this.snackBar.open(`Successfully approved`,'Close',{duration:5000});
+      if(res) {
+        setTimeout(()=>{
+          this.getClassificationNounMod();
+          this.applyFilter(nounCode, modCode, this.dataFrm);
+        },1000);
+        this.schemaInfo.correctionValue = res.count;
+      }
+      this.snackBar.open(`Rejected successfully `,'Close',{duration:5000});
     }, err=>{
       console.error(`Error ${err.message}`);
       this.snackBar.open(`${err.message}`,'Close',{duration:5000});
