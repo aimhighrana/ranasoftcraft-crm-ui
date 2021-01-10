@@ -377,7 +377,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     });
 
     this.requestForm.get('dataScope').setValue('Entire Dataset');
-    this.requestForm.get('threshold').setValue(100);
+    this.requestForm.get('schemaThreshold').setValue(100);
 
     this.getBusinessRulesList(this.moduleId, '', '', '0');
     this.getCollaborators('', this.fetchCount);
@@ -421,7 +421,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       subcribers: new FormControl([]),
       runTime: new FormControl(true),
       dataScope: new FormControl(),
-      threshold: new FormControl(100),
+      schemaThreshold: new FormControl(100),
       schemaId: new FormControl()
     });
     this.schemaCategory = new FormControl('DATAQUALITY_VIEW');

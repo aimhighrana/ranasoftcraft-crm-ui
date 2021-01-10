@@ -160,12 +160,12 @@
                 <div class="f-col mdo-form-field">
                     <mat-label>Threshold</mat-label>
                     <div class="f-row slider-row">
-                        <mat-slider color="primary" [thumbLabel]="requestForm.controls.threshold.value"
-                            [value]="requestForm.controls.threshold.value"
-                            (change)="setValueToForm('threshold',$event)">
+                        <mat-slider color="primary" [thumbLabel]="requestForm.controls.schemaThreshold.value"
+                            [value]="requestForm.controls.schemaThreshold.value"
+                            (change)="setValueToForm('schemaThreshold',$event)">
                         </mat-slider>
                         <span class="f-col-spacer-half"></span>
-                        <div class="percent-count">{{requestForm.controls.threshold.value}}%</div>
+                        <div class="percent-count">{{requestForm.controls.schemaThreshold.value}}%</div>
                     </div>
                 </div>
             </div>

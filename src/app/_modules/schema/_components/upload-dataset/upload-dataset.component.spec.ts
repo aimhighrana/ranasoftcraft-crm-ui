@@ -269,8 +269,8 @@ describe('UploadDatasetComponent', () => {
 
   it(`setValueToForm(), should set requestform values`, async(() => {
     component.createForm();
-    component.setValueToForm('threshold', '13');
-    expect(component.requestForm.controls.threshold.value).toEqual('13');
+    component.setValueToForm('schemaThreshold', '13');
+    expect(component.requestForm.controls.schemaThreshold.value).toEqual('13');
   }))
 
   it(`isSchemaSet(), check if schema exists`, async(() => {
