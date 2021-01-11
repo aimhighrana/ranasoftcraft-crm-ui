@@ -490,12 +490,46 @@ export class BrruleSideSheetComponent implements OnInit {
   }
 
   /**
+   * Map the order of blocks and hierarchy and make sure the "When block" is on top
+   * @param br Pass the business rule data
+   */
+  mapBlocksAndHierarchy(br: CoreSchemaBrInfo) {
+    const mapped = {
+      blocks: [],
+      blockHierarchy: []
+    };
+    const unMapped = {
+      blocks: [],
+      blockHierarchy: []
+    };
+
+    const blocks: UDRBlocksModel[] = br.udrDto ? (br.udrDto.blocks ? br.udrDto.blocks : []) : [];
+    const hierarchy: UDRHierarchyModel[] = br.udrDto ? (br.udrDto.udrHierarchies ? br.udrDto.udrHierarchies : []) : [];
+
+    blocks.map((blk) => {
+        if(blk.blockDesc.toLowerCase() === 'when') {
+          mapped.blocks.push(blk);
+          mapped.blockHierarchy.push(hierarchy.find((hie) => hie.blockRefId === blk.id));
+        } else {
+          unMapped.blocks.push(blk);
+          unMapped.blockHierarchy.push(hierarchy.find((hie) => hie.blockRefId === blk.id));
+        }
+    });
+
+    mapped.blocks.push(...unMapped.blocks);
+    mapped.blockHierarchy.push(...unMapped.blockHierarchy);
+
+    return mapped;
+  }
+
+  /**
    * Initilize form while edit ..
    * @param br initilize form while edit ..
    */
   editUdr(br: CoreSchemaBrInfo) {
-    const blocks: UDRBlocksModel[] = br.udrDto ? (br.udrDto.blocks ? br.udrDto.blocks : []) : [];
-    const blockHierarchy: UDRHierarchyModel[] = br.udrDto ? (br.udrDto.udrHierarchies ? br.udrDto.udrHierarchies : []) : [];
+
+    const {blockHierarchy, blocks} = this.mapBlocksAndHierarchy(br);
+
     blockHierarchy.forEach((hie, idx) => {
       const blck = blocks.filter(fil => fil.id === hie.blockRefId)[0];
       if (blck) {
@@ -541,6 +575,8 @@ export class BrruleSideSheetComponent implements OnInit {
    * @param udr pass the udr block object
    */
   blockCtrl(udr?: UDRBlocksModel): FormGroup {
+    console.log(udr);
+
     return this.formBuilder.group({
       blockDesc: new FormControl(udr ? udr.blockDesc : 'And'),
       blockType: new FormControl(udr ? udr.blockType : BlockType.COND),

@@ -272,6 +272,9 @@
                             (optionSelectedEmit)="updateSubscribersList($event)" (openCustomDialog)="addSubscribers()"
                             [updatedOptionsList]="allSubscribers" [viewMoreAction]="'addSubscribers'"
                             [extraOption]="'addSubscribers'" [extraOptionLabel]="'Invite people to your team'"
+                            (emitSearchValue)="getCollaborators($event)"
+                            [loader]="subscriberLoader"
+                            [debounceValue]="650"
                             [valueKey]="" [labelKey]="'fullName'">
                         </pros-form-input-autoselect>
                     </div>
@@ -305,8 +308,8 @@
                                 menu-arrow</mat-icon></button>
                     </div>
                     <mat-menu #subscriberlist="matMenu" direction="right" class="navigation-menu">
-                        <button mat-menu-item *ngFor="let role of roles" (click)="updateRole(role, subscriber,l)">
-                            {{ role }}</button>
+                        <button mat-menu-item *ngFor="let role of roles" (click)="updateRole(role.code, subscriber,l)">
+                            {{ role.text }}</button>
                         <!-- <mat-nav-list>
                             <mat-list-item *ngFor="let role of roles"
                                 (click)="updateRole(role, subscriber,l)">

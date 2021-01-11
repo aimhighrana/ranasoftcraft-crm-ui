@@ -17,7 +17,7 @@
         <div class="f-row no-result" *ngIf="!hasResult">
           <mat-icon class="mdo-icons">search</mat-icon>
           <span class="f-col-spacer-half"></span>
-          No results found...
+          {{loader === false? 'No results found...' : 'Searching...' }}
         </div>
       </div>
       <mat-divider></mat-divider>

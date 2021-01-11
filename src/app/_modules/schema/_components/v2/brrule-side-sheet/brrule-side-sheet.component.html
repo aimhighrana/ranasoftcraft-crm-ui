@@ -291,7 +291,7 @@
                                                 <div class="col" *ngIf="chldNode.value.conditionOperator  === 'RANGE'">
                                                     <div class="f-row">
                                                         <pros-form-input [placeholder]="'start value'"
-                                                            [value]="item.value.conditionFieldStartValue"
+                                                            [value]="chldNode.value.conditionFieldStartValue"
                                                             (valueChange)="setRangeValueForChild($event,'start',childIndex, i)">
                                                         </pros-form-input>
                                                         <div class="f-col-spacer-half"></div>

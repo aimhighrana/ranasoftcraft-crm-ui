@@ -226,9 +226,11 @@
 
             <!-- three dots -->
             <div class="col">
-              <button mat-button [matMenuTriggerFor]="menu">
-                <mat-icon fontSet="mdo-icons">list-item-drag</mat-icon>
-              </button>
+              <ng-container *ngIf="i>0">
+                <button mat-button [matMenuTriggerFor]="menu">
+                  <mat-icon fontSet="mdo-icons">list-item-drag</mat-icon>
+                </button>
+              </ng-container>
             </div>
 
             <mat-menu #menu="matMenu" class="navigation-menu">
