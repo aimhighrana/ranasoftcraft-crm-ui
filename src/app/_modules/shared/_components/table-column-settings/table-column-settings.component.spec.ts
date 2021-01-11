@@ -154,5 +154,18 @@ describe('TableColumnSettingsComponent', () => {
 
   }));
 
+  it('should get action icon', () => {
+
+    expect(component.getActionIcon('Approve')).toEqual('check-mark');
+
+    expect(component.getActionIcon('Reject')).toEqual('declined');
+
+    expect(component.getActionIcon('Delete')).toEqual('recycle-bin');
+
+    expect(component.getActionIcon('other actions')).toEqual('plus');
+
+
+  });
+
 
 });

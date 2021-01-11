@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ComponentFactoryResolver, Input, OnChanges, SimpleChanges, OnDestroy, ViewContainerRef } from '@angular/core';
-import { MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaCorrectionReq, FilterCriteria, FieldInputType, SchemaTableViewFldMap } from '@models/schema/schemadetailstable';
+import { MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaCorrectionReq, FilterCriteria, FieldInputType, SchemaTableViewFldMap, TableActionViewType, SchemaTableAction } from '@models/schema/schemadetailstable';
 import { ActivatedRoute, Router } from '@angular/router';
 import { throwError, BehaviorSubject, combineLatest, Subscription } from 'rxjs';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
@@ -176,6 +176,14 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
    */
   userDetails: Userdetails;
 
+  TableActionViewType = TableActionViewType;
+
+  tableActionsList: SchemaTableAction[] = [
+    { actionText: 'Approve', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON },
+    { actionText: 'Reject', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON },
+    { actionText: 'Generate cross entry', isPrimaryAction: true, isCustomAction: true, actionViewType: TableActionViewType.ICON }
+  ] as SchemaTableAction[];
+
   constructor(
     private activatedRouter: ActivatedRoute,
     private schemaDetailService: SchemaDetailsService,
@@ -262,9 +270,13 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
      * After choose columns get updated columns ..
      */
     this.sharedServices.getChooseColumnData().subscribe(result=> {
-      if(result){
+      if(result && !result.editActive){
         this.selectedFields = result.selectedFields ? result.selectedFields : [];
         this.calculateDisplayFields();
+
+        if (result.tableActionsList && result.tableActionsList.length) {
+          this.tableActionsList = result.tableActionsList
+        }
       }
     });
 
@@ -456,9 +468,10 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
    * Oen choose column side sheet ..
    */
   openTableColumnSettings() {
-    const data ={schemaId: this.schemaId,variantId: this.variantId, fields: this.metadata.getValue(),selectedFields:this.selectedFields}
+    const data ={schemaId: this.schemaId,variantId: this.variantId, fields: this.metadata.getValue(),
+      selectedFields:this.selectedFields, editActive: true};
     this.sharedServices.setChooseColumnData(data);
-    this.router.navigate(['', { outlets: { sb: 'sb/schema/table-column-settings' }, queryParams:{status:this.activeTab} } ]);
+    this.router.navigate(['', { outlets: { sb: 'sb/schema/table-column-settings' }} ], { queryParams:{status:this.activeTab} });
   }
 
   /**
@@ -788,7 +801,7 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
    * Help to generate / create cross module ..
    * @param row get selected row data
    */
-  generateCrossEntry(row: any) {
+  generateCrossEntry(row: any, crossbrId?) {
     const tragetFld = this.dataSource.targetField;
     if(!tragetFld) {
       throwError('Tragetfield cant be null or empty ');
@@ -797,7 +810,7 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
     if(!objNr)  {
       throwError(`Objectnumber must be required !!!`);
     }
-    const sub = this.schemaDetailService.generateCrossEntry(this.schemaId, this.moduleId, objNr).subscribe(res=>{
+    const sub = this.schemaDetailService.generateCrossEntry(this.schemaId, this.moduleId, objNr, crossbrId || '').subscribe(res=>{
       console.log(res);
       const oldData = this.dataSource.docValue();
       const sameDoc = oldData.filter(fil => (fil as any).OBJECTNUMBER.fieldData === objNr)[0];
@@ -932,6 +945,70 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
    */
   openExecutionTrendSideSheet() {
     this.router.navigate(['', { outlets: { sb: `sb/schema/execution-trend/${this.moduleId}/${this.schemaId}/${this.variantId}` } }])
+  }
+
+  /**
+   * get already saved schema actions
+   */
+  getSchemaTableActions() {
+    this.schemaDetailService.getTableActionsBySchemaId(this.schemaId).subscribe(actions => {
+      console.log(actions);
+      if(actions && actions.length) {
+        this.tableActionsList = actions;
+      }
+    });
+  }
+
+  get primaryActions() {
+    return this.tableActionsList.filter(action => action.isPrimaryAction);
+  }
+
+  get secondaryActions() {
+    return this.tableActionsList.filter(action => !action.isPrimaryAction);
+  }
+
+
+  get isEditer() {
+    return this.schemaInfo
+      && this.schemaInfo.collaboratorModels
+      && this.schemaInfo.collaboratorModels.isEditer;
+  }
+
+  get isReviewer() {
+    return this.schemaInfo
+      && this.schemaInfo.collaboratorModels
+      && this.schemaInfo.collaboratorModels.isReviewer;
+  }
+
+  get isApprover() {
+    return this.schemaInfo
+      && this.schemaInfo.collaboratorModels
+      && (this.schemaInfo.collaboratorModels.isReviewer || this.schemaInfo.collaboratorModels.isApprover);
+  }
+
+  getActionIcon(actionText) {
+    if (actionText === 'Approve') {
+      return 'check-mark';
+    } else if (actionText === 'Reject') {
+      return 'declined';
+    } else if (actionText === 'Delete') {
+      return 'recycle-bin';
+    } else if (actionText === 'Generate cross entry') {
+      return 'plus';
+    }
+
+    return '';
+  }
+
+  doAction(action: SchemaTableAction, row) {
+    console.log('Action selected ', action);
+    if (!action.isCustomAction && action.actionText === 'Approve' && (this.isReviewer || this.isApprover)) {
+      this.approveRecords('inline', row);
+    } else if (!action.isCustomAction && action.actionText === 'Reject' && (this.isReviewer || this.isApprover)) {
+      this.resetRec(row, 'inline');
+    } else if (this.isReviewer || this.isApprover) {
+      this.generateCrossEntry(row, action.refBrId);
+    }
   }
 
 }

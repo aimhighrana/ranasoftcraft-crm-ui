@@ -64,12 +64,13 @@ export class TableColumnSettingsComponent implements OnInit{
 
   actionsList: SchemaTableAction[] = [];
 
-  COMMON_ACTIONS = {
-    Approve: {text: 'Approve', icon: 'check-mark', schemaCategories: [DetailView.DATAQUALITY_VIEW, DetailView.DUPLICACY_VIEW, DetailView.MRO_CLASSIFICATION_VIEW, DetailView.POTEXT_VIEW] },
-    Reject: {text: 'Reject', icon: 'declined', schemaCategories: [DetailView.DATAQUALITY_VIEW, DetailView.DUPLICACY_VIEW, DetailView.MRO_CLASSIFICATION_VIEW, DetailView.POTEXT_VIEW]},
-    Delete: {text: 'Delete', icon: 'recycle-bin', schemaCategories: [DetailView.DUPLICACY_VIEW]},
-    Generate_description: {text : 'Generate description', icon:'form-file', schemaCategories: [DetailView.MRO_CLASSIFICATION_VIEW]}
-  };
+  COMMON_ACTIONS = [
+    {actionText: 'Approve', icon: 'check-mark', schemaCategories: [DetailView.DATAQUALITY_VIEW, DetailView.DUPLICACY_VIEW, DetailView.MRO_CLASSIFICATION_VIEW, DetailView.POTEXT_VIEW] },
+    {actionText: 'Reject', icon: 'declined', schemaCategories: [DetailView.DATAQUALITY_VIEW, DetailView.DUPLICACY_VIEW, DetailView.MRO_CLASSIFICATION_VIEW, DetailView.POTEXT_VIEW]},
+    {actionText: 'Delete', icon: 'recycle-bin', schemaCategories: [DetailView.DUPLICACY_VIEW]},
+    {actionText : 'Generate description', icon:'form-file', schemaCategories: [DetailView.MRO_CLASSIFICATION_VIEW]},
+    {actionText : 'Generate cross entry', isCustomAction: true, icon:'plus', schemaCategories: [DetailView.POTEXT_VIEW]}
+  ];
 
   TableActionViewType = TableActionViewType;
 
@@ -79,6 +80,11 @@ export class TableColumnSettingsComponent implements OnInit{
    * hold initial selected fields
    */
   initialSelectedFields: SchemaTableViewFldMap[] = [];
+
+  /**
+   * hold initial action text while edit starts
+   */
+  previousActionText = '';
 
   constructor(
     private sharedService: SharedServiceService,
@@ -317,10 +323,10 @@ export class TableColumnSettingsComponent implements OnInit{
    * create common actions if table actions list is empty
    */
   addCommonActions() {
-    Object.keys(this.COMMON_ACTIONS).forEach(key => {
-      if(this.COMMON_ACTIONS[key].schemaCategories.includes(this.schemaInfo.schemaCategory)) {
-        const action = { schemaId: this.data.schemaId, isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT,
-          actionText:this.COMMON_ACTIONS[key].text, createdBy: this.userDetails.userName } as SchemaTableAction;
+    this.COMMON_ACTIONS.forEach( commonAction  => {
+      if(commonAction.schemaCategories.includes(this.schemaInfo.schemaCategory as DetailView)) {
+        const action = { schemaId: this.data.schemaId, isPrimaryAction: true, isCustomAction: !!commonAction.isCustomAction, actionViewType: TableActionViewType.ICON_TEXT,
+          actionText:commonAction.actionText, createdBy: this.userDetails.userName } as SchemaTableAction;
         this.createUpdateAction(action);
       }
     })
@@ -404,6 +410,8 @@ export class TableColumnSettingsComponent implements OnInit{
       return;
     }
 
+    this.previousActionText = this.actionsList[rowIndex].actionText;
+
     if (document.getElementById('inpctrl_' + rowIndex)) {
       const inpCtrl = document.getElementById('inpctrl_' + rowIndex) as HTMLDivElement;
       const viewCtrl = document.getElementById('viewctrl_'+ rowIndex) as HTMLSpanElement;
@@ -419,7 +427,11 @@ export class TableColumnSettingsComponent implements OnInit{
       const viewCtrl = document.getElementById('viewctrl_'+ rowIndex) as HTMLSpanElement;
       inpCtrl.style.display = 'none';
       viewCtrl.style.display = 'block';
-      this.actionChanged(rowIndex, 'actionText', value);
+      if (value && value !== this.previousActionText) {
+        this.actionChanged(rowIndex, 'actionText', value);
+      } else {
+        this.actionsList[rowIndex].actionText = this.previousActionText;
+      }
     }
   }
 
@@ -433,6 +445,17 @@ export class TableColumnSettingsComponent implements OnInit{
     else {
       return 'Text only';
     }
+  }
+
+  getActionIcon(actionText) {
+
+    const action = this.COMMON_ACTIONS.find(commonAction => commonAction.actionText === actionText) ;
+
+    if(action) {
+      return action.icon;
+    }
+
+    return 'plus';
   }
 
 }
