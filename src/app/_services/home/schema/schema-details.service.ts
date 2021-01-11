@@ -198,9 +198,10 @@ export class SchemaDetailsService {
    * @param schemaId append in parameter
    * @param objectType append in parameter
    * @param objectNumber append in parameter
+   * @param crossbrId crossbrId
    */
-  public generateCrossEntry(schemaId: string, objectType: string, objectNumber: string) {
-    return this.http.get<string>(this.endpointService.generateCrossEntryUri(schemaId, objectType, objectNumber));
+  public generateCrossEntry(schemaId: string, objectType: string, objectNumber: string, crossbrId: string) {
+    return this.http.get<string>(this.endpointService.generateCrossEntryUri(schemaId, objectType, objectNumber), {params: {crossbrId}});
   }
 
   /**

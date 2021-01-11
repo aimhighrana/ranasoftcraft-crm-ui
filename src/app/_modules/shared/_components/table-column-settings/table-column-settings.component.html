@@ -105,9 +105,9 @@
                                 <mat-menu #secondaryActionsMenu="matMenu" class="navigation-menu">
                                     <button mat-menu-item *ngFor="let sAction of secondaryActions">
                                         <mat-icon
-                                            *ngIf="!sAction.isCustomAction && COMMON_ACTIONS[sAction.actionText] && (sAction.actionViewType=== TableActionViewType.ICON || sAction.actionViewType=== TableActionViewType.ICON_TEXT)"
+                                            *ngIf="!sAction.isCustomAction && (sAction.actionViewType=== TableActionViewType.ICON || sAction.actionViewType=== TableActionViewType.ICON_TEXT)"
                                             fontSet="mdo-icons">
-                                            {{ COMMON_ACTIONS[sAction.actionText].icon }}
+                                            {{ getActionIcon(sAction.actionText) }}
                                         </mat-icon>
                                         <ng-template
                                             [ngIf]="(sAction.actionViewType === TableActionViewType.TEXT) || (sAction.actionViewType === TableActionViewType.ICON_TEXT)">
@@ -119,9 +119,9 @@
                                 <button *ngFor="let pAction of primaryActions" mat-flat-button color="accent"
                                     class="mat-elevation-z0 middleradius">
                                     <mat-icon
-                                        *ngIf="COMMON_ACTIONS[pAction.actionText] && (pAction.actionViewType=== TableActionViewType.ICON || pAction.actionViewType=== TableActionViewType.ICON_TEXT)"
+                                        *ngIf="!pAction.isCustomAction && (pAction.actionViewType=== TableActionViewType.ICON || pAction.actionViewType=== TableActionViewType.ICON_TEXT)"
                                         fontSet="mdo-icons">
-                                        {{ COMMON_ACTIONS[pAction.actionText].icon }}
+                                        {{ getActionIcon(pAction.actionText) }}
                                     </mat-icon>
                                     <ng-template
                                         [ngIf]="pAction.actionViewType=== TableActionViewType.TEXT || pAction.actionViewType=== TableActionViewType.ICON_TEXT">

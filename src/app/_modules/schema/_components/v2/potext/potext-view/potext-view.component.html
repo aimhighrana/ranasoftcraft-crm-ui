@@ -106,14 +106,16 @@
                 <div class="row-spacer"></div>
 
                 <div class="f-row" *ngIf="activeTab && activeTab === 'review' && selection.selected.length !== 0">
-                    <button mat-flat-button (click)="approveRecords('all')" color="accent" class="rightradius">
-                        <!-- <mat-icon fontSet="mdo-icons">check-mark</mat-icon> -->
-                        Approve
-                    </button>
-                    <button mat-flat-button (click)="resetRec('','all')" color="accent" class="middleradius">
-                        <!-- <mat-icon fontSet="mdo-icons">block</mat-icon> -->
-                        Reject
-                    </button>
+                    <ng-template [ngIf]="isReviewer || isApprover">
+                        <button mat-flat-button (click)="approveRecords('all')" color="accent" class="rightradius">
+                            <!-- <mat-icon fontSet="mdo-icons">check-mark</mat-icon> -->
+                            Approve
+                        </button>
+                        <button mat-flat-button (click)="resetRec('','all')" color="accent" class="middleradius">
+                            <!-- <mat-icon fontSet="mdo-icons">block</mat-icon> -->
+                            Reject
+                        </button>
+                    </ng-template>
                     <button mat-flat-button (click)="selection.clear()" color="accent" class="leftradius">
                         <!-- <mat-icon fontSet="mdo-icons">close</mat-icon> -->
                         Unselect
@@ -170,20 +172,53 @@
                                         <button mat-menu-item>Ignore</button>
                                     </mat-menu> -->
     
-                                    <button mat-fab prosClickStopPropagation color="accent" *ngIf="element['CATALOG_ID'] === undefined ||  !element['CATALOG_ID'].fieldData"
+                                    <button mat-fab prosClickStopPropagation color="accent" *ngIf="activeTab !== 'review' && (element['CATALOG_ID'] === undefined ||  !element['CATALOG_ID'].fieldData)"
                                     (click)="generateCrossEntry(element)">
                                         <mat-icon fontSet="mdo-icons">plus</mat-icon>
                                     </button>
 
                                     <ng-template [ngIf]="activeTab === 'review'">
-                                        <button mat-fab prosClickStopPropagation (click)="approveRecords('inline', element)"
+                                        <!-- Secondary actions -->
+                                        <ng-template [ngIf]="true"> <!-- !isReviewer -->
+                                            <button mat-fab color="accent" class="mat-elevation-z0"
+                                                *ngIf="secondaryActions.length" [matMenuTriggerFor]="secondaryActionsMenu">
+                                                <mat-icon fontSet="mdo-icons">more</mat-icon>
+                                            </button>
+                                            <mat-menu #secondaryActionsMenu="matMenu" class="navigation-menu">
+                                                <button mat-menu-item *ngFor="let sAction of secondaryActions"
+                                                    (click)="doAction(sAction, element)">
+                                                <mat-icon fontSet="mdo-icons"
+                                                *ngIf="!sAction.isCustomAction && (sAction.actionViewType=== TableActionViewType.ICON || sAction.actionViewType=== TableActionViewType.ICON_TEXT)"
+                                                > {{ getActionIcon(sAction.actionText) }}
+                                                </mat-icon>
+                                                <ng-template
+                                                    [ngIf]="(sAction.actionViewType === TableActionViewType.TEXT) || (sAction.actionViewType === TableActionViewType.ICON_TEXT)">
+                                                    {{ sAction.actionText }}
+                                                </ng-template>
+                                                </button>
+                                            </mat-menu>
+                                        </ng-template>
+                                        <!-- Primary actions -->
+                                        <button *ngFor="let pAction of primaryActions" mat-flat-button color="accent"
+                                            class="mat-elevation-z0" (click)="doAction(pAction, element)">
+                                        <mat-icon fontSet="mdo-icons"
+                                            *ngIf="(pAction.actionViewType=== TableActionViewType.ICON) || (pAction.actionViewType=== TableActionViewType.ICON_TEXT)"
+                                        >  {{ getActionIcon(pAction.actionText) }}
+                                        </mat-icon>
+                                        <ng-template
+                                            [ngIf]="(pAction.actionViewType=== TableActionViewType.TEXT) || (pAction.actionViewType=== TableActionViewType.ICON_TEXT)">
+                                            {{ pAction.actionText }}
+                                        </ng-template>
+                                        </button>
+
+                                        <!-- <button mat-fab prosClickStopPropagation (click)="approveRecords('inline', element)"
                                             *ngIf="!element['OBJECTNUMBER'].isReviewed">
                                             <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
                                         </button>
 
                                         <button mat-fab prosClickStopPropagation color="accent" *ngIf="!element['OBJECTNUMBER'].isReviewed" (click)="resetRec(element,'row')">
                                             <mat-icon fontSet="mdo-icons">declined</mat-icon>
-                                        </button>
+                                        </button> -->
 
                                     </ng-template>
 
