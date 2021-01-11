@@ -33,8 +33,7 @@
     
                 <div class="f-col mdo-form-field" *ngIf="!isDuplicateType">
                     <mat-label>Weightage</mat-label>
-                    
-
+                
                         <div class="f-row slider-row">
                             <mat-slider thumbLabel formControlName="weightage" [displayWith]="formatLabel" tickInterval="1" min="0"
                         [max]="currentweightageValue" color="primary"></mat-slider>
@@ -71,7 +70,7 @@
                 </div>
                 <div class="f-col mdo-form-field" *ngIf="!isDuplicateType">
                     <pros-form-input (valueChange)="getFormValue($event,'error_message')"
-                        [value]="form.controls.error_message.value" [label]="'Error message (Message)'">
+                        [value]="form.controls.error_message.value" [label]="'Error message'">
                     </pros-form-input>
                     <mat-error
                         *ngIf="submitted && form.controls.error_message.errors && form.controls.error_message.errors.required">

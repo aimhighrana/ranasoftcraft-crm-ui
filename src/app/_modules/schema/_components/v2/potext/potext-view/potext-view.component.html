@@ -3,7 +3,7 @@
         <div class="display-heading-large">
             {{ schemaInfo ? schemaInfo.moduleDescription : 'Unknown' }} / 
             {{ schemaInfo ? schemaInfo.schemaDescription : 'Unknown' }} /
-            {{ (!variantId) ? 'Entire dataset' : 'Unknown'  }}
+            {{ (!variantId || variantId === '0') ? 'Entire dataset' : 'Unknown'  }}
             <button mat-button [matMenuTriggerFor]="check">
                 <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon>
             </button>
@@ -17,20 +17,23 @@
             </mat-menu>
         </div>
         <div class="f-spacer"></div>
-        <button mat-flat-button color="accent" (click)="openSummarySideSheet()" class="rightradius">
-            <mat-icon fontSet="mdo-icons">wand</mat-icon> Check data
-        </button>
-        <button mat-fab color="accent" class="mat-elevation-z0 middleradius"
-            (click)="openExecutionTrendSideSheet()">
-            <mat-icon fontSet="mdo-icons">chart-line</mat-icon>
-        </button>
-        <button mat-fab color="accent" class="mat-elevation-z0 leftradius" [matMenuTriggerFor]="moreactionfile">
-            <mat-icon fontSet="mdo-icons">more</mat-icon>
-        </button>
-        <mat-menu #moreactionfile="matMenu" class="navigation-menu">
-            <button mat-menu-item (click)="downloadExecutionDetails()">Export to CSV</button>
-        </mat-menu>
+        <div class="f-row action-iconbtns">
+            <button mat-flat-button color="accent" (click)="openSummarySideSheet()">
+                <mat-icon fontSet="mdo-icons">wand</mat-icon> Check data
+            </button>
+            <button mat-fab color="accent"
+                (click)="openExecutionTrendSideSheet()">
+                <mat-icon fontSet="mdo-icons">chart-line</mat-icon>
+            </button>
+            <button mat-fab color="accent" [matMenuTriggerFor]="moreactionfile">
+                <mat-icon fontSet="mdo-icons">more</mat-icon>
+            </button>
+            <mat-menu #moreactionfile="matMenu" class="navigation-menu">
+                <button mat-menu-item (click)="downloadExecutionDetails()">Export to CSV</button>
+            </mat-menu>
+        </div>
     </div>
+
     <ng-template [ngIf]="schemaInfo?.isInRunning" [ngIfElse]="schemaInfoTemplate">
         <pros-schema-progress [schemaId]="schemaId"></pros-schema-progress>
     </ng-template>
@@ -108,18 +111,18 @@
                     </mat-menu>
                 </mat-chip-list>
                 <div class="row-spacer"></div>
-                <div class="f-row" *ngIf="activeTab && activeTab === 'review' && selection.selected.length !== 0">
+                <div class="f-row action-iconbtns" *ngIf="activeTab && activeTab === 'review' && selection.selected.length !== 0">
                     <ng-template [ngIf]="isReviewer || isApprover">
-                        <button mat-flat-button (click)="approveRecords('all')" color="accent" class="rightradius">
+                        <button mat-flat-button (click)="approveRecords('all')" color="accent">
                             <!-- <mat-icon fontSet="mdo-icons">check-mark</mat-icon> -->
                             Approve
                         </button>
-                        <button mat-flat-button (click)="resetRec('','all')" color="accent" class="middleradius">
+                        <button mat-flat-button (click)="resetRec('','all')" color="accent">
                             <!-- <mat-icon fontSet="mdo-icons">block</mat-icon> -->
                             Reject
                         </button>
                     </ng-template>
-                    <button mat-flat-button (click)="selection.clear()" color="accent" class="leftradius">
+                    <button mat-flat-button (click)="selection.clear()" color="accent">
                         <!-- <mat-icon fontSet="mdo-icons">close</mat-icon> -->
                         Unselect
                     </button>
@@ -181,7 +184,7 @@
                                     <ng-template [ngIf]="activeTab === 'review'">
                                         <!-- Secondary actions -->
                                         <ng-template [ngIf]="true"> <!-- !isReviewer -->
-                                            <button mat-fab color="accent" class="mat-elevation-z0"
+                                            <button mat-fab color="accent"
                                                 *ngIf="secondaryActions.length" [matMenuTriggerFor]="secondaryActionsMenu">
                                                 <mat-icon fontSet="mdo-icons">more</mat-icon>
                                             </button>
@@ -201,7 +204,7 @@
                                         </ng-template>
                                         <!-- Primary actions -->
                                         <button *ngFor="let pAction of primaryActions" mat-flat-button color="accent"
-                                            class="mat-elevation-z0" (click)="doAction(pAction, element)">
+                                             (click)="doAction(pAction, element)">
                                         <mat-icon fontSet="mdo-icons"
                                             *ngIf="(pAction.actionViewType=== TableActionViewType.ICON) || (pAction.actionViewType=== TableActionViewType.ICON_TEXT)"
                                         >  {{ getActionIcon(pAction.actionText) }}

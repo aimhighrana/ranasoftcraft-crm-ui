@@ -44,12 +44,12 @@
 
         <ng-container matColumnDef="common_actions_header">
             <mat-header-cell *matHeaderCellDef [attr.colspan]="displayedFields.getValue().length">
-                <div class="f-row">
-                    <button mat-flat-button color="accent" class="rightradius">
+                <div class="f-row action-iconbtns">
+                    <button mat-flat-button color="accent">
                         <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
                         Action
                     </button>
-                    <button mat-flat-button (click)="selection.clear()" color="accent" class="rightradius">
+                    <button mat-flat-button (click)="selection.clear()" color="accent">
                         <mat-icon fontSet="mdo-icons">close</mat-icon>
                         Unselect
                     </button>

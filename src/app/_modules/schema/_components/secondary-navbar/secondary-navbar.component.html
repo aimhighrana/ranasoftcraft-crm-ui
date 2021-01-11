@@ -52,9 +52,9 @@
               <mat-list-item *ngFor="let schema of module.schemaLists"
                 [routerLink]="['schema/schema-details', module.moduleId, schema.schemaId]"
                 [routerLinkActive]="'selected'">
-                <div mat-line>{{schema.schemaDescription ?  schema.schemaDescription : 'Untitled'}}
-                  <mat-spinner *ngIf="schema.isInRunning" color="primary" diameter="15"></mat-spinner>
-                </div>
+                <div mat-line>{{schema.schemaDescription ?  schema.schemaDescription : 'Untitled'}}</div>
+                <span class="f-spacer"></span>
+                <mat-spinner *ngIf="schema.isInRunning" color="primary" diameter="15"></mat-spinner>
               </mat-list-item>
             </mat-nav-list>
           </mat-expansion-panel>

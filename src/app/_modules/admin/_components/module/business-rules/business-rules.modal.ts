@@ -78,7 +78,7 @@ export const RULE_TYPES = [
     { ruleDesc: 'Regex Rule', ruleId: '', ruleType: BusinessRuleType.BR_REGEX_RULE, isImplemented: true },
     { ruleDesc: 'User Defined Rule', ruleId: '', ruleType: BusinessRuleType.BR_CUSTOM_SCRIPT, isImplemented: true },
     { ruleDesc: 'Transformation Rule', ruleId: '', ruleType: BusinessRuleType.BR_TRANSFORMATION, isImplemented: true },
-    { ruleDesc: 'Mro Classification Rule', ruleId: '', ruleType: BusinessRuleType.BR_CLASSIFICATION, isImplemented: true },
+    { ruleDesc: 'MRO Classification Rule', ruleId: '', ruleType: BusinessRuleType.BR_CLASSIFICATION, isImplemented: true },
 ];
 
 export const PRE_DEFINED_REGEX = [

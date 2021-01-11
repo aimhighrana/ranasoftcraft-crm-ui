@@ -96,9 +96,9 @@
                         </div> -->
                         <div class="f-col mdo-form-field">
                             <mat-label><strong>Preview</strong></mat-label>
-                            <div class="f-row">
+                            <div class="f-row action-iconbtns">
                                 <!-- Secondary actions -->
-                                <button mat-fab color="accent" class="mat-elevation-z0 rightradius"
+                                <button mat-fab color="accent"
                                     *ngIf="secondaryActions.length" [matMenuTriggerFor]="secondaryActionsMenu">
                                     <mat-icon fontSet="mdo-icons">more</mat-icon>
                                 </button>
@@ -106,7 +106,7 @@
                                     <button mat-menu-item *ngFor="let sAction of secondaryActions">
                                         <mat-icon
                                             *ngIf="!sAction.isCustomAction && (sAction.actionViewType=== TableActionViewType.ICON || sAction.actionViewType=== TableActionViewType.ICON_TEXT)"
-                                            fontSet="mdo-icons">
+                                            fontSet="mdo-icons" class="mat-menu-icon">
                                             {{ getActionIcon(sAction.actionText) }}
                                         </mat-icon>
                                         <ng-template
@@ -116,8 +116,7 @@
                                     </button>
                                 </mat-menu>
                                 <!-- Primary actions -->
-                                <button *ngFor="let pAction of primaryActions" mat-flat-button color="accent"
-                                    class="mat-elevation-z0 middleradius">
+                                <button *ngFor="let pAction of primaryActions" mat-flat-button color="accent">
                                     <mat-icon
                                         *ngIf="!pAction.isCustomAction && (pAction.actionViewType=== TableActionViewType.ICON || pAction.actionViewType=== TableActionViewType.ICON_TEXT)"
                                         fontSet="mdo-icons">

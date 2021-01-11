@@ -507,6 +507,7 @@
 
     mat-tab-body.mat-tab-body {
       height: 100%;
+      padding: 0 4px;
     }
   }
 
@@ -737,6 +738,7 @@
       max-width: 300px;
       width: 220px;
       min-height: auto;
+      // max-height: 470px;
       margin: 8px 0;
       box-shadow: $box-shadow;
 
@@ -770,6 +772,10 @@
             width: 12px;
             color: mat-color($foreground-palette, text);
             margin-right: 4px;
+          }
+
+          &.mat-menu-item-submenu-trigger::after {
+            color: mat-color($foreground-palette, text);
           }
 
           &:hover {
@@ -862,10 +868,6 @@
     border-radius: 3px;
     height: 36px;
     line-height: 34px;
-
-    // &.mat-button.mat-primary .mat-button-focus-overlay {
-    //   background: transparent;
-    // }
   }
 
   button.mat-icon-button {
@@ -926,19 +928,28 @@
     }
   }
 
-  // button-group-radius
-  button.rightradius {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-  }
+  // Group button styling
+  .action-iconbtns {
+    flex-wrap: wrap;
 
-  button.middleradius {
-    border-radius: 0;
-  }
+    button.mat-fab,
+    button.mat-flat-button {
+      margin: 1px 1px 1px 0;
+      min-width: 38px;
+      padding: 0 12px;
+      border-radius: 0;
+      box-shadow: none;
 
-  button.leftradius {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+      &.mat-button-base:first-of-type {
+        border-top-left-radius: 3px;
+        border-bottom-left-radius: 3px;
+      }
+
+      &.mat-button-base:last-of-type {
+        border-top-right-radius: 3px;
+        border-bottom-right-radius: 3px;
+      }
+    }
   }
 
   mat-button-toggle-group.mat-button-toggle-group {
@@ -1052,6 +1063,11 @@
       }
     }
 
+    .mat-header-cell {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
     .mat-row:hover {
       background-color: $color-app-hover;
 
@@ -1064,11 +1080,6 @@
       background-color: $color-app-row;
     }
 
-    .mat-header-cell {
-      font-size: 14px;
-      font-weight: 600;
-    }
-
     .mat-header-cell,
     .mat-cell {
       font-size: 0.8rem;
@@ -1076,27 +1087,20 @@
       color: mat-color($foreground-palette, text);
       padding: 0 8px;
       min-width: 200px;
-      // max-width: 200px;
       word-break: break-word;
       align-self: stretch;
 
       &.fixed-width-c1 {
         min-width: 38px;
         max-width: 38px;
-        border: none;
+        border-right: none;
       }
 
-      // &.fixed-width-c2 {
-      //   min-width: 120px;
-      //   max-width: 120px;
-      //   border: none;
-      // }
-
-      // &.fixed-width-c3 {
-      //   min-width: 140px;
-      //   max-width: 140px;
-      //   border: none;
-      // }
+      &.fixed-width-c2 {
+        min-width: 120px;
+        max-width: 120px;
+        border-right: none;
+      }
 
       &.line-cut {
         text-decoration: line-through;
@@ -1130,13 +1134,6 @@
           .mat-form-field-underline {
             display: none;
           }
-        }
-      }
-
-      .action-iconbtns {
-        button.mat-fab {
-          margin-right: 1px;
-          box-shadow: none;
         }
       }
     }
@@ -1345,6 +1342,12 @@
         .nav-tree {
           .badge {
             color: $color-text-secondary;
+          }
+
+          .mat-list-item {
+            &.selected {
+              background-color: $color-app-hover;
+            }
           }
         }
 

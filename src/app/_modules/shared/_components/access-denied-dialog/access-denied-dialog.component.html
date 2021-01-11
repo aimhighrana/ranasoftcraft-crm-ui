@@ -1,8 +1,15 @@
-<h1 mat-dialog-title>Access denied</h1>
-<div mat-dialog-content>
+<mat-card class="root mat-elevation-z0">
+  <div class="f-row breadcrum-toolbar">
+      <div class="display-heading-large">
+        Access denied
+      </div>
+  </div>
   <h1>403</h1>
-  <p>You don't have permission to view this page !</p>
-</div>
-<div mat-dialog-actions>
-  <button mat-button (click)="close()">Ok</button>
-</div>
+  <p class="content-text">You don't have permission to view this page !</p>
+  <div class="row-spacer"></div>
+  <!-- navigation buttons -->
+  <div class="f-row">
+      <span class="f-spacer"></span>
+      <button mat-flat-button color="primary" (click)="close()">Ok</button>
+  </div>
+</mat-card>

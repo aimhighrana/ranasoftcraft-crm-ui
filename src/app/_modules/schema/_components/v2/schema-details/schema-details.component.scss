@@ -4,10 +4,6 @@ div.root {
   padding: 0 16px;
   overflow: hidden;
 
-  button.mat-flat-button {
-    margin-left: 1px;
-  }
-
   .breadcrum-toolbar {
     align-items: center;
     min-height: 40px;
@@ -21,11 +17,6 @@ div.root {
       line-height: 40px;
       display: flex;
       align-items: center;
-    }
-
-    button.mat-flat-button,
-    button.mat-fab {
-      margin-left: 1px;
     }
   }
 
@@ -63,23 +54,10 @@ div.root {
         }
       }
 
-      .action-iconbtns {
-        flex-wrap: wrap;
-
-        button {
-          margin-top: 2px;
-          margin-bottom: 2px;
-        }
-      }
-
       .mat-cell {
         .mdo-form-input {
           flex: 1;
         }
-      }
-
-      button.mat-flat-button {
-        margin-right: 1px;
       }
     }
   }

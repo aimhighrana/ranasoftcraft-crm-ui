@@ -4,7 +4,7 @@
         <div class="display-heading-large">
             {{ schemaInfo ? schemaInfo.moduleDescription : 'Unknown' }} / 
             {{ schemaInfo ? schemaInfo.schemaDescription : 'Unknown' }} /
-            {{ (!variantId) ? 'Entire dataset' : 'Unknown'  }}
+            {{ (!variantId || variantId === '0') ? 'Entire dataset' : 'Unknown'  }}
             
             <button mat-button [matMenuTriggerFor]="check">
                 <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon>
@@ -19,19 +19,21 @@
             </mat-menu>
         </div>
         <div class="f-spacer"></div>
-        <button mat-flat-button color="accent" (click)="openSummarySideSheet()" class="rightradius">
-            <mat-icon fontSet="mdo-icons">wand</mat-icon> Check data
-        </button>
-        <button mat-fab color="accent" class="mat-elevation-z0 middleradius"
-            (click)="openExecutionTrendSideSheet()">
-            <mat-icon fontSet="mdo-icons">chart-line</mat-icon>
-        </button>
-        <button mat-fab color="accent" class="mat-elevation-z0 leftradius" [matMenuTriggerFor]="moreactionfile">
-            <mat-icon fontSet="mdo-icons">more</mat-icon>
-        </button>
-        <mat-menu #moreactionfile="matMenu" class="navigation-menu">
-            <button mat-menu-item (click)="getDownloadAbledataforMroExecution()">Export to CSV</button>
-        </mat-menu>
+        <div class="f-row action-iconbtns">
+            <button mat-flat-button color="accent" (click)="openSummarySideSheet()">
+                <mat-icon fontSet="mdo-icons">wand</mat-icon> Check data
+            </button>
+            <button mat-fab color="accent"
+                (click)="openExecutionTrendSideSheet()">
+                <mat-icon fontSet="mdo-icons">chart-line</mat-icon>
+            </button>
+            <button mat-fab color="accent" [matMenuTriggerFor]="moreactionfile">
+                <mat-icon fontSet="mdo-icons">more</mat-icon>
+            </button>
+            <mat-menu #moreactionfile="matMenu" class="navigation-menu">
+                <button mat-menu-item (click)="getDownloadAbledataforMroExecution()">Export to CSV</button>
+            </mat-menu>
+        </div>
     </div>
     <ng-template [ngIf]="schemaInfo?.isInRunning" [ngIfElse]="schemaInfoTemplate">
         <pros-schema-progress [schemaId]="schemaId"></pros-schema-progress>
@@ -214,23 +216,23 @@
                         </div>
                         <div class="row-spacer"></div>
 
-                        <div class="f-row" *ngIf="viewOf && viewOf.getValue() === 'correction' && selection.selected.length !== 0">
+                        <div class="f-row action-iconbtns" *ngIf="viewOf && viewOf.getValue() === 'correction' && selection.selected.length !== 0">
                             <ng-template [ngIf]="isReviewer || isApprover">
-                                <button mat-flat-button (click)="generateDesc('',0,'all')" color="accent" class="rightradius">
+                                <button mat-flat-button (click)="generateDesc('',0,'all')" color="accent">
                                     <!-- <mat-icon fontSet="mdo-icons">check-mark</mat-icon> -->
                                     Generate description
                                 </button>
     
-                                <button mat-flat-button (click)="approveRec('',0,'all')" color="accent" class="middleradius">
+                                <button mat-flat-button (click)="approveRec('',0,'all')" color="accent">
                                     <!-- <mat-icon fontSet="mdo-icons">block</mat-icon> -->
                                     Approve
                                 </button>
     
-                                <button mat-flat-button (click)="rejectRec('',0,'all')" color="accent" class="middleradius">
+                                <button mat-flat-button (click)="rejectRec('',0,'all')" color="accent">
                                     Reject
                                 </button>
                             </ng-template>
-                            <button mat-flat-button (click)="selection.clear()" color="accent" class="leftradius">
+                            <button mat-flat-button (click)="selection.clear()" color="accent">
                                 <!-- <mat-icon fontSet="mdo-icons">close</mat-icon> -->
                                 Unselect
                             </button>
@@ -328,7 +330,6 @@
                                                 {{ element[dynCols] ? element[dynCols].fieldValue : '' }}
                                             </span>
                                         </div>
-                                        
                                         </mat-cell>
                                     </ng-container>
                                 </ng-template>

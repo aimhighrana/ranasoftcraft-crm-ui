@@ -18,11 +18,6 @@ div.root {
       display: flex;
       align-items: center;
     }
-
-    button.mat-flat-button,
-    button.mat-fab {
-      margin-left: 1px;
-    }
   }
 
   .data-container {
@@ -97,10 +92,6 @@ div.root {
           width: 213px;
         }
 
-        button.mat-flat-button {
-          margin-right: 1px;
-        }
-
         .data {
           overflow: auto;
           height: calc(100% - 53px - 24px - 48px - 16px * 2);
@@ -111,15 +102,6 @@ div.root {
             max-width: 100%;
             display: table;
             border-collapse: collapse;
-
-            .action-iconbtns {
-              flex-wrap: wrap;
-
-              button {
-                margin-top: 2px;
-                margin-bottom: 2px;
-              }
-            }
           }
         }
       }

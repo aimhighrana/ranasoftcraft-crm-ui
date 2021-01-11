@@ -9,7 +9,7 @@
             </mat-form-field>
         </div>
         <div class="mdo-field-tooltip" (click)="$event.stopPropagation()">
-            <mat-label>Lookup colunm</mat-label>
+            <mat-label>Lookup column</mat-label>
             <mat-form-field appearance="outline">
                 <mat-select formControlName="lookupColumn">
                     <mat-option [value]="field.fieldId" *ngFor="let field of moduleHeaderFields">{{field.fieldDescri}}</mat-option>
@@ -17,7 +17,7 @@
             </mat-form-field>
         </div>
         <div class="mdo-field-tooltip" (click)="$event.stopPropagation()">
-            <mat-label>Result lookup colunm</mat-label>
+            <mat-label>Result lookup column</mat-label>
             <mat-form-field appearance="outline">
                 <mat-select formControlName="lookupColumnResult">
                     <mat-option [value]="'id'">Module object number</mat-option>
