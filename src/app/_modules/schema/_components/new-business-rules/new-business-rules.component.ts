@@ -902,9 +902,9 @@ export class NewBusinessRulesComponent implements OnInit {
             }
         }
         this.allhierarchies.push(UDRHierarchie);
-        if (!nested) {
+        // if (!nested) {
             this.allUDRBlocks.push(udrBlock);
-        }
+        // }
     }
 
     /**

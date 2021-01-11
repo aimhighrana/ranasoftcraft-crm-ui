@@ -72,6 +72,18 @@ export class FormInputAutoselectComponent implements OnInit, OnChanges {
   extraOptionLabel: string;
 
   /**
+   * whether values are loading
+   */
+  @Input()
+  loader = false;
+
+  /**
+   * Preferred deounce value for getting the searchTerm
+   */
+  @Input()
+  debounceValue = 400;
+
+  /**
    * Define the field label
    */
   @Input()
@@ -158,7 +170,9 @@ export class FormInputAutoselectComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    this.selectedMdoFldCtrl.valueChanges.subscribe((value) => {
+    this.selectedMdoFldCtrl.valueChanges
+    .pipe(debounceTime(this.debounceValue))
+    .subscribe((value) => {
       this.emitSearchValue.emit(value);
     })
   }
@@ -242,11 +256,19 @@ export class FormInputAutoselectComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if(!isEqual(changes.updatedOptionsList.previousValue, changes.updatedOptionsList.currentValue)){
-      if(changes.updatedOptionsList.currentValue && changes.updatedOptionsList.currentValue.length>0){
-        this.optionList = changes.updatedOptionsList.currentValue;
-        this.initFilter();
+    const preVal = 'previousValue';
+
+    if(changes.updatedOptionsList) {
+      if(changes.updatedOptionsList[preVal] && !isEqual(changes.updatedOptionsList[preVal], changes.updatedOptionsList.currentValue)){
+        if(changes.updatedOptionsList.currentValue && changes.updatedOptionsList.currentValue.length>0) {
+          this.optionList = changes.updatedOptionsList.currentValue;
+          this.initFilter();
+        }
       }
+    }
+
+    if(changes.loader && changes.loader[preVal] !== changes.loader.currentValue) {
+      this.loader = changes.loader.currentValue;
     }
   }
 }

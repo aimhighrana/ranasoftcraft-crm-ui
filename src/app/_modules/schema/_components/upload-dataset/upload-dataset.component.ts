@@ -20,7 +20,7 @@ import { NewSchemaCollaboratorsComponent } from '../new-schema-collaborators/new
 import { values, pick } from 'lodash';
 import { Utilities } from '@modules/base/common/utilities';
 import { BusinessrulelibraryDialogComponent } from '../businessrulelibrary-dialog/businessrulelibrary-dialog.component';
-import { PermissionOn, UserMdoModel, SchemaDashboardPermission } from '@models/collaborator';
+import { PermissionOn, UserMdoModel, SchemaDashboardPermission, ROLES } from '@models/collaborator';
 import { ScheduleDialogComponent } from '@modules/shared/_components/schedule-dialog/schedule-dialog.component';
 import { SchemaScheduler } from '@models/schema/schemaScheduler';
 import { GLOBALCONSTANTS } from '../../../../_constants';
@@ -239,12 +239,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     isComBased: '0'
   }
 
-  roles = [
-    'Admin',
-    'Reviewer',
-    'Viewer',
-    'Editer'
-  ]
+  roles = ROLES;
   /**
    * List of all selected business rules
    */
@@ -291,6 +286,11 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * active chip value
    */
   activeChipValue = {};
+
+  /**
+   * Loading state for subscriber
+   */
+  subscriberLoader = false;
 
   /**
    * reference to editable fields on click
@@ -1569,9 +1569,12 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * method to get collaboratos/subscribers from the api
    * @param queryString pass query param to fetch values from the api
    */
-  getCollaborators(queryString, fetchCount: number) {
+  getCollaborators(queryString, fetchCount: number = 0) {
+    this.allSubscribers = [];
+    this.subscriberLoader = true;
     this.schemaDetailsService.getAllUserDetails(queryString, fetchCount)
       .subscribe((response: PermissionOn) => {
+        this.subscriberLoader = false;
         if (response && response.users) {
           const subscribers: UserMdoModel[] = response.users;
           subscribers.forEach((subscriber: UserMdoModel) => {
@@ -1582,6 +1585,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
           this.allSubscribers = subscribers;
         }
       }, () => {
+        this.subscriberLoader = false;
         this.snackBar.open('Error getting subscribers', 'okay', {
           duration: 1000
         })
