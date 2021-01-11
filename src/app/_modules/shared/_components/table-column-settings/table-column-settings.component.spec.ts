@@ -123,7 +123,7 @@ describe('TableColumnSettingsComponent', () => {
 
   it('should get action view type description', () => {
     expect(component.getActionViewTypeDesc(TableActionViewType.ICON)).toEqual('Icon only');
-    expect(component.getActionViewTypeDesc(TableActionViewType.ICON_TEXT)).toEqual('Icon and Text');
+    expect(component.getActionViewTypeDesc(TableActionViewType.ICON_TEXT)).toEqual('Icon and text');
     expect(component.getActionViewTypeDesc(TableActionViewType.TEXT)).toEqual('Text only');
   });
 

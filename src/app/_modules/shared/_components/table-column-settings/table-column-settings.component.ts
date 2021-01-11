@@ -428,7 +428,7 @@ export class TableColumnSettingsComponent implements OnInit{
       return 'Icon only';
     }
     else if (viewType === TableActionViewType.ICON_TEXT) {
-      return 'Icon and Text';
+      return 'Icon and text';
     }
     else {
       return 'Text only';

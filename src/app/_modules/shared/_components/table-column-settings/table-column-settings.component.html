@@ -161,7 +161,7 @@
                                     </div>
                                     <div class="col col-x8">
                                         <div mat-line (click)="editActionText(index)">
-                                            <span id="viewctrl_{{ index }}" class="editablevalue"> {{ action.actionText }} </span>
+                                            <span id="viewctrl_{{ index }}" [ngClass]="{'editablevalue' : action.isCustomAction}"> {{ action.actionText }} </span>
                                             <div id="inpctrl_{{ index }}" style="display: none;">
                                                 <pros-form-input type="text" [value]="action.actionText"
                                                     (emitBlurEvent)="emitActionTextBlur(index, $event)">
