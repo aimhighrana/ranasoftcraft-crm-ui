@@ -347,7 +347,7 @@ export class SetupDuplicateRuleComponent implements OnInit, OnChanges, OnDestroy
 
   filterNumFields(value) {
     const textFilteredList = this.filter(value) || [];
-    return textFilteredList.filter(field => field.picklist === '0' && (field.datatype === 'NUMC' || field.dataType === 'DESC'));
+    return textFilteredList.filter(field => field.picklist === '0' && (field.dataType === 'NUMC' || field.dataType === 'DESC'));
   }
 
   setFieldValue(ruleType, fieldId, index) {
