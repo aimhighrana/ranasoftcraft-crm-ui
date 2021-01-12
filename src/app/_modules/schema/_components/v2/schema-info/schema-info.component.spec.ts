@@ -296,7 +296,7 @@ describe('SchemaInfoComponent', () => {
     const variantId = '125A';
     spyOn(router, 'navigate');
     component.editDataScope(variantId);
-    expect(router.navigate).toHaveBeenCalledWith([{outlets: {sb: `sb/schema/data-scope/${component.moduleId}/${component.schemaId}/${variantId}`}}])
+    expect(router.navigate).toHaveBeenCalledWith([{outlets: {sb: `sb/schema/data-scope/${component.moduleId}/${component.schemaId}/${variantId}/sb`}}])
   });
 
   it('getAllBusinessRulesList(), should get all business rules', async() => {
