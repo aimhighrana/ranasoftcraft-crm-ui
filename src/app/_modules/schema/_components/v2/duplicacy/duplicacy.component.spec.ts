@@ -3,12 +3,10 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { SchemaDashboardPermission, SchemaListDetails, SchemaStaticThresholdRes, SchemaVariantsModel } from '@models/schema/schemalist';
 import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
 import { GroupDataTableComponent } from '@modules/schema/_components/v2/duplicacy/group-data-table/group-data-table.component';
-
 import { SchemaService } from '@services/home/schema.service';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { of } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
-
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { CatalogCheckService } from '@services/home/schema/catalog-check.service';
@@ -18,9 +16,9 @@ import { DropDownValue } from '@modules/admin/_components/module/business-rules/
 import { MasterRecordChangeRequest, RECORD_STATUS, RECORD_STATUS_KEY, RequestForCatalogCheckData } from '@models/schema/duplicacy';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DuplicacyDataSource } from './duplicacy-data-source';
-
 import { DuplicacyComponent } from './duplicacy.component';
 import { Router } from '@angular/router';
+import { Userdetails } from '@models/userdetails';
 
 describe('DuplicacyComponent', () => {
   let component: DuplicacyComponent;
@@ -86,8 +84,12 @@ describe('DuplicacyComponent', () => {
   }));
 
   it('should get variant details', async(() => {
-
-    spyOn(schemaVariantService, 'getVariantdetailsByvariantId').withArgs(component.variantId).and.returnValue(of({
+    component.userDetails = {
+      currentRoleId: 'AD',
+      userName: 'harshit',
+      plantCode: '0'
+    } as Userdetails
+    spyOn(schemaVariantService, 'getVariantdetailsByvariantId').withArgs(component.variantId, component.userDetails.currentRoleId, component.userDetails.plantCode, component.userDetails.userName).and.returnValue(of({
       schemaId: component.schemaId,
       filterCriteria: [
         {
@@ -100,7 +102,7 @@ describe('DuplicacyComponent', () => {
 
     component.getVariantDetails();
 
-    expect(schemaVariantService.getVariantdetailsByvariantId).toHaveBeenCalledWith(component.variantId);
+    expect(schemaVariantService.getVariantdetailsByvariantId).toHaveBeenCalledWith(component.variantId, component.userDetails.currentRoleId, component.userDetails.plantCode, component.userDetails.userName);
 
   }));
 
@@ -190,8 +192,12 @@ describe('DuplicacyComponent', () => {
   });
 
   it('should refresh table data on new variantId', (async () => {
-
-    spyOn(schemaVariantService, 'getVariantdetailsByvariantId').withArgs('1').and.returnValue(of({
+    component.userDetails = {
+      currentRoleId: 'AD',
+      userName: 'harshit',
+      plantCode: '0'
+    } as Userdetails
+    spyOn(schemaVariantService, 'getVariantdetailsByvariantId').withArgs('1', component.userDetails.currentRoleId, component.userDetails.plantCode, component.userDetails.userName).and.returnValue(of({
       schemaId: component.schemaId,
       filterCriteria: [
         {

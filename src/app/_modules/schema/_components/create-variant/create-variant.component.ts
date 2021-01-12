@@ -12,6 +12,8 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { BlockType } from '@modules/admin/_components/module/business-rules/user-defined-rule/udr-cdktree.service';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
+import { UserService } from '@services/user/userservice.service';
+import { distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'pros-create-variant',
@@ -71,7 +73,8 @@ export class CreateVariantComponent implements OnInit {
     private snackBar: MatSnackBar,
     private router: Router,
     private schemaDetailsService: SchemaDetailsService,
-    private schemaListService: SchemalistService
+    private schemaListService: SchemalistService,
+    private userService: UserService
   ) { }
 
   ngOnInit(): void {
@@ -151,28 +154,30 @@ export class CreateVariantComponent implements OnInit {
    * Get exiting added Variant Details
    */
   getExistingVariantData() {
-    this.schemaVariantService.getVariantdetailsByvariantId(this.variantId).subscribe(res => {
-      if(res) {
-        this.frmArray.clear();
-        this.variantDesc.setValue(res.variantName);
-        // this.conditionList = res.udrBlocksModel;
-        this.conditionList.forEach((each,index) => {
-          const frmArray =this.frmArray;
-          const field = this.metaDataFieldList.filter(fld=>
-            fld.fieldId === each.conditionFieldId)[0];
-          frmArray.push(this.formBuilder.group({
-            fields:field,
-            operator:each.conditionOperator,
-            conditionFieldValue:each.conditionFieldValue,
-            conditionFieldStartValue: each.conditionFieldStartValue,
-            conditionFieldEndValue: each.conditionFieldEndValue,
-            showRangeFld:false
-          }));
-          if(field && field.picklist === '1') {
-            this.getdropDownValues(field.fieldId, '', index);
-          }
-        });
-      }
+    this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user => {
+      this.schemaVariantService.getVariantdetailsByvariantId(this.variantId, user.currentRoleId, user.plantCode, user.userName).subscribe(res => {
+        if(res) {
+          this.frmArray.clear();
+          this.variantDesc.setValue(res.variantName);
+          // this.conditionList = res.udrBlocksModel;
+          this.conditionList.forEach((each,index) => {
+            const frmArray =this.frmArray;
+            const field = this.metaDataFieldList.filter(fld=>
+              fld.fieldId === each.conditionFieldId)[0];
+            frmArray.push(this.formBuilder.group({
+              fields:field,
+              operator:each.conditionOperator,
+              conditionFieldValue:each.conditionFieldValue,
+              conditionFieldStartValue: each.conditionFieldStartValue,
+              conditionFieldEndValue: each.conditionFieldEndValue,
+              showRangeFld:false
+            }));
+            if(field && field.picklist === '1') {
+              this.getdropDownValues(field.fieldId, '', index);
+            }
+          });
+        }
+      })
     })
   }
 

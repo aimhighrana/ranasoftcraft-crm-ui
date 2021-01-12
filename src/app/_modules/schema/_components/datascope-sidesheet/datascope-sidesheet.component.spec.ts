@@ -8,10 +8,10 @@ import { SchemaVariantsModel } from '@models/schema/schemalist';
 import { AddFilterMenuComponent } from '@modules/shared/_components/add-filter-menu/add-filter-menu.component';
 import { FilterValuesComponent } from '@modules/shared/_components/filter-values/filter-values.component';
 import { FormInputComponent } from '@modules/shared/_components/form-input/form-input.component';
+import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { of } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
-
 import { DatascopeSidesheetComponent } from './datascope-sidesheet.component';
 
 describe('DatascopeSidesheetComponent', () => {
@@ -22,7 +22,7 @@ describe('DatascopeSidesheetComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DatascopeSidesheetComponent, FormInputComponent, AddFilterMenuComponent, FilterValuesComponent ],
+      declarations: [ DatascopeSidesheetComponent, FormInputComponent, AddFilterMenuComponent, FilterValuesComponent, SearchInputComponent ],
       imports: [RouterTestingModule, AppMaterialModuleForSpec, HttpClientTestingModule]
     })
     .compileComponents();
@@ -41,10 +41,15 @@ describe('DatascopeSidesheetComponent', () => {
   });
 
   it('getDataScopeDetails(), should get data scope details by ID', async() => {
+    const userDetails = {
+      userName: 'harshit',
+      plantCode: '0',
+      roleId: 'AD'
+    }
     const variantId = '24345';
-    spyOn(schemaVariantService,'getVariantdetailsByvariantId').withArgs(variantId).and.returnValue(of({} as SchemaVariantsModel));
+    spyOn(schemaVariantService,'getVariantdetailsByvariantId').withArgs(variantId, userDetails.roleId, userDetails.plantCode, userDetails.userName).and.returnValue(of({} as SchemaVariantsModel));
     component.getDataScopeDetails(variantId);
-    expect(schemaVariantService.getVariantdetailsByvariantId).toHaveBeenCalledWith(variantId)
+    expect(schemaVariantService.getVariantdetailsByvariantId).toHaveBeenCalledTimes(1);
   })
 
   it('close(), should close side sheet', async() => {

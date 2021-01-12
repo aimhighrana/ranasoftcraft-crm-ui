@@ -61,18 +61,21 @@ describe('SchemaVariantService', () => {
 
   it('getVariantdetailsByvariantId(): should call', () =>{
     const url = 'get all variant details of variant';
+    const variantId = '7676567575';
+    const userName = 'harshit';
+    const plantCode = '0';
+    const roleId = 'AD';
     // mock url
-    endpointServiceSpy.getVariantdetailsByvariantIdUrl.and.returnValue(url);
+    endpointServiceSpy.getVariantdetailsByvariantIdUrl.withArgs(variantId).and.returnValue(url);
 
     // mock data
     const mockData = {} as any;
     // actual call
-    const variantId = '7676567575';
-    schemaVariantService.getVariantdetailsByvariantId(variantId).subscribe(actualData => {
+    schemaVariantService.getVariantdetailsByvariantId(variantId, roleId, plantCode, userName).subscribe(actualData => {
       expect(actualData).toEqual(mockData);
     });
     // mock http
-    const mockRequest = httpTestingController.expectOne(url);
+    const mockRequest = httpTestingController.expectOne(`${url}?plantCode=${plantCode}&roleId=${roleId}&userName=${userName}`);
     expect(mockRequest.request.method).toEqual('GET');
     expect(mockRequest.request.responseType).toEqual('json');
     mockRequest.flush(mockData);

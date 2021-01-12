@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { PotextViewComponent } from './potext-view.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -84,7 +83,12 @@ describe('PotextViewComponent', () => {
 
 
   it('getVariantDetails(), get variant detaails ', async(()=>{
-    spyOn(schemaVariantService,'getVariantdetailsByvariantId').withArgs(component.variantId).and.returnValue(of({
+    component.userDetails = {
+      userName: 'harshit',
+      plantCode: '0',
+      currentRoleId: 'AD'
+    } as Userdetails
+    spyOn(schemaVariantService,'getVariantdetailsByvariantId').withArgs(component.variantId, component.userDetails.currentRoleId, component.userDetails.plantCode, component.userDetails.userName).and.returnValue(of({
       schemaId: component.schemaId,
       filterCriteria:[
         {
@@ -96,7 +100,7 @@ describe('PotextViewComponent', () => {
     } as SchemaVariantsModel));
 
     component.getVariantDetails();
-    expect(schemaVariantService.getVariantdetailsByvariantId).toHaveBeenCalledWith(component.variantId);
+    expect(schemaVariantService.getVariantdetailsByvariantId).toHaveBeenCalledWith(component.variantId, component.userDetails.currentRoleId, component.userDetails.plantCode, component.userDetails.userName);
   }));
 
   it('getFldMetadata(), get field metadata ', async(()=>{

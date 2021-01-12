@@ -39,8 +39,8 @@ export class SchemaVariantService {
    * Get variant detail by variant id ..
    * @param variantId queryParam for getting variants ..
    */
-  public getVariantdetailsByvariantId(variantId: string): Observable<SchemaVariantsModel> {
-    return this.http.get<SchemaVariantsModel>(this.endPointService.getVariantdetailsByvariantIdUrl(variantId));
+  public getVariantdetailsByvariantId(variantId: string, roleId: string, plantCode: string, userName: string): Observable<SchemaVariantsModel> {
+    return this.http.get<SchemaVariantsModel>(this.endPointService.getVariantdetailsByvariantIdUrl(variantId), {params: {plantCode, roleId, userName}});
   }
 
   public deleteVariant(variantId: string): Observable<boolean> {

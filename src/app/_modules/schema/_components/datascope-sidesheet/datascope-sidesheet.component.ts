@@ -8,7 +8,9 @@ import { DropDownValue } from '@modules/admin/_components/module/business-rules/
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { SchemaService } from '@services/home/schema.service';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
+import { UserService } from '@services/user/userservice.service';
 import { Subscription } from 'rxjs';
+import { distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'pros-datascope-sidesheet',
@@ -57,7 +59,8 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
               private schemaService: SchemaService,
               private sharedService: SharedServiceService,
               private schemaVariantService: SchemaVariantService,
-              private matSnackBar: MatSnackBar) { }
+              private matSnackBar: MatSnackBar,
+              private userService: UserService) { }
 
 
   /**
@@ -82,14 +85,17 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
    * @param variantId ID of variant for which details needed.
    */
   getDataScopeDetails(variantId: string) {
-    const variantDetais = this.schemaVariantService.getVariantdetailsByvariantId(variantId).subscribe((res) => {
-      this.variantInfo.variantName = res.variantName;
-      this.variantInfo.filterCriteria = res.filterCriteria;
-      this.variantInfo.variantId = res.variantId;
-    }, (error) => {
-      console.log('Something went wrong while getting variant details.', error.message);
-    })
-    this.subscriptions.push(variantDetais);
+    const userSub = this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user => {
+      const variantDetais = this.schemaVariantService.getVariantdetailsByvariantId(variantId, user.currentRoleId, user.plantCode, user.userName).subscribe((res) => {
+        this.variantInfo.variantName = res.variantName;
+        this.variantInfo.filterCriteria = res.filterCriteria;
+        this.variantInfo.variantId = res.variantId;
+      }, (error) => {
+        console.log('Something went wrong while getting variant details.', error.message);
+      })
+      this.subscriptions.push(variantDetais);
+    });
+    this.subscriptions.push(userSub);
   }
 
   /**

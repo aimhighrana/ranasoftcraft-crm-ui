@@ -373,7 +373,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
    * Get schema variant details ..
    */
   getVariantDetails() {
-    this.schemaVariantService.getVariantdetailsByvariantId(this.variantId).subscribe(res => {
+    this.schemaVariantService.getVariantdetailsByvariantId(this.variantId, this.userDetails.currentRoleId, this.userDetails.plantCode, this.userDetails.userName).subscribe(res => {
       if (res) {
         const inline = res.filterCriteria.filter(fil => fil.fieldId === 'id')[0];
         if (inline) {
