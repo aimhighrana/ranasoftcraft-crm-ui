@@ -162,18 +162,20 @@ describe('DuplicacyComponent', () => {
 
   it('should fetch table data', async(() => {
 
+    component.groupKey = 'fuzzy';
+    component.groupId = '1701';
+
     const request = new RequestForCatalogCheckData();
     request.schemaId = component.schemaId;
     request.groupId = component.groupId;
     request.page = 0;
     request.size = 20;
     request.key = component.groupKey;
-    request.runId = '';
+    request.runId = '123';
     request.filterCriterias = [];
     request.plantCode = '0';
     request.sort = {};
     request.requestStatus = component.activeTab;
-
 
     spyOn(catalogService, 'getCatalogCheckRecords').withArgs(request)
       .and.returnValue(of());
@@ -205,6 +207,11 @@ describe('DuplicacyComponent', () => {
       variants: [{ variantId: '1', schemaId: component.schemaId, variantName: 'first variant' } as SchemaVariantsModel]
     } as SchemaListDetails;
 
+    component.dataScope = [{ variantId: '1', schemaId: component.schemaId, variantName: 'first variant' } as SchemaVariantsModel];
+
+    component.groupKey = 'fuzzy';
+    component.groupId = '1701';
+
     const request = new RequestForCatalogCheckData();
     request.schemaId = component.schemaId;
     request.groupId = component.groupId;
@@ -213,7 +220,7 @@ describe('DuplicacyComponent', () => {
     request.page = 0;
     request.size = 20;
     request.key = component.groupKey;
-    request.runId = '';
+    request.runId = '123';
     request.filterCriterias = [];
     request.plantCode = '0';
     request.sort = {};
@@ -222,11 +229,11 @@ describe('DuplicacyComponent', () => {
     spyOn(catalogService, 'getCatalogCheckRecords').withArgs(request)
       .and.returnValue(of());
 
-    component.refreshData('1');
+    component.variantChange('1');
     expect(component.variantName).toEqual('first variant');
 
-    component.refreshData('1');
-    expect(catalogService.getCatalogCheckRecords).toHaveBeenCalledTimes(1);
+    component.variantChange('1');
+    // expect(catalogService.getCatalogCheckRecords).toHaveBeenCalledTimes(1);
     expect(schemaVariantService.getVariantdetailsByvariantId).toHaveBeenCalledTimes(1);
 
 

@@ -3,9 +3,9 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { CatalogCheckService } from '@services/home/schema/catalog-check.service';
 import { GroupDetails, RequestForGroupList, TableDataSource } from '@models/schema/duplicacy';
 import { BehaviorSubject } from 'rxjs';
-import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
-import { Router } from '@angular/router';
 import { MatSort } from '@angular/material/sort';
+import { Userdetails } from '@models/userdetails';
+import { UserService } from '@services/user/userservice.service';
 
 
 @Component({
@@ -62,9 +62,10 @@ export class GroupDataTableComponent implements OnInit, OnChanges, AfterViewInit
    */
   pageIndex = 0;
 
+  userDetails: Userdetails = new Userdetails();
+
   constructor(private catalogService: CatalogCheckService,
-    private sharedServices: SharedServiceService,
-    private router: Router) { }
+    private userService: UserService) { }
 
   ngOnChanges(changes: SimpleChanges): void {
 
@@ -73,9 +74,9 @@ export class GroupDataTableComponent implements OnInit, OnChanges, AfterViewInit
       refresh = true;
     }
 
-    if (changes && changes.variantId && changes.variantId.previousValue !== changes.variantId.currentValue) {
+    /* if (changes && changes.variantId && changes.variantId.previousValue !== changes.variantId.currentValue) {
       refresh = true;
-    }
+    } */
 
     if (changes && changes.activeTab && changes.activeTab.previousValue !== changes.activeTab.currentValue) {
       refresh = true;
@@ -100,6 +101,11 @@ export class GroupDataTableComponent implements OnInit, OnChanges, AfterViewInit
         this.tableHeaderActBtn = [];
       }
     });
+
+
+    this.userService.getUserDetails().subscribe(res => {
+      this.userDetails = res;
+    }, error => console.error(`Error : ${error.message}`));
 
   }
 

@@ -27,6 +27,7 @@ import { ContainerRefDirective } from '@modules/shared/_directives/container-ref
 import { TableCellInputComponent } from '@modules/shared/_components/table-cell-input/table-cell-input.component';
 import { Userdetails } from '@models/userdetails';
 import { UserService } from '@services/user/userservice.service';
+import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
 
 @Component({
   selector: 'pros-duplicacy',
@@ -190,6 +191,11 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
   @Input()
   isInRunning: boolean;
 
+  /**
+   * data table search input
+   */
+  @ViewChild('tableSearchInput') tableSearchInput: SearchInputComponent;
+
 
 
   constructor(
@@ -320,7 +326,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
      * inline search changes
      */
     this.inlineSearchSubject.pipe(
-      debounceTime(100),
+      debounceTime(1000),
       distinctUntilChanged()
     ).subscribe(value => this.inlineSearch(value));
 
@@ -335,6 +341,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
    * Get schema info ..
    */
   getSchemaDetails() {
+    this.schemaInfo = new SchemaListDetails();
     this.schemaListService.getSchemaDetailsBySchemaId(this.schemaId).subscribe(res => {
       this.schemaInfo = res;
     }, error => console.error(`Error : ${error.message}`))
@@ -376,11 +383,12 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
   getVariantDetails() {
     this.schemaVariantService.getVariantdetailsByvariantId(this.variantId).subscribe(res => {
       if (res) {
+        const finalFiletr: FilterCriteria[] = [];
         const inline = res.filterCriteria.filter(fil => fil.fieldId === 'id')[0];
         if (inline) {
           this.preInpVal = inline.values ? inline.values.toString() : '';
+          finalFiletr.push(inline);
         }
-        const finalFiletr: FilterCriteria[] = [inline];
         res.filterCriteria.forEach(fil => {
           const filter: FilterCriteria = new FilterCriteria();
           filter.fieldId = fil.fieldId;
@@ -397,9 +405,13 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
           finalFiletr.push(filter);
         });
 
+        console.log(finalFiletr);
+
         this.filterCriteria.next(finalFiletr);
       }
     }, error => {
+      this.filterCriteria.next([]);
+      this.tableSearchInput.clearSearch(true);
       console.error(`Error : ${error.message}`);
     });
   }
@@ -411,6 +423,11 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
    * @param sort apply some sorting on column ..
    */
   getData(isLoadingMore?) {
+
+    if (!this.groupId || !this.groupKey) {
+      this.dataSource.reset();
+      return;
+    }
 
     if (isLoadingMore) {
       this.pageIndex++;
@@ -424,7 +441,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     request.page = this.pageIndex ;
     request.size = 20;
     request.key = this.groupKey;
-    request.runId = '';
+    request.runId = this.schemaInfo && this.schemaInfo.runId ? this.schemaInfo.runId : '';
     request.filterCriterias = this.filterCriteria.getValue() || [];
     request.plantCode = '0';
     request.sort = this.sortOrder;
@@ -758,14 +775,20 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
 
   }
 
-  refreshData(variantId) {
+  variantChange(variantId) {
     if (this.variantId !== variantId) {
       this.variantId = variantId;
       this.variantName = this.variantId === '0' ? 'Entire dataset'
-        : this.schemaInfo.variants.find(v => v.variantId === this.variantId).variantName;
-      this.getData();
+        : this.dataScope.find(v => v.variantId === this.variantId).variantName;
+
       if (this.variantId !== '0') {
         this.getVariantDetails();
+      } else {
+        this.filterCriteria.next([]);
+      }
+
+      if (this.tableSearchInput) {
+        this.tableSearchInput.clearSearch(true);
       }
     }
   }
@@ -824,6 +847,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     this.groupId = event.groupId;
     this.groupKey = event.groupKey;
     this.getData();
+
   }
 
   isStaticColumn(dynCol) {

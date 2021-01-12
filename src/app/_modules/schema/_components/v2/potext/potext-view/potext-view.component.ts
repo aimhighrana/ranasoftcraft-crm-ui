@@ -236,6 +236,7 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
         this.getDataScope();
         this.getSchemaStatics();
         this.getSchemaDetails();
+        this.getSchemaTableActions();
       }
     }
 

@@ -9,9 +9,9 @@
                 </button>
                 <mat-menu #menu="matMenu" class="navigation-menu">
                     <button mat-menu-item (click)="openDataScopeSideSheet()">[New data scope] </button>
-                    <button mat-menu-item (click)="refreshData('0')"> Entire dataset </button>
+                    <button mat-menu-item (click)="variantChange('0')"> Entire dataset </button>
                     <ng-container *ngIf="dataScope && dataScope.length">
-                        <button mat-menu-item *ngFor="let scope of dataScope" (click)="refreshData(scope.variantId)">
+                        <button mat-menu-item *ngFor="let scope of dataScope" (click)="variantChange(scope.variantId)">
                             {{scope.variantName}}
                         </button>
                     </ng-container>
@@ -65,7 +65,8 @@
                     <div class="f-row dataset-grid">
                         <div class="f-col dataset-grid-navigation group-table-container">
                             <!-- Group list table -->
-                            <pros-group-data-table [schemaId]="schemaId" [variantId]="variantId" [moduleId]="moduleId"
+                            <pros-group-data-table *ngIf="schemaInfo && schemaInfo.runId"
+                                [schemaId]="schemaId" [variantId]="variantId" [moduleId]="moduleId" [runId]="schemaInfo.runId"
                                 [activeTab]="activeTab" (groupChange)="updateSelectedGroup($event)">
                             </pros-group-data-table>
                         </div>
@@ -74,7 +75,8 @@
                             <div class="f-row">
                                 <mat-chip-list>
                                     <!-- Applied filters -->
-                                    <pros-search-input (value)="newInlineSearchText($event)" [preValue]="preInpVal">
+                                    <pros-search-input #tableSearchInput [preValue]="preInpVal"
+                                        (value)="newInlineSearchText($event)">
                                     </pros-search-input>
                                     <ng-template ngFor let-ctrl [ngForOf]="filterCriteria | async">
                                         <ng-template [ngIf]="ctrl.type !== 'INLINE'">

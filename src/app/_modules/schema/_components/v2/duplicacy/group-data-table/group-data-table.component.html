@@ -29,7 +29,9 @@
             </mat-header-cell>
             <mat-cell *matCellDef="let row" class="fixed-width-c1">
                 <mat-card-header>
-                    <div mat-card-avatar> RW </div>
+                    <div mat-card-avatar> 
+                        {{ userDetails.firstName ? userDetails.firstName.substring(0,1).toUpperCase() : ''  }}{{ userDetails.lastName ? userDetails.lastName.substring(0,1).toUpperCase() : ''  }}
+                    </div>
                 </mat-card-header>
             </mat-cell>
         </ng-container>
