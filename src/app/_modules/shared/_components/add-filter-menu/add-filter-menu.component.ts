@@ -23,6 +23,9 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
   @Input()
   fieldMetadata: any[];
 
+  @Input()
+  dataScope: boolean;
+
   selectedValues: DropDownValue[] = [];
 
   /**

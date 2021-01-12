@@ -21,7 +21,8 @@
         [moduleId]="moduleId"
         [fieldId]="activateElement ? activateElement.fieldId : ''"
         (selectedValues)="emitAppliedFilter($event)"
-        [checkedValue]="selectedValues">
+        [checkedValue]="selectedValues"
+        [isDataScope]="dataScope">
         </pros-filter-values>
 
     </div>

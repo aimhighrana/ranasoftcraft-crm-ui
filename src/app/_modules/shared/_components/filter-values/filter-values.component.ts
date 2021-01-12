@@ -35,14 +35,22 @@ export class FilterValuesComponent implements OnInit, OnChanges {
   // To have values matches search input text
   searchValue: DropDownValue[];
 
+  /**
+   * Datascope is true then fiter value is serach by api
+   */
+  @Input()
+  isDataScope: boolean;
+
   // Adding debounce to prevent multiple api calls when searching
   delayedCall = debounce((fieldId: string, searchText: string) => {
     if (this.staticFieldValues && this.staticFieldValues.length === 0) {
       this.getDropdownValues(fieldId, searchText);
+    } else if(this.isDataScope){
+      this.getDropdownValues(fieldId, searchText);
     } else {
       this.searchFromExistingValues(searchText);
     }
-  }, 700)
+  }, 300)
 
   constructor(private schemaService: SchemaService) { }
 

@@ -234,7 +234,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * @param variantId: ID of variant/data-scope
    */
   editDataScope(variantId: string) {
-    this.router.navigate([{ outlets: { sb: `sb/schema/data-scope/${this.moduleId}/${this.schemaId}/${variantId}` } }])
+    this.router.navigate([{ outlets: { sb: `sb/schema/data-scope/${this.moduleId}/${this.schemaId}/${variantId}/sb` } }])
   }
 
   /**

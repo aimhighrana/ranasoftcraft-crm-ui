@@ -24,7 +24,7 @@
                     <mat-chip-list>
                         <ng-container *ngIf="variantInfo">
                             <ng-template ngFor let-ctrl [ngForOf]="variantInfo.filterCriteria">
-                                <mat-chip class="mdo-filter-matchip" [matMenuTriggerFor]="appliedfiltermenu"
+                                <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="appliedfiltermenu"
                                     (click)="loadDropValues(ctrl)">
                                     <label>{{ctrl.fldCtrl ? ctrl.fldCtrl.fieldDescri : 'Unknown'}}:</label>
                                     <span class="info">{{prepareTextToShow(ctrl)}}</span>
@@ -32,8 +32,7 @@
                                 </mat-chip>
                             </ng-template>
                         </ng-container>
-    
-    
+
                         <mat-chip class="mdo-filter-matchip" [matMenuTriggerFor]="addFilterMenu"
                             (click)="reInilize = !reInilize">
                             <mat-icon fontSet="mdo-icons">folder-filter</mat-icon>
@@ -41,12 +40,13 @@
     
                         <mat-menu #addFilterMenu="matMenu">
                             <pros-add-filter-menu [moduleId]="moduleId" (evtReadyForApply)="makeFilterCtrl($event)"
-                                [reInilize]="reInilize"></pros-add-filter-menu>
+                                [reInilize]="reInilize" [dataScope]="true"></pros-add-filter-menu>
                         </mat-menu>
                     </mat-chip-list>
     
                     <mat-menu #appliedfiltermenu="matMenu">
                         <pros-filter-values [moduleId]="moduleId" (selectedValues)="updateChipFilter($event, loadDropValuesFor.fieldId)"
+                            [moduleId]="moduleId" [isDataScope]="true"
                             [fieldId]="loadDropValuesFor ? loadDropValuesFor.fieldId : ''"
                             [checkedValue]="loadDropValuesFor ? loadDropValuesFor.checkedValue : []">
                         </pros-filter-values>
