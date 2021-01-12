@@ -115,7 +115,8 @@ export class SchemaExecutionTrendComponent implements OnInit, OnChanges {
         },
         ticks: {
           fontColor: '#000',
-        }
+        },
+        offset: true
       }],
       yAxes: [{
         scaleLabel: {
@@ -124,15 +125,16 @@ export class SchemaExecutionTrendComponent implements OnInit, OnChanges {
         },
         ticks: {
           fontColor: '#000',
-        }
-      }]
+        },
+        offset: true
+      }],
     },
     legend: {
       position: 'bottom',
       labels: {
         fontSize: 12,
         usePointStyle: false,
-        boxWidth: 30,
+        boxWidth: 30
       }
     }
 
