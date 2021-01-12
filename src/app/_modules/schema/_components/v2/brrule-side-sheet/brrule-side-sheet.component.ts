@@ -319,6 +319,7 @@ export class BrruleSideSheetComponent implements OnInit {
    * @param selectedRule selected rule type
    */
   applyValidatorsByRuleType(selectedRule: string) {
+    this.submitted = false;
     this.currentSelectedRule = selectedRule;
     const controlKeys: any[] = Object.keys(this.currentControls);
     let requiredKeys: string[] = [];
@@ -331,6 +332,7 @@ export class BrruleSideSheetComponent implements OnInit {
     if (selectedRule === BusinessRuleType.BR_MANDATORY_FIELDS || selectedRule === BusinessRuleType.BR_METADATA_RULE) {
       requiredKeys = ['categoryId', 'rule_name', 'error_message', 'fields'];
     }
+
     if (selectedRule === BusinessRuleType.BR_TRANSFORMATION) {
       requiredKeys = ['rule_name', 'categoryId', 'transformationRuleType', 'error_message'];
       if (this.selectedTransformationType === this.transformationType.REGEX) {
@@ -342,7 +344,7 @@ export class BrruleSideSheetComponent implements OnInit {
     }
 
     if (selectedRule === BusinessRuleType.BR_CLASSIFICATION) {
-      requiredKeys = ['rule_name', 'error_message', 'categoryId', 'apiKey'];
+      requiredKeys = ['rule_name', 'error_message', 'categoryId', 'apiKey' , 'fields'];
     }
 
     controlKeys.map((key) => {
@@ -354,11 +356,13 @@ export class BrruleSideSheetComponent implements OnInit {
           this.form.get(key).setValue('');
         }
       } else {
-        this.form.get(key).setValidators([Validators.required]);
+        // this.form.get(key).setValidators([Validators.required]);
+        this.form.controls[key].setValidators([Validators.required]);
+        this.form.controls[key].updateValueAndValidity();
       }
     });
 
-    this.form.updateValueAndValidity();
+    // this.form.updateValueAndValidity();
   }
 
   /**

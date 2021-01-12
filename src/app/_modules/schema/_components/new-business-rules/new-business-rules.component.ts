@@ -495,6 +495,7 @@ export class NewBusinessRulesComponent implements OnInit {
      * @param selectedRule selected rule type
      */
     applyValidatorsByRuleType(selectedRule: string) {
+        this.submitted = false;
         this.currentSelectedRule = selectedRule;
         const controlKeys: any[] = Object.keys(this.currentControls);
         let requiredKeys: string[] = [];
@@ -518,6 +519,10 @@ export class NewBusinessRulesComponent implements OnInit {
             requiredKeys = ['rule_name'];
         }
 
+        if (selectedRule === BusinessRuleType.BR_CLASSIFICATION) {
+            requiredKeys = ['rule_name', 'error_message', 'categoryId', 'apiKey' , 'fields'];
+        }
+
         controlKeys.map((key) => {
             const index = requiredKeys.findIndex(reqKey => reqKey === key);
             if (index === -1) {
@@ -527,11 +532,13 @@ export class NewBusinessRulesComponent implements OnInit {
                     this.form.get(key).setValue('');
                 }
             } else {
-                this.form.get(key).setValidators([Validators.required]);
+                // this.form.get(key).setValidators([Validators.required]);
+                this.form.controls[key].setValidators([Validators.required]);
+                this.form.controls[key].updateValueAndValidity();
             }
         });
 
-        this.form.updateValueAndValidity();
+        // this.form.updateValueAndValidity();
     }
 
     /**
