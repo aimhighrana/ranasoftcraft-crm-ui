@@ -803,7 +803,6 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
    */
   formatCellData(fieldId, value) {
     if (this.getFieldInputType(fieldId) === this.FIELD_TYPE.MULTI_SELECT) {
-      // console.log(value);
       return value.toString();
     }
     return value && value !== 'null' ? value : '';
@@ -857,8 +856,6 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
    * @param row entire row should be here
    */
   editCurrentCell(fldid: string, row: any, rIndex: number, containerRef: ContainerRefDirective) {
-    console.log(fldid);
-    console.log(row);
 
     const field = this.selectedFields.find(f => f.fieldId === fldid);
     if (field && !field.editable) {
