@@ -336,8 +336,6 @@ describe('PotextViewComponent', () => {
     component.approveRecords('inline', row);
 
     expect(schemaDetailService.approveCorrectedRecords).toHaveBeenCalledWith(component.schemaId, ['MAT001'] , component.userDetails.currentRoleId);
-
-
   }));
 
   it(`resetRec(), reset corrected records `, async(()=>{
@@ -351,8 +349,6 @@ describe('PotextViewComponent', () => {
     component.resetRec(row, 'inline');
 
     expect(schemaDetailService.resetCorrectionRecords).toHaveBeenCalledWith(component.schemaId, component.schemaInfo.runId,  ['MAT001']);
-
-
   }));
 
   it('openExecutionTrendSideSheet ', async(() => {
@@ -367,13 +363,11 @@ describe('PotextViewComponent', () => {
     expect(component.isEditer).toBeFalsy();
     expect(component.isReviewer).toBeFalsy();
     expect(component.isApprover).toBeFalsy();
-
   });
 
   it('should filter primary and secondary actions', () => {
     expect(component.primaryActions.length).toEqual(3);
     expect(component.secondaryActions.length).toEqual(0);
-
   });
 
   it('should do table action', () => {
@@ -389,7 +383,6 @@ describe('PotextViewComponent', () => {
 
     component.doAction(component.tableActionsList[1], {});
     expect(component.resetRec).toHaveBeenCalledWith({}, 'inline');
-
   });
 
   it('should get table action icon', () => {
@@ -398,6 +391,4 @@ describe('PotextViewComponent', () => {
     expect(component.getActionIcon('Delete')).toEqual('recycle-bin');
     expect(component.getActionIcon('Generate cross entry')).toEqual('plus');
   });
-
-
 });
