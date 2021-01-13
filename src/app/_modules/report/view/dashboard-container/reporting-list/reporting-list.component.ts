@@ -268,6 +268,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
     } else {
       const dialogRef = this.matDialog.open(ReportListDownloadModelComponent, {
         width: '500px',
+        height: '600px',
         data: {
           recCount: this.resultsLength
         }

@@ -16,3 +16,42 @@ div.root {
     height: calc(100% - 52px - 16px * 3 - 36px);
   }
 }
+
+// div.root {
+//   user-select: none;
+//   height: 100%;
+//   overflow: hidden;
+
+//   .breadcrum-toolbar {
+//     align-items: center;
+//     padding-top: 8px;
+//     min-height: 40px;
+
+//     .display-heading-large {
+//       font-size: 1.2rem;
+//       text-overflow: ellipsis;
+//       white-space: nowrap;
+//       overflow: hidden;
+//     }
+//   }
+
+//   .info-link {
+//     font-size: 0.7rem;
+//     cursor: pointer;
+//   }
+
+//   .report-list {
+//     height: calc(100% - 44px - 16px * 3  - 84px);
+//     overflow: auto;
+//     }
+
+//     mat-nav-list{
+//          mat-list-item{
+//             .f-row{
+//                flex: 1;
+//                align-items: center;
+
+//             }
+//          }
+//        }
+//      }
