@@ -285,7 +285,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
 
     this.sharedServices.getDataScope().subscribe(res => {
       if (res) {
-        this.getDataScope();
+        this.getDataScope(res);
       }
     })
 
@@ -873,9 +873,12 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
   /**
    * Get data scopes .. or variants ...
    */
-  getDataScope() {
+  getDataScope(activeVariantId?: string) {
     this.schemaVariantService.getDataScope(this.schemaId, 'RUNFOR').subscribe(res => {
       this.dataScope = res;
+      if(activeVariantId) {
+        this.variantChange(activeVariantId);
+      }
     }, (error) => console.error(`Something went wrong while getting variants : ${error.message}`));
   }
 

@@ -9,11 +9,12 @@
             </button>
             <mat-menu #check="matMenu" class="navigation-menu">
                 <button mat-menu-item (click)="openDataScopeSideSheet()">[New data scope]</button>
-                <button mat-menu-item *ngFor="let scope of dataScope">
-                    {{ 
-                        scope.variantName ? scope.variantName : 'Unknown'
-                    }}
-                </button>
+                <button mat-menu-item (click)="variantChange('0')"> Entire dataset </button>
+                <ng-container *ngIf="dataScope && dataScope.length">
+                    <button mat-menu-item *ngFor="let scope of dataScope" (click)="variantChange(scope.variantId)">
+                        {{scope.variantName}}
+                    </button>
+                </ng-container>
             </mat-menu>
         </div>
         <div class="f-spacer"></div>
