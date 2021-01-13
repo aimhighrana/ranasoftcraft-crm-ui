@@ -1,4 +1,4 @@
-import { UDRBlocksModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { DropDownValue, UDRBlocksModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { AddFilterOutput } from './schema';
 
 
@@ -106,6 +106,8 @@ export class FilterCriteria {
     type: string;
     filterCtrl?: AddFilterOutput;
     fldCtrl?: MetadataModel;
+    selectedValues?: DropDownValue[];
+    textValues?: string[];
 }
 
 export class DataTableSourceResponse {

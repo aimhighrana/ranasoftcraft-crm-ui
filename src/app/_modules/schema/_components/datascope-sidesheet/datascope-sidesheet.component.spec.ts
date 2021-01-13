@@ -2,7 +2,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { SchemaVariantReq } from '@models/schema/schema';
+import { AddFilterOutput, SchemaVariantReq } from '@models/schema/schema';
 import { FilterCriteria } from '@models/schema/schemadetailstable';
 import { SchemaVariantsModel } from '@models/schema/schemalist';
 import { AddFilterMenuComponent } from '@modules/shared/_components/add-filter-menu/add-filter-menu.component';
@@ -56,7 +56,7 @@ describe('DatascopeSidesheetComponent', () => {
     component.outlet = 'sb';
     spyOn(router, 'navigate');
     component.close();
-    expect(router.navigate).toHaveBeenCalledWith([{outlets: {[component.outlet]:null}}]);
+    expect(router.navigate).toHaveBeenCalledWith([{outlets: {[component.outlet]:null}}], {queryParamsHandling: 'preserve'});
   })
 
   it('getValue(), should get value from form-input', async() => {
@@ -75,10 +75,16 @@ describe('DatascopeSidesheetComponent', () => {
 
     ctrl = {
       fieldId: 'MATL_TYPE',
-      values: ['USA Region']
+      values: ['USA_Region'],
+      textValues: ['USA data scope'],
+      selectedValues: [{
+        CODE: 'xyz',
+        TEXT: 'Data scope from API',
+        LANGU: 'English'
+      }]
     } as FilterCriteria;
     result = component.prepareTextToShow(ctrl);
-    expect(result).toEqual('USA Region');
+    expect(result).toEqual('USA data scope');
   })
 
   it('loadDropValues(), should load all selected values', async() => {
@@ -133,6 +139,72 @@ describe('DatascopeSidesheetComponent', () => {
       ]
     } as SchemaVariantReq
     component.updateChipFilter(selectedValues, fieldId);
+    expect(component.variantInfo.filterCriteria[0].values.length).toEqual(2);
+  });
+
+  it('makeFilterCtrl(), should return filter', async() => {
+    const event = {
+      fldCtrl: {
+        fieldId: 'APPROVER_NAME',
+        fieldDescri: 'Approver Name'
+      },
+      selectedValues: [
+        {
+          CODE: 'ashishkr',
+          TEXT: 'ashish goyal',
+          FIELDNAME: 'APPROVER_NAME'
+        },
+        {
+          CODE:  'harshitjain',
+          TEXT: 'harshit jain',
+          FIELDNAME: 'APPROVER_NAME'
+        }
+      ]
+    } as AddFilterOutput
+
+    component.variantInfo = {
+      variantId:  '10002',
+      schemaId: '1002152',
+      variantName: 'Test DS',
+      variantType: 'RUNFOR',
+      filterCriteria: null
+    }
+
+    component.makeFilterCtrl(event);
+    expect(component.variantInfo.filterCriteria.length).toEqual(1);
+
+    component.variantInfo = {
+      variantId:  '10002',
+      schemaId: '1002152',
+      variantName: 'Test DS',
+      variantType: 'RUNFOR',
+      filterCriteria: [
+        {
+          fldCtrl: {
+            fieldId: 'APPROVER_NAME',
+            fieldDescri: 'Approver Name'
+          },
+          selectedValues: [
+            {
+              CODE: 'ashishkrgoyal',
+              TEXT: 'Ashish kumar goyal',
+              FIELDNAME: 'APPROVER_NAME'
+            },
+            {
+              CODE:  'sandeeprana',
+              TEXT: 'Sandeep kumar rana',
+              FIELDNAME: 'APPROVER_NAME'
+            }
+          ],
+          values:  [
+            'ashishkrgoyal',
+            'sandeeprana'
+          ]
+        }
+      ] as FilterCriteria[]
+    }
+
+    component.makeFilterCtrl(event);
     expect(component.variantInfo.filterCriteria[0].values.length).toEqual(2);
   })
 });

@@ -244,7 +244,7 @@ describe('SchemaSummarySidesheetComponent', () => {
     component.outlet = 'outer';
     spyOn(router, 'navigate');
     component.openDataScopeSideSheet();
-    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { outer: `outer/schema/data-scope/${component.moduleId}/${component.schemaId}/new/${component.outlet}` } }])
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { outer: `outer/schema/data-scope/${component.moduleId}/${component.schemaId}/new/${component.outlet}` } }], {queryParamsHandling: 'preserve'});
   })
 
   it('openBusinessRuleSideSheet(), should openBusinessRuleSideSheet', async () => {

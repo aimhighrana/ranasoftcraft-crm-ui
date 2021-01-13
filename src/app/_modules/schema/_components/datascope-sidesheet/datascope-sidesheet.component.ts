@@ -102,7 +102,7 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
    * function to close dataScope side sheet
    */
   close(){
-    this.router.navigate([{ outlets: { [`${this.outlet}`]: null } }]);
+    this.router.navigate([{ outlets: { [`${this.outlet}`]: null } }], {queryParamsHandling: 'preserve'});
   }
 
   /**
@@ -123,9 +123,11 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
     filterCtrl.fldCtrl = event.fldCtrl;
     filterCtrl.type = 'DROPDOWN';
     filterCtrl.values = [];
+    filterCtrl.textValues = [];
     event.selectedValues.forEach((value) => {
       if(value.FIELDNAME === filterCtrl.fieldId) {
-        filterCtrl.values.push(value.CODE)
+        filterCtrl.values.push(value.CODE);
+        filterCtrl.textValues.push(value.TEXT);
       }
     })
     // In case we are adding data-scope
@@ -139,7 +141,10 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
         if(filCtrl.fieldId === event.fldCtrl.fieldId) {
           flag = true;
           filCtrl.values = [];
+          filCtrl.textValues = [];
+
           filCtrl.values.push(...filterCtrl.values);
+          filCtrl.textValues.push(...filterCtrl.textValues);
         }
       })
       if(flag === false){
@@ -156,7 +161,7 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
     if(ctrl.values.length > 1) {
       return ctrl.values.length;
     }else {
-      return ctrl.values[0];
+      return ctrl.textValues ? ctrl.textValues[0] : ctrl.selectedValues[0].TEXT;
     }
   }
 
@@ -212,8 +217,10 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
     this.variantInfo.filterCriteria.forEach((filterCtrl) => {
       if(filterCtrl.fieldId === fieldId) {
         filterCtrl.values.length = 0;
+        filterCtrl.textValues = [];
         selectedValues.forEach((value) => {
           filterCtrl.values.push(value.CODE);
+          filterCtrl.textValues.push(value.TEXT ? value.TEXT : value.CODE);
         })
       }
     })

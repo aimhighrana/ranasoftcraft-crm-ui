@@ -772,7 +772,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    * Function to open data scope side sheet
    */
   openDataScopeSideSheet() {
-    this.router.navigate([ { outlets: { outer: `outer/schema/data-scope/${this.moduleId}/${this.schemaId}/new/${this.outlet}` } }]);
+    this.router.navigate([ { outlets: { outer: `outer/schema/data-scope/${this.moduleId}/${this.schemaId}/new/${this.outlet}` } }], {queryParamsHandling: 'preserve'});
   }
   /**
    * Function to open new br sidesheet
