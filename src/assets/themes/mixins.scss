@@ -1387,6 +1387,22 @@
     }
   }
 
+  pros-report-list-download-model {
+    mat-nav-list.mat-nav-list {
+      mat-list-item.mat-list-item {
+        border-bottom: 1px solid $color-app-border;
+
+        .mat-list-item-content {
+          padding: 0 0 0 8px;
+
+          .mat-card-header-text {
+            margin: 0 4px;
+          }
+        }
+      }
+    }
+  }
+
   pros-add-filter-menu {
     mat-nav-list {
       .filter-header {
