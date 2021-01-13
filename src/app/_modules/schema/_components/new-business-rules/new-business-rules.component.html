@@ -25,9 +25,9 @@
                 </mat-option>
               </ng-container>
             </mat-select>
-            <mat-error *ngIf="submitted && form.controls.rule_type.errors && form.controls.rule_type.errors.required">
-              Please enter rule type</mat-error>
           </mat-form-field>
+          <mat-error *ngIf="submitted && form.controls.rule_type.errors && form.controls.rule_type.errors.required">
+            Please enter rule type</mat-error>
         </div>
 
         <div class="f-col mdo-form-field" *ngIf="!isDuplicateType">
@@ -58,7 +58,7 @@
         </div>
 
         <div class="f-col mdo-form-field">
-          <pros-form-input [value]="form.get('rule_name').value" (valueChange)="getFormValue($event,'rule_name')"
+          <pros-form-input [value]="form.get('rule_name').value" [control]="formField('rule_name')"
             [label]="'Rule name (Description)'">
           </pros-form-input>
           <mat-error *ngIf="submitted && form.controls.rule_name.errors && form.controls.rule_name.errors.required">
@@ -66,8 +66,8 @@
         </div>
 
         <div class="f-col mdo-form-field" *ngIf="!isDuplicateType">
-          <pros-form-input [value]="form.get('error_message').value"
-            (valueChange)="getFormValue($event,'error_message')" [label]="'Error message (Message)'">
+          <pros-form-input [value]="form.get('error_message').value" [control]="formField('error_message')"
+            (valueChange)="getFormValue($event,'error_message')" [label]="'Error message'">
           </pros-form-input>
           <mat-error
             *ngIf="submitted && form.controls.error_message.errors && form.controls.error_message.errors.required">
@@ -75,7 +75,7 @@
         </div>
 
         <div class="f-col mdo-form-field" *ngIf="form.controls.rule_type.value === 'BR_CLASSIFICATION'">
-          <pros-form-input [value]="form.get('apiKey').value" (valueChange)="getFormValue($event,'apiKey')"
+          <pros-form-input [value]="form.get('apiKey').value" [control]="formField('apiKey')" (valueChange)="getFormValue($event,'apiKey')"
             [label]="'Enter access token'">
           </pros-form-input>
           <mat-error *ngIf="submitted && form.controls.apiKey.errors && form.controls.apiKey.errors.required">
@@ -153,7 +153,7 @@
         </div>
 
         <div class="f-col mdo-form-field" *ngIf="isRegexType">
-          <pros-form-input [value]='form.value.regex' (valueChange)="getFormValue($event,'regex')"
+          <pros-form-input [value]='form.value.regex' [control]="formField('regex')" (valueChange)="getFormValue($event,'regex')"
             [label]="'Regex value'">
           </pros-form-input>
           <mat-error *ngIf="submitted && form.controls.regex.errors && form.controls.regex.errors.required">

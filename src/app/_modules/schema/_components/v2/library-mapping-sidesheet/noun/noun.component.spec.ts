@@ -40,5 +40,10 @@ describe('NounComponent', () => {
     component.close();
     expect(router.navigate).toHaveBeenCalledWith([{ outlets: { outer: null } }])
   });
+  it(`To get FormControl from fromGroup `, async(() => {
+    component.buildForm()
+    const field=component.formField('nounCode');
+    expect(field).toBeDefined();
+   }));
 
 });

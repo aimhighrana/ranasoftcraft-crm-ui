@@ -16,8 +16,8 @@ export class LoginComponent implements OnInit {
   returnUrl: string;
 
   signInForm = new FormGroup({
-    userName : new FormControl('', [Validators.required]),
-    password : new FormControl('', [Validators.required])
+    userName: new FormControl('', [Validators.required]),
+    password: new FormControl('', [Validators.required])
   });
 
   /**
@@ -33,31 +33,31 @@ export class LoginComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.signInForm.valueChanges.subscribe(val=>{
+    this.signInForm.valueChanges.subscribe(val => {
       this.errorMsg = '';
     });
 
-    this.activatedRouter.queryParams.subscribe(param=>{
+    this.activatedRouter.queryParams.subscribe(param => {
       this.returnUrl = param.returnUrl ? param.returnUrl : '';
     });
 
-    try{
+    try {
       const jwtToken = localStorage.getItem('JWT-REFRESH-TOKEN');
-      if(jwtToken) {
-        this.validateToken(jwtToken).then(res=>{
-          if(res.body) {
+      if (jwtToken) {
+        this.validateToken(jwtToken).then(res => {
+          if (res.body) {
             res = res.body;
             localStorage.setItem('JWT-TOKEN', (res['JWT-TOKEN'] ? res['JWT-TOKEN'] : ''));
-            localStorage.setItem('JWT-REFRESH-TOKEN', (res['JWT-REFRESH-TOKEN'] ? res['JWT-REFRESH-TOKEN'] :''));
+            localStorage.setItem('JWT-REFRESH-TOKEN', (res['JWT-REFRESH-TOKEN'] ? res['JWT-REFRESH-TOKEN'] : ''));
 
             this.router.navigate(['/home']);
           }
-        }).catch(ex=>{
+        }).catch(ex => {
           console.error(`Exception : ${ex.messgae}`);
         });
       }
 
-    }catch(ex){
+    } catch (ex) {
       console.error(`Exception ${ex.messgae}`);
     }
   }
@@ -78,44 +78,29 @@ export class LoginComponent implements OnInit {
    *
    * Login pre/post processor .. for do authentication ..
    */
-  signIn(){
+  signIn() {
     const userName = this.signInForm.get('userName').value;
     const password = this.signInForm.get('password').value;
-    if(!this.signInForm.valid) {
-      this.errorMsg = 'Username or password require ';
+    console.log(this.signInForm)
+    if (!this.signInForm.valid) {
+      this.signInForm.markAsDirty()
+      this.errorMsg = 'Username or password required ';
       return false;
     }
-    this.msteamsConfigService.signIn(userName, password).subscribe(res=>{
+    this.msteamsConfigService.signIn(userName, password).subscribe(res => {
       localStorage.setItem('JWT-TOKEN', (res['JWT-TOKEN'] ? res['JWT-TOKEN'] : ''));
-      localStorage.setItem('JWT-REFRESH-TOKEN', (res['JWT-REFRESH-TOKEN'] ? res['JWT-REFRESH-TOKEN'] :''));
+      localStorage.setItem('JWT-REFRESH-TOKEN', (res['JWT-REFRESH-TOKEN'] ? res['JWT-REFRESH-TOKEN'] : ''));
       this.errorMsg = '';
 
       // after successfully login ... redirect to redirect url
-      if(this.returnUrl) {
+      if (this.returnUrl) {
         this.router.navigateByUrl(this.returnUrl);
       } else {
         this.router.navigate(['/home']);
       }
-    },error=>{
+    }, error => {
       console.error(`Error : ${error}`);
       this.errorMsg = 'Invalid username or password ';
     });;
   }
-
-  /**
-   * Set email or username to frmCtrl
-   * @param val update username/ email val
-   */
-  emailChange(val: string) {
-    this.signInForm.get('userName').setValue(val)
-  }
-
-  /**
-   * Update password to form control
-   * @param val changed password ..
-   */
-  passChange(val: string) {
-    this.signInForm.get('password').setValue(val);
-  }
-
 }

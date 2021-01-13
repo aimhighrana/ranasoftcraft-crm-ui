@@ -19,7 +19,6 @@ export class SubscriberInviteSidesheetComponent implements OnInit {
    */
   invitationForm: FormGroup;
   submitted = false;
-
   /**
    * Id of schema for which subscribers will be invited
    */
@@ -50,6 +49,7 @@ export class SubscriberInviteSidesheetComponent implements OnInit {
    * Angular hook
    */
   ngOnInit(): void {
+    console.log('this is the component')
     this.activatedRoute.params.subscribe((params) => {
       this.schemaId = params.schemaId;
       this.outlet = params.outlet;
@@ -121,6 +121,11 @@ export class SubscriberInviteSidesheetComponent implements OnInit {
   sendInvitation() {
     this.submitted = true;
     if(!this.invitationForm.valid){
+      (Object).values(this.invites().controls).forEach(outerControl => {
+      (Object).values((outerControl as FormArray).controls).forEach(control=>{
+        if(control.invalid)
+        control.markAsTouched()})
+      });
       this.snackBar.open('Please enter the required fields', 'Dismiss');
       return;
     }

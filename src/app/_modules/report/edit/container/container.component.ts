@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit, ElementRef, OnDestroy } from '@angula
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Widget, WidgetType, ReportDashboardReq, WidgetTableModel, ChartType, Orientation, DatalabelsPosition, LegendPosition, BlockType, TimeseriesStartDate, Criteria, OrderWith, SeriesWith, WorkflowFieldRes } from '../../_models/widget';
 import { Observable, of, BehaviorSubject, Subscription } from 'rxjs';
-import { FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, FormArray, Validators, FormControl } from '@angular/forms';
 import { ReportService } from '../../_service/report.service';
 import { MetadataModel, MetadataModeleResponse } from 'src/app/_models/schema/schemadetailstable';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -52,7 +52,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   headerFields: Observable<MetadataModel[]> = of([]);
   workflowFields: WorkflowFieldRes = new WorkflowFieldRes();
   reportId: string;
-  reportName = '';
+  reportName = new FormControl ('', Validators.required);
   chooseColumns: WidgetTableModel[] = [];
   dataSets: ObjectTypeResponse[];
   dataSetOb: Observable<ObjectTypeResponse[]> = of([]);
@@ -154,7 +154,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         this.getReportConfig(this.reportId);
       } else {
         this.widgetList = [];
-        this.reportName = '';
+        this.reportName = new FormControl('',Validators.required);
         this.collaboratorPermission = true;
       }
     });
@@ -359,7 +359,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       const reportConfig = this.reportService.getReportConfi(reportId, user.currentRoleId).subscribe(res => {
         this.widgetList = res.widgets;
         this.reportId = res.reportId;
-        this.reportName = res.reportName;
+        this.reportName.setValue(res.reportName);
         this.collaboratorPermission = res.permission ? res.permission.isAdmin : false;
       }, error => console.error(`Error: ${error}`));
       this.subscriptions.push(reportConfig);
@@ -736,7 +736,9 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   createUpdateReport() {
-    if (this.reportName === undefined || this.reportName.trim() === '') {
+    this.reportName.markAsTouched()
+    if (this.reportName.value === undefined || this.reportName.value.trim() === '') {
+      this.reportName.markAllAsTouched()
       this.snackbar.open(`Report name can't be empty`, 'Close', { duration: 2000 });
       return false;
     }
@@ -748,7 +750,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const request: ReportDashboardReq = new ReportDashboardReq();
     request.reportId = this.reportId;
-    request.reportName = this.reportName;
+    request.reportName = this.reportName.value;
     request.widgetReqList = this.widgetList;
 
     const userSub = this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user => {
@@ -764,12 +766,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subscriptions.push(userSub);
   }
 
-  // To set the emitted value of form-input component
-  setreportname(data: string): void {
-    this.reportName = data;
-  }
-
-  get possibleOperators(): ConditionalOperator[] {
+    get possibleOperators(): ConditionalOperator[] {
     // get generic operators
     const genericOp: ConditionalOperator = new ConditionalOperator();
     genericOp.desc = 'Common Operator';

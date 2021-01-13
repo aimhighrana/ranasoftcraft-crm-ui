@@ -41,7 +41,7 @@
 
 
             <div class="f-col temp-field">
-                <pros-form-input label="Enter schema name" (valueChange)="changedSchemaName($event)"
+                <pros-form-input label="Enter schema name" [control]="schemaField('schemaDescription')" (valueChange)="changedSchemaName($event)"
                     [value]="schemaListDetails ? schemaListDetails.schemaDescription : ''">
                 </pros-form-input>
                 <mat-error *ngIf="form.controls.schemaDescription.invalid">Please enter schema name</mat-error>

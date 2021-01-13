@@ -383,12 +383,6 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     this.getCollaborators('', this.fetchCount);
   }
 
-  setObjectDescription(moduleName) {
-    this.requestForm.controls.objectDesc.setValue(moduleName);
-    this.requestForm.controls.objectfullDesc.setValue(moduleName);
-    this.requestForm.controls.objectDesc.markAsDirty();
-  }
-
   /**
    * Function to build form
    */
@@ -425,6 +419,13 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       schemaId: new FormControl()
     });
     this.schemaCategory = new FormControl('DATAQUALITY_VIEW');
+  }
+
+  /**
+   * function to return formField
+   */
+  formField(field: string) {
+    return this.requestForm.get(field);
   }
 
   /**
@@ -636,6 +637,10 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    */
   step(where: string, validateForm?: boolean) {
     this.stepSubmitted = true;
+    console.log(this.stepper.selectedIndex)
+    if(this.stepper.selectedIndex===1 && this.requestForm.controls.objectDesc.invalid){
+      this.requestForm.controls.objectDesc.markAsTouched();
+    }
     if (validateForm && !this.validateStep()) {
       return;
     }
@@ -1118,6 +1123,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   setschemaName(event) {
     const updatedSchemaValue = { ...this.requestForm.controls.core_schema.value };
     updatedSchemaValue.discription = event;
+    console.log(updatedSchemaValue)
     this.requestForm.controls.core_schema.setValue(updatedSchemaValue);
   }
 
@@ -1251,6 +1257,8 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * and make a API request
    */
   save() {
+    this.requestForm.controls.objectfullDesc.setValue(this.requestForm.controls.objectDesc.value);
+
     const formObject = this.requestForm.value;
     // add schema view control variable value here
     if (formObject.core_schema) {

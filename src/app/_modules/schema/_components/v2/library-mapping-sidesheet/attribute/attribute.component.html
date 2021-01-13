@@ -16,7 +16,8 @@
         <div class="f-col mdo-justify">
             <form [formGroup]="attributeForm">
                 <div class="mdo-form-field">
-                    <pros-form-input [type]="'text'" [placeholder]="'Name'" [label]="'Name'" (valueChange)="setControlValue('attrCode', $event)">
+                    <pros-form-input [type]="'text'" [control]="formField('attrCode')"
+                    [placeholder]="'Name'" [label]="'Name'">
                     </pros-form-input>
                     <mat-error
                         *ngIf="submitted && attributeForm.controls.attrCode.errors && attributeForm.controls.attrCode.errors.required">
@@ -24,8 +25,8 @@
                     </mat-error>
                 </div>
                 <div class="mdo-form-field">
-                    <pros-form-input [type]="'text'" [placeholder]="'Description'" [label]="'Description'"
-                        (valueChange)="setControlValue('attrDesc', $event)"></pros-form-input>
+                    <pros-form-input [type]="'text'" [control]="formField('attrCode')" 
+                    [placeholder]="'Description'" [label]="'Description'"></pros-form-input>
                     <mat-error
                         *ngIf="submitted && attributeForm.controls.attrDesc.errors && attributeForm.controls.attrDesc.errors.required">
                         Please enter description
@@ -45,16 +46,16 @@
                     <div class="f-row-spacer-half"></div>
                 </div>
                 <div class="mdo-form-field">
-                    <pros-form-input type="number" [placeholder]="'Field length'" [label]="'Field length'"
-                        (valueChange)="setControlValue('attFieldLen', $event)"></pros-form-input>
+                    <pros-form-input type="number" [control]="formField('attFieldLen')"
+                     [placeholder]="'Field length'" [label]="'Field length'"></pros-form-input>
                     <mat-error
                         *ngIf="submitted && attributeForm.controls.attFieldLen.errors && attributeForm.controls.attFieldLen.errors.required">
                         Please enter field length
                     </mat-error>
                 </div>
                 <div class="mdo-form-field">
-                    <pros-form-input [type]="'text'" [placeholder]="'Prefix'" [label]="'Prefix'"
-                        (valueChange)="setControlValue('prefix', $event)"></pros-form-input>
+                    <pros-form-input [type]="'text'" [control]="formField('prefix')"
+                     [placeholder]="'Prefix'" [label]="'Prefix'"></pros-form-input>
                     <mat-error
                         *ngIf="submitted && attributeForm.controls.prefix.errors && attributeForm.controls.prefix.errors.required">
                         Please enter prefix

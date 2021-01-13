@@ -133,6 +133,13 @@ export class TransformationRuleComponent implements OnInit, OnChanges {
     this.patchFormValues(this.initialTransformationData);
   }
 
+   /**
+    * function to return formField
+    */
+  formField(field: string) {
+    return this.form.get(field);
+  }
+
   /**
    * Patch form values with the existing value
    * @param initialData form data to patch

@@ -381,4 +381,10 @@ describe('SchemaInfoComponent', () => {
     component.updateRole(subscriber, role);
     expect(schemaDetailsService.createUpdateUserDetails).toHaveBeenCalledWith(Array(subscriber));
   })
+
+  it(`To get FormControl from fromGroup `, async(() => {
+    component.initializeSummaryForm()
+    const field=component.schemaField('schemaName');
+    expect(field).toBeDefined();
+   }));
 });

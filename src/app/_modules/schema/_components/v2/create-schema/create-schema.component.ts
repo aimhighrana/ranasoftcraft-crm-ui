@@ -98,6 +98,13 @@ export class CreateSchemaComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * method to return the formcontrol
+   */
+  schemaField(fieldName){
+    return this.form.get(fieldName);
+  }
+
+  /**
    * Changed schema name ..
    * @param val change value of schema name ...
    */

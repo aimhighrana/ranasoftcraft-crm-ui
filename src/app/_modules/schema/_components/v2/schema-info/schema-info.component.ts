@@ -186,6 +186,13 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * method to return the formcontrol
+   */
+  schemaField(fieldName){
+    return this.schemaSummaryForm.get(fieldName);
+  }
+
+  /**
    * function to get schema details
    * @param schemaId: Id of schema
    */

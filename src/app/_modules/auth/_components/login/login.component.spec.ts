@@ -46,26 +46,26 @@
 //     expect(component).toBeTruthy();
 //   });
 
-//   it('signIn(), signin ..', async(()=>{
-//     component.signIn();
-//     expect(component.errorMsg).toEqual('Username or password require ');
+// //   it('signIn(), signin ..', async(()=>{
+// //     component.signIn();
+// //     expect(component.errorMsg).toEqual('Username or password require ');
 
-//     component.signInForm.setValue({userName:'srana', password:'rana'})
+// //     component.signInForm.setValue({userName:'srana', password:'rana'})
 
-//     const httpOptions = {
-//       headers: new HttpHeaders({
-//         'JWT-TOKEN':'',
-//         'JWT-REFRESH-TOKEN':''
-//     }), observe: 'response' as const};
-//     const httpRes = new HttpResponse({headers: httpOptions.headers});
-//     spyOn(msTeamService,'signIn').withArgs('srana', 'rana').and.returnValue(of(httpRes))
+// //     const httpOptions = {
+// //       headers: new HttpHeaders({
+// //         'JWT-TOKEN':'',
+// //         'JWT-REFRESH-TOKEN':''
+// //     }), observe: 'response' as const};
+// //     const httpRes = new HttpResponse({headers: httpOptions.headers});
+// //     spyOn(msTeamService,'signIn').withArgs('srana', 'rana').and.returnValue(of(httpRes))
 
-//     spyOn(router,'navigate');
+// //     spyOn(router,'navigate');
 
-//     component.signIn();
+// //     component.signIn();
 
-//     expect(msTeamService.signIn).toHaveBeenCalledWith('srana', 'rana');
-//     expect(router.navigate).toHaveBeenCalledWith(['/home']);
-//   }));
+// //     expect(msTeamService.signIn).toHaveBeenCalledWith('srana', 'rana');
+// //     expect(router.navigate).toHaveBeenCalledWith(['/home']);
+// //   }));
 
 // });

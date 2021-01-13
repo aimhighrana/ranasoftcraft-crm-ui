@@ -1,5 +1,6 @@
 <div class="f-col">
-    <mat-label>{{label}}</mat-label>
+    <mat-label *ngIf="label && isRequired;else notRequired">{{label}}<span class="mandatory">*</span> </mat-label>
+    <ng-template #notRequired>{{label}}</ng-template>
     <mat-form-field appearance="outline">
         <input [id]="id" matInput class="mat-input"
          [type]="type"
@@ -16,6 +17,7 @@
                 <mat-icon fontSet="mdo-icons">help_outline</mat-icon>
             </button>
         </div>
+    <!-- <mat-error *ngIf="control.invalid">{{getErrorMessage(label)}}</mat-error> -->
     </mat-form-field>
     <mat-hint>{{hint}}</mat-hint>
 </div>

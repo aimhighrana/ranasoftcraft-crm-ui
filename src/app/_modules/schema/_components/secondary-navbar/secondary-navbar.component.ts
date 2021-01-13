@@ -184,7 +184,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
         if (this.reportList.length > 0 && !this.isPageReload) {
           const firstReportId = this.reportList[0].reportId;
           this.router.navigate(['home/report/dashboard', firstReportId]);
-        } else {
+        } else if(this.reportList.length === 0 && !this.isPageReload) {
           this.router.navigate(['home/report/dashboard/new']);
         }
       }, error => console.error(`Error : ${error}`));

@@ -475,4 +475,10 @@ describe('UploadDatasetComponent', () => {
     component.addSubscribers();
     expect(globaldialogService.openDialog).toHaveBeenCalled();
   })
+
+  it(`To get FormControl from fromGroup `, async(() => {
+    component.createForm()
+    const field=component.formField('objectDesc');
+    expect(field).toBeDefined();
+   }));
 });

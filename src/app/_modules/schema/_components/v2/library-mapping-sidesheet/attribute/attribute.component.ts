@@ -52,6 +52,13 @@ export class AttributeComponent implements OnInit {
   }
 
   /**
+   * function to return formField
+   */
+    formField(field: string){
+      return this.attributeForm.get(field);
+  }
+
+  /**
    * set form control value
    * @param controlName from control name
    * @param value value to be set
@@ -64,15 +71,15 @@ export class AttributeComponent implements OnInit {
    * save new attribute details
    */
   save() {
-
     this.submitted = true;
-
     if (this.attributeForm.invalid) {
+      (Object).values(this.attributeForm.controls).forEach(control => {
+        if(control.invalid)
+        control.markAsTouched();
+      });
       this.snackBar.open('Please enter the missing fields !', 'close', { duration: 3000 });
       return;
     }
-
-    console.log(this.attributeForm.value);
 
     const request: Attribute[] = [{ ...this.attributeForm.value } as Attribute];
 

@@ -159,6 +159,13 @@ export class ScheduleComponent implements OnInit, OnDestroy {
     })
   }
 
+  /**
+   * function to return formField
+   */
+  formField(field: string) {
+    return this.form.get(field);
+  }
+
 
   /**
    * Getter fuinction to convert the hours text to metric
@@ -184,6 +191,13 @@ export class ScheduleComponent implements OnInit, OnDestroy {
   submit() {
     this.formSubmitted = true;
     console.log(this.form.value);
+    if (this.form.invalid) {
+      (Object).values(this.form.controls).forEach(control => {
+        if(control.invalid)
+        control.markAsTouched()
+      });
+      return;
+    }
     this.scheduleInfo = this.form.value;
     this.scheduleInfo.schemaId = this.schemaId;
     this.scheduleInfo.schedulerId = this.schedulerId !== 'new' ? Number(this.schedulerId) : null;

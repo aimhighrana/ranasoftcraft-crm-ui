@@ -223,13 +223,13 @@ describe('SchemaSummarySidesheetComponent', () => {
     component.getCheckDataDetails(component.schemaId);
     expect(schemaService.getCheckData).toHaveBeenCalledWith(component.schemaId);
   });
-
-  it('getSchemaName(), should get name of schema', async () => {
+  it('updatedSchemaName should set name of schema', async () => {
     const value = 'schemaAshish';
-    component.getSchemaName(value);
+    component.schemaName= new FormControl('');
+    component.schemaName.setValue(value);
+    component.updatedSchemaName=component.schemaName.value
     expect(component.updatedSchemaName).toEqual('schemaAshish');
   });
-
   it('openUploadSideSheet(), should open upload dataset side sheet', async () => {
     component.moduleId = '1001';
     component.outlet = 'outer';

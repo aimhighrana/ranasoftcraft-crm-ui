@@ -72,4 +72,10 @@ describe('ScheduleComponent', () => {
     component.setValueForFormControl();
     expect(component.form.controls.isEnable.value).toEqual(false)
   })
+
+  it(`To get FormControl from fromGroup `, async(() => {
+    component.createForm()
+    const field=component.formField('repeatValue');
+    expect(field).toBeDefined();
+   }));
 });

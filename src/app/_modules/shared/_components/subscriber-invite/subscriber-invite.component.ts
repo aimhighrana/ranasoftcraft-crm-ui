@@ -66,6 +66,13 @@ export class SubscriberInviteComponent implements OnInit {
   }
 
   /**
+   * function to return formField
+   */
+  formField(index: number, field: string) {
+    return this.invites().controls[index].get(field);
+  }
+
+  /**
    * Add a form row to invites array
    */
   addFormRow() {

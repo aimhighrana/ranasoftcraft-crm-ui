@@ -14,6 +14,7 @@ import { SchemaService } from '@services/home/schema.service';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { BlockType } from '@modules/admin/_components/module/business-rules/user-defined-rule/udr-cdktree.service';
 import { CONDITIONS } from 'src/app/_constants';
+import { TransformationRuleComponent } from '@modules/shared/_components/transformation-rule/transformation-rule.component';
 
 @Component({
   selector: 'pros-brrule-side-sheet',
@@ -25,7 +26,6 @@ export class BrruleSideSheetComponent implements OnInit {
   form: FormGroup;
   businessRuleTypes: BusinessRules[] = RULE_TYPES;
   preDefinedRegex: Regex[] = PRE_DEFINED_REGEX;
-
   /**
    * source fields for transformation rule
    */
@@ -144,6 +144,10 @@ export class BrruleSideSheetComponent implements OnInit {
    */
   @ViewChild('fieldsInput') fieldsInput: ElementRef;
 
+  /* To access properties of Child for validation purpose
+   */
+  @ViewChild(TransformationRuleComponent)transformationRuleComponent:TransformationRuleComponent;
+
   /**
    * Class contructor
    * @param dialogRef refernce to matdialog
@@ -157,7 +161,7 @@ export class BrruleSideSheetComponent implements OnInit {
     private schemaService: SchemaService,
     private router: Router,
     private sharedService: SharedServiceService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
   ) { }
 
   /**
@@ -309,6 +313,13 @@ export class BrruleSideSheetComponent implements OnInit {
 
       resolve(null);
     });
+  }
+
+  /**
+   * function to return formField
+   */
+  formField(field: string) {
+    return this.form.get(field);
   }
 
   /**
@@ -747,6 +758,16 @@ export class BrruleSideSheetComponent implements OnInit {
    * function to save the form data
    */
   save() {
+    this.submitted = true;
+    (Object).values(this.form.controls).forEach(control => {
+      if(control.invalid)
+      control.markAsTouched();
+    });
+    (Object).values(this.transformationRuleComponent.form.controls).forEach(control => {
+      this.transformationRuleComponent.submitted=true;
+      if(control.invalid)
+      control.markAsTouched();
+    });
     this.form.controls.fields.setValue(this.selectedFields.map(item => item.fieldId).join(','));
     this.submitted = true;
     if (!this.form.valid) {

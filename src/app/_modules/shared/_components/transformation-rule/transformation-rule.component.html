@@ -55,7 +55,7 @@
         </div>
 
         <div class="mdo-form-field">
-            <pros-form-input [value]='form.value.excludeScript' (valueChange)="getFormValue($event,'excludeScript')"
+            <pros-form-input [control]="formField('excludeScript')" [value]='form.value.excludeScript'
                 [label]="'Exclude script (Regex)'">
             </pros-form-input>
             <mat-error
@@ -64,7 +64,7 @@
         </div>
 
         <div class="mdo-form-field">
-            <pros-form-input [value]='form.value.includeScript' (valueChange)="getFormValue($event,'includeScript')"
+            <pros-form-input [control]="formField('includeScript')" [value]='form.value.includeScript'
                 [label]="'Include script (Regex)'">
             </pros-form-input>
             <mat-error

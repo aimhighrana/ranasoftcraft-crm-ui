@@ -158,4 +158,10 @@ describe('NewBusinessRulesComponent', () => {
           expect(component.duplicacyRuleData).toEqual(br);
 
     });
+
+    it(`To get FormControl from fromGroup `, async(() => {
+        component.initializeForm()
+        const field=component.formField('rule_name');
+        expect(field).toBeDefined();
+       }));
 });

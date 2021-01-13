@@ -17,28 +17,28 @@
         <div class="f-col mdo-justify">
             <form [formGroup]="nounForm">
                 <div class="mdo-form-field">
-                    <pros-form-input [type]="'text'" [placeholder]="'Noun code'"
-                        (valueChange)="setControlValue('nounCode', $event)" [label]="'Noun code'"></pros-form-input>
+                    <pros-form-input [type]="'text'" [control]="formField('nounCode')" [placeholder]="'Noun code'"
+                         [label]="'Noun code'"></pros-form-input>
                     <mat-error *ngIf="submitted && nounForm.controls.nounCode.errors && nounForm.controls.nounCode.errors.required">
                         Please enter noun code
                     </mat-error>
                 </div>
     
                 <div class="mdo-form-field">
-                    <pros-form-input [type]="'text'" [placeholder]="'Noun text'"
-                        (valueChange)="setControlValue('nounText', $event)" [label]="'Noun text'">
+                    <pros-form-input [type]="'text'" [control]="formField('nounText')" [placeholder]="'Noun text'"
+                    [label]="'Noun text'">
                     </pros-form-input>
                 </div>
     
                 <div class="mdo-form-field">
-                    <pros-form-input [type]="'text'" [placeholder]="'Noun numeric code'"
-                        (valueChange)="setControlValue('nounNumCode', $event)" [label]="'Noun numeric code'">
+                    <pros-form-input [type]="'text'" [control]="formField('nounNumCode')" [placeholder]="'Noun numeric code'"
+                    [label]="'Noun numeric code'">
                     </pros-form-input>
                 </div>
     
                 <div class="mdo-form-field">
-                    <pros-form-input [type]="'text'" [placeholder]="'Noun modifier separator'"
-                        (valueChange)="setControlValue('nounModeSep', $event)" [label]="'Noun modifier separator'">
+                    <pros-form-input [type]="'text'" [control]="formField('nounModeSep')" [placeholder]="'Noun modifier separator'"
+                    [label]="'Noun modifier separator'">
                     </pros-form-input>
                 </div>
     

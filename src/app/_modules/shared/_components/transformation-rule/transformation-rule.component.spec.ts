@@ -127,4 +127,10 @@ describe('TransformationRuleComponent', () => {
     component.targetFieldsObject = dummyValue;
     expect(component.displayFnTarget(dummyValue.list[0])).toEqual('Test Field');
   })
+
+  it(`To get FormControl from fromGroup `, async(() => {
+    component.initializeForm()
+    const field=component.formField('excludeScript');
+    expect(field).toBeDefined();
+   }));
 });

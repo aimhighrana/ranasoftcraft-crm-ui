@@ -101,6 +101,11 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
   subscribersNullMessage = `You don't have any subscribers selected. Type the user's name in the box above to add one.`;
 
   /**
+   * formcontrol for schema Name to be passed to child component
+   */
+  schemaName: FormControl;
+
+  /**
    * formcontrol for data scope
    */
   dataScopeControl: FormControl;
@@ -150,7 +155,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    */
   ngOnInit(): void {
     this.getRouteParams();
-
+    this.schemaName= new FormControl('');
     this.dataScopeControl = new FormControl('0');
 
     this.schemaThresholdControl = new FormControl(this.schemaDetails.schemaThreshold);
@@ -639,6 +644,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    * Function to save check data
    */
   saveCheckData() {
+    this.updatedSchemaName=this.schemaName.value
     if((this.schemaDetails.schemaDescription !== this.updatedSchemaName ||
         this.schemaDetails.schemaThreshold !== this.schemaThresholdControl.value)||
         this.schemaId === 'new'
@@ -741,13 +747,6 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    */
   public openUploadSideSheet() {
     this.router.navigate(['', { outlets: { outer: `outer/schema/upload-data/${this.moduleId}/${this.outlet}` } }]);
-  }
-
-  /**
-   * Function to get change in schema name
-   */
-  getSchemaName(value: string) {
-    this.updatedSchemaName = value;
   }
 
   /**

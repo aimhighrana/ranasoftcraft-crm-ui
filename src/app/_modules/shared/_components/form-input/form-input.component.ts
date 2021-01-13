@@ -1,20 +1,21 @@
 import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges, OnChanges, ChangeDetectionStrategy } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { AbstractControl, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'pros-form-input',
   templateUrl: './form-input.component.html',
   styleUrls: ['./form-input.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class FormInputComponent implements OnInit, OnChanges {
 
   constructor() { }
 
+
   /**
    * Define an indiviual form control
    */
-  control: FormControl;
+ @Input() control: FormControl;
 
   /**
    * Getting placeholder from parent
@@ -87,7 +88,7 @@ export class FormInputComponent implements OnInit, OnChanges {
    *
    */
   ngOnInit(): void {
-    this.control = new FormControl();
+    this.control =this.control ? this.control : new FormControl();
     this.readonly ? this.control.disable() : this.control.enable();
     if (this.value !== undefined) {
       this.control.setValue(this.value);
@@ -120,4 +121,15 @@ export class FormInputComponent implements OnInit, OnChanges {
   onBlur(value: string) {
     this.emitBlurEvent.emit(value);
   }
+  /**
+   * method to check if given control is required or not
+   */
+  get isRequired() {
+    const validator = this.control.validator? this.control.validator({} as AbstractControl) : null;
+    if (validator && validator.required)
+      return true;
+      return false
+
+  }
+
 }

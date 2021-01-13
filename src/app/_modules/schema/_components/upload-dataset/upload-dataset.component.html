@@ -70,16 +70,13 @@
             <ng-template matStepLabel></ng-template>
             <div class="f-col">
                 <pros-form-input [value]="requestForm.controls.objectDesc.value" [label]="'Module name'"
-                    [placeholder]="'Module name'" (valueChange)="setObjectDescription($event)"
+                    [placeholder]="'Module name'" [control]="formField('objectDesc')"
                     [hint]="!stepSubmitted || !requestForm.controls['objectDesc'].errors ? 'In MDO module is a dataset' : ''"
                     [disabled]="requestForm.controls.objectId.value !== '' && requestForm.controls.objectId.value !== null">
                 </pros-form-input>
-                <!-- <mat-error *ngIf="requestForm.value.core_schema.discription"> 
-                    requestForm.controls['objectDesc'].errors && !requestForm.controls.objectDesc.pristine ? 'In MDO module is a dataset' : ''-->
                 <mat-error *ngIf="stepSubmitted && requestForm.controls['objectDesc'].errors">
                     Module name is required
                 </mat-error>
-
                 <div class="row-spacer"></div>
 
                 <div class="colunm-listing">
@@ -130,9 +127,9 @@
         <mat-step>
             <ng-template matStepLabel></ng-template>
             <div class="f-col">
-                <pros-form-input [value]="requestForm.get('core_schema').value.discription"
-                    [placeholder]="'Schema name'" [label]="'Schema name'" (valueChange)="setschemaName($event)"
-                    [hint]="!stepSubmitted || isSchemaSet(requestForm.get('core_schema').value) ? 'Schema is a collection of business rules' : ''"
+                <pros-form-input  [value]="requestForm.get('core_schema').value.discription" [label]="'Schema name'"
+                    (emitBlurEvent)="setschemaName($event)" 
+                    [hint]="!stepSubmitted || isSchemaSet(requestForm.get('core_schema').value) ? 'Schema is a collection of business rules' : ''" 
                     [disabled]="isdisabled(requestForm.controls.schemaId.value)">
                 </pros-form-input>
                 <mat-error *ngIf="stepSubmitted && !isSchemaSet(requestForm.get('core_schema').value)">

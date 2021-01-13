@@ -30,12 +30,12 @@
             </ng-template>
             <div class="f-col summary-root">
                 <form [formGroup]="schemaSummaryForm">
-                    <pros-form-input [label]="'Schema name'" [disabled]="false"
+                    <pros-form-input [label]="'Schema name'" [control]="schemaField('schemaName')" [disabled]="false"
                         [value]="schemaDetails?.schemaDescription ? schemaDetails.schemaDescription : ''"
                         (emitBlurEvent)="updateSchemaInfo($event)">
                     </pros-form-input>
                     <div class="row-spacer"></div>
-                    <pros-form-input [label]="'Description'" [disabled]="false"
+                    <pros-form-input [label]="'Description'" [control]="schemaField('schemaDescription')" [disabled]="false"
                         [value]="schemaDetails?.schemaDescription ? schemaDetails.schemaDescription : ''"
                         (emitBlurEvent)="updateSchemaInfo($event)">
                     </pros-form-input>

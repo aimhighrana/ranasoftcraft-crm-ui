@@ -49,8 +49,8 @@
         <div class="f-col mdo-justify">
             <div class="f-col">
                 <div class="f-col mdo-form-field" *ngIf="!isFromCheckData">
-                <pros-form-input [type]="'text'" [label]="'Schema name'" [value]="schemaDetails.schemaDescription"
-                (valueChange)="getSchemaName($event)" placeholder="Schema name" ></pros-form-input>
+                <pros-form-input [type]="'text'" [control]="schemaName" [label]="'Schema name'" [value]="schemaDetails.schemaDescription"
+                 placeholder="Schema name" ></pros-form-input>
                 </div>
 
                 <div class="f-col mdo-form-field">

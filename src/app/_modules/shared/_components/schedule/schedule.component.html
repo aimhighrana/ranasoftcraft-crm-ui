@@ -33,16 +33,16 @@
                 </div>
                 <mat-divider class="divider-dashed"></mat-divider>
                 <div class="f-row every-field mdo-form-field">
-                    <pros-form-input [type]="'number'" [maxLength]='2' [value]='form.value.repeatValue'
-                        (valueChange)="setValue('repeatValue',$event)" [placeholder]="'Enter'" [label]="'Every'"
+                    <pros-form-input [type]="'number'" [control]="formField('repeatValue')" [maxLength]='2' [value]='form.value.repeatValue'
+                    [placeholder]="'Enter'" [label]="'Every'"
                         [minimum]='1'>
                     </pros-form-input>
                     <div class="col-spacer"></div>
                     <div class="week-label">{{getMetricHours}}</div>
                     <mat-error
-                        *ngIf="formSubmitted && form.controls.repeatValue.errors && form.controls.repeatValue.errors.required">
-                        This is a required field
-                    </mat-error>
+                    *ngIf="formSubmitted && form.controls.repeatValue.errors && form.controls.repeatValue.errors.required">
+                    This is a required field
+                </mat-error>
                 </div>
                 <!-- weekly repeat on -->
                 <div *ngIf="form.controls.schemaSchedulerRepeat.value === 'WEEKLY'">
@@ -104,8 +104,8 @@
                     </div>
                 </div>
                 <div class="f-row mdo-form-field every-field" *ngIf="form.controls.end.value === 'AFTER'">
-                    <pros-form-input [type]="'number'" [label]="'Occurences'" [value]="form.controls.occurrenceVal.value"
-                        [maxLength]='2' (valueChange)="setValue('occurrenceVal',$event)" [minimum]='1'>
+                    <pros-form-input [type]="'number'" [control]="formField('occurrenceVal')"
+                     [label]="'Occurences'" [value]="form.controls.occurrenceVal.value" [maxLength]='2' [minimum]='1'>
                     </pros-form-input>
                     <mat-error
                         *ngIf="formSubmitted && form.controls.occurrenceVal.errors && form.controls.occurrenceVal.errors.required">

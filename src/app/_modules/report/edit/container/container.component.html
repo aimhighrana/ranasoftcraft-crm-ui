@@ -15,8 +15,8 @@
     <div class="row-spacer"></div>
 
     <div class="f-col report-builder">
-        <pros-form-input [type]="'text'" [placeholder]="'Untitled-1'" [label]="'Dashboard name'" [value]="reportName"
-          [maxLength]="maxReportNameLength"  (valueChange)="(setreportname($event))">
+        <pros-form-input [type]="'text'" [control]="reportName" [label]="'Dashboard name'" [value]="reportName.value"
+          [maxLength]="maxReportNameLength">
         </pros-form-input>
         <div class="row-spacer"></div>
         <div class="f-row builder-container">

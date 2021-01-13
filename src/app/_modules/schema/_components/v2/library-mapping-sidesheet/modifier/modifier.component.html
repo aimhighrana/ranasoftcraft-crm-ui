@@ -16,7 +16,7 @@
         <div class="f-col mdo-justify">
             <form [formGroup]="modifierForm">
                 <div class="mdo-form-field">
-                    <pros-form-input [type]="'text'" [placeholder]="'Modifier code'"
+                    <pros-form-input [type]="'text'" [control]="formField('modeCode')" [placeholder]="'Modifier code'"
                         (valueChange)="setControlValue('modeCode', $event)"
                         [label]="'Modifier code'"></pros-form-input>
                     <mat-error *ngIf="submitted && modifierForm.controls.modeCode.errors && modifierForm.controls.modeCode.errors.required">
@@ -25,15 +25,13 @@
                 </div>
         
                 <div class="mdo-form-field">
-                    <pros-form-input [type]="'text'" [placeholder]="'Modifier long code'" 
-                        (valueChange)="setControlValue('modLong', $event)" 
-                        [label]="'Modifier long code'"></pros-form-input>
+                    <pros-form-input [type]="'text'" [control]="formField('modLong')" [placeholder]="'Modifier long code'" 
+                    [label]="'Modifier long code'"></pros-form-input>
                 </div>
         
                 <div class="mdo-form-field">
-                    <pros-form-input [type]="'text'" [placeholder]="'Modifier numeric code'" 
-                        (valueChange)="setControlValue('modNumCode', $event)"  
-                        [label]="'Modifier numeric code'">
+                    <pros-form-input [type]="'text'" [control]="formField('modNumCode')" [placeholder]="'Modifier numeric code'" 
+                    [label]="'Modifier numeric code'">
                     </pros-form-input>
                 </div>
         
@@ -46,23 +44,20 @@
                 </div>
         
                 <div class="mdo-form-field">
-                    <pros-form-input [type]="'text'" [placeholder]="'Target class'" 
-                        (valueChange)="setControlValue('targetClass', $event)" 
-                        [label]="'Target class'">
+                    <pros-form-input [type]="'text'" [control]="formField('targetClass')" [placeholder]="'Target class'" 
+                    [label]="'Target class'">
                     </pros-form-input>
                 </div>
         
                 <div class="mdo-form-field">
-                    <pros-form-input [type]="'text'" [placeholder]="'UNSPSC code'" 
-                        (valueChange)="setControlValue('unspcCode', $event)" 
-                        [label]="'UNSPSC code'">
+                    <pros-form-input [type]="'text'" [control]="formField('unspcCode')" [placeholder]="'UNSPSC code'" 
+                    [label]="'UNSPSC code'">
                     </pros-form-input>
                 </div>
         
                 <div class="mdo-form-field">
-                    <pros-form-input [type]="'text'" [placeholder]="'GS1 code'" 
-                        (valueChange)="setControlValue('gs1Code', $event)"  
-                        [label]="'GS1 code'">
+                    <pros-form-input [type]="'text'" [control]="formField('gs1Code')" [placeholder]="'GS1 code'" 
+                    [label]="'GS1 code'">
                     </pros-form-input>
                 </div>
             </form>

@@ -59,12 +59,6 @@ describe('DatascopeSidesheetComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith([{outlets: {[component.outlet]:null}}], {queryParamsHandling: 'preserve'});
   })
 
-  it('getValue(), should get value from form-input', async() => {
-    const dataScopeName = 'USA Region';
-    component.getValue(dataScopeName);
-    expect(component.variantInfo.variantName).toEqual('USA Region');
-  })
-
   it('prepareTextToShow(), should return text/number to chip value', async() => {
     let ctrl = {
       fieldId: 'MATL_TYPE',

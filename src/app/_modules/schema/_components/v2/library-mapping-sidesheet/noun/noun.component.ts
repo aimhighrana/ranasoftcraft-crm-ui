@@ -46,6 +46,13 @@ export class NounComponent implements OnInit {
   }
 
   /**
+   * function to return formField
+   */
+  formField(field: string){
+      return this.nounForm.get(field);
+  }
+
+  /**
    * set form control value
    * @param controlName from control name
    * @param value value to be set
@@ -62,6 +69,10 @@ export class NounComponent implements OnInit {
     this.submitted = true;
 
     if (this.nounForm.invalid) {
+      (Object).values(this.nounForm.controls).forEach(control => {
+        if(control.invalid)
+        control.markAsTouched()
+      });
       this.snackBar.open('Please enter the missing fields !', 'close', { duration: 3000 });
       return;
     }

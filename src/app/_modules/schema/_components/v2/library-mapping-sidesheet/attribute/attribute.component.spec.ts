@@ -51,4 +51,9 @@ describe('AttributeComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith([{ outlets: { outer: null } }])
   });
 
+  it(`To get FormControl from fromGroup `, async(() => {
+    component.buildAttributeForm()
+    const field=component.formField('attrCode');
+    expect(field).toBeDefined();
+   }));
 });

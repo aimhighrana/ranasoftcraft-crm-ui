@@ -15,6 +15,7 @@ import { Regex } from '@modules/admin/_components/module/business-rules/regex-ru
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BlockType } from '@modules/report/_models/widget';
 import { CONDITIONS } from 'src/app/_constants';
+import { TransformationRuleComponent } from '@modules/shared/_components/transformation-rule/transformation-rule.component';
 
 @Component({
     selector: 'pros-new-business-rules',
@@ -101,6 +102,10 @@ export class NewBusinessRulesComponent implements OnInit {
      * to share it with another child component
      */
     submitted = false;
+
+    /* To access properties of Child for validation purpose
+     */
+  @ViewChild(TransformationRuleComponent)transformationRuleComponent:TransformationRuleComponent;
 
     /**
      * Available conditions
@@ -406,6 +411,7 @@ export class NewBusinessRulesComponent implements OnInit {
 
         this.currentControls = controls;
         this.form = new FormGroup(controls);
+        console.log(this.form)
         // Apply conditional validation based on rule type
         this.form.controls.rule_type.valueChanges
             .pipe(distinctUntilChanged())
@@ -419,6 +425,12 @@ export class NewBusinessRulesComponent implements OnInit {
             });
     }
 
+    /**
+     * function to return formField
+     */
+    formField(field: string){
+        return this.form.get(field);
+    }
     /**
      * function to get the fields on basis of module
      */
@@ -632,10 +644,18 @@ export class NewBusinessRulesComponent implements OnInit {
      * function to save the form data
      */
     save() {
+        this.submitted=true;
+        (Object).values(this.form.controls).forEach(control => {
+            if(control.invalid)
+            control.markAsTouched();
+          });
+          (Object).values(this.transformationRuleComponent.form.controls).forEach(control => {
+            this.transformationRuleComponent.submitted=true;
+            if(control.invalid)
+            control.markAsTouched();
+          });
         this.form.controls.fields.setValue(this.selectedFields.map(item => item.fieldId).join(','));
-        this.submitted = true;
-
-        if (!this.form.valid) {
+              if (!this.form.valid) {
             this.snackBar.open('Please enter the required fields', 'okay', { duration: 5000 });
             return;
         }

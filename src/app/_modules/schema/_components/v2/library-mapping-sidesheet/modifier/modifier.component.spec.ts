@@ -51,4 +51,10 @@ describe('ModifierComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith([{ outlets: { outer: null } }])
   });
 
+  it(`To get FormControl from fromGroup `, async(() => {
+    component.buildForm()
+    const field=component.formField('modeCode');
+    expect(field).toBeDefined();
+   }));
+
 });

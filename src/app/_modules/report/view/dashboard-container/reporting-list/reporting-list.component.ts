@@ -167,18 +167,31 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   public getListTableMetadata(): void {
     this.displayedColumnsId = ['action'];
     // this.columnDescs = {};
+    const fieldsArray=[];
     this.widgetService.getListTableMetadata(this.widgetId).subscribe(returnData => {
       if (returnData !== undefined && Object.keys(returnData).length > 0) {
         // this.columnDescs.objectNumber = 'Object Number';
         returnData.forEach(singlerow => {
-          this.displayedColumnsId.push(singlerow.fields);
-          this.columnDescs[singlerow.fields] = singlerow.fieldDesc ? singlerow.fieldDesc :singlerow.fldMetaData.fieldDescri;
+          const obj = { fields: singlerow.fields, fieldOrder: singlerow.fieldOrder }
+          fieldsArray.push(obj);
+          this.columnDescs[singlerow.fields] = singlerow.fieldDesc ? singlerow.fieldDesc : singlerow.fldMetaData.fieldDescri;
         });
+        const sortedFields = this.sortDisplayedColumns(fieldsArray)
+        this.displayedColumnsId = [...this.displayedColumnsId, ...sortedFields.map(elm => elm.fields)]
         this.reportingListWidget.next(returnData);
         this.tableColumnMetaData = returnData;
       }
     });
   }
+
+  /**
+   * function to get meta data of the columns for data table
+   */
+  sortDisplayedColumns(array: any[]){
+    return array.sort((a, b) => a.fieldOrder - b.fieldOrder);
+   }
+
+
 
   public getListdata(pageSize, pageIndex, widgetId: number, criteria: Criteria[], soringMap): void {
     this.widgetService.getListdata(String(pageSize), String(pageIndex), String(widgetId), criteria, soringMap).subscribe(returndata => {
@@ -327,12 +340,13 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
    * function to open column setting side-sheet
    */
   openTableColumnSideSheet() {
+    const sortedColumns=this.sortDisplayedColumns(this.tableColumnMetaData)
     const data = {
       objectType: this.objectType,
-      selectedColumns: this.tableColumnMetaData.map(columnMetaData => columnMetaData.fldMetaData),
+      selectedColumns: sortedColumns.map(columnMetaData => columnMetaData.fldMetaData),
       isWorkflowdataSet: this.isWorkflowdataSet,
       widgetId: this.widgetId,
-      isRefresh: false
+      isRefresh: false,
     }
     this.sharedService.setReportDataTableSetting(data);
     this.router.navigate(['', { outlets: { sb: `sb/report/column-settings/${this.widgetId}` } }])

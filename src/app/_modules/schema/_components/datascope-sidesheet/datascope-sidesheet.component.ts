@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AddFilterOutput, SchemaVariantReq } from '@models/schema/schema';
@@ -43,6 +44,11 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
    * To hold fieldId and selected values of filter
    */
   loadDropValuesFor: LoadDropValueReq;
+
+  /**
+   * To pass formControl to form-input Component
+   */
+  variantName= new FormControl('');
 
   outlet: string;
 
@@ -104,14 +110,6 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
   close(){
     this.router.navigate([{ outlets: { [`${this.outlet}`]: null } }], {queryParamsHandling: 'preserve'});
   }
-
-  /**
-   * Function to get value of form-control
-   */
-  getValue(dataScopeName: string) {
-    this.variantInfo.variantName = dataScopeName;
-  }
-
 
   /**
    * Function to prepare data on filter selection
@@ -183,6 +181,7 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
    * Function to save varient
    */
   saveVarient() {
+    this.variantInfo.variantName = this.variantName.value;
     this.variantInfo.variantId = this.variantInfo.variantId === 'new' ? '' : this.variantInfo.variantId;
     this.variantInfo.schemaId = this.schemaId;
     this.variantInfo.variantType = 'RUNFOR';

@@ -27,24 +27,25 @@
                 <ng-container *ngFor="let item of invites().controls; let i=index">
                     <div class="f-row invite-colunm" [formGroupName]="i">
                         <div class="col-x2">
-                            <pros-form-input [type]="'text'" [placeholder]="'Email address'"
-                                (valueChange)="setFormValue($event, 'email', i)"></pros-form-input>
-                            <mat-error *ngIf="invites().controls[i].get('email').errors && submitted">
-                                Email is required
-                            </mat-error>
+                           <pros-form-input [type]="'text'" [control]="invites().controls[i].get('email')" 
+                            [placeholder]="'Email address'"></pros-form-input>
+                                <mat-error *ngIf="invites().controls[i].get('email').errors && submitted">
+                                    Email is required
+                                </mat-error>
                         </div>
                         <div class="col-x2">
-                            <mat-form-field appearance="outline" class="divided-matfield">
+                            <mat-form-field appearance="outline">
                                 <mat-select formControlName="role">
                                     <mat-option value="admin">Admin</mat-option>
                                     <mat-option value="reviewer">Reviewer</mat-option>
                                     <mat-option value="viewer">Viewer</mat-option>
-                                    <mat-option value="editer">Editer</mat-option>
+                                    <mat-option value="editer">Editor</mat-option>
                                 </mat-select>
                             </mat-form-field>
-                            <mat-error *ngIf="invites().controls[i].get('role').errors && submitted">
+                            <mat-error *ngIf="invites().controls[i].get('role').invalid && submitted">
                                 Role is required
                             </mat-error>
+           
                         </div>
                         <div class="col-x1">
                             <button mat-button (click)="removeInvite(i)">
