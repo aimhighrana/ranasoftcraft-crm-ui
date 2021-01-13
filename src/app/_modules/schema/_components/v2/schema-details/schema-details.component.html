@@ -26,11 +26,11 @@
             <button mat-fab color="accent" (click)="openExecutionTrendSideSheet()">
                 <mat-icon fontSet="mdo-icons">chart-line</mat-icon>
             </button>
-            <button mat-fab color="accent" [matMenuTriggerFor]="moreactionfile">
+            <button mat-fab *ngIf="activeTab !== 'error'" color="accent" [matMenuTriggerFor]="moreactionfile">
                 <mat-icon fontSet="mdo-icons">more</mat-icon>
             </button>
             <mat-menu #moreactionfile="matMenu" class="navigation-menu">
-                <button mat-menu-item (click)="downloadExecutionDetails()" *ngIf="activeTab !== 'error'">Export to CSV</button>
+                <button mat-menu-item (click)="downloadExecutionDetails()">Export to CSV</button>
             </mat-menu>
             <!-- <button mat-flat-button color="accent" (click)="downloadExecutionDetails()">Download</button> -->
         </div>

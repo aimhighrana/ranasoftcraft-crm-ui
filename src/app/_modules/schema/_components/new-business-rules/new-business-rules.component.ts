@@ -267,15 +267,16 @@ export class NewBusinessRulesComponent implements OnInit {
 
             // Handle existing UDR data
             if (udrTreeData && udrTreeData.blocks) {
+                this.udrBlocks = [];
                 const temp: UDRObject[] = [];
                 udrTreeData.blocks.map((block) => {
-                    const { id, blockType, conditionFieldId, conditionOperator,
+                    const { id, blockDesc, conditionFieldId, conditionOperator,
                         conditionFieldValue, rangeStartValue, rangeEndValue,
                         children } = block;
 
                     temp.push({
                         id,
-                        blockTypeText: blockType,
+                        blockTypeText: blockDesc,
                         fieldId: conditionFieldId,
                         operator: conditionOperator,
                         comparisonValue: conditionFieldValue,
@@ -285,9 +286,16 @@ export class NewBusinessRulesComponent implements OnInit {
                         children
                     })
                 })
-                this.udrBlocks = [...temp];
+
+                temp.map((blk) => {
+                    const hierarchyObj = udrTreeData.udrHierarchies.find((hie) => hie.blockRefId === blk.id);
+                    if(hierarchyObj && !hierarchyObj.parentId) {
+                        this.udrBlocks.push(blk);
+                    }
+                })
+
                 this.allUDRBlocks = [...temp];
-                this.allhierarchies = [...udrTreeData.udrHierarchies]
+                this.allhierarchies = [...udrTreeData.udrHierarchies];
             }
         }
 
@@ -301,7 +309,6 @@ export class NewBusinessRulesComponent implements OnInit {
         // Initializing autocomplete
         this.initiateAutocomplete();
     }
-
 
     /**
      * Patch transformation form data
@@ -500,7 +507,7 @@ export class NewBusinessRulesComponent implements OnInit {
         const controlKeys: any[] = Object.keys(this.currentControls);
         let requiredKeys: string[] = [];
         if (selectedRule === BusinessRuleType.BR_CUSTOM_SCRIPT) {
-            requiredKeys = ['rule_type', 'categoryId', 'rule_name'];
+            requiredKeys = ['rule_type', 'rule_name', 'error_message'];
         }
         if (selectedRule === BusinessRuleType.BR_REGEX_RULE) {
             requiredKeys = ['rule_type', 'categoryId', 'rule_name', 'error_message', 'fields', 'regex', 'standard_function'];
@@ -515,12 +522,11 @@ export class NewBusinessRulesComponent implements OnInit {
                 requiredKeys = ['rule_type', 'rule_name', 'categoryId', 'transformationRuleType', 'error_message'];
             }
         }
-        if (selectedRule === BusinessRuleType.BR_DUPLICATE_RULE) {
-            requiredKeys = ['rule_name'];
-        }
-
         if (selectedRule === BusinessRuleType.BR_CLASSIFICATION) {
             requiredKeys = ['rule_name', 'error_message', 'categoryId', 'apiKey' , 'fields'];
+        }
+        if (selectedRule === BusinessRuleType.BR_DUPLICATE_RULE) {
+            requiredKeys = ['rule_name'];
         }
 
         controlKeys.map((key) => {
@@ -532,7 +538,6 @@ export class NewBusinessRulesComponent implements OnInit {
                     this.form.get(key).setValue('');
                 }
             } else {
-                // this.form.get(key).setValidators([Validators.required]);
                 this.form.controls[key].setValidators([Validators.required]);
                 this.form.controls[key].updateValueAndValidity();
             }
@@ -855,11 +860,7 @@ export class NewBusinessRulesComponent implements OnInit {
      * @param i pass the index for the block
      */
     setParentBlockTypeText(event, i) {
-        this.udrBlocks.forEach((block, index) => {
-            if (index > i) {
-                block.blockTypeText = event.value;
-            }
-        })
+        this.udrBlocks[i].blockTypeText = event.value;
     }
 
     /**
@@ -871,6 +872,7 @@ export class NewBusinessRulesComponent implements OnInit {
     addBlock(nested, parent, i) {
         const blockId = Math.floor(Math.random() * 1000000000000).toString();
         let existingBlockType = this.udrBlocks[this.udrBlocks.length - 1].blockTypeText;
+
         if (existingBlockType === 'When') {
             existingBlockType = 'And'
         }
@@ -909,9 +911,7 @@ export class NewBusinessRulesComponent implements OnInit {
             }
         }
         this.allhierarchies.push(UDRHierarchie);
-        // if (!nested) {
-            this.allUDRBlocks.push(udrBlock);
-        // }
+        this.allUDRBlocks.push(udrBlock);
     }
 
     /**

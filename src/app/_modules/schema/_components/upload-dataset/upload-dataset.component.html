@@ -210,7 +210,7 @@
                                 </button>
                             </div>
                             <div class="col col-x8">
-                                <div mat-line><a class="info-link">{{businessRule.brInfo || 'UNTITLED'}}</a></div>
+                                <div mat-line><a class="info-link" (click)="configureRule(businessRule)">{{businessRule.brInfo || 'UNTITLED'}}</a></div>
                             </div>
 
                             <div class="col col-x8 mat-item-center">
