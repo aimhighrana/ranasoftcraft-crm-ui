@@ -35,7 +35,7 @@ describe('ExecutionTrendSidesheetComponent', () => {
 
     spyOn(router, 'navigate');
     component.close();
-    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: null } }]);
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: null } }], {queryParamsHandling: 'preserve'});
 
   });
 

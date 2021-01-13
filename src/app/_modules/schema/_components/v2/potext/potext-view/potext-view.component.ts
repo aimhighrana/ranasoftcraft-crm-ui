@@ -484,7 +484,7 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
     const data ={schemaId: this.schemaId,variantId: this.variantId, fields: this.metadata.getValue(),
       selectedFields:this.selectedFields, editActive: true};
     this.sharedServices.setChooseColumnData(data);
-    this.router.navigate(['', { outlets: { sb: 'sb/schema/table-column-settings' }} ], { queryParams:{status:this.activeTab} });
+    this.router.navigate(['', { outlets: { sb: 'sb/schema/table-column-settings' }} ], {queryParamsHandling: 'preserve'});
   }
 
   /**
@@ -940,21 +940,21 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
    * Function to open data scope side sheet
    */
   openDataScopeSideSheet() {
-    this.router.navigate([{ outlets: { sb: `sb/schema/data-scope/${this.moduleId}/${this.schemaId}/new/sb` } }])
+    this.router.navigate([{ outlets: { sb: `sb/schema/data-scope/${this.moduleId}/${this.schemaId}/new/sb` } }], {queryParamsHandling: 'preserve'})
   }
 
   /**
    * Function to open summary side sheet of schema
    */
   openSummarySideSheet() {
-    this.router.navigate([{ outlets: { sb: `sb/schema/check-data/${this.moduleId}/${this.schemaId}` } }])
+    this.router.navigate([{ outlets: { sb: `sb/schema/check-data/${this.moduleId}/${this.schemaId}` } }], {queryParamsHandling: 'preserve'})
   }
 
   /**
    * Function to open trend execution side sheet
    */
   openExecutionTrendSideSheet() {
-    this.router.navigate(['', { outlets: { sb: `sb/schema/execution-trend/${this.moduleId}/${this.schemaId}/${this.variantId}` } }])
+    this.router.navigate(['', { outlets: { sb: `sb/schema/execution-trend/${this.moduleId}/${this.schemaId}/${this.variantId}` } }], {queryParamsHandling: 'preserve'})
   }
 
   /**

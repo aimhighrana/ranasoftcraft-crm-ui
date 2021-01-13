@@ -362,7 +362,7 @@ describe('DuplicacyComponent', () => {
 
     spyOn(router, 'navigate');
     component.openSummarySideSheet();
-    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/check-data/${component.moduleId}/${component.schemaId}` } }])
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/check-data/${component.moduleId}/${component.schemaId}` } }], {queryParamsHandling: 'preserve'})
   })
 
   it('getDataScope(), should return all variants of a schema', async () => {
@@ -375,13 +375,13 @@ describe('DuplicacyComponent', () => {
   it('openSummarySideSheet(), should navigate to schema summary side sheet', () => {
     spyOn(router, 'navigate');
     component.openSummarySideSheet();
-    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/check-data/${component.moduleId}/${component.schemaId}` } }])
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/check-data/${component.moduleId}/${component.schemaId}` } }], {queryParamsHandling: 'preserve'})
   })
 
   it('openDataScopeSideSheet(), should navigate to data scope side sheet', () => {
     spyOn(router, 'navigate');
     component.openDataScopeSideSheet();
-    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/data-scope/${component.moduleId}/${component.schemaId}/new/sb` } }])
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/data-scope/${component.moduleId}/${component.schemaId}/new/sb` } }], {queryParamsHandling: 'preserve'})
   });
 
   it('should get input type', () => {
@@ -446,7 +446,7 @@ describe('DuplicacyComponent', () => {
   it('openTableColumnSettings(), open table column setting ', async(() => {
     spyOn(router, 'navigate');
     component.openTableColumnSettings();
-    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: { sb: 'sb/schema/table-column-settings' } }], { preserveQueryParams: true });
+    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: { sb: 'sb/schema/table-column-settings' } }], {queryParamsHandling: 'preserve'});
   }));
 
   it('markAsMasterRecord(), markAsMasterRecord ', async(() => {
@@ -473,7 +473,7 @@ describe('DuplicacyComponent', () => {
   it('openExecutionTrendSideSheet ', async(() => {
     spyOn(router, 'navigate');
     component.openExecutionTrendSideSheet();
-    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: { sb: `sb/schema/execution-trend/${component.moduleId}/${component.schemaId}/${component.variantId}` } }]);
+    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: { sb: `sb/schema/execution-trend/${component.moduleId}/${component.schemaId}/${component.variantId}` } }], {queryParamsHandling: 'preserve'});
   }));
 
   it('should get schema permissions', () => {
