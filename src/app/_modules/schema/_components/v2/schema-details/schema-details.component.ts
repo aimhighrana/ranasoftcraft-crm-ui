@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ComponentFactoryResolver, ViewContainerRef, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaCorrectionReq, FilterCriteria, FieldInputType, SchemaTableViewFldMap, SchemaTableAction, TableActionViewType } from '@models/schema/schemadetailstable';
 import { ActivatedRoute, Router } from '@angular/router';
-import { throwError, BehaviorSubject, combineLatest } from 'rxjs';
+import { throwError, BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { SchemaDataSource } from '../../schema-details/schema-datatable/schema-data-source';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
@@ -22,7 +22,7 @@ import { TableCellInputComponent } from '@modules/shared/_components/table-cell-
 import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 import { Userdetails } from '@models/userdetails';
 import { UserService } from '@services/user/userservice.service';
-import { skip } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, skip } from 'rxjs/operators';
 
 @Component({
   selector: 'pros-schema-details',
@@ -192,6 +192,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
   @Input()
   isInRunning: boolean;
 
+  inlineSearchSubject: Subject<string> = new Subject();
+
 
   constructor(
     private activatedRouter: ActivatedRoute,
@@ -284,7 +286,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
 
     this.sharedServices.getDataScope().subscribe(res => {
       if (res) {
-        this.getDataScope(); // Get Data scope..
+        this.getDataScope(res); // Get Data scope..
       }
     })
 
@@ -345,6 +347,14 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
       this.userDetails  = res;
     }, err=> console.log(`Error ${err}`));
 
+    /**
+     * inline search changes
+     */
+    this.inlineSearchSubject.pipe(
+      debounceTime(1000),
+      distinctUntilChanged()
+    ).subscribe(value => this.inlineSearch(value));
+
   }
 
   /**
@@ -375,11 +385,12 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
   getVariantDetails() {
     this.schemaVariantService.getVariantdetailsByvariantId(this.variantId, this.userDetails.currentRoleId, this.userDetails.plantCode, this.userDetails.userName).subscribe(res => {
       if (res) {
+        const finalFiletr: FilterCriteria[] = [];
         const inline = res.filterCriteria.filter(fil => fil.fieldId === 'id')[0];
         if (inline) {
           this.preInpVal = inline.values ? inline.values.toString() : '';
+          finalFiletr.push(inline);
         }
-        const finalFiletr: FilterCriteria[] = [inline];
         res.filterCriteria.forEach(fil => {
           const filter: FilterCriteria = new FilterCriteria();
           filter.fieldId = fil.fieldId;
@@ -846,14 +857,15 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
 
   }
 
-  refreshData(variantId) {
+  variantChange(variantId) {
     if (this.variantId !== variantId) {
       this.variantId = variantId;
       this.variantName = this.variantId === '0' ? 'Entire dataset'
-        : this.schemaInfo.variants.find(v => v.variantId === this.variantId).variantName;
-      this.getData();
+        : this.dataScope.find(v => v.variantId === this.variantId).variantName;
       if (this.variantId !== '0') {
         this.getVariantDetails();
+      } else {
+        this.filterCriteria.next([]);
       }
     }
   }
@@ -918,9 +930,12 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
   /**
    * Get data scopes .. or variants ...
    */
-  getDataScope() {
+  getDataScope(activeVariantId?: string) {
     this.schemaVariantService.getDataScope(this.schemaId, 'RUNFOR').subscribe(res => {
       this.dataScope = res;
+      if(activeVariantId) {
+        this.variantChange(activeVariantId);
+      }
     }, (error) => console.error(`Something went wrong while getting variants. : ${error.message}`));
   }
 

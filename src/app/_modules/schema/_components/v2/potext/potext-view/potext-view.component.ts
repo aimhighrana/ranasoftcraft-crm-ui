@@ -358,11 +358,12 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
   getVariantDetails() {
     const sub = this.schemaVariantService.getVariantdetailsByvariantId(this.variantId, this.userDetails.currentRoleId, this.userDetails.plantCode, this.userDetails.userName).subscribe(res => {
       if (res) {
+        const finalFiletr: FilterCriteria[] = [];
         const inline = res.filterCriteria.filter(fil => fil.fieldId === 'id')[0];
         if (inline) {
           this.preInpVal = inline.values ? inline.values.toString() : '';
+          finalFiletr.push(inline);
         }
-        const finalFiletr: FilterCriteria[] = [inline];
         res.filterCriteria.forEach(fil => {
           const filter: FilterCriteria = new FilterCriteria();
           filter.fieldId = fil.fieldId;
@@ -748,14 +749,15 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
 
   }
 
-  refreshData(variantId) {
+  variantChange(variantId) {
     if (this.variantId !== variantId) {
       this.variantId = variantId;
       this.variantName = this.variantId === '0' ? 'Entire dataset'
-        : this.schemaInfo.variants.find(v => v.variantId === this.variantId).variantName;
-      this.getData();
+        : this.dataScope.find(v => v.variantId === this.variantId).variantName;
       if (this.variantId !== '0') {
         this.getVariantDetails();
+      } else {
+        this.filterCriteria.next([]);
       }
     }
   }
@@ -763,9 +765,12 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Get data scopes .. or variats ...
    */
-  getDataScope() {
+  getDataScope(activeVariantId?: string) {
     const sub = this.schemavariantService.getDataScope(this.schemaId, 'RUNFOR').subscribe(res => {
       this.dataScope = res;
+      if(activeVariantId) {
+        this.variantChange(activeVariantId);
+      }
     }, err => console.error(`Exception : ${err.message}`));
     this.subscribers.push(sub);
   }

@@ -54,7 +54,7 @@ export class SharedServiceService {
   /**
    * Behavior subject for data scope saving
    */
-  private afterSaveDataScope: BehaviorSubject<any> = new BehaviorSubject(null);
+  private afterSaveDataScope: Subject<any> = new Subject();
 
 
   constructor() { }

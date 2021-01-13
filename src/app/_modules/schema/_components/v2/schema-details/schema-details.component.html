@@ -9,9 +9,9 @@
                 </button>
                 <mat-menu #menu="matMenu" class="navigation-menu">
                     <button mat-menu-item (click)="openDataScopeSideSheet()">[New data scope]</button>
-                    <button mat-menu-item (click)="refreshData('0')">Entire dataset</button>
+                    <button mat-menu-item (click)="variantChange('0')">Entire dataset</button>
                     <ng-container *ngIf="dataScope && dataScope.length">
-                        <button mat-menu-item *ngFor="let scope of dataScope" (click)="refreshData(scope.variantId)">
+                        <button mat-menu-item *ngFor="let scope of dataScope" (click)="variantChange(scope.variantId)">
                             {{ scope.variantName ? scope.variantName : 'Unknown'}}
                         </button>
                     </ng-container>
@@ -80,7 +80,7 @@
     <div class="f-row filter-container">
         <!-- Filter here...-->
         <mat-chip-list>
-            <pros-search-input placeholder="Search text" (value)="inlineSearch($event)" [preValue]="preInpVal">
+            <pros-search-input placeholder="Search text" (value)="inlineSearchSubject.next($event);" [preValue]="preInpVal">
             </pros-search-input>
             <div class="f-col-spacer-half"></div>
             <ng-template ngFor let-ctrl [ngForOf]="filterCriteria | async">
