@@ -50,7 +50,7 @@ export class ExecutionTrendSidesheetComponent implements OnInit {
 
 
   close() {
-    this.router.navigate([{ outlets: { sb: null } }]);
+    this.router.navigate([{ outlets: { sb: null } }], {queryParamsHandling: 'preserve'});
   }
 
 }

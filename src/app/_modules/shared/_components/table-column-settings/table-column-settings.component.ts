@@ -146,7 +146,7 @@ export class TableColumnSettingsComponent implements OnInit{
   close()
   {
     // this.sharedService.setChooseColumnData({...this.data, tableActionsList: this.actionsList, editActive: false});
-    this.router.navigate([{ outlets: { sb: null }}],  { preserveQueryParams: true });
+    this.router.navigate([{ outlets: { sb: null }}],  {queryParamsHandling: 'preserve'});
   }
 
   public persistenceTableView(selFld: SchemaTableViewFldMap[]) {

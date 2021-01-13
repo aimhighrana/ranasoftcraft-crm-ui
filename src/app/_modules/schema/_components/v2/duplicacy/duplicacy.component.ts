@@ -506,7 +506,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
       selectedFields: this.selectedFields, editActive: true
     }
     this.sharedServices.setChooseColumnData(data);
-    this.router.navigate(['', { outlets: { sb: 'sb/schema/table-column-settings' } }], { preserveQueryParams: true });
+    this.router.navigate(['', { outlets: { sb: 'sb/schema/table-column-settings' } }], {queryParamsHandling: 'preserve'});
   }
 
   /**
@@ -883,14 +883,14 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
    * Function to open data scope side sheet
    */
   openDataScopeSideSheet() {
-    this.router.navigate([{ outlets: { sb: `sb/schema/data-scope/${this.moduleId}/${this.schemaId}/new/sb` } }])
+    this.router.navigate([{ outlets: { sb: `sb/schema/data-scope/${this.moduleId}/${this.schemaId}/new/sb` } }], {queryParamsHandling: 'preserve'})
   }
 
   /**
    * Function to open summary side sheet of schema
    */
   openSummarySideSheet() {
-    this.router.navigate([{ outlets: { sb: `sb/schema/check-data/${this.moduleId}/${this.schemaId}` } }])
+    this.router.navigate([{ outlets: { sb: `sb/schema/check-data/${this.moduleId}/${this.schemaId}` } }], {queryParamsHandling: 'preserve'})
   }
 
   /**
@@ -1051,7 +1051,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
    * Function to open trend execution side sheet
    */
   openExecutionTrendSideSheet() {
-    this.router.navigate(['', { outlets: { sb: `sb/schema/execution-trend/${this.moduleId}/${this.schemaId}/${this.variantId}` } }])
+    this.router.navigate(['', { outlets: { sb: `sb/schema/execution-trend/${this.moduleId}/${this.schemaId}/${this.variantId}` } }], {queryParamsHandling: 'preserve'})
   }
 
   /**
