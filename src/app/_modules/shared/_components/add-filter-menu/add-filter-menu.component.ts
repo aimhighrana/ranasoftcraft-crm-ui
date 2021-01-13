@@ -43,6 +43,11 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
   metadaDrop: MetadataModel[] = [];
 
   /**
+   * Metadata drop value
+   */
+  searchDrop: MetadataModel[] = [];
+
+  /**
    * Hold info about active element ..
    */
   activateElement: MetadataModel = null;
@@ -99,6 +104,7 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
       this.selectedValues = [];
       if (fields && fields.length > 0) {
         this.metadaDrop = fields;
+        this.searchDrop = fields;
       }
     }
   }
@@ -153,6 +159,7 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
       }
     }
     this.metadaDrop = fields;
+    this.searchDrop = fields;
   }
 
   /**
@@ -192,5 +199,17 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
     this.selectedValues = val;
     this.evtReadyForApply.emit({ fldCtrl: this.activateElement, selectedValues: val });
     this.activateElement = null;
+  }
+
+  /**
+   * To search metadat fields according to the search field
+   * @param searchText string to search with
+   */
+  searchField(searchText: string) {
+    if (searchText.trim()) {
+      this.metadaDrop = this.searchDrop.filter((value) => value.fieldDescri.toLowerCase().includes(searchText.toLowerCase()));
+    } else {
+      this.metadaDrop = this.searchDrop;
+    }
   }
 }

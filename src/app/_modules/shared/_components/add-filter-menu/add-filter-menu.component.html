@@ -1,29 +1,34 @@
-<mat-nav-list>
-    <ng-container *ngIf="!activateElement">
-        <mat-list-item *ngFor="let fld of metadaDrop" prosClickStopPropagation (click)="ctrlFlds(fld)">
-            <div class="mat-line" *ngIf="fld.fieldDescri !== null || fld.fieldDescri !== undefined">
-                {{ fld.fieldDescri }}
-            </div> <span class="f-spacer"></span><mat-icon fontSet="mdo-icons"> arrow-right-alt</mat-icon>
-        </mat-list-item>
-    </ng-container>
-
-    <div class="f-col" *ngIf="activateElement" prosClickStopPropagation>
-       <div class="f-row filter-header" prosClickStopPropagation>
-            <button mat-button (click)="prevState($event)">
-                <mat-icon fontSet="mdo-icons"> arrow-back</mat-icon>
-            </button>
-            <div class="mat-line" *ngIf="activateElement">
-                {{ (activateElement.fieldDescri !== null) ? activateElement.fieldDescri : activateElement.fieldId }}
-            </div>
-       </div>
-       
-        <pros-filter-values
-        [moduleId]="moduleId"
-        [fieldId]="activateElement ? activateElement.fieldId : ''"
-        (selectedValues)="emitAppliedFilter($event)"
-        [checkedValue]="selectedValues"
-        [isDataScope]="dataScope">
-        </pros-filter-values>
-
-    </div>
-</mat-nav-list>
+<div class="root f-col">
+    <mat-nav-list>
+        <ng-container *ngIf="!activateElement">
+                <pros-search-input class="field-mat-menu" *ngIf="searchDrop.length > 0" placeholder="Search for fields" 
+                    prosClickStopPropagation (value)="searchField($event)">
+                </pros-search-input>
+            <mat-list-item *ngFor="let fld of metadaDrop" prosClickStopPropagation (click)="ctrlFlds(fld)">
+                <div class="mat-line" *ngIf="fld.fieldDescri !== null || fld.fieldDescri !== undefined">
+                    {{ fld.fieldDescri }}
+                </div> <span class="f-spacer"></span><mat-icon fontSet="mdo-icons"> arrow-right-alt</mat-icon>
+            </mat-list-item>
+        </ng-container>
+    
+        <div class="f-col" *ngIf="activateElement" prosClickStopPropagation>
+           <div class="f-row filter-header" prosClickStopPropagation>
+                <button mat-button (click)="prevState($event)">
+                    <mat-icon fontSet="mdo-icons"> arrow-back</mat-icon>
+                </button>
+                <div class="mat-line" *ngIf="activateElement">
+                    {{ (activateElement.fieldDescri !== null) ? activateElement.fieldDescri : activateElement.fieldId }}
+                </div>
+           </div>
+           
+            <pros-filter-values
+            [moduleId]="moduleId"
+            [fieldId]="activateElement ? activateElement.fieldId : ''"
+            (selectedValues)="emitAppliedFilter($event)"
+            [checkedValue]="selectedValues"
+            [isDataScope]="dataScope">
+            </pros-filter-values>
+    
+        </div>
+    </mat-nav-list>
+</div>
