@@ -9,7 +9,7 @@ import { BehaviorSubject } from 'rxjs';
 import { ReportingWidget, Criteria, LayoutConfigWorkflowModel } from '../../../_models/widget';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ReportListDownloadModelComponent } from './report-list-download-model/report-list-download-model.component';
+import { ExportReportDatatableComponent } from './export-report-datatable/export-report-datatable.component';
 import { EndpointService } from '@services/endpoint.service';
 import { Router } from '@angular/router';
 import { SharedServiceService } from '@shared/_services/shared-service.service';
@@ -279,9 +279,8 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
       this.downloadData(0);
       // this.widgetService.downloadCSV('Report-List',this.listData);
     } else {
-      const dialogRef = this.matDialog.open(ReportListDownloadModelComponent, {
+      const dialogRef = this.matDialog.open(ExportReportDatatableComponent, {
         width: '500px',
-        height: '600px',
         data: {
           recCount: this.resultsLength
         }
