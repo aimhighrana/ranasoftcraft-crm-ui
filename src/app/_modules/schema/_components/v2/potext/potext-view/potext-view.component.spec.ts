@@ -391,4 +391,9 @@ describe('PotextViewComponent', () => {
     expect(component.getActionIcon('Delete')).toEqual('recycle-bin');
     expect(component.getActionIcon('Generate cross entry')).toEqual('plus');
   });
+
+  it('should check if global actions are enabled', () => {
+    expect(component.isGlobalActionsEnabled).toEqual(false);
+  });
+
 });

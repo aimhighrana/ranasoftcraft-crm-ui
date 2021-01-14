@@ -135,7 +135,7 @@
         </mat-chip-list>
     </div>
     <div class="f-row action-iconbtns" *ngIf="activeTab && activeTab === 'review' && selection.selected.length !== 0">
-        <ng-template [ngIf]="isReviewer || isApprover">
+        <ng-template [ngIf]="(isReviewer || isApprover) && isGlobalActionsEnabled">
             <button mat-flat-button (click)="approveRecords('all')" color="accent">
                 Approve
             </button>
@@ -214,7 +214,7 @@
                         Actions
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        <div class="f-row action-iconbtns">
+                        <div class="f-row action-iconbtns" *ngIf="!element['OBJECTNUMBER'].isReviewed">
                             <!-- Secondary actions -->
                             <ng-template [ngIf]="true"> <!-- !isReviewer -->
                             <button mat-fab color="accent"

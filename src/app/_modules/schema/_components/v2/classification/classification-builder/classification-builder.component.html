@@ -218,7 +218,7 @@
                         <div class="row-spacer"></div>
 
                         <div class="f-row action-iconbtns" *ngIf="viewOf && viewOf.getValue() === 'correction' && selection.selected.length !== 0">
-                            <ng-template [ngIf]="isReviewer || isApprover">
+                            <ng-template [ngIf]="(isReviewer || isApprover) && isGlobalActionsEnabled">
                                 <button mat-flat-button (click)="generateDesc('',0,'all')" color="accent">
                                     <!-- <mat-icon fontSet="mdo-icons">check-mark</mat-icon> -->
                                     Generate description
@@ -281,7 +281,7 @@
                                 </mat-header-cell>
                                 <mat-cell *matCellDef="let row; let rIndex = index;" class="fixed-width-c2">
                                     <div class="f-row action-iconbtns">
-                                        <ng-template [ngIf]="isReviewer || isApprover">
+                                        <ng-template [ngIf]="!row['__aditionalProp'].isReviewed && (isReviewer || isApprover)">
                                             <button mat-fab color="accent" *ngIf="row['__aditionalProp'] && !row['__aditionalProp'].hasLatestDescGenerated" (click)="generateDesc(row, rIndex)" id="descriptonGeneratorBtn_{{ rIndex }}">
                                                 <mat-icon fontSet="mdo-icons">form-file</mat-icon>
                                             </button>

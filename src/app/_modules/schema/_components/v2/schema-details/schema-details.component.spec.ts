@@ -725,4 +725,8 @@ describe('SchemaDetailsComponent', () => {
     expect(component.getActionIcon('Delete')).toEqual('recycle-bin');
   });
 
+  it('should check if global actions are enabled', () => {
+    expect(component.isGlobalActionsEnabled).toEqual(false);
+  });
+
 });

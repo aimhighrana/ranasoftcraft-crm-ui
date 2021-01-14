@@ -132,7 +132,7 @@
 
                             <div class="f-row action-iconbtns"
                                 *ngIf="tableHeaderActBtn.length && activeTab === 'review'">
-                                <ng-template [ngIf]="isReviewer || isApprover">
+                                <ng-template [ngIf]="(isReviewer || isApprover) && isGlobalActionsEnabled">
                                     <button mat-flat-button (click)="approveRecords('global')" color="accent">
                                         <!-- <mat-icon fontSet="mdo-icons">check-mark</mat-icon> -->
                                         Approve
@@ -189,7 +189,7 @@
                                         <mat-cell *matCellDef="let element" class="action-width no-text-decoration">
                                             <div class="f-row action-iconbtns">
                                                 <ng-template [ngIf]="activeTab !== 'review'" [ngIfElse]="review">
-                                                    <button mat-fab color="accent" [matMenuTriggerFor]="moreactions">
+                                                    <button mat-fab color="accent"> <!-- [matMenuTriggerFor]="moreactions" -->
                                                         <mat-icon fontSet="mdo-icons">more</mat-icon>
                                                     </button>
                                                     <!-- more actions menu -->
@@ -219,14 +219,14 @@
                                                         <mat-icon fontSet="mdo-icons">restart</mat-icon>
                                                     </button>
                                                     <button mat-fab color="accent"
-                                                        *ngIf="element && element[RECORD_STATUS_KEY] && (element[RECORD_STATUS_KEY].fieldData !== RECORD_STATUS.DELETABLE)">
+                                                        *ngIf="element && element[RECORD_STATUS_KEY] && (element[RECORD_STATUS_KEY].fieldData !== RECORD_STATUS.DELETABLE)"
+                                                        (click)="markForDeletion(element)">
                                                         <mat-icon fontSet="mdo-icons">recycle-bin</mat-icon>
                                                     </button>
                                                 </ng-template>
                                                 <ng-template #review>
                                                     <!-- Secondary actions -->
-                                                    <ng-template [ngIf]="true">
-                                                        <!-- !isReviewer -->
+                                                    <ng-template [ngIf]="!element['OBJECTNUMBER'].isReviewed && (element[RECORD_STATUS_KEY].fieldData !== RECORD_STATUS.DELETABLE)">
                                                         <button mat-fab color="accent" *ngIf="secondaryActions.length"
                                                             [matMenuTriggerFor]="secondaryActionsMenu">
                                                             <mat-icon fontSet="mdo-icons">more</mat-icon>
@@ -246,7 +246,6 @@
                                                                 </ng-template>
                                                             </button>
                                                         </mat-menu>
-                                                    </ng-template>
                                                     <!-- Primary actions -->
                                                     <button *ngFor="let pAction of primaryActions" mat-flat-button
                                                         color="accent" (click)="doAction(pAction, element)">
@@ -266,6 +265,7 @@
                                                   *ngIf="!element['OBJECTNUMBER'].isReviewed">
                                                   <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
                                               </button> -->
+                                                    </ng-template>
                                                 </ng-template>
                                             </div>
                                         </mat-cell>

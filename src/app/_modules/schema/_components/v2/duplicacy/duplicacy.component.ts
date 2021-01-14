@@ -579,7 +579,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
       }
     } else {
       if (this.selection.selected.length) {
-        const selected = this.selection.selected;
+        const selected = this.selection.selected.filter(sel => !sel.OBJECTNUMBER.isReviewed && (sel[RECORD_STATUS_KEY].fieldData !== RECORD_STATUS.DELETABLE));
         selected.forEach(sel => {
           const docId = sel.OBJECTNUMBER.fieldData;
           objNumbs.push(docId);
@@ -622,7 +622,7 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
       }
     } else {
       if (this.selection.selected.length) {
-        const selected = this.selection.selected;
+        const selected = this.selection.selected.filter(sel => !sel.OBJECTNUMBER.isReviewed && (sel[RECORD_STATUS_KEY].fieldData !== RECORD_STATUS.DELETABLE));
         selected.forEach(sel => {
           const docId = sel.OBJECTNUMBER.fieldData;
           objNumbs.push(docId);
@@ -1114,7 +1114,13 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
       this.approveRecords('inline', row);
     } else if (!action.isCustomAction && action.actionText === 'Reject' && (this.isReviewer || this.isApprover)) {
       this.rejectRecords('inline', row);
+    } else if (!action.isCustomAction && action.actionText === 'Delete' && (this.isReviewer || this.isApprover || this.isEditer)) {
+      this.markForDeletion(row);
     }
+  }
+
+  get isGlobalActionsEnabled() {
+    return this.selection.selected.some(row => !row.OBJECTNUMBER.isReviewed && (row[RECORD_STATUS_KEY].fieldData !== RECORD_STATUS.DELETABLE));
   }
 
 }

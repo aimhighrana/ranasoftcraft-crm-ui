@@ -808,7 +808,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
   approveRec(row: any, rIndex: number, fromWhere?:string) {
     const objNrs: string[] = [];
     if(fromWhere === 'all') {
-      const selectedDocs = this.selection.selected;
+      const selectedDocs = this.selection.selected.filter(sel => !sel.__aditionalProp.isReviewed);
       const objs = selectedDocs.map(map => map.OBJECTNUMBER);
       objNrs.push(...objs.map(m=> m.fieldValue));
     } else {
@@ -819,9 +819,16 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     }
 
     this.schemaDetailService.approveClassification(this.schemaId,this.schemaInfo.runId,objNrs).subscribe(res=>{
-      this.selection.clear();
-      if(document.getElementById('approveBtn_'+rIndex))
-        document.getElementById('approveBtn_'+rIndex).remove();
+      /* if(document.getElementById('approveBtn_'+rIndex))
+        document.getElementById('approveBtn_'+rIndex).remove(); */
+        if (fromWhere === 'all') {
+          this.selection.selected.forEach(record => {
+            record.__aditionalProp.isReviewed = true;
+          })
+        } else {
+          row.__aditionalProp.isReviewed = true;
+        }
+        this.selection.clear();
       this.snackBar.open(`Successfully approved`,'Close',{duration:5000});
     }, err=>{
       console.error(`Error ${err.message}`);
@@ -837,7 +844,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
   rejectRec(row: any, rIndex: number, fromWhere?: string) {
     const objNrs: string[] = [];
     if(fromWhere === 'all') {
-      const selectedDocs = this.selection.selected;
+      const selectedDocs = this.selection.selected.filter(sel => !sel.__aditionalProp.isReviewed);
       const objs = selectedDocs.map(map => map.OBJECTNUMBER);
       objNrs.push(...objs.map(m=> m.fieldValue));
     } else {
@@ -1059,5 +1066,9 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
       this.viewOf.next('');
 
     }
+  }
+
+  get isGlobalActionsEnabled() {
+    return this.selection.selected.some(row => !row.__aditionalProp.isReviewed);
   }
 }

@@ -113,7 +113,7 @@
                 </mat-chip-list>
                 <div class="row-spacer"></div>
                 <div class="f-row action-iconbtns" *ngIf="activeTab && activeTab === 'review' && selection.selected.length !== 0">
-                    <ng-template [ngIf]="isReviewer || isApprover">
+                    <ng-template [ngIf]="(isReviewer || isApprover) && isGlobalActionsEnabled">
                         <button mat-flat-button (click)="approveRecords('all')" color="accent">
                             <!-- <mat-icon fontSet="mdo-icons">check-mark</mat-icon> -->
                             Approve
@@ -182,7 +182,7 @@
                                     (click)="generateCrossEntry(element)">
                                         <mat-icon fontSet="mdo-icons">plus</mat-icon>
                                     </button>
-                                    <ng-template [ngIf]="activeTab === 'review'">
+                                    <ng-template [ngIf]="activeTab === 'review' && !element['OBJECTNUMBER'].isReviewed">
                                         <!-- Secondary actions -->
                                         <ng-template [ngIf]="true"> <!-- !isReviewer -->
                                             <button mat-fab color="accent"

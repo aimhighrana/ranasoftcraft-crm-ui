@@ -584,7 +584,7 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
       }
     } else {
       if (this.selection.selected.length) {
-        const selected = this.selection.selected;
+        const selected = this.selection.selected.filter(sel => !sel.OBJECTNUMBER.isReviewed);
         selected.forEach(sel => {
           const docId = sel.OBJECTNUMBER.fieldData;
           id.push(docId);
@@ -617,7 +617,7 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
       }
     } else {
       if (this.selection.selected.length) {
-        const selected = this.selection.selected;
+        const selected = this.selection.selected.filter(sel => !sel.OBJECTNUMBER.isReviewed);
         selected.forEach(sel => {
           const docId = sel.OBJECTNUMBER.fieldData;
           id.push(docId);
@@ -1024,6 +1024,10 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
     } else if (this.isReviewer || this.isApprover) {
       this.generateCrossEntry(row, action.refBrId);
     }
+  }
+
+  get isGlobalActionsEnabled() {
+    return this.selection.selected.some(row => !row.OBJECTNUMBER.isReviewed);
   }
 
 }

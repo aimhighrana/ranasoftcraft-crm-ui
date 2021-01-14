@@ -140,7 +140,7 @@ it('ngOnChanges(), ngonchange component hooks ', async(()=>{
 
   it(`approveRec(), approve mro classification data `, async(()=>{
     // mock data
-    const row = {OBJECTNUMBER:{fieldValue:'MAT001'}};
+    const row = {OBJECTNUMBER:{fieldValue:'MAT001'}, __aditionalProp: { isReviewed: false}};
     component.schemaId = '234238';
     component.schemaInfo = {runId:'32423432'} as SchemaListDetails;
 
@@ -223,5 +223,15 @@ it('ngOnChanges(), ngonchange component hooks ', async(()=>{
     expect(component.getActionIcon('Reject')).toEqual('declined')
     expect(component.getActionIcon('Delete')).toEqual('recycle-bin');
   });
+
+  it('should check if global actions are enabled', () => {
+    expect(component.isGlobalActionsEnabled).toEqual(false);
+  });
+
+  it('should open column settings sidesheet', () => {
+    spyOn(router, 'navigate');
+    component.openTableColumnSettings();
+    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: { sb: 'sb/schema/table-column-settings' } }], {queryParamsHandling: 'preserve'});
+  })
 
 });
