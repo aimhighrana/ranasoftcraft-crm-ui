@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ComponentFactoryResolver, Input, OnChanges, SimpleChanges, OnDestroy, ViewContainerRef } from '@angular/core';
-import { MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaCorrectionReq, FilterCriteria, FieldInputType, SchemaTableViewFldMap, TableActionViewType, SchemaTableAction } from '@models/schema/schemadetailstable';
+import { MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaCorrectionReq, FilterCriteria, FieldInputType, SchemaTableViewFldMap, TableActionViewType, SchemaTableAction, SchemaTableViewRequest } from '@models/schema/schemadetailstable';
 import { ActivatedRoute, Router } from '@angular/router';
 import { throwError, BehaviorSubject, combineLatest, Subscription } from 'rxjs';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
@@ -203,9 +203,8 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
     private schemaVariantService: SchemaVariantService,
     private componentFactoryResolver: ComponentFactoryResolver,
     private schemavariantService: SchemaVariantService,
-    private userService: UserService
-
-
+    private userService: UserService,
+    private schemaDetailsService: SchemaDetailsService
   ) { }
 
   ngOnDestroy(): void {
@@ -250,7 +249,6 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
 
     if (isRefresh) {
       this.dataSource = new SchemaDataSource(this.schemaDetailService, this.endpointservice, this.schemaId);
-
       /**
        * Get all user selected fields based on default view ..
        */
@@ -295,11 +293,34 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
 
     /**
      * Combine obserable for metadata and selected field by user
-     * And calcute display field amd order
+     * And calcute display field and order
      */
     combineLatest([this.metadata, this.selectedFieldsOb]).subscribe(res => {
       if (res[0]) {
-        this.selectedFields = res[1] ? res[1] : [];
+        const selcteFlds = res[1] ? res[1] : [];
+        if(!selcteFlds.length) {
+          const orderFld: SchemaTableViewFldMap[] = [];
+          Object.keys(res[0].headers).forEach((header, index)=>{
+            if(index <= 9) {
+              const choosenField: SchemaTableViewFldMap = new SchemaTableViewFldMap();
+              choosenField.order = index;
+              choosenField.fieldId = header;
+              orderFld.push(choosenField);
+            }
+          });
+          const schemaTableViewRequest: SchemaTableViewRequest = new SchemaTableViewRequest();
+          schemaTableViewRequest.schemaId = this.schemaId;
+          schemaTableViewRequest.variantId = this.variantId ? this.variantId: '0';
+          schemaTableViewRequest.schemaTableViewMapping = orderFld;
+          this.schemaDetailsService.updateSchemaTableView(schemaTableViewRequest).subscribe(response => {
+            console.log(response);
+          }, error => {
+            console.error('Exception while persist table view');
+          });
+          this.selectedFields = orderFld;
+        } else {
+          this.selectedFields = res[1] ? res[1] : [];
+        }
         this.calculateDisplayFields();
       }
     });

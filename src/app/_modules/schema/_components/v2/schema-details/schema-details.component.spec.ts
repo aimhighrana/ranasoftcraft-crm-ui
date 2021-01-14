@@ -110,10 +110,10 @@ describe('SchemaDetailsComponent', () => {
   }));
 
   it('getFldMetadata(), get field metadata ', async(()=>{
-      spyOn(schemaDetailService,'getMetadataFields').withArgs(component.moduleId).and.returnValue(of());
-      component.getFldMetadata();
+    spyOn(schemaDetailService,'getMetadataFields').withArgs(component.moduleId).and.returnValue(of());
+    component.getFldMetadata();
 
-      expect(schemaDetailService.getMetadataFields).toHaveBeenCalledWith(component.moduleId);
+    expect(schemaDetailService.getMetadataFields).toHaveBeenCalledWith(component.moduleId);
   }));
 
   it('loadDropValues(), load current field .. ', async(()=>{
@@ -396,7 +396,6 @@ describe('SchemaDetailsComponent', () => {
     } as SimpleChanges;
     component.ngOnChanges(changes1);
     expect(component.getDataScope).toHaveBeenCalled();
-    expect(component.getFldMetadata).toHaveBeenCalled();
     expect(component.getSchemaStatics).toHaveBeenCalled();
     expect(component.getSchemaDetails).toHaveBeenCalled();
     expect(component.manageStaticColumns).toHaveBeenCalled();
@@ -644,8 +643,6 @@ describe('SchemaDetailsComponent', () => {
     component.approveRecords('inline', row);
 
     expect(schemaDetailService.approveCorrectedRecords).toHaveBeenCalledWith(component.schemaId, ['MAT001'] , component.userDetails.currentRoleId);
-
-
   }));
 
   it(`resetRec(), reset corrected records `, async(()=>{
@@ -659,8 +656,6 @@ describe('SchemaDetailsComponent', () => {
     component.resetRec(row, 'inline');
 
     expect(schemaDetailService.resetCorrectionRecords).toHaveBeenCalledWith(component.schemaId, component.schemaInfo.runId,  ['MAT001']);
-
-
   }));
 
   it('openExecutionTrendSideSheet ', async(() => {
@@ -686,21 +681,19 @@ describe('SchemaDetailsComponent', () => {
     expect(component.scrollLimitReached).toEqual(true);
     expect(component.fetchCount).toEqual(1);
     expect(component.getData).toHaveBeenCalledWith(component.filterCriteria.getValue(), component.sortOrder, component.fetchCount, true);
+  }));
 
-  }))
   it('should get schema permissions', () => {
 
     component.schemaInfo  = {schemaId: 'schema1', runId:'889321'} as SchemaListDetails;
     expect(component.isEditer).toBeFalsy();
     expect(component.isReviewer).toBeFalsy();
     expect(component.isApprover).toBeFalsy();
-
   });
 
   it('should filter primary and secondary actions', () => {
     expect(component.primaryActions.length).toEqual(2);
     expect(component.secondaryActions.length).toEqual(0);
-
   });
 
   it('should do table action', () => {
@@ -716,7 +709,6 @@ describe('SchemaDetailsComponent', () => {
 
     component.doAction(component.tableActionsList[1], {});
     expect(component.resetRec).toHaveBeenCalledWith({}, 'inline');
-
   });
 
   it('should get table action icon', () => {
@@ -729,4 +721,15 @@ describe('SchemaDetailsComponent', () => {
     expect(component.isGlobalActionsEnabled).toEqual(false);
   });
 
+  it('should get all user selected fields based on default view ..', (async () => {
+    component.metadata.next({headers:{MATL_TYPE:{fieldId:'MATL_TYPE'}}} as MetadataModeleResponse);
+    component.selectedFields = null;
+
+    const response = '7466345563';
+    spyOn(schemaDetailService,'updateSchemaTableView').and.returnValue(of(response));
+
+    component.ngOnInit();
+    expect(schemaDetailService.updateSchemaTableView).toHaveBeenCalledTimes(1);
+    expect(component.selectedFields.length).toEqual(1);
+  }));
 });

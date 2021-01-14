@@ -385,6 +385,18 @@ describe('PotextViewComponent', () => {
     expect(component.resetRec).toHaveBeenCalledWith({}, 'inline');
   });
 
+  it('should get all user selected fields based on default view ..', (async () => {
+    component.metadata.next({headers:{MATL_TYPE:{fieldId:'MATL_TYPE'}}} as MetadataModeleResponse);
+    component.selectedFields = null;
+
+    const response = '7466345563';
+    spyOn(schemaDetailService,'updateSchemaTableView').and.returnValue(of(response));
+
+    component.ngOnInit();
+    expect(schemaDetailService.updateSchemaTableView).toHaveBeenCalledTimes(1);
+    expect(component.selectedFields.length).toEqual(1);
+  }));
+
   it('should get table action icon', () => {
     expect(component.getActionIcon('Approve')).toEqual('check-mark');
     expect(component.getActionIcon('Reject')).toEqual('declined')
@@ -396,4 +408,21 @@ describe('PotextViewComponent', () => {
     expect(component.isGlobalActionsEnabled).toEqual(false);
   });
 
+  it('should load more data on table scroll', async(() => {
+
+    const scrollEvent = {
+      target: {
+        offsetHeight: 500,
+        scrollHeight: 1000,
+        scrollTop: 350
+      }
+    }
+
+    spyOn(component, 'getData');
+
+    component.onTableScroll(scrollEvent);
+
+    expect(component.fetchCount).toEqual(1);
+    expect(component.getData).toHaveBeenCalledWith(component.filterCriteria.getValue(), component.sortOrder, component.fetchCount, true);
+  }));
 });

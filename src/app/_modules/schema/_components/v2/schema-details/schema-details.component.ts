@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ComponentFactoryResolver, ViewContainerRef, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaCorrectionReq, FilterCriteria, FieldInputType, SchemaTableViewFldMap, SchemaTableAction, TableActionViewType } from '@models/schema/schemadetailstable';
+import { MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaCorrectionReq, FilterCriteria, FieldInputType, SchemaTableViewFldMap, SchemaTableAction, TableActionViewType, SchemaTableViewRequest } from '@models/schema/schemadetailstable';
 import { ActivatedRoute, Router } from '@angular/router';
-import { throwError, BehaviorSubject, combineLatest, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, Subject, throwError } from 'rxjs';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { SchemaDataSource } from '../../schema-details/schema-datatable/schema-data-source';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
@@ -207,8 +207,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
     private schemaListService: SchemalistService,
     private schemaVariantService: SchemaVariantService,
     private componentFactoryResolver: ComponentFactoryResolver,
-    private userService: UserService
-
+    private userService: UserService,
+    private schemaDetailsService: SchemaDetailsService,
   ) { }
 
 
@@ -246,19 +246,20 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
       if (this.variantId !== '0') {
         this.getVariantDetails();
       }
-      /**
-       * Get all user selected fields based on default view ..
-       */
-      this.schemaDetailService.getAllSelectedFields(this.schemaId, this.variantId).subscribe(res => {
-        this.selectedFieldsOb.next(res ? res : [])
-      }, error => console.error(`Error : ${error}`));
-      this.manageStaticColumns();
-      this.dataSource.brMetadata.subscribe(res => {
-        if (res) {
-          this.getData();
-        }
-      });
     }
+
+    /**
+     * Get all user selected fields based on default view ..
+     */
+    this.schemaDetailService.getAllSelectedFields(this.schemaId, this.variantId).subscribe(res => {
+      this.selectedFieldsOb.next(res ? res : [])
+    }, error => console.error(`Error : ${error}`));
+    this.manageStaticColumns();
+    this.dataSource.brMetadata.subscribe(res => {
+      if (res) {
+        this.getData();
+      }
+    });
 
     // reset filter and sort order
     this.filterCriteria.next(null);
@@ -283,7 +284,6 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
   }
 
   ngOnInit(): void {
-
     this.sharedServices.getDataScope().subscribe(res => {
       if (res) {
         this.getDataScope(res); // Get Data scope..
@@ -314,11 +314,34 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
 
     /**
      * Combine obserable for metadata and selected field by user
-     * And calcute display field amd order
+     * And calcute display field and order
      */
     combineLatest([this.metadata, this.selectedFieldsOb]).subscribe(res => {
       if (res[0]) {
-        this.selectedFields = res[1] ? res[1] : [];
+        const selcteFlds = res[1] ? res[1] : [];
+        if(!selcteFlds.length) {
+          const orderFld: SchemaTableViewFldMap[] = [];
+          Object.keys(res[0].headers).forEach((header, index)=>{
+            if(index <= 9) {
+              const choosenField: SchemaTableViewFldMap = new SchemaTableViewFldMap();
+              choosenField.order = index;
+              choosenField.fieldId = header;
+              orderFld.push(choosenField);
+            }
+          });
+          const schemaTableViewRequest: SchemaTableViewRequest = new SchemaTableViewRequest();
+          schemaTableViewRequest.schemaId = this.schemaId;
+          schemaTableViewRequest.variantId = this.variantId ? this.variantId: '0';
+          schemaTableViewRequest.schemaTableViewMapping = orderFld;
+          this.schemaDetailsService.updateSchemaTableView(schemaTableViewRequest).subscribe(response => {
+            console.log(response);
+          }, error => {
+            console.error('Exception while persist table view');
+          });
+          this.selectedFields = orderFld;
+        } else {
+          this.selectedFields = res[1] ? res[1] : [];
+        }
         this.calculateDisplayFields();
       }
     });
@@ -413,7 +436,6 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
       console.error(`Error : ${error.message}`);
     });
   }
-
 
   /**
    * Get all fld metada based on module of schema

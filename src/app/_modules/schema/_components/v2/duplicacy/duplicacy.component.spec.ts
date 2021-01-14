@@ -11,7 +11,7 @@ import { SchemaVariantService } from '@services/home/schema/schema-variant.servi
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { CatalogCheckService } from '@services/home/schema/catalog-check.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { FieldInputType, FilterCriteria, MetadataModel } from '@models/schema/schemadetailstable';
+import { FieldInputType, FilterCriteria, MetadataModel, MetadataModeleResponse } from '@models/schema/schemadetailstable';
 import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { MasterRecordChangeRequest, RECORD_STATUS, RECORD_STATUS_KEY, RequestForCatalogCheckData } from '@models/schema/duplicacy';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -147,18 +147,22 @@ describe('DuplicacyComponent', () => {
 
 
   it('should get data table headers', (async () => {
-
+    const response = '7466345563';
+    const metadata = {headers:{MATL_TYPE:{fieldId:'MATL_TYPE'}}} as MetadataModeleResponse;
 
     spyOn(schemaDetailService, 'getMetadataFields').withArgs(component.moduleId)
-      .and.returnValue(of());
+      .and.returnValue(of(metadata));
 
     spyOn(schemaDetailService, 'getAllSelectedFields').withArgs(component.schemaId, component.variantId)
       .and.returnValue(of([]));
+    spyOn(schemaDetailService,'updateSchemaTableView').and.returnValue(of(response));
 
     component.getTableHeaders();
 
     expect(schemaDetailService.getMetadataFields).toHaveBeenCalledWith(component.moduleId);
     expect(schemaDetailService.getAllSelectedFields).toHaveBeenCalledWith(component.schemaId, component.variantId);
+    expect(schemaDetailService.updateSchemaTableView).toHaveBeenCalledTimes(1);
+    expect(component.selectedFields.length).toEqual(1);
   }));
 
 

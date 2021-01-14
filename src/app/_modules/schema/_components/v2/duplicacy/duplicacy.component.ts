@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, ViewChild, OnChanges, SimpleChanges, Input, ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
-import { FieldInputType, FilterCriteria, SchemaTableAction, SchemaTableViewFldMap, TableActionViewType } from '@models/schema/schemadetailstable';
+import { FieldInputType, FilterCriteria, SchemaTableAction, SchemaTableViewFldMap, SchemaTableViewRequest, TableActionViewType } from '@models/schema/schemadetailstable';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
@@ -211,7 +211,8 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     private schemaVariantService: SchemaVariantService,
     private catalogService: CatalogCheckService,
     private componentFactoryResolver: ComponentFactoryResolver,
-    private userService: UserService
+    private userService: UserService,
+    private schemaDetailsService: SchemaDetailsService,
 
   ) { }
 
@@ -347,21 +348,42 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
     }, error => console.error(`Error : ${error.message}`))
   }
 
+  /**
+   * Combine obserable for metadata and selected field by user
+   */
   getTableHeaders() {
-    /**
-     * Combine obserable for metadata and selected field by user
-     */
     combineLatest([this.schemaDetailService.getMetadataFields(this.moduleId),
     this.schemaDetailService.getAllSelectedFields(this.schemaId, this.variantId)])
       .subscribe(res => {
         if (res) {
-          console.log(res);
           this.metadataFldLst = res[0];
-          this.selectedFields = res[1];
+          const selcteFlds = res[1] ? res[1] : [];
+          if(!selcteFlds.length) {
+            const orderFld: SchemaTableViewFldMap[] = [];
+            Object.keys(res[0].headers).forEach((header, index)=>{
+              if(index <= 9) {
+                const choosenField: SchemaTableViewFldMap = new SchemaTableViewFldMap();
+                choosenField.order = index;
+                choosenField.fieldId = header;
+                orderFld.push(choosenField);
+              }
+            });
+            const schemaTableViewRequest: SchemaTableViewRequest = new SchemaTableViewRequest();
+            schemaTableViewRequest.schemaId = this.schemaId;
+            schemaTableViewRequest.variantId = this.variantId ? this.variantId: '0';
+            schemaTableViewRequest.schemaTableViewMapping = orderFld;
+            this.schemaDetailsService.updateSchemaTableView(schemaTableViewRequest).subscribe(response => {
+              console.log(response);
+            }, error => {
+              console.error('Exception while persist table view');
+            });
+            this.selectedFields = orderFld;
+          } else {
+            this.selectedFields = res[1] ? res[1] : [];
+          }
           this.calculateDisplayFields();
-          // this.displayedFields.next(this.startColumns.concat(res[1]));
         }
-      });
+    });
   }
 
 
