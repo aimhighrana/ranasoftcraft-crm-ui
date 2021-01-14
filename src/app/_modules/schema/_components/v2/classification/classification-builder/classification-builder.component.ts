@@ -230,6 +230,11 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
   @Input()
   isInRunning: boolean;
 
+  /**
+   * Variant name if have otherwise by default is entire dataset
+   */
+  variantName = 'Entire dataset';
+
   constructor(
     private schemaDetailService: SchemaDetailsService,
     private schemaService: SchemaService,
@@ -286,7 +291,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
 
     this.sharedServices.getDataScope().subscribe(res => {
       if (res) {
-        this.getDataScope();
+        this.getDataScope(res);
       }
     })
 
@@ -401,9 +406,12 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
   /**
    * Get data scopes .. or variats ...
    */
-  getDataScope() {
+  getDataScope(activeVariantId?: string) {
     const sub = this.schemavariantService.getDataScope(this.schemaId, 'RUNFOR').subscribe(res => {
       this.dataScope = res;
+      if(activeVariantId) {
+        this.variantChange(activeVariantId);
+      }
     }, err => console.error(`Exception : ${err.message}`));
     this.subsribers.push(sub);
   }
@@ -1038,6 +1046,18 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
       this.approveRec(row, rowIndex);
     } else if (!action.isCustomAction && action.actionText === 'Reject' && (this.isReviewer || this.isApprover)) {
       this.rejectRec(row, rowIndex);
+    }
+  }
+
+  variantChange(variantId) {
+    if (this.variantId !== variantId) {
+      this.variantId = variantId;
+      this.variantName = this.variantId === '0' ? 'Entire dataset'
+        : this.dataScope.find(v => v.variantId === this.variantId).variantName;
+
+      this.getSchemaStatics();
+      this.viewOf.next('');
+
     }
   }
 }
