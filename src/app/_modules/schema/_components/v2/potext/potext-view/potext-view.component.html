@@ -35,7 +35,7 @@
         </div>
     </div>
 
-    <ng-template [ngIf]="schemaInfo?.isInRunning" [ngIfElse]="schemaInfoTemplate">
+    <ng-template [ngIf]="isInRunning" [ngIfElse]="schemaInfoTemplate">
         <pros-schema-progress [schemaId]="schemaId"></pros-schema-progress>
     </ng-template>
 
