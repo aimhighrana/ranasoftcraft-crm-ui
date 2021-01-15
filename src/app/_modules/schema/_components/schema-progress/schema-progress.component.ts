@@ -25,6 +25,8 @@ export class SchemaProgressComponent implements OnInit, OnChanges, OnDestroy {
    */
   subscription: Subscription[] = [];
 
+  pollingInterval: ReturnType<typeof setInterval>;
+
   /**
    * Constructor of class
    * @param schemaService: Instace of schema service
@@ -36,7 +38,7 @@ export class SchemaProgressComponent implements OnInit, OnChanges, OnDestroy {
    */
   ngOnInit(): void {
       this.schemaExecutionProgressInfo(this.schemaId);
-      setInterval(() => this.schemaExecutionProgressInfo(this.schemaId), 15000);
+      this.pollingInterval =  setInterval(() => this.schemaExecutionProgressInfo(this.schemaId), 15000);
   }
 
   /**
@@ -70,7 +72,8 @@ export class SchemaProgressComponent implements OnInit, OnChanges, OnDestroy {
   ngOnDestroy(): void {
     this.subscription.forEach((sub) => {
       sub.unsubscribe();
-    })
+    });
+    clearInterval(this.pollingInterval);
   }
 
 }

@@ -3,7 +3,7 @@
      Don't write any html code here ..
 -->
 
-<ng-container>
+<ng-container *ngIf="schemaDetails">
 
     <!-- DATA QUALITIY VIEW -->
     <pros-schema-details *ngIf="displayFormat === 'DATAQUALITY_VIEW'" 
@@ -11,7 +11,7 @@
         [moduleId]="moduleId"
         [variantId]="variantId" 
         [activeTab]="activeTab"
-        [isInRunning]="schemaDetails?.isInRunning">
+        [isInRunning]="schemaDetails.isInRunning">
     </pros-schema-details>
 
 
@@ -20,7 +20,7 @@
         [schemaId]="schemaId" 
         [moduleId]="moduleId"
         [activeTab]="activeTab"
-        [isInRunning]="schemaDetails?.isInRunning">
+        [isInRunning]="schemaDetails.isInRunning">
     </pros-duplicacy>
 
 
@@ -30,7 +30,7 @@
         [moduleId]="moduleId"
         [variantId]="variantId" 
         [activeTab]="activeTab"
-        [isInRunning]="schemaDetails?.isInRunning">
+        > <!-- [isInRunning]="schemaDetails.isInRunning" -->
     </pros-potext-view>
 
     <!-- CLASSIFICATION VIEW -->
@@ -39,7 +39,7 @@
         [moduleId]="moduleId" 
         [variantId]="variantId" 
         [activeTab]="activeTab"
-        [isInRunning]="schemaDetails?.isInRunning">
+        [isInRunning]="schemaDetails.isInRunning">
     </pros-classification-builder>
 
 </ng-container>

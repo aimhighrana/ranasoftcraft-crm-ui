@@ -502,12 +502,16 @@ describe('DuplicacyComponent', () => {
 
     spyOn(component, 'approveRecords');
     spyOn(component, 'rejectRecords');
+    spyOn(component, 'markForDeletion');
 
     component.doAction(component.tableActionsList[0], {});
     expect(component.approveRecords).toHaveBeenCalledWith('inline', {});
 
     component.doAction(component.tableActionsList[1], {});
     expect(component.rejectRecords).toHaveBeenCalledWith('inline', {});
+
+    component.doAction(component.tableActionsList[2], {});
+    expect(component.markForDeletion).toHaveBeenCalledWith({});
 
   });
 

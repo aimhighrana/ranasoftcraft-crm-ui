@@ -234,7 +234,6 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
       if (!this.isInRunning) {
         this.getDataScope();
         this.getSchemaStatics();
-        this.getSchemaDetails();
         this.getSchemaTableActions();
       }
     }
@@ -249,17 +248,21 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
 
     if (isRefresh) {
       this.dataSource = new SchemaDataSource(this.schemaDetailService, this.endpointservice, this.schemaId);
+
+      this.getSchemaDetails();
+
       /**
        * Get all user selected fields based on default view ..
        */
       this.schemaDetailService.getAllSelectedFields(this.schemaId, this.variantId ? this.variantId : '0').subscribe(res => {
         this.selectedFieldsOb.next(res ? res : [])
       }, error => console.error(`Error : ${error}`));
+
+      // reset filter and sort order
+      this.filterCriteria.next(null);
+      this.preInpVal = '';
     }
 
-    // reset filter and sort order
-    this.filterCriteria.next(null);
-    this.preInpVal = '';
 
     if (changes && changes.activeTab && changes.activeTab.currentValue !== changes.activeTab.previousValue) {
       this.activeTab = changes.activeTab.currentValue && changes.activeTab.currentValue === 'error' ? 'success' : changes.activeTab.currentValue;
@@ -931,7 +934,7 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
       if (objctNumber && oldVal !== value) {
         const request: SchemaCorrectionReq = { id: [objctNumber], fldId: fldid, vc: value, isReviewed: null } as SchemaCorrectionReq;
         this.schemaDetailService.doCorrection(this.schemaId, request).subscribe(res => {
-          row[fldid].fieldData = value;
+          // row[fldid].fieldData = value;
           if (res.acknowledge) {
             this.statics.correctedCnt = res.count ? res.count : 0;
           }
