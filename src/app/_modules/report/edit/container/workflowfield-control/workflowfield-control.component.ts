@@ -28,6 +28,12 @@ export class WorkflowfieldControlComponent implements OnInit, OnChanges, OnDestr
   selectedFldId: string;
 
   /**
+   * control for which this component is being used
+   */
+  @Input()
+  controlFor: string;
+
+  /**
    * Is multiSelect dropdown
    */
   @Input()
@@ -117,6 +123,7 @@ export class WorkflowfieldControlComponent implements OnInit, OnChanges, OnDestr
    * Should call http for get all fields
    */
   getField(){
+    console.log(this.objectType)
     if(this.objectType){
       const allfldSub = this.schemaDetailsService.getWorkflowFields(this.objectType.split(',')).subscribe(response=>{
         const res = this.transformFieldRes(response);
@@ -143,7 +150,34 @@ export class WorkflowfieldControlComponent implements OnInit, OnChanges, OnDestr
     const allFieldsChild: Metadata[] = [];
     if(response.static && this.widgetType === 'TIMESERIES'){
       response.static.forEach(fields => {
-        if(fields.fieldId === 'REQUESTOR_DATE' || fields.fieldId === 'DUE_DATE' || fields.fieldId === 'DATE_STARTED' || fields.fieldId === 'FINISHDATE') {
+        if((this.controlFor === 'GroupWith' ) && fields.fieldId === 'REQUESTOR_DATE' || fields.fieldId === 'DUE_DATE' || fields.fieldId === 'DATE_STARTED' || fields.fieldId === 'FINISHDATE') {
+          allFieldsChild.push({
+            fieldId: fields.fieldId,
+            fieldDescri: fields.fieldDescri,
+            isGroup: false,
+            fldCtrl: fields,
+            childs: []
+          });
+        } else if(this.controlFor === 'Field' && fields.fieldId !== 'WFID' && fields.fieldId !== 'CRID') {
+            allFieldsChild.push({
+              fieldId: fields.fieldId,
+              fieldDescri: fields.fieldDescri,
+              isGroup: false,
+              fldCtrl: fields,
+              childs: []
+            });
+          }
+        });
+
+      metadata.push({
+        fieldId: 'static_fields',
+        fieldDescri: 'System fields',
+        isGroup: true,
+        childs: allFieldsChild
+      });
+    } else if( response.static && (this.widgetType === 'BAR_CHART'|| this.widgetType === 'STACKED_BAR_CHART' )){
+      response.static.forEach(fields => {
+        if(fields.fieldId !== 'WFID' && fields.fieldId !== 'CRID' ) {
           allFieldsChild.push({
             fieldId: fields.fieldId,
             fieldDescri: fields.fieldDescri,
@@ -160,7 +194,8 @@ export class WorkflowfieldControlComponent implements OnInit, OnChanges, OnDestr
         isGroup: true,
         childs: allFieldsChild
       });
-    } else if(response.static) {
+    }
+     else if(response.static) {
       response.static.forEach(fields => {
         allFieldsChild.push({
           fieldId: fields.fieldId,

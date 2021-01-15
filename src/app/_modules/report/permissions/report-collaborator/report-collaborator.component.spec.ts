@@ -12,6 +12,8 @@ import { of } from 'rxjs';
 import { Router } from '@angular/router';
 import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
 import { GlobaldialogService } from '@services/globaldialog.service';
+import { ElementRef } from '@angular/core';
+import { MockElementRef } from '@modules/shared/_directives/resizeable.directive.spec';
 
 describe('ReportCollaboratorComponent', () => {
   let component: ReportCollaboratorComponent;
@@ -25,7 +27,7 @@ describe('ReportCollaboratorComponent', () => {
       imports:[AppMaterialModuleForSpec, HttpClientTestingModule, ReactiveFormsModule, FormsModule, RouterTestingModule],
       providers:[
         ReportService,
-        GlobaldialogService
+        GlobaldialogService, { provide: ElementRef, useValue: MockElementRef }
       ]
     })
     .compileComponents();
@@ -98,7 +100,8 @@ describe('ReportCollaboratorComponent', () => {
       {userId:'srana',email:'srana@gmail.com'} as UserMdoModel,
       {userId:'admin',email:'admin@gmail.com'} as UserMdoModel
     ];
-
+    fixture.detectChanges();
+    component.loosefocus=fixture.componentInstance.loosefocus;
     component.permissionOn = {users} as PermissionOn;
 
     // call actual method

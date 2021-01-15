@@ -27,7 +27,7 @@
                 <ng-container *ngFor="let item of invites().controls; let i=index">
                     <div class="f-row invite-colunm" [formGroupName]="i">
                         <div class="col-x2">
-                           <pros-form-input [type]="'text'" [control]="invites().controls[i].get('email')" 
+                            <pros-form-input [type]="'text'" [control]="invites().controls[i].get('email')" 
                             [placeholder]="'Email address'"></pros-form-input>
                                 <mat-error *ngIf="invites().controls[i].get('email').errors && submitted">
                                     Email is required

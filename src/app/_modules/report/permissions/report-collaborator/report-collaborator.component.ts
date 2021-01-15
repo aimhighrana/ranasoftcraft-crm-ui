@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ReportService } from '@modules/report/_service/report.service';
 import { PermissionOn, ReportDashboardPermission, PermissionType } from '@models/collaborator';
 import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
@@ -39,6 +39,11 @@ export class ReportCollaboratorComponent implements OnInit {
   addCollaboratorFrmGrp: FormGroup;
   searchCollCtrl: FormControl = new FormControl('');
   reportId: string;
+
+  /**
+   * To lose focus from input after selecting an option from MatAutocomplete
+   */
+  @ViewChild('loosefoucs')loosefocus:ElementRef;
 
   /**
    * Selected collaborators before saved
@@ -182,12 +187,12 @@ export class ReportCollaboratorComponent implements OnInit {
 
       if (selVal && !isAlreadyExits) {
         this.selectedCollaborators.push(selVal);
-        if (this.currentPageIdx === 0 && this.possibleChips.length < 2) {
           this.possibleChips.push(selVal);
-          this.currentPageIdx = 0;
         }
-      }
+      if(this.enableNextBtn)
+      this.paginateChip('next');
       this.addCollaboratorFrmGrp.controls.addCollaboratorCtrl.reset();
+      this.loosefocus.nativeElement.blur();
     }
   }
 
@@ -341,6 +346,7 @@ export class ReportCollaboratorComponent implements OnInit {
    * @param value changed input value
    */
   searchFld(value: string) {
+    console.log(this.collaboratorList);
     if(value) {
       this.collaboratorListOb = of(this.collaboratorList.filter(fil => {
         if (fil.userMdoModel && fil.userMdoModel.fullName.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !== -1) {
@@ -356,6 +362,8 @@ export class ReportCollaboratorComponent implements OnInit {
         }
 
       }));
+    } else {
+      this.collaboratorListOb= of(this.collaboratorList)
     }
   }
 }

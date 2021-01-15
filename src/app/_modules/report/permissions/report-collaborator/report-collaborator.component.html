@@ -35,7 +35,7 @@
             <h3 class="mat-h3">Add collaborators</h3>
 
             <mat-form-field appearance="outline">
-                <input type="text" placeholder="Search users , roles and groups" aria-label="Number" matInput
+                <input type="text" #loosefoucs placeholder="Search users , roles and groups" aria-label="Number" matInput
                     formControlName="addCollaboratorCtrl" [matAutocomplete]="addCollaboratorCtrlAuto">
                 <mat-autocomplete #addCollaboratorCtrlAuto="matAutocomplete" [displayWith]="displayWith"
                     (optionSelected)="onSelectCollaborator($event)">
@@ -52,7 +52,7 @@
                 <button mat-button  (click)="paginateChip('prev')" [disabled]="enablePreBtn">
                     <mat-icon fontSet="mdo-icons">chevron-left</mat-icon>
                 </button>
-                <mat-chip-list aria-label="Fish selection">
+                <mat-chip-list aria-label="Collaborators selection">
                     <ng-template ngFor let-selcoll [ngForOf]="possibleChips">
                         <mat-chip *ngIf="selcoll.permissionType === 'USER'" matTooltipPosition="right"
                             matTooltip="{{ selcoll.userMdoModel ? selcoll.userMdoModel.fullName : 'Unknown'}}">

@@ -208,7 +208,7 @@
                                 <!--WorkflowType-->
                                 <ng-template
                                     [ngIf]="selStyleWid && (selStyleWid.widgetType === 'COUNT' || selStyleWid.widgetType === 'BAR_CHART' || selStyleWid.widgetType === 'STACKED_BAR_CHART' || selStyleWid.widgetType === 'FILTER' || selStyleWid.widgetType === 'TIMESERIES') && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===true && styleCtrlGrp.get('isCustomdataSet').value===false">
-                                    <pros-workflowfield-control [objectType]="selStyleWid && selStyleWid.objectType"
+                                    <pros-workflowfield-control [controlFor]="'Field'" [widgetType]="selStyleWid && selStyleWid.widgetType" [objectType]="selStyleWid && selStyleWid.objectType"
                                         label="Field" [selectedFldId]="selStyleWid && selStyleWid.field"
                                         (selectionChange)='onFieldChange($event)'>
                                     </pros-workflowfield-control>
@@ -244,7 +244,7 @@
                                 <ng-template
                                     [ngIf]="selStyleWid && (selStyleWid.widgetType === 'STACKED_BAR_CHART'|| selStyleWid.widgetType === 'TIMESERIES') && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===true && styleCtrlGrp.get('isCustomdataSet').value===false">
                                     <pros-workflowfield-control [objectType]="selStyleWid && selStyleWid.objectType" [widgetType]="selStyleWid && selStyleWid.widgetType"
-                                        label="Group with(s)" [selectedFldId]="selStyleWid && selStyleWid.groupById"
+                                        label="Group with(s)" [controlFor]="'GroupWith'" [selectedFldId]="selStyleWid && selStyleWid.groupById"
                                         (selectionChange)='onGroupByChange($event)'>
                                     </pros-workflowfield-control>
                                 </ng-template>

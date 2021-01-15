@@ -649,6 +649,7 @@ export class NewBusinessRulesComponent implements OnInit {
             if(control.invalid)
             control.markAsTouched();
           });
+          if(this.transformationRuleComponent)
           (Object).values(this.transformationRuleComponent.form.controls).forEach(control => {
             this.transformationRuleComponent.submitted=true;
             if(control.invalid)
