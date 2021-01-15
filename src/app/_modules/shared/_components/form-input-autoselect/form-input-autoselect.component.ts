@@ -90,6 +90,12 @@ export class FormInputAutoselectComponent implements OnInit, OnChanges {
   fieldLabel: string;
 
   /**
+   * To show/hide extra action level at bottom
+   */
+  @Input()
+  isExtraLabel = true;
+
+  /**
    * Event emitter for the selected option
    */
   @Output()
@@ -133,6 +139,10 @@ export class FormInputAutoselectComponent implements OnInit, OnChanges {
    * option that holds a value to identify if the results array is empty
    */
   hasResult: boolean;
+
+  /**
+   * Constructor of class
+   */
   constructor() {
     this.selectedMdoFldCtrl = new FormControl();
    }
@@ -169,6 +179,10 @@ export class FormInputAutoselectComponent implements OnInit, OnChanges {
     }
   }
 
+
+  /**
+   * ANGULAR HOOK
+   */
   ngOnInit(): void {
     this.selectedMdoFldCtrl.valueChanges
     .pipe(debounceTime(this.debounceValue))
@@ -255,6 +269,12 @@ export class FormInputAutoselectComponent implements OnInit, OnChanges {
     this.emitExtraLabelClick.emit();
   }
 
+
+  /**
+   * ANGULAR HOOK
+   * It will be called when value of @Input changes from parent component.
+   * @param changes: Object of type SimpleChanges
+   */
   ngOnChanges(changes: SimpleChanges) {
     const preVal = 'previousValue';
 
