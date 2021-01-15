@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ReportListDownloadModelComponent } from './report-list-download-model.component';
+import { ExportReportDatatableComponent } from './export-report-datatable.component';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
-describe('ReportListDownloadModelComponent', () => {
-  let component: ReportListDownloadModelComponent;
-  let fixture: ComponentFixture<ReportListDownloadModelComponent>;
+describe('ExportReportDatatableComponent', () => {
+  let component: ExportReportDatatableComponent;
+  let fixture: ComponentFixture<ExportReportDatatableComponent>;
   const mockDialogRef = {
     close: jasmine.createSpy('close')
   };
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ReportListDownloadModelComponent ],
+      declarations: [ ExportReportDatatableComponent ],
       imports:[
         AppMaterialModuleForSpec,
         ReactiveFormsModule,
@@ -31,7 +31,7 @@ describe('ReportListDownloadModelComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ReportListDownloadModelComponent);
+    fixture = TestBed.createComponent(ExportReportDatatableComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

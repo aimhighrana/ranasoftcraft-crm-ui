@@ -580,7 +580,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
   fileChange(event: any) {
     if (event && event.target) {
       const file = event.target.files[0] as File;
-      if (file.name.endsWith('.png') || file.name.endsWith('.jpg') || file.name.endsWith('.jpeg')) {
+      const fileName = file.name.toLocaleLowerCase();
+      if (fileName.endsWith('.png') || fileName.endsWith('.jpg') || fileName.endsWith('.jpeg')) {
         const uploadUpdateFile = this.schemaService.uploadUpdateFileData(event.target.files[0] as File, this.styleCtrlGrp.get('imagesno').value).subscribe(res => {
           this.styleCtrlGrp.get('imageName').setValue(event.target.files[0] ? event.target.files[0].name : '');
           this.styleCtrlGrp.get('imagesno').setValue(res);

@@ -4,11 +4,11 @@ import { ReportingListComponent } from '../reporting-list.component';
 import { FormControl } from '@angular/forms';
 
 @Component({
-  selector: 'pros-report-list-download-model',
-  templateUrl: './report-list-download-model.component.html',
-  styleUrls: ['./report-list-download-model.component.scss']
+  selector: 'pros-export-report-datatable',
+  templateUrl: './export-report-datatable.component.html',
+  styleUrls: ['./export-report-datatable.component.scss']
 })
-export class ReportListDownloadModelComponent implements OnInit {
+export class ExportReportDatatableComponent implements OnInit {
 
   pages: string[] = [];
 

@@ -24,7 +24,7 @@ import { CollaboratorComponent } from './permissions/collaborator/collaborator.c
 import { SummaryLayoutComponent } from './view/summary-layout/summary-layout.component';
 import { SummaryTabsComponent } from './view/summary-layout/summary-tabs/summary-tabs.component';
 import { WidgetColorPaletteComponent } from './edit/widget-color-palette/widget-color-palette.component';
-import { ReportListDownloadModelComponent } from './view/dashboard-container/reporting-list/report-list-download-model/report-list-download-model.component';
+import { ExportReportDatatableComponent } from './view/dashboard-container/reporting-list/export-report-datatable/export-report-datatable.component';
 import { WorkflowfieldControlComponent } from './edit/container/workflowfield-control/workflowfield-control.component';
 import { WorkflowDatasetComponent } from './edit/container/workflow-dataset/workflow-dataset.component';
 import { ReportDatatableColumnSettingsComponent } from './view/dashboard-container/reporting-list/report-datatable-column-settings/report-datatable-column-settings.component';
@@ -53,7 +53,7 @@ import { HierarchyFilterComponent } from './view/dashboard-container/filter/hier
     SummaryLayoutComponent,
     SummaryTabsComponent,
     WidgetColorPaletteComponent,
-    ReportListDownloadModelComponent,
+    ExportReportDatatableComponent,
     WorkflowfieldControlComponent,
     WorkflowDatasetComponent,
     ReportDatatableColumnSettingsComponent,
