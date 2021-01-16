@@ -307,12 +307,6 @@
                     <mat-menu #subscriberlist="matMenu" direction="right" class="navigation-menu">
                         <button mat-menu-item *ngFor="let role of roles" (click)="updateRole(role.code, subscriber,l)">
                             {{ role.text }}</button>
-                        <!-- <mat-nav-list>
-                            <mat-list-item *ngFor="let role of roles"
-                                (click)="updateRole(role, subscriber,l)">
-                                {{ role }}
-                            </mat-list-item>
-                        </mat-nav-list> -->
                     </mat-menu>
 
                     <div class="col col-x8">

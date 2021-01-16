@@ -105,7 +105,8 @@
                                             </mat-chip>
                                             <!-- Append dynamic filter MatMenu -->
                                             <mat-menu #appliedfiltermenu="matMenu">
-                                                <pros-filter-values [moduleId]="moduleId"
+                                                <pros-filter-values 
+                                                    [moduleId]="moduleId"
                                                     [fieldId]="loadDopValuesFor ? loadDopValuesFor.fieldId : ''"
                                                     [checkedValue]="loadDopValuesFor ? loadDopValuesFor.checkedValue : []"
                                                     (selectedValues)="updateFilterCriteria($event)">
@@ -122,8 +123,11 @@
 
                                     <!-- Add filter control MatMenu -->
                                     <mat-menu #addfiltermenu="matMenu">
-                                        <pros-add-filter-menu [moduleId]="moduleId"
-                                            (evtReadyForApply)="makeFilterControl($event)" [reInilize]="reInilize">
+                                        <pros-add-filter-menu 
+                                            [moduleId]="moduleId"
+                                            (evtReadyForApply)="makeFilterControl($event)" 
+                                            [reInilize]="reInilize"
+                                            [alreadySelectedValues]="filterCriteria.getValue()">
                                         </pros-add-filter-menu>
                                     </mat-menu>
                                 </mat-chip-list>

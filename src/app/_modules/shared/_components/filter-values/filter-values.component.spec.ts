@@ -142,4 +142,25 @@ describe('FilterValuesComponent', () => {
     expect(component.checkedValue.length).toEqual(2);
   }));
 
+  it('generateDropdownValues(), shoudd generate dropdown values from excel', async() => {
+    const dropDownValues = [
+      'firstname',
+      'lastname',
+      'id',
+      'country'
+    ]
+    component.dropValue = [];
+    component.generateDropdownValues(dropDownValues);
+    expect(component.dropValue.length).toEqual(4);
+    expect(component.searchValue.length).toEqual(4);
+  })
+
+  it('updateValues(), shoudld update dropdown values', async() => {
+    component.fieldId = 'APPROVER_ID';
+    component.moduleId = '1005';
+
+    spyOn(component, 'getDropdownValues');
+    component.updateValues();
+    expect(component.getDropdownValues).toHaveBeenCalled();
+  })
 });

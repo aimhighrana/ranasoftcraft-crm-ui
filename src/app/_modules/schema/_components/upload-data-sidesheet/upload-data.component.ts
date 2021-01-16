@@ -129,7 +129,6 @@ export class UploadDataComponent implements OnInit, AfterViewInit {
             status: true,
             message: errorText
           }
-          this.snackBar.open(errorText, 'Close', { duration: 5000 });
           return false;
         }
         const reader: FileReader = new FileReader();

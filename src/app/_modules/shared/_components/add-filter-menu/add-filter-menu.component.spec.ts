@@ -5,21 +5,27 @@ import { FilterValuesComponent } from '../filter-values/filter-values.component'
 import { SearchInputComponent } from '../search-input/search-input.component';
 import { of } from 'rxjs';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
-import { MetadataModel } from '@models/schema/schemadetailstable';
+import { FilterCriteria, MetadataModel } from '@models/schema/schemadetailstable';
+import { SchemaService } from '@services/home/schema.service';
+import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 
 describe('AddFilterMenuComponent', () => {
   let component: AddFilterMenuComponent;
   let fixture: ComponentFixture<AddFilterMenuComponent>;
   let schemaDetailService: jasmine.SpyObj<SchemaDetailsService>;
+  let schemaService: jasmine.SpyObj<SchemaService>;
 
   beforeEach(async(() => {
+    const spyObj = jasmine.createSpyObj('SchemaService', ['dropDownValues', 'generateColumnByFieldId']);
     TestBed.configureTestingModule({
       declarations: [ AddFilterMenuComponent, FilterValuesComponent, SearchInputComponent ],
       imports: [AppMaterialModuleForSpec],
-      providers: [SchemaDetailsService]
+      providers: [SchemaDetailsService,
+        { provide: SchemaService, useValue: spyObj }]
     })
     .compileComponents();
     schemaDetailService = TestBed.inject(SchemaDetailsService) as jasmine.SpyObj<SchemaDetailsService>;
+    schemaService = TestBed.inject(SchemaService) as jasmine.SpyObj<SchemaService>;
   }));
 
   beforeEach(() => {
@@ -72,4 +78,38 @@ describe('AddFilterMenuComponent', () => {
     component.searchField(searchvalue2);
     expect(component.metadaDrop.length).toEqual(0);
   }));
+
+  it(`dropDownValues(), get business rules service`, async(() => {
+    const returnData: DropDownValue[] = [];
+    schemaService.dropDownValues.and.returnValue(of(returnData));
+    component.getDropdownValues('testId', '');
+    expect(schemaService.dropDownValues).toHaveBeenCalled();
+  }));
+
+  it('ctrlFlds(), should get fields according to field id', async() => {
+    const fld = {
+      fieldId: 'APPROVAR_ID'
+    } as MetadataModel
+
+    component.moduleId = '10054';
+    component.alreadySelectedValues = [
+      {
+        fieldId: 'APPROVAR_ID',
+        values: ['AshishKr', 'SRana']
+      },
+      {
+        fieldId: 'MATL_TYPE',
+        values: ['SIL', 'GOL']
+      }
+    ] as FilterCriteria[]
+
+    component.ctrlFlds(fld);
+    expect(component.dropValuesCode.length).toEqual(2);
+
+    component.moduleId = '';
+    component.ctrlFlds(fld);
+    expect(schemaService.generateColumnByFieldId).toHaveBeenCalled();
+
+  })
+
 });

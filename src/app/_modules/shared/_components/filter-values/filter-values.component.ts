@@ -39,19 +39,33 @@ export class FilterValuesComponent implements OnInit, OnChanges {
    * Datascope is true then fiter value is serach by api
    */
   @Input()
-  isDataScope: boolean;
+  isSearchEnable = true;
 
-  // Adding debounce to prevent multiple api calls when searching
+  /**
+   * To hold already selected dropdown value's code.
+   */
+  @Input()
+  selectedDropValues: string[] = [];
+
+  /**
+   * Adding debounce to prevent multiple api calls when searching
+   * @param fieldId: material id
+   * @param searchText: text to be searched
+   */
   delayedCall = debounce((fieldId: string, searchText: string) => {
     if (this.staticFieldValues && this.staticFieldValues.length === 0) {
       this.getDropdownValues(fieldId, searchText);
-    } else if(this.isDataScope){
+    } else if (this.isSearchEnable) {
       this.getDropdownValues(fieldId, searchText);
     } else {
       this.searchFromExistingValues(searchText);
     }
   }, 300)
 
+
+  /**
+   * Constructor of class
+   */
   constructor(private schemaService: SchemaService) { }
 
   /**
@@ -59,21 +73,22 @@ export class FilterValuesComponent implements OnInit, OnChanges {
    * @param changes Input values to watch for changes
    */
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes && changes.fieldId && changes.fieldId.previousValue !== changes.fieldId.currentValue) {
+    if (changes && changes.fieldId && changes.fieldId.previousValue !== changes.fieldId.currentValue && changes.fieldId.previousValue !== undefined) {
       this.fieldId = changes.fieldId.currentValue;
       this.updateValues();
     }
 
-    if (changes && changes.checkedValue && changes.checkedValue.previousValue !== changes.checkedValue.currentValue) {
+    if (changes && changes.checkedValue && changes.checkedValue.previousValue !== changes.checkedValue.currentValue && changes.checkedValue.previousValue !== undefined) {
       this.checkedValue = changes.checkedValue.currentValue;
     }
   }
 
   updateValues() {
-    if(this.fieldId){
-      if(!this.moduleId) {
+    if (this.fieldId) {
+      if (!this.moduleId) {
         this.generateDropdownValues(this.schemaService.getStaticFieldValues(this.fieldId));
       } else {
+        this.checkedValue = []
         this.getDropdownValues(this.fieldId, '');
       }
     }
@@ -85,17 +100,31 @@ export class FilterValuesComponent implements OnInit, OnChanges {
    */
   ngOnInit(): void {
     if (this.fieldId && this.moduleId) {
+      this.checkedValue = []
       this.getDropdownValues(this.fieldId, '');
     }
   }
 
-  // Hitting API to get drop-down values
-  getDropdownValues(materialId: string, query: string) {
-    this.schemaService.dropDownValues(materialId, query).subscribe((data) => {
-      if (data && data.length > 0) {
+  /**
+   * Function to get drop-down values according to field id
+   * @param materialId: fieldId
+   * @param query: querystring if any
+   */
+  getDropdownValues(materialId: string, queryString: string) {
+    this.schemaService.dropDownValues(materialId, queryString).subscribe((data) => {
         this.dropValue = data;
         this.searchValue = this.dropValue;
-      }
+        if (this.selectedDropValues && this.selectedDropValues.length > 0) {
+          if (!queryString.trim()) {
+            this.selectedDropValues.forEach((value) => {
+              const dropValue = {
+                CODE: value,
+                FIELDNAME: materialId
+              } as DropDownValue;
+              this.checkedValue.push(dropValue);
+            })
+          }
+        }
     })
   }
 
@@ -138,8 +167,9 @@ export class FilterValuesComponent implements OnInit, OnChanges {
    */
   isChecked(value: DropDownValue): boolean {
     const codes = this.checkedValue.map(map => map.CODE);
-    return codes.indexOf(value.CODE) !== -1 ? true : false;
+    return (codes.indexOf(value.CODE) !== -1 ? true : false);
   }
+
 
   /**
    * To emit the selected values on click button

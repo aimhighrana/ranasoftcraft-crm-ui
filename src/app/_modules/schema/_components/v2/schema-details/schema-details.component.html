@@ -40,7 +40,6 @@
     <ng-template [ngIf]="isInRunning" [ngIfElse]="schemaInfoTemplate">
         <pros-schema-progress [schemaId]="schemaId"></pros-schema-progress>
     </ng-template>
-
     <ng-template #schemaInfoTemplate>
     <mat-divider></mat-divider>
     <div class="row-spacer"></div>
@@ -107,9 +106,12 @@
                     </mat-chip>
                      <!-- Append dynamic filter MatMenu -->
                     <mat-menu #appliedfiltermenu="matMenu">
-                        <pros-filter-values [fieldId]="loadDopValuesFor ? loadDopValuesFor.fieldId : ''"
+                        <pros-filter-values 
+                            [moduleId]="moduleId"
+                            [fieldId]="loadDopValuesFor ? loadDopValuesFor.fieldId : ''"
                             [checkedValue]="loadDopValuesFor ? loadDopValuesFor.checkedValue : []"
-                            (selectedValues)="updateFilterCriteria($event)"></pros-filter-values>
+                            (selectedValues)="updateFilterCriteria($event)">
+                        </pros-filter-values>
                     </mat-menu>
                 </ng-template>
             </ng-template>
@@ -121,8 +123,11 @@
             </mat-chip>
             <!-- Add filter control MatMenu -->
             <mat-menu #addfiltermenu="matMenu">
-                <pros-add-filter-menu [moduleId]="moduleId" (evtReadyForApply)="makeFilterControl($event)"
-                    [reInilize]="reInilize">
+                <pros-add-filter-menu 
+                    [moduleId]="moduleId"
+                    (evtReadyForApply)="makeFilterControl($event)"
+                    [reInilize]="reInilize"
+                    [alreadySelectedValues]="filterCriteria.getValue()">
                 </pros-add-filter-menu>
             </mat-menu>
             <!-- More control -->
