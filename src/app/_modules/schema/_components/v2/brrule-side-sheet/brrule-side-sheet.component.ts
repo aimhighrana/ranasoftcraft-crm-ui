@@ -335,7 +335,7 @@ export class BrruleSideSheetComponent implements OnInit {
     const controlKeys: any[] = Object.keys(this.currentControls);
     let requiredKeys: string[] = [];
     if (selectedRule === BusinessRuleType.BR_CUSTOM_SCRIPT) {
-      requiredKeys = ['categoryId'];
+      requiredKeys = ['rule_name', 'error_message'];
     }
     if (selectedRule === BusinessRuleType.BR_REGEX_RULE) {
       requiredKeys = ['categoryId', 'rule_name', 'error_message', 'fields', 'regex', 'standard_function'];
@@ -718,6 +718,8 @@ export class BrruleSideSheetComponent implements OnInit {
     }
 
     this.form.controls.fields.setValue('');
+    const txtfield = document.getElementById('fieldsInput') as HTMLInputElement;
+    txtfield.value = '';
     if(this.fieldsInput) {
       this.fieldsInput.nativeElement.blur();
     }

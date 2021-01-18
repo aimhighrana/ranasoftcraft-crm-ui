@@ -579,7 +579,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
       });
       return;
     }
-
+    brInfo.brWeightage = 0;
     brInfo.isCopied = false;
     brInfo.schemaId = null;
     brInfo.copiedFrom = brInfo.brIdStr;

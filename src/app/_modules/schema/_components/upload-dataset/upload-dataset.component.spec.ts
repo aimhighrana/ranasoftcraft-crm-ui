@@ -464,9 +464,37 @@ describe('UploadDatasetComponent', () => {
   });
 
   it('setRunningSchedule(), should set runTime value in request form', async () => {
+    const runId = {value: false};
     component.createForm();
-    component.setRunningSchedule({value: '2234'});
-    expect(component.requestForm.controls.runTime.value).toEqual('2234');
+    component.setRunningSchedule(runId);
+    component.currentSchedule = null;
+    expect(component.requestForm.controls.runTime.value).toEqual(false);
+
+    const runid = {value: true};
+    component.setRunningSchedule(runid);
+    component.currentSchedule = null;
+    expect(component.requestForm.controls.runTime.value).toEqual(true);
+
+    component.currentSchedule = {
+      end: null,
+      endOn: '1610961949192',
+      isEnable: true,
+      monthOn: null,
+      occurrenceVal: 2,
+      repeatValue: '2',
+      schemaId: null,
+      schemaSchedulerRepeat: 'HOURLY',
+      startOn: '1610961949191',
+      weeklyOn: null
+    } as SchemaScheduler;
+    component.setRunningSchedule(runId);
+    expect(component.requestForm.controls.runTime.value).toEqual(false);
+    expect(component.currentSchedule.isEnable).toEqual(true);
+
+
+    component.setRunningSchedule(runid);
+    expect(component.requestForm.controls.runTime.value).toEqual(true);
+    expect(component.currentSchedule.isEnable).toEqual(false);
   })
 
   it('addSubscribers(), should call openDialog', async () => {
@@ -480,5 +508,32 @@ describe('UploadDatasetComponent', () => {
     component.createForm()
     const field=component.formField('objectDesc');
     expect(field).toBeDefined();
-   }));
+  }));
+
+  it(`Toggle isEnable value for schedule using slide toggle `, async(() => {
+    component.createForm();
+    const event = {checked: true};
+
+    component.currentSchedule = null;
+    component.toggleScheduleStatus(event);
+    expect(component.requestForm.controls.runTime.value).toEqual(true);
+
+    component.currentSchedule = {
+      end: null,
+      endOn: '1610961949192',
+      isEnable: true,
+      monthOn: null,
+      occurrenceVal: 2,
+      repeatValue: '2',
+      schemaId: null,
+      schemaSchedulerRepeat: 'HOURLY',
+      startOn: '1610961949191',
+      weeklyOn: null
+    } as SchemaScheduler;
+
+    component.toggleScheduleStatus(event);
+
+    expect(component.currentSchedule.isEnable).toEqual(true);
+    expect(component.requestForm.controls.runTime.value).toEqual(false);
+  }));
 });
