@@ -1,7 +1,7 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ComponentFactoryResolver, ViewContainerRef, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ComponentFactoryResolver, ViewContainerRef, Input, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaCorrectionReq, FilterCriteria, FieldInputType, SchemaTableViewFldMap, SchemaTableAction, TableActionViewType, SchemaTableViewRequest, STANDARD_TABLE_ACTIONS } from '@models/schema/schemadetailstable';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, combineLatest, Subject, throwError } from 'rxjs';
+import { BehaviorSubject, combineLatest, Subject, Subscription, throwError } from 'rxjs';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { SchemaDataSource } from '../../schema-details/schema-datatable/schema-data-source';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
@@ -29,7 +29,7 @@ import { debounceTime, distinctUntilChanged, skip } from 'rxjs/operators';
   templateUrl: './schema-details.component.html',
   styleUrls: ['./schema-details.component.scss']
 })
-export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges {
+export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
 
   /**
    * Module / dataset id
@@ -194,6 +194,10 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
 
   inlineSearchSubject: Subject<string> = new Subject();
 
+  /**
+   * All subscription should be in this variable ..
+   */
+  subscribers: Subscription[] = [];
 
   constructor(
     private activatedRouter: ActivatedRoute,
@@ -210,6 +214,12 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
     private userService: UserService,
     private schemaDetailsService: SchemaDetailsService,
   ) { }
+
+  ngOnDestroy(): void {
+    this.subscribers.forEach(s=>{
+      s.unsubscribe();
+    });
+  }
 
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -333,11 +343,13 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
           schemaTableViewRequest.schemaId = this.schemaId;
           schemaTableViewRequest.variantId = this.variantId ? this.variantId: '0';
           schemaTableViewRequest.schemaTableViewMapping = orderFld;
-          this.schemaDetailsService.updateSchemaTableView(schemaTableViewRequest).subscribe(response => {
+          const sub =  this.schemaDetailsService.updateSchemaTableView(schemaTableViewRequest).subscribe(response => {
             console.log(response);
           }, error => {
             console.error('Exception while persist table view');
           });
+          this.subscribers.push(sub);
+
           this.selectedFields = orderFld;
         } else {
           this.selectedFields = res[1] ? res[1] : [];
@@ -384,9 +396,10 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
    * Get schema info ..
    */
   getSchemaDetails() {
-    this.schemaListService.getSchemaDetailsBySchemaId(this.schemaId).subscribe(res => {
+   const sub =  this.schemaListService.getSchemaDetailsBySchemaId(this.schemaId).subscribe(res => {
       this.schemaInfo = res;
-    }, error => console.error(`Error : ${error.message}`))
+    }, error => console.error(`Error : ${error.message}`));
+    this.subscribers.push(sub);
   }
 
 
@@ -394,19 +407,20 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
    * Call service for get schema statics based on schemaId and latest run
    */
   getSchemaStatics() {
-    this.schemaService.getSchemaThresholdStatics(this.schemaId, this.variantId).subscribe(res => {
+    const sub =  this.schemaService.getSchemaThresholdStatics(this.schemaId, this.variantId).subscribe(res => {
       this.statics = res;
     }, error => {
       this.statics = new SchemaStaticThresholdRes();
       console.error(`Error : ${error}`);
-    })
+    });
+    this.subscribers.push(sub);
   }
 
   /**
    * Get schema variant details ..
    */
   getVariantDetails() {
-    this.schemaVariantService.getVariantdetailsByvariantId(this.variantId, this.userDetails.currentRoleId, this.userDetails.plantCode, this.userDetails.userName).subscribe(res => {
+   const sub =  this.schemaVariantService.getVariantdetailsByvariantId(this.variantId, this.userDetails.currentRoleId, this.userDetails.plantCode, this.userDetails.userName).subscribe(res => {
       if (res) {
         const finalFiletr: FilterCriteria[] = [];
         const inline = res.filterCriteria.filter(fil => fil.fieldId === 'id')[0];
@@ -435,6 +449,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
     }, error => {
       console.error(`Error : ${error.message}`);
     });
+    this.subscribers.push(sub);
   }
 
   /**
@@ -444,11 +459,12 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
     if (this.moduleId === undefined || this.moduleId.trim() === '') {
       throwError('Module id cant be null or empty');
     }
-    this.schemaDetailService.getMetadataFields(this.moduleId).subscribe(response => {
+    const sub =  this.schemaDetailService.getMetadataFields(this.moduleId).subscribe(response => {
       this.metadata.next(response);
     }, error => {
       console.error(`Error : ${error.message}`);
     });
+    this.subscribers.push(sub);
   }
 
   /**
@@ -517,7 +533,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
     // update state of columns
     this.manageStaticColumns();
     this.calculateDisplayFields();
-
+    this.selection.clear();
     if (status === 'error' || status === 'success') {
       this.getData(this.filterCriteria.getValue(), this.sortOrder);
     } else {
@@ -603,7 +619,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
       const oldVal = row[fldid] ? row[fldid].fieldData : '';
       if (objctNumber && oldVal !== value) {
         const request: SchemaCorrectionReq = { id: [objctNumber], fldId: fldid, vc: value, isReviewed: null } as SchemaCorrectionReq;
-        this.schemaDetailService.doCorrection(this.schemaId, request).subscribe(res => {
+        const sub =  this.schemaDetailService.doCorrection(this.schemaId, request).subscribe(res => {
           row[fldid].fieldData = value;
           if (res.acknowledge) {
             this.statics.correctedCnt = res.count ? res.count : 0;
@@ -612,6 +628,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
           this.snackBar.open(`Error :: ${error}`, 'Close', { duration: 2000 });
           console.error(`Error :: ${error.message}`);
         });
+        this.subscribers.push(sub);
       } else {
         console.error(`Wrong with object number or can't change if old and new same  ... `);
       }
@@ -675,7 +692,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
   manageStaticColumns() {
     let dispCols: string[] = [];
     if (this.activeTab === 'success' || this.activeTab === 'error') {
-      dispCols = ['_assigned_buckets', '_score_weightage', '_row_actions', 'OBJECTNUMBER'];
+      dispCols = ['_select_columns', '_assigned_buckets', '_score_weightage', '_row_actions', 'OBJECTNUMBER'];
       this.tableHeaderActBtn = [];
     } else {
       dispCols = ['_select_columns', '_assigned_buckets', '_row_actions', 'OBJECTNUMBER'];
@@ -721,7 +738,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
 
       }
     }
-    this.schemaDetailService.approveCorrectedRecords(this.schemaId, id, this.userDetails.currentRoleId).subscribe(res => {
+    const sub =  this.schemaDetailService.approveCorrectedRecords(this.schemaId, id, this.userDetails.currentRoleId).subscribe(res => {
       if (res.acknowledge) {
         this.getData();
         this.selection.clear();
@@ -730,6 +747,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
       this.snackBar.open(`Error :: ${error}`, 'Close', { duration: 2000 });
       console.error(`Error :: ${error.message}`);
     });
+    this.subscribers.push(sub);
   }
 
   /**
@@ -754,7 +772,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
 
         }
     }
-    this.schemaDetailService.resetCorrectionRecords(this.schemaId, this.schemaInfo.runId , id).subscribe(res=>{
+    const sub =  this.schemaDetailService.resetCorrectionRecords(this.schemaId, this.schemaInfo.runId , id).subscribe(res=>{
       if(res && res.acknowledge) {
             this.statics.correctedCnt = res.count ? res.count : 0;
             this.getData();
@@ -764,6 +782,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
         this.snackBar.open(`Error :: ${error}`, 'Close',{duration:2000});
         console.error(`Error :: ${error.message}`);
     });
+    this.subscribers.push(sub);
 
   }
 
@@ -953,12 +972,13 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
    * Get data scopes .. or variants ...
    */
   getDataScope(activeVariantId?: string) {
-    this.schemaVariantService.getDataScope(this.schemaId, 'RUNFOR').subscribe(res => {
+    const sub = this.schemaVariantService.getDataScope(this.schemaId, 'RUNFOR').subscribe(res => {
       this.dataScope = res;
       if(activeVariantId) {
         this.variantChange(activeVariantId);
       }
     }, (error) => console.error(`Something went wrong while getting variants. : ${error.message}`));
+    this.subscribers.push(sub);
   }
 
   /**
@@ -986,12 +1006,13 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
    * get already saved schema actions
    */
   getSchemaTableActions() {
-    this.schemaDetailService.getTableActionsBySchemaId(this.schemaId).subscribe(actions => {
+    const sub =  this.schemaDetailService.getTableActionsBySchemaId(this.schemaId).subscribe(actions => {
       console.log(actions);
       if(actions && actions.length) {
         this.tableActionsList = actions;
       }
     });
+    this.subscribers.push(sub);
   }
 
   get primaryActions() {
@@ -1027,6 +1048,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
       this.approveRecords('inline', element);
     } else if (!action.isCustomAction && action.actionCode === STANDARD_TABLE_ACTIONS.REJECT && (this.isReviewer || this.isApprover)) {
       this.resetRec(element,'inline');
+    } else {
+      this.generateCrossEntry(element, action.refBrId);
     }
   }
 
@@ -1049,6 +1072,49 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
 
     return true;
 
+  }
+
+  /**
+   * Help to generate / create cross module ..
+   * @param row get selected row data
+   */
+  generateCrossEntry(row: any, crossbrId?) {
+    const tragetFld = this.dataSource.targetField;
+    if (!tragetFld) {
+      throwError('Tragetfield cant be null or empty ');
+    }
+    const objNr = row && row.OBJECTNUMBER ? row.OBJECTNUMBER.fieldData : '';
+    if (!objNr) {
+      throwError(`Objectnumber must be required !!!`);
+    }
+    const sub = this.schemaDetailService.generateCrossEntry(this.schemaId, this.moduleId, objNr, crossbrId || '').subscribe(res=>{
+      if(res) {
+        const oldData = this.dataSource.docValue();
+        const sameDoc = oldData.filter(fil => (fil as any).OBJECTNUMBER.fieldData === objNr)[0];
+        if (sameDoc[tragetFld]) {
+          sameDoc[tragetFld].fieldData = res;
+        } else {
+          sameDoc[tragetFld] = { fieldData: res, fieldDesc: '', fieldId: tragetFld };
+        }
+
+        this.dataSource.setDocValue(oldData);
+
+        // put into correction tab
+        const request: SchemaCorrectionReq = { id: [objNr], fldId: tragetFld, vc: res, isReviewed: null } as SchemaCorrectionReq;
+        const doCorrectionRequest =  this.schemaDetailService.doCorrection(this.schemaId, request).subscribe(r => {
+          if (r.acknowledge) {
+            this.statics.correctedCnt = r.count ? r.count : 0;
+          }
+        }, error => {
+          this.snackBar.open(`Something went wrong `, 'Close', { duration: 2000 });
+          console.error(`Error :: ${error.message}`);
+        });
+        this.subscribers.push(doCorrectionRequest);
+      } else {
+        this.snackBar.open(`Something went wrong `, 'Close', { duration: 2000 });
+      }
+    }, error => { console.error(`Exception while generating coss module .. ${error.message}`) });
+    this.subscribers.push(sub);
   }
 
 

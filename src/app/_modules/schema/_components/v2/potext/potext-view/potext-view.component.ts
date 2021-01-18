@@ -94,7 +94,7 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
    * Store info about active tab..
    */
   @Input()
-  activeTab = 'success';
+  activeTab = 'error';
 
   /**
    * Executed statics of schema
@@ -179,9 +179,9 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
   TableActionViewType = TableActionViewType;
 
   tableActionsList: SchemaTableAction[] = [
-    { actionText: 'Approve', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON, actionCode: STANDARD_TABLE_ACTIONS.APPROVE, actionIconLigature: 'check-mark' },
-    { actionText: 'Reject', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON, actionCode: STANDARD_TABLE_ACTIONS.REJECT, actionIconLigature: 'declined' },
-    { actionText: 'Generate cross entry', isPrimaryAction: false, isCustomAction: true, actionViewType: TableActionViewType.TEXT }
+    { actionText: 'Approve', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON },
+    { actionText: 'Reject', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON },
+    // { actionText: 'Generate cross entry', isPrimaryAction: true, isCustomAction: true, actionViewType: TableActionViewType.ICON }
   ] as SchemaTableAction[];
 
   /**
@@ -264,9 +264,9 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
     }
 
 
-    if (changes && changes.activeTab && changes.activeTab.currentValue !== changes.activeTab.previousValue) {
-      this.activeTab = changes.activeTab.currentValue && changes.activeTab.currentValue === 'error' ? 'success' : changes.activeTab.currentValue;
-    }
+    // if (changes && changes.activeTab && changes.activeTab.currentValue !== changes.activeTab.previousValue) {
+    //   this.activeTab = changes.activeTab.currentValue && changes.activeTab.currentValue === 'error' ? 'success' : changes.activeTab.currentValue;
+    // }
     /**
      * Get onload data ..
      */
@@ -470,7 +470,7 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
     request.variantId = this.variantId;
     request.fetchCount = fetchCount ? fetchCount : 0;
     request.fetchSize = 20;
-    request.requestStatus = this.activeTab ? this.activeTab : 'success';
+    request.requestStatus = this.activeTab ? this.activeTab : 'error';
     request.filterCriterias = filterCriteria;
     request.sort = sort;
     request.isLoadMore = isLoadMore ? isLoadMore : false;
@@ -843,7 +843,7 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
    * @param row get selected row data
    */
   generateCrossEntry(row: any, crossbrId?) {
-    const tragetFld = this.dataSource.targetField;
+    const tragetFld = this.dataSource ? this.dataSource.targetField : '';
     if (!tragetFld) {
       throwError('Tragetfield cant be null or empty ');
     }
@@ -852,27 +852,31 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
       throwError(`Objectnumber must be required !!!`);
     }
     const sub = this.schemaDetailService.generateCrossEntry(this.schemaId, this.moduleId, objNr, crossbrId || '').subscribe(res=>{
-      console.log(res);
-      const oldData = this.dataSource.docValue();
-      const sameDoc = oldData.filter(fil => (fil as any).OBJECTNUMBER.fieldData === objNr)[0];
-      if (sameDoc[tragetFld]) {
-        sameDoc[tragetFld].fieldData = res;
-      } else {
-        sameDoc[tragetFld] = { fieldData: res, fieldDesc: '', fieldId: tragetFld };
-      }
-
-      this.dataSource.setDocValue(oldData);
-
-      // put into correction tab
-      const request: SchemaCorrectionReq = { id: [objNr], fldId: tragetFld, vc: res, isReviewed: null } as SchemaCorrectionReq;
-      this.schemaDetailService.doCorrection(this.schemaId, request).subscribe(r => {
-        if (r.acknowledge) {
-          this.schemaInfo.correctionValue = r.count ? r.count : 0;
+      if(res) {
+        const oldData = this.dataSource.docValue();
+        const sameDoc = oldData.filter(fil => (fil as any).OBJECTNUMBER.fieldData === objNr)[0];
+        if (sameDoc[tragetFld]) {
+          sameDoc[tragetFld].fieldData = res;
+        } else {
+          sameDoc[tragetFld] = { fieldData: res, fieldDesc: '', fieldId: tragetFld };
         }
-      }, error => {
+
+        this.dataSource.setDocValue(oldData);
+
+        // put into correction tab
+        const request: SchemaCorrectionReq = { id: [objNr], fldId: tragetFld, vc: res, isReviewed: null } as SchemaCorrectionReq;
+        const doCorrectionRequest =  this.schemaDetailService.doCorrection(this.schemaId, request).subscribe(r => {
+          if (r.acknowledge) {
+            this.schemaInfo.correctionValue = r.count ? r.count : 0;
+          }
+        }, error => {
+          this.snackBar.open(`Something went wrong `, 'Close', { duration: 2000 });
+          console.error(`Error :: ${error.message}`);
+        });
+        this.subscribers.push(doCorrectionRequest);
+      } else {
         this.snackBar.open(`Something went wrong `, 'Close', { duration: 2000 });
-        console.error(`Error :: ${error.message}`);
-      });
+      }
     }, error => { console.error(`Exception while generating coss module .. ${error.message}`) });
     this.subscribers.push(sub);
   }
