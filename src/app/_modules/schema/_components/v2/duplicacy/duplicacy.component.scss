@@ -15,7 +15,6 @@ div.root {
       white-space: nowrap;
       overflow: hidden;
       line-height: 40px;
-      display: flex;
       align-items: center;
     }
   }
@@ -68,6 +67,10 @@ div.root {
               .mat-cell:not(.no-text-decoration) {
                 text-decoration: line-through;
               }
+            }
+
+            .action-iconbtns {
+              flex-wrap: wrap;
             }
           }
 

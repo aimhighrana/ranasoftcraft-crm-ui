@@ -5,20 +5,20 @@
             {{ schemaInfo ? schemaInfo.moduleDescription : 'Unknown' }} / 
             {{ schemaInfo ? schemaInfo.schemaDescription : 'Unknown' }} /
             {{ variantName ? variantName : 'Unknown'  }}
-            
-            <button mat-button [matMenuTriggerFor]="check">
-                <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon>
-            </button>
-            <mat-menu #check="matMenu" class="navigation-menu">
-                <button mat-menu-item (click)="openDataScopeSideSheet()">[New data scope]</button>
-                <button mat-menu-item (click)="variantChange('0')"> Entire dataset </button>
-                <ng-container *ngIf="dataScope && dataScope.length">
-                    <button mat-menu-item *ngFor="let scope of dataScope" (click)="variantChange(scope.variantId)">
-                        {{scope.variantName}}
-                    </button>
-                </ng-container>
-            </mat-menu>
         </div>
+        <button mat-button [matMenuTriggerFor]="check">
+            <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon>
+        </button>
+        <mat-menu #check="matMenu" class="navigation-menu">
+            <button mat-menu-item (click)="openDataScopeSideSheet()">[New data scope]</button>
+            <button mat-menu-item (click)="variantChange('0')"> Entire dataset </button>
+            <ng-container *ngIf="dataScope && dataScope.length">
+                <button mat-menu-item *ngFor="let scope of dataScope" (click)="variantChange(scope.variantId)">
+                    {{scope.variantName}}
+                </button>
+            </ng-container>
+        </mat-menu>
+        <div class="f-col-spacer-half"></div>
         <div class="f-spacer"></div>
         <div class="f-row action-iconbtns">
             <button mat-flat-button color="accent" (click)="openSummarySideSheet()">

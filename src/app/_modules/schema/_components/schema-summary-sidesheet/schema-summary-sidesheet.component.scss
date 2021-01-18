@@ -2,14 +2,15 @@ div.root {
   user-select: none;
   height: 100%;
   overflow: hidden;
-  width: 868px;
+  width: 900px;
 
   .breadcrum-toolbar {
     padding: 8px 16px;
-    z-index: 2;
 
     .mdo-constrained-right {
+      align-items: center;
       width: 100%;
+      margin-right: 0;
 
       .breadcrum-head {
         align-items: center;
@@ -36,6 +37,8 @@ div.root {
     }
 
     .mdo-justify {
+      margin: 0 16px;
+
       .mdo-form-field {
         margin: 8px 0;
 
@@ -128,22 +131,23 @@ div.root {
   width: 100%;
 
   mat-slider.mat-slider {
-    flex: 30;
-    width: 1px;
-  }
-
-  .percent-count {
     flex: 1;
     width: 1px;
   }
 }
 
-@media (min-width: 1200px) {
-  .mdo-constrained-right {
-    margin-right: 50px;
-  }
+@media (min-width: 1024px) {
+  div.root {
+    .breadcrum-toolbar {
+      .mdo-constrained-right {
+        margin-right: 50px;
+      }
+    }
 
-  .mdo-justify {
-    margin: 0 66px;
+    .sidesheetcontent-listing {
+      .mdo-justify {
+        margin: 0 66px;
+      }
+    }
   }
 }

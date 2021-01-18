@@ -16,7 +16,6 @@ div.root {
       white-space: nowrap;
       overflow: hidden;
       line-height: 40px;
-      display: flex;
       align-items: center;
     }
   }
@@ -39,24 +38,28 @@ div.root {
         .data {
           overflow: auto;
           height: calc(100% - 16px * 4 - 36px - 24px - 56px - 2px);
-        }
 
-        mat-table.mat-table {
-          overflow-x: auto;
-          width: 100vw;
-          max-width: 100%;
-          display: table;
-          border-collapse: collapse;
+          mat-table.mat-table {
+            overflow-x: auto;
+            width: 100vw;
+            max-width: 100%;
+            display: table;
+            border-collapse: collapse;
 
-          .mat-cell {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: flex-start;
-
-            .text-correction {
-              text-decoration: line-through;
+            .mat-cell {
               display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: flex-start;
+
+              .text-correction {
+                text-decoration: line-through;
+                display: flex;
+              }
+
+              .action-iconbtns {
+                flex-wrap: wrap;
+              }
             }
           }
         }

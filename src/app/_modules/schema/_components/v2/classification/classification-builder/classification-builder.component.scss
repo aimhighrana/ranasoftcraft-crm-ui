@@ -15,7 +15,6 @@ div.root {
       white-space: nowrap;
       overflow: hidden;
       line-height: 40px;
-      display: flex;
       align-items: center;
     }
   }
@@ -102,6 +101,12 @@ div.root {
             max-width: 100%;
             display: table;
             border-collapse: collapse;
+
+            .mat-cell {
+              .action-iconbtns {
+                flex-wrap: wrap;
+              }
+            }
           }
         }
       }

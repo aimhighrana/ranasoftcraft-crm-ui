@@ -99,7 +99,6 @@ div.root {
     .info-link {
       align-items: center;
       font-size: 0.9rem;
-      cursor: pointer;
     }
 
     &.col-x16 {
@@ -133,11 +132,6 @@ div.root {
   flex: 1;
 
   mat-slider.mat-slider {
-    flex: 30;
-    width: 1px;
-  }
-
-  .percent-count {
     flex: 1;
     width: 1px;
   }

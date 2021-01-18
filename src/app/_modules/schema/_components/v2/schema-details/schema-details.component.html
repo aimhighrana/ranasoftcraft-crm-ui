@@ -1,23 +1,25 @@
 <div class="mat-elevation-z0 root">
     <div class="f-row breadcrum-toolbar">
-        <div class="display-heading-large">
             <ng-template [ngIf]="schemaInfo">
+                <div class="display-heading-large">
                 {{ schemaInfo.moduleDescription ? schemaInfo.moduleDescription : 'Module' }} /
                 {{ schemaInfo.schemaDescription ? schemaInfo.schemaDescription : 'Untitled'}} / {{variantName}}
-                <button mat-button [matMenuTriggerFor]="menu">
-                    <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon>
-                </button>
-                <mat-menu #menu="matMenu" class="navigation-menu">
-                    <button mat-menu-item (click)="openDataScopeSideSheet()">[New data scope]</button>
-                    <button mat-menu-item (click)="variantChange('0')">Entire dataset</button>
-                    <ng-container *ngIf="dataScope && dataScope.length">
-                        <button mat-menu-item *ngFor="let scope of dataScope" (click)="variantChange(scope.variantId)">
-                            {{ scope.variantName ? scope.variantName : 'Unknown'}}
-                        </button>
-                    </ng-container>
-                </mat-menu>
+            </div>
+            <button mat-button [matMenuTriggerFor]="menu">
+                <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu" class="navigation-menu">
+                <button mat-menu-item (click)="openDataScopeSideSheet()">[New data scope]</button>
+                <button mat-menu-item (click)="variantChange('0')">Entire dataset</button>
+                <ng-container *ngIf="dataScope && dataScope.length">
+                    <button mat-menu-item *ngFor="let scope of dataScope" (click)="variantChange(scope.variantId)">
+                        {{ scope.variantName ? scope.variantName : 'Unknown'}}
+                    </button>
+                </ng-container>
+            </mat-menu>
             </ng-template>
-        </div>
+        
+        <div class="f-col-spacer-half"></div>
         <div class="f-spacer"></div>
         <div class="f-row action-iconbtns">
             <button mat-flat-button color="accent" (click)="openSummarySideSheet()">
@@ -203,7 +205,7 @@
                                 value="{{ element['_score_weightage'] ? element['_score_weightage'].fieldData : '0' }} "
                                 class="f-col"></mat-progress-bar>
                             <span class="f-col-spacer-half"></span>
-                            <span class="f-col">
+                            <span>
                                 {{ element['_score_weightage'] ? element['_score_weightage'].fieldData : '' }}%
                             </span>
                         </div>

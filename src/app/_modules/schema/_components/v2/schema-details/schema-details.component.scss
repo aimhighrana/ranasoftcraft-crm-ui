@@ -15,7 +15,6 @@ div.root {
       white-space: nowrap;
       overflow: hidden;
       line-height: 40px;
-      display: flex;
       align-items: center;
     }
   }
@@ -40,23 +39,22 @@ div.root {
       display: table;
       border-collapse: collapse;
 
-      .progress-cell {
-        flex: 1;
-        align-items: center;
-
-        mat-progress-bar {
-          flex: 3;
-        }
-
-        .countscore {
-          flex: 1;
-          font-weight: 500;
-        }
-      }
-
       .mat-cell {
+        .progress-cell {
+          flex: 1;
+          align-items: center;
+
+          mat-progress-bar {
+            flex: 3;
+          }
+        }
+
         .mdo-form-input {
           flex: 1;
+        }
+
+        .action-iconbtns {
+          flex-wrap: wrap;
         }
       }
     }

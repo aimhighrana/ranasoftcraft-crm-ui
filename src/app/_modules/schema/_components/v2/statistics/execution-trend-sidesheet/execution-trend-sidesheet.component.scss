@@ -15,27 +15,33 @@ div.root {
     }
 
     .mdo-constrained-right {
-      align-items: center;
       width: 100%;
-
-      button.mat-flat-button {
-        min-width: auto;
-      }
+      align-items: center;
     }
   }
 
   .sidesheetcontent-listing {
     height: calc(100% - 52px);
     overflow: auto;
+
+    .mdo-justify {
+      margin: 0 16px;
+    }
   }
 }
 
-@media (min-width: 1200px) {
-  .mdo-constrained-right {
-    margin-right: 50px;
-  }
+@media (min-width: 1024px) {
+  div.root {
+    .breadcrum-toolbar {
+      .mdo-constrained-right {
+        margin-right: 50px;
+      }
+    }
 
-  .mdo-justify {
-    margin: 0 66px;
+    .sidesheetcontent-listing {
+      .mdo-justify {
+        margin: 0 66px;
+      }
+    }
   }
 }

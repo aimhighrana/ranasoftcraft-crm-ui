@@ -4,6 +4,7 @@
             {{schemaDetails?.moduleDescription ? schemaDetails.moduleDescription : 'Untitled'}} /
             {{schemaDetails?.schemaDescription ? schemaDetails.schemaDescription: 'Untitled'}}
         </div>
+        <span class="f-col-spacer-half"></span>
         <span class="f-spacer"></span>
         <div class="f-row action-iconbtns">
             <button mat-flat-button color="accent" (click)="openSummarySideSheet()">
@@ -47,7 +48,7 @@
                             [value]="schemaDetails?.schemaThreshold ? schemaDetails.schemaThreshold : 0"
                             (change)="updateSchemaInfo(schemaDetails.schemaDescription, $event)"></mat-slider>
                             <span class="f-col-spacer-half"></span>
-                            <div class="percent-count">{{schemaSummaryForm.controls.schemaThreshold.value}}%</div>
+                            <div>{{schemaSummaryForm.controls.schemaThreshold.value}}%</div>
                             </div>
                     </div>
                     <div class="row-spacer"></div>
@@ -133,7 +134,7 @@
                                     min="0" [max]="availableWeightage(businessRule.brWeightage)" (change)="updateBr(businessRule,$event)">
                                 </mat-slider> 
                                 <span class="f-col-spacer-half"></span>
-                                <div class="percent-count">{{businessRule.brWeightage}}%</div>
+                                <div>{{businessRule.brWeightage}}%</div>
                             </div>
                             </div>
                             <div class="col col-x4">
