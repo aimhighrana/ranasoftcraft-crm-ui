@@ -686,11 +686,15 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    */
   openGlobalDialog(componentName = 'createBR') {
     if (componentName === 'createBR') {
-      // Open dialog for new business rule creation
-      this.globaldialogService.openDialog(NewBusinessRulesComponent, {
-        moduleId: this.requestForm.controls.objectId.value,
-        fields: this.requestForm.controls.fields.value,
-        maxWeightageLimit: this.getCurrentWeightageLimit()
+      this.createfieldObjectForRequest(this.dataSource).then((finalValues) => {
+        this.requestForm.controls.fields.setValue(finalValues);
+
+        // Open dialog for new business rule creation
+        this.globaldialogService.openDialog(NewBusinessRulesComponent, {
+          moduleId: this.requestForm.controls.objectId.value,
+          fields: this.requestForm.controls.fields.value,
+          maxWeightageLimit: this.getCurrentWeightageLimit()
+        });
       });
 
       this.dialogSubscriber = this.globaldialogService.dialogCloseEmitter
@@ -1139,6 +1143,9 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * @param runId the value of scheduling
    */
   setRunningSchedule(runId) {
+    if(this.currentSchedule) {
+      this.currentSchedule.isEnable = !runId.value;
+    }
     this.requestForm.controls.runTime.setValue(runId.value);
   }
 
@@ -1396,6 +1403,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   toggleScheduleStatus(event) {
     if (this.currentSchedule) {
       this.currentSchedule.isEnable = event.checked;
+      this.requestForm.controls.runTime.setValue(false);
     }
   }
 

@@ -59,6 +59,7 @@
                         *ngIf="submitted && form.controls.categoryId.errors && form.controls.categoryId.errors.required">
                         Please enter Category Id</mat-error>
                 </div>
+                
                 <div class="f-col mdo-form-field">
                     <pros-form-input [control]="formField('rule_name')" [label]="'Rule name (Description)'"
                         [value]="form.controls.rule_name.value">
@@ -108,6 +109,7 @@
                     [fieldsObject]="sourceFieldsObject" [initialLookupData]="transformationLookUpData"
                     (lookupRuleOutput)="setLookupData($event)">
                 </pros-lookup-rule>
+                
                 <div class="f-col mdo-form-field" *ngIf="!isUDR && !isDuplicateType && !isTransformationRule">
                     <mat-label>Fields</mat-label>
                     <mat-form-field appearance="outline">
@@ -132,6 +134,7 @@
                         Please select the fields
                     </mat-error>
                 </div>
+                
                 <div class="f-col mdo-form-field" *ngIf="isRegexType ">
                     <mat-label>Standard function</mat-label>
                     <mat-form-field appearance="outline">
