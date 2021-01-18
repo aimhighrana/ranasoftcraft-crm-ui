@@ -9,7 +9,7 @@ describe('SchemaDetailsService', () => {
   let schemaDetaService: SchemaDetailsService;
   let httpTestingController: HttpTestingController;
   beforeEach(() => {
-    const endpointSpy = jasmine.createSpyObj('EndpointsClassicService', ['getAllSelectedFields', 'getCreateUpdateSchemaActionUrl', 'getFindActionsBySchemaUrl', 'getDeleteSchemaActionUrl', 'getCrossMappingUrl']);
+    const endpointSpy = jasmine.createSpyObj('EndpointsClassicService', ['getAllSelectedFields', 'getCreateUpdateSchemaActionUrl', 'getFindActionsBySchemaUrl', 'getDeleteSchemaActionUrl', 'getCrossMappingUrl', 'getCreateUpdateSchemaActionsListUrl']);
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
@@ -129,6 +129,27 @@ describe('SchemaDetailsService', () => {
     expect(mockRequst.request.method).toEqual('GET');
     expect(mockRequst.request.responseType).toEqual('json');
     mockRequst.flush([]);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('createUpdateSchemaActionsList(): createUpdateSchemaActionsList ', async(() => {
+
+    const url = `createUpdateSchemaActionsList url`;
+    // mock url
+    endpointServiceSpy.getCreateUpdateSchemaActionsListUrl.and.returnValue(url);
+
+    const actions = [new SchemaTableAction()];
+
+    // actual service call
+    schemaDetaService.createUpdateSchemaActionsList(actions).subscribe(actualResponse => {
+      expect(actualResponse).toEqual(actions);
+    });
+    // mock http call
+    const mockRequst = httpTestingController.expectOne(url);
+    expect(mockRequst.request.method).toEqual('POST');
+    expect(mockRequst.request.responseType).toEqual('json');
+    mockRequst.flush(actions);
     // verify http
     httpTestingController.verify();
   }));

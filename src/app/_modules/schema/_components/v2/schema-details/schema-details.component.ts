@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ComponentFactoryResolver, ViewContainerRef, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaCorrectionReq, FilterCriteria, FieldInputType, SchemaTableViewFldMap, SchemaTableAction, TableActionViewType, SchemaTableViewRequest } from '@models/schema/schemadetailstable';
+import { MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaCorrectionReq, FilterCriteria, FieldInputType, SchemaTableViewFldMap, SchemaTableAction, TableActionViewType, SchemaTableViewRequest, STANDARD_TABLE_ACTIONS } from '@models/schema/schemadetailstable';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, Subject, throwError } from 'rxjs';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
@@ -76,7 +76,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
   /**
    * Static column for actions
    */
-  startColumns = ['row_more_action', '_assigned_buckets', '_score_weightage', 'OBJECTNUMBER'];
+  startColumns = ['_assigned_buckets', '_score_weightage', '_row_actions', 'OBJECTNUMBER'];
 
   /**
    * All display column fieldid should be here
@@ -182,8 +182,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
   TableActionViewType = TableActionViewType;
 
   tableActionsList: SchemaTableAction[] = [
-    { actionText: 'Approve', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT },
-    { actionText: 'Reject', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT }
+    { actionText: 'Approve', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT, actionCode: STANDARD_TABLE_ACTIONS.APPROVE, actionIconLigature: 'check-mark' },
+    { actionText: 'Reject', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT, actionCode: STANDARD_TABLE_ACTIONS.REJECT, actionIconLigature: 'declined' }
   ] as SchemaTableAction[];
 
   /**
@@ -675,10 +675,10 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
   manageStaticColumns() {
     let dispCols: string[] = [];
     if (this.activeTab === 'success' || this.activeTab === 'error') {
-      dispCols = ['row_more_action', '_assigned_buckets', '_score_weightage', 'OBJECTNUMBER'];
+      dispCols = ['_assigned_buckets', '_score_weightage', '_row_actions', 'OBJECTNUMBER'];
       this.tableHeaderActBtn = [];
     } else {
-      dispCols = ['_select_columns', 'row_more_action', '_assigned_buckets', '_row_actions', 'OBJECTNUMBER'];
+      dispCols = ['_select_columns', '_assigned_buckets', '_row_actions', 'OBJECTNUMBER'];
     }
     this.startColumns = dispCols;
   }
@@ -1021,29 +1021,34 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges 
       && (this.schemaInfo.collaboratorModels.isReviewer || this.schemaInfo.collaboratorModels.isApprover);
   }
 
-  getActionIcon(actionText) {
-    if (actionText === 'Approve') {
-      return 'check-mark';
-    } else if (actionText === 'Reject') {
-      return 'declined';
-    } else if (actionText === 'Delete') {
-      return 'recycle-bin';
-    }
-
-    return '';
-  }
-
   doAction(action: SchemaTableAction, element) {
     console.log('Action selected ', action);
-    if (!action.isCustomAction &&  action.actionText === 'Approve' && (this.isReviewer || this.isApprover)) {
+    if (!action.isCustomAction &&  action.actionCode === STANDARD_TABLE_ACTIONS.APPROVE && (this.isReviewer || this.isApprover)) {
       this.approveRecords('inline', element);
-    } else if (!action.isCustomAction && action.actionText === 'Reject' && (this.isReviewer || this.isApprover)) {
+    } else if (!action.isCustomAction && action.actionCode === STANDARD_TABLE_ACTIONS.REJECT && (this.isReviewer || this.isApprover)) {
       this.resetRec(element,'inline');
     }
   }
 
   get isGlobalActionsEnabled() {
     return this.selection.selected.some(row => !row.OBJECTNUMBER.isReviewed);
+  }
+
+  /**
+   * check if the user is allowed to make an action
+   * @param action action to be performed
+   */
+  hasActionPermission(action: SchemaTableAction) {
+    if (action.actionCode === STANDARD_TABLE_ACTIONS.APPROVE) {
+      return this.isReviewer || this.isApprover;
+    }
+
+    if (action.actionCode === STANDARD_TABLE_ACTIONS.REJECT) {
+      return this.isReviewer || this.isApprover;
+    }
+
+    return true;
+
   }
 
 

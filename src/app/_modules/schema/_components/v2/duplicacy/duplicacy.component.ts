@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, ViewChild, OnChanges, SimpleChanges, Input, ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
-import { FieldInputType, FilterCriteria, SchemaTableAction, SchemaTableViewFldMap, SchemaTableViewRequest, TableActionViewType } from '@models/schema/schemadetailstable';
+import { FieldInputType, FilterCriteria, SchemaTableAction, SchemaTableViewFldMap, SchemaTableViewRequest, STANDARD_TABLE_ACTIONS, TableActionViewType } from '@models/schema/schemadetailstable';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
@@ -183,9 +183,9 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
   TableActionViewType = TableActionViewType;
 
   tableActionsList: SchemaTableAction[] = [
-    { actionText: 'Approve', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT },
-    { actionText: 'Reject', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT },
-    { actionText: 'Delete', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT }
+    { actionText: 'Approve', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT, actionCode: STANDARD_TABLE_ACTIONS.APPROVE, actionIconLigature: 'check-mark' },
+    { actionText: 'Reject', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT, actionCode: STANDARD_TABLE_ACTIONS.REJECT, actionIconLigature: 'declined' },
+    { actionText: 'Delete', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT, actionCode: STANDARD_TABLE_ACTIONS.DELETE, actionIconLigature: 'recycle-bin' }
   ] as SchemaTableAction[];
 
   @Input()
@@ -534,12 +534,17 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
   /**
    * Method for download error or execution logs
    */
-  /* downloadExecutionDetails() {
+  downloadExecutionDetails() {
+    if(!this.groupId) {
+      return;
+    }
     const downloadLink = document.createElement('a');
-    downloadLink.href = this.endpointservice.downloadExecutionDetailsUrl(this.schemaId, this.activeTab) + '?runId=';
+    const queryParams = `?runId=${this.schemaInfo.runId}&variantId=${this.variantId}&groupId=${this.groupId}`
+    downloadLink.href = this.endpointservice.downloadDuplicateExecutionDetailsUrl(this.schemaId, this.activeTab) + queryParams ;
     downloadLink.setAttribute('target', '_blank');
     document.body.appendChild(downloadLink);
     downloadLink.click();
+  }
 
 
   /**
@@ -1118,31 +1123,37 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
       && (this.schemaInfo.collaboratorModels.isReviewer || this.schemaInfo.collaboratorModels.isApprover);
   }
 
-  getActionIcon(actionText) {
-    if (actionText === 'Approve') {
-      return 'check-mark';
-    } else if (actionText === 'Reject') {
-      return 'declined';
-    } else if (actionText === 'Delete') {
-      return 'recycle-bin';
-    }
-
-    return '';
-  }
 
   doAction(action: SchemaTableAction, row) {
     console.log('Action selected ', action);
-    if (!action.isCustomAction && action.actionText === 'Approve' && (this.isReviewer || this.isApprover)) {
+    if (!action.isCustomAction && action.actionCode === STANDARD_TABLE_ACTIONS.APPROVE && (this.isReviewer || this.isApprover)) {
       this.approveRecords('inline', row);
-    } else if (!action.isCustomAction && action.actionText === 'Reject' && (this.isReviewer || this.isApprover)) {
+    } else if (!action.isCustomAction && action.actionCode === STANDARD_TABLE_ACTIONS.REJECT && (this.isReviewer || this.isApprover)) {
       this.rejectRecords('inline', row);
-    } else if (!action.isCustomAction && action.actionText === 'Delete' && (this.isReviewer || this.isApprover || this.isEditer)) {
+    } else if (!action.isCustomAction && action.actionCode === STANDARD_TABLE_ACTIONS.DELETE && (this.isReviewer || this.isApprover || this.isEditer)) {
       this.markForDeletion(row);
     }
   }
 
   get isGlobalActionsEnabled() {
     return this.selection.selected.some(row => !row.OBJECTNUMBER.isReviewed && (row[RECORD_STATUS_KEY].fieldData !== RECORD_STATUS.DELETABLE));
+  }
+
+  /**
+   * check if the user is allowed to make an action
+   * @param action action to be performed
+   */
+  hasActionPermission(action: SchemaTableAction) {
+    if (action.actionCode === STANDARD_TABLE_ACTIONS.APPROVE) {
+      return this.isReviewer || this.isApprover;
+    }
+
+    if (action.actionCode === STANDARD_TABLE_ACTIONS.REJECT) {
+      return this.isReviewer || this.isApprover;
+    }
+
+    return true;
+
   }
 
 }

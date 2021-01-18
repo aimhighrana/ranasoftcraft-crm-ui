@@ -296,6 +296,10 @@ export class SchemaDetailsService {
     return this.http.get<CrossMappingRule[]>(this.endpointService.getCrossMappingUrl(plantCode));
   }
 
+  public createUpdateSchemaActionsList(actions: SchemaTableAction[]): Observable<any> {
+    return this.http.post<any>(this.endpointService.getCreateUpdateSchemaActionsListUrl(), actions);
+  }
+
 
 
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ComponentFactoryResolver, Input, OnChanges, SimpleChanges, OnDestroy, ViewContainerRef } from '@angular/core';
-import { MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaCorrectionReq, FilterCriteria, FieldInputType, SchemaTableViewFldMap, TableActionViewType, SchemaTableAction, SchemaTableViewRequest } from '@models/schema/schemadetailstable';
+import { MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaCorrectionReq, FilterCriteria, FieldInputType, SchemaTableViewFldMap, TableActionViewType, SchemaTableAction, SchemaTableViewRequest, STANDARD_TABLE_ACTIONS } from '@models/schema/schemadetailstable';
 import { ActivatedRoute, Router } from '@angular/router';
 import { throwError, BehaviorSubject, combineLatest, Subscription } from 'rxjs';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
@@ -179,9 +179,9 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
   TableActionViewType = TableActionViewType;
 
   tableActionsList: SchemaTableAction[] = [
-    { actionText: 'Approve', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON },
-    { actionText: 'Reject', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON },
-    { actionText: 'Generate cross entry', isPrimaryAction: true, isCustomAction: true, actionViewType: TableActionViewType.ICON }
+    { actionText: 'Approve', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON, actionCode: STANDARD_TABLE_ACTIONS.APPROVE, actionIconLigature: 'check-mark' },
+    { actionText: 'Reject', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON, actionCode: STANDARD_TABLE_ACTIONS.REJECT, actionIconLigature: 'declined' },
+    { actionText: 'Generate cross entry', isPrimaryAction: false, isCustomAction: true, actionViewType: TableActionViewType.TEXT }
   ] as SchemaTableAction[];
 
   /**
@@ -1025,33 +1025,36 @@ export class PotextViewComponent implements OnInit, OnChanges, OnDestroy {
       && (this.schemaInfo.collaboratorModels.isReviewer || this.schemaInfo.collaboratorModels.isApprover);
   }
 
-  getActionIcon(actionText) {
-    if (actionText === 'Approve') {
-      return 'check-mark';
-    } else if (actionText === 'Reject') {
-      return 'declined';
-    } else if (actionText === 'Delete') {
-      return 'recycle-bin';
-    } else if (actionText === 'Generate cross entry') {
-      return 'plus';
-    }
-
-    return '';
-  }
-
   doAction(action: SchemaTableAction, row) {
     console.log('Action selected ', action);
-    if (!action.isCustomAction && action.actionText === 'Approve' && (this.isReviewer || this.isApprover)) {
+    if (!action.isCustomAction && action.actionCode === STANDARD_TABLE_ACTIONS.APPROVE && (this.isReviewer || this.isApprover)) {
       this.approveRecords('inline', row);
-    } else if (!action.isCustomAction && action.actionText === 'Reject' && (this.isReviewer || this.isApprover)) {
+    } else if (!action.isCustomAction && action.actionCode === STANDARD_TABLE_ACTIONS.REJECT && (this.isReviewer || this.isApprover)) {
       this.resetRec(row, 'inline');
-    } else if (this.isReviewer || this.isApprover) {
+    } else {
       this.generateCrossEntry(row, action.refBrId);
     }
   }
 
   get isGlobalActionsEnabled() {
     return this.selection.selected.some(row => !row.OBJECTNUMBER.isReviewed);
+  }
+
+  /**
+   * check if the user is allowed to make an action
+   * @param action action to be performed
+   */
+  hasActionPermission(action: SchemaTableAction) {
+    if (action.actionCode === STANDARD_TABLE_ACTIONS.APPROVE) {
+      return this.isReviewer || this.isApprover;
+    }
+
+    if (action.actionCode === STANDARD_TABLE_ACTIONS.REJECT) {
+      return this.isReviewer || this.isApprover;
+    }
+
+    return true;
+
   }
 
 }

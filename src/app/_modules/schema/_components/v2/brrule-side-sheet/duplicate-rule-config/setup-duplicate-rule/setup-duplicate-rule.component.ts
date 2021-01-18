@@ -161,7 +161,7 @@ export class SetupDuplicateRuleComponent implements OnInit, OnChanges, OnDestroy
    */
   filter(val: string): any[] {
     return this.fieldsList.filter(option => {
-      return option.fieldDescri.toLowerCase().indexOf(val.toLowerCase()) === 0;
+      return option.fieldDescri.toString().toLowerCase().indexOf(val.toLowerCase()) === 0;
     })
   }
 

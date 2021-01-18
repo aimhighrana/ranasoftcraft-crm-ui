@@ -11,7 +11,7 @@ import { BehaviorSubject, of } from 'rxjs';
 import { SchemaDashboardPermission, SchemaListDetails, SchemaVariantsModel } from '@models/schema/schemalist';
 import { SchemaService } from '@services/home/schema.service';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
-import { FilterCriteria, MetadataModel, MetadataModeleResponse, RequestForSchemaDetailsWithBr } from '@models/schema/schemadetailstable';
+import { FilterCriteria, MetadataModel, MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaTableAction, STANDARD_TABLE_ACTIONS, TableActionViewType } from '@models/schema/schemadetailstable';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaDataSource } from '../../schema-details/schema-datatable/schema-data-source';
@@ -711,12 +711,6 @@ describe('SchemaDetailsComponent', () => {
     expect(component.resetRec).toHaveBeenCalledWith({}, 'inline');
   });
 
-  it('should get table action icon', () => {
-    expect(component.getActionIcon('Approve')).toEqual('check-mark');
-    expect(component.getActionIcon('Reject')).toEqual('declined')
-    expect(component.getActionIcon('Delete')).toEqual('recycle-bin');
-  });
-
   it('should check if global actions are enabled', () => {
     expect(component.isGlobalActionsEnabled).toEqual(false);
   });
@@ -732,4 +726,23 @@ describe('SchemaDetailsComponent', () => {
     expect(schemaDetailService.updateSchemaTableView).toHaveBeenCalledTimes(1);
     expect(component.selectedFields.length).toEqual(1);
   }));
+
+  it('should check if user has action permission', async (() => {
+
+    component.schemaInfo  = {schemaId: 'schema1', runId:'889321'} as SchemaListDetails;
+
+    const action = {schemaId: component.schemaId, isPrimaryAction: false, actionCode: STANDARD_TABLE_ACTIONS.APPROVE,
+      actionViewType: TableActionViewType.TEXT, isCustomAction: true, createdBy: 'admin'} as SchemaTableAction;
+
+    expect(component.hasActionPermission(action)).toBeFalsy();
+
+    action.actionCode = STANDARD_TABLE_ACTIONS.REJECT;
+    expect(component.hasActionPermission(action)).toBeFalsy();
+
+    action.actionCode = 'other actions';
+    expect(component.hasActionPermission(action)).toBeTruthy();
+
+
+  }));
+
 });

@@ -11,7 +11,7 @@ import { BehaviorSubject, of } from 'rxjs';
 import { SchemaDashboardPermission, SchemaListDetails, SchemaVariantsModel } from '@models/schema/schemalist';
 import { SchemaService } from '@services/home/schema.service';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
-import { FilterCriteria, MetadataModel, MetadataModeleResponse, RequestForSchemaDetailsWithBr } from '@models/schema/schemadetailstable';
+import { FilterCriteria, MetadataModel, MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaTableAction, STANDARD_TABLE_ACTIONS, TableActionViewType } from '@models/schema/schemadetailstable';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaDataSource } from '@modules/schema/_components/schema-details/schema-datatable/schema-data-source';
@@ -366,8 +366,8 @@ describe('PotextViewComponent', () => {
   });
 
   it('should filter primary and secondary actions', () => {
-    expect(component.primaryActions.length).toEqual(3);
-    expect(component.secondaryActions.length).toEqual(0);
+    expect(component.primaryActions.length).toEqual(2);
+    expect(component.secondaryActions.length).toEqual(1);
   });
 
   it('should do table action', () => {
@@ -397,13 +397,6 @@ describe('PotextViewComponent', () => {
     expect(component.selectedFields.length).toEqual(1);
   }));
 
-  it('should get table action icon', () => {
-    expect(component.getActionIcon('Approve')).toEqual('check-mark');
-    expect(component.getActionIcon('Reject')).toEqual('declined')
-    expect(component.getActionIcon('Delete')).toEqual('recycle-bin');
-    expect(component.getActionIcon('Generate cross entry')).toEqual('plus');
-  });
-
   it('should check if global actions are enabled', () => {
     expect(component.isGlobalActionsEnabled).toEqual(false);
   });
@@ -425,4 +418,24 @@ describe('PotextViewComponent', () => {
     expect(component.fetchCount).toEqual(1);
     expect(component.getData).toHaveBeenCalledWith(component.filterCriteria.getValue(), component.sortOrder, component.fetchCount, true);
   }));
+
+  it('should check if user has action permission', async (() => {
+
+    component.schemaInfo  = {schemaId: 'schema1', runId:'889321'} as SchemaListDetails;
+
+    const action = {schemaId: component.schemaId, isPrimaryAction: false, actionCode: STANDARD_TABLE_ACTIONS.APPROVE,
+      actionViewType: TableActionViewType.TEXT, isCustomAction: true, createdBy: 'admin'} as SchemaTableAction;
+
+    expect(component.hasActionPermission(action)).toBeFalsy();
+
+    action.actionCode = STANDARD_TABLE_ACTIONS.REJECT;
+    expect(component.hasActionPermission(action)).toBeFalsy();
+
+    action.actionCode = 'other actions';
+    expect(component.hasActionPermission(action)).toBeTruthy();
+
+
+  }));
+
+
 });

@@ -8,7 +8,7 @@
             <div class="f-row breadcrum-head">
                 <div class="display-heading-large">Configure view</div>
                 <span class="f-spacer"></span>
-                <button *ngIf="columnsTab.isActive" mat-flat-button color="primary" (click)="submitColumn()">Save</button>
+                <button mat-flat-button color="primary" (click)="save(configTabs.selectedIndex)">Save</button>
             </div>
         </div>
     </div>
@@ -16,7 +16,7 @@
     <div class="f-col sidesheetcontent-listing">
         <div class="f-col mdo-justify">
             <div class="f-col">
-                <mat-tab-group disableRipple="true">
+                <mat-tab-group disableRipple="true" #configTabs>
                     <mat-tab #columnsTab>
                         <ng-template mat-tab-label>
                             Columns
@@ -107,7 +107,7 @@
                                         <mat-icon
                                             *ngIf="!sAction.isCustomAction && (sAction.actionViewType=== TableActionViewType.ICON || sAction.actionViewType=== TableActionViewType.ICON_TEXT)"
                                             fontSet="mdo-icons" class="mat-menu-icon">
-                                            {{ getActionIcon(sAction.actionText) }}
+                                            {{ sAction.actionIconLigature }}
                                         </mat-icon>
                                         <ng-template
                                             [ngIf]="(sAction.actionViewType === TableActionViewType.TEXT) || (sAction.actionViewType === TableActionViewType.ICON_TEXT)">
@@ -120,7 +120,7 @@
                                     <mat-icon
                                         *ngIf="!pAction.isCustomAction && (pAction.actionViewType=== TableActionViewType.ICON || pAction.actionViewType=== TableActionViewType.ICON_TEXT)"
                                         fontSet="mdo-icons">
-                                        {{ getActionIcon(pAction.actionText) }}
+                                        {{ pAction.actionIconLigature }}
                                     </mat-icon>
                                     <ng-template
                                         [ngIf]="pAction.actionViewType=== TableActionViewType.TEXT || pAction.actionViewType=== TableActionViewType.ICON_TEXT">

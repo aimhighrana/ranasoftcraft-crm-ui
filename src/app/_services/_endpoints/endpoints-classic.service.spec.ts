@@ -210,4 +210,10 @@ describe('EndpointsClassicService', () => {
     expect(URL).toContain(`schema/getSchemaProgeress/${schemaId}`);
   })
 
+  it('downloadDuplicateExecutionDetailsUrl(), should downloadDuplicateExecutionDetailsUrl', async() => {
+    const serviceObj = new EndpointsClassicService();
+    const URL = serviceObj.downloadDuplicateExecutionDetailsUrl('schema1', 'error');
+    expect(URL).toContain(`duplicate/download/schema1/error`);
+  })
+
 });

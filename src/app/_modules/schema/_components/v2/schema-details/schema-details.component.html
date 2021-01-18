@@ -28,7 +28,7 @@
             <button mat-fab color="accent" (click)="openExecutionTrendSideSheet()">
                 <mat-icon fontSet="mdo-icons">chart-line</mat-icon>
             </button>
-            <button mat-fab *ngIf="activeTab !== 'error'" color="accent" [matMenuTriggerFor]="moreactionfile">
+            <button mat-fab color="accent" [matMenuTriggerFor]="moreactionfile">
                 <mat-icon fontSet="mdo-icons">more</mat-icon>
             </button>
             <mat-menu #moreactionfile="matMenu" class="navigation-menu">
@@ -170,7 +170,7 @@
                         </mat-checkbox>
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="row_more_action" sticky>
+                <!-- <ng-container matColumnDef="row_more_action" sticky>
                     <mat-header-cell *matHeaderCellDef class="fixed-width-c1">
                         <button mat-button (click)="openTableColumnSettings()">
                             <mat-icon fontSet="mdo-icons">cog</mat-icon>
@@ -181,7 +181,7 @@
                             <mat-icon fontSet="mdo-icons">more</mat-icon>
                         </button>
                     </mat-cell>
-                </ng-container>
+                </ng-container> -->
                 <ng-container matColumnDef="_assigned_buckets" sticky>
                     <mat-header-cell *matHeaderCellDef class="fixed-width-c1"></mat-header-cell>
                     <mat-cell *matCellDef="let element" class="fixed-width-c1">
@@ -213,51 +213,48 @@
                 </ng-container>
                 <ng-container matColumnDef="_row_actions" sticky>
                     <mat-header-cell *matHeaderCellDef>
-                        Actions
+                        <button mat-button (click)="openTableColumnSettings()">
+                            <mat-icon fontSet="mdo-icons">cog</mat-icon>
+                        </button>
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         <div class="f-row action-iconbtns" *ngIf="!element['OBJECTNUMBER'].isReviewed">
                             <!-- Secondary actions -->
-                            <ng-template [ngIf]="true"> <!-- !isReviewer -->
                             <button mat-fab color="accent"
                                 *ngIf="secondaryActions.length" [matMenuTriggerFor]="secondaryActionsMenu">
                                 <mat-icon fontSet="mdo-icons">more</mat-icon>
                             </button>
                             <mat-menu #secondaryActionsMenu="matMenu" class="navigation-menu">
-                                <button mat-menu-item *ngFor="let sAction of secondaryActions"
-                                    (click)="doAction(sAction, element)">
+                                <ng-container *ngFor="let sAction of secondaryActions">
+                                    <button mat-menu-item *ngIf="(activeTab === 'review' || sAction.isCustomAction) && hasActionPermission(sAction)"
+                                        (click)="doAction(sAction, element)">
+                                        <mat-icon
+                                            *ngIf="!sAction.isCustomAction && (sAction.actionViewType=== TableActionViewType.ICON || sAction.actionViewType=== TableActionViewType.ICON_TEXT)"
+                                            fontSet="mdo-icons" class="mat-menu-icon">
+                                            {{ sAction.actionIconLigature }}
+                                        </mat-icon>
+                                        <ng-template
+                                            [ngIf]="(sAction.actionViewType === TableActionViewType.TEXT) || (sAction.actionViewType === TableActionViewType.ICON_TEXT)">
+                                            {{ sAction.actionText }}
+                                        </ng-template>
+                                    </button>
+                                </ng-container>
+                            </mat-menu>
+                            <!-- Primary actions -->
+                            <ng-container *ngFor="let pAction of primaryActions">
+                                <button *ngIf="(activeTab === 'review' || pAction.isCustomAction) && hasActionPermission(pAction)" mat-flat-button color="accent"
+                                   (click)="doAction(pAction, element)">
                                     <mat-icon
-                                        *ngIf="!sAction.isCustomAction && (sAction.actionViewType=== TableActionViewType.ICON || sAction.actionViewType=== TableActionViewType.ICON_TEXT)"
-                                        fontSet="mdo-icons" class="mat-menu-icon">
-                                        {{ getActionIcon(sAction.actionText) }}
+                                        *ngIf="(pAction.actionViewType=== TableActionViewType.ICON || pAction.actionViewType=== TableActionViewType.ICON_TEXT)"
+                                        fontSet="mdo-icons">
+                                        {{ pAction.actionIconLigature }}
                                     </mat-icon>
                                     <ng-template
-                                        [ngIf]="(sAction.actionViewType === TableActionViewType.TEXT) || (sAction.actionViewType === TableActionViewType.ICON_TEXT)">
-                                        {{ sAction.actionText }}
+                                        [ngIf]="pAction.actionViewType=== TableActionViewType.TEXT || pAction.actionViewType=== TableActionViewType.ICON_TEXT">
+                                        {{ pAction.actionText }}
                                     </ng-template>
                                 </button>
-                            </mat-menu>
-                            </ng-template>
-                            <!-- Primary actions -->
-                            <button *ngFor="let pAction of primaryActions" mat-flat-button color="accent"
-                               (click)="doAction(pAction, element)">
-                                <mat-icon
-                                    *ngIf="(pAction.actionViewType=== TableActionViewType.ICON || pAction.actionViewType=== TableActionViewType.ICON_TEXT)"
-                                    fontSet="mdo-icons">
-                                    {{ getActionIcon(pAction.actionText) }}
-                                </mat-icon>
-                                <ng-template
-                                    [ngIf]="pAction.actionViewType=== TableActionViewType.TEXT || pAction.actionViewType=== TableActionViewType.ICON_TEXT">
-                                    {{ pAction.actionText }}
-                                </ng-template>
-                            </button>
-                            <!-- <button mat-fab color="accent" prosClickStopPropagation (click)="approveRecords('inline', element)"
-                                *ngIf="!element['OBJECTNUMBER'].isReviewed">
-                                <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
-                            </button>
-                            <button mat-fab color="accent" prosClickStopPropagation (click)="resetRec(element,'row')" *ngIf="!element['OBJECTNUMBER'].isReviewed">
-                                <mat-icon fontSet="mdo-icons">declined</mat-icon>
-                            </button> -->
+                            </ng-container>
                         </div>
                     </mat-cell>
                 </ng-container>

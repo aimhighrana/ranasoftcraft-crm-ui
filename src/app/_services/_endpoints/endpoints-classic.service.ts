@@ -737,6 +737,10 @@ export class EndpointsClassicService {
     return this.apiUrl + `/schema/actions/create-update`;
   }
 
+  public getCreateUpdateSchemaActionsListUrl(): string {
+    return this.apiUrl + `/schema/actions/bulkcreate-update`;
+  }
+
   public getFindActionsBySchemaUrl(schemaId: string): string {
     return this.apiUrl + `/schema/actions/${schemaId}`;
   }
@@ -760,5 +764,9 @@ export class EndpointsClassicService {
    */
   public schemaExecutionProgressDetailUrl(schemaId: string) {
     return `${this.apiUrl}/schema/getSchemaProgeress/${schemaId}`;
+  }
+
+  public downloadDuplicateExecutionDetailsUrl(schemaId: string, status: string): string {
+    return `${this.apiUrl}/duplicate/download/${schemaId}/${status.toLocaleLowerCase()}`;
   }
 }

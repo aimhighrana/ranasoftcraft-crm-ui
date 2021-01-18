@@ -9,11 +9,13 @@ import { of } from 'rxjs';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { SearchInputComponent } from '../search-input/search-input.component';
 import { SchemaListDetails } from '@models/schema/schemalist';
+import { Router } from '@angular/router';
 
 describe('TableColumnSettingsComponent', () => {
   let component: TableColumnSettingsComponent;
   let fixture: ComponentFixture<TableColumnSettingsComponent>;
   let schemaDetailsService: SchemaDetailsService;
+  let router: Router;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -34,6 +36,7 @@ describe('TableColumnSettingsComponent', () => {
     fixture = TestBed.createComponent(TableColumnSettingsComponent);
     component = fixture.componentInstance;
     schemaDetailsService = fixture.debugElement.injector.get(SchemaDetailsService);
+    router = TestBed.inject(Router);
 
     component.userDetails.userName = 'admin';
     component.schemaInfo = new SchemaListDetails();
@@ -44,6 +47,7 @@ describe('TableColumnSettingsComponent', () => {
 
     spyOn(schemaDetailsService, 'createUpdateSchemaAction').and.returnValue(of(new SchemaTableAction()));
     spyOn(schemaDetailsService, 'deleteSchemaTableAction').and.returnValue(of());
+    spyOn(schemaDetailsService, 'createUpdateSchemaActionsList').and.returnValue(of([]));
   });
 
 
@@ -139,33 +143,28 @@ describe('TableColumnSettingsComponent', () => {
 
   it('should add/remove custom action', async(() => {
 
-    const action = {schemaId: component.data.schemaId, actionText: `My custom action ${component.actionsList.length}`, isPrimaryAction: false,
-      actionViewType: TableActionViewType.TEXT, isCustomAction: true, createdBy: component.userDetails.userName} as SchemaTableAction;
-
     component.addCustomAction();
-    // expect(component.actionsList.length).toEqual(1);
-    expect(schemaDetailsService.createUpdateSchemaAction).toHaveBeenCalledWith(action);
-
-
-    component.actionsList[0].actionCode = 'code1701';
-
-    component.removeCustomAction(0);
-    expect(schemaDetailsService.deleteSchemaTableAction).toHaveBeenCalledWith(component.data.schemaId, 'code1701');
+    expect(component.actionsList.length).toEqual(1);
 
   }));
 
-  it('should get action icon', () => {
+  it('should save actions config', () => {
 
-    expect(component.getActionIcon('Approve')).toEqual('check-mark');
+    spyOn(component, 'submitColumn');
+    let activeTabIndex = 0; // columns tab
+    component.save(activeTabIndex);
+    expect(component.submitColumn).toHaveBeenCalled();
 
-    expect(component.getActionIcon('Reject')).toEqual('declined');
-
-    expect(component.getActionIcon('Delete')).toEqual('recycle-bin');
-
-    expect(component.getActionIcon('other actions')).toEqual('plus');
-
+    activeTabIndex = 1; // actions tab
+    component.save(activeTabIndex);
+    expect(schemaDetailsService.createUpdateSchemaActionsList).toHaveBeenCalledWith(component.actionsList);
 
   });
 
+  it('should close sidesheet', () => {
+    spyOn(router, 'navigate');
+    component.close();
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: null }}],  {queryParamsHandling: 'preserve'});
+  })
 
 });

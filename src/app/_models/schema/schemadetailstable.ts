@@ -512,6 +512,13 @@ export enum TableActionViewType {
     ICON_TEXT = 'ICON_TEXT'
 }
 
+export enum STANDARD_TABLE_ACTIONS {
+    APPROVE = 'Approve',
+    REJECT = 'Reject',
+    DELETE = 'Delete',
+    GENERATE_DESC = 'GENERATE_DESCRIPTION'
+}
+
 export interface CrossMappingRule {
     sno: string;
     desc: string;

@@ -11,7 +11,7 @@ import { SchemaVariantService } from '@services/home/schema/schema-variant.servi
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { CatalogCheckService } from '@services/home/schema/catalog-check.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { FieldInputType, FilterCriteria, MetadataModel, MetadataModeleResponse } from '@models/schema/schemadetailstable';
+import { FieldInputType, FilterCriteria, MetadataModel, MetadataModeleResponse, SchemaTableAction, STANDARD_TABLE_ACTIONS, TableActionViewType } from '@models/schema/schemadetailstable';
 import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { MasterRecordChangeRequest, RECORD_STATUS, RECORD_STATUS_KEY, RequestForCatalogCheckData } from '@models/schema/duplicacy';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -515,14 +515,26 @@ describe('DuplicacyComponent', () => {
 
   });
 
-  it('should get table action icon', () => {
-    expect(component.getActionIcon('Approve')).toEqual('check-mark');
-    expect(component.getActionIcon('Reject')).toEqual('declined')
-    expect(component.getActionIcon('Delete')).toEqual('recycle-bin');
-  });
-
   it('should check if global actions are enabled', () => {
     expect(component.isGlobalActionsEnabled).toEqual(false);
   });
+
+  it('should check if user has action permission', async (() => {
+
+    component.schemaInfo  = {schemaId: 'schema1', runId:'889321'} as SchemaListDetails;
+
+    const action = {schemaId: component.schemaId, isPrimaryAction: false, actionCode: STANDARD_TABLE_ACTIONS.APPROVE,
+      actionViewType: TableActionViewType.TEXT, isCustomAction: true, createdBy: 'admin'} as SchemaTableAction;
+
+    expect(component.hasActionPermission(action)).toBeFalsy();
+
+    action.actionCode = STANDARD_TABLE_ACTIONS.REJECT;
+    expect(component.hasActionPermission(action)).toBeFalsy();
+
+    action.actionCode = 'other actions';
+    expect(component.hasActionPermission(action)).toBeTruthy();
+
+
+  }));
 
 });

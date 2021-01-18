@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Observable, of } from 'rxjs';
-import { MetadataModel, MetadataModeleResponse, SchemaTableViewRequest, SchemaTableViewFldMap, TableActionViewType, SchemaTableAction, CrossMappingRule, DetailView } from 'src/app/_models/schema/schemadetailstable';
+import { MetadataModel, MetadataModeleResponse, SchemaTableViewRequest, SchemaTableViewFldMap, TableActionViewType, SchemaTableAction, CrossMappingRule, DetailView, STANDARD_TABLE_ACTIONS } from 'src/app/_models/schema/schemadetailstable';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Router } from '@angular/router';
 import { SharedServiceService } from '../../_services/shared-service.service';
@@ -11,6 +11,7 @@ import { UserService } from '@services/user/userservice.service';
 import { SchemaListDetails } from '@models/schema/schemalist';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { take } from 'rxjs/operators';
+import { GlobaldialogService } from '@services/globaldialog.service';
 
 
 @Component({
@@ -65,11 +66,12 @@ export class TableColumnSettingsComponent implements OnInit{
   actionsList: SchemaTableAction[] = [];
 
   COMMON_ACTIONS = [
-    {actionText: 'Approve', icon: 'check-mark', schemaCategories: [DetailView.DATAQUALITY_VIEW, DetailView.DUPLICACY_VIEW, DetailView.MRO_CLASSIFICATION_VIEW, DetailView.POTEXT_VIEW] },
-    {actionText: 'Reject', icon: 'declined', schemaCategories: [DetailView.DATAQUALITY_VIEW, DetailView.DUPLICACY_VIEW, DetailView.MRO_CLASSIFICATION_VIEW, DetailView.POTEXT_VIEW]},
-    {actionText: 'Delete', icon: 'recycle-bin', schemaCategories: [DetailView.DUPLICACY_VIEW]},
-    {actionText : 'Generate description', icon:'form-file', schemaCategories: [DetailView.MRO_CLASSIFICATION_VIEW]},
-    {actionText : 'Generate cross entry', isCustomAction: true, icon:'plus', schemaCategories: [DetailView.POTEXT_VIEW]}
+    {actionText: 'Approve', schemaCategories: [DetailView.DATAQUALITY_VIEW, DetailView.DUPLICACY_VIEW, DetailView.MRO_CLASSIFICATION_VIEW, DetailView.POTEXT_VIEW],
+    actionCode: STANDARD_TABLE_ACTIONS.APPROVE, actionIconLigature: 'check-mark' },
+    {actionText: 'Reject', schemaCategories: [DetailView.DATAQUALITY_VIEW, DetailView.DUPLICACY_VIEW, DetailView.MRO_CLASSIFICATION_VIEW, DetailView.POTEXT_VIEW],
+    actionCode: STANDARD_TABLE_ACTIONS.REJECT, actionIconLigature: 'declined'},
+    {actionText: 'Delete', schemaCategories: [DetailView.DUPLICACY_VIEW], actionCode: STANDARD_TABLE_ACTIONS.DELETE, actionIconLigature: 'recycle-bin'},
+    {actionText : 'Generate description', actionIconLigature: 'form-file', schemaCategories: [DetailView.MRO_CLASSIFICATION_VIEW], actionCode: STANDARD_TABLE_ACTIONS.GENERATE_DESC}
   ];
 
   TableActionViewType = TableActionViewType;
@@ -82,6 +84,11 @@ export class TableColumnSettingsComponent implements OnInit{
   initialSelectedFields: SchemaTableViewFldMap[] = [];
 
   /**
+   * hold initial configured actions
+   */
+  initialActionsList: SchemaTableAction[] = [];
+
+  /**
    * hold initial action text while edit starts
    */
   previousActionText = '';
@@ -91,7 +98,8 @@ export class TableColumnSettingsComponent implements OnInit{
     private router: Router,
     private schemaDetailsService: SchemaDetailsService,
     private userService: UserService,
-    private schemaListService: SchemalistService
+    private schemaListService: SchemalistService,
+    private glocalDialogService: GlobaldialogService
   ){}
 
   ngOnInit() {
@@ -103,6 +111,7 @@ export class TableColumnSettingsComponent implements OnInit{
           this.data = JSON.parse(JSON.stringify(data));
           this.getSchemaDetails();
           this.initialSelectedFields = data.selectedFields;
+          this.initialActionsList = data.tableActionsList;
           this.headerDetails();
           this.manageStateOfCheckBox();
         }
@@ -158,7 +167,7 @@ export class TableColumnSettingsComponent implements OnInit{
     this.schemaDetailsService.updateSchemaTableView(schemaTableViewRequest).subscribe(response => {
       console.log(response);
       // this.sharedService.setChooseColumnData(this.data);
-      this.sharedService.setChooseColumnData({...this.data, tableActionsList: this.actionsList, editActive: false});
+      this.sharedService.setChooseColumnData({...this.data, tableActionsList: this.initialActionsList, editActive: false});
       this.close();
     }, error => {
       console.error('Exception while persist table view');
@@ -325,9 +334,11 @@ export class TableColumnSettingsComponent implements OnInit{
   addCommonActions() {
     this.COMMON_ACTIONS.forEach( commonAction  => {
       if(commonAction.schemaCategories.includes(this.schemaInfo.schemaCategory as DetailView)) {
-        const action = { schemaId: this.data.schemaId, isPrimaryAction: true, isCustomAction: !!commonAction.isCustomAction, actionViewType: TableActionViewType.ICON_TEXT,
-          actionText:commonAction.actionText, createdBy: this.userDetails.userName } as SchemaTableAction;
-        this.createUpdateAction(action);
+        const action = { schemaId: this.data.schemaId, isPrimaryAction: true, isCustomAction: false,
+          actionViewType: TableActionViewType.ICON_TEXT, actionText:commonAction.actionText, createdBy: this.userDetails.userName,
+          actionCode: commonAction.actionCode, actionIconLigature: commonAction.actionIconLigature } as SchemaTableAction;
+
+          this.actionsList.push(action);
       }
     })
   }
@@ -341,10 +352,7 @@ export class TableColumnSettingsComponent implements OnInit{
    * @param attributeValue new value
    */
   actionChanged(rowIndex: number, attributeKey: string, attributeValue) {
-   /*  this.actionsList[rowIndex][attributeKey] = attributeValue;
-    console.log(this.actionsList[rowIndex]); */
-    const action = {...this.actionsList[rowIndex], [`${attributeKey}`]: attributeValue };
-    this.createUpdateAction(action, rowIndex);
+    this.actionsList[rowIndex][attributeKey] = attributeValue;
   }
 
   /**
@@ -365,9 +373,10 @@ export class TableColumnSettingsComponent implements OnInit{
    */
   addCustomAction() {
     const action = {schemaId: this.data.schemaId, actionText: `My custom action ${this.actionsList.length}`, isPrimaryAction: false,
-      actionViewType: TableActionViewType.TEXT, isCustomAction: true, createdBy: this.userDetails.userName} as SchemaTableAction;
+      actionViewType: TableActionViewType.TEXT, isCustomAction: true, createdBy: this.userDetails.userName, actionOrder: 0} as SchemaTableAction;
 
-    this.createUpdateAction(action);
+    this.actionsList.splice(0, 0, action);
+
   }
 
   /**
@@ -375,15 +384,22 @@ export class TableColumnSettingsComponent implements OnInit{
    * @param rowIndex custom action index
    */
   removeCustomAction(rowIndex: number) {
-    const actionCode = this.actionsList[rowIndex] && this.actionsList[rowIndex].actionCode;
-    if (!actionCode) {
-      return;
-    }
-    this.schemaDetailsService.deleteSchemaTableAction(this.data.schemaId, actionCode)
-      .subscribe(resp =>  {
-        this.actionsList.splice(rowIndex, 1);
-        this.sharedService.setChooseColumnData({selectedFields: this.initialSelectedFields, tableActionsList: this.actionsList, editActive: false});
-      });
+
+    this.glocalDialogService.confirm({label:'Are you sure to delete ?'}, (resp) => {
+      if (resp && resp === 'yes') {
+        const action = this.actionsList[rowIndex];
+        if (!action.sno) {
+          this.actionsList.splice(rowIndex, 1);
+        } else {
+          this.schemaDetailsService.deleteSchemaTableAction(this.data.schemaId, action.actionCode)
+            .subscribe(result =>  {
+              this.actionsList.splice(rowIndex, 1);
+        });
+        }
+      }
+    })
+
+
   }
 
   /**
@@ -447,15 +463,31 @@ export class TableColumnSettingsComponent implements OnInit{
     }
   }
 
-  getActionIcon(actionText) {
+  /**
+   * create update a list of schema actions
+   */
+  saveTableActionsConfig() {
+    this.actionsList.forEach((action, index) => action.actionOrder = index);
+    this.schemaDetailsService.createUpdateSchemaActionsList(this.actionsList).subscribe(actions => {
+      console.log(actions);
+      this.sharedService.setChooseColumnData({selectedFields: this.initialSelectedFields, tableActionsList: actions, editActive: false});
+      this.close();
+    }, error => {
+      console.log('something went wrong!')
+    })
+  }
 
-    const action = this.COMMON_ACTIONS.find(commonAction => commonAction.actionText === actionText) ;
+  /**
+   * save updated config
+   * @param activeTab current active tab 0-columns/1-actions
+   */
+  save(activeTab: number) {
 
-    if(action) {
-      return action.icon;
+    if (activeTab === 0) {
+      this.submitColumn();
+    } else if (activeTab === 1) {
+      this.saveTableActionsConfig();
     }
-
-    return 'plus';
   }
 
 }
