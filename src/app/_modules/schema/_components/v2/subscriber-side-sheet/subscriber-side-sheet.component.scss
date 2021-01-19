@@ -6,10 +6,10 @@ div.root {
 
   .breadcrum-toolbar {
     padding: 8px 16px;
-    z-index: 2;
 
     .mdo-constrained-right {
       width: 100%;
+      margin-right: 0;
 
       .breadcrum-head {
         align-items: center;
@@ -36,13 +36,17 @@ div.root {
     .viewport-scroll {
       height: 100%;
 
-      mat-list.rule-list {
-        mat-list-item {
-          border-bottom-width: 1px;
-          border-bottom-style: solid;
+      .mdo-justify {
+        margin: 0 16px;
 
-          button.mat-flat-button {
-            min-width: 60px;
+        mat-list.rule-list {
+          mat-list-item {
+            border-bottom-width: 1px;
+            border-bottom-style: solid;
+
+            button.mat-flat-button {
+              min-width: 60px;
+            }
           }
         }
       }
@@ -50,12 +54,18 @@ div.root {
   }
 }
 
-@media (min-width: 1200px) {
-  .mdo-constrained-right {
-    margin-right: 50px;
-  }
+@media (min-width: 1024px) {
+  div.root {
+    .breadcrum-toolbar {
+      .mdo-constrained-right {
+        margin-right: 50px;
+      }
+    }
 
-  .mdo-justify {
-    margin: 0 66px;
+    .sidesheetcontent-listing {
+      .mdo-justify {
+        margin: 0 66px;
+      }
+    }
   }
 }

@@ -4,83 +4,97 @@ div.root {
   width: 800px;
 
   .breadcrum-toolbar {
-    align-items: center;
-    padding-top: 8px;
-    position: sticky;
-    top: 0;
-    z-index: 2;
-    min-height: 40px;
-
-    .display-heading-large {
-      font-size: 1.2rem;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-    }
+    padding: 8px 16px;
 
     .mdo-constrained-right {
-      align-items: center;
       width: 100%;
+      align-items: center;
+
+      .breadcrum-head {
+        align-items: center;
+        width: 100%;
+        min-height: 36px;
+
+        .display-heading-large {
+          font-size: 1.2rem;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+        }
+      }
     }
   }
 
-  .mdo-justify {
-    mat-list-item.mat-list-item {
-      height: auto;
+  .sidesheetcontent-listing {
+    height: calc(100% - 52px);
+    overflow: auto;
 
-      .job-line {
-        font-size: 0.8rem;
-      }
+    .mdo-justify {
+      margin: 0 16px;
 
-      .time-icon {
-        font-size: 12px;
-        width: 12px;
-        height: 12px;
-        margin-right: 4px;
-      }
+      mat-list-item.mat-list-item {
+        height: auto;
 
-      .notification-listing {
-        width: 100%;
-        padding: 8px 0;
-
-        .mat-line {
+        .job-line {
           font-size: 0.8rem;
-          margin: 0;
-          font-weight: 500;
         }
 
-        .notify-row {
-          align-items: center;
+        .time-icon {
+          font-size: 12px;
+          width: 12px;
+          height: 12px;
+          margin-right: 4px;
+        }
 
-          .notify-message-row {
-            align-items: baseline;
-            flex: 20;
+        .notification-listing {
+          width: 100%;
+          padding: 8px 0;
 
-            .mat-expand-icon {
-              font-size: 10px;
-              height: 10px;
-              width: 10px;
-              cursor: pointer;
+          .mat-line {
+            font-size: 0.8rem;
+            margin: 0;
+            font-weight: 500;
+          }
+
+          .notify-row {
+            align-items: center;
+
+            .notify-message-row {
+              align-items: baseline;
+              flex: 20;
+
+              .mat-expand-icon {
+                font-size: 10px;
+                height: 10px;
+                width: 10px;
+                cursor: pointer;
+              }
             }
           }
-        }
 
-        .notify-content {
-          font-size: 0.7rem;
-          line-height: 14px;
-          margin-bottom: 4px;
+          .notify-content {
+            font-size: 0.7rem;
+            line-height: 14px;
+            margin-bottom: 4px;
+          }
         }
       }
     }
   }
 }
 
-@media (min-width: 1200px) {
-  .mdo-justify {
-    margin: 0 54px;
-  }
+@media (min-width: 1024px) {
+  div.root {
+    .breadcrum-toolbar {
+      .mdo-constrained-right {
+        margin-right: 50px;
+      }
+    }
 
-  .mdo-constrained-right {
-    margin-right: 54px;
+    .sidesheetcontent-listing {
+      .mdo-justify {
+        margin: 0 66px;
+      }
+    }
   }
 }

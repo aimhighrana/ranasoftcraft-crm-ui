@@ -6,10 +6,10 @@ div.root {
 
   .breadcrum-toolbar {
     padding: 8px 16px;
-    z-index: 2;
 
     .mdo-constrained-right {
       width: 100%;
+      align-items: center;
 
       .breadcrum-head {
         align-items: center;
@@ -31,6 +31,8 @@ div.root {
     overflow: auto;
 
     .mdo-justify {
+      margin: 0 16px;
+
       .upload-error {
         padding: 12px;
         margin: 8px 0;
@@ -70,12 +72,18 @@ div.root {
   }
 }
 
-@media (min-width: 1200px) {
-  .mdo-constrained-right {
-    margin-right: 50px;
-  }
+@media (min-width: 1024px) {
+  div.root {
+    .breadcrum-toolbar {
+      .mdo-constrained-right {
+        margin-right: 50px;
+      }
+    }
 
-  .mdo-justify {
-    margin: 0 66px;
+    .sidesheetcontent-listing {
+      .mdo-justify {
+        margin: 0 66px;
+      }
+    }
   }
 }

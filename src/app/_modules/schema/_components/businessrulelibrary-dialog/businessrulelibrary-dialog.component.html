@@ -7,6 +7,7 @@
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
                 <div class="display-heading-large">Business rule library</div>
+                <span class="f-col-spacer-half"></span>
                 <div class="f-spacer"></div>
                 <button mat-flat-button color="primary" (click)="saveSelection()">Save</button>
             </div>
@@ -32,7 +33,7 @@
     </div>
 
     <div class="f-col sidesheetcontent-listing">
-        <div class="mdo-justify">
+        <div class="f-col mdo-justify">
             <!-- page loader -->
             <div class="loading-spinner" *ngIf="loader"><mat-spinner color="primary" diameter="30"></mat-spinner></div>
             <mat-list role="list" class="rule-list" *ngIf="!loader && filteredBusinessRulesList.length>0">

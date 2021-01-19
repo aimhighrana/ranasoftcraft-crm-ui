@@ -1,91 +1,98 @@
-mat-card.root {
+div.root {
   user-select: none;
   height: 100%;
   overflow: hidden;
   width: 668px;
-  padding: 0 16px;
 
   .breadcrum-toolbar {
-    align-items: center;
-    padding-top: 8px;
-    position: sticky;
-    top: 0;
-    z-index: 2;
-
-    .display-heading-large {
-      font-size: 1.2rem;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-    }
+    padding: 8px 16px;
 
     .mdo-constrained-right {
-      align-items: center;
       width: 100%;
+      align-items: center;
+
+      .breadcrum-head {
+        align-items: center;
+        width: 100%;
+        min-height: 36px;
+
+        .display-heading-large {
+          font-size: 1.2rem;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+        }
+      }
     }
   }
 
-  .mdo-justify {
-    height: 100%;
+  .sidesheetcontent-listing {
+    height: calc(100% - 52px);
+    overflow: auto;
 
-    mat-slide-toggle {
-      margin: 4px 8px;
-    }
+    .mdo-justify {
+      height: 100%;
+      margin: 0 16px;
 
-    .collaborators-list {
-      height: calc(100% - 40px - 70px - 8px - 220px);
-      overflow-y: auto;
-    }
-
-    .chip-enable-coll-list {
-      height: calc(100% - 40px - 70px - 8px - 264px);
-    }
-
-    .collaborators-add {
-      height: 236px;
-
-      .mat-h3 {
-        margin: 8px 0 0 0;
-        font-weight: 500;
-        font-size: 0.8rem;
+      mat-slide-toggle {
+        margin: 4px 8px;
       }
 
-      .selected-coll-groups {
-        margin: 8px 0;
-        align-items: center;
-        justify-content: space-between;
+      .collaborators-list {
+        height: calc(100% - 40px - 70px - 8px - 220px);
+        overflow-y: auto;
+      }
 
-        mat-chip-list {
-          width: calc(100% - 80px);
+      .chip-enable-coll-list {
+        height: calc(100% - 40px - 70px - 8px - 264px);
+      }
 
-          mat-chip {
-            min-width: 120px;
-            justify-content: space-between;
-            max-width: 170px;
-            height: 30px;
+      .collaborators-add {
+        height: 236px;
 
-            .chip-content {
-              width: calc(100% - 36px);
-              display: -webkit-box;
-              -webkit-line-clamp: 1;
-              -webkit-box-orient: vertical;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              white-space: pre-line;
-              word-break: break-word;
-              margin-left: 8px;
-            }
+        .mat-h3 {
+          margin: 8px 0 0 0;
+          font-weight: 500;
+          font-size: 0.8rem;
+        }
 
-            .icon-user {
-              color: #0d66d0;
-            }
+        .selected-coll-groups {
+          margin: 8px 0;
+          align-items: center;
+          justify-content: space-between;
 
-            .icon-role {
-              color: #cb6f10;
-            }
+          mat-chip-list {
+            width: calc(100% - 80px);
 
-            .icon-group {
-              color: #12805c;
+            mat-chip {
+              min-width: 120px;
+              justify-content: space-between;
+              max-width: 170px;
+              height: 30px;
+
+              .chip-content {
+                width: calc(100% - 36px);
+                display: -webkit-box;
+                -webkit-line-clamp: 1;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: pre-line;
+                word-break: break-word;
+                margin-left: 8px;
+              }
+
+              .icon-user {
+                color: #0d66d0;
+              }
+
+              .icon-role {
+                color: #cb6f10;
+              }
+
+              .icon-group {
+                color: #12805c;
+              }
             }
           }
         }
@@ -99,12 +106,18 @@ mat-card.root {
   }
 }
 
-@media (min-width: 1200px) {
-  .mdo-justify {
-    margin: 0 54px;
-  }
+@media (min-width: 1024px) {
+  div.root {
+    .breadcrum-toolbar {
+      .mdo-constrained-right {
+        margin-right: 50px;
+      }
+    }
 
-  .mdo-constrained-right {
-    margin-right: 54px;
+    .sidesheetcontent-listing {
+      .mdo-justify {
+        margin: 0 66px;
+      }
+    }
   }
 }
