@@ -6,7 +6,7 @@
     </div>
     <div class="f-spacer"></div>
     <button mat-button aria-label="Clear" (click)="clearFilterCriteria()" *ngIf="enableClearIcon">
-      <mat-icon>close</mat-icon>
+      <mat-icon fontSet="mdo-icons">close</mat-icon>
     </button>
   </div>
 
@@ -17,31 +17,35 @@
       <!-- DROPDOWN_VALS -->
       <ng-template [ngIf]="(filterWidget.getValue() ? filterWidget.getValue().type : '') === 'DROPDOWN_VALS'">
         <ng-template [ngIf]="filterWidget.getValue().isMultiSelect" [ngIfElse]="single_select_drop">
-          <mat-form-field class="full-width">
-            <mat-chip-list #chipList aria-label="Select">
-              <mat-chip *ngFor="let option of selectedDropVals" [selectable]="true" [removable]="true"
-                (removed)="remove(option)">
-                {{ option.TEXT }}
-                <mat-icon matChipRemove>cancel</mat-icon>
-              </mat-chip>
+          <div class="f-col">
+            <mat-form-field appearance="outline">
+              <mat-chip-list #chipList aria-label="Select">
+                <mat-chip *ngFor="let option of selectedDropVals" [selectable]="true" [removable]="true"
+                  (removed)="remove(option)">
+                  {{ option.TEXT }}
+                  <mat-icon matChipRemove>cancel</mat-icon>
+                </mat-chip>
+              </mat-chip-list>
               <input type="text" placeholder="Select" aria-label="Number" matInput [formControl]="filterFormControl"
-                [matAutocomplete]="auto">
-            </mat-chip-list>
-          </mat-form-field>
+              [matAutocomplete]="auto" class="mat-input">
+            </mat-form-field>
+          </div>
         </ng-template>
         <ng-template #single_select_drop>
-          <mat-form-field appearance="outline">
-            <input type="text" placeholder="Select" aria-label="Number"
-              value="{{ selectedDropVals.length ? selectedDropVals[0].TEXT : ''}}" matInput
-              [formControl]="filterFormControl" [matAutocomplete]="auto">
-            <!-- <button *ngIf="enableClearIcon" mat-button matSuffix mat-icon-button (click)="removeSingleSelectedVal(true)">
-            <mat-icon>close</mat-icon>
-            </button> -->
-          </mat-form-field>
+          <div class="f-col">
+            <mat-form-field appearance="outline">
+              <input type="text" placeholder="Select" aria-label="Number"
+                value="{{ selectedDropVals.length ? selectedDropVals[0].TEXT : ''}}" matInput
+                [formControl]="filterFormControl" [matAutocomplete]="auto">
+              <!-- <button *ngIf="enableClearIcon" mat-button matSuffix mat-icon-button (click)="removeSingleSelectedVal(true)">
+              <mat-icon>close</mat-icon>
+              </button> -->
+            </mat-form-field>
+          </div>
         </ng-template>
 
         <mat-autocomplete #auto="matAutocomplete" [displayWith]="fieldDisplayFn" (optionSelected) = "optionClicked($event)">
-          <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+          <mat-option *ngFor="let option of filteredOptions | async" [value]="option" matTooltip="{{ option.TEXT }}" matTooltipPosition="right">
             <ng-template [ngIf]="filterWidget.getValue().isMultiSelect" [ngIfElse]="singleSelection">
               <mat-checkbox prosClickStopPropagation (change)="toggleSelection(option)" [checked]="isSelected(option)"
                 color="primary">

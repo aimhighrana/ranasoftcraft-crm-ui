@@ -21,4 +21,11 @@ div.root {
       min-width: 80px;
     }
   }
+
+  pros-null-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(100% - 48px - 16px * 2);
+  }
 }
