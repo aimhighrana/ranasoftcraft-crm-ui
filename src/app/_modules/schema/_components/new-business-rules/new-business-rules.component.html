@@ -15,6 +15,11 @@
 
   <div class="f-col sidesheetcontent-listing">
     <div class="f-col mdo-justify">
+
+      <mat-card class="mat-elevation-z0 upload-error" *ngIf="validationError.status">
+        {{validationError.message}}
+      </mat-card>
+
       <form [formGroup]="form">
         <div class="f-col mdo-form-field">
           <mat-label>Rule type</mat-label>
@@ -66,8 +71,10 @@
         </div>
 
         <div class="f-col mdo-form-field" *ngIf="!isDuplicateType">
-          <pros-form-input [value]="form.get('error_message').value" [control]="formField('error_message')"
-            (valueChange)="getFormValue($event,'error_message')" [label]="'Error message'">
+          <pros-form-input 
+            [value]="form.get('error_message').value" 
+            [control]="formField('error_message')"
+            [label]="'Error message'">
           </pros-form-input>
           <mat-error
             *ngIf="submitted && form.controls.error_message.errors && form.controls.error_message.errors.required">
@@ -75,8 +82,10 @@
         </div>
 
         <div class="f-col mdo-form-field" *ngIf="form.controls.rule_type.value === 'BR_CLASSIFICATION'">
-          <pros-form-input [value]="form.get('apiKey').value" [control]="formField('apiKey')" (valueChange)="getFormValue($event,'apiKey')"
-            [label]="'Enter access token'">
+          <pros-form-input
+           [value]="form.get('apiKey').value" 
+           [control]="formField('apiKey')"
+           [label]="'Enter access token'">
           </pros-form-input>
           <mat-error *ngIf="submitted && form.controls.apiKey.errors && form.controls.apiKey.errors.required">
             Please enter access token</mat-error>
@@ -153,7 +162,9 @@
         </div>
 
         <div class="f-col mdo-form-field" *ngIf="isRegexType">
-          <pros-form-input [value]='form.value.regex' [control]="formField('regex')" (valueChange)="getFormValue($event,'regex')"
+          <pros-form-input 
+            [value]='form.value.regex' 
+            [control]="formField('regex')"
             [label]="'Regex value'">
           </pros-form-input>
           <mat-error *ngIf="submitted && form.controls.regex.errors && form.controls.regex.errors.required">

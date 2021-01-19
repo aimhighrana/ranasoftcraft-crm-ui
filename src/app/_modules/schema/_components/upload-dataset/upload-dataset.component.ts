@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, Inject, AfterViewInit, HostListener, Elem
 import { MatStepper } from '@angular/material/stepper';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
-import { ObjectTypeResponse, ObjectType, DataSource, UploadError, AddFilterOutput, SubscriberFields } from '@models/schema/schema';
+import { ObjectTypeResponse, ObjectType, DataSource, ValidationError, AddFilterOutput, SubscriberFields } from '@models/schema/schema';
 import { MetadataModeleResponse, MetadataModel, FilterCriteria, NewBrDialogResponse, LookupFields } from '@models/schema/schemadetailstable';
 import { SchemaService } from '@services/home/schema.service';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
@@ -110,7 +110,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   /**
    * error object for upload
    */
-  uploadError: UploadError = {
+  uploadError: ValidationError = {
     status: false,
     message: ''
   };
@@ -1390,10 +1390,10 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   updateRole(value, subscriber) {
     const subscriberId = subscriber.sno;
     const subscriberInList = this.subscribersList.find(subscriberItem => subscriberItem.sno === subscriberId);
-    subscriberInList.isAdmin = value === 'Admin' ? true : false;
-    subscriberInList.isReviewer = value === 'Reviewer' ? true : false;
-    subscriberInList.isViewer = value === 'Viewer' ? true : false;
-    subscriberInList.isEditer = value === 'Editer' ? true : false;
+    subscriberInList.isAdmin = value === 'isAdmin' ? true : false;
+    subscriberInList.isReviewer = value === 'isReviewer' ? true : false;
+    subscriberInList.isViewer = value === 'isViewer' ? true : false;
+    subscriberInList.isEditer = value === 'isEditer' ? true : false;
   }
 
   /**

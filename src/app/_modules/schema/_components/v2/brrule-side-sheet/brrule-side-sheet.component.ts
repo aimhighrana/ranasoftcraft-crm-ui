@@ -15,6 +15,7 @@ import { SharedServiceService } from '@modules/shared/_services/shared-service.s
 import { BlockType } from '@modules/admin/_components/module/business-rules/user-defined-rule/udr-cdktree.service';
 import { CONDITIONS } from 'src/app/_constants';
 import { TransformationRuleComponent } from '@modules/shared/_components/transformation-rule/transformation-rule.component';
+import { ValidationError } from '@models/schema/schema';
 
 @Component({
   selector: 'pros-brrule-side-sheet',
@@ -146,7 +147,15 @@ export class BrruleSideSheetComponent implements OnInit {
 
   /* To access properties of Child for validation purpose
    */
-  @ViewChild(TransformationRuleComponent)transformationRuleComponent:TransformationRuleComponent;
+  @ViewChild(TransformationRuleComponent) transformationRuleComponent: TransformationRuleComponent;
+
+  /**
+   * To hold information about validation errors.
+   */
+  validationError: ValidationError = {
+    status: false,
+    message: ''
+  }
 
   /**
    * Class contructor
@@ -343,11 +352,13 @@ export class BrruleSideSheetComponent implements OnInit {
     if (selectedRule === BusinessRuleType.BR_MANDATORY_FIELDS || selectedRule === BusinessRuleType.BR_METADATA_RULE) {
       requiredKeys = ['categoryId', 'rule_name', 'error_message', 'fields'];
     }
-
     if (selectedRule === BusinessRuleType.BR_TRANSFORMATION) {
       requiredKeys = ['rule_name', 'categoryId', 'transformationRuleType', 'error_message'];
       if (this.selectedTransformationType === this.transformationType.REGEX) {
         requiredKeys = ['rule_name', 'categoryId', 'transformationRuleType', 'error_message', 'sourceFld'];
+      }
+      else if (this.selectedTransformationType === this.transformationType.LOOKUP) {
+        requiredKeys = ['rule_type', 'rule_name', 'categoryId', 'transformationRuleType', 'error_message'];
       }
     }
     if (selectedRule === BusinessRuleType.BR_DUPLICATE_RULE) {
@@ -355,7 +366,7 @@ export class BrruleSideSheetComponent implements OnInit {
     }
 
     if (selectedRule === BusinessRuleType.BR_CLASSIFICATION) {
-      requiredKeys = ['rule_name', 'error_message', 'categoryId', 'apiKey' , 'fields'];
+      requiredKeys = ['rule_name', 'error_message', 'categoryId', 'apiKey', 'fields'];
     }
 
     controlKeys.map((key) => {
@@ -522,13 +533,13 @@ export class BrruleSideSheetComponent implements OnInit {
     const hierarchy: UDRHierarchyModel[] = br.udrDto ? (br.udrDto.udrHierarchies ? br.udrDto.udrHierarchies : []) : [];
 
     blocks.map((blk) => {
-        if(blk.blockDesc.toLowerCase() === 'when') {
-          mapped.blocks.push(blk);
-          mapped.blockHierarchy.push(hierarchy.find((hie) => hie.blockRefId === blk.id));
-        } else {
-          unMapped.blocks.push(blk);
-          unMapped.blockHierarchy.push(hierarchy.find((hie) => hie.blockRefId === blk.id));
-        }
+      if (blk.blockDesc.toLowerCase() === 'when') {
+        mapped.blocks.push(blk);
+        mapped.blockHierarchy.push(hierarchy.find((hie) => hie.blockRefId === blk.id));
+      } else {
+        unMapped.blocks.push(blk);
+        unMapped.blockHierarchy.push(hierarchy.find((hie) => hie.blockRefId === blk.id));
+      }
     });
 
     mapped.blocks.push(...unMapped.blocks);
@@ -543,7 +554,7 @@ export class BrruleSideSheetComponent implements OnInit {
    */
   editUdr(br: CoreSchemaBrInfo) {
 
-    const {blockHierarchy, blocks} = this.mapBlocksAndHierarchy(br);
+    const { blockHierarchy, blocks } = this.mapBlocksAndHierarchy(br);
 
     blockHierarchy.forEach((hie, idx) => {
       const blck = blocks.filter(fil => fil.id === hie.blockRefId)[0];
@@ -720,7 +731,7 @@ export class BrruleSideSheetComponent implements OnInit {
     this.form.controls.fields.setValue('');
     const txtfield = document.getElementById('fieldsInput') as HTMLInputElement;
     txtfield.value = '';
-    if(this.fieldsInput) {
+    if (this.fieldsInput) {
       this.fieldsInput.nativeElement.blur();
     }
   }
@@ -762,24 +773,35 @@ export class BrruleSideSheetComponent implements OnInit {
   save() {
     this.submitted = true;
     (Object).values(this.form.controls).forEach(control => {
-      if(control.invalid)
-      control.markAsTouched();
+      if (control.invalid)
+        control.markAsTouched();
     });
-    if(this.transformationRuleComponent)
-    (Object).values(this.transformationRuleComponent.form.controls).forEach(control => {
-      this.transformationRuleComponent.submitted=true;
-      if(control.invalid)
-      control.markAsTouched();
-    });
+    if (this.transformationRuleComponent)
+      (Object).values(this.transformationRuleComponent.form.controls).forEach(control => {
+        this.transformationRuleComponent.submitted = true;
+        if (control.invalid)
+          control.markAsTouched();
+      });
     this.form.controls.fields.setValue(this.selectedFields.map(item => item.fieldId).join(','));
     this.submitted = true;
     if (!this.form.valid) {
-      this.snackBar.open('Please enter the required fields', 'okay', { duration: 5000 });
+      this.validationError.status = true;
+      this.validationError.message = 'Please fill the required fields.';
+      this.hideValidationError();
       return;
     }
 
     let brType: string = this.form.value ? this.form.value.rule_type : '';
     brType = brType ? brType : this.coreSchemaBrInfo.brType;
+
+    if (this.currentSelectedRule === BusinessRuleType.BR_TRANSFORMATION &&
+      this.selectedTransformationType === this.transformationType.LOOKUP &&
+      this.lookupData.length === 0) {
+      this.validationError.status = true;
+      this.validationError.message = 'Please configure at least one field.';
+      this.hideValidationError();
+      return;
+    }
 
     if (brType === 'BR_CUSTOM_SCRIPT') {
 
@@ -824,11 +846,11 @@ export class BrruleSideSheetComponent implements OnInit {
       udrDto.udrHierarchies = blockHierarchy;
 
       this.schemaService.saveUpdateUDR(udrDto).subscribe(res => {
-        this.snackBar.open(`Successfully saved !`, 'Close', { duration: 5000 });
+        this.snackBar.open(`Successfully saved !`, 'Close', { duration: 3000 });
         this.sharedService.setAfterBrSave(res);
         this.close();
       }, error => {
-        this.snackBar.open(`Something went wrong `, 'Close', { duration: 5000 });
+        this.snackBar.open(`Something went wrong `, 'Close', { duration: 3000 });
       });
 
     } else if (brType === BusinessRuleType.BR_DUPLICATE_RULE) {
@@ -1173,12 +1195,16 @@ export class BrruleSideSheetComponent implements OnInit {
     } as CoreSchemaBrInfo;
 
     if (!this.duplicateFormRef.valid) {
-      this.snackBar.open('Please enter the required fields', 'okay', { duration: 5000 });
+      this.validationError.status = true;
+      this.validationError.message = 'Please fill the required fields.';
+      this.hideValidationError();
       return;
     }
 
     if (!this.duplicateFormRef.get('addFields').value.length) {
-      this.snackBar.open('At least one field should be selected !', 'okay', { duration: 5000 });
+      this.validationError.status = true;
+      this.validationError.message = 'Please configure at least one field.';
+      this.hideValidationError();
       return;
     }
 
@@ -1204,5 +1230,14 @@ export class BrruleSideSheetComponent implements OnInit {
       this.snackBar.open(`Something went wrong `, 'Close', { duration: 5000 });
     });
 
+  }
+
+  /**
+   * Function to hide validation error
+   */
+  hideValidationError() {
+    setTimeout(() => {
+      this.validationError.status = false;
+    }, 3000)
   }
 }

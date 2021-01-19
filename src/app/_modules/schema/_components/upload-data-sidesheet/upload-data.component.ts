@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { SchemaService } from 'src/app/_services/home/schema.service';
-import { DataSource, UploadError } from 'src/app/_models/schema/schema';
+import { DataSource, ValidationError } from 'src/app/_models/schema/schema';
 import * as XLSX from 'xlsx';
 import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-details.service';
 import { MetadataModeleResponse, MetadataModel } from 'src/app/_models/schema/schemadetailstable';
@@ -53,7 +53,7 @@ export class UploadDataComponent implements OnInit, AfterViewInit {
   /**
    * Hold upload error message and status
    */
-  uploadError: UploadError = {
+  uploadError: ValidationError = {
     status: false,
     message: ''
   };

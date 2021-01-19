@@ -15,6 +15,11 @@
 
     <div class="f-col sidesheetcontent-listing">
         <div class="f-col mdo-justify">
+
+            <mat-card class="mat-elevation-z0 upload-error" *ngIf="validationError.status">
+                {{validationError.message}}
+            </mat-card>
+
             <form [formGroup]="form">
                 <div class="f-col mdo-form-field">
                     <mat-label>Rule type</mat-label>

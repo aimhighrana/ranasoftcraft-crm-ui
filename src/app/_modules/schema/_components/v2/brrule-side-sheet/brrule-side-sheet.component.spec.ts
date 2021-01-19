@@ -153,5 +153,16 @@ describe('BrruleSideSheetComponent', () => {
     expect(blocks.length).toEqual(7);
     expect(blockHierarchy[0].blockRefId).toEqual(blocks[0].id);
     expect(blocks[0].blockDesc).toEqual('When');
-  })
+  });
+
+  it('hideValidationError(), should hide validation message', fakeAsync(() => {
+    component.validationError = {
+      status: true,
+      message: 'Please fill all the required fields'
+    }
+
+    component.hideValidationError();
+    tick(3500);
+    expect(component.validationError.status).toEqual(false);
+  }))
 });

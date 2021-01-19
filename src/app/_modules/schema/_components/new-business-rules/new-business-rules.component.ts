@@ -16,6 +16,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { BlockType } from '@modules/report/_models/widget';
 import { CONDITIONS } from 'src/app/_constants';
 import { TransformationRuleComponent } from '@modules/shared/_components/transformation-rule/transformation-rule.component';
+import { ValidationError } from '@models/schema/schema';
 
 @Component({
     selector: 'pros-new-business-rules',
@@ -105,7 +106,7 @@ export class NewBusinessRulesComponent implements OnInit {
 
     /* To access properties of Child for validation purpose
      */
-  @ViewChild(TransformationRuleComponent)transformationRuleComponent:TransformationRuleComponent;
+    @ViewChild(TransformationRuleComponent) transformationRuleComponent: TransformationRuleComponent;
 
     /**
      * Available conditions
@@ -183,6 +184,14 @@ export class NewBusinessRulesComponent implements OnInit {
      * Hold the duplicacy rule data here
      */
     duplicacyRuleData: CoreSchemaBrInfo = new CoreSchemaBrInfo();
+
+    /**
+     * To hold information about validation error.
+     */
+    validationError: ValidationError = {
+        status: false,
+        message: ''
+    }
 
     /**
      * Class contructor
@@ -294,7 +303,7 @@ export class NewBusinessRulesComponent implements OnInit {
 
                 temp.map((blk) => {
                     const hierarchyObj = udrTreeData.udrHierarchies.find((hie) => hie.blockRefId === blk.id);
-                    if(hierarchyObj && !hierarchyObj.parentId) {
+                    if (hierarchyObj && !hierarchyObj.parentId) {
                         this.udrBlocks.push(blk);
                     }
                 })
@@ -428,7 +437,7 @@ export class NewBusinessRulesComponent implements OnInit {
     /**
      * function to return formField
      */
-    formField(field: string){
+    formField(field: string) {
         return this.form.get(field);
     }
     /**
@@ -528,6 +537,7 @@ export class NewBusinessRulesComponent implements OnInit {
             requiredKeys = ['rule_type', 'categoryId', 'rule_name', 'error_message', 'fields'];
         }
         if (selectedRule === BusinessRuleType.BR_TRANSFORMATION) {
+            requiredKeys = ['rule_name', 'categoryId', 'transformationRuleType', 'error_message'];
             if (this.selectedTransformationType === this.transformationType.REGEX) {
                 requiredKeys = ['rule_type', 'rule_name', 'categoryId', 'transformationRuleType', 'error_message', 'sourceFld', 'targetFld'];
             } else if (this.selectedTransformationType === this.transformationType.LOOKUP) {
@@ -535,7 +545,7 @@ export class NewBusinessRulesComponent implements OnInit {
             }
         }
         if (selectedRule === BusinessRuleType.BR_CLASSIFICATION) {
-            requiredKeys = ['rule_name', 'error_message', 'categoryId', 'apiKey' , 'fields'];
+            requiredKeys = ['rule_name', 'error_message', 'categoryId', 'apiKey', 'fields'];
         }
         if (selectedRule === BusinessRuleType.BR_DUPLICATE_RULE) {
             requiredKeys = ['rule_name'];
@@ -604,7 +614,7 @@ export class NewBusinessRulesComponent implements OnInit {
         this.form.controls.fields.setValue('');
         const txtfield = document.getElementById('fieldsInput') as HTMLInputElement;
         txtfield.value = '';
-        if(this.fieldsInput) {
+        if (this.fieldsInput) {
             this.fieldsInput.nativeElement.blur();
         }
     }
@@ -644,41 +654,55 @@ export class NewBusinessRulesComponent implements OnInit {
      * function to save the form data
      */
     save() {
-        this.submitted=true;
+        this.submitted = true;
         (Object).values(this.form.controls).forEach(control => {
-            if(control.invalid)
-            control.markAsTouched();
-          });
-          if(this.transformationRuleComponent)
-          (Object).values(this.transformationRuleComponent.form.controls).forEach(control => {
-            this.transformationRuleComponent.submitted=true;
-            if(control.invalid)
-            control.markAsTouched();
-          });
+            if (control.invalid)
+                control.markAsTouched();
+        });
+        if (this.transformationRuleComponent)
+            (Object).values(this.transformationRuleComponent.form.controls).forEach(control => {
+                this.transformationRuleComponent.submitted = true;
+                if (control.invalid)
+                    control.markAsTouched();
+            });
         this.form.controls.fields.setValue(this.selectedFields.map(item => item.fieldId).join(','));
-              if (!this.form.valid) {
-            this.snackBar.open('Please enter the required fields', 'okay', { duration: 5000 });
+        if (!this.form.valid) {
+            this.validationError.status = true;
+            this.validationError.message = 'Please fill the required fields.';
+            this.hideValidationError();
             return;
         }
 
+        if (this.currentSelectedRule === BusinessRuleType.BR_TRANSFORMATION &&
+            this.selectedTransformationType === this.transformationType.LOOKUP &&
+            this.lookupData.length === 0) {
+            this.validationError.status = true;
+            this.validationError.message = 'Please configure at least one field.';
+            this.hideValidationError();
+            return;
+        }
         // validation and value for duplicate rule type
         if (this.currentSelectedRule === BusinessRuleType.BR_DUPLICATE_RULE) {
             if (!this.duplicateFormRef.valid) {
-                this.snackBar.open('Please enter the required fields', 'okay', { duration: 3000 });
+                this.validationError.status = true;
+                this.validationError.message = 'Please fill the required fields.';
+                this.hideValidationError();
                 return;
             }
 
             if (!this.duplicateFormRef.get('addFields').value.length) {
-                this.snackBar.open('At least one field should be selected !', 'okay', { duration: 3000 });
+                this.validationError.status = true;
+                this.validationError.message = 'Please configure at least one field.';
+                this.hideValidationError();
                 return;
             }
             const modifiedDuplicacyField = [];
             const duplicacyField = [...this.duplicateFormRef.value.addFields];
-            if(duplicacyField && duplicacyField.length>0) {
+            if (duplicacyField && duplicacyField.length > 0) {
                 duplicacyField.map((field) => {
                     const { fId, criteria, exclusion, inverse, weightage, ival, sval } = field;
                     modifiedDuplicacyField.push({
-                        fieldId : fId,
+                        fieldId: fId,
                         criteria,
                         exclusion,
                         inverse,
@@ -968,6 +992,7 @@ export class NewBusinessRulesComponent implements OnInit {
      * @param transformationData pass transformation data
      */
     setTransformationFormData(transformationData: TransformationFormData) {
+
         const {
             sourceFld,
             excludeScript,
@@ -976,9 +1001,9 @@ export class NewBusinessRulesComponent implements OnInit {
         } = transformationData;
 
         this.form.controls.targetFld.setValue(selectedTargetFields.map(item => item[this.targetFieldsObject.valueKey]).join(','));
-        if(sourceFld) { this.form.controls.sourceFld.setValue(sourceFld); };
-        if(excludeScript) { this.form.controls.excludeScript.setValue(excludeScript); };
-        if(includeScript) { this.form.controls.includeScript.setValue(includeScript); };
+        if (sourceFld) { this.form.controls.sourceFld.setValue(sourceFld); };
+        if (excludeScript) { this.form.controls.excludeScript.setValue(excludeScript); };
+        if (includeScript) { this.form.controls.includeScript.setValue(includeScript); };
     }
 
     /**
@@ -1013,6 +1038,15 @@ export class NewBusinessRulesComponent implements OnInit {
         if (data) {
             this.duplicacyRuleData = data as CoreSchemaBrInfo;
         }
+    }
+
+    /**
+     * Function to hide validation error
+     */
+    hideValidationError() {
+        setTimeout(() => {
+            this.validationError.status = false;
+        }, 3000)
     }
 
 }

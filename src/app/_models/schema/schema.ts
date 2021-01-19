@@ -134,7 +134,7 @@ export interface ExcelValues {
      headerData: DataSource[];
 }
 
-export interface UploadError {
+export interface ValidationError {
      status: boolean;
      message: string;
 }

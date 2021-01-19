@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import { NewBusinessRulesComponent } from './new-business-rules.component';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -141,27 +141,38 @@ describe('NewBusinessRulesComponent', () => {
             weightage: '0',
             ival: 'customer',
             sval: 'vendor:supplier'
-          }];
+        }];
 
-          const duplicacyMaster = [{
+        const duplicacyMaster = [{
             ruleType: 'OLDEST',
             fieldId: 'USERMODIFIED',
             RuleId: 'OLDEST1',
             sno: ''
-          }];
+        }];
 
-          const br = new CoreSchemaBrInfo();
-          br.duplicacyField = duplicacyField;
-          br.duplicacyMaster = duplicacyMaster;
+        const br = new CoreSchemaBrInfo();
+        br.duplicacyField = duplicacyField;
+        br.duplicacyMaster = duplicacyMaster;
 
-          component.patchDuplicacyData(br);
-          expect(component.duplicacyRuleData).toEqual(br);
+        component.patchDuplicacyData(br);
+        expect(component.duplicacyRuleData).toEqual(br);
 
     });
 
     it(`To get FormControl from fromGroup `, async(() => {
         component.initializeForm()
-        const field=component.formField('rule_name');
+        const field = component.formField('rule_name');
         expect(field).toBeDefined();
-       }));
+    }));
+
+    it('hideValidationError(), should hide validation message', fakeAsync(() => {
+        component.validationError = {
+            status: true,
+            message: 'Please fill all the required fields'
+        }
+
+        component.hideValidationError();
+        tick(3500);
+        expect(component.validationError.status).toEqual(false);
+    }))
 });

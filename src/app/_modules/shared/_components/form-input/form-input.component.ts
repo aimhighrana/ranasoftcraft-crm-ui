@@ -95,7 +95,7 @@ export class FormInputComponent implements OnInit, OnChanges {
     }
     this.control.valueChanges.subscribe(
       (data) => {
-        this.valueChange.emit(data);
+          this.valueChange.emit(data);
       }
     );
   }
