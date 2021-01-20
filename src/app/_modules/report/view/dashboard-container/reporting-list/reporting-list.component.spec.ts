@@ -12,11 +12,13 @@ import { Sort } from '@angular/material/sort';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SimpleChanges } from '@angular/core';
 import { SharedModule } from '@modules/shared/shared.module';
+import { Router } from '@angular/router';
 
 describe('ReportingListComponent', () => {
   let component: ReportingListComponent;
   let fixture: ComponentFixture<ReportingListComponent>;
   let widgetServiceSpy: WidgetService
+  let router: Router;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ReportingListComponent ],
@@ -24,6 +26,8 @@ describe('ReportingListComponent', () => {
       providers:[ WidgetService ]
     })
     .compileComponents();
+    router = TestBed.inject(Router);
+
   }));
 
   beforeEach(() => {
@@ -71,10 +75,10 @@ describe('ReportingListComponent', () => {
   //   expect(component.details(data)).not.toBe(null);
   // }))
   it('downloadCSV, download the data', async (() => {
-    component.listData = ['data'];
-    spyOn(widgetServiceSpy, 'downloadCSV').withArgs('Report-List',component.listData);
-    component.downloadCSV();
-    expect(component.downloadCSV).toBeTruthy();
+    spyOn(router, 'navigate');
+    const widgetId= component.widgetId;
+    component.downloadCSV()
+    expect(router.navigate).toHaveBeenCalledWith(['',{ outlets: { sb: `sb/report/download-widget/${widgetId}` }}],  {queryParamsHandling: 'preserve'});
   }));
 
   it('sortTable(), sort the data in asc or desc ', async(() =>{

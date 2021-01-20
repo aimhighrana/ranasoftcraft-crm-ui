@@ -14,5 +14,6 @@ export interface CustomNotification {
     objectType: string;
     acknowledgementRequired: string;
     acknowledmentStatus: string;
-    downloadLink: string
+    downloadLink: string;
+    showMore? : boolean;
 }

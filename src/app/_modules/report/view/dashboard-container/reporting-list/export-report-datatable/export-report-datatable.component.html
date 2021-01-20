@@ -1,83 +1,58 @@
 <div class="root">
-  <div class="f-row breadcrum-toolbar">
-      <button mat-button>
-          <mat-icon fontSet="mdo-icons">close</mat-icon>
-      </button>
-      <div class="col-spacer"></div>
-      <div class="f-col mdo-constrained-right">
-          <div class="f-row breadcrum-head">
-              <div class="display-heading-large">Generate download link</div>
-              <span class="f-spacer"></span>
-              <button mat-flat-button color="primary">Confirm</button>
-          </div>
-      </div>
-  </div>
-  <div class="f-col sidesheetcontent-listing">
-      <div class="f-col mdo-justify">
-          <div class="f-col">
-              <pros-form-input [type]="'text'" [label]="'Generate link'"
-                  [placeholder]="'Type Prospecta email or name to generate a download link'"></pros-form-input>
-              <div class="f-row">
-                  <a class="info-link">Add myself</a>
-                  <div class="col-spacer"></div>
-                  <a class="info-link">Add subscribers (6)</a>
-              </div>
-          </div>
-          <div class="row-spacer"></div>
-          <mat-nav-list>
-              <mat-list-item>
-                  <div class="f-row download-list">
-                      <mat-card-header>
-                          <div mat-card-avatar>RW</div>
-                      </mat-card-header>
-                      <div mat-line>Ricks Woods</div>
-                      <span class="f-spacer"></span>
-                      <button mat-button>
-                          <mat-icon fontSet="mdo-icons">recycle-bin</mat-icon>
-                      </button>
-                  </div>
-              </mat-list-item>
+    <div class="f-row breadcrum-toolbar">
+        <button mat-button (click)="close()">
+            <mat-icon fontSet="mdo-icons">close</mat-icon>
+        </button>
+        <div class="col-spacer"></div>
+        <div class="f-col mdo-constrained-right">
+            <div class="f-row breadcrum-head">
+                <div class="display-heading-large">Generate download link</div>
+                <span class="f-spacer"></span>
+                <button mat-flat-button color="primary" *ngIf="selectedUsers.length > 0" (click)="saveReportDownloadUserList()">Confirm</button>
+            </div>
+        </div>
+    </div>
+    <div class="f-col sidesheetcontent-listing">
+        <div class="f-col mdo-justify" [formGroup]="addwidgetSubsFrmGrp">
+            <div class="f-col">
+                <mat-form-field appearance="outline">
+                    <input type="text" #loosefoucs (focus)="getCollaboratorPermission('', 0)"
+                        placeholder="Type Prospecta email or name to generate a download link" aria-label="Number"
+                        matInput formControlName="addUsersFilter" [matAutocomplete]="addUsersFilterAuto">
+                    <mat-autocomplete #addUsersFilterAuto="matAutocomplete" [displayWith]="displayWith"
+                        (optionSelected)="onSelectUser($event)">
+                        <mat-option *ngFor="let data of collaborators" [value]="data">
+                            {{data.description}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+                <mat-card  *ngIf="selectedEmail" class="f-row mat-elevation-z0 message-alert">
+                    <span>Selected user email ({{selectedEmail}}) is not valid</span>
+                </mat-card>
 
-              <mat-list-item>
-                  <div class="f-row download-list">
-                      <mat-card-header class="header-text">
-                          <div mat-card-avatar>SG</div>
-                      </mat-card-header>
-                      <div mat-line>Steve Graham</div>
-                      <span class="f-spacer"></span>
-                      <button mat-button>
-                          <mat-icon fontSet="mdo-icons"> recycle-bin</mat-icon>
-                      </button>
-                  </div>
-              </mat-list-item>
-
-              <mat-list-item>
-                  <div class="f-row download-list">
-                      <mat-card-header class="header-text">
-                          <div mat-card-avatar>SG</div>
-                      </mat-card-header>
-                      <div mat-line>Steve Graham</div>
-                      <span class="f-spacer"></span>
-                      <button mat-button>
-                          <mat-icon fontSet="mdo-icons"> recycle-bin</mat-icon>
-                      </button>
-                  </div>
-              </mat-list-item>
-
-              <mat-list-item>
-                  <div class="f-row download-list">
-                      <mat-card-header class="header-text">
-                          <div mat-card-avatar>SG</div>
-                      </mat-card-header>
-                      <div mat-line>Steve Graham</div>
-                      <span class="f-spacer"></span>
-                      <button mat-button>
-                          <mat-icon fontSet="mdo-icons"> recycle-bin</mat-icon>
-                      </button>
-                  </div>
-              </mat-list-item>
-
-          </mat-nav-list>
-      </div>
-  </div>
+                <div class="f-row">
+                    <a class="info-link" (click)="addMyselfInSelectedList()">Add myself</a>
+                    <div class="col-spacer"></div>
+                    <a class="info-link">Added subscribers ({{selectedUsers.length}})</a>
+                </div>
+            </div>
+            <div class="row-spacer"></div>
+            <mat-nav-list>
+                <ng-template ngFor let-selcoll [ngForOf]="selectedUsers">
+                    <mat-list-item>
+                        <div class="f-row download-list">
+                            <mat-card-header>
+                                <div mat-card-avatar>{{(selcoll.description)[0]}}</div>
+                            </mat-card-header>
+                            <div mat-line>{{selcoll.description}}</div>
+                            <span class="f-spacer"></span>
+                            <button mat-button>
+                                <mat-icon fontSet="mdo-icons" (click)="remove(selcoll)">recycle-bin</mat-icon>
+                            </button>
+                        </div>
+                    </mat-list-item>
+                </ng-template>
+            </mat-nav-list>
+        </div>
+    </div>
 </div>

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { DropDownValues, LayoutConfigWorkflowModel, ReportDashboardReq } from '../_models/widget';
 import { ReportList } from '../report-list/report-list.component';
-import { PermissionOn, ReportDashboardPermission } from '@models/collaborator';
+import { PermissionOn, ReportDashboardPermission, WidgetDownloadUser } from '@models/collaborator';
 import { EndpointsAnalyticsService } from 'src/app/_services/_endpoints/endpoints-analytics.service';
 import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 import { ObjectTypeResponse } from '@models/schema/schema';
@@ -63,6 +63,10 @@ export class ReportService {
 
   public saveUpdateReportCollaborator(request: ReportDashboardPermission[]): Observable<ReportDashboardPermission[]> {
     return this.http.post<ReportDashboardPermission[]>(this.endpointService.saveUpdateReportCollaborator(), request);
+  }
+
+  public saveUpdateportDownload(request: WidgetDownloadUser[],widgetId:string, userName :string): Observable<ReportDashboardPermission[]> {
+    return this.http.post<ReportDashboardPermission[]>(this.endpointAnalyticService.saveReportDownload(widgetId,userName), request);
   }
 
   public deleteCollaborator(permissionId: string): Observable<boolean> {

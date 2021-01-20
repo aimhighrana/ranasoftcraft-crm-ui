@@ -19,14 +19,32 @@
                 </ng-template>
                 <!-- <button mat-button (click)="paginateNotification()" *ngIf="notifications.length === 10">next</button> -->
                 <mat-nav-list>
-                    <mat-list-item *ngFor="let notification of notifications"
-                        (click)="updateNotification(notification)">
+                    <mat-list-item *ngFor="let notification of notifications;"
+                        >
                         <div class="f-col notification-listing">
                             <div mat-line>{{notification.headerText}}</div>
                             <div class="f-row notify-row">
                                 <div class="f-row notify-message-row">
-                                    <div class="notify-content"><p>{{notification.contentText}}</p></div>
-                                    <mat-icon fontSet="mdo-icons" class="mat-expand-icon">chevron-right</mat-icon>
+                                    <ng-template [ngIf]="!notification.showMore" [ngIfElse]= "withoutTruncate">
+                                        <div class="notify-content" >
+                                            <p>{{notification.contentText}}</p>
+                                            <a (click)="download(notification.downloadLink)">{{notification.downloadLink}}</a>
+                                        </div>
+                                        <a *ngIf="(notification.downloadLink && notification.downloadLink.length > 96)|| (notification.contentText && notification.contentText.length > 96)" (click)="notification.showMore = !notification.showMore">
+                                            <mat-icon fontSet="mdo-icons" class="mat-expand-icon">chevron-right</mat-icon>
+                                        </a>
+                                    </ng-template>
+                                   
+                                    <ng-template  #withoutTruncate>
+                                        <div class="notify-content expand-content">
+                                            <p class="collapse-text">{{notification.contentText}}</p>
+                                            <a (click)="download(notification.downloadLink)">{{notification.downloadLink}}</a>
+                                        </div>
+                                        <a *ngIf="(notification.downloadLink && notification.downloadLink.length > 96) || (notification.contentText && notification.contentText.length > 96)" (click)="notification.showMore = !notification.showMore">
+                                            <mat-icon fontSet="mdo-icons" class="mat-expand-icon">chevron-down</mat-icon>
+                                        </a>
+                                    </ng-template>
+ 
                                 </div>
                                 <span class="f-spacer"></span>
                                 <div class="f-row">
