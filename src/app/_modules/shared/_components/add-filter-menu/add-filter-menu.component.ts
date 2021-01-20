@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnDestroy, OnChanges, SimpleChanges, EventEmitter, Output } from '@angular/core';
-import { throwError, BehaviorSubject } from 'rxjs';
+import { throwError, BehaviorSubject, Subscription } from 'rxjs';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
-import { MetadataModeleResponse, MetadataModel } from '@models/schema/schemadetailstable';
+import { MetadataModeleResponse, MetadataModel, FilterCriteria } from '@models/schema/schemadetailstable';
 import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { AddFilterOutput } from '@models/schema/schema';
 import { SchemaService } from '@services/home/schema.service';
@@ -24,9 +24,20 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
   fieldMetadata: any[];
 
   @Input()
-  dataScope: boolean;
+  isSearchEnable = true;
+
+  /**
+   * To get initally selected values..
+   */
+  @Input()
+  alreadySelectedValues: FilterCriteria[];
 
   selectedValues: DropDownValue[] = [];
+
+  /**
+   * To hold dropdown values of clicked field id
+   */
+  dropValues: DropDownValue[] = [];
 
   /**
    * currently selected fields
@@ -59,6 +70,19 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
   @Output()
   evtReadyForApply: EventEmitter<AddFilterOutput> = new EventEmitter<AddFilterOutput>(null);
 
+  /**
+   * To hold selected dropdown values code..
+   */
+  dropValuesCode: string[];
+
+  /**
+   * To hold all the subscriptions.
+   */
+  subscriptions: Subscription[] = [];
+
+  /**
+   * Constructor of class..
+   */
   constructor(
     private schemaDetailService: SchemaDetailsService,
     private schemaService: SchemaService
@@ -99,8 +123,8 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
    * @param fields Excel first row values(Array)
    */
   initMetadata(fields: any[]) {
+    this.activateElement = null;
     if (!this.moduleId) {
-      this.activateElement = null;
       this.selectedValues = [];
       if (fields && fields.length > 0) {
         this.metadaDrop = fields;
@@ -111,10 +135,15 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
 
   /**
    * Angular hook
+   * It will called once before destroying component lifecycle.
    */
   ngOnDestroy(): void {
     this.metadata.complete();
     this.metadata.unsubscribe();
+
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    })
   }
 
   /**
@@ -136,11 +165,12 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
     if (this.moduleId === undefined || this.moduleId.trim() === '') {
       throwError('Module id cant be null or empty');
     }
-    this.schemaDetailService.getMetadataFields(this.moduleId).subscribe(response => {
+    const sub = this.schemaDetailService.getMetadataFields(this.moduleId).subscribe(response => {
       this.metadata.next(response);
     }, error => {
       console.error(`Error : ${error.message}`);
     });
+    this.subscriptions.push(sub);
   }
 
   /**
@@ -167,10 +197,16 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
    * @param fld get control of that field
    */
   ctrlFlds(fld: MetadataModel) {
+    this.dropValuesCode = [];
     this.activateElement = fld;
     this.metadaDrop = [];
     if (!this.moduleId) {
       this.schemaService.generateColumnByFieldId(this.activateElement.fieldId);
+    }
+    else {
+      if (this.alreadySelectedValues && this.alreadySelectedValues.length > 0) {
+        this.dropValuesCode = this.alreadySelectedValues.filter((selectedValue) => selectedValue.fieldId === fld.fieldId)[0].values;
+      }
     }
   }
 
@@ -212,4 +248,21 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
       this.metadaDrop = this.searchDrop;
     }
   }
+
+  /**
+   * Function to get drop-down values according to field id
+   * @param materialId: fieldID/ materialID
+   * @param query: query string to be searched if any.
+   */
+  getDropdownValues(materialId: string, query: string) {
+    const sub = this.schemaService.dropDownValues(materialId, query).subscribe((data) => {
+      if (data && data.length > 0) {
+        this.dropValues = data;
+      }
+    }, (error) => {
+      console.log('Something went wrong while getting dropdown values', error.message);
+    });
+    this.subscriptions.push(sub);
+  }
 }
+

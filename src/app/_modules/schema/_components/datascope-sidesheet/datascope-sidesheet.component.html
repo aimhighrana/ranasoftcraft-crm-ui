@@ -40,18 +40,26 @@
                         </mat-chip>
     
                         <mat-menu #addFilterMenu="matMenu">
-                            <pros-add-filter-menu [moduleId]="moduleId" (evtReadyForApply)="makeFilterCtrl($event)"
-                                [reInilize]="reInilize" [dataScope]="true"></pros-add-filter-menu>
+                            <pros-add-filter-menu 
+                                [moduleId]="moduleId" 
+                                (evtReadyForApply)="makeFilterCtrl($event)"
+                                [reInilize]="reInilize" 
+                                [isSearchEnable]="true"
+                                [alreadySelectedValues]="variantInfo.filterCriteria"
+                                ></pros-add-filter-menu>
                         </mat-menu>
                     </mat-chip-list>
     
-                    <mat-menu #appliedfiltermenu="matMenu">
-                        <pros-filter-values [moduleId]="moduleId" (selectedValues)="updateChipFilter($event, loadDropValuesFor.fieldId)"
-                            [moduleId]="moduleId" [isDataScope]="true"
-                            [fieldId]="loadDropValuesFor ? loadDropValuesFor.fieldId : ''"
-                            [checkedValue]="loadDropValuesFor ? loadDropValuesFor.checkedValue : []">
-                        </pros-filter-values>
-                    </mat-menu>
+                        <mat-menu #appliedfiltermenu="matMenu">
+                            <pros-filter-values 
+                                [moduleId]="moduleId" 
+                                (selectedValues)="updateChipFilter($event, loadDropValuesFor.fieldId)"
+                                [isSearchEnable]="true"
+                                [fieldId]="loadDropValuesFor ? loadDropValuesFor.fieldId : ''"
+                                [checkedValue]="loadDropValuesFor ? loadDropValuesFor.checkedValue : []"
+                                >
+                            </pros-filter-values>
+                        </mat-menu>
                 </div>
             </div>
         </div>

@@ -26,7 +26,8 @@
             [fieldId]="activateElement ? activateElement.fieldId : ''"
             (selectedValues)="emitAppliedFilter($event)"
             [checkedValue]="selectedValues"
-            [isDataScope]="dataScope">
+            [isSearchEnable]="isSearchEnable"
+            [selectedDropValues]="dropValuesCode">
             </pros-filter-values>
     
         </div>
