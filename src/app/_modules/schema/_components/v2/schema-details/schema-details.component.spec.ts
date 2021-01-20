@@ -19,6 +19,7 @@ import { Router } from '@angular/router';
 import { SimpleChanges } from '@angular/core';
 import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 import { Userdetails } from '@models/userdetails';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('SchemaDetailsComponent', () => {
   let component: SchemaDetailsComponent;
@@ -40,7 +41,8 @@ describe('SchemaDetailsComponent', () => {
       imports:[
         AppMaterialModuleForSpec,
         HttpClientTestingModule,
-        RouterTestingModule
+        RouterTestingModule,
+        SharedModule
       ],providers:[
         {
           provide: SchemaDataSource,

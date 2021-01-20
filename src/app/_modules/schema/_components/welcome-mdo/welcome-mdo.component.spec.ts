@@ -12,6 +12,7 @@ import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
 import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('WelcomeMdoComponent', () => {
   let component: WelcomeMdoComponent;
@@ -28,7 +29,7 @@ describe('WelcomeMdoComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [WelcomeMdoComponent, SvgIconComponent, SearchInputComponent],
-      imports: [AppMaterialModuleForSpec, RouterTestingModule],
+      imports: [AppMaterialModuleForSpec, RouterTestingModule, SharedModule],
       providers: [
         SchemalistService,
         SchemaService,

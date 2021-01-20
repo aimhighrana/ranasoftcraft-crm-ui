@@ -14,6 +14,7 @@ import { SearchInputComponent } from '@modules/shared/_components/search-input/s
 import { GlobaldialogService } from '@services/globaldialog.service';
 import { ElementRef } from '@angular/core';
 import { MockElementRef } from '@modules/shared/_directives/resizeable.directive.spec';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('ReportCollaboratorComponent', () => {
   let component: ReportCollaboratorComponent;
@@ -24,7 +25,7 @@ describe('ReportCollaboratorComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ReportCollaboratorComponent, SearchInputComponent ],
-      imports:[AppMaterialModuleForSpec, HttpClientTestingModule, ReactiveFormsModule, FormsModule, RouterTestingModule],
+      imports:[AppMaterialModuleForSpec, HttpClientTestingModule, ReactiveFormsModule, FormsModule, RouterTestingModule, SharedModule],
       providers:[
         ReportService,
         GlobaldialogService, { provide: ElementRef, useValue: MockElementRef }

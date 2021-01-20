@@ -5,6 +5,7 @@ import { DetailView } from '@models/schema/schemadetailstable';
 import { SchemaListDetails } from '@models/schema/schemalist';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { of } from 'rxjs';
+import { SharedModule } from '@modules/shared/shared.module';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { DetailBuilderComponent } from './detail-builder.component';
@@ -20,7 +21,8 @@ describe('DetailBuilderComponent', () => {
       imports:[
         HttpClientTestingModule,
         RouterTestingModule,
-        AppMaterialModuleForSpec
+        AppMaterialModuleForSpec,
+        SharedModule
       ]
     })
     .compileComponents();

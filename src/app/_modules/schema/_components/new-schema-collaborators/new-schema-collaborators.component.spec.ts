@@ -10,6 +10,7 @@ import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { of } from 'rxjs';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
+import { SharedModule } from '@modules/shared/shared.module';
 
 const mockDialogRef = {
     close: jasmine.createSpy('close')
@@ -31,7 +32,8 @@ describe('NewSchemaCollaboratorsComponent', () => {
                 HttpClientModule,
                 MatSnackBarModule,
                 AppMaterialModuleForSpec,
-                ReactiveFormsModule
+                ReactiveFormsModule,
+                SharedModule
             ],
             providers: [
                 { provide: MatDialogRef, useValue: mockDialogRef },

@@ -6,6 +6,7 @@ import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { RouterTestingModule } from '@angular/router/testing';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('SalesforceConnectionComponent', () => {
   let component: SalesforceConnectionComponent;
@@ -14,7 +15,7 @@ describe('SalesforceConnectionComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ SalesforceConnectionComponent, BreadcrumbComponent ],
-      imports:[AppMaterialModuleForSpec, ReactiveFormsModule, FormsModule, MatDatepickerModule, RouterTestingModule]
+      imports:[AppMaterialModuleForSpec, ReactiveFormsModule, FormsModule, MatDatepickerModule, RouterTestingModule, SharedModule]
     })
     .compileComponents();
   }));

@@ -8,6 +8,7 @@ import { of } from 'rxjs';
 import { SimpleChanges } from '@angular/core';
 import { SchemaStaticThresholdRes } from '@models/schema/schemalist';
 import { CategoryInfo } from '@models/schema/schemadetailstable';
+import { SharedModule } from '@modules/shared/shared.module';
 
 
 describe('CategoriesChartComponent', () => {
@@ -17,7 +18,7 @@ describe('CategoriesChartComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientModule, AppMaterialModuleForSpec],
+      imports: [HttpClientModule, AppMaterialModuleForSpec, SharedModule],
       declarations: [ CategoriesChartComponent ],
       providers: [ SchemaDetailsService, SchemalistService ]
     })

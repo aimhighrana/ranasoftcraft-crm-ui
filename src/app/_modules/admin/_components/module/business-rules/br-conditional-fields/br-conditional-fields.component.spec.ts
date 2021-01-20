@@ -7,6 +7,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { MetadataModeleResponse, Heirarchy, MetadataModel } from '@models/schema/schemadetailstable';
 import { of } from 'rxjs';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('BrConditionalFieldsComponent', () => {
   let component: BrConditionalFieldsComponent;
@@ -17,7 +18,7 @@ describe('BrConditionalFieldsComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ BrConditionalFieldsComponent ],
       imports:[
-        HttpClientTestingModule, AppMaterialModuleForSpec, ReactiveFormsModule, FormsModule
+        HttpClientTestingModule, AppMaterialModuleForSpec, ReactiveFormsModule, FormsModule, SharedModule
       ]
     })
     .compileComponents();

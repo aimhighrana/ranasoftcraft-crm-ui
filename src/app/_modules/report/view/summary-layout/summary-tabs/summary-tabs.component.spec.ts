@@ -2,11 +2,12 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SummaryTabsComponent } from './summary-tabs.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { LayoutFieldsResponse, LayoutTabResponse, MDORECORDESV3, FieldValueV2, FieldCodeText } from '@modules/report/_models/widget';
 import { WidgetService } from '@services/widgets/widget.service';
 import { of } from 'rxjs';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('SummaryTabsComponent', () => {
   let component: SummaryTabsComponent;
@@ -15,7 +16,7 @@ describe('SummaryTabsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ SummaryTabsComponent ],
-      imports:[HttpClientTestingModule, ReactiveFormsModule, FormsModule, RouterTestingModule]
+      imports:[HttpClientTestingModule, AppMaterialModuleForSpec, RouterTestingModule, SharedModule]
     })
     .compileComponents();
   }));

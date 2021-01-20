@@ -12,6 +12,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { UdrConditionFormComponent } from './udr-condition-form/udr-condition-form.component';
 import { UdrConditionControlComponent } from './udr-condition-control/udr-condition-control.component';
 import { UDRHierarchyModel, UDRBlocksModel, UdrModel } from '../business-rules.modal';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('UserDefinedRuleComponent', () => {
   let component: UserDefinedRuleComponent;
@@ -22,7 +23,8 @@ describe('UserDefinedRuleComponent', () => {
       imports: [
         AppMaterialModuleForSpec,
         RouterTestingModule,
-        ReactiveFormsModule , HttpClientTestingModule, FormsModule
+        ReactiveFormsModule , HttpClientTestingModule, FormsModule,
+        SharedModule
       ],
       declarations: [UserDefinedRuleComponent, BreadcrumbComponent, AddTileComponent, UdrConditionFormComponent, UdrConditionControlComponent],
       providers: [

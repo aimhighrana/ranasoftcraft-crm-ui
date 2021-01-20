@@ -3,11 +3,13 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AttributesDoc, NounModifier } from '@models/schema/noun-modifier';
+import { SharedModule } from '@modules/shared/shared.module';
 import { NounModifierService } from '@services/home/schema/noun-modifier.service';
 import { of } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { LibraryMappingSidesheetComponent } from './library-mapping-sidesheet.component';
+import { NounModifierAutocompleteComponent } from './noun-modifier-autocomplete/noun-modifier-autocomplete.component';
 
 describe('LibraryMappingSidesheetComponent', () => {
   let component: LibraryMappingSidesheetComponent;
@@ -17,8 +19,8 @@ describe('LibraryMappingSidesheetComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LibraryMappingSidesheetComponent ],
-      imports: [ AppMaterialModuleForSpec, RouterTestingModule, HttpClientTestingModule ]
+      declarations: [ LibraryMappingSidesheetComponent, NounModifierAutocompleteComponent ],
+      imports: [ AppMaterialModuleForSpec, RouterTestingModule, HttpClientTestingModule, SharedModule ]
     })
     .compileComponents();
   }));
@@ -35,7 +37,6 @@ describe('LibraryMappingSidesheetComponent', () => {
     component.libraryModifierCode = 'Ball';
 
     router = TestBed.inject(Router);
-    // fixture.detectChanges();
   });
 
   it('should create', () => {

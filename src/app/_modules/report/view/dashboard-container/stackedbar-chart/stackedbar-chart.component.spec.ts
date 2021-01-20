@@ -10,6 +10,7 @@ import { BaseChartDirective, Label } from 'ng2-charts';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { ChartLegendLabelItem } from 'chart.js';
 import { MatDialog } from '@angular/material/dialog';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('StackedbarChartComponent', () => {
   let component: StackedbarChartComponent;
@@ -25,7 +26,7 @@ describe('StackedbarChartComponent', () => {
     const widgetServiceSpy = jasmine.createSpyObj(WidgetService,['downloadCSV','getHeaderMetaData', 'getWidgetData']);
     TestBed.configureTestingModule({
       declarations: [ StackedbarChartComponent ],
-      imports:[AppMaterialModuleForSpec,HttpClientTestingModule,MatMenuModule],
+      imports:[AppMaterialModuleForSpec,HttpClientTestingModule,MatMenuModule, SharedModule],
       providers:[
         {provide: WidgetService, userValue: widgetServiceSpy},
         {

@@ -2,6 +2,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { SimpleChange, SimpleChanges } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { SchemaExecutionProgressResponse } from '@models/schema/schema-execution';
+import { SharedModule } from '@modules/shared/shared.module';
 import { SchemaService } from '@services/home/schema.service';
 import { of } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
@@ -18,7 +19,8 @@ describe('SchemaProgressComponent', () => {
       declarations: [ SchemaProgressComponent ],
       imports: [
         AppMaterialModuleForSpec,
-        HttpClientTestingModule
+        HttpClientTestingModule,
+        SharedModule
       ]
     })
     .compileComponents();

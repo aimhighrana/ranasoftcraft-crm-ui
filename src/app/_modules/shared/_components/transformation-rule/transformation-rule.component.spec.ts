@@ -7,6 +7,7 @@ import { FieldConfiguration } from '@models/schema/schemadetailstable';
 
 import { TransformationRuleComponent } from './transformation-rule.component';
 import { BusinessRuleType } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { FormInputComponent } from '../form-input/form-input.component';
 
 describe('TransformationRuleComponent', () => {
   let component: TransformationRuleComponent;
@@ -31,7 +32,7 @@ describe('TransformationRuleComponent', () => {
   };
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [TransformationRuleComponent],
+      declarations: [TransformationRuleComponent, FormInputComponent],
       imports: [AppMaterialModuleForSpec],
       providers: [
         FormsModule,

@@ -8,6 +8,8 @@ import { ScheduleDialogComponent } from './schedule-dialog.component';
 import { SchemaScheduler } from '@models/schema/schemaScheduler';
 import { SchemaService } from '@services/home/schema.service';
 import { of } from 'rxjs';
+import { FormInputComponent } from '../form-input/form-input.component';
+import { DatePickerFieldComponent } from '../date-picker-field/date-picker-field.component';
 
 describe('ScheduleDialogComponent', () => {
   let component: ScheduleDialogComponent;
@@ -16,7 +18,7 @@ describe('ScheduleDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ScheduleDialogComponent ],
+      declarations: [ ScheduleDialogComponent, FormInputComponent, DatePickerFieldComponent ],
       imports: [
         HttpClientTestingModule,
         AppMaterialModuleForSpec,

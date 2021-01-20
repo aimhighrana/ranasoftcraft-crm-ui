@@ -1,5 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { SharedModule } from '@modules/shared/shared.module';
 import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
@@ -13,7 +14,7 @@ describe('HierarchyFilterComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ HierarchyFilterComponent, SearchInputComponent ],
       imports: [
-        HttpClientTestingModule, AppMaterialModuleForSpec
+        HttpClientTestingModule, AppMaterialModuleForSpec, SharedModule
       ]
     })
     .compileComponents();

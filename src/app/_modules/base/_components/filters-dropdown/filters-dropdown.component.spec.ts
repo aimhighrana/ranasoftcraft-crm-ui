@@ -7,6 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
 import { By } from '@angular/platform-browser';
 import { Filter } from '@models/task-list/filter';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('FiltersDropdownComponent', () => {
   let fixture: ComponentFixture<FiltersDropdownComponent>;
@@ -62,7 +63,7 @@ describe('FiltersDropdownComponent', () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule,
       platformBrowserDynamicTesting());
     TestBed.configureTestingModule({
-      imports: [AppMaterialModuleForSpec, RouterTestingModule, HttpClientTestingModule],
+      imports: [AppMaterialModuleForSpec, RouterTestingModule, HttpClientTestingModule, SharedModule],
       providers: [HttpClientTestingModule],
       declarations: [FiltersDropdownComponent]
     }).compileComponents();

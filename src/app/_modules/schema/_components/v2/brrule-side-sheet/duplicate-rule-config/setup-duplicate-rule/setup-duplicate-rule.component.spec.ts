@@ -2,6 +2,7 @@ import { SimpleChanges } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CoreSchemaBrInfo } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { SharedModule } from '@modules/shared/shared.module';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { SetupDuplicateRuleComponent } from './setup-duplicate-rule.component';
@@ -13,7 +14,7 @@ describe('SetupDuplicateRuleComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ SetupDuplicateRuleComponent ],
-      imports: [AppMaterialModuleForSpec, RouterTestingModule]
+      imports: [AppMaterialModuleForSpec, RouterTestingModule, SharedModule]
     })
     .compileComponents();
   }));

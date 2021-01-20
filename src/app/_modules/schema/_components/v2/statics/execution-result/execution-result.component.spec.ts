@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { SharedModule } from '@modules/shared/shared.module';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { ExecutionResultComponent } from './execution-result.component';
@@ -10,7 +11,7 @@ describe('ExecutionResultComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ExecutionResultComponent ],
-      imports: [AppMaterialModuleForSpec]
+      imports: [AppMaterialModuleForSpec, SharedModule]
     })
     .compileComponents();
   }));

@@ -4,6 +4,8 @@ import { DashboardContainerComponent } from './dashboard-container.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Criteria } from '../../_models/widget';
 import { ReportService } from '@modules/report/_service/report.service';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { SharedModule } from '@modules/shared/shared.module';
 
 
 describe('DashboardContainerComponent', () => {
@@ -12,7 +14,7 @@ describe('DashboardContainerComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ DashboardContainerComponent ],
-      imports:[HttpClientTestingModule],
+      imports:[HttpClientTestingModule, AppMaterialModuleForSpec, SharedModule],
       providers:[ReportService]
     })
     .compileComponents();

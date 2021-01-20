@@ -10,6 +10,7 @@ import { UserMdoModel, RolesModel, GroupHeaderModel, PermissionType, PermissionO
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('SchemaCollaboratorsComponent', () => {
   let component: SchemaCollaboratorsComponent;
@@ -20,7 +21,7 @@ describe('SchemaCollaboratorsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ SchemaCollaboratorsComponent ],
-      imports: [ AppMaterialModuleForSpec, HttpClientTestingModule, ReactiveFormsModule, FormsModule, RouterTestingModule ],
+      imports: [ AppMaterialModuleForSpec, HttpClientTestingModule, ReactiveFormsModule, FormsModule, RouterTestingModule, SharedModule ],
       providers:[
         SchemaDetailsService
       ]

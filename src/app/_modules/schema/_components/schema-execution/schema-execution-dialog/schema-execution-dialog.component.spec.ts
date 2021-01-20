@@ -9,6 +9,7 @@ import { SchemaExecutionRequest } from 'src/app/_models/schema/schema-execution'
 import { SchemaService } from '@services/home/schema.service';
 import { of } from 'rxjs';
 import { SchemaExecutionService } from '@services/home/schema/schema-execution.service';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('SchemaExecutionDialogComponent', () => {
   let component: SchemaExecutionDialogComponent;
@@ -22,7 +23,7 @@ describe('SchemaExecutionDialogComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ SchemaExecutionDialogComponent, ThousandconvertorPipe],
-      imports: [ MatDialogModule, AppMaterialModuleForSpec, HttpClientModule, RouterTestingModule],
+      imports: [ MatDialogModule, AppMaterialModuleForSpec, HttpClientModule, RouterTestingModule, SharedModule],
       providers: [
         {
           provide: MatDialogRef,

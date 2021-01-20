@@ -6,6 +6,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { WidgetHeader, WidgetImageModel } from '../../../_models/widget';
 import { WidgetService } from '@services/widgets/widget.service';
 import { of } from 'rxjs';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('ImageComponent', () => {
   let component: ImageComponent;
@@ -15,7 +16,7 @@ describe('ImageComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ImageComponent ],
-      imports:[AppMaterialModuleForSpec,HttpClientTestingModule],
+      imports:[AppMaterialModuleForSpec,HttpClientTestingModule, SharedModule],
       providers: [ WidgetService ]
     })
     .compileComponents();

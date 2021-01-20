@@ -1,4 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { SharedModule } from '@modules/shared/shared.module';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { BrDuplicatecheckSidesheetComponent } from './br-duplicatecheck-sidesheet.component';
 
@@ -8,7 +10,8 @@ describe('BrDuplicatecheckSidesheetComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ BrDuplicatecheckSidesheetComponent ]
+      declarations: [ BrDuplicatecheckSidesheetComponent ],
+      imports: [ AppMaterialModuleForSpec, SharedModule ]
     })
     .compileComponents();
   }));

@@ -11,6 +11,7 @@ import { SchemaListDetails } from 'src/app/_models/schema/schemalist';
 import { SchemaExecutionRequest } from '@models/schema/schema-execution';
 import { SchemaExecutionService } from '@services/home/schema/schema-execution.service';
 import { Router } from '@angular/router';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('SchemaExecutionComponent', () => {
   let component: SchemaExecutionComponent;
@@ -21,7 +22,7 @@ describe('SchemaExecutionComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [AppMaterialModuleForSpec, ReactiveFormsModule, FormsModule, RouterTestingModule],
+      imports: [AppMaterialModuleForSpec, ReactiveFormsModule, FormsModule, RouterTestingModule, SharedModule],
       declarations: [ SchemaExecutionComponent, BreadcrumbComponent ],
       providers: [ SchemalistService, SchemaExecutionService ]
     })

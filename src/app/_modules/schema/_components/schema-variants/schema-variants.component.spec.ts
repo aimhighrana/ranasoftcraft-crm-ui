@@ -14,6 +14,7 @@ import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { SubstringPipe } from 'src/app/_modules/shared/_pipes/substringpipe.pipe';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('SchemaVariantsComponent', () => {
   let component: SchemaVariantsComponent;
@@ -23,7 +24,7 @@ describe('SchemaVariantsComponent', () => {
   let schemaVariantServiceSpy: SchemaVariantService
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [AppMaterialModuleForSpec, MatIconModule, RouterTestingModule, FormsModule, ReactiveFormsModule],
+      imports: [AppMaterialModuleForSpec, MatIconModule, RouterTestingModule, FormsModule, ReactiveFormsModule, SharedModule],
       declarations: [SchemaVariantsComponent, BreadcrumbComponent, SchemaTileComponent, AddTileComponent, SubstringPipe ],
       providers: [ SchemaVariantService ]
     })

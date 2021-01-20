@@ -1,5 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { SharedModule } from '@modules/shared/shared.module';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { NounModifierAutocompleteComponent } from './noun-modifier-autocomplete.component';
@@ -13,7 +14,8 @@ describe('NounModifierAutocompleteComponent', () => {
       declarations: [ NounModifierAutocompleteComponent ],
       imports:[
         AppMaterialModuleForSpec,
-        HttpClientTestingModule
+        HttpClientTestingModule,
+        SharedModule
       ]
     })
     .compileComponents();

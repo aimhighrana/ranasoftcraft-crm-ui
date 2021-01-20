@@ -3,6 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaService } from '@services/home/schema.service';
 import { of } from 'rxjs';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { TableCellInputComponent } from './table-cell-input.component';
 
@@ -14,7 +15,7 @@ describe('TableCellInputComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [TableCellInputComponent],
-      imports: [HttpClientTestingModule]
+      imports: [HttpClientTestingModule, AppMaterialModuleForSpec ]
     })
       .compileComponents();
   }));

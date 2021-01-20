@@ -7,6 +7,7 @@ import { TaskDetailsComponent } from '../task-details/task-details.component';
 import { GeneralInformationTabComponent } from '../general-information-tab/general-information-tab.component';
 import { AttachmentTabComponent } from '../attachment-tab/attachment-tab.component';
 import { HistoryTabComponent } from '../history-tab/history-tab.component';
+import { SharedModule } from '@modules/shared/shared.module';
 describe('TaskSummaryComponent', () => {
   let component: TaskSummaryComponent;
   let fixture: ComponentFixture<TaskSummaryComponent>;
@@ -53,7 +54,7 @@ describe('TaskSummaryComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        AppMaterialModuleForSpec,
+        AppMaterialModuleForSpec, SharedModule,
         RouterTestingModule.withRoutes([{ path: 'home/task-details/:wfid/:eventCode', component: TaskDetailsComponent }])
       ],
       declarations: [TaskSummaryComponent, TaskDetailsComponent, GeneralInformationTabComponent, AttachmentTabComponent, HistoryTabComponent],

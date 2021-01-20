@@ -1,5 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { SharedModule } from '@modules/shared/shared.module';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { ExecutionResultComponent } from './execution-result/execution-result.component';
+import { ExecutionTrendComponent } from './execution-trend/execution-trend.component';
 
 import { StaticsComponent } from './statics.component';
 
@@ -9,8 +12,8 @@ describe('StaticsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ StaticsComponent ],
-      imports: [AppMaterialModuleForSpec]
+      declarations: [ StaticsComponent, ExecutionResultComponent, ExecutionTrendComponent ],
+      imports: [AppMaterialModuleForSpec, SharedModule]
 
     })
     .compileComponents();

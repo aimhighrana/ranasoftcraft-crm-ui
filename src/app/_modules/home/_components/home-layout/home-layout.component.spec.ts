@@ -10,6 +10,7 @@ import { PrimaryNavbarComponent } from '@modules/schema/_components/primary-navb
 import { SecondaryNavbarComponent } from '@modules/schema/_components/secondary-navbar/secondary-navbar.component';
 import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
 import { NavigationDropdownComponent } from '@modules/shared/_components/navigation-dropdown/navigation-dropdown.component';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('HomeLayoutComponent', () => {
   let component: HomeLayoutComponent;
@@ -46,7 +47,8 @@ describe('HomeLayoutComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         AppMaterialModuleForSpec,
-        RouterTestingModule
+        RouterTestingModule,
+        SharedModule
       ],
       providers: [
         { provide: UserService, useValue: userSvcSpy }

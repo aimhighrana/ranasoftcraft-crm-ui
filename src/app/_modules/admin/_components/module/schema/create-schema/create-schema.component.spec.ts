@@ -13,6 +13,7 @@ import { CoreSchemaBrInfo, Category, CreateUpdateSchema } from '../../business-r
 import { ObjectTypeResponse } from '@models/schema/schema';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { Router } from '@angular/router';
+import { SharedModule } from '@modules/shared/shared.module';
 
 
 describe('CreateSchemaComponent', () => {
@@ -27,7 +28,7 @@ describe('CreateSchemaComponent', () => {
       declarations: [ CreateSchemaComponent ],
       imports:[
         HttpClientTestingModule, AppMaterialModuleForSpec, ReactiveFormsModule, FormsModule,
-        RouterTestingModule
+        RouterTestingModule, SharedModule
       ],
       providers:[
         SchemaService, SchemalistService

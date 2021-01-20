@@ -12,6 +12,7 @@ import { of } from 'rxjs';
 import { UDRBlocksModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker/datepicker-input-base';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('FilterComponent', () => {
   let component: FilterComponent;
@@ -20,7 +21,7 @@ describe('FilterComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ FilterComponent ],
-      imports:[AppMaterialModuleForSpec,HttpClientTestingModule]
+      imports:[AppMaterialModuleForSpec,HttpClientTestingModule, SharedModule]
     })
     .compileComponents();
   }));

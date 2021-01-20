@@ -2,6 +2,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { SharedModule } from '@modules/shared/shared.module';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { ExecutionTrendSidesheetComponent } from './execution-trend-sidesheet.component';
@@ -14,7 +15,7 @@ describe('ExecutionTrendSidesheetComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ExecutionTrendSidesheetComponent ],
-      imports: [AppMaterialModuleForSpec, HttpClientTestingModule, RouterTestingModule]
+      imports: [AppMaterialModuleForSpec, HttpClientTestingModule, RouterTestingModule, SharedModule]
     })
     .compileComponents();
   }));

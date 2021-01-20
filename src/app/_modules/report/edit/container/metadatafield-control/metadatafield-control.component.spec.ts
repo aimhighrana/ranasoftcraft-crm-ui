@@ -5,6 +5,7 @@ import { SchemaDetailsService } from '@services/home/schema/schema-details.servi
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { MetadataModel, Heirarchy } from '@models/schema/schemadetailstable';
 import { of } from 'rxjs';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('MetadatafieldControlComponent', () => {
   let component: MetadatafieldControlComponent;
@@ -16,7 +17,7 @@ describe('MetadatafieldControlComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [ MetadatafieldControlComponent ],
-      imports:[AppMaterialModuleForSpec],
+      imports:[AppMaterialModuleForSpec, SharedModule],
       providers:[
         {provide: SchemaDetailsService, userValue: schemaDetailsServiceSp}
       ]

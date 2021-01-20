@@ -4,6 +4,7 @@ import { WorkflowDatasetComponent } from './workflow-dataset.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { WorkflowResponse } from '@models/schema/schema';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('WorkflowDatasetComponent', () => {
   let component: WorkflowDatasetComponent;
@@ -14,7 +15,8 @@ describe('WorkflowDatasetComponent', () => {
       declarations: [ WorkflowDatasetComponent ],
       imports:[
         AppMaterialModuleForSpec,
-        HttpClientTestingModule
+        HttpClientTestingModule,
+        SharedModule
       ]
     })
     .compileComponents();

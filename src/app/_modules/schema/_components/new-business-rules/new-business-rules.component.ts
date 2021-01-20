@@ -420,7 +420,7 @@ export class NewBusinessRulesComponent implements OnInit {
 
         this.currentControls = controls;
         this.form = new FormGroup(controls);
-        console.log(this.form)
+        // console.log(this.form)
         // Apply conditional validation based on rule type
         this.form.controls.rule_type.valueChanges
             .pipe(distinctUntilChanged())
@@ -1018,7 +1018,7 @@ export class NewBusinessRulesComponent implements OnInit {
      * @param formRef pass the form referene
      */
     setDuplicateFormRef(formRef: FormGroup) {
-        console.log(formRef);
+        // console.log(formRef);
         this.duplicateFormRef = formRef;
     }
 

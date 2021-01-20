@@ -8,6 +8,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { WidgetService } from '@services/widgets/widget.service';
 import { of } from 'rxjs';
 import { ChartLegendLabelItem } from 'chart.js';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('TimeseriesWidgetComponent', () => {
   let component: TimeseriesWidgetComponent;
@@ -18,7 +19,8 @@ describe('TimeseriesWidgetComponent', () => {
       declarations: [TimeseriesWidgetComponent],
       imports: [
         HttpClientTestingModule,
-        AppMaterialModuleForSpec
+        AppMaterialModuleForSpec,
+        SharedModule
       ]
     })
       .compileComponents();

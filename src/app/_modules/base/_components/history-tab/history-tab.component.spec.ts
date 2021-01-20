@@ -8,6 +8,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('HistoryTabComponent', () => {
   let component: HistoryTabComponent;
@@ -19,7 +20,8 @@ describe('HistoryTabComponent', () => {
         MatSnackBarModule,
         HttpClientModule,
         RouterTestingModule,
-        AppMaterialModuleForSpec
+        AppMaterialModuleForSpec,
+        SharedModule
       ],
       providers: [
         TaskDetailsComponent,

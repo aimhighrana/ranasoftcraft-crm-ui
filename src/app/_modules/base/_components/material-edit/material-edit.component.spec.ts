@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MaterialEditComponent } from './material-edit.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('MaterialEditComponent', () => {
   let component: MaterialEditComponent;
@@ -10,7 +11,7 @@ describe('MaterialEditComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [MaterialEditComponent],
-      imports: [AppMaterialModuleForSpec]
+      imports: [AppMaterialModuleForSpec, SharedModule]
     })
       .compileComponents();
   }));

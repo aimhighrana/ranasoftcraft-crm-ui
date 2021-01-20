@@ -16,6 +16,7 @@ import { VariantDetails } from '@models/schema/schemalist';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { BreadcrumbComponent } from '@modules/shared/_components/breadcrumb/breadcrumb.component';
 import { Router } from '@angular/router';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('CreateVariantComponent', () => {
   let component: CreateVariantComponent;
@@ -29,7 +30,7 @@ describe('CreateVariantComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ CreateVariantComponent, BrConditionalFieldsComponent, BreadcrumbComponent ],
       imports:[
-        AppMaterialModuleForSpec, HttpClientTestingModule, ReactiveFormsModule, FormsModule, RouterTestingModule
+        AppMaterialModuleForSpec, HttpClientTestingModule, ReactiveFormsModule, FormsModule, RouterTestingModule, SharedModule
       ],
       providers:[
        SchemaService, SchemaDetailsService, SchemaVariantService

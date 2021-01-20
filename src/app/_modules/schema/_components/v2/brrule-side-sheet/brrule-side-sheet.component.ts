@@ -1172,7 +1172,7 @@ export class BrruleSideSheetComponent implements OnInit {
    * @param formRef pass th form reference
    */
   setDuplicateFormRef(formRef: FormGroup) {
-    console.log(formRef);
+    // console.log(formRef);
     this.duplicateFormRef = formRef;
   }
 

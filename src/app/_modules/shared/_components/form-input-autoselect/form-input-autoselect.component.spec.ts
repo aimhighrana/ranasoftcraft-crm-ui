@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { FormInputAutoselectComponent } from './form-input-autoselect.component';
 
@@ -10,7 +10,7 @@ describe('FormInputAutoselectComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ FormInputAutoselectComponent ],
-      imports: [MatAutocompleteModule]
+      imports: [ AppMaterialModuleForSpec ]
     })
     .compileComponents();
   }));

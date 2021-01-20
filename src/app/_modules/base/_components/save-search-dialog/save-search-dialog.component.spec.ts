@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SaveSearchDialogComponent } from './save-search-dialog.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('SaveSearchDialogComponent', () => {
   let component: SaveSearchDialogComponent;
@@ -10,7 +11,7 @@ describe('SaveSearchDialogComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [SaveSearchDialogComponent],
-      imports: [AppMaterialModuleForSpec]
+      imports: [AppMaterialModuleForSpec, SharedModule]
     })
       .compileComponents();
   }));

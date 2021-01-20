@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TableLoadingComponent } from './table-loading.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('TableLoadingComponent', () => {
   let component: TableLoadingComponent;
@@ -10,7 +11,7 @@ describe('TableLoadingComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ TableLoadingComponent ],
-      imports: [AppMaterialModuleForSpec]
+      imports: [AppMaterialModuleForSpec, SharedModule]
 
     })
     .compileComponents();

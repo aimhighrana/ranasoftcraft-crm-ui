@@ -11,6 +11,7 @@ import { PositionType, AlignPosition, AnchorAlignPosition } from '../../../_mode
 import { WidgetService } from '@services/widgets/widget.service';
 import { MetadataModel } from '@models/schema/schemadetailstable';
 import { MatDialog } from '@angular/material/dialog';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('BarChartComponent', () => {
   let component: BarChartComponent;
@@ -24,7 +25,7 @@ describe('BarChartComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ BarChartComponent ],
-      imports:[AppMaterialModuleForSpec,HttpClientTestingModule,MatMenuModule],
+      imports:[AppMaterialModuleForSpec,HttpClientTestingModule,MatMenuModule, SharedModule],
       providers:[
         {
           provide: MatDialog,

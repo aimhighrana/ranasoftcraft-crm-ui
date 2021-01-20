@@ -10,6 +10,7 @@ import { of } from 'rxjs';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { Metadata } from '@modules/report/edit/container/metadatafield-control/metadatafield-control.component';
 import { MatChipInputEvent } from '@angular/material/chips';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('GenericFieldControlComponent', () => {
   let component: GenericFieldControlComponent;
@@ -22,7 +23,8 @@ describe('GenericFieldControlComponent', () => {
         AppMaterialModuleForSpec,
         HttpClientModule,
         ReactiveFormsModule,
-        FormsModule
+        FormsModule,
+        SharedModule
       ]
     })
     .compileComponents();

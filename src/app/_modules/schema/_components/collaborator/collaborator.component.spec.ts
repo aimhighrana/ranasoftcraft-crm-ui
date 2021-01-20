@@ -4,6 +4,7 @@ import { CollaboratorComponent } from './collaborator.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SchemaDashboardPermission } from '@models/collaborator';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('CollaboratorComponent', () => {
   let component: CollaboratorComponent;
@@ -12,7 +13,7 @@ describe('CollaboratorComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ CollaboratorComponent ],
-      imports:[AppMaterialModuleForSpec, ReactiveFormsModule, FormsModule]
+      imports:[AppMaterialModuleForSpec, ReactiveFormsModule, FormsModule, SharedModule]
     })
     .compileComponents();
   }));

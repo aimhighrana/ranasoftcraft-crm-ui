@@ -6,6 +6,8 @@ import { LookupFormData } from '@models/schema/schemadetailstable';
 import { SchemaService } from '@services/home/schema.service';
 import { of } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { FormInputComponent } from '../form-input/form-input.component';
+import { NullStateComponent } from '../null-state/null-state/null-state.component';
 
 import { LookupRuleComponent } from './lookup.component';
 
@@ -16,7 +18,7 @@ describe('LookupRuleComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [LookupRuleComponent],
+      declarations: [LookupRuleComponent, FormInputComponent, NullStateComponent],
       imports: [AppMaterialModuleForSpec],
       providers: [
         MatSnackBarModule,

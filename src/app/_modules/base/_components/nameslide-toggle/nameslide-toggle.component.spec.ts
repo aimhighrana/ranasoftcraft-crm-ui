@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NameslideToggleComponent } from './nameslide-toggle.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('NameslideToggleComponent', () => {
   let component: NameslideToggleComponent;
@@ -10,7 +11,7 @@ describe('NameslideToggleComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [NameslideToggleComponent],
-      imports: [AppMaterialModuleForSpec]
+      imports: [AppMaterialModuleForSpec, SharedModule]
     })
       .compileComponents();
   }));

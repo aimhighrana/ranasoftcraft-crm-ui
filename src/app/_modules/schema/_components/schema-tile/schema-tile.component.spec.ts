@@ -10,6 +10,7 @@ import { SchemaStaticThresholdRes } from '@models/schema/schemalist';
 import { of } from 'rxjs';
 import { SchemaExecutionService } from '@services/home/schema/schema-execution.service';
 import { SchemaExecutionRequest } from '@models/schema/schema-execution';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('SchemaTileComponent', () => {
   let component: SchemaTileComponent;
@@ -20,7 +21,8 @@ describe('SchemaTileComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         AppMaterialModuleForSpec,
-        RouterTestingModule
+        RouterTestingModule,
+        SharedModule
       ],
       declarations: [SchemaTileComponent, BreadcrumbComponent, SubstringPipe],
       providers:[

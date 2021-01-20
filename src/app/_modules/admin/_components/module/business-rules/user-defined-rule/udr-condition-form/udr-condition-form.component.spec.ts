@@ -9,6 +9,7 @@ import { of } from 'rxjs';
 import { BrConditionalFieldsComponent } from '../../br-conditional-fields/br-conditional-fields.component';
 import { MetadataModel } from 'src/app/_models/schema/schemadetailstable';
 import { DropDownValue, ConditionalOperator } from '../../business-rules.modal';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('UdrConditionFormComponent', () => {
   let component: UdrConditionFormComponent;
@@ -18,7 +19,7 @@ describe('UdrConditionFormComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ UdrConditionFormComponent, BrConditionalFieldsComponent ],
       imports:[
-        AppMaterialModuleForSpec, HttpClientTestingModule, ReactiveFormsModule, FormsModule
+        AppMaterialModuleForSpec, HttpClientTestingModule, ReactiveFormsModule, FormsModule, SharedModule
       ],
       providers:[
        SchemaService

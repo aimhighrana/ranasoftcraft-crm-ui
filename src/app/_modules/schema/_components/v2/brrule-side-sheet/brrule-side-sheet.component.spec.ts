@@ -11,6 +11,7 @@ import { of } from 'rxjs';
 import { BusinessRuleType, ConditionalOperator, CoreSchemaBrInfo } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaService } from '@services/home/schema.service';
 import { BlockType } from '@modules/admin/_components/module/business-rules/user-defined-rule/udr-cdktree.service';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('BrruleSideSheetComponent', () => {
   let component: BrruleSideSheetComponent;
@@ -22,7 +23,7 @@ describe('BrruleSideSheetComponent', () => {
     TestBed.configureTestingModule({
       declarations: [BrruleSideSheetComponent, FormInputComponent, SetupDuplicateRuleComponent],
       imports: [
-        HttpClientTestingModule, AppMaterialModuleForSpec, RouterTestingModule
+        HttpClientTestingModule, AppMaterialModuleForSpec, RouterTestingModule, SharedModule
       ],
       providers: [SchemaDetailsService]
     })

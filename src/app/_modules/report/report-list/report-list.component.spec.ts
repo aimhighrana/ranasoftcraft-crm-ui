@@ -5,6 +5,7 @@ import { BreadcrumbComponent } from '../../shared/_components/breadcrumb/breadcr
 import { HttpClientModule } from '@angular/common/http';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { AddTileComponent } from '@modules/shared/_components/add-tile/add-tile.component';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('ReportListComponent', () => {
   let component: ReportListComponent;
@@ -12,7 +13,7 @@ describe('ReportListComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ReportListComponent, BreadcrumbComponent, AddTileComponent ],
-      imports:[ HttpClientModule, AppMaterialModuleForSpec],
+      imports:[ HttpClientModule, AppMaterialModuleForSpec, SharedModule],
     })
     .compileComponents();
   }));

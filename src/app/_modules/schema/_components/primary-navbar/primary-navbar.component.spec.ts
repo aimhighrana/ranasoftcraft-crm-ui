@@ -6,6 +6,7 @@ import { SearchInputComponent } from '@modules/shared/_components/search-input/s
 import { NavigationDropdownComponent } from '@modules/shared/_components/navigation-dropdown/navigation-dropdown.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('PrimaryNavbarComponent', () => {
   let component: PrimaryNavbarComponent;
@@ -15,7 +16,7 @@ describe('PrimaryNavbarComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ PrimaryNavbarComponent, SearchInputComponent, NavigationDropdownComponent, NavigationDropdownComponent ],
-      imports: [AppMaterialModuleForSpec, RouterTestingModule],
+      imports: [AppMaterialModuleForSpec, RouterTestingModule, SharedModule],
     })
     .compileComponents();
     router = TestBed.inject(Router);

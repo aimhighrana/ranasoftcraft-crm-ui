@@ -6,6 +6,7 @@ import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { MsteamAuthConfigurationComponent } from './msteam-auth-configuration.component';
 import { of } from 'rxjs';
 import { FormInputComponent } from '@modules/shared/_components/form-input/form-input.component';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('MsteamAuthConfigurationComponent', () => {
   let component: MsteamAuthConfigurationComponent;
@@ -16,7 +17,7 @@ describe('MsteamAuthConfigurationComponent', () => {
     const spyObj = jasmine.createSpyObj('MsteamsConfigService', ['signIn']);
     TestBed.configureTestingModule({
       declarations: [ MsteamAuthConfigurationComponent, FormInputComponent ],
-      imports: [HttpClientTestingModule, AppMaterialModuleForSpec],
+      imports: [HttpClientTestingModule, AppMaterialModuleForSpec, SharedModule],
       providers:[
         {provide: MsteamsConfigService, useValue: spyObj}
       ]

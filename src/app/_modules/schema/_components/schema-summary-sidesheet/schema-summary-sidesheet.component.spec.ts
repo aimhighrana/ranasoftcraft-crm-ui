@@ -8,6 +8,7 @@ import { AddFilterOutput, CheckDataResponse } from '@models/schema/schema';
 import { FilterCriteria } from '@models/schema/schemadetailstable';
 import { SchemaListDetails, VariantDetails } from '@models/schema/schemalist';
 import { CoreSchemaBrInfo, DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { SharedModule } from '@modules/shared/shared.module';
 import { FormInputAutoselectComponent } from '@modules/shared/_components/form-input-autoselect/form-input-autoselect.component';
 import { FormInputComponent } from '@modules/shared/_components/form-input/form-input.component';
 import { SchemaService } from '@services/home/schema.service';
@@ -37,7 +38,7 @@ describe('SchemaSummarySidesheetComponent', () => {
         FormInputAutoselectComponent,
         FormInputComponent
       ],
-      imports: [AppMaterialModuleForSpec, RouterTestingModule, HttpClientTestingModule]
+      imports: [AppMaterialModuleForSpec, RouterTestingModule, HttpClientTestingModule, SharedModule]
     })
       .compileComponents();
   }));

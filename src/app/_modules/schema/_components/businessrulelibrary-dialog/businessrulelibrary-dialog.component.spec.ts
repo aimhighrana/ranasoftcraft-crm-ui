@@ -7,6 +7,7 @@ import { of } from 'rxjs';
 import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
 import { HttpClientModule } from '@angular/common/http';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('BusinessrulelibraryDialogComponent', () => {
   let component: BusinessrulelibraryDialogComponent;
@@ -21,7 +22,8 @@ describe('BusinessrulelibraryDialogComponent', () => {
       declarations: [BusinessrulelibraryDialogComponent, SearchInputComponent],
       imports: [
         AppMaterialModuleForSpec,
-        HttpClientModule],
+        HttpClientModule,
+        SharedModule],
       providers: [SchemaService,
         { provide: MatDialogRef, useValue: null },
         { provide: MAT_DIALOG_DATA, useValue: model },

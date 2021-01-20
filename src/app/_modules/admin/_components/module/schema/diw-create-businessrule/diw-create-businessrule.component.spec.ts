@@ -5,6 +5,7 @@ import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { ReactiveFormsModule, FormsModule, FormGroup, FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BusinessRuleType, CoreSchemaBrInfo } from '../../business-rules/business-rules.modal';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('DiwCreateBusinessruleComponent', () => {
   let component: DiwCreateBusinessruleComponent;
@@ -15,7 +16,7 @@ describe('DiwCreateBusinessruleComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ DiwCreateBusinessruleComponent ],
-      imports: [AppMaterialModuleForSpec, ReactiveFormsModule, FormsModule],
+      imports: [AppMaterialModuleForSpec, ReactiveFormsModule, FormsModule, SharedModule],
       providers: [
         {
           provide: MatDialogRef,

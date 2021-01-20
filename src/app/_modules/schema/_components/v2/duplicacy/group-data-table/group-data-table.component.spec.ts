@@ -3,6 +3,7 @@ import { SimpleChanges } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { RequestForGroupList } from '@models/schema/duplicacy';
+import { SharedModule } from '@modules/shared/shared.module';
 import { CatalogCheckService } from '@services/home/schema/catalog-check.service';
 import { of } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
@@ -17,7 +18,7 @@ describe('GroupDataTableComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ GroupDataTableComponent ],
-      imports: [AppMaterialModuleForSpec, HttpClientTestingModule, RouterTestingModule]
+      imports: [AppMaterialModuleForSpec, HttpClientTestingModule, RouterTestingModule, SharedModule]
     })
     .compileComponents();
   }));

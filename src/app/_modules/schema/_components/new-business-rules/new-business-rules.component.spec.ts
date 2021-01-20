@@ -9,6 +9,7 @@ import { MetadataModeleResponse } from '@models/schema/schemadetailstable';
 import { of } from 'rxjs';
 import { BusinessRuleType, ConditionalOperator, CoreSchemaBrInfo } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { FormGroup } from '@angular/forms';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('NewBusinessRulesComponent', () => {
     let component: NewBusinessRulesComponent;
@@ -18,7 +19,7 @@ describe('NewBusinessRulesComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [NewBusinessRulesComponent],
-            imports: [AppMaterialModuleForSpec],
+            imports: [AppMaterialModuleForSpec, SharedModule],
             providers: [
                 HttpClientTestingModule,
                 SchemaDetailsService,

@@ -8,6 +8,7 @@ import { of } from 'rxjs';
 import { Userdetails } from '@models/userdetails';
 import { ListPageService } from '@services/list-page.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('ListPageComponent', () => {
   let fixture: ComponentFixture<ListPageComponent>;
@@ -16,7 +17,7 @@ describe('ListPageComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [AppMaterialModuleForSpec, RouterTestingModule, HttpClientTestingModule],
+      imports: [AppMaterialModuleForSpec, RouterTestingModule, HttpClientTestingModule, SharedModule],
       declarations: [ListPageComponent, FormatTableHeadersPipe],
       providers: [
         HttpClientTestingModule,

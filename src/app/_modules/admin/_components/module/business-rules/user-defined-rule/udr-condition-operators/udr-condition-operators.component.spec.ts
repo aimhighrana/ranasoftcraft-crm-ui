@@ -5,6 +5,7 @@ import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { SimpleChanges } from '@angular/core';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('UdrConditionOperatorsComponent', () => {
   let component: UdrConditionOperatorsComponent;
@@ -15,7 +16,8 @@ describe('UdrConditionOperatorsComponent', () => {
       declarations: [ UdrConditionOperatorsComponent ],
       imports:[
         AppMaterialModuleForSpec,
-        HttpClientTestingModule
+        HttpClientTestingModule,
+        SharedModule
       ]
     })
     .compileComponents();

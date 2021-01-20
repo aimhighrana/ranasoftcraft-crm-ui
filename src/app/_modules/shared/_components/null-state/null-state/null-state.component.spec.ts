@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { NullStateComponent } from './null-state.component';
 
@@ -8,7 +9,8 @@ describe('NullStateComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NullStateComponent ]
+      declarations: [ NullStateComponent ],
+      imports: [ AppMaterialModuleForSpec ]
     })
     .compileComponents();
   }));

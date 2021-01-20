@@ -4,6 +4,7 @@ import { DynamicWidgetComponent } from './dynamic-widget.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { SvgIconComponent } from '@modules/shared/_components/svg-icon/svg-icon.component';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('DynamicWidgetComponent', () => {
   let component: DynamicWidgetComponent;
@@ -14,7 +15,8 @@ describe('DynamicWidgetComponent', () => {
       declarations: [ DynamicWidgetComponent, SvgIconComponent ],
       imports:[
         AppMaterialModuleForSpec,
-        HttpClientTestingModule
+        HttpClientTestingModule,
+        SharedModule
       ]
     })
     .compileComponents();

@@ -11,6 +11,7 @@ import { of } from 'rxjs';
 import { Sort } from '@angular/material/sort';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SimpleChanges } from '@angular/core';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('ReportingListComponent', () => {
   let component: ReportingListComponent;
@@ -19,7 +20,7 @@ describe('ReportingListComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ReportingListComponent ],
-      imports:[AppMaterialModuleForSpec,HttpClientTestingModule,MatMenuModule, RouterTestingModule],
+      imports:[AppMaterialModuleForSpec,HttpClientTestingModule,MatMenuModule, RouterTestingModule, SharedModule],
       providers:[ WidgetService ]
     })
     .compileComponents();

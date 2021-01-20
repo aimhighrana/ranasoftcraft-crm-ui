@@ -6,6 +6,7 @@ import { MsteamReportConfigurationComponent, Report } from './msteam-report-conf
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { of } from 'rxjs';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('MsteamReportConfigurationComponent', () => {
   let component: MsteamReportConfigurationComponent;
@@ -17,7 +18,7 @@ describe('MsteamReportConfigurationComponent', () => {
     const spyObj = jasmine.createSpyObj('MsteamsConfigService', ['getReportUrlList']);
     TestBed.configureTestingModule({
       declarations: [ MsteamReportConfigurationComponent ],
-      imports:[HttpClientTestingModule, AppMaterialModuleForSpec],
+      imports:[HttpClientTestingModule, AppMaterialModuleForSpec, SharedModule],
       providers:[
         {provide: MsteamsConfigService, useValue: spyObj}
       ]

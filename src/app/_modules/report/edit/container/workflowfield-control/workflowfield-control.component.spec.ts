@@ -2,10 +2,9 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { WorkflowfieldControlComponent } from './workflowfield-control.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MetadataModel } from '@models/schema/schemadetailstable';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('WorkflowfieldControlComponent', () => {
   let component: WorkflowfieldControlComponent;
@@ -13,7 +12,7 @@ describe('WorkflowfieldControlComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ WorkflowfieldControlComponent ],
-      imports:[HttpClientTestingModule, MatAutocompleteModule, ReactiveFormsModule, FormsModule, MatFormFieldModule],
+      imports:[HttpClientTestingModule, AppMaterialModuleForSpec, SharedModule],
       providers:[
       ]
     })

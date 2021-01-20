@@ -4,6 +4,7 @@ import { DiwCreateSchemaComponent } from './diw-create-schema.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { BusinessRuleType } from '../../business-rules/business-rules.modal';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('DiwCreateSchemaComponent', () => {
   let component: DiwCreateSchemaComponent;
@@ -12,7 +13,7 @@ describe('DiwCreateSchemaComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ DiwCreateSchemaComponent ],
-      imports: [AppMaterialModuleForSpec, ReactiveFormsModule, FormsModule]
+      imports: [AppMaterialModuleForSpec, ReactiveFormsModule, FormsModule, SharedModule]
     })
     .compileComponents();
   }));

@@ -4,6 +4,7 @@ import { CustomEventsComponent } from './custom-events.component';
 import { BreadcrumbComponent } from '../../../../shared/_components/breadcrumb/breadcrumb.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { RouterTestingModule } from '@angular/router/testing';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('CustomEventsComponent', () => {
   let component: CustomEventsComponent;
@@ -13,7 +14,8 @@ describe('CustomEventsComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         AppMaterialModuleForSpec,
-        RouterTestingModule
+        RouterTestingModule,
+        SharedModule
       ],
       declarations: [ CustomEventsComponent, BreadcrumbComponent ]
     })

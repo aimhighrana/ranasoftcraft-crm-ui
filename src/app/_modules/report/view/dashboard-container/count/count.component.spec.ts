@@ -6,6 +6,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { WidgetService } from '@services/widgets/widget.service';
 import { of } from 'rxjs';
 import { WidgetHeader } from '@modules/report/_models/widget';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('CountComponent', () => {
   let component: CountComponent;
@@ -15,7 +16,7 @@ describe('CountComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ CountComponent ],
-      imports:[AppMaterialModuleForSpec,HttpClientTestingModule]
+      imports:[AppMaterialModuleForSpec,HttpClientTestingModule, SharedModule]
     })
     .compileComponents();
   }));

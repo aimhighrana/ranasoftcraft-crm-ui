@@ -1,4 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { SharedModule } from '@modules/shared/shared.module';
+import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { WidgetstyleControlComponent } from './widgetstyle-control.component';
 
@@ -8,7 +10,8 @@ describe('WidgetstyleControlComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ WidgetstyleControlComponent ]
+      declarations: [ WidgetstyleControlComponent ],
+      imports: [ AppMaterialModuleForSpec, SharedModule ]
     })
     .compileComponents();
   }));

@@ -9,6 +9,7 @@ import { FormInputComponent } from '@modules/shared/_components/form-input/form-
 import { SchemaVariantsModel } from '@models/schema/schemalist';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { of } from 'rxjs';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('SaveVariantDialogComponent', () => {
   let component: SaveVariantDialogComponent;
@@ -29,7 +30,7 @@ describe('SaveVariantDialogComponent', () => {
         SchemaVariantService
       ],
       imports:[
-        HttpClientTestingModule, RouterTestingModule, AppMaterialModuleForSpec
+        HttpClientTestingModule, RouterTestingModule, AppMaterialModuleForSpec, SharedModule
       ]
     })
     .compileComponents();

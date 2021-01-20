@@ -4,6 +4,7 @@ import { WsSoapComponent } from './ws-soap.component';
 import { BreadcrumbComponent } from 'src/app/_modules/shared/_components/breadcrumb/breadcrumb.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { RouterTestingModule } from '@angular/router/testing';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('WsSoapComponent', () => {
   let component: WsSoapComponent;
@@ -13,7 +14,8 @@ describe('WsSoapComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         AppMaterialModuleForSpec,
-        RouterTestingModule
+        RouterTestingModule,
+        SharedModule
       ],
       declarations: [ WsSoapComponent, BreadcrumbComponent ]
     })

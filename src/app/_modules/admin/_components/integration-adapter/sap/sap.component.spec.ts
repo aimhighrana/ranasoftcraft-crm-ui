@@ -5,6 +5,7 @@ import { BreadcrumbComponent } from '../../../../shared/_components/breadcrumb/b
 import { AdminTileComponent } from '../../admin-tile/admin-tile.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { RouterTestingModule } from '@angular/router/testing';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('SapComponent', () => {
   let component: SapComponent;
@@ -14,7 +15,8 @@ describe('SapComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         AppMaterialModuleForSpec,
-        RouterTestingModule
+        RouterTestingModule,
+        SharedModule
       ],
       declarations: [ SapComponent, BreadcrumbComponent, AdminTileComponent ]
     })

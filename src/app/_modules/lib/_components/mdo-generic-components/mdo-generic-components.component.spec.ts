@@ -9,6 +9,7 @@ import { AddFilterMenuComponent } from '@modules/shared/_components/add-filter-m
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { FilterValuesComponent } from '@modules/shared/_components/filter-values/filter-values.component';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('MdoGenericComponentsComponent', () => {
   let component: MdoGenericComponentsComponent;
@@ -17,7 +18,7 @@ describe('MdoGenericComponentsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ MdoGenericComponentsComponent, SearchInputComponent, FormInputComponent, AddFilterMenuComponent, FilterValuesComponent ],
-      imports: [AppMaterialModuleForSpec, HttpClientTestingModule, ReactiveFormsModule, FormsModule, RouterTestingModule ]
+      imports: [AppMaterialModuleForSpec, HttpClientTestingModule, ReactiveFormsModule, FormsModule, RouterTestingModule, SharedModule ]
     })
     .compileComponents();
   }));

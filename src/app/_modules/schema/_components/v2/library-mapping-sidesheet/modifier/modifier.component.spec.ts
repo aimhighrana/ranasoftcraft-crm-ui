@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { SharedModule } from '@modules/shared/shared.module';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { ModifierComponent } from './modifier.component';
@@ -13,7 +14,7 @@ describe('ModifierComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ModifierComponent ],
-      imports: [ AppMaterialModuleForSpec, RouterTestingModule ]
+      imports: [ AppMaterialModuleForSpec, RouterTestingModule, SharedModule ]
     })
     .compileComponents();
   }));

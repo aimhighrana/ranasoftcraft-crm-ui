@@ -14,6 +14,7 @@ import { SchemaGroupDetailsResponse } from '@models/schema/schema';
 import { of } from 'rxjs';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('SchemaListComponent', () => {
   let component: SchemaListComponent;
@@ -25,7 +26,8 @@ describe('SchemaListComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         AppMaterialModuleForSpec,
-        RouterTestingModule
+        RouterTestingModule,
+        SharedModule
       ],
       declarations: [SchemaListComponent, BreadcrumbComponent, SchemaTileComponent, AddTileComponent, SubstringPipe],
       providers:[ SchemaService, SchemalistService, MatSnackBar ]

@@ -8,6 +8,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { SchemaStaticThresholdRes } from 'src/app/_models/schema/schemalist';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { SimpleChanges } from '@angular/core';
+import { SharedModule } from '@modules/shared/shared.module';
 
 
 describe('OverviewChartComponent', () => {
@@ -17,7 +18,7 @@ describe('OverviewChartComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports:[AppMaterialModuleForSpec, RouterTestingModule, HttpClientModule],
+      imports:[AppMaterialModuleForSpec, RouterTestingModule, HttpClientModule, SharedModule],
       declarations: [ OverviewChartComponent ],
       providers: [ SchemalistService, SchemaDetailsService ]
     }).compileComponents();

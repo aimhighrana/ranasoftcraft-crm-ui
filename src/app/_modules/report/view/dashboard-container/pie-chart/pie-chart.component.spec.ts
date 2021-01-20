@@ -12,6 +12,7 @@ import { BaseChartDirective } from 'ng2-charts';
 import { MetadataModel } from '@models/schema/schemadetailstable';
 import { MatDialog } from '@angular/material/dialog';
 import { SimpleChanges } from '@angular/core';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('PieChartComponent', () => {
   let component: PieChartComponent;
@@ -25,7 +26,7 @@ describe('PieChartComponent', () => {
     const widgetServiceSpy = jasmine.createSpyObj(WidgetService,['downloadCSV','getHeaderMetaData']);
     TestBed.configureTestingModule({
       declarations: [ PieChartComponent ],
-      imports:[AppMaterialModuleForSpec,HttpClientTestingModule,MatMenuModule],
+      imports:[AppMaterialModuleForSpec,HttpClientTestingModule,MatMenuModule, SharedModule],
       providers:[
         {provide: WidgetService, userValue: widgetServiceSpy},
         {

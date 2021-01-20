@@ -5,6 +5,7 @@ import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FormInputComponent } from '@modules/shared/_components/form-input/form-input.component';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('CreateSchemaComponent', () => {
   let component: CreateSchemaComponent;
@@ -14,7 +15,7 @@ describe('CreateSchemaComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ CreateSchemaComponent, FormInputComponent ],
       imports:[
-        AppMaterialModuleForSpec, HttpClientTestingModule, RouterTestingModule
+        AppMaterialModuleForSpec, HttpClientTestingModule, RouterTestingModule, SharedModule
       ]
     })
     .compileComponents();

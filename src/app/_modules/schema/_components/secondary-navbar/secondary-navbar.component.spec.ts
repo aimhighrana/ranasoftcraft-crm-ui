@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import { SchemaListDetails, SchemaListModuleList } from '@models/schema/schemalist';
 import { SimpleChange, SimpleChanges } from '@angular/core';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('SecondaryNavbarComponent', () => {
   let component: SecondaryNavbarComponent;
@@ -26,7 +27,7 @@ describe('SecondaryNavbarComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ SecondaryNavbarComponent, SearchInputComponent ],
-      imports: [AppMaterialModuleForSpec, RouterTestingModule, HttpClientTestingModule]
+      imports: [AppMaterialModuleForSpec, RouterTestingModule, HttpClientTestingModule, SharedModule]
     })
     .compileComponents();
     router = TestBed.inject(Router);

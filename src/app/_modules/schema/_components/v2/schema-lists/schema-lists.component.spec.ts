@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SchemaListModuleList } from '@models/schema/schemalist';
+import { SharedModule } from '@modules/shared/shared.module';
 import { SchemaService } from '@services/home/schema.service';
 import { of } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
@@ -17,7 +18,7 @@ describe('SchemaListsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ SchemaListsComponent ],
-      imports: [ AppMaterialModuleForSpec, RouterTestingModule ],
+      imports: [ AppMaterialModuleForSpec, RouterTestingModule, SharedModule ],
       providers: [ SchemaService ]
     })
     .compileComponents();

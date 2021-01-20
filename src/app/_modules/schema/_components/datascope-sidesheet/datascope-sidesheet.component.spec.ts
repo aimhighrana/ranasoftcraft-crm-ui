@@ -5,6 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AddFilterOutput, SchemaVariantReq } from '@models/schema/schema';
 import { FilterCriteria } from '@models/schema/schemadetailstable';
 import { SchemaVariantsModel } from '@models/schema/schemalist';
+import { SharedModule } from '@modules/shared/shared.module';
 import { AddFilterMenuComponent } from '@modules/shared/_components/add-filter-menu/add-filter-menu.component';
 import { FilterValuesComponent } from '@modules/shared/_components/filter-values/filter-values.component';
 import { FormInputComponent } from '@modules/shared/_components/form-input/form-input.component';
@@ -23,7 +24,7 @@ describe('DatascopeSidesheetComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ DatascopeSidesheetComponent, FormInputComponent, AddFilterMenuComponent, FilterValuesComponent, SearchInputComponent ],
-      imports: [RouterTestingModule, AppMaterialModuleForSpec, HttpClientTestingModule]
+      imports: [RouterTestingModule, AppMaterialModuleForSpec, HttpClientTestingModule, SharedModule]
     })
     .compileComponents();
   }));

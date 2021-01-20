@@ -8,6 +8,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { UDRBlocksModel } from '../../business-rules.modal';
 import { MatChipInputEvent } from '@angular/material/chips';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('UdrConditionControlComponent', () => {
   let component: UdrConditionControlComponent;
@@ -17,7 +18,8 @@ describe('UdrConditionControlComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ UdrConditionControlComponent ],
       imports:[
-        AppMaterialModuleForSpec, HttpClientTestingModule, RouterTestingModule, ReactiveFormsModule, FormsModule
+        AppMaterialModuleForSpec, HttpClientTestingModule, RouterTestingModule, ReactiveFormsModule, FormsModule,
+        SharedModule
       ]
     })
     .compileComponents();

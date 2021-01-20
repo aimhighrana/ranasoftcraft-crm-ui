@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
+import { SharedModule } from '@modules/shared/shared.module';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { ExclusionsSidesheetComponent } from './exclusions-sidesheet.component';
@@ -13,7 +14,7 @@ describe('ExclusionsSidesheetComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ExclusionsSidesheetComponent ],
-      imports: [ RouterTestingModule, AppMaterialModuleForSpec ]
+      imports: [ RouterTestingModule, AppMaterialModuleForSpec, SharedModule ]
     })
     .compileComponents();
   }));

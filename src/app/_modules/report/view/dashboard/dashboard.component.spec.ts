@@ -8,6 +8,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { BreadcrumbComponent } from '@modules/shared/_components/breadcrumb/breadcrumb.component';
 import { DashboardContainerComponent } from '../dashboard-container/dashboard-container.component';
 import { ReportService } from '../../_service/report.service';
+import { SharedModule } from '@modules/shared/shared.module';
 
 
 describe('DashboardComponent', () => {
@@ -17,7 +18,7 @@ describe('DashboardComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [DashboardComponent, BreadcrumbComponent, DashboardContainerComponent],
-      imports: [AppMaterialModuleForSpec, FormsModule, ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule],
+      imports: [AppMaterialModuleForSpec, FormsModule, ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule, SharedModule],
       providers: [
         ReportService
       ]

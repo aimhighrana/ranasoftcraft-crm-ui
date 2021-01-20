@@ -5,6 +5,7 @@ import { BreadcrumbComponent } from 'src/app/_modules/shared/_components/breadcr
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('XmlComponent', () => {
   let component: XmlComponent;
@@ -12,7 +13,7 @@ describe('XmlComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [AppMaterialModuleForSpec, HttpClientTestingModule, RouterTestingModule],
+      imports: [AppMaterialModuleForSpec, HttpClientTestingModule, RouterTestingModule, SharedModule],
       declarations: [ XmlComponent, BreadcrumbComponent ]
     })
     .compileComponents();

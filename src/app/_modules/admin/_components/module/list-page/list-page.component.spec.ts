@@ -4,6 +4,7 @@ import { ListPageComponent } from './list-page.component';
 import { BreadcrumbComponent } from '../../../../shared/_components/breadcrumb/breadcrumb.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('ListPageComponent', () => {
   let component: ListPageComponent;
@@ -13,7 +14,8 @@ describe('ListPageComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         AppMaterialModuleForSpec,
-        RouterTestingModule
+        RouterTestingModule,
+        SharedModule
       ],
       declarations: [ ListPageComponent, BreadcrumbComponent ]
     })

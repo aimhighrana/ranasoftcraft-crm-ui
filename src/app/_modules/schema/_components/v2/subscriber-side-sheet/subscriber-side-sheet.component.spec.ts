@@ -9,6 +9,7 @@ import { SubscriberSideSheetComponent } from './subscriber-side-sheet.component'
 import { of } from 'rxjs';
 import { SchemaDashboardPermission } from '@models/collaborator';
 import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('SubscriberSideSheetComponent', () => {
   let component: SubscriberSideSheetComponent;
@@ -20,7 +21,7 @@ describe('SubscriberSideSheetComponent', () => {
     TestBed.configureTestingModule({
       declarations: [SubscriberSideSheetComponent, SearchInputComponent],
       imports: [
-        AppMaterialModuleForSpec, HttpClientTestingModule, RouterTestingModule
+        AppMaterialModuleForSpec, HttpClientTestingModule, RouterTestingModule, SharedModule
       ]
     })
       .compileComponents();

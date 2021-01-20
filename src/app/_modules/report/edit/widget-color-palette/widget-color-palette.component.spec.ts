@@ -8,6 +8,7 @@ import { WidgetService } from '@services/widgets/widget.service';
 import { WidgetColorPalette } from '@modules/report/_models/widget';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { of } from 'rxjs';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('WidgetColorPaletteComponent', () => {
   let component: WidgetColorPaletteComponent;
@@ -26,7 +27,7 @@ describe('WidgetColorPaletteComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ WidgetColorPaletteComponent ],
       imports:[
-        AppMaterialModuleForSpec, HttpClientTestingModule
+        AppMaterialModuleForSpec, HttpClientTestingModule, SharedModule
       ],providers: [
         {
           provide: MatDialogRef,

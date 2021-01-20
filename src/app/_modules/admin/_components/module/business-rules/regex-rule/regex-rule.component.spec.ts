@@ -11,6 +11,7 @@ import { of } from 'rxjs';
 import { Metadata } from '@modules/report/edit/container/metadatafield-control/metadatafield-control.component';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { GenericFieldControlComponent } from '../generic-field-control/generic-field-control.component';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('RegexRuleComponent', () => {
   let component: RegexRuleComponent;
@@ -20,7 +21,7 @@ describe('RegexRuleComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ RegexRuleComponent, GenericFieldControlComponent ],
-      imports:[AppMaterialModuleForSpec, ReactiveFormsModule, FormsModule, HttpClientModule, RouterTestingModule],
+      imports:[AppMaterialModuleForSpec, ReactiveFormsModule, FormsModule, HttpClientModule, RouterTestingModule, SharedModule],
       providers:[
         SchemaService
       ]

@@ -117,7 +117,7 @@ describe('ListFiltersComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [AppMaterialModuleForSpec, RouterTestingModule, SharedModule, HttpClientTestingModule],
+      imports: [AppMaterialModuleForSpec, RouterTestingModule, SharedModule, HttpClientTestingModule, SharedModule],
       providers: [HttpClientTestingModule],
       declarations: [ListFiltersComponent]
     }).compileComponents();

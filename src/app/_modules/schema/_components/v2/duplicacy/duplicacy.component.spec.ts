@@ -19,6 +19,7 @@ import { DuplicacyDataSource } from './duplicacy-data-source';
 import { DuplicacyComponent } from './duplicacy.component';
 import { Router } from '@angular/router';
 import { Userdetails } from '@models/userdetails';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('DuplicacyComponent', () => {
   let component: DuplicacyComponent;
@@ -34,7 +35,7 @@ describe('DuplicacyComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [DuplicacyComponent, SearchInputComponent, GroupDataTableComponent],
-      imports: [AppMaterialModuleForSpec, RouterTestingModule, HttpClientTestingModule]
+      imports: [AppMaterialModuleForSpec, RouterTestingModule, HttpClientTestingModule, SharedModule]
     })
       .compileComponents();
   }));

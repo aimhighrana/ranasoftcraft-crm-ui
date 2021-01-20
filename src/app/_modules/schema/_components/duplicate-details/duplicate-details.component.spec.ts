@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DuplicateDetailsComponent } from './duplicate-details.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('DuplicateDetailsComponent', () => {
   let component: DuplicateDetailsComponent;
@@ -11,7 +12,8 @@ describe('DuplicateDetailsComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ DuplicateDetailsComponent ],
       imports: [
-        AppMaterialModuleForSpec
+        AppMaterialModuleForSpec,
+        SharedModule
       ]
     })
     .compileComponents();

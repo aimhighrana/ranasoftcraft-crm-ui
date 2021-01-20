@@ -4,6 +4,7 @@ import { ExportReportDatatableComponent } from './export-report-datatable.compon
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('ExportReportDatatableComponent', () => {
   let component: ExportReportDatatableComponent;
@@ -17,7 +18,8 @@ describe('ExportReportDatatableComponent', () => {
       imports:[
         AppMaterialModuleForSpec,
         ReactiveFormsModule,
-        FormsModule
+        FormsModule,
+        SharedModule
       ],
       providers: [
         {

@@ -3,6 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MapMdoFieldComponent } from './map-mdo-field.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { MetadataModel } from '@models/schema/schemadetailstable';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('MapMdoFieldComponent', () => {
   let component: MapMdoFieldComponent;
@@ -11,7 +12,7 @@ describe('MapMdoFieldComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ MapMdoFieldComponent ],
-      imports:[ AppMaterialModuleForSpec]
+      imports:[ AppMaterialModuleForSpec, SharedModule]
     })
     .compileComponents();
   }));

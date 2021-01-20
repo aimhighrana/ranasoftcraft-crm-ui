@@ -2,6 +2,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CoreSchemaBrInfo } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { SharedModule } from '@modules/shared/shared.module';
 import { SchemaService } from '@services/home/schema.service';
 import { of } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
@@ -21,7 +22,8 @@ describe('BusinessrulelibrarySidesheetComponent', () => {
       imports: [
         AppMaterialModuleForSpec,
         HttpClientTestingModule,
-        RouterTestingModule
+        RouterTestingModule,
+        SharedModule
       ],
       providers: [SchemaService]
     })

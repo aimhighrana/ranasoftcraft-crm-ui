@@ -18,6 +18,7 @@ import { CoreSchemaBrInfo, DropDownValue, TransformationModel } from '@modules/a
 import { AddFilterOutput, DataSource } from '@models/schema/schema';
 import { FilterCriteria } from '@models/schema/schemadetailstable';
 import { SchemaScheduler } from '@models/schema/schemaScheduler';
+import { SharedModule } from '@modules/shared/shared.module';
 
 
 describe('UploadDatasetComponent', () => {
@@ -77,7 +78,7 @@ describe('UploadDatasetComponent', () => {
         FormInputComponent,
         AddFilterMenuComponent,
         FormInputAutoselectComponent],
-      imports: [AppMaterialModuleForSpec],
+      imports: [AppMaterialModuleForSpec, SharedModule],
       providers: [
         SchemaDetailsService,
         GlobaldialogService,

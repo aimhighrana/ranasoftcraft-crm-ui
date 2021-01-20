@@ -9,6 +9,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { SchemaService } from '@services/home/schema.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatChipInputEvent } from '@angular/material/chips';
+import { SharedModule } from '@modules/shared/shared.module';
 
 class SchemaSerStub {
   createBusinessRule() {
@@ -28,7 +29,7 @@ describe('MissingruleComponent', () => {
       imports: [
         AppMaterialModuleForSpec,
         RouterTestingModule,
-        ReactiveFormsModule , HttpClientTestingModule, FormsModule
+        ReactiveFormsModule , HttpClientTestingModule, FormsModule, SharedModule
       ],
       declarations: [MissingruleComponent],
       providers: [

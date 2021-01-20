@@ -18,6 +18,7 @@ import { SchemaDataSource } from '@modules/schema/_components/schema-details/sch
 import { Router } from '@angular/router';
 import { SimpleChanges } from '@angular/core';
 import { Userdetails } from '@models/userdetails';
+import { SharedModule } from '@modules/shared/shared.module';
 describe('PotextViewComponent', () => {
   let component: PotextViewComponent;
   let fixture: ComponentFixture<PotextViewComponent>;
@@ -38,7 +39,8 @@ describe('PotextViewComponent', () => {
       imports:[
         AppMaterialModuleForSpec,
         HttpClientTestingModule,
-        RouterTestingModule
+        RouterTestingModule,
+        SharedModule
       ],providers:[
         {
           provide: SchemaDataSource,

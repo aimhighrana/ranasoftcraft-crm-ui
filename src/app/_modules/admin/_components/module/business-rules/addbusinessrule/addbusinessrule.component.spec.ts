@@ -7,6 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { SvgIconComponent } from '@modules/shared/_components/svg-icon/svg-icon.component';
 import { BusinessRuleType } from '../business-rules.modal';
 import { Router } from '@angular/router';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('AddbusinessruleComponent', () => {
   let component: AddbusinessruleComponent;
@@ -16,7 +17,7 @@ describe('AddbusinessruleComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ AddbusinessruleComponent, BreadcrumbComponent, SvgIconComponent ],
-      imports: [AppMaterialModuleForSpec, HttpClientTestingModule, RouterTestingModule]
+      imports: [AppMaterialModuleForSpec, HttpClientTestingModule, RouterTestingModule, SharedModule]
     })
     .compileComponents();
     router = TestBed.inject(Router);

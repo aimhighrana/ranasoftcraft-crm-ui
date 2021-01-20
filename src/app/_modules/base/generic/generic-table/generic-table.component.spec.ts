@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GenericTableComponent } from './generic-table.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('GenericTableComponent', () => {
   let component: GenericTableComponent;
@@ -172,7 +173,7 @@ describe('GenericTableComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [GenericTableComponent],
-      imports:[ AppMaterialModuleForSpec ]
+      imports:[ AppMaterialModuleForSpec, SharedModule ]
     })
       .compileComponents();
   }));

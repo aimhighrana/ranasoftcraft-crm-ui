@@ -21,6 +21,7 @@ import { ScheduleComponent } from '@modules/shared/_components/schedule/schedule
 import { DatePickerFieldComponent } from '@modules/shared/_components/date-picker-field/date-picker-field.component';
 import { PermissionOn, SchemaDashboardPermission } from '@models/collaborator';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('SchemaInfoComponent', () => {
   let component: SchemaInfoComponent;
@@ -44,7 +45,8 @@ describe('SchemaInfoComponent', () => {
       imports: [
         AppMaterialModuleForSpec,
         HttpClientTestingModule,
-        RouterTestingModule
+        RouterTestingModule,
+        SharedModule
       ]
     })
       .compileComponents();

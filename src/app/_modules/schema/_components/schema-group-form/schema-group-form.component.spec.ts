@@ -11,6 +11,7 @@ import { ObjectTypeResponse, GetAllSchemabymoduleidsReq, GetAllSchemabymoduleids
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatAutocompleteSelectedEvent, MatAutocomplete } from '@angular/material/autocomplete';
 import { Router } from '@angular/router';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('SchemaGroupFormComponent', () => {
   let component: SchemaGroupFormComponent;
@@ -24,7 +25,8 @@ describe('SchemaGroupFormComponent', () => {
         AppMaterialModuleForSpec,
         RouterTestingModule,
         FormsModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        SharedModule
       ],
       providers: [ SchemaService ]
     })
