@@ -6,30 +6,37 @@
     </div>
    
     <mat-autocomplete #mdofieldauto="matAutocomplete">
-      <div class="autodropdown-scroll">
+      <div class="autodropdown-scroll">        
+        
+          <ng-template [ngIf] ="requestFor && requestFor === 'noun'">
+            <mat-option>
+              <div (click)="emitForCreateNew('noun');" class="sticky-actions">
+                <mat-icon fontSet="mdo-icons" class="option-icon">plus</mat-icon>
+                Create new 'noun'
+              </div>
+            </mat-option>            
+          </ng-template>
+    
+          <ng-template [ngIf] ="requestFor && requestFor === 'modifier' && selectedNoun">
+            <mat-option>
+              <div (click)="emitForCreateNew('modifier');" class="sticky-actions">
+                <mat-icon fontSet="mdo-icons" class="option-icon">plus</mat-icon>
+                Create new 'modifier'
+              </div>
+            </mat-option>            
+          </ng-template>
+    
+          <ng-template [ngIf] ="requestFor && requestFor === 'attribute' && selectedNoun">
+            <mat-option>
+              <div (click)="emitForCreateNew('attribute');" class="sticky-actions">
+                <mat-icon fontSet="mdo-icons" class="option-icon">plus</mat-icon>
+                Create new 'attribute'
+              </div>
+            </mat-option>
+          </ng-template>
+         
 
-        <ng-template [ngIf] ="requestFor && requestFor === 'noun'">
-          <div (click)="emitForCreateNew('noun');" class="sticky-actions">
-            <mat-icon fontSet="mdo-icons" class="option-icon">plus</mat-icon>
-            Create new 'noun'
-          </div>
-        </ng-template>
-  
-        <ng-template [ngIf] ="requestFor && requestFor === 'modifier' && selectedNoun">
-          <div (click)="emitForCreateNew('modifier');" class="sticky-actions">
-            <mat-icon fontSet="mdo-icons" class="option-icon">plus</mat-icon>
-            Create new 'modifier'
-          </div>
-        </ng-template>
-  
-        <ng-template [ngIf] ="requestFor && requestFor === 'attribute' && selectedNoun">
-          <div (click)="emitForCreateNew('attribute');" class="sticky-actions">
-            <mat-icon fontSet="mdo-icons" class="option-icon">plus</mat-icon>
-            Create new 'attribute'
-          </div>
-        </ng-template>
-
-        <mat-divider></mat-divider>
+        <mat-divider></mat-divider>       
 
         <mat-option *ngFor="let option of filteredOptions | async; trackBy :suggestedMdoFldTrkBy" [value]="getOptionVal(option)">
             {{

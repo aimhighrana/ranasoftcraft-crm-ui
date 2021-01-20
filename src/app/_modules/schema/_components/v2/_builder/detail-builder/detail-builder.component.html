@@ -6,7 +6,7 @@
 <ng-container *ngIf="schemaDetails">
 
     <!-- DATA QUALITIY VIEW -->
-    <pros-schema-details *ngIf="displayFormat === 'DATAQUALITY_VIEW'" 
+    <pros-schema-details *ngIf="(displayFormat === 'DATAQUALITY_VIEW' || displayFormat === 'POTEXT_VIEW')" 
         [schemaId]="schemaId" 
         [moduleId]="moduleId"
         [variantId]="variantId" 
@@ -25,13 +25,13 @@
 
 
     <!-- POTEXT VIEW -->
-    <pros-potext-view *ngIf="displayFormat === 'POTEXT_VIEW'" 
+    <!-- <pros-potext-view *ngIf="displayFormat === 'POTEXT_VIEW'" 
         [schemaId]="schemaId" 
         [moduleId]="moduleId"
         [variantId]="variantId" 
         [activeTab]="activeTab"
-        > <!-- [isInRunning]="schemaDetails.isInRunning" -->
-    </pros-potext-view>
+        > 
+    </pros-potext-view> -->
 
     <!-- CLASSIFICATION VIEW -->
     <pros-classification-builder *ngIf="displayFormat === 'MRO_CLASSIFICATION_VIEW'" 

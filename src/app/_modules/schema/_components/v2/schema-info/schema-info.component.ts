@@ -892,6 +892,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       schemaReq.schemaId = this.schemaId;
       schemaReq.discription = schemaDescription;
       schemaReq.schemaThreshold = event ? event.value : this.schemaDetails.schemaThreshold;
+      schemaReq.schemaCategory = this.schemaDetails.schemaCategory;
 
       const subscription = this.schemaService.createUpdateSchema(schemaReq).subscribe((response) => {
         this.sharedService.setRefreshSecondaryNav(SecondaynavType.schema, true, this.moduleId);

@@ -745,4 +745,17 @@ describe('SchemaDetailsComponent', () => {
 
   }));
 
+  it('generateCrossEntry() , generate cross module / create cross module ', async(()=>{
+    // mock data
+    const row = {
+      OBJECTNUMBER:{
+        fieldData:'TMP001'
+      }
+    }
+    component.dataSource = new SchemaDataSource(schemaDetailService, null, component.schemaId);
+    spyOn(schemaDetailService, 'generateCrossEntry').withArgs(component.schemaId, component.moduleId, row.OBJECTNUMBER.fieldData, '').and.returnValue(of());
+    component.generateCrossEntry(row);
+    expect(schemaDetailService.generateCrossEntry).toHaveBeenCalledWith(component.schemaId, component.moduleId, row.OBJECTNUMBER.fieldData, '');
+  }));
+
 });

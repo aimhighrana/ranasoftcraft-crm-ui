@@ -129,7 +129,8 @@ export class LibraryMappingSidesheetComponent implements OnInit {
 
     (this.mappingForm.get('attributeMapData') as FormArray).valueChanges.subscribe(values => {
       values.forEach(v=>{
-        const exAttr = this.gsnAttributes.filter(fil => fil.ATTRIBUTE_ID === v.libraryAttributeCode)[0];
+        let exAttr = this.gsnAttributes.filter(fil => fil.ATTRIBUTE_ID === v.libraryAttributeCode)[0];
+        exAttr = exAttr ? exAttr : new AttributesDoc();
         exAttr.localAttributeCode = v.localAttributeCode ? v.localAttributeCode.ATTRIBUTE_ID : '';
         exAttr.localAttributeText = v.localAttributeCode ? v.localAttributeCode.ATTR_CODE : '';
       });
