@@ -12,6 +12,8 @@ export class ImageComponent extends GenericWidgetComponent implements OnInit {
 
   widgetImage : WidgetImageModel;
   headerDesc='';
+
+
   constructor(public widgetService : WidgetService) {
     super();
   }
@@ -23,8 +25,8 @@ export class ImageComponent extends GenericWidgetComponent implements OnInit {
 
   getImageMetadata():void{
     this.widgetService.getimageMetadata(this.widgetId).subscribe(data=>{
-      console.log(data);
       this.widgetImage = data;
+      this.widgetImage.imageName = encodeURIComponent(this.widgetImage.imageName);
     });
   }
 
