@@ -8,9 +8,9 @@
           <div class="f-row breadcrum-head">
             <div class="display-heading-large">{{moduleInfo ? ( moduleInfo.moduleDesc ? moduleInfo.moduleDesc: 'Untitled') : 'Untitled'}}</div>
               <div class="f-spacer"></div>
-              <a class="info-link" *ngIf="currentStep>0" (click)="step(0); uploadedFile = null;">Choose another file</a>
+              <a class="info-link" *ngIf="currentStep>0" (click)="step(0); uploadedFile = null; isInprocess = false;">Choose another file</a>
               <span class="f-col-spacer-half"></span>
-              <button mat-flat-button color="primary" *ngIf="currentStep>0" (click)="uploadFileData(stepper)">Upload</button>
+              <button mat-flat-button color="primary" *ngIf="currentStep>0" [disabled]="isInprocess" (click)="uploadFileData(stepper)">Upload</button>
           </div>
       </div>
   </div>
@@ -80,7 +80,7 @@
               <ng-container matColumnDef="field">
                 <mat-header-cell *matHeaderCellDef>Target  fields</mat-header-cell>
                 <mat-cell *matCellDef="let row; let rowIndex = index">
-                  <pros-map-mdo-field [cellIndex]="rowIndex" [preSelectedFld]="getSelectedFieldId(rowIndex)"
+                  <pros-map-mdo-field [cellIndex]="rowIndex" [preSelectedFld]="getSelectedFieldId(rowIndex)" 
                     [excelField]="row.excelFld" [autoSelectedFld]="moduleInfo.object" [mdoFields]="headerFieldsList"
                     (optionSelectedEmit)="updateMapFields($event)"></pros-map-mdo-field>
                 </mat-cell>

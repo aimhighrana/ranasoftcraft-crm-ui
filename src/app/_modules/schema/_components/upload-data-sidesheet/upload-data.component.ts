@@ -58,6 +58,26 @@ export class UploadDataComponent implements OnInit, AfterViewInit {
     message: ''
   };
 
+  /**
+   * Check whether upload corrected data ..
+   */
+  importcorrectedRec = false;
+
+  /**
+   * Once click on upload button this should be true .. so we can a void multiple click ..
+   */
+  isInprocess = false;
+
+  /**
+   * Executed schema id ..
+   */
+  schemaId: string;
+
+  /**
+   * Specific runid .. to maintain corrected records ..
+   */
+  runid: string;
+
   constructor(
     private _formBuilder: FormBuilder,
     private schemaService: SchemaService,
@@ -71,7 +91,13 @@ export class UploadDataComponent implements OnInit, AfterViewInit {
       this.moduleId = params.moduleId;
       this.outlet = params.outlet;
       this.getSchemaList();
-    })
+    });
+
+    this.activatedRoute.queryParams.subscribe((q)=>{
+      this.importcorrectedRec = q.importcorrectedRec ? q.importcorrectedRec : false;
+      this.schemaId = q.schemaId ? q.schemaId : '';
+      this.runid = q.runid ? q.runid : '';
+    });
 
     this.uploadFileStepCtrl = this._formBuilder.group({
       uploadFileCtrl: ['', Validators.required]
@@ -147,7 +173,13 @@ export class UploadDataComponent implements OnInit, AfterViewInit {
           this.stepper.next();
           const file = target.files[0]
           this.uploadedFile = file;
+
+          if(this.importcorrectedRec) {
+            this.suggestmatches();
+          }
+
           this.uploadFileStepCtrl.get('uploadFileCtrl').setValue(this.uploadedFile);
+
         };
         reader.readAsBinaryString(target.files[0]);
         this.excelMdoFieldMappedData = [];
@@ -160,6 +192,31 @@ export class UploadDataComponent implements OnInit, AfterViewInit {
         }
       }
     }
+  }
+
+
+  /**
+   * Suggest mapping while uploading/import for schema correction ..
+   */
+  suggestmatches() {
+    const headers =  this.excelHeader ? this.excelHeader : [];
+    const finalSuggestedMap:DataSource[] = [];
+    headers.forEach((header, index)=>{
+      const suggestD: DataSource = this.dataSource[index];
+      // index 0 assume this is the object number
+      if(index === 0) {
+        suggestD.mdoFldId = 'objectnumber';
+        suggestD.mdoFldDesc = 'Module Object Number';
+      } else {
+        const metadataCtrl = this.metaDataFieldList.find(f => f.fieldDescri.toLocaleLowerCase() === header.toLocaleLowerCase());
+        if(metadataCtrl) {
+          suggestD.mdoFldId = metadataCtrl.fieldId;
+          suggestD.mdoFldDesc = metadataCtrl.fieldDescri;
+        }
+      }
+      finalSuggestedMap.push(suggestD);
+    });
+    this.excelMdoFieldMappedData = finalSuggestedMap;
   }
 
   /**
@@ -258,20 +315,19 @@ export class UploadDataComponent implements OnInit, AfterViewInit {
   updateMapFields(data) {
     if (data && data.fieldId !== '') {
       const mapData = { columnIndex: data.index, excelFld: data.execlFld, mdoFldId: data.fieldId, mdoFldDesc: data.fieldDesc, excelFrstRow: null };
-      const availmap = this.excelMdoFieldMappedData.filter(fill => fill.columnIndex === data.index);
-      if (availmap.length === 0) {
-        this.excelMdoFieldMappedData.push(mapData);
+      const availmap = this.excelMdoFieldMappedData.find(fill => fill.columnIndex === data.index);
+      if (availmap) {
+        this.excelMdoFieldMappedData.splice(this.excelMdoFieldMappedData.indexOf(availmap), 1);
+        availmap.mdoFldId = data.fieldId;
+        availmap.mdoFldDesc = data.fieldDesc;
+        this.excelMdoFieldMappedData.push(availmap);
       } else {
-        const oldMapFld = availmap[0];
-        this.excelMdoFieldMappedData.splice(this.excelMdoFieldMappedData.indexOf(oldMapFld, 1));
-        oldMapFld.mdoFldId = data.fieldId;
-        oldMapFld.mdoFldDesc = data.fieldDesc;
-        this.excelMdoFieldMappedData.push(oldMapFld);
+        this.excelMdoFieldMappedData.push(mapData);
       }
     } else {
-      const availmap = this.excelMdoFieldMappedData.filter(fill => fill.columnIndex === data.index);
-      if (availmap.length !== 0) {
-        this.excelMdoFieldMappedData.splice(this.excelMdoFieldMappedData.indexOf(availmap[0], 1));
+      const availmap = this.excelMdoFieldMappedData.find(fill => fill.columnIndex === data.index);
+      if (availmap) {
+        this.excelMdoFieldMappedData.splice(this.excelMdoFieldMappedData.indexOf(availmap), 1);
       }
     }
 
@@ -306,15 +362,36 @@ export class UploadDataComponent implements OnInit, AfterViewInit {
 
   uploadDataHttpCall(stepper: MatStepper) {
     const objType = this.moduleInfo.moduleId;
+    this.isInprocess = true;
     if (objType) {
-      this.schemaService.uploadData(this.excelMdoFieldMappedData, objType, this.fileSno).subscribe(res => {
-        // remove valitor here and move to next step
-        this.dataTableCtrl.controls.dataTableFldCtrl.setValue('done');
-        this.isUploaded = true;
-      }, error => {
-        console.error(`Error ${error}`);
-        this.snackBar.open(`Something went wrong , please check mdo logs `, 'Close', { duration: 5000 });
-      });
+      if(this.importcorrectedRec) {
+        if(!this.schemaId || !this.runid) {
+          this.uploadError = { status: true, message: `Invalid parametrs schemaid ${this.schemaId} or runid ${this.runid} !` };
+          return;
+        }
+        this.schemaService.uploadCorrectionData(this.excelMdoFieldMappedData, objType, this.schemaId, this.runid, this.plantCode, this.fileSno).subscribe(res => {
+          // remove valitor here and move to next step
+          this.dataTableCtrl.controls.dataTableFldCtrl.setValue('done');
+          this.isUploaded = true;
+        }, error => {
+          console.error(`Error ${error}`);
+          this.uploadError = { status: true, message: `Something went wrong !` };
+          this.isInprocess = false;
+        });
+      } else {
+        this.schemaService.uploadData(this.excelMdoFieldMappedData, objType, this.fileSno).subscribe(res => {
+          // remove valitor here and move to next step
+          this.dataTableCtrl.controls.dataTableFldCtrl.setValue('done');
+          this.isUploaded = true;
+        }, error => {
+          console.error(`Error ${error}`);
+          this.uploadError = {
+            status: true,
+            message: `Something went wrong !`
+          };
+          this.isInprocess = false;
+        });
+      }
     }
   }
 

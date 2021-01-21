@@ -14,6 +14,7 @@ import { SchemaDetailsService } from '@services/home/schema/schema-details.servi
 import { SchemaService } from '@services/home/schema.service';
 import { DataSource } from '@models/schema/schema';
 import { SchemaListModuleList } from '@models/schema/schemalist';
+import { MetadataModel } from '@models/schema/schemadetailstable';
 
 describe('UploadDataComponent', () => {
   let component: UploadDataComponent;
@@ -127,10 +128,23 @@ describe('UploadDataComponent', () => {
     component.moduleInfo = {moduleId:'1005'} as SchemaListModuleList;
     component.excelMdoFieldMappedData = [{excelFld:'id',excelFrstRow:'3',mdoFldId:'1005',mdoFldDesc:'Material',columnIndex:1}];
 
+    component.schemaId = '276822';
+    component.runid = '87264528';
+
     spyOn(schemaService,'uploadData').withArgs(component.excelMdoFieldMappedData,'1005', component.fileSno).and.returnValue(of());
 
+    spyOn(schemaService, 'uploadCorrectionData').withArgs(component.excelMdoFieldMappedData, '1005',component.schemaId, component.runid, component.plantCode, component.fileSno).and.returnValue(of());
+
     component.uploadDataHttpCall(stepper) ;
+
+    component.importcorrectedRec = true;
+    component.uploadDataHttpCall(stepper) ;
+
     expect(component.uploadDataHttpCall).toBeTruthy();
+
+    expect(schemaService.uploadData).toHaveBeenCalledWith(component.excelMdoFieldMappedData,'1005', component.fileSno);
+    expect(schemaService.uploadCorrectionData).toHaveBeenCalledWith(component.excelMdoFieldMappedData, '1005',component.schemaId, component.runid, component.plantCode, component.fileSno);
+
   });
 
   it('uploadFileData()  ', async(()=>{
@@ -143,6 +157,11 @@ describe('UploadDataComponent', () => {
     });
     spyOn(schemaService,'uploadUpdateFileData').withArgs(component.uploadFileStepCtrl.get('uploadFileCtrl').value, component.fileSno).and.returnValue(of());
     component.uploadFileData(stepper);
+
+    component.excelMdoFieldMappedData = [{columnIndex:0,mdoFldId:'MATL_DEC'} as DataSource];
+
+    component.uploadFileData(stepper);
+
     expect(component.uploadFileData).toBeTruthy();
   }));
 
@@ -151,6 +170,23 @@ describe('UploadDataComponent', () => {
     expect('Test').toEqual(component.getSelectedFieldId(1));
 
     expect('').toEqual(component.getSelectedFieldId(0));
+  }));
+
+  it('suggestmatches(), get suggested rec ..', async(()=>{
+    // mock data
+    component.excelHeader = ['Module obj nr ', 'Material type'];
+
+    component.dataSource = [{columnIndex:0} as DataSource, {columnIndex:1} as DataSource];
+
+    component.metaDataFieldList = [{fieldId: 'MATL_TYPE', fieldDescri:'Material type'} as MetadataModel];
+
+    // call actual method ..
+    component.suggestmatches();
+
+    // verify
+    expect(component.excelMdoFieldMappedData.length).toEqual(2);
+    expect(component.excelMdoFieldMappedData[1].mdoFldId).toEqual('MATL_TYPE');
+
   }));
 
 });
