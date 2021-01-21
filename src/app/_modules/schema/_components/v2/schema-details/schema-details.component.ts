@@ -1117,5 +1117,12 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     this.subscribers.push(sub);
   }
 
+  /**
+   * Open side sheet for upload corrected data in correction index ..
+   */
+  uploadCorrectedData() {
+    this.router.navigate([{outlets: { sb: `sb/schema/upload-data/${this.moduleId}/${this.outlet}`}}], {queryParams:{importcorrectedRec: true, schemaId: this.schemaId, runid: this.schemaInfo.runId}});
+  }
+
 
 }

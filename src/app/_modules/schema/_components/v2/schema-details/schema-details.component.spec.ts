@@ -758,4 +758,11 @@ describe('SchemaDetailsComponent', () => {
     expect(schemaDetailService.generateCrossEntry).toHaveBeenCalledWith(component.schemaId, component.moduleId, row.OBJECTNUMBER.fieldData, '');
   }));
 
+  it('uploadCorrectedData(), navigate for upload corrected rec ', async(()=>{
+    spyOn(router, 'navigate');
+    component.schemaInfo = {runId:'24243'} as SchemaListDetails;
+    component.uploadCorrectedData();
+    expect(router.navigate).toHaveBeenCalledWith([{outlets: { sb: `sb/schema/upload-data/${component.moduleId}/${component.outlet}`}}], {queryParams:{importcorrectedRec: true, schemaId: component.schemaId, runid: component.schemaInfo.runId}});
+  }));
+
 });
