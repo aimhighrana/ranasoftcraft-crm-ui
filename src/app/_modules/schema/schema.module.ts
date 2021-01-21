@@ -48,7 +48,6 @@ import { BrDuplicatecheckSidesheetComponent } from './_components/br-duplicatech
 import { SchemaSummarySidesheetComponent } from './_components/schema-summary-sidesheet/schema-summary-sidesheet.component';
 import { NewDuplicateCheckComponent } from './_components/new-duplicate-check/new-duplicate-check.component';
 import { StringReplaceComponent } from './_components/string-replace/string-replace.component';
-import { EmptyDataComponent } from './_components/empty-data/empty-data.component';
 import { RunningProgressComponent } from './_components/running-progress/running-progress.component';
 import { LibraryMappingSidesheetComponent } from './_components/v2/library-mapping-sidesheet/library-mapping-sidesheet.component';
 import { ExclusionsSidesheetComponent } from './_components/v2/brrule-side-sheet/duplicate-rule-config/exclusions-sidesheet/exclusions-sidesheet.component';
@@ -125,7 +124,6 @@ import { SchemaProgressComponent } from './_components/schema-progress/schema-pr
     SchemaSummarySidesheetComponent,
     NewDuplicateCheckComponent,
     StringReplaceComponent,
-    EmptyDataComponent,
     RunningProgressComponent,
     ExclusionsSidesheetComponent,
     LibraryMappingSidesheetComponent,

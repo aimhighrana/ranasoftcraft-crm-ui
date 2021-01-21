@@ -1,9 +1,11 @@
 <div class="root f-col">
     <mat-nav-list>
         <ng-container *ngIf="!activateElement">
-                <pros-search-input class="field-mat-menu" *ngIf="searchDrop.length > 0" placeholder="Search for fields" 
-                    prosClickStopPropagation (value)="searchField($event)">
-                </pros-search-input>
+                <div class="f-col">
+                    <pros-search-input *ngIf="searchDrop.length > 0" placeholder="Search for fields" 
+                        prosClickStopPropagation (value)="searchField($event)"></pros-search-input>
+                </div>
+                
             <mat-list-item *ngFor="let fld of metadaDrop" prosClickStopPropagation (click)="ctrlFlds(fld)">
                 <div class="mat-line" *ngIf="fld.fieldDescri !== null || fld.fieldDescri !== undefined">
                     {{ fld.fieldDescri }}

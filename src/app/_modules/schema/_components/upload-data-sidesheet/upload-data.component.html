@@ -23,7 +23,7 @@
           <form [formGroup]="uploadFileStepCtrl">
             <ng-template matStepLabel>Upload dataset</ng-template>
 
-            <mat-card class="mat-elevation-z0 upload-error" *ngIf="uploadError.status && uploadError.status">
+            <mat-card class="mat-elevation-z0 error-stackbar" *ngIf="uploadError.status && uploadError.status">
               {{uploadError.message}}
             </mat-card>
 

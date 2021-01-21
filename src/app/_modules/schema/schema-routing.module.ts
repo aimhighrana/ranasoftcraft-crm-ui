@@ -37,7 +37,6 @@ import { BrDuplicatecheckSidesheetComponent } from './_components/br-duplicatech
 import { SchemaSummarySidesheetComponent } from './_components/schema-summary-sidesheet/schema-summary-sidesheet.component';
 import { NewDuplicateCheckComponent } from './_components/new-duplicate-check/new-duplicate-check.component';
 import { StringReplaceComponent } from './_components/string-replace/string-replace.component';
-import { EmptyDataComponent } from './_components/empty-data/empty-data.component';
 import { RunningProgressComponent } from './_components/running-progress/running-progress.component';
 import { ScheduleComponent } from '@modules/shared/_components/schedule/schedule.component';
 import { LibraryMappingSidesheetComponent } from './_components/v2/library-mapping-sidesheet/library-mapping-sidesheet.component';
@@ -108,7 +107,6 @@ const routes: Routes = [
   { path: 'check-data/:moduleId/:schemaId', component: SchemaSummarySidesheetComponent },
   { path: 'system/new-duplicate-check', component: NewDuplicateCheckComponent },
   { path: 'system/string-replace', component: StringReplaceComponent },
-  { path: 'system/empty-data', component: EmptyDataComponent },
   { path: 'system/running-progress', component: RunningProgressComponent },
   { path: 'schedule/:schemaId/:scheduleId', component: ScheduleComponent},
   { path: 'system/exclusions-sidesheet', component: ExclusionsSidesheetComponent },

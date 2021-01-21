@@ -49,7 +49,7 @@ $color-status-info-accent: #e7f5ff;
 // Light theme
 $mdo-light-primary: mat-palette($mdo-light-blue, 500, 50);
 $mdo-light-accent:  mat-palette($mdo-light-grey, 500,);
-$mdo-light-warn:    mat-palette($mat-red);
+$mdo-light-warn:    mat-palette($mat-red, 500);
 
 $mdo-light:   mat-light-theme($mdo-light-primary, $mdo-light-accent, $mdo-light-warn);
 

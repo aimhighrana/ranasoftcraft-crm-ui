@@ -12,17 +12,16 @@
 
     <mat-progress-bar mode="determinate" [value]="progressBar"></mat-progress-bar>
 
-    <mat-card class="mat-elevation-z0 upload-error" *ngIf="uploadError.status">
+    <div class="row-spacer"></div>
+
+    <mat-card class="mat-elevation-z0 error-stackbar" *ngIf="uploadError.status">
         {{uploadError.message}}
     </mat-card>
-
-    <div class="row-spacer"></div>
 
     <mat-horizontal-stepper [@.disabled]="true" linear #stepper>
         <!-- Upload DataSet -->
         <mat-step>
             <ng-template matStepLabel></ng-template>
-            <div class="row-spacer"></div>
             <div class="f-col upload-col" *ngIf="uploadLoader && !uploadError.status">
                 <mat-spinner color="primary" diameter="30"></mat-spinner>
             </div>

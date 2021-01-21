@@ -135,6 +135,21 @@
     }
   }
 
+  //Form-Input
+  pros-form-input {
+    .error-validation-field {
+      color: $color-status-error;
+
+      mat-error {
+        color: $color-status-error;
+      }
+    }
+
+    .mandatory {
+      color: $color-status-error;
+    }
+  }
+
   // CDK-Dragdrop
   .cdk-drag-preview {
     box-sizing: border-box;
@@ -198,7 +213,7 @@
     border-color: $color-app-border;
   }
 
-  // Temporary mat input
+  // Mat-Form-Field
   mat-form-field.mat-form-field {
     .mat-form-field-wrapper {
       padding-bottom: 0;
@@ -254,9 +269,36 @@
       border-width: 1px;
     }
 
-    // &.mat-form-field-appearance-outline .mat-form-field-outline {
-    //   color: $color-app-border;
-    // }
+    &.error-matfield {
+      .mat-form-field-wrapper {
+        background-color: $color-status-error-accent;
+
+        .mat-form-field-flex {
+          border-color: $color-status-error;
+
+          .mat-form-field-outline-start,
+          .mat-form-field-outline-gap,
+          .mat-form-field-outline-end {
+            border-color: $color-status-error;
+          }
+        }
+
+        .mat-form-field-infix {
+          .mat-input {
+            caret-color: $color-status-error;
+            color: $color-status-error;
+          }
+
+          .mat-input::placeholder {
+            color: $color-status-error;
+          }
+        }
+      }
+
+      &.mat-form-field-appearance-outline .mat-form-field-outline-thick > div {
+        border-color: $color-status-error;
+      }
+    }
 
     &.error-cell {
       .mat-form-field-wrapper {
@@ -460,19 +502,6 @@
         }
       }
     }
-
-    .mdo-tabchiplist {
-      margin-left: 8px;
-
-      .mat-chip-list-wrapper {
-        mat-chip {
-          font-weight: normal;
-          font-size: 0.8rem;
-          padding: 2px 8px;
-          min-height: 24px;
-        }
-      }
-    }
   }
 
   // NavTab-Component
@@ -485,19 +514,6 @@
         min-width: 120px;
         font-weight: normal;
         opacity: 1;
-
-        .mdo-tabchiplist {
-          margin-left: 8px;
-
-          .mat-chip-list-wrapper {
-            mat-chip {
-              font-weight: normal;
-              font-size: 0.8rem;
-              padding: 2px 8px;
-              min-height: 24px;
-            }
-          }
-        }
       }
     }
   }
@@ -592,7 +608,7 @@
 
       &.unselected {
         background: mat-color($background-palette, card);
-        border-color: $color-app-border;
+        border: 1px solid $color-app-border;
         color: $color-text-primary;
       }
     }
@@ -1244,6 +1260,13 @@
     }
   }
 
+  // Error Stackbar
+  .error-stackbar {
+    background-color: $color-status-error;
+    color: $color-text-canvas;
+    padding: 12px;
+  }
+
   //DIW Components
   pros-login {
     div.root {
@@ -1439,11 +1462,6 @@
 
   pros-upload-dataset {
     mat-card.root {
-      .upload-error {
-        background-color: $color-status-error;
-        color: $color-text-canvas;
-      }
-
       .colunm-box {
         &.rule-border-row {
           border-bottom: 1px solid $color-app-border;
@@ -1466,11 +1484,6 @@
 
   pros-upload-data {
     div.root {
-      .upload-error {
-        background-color: $color-status-error;
-        color: $color-text-canvas;
-      }
-
       .field-grid {
         mat-table.mat-table {
           .mat-header-cell,
@@ -1611,26 +1624,6 @@
     }
   }
 
-  pros-system-tray {
-    div.root {
-      mat-nav-list.mat-nav-list {
-        mat-list-item.mat-list-item {
-          border-bottom: 1px solid $color-app-border;
-
-          .mat-list-item-content {
-            min-height: 48px;
-
-            mat-card-header.mat-card-header {
-              .mat-card-header-text {
-                margin: 0;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
   pros-report-list {
     mat-card.root {
       mat-list.mat-list {
@@ -1760,6 +1753,44 @@
 
               .mat-form-field-underline {
                 display: none;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  pros-system-tray {
+    div.root {
+      mat-tab-header.mat-tab-header {
+        margin: 0 66px;
+      }
+
+      mat-tab-body.mat-tab-body-active {
+        height: calc(100% - 50px);
+        overflow: auto;
+        padding: 0;
+
+        mat-nav-list.mat-nav-list {
+          padding: 0 66px;
+
+          mat-list-item.mat-list-item {
+            border-bottom: 1px solid $color-app-border;
+
+            .mat-list-item-content {
+              min-height: 48px;
+              padding: 0;
+
+              .notify-content,
+              .mat-expand-icon {
+                color: $color-text-secondary;
+              }
+
+              mat-card-header.mat-card-header {
+                .mat-card-header-text {
+                  margin: 0;
+                }
               }
             }
           }

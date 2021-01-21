@@ -1,5 +1,5 @@
 <div class="f-col">
-    <mat-label *ngIf="label && isRequired;else notRequired">{{label}} <span class="mandatory">*</span> </mat-label>
+    <mat-label *ngIf="label && isRequired;else notRequired">{{label}}<span class="mandatory">*</span></mat-label>
     <ng-template #notRequired><mat-label>{{label}}</mat-label></ng-template>
     <mat-form-field appearance="outline">
         <input [id]="id" matInput class="mat-input"
