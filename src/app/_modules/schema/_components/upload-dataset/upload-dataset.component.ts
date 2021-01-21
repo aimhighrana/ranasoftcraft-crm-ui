@@ -1239,8 +1239,8 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       groupid: subscriber.groupid ? subscriber.groupid : '',
       isAdmin: permissions ? permissions.isAdmin : subscriber.roleDesc === 'Admin',
       isReviewer: permissions ? permissions.isReviewer : subscriber.roleDesc === 'Reviewer',
-      isViewer: permissions ? permissions.isViewer : true,
-      isEditer: permissions ? permissions.isEditer : subscriber.roleDesc === 'Editer',
+      isViewer: permissions ? permissions.isViewer : false,
+      isEditer: permissions ? permissions.isEditer : true,
       permissionType: PermissionType.USER,
       roleId: subscriber.roleId,
       schemaId: '',
@@ -1375,7 +1375,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     this.globaldialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
       if (response && response === 'yes') {
         this.subscribersList.splice(index, 1);
-        this.requestForm.controls.subcribers.value.splice(index, 1);
+        this.requestForm.controls.subcribers.value.splice(index, 1)
       }
     });
   }
