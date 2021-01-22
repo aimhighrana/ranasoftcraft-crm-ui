@@ -36,6 +36,7 @@ export class ExecutionResultComponent implements OnInit {
 
   barChartOptions: ChartOptions = {
     responsive: true,
+    maintainAspectRatio: false,
       tooltips:{
         backgroundColor: 'rgba(255,255,255,0.9)',
         bodyFontColor: '#999',

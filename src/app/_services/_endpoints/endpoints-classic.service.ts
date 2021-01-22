@@ -715,8 +715,8 @@ export class EndpointsClassicService {
     return `${this.apiUrl}/schema/reset-corrected-records/${schemaId}`;
   }
 
-  public getExecutionOverviewChartDataUrl(schemaId: string, variantId: string): string {
-    return this.apiUrl + `/schema/overview-chart-data/${schemaId}/${variantId}`;
+  public getSchemaExecutedStatsTrendUri(schemaId: string, variantId: string): string {
+    return this.apiUrl + `/schema/execution/trends/${schemaId}/${variantId}`;
   }
 
   /**

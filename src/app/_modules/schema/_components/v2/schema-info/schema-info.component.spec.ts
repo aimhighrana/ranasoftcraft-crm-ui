@@ -27,6 +27,7 @@ import { MatSliderChange } from '@angular/material/slider';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { GlobaldialogService } from '@services/globaldialog.service';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { StaticsComponent } from '../statics/statics.component';
 
 describe('SchemaInfoComponent', () => {
   let component: SchemaInfoComponent;
@@ -47,7 +48,8 @@ describe('SchemaInfoComponent', () => {
         AddFilterMenuComponent,
         FormInputComponent,
         ScheduleComponent,
-        DatePickerFieldComponent
+        DatePickerFieldComponent,
+        StaticsComponent
       ],
       imports: [
         AppMaterialModuleForSpec,

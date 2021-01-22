@@ -61,7 +61,6 @@ import { GroupDataTableComponent } from './_components/v2/duplicacy/group-data-t
 import { DuplicacyComponent } from './_components/v2/duplicacy/duplicacy.component';
 import { StaticsComponent } from './_components/v2/statics/statics.component';
 import { ExecutionResultComponent } from './_components/v2/statics/execution-result/execution-result.component';
-import { ExecutionTrendComponent } from './_components/v2/statics/execution-trend/execution-trend.component';
 import { BusinessCaseRuleComponent } from './_components/business-case-rule/business-case-rule.component';
 import { BusinessConcatenationComponent } from './_components/business-concatenation/business-concatenation.component';
 import { NounComponent } from './_components/v2/library-mapping-sidesheet/noun/noun.component';
@@ -138,7 +137,6 @@ import { SchemaProgressComponent } from './_components/schema-progress/schema-pr
     DuplicacyComponent,
     StaticsComponent,
     ExecutionResultComponent,
-    ExecutionTrendComponent,
     BusinessCaseRuleComponent,
     BusinessConcatenationComponent,
     NounComponent,
