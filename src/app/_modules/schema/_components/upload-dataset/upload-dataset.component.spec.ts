@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import { UploadDatasetComponent } from './upload-dataset.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
@@ -536,4 +536,17 @@ describe('UploadDatasetComponent', () => {
     expect(component.currentSchedule.isEnable).toEqual(true);
     expect(component.requestForm.controls.runTime.value).toEqual(false);
   }));
+
+  it('showValidationError(), should hide validation message', fakeAsync(() => {
+    component.uploadError = {
+        status: false,
+        message: ''
+    }
+
+    const message = 'Please fill the required fields.'
+    component.showValidationError(message);
+    expect(component.uploadError.status).toEqual(true);
+    tick(3500);
+    expect(component.uploadError.status).toEqual(false);
+}))
 });

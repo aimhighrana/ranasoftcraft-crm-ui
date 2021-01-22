@@ -785,9 +785,7 @@ export class BrruleSideSheetComponent implements OnInit {
     this.form.controls.fields.setValue(this.selectedFields.map(item => item.fieldId).join(','));
     this.submitted = true;
     if (!this.form.valid) {
-      this.validationError.status = true;
-      this.validationError.message = 'Please fill the required fields.';
-      this.hideValidationError();
+      this.showValidationError('Please fill the required fields.');
       return;
     }
 
@@ -797,9 +795,7 @@ export class BrruleSideSheetComponent implements OnInit {
     if (this.currentSelectedRule === BusinessRuleType.BR_TRANSFORMATION &&
       this.selectedTransformationType === this.transformationType.LOOKUP &&
       this.lookupData.length === 0) {
-      this.validationError.status = true;
-      this.validationError.message = 'Please configure at least one field.';
-      this.hideValidationError();
+      this.showValidationError('Please configure at least one field.');
       return;
     }
 
@@ -1195,16 +1191,12 @@ export class BrruleSideSheetComponent implements OnInit {
     } as CoreSchemaBrInfo;
 
     if (!this.duplicateFormRef.valid) {
-      this.validationError.status = true;
-      this.validationError.message = 'Please fill the required fields.';
-      this.hideValidationError();
+      this.showValidationError('Please fill the required fields.');
       return;
     }
 
     if (!this.duplicateFormRef.get('addFields').value.length) {
-      this.validationError.status = true;
-      this.validationError.message = 'Please configure at least one field.';
-      this.hideValidationError();
+      this.showValidationError('Please configure at least one field.');
       return;
     }
 
@@ -1234,8 +1226,11 @@ export class BrruleSideSheetComponent implements OnInit {
 
   /**
    * Function to hide validation error
+   * @param message: error message to display..
    */
-  hideValidationError() {
+  showValidationError(message: string) {
+    this.validationError.status = true;
+    this.validationError.message = message;
     setTimeout(() => {
       this.validationError.status = false;
     }, 3000)

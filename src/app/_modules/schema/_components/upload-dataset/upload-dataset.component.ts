@@ -454,7 +454,6 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * @param evt file uploaded event
    */
   fileChange(evt: Event) {
-    let errorText = '';
     if (evt !== undefined) {
       this.uploadError.status = false;
       this.uploadError.message = '';
@@ -473,11 +472,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         const sizeKb = Math.round((size / 1024));
         if (sizeKb > (10 * 1024)) {
           this.uploadedFile = null;
-          errorText = `File size too large , upload less then 10 MB`;
-          this.uploadError = {
-            status: true,
-            message: errorText
-          }
+          this.showValidationError('File size too large , upload less then 10 MB');
           return false;
         }
         const reader: FileReader = new FileReader();
@@ -523,12 +518,8 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         this.requestForm.get('file').setValue(target.files[0]);
         this.uploadFileData();
       } else {
-        errorText = `Unsupported file format, allowed file formats are .xlsx, .xls and .csv`;
         this.uploadedFile = null;
-        this.uploadError = {
-          status: true,
-          message: errorText
-        }
+        this.showValidationError('Unsupported file format, allowed file formats are .xlsx, .xls and .csv')
       }
     }
   }
@@ -610,12 +601,13 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     if (this.stepper.selectedIndex === 2) {
       const schema = this.requestForm.get('core_schema').value;
       if (!schema || !schema.discription) {
+        this.showValidationError('Please fix the error below to continue.');
         return false;
       }
     }
     if (this.stepper.selectedIndex === 2) {
       if (this.selectedBusinessRules && this.selectedBusinessRules.length === 0) {
-        this.snackBar.open('Please add a Business Rule to continue', 'Okay', { duration: 5000 });
+        this.showValidationError('Please add a Business Rule to continue.');
         return false;
       }
     }
@@ -635,8 +627,10 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    */
   step(where: string, validateForm?: boolean) {
     this.stepSubmitted = true;
-    console.log(this.stepper.selectedIndex)
+    // this.uploadError.status = false;
+
     if(this.stepper.selectedIndex===1 && this.requestForm.controls.objectDesc.invalid){
+      this.showValidationError('Please fix error below to continue.');
       this.requestForm.controls.objectDesc.markAsTouched();
     }
     if (validateForm && !this.validateStep()) {
@@ -653,7 +647,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         const isNewSchema = this.requestForm.controls.objectId.value;
 
         if (anyMapping === 0 && isNewSchema) {
-          this.snackBar.open('Please select atleast one mapping', 'Okay', { duration: 5000 });
+          this.showValidationError('Please select atleast one mapping.');
           return;
         }
       }
@@ -662,7 +656,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         // there should be atleast one Business rule
         const anyBR = this.requestForm.controls.coreSchemaBr.value;
         if (anyBR.length === 0) {
-          this.snackBar.open('Please create atleast one business rule', 'Okay', { duration: 5000 });
+          this.showValidationError('Please create atleast one business rule');
           return;
         }
       }
@@ -1169,9 +1163,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         this.setModuleValueAndTakeStep(this.data.selecteddata);
       }, (err) => {
         this.uploadLoader = false;
-        this.uploadError.status = true;
-        this.uploadError.message = 'File could not be uploaded';
-        this.snackBar.open('File could not be uploaded', 'Okay', { duration: 5000 })
+        this.showValidationError('File could not be uploaded.');
       });
   }
 
@@ -1330,7 +1322,6 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       fileSerialNo,
       formObject
     ).subscribe((res) => {
-      console.log(res);
       this.snackBar.open('Schema created successfully', 'Okay', {
         duration: 5000
       });
@@ -1789,5 +1780,18 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    */
   getWeightage(rule:CoreSchemaBrInfo): number {
     return Number(rule.brWeightage);
+  }
+
+  /**
+   * Function to show validation error chip on wizard
+   * @param message: error message to show.
+   */
+  showValidationError(message: string) {
+    this.uploadError.status = true;
+    this.uploadError.message = message;
+
+    setTimeout(() => {
+      this.uploadError.status = false;
+    }, 3000)
   }
 }

@@ -165,13 +165,15 @@ describe('NewBusinessRulesComponent', () => {
         expect(field).toBeDefined();
     }));
 
-    it('hideValidationError(), should hide validation message', fakeAsync(() => {
+    it('showValidationError(), should hide validation message', fakeAsync(() => {
         component.validationError = {
-            status: true,
-            message: 'Please fill all the required fields'
+            status: false,
+            message: ''
         }
 
-        component.hideValidationError();
+        const message = 'Please fill the required fields.'
+        component.showValidationError(message);
+        expect(component.validationError.status).toEqual(true);
         tick(3500);
         expect(component.validationError.status).toEqual(false);
     }))
