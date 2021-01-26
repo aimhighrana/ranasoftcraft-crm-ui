@@ -6,7 +6,7 @@ import { SchemaService } from '@services/home/schema.service';
 import { NounModifierService } from '@services/home/schema/noun-modifier.service';
 import { UserService } from '@services/user/userservice.service';
 import { Observable, of } from 'rxjs';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
 export enum CellDataFor {
   LOCAL_NOUN = 'LOCAL_NOUN',
@@ -163,8 +163,9 @@ export class ClassificationDatatableCellEditableComponent implements OnInit, Aft
   }
 
   getLocalNouns(serachString?: string){
-    this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user=>{
-      this.nounModifierService.getLocalNouns(user.plantCode, '','',serachString).subscribe(res=>{
+    this.userService.getUserDetails().pipe(
+      distinctUntilChanged(),
+      switchMap(user => this.nounModifierService.getLocalNouns(user.plantCode, '','',serachString))).subscribe(res=>{
         this.selectFieldOptions = [];
         res.forEach(r=>{
           const drop: DropDownValue = {CODE: r.NOUN_CODE,FIELDNAME:this.fieldId,TEXT:r.NOUN_CODE ? r.NOUN_CODE : r.NOUN_CODE} as DropDownValue;
@@ -177,12 +178,12 @@ export class ClassificationDatatableCellEditableComponent implements OnInit, Aft
           });
         }
       });
-    });
   }
 
   getLocalModifiers(serachString?: string){
-    this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user=>{
-      this.nounModifierService.getLocalModifier(user.plantCode, this.nounCode,serachString).subscribe(res=>{
+    this.userService.getUserDetails().pipe(
+      distinctUntilChanged(),
+      switchMap(user => this.nounModifierService.getLocalModifier(user.plantCode, this.nounCode,serachString))).subscribe(res=>{
         this.selectFieldOptions = [];
         res.forEach(r=>{
           const drop: DropDownValue = {CODE: r.MODE_CODE,FIELDNAME:this.fieldId,TEXT:r.MOD_LONG ? r.MOD_LONG : r.MODE_CODE} as DropDownValue;
@@ -195,7 +196,6 @@ export class ClassificationDatatableCellEditableComponent implements OnInit, Aft
           });
         }
       });
-    });
   }
 
 }
