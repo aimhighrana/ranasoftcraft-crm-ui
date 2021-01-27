@@ -6,7 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { PermissionOn, ROLES, SchemaDashboardPermission } from '@models/collaborator';
 import { AddFilterOutput, CheckDataResponse } from '@models/schema/schema';
 import { FilterCriteria } from '@models/schema/schemadetailstable';
-import { SchemaListDetails, VariantDetails } from '@models/schema/schemalist';
+import { PermissionType, SchemaListDetails, VariantDetails } from '@models/schema/schemalist';
 import { CoreSchemaBrInfo, DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SharedModule } from '@modules/shared/shared.module';
 import { FormInputAutoselectComponent } from '@modules/shared/_components/form-input-autoselect/form-input-autoselect.component';
@@ -157,7 +157,7 @@ describe('SchemaSummarySidesheetComponent', () => {
     expect(schemaDetailsService.getAllUserDetails).toHaveBeenCalled();
   })
 
-  it('addBusinessRule(), should add business rule', () => {
+  it('addBusinessRule(), should add business rule', async () => {
     component.businessRuleData = [];
     const brInfo = {
       brType: 'Meta data',
@@ -226,9 +226,9 @@ describe('SchemaSummarySidesheetComponent', () => {
   });
   it('updatedSchemaName should set name of schema', async () => {
     const value = 'schemaAshish';
-    component.schemaName= new FormControl('');
+    component.schemaName = new FormControl('');
     component.schemaName.setValue(value);
-    component.updatedSchemaName=component.schemaName.value
+    component.updatedSchemaName = component.schemaName.value
     expect(component.updatedSchemaName).toEqual('schemaAshish');
   });
   it('openUploadSideSheet(), should open upload dataset side sheet', async () => {
@@ -245,7 +245,7 @@ describe('SchemaSummarySidesheetComponent', () => {
     component.outlet = 'outer';
     spyOn(router, 'navigate');
     component.openDataScopeSideSheet();
-    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { outer: `outer/schema/data-scope/${component.moduleId}/${component.schemaId}/new/${component.outlet}` } }], {queryParamsHandling: 'preserve'});
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { outer: `outer/schema/data-scope/${component.moduleId}/${component.schemaId}/new/${component.outlet}` } }], { queryParamsHandling: 'preserve' });
   })
 
   it('openBusinessRuleSideSheet(), should openBusinessRuleSideSheet', async () => {
@@ -253,10 +253,10 @@ describe('SchemaSummarySidesheetComponent', () => {
     component.schemaId = '15423'
     spyOn(router, 'navigate');
     component.openBusinessRuleSideSheet();
-    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: { outer: `outer/schema/business-rule/${component.moduleId}/${component.schemaId}/new/outer`} }])
+    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: { outer: `outer/schema/business-rule/${component.moduleId}/${component.schemaId}/new/outer` } }])
   })
 
-  it('updateRole(), should update subscriber role', async() => {
+  it('updateRole(), should update subscriber role', async () => {
     component.roles = ROLES;
     component.schemaId = '125556221415';
     const subscriber = {
@@ -265,7 +265,7 @@ describe('SchemaSummarySidesheetComponent', () => {
       isReviewer: false,
       isEditer: false,
       schemaId: component.schemaId,
-      permissionType : 'USER',
+      permissionType: 'USER',
       sno: '22551',
       userid: 'ASHSH'
     } as SchemaDashboardPermission;
@@ -274,4 +274,191 @@ describe('SchemaSummarySidesheetComponent', () => {
     component.updateRole(subscriber, 'isAdmin');
     expect(subscriber.isAdmin).toEqual(true);
   });
+
+  it('prepareData(), should call createBusinessRule and createUpdateUserDetails', async () => {
+    component.subscriberData = [
+      {
+        sno: '098978685586',
+        schemaId: 'testId',
+        userid: '123456',
+        roleId: 'test',
+        groupid: 'groupid',
+        isAdmin: false,
+        isViewer: false,
+        isEditer: false,
+        isReviewer: false,
+        permissionType: PermissionType.USER,
+        description: '',
+        userMdoModel: null,
+        rolesModel: null,
+        groupHeaderModel: null,
+        plantCode: '0',
+        filterCriteria: [],
+        dataAllocation: [],
+        isCopied: false,
+        isInvited: false,
+      }
+    ];
+
+    component.businessRuleData = [
+      {
+        sno: 1299484,
+        brId: '22',
+        brType: 'TRANSFORMATION',
+        refId: 1,
+        fields: '',
+        regex: '',
+        order: 1,
+        apiKey: '',
+        message: 'Invalid',
+        script: '',
+        brInfo: 'Test Rule',
+        brExpose: 0,
+        status: '1',
+        categoryId: '21474',
+        standardFunction: '',
+        brWeightage: '10',
+        totalWeightage: 100,
+        transformation: 0,
+        tableName: '',
+        qryScript: '',
+        dependantStatus: 'ALL',
+        plantCode: '0',
+        percentage: 0,
+        schemaId: '',
+        brIdStr: '',
+        udrDto: null,
+        transFormationSchema: null,
+        isCopied: false,
+        duplicacyField: [],
+        duplicacyMaster: []
+      }
+    ];
+
+    spyOn(schemaService, 'createCheckDataBusinessRule').and.returnValue(of(null));
+    spyOn(schemaService, 'createBusinessRule').and.returnValue(of(null));
+    spyOn(schemaService, 'createUpdateCheckData').and.returnValue(of(null));
+    spyOn(schemaDetailsService, 'createUpdateUserDetails').and.returnValue(of([]));
+
+    component.prepareData('testModuleId');
+
+    expect(schemaService.createBusinessRule).toHaveBeenCalled();
+    expect(schemaDetailsService.createUpdateUserDetails).toHaveBeenCalled();
+  })
+
+  it('saveCheckData(), ', async() => {
+    component.schemaName = new FormControl('');
+    component.schemaThresholdControl = new FormControl('');
+
+    component.schemaId = 'new';
+    component.schemaDetails = {
+      schemaId: 'testId',
+      schemaDescription: 'desc',
+      errorCount: 0,
+      successCount: 0,
+      totalCount: 0,
+      skippedValue: 0,
+      correctionValue: 0,
+      duplicateValue: 0,
+      totalUniqueValue: 0,
+      successUniqueValue: 0,
+      errorUniqueValue: 0,
+      skippedUniqueValue: 0,
+      successTrendValue: '',
+      errorTrendValue: '',
+      createdBy: '',
+      errorPercentage: 0,
+      successPercentage: 0,
+      variantCount: 0,
+      executionStartTime: 0,
+      executionEndTime: 0,
+      variantId: '',
+      runId: '',
+      brInformation: [],
+      moduleId: '',
+      moduleDescription: '',
+      isInRunning: false,
+      schemaThreshold: '10',
+      collaboratorModels: null,
+      totalValue: 0,
+      errorValue: 0,
+      successValue: 0,
+      variants: [],
+      schemaCategory: '',
+    };
+    component.subscriberData = [
+      {
+        sno: '098978685586',
+        schemaId: 'testId',
+        userid: '123456',
+        roleId: 'test',
+        groupid: 'groupid',
+        isAdmin: false,
+        isViewer: false,
+        isEditer: false,
+        isReviewer: false,
+        permissionType: PermissionType.USER,
+        description: '',
+        userMdoModel: null,
+        rolesModel: null,
+        groupHeaderModel: null,
+        plantCode: '0',
+        filterCriteria: [],
+        dataAllocation: [],
+        isCopied: false,
+        isInvited: false,
+      }
+    ];
+
+    component.businessRuleData = [
+      {
+        sno: 1299484,
+        brId: '22',
+        brType: 'TRANSFORMATION',
+        refId: 1,
+        fields: '',
+        regex: '',
+        order: 1,
+        apiKey: '',
+        message: 'Invalid',
+        script: '',
+        brInfo: 'Test Rule',
+        brExpose: 0,
+        status: '1',
+        categoryId: '21474',
+        standardFunction: '',
+        brWeightage: '10',
+        totalWeightage: 100,
+        transformation: 0,
+        tableName: '',
+        qryScript: '',
+        dependantStatus: 'ALL',
+        plantCode: '0',
+        percentage: 0,
+        schemaId: '',
+        brIdStr: '',
+        udrDto: null,
+        transFormationSchema: null,
+        isCopied: false,
+        duplicacyField: [],
+        duplicacyMaster: []
+      }
+    ];
+    spyOn(schemaService, 'createUpdateSchema').and.returnValue(of(null));
+    spyOn(schemaService, 'createCheckDataBusinessRule').and.returnValue(of(null));
+    spyOn(schemaService, 'createBusinessRule').and.returnValue(of(null));
+    spyOn(schemaService, 'createUpdateCheckData').and.returnValue(of(null));
+    spyOn(schemaDetailsService, 'createUpdateUserDetails').and.returnValue(of([]));
+
+    component.saveCheckData();
+    expect(schemaService.createUpdateSchema).toHaveBeenCalled();
+
+    component.schemaId = 'testId';
+    component.schemaName.setValue('desc');
+    component.schemaThresholdControl.setValue('10');
+
+    component.saveCheckData();
+    expect(schemaService.createBusinessRule).toHaveBeenCalled();
+    expect(schemaDetailsService.createUpdateUserDetails).toHaveBeenCalled();
+  })
 });
