@@ -49,9 +49,21 @@ describe('SchemaExecutionTrendComponent', () => {
 
   });
 
-  /* it('should prepare chart dataset', () => {
+  it('should prepare chart dataset', () => {
+
+    const weeksData = component.groupByMonthWeeks(11, data);
+    spyOn(component, 'groupByMonthWeeks').and.returnValue(weeksData);
+
+    component.prepareDataSet(data);
+    expect(component.dataSet[0].data.length).toEqual(3);
+
+    // first week error records
+    expect(component.dataSet[0].data[0]).toEqual(2.5);
+
+    // first week success records
+    expect(component.dataSet[1].data[0]).toEqual(5);
 
 
-  }); */
+  });
 
 });
