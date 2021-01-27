@@ -114,3 +114,9 @@ export const ROLES = [
     { code: 'isEditer', text: 'Editor', value: false },
     { code: 'isReviewer', text: 'Reviewer', value: false }
 ]
+
+export class WidgetDownloadUser {
+    userName: string;
+    description?: string;
+    email:string;
+}

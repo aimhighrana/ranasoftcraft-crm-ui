@@ -122,4 +122,8 @@ export class EndpointsAnalyticsService {
   public getCustomDatasetFieldsUrl(objectId: string): string {
     return `${this.apiUrl}/report/custom-dataset/fields/${objectId}`
   }
+
+  public saveReportDownload(widgetId: string,userName:string) : string {
+    return `${this.apiUrl}/widget/startdoDownloadFile/${widgetId}?userName=${userName}`;
+  }
 }

@@ -5,11 +5,10 @@ import { MatSort, Sort } from '@angular/material/sort';
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { ReportingWidget, Criteria, LayoutConfigWorkflowModel } from '../../../_models/widget';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ExportReportDatatableComponent } from './export-report-datatable/export-report-datatable.component';
 import { EndpointService } from '@services/endpoint.service';
 import { Router } from '@angular/router';
 import { SharedServiceService } from '@shared/_services/shared-service.service';
@@ -75,6 +74,11 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   layouts: LayoutConfigWorkflowModel[] = [];
   dateFormat: string;
 
+  /**
+   * To hold subscriptions of component
+   */
+  subscription: Subscription[] = [];
+
   constructor(public widgetService: WidgetService,
     @Inject(LOCALE_ID) public locale: string,
     public matDialog: MatDialog,
@@ -104,26 +108,28 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
     this.getUserDetails();
     this.getHeaderMetaData();
     let isRefresh = true;
-    this.sharedService.getReportDataTableSetting().subscribe(response => {
+    const sub = this.sharedService.getReportDataTableSetting().subscribe(response => {
       if ((response?.isRefresh === true) || isRefresh) {
         isRefresh = false;
         this.getListTableMetadata();
       }
-    })
-    this.reportingListWidget.subscribe(res => {
+    });
+    this.subscription.push(sub);
+
+    const subs = this.reportingListWidget.subscribe(res => {
       if (res) {
         this.filterCriteria = [];
         this.getListdata(this.pageSize, this.pageIndex, this.widgetId, this.filterCriteria, this.activeSorts);
       }
     });
-
+    this.subscription.push(subs);
   }
 
   /**
    * function to get logged in user details
    */
   public getUserDetails() {
-    this.userService.getUserDetails().subscribe(user => {
+    const sub =  this.userService.getUserDetails().subscribe(user => {
       this.plantCode = user.plantCode;
       this.roleId = user.currentRoleId;
       switch (user.dateformat) {
@@ -146,19 +152,25 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
         default:
           break;
       }
-    })
+    }, (error)=>{
+      console.log('Something went wrong while getting user details.', error.message)
+    });
+    this.subscription.push(sub);
   }
 
   /**
    * function to get header meta data of widget
    */
   public getHeaderMetaData(): void {
-    this.widgetService.getHeaderMetaData(this.widgetId).subscribe(returnData => {
+    const sub = this.widgetService.getHeaderMetaData(this.widgetId).subscribe(returnData => {
       this.headerDesc = returnData.widgetName;
       this.objectType = returnData.objectType;
       this.isWorkflowdataSet = returnData.isWorkflowdataSet;
       this.tablepageSize=returnData.pageDefaultSize || 100
+    }, (error)=> {
+      console.log('Something went wrong while getting header meta data', error.message)
     });
+    this.subscription.push(sub);
   }
 
   /**
@@ -168,7 +180,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
     this.displayedColumnsId = ['action'];
     // this.columnDescs = {};
     const fieldsArray=[];
-    this.widgetService.getListTableMetadata(this.widgetId).subscribe(returnData => {
+    const sub = this.widgetService.getListTableMetadata(this.widgetId).subscribe(returnData => {
       if (returnData !== undefined && Object.keys(returnData).length > 0) {
         // this.columnDescs.objectNumber = 'Object Number';
         returnData.forEach(singlerow => {
@@ -181,11 +193,14 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
         this.reportingListWidget.next(returnData);
         this.tableColumnMetaData = returnData;
       }
+    }, (error)=> {
+      console.log('Something went wrong while getting table meta data', error.message)
     });
+    this.subscription.push(sub);
   }
 
   /**
-   * function to get meta data of the columns for data table
+   * function to get sorted meta data of the columns for data table
    */
   sortDisplayedColumns(array: any[]){
     return array.sort((a, b) => a.fieldOrder - b.fieldOrder);
@@ -274,24 +289,9 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   *Otherwise open dialog and ask for page from number ..
   *
   */
-  downloadCSV(): void {
-    if (this.resultsLength <= 5000) {
-      this.downloadData(0);
-      // this.widgetService.downloadCSV('Report-List',this.listData);
-    } else {
-      const dialogRef = this.matDialog.open(ExportReportDatatableComponent, {
-        width: '500px',
-        data: {
-          recCount: this.resultsLength
-        }
-      });
-      dialogRef.afterClosed().subscribe(result => {
-        if (result !== undefined) {
-          this.downloadData(result);
-        }
-      });
-    }
-  }
+ downloadCSV(): void {
+  this.router.navigate(['', { outlets: { sb: `sb/report/download-widget/${this.widgetId}` } }], {queryParamsHandling: 'preserve'})
+}
 
   /**
    * Use to get sorted column and
@@ -355,16 +355,20 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
     console.log(this.objectType);
     console.log(row);
     const WFID = row ? row.WFID : '';
-    this.reportService.getAllLayoutsForSummary(this.objectType, WFID, this.roleId, this.plantCode).subscribe(res => {
+    const sub = this.reportService.getAllLayoutsForSummary(this.objectType, WFID, this.roleId, this.plantCode).subscribe(res => {
       console.log(res);
       this.layouts = res;
     }, error => console.error(`Error : ${error.message}`));
-
+      this.subscription.push(sub);
   }
 
   ngOnDestroy(){
     this.reportingListWidget.complete();
     this.reportingListWidget.unsubscribe();
+
+    this.subscription.forEach((sub) => {
+      sub.unsubscribe();
+    })
   }
 
 }

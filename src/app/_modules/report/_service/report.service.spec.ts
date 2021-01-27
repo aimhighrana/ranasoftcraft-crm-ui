@@ -4,6 +4,7 @@ import { ReportService } from './report.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { EndpointsAnalyticsService } from '@services/_endpoints/endpoints-analytics.service';
 import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
+import { WidgetDownloadUser } from '@models/collaborator';
 
 describe('ReportService', () => {
   let service: ReportService;
@@ -12,7 +13,7 @@ describe('ReportService', () => {
   let analyticsServiceSpy: jasmine.SpyObj<EndpointsAnalyticsService>
   beforeEach(() => {
     const epsSpy = jasmine.createSpyObj('EndpointsClassicService', [ 'getPermissionUrl','returnCollaboratorsPermisisonUrl','saveUpdateReportCollaborator','deleteCollaboratorUrl']);
-    const ansSpy = jasmine.createSpyObj('EndpointsAnalyticsService', [ 'reportDashboardUrl', 'docCountUrl',]);
+    const ansSpy = jasmine.createSpyObj('EndpointsAnalyticsService', [ 'reportDashboardUrl', 'docCountUrl','saveReportDownload']);
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule ],
       providers: [
@@ -151,4 +152,25 @@ describe('ReportService', () => {
 
   }));
 
+  it('saveUpdateportDownload() : should call to save/update report download', async(() => {
+    const testurl = 'save update url';
+    const request = [{email:'abc@getMaxListeners.com', description: '', userName:'admin'} as WidgetDownloadUser]
+    const widgetId = '654367';
+    const username = 'Admin';
+    // mocking url
+    // console.log(analyticsServiceSpy.saveReportDownload);
+    analyticsServiceSpy.saveReportDownload.withArgs(widgetId, username).and.returnValue(testurl);
+    // mock data
+    const mockhttpData = {} as any;
+    // actual call
+    service.saveUpdateportDownload(request,widgetId,username).subscribe(actualData => {
+      expect(actualData).toEqual(mockhttpData);
+    });
+    // mocking http
+    const req = httpTestingController.expectOne(testurl);
+    expect(req.request.method).toEqual('POST');
+    req.flush(mockhttpData);
+    // verify http
+    httpTestingController.verify();
+  }));
 });

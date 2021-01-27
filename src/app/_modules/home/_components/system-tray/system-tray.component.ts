@@ -7,7 +7,6 @@ import { CustomNotification } from '@models/customNotification';
 import { MatTabGroup } from '@angular/material/tabs';
 import { HomeService } from '@services/home/home.service'
 import { JobQueue } from '@models/jobQueue';
-
 @Component({
   selector: 'pros-system-tray',
   templateUrl: './system-tray.component.html',
@@ -50,7 +49,7 @@ export class SystemTrayComponent implements OnInit, AfterViewInit {
   constructor(
     private router: Router,
     public userService: UserService,
-    public homeService: HomeService
+    public homeService: HomeService,
   ) { }
 
   /*
@@ -98,7 +97,8 @@ export class SystemTrayComponent implements OnInit, AfterViewInit {
       )
       .subscribe((notifications: Array<CustomNotification>) => {
         notifications.forEach((notification) => {
-          notification.senderUid = notification.senderUid.split(' ').map(name => name[0]).join(' ')
+          notification.senderUid = notification.senderUid.split(' ').map(name => name[0]).join(' ');
+          notification.showMore = false;
         })
         this.notifications.length = 0;
         this.notifications.push(...notifications)
@@ -151,5 +151,13 @@ export class SystemTrayComponent implements OnInit, AfterViewInit {
 
   close() {
     this.router.navigate([{ outlets: { sb: null } }]);
+  }
+
+  download(link: string) {
+    const downloadLink = document.createElement('a');
+    downloadLink.href = `${link}`;
+    downloadLink.setAttribute('target', '_blank');
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
   }
 }
