@@ -40,6 +40,9 @@ describe('ConfirmationDialogComponent', () => {
 
   it('close(), should close the dialog', async(()=>{
     component.close(true);
-    expect(mockDialogRef.close).toHaveBeenCalled();
+    expect(mockDialogRef.close).toHaveBeenCalledWith('yes');
+
+    component.close(false);
+    expect(mockDialogRef.close).toHaveBeenCalledWith('no');
   }));
 });

@@ -203,7 +203,7 @@ export class FormInputAutoselectComponent implements OnInit, OnChanges {
    * method to filter dropdown values based on the typed string
    * @param value pass the value to be looked up in the list of values
    */
-  private _filter(value: any): any[] {
+  _filter(value: any): any[] {
     let availableOptions = this.optionList;
     if(value){
       const filterValue = (isNaN(value))? value.toLowerCase(): value;

@@ -8,6 +8,7 @@ import { SchemaDetailsService } from '@services/home/schema/schema-details.servi
 import { FilterCriteria, MetadataModel } from '@models/schema/schemadetailstable';
 import { SchemaService } from '@services/home/schema.service';
 import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { SimpleChanges } from '@angular/core';
 
 describe('AddFilterMenuComponent', () => {
   let component: AddFilterMenuComponent;
@@ -56,8 +57,15 @@ describe('AddFilterMenuComponent', () => {
       hierarchyFields: []
   };
   spyOn(schemaDetailService, 'getMetadataFields').and.returnValue(of(response));
+  spyOn(component.metadata, 'next');
+
+  component.moduleId = '';
   component.getFldMetadata();
-  expect(schemaDetailService.getMetadataFields).toHaveBeenCalled();
+
+  component.moduleId = '1005';
+  expect(schemaDetailService.getMetadataFields).toHaveBeenCalledTimes(1);
+  expect(component.metadata.next).toHaveBeenCalledWith(response);
+
   }));
 
   it(`searchField(), search metadat fields according to the search field`, async(() => {
@@ -109,6 +117,104 @@ describe('AddFilterMenuComponent', () => {
     component.moduleId = '';
     component.ctrlFlds(fld);
     expect(schemaService.generateColumnByFieldId).toHaveBeenCalled();
+
+  })
+
+  it(`should transform metadata, `, async(() => {
+    const metadata = {
+      headers: {
+        dlerrdhd2747: { fieldId: 'dlerrdhd2747',  fieldDescri: '', picklist: '0'}
+      },
+      grids: '',
+      hierarchy: [],
+      gridFields: '',
+      hierarchyFields: []
+  };
+
+
+  component.tarnsformMetada(metadata);
+  expect(component.metadaDrop.length).toEqual(0);
+  expect(component.searchDrop.length).toEqual(0);
+
+  }));
+
+  it(`should emit applied filters `, async(() => {
+
+    const drop = [{CODE: 'MTL_GRP',  PLANTCODE: '1005'}] as DropDownValue[];
+    spyOn(component.evtReadyForApply, 'emit');
+
+    component.emitAppliedFilter(drop)
+
+    expect(component.selectedValues).toEqual(drop);
+    expect(component.activateElement).toBeNull();
+    expect(component.evtReadyForApply.emit).toHaveBeenCalled();
+
+  }));
+
+  it(`should move to previous status `, async(() => {
+
+    const metadata = {
+      headers: {},
+      grids: '',
+      hierarchy: [],
+      gridFields: '',
+      hierarchyFields: []
+    };
+
+    spyOn(component.metadata, 'next');
+
+    const event = new Event('click');
+
+    component.prevState(event);
+    expect(component.metadaDrop).toEqual([]);
+
+    component.moduleId = '1005';
+    component.prevState(event);
+
+    component.metadata.next(metadata);
+    component.prevState(event);
+
+    expect(component.metadata.next).toHaveBeenCalledTimes(1);
+
+  }));
+
+  it('update on changes', () => {
+
+    spyOn(component, 'getFldMetadata');
+    spyOn(component, 'initMetadata');
+    spyOn(component.metadata, 'next');
+    spyOn(component.currentFields, 'next');
+
+    let changes:SimpleChanges = {moduleId:{currentValue:'1005', previousValue: '1005', firstChange:null, isFirstChange:null}};
+    component.ngOnChanges(changes);
+
+    changes.moduleId.currentValue = '1006';
+    component.ngOnChanges(changes);
+
+    changes.moduleId.currentValue = '';
+    component.ngOnChanges(changes);
+
+    changes = {reInilize:{currentValue:false, previousValue: false, firstChange:null, isFirstChange:null}};
+    component.ngOnChanges(changes);
+
+    changes.reInilize.currentValue = true;
+    component.ngOnChanges(changes);
+
+    component.moduleId = '1005';
+    component.ngOnChanges(changes);
+
+
+    changes = {fieldMetadata:{currentValue:null, previousValue: null, firstChange:null, isFirstChange:null}};
+    component.ngOnChanges(changes);
+
+    changes.fieldMetadata.currentValue = [];
+    component.ngOnChanges(changes);
+
+
+    expect(component.getFldMetadata).toHaveBeenCalledTimes(1);
+    expect(component.initMetadata).toHaveBeenCalledTimes(4);
+    expect(component.metadata.next).toHaveBeenCalledTimes(1);
+    expect(component.currentFields.next).toHaveBeenCalledTimes(1);
 
   })
 

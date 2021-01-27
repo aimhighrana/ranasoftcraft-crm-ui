@@ -75,10 +75,6 @@ export class SearchInputComponent implements OnInit, OnChanges {
    * Detect changes from parent to child
    */
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes && changes.value && changes.value.previousValue !== changes.value.currentValue) {
-      this.value = changes.value.currentValue;
-    }
-
     if (changes && changes.preValue && changes.preValue.previousValue !== changes.preValue.currentValue) {
       this.preValue = changes.preValue.currentValue;
       this.control = new FormControl(this.preValue);

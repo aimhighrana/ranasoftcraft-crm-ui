@@ -152,7 +152,7 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
   ngOnInit(): void {
     this.metadata.subscribe(fld => {
       if (fld) {
-        this.tarnsformMetada();
+        this.tarnsformMetada(fld);
       }
     });
     this.getFldMetadata();
@@ -177,8 +177,7 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
    * Calculate fields based on user view ..
    *
    */
-  tarnsformMetada(): void {
-    const allMDF = this.metadata.getValue();
+  tarnsformMetada(allMDF: MetadataModeleResponse): void {
     const fields = [];
     for (const headerField in allMDF.headers) {
       if (fields.indexOf(headerField)) {
