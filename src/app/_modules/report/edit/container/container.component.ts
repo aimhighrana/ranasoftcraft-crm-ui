@@ -642,6 +642,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.styleCtrlGrp.get('field').setValue('');
     }
     console.log(fieldData);
+    if(fieldData.option && fieldData.option.value.fldCtrl && fieldData.option.value.fldCtrl.dataType)
     this.fieldDataType = fieldData.option.value.fldCtrl.dataType;
   }
 
@@ -649,7 +650,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    * To check the Field Datatype
    */
   get checkFieldDataType(): boolean {
-    return ['NUMC', 'DESC'].indexOf(this.fieldDataType) >= 0 ? true : false;
+    return ['NUMC', 'DEC'].indexOf(this.fieldDataType) >= 0 ? true : false;
   }
 
   /**
@@ -977,8 +978,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     if ((boxX >= 0 && (boxX * this.eachBoxSize) <= this.screenWidth) && (boxY >= 0)) {
       if (this.widgetList.length > 0) {
         const lastWidget = this.widgetList[this.widgetList.length - 1];
-        dropableWidget.x = boxX + lastWidget.x + 2;
-        dropableWidget.y = boxY + lastWidget.y + 2;
+        dropableWidget.x = boxX + lastWidget.x + 11;
+        dropableWidget.y = boxY + lastWidget.y + 11;
       } else {
         dropableWidget.x = boxX;
         dropableWidget.y = boxY;

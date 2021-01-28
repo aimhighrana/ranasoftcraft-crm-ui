@@ -15,13 +15,16 @@
 // import { of } from 'rxjs';
 // import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 // import { SchemaService } from '@services/home/schema.service';
+// import { UserService } from '@services/user/userservice.service';
+// import { Userdetails } from '@models/userdetails';
 
-// xdescribe('ContainerComponent', () => {
+// describe('ContainerComponent', () => {
 //   let component: ContainerComponent;
 //   let fixture: ComponentFixture<ContainerComponent>;
 //   let reportService: ReportService;
 //   let schemaDetailsService: SchemaDetailsService;
 //   let schemaService: SchemaService;
+//   let userService: UserService;
 //   beforeEach(async(() => {
 //     TestBed.configureTestingModule({
 //       declarations: [ ContainerComponent, BreadcrumbComponent, SvgIconComponent ],
@@ -41,6 +44,7 @@
 //     reportService = fixture.debugElement.injector.get(ReportService);
 //     schemaDetailsService = fixture.debugElement.injector.get(SchemaDetailsService);
 //     schemaService = fixture.debugElement.injector.get(SchemaService);
+//     userService = fixture.debugElement.injector.get(UserService);
 //   });
 
 //   it('should create', () => {
@@ -54,10 +58,10 @@
 //     // mock data
 //     const widget = new Widget();
 //     widget.widgetTableFields = [];
-//     component.showStyle(widget);
-//     expect(component.selStyleWid).toEqual(widget, 'If the widget has , then Style widget should be the same widget');
-//     expect(component.showProperty).toEqual(true, 'showProperty should be true');
-//     expect(component.chooseColumns).toEqual(widget.widgetTableFields,'Choose column array should be same to widget obj');
+//     // component.showStyle(widget);
+//     // expect(component.selStyleWid).toEqual(widget, 'If the widget has , then Style widget should be the same widget');
+//     // expect(component.showProperty).toEqual(true, 'showProperty should be true');
+//     // expect(component.chooseColumns).toEqual(widget.widgetTableFields,'Choose column array should be same to widget obj');
 
 //   }));
 
@@ -98,15 +102,12 @@
 //     expect(component.showProperty).toEqual(false, 'Style property panel is hide');
 //   }));
 //   it('ngOnInit(), check all pre require ', async(()=>{
-//     spyOn(reportService,'getReportConfi').withArgs('').and.returnValue(of());
+//     spyOn(reportService,'getReportConfi').withArgs('','').and.returnValue(of());
 //     spyOn(schemaService,'getAllObjectType').and.returnValue(of([]));
+//     // const initialFrmGrp = {widgetName: '', width: '', height: '', field: '', aggregrationOp: '', filterType: '', isMultiSelect: false, groupById: '', objectType: '', imageUrl: '', htmlText: '', imagesno: '', imageName: ''};
 //     component.ngOnInit();
-//     const initialFrmGrp = {widgetName: '', width: '', height: '', field: '', aggregrationOp: '', filterType: '', isMultiSelect: false, groupById: '', objectType: '', imageUrl: '', htmlText: '', imagesno: '', imageName: ''};
-//     expect(component.subscriptions.length).toEqual(4, 'Size should be 4');
-//     expect(component.styleCtrlGrp.value).toEqual(initialFrmGrp, 'Initial form control value should be empty');
-
-
-//     expect(schemaService.getAllObjectType).toHaveBeenCalled();
+//     expect(component.subscriptions.length).toEqual(6, 'Size should be 6');
+//     // expect(schemaService.getAllObjectType()).toHaveBeenCalled()
 //   }));
 
 //   it(`addMoreDefaultFilter(), should add controles to formArray`, async(()=>{
@@ -152,7 +153,7 @@
 //     // mock data
 //     const metaData = {fieldId:'MATL_DESC', fieldDescri:'Desc'} as Metadata;
 //     const option = {option:{value:metaData}} as MatAutocompleteSelectedEvent;
-//     spyOn(reportService,'getReportConfi').withArgs('').and.returnValue(of());
+//     spyOn(reportService,'getReportConfi').withArgs('','').and.returnValue(of());
 //     spyOn(schemaService,'getAllObjectType').and.returnValue(of([]));
 //     // call actual method
 //     component.ngOnInit();
@@ -164,25 +165,31 @@
 //     // mock data
 //     const metaData = {fieldId:'MATL_DESC', fieldDescri:'Desc'} as Metadata;
 //     const option = {option:{value:metaData}} as MatAutocompleteSelectedEvent;
-//     spyOn(reportService,'getReportConfi').withArgs('').and.returnValue(of());
+//     const reportList: ReportList = new ReportList();
+//     reportList.permission = new ReportDashboardPermission();
+//     const user: Userdetails =new Userdetails()
+//     spyOn(userService,'getUserDetails').and.returnValue(of(user));
+
+//     spyOn(reportService,'getReportConfi').withArgs('','').and.returnValue(of());
 //     spyOn(schemaService,'getAllObjectType').and.returnValue(of([]));
 //     // call actual method
 //     component.ngOnInit();
 //     component.onFieldChange(option);
-//     expect(component.styleCtrlGrp.get('field').value).toEqual(metaData.fieldId, 'Field id should equals ${metaData.fieldId}');
+//     expect(component.styleCtrlGrp.get('field').value).toEqual(metaData, 'Field id should equals ${metaData.fieldId}');
 //   }));
 
 //   it('getReportConfig(), get report config', async(()=>{
 //     // mock data
 //     const reportList: ReportList = new ReportList();
 //     reportList.permission = new ReportDashboardPermission();
+//     const user: Userdetails =new Userdetails()
+//     spyOn(userService,'getUserDetails').and.returnValue(of(user));
 
-
-//     spyOn(reportService,'getReportConfi').withArgs('72523857').and.returnValue(of(reportList));
+//     spyOn(reportService,'getReportConfi').withArgs('72523857',user.currentRoleId).and.returnValue(of(reportList));
 
 //     component.getReportConfig('72523857');
 
-//     expect(reportService.getReportConfi).toHaveBeenCalledWith('72523857');
+//     expect(reportService.getReportConfi).toHaveBeenCalledWith('72523857',user.currentRoleId);
 //   }));
 
 //   it('getAllFields(), get all fields', async(()=>{

@@ -42,7 +42,11 @@ div.root {
       .col-heading {
         font-weight: 500;
         padding: 8px;
-        line-height: 36px;
+        line-height: 16px;
+      }
+
+      .subtext {
+        padding: 0 8px;
       }
 
       .builder-board {
