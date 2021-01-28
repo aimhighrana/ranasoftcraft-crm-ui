@@ -1,4 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { SimpleChanges } from '@angular/core';
 import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { NounModifier } from '@models/schema/noun-modifier';
@@ -141,5 +142,40 @@ describe('ClassificationDatatableCellEditableComponent', () => {
     component.emitInputBlur('India');
     expect(component.inputBlur.emit).toHaveBeenCalledWith('India');
   });
+
+  it('update on changes', () => {
+    const changes:SimpleChanges = {controlType:{currentValue:'ctrl', previousValue: '', firstChange:null, isFirstChange:null}};
+    component.ngOnChanges(changes);
+    expect(component.controlType).toEqual('ctrl');
+  });
+
+  it('ngOnInit()', () => {
+
+    spyOn(component, 'getSuggestedNouns');
+    spyOn(component, 'getSuggestedModifiers');
+    spyOn(component, 'getLocalNouns');
+    spyOn(component, 'getLocalModifiers');
+
+    // component.ngOnInit();
+
+    component.brType = '';
+    component.fieldId = 'NOUN_CODE';
+    component.ngOnInit();
+
+    component.fieldId = 'MODE_CODE';
+    component.ngOnInit();
+
+    component.brType = 'unmatched';
+    component.ngOnInit();
+
+    component.fieldId = 'NOUN_CODE';
+    component.ngOnInit();
+
+    expect(component.getSuggestedNouns).toHaveBeenCalledTimes(1);
+    expect(component.getSuggestedModifiers).toHaveBeenCalledTimes(1);
+    expect(component.getLocalNouns).toHaveBeenCalledTimes(1);
+    expect(component.getLocalModifiers).toHaveBeenCalledTimes(1);
+
+  })
 
 });

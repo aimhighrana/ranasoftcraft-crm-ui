@@ -22,6 +22,14 @@ describe('NullStateComponent', () => {
   });
 
   it('should create', () => {
+    component.ngOnInit();
     expect(component).toBeTruthy();
   });
+
+  it('should emit action click', () => {
+    spyOn(component.action, 'emit');
+    component.emitAction();
+    expect(component.action.emit).toHaveBeenCalled()
+  });
+
 });

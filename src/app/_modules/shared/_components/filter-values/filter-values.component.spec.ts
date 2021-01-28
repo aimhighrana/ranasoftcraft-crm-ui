@@ -9,6 +9,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { SchemaService } from '@services/home/schema.service';
 import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { of } from 'rxjs';
+import { SimpleChanges } from '@angular/core';
 
 describe('FilterValuesComponent', () => {
   let component: FilterValuesComponent;
@@ -72,7 +73,7 @@ describe('FilterValuesComponent', () => {
     component.dropValue = [
       {
         CODE: 'test',
-        FIELDNAME: 'Test Field',
+        FIELDNAME: 'first Field',
         LANGU: '',
         PLANTCODE: '',
         SNO: `1`,
@@ -80,7 +81,7 @@ describe('FilterValuesComponent', () => {
       },
       {
         CODE: 'test1',
-        FIELDNAME: 'Test Field 1',
+        FIELDNAME: 'second Field 1',
         LANGU: '',
         PLANTCODE: '',
         SNO: `2`,
@@ -90,6 +91,7 @@ describe('FilterValuesComponent', () => {
 
     component.searchFromExistingValues('');
     expect(component.searchValue.length).toEqual(2);
+
   }));
 
   it(`isChecked(), should return true if a value is already selected`, async(() => {
@@ -103,6 +105,9 @@ describe('FilterValuesComponent', () => {
     };
     component.checkedValue.push(value);
     expect(component.isChecked(value)).toBe(true);
+
+    expect(component.isChecked({...value, CODE: 'no_match'})).toBeFalsy();
+
   }));
 
   it(`onChange(), should remove DropDownValue in the checkedValue list if already exist`, async(() => {
@@ -163,4 +168,44 @@ describe('FilterValuesComponent', () => {
     component.updateValues();
     expect(component.getDropdownValues).toHaveBeenCalled();
   })
+
+  it('update on changes', () => {
+
+    spyOn(component, 'updateValues');
+
+    let changes:SimpleChanges = {fieldId:{currentValue:'', previousValue: '', firstChange:null, isFirstChange:null}};
+    component.ngOnChanges(changes);
+
+    changes.fieldId.currentValue = 'mtl_grp';
+    component.ngOnChanges(changes);
+    expect(component.fieldId).toEqual('mtl_grp');
+    expect(component.updateValues).toHaveBeenCalledTimes(1);
+
+    changes= {checkedValue:{currentValue: [], previousValue: null, firstChange:null, isFirstChange:null}};
+    component.ngOnChanges(changes);
+    expect(component.checkedValue).toEqual([]);
+
+  });
+
+  it('ngOnInit', () => {
+
+    spyOn(component, 'getDropdownValues');
+
+    component.ngOnInit();
+
+    component.moduleId = '1005';
+    component.fieldId = 'mtl_grp';
+    component.ngOnInit();
+
+    expect(component.getDropdownValues).toHaveBeenCalledTimes(1);
+
+  });
+
+  it('submit filter values', () => {
+    spyOn(component.selectedValues, 'emit');
+    component.submit();
+    expect(component.selectedValues.emit).toHaveBeenCalled();
+
+  });
+
 });
