@@ -114,7 +114,7 @@ describe('EndpointsClassicService', () => {
 
   it('getNotificationsUrl(),should return getNotificationsUrl url', async(() => {
     const serObj =new EndpointsClassicService();
-    expect(serObj.getNotificationsUrl('uid','from','to')).toContain('/notification/getNotification/uid?from=from&to=to');
+    expect(serObj.getNotificationsUrl('uid','from','to')).toContain('/notification/getNotification?senderUid=uid&from=from&to=to');
   }));
 
   it('getUpdateNotificationUrl(),should return getUpdateNotificationUrl url', async(() => {
@@ -165,7 +165,7 @@ describe('EndpointsClassicService', () => {
   it('getNotificationsCount(), return count of notification',async(() => {
     const serObj =new EndpointsClassicService();
     const senderUid = '654567879';
-    expect(serObj.getNotificationsCount(senderUid)).toContain(`notification/getNotificationCount/${senderUid}`);
+    expect(serObj.getNotificationsCount(senderUid)).toContain(`notification/getNotificationCount?senderUid=${senderUid}`);
   }));
 
   it('getSaveTaskListViewUrl(), should save task list view', async(() => {

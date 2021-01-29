@@ -447,7 +447,7 @@ export class EndpointsClassicService {
    * @param senderUid username of logged in user
    */
   public getNotificationsUrl(senderUid, from: string, to: string): string {
-    return `${this.apiUrl}/notification/getNotification/${senderUid}?from=${from}&to=${to}`
+    return `${this.apiUrl}/notification/getNotification?senderUid=${senderUid}&from=${from}&to=${to}`
   }
 
   /**
@@ -475,7 +475,7 @@ export class EndpointsClassicService {
 
 
   public getNotificationsCount(senderUid): string {
-    return `${this.apiUrl}/notification/getNotificationCount/${senderUid}`
+    return `${this.apiUrl}/notification/getNotificationCount?senderUid=${senderUid}`
   }
 
   /**
