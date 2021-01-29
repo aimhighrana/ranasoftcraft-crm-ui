@@ -205,7 +205,7 @@ export class ExportReportDatatableComponent implements OnInit {
     const userList: WidgetDownloadUser[] = this.selectedUsers.map(element => ({ userName: element.userName, email: element.email }))
     this.reportServie.saveUpdateportDownload(userList, this.widgetId, this.userInfo.userName).subscribe(res => {
       this.close();
-      this.snackbar.open(`Successfully saved change(s)`, 'Close', { duration: 3000 });
+      this.snackbar.open(`Downloading Started`, 'Close', { duration: 3000 });
     }, errro => {
       this.close();
       this.snackbar.open(`Something went wrong`, 'Close', { duration: 5000 });

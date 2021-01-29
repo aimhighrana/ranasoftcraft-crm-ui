@@ -97,7 +97,6 @@ export class SystemTrayComponent implements OnInit, AfterViewInit {
       )
       .subscribe((notifications: Array<CustomNotification>) => {
         notifications.forEach((notification) => {
-          notification.senderUid = notification.senderUid.split(' ').map(name => name[0]).join(' ');
           notification.showMore = false;
         })
         this.notifications.length = 0;

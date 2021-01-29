@@ -29,12 +29,11 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   removable = true;
   addOnBlur = true;
   dataSource: MatTableDataSource<any> = [] as any;
-  pageSize = 10;
+  pageSize = 100;;
   pageIndex = 0;
   sortingField = '';
   sortingDir = '';
   listData: any[] = new Array();
-  tablepageSize = 100;
 
   pageSizeOption=[100, 200, 300, 400];
 
@@ -52,6 +51,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   headerDesc = '';
   objectType = '';
   isWorkflowdataSet: boolean;
+  isCustomdataSet: boolean;
 
   plantCode: string;
   roleId: string;
@@ -166,7 +166,8 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
       this.headerDesc = returnData.widgetName;
       this.objectType = returnData.objectType;
       this.isWorkflowdataSet = returnData.isWorkflowdataSet;
-      this.tablepageSize=returnData.pageDefaultSize || 100
+      this.isCustomdataSet = returnData.isCustomdataSet;
+      this.pageSize=returnData.pageDefaultSize || 100
     }, (error)=> {
       console.log('Something went wrong while getting header meta data', error.message)
     });
@@ -344,6 +345,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
       objectType: this.objectType,
       selectedColumns: sortedColumns.map(columnMetaData => columnMetaData.fldMetaData),
       isWorkflowdataSet: this.isWorkflowdataSet,
+      isCustomdataSet: this.isCustomdataSet,
       widgetId: this.widgetId,
       isRefresh: false,
     }

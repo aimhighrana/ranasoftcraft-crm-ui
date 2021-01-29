@@ -104,7 +104,7 @@
 //   it('ngOnInit(), check all pre require ', async(()=>{
 //     spyOn(reportService,'getReportConfi').withArgs('','').and.returnValue(of());
 //     spyOn(schemaService,'getAllObjectType').and.returnValue(of([]));
-//     // const initialFrmGrp = {widgetName: '', width: '', height: '', field: '', aggregrationOp: '', filterType: '', isMultiSelect: false, groupById: '', objectType: '', imageUrl: '', htmlText: '', imagesno: '', imageName: ''};
+//     // const initialFrmGrp = {widgetName: '', width: '', height: '', field: '', aggregrationOp: '', filterType: '', isMultiSelect: false, groupById: '', objectType: '', imageUrl: '', htmlText: '', imagesno: '', imageName: '', isCustomdataSet: false, isFieldDistinct: false};
 //     component.ngOnInit();
 //     expect(component.subscriptions.length).toEqual(6, 'Size should be 6');
 //     // expect(schemaService.getAllObjectType()).toHaveBeenCalled()

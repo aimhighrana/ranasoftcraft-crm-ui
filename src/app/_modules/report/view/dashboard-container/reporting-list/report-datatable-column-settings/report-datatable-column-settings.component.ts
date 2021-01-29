@@ -1,7 +1,8 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { MetadataModel } from '@models/schema/schemadetailstable';
+import { ReportService } from '@modules/report/_service/report.service';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { Observable, of, Subscription } from 'rxjs';
@@ -61,9 +62,9 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
    * Constructor of class
    */
   constructor(private router: Router,
-    private acticatedRoute: ActivatedRoute,
     private schemaDetailsService: SchemaDetailsService,
-    private sharedService: SharedServiceService) { }
+    private sharedService: SharedServiceService,
+    private reportService: ReportService) { }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => {
@@ -80,16 +81,19 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
           this.data = data;
 
         this.objectNumber = data.objectType;
-        if (data.isWorkflowdataSet === null || data.isWorkflowdataSet === false) {
+        if ((data.isWorkflowdataSet === null || data.isWorkflowdataSet === false) && (data.isCustomdataSet === null || data.isCustomdataSet === false)) {
           this.getAllMetaDataFields(this.objectNumber);
         }
-        if (data.isWorkflowdataSet === true) {
+        if (data.isWorkflowdataSet === true && (data.isCustomdataSet === null || data.isCustomdataSet === false)) {
           if (data.objectType.includes(',')) {
             const objectType = data.objectType.split(',');
             this.getWorkFlowFields(objectType);
           } else {
             this.getWorkFlowFields(Array(this.objectNumber))
           }
+        }
+        if(data.isCustomdataSet === true && (data.isWorkflowdataSet === null || data.isWorkflowdataSet === false)) {
+          this.getCustomFields(this.objectNumber);
         }
         this.manageStateOfCheckbox()
         }
@@ -309,5 +313,42 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
       console.error('Error while updating report data table column settings', error.message)
     });
     this.subscriptions.push(reportDataTable);
+  }
+
+  /**
+   * function to get Custom Fields of widget
+   * @param objectNumber object number of widget
+   */
+  getCustomFields(objectNumber: string) {
+    const CustomfldSub = this.reportService.getCustomDatasetFields(objectNumber).subscribe(data => {
+      if (this.data && this.data.selectedColumns && this.data.selectedColumns.length > 0) {
+        this.data.selectedColumns.forEach(selectedColumn => {
+          this.headers.push(selectedColumn);
+        })
+      }
+      /**
+       * building array of fieldIds of headers
+       * why...because with this we can restrict duplicate entries
+       */
+      this.fieldIdArray = this.headers.map(header => header.fieldId);
+
+      /**
+       * check and push static headers
+       */
+      data.forEach((CustomField) => {
+        const index = this.fieldIdArray.indexOf(CustomField.fieldId);
+        if (index === -1) {
+          this.headers.push(CustomField);
+        }
+        if(index !== -1) {
+          this.headers[index] = CustomField;
+        }
+      });
+
+      this.headersObs = of(this.headers);
+    }, error => {
+      console.error('Error while getting report workflow fields', error.message);
+    });
+    this.subscriptions.push(CustomfldSub);
   }
 }

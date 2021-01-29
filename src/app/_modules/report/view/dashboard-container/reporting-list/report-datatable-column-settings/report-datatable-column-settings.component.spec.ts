@@ -5,15 +5,22 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppMaterialModuleForSpec } from '../../../../../../app-material-for-spec.module';
 import { Router } from '@angular/router';
-import { MetadataModel } from '../../../../../../_models/schema/schemadetailstable';
+import { MetadataModel, MetadataModeleResponse } from '../../../../../../_models/schema/schemadetailstable';
 import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
 import { SharedModule } from '@modules/shared/shared.module';
+import { ReportService } from '@modules/report/_service/report.service';
+import { of } from 'rxjs';
+import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
+import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 
 
 describe('ReportDatatableColumnSettingsComponent', () => {
   let component: ReportDatatableColumnSettingsComponent;
   let fixture: ComponentFixture<ReportDatatableColumnSettingsComponent>;
   let router: Router;
+  let reportServiceSpy: ReportService;
+  let sharedserviceSpy: SharedServiceService;
+  let schemaDetailsService: SchemaDetailsService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -27,7 +34,9 @@ describe('ReportDatatableColumnSettingsComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ReportDatatableColumnSettingsComponent);
     component = fixture.componentInstance;
-    // fixture.detectChanges();
+    reportServiceSpy = fixture.debugElement.injector.get(ReportService);
+    sharedserviceSpy = fixture.debugElement.injector.get(SharedServiceService);
+    schemaDetailsService = fixture.debugElement.injector.get(SchemaDetailsService);
   });
 
   it('should create', () => {
@@ -112,5 +121,88 @@ describe('ReportDatatableColumnSettingsComponent', () => {
     component.manageStateOfCheckbox();
     expect(component.allIndeterminate).toEqual(false);
     expect(component.allCheckboxSelected).toEqual(true);
-  })
+  });
+
+  it('getCustomFields(), get Custom Fields of widget', async(() => {
+    const obj = 'numberoflogin';
+    component.data= {};
+    const res = [{fieldId: 'USERID', fieldDescri: 'User Id'}, {fieldId: 'TIMEZONE', fieldDescri: 'Time Zone'}];
+    spyOn(reportServiceSpy,'getCustomDatasetFields').withArgs(obj).and.returnValue(of(res));
+    component.getCustomFields(obj);
+    expect(reportServiceSpy.getCustomDatasetFields).toHaveBeenCalledWith(obj);
+    expect(component.headers.length).toEqual(2);
+
+    component.data= {
+      selectedColumns: ['fname']
+    };
+    component.getCustomFields(obj);
+    expect(component.headers.length).toEqual(3);
+  }));
+
+  it('ngOnInit(), preloadaed function', async(() => {
+    const response = { objectType: 'numberoflogin', selectedColumns: ['fname'], isWorkflowdataSet: false, isCustomdataSet: true, widgetId: '9876534433', isRefresh:false};
+    spyOn(sharedserviceSpy,'getReportDataTableSetting').and.returnValue(of(response));
+    component.ngOnInit();
+    expect(sharedserviceSpy.getReportDataTableSetting).toHaveBeenCalled();
+    expect(component.data.objectType).toEqual('numberoflogin');
+  }));
+
+  it('getWorkFlowFields(), get Workflow Fields of widget', async(() => {
+    const obj = Array('1005');
+    component.data= {};
+    const res = {static:[{fieldId: 'status', fieldDescri: 'Staus'}, {fieldId: 'CRID', fieldDescri: 'Criteria Id'}], dynamic:[{fieldId: 'PO_UNIT', fieldDescri: 'Order Unit'}]};
+    spyOn(schemaDetailsService,'getWorkflowFields').withArgs(obj).and.returnValue(of(res));
+    component.getWorkFlowFields(obj);
+    expect(schemaDetailsService.getWorkflowFields).toHaveBeenCalledWith(obj);
+    expect(component.headers.length).toEqual(3);
+
+    component.data= {
+      selectedColumns: ['WFID']
+    };
+    component.getWorkFlowFields(obj);
+    expect(component.headers.length).toEqual(4);
+  }));
+
+  it('ngOnInit(), preloadaed function', async(() => {
+    const response = { objectType: '1005', selectedColumns: ['fname'], isWorkflowdataSet: true, isCustomdataSet: false, widgetId: '9876534433', isRefresh:false};
+    spyOn(sharedserviceSpy,'getReportDataTableSetting').and.returnValue(of(response));
+    component.ngOnInit();
+    expect(sharedserviceSpy.getReportDataTableSetting).toHaveBeenCalled();
+    expect(component.data.objectType).toEqual('1005');
+  }));
+
+  it('getAllMetaDataFields(), get metadata Fields of widget', async(() => {
+    const obj = '1005';
+    component.data= {};
+    const res = {
+      headers:{
+        MARA_NRFHG:{
+          fieldId:'MARA_NRFHG',
+          fieldDescri:'Qual.f.FreeGoodsDis'
+        },
+        GS_TO_DATE:{
+          fieldId:'GS_TO_DATE',
+          fieldDescri:'To Date'
+        }
+      }
+    } as MetadataModeleResponse;
+    spyOn(schemaDetailsService,'getMetadataFields').withArgs(obj).and.returnValue(of(res));
+    component.getAllMetaDataFields(obj);
+    expect(schemaDetailsService.getMetadataFields).toHaveBeenCalledWith(obj);
+    expect(component.headers.length).toEqual(3);
+
+    component.data= {
+      selectedColumns: ['NDC_TYPE']
+    };
+    component.getAllMetaDataFields(obj);
+    expect(component.headers.length).toEqual(4);
+  }));
+
+  it('ngOnInit(), preloadaed function', async(() => {
+    const response = { objectType: '1005', selectedColumns: ['fname'], isWorkflowdataSet: false, isCustomdataSet: false, widgetId: '9876534433', isRefresh:false};
+    spyOn(sharedserviceSpy,'getReportDataTableSetting').and.returnValue(of(response));
+    component.ngOnInit();
+    expect(sharedserviceSpy.getReportDataTableSetting).toHaveBeenCalled();
+    expect(component.data.objectType).toEqual('1005');
+  }));
 });

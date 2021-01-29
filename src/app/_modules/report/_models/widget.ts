@@ -31,7 +31,8 @@ export class Widget {
     workflowPath: string[];
     distictWith: string;
     isCustomdataSet: boolean;
-    pageDefaultSize:number
+    pageDefaultSize:number;
+    isFieldDistinct: boolean;
 }
 
 export interface DateFilterCtrl {
@@ -264,7 +265,8 @@ export class WidgetHeader {
     indexName: string;
     desc: string;
     isWorkflowdataSet: boolean;
-    pageDefaultSize: number
+    pageDefaultSize: number;
+    isCustomdataSet: boolean;
 }
 
 export interface ChartLegend{

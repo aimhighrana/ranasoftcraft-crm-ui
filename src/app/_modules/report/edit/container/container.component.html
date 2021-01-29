@@ -272,6 +272,10 @@
                                 </ng-template>
                             </div>
 
+                            <div class="f-col" *ngIf="selStyleWid && selStyleWid.widgetType === 'COUNT'">
+                                <mat-checkbox color="primary" formControlName="isFieldDistinct">Include field as distinct</mat-checkbox>
+                            </div>
+
                             <div class="f-col">
                                 <!-- FOR FILTERs WIDGET-->
                                 <ng-template [ngIf]="selStyleWid && selStyleWid.widgetType === 'FILTER' ">
@@ -437,7 +441,7 @@
 
                                 <!-- For Custom Modules -->
                                 <ng-template
-                                    [ngIf]="selStyleWid && selStyleWid.widgetType === 'TABLE_LIST' && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===false  && styleCtrlGrp.get('isCustomdataSet').value===true">
+                                    [ngIf]="selStyleWid && selStyleWid.widgetType === 'TABLE_LIST' && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===false && styleCtrlGrp.get('isCustomdataSet').value===true">
                                     <mat-label>Choose columns</mat-label>
                                     <mat-form-field appearance="outline">
                                         <input matInput [matAutocomplete]="chooseColumn" (keyup)="searchCustomChooseColumn($event.target.value)">
@@ -717,7 +721,7 @@
                 </mat-accordion>
 
                 <!-- DEFAULT FILTERS -->
-                <mat-accordion *ngIf="selStyleWid && (selStyleWid.field || (selStyleWid.fieldCtrl && !(selStyleWid.fieldCtrl.dataType === 'DTMS' || selStyleWid.fieldCtrl.dataType === 'DATS')))">
+                <mat-accordion *ngIf="selStyleWid && (selStyleWid.widgetType === 'TABLE_LIST' || (selStyleWid.field || (selStyleWid.fieldCtrl && !(selStyleWid.fieldCtrl.dataType === 'DTMS' || selStyleWid.fieldCtrl.dataType === 'DATS'))))">
                     <mat-expansion-panel class="mat-elevation-z0" togglePosition="before" expanded="true">
                         <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
                             <mat-panel-title class="panel-title">

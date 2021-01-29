@@ -112,4 +112,16 @@ describe('EndpointsAnalyticsService', () => {
     const fieldId = 'NDC_TYPE'
     expect(serviceobj.getFieldMetadatByFldUrl(fieldId)).toContain(`report/fields-description/NDC_TYPE`);
   }));
+
+  it('getCountMetadata(), should return count of meta data', async(() => {
+    const serviceobj = new EndpointsAnalyticsService();
+    expect(serviceobj.getCountMetadata(6547898676578)).toContain(`report/widget/count/metadata/6547898676578`);
+  }));
+
+  it('saveReportDownload(), should return count of meta data', async(() => {
+    const serviceobj = new EndpointsAnalyticsService();
+    const widgetId = '6547898676578';
+    const userName = 'harshit'
+    expect(serviceobj.saveReportDownload(widgetId, userName)).toContain(`/widget/startdoDownloadFile/${widgetId}?userName=${userName}`);
+  }));
 });

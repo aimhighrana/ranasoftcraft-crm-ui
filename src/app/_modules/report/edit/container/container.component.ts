@@ -30,9 +30,16 @@ import { distinctUntilChanged } from 'rxjs/operators';
 })
 export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
+  /** when user click enable/disable widget property */
   showProperty = false;
+
+  /** screenwidth for calculate widget size */
   screenWidth: number;
-  pixcel = 200; // Initial 200
+
+  /** Initial 200 */
+  pixcel = 200;
+
+  /** initial size of every widget */
   eachBoxSize = 0;
 
   /** max width of any widget */
@@ -40,80 +47,90 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /** max height of any widget */
   widgetMaxHeight = 1000;
+
   fieldDataType: string;
-  // for background-color or additinal dynamic css on main container
+
+  /** for background-color or additinal dynamic css on main container */
   containerCss: any = {};
 
+  /** store widget data */
   widgetList: Widget[] = [];
+
+  /** store widget data */
   selStyleWid: Widget;
+
+  /** Form object for widget */
   styleCtrlGrp: FormGroup;
-  fields: BehaviorSubject<MetadataModeleResponse> = new BehaviorSubject<MetadataModeleResponse>(null);
-  wfFields: BehaviorSubject<WorkflowFieldRes> = new BehaviorSubject<WorkflowFieldRes>(null);
-  headerFields: Observable<MetadataModel[]> = of([]);
-  workflowFields: WorkflowFieldRes = new WorkflowFieldRes();
+
+  /** unique reportId for any report */
   reportId: string;
+
+  /** report name for any report */
   reportName = new FormControl ('', Validators.required);
+
+  /** fields for table widget */
   chooseColumns: WidgetTableModel[] = [];
-  dataSets: ObjectTypeResponse[];
-  dataSetOb: Observable<ObjectTypeResponse[]> = of([]);
 
-  dataSetsWorkFlow: WorkflowResponse[];
-  dataSetWorkflow: Observable<WorkflowResponse[]> = of([]);
-
+  /** Form object for Chart properties */
   chartPropCtrlGrp: FormGroup;
 
+  /** Form object for default filter */
   defaultFilterCtrlGrp: FormGroup;
 
+  /** store syncing reord for dataset */
   recordsCount: number;
 
+  /** permission for report */
   collaboratorPermission = false;
 
+  /** store operator for default filter */
   conditionalOperators: ConditionalOperator[] = this.possibleOperators;
 
+  /** store Dropdown value for dropdown fields */
   dropValues: DropDownValue[];
   dropValuesOb: Observable<DropDownValue[]> = of([]);
 
-  workflowPath: WorkflowPath[];
-  workflowPathOb: Observable<WorkflowPath[]> = of([])
-  /**
-   * All the http or normal subscription will store in this array
-   */
+  /** All the http or normal subscription will store in this array */
   subscriptions: Subscription[] = [];
+
+  /** field, groupwith, distinct all value is selected then serieswith is disabled */
   isSerieswithDisabled = false;
   selectedOption: string;
   fld2FldArray = ['FIELD2FIELD', 'FIELD2FIELD_EQUAL', 'FIELD2FIELD_GREATETHENEQUAL', 'FIELD2FIELD_GREATETHAN', 'FIELD2FIELD_LESSTHEN', 'FIELD2FIELD_LESSTHENEQUALTO'];
 
-  /**
-   * Store current search text for datasets
-   */
+  /** Store current search text for datasets */
   searchDataSetVal = '';
 
-  /**
-   * Maximum length of report name
-   */
+  /** Maximum length of report name */
   maxReportNameLength = 100;
 
-  /**
-   * Hold only header fields..
-   */
-  headerFls: MetadataModel[] = [];
+  /** store module data set object */
+  dataSets: ObjectTypeResponse[];
+  dataSetOb: Observable<ObjectTypeResponse[]> = of([]);
 
-  /**
-   * For workflow data set choose column filter ...
-   */
-  workflowFieldsObs: Observable<WorkflowFieldRes> = of(new WorkflowFieldRes());
-
-  /**
-   * store custom data set object
-   */
+  /** store custom data set object */
   customDataSets: ObjectTypeResponse[] = [];
   customDataSetob: Observable<ObjectTypeResponse[]> = of([]);
 
-  /**
-   * store custom data set fields
-   */
+  /** store fields for module dataset */
+  fields: BehaviorSubject<MetadataModeleResponse> = new BehaviorSubject<MetadataModeleResponse>(null);
+
+  /** Hold only header fields.. */
+  headerFls: MetadataModel[] = [];
+  headerFields: Observable<MetadataModel[]> = of([]);
+
+  /** For workflow data set choose column filter ... */
+  workflowFieldsObs: Observable<WorkflowFieldRes> = of(new WorkflowFieldRes());
+  wfFields: BehaviorSubject<WorkflowFieldRes> = new BehaviorSubject<WorkflowFieldRes>(null);
+  workflowFields: WorkflowFieldRes = new WorkflowFieldRes();
+
+  /** store custom data set fields */
   Customfields: MetadataModel[];
   CustomfieldsObs: Observable<MetadataModel[]> = of([]);
+
+  /** store workflow path for workflow dataset */
+  workflowPath: WorkflowPath[];
+  workflowPathOb: Observable<WorkflowPath[]> = of([])
 
   constructor(
     private formBuilder: FormBuilder,
@@ -133,6 +150,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       sub.unsubscribe();
     });
   }
+
   ngAfterViewInit(): void {
     if (this.elementRef.nativeElement) {
       const screenWidth = document.body.offsetWidth;
@@ -181,7 +199,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       workflowPath: [''],
       distictWith: [''],
       isCustomdataSet: [false],
-      pageDefaultSize: ['']
+      pageDefaultSize: [''],
+      isFieldDistinct: [false]
     });
 
     this.chartPropCtrlGrp = this.formBuilder.group({
@@ -231,6 +250,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         changedWidget.distictWith = typeof latestVal.distictWith === 'string' ? latestVal.distictWith : latestVal.distictWith.fieldId;
         changedWidget.isCustomdataSet = latestVal.isCustomdataSet;
         changedWidget.pageDefaultSize = latestVal.pageDefaultSize;
+        changedWidget.isFieldDistinct = latestVal.isFieldDistinct;
 
         // hold selected field control
         if (typeof latestVal.field !== 'string') {
@@ -291,20 +311,20 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const styleSub = this.styleCtrlGrp.get('objectType').valueChanges.subscribe(fillData => {
       if (fillData && typeof fillData === 'string') {
-        if (fillData !== this.styleCtrlGrp.value.objectType && !this.styleCtrlGrp.get('isWorkflowdataSet').value && !this.styleCtrlGrp.get('isCustomdataSet').value) {
+        if (fillData !== this.styleCtrlGrp.value.objectType && !this.selStyleWid.isWorkflowdataSet && !this.selStyleWid.isCustomdataSet) {
           this.getAllFields(fillData);
           this.getRecordCount(fillData);
           this.styleCtrlGrp.get('isWorkflowdataSet').setValue(false);
           this.styleCtrlGrp.get('isCustomdataSet').setValue(false);
         }
-        if (fillData !== this.styleCtrlGrp.value.objectType && this.styleCtrlGrp.get('isWorkflowdataSet').value && !this.styleCtrlGrp.get('isCustomdataSet').value) {
+        if (fillData !== this.styleCtrlGrp.value.objectType && this.selStyleWid.isWorkflowdataSet && !this.selStyleWid.isCustomdataSet) {
           this.getWorkFlowFields(fillData.split(','));
           this.getRecordCount(fillData, true);
           this.getWorkFlowPathDetails(fillData.split(','));
           this.styleCtrlGrp.get('isWorkflowdataSet').setValue(true);
           this.styleCtrlGrp.get('isCustomdataSet').setValue(false);
         }
-        if (fillData !== this.styleCtrlGrp.value.objectType && this.styleCtrlGrp.get('isCustomdataSet').value) {
+        if (fillData !== this.styleCtrlGrp.value.objectType && this.selStyleWid.isCustomdataSet && !this.selStyleWid.isWorkflowdataSet) {
           this.getCustomFields(fillData);
           this.getRecordCount(fillData, false, true);
           this.styleCtrlGrp.get('isWorkflowdataSet').setValue(false);
@@ -485,7 +505,6 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           isMultiSelect: data.isMultiSelect ? data.isMultiSelect : false,
           groupById: data.groupById ? data.groupById : '',
           isWorkflowdataSet: data.isWorkflowdataSet ? data.isWorkflowdataSet : false,
-          objectType: data.objectType ? data.objectType : '',
           imageUrl: data.imageUrl ? data.imageUrl : '',
           htmlText: data.htmlText ? data.htmlText : '',
           imagesno: data.imagesno ? data.imagesno : '',
@@ -496,7 +515,9 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           workflowPath: data.workflowPath ? data.workflowPath : [],
           distictWith: data.distictWith ? data.distictWith : '',
           isCustomdataSet: data.isCustomdataSet ? data.isCustomdataSet : false,
-          pageDefaultSize: data.pageDefaultSize ? data.pageDefaultSize : ''
+          pageDefaultSize: data.pageDefaultSize ? data.pageDefaultSize : '',
+          objectType: data.objectType ? data.objectType: '',
+          isFieldDistinct: data.isFieldDistinct ? data.isFieldDistinct : false
         });
 
         // set value to properties frm ctrl
@@ -534,21 +555,19 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.chooseColumns = data.widgetTableFields ? data.widgetTableFields : [];
 
       // make while edit widget ..
-      if (!data.isWorkflowdataSet) {
-        if (!data.isCustomdataSet) {
-          const hasObj = this.dataSets.filter(fil => fil.objectid === data.objectType)[0];
-          if (hasObj) {
-            setTimeout(() => {
-              (document.getElementById('dataSets') as HTMLInputElement).value = hasObj.objectdesc;
-            }, 1000);
-          }
-        } else {
-          const hasObj = this.customDataSets.filter(fil => fil.objectid === data.objectType)[0];
-          if (hasObj) {
-            setTimeout(() => {
-              (document.getElementById('dataSets') as HTMLInputElement).value = hasObj.objectdesc;
-            }, 1000);
-          }
+      if (!data.isWorkflowdataSet && !data.isCustomdataSet) {
+        const hasObj = this.dataSets.filter(fil => fil.objectid === data.objectType)[0];
+        if (hasObj) {
+          setTimeout(() => {
+            (document.getElementById('dataSets') as HTMLInputElement).value = hasObj.objectdesc;
+          }, 1000);
+        }
+      } else if(!data.isWorkflowdataSet && data.isCustomdataSet) {
+        const hasObj = this.customDataSets.filter(fil => fil.objectid === data.objectType)[0];
+        if (hasObj) {
+          setTimeout(() => {
+            (document.getElementById('dataSets') as HTMLInputElement).value = hasObj.objectdesc;
+          }, 1000);
         }
       }
     }
@@ -774,6 +793,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
     genericOp.desc = 'Common Operator';
     genericOp.childs = [];
     genericOp.childs.push('EQUAL');
+    genericOp.childs.push('NOT_EQUAL');
     genericOp.childs.push('STARTS_WITH');
     genericOp.childs.push('ENDS_WITH');
     genericOp.childs.push('CONTAINS');
@@ -911,18 +931,6 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.workflowFieldsObs = of({ dynamic: dynFld, static: sysFld });
     } else {
       this.workflowFieldsObs = of(this.workflowFields);
-    }
-  }
-
-  /**
-   * Search choose columns ...
-   * @param val searchable text for choose columns ..
-   */
-  searchChooseCustomColumn(val: string) {
-    if (val && val.trim() !== '') {
-      this.headerFields = of(this.headerFls.filter(fil => fil.fieldDescri.toLocaleLowerCase().indexOf(val.toLocaleLowerCase()) !== -1));
-    } else {
-      this.headerFields = of(this.headerFls);
     }
   }
 
