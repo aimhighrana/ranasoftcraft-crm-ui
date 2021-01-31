@@ -74,10 +74,14 @@ export class TableCellInputComponent implements OnInit, AfterViewInit {
     }
 
     setTimeout(() => {
-      const selectedOption = this.selectFieldOptions.find(option => option.TEXT.toLocaleLowerCase() === event.target.value.toLowerCase());
-      const selectedValue = selectedOption ? selectedOption.CODE : this.value;
-      this.emitInputBlur(selectedValue);
+      this.submitSingleSelectValue(event);
     }, 500)
+  }
+
+  submitSingleSelectValue(event) {
+    const selectedOption = this.selectFieldOptions.find(option => option.TEXT.toLocaleLowerCase() === event.target.value.toLowerCase());
+    const selectedValue = selectedOption ? selectedOption.CODE : this.value;
+    this.emitInputBlur(selectedValue);
   }
 
   formatMultiSelectValue(value) {

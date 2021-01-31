@@ -242,7 +242,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
    * Function to close schedule side sheet
    */
   close() {
-    this.router.navigate([{ outlets: { sb: null } }])
+    this.router.navigate([{ outlets: { sb: null } }], {queryParamsHandling: 'preserve'});
   }
 
   /**

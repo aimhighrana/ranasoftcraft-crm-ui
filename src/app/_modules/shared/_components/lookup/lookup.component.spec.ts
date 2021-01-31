@@ -1,4 +1,5 @@
 import { HttpClientModule } from '@angular/common/http';
+import { SimpleChanges } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -49,6 +50,12 @@ describe('LookupRuleComponent', () => {
     expect(component.modulesList.length).toEqual(1);
   });
 
+  it('getObjectTypes(), should call getAllObjectType with empty resp', () => {
+    spyOn(schemaService, 'getAllObjectType').and.returnValue(of([]));
+    component.getObjectTypes();
+    expect(component.modulesList.length).toEqual(0);
+  });
+
   it('selectCurrentField(), should add field to selectedFields', () => {
     component.selectedFields = [];
     const fieldData = {
@@ -60,7 +67,10 @@ describe('LookupRuleComponent', () => {
 
     component.initForm();
     component.selectCurrentField(fieldData);
+
+    component.selectCurrentField(fieldData);
     expect(component.selectedFields.length).toEqual(1);
+
   });
 
   it('setLookupConfig(), should update field to selectedFields', () => {
@@ -109,6 +119,7 @@ describe('LookupRuleComponent', () => {
 
     const eventEmitterSpy = spyOn(component.lookupRuleOutput, 'emit');
     component.setLookupTargetField('Target field modified', 0);
+    component.setLookupTargetField('Target field modified', 0, true);
     expect(eventEmitterSpy).toHaveBeenCalled();
   });
 
@@ -131,6 +142,7 @@ describe('LookupRuleComponent', () => {
     });
 
     expect(result).toEqual('Value form module');
+    expect(component.getInputValue(null)).toEqual('');
   });
 
   it('getValue(), should return ', () => {
@@ -229,6 +241,22 @@ describe('LookupRuleComponent', () => {
     const obj = {labelKey: 'desc', valueKey: 'value', list: []}
     component.updateTargetValue(obj);
     expect(component.fieldsObject).toEqual(obj);
+  });
+
+  it('should remove field after confirm', () => {
+    component.selectedFields = [{fieldId: 'region', enableUserField: true}] as LookupFields[];
+    component.selectedFieldsCopy = [{fieldId: 'region', enableUserField: true}] as LookupFields[];
+    component.removeFieldAfterConfirm('no', 0);
+    component.removeFieldAfterConfirm('yes', 0);
+    expect(component.selectedFields.length).toEqual(0);
   })
+
+  it('should update on input change', () => {
+    spyOn(component, 'updateTargetValue');
+    const changes: SimpleChanges = {fieldsObject: {currentValue: {labelKey: 'label', valueKey: 'value', list: []},
+          previousValue: null, firstChange: true, isFirstChange: null}};
+    component.ngOnChanges(changes)
+    expect(component.updateTargetValue).toHaveBeenCalled();
+  });
 
 });

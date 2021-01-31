@@ -196,14 +196,16 @@ export class TableColumnSettingsComponent implements OnInit{
     if(value) {
       const sugg = this.header.filter(fill=> fill.fieldDescri.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !==-1);
       this.suggestedFlds = sugg.map(map => map.fieldId);
-      if (this.suggestedFlds.length){
+      if (this.suggestedFlds.length && this.scrollable){
         const item = document.getElementById(this.suggestedFlds[0]);
         this.scrollable.nativeElement.scrollTo(0, item.offsetTop - item.scrollHeight);
       }
     } else {
       this.headerFieldObs = of(this.header);
       this.suggestedFlds = [];
-      this.scrollable.nativeElement.scrollTo(0, 0);
+      if(this.scrollable) {
+        this.scrollable.nativeElement.scrollTo(0, 0);
+      }
     }
   }
 
@@ -355,18 +357,18 @@ export class TableColumnSettingsComponent implements OnInit{
     this.actionsList[rowIndex][attributeKey] = attributeValue;
   }
 
-  /**
-   * create update a schema action
-   * @param action to be updated
-   * @param rowIndex inside the actions list
-   */
-  createUpdateAction(action: SchemaTableAction, rowIndex?: number) {
-    this.schemaDetailsService.createUpdateSchemaAction(action).subscribe(resp => {
-      console.log(resp);
-      rowIndex !== undefined ? this.actionsList[rowIndex] = resp : this.actionsList.splice(0, 0, resp);
-      this.sharedService.setChooseColumnData({selectedFields: this.initialSelectedFields, tableActionsList: this.actionsList, editActive: false});
-    })
-  }
+  // /**
+  //  * create update a schema action
+  //  * @param action to be updated
+  //  * @param rowIndex inside the actions list
+  //  */
+  // createUpdateAction(action: SchemaTableAction, rowIndex?: number) {
+  //   this.schemaDetailsService.createUpdateSchemaAction(action).subscribe(resp => {
+  //     console.log(resp);
+  //     rowIndex !== undefined ? this.actionsList[rowIndex] = resp : this.actionsList.splice(0, 0, resp);
+  //     this.sharedService.setChooseColumnData({selectedFields: this.initialSelectedFields, tableActionsList: this.actionsList, editActive: false});
+  //   })
+  // }
 
   /**
    * add a new custom action
@@ -386,20 +388,24 @@ export class TableColumnSettingsComponent implements OnInit{
   removeCustomAction(rowIndex: number) {
 
     this.glocalDialogService.confirm({label:'Are you sure to delete ?'}, (resp) => {
-      if (resp && resp === 'yes') {
-        const action = this.actionsList[rowIndex];
-        if (!action.sno) {
-          this.actionsList.splice(rowIndex, 1);
-        } else {
-          this.schemaDetailsService.deleteSchemaTableAction(this.data.schemaId, action.actionCode)
-            .subscribe(result =>  {
-              this.actionsList.splice(rowIndex, 1);
-        });
-        }
-      }
+      this.removeActionAfterConfirm(resp, rowIndex);
     })
 
 
+  }
+
+  removeActionAfterConfirm(resp, rowIndex) {
+    if (resp && resp === 'yes') {
+      const action = this.actionsList[rowIndex];
+      if (!action.sno) {
+        this.actionsList.splice(rowIndex, 1);
+      } else {
+        this.schemaDetailsService.deleteSchemaTableAction(this.data.schemaId, action.actionCode)
+          .subscribe(result =>  {
+            this.actionsList.splice(rowIndex, 1);
+      });
+      }
+    }
   }
 
   /**

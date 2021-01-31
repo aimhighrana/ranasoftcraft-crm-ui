@@ -4,6 +4,7 @@ import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { NounModifier } from '@models/schema/noun-modifier';
 import { Userdetails } from '@models/userdetails';
+import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { NounModifierService } from '@services/home/schema/noun-modifier.service';
 import { UserService } from '@services/user/userservice.service';
 import { of } from 'rxjs';
@@ -53,13 +54,19 @@ describe('ClassificationDatatableCellEditableComponent', () => {
       {NOUN_CODE: 'Bearing', NOUN_LONG: 'Bearing'}
     ] as NounModifier[];
 
-    spyOn(nounModifierService, 'getSuggestedNouns').withArgs(component.schemaId, component.rundId, component.objectNumber, component.brType, '')
-      .and.returnValue(of(apiResponse));
+    spyOn(nounModifierService, 'getSuggestedNouns').and.returnValue(of(apiResponse));
 
+    component.preSuggestedValues = [{CODE: 'Valve'} as DropDownValue]
+    component.getSuggestedNouns('Valve');
+    expect(component.selectFieldOptions.length).toEqual(2);
+
+    component.preSuggestedValues = [];
     component.getSuggestedNouns('');
-
     expect(component.selectFieldOptions.length).toEqual(1);
-    expect(component.selectFieldOptions[0].CODE).toEqual('Bearing');
+
+    spyOn(component, 'getSuggestedNouns');
+    component.searchControl.setValue('serach text');
+    expect(component.getSuggestedNouns).toHaveBeenCalled();
 
 
   }));
@@ -74,13 +81,19 @@ describe('ClassificationDatatableCellEditableComponent', () => {
       {MODE_CODE: 'Ball', MOD_LONG: 'Ball'}
     ] as NounModifier[];
 
-    spyOn(nounModifierService, 'getSuggestedModifiers').withArgs(component.schemaId, component.rundId, component.objectNumber, component.brType, component.nounCode, '')
-      .and.returnValue(of(apiResponse));
+    spyOn(nounModifierService, 'getSuggestedModifiers').and.returnValue(of(apiResponse));
 
+    component.preSuggestedValues = [{CODE: 'Precision ball'} as DropDownValue]
+    component.getSuggestedModifiers('Precision');
+    expect(component.selectFieldOptions.length).toEqual(2);
+
+    component.preSuggestedValues = [];
     component.getSuggestedModifiers('');
-
     expect(component.selectFieldOptions.length).toEqual(1);
-    expect(component.selectFieldOptions[0].CODE).toEqual('Ball');
+
+    spyOn(component, 'getSuggestedModifiers');
+    component.searchControl.setValue('serach text');
+    expect(component.getSuggestedModifiers).toHaveBeenCalled();
 
   }));
 
@@ -92,12 +105,13 @@ describe('ClassificationDatatableCellEditableComponent', () => {
       {NOUN_CODE: 'Bearing', NOUN_LONG: 'Bearing'}
     ] as NounModifier[];
 
-    spyOn(nounModifierService, 'getLocalNouns').withArgs('1005', '', '', '')
-      .and.returnValue(of(apiResponse));
+    spyOn(nounModifierService, 'getLocalNouns').and.returnValue(of(apiResponse));
 
     component.getLocalNouns('');
+    tick(10);
 
-    tick(100);
+    component.getLocalNouns('search text');
+    tick(10);
 
     expect(component.selectFieldOptions.length).toEqual(1);
     expect(component.selectFieldOptions[0].CODE).toEqual('Bearing');
@@ -113,11 +127,13 @@ describe('ClassificationDatatableCellEditableComponent', () => {
       {MODE_CODE: 'Ball', MOD_LONG: 'Ball'}
     ] as NounModifier[];
 
-    spyOn(nounModifierService, 'getLocalModifier').withArgs('1005', component.nounCode, '')
-      .and.returnValue(of(apiResponse));
+    spyOn(nounModifierService, 'getLocalModifier').and.returnValue(of(apiResponse));
 
     component.getLocalModifiers('');
-    tick(100);
+    tick(10);
+
+    component.getLocalModifiers('search text');
+    tick(10);
 
     expect(component.selectFieldOptions.length).toEqual(1);
     expect(component.selectFieldOptions[0].CODE).toEqual('Ball');
@@ -144,9 +160,14 @@ describe('ClassificationDatatableCellEditableComponent', () => {
   });
 
   it('update on changes', () => {
-    const changes:SimpleChanges = {controlType:{currentValue:'ctrl', previousValue: '', firstChange:null, isFirstChange:null}};
+    let changes:SimpleChanges = {controlType:{currentValue:'ctrl', previousValue: '', firstChange:null, isFirstChange:null}};
     component.ngOnChanges(changes);
     expect(component.controlType).toEqual('ctrl');
+
+    changes = {schemaId:{currentValue:'1701', previousValue: '', firstChange:null, isFirstChange:null}};
+    component.ngOnChanges(changes);
+    expect(component.controlType).toEqual('ctrl');
+
   });
 
   it('ngOnInit()', () => {
@@ -176,6 +197,6 @@ describe('ClassificationDatatableCellEditableComponent', () => {
     expect(component.getLocalNouns).toHaveBeenCalledTimes(1);
     expect(component.getLocalModifiers).toHaveBeenCalledTimes(1);
 
-  })
+  });
 
 });

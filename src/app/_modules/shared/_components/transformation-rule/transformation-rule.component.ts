@@ -304,15 +304,6 @@ export class TransformationRuleComponent implements OnInit, OnChanges {
   }
 
   /**
-   * function to set the value in the form
-   * @param value entered value
-   * @param field the selected field of form
-   */
-  getFormValue(value, field) {
-    this.form.controls[field].setValue(value);
-  }
-
-  /**
    * Angular hook to detect changes in the input values
    * @param changes check for change using changes variable
    */

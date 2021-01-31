@@ -6,6 +6,7 @@ import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { SchemaListModuleList } from '@models/schema/schemalist';
 import { of } from 'rxjs';
 import { SearchInputComponent } from '../search-input/search-input.component';
+import { SimpleChanges } from '@angular/core';
 
 describe('NavigationDropdownComponent', () => {
   let component: NavigationDropdownComponent;
@@ -106,4 +107,19 @@ describe('NavigationDropdownComponent', () => {
     component.searchSchema('t');
     expect(component.filteredSchemaList.length).toEqual(2);
   }));
+
+  it('should update on input change', () => {
+    spyOn(component.selectedModule, 'emit');
+
+    const changes: SimpleChanges = {value: {currentValue: 'new value', previousValue: null, firstChange: null, isFirstChange: null}};
+    component.ngOnChanges(changes);
+    expect(component.selectedModule.emit).toHaveBeenCalled();
+
+  });
+
+  it('should init component', () => {
+    spyOn(component, 'getObjectTypes');
+    component.ngOnInit();
+    expect(component.getObjectTypes).toHaveBeenCalled();
+  })
 });
