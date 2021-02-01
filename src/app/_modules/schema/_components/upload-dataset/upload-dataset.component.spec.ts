@@ -10,15 +10,18 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SchemaService } from '@services/home/schema.service';
 import { of, Subscription } from 'rxjs';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GlobaldialogService } from '@services/globaldialog.service';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { FormInputAutoselectComponent } from '@modules/shared/_components/form-input-autoselect/form-input-autoselect.component';
 import { CoreSchemaBrInfo, DropDownValue, TransformationModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
-import { AddFilterOutput, DataSource } from '@models/schema/schema';
+import { AddFilterOutput, DataSource, ObjectTypeResponse } from '@models/schema/schema';
 import { FilterCriteria } from '@models/schema/schemadetailstable';
 import { SchemaScheduler } from '@models/schema/schemaScheduler';
 import { SharedModule } from '@modules/shared/shared.module';
+import { SchemaDashboardPermission } from '@models/collaborator';
+import { UserService } from '@services/user/userservice.service';
+import { Userdetails } from '@models/userdetails';
 
 
 describe('UploadDatasetComponent', () => {
@@ -27,6 +30,7 @@ describe('UploadDatasetComponent', () => {
   let schemaServiceSpy: SchemaService;
   let schemadetailsService: SchemaDetailsService;
   let globaldialogService: GlobaldialogService;
+  let userService: UserService;
   let usersSpy;
   const transformationRule = {
     formData: {
@@ -100,6 +104,7 @@ describe('UploadDatasetComponent', () => {
     schemaServiceSpy = fixture.debugElement.injector.get(SchemaService);
     schemadetailsService = fixture.debugElement.injector.get(SchemaDetailsService);
     globaldialogService = fixture.debugElement.injector.get(GlobaldialogService);
+    userService = fixture.debugElement.injector.get(UserService);
     // fixture.detectChanges();
     usersSpy = spyOn(schemadetailsService, 'getAllUserDetails').and.callFake(() => {
       return of({
@@ -152,6 +157,18 @@ describe('UploadDatasetComponent', () => {
 
   it(`getObjectTypes(), should call service getAllObjectTypes`, async(() => {
     const returnData = [];
+    spyOn(schemaServiceSpy, 'getAllObjectType').and.returnValue(of(returnData));
+    component.getObjectTypes();
+    expect(schemaServiceSpy.getAllObjectType).toHaveBeenCalled();
+  }));
+
+  it(`getObjectTypes(), should call service getAllObjectTypes`, async(() => {
+    const returnData = [
+      {
+        objectid: '1',
+        objectdesc: 'materialgroup'
+      }
+    ] as ObjectTypeResponse[];
     spyOn(schemaServiceSpy, 'getAllObjectType').and.returnValue(of(returnData));
     component.getObjectTypes();
     expect(schemaServiceSpy.getAllObjectType).toHaveBeenCalled();
@@ -212,6 +229,33 @@ describe('UploadDatasetComponent', () => {
 
     expect(component.createBrObject(formData, formData.udrTreeData)).not.toBeUndefined();
     expect(component.createBrObject(formData, formData.udrTreeData)).not.toBeNull();
+
+    const object = {
+      tempId: '131234343434',
+      sno: 123323,
+      brIdStr: '12343435',
+      brId: '123334545',
+      brType: 'Missing rule type',
+      refId: 1223,
+      message: 'error message',
+      script: 'SSDSD',
+      brInfo: 'BUSINESS RULE ONE',
+      brExpose: 2,
+      status: '0',
+      standardFunction: 'jwqdjd0jr8323',
+      brWeightage: '12',
+      transformation: 1,
+      tableName: 'ashishTableName',
+      qryScript: 'AshishMetaD',
+      dependantStatus: 'TRUE',
+      plantCode: '0',
+      percentage: 100,
+      schemaId: '2343434',
+      isCopied: false,
+      duplicacyRuleData: new CoreSchemaBrInfo()
+    };
+    expect(component.createBrObject(object, formData.udrTreeData)).not.toBeUndefined();
+    expect(component.createBrObject(object, formData.udrTreeData)).not.toBeNull();
   }));
 
   it(`getModulesMetaHeaders(), should be called when creating modules metadata`, async(() => {
@@ -313,6 +357,9 @@ describe('UploadDatasetComponent', () => {
     component.editableFieldIds = ['id1'];
     component.requestForm.controls.objectId.setValue('test');
     expect(component.isEditable(data)).toBeTrue();
+
+    component.requestForm.controls.objectId.setValue('');
+    expect(component.isEditable(data)).toEqual(true)
   }));
 
   it('updateSubscribersList(), should update subscriberList', async () => {
@@ -356,6 +403,10 @@ describe('UploadDatasetComponent', () => {
       'Name your dataset',
     ];
     component.setProgressValue();
+    expect(component.progressBar).toEqual(100 / component.headerText.length);
+
+    const index = 1;
+    component.setProgressValue(index);
     expect(component.progressBar).toEqual(100 / component.headerText.length);
   });
 
@@ -428,6 +479,17 @@ describe('UploadDatasetComponent', () => {
 
   }));
 
+  it('should getScheduleInfo', async(() => {
+    spyOn(schemaServiceSpy, 'getSchedule').withArgs('test schema')
+      .and.returnValue(of(null));
+
+    component.getScheduleInfo('test schema');
+
+    expect(schemaServiceSpy.getSchedule).toHaveBeenCalledWith('test schema');
+    expect(component.canEditSchedule).toEqual(false);
+
+  }));
+
   it('getWeightage(), should return weightage', async () => {
     const br: CoreSchemaBrInfo = {
       sno: 1299484,
@@ -465,13 +527,13 @@ describe('UploadDatasetComponent', () => {
   });
 
   it('setRunningSchedule(), should set runTime value in request form', async () => {
-    const runId = {value: false};
+    const runId = { value: false };
     component.createForm();
     component.setRunningSchedule(runId);
     component.currentSchedule = null;
     expect(component.requestForm.controls.runTime.value).toEqual(false);
 
-    const runid = {value: true};
+    const runid = { value: true };
     component.setRunningSchedule(runid);
     component.currentSchedule = null;
     expect(component.requestForm.controls.runTime.value).toEqual(true);
@@ -499,7 +561,7 @@ describe('UploadDatasetComponent', () => {
   })
 
   it('addSubscribers(), should call openDialog', async () => {
-    component.dialogSubscriber =  new Subscription();
+    component.dialogSubscriber = new Subscription();
     spyOn(globaldialogService, 'openDialog').and.returnValue(null);
     component.addSubscribers();
     expect(globaldialogService.openDialog).toHaveBeenCalled();
@@ -507,13 +569,13 @@ describe('UploadDatasetComponent', () => {
 
   it(`To get FormControl from fromGroup `, async(() => {
     component.createForm()
-    const field=component.formField('objectDesc');
+    const field = component.formField('objectDesc');
     expect(field).toBeDefined();
   }));
 
   it(`Toggle isEnable value for schedule using slide toggle `, async(() => {
     component.createForm();
-    const event = {checked: true};
+    const event = { checked: true };
 
     component.currentSchedule = null;
     component.toggleScheduleStatus(event);
@@ -540,8 +602,8 @@ describe('UploadDatasetComponent', () => {
 
   it('showValidationError(), should hide validation message', fakeAsync(() => {
     component.uploadError = {
-        status: false,
-        message: ''
+      status: false,
+      message: ''
     }
 
     const message = 'Please fill the required fields.'
@@ -549,5 +611,198 @@ describe('UploadDatasetComponent', () => {
     expect(component.uploadError.status).toEqual(true);
     tick(3500);
     expect(component.uploadError.status).toEqual(false);
-}))
+  }));
+
+  it('toolbarHeaderText(), should return toolbar header array', async()=>{
+    component.headerText = ['material', 'mater'];
+    component.headerTextIndex = 1;
+    expect(component.toolbarHeaderText).toEqual('material')
+  });
+
+  it('getCurrentWeightageLimit(), should return current available weightage', async() => {
+    const brWeightage = 10;
+    component.selectedBusinessRules = [
+      {
+        brWeightage: '24'
+      }
+    ] as CoreSchemaBrInfo[];
+
+    const res = component.getCurrentWeightageLimit(brWeightage);
+    expect(res).toEqual(100-24+10);
+
+    component.selectedBusinessRules = [];
+    const res2 = component.getCurrentWeightageLimit();
+    expect(res2).toEqual(100);
+  });
+
+  it('weightageChange(), should update weightage', async()=>{
+    const event = {
+      value : 10
+    };
+    const i = 0;
+
+    component.selectedBusinessRules = [
+      {
+        brWeightage: '10'
+      }
+    ] as CoreSchemaBrInfo[];
+
+    component.weightageChange(event,i);
+    expect(component.selectedBusinessRules[0].brWeightage).toEqual(event.value);
+  });
+
+  it('isdisabled(), should disable input', async() => {
+    let value:any = 2;
+    let res = component.isdisabled(value);
+    expect(res).toEqual(true);
+
+    value = ''
+    res = component.isdisabled(value);
+    expect(res).toEqual(false);
+  });
+
+  it('updateSubscriber(), should update subscriber', async() => {
+    const data = {
+      fieldId: 'mater',
+      type: 'cleaning',
+      values: ['ashish'],
+      fldCtrl: [],
+      filterCtrl: {}
+    };
+
+    component.updatesubscriber(data);
+    expect(component.updatesubscriber).toBeTruthy();
+  });
+
+  it('isSchemaSet(), should set schema name', async() => {
+    let value = {
+      discription: 'materialGrpD'
+    };
+    expect(component.isSchemaSet(value)).toEqual(true);
+
+    value = null;
+    expect(component.isSchemaSet(value)).toEqual(false);
+  });
+
+  it('makeEditable(), should make editable', fakeAsync(()=> {
+    const data = {
+      mdoFldId: '12234545667'
+    } as DataSource;
+    component.makeEditable(data);
+    tick(0);
+    expect(component.editableFieldIds.length).toEqual(1)
+  }));
+
+  it('checkIfExist(), should check for business rules existence', async() => {
+    const rule = {
+      brId: '123234344',
+      brIdStr: '12323444',
+      tempId: '1323443'
+    } as CoreSchemaBrInfo;
+    component.existingTempIds = ['1323443']
+    expect(component.checkIfExist(rule)).toEqual(true);
+  });
+
+  it('setSchemaName(), should set schema name to field', async() => {
+    component.createForm();
+    const coreSchema = {
+      discription: 'Ashish_Schema'
+    }
+    component.requestForm.controls.core_schema.setValue(coreSchema);
+    const event = 'Ashish_Updated_Schema';
+
+    component.setschemaName(event);
+    expect(component.requestForm.controls.core_schema.value.discription).toEqual(event)
+  });
+
+  it('search(), should return search result of modules', async() => {
+    const event = 'module';
+    const whatToFilter = 'module';
+
+    component.modulesListCopy = [];
+    component.search('', whatToFilter);
+    expect(component.modulesList.length).toEqual(0);
+
+    component.modulesList = [
+      {
+        objectdesc: 'moduleAshishGouyal'
+      },
+      {
+        objectdesc: 'Ashish'
+      }
+    ];
+    // whatToFilter = 'schema';
+    component.search(event, whatToFilter);
+    expect(component.modulesList.length).toEqual(1)
+  });
+
+  it('getSchemaCollaboratorInfo(), should get subscriber info of schema', async()=>{
+    const schemaId = '121234'
+    const mockRes = [
+      {
+        sno: '11323',
+        filterCriteria: [
+          {
+            fieldId: 'ashishmaterial',
+            type: 'DROPDOWN',
+            values: ['ashish']
+          }
+        ],
+        isAdmin: true,
+        isReviewer: true,
+        isEditer: true,
+        isViewer: true
+      }
+    ] as SchemaDashboardPermission[];
+
+    spyOn(schemadetailsService, 'getCollaboratorDetails').withArgs(schemaId).and.returnValue((of(mockRes)));
+
+    component.getSchemaCollaboratorInfo(schemaId);
+    expect(schemadetailsService.getCollaboratorDetails).toHaveBeenCalled()
+  })
+
+  it('getSchemaCollaboratorInfo(), should get subscriber info of schema', async()=>{
+    const schemaId = '121234'
+    const mockRes = [
+      {
+        sno: '11323',
+        filterCriteria: [
+          {
+            fieldId: 'ashishmaterial',
+            type: 'DROPDOWN',
+            values: ['ashish']
+          }
+        ],
+        isAdmin: false,
+        isReviewer: false,
+        isEditer: false,
+        isViewer: false
+      }
+    ] as SchemaDashboardPermission[];
+
+    spyOn(schemadetailsService, 'getCollaboratorDetails').withArgs(schemaId).and.returnValue((of(mockRes)));
+
+    component.getSchemaCollaboratorInfo(schemaId);
+    expect(schemadetailsService.getCollaboratorDetails).toHaveBeenCalled()
+  });
+
+  it('ngOnInit(), should call It after loading component successfully.', async() => {
+    const mockRes = {
+      userName: 'AshishK',
+      plantCode: '0'
+    } as Userdetails;
+    spyOn(component, 'createForm');
+    spyOn(component, 'getObjectTypes');
+    spyOn(userService, 'getUserDetails').and.returnValue(of(mockRes))
+    spyOn(component, 'getBusinessRulesList');
+    spyOn(component, 'getCollaborators');
+
+    component.requestForm = new FormGroup({
+      dataScope: new FormControl(''),
+      schemaThreshold: new FormControl()
+    })
+    component.ngOnInit();
+
+    expect(userService.getUserDetails).toHaveBeenCalled();
+  })
 });

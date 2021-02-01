@@ -12,15 +12,17 @@ import { SchemaDetailsService } from '@services/home/schema/schema-details.servi
 import { SchemaService } from '@services/home/schema.service';
 import { DataSource } from '@models/schema/schema';
 import { SchemaListModuleList } from '@models/schema/schemalist';
-import { MetadataModel } from '@models/schema/schemadetailstable';
+import { MetadataModel, MetadataModeleResponse } from '@models/schema/schemadetailstable';
 import { SharedModule } from '@modules/shared/shared.module';
 import { FormControl, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 
 describe('UploadDataComponent', () => {
   let component: UploadDataComponent;
   let fixture: ComponentFixture<UploadDataComponent>;
   let schemaDetailsServiceSpy: SchemaDetailsService;
   let schemaService: SchemaService;
+  let router: Router;
 
   const mockDialogRef = {
     close: jasmine.createSpy('close')
@@ -47,6 +49,7 @@ describe('UploadDataComponent', () => {
     component = fixture.componentInstance;
     schemaDetailsServiceSpy = fixture.debugElement.injector.get(SchemaDetailsService);
     schemaService = fixture.debugElement.injector.get(SchemaService);
+    router = TestBed.inject(Router);
   });
 
   it('should create', () => {
@@ -84,18 +87,34 @@ describe('UploadDataComponent', () => {
 
   it('controlStepChange(), should control the stepper', async(()=>{
     const event = {selectedIndex:0};
+
+    spyOn(component, 'prepareDataSource');
+
     component.controlStepChange(event);
     expect(component.controlStepChange).toBeTruthy();
+
+    event.selectedIndex = 1;
+    component.controlStepChange(event);
+    expect(component.prepareDataSource).toHaveBeenCalled();
   }));
 
   it('getMetadataFields(), get existing metadata fields', async(() =>{
     const moduleId = '6576576';
-    spyOn(schemaDetailsServiceSpy,'getMetadataFields').withArgs(moduleId).and.returnValue(of())
+    const mockRes = {
+      headers: {
+        header: {
+          plantCode: 'H1'
+        }
+      }
+    } as MetadataModeleResponse;
+    spyOn(schemaDetailsServiceSpy,'getMetadataFields').withArgs(moduleId).and.returnValue(of(mockRes))
     component.getMetadataFields(moduleId);
     expect(schemaDetailsServiceSpy.getMetadataFields).toHaveBeenCalledWith(moduleId);
+    expect(component.metadataFields).toEqual(mockRes);
   }));
 
-  it('makeMetadataControle(), help to make metadata control for all header , hierarchy and grid field ', async(()=>{component.metadataFields = {
+  it('makeMetadataControle(), help to make metadata control for all header , hierarchy and grid field ', async(()=>{
+    component.metadataFields = {
     gridFields:{ADDINFO:{ADD_HEIGHT:{fieldId:'ADD_HEIGHT'}}},
     grids:{ADDINFO:{fieldId: 'ADDINFO'}}, headers:{AACR:{fieldId: 'AACR'}},
     hierarchy: [{ heirarchyId: '1', heirarchyText: 'Plant DATA' ,fieldId: 'PLANT', objectType: '1005', objnr: 1, structureId: '0002', tableName: 'PLANTDATA_0002' }],
@@ -103,6 +122,11 @@ describe('UploadDataComponent', () => {
   }
     component.makeMetadataControle();
     expect(component.metaDataFieldList.length).toEqual(3);
+
+    // component.metaDataFieldList = [];
+    component.metadataFields = {} as MetadataModeleResponse;
+    component.makeMetadataControle();
+    expect(component.metaDataFieldList.length).toEqual(0)
   }));
 
   it('uploadFile(), should click on uploadFile input ', async(()=>{
@@ -111,16 +135,72 @@ describe('UploadDataComponent', () => {
     expect(component.uploadFile).toBeTruthy();
   }));
 
-  it('ngOnint()', (() => {
+  it('ngOnInit(), should call ngOnInit', (() => {
     component.moduleInfo = {moduleId:'1005'} as SchemaListModuleList;;
     spyOn(schemaDetailsServiceSpy,'getMetadataFields').withArgs(undefined).and.returnValue(of());
     component.ngOnInit();
     expect(component.ngOnInit).toBeTruthy();
   }));
 
-  it('fileChange', async(()=>{
-    component.fileChange(undefined);
+  it('fileChange, should upload file to server', async(()=>{
+    let event;
+    component.fileChange(event);
+    component.uploadFileStepCtrl = new FormGroup({
+      uploadFileCtrl : new FormControl('')
+    })
+
     expect(component.fileChange).toBeTruthy();
+    expect(component.uploadError.status).toEqual(false);
+
+    event = {
+      target: {
+        files: [
+          {
+            name: 'Ashish.xls'
+          },
+          {
+            name: 'AshishGoyal.xlxs'
+          }
+        ]
+      }
+    };
+    component.fileChange(event);
+
+    expect(component.uploadError.status).toEqual(true);
+
+    event = {
+      target: {
+        files: [
+          {
+            name: 'Ashish.JPEG'
+          }
+        ]
+      }
+    };
+    component.fileChange(event);
+
+    expect(component.uploadError.status).toEqual(true);
+
+    event = {
+      target: {
+        files: [
+          // {
+            new File([], 'AshishGoyal.xlsx')
+            // name: 'AshishGoyal.xlsx',
+            // size: 50000
+          // }
+        ]
+      }
+    }
+    component.importcorrectedRec = true;
+    component.fileChange(event);
+
+    expect(component.uploadError.status).toEqual(false);
+
+    component.importcorrectedRec = false;
+    component.fileChange(event);
+
+    expect(component.uploadError.status).toEqual(false)
   }));
 
   it('uploadDataHttpCall()  ', ()=>{
@@ -131,23 +211,31 @@ describe('UploadDataComponent', () => {
     component.schemaId = '276822';
     component.runid = '87264528';
 
-    spyOn(schemaService,'uploadData').withArgs(component.excelMdoFieldMappedData,'1005', component.fileSno).and.returnValue(of());
+    spyOn(schemaService,'uploadData').withArgs(component.excelMdoFieldMappedData,'1005', component.fileSno).and.returnValue(of('123456743'));
 
-    spyOn(schemaService, 'uploadCorrectionData').withArgs(component.excelMdoFieldMappedData, '1005',component.schemaId, component.runid, component.plantCode, component.fileSno).and.returnValue(of());
+    spyOn(schemaService, 'uploadCorrectionData').withArgs(component.excelMdoFieldMappedData, '1005',component.schemaId, component.runid, component.plantCode, component.fileSno).and.returnValue(of('1223455656767'));
 
     component.uploadDataHttpCall(stepper) ;
 
     component.importcorrectedRec = true;
     component.uploadDataHttpCall(stepper) ;
-
     expect(component.uploadDataHttpCall).toBeTruthy();
 
-    expect(schemaService.uploadData).toHaveBeenCalledWith(component.excelMdoFieldMappedData,'1005', component.fileSno);
     expect(schemaService.uploadCorrectionData).toHaveBeenCalledWith(component.excelMdoFieldMappedData, '1005',component.schemaId, component.runid, component.plantCode, component.fileSno);
+
+    component.schemaId = '';
+    component.runid = null;
+
+    component.uploadDataHttpCall(stepper);
+    expect(component.uploadError.status).toEqual(true);
+
+    component.importcorrectedRec = false;
+    expect(schemaService.uploadData).toHaveBeenCalledWith(component.excelMdoFieldMappedData,'1005', component.fileSno);
 
   });
 
   it('uploadFileData()  ', async(()=>{
+    const mockUploadResponse = '12345678901';
     const stepper: MatStepper = {next:null} as MatStepper;
     component.dataTableCtrl = new FormGroup({
       dataTableFldCtrl: new FormControl('')
@@ -155,14 +243,22 @@ describe('UploadDataComponent', () => {
     component.uploadFileStepCtrl = new FormGroup({
       uploadFileCtrl: new FormControl('')
     });
-    spyOn(schemaService,'uploadUpdateFileData').withArgs(component.uploadFileStepCtrl.get('uploadFileCtrl').value, component.fileSno).and.returnValue(of());
-    component.uploadFileData(stepper);
-
     component.excelMdoFieldMappedData = [{columnIndex:0,mdoFldId:'MATL_DEC'} as DataSource];
 
+    spyOn(component, 'uploadDataHttpCall')
+    spyOn(schemaService,'uploadUpdateFileData').withArgs(component.uploadFileStepCtrl.get('uploadFileCtrl').value, component.fileSno).and.returnValue(of(mockUploadResponse));
     component.uploadFileData(stepper);
 
+    // component.uploadFileData(stepper);
+
     expect(component.uploadFileData).toBeTruthy();
+    expect(schemaService.uploadUpdateFileData).toHaveBeenCalled();
+    expect(component.fileSno).toEqual(mockUploadResponse);
+
+    component.excelMdoFieldMappedData.length = 0;
+    component.uploadFileData(stepper);
+
+    expect(component.uploadError.status).toEqual(true);
   }));
 
   it('getSelectedFieldId()  ', async(()=>{
@@ -189,4 +285,42 @@ describe('UploadDataComponent', () => {
 
   }));
 
+  it('close(), should close upload data sidesheet', async() => {
+    component.outlet = 'outer';
+
+    spyOn(router, 'navigate');
+    component.close();
+
+    expect(router.navigate).toHaveBeenCalledWith([{outlets: {[component.outlet] : null}}])
+  });
+
+  it('getSchemaList(), should get schema list from service', async() => {
+    const mockRes = {
+      moduleId: '1005',
+      moduleDesc: 'Material_Module',
+      schemaLists: []
+    } as SchemaListModuleList;
+    component.moduleId = '129876';
+
+    spyOn(schemaService, 'getSchemaInfoByModuleId').withArgs(component.moduleId).and.returnValue(of(mockRes));
+
+    component.getSchemaList();
+    expect(schemaService.getSchemaInfoByModuleId).toHaveBeenCalledWith(component.moduleId);
+    expect(component.moduleInfo).toEqual(mockRes);
+  });
+
+  it('getSchemaList(), should get schema list from service', async() => {
+    // const mockRes = {
+    //   // moduleId: '1005',
+    //   // moduleDesc: 'Material_Module',
+    //   // schemaLists: []
+    // } as SchemaListModuleList;
+    component.moduleId = '129876';
+
+    spyOn(schemaService, 'getSchemaInfoByModuleId').withArgs(component.moduleId).and.returnValue(of(null));
+
+    component.getSchemaList();
+    expect(schemaService.getSchemaInfoByModuleId).toHaveBeenCalledWith(component.moduleId);
+    // expect(component.moduleInfo).toEqual(mockRes);
+  });
 });

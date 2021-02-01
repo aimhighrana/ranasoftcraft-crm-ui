@@ -167,7 +167,7 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
    * Function to load dropdown values for already seleted filters
    */
   loadDropValues(fldC: FilterCriteria) {
-    if (fldC) {
+    if (fldC && fldC.values) {
       const dropArray: DropDownValue[] = [];
       fldC.values.forEach(val => {
         const drop: DropDownValue = { CODE: val, FIELDNAME: fldC.fieldId } as DropDownValue;

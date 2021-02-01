@@ -146,7 +146,8 @@ export class UploadDataComponent implements OnInit, AfterViewInit {
       }
       if (type === 'xlsx' || type === 'xls' || type === 'csv') {
         // check size of file
-        const size = target.files.item(0).size;
+        const size = target.files[0].size;
+
         const sizeKb = Math.round((size / 1024));
         if (sizeKb > (10 * 1024)) {
           this.uploadedFile = null;
@@ -170,7 +171,9 @@ export class UploadDataComponent implements OnInit, AfterViewInit {
           this.uploadedData = (data as UploadedDataType);
           this.excelHeader = this.uploadedData[0] as string[];
           // move to next step
-          this.stepper.next();
+          if(this.stepper){
+            this.stepper.next();
+          }
           const file = target.files[0]
           this.uploadedFile = file;
 

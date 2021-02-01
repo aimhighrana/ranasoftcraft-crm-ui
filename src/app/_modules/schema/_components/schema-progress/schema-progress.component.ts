@@ -27,6 +27,8 @@ export class SchemaProgressComponent implements OnInit, OnChanges, OnDestroy {
 
   pollingInterval: ReturnType<typeof setInterval>;
 
+  progressHttpCallInterval = 15000;
+
   /**
    * Constructor of class
    * @param schemaService: Instace of schema service
@@ -38,7 +40,7 @@ export class SchemaProgressComponent implements OnInit, OnChanges, OnDestroy {
    */
   ngOnInit(): void {
       this.schemaExecutionProgressInfo(this.schemaId);
-      this.pollingInterval =  setInterval(() => this.schemaExecutionProgressInfo(this.schemaId), 15000);
+      this.pollingInterval =  setInterval(() => this.schemaExecutionProgressInfo(this.schemaId), this.progressHttpCallInterval);
   }
 
   /**

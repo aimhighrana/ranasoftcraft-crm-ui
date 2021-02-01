@@ -189,7 +189,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
   /**
    * get params of active route to get module id and schema id
    */
-  private getRouteParams() {
+  public getRouteParams() {
 
     this.activateRoute.queryParams.subscribe((params) => {
       console.log(params);
@@ -299,7 +299,6 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
       businessRule.brWeightage = String((event as MatSliderChange).value);
     }
     else if (event instanceof MatCheckboxChange) {
-      console.log(event.checked);
       businessRule.status = (event as MatCheckboxChange).checked ? '1' : '0';
     }
   }
@@ -351,7 +350,6 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    * @param schema runable schema details .
    */
   runSchema() {
-    console.log(this.dataScopeControl.value);
     const schemaExecutionReq: SchemaExecutionRequest = new SchemaExecutionRequest();
     schemaExecutionReq.schemaId = this.schemaId;
     schemaExecutionReq.variantId = this.dataScopeControl.value ? this.dataScopeControl.value : '0'; // 0 for run all
@@ -572,13 +570,16 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    * @param brInfo: object contains business rule info
    */
   addBusinessRule(brInfo) {
-    const checkExistence = this.businessRuleData.filter((businessRule) => businessRule.brIdStr === brInfo.brIdStr)[0];
-    if(checkExistence) {
-      this.matSnackBar.open('Business rule already added.', 'ok', {
-        duration: 2000,
-      });
-      return;
+    if(this.businessRuleData.length > 0) {
+      const checkExistence = this.businessRuleData.filter((businessRule) => businessRule.brIdStr === brInfo.brIdStr)[0];
+      if(checkExistence) {
+        this.matSnackBar.open('Business rule already added.', 'ok', {
+          duration: 2000,
+        });
+        return;
+      }
     }
+
     brInfo.brWeightage = 0;
     brInfo.isCopied = false;
     brInfo.schemaId = null;

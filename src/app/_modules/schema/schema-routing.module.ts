@@ -87,7 +87,7 @@ const routes: Routes = [
   { path: 'secondary-navbar', component: SecondaryNavbarComponent },
   { path: 'create-rule', component: CreateRuleComponent },
   { path: 'setup-br-exclusion', component: ExclusionsSidesheetComponent },
-  { path: ':moduleId', component: SchemaListsComponent },
+  { path: ':moduleId', component: SchemaListsComponent, pathMatch: 'full' },
   { path: 'sidenav-userdefined', component: SidenavUserdefinedComponent },
   { path: 'table-loading', component: TableLoadingComponent },
   { path: 'upload-data/:moduleId/:outlet', component: UploadDataComponent },
