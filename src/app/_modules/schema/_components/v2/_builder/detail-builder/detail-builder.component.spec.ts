@@ -9,11 +9,14 @@ import { SharedModule } from '@modules/shared/shared.module';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { DetailBuilderComponent } from './detail-builder.component';
+import { ActivatedRoute } from '@angular/router';
 
 describe('DetailBuilderComponent', () => {
   let component: DetailBuilderComponent;
   let fixture: ComponentFixture<DetailBuilderComponent>;
   let schemaService: SchemalistService;
+  const routeParams = {schemaId: 'schema1', variantId: '0'};
+  const queryParams = {status: 'error'};
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -23,7 +26,11 @@ describe('DetailBuilderComponent', () => {
         RouterTestingModule,
         AppMaterialModuleForSpec,
         SharedModule
-      ]
+      ],
+      providers: [{
+          provide: ActivatedRoute,
+          useValue: {params: of(routeParams), queryParams: of(queryParams)}
+        }]
     })
     .compileComponents();
   }));
@@ -40,8 +47,15 @@ describe('DetailBuilderComponent', () => {
 
 
   it('ngOnInit(), test all prerequired stuff', async(()=>{
+
+    spyOn(component, 'getSchemaDetails');
     component.ngOnInit();
-    expect(component.ngOnInit).toBeTruthy();
+
+    component.schemaId = routeParams.schemaId;
+    component.variantId = '1';
+    queryParams.status = '';
+    component.ngOnInit();
+    expect(component.getSchemaDetails).toHaveBeenCalledTimes(1);
   }));
 
   it(`getSchemaDetails(), get schema details for define view `, async(()=>{

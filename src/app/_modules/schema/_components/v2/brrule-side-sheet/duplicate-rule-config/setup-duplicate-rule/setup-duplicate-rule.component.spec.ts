@@ -1,8 +1,11 @@
 import { SimpleChanges } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CoreSchemaBrInfo } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SharedModule } from '@modules/shared/shared.module';
+import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { SetupDuplicateRuleComponent } from './setup-duplicate-rule.component';
@@ -10,6 +13,8 @@ import { SetupDuplicateRuleComponent } from './setup-duplicate-rule.component';
 describe('SetupDuplicateRuleComponent', () => {
   let component: SetupDuplicateRuleComponent;
   let fixture: ComponentFixture<SetupDuplicateRuleComponent>;
+  let sharedService: SharedServiceService;
+  let router: Router;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -24,6 +29,9 @@ describe('SetupDuplicateRuleComponent', () => {
     component = fixture.componentInstance;
     // fixture.detectChanges();
 
+    sharedService = fixture.debugElement.injector.get(SharedServiceService);
+    router = fixture.debugElement.injector.get(Router);
+
     component.fieldsList = [
       { fieldId: '1', fieldDescri: 'first name' }
     ];
@@ -36,9 +44,11 @@ describe('SetupDuplicateRuleComponent', () => {
 
   it('should filter fields list', () => {
 
-    spyOn(component, 'filter');
     component.searchField('first');
-    expect(component.filter).toHaveBeenCalledWith('first');
+    expect(component.filteredFieldList.length).toEqual(1);
+
+    component.searchField('last');
+    expect(component.filteredFieldList.length).toEqual(0);
 
   });
 
@@ -92,11 +102,17 @@ describe('SetupDuplicateRuleComponent', () => {
     component.addFieldRecord('fid');
     expect(component.fieldRecords.length).toEqual(1);
 
+    component.addFieldRecord('', {});
+    expect(component.fieldRecords.length).toEqual(1);
+
     component.setControlValue('addFields', 'criteria', 'Fuzzy', 0);
     expect(component.fieldRecords.value[0].criteria).toEqual('Fuzzy');
 
-    /* component.removeFormArrayRow('addFields', 0);
-    expect(component.fieldRecords.length).toEqual(0); */
+    component.removeFomArrRowAfterConfirm('no','addFields', 0);
+    expect(component.fieldRecords.length).toEqual(1);
+
+    component.removeFomArrRowAfterConfirm('yes','addFields', 0);
+    expect(component.fieldRecords.length).toEqual(0);
 
   });
 
@@ -193,8 +209,8 @@ describe('SetupDuplicateRuleComponent', () => {
     expect(component.masterRecords.value[0].ruleType).toEqual('OLDEST');
 
     component.initDuplicateRuleForm();
-    br.duplicacyField = [];
-    br.duplicacyMaster = [];
+    br.duplicacyField = null;
+    br.duplicacyMaster = null;
     component.patchDuplicateForm(br);
 
     expect(component.fieldRecords.value.length).toEqual(0);
@@ -212,13 +228,17 @@ describe('SetupDuplicateRuleComponent', () => {
 
     expect(component.masterRecords.value[0].fieldId).toEqual('USERCREATED');
 
+    component.addMasterRecord('', {});
+    expect(component.masterRecords.controls.length).toEqual(1);
+
+
   });
 
   it('should patch duplicate form on change', () => {
 
     spyOn(component, 'patchDuplicateForm');
 
-    const duplicacyField = [{
+    /* const duplicacyField = [{
       fieldId: 'fid',
       criteria: 'Exact_Match',
       exclusion: '0',
@@ -239,13 +259,40 @@ describe('SetupDuplicateRuleComponent', () => {
     coreSchemaBrInfo.duplicacyField = duplicacyField;
     coreSchemaBrInfo.duplicacyMaster = duplicacyMaster;
 
-    component.coreSchemaBrInfo = coreSchemaBrInfo;
+    component.coreSchemaBrInfo = coreSchemaBrInfo; */
 
-    const changes: SimpleChanges = {coreSchemaBrInfo:{currentValue: coreSchemaBrInfo, previousValue: '', firstChange:null, isFirstChange:null}};
+    let changes: SimpleChanges = {coreSchemaBrInfo:{currentValue: new CoreSchemaBrInfo(), previousValue: null, firstChange:null, isFirstChange:null}};
     component.ngOnChanges(changes);
-
     expect(component.patchDuplicateForm).toHaveBeenCalled();
 
+    changes = {fieldsList:{currentValue: [], previousValue: null, firstChange:null, isFirstChange:null}};
+    component.ngOnChanges(changes);
+    expect(component.duplicateFieldsObs).toBeDefined();
+
   });
+
+  it('should init component', () => {
+
+    spyOn(component.formChange, 'emit');
+    spyOn(component, 'updateFieldExclusion');
+
+    component.ngOnInit();
+    expect(component.formChange.emit).toHaveBeenCalled();
+
+    sharedService.setExclusionData({fId:'1',ival:'w1,w2', sval:'customer:client'});
+    sharedService.setExclusionData({fId:'1',ival:'w1,w2', sval:'customer:client', editActive: true});
+    expect(component.updateFieldExclusion).toHaveBeenCalledTimes(1);
+  });
+
+  it('should open exclusion sidesheet', () => {
+    spyOn(router, 'navigate');
+
+    component.initDuplicateRuleForm();
+    component.addFieldRecord('fid');
+
+
+    component.exclusionConf(component.fieldRecords.at(0) as FormGroup);
+    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: { outer: 'outer/schema/setup-br-exclusion' } }]);
+  })
 
 });

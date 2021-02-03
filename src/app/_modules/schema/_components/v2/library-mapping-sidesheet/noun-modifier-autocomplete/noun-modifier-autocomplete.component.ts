@@ -55,19 +55,21 @@ export class NounModifierAutocompleteComponent implements OnInit, OnChanges {
     this.formCtrl = this.formCtrl ? this.formCtrl : new FormControl('');
 
     this.formCtrl.valueChanges.pipe(debounceTime(1000)).subscribe(res=>{
-
-      if(typeof res === 'string') {
-          if(this.requestFor && this.requestFor === RequestFor.noun) {
-            this.getNouns(res.trim());
-          } else if(this.requestFor && this.requestFor === RequestFor.moifier) {
-            this.getModifiers(res.trim());
-          } else if(this.requestFor && this.requestFor === RequestFor.attribute) {
-            this.getAttributes(res.trim());
-          }
-      }
-
+      this.filterAutocompleteOptions(res);
     });
 
+  }
+
+  filterAutocompleteOptions(res) {
+    if(typeof res === 'string') {
+      if(this.requestFor && this.requestFor === RequestFor.noun) {
+        this.getNouns(res.trim());
+      } else if(this.requestFor && this.requestFor === RequestFor.moifier) {
+        this.getModifiers(res.trim());
+      } else if(this.requestFor && this.requestFor === RequestFor.attribute) {
+        this.getAttributes(res.trim());
+      }
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {

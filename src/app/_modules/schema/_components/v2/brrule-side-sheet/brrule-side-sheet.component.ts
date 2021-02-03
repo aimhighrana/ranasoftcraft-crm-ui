@@ -730,8 +730,8 @@ export class BrruleSideSheetComponent implements OnInit {
 
     this.form.controls.fields.setValue('');
     const txtfield = document.getElementById('fieldsInput') as HTMLInputElement;
-    txtfield.value = '';
     if (this.fieldsInput) {
+      txtfield.value = '';
       this.fieldsInput.nativeElement.blur();
     }
   }
@@ -751,20 +751,20 @@ export class BrruleSideSheetComponent implements OnInit {
     return this.form.controls.rule_type.value === BusinessRuleType.BR_REGEX_RULE
   }
 
-  /**
-   * function to set the value in the form
-   * @param value entered value
-   * @param field the selected field of form
-   */
-  getFormValue(value, field) {
-    this.form.controls[field].setValue(value);
-  }
+  // /**
+  //  * function to set the value in the form
+  //  * @param value entered value
+  //  * @param field the selected field of form
+  //  */
+  // getFormValue(value, field) {
+  //   this.form.controls[field].setValue(value);
+  // }
 
   /**
    * function to close the dialog
    */
   close() {
-    this.router.navigate([{ outlets: { [`${this.activeOutlet}`]: null } }]);
+    this.router.navigate([{ outlets: { [`${this.activeOutlet}`]: null } }], {queryParamsHandling: 'preserve'});
   }
 
   /**

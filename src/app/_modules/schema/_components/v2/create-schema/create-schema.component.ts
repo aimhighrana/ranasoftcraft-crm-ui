@@ -61,23 +61,13 @@ export class CreateSchemaComponent implements OnInit, OnDestroy {
       this.moduleId = res.moduleId ? res.moduleId : '';
     });
 
-    this.form = this.formBuilder.group({
-      moduleId: new FormControl('', Validators.required),
-      schemaCategory:new FormControl('DATAQUALITY_VIEW',Validators.required),
-      schemaDescription: new FormControl('', Validators.required),
-      threshold: new FormControl(0, Validators.required)
-    });
-
+    this.initForm();
 
     if (this.moduleId) {
       this.form.patchValue({ moduleId: this.moduleId });
       this.form.get('moduleId').disable({ emitEvent: true, onlySelf: true });
     } else {
-      const sub = this.schemaSrevice.getAllObjectType().subscribe(res => {
-        this.moduleList = res;
-        this.moduleListOb.next(res);
-      }, error => console.error('Error : {}', error.message));
-      this.subscriptions.push(sub);
+      this.getAllObjectType();
     }
 
     if (this.schemaId) {
@@ -95,6 +85,23 @@ export class CreateSchemaComponent implements OnInit, OnDestroy {
       }
     });
 
+  }
+
+  initForm() {
+    this.form = this.formBuilder.group({
+      moduleId: new FormControl('', Validators.required),
+      schemaCategory:new FormControl('DATAQUALITY_VIEW',Validators.required),
+      schemaDescription: new FormControl('', Validators.required),
+      threshold: new FormControl(0, Validators.required)
+    });
+  }
+
+  getAllObjectType() {
+    const sub = this.schemaSrevice.getAllObjectType().subscribe(res => {
+      this.moduleList = res;
+      this.moduleListOb.next(res);
+    }, error => console.error('Error : {}', error.message));
+    this.subscriptions.push(sub);
   }
 
   /**

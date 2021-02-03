@@ -1,10 +1,13 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { AttributesMapping } from '@models/schema/classification';
 import { AttributesDoc, NounModifier } from '@models/schema/noun-modifier';
+import { Userdetails } from '@models/userdetails';
 import { SharedModule } from '@modules/shared/shared.module';
 import { NounModifierService } from '@services/home/schema/noun-modifier.service';
+import { UserService } from '@services/user/userservice.service';
 import { of } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
@@ -16,11 +19,21 @@ describe('LibraryMappingSidesheetComponent', () => {
   let fixture: ComponentFixture<LibraryMappingSidesheetComponent>;
   let nounModifierService: NounModifierService;
   let router: Router;
+  let userDetails: UserService;
+  const routeParams = {
+    moduleId: '1005',
+    libraryNounCode: 'Bearing',
+    libraryModifierCode: 'Ball'
+  }
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ LibraryMappingSidesheetComponent, NounModifierAutocompleteComponent ],
-      imports: [ AppMaterialModuleForSpec, RouterTestingModule, HttpClientTestingModule, SharedModule ]
+      imports: [ AppMaterialModuleForSpec, RouterTestingModule, HttpClientTestingModule, SharedModule ],
+      providers: [{
+        provide: ActivatedRoute,
+        useValue: {params: of(routeParams)}
+      }]
     })
     .compileComponents();
   }));
@@ -37,6 +50,7 @@ describe('LibraryMappingSidesheetComponent', () => {
     component.libraryModifierCode = 'Ball';
 
     router = TestBed.inject(Router);
+    userDetails = fixture.debugElement.injector.get(UserService);
   });
 
   it('should create', () => {
@@ -128,5 +142,151 @@ describe('LibraryMappingSidesheetComponent', () => {
     component.close();
     expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: null } }])
   });
+
+  it('should init component', () => {
+    spyOn(component, 'getLocalNouns');
+    spyOn(component, 'getAttributesFromGsn');
+    spyOn(component, 'buildMappingForm');
+    component.ngOnInit();
+
+    expect(component.moduleId).toEqual(routeParams.moduleId);
+    expect(component.getLocalNouns).toHaveBeenCalled();
+
+  });
+
+  it('should set/patchMappingForm', () => {
+
+    component.buildMappingForm();
+    const attr = {ATTR_CODE:'length'} as AttributesDoc;
+    component.addAttributeMappingRow(attr);
+
+    const mappingData = {libraryNounCode: 'Bearing', libraryModCode: 'Ball', localNounCode: 'Bearing', localModCode: 'Ball',
+      attributeMapData: [{libraryAttributeCode: 'length', localAttributeCode: 'length'}]};
+
+    component.patchMappingForm({} as AttributesMapping);
+    expect(component.attributeMapData.at(0).value.localAttributeCode).toBeFalsy();
+
+    component.patchMappingForm(mappingData);
+    expect(component.attributeMapData.at(0).value.localAttributeCode).toEqual('length');
+
+    component.setFormControlValue('libraryModCode', 'Precision Ball');
+    expect(component.mappingForm.value.libraryModCode).toEqual('Precision Ball');
+
+
+  });
+
+  it('should getAttributesFromGsn', () => {
+    spyOn(component, 'getAttributesMapping');
+    spyOn(userDetails, 'getUserDetails').and.returnValue(of({plantCode: '0'}  as Userdetails));
+    spyOn(nounModifierService, 'getGsnAttribute').and.returnValue(of({ATTRIBUTES: [{ATTR_CODE:'length'} as AttributesDoc]} as NounModifier));
+
+    component.buildMappingForm();
+    component.getAttributesFromGsn('Bearing', 'Ball');
+    expect(component.attributeMapData.length).toEqual(1);
+
+  });
+
+  it('should addAttributeMappingRow', () => {
+    const attr = {ATTR_CODE:'', ATTR_DESC: 'length', localAttributeCode: 'length', localAttributeText: 'length', status: 'mapped'} as AttributesDoc;
+    component.buildMappingForm();
+    component.addAttributeMappingRow(attr);
+    expect(component.attributeMapData.at(0).value.localAttributeCode).toEqual('length');
+  });
+
+  it('should save()', () => {
+
+    const attr = {ATTR_CODE:'', ATTR_DESC: 'length', localAttributeCode: 'length', localAttributeText: 'length', status: 'mapped'} as AttributesDoc;
+
+    const mappingData = {libraryNounCode: 'Bearing', libraryModCode: 'Ball', localNounCode: 'Bearing', localModCode: 'Ball',
+      attributeMapData: [{libraryAttributeCode: 'length', localAttributeCode: 'length'}]};
+
+    spyOn(nounModifierService, 'saveAttributesMapping').and.returnValue(of('success'));
+
+    component.buildMappingForm();
+    component.save();
+
+    component.addAttributeMappingRow(attr);
+    component.patchMappingForm(mappingData);
+    component.save();
+
+    expect(nounModifierService.saveAttributesMapping).toHaveBeenCalledTimes(2);
+
+  });
+
+  it('should openModifierSidesheet', () => {
+    spyOn(router, 'navigate');
+
+    component.buildMappingForm();
+    component.openModifierSidesheet();
+    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: { outer: `outer/schema/modifier/${component.moduleId}/${component.mgroup}/${component.selectedNounCode}` } }])
+  });
+
+  it('should openAttributeSidesheet', () => {
+    spyOn(router, 'navigate');
+    component.buildMappingForm();
+    component.setFormControlValue('localNounCode', 'Bearing');
+    component.openAttributeSidesheet();
+    expect(router.navigate).toHaveBeenCalledWith(['', { outlets: { outer: `outer/schema/attribute/${component.selectedNounCode}` } }])
+  });
+
+  it('should filterAsStatus', () => {
+    spyOn(component, 'filterAttribute');
+
+    component.filterAsStatus('matched');
+    expect(component.statas[0].isSeleted).toBeTrue();
+
+    component.filterAsStatus('matched');
+    expect(component.statas[0].isSeleted).toBeFalse();
+
+  });
+
+  it('should filterAttribute', () => {
+    component.buildMappingForm();
+
+    const attr = {ATTR_CODE:'length', ATTR_DESC: 'length', localAttributeCode: 'length', localAttributeText: 'length', status: 'mapped'} as AttributesDoc;
+    component.gsnAttributes.push(attr);
+
+    component.filterAttribute();
+    expect(component.attributeMapData.controls.length).toEqual(1);
+
+    component.filterAttribute('length');
+    expect(component.attributeMapData.controls.length).toEqual(1);
+
+    component.filterAttribute('length', ['unmapped']);
+    expect(component.attributeMapData.controls.length).toEqual(1);
+
+  });
+
+  it('should nounSuggestion', () => {
+    component.localNounsList = [{NOUN_ID: 'Bearing'} as NounModifier];
+    expect(component.nounSuggestion('Bearing')).toBeDefined()
+  });
+
+  it('should modifierSuggestion', () => {
+    component.LocalModifiersList = [{NOUN_ID: 'Bearing', MODE_CODE: 'Ball'} as NounModifier];
+    expect(component.modifierSuggestion('Ball')).toBeDefined()
+  });
+
+  it('should attributeSuggestion', () => {
+    component.LocalAttributesList = [{ATTR_CODE:'length', ATTR_DESC: 'length'} as AttributesDoc];
+    expect(component.attributeSuggestion('length')).toBeDefined();
+  });
+
+  it('should createNewWidgetFor', () => {
+    spyOn(component, 'openNounSidesheet');
+    spyOn(component, 'openModifierSidesheet');
+    spyOn(component, 'openAttributeSidesheet');
+
+    component.createNewWidgetFor('noun');
+    component.createNewWidgetFor('modifier');
+    component.createNewWidgetFor('attribute');
+    component.createNewWidgetFor('other');
+
+    expect(component.openNounSidesheet).toHaveBeenCalledTimes(1);
+    expect(component.openModifierSidesheet).toHaveBeenCalledTimes(1);
+    expect(component.openAttributeSidesheet).toHaveBeenCalledTimes(1);
+  })
+
+
 
 });

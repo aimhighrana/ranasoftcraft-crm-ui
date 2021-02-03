@@ -1,7 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SharedModule } from '@modules/shared/shared.module';
+import { NounModifierService } from '@services/home/schema/noun-modifier.service';
+import { of } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { AttributeComponent } from './attribute.component';
@@ -10,11 +12,16 @@ describe('AttributeComponent', () => {
   let component: AttributeComponent;
   let fixture: ComponentFixture<AttributeComponent>;
   let router: Router;
+  let nounModifierService: NounModifierService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ AttributeComponent ],
-      imports: [AppMaterialModuleForSpec, RouterTestingModule, SharedModule]
+      imports: [AppMaterialModuleForSpec, RouterTestingModule, SharedModule],
+      providers: [{
+        provide: ActivatedRoute,
+        useValue: {params : of({nounSno: '1701'})}
+      }]
     })
     .compileComponents();
   }));
@@ -23,6 +30,7 @@ describe('AttributeComponent', () => {
     fixture = TestBed.createComponent(AttributeComponent);
     component = fixture.componentInstance;
 
+    nounModifierService = fixture.debugElement.injector.get(NounModifierService);
     router = TestBed.inject(Router);
     // fixture.detectChanges();
   });
@@ -57,4 +65,29 @@ describe('AttributeComponent', () => {
     const field=component.formField('attrCode');
     expect(field).toBeDefined();
    }));
+
+   it('should init component', () => {
+    component.ngOnInit();
+    expect(component.nounSno).toEqual('1701');
+  });
+
+
+  it('should save', () => {
+
+   spyOn(component, 'close');
+   spyOn(nounModifierService, 'addAttribute').and.returnValue(of('success'));
+
+   component.buildAttributeForm();
+   component.save();
+   expect(component.submitted).toBeTrue();
+
+   component.setControlValue('attrCode', 'length');
+   component.setControlValue('attrDesc', 'length mm');
+   component.save();
+
+   expect(nounModifierService.addAttribute).toHaveBeenCalledTimes(1);
+
+  })
+
+
 });
