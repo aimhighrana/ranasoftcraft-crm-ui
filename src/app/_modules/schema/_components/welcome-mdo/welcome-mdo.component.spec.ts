@@ -70,19 +70,30 @@ describe('WelcomeMdoComponent', () => {
   it('schemaList(), should open schemalist by using that objectId', async(() => {
     const searchInputfixture = TestBed.createComponent(SearchInputComponent);
     component.searchInput = searchInputfixture.componentInstance;
-    component.modulesList = [{ moduleId: '1005', objectdesc: 'material', schemaLists: [{}] }];
+    component.modulesList = [{ moduleId: '1005', objectdesc: 'material', schemaLists: [{}] }, { moduleId: '1006'}];
     const objectId = '1005';
     component.schemaList(objectId);
     expect(component.data.objectid).toEqual('1005');
   }));
 
   it('getObjectTypes(), should return all the modules with their schemas', async(() => {
-    spyOn(schemaListServiceSpy, 'getSchemaList').and.returnValue(of({} as SchemaListModuleList[]));
+
+    const response = [{moduleId: '1005'}] as SchemaListModuleList[];
+    spyOn(schemaListServiceSpy, 'getSchemaList').and.returnValues(of([]), of(response));
     component.getObjectTypes();
-    expect(schemaListServiceSpy.getSchemaList).toHaveBeenCalled();
+    expect(component.modulesList).toEqual([]);
+
+    component.getObjectTypes();
+    expect(component.modulesList).toEqual(response);
+    expect(schemaListServiceSpy.getSchemaList).toHaveBeenCalledTimes(2);
   }));
 
   it('searchModule() with args searchTerm, should filter modules', fakeAsync(() => {
+
+
+    component.searchModule('');
+    expect(component.filteredModulesList.length).toEqual(0);
+
     component.modulesList = [
       {
         moduleId: '1',
@@ -135,9 +146,15 @@ describe('WelcomeMdoComponent', () => {
   }));
 
   it(`selectschema() with args {schemaId: '123', schemaDescription: null}, should call createUpdateSchema`, async(() => {
-    component.data.objectid = '123';
+
     spyOn(router, 'navigate')
     spyOn(schemaServiceSpy, 'createUpdateSchema').and.returnValue(of('456'));
+    spyOn(component, 'openUploadScreen');
+
+    component.selectschema();
+    expect(component.openUploadScreen).toHaveBeenCalled();
+
+    component.data.objectid = '123';
     component.selectschema({ schemaId: null, schemaDescription: null });
     expect(schemaServiceSpy.createUpdateSchema).toHaveBeenCalled();
     expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/check-data/123/456` } }]);
@@ -145,4 +162,20 @@ describe('WelcomeMdoComponent', () => {
     component.selectschema({ schemaId: '789', schemaDescription: null });
     expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/check-data/123/789` } }]);
   }));
+
+  it('should init component', () => {
+
+    spyOn(component, 'getObjectTypes');
+    component.ngOnInit();
+    expect(component.getObjectTypes).toHaveBeenCalled();
+  });
+
+  it('should schemaTrackBy', () => {
+    expect(component.schemaTrackBy(1, '123')).toEqual(1);
+  });
+
+  it('should moduleTrackBy', () => {
+    expect(component.moduleTrackBy(1, '123')).toEqual(1);
+  });
+
 });

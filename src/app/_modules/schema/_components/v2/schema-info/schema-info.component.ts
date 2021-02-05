@@ -222,18 +222,22 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    */
   deleteVariant(variantId: string) {
     this.globalDialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
-      if (response && response === 'yes') {
-        const deleteVariant = this.schemaVariantService.deleteVariant(variantId).subscribe(res => {
-          if (res) {
-            this.getSchemaVariants(this.schemaId, 'RUNFOR');
-            this.matSnackBar.open('SuccessFully Deleted!!', 'close', { duration: 3000 })
-          }
-        }, error => {
-          console.log('Error while deleting schema variant', error.message)
-        })
-        this.subscriptions.push(deleteVariant);
-      }
+      this.deleteVariantAfterConfirm(response, variantId);
     });
+  }
+
+  deleteVariantAfterConfirm(response, variantId: string) {
+    if (response && response === 'yes') {
+      const deleteVariant = this.schemaVariantService.deleteVariant(variantId).subscribe(res => {
+        if (res) {
+          this.getSchemaVariants(this.schemaId, 'RUNFOR');
+          this.matSnackBar.open('SuccessFully Deleted!!', 'close', { duration: 3000 })
+        }
+      }, error => {
+        console.log('Error while deleting schema variant', error.message)
+      })
+      this.subscriptions.push(deleteVariant);
+    }
   }
 
   /**
@@ -491,20 +495,24 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       const br = this.businessRuleData[event.previousIndex];
-      if (br) {
-        const request: CoreSchemaBrMap = new CoreSchemaBrMap();
-        request.schemaId = this.schemaId;
-        request.brId = br.brIdStr;
-        request.order = event.currentIndex;
-        request.brWeightage = Number(br.brWeightage);
-        request.status = br.status
-        const updateBusinessRule = this.schemaService.updateBrMap(request).subscribe(res => {
-          if (res) {
-            this.getBusinessRuleList(this.schemaId);
-          }
-        }, error => console.error(`Error : ${error.message}`));
-        this.subscriptions.push(updateBusinessRule);
-      }
+      this.updateBrOrder(br, event.currentIndex);
+    }
+  }
+
+  updateBrOrder(br, currentIndex) {
+    if (br) {
+      const request: CoreSchemaBrMap = new CoreSchemaBrMap();
+      request.schemaId = this.schemaId;
+      request.brId = br.brIdStr;
+      request.order = currentIndex;
+      request.brWeightage = Number(br.brWeightage);
+      request.status = br.status
+      const updateBusinessRule = this.schemaService.updateBrMap(request).subscribe(res => {
+        if (res) {
+          this.getBusinessRuleList(this.schemaId);
+        }
+      }, error => console.error(`Error : ${error.message}`));
+      this.subscriptions.push(updateBusinessRule);
     }
   }
 
@@ -514,15 +522,19 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    */
   deleteBr(br: CoreSchemaBrInfo) {
     this.globalDialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
-      if (response && response === 'yes') {
-        if (br.brIdStr) {
-          const deleteSubscriber = this.schemaService.deleteBr(br.brIdStr).subscribe(res => {
-            this.getBusinessRuleList(this.schemaId);
-          }, error => console.error(`Error : ${error.message}`));
-          this.subscriptions.push(deleteSubscriber);
-        }
-      }
+      this.deleteBrAfterConfirm(response, br);
     });
+  }
+
+  deleteBrAfterConfirm(response: string, br: CoreSchemaBrInfo) {
+    if (response && response === 'yes') {
+      if (br.brIdStr) {
+        const deleteSubscriber = this.schemaService.deleteBr(br.brIdStr).subscribe(res => {
+          this.getBusinessRuleList(this.schemaId);
+        }, error => console.error(`Error : ${error.message}`));
+        this.subscriptions.push(deleteSubscriber);
+      }
+    }
   }
 
   /**
@@ -634,18 +646,22 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
   public deleteSubscriber(sNo: string) {
     console.log(sNo);
     this.globalDialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
-      if (response && response === 'yes') {
-        const sNoList = [];
-        sNoList.push(sNo);
-        const deleteSubscriber = this.schemaDetailsService.deleteCollaborator(sNoList).subscribe(res => {
-          this.matSnackBar.open('Subscriber deleted successfully.', 'okay', { duration: 5000 });
-          this.getSubscriberList(this.schemaId);
-        }, error => {
-          console.log('Error while deleting subscriber', error.message)
-        })
-        this.subscriptions.push(deleteSubscriber);
-      }
+      this.deleteSubsAfterConfirm(response, sNo)
     });
+  }
+
+  deleteSubsAfterConfirm(response: string, sNo: string) {
+    if (response && response === 'yes') {
+      const sNoList = [];
+      sNoList.push(sNo);
+      const deleteSubscriber = this.schemaDetailsService.deleteCollaborator(sNoList).subscribe(res => {
+        this.matSnackBar.open('Subscriber deleted successfully.', 'okay', { duration: 5000 });
+        this.getSubscriberList(this.schemaId);
+      }, error => {
+        console.log('Error while deleting subscriber', error.message)
+      })
+      this.subscriptions.push(deleteSubscriber);
+    }
   }
 
   /**

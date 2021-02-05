@@ -1,28 +1,34 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { SubscriberSideSheetComponent } from './subscriber-side-sheet.component';
-import { of } from 'rxjs';
-import { SchemaDashboardPermission } from '@models/collaborator';
+import { of, throwError } from 'rxjs';
+import { PermissionOn, SchemaDashboardPermission } from '@models/collaborator';
 import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
 import { SharedModule } from '@modules/shared/shared.module';
+import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 
 describe('SubscriberSideSheetComponent', () => {
   let component: SubscriberSideSheetComponent;
   let fixture: ComponentFixture<SubscriberSideSheetComponent>;
   let router: Router;
   let schemaDetailsServiceSpy: SchemaDetailsService;
+  let sharedService: SharedServiceService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [SubscriberSideSheetComponent, SearchInputComponent],
       imports: [
         AppMaterialModuleForSpec, HttpClientTestingModule, RouterTestingModule, SharedModule
-      ]
+      ],
+      providers: [{
+        provide: ActivatedRoute,
+        useValue: {params: of({ moduleId: '1005', schemaId: '1701'})}
+      }]
     })
       .compileComponents();
     router = TestBed.inject(Router);
@@ -32,6 +38,7 @@ describe('SubscriberSideSheetComponent', () => {
     fixture = TestBed.createComponent(SubscriberSideSheetComponent);
     component = fixture.componentInstance;
     schemaDetailsServiceSpy = fixture.debugElement.injector.get(SchemaDetailsService);
+    sharedService = fixture.debugElement.injector.get(SharedServiceService);
     fixture.detectChanges();
   });
 
@@ -65,25 +72,34 @@ describe('SubscriberSideSheetComponent', () => {
     expect(schemaDetailsServiceSpy.getCollaboratorDetails).toHaveBeenCalledWith(component.schemaId);
   })
 
-  // it('getCollaborators(), should get all collaborators', async () => {
-  //   const queryString = '';
-  //   spyOn(schemaDetailsServiceSpy, 'getAllUserDetails').withArgs(queryString).and.returnValue(of({} as PermissionOn));
-  //   const response: PermissionOn = {
-  //     users: [
-  //       {
-  //         userId: 'Ashish',
-  //         userName: 'Ashishkr',
-  //         fName: 'Ashish',
-  //         lName: 'Goyal',
-  //         fullName: 'Ashish Goyal',
-  //         email: 'ashish.goyal@prospecta.com'
-  //       }
-  //     ]
-  //   } as PermissionOn;
-  //   component.subscribers = response.users;
-  //   component.getCollaborators(queryString);
-  //   expect(schemaDetailsServiceSpy.getAllUserDetails).toHaveBeenCalledWith(queryString);
-  // })
+  it('getCollaborators(), should get all collaborators', async () => {
+    const queryString = '';
+
+    const response: PermissionOn = {
+      users: [
+        {
+          userId: 'Ashish',
+          userName: 'Ashishkr',
+          fName: 'Ashish',
+          lName: 'Goyal',
+          fullName: 'Ashish Goyal',
+          email: 'ashish.goyal@prospecta.com'
+        }
+      ]
+    } as PermissionOn;
+
+    component.collaboratorData = [{userid: 'Ashishkr', isViewer: true, schemaId: '1701', isAdmin: false}] as SchemaDashboardPermission[];
+
+    spyOn(schemaDetailsServiceSpy, 'getAllUserDetails').and.returnValue(of(response));
+
+    component.getCollaborators(queryString, 0);
+    expect(component.subscribers.length).toEqual(1);
+    expect(component.subscribers[0].isAdd).toBeTrue();
+
+    component.getCollaborators(queryString, 1);
+    expect(component.subscribers.length).toEqual(2);
+
+  })
 
   it('shortName(), should return initials of subscriber', () => {
     let fName = 'Ashish';
@@ -152,4 +168,61 @@ describe('SubscriberSideSheetComponent', () => {
     component.openSubscriberInviteDialog();
     expect(router.navigate).toHaveBeenCalledWith([{ outlets: { outer: `outer/schema/invite-subscriber/${component.moduleId}/${component.schemaId}/outer` } }])
   })
+
+  it('should init component', () => {
+    spyOn(component, 'getSubscribersBySchemaId');
+    component.ngOnInit();
+    expect(component.getSubscribersBySchemaId).toHaveBeenCalledWith('1701');
+  });
+
+  it('should save()', () => {
+    const subs = [{isViewer: true, schemaId: '1701', isAdmin: false}] as SchemaDashboardPermission[];
+    component.addSubscriberArr = subs;
+    component.outlet = 'sb';
+
+    spyOn(component, 'close');
+
+    spyOn(component, 'createUpdateSubscriber');
+    component.save();
+    expect(component.createUpdateSubscriber).toHaveBeenCalledWith(subs);
+
+    spyOn(sharedService, 'setAfterSubscriberSave');
+    component.outlet = 'outer';
+    component.save();
+    expect(sharedService.setAfterSubscriberSave).toHaveBeenCalledWith(subs);
+
+
+    spyOn(component, 'deleteSubscriber');
+    component.deleteSubscriberArr = [123];
+    component.addSubscriberArr = [];
+    component.save();
+    expect(component.deleteSubscriber).toHaveBeenCalledWith([123]);
+
+  });
+
+  it('should createUpdateSubscriber()', () => {
+    spyOn(schemaDetailsServiceSpy, 'createUpdateUserDetails').and.returnValues(of([123]), throwError({status: 500}));
+    spyOn(sharedService, 'setAfterSubscriberSave');
+
+    const subs = [{isViewer: true, schemaId: '1701', isAdmin: false}] as SchemaDashboardPermission[];
+
+    component.createUpdateSubscriber(subs);
+    component.createUpdateSubscriber(subs);
+    expect(schemaDetailsServiceSpy.createUpdateUserDetails).toHaveBeenCalledWith(subs);
+    expect(sharedService.setAfterSubscriberSave).toHaveBeenCalledTimes(1);
+
+  });
+
+  it('should deleteSubscriber()', () => {
+    spyOn(schemaDetailsServiceSpy, 'deleteCollaborator').and.returnValues(of(true), throwError({status: 500}));
+    spyOn(sharedService, 'setAfterSubscriberSave');
+
+    component.deleteSubscriber([123]);
+    component.deleteSubscriber([123]);
+    expect(schemaDetailsServiceSpy.deleteCollaborator).toHaveBeenCalledWith([123]);
+    expect(sharedService.setAfterSubscriberSave).toHaveBeenCalledTimes(1);
+
+  })
+
+
 });
