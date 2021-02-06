@@ -249,7 +249,7 @@ export class Any2tsService {
       userDetails.firstName = response.fname;
       userDetails.lastName = response.lname;
       userDetails.email = response.email;
-      userDetails.plantCode = response.rolesModel.plantCode;
+      userDetails.plantCode = response.selfServiceUserModel && response.selfServiceUserModel.ECId ? response.selfServiceUserModel.ECId : '0';
       userDetails.currentRoleId = response.rolesModel.roleId;
       userDetails.dateformat = response.dateFormat;
       userDetails.fullName = response.fullName;
