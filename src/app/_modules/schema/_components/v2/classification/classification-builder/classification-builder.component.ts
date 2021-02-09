@@ -16,7 +16,7 @@ import { SchemaDetailsService } from '@services/home/schema/schema-details.servi
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { UserService } from '@services/user/userservice.service';
-import { BehaviorSubject, Subject, Subscription, throwError } from 'rxjs';
+import { BehaviorSubject, Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import * as XLSX from 'xlsx';
 
@@ -334,7 +334,7 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
    */
   getFldMetadata() {
     if (this.moduleId === undefined || this.moduleId.trim() === '') {
-      throwError('Module id cant be null or empty');
+      throw new Error('Module id cant be null or empty');
     }
     const sub = this.schemaDetailService.getMetadataFields(this.moduleId).subscribe(response => {
       this.metadata.next(response);
@@ -814,8 +814,8 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     } else {
       objNrs.push(row.OBJECTNUMBER ? row.OBJECTNUMBER.fieldValue : '');
     }
-    if(!objNrs) {
-      throwError(`Objectnumber is required`);
+    if(!objNrs.length) {
+      throw new Error(`Objectnumber is required`);
     }
 
     this.schemaDetailService.approveClassification(this.schemaId,this.schemaInfo.runId,objNrs).subscribe(res=>{
@@ -850,8 +850,8 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     } else {
       objNrs.push(row.OBJECTNUMBER ? row.OBJECTNUMBER.fieldValue : '');
     }
-    if(!objNrs) {
-      throwError(`Objectnumber is required`);
+    if(!objNrs.length) {
+      throw new Error(`Objectnumber is required`);
     }
     const nounCode = row.NOUN_CODE ? row.NOUN_CODE.fieldValue : '';
     const modCode = row.MODE_CODE ? row.MODE_CODE.fieldValue : '';
@@ -887,9 +887,8 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     } else {
       objNrs.push(row.OBJECTNUMBER ? row.OBJECTNUMBER.fieldValue : '');
     }
-    if(!objNrs) {
-      throwError(`Objectnumber is required`);
-      return;
+    if(!objNrs.length) {
+      throw new Error(`Objectnumber is required`);
     }
 
     this.schemaDetailService.generateMroClassificationDescription(this.schemaId, this.schemaInfo.runId, objNrs, this.dataFrm === 'mro_local_lib' ? true : false).subscribe(res=>{
@@ -1035,17 +1034,17 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
       && (this.schemaInfo.collaboratorModels.isReviewer || this.schemaInfo.collaboratorModels.isApprover);
   }
 
-  getActionIcon(actionText) {
-    if (actionText === 'Approve') {
-      return 'check-mark';
-    } else if (actionText === 'Reject') {
-      return 'declined';
-    } else if (actionText === 'Delete') {
-      return 'recycle-bin';
-    }
+  // getActionIcon(actionText) {
+  //   if (actionText === 'Approve') {
+  //     return 'check-mark';
+  //   } else if (actionText === 'Reject') {
+  //     return 'declined';
+  //   } else if (actionText === 'Delete') {
+  //     return 'recycle-bin';
+  //   }
 
-    return '';
-  }
+  //   return '';
+  // }
 
   doAction(action: SchemaTableAction, row, rowIndex) {
     console.log('Action selected ', action);

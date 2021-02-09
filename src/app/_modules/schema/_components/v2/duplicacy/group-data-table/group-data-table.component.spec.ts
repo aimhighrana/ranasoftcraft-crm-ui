@@ -2,10 +2,10 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { SimpleChanges } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { RequestForGroupList } from '@models/schema/duplicacy';
+import { GroupDetails, RequestForGroupList } from '@models/schema/duplicacy';
 import { SharedModule } from '@modules/shared/shared.module';
 import { CatalogCheckService } from '@services/home/schema/catalog-check.service';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { GroupDataTableComponent } from './group-data-table.component';
@@ -60,13 +60,20 @@ describe('GroupDataTableComponent', () => {
     request.responseStatus = component.activeTab;
 
 
-    spyOn(catalogService, 'getAllGroupIds').withArgs(request)
-      .and.returnValue(of([]));
+    spyOn(catalogService, 'getAllGroupIds').and.returnValues(of([{groupId: '', groupKey: ''}]), of([]), throwError({status: 500}), throwError({status: 500}));
 
     component.getDuplicacyGroupsList();
-
     expect(catalogService.getAllGroupIds).toHaveBeenCalledWith(request);
-    // expect(component.dataSource.data).toEqual(groups);
+
+    component.getDuplicacyGroupsList(true);
+    component.runId = null;
+    request.runId = '';
+    request.page = 1;
+    expect(component.dataSource.data.length).toEqual(1);
+
+    component.getDuplicacyGroupsList();
+    component.getDuplicacyGroupsList(true);
+    expect(component.dataSource.data.length).toEqual(0);
 
   }));
 
@@ -82,16 +89,55 @@ describe('GroupDataTableComponent', () => {
     spyOn(component.selection, 'clear');
     component.masterToggle();
     expect(component.selection.clear).toHaveBeenCalled();
+
+    component.dataSource.data = [{groupId: '1701'} as GroupDetails];
+    component.masterToggle();
+    expect(component.isAllSelected()).toBeTrue();
   });
 
   it('should update groups list on change', () => {
 
     spyOn(component, 'getDuplicacyGroupsList');
 
-    const changes: SimpleChanges = {schemaId:{currentValue:'schema1', previousValue: '', firstChange:null, isFirstChange:null}};
+    let changes: SimpleChanges = {schemaId:{currentValue:'schema1', previousValue: '', firstChange:null, isFirstChange:null}};
     component.ngOnChanges(changes)
-    expect(component.getDuplicacyGroupsList).toHaveBeenCalled();
+
+    changes = {activeTab:{currentValue:'success', previousValue: '', firstChange:null, isFirstChange:null}};
+    component.ngOnChanges(changes);
+
+    component.ngOnChanges({});
+
+    expect(component.getDuplicacyGroupsList).toHaveBeenCalledTimes(2);
 
   });
+
+  it('should init component', () => {
+
+    component.ngOnInit();
+    expect(component.userDetails).toBeDefined();
+
+    component.selection.select([{groupId: '1701'}]);
+    expect(component.tableHeaderActBtn.length).toEqual(1);
+
+    component.selection.clear();
+    expect(component.tableHeaderActBtn.length).toEqual(0);
+  });
+
+  it('should handle scroll event', () => {
+
+    spyOn(component, 'getDuplicacyGroupsList');
+
+    const event = {target: { clientHeight: 300, scrollTop: 300, scrollHeight: 800}};
+    component.onScroll(event);
+
+    event.target.scrollTop = 500;
+    component.onScroll(event);
+
+    component.onScroll(event);
+
+    expect(component.getDuplicacyGroupsList).toHaveBeenCalledTimes(1);
+  })
+
+
 
 });
