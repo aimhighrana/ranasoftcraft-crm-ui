@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SchemaListModuleList } from '@models/schema/schemalist';
 import { SharedModule } from '@modules/shared/shared.module';
@@ -13,13 +13,19 @@ describe('SchemaListsComponent', () => {
   let component: SchemaListsComponent;
   let fixture: ComponentFixture<SchemaListsComponent>;
   let SchemaServiceSpy: SchemaService;
-  let router: Router
+  let router: Router;
+
+  const routeParams = {moduleId: ''};
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ SchemaListsComponent ],
       imports: [ AppMaterialModuleForSpec, RouterTestingModule, SharedModule ],
-      providers: [ SchemaService ]
+      providers: [ SchemaService,
+      {
+        provide: ActivatedRoute,
+        useValue: {params: of(routeParams)}
+      }]
     })
     .compileComponents();
     router = TestBed.inject(Router);
@@ -57,4 +63,17 @@ describe('SchemaListsComponent', () => {
     component.openUploadSideSheet();
     expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/upload-data/${component.moduleId}/${component.outlet}` } }])
   });
+
+  it('should init component', () => {
+
+    spyOn(component, 'getSchemaList');
+    component.ngOnInit();
+
+    routeParams.moduleId = '1005';
+    component.ngOnInit();
+
+    expect(component.moduleId).toEqual('1005');
+    expect(component.getSchemaList).toHaveBeenCalledTimes(1);
+
+  })
 });

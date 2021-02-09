@@ -18,6 +18,8 @@ describe('SaveVariantDialogComponent', () => {
   const mockDialogRef = {
     close: jasmine.createSpy('close')
   };
+
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ SaveVariantDialogComponent, FormInputComponent ],
@@ -57,5 +59,13 @@ describe('SaveVariantDialogComponent', () => {
     component.saveUpdateSchemaVariant();
     expect(schemaVariantServiceSpy.saveUpdateSchemaVariant).toHaveBeenCalledWith([component.schemaVarInfo]);
   }));
+
+  it('should init component', () => {
+    component.data = null;
+    component.ngOnInit();
+    component.data = { schemaInfo: { schemaId: '123'} };
+    component.ngOnInit();
+    expect(component.schemaVarInfo.schemaId).toEqual('123');
+  })
 
 });
