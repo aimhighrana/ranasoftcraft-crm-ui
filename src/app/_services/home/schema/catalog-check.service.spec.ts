@@ -55,16 +55,27 @@ describe('CatalogCheckService', () => {
     // actual service call
     catalogService.getAllGroupIds(request).subscribe(actualResponse => {
       expect(actualResponse).toEqual(mockResult);
-      expect(actualResponse.length).toEqual(2);
     });
 
     // mock http call
-    const mockRequest = httpTestingController.expectOne(`${url}?schemaId=${request.schemaId}&plantCode=${request.plantCode}&runId=${request.runId}`);
+    let mockRequest = httpTestingController.expectOne(`${url}?schemaId=${request.schemaId}&plantCode=${request.plantCode}&runId=${request.runId}`);
     expect(mockRequest.request.method).toEqual('GET');
-    expect(mockRequest.request.responseType).toEqual('json');
     mockRequest.flush(mockData);
     // verify http
     httpTestingController.verify();
+
+    // actual service call
+    catalogService.getAllGroupIds(request).subscribe(actualResponse => {
+      expect(actualResponse).toEqual([]);
+    });
+
+    // mock http call
+    mockRequest = httpTestingController.expectOne(`${url}?schemaId=${request.schemaId}&plantCode=${request.plantCode}&runId=${request.runId}`);
+    mockRequest.flush(null);
+
+    // verify http
+    httpTestingController.verify();
+
   }));
 
   it('get All data Records ', async(() => {

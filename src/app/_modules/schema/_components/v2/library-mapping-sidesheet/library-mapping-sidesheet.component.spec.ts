@@ -156,6 +156,8 @@ describe('LibraryMappingSidesheetComponent', () => {
 
   it('should set/patchMappingForm', () => {
 
+    spyOn(component, 'getLocalAttributes');
+
     component.buildMappingForm();
     const attr = {ATTR_CODE:'length'} as AttributesDoc;
     component.addAttributeMappingRow(attr);
@@ -201,6 +203,8 @@ describe('LibraryMappingSidesheetComponent', () => {
       attributeMapData: [{libraryAttributeCode: 'length', localAttributeCode: 'length'}]};
 
     spyOn(nounModifierService, 'saveAttributesMapping').and.returnValue(of('success'));
+    spyOn(component, 'close');
+    spyOn(component, 'getLocalAttributes');
 
     component.buildMappingForm();
     component.save();

@@ -13,7 +13,8 @@ describe('SchemaVariantService', () => {
   let endpointServiceSpy: jasmine.SpyObj<EndpointsClassicService>;
   beforeEach(async(() => {
     const any2TsSpy = jasmine.createSpyObj('Any2tsService', ['any2SchemaVariantResponse']);
-    const endpointSpy = jasmine.createSpyObj('EndpointsClassicService', ['schemaVarinatDetails', 'getVariantdetailsByvariantIdUrl', 'deleteVariantUrl', 'saveUpdateVariantUrl']);
+    const endpointSpy = jasmine.createSpyObj('EndpointsClassicService', ['schemaVarinatDetails', 'getVariantdetailsByvariantIdUrl',
+        'deleteVariantUrl', 'saveUpdateVariantUrl', 'getSchemaVariantsUrl', 'getAllDataScopesUri', 'getAllDataScopeUrl']);
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule
@@ -123,4 +124,66 @@ describe('SchemaVariantService', () => {
     // verify http
     httpTestingController.verify();
   });
+
+  it('getSchemaVariantDetails(): should call', () =>{
+    const url = 'getSchemaVariantsUrl';
+    const schemaId = 'schema1';
+    // mock url
+    endpointServiceSpy.getSchemaVariantsUrl.withArgs(schemaId).and.returnValue(url);
+
+    // mock data
+    const mockData = [];
+    // actual call
+    schemaVariantService.getSchemaVariantDetails(schemaId).subscribe(actualData => {
+      expect(actualData).toEqual(mockData);
+    });
+    // mock http
+    const mockRequest = httpTestingController.expectOne(`${url}`);
+    expect(mockRequest.request.method).toEqual('GET');
+
+    mockRequest.flush(mockData);
+    // verify http
+    httpTestingController.verify();
+  });
+
+  it('getAllDataScopeList(): should call', () =>{
+    const url = 'getAllDataScopeUrl';
+    // mock url
+    endpointServiceSpy.getAllDataScopeUrl.and.returnValue(url);
+
+    // mock data
+    const mockData = [];
+    // actual call
+    schemaVariantService.getAllDataScopeList('schema1', '').subscribe(actualData => {
+      expect(actualData).toEqual(mockData);
+    });
+    // mock http
+    const mockRequest = httpTestingController.expectOne(`${url}`);
+    expect(mockRequest.request.method).toEqual('GET');
+
+    mockRequest.flush(mockData);
+    // verify http
+    httpTestingController.verify();
+  });
+
+  it('getDataScope(): should call', () =>{
+    const url = 'getAllDataScopesUri';
+    // mock url
+    endpointServiceSpy.getAllDataScopesUri.and.returnValue(url);
+
+    // mock data
+    const mockData = [];
+    // actual call
+    schemaVariantService.getDataScope('schema1', '').subscribe(actualData => {
+      expect(actualData).toEqual(mockData);
+    });
+    // mock http
+    const mockRequest = httpTestingController.expectOne(`${url}`);
+    expect(mockRequest.request.method).toEqual('GET');
+
+    mockRequest.flush(mockData);
+    // verify http
+    httpTestingController.verify();
+  });
+
 });
