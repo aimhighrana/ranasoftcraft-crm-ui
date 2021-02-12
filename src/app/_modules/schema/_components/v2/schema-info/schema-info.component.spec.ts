@@ -7,7 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { FilterValuesComponent } from '@modules/shared/_components/filter-values/filter-values.component';
 import { AddFilterMenuComponent } from '@modules/shared/_components/add-filter-menu/add-filter-menu.component';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CoreSchemaBrInfo, DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { CoreSchemaBrInfo, DropDownValue, DuplicateRuleModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaListDetails } from '@models/schema/schemalist';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { of, throwError } from 'rxjs';
@@ -176,6 +176,43 @@ describe('SchemaInfoComponent', () => {
     spyOn(schemaService, 'createBusinessRule').withArgs(request).and.returnValue(of({} as CoreSchemaBrInfo));
     component.updateCategory(cat, br);
     expect(schemaService.createBusinessRule).toHaveBeenCalledWith(request);
+    // Test case scenerio for duplicate branch
+    const brDupList = [];
+    const brDup = {
+      brIdStr: '36572',
+      brInfo: 'Missing Rule',
+      brType: 'BR_DUPLICATE_CHECK',
+      fields: 'NDC',
+      message: 'Test should passed..',
+      moduleId: '1005',
+      isCopied: false,
+      duplicacyField : [{fieldId:'Test'}],
+      duplicacyMaster:[]
+    } as CoreSchemaBrInfo;
+    brDupList.push(brDup);
+
+    const requestDup: CoreSchemaBrInfo = new CoreSchemaBrInfo();
+    requestDup.brId = brDup.brIdStr;
+    requestDup.schemaId = component.schemaId;
+    requestDup.categoryId = cat.categoryId;
+    requestDup.brInfo = brDup.brInfo;
+    requestDup.brType = brDup.brType;
+    requestDup.fields = brDup.fields;
+    requestDup.message = brDup.message;
+    requestDup.moduleId = component.moduleId;
+    requestDup.isCopied = brDup.isCopied;
+
+    const params = { objectId: component.moduleId, autoMerge: '', groupId: '' };
+    const model = new DuplicateRuleModel();
+    model.coreBrInfo = { ...requestDup};
+    model.addFields = brDup.duplicacyField;
+    model.addFields[0].fId = model.addFields[0].fieldId;
+    model.mergeRules = brDup.duplicacyMaster;
+    model.removeList = [];
+    spyOn(schemaService,'getBusinessRulesBySchemaId').withArgs(component.schemaId).and.returnValue(of(brDupList));
+    spyOn(schemaService, 'saveUpdateDuplicateRule').withArgs(model,params).and.returnValue(of({} as any));
+    component.updateCategory(cat, brDup);
+    expect(schemaService.saveUpdateDuplicateRule).toHaveBeenCalledWith(model,params);
   })
 
   it('updateFragment(), should update tab selection', async () => {
@@ -416,6 +453,35 @@ describe('SchemaInfoComponent', () => {
     component.addBusinessRule(brInfo);
 
     expect(schemaService.createBusinessRule).toHaveBeenCalledTimes(1);
+// scenerio for duplicate branch
+    const brInfoDup = {
+      brIdStr: '24521',
+      brType: 'BR_DUPLICATE_CHECK',
+      brInfo: 'Missing data',
+      fields: 'Region',
+      message: 'Region should be Asia',
+      isCopied: true
+    } as CoreSchemaBrInfo;
+
+    const requestDup: CoreSchemaBrInfo = new CoreSchemaBrInfo();
+
+    requestDup.brId = '';
+    requestDup.schemaId = component.schemaId;
+    requestDup.brInfo = brInfoDup.brInfo;
+    requestDup.brType = brInfoDup.brType;
+    requestDup.fields = brInfoDup.fields;
+    requestDup.message = brInfoDup.message;
+    requestDup.isCopied = brInfoDup.isCopied;
+    requestDup.moduleId = component.moduleId;
+    requestDup.copiedFrom = brInfoDup.brIdStr;
+
+    spyOn(schemaService, 'copyDuplicateRule').withArgs(requestDup).and.returnValue(of(brInfoDup));
+    component.addBusinessRule(brInfoDup);
+
+    component.businessRuleData[0].brIdStr = '24521';
+    component.addBusinessRule(brInfoDup);
+
+    expect(schemaService.copyDuplicateRule).toHaveBeenCalledTimes(1);
   }));
 
   it('getSchemaDetails(), should get schema details', async() => {

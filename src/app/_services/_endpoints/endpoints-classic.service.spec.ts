@@ -678,6 +678,12 @@ describe('EndpointsClassicService', () => {
     expect(serObj.saveUpdateDuplicateRule()).toContain('duplicate/saveDuppsett');
   }));
 
+  it('copyDuplicate(),should return co[y duplicate url', async(() => {
+    const serObj =new EndpointsClassicService();
+    expect(serObj.copyDuplicate()).toContain('duplicate/copyDuplicate');
+  }));
+
+
   it('saveUpdateDataScopeUrl(),should return saveUpdateDataScopeUrl url', async(() => {
     const serObj =new EndpointsClassicService();
     expect(serObj.saveUpdateDataScopeUrl()).toContain('schema/variant/create-update-single');

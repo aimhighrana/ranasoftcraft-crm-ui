@@ -1,4 +1,4 @@
-<div class="root" (scroll)="onScroll($event)">
+<div class="root"  (scroll)="onScroll($event)">
     <mat-table [dataSource]="dataSource.data" matSort>
 
         <ng-container matColumnDef="check">
@@ -40,7 +40,7 @@
             <mat-header-cell *matHeaderCellDef> Name
             </mat-header-cell>
             <mat-cell *matCellDef="let row">
-                {{ row.groupId }}
+                {{ row.groupDesc ? row.groupDesc : row.groupId }}
             </mat-cell>
         </ng-container>
 

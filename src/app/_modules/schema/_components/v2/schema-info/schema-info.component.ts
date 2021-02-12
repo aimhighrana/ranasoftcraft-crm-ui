@@ -4,7 +4,7 @@ import { SchemaService } from '@services/home/schema.service';
 import { CoreSchemaBrMap, SchemaListDetails, LoadDropValueReq, VariantDetails } from '@models/schema/schemalist';
 import { PermissionOn, ROLES, RuleDependentOn, SchemaCollaborator, SchemaDashboardPermission, UserMdoModel } from '@models/collaborator';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
-import { CoreSchemaBrInfo, CreateUpdateSchema, DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { CoreSchemaBrInfo, CreateUpdateSchema, DropDownValue, DuplicateRuleModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { SecondaynavType } from '@models/menu-navigation';
 import { CategoryInfo, FilterCriteria } from '@models/schema/schemadetailstable';
@@ -19,6 +19,7 @@ import { GlobaldialogService } from '@services/globaldialog.service';
 import { Subscription } from 'rxjs';
 import { SchemaScheduler } from '@models/schema/schemaScheduler';
 import { MatCheckboxChange } from '@angular/material/checkbox';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'pros-schema-info',
@@ -481,12 +482,31 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     request.message = br.message;
     request.moduleId = this.moduleId;
     request.isCopied = false;
+    const model = new DuplicateRuleModel();
+     model.coreBrInfo = { ...request};
+    const params = { objectId: this.moduleId, autoMerge: '', groupId: '' };
+    if(br.brType ==='BR_DUPLICATE_CHECK')
+    {
+      this.schemaService.getBusinessRulesBySchemaId(this.schemaId).pipe(map(content=>content.filter(dup=> dup.brIdStr === br.brIdStr)[0])).subscribe(dupBr=>{
+         model.addFields = dupBr.duplicacyField;
+         model.addFields[0].fId = model.addFields[0].fieldId;
+         model.mergeRules = dupBr.duplicacyMaster;
+         model.removeList = [];
+        this.schemaService.saveUpdateDuplicateRule(model, params).subscribe(res=>{
+          this.getBusinessRuleList(this.schemaId);
+         },error=>{console.error(`Error while updating schema .. `, error);
+        });
+      });
 
+    }
+    else
+    {
     this.schemaService.createBusinessRule(request).subscribe(res => {
       this.getBusinessRuleList(this.schemaId);
     }, error => {
       console.error(`Error while updating schema .. `);
     });
+  }
   }
 
   /**
@@ -583,7 +603,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     const filterCtrl: FilterCriteria = new FilterCriteria();
     filterCtrl.fieldId = event.fldCtrl.fieldId;
     filterCtrl.type = 'DROPDOWN';
-    filterCtrl.values = event.selectedValues.map(map => map.CODE);
+    filterCtrl.values = event.selectedValues.map(val => val.CODE);
 
     exitingFilterCtrl.push(filterCtrl);
 
@@ -886,7 +906,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     request.moduleId = this.moduleId;
     request.isCopied = true;
     request.copiedFrom = brInfo.brIdStr;
-
+    console.log(brInfo);
     const checkExistBr = this.businessRuleData.filter((businessRule) => businessRule.brIdStr === brInfo.brIdStr)[0];
     const checkExistCopiedBr = this.businessRuleData.filter((businessRule) => businessRule.copiedFrom === brInfo.brIdStr)[0];
     if (checkExistBr || checkExistCopiedBr) {
@@ -895,6 +915,18 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       })
     }
     else {
+      if(brInfo.brType === 'BR_DUPLICATE_CHECK')
+    {
+      const subscription = this.schemaService.copyDuplicateRule(request).subscribe((response) => {
+        console.log(response);
+        this.getBusinessRuleList(this.schemaId);
+      }, (error) => {
+        console.log('Error while adding business rule', error.message);
+      })
+      this.subscriptions.push(subscription);
+    }
+
+    else{
       const subscription = this.schemaService.createBusinessRule(request).subscribe((response) => {
         console.log(response);
         this.getBusinessRuleList(this.schemaId);
@@ -902,6 +934,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
         console.log('Error while adding business rule', error.message);
       })
       this.subscriptions.push(subscription);
+    }
     }
   }
 

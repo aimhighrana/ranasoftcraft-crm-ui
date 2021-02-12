@@ -502,6 +502,13 @@ export class EndpointsClassicService {
   }
 
   /**
+   * endpoint for copy duplicate rule
+   */
+  public copyDuplicate(): string{
+    return `${this.apiUrl}/duplicate/copyDuplicate`;
+  }
+
+  /**
    * endpoint for save/update schema data scope
    */
   public saveUpdateDataScopeUrl(): string {

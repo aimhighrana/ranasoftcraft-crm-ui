@@ -53,6 +53,7 @@ export class CoreSchemaBrInfo {
     copiedFrom? : string;
     apiKey: string;
     dep_rules?:CoreSchemaBrInfo[];
+    depandantStatus?:null;
 }
 
 export enum BusinessRuleType {

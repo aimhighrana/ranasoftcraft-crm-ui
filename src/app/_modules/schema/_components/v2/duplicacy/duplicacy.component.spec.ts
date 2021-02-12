@@ -355,7 +355,8 @@ describe('DuplicacyComponent', () => {
 
     const group = {
       groupId: 'group1',
-      groupKey: 'exact'
+      groupKey: 'exact',
+      groupDesc: 'Group 1'
     }
 
     spyOn(component, 'getData');

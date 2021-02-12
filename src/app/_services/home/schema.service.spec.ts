@@ -21,7 +21,7 @@ describe('SchemaService', () => {
     'scheduleSchemaCount', 'deleteSchemaGroupUrl', 'uploadDataUrl', 'uploadFileDataUrl', 'getBusinessRulesInfoBySchemaIdUrl', 'getBusinessRulesInfoByModuleIdUrl',
     'getAllBusinessRulesUrl', 'getFillDataInfo', 'createSchema', 'createBr', 'getCategoriesInfo', 'saveUpdateUDRUrl', 'saveUpdateUdrBlockUrl', 'getBusinessRuleInfoUrl',
     'conditionListsUrl', 'dropDownValuesUrl', 'getBrConditionalOperatorUrl', 'deleteBr', 'getUdrBusinessRuleInfoUrl', 'deleteConditionBlock', 'getSchemaThresholdStatics',
-    'uploadCorrectionDataUrl', 'getSchemaInfoByModuleIdUrl', 'deleteSchema']);
+    'uploadCorrectionDataUrl', 'getSchemaInfoByModuleIdUrl', 'deleteSchema','copyDuplicate']);
     const any2Spy = jasmine.createSpyObj('Any2tsService', ['any2SchemaGroupResponse', 'any2SchemaDetails', 'any2ObjectType', 'any2SchemaGroupCountResposne',
     'any2GetAllSchemabymoduleidsResponse', 'any2SchemaGroupWithAssignSchemasResponse']);
     TestBed.configureTestingModule({
@@ -773,4 +773,23 @@ describe('SchemaService', () => {
     httpTestingController.verify();
   }));
 
+  it('should copyDuplicateRule()', async(() => {
+    const url = 'test copyDuplicateRuleUrl';
+    const params = {} as CoreSchemaBrInfo;
+    // mock url
+    endpointServiceSpy.copyDuplicate.and.returnValue(url);
+    // making mock data
+    const mockResponse = {};
+
+    // actual service call
+    schemaService.copyDuplicateRule(params).subscribe(actualData => {
+      expect(actualData).toEqual({} as CoreSchemaBrInfo);
+    });
+    // mocking http
+    const httpReq = httpTestingController.expectOne(`${url}`);
+    expect(httpReq.request.method).toEqual('POST');
+    httpReq.flush(mockResponse);
+    // verify http
+    httpTestingController.verify();
+  }));
 });

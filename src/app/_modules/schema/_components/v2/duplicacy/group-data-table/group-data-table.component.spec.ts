@@ -2,7 +2,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { SimpleChanges } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { GroupDetails, RequestForGroupList } from '@models/schema/duplicacy';
+import { GroupDetails, RequestForGroupList, SearchAfter } from '@models/schema/duplicacy';
 import { SharedModule } from '@modules/shared/shared.module';
 import { CatalogCheckService } from '@services/home/schema/catalog-check.service';
 import { of, throwError } from 'rxjs';
@@ -58,9 +58,9 @@ describe('GroupDataTableComponent', () => {
     request.page = 0;
     request.size = 20;
     request.responseStatus = component.activeTab;
+    request.searchAfter  = new SearchAfter() ;
 
-
-    spyOn(catalogService, 'getAllGroupIds').and.returnValues(of([{groupId: '', groupKey: ''}]), of([]), throwError({status: 500}), throwError({status: 500}));
+    spyOn(catalogService, 'getAllGroupIds').and.returnValues(of({groups:[{groupId: '', groupDesc: '' ,groupKey: ''}], searchAfter:{}}), of([]), throwError({status: 500}), throwError({status: 500}));
 
     component.getDuplicacyGroupsList();
     expect(catalogService.getAllGroupIds).toHaveBeenCalledWith(request);
@@ -69,7 +69,8 @@ describe('GroupDataTableComponent', () => {
     component.runId = null;
     request.runId = '';
     request.page = 1;
-    expect(component.dataSource.data.length).toEqual(1);
+    request.searchAfter = new SearchAfter();
+    expect(component.dataSource.data.length).toEqual(2);
 
     component.getDuplicacyGroupsList();
     component.getDuplicacyGroupsList(true);
@@ -137,7 +138,4 @@ describe('GroupDataTableComponent', () => {
 
     expect(component.getDuplicacyGroupsList).toHaveBeenCalledTimes(1);
   })
-
-
-
 });

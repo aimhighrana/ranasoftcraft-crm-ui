@@ -1,6 +1,6 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed, async } from '@angular/core/testing';
-import { DoCorrectionRequest, MasterRecordChangeRequest, RequestForCatalogCheckData, RequestForGroupList } from '@models/schema/duplicacy';
+import { DoCorrectionRequest, MasterRecordChangeRequest, RequestForCatalogCheckData, RequestForGroupList, SearchAfter } from '@models/schema/duplicacy';
 import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 
 import { CatalogCheckService } from './catalog-check.service';
@@ -35,6 +35,7 @@ describe('CatalogCheckService', () => {
     request.schemaId = 'schema1';
     request.plantCode = '0';
     request.runId = '123';
+    request.searchAfter = new SearchAfter();
 
     const url = 'get group ids url';
 
@@ -42,24 +43,42 @@ describe('CatalogCheckService', () => {
     endpointServiceSpy.duplicacyGroupsListUrl.and.returnValue(url);
     // mock data
     const mockData = {
-      exactGroupId: ['exact1'],
-      fuzzyGroupId: ['fuzzy1']
+      bucket:{
+        buckets:[
+          {
+            key: {
+              exact: '77F8C3099692477C',
+              fuzzy: '',
+              group: 'Group 1'
+            }
+          },
+            {
+              key: {
+                exact: '',
+                fuzzy: '7467374637',
+                group: 'Group 2'
+              }
+          }
+        ]
+      }
     }
 
     // const mockResult
-    const mockResult = [
-      { groupId : 'exact1', groupKey: 'exactGroupId'},
-      { groupId : 'fuzzy1', groupKey: 'fuzzyGroupId'}
-    ];
+    const mockResult = {groups:[
+      { groupId : '77F8C3099692477C', groupKey: 'exactGroupId', groupDesc:'Group 1'},
+      { groupId : '7467374637', groupKey: 'fuzzyGroupId', groupDesc:'Group 2'}
+    ], searchAfter:{ exact: '',fuzzy: '7467374637',group: 'Group 2'}};
 
     // actual service call
     catalogService.getAllGroupIds(request).subscribe(actualResponse => {
-      expect(actualResponse).toEqual(mockResult);
+      console.log(actualResponse);
+       expect(actualResponse).toEqual(mockResult);
     });
 
     // mock http call
-    let mockRequest = httpTestingController.expectOne(`${url}?schemaId=${request.schemaId}&plantCode=${request.plantCode}&runId=${request.runId}`);
-    expect(mockRequest.request.method).toEqual('GET');
+    let mockRequest = httpTestingController.expectOne(`${url}`);
+    expect(mockRequest.request.method).toEqual('POST');
+    expect(mockRequest.request.responseType).toEqual('json');
     mockRequest.flush(mockData);
     // verify http
     httpTestingController.verify();
@@ -70,7 +89,7 @@ describe('CatalogCheckService', () => {
     });
 
     // mock http call
-    mockRequest = httpTestingController.expectOne(`${url}?schemaId=${request.schemaId}&plantCode=${request.plantCode}&runId=${request.runId}`);
+    mockRequest = httpTestingController.expectOne(`${url}`);
     mockRequest.flush(null);
 
     // verify http
