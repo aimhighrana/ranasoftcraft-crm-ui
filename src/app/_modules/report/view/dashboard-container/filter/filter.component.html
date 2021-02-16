@@ -27,7 +27,7 @@
                 </mat-chip>
               </mat-chip-list>
               <input type="text" placeholder="Select" aria-label="Number" matInput [formControl]="filterFormControl"
-              [matAutocomplete]="auto" class="mat-input">
+                  [matAutocomplete]="auto" class="mat-input" [matChipInputFor]="chipList" (matChipInputTokenEnd)="$event.input.value = ''" [matChipInputAddOnBlur]="true">
             </mat-form-field>
           </div>
         </ng-template>
@@ -44,19 +44,19 @@
           </div>
         </ng-template>
 
-        <mat-autocomplete #auto="matAutocomplete" [displayWith]="fieldDisplayFn" (optionSelected) = "optionClicked($event)">
-          <mat-option *ngFor="let option of filteredOptions | async" [value]="option" matTooltip="{{ option.TEXT }}" matTooltipPosition="right">
-            <ng-template [ngIf]="filterWidget.getValue().isMultiSelect" [ngIfElse]="singleSelection">
-              <mat-checkbox prosClickStopPropagation (change)="toggleSelection(option)" [checked]="isSelected(option)"
-                color="primary">
-                {{ option.TEXT }}
-              </mat-checkbox>
-            </ng-template>
-            <ng-template #singleSelection>
-              {{ option.TEXT }}
-            </ng-template>
-          </mat-option>
-        </mat-autocomplete>
+          <mat-autocomplete #auto="matAutocomplete" [displayWith]="fieldDisplayFn" prosAutoCompleteScroll (autoCompleteScroll)="onScroll($event)" prosClickStopPropagation (optionSelected) = "optionClicked($event)">
+              <mat-option *ngFor="let option of filteredOptions | async" [value]="option" matTooltip="{{ option.TEXT }}" matTooltipPosition="right">
+                <ng-template [ngIf]="filterWidget.getValue().isMultiSelect" [ngIfElse]="singleSelection">
+                  <mat-checkbox prosClickStopPropagation (change)="toggleSelection(option)" [checked]="isSelected(option)"
+                    color="primary">
+                    {{ option.TEXT }}
+                  </mat-checkbox>
+                </ng-template>
+                <ng-template #singleSelection>
+                  {{ option.TEXT }}
+                </ng-template>
+              </mat-option>
+          </mat-autocomplete>
       </ng-template>
 
       <!-- HORIZONTAL_VALS -->
@@ -64,11 +64,11 @@
         <div class="f-row horizontal-row">
           <ng-template ngFor let-option [ngForOf]="filteredOptions | async">
             <ng-template [ngIf]="isSelected(option)" [ngIfElse]="unselectedButton">
-              <button mat-stroked-button color="primary"
+              <button mat-stroked-button color="primary" prosClickStopPropagation
                 (click)="optionClicked($event, option)">{{ option.TEXT }}</button>
             </ng-template>
             <ng-template #unselectedButton>
-              <button mat-stroked-button (click)="optionClicked($event, option)">{{ option.TEXT }}</button>
+              <button mat-stroked-button prosClickStopPropagation (click)="optionClicked($event, option)">{{ option.TEXT }}</button>
             </ng-template>
           </ng-template>
         </div>
@@ -79,11 +79,11 @@
         <div class="f-col vertical-row">
           <ng-template ngFor let-option [ngForOf]="filteredOptions | async">
             <ng-template [ngIf]="isSelected(option)" [ngIfElse]="unselectedButton">
-              <button mat-stroked-button color="primary"
+              <button mat-stroked-button color="primary" prosClickStopPropagation
                 (click)="optionClicked($event, option)">{{ option.TEXT ? option.TEXT : option.CODE }}</button>
             </ng-template>
             <ng-template #unselectedButton>
-              <button mat-stroked-button
+              <button mat-stroked-button prosClickStopPropagation
                 (click)="optionClicked($event, option)">{{ option.TEXT ? option.TEXT : option.CODE }}</button>
             </ng-template>
           </ng-template>

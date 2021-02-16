@@ -22,10 +22,11 @@ export class WidgetService {
    * Call this method for widget data
    * Provide widgetId , and filterCriteria
    */
-  public getWidgetData(widgetId: string, filterCriteria: Criteria[],searchString?:string): Observable<any> {
+  public getWidgetData(widgetId: string, filterCriteria: Criteria[],searchString?:string, searchAfter?:string): Observable<any> {
     searchString = searchString===undefined?'':searchString;
     filterCriteria = filterCriteria ? filterCriteria : [];
-    return this.http.post<any>(this.endpointAnalyticService.widgetDataUrl(), filterCriteria, { params: { widgetId,searchString  } });
+    searchAfter = searchAfter ? searchAfter : '';
+    return this.http.post<any>(this.endpointAnalyticService.widgetDataUrl(), filterCriteria, { params: { widgetId,searchString,searchAfter}});
   }
 
   public getListdata(size,from,widgetId: string, filterCriteria: Criteria[], sortMapStr: any):Observable<any>{

@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
 import { SharedServiceService } from '@shared/_services/shared-service.service';
 import { ReportService } from '@modules/report/_service/report.service';
 import { UserService } from '@services/user/userservice.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'pros-reporting-list',
@@ -259,6 +260,33 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
                 }
               }
             }
+            const key = hdvs[column] ? hdvs[column].vc && hdvs[column].vc[0] ? hdvs[column].vc.map(map => map.c).toString() : '' : '';
+            if(column === 'OVERDUE' || column === 'FORWARDENABLED' || column === 'TIME_TAKEN') {
+              switch(column) {
+
+                case 'TIME_TAKEN' :
+                  const days = moment.duration(Number(key), 'milliseconds').days();
+                  const hours = moment.duration(Number(key), 'milliseconds').hours();
+                  const minutes = moment.duration(Number(key), 'milliseconds').minutes();
+                  const seconds = moment.duration(Number(key), 'milliseconds').seconds();
+                  const timeString = `${days >0 ? days + ' d ': ''}${hours >0 ? hours + ' h ': ''}${minutes >0 ? minutes + ' m ': ''}${seconds >0 ? seconds + ' s': ''}`;
+                  obj[column] = timeString ? timeString : '0 s';
+                  break;
+
+                case 'FORWARDENABLED':
+                case 'OVERDUE':
+                  if(key === '1' || key === 'y') {
+                    obj[column] = 'Yes';
+                  }
+                  if(key === '0' || key === 'n') {
+                    obj[column] = 'No';
+                  }
+                  break;
+
+                default:
+                  break;
+              }
+            }
           }
         });
         this.listData.push(obj);
@@ -301,10 +329,9 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
    */
   sortTable(sort: Sort) {
     if (sort) {
-      let fld = sort.active;
+      const fld = sort.active;
       const dir = sort.direction as string;
       this.activeSorts = {} as any;
-      fld = fld === 'objectNumber' ? 'id' : fld;
       this.activeSorts[fld] = dir;
       if (dir === '') {
         this.activeSorts = null;
