@@ -217,7 +217,7 @@ describe('DuplicacyComponent', () => {
     request.sort = {};
     request.requestStatus = component.activeTab;
 
-    const response = {doc: [{id: '1701', masterRecord: true, isReviewed: true, hdvs: { region: {vc: ['Asia'], oc: null, ls: 'Region'}}},
+    const response = {doc: [{id: '1701', masterRecord: '1', isReviewed: true, hdvs: { region: {vc: ['Asia'], oc: null, ls: 'Region'}}},
         {id: '1702', DEL_FLAG: '1', hdvs: { priority: {vc: null , oc: 'High'}}}, {id: '1703'}]}
 
     spyOn(catalogService, 'getCatalogCheckRecords').and.returnValues(of(response), of(response), throwError({status: 500}));

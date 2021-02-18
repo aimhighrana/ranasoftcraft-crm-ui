@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ComponentFactoryResolver, ViewContainerRef, Input, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaCorrectionReq, FilterCriteria, FieldInputType, SchemaTableViewFldMap, SchemaTableAction, TableActionViewType, SchemaTableViewRequest, STANDARD_TABLE_ACTIONS } from '@models/schema/schemadetailstable';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, combineLatest, Subject, Subscription, throwError } from 'rxjs';
+import { BehaviorSubject, combineLatest, Subject, Subscription } from 'rxjs';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { SchemaDataSource } from '../../schema-details/schema-datatable/schema-data-source';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
@@ -457,7 +457,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    */
   getFldMetadata() {
     if (this.moduleId === undefined || this.moduleId.trim() === '') {
-      throwError('Module id cant be null or empty');
+      throw new Error('Module id cant be null or empty');
     }
     const sub =  this.schemaDetailService.getMetadataFields(this.moduleId).subscribe(response => {
       this.metadata.next(response);
@@ -1081,11 +1081,11 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   generateCrossEntry(row: any, crossbrId?) {
     const tragetFld = this.dataSource.targetField;
     if (!tragetFld) {
-      throwError('Tragetfield cant be null or empty ');
+      throw new Error('Tragetfield cant be null or empty ');
     }
     const objNr = row && row.OBJECTNUMBER ? row.OBJECTNUMBER.fieldData : '';
     if (!objNr) {
-      throwError(`Objectnumber must be required !!!`);
+      throw new Error(`Objectnumber must be required !!!`);
     }
     const sub = this.schemaDetailService.generateCrossEntry(this.schemaId, this.moduleId, objNr, crossbrId || '').subscribe(res=>{
       if(res) {

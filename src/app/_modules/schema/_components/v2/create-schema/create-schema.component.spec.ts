@@ -55,7 +55,7 @@ describe('CreateSchemaComponent', () => {
 
     expect(schemaListService.getSchemaDetailsBySchemaId).toHaveBeenCalledTimes(1);
 
-    component.schemaListDetails = {moduleId: '1005',  schemaDescription: 'test', schemaThreshold: '100'} as SchemaListDetails;
+    component.schemaListDetails = {moduleId: '1005',  schemaDescription: 'test', schemaThreshold: '100', schemaCategory: 'DATAQUALITY_VIEW'} as SchemaListDetails;
     component.schemaInfo.next(new SchemaListDetails());
     component.moduleListOb.next([{objectid: '1005', objectdesc: 'material'} as ObjectTypeResponse]);
     expect(component.form.get('moduleId').disabled).toBeTrue();

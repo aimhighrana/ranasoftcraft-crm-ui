@@ -35,7 +35,6 @@ describe('ExecutionTrendSidesheetComponent', () => {
 
     schemaListService = fixture.debugElement.injector.get(SchemalistService);
     router = TestBed.inject(Router);
-    schemaListService = fixture.debugElement.injector.get(SchemalistService);
   });
 
   it('should create', () => {
@@ -51,25 +50,22 @@ describe('ExecutionTrendSidesheetComponent', () => {
   });
 
   it('should init component', () => {
-    spyOn(schemaListService, 'getSchemaDetailsBySchemaId').withArgs(component.schemaId).and.returnValue(of(new SchemaListDetails()));
+    spyOn(schemaListService, 'getSchemaDetailsBySchemaId').withArgs('1').and.returnValue(of(new SchemaListDetails()));
     component.ngOnInit();
 
     expect(component.moduleId).toEqual('1005');
-    expect(schemaListService.getSchemaDetailsBySchemaId).toHaveBeenCalledWith(component.schemaId);
+    expect(schemaListService.getSchemaDetailsBySchemaId).toHaveBeenCalledWith('1');
+    expect(component.statsFilterParams.unit).toEqual('day');
+    expect(component.statsFilterParams._date_filter_type).toEqual('this_month');
   })
   it('getSchemaDetails(), get schema details .. ', async(()=>{
 
+    component.schemaId = '1';
     spyOn(schemaListService, 'getSchemaDetailsBySchemaId').withArgs(component.schemaId).and.returnValue(of(null));
 
     component.getSchemaDetails();
     expect(schemaListService.getSchemaDetailsBySchemaId).toHaveBeenCalledWith(component.schemaId);
 
-  }));
-
-  it('ngOnInit(), load prerequired stuff ', async(()=>{
-    component.ngOnInit();
-    expect(component.statsFilterParams.unit).toEqual('day');
-    expect(component.statsFilterParams._date_filter_type).toEqual('this_month');
   }));
 
 });

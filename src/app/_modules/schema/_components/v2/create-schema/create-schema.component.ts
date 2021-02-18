@@ -80,7 +80,8 @@ export class CreateSchemaComponent implements OnInit, OnDestroy {
 
     combineLatest([this.moduleListOb, this.schemaInfo]).subscribe(res => {
       if (res[0] && res[1]) {
-        this.form.setValue({ moduleId: this.schemaListDetails.moduleId, schemaDescription: this.schemaListDetails.schemaDescription, threshold: this.schemaListDetails.schemaThreshold });
+        this.form.setValue({ moduleId: this.schemaListDetails.moduleId, schemaDescription: this.schemaListDetails.schemaDescription,
+          threshold: this.schemaListDetails.schemaThreshold, schemaCategory: this.schemaListDetails.schemaCategory });
         this.form.get('moduleId').disable({ emitEvent: true, onlySelf: true });
       }
     });

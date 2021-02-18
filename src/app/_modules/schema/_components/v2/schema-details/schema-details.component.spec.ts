@@ -7,8 +7,8 @@ import { FilterValuesComponent } from '@modules/shared/_components/filter-values
 import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
 import { AddFilterMenuComponent } from '@modules/shared/_components/add-filter-menu/add-filter-menu.component';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
-import { BehaviorSubject, of } from 'rxjs';
-import { SchemaDashboardPermission, SchemaListDetails, SchemaVariantsModel } from '@models/schema/schemalist';
+import { of, throwError } from 'rxjs';
+import { SchemaDashboardPermission, SchemaListDetails, SchemaStaticThresholdRes, SchemaVariantsModel } from '@models/schema/schemalist';
 import { SchemaService } from '@services/home/schema.service';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { FilterCriteria, MetadataModel, MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaTableAction, STANDARD_TABLE_ACTIONS, TableActionViewType } from '@models/schema/schemadetailstable';
@@ -20,6 +20,9 @@ import { SimpleChanges } from '@angular/core';
 import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 import { Userdetails } from '@models/userdetails';
 import { SharedModule } from '@modules/shared/shared.module';
+import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
+import { AddFilterOutput } from '@models/schema/schema';
+import { MatSortable } from '@angular/material/sort';
 
 describe('SchemaDetailsComponent', () => {
   let component: SchemaDetailsComponent;
@@ -29,6 +32,7 @@ describe('SchemaDetailsComponent', () => {
   let schemaVariantService: SchemaVariantService;
   let schemaDetailService: SchemaDetailsService;
   let router: Router;
+  let sharedService: SharedServiceService;
 
   const dataSourceSpy= {
     getTableData: jasmine.createSpy('getTableData')
@@ -63,6 +67,7 @@ describe('SchemaDetailsComponent', () => {
     schemaDetailService = fixture.debugElement.injector.get(SchemaDetailsService);
     endpointService = fixture.debugElement.injector.get(EndpointsClassicService);
     component.dataSource = new SchemaDataSource(schemaDetailService, endpointService, '274751');
+    sharedService = fixture.debugElement.injector.get(SharedServiceService);
 
     // fixture.detectChanges();
 
@@ -76,16 +81,27 @@ describe('SchemaDetailsComponent', () => {
   });
 
   it('getSchemaDetails(), get schema details ', async(()=>{
-    spyOn(schemaListService, 'getSchemaDetailsBySchemaId').withArgs(component.schemaId).and.returnValue(of({schemaId: component.schemaId} as SchemaListDetails));
+    spyOn(schemaListService, 'getSchemaDetailsBySchemaId').withArgs(component.schemaId)
+      .and.returnValues(of({schemaId: component.schemaId} as SchemaListDetails), throwError({message: 'api error'}));
     component.getSchemaDetails();
     expect(schemaListService.getSchemaDetailsBySchemaId).toHaveBeenCalledWith(component.schemaId);
+
+    spyOn(console, 'error');
+    component.getSchemaDetails();
+    expect(console.error).toHaveBeenCalled();
   }));
 
   it('getSchemaStatics(), get schema statics .. ', async(()=>{
 
-    spyOn(schemaService,'getSchemaThresholdStatics').withArgs(component.schemaId, component.variantId).and.returnValue(of());
+    spyOn(schemaService,'getSchemaThresholdStatics').withArgs(component.schemaId, component.variantId)
+      .and.returnValues(of(new SchemaStaticThresholdRes()), throwError({message: 'api error'}));
     component.getSchemaStatics();
     expect(schemaService.getSchemaThresholdStatics).toHaveBeenCalledWith(component.schemaId, component.variantId);
+
+    spyOn(console, 'error');
+    component.getSchemaStatics();
+    expect(console.error).toHaveBeenCalled();
+
   }));
 
 
@@ -96,29 +112,47 @@ describe('SchemaDetailsComponent', () => {
       plantCode: '0'
     } as Userdetails
 
-    spyOn(schemaVariantService,'getVariantdetailsByvariantId').withArgs(component.variantId, component.userDetails.currentRoleId, component.userDetails.plantCode, component.userDetails.userName).and.returnValue(of({
+    spyOn(schemaVariantService,'getVariantdetailsByvariantId').withArgs(component.variantId, component.userDetails.currentRoleId, component.userDetails.plantCode, component.userDetails.userName)
+      .and.returnValues(of({
       schemaId: component.schemaId,
-      filterCriteria:[
-        {
-          fieldId: 'MATL_TYPE',
-          type:'DROPDOWN',
-          values:['67','2']
-        } as FilterCriteria
+      filterCriteria: [
+        { fieldId: 'MATL_TYPE', type: 'DROPDOWN', values: ['67', '2'] },
+        { fieldId: 'id', type: 'INLINE', values: ['search text'] }
       ]
-    } as SchemaVariantsModel));
+    } as SchemaVariantsModel), of(null), throwError({message: 'api error'}));
 
     component.getVariantDetails();
+    component.getVariantDetails();
     expect(schemaVariantService.getVariantdetailsByvariantId).toHaveBeenCalledWith(component.variantId, component.userDetails.currentRoleId, component.userDetails.plantCode, component.userDetails.userName);
+
+    spyOn(console, 'error');
+    component.getVariantDetails();
+    expect(console.error).toHaveBeenCalled();
   }));
 
   it('getFldMetadata(), get field metadata ', async(()=>{
-    spyOn(schemaDetailService,'getMetadataFields').withArgs(component.moduleId).and.returnValue(of());
-    component.getFldMetadata();
 
+    component.moduleId = '';
+    expect(() => component.getFldMetadata()).toThrowError('Module id cant be null or empty');
+
+    component.moduleId = '1005';
+
+    spyOn(schemaDetailService,'getMetadataFields').withArgs(component.moduleId)
+      .and.returnValues(of(null), throwError({message: 'api error'}));
+
+    component.getFldMetadata();
     expect(schemaDetailService.getMetadataFields).toHaveBeenCalledWith(component.moduleId);
+
+    spyOn(console, 'error');
+    component.getFldMetadata();
+    expect(console.error).toHaveBeenCalled();
   }));
 
   it('loadDropValues(), load current field .. ', async(()=>{
+
+      component.loadDropValues(null);
+      expect(component.loadDopValuesFor).toBeFalsy();
+
       // mock data
       const data: FilterCriteria = {fieldId:'MATL_TYPE',type:'DROPDOWN', values:['ZMRO','ALT']} as FilterCriteria;
       component.loadDropValues(data);
@@ -211,15 +245,27 @@ describe('SchemaDetailsComponent', () => {
   metadataFldLst.diw_15.dataType = 'DATS';
   result = component.getFieldInputType('diw_15');
   expect(result).toEqual(component.FIELD_TYPE.DATE);
+  component.metadataFldLst.diw_15.dataType = 'DTMS';
+  expect(component.getFieldInputType('diw_15')).toEqual(component.FIELD_TYPE.DATE);
 
 
   metadataFldLst.diw_15.picklist = '1';
-  result = component.getFieldInputType('diw_15');
-  expect(result).toEqual(component.FIELD_TYPE.SINGLE_SELECT);
+  expect(component.getFieldInputType('diw_15')).toEqual(component.FIELD_TYPE.SINGLE_SELECT);
+  metadataFldLst.diw_15.picklist = '30';
+  expect(component.getFieldInputType('diw_15')).toEqual(component.FIELD_TYPE.SINGLE_SELECT);
+  metadataFldLst.diw_15.picklist = '37';
+  expect(component.getFieldInputType('diw_15')).toEqual(component.FIELD_TYPE.SINGLE_SELECT);
+
 
   metadataFldLst.diw_15.isCheckList = 'true';
-  result = component.getFieldInputType('diw_15');
-  expect(result).toEqual(component.FIELD_TYPE.MULTI_SELECT);
+  expect(component.getFieldInputType('diw_15')).toEqual(component.FIELD_TYPE.MULTI_SELECT);
+  metadataFldLst.diw_15.picklist = '30';
+  expect(component.getFieldInputType('diw_15')).toEqual(component.FIELD_TYPE.MULTI_SELECT);
+  metadataFldLst.diw_15.picklist = '1';
+  expect(component.getFieldInputType('diw_15')).toEqual(component.FIELD_TYPE.MULTI_SELECT);
+
+  component.metadataFldLst.diw_15 = {};
+  expect(component.getFieldInputType('diw_15')).toEqual(component.FIELD_TYPE.TEXT);
 
 
   });
@@ -263,6 +309,10 @@ describe('SchemaDetailsComponent', () => {
     component.removeAppliedFilter(filterCriteria);
     expect(component.filterCriteria.getValue().length).toEqual(0);
 
+    spyOn(component.filterCriteria, 'next');
+    component.removeAppliedFilter(filterCriteria);
+    expect(component.filterCriteria.next).toHaveBeenCalledTimes(0);
+
   });
 
   it('should reset applied filter', () => {
@@ -278,9 +328,16 @@ describe('SchemaDetailsComponent', () => {
   it('should change tab status', () => {
 
     spyOn(component, 'getData');
+    spyOn(component, 'calculateDisplayFields');
+    spyOn(router, 'navigate');
 
-    component.changeTabStatus(component.activeTab);
-    expect(component.getData).toHaveBeenCalledTimes(0);
+    expect(component.changeTabStatus(component.activeTab)).toBeFalsy();
+
+    component.changeTabStatus('success');
+    expect(component.getData).toHaveBeenCalledWith(component.filterCriteria.getValue(), component.sortOrder);
+
+    component.changeTabStatus('review');
+    expect(component.getData).toHaveBeenCalled();
 
   });
 
@@ -330,10 +387,26 @@ describe('SchemaDetailsComponent', () => {
   }));
 
   it('inlineSearch(), inline search ', async(()=>{
-    // mock data
-    component.filterCriteria = new BehaviorSubject<FilterCriteria[]>([{fieldId:'MATL_TYPE', type:'INLINE'} as FilterCriteria]);
+    // mock data to be removed
+    /* component.filterCriteria = new BehaviorSubject<FilterCriteria[]>([{fieldId:'MATL_TYPE', type:'INLINE'} as FilterCriteria]);
     component.inlineSearch('mat');
-    expect(component.inlineSearch).toBeTruthy();
+    expect(component.inlineSearch).toBeTruthy(); */
+
+    component.inlineSearch('material');
+
+    expect(component.filterCriteria.getValue().length).toEqual(1);
+
+    component.inlineSearch('');
+    expect(component.filterCriteria.getValue().length).toEqual(0);
+
+    spyOn(component.filterCriteria, 'next');
+    component.inlineSearch('material');
+    expect(component.filterCriteria.next).toHaveBeenCalledTimes(1);
+
+    component.filterCriteria.next([{fieldId: 'region', type: 'INLINE', values: ['search text']}]);
+    component.inlineSearch('new search text');
+    expect(component.filterCriteria.getValue()[0].values).toEqual(['new search text']);
+
   }));
 
   it('ngOnChanges(), ngonchange component hooks ', async(()=>{
@@ -567,6 +640,8 @@ describe('SchemaDetailsComponent', () => {
       }
     });
 
+    spyOn(schemaDetailService, 'getAllSelectedFields').and.returnValues(of([]), throwError({message: 'api error'}));
+
     const changes7 = {
       moduleId:{
         currentValue:'1005',
@@ -598,6 +673,31 @@ describe('SchemaDetailsComponent', () => {
         expect(component.getData).toHaveBeenCalled();
       }
     });
+
+    const changes8 = {
+      variantId:{
+        currentValue:'1',
+        firstChange:true,
+        isFirstChange:null,
+        previousValue:'0'
+      },
+      isInRunning:{
+        currentValue:true,
+        firstChange:true,
+        isFirstChange:null,
+        previousValue:false
+      },
+      activeTab:{
+        currentValue:'success',
+        firstChange:true,
+        isFirstChange:null,
+        previousValue:'error'
+      }
+    } as SimpleChanges;
+    spyOn(console, 'error');
+    component.ngOnChanges(changes8);
+    expect(component.isInRunning).toBeTrue();
+    expect(console.error).toHaveBeenCalled();
   }));
 
   it('openSummarySideSheet(), should navigate to schema summary side sheet', () => {
@@ -620,31 +720,32 @@ describe('SchemaDetailsComponent', () => {
   });
 
   it(`approveRecords(), approve corrected records `, async(()=>{
+
     // mock data
     const row = {OBJECTNUMBER:{fieldData:'MAT001'}};
     component.schemaId = '246726532';
     component.userDetails  = {currentRoleId:'123'} as Userdetails;
 
-    spyOn(schemaDetailService,'approveCorrectedRecords').withArgs(component.schemaId, ['MAT001'] , component.userDetails.currentRoleId).and.returnValue(of({acknowledge:false}));
+    const apiResponse = {acknowledge:false};
+
+    spyOn(schemaDetailService,'approveCorrectedRecords').withArgs(component.schemaId, ['MAT001'] , component.userDetails.currentRoleId)
+      .and.returnValues(of(apiResponse), of(apiResponse), throwError({message: 'api error'}));
 
     component.approveRecords('inline', row);
-
     expect(schemaDetailService.approveCorrectedRecords).toHaveBeenCalledWith(component.schemaId, ['MAT001'] , component.userDetails.currentRoleId);
 
+    spyOn(component, 'getData');
+    component.selection.select(row);
+    apiResponse.acknowledge = true;
+    component.approveRecords('all');
+    expect(component.getData).toHaveBeenCalled();
 
-  }));
+    // error response
+    spyOn(console, 'error');
+    component.selection.select(row);
+    component.approveRecords('all');
+    expect(console.error).toHaveBeenCalled();
 
-  it(`approveRecords(), approve corrected records `, async(()=>{
-    // mock data
-    const row = {OBJECTNUMBER:{fieldData:'MAT001'}};
-    component.schemaId = '246726532';
-    component.userDetails  = {currentRoleId:'123'} as Userdetails;
-
-    spyOn(schemaDetailService,'approveCorrectedRecords').withArgs(component.schemaId, ['MAT001'] , component.userDetails.currentRoleId).and.returnValue(of({acknowledge:false}));
-
-    component.approveRecords('inline', row);
-
-    expect(schemaDetailService.approveCorrectedRecords).toHaveBeenCalledWith(component.schemaId, ['MAT001'] , component.userDetails.currentRoleId);
   }));
 
   it(`resetRec(), reset corrected records `, async(()=>{
@@ -652,12 +753,29 @@ describe('SchemaDetailsComponent', () => {
     const row = {OBJECTNUMBER:{fieldData:'MAT001'}};
     component.schemaId = '246726532';
     component.schemaInfo  = {runId:'889321'} as SchemaListDetails;
+    component.statics = {correctedCnt: 5} as SchemaStaticThresholdRes;
+    const apiResponse = {acknowledge:false};
 
-    spyOn(schemaDetailService,'resetCorrectionRecords').withArgs(component.schemaId, component.schemaInfo.runId,  ['MAT001']).and.returnValue(of({acknowledge:false}));
+
+    spyOn(schemaDetailService,'resetCorrectionRecords').withArgs(component.schemaId, component.schemaInfo.runId,  ['MAT001'])
+      .and.returnValues(of(apiResponse), of(apiResponse), throwError({message: 'api error'}));
 
     component.resetRec(row, 'inline');
-
     expect(schemaDetailService.resetCorrectionRecords).toHaveBeenCalledWith(component.schemaId, component.schemaInfo.runId,  ['MAT001']);
+
+    spyOn(component, 'getData');
+    component.selection.select(row);
+    apiResponse.acknowledge = true;
+    component.resetRec('', 'all');
+    expect(component.getData).toHaveBeenCalled();
+    expect(component.statics.correctedCnt).toEqual(0);
+
+    // error response
+    spyOn(console, 'error');
+    component.selection.select(row);
+    component.resetRec('', 'all');
+    expect(console.error).toHaveBeenCalled();
+
   }));
 
   it('openExecutionTrendSideSheet ', async(() => {
@@ -668,21 +786,29 @@ describe('SchemaDetailsComponent', () => {
 
   it('should load more data on table scroll', async(() => {
 
-    const scrollEvent = {
+    spyOn(component, 'getData');
+
+    const event = {
       target: {
-        offsetHeight: 500,
-        scrollHeight: 1000,
-        scrollTop: 350
+        offsetHeight: 20,
+        scrollTop: 70,
+        scrollHeight: 300
       }
     }
 
-    spyOn(component, 'getData');
+    component.onTableScroll(event);
+    expect(component.scrollLimitReached).toBeFalse();
 
-    component.onTableScroll(scrollEvent);
-
-    expect(component.scrollLimitReached).toEqual(true);
+    event.target.scrollTop = 100;
+    component.onTableScroll(event);
+    component.onTableScroll(event);
+    expect(component.scrollLimitReached).toBeTrue();
     expect(component.fetchCount).toEqual(1);
-    expect(component.getData).toHaveBeenCalledWith(component.filterCriteria.getValue(), component.sortOrder, component.fetchCount, true);
+
+    event.target.scrollTop = 70;
+    component.onTableScroll(event);
+    expect(component.scrollLimitReached).toBeFalse();
+
   }));
 
   it('should get schema permissions', () => {
@@ -691,6 +817,14 @@ describe('SchemaDetailsComponent', () => {
     expect(component.isEditer).toBeFalsy();
     expect(component.isReviewer).toBeFalsy();
     expect(component.isApprover).toBeFalsy();
+
+    component.schemaInfo  = {schemaId: 'schema1', runId:'889321',
+      collaboratorModels: {isEditer: true, isApprover: true, isReviewer: true}
+      } as SchemaListDetails;
+    expect(component.isEditer).toBeTrue()
+    expect(component.isReviewer).toBeTrue();
+    expect(component.isApprover).toBeTrue();
+
   });
 
   it('should filter primary and secondary actions', () => {
@@ -705,28 +839,69 @@ describe('SchemaDetailsComponent', () => {
 
     spyOn(component, 'approveRecords');
     spyOn(component, 'resetRec');
+    spyOn(component, 'generateCrossEntry');
 
     component.doAction(component.tableActionsList[0], {});
     expect(component.approveRecords).toHaveBeenCalledWith('inline', {});
 
     component.doAction(component.tableActionsList[1], {});
     expect(component.resetRec).toHaveBeenCalledWith({}, 'inline');
+
+    const action = {refBrId: '1701'} as SchemaTableAction;
+    component.doAction(action, {});
+    expect(component.generateCrossEntry).toHaveBeenCalledWith({}, '1701');
   });
 
   it('should check if global actions are enabled', () => {
     expect(component.isGlobalActionsEnabled).toEqual(false);
+    const row = { OBJECTNUMBER: 'TMP1701'};
+    component.selection.select(row);
+    expect(component.isGlobalActionsEnabled).toBeTrue();
   });
 
   it('should get all user selected fields based on default view ..', (async () => {
-    component.metadata.next({headers:{MATL_TYPE:{fieldId:'MATL_TYPE'}}} as MetadataModeleResponse);
-    component.selectedFields = null;
-
-    const response = '7466345563';
-    spyOn(schemaDetailService,'updateSchemaTableView').and.returnValue(of(response));
 
     component.ngOnInit();
-    expect(schemaDetailService.updateSchemaTableView).toHaveBeenCalledTimes(1);
-    expect(component.selectedFields.length).toEqual(1);
+    expect(component.userDetails).toBeDefined();
+
+    spyOn(component, 'getDataScope');
+    sharedService.setDataScope(null);
+    sharedService.setDataScope({});
+    expect(component.getDataScope).toHaveBeenCalledTimes(1);
+
+    spyOn(component, 'getData');
+    component.filterCriteria.next([]);
+    expect(component.getData).toHaveBeenCalledTimes(1);
+
+    component.selection.select({objctNumber: '1701'});
+    expect(component.tableHeaderActBtn.length).toEqual(1);
+    component.selection.clear();
+    expect(component.tableHeaderActBtn.length).toEqual(0);
+
+    component.dataSource.brMetadata.next([]);
+    expect(component.getData).toHaveBeenCalled();
+
+    sharedService.setChooseColumnData(null);
+
+    let columnsData = { selectedFields: null, tableActionsList: [{ actionText: 'Approve'} as SchemaTableAction]};
+    spyOn(component, 'calculateDisplayFields');
+    sharedService.setChooseColumnData(columnsData);
+    expect(component.tableActionsList.length).toEqual(1);
+
+    columnsData = {selectedFields: [], tableActionsList: [] };
+    sharedService.setChooseColumnData(columnsData);
+    expect(component.selectedFields.length).toEqual(0);
+
+    spyOn(schemaDetailService, 'updateSchemaTableView').and.returnValue(of([]));
+    component.metadata.next({headers: {}} as MetadataModeleResponse);
+    component.selectedFieldsOb.next([]);
+    expect(schemaDetailService.updateSchemaTableView).toHaveBeenCalled();
+
+    const selectedFields = [{fieldId: 'mtl_grp', order:1, editable: false}];
+    component.selectedFieldsOb.next(selectedFields);
+    component.metadata.next({headers: {}} as MetadataModeleResponse);
+    expect(component.selectedFields).toEqual(selectedFields);
+
   }));
 
   it('should check if user has action permission', async (() => {
@@ -755,9 +930,35 @@ describe('SchemaDetailsComponent', () => {
       }
     }
     component.dataSource = new SchemaDataSource(schemaDetailService, null, component.schemaId);
-    spyOn(schemaDetailService, 'generateCrossEntry').withArgs(component.schemaId, component.moduleId, row.OBJECTNUMBER.fieldData, '').and.returnValue(of());
+    spyOn(schemaDetailService, 'generateCrossEntry').withArgs(component.schemaId, component.moduleId, row.OBJECTNUMBER.fieldData, '')
+      .and.returnValues(of('data'), of('data'), of('data'), throwError({message: 'api error'}));
+
+    spyOn(schemaDetailService, 'doCorrection').and
+      .returnValues(of({acknowledge: false}), of({acknowledge: true}), throwError({message: 'api error'}));
+
+    // no target field
+    expect(() => component.generateCrossEntry(row, '')).toThrowError('Tragetfield cant be null or empty ');
+
+    // no obj number
+    component.dataSource.targetField = 'MATL_GRP';
+    expect(() => component.generateCrossEntry({}, '')).toThrowError('Objectnumber must be required !!!');
+
+    component.dataSource.setDocValue([row]);
     component.generateCrossEntry(row);
     expect(schemaDetailService.generateCrossEntry).toHaveBeenCalledWith(component.schemaId, component.moduleId, row.OBJECTNUMBER.fieldData, '');
+
+    component.statics = {correctedCnt: 5} as SchemaStaticThresholdRes;
+    component.generateCrossEntry(row);
+    expect(component.statics.correctedCnt).toEqual(0);
+
+    spyOn(console, 'error');
+    // correction error api
+    component.generateCrossEntry(row);
+    expect(console.error).toHaveBeenCalled();
+
+    // error api resp
+    component.generateCrossEntry(row);
+    expect(console.error).toHaveBeenCalled();
   }));
 
   it('uploadCorrectedData(), navigate for upload corrected rec ', async(()=>{
@@ -766,5 +967,109 @@ describe('SchemaDetailsComponent', () => {
     component.uploadCorrectedData();
     expect(router.navigate).toHaveBeenCalledWith([{outlets: { sb: `sb/schema/upload-data/${component.moduleId}/${component.outlet}`}}], {queryParams:{importcorrectedRec: true, schemaId: component.schemaId, runid: component.schemaInfo.runId}});
   }));
+
+  it('should manageStaticColumns', () => {
+    component.manageStaticColumns();
+    expect(component.startColumns.includes('_score_weightage')).toBeTrue();
+
+    component.activeTab = 'review';
+    component.manageStaticColumns();
+    expect(component.startColumns.includes('_score_weightage')).toBeFalse();
+  });
+
+  it('should makeFilterControl', () => {
+
+    fixture.detectChanges();
+
+    const criteria = {selectedValues: [{CODE: 'USA'}], fldCtrl: {fieldId: 'region'},  fieldId: 'region'} as AddFilterOutput;
+
+    component.makeFilterControl(criteria);
+    expect(component.filterCriteria.getValue().length).toEqual(1);
+
+    criteria.selectedValues[0].CODE = 'Asia';
+
+    component.makeFilterControl(criteria);
+    expect(component.filterCriteria.getValue()[0].values).toEqual(['Asia']);
+
+   });
+
+   it('prepateTextToShow(), should prepare text to show over mat-chips', async () => {
+    const ctrl: FilterCriteria = {
+      fieldId: 'MaterialType',
+      values: ['123', '456'],
+      type: 'DROPDOWN',
+      filterCtrl: {
+        selectedValues: [
+          {
+            CODE: 'ABC',
+            FIELDNAME: 'MaterialType'
+          } as DropDownValue
+        ]
+      } as AddFilterOutput
+    }
+
+    const result = component.prepareTextToShow(ctrl);
+    expect(result).toEqual('ABC');
+
+    ctrl.filterCtrl.selectedValues[0].TEXT = 'first value';
+    expect(component.prepareTextToShow(ctrl)).toEqual('first value');
+
+    component.filterCriteria.next([ctrl]);
+    ctrl.filterCtrl.selectedValues.push({ CODE: 'DEF', FIELDNAME: 'MaterialType'} as DropDownValue);
+    expect(component.prepareTextToShow(ctrl)).toEqual('2');
+
+    component.filterCriteria.next([]);
+    expect(component.prepareTextToShow(ctrl)).toEqual('Unknown');
+
+    ctrl.filterCtrl.selectedValues = [];
+    expect(component.prepareTextToShow(ctrl)).toEqual('Unknown');
+
+  });
+
+  it('should refresh table data on new variantId', (async () => {
+
+    spyOn(component, 'getVariantDetails');
+
+    component.dataScope = [{ variantId: '1', schemaId: component.schemaId, variantName: 'first variant' } as SchemaVariantsModel];
+
+    component.variantChange('1');
+    expect(component.variantName).toEqual('first variant');
+    component.variantChange('1');
+    expect(component.getVariantDetails).toHaveBeenCalledTimes(1);
+
+    component.variantChange('0');
+    expect(component.filterCriteria.getValue()).toEqual([]);
+
+
+  }));
+
+  it('should getSchemaTableActions', () => {
+
+    spyOn(schemaDetailService, 'getTableActionsBySchemaId').and.returnValues(of([]), of([{ actionText: 'Approve'} as SchemaTableAction]));
+
+    component.getSchemaTableActions();
+    expect(component.tableActionsList.length).toEqual(2);
+
+    component.getSchemaTableActions();
+    expect(component.tableActionsList.length).toEqual(1);
+
+  });
+
+  it('should get data on sort change', () => {
+
+    spyOn(component, 'getData');
+
+    fixture.detectChanges();
+    component.sort.sort({id: 'status'} as MatSortable);
+    expect(component.sortOrder).toEqual({status: 'asc'});
+
+    component.sort.sort({id: 'status'} as MatSortable);
+    expect(component.sortOrder).toEqual({status: 'desc'});
+
+    component.sort.sort({id: 'status'} as MatSortable);
+    expect(component.getData).toHaveBeenCalledTimes(2);
+
+  });
+
 
 });

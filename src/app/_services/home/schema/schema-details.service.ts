@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { SendReqForSchemaDataTableColumnInfo, SendDataForSchemaTableShowMore, SchemaDataTableColumnInfoResponse, RequestForSchemaDetailsWithBr, SchemaTableViewRequest, OverViewChartDataSet, CategoryInfo, CategoryChartDataSet, MetadataModeleResponse, SchemaBrInfo, SchemaCorrectionReq, SchemaExecutionLog, SchemaTableViewFldMap, ClassificationNounMod, SchemaMROCorrectionReq, SchemaTableAction, CrossMappingRule } from 'src/app/_models/schema/schemadetailstable';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../../any2ts.service';
@@ -253,13 +253,11 @@ export class SchemaDetailsService {
    */
   public getDownloadAbledataforMroExecution(schemaId: string, runid: string, nounCode: string, modifierCode: string, ruleType: string,requestStatus: string, searchString): Observable<any> {
     if(nounCode === undefined) {
-      throwError(`Nouncode must be required !`);
-      return;
+      throw new Error(`Nouncode must be required !`);
     }
 
     if(modifierCode === undefined) {
-      throwError(`Modifiercode must be required !`);
-      return;
+      throw new Error(`Modifiercode must be required !`);
     }
 
     searchString = searchString ? searchString : '';

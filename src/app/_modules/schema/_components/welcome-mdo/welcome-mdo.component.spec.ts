@@ -56,17 +56,6 @@ describe('WelcomeMdoComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('selectschema(), Should open sidesheet of selected schemaId or for new schema', async(() => {
-    const schema = { schemaId: '123', schemaDescription: 'test' };
-    component.data.objectid = '456';
-    spyOn(router, 'navigate');
-    component.selectschema(schema);
-    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/check-data/456/123` } }]);
-    expect(component.data.schemaId).toEqual('123');
-    component.selectschema();
-    expect(component.data.schemaId).toEqual(null);
-  }));
-
   it('schemaList(), should open schemalist by using that objectId', async(() => {
     const searchInputfixture = TestBed.createComponent(SearchInputComponent);
     component.searchInput = searchInputfixture.componentInstance;

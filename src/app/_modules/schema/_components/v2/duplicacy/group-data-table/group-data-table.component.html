@@ -1,5 +1,5 @@
-<div class="root">
-    <mat-table [dataSource]="dataSource.data" matSort (scroll)="onScroll($event)">
+<div class="root" (scroll)="onScroll($event)">
+    <mat-table [dataSource]="dataSource.data" matSort>
 
         <ng-container matColumnDef="check">
             <mat-header-cell *matHeaderCellDef class="fixed-width-c1">
