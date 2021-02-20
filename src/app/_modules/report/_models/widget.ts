@@ -81,6 +81,7 @@ export class Criteria {
     conditionFieldStartValue: string;
     conditionFieldEndValue: string;
     udrid: string;
+    widgetType?: WidgetType;
 }
 export enum BlockType {
     AND = 'AND',

@@ -55,6 +55,7 @@ describe('ReportingListComponent', () => {
     spyOn(widgetServiceSpy, 'getListTableMetadata').withArgs(component.widgetId).and.returnValue(of(response));
     component.getListTableMetadata();
     expect(widgetServiceSpy.getListTableMetadata).toHaveBeenCalledWith(component.widgetId);
+    expect(component.displayedColumnsId.length).toEqual(2);
   }));
 
   it('getServerData(), do pagination ', async(()=>{
@@ -101,5 +102,27 @@ describe('ReportingListComponent', () => {
     spyOn(component.reportingListWidget, 'next');
     component.ngOnChanges(chnages);
     expect(component.reportingListWidget.next).toHaveBeenCalled();
+  }));
+
+  it('getListdata(), should return the data of field', async(() => {
+    const res = {data:{hits:{hits:[{_index:'localhost_workflow_do_0_en',_type:'_doc',sourceAsMap:{stat:'APP',staticFields:{OBJECTID:{fId:'OBJECTID',ls:'OBJECTID',vc:[{c:'C000164628'}]},WFID:{fId:'WFID',ls:'WFID',vc:[{c:'130086693666196566'}]},REQUESTOR_DATE:{fId:'REQUESTOR_DATE',ls:'Requested Date',vc:[{c:'1584440382535'}]},TIME_TAKEN:{fId:'TIME_TAKEN',ls:'Time Taken',vc:[{c:97089034}]},FORWARDENABLED:{fId:'FORWARDENABLED',ls:'FORWARDENABLED',vc:[{c:1}]},OVERDUE:{fId:'OVERDUE',ls:'OVERDUE',vc:[{c:'n'}]}},id:103048380550997539},id:103048380550997539,sort:[103048380550997539],_score:null}],total:{value:1,relation:'eq'},max_score:null},took:4,timed_out:false},count:1};
+    const pageSize = 10;
+    const pageIndex = 0;
+    const widgetId = 1612965351574;
+    const criteria = [];
+    const soringMap = null;
+    component.displayedColumnsId = ['objectNumber','REQUESTOR_DATE','WFID','TIME_TAKEN','FORWARDENABLED','OVERDUE'];
+    spyOn(widgetServiceSpy,'getListdata').withArgs(String(pageSize), String(pageIndex), String(widgetId), criteria, soringMap).and.returnValue(of(res));
+
+    component.getListdata(pageSize, pageIndex, widgetId, criteria, soringMap);
+
+    expect(widgetServiceSpy.getListdata).toHaveBeenCalledWith(String(pageSize), String(pageIndex), String(widgetId), criteria, soringMap);
+    expect(component.resultsLength).toEqual(1);
+    expect(component.listData[0].REQUESTOR_DATE).toEqual('1584440382535');
+    expect(component.listData[0].WFID).toEqual('130086693666196566');
+    expect(component.listData[0].OVERDUE).toEqual('No');
+    expect(component.listData[0].FORWARDENABLED).toEqual('Yes');
+    expect(component.listData[0].TIME_TAKEN).toEqual('1 d 2 h 58 m 9 s');
+    expect(component.listData[0].objectNumber).toEqual('C000164628');
   }));
 });

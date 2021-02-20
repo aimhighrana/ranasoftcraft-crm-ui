@@ -76,6 +76,7 @@ import { SubscriberInviteComponent } from './_components/subscriber-invite/subsc
 import { ClassificationDatatableCellEditableComponent } from './_components/classification-datatable-cell-editable/classification-datatable-cell-editable.component';
 import { SubscriberInviteSidesheetComponent } from './_components/subscriber-invite-sidesheet/subscriber-invite-sidesheet.component';
 import { SchemaExecutionTrendComponent } from './_components/statistics/schema-execution-trend/schema-execution-trend.component';
+import { AutoCompleteScrollDirective } from './_directives/auto-complete-scroll.directive';
 
 @NgModule({
   declarations: [
@@ -116,7 +117,8 @@ import { SchemaExecutionTrendComponent } from './_components/statistics/schema-e
     SubscriberInviteComponent,
     ClassificationDatatableCellEditableComponent,
     SubscriberInviteSidesheetComponent,
-    SchemaExecutionTrendComponent
+    SchemaExecutionTrendComponent,
+    AutoCompleteScrollDirective
   ],
   imports: [
     // ng modules
@@ -255,7 +257,8 @@ import { SchemaExecutionTrendComponent } from './_components/statistics/schema-e
     NullStateComponent,
     SubscriberInviteComponent,
     SubscriberInviteSidesheetComponent,
-    SchemaExecutionTrendComponent
+    SchemaExecutionTrendComponent,
+    AutoCompleteScrollDirective
   ],
   entryComponents: [
     TableCellInputComponent
