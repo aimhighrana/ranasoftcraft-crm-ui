@@ -33,6 +33,7 @@ export class Widget {
     isCustomdataSet: boolean;
     pageDefaultSize:number;
     isFieldDistinct: boolean;
+    displayCriteria: DisplayCriteria;
 }
 
 export interface DateFilterCtrl {
@@ -268,6 +269,7 @@ export class WidgetHeader {
     isWorkflowdataSet: boolean;
     pageDefaultSize: number;
     isCustomdataSet: boolean;
+    displayCriteria: DisplayCriteria;
 }
 
 export interface ChartLegend{
@@ -569,4 +571,10 @@ export class LayoutConfigWorkflowModel {
     plantCode: string;
     initiatorLayout: string;
     layoutDesc: string;
+}
+
+export enum DisplayCriteria {
+    CODE = 'CODE',
+    TEXT = 'TEXT',
+    CODE_TEXT = 'CODE_TEXT'
 }

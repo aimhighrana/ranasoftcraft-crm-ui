@@ -6,7 +6,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { PageEvent } from '@angular/material/paginator';
 import { MatMenuModule } from '@angular/material/menu';
 import { WidgetService } from '@services/widgets/widget.service';
-import { WidgetHeader, ReportingWidget, Criteria } from '@modules/report/_models/widget';
+import { WidgetHeader, ReportingWidget, Criteria, DisplayCriteria } from '@modules/report/_models/widget';
 import { of } from 'rxjs';
 import { Sort } from '@angular/material/sort';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -112,8 +112,35 @@ describe('ReportingListComponent', () => {
     const criteria = [];
     const soringMap = null;
     component.displayedColumnsId = ['objectNumber','REQUESTOR_DATE','WFID','TIME_TAKEN','FORWARDENABLED','OVERDUE'];
+    const reportingW = [{ fields: 'REQUESTOR_DATE', fldMetaData: { dataType: 'DTMS' } } as ReportingWidget, { fields: 'objectNumber', fldMetaData: { dataType: '0' } } as ReportingWidget,{ fields: 'WFID', fldMetaData: { dataType: '0' } } as ReportingWidget,{ fields: 'TIME_TAKEN', fldMetaData: { dataType: '0' } } as ReportingWidget,{ fields: 'FORWARDENABLED', fldMetaData: { dataType: '1' } } as ReportingWidget, { fields: 'OVERDUE', fldMetaData: { dataType: '0' } } as ReportingWidget];
+    component.reportingListWidget.next(reportingW);
+    component.widgetHeader = {displayCriteria: DisplayCriteria.CODE} as WidgetHeader;
     spyOn(widgetServiceSpy,'getListdata').withArgs(String(pageSize), String(pageIndex), String(widgetId), criteria, soringMap).and.returnValue(of(res));
 
+    component.getListdata(pageSize, pageIndex, widgetId, criteria, soringMap);
+
+    expect(widgetServiceSpy.getListdata).toHaveBeenCalledWith(String(pageSize), String(pageIndex), String(widgetId), criteria, soringMap);
+    expect(component.resultsLength).toEqual(1);
+    expect(component.listData[0].REQUESTOR_DATE).toEqual('1584440382535');
+    expect(component.listData[0].WFID).toEqual('130086693666196566');
+    expect(component.listData[0].OVERDUE).toEqual('n');
+    expect(component.listData[0].FORWARDENABLED).toEqual('1');
+    expect(component.listData[0].TIME_TAKEN).toEqual('97089034');
+    expect(component.listData[0].objectNumber).toEqual('C000164628');
+
+    component.widgetHeader = {displayCriteria: DisplayCriteria.TEXT} as WidgetHeader;
+    component.getListdata(pageSize, pageIndex, widgetId, criteria, soringMap);
+
+    expect(widgetServiceSpy.getListdata).toHaveBeenCalledWith(String(pageSize), String(pageIndex), String(widgetId), criteria, soringMap);
+    expect(component.resultsLength).toEqual(1);
+    expect(component.listData[0].REQUESTOR_DATE).toEqual('1584440382535');
+    expect(component.listData[0].WFID).toEqual('130086693666196566');
+    expect(component.listData[0].OVERDUE).toEqual('No');
+    expect(component.listData[0].FORWARDENABLED).toEqual('Yes');
+    expect(component.listData[0].TIME_TAKEN).toEqual('1 d 2 h 58 m 9 s');
+    expect(component.listData[0].objectNumber).toEqual('C000164628');
+
+    component.widgetHeader = {displayCriteria: DisplayCriteria.CODE_TEXT} as WidgetHeader;
     component.getListdata(pageSize, pageIndex, widgetId, criteria, soringMap);
 
     expect(widgetServiceSpy.getListdata).toHaveBeenCalledWith(String(pageSize), String(pageIndex), String(widgetId), criteria, soringMap);
@@ -125,4 +152,58 @@ describe('ReportingListComponent', () => {
     expect(component.listData[0].TIME_TAKEN).toEqual('1 d 2 h 58 m 9 s');
     expect(component.listData[0].objectNumber).toEqual('C000164628');
   }));
+
+  it('isDateType(),isDateType  case', async(() => {
+    let result = component.isDateType('column');
+    expect(result).toBeFalse();
+
+    const reportingW = [{ fields: 'column', fldMetaData: { dataType: 'DTMS' } } as ReportingWidget];
+    component.reportingListWidget.next(reportingW);
+    result = component.isDateType('column');
+    expect(result).toBeTrue();
+
+
+    const reportingW2 = [{ fields: 'column', fldMetaData: { dataType: 'CHAR' } } as ReportingWidget];
+    component.reportingListWidget.next(reportingW2);
+    result = component.isDateType('column');
+    expect(result).toBeFalse();
+
+    const reportingW3 = [{ fields: 'column' } as ReportingWidget];
+    component.reportingListWidget.next(reportingW3);
+    result = component.isDateType('column');
+    expect(result).toBeFalse();
+ }));
+
+  it('isDropdownType(), should check field picklist is 1, 37, 30', async(() => {
+    let result = component.isDropdownType('column');
+    expect(result).toBeFalse();
+
+    const reportingW = [{ fields: 'requestor_date', fldMetaData: { picklist: '1' } } as ReportingWidget];
+    component.reportingListWidget.next(reportingW);
+    result = component.isDropdownType('requestor_date');
+    expect(result).toBeTrue();
+
+    const reportingW2 = [{ fields: 'Due_date', fldMetaData: { picklist: '30' } } as ReportingWidget];
+    component.reportingListWidget.next(reportingW2);
+    result = component.isDropdownType('Due_date');
+    expect(result).toBeTrue();
+
+    const reportingW3 = [{ fields: 'forwarded_date', fldMetaData: { picklist: '37' } } as ReportingWidget];
+    component.reportingListWidget.next(reportingW3);
+    result = component.isDropdownType('forwarded_date');
+    expect(result).toBeTrue();
+
+    const reportingW4 = [{ fields: 'TimeTaken' } as ReportingWidget];
+    component.reportingListWidget.next(reportingW4);
+    result = component.isDropdownType('TimeTaken');
+    expect(result).toBeFalse();
+ }));
+
+ it('getDateTypeValue(), should check the value is number or not', async(() => {
+  let fld = '7654345';
+  expect(component.getDateTypeValue(fld)).toEqual(fld);
+
+  fld = 'aftadrtsa';
+  expect(component.getDateTypeValue(fld)).toEqual('');
+ }));
 });

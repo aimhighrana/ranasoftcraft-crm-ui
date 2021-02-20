@@ -463,13 +463,22 @@
                                 </ng-template>
                             </div>
                             <div class="f-col">
-                                <!-- FOR TABLE LIST CHOOSE Default Page Size-->
+                                <!-- FOR TABLE LIST CHOOSE Default Page Size and Column format-->
                                 <!-- For Modules -->
                                 <ng-template
                                     [ngIf]="selStyleWid && selStyleWid.widgetType === 'TABLE_LIST' ">
                                     <mat-label>Default page Size </mat-label>
                                     <mat-form-field appearance="outline">
                                         <input  matInput type="number" min="1"  (input)="checkNumLength($event.target.value)"  formControlName="pageDefaultSize"  placeholder="Default page size">
+                                    </mat-form-field>
+
+                                    <mat-label>Column format</mat-label>
+                                    <mat-form-field appearance="outline">
+                                        <mat-select formControlName="displayCriteria">
+                                            <mat-option value="TEXT"> Text </mat-option>
+                                            <mat-option value="CODE"> Code </mat-option>
+                                            <mat-option value="CODE_TEXT"> CODE & Text </mat-option>
+                                        </mat-select>
                                     </mat-form-field>
                                 </ng-template>
                             </div>

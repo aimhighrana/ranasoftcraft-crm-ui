@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { Widget, WidgetType, ReportDashboardReq, WidgetTableModel, ChartType, Orientation, DatalabelsPosition, LegendPosition, BlockType, TimeseriesStartDate, Criteria, OrderWith, SeriesWith, WorkflowFieldRes } from '../../_models/widget';
+import { Widget, WidgetType, ReportDashboardReq, WidgetTableModel, ChartType, Orientation, DatalabelsPosition, LegendPosition, BlockType, TimeseriesStartDate, Criteria, OrderWith, SeriesWith, WorkflowFieldRes, DisplayCriteria } from '../../_models/widget';
 import { Observable, of, BehaviorSubject, Subscription } from 'rxjs';
 import { FormGroup, FormBuilder, FormArray, Validators, FormControl } from '@angular/forms';
 import { ReportService } from '../../_service/report.service';
@@ -200,7 +200,8 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       distictWith: [''],
       isCustomdataSet: [false],
       pageDefaultSize: [''],
-      isFieldDistinct: [false]
+      isFieldDistinct: [false],
+      displayCriteria: [DisplayCriteria.TEXT]
     });
 
     this.chartPropCtrlGrp = this.formBuilder.group({
@@ -250,6 +251,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         changedWidget.distictWith = typeof latestVal.distictWith === 'string' ? latestVal.distictWith : latestVal.distictWith.fieldId;
         changedWidget.isCustomdataSet = latestVal.isCustomdataSet;
         changedWidget.pageDefaultSize = latestVal.pageDefaultSize;
+        changedWidget.displayCriteria = latestVal.displayCriteria;
         changedWidget.isFieldDistinct = latestVal.isFieldDistinct;
 
         // hold selected field control
@@ -516,6 +518,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           distictWith: data.distictWith ? data.distictWith : '',
           isCustomdataSet: data.isCustomdataSet ? data.isCustomdataSet : false,
           pageDefaultSize: data.pageDefaultSize ? data.pageDefaultSize : '',
+          displayCriteria: data.displayCriteria ? data.displayCriteria : DisplayCriteria.TEXT,
           objectType: data.objectType ? data.objectType: '',
           isFieldDistinct: data.isFieldDistinct ? data.isFieldDistinct : false
         });
