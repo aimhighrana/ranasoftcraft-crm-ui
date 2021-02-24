@@ -476,8 +476,8 @@
     height: 100%;
 
     .mat-tab-header {
-      margin-bottom: 16px;
-      border-color: $color-app-border;
+      margin-bottom: 12px;
+      border-bottom: none;
 
       .mat-tab-list {
         .mat-tab-labels {
@@ -570,40 +570,39 @@
         border: 1px solid $color-app-border;
         background-color: mat-color($background-palette, card);
 
-        label {
-          margin: 0 4px;
+        .chip-text-correct {
+          color: $color-status-info;
         }
 
-        .info {
-          color: $color-text-link;
-          margin-right: 3px;
+        .chip-text-error {
+          color: $color-status-error;
         }
-      }
 
-      &.info-status {
-        background: $color-status-info-accent;
-        color: $color-status-info;
-      }
+        .chip-text-success {
+          color: $color-status-success;
+        }
 
-      &.error-status {
-        background: $color-status-error-accent;
-        color: $color-status-error;
-      }
+        .chip-text-warning {
+          color: $color-status-warning;
+        }
 
-      &.success-status {
-        background: $color-status-success-accent;
-        color: $color-status-success;
-      }
+        .chip-text-outdate {
+          color: $color-text-secondary;
+        }
 
-      &.warning-status {
-        background: $color-status-warning-accent;
-        color: $color-status-warning;
+        &:hover {
+          background: $color-app-hover;
+        }
       }
 
       &.selected {
         background: $color-app-selected;
         border-color: $color-app-selected;
         color: $color-text-canvas;
+
+        &:hover {
+          background: $color-app-selected;
+        }
       }
 
       &.unselected {
@@ -1799,33 +1798,67 @@
     }
   }
 
-  pros-classification-builder {
+  pros-classification-builder,
+  pros-schema-details {
     div.root {
-      .dataset-grid-navigation {
-        .nav-tree {
-          mat-nav-list.mat-nav-list.tree-nav-list {
-            .understep-two {
-              .mat-list-item-content {
-                padding: 0 0 0 72px;
+      .counts {
+        color: $color-text-secondary;
 
-                .mat-list-text {
-                  padding-left: 0;
+        &::after {
+          background: $color-text-secondary;
+        }
+      }
+
+      mat-tab-group.mat-tab-group {
+        mat-tab-body.mat-tab-body {
+          .mat-tab-body-content {
+            overflow: hidden;
+          }
+        }
+      }
+
+      .listing-container {
+        .listset-navigation {
+          border-right-color: $color-app-border;
+
+          .nav-tree {
+            mat-nav-list.mat-nav-list.tree-nav-list {
+              .understep-two {
+                .mat-list-item-content {
+                  padding: 0 0 0 86px;
+
+                  button.mat-button {
+                    width: 36px;
+                    height: 36px;
+                    border-radius: 3px;
+                  }
                 }
               }
             }
-          }
 
-          .error-badge {
-            color: $color-status-error;
-          }
+            .error-badge {
+              color: $color-status-error;
+            }
 
-          .success-badge {
-            color: $color-status-success;
-          }
+            .success-badge {
+              color: $color-status-success;
+            }
 
-          .warning-badge {
-            color: $color-status-warning;
+            .warning-badge {
+              color: $color-status-warning;
+            }
           }
+        }
+
+        .default-badge,
+        .vertical-text {
+          color: $color-text-secondary;
+        }
+
+        .collapse-icon,
+        .split-panel-mark {
+          box-shadow: $box-shadow;
+          background-color: mat-color($background-palette, card);
         }
       }
     }
