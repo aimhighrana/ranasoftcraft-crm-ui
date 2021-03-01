@@ -313,7 +313,7 @@ export class NewBusinessRulesComponent implements OnInit {
             }
         }
 
-        if (this.data.moduleId) {
+        if (this.data && this.data.moduleId) {
             this.getFieldsByModuleId();
         } else {
             // Patch selected fields here
@@ -332,7 +332,7 @@ export class NewBusinessRulesComponent implements OnInit {
         const currentType = this.getTrRuleType(transformationSchema);
         this.form.controls.transformationRuleType.setValue(currentType);
         if (currentType === this.transformationType.REGEX) {
-            if (transformationSchema && transformationSchema.length > 0) {
+            if(transformationSchema && transformationSchema.length>0){
                 const data: TransformationModel = transformationSchema[0];
                 const { excludeScript, includeScript, sourceFld, targetFld, transformationRuleType, udrBlockModel } = data;
                 this.transformationData = {
@@ -346,7 +346,7 @@ export class NewBusinessRulesComponent implements OnInit {
             }
         }
         if (currentType === this.transformationType.LOOKUP) {
-            if (transformationSchema.length > 0) {
+            if(transformationSchema && transformationSchema.length>0) {
                 const lookupFields: LookupFields[] = [];
                 transformationSchema.map((schema) => {
                     lookupFields.push({
@@ -362,7 +362,6 @@ export class NewBusinessRulesComponent implements OnInit {
                         lookupTargetText: ''
                     })
                 });
-
                 this.transformationLookUpData = lookupFields;
             }
         }
