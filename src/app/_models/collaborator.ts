@@ -120,3 +120,13 @@ export class WidgetDownloadUser {
     description?: string;
     email:string;
 }
+
+export enum RuleDependentOn {
+    ALL='ALL',
+    ERROR='ERROR',
+    SUCCESS='SUCCESS',
+    SKIPPED='SKIPPED',
+    OUTDATED='OUTDATED',
+    DUPLICATE='DUPLICATE',
+    DRAFT='DRAFT'
+    }

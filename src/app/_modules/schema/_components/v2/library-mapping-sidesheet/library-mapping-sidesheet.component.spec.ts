@@ -102,7 +102,7 @@ describe('LibraryMappingSidesheetComponent', () => {
 
     spyOn(nounModifierService, 'getLocalAttribute').withArgs('Bearing', 'Ball','0').and.returnValue(of(result));
 
-    component.getLocalAttributes('Bearing', 'Ball');
+    component.getLocalAttributes('Bearing','Ball');
 
     expect(nounModifierService.getLocalAttribute).toHaveBeenCalledWith('Bearing', 'Ball', '0');
     expect(component.LocalAttributesList).toEqual(result);

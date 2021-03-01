@@ -5,7 +5,7 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatSliderChange } from '@angular/material/slider';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PermissionOn, SchemaCollaborator, SchemaDashboardPermission, UserMdoModel, ROLES } from '@models/collaborator';
+import { PermissionOn, SchemaCollaborator, SchemaDashboardPermission, UserMdoModel, ROLES, RuleDependentOn } from '@models/collaborator';
 import { AddFilterOutput, CheckDataBrs, CheckDataRequest, CheckDataSubscriber } from '@models/schema/schema';
 import { SchemaExecutionRequest } from '@models/schema/schema-execution';
 import { CategoryInfo, FilterCriteria } from '@models/schema/schemadetailstable';
@@ -217,6 +217,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
   getSchemaDetails(schemaId: string) {
     this.schemaListService.getSchemaDetailsBySchemaId(schemaId).subscribe(res => {
       this.schemaDetails = res;
+      this.schemaName.setValue(this.schemaDetails.schemaDescription);
       this.schemaThresholdControl.setValue(this.schemaDetails.schemaThreshold);
       if (this.schemaDetails.runId && this.isFromCheckData) {
         this.getCheckDataDetails(this.schemaId);
@@ -267,7 +268,9 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
           businessRule.isCopied = true;
           businessRule.copiedFrom = null;
           businessRule.schemaId = null;
+          businessRule.dependantStatus=RuleDependentOn.ALL;
         })
+        console.log(this.businessRuleData)
       }
     }, error => {
       console.log('Error while fetching business rule info for schema', error);
@@ -328,11 +331,31 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    * @param br delete by br id
    */
   deleteBr(br: CoreSchemaBrInfo) {
-    this.globalDialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
+    const index= this.businessRuleData.findIndex(element=>element.brId===br.brId);
+    let label='Are you sure to delete ?';
+    if(this.businessRuleData[index].dep_rules)
+    label='After delete the dependent rules will removed';
+    this.globalDialogService.confirm({ label }, (response) => {
       if (response && response === 'yes') {
         const brToBeDelete = this.businessRuleData.filter((businessRule) => businessRule.brId === br.brId)[0];
+        const innerindex = this.businessRuleData.indexOf(brToBeDelete);
+        this.businessRuleData.splice(innerindex, 1);
+      }
+    })
+  }
+
+  /**
+   * Delete child business rule  by id
+   * @param br delete by br id
+   */
+  deleteBrChild(br: CoreSchemaBrInfo,parentbr: CoreSchemaBrInfo) {
+    this.globalDialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
+      if (response && response === 'yes') {
+        const idx=this.businessRuleData.findIndex(element=>element.brId===parentbr.brId);
+        const childIdx=this.businessRuleData[idx].dep_rules;
+        const brToBeDelete = childIdx.filter((businessRule) => businessRule.brId === br.brId)[0];
         const index = this.businessRuleData.indexOf(brToBeDelete);
-        this.businessRuleData.splice(index, 1);
+       this.businessRuleData[idx].dep_rules.splice(index,1);
       }
     })
   }
@@ -572,6 +595,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
   addBusinessRule(brInfo) {
     if(this.businessRuleData.length > 0) {
       const checkExistence = this.businessRuleData.filter((businessRule) => businessRule.brIdStr === brInfo.brIdStr)[0];
+      console.log(checkExistence,this.businessRuleData)
       if(checkExistence) {
         this.matSnackBar.open('Business rule already added.', 'ok', {
           duration: 2000,
@@ -579,11 +603,11 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
         return;
       }
     }
-
     brInfo.brWeightage = 0;
     brInfo.isCopied = false;
     brInfo.schemaId = null;
     brInfo.copiedFrom = brInfo.brIdStr;
+    brInfo.dependantStatus=RuleDependentOn.ALL;
     this.businessRuleData.push(brInfo); // Push it into current Business rule listing array..
   }
 
@@ -645,13 +669,12 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    * Function to save check data
    */
   saveCheckData() {
-    this.updatedSchemaName=this.schemaName.value
+    this.updatedSchemaName=this.schemaName.value;
     if((this.schemaDetails.schemaDescription !== this.updatedSchemaName ||
         this.schemaDetails.schemaThreshold !== this.schemaThresholdControl.value)||
-        this.schemaId === 'new'
-    ) {
-      const schemaReq: CreateUpdateSchema = new CreateUpdateSchema();
-      schemaReq.schemaId = this.schemaId === 'new' ? '' : this.schemaId;
+        this.schemaId === 'new'){
+        const schemaReq: CreateUpdateSchema = new CreateUpdateSchema();
+        schemaReq.schemaId = this.schemaId === 'new' ? '' : this.schemaId;
       schemaReq.moduleId = this.moduleId;
       schemaReq.discription = this.updatedSchemaName ? this.updatedSchemaName : this.schemaDetails.schemaDescription;
       schemaReq.schemaThreshold = this.schemaThresholdControl.value;
@@ -690,16 +713,28 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
     });
 
     const forkObj = {};
-    this.businessRuleData.forEach((businessRule, index) => {
+    let counter=0;
+    this.businessRuleData.forEach((businessRule) => {
       businessRule.isCopied = true;
       businessRule.brId = businessRule.brIdStr ? businessRule.brIdStr : null;
       businessRule.brIdStr = businessRule.brIdStr ? businessRule.brIdStr : null;
       businessRule.moduleId = this.moduleId;
       businessRule.schemaId = schemaId;
+      businessRule.order = counter;
+      businessRule.dependantStatus = RuleDependentOn.ALL;
+      forkObj[counter] = this.isFromCheckData ?
+            this.schemaService.createCheckDataBusinessRule(businessRule) :
+            this.schemaService.createBusinessRule(businessRule);
+      counter++;
+      if (businessRule.dep_rules)
+        businessRule.dep_rules.forEach(element => {
+            element.order = counter;
+            forkObj[counter] = this.isFromCheckData ?
+                this.schemaService.createCheckDataBusinessRule(element) :
+                this.schemaService.createBusinessRule(element);
+            counter++
+        });
 
-      forkObj[index] = this.isFromCheckData ?
-                       this.schemaService.createCheckDataBusinessRule(businessRule):
-                       this.schemaService.createBusinessRule(businessRule)
     })
 
     const subscriberSnos = this.schemaDetailsService.createUpdateUserDetails(this.subscriberData)
@@ -728,7 +763,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
 
         this.schemaService.createUpdateCheckData(checkDataObj).subscribe((result) => {
           console.log(result);
-          this.runSchema();
+          // this.runSchema();
           this.close();
           this.matSnackBar.open('This action has been confirmed..', 'Okay', {
             duration: 2000
@@ -768,6 +803,48 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
     })
   }
 
+
+  updateDepRule(br: CoreSchemaBrInfo, event?: any) {
+    const index = this.businessRuleData.findIndex(item=>item.brIdStr===br.brIdStr);
+    console.log(index,br,event)
+    if(event.value!==RuleDependentOn.ALL)
+    { const tobeChild=this.businessRuleData[index]
+    console.log(tobeChild)
+    console.log(this.businessRuleData)
+    if(this.businessRuleData[index-1].dep_rules)
+    {
+     this.addChildatSameRoot(tobeChild,index)
+    }
+    else{
+    this.businessRuleData[index-1].dep_rules=[];
+    this.addChildatSameRoot(tobeChild,index)
+    }
+    const idxforChild=this.businessRuleData[index-1].dep_rules.indexOf(tobeChild);
+    this.businessRuleData[index-1].dep_rules[idxforChild].dependantStatus=event.value;
+    this.businessRuleData.splice(index,1)
+    }
+  }
+
+  addChildatSameRoot(tobeChild:CoreSchemaBrInfo,index:number){
+    this.businessRuleData[index-1].dep_rules.push(tobeChild)
+    if(tobeChild.dep_rules)
+    tobeChild.dep_rules.forEach(element=>{
+      this.businessRuleData[index-1].dep_rules.push(element);
+    });
+  }
+
+  updateDepRuleForChild(br: CoreSchemaBrInfo,index:number, event?: any) {
+   const idx=this.businessRuleData.findIndex(item=>item.brIdStr===br.brIdStr);
+  //  this.businessRuleData[idx].dep_rules[index].dependantStatus=event.value;
+   if(event.value===RuleDependentOn.ALL)
+  { const childBr=this.businessRuleData[idx].dep_rules[index]
+  console.log(childBr)
+  childBr.dependantStatus=event.value;
+  this.businessRuleData.push(childBr)
+  this.businessRuleData[idx].dep_rules.splice(index,1);
+  }
+    console.log(this.businessRuleData)
+  }
   /**
    * Function to open data scope side sheet
    */

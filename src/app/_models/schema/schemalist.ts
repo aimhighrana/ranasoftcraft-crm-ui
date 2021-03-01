@@ -310,4 +310,5 @@ export class CoreSchemaBrMap {
     order: number;
     status: string;
     brWeightage: number;
+    dependantStatus:string;
 }

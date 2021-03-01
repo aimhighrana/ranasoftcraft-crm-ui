@@ -80,8 +80,6 @@ describe('NounModifierService', () => {
 
     spyOn(endpointClassic, 'getAvailableAttributeUri').and.returnValue('getAvailableAttributeUri');
 
-    expect(() => service.getLocalAttribute('', 'Ball', '0')).toThrowError('Nouncode must be required ');
-    expect(() => service.getLocalAttribute('Bearing', '', '0')).toThrowError('Modifier must be required ');
 
     service.getLocalAttribute('Bearing', 'Ball', '0').subscribe(actualReponse => {
       expect(actualReponse).toEqual(expectedResponse);

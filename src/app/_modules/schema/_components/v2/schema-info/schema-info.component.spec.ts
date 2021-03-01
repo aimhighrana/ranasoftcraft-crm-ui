@@ -19,7 +19,7 @@ import { SchemaScheduler } from '@models/schema/schemaScheduler';
 import { FormInputComponent } from '@modules/shared/_components/form-input/form-input.component';
 import { ScheduleComponent } from '@modules/shared/_components/schedule/schedule.component';
 import { DatePickerFieldComponent } from '@modules/shared/_components/date-picker-field/date-picker-field.component';
-import { PermissionOn, SchemaDashboardPermission } from '@models/collaborator';
+import { PermissionOn, RuleDependentOn, SchemaDashboardPermission } from '@models/collaborator';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { SharedModule } from '@modules/shared/shared.module';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
@@ -28,6 +28,7 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { GlobaldialogService } from '@services/globaldialog.service';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { StaticsComponent } from '../statics/statics.component';
+import { FormControl, FormGroup } from '@angular/forms';
 
 describe('SchemaInfoComponent', () => {
   let component: SchemaInfoComponent;
@@ -98,7 +99,15 @@ describe('SchemaInfoComponent', () => {
   })
 
   it('getBusinessRuleList(), should get business rule list of schema', async () => {
-    spyOn(schemaService, 'getBusinessRulesBySchemaId').withArgs(component.schemaId).and.returnValue(of({} as CoreSchemaBrInfo[]));
+    const returnData=[
+      {
+        brWeightage: '46'
+      },
+      {
+        brWeightage: '33'
+      }
+    ] as CoreSchemaBrInfo[];
+    spyOn(schemaService, 'getBusinessRulesBySchemaId').withArgs(component.schemaId).and.returnValue(of(returnData));
     component.getBusinessRuleList(component.schemaId);
     expect(schemaService.getBusinessRulesBySchemaId).toHaveBeenCalledWith(component.schemaId);
   })
@@ -411,6 +420,7 @@ describe('SchemaInfoComponent', () => {
 
   it('getSchemaDetails(), should get schema details', async() => {
     component.schemaId = '12545';
+    component.schemaSummaryForm=new FormGroup({schemaThreshold:new FormControl()});
     spyOn(schemaListService, 'getSchemaDetailsBySchemaId').withArgs(component.schemaId).and.returnValue(of({} as SchemaListDetails))
     component.getSchemaDetails(component.schemaId);
     expect(schemaListService.getSchemaDetailsBySchemaId).toHaveBeenCalledWith(component.schemaId);
@@ -562,8 +572,19 @@ describe('SchemaInfoComponent', () => {
    });
 
    it('should open deleteBr confirm', () => {
+    component.businessRuleData = [
+      {
+        brId: '23542'
+      },
+      {
+        brId: '12345'
+      }
+    ] as CoreSchemaBrInfo[];
+    const br = {
+      brId: '12345'
+    } as CoreSchemaBrInfo;
     spyOn(globalDialogService, 'confirm');
-    component.deleteBr(new CoreSchemaBrInfo());
+    component.deleteBr(br);
     expect(globalDialogService.confirm).toHaveBeenCalled();
    });
 
@@ -704,4 +725,149 @@ describe('SchemaInfoComponent', () => {
     expect(event.container.data).toBeFalsy();
    })
 
+   it('updateDepRule() updateDepRule', async () => {
+    component.businessRuleData = [
+      {
+        sno: 101,
+        brId: '22',
+        brIdStr: '23',
+        brType: 'TRANSFORMATION',
+        refId: 1,
+        fields: '',
+        regex: '',
+        order: 1,
+        apiKey: '',
+        message: 'Invalid',
+        script: ''
+      } as CoreSchemaBrInfo,
+      {
+        sno: 1299484,
+        brId: '22',
+        brIdStr: '22',
+        brType: 'TRANSFORMATION',
+        dep_rules: []
+      } as CoreSchemaBrInfo
+    ];
+    const br = {
+      sno: 1299484,
+      brId: '22',
+      brIdStr: '22',
+      brType: 'TRANSFORMATION',
+      dep_rules: []
+    } as CoreSchemaBrInfo
+    const event = { value: RuleDependentOn.SUCCESS };
+    component.updateDepRule(br, event);
+    expect(component.businessRuleData.length).toEqual(1);
+
+    component.businessRuleData = [
+      {
+        sno: 101,
+        brId: '22',
+        brIdStr: '23',
+        brType: 'TRANSFORMATION',
+        refId: 1,
+        fields: '',
+        regex: '',
+        order: 1,
+        apiKey: '',
+        message: 'Invalid',
+        script: '',
+        dep_rules: [{
+          sno: 1299484,
+          brId: '22',
+          brIdStr: '25',
+          brType: 'TRANSFORMATION',
+          dep_rules: []
+        } as CoreSchemaBrInfo]
+
+      } as CoreSchemaBrInfo,
+      {
+        sno: 1299484,
+        brId: '22',
+        brIdStr: '22',
+        brType: 'TRANSFORMATION',
+        dep_rules: [{
+          sno: 1299484,
+          brId: '22',
+          brIdStr: '22',
+          brType: 'TRANSFORMATION', dependantStatus: 'SUCCESS'
+        }]
+      } as CoreSchemaBrInfo
+    ];
+    component.updateDepRule(br, event);
+    expect(component.businessRuleData.length).toEqual(1);
+  });
+
+  it('updateDepRuleForChild() updateDepRuleForChild', async () => {
+    component.businessRuleData = [
+      {
+        sno: 101,
+        brId: '22',
+        brIdStr: '23',
+        brType: 'TRANSFORMATION',
+        refId: 1,
+        fields: '',
+        regex: '',
+        order: 1,
+        apiKey: '',
+        message: 'Invalid',
+        script: ''
+      } as CoreSchemaBrInfo,
+      {
+        sno: 1299484,
+        brId: '22',
+        brIdStr: '22',
+        brType: 'TRANSFORMATION',
+        dep_rules: []
+      } as CoreSchemaBrInfo
+    ];
+    const br = {
+      sno: 1299484,
+      brId: '22',
+      brIdStr: '22',
+      brType: 'TRANSFORMATION',
+      dep_rules: []
+    } as CoreSchemaBrInfo
+    const event = { value: RuleDependentOn.ALL };
+    component.updateDepRule(br, event);
+    expect(component.businessRuleData.length).toEqual(2);
+
+    component.businessRuleData = [
+      {
+        sno: 101,
+        brId: '22',
+        brIdStr: '23',
+        brType: 'TRANSFORMATION',
+        refId: 1,
+        fields: '',
+        regex: '',
+        order: 1,
+        apiKey: '',
+        message: 'Invalid',
+        script: '',
+        dep_rules: [{
+          sno: 1299484,
+          brId: '22',
+          brIdStr: '25',
+          brType: 'TRANSFORMATION',
+          dep_rules: []
+        } as CoreSchemaBrInfo]
+
+      } as CoreSchemaBrInfo,
+      {
+        sno: 1299484,
+        brId: '22',
+        brIdStr: '22',
+        brType: 'TRANSFORMATION',
+        dep_rules: [{
+          sno: 1299484,
+          brId: '22',
+          brIdStr: '22',
+          brType: 'TRANSFORMATION', dependantStatus: 'SUCCESS'
+        }]
+      } as CoreSchemaBrInfo
+    ];
+    component.updateDepRuleForChild(br, 0, event);
+    expect(component.businessRuleData.length).toEqual(3);
+  });
 });

@@ -57,15 +57,7 @@ export class NounModifierService {
    * @param searchString seach modifier based on the values ..
    */
   public getLocalAttribute(nounCode: string,  modifierCode: string, plantCode : string , searchString?: string): Observable<AttributesDoc[]> {
-    if(!nounCode) {
-      throw new Error('Nouncode must be required ');
-    }
-
-    if(!modifierCode) {
-      throw new Error('Modifier must be required ');
-    }
-
-    searchString = searchString ? searchString : '';
+     searchString = searchString ? searchString : '';
     return this.http.get<AttributesDoc[]>(this.endpointClassic.getAvailableAttributeUri(), {params:{nounCode, modifierCode, searchString, plantCode}})
   }
 
