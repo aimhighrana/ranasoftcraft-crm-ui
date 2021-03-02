@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { PageNotFoundComponent } from '../shared/_components/page-not-found/page-not-found.component';
-import { HomeLayoutComponent } from 'src/app/_modules/home/_components/home-layout/home-layout.component';
 import { WelcomeMdoComponent } from '@modules/schema/_components/welcome-mdo/welcome-mdo.component';
+// import { PrimaryNavigationComponent } from './_components/primary-navigation/primary-navigation.component';
+import { HomeLayoutComponent } from './_components/home-layout/home-layout.component';
 
 const routes: Routes = [
   {

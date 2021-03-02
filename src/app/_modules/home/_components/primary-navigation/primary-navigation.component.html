@@ -1,0 +1,66 @@
+<div class="f-row root">
+    <div class="f-col primarynav-logo">
+        <pros-svg-icon size="70" icon="MDO_LOGO" class="primary-nav"></pros-svg-icon>
+    </div>
+    <!-- <div class="f-row">
+        <button mat-icon-button (click)="toggleSideBar()">
+            <mat-icon fontSet="mdo-icons">menu</mat-icon>
+        </button>
+    </div> -->
+
+    <div class="f-row">
+        <mat-nav-list [disableRipple]="true" class="primary-nav-list">
+            <mat-list-item class="link-items">
+               Home
+            </mat-list-item>
+
+            <mat-list-item class="link-items">
+               Schema
+            </mat-list-item>
+
+            <mat-list-item class="link-items">
+                Reports
+            </mat-list-item>
+        </mat-nav-list>
+    </div>
+
+    <div class="f-spacer"></div>
+
+    <div class="f-row global-menu">
+        <div [matMenuTriggerFor]="navigation">
+            <button mat-mini-fab class="create-new">
+                <mat-icon fontSet="mdo-icons">plus</mat-icon>
+            </button>
+            <mat-menu #navigation="matMenu" xPosition="before" class="navigation-menu">
+                <!-- <pros-navigation-dropdown (selectedModule)="selectedModule($event)">
+                </pros-navigation-dropdown> -->
+            </mat-menu>
+        </div>
+
+        <div class="col-spacer"></div>
+        <div class="f-col-spacer-half"></div>
+
+        <div class="f-row menu-pill-search app-canvas">
+            <mat-icon class="input-action cursor" fontSet="mdo-icons">search</mat-icon>
+            <input class="pill-input" type="text" placeholder="Search anything">
+            <mat-icon class="input-action cursor" fontSet="mdo-icons">close</mat-icon>
+        </div>
+
+        <div class="admin-badge cursor">
+            <mat-icon fontSet="mdo-icons" matBadge="2">tray</mat-icon>
+        </div>
+
+        <div class="col-spacer"></div>
+        <div class="f-col-spacer-half"></div>
+
+        <mat-card-header [matMenuTriggerFor]="profile_navigation">
+            <div mat-card-avatar class="app-canvas cursor">
+                <!-- {{ userDetails.firstName ? userDetails.firstName.substring(0,1).toUpperCase() : ''  }}{{ userDetails.lastName ? userDetails.lastName.substring(0,1).toUpperCase() : ''  }} -->
+            </div>
+            <!-- <mat-card-title>{{ userDetails.fullName ? userDetails.fullName : userDetails.userName }}</mat-card-title> -->
+        </mat-card-header>
+        <mat-menu #profile_navigation="matMenu" xPosition="before" class="navigation-menu">
+            <button mat-menu-item>Sign out</button>
+        </mat-menu>
+    </div>    
+</div>
