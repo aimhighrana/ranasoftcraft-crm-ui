@@ -271,11 +271,19 @@ describe('BrruleSideSheetComponent', () => {
       component.applyValidatorsByRuleType(BusinessRuleType.BR_TRANSFORMATION);
       expect(component.form.controls.rule_name).toBeDefined();
 
-
-      component.applyValidatorsByRuleType(BusinessRuleType.BR_DUPLICATE_RULE);
+      component.applyValidatorsByRuleType(BusinessRuleType.MRO_CLS_MASTER_CHECK);
       expect(component.form.controls.rule_name).toBeDefined();
 
-      component.applyValidatorsByRuleType(BusinessRuleType.BR_CLASSIFICATION);
+      component.applyValidatorsByRuleType(BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI);
+      expect(component.form.controls.rule_name).toBeDefined();
+
+      component.applyValidatorsByRuleType(BusinessRuleType.MRO_GSN_DESC_MATCH);
+      expect(component.form.controls.rule_name).toBeDefined();
+
+      component.applyValidatorsByRuleType(BusinessRuleType.MRO_MANU_PRT_NUM_LOOKUP);
+      expect(component.form.controls.rule_name).toBeDefined();
+
+      component.applyValidatorsByRuleType(BusinessRuleType.BR_DUPLICATE_RULE);
       expect(component.form.controls.rule_name).toBeDefined();
 
   }));
@@ -309,9 +317,21 @@ describe('BrruleSideSheetComponent', () => {
       component.setValueToElement(brInfo);
       expect(component.form.controls.rule_type.value).toEqual(BusinessRuleType.BR_DUPLICATE_RULE);
 
-      brInfo.brType = BusinessRuleType.BR_CLASSIFICATION;
+      brInfo.brType = BusinessRuleType.MRO_CLS_MASTER_CHECK;
       component.setValueToElement(brInfo);
-      expect(component.form.controls.rule_type.value).toEqual(BusinessRuleType.BR_CLASSIFICATION);
+      expect(component.form.controls.rule_type.value).toEqual(BusinessRuleType.MRO_CLS_MASTER_CHECK);
+
+      brInfo.brType = BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI;
+      component.setValueToElement(brInfo);
+      expect(component.form.controls.rule_type.value).toEqual(BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI);
+
+      brInfo.brType = BusinessRuleType.MRO_GSN_DESC_MATCH;
+      component.setValueToElement(brInfo);
+      expect(component.form.controls.rule_type.value).toEqual(BusinessRuleType.MRO_GSN_DESC_MATCH);
+
+      brInfo.brType = BusinessRuleType.MRO_MANU_PRT_NUM_LOOKUP;
+      component.setValueToElement(brInfo);
+      expect(component.form.controls.rule_type.value).toEqual(BusinessRuleType.MRO_MANU_PRT_NUM_LOOKUP);
 
       brInfo.brType = null;
       const previousBrType = component.form.controls.rule_type.value;

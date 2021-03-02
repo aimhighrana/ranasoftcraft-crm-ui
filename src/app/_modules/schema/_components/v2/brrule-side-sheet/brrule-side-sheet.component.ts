@@ -349,7 +349,7 @@ export class BrruleSideSheetComponent implements OnInit {
     if (selectedRule === BusinessRuleType.BR_REGEX_RULE) {
       requiredKeys = ['categoryId', 'rule_name', 'error_message', 'fields', 'regex', 'standard_function'];
     }
-    if (selectedRule === BusinessRuleType.BR_MANDATORY_FIELDS || selectedRule === BusinessRuleType.BR_METADATA_RULE) {
+    if (selectedRule === BusinessRuleType.BR_MANDATORY_FIELDS || selectedRule === BusinessRuleType.BR_METADATA_RULE || BusinessRuleType.MRO_CLS_MASTER_CHECK || BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI) {
       requiredKeys = ['categoryId', 'rule_name', 'error_message', 'fields'];
     }
     if (selectedRule === BusinessRuleType.BR_TRANSFORMATION) {
@@ -365,7 +365,7 @@ export class BrruleSideSheetComponent implements OnInit {
       requiredKeys = ['rule_name'];
     }
 
-    if (selectedRule === BusinessRuleType.BR_CLASSIFICATION) {
+    if (selectedRule === BusinessRuleType.MRO_GSN_DESC_MATCH || BusinessRuleType.MRO_MANU_PRT_NUM_LOOKUP) {
       requiredKeys = ['rule_name', 'error_message', 'categoryId', 'apiKey', 'fields'];
     }
 
@@ -414,7 +414,7 @@ export class BrruleSideSheetComponent implements OnInit {
 
     let patchList = [];
 
-    if (br.brType === BusinessRuleType.BR_METADATA_RULE) {
+    if (br.brType === BusinessRuleType.BR_METADATA_RULE || br.brType === BusinessRuleType.BR_MANDATORY_FIELDS || BusinessRuleType.MRO_CLS_MASTER_CHECK || BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI) {
       patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId'];
     }
     if (br.brType === BusinessRuleType.BR_CUSTOM_SCRIPT) {
@@ -428,15 +428,12 @@ export class BrruleSideSheetComponent implements OnInit {
     if (br.brType === BusinessRuleType.BR_REGEX_RULE) {
       patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId', 'standard_function', 'regex'];
     }
-    if (br.brType === BusinessRuleType.BR_MANDATORY_FIELDS) {
-      patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId'];
-    }
 
     if (br.brType === BusinessRuleType.BR_DUPLICATE_RULE) {
       patchList = ['rule_type', 'rule_name'];
     }
 
-    if (br.brType === BusinessRuleType.BR_CLASSIFICATION) {
+    if (br.brType === BusinessRuleType.MRO_GSN_DESC_MATCH || BusinessRuleType.MRO_MANU_PRT_NUM_LOOKUP) {
       patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId', 'apiKey'];
     }
 
