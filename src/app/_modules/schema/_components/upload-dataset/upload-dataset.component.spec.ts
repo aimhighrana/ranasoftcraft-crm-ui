@@ -22,6 +22,7 @@ import { SharedModule } from '@modules/shared/shared.module';
 import { SchemaDashboardPermission } from '@models/collaborator';
 import { UserService } from '@services/user/userservice.service';
 import { Userdetails } from '@models/userdetails';
+import { RuleDependentOn } from '@models/collaborator';
 
 
 describe('UploadDatasetComponent', () => {
@@ -737,7 +738,8 @@ describe('UploadDatasetComponent', () => {
   });
 
   it('getSchemaCollaboratorInfo(), should get subscriber info of schema', async()=>{
-    const schemaId = '121234'
+    const schemaId = '121234';
+    component.userDetails={plantCode:'0'} as Userdetails;
     const mockRes = [
       {
         sno: '11323',
@@ -762,7 +764,8 @@ describe('UploadDatasetComponent', () => {
   })
 
   it('getSchemaCollaboratorInfo(), should get subscriber info of schema', async()=>{
-    const schemaId = '121234'
+    const schemaId = '121234';
+    component.userDetails={plantCode:'0'} as Userdetails;
     const mockRes = [
       {
         sno: '11323',
@@ -799,10 +802,159 @@ describe('UploadDatasetComponent', () => {
 
     component.requestForm = new FormGroup({
       dataScope: new FormControl(''),
-      schemaThreshold: new FormControl()
+      schemaThreshold: new FormControl(),
+      userId: new FormControl(''),
+      plantCode: new FormControl()
     })
     component.ngOnInit();
 
     expect(userService.getUserDetails).toHaveBeenCalled();
   })
+
+
+it('updateDepRule() updateDepRule', async () => {
+  component.selectedBusinessRules = [
+    {
+      sno: 101,
+      brId: '22',
+      brIdStr: '23',
+      brType: 'TRANSFORMATION',
+      refId: 1,
+      fields: '',
+      regex: '',
+      order: 1,
+      apiKey: '',
+      message: 'Invalid',
+      script: ''
+    } as CoreSchemaBrInfo,
+    {
+      sno: 1299484,
+      brId: '22',
+      brIdStr: '22',
+      brType: 'TRANSFORMATION',
+      dep_rules: []
+    } as CoreSchemaBrInfo
+  ];
+  const br = {
+    sno: 1299484,
+    brId: '22',
+    brIdStr: '22',
+    brType: 'TRANSFORMATION',
+    dep_rules: []
+  } as CoreSchemaBrInfo
+  const event = { value: RuleDependentOn.SUCCESS };
+  component.updateDepRule(br, event);
+  expect(component.selectedBusinessRules.length).toEqual(1);
+
+  component.selectedBusinessRules = [
+    {
+      sno: 101,
+      brId: '22',
+      brIdStr: '23',
+      brType: 'TRANSFORMATION',
+      refId: 1,
+      fields: '',
+      regex: '',
+      order: 1,
+      apiKey: '',
+      message: 'Invalid',
+      script: '',
+      dep_rules: [{
+        sno: 1299484,
+        brId: '22',
+        brIdStr: '25',
+        brType: 'TRANSFORMATION',
+        dep_rules: []
+      } as CoreSchemaBrInfo]
+
+    } as CoreSchemaBrInfo,
+    {
+      sno: 1299484,
+      brId: '22',
+      brIdStr: '22',
+      brType: 'TRANSFORMATION',
+      dep_rules: [{
+        sno: 1299484,
+        brId: '22',
+        brIdStr: '22',
+        brType: 'TRANSFORMATION', dependantStatus: 'SUCCESS'
+      }]
+    } as CoreSchemaBrInfo
+  ];
+  component.updateDepRule(br, event);
+  expect(component.selectedBusinessRules.length).toEqual(1);
+});
+
+it('updateDepRuleForChild() updateDepRuleForChild', async () => {
+  component.selectedBusinessRules = [
+    {
+      sno: 101,
+      brId: '22',
+      brIdStr: '23',
+      brType: 'TRANSFORMATION',
+      refId: 1,
+      fields: '',
+      regex: '',
+      order: 1,
+      apiKey: '',
+      message: 'Invalid',
+      script: ''
+    } as CoreSchemaBrInfo,
+    {
+      sno: 1299484,
+      brId: '22',
+      brIdStr: '22',
+      brType: 'TRANSFORMATION',
+      dep_rules: []
+    } as CoreSchemaBrInfo
+  ];
+  const br = {
+    sno: 1299484,
+    brId: '22',
+    brIdStr: '22',
+    brType: 'TRANSFORMATION',
+    dep_rules: []
+  } as CoreSchemaBrInfo
+  const event = { value: RuleDependentOn.ALL };
+  component.updateDepRule(br, event);
+  expect(component.selectedBusinessRules.length).toEqual(2);
+
+  component.selectedBusinessRules = [
+    {
+      sno: 101,
+      brId: '22',
+      brIdStr: '23',
+      brType: 'TRANSFORMATION',
+      refId: 1,
+      fields: '',
+      regex: '',
+      order: 1,
+      apiKey: '',
+      message: 'Invalid',
+      script: '',
+      dep_rules: [{
+        sno: 1299484,
+        brId: '22',
+        brIdStr: '25',
+        brType: 'TRANSFORMATION',
+        dep_rules: []
+      } as CoreSchemaBrInfo]
+
+    } as CoreSchemaBrInfo,
+    {
+      sno: 1299484,
+      brId: '22',
+      brIdStr: '22',
+      brType: 'TRANSFORMATION',
+      dep_rules: [{
+        sno: 1299484,
+        brId: '22',
+        brIdStr: '22',
+        brType: 'TRANSFORMATION', dependantStatus: 'SUCCESS'
+      }]
+    } as CoreSchemaBrInfo
+  ];
+  component.updateDepRuleForChild(br, 0, event);
+  expect(component.selectedBusinessRules.length).toEqual(3);
+});
 });

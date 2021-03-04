@@ -170,9 +170,12 @@ export class LibraryMappingSidesheetComponent implements OnInit {
 
   getLocalAttributes(nounCode, modifierCode) {
     // const params = {plantCode: '0', nounCode, modifierCode: '', searchString: ''};
+    if(nounCode||modifierCode)
     this.nounModifierService.getLocalAttribute(nounCode, modifierCode, '0')
       .subscribe(attributes => {
         this.LocalAttributesList = attributes;
+      },error=>{
+        console.log(error);
       })
   }
 
