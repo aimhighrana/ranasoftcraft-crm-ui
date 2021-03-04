@@ -9,10 +9,13 @@ import { Observable, of, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
 import { UserService } from '@services/user/userservice.service';
+import { ListService } from '@services/list/list.service';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { CreateUpdateSchema } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SecondaynavType } from '@models/menu-navigation';
+import { DataList } from '@modules/list/_components/list.component';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'pros-secondary-navbar',
@@ -22,8 +25,8 @@ import { SecondaynavType } from '@models/menu-navigation';
 export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
 
   public moduleList: SchemaListModuleList[] = [];
+  dataList: DataList[] = [];
   reportList: ReportList[] = [];
-
   dataIntillegences: SchemaListDetails[] = [];
 
   /**
@@ -45,6 +48,11 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
    * report list observal ..
    */
   reportOb: Observable<ReportList[]> = of([]);
+
+  /**
+   * data list observal ..
+   */
+  dataOb: Observable<DataList[]> = of([]);
 
   @Input()
   activatedPrimaryNav: string;
@@ -78,6 +86,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
     private reportService: ReportService,
     private sharedService: SharedServiceService,
     private userService: UserService,
+    private listService: ListService,
     private matSnackBar: MatSnackBar
   ) { }
 
@@ -99,6 +108,10 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
 
         case 'report':
           this.getreportList();
+          break;
+
+          case 'list':
+          this.getDataList();
           break;
 
         default:
@@ -194,6 +207,18 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   /**
+   * Function to get all data list
+   */
+  public getDataList(){
+    this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user=>{
+      this.listService.dataList().subscribe(dataList => {
+        this.dataOb = of(dataList);
+        this.dataList = (dataList);
+      })
+    });
+  }
+
+  /**
    * Get routed descriptions ..
    */
   get getRoutedDescription(): string {
@@ -207,6 +232,9 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
         break;
       case 'report':
         res = 'Report';
+        break;
+      case 'list':
+        res = 'Data';
         break;
       default:
         break;
@@ -274,6 +302,13 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
         this.reportOb = of(this.reportList);
       }
     }
+    if (this.activatedPrimaryNav === 'list') {
+      if (searchString) {
+        this.dataOb = of(this.dataList.filter(fil => fil.objectDesc.toLocaleLowerCase().indexOf(searchString.toLocaleLowerCase()) !== -1));
+      } else {
+        this.dataOb = of(this.dataList);
+      }
+    }
   }
 
   /**
@@ -325,6 +360,10 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
     else if (url.includes('/home/schema')) {
       this.activatedPrimaryNav = 'schema';
       this.getSchemaList();
+    }
+    else if (url.includes('/home/list')) {
+      this.activatedPrimaryNav = 'list';
+      this.getDataList();
     }
   }
 
@@ -405,5 +444,15 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
     this.subscriptions.forEach((subscription) => {
       subscription.unsubscribe();
     })
+  }
+
+  /**
+   * While drag and drop on list elements
+   * @param event dragable element
+   */
+  drop(event: CdkDragDrop<string[]>) {
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    }
   }
 }

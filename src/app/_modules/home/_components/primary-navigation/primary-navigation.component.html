@@ -1,4 +1,4 @@
-<div class="f-row root">
+<div class="f-row nav-root">
     <div class="f-col primarynav-logo">
         <pros-svg-icon size="70" icon="MDO_LOGO" class="primary-nav"></pros-svg-icon>
     </div>
@@ -7,19 +7,20 @@
             <mat-icon fontSet="mdo-icons">menu</mat-icon>
         </button>
     </div> -->
-
+    
     <div class="f-row">
-        <mat-nav-list [disableRipple]="true" class="primary-nav-list">
-            <mat-list-item class="link-items">
+        <mat-nav-list class="primary-nav-list">
+            <mat-list-item class="link-items" [class.selected]="isNavSelected==='welcome'" (click)="sendToParent('welcome')">
                Home
             </mat-list-item>
-
-            <mat-list-item class="link-items">
+            <mat-list-item class="link-items" [class.selected]="isNavSelected==='list'" (click)="sendToParent('list')">
+               Data
+            </mat-list-item>
+            <mat-list-item class="link-items" [class.selected]="isNavSelected==='schema'" (click)="sendToParent('schema')">
                Schema
             </mat-list-item>
-
-            <mat-list-item class="link-items">
-                Reports
+            <mat-list-item class="link-items" [class.selected]="isNavSelected==='report'" (click)="sendToParent('report')">
+               Reports
             </mat-list-item>
         </mat-nav-list>
     </div>
@@ -32,8 +33,8 @@
                 <mat-icon fontSet="mdo-icons">plus</mat-icon>
             </button>
             <mat-menu #navigation="matMenu" xPosition="before" class="navigation-menu">
-                <!-- <pros-navigation-dropdown (selectedModule)="selectedModule($event)">
-                </pros-navigation-dropdown> -->
+                <pros-navigation-dropdown (selectedModule)="selectedModule($event)">
+                </pros-navigation-dropdown>
             </mat-menu>
         </div>
 
@@ -41,13 +42,11 @@
         <div class="f-col-spacer-half"></div>
 
         <div class="f-row menu-pill-search app-canvas">
-            <mat-icon class="input-action cursor" fontSet="mdo-icons">search</mat-icon>
-            <input class="pill-input" type="text" placeholder="Search anything">
-            <mat-icon class="input-action cursor" fontSet="mdo-icons">close</mat-icon>
+             <pros-search-input placeholder="Search anything"  #schemaSearchInput value=""></pros-search-input>
         </div>
 
-        <div class="admin-badge cursor">
-            <mat-icon fontSet="mdo-icons" matBadge="2">tray</mat-icon>
+        <div class="admin-badge cursor"  (click)="openSystemTray()">
+            <mat-icon fontSet="mdo-icons" matBadge="{{notificationsCount}}">tray</mat-icon>
         </div>
 
         <div class="col-spacer"></div>
@@ -55,12 +54,24 @@
 
         <mat-card-header [matMenuTriggerFor]="profile_navigation">
             <div mat-card-avatar class="app-canvas cursor">
-                <!-- {{ userDetails.firstName ? userDetails.firstName.substring(0,1).toUpperCase() : ''  }}{{ userDetails.lastName ? userDetails.lastName.substring(0,1).toUpperCase() : ''  }} -->
+                {{ userDetails.firstName ? userDetails.firstName.substring(0,1).toUpperCase() : ''  }}{{ userDetails.lastName ? userDetails.lastName.substring(0,1).toUpperCase() : ''  }}
             </div>
             <!-- <mat-card-title>{{ userDetails.fullName ? userDetails.fullName : userDetails.userName }}</mat-card-title> -->
         </mat-card-header>
         <mat-menu #profile_navigation="matMenu" xPosition="before" class="navigation-menu">
-            <button mat-menu-item>Sign out</button>
+            <button mat-menu-item (click)="signOut()">Sign out</button>
         </mat-menu>
     </div>    
 </div>
+
+<mat-sidenav-content id="primaryContent">
+    <mat-sidenav-container autosize>
+        <mat-sidenav mode="side" opened [disableClose]="true" id="secondarySidenav" #secondarySidenav>
+            <!-- secondary side nav -->
+            <pros-secondary-navbar [activatedPrimaryNav]="isNavSelected" (toggleEmitter)="toggleSecondarySideBar()"></pros-secondary-navbar>
+        </mat-sidenav>
+      <mat-sidenav-content id="secondaryContent" #secondaryContent>
+        <router-outlet></router-outlet>
+      </mat-sidenav-content>
+    </mat-sidenav-container>
+  </mat-sidenav-content>

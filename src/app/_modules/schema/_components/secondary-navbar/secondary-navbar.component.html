@@ -4,7 +4,7 @@
     <div class="f-row display-heading-large">
       <div>{{ getRoutedDescription }}</div>
       <span class="f-spacer"></span>
-      <button mat-button *ngIf="activatedPrimaryNav !== 'schema'; else isSchema" (click)="globalCreate()">
+      <button mat-button *ngIf="(activatedPrimaryNav !== 'schema' && activatedPrimaryNav !== 'list'); else isSchema" (click)="globalCreate()">
         <mat-icon fontSet="mdo-icons">plus</mat-icon>
       </button>
       <ng-template #isSchema>
@@ -19,14 +19,13 @@
               (click)="createNewSchema(module.moduleId)">{{module.moduleDesc ? module.moduleDesc : 'Untitled'}}
             </button>
           </div>
-
         </mat-menu>
       </ng-template>
     </div>
 
     <div class="row-spacer"></div>
 
-    <pros-search-input [placeholder]="activatedPrimaryNav ==='report' ? 'Search report' : 'Search schema'"
+    <pros-search-input [placeholder]="activatedPrimaryNav ==='report' ? 'Search report' : activatedPrimaryNav ==='list'? 'Search' :'Search schema'"
       #schemaSearchInput (value)=(searchSchema($event))></pros-search-input>
 
     <div class="row-spacer"></div>
@@ -94,6 +93,15 @@
           <mat-list-item [disabled]="report.permission && !report.permission.isViewable"
             [routerLink]="['report/dashboard', report.reportId]" [routerLinkActive]="'selected'">
             <div class="heading-title">{{report.reportName ? report.reportName : 'Untitled'}}</div>
+          </mat-list-item>
+        </mat-nav-list>
+      </mat-accordion>
+
+      <!-- Tree to show when navigation is on list -->
+      <mat-accordion *ngIf="activatedPrimaryNav === 'list'" cdkDropList [cdkDropListData]="dataList" (cdkDropListDropped)="drop($event)">
+        <mat-nav-list *ngFor="let data of dataOb | async" cdkDrag [disableRipple]="true">
+          <mat-list-item cdkDragHandle>
+            {{data.objectDesc ? data.objectDesc : 'Untitled'}}
           </mat-list-item>
         </mat-nav-list>
       </mat-accordion>

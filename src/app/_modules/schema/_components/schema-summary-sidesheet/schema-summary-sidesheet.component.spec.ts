@@ -219,6 +219,15 @@
 //     expect(schemaListService.getSchemaDetailsBySchemaId).toHaveBeenCalledWith(component.schemaId);
 //   })
 
+  // it('getSchemaDetails(), should get schema details', async () => {
+  //   component.schemaId = '12545';
+  //   component.schemaThresholdControl = new FormControl(null);
+  //   component.schemaName = new FormControl(null);
+  //   spyOn(schemaListService, 'getSchemaDetailsBySchemaId').withArgs(component.schemaId).and.returnValue(of({} as SchemaListDetails))
+  //   component.getSchemaDetails(component.schemaId);
+  //   expect(schemaListService.getSchemaDetailsBySchemaId).toHaveBeenCalledWith(component.schemaId);
+  // })
+
 //   it('getCheckDataDetails(), should get info about check data', async () => {
 //     component.schemaId = '1224552';
 //     spyOn(schemaService, 'getCheckData').withArgs(component.schemaId).and.returnValue(of({} as CheckDataResponse));

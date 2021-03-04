@@ -22,6 +22,7 @@ import { DatePickerFieldComponent } from '@modules/shared/_components/date-picke
 import { PermissionOn, SchemaDashboardPermission } from '@models/collaborator';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { SharedModule } from '@modules/shared/shared.module';
+import { FormControl, FormGroup } from '@angular/forms';
 
 describe('SchemaInfoComponent', () => {
   let component: SchemaInfoComponent;
@@ -361,6 +362,7 @@ describe('SchemaInfoComponent', () => {
 
   it('getSchemaDetails(), should get schema details', async() => {
     component.schemaId = '12545';
+    component.schemaSummaryForm=new FormGroup({schemaThreshold:new FormControl()});
     spyOn(schemaListService, 'getSchemaDetailsBySchemaId').withArgs(component.schemaId).and.returnValue(of({} as SchemaListDetails))
     component.getSchemaDetails(component.schemaId);
     expect(schemaListService.getSchemaDetailsBySchemaId).toHaveBeenCalledWith(component.schemaId);
