@@ -130,6 +130,7 @@ export class GroupDataTableComponent implements OnInit, OnChanges, AfterViewInit
       this.pageIndex++;
     } else {
       this.pageIndex = 0;
+      this.searchAfter = new SearchAfter();
     }
 
     const request = new RequestForGroupList();
