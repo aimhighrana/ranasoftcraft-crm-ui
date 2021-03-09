@@ -143,8 +143,9 @@
 
         <div class="f-row-spacer-half"></div>
 
-        <div class="f-row listing-container">
-            <div class="f-col listset-navigation">
+        <div class="f-row listing-container" #listingContainer>
+            <div class="f-col listset-navigation" [style.width.px]="widthOfSchemaNav"
+                  (window:mouseup)="setStatus($event, 0)" (mousedown)="setStatus($event, 1)" #navscroll>
                 <div class="nav-tree">
                     <mat-accordion>
                         <mat-expansion-panel togglePosition="before" class="mat-elevation-z0" expanded="expanded">
@@ -208,12 +209,12 @@
                     </mat-accordion>
                 </div>
 
-                <div class="split-panel-mark">
-                    <mat-icon fontSet="mdo-icons">chevron-left</mat-icon>
+                <div class="split-panel-mark" (click)="toggleSideBar()">
+                    <mat-icon fontSet="mdo-icons">{{arrowIcon}}</mat-icon>
                 </div>
             </div>
 
-            <div class="f-col listset-grid" (scroll)="onTableScroll($event)">
+            <div class="f-col listset-grid" [ngStyle]="{'width':'calc(100% - ' +widthOfSchemaNav + 'px - 24px)' }" (scroll)="onTableScroll($event)">
                 <div class="listset-text">Header</div>
                 <!-- if have data then render table -->
                 <ng-template [ngIf]="showTableLoading" [ngIfElse]="showdata">

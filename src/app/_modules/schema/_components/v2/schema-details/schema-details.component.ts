@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ComponentFactoryResolver, ViewContainerRef, Input, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ComponentFactoryResolver, ViewContainerRef, Input, OnChanges, SimpleChanges, OnDestroy, ElementRef, HostListener } from '@angular/core';
 import { MetadataModeleResponse, RequestForSchemaDetailsWithBr, SchemaCorrectionReq, FilterCriteria, FieldInputType, SchemaTableViewFldMap, SchemaTableAction, TableActionViewType, SchemaTableViewRequest, STANDARD_TABLE_ACTIONS } from '@models/schema/schemadetailstable';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, Subject, Subscription } from 'rxjs';
@@ -6,7 +6,7 @@ import { SchemaDetailsService } from '@services/home/schema/schema-details.servi
 import { SchemaDataSource } from '../../schema-details/schema-datatable/schema-data-source';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { SchemaService } from '@services/home/schema.service';
-import { SchemaStaticThresholdRes, LoadDropValueReq, SchemaListDetails, SchemaVariantsModel } from '@models/schema/schemalist';
+import { SchemaStaticThresholdRes, LoadDropValueReq, SchemaListDetails, SchemaVariantsModel, SchemaNavGrab } from '@models/schema/schemalist';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -166,6 +166,9 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
 
   @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
 
+  @ViewChild('navscroll')navscroll:ElementRef;
+  @ViewChild('listingContainer')listingContainer:ElementRef;
+
   FIELD_TYPE = FieldInputType;
 
   selectFieldOptions: DropDownValue[] = [];
@@ -174,6 +177,11 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    * Hold info about current user
    */
   userDetails: Userdetails;
+
+  /**
+   * arrow mat-icon code
+   */
+  arrowIcon = 'chevron-left';
 
   /**
    * hold scroll limit reached edge
@@ -193,6 +201,11 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   isInRunning: boolean;
 
   inlineSearchSubject: Subject<string> = new Subject();
+
+  widthOfSchemaNav = 292;
+  boxPosition: { left: number, top: number };
+  public mousePosition: { x: number, y: number };
+  public status: SchemaNavGrab = SchemaNavGrab.OFF;
 
   /**
    * All subscription should be in this variable ..
@@ -291,6 +304,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
         this.getData(this.filterCriteria.getValue(), this.sortOrder);
       }
     });
+    this.setNavDivPositions();
+    this.enableResize();
   }
 
   ngOnInit(): void {
@@ -1123,6 +1138,64 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   uploadCorrectedData() {
     this.router.navigate([{outlets: { sb: `sb/schema/upload-data/${this.moduleId}/${this.outlet}`}}], {queryParams:{importcorrectedRec: true, schemaId: this.schemaId, runid: this.schemaInfo.runId}});
   }
+  /**
+   * function to toggle the icon
+   * and emit the toggle event
+   */
+  toggleSideBar() {
+    if (this.arrowIcon === 'chevron-left') {
+      this.arrowIcon = 'chevron-right';
+      this.widthOfSchemaNav=0;
 
+    }
+    else {
+      this.arrowIcon = 'chevron-left';
+      this.widthOfSchemaNav=292;
+    }
+  }
 
+  @HostListener('window:mousemove', ['$event'])
+  onMouseMove(event: MouseEvent){
+    this.mousePosition = { x: event.clientX, y: event.clientY };
+    if (this.status === SchemaNavGrab.RESIZE) {
+      this.resize();
+      this.navscroll.nativeElement.style.cursor = 'col-resize';
+    }
+    else {
+      this.navscroll.nativeElement.style.cursor = 'default';
+    }
+  }
+
+  public setNavDivPositions() {
+    const { left, top } = this.navscroll.nativeElement.getBoundingClientRect();
+    this.boxPosition = { left, top };
+  }
+
+  public resize() {
+    const maxWidth=this.listingContainer.nativeElement.clientWidth/3;
+    this.widthOfSchemaNav = Number(this.mousePosition.x > this.boxPosition.left) ?
+      Number(this.mousePosition.x - this.boxPosition.left < maxWidth) ?
+        this.mousePosition.x - this.boxPosition.left : maxWidth : 0;
+        this.widthOfSchemaNav<30 ? this.arrowIcon='chevron-right': this.arrowIcon='chevron-left';
+  }
+
+  public setStatus(event: MouseEvent, status: number) {
+    console.log(event,status)
+    if (status === 1) event.stopPropagation();
+    else this.setNavDivPositions();
+    this.status = status;
+  }
+  public enableResize(){
+    const grabberElement = document.createElement('div');
+    grabberElement.style.height = '100%';
+    grabberElement.style.width = '2px';
+    grabberElement.style.backgroundColor = '#ffffff';
+    grabberElement.style.position = 'absolute';
+    grabberElement.style.cursor = 'col-resize';
+    grabberElement.style.resize = 'horizontal';
+    grabberElement.style.overflow = 'auto';
+    grabberElement.style.right = '0%';
+    this.navscroll.nativeElement.appendChild(grabberElement);
+
+  }
 }

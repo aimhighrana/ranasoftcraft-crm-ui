@@ -1,10 +1,10 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, ComponentFactoryResolver, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, ComponentFactoryResolver, ElementRef, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { AttributeCoorectionReq, ClassificationNounMod, MetadataModeleResponse, SchemaMROCorrectionReq, SchemaTableAction, SchemaTableViewFldMap, TableActionViewType } from '@models/schema/schemadetailstable';
-import { SchemaListDetails, SchemaStaticThresholdRes, SchemaVariantsModel } from '@models/schema/schemalist';
+import { SchemaListDetails, SchemaNavGrab, SchemaStaticThresholdRes, SchemaVariantsModel } from '@models/schema/schemalist';
 import { Userdetails } from '@models/userdetails';
 import { CellDataFor, ClassificationDatatableCellEditableComponent } from '@modules/shared/_components/classification-datatable-cell-editable/classification-datatable-cell-editable.component';
 import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
@@ -100,7 +100,7 @@ const definedColumnsMetadata = {
   templateUrl: './classification-builder.component.html',
   styleUrls: ['./classification-builder.component.scss']
 })
-export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDestroy {
+export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
 
 
   @Input()
@@ -163,6 +163,17 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
    */
   tableData: any;
 
+  /**
+   * arrow mat-icon code
+   */
+    arrowIcon = 'chevron-left';
+
+    widthOfSchemaNav = 292;
+    boxPosition: { left: number, top: number };
+    public mousePosition: { x: number, y: number };
+    public status: SchemaNavGrab = SchemaNavGrab.OFF;
+    @ViewChild('navscroll')navscroll:ElementRef;
+    @ViewChild('listingContainer')listingContainer:ElementRef;
 
   /**
    * Store info about views ..
@@ -329,6 +340,9 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     })
   }
 
+  ngAfterViewInit(){
+    this.enableResize();
+  }
   /**
    * Get all fld metada based on module of schema
    */
@@ -1069,5 +1083,62 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
 
   get isGlobalActionsEnabled() {
     return this.selection.selected.some(row => !row.__aditionalProp.isReviewed);
+  }
+
+  toggleSideBar() {
+    if (this.arrowIcon === 'chevron-left') {
+      this.arrowIcon = 'chevron-right';
+      this.widthOfSchemaNav=0;
+
+    }
+    else {
+      this.arrowIcon = 'chevron-left';
+      this.widthOfSchemaNav=292;
+    }
+  }
+
+  @HostListener('window:mousemove', ['$event'])
+  onMouseMove(event: MouseEvent){
+    this.mousePosition = { x: event.clientX, y: event.clientY };
+    if (this.status === SchemaNavGrab.RESIZE) {
+      this.resize();
+      this.navscroll.nativeElement.style.cursor = 'col-resize';
+    }
+    else {
+      this.navscroll.nativeElement.style.cursor = 'default';
+    }
+  }
+
+  public setNavDivPositions() {
+    const { left, top } = this.navscroll.nativeElement.getBoundingClientRect();
+    this.boxPosition = { left, top };
+  }
+
+  public resize() {
+    const maxWidth=this.listingContainer.nativeElement.clientWidth/3;
+    this.widthOfSchemaNav = Number(this.mousePosition.x > this.boxPosition.left) ?
+      Number(this.mousePosition.x - this.boxPosition.left < maxWidth) ?
+        this.mousePosition.x - this.boxPosition.left : maxWidth : 0;
+        this.widthOfSchemaNav<30 ? this.arrowIcon='chevron-right': this.arrowIcon='chevron-left';
+  }
+
+  public setStatus(event: MouseEvent, status: number) {
+    if (status === 1) event.stopPropagation();
+    else this.setNavDivPositions();
+    this.status = status;
+  }
+
+  public enableResize(){
+    const grabberElement = document.createElement('div');
+    grabberElement.style.height = '100%';
+    grabberElement.style.width = '2px';
+    grabberElement.style.backgroundColor = '#ffffff';
+    grabberElement.style.position = 'absolute';
+    grabberElement.style.cursor = 'col-resize';
+    grabberElement.style.resize = 'horizontal';
+    grabberElement.style.overflow = 'auto';
+    grabberElement.style.right = '0%';
+    this.navscroll.nativeElement.appendChild(grabberElement);
+
   }
 }

@@ -81,7 +81,7 @@
         <!-- Tab for the Business rules of schema -->
         <mat-tab label="business-rules">
             <ng-template mat-tab-label>
-                Business rules <span class="mat-tab-count">{{businessRuleData ? businessRuleData.length : 0}}</span>
+                Business rules <span class="mat-tab-count">{{getBusinessRulesLength}}</span>
             </ng-template>
             <div class="colunm-listing">
                 <div class="f-row colunm-box rule-border-row">
@@ -116,11 +116,21 @@
                             </button>
  
                         </div>
-                        <div class="col col-x8">
-                            <a class="f-row info-link">{{businessRule.brInfo}}</a>
+                        <div class="col col-x4" (click)="editBr(businessRule)">
+                            <div mat-line><a class="info-link">{{businessRule.brInfo}}</a></div>
                         </div>
-
-                        <div class="col col-x8">
+                        <div class="col col-x4">
+                            <button mat-stroked-button [matMenuTriggerFor]="businessRuleCat">
+                                {{ businessRule.categoryInfo ?  (businessRule.categoryInfo.categoryDesc ? businessRule.categoryInfo.categoryDesc : 'Untitled') : 'Unknown' }}
+                                <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon>
+                            </button>
+                            <mat-menu #businessRuleCat="matMenu" class="navigation-menu">
+                                <button mat-menu-item *ngFor="let cat of category"
+                                (click)="updateCategory(cat, businessRule)">
+                                {{ cat.categoryDesc ? cat.categoryDesc : cat.categoryId }}</button>
+                            </mat-menu>
+                        </div>
+                        <div class="col col-x8 mat-item-center">
                             <div class="f-row slider-row">
                             <mat-slider color="primary" [value]="businessRule.brWeightage" thumbLabel
                                 tickInterval="1" min="0" [max]="availableWeightage(businessRule.brWeightage)"
@@ -166,11 +176,21 @@
                                 </button>
                                 
                             </div>
-                            <div class="col col-x8">
-                                <a class="f-row info-link">{{deps.brInfo}}</a>
+                            <div class="col col-x4" (click)="editBr(deps)">
+                                <div mat-line><a class="info-link">{{deps.brInfo}}</a></div>
                             </div>
-
-                            <div class="col col-x8">
+                            <div class="col col-x4">
+                                <button mat-stroked-button [matMenuTriggerFor]="businessRuleCat">
+                                    {{ deps.categoryInfo ?  (deps.categoryInfo.categoryDesc ? deps.categoryInfo.categoryDesc : 'Untitled') : 'Unknown' }}
+                                    <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon>
+                                </button>
+                                <mat-menu #businessRuleCat="matMenu" class="navigation-menu">
+                                    <button mat-menu-item *ngFor="let cat of category"
+                                    (click)="updateCategory(cat, deps)">
+                                    {{ cat.categoryDesc ? cat.categoryDesc : cat.categoryId }}</button>
+                                </mat-menu>
+                            </div>
+                            <div class="col col-x8 mat-item-center">
                                 <div class="f-row slider-row">
                                 <mat-slider color="primary" [value]="deps.brWeightage" thumbLabel
                                     tickInterval="1" min="0" [max]="availableWeightage(deps.brWeightage)"

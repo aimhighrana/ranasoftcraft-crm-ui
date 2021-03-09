@@ -312,3 +312,8 @@ export class CoreSchemaBrMap {
     brWeightage: number;
     dependantStatus:string;
 }
+
+export const enum SchemaNavGrab {
+    OFF = 0,
+    RESIZE = 1,
+    }
