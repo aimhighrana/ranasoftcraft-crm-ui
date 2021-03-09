@@ -991,9 +991,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
   }
 
   updateDepRule(br: CoreSchemaBrInfo, event?: any) {
-    console.log(this.businessRuleData)
     const index = this.businessRuleData.findIndex(item=>item.brIdStr===br.brIdStr);
-    console.log(index,br,event)
     if(event.value!==RuleDependentOn.ALL)
     { const tobeChild=this.businessRuleData[index]
     if(this.businessRuleData[index-1].dep_rules)
@@ -1056,6 +1054,14 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       })
   }
 
+  get getBusinessRulesLength(){
+    let inn=0;
+    const count=this.businessRuleData.map(element=>{
+      if(element.dep_rules)
+     inn+= element.dep_rules.length;
+    }).length
+    return count+inn;
+  }
   getCurrentBrStatus(status){
     return status?status:'ALL';
   }

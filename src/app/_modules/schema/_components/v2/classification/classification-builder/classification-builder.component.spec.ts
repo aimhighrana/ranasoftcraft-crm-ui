@@ -562,5 +562,55 @@ it('ngOnChanges(), ngonchange component hooks ', async(()=>{
     expect(component.columnName('OBJECTNUMBER')).toEqual('Material number');
     expect(component.columnName('unknown')).toEqual('unknown');
   })
+  it('toggleSideBar(), toggle sidebar', () => {
+    component.arrowIcon='chevron-left';
+    fixture.detectChanges();
+    component.navscroll=fixture.componentInstance.navscroll;
+    component.toggleSideBar();
+    expect(component.arrowIcon).toEqual('chevron-right');
 
+    component.arrowIcon='chevron-right';
+    component.toggleSideBar();
+    expect(component.arrowIcon).toEqual('chevron-left');
+
+  });
+
+  it('resize(), resize sidebar', () => {
+    component.mousePosition = {
+      x: 8,
+      y: 20
+    }
+    fixture.detectChanges();
+    component.navscroll=fixture.componentInstance.navscroll;
+    component.boxPosition = { left:10, top:20 };
+    component.resize();
+    expect(component.widthOfSchemaNav).toEqual(0)
+
+    component.mousePosition = {
+      x: 18,
+      y: 20
+    }
+    component.boxPosition = { left:10, top:20 };
+    component.resize();
+    expect(component.widthOfSchemaNav).toEqual(8)
+
+    component.mousePosition = {
+      x: 400,
+      y: 20
+    }
+    component.resize();
+    expect(component.arrowIcon).toEqual('chevron-left')
+  });
+
+  it('setStatus(), setStatus sidebar', () => {
+    const event = new MouseEvent('');
+    spyOn(event, 'stopPropagation');
+    spyOn(component, 'setNavDivPositions');
+    component.setStatus(event, 1);
+    expect(event.stopPropagation).toHaveBeenCalled();
+
+    component.setStatus(event, 2);
+    component.setNavDivPositions();
+    expect(component.setNavDivPositions).toHaveBeenCalled();
+  });
 });

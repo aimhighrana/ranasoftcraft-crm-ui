@@ -365,7 +365,7 @@ export class BrruleSideSheetComponent implements OnInit {
       requiredKeys = ['rule_name'];
     }
 
-    if (selectedRule === BusinessRuleType.MRO_GSN_DESC_MATCH || BusinessRuleType.MRO_MANU_PRT_NUM_LOOKUP) {
+    if (selectedRule === BusinessRuleType.MRO_GSN_DESC_MATCH || selectedRule === BusinessRuleType.MRO_MANU_PRT_NUM_LOOKUP) {
       requiredKeys = ['rule_name', 'error_message', 'categoryId', 'apiKey', 'fields'];
     }
 
@@ -414,7 +414,7 @@ export class BrruleSideSheetComponent implements OnInit {
 
     let patchList = [];
 
-    if (br.brType === BusinessRuleType.BR_METADATA_RULE || br.brType === BusinessRuleType.BR_MANDATORY_FIELDS || BusinessRuleType.MRO_CLS_MASTER_CHECK || BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI) {
+    if (br.brType === BusinessRuleType.BR_METADATA_RULE || br.brType === BusinessRuleType.BR_MANDATORY_FIELDS || br.brType === BusinessRuleType.MRO_CLS_MASTER_CHECK || br.brType === BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI) {
       patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId'];
     }
     if (br.brType === BusinessRuleType.BR_CUSTOM_SCRIPT) {
@@ -433,7 +433,7 @@ export class BrruleSideSheetComponent implements OnInit {
       patchList = ['rule_type', 'rule_name'];
     }
 
-    if (br.brType === BusinessRuleType.MRO_GSN_DESC_MATCH || BusinessRuleType.MRO_MANU_PRT_NUM_LOOKUP) {
+    if (br.brType === BusinessRuleType.MRO_GSN_DESC_MATCH || br.brType === BusinessRuleType.MRO_MANU_PRT_NUM_LOOKUP) {
       patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId', 'apiKey'];
     }
 
@@ -769,6 +769,7 @@ export class BrruleSideSheetComponent implements OnInit {
    */
   save() {
     this.submitted = true;
+    this.form.controls.fields.setValue(this.selectedFields.map(item => item.fieldId).join(','));
     (Object).values(this.form.controls).forEach(control => {
       if (control.invalid)
         control.markAsTouched();
@@ -779,7 +780,6 @@ export class BrruleSideSheetComponent implements OnInit {
         if (control.invalid)
           control.markAsTouched();
       });
-    this.form.controls.fields.setValue(this.selectedFields.map(item => item.fieldId).join(','));
     this.submitted = true;
     if (!this.form.valid) {
       this.showValidationError('Please fill the required fields.');

@@ -763,7 +763,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
 
         this.schemaService.createUpdateCheckData(checkDataObj).subscribe((result) => {
           console.log(result);
-          // this.runSchema();
+          this.runSchema();
           this.close();
           this.matSnackBar.open('This action has been confirmed..', 'Okay', {
             duration: 2000
@@ -844,6 +844,15 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
   this.businessRuleData[idx].dep_rules.splice(index,1);
   }
     console.log(this.businessRuleData)
+  }
+
+  get getBusinessRulesLength(){
+    let inn=0;
+    const count=this.businessRuleData.map(element=>{
+      if(element.dep_rules)
+     inn+= element.dep_rules.length;
+    }).length
+    return count+inn;
   }
   /**
    * Function to open data scope side sheet
