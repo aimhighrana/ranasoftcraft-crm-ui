@@ -138,11 +138,16 @@ div.root {
           .mat-cell {
             min-width: 170px;
 
-            .vertical-text {
-              writing-mode: vertical-lr;
-              flex: 1;
-              align-items: center;
-              justify-content: center;
+            &.coll-visible {
+              overflow: visible;
+            }
+
+            &.vertical-cell {
+              writing-mode: vertical-rl;
+
+              .verticalsub-text {
+                padding-top: 32px;
+              }
             }
 
             .collapse-icon {
@@ -152,7 +157,9 @@ div.root {
               height: 8px;
               border-radius: 50%;
               cursor: pointer;
-              margin-left: 16px;
+              position: relative;
+              bottom: -28px;
+              right: 12px;
             }
           }
 

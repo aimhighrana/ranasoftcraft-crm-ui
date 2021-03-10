@@ -346,6 +346,7 @@
                             </ng-container>
                             <ng-container matColumnDef="OBJECTNUMBER" sticky>
                                 <mat-header-cell *matHeaderCellDef>
+                                    <!-- Add class on headercell "coll-visible" -->
                                     <div mat-sort-header>Object Number</div>
                                     <span class="f-spacer"></span>
                                     <!-- Collapse splite start here -->
@@ -355,12 +356,13 @@
                                     <!-- Collapse splite end here -->
 
                                 </mat-header-cell>
-                                <mat-cell *matCellDef="let element">
+                                <mat-cell *matCellDef="let element">   
+                                    <!-- add class in mat-cell "vertical-cell" -->
                                     {{ element['OBJECTNUMBER'] ? element['OBJECTNUMBER'].fieldData : '' }}
                                     <!-- Collapse rowspan splites start here -->
                                     <ng-template>
-                                        <div class="f-col vertical-text">
-                                            <!-- header-cell comes here -->
+                                        <div class="verticalsub-text">
+                                           <!-- text comes here  -->
                                         </div>
                                     </ng-template>
                                     <!-- Collapse rowspan splites end here -->
