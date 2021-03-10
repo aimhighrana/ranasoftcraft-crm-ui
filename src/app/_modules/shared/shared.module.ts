@@ -77,6 +77,7 @@ import { ClassificationDatatableCellEditableComponent } from './_components/clas
 import { SubscriberInviteSidesheetComponent } from './_components/subscriber-invite-sidesheet/subscriber-invite-sidesheet.component';
 import { SchemaExecutionTrendComponent } from './_components/statistics/schema-execution-trend/schema-execution-trend.component';
 import { InfiniteScrollDirective } from './_directives/infinite-scroll.directive';
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 
 @NgModule({
   declarations: [
@@ -171,7 +172,8 @@ import { InfiniteScrollDirective } from './_directives/infinite-scroll.directive
     OverlayModule,
     // chart module
     ChartsModule,
-    ScrollingModule
+    ScrollingModule,
+    MdoUiLibraryModule
   ],
   exports: [
     // modules
@@ -221,6 +223,8 @@ import { InfiniteScrollDirective } from './_directives/infinite-scroll.directive
     MatTreeModule,
     DragDropModule,
     OverlayModule,
+    // MDO UI Library Module
+    MdoUiLibraryModule,
     // chart module
     ChartsModule,
     ScrollingModule,
