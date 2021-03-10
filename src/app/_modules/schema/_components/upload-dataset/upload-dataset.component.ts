@@ -1842,8 +1842,12 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   }
 
   updateDepRule(br: CoreSchemaBrInfo, event?: any) {
-    const index = this.selectedBusinessRules.findIndex(item=>item.brIdStr===br.brIdStr);
-    console.log(index,br,event)
+    let index=null;
+    if(br.brId){
+      index = this.selectedBusinessRules.findIndex((brule) => brule.brId === br.brId);
+    } else {
+      index = this.selectedBusinessRules.findIndex((brule) => brule.tempId === br.tempId);
+    }
     if(event.value!==RuleDependentOn.ALL)
     { const tobeChild=this.selectedBusinessRules[index]
     console.log(tobeChild)
@@ -1871,7 +1875,12 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   }
 
   updateDepRuleForChild(br: CoreSchemaBrInfo,index:number, event?: any) {
-    const idx=this.selectedBusinessRules.findIndex(item=>item.brIdStr===br.brIdStr);
+    let idx=null;
+    if(br.brId){
+      idx = this.selectedBusinessRules.findIndex((brule) => brule.brId === br.brId);
+    } else {
+      idx = this.selectedBusinessRules.findIndex((brule) => brule.tempId === br.tempId);
+    }
     this.selectedBusinessRules[idx].dep_rules[index].dependantStatus=event.value;
     if(event.value===RuleDependentOn.ALL)
    { const childIdx=this.selectedBusinessRules[idx].dep_rules[index]
@@ -1880,6 +1889,5 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    this.selectedBusinessRules.push(childIdx)
    this.selectedBusinessRules[idx].dep_rules.splice(index,1);
    }
-     console.log(this.selectedBusinessRules)
    }
 }
