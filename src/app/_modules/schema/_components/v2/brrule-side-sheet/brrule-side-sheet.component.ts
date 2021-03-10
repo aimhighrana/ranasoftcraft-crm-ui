@@ -16,6 +16,7 @@ import { BlockType } from '@modules/admin/_components/module/business-rules/user
 import { CONDITIONS } from 'src/app/_constants';
 import { TransformationRuleComponent } from '@modules/shared/_components/transformation-rule/transformation-rule.component';
 import { ValidationError } from '@models/schema/schema';
+import { RuleDependentOn } from '@models/collaborator';
 
 @Component({
   selector: 'pros-brrule-side-sheet',
@@ -886,6 +887,7 @@ export class BrruleSideSheetComponent implements OnInit {
       request.categoryId = this.coreSchemaBrInfo.categoryId ? this.coreSchemaBrInfo.categoryId : this.form.value.categoryId;
       request.isCopied = false;
       request.copiedFrom = '';
+      request.dependantStatus=this.coreSchemaBrInfo.dependantStatus? this.coreSchemaBrInfo.dependantStatus:RuleDependentOn.ALL;
       this.schemaService.createBusinessRule(request).subscribe(res => {
         this.sharedService.setAfterBrSave(res);
         this.close();

@@ -614,13 +614,13 @@ describe('UploadDatasetComponent', () => {
     expect(component.uploadError.status).toEqual(false);
   }));
 
-  it('toolbarHeaderText(), should return toolbar header array', async()=>{
+  it('toolbarHeaderText(), should return toolbar header array', async () => {
     component.headerText = ['material', 'mater'];
     component.headerTextIndex = 1;
     expect(component.toolbarHeaderText).toEqual('material')
   });
 
-  it('getCurrentWeightageLimit(), should return current available weightage', async() => {
+  it('getCurrentWeightageLimit(), should return current available weightage', async () => {
     const brWeightage = 10;
     component.selectedBusinessRules = [
       {
@@ -629,16 +629,16 @@ describe('UploadDatasetComponent', () => {
     ] as CoreSchemaBrInfo[];
 
     const res = component.getCurrentWeightageLimit(brWeightage);
-    expect(res).toEqual(100-24+10);
+    expect(res).toEqual(100 - 24 + 10);
 
     component.selectedBusinessRules = [];
     const res2 = component.getCurrentWeightageLimit();
     expect(res2).toEqual(100);
   });
 
-  it('weightageChange(), should update weightage', async()=>{
+  it('weightageChange(), should update weightage', async () => {
     const event = {
-      value : 10
+      value: 10
     };
     const i = 0;
 
@@ -648,12 +648,12 @@ describe('UploadDatasetComponent', () => {
       }
     ] as CoreSchemaBrInfo[];
 
-    component.weightageChange(event,i);
+    component.weightageChange(event, i);
     expect(component.selectedBusinessRules[0].brWeightage).toEqual(event.value);
   });
 
-  it('isdisabled(), should disable input', async() => {
-    let value:any = 2;
+  it('isdisabled(), should disable input', async () => {
+    let value: any = 2;
     let res = component.isdisabled(value);
     expect(res).toEqual(true);
 
@@ -662,7 +662,7 @@ describe('UploadDatasetComponent', () => {
     expect(res).toEqual(false);
   });
 
-  it('updateSubscriber(), should update subscriber', async() => {
+  it('updateSubscriber(), should update subscriber', async () => {
     const data = {
       fieldId: 'mater',
       type: 'cleaning',
@@ -675,7 +675,7 @@ describe('UploadDatasetComponent', () => {
     expect(component.updatesubscriber).toBeTruthy();
   });
 
-  it('isSchemaSet(), should set schema name', async() => {
+  it('isSchemaSet(), should set schema name', async () => {
     let value = {
       discription: 'materialGrpD'
     };
@@ -685,7 +685,7 @@ describe('UploadDatasetComponent', () => {
     expect(component.isSchemaSet(value)).toEqual(false);
   });
 
-  it('makeEditable(), should make editable', fakeAsync(()=> {
+  it('makeEditable(), should make editable', fakeAsync(() => {
     const data = {
       mdoFldId: '12234545667'
     } as DataSource;
@@ -694,7 +694,7 @@ describe('UploadDatasetComponent', () => {
     expect(component.editableFieldIds.length).toEqual(1)
   }));
 
-  it('checkIfExist(), should check for business rules existence', async() => {
+  it('checkIfExist(), should check for business rules existence', async () => {
     const rule = {
       brId: '123234344',
       brIdStr: '12323444',
@@ -704,7 +704,7 @@ describe('UploadDatasetComponent', () => {
     expect(component.checkIfExist(rule)).toEqual(true);
   });
 
-  it('setSchemaName(), should set schema name to field', async() => {
+  it('setSchemaName(), should set schema name to field', async () => {
     component.createForm();
     const coreSchema = {
       discription: 'Ashish_Schema'
@@ -716,7 +716,7 @@ describe('UploadDatasetComponent', () => {
     expect(component.requestForm.controls.core_schema.value.discription).toEqual(event)
   });
 
-  it('search(), should return search result of modules', async() => {
+  it('search(), should return search result of modules', async () => {
     const event = 'module';
     const whatToFilter = 'module';
 
@@ -737,9 +737,9 @@ describe('UploadDatasetComponent', () => {
     expect(component.modulesList.length).toEqual(1)
   });
 
-  it('getSchemaCollaboratorInfo(), should get subscriber info of schema', async()=>{
+  it('getSchemaCollaboratorInfo(), should get subscriber info of schema', async () => {
     const schemaId = '121234';
-    component.userDetails={plantCode:'0'} as Userdetails;
+    component.userDetails = { plantCode: '0' } as Userdetails;
     const mockRes = [
       {
         sno: '11323',
@@ -763,9 +763,9 @@ describe('UploadDatasetComponent', () => {
     expect(schemadetailsService.getCollaboratorDetails).toHaveBeenCalled()
   })
 
-  it('getSchemaCollaboratorInfo(), should get subscriber info of schema', async()=>{
+  it('getSchemaCollaboratorInfo(), should get subscriber info of schema', async () => {
     const schemaId = '121234';
-    component.userDetails={plantCode:'0'} as Userdetails;
+    component.userDetails = { plantCode: '0' } as Userdetails;
     const mockRes = [
       {
         sno: '11323',
@@ -789,7 +789,7 @@ describe('UploadDatasetComponent', () => {
     expect(schemadetailsService.getCollaboratorDetails).toHaveBeenCalled()
   });
 
-  it('ngOnInit(), should call It after loading component successfully.', async() => {
+  it('ngOnInit(), should call It after loading component successfully.', async () => {
     const mockRes = {
       userName: 'AshishK',
       plantCode: '0'
@@ -812,149 +812,152 @@ describe('UploadDatasetComponent', () => {
   })
 
 
-it('updateDepRule() updateDepRule', async () => {
-  component.selectedBusinessRules = [
-    {
-      sno: 101,
-      brId: '22',
-      brIdStr: '23',
-      brType: 'TRANSFORMATION',
-      refId: 1,
-      fields: '',
-      regex: '',
-      order: 1,
-      apiKey: '',
-      message: 'Invalid',
-      script: ''
-    } as CoreSchemaBrInfo,
-    {
+  it('updateDepRule() updateDepRule', async () => {
+    component.selectedBusinessRules = [
+      {
+        sno: 101,
+        brId: '21',
+        brIdStr: '23',
+        brType: 'TRANSFORMATION',
+        refId: 1,
+        fields: '',
+        regex: '',
+        order: 1,
+        apiKey: '',
+        message: 'Invalid',
+        script: ''
+      } as CoreSchemaBrInfo,
+      {
+        sno: 1299484,
+        brId: '22',
+        brIdStr: '22',
+        brType: 'TRANSFORMATION',
+        dep_rules: []
+      } as CoreSchemaBrInfo
+    ];
+    const br = {
       sno: 1299484,
       brId: '22',
       brIdStr: '22',
       brType: 'TRANSFORMATION',
       dep_rules: []
     } as CoreSchemaBrInfo
-  ];
-  const br = {
-    sno: 1299484,
-    brId: '22',
-    brIdStr: '22',
-    brType: 'TRANSFORMATION',
-    dep_rules: []
-  } as CoreSchemaBrInfo
-  const event = { value: RuleDependentOn.SUCCESS };
-  component.updateDepRule(br, event);
-  expect(component.selectedBusinessRules.length).toEqual(1);
+    const event = { value: RuleDependentOn.SUCCESS };
+    component.updateDepRule(br, event);
+    expect(component.selectedBusinessRules.length).toEqual(1);
 
-  component.selectedBusinessRules = [
-    {
-      sno: 101,
-      brId: '22',
-      brIdStr: '23',
-      brType: 'TRANSFORMATION',
-      refId: 1,
-      fields: '',
-      regex: '',
-      order: 1,
-      apiKey: '',
-      message: 'Invalid',
-      script: '',
-      dep_rules: [{
-        sno: 1299484,
-        brId: '22',
-        brIdStr: '25',
+    component.selectedBusinessRules = [
+      {
+        sno: 101,
+        brId: '21',
+        brIdStr: '23',
         brType: 'TRANSFORMATION',
-        dep_rules: []
-      } as CoreSchemaBrInfo]
+        refId: 1,
+        fields: '',
+        regex: '',
+        order: 1,
+        apiKey: '',
+        message: 'Invalid',
+        script: '',
+        dep_rules: [{
+          sno: 1299484,
+          brId: '22',
+          brIdStr: '25',
+          brType: 'TRANSFORMATION',
+          dep_rules: []
+        } as CoreSchemaBrInfo]
 
-    } as CoreSchemaBrInfo,
-    {
-      sno: 1299484,
-      brId: '22',
-      brIdStr: '22',
-      brType: 'TRANSFORMATION',
-      dep_rules: [{
+      } as CoreSchemaBrInfo,
+      {
         sno: 1299484,
         brId: '22',
         brIdStr: '22',
-        brType: 'TRANSFORMATION', dependantStatus: 'SUCCESS'
-      }]
-    } as CoreSchemaBrInfo
-  ];
-  component.updateDepRule(br, event);
-  expect(component.selectedBusinessRules.length).toEqual(1);
-});
-
-it('updateDepRuleForChild() updateDepRuleForChild', async () => {
-  component.selectedBusinessRules = [
-    {
-      sno: 101,
-      brId: '22',
-      brIdStr: '23',
-      brType: 'TRANSFORMATION',
-      refId: 1,
-      fields: '',
-      regex: '',
-      order: 1,
-      apiKey: '',
-      message: 'Invalid',
-      script: ''
-    } as CoreSchemaBrInfo,
-    {
-      sno: 1299484,
-      brId: '22',
-      brIdStr: '22',
-      brType: 'TRANSFORMATION',
-      dep_rules: []
-    } as CoreSchemaBrInfo
-  ];
-  const br = {
-    sno: 1299484,
-    brId: '22',
-    brIdStr: '22',
-    brType: 'TRANSFORMATION',
-    dep_rules: []
-  } as CoreSchemaBrInfo
-  const event = { value: RuleDependentOn.ALL };
-  component.updateDepRule(br, event);
-  expect(component.selectedBusinessRules.length).toEqual(2);
-
-  component.selectedBusinessRules = [
-    {
-      sno: 101,
-      brId: '22',
-      brIdStr: '23',
-      brType: 'TRANSFORMATION',
-      refId: 1,
-      fields: '',
-      regex: '',
-      order: 1,
-      apiKey: '',
-      message: 'Invalid',
-      script: '',
-      dep_rules: [{
-        sno: 1299484,
-        brId: '22',
-        brIdStr: '25',
         brType: 'TRANSFORMATION',
-        dep_rules: []
-      } as CoreSchemaBrInfo]
+        dep_rules: [{
+          sno: 1299484,
+          brId: '22',
+          brIdStr: '22',
+          brType: 'TRANSFORMATION', dependantStatus: 'SUCCESS'
+        }]
+      } as CoreSchemaBrInfo
+    ];
+    component.updateDepRule(br, event);
+    expect(component.selectedBusinessRules.length).toEqual(1);
+  });
 
-    } as CoreSchemaBrInfo,
-    {
-      sno: 1299484,
-      brId: '22',
-      brIdStr: '22',
-      brType: 'TRANSFORMATION',
-      dep_rules: [{
+  it('updateDepRuleForChild() updateDepRuleForChild', async () => {
+    component.selectedBusinessRules = [
+      {
+        sno: 101,
+        brId: '21',
+        brIdStr: '23',
+        brType: 'TRANSFORMATION',
+        refId: 1,
+        fields: '',
+        regex: '',
+        order: 1,
+        apiKey: '',
+        message: 'Invalid',
+        script: ''
+      } as CoreSchemaBrInfo,
+      {
         sno: 1299484,
         brId: '22',
         brIdStr: '22',
-        brType: 'TRANSFORMATION', dependantStatus: 'SUCCESS'
-      }]
+        brType: 'TRANSFORMATION',
+        dep_rules: [{
+          sno: 1299484,
+          brId: '22',
+          brIdStr: '22',
+          brType: 'TRANSFORMATION', dependantStatus: 'ALL'
+        }]
+      } as CoreSchemaBrInfo
+    ];
+    const br = {
+      sno: 1299484,
+      brId: '22',
+      brIdStr: '22',
+      brType: 'TRANSFORMATION',
     } as CoreSchemaBrInfo
-  ];
-  component.updateDepRuleForChild(br, 0, event);
-  expect(component.selectedBusinessRules.length).toEqual(3);
-});
+    const event = { value: RuleDependentOn.ALL };
+    component.updateDepRuleForChild(br, 0, event);
+    expect(component.selectedBusinessRules.length).toEqual(3);
+
+    component.selectedBusinessRules = [
+      {
+        sno: 101,
+        brId: '21',
+        brIdStr: '23',
+        brType: 'TRANSFORMATION',
+        refId: 1,
+        fields: '',
+        regex: '',
+        order: 1,
+        apiKey: '',
+        message: 'Invalid',
+        script: '',
+        dep_rules: [{
+          sno: 1299484,
+          brId: '22',
+          brIdStr: '25',
+          brType: 'TRANSFORMATION',
+        } as CoreSchemaBrInfo]
+
+      } as CoreSchemaBrInfo,
+      {
+        sno: 1299484,
+        brId: '22',
+        brIdStr: '22',
+        brType: 'TRANSFORMATION',
+        dep_rules: [{
+          sno: 1299484,
+          brId: '22',
+          brIdStr: '22',
+          brType: 'TRANSFORMATION', dependantStatus: 'SUCCESS'
+        }]
+      } as CoreSchemaBrInfo
+    ];
+    component.updateDepRuleForChild(br, 0, event);
+    expect(component.selectedBusinessRules.length).toEqual(3);
+  });
 });
