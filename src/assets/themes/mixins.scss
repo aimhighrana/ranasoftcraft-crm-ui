@@ -1099,8 +1099,9 @@
       line-height: 1rem;
       color: mat-color($foreground-palette, text);
       padding: 0 8px;
-      min-width: 200px;
-      word-break: break-word;
+      min-width: 160px;
+      max-width: 200px;
+      word-break: break-all;
       align-self: stretch;
 
       &.fixed-width-c1 {

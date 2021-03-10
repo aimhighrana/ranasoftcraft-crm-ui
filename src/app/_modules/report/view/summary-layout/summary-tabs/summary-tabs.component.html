@@ -10,61 +10,65 @@
 
         <div class="item-grid-list">
           <div *ngFor="let fieldData of metadata.fieldsList" class="grid-tile">
-            <div *ngIf="fieldData && fieldData.picklist !== 2 && fieldData.picklist !== 28 && fieldData.picklist !== 31 && fieldData.dataType !== 'DTMS' && fieldData.dataType !== 'DATS'">
-              <div class="f-row item-tile">
-                <mat-label>{{fieldData.fieldDescri}}</mat-label>
-                <div mat-line *ngIf="!fieldData.showMore; else withoutTruncate">
-                  {{truncateText(fieldData.value, 60)}}
-                <button mat-stroked-button color="primary" *ngIf="fieldData.value.length > 60" (click)="fieldData.showMore = !fieldData.showMore">
-                  {{ fieldData.showMore ? 'less' : 'more'}} 
-                </button>
-              </div>
-              <ng-template  #withoutTruncate> 
-                <div mat-line> {{fieldData.value}} 
+            <ng-template [ngIf]="!fieldData.hidden">
+              <div *ngIf="fieldData && fieldData.picklist !== 2 && fieldData.picklist !== 28 && fieldData.picklist !== 31 && fieldData.dataType !== 'DTMS' && fieldData.dataType !== 'DATS'">
+                <div class="f-row item-tile">
+                  <mat-label>{{fieldData.fieldDescri}}</mat-label>
+                  <div mat-line *ngIf="!fieldData.showMore; else withoutTruncate">
+                    {{truncateText(fieldData.value, 60)}}
                   <button mat-stroked-button color="primary" *ngIf="fieldData.value.length > 60" (click)="fieldData.showMore = !fieldData.showMore">
                     {{ fieldData.showMore ? 'less' : 'more'}} 
                   </button>
-                </div> 
-              </ng-template>
-            </div>
-            </div>
-
-            <!-- ----------------------- Check-Box Case ------------------------------------- -->
-            <div *ngIf="fieldData && fieldData.picklist === 2">
-              <div class="f-row item-tile">
-                <mat-checkbox color="primary" disabled="true" checked="{{fieldData.value}}">{{fieldData.fieldDescri}}</mat-checkbox>
-              </div>
-            </div>
-
-            <!-- ----------------------- Attachment Case ------------------------------------- -->
-            <div *ngIf="fieldData && fieldData.picklist === 28">
-              <div class="f-row item-tile">
-                <mat-label>{{fieldData.fieldDescri}}</mat-label>
-                <div mat-line><a [routerLink]="" href="" (click)="downloadAttachment(fieldData);">
-                    {{fieldData.value}}
-                  </a></div>
                 </div>
-            </div>
-
-            <!-- ------------------------------ Date and Time Case------------------------------------ -->
-            <div *ngIf="fieldData && fieldData.picklist === 0 && fieldData.dataType === 'DTMS'">
-              <div class="f-row item-tile">
-                <mat-label>{{fieldData.fieldDescri}}</mat-label>
-                <div mat-line>
-                  {{fieldData.value | date: getDateTimeFormat(true)}}
+                <ng-template  #withoutTruncate> 
+                  <div mat-line> 
+                      {{fieldData.value}} 
+                      <button mat-stroked-button color="primary" *ngIf="fieldData.value.length > 60" (click)="fieldData.showMore = !fieldData.showMore">
+                        {{ fieldData.showMore ? 'less' : 'more'}} 
+                      </button>
+                  </div> 
+                </ng-template>
+              </div>
+              </div>
+  
+              <!-- ----------------------- Check-Box Case ------------------------------------- -->
+              <div *ngIf="fieldData && fieldData.picklist === 2">
+                <div class="f-row item-tile">
+                  <mat-checkbox color="primary" disabled="true" checked="{{fieldData.value}}">{{fieldData.fieldDescri}}</mat-checkbox>
                 </div>
               </div>
-            </div>
-
-            <!-- ------------------------------ Date Case------------------------------------ -->
-            <div *ngIf="fieldData && fieldData.picklist === 0 && fieldData.dataType === 'DATS'">
-              <div class="f-row item-tile">
-                <mat-label>{{fieldData.fieldDescri}}</mat-label>
-                <div mat-line>
-                  {{fieldData.value | date : getDateTimeFormat()}}
+  
+              <!-- ----------------------- Attachment Case ------------------------------------- -->
+              <div *ngIf="fieldData && fieldData.picklist === 28">
+                <div class="f-row item-tile">
+                  <mat-label>{{fieldData.fieldDescri}}</mat-label>
+                  <div mat-line><a [routerLink]="" href="" (click)="downloadAttachment(fieldData);">
+                      {{fieldData.value}}
+                    </a></div>
+                  </div>
+              </div>
+  
+              <!-- ------------------------------ Date and Time Case------------------------------------ -->
+              <div *ngIf="fieldData && fieldData.picklist === 0 && fieldData.dataType === 'DTMS'">
+                <div class="f-row item-tile">
+                  <mat-label>{{fieldData.fieldDescri}}</mat-label>
+                  <div mat-line>
+                    {{fieldData.value | date: getDateTimeFormat(true)}}
+                  </div>
                 </div>
               </div>
-            </div>
+  
+              <!-- ------------------------------ Date Case------------------------------------ -->
+              <div *ngIf="fieldData && fieldData.picklist === 0 && fieldData.dataType === 'DATS'">
+                <div class="f-row item-tile">
+                  <mat-label>{{fieldData.fieldDescri}}</mat-label>
+                  <div mat-line>
+                    {{fieldData.value | date : getDateTimeFormat()}}
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+            
           </div>
         </div>
 

@@ -15,7 +15,7 @@
     <div class="row-spacer"></div>
 
     <div class="f-col report-builder">
-        <pros-form-input [type]="'text'" [control]="reportName" [label]="'Dashboard name'" [value]="reportName.value"
+        <pros-form-input [type]="'text'" [placeholder]="'Untitled-1'" [control]="reportName" [label]="'Dashboard name'" [value]="reportName.value"
           [maxLength]="maxReportNameLength">
         </pros-form-input>
         <div class="row-spacer"></div>
@@ -24,7 +24,7 @@
                 <div class="col-heading">Widgets</div>
                 <p class="subtext">Add a widget to your dashboard by clicking on one of the options below</p>
                 <mat-divider></mat-divider>
-                <div class="container">
+                <div class="container" cdkDropList cdkDropListConnectedTo="container">
                     <div widgetType="FILTER" class="widget-drag" (click) = "addWidget($event, 'FILTER')">
                         <mat-icon fontSet="mdo-icons" class="widget-icon">filter</mat-icon> Filter
                         <div class="f-spacer"></div>
