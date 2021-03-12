@@ -1,10 +1,12 @@
-import { Component, OnInit, Input, OnDestroy, OnChanges, SimpleChanges, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, OnChanges, SimpleChanges, EventEmitter, Output, ViewChild } from '@angular/core';
 import { throwError, BehaviorSubject, Subscription } from 'rxjs';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { MetadataModeleResponse, MetadataModel, FilterCriteria } from '@models/schema/schemadetailstable';
 import { DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { AddFilterOutput } from '@models/schema/schema';
 import { SchemaService } from '@services/home/schema.service';
+import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
+import { FlatTreeControl } from '@angular/cdk/tree';
 
 @Component({
   selector: 'pros-add-filter-menu',
@@ -79,6 +81,52 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
    * To hold all the subscriptions.
    */
   subscriptions: Subscription[] = [];
+
+  /**
+   * Tree child
+   */
+  @ViewChild('tree') tree;
+
+  /**
+   * tree control
+   */
+  treeControl = new FlatTreeControl<{ name: string, level: number, expandable: boolean, id: string, parent: string }>(node => node.level, node => node.expandable);
+
+  /**
+   * treeFlattener
+   */
+  treeFlattener = null;
+
+  /**
+   * data source
+   */
+  dataSource = null;
+
+  /**
+   * has child
+   */
+  hasChild = null;
+
+  /**
+   * Array to store all Grid And Hirarchy records
+   */
+  allGridAndHirarchyData = [];
+
+  /**
+   * transformer = return tree object.
+   * @param node node
+   * @param level level
+   */
+  public _transformer = (node: any, level: number) => {
+    return {
+      expandable: !!node.children && node.children.length > 0,
+      name: node.name,
+      level,
+      id: node.id,
+      parent: node.parent,
+      allData: node.allData
+    };
+  }
 
   /**
    * Constructor of class..
@@ -156,6 +204,15 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
       }
     });
     this.getFldMetadata();
+
+    this.treeControl = new FlatTreeControl<{ name: string, level: number, expandable: boolean, id: string, parent: string }>(
+      node => node.level, node => node.expandable);
+
+    this.treeFlattener = new MatTreeFlattener(
+      this._transformer, node => node.level, node => node.expandable, node => node.children);
+
+    this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+    this.hasChild  =(_: number, node: { name: string, level: number, expandable: boolean, id: string, parent: string }) => node.expandable;
   }
 
   /**
@@ -174,6 +231,81 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   /**
+   * return grid fields by grid key
+   * @param metadataModeleResponse metaData Object
+   * @param gridKey grid Key to identify
+   * @param parentDesc parent desc name
+   */
+  getGridFieldsByGridKey(metadataModeleResponse: MetadataModeleResponse, gridKey: string, parentDesc: string) {
+    const dataToPush = [];
+    for (const key in metadataModeleResponse.gridFields[gridKey]) {
+      if (metadataModeleResponse.gridFields[gridKey].hasOwnProperty(key)) {
+        const field = metadataModeleResponse.gridFields[gridKey];
+        if (field[key].picklist === '1' || field[key].picklist === '30' || field[key].picklist === '37') {
+          dataToPush.push({ name: field[key].fieldDescri, id: field[key].fieldId, parent: parentDesc, children: [], allData: field[key] });
+        }
+      }
+    }
+    return dataToPush;
+  }
+
+  /**
+   * return Hierarchy field by key
+   * @param metadataModeleResponse meta data object
+   * @param hierarchyKey hirechy key
+   * @param parentDesc parent dsc name
+   * @param heirarchyId heirarchy id
+   */
+  getHierarchyFieldsByHierarchyKey(metadataModeleResponse: MetadataModeleResponse, hierarchyKey: string, parentDesc: string, heirarchyId: string) {
+    const dataToPush = [];
+    for (const key in metadataModeleResponse.hierarchyFields[heirarchyId]) {
+      if (metadataModeleResponse.hierarchyFields[heirarchyId].hasOwnProperty(key)) {
+        const field = metadataModeleResponse.hierarchyFields[heirarchyId];
+        if (field[key].picklist === '1' || field[key].picklist === '30' || field[key].picklist === '37') {
+          dataToPush.push({ name: field[key].fieldDescri, id: field[key].fieldId, parent: parentDesc, children: [], allData: field[key] });
+        }
+      }
+    }
+    return dataToPush;
+  }
+
+  /**
+   * Initialize grid and hirarcy
+   * @param metadataModeleResponse metadata object
+   */
+  initGridAndHierarchyToAutocompleteDropdown(metadataModeleResponse: MetadataModeleResponse) {
+    const data = [];
+    for (const key in metadataModeleResponse.grids) {
+      if (metadataModeleResponse.grids.hasOwnProperty(key)) {
+        const objToPush = {
+          name: metadataModeleResponse.grids[key].fieldDescri,
+          id: metadataModeleResponse.grids[key].fieldId,
+          parent: null,
+          allData: metadataModeleResponse.grids[key],
+          children: this.getGridFieldsByGridKey(metadataModeleResponse, metadataModeleResponse.grids[key].fieldId, metadataModeleResponse.grids[key].fieldDescri)
+        }
+        data.push(objToPush)
+      }
+    }
+
+    for (const key in metadataModeleResponse.hierarchy) {
+      if (metadataModeleResponse.hierarchy.hasOwnProperty(key)) {
+        const objToPush = {
+          name: metadataModeleResponse.hierarchy[key].heirarchyText,
+          id: metadataModeleResponse.hierarchy[key].fieldId,
+          parent: null,
+          allData: metadataModeleResponse.hierarchy[key],
+          children: this.getHierarchyFieldsByHierarchyKey(metadataModeleResponse, metadataModeleResponse.hierarchy[key].fieldId, metadataModeleResponse.hierarchy[key].heirarchyText,
+            metadataModeleResponse.hierarchy[key].heirarchyId)
+        }
+        data.push(objToPush)
+      }
+    }
+    this.dataSource.data = data.filter(f => !!f.children && f.children.length >= 1);
+    this.allGridAndHirarchyData = data.filter(f => !!f.children && f.children.length >= 1);
+  }
+
+  /**
    * Calculate fields based on user view ..
    *
    */
@@ -187,6 +319,8 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
         }
       }
     }
+
+    this.initGridAndHierarchyToAutocompleteDropdown(allMDF);
     this.metadaDrop = fields;
     this.searchDrop = fields;
   }
@@ -243,8 +377,31 @@ export class AddFilterMenuComponent implements OnInit, OnDestroy, OnChanges {
   searchField(searchText: string) {
     if (searchText.trim()) {
       this.metadaDrop = this.searchDrop.filter((value) => value.fieldDescri.toLowerCase().includes(searchText.toLowerCase()));
+      if (this.dataSource != null) {
+        const filterData = [];
+        this.allGridAndHirarchyData.forEach(item => {
+          if (item.name.toString().toLowerCase().indexOf(searchText.toLowerCase()) !== -1 || (!!item.parent && item.parent.toString().toLowerCase().indexOf(searchText.toLowerCase()) !== -1)
+            || item.children.filter(child => { return child.name.toString().toLowerCase().indexOf(searchText.toLowerCase()) !== -1 }).length >= 1) {
+            const parentChildData = item;
+            if (item.children.filter(child => { return child.name.toString().toLowerCase().indexOf(searchText.toLowerCase()) !== -1 }).length >= 1) {
+              parentChildData.children = item.children.filter(child => { return child.name.toString().toLowerCase().indexOf(searchText.toLowerCase()) !== -1 });
+            }
+            filterData.push(parentChildData);
+          }
+        });
+        this.dataSource.data = filterData;
+      }
+      if (!!this.tree && this.tree.treeControl !== null && this.tree.treeControl !== undefined) {
+        this.tree.treeControl.expandAll();
+      }
     } else {
       this.metadaDrop = this.searchDrop;
+      if (this.dataSource !== null) {
+        this.dataSource.data = this.allGridAndHirarchyData;
+      }
+      if (!!this.tree && this.tree.treeControl !== null && this.tree.treeControl !== undefined) {
+        this.tree.treeControl.collapseAll();
+      }
     }
   }
 

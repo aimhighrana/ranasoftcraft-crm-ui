@@ -130,7 +130,7 @@ describe('AddFilterMenuComponent', () => {
       gridFields: '',
       hierarchyFields: []
   };
-
+  spyOn(component,'initGridAndHierarchyToAutocompleteDropdown');
 
   component.tarnsformMetada(metadata);
   expect(component.metadaDrop.length).toEqual(0);

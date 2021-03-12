@@ -82,7 +82,7 @@
                         *ngIf="submitted && form.controls.error_message.errors && form.controls.error_message.errors.required">
                         Please enter Error message</mat-error>
                 </div>
-    
+
                 <div class="f-col mdo-form-field" *ngIf="form.controls.rule_type.value === 'MRO_GSN_DESC_MATCH' || form.controls.rule_type.value === 'MRO_MANU_PRT_NUM_LOOKUP'">
                     <pros-form-input  [control]="formField('apiKey')" [value]="form.controls.apiKey.value"
                         [label]="'Enter access token'" [isHelpIcon]="true" [toolTipInfo]="'Please enter your spare part library access token. If you do not have access to our spare part library, please contact sales@prospecta.com for more information.'">
@@ -90,9 +90,9 @@
                     <mat-error *ngIf="submitted && form.controls.apiKey.errors && form.controls.apiKey.errors.required">
                         Please enter access token</mat-error>
                 </div>
-    
+
                 <mat-divider></mat-divider>
-    
+
                 <div class="mdo-form-field temp-field" *ngIf="isTransformationRule">
                     <mat-radio-group formControlName="transformationRuleType" class="f-row">
                         <mat-radio-button [value]="transformationType.REGEX" color="primary">{{transformationType.REGEX}}
@@ -115,7 +115,7 @@
                     [fieldsObject]="sourceFieldsObject" [initialLookupData]="transformationLookUpData"
                     (lookupRuleOutput)="setLookupData($event)">
                 </pros-lookup-rule>
-                
+
                 <div class="f-col mdo-form-field" *ngIf="!isUDR && !isDuplicateType && !isTransformationRule">
                     <mat-label>Fields</mat-label>
                     <mat-form-field appearance="outline">
@@ -127,13 +127,31 @@
                             </mat-chip>
                             <input matInput id="fieldsInput" #fieldsInput class="mat-input" [matAutocomplete]="auto"
                                 formControlName="fields" [matChipInputFor]="chipList"
-                                [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
+                                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
                         </mat-chip-list>
                         <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectField($event)"
                             [displayWith]="displayFn.bind(this)">
-                            <mat-option *ngFor="let fieldItem of filteredModules | async" [value]="fieldItem.fieldId">
+                            <mat-option *ngFor="let fieldItem of filteredModules | async" [disabled]="!fieldItem.fieldId" [value]="fieldItem.fieldId">
                                 {{fieldItem.fieldDescri}}
                             </mat-option>
+                            <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" #tree>
+                                <!-- This is the tree node template for leaf nodes -->
+                                <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding style="cursor: pointer;"
+                                    (click)="clickTreeNode(node)">
+                                    <!-- use a disabled button to provide padding for tree leaf -->
+                                    <button mat-icon-button disabled></button>
+                                    {{node.name}}
+                                </mat-tree-node>
+                                <!-- This is the tree node template for expandable nodes -->
+                                <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
+                                    <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name">
+                                        <mat-icon class="mat-icon-rtl-mirror">
+                                            {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                                        </mat-icon>
+                                    </button>
+                                    {{node.name}}
+                                </mat-tree-node>
+                            </mat-tree>
                         </mat-autocomplete>
                     </mat-form-field>
                     <mat-error *ngIf="submitted && form.controls.fields.errors && form.controls.fields.errors.required">

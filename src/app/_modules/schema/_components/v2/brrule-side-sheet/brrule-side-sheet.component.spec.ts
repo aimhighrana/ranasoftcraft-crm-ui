@@ -1,4 +1,4 @@
-import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { async, ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { BrruleSideSheetComponent } from './brrule-side-sheet.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
@@ -68,38 +68,44 @@ describe('BrruleSideSheetComponent', () => {
 
   });
 
-  it('should get conditions', () => {
-
-    expect(component.getConditions()[0]).toEqual('And');
-    expect(component.getConditions().length).toEqual(2);
-
-  });
-
   it('getFieldsByModuleId(), get the fields on basis of module', fakeAsync(() => {
     component.buildCommonDataForm();
     tick(100);
-
     const metadataModeleResponse = { headers: [{ fieldId: 'MATL', fieldDescri: 'material location' }] } as MetadataModeleResponse;
     spyOn(schemaDetailsServicespy, 'getMetadataFields').and.returnValue(of(metadataModeleResponse));
-
-    component.getFieldsByModuleId();
-
     component.moduleId = '1005';
-    component.getFieldsByModuleId();
-
-
-    component.brId = '1701';
-    component.coreSchemaBrInfo = {fields: 'region'} as CoreSchemaBrInfo;
-    component.fieldsList = [{fieldId: 'region', fieldDescri: 'region'}];
-    component.getFieldsByModuleId();
-    expect(component.selectedFields.length).toEqual(1);
-
     component.coreSchemaBrInfo = {} as CoreSchemaBrInfo;
     component.getFieldsByModuleId();
     expect(component.selectedFields.length).toEqual(0);
 
-    expect(schemaDetailsServicespy.getMetadataFields).toHaveBeenCalledTimes(3);
+    component.brId = '1701';
+    component.coreSchemaBrInfo = {fields: 'region'} as CoreSchemaBrInfo;
+    component.fieldsList = [{fieldId: 'region', fieldDescri: 'region'}];
+    spyOn(component,'initGridAndHierarchyToAutocompleteDropdown');
+    component.getFieldsByModuleId();
+    expect(component.fieldsList.length).toEqual(2);
+    expect(schemaDetailsServicespy.getMetadataFields).toHaveBeenCalledTimes(2);
+    flush()
   }));
+
+  it('should initGridAndHierarchyToAutocompleteDropdown', () => {
+    const metadataModeleResponse = {
+      grids: { ADDINFO: { fieldDescri: 'Additional data for GS1', fieldId: 'ADDINFO' } },
+      gridFields: { ADDINFO: { ADD_HEIGHT: { fieldDescri: 'Height', fieldId: 'ADD_HEIGHT' } } },
+      hierarchy: [{ fieldId: 'PLANT', heirarchyId: '1', heirarchyText: 'Plant Data', }],
+      hierarchyFields: { 1: { ABC_INDIC: { fieldDescri: 'ABC Indicator', fieldId: 'ABC_INDIC' } } }
+    } as MetadataModeleResponse;
+
+    component.initGridAndHierarchyToAutocompleteDropdown(metadataModeleResponse);
+    // expect(component.dataSource.data.length).toEqual(2);
+    expect(component.allGridAndHirarchyData.length).toEqual(2);
+  });
+
+
+  it('should get conditions', () => {
+    expect(component.getConditions()[0]).toEqual('And');
+    expect(component.getConditions().length).toEqual(2);
+  });
 
   it('formatLabel(), return value in string', async(() => {
     const value = 'Test';
@@ -242,16 +248,14 @@ describe('BrruleSideSheetComponent', () => {
   it('should initiateAutocomplete', () => {
     component.fieldsList = [{fieldId: 'region', fieldDescri: 'region'}];
     component.buildCommonDataForm();
-    component.initiateAutocomplete();
-
     let filteredFields;
     component.filteredModules.subscribe(fields => filteredFields = fields);
     component.form.controls.fields.setValue('status');
+    component.initiateAutocomplete();
     expect(filteredFields.length).toEqual(0);
   })
 
   it('should apply validators by rule type', async(() => {
-
       component.buildCommonDataForm();
 
       component.applyValidatorsByRuleType(BusinessRuleType.BR_CUSTOM_SCRIPT);
@@ -418,7 +422,6 @@ describe('BrruleSideSheetComponent', () => {
     component.buildCommonDataForm();
 
     const event = {option: {value: 'region', viewValue: 'region'}};
-    component.selectField(event);
     component.selectField(event);
     expect(component.selectedFields.length).toEqual(1);
   });
