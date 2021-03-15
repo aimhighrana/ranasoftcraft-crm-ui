@@ -16,7 +16,7 @@ import { AddFilterOutput } from '@models/schema/schema';
 import { FormControl, FormGroup } from '@angular/forms';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { GlobaldialogService } from '@services/globaldialog.service';
-import { Subscription } from 'rxjs';
+import { forkJoin, Subscription } from 'rxjs';
 import { SchemaScheduler } from '@models/schema/schemaScheduler';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { map } from 'rxjs/operators';
@@ -452,6 +452,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     request.schemaId = this.schemaId;
     request.brId = br.brIdStr;
     request.order = br.order;
+    request.dependantStatus = br.dependantStatus;
     if (!request.brWeightage) {
       request.brWeightage = Number(br.brWeightage);
     }
@@ -517,26 +518,40 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     console.log(event.item.data);
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-      const br = this.businessRuleData[event.previousIndex];
+      const br = this.businessRuleData[event.currentIndex];
       this.updateBrOrder(br, event.currentIndex);
     }
   }
 
   updateBrOrder(br, currentIndex) {
     if (br) {
-      console.log(br)
-      const request: CoreSchemaBrMap = new CoreSchemaBrMap();
+      const forkObj = {};
+      let counter=0;
+       const request: CoreSchemaBrMap = new CoreSchemaBrMap();
       request.schemaId = this.schemaId;
       request.brId = br.brIdStr;
       request.order = currentIndex;
       request.brWeightage = Number(br.brWeightage);
-      request.status = br.status
-      const updateBusinessRule = this.schemaService.updateBrMap(request).subscribe(res => {
-        if (res) {
-          this.getBusinessRuleList(this.schemaId);
-        }
-      }, error => console.error(`Error : ${error.message}`));
-      this.subscriptions.push(updateBusinessRule);
+      request.status = br.status?br.status :'0';
+      request.dependantStatus = br.dependantStatus;
+      forkObj[counter] = this.schemaService.updateBrMap(request);
+      counter++;
+      if (br.dep_rules)
+      br.dep_rules.forEach(element => {
+        request.schemaId = this.schemaId;
+        request.brId = element.brIdStr;
+        request.order = ++currentIndex;
+        request.brWeightage = Number(element.brWeightage);
+        request.status = br.status?br.status :'0';
+        request.dependantStatus = element.dependantStatus;
+        forkObj[counter]=this.schemaService.updateBrMap(request);
+        counter++;
+      });
+      forkJoin(forkObj).subscribe(res => {
+        if(res)
+        this.getBusinessRuleList(this.schemaId);
+      });
+
     }
   }
 
@@ -551,10 +566,23 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     label='After delete the dependent rules will removed';
     this.globalDialogService.confirm({label}, (response) => {
       if (response && response === 'yes') {
+        const forkObj = {};
+      let counter=0;
         if (br.brIdStr) {
-          const deleteSubscriber = this.schemaService.deleteBr(br.brIdStr).subscribe(res => {
+          forkObj[counter] =this.schemaService.deleteBr(br.brIdStr);
+          counter++;
+          if (br.dep_rules)
+          br.dep_rules.forEach(element => {
+              forkObj[counter]=this.schemaService.deleteBr(element.brIdStr);;
+            counter++;
+          });
+          const deleteSubscriber= forkJoin(forkObj).subscribe(res => {
+            if(res)
             this.getBusinessRuleList(this.schemaId);
-          }, error => console.error(`Error : ${error.message}`));
+          });
+          // const deleteSubscriber = this.schemaService.deleteBr(br.brIdStr).subscribe(res => {
+          //   this.getBusinessRuleList(this.schemaId);
+          // }, error => console.error(`Error : ${error.message}`));
           this.subscriptions.push(deleteSubscriber);
         }
       }
@@ -1033,14 +1061,28 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
   updateDepRuleForChild(br: CoreSchemaBrInfo,index:number, event?: any) {
     const idx=this.businessRuleData.findIndex(item=>item.brIdStr===br.brIdStr);
     this.businessRuleData[idx].dep_rules[index].dependantStatus=event.value;
-    if(event.value===RuleDependentOn.ALL)
-   { const childIdx=this.businessRuleData[idx].dep_rules[index]
-   console.log(childIdx)
+    const childIdx=this.businessRuleData[idx].dep_rules[index]
+
+    if(event.value===RuleDependentOn.ALL){
    childIdx.dep_rules=[];
-   this.businessRuleData.push(childIdx)
+   this.businessRuleData.push(childIdx);
    this.businessRuleData[idx].dep_rules.splice(index,1);
    }
-     console.log(this.businessRuleData)
+
+   const request: CoreSchemaBrMap = new CoreSchemaBrMap();
+    request.brWeightage =Number(childIdx.brWeightage);
+    request.schemaId = this.schemaId;
+    request.brId = childIdx.brIdStr;
+    request.order = childIdx.order;
+    request.status = childIdx.status
+    request.dependantStatus=childIdx.dependantStatus;
+
+    const updateBusinessRule = this.schemaService.updateBrMap(request).subscribe(res => {
+      if (res) {
+        this.getBusinessRuleList(this.schemaId);
+      }
+    }, error => console.error(`Error : ${error.message}`));
+    this.subscriptions.push(updateBusinessRule);
    }
 
   deleteSchema() {

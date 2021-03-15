@@ -633,7 +633,7 @@ describe('SchemaInfoComponent', () => {
     component.updateBrOrder(br, 2);
     component.updateBrOrder(br, 2);
 
-    expect(component.getBusinessRuleList).toHaveBeenCalledTimes(1);
+    expect(component.getBusinessRuleList).toHaveBeenCalled();
 
    });
 

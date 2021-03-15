@@ -143,7 +143,7 @@
                                         </button>
                                         <!-- Mapping Dropdown Menu -->
                                         <mat-menu #mappingdependency="matMenu" #aboveMenu="matMenu" yPosition="above" xPosition="before" class="mat-elevation-z0 tooltip-fields-menu">
-                                            <div class="top-tiparrow"></div>
+                                            <!-- <div class="top-tiparrow"></div> -->
                                             <div class="f-col">
                                                     <p>Only run this rule if  the preceding rule returns</p>
                                                     <mat-radio-group class="f-col" color="primary" [(ngModel)]="businessRule.dependantStatus" (change)="updateDepRule(businessRule,$event)">
@@ -193,7 +193,7 @@
                                             </button>
                                             <!-- Mapping Dropdown Menu -->
                                             <mat-menu #mappingdependency="matMenu" #aboveMenu="matMenu" yPosition="above" xPosition="before" class="mat-elevation-z0 tooltip-fields-menu">
-                                                <div class="top-tiparrow"></div>
+                                                <!-- <div class="top-tiparrow"></div> -->
                                                 <div class="f-col">
                                                         <p>Only run this rule if  the preceding rule returns</p>
                                                         <mat-radio-group class="f-col" color="primary"  [(ngModel)]="deps.dependantStatus" (change)="updateDepRuleForChild(businessRule,i,$event)">
