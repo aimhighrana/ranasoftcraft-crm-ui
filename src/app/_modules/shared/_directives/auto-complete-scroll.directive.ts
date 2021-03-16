@@ -52,9 +52,12 @@ export class AutoCompleteScrollDirective implements OnDestroy {
     if (this.thresholdPercent === undefined) {
       this.autoCompleteScroll.next({ autoComplete: this.autoComplete, scrollEvent: event });
     } else {
-      const threshold = (this.thresholdPercent * 120 * event.target.scrollHeight) / 100;
-      const current = event.target.scrollTop + event.target.clientHeight;
-      if (current > threshold) {
+      const viewPortHeight = event.target.offsetHeight; // height of the complete viewport
+      const scrollFromTop = event.target.scrollTop;     // height till user has scrolled
+      const scrollHeight = event.target.scrollHeight; // complete scrollable height of the side sheet document
+
+      const limit = scrollHeight - scrollFromTop;
+      if (limit === viewPortHeight){
         this.autoCompleteScroll.next({ autoComplete: this.autoComplete, scrollEvent: event });
       }
     }

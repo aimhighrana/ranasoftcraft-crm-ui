@@ -693,25 +693,27 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param fieldData selected data or on change dropdown data
    * @param index row index
    */
-  onDefaultFilterChange(fieldData: MatAutocompleteSelectedEvent, index: number) {
+   onDefaultFilterChange(fieldData: MatAutocompleteSelectedEvent, index: number) {
     const frmArray = this.defaultFilterCtrlGrp.controls.filters as FormArray;
-    this.fld2FldArray.forEach(value => {
-      if (frmArray.at(index).value.conditionOperator) {
-        if (frmArray.at(index).value.conditionOperator === value) {
-          if (fieldData && fieldData.option.value) {
-            frmArray.at(index).get('conditionFieldEndValue').setValue(fieldData.option.value.fieldId);
-          } else {
-            frmArray.at(index).get('conditionFieldEndValue').setValue('');
-          }
-        }
-      } else {
-        if (fieldData && fieldData.option.value) {
-          frmArray.at(index).get('conditionFieldId').setValue(fieldData.option.value.fieldId);
-        } else {
-          frmArray.at(index).get('conditionFieldId').setValue('');
-        }
-      }
-    });
+    if (fieldData && fieldData.option.value) {
+      frmArray.at(index).get('conditionFieldId').setValue(fieldData.option.value.fieldId);
+    } else {
+      frmArray.at(index).get('conditionFieldId').setValue('');
+    }
+  }
+
+  /**
+   * Use for update default filter conditionFieldEndValue
+   * @param fieldData selected data or on change dropdown data
+   * @param index row index
+   */
+  onDefaultFilterEndValChange(fieldData: MatAutocompleteSelectedEvent, index: number) {
+    const frmArray = this.defaultFilterCtrlGrp.controls.filters as FormArray;
+    if (fieldData && fieldData.option.value) {
+      frmArray.at(index).get('conditionFieldEndValue').setValue(fieldData.option.value.fieldId);
+    } else {
+      frmArray.at(index).get('conditionFieldEndValue').setValue('');
+    }
   }
 
   /**

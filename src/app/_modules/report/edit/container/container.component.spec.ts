@@ -209,4 +209,22 @@
 
 //   }));
 
+//   it('onDefaultFilterEndValChange(), while change value on default filter', async(()=>{
+//     // mock data
+//     const metaData = {fieldId:'MATL_DESC', fieldDescri:'Desc'} as Metadata;
+//     const option = {option:{value:metaData}} as MatAutocompleteSelectedEvent;
+//     const index = 0;
+
+//     // call actual method
+//     component.defaultFilterCtrlGrp = new FormGroup({filters: new FormArray([new FormGroup({
+//         conditionFieldEndValue: new FormControl('')
+//     })])});
+//     component.onDefaultFilterEndValChange(option, index);
+
+//     const frmArray =  component.defaultFilterCtrlGrp.controls.filters as FormArray;
+//     expect(frmArray.length).toEqual(1, 'length should be 1');
+//     expect(frmArray.at(index).get('conditionFieldEndValue').value).toEqual(metaData.fieldId, `Field id should equals ${metaData.fieldId}`);
+//   }));
+// });
+
 // });

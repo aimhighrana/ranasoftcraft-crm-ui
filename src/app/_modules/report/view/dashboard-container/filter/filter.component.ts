@@ -31,6 +31,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
   numericValCtrl: FormControl = new FormControl();
   filterResponse: FilterResponse;
   sliderval: FormControl = new FormControl();
+  filteredArray = 0;
 
   /**
    * store last value in the bucket array
@@ -718,7 +719,8 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
    */
   onScroll() {
     if(this.isLoadMore) {
-      this.loadAlldropData(this.filterWidget.value.fieldId, this.filterCriteria,this.searchString,this.searchAfter);
+      const filteredCriteria =this.removefilter(this.filterWidget.value.fieldId);
+      this.loadAlldropData(this.filterWidget.value.fieldId, filteredCriteria, this.searchString, this.searchAfter);
     }
   }
 
@@ -732,7 +734,15 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     removeValue.forEach(val=> {
       dupFilterCiteria.splice(dupFilterCiteria.indexOf(val),1);
     });
-    console.log(this.filterCriteria);
     return dupFilterCiteria;
+  }
+
+  onfocus() {
+    this.filteredOptions.subscribe(sub=> { this.filteredArray = sub.length});
+    if(this.searchAfter && this.filteredArray > 10) {
+    this.filteredOptions = of([]);
+    const filteredCriteria =this.removefilter(this.filterWidget.value.fieldId);
+    this.loadAlldropData(this.filterWidget.value.fieldId, filteredCriteria, '', '');
+    }
   }
 }
