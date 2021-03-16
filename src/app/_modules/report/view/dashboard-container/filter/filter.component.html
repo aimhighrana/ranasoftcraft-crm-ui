@@ -26,7 +26,7 @@
                   <mat-icon matChipRemove>cancel</mat-icon>
                 </mat-chip>
               </mat-chip-list>
-              <input type="text" placeholder="Select" aria-label="Number" matInput [formControl]="filterFormControl"
+              <input type="text" placeholder="Select" aria-label="Number" matInput [formControl]="filterFormControl" (focus)="onfocus()"
                   [matAutocomplete]="auto" class="mat-input" [matChipInputFor]="chipList" (matChipInputTokenEnd)="$event.input.value = ''" [matChipInputAddOnBlur]="true">
             </mat-form-field>
           </div>
@@ -36,7 +36,7 @@
             <mat-form-field appearance="outline">
               <input type="text" placeholder="Select" aria-label="Number"
                 value="{{ selectedDropVals.length ? selectedDropVals[0].TEXT : ''}}" matInput
-                [formControl]="filterFormControl" [matAutocomplete]="auto">
+                [formControl]="filterFormControl" [matAutocomplete]="auto" (focus)="onfocus()">
               <!-- <button *ngIf="enableClearIcon" mat-button matSuffix mat-icon-button (click)="removeSingleSelectedVal(true)">
               <mat-icon>close</mat-icon>
               </button> -->

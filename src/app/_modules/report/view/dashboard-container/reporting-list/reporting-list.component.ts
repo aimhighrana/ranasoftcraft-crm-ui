@@ -247,7 +247,9 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
                   }
                 });
                 let textvalue = valArray.toString();
-                const codeValue = hdvs[column] ? hdvs[column].vc && hdvs[column].vc[0] ? hdvs[column].vc.map(map => map.c).toString() : '' : '';
+                textvalue = textvalue === 'null' ? '' : textvalue
+                let codeValue = hdvs[column] ? hdvs[column].vc && hdvs[column].vc[0] ? hdvs[column].vc.map(map => map.c).toString() : '' : '';
+                codeValue = codeValue === 'null' ? '' : codeValue;
                 if(column === 'OVERDUE' || column === 'FORWARDENABLED' || column === 'TIME_TAKEN') {
                   switch(column) {
 
@@ -283,7 +285,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
                     break;
                   case DisplayCriteria.CODE_TEXT :
                     if(this.isDropdownType(column)) {
-                      obj[column] = `${textvalue ? codeValue + ' -- ' + textvalue : codeValue  + ' -- ' + codeValue}`;
+                      obj[column] = `${(textvalue ? codeValue + ' -- ' + textvalue : codeValue ? codeValue  + ' -- ' + codeValue : '')}`;
                     } else {
                       obj[column] = `${textvalue ? textvalue : codeValue}`;
                     }
