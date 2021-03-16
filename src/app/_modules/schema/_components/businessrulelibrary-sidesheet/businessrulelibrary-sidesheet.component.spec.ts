@@ -102,4 +102,25 @@ describe('BusinessrulelibrarySidesheetComponent', () => {
       component.getBusinessRulesList('testId', null, null, null);
       expect(schemaService.getBusinessRulesByModuleId).toHaveBeenCalled();
   });
+
+  it('getBusinessRulesBySchemaId(), get rules by schema id', async(()=>{
+    // mock object
+    spyOn(schemaService,'getBusinessRulesBySchemaId').withArgs(component.schemaId).and.returnValue(of([{brIdStr:'732523'} as CoreSchemaBrInfo]));
+
+    component.getBusinessRulesBySchemaId(component.schemaId);
+    expect(schemaService.getBusinessRulesBySchemaId).toHaveBeenCalledWith(component.schemaId);
+    expect(component.schemaBusinessRulesList .length).toEqual(1);
+  }));
+
+  it('ngOnInit(), check prerequired stuff ', async(()=>{
+
+    spyOn(schemaService,'getBusinessRulesBySchemaId').withArgs(component.schemaId).and.returnValue(of([{brIdStr:'732523'} as CoreSchemaBrInfo]));
+
+    spyOn(schemaService, 'getBusinessRulesByModuleId').and.callFake(() => of([]));
+
+    component.ngOnInit();
+
+    expect(schemaService.getBusinessRulesBySchemaId).toHaveBeenCalledWith(component.schemaId);
+    expect(schemaService.getBusinessRulesByModuleId).toHaveBeenCalled();
+  }));
 });

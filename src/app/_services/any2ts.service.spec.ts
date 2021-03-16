@@ -230,7 +230,10 @@ describe('Any2tsService', () => {
         roleId: 'ROLE12',
         sno: '5456465r767',
         userId: 'harshit'
-      }]
+      }],
+      selfServiceUserModel:{
+        ECId:'0'
+      }
     }
     expect(service.any2UserDetails(testData)).not.toBe(null)
 

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en" datatype="plaintext" original="ng2.template">
+    <body>
+      <trans-unit id="404" datatype="html">
+        <source>404</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/_modules/shared/_components/page-not-found/page-not-found.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="weAreSorry" datatype="html">
+        <source>WE ARE SORRY</source>
+        <target>很抱歉</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/_modules/shared/_components/page-not-found/page-not-found.component.html</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="goBack" datatype="html">
+        <source>Go Back</source>
+        <target>回去</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/_modules/shared/_components/page-not-found/page-not-found.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="404msg" datatype="html">
+        <source>We couldn't find the page you were looking for</source>
+        <target>我們找不到您想要的頁面</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/_modules/shared/_components/page-not-found/page-not-found.component.html</context>
+          <context context-type="linenumber">14</context>
+        </context-group>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
