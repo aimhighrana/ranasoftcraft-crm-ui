@@ -20,6 +20,7 @@ const routes: Routes = [
   { path: 'outer/add-business-rules', component: NewBusinessRulesComponent, outlet: 'outer' },
   { path: 'sb/add-business-rules', component: NewBusinessRulesComponent, outlet: 'sb' },
   { path: 'sb/system-tray', component: SystemTrayComponent, outlet: 'sb' },
+  { path: 'listdata', loadChildren: () => import('./_modules/listdata/listdata.module').then(m => m.ListdataModule) },
 
   // anything not mapped should go to page not found component
   { path: '**', component: PageNotFoundComponent }
