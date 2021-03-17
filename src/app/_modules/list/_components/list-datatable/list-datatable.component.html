@@ -1,0 +1,154 @@
+<div class="f-col root">
+    <div class="f-row breadcrum-toolbar">
+        <div class="display-heading-large">
+            Material - {{ currentViewName || 'Default view' }}
+        </div>
+        <button mat-button [matMenuTriggerFor]="menu">
+            <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu" class="navigation-menu">
+            <div class="menu-customdropdown" prosInfiniteScroll 
+                bufferPercentage="10"
+                (scrollEnd)="getViewsList(true)">
+
+                <lib-section text="My views" *ngIf="userViews && userViews.length"></lib-section>
+                <button mat-menu-item *ngFor="let userView of userViews"
+                    (click)="updateTableColumns(userView.viewId)">
+                    {{ userView.viewName }}
+                </button>
+
+                <lib-section text="System views" *ngIf="systemViews && systemViews.length"></lib-section>
+                <button mat-menu-item *ngFor="let systemView of systemViews"
+                    (click)="updateTableColumns(systemView.viewId)">
+                    {{ systemView.viewName }}
+                </button>
+            </div>
+            <mat-divider></mat-divider>
+            <button mat-menu-item (click)="openTableViewSettings()">
+                <mat-icon fontSet="mdo-icons" class="mat-menu-icon">plus</mat-icon> New view
+            </button>
+        </mat-menu>
+        <span class="f-col-spacer-half"></span>
+        <span class="f-spacer"></span>
+        <div class="f-row action-iconbtns">
+            <button mat-fab color="accent" [matMenuTriggerFor]="navigation">
+                <mat-icon fontSet="mdo-icons">more</mat-icon>
+            </button>
+            <mat-menu #navigation="matMenu" class="navigation-menu">
+                <button mat-menu-item (click)="openTableViewSettings(true)"> Configure view </button>
+                <button mat-menu-item (click)="deleteView(currentViewId)"> Delete view </button>
+            </mat-menu>
+        </div>
+    </div>
+
+    <div class="f-row">
+        <mat-chip-list class="f-row">
+            <lib-search placeholder="Search..."></lib-search>
+            <div class="f-col-spacer-half"></div>
+        </mat-chip-list>
+    </div>
+    <div class="row-spacer"></div>
+    <!-- <ng-template> -->
+    <cdk-virtual-scroll-viewport class="data-listing" itemSize="50">
+        <mat-table [dataSource]="dataSource" class="mat-elevation-z0">
+            <ng-container matColumnDef="select" sticky>
+                <mat-header-cell *matHeaderCellDef>
+                    <mat-checkbox (change)="$event ? masterToggle() : null"
+                        [checked]="selection.hasValue() && isAllSelected()"
+                        [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()"
+                        color="primary">
+                    </mat-checkbox>
+                </mat-header-cell>
+                <mat-cell *matCellDef="let row" class="row-error">
+                    <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+                        [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)" color="primary">
+                    </mat-checkbox>
+                </mat-cell>
+            </ng-container>
+            <!-- ID Column -->
+            <ng-container matColumnDef="option" sticky>
+                <mat-header-cell *matHeaderCellDef>
+                    <lib-button icon="cog" (click)="openTableViewSettings(true)"></lib-button>
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <div class="f-row action-iconbtns">
+                        <button mat-button [matMenuTriggerFor]="moreoption">
+                            <mat-icon fontSet="mdo-icons">more</mat-icon>
+                        </button>
+                        <mat-menu #moreoption="matMenu" class="navigation-menu">
+                            <button mat-menu-item>Duplicate</button>
+                            <button mat-menu-item>Edit</button>
+                            <mat-divider></mat-divider>
+                            <button mat-menu-item>Comments (5)</button>
+                            <mat-divider></mat-divider>
+                            <button mat-menu-item>Record status</button>
+                            <button mat-menu-item>Delete</button>
+                        </mat-menu>
+                    </div>
+                </mat-cell>
+            </ng-container>
+
+            <ng-template ngFor let-dynCol [ngForOf]="(displayedColumns | async)">
+                <ng-template
+                        [ngIf]="isStaticCol(dynCol)"
+                        [ngIfElse]="dynamic">
+                        <!-- skip all static columns -->
+                </ng-template>
+                <ng-template #dynamic>
+                    <ng-container [matColumnDef]="dynCol" >
+                        <mat-header-cell *matHeaderCellDef> 
+                            {{ metadataFldLst && metadataFldLst.headers[dynCol] ?
+                                metadataFldLst.headers[dynCol].fieldDescri : dynCol }}    
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element"> 
+                            ESRC1234
+                        </mat-cell>
+                    </ng-container>
+                </ng-template>
+            </ng-template>
+
+            <ng-template>
+                <!-- Material Number Column -->
+                <ng-container matColumnDef="materialno" sticky>
+                    <mat-header-cell *matHeaderCellDef> Material number </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> <a href="#" class="info-link">ESRC1234</a> </mat-cell>
+                </ng-container>
+                
+                <!-- Description Column -->
+                <ng-container matColumnDef="description">
+                    <mat-header-cell *matHeaderCellDef> Material desc </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> BRG BALL,ANNU,6300,10MM </mat-cell>
+                </ng-container>
+    
+                <!-- Part Number Column -->
+                <ng-container matColumnDef="materialtype">
+                    <mat-header-cell *matHeaderCellDef> Material type </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> ERSA-Spare Parts </mat-cell>
+                </ng-container>
+            </ng-template>
+
+            <mat-header-row *matHeaderRowDef="displayedColumns | async; sticky: true"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns | async;"></mat-row>
+        </mat-table>
+    </cdk-virtual-scroll-viewport>
+    <!-- </ng-template> -->
+
+    
+    <ng-template>
+        <!-- paging -->
+        <div class="listing-pagination">
+            <mat-paginator class="data-paginator" showFirstLastButtons="flase">
+            </mat-paginator>
+            <mat-form-field appearance="outline">
+                <input matInput>
+            </mat-form-field>
+        </div>
+
+        <!-- Configure loading -->
+        <div class="f-col loading-result">
+            <pros-null-state [button]="{text: 'Configure'}" [iconWidth]="160"
+                [iconPath]="'./assets/images/empty-table.svg'" [subtext]="'View is not configured'"
+                [message]="'Please configure your view by selecting columns to display'"></pros-null-state>
+        </div>
+    </ng-template>
+</div>

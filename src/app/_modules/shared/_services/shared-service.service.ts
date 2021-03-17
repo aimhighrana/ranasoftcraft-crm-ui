@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { CoreSchemaBrInfo } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SecondaryNavRefresh, SecondaynavType } from '@models/menu-navigation';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { ListPageViewDetails } from '@models/list-page/listpage';
 
 
 @Injectable({
@@ -56,6 +57,7 @@ export class SharedServiceService {
    */
   private afterSaveDataScope: Subject<any> = new Subject();
 
+  private viewDetailsSub: Subject<ListPageViewDetails> = new Subject();
 
   constructor() { }
 
@@ -210,5 +212,13 @@ export class SharedServiceService {
    */
   public getDataScope(): Observable<any> {
     return this.afterSaveDataScope.asObservable();
+  }
+
+  public setViewDetailsData(data: any) {
+    this.viewDetailsSub.next(data);
+  }
+
+  public getViewDetailsData(): Observable<any> {
+    return this.viewDetailsSub.asObservable();
   }
 }

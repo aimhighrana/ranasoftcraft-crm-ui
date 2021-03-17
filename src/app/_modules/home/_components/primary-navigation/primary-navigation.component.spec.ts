@@ -134,11 +134,11 @@ describe('PrimaryNavigationComponent', () => {
     expect(component.isNavSelected).toEqual('schema');
   })
 
-  it('should call openSystemTray()', async () => {
+  /* it('should call openSystemTray()', async () => {
     spyOn(router, 'navigate');
     component.openSystemTray();
     expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: ['sb', 'system-tray'] } }]);
-  });
+  }); */
 
   it('should call signout()', async () => {
     spyOn(router, 'navigate');

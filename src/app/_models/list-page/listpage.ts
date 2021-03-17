@@ -124,3 +124,21 @@ export class Planner {
     value: string;
     selected: boolean;
 }
+
+export class ListPageViewDetails {
+    viewId: string;
+    viewName: string;
+    moduleId: string;
+    isDefault = false;
+    isSystemView = false;
+    fieldsReqList: ListPageViewFldMap[] = [];
+}
+
+export class ListPageViewFldMap {
+    sno: number;
+    fieldId: string;
+	fieldOrder: number;
+	width = '100';
+	isEditable: boolean;
+    sortDirection = 'ASCENDING';
+}
