@@ -1,7 +1,6 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ListPageViewDetails } from '@models/list-page/listpage';
 import { SchemaListDetails } from '@models/schema/schemalist';
@@ -12,8 +11,32 @@ import { SchemaService } from '@services/home/schema.service';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { UserService } from '@services/user/userservice.service';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { MetadataModeleResponse } from '@models/schema/schemadetailstable';
+
+export interface TableElement {
+  checked: string;
+  settings: string;
+  user: string;
+  vendor: string;
+  country: string;
+  action: string;
+  purchase: number;
+}
+
+/**
+ * Prepare a dataSource for the table
+ */
+ const ELEMENT_DATA: TableElement[] = [
+  { checked: '', settings: '', user: 'Abc Def', vendor: 'V0001', country: 'India', purchase: 200, action: 'Update' },
+  { checked: '', settings: '', user: 'Xyz Abc', vendor: 'V0002', country: 'USA', purchase: 600, action: 'Delete' },
+  { checked: '', settings: '', user: 'Tezt User', vendor: 'V0003', country: 'Australia', purchase: 100, action: 'Edit' },
+  { checked: '', settings: '', user: 'Abc user', vendor: 'incorrect', country: 'England', purchase: 450, action: 'Update' },
+  { checked: '', settings: '', user: 'Abc Def', vendor: 'V0001', country: 'edited', purchase: 896, action: 'Update' },
+  { checked: '', settings: '', user: 'Tezt User', vendor: 'V0002', country: 'USA', purchase: 654, action: 'Delete' },
+  { checked: '', settings: '', user: 'Xyz Abc', vendor: 'V0003', country: 'Australia', purchase: 567, action: 'Edit' },
+  { checked: '', settings: '', user: 'Xyz Abc', vendor: 'V0004', country: 'England', purchase: 432, action: 'Edit' },
+];
 
 @Component({
   selector: 'pros-list-datatable',
@@ -71,9 +94,21 @@ export class ListDatatableComponent implements OnInit {
 
    staticColumns: string[] = ['select', 'option'];
 
-   displayedColumns: BehaviorSubject<string[]> = new BehaviorSubject(this.staticColumns);
+  //  displayedColumns: BehaviorSubject<string[]> = new BehaviorSubject(this.staticColumns);
 
-   dataSource = new MatTableDataSource<any>();
+  //  dataSource = new MatTableDataSource<any>();
+
+
+  /**
+   * Define columns to be displayed in the table
+   */
+   displayedColumns: string[] = Object.keys(ELEMENT_DATA[0]);
+
+   /**
+    * Hold the data to be shown in the table
+    */
+   dataSource: TableElement[] = ELEMENT_DATA;
+
    selection = new SelectionModel<any>(true, []);
 
 
@@ -196,27 +231,27 @@ export class ListDatatableComponent implements OnInit {
     this.subscriptionsList.push(sub);
   }
 
-   /** Whether the number of selected elements matches the total number of rows. */
-   isAllSelected() {
-     const numSelected = this.selection.selected.length;
-     const numRows = this.dataSource.data.length;
-     return numSelected === numRows;
-   }
+  //  /** Whether the number of selected elements matches the total number of rows. */
+  //  isAllSelected() {
+  //    const numSelected = this.selection.selected.length;
+  //    const numRows = this.dataSource.data.length;
+  //    return numSelected === numRows;
+  //  }
 
-   /** Selects all rows if they are not all selected; otherwise clear selection. */
-   masterToggle() {
-     this.isAllSelected() ?
-         this.selection.clear() :
-         this.dataSource.data.forEach(row => this.selection.select(row));
-   }
+  //  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  //  masterToggle() {
+  //    this.isAllSelected() ?
+  //        this.selection.clear() :
+  //        this.dataSource.data.forEach(row => this.selection.select(row));
+  //  }
 
-   /** The label for the checkbox on the passed row */
-   checkboxLabel(row?: any): string {
-     if (!row) {
-       return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
-     }
+  //  /** The label for the checkbox on the passed row */
+  //  checkboxLabel(row?: any): string {
+  //    if (!row) {
+  //      return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
+  //    }
 
-   }
+  //  }
 
    /**
     * open view config sidesheet
@@ -238,7 +273,7 @@ export class ListDatatableComponent implements OnInit {
        this.currentViewName = activeView.viewName;
        const activeColumns: string[] = activeView.fieldsReqList.map( field => field.fieldId);
        console.log(this.staticColumns.concat(activeColumns));
-       this.displayedColumns.next(this.staticColumns.concat(activeColumns));
+      //  this.displayedColumns.next(this.staticColumns.concat(activeColumns));
      }
 
    }
@@ -264,5 +299,18 @@ export class ListDatatableComponent implements OnInit {
    isStaticCol(colId: string) {
      return this.staticColumns.includes(colId);
    }
+
+  rowHasWarning(row): boolean {
+    return row.purchase && row.purchase < 300 ? true : false;
+  }
+
+  /**
+   * Check if the row has error based on the data
+   * @param row pass the row object for analysis
+   * @returns boolean
+   */
+  rowHasError(row): boolean {
+    return row.purchase && row.purchase > 800 ? true : false;
+  }
 
 }

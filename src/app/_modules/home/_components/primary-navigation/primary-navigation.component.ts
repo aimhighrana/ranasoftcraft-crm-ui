@@ -144,7 +144,7 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
     grabberElement.style.backgroundColor = '#ffffff';
     grabberElement.style.position = 'absolute';
     grabberElement.style.cursor = 'col-resize';
-    grabberElement.style.resize = 'horizontal';
+    grabberElement.style.resize = 'none';
     grabberElement.style.overflow = 'auto';
     grabberElement.addEventListener('mousedown', () => {
       this.grab = true;

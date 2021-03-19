@@ -46,7 +46,12 @@
         </div>
 
         <div class="admin-badge cursor"  (click)="openSystemTray()">
-            <mat-icon fontSet="mdo-icons" matBadge="{{notificationsCount}}">tray</mat-icon>
+            <mat-icon fontSet="mdo-icons" libBadge="{{ notificationsCount }}"
+            matBadgeOverlap="true"
+            matBadgeColor="primary"
+            matBadgeSize="small"
+            matBadgePosition="after"
+            >tray</mat-icon>
         </div>
 
         <div class="col-spacer"></div>

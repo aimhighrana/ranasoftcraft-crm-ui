@@ -4,68 +4,6 @@ div.root {
   padding: 0 16px;
   overflow: hidden;
 
-  .breadcrum-toolbar {
-    align-items: center;
-    min-height: 40px;
-    padding: 8px 0;
-
-    .display-heading-large {
-      font-size: 1.2rem;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-      line-height: 40px;
-      align-items: center;
-    }
-
-    .gap-icons {
-      margin-left: 4px;
-    }
-  }
-
-  pros-search-input {
-    min-width: 213px;
-  }
-
-  .data-listing {
-    flex: 1;
-
-    mat-table.mat-table {
-      .mat-column-select,
-      .mat-column-option {
-        max-width: 36px;
-        border: none;
-      }
-
-      .mat-column-materialno {
-        max-width: 136px;
-        border: none;
-      }
-
-      .row-error::before,
-      .row-warning::before {
-        content: '';
-        width: 3px;
-        height: 100%;
-        top: 0;
-        left: 0;
-        position: absolute;
-      }
-    }
-  }
-
-  .listing-pagination {
-    position: relative;
-
-    mat-form-field {
-      position: absolute;
-      top: 6px;
-      left: 78px;
-      width: 106px;
-      text-align: center;
-    }
-  }
-
   .loading-result {
     height: calc(100% - 36px - 16px * 3);
     align-items: center;
