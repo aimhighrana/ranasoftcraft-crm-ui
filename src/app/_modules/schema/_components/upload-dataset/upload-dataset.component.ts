@@ -20,7 +20,7 @@ import { NewSchemaCollaboratorsComponent } from '../new-schema-collaborators/new
 import { values, pick } from 'lodash';
 import { Utilities } from '@modules/base/common/utilities';
 import { BusinessrulelibraryDialogComponent } from '../businessrulelibrary-dialog/businessrulelibrary-dialog.component';
-import { PermissionOn, UserMdoModel, SchemaDashboardPermission, ROLES } from '@models/collaborator';
+import { PermissionOn, UserMdoModel, SchemaDashboardPermission, ROLES, RuleDependentOn } from '@models/collaborator';
 import { ScheduleDialogComponent } from '@modules/shared/_components/schedule-dialog/schedule-dialog.component';
 import { SchemaScheduler } from '@models/schema/schemaScheduler';
 import { GLOBALCONSTANTS } from '../../../../_constants';
@@ -816,6 +816,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * @param rule the selected rule which is to be configured
    */
   configureRule(rule: CoreSchemaBrInfo) {
+    console.log(rule)
     this.createfieldObjectForRequest(this.dataSource).then((finalValues) => {
       this.requestForm.controls.fields.setValue(finalValues);
       // destructure the business rule object
@@ -867,6 +868,7 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
     this.dialogSubscriber = this.globaldialogService.dialogCloseEmitter
       .pipe(distinctUntilChanged())
       .subscribe((response: NewBrDialogResponse) => {
+        console.log(response)
         if (response && response.formData) {
           this.updateCurrentRulesList(response);
         }
@@ -980,6 +982,10 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   reoderBR(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.selectedBusinessRules, event.previousIndex, event.currentIndex);
     this.selectedBusinessRules[event.currentIndex].order = event.currentIndex + 1;
+  }
+
+  drop(event: CdkDragDrop<any>) {
+         moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
   }
   /**
    * function to set module data and navigate
@@ -1296,7 +1302,21 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   removeTempId(value) {
     const modified = { ...value };
     const rules = value.coreSchemaBr.map((rule) => pick(rule, Object.keys(rule).filter(key => key !== 'tempId')));
-    modified.coreSchemaBr = rules;
+    const flattenRules=[];
+    let counter=0;
+    rules.forEach(element => {
+      element.order=counter;
+      flattenRules.push(element)
+      counter++;
+    if(element.dep_rules)
+     element.dep_rules.forEach(child => {
+       child.order=counter;
+      flattenRules.push(child)
+      counter++;
+     });
+     delete element.dep_rules;
+   });
+    modified.coreSchemaBr = flattenRules;
     return modified;
   }
 
@@ -1338,7 +1358,11 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * @param index index of object to be removed
    */
   deleteBR(rule: CoreSchemaBrInfo) {
-    this.globaldialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
+    const indexofRule= this.selectedBusinessRules.indexOf(rule);
+    let label='Are you sure to delete ?';
+    if(this.selectedBusinessRules[indexofRule].dep_rules)
+    label='After delete the dependent rules will removed';
+    this.globaldialogService.confirm({ label }, (response) => {
       if (response && response === 'yes') {
         let index = null;
         if (rule.tempId) {
@@ -1356,6 +1380,27 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
         this.requestForm.controls.coreSchemaBr.setValue([...this.selectedBusinessRules]);
       }
     });
+  }
+
+  /**
+   * Delete child business rule  by id
+   * @param br delete by br id
+   */
+  deleteBrChild(br: CoreSchemaBrInfo,parentbr: CoreSchemaBrInfo) {
+    this.globaldialogService.confirm({ label: 'Are you sure to delete ?' }, (response) => {
+      if (response && response === 'yes') {
+        const idx=this.selectedBusinessRules.indexOf(parentbr);
+        const childIdx=this.selectedBusinessRules[idx].dep_rules;
+        const brToBeDelete = childIdx.filter((businessRule) => businessRule.brId === br.brId)[0];
+        const index = this.selectedBusinessRules.indexOf(brToBeDelete);
+       this.selectedBusinessRules[idx].dep_rules.splice(index,1);
+
+       const existingIdIndex=this.existingTempIds.indexOf(br.tempId);
+       this.existingTempIds.splice(existingIdIndex,1);
+
+      }
+    });
+    console.log(this.selectedBusinessRules)
   }
 
   /**
@@ -1531,16 +1576,17 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
    * @param businessRules an array of businessRules or a single business rule
    */
   selectBusinessRule(businessRules: CoreSchemaBrInfo[] | CoreSchemaBrInfo) {
+    console.log(this.selectedBusinessRules,businessRules)
     if (Array.isArray(businessRules)) {
       businessRules.map((rule) => {
-        const updatedObj = { ...rule, brWeightage: 0, isCopied: true };
+        const updatedObj = { ...rule, brWeightage: 0, isCopied: true,dependantStatus:RuleDependentOn.ALL };
         this.addTempIdToExisting(updatedObj.tempId).then(() => {
           this.selectedBusinessRules.push(updatedObj);
         });
       });
     } else {
       if(!this.checkIfExist(businessRules)){
-        const updatedObj = { ...businessRules, brWeightage: 0, isCopied: true };
+        const updatedObj = { ...businessRules, brWeightage: 0, isCopied: true,dependantStatus:RuleDependentOn.ALL };
         this.addTempIdToExisting(updatedObj.tempId).then(() => {
           this.selectedBusinessRules.push(updatedObj);
         });
@@ -1794,4 +1840,54 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
       this.uploadError.status = false;
     }, 3000)
   }
+
+  updateDepRule(br: CoreSchemaBrInfo, event?: any) {
+    let index=null;
+    if(br.brId){
+      index = this.selectedBusinessRules.findIndex((brule) => brule.brId === br.brId);
+    } else {
+      index = this.selectedBusinessRules.findIndex((brule) => brule.tempId === br.tempId);
+    }
+    if(event.value!==RuleDependentOn.ALL)
+    { const tobeChild=this.selectedBusinessRules[index]
+    console.log(tobeChild)
+    console.log(this.selectedBusinessRules)
+    if(this.selectedBusinessRules[index-1].dep_rules)
+    {
+     this.addChildatSameRoot(tobeChild,index)
+    }
+    else{
+    this.selectedBusinessRules[index-1].dep_rules=[];
+    this.addChildatSameRoot(tobeChild,index)
+    }
+       const idxforChild=this.selectedBusinessRules[index-1].dep_rules.indexOf(tobeChild);
+    this.selectedBusinessRules[index-1].dep_rules[idxforChild].dependantStatus=event.value;
+    this.selectedBusinessRules.splice(index,1)
+    }
+  }
+
+  addChildatSameRoot(tobeChild:CoreSchemaBrInfo,index:number){
+      this.selectedBusinessRules[index-1].dep_rules.push(tobeChild)
+    if(tobeChild.dep_rules)
+    tobeChild.dep_rules.forEach(element=>{
+      this.selectedBusinessRules[index-1].dep_rules.push(element);
+    });
+  }
+
+  updateDepRuleForChild(br: CoreSchemaBrInfo,index:number, event?: any) {
+    let idx=null;
+    if(br.brId){
+      idx = this.selectedBusinessRules.findIndex((brule) => brule.brId === br.brId);
+    } else {
+      idx = this.selectedBusinessRules.findIndex((brule) => brule.tempId === br.tempId);
+    }
+    this.selectedBusinessRules[idx].dep_rules[index].dependantStatus=event.value;
+    if(event.value===RuleDependentOn.ALL)
+   { const childIdx=this.selectedBusinessRules[idx].dep_rules[index]
+   console.log(childIdx)
+   childIdx.dep_rules=[];
+   this.selectedBusinessRules.push(childIdx)
+   this.selectedBusinessRules[idx].dep_rules.splice(index,1);
+   }
+   }
 }

@@ -2,65 +2,117 @@
     <div class="row-spacer"></div>
     <div class="f-row">
         <mat-chip-list>
-            <!------------------------1------------------------>
-            <mat-chip class="mdo-filter-matchip" [matMenuTriggerFor]="addfilter" disableRipple="true">
-                <label>Subset filter:</label> <span class="info">All</span>
-                <mat-icon matChipRemove>clear</mat-icon>
+            <!---Filter cotainer ...----->
+            
+            <mat-chip class="mdo-filter-matchip" [matMenuTriggerFor]="display_in" disableRipple="true">
+                <label>Display in:</label> <span class="info">
+                    {{ 
+                        selectedUnit
+                    }}
+                </span>
             </mat-chip>
-            <mat-menu #addfilter="matMenu" class="navigation-menu">
+            <mat-menu #display_in="matMenu" class="navigation-menu">
                 <div class="f-col">
-                    <pros-search-input></pros-search-input>
                     <mat-nav-list role="navigation">
-                        <mat-list-item>
-                            <mat-checkbox color="primary"> Customer</mat-checkbox>
+                        <mat-list-item (click)="applyFilter('unit','day')">
+                            <div mat-line>Daily</div>
                         </mat-list-item>
-                        <mat-list-item>
-                            <mat-checkbox color="primary"> Order</mat-checkbox>
+                        <mat-list-item (click)="applyFilter('unit','week')">
+                            <div mat-line>Weekly</div>
                         </mat-list-item>
-                        <mat-list-item>
-                            <mat-checkbox color="primary"> Value</mat-checkbox>
+                        <mat-list-item (click)="applyFilter('unit','month')">
+                            <div mat-line>Monthly</div>
                         </mat-list-item>
-                    </mat-nav-list>
-                    <button mat-flat-button="" color="accent"> Apply</button>
-                </div>
-            </mat-menu>
-
-            <!------------------------2---------------------->
-            <mat-chip class="mdo-filter-matchip" [matMenuTriggerFor]="addfilters" disableRipple="true">
-                <label>Run by:</label> <span class="info">Rick Woods</span>
-                <mat-icon matChipRemove>clear</mat-icon>
-            </mat-chip>
-            <mat-menu #addfilters="matMenu" class="navigation-menu">
-                <div class="f-col">
-                    <pros-search-input></pros-search-input>
-                    <mat-nav-list role="navigation">
-                        <mat-list-item>
-                            <div mat-line>Customer</div>
-                        </mat-list-item>
-                        <mat-list-item>
-                            <div mat-line>Order</div>
-                        </mat-list-item>
-                        <mat-list-item>
-                            <div mat-line>Vender</div>
-                        </mat-list-item>
-                        <mat-list-item>
-                            <div mat-line>Unit of measure</div>
+                        <mat-list-item (click)="applyFilter('unit','year')">
+                            <div mat-line>Yearly</div>
                         </mat-list-item>
                     </mat-nav-list>
                 </div>
             </mat-menu>
 
-            <!----------------------3----------------------->
-            <mat-chip class="mdo-filter-matchip" disableRipple="true">
-                <label>Date:</label> <span class="info">This month</span>
-                <mat-icon matChipRemove>clear</mat-icon>
+            <mat-chip class="mdo-filter-matchip" [matMenuTriggerFor]="date_filter" disableRipple="true">
+                <label>Date:</label> <span class="info">
+                    {{
+                        selectedDateFilter
+                    }}
+                </span>
+                <!-- <mat-icon matChipRemove>clear</mat-icon> -->
             </mat-chip>
+
+            <mat-menu #date_filter="matMenu" class="navigation-menu">
+                <div class="f-col">
+                    <mat-nav-list role="navigation">
+                        <mat-list-item (click)="applyFilter('date','today');">
+                            <div mat-line>Today</div>
+                        </mat-list-item>
+                        <mat-list-item (click)="applyFilter('date','this_week');">
+                            <div mat-line>This week</div>
+                        </mat-list-item>
+                        <mat-list-item (click)="applyFilter('date','this_month');">
+                            <div mat-line>This month</div>
+                        </mat-list-item>
+                        <mat-list-item (click)="applyFilter('date','specific_date'); specificDate.open()" prosClickStopPropagation>
+                            <div class="mat-line">
+                                Specific date
+                            </div> 
+                            <span class="f-spacer"></span><mat-icon fontSet="mdo-icons"> arrow-right-alt</mat-icon>
+                            <mat-form-field style="width: 0px;">
+                                <input matInput  [matDatepicker]="specificDate" disabled style="display: none;" [max]="maxDate" (dateChange) ="changeSpecificDate($event)">
+                                <mat-datepicker #specificDate disabled="false"></mat-datepicker>
+                            </mat-form-field>
+                            
+                        </mat-list-item>
+                        <mat-list-item (click)="applyFilter('date','date_range'); date_range.open()" prosClickStopPropagation>
+                            <div class="mat-line">
+                                Date range
+                            </div> <span class="f-spacer"></span><mat-icon fontSet="mdo-icons"> arrow-right-alt</mat-icon>                            
+
+                            <mat-form-field style="width: 0px;">
+                                <mat-date-range-input [rangePicker]="date_range" [max]="maxDate" separator="">
+                                    <input matStartDate placeholder="Start date" style="display: none;" (dateChange)="changeDateRange('start', $event)">
+                                    <input matEndDate placeholder="End date" style="display: none;" (dateChange)="changeDateRange('end', $event)">
+                                </mat-date-range-input>                                  
+                                <mat-date-range-picker #date_range></mat-date-range-picker>
+                            </mat-form-field>
+
+                        </mat-list-item>
+                    </mat-nav-list>
+                </div>
+            </mat-menu>
+
+            <mat-chip class="mdo-filter-matchip" [matMenuTriggerFor]="data_scope" disableRipple="true">
+                <label>Data scope :</label> <span class="info">
+                    {{
+                        statsFilterParams._data_scope && statsFilterParams._data_scope.variantName ? statsFilterParams._data_scope.variantName : 'Untitled'
+                    }}
+                </span>
+            </mat-chip>
+            <mat-menu #data_scope="matMenu" class="navigation-menu">
+                <div class="f-col">
+                    <pros-search-input prosClickStopPropagation (value)="filterDataScope($event)"></pros-search-input>
+                    <mat-nav-list role="navigation">
+                        <mat-list-item  *ngFor="let scope of dataScopeOb | async" (click)="applyFilter('data_scope',scope)">
+                            <div mat-line>
+                                {{
+                                    scope.variantName ? scope.variantName : 'Untitled'
+                                }}
+                            </div>
+                        </mat-list-item>
+                    </mat-nav-list>
+                </div>
+            </mat-menu>
+
         </mat-chip-list>
     </div>
     <div class="row-spacer"></div>
 
-    <pros-execution-result></pros-execution-result>
+    <!-- Schema execution stats by catageory .. -->
+    <!-- <pros-execution-result></pros-execution-result> -->
     <div class="row-spacer"></div>
-    <pros-execution-trend></pros-execution-trend>
-
+    
+    <!-- Schema execution trend history ..-->
+    <pros-schema-execution-trend [moduleId]="moduleId" [schemaId]="schemaId" [filter]="statsFilterParams" [unit]="statsFilterParams.unit">
+    </pros-schema-execution-trend>
+    <div class="row-spacer"></div>
+    
 </div>

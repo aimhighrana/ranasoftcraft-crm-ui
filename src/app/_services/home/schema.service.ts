@@ -292,6 +292,15 @@ export class SchemaService {
   }
 
   /**
+   * Function to POST Api call for copy duplicate rule data scope
+   * @param params coreSchemaBrInfo req object
+   */
+  public copyDuplicateRule(params : CoreSchemaBrInfo): Observable<CoreSchemaBrInfo> {
+    return this.http.post<CoreSchemaBrInfo>(this.endpointService.copyDuplicate(), params);
+  }
+
+
+  /**
    * Function to POST Api call for save/update schema data scope
    * @param dataScopeReq datascope details req object
    */

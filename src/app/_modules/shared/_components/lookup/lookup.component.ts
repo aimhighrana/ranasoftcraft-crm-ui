@@ -79,12 +79,16 @@ export class LookupRuleComponent implements OnInit, OnChanges {
    * @param index pass index of the item to be removed
    */
   removeField(index) {
-    this.globalDialogService.confirm({ label: 'Are you sure you wisht to delete this field?' }, (res) => {
-      if (res === 'yes') {
-        this.selectedFields.splice(index, 1);
-        this.selectedFieldsCopy.splice(index, 1);
-      }
+    this.globalDialogService.confirm({ label: 'Are you sure to delete this mapping ?' }, (res) => {
+      this.removeFieldAfterConfirm(res, index);
     })
+  }
+
+  removeFieldAfterConfirm(res: string, index: number) {
+    if (res === 'yes') {
+      this.selectedFields.splice(index, 1);
+      this.selectedFieldsCopy.splice(index, 1);
+    }
   }
 
 

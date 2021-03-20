@@ -52,6 +52,8 @@ export class CoreSchemaBrInfo {
     moduleId?: string;
     copiedFrom? : string;
     apiKey: string;
+    dep_rules?:CoreSchemaBrInfo[];
+    depandantStatus?:null;
 }
 
 export enum BusinessRuleType {
@@ -64,7 +66,10 @@ export enum BusinessRuleType {
     BR_EXTERNALVALIDATION_RULE = 'BR_EXTERNALVALIDATION_RULE',
     BR_REGEX_RULE = 'BR_REGEX_RULE',
     BR_TRANSFORMATION = 'BR_TRANSFORMATION',
-    BR_CLASSIFICATION = 'BR_CLASSIFICATION',
+    MRO_CLS_MASTER_CHECK = 'MRO_CLS_MASTER_CHECK',
+    MRO_MANU_PRT_NUM_LOOKUP = 'MRO_MANU_PRT_NUM_LOOKUP',
+    MRO_MANU_PRT_NUM_IDENTI = 'MRO_MANU_PRT_NUM_IDENTI',
+    MRO_GSN_DESC_MATCH = 'MRO_GSN_DESC_MATCH',
 }
 
 export const RULE_TYPES = [
@@ -78,7 +83,10 @@ export const RULE_TYPES = [
     { ruleDesc: 'Regex Rule', ruleId: '', ruleType: BusinessRuleType.BR_REGEX_RULE, isImplemented: true },
     { ruleDesc: 'User Defined Rule', ruleId: '', ruleType: BusinessRuleType.BR_CUSTOM_SCRIPT, isImplemented: true },
     { ruleDesc: 'Transformation Rule', ruleId: '', ruleType: BusinessRuleType.BR_TRANSFORMATION, isImplemented: true },
-    { ruleDesc: 'MRO Classification Rule', ruleId: '', ruleType: BusinessRuleType.BR_CLASSIFICATION, isImplemented: true },
+    { ruleDesc: 'MDO Classification Master Check', ruleId: '', ruleType: BusinessRuleType.MRO_CLS_MASTER_CHECK, isImplemented: true },
+    { ruleDesc: 'Manufacturer Part Number Lookup', ruleId: '', ruleType: BusinessRuleType.MRO_MANU_PRT_NUM_LOOKUP, isImplemented: true },
+    { ruleDesc: 'Manufacturer Part Number Identification', ruleId: '', ruleType: BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI, isImplemented: true },
+    { ruleDesc: 'Material Description Match', ruleId: '', ruleType: BusinessRuleType.MRO_GSN_DESC_MATCH, isImplemented: true },
 ];
 
 export const PRE_DEFINED_REGEX = [

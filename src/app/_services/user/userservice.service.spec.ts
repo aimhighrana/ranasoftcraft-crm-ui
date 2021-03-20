@@ -36,8 +36,10 @@ describe('UserService', () => {
   });
 
   it('getUserDetails(): get user details ', async(() => {
+
+
     const apiUrl = 'test user details url';
-    const userId = 'admin';
+    const userId = 'mdo_refresh';
     // mock url
     endpointServiceSpy.getUserDetailsUrl.withArgs(userId).and.returnValue(apiUrl);
     const mockData = {} as any;
@@ -48,8 +50,19 @@ describe('UserService', () => {
     userService.getUserDetails().subscribe(actualData => {
       expect(actualData).toEqual(expectedData);
     });
+
+    // user details through api call
+    spyOn(localStorage, 'getItem')
+    .and.returnValue('eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJ1c2VybmFtZVwiOlwibWRvX3JlZnJlc2hcIn0iLCJhdWQiOlsibGlicmFyeSIsIk1STyIsImFuYWx5dGljcyIsImNvcmUiLCJzeW5jIl0sImlzcyI6ImF1dGgiLCJleHAiOjE2MTMwNjYzNDksImlhdCI6MTYxMzA2NTQ0OX0.gxc2oYp8NnSCpUQSsW1uu39_BzYEdktPW24ucE8AU6k')
+
+    userService.getUserDetails().subscribe(actualData => {
+      expect(actualData).toEqual(expectedData);
+    });
+
     // mock http
-    httpTestingController.expectNone(apiUrl);
+    const mockRequest = httpTestingController.expectOne(apiUrl);
+    mockRequest.flush(mockData);
+
     // verify http
     httpTestingController.verify();
   }));

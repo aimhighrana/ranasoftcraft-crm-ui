@@ -66,9 +66,6 @@ export class SubscriberInviteSidesheetComponent implements OnInit {
       invites: this._formBuilder.array([])
     });
 
-    this.invitationForm.valueChanges.subscribe((formData) => {
-    });
-
     this.addFormRow();
   }
 
@@ -95,10 +92,14 @@ export class SubscriberInviteSidesheetComponent implements OnInit {
    */
   removeInvite(inviteIndex: number) {
     this.globalDialogService.confirm({ label: 'Sure to delete ?' }, (res) => {
-      if (res === 'yes') {
-        this.invites().removeAt(inviteIndex);
-      }
+      this.removeInviteAfterConfirm(res, inviteIndex);
     });
+  }
+
+  removeInviteAfterConfirm(resp: string, inviteIndex: number) {
+    if (resp === 'yes') {
+      this.invites().removeAt(inviteIndex);
+    }
   }
 
   /**
@@ -112,7 +113,7 @@ export class SubscriberInviteSidesheetComponent implements OnInit {
    * Close the dialog
    */
   closeDialog() {
-    this.router.navigate([{outlets: {outer: null}}])
+    this.router.navigate([{outlets: {outer: null}}], {queryParamsHandling: 'preserve'});
   }
 
   /**

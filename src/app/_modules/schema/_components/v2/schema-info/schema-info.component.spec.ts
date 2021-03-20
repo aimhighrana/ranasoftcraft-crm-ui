@@ -6,11 +6,11 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FilterValuesComponent } from '@modules/shared/_components/filter-values/filter-values.component';
 import { AddFilterMenuComponent } from '@modules/shared/_components/add-filter-menu/add-filter-menu.component';
-import { Router } from '@angular/router';
-import { CoreSchemaBrInfo, DropDownValue } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { ActivatedRoute, Router } from '@angular/router';
+import { CoreSchemaBrInfo, DropDownValue, DuplicateRuleModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { SchemaListDetails } from '@models/schema/schemalist';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { CategoryInfo, FilterCriteria } from '@models/schema/schemadetailstable';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { SchemaService } from '@services/home/schema.service';
@@ -19,9 +19,15 @@ import { SchemaScheduler } from '@models/schema/schemaScheduler';
 import { FormInputComponent } from '@modules/shared/_components/form-input/form-input.component';
 import { ScheduleComponent } from '@modules/shared/_components/schedule/schedule.component';
 import { DatePickerFieldComponent } from '@modules/shared/_components/date-picker-field/date-picker-field.component';
-import { PermissionOn, SchemaDashboardPermission } from '@models/collaborator';
+import { PermissionOn, RuleDependentOn, SchemaDashboardPermission } from '@models/collaborator';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { SharedModule } from '@modules/shared/shared.module';
+import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
+import { MatSliderChange } from '@angular/material/slider';
+import { MatCheckboxChange } from '@angular/material/checkbox';
+import { GlobaldialogService } from '@services/globaldialog.service';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { StaticsComponent } from '../statics/statics.component';
 import { FormControl, FormGroup } from '@angular/forms';
 
 describe('SchemaInfoComponent', () => {
@@ -32,6 +38,8 @@ describe('SchemaInfoComponent', () => {
   let schemaVariantService: SchemaVariantService;
   let schemaService: SchemaService;
   let schemaListService: SchemalistService;
+  let sharedService: SharedServiceService;
+  let globalDialogService: GlobaldialogService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -41,14 +49,19 @@ describe('SchemaInfoComponent', () => {
         AddFilterMenuComponent,
         FormInputComponent,
         ScheduleComponent,
-        DatePickerFieldComponent
+        DatePickerFieldComponent,
+        StaticsComponent
       ],
       imports: [
         AppMaterialModuleForSpec,
         HttpClientTestingModule,
         RouterTestingModule,
         SharedModule
-      ]
+      ],
+      providers: [{
+          provide: ActivatedRoute,
+          useValue: {params: of({moduleId: '1005', schemaId: '123'})}
+        }]
     })
       .compileComponents();
     router = TestBed.inject(Router);
@@ -61,7 +74,9 @@ describe('SchemaInfoComponent', () => {
     schemaVariantService = fixture.debugElement.injector.get(SchemaVariantService);
     schemaService = fixture.debugElement.injector.get(SchemaService);
     schemaListService = fixture.debugElement.injector.get(SchemalistService);
-    fixture.detectChanges();
+    sharedService = fixture.debugElement.injector.get(SharedServiceService);
+    globalDialogService = fixture.debugElement.injector.get(GlobaldialogService);
+    // fixture.detectChanges();
   });
 
   it('should create', () => {
@@ -76,13 +91,23 @@ describe('SchemaInfoComponent', () => {
 
   it('getSchemaVariants(), should return all variants of a schema', async () => {
     component.schemaId = '1005';
-    spyOn(schemaVariantService, 'getAllDataScopeList').withArgs(component.schemaId, 'RUNFOR').and.returnValue(of())
+    spyOn(schemaVariantService, 'getAllDataScopeList').withArgs(component.schemaId, 'RUNFOR').and.returnValues(of([]), throwError({status: 404}));
+    component.getSchemaVariants(component.schemaId, 'RUNFOR');
     component.getSchemaVariants(component.schemaId, 'RUNFOR');
     expect(schemaVariantService.getAllDataScopeList).toHaveBeenCalledWith(component.schemaId, 'RUNFOR');
+
   })
 
   it('getBusinessRuleList(), should get business rule list of schema', async () => {
-    spyOn(schemaService, 'getBusinessRulesBySchemaId').withArgs(component.schemaId).and.returnValue(of({} as CoreSchemaBrInfo[]));
+    const returnData=[
+      {
+        brWeightage: '46'
+      },
+      {
+        brWeightage: '33'
+      }
+    ] as CoreSchemaBrInfo[];
+    spyOn(schemaService, 'getBusinessRulesBySchemaId').withArgs(component.schemaId).and.returnValue(of(returnData));
     component.getBusinessRuleList(component.schemaId);
     expect(schemaService.getBusinessRulesBySchemaId).toHaveBeenCalledWith(component.schemaId);
   })
@@ -151,6 +176,43 @@ describe('SchemaInfoComponent', () => {
     spyOn(schemaService, 'createBusinessRule').withArgs(request).and.returnValue(of({} as CoreSchemaBrInfo));
     component.updateCategory(cat, br);
     expect(schemaService.createBusinessRule).toHaveBeenCalledWith(request);
+    // Test case scenerio for duplicate branch
+    const brDupList = [];
+    const brDup = {
+      brIdStr: '36572',
+      brInfo: 'Missing Rule',
+      brType: 'BR_DUPLICATE_CHECK',
+      fields: 'NDC',
+      message: 'Test should passed..',
+      moduleId: '1005',
+      isCopied: false,
+      duplicacyField : [{fieldId:'Test'}],
+      duplicacyMaster:[]
+    } as CoreSchemaBrInfo;
+    brDupList.push(brDup);
+
+    const requestDup: CoreSchemaBrInfo = new CoreSchemaBrInfo();
+    requestDup.brId = brDup.brIdStr;
+    requestDup.schemaId = component.schemaId;
+    requestDup.categoryId = cat.categoryId;
+    requestDup.brInfo = brDup.brInfo;
+    requestDup.brType = brDup.brType;
+    requestDup.fields = brDup.fields;
+    requestDup.message = brDup.message;
+    requestDup.moduleId = component.moduleId;
+    requestDup.isCopied = brDup.isCopied;
+
+    const params = { objectId: component.moduleId, autoMerge: '', groupId: '' };
+    const model = new DuplicateRuleModel();
+    model.coreBrInfo = { ...requestDup};
+    model.addFields = brDup.duplicacyField;
+    model.addFields[0].fId = model.addFields[0].fieldId;
+    model.mergeRules = brDup.duplicacyMaster;
+    model.removeList = [];
+    spyOn(schemaService,'getBusinessRulesBySchemaId').withArgs(component.schemaId).and.returnValue(of(brDupList));
+    spyOn(schemaService, 'saveUpdateDuplicateRule').withArgs(model,params).and.returnValue(of({} as any));
+    component.updateCategory(cat, brDup);
+    expect(schemaService.saveUpdateDuplicateRule).toHaveBeenCalledWith(model,params);
   })
 
   it('updateFragment(), should update tab selection', async () => {
@@ -170,6 +232,11 @@ describe('SchemaInfoComponent', () => {
     tabLabel = 'execution-logs';
     component.updateFragment(tabLabel);
     expect(component.selectedIndex).toEqual(3)
+
+    component.selectedIndex = 0;
+    tabLabel = '';
+    component.updateFragment(tabLabel);
+    expect(component.selectedIndex).toEqual(0)
   })
 
   it('editBr(), should open side sheet of business rules', async () => {
@@ -225,6 +292,17 @@ describe('SchemaInfoComponent', () => {
     }
     const result = component.prepareTextToShow(ctrl);
     expect(result).toEqual('ABC');
+
+    ctrl.filterCtrl.selectedValues[0].TEXT = 'first value';
+    expect(component.prepareTextToShow(ctrl)).toEqual('first value');
+
+    ctrl.filterCtrl.selectedValues.push({ CODE: 'DEF', FIELDNAME: 'MaterialType'} as DropDownValue);
+    expect(component.prepareTextToShow(ctrl)).toEqual('2');
+
+    ctrl.filterCtrl.selectedValues = [];
+    expect(component.prepareTextToShow(ctrl)).toEqual('Unknown');
+
+
   })
 
   it('loadDropValues(), should load dropdown values of selected filters', async() => {
@@ -240,7 +318,12 @@ describe('SchemaInfoComponent', () => {
           } as DropDownValue
         ]
       } as AddFilterOutput
-    }
+    };
+
+    component.loadDropValues(null);
+    expect(component.loadDopValuesFor).toBeFalsy();
+
+
     component.loadDropValues(fldc);
     expect(component.loadDopValuesFor.checkedValue.length).toEqual(2);
   })
@@ -272,14 +355,14 @@ describe('SchemaInfoComponent', () => {
 
   it('getScheduleInfo(), should get schedule info', async() => {
     component.schemaId = '2452141452';
-    const mockResponse = {} as SchemaScheduler;
-    spyOn(schemaService, 'getSchedule').and.returnValue(of({} as SchemaScheduler));
+
+    spyOn(schemaService, 'getSchedule').and.returnValues(of(null), of({} as SchemaScheduler));
     component.getScheduleInfo(component.schemaId);
-    expect(schemaService.getSchedule).toHaveBeenCalledWith(component.schemaId);
-    schemaService.getSchedule(component.schemaId).subscribe(res => {
-      expect(res).toEqual(mockResponse);
-      expect(component.canEditSchedule).toEqual(true);
-    })
+    expect(component.canEditSchedule).toBeFalse();
+
+    component.getScheduleInfo(component.schemaId);
+    expect(component.canEditSchedule).toBeTrue();
+
   })
 
   it('toggleScheduleState(), should toggle state of schedule', async() => {
@@ -287,7 +370,7 @@ describe('SchemaInfoComponent', () => {
       isEnable: false
     } as SchemaScheduler;
     component.schemaId = '2561141'
-    spyOn(schemaService, 'createUpdateSchedule').and.returnValue(of());
+    spyOn(schemaService, 'createUpdateSchedule').and.returnValue(of(1));
     component.toggleScheduleState();
     expect(component.scheduleInfo.isEnable).toEqual(true);
     expect(schemaService.createUpdateSchedule).toHaveBeenCalledWith(component.schemaId, component.scheduleInfo)
@@ -303,16 +386,23 @@ describe('SchemaInfoComponent', () => {
   });
 
   it('getAllBusinessRulesList(), should get all business rules', async() => {
-    spyOn(schemaService, 'getBusinessRulesByModuleId').and.returnValue(of({} as CoreSchemaBrInfo[]));
+    spyOn(schemaService, 'getBusinessRulesByModuleId').and.returnValues(of([]), of([{brId: '1'}, {brId: '2'}] as CoreSchemaBrInfo[]));
     component.moduleId = '1004';
     component.getAllBusinessRulesList(component.moduleId, '', '', '0');
-    expect(schemaService.getBusinessRulesByModuleId).toHaveBeenCalled();
+    expect(component.allBusinessRulesList.length).toEqual(0);
+
+    component.getAllBusinessRulesList(component.moduleId, '', '', '0');
+    expect(component.allBusinessRulesList.length).toEqual(2);
+
+    expect(schemaService.getBusinessRulesByModuleId).toHaveBeenCalledTimes(2);
   })
 
   it('getCollaborators(), should get all subscribers', async() => {
-    spyOn(schemaDetailsService, 'getAllUserDetails').and.returnValue(of({} as PermissionOn));
+    spyOn(schemaDetailsService, 'getAllUserDetails').and.returnValues(of({} as PermissionOn), of({users: [{userId: 'bilel'}]} as PermissionOn));
     component.getCollaborators('', 0);
-    expect(schemaDetailsService.getAllUserDetails).toHaveBeenCalled();
+    component.getCollaborators('', 0);
+    expect(schemaDetailsService.getAllUserDetails).toHaveBeenCalledTimes(2);
+    expect(component.allSubscribers.length).toEqual(1);
   })
 
   it('openBrLibrarySideSheet(), should navigate to business rule library side sheet', () => {
@@ -324,7 +414,7 @@ describe('SchemaInfoComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith([{outlets: {sb: `sb/schema/businessrule-library/${component.moduleId}/${component.schemaId}/${component.outlet}`}}])
   })
 
-  it('addBusinessRule(), should add business rule from auto-complete', async() => {
+  it('addBusinessRule(), should add business rule from auto-complete', async(() => {
     const brInfo = {
       brIdStr: '2452',
       brType: 'Meta Data',
@@ -355,10 +445,44 @@ describe('SchemaInfoComponent', () => {
       }
     ] as CoreSchemaBrInfo[]
 
-    spyOn(schemaService, 'createBusinessRule').withArgs(request).and.returnValue(of());
+    spyOn(component, 'getBusinessRuleList');
+    spyOn(schemaService, 'createBusinessRule').withArgs(request).and.returnValue(of(brInfo));
     component.addBusinessRule(brInfo);
-    expect(schemaService.createBusinessRule).toHaveBeenCalledWith(request);
-  })
+
+    component.businessRuleData[0].brIdStr = '2452';
+    component.addBusinessRule(brInfo);
+
+    expect(schemaService.createBusinessRule).toHaveBeenCalledTimes(1);
+// scenerio for duplicate branch
+    const brInfoDup = {
+      brIdStr: '24521',
+      brType: 'BR_DUPLICATE_CHECK',
+      brInfo: 'Missing data',
+      fields: 'Region',
+      message: 'Region should be Asia',
+      isCopied: true
+    } as CoreSchemaBrInfo;
+
+    const requestDup: CoreSchemaBrInfo = new CoreSchemaBrInfo();
+
+    requestDup.brId = '';
+    requestDup.schemaId = component.schemaId;
+    requestDup.brInfo = brInfoDup.brInfo;
+    requestDup.brType = brInfoDup.brType;
+    requestDup.fields = brInfoDup.fields;
+    requestDup.message = brInfoDup.message;
+    requestDup.isCopied = brInfoDup.isCopied;
+    requestDup.moduleId = component.moduleId;
+    requestDup.copiedFrom = brInfoDup.brIdStr;
+
+    spyOn(schemaService, 'copyDuplicateRule').withArgs(requestDup).and.returnValue(of(brInfoDup));
+    component.addBusinessRule(brInfoDup);
+
+    component.businessRuleData[0].brIdStr = '24521';
+    component.addBusinessRule(brInfoDup);
+
+    expect(schemaService.copyDuplicateRule).toHaveBeenCalledTimes(1);
+  }));
 
   it('getSchemaDetails(), should get schema details', async() => {
     component.schemaId = '12545';
@@ -381,7 +505,9 @@ describe('SchemaInfoComponent', () => {
       userid: 'ASHSH'
     } as SchemaDashboardPermission;
     const role = 'isAdmin';
-    spyOn(schemaDetailsService, 'createUpdateUserDetails').withArgs(Array(subscriber)).and.returnValue(of())
+    spyOn(schemaDetailsService, 'createUpdateUserDetails').withArgs(Array(subscriber)).and.returnValue(of([22551]))
+    spyOn(component, 'getSubscriberList');
+
     component.updateRole(subscriber, role);
     expect(schemaDetailsService.createUpdateUserDetails).toHaveBeenCalledWith(Array(subscriber));
   })
@@ -391,4 +517,423 @@ describe('SchemaInfoComponent', () => {
     const field=component.schemaField('schemaName');
     expect(field).toBeDefined();
    }));
+
+   it('should init component', () => {
+
+    spyOn(component, 'getSchemaDetails');
+    spyOn(component, 'getSubscriberList');
+    spyOn(component, 'getBusinessRuleList');
+    spyOn(component, 'getSchemaVariants');
+    spyOn(component, 'getAllBusinessRulesList');
+    spyOn(component, 'getCollaborators');
+    spyOn(component, 'getScheduleInfo');
+    spyOn(component, 'getAllCategoryInfo');
+
+    component.ngOnInit();
+    expect(component.moduleId).toEqual('1005');
+
+    sharedService.setAfterBrSave({});
+    expect(component.getBusinessRuleList).toHaveBeenCalledTimes(2);
+
+    sharedService.setAfterSubscriberSave({});
+    expect(component.getSubscriberList).toHaveBeenCalledTimes(2);
+
+    sharedService.setScheduleInfo({});
+    expect(component.getScheduleInfo).toHaveBeenCalledTimes(2);
+
+    sharedService.setDataScope(null);
+    sharedService.setDataScope({});
+    expect(component.getSchemaVariants).toHaveBeenCalledTimes(2);
+
+   });
+
+   it('should open delete variant confirm', () => {
+    spyOn(globalDialogService, 'confirm');
+    component.deleteVariant('123');
+    expect(globalDialogService.confirm).toHaveBeenCalled();
+   });
+
+   it('should deleteVariantAfterConfirm', () => {
+
+    spyOn(schemaVariantService, 'deleteVariant').and.returnValues(of(false), of(true));
+    spyOn(component, 'getSchemaVariants');
+
+    component.deleteVariantAfterConfirm('no', '1701');
+
+    component.deleteVariantAfterConfirm('yes', '1701');
+    component.deleteVariantAfterConfirm('yes', '1701');
+
+    expect(component.getSchemaVariants).toHaveBeenCalledTimes(1);
+    expect(schemaVariantService.deleteVariant).toHaveBeenCalledTimes(2);
+
+   });
+
+   it('should addSubscriber', () => {
+
+    spyOn(schemaDetailsService, 'createUpdateUserDetails').and.returnValues(of(null), of([123]), of());
+    spyOn(component, 'getSubscriberList');
+    const subscriberInfo = {userName: 'admin'} ;
+
+    component.addSubscriber(subscriberInfo);
+    component.addSubscriber(subscriberInfo);
+    expect(component.getSubscriberList).toHaveBeenCalledTimes(1);
+
+    component.subscriberData = [{userid: 'admin'}] as SchemaDashboardPermission[];
+    component.addSubscriber(subscriberInfo);
+
+    expect(schemaDetailsService.createUpdateUserDetails).toHaveBeenCalledTimes(2);
+
+
+   });
+
+   it('should getSubscriberList', () => {
+
+    const data = [{userid: 'admin', filterCriteria: [{fieldId: 'mtl_grp', type: 'DROPDOWN', values: ['1701']}]}] as SchemaDashboardPermission[];
+
+    spyOn(schemaDetailsService, 'getCollaboratorDetails').and.returnValue(of(data));
+
+    component.getSubscriberList('123');
+    expect(component.subscriberData.length).toEqual(1);
+
+   });
+
+   it('should updateBr', () => {
+
+    spyOn(schemaService, 'updateBrMap').and.returnValues(of(false), of(true), of(false), of(false));
+    spyOn(component, 'getBusinessRuleList');
+
+    const br = new CoreSchemaBrInfo();
+
+    const sliderEvent = new MatSliderChange();
+    sliderEvent.value = 25;
+    component.updateBr(br, sliderEvent);
+
+    const checkboxEvent = new MatCheckboxChange();
+    checkboxEvent.checked = true;
+    component.updateBr(br, checkboxEvent);
+
+    checkboxEvent.checked = false;
+    component.updateBr(br, checkboxEvent);
+
+    const event = {};
+    component.updateBr(br, event);
+
+    expect(component.getBusinessRuleList).toHaveBeenCalledTimes(1);
+
+
+   });
+
+   it('should updateBrOrder', () => {
+
+    spyOn(schemaService, 'updateBrMap').and.returnValues(of(false), of(true));
+    spyOn(component, 'getBusinessRuleList');
+
+    const br = {brIdStr: '123', brWeightage: '20'} as CoreSchemaBrInfo;
+    component.updateBrOrder(null, 2);
+    component.updateBrOrder(br, 2);
+    component.updateBrOrder(br, 2);
+
+    expect(component.getBusinessRuleList).toHaveBeenCalled();
+
+   });
+
+   it('should open deleteBr confirm', () => {
+    component.businessRuleData = [
+      {
+        brId: '23542'
+      },
+      {
+        brId: '12345'
+      }
+    ] as CoreSchemaBrInfo[];
+    const br = {
+      brId: '12345'
+    } as CoreSchemaBrInfo;
+    spyOn(globalDialogService, 'confirm');
+    component.deleteBr(br);
+    expect(globalDialogService.confirm).toHaveBeenCalled();
+   });
+
+   it('should deleteBrAfterConfirm', () => {
+
+    spyOn(schemaService, 'deleteBr').and.returnValue(of(true));
+    spyOn(component, 'getBusinessRuleList');
+
+    const br = new CoreSchemaBrInfo();
+
+    component.deleteBrAfterConfirm('no', br);
+    component.deleteBrAfterConfirm('yes', br);
+
+    br.brIdStr = '123';
+    component.deleteBrAfterConfirm('yes', br);
+
+    expect(schemaService.deleteBr).toHaveBeenCalledTimes(1);
+
+   });
+
+   it('should open deleteSubscriber confirm', () => {
+    spyOn(globalDialogService, 'confirm');
+    component.deleteSubscriber('1701');
+    expect(globalDialogService.confirm).toHaveBeenCalled();
+   });
+
+   it('should deleteSubsAfterConfirm', () => {
+
+    spyOn(schemaDetailsService, 'deleteCollaborator').and.returnValue(of(true));
+    spyOn(component, 'getSubscriberList');
+
+    component.deleteSubsAfterConfirm('no', '1701');
+    component.deleteSubsAfterConfirm('yes', '1701');
+
+    expect(schemaDetailsService.deleteCollaborator).toHaveBeenCalledTimes(1);
+
+   });
+
+   it('should updateSubscriberInfo', () => {
+
+    spyOn(schemaDetailsService, 'createUpdateUserDetails').and.returnValue(of([123]));
+    spyOn(component, 'getSubscriberList');
+
+    component.subscriberData = [{userid: 'admin', sno: 1, filterCriteria: []}, {userid: 'user', sno: 2}] as SchemaDashboardPermission[];
+    component.updateSubscriberInfo(1, [{fieldId: 'mtl_grp', type: 'DROPDOWN', values: ['1701']}]);
+
+    expect(schemaDetailsService.createUpdateUserDetails).toHaveBeenCalledTimes(1);
+
+
+   });
+
+   it('should updateSchemaInfo', () => {
+
+    spyOn(schemaService, 'createUpdateSchema').and.returnValue(of('success'));
+    spyOn(component, 'getSchemaDetails');
+
+    component.schemaDetails = {schemaDescription: 'desc'} as SchemaListDetails;
+
+    component.updateSchemaInfo('desc');
+
+    component.updateSchemaInfo('updated desc');
+
+    component.updateSchemaInfo('updated desc', {value: 15});
+
+    expect(schemaService.createUpdateSchema).toHaveBeenCalledTimes(2);
+
+   });
+
+   it('should deleteSchema', () => {
+
+    spyOn(router, 'navigate');
+    spyOn(schemaService, 'deleteSChema').and.returnValue(of(true));
+
+    component.deleteSchema();
+    expect(schemaService.deleteSChema).toHaveBeenCalled();
+
+   });
+
+   it('should makeFilterControl', () => {
+
+    spyOn(component, 'updateSubscriberInfo');
+    spyOn(component, 'getSubscriberList');
+    spyOn(schemaDetailsService, 'createUpdateUserDetails').and.returnValue(of([1]))
+
+    const event = {selectedValues: [{CODE: 'USA'}], fldCtrl: {fieldId: 'region'},  fieldId: 'region'} as AddFilterOutput;
+
+    component.subscriberData = [{sno: 1,userid: 'admin', filterCriteria: []}] as SchemaDashboardPermission[];
+    component.makeFilterControl(event, 1);
+    expect(component.updateSubscriberInfo).toHaveBeenCalled();
+
+
+    component.subscriberData[0].filterCriteria = [{fieldId: 'region', type: 'DROPDOWN', values: ['Asia']}, {fieldId: 'mtl_grp', type: 'DROPDOWN', values: ['1701']}];
+    component.subscriberData.push({sno: 2} as SchemaDashboardPermission);
+    component.makeFilterControl(event, 1);
+    expect(schemaDetailsService.createUpdateUserDetails).toHaveBeenCalledTimes(1);
+
+   });
+
+   it('should removeAppliedFilter', () => {
+
+    spyOn(component, 'getSubscriberList');
+    spyOn(schemaDetailsService, 'createUpdateUserDetails').and.returnValue(of([1]))
+
+    const criteria = {fieldId: 'region', values: [''], type: 'DROPDOWN'} as FilterCriteria;
+
+    component.subscriberData = [{sno: 1, filterCriteria: [{fieldId: 'region'}, {fieldId: 'mtl_grp'}, {fieldId: 'status'}]},
+        {sno: 2, filterCriteria: []}] as SchemaDashboardPermission[];
+
+    component.removeAppliedFilter(criteria, 1);
+
+    expect(component.subscriberData[0].filterCriteria.length).toEqual(2);
+    expect(schemaDetailsService.createUpdateUserDetails).toHaveBeenCalledTimes(1);
+
+   });
+
+   it('should fetchSelectedValues', () => {
+
+    spyOn(component, 'getSubscriberList');
+    spyOn(schemaDetailsService, 'createUpdateUserDetails').and.returnValue(of([1]));
+
+    component.fetchSelectedValues([], 1);
+
+    const seletectedValues = [{CODE: 'region', FIELDNAME: 'region'}];
+
+    component.subscriberData = [{sno: 1, filterCriteria: [{fieldId: 'region', values: []}, {fieldId: 'mtl_grp'}]},
+        {sno: 2, filterCriteria: []}] as SchemaDashboardPermission[];
+
+    component.fetchSelectedValues(seletectedValues, 1);
+
+    expect(component.subscriberData[0].filterCriteria[0].values.length).toEqual(1);
+    expect(schemaDetailsService.createUpdateUserDetails).toHaveBeenCalledTimes(1);
+
+   });
+
+   it('should drop()', () => {
+    const event = {item: { data: null}, previousContainer: {id: '1'} , container: {id: '2'} } as CdkDragDrop<any>;
+    component.drop(event);
+    expect(event.container.data).toBeFalsy();
+   })
+
+   it('updateDepRule() updateDepRule', async () => {
+    component.businessRuleData = [
+      {
+        sno: 101,
+        brId: '22',
+        brIdStr: '23',
+        brType: 'TRANSFORMATION',
+        refId: 1,
+        fields: '',
+        regex: '',
+        order: 1,
+        apiKey: '',
+        message: 'Invalid',
+        script: ''
+      } as CoreSchemaBrInfo,
+      {
+        sno: 1299484,
+        brId: '22',
+        brIdStr: '22',
+        brType: 'TRANSFORMATION',
+        dep_rules: []
+      } as CoreSchemaBrInfo
+    ];
+    const br = {
+      sno: 1299484,
+      brId: '22',
+      brIdStr: '22',
+      brType: 'TRANSFORMATION',
+      dep_rules: []
+    } as CoreSchemaBrInfo
+    const event = { value: RuleDependentOn.SUCCESS };
+    component.updateDepRule(br, event);
+    expect(component.businessRuleData.length).toEqual(1);
+
+    component.businessRuleData = [
+      {
+        sno: 101,
+        brId: '22',
+        brIdStr: '23',
+        brType: 'TRANSFORMATION',
+        refId: 1,
+        fields: '',
+        regex: '',
+        order: 1,
+        apiKey: '',
+        message: 'Invalid',
+        script: '',
+        dep_rules: [{
+          sno: 1299484,
+          brId: '22',
+          brIdStr: '25',
+          brType: 'TRANSFORMATION',
+          dep_rules: []
+        } as CoreSchemaBrInfo]
+
+      } as CoreSchemaBrInfo,
+      {
+        sno: 1299484,
+        brId: '22',
+        brIdStr: '22',
+        brType: 'TRANSFORMATION',
+        dep_rules: [{
+          sno: 1299484,
+          brId: '22',
+          brIdStr: '22',
+          brType: 'TRANSFORMATION', dependantStatus: 'SUCCESS'
+        }]
+      } as CoreSchemaBrInfo
+    ];
+    component.updateDepRule(br, event);
+    expect(component.businessRuleData.length).toEqual(1);
+  });
+
+  it('updateDepRuleForChild() updateDepRuleForChild', async () => {
+    component.businessRuleData = [
+      {
+        sno: 101,
+        brId: '22',
+        brIdStr: '23',
+        brType: 'TRANSFORMATION',
+        refId: 1,
+        fields: '',
+        regex: '',
+        order: 1,
+        apiKey: '',
+        message: 'Invalid',
+        script: ''
+      } as CoreSchemaBrInfo,
+      {
+        sno: 1299484,
+        brId: '22',
+        brIdStr: '22',
+        brType: 'TRANSFORMATION',
+        dep_rules: []
+      } as CoreSchemaBrInfo
+    ];
+    const br = {
+      sno: 1299484,
+      brId: '22',
+      brIdStr: '22',
+      brType: 'TRANSFORMATION',
+      dep_rules: []
+    } as CoreSchemaBrInfo
+    const event = { value: RuleDependentOn.ALL };
+    component.updateDepRule(br, event);
+    expect(component.businessRuleData.length).toEqual(2);
+
+    component.businessRuleData = [
+      {
+        sno: 101,
+        brId: '22',
+        brIdStr: '23',
+        brType: 'TRANSFORMATION',
+        refId: 1,
+        fields: '',
+        regex: '',
+        order: 1,
+        apiKey: '',
+        message: 'Invalid',
+        script: '',
+        dep_rules: [{
+          sno: 1299484,
+          brId: '22',
+          brIdStr: '25',
+          brType: 'TRANSFORMATION',
+          dep_rules: []
+        } as CoreSchemaBrInfo]
+
+      } as CoreSchemaBrInfo,
+      {
+        sno: 1299484,
+        brId: '22',
+        brIdStr: '22',
+        brType: 'TRANSFORMATION',
+        dep_rules: [{
+          sno: 1299484,
+          brId: '22',
+          brIdStr: '22',
+          brType: 'TRANSFORMATION', dependantStatus: 'SUCCESS'
+        }]
+      } as CoreSchemaBrInfo
+    ];
+    component.updateDepRuleForChild(br, 0, event);
+    expect(component.businessRuleData.length).toEqual(3);
+  });
 });

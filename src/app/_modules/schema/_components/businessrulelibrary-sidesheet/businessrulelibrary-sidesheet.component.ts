@@ -170,25 +170,40 @@ export class BusinessrulelibrarySidesheetComponent implements OnInit {
    * save data and close the dialog
    */
   saveSelection() {
-    console.log(this.selectedBusinessRule);
     if (this.outlet === 'sb') {
+      console.log('test  ' + this.selectedBusinessRule);
       this.selectedBusinessRule.forEach(businessRule => {
         const request: CoreSchemaBrInfo = new CoreSchemaBrInfo();
 
-        request.brId = businessRule.brIdStr;
+        request.brId = '';
         request.schemaId = this.schemaId;
         request.brInfo = businessRule.brInfo;
         request.brType = businessRule.brType;
         request.fields = businessRule.fields;
         request.message = businessRule.message;
-        request.isCopied = false;
+        request.isCopied = true;
+        request.moduleId = this.moduleId;
+        request.copiedFrom = businessRule.brIdStr;
 
-        this.schemaService.createBusinessRule(request).subscribe((response) => {
-          console.log(response);
-        }, (error) => {
-          console.log('Error while adding business rule', error.message);
-        })
-      });
+        if(businessRule.brType === 'BR_DUPLICATE_CHECK')
+    {
+       this.schemaService.copyDuplicateRule(request).subscribe((response) => {
+        console.log(response);
+      }, (error) => {
+        console.log('Error while adding business rule', error.message);
+      })
+    }
+    else
+    {
+      this.schemaService.createBusinessRule(request).subscribe((response) => {
+        console.log(response);
+      }, (error) => {
+        console.log('Error while adding business rule', error.message);
+      })
+
+
+       }
+    });
       this.sharedService.setAfterBrSave(true);
     }
     else {

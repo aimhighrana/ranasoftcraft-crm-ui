@@ -47,9 +47,6 @@ export class DuplicacyComponent implements OnInit, OnChanges, AfterViewInit {
    * Selected group key
    */
   groupKey: string;
-
-
-
   /**
    * Module / dataset id
    */

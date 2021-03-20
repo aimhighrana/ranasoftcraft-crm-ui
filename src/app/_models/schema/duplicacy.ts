@@ -22,7 +22,13 @@ export class RequestForGroupList {
     page: number;
     size: number;
     responseStatus: string;
+    searchAfter : SearchAfter;
+}
 
+export class SearchAfter{
+    exact : string;
+    group : string;
+    fuzzy : string;
 }
 
 export class RequestForCatalogCheckData {
@@ -73,4 +79,5 @@ export class DoCorrectionRequest {
     groupIdold: string;
     groupIdnew: string;
     groupField: string;
+    groupDesc : number;
 }

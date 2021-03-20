@@ -17,95 +17,141 @@ div.root {
       line-height: 40px;
       align-items: center;
     }
+
+    .counts::after {
+      content: "\a";
+      width: 2px;
+      height: 2px;
+      border-radius: 50%;
+      display: inline-block;
+      margin: 0 8px;
+      vertical-align: middle;
+    }
+
+    .counts:last-of-type::after {
+      display: none;
+    }
   }
 
-  .data-container {
+  .mat-tab-container {
     height: 100%;
-    overflow: hidden;
 
-    .dataset-grid {
+    .filter-container {
+      flex-wrap: wrap;
+      margin: 8px 0;
+
+      pros-search-input {
+        width: 213px;
+        margin-right: 4px;
+      }
+    }
+
+    .listing-container {
       height: 100%;
       overflow: hidden;
 
-      .dataset-grid-navigation {
+      .listset-navigation {
         height: 100%;
-        width: 340px;
+        width: 292px;
         padding-right: 12px;
-      }
+        margin-right: 12px;
+        border-right-width: 1px;
+        border-right-style: solid;
+        position: relative;
 
-      .nav-tree {
-        height: calc(100% - 56px - 24px - 48px - 16px * 2);
-        overflow-y: auto;
-        overflow-x: hidden;
+        .nav-tree {
+          height: calc(100% - 107px);
+          overflow-y: auto;
+          overflow-x: hidden;
 
-        mat-accordion.mat-accordion {
-          mat-expansion-panel {
-            .mat-expansion-panel-header {
-              padding: 0 0 0 16px;
+          mat-accordion.mat-accordion {
+            mat-expansion-panel {
+              .mat-expansion-panel-header {
+                padding: 0 0 0 8px;
 
-              mat-panel-title {
-                width: 100%;
-                margin-right: 0;
+                mat-panel-title {
+                  width: 100%;
+                  margin-right: 0;
 
-                .expand-title {
-                  text-overflow: ellipsis;
-                  overflow: hidden;
-                  white-space: nowrap;
-                  font-size: 0.9rem;
+                  .expand-title {
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    font-size: 0.9rem;
+                  }
                 }
               }
-            }
 
-            .undertree-expansion-panel {
-              padding-left: 48px;
-            }
+              .undertree-expansion-panel {
+                padding-left: 42px;
+              }
 
-            mat-nav-list {
-              mat-list-item {
-                font-size: 0.9rem;
-                height: 48px;
-
-                .mat-list-icon {
-                  font-size: 14px;
-                  border-radius: 3px;
-                  height: 36px;
+              mat-nav-list {
+                mat-list-item {
+                  font-size: 0.9rem;
+                  height: 48px;
                 }
               }
             }
           }
+
+          .default-badge {
+            margin: 0 8px;
+            min-width: 24px;
+            text-align: right;
+          }
+        }
+
+        .split-panel-mark {
+          border-radius: 50%;
+          position: absolute;
+          right: -10px;
+          top: 36px;
+          cursor: pointer;
+          z-index: 2;
+          width: 20px;
+          height: 20px;
+          text-align: center;
+          line-height: 16px;
+
+          mat-icon.mat-icon {
+            width: 9px;
+            font-size: 8px;
+          }
         }
       }
 
-      .badge {
-        margin: 0 8px;
-        min-width: 24px;
-        text-align: right;
-      }
+      .listset-grid {
+        width: calc(100% - 292px - 24px);
+        overflow: hidden;
 
-      .dataset-grid-listing {
-        padding-left: 12px;
-        height: 100%;
-        width: calc(100% - 340px - 13px);
-
-        pros-search-input {
-          width: 213px;
+        .listset-text {
+          font-size: 1.2rem;
+          line-height: 48px;
         }
 
-        .data {
-          overflow: auto;
-          height: calc(100% - 53px - 24px - 48px - 16px * 2);
+        .datasource {
+          overflow-x: auto;
+          height: calc(100% - 107px);
 
           mat-table.mat-table {
-            overflow-x: auto;
-            width: 100%;
-            max-width: 100%;
             display: table;
-            border-collapse: collapse;
 
+            .mat-header-cell,
             .mat-cell {
-              .action-iconbtns {
-                flex-wrap: wrap;
-              }
+              min-width: 140px;
+            }
+
+            .mat-column-checkbox_select,
+            .mat-column-assigned_bucket {
+              min-width: 36px;
+              max-width: 36px;
+              border-right: none;
+            }
+
+            .mat-column-row_action {
+              min-width: 36px;
+              border-right: none;
             }
           }
         }

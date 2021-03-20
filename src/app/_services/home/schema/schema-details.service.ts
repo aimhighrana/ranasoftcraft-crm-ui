@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { SendReqForSchemaDataTableColumnInfo, SendDataForSchemaTableShowMore, SchemaDataTableColumnInfoResponse, RequestForSchemaDetailsWithBr, SchemaTableViewRequest, OverViewChartDataSet, CategoryInfo, CategoryChartDataSet, MetadataModeleResponse, SchemaBrInfo, SchemaCorrectionReq, SchemaExecutionLog, SchemaTableViewFldMap, ClassificationNounMod, SchemaMROCorrectionReq, SchemaTableAction, CrossMappingRule } from 'src/app/_models/schema/schemadetailstable';
-import * as moment from 'moment';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../../any2ts.service';
 import { SchemaListDetails } from 'src/app/_models/schema/schemalist';
 import { PermissionOn, SchemaDashboardPermission } from '@models/collaborator';
 import { EndpointsAnalyticsService } from '@services/_endpoints/endpoints-analytics.service';
 import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
+import { StatisticsFilterParams } from '@modules/schema/_components/v2/statics/statics.component';
 
 @Injectable({
   providedIn: 'root'
@@ -21,10 +21,6 @@ export class SchemaDetailsService {
     private any2tsService: Any2tsService,
     private analyticsEndpointService: EndpointsAnalyticsService
   ) { }
-
-  private getDateString(days) {
-    return moment().add(days, 'd').format('MM/DD/YYYY HH:mm');
-  }
 
   public getSchemaDataTableColumnInfo(sendData: SendReqForSchemaDataTableColumnInfo): Observable<SchemaDataTableColumnInfoResponse> {
     return this.http.post<any>(this.endpointService.getSchemaDataTableColumnInfoUrl(), sendData).pipe(map(data => {
@@ -236,8 +232,14 @@ export class SchemaDetailsService {
     return this.http.put<any>(this.endpointService.rejectClassificationUri(), objNr, {params:{schemaId, runId}});
   }
 
-  public getExecutionOverviewChartData(schemaId: string, variantId: string): Observable<SchemaExecutionLog[]> {
-    return this.http.get<any>(this.endpointService.getExecutionOverviewChartDataUrl(schemaId, variantId));
+  public getSchemaExecutedStatsTrend(schemaId: string, variantId: string, plantCode?: string ,  filter?: StatisticsFilterParams): Observable<SchemaExecutionLog[]> {
+    return this.http.get<any>(this.endpointService.getSchemaExecutedStatsTrendUri(schemaId, variantId) , {
+      params:{
+        exeStart: filter && filter.exe_start_date ? filter.exe_start_date : null,
+        exeEnd: filter && filter.exe_end_date ? filter.exe_end_date : null,
+        plantCode: plantCode ? plantCode : '0'
+      }
+    });
   }
   /**
    * Get downloadable data for mro execution ..
@@ -251,13 +253,11 @@ export class SchemaDetailsService {
    */
   public getDownloadAbledataforMroExecution(schemaId: string, runid: string, nounCode: string, modifierCode: string, ruleType: string,requestStatus: string, searchString): Observable<any> {
     if(nounCode === undefined) {
-      throwError(`Nouncode must be required !`);
-      return;
+      throw new Error(`Nouncode must be required !`);
     }
 
     if(modifierCode === undefined) {
-      throwError(`Modifiercode must be required !`);
-      return;
+      throw new Error(`Modifiercode must be required !`);
     }
 
     searchString = searchString ? searchString : '';

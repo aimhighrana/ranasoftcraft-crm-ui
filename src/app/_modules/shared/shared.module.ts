@@ -78,6 +78,7 @@ import { SubscriberInviteSidesheetComponent } from './_components/subscriber-inv
 import { SchemaExecutionTrendComponent } from './_components/statistics/schema-execution-trend/schema-execution-trend.component';
 import { InfiniteScrollDirective } from './_directives/infinite-scroll.directive';
 import { MdoUiLibraryModule } from 'mdo-ui-library';
+import { AutoCompleteScrollDirective } from './_directives/auto-complete-scroll.directive';
 
 @NgModule({
   declarations: [
@@ -119,7 +120,8 @@ import { MdoUiLibraryModule } from 'mdo-ui-library';
     SubscriberInviteComponent,
     ClassificationDatatableCellEditableComponent,
     SubscriberInviteSidesheetComponent,
-    SchemaExecutionTrendComponent
+    SchemaExecutionTrendComponent,
+    AutoCompleteScrollDirective
   ],
   imports: [
     // ng modules
@@ -262,7 +264,8 @@ import { MdoUiLibraryModule } from 'mdo-ui-library';
     NullStateComponent,
     SubscriberInviteComponent,
     SubscriberInviteSidesheetComponent,
-    SchemaExecutionTrendComponent
+    SchemaExecutionTrendComponent,
+    AutoCompleteScrollDirective
   ],
   entryComponents: [
     TableCellInputComponent

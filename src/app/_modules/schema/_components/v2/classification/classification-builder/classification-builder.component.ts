@@ -1,10 +1,10 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, ComponentFactoryResolver, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, ComponentFactoryResolver, ElementRef, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { AttributeCoorectionReq, ClassificationNounMod, MetadataModeleResponse, SchemaMROCorrectionReq, SchemaTableAction, SchemaTableViewFldMap, TableActionViewType } from '@models/schema/schemadetailstable';
-import { SchemaListDetails, SchemaStaticThresholdRes, SchemaVariantsModel } from '@models/schema/schemalist';
+import { SchemaListDetails, SchemaNavGrab, SchemaStaticThresholdRes, SchemaVariantsModel } from '@models/schema/schemalist';
 import { Userdetails } from '@models/userdetails';
 import { CellDataFor, ClassificationDatatableCellEditableComponent } from '@modules/shared/_components/classification-datatable-cell-editable/classification-datatable-cell-editable.component';
 import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
@@ -16,7 +16,7 @@ import { SchemaDetailsService } from '@services/home/schema/schema-details.servi
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { UserService } from '@services/user/userservice.service';
-import { BehaviorSubject, Subject, Subscription, throwError } from 'rxjs';
+import { BehaviorSubject, Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import * as XLSX from 'xlsx';
 
@@ -100,7 +100,7 @@ const definedColumnsMetadata = {
   templateUrl: './classification-builder.component.html',
   styleUrls: ['./classification-builder.component.scss']
 })
-export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDestroy {
+export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
 
 
   @Input()
@@ -163,6 +163,17 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
    */
   tableData: any;
 
+  /**
+   * arrow mat-icon code
+   */
+    arrowIcon = 'chevron-left';
+
+    widthOfSchemaNav = 292;
+    boxPosition: { left: number, top: number };
+    public mousePosition: { x: number, y: number };
+    public status: SchemaNavGrab = SchemaNavGrab.OFF;
+    @ViewChild('navscroll')navscroll:ElementRef;
+    @ViewChild('listingContainer')listingContainer:ElementRef;
 
   /**
    * Store info about views ..
@@ -329,12 +340,15 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     })
   }
 
+  ngAfterViewInit(){
+    this.enableResize();
+  }
   /**
    * Get all fld metada based on module of schema
    */
   getFldMetadata() {
     if (this.moduleId === undefined || this.moduleId.trim() === '') {
-      throwError('Module id cant be null or empty');
+      throw new Error('Module id cant be null or empty');
     }
     const sub = this.schemaDetailService.getMetadataFields(this.moduleId).subscribe(response => {
       this.metadata.next(response);
@@ -814,8 +828,8 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     } else {
       objNrs.push(row.OBJECTNUMBER ? row.OBJECTNUMBER.fieldValue : '');
     }
-    if(!objNrs) {
-      throwError(`Objectnumber is required`);
+    if(!objNrs.length) {
+      throw new Error(`Objectnumber is required`);
     }
 
     this.schemaDetailService.approveClassification(this.schemaId,this.schemaInfo.runId,objNrs).subscribe(res=>{
@@ -850,8 +864,8 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     } else {
       objNrs.push(row.OBJECTNUMBER ? row.OBJECTNUMBER.fieldValue : '');
     }
-    if(!objNrs) {
-      throwError(`Objectnumber is required`);
+    if(!objNrs.length) {
+      throw new Error(`Objectnumber is required`);
     }
     const nounCode = row.NOUN_CODE ? row.NOUN_CODE.fieldValue : '';
     const modCode = row.MODE_CODE ? row.MODE_CODE.fieldValue : '';
@@ -887,9 +901,8 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
     } else {
       objNrs.push(row.OBJECTNUMBER ? row.OBJECTNUMBER.fieldValue : '');
     }
-    if(!objNrs) {
-      throwError(`Objectnumber is required`);
-      return;
+    if(!objNrs.length) {
+      throw new Error(`Objectnumber is required`);
     }
 
     this.schemaDetailService.generateMroClassificationDescription(this.schemaId, this.schemaInfo.runId, objNrs, this.dataFrm === 'mro_local_lib' ? true : false).subscribe(res=>{
@@ -1035,17 +1048,17 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
       && (this.schemaInfo.collaboratorModels.isReviewer || this.schemaInfo.collaboratorModels.isApprover);
   }
 
-  getActionIcon(actionText) {
-    if (actionText === 'Approve') {
-      return 'check-mark';
-    } else if (actionText === 'Reject') {
-      return 'declined';
-    } else if (actionText === 'Delete') {
-      return 'recycle-bin';
-    }
+  // getActionIcon(actionText) {
+  //   if (actionText === 'Approve') {
+  //     return 'check-mark';
+  //   } else if (actionText === 'Reject') {
+  //     return 'declined';
+  //   } else if (actionText === 'Delete') {
+  //     return 'recycle-bin';
+  //   }
 
-    return '';
-  }
+  //   return '';
+  // }
 
   doAction(action: SchemaTableAction, row, rowIndex) {
     console.log('Action selected ', action);
@@ -1070,5 +1083,62 @@ export class ClassificationBuilderComponent implements OnInit, OnChanges, OnDest
 
   get isGlobalActionsEnabled() {
     return this.selection.selected.some(row => !row.__aditionalProp.isReviewed);
+  }
+
+  toggleSideBar() {
+    if (this.arrowIcon === 'chevron-left') {
+      this.arrowIcon = 'chevron-right';
+      this.widthOfSchemaNav=0;
+
+    }
+    else {
+      this.arrowIcon = 'chevron-left';
+      this.widthOfSchemaNav=292;
+    }
+  }
+
+  @HostListener('window:mousemove', ['$event'])
+  onMouseMove(event: MouseEvent){
+    this.mousePosition = { x: event.clientX, y: event.clientY };
+    if (this.status === SchemaNavGrab.RESIZE) {
+      this.resize();
+      this.navscroll.nativeElement.style.cursor = 'col-resize';
+    }
+    else {
+      this.navscroll.nativeElement.style.cursor = 'default';
+    }
+  }
+
+  public setNavDivPositions() {
+    const { left, top } = this.navscroll.nativeElement.getBoundingClientRect();
+    this.boxPosition = { left, top };
+  }
+
+  public resize() {
+    const maxWidth=this.listingContainer.nativeElement.clientWidth/3;
+    this.widthOfSchemaNav = Number(this.mousePosition.x > this.boxPosition.left) ?
+      Number(this.mousePosition.x - this.boxPosition.left < maxWidth) ?
+        this.mousePosition.x - this.boxPosition.left : maxWidth : 0;
+        this.widthOfSchemaNav<30 ? this.arrowIcon='chevron-right': this.arrowIcon='chevron-left';
+  }
+
+  public setStatus(event: MouseEvent, status: number) {
+    if (status === 1) event.stopPropagation();
+    else this.setNavDivPositions();
+    this.status = status;
+  }
+
+  public enableResize(){
+    const grabberElement = document.createElement('div');
+    grabberElement.style.height = '100%';
+    grabberElement.style.width = '2px';
+    grabberElement.style.backgroundColor = '#ffffff';
+    grabberElement.style.position = 'absolute';
+    grabberElement.style.cursor = 'col-resize';
+    grabberElement.style.resize = 'horizontal';
+    grabberElement.style.overflow = 'auto';
+    grabberElement.style.right = '0%';
+    this.navscroll.nativeElement.appendChild(grabberElement);
+
   }
 }

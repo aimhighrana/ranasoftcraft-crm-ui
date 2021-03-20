@@ -268,7 +268,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
   toggleSideBar(hidePrimary = false) {
     if (this.arrowIcon === 'chevron-left') {
       this.arrowIcon = 'chevron-right';
-    } else if (this.arrowIcon === 'chevron-right') {
+    } else {
       this.arrowIcon = 'chevron-left'
     }
     this.toggleEmitter.emit(hidePrimary)

@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { SimpleChange, SimpleChanges } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, discardPeriodicTasks, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { SchemaExecutionProgressResponse } from '@models/schema/schema-execution';
 import { SharedModule } from '@modules/shared/shared.module';
 import { SchemaService } from '@services/home/schema.service';
@@ -49,7 +49,7 @@ describe('SchemaProgressComponent', () => {
   });
 
   it('ngOnchanges(), should called the ngOnchanges', async() => {
-    const changes = {
+    let changes = {
       schemaId : {
         firstChange: true,
         previousValue: undefined,
@@ -61,5 +61,21 @@ describe('SchemaProgressComponent', () => {
 
     expect(component.schemaId).toEqual(changes.schemaId.currentValue);
 
+    changes = {} as SimpleChanges;
+    component.schemaId = '121356'
+    component.ngOnChanges(changes);
+    expect(component.schemaId).toEqual('121356')
+
   })
+
+  it('ngOnInit(), should called ngOnInit function', fakeAsync(() => {
+    component.progressHttpCallInterval = 10;
+    spyOn(component, 'schemaExecutionProgressInfo');
+    component.ngOnInit();
+
+    expect(component.schemaExecutionProgressInfo).toHaveBeenCalledTimes(1);
+    tick(component.progressHttpCallInterval);
+    expect(component.schemaExecutionProgressInfo).toHaveBeenCalled();
+    discardPeriodicTasks();
+  }))
 });

@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SchemaListDetails } from '@models/schema/schemalist';
+import { SchemaListDetails, SchemaVariantsModel, VarinatType } from '@models/schema/schemalist';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
+import { StatisticsFilterParams } from '../../statics/statics.component';
+import * as moment from 'moment';
 
 @Component({
   selector: 'pros-execution-trend-sidesheet',
@@ -21,6 +23,10 @@ export class ExecutionTrendSidesheetComponent implements OnInit {
    */
   schemaInfo: SchemaListDetails;
 
+  /**
+   * Filter params ...
+   */
+  statsFilterParams: StatisticsFilterParams;
 
 
   constructor(private router: Router,
@@ -29,6 +35,7 @@ export class ExecutionTrendSidesheetComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
+    this.statsFilterParams = {unit: 'day', exe_end_date: String(moment().endOf('day').toDate().getTime()), exe_start_date : String(moment().startOf('month').toDate().getTime()),_date_filter_type:'this_month', _data_scope: {variantId:'0',variantName:'Entire data scope', variantType: VarinatType.RUNFOR} as SchemaVariantsModel};
     this.activatedRoute.params.subscribe(params => {
       this.moduleId = params.moduleId;
       this.schemaId = params.schemaId;

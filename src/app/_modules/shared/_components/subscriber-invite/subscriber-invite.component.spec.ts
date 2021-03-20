@@ -1,9 +1,11 @@
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
+import { of } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { FormInputComponent } from '../form-input/form-input.component';
 
@@ -17,6 +19,7 @@ describe('SubscriberInviteComponent', () => {
   let component: SubscriberInviteComponent;
   let fixture: ComponentFixture<SubscriberInviteComponent>;
   const formBuilder: FormBuilder = new FormBuilder();
+  let schemaDetailsService : SchemaDetailsService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -32,10 +35,8 @@ describe('SubscriberInviteComponent', () => {
         ReactiveFormsModule
       ],
       providers: [
-        { provide: MatDialogRef, useValue: mockDialogRef },
         { provide: FormBuilder, useValue: formBuilder },
-
-        { provide: MatDialogRef, useValue: {} },
+        { provide: MatDialogRef, useValue: mockDialogRef },
         { provide: MAT_DIALOG_DATA, useValue: [] },
       ]
     })
@@ -46,6 +47,8 @@ describe('SubscriberInviteComponent', () => {
     fixture = TestBed.createComponent(SubscriberInviteComponent);
     component = fixture.componentInstance;
     // fixture.detectChanges();
+
+    schemaDetailsService = fixture.debugElement.injector.get(SchemaDetailsService);
   });
 
   it('should create', () => {
@@ -77,5 +80,58 @@ describe('SubscriberInviteComponent', () => {
     component.initInviteForm();
     expect(component.invites().controls.length).toEqual(1);
   });
+
+  it('should init component', () => {
+    spyOn(component, 'initInviteForm');
+    component.ngOnInit();
+    expect(component.initInviteForm).toHaveBeenCalled();
+  });
+
+  it('should create new invite', () => {
+    component.initInviteForm();
+    const group: FormGroup = component.newInvite();
+    expect(group.value.email).toEqual('');
+  });
+
+  it('should close', () => {
+    component.closeDialog();
+    expect(mockDialogRef.close).toHaveBeenCalled();
+  });
+
+  it('should send invite', () => {
+
+    spyOn(schemaDetailsService, 'createUpdateUserDetails').and.returnValue(of());
+    component.initInviteForm();
+    component.sendInvitation();
+
+    component.invites().at(0).setValue({email : 'bilel@prospecta.com', role: 'Reviewer'});
+
+    component.sendInvitation();
+    expect(schemaDetailsService.createUpdateUserDetails).toHaveBeenCalledTimes(1);
+
+  });
+
+  it('should setFormValue', () => {
+    component.initInviteForm();
+    component.setFormValue('bilel@prospecta.com', 'email', 0);
+    expect(component.invites().at(0).value.email).toEqual('bilel@prospecta.com');
+  });
+
+  it('should remove invite after confim', () => {
+    component.initInviteForm();
+    component.removeInviteAfterConfirm('no', 0);
+    component.removeInviteAfterConfirm('yes', 0);
+    expect(component.invites().length).toEqual(0);
+  });
+
+  it('should mapSubscribers', () => {
+    const result = component.mapSubscribers({email: 'bilel@prospecta.com', role: 'Reviewer'});
+    expect(result.userid).toEqual('bilel@prospecta.com');
+  });
+
+  it('should get form control', () => {
+    component.initInviteForm();
+    expect(component.formField(0, 'email')).toBeDefined();
+  })
 
 });

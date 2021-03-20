@@ -359,19 +359,19 @@ export class LibraryMappingSidesheetComponent implements OnInit {
    * @param gsnNounCode gdnNounCode ...
    */
   nounSuggestion(gsnNounCode: string): NounModifier {
-    const nnn = this.localNounsList.filter(f=> f.NOUN_ID.toLocaleLowerCase().indexOf(gsnNounCode.toLocaleLowerCase()))[0];
+    const nnn = this.localNounsList.filter(f=> f.NOUN_ID.toLocaleLowerCase().indexOf(gsnNounCode.toLocaleLowerCase()) !== -1)[0];
     return nnn;
   }
 
 
   modifierSuggestion(gsnModeCode: string): NounModifier{
-    const nnn = this.LocalModifiersList.filter(f=> f.MODE_CODE.toLocaleLowerCase().indexOf(gsnModeCode.toLocaleLowerCase()))[0];
+    const nnn = this.LocalModifiersList.filter(f=> f.MODE_CODE.toLocaleLowerCase().indexOf(gsnModeCode.toLocaleLowerCase()) !== -1)[0];
     return nnn;
   }
 
 
   attributeSuggestion(gsnAttributeCode: string): AttributesDoc {
-    const nnn = this.LocalAttributesList.filter(f=> f.ATTR_CODE.toLocaleLowerCase().indexOf(gsnAttributeCode.toLocaleLowerCase()))[0];
+    const nnn = this.LocalAttributesList.filter(f=> f.ATTR_CODE.toLocaleLowerCase().indexOf(gsnAttributeCode.toLocaleLowerCase()) !== -1)[0];
     return nnn;
   }
 

@@ -1,11 +1,14 @@
 import { TestBed, async } from '@angular/core/testing';
 
 import { SchemaService } from './schema.service';
-import { SchemaGroupResponse, SchemaGroupDetailsResponse, CreateSchemaGroupRequest, ObjectTypeResponse } from 'src/app/_models/schema/schema';
+import { SchemaGroupResponse, SchemaGroupDetailsResponse, CreateSchemaGroupRequest, ObjectTypeResponse, ExcelValues, SchemaGroupCountResponse, GetAllSchemabymoduleidsReq, GetAllSchemabymoduleidsRes, SchemaGroupWithAssignSchemas } from 'src/app/_models/schema/schema';
 import { HttpTestingController, HttpClientTestingModule } from '@angular/common/http/testing';
 import { Any2tsService } from '../any2ts.service';
 import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 import { SchemaExecutionProgressResponse } from '@models/schema/schema-execution';
+import { Category, CoreSchemaBrInfo, CreateUpdateSchema, DropDownValue, UDRBlocksModel, UdrModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { HttpResponse } from '@angular/common/http';
+import { SchemaListModuleList, SchemaStaticThresholdRes } from '@models/schema/schemalist';
 describe('SchemaService', () => {
   let schemaService: SchemaService;
   let httpTestingController: HttpTestingController;
@@ -13,8 +16,14 @@ describe('SchemaService', () => {
   let any2tsSpy: jasmine.SpyObj<Any2tsService>;
 
   beforeEach(async(() => {
-    const epsSpy = jasmine.createSpyObj('EndpointsClassicService', ['getSchemaGroupsUrl', 'getSchemaGroupDetailsByGrpIdUrl', 'getCreateSchemaGroupUrl', 'getAllObjecttypeUrl', 'deleteConditionBlock', 'deleteSchema', 'schemaExecutionProgressDetailUrl']);
-    const any2Spy = jasmine.createSpyObj('Any2tsService', ['any2SchemaGroupResponse', 'any2SchemaDetails', 'any2ObjectType']);
+    const epsSpy = jasmine.createSpyObj('EndpointsClassicService', ['getSchemaGroupsUrl', 'getSchemaGroupDetailsByGrpIdUrl', 'getCreateSchemaGroupUrl', 'getAllObjecttypeUrl',
+    'deleteConditionBlock', 'deleteSchema', 'schemaExecutionProgressDetailUrl', 'getSchemaGroupCountUrl', 'getAllSchemabymoduleids', 'groupDetailswithAssignedschemaUrl',
+    'scheduleSchemaCount', 'deleteSchemaGroupUrl', 'uploadDataUrl', 'uploadFileDataUrl', 'getBusinessRulesInfoBySchemaIdUrl', 'getBusinessRulesInfoByModuleIdUrl',
+    'getAllBusinessRulesUrl', 'getFillDataInfo', 'createSchema', 'createBr', 'getCategoriesInfo', 'saveUpdateUDRUrl', 'saveUpdateUdrBlockUrl', 'getBusinessRuleInfoUrl',
+    'conditionListsUrl', 'dropDownValuesUrl', 'getBrConditionalOperatorUrl', 'deleteBr', 'getUdrBusinessRuleInfoUrl', 'deleteConditionBlock', 'getSchemaThresholdStatics',
+    'uploadCorrectionDataUrl', 'getSchemaInfoByModuleIdUrl', 'deleteSchema','copyDuplicate']);
+    const any2Spy = jasmine.createSpyObj('Any2tsService', ['any2SchemaGroupResponse', 'any2SchemaDetails', 'any2ObjectType', 'any2SchemaGroupCountResposne',
+    'any2GetAllSchemabymoduleidsResponse', 'any2SchemaGroupWithAssignSchemasResponse']);
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
@@ -193,4 +202,594 @@ describe('SchemaService', () => {
 
     httpTestingController.verify();
   })
+
+  it('should setStaticFieldValues', () => {
+
+    /* schemaService.setStaticFieldValues(['Asia']);
+    expect(schemaService.getStaticFieldValues('')).toEqual(['Asia']); */
+
+    expect(schemaService.getStaticFieldValues('')).toBeNull();
+    expect(schemaService.getStaticFieldValues('color')).toBeNull();
+
+    const excelData = {
+      uploadedData: [
+        ['', 'blue'],
+        ['', 'red']
+      ],
+      headerData: [{mdoFldId: 'color', columnIndex: 1}]
+    } as ExcelValues;
+
+    schemaService.setExcelValues(excelData);
+
+    expect(schemaService.getStaticFieldValues('color')).toEqual(['red']);
+
+
+  })
+
+  it('should set/get currentweightage', () => {
+    schemaService.currentweightage = 100;
+    expect(schemaService.currentweightageValue).toEqual(100);
+  });
+
+  it('should getSchemaGroupCounts()', async(() => {
+    const url = 'test getSchemaGroupCountUrl';
+    const groupId = 826462836823234;
+    // mock url
+    endpointServiceSpy.getSchemaGroupCountUrl.withArgs(groupId).and.returnValue(url);
+    // making mock data
+    const mockhttpData = {} as any;
+    const mockTS: SchemaGroupCountResponse = new SchemaGroupCountResponse();
+    // mock any2ts
+    any2tsSpy.any2SchemaGroupCountResposne.withArgs(mockhttpData).and.returnValue(mockTS);
+    // actual service call
+    schemaService.getSchemaGroupCounts(groupId).subscribe(actualData => {
+      expect(actualData).toEqual(mockTS);
+    });
+    // mocking http
+    const httpReq = httpTestingController.expectOne(url);
+    expect(httpReq.request.method).toEqual('GET');
+    httpReq.flush(mockhttpData);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('should getAllSchemabymoduleids()', async(() => {
+    const url = 'test getAllSchemabymoduleids url';
+    const request = new GetAllSchemabymoduleidsReq();
+    // mock url
+    endpointServiceSpy.getAllSchemabymoduleids.and.returnValue(url);
+    // making mock data
+    const mockhttpData = {} as any;
+    const mockTS: GetAllSchemabymoduleidsRes[] = [];
+    // mock any2ts
+    any2tsSpy.any2GetAllSchemabymoduleidsResponse.withArgs(mockhttpData).and.returnValue(mockTS);
+    // actual service call
+    schemaService.getAllSchemabymoduleids(request).subscribe(actualData => {
+      expect(actualData).toEqual(mockTS);
+    });
+    // mocking http
+    const httpReq = httpTestingController.expectOne(url);
+    expect(httpReq.request.method).toEqual('POST');
+    httpReq.flush(mockhttpData);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('should getSchemaGroupDetailsByGroupId()', async(() => {
+    const url = 'test groupDetailswithAssignedschemaUrl';
+    const groupId = '826462836823234'
+    // mock url
+    endpointServiceSpy.groupDetailswithAssignedschemaUrl.and.returnValue(url);
+    // making mock data
+    const mockhttpData = {} as any;
+    const mockTS: SchemaGroupWithAssignSchemas = new SchemaGroupWithAssignSchemas();
+    // mock any2ts
+    any2tsSpy.any2SchemaGroupWithAssignSchemasResponse.withArgs(mockhttpData).and.returnValue(mockTS);
+    // actual service call
+    schemaService.getSchemaGroupDetailsByGroupId(groupId).subscribe(actualData => {
+      expect(actualData).toEqual(mockTS);
+    });
+    // mocking http
+    const httpReq = httpTestingController.expectOne(url);
+    expect(httpReq.request.method).toEqual('GET');
+    httpReq.flush(mockhttpData);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('should scheduleSchemaCount()', async(() => {
+    const url = 'test scheduleSchemaCount url';
+    const schemaId = '826462836823234'
+    // mock url
+    endpointServiceSpy.scheduleSchemaCount.and.returnValue(url);
+    // making mock data
+    const mockTS = 1;
+
+    // actual service call
+    schemaService.scheduleSchemaCount(schemaId).subscribe(actualData => {
+      expect(actualData).toEqual(mockTS);
+    });
+    // mocking http
+    const httpReq = httpTestingController.expectOne(url);
+    expect(httpReq.request.method).toEqual('GET');
+    httpReq.flush(mockTS);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('should deleteSchemaGroup()', async(() => {
+    const url = 'test deleteSchemaGroupUrl';
+    const groupId = '826462836823234'
+    // mock url
+    endpointServiceSpy.deleteSchemaGroupUrl.and.returnValue(url);
+    // making mock data
+    const mockResponse = true;
+
+    // actual service call
+    schemaService.deleteSchemaGroup(groupId).subscribe(actualData => {
+      expect(actualData).toEqual(mockResponse);
+    });
+    // mocking http
+    const httpReq = httpTestingController.expectOne(url);
+    expect(httpReq.request.method).toEqual('DELETE');
+    httpReq.event(new HttpResponse<boolean>({body: true}));
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('should uploadUpdateFileData()', async(() => {
+    const url = 'test uploadFileDataUrl';
+    // mock url
+    endpointServiceSpy.uploadFileDataUrl.and.returnValue(url);
+    // making mock data
+    const response = 'success';
+
+    // actual service call
+    schemaService.uploadUpdateFileData(new File([], 'testfile'), '826462836823234').subscribe(actualData => {
+      expect(actualData).toEqual(response);
+    });
+    // mocking http
+    const httpReq = httpTestingController.expectOne(`${url}?fileSno=826462836823234`);
+    expect(httpReq.request.method).toEqual('POST');
+    httpReq.flush(response);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('should uploadData()', async(() => {
+    const url = 'test uploadDataUrl';
+    // mock url
+    endpointServiceSpy.uploadDataUrl.and.returnValue(url);
+    // making mock data
+    const response = 'success';
+
+    // actual service call
+    schemaService.uploadData([], '1005', '826462836823234').subscribe(actualData => {
+      expect(actualData).toEqual(response);
+    });
+    // mocking http
+    const httpReq = httpTestingController.expectOne(`${url}`);
+    expect(httpReq.request.method).toEqual('POST');
+    httpReq.flush(response);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('should getBusinessRulesBySchemaId()', async(() => {
+    const url = 'test getBusinessRulesInfoBySchemaIdUrl';
+    const schemaId = '826462836823234';
+    // mock url
+    endpointServiceSpy.getBusinessRulesInfoBySchemaIdUrl.and.returnValue(url);
+    // making mock data
+    const response: CoreSchemaBrInfo[] = [];
+
+    // actual service call
+    schemaService.getBusinessRulesBySchemaId(schemaId).subscribe(actualData => {
+      expect(actualData).toEqual(response);
+    });
+    // mocking http
+    const httpReq = httpTestingController.expectOne(`${url}`);
+    expect(httpReq.request.method).toEqual('GET');
+    httpReq.flush(response);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('should getBusinessRulesByModuleId()', async(() => {
+    const url = 'test getBusinessRulesInfoByModuleIdUrl';
+
+    // mock url
+    endpointServiceSpy.getBusinessRulesInfoByModuleIdUrl.and.returnValue(url);
+    // making mock data
+    const response: CoreSchemaBrInfo[] = [];
+
+    // actual service call
+    schemaService.getBusinessRulesByModuleId('1005','dup','DUPLICATE','10').subscribe(actualData => {
+      expect(actualData).toEqual(response);
+    });
+    // mocking http
+    const httpReq = httpTestingController.expectOne(`${url}?moduleId=1005&searchString=dup&brType=DUPLICATE&fetchCount=10`);
+    expect(httpReq.request.method).toEqual('GET');
+    httpReq.flush(response);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('should getAllBusinessRules()', async(() => {
+    const url = 'test getAllBusinessRulesUrl';
+
+    // mock url
+    endpointServiceSpy.getAllBusinessRulesUrl.and.returnValue(url);
+    // making mock data
+    const response: CoreSchemaBrInfo[] = [];
+
+    // actual service call
+    schemaService.getAllBusinessRules().subscribe(actualData => {
+      expect(actualData).toEqual(response);
+    });
+    // mocking http
+    const httpReq = httpTestingController.expectOne(`${url}`);
+    expect(httpReq.request.method).toEqual('GET');
+    httpReq.flush(response);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('should getAllCategoriesList()', async(() => {
+    const url = 'test getCategoriesInfo url';
+
+    // mock url
+    endpointServiceSpy.getCategoriesInfo.and.returnValue(url);
+    // making mock data
+    const response: Category[] = [];
+
+    // actual service call
+    schemaService.getAllCategoriesList().subscribe(actualData => {
+      expect(actualData).toEqual(response);
+    });
+    // mocking http
+    const httpReq = httpTestingController.expectOne(`${url}`);
+    expect(httpReq.request.method).toEqual('GET');
+    httpReq.flush(response);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('should getFillDataDropdownData()', async(() => {
+    const url = 'test getFillDataInfo url';
+    const id = '1701'
+    // mock url
+    endpointServiceSpy.getFillDataInfo.and.returnValue(url);
+    // making mock data
+    const response = [];
+
+    // actual service call
+    schemaService.getFillDataDropdownData(id).subscribe(actualData => {
+      expect(actualData).toEqual(response);
+    });
+    // mocking http
+    const httpReq = httpTestingController.expectOne(`${url}`);
+    expect(httpReq.request.method).toEqual('GET');
+    httpReq.flush(response);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('should createUpdateSchema()', async(() => {
+    const url = 'test createSchema url';
+    const request = new CreateUpdateSchema();
+    // mock url
+    endpointServiceSpy.createSchema.and.returnValue(url);
+    // making mock data
+    const response = 'success';
+
+    // actual service call
+    schemaService.createUpdateSchema(request).subscribe(actualData => {
+      expect(actualData).toEqual(response);
+    });
+    // mocking http
+    const httpReq = httpTestingController.expectOne(`${url}`);
+    expect(httpReq.request.method).toEqual('POST');
+    httpReq.flush(response);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('should createBusinessRule()', async(() => {
+    const url = 'test createBr url';
+    const request =  new CoreSchemaBrInfo();
+    // mock url
+    endpointServiceSpy.createBr.and.returnValue(url);
+    // making mock data
+    const response = new CoreSchemaBrInfo();
+
+    // actual service call
+    schemaService.createBusinessRule(request).subscribe(actualData => {
+      expect(actualData).toEqual(response);
+    });
+    // mocking http
+    const httpReq = httpTestingController.expectOne(`${url}`);
+    expect(httpReq.request.method).toEqual('POST');
+    httpReq.flush(response);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('should deleteBr()', async(() => {
+    const url = 'test deleteBr url';
+    const brId = '826462836823234'
+    // mock url
+    endpointServiceSpy.deleteBr.and.returnValue(url);
+    // making mock data
+    const mockResponse = true;
+
+    // actual service call
+    schemaService.deleteBr(brId).subscribe(actualData => {
+      expect(actualData).toEqual(mockResponse);
+    });
+    // mocking http
+    const httpReq = httpTestingController.expectOne(url);
+    expect(httpReq.request.method).toEqual('DELETE');
+    httpReq.event(new HttpResponse<boolean>({body: true}));
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('should getBrConditionalOperator()', async(() => {
+    const url = 'test getBrConditionalOperatorUrl';
+    // mock url
+    endpointServiceSpy.getBrConditionalOperatorUrl.and.returnValue(url);
+    // making mock data
+    const mockResponse = ['AND'];
+
+    // actual service call
+    schemaService.getBrConditionalOperator().subscribe(actualData => {
+      expect(actualData).toEqual(mockResponse);
+    });
+    // mocking http
+    const httpReq = httpTestingController.expectOne(url);
+    expect(httpReq.request.method).toEqual('GET');
+    httpReq.flush(mockResponse);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('should dropDownValues()', async(() => {
+    const url = 'test dropDownValuesUrl';
+    // mock url
+    endpointServiceSpy.dropDownValuesUrl.and.returnValue(url);
+    // making mock data
+    const mockResponse : DropDownValue[] = [];
+
+    // actual service call
+    schemaService.dropDownValues('mtl_grp', 'search').subscribe(actualData => {
+      expect(actualData).toEqual(mockResponse);
+    });
+    // mocking http
+    const httpReq = httpTestingController.expectOne(`${url}?queryString=search`);
+    expect(httpReq.request.method).toEqual('GET');
+    httpReq.flush(mockResponse);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('should getConditionList()', async(() => {
+    const url = 'test conditionListsUrl';
+    const objectType = '1005';
+    // mock url
+    endpointServiceSpy.conditionListsUrl.and.returnValue(url);
+    // making mock data
+    const mockResponse : UDRBlocksModel[] = [];
+
+    // actual service call
+    schemaService.getConditionList(objectType).subscribe(actualData => {
+      expect(actualData).toEqual(mockResponse);
+    });
+    // mocking http
+    const httpReq = httpTestingController.expectOne(`${url}`);
+    expect(httpReq.request.method).toEqual('GET');
+    httpReq.flush(mockResponse);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('should getBusinessRuleInfo()', async(() => {
+    const url = 'test getBusinessRuleInfoUrl';
+    const brId = '1701';
+    // mock url
+    endpointServiceSpy.getBusinessRuleInfoUrl.and.returnValue(url);
+    // making mock data
+    const mockResponse = {brId}  as CoreSchemaBrInfo;
+
+    // actual service call
+    schemaService.getBusinessRuleInfo(brId).subscribe(actualData => {
+      expect(actualData).toEqual(mockResponse);
+    });
+    // mocking http
+    const httpReq = httpTestingController.expectOne(`${url}`);
+    expect(httpReq.request.method).toEqual('GET');
+    httpReq.flush(mockResponse);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+
+  it('should saveUpdateUdrBlock()', async(() => {
+    const url = 'test saveUpdateUdrBlockUrl';
+    const blocks = [new UDRBlocksModel()];
+    // mock url
+    endpointServiceSpy.saveUpdateUdrBlockUrl.and.returnValue(url);
+    // making mock data
+    const mockResponse = ['id1'];
+
+    // actual service call
+    schemaService.saveUpdateUdrBlock(blocks).subscribe(actualData => {
+      expect(actualData).toEqual(mockResponse);
+    });
+    // mocking http
+    const httpReq = httpTestingController.expectOne(`${url}`);
+    expect(httpReq.request.method).toEqual('POST');
+    httpReq.flush(mockResponse);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('should saveUpdateUDR()', async(() => {
+    const url = 'test saveUpdateUDRUrl';
+    const udr = new UdrModel();
+    // mock url
+    endpointServiceSpy.saveUpdateUDRUrl.and.returnValue(url);
+    // making mock data
+    const mockResponse = 'id1';
+
+    // actual service call
+    schemaService.saveUpdateUDR(udr).subscribe(actualData => {
+      expect(actualData).toEqual(mockResponse);
+    });
+    // mocking http
+    const httpReq = httpTestingController.expectOne(`${url}`);
+    expect(httpReq.request.method).toEqual('POST');
+    httpReq.flush(mockResponse);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('should getUdrBusinessRuleInfo()', async(() => {
+    const url = 'test getUdrBusinessRuleInfoUrl';
+    const ruleId = '1701'
+    // mock url
+    endpointServiceSpy.getUdrBusinessRuleInfoUrl.and.returnValue(url);
+    // making mock data
+    const mockResponse = new UdrModel();
+
+    // actual service call
+    schemaService.getUdrBusinessRuleInfo(ruleId).subscribe(actualData => {
+      expect(actualData).toEqual(mockResponse);
+    });
+    // mocking http
+    const httpReq = httpTestingController.expectOne(`${url}`);
+    expect(httpReq.request.method).toEqual('GET');
+    httpReq.flush(mockResponse);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('should deleteConditionBlock()', async(() => {
+    const url = 'test deleteConditionBlock url';
+    const ruleId = '1701'
+    // mock url
+    endpointServiceSpy.deleteConditionBlock.and.returnValue(url);
+    // making mock data
+    const mockResponse = true;
+
+    // actual service call
+    schemaService.deleteConditionBlock(ruleId).subscribe(actualData => {
+      expect(actualData).toEqual(mockResponse);
+    });
+    // mocking http
+    const httpReq = httpTestingController.expectOne(`${url}`);
+    expect(httpReq.request.method).toEqual('DELETE');
+    httpReq.event(new HttpResponse<boolean>({body: mockResponse}));
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('should getSchemaThresholdStatics()', async(() => {
+    const url = 'test getSchemaThresholdStatics url';
+    const schemaId = '1701'
+    // mock url
+    endpointServiceSpy.getSchemaThresholdStatics.and.returnValue(url);
+    // making mock data
+    const mockResponse = new SchemaStaticThresholdRes();
+
+    // actual service call
+    schemaService.getSchemaThresholdStatics(schemaId).subscribe(actualData => {
+      expect(actualData).toEqual(mockResponse);
+    });
+    // mocking http
+    const httpReq = httpTestingController.expectOne(`${url}`);
+    expect(httpReq.request.method).toEqual('GET');
+    httpReq.flush(mockResponse);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('should uploadCorrectionData()', async(() => {
+    const url = 'test uploadCorrectionDataUrl';
+    // mock url
+    endpointServiceSpy.uploadCorrectionDataUrl.and.returnValue(url);
+    // making mock data
+    const mockResponse = 'success';
+
+    // actual service call
+    schemaService.uploadCorrectionData([], '1005', '1701', '170170', '0', '1801').subscribe(actualData => {
+      expect(actualData).toEqual(mockResponse);
+    });
+    // mocking http
+    const httpReq = httpTestingController.expectOne(`${url}`);
+    expect(httpReq.request.method).toEqual('POST');
+    httpReq.flush(mockResponse);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('should getSchemaInfoByModuleId()', async(() => {
+    const url = 'test getSchemaInfoByModuleIdUrl';
+    const moduleId = '1701'
+    // mock url
+    endpointServiceSpy.getSchemaInfoByModuleIdUrl.and.returnValue(url);
+    // making mock data
+    const mockResponse = new SchemaListModuleList();
+
+    // actual service call
+    schemaService.getSchemaInfoByModuleId(moduleId).subscribe(actualData => {
+      expect(actualData).toEqual(mockResponse);
+    });
+    // mocking http
+    const httpReq = httpTestingController.expectOne(`${url}`);
+    expect(httpReq.request.method).toEqual('GET');
+    httpReq.flush(mockResponse);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('should deleteSChema()', async(() => {
+    const url = 'test deleteSchema';
+    const schemaId = '1701'
+    // mock url
+    endpointServiceSpy.deleteSchema.and.returnValue(url);
+    // making mock data
+    const mockResponse = true;
+
+    // actual service call
+    schemaService.deleteSChema(schemaId).subscribe(actualData => {
+      expect(actualData).toEqual(mockResponse);
+    });
+    // mocking http
+    const httpReq = httpTestingController.expectOne(`${url}`);
+    expect(httpReq.request.method).toEqual('DELETE');
+    httpReq.event(new HttpResponse<boolean>({body: mockResponse}));
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('should copyDuplicateRule()', async(() => {
+    const url = 'test copyDuplicateRuleUrl';
+    const params = {} as CoreSchemaBrInfo;
+    // mock url
+    endpointServiceSpy.copyDuplicate.and.returnValue(url);
+    // making mock data
+    const mockResponse = {};
+
+    // actual service call
+    schemaService.copyDuplicateRule(params).subscribe(actualData => {
+      expect(actualData).toEqual({} as CoreSchemaBrInfo);
+    });
+    // mocking http
+    const httpReq = httpTestingController.expectOne(`${url}`);
+    expect(httpReq.request.method).toEqual('POST');
+    httpReq.flush(mockResponse);
+    // verify http
+    httpTestingController.verify();
+  }));
 });

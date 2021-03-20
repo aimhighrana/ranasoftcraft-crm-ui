@@ -56,4 +56,14 @@ describe('CountComponent', () => {
     component.getCountData(widgetId,criteria);
     expect(WidgetServiceSpy.getWidgetData).toHaveBeenCalledWith(String(widgetId), criteria);
   }));
+
+  it('getCountData(), return count of the widget', async(() => {
+    const widgetId = 732864726783;
+    const criteria = [];
+    const res = {aggregations: {'scripted_metric#COUNT': {value: 46}}};
+    spyOn(WidgetServiceSpy,'getWidgetData').withArgs(String(widgetId), criteria).and.returnValue(of(res));
+    component.getCountData(widgetId,criteria);
+    expect(WidgetServiceSpy.getWidgetData).toHaveBeenCalledWith(String(widgetId), criteria);
+    expect(component.count).toEqual(46);
+  }));
 });

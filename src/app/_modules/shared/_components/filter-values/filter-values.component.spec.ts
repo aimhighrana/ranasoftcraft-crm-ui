@@ -17,7 +17,7 @@ describe('FilterValuesComponent', () => {
   let schemaService: jasmine.SpyObj<SchemaService>;
 
   beforeEach(async(() => {
-    const spyObj = jasmine.createSpyObj('SchemaService', ['dropDownValues']);
+    const spyObj = jasmine.createSpyObj('SchemaService', ['dropDownValues', 'getStaticFieldValues']);
     TestBed.configureTestingModule({
       declarations: [FilterValuesComponent, SearchInputComponent],
       imports: [AppMaterialModuleForSpec, HttpClientTestingModule, ReactiveFormsModule, FormsModule, RouterTestingModule],
@@ -43,7 +43,17 @@ describe('FilterValuesComponent', () => {
     const returnData: DropDownValue[] = [];
     schemaService.dropDownValues.and.returnValue(of(returnData));
     component.getDropdownValues('testId', '');
-    expect(schemaService.dropDownValues).toHaveBeenCalled();
+    expect(component.checkedValue.length).toEqual(0);
+
+    component.selectedDropValues = ['firstname', 'lastname'];
+
+    component.getDropdownValues('testId', 'search text');
+    expect(component.checkedValue.length).toEqual(0);
+
+    component.getDropdownValues('testId', '');
+    expect(component.checkedValue.length).toEqual(2);
+
+    expect(schemaService.dropDownValues).toHaveBeenCalledTimes(3);
   }));
 
   it(`searchFromExistingValues(), should search value from existing values list`, async(() => {
@@ -155,18 +165,32 @@ describe('FilterValuesComponent', () => {
       'country'
     ]
     component.dropValue = [];
+    component.generateDropdownValues([]);
+    expect(component.dropValue.length).toEqual(0);
+
     component.generateDropdownValues(dropDownValues);
     expect(component.dropValue.length).toEqual(4);
     expect(component.searchValue.length).toEqual(4);
   })
 
   it('updateValues(), shoudld update dropdown values', async() => {
+
+    component.updateValues();
+    expect(component.checkedValue.length).toEqual(0);
+
     component.fieldId = 'APPROVER_ID';
     component.moduleId = '1005';
 
     spyOn(component, 'getDropdownValues');
     component.updateValues();
     expect(component.getDropdownValues).toHaveBeenCalled();
+
+    spyOn(component, 'generateDropdownValues');
+    schemaService.getStaticFieldValues.and.returnValue([]);
+    component.moduleId = '';
+    component.updateValues();
+    expect(component.generateDropdownValues).toHaveBeenCalled();
+
   })
 
   it('update on changes', () => {

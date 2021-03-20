@@ -1,9 +1,12 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { SchemaExecutionLog } from '@models/schema/schemadetailstable';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
-import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
+import { ChartDataSets, ChartOptions, ChartType, TimeUnit } from 'chart.js';
 import { BaseChartDirective, Label } from 'ng2-charts';
 import * as moment from 'moment';
+import { StatisticsFilterParams } from '@modules/schema/_components/v2/statics/statics.component';
+import { UserService } from '@services/user/userservice.service';
+import { distinctUntilChanged } from 'rxjs/operators';
 import * as _ from 'lodash';
 
 @Component({
@@ -16,24 +19,32 @@ export class SchemaExecutionTrendComponent implements OnInit, OnChanges {
   /**
    * To store module ID
    */
-  @Input() moduleId: string;
+  @Input() readonly moduleId: string;
 
   /**
    * To store schema ID
    */
-  @Input() schemaId: string;
+  @Input() readonly schemaId: string;
 
   /**
    * To store variant ID
    */
   @Input() variantId = '0';
 
-  @ViewChild(BaseChartDirective) chart: BaseChartDirective;
+  @Input()
+  filter: StatisticsFilterParams;
+
+  @ViewChild(BaseChartDirective) readonly chart: BaseChartDirective;
 
   dataSetLabels: Label[] = [];
   chartType: ChartType = 'line';
-  chartPlugins = [];
 
+  /**
+   * Unit of execution trend ..
+   * This will calculate based on execution output ..
+   */
+  @Input()
+  unit: TimeUnit = 'day';
 
   dataSet: ChartDataSets[] = [
     {
@@ -78,40 +89,41 @@ export class SchemaExecutionTrendComponent implements OnInit, OnChanges {
     responsive: true,
     maintainAspectRatio: false,
     tooltips: {
-      callbacks: {
-        label: (tooltipItem, data) => {
-          let label = data.datasets[tooltipItem.datasetIndex].label || '';
-          label += ': ';
-          const sum = data.datasets.reduce((total, dataSet) => total + +dataSet.data[tooltipItem.index], 0);
-          const perc = Math.round((+tooltipItem.yLabel / sum) * 100);
-          label += `${perc || 0} %`;
-          return label;
-        }
-      },
+      // callbacks: {
+      //   label: (tooltipItem, data) => {
+      //     let label = data.datasets[tooltipItem.datasetIndex].label || '';
+      //     label += ': ';
+      //     const sum = data.datasets.reduce((total, dataSet) => total + +dataSet.data[tooltipItem.index], 0);
+      //     const perc = Math.round((+tooltipItem.yLabel / sum) * 100);
+      //     label += `${perc || 0} %`;
+      //     return label;
+      //   }
+      // },
       backgroundColor: 'rgba(255,255,255,0.9)',
       bodyFontColor: '#999',
       borderColor: '#999',
       borderWidth: 1,
       caretPadding: 15,
       displayColors: true,
-      enabled: true,
-      intersect: true,
-      mode: 'x',
+      // enabled: true,
+      // intersect: true,
+      // mode: 'x',
       titleFontColor: '#999',
       titleMarginBottom: 10,
-      xPadding: 15,
-      yPadding: 15,
+      // xPadding: 15,
+      // yPadding: 15,
+      mode:'index',
+      intersect: false
     },
     scales: {
       xAxes: [{
+        scaleLabel: {
+          display: true,
+          labelString: 'Date'
+        },
         gridLines: {
           display: false,
           color: 'rgba(255,255,255,0.1)',
-        },
-        scaleLabel: {
-          display: true,
-          labelString: 'Weeks',
-
         },
         ticks: {
           fontColor: '#000',
@@ -136,7 +148,28 @@ export class SchemaExecutionTrendComponent implements OnInit, OnChanges {
         usePointStyle: false,
         boxWidth: 30
       }
-    }
+    },
+    plugins: {
+      zoom: {
+        pan: {
+          enabled: true,
+          mode: 'x',
+          speed: 10,
+          threshold: 10,
+          onPan() {console.log('I am pan ...!'); },
+          onPanComplete() {console.log('On pan Complete !'); }
+        },
+        zoom: {
+          enabled: false,
+          grag: true,
+          mode: 'x',
+          /*limits: {max: 10, min: 0.5}, */
+          onZoom() {console.log('ONZOOM'); },
+          onZoomComplete() {console.log('ZOOM Complete'); }
+
+        }
+      }
+    },
 
   };
 
@@ -149,15 +182,33 @@ export class SchemaExecutionTrendComponent implements OnInit, OnChanges {
   /**
    * constructor of class
    */
-  constructor(private schemaDetailsService: SchemaDetailsService) { }
+  constructor(
+    private schemaDetailsService: SchemaDetailsService,
+    private userDetailsService: UserService
+  ) { }
 
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.dataSetLabels = [];
-    this.dataSet.forEach(d => {
-      d.data = [];
-    })
-    this.getExecutionTrendData(this.schemaId, this.variantId);
+
+
+    if((changes.schemaId && changes.schemaId.currentValue !==  changes.schemaId.previousValue) ||
+    (changes.variantId && changes.variantId.currentValue !==  changes.variantId.previousValue) ||
+    (changes.filter && changes.filter.previousValue !== changes.filter.currentValue )) {
+      this.filter = changes.filter.currentValue;
+      this.variantId = this.filter && this.filter._data_scope ? this.filter._data_scope.variantId : this.variantId;
+      this.dataSetLabels = [];
+      this.dataSet.forEach(d => {
+        d.data = [];
+      })
+      this.getExecutionTrendData(this.schemaId, this.variantId);
+    }
+
+    if(changes.unit && changes.unit.previousValue !== changes.unit.currentValue) {
+      this.unit = changes.unit.currentValue;
+      this.chart.chart.options = this.chartOptions;
+      this.chart.chart.update();
+    }
+
   }
 
   /**
@@ -173,14 +224,16 @@ export class SchemaExecutionTrendComponent implements OnInit, OnChanges {
    * @param variantId: variant id
    */
   getExecutionTrendData(schemaId: string, variantId: string) {
-    this.schemaDetailsService.getExecutionOverviewChartData(schemaId, variantId)
+    this.userDetailsService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user=>{
+      this.schemaDetailsService.getSchemaExecutedStatsTrend(schemaId, variantId, user.plantCode, this.filter)
       .subscribe((response) => {
-        console.log(response);
         this.data = response;
         this.prepareDataSet(this.data);
       }, (error) => {
         console.log('Something went wrong while getting exec trend data.', error.message)
       })
+    });
+
   }
 
   /**
@@ -189,53 +242,53 @@ export class SchemaExecutionTrendComponent implements OnInit, OnChanges {
    */
   prepareDataSet(rawData: SchemaExecutionLog[]) {
 
-    const currentMonth = new Date().getMonth();
-    const groupedData = this.groupByMonthWeeks(currentMonth, rawData);
-    let weeklyErr = 0;
-    let weeklySuccess = 0;
-    let weeklyTotal = 0;
+    const errorDataSet = [];
+    const successDataSet = [];
 
-    for (const data of groupedData) {
-      // calc the avg of week..
-      weeklyTotal = data.executions.reduce((total, execution) => total + execution.total, 0);
-      weeklySuccess = data.executions.reduce((total, execution) => total + execution.totalSuccess, 0);
-      weeklyErr = data.executions.reduce((total, execution) => total + execution.totalError, 0);
+    let finalExecution = {};
 
-      console.log(weeklyErr, weeklySuccess, weeklyTotal);
+    this.dataSetLabels = [];
+    this.dataSet.forEach(d => { d.data = []; });
 
-      weeklyErr = weeklyErr / data.executions.length;
-      weeklySuccess = weeklySuccess / data.executions.length;
+    switch (this.unit) {
+      case 'day':
+        finalExecution = _.groupBy(rawData, (data)=>{
+          return moment(data.exeStrtDate).endOf('day').toDate().getTime();
+        });
+        break;
+      case 'week':
+        finalExecution = _.groupBy(rawData, (data)=>{
+          return moment(data.exeStrtDate).endOf('week').toDate().getTime();
+        });
+        break;
+      case 'month':
+        finalExecution = _.groupBy(rawData, (data)=>{
+          return moment(data.exeStrtDate).endOf('month').toDate().getTime();
+        });
+        break;
 
-      // Push the data into chart properties..
-      this.dataSetLabels.push(`Week ${data.weekOfMonth}`);
-      this.dataSet[0].data.push(weeklyErr);
-      this.dataSet[1].data.push(weeklySuccess);
+      case 'year':
+        finalExecution = _.groupBy(rawData, (data)=>{
+          return moment(data.exeStrtDate).endOf('year').toDate().getTime();
+        });
+        break;
+
+      default:
+        break;
     }
 
-    console.log(this.dataSet);
-    console.log(this.dataSetLabels);
+    Object.keys(finalExecution).forEach(exeDate=>{
+      const details: SchemaExecutionLog[] = finalExecution[exeDate];
+
+      // last execution for this period of time ..
+      const lastExe = details[details.length-1];
+      const exeStrtdate = moment.unix(lastExe.exeStrtDate ? lastExe.exeStrtDate/1000 : 0).format('DD-MMM-YYYY');
+      this.dataSetLabels.push(exeStrtdate);
+      errorDataSet.push(lastExe.totalError);
+      successDataSet.push(lastExe.totalSuccess);
+    });
+
+    this.dataSet[0].data = errorDataSet;
+    this.dataSet[1].data = successDataSet;
   }
-
-  groupByMonthWeeks(currentMonth: number, data: SchemaExecutionLog[]) {
-
-    const groupedData = _.chain(data)
-      .filter(row => moment(row.exeStrtDate).month() === currentMonth)
-      .groupBy(row => moment(row.exeStrtDate).isoWeek())
-      .map((executions, weekOfYear) => {
-        console.log('Week of year ', weekOfYear)
-        // const weekOfMonth = Math.ceil(moment(executions[0].exeStrtDate).date() / 7);
-        const groupFirstDate = executions[0].exeStrtDate;
-        const weekStartDate = moment(groupFirstDate).startOf('isoWeek').format('ll');
-        const weekEndDate = moment(groupFirstDate).endOf('isoWeek').format('ll');
-        const weekOfMonth = Math.ceil((moment(groupFirstDate).date() + 6 - moment(groupFirstDate).day()) / 7);
-        return { weekOfMonth, weekStartDate, weekEndDate, executions };
-      })
-      .sortBy('weekOfMonth')
-      .value();
-
-    console.log(groupedData);
-    return groupedData;
-
-  }
-
 }

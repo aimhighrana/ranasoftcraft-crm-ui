@@ -123,4 +123,60 @@ describe('BusinessrulelibrarySidesheetComponent', () => {
     expect(schemaService.getBusinessRulesBySchemaId).toHaveBeenCalledWith(component.schemaId);
     expect(schemaService.getBusinessRulesByModuleId).toHaveBeenCalled();
   }));
+
+  it('saveSelection(), Add rule from side sheet ', async(()=>{
+      component.outlet = 'sb'
+      const list = [];
+      const core  = new CoreSchemaBrInfo();
+      component.schemaId ='1234567';
+      core.brInfo = 'Test';
+      core.brType = 'BR_DUPLICATE_CHECK';
+      core.fields = '';
+      core.message = '';
+      core.brIdStr = '1234567890987654';
+      const coreInfo  = new CoreSchemaBrInfo();
+      coreInfo.brInfo = 'Test';
+      coreInfo.brType = 'BR_Test';
+      coreInfo.fields = '';
+      coreInfo.message = '';
+      coreInfo.brIdStr = '1234567890987654';
+      list.push(core);
+      list.push(coreInfo);
+      component.selectedBusinessRule = list;
+      // console.log('test  ' + component.selectedBusinessRule);
+      component.moduleId =  '1234567';
+
+      const coreRequest = new CoreSchemaBrInfo();
+      coreRequest.brId = '';
+      coreRequest.schemaId = component.schemaId;
+      coreRequest.brInfo = core.brInfo;
+      coreRequest.brType = core.brType;
+      coreRequest.fields = core.fields;
+      coreRequest.message = core.message;
+      coreRequest.isCopied = true;
+      coreRequest.moduleId = component.moduleId;
+      coreRequest.copiedFrom = core.brIdStr;
+
+      const coreRequestInfo = new CoreSchemaBrInfo();
+      coreRequestInfo.brId = '';
+      coreRequestInfo.schemaId = component.schemaId;
+      coreRequestInfo.brInfo = coreInfo.brInfo;
+      coreRequestInfo.brType = coreInfo.brType;
+      coreRequestInfo.fields = coreInfo.fields;
+      coreRequestInfo.message = coreInfo.message;
+      coreRequestInfo.isCopied = true;
+      coreRequestInfo.moduleId = component.moduleId;
+      coreRequestInfo.copiedFrom = coreInfo.brIdStr;
+
+      spyOn(schemaService,'copyDuplicateRule').withArgs(coreRequest).and.returnValue(of());
+      spyOn(schemaService,'createBusinessRule').withArgs(coreRequestInfo).and.returnValue(of(null));
+     component.saveSelection();
+
+      expect(schemaService.copyDuplicateRule).toHaveBeenCalledWith(coreRequest);
+      expect(schemaService.createBusinessRule).toHaveBeenCalledWith(coreRequestInfo);
+
+  }));
+
+
+
 });

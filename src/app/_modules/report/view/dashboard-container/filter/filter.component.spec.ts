@@ -1,9 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FilterComponent } from './filter.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Criteria, DropDownValues, FilterWidget, FilterResponse, Widget } from '../../../_models/widget';
+import { Criteria, DropDownValues, FilterWidget, FilterResponse, Widget, WidgetType } from '../../../_models/widget';
 import { MatSliderChange } from '@angular/material/slider';
 import { MetadataModel } from 'src/app/_models/schema/schemadetailstable';
 import * as moment from 'moment';
@@ -94,9 +93,12 @@ describe('FilterComponent', () => {
   }));
 
   it('optionClicked(), click on options ', async(()=>{
-    const event = {option:null} as MatAutocompleteSelectedEvent;
+    const event = {option:{value:{CODE:'4',FIELDNAME:'EVENT_ID',TEXT:'Change'}}} as MatAutocompleteSelectedEvent;
+    component.filterCriteria = [{blockType: 'COND', conditionFieldId: 'EVENT_ID',conditionFieldValue: '4', conditionOperator: 'EQUAL',fieldId: 'EVENT_ID'} as Criteria];
+    spyOn(component,'toggleSelection')
     component.optionClicked(event);
     expect(component.optionClicked).toBeTruthy();
+    expect(component.toggleSelection).toHaveBeenCalled();
   }));
 
   it('toggleSelection(), toggle selection ', async(()=>{
@@ -209,8 +211,105 @@ describe('FilterComponent', () => {
     component.updateObjRefDescription(buckets, 'MATL_GROUP');
 
     expect(component.values.length).toEqual(0);
-
-
   }));
 
+  it('getFieldsMetadaDesc(), should return the dropdown value of the field', async(() => {
+    const buckets = [{doc_count:1,key:{FILTER:'1'},'top_hits#items':{hits:{hits:[{_index:'localhost_workflow_do_0_en',_type:'_doc',_source:{staticFields:{FORWARDENABLED:{vc:[{c: '1'}]}}},_id:'590347384429815008',_score:1.0}]}}}];
+    component.values = [{CODE: '1', FIELDNAME: 'FORWARDENABLED', TEXT: '1'} as DropDownValues]
+    component.getFieldsMetadaDesc(buckets, 'FORWARDENABLED');
+    expect(component.values.length).toEqual(1);
+    expect(component.values[0].TEXT).toEqual('Yes');
+
+    const buckets1 = [{doc_count:2,key:{FILTER:'212255'},'top_hits#items':{hits:{hits:[{_index:'localhost_workflow_do_0_en',_type:'_doc',_source:{staticFields:{TIME_TAKEN:{vc:[{c: '212255'}]}}},_id:'590347384429815008',_score:1.0}]}}}, {doc_count:2,key:{FILTER:'610026'},'top_hits#items':{hits:{hits:[{_index:'localhost_workflow_do_0_en',_type:'_doc',_source:{staticFields:{TIME_TAKEN:{vc:[{c: '610026'}]}}},_id:'590347384429815008',_score:1.0}]}}}];
+    component.values = [{CODE: '212255', FIELDNAME: 'TIME_TAKEN', TEXT: '212255'} as DropDownValues, {CODE: '610026', FIELDNAME: 'TIME_TAKEN', TEXT: '610026'} as DropDownValues]
+    component.getFieldsMetadaDesc(buckets1, 'TIME_TAKEN');
+    expect(component.values.length).toEqual(2);
+    expect(component.values[0].TEXT).toEqual('3 m 32 s');
+    expect(component.values[1].TEXT).toEqual('10 m 10 s');
+
+    const buckets2 = [{doc_count:2,key:{FILTER:'n'},'top_hits#items':{hits:{hits:[{_index:'localhost_workflow_do_0_en',_type:'_doc',_source:{staticFields: {OVERDUE: {vc: [{c: 'n'}]}}},_id:'590347384429815008',_score:1.0}]}}}, {doc_count:2,key:{FILTER:'y'},'top_hits#items':{hits:{hits:[{_index:'localhost_workflow_do_0_en',_type:'_doc',_source:{staticFields: {OVERDUE: {vc: [{c: 'y'}]}}},_id:'590347384429815008',_score:1.0}]}}}];
+    component.values = [{CODE: 'n', FIELDNAME: 'TIME_TAKEN', TEXT: 'n'} as DropDownValues, {CODE: 'y', FIELDNAME: 'OVERDUE', TEXT: 'y'} as DropDownValues]
+    component.getFieldsMetadaDesc(buckets2, 'OVERDUE');
+    expect(component.values.length).toEqual(2);
+    expect(component.values[0].TEXT).toEqual('No');
+    expect(component.values[1].TEXT).toEqual('Yes');
+  }));
+
+  it(`loadAlldropData(), should return the filter data`, async(()=>{
+    // mock data
+    const filterWidget= new FilterWidget()
+     filterWidget.fieldId='WFID';
+     filterWidget.isMultiSelect=true;
+     filterWidget.metaData={fieldId:'WFID',picklist:'1'} as MetadataModel;
+    component.filterWidget.next(filterWidget);
+    component.widgetId=13283821;
+    const response={aggregations:{'composite#bucket':{buckets:[{key:{FILTER:'106406009136356487'},'top_hits#items':{hits:{hits:[{_source:{staticFields:{WFID:{vc:[{c:'106406009136356487'}]}}}}]}}},{key:{FILTER:'115186306527988711'},'top_hits#items':{hits:{hits:[{_source:{staticFields:{WFID:{vc:[{c:'115186306527988711'}]}}}}]}}},{key:{FILTER:'130086693666196566'},'top_hits#items':{hits:{hits:[{_source:{staticFields:{WFID:{vc:[{c:'130086693666196566'}]}}}}]}}},{key:{FILTER:'161887603277972056'},'top_hits#items':{hits:{hits:[{_source:{staticFields:{WFID:{vc:[{c:'161887603277972056'}]}}}}]}}},{key:{FILTER:'173400567817058882'},'top_hits#items':{hits:{hits:[{_source:{staticFields:{WFID:{vc:[{c:'173400567817058882'}]}}}}]}}},{key:{FILTER:'191553074485201096'},'top_hits#items':{hits:{hits:[{_source:{staticFields:{WFID:{vc:[{c:'191553074485201096'}]}}}}]}}},{key:{FILTER:'209608314301990419'},'top_hits#items':{hits:{hits:[{_source:{staticFields:{WFID:{vc:[{c:'209608314301990419'}]}}}}]}}},{key:{FILTER:'247307504273738382'},'top_hits#items':{hits:{hits:[{_source:{staticFields:{WFID:{vc:[{c:'247307504273738382'}]}}}}]}}},{key:{FILTER:'257239960933193077'},'top_hits#items':{hits:{hits:[{_source:{staticFields:{WFID:{vc:[{c:'257239960933193077'}]}}}}]}}},{key:{FILTER:'271471671527993003'},'top_hits#items':{hits:{hits:[{_source:{staticFields:{WFID:{vc:[{c:'271471671527993003'}]}}}}]}}}],after_key:{FILTER:'271471671527993003'}}}}
+    const fieldId = 'WFID';
+    const criteria = [];
+    const searchString = '';
+    const searchAfter = '';
+    spyOn(widgetService,'getWidgetData').withArgs(String(component.widgetId),criteria,searchString,searchAfter).and.returnValue(of(response));
+    component.loadAlldropData(fieldId,criteria,searchString,searchAfter);
+
+    expect(widgetService.getWidgetData).toHaveBeenCalledWith(String(component.widgetId),criteria,searchString,searchAfter);
+    expect(component.isLoadMore).toEqual(true);
+    expect(component.searchAfter).toEqual('271471671527993003');
+  }));
+
+  it('onScroll(), scroll event object', async(()=> {
+    spyOn(component,'loadAlldropData');
+    component.isLoadMore = true;
+    const filterWidget= new FilterWidget()
+     filterWidget.fieldId='WFID';
+     filterWidget.isMultiSelect=true;
+     filterWidget.metaData={fieldId:'WFID',picklist:'1'} as MetadataModel;
+    component.filterWidget.next(filterWidget);
+    component.filterCriteria = [];
+    component.searchString = '';
+    component.searchAfter = '';
+    component.onScroll();
+
+    expect(component.loadAlldropData).toHaveBeenCalledWith(component.filterWidget.value.fieldId, component.filterCriteria,component.searchString,component.searchAfter);
+
+    component.isLoadMore = false;
+    component.onScroll();
+
+    expect(component.onScroll).toBeTruthy();
+  }));
+
+  it('removefilter(), should remove the filter of that cureenet fieldId', async(()=> {
+    component.filterCriteria = [{fieldId:'WFID', widgetType:WidgetType.FILTER} as Criteria];
+    const filterWidget= new FilterWidget()
+      filterWidget.fieldId='WFID';
+      filterWidget.isMultiSelect=true;
+      filterWidget.metaData={fieldId:'WFID',picklist:'1'} as MetadataModel;
+   component.filterWidget.next(filterWidget);
+   component.removefilter('WFID');
+   expect(component.filterCriteria.length).toEqual(1);
+  }));
+
+  it('onfocus(), should call when text field in focus', async(()=> {
+    component.filterCriteria = [{fieldId:'WFID', widgetType:WidgetType.FILTER} as Criteria];
+    const filterWidget= new FilterWidget()
+      filterWidget.fieldId='WFID';
+      filterWidget.isMultiSelect=true;
+      filterWidget.metaData={fieldId:'WFID',picklist:'1'} as MetadataModel;
+   component.filterWidget.next(filterWidget);
+   component.searchString = '';
+   component.searchAfter = '82734883';
+   const filteredCriteria = component.removefilter('WFID');
+   const filter = [{CODE:'test'},{CODE:'test'},{CODE:'test'},{CODE:'test'},{CODE:'test'},{CODE:'test'},{CODE:'test'},{CODE:'test'},{CODE:'test'},{CODE:'test'},{CODE:'test'},{CODE:'test'}]as DropDownValues[];
+   component.filteredOptions = of(filter);
+   spyOn(component,'loadAlldropData');
+   component.onfocus();
+
+   expect(component.filterCriteria.length).toEqual(1);
+   expect(component.loadAlldropData).toHaveBeenCalledWith(component.filterWidget.value.fieldId, filteredCriteria, component.searchString, '');
+
+
+   component.searchAfter = '';
+   component.onfocus();
+
+   expect(component.filterCriteria.length).toEqual(1);
+  }));
 });

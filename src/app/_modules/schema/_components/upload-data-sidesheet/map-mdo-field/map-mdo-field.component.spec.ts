@@ -4,6 +4,7 @@ import { MapMdoFieldComponent } from './map-mdo-field.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { MetadataModel } from '@models/schema/schemadetailstable';
 import { SharedModule } from '@modules/shared/shared.module';
+import { FormControl } from '@angular/forms';
 
 describe('MapMdoFieldComponent', () => {
   let component: MapMdoFieldComponent;
@@ -45,6 +46,20 @@ describe('MapMdoFieldComponent', () => {
       component.autoSelectedFld = 'test';
       component.ngOnInit();
       expect(component.ngOnInit).toBeTruthy();
+
+      component.preSelectedFld = '';
+      component.autoSelectedFld = '';
+      component.selectedMdoFldCtrl = new FormControl('Ashish');
+
+      component.ngOnInit();
+      expect(component.selectedMdoFldCtrl.value).toEqual('Ashish');
+
+      component.selectedMdoFldCtrl = new FormControl('');
+      component.ngOnInit();
+      component.selectedMdoFldCtrl.setValue('Material group');
+      component.suggestedMdoFldArray.subscribe((field) => {
+        expect(field.length).toEqual(2);
+      });
   }));
 
   it('suggestedMdoFldTrkBy(), trackby for suggested field', async(() => {

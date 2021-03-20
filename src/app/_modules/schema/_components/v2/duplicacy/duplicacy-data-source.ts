@@ -68,7 +68,7 @@ export class DuplicacyDataSource implements DataSource<SchemaTableData> {
 
                 // record status
                 const status: SchemaTableData = new SchemaTableData();
-                status.fieldData = doc.masterRecord ? RECORD_STATUS.MASTER : doc.DEL_FLAG ? RECORD_STATUS.DELETABLE : RECORD_STATUS.NOT_DELETABLE;
+                status.fieldData = doc.masterRecord === '1' ? RECORD_STATUS.MASTER : doc.DEL_FLAG ? RECORD_STATUS.DELETABLE : RECORD_STATUS.NOT_DELETABLE;
                 status.fieldId = RECORD_STATUS_KEY ;
                 status.fieldDesc = 'Status';
                 rowData[RECORD_STATUS_KEY] = status;

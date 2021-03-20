@@ -16,6 +16,9 @@ import { BlockType } from '@modules/admin/_components/module/business-rules/user
 import { CONDITIONS } from 'src/app/_constants';
 import { TransformationRuleComponent } from '@modules/shared/_components/transformation-rule/transformation-rule.component';
 import { ValidationError } from '@models/schema/schema';
+import { FlatTreeControl } from '@angular/cdk/tree';
+import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
+import { RuleDependentOn } from '@models/collaborator';
 
 @Component({
   selector: 'pros-brrule-side-sheet',
@@ -23,6 +26,12 @@ import { ValidationError } from '@models/schema/schema';
   styleUrls: ['./brrule-side-sheet.component.scss']
 })
 export class BrruleSideSheetComponent implements OnInit {
+
+
+  /**
+   * Array to store all Grid And Hirarchy records
+   */
+  allGridAndHirarchyData = [];
 
   form: FormGroup;
   businessRuleTypes: BusinessRules[] = RULE_TYPES;
@@ -158,6 +167,47 @@ export class BrruleSideSheetComponent implements OnInit {
   }
 
   /**
+   * Tree child
+   */
+  @ViewChild('tree') tree = null;
+
+  /**
+   * tree control
+   */
+  treeControl = null;
+
+  /**
+   * treeFlattener
+   */
+  treeFlattener = null;
+
+  /**
+   * data source
+   */
+  dataSource = null;
+
+  /**
+   * has child
+   */
+  hasChild = null;
+
+  /**
+   * transformer = return tree object.
+   * @param node node
+   * @param level level
+   */
+  private _transformer = (node: any, level: number) => {
+    return {
+      expandable: !!node.children && node.children.length > 0,
+      name: node.name,
+      level,
+      id: node.id,
+      parent: node.parent,
+      allData: node.allData
+    };
+  }
+
+  /**
    * Class contructor
    * @param dialogRef refernce to matdialog
    * @param data data recieved from parent
@@ -197,6 +247,16 @@ export class BrruleSideSheetComponent implements OnInit {
     this.getCategories();
     this.filteredModules = of(this.fieldsList);
     this.operators = this.possibleOperators();
+
+    this.treeControl = new FlatTreeControl<{ name: string, level: number, expandable: boolean, id: string, parent: string }>(
+      node => node.level, node => node.expandable);
+
+    this.treeFlattener = new MatTreeFlattener(
+      this._transformer, node => node.level, node => node.expandable, node => node.children);
+
+    this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+    this.hasChild  =(_: number, node: { name: string, level: number, expandable: boolean, id: string, parent: string }) => node.expandable;
+
     this.activatedRouter.params.subscribe(res => {
       this.routeData = res;
       this.moduleId = res.moduleId;
@@ -273,12 +333,106 @@ export class BrruleSideSheetComponent implements OnInit {
       .pipe(
         startWith(''),
         map(keyword => {
-          return keyword ?
-            this.fieldsList.filter(item => {
+          if (keyword) {
+            const filterData = [];
+            this.allGridAndHirarchyData.forEach(item => {
+              if (item.name.toString().toLowerCase().indexOf(keyword) !== -1 || (!!item.parent && item.parent.toString().toLowerCase().indexOf(keyword) !== -1)
+                || item.children.filter(child => { return child.name.toString().toLowerCase().indexOf(keyword) !== -1 }).length >= 1) {
+                const parentChildData = item;
+                if (item.children.filter(child => { return child.name.toString().toLowerCase().indexOf(keyword) !== -1 }).length >= 1) {
+                  parentChildData.children = item.children.filter(child => { return child.name.toString().toLowerCase().indexOf(keyword) !== -1 });
+                }
+                filterData.push(parentChildData);
+              }
+            });
+            this.dataSource.data = filterData;
+            if (this.tree !== null && this.tree.treeControl !== null) {
+              this.tree.treeControl.expandAll();
+            }
+            return this.fieldsList.filter(item => {
               return item.fieldDescri.toString().toLowerCase().indexOf(keyword) !== -1
-            }) : this.fieldsList
+            }).length >= 1 || this.dataSource.data.length === 0 ? this.fieldsList.filter(item => {
+              return item.fieldDescri.toString().toLowerCase().indexOf(keyword) !== -1
+            }) : [{ fieldDescri: 'No header data found', fieldId: null }];
+          } else {
+            this.dataSource.data = this.allGridAndHirarchyData;
+            if (this.tree !== null && this.tree.treeControl !== null) {
+              this.tree.treeControl.collapseAll();
+            }
+            return this.fieldsList;
+          }
         }),
       )
+  }
+  /**
+   * return grid fields by grid key
+   * @param metadataModeleResponse metaData Object
+   * @param gridKey grid Key to identify
+   * @param parentDesc parent desc name
+   */
+  getGridFieldsByGridKey(metadataModeleResponse: MetadataModeleResponse, gridKey: string, parentDesc: string) {
+    const dataToPush = [];
+    for (const key in metadataModeleResponse.gridFields[gridKey]) {
+      if (metadataModeleResponse.gridFields[gridKey].hasOwnProperty(key)) {
+        const field = metadataModeleResponse.gridFields[gridKey];
+        dataToPush.push({ name: field[key].fieldDescri, id: field[key].fieldId, parent: parentDesc, children: [] });
+      }
+    }
+    return dataToPush;
+  }
+
+  /**
+   * return Hierarchy field by key
+   * @param metadataModeleResponse metaData Object
+   * @param hierarchyKey hirechy key
+   * @param parentDesc parent dsc name
+   * @param heirarchyId heirarchy id
+   */
+  getHierarchyFieldsByHierarchyKey(metadataModeleResponse: MetadataModeleResponse, hierarchyKey: string, parentDesc: string, heirarchyId: string) {
+    const dataToPush = [];
+    for (const key in metadataModeleResponse.hierarchyFields[heirarchyId]) {
+      if (metadataModeleResponse.hierarchyFields[heirarchyId].hasOwnProperty(key)) {
+        const field = metadataModeleResponse.hierarchyFields[heirarchyId];
+        dataToPush.push({ name: field[key].fieldDescri, id: field[key].fieldId, parent: parentDesc, children: [] });
+      }
+    }
+    return dataToPush;
+  }
+
+  /**
+   * Initialize tree view
+   * @param metadataModeleResponse metadate Object
+   */
+  initGridAndHierarchyToAutocompleteDropdown(metadataModeleResponse: MetadataModeleResponse) {
+    const data = [];
+    for (const key in metadataModeleResponse.grids) {
+      if (metadataModeleResponse.grids.hasOwnProperty(key)) {
+        const objToPush = {
+          name: metadataModeleResponse.grids[key].fieldDescri,
+          id: metadataModeleResponse.grids[key].fieldId,
+          parent: null,
+          children: this.getGridFieldsByGridKey(metadataModeleResponse, metadataModeleResponse.grids[key].fieldId, metadataModeleResponse.grids[key].fieldDescri)
+        }
+        data.push(objToPush)
+      }
+    }
+
+    for (const key in metadataModeleResponse.hierarchy) {
+      if (metadataModeleResponse.hierarchy.hasOwnProperty(key)) {
+        const objToPush = {
+          name: metadataModeleResponse.hierarchy[key].heirarchyText,
+          id: metadataModeleResponse.hierarchy[key].fieldId,
+          parent: null,
+          children: this.getHierarchyFieldsByHierarchyKey(metadataModeleResponse, metadataModeleResponse.hierarchy[key].fieldId, metadataModeleResponse.hierarchy[key].heirarchyText,
+            metadataModeleResponse.hierarchy[key].heirarchyId)
+        }
+        data.push(objToPush)
+      }
+    }
+    if (this.dataSource !== null) {
+      this.dataSource.data = data;
+    }
+    this.allGridAndHirarchyData = data;
   }
 
   /**
@@ -349,7 +503,7 @@ export class BrruleSideSheetComponent implements OnInit {
     if (selectedRule === BusinessRuleType.BR_REGEX_RULE) {
       requiredKeys = ['categoryId', 'rule_name', 'error_message', 'fields', 'regex', 'standard_function'];
     }
-    if (selectedRule === BusinessRuleType.BR_MANDATORY_FIELDS || selectedRule === BusinessRuleType.BR_METADATA_RULE) {
+    if (selectedRule === BusinessRuleType.BR_MANDATORY_FIELDS || selectedRule === BusinessRuleType.BR_METADATA_RULE || BusinessRuleType.MRO_CLS_MASTER_CHECK || BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI) {
       requiredKeys = ['categoryId', 'rule_name', 'error_message', 'fields'];
     }
     if (selectedRule === BusinessRuleType.BR_TRANSFORMATION) {
@@ -365,7 +519,7 @@ export class BrruleSideSheetComponent implements OnInit {
       requiredKeys = ['rule_name'];
     }
 
-    if (selectedRule === BusinessRuleType.BR_CLASSIFICATION) {
+    if (selectedRule === BusinessRuleType.MRO_GSN_DESC_MATCH || selectedRule === BusinessRuleType.MRO_MANU_PRT_NUM_LOOKUP) {
       requiredKeys = ['rule_name', 'error_message', 'categoryId', 'apiKey', 'fields'];
     }
 
@@ -414,7 +568,7 @@ export class BrruleSideSheetComponent implements OnInit {
 
     let patchList = [];
 
-    if (br.brType === BusinessRuleType.BR_METADATA_RULE) {
+    if (br.brType === BusinessRuleType.BR_METADATA_RULE || br.brType === BusinessRuleType.BR_MANDATORY_FIELDS || br.brType === BusinessRuleType.MRO_CLS_MASTER_CHECK || br.brType === BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI) {
       patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId'];
     }
     if (br.brType === BusinessRuleType.BR_CUSTOM_SCRIPT) {
@@ -428,15 +582,12 @@ export class BrruleSideSheetComponent implements OnInit {
     if (br.brType === BusinessRuleType.BR_REGEX_RULE) {
       patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId', 'standard_function', 'regex'];
     }
-    if (br.brType === BusinessRuleType.BR_MANDATORY_FIELDS) {
-      patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId'];
-    }
 
     if (br.brType === BusinessRuleType.BR_DUPLICATE_RULE) {
       patchList = ['rule_type', 'rule_name'];
     }
 
-    if (br.brType === BusinessRuleType.BR_CLASSIFICATION) {
+    if (br.brType === BusinessRuleType.MRO_GSN_DESC_MATCH || br.brType === BusinessRuleType.MRO_MANU_PRT_NUM_LOOKUP) {
       patchList = ['rule_type', 'rule_name', 'error_message', 'weightage', 'categoryId', 'apiKey'];
     }
 
@@ -685,9 +836,8 @@ export class BrruleSideSheetComponent implements OnInit {
           list: this.fieldsList
         }
         this.filteredModules = of(this.fieldsList);
-
+        this.initGridAndHierarchyToAutocompleteDropdown(metadataModeleResponse);
         this.initiateAutocomplete();
-
         if (this.brId && this.coreSchemaBrInfo) {
           try {
             const fldIds = this.coreSchemaBrInfo.fields ? this.coreSchemaBrInfo.fields.split(',') : [];
@@ -696,6 +846,14 @@ export class BrruleSideSheetComponent implements OnInit {
               const fldCtrl = this.fieldsList.find(fil => fil.fieldId === fld);
               if (fldCtrl) {
                 this.selectedFields.push({ fieldDescri: fldCtrl.fieldDescri, fieldId: fld });
+              } else {
+                const fieldsselected = this.allGridAndHirarchyData.find(parent => { return parent.children.find(child => { return child.id === fld }) });
+                if (fieldsselected && fieldsselected.children.length >= 1) {
+                  const field = fieldsselected.children.find(child => child.id === fld);
+                  if (field) {
+                    this.selectedFields.push({ fieldDescri: field.parent + '/' + field.name, fieldId: field.id });
+                  }
+                }
               }
             });
           } catch (ex) { console.error(ex) }
@@ -718,19 +876,46 @@ export class BrruleSideSheetComponent implements OnInit {
    * @param event selected item eent
    */
   selectField(event) {
-    const alreadyExists = this.selectedFields.find(item => item.fieldId === event.option.value);
+    if (!!event.option.value) {
+      const alreadyExists = this.selectedFields.find(item => item.fieldId === event.option.value);
+      if (alreadyExists) {
+        this.snackBar.open('This field is already selected', 'error', { duration: 5000 });
+      } else {
+        this.selectedFields.push({
+          fieldDescri: event.option.viewValue,
+          fieldId: event.option.value
+        });
+      }
+      this.form.get('fields').patchValue('');
+      const txtfield = document.getElementById('fieldsInput') as HTMLInputElement;
+      if (txtfield) {
+        txtfield.value = '';
+      }
+      if (this.fieldsInput) {
+        this.fieldsInput.nativeElement.blur();
+      }
+    }
+  }
+  /**
+   * While clicking on Tree node
+   * @param selectedNode selected node
+   */
+  clickTreeNode(selectedNode) {
+    const selectedNodes = {
+      fieldDescri: selectedNode.parent + '/' + selectedNode.name,
+      fieldId: selectedNode.id
+    }
+    const alreadyExists = this.selectedFields.find(item => item.fieldId === selectedNodes.fieldId);
     if (alreadyExists) {
       this.snackBar.open('This field is already selected', 'error', { duration: 5000 });
     } else {
-      this.selectedFields.push({
-        fieldDescri: event.option.viewValue,
-        fieldId: event.option.value
-      });
+      this.selectedFields.push(selectedNodes);
     }
-
-    this.form.controls.fields.setValue('');
+    this.form.get('fields').patchValue('');
     const txtfield = document.getElementById('fieldsInput') as HTMLInputElement;
-    txtfield.value = '';
+    if (txtfield) {
+      txtfield.value = '';
+    }
     if (this.fieldsInput) {
       this.fieldsInput.nativeElement.blur();
     }
@@ -764,7 +949,7 @@ export class BrruleSideSheetComponent implements OnInit {
    * function to close the dialog
    */
   close() {
-    this.router.navigate([{ outlets: { [`${this.activeOutlet}`]: null } }]);
+    this.router.navigate([{ outlets: { [`${this.activeOutlet}`]: null } }], {queryParamsHandling: 'preserve'});
   }
 
   /**
@@ -772,6 +957,7 @@ export class BrruleSideSheetComponent implements OnInit {
    */
   save() {
     this.submitted = true;
+    this.form.controls.fields.setValue(this.selectedFields.map(item => item.fieldId).join(','));
     (Object).values(this.form.controls).forEach(control => {
       if (control.invalid)
         control.markAsTouched();
@@ -782,7 +968,6 @@ export class BrruleSideSheetComponent implements OnInit {
         if (control.invalid)
           control.markAsTouched();
       });
-    this.form.controls.fields.setValue(this.selectedFields.map(item => item.fieldId).join(','));
     this.submitted = true;
     if (!this.form.valid) {
       this.showValidationError('Please fill the required fields.');
@@ -889,6 +1074,7 @@ export class BrruleSideSheetComponent implements OnInit {
       request.categoryId = this.coreSchemaBrInfo.categoryId ? this.coreSchemaBrInfo.categoryId : this.form.value.categoryId;
       request.isCopied = false;
       request.copiedFrom = '';
+      request.dependantStatus=this.coreSchemaBrInfo.dependantStatus? this.coreSchemaBrInfo.dependantStatus:RuleDependentOn.ALL;
       this.schemaService.createBusinessRule(request).subscribe(res => {
         this.sharedService.setAfterBrSave(res);
         this.close();

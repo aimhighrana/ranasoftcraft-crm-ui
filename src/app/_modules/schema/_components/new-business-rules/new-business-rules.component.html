@@ -81,10 +81,12 @@
             Please enter error message</mat-error>
         </div>
 
-        <div class="f-col mdo-form-field" *ngIf="form.controls.rule_type.value === 'BR_CLASSIFICATION'">
+        <div class="f-col mdo-form-field" *ngIf="form.controls.rule_type.value === 'MRO_GSN_DESC_MATCH' || form.controls.rule_type.value === 'MRO_MANU_PRT_NUM_LOOKUP'">
           <pros-form-input
            [value]="form.get('apiKey').value" 
            [control]="formField('apiKey')"
+           [isHelpIcon]="true"
+           [toolTipInfo]="'Please enter your spare part library access token. If you do not have access to our spare part library, please contact sales@prospecta.com for more information.'"
            [label]="'Enter access token'">
           </pros-form-input>
           <mat-error *ngIf="submitted && form.controls.apiKey.errors && form.controls.apiKey.errors.required">

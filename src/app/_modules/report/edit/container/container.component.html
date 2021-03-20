@@ -15,14 +15,16 @@
     <div class="row-spacer"></div>
 
     <div class="f-col report-builder">
-        <pros-form-input [type]="'text'" [control]="reportName" [label]="'Dashboard name'" [value]="reportName.value"
+        <pros-form-input [type]="'text'" [placeholder]="'Untitled-1'" [control]="reportName" [label]="'Dashboard name'" [value]="reportName.value"
           [maxLength]="maxReportNameLength">
         </pros-form-input>
         <div class="row-spacer"></div>
         <div class="f-row builder-container">
             <div class="widget-col">
                 <div class="col-heading">Widgets</div>
-                <div class="container">
+                <p class="subtext">Add a widget to your dashboard by clicking on one of the options below</p>
+                <mat-divider></mat-divider>
+                <div class="container" cdkDropList cdkDropListConnectedTo="container">
                     <div widgetType="FILTER" class="widget-drag" (click) = "addWidget($event, 'FILTER')">
                         <mat-icon fontSet="mdo-icons" class="widget-icon">filter</mat-icon> Filter
                         <div class="f-spacer"></div>
@@ -270,6 +272,10 @@
                                 </ng-template>
                             </div>
 
+                            <div class="f-col" *ngIf="selStyleWid && selStyleWid.widgetType === 'COUNT'">
+                                <mat-checkbox color="primary" formControlName="isFieldDistinct">Include field as distinct</mat-checkbox>
+                            </div>
+
                             <div class="f-col">
                                 <!-- FOR FILTERs WIDGET-->
                                 <ng-template [ngIf]="selStyleWid && selStyleWid.widgetType === 'FILTER' ">
@@ -435,7 +441,7 @@
 
                                 <!-- For Custom Modules -->
                                 <ng-template
-                                    [ngIf]="selStyleWid && selStyleWid.widgetType === 'TABLE_LIST' && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===false  && styleCtrlGrp.get('isCustomdataSet').value===true">
+                                    [ngIf]="selStyleWid && selStyleWid.widgetType === 'TABLE_LIST' && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===false && styleCtrlGrp.get('isCustomdataSet').value===true">
                                     <mat-label>Choose columns</mat-label>
                                     <mat-form-field appearance="outline">
                                         <input matInput [matAutocomplete]="chooseColumn" (keyup)="searchCustomChooseColumn($event.target.value)">
@@ -457,13 +463,22 @@
                                 </ng-template>
                             </div>
                             <div class="f-col">
-                                <!-- FOR TABLE LIST CHOOSE Default Page Size-->
+                                <!-- FOR TABLE LIST CHOOSE Default Page Size and Column format-->
                                 <!-- For Modules -->
                                 <ng-template
                                     [ngIf]="selStyleWid && selStyleWid.widgetType === 'TABLE_LIST' ">
                                     <mat-label>Default page Size </mat-label>
                                     <mat-form-field appearance="outline">
                                         <input  matInput type="number" min="1"  (input)="checkNumLength($event.target.value)"  formControlName="pageDefaultSize"  placeholder="Default page size">
+                                    </mat-form-field>
+
+                                    <mat-label>Column format</mat-label>
+                                    <mat-form-field appearance="outline">
+                                        <mat-select formControlName="displayCriteria">
+                                            <mat-option value="TEXT"> Text </mat-option>
+                                            <mat-option value="CODE"> Code </mat-option>
+                                            <mat-option value="CODE_TEXT"> CODE & Text </mat-option>
+                                        </mat-select>
                                     </mat-form-field>
                                 </ng-template>
                             </div>
@@ -715,7 +730,7 @@
                 </mat-accordion>
 
                 <!-- DEFAULT FILTERS -->
-                <mat-accordion *ngIf="selStyleWid && (selStyleWid.field || (selStyleWid.fieldCtrl && !(selStyleWid.fieldCtrl.dataType === 'DTMS' || selStyleWid.fieldCtrl.dataType === 'DATS')))">
+                <mat-accordion *ngIf="selStyleWid && (selStyleWid.widgetType === 'TABLE_LIST' || (selStyleWid.field || (selStyleWid.fieldCtrl && !(selStyleWid.fieldCtrl.dataType === 'DTMS' || selStyleWid.fieldCtrl.dataType === 'DATS'))))">
                     <mat-expansion-panel class="mat-elevation-z0" togglePosition="before" expanded="true">
                         <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
                             <mat-panel-title class="panel-title">

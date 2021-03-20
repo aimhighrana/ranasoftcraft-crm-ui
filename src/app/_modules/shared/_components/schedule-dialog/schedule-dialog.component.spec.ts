@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
@@ -10,7 +10,14 @@ import { SchemaService } from '@services/home/schema.service';
 import { of } from 'rxjs';
 import { FormInputComponent } from '../form-input/form-input.component';
 import { DatePickerFieldComponent } from '../date-picker-field/date-picker-field.component';
-import * as moment from 'moment';
+
+const isRequired = (control: AbstractControl) => {
+  const validator = control.validator({} as AbstractControl);
+    if (validator && validator.required) {
+      return true;
+    }
+    return false;
+}
 
 describe('ScheduleDialogComponent', () => {
   let component: ScheduleDialogComponent;
@@ -83,19 +90,41 @@ describe('ScheduleDialogComponent', () => {
   });
 
   it('get getReferenceString', () => {
+    component.createForm();
     expect(component.getReferenceString).toEqual('');
+
+    component.setValue('end', SchemaSchedulerEnd.AFTER);
+    expect(component.getReferenceString).toContain('occurrences');
+
+    component.setValue('end', SchemaSchedulerEnd.ON);
+    expect(component.getReferenceString).toContain('ending');
+
     component.setValue('end', SchemaSchedulerEnd.NEVER);
+    expect(component.getReferenceString).toContain('Occurs every');
 
-    const startValue = component.form.controls.startOn.value
-    const repeatValue = component.form.controls.repeatValue.value;
-    const startStr = `starting from ${moment(parseInt(startValue, 10)).format('MM/DD/YYYY')} `;
-    const endStr = 'ending NEVER';
+  });
 
-    const finalResult = `Occurs every ${repeatValue} ${component.getMetricHours ? component.getMetricHours : ''} ${startStr} and ${endStr}`;
+  it('should create form', () => {
+    expect(component.form).toBeDefined();
+  });
 
-    expect(component.getReferenceString).toEqual(finalResult);
+  it('should init component', () => {
+
+    component.ngOnInit();
+    component.setValue('schemaSchedulerRepeat', SchemaSchedulerRepeat.DAILY);
+    component.setValue('schemaSchedulerRepeat', SchemaSchedulerRepeat.WEEKLY);
+    component.setValue('schemaSchedulerRepeat', SchemaSchedulerRepeat.MONTHLY);
+    component.setValue('schemaSchedulerRepeat', SchemaSchedulerRepeat.YEARLY);
+    expect(component.form.value.repeatValue).toEqual(2);
+
+    component.setValue('end', SchemaSchedulerEnd.AFTER);
+    expect(isRequired(component.form.controls.occurrenceVal)).toBeTrue();
+
+    component.setValue('end', SchemaSchedulerEnd.ON);
+    expect(isRequired(component.form.controls.endOn)).toBeTrue();
 
   });
 
 
 });
+

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { EndpointsAnalyticsService } from '@services/_endpoints/endpoints-analytics.service';
 import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 import { EndpointsDataplayService } from '@services/_endpoints/endpoints-dataplay.service';
-import { Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import {AttributesDoc, NounModifier} from '@models/schema/noun-modifier.ts';
 import { HttpClient } from '@angular/common/http';
@@ -44,7 +44,7 @@ export class NounModifierService {
    */
   public getLocalModifier(plantCode : string , nounCode: string, searchString?: string): Observable<NounModifier[]> {
     if(!nounCode) {
-      throwError('Nouncode must be required ');
+      throw new Error('Nouncode must be required ');
     }
     searchString = searchString ? searchString : '';
     return this.http.get<NounModifier[]>(this.endpointClassic.getAvailableModifierUri(), {params:{nounCode, searchString, plantCode}})
@@ -57,15 +57,7 @@ export class NounModifierService {
    * @param searchString seach modifier based on the values ..
    */
   public getLocalAttribute(nounCode: string,  modifierCode: string, plantCode : string , searchString?: string): Observable<AttributesDoc[]> {
-    if(!nounCode) {
-      throwError('Nouncode must be required ');
-    }
-
-    if(!modifierCode) {
-      throwError('Modifier must be required ');
-    }
-
-    searchString = searchString ? searchString : '';
+     searchString = searchString ? searchString : '';
     return this.http.get<AttributesDoc[]>(this.endpointClassic.getAvailableAttributeUri(), {params:{nounCode, modifierCode, searchString, plantCode}})
   }
 
@@ -93,7 +85,7 @@ export class NounModifierService {
    */
   public getGsnModifier(plantCode : string , nounCode: string, searchString?: string): Observable<Modifier[]> {
     if(!nounCode) {
-      throwError('Nouncode must be required ');
+      throw new Error('Nouncode must be required ');
     }
     searchString = searchString ? searchString : '';
     return this.http.get<Modifier[]>(this.endpointDataplay.getAvailableNounsUri(), {params:{nounCode, searchString, plantCode}})
@@ -107,11 +99,11 @@ export class NounModifierService {
    */
   public getGsnAttribute(nounCode: string,  modifierCode: string, plantCode : string , searchString?: string): Observable<NounModifier> {
     if(!nounCode) {
-      throwError('Nouncode must be required ');
+      throw new Error('Nouncode must be required ');
     }
 
     if(!modifierCode) {
-      throwError('Modifier must be required ');
+      throw new Error('Modifier must be required ');
     }
 
     searchString = searchString ? searchString : '';
@@ -146,7 +138,7 @@ export class NounModifierService {
    */
   public getSuggestedModifiers(schemaId: string, runid: string, objNr: string, brType: string, nounCode: string,  searchString?: string): Observable<NounModifier[]> {
     if(!nounCode) {
-      throwError('Nouncode must be required ');
+      throw new Error('Nouncode must be required ');
     }
     searchString = searchString ? searchString : '';
     return this.http.get<NounModifier[]>(this.endpointClassic.getSuggestedModifierUri(schemaId, runid), {params:{nounCode, searchString, brType, objNr}})
@@ -165,11 +157,11 @@ export class NounModifierService {
    */
   public getSuggestedAttributes(schemaId: string, runid: string, objNr: string, brType: string, nounCode: string, modCode: string,  searchString?: string): Observable<Modifier[]> {
     if(!nounCode) {
-      throwError('Nouncode must be required ');
+      throw new Error('Nouncode must be required ');
     }
 
     if(!modCode) {
-      throwError('Modifier must be required ');
+      throw new Error('Modifier must be required ');
     }
 
     searchString = searchString ? searchString : '';

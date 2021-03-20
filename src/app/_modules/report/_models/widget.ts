@@ -31,7 +31,9 @@ export class Widget {
     workflowPath: string[];
     distictWith: string;
     isCustomdataSet: boolean;
-    pageDefaultSize:number
+    pageDefaultSize:number;
+    isFieldDistinct: boolean;
+    displayCriteria: DisplayCriteria;
 }
 
 export interface DateFilterCtrl {
@@ -80,6 +82,7 @@ export class Criteria {
     conditionFieldStartValue: string;
     conditionFieldEndValue: string;
     udrid: string;
+    widgetType?: WidgetType;
 }
 export enum BlockType {
     AND = 'AND',
@@ -264,7 +267,9 @@ export class WidgetHeader {
     indexName: string;
     desc: string;
     isWorkflowdataSet: boolean;
-    pageDefaultSize: number
+    pageDefaultSize: number;
+    isCustomdataSet: boolean;
+    displayCriteria: DisplayCriteria;
 }
 
 export interface ChartLegend{
@@ -566,4 +571,10 @@ export class LayoutConfigWorkflowModel {
     plantCode: string;
     initiatorLayout: string;
     layoutDesc: string;
+}
+
+export enum DisplayCriteria {
+    CODE = 'CODE',
+    TEXT = 'TEXT',
+    CODE_TEXT = 'CODE_TEXT'
 }

@@ -37,21 +37,19 @@ describe('SchemalistService', () => {
     // mock url
     endpointServiceSpy.getSchemaListByGroupIdUrl.and.returnValue(url);
     // mock data
-    const mockData = {} as any;
     const expectedData: SchemaListModuleList[] = [];
     expectedData.push(new SchemaListModuleList());
     expectedData.push(new SchemaListModuleList());
 
     // actual service call
     schemalistService.getSchemaList().subscribe(actualResponse => {
-      // expect(actualResponse).toEqual(expectedData);
-      // expect(actualResponse.length).toEqual(expectedData.length);
+      expect(actualResponse).toEqual(expectedData);
     });
     // mock http call
     const mockRequst = httpTestingController.expectOne(url);
     expect(mockRequst.request.method).toEqual('GET');
     expect(mockRequst.request.responseType).toEqual('json');
-    mockRequst.flush(mockData);
+    mockRequst.flush(expectedData);
     // verify http
     httpTestingController.verify();
   }));

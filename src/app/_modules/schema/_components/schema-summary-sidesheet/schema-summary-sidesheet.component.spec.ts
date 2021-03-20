@@ -420,7 +420,6 @@
 //       }
 //     ];
 
-//     component.businessRuleData = [
 //       {
 //         sno: 1299484,
 //         brId: '22',
@@ -460,15 +459,23 @@
 //     spyOn(schemaService, 'createUpdateCheckData').and.returnValue(of(null));
 //     spyOn(schemaDetailsService, 'createUpdateUserDetails').and.returnValue(of([]));
 
-//     component.saveCheckData();
-//     expect(schemaService.createUpdateSchema).toHaveBeenCalled();
+// });
 
-//     component.schemaId = 'testId';
-//     component.schemaName.setValue('desc');
-//     component.schemaThresholdControl.setValue('10');
-
-//     component.saveCheckData();
-//     expect(schemaService.createBusinessRule).toHaveBeenCalled();
-//     expect(schemaDetailsService.createUpdateUserDetails).toHaveBeenCalled();
-//   })
+//       } as CoreSchemaBrInfo,
+//       {
+//         sno: 1299484,
+//         brId: '22',
+//         brIdStr: '22',
+//         brType: 'TRANSFORMATION',
+//         dep_rules: [{
+//           sno: 1299484,
+//           brId: '22',
+//           brIdStr: '22',
+//           brType: 'TRANSFORMATION', dependantStatus: 'SUCCESS'
+//         }]
+//       } as CoreSchemaBrInfo
+//     ];
+//     component.updateDepRuleForChild(br, 0, event);
+//     expect(component.businessRuleData.length).toEqual(3);
+//   });
 // });

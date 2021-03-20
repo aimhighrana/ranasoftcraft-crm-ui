@@ -313,7 +313,7 @@ export class NewBusinessRulesComponent implements OnInit {
             }
         }
 
-        if (this.data.moduleId) {
+        if (this.data && this.data.moduleId) {
             this.getFieldsByModuleId();
         } else {
             // Patch selected fields here
@@ -332,7 +332,7 @@ export class NewBusinessRulesComponent implements OnInit {
         const currentType = this.getTrRuleType(transformationSchema);
         this.form.controls.transformationRuleType.setValue(currentType);
         if (currentType === this.transformationType.REGEX) {
-            if (transformationSchema && transformationSchema.length > 0) {
+            if(transformationSchema && transformationSchema.length>0){
                 const data: TransformationModel = transformationSchema[0];
                 const { excludeScript, includeScript, sourceFld, targetFld, transformationRuleType, udrBlockModel } = data;
                 this.transformationData = {
@@ -346,7 +346,7 @@ export class NewBusinessRulesComponent implements OnInit {
             }
         }
         if (currentType === this.transformationType.LOOKUP) {
-            if (transformationSchema.length > 0) {
+            if(transformationSchema && transformationSchema.length>0) {
                 const lookupFields: LookupFields[] = [];
                 transformationSchema.map((schema) => {
                     lookupFields.push({
@@ -362,7 +362,6 @@ export class NewBusinessRulesComponent implements OnInit {
                         lookupTargetText: ''
                     })
                 });
-
                 this.transformationLookUpData = lookupFields;
             }
         }
@@ -533,7 +532,7 @@ export class NewBusinessRulesComponent implements OnInit {
         if (selectedRule === BusinessRuleType.BR_REGEX_RULE) {
             requiredKeys = ['rule_type', 'categoryId', 'rule_name', 'error_message', 'fields', 'regex', 'standard_function'];
         }
-        if (selectedRule === BusinessRuleType.BR_MANDATORY_FIELDS || selectedRule === BusinessRuleType.BR_METADATA_RULE) {
+        if (selectedRule === BusinessRuleType.BR_MANDATORY_FIELDS || selectedRule === BusinessRuleType.BR_METADATA_RULE || selectedRule === BusinessRuleType.MRO_CLS_MASTER_CHECK || selectedRule === BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI) {
             requiredKeys = ['rule_type', 'categoryId', 'rule_name', 'error_message', 'fields'];
         }
         if (selectedRule === BusinessRuleType.BR_TRANSFORMATION) {
@@ -544,7 +543,7 @@ export class NewBusinessRulesComponent implements OnInit {
                 requiredKeys = ['rule_type', 'rule_name', 'categoryId', 'transformationRuleType', 'error_message'];
             }
         }
-        if (selectedRule === BusinessRuleType.BR_CLASSIFICATION) {
+        if (selectedRule === BusinessRuleType.MRO_GSN_DESC_MATCH || selectedRule === BusinessRuleType.MRO_MANU_PRT_NUM_LOOKUP) {
             requiredKeys = ['rule_name', 'error_message', 'categoryId', 'apiKey', 'fields'];
         }
         if (selectedRule === BusinessRuleType.BR_DUPLICATE_RULE) {

@@ -6,7 +6,7 @@ import { ENTER, COMMA } from '@angular/cdk/keycodes';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { ReportingWidget, Criteria, LayoutConfigWorkflowModel } from '../../../_models/widget';
+import { ReportingWidget, Criteria, LayoutConfigWorkflowModel, DisplayCriteria, WidgetHeader } from '../../../_models/widget';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EndpointService } from '@services/endpoint.service';
@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
 import { SharedServiceService } from '@shared/_services/shared-service.service';
 import { ReportService } from '@modules/report/_service/report.service';
 import { UserService } from '@services/user/userservice.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'pros-reporting-list',
@@ -29,12 +30,11 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   removable = true;
   addOnBlur = true;
   dataSource: MatTableDataSource<any> = [] as any;
-  pageSize = 10;
+  pageSize = 100;
   pageIndex = 0;
   sortingField = '';
   sortingDir = '';
   listData: any[] = new Array();
-  tablepageSize = 100;
 
   pageSizeOption=[100, 200, 300, 400];
 
@@ -49,9 +49,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
 
   activeSorts: any = null;
 
-  headerDesc = '';
-  objectType = '';
-  isWorkflowdataSet: boolean;
+  widgetHeader: WidgetHeader = new WidgetHeader();
 
   plantCode: string;
   roleId: string;
@@ -163,10 +161,9 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
    */
   public getHeaderMetaData(): void {
     const sub = this.widgetService.getHeaderMetaData(this.widgetId).subscribe(returnData => {
-      this.headerDesc = returnData.widgetName;
-      this.objectType = returnData.objectType;
-      this.isWorkflowdataSet = returnData.isWorkflowdataSet;
-      this.tablepageSize=returnData.pageDefaultSize || 100
+      this.widgetHeader = returnData;
+      this.widgetHeader.displayCriteria = returnData.displayCriteria ? returnData.displayCriteria : DisplayCriteria.CODE;
+      this.pageSize=returnData.pageDefaultSize || 100;
     }, (error)=> {
       console.log('Something went wrong while getting header meta data', error.message)
     });
@@ -234,7 +231,6 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
           Object.assign(hdvs, source.staticFields);
         }
         this.displayedColumnsId.forEach(column => {
-
           if (column === 'action' || column === 'objectNumber' || column === 'stat') {
             if(column === 'objectNumber') {
               obj[column]=objectNumber;
@@ -250,11 +246,53 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
                     valArray.push(v.t);
                   }
                 });
-                const finalText = valArray.toString();
-                if (finalText) {
-                  obj[column] = finalText;
-                } else {
-                  obj[column] = hdvs[column] ? hdvs[column].vc && hdvs[column].vc[0] ? hdvs[column].vc.map(map => map.c).toString() : '' : '';
+                let textvalue = valArray.toString();
+                textvalue = textvalue === 'null' ? '' : textvalue
+                let codeValue = hdvs[column] ? hdvs[column].vc && hdvs[column].vc[0] ? hdvs[column].vc.map(map => map.c).toString() : '' : '';
+                codeValue = codeValue === 'null' ? '' : codeValue;
+                if(column === 'OVERDUE' || column === 'FORWARDENABLED' || column === 'TIME_TAKEN') {
+                  switch(column) {
+
+                    case 'TIME_TAKEN' :
+                      const days = moment.duration(Number(codeValue), 'milliseconds').days();
+                      const hours = moment.duration(Number(codeValue), 'milliseconds').hours();
+                      const minutes = moment.duration(Number(codeValue), 'milliseconds').minutes();
+                      const seconds = moment.duration(Number(codeValue), 'milliseconds').seconds();
+                      const timeString = `${days >0 ? days + ' d ': ''}${hours >0 ? hours + ' h ': ''}${minutes >0 ? minutes + ' m ': ''}${seconds >0 ? seconds + ' s': ''}`;
+                      textvalue = timeString ? timeString : '0 s';
+                      break;
+
+                    case 'FORWARDENABLED':
+                    case 'OVERDUE':
+                      if(codeValue === '1' || codeValue === 'y') {
+                        textvalue = 'Yes';
+                      }
+                      if(codeValue === '0' || codeValue === 'n') {
+                        textvalue = 'No';
+                      }
+                      break;
+
+                    default:
+                      break;
+                  }
+                }
+                switch(this.widgetHeader.displayCriteria) {
+                  case DisplayCriteria.CODE :
+                    obj[column] = `${codeValue}`;
+                    break;
+                  case DisplayCriteria.TEXT :
+                    obj[column] = `${textvalue ? textvalue : codeValue}`;
+                    break;
+                  case DisplayCriteria.CODE_TEXT :
+                    if(this.isDropdownType(column)) {
+                      obj[column] = `${(textvalue ? codeValue + ' -- ' + textvalue : codeValue ? codeValue  + ' -- ' + codeValue : '')}`;
+                    } else {
+                      obj[column] = `${textvalue ? textvalue : codeValue}`;
+                    }
+                    break;
+
+                  default:
+                    break;
                 }
               }
             }
@@ -280,7 +318,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   details(data): void {
     const url = document.getElementsByTagName('base')[0].href.substring(0, document.getElementsByTagName('base')[0].href.indexOf('MDOSF'));
     window.open(
-      url + 'MDOSF/loginPostProcessor?to=summary&objNum=' + data.objectNumber + '&objectType=' + this.objectType, 'MDO_TAB');
+      url + 'MDOSF/loginPostProcessor?to=summary&objNum=' + data.objectNumber + '&objectType=' + this.widgetHeader.objectType, 'MDO_TAB');
   }
 
   /*
@@ -300,10 +338,9 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
    */
   sortTable(sort: Sort) {
     if (sort) {
-      let fld = sort.active;
+      const fld = sort.active;
       const dir = sort.direction as string;
       this.activeSorts = {} as any;
-      fld = fld === 'objectNumber' ? 'id' : fld;
       this.activeSorts[fld] = dir;
       if (dir === '') {
         this.activeSorts = null;
@@ -335,15 +372,20 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
     return hasFld ? (hasFld.fldMetaData ? ((hasFld.fldMetaData.dataType === 'DATS' || hasFld.fldMetaData.dataType === 'DTMS') ? true : false) : false) : false;
   }
 
+  getDateTypeValue(val: string): string {
+    return Number(val) ? val : '';
+  }
+
   /**
    * function to open column setting side-sheet
    */
   openTableColumnSideSheet() {
     const sortedColumns=this.sortDisplayedColumns(this.tableColumnMetaData)
     const data = {
-      objectType: this.objectType,
+      objectType: this.widgetHeader.objectType,
       selectedColumns: sortedColumns.map(columnMetaData => columnMetaData.fldMetaData),
-      isWorkflowdataSet: this.isWorkflowdataSet,
+      isWorkflowdataSet: this.widgetHeader.isWorkflowdataSet,
+      isCustomdataSet: this.widgetHeader.isCustomdataSet,
       widgetId: this.widgetId,
       isRefresh: false,
     }
@@ -352,10 +394,8 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
   }
 
   getAlllayouts(row: any) {
-    console.log(this.objectType);
-    console.log(row);
     const WFID = row ? row.WFID : '';
-    const sub = this.reportService.getAllLayoutsForSummary(this.objectType, WFID, this.roleId, this.plantCode).subscribe(res => {
+    const sub = this.reportService.getAllLayoutsForSummary(this.widgetHeader.objectType, WFID, this.roleId, this.plantCode).subscribe(res => {
       console.log(res);
       this.layouts = res;
     }, error => console.error(`Error : ${error.message}`));
@@ -369,6 +409,12 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
     this.subscription.forEach((sub) => {
       sub.unsubscribe();
     })
+  }
+
+  isDropdownType(column: string): boolean {
+    const val = this.reportingListWidget.getValue() ? this.reportingListWidget.getValue() : [];
+    const hasFld = val.filter(fil => fil.fields === column)[0];
+    return hasFld ? (hasFld.fldMetaData ? ((hasFld.fldMetaData.picklist === '1' || hasFld.fldMetaData.picklist === '30' || hasFld.fldMetaData.picklist === '37') ? true : false) : false) : false;
   }
 
 }

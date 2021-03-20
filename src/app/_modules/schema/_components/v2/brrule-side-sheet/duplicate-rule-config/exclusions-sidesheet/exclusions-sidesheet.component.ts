@@ -42,7 +42,7 @@ export class ExclusionsSidesheetComponent implements OnInit, OnDestroy {
         if (data && data.fId) {
           this.initExclusionData(data);
         } else {
-          this.router.navigate([{ outlets: { outer: null } }]);
+          this.close();
         }
       })
   }
@@ -144,11 +144,15 @@ export class ExclusionsSidesheetComponent implements OnInit, OnDestroy {
   removeSynonymGroup(index) {
 
     this.glocalDialogService.confirm({label:'Are you sure to delete ?'}, (resp) => {
-      if (resp && resp === 'yes') {
-        this.synonymsArray.removeAt(index);
-      }
+      this.removeSynGrpAfterConfirm(resp, index);
     })
 
+  }
+
+  removeSynGrpAfterConfirm(resp: string, index: number) {
+    if (resp && resp === 'yes') {
+      this.synonymsArray.removeAt(index);
+    }
   }
 
   /**

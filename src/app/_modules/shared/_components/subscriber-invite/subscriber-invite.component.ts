@@ -85,10 +85,14 @@ export class SubscriberInviteComponent implements OnInit {
    */
   removeInvite(inviteIndex: number) {
     this.globalDialogService.confirm({ label: 'Sure to delete ?' }, (res) => {
-      if (res === 'yes') {
-        this.invites().removeAt(inviteIndex);
-      }
+      this.removeInviteAfterConfirm(res, inviteIndex);
     });
+  }
+
+  removeInviteAfterConfirm(resp: string, inviteIndex: number) {
+    if (resp === 'yes') {
+      this.invites().removeAt(inviteIndex);
+    }
   }
 
   /**

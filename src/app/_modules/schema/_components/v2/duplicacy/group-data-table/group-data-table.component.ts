@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { CatalogCheckService } from '@services/home/schema/catalog-check.service';
-import { GroupDetails, RequestForGroupList, TableDataSource } from '@models/schema/duplicacy';
+import { GroupDetails, RequestForGroupList, SearchAfter, TableDataSource } from '@models/schema/duplicacy';
 import { BehaviorSubject } from 'rxjs';
 import { MatSort } from '@angular/material/sort';
 import { Userdetails } from '@models/userdetails';
@@ -61,7 +61,7 @@ export class GroupDataTableComponent implements OnInit, OnChanges, AfterViewInit
    * data fetch page index
    */
   pageIndex = 0;
-
+  searchAfter : SearchAfter  = new SearchAfter();
   userDetails: Userdetails = new Userdetails();
 
   constructor(private catalogService: CatalogCheckService,
@@ -130,6 +130,7 @@ export class GroupDataTableComponent implements OnInit, OnChanges, AfterViewInit
       this.pageIndex++;
     } else {
       this.pageIndex = 0;
+      this.searchAfter = new SearchAfter();
     }
 
     const request = new RequestForGroupList();
@@ -139,19 +140,22 @@ export class GroupDataTableComponent implements OnInit, OnChanges, AfterViewInit
     request.page = this.pageIndex;
     request.size = 20;
     request.responseStatus = this.activeTab;
-
+    request.searchAfter =this.searchAfter;
     this.catalogService.getAllGroupIds(request)
       .subscribe(groups => {
         if (isLoadingMore) {
-          this.dataSource.data = this.dataSource.data.concat(groups);
+          this.dataSource.data = this.dataSource.data.concat(groups.groups);
+          this.searchAfter = groups.searchAfter;
+          console.log(this.searchAfter);
         }
         else {
-          this.dataSource.data = groups;
-          this.dataSource.totalCount = groups.length;
+          this.dataSource.data = groups.groups;
+          this.dataSource.totalCount = groups.groups.length;
+          this.searchAfter = groups.searchAfter;
           const firstRow = this.dataSource.data[0] ? this.dataSource.data[0] : this.BLANK_GROUP ;
           this.rowGroupClicked(firstRow);
         }
-        console.log('Duplicacy groups list ',groups);
+        console.log('Duplicacy groups list ',groups.groups);
       }, error => {
 
         if (!isLoadingMore) {
@@ -166,8 +170,10 @@ export class GroupDataTableComponent implements OnInit, OnChanges, AfterViewInit
 
 
   rowGroupClicked(row) {
+    console.log(row);
     this.activeGroupId = row.groupId;
     this.groupChange.emit(row);
+
   }
 
   /** Whether the number of selected elements matches the total number of rows. */
@@ -185,7 +191,7 @@ export class GroupDataTableComponent implements OnInit, OnChanges, AfterViewInit
   }
 
   onScroll(event){
-
+    console.log('colled');
     if (event.target.clientHeight + event.target.scrollTop >= event.target.scrollHeight) {
       if( event.target.scrollTop > this.lastScrollTop){
         console.log('End ', event.target.scrollTop);

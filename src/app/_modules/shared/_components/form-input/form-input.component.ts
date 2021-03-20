@@ -84,6 +84,11 @@ export class FormInputComponent implements OnInit, OnChanges {
   readonly = false;
 
   /**
+   * To get information of the input fields
+   */
+  @Input() toolTipInfo: string;
+
+  /**
    * ANGULAR HOOK
    *
    */

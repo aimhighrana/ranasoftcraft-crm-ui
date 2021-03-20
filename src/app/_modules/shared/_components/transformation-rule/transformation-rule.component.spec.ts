@@ -3,11 +3,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
-import { FieldConfiguration } from '@models/schema/schemadetailstable';
+import { FieldConfiguration, TransformationFormData } from '@models/schema/schemadetailstable';
 
 import { TransformationRuleComponent } from './transformation-rule.component';
 import { BusinessRuleType } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { FormInputComponent } from '../form-input/form-input.component';
+import { SimpleChanges } from '@angular/core';
 
 describe('TransformationRuleComponent', () => {
   let component: TransformationRuleComponent;
@@ -134,4 +135,104 @@ describe('TransformationRuleComponent', () => {
     const field=component.formField('excludeScript');
     expect(field).toBeDefined();
    }));
+
+   it('should init component', () => {
+
+    component.ngOnInit();
+    expect(component.form).toBeDefined();
+
+    spyOn(component.transformationFormOutput, 'emit');
+    component.form.reset();
+    expect(component.transformationFormOutput.emit).toHaveBeenCalled();
+
+   });
+
+   it('should patch form value', () => {
+
+    component.sourceFieldsObject = {
+      valueKey: 'value',
+      labelKey: 'label',
+      list: [{value: 'width'}]
+    };
+
+    component.targetFieldsObject = {
+      valueKey: 'value',
+      labelKey: 'label',
+      list: [{value: 'length'}]
+    };
+
+    const formData = {sourceFld: 'width', targetFld: 'size,length'} as TransformationFormData;
+
+    component.initializeForm();
+    component.patchFormValues(null);
+
+    component.patchFormValues({} as TransformationFormData);
+    expect(component.selectedSourceField).toBeFalsy();
+
+    component.patchFormValues(formData);
+    expect(component.selectedSourceField).toEqual(component.sourceFieldsObject.list[0]);
+    expect(component.selectedTargetFields).toEqual(component.targetFieldsObject.list);
+
+   });
+
+   it('should remove source field', () => {
+    component.initializeForm();
+    component.removeSourceField();
+    expect(component.selectedSourceField).toBeNull();
+   });
+
+   it('should init target autocomplete', () => {
+     component.initializeForm();
+     component.initTargetAutocomplete();
+     expect(component.filteredTargetFields).toBeDefined();
+   });
+
+   it('should init source autocomplete', () => {
+    component.initializeForm();
+    component.initSourceAutocomplete();
+    expect(component.filteredSourceFields).toBeDefined();
+
+    let filteredFields;
+    component.filteredSourceFields.subscribe(fields => filteredFields = fields);
+    component.sourceFieldsObject = dummyValue;
+    component.form.controls.sourceFld.setValue('two');
+    expect(filteredFields.length).toEqual(1);
+
+  });
+
+  it('should emitTransformationOutput', () => {
+
+    spyOn(component.transformationFormOutput, 'emit');
+    component.initializeForm();
+    component.emitTransformationOutput();
+    expect(component.transformationFormOutput.emit).toHaveBeenCalled();
+
+  });
+
+  it('displayFnSource(), should return a display value', () => {
+    component.sourceFieldsObject = dummyValue;
+    expect(component.displayFnSource(dummyValue.list[0])).toEqual('Test Field');
+  })
+
+  it('update on changes', () => {
+
+    spyOn(component, 'updateSourceValue');
+    spyOn(component, 'updateTargetValue');
+    spyOn(component, 'patchFormValues');
+
+    component.ngOnChanges({});
+
+
+    const changes:SimpleChanges = {sourceFieldsObject:{currentValue:dummyValue, previousValue: null, firstChange:null, isFirstChange:null},
+    targetFieldsObject:{currentValue:dummyValue, previousValue: null, firstChange:null, isFirstChange:null},
+    selectedRuleType:{currentValue:'Regex', previousValue: null, firstChange:null, isFirstChange:null},
+    submitted:{currentValue:true, previousValue: false, firstChange:null, isFirstChange:null}
+    };
+    component.ngOnChanges(changes);
+
+    component.initializeForm();
+    component.ngOnChanges(changes);
+
+    expect(component.patchFormValues).toHaveBeenCalledTimes(3);
+  });
 });

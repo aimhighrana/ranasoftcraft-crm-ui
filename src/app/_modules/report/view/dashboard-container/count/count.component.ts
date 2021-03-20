@@ -64,7 +64,7 @@ export class CountComponent extends GenericWidgetComponent implements OnInit,OnC
     const widgetDataSub = this.widgetService.getWidgetData(String(widgetid),creiteria).subscribe(returndata=>{
       this.count = 0;
       const res = Object.keys(returndata.aggregations);
-      if(res[0] === 'value_count#COUNT' || res[0] === 'cardinality#COUNT') {
+      if(res[0] === 'value_count#COUNT' || res[0] === 'scripted_metric#COUNT') {
         this.count  = returndata.aggregations[res[0]] ? returndata.aggregations[res[0]].value : 0;
       } else if(res[0] === 'sum#COUNT') {
         const sumCnt  = returndata.aggregations[res[0]] ? returndata.aggregations[res[0]].value : 0;

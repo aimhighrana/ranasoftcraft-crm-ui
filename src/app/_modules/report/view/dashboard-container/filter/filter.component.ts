@@ -3,12 +3,13 @@ import { FormControl } from '@angular/forms';
 import { Observable, BehaviorSubject, of, Subscription } from 'rxjs';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
-import { FilterWidget, DropDownValues, Criteria, BlockType, ConditionOperator, WidgetHeader, FilterResponse, DateFilterQuickSelect, DateBulder, DateSelectionType } from '../../../_models/widget';
+import { FilterWidget, DropDownValues, Criteria, BlockType, ConditionOperator, WidgetHeader, FilterResponse, DateFilterQuickSelect, DateBulder, DateSelectionType, WidgetType } from '../../../_models/widget';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { MatSliderChange } from '@angular/material/slider';
 import { UDRBlocksModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-
+import * as moment from 'moment';
+import { debounceTime } from 'rxjs/operators';
 @Component({
   selector: 'pros-filter',
   templateUrl: './filter.component.html',
@@ -30,6 +31,22 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
   numericValCtrl: FormControl = new FormControl();
   filterResponse: FilterResponse;
   sliderval: FormControl = new FormControl();
+  filteredArray = 0;
+
+  /**
+   * store last value in the bucket array
+   */
+  searchAfter: string;
+
+  /**
+   * load more value in the filter
+   */
+  isLoadMore = false;
+
+  /**
+   * store search string value
+   */
+  searchString: string;
 
   /**
    * When reset filter from main container value should be true
@@ -98,15 +115,20 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
   ngOnInit(): void {
     this.getFilterMetadata();
     this.getHeaderMetaData();
-    this.filterFormControl.valueChanges.subscribe(val=>{
+
+    this.filterFormControl.valueChanges.pipe(debounceTime(1000)).subscribe(val=>{
       if(typeof val === 'string') {
-        this.loadAlldropData(this.filterWidget.value.fieldId, this.filterCriteria,val);
+        this.filteredOptions = of([]);
+        this.searchString = val;
+        const filteredCriteria =this.removefilter(this.filterWidget.value.fieldId);
+        this.loadAlldropData(this.filterWidget.value.fieldId, filteredCriteria, val);
       }else {
-      	   this.filteredOptions = of(this.values);
-     	   if(typeof val === 'string' && val.trim() === '' && !this.filterWidget.getValue().isMultiSelect){
-      	     this.removeSingleSelectedVal(false);
-      	   }
-      	 }
+        this.searchString = '';
+        this.filteredOptions = of(this.values);
+        if(typeof val === 'string' && val.trim() === '' && !this.filterWidget.getValue().isMultiSelect){
+          this.removeSingleSelectedVal(false);
+        }
+      }
     });
     const filterWid = this.filterWidget.subscribe(widget=>{
       if(widget) {
@@ -119,7 +141,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
   getFieldsMetadaDesc(buckets:any[], fieldId: string) {
     const finalVal = {} as any;
     buckets.forEach(bucket=>{
-      const key = bucket.key;
+      const key = bucket.key.FILTER;
       const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
       const val = hits._source.hdvs?(hits._source.hdvs[fieldId] ?
                   ( hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vc : null) : null):
@@ -140,35 +162,29 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
         }
       } else {
         finalVal[key] = key;
-      }
-      if(fieldId === 'OVERDUE' || fieldId === 'FORWARDENABLED' || fieldId === 'TIME_TAKEN') {
-        if(fieldId === 'TIME_TAKEN') {
-          const seconds = Math.floor((key % (1000*60)) / 1000);
-          const minutes = Math.floor((key % (1000*60*60)) / (1000*60));
-          const hours = Math.floor((key % (1000*60*60*24)) / (1000*60*60));
-          const days = Math.floor(key / (1000*60*60*24));
+      } if(fieldId === 'OVERDUE' || fieldId === 'FORWARDENABLED' || fieldId === 'TIME_TAKEN') {
+        switch(fieldId) {
+          case 'TIME_TAKEN':
+            const days = moment.duration(Number(key), 'milliseconds').days();
+            const hours = moment.duration(Number(key), 'milliseconds').hours();
+            const minutes = moment.duration(Number(key), 'milliseconds').minutes();
+            const seconds = moment.duration(Number(key), 'milliseconds').seconds();
+            const timeString = `${days >0 ? days + ' d ': ``}${hours >0 ? hours + ' h ': ``}${minutes >0 ? minutes + ' m ': ``}${seconds >0 ? seconds + ' s': ``}`;
+            finalVal[key] = timeString ? timeString : '0 s';
+            break;
 
-          let timeString = '';
-          if (days !== 0) {
-            timeString += (days + ' d ');
-          }
-          if (hours !== 0) {
-            timeString += (hours + ' h ');
-          }
-          if (minutes !== 0) {
-            timeString += (minutes + ' m ');
-          }
-          if (seconds !== 0 || key < 1000) {
-            timeString += (seconds + ' s ');
-          }
-          finalVal[key] = timeString;
-        } else {
-          if(key === '1' || key === 'y') {
-            finalVal[key] = 'Yes';
-          }
-          if(key === '0' || key === 'n') {
-            finalVal[key] = 'No';
-          }
+          case 'OVERDUE':
+          case 'FORWARDENABLED':
+            if(key === '1' || key === 'y') {
+              finalVal[key] = 'Yes';
+            }
+            if(key === '0' || key === 'n') {
+              finalVal[key] = 'No';
+            }
+            break;
+
+          default:
+            break;
         }
       }
     });
@@ -181,8 +197,10 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
           this.values[index] = valOld[0];
         }
     });
-    this.filteredOptions = of(this.values);
-
+    this.filteredOptions.subscribe(sub=>{
+    sub.push(...this.values);
+      this.filteredOptions = of(sub);
+    });
   }
 
   updateObjRefDescription(buckets:any[], fieldId: string) {
@@ -190,7 +208,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     locale = locale.toUpperCase();
     const finalVal = {} as any;
     buckets.forEach(bucket=>{
-      const key = bucket.key;
+      const key = bucket.key.FILTER;
       const hits = bucket['top_hits#items'] ? bucket['top_hits#items'].hits.hits[0] : null;
       const val = hits._source.hdvs?(hits._source.hdvs[fieldId] ?
         ( hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vc : null) : null):
@@ -223,7 +241,11 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
           this.values[index] = valOld[0];
         }
     });
-    this.filteredOptions = of(this.values);
+
+    this.filteredOptions.subscribe(sub=>{
+      sub.push(...this.values);
+        this.filteredOptions = of(sub);
+      });
   }
 
   public getHeaderMetaData():void{
@@ -339,14 +361,20 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     }
   }
 
-  private loadAlldropData(fieldId: string, criteria: Criteria[],searchString?:string):void{
-    const widgetData = this.widgetService.getWidgetData(String(this.widgetId), criteria,searchString).subscribe(returnData=>{
+  public loadAlldropData(fieldId: string, criteria: Criteria[],searchString?:string, searchAfter?:string): void{
+    const widgetData = this.widgetService.getWidgetData(String(this.widgetId), criteria,searchString,searchAfter).subscribe(returnData=>{
       const res = Object.keys(returnData.aggregations);
       const buckets  = returnData.aggregations[res[0]] ? returnData.aggregations[res[0]].buckets : [];
+      if (buckets && buckets.length === 10) {
+        this.searchAfter = returnData.aggregations[res[0]].after_key.FILTER ? returnData.aggregations[res[0]].after_key.FILTER : '';
+        this.isLoadMore = true;
+      } else {
+        this.isLoadMore = false;
+      }
       if(this.filterWidget.getValue().metaData &&(this.filterWidget.getValue().metaData.picklist === '1' || this.filterWidget.getValue().metaData.picklist === '30' || this.filterWidget.getValue().metaData.picklist === '37')) {
         const metadatas: DropDownValues[] = [];
         buckets.forEach(bucket => {
-          const metaData = {CODE: bucket.key, FIELDNAME: fieldId, TEXT: bucket.key} as DropDownValues;
+          const metaData = {CODE: bucket.key.FILTER, FIELDNAME: fieldId, TEXT: bucket.key.FILTER} as DropDownValues;
           metadatas.push(metaData);
         });
         this.values = metadatas;
@@ -355,7 +383,10 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
         } else if(this.filterWidget.getValue().metaData.picklist === '30'){
           this.updateObjRefDescription(buckets, fieldId);
         } else {
-          this.filteredOptions = of(this.values);
+          this.filteredOptions.subscribe(sub=>{
+            sub.push(...this.values);
+              this.filteredOptions = of(sub);
+            });
         }
       } else if(this.filterWidget.getValue().metaData && (this.filterWidget.getValue().metaData.picklist === '0' && this.filterWidget.getValue().metaData.dataType === 'NUMC')) {
         // static data  TODO
@@ -383,9 +414,11 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     this.evtFilterCriteria.emit(criteria);
   }
 
-  optionClicked(event: MatAutocompleteSelectedEvent) {
+  optionClicked(event: MatAutocompleteSelectedEvent, option?: DropDownValues) {
     if(event.option) {
       this.toggleSelection(event.option.value);
+    } else {
+      this.toggleSelection(option);
     }
   }
 
@@ -404,6 +437,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
           critera1.conditionFieldId = this.filterWidget.getValue().fieldId;
           critera1.conditionFieldValue = option.CODE ? option.CODE : '';
           critera1.blockType = BlockType.COND;
+          critera1.widgetType = WidgetType.FILTER;
           critera1.conditionOperator = ConditionOperator.EQUAL;
           selectedOptions.push(critera1);
           this.enableClearIcon = true;
@@ -414,6 +448,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
         critera1.conditionFieldId = this.filterWidget.getValue().fieldId;
         critera1.conditionFieldValue = option ? option.CODE : '';
         critera1.blockType = BlockType.COND;
+        critera1.widgetType = WidgetType.FILTER;
         critera1.conditionOperator = ConditionOperator.EQUAL;
         selectedOptions.push(critera1);
         this.enableClearIcon = true;
@@ -426,6 +461,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
           critera1.conditionFieldId = this.filterWidget.getValue().fieldId;
           critera1.conditionFieldValue = option ? option.CODE : '';
           critera1.blockType = BlockType.COND;
+          critera1.widgetType = WidgetType.FILTER;
           critera1.conditionOperator = ConditionOperator.EQUAL;
           selectedOptions.push(critera1);
           this.enableClearIcon = true;
@@ -676,5 +712,37 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
       this.numericValCtrl.setValue(this.filterResponse.min);
     }
     this.sliderValueChange(event);
+  }
+
+  /**
+   * should load the data when user scroll the filter value
+   */
+  onScroll() {
+    if(this.isLoadMore) {
+      const filteredCriteria =this.removefilter(this.filterWidget.value.fieldId);
+      this.loadAlldropData(this.filterWidget.value.fieldId, filteredCriteria, this.searchString, this.searchAfter);
+    }
+  }
+
+  /**
+   * should remove the filter of that current fieldId which is on filter
+   * @param fieldId selected fieldId
+   */
+  removefilter(fieldId: string): Criteria[] {
+    const removeValue = this.filterCriteria.filter(fill=> fill.fieldId === fieldId && fill.widgetType === WidgetType.FILTER);
+    const dupFilterCiteria = [...this.filterCriteria];
+    removeValue.forEach(val=> {
+      dupFilterCiteria.splice(dupFilterCiteria.indexOf(val),1);
+    });
+    return dupFilterCiteria;
+  }
+
+  onfocus() {
+    this.filteredOptions.subscribe(sub=> { this.filteredArray = sub.length});
+    if(this.searchAfter && this.filteredArray > 10) {
+    this.filteredOptions = of([]);
+    const filteredCriteria =this.removefilter(this.filterWidget.value.fieldId);
+    this.loadAlldropData(this.filterWidget.value.fieldId, filteredCriteria, '', '');
+    }
   }
 }

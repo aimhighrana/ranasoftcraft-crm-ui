@@ -447,7 +447,7 @@ export class EndpointsClassicService {
    * @param senderUid username of logged in user
    */
   public getNotificationsUrl(senderUid, from: string, to: string): string {
-    return `${this.apiUrl}/notification/getNotification/${senderUid}?from=${from}&to=${to}`
+    return `${this.apiUrl}/notification/getNotification?senderUid=${senderUid}&from=${from}&to=${to}`
   }
 
   /**
@@ -475,7 +475,7 @@ export class EndpointsClassicService {
 
 
   public getNotificationsCount(senderUid): string {
-    return `${this.apiUrl}/notification/getNotificationCount/${senderUid}`
+    return `${this.apiUrl}/notification/getNotificationCount?senderUid=${senderUid}`
   }
 
   /**
@@ -499,6 +499,13 @@ export class EndpointsClassicService {
    */
   public saveUpdateDuplicateRule(): string {
     return `${this.apiUrl}/duplicate/saveDuppsett`;
+  }
+
+  /**
+   * endpoint for copy duplicate rule
+   */
+  public copyDuplicate(): string{
+    return `${this.apiUrl}/duplicate/copyDuplicate`;
   }
 
   /**
@@ -715,8 +722,8 @@ export class EndpointsClassicService {
     return `${this.apiUrl}/schema/reset-corrected-records/${schemaId}`;
   }
 
-  public getExecutionOverviewChartDataUrl(schemaId: string, variantId: string): string {
-    return this.apiUrl + `/schema/overview-chart-data/${schemaId}/${variantId}`;
+  public getSchemaExecutedStatsTrendUri(schemaId: string, variantId: string): string {
+    return this.apiUrl + `/schema/execution/trends/${schemaId}/${variantId}`;
   }
 
   /**

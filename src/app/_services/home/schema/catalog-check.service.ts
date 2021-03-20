@@ -24,14 +24,33 @@ export class CatalogCheckService {
 
   getAllGroupIds(params) : Observable<any> {
 
-    return this.http.get<any>(this.endpointService.duplicacyGroupsListUrl(), { params })
+    return this.http.post<any>(this.endpointService.duplicacyGroupsListUrl(),  params )
       .pipe(
         map(data => {
           if (data){
-            let groups = data.exactGroupId.map(id => {return  {groupId: id, groupKey: 'exactGroupId' }});
-            groups = groups.concat(data.fuzzyGroupId.map(id => {return  {groupId: id, groupKey: 'fuzzyGroupId' }}));
+            let groups = [];
+            const response = {
+              groups: [],
+              searchAfter: ''
+            };
+            let searchAfter;
+            data.bucket.buckets.map(id => {
+              if (id.key.exact !== '') {
+                groups = groups.concat({ groupId: id.key.exact, groupDesc: id.key.group, groupKey: 'exactGroupId' })
+              }
+              if (id.key.fuzzy !== '') {
+                groups = groups.concat({ groupId: id.key.fuzzy, groupDesc: id.key.group, groupKey: 'fuzzyGroupId' })
+              }
+            });
+            if (data.bucket.buckets.length !== 0) {
+              console.log('after key : ' + data.bucket.buckets[data.bucket.buckets.length - 1].key);
+              searchAfter = data.bucket.buckets[data.bucket.buckets.length - 1].key;
+            }
             console.log('Groups ', groups);
-            return groups;
+            console.log('searchAfter ', searchAfter);
+            response.groups = groups;
+            response.searchAfter = searchAfter;
+            return response;
           }
           return [];
         })

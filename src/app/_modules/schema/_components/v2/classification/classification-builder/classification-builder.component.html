@@ -10,16 +10,23 @@
             <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon>
         </button>
         <mat-menu #check="matMenu" class="navigation-menu">
-            <button mat-menu-item (click)="openDataScopeSideSheet()">[New data scope]</button>
             <button mat-menu-item (click)="variantChange('0')"> Entire dataset </button>
             <ng-container *ngIf="dataScope && dataScope.length">
                 <button mat-menu-item *ngFor="let scope of dataScope" (click)="variantChange(scope.variantId)">
                     {{scope.variantName}}
                 </button>
             </ng-container>
+            <mat-divider></mat-divider>
+            <button mat-menu-item (click)="openDataScopeSideSheet()"><mat-icon fontSet="mdo-icons" class="mat-menu-icon">plus</mat-icon> New data scope</button>
         </mat-menu>
-        <div class="f-col-spacer-half"></div>
+        <div class="col-spacer"></div>
         <div class="f-spacer"></div>
+        <div class="f-row">
+            <span class="counts">230 errors</span>
+            <span class="counts">114 warnings</span>
+            <span class="counts">22 corrections</span>
+        </div>
+        <div class="col-spacer"></div>
         <div class="f-row action-iconbtns">
             <button mat-flat-button color="accent" (click)="openSummarySideSheet()">
                 <mat-icon fontSet="mdo-icons">wand</mat-icon> Check data
@@ -36,33 +43,33 @@
             </mat-menu>
         </div>
     </div>
+
     <ng-template [ngIf]="isInRunning" [ngIfElse]="schemaInfoTemplate">
         <pros-schema-progress [schemaId]="schemaId"></pros-schema-progress>
     </ng-template>
 
     <ng-template #schemaInfoTemplate>
-    <mat-divider></mat-divider>
-    <div class="row-spacer"></div>
-    <div class="f-row">
-        <mat-chip-list>
-            <mat-chip disableRipple="true" (click)="viewOf.next('')" class="none-stats-chip">
-                {{ schemaInfo ? schemaInfo.totalCount : 0 }} all</mat-chip>
-            <!-- <mat-chip disableRipple="true" class="warning-status">0 warning</mat-chip> -->
-            <mat-chip disableRipple="true" (click)="viewOf.next('correction')" class="info-status">
-                {{ schemaInfo ? schemaInfo.correctionValue : 0 }} corrections</mat-chip>
-        </mat-chip-list>
-    </div>
-    <div class="f-row-spacer-half"></div>
-    <div class="f-col data-container">
+    <div class="f-col mat-tab-container">
         <mat-tab-group disableRipple="true">
             <mat-tab>
                 <ng-template mat-tab-label>
                     MRO classification
                 </ng-template>
-                <div class="f-row dataset-grid">
-                    <div class="f-col dataset-grid-navigation">
-                        <pros-search-input (value)="getClassificationNounMod($event)" placeholder="Search nouns and modifiers"></pros-search-input>
-                        <div class="row-spacer"></div>
+                <div class="f-row filter-container">
+                    <mat-chip-list>
+                        <pros-search-input placeholder="Search"></pros-search-input>
+                        <mat-chip class="mdo-filter-matchip" disableRipple="true" (click)="viewOf.next('')">
+                            All &nbsp;<span>{{ schemaInfo ? schemaInfo.totalCount : 0 }} </span></mat-chip>
+                        <!-- <mat-chip disableRipple="true" class="warning-status">0 warning</mat-chip> -->
+                        <mat-chip class="mdo-filter-matchip" disableRipple="true" (click)="viewOf.next('correction')">
+                            Corrections &nbsp;<span class="chip-text-correct">{{ schemaInfo ? schemaInfo.correctionValue : 0 }}</span></mat-chip>
+                    </mat-chip-list>
+                </div>
+                <div class="f-row-spacer-half"></div>
+                <div class="f-row listing-container" #listingContainer>
+                    <div class="f-col listset-navigation" [style.width.px]="widthOfSchemaNav"
+                  (window:mouseup)="setStatus($event, 0)" (mousedown)="setStatus($event, 1)" #navscroll>
+                        <!-- <pros-search-input (value)="getClassificationNounMod($event)" placeholder="Search nouns and modifiers"></pros-search-input> -->
                         <div class="nav-tree">
                             <mat-accordion>
                                 <mat-expansion-panel togglePosition="before" class="mat-elevation-z0" expanded="expanded">
@@ -72,7 +79,7 @@
                                                 Master library
                                             </div>
                                             <span class="f-spacer"></span>
-                                            <div class="badge success-badge">
+                                            <div class="default-badge success-badge">
                                                 {{ rulesNounMods && rulesNounMods.mro_local_lib ? rulesNounMods.mro_local_lib.doc_cnt : 0 }}
                                             </div>
                                         </mat-panel-title>
@@ -89,7 +96,7 @@
                                                             }}
                                                         </div>
                                                         <span class="f-spacer"></span>
-                                                        <div class="badge success-badge">
+                                                        <div class="default-badge success-badge">
                                                             {{ noun.doc_count ? noun.doc_count : 0 }}
                                                         </div>
                                                     </mat-panel-title>
@@ -102,10 +109,10 @@
                                                             {{ modifier.modDesc ? modifier.modDesc : 'Unknown' }}
                                                         </div>
                                                         <span class="f-spacer"></span>
-                                                        <div class="badge warning-badge">
+                                                        <div class="default-badge warning-badge">
                                                            0
                                                         </div>
-                                                        <div class="badge success-badge">
+                                                        <div class="default-badge success-badge">
                                                             {{ modifier.doc_count ? modifier.doc_count : 0  }}
                                                         </div>
                                                     </mat-list-item>
@@ -124,7 +131,7 @@
                                                 GSN
                                             </div>
                                             <span class="f-spacer"></span>
-                                            <div class="badge success-badge">
+                                            <div class="default-badge success-badge">
                                                 {{ rulesNounMods && rulesNounMods.mro_gsn_lib ? rulesNounMods.mro_gsn_lib.doc_cnt : 0 }}
                                             </div>
                                         </mat-panel-title>
@@ -141,7 +148,7 @@
                                                             }}
                                                         </div>
                                                         <span class="f-spacer"></span>
-                                                        <div class="badge success-badge">
+                                                        <div class="default-badge success-badge">
                                                             {{ noun.doc_count ? noun.doc_count : 0 }}
                                                         </div>
                                                     </mat-panel-title>
@@ -157,10 +164,10 @@
                                                             {{ modifier.modDesc ? modifier.modDesc : 'Unknown' }}
                                                         </div>
                                                         <span class="f-spacer"></span>
-                                                        <div class="badge warning-badge">
+                                                        <div class="default-badge warning-badge">
                                                             0
                                                         </div>
-                                                        <div class="badge success-badge">
+                                                        <div class="default-badge success-badge">
                                                             {{ modifier.doc_count ? modifier.doc_count : 0  }}
                                                         </div>
                                                     </mat-list-item>
@@ -178,7 +185,7 @@
                                                 Unmatched
                                             </div>
                                             <span class="f-spacer"></span>
-                                            <div class="badge error-badge">
+                                            <div class="default-badge error-badge">
                                                 {{
                                                     rulesNounMods.unmatched ? rulesNounMods.unmatched.doc_count : 0
                                                 }}
@@ -188,70 +195,53 @@
                                 </mat-expansion-panel>
                             </mat-accordion>
                         </div>
+
+                        <div class="split-panel-mark"  (click)="toggleSideBar()">
+                            <mat-icon fontSet="mdo-icons">{{arrowIcon}}</mat-icon>
+                        </div>
                     </div>
-                    <mat-divider [vertical]="true"></mat-divider>
-                    <div class="f-col dataset-grid-listing">
+
+                    <div class="f-col listset-grid"  [ngStyle]="{'width':'calc(100% - ' +widthOfSchemaNav + 'px - 24px)' }">
+                        <div class="listset-text">Header</div>
                         <!-- Filters  -->
-                        <div class="f-row">
+                        <!-- <div class="f-row">
                             <pros-search-input #tableSearchInput placeholder="Search spare parts"
                                 (value)="tableSearchSubject.next($event)"></pros-search-input>
-                            <div class="f-col-spacer-half"></div>
-                            <!-- <mat-chip-list>
-                                <mat-chip class="mdo-filter-matchip" disableRipple="true">
-                                    <label>Status:</label> <span class="info">All</span>
-                                    <mat-icon matChipRemove>clear</mat-icon>
-                                </mat-chip>
-                                <mat-chip class="mdo-filter-matchip" disableRipple="true">
-                                    <label>Attributes:</label> <span class="info">12mm</span>
-                                    <mat-icon matChipRemove>clear</mat-icon>
-                                </mat-chip>
-                                <mat-chip class="mdo-filter-matchip" disableRipple="true">
-                                    <label>Diameter:</label> <span class="info">12mm</span>
-                                    <mat-icon matChipRemove>clear</mat-icon>
-                                </mat-chip>
-                                <mat-chip class="mdo-filter-matchip" disableRipple="true">
-                                    <label>Color:</label> <span class="info">All</span>
-                                    <mat-icon matChipRemove>clear</mat-icon>
-                                </mat-chip>
-                            </mat-chip-list> -->
-                        </div>
-                        <div class="row-spacer"></div>
-
-                        <div class="f-row action-iconbtns" *ngIf="viewOf && viewOf.getValue() === 'correction' && selection.selected.length !== 0">
-                            <ng-template [ngIf]="(isReviewer || isApprover) && isGlobalActionsEnabled">
-                                <button mat-flat-button (click)="generateDesc('',0,'all')" color="accent">
-                                    <!-- <mat-icon fontSet="mdo-icons">check-mark</mat-icon> -->
-                                    Generate description
-                                </button>
-    
-                                <button mat-flat-button (click)="approveRec('',0,'all')" color="accent">
-                                    <!-- <mat-icon fontSet="mdo-icons">block</mat-icon> -->
-                                    Approve
-                                </button>
-    
-                                <button mat-flat-button (click)="rejectRec('',0,'all')" color="accent">
-                                    Reject
-                                </button>
-                            </ng-template>
-                            <button mat-flat-button (click)="selection.clear()" color="accent">
-                                <!-- <mat-icon fontSet="mdo-icons">close</mat-icon> -->
-                                Unselect
-                            </button>
-                        </div>
-
+                        </div> -->
                         <!-- Data Table -->
-                        <div class="data" (scroll)="onTableScroll($event)">
+                        <div class="f-col datasource" (scroll)="onTableScroll($event)">
+                            <div class="f-row action-iconbtns" *ngIf="viewOf && viewOf.getValue() === 'correction' && selection.selected.length !== 0">
+                                <ng-template [ngIf]="(isReviewer || isApprover) && isGlobalActionsEnabled">
+                                    <button mat-flat-button (click)="generateDesc('',0,'all')" color="accent">
+                                        <!-- <mat-icon fontSet="mdo-icons">check-mark</mat-icon> -->
+                                        Generate description
+                                    </button>
+        
+                                    <button mat-flat-button (click)="approveRec('',0,'all')" color="accent">
+                                        <!-- <mat-icon fontSet="mdo-icons">block</mat-icon> -->
+                                        Approve
+                                    </button>
+        
+                                    <button mat-flat-button (click)="rejectRec('',0,'all')" color="accent">
+                                        Reject
+                                    </button>
+                                </ng-template>
+                                <button mat-flat-button (click)="selection.clear()" color="accent">
+                                    <!-- <mat-icon fontSet="mdo-icons">close</mat-icon> -->
+                                    Unselect
+                                </button>
+                            </div>
                         <mat-table [dataSource]="dataSource" class="mat-elevation-z0">
                             <!-- Checkbox Column -->
                             <ng-container matColumnDef="checkbox_select" sticky>
-                                <mat-header-cell *matHeaderCellDef class="fixed-width-c1">
+                                <mat-header-cell *matHeaderCellDef>
                                     <mat-checkbox (change)="$event ? masterToggle() : null"
                                         [checked]="selection.hasValue() && isAllSelected()"
                                         [indeterminate]="selection.hasValue() && !isAllSelected()"
                                         [aria-label]="checkboxLabel()" color="primary">
                                     </mat-checkbox>
                                 </mat-header-cell>
-                                <mat-cell class="fixed-width-c1" *matCellDef="let row">
+                                <mat-cell *matCellDef="let row">
                                     <mat-checkbox (click)="$event.stopPropagation()"
                                         (change)="$event ? selection.toggle(row) : null"
                                         [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)"
@@ -261,10 +251,10 @@
                             </ng-container>
                             <!-- Name Column -->
                             <ng-container matColumnDef="assigned_bucket" sticky>
-                                <mat-header-cell *matHeaderCellDef class="fixed-width-c1">
+                                <mat-header-cell *matHeaderCellDef>
                                     
                                 </mat-header-cell>
-                                <mat-cell class="fixed-width-c1" *matCellDef="let element">
+                                <mat-cell *matCellDef="let element">
                                     <mat-card-header>
                                         <div mat-card-avatar>
                                             {{ userDetails ? (userDetails.firstName ? userDetails.firstName.substring(0,1).toUpperCase() : '') : ''  }}{{ userDetails ? ( userDetails.lastName ? userDetails.lastName.substring(0,1).toUpperCase() : '') : ''  }}
@@ -274,12 +264,12 @@
                             </ng-container>
                             <!-- Action Column -->
                             <ng-container matColumnDef="row_action" sticky>
-                                <mat-header-cell *matHeaderCellDef class="fixed-width-c2">
+                                <mat-header-cell *matHeaderCellDef>
                                   <!-- <button mat-button (click)="openTableColumnSettings()"> 
                                         <mat-icon fontSet="mdo-icons">cog</mat-icon>
                                     </button> -->
                                 </mat-header-cell>
-                                <mat-cell *matCellDef="let row; let rIndex = index;" class="fixed-width-c2">
+                                <mat-cell *matCellDef="let row; let rIndex = index;">
                                     <div class="f-row action-iconbtns">
                                         <ng-template [ngIf]="!row['__aditionalProp'].isReviewed && (isReviewer || isApprover)">
                                             <button mat-fab color="accent" *ngIf="row['__aditionalProp'] && !row['__aditionalProp'].hasLatestDescGenerated" (click)="generateDesc(row, rIndex)" id="descriptonGeneratorBtn_{{ rIndex }}">

@@ -49,7 +49,21 @@
                                 <span class="f-spacer"></span>
                                 <div class="f-row">
                                     <mat-card-header>
-                                        <div mat-card-avatar>{{notification.senderUid}}</div>
+                                        <ng-template [ngIf]="notification.senderUid || notification.senderMail" [ngIfElse]="showUserProfile">
+                                            <mat-card-header>
+                                                <div mat-card-avatar>
+                                                    {{notification.senderUid ? notification.senderUid[0] : notification.senderMail[0]}}
+                                                </div>
+                                            </mat-card-header>
+                                        </ng-template>
+            
+                                        <ng-template #showUserProfile>
+                                            <mat-card-header>
+                                                <div mat-card-avatar>
+                                                    <mat-icon fontSet="mdo-icons">home-channel2</mat-icon>
+                                                </div>
+                                            </mat-card-header>
+                                        </ng-template>
                                     </mat-card-header>
                                     <span class="f-col-spacer-half"></span>
                                     <button mat-button (click)="deleteNotification(notification.id)"
