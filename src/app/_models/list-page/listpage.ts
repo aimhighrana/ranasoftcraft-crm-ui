@@ -111,7 +111,7 @@ export class Status {
     display: string;
     value: string;
     selected: boolean;
-  }
+}
 
 export class Superior {
     display: string;
@@ -137,8 +137,17 @@ export class ListPageViewDetails {
 export class ListPageViewFldMap {
     sno: number;
     fieldId: string;
-	fieldOrder: number;
-	width = '100';
-	isEditable: boolean;
+    fieldOrder: string;
+    width = '100';
+    isEditable: boolean;
     sortDirection = 'ASCENDING';
+}
+
+export class FilterCriteria {
+    endValue: string;
+    esFieldPath: string;
+    fieldId: string;
+    operator: string;
+    startValue: string;
+    values: string[];
 }

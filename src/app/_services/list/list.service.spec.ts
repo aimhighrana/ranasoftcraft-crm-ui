@@ -12,7 +12,8 @@ describe('ListService', () => {
   let httpTestingController: HttpTestingController;
 
   beforeEach(() => {
-    const endpointSpy = jasmine.createSpyObj('EndpointsListService', ['getAllListPageViewsUrl', 'getListPageViewDetailsUrl', 'upsertListPageViewUrl', 'deleteListPageViewUrl']);
+    const endpointSpy = jasmine.createSpyObj('EndpointsListService', ['getAllListPageViewsUrl', 'getListPageViewDetailsUrl', 'upsertListPageViewUrl', 'deleteListPageViewUrl',
+    'getTableDataUrl', 'getDataCountUrl']);
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule ],
       providers: [
@@ -136,6 +137,54 @@ describe('ListService', () => {
     expect(mockRequst.request.method).toEqual('DELETE');
     expect(mockRequst.request.responseType).toEqual('json');
     mockRequst.flush(viewDetails);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('getTableData()', async(() => {
+
+    const url = `getTableDataUrl`;
+    // mock url
+    endpointServiceSpy.getTableDataUrl.and.returnValue(url);
+
+    const moduleId = '1005';
+    const viewId = '1701';
+    const pageIndex = 0;
+    const response = [];
+
+    // actual service call
+    listService.getTableData(moduleId, viewId, pageIndex, [] )
+      .subscribe(actualResponse => {
+          expect(actualResponse).toEqual(response);
+    });
+    // mock http call
+    const mockRequst = httpTestingController.expectOne(`${url}?moduleId=${moduleId}&viewId=${viewId}&pageId=${pageIndex}`);
+    expect(mockRequst.request.method).toEqual('POST');
+    expect(mockRequst.request.responseType).toEqual('json');
+    mockRequst.flush(response);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('getDataCount()', async(() => {
+
+    const url = `getDataCountUrl`;
+    // mock url
+    endpointServiceSpy.getDataCountUrl.and.returnValue(url);
+
+    const moduleId = '1005';
+    const response = 1000;
+
+    // actual service call
+    listService.getDataCount(moduleId, [] )
+      .subscribe(actualResponse => {
+          expect(actualResponse).toEqual(response);
+    });
+    // mock http call
+    const mockRequst = httpTestingController.expectOne(`${url}?moduleId=${moduleId}`);
+    expect(mockRequst.request.method).toEqual('POST');
+    expect(mockRequst.request.responseType).toEqual('json');
+    mockRequst.flush(response);
     // verify http
     httpTestingController.verify();
   }));

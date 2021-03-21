@@ -14,8 +14,9 @@ import { distinctUntilChanged } from 'rxjs/operators';
 import { CreateUpdateSchema } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SecondaynavType } from '@models/menu-navigation';
-import { DataList } from '@modules/list/_components/list.component';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CoreService } from '@services/core/core.service';
+import { ObjectType } from '@models/core/coreModel';
 
 @Component({
   selector: 'pros-secondary-navbar',
@@ -25,7 +26,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
 
   public moduleList: SchemaListModuleList[] = [];
-  dataList: DataList[] = [];
+  objectTypeList: ObjectType[] = [];
   reportList: ReportList[] = [];
   dataIntillegences: SchemaListDetails[] = [];
 
@@ -52,7 +53,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * data list observal ..
    */
-  dataOb: Observable<DataList[]> = of([]);
+   objectTypeObs: Observable<ObjectType[]> = of([]);
 
   @Input()
   activatedPrimaryNav: string;
@@ -87,7 +88,8 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
     private sharedService: SharedServiceService,
     private userService: UserService,
     private listService: ListService,
-    private matSnackBar: MatSnackBar
+    private matSnackBar: MatSnackBar,
+    private coreService: CoreService
   ) { }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -111,7 +113,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
           break;
 
           case 'list':
-          this.getDataList();
+          this.getAllObjectType();
           break;
 
         default:
@@ -207,15 +209,19 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   /**
-   * Function to get all data list
+   * Function to get all list modules
    */
-  public getDataList(){
-    this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(user=>{
-      this.listService.dataList().subscribe(dataList => {
-        this.dataOb = of(dataList);
-        this.dataList = (dataList);
-      })
-    });
+   public getAllObjectType(){
+    this.coreService.getAllObjectType().subscribe(modules => {
+      this.objectTypeList = modules;
+      this.objectTypeObs = of(modules);
+      if(modules && modules.length && !this.isPageReload) {
+          const firstModuleId = this.objectTypeList[0].objectid;
+          this.router.navigate(['/home/list/datatable', firstModuleId]);
+      }
+    }, error => {
+      console.error(`Error:: ${error.message}`);
+    })
   }
 
   /**
@@ -304,9 +310,9 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
     }
     if (this.activatedPrimaryNav === 'list') {
       if (searchString) {
-        this.dataOb = of(this.dataList.filter(fil => fil.objectDesc.toLocaleLowerCase().indexOf(searchString.toLocaleLowerCase()) !== -1));
+        this.objectTypeObs = of(this.objectTypeList.filter(fil => fil.objectdesc.toLocaleLowerCase().indexOf(searchString.toLocaleLowerCase()) !== -1));
       } else {
-        this.dataOb = of(this.dataList);
+        this.objectTypeObs = of(this.objectTypeList);
       }
     }
   }
@@ -363,7 +369,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
     }
     else if (url.includes('/home/list')) {
       this.activatedPrimaryNav = 'list';
-      this.getDataList();
+      this.getAllObjectType();
     }
   }
 

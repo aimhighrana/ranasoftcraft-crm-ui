@@ -142,7 +142,7 @@ export class TableViewSettingsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.viewDetails.fieldsReqList.map((field, index) => field.fieldOrder = index);
+    this.viewDetails.fieldsReqList.map((field, index) => field.fieldOrder = `${index}`);
     console.log(this.viewDetails);
 
     this.listService.upsertListPageViewDetails(this.viewDetails, this.userDetails.userName, this.userDetails.currentRoleId, this.userDetails.plantCode, this.moduleId)

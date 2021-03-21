@@ -1,4 +1,4 @@
-/* import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ListPageViewDetails, ListPageViewFldMap } from '@models/list-page/listpage';
@@ -15,6 +15,7 @@ import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 
 import { TableViewSettingsComponent } from './table-view-settings.component';
+import { SharedModule } from '@modules/shared/shared.module';
 
 describe('TableViewSettingsComponent', () => {
   let component: TableViewSettingsComponent;
@@ -29,7 +30,7 @@ describe('TableViewSettingsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ TableViewSettingsComponent, FormInputComponent, SearchInputComponent ],
-      imports: [ AppMaterialModuleForSpec,  RouterTestingModule ],
+      imports: [ AppMaterialModuleForSpec,  RouterTestingModule, SharedModule ],
       providers: [
         { provide: ActivatedRoute, useValue: { params: of(pathPrams)}}
       ]
@@ -150,7 +151,7 @@ describe('TableViewSettingsComponent', () => {
   });
 
   it('isChecked(), is checked ', async(()=>{
-    component.viewDetails.fieldsReqList = [{fieldId: 'MATL_TYPE', fieldOrder: 0, isEditable: true} as ListPageViewFldMap];
+    component.viewDetails.fieldsReqList = [{fieldId: 'MATL_TYPE', fieldOrder: '0', isEditable: true} as ListPageViewFldMap];
 
     expect(component.isChecked({fieldId:'MATL_TYPE'} as MetadataModel)).toEqual(true);
 
@@ -162,12 +163,17 @@ describe('TableViewSettingsComponent', () => {
     spyOn(component, 'close');
 
     component.viewDetails.fieldsReqList = [
-      {fieldId: 'MTL_Grp', fieldOrder: 0, isEditable: true} as ListPageViewFldMap
+      {fieldId: 'MTL_Grp', fieldOrder: '0', isEditable: true} as ListPageViewFldMap
     ];
+
+    component.save();
+    expect(component.submitted).toBeTrue();
+
+    component.viewDetails.viewName = 'test view';
 
     const request = new ListPageViewDetails();
     request.fieldsReqList = [
-      {fieldId: 'MTL_Grp', fieldOrder: 0, isEditable: true} as ListPageViewFldMap
+      {fieldId: 'MTL_Grp', fieldOrder: '0', isEditable: true} as ListPageViewFldMap
     ];
 
     spyOn(listService, 'upsertListPageViewDetails')
@@ -190,7 +196,7 @@ describe('TableViewSettingsComponent', () => {
   it('should editableChange', () => {
 
     component.viewDetails.fieldsReqList = [
-      {fieldId: 'MTL_Grp', fieldOrder: 1, isEditable: false} as ListPageViewFldMap
+      {fieldId: 'MTL_Grp', fieldOrder: '1', isEditable: false} as ListPageViewFldMap
     ];
 
     component.editableChange({fieldId: 'MTL_Grp'} as MetadataModel);
@@ -204,7 +210,7 @@ describe('TableViewSettingsComponent', () => {
   it('should isEditEnabled', () => {
 
     component.viewDetails.fieldsReqList = [
-      {fieldId: 'MTL_Grp', fieldOrder: 1, isEditable: true} as ListPageViewFldMap
+      {fieldId: 'MTL_Grp', fieldOrder: '1', isEditable: true} as ListPageViewFldMap
     ];
 
     expect(component.isEditEnabled({fieldId: 'MTL_Grp'} as MetadataModel)).toBeTrue();
@@ -222,22 +228,4 @@ describe('TableViewSettingsComponent', () => {
 
   });
 
-  it('should searchFld', () => {
-
-    spyOn(component, 'getTableViewDetails');
-    spyOn(component, 'getFldMetadata');
-    spyOn(userService, 'getUserDetails').and.returnValue(of(new Userdetails()));
-
-    fixture.detectChanges();
-
-    component.header = [ { fieldId: 'name', fieldDescri: 'name' }] as MetadataModel[];
-    component.searchFld('');
-    expect(component.suggestedFlds.length).toEqual(0);
-
-    component.searchFld('length');
-    expect(component.suggestedFlds.length).toEqual(0);
-
-  });
-
 });
- */

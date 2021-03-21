@@ -3,8 +3,9 @@ import { Observable, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ListPageViewDetails, ListPageViewFldMap } from '@models/list-page/listpage';
+import { FilterCriteria, ListPageViewDetails, ListPageViewFldMap } from '@models/list-page/listpage';
 import { EndpointsListService } from '@services/_endpoints/endpoints-list.service';
+
 
 @Injectable({
   providedIn: 'root'
@@ -34,9 +35,11 @@ export class ListService {
     const viewsList = [];
     for(let i=1; i<=10; i++) {
       const view = new ListPageViewDetails();
-      view.viewId = `${Math.floor(Math.random()*1000)}`;
-      view.viewName = `view ${view.viewId}`;
-      view.fieldsReqList.push({fieldId: `Column ${view.viewId}`} as ListPageViewFldMap);
+      const id = Math.floor(Math.random()*1000);
+      view.viewId = `view ${id}`;
+      // view.viewId = ``;
+      view.viewName = `view ${id}`;
+      view.fieldsReqList.push({fieldId: `Column ${id}`} as ListPageViewFldMap);
       viewsList.push(view);
     }
     return of(viewsList);
@@ -65,4 +68,27 @@ public upsertListPageViewDetails(viewDetails: ListPageViewDetails, userId, role,
  public deleteListPageView(viewId: string, userId, role, tenantcode, moduleId): Observable<ListPageViewDetails> {
   return this.http.delete<any>(this.endpointService.deleteListPageViewUrl(viewId), { params: {userId, role, tenantcode, moduleId}});
 }
+
+/**
+ * get table records
+ * @param moduleId module id
+ * @param viewId active view id
+ * @param pageId page index
+ * @param filterCriterias applied filters
+ * @returns page records
+ */
+public getTableData(moduleId: string, viewId: string, pageId: number, filterCriterias: FilterCriteria[]): Observable<any> {
+  return this.http.post<any>(this.endpointService.getTableDataUrl(), filterCriterias, {params: {moduleId, viewId, pageId: `${pageId}`}})
+}
+
+/**
+ * get records count
+ * @param moduleId module id
+ * @param filterCriterias uplied filters
+ * @returns total records count
+ */
+public getDataCount(moduleId: string, filterCriterias: FilterCriteria[]): Observable<number> {
+  return this.http.post<number>(this.endpointService.getDataCountUrl(), filterCriterias, {params: {moduleId}})
+}
+
 }

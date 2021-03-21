@@ -17,6 +17,8 @@ export const environment = {
   analyticsUrl: 'http://localhost:8081',
   // apiurl: 'https://beta.mdoondemand.com',
   apiurl: 'https://dev.masterdataonline.com',
+  // listurl: 'http://localhost:1002',
+  listurl: 'https://dev.masterdataonline.com',
   coreUrl:'http://localhost:8084',
   syncUrl:'http://localhost:8085',
   authUrl:'http://localhost:8082',

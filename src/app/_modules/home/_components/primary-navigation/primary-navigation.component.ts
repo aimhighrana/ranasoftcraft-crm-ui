@@ -205,8 +205,6 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
     this.isNavSelected = val;
     if (val === 'welcome') {
         this.router.navigate(['/home/dash/welcome'])
-    }else if (val === 'list') {
-      this.router.navigate(['/home/list'])
     }
   }
 

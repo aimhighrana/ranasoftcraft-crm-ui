@@ -26,4 +26,12 @@ export class EndpointsListService {
     return this.apiUrl + `/view/delete-view/${viewId}`;
   }
 
+  public getTableDataUrl(): string {
+    return this.apiUrl + `/search/all-data`;
+  }
+
+  public getDataCountUrl(): string {
+    return this.apiUrl + `/search/data-count`;
+  }
+
 }

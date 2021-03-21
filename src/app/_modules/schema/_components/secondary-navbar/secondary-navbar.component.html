@@ -6,9 +6,10 @@
       <span class="f-spacer"></span>
       <lib-button type="plain" iconFontType="solid" icon="plus" *ngIf="(activatedPrimaryNav !== 'schema' && activatedPrimaryNav !== 'list'); else isSchema" (click)="globalCreate()"></lib-button>
       <ng-template #isSchema>
-        <lib-button type="plain" iconFontType="solid" icon="plus" [matMenuTriggerFor]="moduleMenu"></lib-button>
+        <lib-button type="plain" iconFontType="solid" icon="plus" [matMenuTriggerFor]="moduleMenu"
+          *ngIf="activatedPrimaryNav !== 'list'"></lib-button>
         <mat-menu #moduleMenu="matMenu" xPosition="before" (closed)="searchInput.clearSearch()" class="navigation-menu">
-          <div class="search-row"><lib-search  placeholder="Search for module" (value)="filterModulesMenu($event)" #searchInput prosClickStopPropagation></lib-search></div>
+          <div class="search-row"><lib-search  placeholder="Search for module" (valueChange)="filterModulesMenu($event)" #searchInput prosClickStopPropagation></lib-search></div>
           <div class="menu-customdropdown">
             <button mat-menu-item *ngFor="let module of filteredModulesMenu"
               (click)="createNewSchema(module.moduleId)">{{module.moduleDesc ? module.moduleDesc : 'Untitled'}}
@@ -20,7 +21,7 @@
 
     <div class="row-spacer"></div>
 
-    <lib-search  placeholder="Search" #schemaSearchInput (value)=(searchSchema($event))></lib-search>
+    <lib-search  placeholder="Search" #schemaSearchInput (valueChange)=(searchSchema($event))></lib-search>
     <!-- placeholder="activatedPrimaryNav ==='report' ? 'Search report' : activatedPrimaryNav ==='list'? 'Search' :'Search schema'" -->
     
     <div class="row-spacer"></div>
@@ -91,10 +92,12 @@
       </mat-accordion>
 
       <!-- Tree to show when navigation is on list -->
-      <mat-accordion *ngIf="activatedPrimaryNav === 'list'" cdkDropList [cdkDropListData]="dataList" (cdkDropListDropped)="drop($event)">
-        <mat-nav-list *ngFor="let data of dataOb | async" cdkDrag [disableRipple]="true">
-          <mat-list-item cdkDragHandle>
-            {{data.objectDesc ? data.objectDesc : 'Untitled'}}
+      <mat-accordion *ngIf="activatedPrimaryNav === 'list'" cdkDropList [cdkDropListData]="objectTypeList" (cdkDropListDropped)="drop($event)">
+        <mat-nav-list *ngFor="let objectType of objectTypeObs | async" cdkDrag [disableRipple]="true">
+          <mat-list-item cdkDragHandle 
+          [routerLink]="['list/datatable', objectType.objectid]"
+          routerLinkActive="selected">
+              {{objectType.objectdesc ? objectType.objectdesc : 'Untitled'}}
           </mat-list-item>
         </mat-nav-list>
       </mat-accordion>

@@ -6,11 +6,11 @@ import { ListDatatableComponent } from './_components/list-datatable/list-datata
 import { TableViewSettingsComponent } from './_components/table-view-settings/table-view-settings.component';
 
 const routes: Routes = [
-  {
+  /* {
     path: '',
     component: ListDatatableComponent
-  },
-  // { path: 'datatable/:moduleId/:schemaId', component: ListDatatableComponent },
+  }, */
+  { path: 'datatable/:moduleId', component: ListDatatableComponent },
   { path: 'table-view-settings/:moduleId/:viewId', component: TableViewSettingsComponent },
   { path: '**', component: PageNotFoundComponent }
 ];

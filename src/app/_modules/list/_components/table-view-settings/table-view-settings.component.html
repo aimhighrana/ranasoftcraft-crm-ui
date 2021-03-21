@@ -5,10 +5,10 @@
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
-                <lib-text-line type="leading">Configure view</lib-text-line>
+                <lib-text-line type="leading" i18n="@@configure_view">Configure view</lib-text-line>
                 <span class="f-col-spacer-half"></span>
                 <span class="f-spacer"></span>
-                <lib-button type="major" (afterClick)="save()"> Save </lib-button>
+                <lib-button type="major" (afterClick)="save()" i18n="@@save"> Save </lib-button>
             </div>
         </div>
     </div>
@@ -32,9 +32,9 @@
                     <div class="check-list">
                         <div class="f-row colunm-box">
                             <div class="col"></div>
-                            <div class="col col-x4"><strong> Column </strong></div>
+                            <div class="col col-x4"><strong i18n="@@Column"> Column </strong></div>
                             <span class="f-spacer"></span>
-                            <div class="col"><strong> Visible </strong></div>
+                            <div class="col"><strong i18n="@@Visible"> Visible </strong></div>
                             <span class="f-col-spacer-half"></span>
                         </div>
                         <div cdkDropList [cdkDropListData]="header" (cdkDropListDropped)="drop($event)"
@@ -42,7 +42,7 @@
                             <div *ngFor="let fld of header" id="{{ fld.fieldId }}" cdkDrag class="colunm-list">
                                 <div class="f-row colunm-box">
                                     <div class="col">
-                                        <lib-button cdkDragHandle type="plain" iconFontType="solid" [matMenuTriggerFor]="menu" icon="grip-lines"></lib-button>
+                                        <lib-button cdkDragHandle type="plain" iconFontType="solid" icon="grip-lines"></lib-button>
                                     </div>
 
                                     <div class="col col-x4">

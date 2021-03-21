@@ -13,4 +13,30 @@ describe('EndpointsListService', () => {
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
+
+  it('should getAllListPageViewsUrl', () => {
+    expect(service.getAllListPageViewsUrl()).toContain('/view/all');
+  });
+
+  it('should getListPageViewDetailsUrl', () => {
+    expect(service.getListPageViewDetailsUrl('1701')).toContain('/view/1701');
+  });
+
+  it('should upsertListPageViewUrl', () => {
+    expect(service.upsertListPageViewUrl()).toContain('/view/save-update-view');
+  });
+
+  it('should deleteListPageViewUrl', () => {
+    expect(service.deleteListPageViewUrl('1701')).toContain('/view/delete-view/1701');
+  });
+
+  it('should getTableDataUrl', () => {
+    expect(service.getTableDataUrl()).toContain('/search/all-data');
+  });
+
+  it('should getDataCountUrl', () => {
+    expect(service.getDataCountUrl()).toContain('/search/data-count');
+  });
+
+
 });
