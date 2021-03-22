@@ -18,11 +18,11 @@ import { CoreSchemaBrInfo, TransformationModel, DropDownValue, UDRBlocksModel, B
 import { distinctUntilChanged } from 'rxjs/operators';
 import { NewSchemaCollaboratorsComponent } from '../new-schema-collaborators/new-schema-collaborators.component';
 import { values, pick } from 'lodash';
-import { Utilities } from '@modules/base/common/utilities';
 import { BusinessrulelibraryDialogComponent } from '../businessrulelibrary-dialog/businessrulelibrary-dialog.component';
 import { PermissionOn, UserMdoModel, SchemaDashboardPermission, ROLES, RuleDependentOn } from '@models/collaborator';
 import { ScheduleDialogComponent } from '@modules/shared/_components/schedule-dialog/schedule-dialog.component';
 import { SchemaScheduler } from '@models/schema/schemaScheduler';
+import { Utilities } from '@models/schema/utilities';
 import { GLOBALCONSTANTS } from '../../../../_constants';
 import { LoadDropValueReq, PermissionType } from '@models/schema/schemalist';
 import { BlockType } from '@modules/admin/_components/module/business-rules/user-defined-rule/udr-cdktree.service';

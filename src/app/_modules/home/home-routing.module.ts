@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { PageNotFoundComponent } from '../shared/_components/page-not-found/page-not-found.component';
-import { WelcomeMdoComponent } from '@modules/schema/_components/welcome-mdo/welcome-mdo.component';
 import { PrimaryNavigationComponent } from './_components/primary-navigation/primary-navigation.component';
+import { WelcomeComponent } from './_components/welcome/welcome.component';
 
 const routes: Routes = [
   {
@@ -16,7 +16,7 @@ const routes: Routes = [
         path: 'dash', children: [
           {
             path: 'welcome',
-            component: WelcomeMdoComponent
+            component: WelcomeComponent
           }
         ]
       },
@@ -24,8 +24,6 @@ const routes: Routes = [
       { path: 'schema', loadChildren: () => import('../schema/schema.module').then(m => m.SchemaModule) },
       { path: 'report', loadChildren: () => import('../report/report.module').then(m => m.ReportModule) },
       { path: 'list', loadChildren: () => import('../list/list.module').then(m => m.ListModule) },
-      // load base component
-      { path: '', loadChildren: () => import('../base/base.module').then(m => m.BaseModule) },
     ]
   },
   // anything not mapped should go to page not found component

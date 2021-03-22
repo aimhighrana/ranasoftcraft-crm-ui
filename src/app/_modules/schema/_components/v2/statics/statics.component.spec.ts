@@ -25,7 +25,7 @@ describe('StaticsComponent', () => {
   }));
 
   beforeEach(() => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+    // jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
     fixture = TestBed.createComponent(StaticsComponent);
     component = fixture.componentInstance;
     // fixture.detectChanges();

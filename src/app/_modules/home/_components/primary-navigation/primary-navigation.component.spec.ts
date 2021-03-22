@@ -9,7 +9,7 @@
 // import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 // import { MatSidenavContainer, MatSidenavModule } from '@angular/material/sidenav';
 // import { PrimaryNavigationComponent } from './primary-navigation.component';
-// import { SecondaryNavbarComponent } from '@modules/schema/_components/secondary-navbar/secondary-navbar.component';
+// import { SecondaryNavbarComponent } from '@modules/home/_components/secondary-navbar/secondary-navbar.component';
 // import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 // import { Router } from '@angular/router';
 // import { MatDialogRef } from '@angular/material/dialog';
@@ -103,16 +103,16 @@
 //     expect(component.selectedRoleDesc).toBe('');
 //   })
 
-//   it('sendToParent(), should assign navigation value', async() => {
-//     const value = 'report';
-//     component.sendToParent(value);
-//     expect(component.isNavSelected).toEqual(value);
+  // it('sendToParent(), should assign navigation value', async() => {
+  //   const value = 'report';
+  //   component.sendToParent(value);
+  //   expect(component.isNavSelected).toEqual(value);
 
-//     const value2 = 'welcome';
-//     spyOn(router, 'navigate');
-//     component.sendToParent(value2);
-//     expect(router.navigate).toHaveBeenCalledWith(['/home/dash/welcome'])
-//   })
+  //   const value2 = 'welcome';
+  //   spyOn(router, 'navigate');
+  //   component.sendToParent(value2);
+  //   expect(router.navigate).toHaveBeenCalledWith(['/home/dash/welcome'])
+  // })
 
 //   it(`createSchema() with args {moduleId: '123', schemaId: null}, should call createUpdateSchema`, async(() => {
 //       spyOn(router, 'navigate')

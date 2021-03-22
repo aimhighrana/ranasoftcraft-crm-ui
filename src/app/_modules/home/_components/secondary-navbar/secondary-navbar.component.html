@@ -1,0 +1,112 @@
+<div class="root">
+  <mat-card class="secondary-card mat-elevation-z0">
+    <div class="f-row-spacer-half"></div>
+    <div class="f-row">
+      <lib-text-line type="leading">{{ getRoutedDescription }}</lib-text-line>
+      <span class="f-spacer"></span>
+      <lib-button type="plain" iconFontType="solid" icon="plus" *ngIf="(activatedPrimaryNav !== 'schema' && activatedPrimaryNav !== 'list'); else isSchema" (click)="globalCreate()"></lib-button>
+      <ng-template #isSchema>
+        <lib-button type="plain" iconFontType="solid" icon="plus" [matMenuTriggerFor]="moduleMenu"
+          *ngIf="activatedPrimaryNav !== 'list'"></lib-button>
+        <mat-menu #moduleMenu="matMenu" xPosition="before" (closed)="searchInput.clearSearch()" class="navigation-menu">
+          <div class="search-row"><lib-search  placeholder="Search for module" (valueChange)="filterModulesMenu($event)" #searchInput prosClickStopPropagation></lib-search></div>
+          <div class="menu-customdropdown">
+            <button mat-menu-item *ngFor="let module of filteredModulesMenu"
+              (click)="createNewSchema(module.moduleId)">{{module.moduleDesc ? module.moduleDesc : 'Untitled'}}
+            </button>
+          </div>
+        </mat-menu>
+      </ng-template>
+    </div>
+
+    <div class="row-spacer"></div>
+
+    <lib-search  placeholder="Search" #schemaSearchInput (valueChange)=(searchSchema($event))></lib-search>
+    <!-- placeholder="activatedPrimaryNav ==='report' ? 'Search report' : activatedPrimaryNav ==='list'? 'Search' :'Search schema'" -->
+    
+    <div class="row-spacer"></div>
+
+    <div class="nav-tree" id="nav-tree">
+      <!-- Tree to show when navigation is on HOME -->
+      <mat-accordion *ngIf="activatedPrimaryNav === 'welcome'">
+        <lib-section text="Data intelligence"></lib-section>
+        <div class="row-spacer"></div>
+        <ng-container *ngFor="let module of searchModuleResults">
+          <mat-expansion-panel togglePosition="before" class="mat-elevation-z0"
+            *ngIf="module.schemaLists && module.schemaLists.length>0">
+            <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
+              <mat-panel-title>
+                <div class="expand-title">{{module.moduleDesc ? module.moduleDesc : 'Untitled'}}</div>
+                <span class="f-spacer"></span>
+                <div class="badge">{{module.schemaLists.length}}</div>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <mat-nav-list role="navigation" [disableRipple]="true">
+              <mat-list-item *ngFor="let schema of module.schemaLists"
+                [routerLink]="['schema/schema-details', module.moduleId, schema.schemaId]"
+                [routerLinkActive]="'selected'">
+                <div mat-line>{{schema.schemaDescription ?  schema.schemaDescription : 'Untitled'}}</div>
+                <span class="f-spacer"></span>
+                <mat-spinner *ngIf="schema.isInRunning" color="primary" diameter="15"></mat-spinner>
+              </mat-list-item>
+            </mat-nav-list>
+          </mat-expansion-panel>
+        </ng-container>
+      </mat-accordion>
+
+      <!-- Tree to show when navigation is on schema -->
+      <mat-accordion *ngIf="activatedPrimaryNav === 'schema'">
+        <ng-container *ngFor="let module of searchModuleResults">
+          <mat-expansion-panel togglePosition="before" class="mat-elevation-z0"
+            [expanded]="activeMenuItemId === module.moduleId"
+            *ngIf="module.schemaLists && module.schemaLists.length>0"
+            [id]="module.moduleId">
+            <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px"
+              [routerLink]="['schema', module.moduleId]">
+              <mat-panel-title>
+                <div class="expand-title">{{module.moduleDesc ? module.moduleDesc : 'Untitled'}}</div>
+                <span class="f-spacer"></span>
+                <div class="badge">{{module.schemaLists.length}}</div>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <mat-nav-list role="navigation" [disableRipple]="true">
+              <mat-list-item *ngFor="let schema of module.schemaLists"
+                [routerLink]="['schema/schema-info', schema.moduleId, schema.schemaId]"
+                [ngClass]="{'selected' : isActiveLink('schema/schema-info/' + schema.moduleId + '/' + schema.schemaId)}"
+                [queryParams]="{fragment:'business-rules'}">
+                <div mat-line>{{schema.schemaDescription ?  schema.schemaDescription : 'Untitled'}}</div>
+              </mat-list-item>
+            </mat-nav-list>
+          </mat-expansion-panel>
+        </ng-container>
+      </mat-accordion>
+
+      <!-- Tree to show when navigation is on report -->
+      <mat-accordion *ngIf="activatedPrimaryNav === 'report'">
+        <mat-nav-list *ngFor="let report of reportOb | async" [disableRipple]="true">
+          <mat-list-item [disabled]="report.permission && !report.permission.isViewable"
+            [routerLink]="['report/dashboard', report.reportId]" [routerLinkActive]="'selected'">
+            <div class="heading-title">{{report.reportName ? report.reportName : 'Untitled'}}</div>
+          </mat-list-item>
+        </mat-nav-list>
+      </mat-accordion>
+
+      <!-- Tree to show when navigation is on list -->
+      <mat-accordion *ngIf="activatedPrimaryNav === 'list'" cdkDropList [cdkDropListData]="objectTypeList" (cdkDropListDropped)="drop($event)">
+        <mat-nav-list *ngFor="let objectType of objectTypeObs | async" cdkDrag [disableRipple]="true">
+          <mat-list-item cdkDragHandle 
+          [routerLink]="['list/datatable', objectType.objectid]"
+          routerLinkActive="selected">
+              {{objectType.objectdesc ? objectType.objectdesc : 'Untitled'}}
+          </mat-list-item>
+        </mat-nav-list>
+      </mat-accordion>
+    </div>
+  </mat-card>
+
+  <div class="split-col" (click)="toggleSideBar()">
+    <div class="split-arrow">
+      <mat-icon fontSet="mdo-icons">{{arrowIcon}}</mat-icon>
+    </div>
+  </div>
+</div>
