@@ -19,7 +19,7 @@
             </div>
             <mat-divider></mat-divider>
             <button mat-menu-item (click)="openTableViewSettings()">
-                <mat-icon fontSet="mdo-icons" class="mat-menu-icon">plus</mat-icon> New view
+                <mat-icon fontSet="mdo-icons" class="mat-menu-icon">plus</mat-icon><span i18n="@@new_view"> New view </span>
             </button>
         </mat-menu>
         <span class="f-col-spacer-half"></span>
@@ -27,8 +27,8 @@
         <div class="f-row action-iconbtns">
             <lib-button type="plain" iconFontType="solid" [matMenuTriggerFor]="navigation" icon="ellipsis-h"></lib-button>
             <mat-menu #navigation="matMenu" class="navigation-menu">
-                <button mat-menu-item (click)="openTableViewSettings(true)"> Configure view </button>
-                <button mat-menu-item (click)="deleteView(currentView.viewId)"> Delete view </button>
+                <button mat-menu-item (click)="openTableViewSettings(true)" i18n="@@configure_view"> Configure view </button>
+                <button mat-menu-item (click)="deleteView(currentView.viewId)" i18n="@@delete_view"> Delete view </button>
             </mat-menu>
         </div>
     </div>
@@ -36,7 +36,7 @@
     <div class="row-spacer"></div>
 
     <div class="f-row">
-        <lib-search placeholder="Search..."></lib-search>
+        <lib-search i18n-placeholder="@@search" placeholder="Search..."></lib-search>
     </div>
 
     <div class="row-spacer"></div>
@@ -94,7 +94,7 @@
                 </ng-template>
             </ng-template>
 
-            <tr mat-header-row *matHeaderRowDef="displayedColumns | async;"></tr>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns | async; sticky: true"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns | async;"></tr>
         </table>
     </div>

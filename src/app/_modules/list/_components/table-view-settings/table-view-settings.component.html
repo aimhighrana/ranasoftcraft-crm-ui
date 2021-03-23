@@ -23,11 +23,11 @@
                     Columns
                 </ng-template>
                 <div class="f-col">
-                    <lib-input label="View name" [(ngModel)]="viewDetails.viewName"
+                    <lib-input i18n-label="@@view_name" label="View name" [(ngModel)]="viewDetails.viewName"
                         [hint]="submitted && !viewDetails.viewName ? 'View name is required' : ''"
                         [hasError]="submitted && !viewDetails.viewName">
                     </lib-input>
-                    <lib-search placeholder="Search columns" (valueChange)="searchFld($event)"></lib-search>
+                    <lib-search i18n-placeholder="@@search" placeholder="Search columns" (valueChange)="searchFld($event)"></lib-search>
                     <div class="row-spacer"></div>
                     <div class="check-list">
                         <div class="f-row colunm-box">

@@ -65,6 +65,46 @@
           <context context-type="linenumber">40</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="view_name" datatype="html">
+        <source>View name</source>
+        <target>Visa namn</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app_modules/list/_components/table-view-settings/table-view-settings.component.html</context>
+          <context context-type="linenumber">26</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="search_columns" datatype="html">
+        <source>Search columns</source>
+        <target>Sök i kolumner</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app_modules/list/_components/table-view-settings/table-view-settings.component.html</context>
+          <context context-type="linenumber">30</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="new_view" datatype="html">
+        <source>New view</source>
+        <target>Ny vy</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\list\_components\list-datatable\list-datatable.component.html</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="delete_view" datatype="html">
+        <source>Delete view</source>
+        <target>Radera vy</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\list\_components\list-datatable\list-datatable.component.html</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="search" datatype="html">
+        <source>Search...</source>
+        <target>Sök...</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\list\_components\list-datatable\list-datatable.component.html</context>
+          <context context-type="linenumber">39</context>
+        </context-group>
+      </trans-unit>
     </body>
   </file>
 </xliff>
