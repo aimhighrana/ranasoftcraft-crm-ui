@@ -41,10 +41,10 @@
         <div class="col-spacer"></div>
         <div class="f-col-spacer-half"></div>
 
-        <div class="f-row menu-pill-search app-canvas">
-             <pros-search-input placeholder="Search anything"  #schemaSearchInput value=""></pros-search-input>
-        </div>
+        <lib-search  placeholder="Search anything" #schemaSearchInput value="" class="lib-search"></lib-search>
 
+        <div class="col-spacer"></div>
+        <div class="f-col-spacer-half"></div>
         <div class="admin-badge cursor"  (click)="openSystemTray()">
             <mat-icon fontSet="mdo-icons" libBadge="{{ notificationsCount }}"
             matBadgeOverlap="true"
@@ -56,20 +56,15 @@
 
         <div class="col-spacer"></div>
         <div class="f-col-spacer-half"></div>
+        <lib-avatar size="small" initials="{{ userDetails.firstName ? userDetails.firstName.substring(0,1).toUpperCase() : ''  }}{{ userDetails.lastName ? userDetails.lastName.substring(0,1).toUpperCase() : ''  }}" [matMenuTriggerFor]="profile_navigation"></lib-avatar>
 
-        <mat-card-header [matMenuTriggerFor]="profile_navigation">
-            <div mat-card-avatar class="app-canvas cursor">
-                {{ userDetails.firstName ? userDetails.firstName.substring(0,1).toUpperCase() : ''  }}{{ userDetails.lastName ? userDetails.lastName.substring(0,1).toUpperCase() : ''  }}
-            </div>
-            <!-- <mat-card-title>{{ userDetails.fullName ? userDetails.fullName : userDetails.userName }}</mat-card-title> -->
-        </mat-card-header>
         <mat-menu #profile_navigation="matMenu" xPosition="before" class="navigation-menu">
             <button mat-menu-item (click)="signOut()">Sign out</button>
         </mat-menu>
     </div>    
 </div>
 
-<mat-sidenav-content id="primaryContent">
+<mat-sidenav-content id="primaryContent" class="body-sidecontent">
     <mat-sidenav-container autosize>
         <mat-sidenav mode="side" opened [disableClose]="true" id="secondarySidenav" #secondarySidenav>
             <!-- secondary side nav -->

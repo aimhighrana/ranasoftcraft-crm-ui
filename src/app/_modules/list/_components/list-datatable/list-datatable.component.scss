@@ -4,6 +4,11 @@ div.root {
   padding: 0 16px;
   overflow: hidden;
 
+  .data-listing {
+    height: 100%;
+    overflow: auto;
+  }
+
   .loading-result {
     height: calc(100% - 36px - 16px * 3);
     align-items: center;

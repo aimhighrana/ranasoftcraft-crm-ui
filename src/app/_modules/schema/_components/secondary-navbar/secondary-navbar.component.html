@@ -1,19 +1,14 @@
 <div class="root">
   <mat-card class="secondary-card mat-elevation-z0">
     <div class="f-row-spacer-half"></div>
-    <div class="f-row display-heading-large">
-      <div>{{ getRoutedDescription }}</div>
+    <div class="f-row">
+      <lib-text-line type="leading">{{ getRoutedDescription }}</lib-text-line>
       <span class="f-spacer"></span>
-      <button mat-button *ngIf="(activatedPrimaryNav !== 'schema' && activatedPrimaryNav !== 'list'); else isSchema" (click)="globalCreate()">
-        <mat-icon fontSet="mdo-icons">plus</mat-icon>
-      </button>
+      <lib-button type="plain" iconFontType="solid" icon="plus" *ngIf="(activatedPrimaryNav !== 'schema' && activatedPrimaryNav !== 'list'); else isSchema" (click)="globalCreate()"></lib-button>
       <ng-template #isSchema>
-        <button mat-button [matMenuTriggerFor]="moduleMenu">
-          <mat-icon fontSet="mdo-icons">plus</mat-icon>
-        </button>
+        <lib-button type="plain" iconFontType="solid" icon="plus" [matMenuTriggerFor]="moduleMenu"></lib-button>
         <mat-menu #moduleMenu="matMenu" xPosition="before" (closed)="searchInput.clearSearch()" class="navigation-menu">
-          <pros-search-input class="field-mat-menu" placeholder="Search for module" (value)="filterModulesMenu($event)"
-            #searchInput prosClickStopPropagation></pros-search-input>
+          <div class="search-row"><lib-search  placeholder="Search for module" (value)="filterModulesMenu($event)" #searchInput prosClickStopPropagation></lib-search></div>
           <div class="menu-customdropdown">
             <button mat-menu-item *ngFor="let module of filteredModulesMenu"
               (click)="createNewSchema(module.moduleId)">{{module.moduleDesc ? module.moduleDesc : 'Untitled'}}
@@ -25,17 +20,15 @@
 
     <div class="row-spacer"></div>
 
-    <pros-search-input [placeholder]="activatedPrimaryNav ==='report' ? 'Search report' : activatedPrimaryNav ==='list'? 'Search' :'Search schema'"
-      #schemaSearchInput (value)=(searchSchema($event))></pros-search-input>
-
+    <lib-search  placeholder="Search" #schemaSearchInput (value)=(searchSchema($event))></lib-search>
+    <!-- placeholder="activatedPrimaryNav ==='report' ? 'Search report' : activatedPrimaryNav ==='list'? 'Search' :'Search schema'" -->
+    
     <div class="row-spacer"></div>
 
     <div class="nav-tree" id="nav-tree">
       <!-- Tree to show when navigation is on HOME -->
       <mat-accordion *ngIf="activatedPrimaryNav === 'welcome'">
-        <div class="section-header">
-          Data intelligence
-        </div>
+        <lib-section text="Data intelligence"></lib-section>
         <div class="row-spacer"></div>
         <ng-container *ngFor="let module of searchModuleResults">
           <mat-expansion-panel togglePosition="before" class="mat-elevation-z0"

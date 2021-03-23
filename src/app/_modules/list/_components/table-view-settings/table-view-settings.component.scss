@@ -8,26 +8,8 @@ div.root {
     padding: 8px 16px;
 
     .mdo-constrained-right {
-      align-items: center;
       width: 100%;
       margin-right: 0;
-
-      .breadcrum-head {
-        align-items: center;
-        width: 100%;
-        min-height: 36px;
-
-        .display-heading-large {
-          font-size: 1.2rem;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          overflow: hidden;
-        }
-      }
-
-      .mdo-form-field {
-        width: 100%;
-      }
     }
   }
 
@@ -37,16 +19,6 @@ div.root {
 
     .mdo-justify {
       margin: 0 16px;
-
-      .mdo-form-field {
-        margin-bottom: 16px;
-        width: 100%;
-
-        mat-label {
-          font-weight: 500;
-          font-size: 0.8rem;
-        }
-      }
     }
   }
 }

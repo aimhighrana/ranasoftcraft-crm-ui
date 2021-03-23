@@ -1,18 +1,19 @@
 <div class="root">
+
     <div class="f-row breadcrum-toolbar">
         <lib-button icon="close" (afterClick)="close()"></lib-button>
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
-                <div class="display-heading-large">Configure view</div>
+                <lib-text-line type="leading">Configure view</lib-text-line>
                 <span class="f-col-spacer-half"></span>
                 <span class="f-spacer"></span>
-                <lib-button type="major" (afterClick)="save()"> save </lib-button>
+                <lib-button type="major" (afterClick)="save()"> Save </lib-button>
             </div>
         </div>
     </div>
 
-    <div class="row-spacer"></div>
+    <div class="f-row-spacer-half"></div>
 
     <div class="f-col sidesheetcontent-listing">
 
@@ -22,15 +23,11 @@
                     Columns
                 </ng-template>
                 <div class="f-col">
-                    <div class="mdo-form-field">
-                        <lib-input label="View name" [(ngModel)]="viewDetails.viewName"
-                            [hint]="submitted && !viewDetails.viewName ? 'View name is required' : ''"
-                            [hasError]="submitted && !viewDetails.viewName">
-                        </lib-input>
-                    </div>
-                    <div class="mdo-form-field">
-                        <lib-search placeholder="Search columns" (valueChange)="searchFld($event)"></lib-search>
-                    </div>
+                    <lib-input label="View name" [(ngModel)]="viewDetails.viewName"
+                        [hint]="submitted && !viewDetails.viewName ? 'View name is required' : ''"
+                        [hasError]="submitted && !viewDetails.viewName">
+                    </lib-input>
+                    <lib-search placeholder="Search columns" (valueChange)="searchFld($event)"></lib-search>
                     <div class="row-spacer"></div>
                     <div class="check-list">
                         <div class="f-row colunm-box">
@@ -45,9 +42,7 @@
                             <div *ngFor="let fld of header" id="{{ fld.fieldId }}" cdkDrag class="colunm-list">
                                 <div class="f-row colunm-box">
                                     <div class="col">
-                                        <button mat-button cdkDragHandle>
-                                            <mat-icon fontSet="mdo-icons">two-lines</mat-icon>
-                                        </button>
+                                        <lib-button cdkDragHandle type="plain" iconFontType="solid" [matMenuTriggerFor]="menu" icon="grip-lines"></lib-button>
                                     </div>
 
                                     <div class="col col-x4">
@@ -67,8 +62,7 @@
                                     <div class="f-spacer"></div>
 
                                     <div class="col">
-                                        <lib-checkbox [checked]="isChecked(fld)"
-                                            (valueChange)="selectionChange(fld)">
+                                        <lib-checkbox [checked]="isChecked(fld)" (valueChange)="selectionChange(fld)">
                                         </lib-checkbox>
                                     </div>
                                 </div>

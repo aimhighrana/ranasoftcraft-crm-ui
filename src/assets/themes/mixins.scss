@@ -752,6 +752,10 @@
 
   //Mat-Menu
   .cdk-overlay-pane {
+    .search-row {
+      margin: 8px;
+    }
+
     .mat-menu-panel {
       max-width: 300px;
       width: 220px;
@@ -1293,7 +1297,7 @@
   }
 
   pros-primary-navigation {
-    mat-sidenav-content.mat-sidenav-content {
+    mat-sidenav-content.body-sidecontent {
       height: calc(100% - 60px);
     }
 
@@ -1335,36 +1339,18 @@
           background: mat-color($background-palette, card);
         }
 
-        .menu-pill-search {
-          .input-action {
-            color: $color-text-secondary;
-          }
-
-          .pill-input {
-            color: $color-text-offcanvas;
-
-            &::placeholder {
-              color: $color-text-secondary;
-            }
-          }
-        }
-
         .admin-badge {
           .mat-badge-content {
             background: transparent;
             letter-spacing: 0;
-            top: -16px;
+            top: -18px;
+            left: 0;
             font-weight: 400;
             font-size: 11px;
             color: $color-text-offcanvas;
             border: none;
           }
         }
-      }
-
-      .app-canvas {
-        background: $color-app-canvas;
-        color: $color-text-offcanvas;
       }
     }
   }
@@ -1380,6 +1366,8 @@
           }
 
           .mat-list-item {
+            font-size: 14px;
+
             &.selected {
               background-color: $color-app-hover;
             }
@@ -1850,6 +1838,71 @@
     .state-container {
       .label-text {
         color: $color-text-secondary;
+      }
+    }
+  }
+
+  pros-schema-details {
+    div.root {
+      .counts {
+        color: $color-text-secondary;
+
+        &::after {
+          background: $color-text-secondary;
+        }
+      }
+
+      mat-tab-group.mat-tab-group {
+        mat-tab-body.mat-tab-body {
+          .mat-tab-body-content {
+            overflow: hidden;
+          }
+        }
+      }
+
+      .listing-container {
+        .listset-navigation {
+          border-right-color: $color-app-border;
+
+          .nav-tree {
+            mat-nav-list.mat-nav-list.tree-nav-list {
+              .understep-two {
+                .mat-list-item-content {
+                  padding: 0 0 0 86px;
+
+                  button.mat-button {
+                    width: 36px;
+                    height: 36px;
+                    border-radius: 3px;
+                  }
+                }
+              }
+            }
+
+            .error-badge {
+              color: $color-status-error;
+            }
+
+            .success-badge {
+              color: $color-status-success;
+            }
+
+            .warning-badge {
+              color: $color-status-warning;
+            }
+          }
+        }
+
+        .default-badge,
+        .vertical-text {
+          color: $color-text-secondary;
+        }
+
+        .collapse-icon,
+        .split-panel-mark {
+          box-shadow: $box-shadow;
+          background-color: mat-color($background-palette, card);
+        }
       }
     }
   }

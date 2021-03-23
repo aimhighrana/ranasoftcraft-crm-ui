@@ -4,36 +4,16 @@
 
   mat-card.secondary-card {
     border-radius: 0;
-    padding: 0;
+    padding: 0 16px;
     height: 100%;
     user-select: none;
     overflow: hidden;
     width: 100%;
 
-    .display-heading-large {
-      font-size: 1.2rem;
-      align-items: center;
-      padding: 0 16px;
-      min-height: 40px;
-
-      > div {
-        overflow: hidden;
-        width: 100%;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-    }
-
-    pros-search-input {
-      display: block;
-      padding: 0 16px;
-    }
-
     .nav-tree {
       height: calc(100% - 40px - 36px - 40px);
       overflow-y: auto;
       overflow-x: hidden;
-      padding: 0 16px;
 
       mat-accordion.mat-accordion {
         mat-expansion-panel {
@@ -48,7 +28,7 @@
                 text-overflow: ellipsis;
                 overflow: hidden;
                 white-space: nowrap;
-                font-size: 0.9rem;
+                font-size: 14px;
               }
 
               .badge {
