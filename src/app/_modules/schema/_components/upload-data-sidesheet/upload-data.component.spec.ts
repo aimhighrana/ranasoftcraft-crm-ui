@@ -302,11 +302,13 @@ describe('UploadDataComponent', () => {
     } as SchemaListModuleList;
     component.moduleId = '129876';
 
+    spyOn(component, 'getMetadataFields');
     spyOn(schemaService, 'getSchemaInfoByModuleId').withArgs(component.moduleId).and.returnValue(of(mockRes));
 
     component.getSchemaList();
     expect(schemaService.getSchemaInfoByModuleId).toHaveBeenCalledWith(component.moduleId);
     expect(component.moduleInfo).toEqual(mockRes);
+    expect(component.getMetadataFields).toHaveBeenCalled();
   });
 
   it('getSchemaList(), should get schema list from service', async() => {

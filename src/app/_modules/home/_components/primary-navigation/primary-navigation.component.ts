@@ -64,13 +64,11 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
   ) { }
 
   ngOnInit(): void {
-    this.userService.getUserDetails().subscribe(res => {
-      this.userDetails = res;
-    }, error => console.error(`Error : ${error.message}`));
+
     this.udSub = this.userService.getUserDetails().subscribe(
       (response: Userdetails) => {
         this.userDetails = response;
-      }
+      }, error => console.error(`Error : ${error.message}`)
     );
 
     this.appStateSubject.subscribe(res => {
