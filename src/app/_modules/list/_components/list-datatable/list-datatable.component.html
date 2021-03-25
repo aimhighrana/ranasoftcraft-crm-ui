@@ -98,6 +98,7 @@
             <tr mat-row *matRowDef="let row; columns: displayedColumns | async;"></tr>
         </table>
     </div>
+    <div class="f-row-spacer-half"></div>
     <lib-pagination [currentPageIndex]="recordsPageIndex" 
         [totalCount]="totalCount" pageSize="50"
         (pageChangeEvent)="onPageChange($event)">
