@@ -1,4 +1,4 @@
-<div cdkScrollable class="root">
+<div class="root">
     <div class="f-row breadcrum-toolbar">
         <div class="display-heading-large">
             Dashboard builder
@@ -103,7 +103,7 @@
             </mat-card>
 
 
-            <div class="property-col" *ngIf="showProperty">
+            <div cdkScrollable class="property-col" *ngIf="showProperty">
                 <div class="f-row col-heading">
                     <div class="display-heading-large">
                         {{ selStyleWid ? selStyleWid.widgetTitle : 'Untitled' }} properties
