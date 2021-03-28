@@ -151,3 +151,14 @@ export class FilterCriteria {
     startValue: string;
     values: string[];
 }
+
+export class ViewsPage {
+    systemViews: ViewsPageItem[] = [];
+    userViews: ViewsPageItem[] = [];
+}
+
+export class ViewsPageItem {
+    viewId: string;
+    viewName: string;
+    default: boolean;
+}

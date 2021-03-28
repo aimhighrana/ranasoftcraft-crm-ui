@@ -3,7 +3,7 @@ import { Observable, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { FilterCriteria, ListPageViewDetails, ListPageViewFldMap } from '@models/list-page/listpage';
+import { FilterCriteria, ListPageViewDetails, ViewsPage } from '@models/list-page/listpage';
 import { EndpointsListService } from '@services/_endpoints/endpoints-list.service';
 
 
@@ -31,21 +31,9 @@ export class ListService {
   /**
    * get all list page views
    */
-   public getAllListPageViews(userId, role, tenantcode, moduleId, pageIndex?, pageSize?): Observable<ListPageViewDetails[]> {
-    const viewsList = [];
-    for(let i=1; i<=10; i++) {
-      const view = new ListPageViewDetails();
-      const id = Math.floor(Math.random()*1000);
-      view.viewId = `view ${id}`;
-      // view.viewId = ``;
-      view.viewName = `view ${id}`;
-      view.fieldsReqList.push({fieldId: `Column ${id}`} as ListPageViewFldMap);
-      viewsList.push(view);
-    }
-    return of(viewsList);
-
-  // return this.http.get<ListPageViewDetails[]>(this.endpointService.getAllListPageViewsUrl(), { params: {userId, role, tenantcode, moduleId}});
-}
+   public getAllListPageViews(userId, role, tenantcode, moduleId, offSet): Observable<ViewsPage> {
+    return this.http.get<ViewsPage>(this.endpointService.getAllListPageViewsUrl(), { params: {userId, role, tenantcode, moduleId, offSet}});
+  }
 
 /**
  * get list page view details

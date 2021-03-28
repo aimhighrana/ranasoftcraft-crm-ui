@@ -18,4 +18,8 @@ describe('EndpointsCoreService', () => {
     expect(service.getAllObjectTypeUrl()).toContain('/metadata/get-all-objecttype');
   });
 
+  it('should getAllFieldsForViewUrl', () => {
+    expect(service.getAllFieldsForViewUrl()).toContain('/metadata/list-view-fields');
+  });
+
 });

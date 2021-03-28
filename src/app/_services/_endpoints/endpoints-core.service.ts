@@ -14,4 +14,8 @@ export class EndpointsCoreService {
     return this.apiurl + '/metadata/get-all-objecttype'
   }
 
+  public getAllFieldsForViewUrl(): string {
+    return this.apiurl + `/metadata/list-view-fields`;
+  }
+
 }

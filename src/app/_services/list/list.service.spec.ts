@@ -1,6 +1,6 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { async, TestBed } from '@angular/core/testing';
-import { ListPageViewDetails } from '@models/list-page/listpage';
+import { ListPageViewDetails, ViewsPage } from '@models/list-page/listpage';
 import { Userdetails } from '@models/userdetails';
 import { EndpointsListService } from '@services/_endpoints/endpoints-list.service';
 
@@ -29,13 +29,13 @@ describe('ListService', () => {
     expect(listService).toBeTruthy();
   });
 
-  /* it('getAllListPageViews()', async(() => {
+  it('getAllListPageViews()', async(() => {
 
     const url = `getAllListPageViewsUrl`;
     // mock url
     endpointServiceSpy.getAllListPageViewsUrl.and.returnValue(url);
 
-    const response = [new ListPageViewDetails()];
+    const response = new ViewsPage();
 
     const userDetails = new Userdetails();
     userDetails.userName = 'Admin';
@@ -44,18 +44,18 @@ describe('ListService', () => {
     const moduleId = '1005';
 
     // actual service call
-    listService.getAllListPageViews(userDetails.userName, userDetails.currentRoleId, userDetails.plantCode, moduleId )
+    listService.getAllListPageViews(userDetails.userName, userDetails.currentRoleId, userDetails.plantCode, moduleId,0 )
       .subscribe(actualResponse => {
           expect(actualResponse).toEqual(response);
     });
     // mock http call
-    const mockRequst = httpTestingController.expectOne(`${url}?userId=${userDetails.userName}&role=${userDetails.currentRoleId}&tenantcode=${userDetails.plantCode}&moduleId=${moduleId}`);
+    const mockRequst = httpTestingController.expectOne(`${url}?userId=${userDetails.userName}&role=${userDetails.currentRoleId}&tenantcode=${userDetails.plantCode}&moduleId=${moduleId}&offSet=0`);
     expect(mockRequst.request.method).toEqual('GET');
     expect(mockRequst.request.responseType).toEqual('json');
     mockRequst.flush(response);
     // verify http
     httpTestingController.verify();
-  })); */
+  }));
 
   it('getListPageViewDetails()', async(() => {
 

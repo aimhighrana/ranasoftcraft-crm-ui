@@ -4,16 +4,16 @@
         <lib-text-line type="leading">Material - {{ currentView.viewName || 'Default view' }}</lib-text-line>
         <lib-button type="plain" iconFontType="solid" [matMenuTriggerFor]="menu" icon="caret-down"></lib-button>
         <mat-menu #menu="matMenu" class="navigation-menu">
-            <div class="menu-customdropdown" prosInfiniteScroll bufferPercentage="10" (scrollEnd)="getViewsList(true)">
+            <div class="menu-customdropdown" prosInfiniteScroll bufferPercentage="20" (scrollEnd)="getViewsList(true)">
 
                 <lib-section text="My views" *ngIf="userViews && userViews.length"></lib-section>
-                <button mat-menu-item *ngFor="let userView of userViews" (click)="updateTableColumns(userView.viewId)">
+                <button mat-menu-item *ngFor="let userView of userViews" (click)="getViewDetails(userView.viewId)">
                     {{ userView.viewName }}
                 </button>
 
                 <lib-section text="System views" *ngIf="systemViews && systemViews.length"></lib-section>
                 <button mat-menu-item *ngFor="let systemView of systemViews"
-                    (click)="updateTableColumns(systemView.viewId)">
+                    (click)="getViewDetails(systemView.viewId)">
                     {{ systemView.viewName }}
                 </button>
             </div>
@@ -84,8 +84,7 @@
                 <ng-template #dynamic>
                     <ng-container [matColumnDef]="dynCol">
                         <th mat-header-cell *matHeaderCellDef>
-                            {{ metadataFldLst && metadataFldLst.headers[dynCol] ?
-                            metadataFldLst.headers[dynCol].fieldDescri : dynCol }}
+                            {{ getFieldDesc(dynCol) }}
                         </th>
                         <td mat-cell *matCellDef="let element">
                             {{ element[dynCol] ? element[dynCol].fieldData || '' : ''}}

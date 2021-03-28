@@ -1,6 +1,6 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { ObjectType } from '@models/core/coreModel';
+import { FieldMetaData, ObjectType } from '@models/core/coreModel';
 import { EndpointsCoreService } from '@services/_endpoints/endpoints-core.service';
 
 import { CoreService } from './core.service';
@@ -11,7 +11,7 @@ describe('CoreService', () => {
   let httpTestingController: HttpTestingController;
 
   beforeEach(() => {
-    const endpointSpy = jasmine.createSpyObj('EndpointsCoreService', ['getAllObjectTypeUrl']);
+    const endpointSpy = jasmine.createSpyObj('EndpointsCoreService', ['getAllObjectTypeUrl', 'getAllFieldsForViewUrl']);
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule ],
       providers: [
@@ -45,5 +45,26 @@ describe('CoreService', () => {
     mockRequest.flush(response);
     httpTestingController.verify();
 
-  })
+  });
+
+  it('should getAllFieldsForView', () => {
+
+    const url = 'getAllFieldsForViewUrl';
+    const response = [
+      {fieldId: 'MTL_TYPE', fieldDescri: 'Material type'}
+    ] as FieldMetaData[];
+
+    endpointsServiceSpy.getAllFieldsForViewUrl.and.returnValue(url);
+
+    service.getAllFieldsForView('1005').subscribe(modules => {
+      expect(modules).toEqual(response);
+    });
+
+    const mockRequest = httpTestingController.expectOne(`${url}?moduleId=1005`);
+    expect(mockRequest.request.method).toEqual('GET');
+    mockRequest.flush(response);
+    httpTestingController.verify();
+
+  });
+
 });

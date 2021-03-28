@@ -11,7 +11,7 @@ export class EndpointsListService {
   constructor() { }
 
   public getAllListPageViewsUrl(): string {
-    return this.apiUrl + `/view/all`;
+    return this.apiUrl + `/view/get-all-view`;
   }
 
   public getListPageViewDetailsUrl(viewId: string): string {

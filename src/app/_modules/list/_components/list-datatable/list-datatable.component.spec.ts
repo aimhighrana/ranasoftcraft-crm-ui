@@ -11,6 +11,7 @@ import { Userdetails } from '@models/userdetails';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { PageEvent } from '@angular/material/paginator';
 import { SharedModule } from '@modules/shared/shared.module';
+import { ViewsPage } from '@models/list-page/listpage';
 
 describe('ListDatatableComponent', () => {
   let component: ListDatatableComponent;
@@ -19,7 +20,7 @@ describe('ListDatatableComponent', () => {
   let listService: ListService;
   let router: Router;
   let sharedServices: SharedServiceService;
-  const routeParams = {moduleId: '1005', schemaId: '1701' };
+  const routeParams = { moduleId: '1005' };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -70,11 +71,11 @@ describe('ListDatatableComponent', () => {
     component.moduleId = '1005';
 
     spyOn(listService, 'getAllListPageViews')
-      .and.returnValues(of([]), throwError({ message: 'api error'}));
+      .and.returnValues(of(new ViewsPage()), throwError({ message: 'api error'}));
 
     component.getViewsList();
     expect(listService.getAllListPageViews).toHaveBeenCalled();
-    expect(component.viewsList).toEqual([component.defaultView]);
+    expect(component.currentView).toEqual(component.defaultView);
 
     // api error
     spyOn(console, 'error');

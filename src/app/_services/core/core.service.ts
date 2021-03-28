@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ObjectType } from '@models/core/coreModel';
+import { FieldMetaData, ObjectType } from '@models/core/coreModel';
 import { EndpointsCoreService } from '@services/_endpoints/endpoints-core.service';
 import { Observable } from 'rxjs';
 
@@ -14,6 +14,10 @@ export class CoreService {
 
   getAllObjectType(): Observable<ObjectType[]>{
     return this.http.get<ObjectType[]>(this.endpointsService.getAllObjectTypeUrl());
+  }
+
+  public getAllFieldsForView(moduleId: string): Observable<FieldMetaData[]> {
+    return this.http.get<FieldMetaData[]>(this.endpointsService.getAllFieldsForViewUrl(), {params: {moduleId}})
   }
 
 }

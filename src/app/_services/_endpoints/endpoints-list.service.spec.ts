@@ -15,7 +15,7 @@ describe('EndpointsListService', () => {
   });
 
   it('should getAllListPageViewsUrl', () => {
-    expect(service.getAllListPageViewsUrl()).toContain('/view/all');
+    expect(service.getAllListPageViewsUrl()).toContain('/view/get-all-view');
   });
 
   it('should getListPageViewDetailsUrl', () => {

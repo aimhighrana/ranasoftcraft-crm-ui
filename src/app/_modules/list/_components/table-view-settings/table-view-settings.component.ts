@@ -1,14 +1,14 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { MetadataModel, MetadataModeleResponse } from '@models/schema/schemadetailstable';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SchemaDetailsService } from 'src/app/_services/home/schema/schema-details.service';
 import { Userdetails } from '@models/userdetails';
 import { UserService } from '@services/user/userservice.service';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { ListService } from '@services/list/list.service';
 import { ListPageViewDetails, ListPageViewFldMap } from '@models/list-page/listpage';
+import { CoreService } from '@services/core/core.service';
+import { FieldMetaData } from '@models/core/coreModel';
 
 @Component({
   selector: 'pros-table-view-settings',
@@ -27,12 +27,10 @@ export class TableViewSettingsComponent implements OnInit, OnDestroy {
    */
   viewId: string;
 
-  metadataFldLst: MetadataModeleResponse;
-  header : MetadataModel[] = [];
+  metadataFldLst: FieldMetaData[];
 
   allChecked = false;
   allIndeterminate = false;
-  headerArray = [];
 
   /**
    * Hold fields of all suggested fields
@@ -57,7 +55,7 @@ export class TableViewSettingsComponent implements OnInit, OnDestroy {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private listService: ListService,
-    private schemaDetailsService: SchemaDetailsService,
+    private coreService: CoreService,
     private userService: UserService
     ){}
 
@@ -95,35 +93,19 @@ export class TableViewSettingsComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Get all fld metada based on module of schema
+   * Get all fld metada based on module id
    */
-  getFldMetadata() {
+   getFldMetadata() {
     if (this.moduleId === undefined || this.moduleId.trim() === '') {
       throw new Error('Module id cant be null or empty');
     }
-    const sub =  this.schemaDetailsService.getMetadataFields(this.moduleId).subscribe(response => {
+    const sub = this.coreService.getAllFieldsForView(this.moduleId).subscribe(response => {
       this.metadataFldLst = response;
-      this.headerDetails();
     }, error => {
       console.error(`Error : ${error.message}`);
     });
     this.subscriptions.push(sub);
   }
-
-  /**
-   * get available headers details
-   */
-  public headerDetails() {
-    this.header = [];
-
-    if(this.metadataFldLst && this.metadataFldLst.headers){
-      Object.keys(this.metadataFldLst.headers).forEach(hekey => {
-          this.header.push(this.metadataFldLst.headers[hekey]);
-      });
-    }
-    this.headerArray = this.header.map(he=> he.fieldId);
-  }
-
 
   /**
    * close sidesheet
@@ -142,17 +124,32 @@ export class TableViewSettingsComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.viewDetails.moduleId = this.moduleId;
     this.viewDetails.fieldsReqList.map((field, index) => field.fieldOrder = `${index}`);
-    console.log(this.viewDetails);
+
+    const isUpdate = !!this.viewDetails.viewId;
+    /* if(!isUpdate) {
+      this.viewDetails.viewId = this.generateNewId();
+    } */
 
     this.listService.upsertListPageViewDetails(this.viewDetails, this.userDetails.userName, this.userDetails.currentRoleId, this.userDetails.plantCode, this.moduleId)
       .subscribe(response => {
-          console.log(response);
-          this.sharedService.setViewDetailsData({...this.viewDetails, viewId: response.viewId});
+          this.sharedService.setViewDetailsData({
+            isUpdate,
+            viewDetails: {...this.viewDetails, viewId: response.viewId}
+          });
           this.close();
     }, error => {
       console.error('Exception while persist table view');
     });
+  }
+
+  /**
+   * generate new id
+   * @returns new unique id
+   */
+  generateNewId(): string {
+    return `${new Date().valueOf()}`;
   }
 
   /**
@@ -161,14 +158,13 @@ export class TableViewSettingsComponent implements OnInit, OnDestroy {
    */
   searchFld(value: string) {
     if(value) {
-      const sugg = this.header.filter(fill=> fill.fieldDescri.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !==-1);
+      const sugg = this.metadataFldLst.filter(fill=> fill.fieldDescri.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !==-1);
       this.suggestedFlds = sugg.map(map => map.fieldId);
       if (this.suggestedFlds.length){
         const item = document.getElementById(this.suggestedFlds[0]);
         this.scrollable.nativeElement.scrollTo(0, item.offsetTop - item.scrollHeight);
       }
     } else {
-      // this.headerFieldObs = of(this.header);
       this.suggestedFlds = [];
       this.scrollable.nativeElement.scrollTo(0, 0);
     }
@@ -178,7 +174,7 @@ export class TableViewSettingsComponent implements OnInit, OnDestroy {
    * While change checkbox state ..
    * @param fld changeable checkbox
    */
-  selectionChange(fld: MetadataModel) {
+  selectionChange(fld: FieldMetaData) {
     const selIndex =  this.viewDetails.fieldsReqList.findIndex(f => f.fieldId === fld.fieldId);
     if(selIndex !==-1) {
       this.viewDetails.fieldsReqList.splice(selIndex, 1)
@@ -194,7 +190,7 @@ export class TableViewSettingsComponent implements OnInit, OnDestroy {
    * checked is checked
    * @param fld field for checking is selected or not
    */
-  isChecked(fld: MetadataModel): boolean {
+  isChecked(fld: FieldMetaData): boolean {
     const selCheck = this.viewDetails.fieldsReqList.findIndex(f => (f.fieldId ? f.fieldId : f) === fld.fieldId);
     return selCheck !==-1 ? true : false;
   }
@@ -210,14 +206,14 @@ export class TableViewSettingsComponent implements OnInit, OnDestroy {
     }
   }
 
-  editableChange(fld: MetadataModel){
+  editableChange(fld: FieldMetaData){
     const field = this.viewDetails.fieldsReqList.find(f => f.fieldId === fld.fieldId);
     if (field){
       field.isEditable = !field.isEditable;
     }
   }
 
-  isEditEnabled(fld : MetadataModel){
+  isEditEnabled(fld : FieldMetaData){
     return this.viewDetails.fieldsReqList.findIndex(field => (field.fieldId === fld.fieldId) && field.isEditable ) !== -1;
   }
 
