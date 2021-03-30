@@ -29,13 +29,14 @@ export class TableViewSettingsComponent implements OnInit, OnDestroy {
 
   metadataFldLst: FieldMetaData[];
 
-  allChecked = false;
-  allIndeterminate = false;
-
   /**
    * Hold fields of all suggested fields
    */
-  suggestedFlds: string[] = [];
+  suggestedFlds: FieldMetaData[] = [];
+
+  allChecked = false;
+  allIndeterminate = false;
+
 
   @ViewChild('scrollableContainer', {read: ElementRef}) scrollable : ElementRef<any>;
 
@@ -100,7 +101,8 @@ export class TableViewSettingsComponent implements OnInit, OnDestroy {
       throw new Error('Module id cant be null or empty');
     }
     const sub = this.coreService.getAllFieldsForView(this.moduleId).subscribe(response => {
-      this.metadataFldLst = response;
+      this.metadataFldLst = response || [];
+      this.suggestedFlds = this.metadataFldLst;
     }, error => {
       console.error(`Error : ${error.message}`);
     });
@@ -128,9 +130,6 @@ export class TableViewSettingsComponent implements OnInit, OnDestroy {
     this.viewDetails.fieldsReqList.map((field, index) => field.fieldOrder = `${index}`);
 
     const isUpdate = !!this.viewDetails.viewId;
-    /* if(!isUpdate) {
-      this.viewDetails.viewId = this.generateNewId();
-    } */
 
     this.listService.upsertListPageViewDetails(this.viewDetails, this.userDetails.userName, this.userDetails.currentRoleId, this.userDetails.plantCode, this.moduleId)
       .subscribe(response => {
@@ -145,27 +144,14 @@ export class TableViewSettingsComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * generate new id
-   * @returns new unique id
-   */
-  generateNewId(): string {
-    return `${new Date().valueOf()}`;
-  }
-
-  /**
    * Search field by value change
    * @param value changed input value
    */
   searchFld(value: string) {
     if(value) {
-      const sugg = this.metadataFldLst.filter(fill=> fill.fieldDescri.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !==-1);
-      this.suggestedFlds = sugg.map(map => map.fieldId);
-      if (this.suggestedFlds.length){
-        const item = document.getElementById(this.suggestedFlds[0]);
-        this.scrollable.nativeElement.scrollTo(0, item.offsetTop - item.scrollHeight);
-      }
+      this.suggestedFlds = this.metadataFldLst.filter(fill=> fill.fieldDescri.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !==-1);
     } else {
-      this.suggestedFlds = [];
+      this.suggestedFlds = this.metadataFldLst;
       this.scrollable.nativeElement.scrollTo(0, 0);
     }
   }

@@ -210,6 +210,9 @@ describe('UploadDataComponent', () => {
 
     component.schemaId = '276822';
     component.runid = '87264528';
+    component.dataTableCtrl = new FormGroup({
+      dataTableFldCtrl: new FormControl('')
+    });
 
     spyOn(schemaService,'uploadData').withArgs(component.excelMdoFieldMappedData,'1005', component.fileSno).and.returnValue(of('123456743'));
 

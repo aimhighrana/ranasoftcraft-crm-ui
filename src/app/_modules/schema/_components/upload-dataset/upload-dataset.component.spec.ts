@@ -690,7 +690,7 @@ describe('UploadDatasetComponent', () => {
       mdoFldId: '12234545667'
     } as DataSource;
     component.makeEditable(data);
-    tick(0);
+    tick(10);
     expect(component.editableFieldIds.length).toEqual(1)
   }));
 

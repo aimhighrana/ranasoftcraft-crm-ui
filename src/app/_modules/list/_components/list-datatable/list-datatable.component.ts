@@ -67,7 +67,7 @@ export class ListDatatableComponent implements OnInit, OnDestroy {
   /**
    * for table records paging
    */
-  recordsPageIndex = 0;
+  recordsPageIndex = 1;
 
   staticColumns: string[] = ['_select', '_settings', 'OBJECTNUMBER'];
 
@@ -106,7 +106,7 @@ export class ListDatatableComponent implements OnInit, OnDestroy {
     this.activatedRouter.params.subscribe(params => {
       this.dataSource.reset();
       this.viewsPageIndex = 0;
-      this.recordsPageIndex = 0;
+      this.recordsPageIndex = 1;
       this.currentView = new ListPageViewDetails();
       this.moduleId = params.moduleId;
       this.getTotalCount();
@@ -133,7 +133,7 @@ export class ListDatatableComponent implements OnInit, OnDestroy {
     if (loadMore) {
       this.viewsPageIndex++;
     } else {
-      this.viewsPageIndex = 0;
+      this.viewsPageIndex = 1;
     }
     const sub = this.listService.getAllListPageViews(this.userDetails.userName, this.userDetails.currentRoleId, this.userDetails.plantCode, this.moduleId, this.viewsPageIndex)
       .subscribe(views => {
