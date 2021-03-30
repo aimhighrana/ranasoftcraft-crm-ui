@@ -38,7 +38,7 @@
     "chartjs-plugin-datalabels": "0.7.0",
     "chartjs-plugin-zoom": "0.7.7",
     "jwt-decode": "2.2.0",
-    "mdo-ui-library": "0.0.11",
+    "mdo-ui-library": "0.0.14",
     "moment": "2.27.0",
     "ng2-charts": "2.3.2",
     "rxjs": "6.5.5",

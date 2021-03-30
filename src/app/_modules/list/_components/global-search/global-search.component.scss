@@ -1,0 +1,14 @@
+.search-table {
+  width: 600px;
+  height: auto;
+  position: absolute;
+  overflow-x: auto;
+  overflow-y: hidden;
+  top: 95px;
+  z-index: 110;
+
+  .filter-table {
+    overflow: hidden;
+    height: 100%;
+  }
+}
