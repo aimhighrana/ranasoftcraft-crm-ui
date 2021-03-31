@@ -1,7 +1,7 @@
 <div class="root">
     <div class="f-row breadcrum-toolbar">
         <button mat-button (click)="close()">
-            <mat-icon fontSet="mdo-icons">close</mat-icon>
+            <mat-icon fontSet="mdo-icons">times</mat-icon>
         </button>
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
@@ -43,7 +43,7 @@
                                         <div class="f-row colunm-box">
                                             <div class="col">
                                                 <button mat-button cdkDragHandle>
-                                                    <mat-icon fontSet="mdo-icons">two-lines</mat-icon>
+                                                    <mat-icon fontSet="mdo-icons">grip-lines</mat-icon>
                                                 </button>
                                             </div>
 
@@ -101,7 +101,7 @@
                                 <!-- Secondary actions -->
                                 <button mat-fab color="accent"
                                     *ngIf="secondaryActions.length" [matMenuTriggerFor]="secondaryActionsMenu">
-                                    <mat-icon fontSet="mdo-icons">more</mat-icon>
+                                    <mat-icon fontSet="mdo-icons">ellipsis-h</mat-icon>
                                 </button>
                                 <mat-menu #secondaryActionsMenu="matMenu" class="navigation-menu">
                                     <button mat-menu-item *ngFor="let sAction of secondaryActions">
@@ -137,7 +137,7 @@
                                 <div class="col">&nbsp;</div>
                                 <div class="col col-x8"><strong>Action</strong></div>
                                 <div class="col col-x4"><strong class="f-row">Primary &nbsp;
-                                        <mat-icon matTooltip="Primary" fontSet="mdo-icons">question-mark</mat-icon>
+                                        <mat-icon matTooltip="Primary" fontSet="mdo-icons-light">question-circle</mat-icon>
                                     </strong></div>
                                 <div class="col col-x4">&nbsp;</div>
                                 <div class="col col-x4 text-end"></div>
@@ -156,7 +156,7 @@
                                     class="f-row colunm-box rule-border-row" cdkDrag>
                                     <div class="col">
                                         <button mat-button cdkDragHandle>
-                                            <mat-icon fontSet="mdo-icons">two-lines</mat-icon>
+                                            <mat-icon fontSet="mdo-icons">grip-lines</mat-icon>
                                         </button>
                                     </div>
                                     <div class="col col-x8">
@@ -187,7 +187,7 @@
                                         <ng-template #commonAction>
                                             <button mat-stroked-button [matMenuTriggerFor]="displayMenu">
                                                 {{ getActionViewTypeDesc(action.actionViewType) }}
-                                                <mat-icon fontSet="mdo-icons">menu-arrow </mat-icon>
+                                                <mat-icon fontSet="mdo-icons-solid">caret-down</mat-icon>
                                             </button>
                                             <mat-menu #displayMenu="matMenu" class="navigation-menu">
                                                 <button
@@ -208,7 +208,7 @@
                                             *ngIf="action.isCustomAction">
                                             <mat-icon fontSet="mdo-icons" [matBadge]="action.refBrId ? '1' : '?'"
                                                 matBadgeOverlap="false" matBadgeColor="accent" class="badge-background" 
-                                                [ngClass]="{'badge-error-value' : !action.refBrId}">mapping</mat-icon>
+                                                [ngClass]="{'badge-error-value' : !action.refBrId}">link</mat-icon>
                                         </button>
                                         <mat-menu #mappingMenu="matMenu" class="navigation-menu">
                                             <button mat-menu-item *ngFor="let rule of crossMappingRules"
@@ -221,7 +221,7 @@
                                         <div class="col-spacer"></div>
                                         <button mat-button *ngIf="action.isCustomAction"
                                             (click)="removeCustomAction(index)">
-                                            <mat-icon fontSet="mdo-icons">recycle-bin</mat-icon>
+                                            <mat-icon fontSet="mdo-icons">trash-alt</mat-icon>
                                         </button>
                                     </div>
                                 </div>

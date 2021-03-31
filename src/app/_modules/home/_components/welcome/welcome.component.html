@@ -22,12 +22,12 @@
 
     <mat-list>
         <mat-list-item class="f-row">
-            <mat-icon mat-list-icon fontSet="mdo-icons">context-help-alt</mat-icon>
+            <mat-icon mat-list-icon fontSet="mdo-icons-solid">graduation-cap</mat-icon>
             <div mat-line>Show me around</div>
             <div mat-line class="short-line">Take a tour and discover MDO</div>
             <div class="f-row">
                 <div class="col-spacer"></div>
-                <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
+                <mat-icon fontSet="mdo-icons">check</mat-icon>
                 <div class="col-spacer"></div>
             </div>
             <button mat-flat-button color="accent">Learn</button>
@@ -36,7 +36,7 @@
         <mat-divider></mat-divider>
 
         <mat-list-item>
-            <mat-icon mat-list-icon fontSet="mdo-icons">levels</mat-icon>
+            <mat-icon mat-list-icon fontSet="mdo-icons">sliders-h</mat-icon>
             <div mat-line>Configure your profile</div>
             <div mat-line class="short-line">Set up your system preferences and upload your profile picture</div>
             <button mat-flat-button color="accent">Configure</button>
@@ -45,7 +45,7 @@
         <mat-divider></mat-divider>
 
         <mat-list-item>
-            <mat-icon mat-list-icon fontSet="mdo-icons">assign-user-alt</mat-icon>
+            <mat-icon mat-list-icon fontSet="mdo-icons">user-plus</mat-icon>
             <div mat-line>Invite your colleagues</div>
             <div mat-line class="short-line">Invite others to join your team in MDO and start collaborating</div>
             <button mat-flat-button color="accent">Invite</button>
@@ -54,13 +54,13 @@
         <mat-divider></mat-divider>
 
         <mat-list-item>
-            <mat-icon mat-list-icon fontSet="mdo-icons">wand</mat-icon>
+            <mat-icon mat-list-icon fontSet="mdo-icons-solid">magic</mat-icon>
             <div mat-line>Check your data</div>
             <div mat-line class="short-line">Validate your data by uploading a new or using existing dataset</div>
 
             <button mat-flat-button color="accent" [matMenuTriggerFor]="check" [disabled]="loader" (menuOpened)="moduleSearchInput.clearSearch();">
                 Check
-                <mat-icon fontSet="mdo-icons" class="mat-menu-icon">menu-arrow</mat-icon>
+                <mat-icon fontSet="mdo-icons-solid">caret-down</mat-icon>
             </button>
             
             <!-- module-menu -->

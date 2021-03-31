@@ -4,9 +4,9 @@
     <div class="f-row">
       <lib-text-line type="leading">{{ getRoutedDescription }}</lib-text-line>
       <span class="f-spacer"></span>
-      <lib-button type="plain" iconFontType="solid" icon="plus" *ngIf="(activatedPrimaryNav !== 'schema' && activatedPrimaryNav !== 'list'); else isSchema" (click)="globalCreate()"></lib-button>
+      <lib-button type="plain" iconFontType="light" icon="plus" *ngIf="(activatedPrimaryNav !== 'schema' && activatedPrimaryNav !== 'list'); else isSchema" (click)="globalCreate()"></lib-button>
       <ng-template #isSchema>
-        <lib-button type="plain" iconFontType="solid" icon="plus" [matMenuTriggerFor]="moduleMenu"
+        <lib-button type="plain" iconFontType="light" icon="plus" [matMenuTriggerFor]="moduleMenu"
           *ngIf="activatedPrimaryNav !== 'list'"></lib-button>
         <mat-menu #moduleMenu="matMenu" xPosition="before" (closed)="searchInput.clearSearch()" class="navigation-menu">
           <div class="search-row"><lib-search  placeholder="Search for module" (valueChange)="filterModulesMenu($event)" #searchInput prosClickStopPropagation></lib-search></div>
@@ -30,7 +30,6 @@
       <!-- Tree to show when navigation is on HOME -->
       <mat-accordion *ngIf="activatedPrimaryNav === 'welcome'">
         <lib-section text="Data intelligence"></lib-section>
-        <div class="row-spacer"></div>
         <ng-container *ngFor="let module of searchModuleResults">
           <mat-expansion-panel togglePosition="before" class="mat-elevation-z0"
             *ngIf="module.schemaLists && module.schemaLists.length>0">

@@ -6,7 +6,7 @@
                 {{ schemaInfo.schemaDescription ? schemaInfo.schemaDescription : 'Untitled'}} / {{variantName}}
             </div>
             <button mat-button [matMenuTriggerFor]="menu">
-                <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon>
+                <mat-icon fontSet="mdo-icons-solid">caret-down</mat-icon>
             </button>
             <mat-menu #menu="matMenu" class="navigation-menu">
                 <button mat-menu-item (click)="variantChange('0')">Entire dataset</button>
@@ -17,7 +17,7 @@
                 </ng-container>
                 <mat-divider></mat-divider>
                 <button mat-menu-item (click)="openDataScopeSideSheet()">
-                    <mat-icon fontSet="mdo-icons" class="mat-menu-icon">plus</mat-icon> New data scope
+                    <mat-icon fontSet="mdo-icons-light" class="mat-menu-icon">plus</mat-icon> New data scope
                 </button>
             </mat-menu>
         </ng-template>
@@ -31,13 +31,13 @@
         <div class="col-spacer"></div>
         <div class="f-row action-iconbtns">
             <button mat-flat-button color="accent" (click)="openSummarySideSheet()">
-                <mat-icon fontSet="mdo-icons">wand</mat-icon> Check data
+                <mat-icon fontSet="mdo-icons">square-root-alt</mat-icon> Check data
             </button>
             <button mat-fab color="accent" (click)="openExecutionTrendSideSheet()">
                 <mat-icon fontSet="mdo-icons">chart-line</mat-icon>
             </button>
             <button mat-fab color="accent" [matMenuTriggerFor]="moreactionfile">
-                <mat-icon fontSet="mdo-icons">more</mat-icon>
+                <mat-icon fontSet="mdo-icons">ellipsis-h</mat-icon>
             </button>
             <mat-menu #moreactionfile="matMenu" class="navigation-menu">
                 <button mat-menu-item (click)="downloadExecutionDetails()">Export to CSV</button>
@@ -121,7 +121,7 @@
                 <!-- Add filter control -->
                 <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="addfiltermenu"
                     (click)="reInilize = !reInilize">
-                    <mat-icon fontSet="mdo-icons">folder-filter</mat-icon>
+                    <mat-icon fontSet="mdo-icons-light">filter</mat-icon>
                 </mat-chip>
                 <!-- Add filter control MatMenu -->
                 <mat-menu #addfiltermenu="matMenu">
@@ -131,7 +131,7 @@
                 </mat-menu>
                 <!-- More control -->
                 <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="moreFilterMenu">
-                    <mat-icon fontSet="mdo-icons">more</mat-icon>
+                    <mat-icon fontSet="mdo-icons">ellipsis-h</mat-icon>
                 </mat-chip>
                 <!-- More control MatMenu -->
                 <mat-menu #moreFilterMenu="matMenu" class="navigation-menu">
@@ -279,8 +279,8 @@
                                 </mat-cell>
                             </ng-container>
                             <ng-container matColumnDef="_score_weightage" sticky>
-                                <mat-header-cell *matHeaderCellDef> Score &nbsp;<mat-icon fontSet="mdo-icons">
-                                        question-mark</mat-icon>
+                                <mat-header-cell *matHeaderCellDef> Score &nbsp;<mat-icon fontSet="mdo-icons-light">
+                                    question-circle</mat-icon>
                                 </mat-header-cell>
                                 <mat-cell *matCellDef="let element">
                                     <div class="f-row progress-cell">

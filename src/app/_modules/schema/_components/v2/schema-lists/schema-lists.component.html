@@ -5,7 +5,7 @@
         </div>
         <span class="f-spacer"></span>
         <button mat-flat-button (click)="openUploadSideSheet()">
-            <mat-icon fontSet="mdo-icons"> outbox-alt</mat-icon> Upload data
+            <mat-icon fontSet="mdo-icons">outbox-alt</mat-icon> Upload data
         </button>
     </div>
 
@@ -19,7 +19,7 @@
         <mat-list *ngFor="let schemalist of moduleData.schemaLists">
             <mat-list-item class="f-row">
 
-                <mat-icon mat-list-icon fontSet="mdo-icons">wand</mat-icon>
+                <mat-icon mat-list-icon fontSet="mdo-icons-solid">magic</mat-icon>
                 <!-- Schema Name -->
                 <div mat-line>{{ schemalist.schemaDescription? schemalist.schemaDescription: 'Untitled'}}</div>
                 <!-- Schema Last Run -->
@@ -28,7 +28,7 @@
                 </div>
     
                 <button mat-button (click)="openSchemaInfo(schemalist.schemaId)">
-                    <mat-icon fontSet="mdo-icons"> arrow-right</mat-icon>
+                    <mat-icon fontSet="mdo-icons">long-arrow-right</mat-icon>
                 </button>
 
             </mat-list-item>

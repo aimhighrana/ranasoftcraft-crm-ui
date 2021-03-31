@@ -101,7 +101,7 @@
     white-space: nowrap;
     direction: ltr;
     display: inline-block;
-    letter-spacing: 10px;
+    /* letter-spacing: 10px; */
     /* Support for all WebKit browsers. */
     -webkit-font-smoothing: antialiased;
     /* Support for Safari and Chrome. */

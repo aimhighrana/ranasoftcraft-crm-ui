@@ -1,7 +1,7 @@
 <div class="root">
     <div class="f-row breadcrum-toolbar">
         <button mat-button (click)="closeDialogComponent()">
-            <mat-icon fontSet="mdo-icons">close</mat-icon>
+            <mat-icon fontSet="mdo-icons">times</mat-icon>
         </button>
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
@@ -39,10 +39,10 @@
                     <div class="mat-line">{{brItem.brInfo}}</div>
                     <span class="f-spacer"></span>
                     <button mat-flat-button color="accent" *ngIf="!isSelected(brItem); else doneButton"
-                        (click)="selectBusinessRule(brItem, constants.ADD)">Add</button>
+                        (click)="selectBusinessRule(brItem, constants.ADD)">plus</button>
                     <ng-template #doneButton>
                         <button mat-flat-button color="accent" (click)="selectBusinessRule(brItem, constants.REMOVE)">
-                            <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
+                            <mat-icon fontSet="mdo-icons">check</mat-icon>
                         </button>
                     </ng-template>
                 </mat-list-item>

@@ -67,11 +67,11 @@ export class TableColumnSettingsComponent implements OnInit{
 
   COMMON_ACTIONS = [
     {actionText: 'Approve', schemaCategories: [DetailView.DATAQUALITY_VIEW, DetailView.DUPLICACY_VIEW, DetailView.MRO_CLASSIFICATION_VIEW, DetailView.POTEXT_VIEW],
-    actionCode: STANDARD_TABLE_ACTIONS.APPROVE, actionIconLigature: 'check-mark' },
+    actionCode: STANDARD_TABLE_ACTIONS.APPROVE, actionIconLigature: 'check' },
     {actionText: 'Reject', schemaCategories: [DetailView.DATAQUALITY_VIEW, DetailView.DUPLICACY_VIEW, DetailView.MRO_CLASSIFICATION_VIEW, DetailView.POTEXT_VIEW],
-    actionCode: STANDARD_TABLE_ACTIONS.REJECT, actionIconLigature: 'declined'},
-    {actionText: 'Delete', schemaCategories: [DetailView.DUPLICACY_VIEW], actionCode: STANDARD_TABLE_ACTIONS.DELETE, actionIconLigature: 'recycle-bin'},
-    {actionText : 'Generate description', actionIconLigature: 'form-file', schemaCategories: [DetailView.MRO_CLASSIFICATION_VIEW], actionCode: STANDARD_TABLE_ACTIONS.GENERATE_DESC}
+    actionCode: STANDARD_TABLE_ACTIONS.REJECT, actionIconLigature: 'ban'},
+    {actionText: 'Delete', schemaCategories: [DetailView.DUPLICACY_VIEW], actionCode: STANDARD_TABLE_ACTIONS.DELETE, actionIconLigature: 'trash-alt'},
+    {actionText : 'Generate description', actionIconLigature: 'file-alt', schemaCategories: [DetailView.MRO_CLASSIFICATION_VIEW], actionCode: STANDARD_TABLE_ACTIONS.GENERATE_DESC}
   ];
 
   TableActionViewType = TableActionViewType;

@@ -19,7 +19,7 @@
             </div>
             <mat-divider></mat-divider>
             <button mat-menu-item (click)="openTableViewSettings()">
-                <mat-icon fontSet="mdo-icons" class="mat-menu-icon">plus</mat-icon><span i18n="@@new_view"> New view
+                <mat-icon fontSet="mdo-icons-light" class="mat-menu-icon">plus</mat-icon><span i18n="@@new_view"> New view
                 </span>
             </button>
         </mat-menu>
@@ -40,12 +40,13 @@
     <div class="row-spacer"></div>
 
     <div class="f-row">
-        <lib-search i18n-placeholder="@@search" placeholder="Search..."></lib-search>
+        <lib-search i18n-placeholder="@@search" placeholder="Search..." class="lib-search" (click)="showGlobalFilter = true" (blur)="showGlobalFilter  = false "></lib-search>
     </div>
-    <!-------this is global serach component------->
-    <ng-template>
+    
+    <ng-template [ngIf]="showGlobalFilter">
         <pros-global-search></pros-global-search>
     </ng-template>
+
     <div class="row-spacer"></div>
     <div class="data-listing">
         <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">

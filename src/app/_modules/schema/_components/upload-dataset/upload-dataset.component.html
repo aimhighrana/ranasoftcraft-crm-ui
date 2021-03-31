@@ -6,7 +6,7 @@
         </div>
         <span class="f-spacer"></span>
         <button mat-button (click)="closeDialog()">
-            <mat-icon fontSet="mdo-icons">close</mat-icon>
+            <mat-icon fontSet="mdo-icons">times</mat-icon>
         </button>
     </div>
 
@@ -172,7 +172,7 @@
                     <div class="col col-x8"><strong>Business rule</strong></div>
                     <div class="col col-x8 mat-item-center">
                         <div class="f-row">
-                            <strong>Weightage &nbsp;<mat-icon fontSet="mdo-icons" matTooltip="Score assigned to a record upon successful validation of a business rule. For a schema total weightage of all the business rules must not exceed 100">question-mark</mat-icon></strong>
+                            <strong>Weightage &nbsp;<mat-icon fontSet="mdo-icons" matTooltip="Score assigned to a record upon successful validation of a business rule. For a schema total weightage of all the business rules must not exceed 100">question-circle</mat-icon></strong>
                         </div>
                     </div>
                     <div class="col col-x4"><strong>Enabled</strong></div>
@@ -202,7 +202,7 @@
                             <div  class="f-row colunm-box rule-border-row">
                             <div class="col">
                                 <button mat-button cdkDragHandle>
-                                    <mat-icon fontSet="mdo-icons">two-lines</mat-icon>
+                                    <mat-icon fontSet="mdo-icons">grip-lines</mat-icon>
                                 </button>
                             </div>
                             <div class="col col-x8">
@@ -242,7 +242,7 @@
                             </div>
                             <div class="col col-x4 text-end">
                                 <button mat-button [matMenuTriggerFor]="mappingdependency" [disabled]="k===0">
-                                    <mat-icon fontSet="mdo-icons">mapping</mat-icon>
+                                    <mat-icon fontSet="mdo-icons">link</mat-icon>
                                 </button>
                                 <!-- Mapping Dropdown Menu -->
                                 <mat-menu #mappingdependency="matMenu" #aboveMenu="matMenu" yPosition="above" xPosition="before" class="mat-elevation-z0 tooltip-fields-menu">
@@ -257,7 +257,7 @@
                                         </div>
                                 </mat-menu>
                                 <button mat-button (click)="deleteBR(businessRule)">
-                                    <mat-icon fontSet="mdo-icons">recycle-bin</mat-icon>
+                                    <mat-icon fontSet="mdo-icons">trash-alt</mat-icon>
                                 </button>
                             </div>
                         </div>
@@ -308,7 +308,7 @@
         
                                     <div class="col col-x4 text-end">
                                         <button mat-button [matMenuTriggerFor]="mappingdependency">
-                                            <mat-icon fontSet="mdo-icons">mapping</mat-icon>
+                                            <mat-icon fontSet="mdo-icons">link</mat-icon>
                                         </button>
                                         <!-- Mapping Dropdown Menu -->
                                         <mat-menu #mappingdependency="matMenu" #aboveMenu="matMenu" yPosition="above" xPosition="before" class="mat-elevation-z0 tooltip-fields-menu">
@@ -323,7 +323,7 @@
                                                 </div>
                                         </mat-menu>
                                         <button mat-button (click)="deleteBrChild(deps,businessRule)">
-                                            <mat-icon fontSet="mdo-icons">recycle-bin</mat-icon>
+                                            <mat-icon fontSet="mdo-icons">trash-alt</mat-icon>
                                         </button>
                                     </div>
                                 </div>
@@ -378,14 +378,14 @@
                     </div>
 
                     <div class="col col-x4" [matMenuTriggerFor]="subscriberlist">
-                        <button mat-stroked-button *ngIf="subscriber.isAdmin">Admin <mat-icon fontSet="mdo-icons">
-                                menu-arrow</mat-icon></button>
-                        <button mat-stroked-button *ngIf="subscriber.isReviewer">Reviewer <mat-icon fontSet="mdo-icons">
-                                menu-arrow</mat-icon></button>
-                        <button mat-stroked-button *ngIf="subscriber.isViewer">Viewer <mat-icon fontSet="mdo-icons">
-                                menu-arrow</mat-icon></button>
-                        <button mat-stroked-button *ngIf="subscriber.isEditer">Editor <mat-icon fontSet="mdo-icons">
-                                menu-arrow</mat-icon></button>
+                        <button mat-stroked-button *ngIf="subscriber.isAdmin">Admin <mat-icon fontSet="mdo-icons-solid">
+                                caret-down</mat-icon></button>
+                        <button mat-stroked-button *ngIf="subscriber.isReviewer">Reviewer <mat-icon fontSet="mdo-icons-solid">
+                                caret-down</mat-icon></button>
+                        <button mat-stroked-button *ngIf="subscriber.isViewer">Viewer <mat-icon fontSet="mdo-icons-solid">
+                                caret-down</mat-icon></button>
+                        <button mat-stroked-button *ngIf="subscriber.isEditer">Editor <mat-icon fontSet="mdo-icons-solid">
+                                caret-down</mat-icon></button>
                     </div>
                     <mat-menu #subscriberlist="matMenu" direction="right" class="navigation-menu">
                         <button mat-menu-item *ngFor="let role of roles" (click)="updateRole(role.code, subscriber,l)">
@@ -413,7 +413,7 @@
 
                             <mat-chip class="mdo-filter-matchip" disableRipple="true"
                                 [matMenuTriggerFor]="addfiltermenu" (click)="reInilize = !reInilize">
-                                <mat-icon fontSet="mdo-icons">folder-filter</mat-icon>
+                                <mat-icon fontSet="mdo-icons">filter</mat-icon>
                             </mat-chip>
 
                         </mat-chip-list>
@@ -437,7 +437,7 @@
 
                     <div class="col mat-item-end">
                         <button mat-button (click)="deleteSubscriber(l)">
-                            <mat-icon fontSet="mdo-icons">recycle-bin</mat-icon>
+                            <mat-icon fontSet="mdo-icons">trash-alt</mat-icon>
                         </button>
                     </div>
                 </div>
@@ -470,7 +470,7 @@
                         </mat-slide-toggle>
                         <span class="f-spacer"></span>
                         <button mat-flat-button color="primary" (click)="openScheduleSideSheet()">
-                            <mat-icon fontSet="mdo-icons">form-time</mat-icon> Edit schedule
+                            <mat-icon fontSet="mdo-icons">histro</mat-icon> Edit schedule
                         </button>
                     </ng-template>
 
@@ -478,7 +478,7 @@
                     <ng-template #addSchedule>
                         <span class="f-spacer"></span>
                         <button mat-flat-button color="primary" (click)="openScheduleSideSheet()">
-                            <mat-icon fontSet="mdo-icons">form-time</mat-icon> Add schedule
+                            <mat-icon fontSet="mdo-icons">history</mat-icon> Add schedule
                         </button>
                     </ng-template>
                 </div>

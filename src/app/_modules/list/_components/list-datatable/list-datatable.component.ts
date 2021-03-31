@@ -60,6 +60,11 @@ export class ListDatatableComponent implements OnInit, OnDestroy {
   totalCount = 0;
 
   /**
+   * Flag for show hide global filter sections
+   */
+  showGlobalFilter = false;
+
+  /**
    * for table records paging
    */
   recordsPageIndex = 0;

@@ -6,7 +6,7 @@
                     {{ schemaInfo.schemaDescription ? schemaInfo.schemaDescription : 'Untitled'}} / {{variantName}}
                 </div>
                 <button mat-button [matMenuTriggerFor]="menu">
-                    <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon>
+                    <mat-icon fontSet="mdo-icons-solid">caret-down</mat-icon>
                 </button>
                 <mat-menu #menu="matMenu" class="navigation-menu">
                     <button mat-menu-item (click)="openDataScopeSideSheet()">[New data scope] </button>
@@ -22,13 +22,13 @@
         <div class="f-spacer"></div>
         <div class="f-row action-iconbtns">
             <button mat-flat-button color="accent" (click)="openSummarySideSheet()">
-                <mat-icon fontSet="mdo-icons">wand</mat-icon> Check data
+                <mat-icon fontSet="mdo-icons">square-root-alt</mat-icon> Check data
             </button>
             <button mat-fab color="accent" (click)="openExecutionTrendSideSheet()">
                 <mat-icon fontSet="mdo-icons">chart-line</mat-icon>
             </button>
             <button mat-fab color="accent" [matMenuTriggerFor]="moreactionfile">
-                <mat-icon fontSet="mdo-icons">more</mat-icon>
+                <mat-icon fontSet="mdo-icons">ellipsis-h</mat-icon>
             </button>
             <mat-menu #moreactionfile="matMenu" class="navigation-menu">
                 <button mat-menu-item (click)="downloadExecutionDetails()">Export to CSV</button>
@@ -118,7 +118,7 @@
                                     <!-- Add filter control -->
                                     <mat-chip class="mdo-filter-matchip" disableRipple="true"
                                         [matMenuTriggerFor]="addfiltermenu" (click)="reInilize = !reInilize">
-                                        <mat-icon fontSet="mdo-icons">folder-filter</mat-icon>
+                                        <mat-icon fontSet="mdo-icons-light">filter</mat-icon>
                                     </mat-chip>
 
                                     <!-- Add filter control MatMenu -->
@@ -195,7 +195,7 @@
                                             <div class="f-row action-iconbtns">
                                                 <ng-template [ngIf]="activeTab !== 'review'" [ngIfElse]="review">
                                                     <button mat-fab color="accent"> <!-- [matMenuTriggerFor]="moreactions" -->
-                                                        <mat-icon fontSet="mdo-icons">more</mat-icon>
+                                                        <mat-icon fontSet="mdo-icons">ellipsis-h</mat-icon>
                                                     </button>
                                                     <!-- more actions menu -->
                                                     <mat-menu #moreactions="matMenu" class="navigation-menu">
@@ -208,25 +208,25 @@
                                                     </mat-menu>
 
                                                     <button mat-fab color="accent">
-                                                        <mat-icon fontSet="mdo-icons"
+                                                        <mat-icon fontSet="mdo-icons-solid"
                                                             *ngIf="element && element[RECORD_STATUS_KEY] && (element[RECORD_STATUS_KEY].fieldData === RECORD_STATUS.MASTER); else notMaster">
                                                             star
                                                         </mat-icon>
                                                         <ng-template #notMaster>
                                                             <mat-icon fontSet="mdo-icons"
                                                                 (click)="markAsMasterRecord(element)">
-                                                                star-outline
+                                                                star
                                                             </mat-icon>
                                                         </ng-template>
                                                     </button>
                                                     <button mat-fab color="accent"
                                                         *ngIf="element && element[RECORD_STATUS_KEY] && (element[RECORD_STATUS_KEY].fieldData === RECORD_STATUS.DELETABLE)">
-                                                        <mat-icon fontSet="mdo-icons">restart</mat-icon>
+                                                        <mat-icon fontSet="mdo-icons">redo-alt</mat-icon>
                                                     </button>
                                                     <button mat-fab color="accent"
                                                         *ngIf="element && element[RECORD_STATUS_KEY] && (element[RECORD_STATUS_KEY].fieldData !== RECORD_STATUS.DELETABLE)"
                                                         (click)="markForDeletion(element)">
-                                                        <mat-icon fontSet="mdo-icons">recycle-bin</mat-icon>
+                                                        <mat-icon fontSet="mdo-icons">trash-alt</mat-icon>
                                                     </button>
                                                 </ng-template>
                                                 <ng-template #review>
@@ -234,7 +234,7 @@
                                                     <ng-template [ngIf]="!element['OBJECTNUMBER'].isReviewed && (element[RECORD_STATUS_KEY].fieldData !== RECORD_STATUS.DELETABLE)">
                                                         <button mat-fab color="accent" *ngIf="secondaryActions.length"
                                                             [matMenuTriggerFor]="secondaryActionsMenu">
-                                                            <mat-icon fontSet="mdo-icons">more</mat-icon>
+                                                            <mat-icon fontSet="mdo-icons">ellipsis-h</mat-icon>
                                                         </button>
                                                         <mat-menu #secondaryActionsMenu="matMenu"  class="navigation-menu">
                                                             <ng-container *ngFor="let sAction of secondaryActions">
@@ -374,11 +374,11 @@
                                             [attr.colspan]="displayedFields.getValue().length">
                                             <div class="f-row action-iconbtns">
                                                 <button mat-flat-button>
-                                                    <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
+                                                    <mat-icon fontSet="mdo-icons">check</mat-icon>
                                                     Action
                                                 </button>
                                                 <button mat-flat-button (click)="selection.clear()">
-                                                    <mat-icon fontSet="mdo-icons">close</mat-icon>
+                                                    <mat-icon fontSet="mdo-icons">times</mat-icon>
                                                     Unselect
                                                 </button>
                                             </div>

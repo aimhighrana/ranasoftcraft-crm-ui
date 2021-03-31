@@ -1,7 +1,7 @@
 <div class="root">
     <div class="f-row breadcrum-toolbar">
         <button mat-button (click)="close()">
-            <mat-icon fontSet="mdo-icons">close</mat-icon>
+            <mat-icon fontSet="mdo-icons">times</mat-icon>
         </button>
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
@@ -255,7 +255,7 @@
                                 <!-- three dots -->
                                 <div class="col" *ngIf="i !== 0">
                                     <button mat-button [matMenuTriggerFor]="menu">
-                                        <mat-icon fontSet="mdo-icons">list-item-drag</mat-icon>
+                                        <mat-icon fontSet="mdo-icons">ellipsis-v</mat-icon>
                                     </button>
                                 </div>
                                 <mat-menu #menu="matMenu" class="navigation-menu">
@@ -328,7 +328,7 @@
                                                 </div>
                                                 <div class="col">
                                                     <button mat-button [matMenuTriggerFor]="nestedMenu">
-                                                        <mat-icon fontSet="mdo-icons">list-item-drag</mat-icon>
+                                                        <mat-icon fontSet="mdo-icons">ellipsis-v</mat-icon>
                                                     </button>
                                                     <mat-menu #nestedMenu="matMenu" class="navigation-menu">
                                                         <!-- give local reference and tell this is manu by assigning 'matMenu' -->

@@ -4,6 +4,10 @@ div.root {
   padding: 0 16px;
   overflow: hidden;
 
+  .lib-search {
+    width: 213px;
+  }
+
   .data-listing {
     height: 100%;
     overflow: auto;

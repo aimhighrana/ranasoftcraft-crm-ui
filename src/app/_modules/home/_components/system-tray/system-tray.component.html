@@ -1,7 +1,7 @@
 <div class="root">
     <div class="f-row breadcrum-toolbar">
         <button mat-button (click)="close()">
-            <mat-icon fontSet="mdo-icons">close</mat-icon>
+            <mat-icon fontSet="mdo-icons">times</mat-icon>
         </button>
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
@@ -68,7 +68,7 @@
                                     <span class="f-col-spacer-half"></span>
                                     <button mat-button (click)="deleteNotification(notification.id)"
                                         prosClickStopPropagation>
-                                        <mat-icon fontSet="mdo-icons">recycle-bin</mat-icon>
+                                        <mat-icon fontSet="mdo-icons">trash-alt</mat-icon>
                                     </button>
                                 </div>
                             </div>
@@ -94,7 +94,7 @@
                                 <mat-spinner diameter="14"></mat-spinner>&nbsp;Running
                             </mat-chip>
                             <mat-chip disableRipple="true" *ngIf="job.jobPk.status === 'COMPLETE'" class="unselected">
-                                <mat-icon fontSet="mdo-icons" class="time-icon">form-time</mat-icon>&nbsp;{{
+                                <mat-icon fontSet="mdo-icons" class="time-icon">clock</mat-icon>&nbsp;{{
                                 job.startDate | date:'dd-MMM-yyyy hh:mm:ss' }}
                             </mat-chip>
                         </mat-chip-list>
@@ -104,7 +104,7 @@
                         </mat-card-header>
                         <span class="col-spacer"></span>
                         <button mat-button>
-                            <mat-icon fontSet="mdo-icons">more</mat-icon>
+                            <mat-icon fontSet="mdo-icons">ellipsis-h</mat-icon>
                         </button>
                     </mat-list-item>
                 </mat-nav-list>

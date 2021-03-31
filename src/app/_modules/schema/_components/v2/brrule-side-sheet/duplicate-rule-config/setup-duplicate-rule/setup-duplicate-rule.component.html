@@ -17,13 +17,13 @@
                         <div class="col col-x4">
                             <strong> Match
                                 <mat-icon matTooltip="match" fontSet="mdo-icons" class="mat-head-icon">
-                                    question-mark</mat-icon>
+                                    question-circle</mat-icon>
                             </strong>
                         </div>
                         <div class="col col-x4">
                             <strong>Exclusions
                                 <mat-icon matTooltip="exclusions" fontSet="mdo-icons" class="mat-head-icon">
-                                    question-mark</mat-icon>
+                                    question-circle</mat-icon>
                             </strong>
                         </div>
                         <div class="col"></div>
@@ -50,7 +50,7 @@
                                 <ng-container [formGroupName]="i">
                                     <div class="col">
                                         <button mat-button cdkDragHandle>
-                                            <mat-icon fontSet="mdo-icons">two-lines</mat-icon>
+                                            <mat-icon fontSet="mdo-icons">grip-lines</mat-icon>
                                         </button>
                                     </div>
                                     <div class="col col-x4">
@@ -60,7 +60,7 @@
                                         <div class="f-col">
                                             <button mat-stroked-button [matMenuTriggerFor]="fieldMatchMenu">
                                                 {{ getDuppCriteriaDesc(item.value.criteria) }}
-                                                <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon></button>
+                                                <mat-icon fontSet="mdo-icons-solid">caret-down</mat-icon></button>
                                         <mat-menu #fieldMatchMenu="matMenu" class="navigation-menu">
                                                 <button mat-menu-item
                                                     (click)="setControlValue('addFields', 'criteria', 'Exact_Match', i)">
@@ -78,7 +78,7 @@
                                             {{ item.value.exclusion }} </a> </div>
                                     <div class="col">
                                         <button mat-button (click)="removeFormArrayRow('addFields', i)">
-                                            <mat-icon fontSet="mdo-icons">recycle-bin</mat-icon>
+                                            <mat-icon fontSet="mdo-icons">trash-alt</mat-icon>
                                         </button>
                                     </div>
                                 </ng-container>
@@ -137,7 +137,7 @@
                                             [ngIfElse]="others">
                                             <button mat-stroked-button [matMenuTriggerFor]="fieldMatchMenu">
                                                 {{ getMergeRuleFieldDesc(item.value.fieldId) }}
-                                                <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon></button>
+                                                <mat-icon fontSet="mdo-icons-solid">caret-down</mat-icon></button>
                                         <mat-menu #fieldMatchMenu="matMenu" class="navigation-menu">
                                                 <button mat-menu-item *ngFor="let field of MERGE_RULE_FIELDS"
                                                     (click)="setFieldValue(item.value.ruleType, field.value, i)">
@@ -148,7 +148,7 @@
                                         <ng-template #others>
                                             <button mat-stroked-button [matMenuTriggerFor]="searchFieldMenu">
                                                 {{ item.value.fieldId ? getFieldDesc(item.value.fieldId) : 'select' }}
-                                                <mat-icon fontSet="mdo-icons">menu-arrow</mat-icon></button>
+                                                <mat-icon fontSet="mdo-icons-solid">caret-down</mat-icon></button>
                                                 <!-- field search menu -->
                                                 <mat-menu #searchFieldMenu="matMenu" class="navigation-menu">
                                                 <div class="fields-menu">
@@ -188,7 +188,7 @@
                                 </div>
                                 <div class="col mat-item-end">
                                     <button mat-button (click)="removeFormArrayRow('mergeRules', i)">
-                                        <mat-icon fontSet="mdo-icons">recycle-bin</mat-icon>
+                                        <mat-icon fontSet="mdo-icons">trash-alt</mat-icon>
                                     </button>
                                 </div>
                             </ng-container>

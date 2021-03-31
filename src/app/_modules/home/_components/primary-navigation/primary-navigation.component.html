@@ -30,7 +30,7 @@
     <div class="f-row global-menu">
         <div [matMenuTriggerFor]="navigation">
             <button mat-mini-fab class="create-new">
-                <mat-icon fontSet="mdo-icons">plus</mat-icon>
+                <mat-icon fontSet="mdo-icons-light">plus</mat-icon>
             </button>
             <mat-menu #navigation="matMenu" xPosition="before" class="navigation-menu">
                 <pros-navigation-dropdown (selectedModule)="selectedModule($event)">
@@ -46,12 +46,12 @@
         <div class="col-spacer"></div>
         <div class="f-col-spacer-half"></div>
         <div class="admin-badge cursor"  (click)="openSystemTray()">
-            <mat-icon fontSet="mdo-icons" libBadge="{{ notificationsCount }}"
+            <mat-icon fontSet="mdo-icons-solid"  libBadge="{{ notificationsCount }}"
             matBadgeOverlap="true"
             matBadgeColor="primary"
             matBadgeSize="small"
             matBadgePosition="after"
-            >tray</mat-icon>
+            >bell</mat-icon>
         </div>
 
         <div class="col-spacer"></div>
