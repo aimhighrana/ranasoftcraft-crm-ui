@@ -20,12 +20,7 @@
                 <div class="f-row">
                     <div class="f-col mdo-form-field">
                         <mat-label>Repeat</mat-label>
-                        <mat-button-toggle-group formControlName="schemaSchedulerRepeat" appearance="legacy"
-                            name="fontStyle" aria-label="Font Style">
-                            <mat-button-toggle *ngFor='let repeat of repeatInterval' [value]='repeat'
-                                [disableRipple]="true">{{repeat | titlecase}}
-                            </mat-button-toggle>
-                        </mat-button-toggle-group>
+                        <lib-segment formControlName="schemaSchedulerRepeat" [optionsList]="repeatInterval" labelKey="label" valueKey="value"></lib-segment>
                         <mat-error
                             *ngIf="formSubmitted && form.controls.schemaSchedulerRepeat.errors && form.controls.schemaSchedulerRepeat.errors.required">
                             This is a required field
@@ -34,10 +29,8 @@
                 </div>
                 <mat-divider class="divider-dashed"></mat-divider>
                 <div class="f-row every-field mdo-form-field">
-                    <pros-form-input [type]="'number'" [control]="formField('repeatValue')" [maxLength]='2' [value]='form.value.repeatValue'
-                    [placeholder]="'Enter'" [label]="'Every'"
-                        [minimum]='1'>
-                    </pros-form-input>
+                    <lib-input formControlName="repeatValue" type="number" [maxLength]='2' [value]='form.value.repeatValue' placeholder="Enter" label="Every" [minimum]='1' isRequired="true">
+                    </lib-input>
                     <div class="col-spacer"></div>
                     <div class="week-label">{{getMetricHours}}</div>
                     <mat-error
@@ -49,11 +42,7 @@
                 <div *ngIf="form.controls.schemaSchedulerRepeat.value === 'WEEKLY'">
                     <div class="f-col mdo-form-field">
                         <mat-label>Repeat on</mat-label>
-                        <mat-radio-group aria-label="Select an option" color="primary" formControlName="weeklyOn">
-                            <mat-radio-button *ngFor="let weekDay of weekDays" [value]='weekDay.value'>
-                                {{weekDay.text | titlecase}}
-                            </mat-radio-button>
-                        </mat-radio-group>
+                        <lib-radio-group class="mdo-schedule-segment" formControlName="weeklyOn" [options]="weekDays" [aria-label]="'Select an option'" [theme]="'primary'" [labelPosition]="'after'" [layout]="'horizontal'"></lib-radio-group>
                     </div>
                     <mat-error
                         *ngIf="formSubmitted && form.controls.weeklyOn.errors && form.controls.weeklyOn.errors.required">
@@ -64,11 +53,7 @@
                 <div *ngIf="form.controls.schemaSchedulerRepeat.value === 'MONTHLY'">
                     <div class="f-col mdo-form-field">
                         <mat-label>Repeat by</mat-label>
-                        <mat-radio-group aria-label="Select an option" color="primary" formControlName="monthOn">
-                            <mat-radio-button *ngFor="let repeatBy of repeatBys" [value]='repeatBy.value'>
-                                {{repeatBy.text | titlecase}}
-                            </mat-radio-button>
-                        </mat-radio-group>
+                        <lib-radio-group class="mdo-schedule-segment" formControlName="monthOn" [options]="repeatBys" [aria-label]="'Select an option'" [theme]="'primary'" [labelPosition]="'after'" [layout]="'horizontal'"></lib-radio-group>
                         <mat-error
                             *ngIf="formSubmitted && form.controls.monthOn.errors && form.controls.monthOn.errors.required">
                             This is a required field when occuring cycle is monthly
@@ -94,20 +79,14 @@
                 <div class="f-row mdo-form-field">
                     <div class="f-col">
                         <mat-label>Ends</mat-label>
-                        <mat-button-toggle-group appearance="legacy" name="fontStyle" aria-label="Font Style"
-                            formControlName="end">
-                            <mat-button-toggle *ngFor="let schedulerEndOption of schedulerEndOptions"
-                                [value]="schedulerEndOption">{{schedulerEndOption}}</mat-button-toggle>
-                        </mat-button-toggle-group>
+                        <lib-segment formControlName="end" [optionsList]="schedulerEndOptions" labelKey="label" valueKey="value"></lib-segment>
                         <mat-error *ngIf="formSubmitted && form.controls.end.errors && form.controls.end.errors.required">
                             This is a required field
                         </mat-error>
                     </div>
                 </div>
                 <div class="f-row mdo-form-field every-field" *ngIf="form.controls.end.value === 'AFTER'">
-                    <pros-form-input [type]="'number'" [control]="formField('occurrenceVal')"
-                     [label]="'Occurences'" [value]="form.controls.occurrenceVal.value" [maxLength]='2' [minimum]='1'>
-                    </pros-form-input>
+                    <lib-input formControlName="occurrenceVal" [type]="'number'" [label]="'Occurences'" [value]="form.controls.occurrenceVal.value" [maxLength]='2' [minimum]='1'></lib-input>
                     <mat-error
                         *ngIf="formSubmitted && form.controls.occurrenceVal.errors && form.controls.occurrenceVal.errors.required">
                         This is a required field when cycle ends is After
