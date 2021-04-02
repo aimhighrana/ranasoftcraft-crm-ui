@@ -2,12 +2,10 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ListPageViewDetails, ListPageViewFldMap } from '@models/list-page/listpage';
-import { Userdetails } from '@models/userdetails';
 import { FormInputComponent } from '@modules/shared/_components/form-input/form-input.component';
 import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { ListService } from '@services/list/list.service';
-import { UserService } from '@services/user/userservice.service';
 import { of, throwError } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
@@ -20,7 +18,6 @@ import { CoreService } from '@services/core/core.service';
 describe('TableViewSettingsComponent', () => {
   let component: TableViewSettingsComponent;
   let fixture: ComponentFixture<TableViewSettingsComponent>;
-  let userService: UserService;
   let listService: ListService;
   let coreService: CoreService;
   let router: Router;
@@ -42,7 +39,6 @@ describe('TableViewSettingsComponent', () => {
     fixture = TestBed.createComponent(TableViewSettingsComponent);
     component = fixture.componentInstance;
 
-    userService = fixture.debugElement.injector.get(UserService);
     listService = fixture.debugElement.injector.get(ListService);
     coreService = fixture.debugElement.injector.get(CoreService);
     router = TestBed.inject(Router);
@@ -58,19 +54,10 @@ describe('TableViewSettingsComponent', () => {
 
     spyOn(component, 'getFldMetadata');
     spyOn(component, 'getTableViewDetails');
-    spyOn(userService, 'getUserDetails').and.returnValues(of(new Userdetails()), throwError({message: 'error resp'}));
 
     component.ngOnInit();
     expect(component.getFldMetadata).toHaveBeenCalled();
     expect(component.getTableViewDetails).toHaveBeenCalled();
-    expect(component.userDetails).toBeDefined();
-
-
-    pathPrams.viewId = 'new';
-    spyOn(console, 'error');
-    component.ngOnInit();
-    expect(component.getFldMetadata).toHaveBeenCalled();
-    expect(console.error).toHaveBeenCalled();
 
   });
 

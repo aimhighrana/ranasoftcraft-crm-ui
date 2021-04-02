@@ -1,14 +1,13 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { combineLatest, Subject, Subscription } from 'rxjs';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Userdetails } from '@models/userdetails';
-import { UserService } from '@services/user/userservice.service';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { ListService } from '@services/list/list.service';
 import { ListPageViewDetails, ListPageViewFldMap } from '@models/list-page/listpage';
 import { CoreService } from '@services/core/core.service';
 import { FieldMetaData } from '@models/core/coreModel';
+import { sortBy } from 'lodash';
 
 @Component({
   selector: 'pros-table-view-settings',
@@ -32,15 +31,10 @@ export class TableViewSettingsComponent implements OnInit, OnDestroy {
   /**
    * Hold fields of all suggested fields
    */
-  suggestedFlds: FieldMetaData[] = [];
+  suggestedFlds: string[] = [];
 
   allChecked = false;
   allIndeterminate = false;
-
-
-  @ViewChild('scrollableContainer', {read: ElementRef}) scrollable : ElementRef<any>;
-
-  userDetails = new Userdetails();
 
   /**
    * Hold current view config details
@@ -51,23 +45,21 @@ export class TableViewSettingsComponent implements OnInit, OnDestroy {
 
   submitted = false;
 
+  fldMetadataObs: Subject<FieldMetaData[]> = new Subject();
+
+  viewDetailsObs: Subject<ListPageViewDetails> = new Subject();
+
   constructor(
     private sharedService: SharedServiceService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private listService: ListService,
-    private coreService: CoreService,
-    private userService: UserService
+    private coreService: CoreService
     ){}
 
   ngOnInit() {
 
-    const subs = this.userService.getUserDetails().subscribe(res => {
-      this.userDetails = res;
-    }, error => console.error(`Error : ${error.message}`));
-    this.subscriptions.push(subs);
-
-    const subs1 = this.activatedRoute.params.subscribe(params => {
+    const subs = this.activatedRoute.params.subscribe(params => {
       this.moduleId = params.moduleId;
       this.getFldMetadata();
 
@@ -76,7 +68,12 @@ export class TableViewSettingsComponent implements OnInit, OnDestroy {
         this.getTableViewDetails();
       }
     });
-    this.subscriptions.push(subs1);
+    this.subscriptions.push(subs);
+
+    const sub1 = combineLatest([this.fldMetadataObs, this.viewDetailsObs]).subscribe(resp => {
+        this.FldMetadataOrders();
+    });
+    this.subscriptions.push(sub1);
 
   }
 
@@ -84,9 +81,11 @@ export class TableViewSettingsComponent implements OnInit, OnDestroy {
    * get table view details
    */
   getTableViewDetails() {
-    const sub =  this.listService.getListPageViewDetails(this.viewId, this.userDetails.userName, this.userDetails.currentRoleId, this.userDetails.plantCode, this.moduleId)
+    const sub =  this.listService.getListPageViewDetails(this.viewId, this.moduleId)
       .subscribe(response => {
           this.viewDetails = response;
+          this.viewDetails.fieldsReqList = sortBy(this.viewDetails.fieldsReqList, 'fieldOrder');
+          this.viewDetailsObs.next(this.viewDetails);
     }, error => {
       console.error(`Error : ${error.message}`);
     });
@@ -102,11 +101,25 @@ export class TableViewSettingsComponent implements OnInit, OnDestroy {
     }
     const sub = this.coreService.getAllFieldsForView(this.moduleId).subscribe(response => {
       this.metadataFldLst = response || [];
-      this.suggestedFlds = this.metadataFldLst;
+      this.fldMetadataObs.next(this.metadataFldLst);
+      this.suggestedFlds = this.metadataFldLst.map(fld => fld.fieldId);
     }, error => {
       console.error(`Error : ${error.message}`);
     });
     this.subscriptions.push(sub);
+  }
+
+  /**
+   * reorder fields metatdata based on saved columns orders
+   */
+  FldMetadataOrders() {
+    let index = -1;
+    this.viewDetails.fieldsReqList.forEach(field => {
+      const fieldPosition = this.metadataFldLst.findIndex(f => f.fieldId === field.fieldId);
+      if(fieldPosition !== -1) {
+        moveItemInArray(this.metadataFldLst, fieldPosition, ++index);
+      }
+    });
   }
 
   /**
@@ -127,11 +140,20 @@ export class TableViewSettingsComponent implements OnInit, OnDestroy {
     }
 
     this.viewDetails.moduleId = this.moduleId;
-    this.viewDetails.fieldsReqList.map((field, index) => field.fieldOrder = `${index}`);
+
+    let order = 0;
+    this.metadataFldLst.forEach(metafld => {
+      const field = this.viewDetails.fieldsReqList.find(fld => fld.fieldId === metafld.fieldId)
+      if(field) {
+        field.fieldOrder = `${++order}`;
+      }
+    });
+
+    this.viewDetails.fieldsReqList = sortBy(this.viewDetails.fieldsReqList, 'fieldOrder');
 
     const isUpdate = !!this.viewDetails.viewId;
 
-    this.listService.upsertListPageViewDetails(this.viewDetails, this.userDetails.userName, this.userDetails.currentRoleId, this.userDetails.plantCode, this.moduleId)
+    this.listService.upsertListPageViewDetails(this.viewDetails, this.moduleId)
       .subscribe(response => {
           this.sharedService.setViewDetailsData({
             isUpdate,
@@ -149,10 +171,10 @@ export class TableViewSettingsComponent implements OnInit, OnDestroy {
    */
   searchFld(value: string) {
     if(value) {
-      this.suggestedFlds = this.metadataFldLst.filter(fill=> fill.fieldDescri.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !==-1);
+      this.suggestedFlds = this.metadataFldLst.filter(fill=> fill.fieldDescri.toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) !==-1)
+          .map(fld => fld.fieldId);
     } else {
-      this.suggestedFlds = this.metadataFldLst;
-      this.scrollable.nativeElement.scrollTo(0, 0);
+      this.suggestedFlds = this.metadataFldLst.map(fld => fld.fieldId);
     }
   }
 
