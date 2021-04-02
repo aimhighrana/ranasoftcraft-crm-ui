@@ -7,6 +7,7 @@ import { MonthOn, SchemaScheduler, SchemaSchedulerEnd,
 import { SchemaService } from '@services/home/schema.service';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
+import { TitleCasePipe } from '@angular/common';
 
 @Component({
   selector: 'pros-schedule-dialog',
@@ -32,14 +33,19 @@ export class ScheduleDialogComponent implements OnInit, OnDestroy {
   /**
    * Looping variable for intervals
    */
-  repeatInterval = Object.keys(SchemaSchedulerRepeat);
+  repeatInterval = Object.keys(SchemaSchedulerRepeat).map((x) => {
+    return {
+      label: this.titlecasePipe.transform(x) || x,
+      value: x
+    }
+  });
   /**
    * Looping variable for weekdays
    */
   weekDays = Object.keys(WeekOn).map(item => {
     return {
-      value: WeekOn[item],
-      text: item
+      value: this.titlecasePipe.transform(WeekOn[item]) || '',
+      key: item
     }
   })
   /**
@@ -47,14 +53,19 @@ export class ScheduleDialogComponent implements OnInit, OnDestroy {
    */
   repeatBys = Object.keys(MonthOn).map(item => {
     return {
-      value: item,
-      text: MonthOn[item],
+      value: this.titlecasePipe.transform(item) || '',
+      key: MonthOn[item]
     }
   });
   /**
    * Looping variable for end
    */
-  schedulerEndOptions = Object.keys(SchemaSchedulerEnd);
+  schedulerEndOptions = Object.keys(SchemaSchedulerEnd).map((x) => {
+    return {
+      label: x,
+      value: x
+    }
+  });
 
   today = new Date();
 
@@ -72,6 +83,7 @@ export class ScheduleDialogComponent implements OnInit, OnDestroy {
     public dialogRef: MatDialogRef<ScheduleDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data,
     private schemaService: SchemaService,
+    private titlecasePipe: TitleCasePipe
   ) { }
 
   ngOnInit(): void {
