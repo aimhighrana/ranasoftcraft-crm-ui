@@ -2,10 +2,8 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ListPageViewDetails, ViewsPage } from '@models/list-page/listpage';
-import { Userdetails } from '@models/userdetails';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { ListService } from '@services/list/list.service';
-import { UserService } from '@services/user/userservice.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { PageEvent } from '@angular/material/paginator';
 import { ListDataSource } from './list-data-source';
@@ -55,6 +53,11 @@ export class ListDatatableComponent implements OnInit, OnDestroy {
   viewsPageIndex = 0;
 
   /**
+   * default datatable page size
+   */
+  recordsPageSize = 50;
+
+  /**
    * Hold total records count
    */
   totalCount = 0;
@@ -79,8 +82,6 @@ export class ListDatatableComponent implements OnInit, OnDestroy {
 
   subscriptionsList: Subscription[] = [];
 
-  userDetails = new Userdetails();
-
   metadataFldLst: FieldMetaData[] = [];
 
 
@@ -88,7 +89,6 @@ export class ListDatatableComponent implements OnInit, OnDestroy {
     private activatedRouter: ActivatedRoute,
     private router: Router,
     private sharedServices: SharedServiceService,
-    private userService: UserService,
     private listService: ListService,
     private coreService: CoreService) {
 
@@ -99,14 +99,12 @@ export class ListDatatableComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    this.userService.getUserDetails().subscribe(userDetails => {
-      this.userDetails = userDetails;
-    });
-
     this.activatedRouter.params.subscribe(params => {
       this.dataSource.reset();
       this.viewsPageIndex = 0;
       this.recordsPageIndex = 1;
+      this.totalCount = 0;
+      this.viewsList = new ViewsPage();
       this.currentView = new ListPageViewDetails();
       this.moduleId = params.moduleId;
       this.getTotalCount();
@@ -133,9 +131,9 @@ export class ListDatatableComponent implements OnInit, OnDestroy {
     if (loadMore) {
       this.viewsPageIndex++;
     } else {
-      this.viewsPageIndex = 1;
+      this.viewsPageIndex = 0;
     }
-    const sub = this.listService.getAllListPageViews(this.userDetails.userName, this.userDetails.currentRoleId, this.userDetails.plantCode, this.moduleId, this.viewsPageIndex)
+    const sub = this.listService.getAllListPageViews(this.moduleId, this.viewsPageIndex)
       .subscribe(views => {
 
         if(views && ((views.userViews && views.userViews.length) || (views.systemViews && views.systemViews.length))) {
@@ -150,6 +148,8 @@ export class ListDatatableComponent implements OnInit, OnDestroy {
         } else if (!loadMore) {
             this.currentView = this.defaultView;
             this.updateTableColumns();
+        } else {
+          this.viewsPageIndex--;
         }
       }, error => {
         console.error(`Error :: ${error.message}`);
@@ -166,7 +166,7 @@ export class ListDatatableComponent implements OnInit, OnDestroy {
    * get view details by id
    */
    getViewDetails(viewId) {
-    const sub =  this.listService.getListPageViewDetails(viewId, this.userDetails.userName, this.userDetails.currentRoleId, this.userDetails.plantCode, this.moduleId)
+    const sub =  this.listService.getListPageViewDetails(viewId, this.moduleId)
       .subscribe(response => {
           this.currentView = response;
           this.updateTableColumns();
@@ -185,7 +185,7 @@ export class ListDatatableComponent implements OnInit, OnDestroy {
     if(!viewId || viewId === 'default' ) {
       return;
     }
-    const sub = this.listService.deleteListPageView(viewId, this.userDetails.userName, this.userDetails.currentRoleId, this.userDetails.plantCode, this.moduleId)
+    const sub = this.listService.deleteListPageView(viewId, this.moduleId)
       .subscribe(resp => {
         this.getViewsList();
       }, error => {
@@ -335,6 +335,19 @@ export class ListDatatableComponent implements OnInit, OnDestroy {
    */
   rowHasError(row): boolean {
     return row.purchase && row.purchase > 800 ? true : false;
+  }
+
+  isLargeHeader(fieldId: string) {
+    return this.getFieldDesc(fieldId) && this.getFieldDesc(fieldId).length > 50;
+  }
+
+  isLargeCell(row: any, fieldId: string) {
+    return row[fieldId] && row[fieldId].fieldData && row[fieldId].fieldData > 50;
+  }
+
+  get displayedRecordsRange(): string {
+    const endRecord = this.recordsPageIndex * this.recordsPageSize < this.totalCount ? this.recordsPageIndex * this.recordsPageSize : this.totalCount;
+    return this.totalCount ? `${((this.recordsPageIndex - 1) * this.recordsPageSize) + 1 } to ${endRecord} of ${this.totalCount}` : '';
   }
 
   ngOnDestroy(): void {

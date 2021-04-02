@@ -2,8 +2,6 @@ import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/co
 import { Subscription } from 'rxjs';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Userdetails } from '@models/userdetails';
-import { UserService } from '@services/user/userservice.service';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { ListService } from '@services/list/list.service';
 import { ListPageViewDetails, ListPageViewFldMap } from '@models/list-page/listpage';
@@ -40,8 +38,6 @@ export class TableViewSettingsComponent implements OnInit, OnDestroy {
 
   @ViewChild('scrollableContainer', {read: ElementRef}) scrollable : ElementRef<any>;
 
-  userDetails = new Userdetails();
-
   /**
    * Hold current view config details
    */
@@ -56,18 +52,12 @@ export class TableViewSettingsComponent implements OnInit, OnDestroy {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private listService: ListService,
-    private coreService: CoreService,
-    private userService: UserService
+    private coreService: CoreService
     ){}
 
   ngOnInit() {
 
-    const subs = this.userService.getUserDetails().subscribe(res => {
-      this.userDetails = res;
-    }, error => console.error(`Error : ${error.message}`));
-    this.subscriptions.push(subs);
-
-    const subs1 = this.activatedRoute.params.subscribe(params => {
+    const subs = this.activatedRoute.params.subscribe(params => {
       this.moduleId = params.moduleId;
       this.getFldMetadata();
 
@@ -76,7 +66,7 @@ export class TableViewSettingsComponent implements OnInit, OnDestroy {
         this.getTableViewDetails();
       }
     });
-    this.subscriptions.push(subs1);
+    this.subscriptions.push(subs);
 
   }
 
@@ -84,7 +74,7 @@ export class TableViewSettingsComponent implements OnInit, OnDestroy {
    * get table view details
    */
   getTableViewDetails() {
-    const sub =  this.listService.getListPageViewDetails(this.viewId, this.userDetails.userName, this.userDetails.currentRoleId, this.userDetails.plantCode, this.moduleId)
+    const sub =  this.listService.getListPageViewDetails(this.viewId, this.moduleId)
       .subscribe(response => {
           this.viewDetails = response;
     }, error => {
@@ -131,7 +121,7 @@ export class TableViewSettingsComponent implements OnInit, OnDestroy {
 
     const isUpdate = !!this.viewDetails.viewId;
 
-    this.listService.upsertListPageViewDetails(this.viewDetails, this.userDetails.userName, this.userDetails.currentRoleId, this.userDetails.plantCode, this.moduleId)
+    this.listService.upsertListPageViewDetails(this.viewDetails, this.moduleId)
       .subscribe(response => {
           this.sharedService.setViewDetailsData({
             isUpdate,

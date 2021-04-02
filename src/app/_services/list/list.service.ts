@@ -31,30 +31,30 @@ export class ListService {
   /**
    * get all list page views
    */
-   public getAllListPageViews(userId, role, tenantcode, moduleId, offSet): Observable<ViewsPage> {
-    return this.http.get<ViewsPage>(this.endpointService.getAllListPageViewsUrl(), { params: {userId, role, tenantcode, moduleId, offSet}});
+   public getAllListPageViews(moduleId, offSet): Observable<ViewsPage> {
+    return this.http.get<ViewsPage>(this.endpointService.getAllListPageViewsUrl(), { params: {moduleId, offSet}});
   }
 
 /**
  * get list page view details
  * @param viewId view id
  */
- public getListPageViewDetails(viewId: string, userId, role, tenantcode, moduleId): Observable<ListPageViewDetails> {
-  return this.http.get<ListPageViewDetails>(this.endpointService.getListPageViewDetailsUrl(viewId), { params: {userId, role, tenantcode, moduleId}});
+ public getListPageViewDetails(viewId: string, moduleId): Observable<ListPageViewDetails> {
+  return this.http.get<ListPageViewDetails>(this.endpointService.getListPageViewDetailsUrl(viewId), { params: {moduleId}});
 }
 
 /**
  * update list page view details
  */
-public upsertListPageViewDetails(viewDetails: ListPageViewDetails, userId, role, tenantcode, moduleId): Observable<ListPageViewDetails> {
-  return this.http.post<any>(this.endpointService.upsertListPageViewUrl(), viewDetails, { params: {userId, role, tenantcode, moduleId}});
+public upsertListPageViewDetails(viewDetails: ListPageViewDetails, moduleId): Observable<ListPageViewDetails> {
+  return this.http.post<any>(this.endpointService.upsertListPageViewUrl(), viewDetails, { params: {moduleId}});
 }
 
 /**
  * delete list page view details
  */
- public deleteListPageView(viewId: string, userId, role, tenantcode, moduleId): Observable<ListPageViewDetails> {
-  return this.http.delete<any>(this.endpointService.deleteListPageViewUrl(viewId), { params: {userId, role, tenantcode, moduleId}});
+ public deleteListPageView(viewId: string, moduleId): Observable<ListPageViewDetails> {
+  return this.http.delete<any>(this.endpointService.deleteListPageViewUrl(viewId), { params: {moduleId}});
 }
 
 /**

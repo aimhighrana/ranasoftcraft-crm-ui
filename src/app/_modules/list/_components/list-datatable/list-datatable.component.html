@@ -91,10 +91,12 @@
                 </ng-template>
                 <ng-template #dynamic>
                     <ng-container [matColumnDef]="dynCol">
-                        <th mat-header-cell *matHeaderCellDef>
+                        <th mat-header-cell *matHeaderCellDef 
+                            [ngClass]="{'large-cell-header': isLargeHeader(dynCol)}">
                             {{ getFieldDesc(dynCol) }}
                         </th>
-                        <td mat-cell *matCellDef="let element">
+                        <td mat-cell *matCellDef="let element"
+                            [ngClass]="{'large-cell-content': isLargeCell(element, dynCol)}">
                             {{ element[dynCol] ? element[dynCol].fieldData || '' : ''}}
                         </td>
                     </ng-container>
@@ -106,9 +108,14 @@
         </table>
     </div>
     <div class="f-row-spacer-half"></div>
-    <lib-pagination [currentPageIndex]="recordsPageIndex" [totalCount]="totalCount" pageSize="50"
-        (pageChangeEvent)="onPageChange($event)">
-    </lib-pagination>
+    <div class="pagination-section">
+        <lib-pagination [currentPageIndex]="recordsPageIndex" [totalCount]="totalCount" [pageSize]="recordsPageSize"
+            (pageChangeEvent)="onPageChange($event)">
+        </lib-pagination>
+        <span>
+            {{ displayedRecordsRange }}
+        </span>
+    </div>
 
     <div class="f-row-spacer-half"></div>
 

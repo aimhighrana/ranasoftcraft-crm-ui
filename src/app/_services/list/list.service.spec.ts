@@ -1,7 +1,6 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { async, TestBed } from '@angular/core/testing';
 import { ListPageViewDetails, ViewsPage } from '@models/list-page/listpage';
-import { Userdetails } from '@models/userdetails';
 import { EndpointsListService } from '@services/_endpoints/endpoints-list.service';
 
 import { ListService } from './list.service';
@@ -36,20 +35,15 @@ describe('ListService', () => {
     endpointServiceSpy.getAllListPageViewsUrl.and.returnValue(url);
 
     const response = new ViewsPage();
-
-    const userDetails = new Userdetails();
-    userDetails.userName = 'Admin';
-    userDetails.currentRoleId = 'Admin';
-    userDetails.plantCode = '0';
     const moduleId = '1005';
 
     // actual service call
-    listService.getAllListPageViews(userDetails.userName, userDetails.currentRoleId, userDetails.plantCode, moduleId,0 )
+    listService.getAllListPageViews(moduleId,0 )
       .subscribe(actualResponse => {
           expect(actualResponse).toEqual(response);
     });
     // mock http call
-    const mockRequst = httpTestingController.expectOne(`${url}?userId=${userDetails.userName}&role=${userDetails.currentRoleId}&tenantcode=${userDetails.plantCode}&moduleId=${moduleId}&offSet=0`);
+    const mockRequst = httpTestingController.expectOne(`${url}?moduleId=${moduleId}&offSet=0`);
     expect(mockRequst.request.method).toEqual('GET');
     expect(mockRequst.request.responseType).toEqual('json');
     mockRequst.flush(response);
@@ -65,19 +59,15 @@ describe('ListService', () => {
 
     const viewDetails = new ListPageViewDetails();
     viewDetails.viewId = '1701';
-    const userDetails = new Userdetails();
-    userDetails.userName = 'Admin';
-    userDetails.currentRoleId = 'Admin';
-    userDetails.plantCode = '0';
     const moduleId = '1005';
 
     // actual service call
-    listService.getListPageViewDetails(viewDetails.viewId, userDetails.userName, userDetails.currentRoleId, userDetails.plantCode, moduleId )
+    listService.getListPageViewDetails(viewDetails.viewId, moduleId )
       .subscribe(actualResponse => {
           expect(actualResponse).toEqual(viewDetails);
     });
     // mock http call
-    const mockRequst = httpTestingController.expectOne(`${url}?userId=${userDetails.userName}&role=${userDetails.currentRoleId}&tenantcode=${userDetails.plantCode}&moduleId=${moduleId}`);
+    const mockRequst = httpTestingController.expectOne(`${url}?moduleId=${moduleId}`);
     expect(mockRequst.request.method).toEqual('GET');
     expect(mockRequst.request.responseType).toEqual('json');
     mockRequst.flush(viewDetails);
@@ -93,19 +83,15 @@ describe('ListService', () => {
 
     const viewDetails = new ListPageViewDetails();
     viewDetails.viewId = '1701';
-    const userDetails = new Userdetails();
-    userDetails.userName = 'Admin';
-    userDetails.currentRoleId = 'Admin';
-    userDetails.plantCode = '0';
     const moduleId = '1005';
 
     // actual service call
-    listService.upsertListPageViewDetails(viewDetails, userDetails.userName, userDetails.currentRoleId, userDetails.plantCode, moduleId )
+    listService.upsertListPageViewDetails(viewDetails, moduleId )
       .subscribe(actualResponse => {
           expect(actualResponse).toEqual(viewDetails);
     });
     // mock http call
-    const mockRequst = httpTestingController.expectOne(`${url}?userId=${userDetails.userName}&role=${userDetails.currentRoleId}&tenantcode=${userDetails.plantCode}&moduleId=${moduleId}`);
+    const mockRequst = httpTestingController.expectOne(`${url}?moduleId=${moduleId}`);
     expect(mockRequst.request.method).toEqual('POST');
     expect(mockRequst.request.responseType).toEqual('json');
     mockRequst.flush(viewDetails);
@@ -121,19 +107,15 @@ describe('ListService', () => {
 
     const viewDetails = new ListPageViewDetails();
     viewDetails.viewId = '1701';
-    const userDetails = new Userdetails();
-    userDetails.userName = 'Admin';
-    userDetails.currentRoleId = 'Admin';
-    userDetails.plantCode = '0';
     const moduleId = '1005';
 
     // actual service call
-    listService.deleteListPageView(viewDetails.viewId, userDetails.userName, userDetails.currentRoleId, userDetails.plantCode, moduleId )
+    listService.deleteListPageView(viewDetails.viewId, moduleId )
       .subscribe(actualResponse => {
           expect(actualResponse).toEqual(viewDetails);
     });
     // mock http call
-    const mockRequst = httpTestingController.expectOne(`${url}?userId=${userDetails.userName}&role=${userDetails.currentRoleId}&tenantcode=${userDetails.plantCode}&moduleId=${moduleId}`);
+    const mockRequst = httpTestingController.expectOne(`${url}?moduleId=${moduleId}`);
     expect(mockRequst.request.method).toEqual('DELETE');
     expect(mockRequst.request.responseType).toEqual('json');
     mockRequst.flush(viewDetails);
