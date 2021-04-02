@@ -1,17 +1,3 @@
-::ng-deep {
-  lib-radio-group.mdo-schedule-segment {
-    mat-radio-group {
-      display: flex;
-      flex-wrap: wrap;
-  
-      mat-radio-button {
-        flex: 0 0 25%;
-        margin-bottom: 8px;
-      }
-    }
-  }
-}
-
 div.root {
   user-select: none;
   height: 100%;
@@ -58,7 +44,7 @@ div.root {
         &.every-field {
           align-items: center;
 
-          lib-input {
+          .mdo-scheduler-input {
             flex: 2;
           }
 
