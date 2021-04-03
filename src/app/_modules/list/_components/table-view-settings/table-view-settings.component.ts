@@ -26,7 +26,7 @@ export class TableViewSettingsComponent implements OnInit, OnDestroy {
    */
   viewId: string;
 
-  metadataFldLst: FieldMetaData[];
+  metadataFldLst: FieldMetaData[] = [];
 
   /**
    * Hold fields of all suggested fields

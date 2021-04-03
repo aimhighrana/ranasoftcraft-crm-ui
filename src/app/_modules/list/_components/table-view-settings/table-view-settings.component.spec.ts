@@ -128,6 +128,10 @@ describe('TableViewSettingsComponent', () => {
       {fieldId: 'MTL_Grp', fieldOrder: '0', isEditable: true} as ListPageViewFldMap
     ];
 
+    component.metadataFldLst = [
+      {fieldId: 'MTL_Grp', fieldDescri: 'Material group'}
+    ] as FieldMetaData[];
+
     component.save();
     expect(component.submitted).toBeTrue();
 
