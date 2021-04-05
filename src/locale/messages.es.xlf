@@ -126,6 +126,14 @@
         <target>Seleccione un archivo</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\upload-data-sidesheet\upload-data.component.html</context>
+          <context context-type="linenumber">37</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="drag_drop_file" datatype="html">
+        <source>Drag &amp; drop or select a file to upload</source>
+        <target>Sleep &amp; zet neer of selecteer een bestand om te uploaden</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-data-sidesheet\upload-data.component.html</context>
           <context context-type="linenumber">36</context>
         </context-group>
       </trans-unit>
