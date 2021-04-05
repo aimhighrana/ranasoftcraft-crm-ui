@@ -371,8 +371,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
       } else {
         this.isLoadMore = false;
       }
-      const picklist = ['1', '30', '37', '4', '38', '35'];
-      if(this.filterWidget.getValue().metaData && (picklist.find(val => val === this.filterWidget.getValue().metaData.picklist))) {
+      if(this.filterWidget.getValue().metaData &&(this.filterWidget.getValue().metaData.picklist === '1' || this.filterWidget.getValue().metaData.picklist === '30' || this.filterWidget.getValue().metaData.picklist === '37')) {
         const metadatas: DropDownValues[] = [];
         buckets.forEach(bucket => {
           const metaData = {CODE: bucket.key.FILTER, FIELDNAME: fieldId, TEXT: bucket.key.FILTER} as DropDownValues;
