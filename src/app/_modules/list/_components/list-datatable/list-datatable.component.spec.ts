@@ -4,10 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ListService } from '@services/list/list.service';
 import { of, throwError } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
-
 import { ListDatatableComponent } from './list-datatable.component';
-import { UserService } from '@services/user/userservice.service';
-import { Userdetails } from '@models/userdetails';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { PageEvent } from '@angular/material/paginator';
 import { SharedModule } from '@modules/shared/shared.module';
@@ -16,7 +13,6 @@ import { ViewsPage } from '@models/list-page/listpage';
 describe('ListDatatableComponent', () => {
   let component: ListDatatableComponent;
   let fixture: ComponentFixture<ListDatatableComponent>;
-  let userService: UserService;
   let listService: ListService;
   let router: Router;
   let sharedServices: SharedServiceService;
@@ -37,16 +33,10 @@ describe('ListDatatableComponent', () => {
     fixture = TestBed.createComponent(ListDatatableComponent);
     component = fixture.componentInstance;
 
-    userService = fixture.debugElement.injector.get(UserService);
     listService = fixture.debugElement.injector.get(ListService);
     sharedServices = fixture.debugElement.injector.get(SharedServiceService);
     router = TestBed.inject(Router);
     // fixture.detectChanges();
-
-    component.userDetails = new Userdetails();
-    component.userDetails.userName = 'Admin';
-    component.userDetails.currentRoleId = 'Admin';
-    component.userDetails.plantCode = '0';
 
   });
 
@@ -58,7 +48,6 @@ describe('ListDatatableComponent', () => {
 
     spyOn(component, 'getViewsList');
     spyOn(component, 'getTotalCount');
-    spyOn(userService, 'getUserDetails').and.returnValue(of());
     spyOn(sharedServices, 'getViewDetailsData').and.returnValue(of());
     component.ngOnInit();
 

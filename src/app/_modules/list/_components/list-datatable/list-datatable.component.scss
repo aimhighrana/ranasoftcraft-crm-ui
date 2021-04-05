@@ -13,6 +13,11 @@ div.root {
     overflow: auto;
   }
 
+  .pagination-section {
+    display: flex;
+    align-items: center;
+  }
+
   .loading-result {
     height: calc(100% - 36px - 16px * 3);
     align-items: center;

@@ -4,9 +4,9 @@
             {{  moduleData ? ( moduleData.moduleDesc ? moduleData.moduleDesc: 'Untitled') : 'Untitled'}}
         </div>
         <span class="f-spacer"></span>
-        <button mat-flat-button (click)="openUploadSideSheet()">
-            <mat-icon fontSet="mdo-icons">outbox-alt</mat-icon> Upload data
-        </button>
+        <lib-button (click)="openUploadSideSheet()" type="minor" i18n="@@upload_data" icon="outbox-alt" iconFontType="solid" iconPosition="before">
+            Upload data
+        </lib-button>
     </div>
 
     <!-- <mat-card class="f-row mat-elevation-z0 message info-alert">

@@ -127,6 +127,36 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\shared\_components\schedule\schedule.component.html</context>
           <context context-type="linenumber">89</context>
+      <trans-unit id="upload_data" datatype="html">
+        <source>Upload data</source>
+        <target>Hochladen von Daten</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-lists\schema-lists.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="upload" datatype="html">
+        <source>Upload</source>
+        <target>Hochladen</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-data-sidesheet\upload-data.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="select_a_file" datatype="html">
+        <source>Select a file</source>
+        <target>Auswählen einer Datei</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-data-sidesheet\upload-data.component.html</context>
+          <context context-type="linenumber">37</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="drag_drop_file" datatype="html">
+        <source>Drag &amp; drop or select a file to upload</source>
+        <target>Gebruik slepen en neerzetten of selecteer een bestand om te uploaden</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\upload-data-sidesheet\upload-data.component.html</context>
+          <context context-type="linenumber">36</context>
         </context-group>
       </trans-unit>
     </body>
