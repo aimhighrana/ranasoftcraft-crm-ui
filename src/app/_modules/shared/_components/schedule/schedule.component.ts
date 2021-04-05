@@ -8,6 +8,7 @@ import { SchemaService } from '@services/home/schema.service';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 import { TitleCasePipe } from '@angular/common';
+import { TransientService } from 'mdo-ui-library';
 
 @Component({
   selector: 'pros-schedule',
@@ -96,7 +97,8 @@ export class ScheduleComponent implements OnInit, OnDestroy {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private sharedService: SharedServiceService,
-    private titlecasePipe: TitleCasePipe
+    private titlecasePipe: TitleCasePipe,
+    private mdoToastService: TransientService
   ) { }
 
   ngOnInit(): void {
@@ -217,7 +219,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
       if (response) {
         this.close();
         this.sharedService.setScheduleInfo(response);
-        this.matSnackBar.open('Schema Has Been Scheduled..', 'Okay', {
+        this.mdoToastService.open('Schema Has Been Scheduled..', 'Okay', {
           duration: 3000
         })
       }
