@@ -86,7 +86,7 @@
                     </div>
                 </div>
                 <div class="f-row mdo-form-field every-field" *ngIf="form.controls.end.value === 'AFTER'">
-                    <lib-input class="mdo-scheduler-input" formControlName="occurrenceVal" [type]="'number'" i18n-label="@@occurences" label="Occurences" [value]="form.controls.occurrenceVal.value" [maxLength]='2' [minimum]='1'></lib-input>
+                    <lib-input formControlName="occurrenceVal" class="mdo-scheduler-input" [type]="'number'" i18n-label="@@occurences" label="Occurences" [value]="form.controls.occurrenceVal.value" [maxLength]='2' [minimum]='1'></lib-input>
                     <mat-error
                         *ngIf="formSubmitted && form.controls.occurrenceVal.errors && form.controls.occurrenceVal.errors.required">
                         This is a required field when cycle ends is After
