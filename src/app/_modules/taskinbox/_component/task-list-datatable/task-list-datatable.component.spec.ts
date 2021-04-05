@@ -8,7 +8,7 @@ describe('TaskListDatatableComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TaskListDatatableComponent ]
+      declarations: [ TaskListDatatableComponent]
     })
     .compileComponents();
   }));
