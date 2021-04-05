@@ -33,11 +33,12 @@
             <div class="f-col upload-col">
               <input class="drag-input" type="file" (change)="fileChange($event)" formControlName="uploadFileCtrl"
                 multiple="false" id="uploadFileCtrl" />
-              <lib-empty-state i18n-primaryText="@@drag_drop_file" primaryText="Drag & drop or select a file to upload" icon="table" iconSize="100">
-                <lib-button *ngIf="!uploadedFile" i18n="@@select_a_file" [disabled]="uploadDisabled"
-                (click)="uploadFile()">Select a file</lib-button>
-                <lib-button *ngIf="uploadedFile" [disabled]="uploadDisabled"
-                  (click)="uploadFile()">{{ uploadedFile.name }}</lib-button>
+              <lib-empty-state i18n-primaryText="@@drag_drop_file" primaryText="Drag & drop or select a file to upload"
+                icon="table" iconSize="100">
+                <lib-button  type="minor" *ngIf="!uploadedFile" i18n="@@select_a_file" [disabled]="uploadDisabled"
+                  (click)="uploadFile()">Select a file</lib-button>
+                <lib-button  type="minor" *ngIf="uploadedFile" [disabled]="uploadDisabled" (click)="uploadFile()">{{ uploadedFile.name
+                  }}</lib-button>
               </lib-empty-state>
             </div>
           </form>
