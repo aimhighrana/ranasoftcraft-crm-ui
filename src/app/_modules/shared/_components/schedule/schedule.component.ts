@@ -36,7 +36,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
    */
   repeatInterval = Object.keys(SchemaSchedulerRepeat).map((x) => {
     return {
-      label: this.titlecasePipe.transform(x) || x,
+      label: this.titlecasePipe.transform(x),
       value: x
     }
   });
@@ -45,7 +45,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
    */
   weekDays = Object.keys(WeekOn).map(item => {
     return {
-      value: this.titlecasePipe.transform(WeekOn[item]) || '',
+      value: this.titlecasePipe.transform(WeekOn[item]),
       key: item
     }
   })
@@ -54,7 +54,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
    */
   repeatBys = Object.keys(MonthOn).map(item => {
     return {
-      value: this.titlecasePipe.transform(item) || '',
+      value: this.titlecasePipe.transform(item),
       key: MonthOn[item]
     }
   });
