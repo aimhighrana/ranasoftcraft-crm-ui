@@ -10,6 +10,8 @@ import { SchemaService } from '@services/home/schema.service';
 import { of } from 'rxjs';
 import { FormInputComponent } from '../form-input/form-input.component';
 import { DatePickerFieldComponent } from '../date-picker-field/date-picker-field.component';
+import { TitleCasePipe } from '@angular/common';
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 
 const isRequired = (control: AbstractControl) => {
   const validator = control.validator({} as AbstractControl);
@@ -34,9 +36,11 @@ describe('ScheduleDialogComponent', () => {
         HttpClientTestingModule,
         AppMaterialModuleForSpec,
         FormsModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        MdoUiLibraryModule
       ],
       providers: [
+        TitleCasePipe,
         { provide: MatDialogRef, useValue: mockDialogRef },
         { provide: MAT_DIALOG_DATA, useValue: [] },
       ]
