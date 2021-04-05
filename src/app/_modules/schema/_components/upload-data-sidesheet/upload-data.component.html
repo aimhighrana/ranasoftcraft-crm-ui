@@ -12,7 +12,8 @@
         <a class="info-link" *ngIf="currentStep>0" (click)="step(0); uploadedFile = null; isInprocess = false;">Choose
           another file</a>
         <span class="f-col-spacer-half"></span>
-        <lib-button type="major" i18n="@@upload" *ngIf="currentStep>0" [disabled]="isInprocess" (click)="uploadFileData(stepper)">Upload</lib-button>
+        <lib-button type="major" i18n="@@upload" *ngIf="currentStep>0" [disabled]="isInprocess"
+          (click)="uploadFileData(stepper)">Upload</lib-button>
       </div>
     </div>
   </div>
@@ -33,7 +34,10 @@
               <input class="drag-input" type="file" (change)="fileChange($event)" formControlName="uploadFileCtrl"
                 multiple="false" id="uploadFileCtrl" />
               <lib-empty-state primaryText="Drag & drop or select a file to upload" icon="table" iconSize="100">
-                <lib-button i18n="@@select_a_file" [disabled]="uploadDisabled" (click)="uploadFile()">{{ uploadedFile ? uploadedFile.name:'Select a file' }}</lib-button>
+                <lib-button *ngIf="uploadedFile" [disabled]="uploadDisabled"
+                  (click)="uploadFile()">{{ uploadedFile.name }}</lib-button>
+                <lib-button *ngIf="!uploadedFile" i18n="@@select_a_file" [disabled]="uploadDisabled"
+                  (click)="uploadFile()">Select a file</lib-button>
               </lib-empty-state>
             </div>
           </form>
