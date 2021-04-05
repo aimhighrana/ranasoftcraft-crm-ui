@@ -1,38 +1,37 @@
 .root {
-    user-select: none;
-    height: 100%;
-    padding: 0 16px;
-    overflow: hidden;
-  
-    .task-inbox {
-      height: calc(100% - 42px - 36px * 2 - 8px * 5);
-  
-      table.mat-table {
-        width: 100%;
-  
-        td.mat-cell {
-          border-right: none;
-        }
-  
-        .mat-column-select {
-          width: 36px;
-        }
-  
-        .mat-column-setting {
-          width: 112px;
-        }
-  
-        .mat-column-sent,
-        .mat-column-dueby,
-        .mat-column-requestby,
-        .mat-column-sentby {
-          text-align: right;
-  
-          .lib-avatar {
-            float: right;
-          }
+  user-select: none;
+  height: 100%;
+  padding: 0 16px;
+  overflow: hidden;
+
+  .task-inbox {
+    height: calc(100% - 42px - 36px * 2 - 8px * 5);
+
+    table.mat-table {
+      width: 100%;
+
+      td.mat-cell {
+        border-right: none;
+      }
+
+      .mat-column-select {
+        width: 36px;
+      }
+
+      .mat-column-setting {
+        width: 112px;
+      }
+
+      .mat-column-sent,
+      .mat-column-dueby,
+      .mat-column-requestby,
+      .mat-column-sentby {
+        text-align: right;
+
+        .lib-avatar {
+          float: right;
         }
       }
     }
   }
-  
+}
