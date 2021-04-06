@@ -7,28 +7,25 @@
         <span class="f-col-spacer-half"></span>
         <span class="f-spacer"></span>
         <div class="f-row action-iconbtns">
-            <button mat-flat-button color="accent" (click)="openSummarySideSheet()">
-                <mat-icon fontSet="mdo-icons">square-root-alt</mat-icon> Check data
-            </button>
-            <button mat-fab color="accent" [matMenuTriggerFor]="navigation">
+            <lib-button mat-flat-button type="minor" (click)="openSummarySideSheet()">
+                <mat-icon fontSet="mdo-icons">square-root-alt</mat-icon>
+                <ng-container i18n="@@check_data">Check data</ng-container>
+            </lib-button>
+            <lib-button mat-fab type="minor" [matMenuTriggerFor]="navigation">
                 <mat-icon fontSet="mdo-icons">ellipsis-h</mat-icon>
-            </button>
+            </lib-button>
             <!-- menu to add business rule and subscriber -->
             <mat-menu #navigation="matMenu" direction="right" class="navigation-menu">
-                <button mat-menu-item (click)="deleteSchema()" [disableRipple]="true"> Delete </button>
+                <button mat-menu-item (click)="deleteSchema()" i18n="@@delete" [disableRipple]="true"> Delete </button>
             </mat-menu>
         </div>
     </div>
 
     <div class="row-spacer"></div>
-
-    <mat-tab-group disableRipple="true" animationDuration="0ms"
-        (selectedTabChange)="updateFragment($event.tab.textLabel)" [selectedIndex]="selectedIndex">
+    <lib-tab-group disableRipple="true" animationDuration="0ms" (selectedIndexChange)="updateFragmentByIndex($event)"
+        [selectedIndex]="selectedIndex">
         <!-- Tab for the summary of schema -->
-        <mat-tab label="summary">
-            <ng-template mat-tab-label>
-                Summary
-            </ng-template>
+        <lib-tab label="Summary" i18n-label="@@summary">
             <div class="f-col summary-root">
                 <form [formGroup]="schemaSummaryForm">
                     <pros-form-input [label]="'Schema name'" [control]="schemaField('schemaName')" [disabled]="false"
@@ -45,18 +42,18 @@
                         <mat-label>Threshold</mat-label>
                         <div class="f-row slider-row">
                             <mat-slider color="primary" thumbLabel formControlName="schemaThreshold"
-                            [value]="schemaDetails?.schemaThreshold ? schemaDetails.schemaThreshold : 0"
-                            (change)="updateSchemaInfo(schemaDetails.schemaDescription, $event)"></mat-slider>
+                                [value]="schemaDetails?.schemaThreshold ? schemaDetails.schemaThreshold : 0"
+                                (change)="updateSchemaInfo(schemaDetails.schemaDescription, $event)"></mat-slider>
                             <span class="f-col-spacer-half"></span>
                             <div>{{schemaSummaryForm.controls.schemaThreshold.value}}%</div>
-                            </div>
+                        </div>
                     </div>
                     <div class="row-spacer"></div>
                     <mat-accordion>
                         <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
                             <mat-expansion-panel-header expandedHeight="36px" collapsedHeight="36px">
                                 <mat-panel-title class="panel-title">
-                                    Data scope ({{variantDetails ?  variantDetails.length : 0}})
+                                    Data scope ({{variantDetails ? variantDetails.length : 0}})
                                 </mat-panel-title>
                             </mat-expansion-panel-header>
 
@@ -65,7 +62,8 @@
                                     <div mat-line class="info-link">[Add data scope]</div>
                                 </mat-list-item>
                                 <mat-list-item *ngFor="let variant of variantDetails">
-                                    <div mat-line class="info-link" (click)="editDataScope(variant.variantId)">{{variant.variantName}}</div>
+                                    <div mat-line class="info-link" (click)="editDataScope(variant.variantId)">
+                                        {{variant.variantName}}</div>
                                     <span class="f-spacer"></span>
                                     <button mat-button (click)="deleteVariant(variant.variantId)">
                                         <mat-icon fontSet="mdo-icons">recycle-bin</mat-icon>
@@ -76,13 +74,10 @@
                     </mat-accordion>
                 </form>
             </div>
-        </mat-tab>
+        </lib-tab>
 
         <!-- Tab for the Business rules of schema -->
-        <mat-tab label="business-rules">
-            <ng-template mat-tab-label>
-                Business rules <span class="mat-tab-count">{{getBusinessRulesLength}}</span>
-            </ng-template>
+        <lib-tab  i18n-label="@@business_rules" label="Business rules {{getBusinessRulesLength}}">
             <div class="colunm-listing">
                 <div class="f-row colunm-box rule-border-row">
                     <div class="col"></div>
@@ -92,7 +87,9 @@
                                 question-circle</mat-icon>
                         </strong></div>
                     <div class="col col-x8 mat-item-center"><strong class="f-row">Weightage &nbsp;
-                            <mat-icon matTooltip="Score assigned to a record upon successful validation of a business rule.For a schema total weightage of all the business rules must not exceed 100" fontSet="mdo-icons">
+                            <mat-icon
+                                matTooltip="Score assigned to a record upon successful validation of a business rule.For a schema total weightage of all the business rules must not exceed 100"
+                                fontSet="mdo-icons">
                                 question-circle</mat-icon>
                         </strong></div>
                     <div class="col col-x4"><strong>Enabled</strong></div>
@@ -100,155 +97,166 @@
                 </div>
                 <div class="f-row colunm-box rule-border-row">
                     <div class="mdo-auto-complete">
-                        <pros-form-input-autoselect [fieldLabel]="'Type rule name to add'" (openCustomDialog)="openBrLibrarySideSheet()"
-                        [updatedOptionsList]="allBusinessRulesList" [labelKey]="'brInfo'" (emitExtraLabelClick)="openBusinessRuleSideSheet()"
-                         [extraOptionLabel]="'Add new business rule'" (optionSelectedEmit)="addBusinessRule($event)" (emitSearchValue)="getAllBusinessRulesList(moduleId, $event, '', '0')"></pros-form-input-autoselect>
+                        <pros-form-input-autoselect [fieldLabel]="'Type rule name to add'"
+                            (openCustomDialog)="openBrLibrarySideSheet()" [updatedOptionsList]="allBusinessRulesList"
+                            [labelKey]="'brInfo'" (emitExtraLabelClick)="openBusinessRuleSideSheet()"
+                            [extraOptionLabel]="'Add new business rule'" (optionSelectedEmit)="addBusinessRule($event)"
+                            (emitSearchValue)="getAllBusinessRulesList(moduleId, $event, '', '0')">
+                        </pros-form-input-autoselect>
                     </div>
                 </div>
 
                 <ng-template [ngIf]="businessRuleData.length>0" [ngIfElse]="nullState">
-                    <div cdkDropList [cdkDropListData]="businessRuleData"  (cdkDropListDropped)="drop($event)">
-                    <div cdkDrag *ngFor="let businessRule of businessRuleData; let i=index" >
-                       <div  class="f-row colunm-box rule-border-row">
-                        <div class="col">
-                            <button mat-button cdkDragHandle >
-                            <mat-icon fontSet="mdo-icons">grip-lines</mat-icon>
-                            </button>
- 
-                        </div>
-                        <div class="col col-x4" (click)="editBr(businessRule)">
-                            <div mat-line><a class="info-link">{{businessRule.brInfo}}</a></div>
-                        </div>
-                        <div class="col col-x4">
-                            <button mat-stroked-button [matMenuTriggerFor]="businessRuleCat">
-                                {{ businessRule.categoryInfo ?  (businessRule.categoryInfo.categoryDesc ? businessRule.categoryInfo.categoryDesc : 'Untitled') : 'Unknown' }}
-                                <mat-icon fontSet="mdo-icons-solid">caret-down</mat-icon>
-                            </button>
-                            <mat-menu #businessRuleCat="matMenu" class="navigation-menu">
-                                <button mat-menu-item *ngFor="let cat of category"
-                                (click)="updateCategory(cat, businessRule)">
-                                {{ cat.categoryDesc ? cat.categoryDesc : cat.categoryId }}</button>
-                            </mat-menu>
-                        </div>
-                        <div class="col col-x8 mat-item-center">
-                            <div class="f-row slider-row">
-                            <mat-slider color="primary" [value]="businessRule.brWeightage" thumbLabel
-                                tickInterval="1" min="0" [max]="availableWeightage(businessRule.brWeightage)"
-                                (change)="updateBr(businessRule,$event)">
-                            </mat-slider>
-                            <span class="f-col-spacer-half"></span>
-                            <div class="percent-count">{{businessRule.brWeightage}}%</div>
-                        </div>
-                        </div>
-
-                        <div class="col col-x4">
-                            <mat-checkbox color="primary" [checked]="businessRule.status === '1' ? true : false"
-                                (change)="updateBr(businessRule,$event)"></mat-checkbox> 
-                        </div>
-
-                        <div class="col col-x4 text-end">
-                            <button mat-button [matMenuTriggerFor]="mappingdependency" [disabled]='i===0 '>
-                                <mat-icon fontSet="mdo-icons">link</mat-icon>
-                            </button>
-                            <!-- Mapping Dropdown Menu -->
-                            <mat-menu #mappingdependency="matMenu" #aboveMenu="matMenu" yPosition="above" xPosition="before" class="mat-elevation-z0 tooltip-fields-menu">
-                                <!-- <div class="top-tiparrow"></div> -->
-                                <div class="f-col">
-                                        <p>Only run this rule if  the preceding rule returns</p>
-                                        <mat-radio-group class="f-col" color="primary" [(ngModel)]="businessRule.dependantStatus" (change)="updateDepRule(businessRule,$event)">
-                                            <mat-radio-button value="ALL">All</mat-radio-button>
-                                            <mat-radio-button value="SUCCESS">Success</mat-radio-button>
-                                            <mat-radio-button value="ERROR">Failure</mat-radio-button>
-                                        </mat-radio-group>
-                                    </div>
-                            </mat-menu>
-                            <button mat-button (click)="deleteBr(businessRule)">
-                                <mat-icon fontSet="mdo-icons">trash-alt</mat-icon>
-                            </button>
-                        </div>
-                    </div>
-                    <div cdkDropList [cdkDropListData]="businessRule.dep_rules"  (cdkDropListDropped)="drop($event)">
-                        <div cdkDrag *ngFor="let deps of businessRule.dep_rules;let i=index;" >
+                    <div cdkDropList [cdkDropListData]="businessRuleData" (cdkDropListDropped)="drop($event)">
+                        <div cdkDrag *ngFor="let businessRule of businessRuleData; let i=index">
                             <div class="f-row colunm-box rule-border-row">
-                            <div class="col">
-                                <button mat-button cdkDragHandle>
-                                <mat-icon >subdirectory_arrow_right</mat-icon>
-                                </button>
-                                
-                            </div>
-                            <div class="col col-x4" (click)="editBr(deps)">
-                                <div mat-line><a class="info-link">{{deps.brInfo}}</a></div>
-                            </div>
-                            <div class="col col-x4">
-                                <button mat-stroked-button [matMenuTriggerFor]="businessRuleCat">
-                                    {{ deps.categoryInfo ?  (deps.categoryInfo.categoryDesc ? deps.categoryInfo.categoryDesc : 'Untitled') : 'Unknown' }}
-                                    <mat-icon fontSet="mdo-icons">caret-down</mat-icon>
-                                </button>
-                                <mat-menu #businessRuleCat="matMenu" class="navigation-menu">
-                                    <button mat-menu-item *ngFor="let cat of category"
-                                    (click)="updateCategory(cat, deps)">
-                                    {{ cat.categoryDesc ? cat.categoryDesc : cat.categoryId }}</button>
-                                </mat-menu>
-                            </div>
-                            <div class="col col-x8 mat-item-center">
-                                <div class="f-row slider-row">
-                                <mat-slider color="primary" [value]="deps.brWeightage" thumbLabel
-                                    tickInterval="1" min="0" [max]="availableWeightage(deps.brWeightage)"
-                                    (change)="updateBr(deps,$event)">
-                                </mat-slider>
-                                <span class="f-col-spacer-half"></span>
-                                <div class="percent-count">{{deps.brWeightage}}%</div>
-                            </div>
-                            </div>
+                                <div class="col">
+                                    <button mat-button cdkDragHandle>
+                                        <mat-icon fontSet="mdo-icons">grip-lines</mat-icon>
+                                    </button>
 
-                            <div class="col col-x4">
-                                <mat-checkbox color="primary" [checked]="deps.status === '1' ? true : false"
-                                    (change)="updateBr(deps,$event)"></mat-checkbox> 
-                            </div>
+                                </div>
+                                <div class="col col-x4" (click)="editBr(businessRule)">
+                                    <div mat-line><a class="info-link">{{businessRule.brInfo}}</a></div>
+                                </div>
+                                <div class="col col-x4">
+                                    <button mat-stroked-button [matMenuTriggerFor]="businessRuleCat">
+                                        {{ businessRule.categoryInfo ? (businessRule.categoryInfo.categoryDesc ?
+                                        businessRule.categoryInfo.categoryDesc : 'Untitled') : 'Unknown' }}
+                                        <mat-icon fontSet="mdo-icons-solid">caret-down</mat-icon>
+                                    </button>
+                                    <mat-menu #businessRuleCat="matMenu" class="navigation-menu">
+                                        <button mat-menu-item *ngFor="let cat of category"
+                                            (click)="updateCategory(cat, businessRule)">
+                                            {{ cat.categoryDesc ? cat.categoryDesc : cat.categoryId }}</button>
+                                    </mat-menu>
+                                </div>
+                                <div class="col col-x8 mat-item-center">
+                                    <div class="f-row slider-row">
+                                        <mat-slider color="primary" [value]="businessRule.brWeightage" thumbLabel
+                                            tickInterval="1" min="0"
+                                            [max]="availableWeightage(businessRule.brWeightage)"
+                                            (change)="updateBr(businessRule,$event)">
+                                        </mat-slider>
+                                        <span class="f-col-spacer-half"></span>
+                                        <div class="percent-count">{{businessRule.brWeightage}}%</div>
+                                    </div>
+                                </div>
 
-                            <div class="col col-x4 text-end">
-                                <button mat-button [matMenuTriggerFor]="mappingdependency">
-                                    <mat-icon fontSet="mdo-icons">link</mat-icon>
-                                </button>
-                                <!-- Mapping Dropdown Menu -->
-                                <mat-menu #mappingdependency="matMenu" #aboveMenu="matMenu" yPosition="above" xPosition="before" class="mat-elevation-z0 tooltip-fields-menu">
-                                    <!-- <div class="top-tiparrow"></div> -->
-                                    <div class="f-col">
-                                            <p>Only run this rule if  the preceding rule returns</p>
-                                            <mat-radio-group class="f-col" color="primary"  [(ngModel)]="deps.dependantStatus" (change)="updateDepRuleForChild(businessRule,i,$event)">
+                                <div class="col col-x4">
+                                    <mat-checkbox color="primary" [checked]="businessRule.status === '1' ? true : false"
+                                        (change)="updateBr(businessRule,$event)"></mat-checkbox>
+                                </div>
+
+                                <div class="col col-x4 text-end">
+                                    <button mat-button [matMenuTriggerFor]="mappingdependency" [disabled]='i===0 '>
+                                        <mat-icon fontSet="mdo-icons">link</mat-icon>
+                                    </button>
+                                    <!-- Mapping Dropdown Menu -->
+                                    <mat-menu #mappingdependency="matMenu" #aboveMenu="matMenu" yPosition="above"
+                                        xPosition="before" class="mat-elevation-z0 tooltip-fields-menu">
+                                        <!-- <div class="top-tiparrow"></div> -->
+                                        <div class="f-col">
+                                            <p>Only run this rule if the preceding rule returns</p>
+                                            <mat-radio-group class="f-col" color="primary"
+                                                [(ngModel)]="businessRule.dependantStatus"
+                                                (change)="updateDepRule(businessRule,$event)">
                                                 <mat-radio-button value="ALL">All</mat-radio-button>
                                                 <mat-radio-button value="SUCCESS">Success</mat-radio-button>
                                                 <mat-radio-button value="ERROR">Failure</mat-radio-button>
                                             </mat-radio-group>
                                         </div>
-                                </mat-menu>
-                                <button mat-button (click)="deleteBrChild(deps,businessRule)">
-                                    <mat-icon fontSet="mdo-icons">trash-alt</mat-icon>
-                                </button>
+                                    </mat-menu>
+                                    <button mat-button (click)="deleteBr(businessRule)">
+                                        <mat-icon fontSet="mdo-icons">trash-alt</mat-icon>
+                                    </button>
+                                </div>
+                            </div>
+                            <div cdkDropList [cdkDropListData]="businessRule.dep_rules"
+                                (cdkDropListDropped)="drop($event)">
+                                <div cdkDrag *ngFor="let deps of businessRule.dep_rules;let i=index;">
+                                    <div class="f-row colunm-box rule-border-row">
+                                        <div class="col">
+                                            <button mat-button cdkDragHandle>
+                                                <mat-icon>subdirectory_arrow_right</mat-icon>
+                                            </button>
+
+                                        </div>
+                                        <div class="col col-x4" (click)="editBr(deps)">
+                                            <div mat-line><a class="info-link">{{deps.brInfo}}</a></div>
+                                        </div>
+                                        <div class="col col-x4">
+                                            <button mat-stroked-button [matMenuTriggerFor]="businessRuleCat">
+                                                {{ deps.categoryInfo ? (deps.categoryInfo.categoryDesc ?
+                                                deps.categoryInfo.categoryDesc : 'Untitled') : 'Unknown' }}
+                                                <mat-icon fontSet="mdo-icons">caret-down</mat-icon>
+                                            </button>
+                                            <mat-menu #businessRuleCat="matMenu" class="navigation-menu">
+                                                <button mat-menu-item *ngFor="let cat of category"
+                                                    (click)="updateCategory(cat, deps)">
+                                                    {{ cat.categoryDesc ? cat.categoryDesc : cat.categoryId }}</button>
+                                            </mat-menu>
+                                        </div>
+                                        <div class="col col-x8 mat-item-center">
+                                            <div class="f-row slider-row">
+                                                <mat-slider color="primary" [value]="deps.brWeightage" thumbLabel
+                                                    tickInterval="1" min="0"
+                                                    [max]="availableWeightage(deps.brWeightage)"
+                                                    (change)="updateBr(deps,$event)">
+                                                </mat-slider>
+                                                <span class="f-col-spacer-half"></span>
+                                                <div class="percent-count">{{deps.brWeightage}}%</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col col-x4">
+                                            <mat-checkbox color="primary" [checked]="deps.status === '1' ? true : false"
+                                                (change)="updateBr(deps,$event)"></mat-checkbox>
+                                        </div>
+
+                                        <div class="col col-x4 text-end">
+                                            <button mat-button [matMenuTriggerFor]="mappingdependency">
+                                                <mat-icon fontSet="mdo-icons">link</mat-icon>
+                                            </button>
+                                            <!-- Mapping Dropdown Menu -->
+                                            <mat-menu #mappingdependency="matMenu" #aboveMenu="matMenu"
+                                                yPosition="above" xPosition="before"
+                                                class="mat-elevation-z0 tooltip-fields-menu">
+                                                <!-- <div class="top-tiparrow"></div> -->
+                                                <div class="f-col">
+                                                    <p>Only run this rule if the preceding rule returns</p>
+                                                    <mat-radio-group class="f-col" color="primary"
+                                                        [(ngModel)]="deps.dependantStatus"
+                                                        (change)="updateDepRuleForChild(businessRule,i,$event)">
+                                                        <mat-radio-button value="ALL">All</mat-radio-button>
+                                                        <mat-radio-button value="SUCCESS">Success</mat-radio-button>
+                                                        <mat-radio-button value="ERROR">Failure</mat-radio-button>
+                                                    </mat-radio-group>
+                                                </div>
+                                            </mat-menu>
+                                            <button mat-button (click)="deleteBrChild(deps,businessRule)">
+                                                <mat-icon fontSet="mdo-icons">trash-alt</mat-icon>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        </div>
-                        </div>
                     </div>
-            </div>
 
-            
+
                 </ng-template>
 
                 <ng-template #nullState>
-                    <pros-null-state [message]="brsNullMessage"
-                    [button]="false">
+                    <pros-null-state [message]="brsNullMessage" [button]="false">
                     </pros-null-state>
                 </ng-template>
-               
+
             </div>
-        </mat-tab>
+        </lib-tab>
 
         <!-- Tab for the Subscribers of the schema -->
-        <mat-tab label="subscribers">
-            <ng-template mat-tab-label>
-                Subscribers <span class="mat-tab-count">{{subscriberData ? subscriberData.length : 0}}</span>
-            </ng-template>
+        <lib-tab i18n-label="@@subscribers" label="Subscribers {{subscriberData ? subscriberData.length : 0}}">
             <div class="colunm-listing">
                 <div class="f-row colunm-box rule-border-row">
                     <div class="col"></div>
@@ -260,16 +268,19 @@
 
                 <div class="f-row colunm-box rule-border-row">
                     <div class="mdo-auto-complete">
-                        <pros-form-input-autoselect [fieldLabel]="'Type subscriber name to add'" [updatedOptionsList]="allSubscribers" 
-                        (openCustomDialog)="openSubscriberSideSheet()" [labelKey]="'fullName'" [extraOptionLabel]="'Invite people to your team'"
-                        (optionSelectedEmit)="addSubscriber($event)" (emitSearchValue)="getCollaborators($event, 0)"></pros-form-input-autoselect>
+                        <pros-form-input-autoselect [fieldLabel]="'Type subscriber name to add'"
+                            [updatedOptionsList]="allSubscribers" (openCustomDialog)="openSubscriberSideSheet()"
+                            [labelKey]="'fullName'" [extraOptionLabel]="'Invite people to your team'"
+                            (optionSelectedEmit)="addSubscriber($event)"
+                            (emitSearchValue)="getCollaborators($event, 0)"></pros-form-input-autoselect>
                     </div>
                 </div>
 
                 <ng-template [ngIf]="subscriberData.length>0" [ngIfElse]="subscriberNullState">
                     <div class="f-row colunm-box rule-border-row" *ngFor="let subscriber of subscriberData">
                         <div class="col">
-                            <ng-template [ngIf]="subscriber.userMdoModel && subscriber.isInvited!==true" [ngIfElse]="invitedUserProfile">
+                            <ng-template [ngIf]="subscriber.userMdoModel && subscriber.isInvited!==true"
+                                [ngIfElse]="invitedUserProfile">
                                 <mat-card-header>
                                     <div mat-card-avatar>
                                         {{shortName(subscriber.userMdoModel.fName, subscriber.userMdoModel.lName)}}
@@ -284,11 +295,12 @@
                                     </div>
                                 </mat-card-header>
                             </ng-template>
-                            
+
                         </div>
                         <div class="col col-x4">
                             <mat-card-header>
-                                <ng-template [ngIf]="subscriber.userMdoModel && subscriber.isInvited!==true" [ngIfElse]="isInvited">
+                                <ng-template [ngIf]="subscriber.userMdoModel && subscriber.isInvited!==true"
+                                    [ngIfElse]="isInvited">
                                     <mat-card-title>
                                         {{subscriber.userMdoModel.fName}} {{subscriber.userMdoModel.lName}}
                                     </mat-card-title>
@@ -299,62 +311,69 @@
                                         {{subscriber.userid}}
                                     </mat-card-title>
                                 </ng-template>
-                                
+
                             </mat-card-header>
                         </div>
                         <div class="col col-x8" [matMenuTriggerFor]="subscriberRole">
-                            <button mat-stroked-button *ngIf="subscriber.isAdmin">Admin <mat-icon fontSet="mdo-icons-solid">
+                            <button mat-stroked-button *ngIf="subscriber.isAdmin">Admin <mat-icon
+                                    fontSet="mdo-icons-solid">
                                     caret-down</mat-icon></button>
-                            <button mat-stroked-button *ngIf="subscriber.isReviewer">Reviewer <mat-icon fontSet="mdo-icons-solid">
-                                caret-down</mat-icon></button>
-                            <button mat-stroked-button *ngIf="subscriber.isViewer">Viewer <mat-icon fontSet="mdo-icons-solid">
+                            <button mat-stroked-button *ngIf="subscriber.isReviewer">Reviewer <mat-icon
+                                    fontSet="mdo-icons-solid">
                                     caret-down</mat-icon></button>
-                            <button mat-stroked-button *ngIf="subscriber.isEditer">Editor <mat-icon fontSet="mdo-icons-solid">
+                            <button mat-stroked-button *ngIf="subscriber.isViewer">Viewer <mat-icon
+                                    fontSet="mdo-icons-solid">
+                                    caret-down</mat-icon></button>
+                            <button mat-stroked-button *ngIf="subscriber.isEditer">Editor <mat-icon
+                                    fontSet="mdo-icons-solid">
                                     caret-down</mat-icon></button>
                         </div>
                         <mat-menu #subscriberRole="matMenu" class="navigation-menu">
-                            <button mat-menu-item *ngFor="let role of roles" (click)="updateRole(subscriber, role.code)">{{role.text}}</button>
+                            <button mat-menu-item *ngFor="let role of roles"
+                                (click)="updateRole(subscriber, role.code)">{{role.text}}</button>
                         </mat-menu>
 
                         <div class="col col-x16">
                             <mat-chip-list>
                                 <ng-template ngFor let-ctrl [ngForOf]="subscriber.filterCriteria">
-                                
-                                    <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="appliedfiltermenu"
-                                        (click)="loadDropValues(ctrl)">
+
+                                    <mat-chip class="mdo-filter-matchip" disableRipple="true"
+                                        [matMenuTriggerFor]="appliedfiltermenu" (click)="loadDropValues(ctrl)">
                                         <label>
                                             {{ ctrl.filterCtrl ? ctrl.filterCtrl.fldCtrl.fieldDescri : 'Unknown' }}
                                             :
                                         </label>
-                                        <ng-template [ngIf]="ctrl.filterCtrl && ctrl.filterCtrl.selectedValues.length >= 1">
+                                        <ng-template
+                                            [ngIf]="ctrl.filterCtrl && ctrl.filterCtrl.selectedValues.length >= 1">
                                             <span class="info">
                                                 {{ prepareTextToShow(ctrl) }}
                                             </span>
                                         </ng-template>
-                                        <mat-icon matChipRemove (click)="removeAppliedFilter(ctrl, subscriber.sno)">clear
+                                        <mat-icon matChipRemove (click)="removeAppliedFilter(ctrl, subscriber.sno)">
+                                            clear
                                         </mat-icon>
                                     </mat-chip>
                                 </ng-template>
-    
+
                                 <mat-chip class="mdo-filter-matchip" disableRipple="true"
                                     [matMenuTriggerFor]="addfiltermenu" (click)="reInilize = !reInilize"
                                     *ngIf="subscriber.isInvited!==true">
                                     <mat-icon fontSet="mdo-icons">filter</mat-icon>
                                 </mat-chip>
-    
+
                             </mat-chip-list>
-    
+
                             <mat-menu #appliedfiltermenu="matMenu">
                                 <pros-filter-values (selectedValues)="fetchSelectedValues($event, subscriber.sno)"
-                                    [moduleId]="moduleId"
-                                    [fieldId]="loadDopValuesFor ? loadDopValuesFor.fieldId : ''"
+                                    [moduleId]="moduleId" [fieldId]="loadDopValuesFor ? loadDopValuesFor.fieldId : ''"
                                     [checkedValue]="loadDopValuesFor ? loadDopValuesFor.checkedValue : []">
                                 </pros-filter-values>
                             </mat-menu>
-    
+
                             <mat-menu #addfiltermenu="matMenu">
                                 <pros-add-filter-menu [moduleId]="moduleId"
-                                    (evtReadyForApply)="makeFilterControl($event, subscriber.sno)" [reInilize]="reInilize">
+                                    (evtReadyForApply)="makeFilterControl($event, subscriber.sno)"
+                                    [reInilize]="reInilize">
                                 </pros-add-filter-menu>
                             </mat-menu>
                         </div>
@@ -367,53 +386,46 @@
                 </ng-template>
 
                 <ng-template #subscriberNullState>
-                    <pros-null-state
-                    [button]="false"
-                    [message]="subscribersNullMessage">
+                    <pros-null-state [button]="false" [message]="subscribersNullMessage">
                     </pros-null-state>
                 </ng-template>
             </div>
-        </mat-tab>
+        </lib-tab>
 
         <!-- Tab for the Schedule of the schema -->
-        <mat-tab label="Schedule">
-            <ng-template mat-tab-label>
-                Schedule
-            </ng-template>
+        <lib-tab label="Schedule" i18n-label="schedule">
             <div class="f-col summary-root">
-            <div class="f-row schedule-row">
+                <div class="f-row schedule-row">
 
-                <!-- in case of existing schedule, will show edit button and toggle-->
-                <ng-template [ngIf]="canEditSchedule" [ngIfElse]="addSchedule">
-                    <mat-slide-toggle color="primary" [checked]="scheduleInfo.isEnable" (change)="toggleScheduleState()">
-                        Enable schedule
-                    </mat-slide-toggle>
-                    <span class="f-spacer"></span>
-                    <button mat-flat-button color="primary" (click)="openScheduleSideSheet(scheduleInfo.schedulerId)">
-                        <mat-icon fontSet="mdo-icons">history</mat-icon> Edit schedule
-                    </button>
-                </ng-template>
+                    <!-- in case of existing schedule, will show edit button and toggle-->
+                    <ng-template [ngIf]="canEditSchedule" [ngIfElse]="addSchedule">
+                        <mat-slide-toggle color="primary" [checked]="scheduleInfo.isEnable"
+                            (change)="toggleScheduleState()">
+                            Enable schedule
+                        </mat-slide-toggle>
+                        <span class="f-spacer"></span>
+                        <button mat-flat-button color="primary"
+                            (click)="openScheduleSideSheet(scheduleInfo.schedulerId)">
+                            <mat-icon fontSet="mdo-icons">history</mat-icon> Edit schedule
+                        </button>
+                    </ng-template>
 
-                <!-- in case of there is no schedule, will show only add button -->
-                <ng-template #addSchedule>
-                    <span class="f-spacer"></span>
-                    <button mat-flat-button color="primary" (click)="openScheduleSideSheet()">
-                        <mat-icon fontSet="mdo-icons">history</mat-icon> Add schedule
-                    </button>
-                </ng-template>
+                    <!-- in case of there is no schedule, will show only add button -->
+                    <ng-template #addSchedule>
+                        <span class="f-spacer"></span>
+                        <button mat-flat-button color="primary" (click)="openScheduleSideSheet()">
+                            <mat-icon fontSet="mdo-icons">history</mat-icon> Add schedule
+                        </button>
+                    </ng-template>
+                </div>
+                <mat-divider></mat-divider>
             </div>
-            <mat-divider></mat-divider>
-            </div>
-        </mat-tab>
+        </lib-tab>
 
         <!-- Tab for the Statistics of the schema -->
-        <mat-tab label="Statistics">
-            <ng-template mat-tab-label>
-                Statistics
-            </ng-template>
+        <lib-tab label="Statistics" i18n-label="statistics">
             <pros-statics [moduleId]="moduleId" [schemaId]="schemaId">
             </pros-statics>
-        </mat-tab>
-
-    </mat-tab-group>
+        </lib-tab>
+    </lib-tab-group>
 </div>
