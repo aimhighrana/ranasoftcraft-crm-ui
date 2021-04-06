@@ -16,10 +16,10 @@ import { AddFilterOutput } from '@models/schema/schema';
 import { FormControl, FormGroup } from '@angular/forms';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { GlobaldialogService } from '@services/globaldialog.service';
-import { forkJoin, Subscription } from 'rxjs';
+import { forkJoin, Subject, Subscription } from 'rxjs';
 import { SchemaScheduler } from '@models/schema/schemaScheduler';
 import { MatCheckboxChange } from '@angular/material/checkbox';
-import { map } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { TransientService } from 'mdo-ui-library';
 
 @Component({
@@ -100,6 +100,11 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * To hold all the subscriptions related to component
    */
   subscriptions: Subscription[] = [];
+  
+  /**
+   * To trigger debounced event on schema name changed
+   */
+  schemaValueChanged: Subject<string> = new Subject<string>(); 
 
   constructor(
     private activateRoute: ActivatedRoute,
@@ -1018,6 +1023,22 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       })
       this.subscriptions.push(subscription);
     }
+  }
+
+  /**
+  * Function to call when schema description is changed in inputbox
+  * @param $event: updated schema description.
+  */
+   onChangeSchemaDescription($event) {
+    console.log($event);
+    if (this.schemaValueChanged.observers.length === 0) {
+      this.schemaValueChanged
+      .pipe(debounceTime(1000), distinctUntilChanged())
+      .subscribe(schema => {
+        this.updateSchemaInfo(schema);
+      });
+    }
+    this.schemaValueChanged.next($event);
   }
 
   updateDepRule(br: CoreSchemaBrInfo, event?: any) {

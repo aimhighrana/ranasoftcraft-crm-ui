@@ -31,7 +31,7 @@
             </ng-template>
             <div class="f-col summary-root">
                 <form [formGroup]="schemaSummaryForm">
-                    <lib-input class="mdo-scheduler-input" [formControlName]="'schemaName'" type="text" [value]="schemaDetails?.schemaDescription ? schemaDetails.schemaDescription : ''" placeholder="Schema name" i18n-label="@@schema_name" label="Schema name" (emitBlurEvent)="updateSchemaInfo($event)"></lib-input>
+                    <lib-input (valueChange)="onChangeSchemaDescription($event)" class="mdo-scheduler-input" [formControlName]="'schemaName'" type="text" [value]="schemaDetails?.schemaDescription ? schemaDetails.schemaDescription : ''" placeholder="Schema name" i18n-label="@@schema_name" label="Schema name" (emitBlurEvent)="updateSchemaInfo($event)"></lib-input>
                     <div class="row-spacer"></div>
                     <div class="f-col mdo-form-field">
                         <mat-label i18n="@@threshold">Threshold</mat-label>
