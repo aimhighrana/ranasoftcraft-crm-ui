@@ -36,7 +36,7 @@
                     <div class="f-col mdo-form-field">
                         <mat-label i18n="@@threshold">Threshold</mat-label>
                         <div class="f-row slider-row">
-                            <lib-range-slider color="primary" thumbLabel formControlName="schemaThreshold"
+                            <lib-range-slider class="range-slider" color="primary" thumbLabel formControlName="schemaThreshold"
                                 [value]="schemaDetails?.schemaThreshold ? schemaDetails.schemaThreshold : 0"
                                 (change)="updateSchemaInfo(schemaDetails.schemaDescription, $event)"></lib-range-slider>
                             <span class="f-col-spacer-half"></span>
