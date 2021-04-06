@@ -54,8 +54,8 @@ export class ScheduleComponent implements OnInit, OnDestroy {
    */
   repeatBys = Object.keys(MonthOn).map(item => {
     return {
-      value: this.titlecasePipe.transform(item),
-      key: MonthOn[item]
+      value: this.titlecasePipe.transform(MonthOn[item]),
+      key: item
     }
   });
   /**
@@ -213,6 +213,8 @@ export class ScheduleComponent implements OnInit, OnDestroy {
       return;
     }
     this.scheduleInfo = this.form.value;
+    this.scheduleInfo.weeklyOn = this.form.value.weeklyOn ? this.form.value.weeklyOn.key : null;
+    this.scheduleInfo.monthOn = this.form.value.monthOn ? this.form.value.monthOn.key : null;
     this.scheduleInfo.schemaId = this.schemaId;
     this.scheduleInfo.schedulerId = this.schedulerId !== 'new' ? Number(this.schedulerId) : null;
     const updateSubscription = this.schemaService.createUpdateSchedule(this.schemaId, this.scheduleInfo).subscribe((response) => {
@@ -282,8 +284,10 @@ export class ScheduleComponent implements OnInit, OnDestroy {
     this.form.get('isEnable').setValue(this.scheduleInfo.isEnable);
     this.form.get('schemaSchedulerRepeat').setValue(this.scheduleInfo.schemaSchedulerRepeat);
     this.form.get('repeatValue').setValue(this.scheduleInfo.repeatValue);
-    this.form.get('weeklyOn').setValue(this.scheduleInfo.weeklyOn);
-    this.form.get('monthOn').setValue(this.scheduleInfo.monthOn);
+    const weeklyOn = this.weekDays.find((x) => x.key === this.scheduleInfo.weeklyOn);
+    this.form.get('weeklyOn').setValue(weeklyOn);
+    const monthlyOn = this.repeatBys.find((x) => x.key === this.scheduleInfo.monthOn);
+    this.form.get('monthOn').setValue(monthlyOn);
     this.form.get('startOn').setValue(this.scheduleInfo.startOn);
     this.form.get('end').setValue(this.scheduleInfo.end);
     this.form.get('occurrenceVal').setValue(this.scheduleInfo.occurrenceVal);

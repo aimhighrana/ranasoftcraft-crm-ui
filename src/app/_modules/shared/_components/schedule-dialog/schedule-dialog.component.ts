@@ -53,8 +53,8 @@ export class ScheduleDialogComponent implements OnInit, OnDestroy {
    */
   repeatBys = Object.keys(MonthOn).map(item => {
     return {
-      value: this.titlecasePipe.transform(item),
-      key: MonthOn[item]
+      value: this.titlecasePipe.transform(MonthOn[item]),
+      key: item
     }
   });
   /**
@@ -179,6 +179,8 @@ export class ScheduleDialogComponent implements OnInit, OnDestroy {
   submit() {
     this.formSubmitted = true;
     const schedule: SchemaScheduler = {...this.form.value};
+    schedule.weeklyOn = this.form.value.weeklyOn ? this.form.value.weeklyOn.key : null;
+    schedule.monthOn = this.form.value.monthOn ? this.form.value.monthOn.key : null;
     this.dialogRef.close(schedule)
   }
 
@@ -235,8 +237,10 @@ export class ScheduleDialogComponent implements OnInit, OnDestroy {
     this.form.get('isEnable').setValue(response.isEnable);
     this.form.get('schemaSchedulerRepeat').setValue(response.schemaSchedulerRepeat);
     this.form.get('repeatValue').setValue(response.repeatValue);
-    this.form.get('weeklyOn').setValue(response.weeklyOn);
-    this.form.get('monthOn').setValue(response.monthOn);
+    const weeklyOn = this.weekDays.find((x) => x.key === response.weeklyOn);
+    this.form.get('weeklyOn').setValue(weeklyOn);
+    const monthlyOn = this.repeatBys.find((x) => x.key === response.monthOn);
+    this.form.get('monthOn').setValue(monthlyOn);
     this.form.get('startOn').setValue(response.startOn);
     this.form.get('end').setValue(response.end);
     this.form.get('occurrenceVal').setValue(response.occurrenceVal);

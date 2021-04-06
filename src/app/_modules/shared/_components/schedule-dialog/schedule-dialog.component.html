@@ -9,7 +9,7 @@
                 <div class="display-heading-large">Schedule</div>
                 <span class="f-col-spacer-half"></span>
                 <span class="f-spacer"></span>
-                <button mat-flat-button color="primary" (click)="submit()">Save</button>
+                <lib-button class="schedule-save-btn" type="minor" (click)="submit()" i18n="@@save">Save</lib-button>
             </div>
         </div>
     </div>
@@ -22,7 +22,7 @@
                 <div class="f-row">
                     <div class="f-col mdo-form-field">
                         <mat-label>Repeat</mat-label>
-                        <lib-segment formControlName="schemaSchedulerRepeat" [optionsList]="repeatInterval" labelKey="label" valueKey="value"></lib-segment>
+                        <lib-segment class="mt-4" formControlName="schemaSchedulerRepeat" [optionsList]="repeatInterval" labelKey="label" valueKey="value"></lib-segment>
                         <mat-error
                             *ngIf="formSubmitted && form.controls.schemaSchedulerRepeat.errors && form.controls.schemaSchedulerRepeat.errors.required">
                             This is a required field
@@ -31,7 +31,7 @@
                 </div>
                 <mat-divider class="divider-dashed"></mat-divider>
                 <div class="f-row every-field mdo-form-field">
-                    <lib-input class="mdo-scheduler-input" formControlName="repeatValue" type="number" [maxLength]='2' [value]='form.value.repeatValue' placeholder="Enter" label="Every" [minimum]='1'>
+                    <lib-input class="mdo-scheduler-input" formControlName="repeatValue" type="number" [maxLength]='2' [value]='form.value.repeatValue' i18n-placeholder="@@enter" placeholder="Enter" i18n-label="@@every" label="Every" [minimum]='1'>
                     </lib-input>
                     <div class="col-spacer"></div>
                     <div class="week-label">{{getMetricHours}}</div>
@@ -79,14 +79,14 @@
                 <div class="f-row mdo-form-field">
                     <div class="f-col">
                         <mat-label>Ends</mat-label>
-                        <lib-segment formControlName="end" [optionsList]="schedulerEndOptions" labelKey="label" valueKey="value"></lib-segment>
+                        <lib-segment class="mt-4" formControlName="end" [optionsList]="schedulerEndOptions" labelKey="label" valueKey="value"></lib-segment>
                         <mat-error *ngIf="formSubmitted && form.controls.end.errors && form.controls.end.errors.required">
                             This is a required field
                         </mat-error>
                     </div>
                 </div>
                 <div class="f-row  mdo-form-field every-field" *ngIf="form.controls.end.value === 'AFTER'">
-                    <lib-input class="mdo-scheduler-input" formControlName="occurrenceVal" [type]="'number'" [label]="'Occurences'" [value]="form.controls.occurrenceVal.value" [maxLength]='2' [minimum]='1'></lib-input>
+                    <lib-input class="mdo-scheduler-input" formControlName="occurrenceVal" [type]="'number'" i18n-label="@@occurences" label="Occurences" [value]="form.controls.occurrenceVal.value" [maxLength]='2' [minimum]='1'></lib-input>
                     <mat-error
                         *ngIf="formSubmitted && form.controls.occurrenceVal.errors && form.controls.occurrenceVal.errors.required">
                         This is a required field when cycle ends is After
