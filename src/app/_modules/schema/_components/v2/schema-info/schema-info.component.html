@@ -31,10 +31,10 @@
             </ng-template>
             <div class="f-col summary-root">
                 <form [formGroup]="schemaSummaryForm">
-                    <lib-input class="mdo-scheduler-input" [formControlName]="'schemaName'" type="text" [value]="schemaDetails?.schemaDescription ? schemaDetails.schemaDescription : ''" placeholder="Schema name" label="Schema name" (emitBlurEvent)="updateSchemaInfo($event)"></lib-input>
+                    <lib-input class="mdo-scheduler-input" [formControlName]="'schemaName'" type="text" [value]="schemaDetails?.schemaDescription ? schemaDetails.schemaDescription : ''" placeholder="Schema name" i18n-label="@@schema_name" label="Schema name" (emitBlurEvent)="updateSchemaInfo($event)"></lib-input>
                     <div class="row-spacer"></div>
                     <div class="f-col mdo-form-field">
-                        <mat-label>Threshold</mat-label>
+                        <mat-label i18n="@@threshold">Threshold</mat-label>
                         <div class="f-row slider-row">
                             <lib-range-slider color="primary" thumbLabel formControlName="schemaThreshold"
                                 [value]="schemaDetails?.schemaThreshold ? schemaDetails.schemaThreshold : 0"
@@ -48,13 +48,13 @@
                         <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
                             <mat-expansion-panel-header expandedHeight="36px" collapsedHeight="36px">
                                 <mat-panel-title class="panel-title">
-                                    <span>Data scope</span>&nbsp;({{variantDetails ?  variantDetails.length : 0}})
+                                    <span i18n="@@data_scope">Data scope</span>&nbsp;({{variantDetails ?  variantDetails.length : 0}})
                                 </mat-panel-title>
                             </mat-expansion-panel-header>
 
                             <mat-nav-list role="navigation" class="summary-rowlist">
                                 <mat-list-item (click)="addDataScope()">
-                                    <div mat-line class="info-link">[<span>Add data scope</span>]</div>
+                                    <div mat-line class="info-link">[<span i18n="@@add_data_scope">Add data scope</span>]</div>
                                 </mat-list-item>
                                 <mat-list-item *ngFor="let variant of variantDetails">
                                     <div mat-line class="info-link" (click)="editDataScope(variant.variantId)">{{variant.variantName}}</div>
