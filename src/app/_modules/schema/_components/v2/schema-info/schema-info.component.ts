@@ -20,6 +20,7 @@ import { forkJoin, Subscription } from 'rxjs';
 import { SchemaScheduler } from '@models/schema/schemaScheduler';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { map } from 'rxjs/operators';
+import { TransientService } from 'mdo-ui-library';
 
 @Component({
   selector: 'pros-schema-info',
@@ -109,6 +110,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     private schemaListService: SchemalistService,
     private schemaVariantService: SchemaVariantService,
     private matSnackBar: MatSnackBar,
+    private toasterService: TransientService,
     private globalDialogService: GlobaldialogService
   ) { }
 
@@ -232,7 +234,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       const deleteVariant = this.schemaVariantService.deleteVariant(variantId).subscribe(res => {
         if (res) {
           this.getSchemaVariants(this.schemaId, 'RUNFOR');
-          this.matSnackBar.open('SuccessFully Deleted!!', 'close', { duration: 3000 })
+          this.toasterService.open('SuccessFully Deleted!!', 'close', { duration: 3000 })
         }
       }, error => {
         console.log('Error while deleting schema variant', error.message)
@@ -1004,12 +1006,12 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
 
       const subscription = this.schemaService.createUpdateSchema(schemaReq).subscribe((response) => {
         this.sharedService.setRefreshSecondaryNav(SecondaynavType.schema, true, this.moduleId);
-        this.matSnackBar.open('Schema description updated successfully.', 'ok', {
+        this.toasterService.open('Schema description updated successfully.', 'ok', {
           duration: 2000
         })
         this.getSchemaDetails(this.schemaId);
       }, (error) =>  {
-        this.matSnackBar.open('Something went wrong', 'ok', {
+        this.toasterService.open('Something went wrong', 'ok', {
           duration: 2000
         })
         console.error('Something went wrong while updating schema info', error.message);
@@ -1090,9 +1092,9 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       .subscribe(resp => {
         this.router.navigate(['home', 'schema', this.moduleId]);
         this.sharedService.setRefreshSecondaryNav(SecondaynavType.schema, true, this.moduleId);
-        this.matSnackBar.open('Schema deleted successfully.', 'ok', { duration: 2000 });
+        this.toasterService.open('Schema deleted successfully.', 'ok', { duration: 2000 });
       }, error => {
-        this.matSnackBar.open('Something went wrong', 'ok', { duration: 2000 });
+        this.toasterService.open('Something went wrong', 'ok', { duration: 2000 });
       })
   }
 

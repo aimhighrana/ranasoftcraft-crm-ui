@@ -31,38 +31,30 @@
             </ng-template>
             <div class="f-col summary-root">
                 <form [formGroup]="schemaSummaryForm">
-                    <pros-form-input [label]="'Schema name'" [control]="schemaField('schemaName')" [disabled]="false"
-                        [value]="schemaDetails?.schemaDescription ? schemaDetails.schemaDescription : ''"
-                        (emitBlurEvent)="updateSchemaInfo($event)">
-                    </pros-form-input>
-                    <div class="row-spacer"></div>
-                    <!-- <pros-form-input [label]="'Description'" [control]="schemaField('schemaDescription')" [disabled]="false"
-                        [value]="schemaDetails?.schemaDescription ? schemaDetails.schemaDescription : ''"
-                        (emitBlurEvent)="updateSchemaInfo($event)">
-                    </pros-form-input> -->
+                    <lib-input class="mdo-scheduler-input" [formControlName]="'schemaName'" type="text" [value]="schemaDetails?.schemaDescription ? schemaDetails.schemaDescription : ''" placeholder="Schema name" label="Schema name" (emitBlurEvent)="updateSchemaInfo($event)"></lib-input>
                     <div class="row-spacer"></div>
                     <div class="f-col mdo-form-field">
                         <mat-label>Threshold</mat-label>
                         <div class="f-row slider-row">
-                            <mat-slider color="primary" thumbLabel formControlName="schemaThreshold"
-                            [value]="schemaDetails?.schemaThreshold ? schemaDetails.schemaThreshold : 0"
-                            (change)="updateSchemaInfo(schemaDetails.schemaDescription, $event)"></mat-slider>
+                            <lib-range-slider color="primary" thumbLabel formControlName="schemaThreshold"
+                                [value]="schemaDetails?.schemaThreshold ? schemaDetails.schemaThreshold : 0"
+                                (change)="updateSchemaInfo(schemaDetails.schemaDescription, $event)"></lib-range-slider>
                             <span class="f-col-spacer-half"></span>
                             <div>{{schemaSummaryForm.controls.schemaThreshold.value}}%</div>
-                            </div>
+                        </div>
                     </div>
                     <div class="row-spacer"></div>
                     <mat-accordion>
                         <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
                             <mat-expansion-panel-header expandedHeight="36px" collapsedHeight="36px">
                                 <mat-panel-title class="panel-title">
-                                    Data scope ({{variantDetails ?  variantDetails.length : 0}})
+                                    <span>Data scope</span>&nbsp;({{variantDetails ?  variantDetails.length : 0}})
                                 </mat-panel-title>
                             </mat-expansion-panel-header>
 
                             <mat-nav-list role="navigation" class="summary-rowlist">
                                 <mat-list-item (click)="addDataScope()">
-                                    <div mat-line class="info-link">[Add data scope]</div>
+                                    <div mat-line class="info-link">[<span>Add data scope</span>]</div>
                                 </mat-list-item>
                                 <mat-list-item *ngFor="let variant of variantDetails">
                                     <div mat-line class="info-link" (click)="editDataScope(variant.variantId)">{{variant.variantName}}</div>

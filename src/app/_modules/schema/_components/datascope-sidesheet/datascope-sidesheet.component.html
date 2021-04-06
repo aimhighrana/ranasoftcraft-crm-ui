@@ -1,15 +1,15 @@
 <div class="root">
     <div class="f-row breadcrum-toolbar">
-        <button mat-button (click)="close()">
+        <lib-button (click)="close()">
             <mat-icon fontSet="mdo-icons">times</mat-icon>
-        </button>
+        </lib-button>
             <div class="col-spacer"></div>
             <div class="f-col mdo-constrained-right">
                 <div class="f-row breadcrum-head">
                     <div class="display-heading-large">Data scope</div>
                     <span class="f-col-spacer-half"></span>
                     <span class="f-spacer"></span>
-                    <button mat-flat-button color="primary" (click)="saveVarient()">Save</button>
+                    <lib-button type="major" color="primary" (click)="saveVarient()">Save</lib-button>
                 </div>
             </div>
     </div>
