@@ -114,6 +114,10 @@ describe('ScheduleComponent', () => {
     component.setValue('end', SchemaSchedulerEnd.AFTER);
     component.submit();
     expect(component.formSubmitted).toEqual(true);
+
+    component.schedulerId = 'new';
+    component.submit();
+    expect(component.scheduleInfo.schedulerId).toEqual(null);
   });
 
   it('get getReferenceString', () => {
@@ -129,11 +133,21 @@ describe('ScheduleComponent', () => {
     component.setValue('end', SchemaSchedulerEnd.NEVER);
     expect(component.getReferenceString).toContain('Occurs every');
 
+    component.setValue('schemaSchedulerRepeat', SchemaSchedulerRepeat.DAILY);
+    expect(component.getReferenceString).toContain('Days');
+
+    component.setValue('repeatValue', 2);
+    component.setValue('schemaSchedulerRepeat', '');
+    expect(component.getReferenceString).toContain('2  starting');
+
   });
 
   it('should init component', () => {
 
     component.ngOnInit();
+
+    component.setValue('schemaSchedulerRepeat', SchemaSchedulerRepeat.HOURLY);
+    expect(component.form.value.repeatValue).toEqual(12);
     component.setValue('schemaSchedulerRepeat', SchemaSchedulerRepeat.DAILY);
     component.setValue('schemaSchedulerRepeat', SchemaSchedulerRepeat.WEEKLY);
     component.setValue('schemaSchedulerRepeat', SchemaSchedulerRepeat.MONTHLY);

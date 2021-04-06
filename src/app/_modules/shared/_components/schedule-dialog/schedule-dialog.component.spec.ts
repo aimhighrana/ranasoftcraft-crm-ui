@@ -106,6 +106,10 @@ describe('ScheduleDialogComponent', () => {
     component.setValue('end', SchemaSchedulerEnd.NEVER);
     expect(component.getReferenceString).toContain('Occurs every');
 
+    component.setValue('repeatValue', 2);
+    component.setValue('schemaSchedulerRepeat', '');
+    expect(component.getReferenceString).toContain('2  starting');
+
   });
 
   it('should create form', () => {
@@ -115,6 +119,9 @@ describe('ScheduleDialogComponent', () => {
   it('should init component', () => {
 
     component.ngOnInit();
+    component.setValue('schemaSchedulerRepeat', SchemaSchedulerRepeat.HOURLY);
+    expect(component.form.value.repeatValue).toEqual(12);
+
     component.setValue('schemaSchedulerRepeat', SchemaSchedulerRepeat.DAILY);
     component.setValue('schemaSchedulerRepeat', SchemaSchedulerRepeat.WEEKLY);
     component.setValue('schemaSchedulerRepeat', SchemaSchedulerRepeat.MONTHLY);
