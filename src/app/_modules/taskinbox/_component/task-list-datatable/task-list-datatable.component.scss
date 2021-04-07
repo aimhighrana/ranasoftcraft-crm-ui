@@ -1,43 +1,38 @@
-.root {
-	user-select: none;
-	height: 100%;
-	padding: 0 16px;
-	// overflow: hidden;
+div.root {
+  user-select: none;
+  height: 100%;
+  padding: 0 16px;
 
-	.task-inbox {
-		height: calc(100% - 42px - 36px * 2 - 8px * 5);
-		// width: 550px;
+  .task-inbox {
+    height: calc(100% - 42px - 36px * 2 - 8px * 5);
+    width: 100%;
 
-		table {
-			width: 100%;
-			overflow: scroll !important;
-			width: 1280px;
-		}
-		table.mat-table {
-			// width: 100%;
+    table.mat-table {
+      width: 1280px;
+      overflow: scroll !important;
 
-			td.mat-cell {
-				border-right: none;
-			}
+      td.mat-cell {
+        border-right: none;
+      }
 
-			.mat-column-select {
-				width: 36px;
-			}
+      .mat-column-select {
+        width: 36px;
+      }
 
-			.mat-column-setting {
-				width: 112px;
-			}
+      .mat-column-setting {
+        width: 112px;
+      }
 
-			.mat-column-sent,
-			.mat-column-dueby,
-			.mat-column-requestby,
-			.mat-column-sentby {
-				text-align: right;
+      .mat-column-sent,
+      .mat-column-dueby,
+      .mat-column-requestby,
+      .mat-column-sentby {
+        text-align: right;
 
-				.lib-avatar {
-					float: right;
-				}
-			}
-		}
-	}
+        .lib-avatar {
+          float: right;
+        }
+      }
+    }
+  }
 }

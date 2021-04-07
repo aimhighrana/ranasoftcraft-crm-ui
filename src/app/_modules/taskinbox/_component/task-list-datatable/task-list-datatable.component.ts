@@ -1,12 +1,10 @@
 import { ViewsPage } from '@models/list-page/listpage';
-import { catchError, map, switchMap, startWith } from 'rxjs/operators';
 import { MatSort } from '@angular/material/sort';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute } from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { merge, of } from 'rxjs';
 
 export interface PeriodicElement {
 	Records: string;
@@ -268,7 +266,7 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit {
 		pageSize: 10,
 		length: 0, // totalCount
 	};
-	isLoadingResults: boolean = false;
+	isLoadingResults = false;
 
 	viewsList: ViewsPage = new ViewsPage();
 
@@ -279,7 +277,6 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit {
 
 	ngOnInit(): void {
 		this.route.params.subscribe((param) => {
-			debugger;
 			this.node = param.node || null;
 			this.nodeColumns = NODEFIELDS[this.node];
 			this.displayedColumns = this.nodeColumns.map((d) => d.fldId);
@@ -288,9 +285,8 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit {
 			this.selection = new SelectionModel<PeriodicElement>(true, []);
 		});
 		this.route.queryParams.subscribe((queryParam) => {
-			debugger;
-			this.savedSearchParameters = queryParam['s'] || null;
-			this.inlineFilters = queryParam['f'] || null;
+			this.savedSearchParameters = queryParam.s || null;
+			this.inlineFilters = queryParam.f || null;
 		});
 	}
 
@@ -303,7 +299,7 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit {
 
 	/** Whether the number of selected elements matches the total number of rows. */
 	isAllSelected() {
-		const numSelected = this.selection.selected.length;
+		// const numSelected = this.selection.selected.length;
 		// const numRows = this.dataSource.docLength();
 		// return numSelected === numRows;
 		return false;
