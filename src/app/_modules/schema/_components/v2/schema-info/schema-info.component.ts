@@ -18,8 +18,8 @@ import { SchemaVariantService } from '@services/home/schema/schema-variant.servi
 import { GlobaldialogService } from '@services/globaldialog.service';
 import { forkJoin, Subscription } from 'rxjs';
 import { SchemaScheduler } from '@models/schema/schemaScheduler';
-import { MatCheckboxChange } from '@angular/material/checkbox';
 import { map } from 'rxjs/operators';
+import { TransientService } from 'mdo-ui-library';
 
 @Component({
   selector: 'pros-schema-info',
@@ -105,6 +105,8 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    */
   infoTabs: string[] = ['summary', 'business-rules', 'subscribers', 'Schedule', 'Statistics'];
 
+  depRuleList = [{ value: 'ALL', key: 'ALL' }, { value: 'SUCCESS', key: 'SUCCESS' }, { value: 'FAILURE', key: 'ERROR' }];
+
   constructor(
     private activateRoute: ActivatedRoute,
     private router: Router,
@@ -115,6 +117,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     private schemaListService: SchemalistService,
     private schemaVariantService: SchemaVariantService,
     private matSnackBar: MatSnackBar,
+    private toasterService: TransientService,
     private globalDialogService: GlobaldialogService
   ) {
   }
@@ -239,7 +242,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       const deleteVariant = this.schemaVariantService.deleteVariant(variantId).subscribe(res => {
         if (res) {
           this.getSchemaVariants(this.schemaId, 'RUNFOR');
-          this.matSnackBar.open('SuccessFully Deleted!!', 'close', { duration: 3000 })
+          this.toasterService.open('SuccessFully Deleted!!', 'close', { duration: 3000 })
         }
       }, error => {
         console.log('Error while deleting schema variant', error.message)
@@ -454,13 +457,14 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
   /**
    * @param br updateable business rules...
    * @param event value of chnaged
+   * @param eventName name of the event
    */
-  updateBr(br: CoreSchemaBrInfo, event?: any) {
+  updateBr(br: CoreSchemaBrInfo, event?: any, eventName?: string) {
     const request: CoreSchemaBrMap = new CoreSchemaBrMap();
     if (event instanceof MatSliderChange) {
       request.brWeightage = (event as MatSliderChange).value;
-    } else if (event instanceof MatCheckboxChange) {
-      request.status = (event as MatCheckboxChange).checked ? '1' : '0';
+    } else if (eventName === 'checkbox') {
+      request.status = event ? '1' : '0';
     }
     request.schemaId = this.schemaId;
     request.brId = br.brIdStr;
@@ -1031,7 +1035,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
 
   updateDepRule(br: CoreSchemaBrInfo, event?: any) {
     const index = this.businessRuleData.findIndex(item => item.brIdStr === br.brIdStr);
-    if (event.value !== RuleDependentOn.ALL) {
+    if (event.key !== RuleDependentOn.ALL) {
       const tobeChild = this.businessRuleData[index]
       if (this.businessRuleData[index - 1].dep_rules) {
         this.addChildatSameRoot(tobeChild, index)
@@ -1041,7 +1045,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
         this.addChildatSameRoot(tobeChild, index)
       }
       const idxforChild = this.businessRuleData[index - 1].dep_rules.findIndex(item => item.brIdStr === tobeChild.brIdStr);
-      this.businessRuleData[index - 1].dep_rules[idxforChild].dependantStatus = event.value;
+      this.businessRuleData[index - 1].dep_rules[idxforChild].dependantStatus = event.key;
       this.businessRuleData.splice(index, 1);
       const request: CoreSchemaBrMap = new CoreSchemaBrMap();
       request.brWeightage = Number(br.brWeightage);
@@ -1050,7 +1054,6 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       request.order = br.order;
       request.status = br.status
       request.dependantStatus = br.dependantStatus;
-
       const updateBusinessRule = this.schemaService.updateBrMap(request).subscribe(res => {
         if (res) {
           this.getBusinessRuleList(this.schemaId);
@@ -1116,6 +1119,9 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
   }
   getCurrentBrStatus(status) {
     return status ? status : 'ALL';
+  }
+  getCurrentBrStatusObj(status) {
+    return this.depRuleList.find(depRule => depRule.value === status) || this.depRuleList[0];
   }
   /**
    * ANGULAR HOOK
