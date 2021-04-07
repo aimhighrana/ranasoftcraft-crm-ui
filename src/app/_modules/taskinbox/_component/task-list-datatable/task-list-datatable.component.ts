@@ -1,7 +1,12 @@
+import { ViewsPage } from '@models/list-page/listpage';
+import { catchError, map, switchMap, startWith } from 'rxjs/operators';
+import { MatSort } from '@angular/material/sort';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute } from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
+import { merge, of } from 'rxjs';
 
 export interface PeriodicElement {
 	Records: string;
@@ -117,28 +122,158 @@ const ELEMENT_DATA: PeriodicElement[] = [
 	},
 ];
 
+const NODEFIELDS: { [node: string]: { fldId: string; fldDesc: string }[] } = {
+	inbox: [
+		{
+			fldId: 'description',
+			fldDesc: 'Description',
+		},
+		{
+			fldId: 'labels',
+			fldDesc: 'Labels',
+		},
+		{
+			fldId: 'sent',
+			fldDesc: 'Sent',
+		},
+		{
+			fldId: 'dueby',
+			fldDesc: 'Due by',
+		},
+		{
+			fldId: 'requestby',
+			fldDesc: 'Request by',
+		},
+		{
+			fldId: 'sentby',
+			fldDesc: 'Sent by',
+		},
+	],
+	in_workflow: [
+		{
+			fldId: 'description',
+			fldDesc: 'Description',
+		},
+		{
+			fldId: 'labels',
+			fldDesc: 'Labels',
+		},
+		{
+			fldId: 'sent',
+			fldDesc: 'Sent',
+		},
+		{
+			fldId: 'requestby',
+			fldDesc: 'Request by',
+		},
+		{
+			fldId: 'sentby',
+			fldDesc: 'Sent by',
+		},
+	],
+	rejected: [
+		{
+			fldId: 'description',
+			fldDesc: 'Description',
+		},
+		{
+			fldId: 'labels',
+			fldDesc: 'Labels',
+		},
+		{
+			fldId: 'sent',
+			fldDesc: 'Sent',
+		},
+		{
+			fldId: 'dueby',
+			fldDesc: 'Due by',
+		},
+		{
+			fldId: 'sentby',
+			fldDesc: 'Sent by',
+		},
+	],
+	draft: [
+		{
+			fldId: 'description',
+			fldDesc: 'Description',
+		},
+		{
+			fldId: 'labels',
+			fldDesc: 'Labels',
+		},
+		{
+			fldId: 'sent',
+			fldDesc: 'Sent',
+		},
+		{
+			fldId: 'dueby',
+			fldDesc: 'Due by',
+		},
+		{
+			fldId: 'requestby',
+			fldDesc: 'Request by',
+		},
+	],
+	completed: [
+		{
+			fldId: 'description',
+			fldDesc: 'Description',
+		},
+		{
+			fldId: 'labels',
+			fldDesc: 'Labels',
+		},
+		{
+			fldId: 'dueby',
+			fldDesc: 'Due by',
+		},
+		{
+			fldId: 'requestby',
+			fldDesc: 'Request by',
+		},
+		{
+			fldId: 'sentby',
+			fldDesc: 'Sent by',
+		},
+	],
+};
+
 @Component({
 	selector: 'pros-task-list-datatable',
 	templateUrl: './task-list-datatable.component.html',
 	styleUrls: ['./task-list-datatable.component.scss'],
 })
-export class TaskListDatatableComponent implements OnInit {
+export class TaskListDatatableComponent implements OnInit, AfterViewInit {
 	displayedColumns: string[] = [
-		'select',
-		'setting',
-		'Records',
-		'description',
-		'labels',
-		'sent',
-		'dueby',
-		'requestby',
-		'sentby',
+		// 'select',
+		// 'setting',
+		// 'Records',
+		// 'description',
+		// 'labels',
+		// 'sent',
+		// 'dueby',
+		// 'requestby',
+		// 'sentby',
 	];
-	dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
-	selection = new SelectionModel<PeriodicElement>(true, []);
+	staticColumns: string[] = ['select', 'setting', 'Records'];
+	dataSource: MatTableDataSource<PeriodicElement>;
+	selection: SelectionModel<PeriodicElement>;
 	node: string = null;
+	nodeColumns: { fldId: string; fldDesc: string }[] = [];
 	savedSearchParameters: string = null;
 	inlineFilters: string = null;
+	pageEvent: { pageIndex: number; pageSize: number; length: number } = {
+		pageIndex: 0,
+		pageSize: 10,
+		length: 0, // totalCount
+	};
+	isLoadingResults: boolean = false;
+
+	viewsList: ViewsPage = new ViewsPage();
+
+	// @ViewChild(MatPaginator) paginator: MatPaginator;
+	@ViewChild(MatSort) sort: MatSort;
 
 	constructor(private route: ActivatedRoute) {}
 
@@ -146,11 +281,55 @@ export class TaskListDatatableComponent implements OnInit {
 		this.route.params.subscribe((param) => {
 			debugger;
 			this.node = param.node || null;
+			this.nodeColumns = NODEFIELDS[this.node];
+			this.displayedColumns = this.nodeColumns.map((d) => d.fldId);
+			this.displayedColumns.unshift('select', 'setting', 'Records');
+			this.dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
+			this.selection = new SelectionModel<PeriodicElement>(true, []);
 		});
 		this.route.queryParams.subscribe((queryParam) => {
 			debugger;
 			this.savedSearchParameters = queryParam['s'] || null;
 			this.inlineFilters = queryParam['f'] || null;
 		});
+	}
+
+	ngAfterViewInit() {
+		this.sort.sortChange.subscribe(() => {
+			// this.paginator.pageIndex = 0;
+			this.pageEvent.pageIndex = 0;
+		});
+	}
+
+	/** Whether the number of selected elements matches the total number of rows. */
+	isAllSelected() {
+		const numSelected = this.selection.selected.length;
+		// const numRows = this.dataSource.docLength();
+		// return numSelected === numRows;
+		return false;
+	}
+
+	/** Selects all rows if they are not all selected; otherwise clear selection. */
+	masterToggle() {
+		// this.isAllSelected() ? this.selection.clear() : this.dataSource.docValue().forEach((row) => this.selection.select(row));
+	}
+
+	/** The label for the checkbox on the passed row */
+	checkboxLabel(row?: any): string {
+		if (!row) {
+			return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
+		}
+	}
+
+	onPageChange(event: PageEvent) {
+		this.pageEvent.pageIndex = event.pageIndex;
+		// this.getTableData();
+	}
+	isStaticCol(dynCol) {
+		return this.staticColumns.includes(dynCol);
+	}
+	getFieldDesc(dynCol) {
+		const field = this.nodeColumns.find((f) => f.fldId === dynCol);
+		return field ? field.fldDesc || 'Unkown' : dynCol || 'Unkown';
 	}
 }
