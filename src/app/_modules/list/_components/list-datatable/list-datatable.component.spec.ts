@@ -9,6 +9,7 @@ import { SharedServiceService } from '@modules/shared/_services/shared-service.s
 import { PageEvent } from '@angular/material/paginator';
 import { SharedModule } from '@modules/shared/shared.module';
 import { ListPageViewFldMap, ViewsPage } from '@models/list-page/listpage';
+import { FieldMetaData } from '@models/core/coreModel';
 
 describe('ListDatatableComponent', () => {
   let component: ListDatatableComponent;
@@ -182,6 +183,33 @@ describe('ListDatatableComponent', () => {
 
     expect(component.getColumnWidth('MATL_TYPE')).toEqual(200);
     expect(component.getColumnWidth('default')).toEqual(100);
+
+  });
+
+  it('should getDefaultViewId', () => {
+
+    component.viewsList = {
+      userViews: [
+        {viewId: '1701', default: false},
+        {viewId: '1702', default: true}
+      ]
+     } as ViewsPage;
+
+    expect(component.getDefaultViewId()).toEqual('1702');
+
+    component.viewsList.userViews[1].default = false;
+    expect(component.getDefaultViewId()).toEqual('1701');
+
+  });
+
+  it('should getFieldDesc', () => {
+
+    component.metadataFldLst = [
+      {fieldId: 'MTL_GRP', fieldDescri: 'Material group'}
+    ] as FieldMetaData[];
+
+    expect(component.getFieldDesc('MTL_GRP')).toEqual('Material group');
+    expect(component.getFieldDesc('Other')).toEqual('Other');
 
   });
 
