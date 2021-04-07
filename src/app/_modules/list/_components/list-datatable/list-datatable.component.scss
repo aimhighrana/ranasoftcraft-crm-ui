@@ -11,6 +11,33 @@ div.root {
   .data-listing {
     height: 100%;
     overflow: auto;
+
+    .mat-table {
+      &.resizing {
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: col-resize;
+      }
+
+      .mat-header-cell {
+        &:not(:last-child) {
+          &.resizable {
+            border-right: 1px solid #e4ebf3;
+          }
+
+          .resize-holder {
+            cursor: col-resize;
+            width: 20px;
+            height: 100%;
+            position: absolute;
+            right: -10px;
+            top: 0;
+            z-index: 1;
+          }
+        }
+      }
+    }
   }
 
   .pagination-section {

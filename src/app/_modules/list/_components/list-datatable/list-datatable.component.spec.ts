@@ -8,7 +8,7 @@ import { ListDatatableComponent } from './list-datatable.component';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { PageEvent } from '@angular/material/paginator';
 import { SharedModule } from '@modules/shared/shared.module';
-import { ViewsPage } from '@models/list-page/listpage';
+import { ListPageViewFldMap, ViewsPage } from '@models/list-page/listpage';
 
 describe('ListDatatableComponent', () => {
   let component: ListDatatableComponent;
@@ -58,6 +58,7 @@ describe('ListDatatableComponent', () => {
  it('getViewsList() ', async(() => {
 
     component.moduleId = '1005';
+    spyOn(component, 'updateTableColumns');
 
     spyOn(listService, 'getAllListPageViews')
       .and.returnValues(of(new ViewsPage()), throwError({ message: 'api error'}));
@@ -65,6 +66,7 @@ describe('ListDatatableComponent', () => {
     component.getViewsList();
     expect(listService.getAllListPageViews).toHaveBeenCalled();
     expect(component.currentView).toEqual(component.defaultView);
+    expect(component.updateTableColumns).toHaveBeenCalled();
 
     // api error
     spyOn(console, 'error');
@@ -151,6 +153,38 @@ describe('ListDatatableComponent', () => {
 
     component.onPageChange(pageEvent);
     expect(component.dataSource.getData).toHaveBeenCalledWith(component.moduleId, '', 5);
+  });
+
+  it('should updateTableColumns', () => {
+
+    spyOn(component, 'getTableData');
+
+    component.updateTableColumns();
+
+    component.currentView.fieldsReqList.push(
+      {fieldId: 'MATL_TYPE'} as ListPageViewFldMap
+    );
+
+    component.updateTableColumns();
+    expect(component.getTableData).toHaveBeenCalledTimes(1);
+  });
+
+  it('should get table width', () => {
+
+    const width = component.staticColumns.length * 100;
+    expect(component.tableWidth).toEqual(width);
+
+  });
+
+  it('should get table column width', () => {
+
+    component.currentView.fieldsReqList.push(
+      {fieldId: 'MATL_TYPE', width: '200'} as ListPageViewFldMap
+    );
+
+    expect(component.getColumnWidth('MATL_TYPE')).toEqual(200);
+    expect(component.getColumnWidth('default')).toEqual(100);
+
   });
 
 });

@@ -79,6 +79,7 @@ import { SchemaExecutionTrendComponent } from './_components/statistics/schema-e
 import { InfiniteScrollDirective } from './_directives/infinite-scroll.directive';
 import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { AutoCompleteScrollDirective } from './_directives/auto-complete-scroll.directive';
+import { ResizableColumnDirective } from './_directives/resizable-column.directive';
 
 @NgModule({
   declarations: [
@@ -87,6 +88,7 @@ import { AutoCompleteScrollDirective } from './_directives/auto-complete-scroll.
     TagsEllipsisDirective,
     ContainerRefDirective,
     InfiniteScrollDirective,
+    ResizableColumnDirective,
     // pipes
     SubstringPipe,
     ReplaceUnderscorePipe,
@@ -236,6 +238,7 @@ import { AutoCompleteScrollDirective } from './_directives/auto-complete-scroll.
     ResizeableDirective,
     ContainerRefDirective,
     InfiniteScrollDirective,
+    ResizableColumnDirective,
     // pipes
     SubstringPipe,
     ReplaceUnderscorePipe,
