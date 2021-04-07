@@ -1,12 +1,12 @@
-import { NgModule } from "@angular/core";
-import { Routes, RouterModule } from "@angular/router";
-import { TaskListDatatableComponent } from "./_component/task-list-datatable/task-list-datatable.component";
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { TaskListDatatableComponent } from './_component/task-list-datatable/task-list-datatable.component';
 
 const routes: Routes = [
   // {path: '' , component:TaskListDatatableComponent},
-  { path: "", redirectTo: "feed", pathMatch: "full" },
+  { path: '', redirectTo: 'feed', pathMatch: 'full' },
   {
-    path: "feed",
+    path: 'feed',
     component: TaskListDatatableComponent,
   },
 ];
