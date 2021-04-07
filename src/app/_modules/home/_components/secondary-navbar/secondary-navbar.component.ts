@@ -80,6 +80,9 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
 
   activeMenuItemId = '';
 
+  /**
+   * Mockdata for tasks list in home page side menu
+   */
   taskList = [
     {
       label: 'Inbox',
@@ -92,6 +95,13 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
           label: 'Test',
           id: 'test',
           rec_cnt: 2,
+          new_feed_cnt: 1,
+          hasNewFeeds: true
+        },
+        {
+          label: 'Test2',
+          id: 'test',
+          rec_cnt: 5,
           new_feed_cnt: 1,
           hasNewFeeds: true
         }
@@ -111,7 +121,22 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
       rec_cnt: 10,
       new_feed_cnt: 1,
       hasNewFeeds: true,
-      childs: []
+      childs: [
+        {
+          label: 'Test1',
+          id: 'test',
+          rec_cnt: 10,
+          new_feed_cnt: 0,
+          hasNewFeeds: false
+        },
+        {
+          label: 'Test2',
+          id: 'test',
+          rec_cnt: 15,
+          new_feed_cnt: 1,
+          hasNewFeeds: true
+        }
+      ]
     },
     {
       label: 'Completed',
