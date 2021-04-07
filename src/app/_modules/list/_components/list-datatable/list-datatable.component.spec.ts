@@ -161,11 +161,9 @@ describe('ListDatatableComponent', () => {
 
     component.updateTableColumns();
 
-    component.currentView.fieldsReqList.push(
-      {fieldId: 'MATL_TYPE'} as ListPageViewFldMap
-    );
-
+    component.currentView = null;
     component.updateTableColumns();
+
     expect(component.getTableData).toHaveBeenCalledTimes(1);
   });
 
