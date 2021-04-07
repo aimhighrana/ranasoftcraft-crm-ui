@@ -1913,3 +1913,20 @@
     }
   }
 }
+
+.mdo-schedule-segment {
+  mat-radio-group {
+    display: flex;
+    flex-wrap: wrap;
+
+    mat-radio-button {
+      flex: 0 0 25%;
+      margin-bottom: 8px;
+    }
+  }
+}
+
+.schedule-save-btn .mdo-button.mdo-minor {
+  background-color: #10aeef;
+  color: white;
+}
