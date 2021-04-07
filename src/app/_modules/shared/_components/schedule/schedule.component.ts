@@ -7,6 +7,8 @@ import { SharedServiceService } from '@modules/shared/_services/shared-service.s
 import { SchemaService } from '@services/home/schema.service';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
+import { TitleCasePipe } from '@angular/common';
+import { TransientService } from 'mdo-ui-library';
 
 @Component({
   selector: 'pros-schedule',
@@ -32,14 +34,19 @@ export class ScheduleComponent implements OnInit, OnDestroy {
   /**
    * Looping variable for intervals
    */
-  repeatInterval = Object.keys(SchemaSchedulerRepeat);
+  repeatInterval = Object.keys(SchemaSchedulerRepeat).map((x) => {
+    return {
+      label: this.titlecasePipe.transform(x),
+      value: x
+    }
+  });
   /**
    * Looping variable for weekdays
    */
   weekDays = Object.keys(WeekOn).map(item => {
     return {
-      value: WeekOn[item],
-      text: item
+      value: this.titlecasePipe.transform(WeekOn[item]),
+      key: item
     }
   })
   /**
@@ -47,14 +54,19 @@ export class ScheduleComponent implements OnInit, OnDestroy {
    */
   repeatBys = Object.keys(MonthOn).map(item => {
     return {
-      value: item,
-      text: MonthOn[item],
+      value: this.titlecasePipe.transform(MonthOn[item]),
+      key: item
     }
   });
   /**
    * Looping variable for end
    */
-  schedulerEndOptions = Object.keys(SchemaSchedulerEnd);
+  schedulerEndOptions = Object.keys(SchemaSchedulerEnd).map((x) => {
+    return {
+      label: x,
+      value: x
+    }
+  });
 
   today = new Date();
 
@@ -84,7 +96,9 @@ export class ScheduleComponent implements OnInit, OnDestroy {
     private matSnackBar: MatSnackBar,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private sharedService: SharedServiceService
+    private sharedService: SharedServiceService,
+    private titlecasePipe: TitleCasePipe,
+    private mdoToastService: TransientService
   ) { }
 
   ngOnInit(): void {
@@ -199,13 +213,15 @@ export class ScheduleComponent implements OnInit, OnDestroy {
       return;
     }
     this.scheduleInfo = this.form.value;
+    this.scheduleInfo.weeklyOn = this.form.value.weeklyOn ? this.form.value.weeklyOn.key : null;
+    this.scheduleInfo.monthOn = this.form.value.monthOn ? this.form.value.monthOn.key : null;
     this.scheduleInfo.schemaId = this.schemaId;
     this.scheduleInfo.schedulerId = this.schedulerId !== 'new' ? Number(this.schedulerId) : null;
     const updateSubscription = this.schemaService.createUpdateSchedule(this.schemaId, this.scheduleInfo).subscribe((response) => {
       if (response) {
         this.close();
         this.sharedService.setScheduleInfo(response);
-        this.matSnackBar.open('Schema Has Been Scheduled..', 'Okay', {
+        this.mdoToastService.open('Schema Has Been Scheduled..', 'Okay', {
           duration: 3000
         })
       }
@@ -268,8 +284,10 @@ export class ScheduleComponent implements OnInit, OnDestroy {
     this.form.get('isEnable').setValue(this.scheduleInfo.isEnable);
     this.form.get('schemaSchedulerRepeat').setValue(this.scheduleInfo.schemaSchedulerRepeat);
     this.form.get('repeatValue').setValue(this.scheduleInfo.repeatValue);
-    this.form.get('weeklyOn').setValue(this.scheduleInfo.weeklyOn);
-    this.form.get('monthOn').setValue(this.scheduleInfo.monthOn);
+    const weeklyOn = this.weekDays.find((x) => x.key === this.scheduleInfo.weeklyOn);
+    this.form.get('weeklyOn').setValue(weeklyOn);
+    const monthlyOn = this.repeatBys.find((x) => x.key === this.scheduleInfo.monthOn);
+    this.form.get('monthOn').setValue(monthlyOn);
     this.form.get('startOn').setValue(this.scheduleInfo.startOn);
     this.form.get('end').setValue(this.scheduleInfo.end);
     this.form.get('occurrenceVal').setValue(this.scheduleInfo.occurrenceVal);

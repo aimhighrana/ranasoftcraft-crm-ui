@@ -24,6 +24,7 @@ const routes: Routes = [
       { path: 'schema', loadChildren: () => import('../schema/schema.module').then(m => m.SchemaModule) },
       { path: 'report', loadChildren: () => import('../report/report.module').then(m => m.ReportModule) },
       { path: 'list', loadChildren: () => import('../list/list.module').then(m => m.ListModule) },
+      { path: 'task/inbox', loadChildren: () => import('../taskinbox/taskinbox.module').then(m => m.TaskinboxModule) },
     ]
   },
   // anything not mapped should go to page not found component

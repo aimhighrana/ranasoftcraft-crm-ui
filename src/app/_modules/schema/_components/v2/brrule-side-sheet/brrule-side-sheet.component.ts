@@ -503,7 +503,7 @@ export class BrruleSideSheetComponent implements OnInit {
     if (selectedRule === BusinessRuleType.BR_REGEX_RULE) {
       requiredKeys = ['categoryId', 'rule_name', 'error_message', 'fields', 'regex', 'standard_function'];
     }
-    if (selectedRule === BusinessRuleType.BR_MANDATORY_FIELDS || selectedRule === BusinessRuleType.BR_METADATA_RULE || BusinessRuleType.MRO_CLS_MASTER_CHECK || BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI) {
+    if (selectedRule === BusinessRuleType.BR_MANDATORY_FIELDS || selectedRule === BusinessRuleType.BR_METADATA_RULE || selectedRule === BusinessRuleType.MRO_CLS_MASTER_CHECK || selectedRule === BusinessRuleType.MRO_MANU_PRT_NUM_IDENTI) {
       requiredKeys = ['categoryId', 'rule_name', 'error_message', 'fields'];
     }
     if (selectedRule === BusinessRuleType.BR_TRANSFORMATION) {
