@@ -1,15 +1,13 @@
 <div class="root">
     <div class="f-row breadcrum-toolbar">
-        <button mat-button (click)="close()">
-            <mat-icon fontSet="mdo-icons">close</mat-icon>
-        </button>
+        <lib-button iconFontType="solid" icon="times" (afterClick)="close()"></lib-button>
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
                 <div class="display-heading-large">Schedule</div>
                 <span class="f-col-spacer-half"></span>
                 <span class="f-spacer"></span>
-                <lib-button class="schedule-save-btn" type="minor" (click)="submit()" i18n="@@save">Save</lib-button>
+                <lib-button type="major" (afterClick)="submit()" i18n="@@save">Save</lib-button>
             </div>
         </div>
     </div>
