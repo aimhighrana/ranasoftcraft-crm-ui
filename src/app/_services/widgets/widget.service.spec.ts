@@ -9,9 +9,9 @@ describe('WidgetService', () => {
   let endpointServiceSpy: jasmine.SpyObj<EndpointsAnalyticsService>;
   let httpTestingController: HttpTestingController;
   beforeEach(() => {
-    const epsSpy = jasmine.createSpyObj('EndpointsAnalyticsService', [ 'widgetDataUrl']);
+    const epsSpy = jasmine.createSpyObj('EndpointsAnalyticsService', ['widgetDataUrl', 'copyReport']);
     TestBed.configureTestingModule({
-      imports: [ HttpClientTestingModule ],
+      imports: [HttpClientTestingModule],
       providers: [
         WidgetService,
         { provide: EndpointsAnalyticsService, useValue: epsSpy }
@@ -34,7 +34,7 @@ describe('WidgetService', () => {
     // mock data
     const mockhttpData = {} as any;
     // actual call
-    service.getWidgetData(widgetId,null).subscribe(actualData => {
+    service.getWidgetData(widgetId, null).subscribe(actualData => {
       expect(actualData).toEqual(mockhttpData);
     });
     // mocking http
@@ -44,5 +44,23 @@ describe('WidgetService', () => {
     // verify http
     httpTestingController.verify();
 
+  }));
+
+  it('copyReport() : should call copyReport', async(() => {
+    const reportName = 'Copy of Test';
+    const reportId = '724752745672';
+    const testurl = 'dummy url to test';
+
+    endpointServiceSpy.copyReport.and.returnValue(testurl);
+
+    const mockhttpData = {} as any;
+    service.copyReport(reportId, reportName).subscribe((response) => {
+      expect(response).not.toBe(null)
+    });
+
+    const req = httpTestingController.expectOne(`${testurl}`);
+    expect(req.request.method).toEqual('POST');
+    req.flush(mockhttpData);
+    httpTestingController.verify();
   }));
 });
