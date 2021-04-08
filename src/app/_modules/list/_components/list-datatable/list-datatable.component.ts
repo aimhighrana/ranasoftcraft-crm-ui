@@ -1,7 +1,7 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ListPageViewDetails, ViewsPage } from '@models/list-page/listpage';
+import { ListPageViewDetails, SortDirection, ViewsPage } from '@models/list-page/listpage';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { ListService } from '@services/list/list.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
@@ -12,6 +12,7 @@ import { CoreService } from '@services/core/core.service';
 import { sortBy } from 'lodash';
 import { GlobaldialogService } from '@services/globaldialog.service';
 import { ResizableColumnDirective } from '@modules/shared/_directives/resizable-column.directive';
+import { MatSort } from '@angular/material/sort';
 
 
 @Component({
@@ -19,9 +20,11 @@ import { ResizableColumnDirective } from '@modules/shared/_directives/resizable-
   templateUrl: './list-datatable.component.html',
   styleUrls: ['./list-datatable.component.scss']
 })
-export class ListDatatableComponent implements OnInit, OnDestroy {
+export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChildren(ResizableColumnDirective, {read: ElementRef}) columnsList: QueryList<ElementRef>;
+
+  @ViewChild(MatSort) sort: MatSort;
 
   /**
    * hold current module id
@@ -89,6 +92,8 @@ export class ListDatatableComponent implements OnInit, OnDestroy {
 
   metadataFldLst: FieldMetaData[] = [];
 
+
+
   constructor(
     private activatedRouter: ActivatedRoute,
     private router: Router,
@@ -125,6 +130,23 @@ export class ListDatatableComponent implements OnInit, OnDestroy {
         this.getViewsList();
       }
     })
+
+  }
+
+  ngAfterViewInit(): void {
+    this.sort.sortChange.subscribe(res => {
+      const col = this.currentView.fieldsReqList.find(c => c.fieldId === res.active);
+      if (col) {
+        col.sortDirection = SortDirection[res.direction] || null;
+        // update default column sort direction
+        const sub = this.listService.upsertListPageViewDetails(this.currentView, this.moduleId).subscribe(resp => {
+          this.recordsPageIndex = 1;
+          this.getTableData();
+        });
+      this.subscriptionsList.push(sub);
+      }
+
+    });
 
   }
 
@@ -395,6 +417,23 @@ export class ListDatatableComponent implements OnInit, OnDestroy {
     });
 
     return width;
+  }
+
+  /**
+   * get initial sort direction for a column
+   * @param fieldId column
+   * @returns column sort direction
+   */
+  getColumnSortDir(fieldId) {
+    const col = this.currentView.fieldsReqList.find(c => c.fieldId === fieldId);
+    return col && col.sortDirection ? Object.keys(SortDirection).find(key => SortDirection[key] === col.sortDirection) : '';
+  }
+
+  /**
+   * open filter settings sidesheet
+   */
+  openFiltersSideSheet() {
+    this.router.navigate([{ outlets: { sb: `sb/list/filter-settings/${this.moduleId}` } }], { queryParamsHandling: 'preserve' });
   }
 
   ngOnDestroy(): void {

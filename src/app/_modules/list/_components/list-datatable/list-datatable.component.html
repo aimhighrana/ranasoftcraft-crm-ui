@@ -42,6 +42,9 @@
 
     <div class="f-row">
         <lib-search i18n-placeholder="@@search" placeholder="Search..." class="lib-search" (click)="showGlobalFilter = true" (blur)="showGlobalFilter  = false "></lib-search>
+        
+        <lib-chip icon="filter" (click)="openFiltersSideSheet()"></lib-chip>
+
     </div>
     
     <ng-template [ngIf]="showGlobalFilter">
@@ -50,7 +53,7 @@
 
     <div class="row-spacer"></div>
     <div class="data-listing">
-        <table mat-table [dataSource]="dataSource" class="mat-elevation-z0" [ngStyle]="{'min-width.px': tableWidth}">
+        <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z0" [ngStyle]="{'min-width.px': tableWidth}">
             <ng-container matColumnDef="_select" sticky>
                 <th mat-header-cell *matHeaderCellDef class="fixed-width-c1"
                     >
@@ -93,7 +96,7 @@
                 </ng-template>
                 <ng-template #dynamic>
                     <ng-container [matColumnDef]="dynCol">
-                        <th mat-header-cell *matHeaderCellDef 
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header [start]="getColumnSortDir(dynCol)"
                             [ngStyle]="{'width.px': getColumnWidth(dynCol)}"
                             [ngClass]="{'large-cell-header': isLargeHeader(dynCol)}"
                             prosResizableColumn [index]="index"
