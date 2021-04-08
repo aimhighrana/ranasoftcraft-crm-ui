@@ -26,25 +26,19 @@ const routes: Routes = [
       // { path: '', redirectTo: 'schema', pathMatch: 'full' },
       {
         path: 'schema',
-        loadChildren: () =>
-          import('../schema/schema.module').then((m) => m.SchemaModule),
+        loadChildren: () => import('../schema/schema.module').then((m) => m.SchemaModule),
       },
       {
         path: 'report',
-        loadChildren: () =>
-          import('../report/report.module').then((m) => m.ReportModule),
+        loadChildren: () => import('../report/report.module').then((m) => m.ReportModule),
       },
       {
         path: 'list',
-        loadChildren: () =>
-          import('../list/list.module').then((m) => m.ListModule),
+        loadChildren: () => import('../list/list.module').then((m) => m.ListModule),
       },
       {
         path: 'task/:node',
-        loadChildren: () =>
-          import('../taskinbox/taskinbox.module').then(
-            (m) => m.TaskinboxModule
-          ),
+        loadChildren: () => import('../taskinbox/taskinbox.module').then((m) => m.TaskinboxModule),
       },
     ],
   },
