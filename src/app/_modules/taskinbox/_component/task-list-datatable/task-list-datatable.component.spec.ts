@@ -1,3 +1,4 @@
+import { PageEvent } from '@angular/material/paginator';
 import { of } from 'rxjs';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
@@ -50,5 +51,22 @@ describe('TaskListDatatableComponent', () => {
     component.getNodeColumns();
 
     expect(component.getTableData).toHaveBeenCalled();
+  });
+
+  it('should check if a column is static', () => {
+    expect(component.isStaticCol('select')).toBeTrue();
+    expect(component.isStaticCol('other')).toBeFalse();
+  });
+
+  it('getFieldDesc()', () => {
+    expect(component.getFieldDesc('dueby')).toEqual('Due by');
+  });
+
+  it('onPageChange()', () => {
+    const pageEvent = new PageEvent();
+    pageEvent.pageIndex = 5;
+    component.onPageChange(pageEvent);
+
+    expect(component.pageEvent.pageIndex).toBe(5);
   });
 });
