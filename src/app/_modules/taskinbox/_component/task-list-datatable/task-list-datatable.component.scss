@@ -5,11 +5,10 @@ div.root {
 
   .task-inbox {
     height: calc(100% - 42px - 36px * 2 - 8px * 5);
-    width: 100%;
 
     table.mat-table {
-      width: 1280px;
-      overflow: scroll !important;
+      width: 100%;
+      overflow: scroll;
 
       td.mat-cell {
         border-right: none;
