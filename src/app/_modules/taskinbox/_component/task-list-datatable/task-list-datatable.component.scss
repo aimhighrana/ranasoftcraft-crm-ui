@@ -8,7 +8,7 @@ div.root {
 
     table.mat-table {
       width: 100%;
-      overflow: scroll;
+      overflow: auto;
 
       td.mat-cell {
         border-right: none;
