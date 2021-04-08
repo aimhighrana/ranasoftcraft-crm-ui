@@ -80,6 +80,57 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
 
   activeMenuItemId = '';
 
+  taskList = [
+    {
+      label: 'Inbox',
+      id: 'inbox',
+      rec_cnt: 2,
+      new_feed_cnt: 1,
+      hasNewFeeds: true,
+      childs: [
+        {
+          label: 'Test',
+          id: 'test',
+          rec_cnt: 2,
+          new_feed_cnt: 1,
+          hasNewFeeds: true
+        }
+      ]
+    },
+    {
+      label: 'In Workflow',
+      id: 'in_workflow',
+      rec_cnt: 5,
+      new_feed_cnt: 0,
+      hasNewFeeds: false,
+      childs: []
+    },
+    {
+      label: 'Rejected',
+      id: 'rejected',
+      rec_cnt: 10,
+      new_feed_cnt: 1,
+      hasNewFeeds: true,
+      childs: []
+    },
+    {
+      label: 'Completed',
+      id: 'completed',
+      rec_cnt: 15,
+      new_feed_cnt: 0,
+      hasNewFeeds: false,
+      childs: []
+    },
+    {
+      label: 'Draft',
+      id: 'draft',
+      rec_cnt: 5,
+      new_feed_cnt: 0,
+      hasNewFeeds: false,
+      childs: []
+    }
+  ];
+
   constructor(
     private router: Router,
     private schemaListService: SchemalistService,

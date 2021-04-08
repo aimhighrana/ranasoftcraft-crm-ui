@@ -1,0 +1,22 @@
+.root {
+  user-select: none;
+  height: 100%;
+  padding: 0 16px;
+  overflow: hidden;
+
+  .system {
+    align-items: flex-start;
+
+    .system-fields-col {
+      width: 220px;
+    }
+
+    .system-values-col {
+      width: calc(100% - 220px);
+    }
+
+    .date-list {
+      flex: 1;
+    }
+  }
+}
