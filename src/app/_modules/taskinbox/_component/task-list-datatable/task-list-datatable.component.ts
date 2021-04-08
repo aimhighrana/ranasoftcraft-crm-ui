@@ -278,11 +278,7 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.route.params.subscribe((param) => {
       this.node = param.node || null;
-      this.nodeColumns = NODEFIELDS[this.node];
-      this.displayedColumns = this.nodeColumns.map((d) => d.fldId);
-      this.displayedColumns.unshift('select', 'setting', 'Records');
-      this.dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
-      this.selection = new SelectionModel<PeriodicElement>(true, []);
+      this.getNodeColumns();
     });
     this.route.queryParams.subscribe((queryParam) => {
       this.savedSearchParameters = queryParam.s || null;
@@ -297,6 +293,16 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit {
     });
   }
 
+  getNodeColumns() {
+    this.nodeColumns = NODEFIELDS[this.node];
+    this.displayedColumns = this.nodeColumns.map((d) => d.fldId);
+    this.displayedColumns.unshift('select', 'setting', 'Records');
+    this.getTableData();
+  }
+  getTableData() {
+    this.dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
+    this.selection = new SelectionModel<PeriodicElement>(true, []);
+  }
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
     // const numSelected = this.selection.selected.length;
