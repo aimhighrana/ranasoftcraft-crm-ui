@@ -9,16 +9,22 @@ import { BreadcrumbComponent } from '@modules/shared/_components/breadcrumb/brea
 import { DashboardContainerComponent } from '../dashboard-container/dashboard-container.component';
 import { ReportService } from '../../_service/report.service';
 import { SharedModule } from '@modules/shared/shared.module';
-
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { of } from 'rxjs';
+import { DuplicateReportComponent } from '../duplicate-report/duplicate-report.component';
+import { Router } from '@angular/router';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
   let fixture: ComponentFixture<DashboardComponent>;
+  let dialogSpy: jasmine.Spy;
+  const dialogRefSpyObj = jasmine.createSpyObj({ afterClosed: of({}), close: null });
+  let router: Router;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [DashboardComponent, BreadcrumbComponent, DashboardContainerComponent],
-      imports: [AppMaterialModuleForSpec, FormsModule, ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule, SharedModule],
+      imports: [AppMaterialModuleForSpec, FormsModule, ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule, SharedModule, MatDialogModule],
       providers: [
         ReportService
       ]
@@ -29,6 +35,8 @@ describe('DashboardComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(DashboardComponent);
     component = fixture.componentInstance;
+    dialogSpy = spyOn(TestBed.get(MatDialog), 'open').and.returnValue(dialogRefSpyObj);
+    router = TestBed.inject(Router);
   });
 
   it('should create', () => {
@@ -56,5 +64,20 @@ describe('DashboardComponent', () => {
     component.emitClearBtnEvent = false;
     component.clearFilters();
     expect(component.emitClearBtnEvent).toEqual(true);
-  })
+  });
+
+  it('editReport(), navigate to ', () => {
+    component.reportId = 111;
+    spyOn(router, 'navigate');
+    component.editReport();
+    expect(router.navigate).toHaveBeenCalledWith(['/home', 'report', 'dashboard-builder', component.reportId.toString()]);
+  });
+
+  it('duplicateReport(), open dialog', () => {
+    component.reportId = 222;
+    component.reportName = 'Test';
+    component.duplicateReport();
+    expect(dialogSpy).toHaveBeenCalled();
+    expect(dialogSpy).toHaveBeenCalledWith(DuplicateReportComponent, { data: { reportName: 'Test', reportId: 222 }, disableClose: true, width: '600px', height: '250px' });
+  });
 });

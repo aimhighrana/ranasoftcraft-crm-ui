@@ -124,4 +124,11 @@ describe('EndpointsAnalyticsService', () => {
     const userName = 'harshit'
     expect(serviceobj.saveReportDownload(widgetId, userName)).toContain(`/widget/startdoDownloadFile/${widgetId}?userName=${userName}`);
   }));
+
+  it('copyReport(), should copy a report', async(() => {
+    const serviceobj = new EndpointsAnalyticsService();
+    const reportId = '6547898676578';
+    const reportName = 'Copy of Test'
+    expect(serviceobj.copyReport(reportId, reportName)).toContain(`/report/copy-report?reportId=${reportId}&reportName=${reportName}`);
+  }));
 });
