@@ -1035,7 +1035,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
 
   updateDepRule(br: CoreSchemaBrInfo, event?: any) {
     const index = this.businessRuleData.findIndex(item => item.brIdStr === br.brIdStr);
-    if (event.key !== RuleDependentOn.ALL) {
+    if (event.value !== RuleDependentOn.ALL) {
       const tobeChild = this.businessRuleData[index]
       if (this.businessRuleData[index - 1].dep_rules) {
         this.addChildatSameRoot(tobeChild, index)
