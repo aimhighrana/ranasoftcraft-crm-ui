@@ -874,6 +874,62 @@
           <context context-type="linenumber">5</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="sortBy" datatype="html">
+        <source>Sort by</source>
+        <target>Ordina per</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/_modules/report/edit/container/container.component.html</context>
+          <context context-type="linenumber">370</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ascending" datatype="html">
+        <source>Ascending</source>
+        <target>Ascendente</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/_modules/report/edit/container/container.component.html</context>
+          <context context-type="linenumber">373</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="descending" datatype="html">
+        <source>Descending</source>
+        <target>Discendente</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/_modules/report/edit/container/container.component.html</context>
+          <context context-type="linenumber">374</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rowAscending" datatype="html">
+        <source>Row ascending</source>
+        <target>Riga ascendente</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/_modules/report/edit/container/container.component.html</context>
+          <context context-type="linenumber">579</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rowDescending" datatype="html">
+        <source>Row descending</source>
+        <target>Riga discendente</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/_modules/report/edit/container/container.component.html</context>
+          <context context-type="linenumber">580</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="columnAscending" datatype="html">
+        <source>Column Ascending</source>
+        <target>Colonna crescente</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/_modules/report/edit/container/container.component.html</context>
+          <context context-type="linenumber">581</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="columnDescending" datatype="html">
+        <source>Column descending</source>
+        <target>Colonna discendente</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/_modules/report/edit/container/container.component.html</context>
+          <context context-type="linenumber">582</context>
+        </context-group>
+      </trans-unit>
     </body>
   </file>
 </xliff>
