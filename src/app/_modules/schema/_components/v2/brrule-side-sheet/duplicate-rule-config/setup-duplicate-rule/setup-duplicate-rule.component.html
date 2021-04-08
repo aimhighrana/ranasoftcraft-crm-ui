@@ -16,13 +16,13 @@
                         </div>
                         <div class="col col-x4">
                             <strong> Match
-                                <mat-icon matTooltip="match" fontSet="mdo-icons" class="mat-head-icon">
+                                <mat-icon libTooltip="match" fontSet="mdo-icons" class="mat-head-icon">
                                     question-circle</mat-icon>
                             </strong>
                         </div>
                         <div class="col col-x4">
                             <strong>Exclusions
-                                <mat-icon matTooltip="exclusions" fontSet="mdo-icons" class="mat-head-icon">
+                                <mat-icon libTooltip="exclusions" fontSet="mdo-icons" class="mat-head-icon">
                                     question-circle</mat-icon>
                             </strong>
                         </div>
@@ -49,18 +49,18 @@
 
                                 <ng-container [formGroupName]="i">
                                     <div class="col">
-                                        <button mat-button cdkDragHandle>
+                                        <lib-button cdkDragHandle>
                                             <mat-icon fontSet="mdo-icons">grip-lines</mat-icon>
-                                        </button>
+                                        </lib-button>
                                     </div>
                                     <div class="col col-x4">
                                         <div mat-line> {{ getFieldDesc(item.value.fId)}} </div>
                                     </div>
                                     <div class="col col-x4">
                                         <div class="f-col">
-                                            <button mat-stroked-button [matMenuTriggerFor]="fieldMatchMenu">
+                                            <lib-button [matMenuTriggerFor]="fieldMatchMenu">
                                                 {{ getDuppCriteriaDesc(item.value.criteria) }}
-                                                <mat-icon fontSet="mdo-icons-solid">caret-down</mat-icon></button>
+                                                <mat-icon fontSet="mdo-icons-solid">caret-down</mat-icon></lib-button>
                                         <mat-menu #fieldMatchMenu="matMenu" class="navigation-menu">
                                                 <button mat-menu-item
                                                     (click)="setControlValue('addFields', 'criteria', 'Exact_Match', i)">
@@ -77,17 +77,15 @@
                                     <div class="col col-x4"> <a class="f-row info-link" (click)="exclusionConf(item)">
                                             {{ item.value.exclusion }} </a> </div>
                                     <div class="col">
-                                        <button mat-button (click)="removeFormArrayRow('addFields', i)">
+                                        <lib-button (click)="removeFormArrayRow('addFields', i)">
                                             <mat-icon fontSet="mdo-icons">trash-alt</mat-icon>
-                                        </button>
+                                        </lib-button>
                                     </div>
                                 </ng-container>
                             </div>
                         </div>
                     </ng-container>
-
-                    <pros-null-state *ngIf="fieldRecords.controls.length === 0"
-                        message="Type inside the search box to find fields" [button]="null"></pros-null-state>
+                    <lib-empty-state *ngIf="fieldRecords.controls.length === 0" primaryText="Nothing to see here" secondaryText="Type inside the search box to find fields" icon="table" iconSize="100"></lib-empty-state>
                 </div>
             </mat-expansion-panel>
         </mat-accordion>
@@ -146,9 +144,9 @@
                                         </ng-template>
 
                                         <ng-template #others>
-                                            <button mat-stroked-button [matMenuTriggerFor]="searchFieldMenu">
+                                            <lib-button [matMenuTriggerFor]="searchFieldMenu">
                                                 {{ item.value.fieldId ? getFieldDesc(item.value.fieldId) : 'select' }}
-                                                <mat-icon fontSet="mdo-icons-solid">caret-down</mat-icon></button>
+                                                <mat-icon fontSet="mdo-icons-solid">caret-down</mat-icon></lib-button>
                                                 <!-- field search menu -->
                                                 <mat-menu #searchFieldMenu="matMenu" class="navigation-menu">
                                                 <div class="fields-menu">
@@ -187,15 +185,14 @@
                                     </div>
                                 </div>
                                 <div class="col mat-item-end">
-                                    <button mat-button (click)="removeFormArrayRow('mergeRules', i)">
+                                    <lib-button (click)="removeFormArrayRow('mergeRules', i)">
                                         <mat-icon fontSet="mdo-icons">trash-alt</mat-icon>
-                                    </button>
+                                    </lib-button>
                                 </div>
                             </ng-container>
                         </div>
                     </ng-container>
-                    <pros-null-state *ngIf="masterRecords.controls.length === 0"
-                        message="Type inside the search box to find master records" [button]="null"></pros-null-state>
+                    <lib-empty-state *ngIf="masterRecords.controls.length === 0" primaryText="Nothing to see here" secondaryText="Type inside the search box to find master records" icon="table" iconSize="100"></lib-empty-state>
                 </div>
             </mat-expansion-panel>
         </mat-accordion>

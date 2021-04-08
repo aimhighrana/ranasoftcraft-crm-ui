@@ -207,6 +207,8 @@ export class BrruleSideSheetComponent implements OnInit {
     };
   }
 
+  transRuleTypeList = [{ value: this.transformationType.REGEX, key: this.transformationType.REGEX }, { value: this.transformationType.LOOKUP, key: this.transformationType.LOOKUP }];
+
   /**
    * Class contructor
    * @param dialogRef refernce to matdialog
@@ -240,6 +242,15 @@ export class BrruleSideSheetComponent implements OnInit {
     return '';
   }
 
+  /**
+   * Getter for selected transformation type for radio button
+   */
+  get selectedTransRuleTypeRadio() {
+    if (this.form && this.form.controls) {
+      return this.transRuleTypeList.find(ruleType => this.form.controls.transformationRuleType.value === ruleType.value);
+    }
+    return '';
+  }
   /**
    * Angular hook
    */
@@ -483,6 +494,15 @@ export class BrruleSideSheetComponent implements OnInit {
    */
   formField(field: string) {
     return this.form.get(field);
+  }
+
+  /**
+   * function to UPDATE Transformation rule type when lib radio is clicked
+   */
+  updateTransformationRuleType($event) {
+    if (this.form?.controls) {
+      this.form.controls.transformationRuleType.setValue($event.value);
+    }
   }
 
   /**
