@@ -1,15 +1,15 @@
 <div class="root">
     <div class="f-row breadcrum-toolbar">
-        <button mat-button (click)="closeDialogComponent()">
+        <lib-button (click)="closeDialogComponent()">
             <mat-icon fontSet="mdo-icons">times</mat-icon>
-        </button>
+        </lib-button>
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
                 <div class="display-heading-large">Business rule library</div>
                 <span class="f-col-spacer-half"></span>
                 <div class="f-spacer"></div>
-                <button mat-flat-button color="primary" (click)="saveSelection()">Save</button>
+                <lib-button type="major" (click)="saveSelection()">Save</lib-button>
             </div>
             <div class="row-spacer"></div>
             <div class="f-row">
@@ -38,12 +38,14 @@
                 <mat-list-item role="listitem" *cdkVirtualFor="let brItem of filteredBusinessRulesList; trackBy: trackByFn">
                     <div class="mat-line">{{brItem.brInfo}}</div>
                     <span class="f-spacer"></span>
-                    <button mat-flat-button color="accent" *ngIf="!isSelected(brItem); else doneButton"
-                        (click)="selectBusinessRule(brItem, constants.ADD)">plus</button>
+                    <lib-button type="minor" sizeLarge="true" *ngIf="!isSelected(brItem); else doneButton"
+                        (click)="selectBusinessRule(brItem, constants.ADD)">
+                        <mat-icon fontSet="mdo-icons">plus</mat-icon>
+                    </lib-button>
                     <ng-template #doneButton>
-                        <button mat-flat-button color="accent" (click)="selectBusinessRule(brItem, constants.REMOVE)">
+                        <lib-button type="minor" sizeLarge="true" (click)="selectBusinessRule(brItem, constants.REMOVE)">
                             <mat-icon fontSet="mdo-icons">check</mat-icon>
-                        </button>
+                        </lib-button>
                     </ng-template>
                 </mat-list-item>
             </mat-list>

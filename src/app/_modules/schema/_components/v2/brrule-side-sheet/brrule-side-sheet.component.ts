@@ -197,6 +197,14 @@ export class BrruleSideSheetComponent implements OnInit {
   transRuleTypeList = [{ value: this.transformationType.REGEX, key: this.transformationType.REGEX }, { value: this.transformationType.LOOKUP, key: this.transformationType.LOOKUP }];
 
   /**
+   * function to format slider thumbs label.
+   * @param percent percent
+   */
+  rangeSliderLabelFormat(percent) {
+    return `${percent}%`;
+  }
+
+  /**
    * transformer = return tree object.
    * @param node node
    * @param level level

@@ -133,13 +133,9 @@
                                 </div>
                                 <div class="col col-x8 mat-item-center">
                                     <div class="f-row slider-row">
-                                        <mat-slider color="primary" [value]="businessRule.brWeightage" thumbLabel
-                                            tickInterval="1" min="0"
-                                            [max]="availableWeightage(businessRule.brWeightage)"
-                                            (change)="updateBr(businessRule,$event)">
-                                        </mat-slider>
-                                        <span class="f-col-spacer-half"></span>
-                                        <div class="percent-count">{{businessRule.brWeightage}}%</div>
+                                        <lib-range-slider class="lib-slider" thumbLabel="true"  tickInterval="1" minValue="0" (valueChange)="businessRule.brWeightage=$event;updateBr(businessRule,$event)"
+                                        [value]="businessRule.brWeightage"  [maxValue]="availableWeightage(businessRule.brWeightage)" color="primary"></lib-range-slider><span class="f-col-spacer-half"></span>
+                            <div class="percent-count">{{businessRule.brWeightage}}%</div>
                                     </div>
                                 </div>
 

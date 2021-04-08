@@ -131,9 +131,10 @@ div.root {
   flex-wrap: wrap;
   flex: 1;
 
-  mat-slider.mat-slider {
+  .lib-slider {
     flex: 1;
     width: 1px;
+    height: 48px;
   }
 }
 
