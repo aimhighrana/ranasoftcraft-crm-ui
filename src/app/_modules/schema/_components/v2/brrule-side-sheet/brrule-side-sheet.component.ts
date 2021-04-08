@@ -192,6 +192,11 @@ export class BrruleSideSheetComponent implements OnInit {
   hasChild = null;
 
   /**
+   * transformation rule type list
+   */
+  transRuleTypeList = [{ value: this.transformationType.REGEX, key: this.transformationType.REGEX }, { value: this.transformationType.LOOKUP, key: this.transformationType.LOOKUP }];
+
+  /**
    * transformer = return tree object.
    * @param node node
    * @param level level
@@ -206,8 +211,6 @@ export class BrruleSideSheetComponent implements OnInit {
       allData: node.allData
     };
   }
-
-  transRuleTypeList = [{ value: this.transformationType.REGEX, key: this.transformationType.REGEX }, { value: this.transformationType.LOOKUP, key: this.transformationType.LOOKUP }];
 
   /**
    * Class contructor
