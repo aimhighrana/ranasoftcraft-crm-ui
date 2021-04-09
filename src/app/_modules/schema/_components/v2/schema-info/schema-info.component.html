@@ -33,9 +33,9 @@
                     <div class="f-col mdo-form-field">
                         <mat-label i18n="@@threshold">Threshold</mat-label>
                         <div class="f-row slider-row">
-                            <lib-range-slider class="range-slider" color="primary" thumbLabel formControlName="schemaThreshold"
+                            <lib-range-slider class="lib-slider" color="primary" thumbLabel formControlName="schemaThreshold"
                                 [value]="schemaDetails?.schemaThreshold ? schemaDetails.schemaThreshold : 0"
-                                (valueChange)="updateSchemaInfo(schemaDetails.schemaDescription, {value:$event})"></lib-range-slider>
+                                (valueChange)="onChangeSchemaThreshold($event)"></lib-range-slider>
                             <span class="f-col-spacer-half"></span>
                             <div>{{schemaSummaryForm.controls.schemaThreshold.value}}%</div>
                         </div>
@@ -69,7 +69,7 @@
         </lib-tab>
 
         <!-- Tab for the Business rules of schema -->
-        <lib-tab i18n-label="@@business_rules" label="Business rules {{getBusinessRulesLength}}">
+        <lib-tab i18n-label="@@business_rules" label="Business rules" [badgeCount]="getBusinessRulesLength">
             <div class="colunm-listing">
                 <div class="f-row colunm-box rule-border-row">
                     <div class="col"></div>
@@ -240,7 +240,7 @@
         </lib-tab>
 
         <!-- Tab for the Subscribers of the schema -->
-        <lib-tab i18n-label="@@subscribers" label="Subscribers {{subscriberData ? subscriberData.length : 0}}">
+        <lib-tab i18n-label="@@subscribers" label="Subscribers" [badgeCount]="subscriberData ? subscriberData.length : 0">
             <div class="colunm-listing">
                 <div class="f-row colunm-box rule-border-row">
                     <div class="col"></div>

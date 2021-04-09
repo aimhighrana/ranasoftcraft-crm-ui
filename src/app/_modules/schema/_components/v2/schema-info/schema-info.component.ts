@@ -112,6 +112,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * To trigger debounced event on schema name changed
    */
   schemaValueChanged: Subject<string> = new Subject<string>();
+  schemaThresholdChanged: Subject<string> = new Subject<string>();
 
   constructor(
     private activateRoute: ActivatedRoute,
@@ -1039,6 +1040,21 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Function to call when schema threshold is changed in slider
+   * @param $event: updated schema description.
+   */
+   onChangeSchemaThreshold($event) {
+    console.log($event);
+    if (this.schemaThresholdChanged.observers.length === 0) {
+      this.schemaThresholdChanged
+        .pipe(debounceTime(1000), distinctUntilChanged())
+        .subscribe(threshold => {
+          this.updateSchemaInfo(this.schemaDetails.schemaDescription, {value: threshold});
+        });
+    }
+    this.schemaThresholdChanged.next($event);
+  }
   /**
    * Function to call when schema description is changed in inputbox
    * @param $event: updated schema description.

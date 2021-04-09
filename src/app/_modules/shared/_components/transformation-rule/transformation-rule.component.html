@@ -55,11 +55,11 @@
         </div>
 
         <div class="mdo-form-field">
-            <lib-input label="Exclude script (Regex)" isRequired="true" formControlName="excludeScript" [value]='form.value.excludeScript' [hint]="submitted && form.controls.excludeScript.errors && form.controls.excludeScript.errors.required ? 'Please enter exclude script' : ''" [hasError]="submitted && form.controls.excludeScript.errors && form.controls.excludeScript.errors.required"></lib-input>
+            <lib-input label="Exclude script (Regex)" formControlName="excludeScript" [value]='form.value.excludeScript' [hint]="submitted && form.controls.excludeScript.errors && form.controls.excludeScript.errors.required ? 'Please enter exclude script' : ''" [hasError]="submitted && form.controls.excludeScript.errors && form.controls.excludeScript.errors.required"></lib-input>
         </div>
 
         <div class="mdo-form-field">
-            <lib-input label="Include script (Regex)" isRequired="true" formControlName="includeScript" [value]='form.value.includeScript' [hint]="submitted && form.controls.includeScript.errors && form.controls.includeScript.errors.required ? 'Please enter include script' : ''" [hasError]="submitted && form.controls.includeScript.errors && form.controls.includeScript.errors.required"></lib-input>
+            <lib-input label="Include script (Regex)" formControlName="includeScript" [value]='form.value.includeScript' [hint]="submitted && form.controls.includeScript.errors && form.controls.includeScript.errors.required ? 'Please enter include script' : ''" [hasError]="submitted && form.controls.includeScript.errors && form.controls.includeScript.errors.required"></lib-input>
         </div>
 </form>
 <!-- transformation rule end -->
