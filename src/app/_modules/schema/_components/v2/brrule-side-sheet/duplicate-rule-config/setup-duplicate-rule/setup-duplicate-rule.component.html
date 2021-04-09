@@ -3,7 +3,7 @@
         <mat-accordion>
             <mat-expansion-panel togglePosition="before" class="mat-elevation-z0" expanded>
                 <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
-                    <mat-panel-title class="panel-title">
+                    <mat-panel-title i18n="@@fields" class="panel-title">
                         Fields
                     </mat-panel-title>
                 </mat-expansion-panel-header>
@@ -12,17 +12,17 @@
                     <div class="f-row colunm-box rule-border-row">
                         <div class="col"></div>
                         <div class="col col-x4">
-                            <strong>Field</strong>
+                            <strong i18n="@@field">Field</strong>
                         </div>
                         <div class="col col-x4">
-                            <strong> Match
-                                <mat-icon libTooltip="match" fontSet="mdo-icons" class="mat-head-icon">
+                            <strong> <span i18n="@@match">Match</span>
+                                <mat-icon i18n-libTooltip="@@match" libTooltip="match" fontSet="mdo-icons" class="mat-head-icon">
                                     question-circle</mat-icon>
                             </strong>
                         </div>
                         <div class="col col-x4">
-                            <strong>Exclusions
-                                <mat-icon libTooltip="exclusions" fontSet="mdo-icons" class="mat-head-icon">
+                            <strong><span i18n="@@exclusions">Exclusions</span>
+                                <mat-icon libTooltip="exclusions" i18n-libTooltip="@@exclusions" fontSet="mdo-icons" class="mat-head-icon">
                                     question-circle</mat-icon>
                             </strong>
                         </div>
@@ -69,7 +69,7 @@
                                                     (click)="setControlValue('addFields', 'criteria', 'Fuzzy', i)">
                                                     Fuzzy </button>
                                             </mat-menu>
-                                            <mat-error
+                                            <mat-error i18n="@@pls_select_value"
                                                 *ngIf="submitted && item.get('criteria').errors && item.get('criteria').errors.required">
                                                 Please select value</mat-error>
                                         </div>
@@ -85,7 +85,7 @@
                             </div>
                         </div>
                     </ng-container>
-                    <lib-empty-state *ngIf="fieldRecords.controls.length === 0" primaryText="Nothing to see here" secondaryText="Type inside the search box to find fields" icon="table" iconSize="100"></lib-empty-state>
+                    <lib-empty-state *ngIf="fieldRecords.controls.length === 0" i18n-primaryText="@@nothing_to_see_here" primaryText="Nothing to see here" i18n-secondaryText="@@type_inside_search_box_to_find_fields" secondaryText="Type inside the search box to find fields" icon="table" iconSize="100"></lib-empty-state>
                 </div>
             </mat-expansion-panel>
         </mat-accordion>
@@ -93,7 +93,7 @@
         <mat-accordion>
             <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
                 <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
-                    <mat-panel-title class="panel-title">
+                    <mat-panel-title class="panel-title" i18n="@@master_record_parameters">
                         Master record parameters
                     </mat-panel-title>
                 </mat-expansion-panel-header>
@@ -102,10 +102,10 @@
 
                     <div class="f-row colunm-box rule-border-row">
                         <div class="col col-x4">
-                            <strong>Parameter</strong>
+                            <strong i18n="@@parameter">Parameter</strong>
                         </div>
                         <div class="col col-x4">
-                            <strong>Attribute</strong>
+                            <strong i18n="@@attribute">Attribute</strong>
                         </div>
                         <div class="col mat-item-end"></div>
                     </div>
@@ -179,7 +179,7 @@
                                               </mat-autocomplete>
                                         </mat-form-field> -->
                                         </ng-template>
-                                        <mat-error
+                                        <mat-error i18n="@@pls_select_field"
                                             *ngIf="submitted && item.get('fieldId').errors && item.get('fieldId').errors.required">
                                             Please select field</mat-error>
                                     </div>
@@ -192,7 +192,7 @@
                             </ng-container>
                         </div>
                     </ng-container>
-                    <lib-empty-state *ngIf="masterRecords.controls.length === 0" primaryText="Nothing to see here" secondaryText="Type inside the search box to find master records" icon="table" iconSize="100"></lib-empty-state>
+                    <lib-empty-state *ngIf="masterRecords.controls.length === 0" i18n-primaryText="@@nothing_to_see_here" primaryText="Nothing to see here" i18n-secondaryText="@@type_inside_search_box_to_find_master" secondaryText="Type inside the search box to find master records" icon="table" iconSize="100"></lib-empty-state>
                 </div>
             </mat-expansion-panel>
         </mat-accordion>
