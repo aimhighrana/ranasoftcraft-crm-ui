@@ -16,9 +16,10 @@ import { AddFilterOutput } from '@models/schema/schema';
 import { FormControl, FormGroup } from '@angular/forms';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { GlobaldialogService } from '@services/globaldialog.service';
-import { forkJoin, Subscription } from 'rxjs';
+import { forkJoin, Subject, Subscription } from 'rxjs';
 import { SchemaScheduler } from '@models/schema/schemaScheduler';
-import { map } from 'rxjs/operators';
+import { MatCheckboxChange } from '@angular/material/checkbox';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { TransientService } from 'mdo-ui-library';
 
 @Component({
@@ -106,6 +107,11 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
   infoTabs: string[] = ['summary', 'business-rules', 'subscribers', 'Schedule', 'Statistics'];
 
   depRuleList = [{ value: 'ALL', key: 'ALL' }, { value: 'SUCCESS', key: 'SUCCESS' }, { value: 'FAILURE', key: 'ERROR' }];
+
+  /**
+   * To trigger debounced event on schema name changed
+   */
+  schemaValueChanged: Subject<string> = new Subject<string>();
 
   constructor(
     private activateRoute: ActivatedRoute,
@@ -1019,18 +1025,34 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
 
       const subscription = this.schemaService.createUpdateSchema(schemaReq).subscribe((response) => {
         this.sharedService.setRefreshSecondaryNav(SecondaynavType.schema, true, this.moduleId);
-        this.matSnackBar.open('Schema description updated successfully.', 'ok', {
+        this.toasterService.open('Schema description updated successfully.', 'ok', {
           duration: 2000
         })
         this.getSchemaDetails(this.schemaId);
       }, (error) => {
-        this.matSnackBar.open('Something went wrong', 'ok', {
+        this.toasterService.open('Something went wrong', 'ok', {
           duration: 2000
-        })
+        });
         console.error('Something went wrong while updating schema info', error.message);
       })
       this.subscriptions.push(subscription);
     }
+  }
+
+  /**
+   * Function to call when schema description is changed in inputbox
+   * @param $event: updated schema description.
+   */
+  onChangeSchemaDescription($event) {
+    console.log($event);
+    if (this.schemaValueChanged.observers.length === 0) {
+      this.schemaValueChanged
+        .pipe(debounceTime(1000), distinctUntilChanged())
+        .subscribe(schema => {
+          this.updateSchemaInfo(schema);
+        });
+    }
+    this.schemaValueChanged.next($event);
   }
 
   updateDepRule(br: CoreSchemaBrInfo, event?: any) {
@@ -1045,7 +1067,7 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
         this.addChildatSameRoot(tobeChild, index)
       }
       const idxforChild = this.businessRuleData[index - 1].dep_rules.findIndex(item => item.brIdStr === tobeChild.brIdStr);
-      this.businessRuleData[index - 1].dep_rules[idxforChild].dependantStatus = event.key;
+      this.businessRuleData[index - 1].dep_rules[idxforChild].dependantStatus = event.value;
       this.businessRuleData.splice(index, 1);
       const request: CoreSchemaBrMap = new CoreSchemaBrMap();
       request.brWeightage = Number(br.brWeightage);
@@ -1103,9 +1125,9 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
       .subscribe(resp => {
         this.router.navigate(['home', 'schema', this.moduleId]);
         this.sharedService.setRefreshSecondaryNav(SecondaynavType.schema, true, this.moduleId);
-        this.matSnackBar.open('Schema deleted successfully.', 'ok', { duration: 2000 });
+        this.toasterService.open('Schema deleted successfully.', 'ok', { duration: 2000 });
       }, error => {
-        this.matSnackBar.open('Something went wrong', 'ok', { duration: 2000 });
+        this.toasterService.open('Something went wrong', 'ok', { duration: 2000 });
       })
   }
 

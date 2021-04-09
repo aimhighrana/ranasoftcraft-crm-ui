@@ -628,11 +628,13 @@ describe('SchemaInfoComponent', () => {
     spyOn(schemaService, 'updateBrMap').and.returnValues(of(false), of(true));
     spyOn(component, 'getBusinessRuleList');
 
-    const br = {brIdStr: '123', brWeightage: '20'} as CoreSchemaBrInfo;
+    let br = {brIdStr: '123', brWeightage: '20'} as CoreSchemaBrInfo;
     component.updateBrOrder(null, 2);
     component.updateBrOrder(br, 2);
     component.updateBrOrder(br, 2);
-
+    expect(component.getBusinessRuleList).toHaveBeenCalled();
+    br = {brIdStr: '123', brWeightage: '20', status: 'test'} as CoreSchemaBrInfo;
+    component.updateBrOrder(br, 2);
     expect(component.getBusinessRuleList).toHaveBeenCalled();
 
    });
