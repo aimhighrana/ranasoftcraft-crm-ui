@@ -29,6 +29,25 @@
     <div class="nav-tree" id="nav-tree">
       <!-- Tree to show when navigation is on HOME -->
       <mat-accordion *ngIf="activatedPrimaryNav === 'welcome'">
+        <lib-section text="Tasks" *ngIf="taskList.length"></lib-section>
+        <ng-container *ngFor="let task of taskList">
+          <mat-expansion-panel hideToggle="{{ task.childs.length ? 'false' : 'true' }}" togglePosition="before" class="mat-elevation-z0">
+            <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
+              <mat-panel-title>
+                <div class="expand-title">{{task.label}}</div>
+                <span class="f-spacer"></span>
+                <div class="badge">{{task.rec_cnt}}</div>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <mat-nav-list [disableRipple]="true">
+              <mat-list-item *ngFor="let subTask of task.childs">
+                <div mat-line>{{ subTask.label }}</div>
+                <span class="f-spacer"></span>
+                <span>{{ subTask.rec_cnt }}</span>
+              </mat-list-item>
+            </mat-nav-list>
+          </mat-expansion-panel>
+        </ng-container>
         <lib-section text="Data intelligence"></lib-section>
         <ng-container *ngFor="let module of searchModuleResults">
           <mat-expansion-panel togglePosition="before" class="mat-elevation-z0"
