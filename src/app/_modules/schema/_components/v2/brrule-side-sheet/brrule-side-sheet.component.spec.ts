@@ -149,7 +149,7 @@ describe('BrruleSideSheetComponent', () => {
   }));
 
   it(`createBrObject(), should create business rule object`, async(() => {
-    const formData = {
+    let formData: any = {
       rule_type: 'test',
       rule_name: 'test',
       error_message: 'test',
@@ -161,10 +161,41 @@ describe('BrruleSideSheetComponent', () => {
       categoryId: 'test',
     };
 
-    const brObject = component.createBrObject(formData, formData.udrTreeData);
+    let brObject = component.createBrObject(formData, formData.udrTreeData);
     expect(brObject).not.toBeUndefined();
     expect(brObject).not.toBeNull();
     expect(brObject.brType).toEqual('test');
+
+    formData = {
+      sno: 1,
+      refid: 1,
+      message: 'test',
+      script: 'test',
+      brInfo: 'test',
+      status: 1,
+      brExpose: 1,
+      brType: 'test',
+      rule_type: 'test',
+      rule_name: 'test',
+      error_message: 'test',
+      standard_function: 'test',
+      regex: 'test',
+      fields: [],
+      udrTreeData: { udrHierarchies: [], blocks: [] },
+      weightage: 10,
+      brIdStr: 'test',
+      percentage: 1,
+      plantCode: '1',
+      tableName:'test',
+      transformation: 1,
+      categoryId: 'test',
+      isCopied: true
+    };
+    brObject = component.createBrObject(formData, formData.udrTreeData);
+    expect(brObject).not.toBeUndefined();
+    expect(brObject).not.toBeNull();
+    expect(brObject.brType).toEqual('test');
+    expect(brObject.isCopied).toBeTruthy();
   }));
 
   it(`initUDRForm(), should create UDR form object`, async(() => {
