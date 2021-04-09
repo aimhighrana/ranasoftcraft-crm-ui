@@ -18,7 +18,6 @@ import { SchemaVariantService } from '@services/home/schema/schema-variant.servi
 import { GlobaldialogService } from '@services/globaldialog.service';
 import { forkJoin, Subject, Subscription } from 'rxjs';
 import { SchemaScheduler } from '@models/schema/schemaScheduler';
-import { MatCheckboxChange } from '@angular/material/checkbox';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { TransientService } from 'mdo-ui-library';
 
