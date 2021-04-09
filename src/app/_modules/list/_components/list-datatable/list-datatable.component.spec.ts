@@ -8,7 +8,8 @@ import { ListDatatableComponent } from './list-datatable.component';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { PageEvent } from '@angular/material/paginator';
 import { SharedModule } from '@modules/shared/shared.module';
-import { ViewsPage } from '@models/list-page/listpage';
+import { ListPageViewFldMap, ViewsPage } from '@models/list-page/listpage';
+import { FieldMetaData } from '@models/core/coreModel';
 
 describe('ListDatatableComponent', () => {
   let component: ListDatatableComponent;
@@ -58,6 +59,7 @@ describe('ListDatatableComponent', () => {
  it('getViewsList() ', async(() => {
 
     component.moduleId = '1005';
+    spyOn(component, 'updateTableColumns');
 
     spyOn(listService, 'getAllListPageViews')
       .and.returnValues(of(new ViewsPage()), throwError({ message: 'api error'}));
@@ -65,6 +67,7 @@ describe('ListDatatableComponent', () => {
     component.getViewsList();
     expect(listService.getAllListPageViews).toHaveBeenCalled();
     expect(component.currentView).toEqual(component.defaultView);
+    expect(component.updateTableColumns).toHaveBeenCalled();
 
     // api error
     spyOn(console, 'error');
@@ -151,6 +154,63 @@ describe('ListDatatableComponent', () => {
 
     component.onPageChange(pageEvent);
     expect(component.dataSource.getData).toHaveBeenCalledWith(component.moduleId, '', 5);
+  });
+
+  it('should updateTableColumns', () => {
+
+    spyOn(component, 'getTableData');
+
+    component.updateTableColumns();
+
+    component.currentView = null;
+    component.updateTableColumns();
+
+    expect(component.getTableData).toHaveBeenCalledTimes(1);
+  });
+
+  it('should get table width', () => {
+
+    const width = component.staticColumns.length * 100;
+    expect(component.tableWidth).toEqual(width);
+
+  });
+
+  it('should get table column width', () => {
+
+    component.currentView.fieldsReqList.push(
+      {fieldId: 'MATL_TYPE', width: '200'} as ListPageViewFldMap
+    );
+
+    expect(component.getColumnWidth('MATL_TYPE')).toEqual(200);
+    expect(component.getColumnWidth('default')).toEqual(100);
+
+  });
+
+  it('should getDefaultViewId', () => {
+
+    component.viewsList = {
+      userViews: [
+        {viewId: '1701', default: false},
+        {viewId: '1702', default: true}
+      ]
+     } as ViewsPage;
+
+    expect(component.getDefaultViewId()).toEqual('1702');
+
+    component.viewsList.userViews[1].default = false;
+    expect(component.getDefaultViewId()).toEqual('1701');
+
+  });
+
+  it('should getFieldDesc', () => {
+
+    component.metadataFldLst = [
+      {fieldId: 'MTL_GRP', fieldDescri: 'Material group'}
+    ] as FieldMetaData[];
+
+    expect(component.getFieldDesc('MTL_GRP')).toEqual('Material group');
+    expect(component.getFieldDesc('Other')).toEqual('Other');
+
   });
 
 });

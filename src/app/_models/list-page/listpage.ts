@@ -143,6 +143,11 @@ export class ListPageViewFldMap {
     sortDirection = 'ASCENDING';
 }
 
+export enum SortDirection {
+    asc = 'ASCENDING',
+    desc = 'DESCENDING'
+}
+
 export class FilterCriteria {
     endValue: string;
     esFieldPath: string;
