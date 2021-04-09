@@ -197,6 +197,234 @@
           <context context-type="linenumber">426</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="business_rule" datatype="html">
+        <source>Business rule</source>
+        <target>aturan bisnis</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
+          <context context-type="linenumber">84</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="category" datatype="html">
+        <source>Category</source>
+        <target>Kategori</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
+          <context context-type="linenumber">85</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">53</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="br_category_tooltip_msg" datatype="html">
+        <source>Dimension of data quality to be measured</source>
+        <target>Dimensi kualitas data yang akan diukur</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
+          <context context-type="linenumber">86</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="weightage" datatype="html">
+        <source>Weightage</source>
+        <target>weightage</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
+          <context context-type="linenumber">89</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">40</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="br_weightage_tooltip_msg" datatype="html">
+        <source>Score assigned to a record upon successful validation of a business rule.For a schema total weightage of all the business rules must not exceed 100</source>
+        <target>Skor ditugaskan ke rekor pada validasi sukses bisnis rule.For skema keseluruhan weightage dari semua aturan bisnis tidak boleh melebihi 100</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
+          <context context-type="linenumber">91</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="enabled" datatype="html">
+        <source>Enabled</source>
+        <target>Diaktifkan</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
+          <context context-type="linenumber">95</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="type_rule_name_to_add" datatype="html">
+        <source>Type rule name to add</source>
+        <target>Ketik nama aturan untuk menambahkan</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
+          <context context-type="linenumber">100</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="add_br_rule" datatype="html">
+        <source>Add new business rule</source>
+        <target>Tambahkan aturan bisnis baru</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
+          <context context-type="linenumber">103</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rule_type" datatype="html">
+        <source>Rule type</source>
+        <target>jenis aturan</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">26</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rule_type_missing_msg" datatype="html">
+        <source>Please enter rule type</source>
+        <target>Masukkan jenis aturan</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">26</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="weightage_missing_msg" datatype="html">
+        <source>Please enter Weightage</source>
+        <target>Masukkan weightage</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">47</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="category_id_missing_msg" datatype="html">
+        <source>Please enter Category Id</source>
+        <target>Masukkan Kategori Id</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">47</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rule_name_desc" datatype="html">
+        <source>Rule name (Description)</source>
+        <target>nama aturan (Keterangan)</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">67</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="error_message" datatype="html">
+        <source>Error message</source>
+        <target>Pesan eror</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">71</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="fields" datatype="html">
+        <source>Fields</source>
+        <target>Fields</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="field" datatype="html">
+        <source>Field</source>
+        <target>Bidang</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="match" datatype="html">
+        <source>Match</source>
+        <target>Pertandingan</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="exclusions" datatype="html">
+        <source>Exclusions</source>
+        <target>pengecualian</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
+          <context context-type="linenumber">24</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="pls_select_value" datatype="html">
+        <source>Please select value</source>
+        <target>Silakan pilih nilai</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
+          <context context-type="linenumber">72</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="nothing_to_see_here" datatype="html">
+        <source>Nothing to see here</source>
+        <target>Tidak ada yang bisa dilihat di sini</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
+          <context context-type="linenumber">88</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="type_inside_search_box_to_find_fields" datatype="html">
+        <source>Type inside the search box to find fields</source>
+        <target>Ketik di dalam kotak pencarian untuk menemukan ladang</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
+          <context context-type="linenumber">88</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="master_record_parameters" datatype="html">
+        <source>Master record parameters</source>
+        <target>parameter rekaman master</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
+          <context context-type="linenumber">97</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="parameter" datatype="html">
+        <source>Parameter</source>
+        <target>Parameter</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
+          <context context-type="linenumber">105</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="attribute" datatype="html">
+        <source>Attribute</source>
+        <target>Atribut</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
+          <context context-type="linenumber">108</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="pls_select_field" datatype="html">
+        <source>Please select field</source>
+        <target>Silakan pilih bidang</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
+          <context context-type="linenumber">184</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="type_inside_search_box_to_find_master" datatype="html">
+        <source>Type inside the search box to find master records</source>
+        <target>Ketik di dalam kotak pencarian untuk menemukan catatan master</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
+          <context context-type="linenumber">195</context>
+        </context-group>
+      </trans-unit>
     </body>
   </file>
 </xliff>

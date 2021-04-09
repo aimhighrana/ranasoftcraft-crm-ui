@@ -199,7 +199,7 @@
       </trans-unit>
       <trans-unit id="business_rule" datatype="html">
         <source>Business rule</source>
-        <target>business_rule</target>
+        <target>قاعدة العمل</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
           <context context-type="linenumber">84</context>
@@ -211,7 +211,7 @@
       </trans-unit>
       <trans-unit id="category" datatype="html">
         <source>Category</source>
-        <target>category</target>
+        <target>فئة</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
           <context context-type="linenumber">85</context>
@@ -223,7 +223,7 @@
       </trans-unit>
       <trans-unit id="br_category_tooltip_msg" datatype="html">
         <source>Dimension of data quality to be measured</source>
-        <target>br_category_tooltip_msg</target>
+        <target>البعد من جودة البيانات التي يتم قياسها</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
           <context context-type="linenumber">86</context>
@@ -231,7 +231,7 @@
       </trans-unit>
       <trans-unit id="weightage" datatype="html">
         <source>Weightage</source>
-        <target>weightage</target>
+        <target>الترجيح</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
           <context context-type="linenumber">89</context>
@@ -243,7 +243,7 @@
       </trans-unit>
       <trans-unit id="br_weightage_tooltip_msg" datatype="html">
         <source>Score assigned to a record upon successful validation of a business rule.For a schema total weightage of all the business rules must not exceed 100</source>
-        <target>br_weightage_tooltip_msg</target>
+        <target>يسجل المخصصة الى مستوى قياسي عند التحقق من صحة الناجح لأعمال rule.For والترجيح مجموعه مخطط لجميع قواعد العمل يجب ألا يتجاوز 100</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
           <context context-type="linenumber">91</context>
@@ -251,7 +251,7 @@
       </trans-unit>
       <trans-unit id="enabled" datatype="html">
         <source>Enabled</source>
-        <target>enabled</target>
+        <target>تمكين</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
           <context context-type="linenumber">95</context>
@@ -259,7 +259,7 @@
       </trans-unit>
       <trans-unit id="type_rule_name_to_add" datatype="html">
         <source>Type rule name to add</source>
-        <target>type_rule_name_to_add</target>
+        <target>اكتب اسم القاعدة لإضافة</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
           <context context-type="linenumber">100</context>
@@ -267,7 +267,7 @@
       </trans-unit>
       <trans-unit id="add_br_rule" datatype="html">
         <source>Add new business rule</source>
-        <target>add_br_rule</target>
+        <target>إضافة قاعدة جديدة للأعمال</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
           <context context-type="linenumber">103</context>
@@ -275,7 +275,7 @@
       </trans-unit>
       <trans-unit id="rule_type" datatype="html">
         <source>Rule type</source>
-        <target>rule_type</target>
+        <target>نوع القاعدة</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
           <context context-type="linenumber">26</context>
@@ -283,7 +283,7 @@
       </trans-unit>
       <trans-unit id="rule_type_missing_msg" datatype="html">
         <source>Please enter rule type</source>
-        <target>rule_type_missing_msg</target>
+        <target>الرجاء إدخال نوع الحكم</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
           <context context-type="linenumber">26</context>
@@ -291,7 +291,7 @@
       </trans-unit>
       <trans-unit id="weightage_missing_msg" datatype="html">
         <source>Please enter Weightage</source>
-        <target>weightage_missing_msg</target>
+        <target>الرجاء إدخال الترجيح</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
           <context context-type="linenumber">47</context>
@@ -299,7 +299,7 @@
       </trans-unit>
       <trans-unit id="category_id_missing_msg" datatype="html">
         <source>Please enter Category Id</source>
-        <target>category_id_missing_msg</target>
+        <target>الرجاء إدخال رقم تعريف فئة</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
           <context context-type="linenumber">47</context>
@@ -307,15 +307,15 @@
       </trans-unit>
       <trans-unit id="rule_name_desc" datatype="html">
         <source>Rule name (Description)</source>
-        <target>rule_name_desc</target>
+        <target>اسم القاعدة (الوصف)</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
           <context context-type="linenumber">67</context>
         </context-group>
       </trans-unit>
       <trans-unit id="error_message" datatype="html">
-        <source>Rule name (Description)</source>
-        <target>error_message</target>
+        <source>Error message</source>
+        <target>رسالة خطأ</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
           <context context-type="linenumber">71</context>
@@ -323,7 +323,7 @@
       </trans-unit>
       <trans-unit id="fields" datatype="html">
         <source>Fields</source>
-        <target>fields</target>
+        <target>مجالات</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
           <context context-type="linenumber">7</context>
@@ -331,7 +331,7 @@
       </trans-unit>
       <trans-unit id="field" datatype="html">
         <source>Field</source>
-        <target>field</target>
+        <target>حقل</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
           <context context-type="linenumber">15</context>
@@ -339,7 +339,7 @@
       </trans-unit>
       <trans-unit id="match" datatype="html">
         <source>Match</source>
-        <target>match</target>
+        <target>مباراة</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
           <context context-type="linenumber">18</context>
@@ -351,7 +351,7 @@
       </trans-unit>
       <trans-unit id="exclusions" datatype="html">
         <source>Exclusions</source>
-        <target>exclusions</target>
+        <target>الاستثناءات</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
           <context context-type="linenumber">24</context>
@@ -363,7 +363,7 @@
       </trans-unit>
       <trans-unit id="pls_select_value" datatype="html">
         <source>Please select value</source>
-        <target>pls_select_value</target>
+        <target>الرجاء تحديد قيمة</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
           <context context-type="linenumber">72</context>
@@ -371,7 +371,7 @@
       </trans-unit>
       <trans-unit id="nothing_to_see_here" datatype="html">
         <source>Nothing to see here</source>
-        <target>nothing_to_see_here</target>
+        <target>لا شيء لنرى هنا</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
           <context context-type="linenumber">88</context>
@@ -379,7 +379,7 @@
       </trans-unit>
       <trans-unit id="type_inside_search_box_to_find_fields" datatype="html">
         <source>Type inside the search box to find fields</source>
-        <target>type_inside_search_box_to_find_fields</target>
+        <target>اكتب داخل مربع البحث للعثور على حقول</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
           <context context-type="linenumber">88</context>
@@ -387,7 +387,7 @@
       </trans-unit>
       <trans-unit id="master_record_parameters" datatype="html">
         <source>Master record parameters</source>
-        <target>master_record_parameters</target>
+        <target>المعلمات السجل الرئيسي</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
           <context context-type="linenumber">97</context>
@@ -395,7 +395,7 @@
       </trans-unit>
       <trans-unit id="parameter" datatype="html">
         <source>Parameter</source>
-        <target>parameter</target>
+        <target>معامل</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
           <context context-type="linenumber">105</context>
@@ -403,7 +403,7 @@
       </trans-unit>
       <trans-unit id="attribute" datatype="html">
         <source>Attribute</source>
-        <target>attribute</target>
+        <target>ينسب</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
           <context context-type="linenumber">108</context>
@@ -411,7 +411,7 @@
       </trans-unit>
       <trans-unit id="pls_select_field" datatype="html">
         <source>Please select field</source>
-        <target>pls_select_field</target>
+        <target>يرجى تحديد الحقل</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
           <context context-type="linenumber">184</context>
@@ -419,7 +419,7 @@
       </trans-unit>
       <trans-unit id="type_inside_search_box_to_find_master" datatype="html">
         <source>Type inside the search box to find master records</source>
-        <target>type_inside_search_box_to_find_master</target>
+        <target>اكتب داخل مربع البحث للعثور على السجلات الرئيسية</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
           <context context-type="linenumber">195</context>

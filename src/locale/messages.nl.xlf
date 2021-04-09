@@ -197,6 +197,234 @@
           <context context-type="linenumber">426</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="business_rule" datatype="html">
+        <source>Business rule</source>
+        <target>business rule</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
+          <context context-type="linenumber">84</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="category" datatype="html">
+        <source>Category</source>
+        <target>Categorie</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
+          <context context-type="linenumber">85</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">53</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="br_category_tooltip_msg" datatype="html">
+        <source>Dimension of data quality to be measured</source>
+        <target>Kwaliteitsdimensie gegevens te meten</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
+          <context context-type="linenumber">86</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="weightage" datatype="html">
+        <source>Weightage</source>
+        <target>weightage</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
+          <context context-type="linenumber">89</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">40</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="br_weightage_tooltip_msg" datatype="html">
+        <source>Score assigned to a record upon successful validation of a business rule.For a schema total weightage of all the business rules must not exceed 100</source>
+        <target>Score die aan een record na succesvolle validatie van een bedrijf rule.For een schema totaal weightage van alle business rules mag niet meer dan 100</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
+          <context context-type="linenumber">91</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="enabled" datatype="html">
+        <source>Enabled</source>
+        <target>Ingeschakeld</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
+          <context context-type="linenumber">95</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="type_rule_name_to_add" datatype="html">
+        <source>Type rule name to add</source>
+        <target>Typ regel naam aan toe te voegen</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
+          <context context-type="linenumber">100</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="add_br_rule" datatype="html">
+        <source>Add new business rule</source>
+        <target>Voeg nieuwe business rule</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
+          <context context-type="linenumber">103</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rule_type" datatype="html">
+        <source>Rule type</source>
+        <target>regeltype</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">26</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rule_type_missing_msg" datatype="html">
+        <source>Please enter rule type</source>
+        <target>Vul regeltype</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">26</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="weightage_missing_msg" datatype="html">
+        <source>Please enter Weightage</source>
+        <target>Vul weightage</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">47</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="category_id_missing_msg" datatype="html">
+        <source>Please enter Category Id</source>
+        <target>Vul Categorie Id</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">47</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rule_name_desc" datatype="html">
+        <source>Rule name (Description)</source>
+        <target>Regelnaam (Beschrijving)</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">67</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="error_message" datatype="html">
+        <source>Error message</source>
+        <target>foutmelding</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
+          <context context-type="linenumber">71</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="fields" datatype="html">
+        <source>Fields</source>
+        <target>Fields</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="field" datatype="html">
+        <source>Field</source>
+        <target>Veld</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="match" datatype="html">
+        <source>Match</source>
+        <target>Wedstrijd</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="exclusions" datatype="html">
+        <source>Exclusions</source>
+        <target>uitsluitingen</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
+          <context context-type="linenumber">24</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="pls_select_value" datatype="html">
+        <source>Please select value</source>
+        <target>Kies een waarde</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
+          <context context-type="linenumber">72</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="nothing_to_see_here" datatype="html">
+        <source>Nothing to see here</source>
+        <target>Niets te zien hier</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
+          <context context-type="linenumber">88</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="type_inside_search_box_to_find_fields" datatype="html">
+        <source>Type inside the search box to find fields</source>
+        <target>Typ in het zoekvak om velden te vinden</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
+          <context context-type="linenumber">88</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="master_record_parameters" datatype="html">
+        <source>Master record parameters</source>
+        <target>Stamrecord parameters</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
+          <context context-type="linenumber">97</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="parameter" datatype="html">
+        <source>Parameter</source>
+        <target>Parameter</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
+          <context context-type="linenumber">105</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="attribute" datatype="html">
+        <source>Attribute</source>
+        <target>Attribuut</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
+          <context context-type="linenumber">108</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="pls_select_field" datatype="html">
+        <source>Please select field</source>
+        <target>Selecteer veld</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
+          <context context-type="linenumber">184</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="type_inside_search_box_to_find_master" datatype="html">
+        <source>Type inside the search box to find master records</source>
+        <target>Typ in het zoekvak om stamrecords vinden</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
+          <context context-type="linenumber">195</context>
+        </context-group>
+      </trans-unit>
     </body>
   </file>
 </xliff>
