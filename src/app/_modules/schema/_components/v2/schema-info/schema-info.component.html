@@ -29,6 +29,7 @@
             <ng-template mat-tab-label>
                 Summary
             </ng-template>
+
             <div class="f-col summary-root">
                 <form [formGroup]="schemaSummaryForm">
                     <lib-input (valueChange)="onChangeSchemaDescription($event)" class="mdo-scheduler-input" [formControlName]="'schemaName'" type="text" [value]="schemaDetails?.schemaDescription ? schemaDetails.schemaDescription : ''" placeholder="Schema name" i18n-label="@@schema_name" label="Schema name" (emitBlurEvent)="updateSchemaInfo($event)"></lib-input>
@@ -38,7 +39,7 @@
                         <div class="f-row slider-row">
                             <lib-range-slider class="range-slider" color="primary" thumbLabel formControlName="schemaThreshold"
                                 [value]="schemaDetails?.schemaThreshold ? schemaDetails.schemaThreshold : 0"
-                                (change)="updateSchemaInfo(schemaDetails.schemaDescription, $event)"></lib-range-slider>
+                                (valueChange)="updateSchemaInfo(schemaDetails.schemaDescription, {value:$event})"></lib-range-slider>
                             <span class="f-col-spacer-half"></span>
                             <div>{{schemaSummaryForm.controls.schemaThreshold.value}}%</div>
                         </div>
@@ -59,9 +60,9 @@
                                 <mat-list-item *ngFor="let variant of variantDetails">
                                     <div mat-line class="info-link" (click)="editDataScope(variant.variantId)">{{variant.variantName}}</div>
                                     <span class="f-spacer"></span>
-                                    <button mat-button (click)="deleteVariant(variant.variantId)">
+                                    <lib-button (click)="deleteVariant(variant.variantId)">
                                         <mat-icon fontSet="mdo-icons">recycle-bin</mat-icon>
-                                    </button>
+                                    </lib-button>
                                 </mat-list-item>
                             </mat-nav-list>
                         </mat-expansion-panel>
