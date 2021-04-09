@@ -1,14 +1,14 @@
-.root {
+div.root {
   user-select: none;
   height: 100%;
   padding: 0 16px;
-  overflow: hidden;
 
   .task-inbox {
     height: calc(100% - 42px - 36px * 2 - 8px * 5);
 
     table.mat-table {
       width: 100%;
+      overflow: auto;
 
       td.mat-cell {
         border-right: none;
