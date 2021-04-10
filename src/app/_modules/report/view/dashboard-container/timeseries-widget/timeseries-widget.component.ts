@@ -4,7 +4,7 @@ import { TimeDisplayFormat, ChartDataSets, ChartOptions, ChartLegendLabelItem } 
 import { BaseChartDirective, Label } from 'ng2-charts';
 import * as moment from 'moment';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { ButtonArr, ChartLegend, ConditionOperator, Criteria, SeriesWith, TimeSeriesWidget, WidgetColorPalette } from '../../../_models/widget';
 import * as zoomPlugin from 'chartjs-plugin-zoom';
 import { BlockType } from '@modules/admin/_components/module/business-rules/user-defined-rule/udr-cdktree.service';
@@ -137,9 +137,12 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
 
   isLoading = true ;
 
+  subscriptions: Subscription[] = [];
+
   ngOnDestroy(): void {
-    this.widgetInf.complete();
-    this.widgetInf.unsubscribe();
+    this.subscriptions.forEach(sub => {
+      sub.unsubscribe();
+    });
   }
 
   ngOnChanges(changes: import('@angular/core').SimpleChanges): void {
@@ -171,7 +174,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
 
 
     this.getTimeSeriesMetadata();
-    this.widgetInf.subscribe(metadata => {
+    const widgeInf = this.widgetInf.subscribe(metadata => {
       if (metadata) {
         this.getwidgetData(this.widgetId);
         if(this.isLoading) {
@@ -181,12 +184,14 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         }
       }
     });
+    this.subscriptions.push(widgeInf);
     // after color defined update on widget
-    this.afterColorDefined.subscribe(res => {
+    const afterColorDefined = this.afterColorDefined.subscribe(res => {
       if (res) {
         this.updateColorBasedOnDefined(res);
       }
     });
+    this.subscriptions.push(afterColorDefined);
   }
 
   /**
@@ -310,7 +315,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
    */
 
   getTimeSeriesMetadata(): void {
-    this.widgetService.getTimeseriesWidgetInfo(this.widgetId).subscribe(res => {
+    const timeSeriesWidgetInfo = this.widgetService.getTimeseriesWidgetInfo(this.widgetId).subscribe(res => {
       this.widgetInf.next(res);
       if (res.timeSeries.fieldId === res.timeSeries.groupWith) {
         this.isGroupByChart = true;
@@ -318,6 +323,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         this.isGroupByChart = false;
       }
     }, error => console.error(`Error : ${error}`));
+    this.subscriptions.push(timeSeriesWidgetInfo);
   }
 
   /**
@@ -337,7 +343,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
           type: 'time',
           time: {
             unit: this.timeseriesData.timeSeries.seriesWith
-        },
+          },
           scaleLabel: {
             display: true,
             labelString: this.timeseriesData.timeSeries.xAxisLabel ? this.timeseriesData.timeSeries.xAxisLabel : ''
@@ -350,25 +356,25 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
           }, ticks
         }]
       };
-    }else{
-        this.timeSeriesOption.scales = {
-          xAxes: [{
-            type: 'time',
-            time: {
-              unit: this.timeseriesData.timeSeries.seriesWith
+    } else {
+      this.timeSeriesOption.scales = {
+        xAxes: [{
+          type: 'time',
+          time: {
+            unit: this.timeseriesData.timeSeries.seriesWith
           },
-            scaleLabel: {
-              display: true,
-              labelString: this.timeseriesData.timeSeries.xAxisLabel ? this.timeseriesData.timeSeries.xAxisLabel : ''
-            },
-          }],
-          yAxes: [{
-            scaleLabel: {
-              display: true,
-              labelString: this.timeseriesData.timeSeries.yAxisLabel ? this.timeseriesData.timeSeries.yAxisLabel : ''
-            },
-          }]
-        };
+          scaleLabel: {
+            display: true,
+            labelString: this.timeseriesData.timeSeries.xAxisLabel ? this.timeseriesData.timeSeries.xAxisLabel : ''
+          },
+        }],
+        yAxes: [{
+          scaleLabel: {
+            display: true,
+            labelString: this.timeseriesData.timeSeries.yAxisLabel ? this.timeseriesData.timeSeries.yAxisLabel : ''
+          },
+        }]
+      };
     }
     const hasBtn = this.dateFilters.filter(fil => fil.value === (this.timeseriesData.timeSeries.startDate))[0];
     if (hasBtn) {
@@ -378,16 +384,6 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       this.dateFilters.splice(index, 0, hasBtn);
       this.updateForm('date', hasBtn);
     }
-
-    /**
-     * SET TITLE OF CHART
-     */
-
-    this.timeSeriesOption.title = {
-      display: true,
-      text: this.timeseriesData.widgetName
-    }
-
   }
 
 
@@ -473,7 +469,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
    */
   getwidgetData(widgetId: number): void {
     this.dataSet = [{ data: [] }];
-    this.widgetService.getWidgetData(String(widgetId), this.filterCriteria).subscribe(response => {
+    const widgetdata = this.widgetService.getWidgetData(String(widgetId), this.filterCriteria).subscribe(response => {
       if (response !== null) {
         const metadata = this.widgetInf.getValue() ? this.widgetInf.getValue() : {} as TimeSeriesWidget;
         if (this.isGroupByChart) {
@@ -502,6 +498,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         }
       }
     });
+    this.subscriptions.push(widgetdata);
   }
 
   transformDataSets(data: any): any {

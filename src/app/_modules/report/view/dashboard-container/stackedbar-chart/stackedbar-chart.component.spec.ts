@@ -155,6 +155,11 @@ describe('StackedbarChartComponent', () => {
     const test = new StackBarChartWidget();
     test.orientation = Orientation.VERTICAL;
     component.stackBarWidget.next(test);
+    const eleRef = htmlnative.getElementsByTagName('canvas')[0];
+    const baseChart = new BaseChartDirective(eleRef[0], null);
+    baseChart.chart = {canvas: eleRef, getElementAtEvent:(e: any) => [{_datasetIndex:0, _index: 0} as any] } as Chart;
+    baseChart.chart.options = {scales : {xAxes: [{}], yAxes : [{}]}};
+    component.chart = baseChart;
     component.getBarConfigurationData();
     expect('bar').toBe(component.orientation);
   }));
@@ -164,9 +169,14 @@ describe('StackedbarChartComponent', () => {
     test.isEnableLegend = true;
     test.legendPosition = PositionType.TOP;
     component.stackBarWidget.next(test);
+    const eleRef = htmlnative.getElementsByTagName('canvas')[0];
+    const baseChart = new BaseChartDirective(eleRef[0], null);
+    baseChart.chart = {canvas: eleRef, getElementAtEvent:(e: any) => [{_datasetIndex:0, _index: 0} as any] } as Chart;
+    baseChart.chart.options = {scales : {xAxes: [{}], yAxes : [{}]}};
+    component.chart = baseChart;
     component.getBarConfigurationData();
     expect(component.stackBarWidget.getValue().isEnableLegend).toBe(true);
-    expect(component.stackBarWidget.getValue().legendPosition).toBe(component.barChartOptions.legend.position);
+    expect(component.stackBarWidget.getValue().legendPosition).toBe(component.chart.chart.options.legend.position);
 
   }));
 
@@ -176,10 +186,15 @@ describe('StackedbarChartComponent', () => {
     test.datalabelsPosition = AlignPosition.CENTER;
     test.anchorPosition = AnchorAlignPosition.CENTER;
     component.stackBarWidget.next(test);
+    const eleRef = htmlnative.getElementsByTagName('canvas')[0];
+    const baseChart = new BaseChartDirective(eleRef[0], null);
+    baseChart.chart = {canvas: eleRef, getElementAtEvent:(e: any) => [{_datasetIndex:0, _index: 0} as any] } as Chart;
+    baseChart.chart.options = {scales : {xAxes: [{}], yAxes : [{}]}};
+    component.chart = baseChart;
     component.getBarConfigurationData();
     expect(component.stackBarWidget.getValue().isEnableDatalabels).toBe(true);
-    expect(component.stackBarWidget.getValue().datalabelsPosition).toBe(component.barChartOptions.plugins.datalabels.align.toString());
-    expect(component.stackBarWidget.getValue().anchorPosition).toBe(component.barChartOptions.plugins.datalabels.anchor.toString());
+    expect(component.stackBarWidget.getValue().datalabelsPosition).toBe(component.chart.chart.options.plugins.datalabels.align.toString());
+    expect(component.stackBarWidget.getValue().anchorPosition).toBe(component.chart.chart.options.plugins.datalabels.anchor.toString());
 
   }));
 
@@ -189,10 +204,15 @@ describe('StackedbarChartComponent', () => {
     test.xAxisLabel = 'X';
     test.yAxisLabel = 'Y';
     component.stackBarWidget.next(test);
+    const eleRef = htmlnative.getElementsByTagName('canvas')[0];
+    const baseChart = new BaseChartDirective(eleRef[0], null);
+    baseChart.chart = {canvas: eleRef, getElementAtEvent:(e: any) => [{_datasetIndex:0, _index: 0} as any] } as Chart;
+    baseChart.chart.options = {scales : {xAxes: [{}], yAxes : [{}]}};
+    component.chart = baseChart;
     component.getBarConfigurationData();
     expect(component.stackBarWidget.getValue().displayAxisLabel).toBe(true);
-    expect(component.stackBarWidget.getValue().xAxisLabel).toBe(component.barChartOptions.scales.xAxes[0].scaleLabel.labelString);
-    expect(component.stackBarWidget.getValue().yAxisLabel).toBe(component.barChartOptions.scales.yAxes[0].scaleLabel.labelString);
+    expect(component.stackBarWidget.getValue().xAxisLabel).toBe(component.chart.chart.options.scales.xAxes[0].scaleLabel.labelString);
+    expect(component.stackBarWidget.getValue().yAxisLabel).toBe(component.chart.chart.options.scales.yAxes[0].scaleLabel.labelString);
   }));
 
   it(`setChartAxisAndScaleRange(), should set chart axis and scale on chart option`,async(()=>{
@@ -205,16 +225,21 @@ describe('StackedbarChartComponent', () => {
     barWidget.xAxisLabel = 'Material Type';
     barWidget.yAxisLabel = 'Value';
     component.stackBarWidget.next(barWidget);
+    const eleRef = htmlnative.getElementsByTagName('canvas')[0];
+    const baseChart = new BaseChartDirective(eleRef[0], null);
+    baseChart.chart = {canvas: eleRef, getElementAtEvent:(e: any) => [{_datasetIndex:0, _index: 0} as any] } as Chart;
+    baseChart.chart.options = {scales : {xAxes: [{}], yAxes : [{}]}};
+    component.chart = baseChart;
 
     const ticks = {min:barWidget.scaleFrom, max:barWidget.scaleTo, stepSize:barWidget.stepSize};
     // call actual component function
     component.setChartAxisAndScaleRange();
 
     // asserts & expect
-    expect(component.barChartOptions.scales.yAxes[0].ticks).toEqual(ticks);
+    expect(component.chart.chart.options.scales.yAxes[0].ticks).toEqual(ticks);
     // expect(component.barChartOptions.scales.xAxes[0].ticks).toEqual(undefined);
-    expect(component.barChartOptions.scales.yAxes[0].scaleLabel.labelString).toEqual(barWidget.yAxisLabel);
-    expect(component.barChartOptions.scales.xAxes[0].scaleLabel.labelString).toEqual(barWidget.xAxisLabel);
+    expect(component.chart.chart.options.scales.yAxes[0].scaleLabel.labelString).toEqual(barWidget.yAxisLabel);
+    expect(component.chart.chart.options.scales.xAxes[0].scaleLabel.labelString).toEqual(barWidget.xAxisLabel);
 
     // scenario  2
     barWidget.orientation = Orientation.HORIZONTAL;
@@ -224,10 +249,10 @@ describe('StackedbarChartComponent', () => {
     component.setChartAxisAndScaleRange();
 
     // asserts & expect
-    expect(component.barChartOptions.scales.xAxes[0].ticks).toEqual(ticks);
+    expect(component.chart.chart.options.scales.xAxes[0].ticks).toEqual(ticks);
     // expect(component.barChartOptions.scales.yAxes[0].ticks).toEqual(undefined);
-    expect(component.barChartOptions.scales.yAxes[0].scaleLabel.labelString).toEqual(barWidget.yAxisLabel);
-    expect(component.barChartOptions.scales.xAxes[0].scaleLabel.labelString).toEqual(barWidget.xAxisLabel);
+    expect(component.chart.chart.options.scales.yAxes[0].scaleLabel.labelString).toEqual(barWidget.yAxisLabel);
+    expect(component.chart.chart.options.scales.xAxes[0].scaleLabel.labelString).toEqual(barWidget.xAxisLabel);
 
     // scenario  3
     const data = new StackBarChartWidget();
@@ -239,8 +264,8 @@ describe('StackedbarChartComponent', () => {
     // asserts & expect
     // expect(component.barChartOptions.scales.xAxes[0].ticks).toEqual(undefined);
     // expect(component.barChartOptions.scales.yAxes[0].ticks).toEqual(undefined);
-    expect(component.barChartOptions.scales.yAxes[0].scaleLabel.labelString).toEqual('');
-    expect(component.barChartOptions.scales.xAxes[0].scaleLabel.labelString).toEqual(data.xAxisLabel);
+    expect(component.chart.chart.options.scales.yAxes[0].scaleLabel.labelString).toEqual('');
+    expect(component.chart.chart.options.scales.xAxes[0].scaleLabel.labelString).toEqual(data.xAxisLabel);
   }));
 
 
@@ -289,12 +314,12 @@ describe('StackedbarChartComponent', () => {
   }));
 
   it('getFieldsMetadaDescaxis1(), get description of axis 1', async(()=>{
-    const res = [{key:{STATUS__C:'',LEVEL__C:''},doc_count:3,'top_hits#items':{hits:{total:{value:3,relation:'eq'},max_score:1.0,hits:[{_index:'localhost_3901_do_0',_type:'_doc',_id:'TEMP003',_score:1.0,_source:{hdvs:{STATUS__C:{fId:'STATUS__C',lls:{EN:{label:'Status'}},vls:{EN:{valueTxt:''}},vc:[{c:''}]},LEVEL__C:{fId:'LEVEL__C',lls:{EN:{label:'Level'}},vls:{EN:{valueTxt:''}},vc:[{c:''}]}}}}]}}},{key:{STATUS__C:'',LEVEL__C:'Level 3'},doc_count:2,'top_hits#items':{hits:{total:{value:2,relation:'eq'},max_score:1.0,hits:[{_index:'localhost_3901_do_0',_type:'_doc',_id:'TMP000000000000009',_score:1.0,_source:{hdvs:{STATUS__C:{fId:'STATUS__C',loc:'',lls:{EN:{label:'Status'}},ddv:[],msdv:[],vls:{EN:{valueTxt:''}},vc:[{c:''}]},LEVEL__C:{fId:'LEVEL__C',loc:'',lls:{EN:{label:'Level'}},ddv:[{val:'Level 3: $100K - $1MM',lang:'EN'}],msdv:[],vls:{EN:{valueTxt:'Level 3'}},vc:[{c:'Level 3'}]}}}}]}}}];
+    const res = [{key:{CLAIMED:"n",MASSPROCESSING_ID:"432651935700873253"},'top_hits#items':{hits:{hits:[{_index:"localhost_workflow_do_0_en",_type:"_doc",_source:{staticFields:{CLAIMED:{vc:[{c:'n',t:"No"}]},MASSPROCESSING_ID:{vc:[{c:"432651935700873253"}]}}},_id:"462107749703085781_3153515",_score:3.77689}]}}}]
 
     component.arrayBuckets = res;
-    component.getFieldsMetadaDescaxis1('LEVEL__C');
+    component.getFieldsMetadaDescaxis1('MASSPROCESSING_ID');
 
-    expect(component.codeTextaxis1['Level 3']).toEqual(undefined);
+    expect(component.codeTextaxis1['432651935700873253']).toEqual('432651935700873253');
 
 
   }));

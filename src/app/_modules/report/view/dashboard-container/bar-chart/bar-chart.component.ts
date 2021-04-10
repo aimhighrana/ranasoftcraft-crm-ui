@@ -82,12 +82,16 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     scales : {
       xAxes : [
         {
-          display : true
+          scaleLabel:{
+            display : false
+          }
         }
       ],
       yAxes : [
         {
-          display : true
+          scaleLabel:{
+            display : false
+          }
         }
       ]
     }
@@ -154,31 +158,35 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
   }
 
   public getBarConfigurationData(): void {
-      // Bar orientation
-      this.orientation = this.barWidget.getValue().orientation === 'VERTICAL' ? 'bar' : 'horizontalBar';
+    // Bar orientation
+    this.orientation = this.barWidget.getValue().orientation === 'VERTICAL' ? 'bar' : 'horizontalBar';
 
-      // if showLegend flag will be true it show legend on Bar widget
-        if (this.barWidget.getValue().isEnableLegend) {
-          this.barChartOptions.legend = {
+    // if showLegend flag will be true it show legend on Bar widget
+    if (this.barWidget.getValue().isEnableLegend) {
+      this.chart.chart.options = {
+        legend: {
+          display: true,
+          position: this.barWidget.getValue().legendPosition
+        }
+      }
+    }
+
+    // if showCountOnStack flag will be true it show datalables on stack and position of datalables also configurable
+    if (this.barWidget.getValue().isEnableDatalabels) {
+      this.chart.chart.options = {
+        plugins: {
+          datalabels: {
             display: true,
-            position: this.barWidget.getValue().legendPosition
+            align: this.barWidget.getValue().datalabelsPosition,
+            anchor: this.barWidget.getValue().datalabelsPosition,
           }
         }
-        // if showCountOnStack flag will be true it show datalables on stack and position of datalables also configurable
-        if (this.barWidget.getValue().isEnableDatalabels) {
-          this.barChartOptions.plugins = {
-            ChartDataLables,
-            datalabels: {
-              align: this.barWidget.getValue().datalabelsPosition,
-              anchor: this.barWidget.getValue().datalabelsPosition,
-              display:'auto'
-            }
-          }
-        }
-        // set scale range and axis lebels
-        this.setChartAxisAndScaleRange();
+      }
+    }
+    // set scale range and axis lebels
+    this.setChartAxisAndScaleRange();
 
-        // Bar widget color
+      // Bar widget color
       // this.barChartColors = [{
       //   backgroundColor: this.widgetColorPalette && this.widgetColorPalette.colorPalettes ? this.widgetColorPalette.colorPalettes[0].colorCode : '#8CF5A9',
       //   borderColor: this.widgetColorPalette && this.widgetColorPalette.colorPalettes ? this.widgetColorPalette.colorPalettes[0].colorCode : '#8CF5A9',
@@ -492,7 +500,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
         && this.barWidget.getValue().stepSize !== null && this.barWidget.getValue().stepSize !== undefined) {
         const ticks = {min:this.barWidget.getValue().scaleFrom, max:this.barWidget.getValue().scaleTo, stepSize:this.barWidget.getValue().stepSize};
         if(this.barWidget.getValue().orientation === Orientation.HORIZONTAL) {
-          this.barChartOptions.scales = {
+          this.chart.chart.options.scales = {
             xAxes: [{
               scaleLabel: {
                 display: true,
@@ -510,7 +518,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
             }]
           }
         } else {
-          this.barChartOptions.scales = {
+          this.chart.chart.options.scales = {
             xAxes: [{
               scaleLabel: {
                 display: true,
@@ -529,13 +537,13 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
           }
         }
     } else {
-      this.barChartOptions.scales = {
+      this.chart.chart.options.scales = {
         xAxes: [{
           scaleLabel: {
             display: true,
             labelString: this.barWidget.getValue().xAxisLabel ? this.barWidget.getValue().xAxisLabel : ''
           },
-          ticks : {
+          ticks: {
             padding: this.barWidget.getValue().isEnableDatalabels && (this.barWidget.getValue().orientation === Orientation.VERTICAL) && (this.barWidget.getValue().datalabelsPosition === 'start' || this.barWidget.getValue().datalabelsPosition === 'center') ?  20 : 0
           }
         }],
@@ -544,13 +552,12 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
             display: true,
             labelString: this.barWidget.getValue().yAxisLabel ? this.barWidget.getValue().yAxisLabel : ''
           },
-          ticks : {
+          ticks: {
             padding: this.barWidget.getValue().isEnableDatalabels && (this.barWidget.getValue().orientation === Orientation.HORIZONTAL) && (this.barWidget.getValue().datalabelsPosition === 'start' || this.barWidget.getValue().datalabelsPosition === 'center') ?  40 : 0
           }
-        }]
+        }],
       }
     }
-
   }
 
   /**

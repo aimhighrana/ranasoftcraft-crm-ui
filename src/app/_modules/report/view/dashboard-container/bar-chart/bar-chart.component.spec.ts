@@ -24,7 +24,7 @@ describe('BarChartComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ BarChartComponent ],
+      declarations: [ BarChartComponent, BaseChartDirective ],
       imports:[AppMaterialModuleForSpec,HttpClientTestingModule,MatMenuModule, SharedModule],
       providers:[
         {
@@ -76,6 +76,11 @@ describe('BarChartComponent', () => {
     test.orientation = Orientation.HORIZONTAL;
     test.legendPosition = PositionType.TOP;
     component.barWidget.next(test);
+    const eleRef = htmlnative.getElementsByTagName('canvas')[0];
+    const baseChart = new BaseChartDirective(eleRef[0], null);
+    baseChart.chart = {canvas: eleRef, getElementAtEvent:(e: any) => [{_datasetIndex:0, _index: 0} as any] } as Chart;
+    baseChart.chart.options = {scales : {xAxes: [{}], yAxes : [{}]}};
+    component.chart = baseChart;
     component.getBarConfigurationData();
     expect('horizontalBar').toBe(component.orientation);
   }));
@@ -85,9 +90,14 @@ describe('BarChartComponent', () => {
     test.isEnableLegend = true;
     test.legendPosition = PositionType.TOP;
     component.barWidget.next(test);
+    const eleRef = htmlnative.getElementsByTagName('canvas')[0];
+    const baseChart = new BaseChartDirective(eleRef[0], null);
+    baseChart.chart = {canvas: eleRef, getElementAtEvent:(e: any) => [{_datasetIndex:0, _index: 0} as any] } as Chart;
+    baseChart.chart.options = {scales : {xAxes: [{}], yAxes : [{}]}};
+    component.chart = baseChart;
     component.getBarConfigurationData();
-    expect(component.barWidget.getValue().isEnableLegend).toBe(component.barChartOptions.legend.display);
-    expect(component.barWidget.getValue().legendPosition).toBe(component.barChartOptions.legend.position);
+    expect(component.barWidget.getValue().isEnableLegend).toBe(component.chart.chart.options.legend.display);
+    expect(component.barWidget.getValue().legendPosition).toBe(component.chart.chart.options.legend.position);
   }));
 
   it('should have true value for showCountOnStack flag then set align and anchor position', async ( () => {
@@ -96,10 +106,15 @@ describe('BarChartComponent', () => {
     test.datalabelsPosition = AlignPosition.CENTER;
     test.anchorPosition = AnchorAlignPosition.CENTER
     component.barWidget.next(test);
+    const eleRef = htmlnative.getElementsByTagName('canvas')[0];
+    const baseChart = new BaseChartDirective(eleRef[0], null);
+    baseChart.chart = {canvas: eleRef, getElementAtEvent:(e: any) => [{_datasetIndex:0, _index: 0} as any] } as Chart;
+    baseChart.chart.options = {scales : {xAxes: [{}], yAxes : [{}]}};
+    component.chart = baseChart;
     component.getBarConfigurationData();
     expect(component.barWidget.getValue().isEnableDatalabels).toBe(true);
-    expect(component.barWidget.getValue().datalabelsPosition).toBe(component.barChartOptions.plugins.datalabels.align.toString());
-    expect(component.barWidget.getValue().anchorPosition).toBe(component.barChartOptions.plugins.datalabels.anchor.toString());
+    expect(component.barWidget.getValue().datalabelsPosition).toBe(component.chart.chart.options.plugins.datalabels.align.toString());
+    expect(component.barWidget.getValue().anchorPosition).toBe(component.chart.chart.options.plugins.datalabels.anchor.toString());
   }));
 
   it('should have true value for displayAxisLable flag then set xAxisLabel, yAxisLabel', async (() => {
@@ -108,10 +123,15 @@ describe('BarChartComponent', () => {
     test.xAxisLabel = 'X-Axis';
     test.yAxisLabel = 'Y-Axis';
     component.barWidget.next(test);
+    const eleRef = htmlnative.getElementsByTagName('canvas')[0];
+    const baseChart = new BaseChartDirective(eleRef[0], null);
+    baseChart.chart = {canvas: eleRef, getElementAtEvent:(e: any) => [{_datasetIndex:0, _index: 0} as any] } as Chart;
+    baseChart.chart.options = {scales : {xAxes: [{}], yAxes : [{}]}};
+    component.chart = baseChart;
     component.getBarConfigurationData();
     expect(component.barWidget.getValue().displayAxisLabel).toBe(true);
-    expect(component.barWidget.getValue().xAxisLabel).toBe(component.barChartOptions.scales.xAxes[0].scaleLabel.labelString);
-    expect(component.barWidget.getValue().yAxisLabel).toBe(component.barChartOptions.scales.yAxes[0].scaleLabel.labelString);
+    expect(component.barWidget.getValue().xAxisLabel).toBe(component.chart.chart.options.scales.xAxes[0].scaleLabel.labelString);
+    expect(component.barWidget.getValue().yAxisLabel).toBe(component.chart.chart.options.scales.yAxes[0].scaleLabel.labelString);
   }));
 
   it(`setChartAxisAndScaleRange(), should set chart axis and scale on chart option`,async(()=>{
@@ -124,16 +144,21 @@ describe('BarChartComponent', () => {
     barWidget.xAxisLabel = 'Material Type';
     barWidget.yAxisLabel = 'Value';
     component.barWidget.next(barWidget);
+    const eleRef = htmlnative.getElementsByTagName('canvas')[0];
+    const baseChart = new BaseChartDirective(eleRef[0], null);
+    baseChart.chart = {canvas: eleRef, getElementAtEvent:(e: any) => [{_datasetIndex:0, _index: 0} as any] } as Chart;
+    baseChart.chart.options = {scales : {xAxes: [{}], yAxes : [{}]}};
+    component.chart = baseChart;
 
     const ticks = {min:barWidget.scaleFrom, max:barWidget.scaleTo, stepSize:barWidget.stepSize};
     // call actual component function
     component.setChartAxisAndScaleRange();
 
     // asserts & expect
-    expect(component.barChartOptions.scales.yAxes[0].ticks).toEqual(ticks);
+    expect(component.chart.chart.options.scales.yAxes[0].ticks).toEqual(ticks);
     // expect(component.barChartOptions.scales.xAxes[0].ticks).toEqual(undefined);
-    expect(component.barChartOptions.scales.yAxes[0].scaleLabel.labelString).toEqual(barWidget.yAxisLabel);
-    expect(component.barChartOptions.scales.xAxes[0].scaleLabel.labelString).toEqual(barWidget.xAxisLabel);
+    expect(component.chart.chart.options.scales.yAxes[0].scaleLabel.labelString).toEqual(barWidget.yAxisLabel);
+    expect(component.chart.chart.options.scales.xAxes[0].scaleLabel.labelString).toEqual(barWidget.xAxisLabel);
 
     // scenario  2
     barWidget.orientation = Orientation.HORIZONTAL;
@@ -143,23 +168,24 @@ describe('BarChartComponent', () => {
     component.setChartAxisAndScaleRange();
 
     // asserts & expect
-    expect(component.barChartOptions.scales.xAxes[0].ticks).toEqual(ticks);
+    expect(component.chart.chart.options.scales.xAxes[0].ticks).toEqual(ticks);
     // expect(component.barChartOptions.scales.yAxes[0].ticks).toEqual(undefined);
-    expect(component.barChartOptions.scales.yAxes[0].scaleLabel.labelString).toEqual(barWidget.yAxisLabel);
-    expect(component.barChartOptions.scales.xAxes[0].scaleLabel.labelString).toEqual(barWidget.xAxisLabel);
+    expect(component.chart.chart.options.scales.yAxes[0].scaleLabel.labelString).toEqual(barWidget.yAxisLabel);
+    expect(component.chart.chart.options.scales.xAxes[0].scaleLabel.labelString).toEqual(barWidget.xAxisLabel);
 
     // scenario  3
     const data = new BarChartWidget();
     data.xAxisLabel = 'Data 1';
     component.barWidget.next(data);
+
     // call actual component method
     component.setChartAxisAndScaleRange();
 
     // asserts & expect
     // expect(component.barChartOptions.scales.xAxes[0].ticks).toEqual(undefined);
     // expect(component.barChartOptions.scales.yAxes[0].ticks).toEqual(undefined);
-    expect(component.barChartOptions.scales.yAxes[0].scaleLabel.labelString).toEqual('');
-    expect(component.barChartOptions.scales.xAxes[0].scaleLabel.labelString).toEqual(data.xAxisLabel);
+    expect(component.chart.chart.options.scales.yAxes[0].scaleLabel.labelString).toEqual('');
+    expect(component.chart.chart.options.scales.xAxes[0].scaleLabel.labelString).toEqual(data.xAxisLabel);
   }));
 
 

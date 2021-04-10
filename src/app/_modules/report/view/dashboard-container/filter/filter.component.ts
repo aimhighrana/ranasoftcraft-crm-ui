@@ -106,9 +106,15 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
    * Automatic angular trigger when the filterCriteria changed by dashboard container
    *
    */
-  ngOnChanges(changes: import('@angular/core').SimpleChanges): void {
-    if(changes && changes.hasFilterCriteria && changes.hasFilterCriteria.currentValue && changes.hasFilterCriteria.previousValue !== undefined) {
+   ngOnChanges(changes: import('@angular/core').SimpleChanges): void {
+    if(changes && changes.hasFilterCriteria && changes.hasFilterCriteria.currentValue !== changes.hasFilterCriteria.previousValue && changes.hasFilterCriteria.currentValue ) {
       this.clearFilterCriteria();
+    }
+
+    if (changes && changes.filterCriteria && changes.filterCriteria.currentValue !== changes.filterCriteria.previousValue && changes.filterCriteria.previousValue !== undefined) {
+      if (this.filterWidget && this.filterWidget.value) {
+        this.loadAlldropData(this.filterWidget.value.fieldId, this.filterCriteria, '');
+      }
     }
   }
 
@@ -120,8 +126,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
       if(typeof val === 'string') {
         this.filteredOptions = of([]);
         this.searchString = val;
-        const filteredCriteria =this.removefilter(this.filterWidget.value.fieldId);
-        this.loadAlldropData(this.filterWidget.value.fieldId, filteredCriteria, val);
+        this.loadAlldropData(this.filterWidget.value.fieldId, this.filterCriteria, val);
       }else {
         this.searchString = '';
         this.filteredOptions = of(this.values);
@@ -362,6 +367,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
   }
 
   public loadAlldropData(fieldId: string, criteria: Criteria[],searchString?:string, searchAfter?:string): void{
+    criteria = this.removefilter(this.filterWidget.value.fieldId, criteria);
     const widgetData = this.widgetService.getWidgetData(String(this.widgetId), criteria,searchString,searchAfter).subscribe(returnData=>{
       const res = Object.keys(returnData.aggregations);
       const buckets  = returnData.aggregations[res[0]] ? returnData.aggregations[res[0]].buckets : [];
@@ -379,7 +385,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
           metadatas.push(metaData);
         });
         this.values = metadatas;
-        if(this.filterWidget.getValue().metaData.picklist === '1' || this.filterWidget.getValue().metaData.picklist === '37' || this.filterWidget.getValue().metaData.picklist === '4' || this.filterWidget.getValue().metaData.picklist === '38') {
+        if(this.filterWidget.getValue().metaData.picklist === '1' || this.filterWidget.getValue().metaData.picklist === '37' || this.filterWidget.getValue().metaData.picklist === '4' || this.filterWidget.getValue().metaData.picklist === '38' || this.filterWidget.getValue().metaData.picklist === '35') {
           this.getFieldsMetadaDesc(buckets, fieldId);
         } else if(this.filterWidget.getValue().metaData.picklist === '30'){
           this.updateObjRefDescription(buckets, fieldId);
@@ -496,8 +502,9 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     const returnValue: DropDownValues[] = [];
     selectedOptions.forEach(value => {
       if(value.fieldId === this.filterWidget.value.fieldId){
+        const existValue = this.selectedDropVals.filter(exist => exist.CODE === value.conditionFieldValue);
         const textVal = this.values.filter(val => val.CODE === value.conditionFieldValue);
-        const text = textVal.length >0 ? textVal[0].TEXT : value.conditionFieldValue;
+        const text = textVal.length >0 ? textVal[0].TEXT : existValue.length > 0? existValue[0].TEXT : value.conditionFieldValue;
         returnValue.push({CODE: value.conditionFieldValue,FIELDNAME: value.fieldId,TEXT: text,langu:'EN',sno: null});
       }
 
@@ -720,8 +727,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
    */
   onScroll() {
     if(this.isLoadMore) {
-      const filteredCriteria =this.removefilter(this.filterWidget.value.fieldId);
-      this.loadAlldropData(this.filterWidget.value.fieldId, filteredCriteria, this.searchString, this.searchAfter);
+      this.loadAlldropData(this.filterWidget.value.fieldId, this.filterCriteria, this.searchString, this.searchAfter);
     }
   }
 
@@ -729,11 +735,14 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
    * should remove the filter of that current fieldId which is on filter
    * @param fieldId selected fieldId
    */
-  removefilter(fieldId: string): Criteria[] {
-    const removeValue = this.filterCriteria.filter(fill=> fill.fieldId === fieldId && fill.widgetType === WidgetType.FILTER);
-    const dupFilterCiteria = [...this.filterCriteria];
-    removeValue.forEach(val=> {
-      dupFilterCiteria.splice(dupFilterCiteria.indexOf(val),1);
+  removefilter(fieldId: string, filterCriteria: Criteria[]): Criteria[] {
+    if (!filterCriteria) {
+      return [];
+    }
+    const dupFilterCiteria = [...filterCriteria];
+    const removeValue = filterCriteria.filter(fill => fill.fieldId === fieldId && fill.widgetType === WidgetType.FILTER);
+    removeValue.forEach(val => {
+      dupFilterCiteria.splice(dupFilterCiteria.indexOf(val), 1);
     });
     return dupFilterCiteria;
   }
@@ -742,8 +751,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     this.filteredOptions.subscribe(sub=> { this.filteredArray = sub.length});
     if(this.searchAfter && this.filteredArray > 10) {
     this.filteredOptions = of([]);
-    const filteredCriteria =this.removefilter(this.filterWidget.value.fieldId);
-    this.loadAlldropData(this.filterWidget.value.fieldId, filteredCriteria, '', '');
+    this.loadAlldropData(this.filterWidget.value.fieldId, this.filterCriteria, '', '');
     }
   }
 }

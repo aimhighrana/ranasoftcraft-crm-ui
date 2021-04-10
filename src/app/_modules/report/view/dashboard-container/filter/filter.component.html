@@ -13,12 +13,12 @@
   <mat-card-content>
     <!-- CONTROL FOR DROPDOWNS -->
     <ng-template
-      [ngIf]="filterWidget && filterWidget.getValue() && filterWidget.getValue().metaData && filterWidget.getValue().metaData.picklist && (filterWidget.getValue().metaData.picklist === '1' || filterWidget.getValue().metaData.picklist === '30' || filterWidget.getValue().metaData.picklist === '37' || filterWidget.getValue().metaData.picklist === '4' || filterWidget.getValue().metaData.picklist === '38' || (filterWidget.getValue().metaData.picklist === '0' && filterWidget.getValue().metaData.dataType === 'TEXT'))">
+      [ngIf]="filterWidget && filterWidget.getValue() && filterWidget.getValue().metaData && filterWidget.getValue().metaData.picklist && (filterWidget.getValue().metaData.picklist === '1' || filterWidget.getValue().metaData.picklist === '30' || filterWidget.getValue().metaData.picklist === '37' || filterWidget.getValue().metaData.picklist === '4' || filterWidget.getValue().metaData.picklist === '38' || filterWidget.getValue().metaData.picklist === '35' || (filterWidget.getValue().metaData.picklist === '0' && filterWidget.getValue().metaData.dataType === 'TEXT'))">
       <!-- DROPDOWN_VALS -->
       <ng-template [ngIf]="(filterWidget.getValue() ? filterWidget.getValue().type : '') === 'DROPDOWN_VALS'">
         <ng-template [ngIf]="filterWidget.getValue().isMultiSelect" [ngIfElse]="single_select_drop">
           <div class="f-col">
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" class="direction-chip">
               <mat-chip-list #chipList aria-label="Select">
                 <mat-chip *ngFor="let option of selectedDropVals" [selectable]="true" [removable]="true"
                   (removed)="remove(option)">

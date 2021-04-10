@@ -116,7 +116,6 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
 
     const subs = this.reportingListWidget.subscribe(res => {
       if (res) {
-        // this.filterCriteria = [];
         this.getListdata(this.pageSize, this.pageIndex, this.widgetId, this.filterCriteria, this.activeSorts);
       }
     });
