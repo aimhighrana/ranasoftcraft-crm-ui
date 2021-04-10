@@ -16,13 +16,14 @@ describe('ListFilterComponent', () => {
   let coreService: CoreService;
   let router: Router;
   const pathPrams = { moduleId: '1005'};
+  const queryParams = { f: '' };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ListFilterComponent ],
       imports: [ AppMaterialModuleForSpec,  RouterTestingModule, SharedModule ],
       providers: [
-        { provide: ActivatedRoute, useValue: { params: of(pathPrams), queryParams: of({f: ''})}}
+        { provide: ActivatedRoute, useValue: { params: of(pathPrams), queryParams: of(queryParams)}}
       ]
     })
     .compileComponents();
@@ -134,6 +135,15 @@ describe('ListFilterComponent', () => {
 
     expect(component.moduleId).toEqual('1005');
     expect(component.filtersList).toEqual(new ListPageFilters());
+
+    const filters = new ListPageFilters();
+    filters.filterCriteria.push(
+      {fieldId: 'region', values: ['TN']} as FilterCriteria
+    );
+
+    queryParams.f = btoa(JSON.stringify(filters));
+    component.ngOnInit();
+    expect(component.filtersList.filterCriteria[0].fieldId).toEqual('region');
 
   });
 

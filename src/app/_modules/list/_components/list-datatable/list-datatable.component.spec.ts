@@ -8,23 +8,26 @@ import { ListDatatableComponent } from './list-datatable.component';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { PageEvent } from '@angular/material/paginator';
 import { SharedModule } from '@modules/shared/shared.module';
-import { ListPageViewFldMap, ViewsPage } from '@models/list-page/listpage';
+import { FilterCriteria, ListPageFilters, ListPageViewFldMap, ViewsPage } from '@models/list-page/listpage';
 import { FieldMetaData } from '@models/core/coreModel';
+import { CoreService } from '@services/core/core.service';
 
 describe('ListDatatableComponent', () => {
   let component: ListDatatableComponent;
   let fixture: ComponentFixture<ListDatatableComponent>;
   let listService: ListService;
+  let coreService: CoreService;
   let router: Router;
   let sharedServices: SharedServiceService;
   const routeParams = { moduleId: '1005' };
+  const queryParams = { f: '' };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ListDatatableComponent ],
       imports: [ AppMaterialModuleForSpec, RouterTestingModule, SharedModule ],
       providers: [
-        { provide: ActivatedRoute, useValue: { params: of(routeParams), queryParams: of({f: ''})}}
+        { provide: ActivatedRoute, useValue: { params: of(routeParams), queryParams: of(queryParams)}}
       ]
     })
     .compileComponents();
@@ -37,6 +40,7 @@ describe('ListDatatableComponent', () => {
     listService = fixture.debugElement.injector.get(ListService);
     sharedServices = fixture.debugElement.injector.get(SharedServiceService);
     router = TestBed.inject(Router);
+    coreService = fixture.debugElement.injector.get(CoreService);
     // fixture.detectChanges();
 
   });
@@ -50,9 +54,19 @@ describe('ListDatatableComponent', () => {
     spyOn(component, 'getViewsList');
     spyOn(component, 'getTotalCount');
     spyOn(sharedServices, 'getViewDetailsData').and.returnValue(of());
-    component.ngOnInit();
+    spyOn(component, 'getTableData');
 
+    component.ngOnInit();
     expect(component.getViewsList).toHaveBeenCalled();
+
+    const filters = new ListPageFilters();
+    filters.filterCriteria.push(
+      {fieldId: 'region', values: ['TN']} as FilterCriteria
+    );
+
+    queryParams.f = btoa(JSON.stringify(filters));
+    component.ngOnInit();
+    expect(component.filtersList.filterCriteria[0].fieldId).toEqual('region');
 
   });
 
@@ -227,6 +241,56 @@ describe('ListDatatableComponent', () => {
     spyOn(router, 'navigate');
     component.resetAllFilters();
     expect(router.navigate).toHaveBeenCalledWith([], {queryParams: {}});
+
+  });
+
+  it('should getFldMetadata', () => {
+
+
+    expect(() => component.getFldMetadata()).toThrowError('Module id cant be null or empty');
+
+    const response = [{
+          fieldId: 'name',
+          fieldDescri: 'name'
+    }] as FieldMetaData[];
+
+    component.moduleId = '1005';
+    spyOn(coreService, 'getAllFieldsForView').withArgs(component.moduleId)
+      .and.returnValues(of(response), throwError({message: 'api error'}));
+
+
+    component.getFldMetadata();
+    expect(coreService.getAllFieldsForView).toHaveBeenCalledWith(component.moduleId);
+    expect(component.metadataFldLst).toEqual(response);
+
+
+    // api error
+    spyOn(console, 'error');
+    component.getFldMetadata();
+    expect(console.error).toHaveBeenCalled();
+
+  });
+
+  it('should getObjectTypeDetails', () => {
+
+    const response = {
+      objectid: '1005',
+      objectdesc: 'Material'
+    };
+
+    component.moduleId = '1005';
+    spyOn(coreService, 'getObjectTypeDetails').withArgs(component.moduleId)
+      .and.returnValues(of(response), throwError({message: 'api error'}));
+
+
+    component.getObjectTypeDetails();
+    expect(coreService.getObjectTypeDetails).toHaveBeenCalledWith(component.moduleId);
+    expect(component.objectType).toEqual(response);
+
+    // api error
+    spyOn(console, 'error');
+    component.getObjectTypeDetails();
+    expect(console.error).toHaveBeenCalled();
 
   });
 
