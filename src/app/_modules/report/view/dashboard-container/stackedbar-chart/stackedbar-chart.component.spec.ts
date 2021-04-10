@@ -314,7 +314,7 @@ describe('StackedbarChartComponent', () => {
   }));
 
   it('getFieldsMetadaDescaxis1(), get description of axis 1', async(()=>{
-    const res = [{key:{CLAIMED:"n",MASSPROCESSING_ID:"432651935700873253"},'top_hits#items':{hits:{hits:[{_index:"localhost_workflow_do_0_en",_type:"_doc",_source:{staticFields:{CLAIMED:{vc:[{c:'n',t:"No"}]},MASSPROCESSING_ID:{vc:[{c:"432651935700873253"}]}}},_id:"462107749703085781_3153515",_score:3.77689}]}}}]
+    const res = [{key:{CLAIMED:'n',MASSPROCESSING_ID:'432651935700873253'},'top_hits#items':{hits:{hits:[{_index:'localhost_workflow_do_0_en',_type:'_doc',_source:{staticFields:{CLAIMED:{vc:[{c:'n',t:'No'}]},MASSPROCESSING_ID:{vc:[{c:'432651935700873253'}]}}},_id:'462107749703085781_3153515',_score:3.77689}]}}}]
 
     component.arrayBuckets = res;
     component.getFieldsMetadaDescaxis1('MASSPROCESSING_ID');

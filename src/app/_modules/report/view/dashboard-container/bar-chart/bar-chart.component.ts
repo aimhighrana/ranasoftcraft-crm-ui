@@ -5,7 +5,6 @@ import { BarChartWidget, Criteria, WidgetHeader, ChartLegend, ConditionOperator,
 import { BehaviorSubject } from 'rxjs';
 import { ChartOptions, ChartTooltipItem, ChartData } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
-import   ChartDataLables from 'chartjs-plugin-datalabels';
 import { MatDialog } from '@angular/material/dialog';
 
 
