@@ -12,13 +12,21 @@
       width: 220px;
 
       .filters-list {
-        max-height: 200px;
+        max-height: 300px;
         overflow-y: auto;
+
+        mat-list-item {
+          cursor: pointer;
+        }
       }
 
       .fields-list {
-        max-height: 600px;
+        max-height: 450px;
         overflow-y: auto;
+
+        mat-list-item {
+          cursor: pointer;
+        }
       }
     }
 

@@ -8,6 +8,7 @@ import { TableViewSettingsComponent } from './_components/table-view-settings/ta
 import { SharedModule } from '@modules/shared/shared.module';
 import { GlobalSearchComponent } from './_components/global-search/global-search.component';
 import { ListFilterComponent } from './_components/list-filter/list-filter.component';
+import { FilterSaveModalComponent } from './_components/filter-save-modal/filter-save-modal.component';
 
 
 @NgModule({
@@ -16,7 +17,8 @@ import { ListFilterComponent } from './_components/list-filter/list-filter.compo
     TableViewSettingsComponent,
     ListDatatableComponent,
     GlobalSearchComponent,
-    ListFilterComponent
+    ListFilterComponent,
+    FilterSaveModalComponent
   ],
   imports: [
     CommonModule,

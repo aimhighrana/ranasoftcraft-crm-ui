@@ -1,7 +1,9 @@
 <div class="f-col root">
     <div class="f-row-spacer-half"></div>
     <div class="f-row">
-        <lib-text-line type="leading">Material - {{ currentView.viewName || 'Default view' }}</lib-text-line>
+        <lib-text-line type="leading"> 
+            {{ objectType && objectType.objectdesc ? objectType.objectdesc: 'Untitled' }} - {{ currentView.viewName || 'Default view' }}
+        </lib-text-line>
         <lib-button type="plain" iconFontType="solid" [matMenuTriggerFor]="menu" icon="caret-down"></lib-button>
         <mat-menu #menu="matMenu" class="navigation-menu">
             <div class="menu-customdropdown" prosInfiniteScroll bufferPercentage="20" (scrollEnd)="getViewsList(true)">
@@ -42,8 +44,16 @@
 
     <div class="f-row">
         <lib-search i18n-placeholder="@@search" placeholder="Search..." class="lib-search" (click)="showGlobalFilter = true" (blur)="showGlobalFilter  = false "></lib-search>
-        
-        <lib-chip icon="filter" (click)="openFiltersSideSheet()"></lib-chip>
+        <span class="f-col-spacer-half"></span>
+        <lib-chip icon="filter" [libBadge]="filtersList && filtersList.filterCriteria ? filtersList.filterCriteria.length || '' : ''" 
+            (click)="openFiltersSideSheet()"></lib-chip>
+        <span class="f-col-spacer-half"></span>
+        <lib-chip icon="ellipsis-h" *ngIf="filtersList && (filtersList.filterId || filtersList.filterCriteria.length)"
+            [matMenuTriggerFor]="filterMenu"></lib-chip>
+        <mat-menu #filterMenu="matMenu">
+            <button mat-menu-item (click)="saveFilterCriterias()"> Save as... </button>
+            <button mat-menu-item (click)="resetAllFilters()"> Reset </button>
+        </mat-menu>
 
     </div>
     
@@ -95,8 +105,8 @@
                     <!-- skip all static columns -->
                 </ng-template>
                 <ng-template #dynamic>
-                    <ng-container [matColumnDef]="dynCol">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header [start]="getColumnSortDir(dynCol)"
+                    <ng-container [matColumnDef]="dynCol"> <!-- mat-sort-header [start]="getColumnSortDir(dynCol)" -->
+                        <th mat-header-cell *matHeaderCellDef
                             [ngStyle]="{'width.px': getColumnWidth(dynCol)}"
                             [ngClass]="{'large-cell-header': isLargeHeader(dynCol)}"
                             prosResizableColumn [index]="index"

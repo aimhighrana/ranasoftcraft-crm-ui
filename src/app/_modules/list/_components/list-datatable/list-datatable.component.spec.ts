@@ -24,7 +24,7 @@ describe('ListDatatableComponent', () => {
       declarations: [ ListDatatableComponent ],
       imports: [ AppMaterialModuleForSpec, RouterTestingModule, SharedModule ],
       providers: [
-        { provide: ActivatedRoute, useValue: { params: of(routeParams)}}
+        { provide: ActivatedRoute, useValue: { params: of(routeParams), queryParams: of({f: ''})}}
       ]
     })
     .compileComponents();
@@ -153,7 +153,7 @@ describe('ListDatatableComponent', () => {
     pageEvent.pageIndex = 5;
 
     component.onPageChange(pageEvent);
-    expect(component.dataSource.getData).toHaveBeenCalledWith(component.moduleId, '', 5);
+    expect(component.dataSource.getData).toHaveBeenCalledWith(component.moduleId, '', 5, []);
   });
 
   it('should updateTableColumns', () => {
@@ -210,6 +210,23 @@ describe('ListDatatableComponent', () => {
 
     expect(component.getFieldDesc('MTL_GRP')).toEqual('Material group');
     expect(component.getFieldDesc('Other')).toEqual('Other');
+
+  });
+
+  it('should openFiltersSideSheet', () => {
+
+    spyOn(router, 'navigate');
+    component.moduleId = '1005';
+    component.openFiltersSideSheet();
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/list/filter-settings/${component.moduleId}` } }], { queryParamsHandling: 'preserve' });
+
+  });
+
+  it('should resetAllFilters', () => {
+
+    spyOn(router, 'navigate');
+    component.resetAllFilters();
+    expect(router.navigate).toHaveBeenCalledWith([], {queryParams: {}});
 
   });
 

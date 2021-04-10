@@ -14,8 +14,12 @@ export class EndpointsCoreService {
     return this.apiurl + '/metadata/get-all-objecttype'
   }
 
-  public getAllFieldsForViewUrl(): string {
-    return this.apiurl + `/metadata/list-view-fields`;
+  public getAllFieldsForViewUrl(moduleId): string {
+    return this.apiurl + `/metadata/list-view-all-fields/${moduleId}`;
+  }
+
+  getObjectTypeDetailsUrl (moduleId) {
+    return this.apiurl + `/metadata/get-module-desc/${moduleId}`
   }
 
 }
