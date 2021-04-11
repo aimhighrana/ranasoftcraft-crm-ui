@@ -51,8 +51,8 @@
         <lib-chip icon="ellipsis-h" *ngIf="filtersList && (filtersList.filterId || filtersList.filterCriteria.length)"
             [matMenuTriggerFor]="filterMenu"></lib-chip>
         <mat-menu #filterMenu="matMenu">
-            <button mat-menu-item (click)="saveFilterCriterias()"> Save as... </button>
-            <button mat-menu-item (click)="resetAllFilters()"> Reset </button>
+            <button mat-menu-item (click)="saveFilterCriterias()" i18n="@@save_as"> Save as... </button>
+            <button mat-menu-item (click)="resetAllFilters()" i18n="@@reset"> Reset </button>
         </mat-menu>
 
     </div>

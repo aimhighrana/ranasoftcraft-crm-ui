@@ -3,14 +3,14 @@
     <div class="f-row">
         <lib-segment [optionsList]="optionsList" labelKey="label" valueKey="value"></lib-segment>
         <span class="f-spacer"></span>
-        <lib-button type="minor" icon="times" iconPosition="before" (click)="close()"> close </lib-button>
+        <lib-button type="minor" icon="times" iconPosition="before" (click)="close()" i18n="@@close"> close </lib-button>
         <span class="f-col-spacer-half"></span>
-        <lib-button type="minor" (click)="clearAllFilters()">Reset all</lib-button>
+        <lib-button type="minor" (click)="clearAllFilters()" i18n="@@reset_all">Reset all</lib-button>
     </div>
     <div class="row-spacer"></div>
     <div class="f-row system">
         <div class="f-col system-fields-col">
-            <lib-search placeholder="Search" (valueChange)="searchFilter($event)"></lib-search>
+            <lib-search i18n-placeholder="@@search" placeholder="Search" (valueChange)="searchFilter($event)"></lib-search>
             <div class="row-spacer"></div>
             <mat-list class="filters-list">
                 <mat-list-item class="f-row" *ngFor="let filter of filtersList.filterCriteria; let index=index">
@@ -28,7 +28,7 @@
 
             <div class="f-row">
                 <span class="col-spacer"></span>
-                <lib-text-line type="base" weight="strong" textColor="secondary">Apply filters...</lib-text-line>
+                <lib-text-line type="base" weight="strong" textColor="secondary" i18n="@apply_filters">Apply filters...</lib-text-line>
             </div>
             <mat-list class="fields-list">
                 <mat-list-item *ngFor="let field of metadataFldLst"
@@ -48,13 +48,13 @@
                         <mat-icon fontSet="mdo-icons-solid">sliders-h</mat-icon>
                     </lib-button>
                     <lib-button-group>
-                        <lib-button type="major" (click)="upsertFilter()">Apply</lib-button>
+                        <lib-button type="major" (click)="upsertFilter()" i18n="@@apply">Apply</lib-button>
                         <lib-button type="major" icon="ellipsis-h"></lib-button>
                     </lib-button-group>
                 </div>
                 <div class="row-spacer"></div>
                 <div class="f-col">
-                    <lib-input placeholder="type filter value" [value]="activeFilter.values ? activeFilter.values.toString() : ''"
+                    <lib-input i18n-placeholder="@@type_filter_value" placeholder="type filter value" [value]="activeFilter.values ? activeFilter.values.toString() : ''"
                         (valueChange)="updateFilterValue($event)"></lib-input>
                 </div>
             </ng-template>

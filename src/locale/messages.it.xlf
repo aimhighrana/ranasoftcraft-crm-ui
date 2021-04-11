@@ -181,6 +181,86 @@
           <context context-type="linenumber">36</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="close" datatype="html">
+        <source>close</source>
+        <target>vicina</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\list\_components\list-filter\list-filter.component.html</context>
+          <context context-type="linenumber">6</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="reset_all" datatype="html">
+        <source>Reset all</source>
+        <target>Resetta tutto</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\list\_components\list-filter\list-filter.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="apply_filters" datatype="html">
+        <source>Apply filters...</source>
+        <target>Applica filtri ...</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\list\_components\list-filter\list-filter.component.html</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="apply" datatype="html">
+        <source>Apply</source>
+        <target>Applicare</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\list\_components\list-filter\list-filter.component.html</context>
+          <context context-type="linenumber">51</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="type_filter_value" datatype="html">
+        <source>type filter value</source>
+        <target>digitare il valore del filtro</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\list\_components\list-filter\list-filter.component.html</context>
+          <context context-type="linenumber">57</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="save_as" datatype="html">
+        <source>Save as...</source>
+        <target>Salva come...</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\list\_components\list-datatable\list-datatable.component.html</context>
+          <context context-type="linenumber">54</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="reset" datatype="html">
+        <source>Reset</source>
+        <target>Ripristina</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\list\_components\list-datatable\list-datatable.component.html</context>
+          <context context-type="linenumber">55</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="save_filter_as" datatype="html">
+        <source>Save filter as...</source>
+        <target>Salva filtro con nome ...</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\list\_components\filter-save-modal\filter-save-modal.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="filter_name" datatype="html">
+        <source>Filter name</source>
+        <target>Nome del filtro</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\list\_components\filter-save-modal\filter-save-modal.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="cancel" datatype="html">
+        <source>Cancel</source>
+        <target>Annulla</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\list\_components\filter-save-modal\filter-save-modal.component.html</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+      </trans-unit>
     </body>
   </file>
 </xliff>
