@@ -385,12 +385,12 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         });
         const finalText = Number(valArray);
         if(finalText) {
-          this.codeTextaxis1[key] = new Date(finalText).toLocaleString();
+          this.codeTextaxis1[key] = new Date(finalText).toLocaleDateString();
         } else {
-          this.codeTextaxis1[key] = new Date(key).toLocaleString();
+          this.codeTextaxis1[key] = new Date(key).toLocaleDateString();
         }
       } else {
-        this.codeTextaxis1[key] = new Date(key).toLocaleString();
+        this.codeTextaxis1[key] = new Date(key).toLocaleDateString();
       }
     });
     this.updateLabelsaxis1();
@@ -451,12 +451,12 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
           });
           const finalText = Number(valArray);
           if(finalText) {
-            this.codeTextaxis2[key] = new Date(finalText).toLocaleString();
+            this.codeTextaxis2[key] = new Date(finalText).toLocaleDateString();
           } else {
-            this.codeTextaxis2[key] = new Date(key).toLocaleString();
+            this.codeTextaxis2[key] = new Date(key).toLocaleDateString();
           }
       } else {
-        this.codeTextaxis2[key] = new Date(key).toLocaleString();
+        this.codeTextaxis2[key] = new Date(key).toLocaleDateString();
       }
     });
     this.updateLabelsaxis2();

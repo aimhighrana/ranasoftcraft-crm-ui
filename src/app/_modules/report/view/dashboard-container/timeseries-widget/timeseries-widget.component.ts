@@ -140,6 +140,8 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   subscriptions: Subscription[] = [];
 
   ngOnDestroy(): void {
+    this.widgetInf.complete();
+    this.widgetInf.unsubscribe();
     this.subscriptions.forEach(sub => {
       sub.unsubscribe();
     });
