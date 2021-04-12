@@ -1927,6 +1927,15 @@
 }
 
 /* home page tasks list menu drag and drop custom styles */
+.task-badge {
+  .mdo-button:hover {
+    background: none;
+    .mat-button-focus-overlay {
+      opacity: 0 !important;
+    }
+  }
+}
+
 .task-badge.btn-pos {
   .mat-badge-content {
     bottom: -21px !important;
