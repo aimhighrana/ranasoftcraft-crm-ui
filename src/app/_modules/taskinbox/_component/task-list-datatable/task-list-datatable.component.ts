@@ -351,7 +351,7 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit, OnDest
   }
 
   openTableViewSettings() {
-    this.router.navigate([{ outlets: { sb: `sb/task/table-view-settings/${this.node}` } }], { queryParamsHandling: 'preserve' });
+    this.router.navigate([{ outlets: { sb: `sb/task/view/${this.node}` } }], { queryParamsHandling: 'preserve' });
   }
   ngOnDestroy() {
     this.unsubscribeAll$.next(true);

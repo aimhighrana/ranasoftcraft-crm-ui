@@ -10,7 +10,7 @@ const routes: Routes = [
     component: TaskListDatatableComponent,
   },
   {
-    path: 'table-view-settings/:node',
+    path: 'view/:node',
     component: TaskListTableViewSettingsComponent,
   },
 ];

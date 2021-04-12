@@ -58,7 +58,7 @@ describe('TaskListDatatableComponent', () => {
     component.node = 'inbox';
 
     component.openTableViewSettings();
-    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/task/table-view-settings/${component.node}` } }], {
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/task/view/${component.node}` } }], {
       queryParamsHandling: 'preserve',
     });
   });
