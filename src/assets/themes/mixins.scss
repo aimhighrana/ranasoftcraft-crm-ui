@@ -1925,3 +1925,73 @@
     }
   }
 }
+
+/* home page tasks list menu drag and drop custom styles */
+.cdk-drag-preview.task-search-list-drag-el {
+  display: flex;
+  align-items: center;
+  padding-left: 16px;
+  padding-right: 8px;
+
+  div {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    box-sizing: border-box;
+  }
+}
+
+.cdk-drag-preview.tasks-list-drag-el {
+  height: auto !important;
+
+  .mat-expansion-panel-content {
+    display: none;
+  }
+
+  mat-expansion-panel {
+    margin: 0;
+
+    .mat-expansion-panel-header {
+      padding: 0 0 0 16px;
+
+      mat-panel-title {
+        width: 100%;
+        margin-right: 0;
+
+        .expand-title {
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
+          font-size: 0.9rem;
+        }
+
+        .badge {
+          margin: 0 8px;
+          font-size: 0.8rem;
+        }
+      }
+    }
+
+    mat-nav-list {
+      mat-list-item {
+        div.mat-line {
+          padding-left: 48px;
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
+
+  .mat-expansion-indicator::after {
+    padding: 5px;
+    vertical-align: top;
+    color: #272d37;
+  }
+
+.cdk-drag-placeholder.tasks-list-drag-el {
+  .mat-expansion-panel-content {
+    display: none;
+  }
+}
+
