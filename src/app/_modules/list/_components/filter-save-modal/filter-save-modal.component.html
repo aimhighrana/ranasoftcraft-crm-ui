@@ -1,0 +1,21 @@
+<mat-card class="root mat-elevation-z0">
+    <div class="f-row breadcrum-toolbar">
+        <lib-text-line type="leading" i18n="@@save_filter_as">Save filter as...</lib-text-line>
+        <span class="f-spacer"></span>
+        <button mat-button (click)="close(false)">
+            <mat-icon fontSet="mdo-icons">times</mat-icon>
+        </button>
+    </div>
+    <div class="f-col">
+        <lib-input i18n-label="@@filter_name" label="Filter name" [hasError]="submitted && nameControl.invalid"
+            [hint]="submitted && nameControl.invalid ? 'filter name is required' :''"
+            [formControl]="nameControl"></lib-input>
+    </div>
+    <div class="row-spacer"></div>
+    <!-- navigation buttons -->
+    <div class="f-row">
+        <lib-button type="minor" (click)="close(false)" i18n="@@cancel"> Cancel </lib-button>
+        <span class="f-spacer"></span>
+        <lib-button type="major" (click)="close(true)" i18n="@@save">Save</lib-button>
+    </div>
+</mat-card>

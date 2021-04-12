@@ -17,7 +17,11 @@ export class CoreService {
   }
 
   public getAllFieldsForView(moduleId: string): Observable<FieldMetaData[]> {
-    return this.http.get<FieldMetaData[]>(this.endpointsService.getAllFieldsForViewUrl(), {params: {moduleId}})
+    return this.http.get<FieldMetaData[]>(this.endpointsService.getAllFieldsForViewUrl(moduleId))
+  }
+
+  getObjectTypeDetails(moduleId): Observable<ObjectType>{
+    return this.http.get<ObjectType>(this.endpointsService.getObjectTypeDetailsUrl(moduleId));
   }
 
 }

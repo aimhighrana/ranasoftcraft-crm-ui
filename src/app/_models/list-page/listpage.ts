@@ -157,6 +157,14 @@ export class FilterCriteria {
     values: string[];
 }
 
+export class ListPageFilters {
+    filterId: string;
+    description: string;
+    isDefault: boolean;
+    moduleId: string;
+    filterCriteria: FilterCriteria[] = [];
+}
+
 export class ViewsPage {
     systemViews: ViewsPageItem[] = [];
     userViews: ViewsPageItem[] = [];

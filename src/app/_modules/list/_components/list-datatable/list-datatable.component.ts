@@ -1,18 +1,21 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ListPageViewDetails, SortDirection, ViewsPage } from '@models/list-page/listpage';
+import { ListPageFilters, ListPageViewDetails, SortDirection, ViewsPage } from '@models/list-page/listpage';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { ListService } from '@services/list/list.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { PageEvent } from '@angular/material/paginator';
 import { ListDataSource } from './list-data-source';
-import { FieldMetaData } from '@models/core/coreModel';
+import { FieldMetaData, ObjectType } from '@models/core/coreModel';
 import { CoreService } from '@services/core/core.service';
 import { sortBy } from 'lodash';
 import { GlobaldialogService } from '@services/globaldialog.service';
 import { ResizableColumnDirective } from '@modules/shared/_directives/resizable-column.directive';
 import { MatSort } from '@angular/material/sort';
+import { map } from 'rxjs/operators';
+import { MatDialog } from '@angular/material/dialog';
+import { FilterSaveModalComponent } from '../filter-save-modal/filter-save-modal.component';
 
 
 @Component({
@@ -30,6 +33,11 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
    * hold current module id
    */
   moduleId: string;
+
+  /**
+   * Hold current module details
+   */
+  objectType: ObjectType;
 
   /**
    * hold current view
@@ -93,6 +101,9 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
   metadataFldLst: FieldMetaData[] = [];
 
 
+  filtersList: ListPageFilters = new ListPageFilters();
+
+  isPageRefresh = true;
 
   constructor(
     private activatedRouter: ActivatedRoute,
@@ -100,7 +111,8 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
     private sharedServices: SharedServiceService,
     private listService: ListService,
     private coreService: CoreService,
-    private glocalDialogService: GlobaldialogService) {
+    private glocalDialogService: GlobaldialogService,
+    private matDialog: MatDialog) {
 
     this.dataSource = new ListDataSource(this.listService);
 
@@ -120,6 +132,31 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
       this.getTotalCount();
       this.getViewsList();
       this.getFldMetadata();
+      this.getObjectTypeDetails();
+    });
+
+    this.activatedRouter.queryParams.pipe(
+      map(params => {
+        if(params.f) {
+          try {
+            const filters = JSON.parse(atob(params.f));
+            return filters;
+          } catch (err) {
+            console.error(err);
+            return new ListPageFilters();
+          }
+        } else {
+          return new ListPageFilters();
+        }
+      })
+    )
+    .subscribe(filters => {
+      this.filtersList = filters;
+      console.log(this.filtersList);
+      if(!this.isPageRefresh) {
+        this.getTableData();
+      }
+      this.isPageRefresh = false;
     });
 
     this.sharedServices.getViewDetailsData().subscribe(resp => {
@@ -245,6 +282,18 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   /**
+   * get current module details
+   */
+  getObjectTypeDetails() {
+    const sub = this.coreService.getObjectTypeDetails(this.moduleId).subscribe(response => {
+      this.objectType = response;
+    }, error => {
+      console.error(`Error : ${error.message}`);
+    });
+    this.subscriptionsList.push(sub);
+  }
+
+  /**
    * get total records count
    */
   getTotalCount() {
@@ -306,7 +355,7 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
    */
   getTableData() {
     const viewId = this.currentView.viewId ?  this.currentView.viewId : '';
-    this.dataSource.getData(this.moduleId, viewId, this.recordsPageIndex);
+    this.dataSource.getData(this.moduleId, viewId, this.recordsPageIndex, this.filtersList.filterCriteria);
   }
 
   /**
@@ -434,6 +483,37 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
    */
   openFiltersSideSheet() {
     this.router.navigate([{ outlets: { sb: `sb/list/filter-settings/${this.moduleId}` } }], { queryParamsHandling: 'preserve' });
+  }
+
+  /**
+   * upsert filters
+   */
+  saveFilterCriterias() {
+
+    const dialogCloseRef = this.matDialog.open(FilterSaveModalComponent, {
+      data: {filterName: this.filtersList.description},
+      width:'400px'
+    });
+    dialogCloseRef.afterClosed().subscribe(res=>{
+      if(res) {
+        this.filtersList.moduleId = this.moduleId;
+        this.filtersList.description = res;
+        const sub = this.listService.upsertListFilters(this.filtersList).subscribe(resp => {
+          if(resp && resp.filterId) {
+            this.filtersList.filterId = resp.filterId;
+            this.router.navigate([], {queryParams: {f: btoa(JSON.stringify(this.filtersList))}});
+          }
+        }, error => {
+          console.error(`Error : ${error.message}`);
+        });
+        this.subscriptionsList.push(sub);
+      }
+    });
+
+  }
+
+  resetAllFilters() {
+    this.router.navigate([], {queryParams: {}});
   }
 
   ngOnDestroy(): void {

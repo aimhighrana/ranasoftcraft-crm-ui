@@ -1,6 +1,6 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { async, TestBed } from '@angular/core/testing';
-import { ListPageViewDetails, ViewsPage } from '@models/list-page/listpage';
+import { ListPageFilters, ListPageViewDetails, ViewsPage } from '@models/list-page/listpage';
 import { EndpointsListService } from '@services/_endpoints/endpoints-list.service';
 
 import { ListService } from './list.service';
@@ -12,7 +12,7 @@ describe('ListService', () => {
 
   beforeEach(() => {
     const endpointSpy = jasmine.createSpyObj('EndpointsListService', ['getAllListPageViewsUrl', 'getListPageViewDetailsUrl', 'upsertListPageViewUrl', 'deleteListPageViewUrl',
-    'getTableDataUrl', 'getDataCountUrl']);
+    'getTableDataUrl', 'getDataCountUrl', 'upsertListFiltersUrl']);
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule ],
       providers: [
@@ -164,6 +164,30 @@ describe('ListService', () => {
     });
     // mock http call
     const mockRequst = httpTestingController.expectOne(`${url}?moduleId=${moduleId}`);
+    expect(mockRequst.request.method).toEqual('POST');
+    expect(mockRequst.request.responseType).toEqual('json');
+    mockRequst.flush(response);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('upsertListFilters()', async(() => {
+
+    const url = `upsertListFiltersUrl`;
+    // mock url
+    endpointServiceSpy.upsertListFiltersUrl.and.returnValue(url);
+
+    const response = {
+      filterId: '1701'
+    }
+
+    // actual service call
+    listService.upsertListFilters(new ListPageFilters())
+      .subscribe(actualResponse => {
+          expect(actualResponse).toEqual(response);
+    });
+    // mock http call
+    const mockRequst = httpTestingController.expectOne(`${url}`);
     expect(mockRequst.request.method).toEqual('POST');
     expect(mockRequst.request.responseType).toEqual('json');
     mockRequst.flush(response);

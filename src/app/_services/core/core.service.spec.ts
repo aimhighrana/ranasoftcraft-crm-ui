@@ -11,7 +11,7 @@ describe('CoreService', () => {
   let httpTestingController: HttpTestingController;
 
   beforeEach(() => {
-    const endpointSpy = jasmine.createSpyObj('EndpointsCoreService', ['getAllObjectTypeUrl', 'getAllFieldsForViewUrl']);
+    const endpointSpy = jasmine.createSpyObj('EndpointsCoreService', ['getAllObjectTypeUrl', 'getAllFieldsForViewUrl', 'getObjectTypeDetailsUrl']);
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule ],
       providers: [
@@ -60,7 +60,28 @@ describe('CoreService', () => {
       expect(modules).toEqual(response);
     });
 
-    const mockRequest = httpTestingController.expectOne(`${url}?moduleId=1005`);
+    const mockRequest = httpTestingController.expectOne(`${url}`);
+    expect(mockRequest.request.method).toEqual('GET');
+    mockRequest.flush(response);
+    httpTestingController.verify();
+
+  });
+
+  it('should getObjectTypeDetails', () => {
+
+    const url = 'getObjectTypeDetailsUrl';
+    const response = {
+      objectid: '1005',
+      objectdesc: 'Material'
+    } as ObjectType;
+
+    endpointsServiceSpy.getObjectTypeDetailsUrl.and.returnValue(url);
+
+    service.getObjectTypeDetails('1005').subscribe(modules => {
+      expect(modules).toEqual(response);
+    });
+
+    const mockRequest = httpTestingController.expectOne(`${url}`);
     expect(mockRequest.request.method).toEqual('GET');
     mockRequest.flush(response);
     httpTestingController.verify();
