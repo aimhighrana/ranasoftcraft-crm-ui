@@ -38,7 +38,8 @@
                   <mat-panel-title>
                     <div class="expand-title">{{task.label}}</div>
                     <span class="f-spacer"></span>
-                    <div class="badge">{{task.rec_cnt}}</div>
+                    <div *ngIf="!task.hasNewFeeds" class="badge">{{task.rec_cnt}}</div>
+                    <lib-button *ngIf="task.hasNewFeeds" [libBadge]="task.new_feed_cnt" matBadgePosition="below" matBadgeSize="medium" matBadgeOverlap="true" class="task-badge btn-pos"></lib-button>
                   </mat-panel-title>
                 </mat-expansion-panel-header>
                 <mat-nav-list [disableRipple]="true" class="dnd-task-search-list">
@@ -47,7 +48,8 @@
                       <div cdkDrag class="task-search-list-drag-el" cdkDragBoundary=".dnd-task-search-list" [routerLink]="['/home/task', task.id, 'feed']" [queryParams]="{ s: subTask.id}">
                         <div mat-line>{{ subTask.label }}</div>
                         <span class="f-spacer"></span>
-                        <span>{{ subTask.rec_cnt }}</span>
+                        <span *ngIf="!subTask.hasNewFeeds">{{ subTask.rec_cnt }}</span>
+                        <lib-button *ngIf="subTask.hasNewFeeds" [libBadge]="subTask.new_feed_cnt" matBadgePosition="below" matBadgeSize="medium" class="task-badge search-badge"></lib-button>
                       </div>
                     </mat-list-item>
                   </div>

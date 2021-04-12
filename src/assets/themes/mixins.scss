@@ -1927,6 +1927,19 @@
 }
 
 /* home page tasks list menu drag and drop custom styles */
+.tasks-list-drag-el .mat-expansion-panel .mat-expansion-panel-header {
+  .mat-content {
+    overflow: unset;
+  }
+}
+
+.task-badge.btn-pos {
+  .mat-badge-content {
+    bottom: -21px !important;
+    right: 4px !important;
+  }
+}
+
 .cdk-drag-preview.task-search-list-drag-el {
   display: flex;
   align-items: center;
@@ -1939,6 +1952,16 @@
     text-overflow: ellipsis;
     display: block;
     box-sizing: border-box;
+  }
+
+  .task-badge {
+    height: 0;
+  }
+
+  .task-badge.search-badge {
+    .mat-badge-content {
+      right: 0 !important;
+    }
   }
 }
 
@@ -1989,9 +2012,20 @@
     color: #272d37;
   }
 
+  .task-badge {
+    height: 0;
+  }
+
+  .task-badge.btn-pos {
+    .mat-badge-content {
+      bottom: -21px !important;
+      right: 8px !important;
+    }
+  }
+}
+
 .cdk-drag-placeholder.tasks-list-drag-el {
   .mat-expansion-panel-content {
     display: none;
   }
 }
-
