@@ -1927,12 +1927,6 @@
 }
 
 /* home page tasks list menu drag and drop custom styles */
-.tasks-list-drag-el .mat-expansion-panel .mat-expansion-panel-header {
-  .mat-content {
-    overflow: unset;
-  }
-}
-
 .task-badge.btn-pos {
   .mat-badge-content {
     bottom: -21px !important;
@@ -1987,6 +1981,7 @@
           overflow: hidden;
           white-space: nowrap;
           font-size: 0.9rem;
+          width: calc(100% - 50px);
         }
 
         .badge {
@@ -2013,6 +2008,8 @@
   }
 
   .task-badge {
+    position: absolute;
+    right: 0;
     height: 0;
   }
 
