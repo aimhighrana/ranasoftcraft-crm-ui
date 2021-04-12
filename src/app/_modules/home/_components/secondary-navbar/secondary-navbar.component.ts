@@ -210,11 +210,8 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
           this.getreportList();
           break;
 
-          case 'list':
+        case 'list':
           this.getAllObjectType();
-          break;
-
-        default:
           break;
       }
     }
@@ -245,7 +242,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
     const currentUrl = this.router.url;
     this.checkDescOnReload(currentUrl)
     this.taskList = this.mockTaskList;
-    const orderList = localStorage.getItem('tasllist-feeds-order');
+    const orderList = localStorage.getItem('tasklist-feeds-order');
     if (this.taskList.length && orderList) {
       this.setTaskListOrder(orderList);
     }
@@ -272,15 +269,22 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
    * @param list task order list
    */
   setTaskListOrder(list) {
-    const decodedList = atob(list);
-    const parsedList = decodedList ? JSON.parse(decodedList) : '';
-    if (Object.keys(parsedList).length) {
-      this.taskList = this.sortTaskById(this.taskList, parsedList);
-      this.taskList.forEach((x, i) => {
-        if (x.childs && x.childs.length) {
-          this.taskList[i].childs = this.sortTaskById(x.childs, parsedList);
-        }
-      });
+    try {
+      const decodedList = atob(list);
+      const parsedList = decodedList ? JSON.parse(decodedList) : '';
+      if (Object.keys(parsedList).length) {
+        this.taskList = this.sortTaskById(this.taskList, parsedList);
+        this.taskList.forEach((x, i) => {
+          if (x.childs && x.childs.length) {
+            this.taskList[i].childs = this.sortTaskById(x.childs, parsedList);
+          }
+        });
+      }
+
+      return true;
+    } catch(e) {
+      console.log(e);
+      return false;
     }
   }
 
@@ -346,8 +350,6 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
         const val2 = b.id ? ((orderList[b.id] || orderList[b.id] === 0) ? orderList[b.id] : Infinity) : Infinity;
         if (val1 < val2) {
           return -1;
-        } else {
-          return 1;
         }
       });
     } catch (e) {
@@ -421,16 +423,23 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
    * Function to get all list modules
    */
    public getAllObjectType(){
-    this.coreService.getAllObjectType().subscribe(modules => {
-      this.objectTypeList = modules;
-      this.objectTypeObs = of(modules);
-      if(modules && modules.length && !this.isPageReload) {
-          const firstModuleId = this.objectTypeList[0].objectid;
-          this.router.navigate(['/home/list/datatable', firstModuleId]);
-      }
-    }, error => {
-      console.error(`Error:: ${error.message}`);
-    })
+    try {
+      this.coreService.getAllObjectType().subscribe(modules => {
+        this.objectTypeList = modules;
+        this.objectTypeObs = of(modules);
+        if(modules && modules.length && !this.isPageReload) {
+            const firstModuleId = this.objectTypeList[0].objectid;
+            this.router.navigate(['/home/list/datatable', firstModuleId]);
+        }
+      }, error => {
+        console.error(`Error:: ${error.message}`);
+      });
+
+      return true;
+    } catch(e) {
+      console.log(e);
+      return false;
+    }
   }
 
   /**
@@ -450,8 +459,6 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
         break;
       case 'list':
         res = 'Data';
-        break;
-      default:
         break;
     }
     return res;
@@ -706,9 +713,12 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
           });
         }
       });
-      localStorage.setItem('tasllist-feeds-order', btoa(JSON.stringify(newOrderList)));
+      localStorage.setItem('tasklist-feeds-order', btoa(JSON.stringify(newOrderList)));
+
+      return true;
     } catch (e) {
       console.log(e);
+      return false;
     }
   }
 }
