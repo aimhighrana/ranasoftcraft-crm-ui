@@ -652,10 +652,10 @@ describe('SchemaInfoComponent', () => {
     }, {
       dep_rules: [{}, {}, {}]
     }] as Array<CoreSchemaBrInfo>;
-    let length = component.getBusinessRulesLength;
+    const length = component.getBusinessRulesLength;
     expect(length).toEqual(7);
    });
-  
+
    it('should open deleteBr confirm', () => {
     component.businessRuleData = [
       {
