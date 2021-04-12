@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, SimpleChanges, Input, EventEmitter, Output, ViewChild, OnDestroy, ViewChildren, AfterViewInit, QueryList } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, Input, EventEmitter, Output, ViewChild, OnDestroy, ViewChildren, QueryList, AfterViewInit } from '@angular/core';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { SchemaListModuleList, SchemaListDetails } from '@models/schema/schemalist';
 import { SchemaService } from '@services/home/schema.service';
@@ -24,7 +24,7 @@ import { MatExpansionPanel } from '@angular/material/expansion';
   templateUrl: './secondary-navbar.component.html',
   styleUrls: ['./secondary-navbar.component.scss']
 })
-export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
+export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
 
   /**
    * List of Mat expansion panels available in DOM
@@ -249,7 +249,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
     if (this.taskList.length && orderList) {
       this.setTaskListOrder(orderList);
     }
-    
+
     this.router.events.subscribe((event: Event) => {
       if (event instanceof NavigationEnd) {
         const url = this.router.url;
@@ -257,7 +257,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
           this.showTasksList = true;
         } else {
           this.showTasksList = false;
-          this.selectedTask = "";
+          this.selectedTask = '';
         }
       }
     });
@@ -293,14 +293,14 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
       let openPanel = false;
       this.activatedRoute.queryParams.subscribe((param) => {
         const url = this.router.url;
-        if (param['s'] && url.includes('/home/task')) {
+        if (param.s && url.includes('/home/task')) {
           this.showTasksList = true;
-          this.selectedTask = param['s'];
+          this.selectedTask = param.s;
           taskID = url.split('?')[0].split('/')[3] || '';
           const task = this.taskList.filter((x) => x.id === taskID);
-          if (task.length && task[0]['childs'] && task[0]['childs'].length) {
-            const childs = task[0]['childs'];
-            const child = childs.filter((y) => y.id === param['s']);
+          if (task.length && task[0].childs && task[0].childs.length) {
+            const childs = task[0].childs;
+            const child = childs.filter((y) => y.id === param.s);
             if (child.length) {
               openPanel = true;
             }
@@ -316,10 +316,10 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
         setTimeout(() => {
           const domPanelList = document.querySelectorAll('mat-expansion-panel');
           domPanelList.forEach((panel, ind) => {
-            if (panel['id'] && (panel['id'] === taskID)) {
+            if (panel.id && (panel.id === taskID)) {
               const panelID = `cdk-accordion-child-${ind}`;
               this.expansionPanel.forEach((el) => {
-                if (el['id'] === panelID) {
+                if (el.id === panelID) {
                   setTimeout(() => {
                     el.open();
                   }, 0);
