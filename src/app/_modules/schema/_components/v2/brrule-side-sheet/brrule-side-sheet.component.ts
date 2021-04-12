@@ -192,6 +192,19 @@ export class BrruleSideSheetComponent implements OnInit {
   hasChild = null;
 
   /**
+   * transformation rule type list
+   */
+  transRuleTypeList = [{ value: this.transformationType.REGEX, key: this.transformationType.REGEX }, { value: this.transformationType.LOOKUP, key: this.transformationType.LOOKUP }];
+
+  /**
+   * function to format slider thumbs label.
+   * @param percent percent
+   */
+  rangeSliderLabelFormat(percent) {
+    return `${percent}%`;
+  }
+
+  /**
    * transformer = return tree object.
    * @param node node
    * @param level level
@@ -240,6 +253,15 @@ export class BrruleSideSheetComponent implements OnInit {
     return '';
   }
 
+  /**
+   * Getter for selected transformation type for radio button
+   */
+  get selectedTransRuleTypeRadio() {
+    if (this.form && this.form.controls) {
+      return this.transRuleTypeList.find(ruleType => this.form.controls.transformationRuleType.value === ruleType.value);
+    }
+    return '';
+  }
   /**
    * Angular hook
    */
@@ -483,6 +505,15 @@ export class BrruleSideSheetComponent implements OnInit {
    */
   formField(field: string) {
     return this.form.get(field);
+  }
+
+  /**
+   * function to UPDATE Transformation rule type when lib radio is clicked
+   */
+  updateTransformationRuleType($event) {
+    if (this.form?.controls) {
+      this.form.controls.transformationRuleType.setValue($event.value);
+    }
   }
 
   /**
