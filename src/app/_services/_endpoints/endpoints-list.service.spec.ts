@@ -38,5 +38,9 @@ describe('EndpointsListService', () => {
     expect(service.getDataCountUrl()).toContain('/search/data-count');
   });
 
+  it('should upsertListFiltersUrl', () => {
+    expect(service.upsertListFiltersUrl()).toContain('/search/save-update-filter');
+  });
+
 
 });

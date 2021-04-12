@@ -34,4 +34,8 @@ export class EndpointsListService {
     return this.apiUrl + `/search/data-count`;
   }
 
+  public upsertListFiltersUrl(): string {
+    return this.apiUrl + `/search/save-update-filter`;
+  }
+
 }

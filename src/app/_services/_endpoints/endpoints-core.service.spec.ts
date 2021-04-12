@@ -19,7 +19,11 @@ describe('EndpointsCoreService', () => {
   });
 
   it('should getAllFieldsForViewUrl', () => {
-    expect(service.getAllFieldsForViewUrl()).toContain('/metadata/list-view-fields');
+    expect(service.getAllFieldsForViewUrl('1005')).toContain('/metadata/list-view-all-fields/1005');
+  });
+
+  it('should getObjectTypeDetailsUrl', () => {
+    expect(service.getObjectTypeDetailsUrl('1005')).toContain('/metadata/get-module-desc/1005');
   });
 
 });

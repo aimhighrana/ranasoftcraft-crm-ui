@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FieldMetaData } from '@models/core/coreModel';
+import { FilterCriteria, ListPageFilters } from '@models/list-page/listpage';
 import { SharedModule } from '@modules/shared/shared.module';
 import { CoreService } from '@services/core/core.service';
 import { of, throwError } from 'rxjs';
@@ -15,13 +16,14 @@ describe('ListFilterComponent', () => {
   let coreService: CoreService;
   let router: Router;
   const pathPrams = { moduleId: '1005'};
+  const queryParams = { f: '' };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ListFilterComponent ],
       imports: [ AppMaterialModuleForSpec,  RouterTestingModule, SharedModule ],
       providers: [
-        { provide: ActivatedRoute, useValue: { params: of(pathPrams)}}
+        { provide: ActivatedRoute, useValue: { params: of(pathPrams), queryParams: of(queryParams)}}
       ]
     })
     .compileComponents();
@@ -70,7 +72,78 @@ describe('ListFilterComponent', () => {
 
     spyOn(router, 'navigate');
     component.close();
-    expect(router.navigate).toHaveBeenCalledWith([{outlets: {sb: null}}], {queryParamsHandling: 'preserve'});
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: null } }], { queryParams: {} });
+
+    component.filtersList.filterCriteria.push(
+      { fieldId: 'MTL_TYPE', values: ['pen']} as FilterCriteria
+    );
+    const filters = btoa(JSON.stringify(component.filtersList));
+    component.close();
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: null } }], { queryParams: {f: filters} });
+
+
+  });
+
+  it('should upsertFilter', () => {
+
+    component.activeFilter = new FilterCriteria();
+    component.activeFilter.fieldId = 'MTL_GROUP';
+
+    component.upsertFilter();
+    component.upsertFilter();
+    expect(component.filtersList.filterCriteria.length).toEqual(1);
+
+  });
+
+  it('should editFilter', () => {
+
+    component.editFilter('MTL_GROUP');
+    expect(component.activeFilter.fieldId).toEqual('MTL_GROUP');
+
+    component.upsertFilter();
+    component.filtersList.filterCriteria[0].values = ['grp1'];
+    component.editFilter('MTL_GROUP');
+    expect(component.activeFilter.values).toEqual(['grp1']);
+
+  });
+
+  it('should getFieldDescription', () => {
+
+    expect(component.getFieldDescription('any')).toEqual('Unkown');
+
+    component.metadataFldLst = [
+      {fieldId: 'MTL_GRP', fieldDescri: 'Material groupe'}
+    ] as FieldMetaData[];
+
+    expect(component.getFieldDescription('MTL_GRP')).toEqual('Material groupe');
+
+  });
+
+  it('should updateFilterValue', () => {
+
+    component.activeFilter = new FilterCriteria();
+    component.updateFilterValue('new value');
+    expect(component.activeFilter.values).toEqual(['new value']);
+
+  });
+
+  it('should init component', () => {
+
+    spyOn(component, 'getFldMetadata');
+
+    component.ngOnInit();
+
+    expect(component.moduleId).toEqual('1005');
+    expect(component.filtersList).toEqual(new ListPageFilters());
+
+    const filters = new ListPageFilters();
+    filters.filterCriteria.push(
+      {fieldId: 'region', values: ['TN']} as FilterCriteria
+    );
+
+    queryParams.f = btoa(JSON.stringify(filters));
+    component.ngOnInit();
+    expect(component.filtersList.filterCriteria[0].fieldId).toEqual('region');
 
   });
 
