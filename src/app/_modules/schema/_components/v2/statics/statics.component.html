@@ -3,55 +3,39 @@
     <div class="f-row">
         <mat-chip-list>
             <!---Filter cotainer ...----->
-            
-            <mat-chip class="mdo-filter-matchip" [matMenuTriggerFor]="display_in" disableRipple="true">
-                <label>Display in:</label> <span class="info">
-                    {{ 
-                        selectedUnit
-                    }}
-                </span>
-            </mat-chip>
+            <lib-chip label="Display in:" [matMenuTriggerFor]="display_in" disableRipple="true" type="info">{{selectedUnit}}</lib-chip>
             <mat-menu #display_in="matMenu" class="navigation-menu">
                 <div class="f-col">
-                    <mat-nav-list role="navigation">
-                        <mat-list-item (click)="applyFilter('unit','day')">
-                            <div mat-line>Daily</div>
-                        </mat-list-item>
-                        <mat-list-item (click)="applyFilter('unit','week')">
-                            <div mat-line>Weekly</div>
-                        </mat-list-item>
-                        <mat-list-item (click)="applyFilter('unit','month')">
-                            <div mat-line>Monthly</div>
-                        </mat-list-item>
-                        <mat-list-item (click)="applyFilter('unit','year')">
-                            <div mat-line>Yearly</div>
-                        </mat-list-item>
-                    </mat-nav-list>
+                    <lib-filter-option (click)="applyFilter('unit','day')">
+                        <div mat-line>Daily</div>
+                    </lib-filter-option>
+                    <lib-filter-option (click)="applyFilter('unit','week')">
+                        <div mat-line>Weekly</div>
+                    </lib-filter-option>
+                    <lib-filter-option (click)="applyFilter('unit','month')">
+                        <div mat-line>Monthly</div>
+                    </lib-filter-option>
+                    <lib-filter-option (click)="applyFilter('unit','year')">
+                        <div mat-line>Yearly</div>
+                    </lib-filter-option>
                 </div>
             </mat-menu>
 
-            <mat-chip class="mdo-filter-matchip" [matMenuTriggerFor]="date_filter" disableRipple="true">
-                <label>Date:</label> <span class="info">
-                    {{
-                        selectedDateFilter
-                    }}
-                </span>
-                <!-- <mat-icon matChipRemove>clear</mat-icon> -->
-            </mat-chip>
+            <lib-chip label="Date:" [matMenuTriggerFor]="date_filter" disableRipple="true" type="info">{{selectedDateFilter}}</lib-chip>
 
             <mat-menu #date_filter="matMenu" class="navigation-menu">
                 <div class="f-col">
-                    <mat-nav-list role="navigation">
-                        <mat-list-item (click)="applyFilter('date','today');">
-                            <div mat-line>Today</div>
-                        </mat-list-item>
-                        <mat-list-item (click)="applyFilter('date','this_week');">
-                            <div mat-line>This week</div>
-                        </mat-list-item>
-                        <mat-list-item (click)="applyFilter('date','this_month');">
-                            <div mat-line>This month</div>
-                        </mat-list-item>
-                        <mat-list-item (click)="applyFilter('date','specific_date'); specificDate.open()" prosClickStopPropagation>
+                    <lib-filter-option (click)="applyFilter('date','today');">
+                        <div mat-line>Today</div>
+                    </lib-filter-option>
+                    <lib-filter-option (click)="applyFilter('date','this_week');">
+                        <div mat-line>This week</div>
+                    </lib-filter-option>
+                    <lib-filter-option (click)="applyFilter('date','this_month');">
+                        <div mat-line>This month</div>
+                    </lib-filter-option>
+                    <lib-filter-option (click)="applyFilter('date','specific_date'); specificDate.open()" prosClickStopPropagation>
+                        <div class="f-row">
                             <div class="mat-line">
                                 Specific date
                             </div> 
@@ -60,13 +44,14 @@
                                 <input matInput  [matDatepicker]="specificDate" disabled style="display: none;" [max]="maxDate" (dateChange) ="changeSpecificDate($event)">
                                 <mat-datepicker #specificDate disabled="false"></mat-datepicker>
                             </mat-form-field>
-                            
-                        </mat-list-item>
-                        <mat-list-item (click)="applyFilter('date','date_range'); date_range.open()" prosClickStopPropagation>
+                        </div>
+                    </lib-filter-option>
+                    <lib-filter-option (click)="applyFilter('date','date_range'); date_range.open()" prosClickStopPropagation>
+                        <div class="f-row">
                             <div class="mat-line">
                                 Date range
                             </div> <span class="f-spacer"></span><mat-icon fontSet="mdo-icons"> arrow-right-alt</mat-icon>                            
-
+    
                             <mat-form-field style="width: 0px;">
                                 <mat-date-range-input [rangePicker]="date_range" [max]="maxDate" separator="">
                                     <input matStartDate placeholder="Start date" style="display: none;" (dateChange)="changeDateRange('start', $event)">
@@ -74,31 +59,24 @@
                                 </mat-date-range-input>                                  
                                 <mat-date-range-picker #date_range></mat-date-range-picker>
                             </mat-form-field>
-
-                        </mat-list-item>
-                    </mat-nav-list>
+                        </div>
+                    </lib-filter-option>
                 </div>
             </mat-menu>
 
-            <mat-chip class="mdo-filter-matchip" [matMenuTriggerFor]="data_scope" disableRipple="true">
-                <label>Data scope :</label> <span class="info">
-                    {{
-                        statsFilterParams._data_scope && statsFilterParams._data_scope.variantName ? statsFilterParams._data_scope.variantName : 'Untitled'
-                    }}
-                </span>
-            </mat-chip>
+            <lib-chip label="Data scope :" [matMenuTriggerFor]="data_scope" disableRipple="true" type="info">{{statsFilterParams._data_scope && statsFilterParams._data_scope.variantName ? statsFilterParams._data_scope.variantName : 'Untitled'}}</lib-chip>
             <mat-menu #data_scope="matMenu" class="navigation-menu">
                 <div class="f-col">
                     <pros-search-input prosClickStopPropagation (value)="filterDataScope($event)"></pros-search-input>
-                    <mat-nav-list role="navigation">
-                        <mat-list-item  *ngFor="let scope of dataScopeOb | async" (click)="applyFilter('data_scope',scope)">
+                    <div role="navigation">
+                        <lib-filter-option  *ngFor="let scope of dataScopeOb | async" (click)="applyFilter('data_scope',scope)">
                             <div mat-line>
                                 {{
                                     scope.variantName ? scope.variantName : 'Untitled'
                                 }}
                             </div>
-                        </mat-list-item>
-                    </mat-nav-list>
+                        </lib-filter-option>
+                    </div>
                 </div>
             </mat-menu>
 
