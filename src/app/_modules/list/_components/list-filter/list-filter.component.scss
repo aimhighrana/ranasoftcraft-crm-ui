@@ -1,6 +1,7 @@
 .root {
   user-select: none;
   height: 100%;
+  width: 900px;
   padding: 0 16px;
   overflow: hidden;
 
@@ -9,6 +10,16 @@
 
     .system-fields-col {
       width: 220px;
+
+      .filters-list {
+        max-height: 200px;
+        overflow-y: auto;
+      }
+
+      .fields-list {
+        max-height: 600px;
+        overflow-y: auto;
+      }
     }
 
     .system-values-col {
