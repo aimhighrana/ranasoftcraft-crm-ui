@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, SimpleChanges, Input, EventEmitter, Output, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, Input, EventEmitter, Output, ViewChild, OnDestroy, ViewChildren, AfterViewInit, QueryList } from '@angular/core';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { SchemaListModuleList, SchemaListDetails } from '@models/schema/schemalist';
 import { SchemaService } from '@services/home/schema.service';
@@ -6,7 +6,7 @@ import { ReportService } from '@modules/report/_service/report.service';
 import { ReportList } from '@modules/report/report-list/report-list.component';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { Observable, of, Subscription } from 'rxjs';
-import { Router } from '@angular/router';
+import { Router, Event, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
 import { UserService } from '@services/user/userservice.service';
 import { ListService } from '@services/list/list.service';
@@ -17,6 +17,7 @@ import { SecondaynavType } from '@models/menu-navigation';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { CoreService } from '@services/core/core.service';
 import { ObjectType } from '@models/core/coreModel';
+import { MatExpansionPanel } from '@angular/material/expansion';
 
 @Component({
   selector: 'pros-secondary-navbar',
@@ -24,6 +25,21 @@ import { ObjectType } from '@models/core/coreModel';
   styleUrls: ['./secondary-navbar.component.scss']
 })
 export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
+
+  /**
+   * List of Mat expansion panels available in DOM
+   */
+  @ViewChildren(MatExpansionPanel) expansionPanel: QueryList<any>;
+
+  /**
+   * Handles Show / Hide of Tasks list in other pages except Home page
+   */
+  showTasksList = false;
+
+  /**
+   * Highlights selected task from Tasks list and search / filter under tasks list
+   */
+  selectedTask;
 
   public moduleList: SchemaListModuleList[] = [];
   objectTypeList: ObjectType[] = [];
@@ -81,9 +97,14 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
   activeMenuItemId = '';
 
   /**
+   * Tasks list for secondary menu
+   */
+  taskList = [];
+
+  /**
    * Mockdata for tasks list in home page side menu
    */
-  taskList = [
+  mockTaskList = [
     {
       label: 'Inbox',
       id: 'inbox',
@@ -92,15 +113,15 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
       hasNewFeeds: true,
       childs: [
         {
-          label: 'Test',
-          id: 'test',
+          label: 'Test Search / Filter for Tasks',
+          id: '1test1',
           rec_cnt: 2,
           new_feed_cnt: 1,
           hasNewFeeds: true
         },
         {
           label: 'Test2',
-          id: 'test',
+          id: '1test2',
           rec_cnt: 5,
           new_feed_cnt: 1,
           hasNewFeeds: true
@@ -111,8 +132,8 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
       label: 'In Workflow',
       id: 'in_workflow',
       rec_cnt: 5,
-      new_feed_cnt: 0,
-      hasNewFeeds: false,
+      new_feed_cnt: 2,
+      hasNewFeeds: true,
       childs: []
     },
     {
@@ -124,14 +145,14 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
       childs: [
         {
           label: 'Test1',
-          id: 'test',
+          id: '2test1',
           rec_cnt: 10,
           new_feed_cnt: 0,
           hasNewFeeds: false
         },
         {
           label: 'Test2',
-          id: 'test',
+          id: '2test2',
           rec_cnt: 15,
           new_feed_cnt: 1,
           hasNewFeeds: true
@@ -158,6 +179,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
 
   constructor(
     private router: Router,
+    private activatedRoute: ActivatedRoute,
     private schemaListService: SchemalistService,
     private schemaService: SchemaService,
     private reportService: ReportService,
@@ -222,6 +244,117 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
 
     const currentUrl = this.router.url;
     this.checkDescOnReload(currentUrl)
+    this.taskList = this.mockTaskList;
+    const orderList = localStorage.getItem('tasllist-feeds-order');
+    if (this.taskList.length && orderList) {
+      this.setTaskListOrder(orderList);
+    }
+    
+    this.router.events.subscribe((event: Event) => {
+      if (event instanceof NavigationEnd) {
+        const url = this.router.url;
+        if (url.includes('home/task')) {
+          this.showTasksList = true;
+        } else {
+          this.showTasksList = false;
+          this.selectedTask = "";
+        }
+      }
+    });
+  }
+
+  ngAfterViewInit() {
+    this.expandSearchFilterInCurrentUrl();
+  }
+
+  /**
+   * Sets order of tasks and child search / filter feeds
+   * @param list task order list
+   */
+  setTaskListOrder(list) {
+    const decodedList = atob(list);
+    const parsedList = decodedList ? JSON.parse(decodedList) : '';
+    if (Object.keys(parsedList).length) {
+      this.taskList = this.sortTaskById(this.taskList, parsedList);
+      this.taskList.forEach((x, i) => {
+        if (x.childs && x.childs.length) {
+          this.taskList[i].childs = this.sortTaskById(x.childs, parsedList);
+        }
+      });
+    }
+  }
+
+  /**
+   * Expands search / filter from tasks
+   */
+  expandSearchFilterInCurrentUrl() {
+    try {
+      let taskID;
+      let openPanel = false;
+      this.activatedRoute.queryParams.subscribe((param) => {
+        const url = this.router.url;
+        if (param['s'] && url.includes('/home/task')) {
+          this.showTasksList = true;
+          this.selectedTask = param['s'];
+          taskID = url.split('?')[0].split('/')[3] || '';
+          const task = this.taskList.filter((x) => x.id === taskID);
+          if (task.length && task[0]['childs'] && task[0]['childs'].length) {
+            const childs = task[0]['childs'];
+            const child = childs.filter((y) => y.id === param['s']);
+            if (child.length) {
+              openPanel = true;
+            }
+          }
+        } else if (url.includes('/home/task')) {
+          this.showTasksList = true;
+          taskID = url.split('?')[0].split('/')[3] || '';
+          this.selectedTask = taskID;
+        }
+      });
+
+      if (taskID && openPanel) {
+        setTimeout(() => {
+          const domPanelList = document.querySelectorAll('mat-expansion-panel');
+          domPanelList.forEach((panel, ind) => {
+            if (panel['id'] && (panel['id'] === taskID)) {
+              const panelID = `cdk-accordion-child-${ind}`;
+              this.expansionPanel.forEach((el) => {
+                if (el['id'] === panelID) {
+                  setTimeout(() => {
+                    el.open();
+                  }, 0);
+                }
+              });
+            }
+          });
+        }, 0);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  /**
+   * Sorts Tasks By ID
+   * @param list task list
+   * @param orderList task order list
+   */
+  sortTaskById(list, orderList) {
+    try {
+      list.sort((a, b) => {
+        const val1 = a.id ? ((orderList[a.id] || orderList[a.id] === 0) ? orderList[a.id] : Infinity) : Infinity;
+        const val2 = b.id ? ((orderList[b.id] || orderList[b.id] === 0) ? orderList[b.id] : Infinity) : Infinity;
+        if (val1 < val2) {
+          return -1;
+        } else {
+          return 1;
+        }
+      });
+    } catch (e) {
+      console.log(e);
+    }
+
+    return list;
   }
 
   /**
@@ -535,6 +668,47 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
   drop(event: CdkDragDrop<string[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    }
+  }
+
+  /**
+   * Drag and drop for task list
+   * @param ev draggable element
+   * @param ind parent index of dragged child
+   */
+  dropTask(ev: CdkDragDrop<string[]>, ind?) {
+    if ((ev.previousContainer === ev.container) && (ev.previousIndex !== ev.currentIndex)) {
+      if (ind) {
+        moveItemInArray(this.taskList[ind].childs, ev.previousIndex, ev.currentIndex);
+      } else {
+        moveItemInArray(this.taskList, ev.previousIndex, ev.currentIndex);
+      }
+      this.updateTaskListInStorage(this.taskList);
+    }
+  }
+
+  /**
+   * Update task list order in local storage
+   * @param list updated tasks list
+   */
+  updateTaskListInStorage(list) {
+    try {
+      const newOrderList  = {};
+      list.forEach((x, i) => {
+        if (x.id) {
+          newOrderList[x.id] = i;
+        }
+        if (x.childs && x.childs.length) {
+          x.childs.forEach((y, j) => {
+            if (y.id) {
+              newOrderList[y.id] = j;
+            }
+          });
+        }
+      });
+      localStorage.setItem('tasllist-feeds-order', btoa(JSON.stringify(newOrderList)));
+    } catch (e) {
+      console.log(e);
     }
   }
 }
