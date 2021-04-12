@@ -275,6 +275,15 @@ describe('BrruleSideSheetComponent', () => {
     expect(component.selectedTransformationType).toEqual('REGEX');
   }))
 
+  it('should get selectedTransRuleTypeRadio', async(() => {
+    component.buildCommonDataForm();
+    let selectedType: any = component.selectedTransRuleTypeRadio;
+    expect(selectedType).toEqual(undefined);
+    component.form.controls.transformationRuleType.setValue('REGEX', {emitEvent: false});
+    selectedType = component.selectedTransRuleTypeRadio;
+    expect(selectedType?.value).toEqual('REGEX');
+  }))
+
   it('should init component', async(() => {
     spyOn(component, 'getCategories');
     spyOn(component, 'getFieldsByModuleId');

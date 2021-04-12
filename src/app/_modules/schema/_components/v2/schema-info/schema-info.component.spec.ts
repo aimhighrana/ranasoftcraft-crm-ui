@@ -639,6 +639,23 @@ describe('SchemaInfoComponent', () => {
 
    });
 
+   it('should get current br status', () => {
+    let status = component.getCurrentBrStatus('');
+    expect(status).toEqual('ALL');
+     status = component.getCurrentBrStatus('TEST');
+    expect(status).toEqual('TEST');
+   });
+
+   it('should get Business Rules', () => {
+    component.businessRuleData = [{
+      dep_rules: [{}, {}]
+    }, {
+      dep_rules: [{}, {}, {}]
+    }] as Array<CoreSchemaBrInfo>;
+    let length = component.getBusinessRulesLength;
+    expect(length).toEqual(7);
+   });
+  
    it('should open deleteBr confirm', () => {
     component.businessRuleData = [
       {
