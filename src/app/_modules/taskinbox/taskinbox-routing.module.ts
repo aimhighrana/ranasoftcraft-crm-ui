@@ -1,3 +1,4 @@
+import { TaskListTableViewSettingsComponent } from './_component/task-list-table-view-settings/task-list-table-view-settings.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { TaskListDatatableComponent } from './_component/task-list-datatable/task-list-datatable.component';
@@ -7,6 +8,10 @@ const routes: Routes = [
   {
     path: 'feed',
     component: TaskListDatatableComponent,
+  },
+  {
+    path: 'view/:node',
+    component: TaskListTableViewSettingsComponent,
   },
 ];
 

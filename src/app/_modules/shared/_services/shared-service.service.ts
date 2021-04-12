@@ -4,12 +4,10 @@ import { SecondaryNavRefresh, SecondaynavType } from '@models/menu-navigation';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { ListPageViewDetails } from '@models/list-page/listpage';
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SharedServiceService {
-
   private chooseColumnSub: BehaviorSubject<any> = new BehaviorSubject(null);
 
   private afterBrSaveUpdate: BehaviorSubject<any> = new BehaviorSubject(null);
@@ -59,7 +57,9 @@ export class SharedServiceService {
 
   private viewDetailsSub: Subject<ListPageViewDetails> = new Subject();
 
-  constructor() { }
+  private taskinboxViewDetailsSub: BehaviorSubject<any> = new BehaviorSubject(null);
+
+  constructor() {}
 
   public setChooseColumnData(data: any) {
     this.chooseColumnSub.next(data);
@@ -100,7 +100,7 @@ export class SharedServiceService {
   }
 
   public getSecondaryNavbarList() {
-    this.secondaryBarData.next('')
+    this.secondaryBarData.next('');
   }
   /**
    * Use for refresh .. secondary nav bar
@@ -108,7 +108,7 @@ export class SharedServiceService {
    * @param activeMenuItemId active item inside selected menu
    */
   public setRefreshSecondaryNav(activeMenu: SecondaynavType, isPageReload, activeMenuItemId?: string) {
-    this.refreshSecondaryNav.next({activeMenu, isPageReload, activeMenuItemId});
+    this.refreshSecondaryNav.next({ activeMenu, isPageReload, activeMenuItemId });
   }
 
   /**
@@ -135,23 +135,22 @@ export class SharedServiceService {
    * function to call the subscriber to get notifications
    */
   public getNotificationCount() {
-    return this.updateNotifications.next(true)
+    return this.updateNotifications.next(true);
   }
 
   /**
    * function to set data of report data-table settings
    */
-  public setReportDataTableSetting(data:any){
+  public setReportDataTableSetting(data: any) {
     return this.reportDataTableSetting.next(data);
   }
 
   /**
    * function to get data of report data-table settings
    */
-  public getReportDataTableSetting(): Observable<any>{
+  public getReportDataTableSetting(): Observable<any> {
     return this.reportDataTableSetting.asObservable();
   }
-
 
   /**
    * Set is from msteam loged in ..
@@ -187,15 +186,15 @@ export class SharedServiceService {
     return this.updateRuleFieldExclusion.next(data);
   }
 
-  public getExclusionData() : Observable<any>{
+  public getExclusionData(): Observable<any> {
     return this.updateRuleFieldExclusion.asObservable();
   }
 
-  public emitSaveBrEvent(brInfo : CoreSchemaBrInfo){
+  public emitSaveBrEvent(brInfo: CoreSchemaBrInfo) {
     this.saveBr.next(brInfo);
   }
 
-  public getSaveBrObs() : Observable<CoreSchemaBrInfo>{
+  public getSaveBrObs(): Observable<CoreSchemaBrInfo> {
     return this.saveBr.asObservable();
   }
 
@@ -203,8 +202,8 @@ export class SharedServiceService {
    * Function to set data scope info after saving
    * @param data: dataScope object
    */
-  public setDataScope(data){
-    this.afterSaveDataScope.next(data)
+  public setDataScope(data) {
+    this.afterSaveDataScope.next(data);
   }
 
   /**
@@ -220,5 +219,11 @@ export class SharedServiceService {
 
   public getViewDetailsData(): Observable<any> {
     return this.viewDetailsSub.asObservable();
+  }
+  public settaskinboxViewDetailsData(data: any) {
+    this.taskinboxViewDetailsSub.next(data);
+  }
+  public gettaskinboxViewDetailsData(): Observable<any> {
+    return this.taskinboxViewDetailsSub.asObservable();
   }
 }
