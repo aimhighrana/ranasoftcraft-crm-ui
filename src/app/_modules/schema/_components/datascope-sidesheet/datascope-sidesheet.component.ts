@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AddFilterOutput, SchemaVariantReq } from '@models/schema/schema';
 import { FilterCriteria } from '@models/schema/schemadetailstable';
@@ -10,6 +9,7 @@ import { SharedServiceService } from '@modules/shared/_services/shared-service.s
 import { SchemaService } from '@services/home/schema.service';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { UserService } from '@services/user/userservice.service';
+import { TransientService } from 'mdo-ui-library';
 import { Subscription } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
 
@@ -65,7 +65,7 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
               private schemaService: SchemaService,
               private sharedService: SharedServiceService,
               private schemaVariantService: SchemaVariantService,
-              private matSnackBar: MatSnackBar,
+              private toasterService: TransientService,
               private userService: UserService) { }
 
 
@@ -188,9 +188,9 @@ export class DatascopeSidesheetComponent implements OnInit, OnDestroy {
     const saveVariant = this.schemaService.saveUpdateDataScope(this.variantInfo).subscribe((res) => {
       this.close();
       this.sharedService.setDataScope(res);
-      this.matSnackBar.open('This action has been performed.', 'Okay', {
+      this.toasterService.open('This action has been performed.', 'Okay', {
         duration: 2000
-      })
+      });
     }, (error) => {
       console.log('Something went wrong while saving data scope', error.message)
     })
