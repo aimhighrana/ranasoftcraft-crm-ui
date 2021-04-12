@@ -46,6 +46,10 @@
         <source>save</source>
         <target>Salva</target>
         <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\businessrulelibrary-sidesheet\businessrulelibrary-sidesheet.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+        <context-group purpose="location">
           <context context-type="sourcefile">src/app_modules/list/_components/table-view-settings/table-view-settings.component.html</context>
           <context context-type="linenumber">10</context>
         </context-group>
