@@ -1,7 +1,9 @@
 <div class="f-col root">
     <div class="f-row-spacer-half"></div>
     <div class="f-row">
-        <lib-text-line type="leading">Material - {{ currentView.viewName || 'Default view' }}</lib-text-line>
+        <lib-text-line type="leading"> 
+            {{ objectType && objectType.objectdesc ? objectType.objectdesc: 'Untitled' }} - {{ currentView.viewName || 'Default view' }}
+        </lib-text-line>
         <lib-button type="plain" iconFontType="solid" [matMenuTriggerFor]="menu" icon="caret-down"></lib-button>
         <mat-menu #menu="matMenu" class="navigation-menu">
             <div class="menu-customdropdown" prosInfiniteScroll bufferPercentage="20" (scrollEnd)="getViewsList(true)">
@@ -31,7 +33,8 @@
             <mat-menu #navigation="matMenu" class="navigation-menu">
                 <button mat-menu-item (click)="openTableViewSettings(true)" i18n="@@configure_view"> Configure view
                 </button>
-                <button mat-menu-item (click)="deleteView(currentView.viewId)" i18n="@@delete_view"> Delete view
+                <button mat-menu-item (click)="deleteView(currentView.viewId)" i18n="@@delete_view"
+                    *ngIf="!currentView.isSystemView"> Delete view
                 </button>
             </mat-menu>
         </div>
@@ -41,6 +44,17 @@
 
     <div class="f-row">
         <lib-search i18n-placeholder="@@search" placeholder="Search..." class="lib-search" (click)="showGlobalFilter = true" (blur)="showGlobalFilter  = false "></lib-search>
+        <span class="f-col-spacer-half"></span>
+        <lib-chip icon="filter" [libBadge]="filtersList && filtersList.filterCriteria ? filtersList.filterCriteria.length || '' : ''" 
+            (click)="openFiltersSideSheet()"></lib-chip>
+        <span class="f-col-spacer-half"></span>
+        <lib-chip icon="ellipsis-h" *ngIf="filtersList && (filtersList.filterId || filtersList.filterCriteria.length)"
+            [matMenuTriggerFor]="filterMenu"></lib-chip>
+        <mat-menu #filterMenu="matMenu">
+            <button mat-menu-item (click)="saveFilterCriterias()" i18n="@@save_as"> Save as... </button>
+            <button mat-menu-item (click)="resetAllFilters()" i18n="@@reset"> Reset </button>
+        </mat-menu>
+
     </div>
     
     <ng-template [ngIf]="showGlobalFilter">
@@ -49,14 +63,15 @@
 
     <div class="row-spacer"></div>
     <div class="data-listing">
-        <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
+        <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z0" [ngStyle]="{'min-width.px': tableWidth}">
             <ng-container matColumnDef="_select" sticky>
-                <th mat-header-cell *matHeaderCellDef>
+                <th mat-header-cell *matHeaderCellDef class="fixed-width-c1"
+                    >
                     <lib-checkbox (valueChange)="masterToggle()" [checked]="selection.hasValue() && isAllSelected()"
                         [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
                     </lib-checkbox>
                 </th>
-                <td mat-cell *matCellDef="let element"
+                <td mat-cell *matCellDef="let element" class="fixed-width-c1"
                     [ngClass]="{'mdo-row-warning': rowHasWarning(element), 'mdo-row-error': rowHasError(element)}">
                     <lib-checkbox (valueChange)="selection.toggle(element)" [checked]="selection.isSelected(element)"
                         [aria-label]="checkboxLabel(element)"></lib-checkbox>
@@ -64,10 +79,10 @@
             </ng-container>
 
             <ng-container matColumnDef="_settings" sticky>
-                <th mat-header-cell *matHeaderCellDef>
+                <th mat-header-cell *matHeaderCellDef class="fixed-width-c1">
                     <lib-button icon="cog" (click)="openTableViewSettings(true)"></lib-button>
                 </th>
-                <td mat-cell *matCellDef="let element">
+                <td mat-cell *matCellDef="let element" class="fixed-width-c1">
                     <!-- <lib-button-group>
                         <lib-button type="minor" iconFontType="solid" icon="ellipsis-h"></lib-button>
                         <lib-button type="minor" iconFontType="solid" icon="check"></lib-button>
@@ -76,23 +91,27 @@
                 </td>
             </ng-container>
 
-            <ng-container matColumnDef="OBJECTNUMBER" sticky>
+            <ng-container matColumnDef="OBJECTNUMBER" class="fixed-width-c2" sticky>
                 <th mat-header-cell *matHeaderCellDef>
                     Object Number
                 </th>
-                <td mat-cell *matCellDef="let element">
+                <td mat-cell *matCellDef="let element" class="fixed-width-c2">
                     {{ element.OBJECTNUMBER.fieldData}}
                 </td>
             </ng-container>
 
-            <ng-template ngFor let-dynCol [ngForOf]="(displayedColumns | async)">
+            <ng-template ngFor let-dynCol let-index="index" [ngForOf]="(displayedColumns | async)">
                 <ng-template [ngIf]="isStaticCol(dynCol)" [ngIfElse]="dynamic">
                     <!-- skip all static columns -->
                 </ng-template>
                 <ng-template #dynamic>
-                    <ng-container [matColumnDef]="dynCol">
-                        <th mat-header-cell *matHeaderCellDef 
-                            [ngClass]="{'large-cell-header': isLargeHeader(dynCol)}">
+                    <ng-container [matColumnDef]="dynCol"> <!-- mat-sort-header [start]="getColumnSortDir(dynCol)" -->
+                        <th mat-header-cell *matHeaderCellDef
+                            [ngStyle]="{'width.px': getColumnWidth(dynCol)}"
+                            [ngClass]="{'large-cell-header': isLargeHeader(dynCol)}"
+                            prosResizableColumn [index]="index"
+                            (widthChanged)="onColumnsResize($event)"
+                            [id]="dynCol">
                             {{ getFieldDesc(dynCol) }}
                         </th>
                         <td mat-cell *matCellDef="let element"

@@ -1,16 +1,21 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ListPageViewDetails, ViewsPage } from '@models/list-page/listpage';
+import { ListPageFilters, ListPageViewDetails, SortDirection, ViewsPage } from '@models/list-page/listpage';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { ListService } from '@services/list/list.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { PageEvent } from '@angular/material/paginator';
 import { ListDataSource } from './list-data-source';
-import { FieldMetaData } from '@models/core/coreModel';
+import { FieldMetaData, ObjectType } from '@models/core/coreModel';
 import { CoreService } from '@services/core/core.service';
 import { sortBy } from 'lodash';
 import { GlobaldialogService } from '@services/globaldialog.service';
+import { ResizableColumnDirective } from '@modules/shared/_directives/resizable-column.directive';
+import { MatSort } from '@angular/material/sort';
+import { map } from 'rxjs/operators';
+import { MatDialog } from '@angular/material/dialog';
+import { FilterSaveModalComponent } from '../filter-save-modal/filter-save-modal.component';
 
 
 @Component({
@@ -18,12 +23,21 @@ import { GlobaldialogService } from '@services/globaldialog.service';
   templateUrl: './list-datatable.component.html',
   styleUrls: ['./list-datatable.component.scss']
 })
-export class ListDatatableComponent implements OnInit, OnDestroy {
+export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy {
+
+  @ViewChildren(ResizableColumnDirective, {read: ElementRef}) columnsList: QueryList<ElementRef>;
+
+  @ViewChild(MatSort) sort: MatSort;
 
   /**
    * hold current module id
    */
   moduleId: string;
+
+  /**
+   * Hold current module details
+   */
+  objectType: ObjectType;
 
   /**
    * hold current view
@@ -87,13 +101,18 @@ export class ListDatatableComponent implements OnInit, OnDestroy {
   metadataFldLst: FieldMetaData[] = [];
 
 
+  filtersList: ListPageFilters = new ListPageFilters();
+
+  isPageRefresh = true;
+
   constructor(
     private activatedRouter: ActivatedRoute,
     private router: Router,
     private sharedServices: SharedServiceService,
     private listService: ListService,
     private coreService: CoreService,
-    private glocalDialogService: GlobaldialogService) {
+    private glocalDialogService: GlobaldialogService,
+    private matDialog: MatDialog) {
 
     this.dataSource = new ListDataSource(this.listService);
 
@@ -113,6 +132,31 @@ export class ListDatatableComponent implements OnInit, OnDestroy {
       this.getTotalCount();
       this.getViewsList();
       this.getFldMetadata();
+      this.getObjectTypeDetails();
+    });
+
+    this.activatedRouter.queryParams.pipe(
+      map(params => {
+        if(params.f) {
+          try {
+            const filters = JSON.parse(atob(params.f));
+            return filters;
+          } catch (err) {
+            console.error(err);
+            return new ListPageFilters();
+          }
+        } else {
+          return new ListPageFilters();
+        }
+      })
+    )
+    .subscribe(filters => {
+      this.filtersList = filters;
+      console.log(this.filtersList);
+      if(!this.isPageRefresh) {
+        this.getTableData();
+      }
+      this.isPageRefresh = false;
     });
 
     this.sharedServices.getViewDetailsData().subscribe(resp => {
@@ -123,6 +167,23 @@ export class ListDatatableComponent implements OnInit, OnDestroy {
         this.getViewsList();
       }
     })
+
+  }
+
+  ngAfterViewInit(): void {
+    this.sort.sortChange.subscribe(res => {
+      const col = this.currentView.fieldsReqList.find(c => c.fieldId === res.active);
+      if (col) {
+        col.sortDirection = SortDirection[res.direction] || null;
+        // update default column sort direction
+        const sub = this.listService.upsertListPageViewDetails(this.currentView, this.moduleId).subscribe(resp => {
+          this.recordsPageIndex = 1;
+          this.getTableData();
+        });
+      this.subscriptionsList.push(sub);
+      }
+
+    });
 
   }
 
@@ -221,6 +282,18 @@ export class ListDatatableComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * get current module details
+   */
+  getObjectTypeDetails() {
+    const sub = this.coreService.getObjectTypeDetails(this.moduleId).subscribe(response => {
+      this.objectType = response;
+    }, error => {
+      console.error(`Error : ${error.message}`);
+    });
+    this.subscriptionsList.push(sub);
+  }
+
+  /**
    * get total records count
    */
   getTotalCount() {
@@ -282,7 +355,7 @@ export class ListDatatableComponent implements OnInit, OnDestroy {
    */
   getTableData() {
     const viewId = this.currentView.viewId ?  this.currentView.viewId : '';
-    this.dataSource.getData(this.moduleId, viewId, this.recordsPageIndex);
+    this.dataSource.getData(this.moduleId, viewId, this.recordsPageIndex, this.filtersList.filterCriteria);
   }
 
   /**
@@ -358,6 +431,89 @@ export class ListDatatableComponent implements OnInit, OnDestroy {
   get displayedRecordsRange(): string {
     const endRecord = this.recordsPageIndex * this.recordsPageSize < this.totalCount ? this.recordsPageIndex * this.recordsPageSize : this.totalCount;
     return this.totalCount ? `${((this.recordsPageIndex - 1) * this.recordsPageSize) + 1 } to ${endRecord} of ${this.totalCount}` : '';
+  }
+
+  /**
+   * update view columns width
+   * @param event new column width
+   */
+  onColumnsResize(event) {
+    this.columnsList.forEach(col => {
+      const column = this.currentView.fieldsReqList.find(c => c.fieldId === col.nativeElement.id);
+      if (column) {
+        column.width = col.nativeElement.offsetWidth;
+      }
+    });
+    const sub = this.listService.upsertListPageViewDetails(this.currentView, this.moduleId).subscribe(resp => {
+        console.log(resp);
+    });
+    this.subscriptionsList.push(sub);
+  }
+
+  getColumnWidth(fieldId) {
+    const col = this.currentView.fieldsReqList.find(c => c.fieldId === fieldId);
+    return col ? +col.width || 100 : 100;
+  }
+
+  /**
+   * table width based on displayed columns width
+   */
+  get tableWidth() {
+
+    let width = this.staticColumns.length * 100;
+    this.currentView.fieldsReqList.forEach(col => {
+      width += +col.width || 100;
+    });
+
+    return width;
+  }
+
+  /**
+   * get initial sort direction for a column
+   * @param fieldId column
+   * @returns column sort direction
+   */
+  getColumnSortDir(fieldId) {
+    const col = this.currentView.fieldsReqList.find(c => c.fieldId === fieldId);
+    return col && col.sortDirection ? Object.keys(SortDirection).find(key => SortDirection[key] === col.sortDirection) : '';
+  }
+
+  /**
+   * open filter settings sidesheet
+   */
+  openFiltersSideSheet() {
+    this.router.navigate([{ outlets: { sb: `sb/list/filter-settings/${this.moduleId}` } }], { queryParamsHandling: 'preserve' });
+  }
+
+  /**
+   * upsert filters
+   */
+  saveFilterCriterias() {
+
+    const dialogCloseRef = this.matDialog.open(FilterSaveModalComponent, {
+      data: {filterName: this.filtersList.description},
+      width:'400px'
+    });
+    dialogCloseRef.afterClosed().subscribe(res=>{
+      if(res) {
+        this.filtersList.moduleId = this.moduleId;
+        this.filtersList.description = res;
+        const sub = this.listService.upsertListFilters(this.filtersList).subscribe(resp => {
+          if(resp && resp.filterId) {
+            this.filtersList.filterId = resp.filterId;
+            this.router.navigate([], {queryParams: {f: btoa(JSON.stringify(this.filtersList))}});
+          }
+        }, error => {
+          console.error(`Error : ${error.message}`);
+        });
+        this.subscriptionsList.push(sub);
+      }
+    });
+
+  }
+
+  resetAllFilters() {
+    this.router.navigate([], {queryParams: {}});
   }
 
   ngOnDestroy(): void {

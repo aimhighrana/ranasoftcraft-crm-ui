@@ -8,22 +8,26 @@ import { ListDatatableComponent } from './list-datatable.component';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { PageEvent } from '@angular/material/paginator';
 import { SharedModule } from '@modules/shared/shared.module';
-import { ViewsPage } from '@models/list-page/listpage';
+import { FilterCriteria, ListPageFilters, ListPageViewFldMap, ViewsPage } from '@models/list-page/listpage';
+import { FieldMetaData } from '@models/core/coreModel';
+import { CoreService } from '@services/core/core.service';
 
 describe('ListDatatableComponent', () => {
   let component: ListDatatableComponent;
   let fixture: ComponentFixture<ListDatatableComponent>;
   let listService: ListService;
+  let coreService: CoreService;
   let router: Router;
   let sharedServices: SharedServiceService;
   const routeParams = { moduleId: '1005' };
+  const queryParams = { f: '' };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ListDatatableComponent ],
       imports: [ AppMaterialModuleForSpec, RouterTestingModule, SharedModule ],
       providers: [
-        { provide: ActivatedRoute, useValue: { params: of(routeParams)}}
+        { provide: ActivatedRoute, useValue: { params: of(routeParams), queryParams: of(queryParams)}}
       ]
     })
     .compileComponents();
@@ -36,6 +40,7 @@ describe('ListDatatableComponent', () => {
     listService = fixture.debugElement.injector.get(ListService);
     sharedServices = fixture.debugElement.injector.get(SharedServiceService);
     router = TestBed.inject(Router);
+    coreService = fixture.debugElement.injector.get(CoreService);
     // fixture.detectChanges();
 
   });
@@ -49,15 +54,26 @@ describe('ListDatatableComponent', () => {
     spyOn(component, 'getViewsList');
     spyOn(component, 'getTotalCount');
     spyOn(sharedServices, 'getViewDetailsData').and.returnValue(of());
-    component.ngOnInit();
+    spyOn(component, 'getTableData');
 
+    component.ngOnInit();
     expect(component.getViewsList).toHaveBeenCalled();
+
+    const filters = new ListPageFilters();
+    filters.filterCriteria.push(
+      {fieldId: 'region', values: ['TN']} as FilterCriteria
+    );
+
+    queryParams.f = btoa(JSON.stringify(filters));
+    component.ngOnInit();
+    expect(component.filtersList.filterCriteria[0].fieldId).toEqual('region');
 
   });
 
  it('getViewsList() ', async(() => {
 
     component.moduleId = '1005';
+    spyOn(component, 'updateTableColumns');
 
     spyOn(listService, 'getAllListPageViews')
       .and.returnValues(of(new ViewsPage()), throwError({ message: 'api error'}));
@@ -65,6 +81,7 @@ describe('ListDatatableComponent', () => {
     component.getViewsList();
     expect(listService.getAllListPageViews).toHaveBeenCalled();
     expect(component.currentView).toEqual(component.defaultView);
+    expect(component.updateTableColumns).toHaveBeenCalled();
 
     // api error
     spyOn(console, 'error');
@@ -150,7 +167,131 @@ describe('ListDatatableComponent', () => {
     pageEvent.pageIndex = 5;
 
     component.onPageChange(pageEvent);
-    expect(component.dataSource.getData).toHaveBeenCalledWith(component.moduleId, '', 5);
+    expect(component.dataSource.getData).toHaveBeenCalledWith(component.moduleId, '', 5, []);
+  });
+
+  it('should updateTableColumns', () => {
+
+    spyOn(component, 'getTableData');
+
+    component.updateTableColumns();
+
+    component.currentView = null;
+    component.updateTableColumns();
+
+    expect(component.getTableData).toHaveBeenCalledTimes(1);
+  });
+
+  it('should get table width', () => {
+
+    const width = component.staticColumns.length * 100;
+    expect(component.tableWidth).toEqual(width);
+
+  });
+
+  it('should get table column width', () => {
+
+    component.currentView.fieldsReqList.push(
+      {fieldId: 'MATL_TYPE', width: '200'} as ListPageViewFldMap
+    );
+
+    expect(component.getColumnWidth('MATL_TYPE')).toEqual(200);
+    expect(component.getColumnWidth('default')).toEqual(100);
+
+  });
+
+  it('should getDefaultViewId', () => {
+
+    component.viewsList = {
+      userViews: [
+        {viewId: '1701', default: false},
+        {viewId: '1702', default: true}
+      ]
+     } as ViewsPage;
+
+    expect(component.getDefaultViewId()).toEqual('1702');
+
+    component.viewsList.userViews[1].default = false;
+    expect(component.getDefaultViewId()).toEqual('1701');
+
+  });
+
+  it('should getFieldDesc', () => {
+
+    component.metadataFldLst = [
+      {fieldId: 'MTL_GRP', fieldDescri: 'Material group'}
+    ] as FieldMetaData[];
+
+    expect(component.getFieldDesc('MTL_GRP')).toEqual('Material group');
+    expect(component.getFieldDesc('Other')).toEqual('Other');
+
+  });
+
+  it('should openFiltersSideSheet', () => {
+
+    spyOn(router, 'navigate');
+    component.moduleId = '1005';
+    component.openFiltersSideSheet();
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/list/filter-settings/${component.moduleId}` } }], { queryParamsHandling: 'preserve' });
+
+  });
+
+  it('should resetAllFilters', () => {
+
+    spyOn(router, 'navigate');
+    component.resetAllFilters();
+    expect(router.navigate).toHaveBeenCalledWith([], {queryParams: {}});
+
+  });
+
+  it('should getFldMetadata', () => {
+
+
+    expect(() => component.getFldMetadata()).toThrowError('Module id cant be null or empty');
+
+    const response = [{
+          fieldId: 'name',
+          fieldDescri: 'name'
+    }] as FieldMetaData[];
+
+    component.moduleId = '1005';
+    spyOn(coreService, 'getAllFieldsForView').withArgs(component.moduleId)
+      .and.returnValues(of(response), throwError({message: 'api error'}));
+
+
+    component.getFldMetadata();
+    expect(coreService.getAllFieldsForView).toHaveBeenCalledWith(component.moduleId);
+    expect(component.metadataFldLst).toEqual(response);
+
+
+    // api error
+    spyOn(console, 'error');
+    component.getFldMetadata();
+    expect(console.error).toHaveBeenCalled();
+
+  });
+
+  it('should getObjectTypeDetails', () => {
+
+    const response = {
+      objectid: '1005',
+      objectdesc: 'Material'
+    };
+
+    component.moduleId = '1005';
+    spyOn(coreService, 'getObjectTypeDetails').withArgs(component.moduleId)
+      .and.returnValues(of(response), throwError({message: 'api error'}));
+
+
+    component.getObjectTypeDetails();
+    expect(coreService.getObjectTypeDetails).toHaveBeenCalledWith(component.moduleId);
+    expect(component.objectType).toEqual(response);
+
+    // api error
+    spyOn(console, 'error');
+    component.getObjectTypeDetails();
+    expect(console.error).toHaveBeenCalled();
+
   });
 
 });

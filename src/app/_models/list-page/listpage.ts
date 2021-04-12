@@ -143,6 +143,11 @@ export class ListPageViewFldMap {
     sortDirection = 'ASCENDING';
 }
 
+export enum SortDirection {
+    asc = 'ASCENDING',
+    desc = 'DESCENDING'
+}
+
 export class FilterCriteria {
     endValue: string;
     esFieldPath: string;
@@ -150,6 +155,14 @@ export class FilterCriteria {
     operator: string;
     startValue: string;
     values: string[];
+}
+
+export class ListPageFilters {
+    filterId: string;
+    description: string;
+    isDefault: boolean;
+    moduleId: string;
+    filterCriteria: FilterCriteria[] = [];
 }
 
 export class ViewsPage {

@@ -17,9 +17,9 @@ export class ListDataSource implements DataSource<SchemaTableData> {
      * @param viewId active view id
      * @param pageId page index
      */
-    public getData(moduleId, viewId, pageIndex) {
+    public getData(moduleId, viewId, pageIndex, filterCriterias) {
 
-        this.listService.getTableData(moduleId, viewId, pageIndex, []).subscribe(res => {
+        this.listService.getTableData(moduleId, viewId, pageIndex, filterCriterias).subscribe(res => {
             this.dataSourceSubject.next(this.docsTransformation(res));
         }, error => {
             console.error(`Error : ${error.message}`);
