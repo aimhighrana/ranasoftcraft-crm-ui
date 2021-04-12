@@ -610,6 +610,118 @@
           <context context-type="linenumber">17</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="daily" datatype="html">
+        <source>Daily</source>
+        <target>Ежедневно</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\statics\statics.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="weekly" datatype="html">
+        <source>Weekly</source>
+        <target>еженедельно</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\statics\statics.component.html</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="monthly" datatype="html">
+        <source>Monthly</source>
+        <target>ежемесячно</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\statics\statics.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="yearly" datatype="html">
+        <source>Yearly</source>
+        <target>каждый год</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\statics\statics.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="display_in_label" datatype="html">
+        <source>Display in:</source>
+        <target>Дисплей в:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\statics\statics.component.html</context>
+          <context context-type="linenumber">6</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="date_label" datatype="html">
+        <source>Date:</source>
+        <target>Дата:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\statics\statics.component.html</context>
+          <context context-type="linenumber">24</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="today" datatype="html">
+        <source>Today</source>
+        <target>Сегодня</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\statics\statics.component.html</context>
+          <context context-type="linenumber">29</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="this_week" datatype="html">
+        <source>This week</source>
+        <target>На этой неделе</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\statics\statics.component.html</context>
+          <context context-type="linenumber">32</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="this_month" datatype="html">
+        <source>This month</source>
+        <target>Этот месяц</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\statics\statics.component.html</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="specific_date" datatype="html">
+        <source>Specific date</source>
+        <target>Конкретная дата</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\statics\statics.component.html</context>
+          <context context-type="linenumber">40</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="date_range" datatype="html">
+        <source>Date range</source>
+        <target>Диапазон дат</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\statics\statics.component.html</context>
+          <context context-type="linenumber">52</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="start_date" datatype="html">
+        <source>Start date</source>
+        <target>Дата начала</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\statics\statics.component.html</context>
+          <context context-type="linenumber">57</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="end_date" datatype="html">
+        <source>End date</source>
+        <target>Дата окончания</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\statics\statics.component.html</context>
+          <context context-type="linenumber">58</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="data_scope_label" datatype="html">
+        <source>Data scope :</source>
+        <target>Объем данных:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\statics\statics.component.html</context>
+          <context context-type="linenumber">67</context>
+        </context-group>
+      </trans-unit>
     </body>
   </file>
 </xliff>

@@ -3,40 +3,40 @@
     <div class="f-row">
         <mat-chip-list>
             <!---Filter cotainer ...----->
-            <lib-chip label="Display in:" [matMenuTriggerFor]="display_in" disableRipple="true" type="info">{{selectedUnit}}</lib-chip>
+            <lib-chip i18n-label="@@display_in_label" label="Display in:" [matMenuTriggerFor]="display_in" disableRipple="true" type="info">{{selectedUnit}}</lib-chip>
             <mat-menu #display_in="matMenu" class="navigation-menu">
                 <div class="f-col">
                     <lib-filter-option (click)="applyFilter('unit','day')">
-                        <div mat-line>Daily</div>
+                        <div mat-line i18n="daily">Daily</div>
                     </lib-filter-option>
                     <lib-filter-option (click)="applyFilter('unit','week')">
-                        <div mat-line>Weekly</div>
+                        <div mat-line i18n="weekly">Weekly</div>
                     </lib-filter-option>
                     <lib-filter-option (click)="applyFilter('unit','month')">
-                        <div mat-line>Monthly</div>
+                        <div mat-line i18n="monthly">Monthly</div>
                     </lib-filter-option>
                     <lib-filter-option (click)="applyFilter('unit','year')">
-                        <div mat-line>Yearly</div>
+                        <div mat-line i18n="yearly">Yearly</div>
                     </lib-filter-option>
                 </div>
             </mat-menu>
 
-            <lib-chip label="Date:" [matMenuTriggerFor]="date_filter" disableRipple="true" type="info">{{selectedDateFilter}}</lib-chip>
+            <lib-chip i18n-label="@@date_label" label="Date:" [matMenuTriggerFor]="date_filter" disableRipple="true" type="info">{{selectedDateFilter}}</lib-chip>
 
             <mat-menu #date_filter="matMenu" class="navigation-menu">
                 <div class="f-col">
                     <lib-filter-option (click)="applyFilter('date','today');">
-                        <div mat-line>Today</div>
+                        <div mat-line i18n="@@today">Today</div>
                     </lib-filter-option>
                     <lib-filter-option (click)="applyFilter('date','this_week');">
-                        <div mat-line>This week</div>
+                        <div mat-line i18n="@@this_week">This week</div>
                     </lib-filter-option>
                     <lib-filter-option (click)="applyFilter('date','this_month');">
-                        <div mat-line>This month</div>
+                        <div mat-line i18n="@@this_month">This month</div>
                     </lib-filter-option>
                     <lib-filter-option (click)="applyFilter('date','specific_date'); specificDate.open()" prosClickStopPropagation>
                         <div class="f-row">
-                            <div class="mat-line">
+                            <div class="mat-line" i18n="@@specific_date">
                                 Specific date
                             </div> 
                             <span class="f-spacer"></span><mat-icon fontSet="mdo-icons"> arrow-right-alt</mat-icon>
@@ -48,14 +48,14 @@
                     </lib-filter-option>
                     <lib-filter-option (click)="applyFilter('date','date_range'); date_range.open()" prosClickStopPropagation>
                         <div class="f-row">
-                            <div class="mat-line">
+                            <div class="mat-line" i18n="@@date_range">
                                 Date range
                             </div> <span class="f-spacer"></span><mat-icon fontSet="mdo-icons"> arrow-right-alt</mat-icon>                            
     
                             <mat-form-field style="width: 0px;">
                                 <mat-date-range-input [rangePicker]="date_range" [max]="maxDate" separator="">
-                                    <input matStartDate placeholder="Start date" style="display: none;" (dateChange)="changeDateRange('start', $event)">
-                                    <input matEndDate placeholder="End date" style="display: none;" (dateChange)="changeDateRange('end', $event)">
+                                    <input matStartDate i18n-placeholder="@@start_date" placeholder="Start date" style="display: none;" (dateChange)="changeDateRange('start', $event)">
+                                    <input matEndDate i18n-placeholder="@@end_date" placeholder="End date" style="display: none;" (dateChange)="changeDateRange('end', $event)">
                                 </mat-date-range-input>                                  
                                 <mat-date-range-picker #date_range></mat-date-range-picker>
                             </mat-form-field>
@@ -64,7 +64,7 @@
                 </div>
             </mat-menu>
 
-            <lib-chip label="Data scope :" [matMenuTriggerFor]="data_scope" disableRipple="true" type="info">{{statsFilterParams._data_scope && statsFilterParams._data_scope.variantName ? statsFilterParams._data_scope.variantName : 'Untitled'}}</lib-chip>
+            <lib-chip i18n-label="@@data_scope_label" label="Data scope :" [matMenuTriggerFor]="data_scope" disableRipple="true" type="info">{{statsFilterParams._data_scope && statsFilterParams._data_scope.variantName ? statsFilterParams._data_scope.variantName : 'Untitled'}}</lib-chip>
             <mat-menu #data_scope="matMenu" class="navigation-menu">
                 <div class="f-col">
                     <pros-search-input prosClickStopPropagation (value)="filterDataScope($event)"></pros-search-input>

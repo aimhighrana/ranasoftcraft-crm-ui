@@ -610,6 +610,118 @@
           <context context-type="linenumber">17</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="daily" datatype="html">
+        <source>Daily</source>
+        <target>Harian</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\statics\statics.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="weekly" datatype="html">
+        <source>Weekly</source>
+        <target>Mingguan</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\statics\statics.component.html</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="monthly" datatype="html">
+        <source>Monthly</source>
+        <target>Bulanan</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\statics\statics.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="yearly" datatype="html">
+        <source>Yearly</source>
+        <target>Tahunan</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\statics\statics.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="display_in_label" datatype="html">
+        <source>Display in:</source>
+        <target>Tampilan di:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\statics\statics.component.html</context>
+          <context context-type="linenumber">6</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="date_label" datatype="html">
+        <source>Date:</source>
+        <target>Tanggal:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\statics\statics.component.html</context>
+          <context context-type="linenumber">24</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="today" datatype="html">
+        <source>Today</source>
+        <target>Hari ini</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\statics\statics.component.html</context>
+          <context context-type="linenumber">29</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="this_week" datatype="html">
+        <source>This week</source>
+        <target>Minggu ini</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\statics\statics.component.html</context>
+          <context context-type="linenumber">32</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="this_month" datatype="html">
+        <source>This month</source>
+        <target>Bulan ini</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\statics\statics.component.html</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="specific_date" datatype="html">
+        <source>Specific date</source>
+        <target>Tanggal yang spesifik</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\statics\statics.component.html</context>
+          <context context-type="linenumber">40</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="date_range" datatype="html">
+        <source>Date range</source>
+        <target>rentang tanggal</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\statics\statics.component.html</context>
+          <context context-type="linenumber">52</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="start_date" datatype="html">
+        <source>Start date</source>
+        <target>Mulai tanggal</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\statics\statics.component.html</context>
+          <context context-type="linenumber">57</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="end_date" datatype="html">
+        <source>End date</source>
+        <target>tanggal akhir</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\statics\statics.component.html</context>
+          <context context-type="linenumber">58</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="data_scope_label" datatype="html">
+        <source>Data scope :</source>
+        <target>Data lingkup:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\statics\statics.component.html</context>
+          <context context-type="linenumber">67</context>
+        </context-group>
+      </trans-unit>
     </body>
   </file>
 </xliff>
