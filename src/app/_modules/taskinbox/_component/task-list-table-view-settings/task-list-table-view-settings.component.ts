@@ -70,6 +70,15 @@ export class TaskListTableViewSettingsComponent implements OnInit, OnDestroy {
         if (resp && resp.node === this.node) {
           this.viewDetails = sortBy(resp.viewDetails, 'fieldOrder');
           this.viewDetailsObs.next(this.viewDetails);
+        } else {
+          this.viewDetails = this.metadataFldLst.map((d) => {
+            return {
+              fldId: d.fldId,
+              fldDesc: d.fldDesc,
+              fldOrder: '0',
+            };
+          });
+          this.viewDetailsObs.next(this.viewDetails);
         }
       });
     // this.listService.getListPageViewDetails(this.viewId, this.moduleId).subscribe(

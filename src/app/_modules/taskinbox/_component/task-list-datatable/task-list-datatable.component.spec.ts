@@ -87,4 +87,10 @@ describe('TaskListDatatableComponent', () => {
 
     expect(component.pageEvent.pageIndex).toBe(5);
   });
+
+  it('ngOnDestroy()', () => {
+    spyOn(component.unsubscribeAll$, 'unsubscribe');
+    component.ngOnDestroy();
+    expect(component.unsubscribeAll$.unsubscribe).toHaveBeenCalled();
+  });
 });

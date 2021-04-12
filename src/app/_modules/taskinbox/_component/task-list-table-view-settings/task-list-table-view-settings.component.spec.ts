@@ -54,7 +54,7 @@ describe('TaskListTableViewSettingsComponent', () => {
   });
 
   it('getTableViewDetails()', () => {
-    spyOn(sharedServices, 'gettaskinboxViewDetailsData').and.returnValue(
+    spyOn(sharedServices, 'gettaskinboxViewDetailsData').and.returnValues(
       of({ node: 'inbox', viewDetails: [{ fldId: 'dueby', fldOrder: '0', fldDesc: 'Due by' }] })
     );
     component.node = 'inbox';
@@ -62,6 +62,15 @@ describe('TaskListTableViewSettingsComponent', () => {
 
     expect(sharedServices.gettaskinboxViewDetailsData).toHaveBeenCalled();
     expect(component.viewDetails).toEqual([{ fldId: 'dueby', fldOrder: '0', fldDesc: 'Due by' }]);
+    expect(component.viewDetails.length).toBe(1);
+  });
+  it('gettaskinboxViewDetailsData() with null return', () => {
+    spyOn(sharedServices, 'gettaskinboxViewDetailsData').and.returnValues(of(null));
+    component.node = 'inbox';
+    component.getTableViewDetails();
+
+    expect(sharedServices.gettaskinboxViewDetailsData).toHaveBeenCalled();
+    expect(component.viewDetails.length).toBeGreaterThan(1);
   });
 
   it('getFldMetadata())', () => {
@@ -97,10 +106,10 @@ describe('TaskListTableViewSettingsComponent', () => {
 
   it('should selectionChange', () => {
     component.selectionChange({ fldId: 'sent', fldDesc: 'Sent' });
-    expect(component.viewDetails.length).toEqual(1);
+    expect(component.viewDetails.length).toEqual(5);
 
-    component.selectionChange({ fldId: 'sent', fldDesc: 'Sent' });
-    expect(component.viewDetails.length).toEqual(0);
+    component.selectionChange({ fldId: 'new', fldDesc: 'New' });
+    expect(component.viewDetails.length).toEqual(6);
   });
 
   it('throw error when node is undefined', () => {
@@ -122,5 +131,11 @@ describe('TaskListTableViewSettingsComponent', () => {
       viewDetails: [{ fldId: 'dueby', fldDesc: 'Due by', fldOrder: '1' }],
     });
     expect(component.close).toHaveBeenCalled();
+  });
+
+  it('ngOnDestroy()', () => {
+    spyOn(component.unsubscribeAll$, 'unsubscribe');
+    component.ngOnDestroy();
+    expect(component.unsubscribeAll$.unsubscribe).toHaveBeenCalled();
   });
 });
