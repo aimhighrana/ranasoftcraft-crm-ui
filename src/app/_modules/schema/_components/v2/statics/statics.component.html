@@ -20,9 +20,9 @@
                     </lib-filter-option>
                 </div>
             </mat-menu>
+            <span class="col-spacer"></span>
 
             <lib-chip i18n-label="@@date_label" label="Date:" [matMenuTriggerFor]="date_filter" disableRipple="true" type="info">{{selectedDateFilter}}</lib-chip>
-
             <mat-menu #date_filter="matMenu" class="navigation-menu">
                 <div class="f-col">
                     <lib-filter-option (click)="applyFilter('date','today');">
@@ -63,6 +63,7 @@
                     </lib-filter-option>
                 </div>
             </mat-menu>
+            <span class="col-spacer"></span>
 
             <lib-chip i18n-label="@@data_scope_label" label="Data scope :" [matMenuTriggerFor]="data_scope" disableRipple="true" type="info">{{statsFilterParams._data_scope && statsFilterParams._data_scope.variantName ? statsFilterParams._data_scope.variantName : 'Untitled'}}</lib-chip>
             <mat-menu #data_scope="matMenu" class="navigation-menu">
@@ -79,7 +80,6 @@
                     </div>
                 </div>
             </mat-menu>
-
         </mat-chip-list>
     </div>
     <div class="row-spacer"></div>
