@@ -606,6 +606,70 @@
           <context context-type="linenumber">17</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="home" datatype="html">
+        <source>Home</source>
+        <target>home</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\home\_components\primary-navigation\primary-navigation.component.html</context>
+          <context context-type="linenumber">14</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="data" datatype="html">
+        <source>Data</source>
+        <target>data</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\home\_components\primary-navigation\primary-navigation.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="schema" datatype="html">
+        <source>Schema</source>
+        <target>schema</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\home\_components\primary-navigation\primary-navigation.component.html</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="reports" datatype="html">
+        <source>Reports</source>
+        <target>reports</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\home\_components\primary-navigation\primary-navigation.component.html</context>
+          <context context-type="linenumber">20</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="sign_out" datatype="html">
+        <source>Sign out</source>
+        <target>sign_out</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\home\_components\primary-navigation\primary-navigation.component.html</context>
+          <context context-type="linenumber">58</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="check_data" datatype="html">
+        <source>Check data</source>
+        <target>check_data</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\navigation-dropdown\navigation-dropdown.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="new_module" datatype="html">
+        <source>New module</source>
+        <target>new_module</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\navigation-dropdown\navigation-dropdown.component.html</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="new_schema" datatype="html">
+        <source>New schema</source>
+        <target>new_schema</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\navigation-dropdown\navigation-dropdown.component.html</context>
+          <context context-type="linenumber">45</context>
+        </context-group>
+      </trans-unit>
     </body>
   </file>
 </xliff>
