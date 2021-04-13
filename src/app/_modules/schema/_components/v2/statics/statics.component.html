@@ -68,7 +68,7 @@
             <lib-chip i18n-label="@@data_scope_label" label="Data scope :" [matMenuTriggerFor]="data_scope" disableRipple="true" type="info">{{statsFilterParams._data_scope && statsFilterParams._data_scope.variantName ? statsFilterParams._data_scope.variantName : 'Untitled'}}</lib-chip>
             <mat-menu #data_scope="matMenu" class="navigation-menu">
                 <div class="f-col">
-                    <pros-search-input prosClickStopPropagation (value)="filterDataScope($event)"></pros-search-input>
+                    <lib-search i18n-placeholder="@@search" placeholder="Search" prosClickStopPropagation (valueChange)="filterDataScope($event)"></lib-search>
                     <div role="navigation">
                         <lib-filter-option  *ngFor="let scope of dataScopeOb | async" (click)="applyFilter('data_scope',scope)">
                             <div mat-line>
