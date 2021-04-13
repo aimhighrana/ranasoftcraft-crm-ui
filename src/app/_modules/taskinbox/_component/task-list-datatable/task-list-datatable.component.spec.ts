@@ -66,7 +66,7 @@ describe('TaskListDatatableComponent', () => {
     component.currentNodeFilterChips = [
       {
         chip: 'Bookmarked',
-        value: 2,
+        value: '2',
         icon: 'star',
         hasMenu: false,
       },
@@ -74,7 +74,7 @@ describe('TaskListDatatableComponent', () => {
     component.setChipValue(
       {
         chip: 'Bookmarked',
-        value: 2,
+        value: '2',
         icon: 'star',
         hasMenu: false,
       },
@@ -84,11 +84,16 @@ describe('TaskListDatatableComponent', () => {
     expect(component.currentNodeFilterChips).toEqual([
       {
         chip: 'Bookmarked',
-        value: 5,
+        value: '2,5',
         icon: 'star',
         hasMenu: false,
       },
     ]);
+  });
+
+  it('filterModulesMenu()', () => {
+    component.filterModulesMenu('he', 'Label');
+    expect(component.filteredNodeChipsMenuItems.Label).toEqual(['He']);
   });
 
   it('openTableViewSettings()', () => {

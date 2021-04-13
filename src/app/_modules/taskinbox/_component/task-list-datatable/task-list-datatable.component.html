@@ -14,9 +14,39 @@
     <lib-chip-list>
       <lib-search placeholder="Search tasks"></lib-search>
       <ng-container *ngFor="let chip of currentNodeFilterChips">
-        <lib-chip [label]="chip.chip" [icon]="chip.icon" [type]="chip.type" [matMenuTriggerFor]="filterMenu">{{ chip.value }}</lib-chip>
-        <mat-menu #filterMenu="matMenu">
-          <button mat-menu-item *ngFor="let item of chip.menuItems" (click)="setChipValue(chip, item)">{{ item }}</button>
+        <lib-chip [label]="chip.chip" [icon]="chip.icon" [type]="chip.type" [matMenuTriggerFor]="filterMenu"
+          >{{ chip.type ? ': ' : '' }}{{ chip.value ? chip.value : 'All' }}</lib-chip
+        >
+        <mat-menu #filterMenu="matMenu" xPosition="after" (closed)="searchInput.clearSearch()">
+          <lib-filter-dropdown>
+            <div class="dropdown-search-wrapper">
+              <lib-search #searchInput prosClickStopPropagation (valueChange)="filterModulesMenu($event, chip.chip)"></lib-search>
+            </div>
+            <div class="dropdown-options-wrapper f-col">
+              <div class="dropdown-options-inner-container">
+                <div class="default-options">
+                  <lib-filter-option>
+                    <lib-checkbox label="All"></lib-checkbox>
+                  </lib-filter-option>
+                  <div class="separator">
+                    <mat-divider></mat-divider>
+                  </div>
+                </div>
+                <div class="options">
+                  <lib-filter-option
+                    prosClickStopPropagation
+                    (click)="setChipValue(chip, item)"
+                    *ngFor="let item of filteredNodeChipsMenuItems[chip.chip]"
+                  >
+                    <lib-checkbox [label]="item" prosClickStopPropagation (valueChange)="setChipValue(chip, item)"></lib-checkbox>
+                  </lib-filter-option>
+                </div>
+              </div>
+              <div class="filter-button-wrapper">
+                <lib-button type="minor">Apply</lib-button>
+              </div>
+            </div>
+          </lib-filter-dropdown>
         </mat-menu>
       </ng-container>
       <lib-chip icon="filter"></lib-chip>

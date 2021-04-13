@@ -267,22 +267,22 @@ export const nodeChips: {
       hasMenu: false,
     },
     {
-      chip: 'Label: ',
-      value: 'All',
+      chip: 'Label',
+      value: '',
       hasMenu: true,
       type: 'info',
       menuItems: ['All', 'H', 'He'],
     },
     {
-      chip: 'Sent: ',
-      value: 'All',
+      chip: 'Sent',
+      value: '',
       hasMenu: true,
       type: 'info',
       menuItems: ['All', 'Long', 'Short'],
     },
     {
-      chip: 'Requested by: ',
-      value: 'All',
+      chip: 'Requestedby',
+      value: '',
       hasMenu: true,
       type: 'info',
       menuItems: ['All', 'Fred', 'Shred'],
@@ -307,22 +307,22 @@ export const nodeChips: {
       hasMenu: false,
     },
     {
-      chip: 'Label: ',
-      value: 'All',
+      chip: 'Label',
+      value: '',
       hasMenu: true,
       type: 'info',
       menuItems: ['All', 'H', 'He'],
     },
     {
-      chip: 'Sent: ',
-      value: 'All',
+      chip: 'Sent',
+      value: '',
       hasMenu: true,
       type: 'info',
       menuItems: ['All', 'Long', 'Short'],
     },
     {
-      chip: 'Requested by: ',
-      value: 'All',
+      chip: 'Requestedby',
+      value: '',
       hasMenu: true,
       type: 'info',
       menuItems: ['All', 'Fred', 'Shred'],
@@ -352,15 +352,15 @@ export const nodeChips: {
       hasMenu: false,
     },
     {
-      chip: 'Sent: ',
-      value: 'All',
+      chip: 'Sent',
+      value: '',
       hasMenu: true,
       type: 'info',
       menuItems: ['All', 'Long', 'Short'],
     },
     {
-      chip: 'Requested by: ',
-      value: 'All',
+      chip: 'Requestedby',
+      value: '',
       hasMenu: true,
       type: 'info',
       menuItems: ['All', 'Fred', 'Shred'],
@@ -390,15 +390,15 @@ export const nodeChips: {
       hasMenu: false,
     },
     {
-      chip: 'Label: ',
-      value: 'All',
+      chip: 'Label',
+      value: '',
       hasMenu: true,
       type: 'info',
       menuItems: ['All', 'H', 'He'],
     },
     {
-      chip: 'Sent: ',
-      value: 'All',
+      chip: 'Sent',
+      value: '',
       hasMenu: true,
       type: 'info',
       menuItems: ['All', 'Long', 'Short'],
@@ -423,27 +423,33 @@ export const nodeChips: {
       hasMenu: false,
     },
     {
-      chip: 'Label: ',
-      value: 'All',
+      chip: 'Label',
+      value: '',
       hasMenu: true,
       type: 'info',
-      menuItems: ['All', 'H', 'He'],
+      menuItems: ['H', 'He'],
     },
     {
-      chip: 'Sent: ',
-      value: 'All',
+      chip: 'Sent',
+      value: '',
       hasMenu: true,
       type: 'info',
-      menuItems: ['All', 'Long', 'Short'],
+      menuItems: ['Long', 'Short'],
     },
     {
-      chip: 'Requested by: ',
-      value: 'All',
+      chip: 'Requestedby',
+      value: '',
       hasMenu: true,
       type: 'info',
-      menuItems: ['All', 'Fred', 'Shred'],
+      menuItems: ['Fred', 'Shred'],
     },
   ],
+};
+
+export const nodeChipsMenuItems = {
+  Label: ['H', 'He'],
+  Sent: ['Long', 'Short'],
+  Requestedby: ['Fred', 'Shred'],
 };
 
 @Component({
@@ -469,6 +475,7 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit, OnDest
   node: string = null;
   nodeColumns: { fldId: string; fldDesc: string }[] = [];
   currentNodeFilterChips: { chip: string; value: any; icon?: string; type?: string; hasMenu: boolean; menuItems?: string[] }[] = [];
+  filteredNodeChipsMenuItems = Object.assign({}, nodeChipsMenuItems);
   savedSearchParameters: string = null;
   inlineFilters: string = null;
   pageEvent: { pageIndex: number; pageSize: number; length: number } = {
@@ -528,12 +535,24 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit, OnDest
   setChipValue(chip: { chip: string; value: any; icon?: string; type?: string; hasMenu: boolean; menuItems?: string[] }, item: any) {
     this.currentNodeFilterChips = this.currentNodeFilterChips.map((d) => {
       if (d.chip === chip.chip) {
-        d.value = item;
+        const currentValues: string[] = d.value.split(',').filter((v) => v);
+        const index = currentValues.indexOf(item);
+        if (index >= 0) {
+          currentValues.splice(index, 1);
+        } else {
+          currentValues.push(item);
+        }
+        d.value = currentValues.join(',');
       } else {
-        d.value = d.menuItems && d.menuItems[0] ? d.menuItems[0] : d.value;
+        d.value = '';
       }
       return d;
     });
+  }
+  filterModulesMenu(event, chip) {
+    const items: string[] = nodeChipsMenuItems[chip] || [];
+    const filtered = items.filter((d) => d.toLowerCase().includes(event.toLowerCase()));
+    this.filteredNodeChipsMenuItems[chip] = filtered;
   }
   getTableData() {
     this.dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
