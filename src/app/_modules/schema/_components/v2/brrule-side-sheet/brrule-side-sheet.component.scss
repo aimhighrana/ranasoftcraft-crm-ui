@@ -47,8 +47,9 @@ div.root {
           justify-content: center;
           flex: 1;
 
-          mat-slider.mat-slider {
+          .lib-slider {
             flex: 1;
+            height: 48px;
           }
         }
       }

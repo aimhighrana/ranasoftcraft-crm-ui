@@ -1,10 +1,13 @@
+import { takeUntil } from 'rxjs/operators';
+import { SharedServiceService } from './../../../shared/_services/shared-service.service';
 import { ViewsPage } from '@models/list-page/listpage';
 import { MatSort } from '@angular/material/sort';
 import { PageEvent } from '@angular/material/paginator';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
+import { Subject } from 'rxjs';
 
 export interface PeriodicElement {
   Records: string;
@@ -120,7 +123,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
   },
 ];
 
-const NODEFIELDS: { [node: string]: { fldId: string; fldDesc: string }[] } = {
+export const NODEFIELDS: { [node: string]: { fldId: string; fldDesc: string }[] } = {
   inbox: [
     {
       fldId: 'description',
@@ -242,7 +245,7 @@ const NODEFIELDS: { [node: string]: { fldId: string; fldDesc: string }[] } = {
   templateUrl: './task-list-datatable.component.html',
   styleUrls: ['./task-list-datatable.component.scss'],
 })
-export class TaskListDatatableComponent implements OnInit, AfterViewInit {
+export class TaskListDatatableComponent implements OnInit, AfterViewInit, OnDestroy {
   displayedColumns: string[] = [
     // 'select',
     // 'setting',
@@ -269,21 +272,34 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit {
   isLoadingResults = false;
 
   viewsList: ViewsPage = new ViewsPage();
+  unsubscribeAll$: Subject<boolean> = new Subject<boolean>();
 
   // @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute, private router: Router, private sharedServices: SharedServiceService) {}
 
   ngOnInit(): void {
     this.route.params.subscribe((param) => {
       this.node = param.node || null;
-      this.getNodeColumns();
+      this.nodeColumns = NODEFIELDS[this.node];
+      this.updateTableColumns();
     });
     this.route.queryParams.subscribe((queryParam) => {
       this.savedSearchParameters = queryParam.s || null;
       this.inlineFilters = queryParam.f || null;
     });
+    this.sharedServices
+      .gettaskinboxViewDetailsData()
+      .pipe(takeUntil(this.unsubscribeAll$))
+      .subscribe((resp) => {
+        if (resp && resp.node === this.node) {
+          this.nodeColumns = resp.viewDetails;
+          this.updateTableColumns();
+        } else {
+          this.updateTableColumns();
+        }
+      });
   }
 
   ngAfterViewInit() {
@@ -293,8 +309,7 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit {
     });
   }
 
-  getNodeColumns() {
-    this.nodeColumns = NODEFIELDS[this.node];
+  updateTableColumns() {
     this.displayedColumns = this.nodeColumns.map((d) => d.fldId);
     this.displayedColumns.unshift('select', 'setting', 'Records');
     this.getTableData();
@@ -333,5 +348,13 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit {
   getFieldDesc(dynCol) {
     const field = this.nodeColumns.find((f) => f.fldId === dynCol);
     return field ? field.fldDesc || 'Unkown' : dynCol || 'Unkown';
+  }
+
+  openTableViewSettings() {
+    this.router.navigate([{ outlets: { sb: `sb/task/view/${this.node}` } }], { queryParamsHandling: 'preserve' });
+  }
+  ngOnDestroy() {
+    this.unsubscribeAll$.next(true);
+    this.unsubscribeAll$.unsubscribe();
   }
 }

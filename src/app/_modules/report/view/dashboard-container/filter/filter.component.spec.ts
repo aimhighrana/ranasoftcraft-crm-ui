@@ -278,14 +278,14 @@ describe('FilterComponent', () => {
   }));
 
   it('removefilter(), should remove the filter of that cureenet fieldId', async(()=> {
-    component.filterCriteria = [{fieldId:'WFID', widgetType:WidgetType.FILTER} as Criteria];
+    const critera = [{fieldId:'WFID', widgetType:WidgetType.FILTER} as Criteria];
     const filterWidget= new FilterWidget()
       filterWidget.fieldId='WFID';
       filterWidget.isMultiSelect=true;
       filterWidget.metaData={fieldId:'WFID',picklist:'1'} as MetadataModel;
    component.filterWidget.next(filterWidget);
-   component.removefilter('WFID');
-   expect(component.filterCriteria.length).toEqual(1);
+   const res = component.removefilter('WFID', critera);
+    expect(res).toEqual([]);
   }));
 
   it('onfocus(), should call when text field in focus', async(()=> {
@@ -297,14 +297,13 @@ describe('FilterComponent', () => {
    component.filterWidget.next(filterWidget);
    component.searchString = '';
    component.searchAfter = '82734883';
-   const filteredCriteria = component.removefilter('WFID');
    const filter = [{CODE:'test'},{CODE:'test'},{CODE:'test'},{CODE:'test'},{CODE:'test'},{CODE:'test'},{CODE:'test'},{CODE:'test'},{CODE:'test'},{CODE:'test'},{CODE:'test'},{CODE:'test'}]as DropDownValues[];
    component.filteredOptions = of(filter);
    spyOn(component,'loadAlldropData');
    component.onfocus();
 
    expect(component.filterCriteria.length).toEqual(1);
-   expect(component.loadAlldropData).toHaveBeenCalledWith(component.filterWidget.value.fieldId, filteredCriteria, component.searchString, '');
+   expect(component.loadAlldropData).toHaveBeenCalledWith(component.filterWidget.value.fieldId, component.filterCriteria, component.searchString, '');
 
 
    component.searchAfter = '';
