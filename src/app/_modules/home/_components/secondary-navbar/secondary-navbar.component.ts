@@ -721,4 +721,23 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
       return false;
     }
   }
+
+  updateTaskState(taskId, subTaskId?) {
+    let currTask;
+    if (subTaskId) {
+      this.selectedTask = subTaskId;
+      currTask = this.taskList.find((x) => (x.id === taskId)).childs.find((y) => (y.id === subTaskId));
+    } else {
+      this.selectedTask = taskId;
+      currTask = this.taskList.find((x) => (x.id === taskId));
+    }
+
+    if (currTask.hasNewFeeds) {
+      setTimeout(() => {
+        currTask.hasNewFeeds = false;
+      }, 3000);
+    }
+
+    return true;
+  }
 }

@@ -467,4 +467,10 @@ describe('SecondaryNavbarComponent', () => {
   it('getAllObjectType(), Should fetch all list modules', async() => {
     expect(component.getAllObjectType()).toBeTruthy();
   });
+
+  it('updateTaskState(), Should update task and search/filter state', async() => {
+    component.taskList = component.mockTaskList;
+    expect(component.updateTaskState('inbox')).toBeTruthy();
+    expect(component.updateTaskState('inbox', '1test2')).toBeTruthy();
+  });
 });

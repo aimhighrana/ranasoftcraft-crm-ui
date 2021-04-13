@@ -34,7 +34,7 @@
           <ng-container *ngFor="let task of taskList; let i=index">
             <div cdkDrag  class="tasks-list-drag-el" cdkDragBoundary=".dnd-tasks-list">
               <mat-expansion-panel hideToggle="{{ (task.childs && task.childs.length) ? 'false' : 'true' }}" togglePosition="before" class="mat-elevation-z0" [id]="task.id">
-                <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px" [routerLink]="['/home/task', task.id, 'feed']" [class.selected-task] = "task.id === selectedTask" (click)="selectedTask = task.id">
+                <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px" [routerLink]="['/home/task', task.id, 'feed']" [class.selected-task] = "task.id === selectedTask" (click)="updateTaskState(task.id)">
                   <mat-panel-title>
                     <div class="expand-title">{{task.label}}</div>
                     <span class="f-spacer"></span>
@@ -44,8 +44,8 @@
                 </mat-expansion-panel-header>
                 <mat-nav-list [disableRipple]="true" class="dnd-task-search-list">
                   <div cdkDropList (cdkDropListDropped)="dropTask($event, i)">
-                    <mat-list-item *ngFor="let subTask of task.childs" [class.selected-task] = "subTask.id === selectedTask" (click)="selectedTask = subTask.id">
-                      <div cdkDrag class="task-search-list-drag-el" cdkDragBoundary=".dnd-task-search-list" [routerLink]="['/home/task', task.id, 'feed']" [queryParams]="{ s: subTask.id}">
+                    <mat-list-item *ngFor="let subTask of task.childs" [class.selected-task] = "subTask.id === selectedTask">
+                      <div cdkDrag class="task-search-list-drag-el" cdkDragBoundary=".dnd-task-search-list" [routerLink]="['/home/task', task.id, 'feed']" [queryParams]="{ s: subTask.id}"  (click)="updateTaskState(task.id, subTask.id)">
                         <div mat-line>{{ subTask.label }}</div>
                         <span class="f-spacer"></span>
                         <span *ngIf="!subTask.hasNewFeeds && subTask.rec_cnt">{{ subTask.rec_cnt }}</span>
