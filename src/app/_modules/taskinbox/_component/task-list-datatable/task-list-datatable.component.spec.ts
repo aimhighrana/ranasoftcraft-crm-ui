@@ -46,11 +46,49 @@ describe('TaskListDatatableComponent', () => {
   });
   it('updateTableColumns()', () => {
     spyOn(component, 'updateTableColumns');
+    spyOn(component, 'updateNodeChips');
     spyOn(sharedServices, 'gettaskinboxViewDetailsData').and.returnValue(of());
     component.ngOnInit();
 
     expect(component.updateTableColumns).toHaveBeenCalled();
+    expect(component.updateNodeChips).toHaveBeenCalled();
     expect(sharedServices.gettaskinboxViewDetailsData).toHaveBeenCalled();
+  });
+
+  it('updateNodeChips()', () => {
+    component.node = 'inbox';
+    component.updateNodeChips();
+
+    expect(component.currentNodeFilterChips.length).toBeGreaterThan(1);
+  });
+
+  it('setChipValue()', () => {
+    component.currentNodeFilterChips = [
+      {
+        chip: 'Bookmarked',
+        value: 2,
+        icon: 'star',
+        hasMenu: false,
+      },
+    ];
+    component.setChipValue(
+      {
+        chip: 'Bookmarked',
+        value: 2,
+        icon: 'star',
+        hasMenu: false,
+      },
+      5
+    );
+
+    expect(component.currentNodeFilterChips).toEqual([
+      {
+        chip: 'Bookmarked',
+        value: 5,
+        icon: 'star',
+        hasMenu: false,
+      },
+    ]);
   });
 
   it('openTableViewSettings()', () => {
