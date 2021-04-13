@@ -1381,6 +1381,14 @@
         background-color: mat-color($background-palette, card);
         box-shadow: $box-shadow;
       }
+
+      mat-expansion-panel-header {
+        &.selected,
+        &.selected:hover,
+        &.selected:focus {
+          background-color: $color-app-hover;
+        }
+      }
     }
   }
 

@@ -37,9 +37,10 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
   showTasksList = false;
 
   /**
-   * Highlights selected task from Tasks list and search / filter under tasks list
+   * Highlights selected task and selected search / filter from Tasks list and search / filter under tasks list
    */
   selectedTask;
+  selectedTaskFilter;
 
   public moduleList: SchemaListModuleList[] = [];
   objectTypeList: ObjectType[] = [];
@@ -255,6 +256,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
         } else {
           this.showTasksList = false;
           this.selectedTask = '';
+          this.selectedTaskFilter = '';
         }
       }
     });
@@ -293,46 +295,19 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
    */
   expandSearchFilterInCurrentUrl() {
     try {
-      let taskID;
-      let openPanel = false;
       this.activatedRoute.queryParams.subscribe((param) => {
         const url = this.router.url;
-        if (param.s && url.includes('/home/task')) {
+        if (url.includes('/home/task')) {
           this.showTasksList = true;
-          this.selectedTask = param.s;
-          taskID = url.split('?')[0].split('/')[3] || '';
-          const task = this.taskList.filter((x) => x.id === taskID);
-          if (task.length && task[0].childs && task[0].childs.length) {
-            const childs = task[0].childs;
-            const child = childs.filter((y) => y.id === param.s);
-            if (child.length) {
-              openPanel = true;
-            }
-          }
-        } else if (url.includes('/home/task')) {
-          this.showTasksList = true;
-          taskID = url.split('?')[0].split('/')[3] || '';
-          this.selectedTask = taskID;
-        }
-      });
-
-      if (taskID && openPanel) {
-        setTimeout(() => {
-          const domPanelList = document.querySelectorAll('mat-expansion-panel');
-          domPanelList.forEach((panel, ind) => {
-            if (panel.id && (panel.id === taskID)) {
-              const panelID = `cdk-accordion-child-${ind}`;
-              this.expansionPanel.forEach((el) => {
-                if (el.id === panelID) {
-                  setTimeout(() => {
-                    el.open();
-                  }, 0);
-                }
-              });
+          const urlParts = url.split('?')[0].split('/');
+          urlParts.forEach((x, i) => {
+            if (x === 'task') {
+              this.selectedTask = urlParts[i+1] || '';
             }
           });
-        }, 0);
-      }
+          this.selectedTaskFilter = param.s || undefined;
+        }
+      });
     } catch (e) {
       console.log(e);
     }
@@ -722,13 +697,20 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
     }
   }
 
+  /**
+   * Updates task state to unread
+   * @param taskId selected task id
+   * @param subTaskId selected search / filter id
+   */
   updateTaskState(taskId, subTaskId?) {
     let currTask;
     if (subTaskId) {
-      this.selectedTask = subTaskId;
+      this.selectedTask = taskId;
+      this.selectedTaskFilter = subTaskId;
       currTask = this.taskList.find((x) => (x.id === taskId)).childs.find((y) => (y.id === subTaskId));
     } else {
       this.selectedTask = taskId;
+      this.selectedTaskFilter = '';
       currTask = this.taskList.find((x) => (x.id === taskId));
     }
 
