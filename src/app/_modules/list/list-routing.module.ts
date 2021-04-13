@@ -4,6 +4,7 @@ import { PageNotFoundComponent } from '@modules/shared/_components/page-not-foun
 // import { ListComponent } from './_components/list.component';
 import { ListDatatableComponent } from './_components/list-datatable/list-datatable.component';
 import { ListFilterComponent } from './_components/list-filter/list-filter.component';
+import { SettingComponent } from './_components/setting/setting.component';
 import { TableViewSettingsComponent } from './_components/table-view-settings/table-view-settings.component';
 
 const routes: Routes = [
@@ -14,6 +15,7 @@ const routes: Routes = [
   { path: 'datatable/:moduleId', component: ListDatatableComponent },
   { path: 'table-view-settings/:moduleId/:viewId', component: TableViewSettingsComponent },
   { path: 'filter-settings/:moduleId', component: ListFilterComponent },
+  { path: 'setting', component: SettingComponent },
   { path: '**', component: PageNotFoundComponent }
 ];
 @NgModule({
