@@ -7,7 +7,7 @@ export class ResizableColumnDirective implements OnInit {
 
   @Input() index: number;
 
-  @Output() widthChanged = new EventEmitter<number>();
+  @Output() widthChanged = new EventEmitter<any>();
 
   private startX: number;
 
@@ -76,7 +76,7 @@ export class ResizableColumnDirective implements OnInit {
       this.pressed = false;
       this.renderer.removeClass(this.table, 'resizing');
       if (this.width !== this.startWidth) {
-        this.widthChanged.emit(this.width);
+        this.widthChanged.emit({columnId: this.column.id, width: this.width});
       }
     }
   };

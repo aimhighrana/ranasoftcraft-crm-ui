@@ -438,16 +438,15 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
    * @param event new column width
    */
   onColumnsResize(event) {
-    this.columnsList.forEach(col => {
-      const column = this.currentView.fieldsReqList.find(c => c.fieldId === col.nativeElement.id);
-      if (column) {
-        column.width = col.nativeElement.offsetWidth;
-      }
-    });
-    const sub = this.listService.upsertListPageViewDetails(this.currentView, this.moduleId).subscribe(resp => {
+    const column = this.currentView.fieldsReqList.find(c => c.fieldId === event.columnId);
+    if(column) {
+      column.width = event.width;
+
+      const sub = this.listService.upsertListPageViewDetails(this.currentView, this.moduleId).subscribe(resp => {
         console.log(resp);
-    });
-    this.subscriptionsList.push(sub);
+      });
+      this.subscriptionsList.push(sub);
+    }
   }
 
   getColumnWidth(fieldId) {
