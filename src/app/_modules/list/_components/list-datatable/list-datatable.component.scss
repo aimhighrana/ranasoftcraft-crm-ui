@@ -12,11 +12,6 @@ div.root {
     height: 100%;
     overflow: auto;
 
-    .large-cell-header,
-    .large-cell-content {
-      word-break: break-word;
-    }
-
     .mat-table {
       &.resizing {
         -moz-user-select: none;
@@ -25,30 +20,20 @@ div.root {
         cursor: col-resize;
       }
 
+      .large-cell-header,
+      .large-cell-content {
+        word-break: break-word;
+      }
+
+      .mat-cell {
+        flex: none;
+      }
+
       .mat-header-cell {
+        flex: none;
+
         &.resizable {
           border-right: 1px solid #e4ebf3;
-          flex: none;
-
-          .mat-sort-header-container {
-            .mat-focus-indicator {
-              margin-right: 12px;
-            }
-
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-          }
-        }
-
-        .resize-holder {
-          cursor: col-resize;
-          width: 20px;
-          height: 100%;
-          position: absolute;
-          right: -10px;
-          top: 0;
-          z-index: 101;
         }
       }
     }
