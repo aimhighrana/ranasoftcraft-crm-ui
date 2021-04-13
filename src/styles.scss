@@ -1,10 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
 @import "assets/themes/themes.scss";
-@import "assets/fonts/_fonts.css";
 @import '~mdo-ui-library/assets/themes/themes.scss';
 @import '~mdo-ui-library/assets/styles.scss';
 @import '~mdo-ui-library/assets/fonts/_fonts.css';
 @import "keyframes.scss";
+@import "assets/fonts/_fonts.css";
 // bpmn-js style files
 @import '~bpmn-js/dist/assets/diagram-js.css';
 @import '~bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
@@ -12,6 +12,10 @@
 @import '~bpmn-js/dist/assets/bpmn-font/css/bpmn-codes.css';
 @import '~bpmn-js-properties-panel/dist/assets/bpmn-js-properties-panel.css';
 @import '~bpmn-js-bpmnlint/dist/assets/css/bpmn-js-bpmnlint.css';
+
+#container {
+  height: 100% !important;
+}
 
 html,
 body {
