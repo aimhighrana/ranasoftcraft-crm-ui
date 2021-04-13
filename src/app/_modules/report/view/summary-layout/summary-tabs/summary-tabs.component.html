@@ -15,14 +15,14 @@
                 <div class="f-row item-tile">
                   <mat-label>{{fieldData.fieldDescri}}</mat-label>
                   <div mat-line *ngIf="!fieldData.showMore; else withoutTruncate">
-                    {{truncateText(fieldData.value, 60)}}
+                    {{fieldData.value !== 'null' ? truncateText(fieldData.value, 60) : ''}}
                   <button mat-stroked-button color="primary" *ngIf="fieldData.value.length > 60" (click)="fieldData.showMore = !fieldData.showMore">
                     {{ fieldData.showMore ? 'less' : 'more'}} 
                   </button>
                 </div>
                 <ng-template  #withoutTruncate> 
                   <div mat-line> 
-                      {{fieldData.value}} 
+                      {{fieldData.value !== 'null' ? fieldData.value : ''}} 
                       <button mat-stroked-button color="primary" *ngIf="fieldData.value.length > 60" (click)="fieldData.showMore = !fieldData.showMore">
                         {{ fieldData.showMore ? 'less' : 'more'}} 
                       </button>
@@ -43,7 +43,7 @@
                 <div class="f-row item-tile">
                   <mat-label>{{fieldData.fieldDescri}}</mat-label>
                   <div mat-line><a [routerLink]="" href="" (click)="downloadAttachment(fieldData);">
-                      {{fieldData.value}}
+                      {{fieldData.value !== 'null' ? fieldData.value : ''}}
                     </a></div>
                   </div>
               </div>

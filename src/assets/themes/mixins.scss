@@ -33,8 +33,10 @@
     opacity: 0;
   }
 
-  mat-sidenav-container.mat-sidenav-container {
-    background-color: mat-color($background-palette, card);
+  pros-home-layout {
+    mat-sidenav-container.mat-sidenav-container {
+      background-color: mat-color($background-palette, card);
+    }
   }
 
   pros-svg-icon {
@@ -84,10 +86,6 @@
   // Generic dailog
   .cdk-overlay-container .mat-dialog-container {
     padding: 0 16px;
-  }
-
-  .mat-drawer-container {
-    height: 100%;
   }
 
   .mat-snack-bar-container {
@@ -238,6 +236,7 @@
           caret-color: $color-text-secondary;
           padding-right: 12px;
           line-height: 16px;
+          flex: 1;
         }
 
         .mat-input::placeholder {
@@ -269,6 +268,15 @@
 
     &.mat-form-field-appearance-outline .mat-form-field-outline-thick > div {
       border-width: 1px;
+    }
+
+    &.direction-chip {
+      .mat-form-field-wrapper {
+        .mat-form-field-infix {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
     }
 
     &.error-matfield {
@@ -478,8 +486,8 @@
     height: 100%;
 
     .mat-tab-header {
-      margin-bottom: 16px;
-      border-color: $color-app-border;
+      margin-bottom: 12px;
+      border-bottom: none;
 
       .mat-tab-list {
         .mat-tab-labels {
@@ -572,40 +580,39 @@
         border: 1px solid $color-app-border;
         background-color: mat-color($background-palette, card);
 
-        label {
-          margin: 0 4px;
+        .chip-text-correct {
+          color: $color-status-info;
         }
 
-        .info {
-          color: $color-text-link;
-          margin-right: 3px;
+        .chip-text-error {
+          color: $color-status-error;
         }
-      }
 
-      &.info-status {
-        background: $color-status-info-accent;
-        color: $color-status-info;
-      }
+        .chip-text-success {
+          color: $color-status-success;
+        }
 
-      &.error-status {
-        background: $color-status-error-accent;
-        color: $color-status-error;
-      }
+        .chip-text-warning {
+          color: $color-status-warning;
+        }
 
-      &.success-status {
-        background: $color-status-success-accent;
-        color: $color-status-success;
-      }
+        .chip-text-outdate {
+          color: $color-text-secondary;
+        }
 
-      &.warning-status {
-        background: $color-status-warning-accent;
-        color: $color-status-warning;
+        &:hover {
+          background: $color-app-hover;
+        }
       }
 
       &.selected {
         background: $color-app-selected;
         border-color: $color-app-selected;
         color: $color-text-canvas;
+
+        &:hover {
+          background: $color-app-selected;
+        }
       }
 
       &.unselected {
@@ -752,10 +759,6 @@
 
   //Mat-Menu
   .cdk-overlay-pane {
-    .search-row {
-      margin: 8px;
-    }
-
     .mat-menu-panel {
       max-width: 300px;
       width: 220px;
@@ -930,6 +933,11 @@
     align-items: center;
     font-size: 0.7rem;
     font-weight: 400;
+
+    mat-icon {
+      font-size: 10px;
+      height: 10px;
+    }
   }
 
   button.mat-raised-button {
@@ -1101,8 +1109,9 @@
       line-height: 1rem;
       color: mat-color($foreground-palette, text);
       padding: 0 8px;
-      min-width: 200px;
-      word-break: break-word;
+      min-width: 160px;
+      max-width: 200px;
+      word-break: break-all;
       align-self: stretch;
 
       &.fixed-width-c1 {
@@ -1291,13 +1300,10 @@
     }
   }
 
-  pros-primary-navigation {
-    mat-sidenav-content.body-sidecontent {
-      height: calc(100% - 60px);
-    }
-
-    div.nav-root {
-      background: $color-app-offcanvas;
+  pros-primary-navbar {
+    div.root {
+      background-color: $color-app-offcanvas;
+      color: $color-text-offcanvas;
 
       pros-svg-icon.primary-nav {
         path {
@@ -1309,41 +1315,50 @@
         }
       }
 
-      mat-nav-list.primary-nav-list {
-        mat-list-item.link-items {
+      button.mat-mini-fab {
+        background: mat-color($background-palette, card);
+      }
+
+      .primary-nav-list {
+        border-bottom: 1px solid mat-color($background-palette, focused-button);
+
+        .mat-list-item {
           color: $color-text-offcanvas;
 
-          &.selected {
-            color: $color-text-canvas;
+          &:hover {
+            background: transparent;
+          }
 
-            &::before {
-              background: $color-text-canvas;
+          &.selected {
+            background: mat-color($background-palette, focused-button);
+
+            .col-space {
+              color: $color-text-canvas;
             }
           }
 
-          &:hover {
-            background-color: $color-app-offcanvas;
+          &.selected::before {
+            background: mat-color($primary-palette);
           }
         }
       }
 
-      .global-menu {
-        color: $color-text-offcanvas;
-
-        .create-new {
-          background: mat-color($background-palette, card);
+      .admin-badge {
+        .mat-badge-content {
+          background: transparent;
+          letter-spacing: 0;
+          top: -18px;
+          font-weight: 400;
         }
+      }
 
-        .admin-badge {
-          .mat-badge-content {
-            background: transparent;
-            letter-spacing: 0;
-            top: -18px;
-            left: 0;
-            font-weight: 400;
-            font-size: 11px;
-            color: $color-text-offcanvas;
+      .nav-profile {
+        mat-card-header.mat-card-header {
+          flex: 1;
+
+          .mat-card-avatar {
             border: none;
+            background: mat-color($background-palette, focused-button);
           }
         }
       }
@@ -1361,8 +1376,6 @@
           }
 
           .mat-list-item {
-            font-size: 14px;
-
             &.selected {
               background-color: $color-app-hover;
             }
@@ -1796,47 +1809,7 @@
     }
   }
 
-  pros-classification-builder {
-    div.root {
-      .dataset-grid-navigation {
-        .nav-tree {
-          mat-nav-list.mat-nav-list.tree-nav-list {
-            .understep-two {
-              .mat-list-item-content {
-                padding: 0 0 0 72px;
-
-                .mat-list-text {
-                  padding-left: 0;
-                }
-              }
-            }
-          }
-
-          .error-badge {
-            color: $color-status-error;
-          }
-
-          .success-badge {
-            color: $color-status-success;
-          }
-
-          .warning-badge {
-            color: $color-status-warning;
-          }
-        }
-      }
-    }
-  }
-
-  pros-null-state,
-  pros-schema-progress {
-    .state-container {
-      .label-text {
-        color: $color-text-secondary;
-      }
-    }
-  }
-
+  pros-classification-builder,
   pros-schema-details {
     div.root {
       .counts {
@@ -1901,6 +1874,15 @@
       }
     }
   }
+
+  pros-null-state,
+  pros-schema-progress {
+    .state-container {
+      .label-text {
+        color: $color-text-secondary;
+      }
+    }
+  }
 }
 
 @mixin pros-cmp-typography($config) {
@@ -1910,18 +1892,6 @@
       height: mat-font-size($config, display-3);
       font-size: mat-font-size($config, display-3);
       font-weight: mat-font-weight($config, display-3);
-    }
-  }
-}
-
-.mdo-schedule-segment {
-  mat-radio-group {
-    display: flex;
-    flex-wrap: wrap;
-
-    mat-radio-button {
-      flex: 0 0 25%;
-      margin-bottom: 8px;
     }
   }
 }

@@ -255,7 +255,7 @@
                             <div class="f-col">
                                 <!--TransitionalType-->
                                 <ng-template
-                                    [ngIf]="selStyleWid && selStyleWid.widgetType === 'TIMESERIES' && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===false">
+                                    [ngIf]="selStyleWid && selStyleWid.widgetType === 'TIMESERIES' && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===false && selStyleWid.groupById">
                                     <pros-metadatafield-control [moduleId]="selStyleWid && selStyleWid.objectType"
                                         lebel="Distinct with" [selectedFldId]="selStyleWid && selStyleWid.distictWith"
                                         (selectionChange)='onDistictWithChange($event)' [isCustomdataset]="selStyleWid && selStyleWid.isCustomdataSet">
@@ -264,7 +264,7 @@
 
                                 <!--WorkflowType-->
                                 <ng-template
-                                    [ngIf]="selStyleWid && selStyleWid.widgetType === 'TIMESERIES' && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===true  && styleCtrlGrp.get('isCustomdataSet').value===false">
+                                    [ngIf]="selStyleWid && selStyleWid.widgetType === 'TIMESERIES' && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===true  && styleCtrlGrp.get('isCustomdataSet').value===false && selStyleWid.groupById">
                                     <pros-workflowfield-control [objectType]="selStyleWid && selStyleWid.objectType"
                                         label="Distinct with" [selectedFldId]="selStyleWid && selStyleWid.distictWith"
                                         (selectionChange)='onDistictWithChange($event)'>
