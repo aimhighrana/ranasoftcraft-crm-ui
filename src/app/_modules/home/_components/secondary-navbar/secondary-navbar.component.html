@@ -27,27 +27,41 @@
     <div class="row-spacer"></div>
 
     <div class="nav-tree" id="nav-tree">
+      <mat-accordion *ngIf="activatedPrimaryNav === 'welcome' || showTasksList">
+      <!-- <mat-accordion> -->
+        <lib-section text="Tasks" *ngIf="taskList.length"></lib-section>
+        <div cdkDropList class="dnd-tasks-list" (cdkDropListDropped)="dropTask($event)">
+          <ng-container *ngFor="let task of taskList; let i=index">
+            <div cdkDrag  class="tasks-list-drag-el" cdkDragBoundary=".dnd-tasks-list">
+              <mat-expansion-panel hideToggle="{{ (task.childs && task.childs.length) ? 'false' : 'true' }}" togglePosition="before" class="mat-elevation-z0" [id]="task.id" [expanded]="(task.id === selectedTask) && selectedTaskFilter">
+                <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px" [routerLink]="['/home/task', task.id, 'feed']" [class.selected] = "!selectedTaskFilter && (task.id === selectedTask)" (click)="updateTaskState(task.id)">
+                  <mat-panel-title>
+                    <div class="expand-title">{{task.label}}</div>
+                    <span class="f-spacer"></span>
+                    <div *ngIf="!task.hasNewFeeds && task.rec_cnt" class="badge">{{ task.rec_cnt }}</div>
+                    <lib-button *ngIf="task.hasNewFeeds && task.new_feed_cnt" [libBadge]="task.new_feed_cnt" matBadgePosition="below" matBadgeSize="medium" matBadgeOverlap="true" class="task-badge btn-pos"></lib-button>
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <mat-nav-list [disableRipple]="true" class="dnd-task-search-list">
+                  <div cdkDropList (cdkDropListDropped)="dropTask($event, i)">
+                    <mat-list-item *ngFor="let subTask of task.childs" [class.selected] = "subTask.id === selectedTaskFilter">
+                      <div cdkDrag class="task-search-list-drag-el" cdkDragBoundary=".dnd-task-search-list" [routerLink]="['/home/task', task.id, 'feed']" [queryParams]="{ s: subTask.id}"  (click)="updateTaskState(task.id, subTask.id)">
+                        <div mat-line>{{ subTask.label }}</div>
+                        <span class="f-spacer"></span>
+                        <span *ngIf="!subTask.hasNewFeeds && subTask.rec_cnt">{{ subTask.rec_cnt }}</span>
+                        <lib-button *ngIf="subTask.hasNewFeeds && subTask.new_feed_cnt" [libBadge]="subTask.new_feed_cnt" matBadgePosition="below" matBadgeSize="medium" class="task-badge search-badge"></lib-button>
+                      </div>
+                    </mat-list-item>
+                  </div>
+                </mat-nav-list>
+              </mat-expansion-panel>
+            </div>
+          </ng-container>
+        </div>
+      </mat-accordion>
+
       <!-- Tree to show when navigation is on HOME -->
       <mat-accordion *ngIf="activatedPrimaryNav === 'welcome'">
-        <lib-section text="Tasks" *ngIf="taskList.length"></lib-section>
-        <ng-container *ngFor="let task of taskList">
-          <mat-expansion-panel hideToggle="{{ task.childs.length ? 'false' : 'true' }}" togglePosition="before" class="mat-elevation-z0">
-            <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
-              <mat-panel-title>
-                <div class="expand-title">{{task.label}}</div>
-                <span class="f-spacer"></span>
-                <div class="badge">{{task.rec_cnt}}</div>
-              </mat-panel-title>
-            </mat-expansion-panel-header>
-            <mat-nav-list [disableRipple]="true">
-              <mat-list-item *ngFor="let subTask of task.childs">
-                <div mat-line>{{ subTask.label }}</div>
-                <span class="f-spacer"></span>
-                <span>{{ subTask.rec_cnt }}</span>
-              </mat-list-item>
-            </mat-nav-list>
-          </mat-expansion-panel>
-        </ng-container>
         <lib-section text="Data intelligence"></lib-section>
         <ng-container *ngFor="let module of searchModuleResults">
           <mat-expansion-panel togglePosition="before" class="mat-elevation-z0"
