@@ -5,9 +5,7 @@
       {{ widgetHeader.desc }}
     </div>
     <div class="f-spacer"></div>
-    <button mat-button aria-label="Clear" (click)="clearFilterCriteria()" *ngIf="enableClearIcon">
-      <mat-icon fontSet="mdo-icons">close</mat-icon>
-    </button>
+    <lib-button  aria-label="Clear" (click)="clearFilterCriteria()" *ngIf="enableClearIcon" type="plain" iconFontType="light" icon="times"></lib-button>
   </div>
 
   <mat-card-content>

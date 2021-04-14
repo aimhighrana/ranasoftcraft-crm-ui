@@ -4,16 +4,15 @@
             Confirmation
         </div>
         <span class="f-spacer"></span>
-        <button mat-button (click)="close(false)">
-            <mat-icon fontSet="mdo-icons">times</mat-icon>
-        </button>
+        <lib-button type="plain"  (click)="close(false)" iconFontType="light" icon="times"></lib-button>
+
     </div>
     <p class="content-text">{{data ? data.label : 'Are you sure to delete?'}}</p>
     <div class="row-spacer"></div>
     <!-- navigation buttons -->
     <div class="f-row">
-        <button mat-flat-button color="accent" (click)="close(false)">No</button>
+        <lib-button type="minor" (click)="close(false)">No</lib-button>
         <span class="f-spacer"></span>
-        <button mat-flat-button color="primary" (click)="close(true)">Yes</button>
+        <lib-button type="major" (click)="close(true)">Yes</lib-button>
     </div>
 </mat-card>
