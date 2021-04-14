@@ -12,8 +12,22 @@ div.nav-root {
     }
   }
 
-  .lib-tab-group.primary-navigation {
-    height: 42px;
+  mat-nav-list.primary-nav-list {
+    mat-list-item.link-items {
+      padding: 8px;
+      font-size: 0.9rem;
+      display: inline-block;
+      height: auto;
+      width: auto;
+      &.selected::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        height: 3px;
+        width: 100%;
+      }
+    }
   }
 
   .global-menu {
