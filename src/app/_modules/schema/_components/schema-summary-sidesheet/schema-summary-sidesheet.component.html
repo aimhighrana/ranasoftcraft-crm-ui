@@ -1,8 +1,8 @@
 <div class="root">
     <div class="f-row breadcrum-toolbar">
-        <button mat-button (click)="close()">
+        <lib-button mat-button (click)="close()">
             <mat-icon fontSet="mdo-icons">times</mat-icon>
-        </button>
+        </lib-button>
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
@@ -36,11 +36,11 @@
                   </mat-menu> -->
                 <span class="f-col-spacer-half"></span>
                 <span class="f-spacer"></span>
-                <button mat-flat-button (click)="openUploadSideSheet()">
+                <lib-button type="minor" (click)="openUploadSideSheet()">
                     <mat-icon fontSet="mdo-icons">outbox-alt</mat-icon> Upload data
-                </button>
+                </lib-button>
                 <span class="f-col-spacer-half"></span>
-                <button mat-flat-button color="primary" (click)="saveCheckData()">Check</button>
+                <lib-button type="major" (click)="saveCheckData()">Check</lib-button>
             </div>
         </div>
     </div>
@@ -68,8 +68,8 @@
                 <div class="f-col mdo-form-field">
                     <mat-label>Threshold</mat-label>
                     <div class="f-row slider-row">
-                    <mat-slider thumbLabel color="primary" [formControl]="schemaThresholdControl">
-                    </mat-slider>
+                    <lib-range-slider class="lib-slider" thumbLabel="true" [formControl]="schemaThresholdControl"  tickInterval="1" [formatLabelFn]="rangeSliderLabelFormat" [value]="schemaThresholdControl.value" color="primary"></lib-range-slider>
+
                     <span class="f-col-spacer-half"></span>
                     <div>{{schemaThresholdControl.value}}%</div>
                     </div>
@@ -123,6 +123,7 @@
 
                                     <div class="col col-x8">
                                         <div class="f-row slider-row">
+                                        <lib-range-slider minValue="0" (valueChange)="updateBr(businessRule,$event)" [maxValue]="availableWeightage(businessRule.brWeightage)" class="lib-slider" thumbLabel="true" tickInterval="1" [formatLabelFn]="rangeSliderLabelFormat" [value]="businessRule.brWeightage" color="primary"></lib-range-slider>
                                         <mat-slider color="primary" [value]="businessRule.brWeightage" thumbLabel
                                             tickInterval="1" min="0" [max]="availableWeightage(businessRule.brWeightage)"
                                             (change)="updateBr(businessRule,$event)">

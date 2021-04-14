@@ -137,6 +137,14 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    */
   subscriptions: Subscription[] = [];
 
+  /**
+   * function to format slider thumbs label.
+   * @param percent percent
+   */
+   rangeSliderLabelFormat(percent) {
+    return `${percent}%`;
+  }
+
   constructor(
     private activateRoute: ActivatedRoute,
     private router: Router,
