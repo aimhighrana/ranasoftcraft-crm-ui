@@ -19,6 +19,7 @@ div.nav-root {
       display: inline-block;
       height: auto;
       width: auto;
+
       &.selected::before {
         content: '';
         position: absolute;
