@@ -37,6 +37,7 @@ div.root {
         position: relative;
         border-right-width: 1px;
         border-right-style: solid;
+        height: 100%;
       }
 
       .col-heading {
@@ -53,12 +54,13 @@ div.root {
         width: calc(100% - 200px);
         display: flex;
         flex-wrap: wrap;
-        padding: 8px;
+        padding: 0;
         position: relative;
         overflow-x: scroll;
         background: radial-gradient(#e0e0e0 1px, transparent 1px) 0 0;
         background-position: 5px 5px;
         border-radius: 0;
+        height: 100%;
       }
 
       .adjust-property {
