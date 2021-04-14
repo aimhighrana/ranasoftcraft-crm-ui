@@ -9,10 +9,10 @@
     </div> -->
     
     <div class="f-row primary-nav-buttons">
-        <lib-button sizeLarge="true" [class.active]="isNavSelected==='welcome'" i18n="@@home" (click)="sendToParent('welcome')">Home</lib-button>
-        <lib-button sizeLarge="true" [class.active]="isNavSelected==='data'" i18n="@@data" (click)="sendToParent('data')">Data</lib-button>
-        <lib-button sizeLarge="true" [class.active]="isNavSelected==='schema'" i18n="@@schema" (click)="sendToParent('schema')">Schema</lib-button>
-        <lib-button [sizeLarge]="true" [class.active]="isNavSelected==='reports'" i18n="@@reports" (click)="sendToParent('reports')">Reports</lib-button>
+        <lib-button class="lib-button" [class.active]="isNavSelected==='welcome'" i18n="@@home" (click)="sendToParent('welcome')">Home</lib-button>
+        <lib-button class="lib-button" [class.active]="isNavSelected==='data'" i18n="@@data" (click)="sendToParent('data')">Data</lib-button>
+        <lib-button class="lib-button" [class.active]="isNavSelected==='schema'" i18n="@@schema" (click)="sendToParent('schema')">Schema</lib-button>
+        <lib-button class="lib-button" [class.active]="isNavSelected==='reports'" i18n="@@reports" (click)="sendToParent('reports')">Reports</lib-button>
     </div>
 
     <div class="f-spacer"></div>
