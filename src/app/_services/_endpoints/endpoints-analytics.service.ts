@@ -127,6 +127,9 @@ export class EndpointsAnalyticsService {
     return `${this.apiUrl}/widget/startdoDownloadFile/${widgetId}?userName=${userName}`;
   }
 
+  /**
+   * endpoint to copy endpoint
+   */
   public copyReport(reportId: string, reportName:string) : string {
     return `${this.apiUrl}/report/copy-report?reportId=${reportId}&reportName=${reportName}`;
   }
