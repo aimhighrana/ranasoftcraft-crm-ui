@@ -240,6 +240,218 @@ export const NODEFIELDS: { [node: string]: { fldId: string; fldDesc: string }[] 
   ],
 };
 
+export const nodeChips: {
+  [node: string]: { chip: string; value: any; icon?: string; type?: string; hasMenu: boolean; menuItems?: string[] }[];
+} = {
+  inbox: [
+    {
+      chip: 'Bookmarked',
+      value: 2,
+      icon: 'star',
+      hasMenu: false,
+    },
+    {
+      chip: 'Important',
+      value: 4,
+      icon: 'long-arrow-up',
+      hasMenu: false,
+    },
+    {
+      chip: 'Due',
+      value: 4,
+      hasMenu: false,
+    },
+    {
+      chip: 'Unread',
+      value: 3,
+      hasMenu: false,
+    },
+    {
+      chip: 'Label',
+      value: '',
+      hasMenu: true,
+      type: 'info',
+      menuItems: ['All', 'H', 'He'],
+    },
+    {
+      chip: 'Sent',
+      value: '',
+      hasMenu: true,
+      type: 'info',
+      menuItems: ['All', 'Long', 'Short'],
+    },
+    {
+      chip: 'Requestedby',
+      value: '',
+      hasMenu: true,
+      type: 'info',
+      menuItems: ['All', 'Fred', 'Shred'],
+    },
+  ],
+  in_workflow: [
+    {
+      chip: 'Bookmarked',
+      value: 2,
+      icon: 'star',
+      hasMenu: false,
+    },
+    {
+      chip: 'Important',
+      value: 4,
+      icon: 'long-arrow-up',
+      hasMenu: false,
+    },
+    {
+      chip: 'Unread',
+      value: 3,
+      hasMenu: false,
+    },
+    {
+      chip: 'Label',
+      value: '',
+      hasMenu: true,
+      type: 'info',
+      menuItems: ['All', 'H', 'He'],
+    },
+    {
+      chip: 'Sent',
+      value: '',
+      hasMenu: true,
+      type: 'info',
+      menuItems: ['All', 'Long', 'Short'],
+    },
+    {
+      chip: 'Requestedby',
+      value: '',
+      hasMenu: true,
+      type: 'info',
+      menuItems: ['All', 'Fred', 'Shred'],
+    },
+  ],
+  rejected: [
+    {
+      chip: 'Bookmarked',
+      value: 2,
+      icon: 'star',
+      hasMenu: false,
+    },
+    {
+      chip: 'Important',
+      value: 4,
+      icon: 'long-arrow-up',
+      hasMenu: false,
+    },
+    {
+      chip: 'Due',
+      value: 4,
+      hasMenu: false,
+    },
+    {
+      chip: 'Unread',
+      value: 3,
+      hasMenu: false,
+    },
+    {
+      chip: 'Sent',
+      value: '',
+      hasMenu: true,
+      type: 'info',
+      menuItems: ['All', 'Long', 'Short'],
+    },
+    {
+      chip: 'Requestedby',
+      value: '',
+      hasMenu: true,
+      type: 'info',
+      menuItems: ['All', 'Fred', 'Shred'],
+    },
+  ],
+  draft: [
+    {
+      chip: 'Bookmarked',
+      value: 2,
+      icon: 'star',
+      hasMenu: false,
+    },
+    {
+      chip: 'Important',
+      value: 4,
+      icon: 'long-arrow-up',
+      hasMenu: false,
+    },
+    {
+      chip: 'Due',
+      value: 4,
+      hasMenu: false,
+    },
+    {
+      chip: 'Unread',
+      value: 3,
+      hasMenu: false,
+    },
+    {
+      chip: 'Label',
+      value: '',
+      hasMenu: true,
+      type: 'info',
+      menuItems: ['All', 'H', 'He'],
+    },
+    {
+      chip: 'Sent',
+      value: '',
+      hasMenu: true,
+      type: 'info',
+      menuItems: ['All', 'Long', 'Short'],
+    },
+  ],
+  completed: [
+    {
+      chip: 'Bookmarked',
+      value: 2,
+      icon: 'star',
+      hasMenu: false,
+    },
+    {
+      chip: 'Important',
+      value: 4,
+      icon: 'long-arrow-up',
+      hasMenu: false,
+    },
+    {
+      chip: 'Due',
+      value: 4,
+      hasMenu: false,
+    },
+    {
+      chip: 'Label',
+      value: '',
+      hasMenu: true,
+      type: 'info',
+      menuItems: ['H', 'He'],
+    },
+    {
+      chip: 'Sent',
+      value: '',
+      hasMenu: true,
+      type: 'info',
+      menuItems: ['Long', 'Short'],
+    },
+    {
+      chip: 'Requestedby',
+      value: '',
+      hasMenu: true,
+      type: 'info',
+      menuItems: ['Fred', 'Shred'],
+    },
+  ],
+};
+
+export const nodeChipsMenuItems = {
+  Label: ['H', 'He'],
+  Sent: ['Long', 'Short'],
+  Requestedby: ['Fred', 'Shred'],
+};
+
 @Component({
   selector: 'pros-task-list-datatable',
   templateUrl: './task-list-datatable.component.html',
@@ -262,6 +474,8 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit, OnDest
   selection: SelectionModel<PeriodicElement>;
   node: string = null;
   nodeColumns: { fldId: string; fldDesc: string }[] = [];
+  currentNodeFilterChips: { chip: string; value: any; icon?: string; type?: string; hasMenu: boolean; menuItems?: string[] }[] = [];
+  filteredNodeChipsMenuItems = Object.assign({}, nodeChipsMenuItems);
   savedSearchParameters: string = null;
   inlineFilters: string = null;
   pageEvent: { pageIndex: number; pageSize: number; length: number } = {
@@ -284,6 +498,7 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit, OnDest
       this.node = param.node || null;
       this.nodeColumns = NODEFIELDS[this.node];
       this.updateTableColumns();
+      this.updateNodeChips();
     });
     this.route.queryParams.subscribe((queryParam) => {
       this.savedSearchParameters = queryParam.s || null;
@@ -313,6 +528,31 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit, OnDest
     this.displayedColumns = this.nodeColumns.map((d) => d.fldId);
     this.displayedColumns.unshift('select', 'setting', 'Records');
     this.getTableData();
+  }
+  updateNodeChips() {
+    this.currentNodeFilterChips = nodeChips[this.node];
+  }
+  setChipValue(chip: { chip: string; value: any; icon?: string; type?: string; hasMenu: boolean; menuItems?: string[] }, item: any) {
+    this.currentNodeFilterChips = this.currentNodeFilterChips.map((d) => {
+      if (d.chip === chip.chip) {
+        const currentValues: string[] = d.value.split(',').filter((v) => v);
+        const index = currentValues.indexOf(item);
+        if (index >= 0) {
+          currentValues.splice(index, 1);
+        } else {
+          currentValues.push(item);
+        }
+        d.value = currentValues.join(',');
+      } else {
+        d.value = '';
+      }
+      return d;
+    });
+  }
+  filterModulesMenu(event, chip) {
+    const items: string[] = nodeChipsMenuItems[chip] || [];
+    const filtered = items.filter((d) => d.toLowerCase().includes(event.toLowerCase()));
+    this.filteredNodeChipsMenuItems[chip] = filtered;
   }
   getTableData() {
     this.dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
