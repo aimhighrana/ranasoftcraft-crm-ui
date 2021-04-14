@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule, TitleCasePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -269,9 +269,6 @@ import { ResizableColumnDirective } from './_directives/resizable-column.directi
     SubscriberInviteSidesheetComponent,
     SchemaExecutionTrendComponent,
     AutoCompleteScrollDirective
-  ],
-  providers: [
-    TitleCasePipe
   ],
   entryComponents: [
     TableCellInputComponent

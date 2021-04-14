@@ -4,19 +4,17 @@
             Dashboard builder
         </div>
         <div class="f-spacer"></div>
-        <button mat-flat-button color="accent" class="mat-elevation-z0" *ngIf="collaboratorPermission && reportId"
-        [routerLink]="['', { outlets: { sb: 'sb/report/collaborators/' + reportId } } ]">
-        <mat-icon fontSet="mdo-icons">add-group</mat-icon>  Add collaborators
-        </button>
+        <lib-button type="minor" *ngIf="collaboratorPermission && reportId"
+        [routerLink]="['', { outlets: { sb: 'sb/report/collaborators/' + reportId } } ]" icon="user-plus"> Add collaborators </lib-button>
         <span class="f-col-spacer-half"></span>
-        <button mat-flat-button color="primary" (click)="createUpdateReport()"> Save </button>
+        <lib-button (click)="createUpdateReport()" type="major">Save</lib-button>
     </div>
 
     <div class="row-spacer"></div>
 
     <div class="f-col report-builder">
-        <pros-form-input [type]="'text'" [placeholder]="'Untitled-1'" [control]="reportName" [label]="'Dashboard name'" [value]="reportName.value"
-          [maxLength]="maxReportNameLength">
+        <pros-form-input [type]="'text'" [placeholder]="'Untitled-1'" [control]="reportName" [label]="'Dashboard name'"
+            [value]="reportName.value" [maxLength]="maxReportNameLength">
         </pros-form-input>
         <div class="row-spacer"></div>
         <div class="f-row builder-container">
@@ -25,68 +23,53 @@
                 <p class="subtext">Add a widget to your dashboard by clicking on one of the options below</p>
                 <mat-divider></mat-divider>
                 <div class="container" cdkDropList cdkDropListConnectedTo="container">
-                    <div widgetType="FILTER" class="widget-drag" (click) = "addWidget($event, 'FILTER')">
+                    <div widgetType="FILTER" class="widget-drag" (click)="addWidget($event, 'FILTER')">
                         <mat-icon fontSet="mdo-icons" class="widget-icon">filter</mat-icon> Filter
                         <div class="f-spacer"></div>
-                        <button mat-button>
-                            <mat-icon fontSet="mdo-icons">plus</mat-icon>
-                        </button>
+                        <lib-button type="plain" icon="plus"></lib-button>
                     </div>
                     <mat-divider></mat-divider>
-                    <div widgetType="COUNT" class="widget-drag" (click) = "addWidget($event, 'COUNT')">
-                        <mat-icon fontSet="mdo-icons" class="widget-icon">form-number</mat-icon> Metric
+                    <div widgetType="COUNT" class="widget-drag" (click)="addWidget($event, 'COUNT')">
+                        <mat-icon fontSet="mdo-icons" class="widget-icon">hashtag</mat-icon> Metric
                         <div class="f-spacer"></div>
-                        <button mat-button>
-                            <mat-icon fontSet="mdo-icons">plus</mat-icon>
-                        </button>
+                        <lib-button type="plain" icon="plus"></lib-button>
                     </div>
                     <mat-divider></mat-divider>
-                    <div widgetType="TABLE_LIST" class="widget-drag" (click) = "addWidget($event, 'TABLE_LIST')">
-                        <mat-icon fontSet="mdo-icons" class="widget-icon">form-table</mat-icon> Table list
+                    <div widgetType="TABLE_LIST" class="widget-drag" (click)="addWidget($event, 'TABLE_LIST')">
+                        <mat-icon fontSet="mdo-icons" class="widget-icon">table</mat-icon> Table list
                         <div class="f-spacer"></div>
-                        <button mat-button>
-                            <mat-icon fontSet="mdo-icons">plus</mat-icon>
-                        </button>
+                        <lib-button type="plain" icon="plus"></lib-button>
                     </div>
                     <mat-divider></mat-divider>
-                    <div widgetType="BAR_CHART" class="widget-drag" (click) = "addWidget($event, 'BAR_CHART')">
-                        <mat-icon fontSet="mdo-icons" class="widget-icon">chart-pie</mat-icon> Bar/pie chart
+                    <div widgetType="BAR_CHART" class="widget-drag" (click)="addWidget($event, 'BAR_CHART')">
+                        <mat-icon fontSet="mdo-icons-solid" class="widget-icon">chart-pie</mat-icon> Bar/pie chart
                         <div class="f-spacer"></div>
-                        <button mat-button>
-                            <mat-icon fontSet="mdo-icons">plus</mat-icon>
-                        </button>
+                        <lib-button type="plain" icon="plus"></lib-button>
                     </div>
                     <mat-divider></mat-divider>
-                    <div widgetType="STACKED_BAR_CHART" class="widget-drag" (click) = "addWidget($event, 'STACKED_BAR_CHART')">
-                        <mat-icon fontSet="mdo-icons" class="widget-icon">chart-complex</mat-icon> Stacked bar chart
+                    <div widgetType="STACKED_BAR_CHART" class="widget-drag"
+                        (click)="addWidget($event, 'STACKED_BAR_CHART')">
+                        <mat-icon fontSet="mdo-icons" class="widget-icon">analytics</mat-icon> Stacked bar chart
                         <div class="f-spacer"></div>
-                        <button mat-button>
-                            <mat-icon fontSet="mdo-icons">plus</mat-icon>
-                        </button>
+                        <lib-button type="plain" icon="plus"></lib-button>
                     </div>
                     <mat-divider></mat-divider>
-                    <div widgetType="IMAGE" class="widget-drag" (click) = "addWidget($event, 'IMAGE')">
-                        <mat-icon fontSet="mdo-icons" class="widget-icon">picture</mat-icon> Image
+                    <div widgetType="IMAGE" class="widget-drag" (click)="addWidget($event, 'IMAGE')">
+                        <mat-icon fontSet="mdo-icons" class="widget-icon">image</mat-icon> Image
                         <div class="f-spacer"></div>
-                        <button mat-button>
-                            <mat-icon fontSet="mdo-icons">plus</mat-icon>
-                        </button>
+                        <lib-button type="plain" icon="plus"></lib-button>
                     </div>
                     <mat-divider></mat-divider>
-                    <div widgetType="HTML" class="widget-drag" (click) = "addWidget($event, 'HTML')">
-                        <mat-icon fontSet="mdo-icons" class="widget-icon">more-alt2</mat-icon> HTML editor
+                    <div widgetType="HTML" class="widget-drag" (click)="addWidget($event, 'HTML')">
+                        <mat-icon fontSet="mdo-icons" class="widget-icon">arrows-alt-h</mat-icon> HTML editor
                         <div class="f-spacer"></div>
-                        <button mat-button>
-                            <mat-icon fontSet="mdo-icons">plus</mat-icon>
-                        </button>
+                        <lib-button type="plain" icon="plus"></lib-button>
                     </div>
                     <mat-divider></mat-divider>
-                    <div widgetType="TIMESERIES" class="widget-drag" (click) = "addWidget($event, 'TIMESERIES')">
-                        <mat-icon fontSet="mdo-icons" class="widget-icon">form-time</mat-icon> Time series
+                    <div widgetType="TIMESERIES" class="widget-drag" (click)="addWidget($event, 'TIMESERIES')">
+                        <mat-icon fontSet="mdo-icons" class="widget-icon">clock</mat-icon> Time series
                         <div class="f-spacer"></div>
-                        <button mat-button>
-                            <mat-icon fontSet="mdo-icons">plus</mat-icon>
-                        </button>
+                        <lib-button type="plain" icon="plus"></lib-button>
                     </div>
                     <mat-divider></mat-divider>
                 </div>
@@ -109,9 +92,7 @@
                         {{ selStyleWid ? selStyleWid.widgetTitle : 'Untitled' }} properties
                     </div>
                     <div class="f-spacer"></div>
-                    <button mat-button (click)="showProperty=false">
-                        <mat-icon fontSet="mdo-icons">close</mat-icon>
-                    </button>
+                    <lib-button (click)="showProperty=false" type="plain" icon="times"></lib-button>
                 </div>
 
                 <!-- BASIC CONFIGURATION-->
@@ -134,45 +115,58 @@
                                 <div class="f-col">
                                     <mat-label>Width</mat-label>
                                     <mat-form-field appearance="outline">
-                                        <input type="number" [max]="widgetMaxWidth" min="1" matInput formControlName="width" (input)="widthCount($event.target.value)">
+                                        <input type="number" [max]="widgetMaxWidth" min="1" matInput
+                                            formControlName="width" (input)="widthCount($event.target.value)">
                                     </mat-form-field>
                                 </div>
                                 <span class="col-spacer"></span>
                                 <div class="f-col">
                                     <mat-label>Height</mat-label>
                                     <mat-form-field appearance="outline">
-                                        <input type="number" min="0" [max]="widgetMaxHeight" matInput formControlName="height" (input)="heightCount($event.target.value)">
+                                        <input type="number" min="0" [max]="widgetMaxHeight" matInput
+                                            formControlName="height" (input)="heightCount($event.target.value)">
                                     </mat-form-field>
                                 </div>
                             </div>
 
                             <div class="f-col">
-                                <ng-template [ngIf]="selStyleWid && !(selStyleWid.widgetType === 'IMAGE' || selStyleWid.widgetType === 'HTML')">
-                                    <ng-template [ngIf]="styleCtrlGrp.get('isWorkflowdataSet') && styleCtrlGrp.get('isWorkflowdataSet').value " [ngIfElse]="singleSelect">
-                                        <mat-label>Data set ({{ styleCtrlGrp.get('objectType').value.split(',').length }} selected) </mat-label>
+                                <ng-template
+                                    [ngIf]="selStyleWid && !(selStyleWid.widgetType === 'IMAGE' || selStyleWid.widgetType === 'HTML')">
+                                    <ng-template
+                                        [ngIf]="styleCtrlGrp.get('isWorkflowdataSet') && styleCtrlGrp.get('isWorkflowdataSet').value "
+                                        [ngIfElse]="singleSelect">
+                                        <mat-label>Data set ({{ styleCtrlGrp.get('objectType').value.split(',').length
+                                            }} selected) </mat-label>
                                     </ng-template>
                                     <ng-template #singleSelect>
                                         <mat-label>Data set</mat-label>
                                     </ng-template>
                                     <mat-form-field appearance="outline">
-                                        <input matInput [formControl]="objectType" [matAutocomplete]="dataSetCtrl" (keyup)="searchDataSet($event.target.value)" id="dataSets" >
-                                        <mat-autocomplete #dataSetCtrl="matAutocomplete" [displayWith]="displayWithDataSet">
+                                        <input matInput [formControl]="objectType" [matAutocomplete]="dataSetCtrl"
+                                            (keyup)="searchDataSet($event.target.value)" id="dataSets">
+                                        <mat-autocomplete #dataSetCtrl="matAutocomplete"
+                                            [displayWith]="displayWithDataSet">
                                             <mat-optgroup label="Module">
-                                                <mat-option *ngFor="let object of dataSetOb | async" [value]="object" (click)="afterDataSetSelect(object)">
+                                                <mat-option *ngFor="let object of dataSetOb | async" [value]="object"
+                                                    (click)="afterDataSetSelect(object)">
                                                     {{ object.objectdesc ? object.objectdesc : 'Untitled' }}
                                                 </mat-option>
                                             </mat-optgroup>
 
                                             <mat-optgroup label="Custom">
-                                                <mat-option *ngFor="let object of customDataSetob | async" [value]="object" (click)="afterCustomSelect(object)">
+                                                <mat-option *ngFor="let object of customDataSetob | async"
+                                                    [value]="object" (click)="afterCustomSelect(object)">
                                                     {{ object.objectdesc ? object.objectdesc : 'Untitled' }}
                                                 </mat-option>
                                             </mat-optgroup>
-                                            
-                                            <pros-workflow-dataset (selectedWfs)="afterWfSelect($event)" [preSelectedObj]="selStyleWid ? selStyleWid.objectType : ''" [isWorkFlow]="isWorkflowRefresh" [searchText]="searchDataSetVal"></pros-workflow-dataset>    
+
+                                            <pros-workflow-dataset (selectedWfs)="afterWfSelect($event)"
+                                                [preSelectedObj]="selStyleWid ? selStyleWid.objectType : ''"
+                                                [isWorkFlow]="isWorkflowRefresh" [searchText]="searchDataSetVal">
+                                            </pros-workflow-dataset>
                                         </mat-autocomplete>
                                     </mat-form-field>
-                                    
+
                                     <mat-hint *ngIf="selStyleWid  && selStyleWid.objectType && recordsCount">Total
                                         {{ recordsCount }} record(s) found</mat-hint>
                                     <mat-hint *ngIf="selStyleWid  && selStyleWid.objectType && !recordsCount">Index not
@@ -187,7 +181,8 @@
                                     <mat-label>Workflow path</mat-label>
                                     <mat-form-field appearance="outline">
                                         <mat-select formControlName="workflowPath" multiple>
-                                            <mat-option *ngFor="let workflow of workflowPathOb | async" [value]="workflow.pathname">
+                                            <mat-option *ngFor="let workflow of workflowPathOb | async"
+                                                [value]="workflow.pathname">
                                                 {{ workflow.workflowdesc ? workflow.workflowdesc : 'Unknown path' }}
                                             </mat-option>
                                         </mat-select>
@@ -195,14 +190,15 @@
                                 </ng-template>
                             </div>
 
-                           
+
 
                             <div class="f-col">
                                 <!--Modules-->
                                 <ng-template
                                     [ngIf]="selStyleWid && (selStyleWid.widgetType === 'COUNT' || selStyleWid.widgetType === 'BAR_CHART' || selStyleWid.widgetType === 'STACKED_BAR_CHART' || selStyleWid.widgetType === 'FILTER'  || selStyleWid.widgetType === 'TIMESERIES') && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===false">
                                     <pros-metadatafield-control [moduleId]="selStyleWid && selStyleWid.objectType"
-                                        lebel="Field" [selectedFldId]="selStyleWid && selStyleWid.field" [isCustomdataset]="selStyleWid && selStyleWid.isCustomdataSet"
+                                        lebel="Field" [selectedFldId]="selStyleWid && selStyleWid.field"
+                                        [isCustomdataset]="selStyleWid && selStyleWid.isCustomdataSet"
                                         (selectionChange)='onFieldChange($event)'>
                                     </pros-metadatafield-control>
                                 </ng-template>
@@ -210,8 +206,10 @@
                                 <!--WorkflowType-->
                                 <ng-template
                                     [ngIf]="selStyleWid && (selStyleWid.widgetType === 'COUNT' || selStyleWid.widgetType === 'BAR_CHART' || selStyleWid.widgetType === 'STACKED_BAR_CHART' || selStyleWid.widgetType === 'FILTER' || selStyleWid.widgetType === 'TIMESERIES') && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===true && styleCtrlGrp.get('isCustomdataSet').value===false">
-                                    <pros-workflowfield-control [controlFor]="'Field'" [widgetType]="selStyleWid && selStyleWid.widgetType" [objectType]="selStyleWid && selStyleWid.objectType"
-                                        label="Field" [selectedFldId]="selStyleWid && selStyleWid.field"
+                                    <pros-workflowfield-control [controlFor]="'Field'"
+                                        [widgetType]="selStyleWid && selStyleWid.widgetType"
+                                        [objectType]="selStyleWid && selStyleWid.objectType" label="Field"
+                                        [selectedFldId]="selStyleWid && selStyleWid.field"
                                         (selectionChange)='onFieldChange($event)'>
                                     </pros-workflowfield-control>
                                 </ng-template>
@@ -223,11 +221,15 @@
                                     <mat-label>Aggregration operator</mat-label>
                                     <mat-form-field appearance="outline">
                                         <mat-select formControlName="aggregrationOp">
-                                            <mat-option value="GROUPBY" *ngIf="(selStyleWid.widgetType === 'BAR_CHART' || selStyleWid.widgetType === 'STACKED_BAR_CHART' || selStyleWid.widgetType === 'TIMESERIES')">Group by</mat-option>
+                                            <mat-option value="GROUPBY"
+                                                *ngIf="(selStyleWid.widgetType === 'BAR_CHART' || selStyleWid.widgetType === 'STACKED_BAR_CHART' || selStyleWid.widgetType === 'TIMESERIES')">
+                                                Group by</mat-option>
                                             <mat-option value="COUNT">Count</mat-option>
                                             <!-- <mat-option value="MIN" >Min</mat-option>
                                             <mat-option value="MAX" >Max</mat-option> -->
-                                            <mat-option value="SUM" *ngIf="(selStyleWid.widgetType === 'COUNT' && checkFieldDataType)">Sum</mat-option>
+                                            <mat-option value="SUM"
+                                                *ngIf="(selStyleWid.widgetType === 'COUNT' && checkFieldDataType)">Sum
+                                            </mat-option>
                                         </mat-select>
                                     </mat-form-field>
                                 </ng-template>
@@ -236,8 +238,10 @@
                                 <!-- FOR  Modules STACKED BAR CHART WIDGET-->
                                 <ng-template
                                     [ngIf]="selStyleWid && (selStyleWid.widgetType === 'STACKED_BAR_CHART'  || selStyleWid.widgetType === 'TIMESERIES') && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===false">
-                                    <pros-metadatafield-control [moduleId]="selStyleWid && selStyleWid.objectType" [widgetType]="selStyleWid && selStyleWid.widgetType"
-                                        lebel="Group(s) with" [selectedFldId]="selStyleWid && selStyleWid.groupById" [isCustomdataset]="selStyleWid && selStyleWid.isCustomdataSet"
+                                    <pros-metadatafield-control [moduleId]="selStyleWid && selStyleWid.objectType"
+                                        [widgetType]="selStyleWid && selStyleWid.widgetType" lebel="Group(s) with"
+                                        [selectedFldId]="selStyleWid && selStyleWid.groupById"
+                                        [isCustomdataset]="selStyleWid && selStyleWid.isCustomdataSet"
                                         (selectionChange)='onGroupByChange($event)'>
                                     </pros-metadatafield-control>
                                 </ng-template>
@@ -245,8 +249,10 @@
                                 <!-- FOR Workflow STACKED BAR CHART WIDGET-->
                                 <ng-template
                                     [ngIf]="selStyleWid && (selStyleWid.widgetType === 'STACKED_BAR_CHART'|| selStyleWid.widgetType === 'TIMESERIES') && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===true && styleCtrlGrp.get('isCustomdataSet').value===false">
-                                    <pros-workflowfield-control [objectType]="selStyleWid && selStyleWid.objectType" [widgetType]="selStyleWid && selStyleWid.widgetType"
-                                        label="Group with(s)" [controlFor]="'GroupWith'" [selectedFldId]="selStyleWid && selStyleWid.groupById"
+                                    <pros-workflowfield-control [objectType]="selStyleWid && selStyleWid.objectType"
+                                        [widgetType]="selStyleWid && selStyleWid.widgetType" label="Group with(s)"
+                                        [controlFor]="'GroupWith'"
+                                        [selectedFldId]="selStyleWid && selStyleWid.groupById"
                                         (selectionChange)='onGroupByChange($event)'>
                                     </pros-workflowfield-control>
                                 </ng-template>
@@ -258,7 +264,8 @@
                                     [ngIf]="selStyleWid && selStyleWid.widgetType === 'TIMESERIES' && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===false && selStyleWid.groupById">
                                     <pros-metadatafield-control [moduleId]="selStyleWid && selStyleWid.objectType"
                                         lebel="Distinct with" [selectedFldId]="selStyleWid && selStyleWid.distictWith"
-                                        (selectionChange)='onDistictWithChange($event)' [isCustomdataset]="selStyleWid && selStyleWid.isCustomdataSet">
+                                        (selectionChange)='onDistictWithChange($event)'
+                                        [isCustomdataset]="selStyleWid && selStyleWid.isCustomdataSet">
                                     </pros-metadatafield-control>
                                 </ng-template>
 
@@ -273,7 +280,8 @@
                             </div>
 
                             <div class="f-col" *ngIf="selStyleWid && selStyleWid.widgetType === 'COUNT'">
-                                <mat-checkbox color="primary" formControlName="isFieldDistinct">Include field as distinct</mat-checkbox>
+                                <mat-checkbox color="primary" formControlName="isFieldDistinct">Include field as
+                                    distinct</mat-checkbox>
                             </div>
 
                             <div class="f-col">
@@ -281,9 +289,9 @@
                                 <ng-template [ngIf]="selStyleWid && selStyleWid.widgetType === 'FILTER' ">
                                     <!-- if date type field then , special config -->
                                     <ng-template
-                                    [ngIf]="selStyleWid.fieldCtrl && ((selStyleWid.fieldCtrl.picklist === '0' && (selStyleWid.fieldCtrl.dataType === 'DTMS' || selStyleWid.fieldCtrl.dataType === 'DATS')) || selStyleWid.fieldCtrl.fieldId === 'REQUESTOR_DATE' 
+                                        [ngIf]="selStyleWid.fieldCtrl && ((selStyleWid.fieldCtrl.picklist === '0' && (selStyleWid.fieldCtrl.dataType === 'DTMS' || selStyleWid.fieldCtrl.dataType === 'DATS')) || selStyleWid.fieldCtrl.fieldId === 'REQUESTOR_DATE' 
                                         || selStyleWid.fieldCtrl.fieldId === 'DUE_DATE' || selStyleWid.fieldCtrl.fieldId === 'DATE_STARTED' || selStyleWid.fieldCtrl.fieldId === 'FINISHDATE')"
-                                    [ngIfElse]="otherCtrl">
+                                        [ngIfElse]="otherCtrl">
 
                                         <div class="f-col">
                                             <mat-label>Select default days</mat-label>
@@ -322,14 +330,14 @@
                                                         <mat-form-field appearance="outline">
                                                             <input matInput matInput [matDatepicker]="startDate"
                                                                 disabled formControlName="startDate">
-                                                                <div class="f-row input-actions">
-                                                                    <mat-divider [vertical]="true"></mat-divider>
-                                                                    <mat-datepicker-toggle matSuffix [for]="startDate">
-                                                                    </mat-datepicker-toggle>
-                                                                    <mat-datepicker #startDate disabled="false">
-                                                                    </mat-datepicker>
-                                                                </div>
-                                                           
+                                                            <div class="f-row input-actions">
+                                                                <mat-divider [vertical]="true"></mat-divider>
+                                                                <mat-datepicker-toggle matSuffix [for]="startDate">
+                                                                </mat-datepicker-toggle>
+                                                                <mat-datepicker #startDate disabled="false">
+                                                                </mat-datepicker>
+                                                            </div>
+
                                                         </mat-form-field>
                                                     </div>
 
@@ -340,13 +348,13 @@
                                                         <mat-form-field appearance="outline">
                                                             <input matInput matInput [matDatepicker]="endDate" disabled
                                                                 formControlName="endDate">
-                                                                <div class="f-row input-actions">
-                                                                    <mat-divider [vertical]="true"></mat-divider>
-                                                                    <mat-datepicker-toggle matSuffix [for]="endDate">
-                                                                    </mat-datepicker-toggle>
-                                                                    <mat-datepicker #endDate disabled="false">
-                                                                    </mat-datepicker>
-                                                                  </div>
+                                                            <div class="f-row input-actions">
+                                                                <mat-divider [vertical]="true"></mat-divider>
+                                                                <mat-datepicker-toggle matSuffix [for]="endDate">
+                                                                </mat-datepicker-toggle>
+                                                                <mat-datepicker #endDate disabled="false">
+                                                                </mat-datepicker>
+                                                            </div>
                                                         </mat-form-field>
                                                     </div>
                                                 </ng-template>
@@ -382,8 +390,10 @@
                                     [ngIf]="selStyleWid && selStyleWid.widgetType === 'TABLE_LIST' && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===false  && styleCtrlGrp.get('isCustomdataSet').value===false">
                                     <mat-label>Choose columns</mat-label>
                                     <mat-form-field appearance="outline">
-                                        <input matInput [matAutocomplete]="chooseColumn" (keyup)="searchChooseColumn($event.target.value)">
-                                        <mat-autocomplete #chooseColumn="matAutocomplete" [displayWith]="chooseColumnDisWith">
+                                        <input matInput [matAutocomplete]="chooseColumn"
+                                            (keyup)="searchChooseColumn($event.target.value)">
+                                        <mat-autocomplete #chooseColumn="matAutocomplete"
+                                            [displayWith]="chooseColumnDisWith">
                                             <mat-option *ngFor="let field of headerFields | async"
                                                 value="{{ field.fieldId }}">
                                                 <div (click)="optionClicked($event, field)">
@@ -406,35 +416,37 @@
                                     <mat-label>Choose columns</mat-label>
                                     <mat-form-field appearance="outline">
 
-                                        <input matInput [matAutocomplete]="chooseColumnWF" (keyup)="searchChooseColumnWorkflow($event.target.value)">
-                                        <mat-autocomplete #chooseColumnWF="matAutocomplete" [displayWith]="chooseColumnDisWith">
+                                        <input matInput [matAutocomplete]="chooseColumnWF"
+                                            (keyup)="searchChooseColumnWorkflow($event.target.value)">
+                                        <mat-autocomplete #chooseColumnWF="matAutocomplete"
+                                            [displayWith]="chooseColumnDisWith">
                                             <mat-optgroup label="System fileds">
                                                 <mat-option *ngFor="let field of (workflowFieldsObs | async).static"
-                                                value="{{ field.fieldId }}">
-                                                <div (click)="optionClicked($event, field)">
-                                                    <mat-checkbox prosClickStopPropagation
-                                                        (change)="toggleSelection(field)" [checked]="isSelected(field)"
-                                                        color="primary">
-                                                        {{ field.fieldDescri }}
-                                                    </mat-checkbox>
-                                                </div>
-                                               </mat-option>
+                                                    value="{{ field.fieldId }}">
+                                                    <div (click)="optionClicked($event, field)">
+                                                        <mat-checkbox prosClickStopPropagation
+                                                            (change)="toggleSelection(field)"
+                                                            [checked]="isSelected(field)" color="primary">
+                                                            {{ field.fieldDescri }}
+                                                        </mat-checkbox>
+                                                    </div>
+                                                </mat-option>
                                             </mat-optgroup>
 
                                             <mat-optgroup label="Module fileds">
                                                 <mat-option *ngFor="let field of (workflowFieldsObs | async).dynamic"
-                                                value="{{ field.fieldId }}">
-                                                <div (click)="optionClicked($event, field)">
-                                                    <mat-checkbox prosClickStopPropagation
-                                                        (change)="toggleSelection(field)" [checked]="isSelected(field)"
-                                                        color="primary">
-                                                        {{ field.fieldDescri }}
-                                                    </mat-checkbox>
-                                                </div>
-                                               </mat-option>
+                                                    value="{{ field.fieldId }}">
+                                                    <div (click)="optionClicked($event, field)">
+                                                        <mat-checkbox prosClickStopPropagation
+                                                            (change)="toggleSelection(field)"
+                                                            [checked]="isSelected(field)" color="primary">
+                                                            {{ field.fieldDescri }}
+                                                        </mat-checkbox>
+                                                    </div>
+                                                </mat-option>
                                             </mat-optgroup>
-                                        </mat-autocomplete> 
-                                         
+                                        </mat-autocomplete>
+
                                     </mat-form-field>
                                     <mat-hint>{{ chooseColumns ? chooseColumns.length : '0' }} Selected</mat-hint>
                                 </ng-template>
@@ -444,9 +456,11 @@
                                     [ngIf]="selStyleWid && selStyleWid.widgetType === 'TABLE_LIST' && styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===false && styleCtrlGrp.get('isCustomdataSet').value===true">
                                     <mat-label>Choose columns</mat-label>
                                     <mat-form-field appearance="outline">
-                                        <input matInput [matAutocomplete]="chooseColumn" (keyup)="searchCustomChooseColumn($event.target.value)">
-                                        <mat-autocomplete #chooseColumn="matAutocomplete" [displayWith]="chooseColumnDisWith">
-                                            <mat-option  *ngFor="let fld of CustomfieldsObs | async"
+                                        <input matInput [matAutocomplete]="chooseColumn"
+                                            (keyup)="searchCustomChooseColumn($event.target.value)">
+                                        <mat-autocomplete #chooseColumn="matAutocomplete"
+                                            [displayWith]="chooseColumnDisWith">
+                                            <mat-option *ngFor="let fld of CustomfieldsObs | async"
                                                 value="{{ fld.fieldId }}">
                                                 <div (click)="optionClicked($event, fld)">
                                                     <mat-checkbox prosClickStopPropagation
@@ -465,11 +479,12 @@
                             <div class="f-col">
                                 <!-- FOR TABLE LIST CHOOSE Default Page Size and Column format-->
                                 <!-- For Modules -->
-                                <ng-template
-                                    [ngIf]="selStyleWid && selStyleWid.widgetType === 'TABLE_LIST' ">
+                                <ng-template [ngIf]="selStyleWid && selStyleWid.widgetType === 'TABLE_LIST' ">
                                     <mat-label>Default page Size </mat-label>
                                     <mat-form-field appearance="outline">
-                                        <input  matInput type="number" min="1"  (input)="checkNumLength($event.target.value)"  formControlName="pageDefaultSize"  placeholder="Default page size">
+                                        <input matInput type="number" min="1"
+                                            (input)="checkNumLength($event.target.value)"
+                                            formControlName="pageDefaultSize" placeholder="Default page size">
                                     </mat-form-field>
 
                                     <mat-label>Column format</mat-label>
@@ -492,22 +507,20 @@
                                     </mat-form-field>
 
                                     <div class="f-row image-algin">
-                                        <button mat-button matTooltip="Upload image" matTooltipPosition="right"
-                                            (click)="uploadFileChange()"  prosClickStopPropagation>
-                                            <mat-icon>add_photo_alternate</mat-icon>
-                                        </button>
+                                        <lib-button (click)="uploadFileChange()" prosClickStopPropagation icon="image"></lib-button>
                                         <input type="file" (change)="fileChange($event)" style="display: none;"
-                                             id="uploadFileCtrl" accept="image/png, image/jpeg" prosClickStopPropagation />
+                                            id="uploadFileCtrl" accept="image/png, image/jpeg"
+                                            prosClickStopPropagation />
                                         <span class="col-spacer"></span>
                                         <mat-form-field class="upload-mat-form" appearance="outline">
                                             <input matInput disabled readonly formControlName="imageName">
                                             <div class="f-row input-actions">
                                                 <mat-divider [vertical]="true"></mat-divider>
                                                 <button mat-button matSuffix aria-label="Clear"
-                                                (click)="removeUploadedImage()">
-                                                <mat-icon>close</mat-icon>
-                                            </button>
-                                              </div>
+                                                    (click)="removeUploadedImage()">
+                                                    <mat-icon fontSet="mdo-icons">times</mat-icon>
+                                                </button>
+                                            </div>
                                         </mat-form-field>
                                     </div>
                                 </ng-template>
@@ -540,7 +553,8 @@
                             <div class="f-col">
                                 <mat-label>Chart type </mat-label>
                                 <mat-form-field appearance="outline">
-                                    <mat-select formControlName="chartType" [disabled]="selStyleWid.widgetType === 'STACKED_BAR_CHART'">
+                                    <mat-select formControlName="chartType"
+                                        [disabled]="selStyleWid.widgetType === 'STACKED_BAR_CHART'">
                                         <mat-option value="BAR"> Bar </mat-option>
                                         <mat-option *ngIf="selStyleWid.widgetType === 'BAR_CHART' " value="PIE"> Pie
                                         </mat-option>
@@ -550,7 +564,7 @@
                                 </mat-form-field>
                             </div>
 
-                            <div class="f-col"  *ngIf="selStyleWid.widgetType !== 'TIMESERIES'">
+                            <div class="f-col" *ngIf="selStyleWid.widgetType !== 'TIMESERIES'">
                                 <mat-label>Orientation</mat-label>
                                 <mat-form-field appearance="outline"
                                     *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('chartType').value === 'BAR'">
@@ -586,7 +600,8 @@
                                         </mat-select>
                                     </mat-form-field>
                                 </div>
-                                <ng-template [ngIf]="(selStyleWid && selStyleWid.widgetType !== 'TIMESERIES') || chartPropCtrlGrp.get('chartType').value === 'LINE'">
+                                <ng-template
+                                    [ngIf]="(selStyleWid && selStyleWid.widgetType !== 'TIMESERIES') || chartPropCtrlGrp.get('chartType').value === 'LINE'">
                                     <div class="f-col">
                                         <div class="f-row">
                                             <div class="f-col">
@@ -604,7 +619,7 @@
                                             </div>
                                         </div>
                                     </div>
-    
+
                                     <div class="f-col">
                                         <div class="f-row">
                                             <div class="f-col">
@@ -643,11 +658,12 @@
                             </div>
 
                             <!-- PIE CHART PERCETAGE CONFIG -->
-                            <div class="f-col" *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('isEnableDatalabels').value && ( chartPropCtrlGrp.get('chartType').value === 'PIE' || (selStyleWid && selStyleWid.widgetType === 'TIMESERIES' &&  selStyleWid.field === 'TIME_TAKEN') )">
+                            <div class="f-col"
+                                *ngIf="chartPropCtrlGrp && chartPropCtrlGrp.get('isEnableDatalabels').value && ( chartPropCtrlGrp.get('chartType').value === 'PIE' || (selStyleWid && selStyleWid.widgetType === 'TIMESERIES' &&  selStyleWid.field === 'TIME_TAKEN') )">
                                 <mat-checkbox color="primary" formControlName="isEnabledBarPerc">Show data in %
                                 </mat-checkbox>
                             </div>
-                                <!-- PIE CHART PERCETAGE CONFIG -->
+                            <!-- PIE CHART PERCETAGE CONFIG -->
 
                             <div class="f-col">
                                 <mat-checkbox color="primary" formControlName="isEnableLegend">Show legend
@@ -677,7 +693,8 @@
                                 <!-- SERIES WITH -->
                                 <mat-label>Series with</mat-label>
                                 <mat-form-field appearance="outline">
-                                    <mat-select formControlName="seriesWith" [disabled]="isSerieswithDisabled"  [(value)]="selectedOption">
+                                    <mat-select formControlName="seriesWith" [disabled]="isSerieswithDisabled"
+                                        [(value)]="selectedOption">
                                         <mat-option value="day" *ngIf="isSriesWithVisibile"> Day </mat-option>
                                         <mat-option value="week" *ngIf="isSriesWithVisibile"> Week </mat-option>
                                         <mat-option value="month" *ngIf="isSriesWithVisibile"> Month </mat-option>
@@ -714,7 +731,8 @@
                                 </mat-form-field>
                             </div>
 
-                            <div class="f-col" *ngIf="selStyleWid && selStyleWid.widgetType === 'TIMESERIES' &&  selStyleWid.field === 'TIME_TAKEN'">
+                            <div class="f-col"
+                                *ngIf="selStyleWid && selStyleWid.widgetType === 'TIMESERIES' &&  selStyleWid.field === 'TIME_TAKEN'">
                                 <mat-label>Bucket filter</mat-label>
                                 <mat-form-field appearance="outline">
                                     <mat-select formControlName="bucketFilter">
@@ -730,7 +748,8 @@
                 </mat-accordion>
 
                 <!-- DEFAULT FILTERS -->
-                <mat-accordion *ngIf="selStyleWid && (selStyleWid.widgetType === 'TABLE_LIST' || (selStyleWid.field || (selStyleWid.fieldCtrl && !(selStyleWid.fieldCtrl.dataType === 'DTMS' || selStyleWid.fieldCtrl.dataType === 'DATS'))))">
+                <mat-accordion
+                    *ngIf="selStyleWid && (selStyleWid.widgetType === 'TABLE_LIST' || (selStyleWid.field || (selStyleWid.fieldCtrl && !(selStyleWid.fieldCtrl.dataType === 'DTMS' || selStyleWid.fieldCtrl.dataType === 'DATS'))))">
                     <mat-expansion-panel class="mat-elevation-z0" togglePosition="before" expanded="true">
                         <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
                             <mat-panel-title class="panel-title">
@@ -743,13 +762,12 @@
                                     <div class="f-row def-algin" formArrayName="filters"
                                         *ngFor="let filter of defaultFilterCtrlGrp.get('filters').controls; let i = index">
                                         <ng-container [formGroupName]="i">
-                                                <!-- For Modules -->
+                                            <!-- For Modules -->
                                             <div class="f-col">
                                                 <ng-template
-                                                [ngIf]="styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===false">
+                                                    [ngIf]="styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===false">
                                                     <pros-metadatafield-control
-                                                        [moduleId]="selStyleWid && selStyleWid.objectType"
-                                                        lebel="Field"
+                                                        [moduleId]="selStyleWid && selStyleWid.objectType" lebel="Field"
                                                         [selectedFldId]="selStyleWid && selStyleWid.defaultFilters && (selStyleWid.defaultFilters[i]).conditionFieldId"
                                                         (selectionChange)='onDefaultFilterChange($event,i)'
                                                         [isCustomdataset]="selStyleWid && selStyleWid.isCustomdataSet"
@@ -757,9 +775,10 @@
                                                     </pros-metadatafield-control>
                                                     <span class="col-spacer"></span>
                                                 </ng-template>
-                                            
+
                                                 <!-- For WorkFlow Modules -->
-                                                <ng-template [ngIf]="styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===true  && styleCtrlGrp.get('isCustomdataSet').value===false">
+                                                <ng-template
+                                                    [ngIf]="styleCtrlGrp && styleCtrlGrp.get('isWorkflowdataSet').value===true  && styleCtrlGrp.get('isCustomdataSet').value===false">
                                                     <pros-workflowfield-control
                                                         [objectType]="selStyleWid && selStyleWid.objectType"
                                                         label="Field"
@@ -782,7 +801,7 @@
                                                 </pros-udr-condition-operators>
                                             </div>
 
-                                            <span class="col-spacer"></span>                                            
+                                            <span class="col-spacer"></span>
                                             <div class="f-col">
                                                 <ng-template
                                                     [ngIf]="selStyleWid && selStyleWid.defaultFilters && (selStyleWid.defaultFilters[i]).conditionOperator==='FIELD2FIELD_EQUAL'
@@ -803,19 +822,20 @@
 
                                                 <ng-template #fieldvalue>
                                                     <div class="f-col value-set">
-                                                    <mat-label>Value</mat-label>
-                                                    <mat-form-field appearance="outline">
-                                                        <input matInput formControlName="conditionFieldValue">
-                                                    </mat-form-field>
-                                                </div>
+                                                        <mat-label>Value</mat-label>
+                                                        <mat-form-field appearance="outline">
+                                                            <input matInput formControlName="conditionFieldValue">
+                                                        </mat-form-field>
+                                                    </div>
                                                 </ng-template>
                                             </div>
                                             <span class="col-spacer"></span>
                                             <div class="f-col value-set">
-                                                <button mat-button (click)="removeFilter(i)" matTooltip="Remove"
+                                                <!-- <button mat-button (click)="removeFilter(i)" matTooltip="Remove"
                                                     color="warn" matTooltipPosition="right">
                                                     <mat-icon>remove_circle_outline</mat-icon>
-                                                </button>
+                                                </button> -->
+                                                <lib-button type="plain" icon="minus-circle" (click)="removeFilter(i)" matTooltip="Remove" matTooltipPosition="right"></lib-button>
                                             </div>
                                         </ng-container>
                                     </div>
@@ -823,9 +843,7 @@
                             </ng-template>
 
                             <div class="f-row add-button">
-                                <button mat-flat-button (click)="addMoreDefaultFilter()" color="accent">
-                                    Add
-                                </button>
+                                <lib-button (click)="addMoreDefaultFilter()" type="minor">Add</lib-button>
                             </div>
                         </div>
                     </mat-expansion-panel>
