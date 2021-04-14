@@ -8,19 +8,30 @@
         </button>
     </div> -->
     
-    <div class="f-row primary-nav-buttons">
-        <lib-button class="lib-button" [class.active]="isNavSelected==='welcome'" i18n="@@home" (click)="sendToParent('welcome')">Home</lib-button>
-        <lib-button class="lib-button" [class.active]="isNavSelected==='data'" i18n="@@data" (click)="sendToParent('data')">Data</lib-button>
-        <lib-button class="lib-button" [class.active]="isNavSelected==='schema'" i18n="@@schema" (click)="sendToParent('schema')">Schema</lib-button>
-        <lib-button class="lib-button" [class.active]="isNavSelected==='reports'" i18n="@@reports" (click)="sendToParent('reports')">Reports</lib-button>
+    <div class="f-row">
+        <mat-nav-list class="primary-nav-list">
+            <mat-list-item class="link-items" [class.selected]="isNavSelected==='welcome'" (click)="sendToParent('welcome')">
+               Home
+            </mat-list-item>
+            <mat-list-item class="link-items" [class.selected]="isNavSelected==='list'" (click)="sendToParent('list')">
+               Data
+            </mat-list-item>
+            <mat-list-item class="link-items" [class.selected]="isNavSelected==='schema'" (click)="sendToParent('schema')">
+               Schema
+            </mat-list-item>
+            <mat-list-item class="link-items" [class.selected]="isNavSelected==='report'" (click)="sendToParent('report')">
+               Reports
+            </mat-list-item>
+        </mat-nav-list>
     </div>
 
     <div class="f-spacer"></div>
-    <lib-button [matMenuTriggerFor]="navigation" rounded="true" class="create-new lib-button primary-navigation">
-        <mat-icon fontSet="mdo-icons-light">plus</mat-icon>
-    </lib-button>
+
     <div class="f-row global-menu">
-        <div>
+        <div [matMenuTriggerFor]="navigation">
+            <button mat-mini-fab class="create-new">
+                <mat-icon fontSet="mdo-icons-light">plus</mat-icon>
+            </button>
             <mat-menu #navigation="matMenu" xPosition="before" class="navigation-menu">
                 <pros-navigation-dropdown (selectedModule)="selectedModule($event)">
                 </pros-navigation-dropdown>
@@ -48,7 +59,7 @@
         <lib-avatar size="small" initials="{{ userDetails.firstName ? userDetails.firstName.substring(0,1).toUpperCase() : ''  }}{{ userDetails.lastName ? userDetails.lastName.substring(0,1).toUpperCase() : ''  }}" [matMenuTriggerFor]="profile_navigation"></lib-avatar>
 
         <mat-menu #profile_navigation="matMenu" xPosition="before" class="navigation-menu">
-            <button mat-menu-item (click)="signOut()" i18n="@@sign_out">Sign out</button>
+            <button mat-menu-item (click)="signOut()">Sign out</button>
         </mat-menu>
     </div>    
 </div>
