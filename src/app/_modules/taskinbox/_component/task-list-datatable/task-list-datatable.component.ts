@@ -239,214 +239,343 @@ export const NODEFIELDS: { [node: string]: { fldId: string; fldDesc: string }[] 
     },
   ],
 };
-
+export interface INodeChips {
+  fldId: string;
+  value: any[];
+  icon?: string;
+  type?: string;
+  hasMenu: boolean;
+  startvalue?: any;
+  endvalue?: any;
+  operator?: string;
+  parentnode?: string;
+}
+export interface IFilterSettings {
+  fldId: string;
+  value: any[];
+  startvalue: any;
+  endvalue: any;
+  operator: string;
+  parentnode?: string;
+}
 export const nodeChips: {
-  [node: string]: { chip: string; value: any; icon?: string; type?: string; hasMenu: boolean; menuItems?: string[] }[];
+  [node: string]: INodeChips[];
 } = {
   inbox: [
     {
-      chip: 'Bookmarked',
-      value: 2,
+      fldId: 'Bookmarked',
+      value: [2],
       icon: 'star',
       hasMenu: false,
+      startvalue: '',
+      endvalue: '',
+      operator: 'equal',
+      parentnode: '',
     },
     {
-      chip: 'Important',
-      value: 4,
+      fldId: 'Important',
+      value: [4],
       icon: 'long-arrow-up',
       hasMenu: false,
+      startvalue: '',
+      endvalue: '',
+      operator: 'equal',
+      parentnode: '',
     },
     {
-      chip: 'Due',
-      value: 4,
+      fldId: 'Due',
+      value: [4],
       hasMenu: false,
+      startvalue: '',
+      endvalue: '',
+      operator: 'equal',
+      parentnode: '',
     },
     {
-      chip: 'Unread',
-      value: 3,
+      fldId: 'Unread',
+      value: [3],
       hasMenu: false,
+      startvalue: '',
+      endvalue: '',
+      operator: 'equal',
+      parentnode: '',
     },
     {
-      chip: 'Label',
-      value: '',
+      fldId: 'Label',
+      value: [],
       hasMenu: true,
       type: 'info',
-      menuItems: ['All', 'H', 'He'],
+      startvalue: '',
+      endvalue: '',
+      operator: 'equal',
+      parentnode: '',
     },
     {
-      chip: 'Sent',
-      value: '',
+      fldId: 'Sent',
+      value: [],
       hasMenu: true,
       type: 'info',
-      menuItems: ['All', 'Long', 'Short'],
+      startvalue: '',
+      endvalue: '',
+      operator: 'equal',
+      parentnode: '',
     },
     {
-      chip: 'Requestedby',
-      value: '',
+      fldId: 'Requestedby',
+      value: [],
       hasMenu: true,
       type: 'info',
-      menuItems: ['All', 'Fred', 'Shred'],
+      startvalue: '',
+      endvalue: '',
+      operator: 'equal',
+      parentnode: '',
     },
   ],
   in_workflow: [
     {
-      chip: 'Bookmarked',
-      value: 2,
+      fldId: 'Bookmarked',
+      value: [2],
       icon: 'star',
       hasMenu: false,
+      startvalue: '',
+      endvalue: '',
+      operator: 'equal',
+      parentnode: '',
     },
     {
-      chip: 'Important',
-      value: 4,
+      fldId: 'Important',
+      value: [4],
       icon: 'long-arrow-up',
       hasMenu: false,
+      startvalue: '',
+      endvalue: '',
+      operator: 'equal',
+      parentnode: '',
     },
     {
-      chip: 'Unread',
-      value: 3,
+      fldId: 'Unread',
+      value: [3],
       hasMenu: false,
+      startvalue: '',
+      endvalue: '',
+      operator: 'equal',
+      parentnode: '',
     },
     {
-      chip: 'Label',
-      value: '',
+      fldId: 'Label',
+      value: [],
       hasMenu: true,
       type: 'info',
-      menuItems: ['All', 'H', 'He'],
+      startvalue: '',
+      endvalue: '',
+      operator: 'equal',
+      parentnode: '',
     },
     {
-      chip: 'Sent',
-      value: '',
+      fldId: 'Sent',
+      value: [],
       hasMenu: true,
       type: 'info',
-      menuItems: ['All', 'Long', 'Short'],
+      startvalue: '',
+      endvalue: '',
+      operator: 'equal',
+      parentnode: '',
     },
     {
-      chip: 'Requestedby',
-      value: '',
+      fldId: 'Requestedby',
+      value: [],
       hasMenu: true,
       type: 'info',
-      menuItems: ['All', 'Fred', 'Shred'],
+      startvalue: '',
+      endvalue: '',
+      operator: 'equal',
+      parentnode: '',
     },
   ],
   rejected: [
     {
-      chip: 'Bookmarked',
-      value: 2,
+      fldId: 'Bookmarked',
+      value: [2],
       icon: 'star',
       hasMenu: false,
+      startvalue: '',
+      endvalue: '',
+      operator: 'equal',
+      parentnode: '',
     },
     {
-      chip: 'Important',
-      value: 4,
+      fldId: 'Important',
+      value: [4],
       icon: 'long-arrow-up',
       hasMenu: false,
+      startvalue: '',
+      endvalue: '',
+      operator: 'equal',
+      parentnode: '',
     },
     {
-      chip: 'Due',
-      value: 4,
+      fldId: 'Due',
+      value: [4],
       hasMenu: false,
+      startvalue: '',
+      endvalue: '',
+      operator: 'equal',
+      parentnode: '',
     },
     {
-      chip: 'Unread',
-      value: 3,
+      fldId: 'Unread',
+      value: [3],
       hasMenu: false,
+      startvalue: '',
+      endvalue: '',
+      operator: 'equal',
+      parentnode: '',
     },
     {
-      chip: 'Sent',
-      value: '',
+      fldId: 'Sent',
+      value: [],
       hasMenu: true,
       type: 'info',
-      menuItems: ['All', 'Long', 'Short'],
+      startvalue: '',
+      endvalue: '',
+      operator: 'equal',
+      parentnode: '',
     },
     {
-      chip: 'Requestedby',
-      value: '',
+      fldId: 'Requestedby',
+      value: [],
       hasMenu: true,
       type: 'info',
-      menuItems: ['All', 'Fred', 'Shred'],
+      startvalue: '',
+      endvalue: '',
+      operator: 'equal',
+      parentnode: '',
     },
   ],
   draft: [
     {
-      chip: 'Bookmarked',
-      value: 2,
+      fldId: 'Bookmarked',
+      value: [2],
       icon: 'star',
       hasMenu: false,
+      startvalue: '',
+      endvalue: '',
+      operator: 'equal',
+      parentnode: '',
     },
     {
-      chip: 'Important',
-      value: 4,
+      fldId: 'Important',
+      value: [4],
       icon: 'long-arrow-up',
       hasMenu: false,
+      startvalue: '',
+      endvalue: '',
+      operator: 'equal',
+      parentnode: '',
     },
     {
-      chip: 'Due',
-      value: 4,
+      fldId: 'Due',
+      value: [4],
       hasMenu: false,
+      startvalue: '',
+      endvalue: '',
+      operator: 'equal',
+      parentnode: '',
     },
     {
-      chip: 'Unread',
-      value: 3,
+      fldId: 'Unread',
+      value: [3],
       hasMenu: false,
+      startvalue: '',
+      endvalue: '',
+      operator: 'equal',
+      parentnode: '',
     },
     {
-      chip: 'Label',
-      value: '',
+      fldId: 'Label',
+      value: [],
       hasMenu: true,
       type: 'info',
-      menuItems: ['All', 'H', 'He'],
+      startvalue: '',
+      endvalue: '',
+      operator: 'equal',
+      parentnode: '',
     },
     {
-      chip: 'Sent',
-      value: '',
+      fldId: 'Sent',
+      value: [],
       hasMenu: true,
       type: 'info',
-      menuItems: ['All', 'Long', 'Short'],
+      startvalue: '',
+      endvalue: '',
+      operator: 'equal',
+      parentnode: '',
     },
   ],
   completed: [
     {
-      chip: 'Bookmarked',
-      value: 2,
+      fldId: 'Bookmarked',
+      value: [2],
       icon: 'star',
       hasMenu: false,
+      startvalue: '',
+      endvalue: '',
+      operator: 'equal',
+      parentnode: '',
     },
     {
-      chip: 'Important',
-      value: 4,
+      fldId: 'Important',
+      value: [4],
       icon: 'long-arrow-up',
       hasMenu: false,
+      startvalue: '',
+      endvalue: '',
+      operator: 'equal',
+      parentnode: '',
     },
     {
-      chip: 'Due',
-      value: 4,
+      fldId: 'Due',
+      value: [4],
       hasMenu: false,
+      startvalue: '',
+      endvalue: '',
+      operator: 'equal',
+      parentnode: '',
     },
     {
-      chip: 'Label',
-      value: '',
+      fldId: 'Label',
+      value: [],
       hasMenu: true,
       type: 'info',
-      menuItems: ['H', 'He'],
+      startvalue: '',
+      endvalue: '',
+      operator: 'equal',
+      parentnode: '',
     },
     {
-      chip: 'Sent',
-      value: '',
+      fldId: 'Sent',
+      value: [],
       hasMenu: true,
       type: 'info',
-      menuItems: ['Long', 'Short'],
+      startvalue: '',
+      endvalue: '',
+      operator: 'equal',
+      parentnode: '',
     },
     {
-      chip: 'Requestedby',
-      value: '',
+      fldId: 'Requestedby',
+      value: [],
       hasMenu: true,
       type: 'info',
-      menuItems: ['Fred', 'Shred'],
+      startvalue: '',
+      endvalue: '',
+      operator: 'equal',
+      parentnode: '',
     },
   ],
 };
 
-export const nodeChipsMenuItems = {
+export const nodeChipsMenuItems: { [fldId: string]: string[] } = {
   Label: ['H', 'He'],
   Sent: ['Long', 'Short'],
   Requestedby: ['Fred', 'Shred'],
@@ -474,8 +603,11 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit, OnDest
   selection: SelectionModel<PeriodicElement>;
   node: string = null;
   nodeColumns: { fldId: string; fldDesc: string }[] = [];
-  currentNodeFilterChips: { chip: string; value: any; icon?: string; type?: string; hasMenu: boolean; menuItems?: string[] }[] = [];
+
+  currentNodeFilterChips: INodeChips[] = [];
   filteredNodeChipsMenuItems = Object.assign({}, nodeChipsMenuItems);
+  currentFilterSettings: IFilterSettings[] = [];
+
   savedSearchParameters: string = null;
   inlineFilters: string = null;
   pageEvent: { pageIndex: number; pageSize: number; length: number } = {
@@ -532,22 +664,48 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit, OnDest
   updateNodeChips() {
     this.currentNodeFilterChips = nodeChips[this.node];
   }
-  setChipValue(chip: { chip: string; value: any; icon?: string; type?: string; hasMenu: boolean; menuItems?: string[] }, item: any) {
-    this.currentNodeFilterChips = this.currentNodeFilterChips.map((d) => {
-      if (d.chip === chip.chip) {
-        const currentValues: string[] = d.value.split(',').filter((v) => v);
-        const index = currentValues.indexOf(item);
-        if (index >= 0) {
-          currentValues.splice(index, 1);
-        } else {
-          currentValues.push(item);
-        }
-        d.value = currentValues.join(',');
+  setChipValue(chip: INodeChips, item: any) {
+    const index = this.currentFilterSettings.findIndex((d) => d.fldId === chip.fldId);
+    if (index >= 0) {
+      const filterSettingObj: IFilterSettings = this.currentFilterSettings[index];
+      const valueIndex = filterSettingObj.value.findIndex((d) => d === item);
+      if (valueIndex >= 0) {
+        filterSettingObj.value.splice(valueIndex, 1);
       } else {
-        d.value = '';
+        filterSettingObj.value.push(item);
+      }
+      if (filterSettingObj.value.length <= 0) {
+        this.currentFilterSettings.splice(index, 1);
+      } else {
+        this.currentFilterSettings[index] = filterSettingObj;
+      }
+    } else {
+      const filterSettingObj: IFilterSettings = {
+        fldId: chip.fldId,
+        value: [item],
+        startvalue: [],
+        endvalue: [],
+        operator: 'equal',
+        parentnode: '',
+      };
+      this.currentFilterSettings.push(filterSettingObj);
+    }
+    this.currentNodeFilterChips = this.currentNodeFilterChips.map((d) => {
+      if (d.fldId === chip.fldId) {
+        const idx = d.value.indexOf(item);
+        if (idx >= 0) {
+          d.value.splice(idx, 1);
+        } else {
+          d.value.push(item);
+        }
       }
       return d;
     });
+    this.updateQueryParameter();
+  }
+  updateQueryParameter() {
+    const encoded = this.currentFilterSettings.length ? btoa(JSON.stringify(this.currentFilterSettings)) : '';
+    this.router.navigate([`/home/task/${this.node}/feed`], { queryParams: { f: encoded }, queryParamsHandling: 'merge' });
   }
   filterModulesMenu(event, chip) {
     const items: string[] = nodeChipsMenuItems[chip] || [];

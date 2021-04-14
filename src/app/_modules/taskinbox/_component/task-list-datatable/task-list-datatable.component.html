@@ -14,19 +14,26 @@
     <lib-chip-list>
       <lib-search placeholder="Search tasks"></lib-search>
       <ng-container *ngFor="let chip of currentNodeFilterChips">
-        <lib-chip [label]="chip.chip" [icon]="chip.icon" [type]="chip.type" [matMenuTriggerFor]="filterMenu"
-          >{{ chip.type ? ': ' : '' }}{{ chip.value ? chip.value : 'All' }}</lib-chip
+        <lib-chip
+          [label]="chip.fldId"
+          [icon]="chip.icon"
+          [type]="chip.type"
+          [matMenuTriggerFor]="filterMenu"
+          (click)="!chip.hasMenu ? setChipValue(chip, true) : null"
+          [selectable]="true"
+          [selected]="chip.value.includes(true) && !chip.hasMenu"
+          >{{ chip.hasMenu ? ': ' : '' }}{{ chip.hasMenu ? (chip.value.length > 0 ? chip.value.join(', ') : 'All') : '' }}</lib-chip
         >
-        <mat-menu #filterMenu="matMenu" xPosition="after" (closed)="searchInput.clearSearch()">
-          <lib-filter-dropdown>
+        <mat-menu #filterMenu="matMenu" xPosition="after">
+          <lib-filter-dropdown *ngIf="chip?.hasMenu">
             <div class="dropdown-search-wrapper">
-              <lib-search #searchInput prosClickStopPropagation (valueChange)="filterModulesMenu($event, chip.chip)"></lib-search>
+              <lib-search #searchInput prosClickStopPropagation (valueChange)="filterModulesMenu($event, chip.fldId)"></lib-search>
             </div>
             <div class="dropdown-options-wrapper f-col">
               <div class="dropdown-options-inner-container">
                 <div class="default-options">
                   <lib-filter-option>
-                    <lib-checkbox label="All"></lib-checkbox>
+                    <lib-checkbox label="All" [checked]="chip.value.length <= 0"></lib-checkbox>
                   </lib-filter-option>
                   <div class="separator">
                     <mat-divider></mat-divider>
@@ -36,14 +43,16 @@
                   <lib-filter-option
                     prosClickStopPropagation
                     (click)="setChipValue(chip, item)"
-                    *ngFor="let item of filteredNodeChipsMenuItems[chip.chip]"
+                    *ngFor="let item of filteredNodeChipsMenuItems[chip.fldId]"
                   >
-                    <lib-checkbox [label]="item" prosClickStopPropagation (valueChange)="setChipValue(chip, item)"></lib-checkbox>
+                    <lib-checkbox
+                      [label]="item"
+                      prosClickStopPropagation
+                      (valueChange)="setChipValue(chip, item)"
+                      [checked]="chip.value.indexOf(item) >= 0"
+                    ></lib-checkbox>
                   </lib-filter-option>
                 </div>
-              </div>
-              <div class="filter-button-wrapper">
-                <lib-button type="minor">Apply</lib-button>
               </div>
             </div>
           </lib-filter-dropdown>

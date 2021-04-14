@@ -63,32 +63,130 @@ describe('TaskListDatatableComponent', () => {
   });
 
   it('setChipValue()', () => {
+    spyOn(component, 'updateQueryParameter');
     component.currentNodeFilterChips = [
       {
-        chip: 'Bookmarked',
-        value: '2',
+        fldId: 'Bookmarked',
+        value: ['2'],
         icon: 'star',
         hasMenu: false,
       },
     ];
+    component.currentFilterSettings = [
+      {
+        fldId: 'Bookmarked',
+        value: ['2'],
+        startvalue: [],
+        endvalue: [],
+        operator: 'equal',
+        parentnode: '',
+      },
+    ];
     component.setChipValue(
       {
-        chip: 'Bookmarked',
-        value: '2',
+        fldId: 'Bookmarked',
+        value: ['2'],
         icon: 'star',
         hasMenu: false,
       },
-      5
+      '5'
     );
 
     expect(component.currentNodeFilterChips).toEqual([
       {
-        chip: 'Bookmarked',
-        value: '2,5',
+        fldId: 'Bookmarked',
+        value: ['2', '5'],
         icon: 'star',
         hasMenu: false,
       },
     ]);
+    expect(component.currentFilterSettings).toEqual([
+      {
+        fldId: 'Bookmarked',
+        value: ['2', '5'],
+        startvalue: [],
+        endvalue: [],
+        operator: 'equal',
+        parentnode: '',
+      },
+    ]);
+
+    component.setChipValue(
+      {
+        fldId: 'Bookmarked',
+        value: ['2'],
+        icon: 'star',
+        hasMenu: false,
+      },
+      '5'
+    );
+    expect(component.currentNodeFilterChips).toEqual([
+      {
+        fldId: 'Bookmarked',
+        value: ['2'],
+        icon: 'star',
+        hasMenu: false,
+      },
+    ]);
+    expect(component.currentFilterSettings).toEqual([
+      {
+        fldId: 'Bookmarked',
+        value: ['2'],
+        startvalue: [],
+        endvalue: [],
+        operator: 'equal',
+        parentnode: '',
+      },
+    ]);
+    component.setChipValue(
+      {
+        fldId: 'Bookmarked',
+        value: ['2'],
+        icon: 'star',
+        hasMenu: false,
+      },
+      '2'
+    );
+    expect(component.currentNodeFilterChips).toEqual([
+      {
+        fldId: 'Bookmarked',
+        value: [],
+        icon: 'star',
+        hasMenu: false,
+      },
+    ]);
+    expect(component.currentFilterSettings).toEqual([]);
+    expect(component.updateQueryParameter).toHaveBeenCalled();
+  });
+
+  it('updateQueryParameter()', () => {
+    spyOn(router, 'navigate');
+    component.node = 'inbox';
+    component.currentFilterSettings = [
+      {
+        fldId: 'Bookmarked',
+        value: ['2'],
+        startvalue: [],
+        endvalue: [],
+        operator: 'equal',
+        parentnode: '',
+      },
+    ];
+
+    component.updateQueryParameter();
+    let f = btoa(JSON.stringify(component.currentFilterSettings));
+    expect(router.navigate).toHaveBeenCalledWith([`/home/task/${component.node}/feed`], {
+      queryParams: { f },
+      queryParamsHandling: 'merge',
+    });
+
+    component.currentFilterSettings = [];
+    component.updateQueryParameter();
+    f = '';
+    expect(router.navigate).toHaveBeenCalledWith([`/home/task/${component.node}/feed`], {
+      queryParams: { f },
+      queryParamsHandling: 'merge',
+    });
   });
 
   it('filterModulesMenu()', () => {
