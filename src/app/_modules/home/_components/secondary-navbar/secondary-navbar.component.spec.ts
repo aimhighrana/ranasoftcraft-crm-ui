@@ -93,6 +93,17 @@ describe('SecondaryNavbarComponent', () => {
     component.ngOnChanges(changes);
     expect(component.getreportList).toHaveBeenCalled();
 
+    changes = {
+      activatedPrimaryNav: {
+        currentValue: 'list',
+        previousValue: 'report',
+        firstChange: true,
+      } as SimpleChange
+    } as SimpleChanges
+
+    spyOn(component, 'getAllObjectType')
+    component.ngOnChanges(changes);
+    expect(component.getAllObjectType).toHaveBeenCalled();
   })
 
   it('getDataIntilligence() should return schema with varients', async(() => {
@@ -150,6 +161,9 @@ describe('SecondaryNavbarComponent', () => {
 
     component.activatedPrimaryNav = 'report';
     expect(component.getRoutedDescription).toEqual('Report');
+
+    component.activatedPrimaryNav = 'list';
+    expect(component.getRoutedDescription).toEqual('Data');
   });
 
 
@@ -182,6 +196,12 @@ describe('SecondaryNavbarComponent', () => {
     component.checkDescOnReload(url);
     expect(component.getSchemaList).toHaveBeenCalled();
     expect(component.activatedPrimaryNav).toEqual('schema');
+
+    spyOn(component, 'getAllObjectType');
+    url = 'https://beta.mdoondemand.com/MDOSF/fuze/ngx-mdo/index.html#/home/list';
+    component.checkDescOnReload(url);
+    expect(component.getAllObjectType).toHaveBeenCalled();
+    expect(component.activatedPrimaryNav).toEqual('list');
   })
 
   it('getSchemaList(), should get all schema list', async () => {
@@ -320,6 +340,19 @@ describe('SecondaryNavbarComponent', () => {
 
   });
 
+  it('ngOnInit(), should set value for activemenuid', async () => {
+    component.isPageReload = false;
+    const mockNavRes = {
+      activeMenu: SecondaynavType.schema,
+      activeMenuItemId: '',
+      isPageReload: true
+    } as SecondaryNavRefresh
+    spyOn(sharedService, 'isSecondaryNavRefresh').and.returnValue(of(mockNavRes));
+
+    component.ngOnInit();
+    expect(component.activeMenuItemId).toEqual('');
+  });
+
   it('filterModulesMenu(), should filter modules according to search string', async () => {
     let searchString = 'goyal';
     component.moduleList = [
@@ -417,4 +450,27 @@ describe('SecondaryNavbarComponent', () => {
     expect(userService.getUserDetails).toHaveBeenCalled();
     expect(reportService.reportList).toHaveBeenCalledWith(userDetails.plantCode, userDetails.currentRoleId);
   })
+
+  it('setTaskListOrder(), should order tasks list', async() => {
+    component.taskList = component.mockTaskList;
+    const taskOrderList = 'eyJpbmJveCI6MSwiMXRlc3QxIjoxLCIxdGVzdDIiOjAsImluX3dvcmtmbG93IjowfQ==';
+
+    expect(component.setTaskListOrder(taskOrderList)).toBeTruthy();
+  });
+
+  it('updateTaskListInStorage(), should update tasks list in local storage', async() => {
+    component.taskList = component.mockTaskList;
+
+    expect(component.updateTaskListInStorage(component.taskList)).toBeTruthy();
+  });
+
+  it('getAllObjectType(), Should fetch all list modules', async() => {
+    expect(component.getAllObjectType()).toBeTruthy();
+  });
+
+  it('updateTaskState(), Should update task and search/filter state', async() => {
+    component.taskList = component.mockTaskList;
+    expect(component.updateTaskState('inbox')).toBeTruthy();
+    expect(component.updateTaskState('inbox', '1test2')).toBeTruthy();
+  });
 });

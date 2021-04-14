@@ -9,6 +9,7 @@ import { SharedModule } from '@modules/shared/shared.module';
 import { GlobalSearchComponent } from './_components/global-search/global-search.component';
 import { ListFilterComponent } from './_components/list-filter/list-filter.component';
 import { FilterSaveModalComponent } from './_components/filter-save-modal/filter-save-modal.component';
+import { SettingComponent } from './_components/setting/setting.component';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { FilterSaveModalComponent } from './_components/filter-save-modal/filter
     ListDatatableComponent,
     GlobalSearchComponent,
     ListFilterComponent,
-    FilterSaveModalComponent
+    FilterSaveModalComponent,
+    SettingComponent
   ],
   imports: [
     CommonModule,

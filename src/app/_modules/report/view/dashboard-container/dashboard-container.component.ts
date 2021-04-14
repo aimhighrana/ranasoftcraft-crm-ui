@@ -52,6 +52,7 @@ export class DashboardContainerComponent implements OnInit, AfterViewInit, OnCha
     }
 
     if(changes && changes.reportId && changes.reportId.currentValue !== changes.reportId.previousValue) {
+      this.filterCriteria = [];
       this.reportId = changes.reportId.currentValue;
       if(this.reportId) {
         this.getReportInfo(this.reportId);

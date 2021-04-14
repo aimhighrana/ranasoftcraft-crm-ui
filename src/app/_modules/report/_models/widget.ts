@@ -578,3 +578,10 @@ export enum DisplayCriteria {
     TEXT = 'TEXT',
     CODE_TEXT = 'CODE_TEXT'
 }
+
+export interface DuplicateReport {
+    acknowledged: boolean;
+    errorMsg: string;
+    reportId: string;
+    reportName: string;
+}

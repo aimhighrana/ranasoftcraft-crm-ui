@@ -166,34 +166,36 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
   }
 
   public getBarConfigurationData() : void {
-     // bar orientation based on orientation value
+    // bar orientation based on orientation value
 
-     this.orientation = this.stackBarWidget.getValue().orientation === 'VERTICAL' ? 'bar' : 'horizontalBar';
+    this.orientation = this.stackBarWidget.getValue().orientation === 'VERTICAL' ? 'bar' : 'horizontalBar';
 
-     // if showLegend flag will be true it show legend on Stacked bar widget
-     if (this.stackBarWidget.getValue().isEnableLegend) {
-       this.barChartOptions.legend= {
-         display: true,
-         position: this.stackBarWidget.getValue().legendPosition,
-         onClick: (event: MouseEvent, legendItem: ChartLegendLabelItem) => {
-          // call protype of stacked bar chart componenet
-          this.legendClick(legendItem);
+    // if showLegend flag will be true it show legend on Stacked bar widget
+    if (this.stackBarWidget.getValue().isEnableLegend) {
+      this.chart.chart.options = {
+        legend: {
+          display: false,
+          position: this.stackBarWidget.getValue().legendPosition,
+          onClick: (event: MouseEvent, legendItem: ChartLegendLabelItem) => {
+            // call protype of stacked bar chart componenet
+            this.legendClick(legendItem);
+          }
         }
-       }
-     }
-     // if showCountOnStack flag will be true it show datalables on stack and position of datalables also configurable
-     if (this.stackBarWidget.getValue().isEnableDatalabels) {
-       this.barChartOptions.plugins = {
+      }
+    }
+    // if showCountOnStack flag will be true it show datalables on stack and position of datalables also configurable
+    if (this.stackBarWidget.getValue().isEnableDatalabels) {
+      this.chart.chart.options.plugins = {
         ChartDataLables,
-         datalabels: {
-           align:  this.stackBarWidget.getValue().datalabelsPosition,
-           anchor: this.stackBarWidget.getValue().datalabelsPosition,
-           display:'auto'
-         }
-       }
-     }
-      // show axis labels and scales range
-      this.setChartAxisAndScaleRange();
+        datalabels: {
+          align: this.stackBarWidget.getValue().datalabelsPosition,
+          anchor: this.stackBarWidget.getValue().datalabelsPosition,
+          display: 'auto'
+        }
+      }
+    }
+    // show axis labels and scales range
+    this.setChartAxisAndScaleRange();
   }
 
   public getstackbarChartData(widgetId:number,criteria:Criteria[]) : void{
@@ -328,6 +330,8 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         const finalText = valArray.toString();
         if(finalText) {
           this.codeTextaxis1[key] = finalText;
+        } else {
+          this.codeTextaxis1[key] = key;
         }
       } else {
         this.codeTextaxis1[key] = key;
@@ -354,6 +358,8 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         const finalText = valArray.toString();
         if(finalText) {
           this.codeTextaxis1[key] = finalText;
+        } else {
+          this.codeTextaxis1[key] = key;
         }
       } else {
         this.codeTextaxis1[key] = key;
@@ -379,10 +385,12 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         });
         const finalText = Number(valArray);
         if(finalText) {
-          this.codeTextaxis1[key] = new Date(finalText).toLocaleDateString();;
+          this.codeTextaxis1[key] = new Date(finalText).toLocaleDateString();
+        } else {
+          this.codeTextaxis1[key] = new Date(key).toLocaleDateString();
         }
       } else {
-        this.codeTextaxis1[key] = new Date(key).toLocaleDateString();;
+        this.codeTextaxis1[key] = new Date(key).toLocaleDateString();
       }
     });
     this.updateLabelsaxis1();
@@ -414,6 +422,8 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
           const finalText = valArray.toString();
           if(finalText) {
             this.codeTextaxis2[key] = finalText;
+          } else {
+            this.codeTextaxis2[key] = key;
           }
       } else {
         this.codeTextaxis2[key] = key;
@@ -441,10 +451,12 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
           });
           const finalText = Number(valArray);
           if(finalText) {
-            this.codeTextaxis2[key] = new Date(finalText).toLocaleDateString();;
+            this.codeTextaxis2[key] = new Date(finalText).toLocaleDateString();
+          } else {
+            this.codeTextaxis2[key] = new Date(key).toLocaleDateString();
           }
       } else {
-        this.codeTextaxis2[key] = new Date(key).toLocaleDateString();;
+        this.codeTextaxis2[key] = new Date(key).toLocaleDateString();
       }
     });
     this.updateLabelsaxis2();
@@ -470,6 +482,8 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
           const finalText = valArray.toString();
           if(finalText) {
             this.codeTextaxis2[key] = finalText;
+          } else {
+            this.codeTextaxis2[key] = key;
           }
       } else {
         this.codeTextaxis2[key] = key;
@@ -640,7 +654,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
       && this.stackBarWidget.getValue().stepSize !== null && this.stackBarWidget.getValue().stepSize !== undefined) {
         const ticks = {min:this.stackBarWidget.getValue().scaleFrom, max:this.stackBarWidget.getValue().scaleTo, stepSize:this.stackBarWidget.getValue().stepSize};
         if(this.stackBarWidget.getValue().orientation === Orientation.HORIZONTAL) {
-          this.barChartOptions.scales = {
+          this.chart.chart.options.scales = {
             xAxes: [{
               scaleLabel: {
                 display: true,
@@ -658,7 +672,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
             }]
           }
         } else {
-          this.barChartOptions.scales = {
+          this.chart.chart.options.scales = {
             xAxes: [{
               scaleLabel: {
                 display: true,
@@ -677,14 +691,14 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
           }
         }
     } else {
-      this.barChartOptions.scales = {
+      this.chart.chart.options.scales = {
         xAxes: [{
           scaleLabel: {
             display: true,
             labelString: this.stackBarWidget.getValue().xAxisLabel ? this.stackBarWidget.getValue().xAxisLabel : ''
           },
-          ticks : {
-            padding: this.stackBarWidget.getValue().isEnableDatalabels && (this.stackBarWidget.getValue().orientation === Orientation.VERTICAL) && (this.stackBarWidget.getValue().datalabelsPosition === 'start' || this.stackBarWidget.getValue().datalabelsPosition === 'center') ?  20 : 0
+          ticks: {
+            padding: this.stackBarWidget.getValue().isEnableDatalabels && (this.stackBarWidget.getValue().orientation === Orientation.VERTICAL) && (this.stackBarWidget.getValue().datalabelsPosition === 'start' || this.stackBarWidget.getValue().datalabelsPosition === 'center') ? 20 : 0
           }
         }],
         yAxes: [{
@@ -692,13 +706,12 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
             display: true,
             labelString: this.stackBarWidget.getValue().yAxisLabel ? this.stackBarWidget.getValue().yAxisLabel : ''
           },
-          ticks : {
-            padding: this.stackBarWidget.getValue().isEnableDatalabels && (this.stackBarWidget.getValue().orientation === Orientation.HORIZONTAL) && (this.stackBarWidget.getValue().datalabelsPosition === 'start' || this.stackBarWidget.getValue().datalabelsPosition === 'center') ?  20 : 0
+          ticks: {
+            padding: this.stackBarWidget.getValue().isEnableDatalabels && (this.stackBarWidget.getValue().orientation === Orientation.HORIZONTAL) && (this.stackBarWidget.getValue().datalabelsPosition === 'start' || this.stackBarWidget.getValue().datalabelsPosition === 'center') ? 20 : 0
           }
-        }]
+        }],
       }
     }
-
   }
 
   /**
