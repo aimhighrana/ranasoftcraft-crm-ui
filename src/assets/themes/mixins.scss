@@ -508,14 +508,16 @@
 
   .lib-tab-group.primary-navigation .mdo-tabs-underline .mat-tab-header {
     .mat-ink-bar {
-      background: #ffffff;
+      background: #fff;
       height: 3px;
     }
+
     .mat-tab-label {
       color: #b7bfce;
+
       &.mat-tab-label-active {
-        border-bottom: 2px #E4EBF3;
-        color: #ffffff;
+        border-bottom: 2px #e4ebf3;
+        color: #fff;
       }
     }
   }
@@ -905,8 +907,9 @@
     height: 36px;
     line-height: 34px;
   }
+
   .lib-button.primary-navigation button.mdo-button.mdo-rounded {
-    background: white;
+    background: #fff;
   }
 
   button.mat-icon-button {
