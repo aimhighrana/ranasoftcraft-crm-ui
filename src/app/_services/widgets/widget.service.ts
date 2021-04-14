@@ -139,6 +139,9 @@ export class WidgetService {
     return this.http.get<TreeModel[]>(this.endpointAnalyticService.getLocationHierarchyUrl(topLocation, fieldId, searchString, searchFunc), {params:{plantCode}})
   }
 
+  /**
+   * Call http to copy / duplicate a report
+   */
   public copyReport(reportId: string, reportName:string) : Observable<DuplicateReport> {
     return this.http.post<DuplicateReport>(this.endpointAnalyticService.copyReport(reportId, reportName), {});
   }

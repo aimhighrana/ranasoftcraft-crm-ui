@@ -31,6 +31,9 @@ export class DuplicateReportComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  /**
+   * Copy report and navigate over to dashboard-builder, or display error message.
+   */
   onConfirm() {
     this.widgetService.copyReport(this.data.reportId, this.reportName).subscribe(res => {
       if (res.errorMsg) {
@@ -50,6 +53,9 @@ export class DuplicateReportComponent implements OnInit {
     })
   }
 
+  /**
+   * Close dialog
+   */
   onCancel() {
     this.dialogRef.close();
   }

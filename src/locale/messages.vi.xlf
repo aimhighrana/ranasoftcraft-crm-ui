@@ -609,6 +609,10 @@
           <context context-type="sourcefile">src\app\_modules\list\_components\filter-save-modal\filter-save-modal.component.html</context>
           <context context-type="linenumber">17</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/_modules/report/view/duplicate-report/duplicate-report.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="home" datatype="html">
         <source>Home</source>
@@ -826,7 +830,7 @@
           <context context-type="linenumber">71</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="duplicateReport_h1" datatype="html">
+      <trans-unit id="duplicateReport" datatype="html">
         <source>Duplicate report</source>
         <target>Báo cáo trùng lặp</target>
         <context-group purpose="location">
@@ -834,7 +838,7 @@
           <context context-type="linenumber">1</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="duplicateReport_label" datatype="html">
+      <trans-unit id="report" datatype="html">
         <source>Report</source>
         <target>Báo cáo</target>
         <context-group purpose="location">
@@ -842,7 +846,7 @@
           <context context-type="linenumber">8</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="duplicateReport_retry" datatype="html">
+      <trans-unit id="retry" datatype="html">
         <source>Retry</source>
         <target>Thử lại</target>
         <context-group purpose="location">
@@ -850,20 +854,12 @@
           <context context-type="linenumber">19</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="duplicateReport_confirm" datatype="html">
+      <trans-unit id="confirm" datatype="html">
         <source>Confirm</source>
         <target>Xác nhận</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/_modules/report/view/duplicate-report/duplicate-report.component.html</context>
           <context context-type="linenumber">21</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="duplicateReport_cancel" datatype="html">
-        <source>Cancel</source>
-        <target>Huỷ bỏ</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/_modules/report/view/duplicate-report/duplicate-report.component.html</context>
-          <context context-type="linenumber">16</context>
         </context-group>
       </trans-unit>
     </body>
