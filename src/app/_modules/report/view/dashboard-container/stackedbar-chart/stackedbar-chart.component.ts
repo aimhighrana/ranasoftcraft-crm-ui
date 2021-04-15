@@ -610,12 +610,13 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     let finalDataSet: any[] = [];
 
     // perform sort
-    if(this.stackBarWidget.getValue().orderWith) {
-      if(this.stackBarWidget.getValue().orderWith === OrderWith.ASC) {
+    const orderWith = this.stackBarWidget.getValue().orderWith;
+    if(orderWith) {
+      if(orderWith === OrderWith.ROW_ASC) {
         resBuckets.sort((a: any, b: any) =>{
           return a.doc_count - b.doc_count;
         });
-      } else if(this.stackBarWidget.getValue().orderWith === OrderWith.DESC) {
+      } else if(orderWith === OrderWith.ROW_DESC) {
         resBuckets.sort((a: any, b: any) =>{
           return b.doc_count - a.doc_count;
         });
