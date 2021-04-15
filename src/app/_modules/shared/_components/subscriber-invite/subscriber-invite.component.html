@@ -1,15 +1,13 @@
 <div class="root">
     <div class="f-row breadcrum-toolbar">
-        <button mat-button (click)="closeDialog()">
-            <mat-icon fontSet="mdo-icons">close</mat-icon>
-        </button>
+        <lib-button (click)="closeDialog()" type="plain" iconFontType="light" icon="times"></lib-button>
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
                 <div class="display-heading-large">Invite people to your team</div>
                 <span class="f-col-spacer-half"></span>
                 <span class="f-spacer"></span>
-                <button mat-flat-button color="primary" (click)="sendInvitation()">Invite</button>
+                <lib-button type="major" (click)="sendInvitation()">Invite</lib-button>
             </div>
             <div class="row-spacer"></div>
         </div>
@@ -46,9 +44,7 @@
                                 </mat-error>
                             </div>
                             <div class="col-x1">
-                                <button mat-button (click)="removeInvite(i)">
-                                    <mat-icon fontSet="mdo-icons"> recycle-bin</mat-icon>
-                                </button>
+                                <lib-button  (click)="removeInvite(i)" type="plain" icon="recycle"></lib-button>
                             </div>
                         </div>
                     </ng-container>

@@ -1,6 +1,6 @@
 <div class="root">
     <div class="f-row breadcrum-toolbar">
-        <lib-button iconFontType="solid" icon="times" (afterClick)="close()"></lib-button>
+        <lib-button  (afterClick)="close()" type="plain" iconFontType="light" icon="times"></lib-button>
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
@@ -26,8 +26,7 @@
                         [hint]="submitted && !viewDetails.viewName ? 'View name is required' : ''"
                         [hasError]="submitted && !viewDetails.viewName">
                     </lib-input>
-                    <lib-search i18n-placeholder="@@search" placeholder="Search columns"
-                        (valueChange)="searchFld($event)"></lib-search>
+                    <lib-search i18n-placeholder="@@search" placeholder="Search columns" (valueChange)="searchFld($event)"></lib-search>
                     <div class="row-spacer"></div>
                     <div class="check-list">
                         <div class="f-row colunm-box">
@@ -40,15 +39,23 @@
                         <div cdkDropList [cdkDropListData]="metadataFldLst" (cdkDropListDropped)="drop($event)"
                             #scrollableContainer>
                             <div *ngFor="let fld of metadataFldLst" id="{{ fld.fieldId }}" cdkDrag class="colunm-list">
-                                <div class="f-row colunm-box" *ngIf="suggestedFlds.indexOf(fld.fieldId) !== -1">
+                                <div class="f-row colunm-box">
                                     <div class="col">
-                                        <lib-button cdkDragHandle type="plain" iconFontType="solid" icon="grip-lines">
-                                        </lib-button>
+                                        <lib-button cdkDragHandle type="plain" iconFontType="solid" icon="grip-lines"></lib-button>
                                     </div>
 
                                     <div class="col col-x4">
-                                        <span>{{ fld.fieldDescri ? fld.fieldDescri : (fld.fieldDesc ?
-                                            fld.fieldDesc : 'Untitled') }} </span>
+                                        <ng-template [ngIf]="suggestedFlds.indexOf(fld.fieldId) !==-1"
+                                            [ngIfElse]="notSuggested">
+                                            <span style="background-color: #FFFF00">{{ fld.fieldDescri ?
+                                                fld.fieldDescri : (fld.fieldDesc ? fld.fieldDesc : 'Untitled')
+                                                }} </span>
+                                        </ng-template>
+
+                                        <ng-template #notSuggested>
+                                            <span>{{ fld.fieldDescri ? fld.fieldDescri : (fld.fieldDesc ?
+                                                fld.fieldDesc : 'Untitled') }} </span>
+                                        </ng-template>
                                     </div>
 
                                     <div class="f-spacer"></div>

@@ -1,15 +1,13 @@
 <div class="root">
     <div class="f-row breadcrum-toolbar">
-        <button mat-button (click)="close()">
-            <mat-icon fontSet="mdo-icons">times</mat-icon>
-        </button>
+        <lib-button type="plain" (click)="close()" iconFontType="light" icon="times"></lib-button>
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
                 <div class="display-heading-large">Configure view</div>
                 <span class="f-col-spacer-half"></span>
                 <span class="f-spacer"></span>
-                <button mat-flat-button color="primary" (click)="save(configTabs.selectedIndex)">Save</button>
+                <lib-button (click)="save(configTabs.selectedIndex)" type="major">Save</lib-button>
             </div>
         </div>
     </div>
@@ -23,8 +21,7 @@
                             Columns
                         </ng-template>
                         <div class="f-col">
-                            <pros-search-input label="Search" placeholder="Search columns" (value)="searchFld($event)">
-                            </pros-search-input>
+                            <lib-search placeholder="Search columns" (value)="searchFld($event)"></lib-search>
                             <div class="row-spacer"></div>
                             <div class="check-list">
                                 <!-- <mat-checkbox class="checkedall" color="primary" (change)="selectAll()" [(ngModel)]="allChecked"
@@ -42,9 +39,8 @@
                                     <div *ngFor="let fld of header" id="{{ fld.fieldId }}" cdkDrag class="colunm-list">
                                         <div class="f-row colunm-box">
                                             <div class="col">
-                                                <button mat-button cdkDragHandle>
-                                                    <mat-icon fontSet="mdo-icons">grip-lines</mat-icon>
-                                                </button>
+                                                <lib-button cdkDragHandle type="plain" iconFontType="solid"
+                                                    icon="grip-lines"></lib-button>
                                             </div>
 
                                             <div class="col col-x4">
@@ -97,10 +93,10 @@
                         </div> -->
                         <div class="f-col mdo-form-field">
                             <mat-label><strong>Preview</strong></mat-label>
-                            <div class="f-row action-iconbtns">
-                                <!-- Secondary actions -->
-                                <button mat-fab color="accent"
-                                    *ngIf="secondaryActions.length" [matMenuTriggerFor]="secondaryActionsMenu">
+                            <div class="f-row">
+                                <!-- Secondary actions
+                                <button mat-fab color="accent" *ngIf="secondaryActions.length"
+                                    [matMenuTriggerFor]="secondaryActionsMenu">
                                     <mat-icon fontSet="mdo-icons">ellipsis-h</mat-icon>
                                 </button>
                                 <mat-menu #secondaryActionsMenu="matMenu" class="navigation-menu">
@@ -115,9 +111,9 @@
                                             {{ sAction.actionText }}
                                         </ng-template>
                                     </button>
-                                </mat-menu>
+                                </mat-menu> -->
                                 <!-- Primary actions -->
-                                <button *ngFor="let pAction of primaryActions" mat-flat-button color="accent">
+                                <!-- <button *ngFor="let pAction of primaryActions" mat-flat-button color="accent">
                                     <mat-icon
                                         *ngIf="!pAction.isCustomAction && (pAction.actionViewType=== TableActionViewType.ICON || pAction.actionViewType=== TableActionViewType.ICON_TEXT)"
                                         fontSet="mdo-icons">
@@ -127,7 +123,35 @@
                                         [ngIf]="pAction.actionViewType=== TableActionViewType.TEXT || pAction.actionViewType=== TableActionViewType.ICON_TEXT">
                                         {{ pAction.actionText }}
                                     </ng-template>
-                                </button>
+                                </button> -->
+                                <!-- Primary actions -->
+                                <lib-button-group>
+                                    <lib-button *ngIf="secondaryActions.length"
+                                        [matMenuTriggerFor]="secondaryActionsMenu" type="minor" icon="ellipsis-h">
+                                    </lib-button>
+                                    <mat-menu #secondaryActionsMenu="matMenu" class="navigation-menu">
+                                        <button mat-menu-item *ngFor="let sAction of secondaryActions">
+                                            <mat-icon
+                                                *ngIf="!sAction.isCustomAction && (sAction.actionViewType === TableActionViewType.ICON || sAction.actionViewType === TableActionViewType.ICON_TEXT)"
+                                                fontSet="mdo-icons" class="mat-menu-icon">
+                                                {{ sAction.actionIconLigature }}
+                                            </mat-icon>
+                                            <ng-template
+                                                [ngIf]="(sAction.actionViewType === TableActionViewType.TEXT) || (sAction.actionViewType === TableActionViewType.ICON_TEXT)">
+                                                {{ sAction.actionText }}
+                                            </ng-template>
+                                        </button>
+                                    </mat-menu>
+                                    <ng-container *ngFor="let pAction of primaryActions">
+                                        <ng-container *ngIf="!pAction.isCustomAction && (pAction.actionViewType=== TableActionViewType.ICON || pAction.actionViewType=== TableActionViewType.ICON_TEXT)">
+                                            <lib-button type="minor" iconPosition="before" [icon]="pAction.actionIconLigature">
+                                                <ng-container *ngIf="pAction.actionViewType=== TableActionViewType.TEXT || pAction.actionViewType=== TableActionViewType.ICON_TEXT">
+                                                    {{ pAction.actionText }}
+                                                </ng-container>
+                                            </lib-button>
+                                        </ng-container>
+                                    </ng-container>
+                                </lib-button-group>
                             </div>
                         </div>
                         <div class="row-spacer"></div>
@@ -137,7 +161,8 @@
                                 <div class="col">&nbsp;</div>
                                 <div class="col col-x8"><strong>Action</strong></div>
                                 <div class="col col-x4"><strong class="f-row">Primary &nbsp;
-                                        <mat-icon matTooltip="Primary" fontSet="mdo-icons-light">question-circle</mat-icon>
+                                        <mat-icon matTooltip="Primary" fontSet="mdo-icons-light">question-circle
+                                        </mat-icon>
                                     </strong></div>
                                 <div class="col col-x4">&nbsp;</div>
                                 <div class="col col-x4 text-end"></div>
@@ -155,13 +180,14 @@
                                 <div *ngFor="let action of actionsList; let index=index"
                                     class="f-row colunm-box rule-border-row" cdkDrag>
                                     <div class="col">
-                                        <button mat-button cdkDragHandle>
-                                            <mat-icon fontSet="mdo-icons">grip-lines</mat-icon>
-                                        </button>
+                                        <lib-button cdkDragHandle type="plain" iconFontType="solid" icon="grip-lines">
+                                        </lib-button>
                                     </div>
                                     <div class="col col-x8">
                                         <div mat-line (click)="editActionText(index)">
-                                            <span id="viewctrl_{{ index }}" [ngClass]="{'editablevalue' : action.isCustomAction}"> {{ action.actionText }} </span>
+                                            <span id="viewctrl_{{ index }}"
+                                                [ngClass]="{'editablevalue' : action.isCustomAction}"> {{
+                                                action.actionText }} </span>
                                             <div id="inpctrl_{{ index }}" style="display: none;">
                                                 <pros-form-input type="text" [value]="action.actionText"
                                                     (emitBlurEvent)="emitActionTextBlur(index, $event)">
@@ -177,18 +203,15 @@
                                             (change)="actionChanged(index, 'isPrimaryAction', $event.checked)">
                                         </mat-checkbox>
                                     </div>
-                                    
+
                                     <div class="col col-x4">
                                         <ng-template [ngIf]="action.isCustomAction" [ngIfElse]="commonAction">
-                                            <button mat-stroked-button>
-                                                {{ getActionViewTypeDesc(action.actionViewType) }}
-                                            </button>
+                                            <lib-button type="plain">{{ getActionViewTypeDesc(action.actionViewType) }}</lib-button>
                                         </ng-template>
                                         <ng-template #commonAction>
-                                            <button mat-stroked-button [matMenuTriggerFor]="displayMenu">
+                                            <lib-button [matMenuTriggerFor]="displayMenu" type="minor" icon="caret-down">
                                                 {{ getActionViewTypeDesc(action.actionViewType) }}
-                                                <mat-icon fontSet="mdo-icons-solid">caret-down</mat-icon>
-                                            </button>
+                                            </lib-button>
                                             <mat-menu #displayMenu="matMenu" class="navigation-menu">
                                                 <button
                                                     (click)="actionChanged(index, 'actionViewType', TableActionViewType.ICON)"
@@ -196,20 +219,21 @@
                                                 <button
                                                     (click)="actionChanged(index, 'actionViewType', TableActionViewType.ICON_TEXT)"
                                                     mat-menu-item> Icon and text </button>
-                                                    <button
+                                                <button
                                                     (click)="actionChanged(index, 'actionViewType', TableActionViewType.TEXT)"
                                                     mat-menu-item> Text only </button>
-                                                
+
                                             </mat-menu>
                                         </ng-template>
                                     </div>
                                     <div class="col col-x4 text-end">
-                                        <button mat-button [matMenuTriggerFor]="mappingMenu"
+                                        <!-- <button mat-button [matMenuTriggerFor]="mappingMenu"
                                             *ngIf="action.isCustomAction">
                                             <mat-icon fontSet="mdo-icons" [matBadge]="action.refBrId ? '1' : '?'"
-                                                matBadgeOverlap="false" matBadgeColor="accent" class="badge-background" 
+                                                matBadgeOverlap="false" matBadgeColor="accent" class="badge-background"
                                                 [ngClass]="{'badge-error-value' : !action.refBrId}">link</mat-icon>
-                                        </button>
+                                        </button> -->
+                                        <lib-button [matMenuTriggerFor]="mappingMenu" *ngIf="action.isCustomAction" type="plain" icon="link" ></lib-button>
                                         <mat-menu #mappingMenu="matMenu" class="navigation-menu">
                                             <button mat-menu-item *ngFor="let rule of crossMappingRules"
                                                 (click)="actionChanged(index, 'refBrId', rule.sno)">
@@ -219,10 +243,8 @@
                                             </button>
                                         </mat-menu>
                                         <div class="col-spacer"></div>
-                                        <button mat-button *ngIf="action.isCustomAction"
-                                            (click)="removeCustomAction(index)">
-                                            <mat-icon fontSet="mdo-icons">trash-alt</mat-icon>
-                                        </button>
+                                        <lib-button type="plain" *ngIf="action.isCustomAction" (click)="deleteBr(businessRule)" iconFontType="light"
+                                            icon="trash-alt"></lib-button>
                                     </div>
                                 </div>
                             </div>

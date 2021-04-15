@@ -3,9 +3,7 @@
     <mat-toolbar-row>
       <span> {{ brId ? 'Update ' : 'Create a new business '}} <strong>{{ businessRuleTypeDef }}</strong></span>
       <span class="f-spacer"></span>
-      <button mat-icon-button (click)="closeDialog()">
-        <mat-icon>close</mat-icon>
-      </button>
+      <lib-button type="plain" icon="times" iconFontType="light" (click)="closeDialog()"></lib-button>
     </mat-toolbar-row>
   </mat-toolbar>
   <mat-divider></mat-divider>
@@ -91,14 +89,13 @@
           </div>
           -->
           <div class="f-row">
-            <button mat-flat-button color="primary" matStepperPrevious>Back</button>
+            <!-- <button mat-flat-button color="primary" matStepperPrevious>Back</button> -->
+            <lib-button type="major" matStepperPrevious>Back</lib-button>
             <span class="f-spacer"></span>
-            <button *ngIf="selectedBrType !== 'BR_CUSTOM_SCRIPT'" mat-flat-button color="primary"
-              (click)="clickSaved()">Save rule</button>
-            <button *ngIf="selectedBrType === 'BR_CUSTOM_SCRIPT'" mat-flat-button matStepperNext (click)="finishUdrCreProcess = undefined">Skip</button>
+            <lib-button *ngIf="selectedBrType !== 'BR_CUSTOM_SCRIPT'"type="major" (click)="clickSaved()">Save rule</lib-button>
+            <lib-button *ngIf="selectedBrType === 'BR_CUSTOM_SCRIPT'" matStepperNext (click)="finishUdrCreProcess = undefined" type="plain" >Skip</lib-button>
             <span class="f-col-spacer-half "></span>
-            <button *ngIf="selectedBrType === 'BR_CUSTOM_SCRIPT'" mat-flat-button color="primary"
-              (click)="clickSaved()">Save</button>
+            <lib-button *ngIf="selectedBrType === 'BR_CUSTOM_SCRIPT'" type="major" (click)="clickSaved()">Save</lib-button>
           </div>
         </form>
       </mat-step>
@@ -116,9 +113,9 @@
           <!-- User Defined Buisness Rule Container End Here-->
 
           <div class="f-row">
-            <button mat-flat-button color="primary" matStepperPrevious>Back</button>
+            <lib-button type="major"matStepperPrevious >Back</lib-button>
             <span class="f-spacer"></span>
-            <button mat-flat-button color="primary" (click)="udrClickSaved()">Save rule</button>
+            <lib-button type="major" (click)="udrClickSaved()">Save rule</lib-button>
           </div>
         </form>
       </mat-step>

@@ -1,35 +1,31 @@
 <div class="mat-elevation-z0 root">
-    <div class="f-row breadcrum-toolbar">       
-            <ng-template [ngIf]="schemaInfo">
-                <div class="display-heading-large">
-                    {{ schemaInfo.moduleDescription ? schemaInfo.moduleDescription : 'Module' }} /
-                    {{ schemaInfo.schemaDescription ? schemaInfo.schemaDescription : 'Untitled'}} / {{variantName}}
-                </div>
-                <button mat-button [matMenuTriggerFor]="menu">
-                    <mat-icon fontSet="mdo-icons-solid">caret-down</mat-icon>
-                </button>
-                <mat-menu #menu="matMenu" class="navigation-menu">
-                    <button mat-menu-item (click)="openDataScopeSideSheet()">[New data scope] </button>
-                    <button mat-menu-item (click)="variantChange('0')"> Entire dataset </button>
-                    <ng-container *ngIf="dataScope && dataScope.length">
-                        <button mat-menu-item *ngFor="let scope of dataScope" (click)="variantChange(scope.variantId)">
-                            {{scope.variantName}}
-                        </button>
-                    </ng-container>
-                </mat-menu>
-            </ng-template>
+    <div class="f-row breadcrum-toolbar">
+        <ng-template [ngIf]="schemaInfo">
+            <div class="display-heading-large">
+                {{ schemaInfo.moduleDescription ? schemaInfo.moduleDescription : 'Module' }} /
+                {{ schemaInfo.schemaDescription ? schemaInfo.schemaDescription : 'Untitled'}} / {{variantName}}
+            </div>
+            <lib-button type="plain" iconFontType="solid" [matMenuTriggerFor]="menu" icon="caret-down"></lib-button>
+
+            <mat-menu #menu="matMenu" class="navigation-menu">
+                <button mat-menu-item (click)="openDataScopeSideSheet()">[New data scope] </button>
+                <button mat-menu-item (click)="variantChange('0')"> Entire dataset </button>
+                <ng-container *ngIf="dataScope && dataScope.length">
+                    <button mat-menu-item *ngFor="let scope of dataScope" (click)="variantChange(scope.variantId)">
+                        {{scope.variantName}}
+                    </button>
+                </ng-container>
+            </mat-menu>
+        </ng-template>
         <div class="f-col-spacer-half"></div>
         <div class="f-spacer"></div>
-        <div class="f-row action-iconbtns">
-            <button mat-flat-button color="accent" (click)="openSummarySideSheet()">
-                <mat-icon fontSet="mdo-icons">square-root-alt</mat-icon> Check data
-            </button>
-            <button mat-fab color="accent" (click)="openExecutionTrendSideSheet()">
-                <mat-icon fontSet="mdo-icons">chart-line</mat-icon>
-            </button>
-            <button mat-fab color="accent" [matMenuTriggerFor]="moreactionfile">
-                <mat-icon fontSet="mdo-icons">ellipsis-h</mat-icon>
-            </button>
+        <div class="f-row">
+            <lib-button-group>
+                <lib-button type="minor" iconPosition="before" icon="square-root-alt" (click)="openSummarySideSheet()">
+                    Check data </lib-button>
+                <lib-button type="minor" icon="chart-line" (click)="openExecutionTrendSideSheet()"></lib-button>
+                <lib-button type="minor" [matMenuTriggerFor]="moreactionfile" icon="ellipsis-h"></lib-button>
+            </lib-button-group>
             <mat-menu #moreactionfile="matMenu" class="navigation-menu">
                 <button mat-menu-item (click)="downloadExecutionDetails()">Export to CSV</button>
                 <!-- <button mat-menu-item>Import from CSV</button> -->
@@ -66,19 +62,19 @@
                     <div class="f-row dataset-grid">
                         <div class="f-col dataset-grid-navigation group-table-container">
                             <!-- Group list table -->
-                            <pros-group-data-table *ngIf="schemaInfo && schemaInfo.runId"
-                                [schemaId]="schemaId" [variantId]="variantId" [moduleId]="moduleId" [runId]="schemaInfo.runId"
+                            <pros-group-data-table *ngIf="schemaInfo && schemaInfo.runId" [schemaId]="schemaId"
+                                [variantId]="variantId" [moduleId]="moduleId" [runId]="schemaInfo.runId"
                                 [activeTab]="activeTab" (groupChange)="updateSelectedGroup($event)">
                             </pros-group-data-table>
                         </div>
                         <mat-divider [vertical]="true"></mat-divider>
                         <div class="f-col dataset-grid-listing">
                             <div class="f-row">
+                                <lib-search placeholder="Search..." (value)="inlineSearchSubject.next($event);" 
+                                    [preValue]="preInpVal"></lib-search>
+                                <div class="f-col-spacer-half"></div>
                                 <mat-chip-list>
                                     <!-- Applied filters -->
-                                    <pros-search-input #tableSearchInput [preValue]="preInpVal"
-                                        (value)="newInlineSearchText($event)">
-                                    </pros-search-input>
                                     <ng-template ngFor let-ctrl [ngForOf]="filterCriteria | async">
                                         <ng-template [ngIf]="ctrl.type !== 'INLINE'">
                                             <div class="f-col-spacer-half"></div>
@@ -105,8 +101,7 @@
                                             </mat-chip>
                                             <!-- Append dynamic filter MatMenu -->
                                             <mat-menu #appliedfiltermenu="matMenu">
-                                                <pros-filter-values 
-                                                    [moduleId]="moduleId"
+                                                <pros-filter-values [moduleId]="moduleId"
                                                     [fieldId]="loadDopValuesFor ? loadDopValuesFor.fieldId : ''"
                                                     [checkedValue]="loadDopValuesFor ? loadDopValuesFor.checkedValue : []"
                                                     (selectedValues)="updateFilterCriteria($event)">
@@ -123,10 +118,8 @@
 
                                     <!-- Add filter control MatMenu -->
                                     <mat-menu #addfiltermenu="matMenu">
-                                        <pros-add-filter-menu 
-                                            [moduleId]="moduleId"
-                                            (evtReadyForApply)="makeFilterControl($event)" 
-                                            [reInilize]="reInilize"
+                                        <pros-add-filter-menu [moduleId]="moduleId"
+                                            (evtReadyForApply)="makeFilterControl($event)" [reInilize]="reInilize"
                                             [alreadySelectedValues]="filterCriteria.getValue()">
                                         </pros-add-filter-menu>
                                     </mat-menu>
@@ -138,19 +131,10 @@
                             <div class="f-row action-iconbtns"
                                 *ngIf="tableHeaderActBtn.length && activeTab === 'review'">
                                 <ng-template [ngIf]="(isReviewer || isApprover) && isGlobalActionsEnabled">
-                                    <button mat-flat-button (click)="approveRecords('global')" color="accent">
-                                        <!-- <mat-icon fontSet="mdo-icons">check-mark</mat-icon> -->
-                                        Approve
-                                    </button>
-                                    <button mat-flat-button (click)="rejectRecords('global')" color="accent">
-                                        <!-- <mat-icon fontSet="mdo-icons">block</mat-icon> -->
-                                        Reject
-                                    </button>
+                                    <lib-button type="minor" (click)="approveRecords('global')"> Approve </lib-button>
+                                    <lib-button type="minor" (click)="rejectRecords('global')"> Reject </lib-button>
                                 </ng-template>
-                                <button mat-flat-button (click)="selection.clear()" color="accent">
-                                    <!-- <mat-icon fontSet="mdo-icons">close</mat-icon> -->
-                                    Unselect
-                                </button>
+                                <lib-button type="minor" (click)="selection.clear()"> Unselect </lib-button>    
                             </div>
 
                             <!-- Data Table -->
@@ -187,58 +171,48 @@
                                     <!-- Actions Column -->
                                     <ng-container matColumnDef="action" sticky>
                                         <mat-header-cell *matHeaderCellDef class="action-width">
-                                            <button mat-button (click)="openTableColumnSettings()">
-                                                <mat-icon fontSet="mdo-icons">cog</mat-icon>
-                                            </button>
+                                            <lib-button type="plain" (click)="openTableColumnSettings()" icon="cog">
+                                            </lib-button>
                                         </mat-header-cell>
                                         <mat-cell *matCellDef="let element" class="action-width no-text-decoration">
-                                            <div class="f-row action-iconbtns">
+                                            <div class="f-row">
                                                 <ng-template [ngIf]="activeTab !== 'review'" [ngIfElse]="review">
-                                                    <button mat-fab color="accent"> <!-- [matMenuTriggerFor]="moreactions" -->
-                                                        <mat-icon fontSet="mdo-icons">ellipsis-h</mat-icon>
-                                                    </button>
-                                                    <!-- more actions menu -->
-                                                    <mat-menu #moreactions="matMenu" class="navigation-menu">
-                                                        <!-- <button mat-menu-item>Create HERS</button>
-                                                        <button mat-menu-item>Create info record</button>
-                                                        <mat-divider></mat-divider>
-                                                        <button mat-menu-item>Assign to...</button> -->
-                                                        <button mat-menu-item (click)="markForDeletion(element)">Mark
-                                                            for deletion</button>
-                                                    </mat-menu>
+                                                    <lib-button-group>
+                                                        <lib-button icon="ellipsis-h" type="minor" [matMenuTriggerFor]="moreactions"></lib-button>
+                                                        <!-- more actions menu -->
+                                                        <mat-menu #moreactions="matMenu" class="navigation-menu">
+                                                            <!-- <button mat-menu-item>Create HERS</button>
+                                                            <button mat-menu-item>Create info record</button>
+                                                            <mat-divider></mat-divider>
+                                                            <button mat-menu-item>Assign to...</button> -->
+                                                            <button mat-menu-item (click)="markForDeletion(element)">Mark
+                                                                for deletion</button>
+                                                        </mat-menu>
 
-                                                    <button mat-fab color="accent">
-                                                        <mat-icon fontSet="mdo-icons-solid"
-                                                            *ngIf="element && element[RECORD_STATUS_KEY] && (element[RECORD_STATUS_KEY].fieldData === RECORD_STATUS.MASTER); else notMaster">
-                                                            star
-                                                        </mat-icon>
+                                                        <ng-container *ngIf="element && element[RECORD_STATUS_KEY] && (element[RECORD_STATUS_KEY].fieldData === RECORD_STATUS.MASTER); else notMaster">
+                                                            <lib-button type="minor" icon="star"></lib-button>
+                                                        </ng-container>
                                                         <ng-template #notMaster>
-                                                            <mat-icon fontSet="mdo-icons"
-                                                                (click)="markAsMasterRecord(element)">
-                                                                star
-                                                            </mat-icon>
+                                                            <lib-button type="minor" icon="star" (click)="markAsMasterRecord(element)"></lib-button>
                                                         </ng-template>
-                                                    </button>
-                                                    <button mat-fab color="accent"
-                                                        *ngIf="element && element[RECORD_STATUS_KEY] && (element[RECORD_STATUS_KEY].fieldData === RECORD_STATUS.DELETABLE)">
-                                                        <mat-icon fontSet="mdo-icons">redo-alt</mat-icon>
-                                                    </button>
-                                                    <button mat-fab color="accent"
-                                                        *ngIf="element && element[RECORD_STATUS_KEY] && (element[RECORD_STATUS_KEY].fieldData !== RECORD_STATUS.DELETABLE)"
-                                                        (click)="markForDeletion(element)">
-                                                        <mat-icon fontSet="mdo-icons">trash-alt</mat-icon>
-                                                    </button>
+
+                                                        <lib-button type="minor" *ngIf="element && element[RECORD_STATUS_KEY] && (element[RECORD_STATUS_KEY].fieldData === RECORD_STATUS.DELETABLE)" icon="redo-alt"></lib-button>
+                                                        <lib-button type="minor" *ngIf="element && element[RECORD_STATUS_KEY] && (element[RECORD_STATUS_KEY].fieldData !== RECORD_STATUS.DELETABLE)"
+                                                        (click)="markForDeletion(element)" icon="trash-alt"></lib-button>
+                                                    </lib-button-group>
                                                 </ng-template>
+                                                
                                                 <ng-template #review>
                                                     <!-- Secondary actions -->
-                                                    <ng-template [ngIf]="!element['OBJECTNUMBER'].isReviewed && (element[RECORD_STATUS_KEY].fieldData !== RECORD_STATUS.DELETABLE)">
-                                                        <button mat-fab color="accent" *ngIf="secondaryActions.length"
-                                                            [matMenuTriggerFor]="secondaryActionsMenu">
-                                                            <mat-icon fontSet="mdo-icons">ellipsis-h</mat-icon>
-                                                        </button>
-                                                        <mat-menu #secondaryActionsMenu="matMenu"  class="navigation-menu">
+
+                                                    <ng-template
+                                                        [ngIf]="!element['OBJECTNUMBER'].isReviewed && (element[RECORD_STATUS_KEY].fieldData !== RECORD_STATUS.DELETABLE)">
+                                                        <lib-button *ngIf="secondaryActions.length" [matMenuTriggerFor]="secondaryActionsMenu" type="minor" icon="ellipsis-h"></lib-button>
+                                                        <mat-menu #secondaryActionsMenu="matMenu"
+                                                            class="navigation-menu">
                                                             <ng-container *ngFor="let sAction of secondaryActions">
-                                                                <button mat-menu-item *ngIf="hasActionPermission(sAction)"                                                                   
+                                                                <button mat-menu-item
+                                                                    *ngIf="hasActionPermission(sAction)"
                                                                     (click)="doAction(sAction, element)">
                                                                     <mat-icon fontSet="mdo-icons"
                                                                         *ngIf="!sAction.isCustomAction && (sAction.actionViewType=== TableActionViewType.ICON || sAction.actionViewType=== TableActionViewType.ICON_TEXT)">
@@ -251,20 +225,21 @@
                                                                 </button>
                                                             </ng-container>
                                                         </mat-menu>
-                                                    <!-- Primary actions -->
-                                                    <ng-container *ngFor="let pAction of primaryActions">
-                                                        <button mat-flat-button color="accent" *ngIf="hasActionPermission(pAction)"
-                                                            (click)="doAction(pAction, element)">
-                                                            <mat-icon fontSet="mdo-icons"
-                                                                *ngIf="(pAction.actionViewType=== TableActionViewType.ICON) || (pAction.actionViewType=== TableActionViewType.ICON_TEXT)">
-                                                                {{ pAction.actionIconLigature }}
-                                                            </mat-icon>
-                                                            <ng-template
-                                                                [ngIf]="(pAction.actionViewType=== TableActionViewType.TEXT) || (pAction.actionViewType=== TableActionViewType.ICON_TEXT)">
-                                                                {{ pAction.actionText }}
-                                                            </ng-template>
-                                                        </button>
-                                                    </ng-container>
+                                                        <!-- Primary actions -->
+                                                        <ng-container *ngFor="let pAction of primaryActions">
+                                                            <button mat-flat-button color="accent"
+                                                                *ngIf="hasActionPermission(pAction)"
+                                                                (click)="doAction(pAction, element)">
+                                                                <mat-icon fontSet="mdo-icons"
+                                                                    *ngIf="(pAction.actionViewType=== TableActionViewType.ICON) || (pAction.actionViewType=== TableActionViewType.ICON_TEXT)">
+                                                                    {{ pAction.actionIconLigature }}
+                                                                </mat-icon>
+                                                                <ng-template
+                                                                    [ngIf]="(pAction.actionViewType=== TableActionViewType.TEXT) || (pAction.actionViewType=== TableActionViewType.ICON_TEXT)">
+                                                                    {{ pAction.actionText }}
+                                                                </ng-template>
+                                                            </button>
+                                                        </ng-container>
                                                     </ng-template>
                                                 </ng-template>
                                             </div>
@@ -373,14 +348,8 @@
                                         <mat-header-cell *matHeaderCellDef
                                             [attr.colspan]="displayedFields.getValue().length">
                                             <div class="f-row action-iconbtns">
-                                                <button mat-flat-button>
-                                                    <mat-icon fontSet="mdo-icons">check</mat-icon>
-                                                    Action
-                                                </button>
-                                                <button mat-flat-button (click)="selection.clear()">
-                                                    <mat-icon fontSet="mdo-icons">times</mat-icon>
-                                                    Unselect
-                                                </button>
+                                                <lib-button type="plain" icon="check"> Action </lib-button>
+                                                <lib-button (click)="selection.clear()" type="plain" icon="times"></lib-button>
                                             </div>
                                         </mat-header-cell>
                                     </ng-container>
