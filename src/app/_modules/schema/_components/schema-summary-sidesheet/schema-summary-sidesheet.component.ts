@@ -1,7 +1,6 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatSliderChange } from '@angular/material/slider';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PermissionOn, SchemaCollaborator, SchemaDashboardPermission, UserMdoModel, ROLES, RuleDependentOn } from '@models/collaborator';
