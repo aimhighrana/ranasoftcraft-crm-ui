@@ -1,14 +1,12 @@
 <div class="root">
     <div class="f-row breadcrum-toolbar">
-        <button mat-button (click)="close()">
-            <mat-icon fontSet="mdo-icons">close</mat-icon>
-        </button>
+        <lib-button (click)="close()" type="plain" icon="times"></lib-button>
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
                 <div class="display-heading-large">Generate download link</div>
                 <span class="f-spacer"></span>
-                <button mat-flat-button color="primary" *ngIf="selectedUsers.length > 0" (click)="saveReportDownloadUserList()">Confirm</button>
+                <lib-button type="major"  *ngIf="selectedUsers.length > 0" (click)="saveReportDownloadUserList()">Confirm</lib-button>
             </div>
         </div>
     </div>
@@ -46,9 +44,7 @@
                             </mat-card-header>
                             <div mat-line>{{selcoll.description}}</div>
                             <span class="f-spacer"></span>
-                            <button mat-button>
-                                <mat-icon fontSet="mdo-icons" (click)="remove(selcoll)">recycle-bin</mat-icon>
-                            </button>
+                            <lib-button (click)="remove(selcoll)" type="plain" icon="trash-alt"></lib-button>
                         </div>
                     </mat-list-item>
                 </ng-template>

@@ -5,11 +5,9 @@
 				{{reportName ? reportName: 'Untitled'}}
 			</div>
 			<div class="f-spacer"></div>
-			<button *ngIf="showClearFilterBtn" mat-flat-button color="accent" (mouseup)="clearFilters()">Clear filter(s)</button>
+			<lib-button *ngIf="showClearFilterBtn" (mouseup)="clearFilters()" type="minor">Clear filter(s)</lib-button>
 			<ng-template [ngIf]="!isFromMsteam">
-				<button mat-fab color="accent" class="mat-elevation-z0" *ngIf="(collaboratorEditPermission || collaboratorDeletePermission || collaboratorAdminPermission)" [matMenuTriggerFor]="moremenu">
-					<mat-icon fontSet="mdo-icons">more1</mat-icon>
-				</button>
+				<lib-button *ngIf="(collaboratorEditPermission || collaboratorDeletePermission || collaboratorAdminPermission)" [matMenuTriggerFor]="moremenu" type="minor" icon="ellipsis-h"></lib-button>
 				<mat-menu #moremenu="matMenu" class="navigation-menu">
 					<button mat-menu-item  *ngIf="(collaboratorEditPermission || collaboratorAdminPermission)" (click)="editReport()">Edit</button>
 					<button mat-menu-item  *ngIf="(collaboratorEditPermission || collaboratorAdminPermission)" (click)="duplicateReport()">Duplicate</button>
