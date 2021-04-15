@@ -1,11 +1,11 @@
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { PageEvent } from '@angular/material/paginator';
-import { of } from 'rxjs';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { of, Subject } from 'rxjs';
+import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 
 import { TaskListDatatableComponent } from './task-list-datatable.component';
 import { SharedModule } from '@modules/shared/shared.module';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
@@ -14,20 +14,28 @@ describe('TaskListDatatableComponent', () => {
   let fixture: ComponentFixture<TaskListDatatableComponent>;
   let router: Router;
   let sharedServices: SharedServiceService;
-  const queryParams = { s: 'inbox', f: 'test' };
+  let activatedRoute: ActivatedRoute;
+  // const queryParams = { s: 'inbox', f: '' };
+  let queryParams: Subject<Params>;
   const params = { node: 'inbox' };
 
   beforeEach(async(() => {
+    queryParams = new Subject<Params>();
+    queryParams.next({ s: 'inbox', f: 'W29iamVjdCBPYmplY3Rd' });
     TestBed.configureTestingModule({
       declarations: [TaskListDatatableComponent],
       imports: [AppMaterialModuleForSpec, RouterTestingModule, SharedModule],
       providers: [
         {
           provide: ActivatedRoute,
-          useValue: { queryParams: of(queryParams), params: of(params) },
+          useValue: { queryParams, params: of(params), snapshot: { queryParams: { f: 'test' } } },
         },
       ],
-    }).compileComponents();
+    })
+      .compileComponents()
+      .then(() => {
+        activatedRoute = TestBed.inject(ActivatedRoute);
+      });
   }));
 
   beforeEach(() => {
@@ -35,6 +43,7 @@ describe('TaskListDatatableComponent', () => {
     component = fixture.componentInstance;
     sharedServices = fixture.debugElement.injector.get(SharedServiceService);
     router = TestBed.inject(Router);
+    // activatedRoute = TestBed.inject(ActivatedRoute);
     fixture.detectChanges();
   });
 
@@ -44,6 +53,32 @@ describe('TaskListDatatableComponent', () => {
   it('should have node inbox', () => {
     expect(component.node).toEqual('inbox');
   });
+  it('should have queryParam', async () => {
+    expect(activatedRoute.snapshot.queryParams.f).toEqual('test');
+  });
+  it('should have queryParam', fakeAsync(() => {
+    // this calls ngOnInit and we subscribe
+    spyOn(component, 'updateNodeChips');
+    const settings = [
+      {
+        fldId: 'Bookmarked',
+        value: ['2'],
+        startvalue: [],
+        endvalue: [],
+        operator: 'equal',
+        parentnode: '',
+      },
+    ];
+    const f = btoa(JSON.stringify(settings));
+    fixture.detectChanges();
+    queryParams.next({ s: 'inbox', f });
+
+    // tick to make sure the async observable resolves
+    tick();
+    expect(component.savedSearchParameters).toBe('inbox');
+    expect(component.inlineFilters).toBe(f);
+    expect(component.updateNodeChips).toHaveBeenCalledWith(settings);
+  }));
   it('updateTableColumns()', () => {
     spyOn(component, 'updateTableColumns');
     spyOn(component, 'updateNodeChips');
@@ -61,34 +96,147 @@ describe('TaskListDatatableComponent', () => {
 
     expect(component.currentNodeFilterChips.length).toBeGreaterThan(1);
   });
+  it('updateNodeChips() with parameter', () => {
+    component.node = 'inbox';
+    component.updateNodeChips([
+      {
+        fldId: 'Bookmarked',
+        value: [true],
+        startvalue: [],
+        endvalue: [],
+        operator: 'equal',
+        parentnode: '',
+      },
+    ]);
+    const chip = component.currentNodeFilterChips.find((d) => d.fldId === 'Bookmarked');
+    expect(chip.value).toEqual([true]);
+  });
 
   it('setChipValue()', () => {
+    spyOn(component, 'updateQueryParameter');
     component.currentNodeFilterChips = [
       {
-        chip: 'Bookmarked',
-        value: '2',
+        fldId: 'Bookmarked',
+        value: ['2'],
         icon: 'star',
         hasMenu: false,
       },
     ];
+    component.currentFilterSettings = [
+      {
+        fldId: 'Bookmarked',
+        value: ['2'],
+        startvalue: [],
+        endvalue: [],
+        operator: 'equal',
+        parentnode: '',
+      },
+    ];
     component.setChipValue(
       {
-        chip: 'Bookmarked',
-        value: '2',
+        fldId: 'Bookmarked',
+        value: ['2'],
         icon: 'star',
         hasMenu: false,
       },
-      5
+      '5'
     );
 
     expect(component.currentNodeFilterChips).toEqual([
       {
-        chip: 'Bookmarked',
-        value: '2,5',
+        fldId: 'Bookmarked',
+        value: ['2', '5'],
         icon: 'star',
         hasMenu: false,
       },
     ]);
+    expect(component.currentFilterSettings).toEqual([
+      {
+        fldId: 'Bookmarked',
+        value: ['2', '5'],
+        startvalue: [],
+        endvalue: [],
+        operator: 'equal',
+        parentnode: '',
+      },
+    ]);
+
+    component.setChipValue(
+      {
+        fldId: 'Bookmarked',
+        value: ['2'],
+        icon: 'star',
+        hasMenu: false,
+      },
+      '5'
+    );
+    expect(component.currentNodeFilterChips).toEqual([
+      {
+        fldId: 'Bookmarked',
+        value: ['2'],
+        icon: 'star',
+        hasMenu: false,
+      },
+    ]);
+    expect(component.currentFilterSettings).toEqual([
+      {
+        fldId: 'Bookmarked',
+        value: ['2'],
+        startvalue: [],
+        endvalue: [],
+        operator: 'equal',
+        parentnode: '',
+      },
+    ]);
+    component.setChipValue(
+      {
+        fldId: 'Bookmarked',
+        value: ['2'],
+        icon: 'star',
+        hasMenu: false,
+      },
+      '2'
+    );
+    expect(component.currentNodeFilterChips).toEqual([
+      {
+        fldId: 'Bookmarked',
+        value: [],
+        icon: 'star',
+        hasMenu: false,
+      },
+    ]);
+    expect(component.currentFilterSettings).toEqual([]);
+    expect(component.updateQueryParameter).toHaveBeenCalled();
+  });
+
+  it('updateQueryParameter()', () => {
+    spyOn(router, 'navigate');
+    component.node = 'inbox';
+    component.currentFilterSettings = [
+      {
+        fldId: 'Bookmarked',
+        value: ['2'],
+        startvalue: [],
+        endvalue: [],
+        operator: 'equal',
+        parentnode: '',
+      },
+    ];
+
+    component.updateQueryParameter();
+    let f = btoa(JSON.stringify(component.currentFilterSettings));
+    expect(router.navigate).toHaveBeenCalledWith([`/home/task/${component.node}/feed`], {
+      queryParams: { f },
+      queryParamsHandling: 'merge',
+    });
+
+    component.currentFilterSettings = [];
+    component.updateQueryParameter();
+    f = '';
+    expect(router.navigate).toHaveBeenCalledWith([`/home/task/${component.node}/feed`], {
+      queryParams: { f },
+      queryParamsHandling: 'merge',
+    });
   });
 
   it('filterModulesMenu()', () => {
