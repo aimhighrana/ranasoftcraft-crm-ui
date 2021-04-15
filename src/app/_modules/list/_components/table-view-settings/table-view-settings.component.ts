@@ -79,6 +79,7 @@ export class TableViewSettingsComponent implements OnInit, OnDestroy {
     subs = this.fldMetadataObs.subscribe(fields => {
       this.mergeFieldsMetadata();
     });
+
     this.subscriptions.push(subs);
 
     subs = this.searchFieldSub.pipe(
