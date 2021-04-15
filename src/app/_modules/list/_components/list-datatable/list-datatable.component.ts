@@ -271,6 +271,7 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
   getFldMetadata(fieldsList: string[]) {
     if(!fieldsList || !fieldsList.length) {
       this.metadataFldLst = [];
+      return;
     }
     const sub = this.coreService.getMetadataByFields(fieldsList).subscribe(response => {
       this.metadataFldLst = response;
