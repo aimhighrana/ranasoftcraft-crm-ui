@@ -37,10 +37,10 @@
                 <span class="f-col-spacer-half"></span>
                 <span class="f-spacer"></span>
                 <lib-button type="minor" (click)="openUploadSideSheet()">
-                    <mat-icon fontSet="mdo-icons">outbox-alt</mat-icon> Upload data
+                    <mat-icon fontSet="mdo-icons">outbox-alt</mat-icon> <span i18n="@@upload_data">Upload data</span>
                 </lib-button>
                 <span class="f-col-spacer-half"></span>
-                <lib-button type="major" (click)="saveCheckData()">Check</lib-button>
+                <lib-button type="major" i18n="@@check" (click)="saveCheckData()">Check</lib-button>
             </div>
         </div>
     </div>
@@ -53,12 +53,12 @@
                 </div>
 
                 <div class="f-col mdo-form-field">
-                    <mat-label>Data scope</mat-label>
+                    <mat-label i18n="@@data_scope">Data scope</mat-label>
                     <mat-form-field appearance="outline">
                         <mat-select [formControl]="dataScopeControl">
-                            <mat-option (click)="openDataScopeSideSheet()">Add data scope</mat-option>
+                            <mat-option i18n="@@add_data_scope" (click)="openDataScopeSideSheet()">Add data scope</mat-option>
                             <mat-divider></mat-divider>
-                            <mat-option value='0'>Entire data scope</mat-option>
+                            <mat-option value='0' i18n="@@entire_data_scope">Entire data scope</mat-option>
                             <mat-option *ngFor="let variant of variantDetails" [value]="variant.variantId">
                                 {{variant.variantName}}
                             </mat-option>
@@ -66,7 +66,7 @@
                     </mat-form-field>
                 </div>
                 <div class="f-col mdo-form-field">
-                    <mat-label>Threshold</mat-label>
+                    <mat-label i18n="@@threshold">Threshold</mat-label>
                     <div class="f-row slider-row">
                     <lib-range-slider class="lib-slider" thumbLabel="true" [formControl]="schemaThresholdControl"  tickInterval="1" [formatLabelFn]="rangeSliderLabelFormat" [value]="schemaThresholdControl.value" color="primary"></lib-range-slider>
 
@@ -78,30 +78,30 @@
                     <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
                         <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
                             <mat-panel-title class="panel-title">
-                                Business rules ({{getBusinessRulesLength}})
+                                <span i18n="@@business_rules">Business rules</span> ({{getBusinessRulesLength}})
                             </mat-panel-title>
                         </mat-expansion-panel-header>
                         <!-- Business rule listing latest code start here-->
                         <div class="colunm-listing">
                             <div class="f-row colunm-box rule-border-row">
                                 <div class="col"></div>
-                                <div class="col col-x8"><strong>Business rule</strong></div>
-                                <div class="col col-x8 text-center"><strong class="f-row">Weightage
-                                        <mat-icon matTooltip="Score assigned to a record upon successful validation of a business rule.For a schema total weightage of all the business rules must not exceed 100" fontSet="mdo-icons" class="mat-head-icon">
+                                <div class="col col-x8"><strong i18n="@@business_rule">Business rule</strong></div>
+                                <div class="col col-x8 text-center"><strong class="f-row"><span i18n="@@weightage">Weightage</span>
+                                        <mat-icon i18n-matTooltip="@@br_weightage_tooltip_msg" matTooltip="Score assigned to a record upon successful validation of a business rule.For a schema total weightage of all the business rules must not exceed 100" fontSet="mdo-icons" class="mat-head-icon">
                                             question-circle</mat-icon>
                                     </strong></div>
-                                <div class="col col-x4"><strong>Enabled</strong></div>
+                                <div class="col col-x4"><strong i18n="@@enabled">Enabled</strong></div>
                                 <div class="col col-x4 text-end"></div>
                             </div>
 
                             <div class="f-row colunm-box rule-border-row">
                                 <div class="mdo-auto-select">
-                                    <pros-form-input-autoselect [fieldLabel]="'Type rule name to add'"
+                                    <pros-form-input-autoselect i18n-fieldLabel="@@type_rule_name_to_add" fieldLabel="Type rule name to add"
                                         (openCustomDialog)="openBrLibrarySideSheet()"
                                         [updatedOptionsList]="allBusinessRulesList" 
                                         [labelKey]="'brInfo'"
                                         (optionSelectedEmit)="addBusinessRule($event)"
-                                        [extraOptionLabel]="'Add new business rule'"
+                                        i18n-extraOptionLabel="@@add_br_rule" extraOptionLabel="Add new business rule"
                                         [isExtraLabel]="false"></pros-form-input-autoselect>
                                         <!-- (emitExtraLabelClick)="openBusinessRuleSideSheet()" -->
                                 </div>
@@ -124,35 +124,26 @@
                                     <div class="col col-x8">
                                         <div class="f-row slider-row">
                                         <lib-range-slider minValue="0" (valueChange)="updateBr(businessRule,$event)" [maxValue]="availableWeightage(businessRule.brWeightage)" class="lib-slider" thumbLabel="true" tickInterval="1" [formatLabelFn]="rangeSliderLabelFormat" [value]="businessRule.brWeightage" color="primary"></lib-range-slider>
-                                        <mat-slider color="primary" [value]="businessRule.brWeightage" thumbLabel
-                                            tickInterval="1" min="0" [max]="availableWeightage(businessRule.brWeightage)"
-                                            (change)="updateBr(businessRule,$event)">
-                                        </mat-slider>
                                         <span class="f-col-spacer-half"></span>
                                         <div class="percent-count">{{businessRule.brWeightage}}%</div>
                                     </div>
                                     </div>
 
                                     <div class="col col-x4">
-                                        <mat-checkbox color="primary" [checked]="businessRule.status === '1' ? true : false"
-                                            (change)="updateBr(businessRule,$event)"></mat-checkbox> 
+                                        <lib-checkbox color="primary" [checked]="businessRule.status === '1'" (valueChange)="updateBr(businessRule, $event, 'checkbox')"></lib-checkbox>
                                     </div>
 
                                     <div class="col col-x4 text-end">
-                                        <button mat-button [matMenuTriggerFor]="mappingdependency" [disabled]='i===0 '>
+                                        <lib-button mat-button [matMenuTriggerFor]="mappingdependency" [disabled]='i===0 '>
                                             <mat-icon fontSet="mdo-icons">link</mat-icon>
-                                        </button>
+                                        </lib-button>
                                         <!-- Mapping Dropdown Menu -->
                                         <mat-menu #mappingdependency="matMenu" #aboveMenu="matMenu" yPosition="above" xPosition="before" class="mat-elevation-z0 tooltip-fields-menu">
                                             <!-- <div class="top-tiparrow"></div> -->
                                             <div class="f-col">
-                                                    <p>Only run this rule if  the preceding rule returns</p>
-                                                    <mat-radio-group class="f-col" color="primary" [(ngModel)]="businessRule.dependantStatus" (change)="updateDepRule(businessRule,$event)">
-                                                        <mat-radio-button value="ALL">All</mat-radio-button>
-                                                        <mat-radio-button value="SUCCESS">Success</mat-radio-button>
-                                                        <mat-radio-button value="ERROR">Failure</mat-radio-button>
-                                                    </mat-radio-group>
-                                                </div>
+                                                <p i18n="@@run_rule_warning_msg">Only run this rule if  the preceding rule returns</p>
+                                                <lib-radio-group (click)="$event.stopPropagation()" [options]="depRuleList" class="f-col" color="primary"  [value]="getCurrentBrStatusObj(businessRule.dependantStatus)" (valueChange)="updateDepRule(businessRule,$event)"></lib-radio-group>
+                                            </div>
                                         </mat-menu>
                                         <button mat-button (click)="deleteBr(businessRule)">
                                             <mat-icon fontSet="mdo-icons">trash-alt</mat-icon>
@@ -174,18 +165,14 @@
     
                                         <div class="col col-x8">
                                             <div class="f-row slider-row">
-                                            <mat-slider color="primary" [value]="deps.brWeightage" thumbLabel
-                                                tickInterval="1" min="0" [max]="availableWeightage(deps.brWeightage)"
-                                                (change)="updateBr(deps,$event)">
-                                            </mat-slider>
+                                                <lib-range-slider minValue="0" [maxValue]="availableWeightage(deps.brWeightage)" (valueChange)="updateBr(deps,$event)" class="lib-slider" thumbLabel="true" tickInterval="1" [formatLabelFn]="rangeSliderLabelFormat" [value]="deps.brWeightage" color="primary"></lib-range-slider>
                                             <span class="f-col-spacer-half"></span>
                                             <div class="percent-count">{{deps.brWeightage}}%</div>
                                         </div>
                                         </div>
     
                                         <div class="col col-x4">
-                                            <mat-checkbox color="primary" [checked]="deps.status === '1' ? true : false"
-                                                (change)="updateBr(deps,$event)"></mat-checkbox> 
+                                            <lib-checkbox color="primary" [checked]="deps.status === '1'" (valueChange)="updateBr(deps, $event, 'checkbox')"></lib-checkbox>
                                         </div>
     
                                         <div class="col col-x4 text-end">
@@ -196,17 +183,13 @@
                                             <mat-menu #mappingdependency="matMenu" #aboveMenu="matMenu" yPosition="above" xPosition="before" class="mat-elevation-z0 tooltip-fields-menu">
                                                 <!-- <div class="top-tiparrow"></div> -->
                                                 <div class="f-col">
-                                                        <p>Only run this rule if  the preceding rule returns</p>
-                                                        <mat-radio-group class="f-col" color="primary"  [(ngModel)]="deps.dependantStatus" (change)="updateDepRuleForChild(businessRule,i,$event)">
-                                                            <mat-radio-button value="ALL">All</mat-radio-button>
-                                                            <mat-radio-button value="SUCCESS">Success</mat-radio-button>
-                                                            <mat-radio-button value="ERROR">Failure</mat-radio-button>
-                                                        </mat-radio-group>
+                                                        <p i18n="@@run_rule_warning_msg">Only run this rule if  the preceding rule returns</p>
+                                                        <lib-radio-group (click)="$event.stopPropagation()" [options]="depRuleList" class="f-col" color="primary"  [value]="getCurrentBrStatusObj(deps.dependantStatus)" (valueChange)="updateDepRuleForChild(businessRule,i, $event)"></lib-radio-group>
                                                     </div>
                                             </mat-menu>
-                                            <button mat-button (click)="deleteBrChild(deps,businessRule)">
+                                            <lib-button mat-button (click)="deleteBrChild(deps,businessRule)">
                                                 <mat-icon fontSet="mdo-icons">trash-alt</mat-icon>
-                                            </button>
+                                            </lib-button>
                                         </div>
                                     </div>
                                     </div>
@@ -218,8 +201,7 @@
                             </ng-template>
 
                             <ng-template #brsNullState>
-                                <pros-null-state [button]="false" [message]="brsNullMessage">
-                                </pros-null-state>
+                                <lib-empty-state i18n-primaryText="@@nothing_to_see_here" primaryText="Nothing to see here" i18n-secondaryText="@@brs_null_message" [secondaryText]="brsNullMessage" icon="table"iconSize="100"></lib-empty-state>
                             </ng-template>
                         </div>
                         <!-- Business rule listing latest code end here-->
@@ -230,16 +212,16 @@
                     <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
                         <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
                             <mat-panel-title class="panel-title">
-                                Subscribers ({{subscriberData ? subscriberData.length : 0}})
+                                <span i18n="@@subscribers">Subscribers</span> ({{subscriberData ? subscriberData.length : 0}})
                             </mat-panel-title>
                         </mat-expansion-panel-header>
                         <!-- Subscribers listing latest code start here-->
                         <div class="colunm-listing">
                             <div class="f-row colunm-box rule-border-row">
                                 <div class="col"></div>
-                                <div class="col col-x8"><strong>Subscriber</strong></div>
-                                <div class="col col-x4"><strong>Role</strong></div>
-                                <div class="col col-x16"><strong>Data allocation</strong></div>
+                                <div class="col col-x8"><strong i18n="@@subscriber">Subscriber</strong></div>
+                                <div class="col col-x4"><strong i18n="@@role">Role</strong></div>
+                                <div class="col col-x16"><strong i18n="@@data_allocation">Data allocation</strong></div>
                                 <div class="col">
                                 </div>
                             </div>
@@ -247,12 +229,12 @@
                             <div class="f-row colunm-box rule-border-row">
                                 <div class="mdo-auto-select">
                                     <pros-form-input-autoselect
-                                        [fieldLabel]="'Type subscriber name to add'"
+                                    i18n-fieldLabel="@@type_subscriber_name" fieldLabel="Type subscriber name to add"
                                         (openCustomDialog)="openSubscriberSideSheet()" 
                                         [updatedOptionsList]="allSubscribers"
                                         [labelKey]="'fullName'"
                                         (optionSelectedEmit)="addSubscriber($event)"
-                                        [extraOptionLabel]="'Invite people to your team'">
+                                        i18n-extraOptionLabel="@@invite_people_to_team" extraOptionLabel="Invite people to your team">
                                     </pros-form-input-autoselect>
                                 </div>
                             </div>
@@ -261,7 +243,8 @@
                                 <div class="f-row colunm-box rule-border-row" *ngFor="let subscriber of subscriberData">
                                     <div class="col">
                                     <ng-template [ngIf]="subscriber.userMdoModel && subscriber.isInvited!==true" [ngIfElse]="invitedUserProfile">
-                                        <mat-card-header>
+                                        <lib-avatar [initials]="shortName(subscriber.userMdoModel.fName, subscriber.userMdoModel.lName)"></lib-avatar>
+                                        <mat-card-header *ngIf="false">
                                             <div mat-card-avatar *ngIf="subscriber.userMdoModel">
                                                 {{shortName(subscriber.userMdoModel.fName, subscriber.userMdoModel.lName)}}
                                             </div>
@@ -294,16 +277,16 @@
                                     </div>
         
                                     <div class="col col-x4" [matMenuTriggerFor]="subscriberRole">
-                                        <button mat-stroked-button *ngIf="subscriber.isAdmin">Admin <mat-icon
+                                        <button mat-stroked-button *ngIf="subscriber.isAdmin"><span i18n="@@admin">Admin</span> <mat-icon
                                                 fontSet="mdo-icons-solid">
                                                 caret-down</mat-icon></button>
-                                        <button mat-stroked-button *ngIf="subscriber.isReviewer">Reviewer <mat-icon
+                                        <button mat-stroked-button *ngIf="subscriber.isReviewer"><span i18n="@@reviewer">Reviewer</span> <mat-icon
                                                 fontSet="mdo-icons-solid">
                                                 caret-down</mat-icon></button>
-                                        <button mat-stroked-button *ngIf="subscriber.isViewer">Viewer <mat-icon
+                                        <button mat-stroked-button *ngIf="subscriber.isViewer"><span i18n="@@viewer">Viewer</span> <mat-icon
                                                 fontSet="mdo-icons-solid">
                                                 caret-down</mat-icon></button>
-                                        <button mat-stroked-button *ngIf="subscriber.isEditer">Editor <mat-icon
+                                        <button mat-stroked-button *ngIf="subscriber.isEditer"><span i18n="@@editor">Editor</span> <mat-icon
                                                 fontSet="mdo-icons-solid">
                                                 caret-down</mat-icon></button>
                                     </div>
@@ -357,18 +340,15 @@
                                     </div>
         
                                     <div class="col">
-                                        <button mat-button (click)="deleteSubscriber(subscriber.sno)">
+                                        <lib-button (click)="deleteSubscriber(subscriber.sno)">
                                             <mat-icon fontSet="mdo-icons">trash-alt</mat-icon>
-                                        </button>
+                                        </lib-button>
                                     </div>
                                 </div>
                             </ng-template>
 
                             <ng-template #subscriberNullState>
-                                <pros-null-state
-                                [button]="false"
-                                [message]="subscribersNullMessage">
-                                </pros-null-state>
+                                <lib-empty-state i18n-primaryText="@@nothing_to_see_here" primaryText="Nothing to see here" i18n-secondaryText="@@subscriber_null_message" [secondaryText]="subscribersNullMessage" icon="table"iconSize="100"></lib-empty-state>
                             </ng-template>
                         </div>
                         <!-- Subscribers listing latest code end here -->

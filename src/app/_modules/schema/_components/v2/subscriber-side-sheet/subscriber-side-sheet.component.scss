@@ -49,6 +49,10 @@ div.root {
             }
           }
         }
+
+        mat-list mat-card-header.avatar-header {
+          flex-direction: row-reverse;
+        }
       }
     }
   }

@@ -1,22 +1,22 @@
 <ng-template [ngIf]="!showInviteTemplate" [ngIfElse]="inviteTemplate">
     <div class="root">
         <div class="f-row breadcrum-toolbar">
-            <button mat-button (click)="close()">
+            <lib-button (click)="close()">
                 <mat-icon fontSet="mdo-icons">close</mat-icon>
-            </button>
+            </lib-button>
             <div class="col-spacer"></div>
             <div class="f-col mdo-constrained-right">
                 <div class="f-row breadcrum-head">
-                    <div class="display-heading-large">Add subscribers</div>
+                    <div class="display-heading-large" i18n="@@add_subscribers">Add subscribers</div>
                     <span class="f-col-spacer-half"></span>
                     <div class="f-spacer"></div>
-                    <button mat-flat-button [disabled]="true" (click)="openSubscriberInviteDialog()"><mat-icon fontSet="mdo-icons"> add-group</mat-icon> Invite people to your team</button>
+                    <lib-button type="minor" [disabled]="true" (click)="openSubscriberInviteDialog()"><mat-icon fontSet="mdo-icons"> add-group</mat-icon> Invite people to your team</lib-button>
                     <span class="f-col-spacer-half"></span>
-                    <button mat-flat-button color="primary" (click)="save()">Save</button>
+                    <lib-button type="major" color="primary" i18n="@@save" (click)="save()">Save</lib-button>
                 </div>
                 <div class="row-spacer"></div>
                 <div class="f-row">
-                    <pros-search-input (value)="getCollaborators($event, 0)" placeholder="Search subscribers"></pros-search-input>
+                    <lib-search (valueChange)="getCollaborators($event, 0)" i18n-placeholder="@@search_subscribers" placeholder="Search subscribers"></lib-search>
                     <span class="col-spacer"></span>
                     <!-- <mat-chip-list>
                         <mat-chip class="mdo-filter-matchip">
@@ -33,19 +33,19 @@
                 <mat-list role="list" class="rule-list" *cdkVirtualFor="let subscriber of subscribers">
                     <mat-list-item role="listitem">
                         <div class="mat-line">
-                            <mat-card-header>
-                                <div mat-card-avatar>{{shortName(subscriber.fName, subscriber.lName) | uppercase}}</div>
+                            <mat-card-header class="avatar-header">
+                                <lib-avatar [initials]="shortName(subscriber.fName, subscriber.lName) | uppercase" ></lib-avatar>
                                 <mat-card-title mat-line>{{subscriber.fullName}}</mat-card-title>
                             </mat-card-header>
                         </div>
                         <span class="f-spacer"></span>
                         <ng-template [ngIf]="subscriber.isAdd===false" [ngIfElse]="checkButton">
-                            <button mat-flat-button color="accent" (click)="addSubscriber(subscriber)">Add</button>
+                            <lib-button type="minor" color="accent" (click)="addSubscriber(subscriber)" i18n="@@add">Add</lib-button>
                         </ng-template>
                         <ng-template #checkButton>
-                            <button mat-flat-button color="accent" (click)="uncheckSubscriber(subscriber)">
+                            <lib-button type="minor" color="accent" (click)="uncheckSubscriber(subscriber)">
                                 <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
-                            </button>
+                            </lib-button>
                         </ng-template>
                     </mat-list-item>
                 </mat-list>
