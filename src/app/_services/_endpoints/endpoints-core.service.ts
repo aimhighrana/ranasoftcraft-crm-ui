@@ -22,4 +22,12 @@ export class EndpointsCoreService {
     return this.apiurl + `/metadata/get-module-desc/${moduleId}`
   }
 
+  searchFieldsMetadataUrl(): string {
+    return this.apiurl + `/metadata/list-view-fields`;
+  }
+
+  getMetadataByFieldsUrl(): string {
+    return this.apiurl + `/metadata/get-metadata-by-fields`;
+  }
+
 }

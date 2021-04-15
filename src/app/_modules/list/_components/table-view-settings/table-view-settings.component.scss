@@ -14,11 +14,13 @@ div.root {
   }
 
   .sidesheetcontent-listing {
-    height: calc(100% - 52px);
-    overflow: auto;
-
     .mdo-justify {
       margin: 0 16px;
+
+      .fields-container {
+        max-height: 400px;
+        overflow: auto;
+      }
     }
   }
 }

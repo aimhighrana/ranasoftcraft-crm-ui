@@ -218,7 +218,7 @@ describe('StackedbarChartComponent', () => {
   it(`setChartAxisAndScaleRange(), should set chart axis and scale on chart option`,async(()=>{
     // mock data
     const barWidget =  new StackBarChartWidget();
-    barWidget.orderWith = OrderWith.ASC;
+    barWidget.orderWith = OrderWith.ROW_ASC;
     barWidget.scaleFrom = 0;
     barWidget.scaleTo = 20;
     barWidget.stepSize = 4;
@@ -272,7 +272,7 @@ describe('StackedbarChartComponent', () => {
   it(`transformDataSets(), data transformation before rander on chart`, async(()=>{
     // mock data
     const barWidget =  new StackBarChartWidget();
-    barWidget.orderWith = OrderWith.ASC;
+    barWidget.orderWith = OrderWith.ROW_ASC;
     barWidget.scaleFrom = 0;
     barWidget.scaleTo = 20;
     barWidget.stepSize = 4;
@@ -288,7 +288,7 @@ describe('StackedbarChartComponent', () => {
     expect(actualResponse[1].doc_count).toEqual(10,`10 should be on second position`);
 
     // scenario  2
-    barWidget.orderWith = OrderWith.DESC;
+    barWidget.orderWith = OrderWith.ROW_DESC;
     barWidget.scaleTo = 30;
     component.stackBarWidget.next(barWidget);
 

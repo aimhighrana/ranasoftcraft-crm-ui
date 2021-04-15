@@ -379,6 +379,16 @@
                                                 multiselect
                                             </mat-checkbox>
                                         </div>
+
+                                        <div class="f-col">
+                                            <mat-label i18n="@@sortBy">Sort by</mat-label>
+                                            <mat-form-field appearance="outline">
+                                                <mat-select formControlName="orderWith">
+                                                    <mat-option [value]="OrderWith.ASC" i18n="@@ascending"> Ascending </mat-option>
+                                                    <mat-option [value]="OrderWith.DESC" i18n="@@descending"> Descending </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
                                     </ng-template>
                                 </ng-template>
                             </div>
@@ -592,11 +602,13 @@
                                 </div>
 
                                 <div class="f-col" *ngIf="selStyleWid.widgetType !== 'TIMESERIES'">
-                                    <mat-label>Count order by</mat-label>
+                                    <mat-label i18n="@@sortBy">Sort by</mat-label>
                                     <mat-form-field appearance="outline">
                                         <mat-select formControlName="orderWith">
-                                            <mat-option value="asc"> Ascending </mat-option>
-                                            <mat-option value="desc"> Descending </mat-option>
+                                            <mat-option [value]="OrderWith.ROW_ASC" i18n="@@rowAscending"> Row ascending </mat-option>
+                                            <mat-option [value]="OrderWith.ROW_DESC" i18n="@@rowDescending"> Row descending </mat-option>
+                                            <mat-option [value]="OrderWith.COL_ASC" i18n="@@columnAscending"> Column Ascending </mat-option>
+                                            <mat-option [value]="OrderWith.COL_DESC" i18n="@@columnDescending"> Column descending </mat-option>
                                         </mat-select>
                                     </mat-form-field>
                                 </div>

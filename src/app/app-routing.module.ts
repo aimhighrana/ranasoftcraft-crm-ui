@@ -15,6 +15,7 @@ const routes: Routes = [
   { path: 'outer/schema', loadChildren: () => import('./_modules/schema/schema.module').then((m) => m.SchemaModule), outlet: 'outer' },
   { path: 'sb/list', loadChildren: () => import('./_modules/list/list.module').then((m) => m.ListModule), outlet: 'sb' },
   { path: 'outer/list', loadChildren: () => import('./_modules/list/list.module').then((m) => m.ListModule), outlet: 'outer' },
+  { path: 'home/settings', loadChildren: () => import('./_modules/settings/settings.module').then((m) => m.SettingsModule), outlet: 'sb' },
   { path: 'msteams', loadChildren: () => import('./_modules/msteams/msteams.module').then((m) => m.MSTeamsModule) },
   { path: 'sb/report', loadChildren: () => import('./_modules/report/report.module').then((m) => m.ReportModule), outlet: 'sb' },
   { path: 'lib', loadChildren: () => import('./_modules/lib/lib.module').then((m) => m.LibModule) },

@@ -614,6 +614,94 @@
           <context context-type="linenumber">16</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="home" datatype="html">
+        <source>Home</source>
+        <target>Rumah</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\home\_components\primary-navigation\primary-navigation.component.html</context>
+          <context context-type="linenumber">14</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="data" datatype="html">
+        <source>Data</source>
+        <target>Data</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\home\_components\primary-navigation\primary-navigation.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="schema" datatype="html">
+        <source>Schema</source>
+        <target>Skema</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\home\_components\primary-navigation\primary-navigation.component.html</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="reports" datatype="html">
+        <source>Reports</source>
+        <target>reports</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\home\_components\primary-navigation\primary-navigation.component.html</context>
+          <context context-type="linenumber">20</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="sign_out" datatype="html">
+        <source>Sign out</source>
+        <target>Keluar</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\home\_components\primary-navigation\primary-navigation.component.html</context>
+          <context context-type="linenumber">58</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="check_data" datatype="html">
+        <source>Check data</source>
+        <target>Periksa Data</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\navigation-dropdown\navigation-dropdown.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="new_module" datatype="html">
+        <source>New module</source>
+        <target>modul baru</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\navigation-dropdown\navigation-dropdown.component.html</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="new_schema" datatype="html">
+        <source>New schema</source>
+        <target>skema baru</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\navigation-dropdown\navigation-dropdown.component.html</context>
+          <context context-type="linenumber">45</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="system_tray" datatype="html">
+        <source>System tray</source>
+        <target>system tray</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\home\_components\system-tray\system-tray.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="notifications" datatype="html">
+        <source>Notifications</source>
+        <target>pemberitahuan</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\home\_components\system-tray\system-tray.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="job_query" datatype="html">
+        <source>Job query</source>
+        <target>permintaan pekerjaan</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\home\_components\system-tray\system-tray.component.html</context>
+          <context context-type="linenumber">77</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="daily" datatype="html">
         <source>Daily</source>
         <target>Harian</target>
@@ -772,6 +860,74 @@
         <context-group purpose="location">
           <context context-type="sourcefile">app/_modules/report/view/duplicate-report/duplicate-report.component.html</context>
           <context context-type="linenumber">21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="settings" datatype="html">
+        <source>Settings</source>
+        <target>pengaturan</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\home\_components\primary-navigation\primary-navigation.component.html</context>
+          <context context-type="linenumber">62</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\settings\_components\settings.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="sortBy" datatype="html">
+        <source>Sort by</source>
+        <target>Sortir dengan</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/_modules/report/edit/container/container.component.html</context>
+          <context context-type="linenumber">370</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ascending" datatype="html">
+        <source>Ascending</source>
+        <target>Naik</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/_modules/report/edit/container/container.component.html</context>
+          <context context-type="linenumber">373</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="descending" datatype="html">
+        <source>Descending</source>
+        <target>Menurun</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/_modules/report/edit/container/container.component.html</context>
+          <context context-type="linenumber">374</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rowAscending" datatype="html">
+        <source>Row ascending</source>
+        <target>Baris menaik</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/_modules/report/edit/container/container.component.html</context>
+          <context context-type="linenumber">579</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rowDescending" datatype="html">
+        <source>Row descending</source>
+        <target>Baris menurun</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/_modules/report/edit/container/container.component.html</context>
+          <context context-type="linenumber">580</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="columnAscending" datatype="html">
+        <source>Column Ascending</source>
+        <target>Kolom Menaik</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/_modules/report/edit/container/container.component.html</context>
+          <context context-type="linenumber">581</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="columnDescending" datatype="html">
+        <source>Column descending</source>
+        <target>Kolom menurun</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/_modules/report/edit/container/container.component.html</context>
+          <context context-type="linenumber">582</context>
         </context-group>
       </trans-unit>
     </body>
