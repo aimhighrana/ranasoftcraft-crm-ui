@@ -1,8 +1,6 @@
 <div class="root">
     <div class="f-row breadcrum-toolbar">
-        <lib-button (click)="close()">
-            <mat-icon fontSet="mdo-icons">times</mat-icon>
-        </lib-button>
+        <lib-button (click)="close()" icon="times" type="plain" iconFontType="light"></lib-button>
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
@@ -59,10 +57,7 @@
                                         </ng-template>
                                     </mat-card-header>
                                     <span class="f-col-spacer-half"></span>
-                                    <lib-button (click)="deleteNotification(notification.id)"
-                                        prosClickStopPropagation>
-                                        <mat-icon fontSet="mdo-icons">trash-alt</mat-icon>
-                                    </lib-button>
+                                    <lib-button (click)="deleteNotification(notification.id)" type="plain" icon="trash-alt" prosClickStopPropagation></lib-button>
                                 </div>
                             </div>
                             <p class="notify-content" disableRipple="true">{{notification.sendTime | date:"dd MMM hh:mm:ss" }}</p>
@@ -91,9 +86,7 @@
                             <lib-avatar [initials]="job.initiatedBy"></lib-avatar>
                         </mat-card-header>
                         <span class="col-spacer"></span>
-                        <lib-button>
-                            <mat-icon fontSet="mdo-icons">ellipsis-h</mat-icon>
-                        </lib-button>
+                        <lib-button type="plain" icon="ellipsis-h"></lib-button>
                     </mat-list-item>
                 </mat-nav-list>
             </lib-tab>
