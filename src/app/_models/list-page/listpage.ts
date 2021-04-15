@@ -175,3 +175,11 @@ export class ViewsPageItem {
     viewName: string;
     default: boolean;
 }
+
+export enum FieldControlType {
+    TEXT = 'text',
+    TEXT_AREA = 'text-area',
+    EMAIL = 'email',
+    PASSWORD = 'password',
+    NUMBER = 'number'
+}

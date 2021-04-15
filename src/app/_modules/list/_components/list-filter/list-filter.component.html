@@ -10,14 +10,14 @@
     <div class="row-spacer"></div>
     <div class="f-row system">
         <div class="f-col system-fields-col">
-            <lib-search i18n-placeholder="@@search" placeholder="Search" (valueChange)="searchFilter($event)"></lib-search>
+            <lib-search i18n-placeholder="@@search" placeholder="Search" (valueChange)="searchFieldSub.next($event)"></lib-search>
             <div class="row-spacer"></div>
             <mat-list class="filters-list">
-                <mat-list-item class="f-row" *ngFor="let filter of filtersList.filterCriteria; let index=index">
+                <mat-list-item class="f-row" *ngFor="let filter of suggestedFilters; let index=index">
                     <div class="f-col"
-                        (click)="editFilter(filter.fieldId)">
-                        <lib-text-line type="base"> {{ getFieldDescription(filter.fieldId) }}  </lib-text-line>
-                        <lib-text-line type="base" textColor="secondary"> {{ filter.values ? filter.values.toString() : '' }} </lib-text-line>
+                        (click)="upsertFilter(filter.fieldId)">
+                        <lib-text-line type="base"> {{ getFilterDescription(filter.fieldId) }}  </lib-text-line>
+                        <lib-text-line type="base" textColor="secondary"> {{ getFilterValue(filter.fieldId) }} </lib-text-line>
                     </div>
                     <span class="f-spacer"></span>
                     <lib-button type="plain" iconFontType="solid" icon="times" 
@@ -30,9 +30,11 @@
                 <span class="col-spacer"></span>
                 <lib-text-line type="base" weight="strong" textColor="secondary" i18n="@apply_filters">Apply filters...</lib-text-line>
             </div>
-            <mat-list class="fields-list">
-                <mat-list-item *ngFor="let field of metadataFldLst"
-                    (click)="editFilter(field.fieldId)">
+            <mat-list class="fields-list"
+                prosInfiniteScroll bufferPercentage="20" (scrollEnd)="getModuleFldMetadata(true)">
+                <!-- Todo: hide already applied field filters -->
+                <mat-list-item *ngFor="let field of moduleFieldsMetatdata"
+                    (click)="upsertFilter(field.fieldId)">
                     {{ field.fieldDescri }}
                 </mat-list-item>
             </mat-list>
@@ -48,14 +50,36 @@
                         <mat-icon fontSet="mdo-icons-solid">sliders-h</mat-icon>
                     </lib-button>
                     <lib-button-group>
-                        <lib-button type="major" (click)="upsertFilter()" i18n="@@apply">Apply</lib-button>
+                        <lib-button type="major" (click)="applyFilter()" i18n="@@apply">Apply</lib-button>
                         <lib-button type="major" icon="ellipsis-h"></lib-button>
                     </lib-button-group>
                 </div>
                 <div class="row-spacer"></div>
                 <div class="f-col">
-                    <lib-input i18n-placeholder="@@type_filter_value" placeholder="type filter value" [value]="activeFilter.values ? activeFilter.values.toString() : ''"
-                        (valueChange)="updateFilterValue($event)"></lib-input>
+                    <ng-container [ngSwitch]="getFieldControlType(activeFilter.fieldId)">
+                        <!-- Text, Password, Email -->
+                        <!-- <mat-form-field appearance="outline"
+                            *ngSwitchCase="[FieldControlType.TEXT, FieldControlType.EMAIL, FieldControlType.PASSWORD].includes(getFieldControlType(activeFilter.fieldId)) ? getFieldControlType(activeFilter.fieldId): !getFieldControlType(activeFilter.fieldId) ">
+                            <mat-label>Filter value</mat-label>
+                            <input matInput type="getFieldControlType(activeFilter.fieldId)" 
+                                [value]="activeFilter.values ? activeFilter.values.toString() : ''"
+                                (change)="updateFilterValue($event.target.value)"/>
+                        </mat-form-field> -->
+
+                        <lib-input *ngSwitchCase="[FieldControlType.TEXT, FieldControlType.EMAIL, FieldControlType.PASSWORD].includes(getFieldControlType(activeFilter.fieldId)) ? getFieldControlType(activeFilter.fieldId): !getFieldControlType(activeFilter.fieldId) "
+                            i18n-placeholder="@@type_filter_value" placeholder="type filter value" [value]="activeFilter.values ? activeFilter.values.toString() : ''"
+                            (valueChange)="updateFilterValue($event)"></lib-input>
+
+                        <!-- Input type number -->
+                        <lib-range-slider *ngSwitchCase="FieldControlType.NUMBER"
+                            thumbLabel
+                            [value]="activeFilter.startValue || 0" [highValue]="activeFilter.endValue || 1"
+                            (valueChange)="updateFilterValue($event)"></lib-range-slider>
+
+                        <!-- Default input text -->
+                        <lib-input *ngSwitchDefault i18n-placeholder="@@type_filter_value" placeholder="type filter value" [value]="activeFilter.values ? activeFilter.values.toString() : ''"
+                            (valueChange)="updateFilterValue($event)"></lib-input>
+                    </ng-container>
                 </div>
             </ng-template>
            
