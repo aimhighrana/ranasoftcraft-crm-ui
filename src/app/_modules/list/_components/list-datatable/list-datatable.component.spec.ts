@@ -173,6 +173,7 @@ describe('ListDatatableComponent', () => {
   it('should updateTableColumns', () => {
 
     spyOn(component, 'getTableData');
+    spyOn(component, 'getFldMetadata');
 
     component.updateTableColumns();
 
@@ -180,6 +181,7 @@ describe('ListDatatableComponent', () => {
     component.updateTableColumns();
 
     expect(component.getTableData).toHaveBeenCalledTimes(1);
+    expect(component.getFldMetadata).toHaveBeenCalledTimes(1);
   });
 
   it('should get table width', () => {
@@ -246,27 +248,26 @@ describe('ListDatatableComponent', () => {
 
   it('should getFldMetadata', () => {
 
-
-    expect(() => component.getFldMetadata()).toThrowError('Module id cant be null or empty');
+    component.getFldMetadata([]);
+    expect(component.metadataFldLst).toEqual([]);
 
     const response = [{
           fieldId: 'name',
           fieldDescri: 'name'
     }] as FieldMetaData[];
 
-    component.moduleId = '1005';
-    spyOn(coreService, 'getAllFieldsForView').withArgs(component.moduleId)
+    spyOn(coreService, 'getMetadataByFields').withArgs(['name'])
       .and.returnValues(of(response), throwError({message: 'api error'}));
 
 
-    component.getFldMetadata();
-    expect(coreService.getAllFieldsForView).toHaveBeenCalledWith(component.moduleId);
+    component.getFldMetadata(['name']);
+    expect(coreService.getMetadataByFields).toHaveBeenCalledWith(['name']);
     expect(component.metadataFldLst).toEqual(response);
 
 
     // api error
     spyOn(console, 'error');
-    component.getFldMetadata();
+    component.getFldMetadata(['name']);
     expect(console.error).toHaveBeenCalled();
 
   });
