@@ -15,15 +15,25 @@
       <lib-search placeholder="Search tasks"></lib-search>
       <ng-container *ngFor="let chip of currentNodeFilterChips">
         <lib-chip
+          *ngIf="chip.hasMenu; else noMenu"
           [label]="chip.fldId"
           [icon]="chip.icon"
           [type]="chip.type"
           [matMenuTriggerFor]="filterMenu"
           (click)="!chip.hasMenu ? setChipValue(chip, true) : null"
-          [selectable]="true"
-          [selected]="chip.value.includes(true) && !chip.hasMenu"
           >{{ chip.hasMenu ? ': ' : '' }}{{ chip.hasMenu ? (chip.value.length > 0 ? chip.value.join(', ') : 'All') : '' }}</lib-chip
         >
+        <ng-template #noMenu>
+          <lib-chip
+            [label]="chip.fldId"
+            [icon]="chip.icon"
+            [type]="chip.type"
+            (click)="!chip.hasMenu ? setChipValue(chip, true) : null"
+            [selectable]="true"
+            [selected]="chip.value.includes(true) && !chip.hasMenu"
+            >{{ chip.hasMenu ? ': ' : '' }}{{ chip.hasMenu ? (chip.value.length > 0 ? chip.value.join(', ') : 'All') : '' }}</lib-chip
+          >
+        </ng-template>
         <mat-menu #filterMenu="matMenu" xPosition="after">
           <lib-filter-dropdown *ngIf="chip?.hasMenu">
             <div class="dropdown-search-wrapper">
