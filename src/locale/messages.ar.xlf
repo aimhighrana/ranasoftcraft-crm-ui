@@ -924,7 +924,7 @@
       </trans-unit>
       <trans-unit id="check" datatype="html">
         <source>Check</source>
-        <target>check</target>
+        <target>الشيك</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">43</context>
@@ -932,7 +932,7 @@
       </trans-unit>
       <trans-unit id="entire_data_scope" datatype="html">
         <source>Entire data scope</source>
-        <target>entire_data_scope</target>
+        <target>نطاق البيانات بالكامل</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">61</context>
@@ -940,7 +940,7 @@
       </trans-unit>
       <trans-unit id="run_rule_warning_msg" datatype="html">
         <source>Only run this rule if the preceding rule returns</source>
-        <target>run_rule_warning_msg</target>
+        <target>فقط تشغيل هذه القاعدة إذا ما تقدم عوائد حكم</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">144</context>
@@ -952,7 +952,7 @@
       </trans-unit>
       <trans-unit id="brs_null_message" datatype="html">
         <source>You don't have any business rules selected. Type the business rule in the box above to add one.</source>
-        <target>brs_null_message</target>
+        <target>ليس لديك أي قواعد العمل المحدد. اكتب قاعدة العمل في المربع أعلاه لإضافة واحد.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">144</context>
@@ -964,7 +964,7 @@
       </trans-unit>
       <trans-unit id="subscriber" datatype="html">
         <source>Subscriber</source>
-        <target>subscriber</target>
+        <target>مكتتب</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">222</context>
@@ -972,7 +972,7 @@
       </trans-unit>
       <trans-unit id="role" datatype="html">
         <source>Role</source>
-        <target>role</target>
+        <target>دور</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">223</context>
@@ -980,7 +980,7 @@
       </trans-unit>
       <trans-unit id="data_allocation" datatype="html">
         <source>Data allocation</source>
-        <target>data_allocation</target>
+        <target>توزيع البيانات</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">224</context>
@@ -988,7 +988,7 @@
       </trans-unit>
       <trans-unit id="type_subscriber_name" datatype="html">
         <source>Type subscriber name to add</source>
-        <target>type_subscriber_name</target>
+        <target>اكتب اسم المشترك لإضافة</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">232</context>
@@ -996,7 +996,7 @@
       </trans-unit>
       <trans-unit id="invite_people_to_team" datatype="html">
         <source>Invite people to your team</source>
-        <target>invite_people_to_team</target>
+        <target>دعوة الناس إلى فريقك</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">237</context>
@@ -1008,7 +1008,7 @@
       </trans-unit>
       <trans-unit id="admin" datatype="html">
         <source>Admin</source>
-        <target>admin</target>
+        <target>مشرف</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">280</context>
@@ -1020,7 +1020,7 @@
       </trans-unit>
       <trans-unit id="reviewer" datatype="html">
         <source>Reviewer</source>
-        <target>reviewer</target>
+        <target>مراجع</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">283</context>
@@ -1032,7 +1032,7 @@
       </trans-unit>
       <trans-unit id="viewer" datatype="html">
         <source>Viewer</source>
-        <target>viewer</target>
+        <target>مشاهد</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">286</context>
@@ -1044,7 +1044,7 @@
       </trans-unit>
       <trans-unit id="editor" datatype="html">
         <source>Editor</source>
-        <target>editor</target>
+        <target>محرر</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">289</context>
@@ -1056,7 +1056,7 @@
       </trans-unit>
       <trans-unit id="subscriber_null_message" datatype="html">
         <source>You don't have any subscribers selected. Type the user's name in the box above to add one.</source>
-        <target>subscriber_null_message</target>
+        <target>لم يكن لديك أي مشترك المحدد. اكتب اسم المستخدم في المربع أعلاه لإضافة واحد.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">351</context>
@@ -1064,7 +1064,7 @@
       </trans-unit>
       <trans-unit id="add_subscribers" datatype="html">
         <source>Add subscribers</source>
-        <target>add_subscribers</target>
+        <target>إضافة المشتركين</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\subscriber-side-sheet\subscriber-side-sheet.component.html</context>
           <context context-type="linenumber">10</context>
@@ -1072,7 +1072,7 @@
       </trans-unit>
       <trans-unit id="search_subscribers" datatype="html">
         <source>Search subscribers</source>
-        <target>search_subscribers</target>
+        <target>بحث مشترك</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\subscriber-side-sheet\subscriber-side-sheet.component.html</context>
           <context context-type="linenumber">19</context>
@@ -1080,7 +1080,7 @@
       </trans-unit>
       <trans-unit id="add" datatype="html">
         <source>Add</source>
-        <target>add</target>
+        <target>يضيف</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\subscriber-side-sheet\subscriber-side-sheet.component.html</context>
           <context context-type="linenumber">43</context>
@@ -1088,7 +1088,7 @@
       </trans-unit>
       <trans-unit id="invite" datatype="html">
         <source>Invite</source>
-        <target>invite</target>
+        <target>يدعو</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite-sidesheet\subscriber-invite-sidesheet.component.html</context>
           <context context-type="linenumber">12</context>
@@ -1096,7 +1096,7 @@
       </trans-unit>
       <trans-unit id="add_user" datatype="html">
         <source>Add user</source>
-        <target>add_user</target>
+        <target>إضافة المستخدم</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite-sidesheet\subscriber-invite-sidesheet.component.html</context>
           <context context-type="linenumber">22</context>
@@ -1104,7 +1104,7 @@
       </trans-unit>
       <trans-unit id="email_address" datatype="html">
         <source>Email address</source>
-        <target>email_address</target>
+        <target>عنوان البريد الإلكتروني</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite-sidesheet\subscriber-invite-sidesheet.component.html</context>
           <context context-type="linenumber">31</context>
@@ -1112,7 +1112,7 @@
       </trans-unit>
       <trans-unit id="email_required" datatype="html">
         <source>Email is required</source>
-        <target>email_required</target>
+        <target>البريد الالكتروني مطلوب</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite-sidesheet\subscriber-invite-sidesheet.component.html</context>
           <context context-type="linenumber">33</context>
@@ -1120,7 +1120,7 @@
       </trans-unit>
       <trans-unit id="role_required" datatype="html">
         <source>Role is required</source>
-        <target>role_required</target>
+        <target>مطلوب دور</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite-sidesheet\subscriber-invite-sidesheet.component.html</context>
           <context context-type="linenumber">46</context>

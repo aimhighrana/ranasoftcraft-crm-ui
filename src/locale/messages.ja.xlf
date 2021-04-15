@@ -924,7 +924,7 @@
       </trans-unit>
       <trans-unit id="check" datatype="html">
         <source>Check</source>
-        <target>check</target>
+        <target>小切手</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">43</context>
@@ -932,7 +932,7 @@
       </trans-unit>
       <trans-unit id="entire_data_scope" datatype="html">
         <source>Entire data scope</source>
-        <target>entire_data_scope</target>
+        <target>全体のデータスコープ</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">61</context>
@@ -940,7 +940,7 @@
       </trans-unit>
       <trans-unit id="run_rule_warning_msg" datatype="html">
         <source>Only run this rule if the preceding rule returns</source>
-        <target>run_rule_warning_msg</target>
+        <target>ルールリターンの前にいる場合のみ、このルールを実行します</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">144</context>
@@ -952,7 +952,7 @@
       </trans-unit>
       <trans-unit id="brs_null_message" datatype="html">
         <source>You don't have any business rules selected. Type the business rule in the box above to add one.</source>
-        <target>brs_null_message</target>
+        <target>選択した任意のビジネスルールを持っていません。 1を追加するには、上のボックスにビジネスルールを入力します。</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">144</context>
@@ -964,7 +964,7 @@
       </trans-unit>
       <trans-unit id="subscriber" datatype="html">
         <source>Subscriber</source>
-        <target>subscriber</target>
+        <target>加入者</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">222</context>
@@ -972,7 +972,7 @@
       </trans-unit>
       <trans-unit id="role" datatype="html">
         <source>Role</source>
-        <target>role</target>
+        <target>役割</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">223</context>
@@ -980,7 +980,7 @@
       </trans-unit>
       <trans-unit id="data_allocation" datatype="html">
         <source>Data allocation</source>
-        <target>data_allocation</target>
+        <target>データの割り当て</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">224</context>
@@ -988,7 +988,7 @@
       </trans-unit>
       <trans-unit id="type_subscriber_name" datatype="html">
         <source>Type subscriber name to add</source>
-        <target>type_subscriber_name</target>
+        <target>追加するには、加入者名を入力します</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">232</context>
@@ -996,7 +996,7 @@
       </trans-unit>
       <trans-unit id="invite_people_to_team" datatype="html">
         <source>Invite people to your team</source>
-        <target>invite_people_to_team</target>
+        <target>あなたのチームに人を招待</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">237</context>
@@ -1008,7 +1008,7 @@
       </trans-unit>
       <trans-unit id="admin" datatype="html">
         <source>Admin</source>
-        <target>admin</target>
+        <target>管理者</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">280</context>
@@ -1020,7 +1020,7 @@
       </trans-unit>
       <trans-unit id="reviewer" datatype="html">
         <source>Reviewer</source>
-        <target>reviewer</target>
+        <target>レビュー</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">283</context>
@@ -1032,7 +1032,7 @@
       </trans-unit>
       <trans-unit id="viewer" datatype="html">
         <source>Viewer</source>
-        <target>viewer</target>
+        <target>ビューア</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">286</context>
@@ -1044,7 +1044,7 @@
       </trans-unit>
       <trans-unit id="editor" datatype="html">
         <source>Editor</source>
-        <target>editor</target>
+        <target>編集者</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">289</context>
@@ -1056,7 +1056,7 @@
       </trans-unit>
       <trans-unit id="subscriber_null_message" datatype="html">
         <source>You don't have any subscribers selected. Type the user's name in the box above to add one.</source>
-        <target>subscriber_null_message</target>
+        <target>あなたは、任意の加入者が選択されていません。 1を追加するには、上のボックスにユーザーの名前を入力します。</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
           <context context-type="linenumber">351</context>
@@ -1064,7 +1064,7 @@
       </trans-unit>
       <trans-unit id="add_subscribers" datatype="html">
         <source>Add subscribers</source>
-        <target>add_subscribers</target>
+        <target>加入者を追加します。</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\subscriber-side-sheet\subscriber-side-sheet.component.html</context>
           <context context-type="linenumber">10</context>
@@ -1072,7 +1072,7 @@
       </trans-unit>
       <trans-unit id="search_subscribers" datatype="html">
         <source>Search subscribers</source>
-        <target>search_subscribers</target>
+        <target>検索の加入者</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\subscriber-side-sheet\subscriber-side-sheet.component.html</context>
           <context context-type="linenumber">19</context>
@@ -1080,7 +1080,7 @@
       </trans-unit>
       <trans-unit id="add" datatype="html">
         <source>Add</source>
-        <target>add</target>
+        <target>追加</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\subscriber-side-sheet\subscriber-side-sheet.component.html</context>
           <context context-type="linenumber">43</context>
@@ -1088,7 +1088,7 @@
       </trans-unit>
       <trans-unit id="invite" datatype="html">
         <source>Invite</source>
-        <target>invite</target>
+        <target>招待する</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite-sidesheet\subscriber-invite-sidesheet.component.html</context>
           <context context-type="linenumber">12</context>
@@ -1096,7 +1096,7 @@
       </trans-unit>
       <trans-unit id="add_user" datatype="html">
         <source>Add user</source>
-        <target>add_user</target>
+        <target>ユーザーを追加する</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite-sidesheet\subscriber-invite-sidesheet.component.html</context>
           <context context-type="linenumber">22</context>
@@ -1104,7 +1104,7 @@
       </trans-unit>
       <trans-unit id="email_address" datatype="html">
         <source>Email address</source>
-        <target>email_address</target>
+        <target>電子メールアドレス</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite-sidesheet\subscriber-invite-sidesheet.component.html</context>
           <context context-type="linenumber">31</context>
@@ -1112,7 +1112,7 @@
       </trans-unit>
       <trans-unit id="email_required" datatype="html">
         <source>Email is required</source>
-        <target>email_required</target>
+        <target>メールが要求されます</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite-sidesheet\subscriber-invite-sidesheet.component.html</context>
           <context context-type="linenumber">33</context>
@@ -1120,7 +1120,7 @@
       </trans-unit>
       <trans-unit id="role_required" datatype="html">
         <source>Role is required</source>
-        <target>role_required</target>
+        <target>役割が必要です</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite-sidesheet\subscriber-invite-sidesheet.component.html</context>
           <context context-type="linenumber">46</context>
