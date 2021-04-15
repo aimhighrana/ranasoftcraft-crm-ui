@@ -13,6 +13,7 @@ export class Widget {
     aggregrationOp: string;
     filterType: string;
     isMultiSelect: boolean;
+    orderWith: OrderWith;
     groupById: string;
     widgetTableFields: WidgetTableModel[];
     htmlText: string;
@@ -382,7 +383,11 @@ export enum LegendPosition {
 
 export enum OrderWith {
     ASC = 'asc',
-    DESC = 'desc'
+    DESC = 'desc',
+    ROW_ASC = 'ROW_ASC',
+    ROW_DESC = 'ROW_DESC',
+    COL_ASC = 'COL_ASC',
+    COL_DESC = 'COL_DESC'
 }
 
 export class ChartProperties {
