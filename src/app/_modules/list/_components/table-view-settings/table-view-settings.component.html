@@ -1,6 +1,6 @@
 <div class="root">
     <div class="f-row breadcrum-toolbar">
-        <lib-button  (afterClick)="close()" type="plain" iconFontType="light" icon="times"></lib-button>
+        <lib-button iconFontType="solid" icon="times" (afterClick)="close()"></lib-button>
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
@@ -43,21 +43,13 @@
                             <div *ngFor="let fld of mergedFieldsMetadata" id="{{ fld.fieldId }}" cdkDrag class="colunm-list">
                                 <div class="f-row colunm-box">
                                     <div class="col">
-                                         <lib-button cdkDragHandle type="plain" iconFontType="solid" icon="grip-lines"></lib-button>
+                                        <lib-button cdkDragHandle type="plain" iconFontType="solid" icon="grip-lines">
+                                        </lib-button>
                                     </div>
 
                                     <div class="col col-x4">
-                                        <ng-template [ngIf]="suggestedFlds.indexOf(fld.fieldId) !==-1"
-                                            [ngIfElse]="notSuggested">
-                                            <span style="background-color: #FFFF00">{{ fld.fieldDescri ?
-                                                fld.fieldDescri : (fld.fieldDesc ? fld.fieldDesc : 'Untitled')
-                                                }} </span>
-                                        </ng-template>
-
-                                        <ng-template #notSuggested>
-                                            <span>{{ fld.fieldDescri ? fld.fieldDescri : (fld.fieldDesc ?
-                                                fld.fieldDesc : 'Untitled') }} </span>
-                                        </ng-template>                                                         
+                                        <span>{{ fld.fieldDescri ? fld.fieldDescri : (fld.fieldDesc ?
+                                            fld.fieldDesc : 'Untitled') }} </span>
                                     </div>
 
                                     <div class="f-spacer"></div>
@@ -65,7 +57,6 @@
                                     <div class="col">
                                         <lib-checkbox [checked]="isChecked(fld)" (valueChange)="selectionChange(fld)">
                                         </lib-checkbox>
-                                        
                                     </div>
                                 </div>
                             </div>
