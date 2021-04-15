@@ -129,6 +129,6 @@ describe('EndpointsAnalyticsService', () => {
     const serviceobj = new EndpointsAnalyticsService();
     const reportId = '6547898676578';
     const reportName = 'Copy of Test'
-    expect(serviceobj.copyReport(reportId, reportName)).toContain(`/report/copy-report?reportId=${reportId}&reportName=${reportName}`);
+    expect(serviceobj.copyReport(reportId, reportName)).toContain(`/report/copy?reportId=${reportId}&reportName=${reportName}`);
   }));
 });
