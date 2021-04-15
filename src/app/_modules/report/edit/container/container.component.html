@@ -5,7 +5,7 @@
         </div>
         <div class="f-spacer"></div>
         <lib-button type="minor" *ngIf="collaboratorPermission && reportId"
-        [routerLink]="['', { outlets: { sb: 'sb/report/collaborators/' + reportId } } ]" icon="user-plus"> Add collaborators </lib-button>
+        [routerLink]="['', { outlets: { sb: 'sb/report/collaborators/' + reportId } } ]" iconPosition="before" icon="user-plus"> Add collaborators </lib-button>
         <span class="f-col-spacer-half"></span>
         <lib-button (click)="createUpdateReport()" type="major">Save</lib-button>
     </div>
