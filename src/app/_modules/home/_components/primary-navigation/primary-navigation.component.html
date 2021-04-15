@@ -59,6 +59,8 @@
         <lib-avatar size="small" initials="{{ userDetails.firstName ? userDetails.firstName.substring(0,1).toUpperCase() : ''  }}{{ userDetails.lastName ? userDetails.lastName.substring(0,1).toUpperCase() : ''  }}" [matMenuTriggerFor]="profile_navigation"></lib-avatar>
 
         <mat-menu #profile_navigation="matMenu" xPosition="before" class="navigation-menu">
+            <button mat-menu-item (click)="openSettings()" i18n="@@settings">Settings</button>
+            <mat-divider></mat-divider>
             <button mat-menu-item (click)="signOut()">Sign out</button>
         </mat-menu>
     </div>    
