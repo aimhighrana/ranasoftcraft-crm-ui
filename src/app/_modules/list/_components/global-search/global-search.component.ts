@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
 export interface PeriodicElement {
   materialnumber: string;
@@ -22,9 +22,16 @@ export class GlobalSearchComponent implements OnInit {
   displayedColumns: string[] = ['materialnumber', 'materialdescription', 'materialtype',];
   dataSource = ELEMENT_DATA;
 
+  @Output()
+  filterChanged: EventEmitter<any> = new EventEmitter();
+
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+  applyFilter() {
+    this.filterChanged.emit({});
   }
 
 }

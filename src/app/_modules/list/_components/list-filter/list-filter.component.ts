@@ -169,6 +169,7 @@ export class ListFilterComponent implements OnInit {
       this.activeFilter = new FilterCriteria();
       this.activeFilter.fieldId = fieldId;
       this.activeFilter.operator = 'EQUAL';
+      this.activeFilter.values = [];
       this.activeFilter.esFieldPath = `hdvs.${fieldId}`;
     }
   }
@@ -193,7 +194,7 @@ export class ListFilterComponent implements OnInit {
 
   /**
    * Format filter value based on field metadata
-   * @param fieldId 
+   * @param fieldId field id
    * @returns string
    */
   getFilterValue(fieldId) {
@@ -267,8 +268,8 @@ export class ListFilterComponent implements OnInit {
 
   /**
    * get field control type based on field metadata
-   * @param fieldId 
-   * @returns 
+   * @param fieldId field id
+   * @returns control type for filter value
    */
   getFieldControlType(fieldId) {
     const field = this.moduleFieldsMetatdata.find(f => f.fieldId === fieldId);
