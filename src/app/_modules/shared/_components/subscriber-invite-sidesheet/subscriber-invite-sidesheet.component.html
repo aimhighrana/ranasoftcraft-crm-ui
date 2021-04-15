@@ -28,7 +28,7 @@
                 <ng-container *ngFor="let item of invites().controls; let i=index">
                     <div class="f-row invite-colunm" [formGroupName]="i">
                         <div class="col-x2">
-                            <lib-input type="text" i18n-placeholder="@@email_address" placeholder="Email address" label="‎" [hasError]="invites().controls[i].get('email').errors && submitted" [formControl]="invites().controls[i].get('email')"></lib-input>
+                            <lib-input class="lib-input" type="text" i18n-placeholder="@@email_address" placeholder="Email address" label="‎" [hasError]="invites().controls[i].get('email').errors && submitted" [formControl]="invites().controls[i].get('email')"></lib-input>
                                 <mat-error i18n="@@email_required" *ngIf="invites().controls[i].get('email').errors && submitted">
                                     Email is required
                                 </mat-error>
