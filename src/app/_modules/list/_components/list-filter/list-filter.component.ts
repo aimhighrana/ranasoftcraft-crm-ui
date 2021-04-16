@@ -180,7 +180,7 @@ export class ListFilterComponent implements OnInit {
    */
   getFieldDescription(fieldId) {
     const field = this.moduleFieldsMetatdata.find(f => f.fieldId === fieldId) ;
-    return field ? field.fieldDescri || 'Unkown' : 'Unkown';
+    return field ? field.fieldDescri || 'Unknown' : 'Unknown';
   }
 
   /**
@@ -189,7 +189,7 @@ export class ListFilterComponent implements OnInit {
    */
    getFilterDescription(fieldId) {
     const field = this.filterFieldsMetadata.find(f => f.fieldId === fieldId) ;
-    return field ? field.fieldDescri || 'Unkown' : 'Unkown';
+    return field ? field.fieldDescri || 'Unknown' : 'Unknown';
   }
 
   /**

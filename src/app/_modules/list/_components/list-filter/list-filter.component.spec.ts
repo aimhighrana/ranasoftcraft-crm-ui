@@ -145,7 +145,7 @@ describe('ListFilterComponent', () => {
 
   it('should getFieldDescription', () => {
 
-    expect(component.getFieldDescription('any')).toEqual('Unkown');
+    expect(component.getFieldDescription('any')).toEqual('Unknown');
 
     component.moduleFieldsMetatdata = [
       {fieldId: 'MTL_GRP', fieldDescri: 'Material groupe'}
@@ -157,7 +157,7 @@ describe('ListFilterComponent', () => {
 
   it('should getFilterDescription', () => {
 
-    expect(component.getFilterDescription('any')).toEqual('Unkown');
+    expect(component.getFilterDescription('any')).toEqual('Unknown');
 
     component.filterFieldsMetadata = [
       {fieldId: 'MTL_GRP', fieldDescri: 'Material groupe'}
