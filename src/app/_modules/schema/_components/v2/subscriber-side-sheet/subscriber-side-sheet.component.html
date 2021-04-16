@@ -1,8 +1,8 @@
 <ng-template [ngIf]="!showInviteTemplate" [ngIfElse]="inviteTemplate">
     <div class="root">
         <div class="f-row breadcrum-toolbar">
-            <lib-button (click)="close()">
-                <mat-icon fontSet="mdo-icons">close</mat-icon>
+            <lib-button mat-button (click)="close()">
+                <mat-icon fontSet="mdo-icons">times</mat-icon>
             </lib-button>
             <div class="col-spacer"></div>
             <div class="f-col mdo-constrained-right">
@@ -10,7 +10,7 @@
                     <div class="display-heading-large" i18n="@@add_subscribers">Add subscribers</div>
                     <span class="f-col-spacer-half"></span>
                     <div class="f-spacer"></div>
-                    <lib-button type="minor" [disabled]="true" (click)="openSubscriberInviteDialog()"><mat-icon fontSet="mdo-icons"> add-group</mat-icon> Invite people to your team</lib-button>
+                    <lib-button mat-button type="minor" [disabled]="true" (click)="openSubscriberInviteDialog()"><mat-icon fontSet="mdo-icons"> add-group</mat-icon> Invite people to your team</lib-button>
                     <span class="f-col-spacer-half"></span>
                     <lib-button type="major" color="primary" i18n="@@save" (click)="save()">Save</lib-button>
                 </div>

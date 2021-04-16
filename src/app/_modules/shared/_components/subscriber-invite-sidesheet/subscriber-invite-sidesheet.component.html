@@ -1,7 +1,7 @@
 <div class="root">
     <div class="f-row breadcrum-toolbar">
-        <lib-button (click)="closeDialog()">
-            <mat-icon fontSet="mdo-icons">close</mat-icon>
+        <lib-button mat-button (click)="closeDialog()">
+            <mat-icon fontSet="mdo-icons">times</mat-icon>
         </lib-button>
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
@@ -48,8 +48,8 @@
            
                         </div>
                         <div class="col-x1">
-                            <lib-button (click)="removeInvite(i)">
-                                <mat-icon fontSet="mdo-icons"> recycle-bin</mat-icon>
+                            <lib-button mat-button (click)="removeInvite(i)">
+                                <mat-icon fontSet="mdo-icons">trash-alt</mat-icon>
                             </lib-button>
                         </div>
                     </div>
