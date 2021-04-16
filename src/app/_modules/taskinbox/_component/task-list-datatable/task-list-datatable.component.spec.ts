@@ -21,7 +21,7 @@ describe('TaskListDatatableComponent', () => {
 
   beforeEach(async(() => {
     queryParams = new Subject<Params>();
-    queryParams.next({ s: 'inbox', f: 'W29iamVjdCBPYmplY3Rd' });
+    // queryParams.next({ s: 'inbox', f: 'W29iamVjdCBPYmplY3Rd' });
     TestBed.configureTestingModule({
       declarations: [TaskListDatatableComponent],
       imports: [AppMaterialModuleForSpec, RouterTestingModule, SharedModule],
@@ -250,6 +250,15 @@ describe('TaskListDatatableComponent', () => {
 
     component.openTableViewSettings();
     expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/task/view/${component.node}` } }], {
+      queryParamsHandling: 'preserve',
+    });
+  });
+  it('openFilterSettingsPanel()', () => {
+    spyOn(router, 'navigate');
+    component.node = 'inbox';
+
+    component.openFilterSettingsPanel();
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/task/filter/${component.node}` } }], {
       queryParamsHandling: 'preserve',
     });
   });

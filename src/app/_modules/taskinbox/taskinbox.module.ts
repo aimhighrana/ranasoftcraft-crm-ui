@@ -5,9 +5,10 @@ import { TaskinboxRoutingModule } from './taskinbox-routing.module';
 import { TaskListDatatableComponent } from './_component/task-list-datatable/task-list-datatable.component';
 import { SharedModule } from '@modules/shared/shared.module';
 import { TaskListTableViewSettingsComponent } from './_component/task-list-table-view-settings/task-list-table-view-settings.component';
+import { TaskListFilterComponent } from './_component/task-list-filter/task-list-filter.component';
 
 @NgModule({
-  declarations: [TaskListDatatableComponent, TaskListTableViewSettingsComponent],
+  declarations: [TaskListDatatableComponent, TaskListTableViewSettingsComponent, TaskListFilterComponent],
   imports: [CommonModule, TaskinboxRoutingModule, SharedModule],
 })
 export class TaskinboxModule {}
