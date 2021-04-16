@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FieldMetaData } from '@models/core/coreModel';
@@ -175,7 +175,7 @@ describe('ListFilterComponent', () => {
 
   });
 
-  it('should init component', () => {
+  it('should init component', fakeAsync(() => {
 
     spyOn(component, 'getfilterFieldsMetadata');
     spyOn(component, 'getModuleFldMetadata');
@@ -195,8 +195,9 @@ describe('ListFilterComponent', () => {
     expect(component.filtersList.filterCriteria[0].fieldId).toEqual('region');
 
     component.searchFieldSub.next('material');
+    tick(1000);
     expect(component.suggestedFilters.length).toEqual(0);
 
-  });
+  }));
 
 });
