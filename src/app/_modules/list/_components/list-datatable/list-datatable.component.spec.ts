@@ -55,6 +55,7 @@ describe('ListDatatableComponent', () => {
     spyOn(component, 'getTotalCount');
     spyOn(sharedServices, 'getViewDetailsData').and.returnValue(of());
     spyOn(component, 'getTableData');
+    spyOn(component, 'getObjectTypeDetails');
 
     component.ngOnInit();
     expect(component.getViewsList).toHaveBeenCalled();

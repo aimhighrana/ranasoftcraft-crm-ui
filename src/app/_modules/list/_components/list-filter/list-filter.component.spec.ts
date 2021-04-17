@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FieldMetaData } from '@models/core/coreModel';
@@ -41,10 +41,10 @@ describe('ListFilterComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should getFldMetadata', () => {
+  it('should getModuleFldMetadata', () => {
 
 
-    expect(() => component.getFldMetadata()).toThrowError('Module id cant be null or empty');
+    expect(() => component.getModuleFldMetadata()).toThrowError('Module id cant be null or empty');
 
     const response = [{
           fieldId: 'name',
@@ -52,18 +52,54 @@ describe('ListFilterComponent', () => {
     }] as FieldMetaData[];
 
     component.moduleId = '1005';
-    spyOn(coreService, 'getAllFieldsForView').withArgs(component.moduleId)
-      .and.returnValues(of(response), throwError({message: 'api error'}));
+    spyOn(coreService, 'searchFieldsMetadata')
+      .and.returnValues(of(response), of(response), of([]),throwError({message: 'api error'}));
 
 
-    component.getFldMetadata();
-    expect(coreService.getAllFieldsForView).toHaveBeenCalledWith(component.moduleId);
-    expect(component.metadataFldLst).toEqual(response);
+    component.getModuleFldMetadata();
+    expect(coreService.searchFieldsMetadata).toHaveBeenCalledWith(component.moduleId, component.fieldsPageIndex, component.fieldsSearchString,20);
+    expect(component.moduleFieldsMetatdata).toEqual(response);
+
+    // load more
+    component.getModuleFldMetadata(true);
+    expect(coreService.searchFieldsMetadata).toHaveBeenCalledWith(component.moduleId, 1, component.fieldsSearchString,20);
+    expect(component.moduleFieldsMetatdata.length).toEqual(2);
+
+    // load more empty response
+    component.getModuleFldMetadata(true);
+    expect(coreService.searchFieldsMetadata).toHaveBeenCalledWith(component.moduleId, 2, component.fieldsSearchString,20);
+    expect(component.moduleFieldsMetatdata.length).toEqual(2);
+    expect(component.fieldsPageIndex).toEqual(1);
 
 
     // api error
     spyOn(console, 'error');
-    component.getFldMetadata();
+    component.getModuleFldMetadata();
+    expect(console.error).toHaveBeenCalled();
+
+  });
+
+  it('should getfilterFieldsMetadata', () => {
+
+    component.getfilterFieldsMetadata([]);
+
+    const response = [{
+          fieldId: 'name',
+          fieldDescri: 'name'
+    }] as FieldMetaData[];
+
+    spyOn(coreService, 'getMetadataByFields').withArgs(['name'])
+      .and.returnValues(of(response), throwError({message: 'api error'}));
+
+
+    component.getfilterFieldsMetadata(['name']);
+    expect(coreService.getMetadataByFields).toHaveBeenCalledWith(['name']);
+    expect(component.filterFieldsMetadata).toEqual(response);
+
+
+    // api error
+    spyOn(console, 'error');
+    component.getfilterFieldsMetadata(['name']);
     expect(console.error).toHaveBeenCalled();
 
   });
@@ -84,38 +120,50 @@ describe('ListFilterComponent', () => {
 
   });
 
-  it('should upsertFilter', () => {
+  it('should applyFilter', () => {
 
     component.activeFilter = new FilterCriteria();
     component.activeFilter.fieldId = 'MTL_GROUP';
 
-    component.upsertFilter();
-    component.upsertFilter();
+    component.applyFilter();
+    component.applyFilter();
     expect(component.filtersList.filterCriteria.length).toEqual(1);
 
   });
 
-  it('should editFilter', () => {
+  it('should upsertFilter', () => {
 
-    component.editFilter('MTL_GROUP');
+    component.upsertFilter('MTL_GROUP');
     expect(component.activeFilter.fieldId).toEqual('MTL_GROUP');
 
-    component.upsertFilter();
+    component.applyFilter();
     component.filtersList.filterCriteria[0].values = ['grp1'];
-    component.editFilter('MTL_GROUP');
+    component.upsertFilter('MTL_GROUP');
     expect(component.activeFilter.values).toEqual(['grp1']);
 
   });
 
   it('should getFieldDescription', () => {
 
-    expect(component.getFieldDescription('any')).toEqual('Unkown');
+    expect(component.getFieldDescription('any')).toEqual('Unknown');
 
-    component.metadataFldLst = [
+    component.moduleFieldsMetatdata = [
       {fieldId: 'MTL_GRP', fieldDescri: 'Material groupe'}
     ] as FieldMetaData[];
 
     expect(component.getFieldDescription('MTL_GRP')).toEqual('Material groupe');
+
+  });
+
+  it('should getFilterDescription', () => {
+
+    expect(component.getFilterDescription('any')).toEqual('Unknown');
+
+    component.filterFieldsMetadata = [
+      {fieldId: 'MTL_GRP', fieldDescri: 'Material groupe'}
+    ] as FieldMetaData[];
+
+    expect(component.getFilterDescription('MTL_GRP')).toEqual('Material groupe');
 
   });
 
@@ -127,9 +175,10 @@ describe('ListFilterComponent', () => {
 
   });
 
-  it('should init component', () => {
+  it('should init component', fakeAsync(() => {
 
-    spyOn(component, 'getFldMetadata');
+    spyOn(component, 'getfilterFieldsMetadata');
+    spyOn(component, 'getModuleFldMetadata');
 
     component.ngOnInit();
 
@@ -145,6 +194,10 @@ describe('ListFilterComponent', () => {
     component.ngOnInit();
     expect(component.filtersList.filterCriteria[0].fieldId).toEqual('region');
 
-  });
+    component.searchFieldSub.next('material');
+    tick(1000);
+    expect(component.suggestedFilters.length).toEqual(0);
+
+  }));
 
 });

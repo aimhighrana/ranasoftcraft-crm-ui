@@ -153,6 +153,8 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
       this.filtersList = filters;
       console.log(this.filtersList);
       if(!this.isPageRefresh) {
+
+        this.getTotalCount();
         this.getTableData();
       }
       this.isPageRefresh = false;
@@ -297,7 +299,7 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
    * get total records count
    */
   getTotalCount() {
-    const subs = this.listService.getDataCount(this.moduleId, []).subscribe(count => {
+    const subs = this.listService.getDataCount(this.moduleId, this.filtersList.filterCriteria).subscribe(count => {
       this.totalCount = count;
     }, error => {
       console.error(`Error : ${error.message}`);
