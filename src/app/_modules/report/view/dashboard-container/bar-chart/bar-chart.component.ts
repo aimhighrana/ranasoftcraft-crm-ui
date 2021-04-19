@@ -6,6 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 import { ChartOptions, ChartTooltipItem, ChartData } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 
@@ -122,6 +123,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
 
   constructor(
     private widgetService: WidgetService,
+    private snackBar: MatSnackBar,
     @Inject(LOCALE_ID) public locale: string,
     public matDialog: MatDialog
   ) {
@@ -738,9 +740,12 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     this.barWidget.unsubscribe();
   }
 
-  updateLabel() {
+  saveDisplayCriteria() {
     this.widgetService.saveDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType, this.ctOption.key).subscribe(res => {
       this.updateChart(this.returndata);
+    }, error => {
+      console.error(`Error : ${error}`);
+      this.snackBar.open(`Something went wrong`, 'Close', { duration: 3000 });
     });
   }
 }

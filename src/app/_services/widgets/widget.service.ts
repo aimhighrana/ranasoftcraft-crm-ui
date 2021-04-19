@@ -146,10 +146,16 @@ export class WidgetService {
     return this.http.post<DuplicateReport>(this.endpointAnalyticService.copyReport(reportId, reportName), {});
   }
 
+  /**
+   * Call http to get DisplayCriteria for a Widget
+   */
   public getDisplayCriteria(widgetId: string, widgetType: WidgetType) : Observable<any> {
     return this.http.get<any>(this.endpointAnalyticService.displayCriteria(widgetId, widgetType));
   }
 
+  /**
+   * Call http to save DisplayCriteria for a Widget
+   */
   public saveDisplayCriteria(widgetId: string, widgetType: WidgetType, displayCriteria: DisplayCriteria, body = null) : Observable<any> {
     const url = displayCriteria ? `&displayCriteria=${displayCriteria}` : '';
     return this.http.post<any>(this.endpointAnalyticService.displayCriteria(widgetId, widgetType) + url, body);

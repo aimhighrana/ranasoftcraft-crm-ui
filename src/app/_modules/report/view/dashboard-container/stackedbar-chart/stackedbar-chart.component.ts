@@ -8,6 +8,7 @@ import { StackBarChartWidget, Criteria, WidgetHeader, BlockType, ConditionOperat
 import { ReportService } from '../../../_service/report.service';
 import   ChartDataLables from 'chartjs-plugin-datalabels';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'pros-stackedbar-chart',
@@ -83,6 +84,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
   constructor(
     private widgetService : WidgetService,
     private reportService: ReportService,
+    private snackBar: MatSnackBar,
     @Inject(LOCALE_ID) public locale: string,
     public matDialog: MatDialog
   ) {
@@ -106,6 +108,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     this.stackBarWidget.subscribe(res=>{
       if(res){
         this.resetChart();
+        this.getstackbarChartData(this.widgetId,this.filterCriteria);
       }
     });
 
@@ -782,7 +785,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     return this.getRandomColor();
   }
 
-  checkTextCode(v): string {
+  checkTextCode(v: { c: string; t: string; }): string {
     switch (this.ctOption.key) {
       case DisplayCriteria.CODE:
         if(v.c) {
@@ -801,10 +804,13 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     return '';
   }
 
-  updateLabel() {
+  saveDisplayCriteria() {
     this.widgetService.saveDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType, this.ctOption.key).subscribe(res => {
       this.resetChart();
       this.updateChart(this.returnData);
+    }, error => {
+      console.error(`Error : ${error}`);
+      this.snackBar.open(`Something went wrong`, 'Close', { duration: 3000 });
     });
   }
 }

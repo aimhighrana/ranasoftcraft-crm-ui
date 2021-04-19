@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FilterComponent } from './filter.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Criteria, DropDownValues, FilterWidget, FilterResponse, Widget, WidgetType } from '../../../_models/widget';
+import { Criteria, DropDownValues, FilterWidget, FilterResponse, Widget, WidgetType, DisplayCriteria } from '../../../_models/widget';
 import { MatSliderChange } from '@angular/material/slider';
 import { MetadataModel } from 'src/app/_models/schema/schemadetailstable';
 import * as moment from 'moment';
@@ -310,5 +310,20 @@ describe('FilterComponent', () => {
    component.onfocus();
 
    expect(component.filterCriteria.length).toEqual(1);
+  }));
+
+  it('checkTextCode(), should return string from DisplayCriteria', async(()=> {
+    component.ctOption.key = DisplayCriteria.TEXT;
+    const test = { t: 'test', c: '1234'};
+    let res = component.checkTextCode(test);
+    expect(res).toEqual('test');
+
+    component.ctOption.key = DisplayCriteria.CODE;
+    res = component.checkTextCode(test);
+    expect(res).toEqual('1234');
+
+    component.ctOption.key = DisplayCriteria.CODE_TEXT;
+    res = component.checkTextCode(test);
+    expect(res).toEqual('1234 -- test');
   }));
 });

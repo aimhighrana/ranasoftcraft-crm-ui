@@ -6,6 +6,13 @@
     </div>
     <div class="f-spacer"></div>
     <lib-button  aria-label="Clear" (click)="clearFilterCriteria()" *ngIf="enableClearIcon" type="plain" iconFontType="light" icon="times"></lib-button>
+    <lib-button [matMenuTriggerFor]="menu" type="plain" icon="ellipsis-h"></lib-button>
+    <mat-menu #menu="matMenu" class="navigation-menu">
+      <button mat-menu-item [matMenuTriggerFor]="tcOptionMenu" i18n="@@viewAs">View as...</button>
+      <mat-menu #tcOptionMenu="matMenu">
+        <lib-radio-group layout="vertical" [(value)]="ctOption" [options]="ctOptions" (valueChange)="saveDisplayCriteria()"></lib-radio-group>
+      </mat-menu>
+    </mat-menu>
   </div>
 
   <mat-card-content>

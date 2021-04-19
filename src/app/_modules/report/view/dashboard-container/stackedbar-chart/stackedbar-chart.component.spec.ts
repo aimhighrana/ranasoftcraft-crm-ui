@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { StackedbarChartComponent } from './stackedbar-chart.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { StackBarChartWidget, Criteria, WidgetHeader, PositionType, AlignPosition, AnchorAlignPosition, Orientation, OrderWith, WidgetColorPalette, Widget, WidgetType} from '../../../_models/widget';
+import { StackBarChartWidget, Criteria, WidgetHeader, PositionType, AlignPosition, AnchorAlignPosition, Orientation, OrderWith, WidgetColorPalette, Widget, WidgetType, DisplayCriteria} from '../../../_models/widget';
 import { BehaviorSubject, of } from 'rxjs';
 import { MatMenuModule } from '@angular/material/menu';
 import { BaseChartDirective, Label } from 'ng2-charts';
@@ -421,5 +421,20 @@ describe('StackedbarChartComponent', () => {
     const actualRes = component.getUpdatedColorCode('HAWA');
     expect(actualRes).toEqual('#f1f1f1');
 
+  }));
+
+  it('checkTextCode(), should return string from DisplayCriteria', async(()=> {
+    component.ctOption.key = DisplayCriteria.TEXT;
+    const test = { t: 'test', c: '1234'};
+    let res = component.checkTextCode(test);
+    expect(res).toEqual('test');
+
+    component.ctOption.key = DisplayCriteria.CODE;
+    res = component.checkTextCode(test);
+    expect(res).toEqual('1234');
+
+    component.ctOption.key = DisplayCriteria.CODE_TEXT;
+    res = component.checkTextCode(test);
+    expect(res).toEqual('1234 -- test');
   }));
 });

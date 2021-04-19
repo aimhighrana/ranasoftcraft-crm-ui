@@ -11,6 +11,7 @@ import { BlockType } from '@modules/admin/_components/module/business-rules/user
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import ChartDataLables from 'chartjs-plugin-datalabels';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 const btnArray: ButtonArr[] = [
   { id: 0, value: 'millisecond', isActive: false },
@@ -154,6 +155,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   constructor(
     private widgetService: WidgetService,
     private fb: FormBuilder,
+    private snackBar: MatSnackBar,
     public matDialog: MatDialog) {
     super(matDialog);
   }
@@ -1014,9 +1016,12 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     // this.widgetInf.next(this.widgetInf.getValue());
   }
 
-  updateLabel() {
+  saveDisplayCriteria() {
     this.widgetService.saveDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType, this.ctOption.key).subscribe(res => {
       this.updateChart(this.responseData)
+    }, error => {
+      console.error(`Error : ${error}`);
+      this.snackBar.open(`Something went wrong`, 'Close', { duration: 3000 });
     });
   }
 

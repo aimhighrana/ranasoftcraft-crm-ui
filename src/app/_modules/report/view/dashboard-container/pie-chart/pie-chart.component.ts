@@ -8,6 +8,7 @@ import { ChartOptions, ChartTooltipItem, ChartData, ChartLegendLabelItem } from 
 import { BaseChartDirective } from 'ng2-charts';
 import ChartDataLables from 'chartjs-plugin-datalabels';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'pros-pie-chart',
@@ -102,6 +103,7 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
   constructor(
     private widgetService: WidgetService,
     private reportService: ReportService,
+    private snackBar: MatSnackBar,
     @Inject(LOCALE_ID) public locale: string,
     public matDialog: MatDialog
   ) {
@@ -618,9 +620,12 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
     }
   }
 
-  updateLabel() {
+  saveDisplayCriteria() {
     this.widgetService.saveDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType, this.ctOption.key).subscribe(res => {
       this.updateChart(this.returndata);
+    }, error => {
+      console.error(`Error : ${error}`);
+      this.snackBar.open(`Something went wrong`, 'Close', { duration: 3000 });
     });
   }
 }
