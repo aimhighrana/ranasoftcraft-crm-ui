@@ -12,26 +12,16 @@
     padding: 0 12px;
   }
 
+  .list-item {
+    cursor: pointer;
+  }
+
   .tabs-result {
     width: calc(100% - 220px - 24px);
     align-items: center;
 
     .tabs-middle {
       width: 70%;
-    }
-
-    .tabs-content {
-      align-items: flex-start;
-
-      .avatar {
-        width: 300px;
-        display: flex;
-        justify-content: space-around;
-      }
-
-      .entry-fields {
-        width: 100%;
-      }
     }
   }
 }

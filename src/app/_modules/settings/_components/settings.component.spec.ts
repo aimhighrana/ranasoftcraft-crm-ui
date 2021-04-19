@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SharedModule } from '@modules/shared/shared.module';
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 
 import { SettingsComponent } from './settings.component';
 
@@ -15,7 +16,8 @@ describe('SettingsComponent', () => {
       declarations: [ SettingsComponent ],
       imports: [
         RouterTestingModule,
-        SharedModule
+        SharedModule,
+        MdoUiLibraryModule
       ]
     })
     .compileComponents();

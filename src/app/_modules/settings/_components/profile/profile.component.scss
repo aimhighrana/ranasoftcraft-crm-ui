@@ -1,0 +1,17 @@
+.mat-err {
+  margin-bottom: 12px;
+}
+
+.tabs-content {
+  align-items: flex-start;
+
+  .avatar {
+    width: 300px;
+    display: flex;
+    justify-content: space-around;
+  }
+
+  .entry-fields {
+    width: 100%;
+  }
+}
