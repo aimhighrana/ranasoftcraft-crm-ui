@@ -6,6 +6,7 @@ div.root {
 
   .breadcrum-toolbar {
     padding: 8px 16px;
+    align-items: flex-start;
 
     .mdo-constrained-right {
       width: 100%;
@@ -14,13 +15,11 @@ div.root {
   }
 
   .sidesheetcontent-listing {
+    height: calc(100% - 170px);
+    overflow: auto;
+
     .mdo-justify {
       margin: 0 16px;
-
-      .fields-container {
-        max-height: 400px;
-        overflow: auto;
-      }
     }
   }
 }
