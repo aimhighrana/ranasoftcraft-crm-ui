@@ -70,7 +70,7 @@
             <lib-chip-list>
                 
                 <mat-chip-list>
-                    <lib-search placeholder="Search..." (valueChange)="inlineSearchSubject.next($event);">
+                    <lib-search class="lib-search" placeholder="Search..." (valueChange)="inlineSearchSubject.next($event);">
                     </lib-search>
                     
                     <lib-chip class="mdo-filter-matchip" i18n-label="@@errors" label="Errors" disableRipple="true" (click)="changeTabStatus('error')">
