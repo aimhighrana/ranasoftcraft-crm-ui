@@ -7,7 +7,7 @@
                 <div class="display-heading-large" i18n="@@configure_view">Configure view</div>
                 <span class="f-col-spacer-half"></span>
                 <span class="f-spacer"></span>
-                <lib-button i18n="@@save" (click)="save(configTabs.selectedIndex)" type="major">Save</lib-button>
+                <lib-button i18n="@@save" (click)="save(configTabSelectedIndex)" type="major">Save</lib-button>
             </div>
         </div>
     </div>
@@ -15,24 +15,21 @@
     <div class="f-col sidesheetcontent-listing">
         <div class="f-col mdo-justify">
             <div class="f-col">
-                <mat-tab-group disableRipple="true" animationDuration="0ms" #configTabs>
-                    <mat-tab #columnsTab>
-                        <ng-template mat-tab-label>
-                            Columns
-                        </ng-template>
+                <lib-tab-group (selectedIndexChange)="configTabSelectedIndex=$event">
+                    <lib-tab i18n-label="@@columns" label="Columns">                  
                         <div class="f-col">
-                            <lib-search placeholder="Search columns" (value)="searchFld($event)"></lib-search>
+                            <lib-search i18n-placeholder="@@search_columns" placeholder="Search columns" (valueChange)="searchFld($event)"></lib-search>
                             <div class="row-spacer"></div>
                             <div class="check-list">
                                 <!-- <mat-checkbox class="checkedall" color="primary" (change)="selectAll()" [(ngModel)]="allChecked"
                                     [indeterminate]="allIndeterminate"> <span class="checkboxlabel">All</span></mat-checkbox> -->
                                 <div class="f-row colunm-box">
                                     <div class="col"></div>
-                                    <div class="col col-x4"><strong> Column </strong></div>
+                                    <div class="col col-x4"><strong i18n="@@Column"> Column </strong></div>
                                     <span class="f-spacer"></span>
-                                    <div class="col"><strong> Visible </strong></div>
+                                    <div class="col"><strong i18n="@@Visible"> Visible </strong></div>
                                     <span class="f-col-spacer-half"></span>
-                                    <div class="col"><strong> Editable </strong></div>
+                                    <div class="col"><strong i18n="@@editable"> Editable </strong></div>
                                 </div>
                                 <div cdkDropList [cdkDropListData]="header" (cdkDropListDropped)="drop($event)"
                                     #scrollableContainer>
@@ -60,39 +57,24 @@
                                             <div class="f-spacer"></div>
 
                                             <div class="col">
-                                                <mat-checkbox color="primary" (change)="selectionChange(fld)"
-                                                    [checked]="isChecked(fld)">
-                                                </mat-checkbox>
+                                                <lib-checkbox (valueChange)="selectionChange(fld)"
+                                                [checked]="isChecked(fld)"></lib-checkbox>
                                             </div>
                                             <span class="f-col-spacer-half"></span>
 
                                             <div class="col">
-                                                <mat-checkbox color="primary" (change)="editableChange(fld)"
-                                                    [disabled]="!isChecked(fld)" [checked]="isEditEnabled(fld)">
-                                                </mat-checkbox>
+                                                <lib-checkbox (valueChange)="editableChange(fld)"
+                                                [disabled]="!isChecked(fld)" [checked]="isEditEnabled(fld)"></lib-checkbox>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </mat-tab>
-                    <mat-tab *ngIf="isActionConfigAllowed">
-                        <ng-template mat-tab-label>
-                            Actions
-                        </ng-template>
-                        <!-- <div class="f-col mdo-form-field">
-                            <mat-label><strong>Role</strong></mat-label>
-                            <div class="f-row">
-                                <mat-button-toggle-group appearance="legacy" name="fontStyle" aria-label="Font Style">
-                                    <mat-button-toggle value="Editor">Editor</mat-button-toggle>
-                                    <mat-button-toggle value="Approver">Approver</mat-button-toggle>
-                                    <mat-button-toggle value="Reviewer">Reviewer</mat-button-toggle>
-                                </mat-button-toggle-group>
-                            </div>
-                        </div> -->
+                    </lib-tab>
+                    <lib-tab *ngIf="true || isActionConfigAllowed" label="Actions">
                         <div class="f-col mdo-form-field">
-                            <mat-label><strong>Preview</strong></mat-label>
+                            <mat-label><strong i18n="@@preview">Preview</strong></mat-label>
                             <div class="f-row">
                                 <!-- Secondary actions
                                 <button mat-fab color="accent" *ngIf="secondaryActions.length"
@@ -159,9 +141,9 @@
                         <div class="colunm-listing">
                             <div class="f-row colunm-box rule-border-row">
                                 <div class="col">&nbsp;</div>
-                                <div class="col col-x8"><strong>Action</strong></div>
-                                <div class="col col-x4"><strong class="f-row">Primary &nbsp;
-                                        <mat-icon matTooltip="Primary" fontSet="mdo-icons-light">question-circle
+                                <div class="col col-x8"><strong i18n="@@action">Action</strong></div>
+                                <div class="col col-x4"><strong class="f-row" i18n="@@primary">Primary &nbsp;
+                                        <mat-icon libTooltip="Primary" i18n-libTooltip="@@primary" fontSet="mdo-icons-light">question-circle
                                         </mat-icon>
                                     </strong></div>
                                 <div class="col col-x4">&nbsp;</div>
@@ -170,7 +152,7 @@
                             <div class="f-row colunm-box rule-border-row">
                                 <div class="col">&nbsp;</div>
                                 <div class="col col-x8">
-                                    <a (click)="addCustomAction()" class="mat-line info-link">New custom action</a>
+                                    <a (click)="addCustomAction()" i18n="@@new_custom_action" class="mat-line info-link">New custom action</a>
                                 </div>
                                 <div class="col col-x4"></div>
                                 <div class="col col-x4"></div>
@@ -197,11 +179,10 @@
                                     </div>
 
                                     <div class="col col-x4">
-                                        <mat-checkbox color="primary"
-                                            [disabled]="!action.isPrimaryAction && primaryActions.length === 3"
-                                            [checked]="action.isPrimaryAction"
-                                            (change)="actionChanged(index, 'isPrimaryAction', $event.checked)">
-                                        </mat-checkbox>
+                                        <lib-checkbox [disabled]="!action.isPrimaryAction && primaryActions.length === 3"
+                                        [checked]="action.isPrimaryAction"
+                                        (valueChange)="actionChanged(index, 'isPrimaryAction', $event.checked)">
+                                        </lib-checkbox>
                                     </div>
 
                                     <div class="col col-x4">
@@ -250,8 +231,9 @@
                             </div>
                         </div>
                         <!-- Action code end here-->
-                    </mat-tab>
-                </mat-tab-group>
+                    </lib-tab>
+                    
+                </lib-tab-group>
             </div>
         </div>
     </div>
