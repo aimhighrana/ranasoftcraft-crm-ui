@@ -229,16 +229,16 @@
                         <mat-table [dataSource]="dataSource" matSort>
                             <ng-container matColumnDef="_select_columns" sticky>
                                 <mat-header-cell *matHeaderCellDef>
-                                    <mat-checkbox color="primary" (change)="$event ? masterToggle() : null"
+                                    <lib-checkbox (valueChange)="$event ? masterToggle() : null"
                                         [checked]="selection.hasValue() && isAllSelected()"
                                         [indeterminate]="selection.hasValue() && !isAllSelected()">
-                                    </mat-checkbox>
+                                    </lib-checkbox>
                                 </mat-header-cell>
                                 <mat-cell *matCellDef="let row">
-                                    <mat-checkbox color="primary" (click)="$event.stopPropagation()"
-                                        (change)="$event ? selection.toggle(row) : null"
+                                    <lib-checkbox (click)="$event.stopPropagation()"
+                                        (valueChange)="$event ? selection.toggle(row) : null"
                                         [checked]="selection.isSelected(row)">
-                                    </mat-checkbox>
+                                    </lib-checkbox>
                                 </mat-cell>
                             </ng-container>
                             <!-- <ng-container matColumnDef="row_more_action" sticky>
