@@ -35,7 +35,7 @@ export class ProfileComponent implements OnInit {
    */
   createForm() {
     this.settingsForm = new FormGroup({
-      userName: new FormControl({value: '', disabled: true}),
+      userName: new FormControl({ value: '', disabled: true }),
       fullName: new FormControl('', [Validators.required]),
       preferredName: new FormControl('', [Validators.required]),
       phone: new FormControl(null, [Validators.required]),
