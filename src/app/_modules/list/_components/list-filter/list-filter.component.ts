@@ -14,6 +14,19 @@ import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 })
 export class ListFilterComponent implements OnInit {
 
+  periods = [
+    {value: 'Daily', key: 1},
+    {value: 'Weekly', key: 2},
+    {value: 'Monthly', key: 3},
+    {value: 'Quarterly', key: 4},
+    {value: 'Yearly', key: 5},
+  ];
+
+  rulelist = [
+    { label: 'Is', value: 'value1' },
+    { label: 'Is not', value: 'value2' }
+  ]
+
   /**
    * hold current  id
    */
