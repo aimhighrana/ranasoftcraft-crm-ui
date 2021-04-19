@@ -67,57 +67,58 @@
     </nav> -->
         <div class="f-row filter-container">
             <!-- Filter here...-->
-            <mat-chip-list>
-                <lib-search placeholder="Search..." (valueChange)="inlineSearchSubject.next($event);">
-                </lib-search>
+            <lib-chip-list>
                 
-                <mat-chip class="mdo-filter-matchip" disableRipple="true" (click)="changeTabStatus('error')">
-                    <span i18n="@@errors">Errors</span> &nbsp; <span class="chip-text-error">{{ (statics && statics.errorCnt) ? statics.errorCnt : 0
-                        }}</span>
-                </mat-chip>
-                <mat-chip class="mdo-filter-matchip" disableRipple="true" (click)="changeTabStatus('success')">
-                    <span i18n="@@success">Success</span> &nbsp; <span class="chip-text-success">{{ (statics && statics.successCnt) ?
-                        statics.successCnt : 0 }}</span>
-                </mat-chip>
-                <mat-chip class="mdo-filter-matchip" disableRipple="true" (click)="changeTabStatus('review')">
-                    <span i18n="@@corrections">Corrections</span> &nbsp; <span class="chip-text-correct">{{ (statics && statics.correctedCnt) ?
-                        statics.correctedCnt : 0 }}</span>
-                </mat-chip>
-                <ng-template ngFor let-ctrl [ngForOf]="filterCriteria | async">
-                    <ng-template [ngIf]="ctrl.type !== 'INLINE'">
-                        <mat-chip class="mdo-filter-matchip" disableRipple="true"
-                            [matMenuTriggerFor]="appliedfiltermenu" (click)="loadDropValues(ctrl)">
-                            {{ ctrl.filterCtrl ? ctrl.filterCtrl.fldCtrl.fieldDescri : 'Unknown' }}:
-                            &nbsp;
-                            <ng-template [ngIf]="ctrl.filterCtrl.selectedValues.length > 1" [ngIfElse]="showText">
-                                <span class="chip-text-correct">
-                                    {{ prepareTextToShow(ctrl) }}
-                                </span>
-                            </ng-template>
-                            <ng-template #showText>
-                                <span class="chip-text-correct">
-                                    <!-- {{ ctrl.filterCtrl ? (ctrl.filterCtrl.selectedValeus[0].TEXT ? ctrl.filterCtrl.selectedValeus[0].TEXT : ctrl.filterCtrl.selectedValeus[0].CODE) : ''}} -->
-                                    {{ prepareTextToShow(ctrl)}}
-                                </span>
-                            </ng-template>
-                            <mat-icon matChipRemove (click)="removeAppliedFilter(ctrl)">clear</mat-icon>
-                        </mat-chip>
-                        <!-- Append dynamic filter MatMenu -->
-                        <mat-menu #appliedfiltermenu="matMenu">
-                            <pros-filter-values [moduleId]="moduleId"
-                                [fieldId]="loadDopValuesFor ? loadDopValuesFor.fieldId : ''"
-                                [checkedValue]="loadDopValuesFor ? loadDopValuesFor.checkedValue : []"
-                                (selectedValues)="updateFilterCriteria($event)">
-                            </pros-filter-values>
-                        </mat-menu>
+                <mat-chip-list>
+                    <lib-search placeholder="Search..." (valueChange)="inlineSearchSubject.next($event);">
+                    </lib-search>
+                    
+                    <lib-chip class="mdo-filter-matchip" i18n-label="@@errors" label="Errors" disableRipple="true" (click)="changeTabStatus('error')">
+                        {{ (statics && statics.errorCnt) ? statics.errorCnt : 0
+                            }}
+                    </lib-chip>
+                    <lib-chip i18n-label="@@success" label="Success" class="mdo-filter-matchip" disableRipple="true" (click)="changeTabStatus('success')">
+                        {{ (statics && statics.successCnt) ?
+                            statics.successCnt : 0 }}
+                    </lib-chip>
+                    <lib-chip class="mdo-filter-matchip" i18n-label="@@corrections" label="Corrections" disableRipple="true" (click)="changeTabStatus('review')">
+                        {{ (statics && statics.correctedCnt) ?
+                            statics.correctedCnt : 0 }}
+                    </lib-chip>
+                    <ng-template ngFor let-ctrl [ngForOf]="filterCriteria | async">
+                        <ng-template [ngIf]="ctrl.type !== 'INLINE'">
+                            <mat-chip class="mdo-filter-matchip" disableRipple="true"
+                                [matMenuTriggerFor]="appliedfiltermenu" (click)="loadDropValues(ctrl)">
+                                {{ ctrl.filterCtrl ? ctrl.filterCtrl.fldCtrl.fieldDescri : 'Unknown' }}:&nbsp;
+                                <ng-template [ngIf]="ctrl.filterCtrl.selectedValues.length > 1" [ngIfElse]="showText">
+                                    <span class="chip-text-correct">
+                                        {{ prepareTextToShow(ctrl) }}
+                                    </span>
+                                </ng-template>
+                                <ng-template #showText>
+                                    <span class="chip-text-correct">
+                                        <!-- {{ ctrl.filterCtrl ? (ctrl.filterCtrl.selectedValeus[0].TEXT ? ctrl.filterCtrl.selectedValeus[0].TEXT : ctrl.filterCtrl.selectedValeus[0].CODE) : ''}} -->
+                                        {{ prepareTextToShow(ctrl)}}
+                                    </span>
+                                </ng-template>
+                                <mat-icon matChipRemove (click)="removeAppliedFilter(ctrl)">clear</mat-icon>
+                            </mat-chip>
+                            <!-- Append dynamic filter MatMenu -->
+                            <mat-menu #appliedfiltermenu="matMenu">
+                                <pros-filter-values [moduleId]="moduleId"
+                                    [fieldId]="loadDopValuesFor ? loadDopValuesFor.fieldId : ''"
+                                    [checkedValue]="loadDopValuesFor ? loadDopValuesFor.checkedValue : []"
+                                    (selectedValues)="updateFilterCriteria($event)">
+                                </pros-filter-values>
+                            </mat-menu>
+                        </ng-template>
                     </ng-template>
-                </ng-template>
+                </mat-chip-list>
 
                 <!-- Add filter control -->
-                <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="addfiltermenu"
-                    (click)="reInilize = !reInilize">
-                    <mat-icon fontSet="mdo-icons-light">filter</mat-icon>
-                </mat-chip>
+                <lib-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="addfiltermenu"
+                    (click)="reInilize = !reInilize" icon="filter">
+                </lib-chip>
                 <!-- Add filter control MatMenu -->
                 <mat-menu #addfiltermenu="matMenu">
                     <pros-add-filter-menu [moduleId]="moduleId" (evtReadyForApply)="makeFilterControl($event)"
@@ -125,15 +126,14 @@
                     </pros-add-filter-menu>
                 </mat-menu>
                 <!-- More control -->
-                <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="moreFilterMenu">
-                    <mat-icon fontSet="mdo-icons">ellipsis-h</mat-icon>
-                </mat-chip>
+                <lib-chip class="mdo-filter-matchip" disableRipple="true" icon="ellipsis-h" [matMenuTriggerFor]="moreFilterMenu">
+                </lib-chip>
                 <!-- More control MatMenu -->
                 <mat-menu #moreFilterMenu="matMenu" class="navigation-menu">
                     <button mat-menu-item i18n="@@save_as" (click)="opnDialogSaveVariant()">Save as...</button>
                     <button mat-menu-item i18n="@@reset" (click)="resetAppliedFilter()">Reset</button>
                 </mat-menu>
-            </mat-chip-list>
+            </lib-chip-list>
         </div>
 
         <div class="f-row-spacer-half"></div>
