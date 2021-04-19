@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { StackedbarChartComponent } from './stackedbar-chart.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { StackBarChartWidget, Criteria, WidgetHeader, PositionType, AlignPosition, AnchorAlignPosition, Orientation, OrderWith, WidgetColorPalette} from '../../../_models/widget';
+import { StackBarChartWidget, Criteria, WidgetHeader, PositionType, AlignPosition, AnchorAlignPosition, Orientation, OrderWith, WidgetColorPalette, Widget, WidgetType} from '../../../_models/widget';
 import { BehaviorSubject, of } from 'rxjs';
 import { MatMenuModule } from '@angular/material/menu';
 import { BaseChartDirective, Label } from 'ng2-charts';
@@ -23,7 +23,7 @@ describe('StackedbarChartComponent', () => {
   };
 
   beforeEach(async(() => {
-    const widgetServiceSpy = jasmine.createSpyObj(WidgetService,['downloadCSV','getHeaderMetaData', 'getWidgetData']);
+    const widgetServiceSpy = jasmine.createSpyObj(WidgetService,['downloadCSV','getHeaderMetaData', 'getWidgetData', 'getDisplayCriteria']);
     TestBed.configureTestingModule({
       declarations: [ StackedbarChartComponent ],
       imports:[AppMaterialModuleForSpec,HttpClientTestingModule,MatMenuModule, SharedModule],
@@ -142,13 +142,19 @@ describe('StackedbarChartComponent', () => {
   }));
 
   it('ngOnInit(),  should enable pre required on this component', async(()=>{
+    component.widgetId = 12345;
+    component.widgetInfo = new Widget();
+    component.widgetInfo.widgetType = WidgetType.STACKED_BAR_CHART;
+    component.widgetInfo.widgetId = component.widgetId.toString();
     component.stackBarWidget.next(new StackBarChartWidget());
+    spyOn(widgetService, 'getDisplayCriteria').withArgs(component.widgetInfo.widgetId, component.widgetInfo.widgetType).and.returnValue(of({propId:'626039146695',widgetId:12345,createdBy:'initiator',createdAt:1618442609,displayCriteria:'CODE_TEXT'}));
     component.ngOnInit();
     expect(component.stackbarLegend.length).toEqual(0, 'Initial stacked bar legend length should be 0');
     expect(component.stachbarAxis.length).toEqual(0, 'Initial stacked bar axis length should be 0');
     expect(component.barChartLabels.length).toEqual(0, 'Initial stack chart lebels length should 0');
     expect(component.listxAxis2.length).toEqual(0, 'Initial stack chart Axis2 length should 0');
     expect(component.barChartData[0].data.length).toEqual(5, 'Initial stack chart data  length should 5');
+    expect(widgetService.getDisplayCriteria).toHaveBeenCalledWith(component.widgetInfo.widgetId, WidgetType.STACKED_BAR_CHART);
   }));
 
   it('should show bar orienation based on orienation value', async(()=> {

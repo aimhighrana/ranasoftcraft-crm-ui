@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import * as XLSX from 'xlsx';
-import { Criteria, BarChartWidget, WidgetHeader, TimeSeriesWidget, WidgetImageModel, WidgetHtmlEditor, ReportingWidget, LayoutTabResponse, MDORECORDESV3,WidgetColorPalette, DuplicateReport } from 'src/app/_modules/report/_models/widget';
+import { Criteria, BarChartWidget, WidgetHeader, TimeSeriesWidget, WidgetImageModel, WidgetHtmlEditor, ReportingWidget, LayoutTabResponse, MDORECORDESV3,WidgetColorPalette, DuplicateReport, DisplayCriteria, WidgetType } from 'src/app/_modules/report/_models/widget';
 import { TreeModel } from '@modules/report/view/dashboard-container/filter/hierarchy-filter/hierarchy-filter.component';
 import { EndpointsAnalyticsService } from '@services/_endpoints/endpoints-analytics.service';
 
@@ -144,5 +144,14 @@ export class WidgetService {
    */
   public copyReport(reportId: string, reportName:string) : Observable<DuplicateReport> {
     return this.http.post<DuplicateReport>(this.endpointAnalyticService.copyReport(reportId, reportName), {});
+  }
+
+  public getDisplayCriteria(widgetId: string, widgetType: WidgetType) : Observable<any> {
+    return this.http.get<any>(this.endpointAnalyticService.displayCriteria(widgetId, widgetType));
+  }
+
+  public saveDisplayCriteria(widgetId: string, widgetType: WidgetType, displayCriteria: DisplayCriteria, body = null) : Observable<any> {
+    const url = displayCriteria ? `&displayCriteria=${displayCriteria}` : '';
+    return this.http.post<any>(this.endpointAnalyticService.displayCriteria(widgetId, widgetType) + url, body);
   }
 }

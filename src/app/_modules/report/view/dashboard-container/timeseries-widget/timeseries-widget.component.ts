@@ -5,7 +5,7 @@ import { BaseChartDirective, Label } from 'ng2-charts';
 import * as moment from 'moment';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { ButtonArr, ChartLegend, ConditionOperator, Criteria, SeriesWith, TimeSeriesWidget, WidgetColorPalette } from '../../../_models/widget';
+import { ButtonArr, ChartLegend, ConditionOperator, Criteria, DisplayCriteria, SeriesWith, TimeSeriesWidget, WidgetColorPalette } from '../../../_models/widget';
 import * as zoomPlugin from 'chartjs-plugin-zoom';
 import { BlockType } from '@modules/admin/_components/module/business-rules/user-defined-rule/udr-cdktree.service';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
@@ -27,10 +27,22 @@ const btnArray: ButtonArr[] = [
 })
 export class TimeseriesWidgetComponent extends GenericWidgetComponent implements OnInit, OnChanges, OnDestroy {
 
-  constructor(
-    private widgetService: WidgetService, private fb: FormBuilder, public matDialog: MatDialog) {
-    super(matDialog);
-  }
+  responseData: any;
+  ctOptions = [
+    {
+      key: DisplayCriteria.TEXT,
+      value: 'Text'
+    },
+    {
+      key: DisplayCriteria.CODE,
+      value: 'Code'
+    },
+    {
+      key: DisplayCriteria.CODE_TEXT,
+      value: 'Code and Text'
+    }
+  ];
+  ctOption = this.ctOptions[1];
 
   timeDateFormat: TimeDisplayFormat;
   dataSet: ChartDataSets[] = [{ data: [] }];
@@ -139,6 +151,13 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
 
   subscriptions: Subscription[] = [];
 
+  constructor(
+    private widgetService: WidgetService,
+    private fb: FormBuilder,
+    public matDialog: MatDialog) {
+    super(matDialog);
+  }
+
   ngOnDestroy(): void {
     this.widgetInf.complete();
     this.widgetInf.unsubscribe();
@@ -174,6 +193,9 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       this.emitDateChangeValues();
     });
 
+    this.widgetService.getDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType).subscribe(res => {
+      this.ctOption = this.ctOptions.find(d => d.key === res.displayCriteria);
+    });
 
     this.getTimeSeriesMetadata();
     const widgeInf = this.widgetInf.subscribe(metadata => {
@@ -469,38 +491,46 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
    * function to get widget data according to widgetID
    * @param widgetId ID of the widget
    */
-  getwidgetData(widgetId: number): void {
+   getwidgetData(widgetId: number): void {
     this.dataSet = [{ data: [] }];
-    const widgetdata = this.widgetService.getWidgetData(String(widgetId), this.filterCriteria).subscribe(response => {
-      if (response !== null) {
-        const metadata = this.widgetInf.getValue() ? this.widgetInf.getValue() : {} as TimeSeriesWidget;
-        if (this.isGroupByChart) {
-          this.transformForGroupBy(response);
-        } else if (metadata.timeSeries && (metadata.timeSeries.fieldId && metadata.timeSeries.groupWith && metadata.timeSeries.distictWith)) {
-          this.dataSet = this.transformDataForComparison(response, true);
-        } else if (metadata.timeSeries && ((!metadata.timeSeries.fieldId || metadata.timeSeries.fieldId === '') && metadata.timeSeries.groupWith && metadata.timeSeries.distictWith)) {
-          this.transformForGroupBy(response, true);
-        } else if (metadata.timeSeries.fieldId === 'TIME_TAKEN' || metadata.timeSeries.bucketFilter) {
-          this.tarnsformForShowInPercentage(response, metadata.timeSeries.showInPercentage);
+    this.widgetService.getWidgetData(String(widgetId), this.filterCriteria).subscribe(response => {
+      this.responseData = response;
+      this.updateChart(this.responseData)
+    });
+  }
+
+  private updateChart(responseData) {
+    if (responseData !== null) {
+      const metadata = this.widgetInf.getValue() ? this.widgetInf.getValue() : {} as TimeSeriesWidget;
+      if (this.isGroupByChart) {
+        this.transformForGroupBy(responseData);
+      } else if (metadata.timeSeries && (metadata.timeSeries.fieldId && metadata.timeSeries.groupWith && metadata.timeSeries.distictWith)) {
+        this.dataSet = this.transformDataForComparison(responseData, true);
+      } else if (metadata.timeSeries && ((!metadata.timeSeries.fieldId || metadata.timeSeries.fieldId === '') && metadata.timeSeries.groupWith && metadata.timeSeries.distictWith)) {
+        this.transformForGroupBy(responseData, true);
+      } else if (metadata.timeSeries.fieldId === 'TIME_TAKEN' || metadata.timeSeries.bucketFilter) {
+        this.tarnsformForShowInPercentage(responseData, metadata.timeSeries.showInPercentage);
+      }
+      else {
+        if (this.timeseriesData.timeSeries.chartType === 'BAR') {
+          this.dataSet = this.transformDataForComparison(responseData);
+        } else {
+          this.showFilterOption = true;
+          this.dataSet = this.transformDataSets(responseData);
         }
-        else {
-          if (this.timeseriesData.timeSeries.chartType === 'BAR') {
-            this.dataSet = this.transformDataForComparison(response);
-          } else {
-            this.showFilterOption = true;
-            this.dataSet = this.transformDataSets(response);
-          }
-          if (this.filterCriteria.length === 0) {
-            this.dateFilters.forEach(ele => {
-              ele.isActive = false;
-            });
-            this.startDateCtrl.setValue(null);
-            this.endDateCtrl.setValue(null);
-          }
+        if (this.filterCriteria.length === 0) {
+          this.dateFilters.forEach(ele => {
+            ele.isActive = false;
+          });
+          this.startDateCtrl.setValue(null);
+          this.endDateCtrl.setValue(null);
         }
       }
-    });
-    this.subscriptions.push(widgetdata);
+
+      if (this.chart) {
+        this.chart.update();
+      }
+    }
   }
 
   transformDataSets(data: any): any {
@@ -607,7 +637,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
           if (exist.length === 0) {
             this.chartLegend.push(chartLegend);
             if (this.dataSetlabel.indexOf(arrBucket.key) === -1) {
-              label.length > 0 ? this.dataSetlabel.push(label) : this.dataSetlabel.push(arrBucket.key);
+              label.length > 0 ? this.dataSetlabel.push(label) : this.dataSetlabel.push(this.checkTextCode(arrBucket));
             }
           }
         });
@@ -982,5 +1012,30 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     // this.lablels = [];
     // this.chartLegend = [];
     // this.widgetInf.next(this.widgetInf.getValue());
+  }
+
+  updateLabel() {
+    this.widgetService.saveDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType, this.ctOption.key).subscribe(res => {
+      this.updateChart(this.responseData)
+    });
+  }
+
+  checkTextCode(arrBucket): string {
+    switch (this.ctOption.key) {
+      case DisplayCriteria.CODE:
+        if(arrBucket.key) {
+          return arrBucket.key;
+        }
+        break;
+        case DisplayCriteria.TEXT:
+          if(arrBucket.text) {
+            return arrBucket.text;
+          }
+        break;
+        default:
+          return `${arrBucket.key} -- ${arrBucket.text || ''}`;
+        break;
+    }
+    return '';
   }
 }

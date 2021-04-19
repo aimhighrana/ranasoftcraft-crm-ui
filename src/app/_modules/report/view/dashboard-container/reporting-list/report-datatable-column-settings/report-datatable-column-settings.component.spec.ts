@@ -12,6 +12,7 @@ import { ReportService } from '@modules/report/_service/report.service';
 import { of } from 'rxjs';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
+import { DisplayCriteria } from '@modules/report/_models/widget';
 
 
 describe('ReportDatatableColumnSettingsComponent', () => {
@@ -204,5 +205,117 @@ describe('ReportDatatableColumnSettingsComponent', () => {
     component.ngOnInit();
     expect(sharedserviceSpy.getReportDataTableSetting).toHaveBeenCalled();
     expect(component.data.objectType).toEqual('1005');
+  }));
+
+  it('manageAllDisplayCriteria(), allDisplayCriteria should equal TEXT', async(() => {
+    component.data = {
+      objectType: 1005,
+      selectedColumns: [
+        {
+          fieldId: 'NDCTYPE',
+          fieldDescri: 'NDC TYPE MATERIAL',
+          displayCriteria: DisplayCriteria.TEXT
+        },
+        {
+          fieldId: 'MATL_TYPE',
+          fieldDescri: 'MATERIAL TYPE',
+          displayCriteria: DisplayCriteria.TEXT
+        }
+      ],
+      isWorkflowdataSet: false,
+      widgetId: 123456
+    };
+    component.manageAllDisplayCriteria();
+    expect(component.allDisplayCriteria).toEqual(DisplayCriteria.TEXT);
+  }));
+
+  it('manageAllDisplayCriteria(), allDisplayCriteria should equal CODE', async(() => {
+    component.data = {
+      objectType: 1005,
+      selectedColumns: [
+        {
+          fieldId: 'NDCTYPE',
+          fieldDescri: 'NDC TYPE MATERIAL',
+          displayCriteria: DisplayCriteria.CODE
+        },
+        {
+          fieldId: 'MATL_TYPE',
+          fieldDescri: 'MATERIAL TYPE',
+          displayCriteria: DisplayCriteria.CODE
+        }
+      ],
+      isWorkflowdataSet: false,
+      widgetId: 123456
+    };
+    component.manageAllDisplayCriteria();
+    expect(component.allDisplayCriteria).toEqual(DisplayCriteria.CODE);
+  }));
+
+  it('manageAllDisplayCriteria(), allDisplayCriteria should equal CODE_TEXT', async(() => {
+    component.data = {
+      objectType: 1005,
+      selectedColumns: [
+        {
+          fieldId: 'NDCTYPE',
+          fieldDescri: 'NDC TYPE MATERIAL',
+          displayCriteria: DisplayCriteria.CODE_TEXT
+        },
+        {
+          fieldId: 'MATL_TYPE',
+          fieldDescri: 'MATERIAL TYPE',
+          displayCriteria: DisplayCriteria.CODE_TEXT
+        }
+      ],
+      isWorkflowdataSet: false,
+      widgetId: 123456
+    };
+    component.manageAllDisplayCriteria();
+    expect(component.allDisplayCriteria).toEqual(DisplayCriteria.CODE_TEXT);
+  }));
+
+  it('manageAllDisplayCriteria(), allDisplayCriteria should equal null', async(() => {
+    component.data = {
+      objectType: 1005,
+      selectedColumns: [
+        {
+          fieldId: 'NDCTYPE',
+          fieldDescri: 'NDC TYPE MATERIAL',
+          displayCriteria: DisplayCriteria.TEXT
+        },
+        {
+          fieldId: 'MATL_TYPE',
+          fieldDescri: 'MATERIAL TYPE',
+          displayCriteria: DisplayCriteria.CODE_TEXT
+        }
+      ],
+      isWorkflowdataSet: false,
+      widgetId: 123456
+    };
+    component.manageAllDisplayCriteria();
+    expect(component.allDisplayCriteria).toEqual(null);
+  }));
+
+  it('changeAllDisplayCriteria(), should change all selectedColumns.displayCriteria to CODE_TEXT', async(() => {
+    component.data = {
+      objectType: 1005,
+      selectedColumns: [
+        {
+          fieldId: 'NDCTYPE',
+          fieldDescri: 'NDC TYPE MATERIAL',
+          displayCriteria: DisplayCriteria.TEXT
+        },
+        {
+          fieldId: 'MATL_TYPE',
+          fieldDescri: 'MATERIAL TYPE',
+          displayCriteria: DisplayCriteria.CODE
+        }
+      ],
+      isWorkflowdataSet: false,
+      widgetId: 123456
+    };
+    component.allDisplayCriteria = DisplayCriteria.CODE_TEXT;
+    component.changeAllDisplayCriteria();
+    expect(component.data.selectedColumns[0].displayCriteria).toEqual(DisplayCriteria.CODE_TEXT);
+    expect(component.data.selectedColumns[1].displayCriteria).toEqual(DisplayCriteria.CODE_TEXT);
   }));
 });

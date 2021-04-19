@@ -2,9 +2,11 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MetadataModel } from '@models/schema/schemadetailstable';
+import { DisplayCriteria } from '@modules/report/_models/widget';
 import { ReportService } from '@modules/report/_service/report.service';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
+import { WidgetService } from '@services/widgets/widget.service';
 import { Observable, of, Subscription } from 'rxjs';
 
 @Component({
@@ -57,6 +59,7 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
    * All the http or normal subscription will store in this array
    */
   subscriptions: Subscription[] = [];
+  allDisplayCriteria: DisplayCriteria;
 
   /**
    * Constructor of class
@@ -64,7 +67,9 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
   constructor(private router: Router,
     private schemaDetailsService: SchemaDetailsService,
     private sharedService: SharedServiceService,
-    private reportService: ReportService) { }
+    private reportService: ReportService,
+    private widgetService: WidgetService,
+  ) { }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => {
@@ -215,6 +220,9 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
       }
     })
     if (flag === false) {
+      if (!checkbox.displayCriteria) {
+        checkbox.displayCriteria = DisplayCriteria.CODE;
+      }
       this.data.selectedColumns.push(checkbox);
     }
     this.manageStateOfCheckbox()
@@ -232,6 +240,41 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
       this.allIndeterminate = true;
       this.allCheckboxSelected = false;
     }
+    this.manageAllDisplayCriteria();
+  }
+
+  manageAllDisplayCriteria() {
+    let text = false;
+    let code = false;
+    let codeText = false;
+    this.data.selectedColumns.forEach(row => {
+      switch (row.displayCriteria) {
+        case DisplayCriteria.TEXT:
+          text = true;
+          break;
+        case DisplayCriteria.CODE:
+          code = true;
+          break;
+        case DisplayCriteria.CODE_TEXT:
+          codeText = true;
+          break;
+      }
+    });
+    if (text && !code && !codeText) {
+      this.allDisplayCriteria = DisplayCriteria.TEXT;
+    } else if (!text && code && !codeText) {
+      this.allDisplayCriteria = DisplayCriteria.CODE;
+    } else if (!text && !code && codeText) {
+      this.allDisplayCriteria = DisplayCriteria.CODE_TEXT;
+    } else {
+      this.allDisplayCriteria = null;
+    }
+  }
+
+  changeAllDisplayCriteria() {
+    this.data.selectedColumns.forEach(row => {
+      row.displayCriteria = this.allDisplayCriteria;
+    });
   }
 
   /**
@@ -301,18 +344,26 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
       const obj = {
         widgetId : this.data.widgetId,
         fields: header.fieldId,
+        sno: header.sno,
+        displayCriteria: header.displayCriteria,
+        createdBy: this.data.userDetails.userName,
         fieldOrder: order++
       }
       prepareData.push(obj);
-    })
+    });
+    const reportDisplayCriteria = this.widgetService.saveDisplayCriteria(this.data.widgetId, this.data.widgetType, null, prepareData).subscribe(res => {
+    }, error => {
+      console.error('Error while updating report data table column settings', error.message);
+    });
     const reportDataTable = this.schemaDetailsService.createUpdateReportDataTable(this.data.widgetId, prepareData).subscribe(response => {
       this.close();
       this.data.isRefresh = true;
       this.sharedService.setReportDataTableSetting(this.data);
     }, error => {
-      console.error('Error while updating report data table column settings', error.message)
+      console.error('Error while updating report data table column settings', error.message);
     });
     this.subscriptions.push(reportDataTable);
+    this.subscriptions.push(reportDisplayCriteria);
   }
 
   /**

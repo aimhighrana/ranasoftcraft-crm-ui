@@ -1,7 +1,7 @@
 import { Component, OnInit, OnChanges, ViewChild, LOCALE_ID, Inject, SimpleChanges, OnDestroy } from '@angular/core';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
 import { BehaviorSubject } from 'rxjs';
-import { PieChartWidget, WidgetHeader, ChartLegend, Criteria, BlockType, ConditionOperator, WidgetColorPalette } from '../../../_models/widget';
+import { PieChartWidget, WidgetHeader, ChartLegend, Criteria, BlockType, ConditionOperator, WidgetColorPalette, DisplayCriteria } from '../../../_models/widget';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { ReportService } from '../../../_service/report.service';
 import { ChartOptions, ChartTooltipItem, ChartData, ChartLegendLabelItem } from 'chart.js';
@@ -16,7 +16,21 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class PieChartComponent extends GenericWidgetComponent implements OnInit, OnChanges, OnDestroy {
 
-
+  ctOptions = [
+    {
+      key: DisplayCriteria.TEXT,
+      value: 'Text'
+    },
+    {
+      key: DisplayCriteria.CODE,
+      value: 'Code'
+    },
+    {
+      key: DisplayCriteria.CODE_TEXT,
+      value: 'Code and Text'
+    }
+  ];
+  ctOption = this.ctOptions[0];
   pieWidget: BehaviorSubject<PieChartWidget> = new BehaviorSubject<PieChartWidget>(null);
   widgetHeader: WidgetHeader = new WidgetHeader();
   chartLegend: ChartLegend[] = [];
@@ -83,6 +97,7 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
 
     },
   ];
+  returndata: any;
 
   constructor(
     private widgetService: WidgetService,
@@ -119,6 +134,10 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
       if (res) {
         this.updateColorBasedOnDefined(res);
       }
+    });
+
+    this.widgetService.getDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType).subscribe(res => {
+      this.ctOption = this.ctOptions.find(d => d.key === res.displayCriteria);
     });
   }
 
@@ -177,65 +196,69 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
    * @param widgetId Id of the widget
    * @param critria crieteria
    */
-  public getPieChartData(widgetId: number, critria: Criteria[]): void {
+   public getPieChartData(widgetId: number, critria: Criteria[]): void {
     this.widgetService.getWidgetData(String(widgetId), critria).subscribe(returndata => {
-      const res = Object.keys(returndata.aggregations);
-      const arrayBuckets  = returndata.aggregations[res[0]] ? returndata.aggregations[res[0]].buckets : [];
-      this.dataSet = [];
-      arrayBuckets.forEach(bucket => {
-        const key = bucket.key === '' ? this.pieWidget.value.blankValueAlias !== undefined ? this.pieWidget.value.blankValueAlias : '' : bucket.key;
-        this.lablels.push(key);
-        this.dataSet.push(bucket.doc_count);
-      });
-      if(this.pieWidget.getValue().metaData && (this.pieWidget.getValue().metaData.picklist === '0' && (this.pieWidget.getValue().metaData.dataType === 'DTMS' || this.pieWidget.getValue().metaData.dataType === 'DATS'))) {
-        if (this.chartLegend.length === 0) {
-          this.getDateFieldsDesc(arrayBuckets);
-        } else {
-          this.lablels = this.chartLegend.map(map => map.text);
-        }
-       } else if (this.pieWidget.getValue().metaData && (this.pieWidget.getValue().metaData.picklist === '1' || this.pieWidget.getValue().metaData.picklist === '37' || this.pieWidget.getValue().metaData.picklist === '30')) {
-        if (this.chartLegend.length === 0) {
-          this.getFieldsMetadaDesc(arrayBuckets);
-        } else {
-          this.lablels = this.chartLegend.map(map => map.text);
-        }
-      } else {
-        if (this.chartLegend.length === 0) {
-          this.getFieldsDesc(arrayBuckets);
-        } else {
-          this.lablels = this.chartLegend.map(map => map.text);
-        }
-      }
-
-      if (this.pieWidget.getValue().isEnabledBarPerc) {
-        this.total = Number(this.dataSet.reduce((accumulator, currentValue) => accumulator + currentValue));
-        this.pieChartOptions = {
-          plugins: {
-            datalabels: {
-              display: true,
-              formatter: (value, ctx) => {
-                if (this.total > 0) {
-                  return (value * 100 / this.total).toFixed(2) + '%';
-                }
-              },
-            }
-          },
-          onClick: (event?: MouseEvent, activeElements?: Array<{}>) => {
-            this.stackClickFilter(event, activeElements);
-          },
-        }
-      }
-      this.pieChartData = [{
-        data: this.dataSet
-      }];
-      this.getColor();
-
-      // update chart after data sets change
-      if (this.chart) {
-        this.chart.update();
-      }
-
+      this.returndata = returndata;
+      this.updateChart(this.returndata);
     });
+  }
+
+  private updateChart(returndata) {
+    const res = Object.keys(returndata.aggregations);
+    const arrayBuckets  = returndata.aggregations[res[0]] ? returndata.aggregations[res[0]].buckets : [];
+    this.dataSet = [];
+    arrayBuckets.forEach(bucket => {
+      const key = bucket.key === '' ? this.pieWidget.value.blankValueAlias !== undefined ? this.pieWidget.value.blankValueAlias : '' : bucket.key;
+      this.lablels.push(key);
+      this.dataSet.push(bucket.doc_count);
+    });
+    if(this.pieWidget.getValue().metaData && (this.pieWidget.getValue().metaData.picklist === '0' && (this.pieWidget.getValue().metaData.dataType === 'DTMS' || this.pieWidget.getValue().metaData.dataType === 'DATS'))) {
+      if (this.chartLegend.length === 0) {
+        this.getDateFieldsDesc(arrayBuckets);
+      } else {
+        this.setLabels();
+      }
+     } else if (this.pieWidget.getValue().metaData && (this.pieWidget.getValue().metaData.picklist === '1' || this.pieWidget.getValue().metaData.picklist === '37' || this.pieWidget.getValue().metaData.picklist === '30')) {
+      if (this.chartLegend.length === 0) {
+        this.getFieldsMetadaDesc(arrayBuckets);
+      } else {
+        this.setLabels();
+      }
+    } else {
+      if (this.chartLegend.length === 0) {
+        this.getFieldsDesc(arrayBuckets);
+      } else {
+        this.setLabels();
+      }
+    }
+
+    if (this.pieWidget.getValue().isEnabledBarPerc) {
+      this.total = Number(this.dataSet.reduce((accumulator, currentValue) => accumulator + currentValue));
+      this.pieChartOptions = {
+        plugins: {
+          datalabels: {
+            display: true,
+            formatter: (value, ctx) => {
+              if (this.total > 0) {
+                return (value * 100 / this.total).toFixed(2) + '%';
+              }
+            },
+          }
+        },
+        onClick: (event?: MouseEvent, activeElements?: Array<{}>) => {
+          this.stackClickFilter(event, activeElements);
+        },
+      }
+    }
+    this.pieChartData = [{
+      data: this.dataSet
+    }];
+    this.getColor();
+
+    // update chart after data sets change
+    if (this.chart) {
+      this.chart.update();
+    }
   }
 
   /**
@@ -287,7 +310,7 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
       }
       this.chartLegend.push(chartLegend);
     });
-    this.lablels = this.chartLegend.map(map => map.text);
+    this.setLabels();
   }
 
   /**
@@ -337,7 +360,7 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
       }
       this.chartLegend.push(chartLegend);
     });
-    this.lablels = this.chartLegend.map(map => map.text);
+    this.setLabels();
   }
 
   /**
@@ -386,7 +409,7 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
       }
       this.chartLegend.push(chartLegend);
     });
-    this.lablels = this.chartLegend.map(map => map.text);
+    this.setLabels();
   }
 
   legendClick(legendItem: ChartLegendLabelItem) {
@@ -579,5 +602,25 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
   ngOnDestroy(): void {
     this.pieWidget.complete();
     this.pieWidget.unsubscribe();
+  }
+
+  setLabels() {
+    switch (this.ctOption.key) {
+      case DisplayCriteria.CODE:
+        this.lablels = this.chartLegend.map(map => map.code);
+        break;
+        case DisplayCriteria.TEXT:
+        this.lablels = this.chartLegend.map(map => map.text);
+        break;
+        default:
+        this.lablels = this.chartLegend.map(map => map.code + ' -- ' + map.text);
+        break;
+    }
+  }
+
+  updateLabel() {
+    this.widgetService.saveDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType, this.ctOption.key).subscribe(res => {
+      this.updateChart(this.returndata);
+    });
   }
 }

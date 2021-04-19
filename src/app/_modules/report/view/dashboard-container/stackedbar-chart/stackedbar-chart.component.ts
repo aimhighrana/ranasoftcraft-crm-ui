@@ -4,7 +4,7 @@ import { Label, BaseChartDirective } from 'ng2-charts';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
 import { BehaviorSubject } from 'rxjs';
-import { StackBarChartWidget, Criteria, WidgetHeader, BlockType, ConditionOperator, ChartLegend, Orientation, OrderWith, WidgetColorPalette } from '../../../_models/widget';
+import { StackBarChartWidget, Criteria, WidgetHeader, BlockType, ConditionOperator, ChartLegend, Orientation, OrderWith, WidgetColorPalette, DisplayCriteria } from '../../../_models/widget';
 import { ReportService } from '../../../_service/report.service';
 import   ChartDataLables from 'chartjs-plugin-datalabels';
 import { MatDialog } from '@angular/material/dialog';
@@ -16,6 +16,21 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class StackedbarChartComponent extends GenericWidgetComponent implements OnInit ,OnChanges, OnDestroy{
 
+  ctOptions = [
+    {
+      key: DisplayCriteria.TEXT,
+      value: 'Text'
+    },
+    {
+      key: DisplayCriteria.CODE,
+      value: 'Code'
+    },
+    {
+      key: DisplayCriteria.CODE_TEXT,
+      value: 'Code and Text'
+    }
+  ];
+  ctOption = this.ctOptions[0];
   orientation = 'bar';
   stackBarWidget : BehaviorSubject<StackBarChartWidget> = new BehaviorSubject<StackBarChartWidget>(null);
   widgetHeader: WidgetHeader = new WidgetHeader();
@@ -63,7 +78,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     }
   };
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
-
+  returnData: any;
 
   constructor(
     private widgetService : WidgetService,
@@ -90,16 +105,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     this.getHeaderMetaData();
     this.stackBarWidget.subscribe(res=>{
       if(res){
-        // reset while filter applied
-        this.stackbarLegend = [];
-        this.stachbarAxis = [];
-        this.barChartLabels = new Array();
-        this.listxAxis2 = new Array();
-        this.labels = [];
-        this.codeTextaxis1 = {};
-        this.codeTextaxis2 = {};
-        this.barChartData = [{ data: [0,0,0,0,0], label: 'Loading..', stack: 'a',  barThickness: 'flex' }];
-        this.getstackbarChartData(this.widgetId,this.filterCriteria);
+        this.resetChart();
       }
     });
 
@@ -145,6 +151,9 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
       }
     });
 
+    this.widgetService.getDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType).subscribe(res => {
+      this.ctOption = this.ctOptions.find(d => d.key === res.displayCriteria);
+    });
   }
 
   public getHeaderMetaData():void{
@@ -200,60 +209,76 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
 
   public getstackbarChartData(widgetId:number,criteria:Criteria[]) : void{
     this.widgetService.getWidgetData(String(widgetId),criteria).subscribe(returnData=>{
-      const res = Object.keys(returnData.aggregations);
-      this.arrayBuckets  = returnData.aggregations[res[0]] ? returnData.aggregations[res[0]].buckets : [];
-       this.dataObj = new Object();
-       this.labels = [];
-       this.barChartLabels = new Array();
-       // transform data before go for render
-       this.arrayBuckets =  this.transformDataSets(this.arrayBuckets);
-      this.arrayBuckets.forEach(singleBucket=>{
-        if(this.barChartLabels.indexOf(singleBucket.key[this.stackBarWidget.getValue().groupById]) === -1){
-          this.barChartLabels.push(singleBucket.key[this.stackBarWidget.getValue().groupById]);
-          this.stachbarAxis.push({legendIndex: this.stachbarAxis.length,code:singleBucket.key[this.stackBarWidget.getValue().groupById],text: singleBucket.key[this.stackBarWidget.getValue().groupById]});
-          if(singleBucket.key[this.stackBarWidget.getValue().groupById] !== '' && this.labels.indexOf(singleBucket.key[this.stackBarWidget.getValue().groupById]) === -1){
-            this.labels.push(singleBucket.key[this.stackBarWidget.getValue().groupById]);
-          }
-        }
-        if(this.listxAxis2.indexOf(singleBucket.key[this.stackBarWidget.getValue().fieldId]) === -1){
-          const mtl = singleBucket.key[this.stackBarWidget.getValue().fieldId];
-          const arr:any[]=[0];
-          this.dataObj[mtl === ''?this.stackBarWidget.value.blankValueAlias!==undefined?this.stackBarWidget.value.blankValueAlias:mtl:mtl]=arr;
-          this.listxAxis2.push(mtl);
-          this.stackbarLegend.push({code: mtl,legendIndex:this.stackbarLegend.length,text:mtl})
-        }
-      });
-
-       // maintaining alias here
-
-       this.stackbarLegend.forEach(legend=>{
-        if(legend.code === ''){
-          legend.code = this.stackBarWidget.value.blankValueAlias !== undefined?this.stackBarWidget.value.blankValueAlias:'';
-        }
-      });
-
-      for(let i=0;i<this.listxAxis2.length;i++){
-        if(this.listxAxis2[i] === ''){
-          this.listxAxis2[i] = this.stackBarWidget.value.blankValueAlias !== undefined?this.stackBarWidget.value.blankValueAlias:'';
-      }
-      }
-
-      if(Object.keys(this.dataObj).length!==0){
-        this.arrayBuckets.forEach(singleBucket=>{
-          const xval1 = singleBucket.key[this.stackBarWidget.getValue().groupById];
-          let xval2 = singleBucket.key[this.stackBarWidget.getValue().fieldId];
-          xval2 = xval2 === ''?this.stackBarWidget.value.blankValueAlias !== undefined?this.stackBarWidget.value.blankValueAlias:xval2:xval2;
-            const arr=  this.dataObj[xval2] ? this.dataObj[xval2] : {};
-            const xpos1 = this.barChartLabels.indexOf(xval1);
-            const count = singleBucket.doc_count;
-            arr[xpos1] = count;
-            this.dataObj[xval2] = arr;
-        });
-
-        this.barChartData.splice(0,1);
-      }
-      this.stackBardata.next(returnData);
+      this.returnData = returnData;
+      this.updateChart(this.returnData);
     });
+  }
+
+  private resetChart() {
+    // reset while filter applied
+    this.stackbarLegend = [];
+    this.stachbarAxis = [];
+    this.barChartLabels = new Array();
+    this.listxAxis2 = new Array();
+    this.labels = [];
+    this.codeTextaxis1 = {};
+    this.codeTextaxis2 = {};
+    this.barChartData = [{ data: [0,0,0,0,0], label: 'Loading..', stack: 'a',  barThickness: 'flex' }];
+  }
+
+  private updateChart(returnData) {
+    const res = Object.keys(returnData.aggregations);
+    this.arrayBuckets  = returnData.aggregations[res[0]] ? returnData.aggregations[res[0]].buckets : [];
+     this.dataObj = new Object();
+     this.labels = [];
+     this.barChartLabels = new Array();
+     // transform data before go for render
+     this.arrayBuckets =  this.transformDataSets(this.arrayBuckets);
+    this.arrayBuckets.forEach(singleBucket=>{
+      if(this.barChartLabels.indexOf(singleBucket.key[this.stackBarWidget.getValue().groupById]) === -1){
+        this.barChartLabels.push(singleBucket.key[this.stackBarWidget.getValue().groupById]);
+        this.stachbarAxis.push({legendIndex: this.stachbarAxis.length,code:singleBucket.key[this.stackBarWidget.getValue().groupById],text: singleBucket.key[this.stackBarWidget.getValue().groupById]});
+        if(singleBucket.key[this.stackBarWidget.getValue().groupById] !== '' && this.labels.indexOf(singleBucket.key[this.stackBarWidget.getValue().groupById]) === -1){
+          this.labels.push(singleBucket.key[this.stackBarWidget.getValue().groupById]);
+        }
+      }
+      if(this.listxAxis2.indexOf(singleBucket.key[this.stackBarWidget.getValue().fieldId]) === -1){
+        const mtl = singleBucket.key[this.stackBarWidget.getValue().fieldId];
+        const arr:any[]=[0];
+        this.dataObj[mtl === ''?this.stackBarWidget.value.blankValueAlias!==undefined?this.stackBarWidget.value.blankValueAlias:mtl:mtl]=arr;
+        this.listxAxis2.push(mtl);
+        this.stackbarLegend.push({code: mtl,legendIndex:this.stackbarLegend.length,text:mtl})
+      }
+    });
+
+     // maintaining alias here
+     this.stackbarLegend.forEach(legend=>{
+      if(legend.code === ''){
+        legend.code = this.stackBarWidget.value.blankValueAlias !== undefined?this.stackBarWidget.value.blankValueAlias:'';
+      }
+    });
+
+    for(let i=0;i<this.listxAxis2.length;i++){
+      if(this.listxAxis2[i] === ''){
+        this.listxAxis2[i] = this.stackBarWidget.value.blankValueAlias !== undefined?this.stackBarWidget.value.blankValueAlias:'';
+    }
+    }
+
+    if(Object.keys(this.dataObj).length!==0){
+      this.arrayBuckets.forEach(singleBucket=>{
+        const xval1 = singleBucket.key[this.stackBarWidget.getValue().groupById];
+        let xval2 = singleBucket.key[this.stackBarWidget.getValue().fieldId];
+        xval2 = xval2 === ''?this.stackBarWidget.value.blankValueAlias !== undefined?this.stackBarWidget.value.blankValueAlias:xval2:xval2;
+          const arr=  this.dataObj[xval2] ? this.dataObj[xval2] : {};
+          const xpos1 = this.barChartLabels.indexOf(xval1);
+          const count = singleBucket.doc_count;
+          arr[xpos1] = count;
+          this.dataObj[xval2] = arr;
+      });
+
+      this.barChartData.splice(0,1);
+    }
+    this.stackBardata.next(returnData);
   }
 
   public getRandomColor():string {
@@ -324,7 +349,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         const valArray = [];
         val.forEach(v=>{
           if(v.t) {
-            valArray.push(v.t);
+            valArray.push(this.checkTextCode(v));
           }
         });
         const finalText = valArray.toString();
@@ -352,7 +377,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         const valArray = [];
         val.forEach(v=>{
           if(v.t) {
-            valArray.push(v.t);
+            valArray.push(this.checkTextCode(v));
           }
         });
         const finalText = valArray.toString();
@@ -416,7 +441,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         const valArray = [];
         val.forEach(v=>{
             if(v.t) {
-              valArray.push(v.t);
+              valArray.push(this.checkTextCode(v));
             }
           });
           const finalText = valArray.toString();
@@ -476,7 +501,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         const valArray = [];
         val.forEach(v=>{
             if(v.t) {
-              valArray.push(v.t);
+              valArray.push(this.checkTextCode(v));
             }
           });
           const finalText = valArray.toString();
@@ -757,4 +782,29 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     return this.getRandomColor();
   }
 
+  checkTextCode(v): string {
+    switch (this.ctOption.key) {
+      case DisplayCriteria.CODE:
+        if(v.c) {
+          return v.c;
+        }
+        break;
+        case DisplayCriteria.TEXT:
+          if(v.t) {
+            return v.t;
+          }
+        break;
+        default:
+          return `${v.c} -- ${v.t}`;
+        break;
+    }
+    return '';
+  }
+
+  updateLabel() {
+    this.widgetService.saveDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType, this.ctOption.key).subscribe(res => {
+      this.resetChart();
+      this.updateChart(this.returnData);
+    });
+  }
 }
