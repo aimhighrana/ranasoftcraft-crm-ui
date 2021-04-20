@@ -1,5 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { Observable } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'pros-profile',
@@ -7,6 +10,41 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent implements OnInit {
+
+  constructor() {
+    this.filteredOptions = this.optionCtrl2.valueChanges.pipe(
+      startWith(''),
+      map((num: string | null) => num ? this._filter(num) : this.allOptions.slice()));
+   }
+
+  /**
+   * Form control for the input
+   */
+   optionCtrl2 = new FormControl();
+
+   /**
+    * hold the list of filtered options
+    */
+   filteredOptions: Observable<string[]>;
+
+   /**
+    * Available options list
+    */
+   allOptions: string[] = ['One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten'];
+
+   /**
+    * Reference to the input
+    */
+   @ViewChild('optionInput2') optionInput2: ElementRef<HTMLInputElement>;
+
+   /**
+    * reference to auto-complete
+    */
+   @ViewChild('auto') matAutocomplete: MatAutocomplete;
+   selectedValue: any;
+
+   selected: any;
+
 
   // settings form
   settingsForm: FormGroup;
@@ -23,7 +61,26 @@ export class ProfileComponent implements OnInit {
     secondaryEmail: 'secEmail@test.com'
   }
 
-  constructor() { }
+
+   /**
+    * mehtod to filter items based on the searchterm
+    * @param value searchTerm
+    * @returns string[]
+    */
+   _filter(value: string): string[] {
+     const filterValue = value.toLowerCase();
+
+     return this.allOptions.filter(num => num.toLowerCase().indexOf(filterValue) === 0);
+   }
+
+   /**
+    * method to add item to selected items
+    * for single sleect
+    * @param event item
+    */
+    selectSingle(event: MatAutocompleteSelectedEvent): void {
+     this.selectedValue = event.option.value;
+   }
 
   ngOnInit(): void {
     this.createForm();
