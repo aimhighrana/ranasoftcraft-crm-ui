@@ -131,6 +131,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
 
     if (changes && changes.filterCriteria && changes.filterCriteria.currentValue !== changes.filterCriteria.previousValue && changes.filterCriteria.previousValue !== undefined) {
       if (this.filterWidget && this.filterWidget.value) {
+        this.filteredOptions = of([]);
         this.loadAlldropData(this.filterWidget.value.fieldId, this.filterCriteria, '');
       }
     }
