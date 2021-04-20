@@ -113,7 +113,6 @@ export class TaskListFilterComponent implements OnInit {
     this.pageEvent.totalCount = 0;
   }
   scroll(loadMore: boolean) {
-    debugger;
     if (!this.infinteScrollLoading) {
       if (loadMore) {
         this.pageEvent.pageIndex++;
