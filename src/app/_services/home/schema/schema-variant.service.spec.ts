@@ -35,7 +35,7 @@ describe('SchemaVariantService', () => {
     expect(service).toBeTruthy();
   });
 
-  
+
 
   it('getVariantdetailsByvariantId(): should call', () =>{
     const url = 'get all variant details of variant';
