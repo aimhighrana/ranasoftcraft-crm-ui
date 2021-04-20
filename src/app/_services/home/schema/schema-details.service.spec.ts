@@ -2,19 +2,18 @@ import { TestBed, async } from '@angular/core/testing';
 
 import { SchemaDetailsService } from './schema-details.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
-import { CategoryChartDataSet, CategoryInfo, ClassificationNounMod, MetadataModeleResponse, Noun, OverViewChartDataSet, RequestForSchemaDetailsWithBr, SchemaBrInfo, SchemaCorrectionReq, SchemaDataTableColumnInfoResponse, SchemaExecutionLog, SchemaMROCorrectionReq, SchemaTableAction, SchemaTableViewFldMap, SchemaTableViewRequest, SendReqForSchemaDataTableColumnInfo } from '@models/schema/schemadetailstable';
+import { CategoryInfo, ClassificationNounMod, Noun, RequestForSchemaDetailsWithBr, SchemaBrInfo, SchemaCorrectionReq, SchemaExecutionLog, SchemaMROCorrectionReq, SchemaTableAction, SchemaTableViewFldMap, SchemaTableViewRequest } from '@models/schema/schemadetailstable';
 import { PermissionOn, SchemaDashboardPermission } from '@models/collaborator';
 import { HttpResponse } from '@angular/common/http';
 import { Any2tsService } from '@services/any2ts.service';
-import { SchemaListDetails } from '@models/schema/schemalist';
+import { EndpointsRuleService } from '@services/_endpoints/endpoints-rule.service';
 describe('SchemaDetailsService', () => {
-  let endpointServiceSpy: jasmine.SpyObj<EndpointsClassicService>;
+  let endpointServiceSpy: jasmine.SpyObj<EndpointsRuleService>;
   let schemaDetaService: SchemaDetailsService;
   let httpTestingController: HttpTestingController;
   let any2tsSpy: jasmine.SpyObj<Any2tsService>;
   beforeEach(() => {
-    const endpointSpy = jasmine.createSpyObj('EndpointsClassicService', ['getAllSelectedFields', 'getCreateUpdateSchemaActionUrl', 'getFindActionsBySchemaUrl',
+    const endpointSpy = jasmine.createSpyObj('EndpointsRuleService', ['getAllSelectedFields', 'getCreateUpdateSchemaActionUrl', 'getFindActionsBySchemaUrl',
     'getDeleteSchemaActionUrl', 'getCrossMappingUrl', 'getCreateUpdateSchemaActionsListUrl', 'getAllSelectedFields', 'getWorkFlowFieldsUrl', 'getUpdateSchemaTableViewUrl',
     'getSchemaTableDetailsUrl', 'getSchemaBrInfoList', 'getCorrectedRecords', 'getSchemaExecutionLogUrl', 'doCorrectionUrl', 'getLastBrErrorRecords',
     'approveCorrectedRecords', 'resetCorrectionRecords', 'getAllUserDetailsUrl', 'createUpdateUserDetailsUrl', 'deleteSchemaCollaboratorDetailsUrl',
@@ -30,13 +29,13 @@ describe('SchemaDetailsService', () => {
       imports: [HttpClientTestingModule],
       providers: [
         SchemaDetailsService,
-        { provide: EndpointsClassicService, useValue: endpointSpy },
+        { provide: EndpointsRuleService, useValue: endpointSpy },
         { provide: Any2tsService, useValue: mapperSpy}
       ]
     }).compileComponents();
     schemaDetaService = TestBed.inject(SchemaDetailsService);
     httpTestingController = TestBed.inject(HttpTestingController);
-    endpointServiceSpy = TestBed.inject(EndpointsClassicService) as jasmine.SpyObj<EndpointsClassicService>;
+    endpointServiceSpy = TestBed.inject(EndpointsRuleService) as jasmine.SpyObj<EndpointsRuleService>;
     any2tsSpy = TestBed.inject(Any2tsService) as jasmine.SpyObj<Any2tsService>;
   });
 
@@ -752,110 +751,110 @@ describe('SchemaDetailsService', () => {
     httpTestingController.verify();
   }));
 
-  it('should getSchemaDataTableColumnInfo()', async(() => {
+  // it('should getSchemaDataTableColumnInfo()', async(() => {
 
-    const url = `getSchemaDataTableColumnInfoUrl`;
-    // mock url
-    endpointServiceSpy.getSchemaDataTableColumnInfoUrl.and.returnValue(url);
+  //   const url = `getSchemaDataTableColumnInfoUrl`;
+  //   // mock url
+  //   endpointServiceSpy.getSchemaDataTableColumnInfoUrl.and.returnValue(url);
 
-    const request = new SendReqForSchemaDataTableColumnInfo();
-    const mockHttpResp = {};
-    const response = new SchemaDataTableColumnInfoResponse();
+  //   const request = new SendReqForSchemaDataTableColumnInfo();
+  //   const mockHttpResp = {};
+  //   const response = new SchemaDataTableColumnInfoResponse();
 
-    any2tsSpy.any2SchemaDataTableResponse.withArgs(mockHttpResp).and.returnValue(response);
+  //   any2tsSpy.any2SchemaDataTableResponse.withArgs(mockHttpResp).and.returnValue(response);
 
-    // actual service call
-    schemaDetaService.getSchemaDataTableColumnInfo(request).subscribe(actualResponse => {
-      expect(actualResponse).toEqual(response);
-    });
-    // mock http call
-    const mockRequst = httpTestingController.expectOne(`${url}`);
-    expect(mockRequst.request.method).toEqual('POST');
-    expect(mockRequst.request.responseType).toEqual('json');
-    mockRequst.flush(mockHttpResp);
-    // verify http
-    httpTestingController.verify();
-  }));
+  //   // actual service call
+  //   schemaDetaService.getSchemaDataTableColumnInfo(request).subscribe(actualResponse => {
+  //     expect(actualResponse).toEqual(response);
+  //   });
+  //   // mock http call
+  //   const mockRequst = httpTestingController.expectOne(`${url}`);
+  //   expect(mockRequst.request.method).toEqual('POST');
+  //   expect(mockRequst.request.responseType).toEqual('json');
+  //   mockRequst.flush(mockHttpResp);
+  //   // verify http
+  //   httpTestingController.verify();
+  // }));
 
-  it('should getSchemaDetailsBySchemaId()', async(() => {
+  // it('should getSchemaDetailsBySchemaId()', async(() => {
 
-    const url = `getSchemaDetailsBySchemaId url`;
-    // mock url
-    endpointServiceSpy.getSchemaDetailsBySchemaId.and.returnValue(url);
+  //   const url = `getSchemaDetailsBySchemaId url`;
+  //   // mock url
+  //   endpointServiceSpy.getSchemaDetailsBySchemaId.and.returnValue(url);
 
-    const schemaId = '15488788';
-    const response = new SchemaListDetails();
+  //   const schemaId = '15488788';
+  //   const response = new SchemaListDetails();
 
-    // actual service call
-    schemaDetaService.getSchemaDetailsBySchemaId(schemaId).subscribe(actualResponse => {
-      expect(actualResponse).toBeNull();
-    });
-    // mock http call
-    const mockRequst = httpTestingController.expectOne(`${url}`);
-    expect(mockRequst.request.method).toEqual('POST');
-    expect(mockRequst.request.responseType).toEqual('json');
-    mockRequst.flush(response);
-    // verify http
-    httpTestingController.verify();
-  }));
+  //   // actual service call
+  //   schemaDetaService.getSchemaDetailsBySchemaId(schemaId).subscribe(actualResponse => {
+  //     expect(actualResponse).toBeNull();
+  //   });
+  //   // mock http call
+  //   const mockRequst = httpTestingController.expectOne(`${url}`);
+  //   expect(mockRequst.request.method).toEqual('POST');
+  //   expect(mockRequst.request.responseType).toEqual('json');
+  //   mockRequst.flush(response);
+  //   // verify http
+  //   httpTestingController.verify();
+  // }));
 
-  it('should getSchemaDataTableShowMore()', async(() => {
+  // it('should getSchemaDataTableShowMore()', async(() => {
 
-    const url = `getShowMoreSchemaTableDataUrl`;
-    // mock url
-    endpointServiceSpy.getShowMoreSchemaTableDataUrl.and.returnValue(url);
+  //   const url = `getShowMoreSchemaTableDataUrl`;
+  //   // mock url
+  //   endpointServiceSpy.getShowMoreSchemaTableDataUrl.and.returnValue(url);
 
-    const scrollId = '15488788';
-    const response = {};
+  //   const scrollId = '15488788';
+  //   const response = {};
 
-    // actual service call
-    schemaDetaService.getSchemaDataTableShowMore(scrollId).subscribe(actualResponse => {
-      expect(actualResponse).toEqual(response);
-    });
-    // mock http call
-    const mockRequst = httpTestingController.expectOne(`${url}`);
-    expect(mockRequst.request.method).toEqual('POST');
-    expect(mockRequst.request.responseType).toEqual('json');
-    mockRequst.flush(response);
-    // verify http
-    httpTestingController.verify();
-  }));
+  //   // actual service call
+  //   schemaDetaService.getSchemaDataTableShowMore(scrollId).subscribe(actualResponse => {
+  //     expect(actualResponse).toEqual(response);
+  //   });
+  //   // mock http call
+  //   const mockRequst = httpTestingController.expectOne(`${url}`);
+  //   expect(mockRequst.request.method).toEqual('POST');
+  //   expect(mockRequst.request.responseType).toEqual('json');
+  //   mockRequst.flush(response);
+  //   // verify http
+  //   httpTestingController.verify();
+  // }));
 
-  it('should getOverviewChartDetails()', async(() => {
+  // it('should getOverviewChartDetails()', async(() => {
 
-    const url = `getOverviewChartDataUrl`;
-    // mock url
-    endpointServiceSpy.getOverviewChartDataUrl.and.returnValue(url);
+  //   const url = `getOverviewChartDataUrl`;
+  //   // mock url
+  //   endpointServiceSpy.getOverviewChartDataUrl.and.returnValue(url);
 
-    const mockHttpResp = {};
-    const response = new OverViewChartDataSet();
+  //   const mockHttpResp = {};
+  //   const response = new OverViewChartDataSet();
 
-    any2tsSpy.any2OverviewChartData.withArgs(mockHttpResp).and.returnValue(response);
+  //   any2tsSpy.any2OverviewChartData.withArgs(mockHttpResp).and.returnValue(response);
 
-    // actual service call
-    schemaDetaService.getOverviewChartDetails('schema1', '0', 'run1').subscribe(actualResponse => {
-      expect(actualResponse).toEqual(response);
-    });
-    // mock http call
-    let mockRequst = httpTestingController.expectOne(`${url}`);
-    expect(mockRequst.request.method).toEqual('GET');
-    expect(mockRequst.request.responseType).toEqual('json');
-    mockRequst.flush(mockHttpResp);
-    // verify http
-    httpTestingController.verify();
+  //   // actual service call
+  //   schemaDetaService.getOverviewChartDetails('schema1', '0', 'run1').subscribe(actualResponse => {
+  //     expect(actualResponse).toEqual(response);
+  //   });
+  //   // mock http call
+  //   let mockRequst = httpTestingController.expectOne(`${url}`);
+  //   expect(mockRequst.request.method).toEqual('GET');
+  //   expect(mockRequst.request.responseType).toEqual('json');
+  //   mockRequst.flush(mockHttpResp);
+  //   // verify http
+  //   httpTestingController.verify();
 
-    // actual service call
-    schemaDetaService.getOverviewChartDetails('', '0', '').subscribe(actualResponse => {
-      expect(actualResponse).toEqual(response);
-    });
+  //   // actual service call
+  //   schemaDetaService.getOverviewChartDetails('', '0', '').subscribe(actualResponse => {
+  //     expect(actualResponse).toEqual(response);
+  //   });
 
-    // mock http call
-    mockRequst = httpTestingController.expectOne(`${url}`);
-    mockRequst.flush(mockHttpResp);
-    // verify http
-    httpTestingController.verify();
+  //   // mock http call
+  //   mockRequst = httpTestingController.expectOne(`${url}`);
+  //   mockRequst.flush(mockHttpResp);
+  //   // verify http
+  //   httpTestingController.verify();
 
-  }));
+  // }));
 
   it('should getAllCategoryInfo()', async(() => {
 
@@ -881,78 +880,78 @@ describe('SchemaDetailsService', () => {
     httpTestingController.verify();
   }));
 
-  it('should getSchemaStatus()', async(() => {
+  // it('should getSchemaStatus()', async(() => {
 
-    const url = `getSchemaStatusUrl`;
-    // mock url
-    endpointServiceSpy.getSchemaStatusUrl.and.returnValue(url);
+  //   const url = `getSchemaStatusUrl`;
+  //   // mock url
+  //   endpointServiceSpy.getSchemaStatusUrl.and.returnValue(url);
 
-    const mockHttpResp = {};
-    const response: string[] = [];
+  //   const mockHttpResp = {};
+  //   const response: string[] = [];
 
-    any2tsSpy.any2SchemaStatus.withArgs(mockHttpResp).and.returnValue(response);
+  //   any2tsSpy.any2SchemaStatus.withArgs(mockHttpResp).and.returnValue(response);
 
-    // actual service call
-    schemaDetaService.getSchemaStatus().subscribe(actualResponse => {
-      expect(actualResponse).toEqual(response);
-    });
-    // mock http call
-    const mockRequst = httpTestingController.expectOne(`${url}`);
-    expect(mockRequst.request.method).toEqual('GET');
-    expect(mockRequst.request.responseType).toEqual('json');
-    mockRequst.flush(mockHttpResp);
-    // verify http
-    httpTestingController.verify();
-  }));
+  //   // actual service call
+  //   schemaDetaService.getSchemaStatus().subscribe(actualResponse => {
+  //     expect(actualResponse).toEqual(response);
+  //   });
+  //   // mock http call
+  //   const mockRequst = httpTestingController.expectOne(`${url}`);
+  //   expect(mockRequst.request.method).toEqual('GET');
+  //   expect(mockRequst.request.responseType).toEqual('json');
+  //   mockRequst.flush(mockHttpResp);
+  //   // verify http
+  //   httpTestingController.verify();
+  // }));
 
-  it('should getCategoryChartDetails()', async(() => {
+  // it('should getCategoryChartDetails()', async(() => {
 
-    const url = `categoryChartData url`;
-    // mock url
-    endpointServiceSpy.categoryChartData.and.returnValue(url);
+  //   const url = `categoryChartData url`;
+  //   // mock url
+  //   endpointServiceSpy.categoryChartData.and.returnValue(url);
 
-    const mockHttpResp = {};
-    const response = new CategoryChartDataSet();
+  //   const mockHttpResp = {};
+  //   const response = new CategoryChartDataSet();
 
-    any2tsSpy.any2CategoryChartData.withArgs(mockHttpResp).and.returnValue(response);
+  //   any2tsSpy.any2CategoryChartData.withArgs(mockHttpResp).and.returnValue(response);
 
-    // actual service call
-    schemaDetaService.getCategoryChartDetails('schema1', '0', 'cat1', '').subscribe(actualResponse => {
-      expect(actualResponse).toEqual(response);
-    });
-    // mock http call
-    const mockRequst = httpTestingController.expectOne(`${url}`);
-    expect(mockRequst.request.method).toEqual('GET');
-    expect(mockRequst.request.responseType).toEqual('json');
-    mockRequst.flush(mockHttpResp);
-    // verify http
-    httpTestingController.verify();
-  }));
+  //   // actual service call
+  //   schemaDetaService.getCategoryChartDetails('schema1', '0', 'cat1', '').subscribe(actualResponse => {
+  //     expect(actualResponse).toEqual(response);
+  //   });
+  //   // mock http call
+  //   const mockRequst = httpTestingController.expectOne(`${url}`);
+  //   expect(mockRequst.request.method).toEqual('GET');
+  //   expect(mockRequst.request.responseType).toEqual('json');
+  //   mockRequst.flush(mockHttpResp);
+  //   // verify http
+  //   httpTestingController.verify();
+  // }));
 
-  it('should getMetadataFields()', async(() => {
+  // it('should getMetadataFields()', async(() => {
 
-    const url = `getMetadataFields url`;
-    // mock url
-    endpointServiceSpy.getMetadataFields.and.returnValue(url);
+  //   const url = `getMetadataFields url`;
+  //   // mock url
+  //   endpointServiceSpy.getMetadataFields.and.returnValue(url);
 
-    const mockHttpResp = {};
-    const response = new MetadataModeleResponse();
-    const objectId = '1005';
+  //   const mockHttpResp = {};
+  //   const response = new MetadataModeleResponse();
+  //   const objectId = '1005';
 
-    any2tsSpy.any2MetadataResponse.withArgs(mockHttpResp).and.returnValue(response);
+  //   any2tsSpy.any2MetadataResponse.withArgs(mockHttpResp).and.returnValue(response);
 
-    // actual service call
-    schemaDetaService.getMetadataFields(objectId).subscribe(actualResponse => {
-      expect(actualResponse).toEqual(response);
-    });
-    // mock http call
-    const mockRequst = httpTestingController.expectOne(`${url}`);
-    expect(mockRequst.request.method).toEqual('GET');
-    expect(mockRequst.request.responseType).toEqual('json');
-    mockRequst.flush(mockHttpResp);
-    // verify http
-    httpTestingController.verify();
-  }));
+  //   // actual service call
+  //   schemaDetaService.getMetadataFields(objectId).subscribe(actualResponse => {
+  //     expect(actualResponse).toEqual(response);
+  //   });
+  //   // mock http call
+  //   const mockRequst = httpTestingController.expectOne(`${url}`);
+  //   expect(mockRequst.request.method).toEqual('GET');
+  //   expect(mockRequst.request.responseType).toEqual('json');
+  //   mockRequst.flush(mockHttpResp);
+  //   // verify http
+  //   httpTestingController.verify();
+  // }));
 
   it('should getClassificationNounMod()', async(() => {
 

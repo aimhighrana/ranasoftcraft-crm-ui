@@ -1,19 +1,19 @@
 import { Injectable } from '@angular/core';
-import { CommonGridRequestObject, TaskListSummaryRequestParams } from '@models/task-list/taskListDetails';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
-export class EndpointsDiwService {
+export class EndpointsRuleService {
 
   readonly origin = `${environment.apiurl}/rule`;
+  readonly classicOrigin = `${environment.apiurl}/MDOSF/fapi`;
 
   constructor() { }
 
 
   public getSchemaListByGroupIdUrl() {
-    return this.origin + '/schema/metadata/schema-list';
+    return this.classicOrigin + '/schema/schema-list';
   }
 
   public downloadExecutionDetailsUrl(schemaId: string, status: string): string {
@@ -33,7 +33,7 @@ export class EndpointsDiwService {
   }
 
   public getSchemaTableDetailsUrl(): string {
-    return this.origin + '/schema/metadata/schema-details';
+    return this.classicOrigin + '/schema/schema-details';
   }
 
   public getUpdateSchemaTableViewUrl(): string {
@@ -44,16 +44,16 @@ export class EndpointsDiwService {
     return this.origin + '/schema/metadata/category-list';
   }
 
-  public getSchemaStatusUrl(): string {
-    return this.origin + '/schema/schema-status';
-  }
+  // public getSchemaStatusUrl(): string {
+  //   return this.origin + '/schema/schema-status';
+  // }
 
   public getAllSelectedFields(): string {
     return this.origin + `/schema/metadata/get-selected-fields-view`;
   }
 
   public getSchemaVariantsUrl(schemaId: string): string {
-    return this.origin + '/schema/metadata/variants/' + schemaId;
+    return this.classicOrigin + '/schema/variants/' + schemaId;
   }
 
   public getSchemaBrInfoList(schemaId: string): string {
@@ -61,7 +61,7 @@ export class EndpointsDiwService {
   }
 
   public doCorrectionUrl(schemaId: string): string {
-    return `${this.origin}/schema/do-correction/${schemaId}`;
+    return `${this.origin}/schema/actions/do-correction/${schemaId}`;
   }
 
   public getCorrectedRecords(schemaId: string): string {
@@ -77,7 +77,7 @@ export class EndpointsDiwService {
   }
 
   public approveCorrectedRecords(schemaId: string): string {
-    return `${this.origin}/schema/approve-corrected-records/${schemaId}`;
+    return `${this.origin}/schema/actions/approve-corrected-records/${schemaId}`;
   }
 
   public uploadFileDataUrl(): string {
@@ -89,15 +89,15 @@ export class EndpointsDiwService {
   }
 
   public getBusinessRulesInfoByModuleIdUrl() {
-    return this.origin + `/schema/get-business-rules/`
+    return this.origin + `/schema/metadata/get-business-rules/`
   }
 
   public getBusinessRulesInfoBySchemaIdUrl(schemaId: string) {
-    return this.origin + `/schema/get-business-rules/${schemaId}`;
+    return this.origin + `/schema/metadata/get-business-rules/${schemaId}`;
   }
 
   public getCategoriesInfo() {
-    return this.origin + '/schema/category-list';
+    return this.origin + '/schema/metadata/category-list';
   }
 
   public getFillDataInfo(id) {
@@ -105,35 +105,17 @@ export class EndpointsDiwService {
   }
 
   public createBr() {
-    return this.origin + '/schema/create-update-br'
+    return this.origin + '/schema/metadata/create-update-br'
   }
 
   public createSchema() {
-    return this.origin + '/schema/create-update-schema';
+    return this.origin + '/schema/metadata/create-update-schema';
   }
 
   public deleteBr(id): string {
-    return this.origin + '/schema/delete-business-rule/' + id;
+    return this.origin + '/schema/metadata/delete-business-rule/' + id;
   }
 
-  public getFiltersUrl() {
-    return `${this.origin}/tasklist/filter`;
-  }
-  public getFilterDynamicListsUrl() {
-    return `${this.origin}/tasklist/filterList`
-  }
-
-  public getDynamicColumnListsUrl() {
-    return `${this.origin}/listPage/listmetadata`
-  }
-
-  public getDynamicFiltermetaListsUrl() {
-    return `${this.origin}/listPage/getFilterMetaField`
-  }
-
-  public getTasksUrl(): string {
-    return `${this.origin}/tasklist/taskListData`;
-  }
 
   public returnCollaboratorsPermisisonUrl(reportId: string): string {
     return `${this.origin}/admin/permission/collaborators/permission/${reportId}`;
@@ -148,7 +130,7 @@ export class EndpointsDiwService {
   }
 
   public getBrConditionalOperatorUrl(): string {
-    return `${this.origin}/schema/br/condition-operator`;
+    return `${this.origin}/schema/metadata/br/condition-operator`;
   }
 
   public dropDownValuesUrl(fieldId: string): string {
@@ -156,11 +138,11 @@ export class EndpointsDiwService {
   }
 
   public saveUpdateUdrBlockUrl(): string {
-    return `${this.origin}/admin/schema/br/udr`;
+    return `${this.origin}/admin/schema/metadata/br/udr`;
   }
 
   public conditionListsUrl(objectType: string): string {
-    return `${this.origin}/schema/br/udr/condition-list/${objectType}`;
+    return `${this.origin}/schema/metadata/br/udr/condition-list/${objectType}`;
   }
 
   public saveUpdateUDRUrl(): string {
@@ -168,30 +150,16 @@ export class EndpointsDiwService {
   }
 
   public getBusinessRuleInfoUrl(brId: string): string {
-    return `${this.origin}/schema/get-business-rule-info/${brId}`;
+    return `${this.origin}/schema/metadata/get-business-rule-info/${brId}`;
   }
 
   public getUdrBusinessRuleInfoUrl(ruleId: string): string {
-    return `${this.origin}/schema/br/udr/${ruleId}`;
+    return `${this.origin}/schema/metadata/br/udr/${ruleId}`;
   }
 
-  public getTaskListViewsUrl(userName: string): string {
-    return `${this.origin}/tasklist/getTaskListViews?userCreated=${userName}`;
-  }
 
-  public getDeleteTaskListViewUrl(viewId: string): string {
-    return `${this.origin}/tasklist/deleteTaskListView?viewId=${viewId}`;
-  }
-
-  public getSaveTaskListViewUrl(): string {
-    return `${this.origin}/tasklist/taskListUserView`;
-  }
-
-  public getSaveTaskListURL(): string {
-    return `${this.origin}/tasklist/taskListUserView`;
-  }
   public deleteConditionBlock(blockId: string): string {
-    return `${this.origin}/schema/br/udr/delete-conditionblock/${blockId}`;
+    return `${this.origin}/schema/metadata/br/udr/delete-conditionblock/${blockId}`;
   }
 
   public getSchemaThresholdStatics(schemaId: string, variantId?: string): string {
@@ -207,15 +175,15 @@ export class EndpointsDiwService {
   }
 
   public getCollaboratorDetailsUrl(schemaId: string): string {
-    return `${this.origin}/schema/get-all-schemacollaborator-details/${schemaId}`;
+    return `${this.origin}/schema/metadata/get-all-schemacollaborator-details/${schemaId}`;
   }
 
   public createUpdateUserDetailsUrl(): string {
-    return `${this.origin}/schema/create-update-schemacollaborator`;
+    return `${this.origin}/schema/metadata/create-update-schemacollaborator`;
   }
 
   public getAllUserDetailsUrl(): string {
-    return `${this.origin}/admin/permission/collaborators`;
+    return `${this.classicOrigin}/admin/permission/collaborators`;
   }
 
   public deleteSchemaCollaboratorDetailsUrl(): string {
@@ -223,85 +191,23 @@ export class EndpointsDiwService {
   }
 
   public deleteSchema(schemaId: string): string {
-    return `${this.origin}/schema/delete/${schemaId}`;
-  }
-  public getTaskListCountURL(): string {
-    return `${this.origin}/tasklist/getTaskListCount`;
-  }
-
-  public getTaskSummaryMetaDataURL(taskListSummaryRequestParams: TaskListSummaryRequestParams): string {
-    return `${this.origin}/layout/getLayoutMetaData/${taskListSummaryRequestParams.objectnumber}/${taskListSummaryRequestParams.objecttype}/${5}?plantCode=${taskListSummaryRequestParams.plantCode}&userRole=${taskListSummaryRequestParams.userRole}&taskId=${taskListSummaryRequestParams.taskId}&userId=${taskListSummaryRequestParams.userId}&wfId=${taskListSummaryRequestParams.taskId}&lang=${taskListSummaryRequestParams.lang}`
-  }
-
-  public getTaskSummaryLayoutDataURL(wfid: string, eventCode: string, lang: string): string {
-    return `${this.origin}/layoutData/getLayoutData/${wfid}/${eventCode}?lang=${lang}`;
-  }
-
-  public getAuditTrailLogsURL(): string {
-    return `${this.origin}/changeAuditLog/getChangeAuditLog`;
-  }
-
-  public getGridMetaDataURL(gridRequestParams: CommonGridRequestObject): string {
-    const urlParams = `plantCode=${gridRequestParams.plantCode}&lang=${gridRequestParams.lang}&taskId=${gridRequestParams.taskId}&wfId=${gridRequestParams.wfId}&userId=${gridRequestParams.userId}&userRole=${gridRequestParams.userRole}&tabId=${gridRequestParams.tabId}`
-    return `${this.origin}/grid/getGridMetadata/${gridRequestParams.objecttype}/${gridRequestParams.tabCode}/${gridRequestParams.eventCode}?${urlParams}`;
-  }
-
-  public getGridDataUrl(gridRequestParams: CommonGridRequestObject) {
-    const urlParams = `plantCode=${gridRequestParams.plantCode}&lang=${gridRequestParams.lang}&taskId=${gridRequestParams.taskId}&wfId=${gridRequestParams.wfId}&userRole=${gridRequestParams.userRole}&userId=${gridRequestParams.userId}&fetchCount=${gridRequestParams.fetchCount}&fetchSize=${gridRequestParams.fetchSize}`;
-    return `${this.origin}/gridData/getGridData/${gridRequestParams.objecttype}/${gridRequestParams.objectNumber}/${gridRequestParams.gridId}/${gridRequestParams.eventCode}?${urlParams}`
-  }
-
-  public getMetadataByWfid(wfid: string): string {
-    return `${this.origin}/layout/getMetadataByWfid/${wfid}`
-  }
-
-  public getCommonLayoutDataUrl(taskListSummaryRequestParams: TaskListSummaryRequestParams) {
-    const urlParams = `plantCode=${taskListSummaryRequestParams.plantCode}&lang=${taskListSummaryRequestParams.lang}&taskId=${taskListSummaryRequestParams.taskId}&wfId=${taskListSummaryRequestParams.wfId}&userRole=${taskListSummaryRequestParams.userRole}&userId=${taskListSummaryRequestParams.userId}`;
-    return `${this.origin}/layout/getLayoutdata/${taskListSummaryRequestParams.objectnumber}/${taskListSummaryRequestParams.objecttype}/5?${urlParams}`
-  }
-
-  public getChangeLogDetails(): string {
-    return `${this.origin}/changeAuditLog/getChangeLogDetails`
-  }
-
-  public getLoadRecipientsListUrl(): string {
-    return `${this.origin}/restWorkflow/loadRecipient`;
-  }
-
-  public getWfFieldsListUrl(): string {
-    return `${this.origin}/restWorkflow/loadWorkfLowField`;
-  }
-
-  public getLoadApisUrl(): string {
-    return `${this.origin}/restWorkflow/loadAPI`;
-  }
-
-  public getSaveWfDefinitionUrl(): string {
-    return `${this.origin}/restWorkflow/saveWorkFlowStepViaXml`;
-  }
-
-  public getFieldOptionsUrl(): string {
-    return `${this.origin}/restWorkflow/admin_dropdown_list_dropdown_data`;
-  }
-
-  public getloadWfDefinitionUrl(): string {
-    return `${this.origin}/restWorkflow/loadWorkFlowPathStep`;
+    return `${this.origin}/schema/metadata/delete/${schemaId}`;
   }
 
   public saveUpdateVariantUrl(): string {
-    return `${this.origin}/schema/data-variants`;
+    return `${this.origin}/schema/metadata/data-variants`;
   }
 
   public getVariantdetailsByvariantIdUrl(variantId: string): string {
-    return `${this.origin}/schema/variant/${variantId}`;
+    return `${this.origin}/schema/metadata/variant/${variantId}`;
   }
 
   public deleteVariantUrl(variantId: string): string {
-    return `${this.origin}/schema/variant/delete/${variantId}`;
+    return `${this.origin}/schema/metadata/variant/delete/${variantId}`;
   }
 
   public saveNewSchemaUrl(objectId: string, runNow: boolean, variantId: string, fileSno: string): string {
-    return `${this.origin}/schemamodule/create-schema?objectId=${objectId}&runNow=${runNow}&variantId=${variantId}&fileSno=${fileSno}`
+    return `${this.origin}/schema/metadata/create-schema?objectId=${objectId}&runNow=${runNow}&variantId=${variantId}&fileSno=${fileSno}`
   }
 
   /**
@@ -309,7 +215,7 @@ export class EndpointsDiwService {
    * @param moduleId module id/objectId
    */
   public getSchemaInfoByModuleIdUrl(moduleId: string): string {
-    return `${this.origin}/schema/schema-info/${moduleId}`;
+    return `${this.origin}/schema/metadata/schema-info/${moduleId}`;
   }
 
 
@@ -318,15 +224,11 @@ export class EndpointsDiwService {
    *
    */
   public getSchemaWithVariantsUrl(): string {
-    return `${this.origin}/schema/list-variants`;
-  }
-
-  public downloadAttachment(sno): string {
-    return `${this.origin}/attachment/downloadAttachments?sno=${sno}`;
+    return `${this.origin}/schema/metadata/list-variants`;
   }
 
   public updateBrMap(): string {
-    return `${this.origin}/schema/br/update-br-map`;
+    return `${this.origin}/schema/metadata/br/update-br-map`;
   }
 
   public getCategoriesUrl(): string {
@@ -431,7 +333,7 @@ export class EndpointsDiwService {
    * @param schemaId Id of schema
    */
   public createUpdateScheduleUrl(schemaId: string) {
-    return `${this.origin}/schema/createupdate-schema-scheduler?schemaId=${schemaId}`;
+    return `${this.classicOrigin}/schema/createupdate-schema-scheduler?schemaId=${schemaId}`;
   }
 
   /**
@@ -439,7 +341,7 @@ export class EndpointsDiwService {
    * @param schemaId Id of schema
    */
   public getScheduleUrl(schemaId: string) {
-    return `${this.origin}/schema/get-schema-scheduler/${schemaId}`;
+    return `${this.classicOrigin}/schema/get-schema-scheduler/${schemaId}`;
   }
 
   /**
@@ -469,7 +371,7 @@ export class EndpointsDiwService {
    * @param type: type of variants
    */
   public getAllDataScopeUrl(schemaId: string, type: string): string {
-    return `${this.origin}/schema/variants/${schemaId}/${type}`;
+    return `${this.classicOrigin}/schema/variants/${schemaId}/${type}`;
   }
   /**
    * Get all noun and modifiers uri ..
@@ -486,7 +388,7 @@ export class EndpointsDiwService {
   }
 
   public getAllDataScopesUri(schemaId: string, type: string ) {
-    return `${this.origin}/schema/variants/${schemaId}/${type}`;
+    return `${this.classicOrigin}/schema/variants/${schemaId}/${type}`;
   }
 
   public generateCrossEntryUri(schemaId: string, objectType: string, objectNumber: string): string {
@@ -512,7 +414,7 @@ export class EndpointsDiwService {
    * @param schemaId: schema ID
    */
   public getCheckDataUrl(schemaId: string) {
-    return `${this.origin}/schema/checkdata/get-all-br-collaborator-details/${schemaId}`;
+    return `${this.classicOrigin}/schema/checkdata/get-all-br-collaborator-details/${schemaId}`;
   }
 
   public getAllBusinessRulesUrl() {
@@ -581,18 +483,18 @@ export class EndpointsDiwService {
    * Get doing correction uri ..
    */
   public doClassificationCorrectionUri(): string {
-    return `${this.origin}/schema/do-mro-correction`;
+    return `${this.origin}/schema/actions/do-mro-correction`;
   }
   public getCreateNounModUrl() : string{
-    return this.origin + '/schema/create-noun';
+    return this.origin + '/schema/metadata/create-noun';
   }
 
   public getCreateAttributeUrl(nounSno: string) : string{
-    return this.origin + `/schema/add-attributes/${nounSno}`;
+    return this.origin + `/schema/metadata/add-attributes/${nounSno}`;
   }
 
   public getSaveAttributesMappingUrl() : string{
-    return this.origin + `/schema/save-mappings`;
+    return this.origin + `/schema/metadata/save-mappings`;
   }
 
   public getFetchAttributesMappingUrl() : string{
@@ -603,14 +505,14 @@ export class EndpointsDiwService {
    * Get approve classification records uri ..
    */
   public approveClassificationUri(): string {
-    return `${this.origin}/schema/mro/approve`;
+    return `${this.origin}/schema/actions/mro/approve`;
   }
 
   /**
    * Use this uri for reject or reset mro classification records ..
    */
   public rejectClassificationUri(): string {
-    return `${this.origin}/schema/mro/reset`;
+    return `${this.origin}/schema/actions/mro/reset`;
   }
 
   /**
@@ -658,9 +560,6 @@ export class EndpointsDiwService {
     return `${this.origin}/schema/rejectDuplicateRecords/${schemaId}/${runId}?userName=${userName}`;
   }
 
-  public getlayoutsUrl() {
-    return `${this.origin}/report/layouts`;
-  }
 
   /**
    * Uri for reset schema execution correction data ..
@@ -697,7 +596,7 @@ export class EndpointsDiwService {
   }
 
   public getFindActionsBySchemaUrl(schemaId: string): string {
-    return this.origin + `/schema/actions/${schemaId}`;
+    return this.classicOrigin + `/schema/actions/${schemaId}`;
   }
 
   public getFindActionsBySchemaAndRoleUrl(schemaId: string, role: string): string {

@@ -499,10 +499,13 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy {
    */
   checkNewSchemaCount(moduleId: string) {
     const findModule:SchemaListModuleList = this.moduleList.filter((module) => module.moduleId === moduleId)[0];
-    const newSchemaArr = findModule.schemaLists.filter((schema) => {
+    let newSchemaArr = [];
+    if(findModule.schemaLists) {
+      newSchemaArr = findModule.schemaLists.filter((schema) => {
         schema.schemaDescription = schema.schemaDescription ? schema.schemaDescription : 'untitled';
         return schema.schemaDescription.toLocaleLowerCase().startsWith('new schema');
-    });
+      });
+    }
     return newSchemaArr.length>0 ? `New schema ${newSchemaArr.length + 1}` : `New schema`;
   }
 
