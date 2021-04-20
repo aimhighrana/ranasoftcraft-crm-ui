@@ -351,9 +351,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
       if(val) {
         const valArray = [];
         val.forEach(v=>{
-          if(v.t) {
-            valArray.push(this.checkTextCode(v));
-          }
+          valArray.push(this.checkTextCode(v));
         });
         const finalText = valArray.toString();
         if(finalText) {
@@ -379,9 +377,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
       if(val !== null) {
         const valArray = [];
         val.forEach(v=>{
-          if(v.t) {
-            valArray.push(this.checkTextCode(v));
-          }
+          valArray.push(this.checkTextCode(v));
         });
         const finalText = valArray.toString();
         if(finalText) {
@@ -407,9 +403,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
       if(val !== null) {
         const valArray = [];
         val.forEach(v=>{
-          if(v.c) {
-            valArray.push(v.c);
-          }
+          valArray.push(this.checkTextCode(v));
         });
         const finalText = Number(valArray);
         if(finalText) {
@@ -443,9 +437,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
       if(val) {
         const valArray = [];
         val.forEach(v=>{
-            if(v.t) {
-              valArray.push(this.checkTextCode(v));
-            }
+          valArray.push(this.checkTextCode(v));
           });
           const finalText = valArray.toString();
           if(finalText) {
@@ -473,9 +465,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
       if(val) {
         const valArray = [];
         val.forEach(v=>{
-            if(v.c) {
-              valArray.push(v.c);
-            }
+          valArray.push(this.checkTextCode(v));
           });
           const finalText = Number(valArray);
           if(finalText) {
@@ -503,9 +493,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
       if(val) {
         const valArray = [];
         val.forEach(v=>{
-            if(v.t) {
-              valArray.push(this.checkTextCode(v));
-            }
+          valArray.push(this.checkTextCode(v));
           });
           const finalText = valArray.toString();
           if(finalText) {
@@ -538,6 +526,10 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
 
         this.barChartData.push(singleobj);
       });
+      for(let i=0;i<this.barChartLabels.length;i++){
+        const lbl = this.barChartLabels[i] as any;
+        this.barChartLabels[i] = this.codeTextaxis1[lbl] ? this.codeTextaxis1[lbl] : lbl;
+      }
   }
 
   /**
@@ -798,7 +790,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
           }
         break;
         default:
-          return `${v.c} -- ${v.t}`;
+          return `${v.c || ''} -- ${v.t || ''}`;
         break;
     }
     return '';

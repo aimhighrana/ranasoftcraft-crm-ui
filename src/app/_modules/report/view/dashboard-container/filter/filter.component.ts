@@ -177,9 +177,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
       if(val) {
         const valArray = [];
         val.forEach(v=>{
-          if(v.t) {
-            valArray.push(this.checkTextCode(v));
-          }
+          valArray.push(this.checkTextCode(v));
         });
         const finalText = valArray.toString();
         if(finalText) {
@@ -244,9 +242,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
       if(val) {
         const valArray = [];
         val.forEach(v=>{
-          if(v.t) {
-            valArray.push(this.checkTextCode(v));
-          }
+          valArray.push(this.checkTextCode(v));
         });
         const finalText = valArray.toString();
         if(finalText) {
@@ -793,7 +789,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
           }
         break;
         default:
-          return `${v.c} -- ${v.t}`;
+          return `${v.c || ''} -- ${v.t || ''}`;
         break;
     }
     return '';
@@ -802,6 +798,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
   saveDisplayCriteria() {
     this.widgetService.saveDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType, this.ctOption.key).subscribe(res => {
       this.removefilter(this.filterWidget.value.fieldId, this.filterCriteria);
+      this.filteredOptions = of([]);
       this.updateFilter(this.widgetInfo.widgetId, this.returnData);
     }, error => {
       console.error(`Error : ${error}`);
