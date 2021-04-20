@@ -146,10 +146,14 @@ describe('WelcomeComponent', () => {
     component.data.objectid = '123';
     component.selectschema({ schemaId: null, schemaDescription: null });
     expect(schemaServiceSpy.createUpdateSchema).toHaveBeenCalled();
-    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/check-data/123/456` } }]);
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/check-data/123/456` } }],{
+      queryParams: {isCheckData: true}
+    });
 
     component.selectschema({ schemaId: '789', schemaDescription: null });
-    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/check-data/123/789` } }]);
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/check-data/123/789` } }],{
+      queryParams: {isCheckData: true}
+    });
   }));
 
   it('should init component', () => {
