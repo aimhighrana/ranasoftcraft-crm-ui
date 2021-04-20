@@ -108,7 +108,6 @@ describe('TaskListFilterComponent', () => {
   it('searchInput valuechange', async(() => {
     spyOn(component, 'resetPageEvent');
     component.ngOnInit();
-    // let field: HTMLInputElement = fixture.debugElement.query(By.directive(SearchComponent)).nativeElement;
     const field = fixture.debugElement.query(By.css('lib-search:first-of-type'));
     const input = field.query(By.css('input')).nativeElement;
     input.value = 'someValue';

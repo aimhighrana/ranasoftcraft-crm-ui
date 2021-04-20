@@ -59,20 +59,6 @@ export class TaskListFilterComponent implements OnInit {
   };
   hasChild = (_: number, node: ExampleFlatNode) => node.expandable;
   ngOnInit(): void {
-    // let r = this.filterFields(
-    //   [
-    //     {
-    //       fieldId: 'Customer',
-    //       fieldDesc: 'Customer Order',
-    //       picklist: '0',
-    //       dataType: 'CHAR',
-    //       fields: [{ fieldId: 'CustomerAddress', fieldDesc: 'Customer Address', picklist: '0', dataType: 'CHAR', fields: [] }],
-    //     },
-    //   ],
-    //   'cust'
-    // );
-    // console.log('r', r);
-
     this.route.params.subscribe((param) => {
       this.node = param.node || null;
       this.loadData([]);
@@ -153,7 +139,6 @@ export class TaskListFilterComponent implements OnInit {
       existingData.push(...resp.data);
       this.dataSource.data = existingData;
     });
-    // let data = treeData.slice(this.pageEvent.pageIndex * this.pageEvent.pageSize, (this.pageEvent.pageIndex + 1) * this.pageEvent.pageSize);
   }
   getLazyData(pageIndex, pageSize, value?: string) {
     if (value) {
