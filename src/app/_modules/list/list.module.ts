@@ -7,6 +7,7 @@ import { ListDatatableComponent } from './_components/list-datatable/list-datata
 import { TableViewSettingsComponent } from './_components/table-view-settings/table-view-settings.component';
 import { SharedModule } from '@modules/shared/shared.module';
 import { GlobalSearchComponent } from './_components/global-search/global-search.component';
+import { ListFilterComponent } from './_components/list-filter/list-filter.component';
 import { FilterSaveModalComponent } from './_components/filter-save-modal/filter-save-modal.component';
 import { FilterChipsComponent } from './_components/filter-chips/filter-chips.component';
 
@@ -17,6 +18,7 @@ import { FilterChipsComponent } from './_components/filter-chips/filter-chips.co
     TableViewSettingsComponent,
     ListDatatableComponent,
     GlobalSearchComponent,
+    ListFilterComponent,
     FilterSaveModalComponent,
     FilterChipsComponent
   ],
