@@ -23,6 +23,7 @@ import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.
 import { Userdetails } from '@models/userdetails';
 import { UserService } from '@services/user/userservice.service';
 import { debounceTime, distinctUntilChanged, skip } from 'rxjs/operators';
+import { TransientService } from 'mdo-ui-library';
 
 @Component({
   selector: 'pros-schema-details',
@@ -226,6 +227,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     private componentFactoryResolver: ComponentFactoryResolver,
     private userService: UserService,
     private schemaDetailsService: SchemaDetailsService,
+    private transientService: TransientService
   ) { }
 
   ngOnDestroy(): void {
@@ -640,7 +642,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
             this.statics.correctedCnt = res.count ? res.count : 0;
           }
         }, error => {
-          this.snackBar.open(`Error :: ${error}`, 'Close', { duration: 2000 });
+          this.transientService.open(`Error :: ${error}`, 'Close', { duration: 2000 });
           console.error(`Error :: ${error.message}`);
         });
         this.subscribers.push(sub);
@@ -759,7 +761,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
         this.selection.clear();
       }
     }, error => {
-      this.snackBar.open(`Error :: ${error}`, 'Close', { duration: 2000 });
+      this.transientService.open(`Error :: ${error}`, 'Close', { duration: 2000 });
       console.error(`Error :: ${error.message}`);
     });
     this.subscribers.push(sub);
@@ -794,7 +796,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
             this.selection.clear();
         }
     }, error=>{
-        this.snackBar.open(`Error :: ${error}`, 'Close',{duration:2000});
+        this.transientService.open(`Error :: ${error}`, 'Close',{duration:2000});
         console.error(`Error :: ${error.message}`);
     });
     this.subscribers.push(sub);
@@ -1121,12 +1123,12 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
             this.statics.correctedCnt = r.count ? r.count : 0;
           }
         }, error => {
-          this.snackBar.open(`Something went wrong `, 'Close', { duration: 2000 });
+          this.transientService.open(`Something went wrong `, 'Close', { duration: 2000 });
           console.error(`Error :: ${error.message}`);
         });
         this.subscribers.push(doCorrectionRequest);
       } else {
-        this.snackBar.open(`Something went wrong `, 'Close', { duration: 2000 });
+        this.transientService.open(`Something went wrong `, 'Close', { duration: 2000 });
       }
     }, error => { console.error(`Exception while generating coss module .. ${error.message}`) });
     this.subscribers.push(sub);
