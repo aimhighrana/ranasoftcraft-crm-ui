@@ -131,7 +131,6 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
       this.moduleId = params.moduleId;
       this.getTotalCount();
       this.getViewsList();
-      this.getFldMetadata();
       this.getObjectTypeDetails();
     });
 
@@ -154,6 +153,8 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
       this.filtersList = filters;
       console.log(this.filtersList);
       if(!this.isPageRefresh) {
+
+        this.getTotalCount();
         this.getTableData();
       }
       this.isPageRefresh = false;
@@ -269,11 +270,12 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
   /**
    * Get all fld metada based on module of schema
    */
-  getFldMetadata() {
-    if (this.moduleId === undefined || this.moduleId.trim() === '') {
-      throw new Error('Module id cant be null or empty');
+  getFldMetadata(fieldsList: string[]) {
+    if(!fieldsList || !fieldsList.length) {
+      this.metadataFldLst = [];
+      return;
     }
-    const sub = this.coreService.getAllFieldsForView(this.moduleId).subscribe(response => {
+    const sub = this.coreService.getMetadataByFields(fieldsList).subscribe(response => {
       this.metadataFldLst = response;
     }, error => {
       console.error(`Error : ${error.message}`);
@@ -297,7 +299,7 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
    * get total records count
    */
   getTotalCount() {
-    const subs = this.listService.getDataCount(this.moduleId, []).subscribe(count => {
+    const subs = this.listService.getDataCount(this.moduleId, this.filtersList.filterCriteria).subscribe(count => {
       this.totalCount = count;
     }, error => {
       console.error(`Error : ${error.message}`);
@@ -342,6 +344,8 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
 
     if (this.currentView && this.currentView.fieldsReqList) {
 
+      const fieldsList = this.currentView.fieldsReqList.map(field => field.fieldId);
+      this.getFldMetadata(fieldsList);
       this.getTableData();
 
       const activeColumns: string[] = this.currentView.fieldsReqList.map(field => field.fieldId);

@@ -1163,6 +1163,16 @@
     .mat-cell:last-of-type {
       border-right: none;
     }
+
+    .resize-holder {
+      cursor: col-resize;
+      width: 20px;
+      height: 100%;
+      position: absolute;
+      right: -10px;
+      top: 0;
+      z-index: 101;
+    }
   }
 
   //Mat-Stepper

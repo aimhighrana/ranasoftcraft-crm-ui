@@ -1,17 +1,15 @@
 <div class="root">
     <div class="f-row breadcrum-toolbar">
-        <lib-button (click)="close()">
-            <mat-icon fontSet="mdo-icons">times</mat-icon>
-        </lib-button>
-            <div class="col-spacer"></div>
-            <div class="f-col mdo-constrained-right">
-                <div class="f-row breadcrum-head">
-                    <div i18n="@@data_scope" class="display-heading-large">Data scope</div>
-                    <span class="f-col-spacer-half"></span>
-                    <span class="f-spacer"></span>
-                    <lib-button i18n="@@save" type="major" (click)="saveVarient()">Save</lib-button>
-                </div>
+        <lib-button type="plain" (click)="close()" iconFontType="light" icon="times"></lib-button>
+        <div class="col-spacer"></div>
+        <div class="f-col mdo-constrained-right">
+            <div class="f-row breadcrum-head">
+                <div i18n="@@data_scope" class="display-heading-large">Data scope</div>
+                <span class="f-col-spacer-half"></span>
+                <span class="f-spacer"></span>
+                <lib-button i18n="@@save" type="major" (click)="saveVarient()">Save</lib-button>
             </div>
+        </div>
     </div>
     <div class="f-col sidesheetcontent-listing">
         <div class="f-col mdo-justify">
@@ -24,8 +22,8 @@
                     <mat-chip-list>
                         <ng-container *ngIf="variantInfo">
                             <ng-template ngFor let-ctrl [ngForOf]="variantInfo.filterCriteria">
-                                <mat-chip class="mdo-filter-matchip" disableRipple="true" [matMenuTriggerFor]="appliedfiltermenu"
-                                    (click)="loadDropValues(ctrl)">
+                                <mat-chip class="mdo-filter-matchip" disableRipple="true"
+                                    [matMenuTriggerFor]="appliedfiltermenu" (click)="loadDropValues(ctrl)">
                                     <label>{{ctrl.fldCtrl ? ctrl.fldCtrl.fieldDescri : 'Unknown'}}:</label>
                                     <span class="info">{{prepareTextToShow(ctrl)}}</span>
                                     <mat-icon matChipRemove (click)="removeFilter(ctrl)">clear</mat-icon>
@@ -37,28 +35,21 @@
                             (click)="reInilize = !reInilize">
                             <mat-icon fontSet="mdo-icons">filter</mat-icon>
                         </mat-chip>
-    
+
                         <mat-menu #addFilterMenu="matMenu">
-                            <pros-add-filter-menu 
-                                [moduleId]="moduleId" 
-                                (evtReadyForApply)="makeFilterCtrl($event)"
-                                [reInilize]="reInilize" 
-                                [isSearchEnable]="true"
-                                [alreadySelectedValues]="variantInfo.filterCriteria"
-                                ></pros-add-filter-menu>
+                            <pros-add-filter-menu [moduleId]="moduleId" (evtReadyForApply)="makeFilterCtrl($event)"
+                                [reInilize]="reInilize" [isSearchEnable]="true"
+                                [alreadySelectedValues]="variantInfo.filterCriteria"></pros-add-filter-menu>
                         </mat-menu>
                     </mat-chip-list>
-    
-                        <mat-menu #appliedfiltermenu="matMenu">
-                            <pros-filter-values 
-                                [moduleId]="moduleId" 
-                                (selectedValues)="updateChipFilter($event, loadDropValuesFor.fieldId)"
-                                [isSearchEnable]="true"
-                                [fieldId]="loadDropValuesFor ? loadDropValuesFor.fieldId : ''"
-                                [checkedValue]="loadDropValuesFor ? loadDropValuesFor.checkedValue : []"
-                                >
-                            </pros-filter-values>
-                        </mat-menu>
+
+                    <mat-menu #appliedfiltermenu="matMenu">
+                        <pros-filter-values [moduleId]="moduleId"
+                            (selectedValues)="updateChipFilter($event, loadDropValuesFor.fieldId)"
+                            [isSearchEnable]="true" [fieldId]="loadDropValuesFor ? loadDropValuesFor.fieldId : ''"
+                            [checkedValue]="loadDropValuesFor ? loadDropValuesFor.checkedValue : []">
+                        </pros-filter-values>
+                    </mat-menu>
                 </div>
             </div>
         </div>

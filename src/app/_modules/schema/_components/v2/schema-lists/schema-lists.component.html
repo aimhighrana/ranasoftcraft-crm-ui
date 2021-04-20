@@ -4,9 +4,7 @@
             {{  moduleData ? ( moduleData.moduleDesc ? moduleData.moduleDesc: 'Untitled') : 'Untitled'}}
         </div>
         <span class="f-spacer"></span>
-        <lib-button (click)="openUploadSideSheet()" type="minor" i18n="@@upload_data" icon="outbox-alt" iconFontType="solid" iconPosition="before">
-            Upload data
-        </lib-button>
+        <lib-button (click)="openUploadSideSheet()" type="plain" iconPosition="before" icon="upload" > Upload data </lib-button>
     </div>
 
     <!-- <mat-card class="f-row mat-elevation-z0 message info-alert">
@@ -26,14 +24,10 @@
                 <div mat-line class="short-line">Last run: 
                     {{ schemalist.executionEndTime ? (schemalist.executionEndTime | date:'MMM d, y, h:mm:ss a'): 'N/A' }}
                 </div>
+                <lib-button type="plain" iconFontType="solid" (click)="openSchemaInfo(schemalist.schemaId)" icon="long-arrow-right"></lib-button>
     
-                <button mat-button (click)="openSchemaInfo(schemalist.schemaId)">
-                    <mat-icon fontSet="mdo-icons">long-arrow-right</mat-icon>
-                </button>
-
             </mat-list-item>
             <mat-divider></mat-divider>
         </mat-list>
     </ng-template>
-    
 </div>
