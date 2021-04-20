@@ -1,5 +1,3 @@
-@import '../../../../../assets/themes/themes.scss';
-
 .root {
   user-select: none;
   height: 100%;
@@ -36,14 +34,14 @@
     }
 
     mat-tree .mat-tree-node {
-      color: $color-text-primary;
-      background: $color-text-canvas;
+      color: #272d37;
+      background: #fff;
       font-size: 14px;
       cursor: pointer;
     }
 
     mat-tree .mat-tree-node:hover {
-      background-color: $color-app-hover;
+      background-color: #f2f5f8;
     }
 
     mat-tree .mat-tree-node mat-icon {
@@ -54,7 +52,7 @@
       height: 36px;
       font-size: 24px;
       line-height: 24px;
-      color: $color-text-primary;
+      color: #272d37;
     }
 
     .mat-tree-container {
