@@ -980,7 +980,7 @@
       </trans-unit>
       <trans-unit id="entire_dataset" datatype="html">
         <source>Entire dataset</source>
-        <target>entire_dataset</target>
+        <target>データセット全体</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
           <context context-type="linenumber">10</context>
@@ -988,7 +988,7 @@
       </trans-unit>
       <trans-unit id="new_data_scope" datatype="html">
         <source>New data scope</source>
-        <target>new_data_scope</target>
+        <target>新しいデータスコープ</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
           <context context-type="linenumber">18</context>
@@ -996,7 +996,7 @@
       </trans-unit>
       <trans-unit id="export_to_csv" datatype="html">
         <source>Export to CSV</source>
-        <target>export_to_csv</target>
+        <target>CSVへのエクスポート</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
           <context context-type="linenumber">38</context>
@@ -1004,7 +1004,7 @@
       </trans-unit>
       <trans-unit id="import_from_csv" datatype="html">
         <source>Import from CSV</source>
-        <target>import_from_csv</target>
+        <target>CSVからのインポート</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
           <context context-type="linenumber">39</context>
@@ -1012,7 +1012,7 @@
       </trans-unit>
       <trans-unit id="errors" datatype="html">
         <source>Errors</source>
-        <target>errors</target>
+        <target>エラー</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
           <context context-type="linenumber">74</context>
@@ -1020,7 +1020,7 @@
       </trans-unit>
       <trans-unit id="success" datatype="html">
         <source>Success</source>
-        <target>success</target>
+        <target>成功</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
           <context context-type="linenumber">78</context>
@@ -1028,7 +1028,7 @@
       </trans-unit>
       <trans-unit id="corrections" datatype="html">
         <source>Corrections</source>
-        <target>corrections</target>
+        <target>訂正</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
           <context context-type="linenumber">82</context>
@@ -1036,7 +1036,7 @@
       </trans-unit>
       <trans-unit id="header" datatype="html">
         <source>Header</source>
-        <target>header</target>
+        <target>ヘッダ</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
           <context context-type="linenumber">148</context>
@@ -1048,7 +1048,7 @@
       </trans-unit>
       <trans-unit id="plant_data" datatype="html">
         <source>Plant data</source>
-        <target>plant_data</target>
+        <target>プラントデータ</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
           <context context-type="linenumber">159</context>
@@ -1056,7 +1056,7 @@
       </trans-unit>
       <trans-unit id="valuation_data" datatype="html">
         <source>Valuation data</source>
-        <target>valuation_data</target>
+        <target>評価データ</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
           <context context-type="linenumber">167</context>
@@ -1068,7 +1068,7 @@
       </trans-unit>
       <trans-unit id="language_table" datatype="html">
         <source>Language table</source>
-        <target>language_table</target>
+        <target>言語テーブル</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
           <context context-type="linenumber">184</context>
@@ -1076,7 +1076,7 @@
       </trans-unit>
       <trans-unit id="all_unit_of_measure" datatype="html">
         <source>Alt unit of measure</source>
-        <target>all_unit_of_measure</target>
+        <target>対策のAltキーユニット</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
           <context context-type="linenumber">195</context>
@@ -1084,7 +1084,7 @@
       </trans-unit>
       <trans-unit id="approve" datatype="html">
         <source>Approve</source>
-        <target>approve</target>
+        <target>認めます</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
           <context context-type="linenumber">222</context>
@@ -1096,7 +1096,7 @@
       </trans-unit>
       <trans-unit id="reject" datatype="html">
         <source>Reject</source>
-        <target>reject</target>
+        <target>拒絶します</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
           <context context-type="linenumber">223</context>
@@ -1104,7 +1104,7 @@
       </trans-unit>
       <trans-unit id="unselect" datatype="html">
         <source>Unselect</source>
-        <target>unselect</target>
+        <target>選択を解除</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
           <context context-type="linenumber">224</context>
@@ -1112,7 +1112,7 @@
       </trans-unit>
       <trans-unit id="score" datatype="html">
         <source>Score</source>
-        <target>score</target>
+        <target>スコア</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
           <context context-type="linenumber">270</context>
@@ -1120,7 +1120,7 @@
       </trans-unit>
       <trans-unit id="object_number" datatype="html">
         <source>Object Number</source>
-        <target>object_number</target>
+        <target>オブジェクト番号</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
           <context context-type="linenumber">334</context>
@@ -1128,7 +1128,7 @@
       </trans-unit>
       <trans-unit id="create" datatype="html">
         <source>Create</source>
-        <target>create</target>
+        <target>作ります</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\save-variant-dialog\save-variant-dialog.component.html</context>
           <context context-type="linenumber">18</context>
@@ -1136,7 +1136,7 @@
       </trans-unit>
       <trans-unit id="columns" datatype="html">
         <source>Columns</source>
-        <target>columns</target>
+        <target>コラム</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app_modules/list/_components/table-view-settings/table-view-settings.component.html</context>
           <context context-type="linenumber">30</context>
@@ -1148,7 +1148,7 @@
       </trans-unit>
       <trans-unit id="editable" datatype="html">
         <source>Editable</source>
-        <target>Editable</target>
+        <target>編集可能</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\shared\_components\table-column-settings\table-column-settings.component.html</context>
           <context context-type="linenumber">32</context>
@@ -1156,7 +1156,7 @@
       </trans-unit>
       <trans-unit id="preview" datatype="html">
         <source>Preview</source>
-        <target>preview</target>
+        <target>試写</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\shared\_components\table-column-settings\table-column-settings.component.html</context>
           <context context-type="linenumber">77</context>
@@ -1164,7 +1164,7 @@
       </trans-unit>
       <trans-unit id="action" datatype="html">
         <source>Action</source>
-        <target>action</target>
+        <target>アクション</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\shared\_components\table-column-settings\table-column-settings.component.html</context>
           <context context-type="linenumber">144</context>
@@ -1172,7 +1172,7 @@
       </trans-unit>
       <trans-unit id="primary" datatype="html">
         <source>Primary</source>
-        <target>primary</target>
+        <target>主要</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\shared\_components\table-column-settings\table-column-settings.component.html</context>
           <context context-type="linenumber">145</context>
@@ -1184,7 +1184,7 @@
       </trans-unit>
       <trans-unit id="new_custom_action" datatype="html">
         <source>New custom action</source>
-        <target>new_custom_action</target>
+        <target>新しいカスタムアクション</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\shared\_components\table-column-settings\table-column-settings.component.html</context>
           <context context-type="linenumber">155</context>
