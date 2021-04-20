@@ -23,10 +23,10 @@ div.root {
   }
 
   .report-builder {
-    height: 100%;
+    height: calc(100% - 16px * 2 - 32px);
 
     .builder-container {
-      height: calc(100% - 52px - 32px - 70px);
+      height: calc(100% - 52px - 32px);
       justify-content: space-between;
       border-width: 1px;
       border-style: solid;
