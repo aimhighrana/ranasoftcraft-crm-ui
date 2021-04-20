@@ -1360,6 +1360,12 @@
     }
   }
 
+  pros-settings {
+    .mat-list-item.selected {
+      background-color: $color-app-hover;
+    }
+  }
+
   pros-secondary-navbar {
     .root {
       mat-card.secondary-card {

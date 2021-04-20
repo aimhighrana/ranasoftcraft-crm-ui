@@ -206,7 +206,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
 
     this.activateRoute.queryParams.subscribe((params) => {
       console.log(params);
-      this.isFromCheckData = Boolean(params.isCheckData);
+      this.isFromCheckData = Boolean(params.isCheckData === 'true');
       this.moduleDesc = params.name;
     })
 

@@ -147,12 +147,12 @@ describe('WelcomeComponent', () => {
     component.selectschema({ schemaId: null, schemaDescription: null });
     expect(schemaServiceSpy.createUpdateSchema).toHaveBeenCalled();
     expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/check-data/123/456` } }],{
-      queryParams: {isCheckData: true}
+      queryParams: {isCheckData: false}
     });
 
     component.selectschema({ schemaId: '789', schemaDescription: null });
     expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/check-data/123/789` } }],{
-      queryParams: {isCheckData: true}
+      queryParams: {isCheckData: false}
     });
   }));
 

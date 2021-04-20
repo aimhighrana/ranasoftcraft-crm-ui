@@ -147,7 +147,7 @@ export class WelcomeComponent implements OnInit , OnDestroy {
        const moduleId = this.data.objectid;
        if (schemaId) {
          this.router.navigate([{ outlets: { sb: `sb/schema/check-data/${moduleId}/${schemaId}` } }],{
-           queryParams: {isCheckData: true}
+           queryParams: {isCheckData: false}
          })
        } else {
          const schemaReq: CreateUpdateSchema = new CreateUpdateSchema();
@@ -156,7 +156,7 @@ export class WelcomeComponent implements OnInit , OnDestroy {
          this.schemaService.createUpdateSchema(schemaReq).subscribe((response) => {
            const receivedSchemaId = response;
            this.router.navigate([{ outlets: { sb: `sb/schema/check-data/${moduleId}/${receivedSchemaId}` } }],{
-            queryParams: {isCheckData: true}
+            queryParams: {isCheckData: false}
           })
          }, (error) => {
            console.log('Something went wrong while creating schema', error.message);
