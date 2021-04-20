@@ -157,6 +157,7 @@ export class TaskListFilterComponent implements OnInit {
           };
           return parentNode;
         })
+        .filter((d) => d.fields && d.fields.length > 0)
         .slice(pageIndex * pageSize, (pageIndex + 1) * pageSize);
       return of({ data: filteredData, totalCount: treeData.length }).pipe(delay(1500));
     }
@@ -184,7 +185,7 @@ export class TaskListFilterComponent implements OnInit {
             d.fields.filter((f) => f),
             value
           );
-          return d;
+          return d.fields.length > 0 ? d : null;
         }
         return this.filterNode(d, value);
       })
