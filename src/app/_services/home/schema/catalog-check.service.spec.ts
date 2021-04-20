@@ -1,14 +1,14 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed, async } from '@angular/core/testing';
 import { DoCorrectionRequest, MasterRecordChangeRequest, RequestForCatalogCheckData, RequestForGroupList, SearchAfter } from '@models/schema/duplicacy';
-import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
+import { EndpointsRuleService } from '@services/_endpoints/endpoints-rule.service';
 
 import { CatalogCheckService } from './catalog-check.service';
 
 describe('CatalogCheckService', () => {
   let catalogService: CatalogCheckService;
-  let endpointServiceSpy: jasmine.SpyObj<EndpointsClassicService>;
-  const endpointSpy = jasmine.createSpyObj('EndpointsClassicService', ['duplicacyGroupsListUrl', 'catalogCheckRecordsUrl', 'markForDeletionUrl',
+  let endpointServiceSpy: jasmine.SpyObj<EndpointsRuleService>;
+  const endpointSpy = jasmine.createSpyObj('EndpointsRuleService', ['duplicacyGroupsListUrl', 'catalogCheckRecordsUrl', 'markForDeletionUrl',
   'masterRecordChangeUrl','doDuplicacyCorrectionUrl','approveDuplicacyCorrectionUrl', 'rejectDuplicacyCorrectionUrl']);
   let httpTestingController: HttpTestingController;
 
@@ -16,11 +16,11 @@ describe('CatalogCheckService', () => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
-        { provide: EndpointsClassicService, useValue: endpointSpy }
+        { provide: EndpointsRuleService, useValue: endpointSpy }
       ]
     });
     catalogService = TestBed.inject(CatalogCheckService);
-    endpointServiceSpy = TestBed.inject(EndpointsClassicService) as jasmine.SpyObj<EndpointsClassicService>;
+    endpointServiceSpy = TestBed.inject(EndpointsRuleService) as jasmine.SpyObj<EndpointsRuleService>;
     httpTestingController = TestBed.inject(HttpTestingController);
 
   });

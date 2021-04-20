@@ -3,15 +3,15 @@ import { TestBed } from '@angular/core/testing';
 import { Attribute, CreateNounModRequest } from '@models/schema/classification';
 import { AttributesDoc, NounModifier } from '@models/schema/noun-modifier';
 import { Modifier } from '@models/schema/schemadetailstable';
-import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 import { EndpointsDataplayService } from '@services/_endpoints/endpoints-dataplay.service';
+import { EndpointsRuleService } from '@services/_endpoints/endpoints-rule.service';
 
 import { NounModifierService } from './noun-modifier.service';
 
 describe('NounModifierService', () => {
   let service: NounModifierService;
   let httpTestingController: HttpTestingController;
-  let endpointClassic: EndpointsClassicService;
+  let endpointClassic: EndpointsRuleService;
   let endpointDataplay: EndpointsDataplayService;
 
   beforeEach(() => {
@@ -20,7 +20,7 @@ describe('NounModifierService', () => {
     });
     service = TestBed.inject(NounModifierService);
     httpTestingController = TestBed.inject(HttpTestingController);
-    endpointClassic = TestBed.inject(EndpointsClassicService);
+    endpointClassic = TestBed.inject(EndpointsRuleService);
     endpointDataplay = TestBed.inject(EndpointsDataplayService);
   });
 

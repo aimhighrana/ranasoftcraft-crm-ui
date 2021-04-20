@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { EndpointsAnalyticsService } from '@services/_endpoints/endpoints-analytics.service';
-import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 import { EndpointsDataplayService } from '@services/_endpoints/endpoints-dataplay.service';
 import { Observable } from 'rxjs';
 
-import {AttributesDoc, NounModifier} from '@models/schema/noun-modifier.ts';
+import {AttributesDoc, NounModifier} from '@models/schema/noun-modifier';
 import { HttpClient } from '@angular/common/http';
 import { Modifier } from '@models/schema/schemadetailstable';
 import { Attribute, AttributesMapping, CreateNounModRequest } from '@models/schema/classification';
+import { EndpointsRuleService } from '@services/_endpoints/endpoints-rule.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +15,7 @@ import { Attribute, AttributesMapping, CreateNounModRequest } from '@models/sche
 export class NounModifierService {
 
   constructor(
-    private endpointClassic: EndpointsClassicService,
+    private endpointClassic: EndpointsRuleService,
     private endpointAnalytics: EndpointsAnalyticsService,
     private endpointDataplay: EndpointsDataplayService,
     private http: HttpClient

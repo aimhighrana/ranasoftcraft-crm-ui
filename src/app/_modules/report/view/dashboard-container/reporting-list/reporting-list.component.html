@@ -11,6 +11,7 @@
             <button mat-menu-item (click)="downloadCSV()">Data download (.csv)</button>
         </mat-menu>
     </div>
+    
     <mat-card-content>
         <div class="root-table">
             <table mat-table [dataSource]="dataSource" matSort (matSortChange)="sortTable($event)">
