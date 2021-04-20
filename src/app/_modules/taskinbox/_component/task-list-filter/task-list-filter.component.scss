@@ -1,3 +1,5 @@
+@import '../../../../../assets/themes/themes.scss';
+
 .root {
   user-select: none;
   height: 100%;
@@ -10,15 +12,6 @@
 
     .system-fields-col {
       width: 220px;
-
-      .filters-list {
-        max-height: 300px;
-        overflow-y: auto;
-
-        mat-list-item {
-          cursor: pointer;
-        }
-      }
 
       .fields-list {
         max-height: 450px;
@@ -39,18 +32,18 @@
     }
 
     .mat-tree-node {
-      overflow: visible !important;
+      overflow: visible;
     }
 
     mat-tree .mat-tree-node {
-      color: #272d37;
-      background: #fff;
+      color: $color-text-primary;
+      background: $color-text-canvas;
       font-size: 14px;
       cursor: pointer;
     }
 
     mat-tree .mat-tree-node:hover {
-      background-color: #f2f5f8;
+      background-color: $color-app-hover;
     }
 
     mat-tree .mat-tree-node mat-icon {
@@ -61,7 +54,7 @@
       height: 36px;
       font-size: 24px;
       line-height: 24px;
-      color: #272d37;
+      color: $color-text-primary;
     }
 
     .mat-tree-container {

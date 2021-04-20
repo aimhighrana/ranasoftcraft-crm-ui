@@ -119,12 +119,12 @@ describe('TaskListFilterComponent', () => {
   it('scroll($event)', () => {
     spyOn(component, 'loadData');
     component.ngOnInit();
-    const event = { target: { offsetHeight: 450, scrollTop: 20, scrollHeight: 480 } };
-    component.scroll(event);
+    // const event = { target: { offsetHeight: 450, scrollTop: 20, scrollHeight: 480 } };
+    component.scroll(true);
     expect(component.loadData).toHaveBeenCalled();
 
     component.pageEvent.pageIndex = 1;
-    component.scroll(event);
+    component.scroll(true);
     expect(component.infinteScrollLoading).toBe(false);
   });
   it('loadData()', () => {

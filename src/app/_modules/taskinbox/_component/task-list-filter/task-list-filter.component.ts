@@ -104,20 +104,22 @@ export class TaskListFilterComponent implements OnInit {
           this.loadData([]);
         }
       });
-    this.scroll = this.scroll.bind(this);
-    document.getElementById('mat-tree').addEventListener('scroll', this.scroll);
+    // this.scroll = this.scroll.bind(this);
+    // document.getElementById('mat-tree').addEventListener('scroll', this.scroll);
   }
   resetPageEvent() {
     this.pageEvent.pageIndex = 0;
     this.pageEvent.pageSize = 10;
     this.pageEvent.totalCount = 0;
   }
-  scroll(event) {
-    const scrollableHeight = event.target.scrollHeight;
-    const scrolledHeight = event.target.offsetHeight + event.target.scrollTop;
-    const ratio = scrolledHeight > 0 && (scrolledHeight * 100) / scrollableHeight;
-    if (ratio >= 95 && ratio < 98 && !this.infinteScrollLoading) {
-      this.pageEvent.pageIndex++;
+  scroll(loadMore: boolean) {
+    debugger;
+    if (!this.infinteScrollLoading) {
+      if (loadMore) {
+        this.pageEvent.pageIndex++;
+      } else {
+        this.pageEvent.pageIndex = 0;
+      }
       const { pageIndex, pageSize, totalCount } = this.pageEvent;
       if (pageIndex * pageSize > totalCount) {
         this.infinteScrollLoading = false;
