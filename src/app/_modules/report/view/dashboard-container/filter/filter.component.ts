@@ -776,6 +776,9 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     }
   }
 
+  /**
+   * Return the value of DisplayCriteria
+   */
   checkTextCode(v: { c: string; t: string; }): string {
     switch (this.ctOption.key) {
       case DisplayCriteria.CODE:
@@ -795,11 +798,37 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     return '';
   }
 
+  /**
+   * Save DisplayCriteria and update filter widget
+   */
   saveDisplayCriteria() {
     this.widgetService.saveDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType, this.ctOption.key).subscribe(res => {
-      this.removefilter(this.filterWidget.value.fieldId, this.filterCriteria);
       this.filteredOptions = of([]);
-      this.updateFilter(this.widgetInfo.widgetId, this.returnData);
+      this.values = [];
+      this.updateFilter(this.filterWidget.value.fieldId, this.returnData);
+      // Update filterFormControl with updated values
+      if (this.filterFormControl.value) {
+        this.filteredOptions.subscribe(sub=>{
+          sub.forEach(v => {
+            if (v.CODE === this.filterFormControl.value.CODE) {
+              this.filterFormControl.setValue(v);
+            }
+          });
+        });
+      }
+      // Update selectedDropVals with updated values
+      if (this.selectedDropVals && this.selectedDropVals.length > 0) {
+        this.filteredOptions.subscribe(sub=>{
+          for (let index = 0; index < this.selectedDropVals.length; index++) {
+            const element = this.selectedDropVals[index];
+            sub.forEach(v => {
+              if (v.CODE === this.selectedDropVals[index].CODE) {
+                this.selectedDropVals[index].TEXT = v.TEXT;
+              }
+            });
+          }
+        });
+      }
     }, error => {
       console.error(`Error : ${error}`);
       this.snackBar.open(`Something went wrong`, 'Close', { duration: 3000 });
