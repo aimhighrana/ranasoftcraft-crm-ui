@@ -819,14 +819,13 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
       // Update selectedDropVals with updated values
       if (this.selectedDropVals && this.selectedDropVals.length > 0) {
         this.filteredOptions.subscribe(sub=>{
-          for (let index = 0; index < this.selectedDropVals.length; index++) {
-            const element = this.selectedDropVals[index];
+          this.selectedDropVals.forEach(item => {
             sub.forEach(v => {
-              if (v.CODE === this.selectedDropVals[index].CODE) {
-                this.selectedDropVals[index].TEXT = v.TEXT;
+              if (v.CODE === item.CODE) {
+                item.TEXT = v.TEXT;
               }
             });
-          }
+          });
         });
       }
     }, error => {
