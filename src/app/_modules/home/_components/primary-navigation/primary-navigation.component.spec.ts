@@ -141,7 +141,7 @@ describe('PrimaryNavigationComponent', () => {
   it('should call openSettings()', async () => {
     spyOn(router, 'navigate');
     component.openSettings();
-    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: 'home/settings' }}]);
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: 'settings' }}]);
   });
 
   it('should call signout()', async () => {
