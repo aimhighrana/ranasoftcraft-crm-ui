@@ -7,7 +7,6 @@ import { SchemaDataSource } from '../../schema-details/schema-datatable/schema-d
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { SchemaService } from '@services/home/schema.service';
 import { SchemaStaticThresholdRes, LoadDropValueReq, SchemaListDetails, SchemaVariantsModel, SchemaNavGrab } from '@models/schema/schemalist';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
 import { SelectionModel } from '@angular/cdk/collections';
 import { AddFilterOutput } from '@models/schema/schema';
@@ -220,7 +219,6 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     private sharedServices: SharedServiceService,
     private schemaService: SchemaService,
     private endpointservice: EndpointsClassicService,
-    private snackBar: MatSnackBar,
     private matDialog: MatDialog,
     private schemaListService: SchemalistService,
     private schemaVariantService: SchemaVariantService,
