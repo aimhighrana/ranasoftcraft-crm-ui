@@ -44,10 +44,6 @@ export class EndpointsRuleService {
     return this.origin + '/schema/metadata/category-list';
   }
 
-  // public getSchemaStatusUrl(): string {
-  //   return this.origin + '/schema/schema-status';
-  // }
-
   public getAllSelectedFields(): string {
     return this.origin + `/schema/metadata/get-selected-fields-view`;
   }

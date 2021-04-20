@@ -35,29 +35,7 @@ describe('SchemaVariantService', () => {
     expect(service).toBeTruthy();
   });
 
-  // it('schemavariantDetailsBySchemaId() : should call' , () => {
-  //   const url = 'get all variant of schema';
-  //   // mock url
-  //   endpointServiceSpy.schemaVarinatDetails.and.returnValue(url);
-
-  //   // mock data
-  //   const mockData = {} as any;
-  //   const schemaVariants: SchemaVariantResponse[] = [];
-  //   any2tsServiceSpy.any2SchemaVariantResponse.withArgs(mockData).and.returnValue(schemaVariants);
-  //   // actual call
-  //   const sendData: SendSchemavariantRequest = new SendSchemavariantRequest();
-  //   schemaVariantService.schemavariantDetailsBySchemaId(sendData).subscribe(actualData => {
-  //     expect(actualData).toEqual(schemaVariants);
-  //   });
-
-  //   // mock http
-  //   const mockRequest = httpTestingController.expectOne(url);
-  //   expect(mockRequest.request.method).toEqual('POST');
-  //   expect(mockRequest.request.responseType).toEqual('json');
-  //   mockRequest.flush(mockData);
-  //   // verify http
-  //   httpTestingController.verify();
-  // });
+  
 
   it('getVariantdetailsByvariantId(): should call', () =>{
     const url = 'get all variant details of variant';

@@ -48,77 +48,7 @@ describe('SchemaService', () => {
     expect(service).toBeTruthy();
   });
 
-  // it('getAllSchemaGroup() : be able to retrive schemagroups from the API', async(() => {
-  //   const testurl = 'dummy url to test';
-  //   // mocking url
-  //   endpointServiceSpy.getSchemaGroupsUrl.and.returnValue(testurl);
-  //   // mock data
-  //   const mockhttpData = {} as any;
-  //   const mockTS: SchemaGroupResponse[] = [];
-  //   mockTS.push(new SchemaGroupResponse());
-  //   mockTS.push(new SchemaGroupResponse());
-  //   // mock any2TS
-  //   any2tsSpy.any2SchemaGroupResponse.withArgs(mockhttpData).and.returnValue(mockTS);
-  //   // actual call
-  //   schemaService.getAllSchemaGroup().subscribe(actualData => {
-  //     expect(actualData).toEqual(mockTS);
-  //   });
-  //   // mocking http
-  //   const req = httpTestingController.expectOne(testurl);
-  //   expect(req.request.method).toEqual('GET');
-  //   req.flush(mockhttpData);
-  //   // verify http
-  //   httpTestingController.verify();
 
-  // }));
-
-  // it('getSchemaGroupDetailsBySchemaGrpId(): be able to retrive Schema Group Details By Group Id from the API', async(() => {
-  //   const url = 'test url for schema details by grp id';
-  //   const groupId = '826462836823234';
-  //   // mock url
-  //   endpointServiceSpy.getSchemaGroupDetailsByGrpIdUrl.withArgs(groupId).and.returnValue(url);
-  //   // making mock data
-  //   const mockhttpData = {} as any;
-  //   const mockTS: SchemaGroupDetailsResponse = new SchemaGroupDetailsResponse();
-  //   // mock any2ts
-  //   any2tsSpy.any2SchemaDetails.withArgs(mockhttpData).and.returnValue(mockTS);
-  //   // actual service call
-  //   schemaService.getSchemaGroupDetailsBySchemaGrpId(groupId).subscribe(actualData => {
-  //     expect(actualData).toEqual(mockTS);
-  //   });
-  //   // mocking http
-  //   const httpReq = httpTestingController.expectOne(url);
-  //   expect(httpReq.request.method).toEqual('GET');
-  //   httpReq.flush(mockhttpData);
-  //   // verify http
-  //   httpTestingController.verify();
-  // }));
-
-  // it('createSchemaGroup(): schema and update group ', async(() => {
-  //   // mock data
-  //   const createSchemaGroupRequest: CreateSchemaGroupRequest = new CreateSchemaGroupRequest();
-  //   createSchemaGroupRequest.moduleIds = ['1005', '23345'];
-  //   createSchemaGroupRequest.schemaIds = [827368263875, 72354725378];
-  //   createSchemaGroupRequest.schemaGroupName = 'Test group create 1';
-  //   createSchemaGroupRequest.groupId = '23764527357534';
-
-  //   // mock url
-  //   const createUrl = 'create-schema-group';
-  //   endpointServiceSpy.getCreateSchemaGroupUrl.and.returnValue(createUrl);
-
-  //   // call actual service method
-  //   schemaService.createSchemaGroup(createSchemaGroupRequest).subscribe(data => {
-  //     expect(createSchemaGroupRequest.groupId).toEqual(data.groupId);
-  //   });
-
-  //   // mock http
-  //   const httpReq = httpTestingController.expectOne(createUrl);
-  //   expect(httpReq.request.method).toEqual('POST');
-  //   httpReq.flush(createSchemaGroupRequest);
-  //   // verify http
-  //   httpTestingController.verify();
-
-  // }));
 
   it('getAllObjectType() : will return list of object type ', async(() => {
     // mock data
@@ -280,27 +210,6 @@ describe('SchemaService', () => {
     httpTestingController.verify();
   }));
 
-  // it('should getSchemaGroupDetailsByGroupId()', async(() => {
-  //   const url = 'test groupDetailswithAssignedschemaUrl';
-  //   const groupId = '826462836823234'
-  //   // mock url
-  //   endpointServiceSpy.groupDetailswithAssignedschemaUrl.and.returnValue(url);
-  //   // making mock data
-  //   const mockhttpData = {} as any;
-  //   const mockTS: SchemaGroupWithAssignSchemas = new SchemaGroupWithAssignSchemas();
-  //   // mock any2ts
-  //   any2tsSpy.any2SchemaGroupWithAssignSchemasResponse.withArgs(mockhttpData).and.returnValue(mockTS);
-  //   // actual service call
-  //   schemaService.getSchemaGroupDetailsByGroupId(groupId).subscribe(actualData => {
-  //     expect(actualData).toEqual(mockTS);
-  //   });
-  //   // mocking http
-  //   const httpReq = httpTestingController.expectOne(url);
-  //   expect(httpReq.request.method).toEqual('GET');
-  //   httpReq.flush(mockhttpData);
-  //   // verify http
-  //   httpTestingController.verify();
-  // }));
 
   it('should scheduleSchemaCount()', async(() => {
     const url = 'test scheduleSchemaCount url';
@@ -322,25 +231,6 @@ describe('SchemaService', () => {
     httpTestingController.verify();
   }));
 
-  // it('should deleteSchemaGroup()', async(() => {
-  //   const url = 'test deleteSchemaGroupUrl';
-  //   const groupId = '826462836823234'
-  //   // mock url
-  //   endpointServiceSpy.deleteSchemaGroupUrl.and.returnValue(url);
-  //   // making mock data
-  //   const mockResponse = true;
-
-  //   // actual service call
-  //   schemaService.deleteSchemaGroup(groupId).subscribe(actualData => {
-  //     expect(actualData).toEqual(mockResponse);
-  //   });
-  //   // mocking http
-  //   const httpReq = httpTestingController.expectOne(url);
-  //   expect(httpReq.request.method).toEqual('DELETE');
-  //   httpReq.event(new HttpResponse<boolean>({body: true}));
-  //   // verify http
-  //   httpTestingController.verify();
-  // }));
 
   it('should uploadUpdateFileData()', async(() => {
     const url = 'test uploadFileDataUrl';

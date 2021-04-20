@@ -23,21 +23,7 @@ export class SchemaDetailsService {
     private analyticsEndpointService: EndpointsAnalyticsService
   ) { }
 
-  // public getSchemaDataTableColumnInfo(sendData: SendReqForSchemaDataTableColumnInfo): Observable<SchemaDataTableColumnInfoResponse> {
-  //   return this.http.post<any>(this.endpointService.getSchemaDataTableColumnInfoUrl(), sendData).pipe(map(data => {
-  //     return this.any2tsService.any2SchemaDataTableResponse(data);
-  //   }));
-  // }
 
-  // public getSchemaDetailsBySchemaId(schemaId: string): Observable<SchemaListDetails> {
-  //   return this.http.post<any>(this.endpointService.getSchemaDetailsBySchemaId(schemaId), '').pipe(map(data => {
-  //     return null; // this.any2tsService.returnSchemaListDataForGrp(data, schemaId);
-  //   }));
-  // }
-  // public getSchemaDataTableShowMore(scrollId: string): Observable<any> {
-  //   const sendData: SendDataForSchemaTableShowMore = new SendDataForSchemaTableShowMore(scrollId, '');
-  //   return this.http.post<any>(this.endpointService.getShowMoreSchemaTableDataUrl(), sendData);
-  // }
 
   /**
    * Call http for table data response
@@ -54,13 +40,7 @@ export class SchemaDetailsService {
     return this.http.post<any>(this.endpointService.getUpdateSchemaTableViewUrl(), schemaTableViewReq);
   }
 
-  // public getOverviewChartDetails(schemaId: string, variantId: string, runId: string): Observable<OverViewChartDataSet> {
-  //   schemaId = schemaId ? schemaId : '';
-  //   runId = runId ? runId : '';
-  //   return this.http.get<any>(this.endpointService.getOverviewChartDataUrl(schemaId, variantId, runId)).pipe(map(data => {
-  //     return this.any2tsService.any2OverviewChartData(data);
-  //   }));
-  // }
+
 
   public getAllCategoryInfo(): Observable<CategoryInfo[]> {
     return this.http.get<any>(this.endpointService.getCategoryInfoUrl()).pipe(map(data => {
@@ -69,11 +49,7 @@ export class SchemaDetailsService {
   }
 
 
-  // public getCategoryChartDetails(schemaId: string, variantId: string, categoryId: string, status: string): Observable<CategoryChartDataSet> {
-  //   return this.http.get<any>(this.endpointService.categoryChartData(schemaId, variantId, categoryId, status)).pipe(map(response => {
-  //     return this.any2tsService.any2CategoryChartData(response);
-  //   }));
-  // }
+
 
   public getMetadataFields(objectId: string): Observable<MetadataModeleResponse> {
     return this.http.get<any>(this.endpointClassic.getMetadataFields(objectId)).pipe(map(res => {

@@ -79,21 +79,7 @@ export class SchemaService {
     return this.excelValues.getValue();
   }
 
-  // public getSchemaGroupDetailsBySchemaGrpId(schemaGroupId: string): Observable<SchemaGroupDetailsResponse> {
-  //   return this.http.get<any>(this.endpointService.getSchemaGroupDetailsByGrpIdUrl(schemaGroupId)).pipe(map(data => {
-  //     return this.any2tsService.any2SchemaDetails(data);
-  //   }));
-  // }
 
-  // public getSchemaGroupCounts(groupId: number): Observable<SchemaGroupCountResponse> {
-  //   return this.http.get<any>(this.endpointService.getSchemaGroupCountUrl(groupId)).pipe(map(data => {
-  //     return this.any2tsService.any2SchemaGroupCountResposne(data);
-  //   }));
-  // }
-
-  // public createSchemaGroup(createSchemaGroupRequest: CreateSchemaGroupRequest): Observable<any> {
-  //   return this.http.post<any>(this.endpointService.getCreateSchemaGroupUrl(), createSchemaGroupRequest);
-  // }
 
   public getAllSchemabymoduleids(getAllSchemabymoduleidsReq: GetAllSchemabymoduleidsReq): Observable<GetAllSchemabymoduleidsRes[]> {
     return this.http.post<any>(this.endpointService.getAllSchemabymoduleids(), getAllSchemabymoduleidsReq).pipe(map(data => {
@@ -107,11 +93,7 @@ export class SchemaService {
     }));
   }
 
-  // public getSchemaGroupDetailsByGroupId(schemaGroupId: string): Observable<SchemaGroupWithAssignSchemas> {
-  //   return this.http.get<any>(this.endpointService.groupDetailswithAssignedschemaUrl(schemaGroupId)).pipe(map(response => {
-  //     return this.any2tsService.any2SchemaGroupWithAssignSchemasResponse(response);
-  //   }));
-  // }
+
 
   public scheduleSchemaCount(schemaId: string): Observable<number> {
     return this.http.get<any>(this.endpointClassic.scheduleSchemaCount(schemaId));
