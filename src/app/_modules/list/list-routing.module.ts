@@ -15,7 +15,6 @@ const routes: Routes = [
   { path: 'datatable/:moduleId', component: ListDatatableComponent },
   { path: 'table-view-settings/:moduleId/:viewId', component: TableViewSettingsComponent },
   { path: 'filter-settings/:moduleId', component: ListFilterComponent },
-  // { path: 'list-filter', component: ListFilterComponent },
   { path: 'filter-chips', component: FilterChipsComponent },
   { path: '**', component: PageNotFoundComponent }
 ];
