@@ -1316,6 +1316,66 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
           <context context-type="linenumber">27</context>
+          </context-group>
+      </trans-unit>
+      <trans-unit id="text" datatype="html">
+        <source>Text</source>
+        <target>Text</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\dashboard-container\reporting-list\report-datatable-column-settings\report-datatable-column-settings.component.html</context>
+          <context context-type="linenumber">26</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\dashboard-container\reporting-list\report-datatable-column-settings\report-datatable-column-settings.component.html</context>
+          <context context-type="linenumber">43</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="code" datatype="html">
+        <source>Code</source>
+        <target>Code</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\dashboard-container\reporting-list\report-datatable-column-settings\report-datatable-column-settings.component.html</context>
+          <context context-type="linenumber">27</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\dashboard-container\reporting-list\report-datatable-column-settings\report-datatable-column-settings.component.html</context>
+          <context context-type="linenumber">44</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="codeAndText" datatype="html">
+        <source>Code and Text</source>
+        <target>Code und Text</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\dashboard-container\reporting-list\report-datatable-column-settings\report-datatable-column-settings.component.html</context>
+          <context context-type="linenumber">27</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\dashboard-container\reporting-list\report-datatable-column-settings\report-datatable-column-settings.component.html</context>
+          <context context-type="linenumber">44</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="viewAs" datatype="html">
+        <source>View as...</source>
+        <target>Ansicht als...</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\dashboard-container\bar-chart\bar-chart.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\dashboard-container\pie-chart\pie-chart.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\dashboard-container\stackedbar-chart\stackedbar-chart.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\dashboard-container\timeseries-widget\timeseries-widget.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\report\view\dashboard-container\filter\filter.component.html</context>
+          <context context-type="linenumber">11</context>
         </context-group>
       </trans-unit>
     </body>
