@@ -261,7 +261,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
         }
       }
     });
-    this.getInboxNodesCountUrl();
+    this.getInboxNodesCount();
   }
 
   ngAfterViewInit() {
@@ -725,7 +725,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
     return true;
   }
 
-  getInboxNodesCountUrl() {
+  getInboxNodesCount() {
     this.listService.getInboxNodesCount().pipe(take(1)).subscribe(resp => {
       this.taskList = resp;
     });
