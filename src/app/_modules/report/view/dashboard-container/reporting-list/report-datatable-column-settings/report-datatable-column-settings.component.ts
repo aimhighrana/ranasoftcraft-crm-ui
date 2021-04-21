@@ -243,37 +243,39 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
     this.manageAllDisplayCriteria();
   }
 
+  /**
+   * function to manage all DisplayCriteria are the same
+   */
   manageAllDisplayCriteria() {
-    let text = false;
-    let code = false;
-    let codeText = false;
-    this.data.selectedColumns.forEach(row => {
-      switch (row.displayCriteria) {
-        case DisplayCriteria.TEXT:
-          text = true;
-          break;
-        case DisplayCriteria.CODE:
-          code = true;
-          break;
-        case DisplayCriteria.CODE_TEXT:
-          codeText = true;
-          break;
-      }
-    });
-    if (text && !code && !codeText) {
+    const columns: MetadataModel[] = this.data.selectedColumns;
+    const text = !columns.some(s => s.displayCriteria && s.displayCriteria !== DisplayCriteria.TEXT);
+    if (text) {
       this.allDisplayCriteria = DisplayCriteria.TEXT;
-    } else if (!text && code && !codeText) {
-      this.allDisplayCriteria = DisplayCriteria.CODE;
-    } else if (!text && !code && codeText) {
-      this.allDisplayCriteria = DisplayCriteria.CODE_TEXT;
-    } else {
-      this.allDisplayCriteria = null;
+      return;
     }
+
+    const code = !columns.some(s => s.displayCriteria && s.displayCriteria !== DisplayCriteria.CODE);
+    if (code) {
+      this.allDisplayCriteria = DisplayCriteria.CODE;
+      return;
+    }
+
+    const codeText = !columns.some(s => s.displayCriteria && s.displayCriteria !== DisplayCriteria.CODE_TEXT);
+    if (codeText) {
+      this.allDisplayCriteria = DisplayCriteria.CODE_TEXT;
+      return;
+    }
+    this.allDisplayCriteria = null;
   }
 
+  /**
+   * function to change all selected column to a DisplayCriteria
+   */
   changeAllDisplayCriteria() {
     this.data.selectedColumns.forEach(row => {
-      row.displayCriteria = this.allDisplayCriteria;
+      if (row.pickList === '1' || row.pickList === '30' || row.pickList === '37') {
+        row.displayCriteria = this.allDisplayCriteria;
+      }
     });
   }
 
@@ -351,10 +353,11 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
       }
       prepareData.push(obj);
     });
-    const reportDisplayCriteria = this.widgetService.saveDisplayCriteria(this.data.widgetId, this.data.widgetType, null, prepareData).subscribe(res => {
+    const saveDisplayCriteria = this.widgetService.saveDisplayCriteria(this.data.widgetId, this.data.widgetType, null, prepareData).subscribe(res => {
     }, error => {
       console.error('Error while updating report data table column settings', error.message);
     });
+    this.subscriptions.push(saveDisplayCriteria);
     const reportDataTable = this.schemaDetailsService.createUpdateReportDataTable(this.data.widgetId, prepareData).subscribe(response => {
       this.close();
       this.data.isRefresh = true;
@@ -363,7 +366,6 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
       console.error('Error while updating report data table column settings', error.message);
     });
     this.subscriptions.push(reportDataTable);
-    this.subscriptions.push(reportDisplayCriteria);
   }
 
   /**

@@ -1,6 +1,6 @@
 import { Component, OnInit, OnChanges, ViewChild, LOCALE_ID, Inject, SimpleChanges, OnDestroy } from '@angular/core';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { PieChartWidget, WidgetHeader, ChartLegend, Criteria, BlockType, ConditionOperator, WidgetColorPalette, DisplayCriteria } from '../../../_models/widget';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { ReportService } from '../../../_service/report.service';
@@ -17,7 +17,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class PieChartComponent extends GenericWidgetComponent implements OnInit, OnChanges, OnDestroy {
 
-  ctOptions = [
+  displayCriteriaOptions = [
     {
       key: DisplayCriteria.TEXT,
       value: 'Text'
@@ -31,7 +31,7 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
       value: 'Code and Text'
     }
   ];
-  ctOption = this.ctOptions[0];
+  displayCriteriaOption = this.displayCriteriaOptions[0];
   pieWidget: BehaviorSubject<PieChartWidget> = new BehaviorSubject<PieChartWidget>(null);
   widgetHeader: WidgetHeader = new WidgetHeader();
   chartLegend: ChartLegend[] = [];
@@ -99,6 +99,7 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
     },
   ];
   returndata: any;
+  subscriptions: Subscription[] = [];
 
   constructor(
     private widgetService: WidgetService,
@@ -132,21 +133,33 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
     });
 
     // after color defined update on widget
-    this.afterColorDefined.subscribe(res => {
+    const afterColorDefined = this.afterColorDefined.subscribe(res => {
       if (res) {
         this.updateColorBasedOnDefined(res);
       }
     });
+    this.subscriptions.push(afterColorDefined);
 
-    this.widgetService.getDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType).subscribe(res => {
-      this.ctOption = this.ctOptions.find(d => d.key === res.displayCriteria);
+    const getDisplayCriteria = this.widgetService.getDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType).subscribe(res => {
+      this.displayCriteriaOption = this.displayCriteriaOptions.find(d => d.key === res.displayCriteria);
+    }, error => {
+      console.error(`Error : ${error}`);
     });
+    this.subscriptions.push(getDisplayCriteria);
   }
 
   public getHeaderMetaData(): void {
     this.widgetService.getHeaderMetaData(this.widgetId).subscribe(returnData => {
       this.widgetHeader = returnData;
     }, error => console.error(`Error : ${error}`));
+  }
+
+  ngOnDestroy(): void {
+    this.pieWidget.complete();
+    this.pieWidget.unsubscribe();
+    this.subscriptions.forEach(sub => {
+      sub.unsubscribe();
+    });
   }
 
   /**
@@ -601,13 +614,8 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
     return this.getRandomColor();
   }
 
-  ngOnDestroy(): void {
-    this.pieWidget.complete();
-    this.pieWidget.unsubscribe();
-  }
-
   setLabels() {
-    switch (this.ctOption.key) {
+    switch (this.displayCriteriaOption.key) {
       case DisplayCriteria.CODE:
         this.lablels = this.chartLegend.map(map => map.code);
         break;
@@ -621,11 +629,12 @@ export class PieChartComponent extends GenericWidgetComponent implements OnInit,
   }
 
   saveDisplayCriteria() {
-    this.widgetService.saveDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType, this.ctOption.key).subscribe(res => {
+    const saveDisplayCriteria = this.widgetService.saveDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType, this.displayCriteriaOption.key).subscribe(res => {
       this.updateChart(this.returndata);
     }, error => {
       console.error(`Error : ${error}`);
       this.snackBar.open(`Something went wrong`, 'Close', { duration: 3000 });
     });
+    this.subscriptions.push(saveDisplayCriteria);
   }
 }

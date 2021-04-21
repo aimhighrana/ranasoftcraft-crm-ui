@@ -2,7 +2,7 @@ import { Component, OnInit, OnChanges, ViewChild, LOCALE_ID, Inject, SimpleChang
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
 import { BarChartWidget, Criteria, WidgetHeader, ChartLegend, ConditionOperator, BlockType, Orientation, WidgetColorPalette, DisplayCriteria } from '../../../_models/widget';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { ChartOptions, ChartTooltipItem, ChartData } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import { MatDialog } from '@angular/material/dialog';
@@ -17,7 +17,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class BarChartComponent extends GenericWidgetComponent implements OnInit, OnChanges, OnDestroy {
 
-  ctOptions = [
+  displayCriteriaOptions = [
     {
       key: DisplayCriteria.TEXT,
       value: 'Text'
@@ -31,7 +31,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
       value: 'Code and Text'
     }
   ];
-  ctOption = this.ctOptions[0];
+  displayCriteriaOption = this.displayCriteriaOptions[0];
   barWidget: BehaviorSubject<BarChartWidget> = new BehaviorSubject<BarChartWidget>(null);
   widgetHeader: WidgetHeader = new WidgetHeader();
   chartLegend: ChartLegend[] = [];
@@ -120,6 +120,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     },
   ];
   returndata: any;
+  subscriptions: Subscription[] = [];
 
   constructor(
     private widgetService: WidgetService,
@@ -151,14 +152,26 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     });
 
     // after color defined update on widget
-    this.afterColorDefined.subscribe(res=>{
+    const afterColorDefined = this.afterColorDefined.subscribe(res=>{
       if(res) {
         this.updateColorBasedOnDefined(res);
       }
     });
+    this.subscriptions.push(afterColorDefined);
 
-    this.widgetService.getDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType).subscribe(res => {
-      this.ctOption = this.ctOptions.find(d => d.key === res.displayCriteria);
+    const getDisplayCriteria =  this.widgetService.getDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType).subscribe(res => {
+      this.displayCriteriaOption = this.displayCriteriaOptions.find(d => d.key === res.displayCriteria);
+    }, error => {
+      console.error(`Error : ${error}`);
+    });
+    this.subscriptions.push(getDisplayCriteria);
+  }
+
+  ngOnDestroy(){
+    this.barWidget.complete();
+    this.barWidget.unsubscribe();
+    this.subscriptions.forEach(sub => {
+      sub.unsubscribe();
     });
   }
 
@@ -339,7 +352,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
   }
 
   setLabels() {
-    switch (this.ctOption.key) {
+    switch (this.displayCriteriaOption.key) {
       case DisplayCriteria.CODE:
         this.lablels = this.chartLegend.map(map => map.code);
         break;
@@ -735,17 +748,13 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     }
   }
 
-  ngOnDestroy(){
-    this.barWidget.complete();
-    this.barWidget.unsubscribe();
-  }
-
   saveDisplayCriteria() {
-    this.widgetService.saveDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType, this.ctOption.key).subscribe(res => {
+    const saveDisplayCriteria = this.widgetService.saveDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType, this.displayCriteriaOption.key).subscribe(res => {
       this.updateChart(this.returndata);
     }, error => {
       console.error(`Error : ${error}`);
       this.snackBar.open(`Something went wrong`, 'Close', { duration: 3000 });
     });
+    this.subscriptions.push(saveDisplayCriteria)
   }
 }

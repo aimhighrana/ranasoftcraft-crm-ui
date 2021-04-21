@@ -29,7 +29,7 @@ const btnArray: ButtonArr[] = [
 export class TimeseriesWidgetComponent extends GenericWidgetComponent implements OnInit, OnChanges, OnDestroy {
 
   responseData: any;
-  ctOptions = [
+  displayCriteriaOptions = [
     {
       key: DisplayCriteria.TEXT,
       value: 'Text'
@@ -43,7 +43,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       value: 'Code and Text'
     }
   ];
-  ctOption = this.ctOptions[1];
+  displayCriteriaOption = this.displayCriteriaOptions[1];
 
   timeDateFormat: TimeDisplayFormat;
   dataSet: ChartDataSets[] = [{ data: [] }];
@@ -187,17 +187,22 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     });
 
 
-    this.startDateCtrl.valueChanges.subscribe(data => {
+    const startDateCtrl = this.startDateCtrl.valueChanges.subscribe(data => {
       this.emitDateChangeValues();
     });
+    this.subscriptions.push(startDateCtrl);
 
-    this.endDateCtrl.valueChanges.subscribe(data => {
+    const endDateCtrl = this.endDateCtrl.valueChanges.subscribe(data => {
       this.emitDateChangeValues();
     });
+    this.subscriptions.push(endDateCtrl);
 
-    this.widgetService.getDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType).subscribe(res => {
-      this.ctOption = this.ctOptions.find(d => d.key === res.displayCriteria);
+    const getDisplayCriteria = this.widgetService.getDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType).subscribe(res => {
+      this.displayCriteriaOption = this.displayCriteriaOptions.find(d => d.key === res.displayCriteria);
+    }, error => {
+      console.error(`Error : ${error}`);
     });
+    this.subscriptions.push(getDisplayCriteria);
 
     this.getTimeSeriesMetadata();
     const widgeInf = this.widgetInf.subscribe(metadata => {
@@ -1017,16 +1022,17 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   }
 
   saveDisplayCriteria() {
-    this.widgetService.saveDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType, this.ctOption.key).subscribe(res => {
+    const saveDisplayCriteria = this.widgetService.saveDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType, this.displayCriteriaOption.key).subscribe(res => {
       this.updateChart(this.responseData)
     }, error => {
       console.error(`Error : ${error}`);
       this.snackBar.open(`Something went wrong`, 'Close', { duration: 3000 });
     });
+    this.subscriptions.push(saveDisplayCriteria);
   }
 
   checkTextCode(arrBucket): string {
-    switch (this.ctOption.key) {
+    switch (this.displayCriteriaOption.key) {
       case DisplayCriteria.CODE:
         if(arrBucket.key) {
           return arrBucket.key;

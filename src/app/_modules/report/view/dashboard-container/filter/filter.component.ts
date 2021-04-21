@@ -18,7 +18,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class FilterComponent extends GenericWidgetComponent implements OnInit, OnChanges,OnDestroy {
 
-  ctOptions = [
+  displayCriteriaOptions = [
     {
       key: DisplayCriteria.TEXT,
       value: 'Text'
@@ -32,7 +32,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
       value: 'Code and Text'
     }
   ];
-  ctOption = this.ctOptions[0];
+  displayCriteriaOption = this.displayCriteriaOptions[0];
   values: DropDownValues[] = [];
   filterWidget:BehaviorSubject<FilterWidget> = new BehaviorSubject<FilterWidget>(null);
   filteredOptions: Observable<DropDownValues[]> = of([]);
@@ -161,9 +161,12 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     });
     this.subscriptions.push(filterWid);
 
-    this.widgetService.getDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType).subscribe(res => {
-      this.ctOption = this.ctOptions.find(d => d.key === res.displayCriteria);
+    const getDisplayCriteria = this.widgetService.getDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType).subscribe(res => {
+      this.displayCriteriaOption = this.displayCriteriaOptions.find(d => d.key === res.displayCriteria);
+    }, error => {
+      console.error(`Error : ${error}`);
     });
+    this.subscriptions.push(getDisplayCriteria);
   }
 
   getFieldsMetadaDesc(buckets:any[], fieldId: string) {
@@ -781,7 +784,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
    * Return the value of DisplayCriteria
    */
   checkTextCode(v: { c: string; t: string; }): string {
-    switch (this.ctOption.key) {
+    switch (this.displayCriteriaOption.key) {
       case DisplayCriteria.CODE:
         if(v.c) {
           return v.c;
@@ -803,7 +806,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
    * Save DisplayCriteria and update filter widget
    */
   saveDisplayCriteria() {
-    this.widgetService.saveDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType, this.ctOption.key).subscribe(res => {
+    const saveDisplayCriteria = this.widgetService.saveDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType, this.displayCriteriaOption.key).subscribe(res => {
       this.filteredOptions = of([]);
       this.values = [];
       this.updateFilter(this.filterWidget.value.fieldId, this.returnData);
@@ -833,5 +836,6 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
       console.error(`Error : ${error}`);
       this.snackBar.open(`Something went wrong`, 'Close', { duration: 3000 });
     });
+    this.subscriptions.push(saveDisplayCriteria);
   }
 }

@@ -3,7 +3,7 @@ import { ChartOptions, ChartLegendLabelItem } from 'chart.js';
 import { Label, BaseChartDirective } from 'ng2-charts';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { StackBarChartWidget, Criteria, WidgetHeader, BlockType, ConditionOperator, ChartLegend, Orientation, OrderWith, WidgetColorPalette, DisplayCriteria } from '../../../_models/widget';
 import { ReportService } from '../../../_service/report.service';
 import   ChartDataLables from 'chartjs-plugin-datalabels';
@@ -17,7 +17,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class StackedbarChartComponent extends GenericWidgetComponent implements OnInit ,OnChanges, OnDestroy{
 
-  ctOptions = [
+  displayCriteriaOptions = [
     {
       key: DisplayCriteria.TEXT,
       value: 'Text'
@@ -31,7 +31,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
       value: 'Code and Text'
     }
   ];
-  ctOption = this.ctOptions[0];
+  displayCriteriaOption = this.displayCriteriaOptions[0];
   orientation = 'bar';
   stackBarWidget : BehaviorSubject<StackBarChartWidget> = new BehaviorSubject<StackBarChartWidget>(null);
   widgetHeader: WidgetHeader = new WidgetHeader();
@@ -80,6 +80,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
   };
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
   returnData: any;
+  subscriptions: Subscription[] = [];
 
   constructor(
     private widgetService : WidgetService,
@@ -94,6 +95,9 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
   ngOnDestroy(): void {
     this.stackBarWidget.complete();
     this.stackBarWidget.unsubscribe();
+    this.subscriptions.forEach(sub => {
+      sub.unsubscribe();
+    });
   }
   ngOnChanges(changes: SimpleChanges):void{
     this.stackBarWidget.next(this.stackBarWidget.getValue());
@@ -148,15 +152,19 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
     });
 
     // after color defined update on widget
-    this.afterColorDefined.subscribe(res=>{
+    const afterColorDefined = this.afterColorDefined.subscribe(res=>{
       if(res) {
         this.updateColorBasedOnDefined(res);
       }
     });
+    this.subscriptions.push(afterColorDefined);
 
-    this.widgetService.getDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType).subscribe(res => {
-      this.ctOption = this.ctOptions.find(d => d.key === res.displayCriteria);
+    const getDisplayCriteria = this.widgetService.getDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType).subscribe(res => {
+      this.displayCriteriaOption = this.displayCriteriaOptions.find(d => d.key === res.displayCriteria);
+    }, error => {
+      console.error(`Error : ${error}`);
     });
+    this.subscriptions.push(getDisplayCriteria);
   }
 
   public getHeaderMetaData():void{
@@ -778,7 +786,7 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
   }
 
   checkTextCode(v: { c: string; t: string; }): string {
-    switch (this.ctOption.key) {
+    switch (this.displayCriteriaOption.key) {
       case DisplayCriteria.CODE:
         if(v.c) {
           return v.c;
@@ -797,12 +805,13 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
   }
 
   saveDisplayCriteria() {
-    this.widgetService.saveDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType, this.ctOption.key).subscribe(res => {
+    const saveDisplayCriteria = this.widgetService.saveDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType, this.displayCriteriaOption.key).subscribe(res => {
       this.resetChart();
       this.updateChart(this.returnData);
     }, error => {
       console.error(`Error : ${error}`);
       this.snackBar.open(`Something went wrong`, 'Close', { duration: 3000 });
     });
+    this.subscriptions.push(saveDisplayCriteria);
   }
 }

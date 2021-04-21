@@ -15,7 +15,7 @@ import { SchemaDetailsService } from '@services/home/schema/schema-details.servi
 import { DisplayCriteria } from '@modules/report/_models/widget';
 
 
-describe('ReportDatatableColumnSettingsComponent', () => {
+fdescribe('ReportDatatableColumnSettingsComponent', () => {
   let component: ReportDatatableColumnSettingsComponent;
   let fixture: ComponentFixture<ReportDatatableColumnSettingsComponent>;
   let router: Router;
@@ -302,12 +302,20 @@ describe('ReportDatatableColumnSettingsComponent', () => {
         {
           fieldId: 'NDCTYPE',
           fieldDescri: 'NDC TYPE MATERIAL',
-          displayCriteria: DisplayCriteria.TEXT
+          displayCriteria: DisplayCriteria.TEXT,
+          pickList: '1'
         },
         {
           fieldId: 'MATL_TYPE',
           fieldDescri: 'MATERIAL TYPE',
-          displayCriteria: DisplayCriteria.CODE
+          displayCriteria: DisplayCriteria.CODE,
+          pickList: '30'
+        },
+        {
+          fieldId: 'DATE',
+          fieldDescri: 'DATE',
+          displayCriteria: DisplayCriteria.CODE,
+          pickList: '37'
         }
       ],
       isWorkflowdataSet: false,
@@ -317,5 +325,6 @@ describe('ReportDatatableColumnSettingsComponent', () => {
     component.changeAllDisplayCriteria();
     expect(component.data.selectedColumns[0].displayCriteria).toEqual(DisplayCriteria.CODE_TEXT);
     expect(component.data.selectedColumns[1].displayCriteria).toEqual(DisplayCriteria.CODE_TEXT);
+    expect(component.data.selectedColumns[2].displayCriteria).toEqual(DisplayCriteria.CODE_TEXT);
   }));
 });
