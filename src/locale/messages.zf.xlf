@@ -613,6 +613,10 @@
           <context context-type="sourcefile">app/_modules/report/view/duplicate-report/duplicate-report.component.html</context>
           <context context-type="linenumber">16</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\settings\_components\profile\change-password-dialog\change-password-dialog.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="home" datatype="html">
         <source>Home</source>
@@ -1005,6 +1009,10 @@
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
           <context context-type="linenumber">37</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\settings\_components\profile\change-password-dialog\change-password-dialog.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="digital_signature" datatype="html">
         <source>Digital Signature</source>
@@ -1014,36 +1022,36 @@
           <context context-type="linenumber">38</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="please_enter_valid_email" datatype="html">
-        <source>Please Enter Valid Email</source>
-        <target>请输入有效电子邮件</target>
+      <trans-unit id="ok" datatype="html">
+        <source>OK</source>
+        <target>好的</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">30</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">34</context>
+          <context context-type="sourcefile">src\app\_modules\settings\_components\profile\change-password-dialog\change-password-dialog.component.html</context>
+          <context context-type="linenumber">17</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="this_is_a_required_field" datatype="html">
-        <source>This is a required field</source>
-        <target>这是一个必填字段</target>
+      <trans-unit id="current_password" datatype="html">
+        <source>Current password</source>
+        <target>当前密码</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">15</context>
+          <context context-type="sourcefile">src\app\_modules\settings\_components\profile\change-password-dialog\change-password-dialog.component.html</context>
+          <context context-type="linenumber">9</context>
         </context-group>
+      </trans-unit>
+      <trans-unit id="new_password" datatype="html">
+        <source>New password</source>
+        <target>新密码</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">19</context>
+          <context context-type="sourcefile">src\app\_modules\settings\_components\profile\change-password-dialog\change-password-dialog.component.html</context>
+          <context context-type="linenumber">10</context>
         </context-group>
+      </trans-unit>
+      <trans-unit id="confirm_new_password" datatype="html">
+        <source>Confirm new password</source>
+        <target>确认新密码</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">23</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">27</context>
+          <context context-type="sourcefile">src\app\_modules\settings\_components\profile\change-password-dialog\change-password-dialog.component.html</context>
+          <context context-type="linenumber">11</context>
         </context-group>
       </trans-unit>
     </body>

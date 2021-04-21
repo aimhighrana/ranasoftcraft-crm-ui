@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { TransientService } from 'mdo-ui-library';
+import { ChangePasswordDialogComponent } from './change-password-dialog/change-password-dialog.component';
 
 @Component({
   selector: 'pros-profile',
@@ -23,7 +26,7 @@ export class ProfileComponent implements OnInit {
     secondaryEmail: 'secEmail@test.com'
   }
 
-  constructor() { }
+  constructor(private dialog: MatDialog, private libToast: TransientService) { }
 
   ngOnInit(): void {
     this.createForm();
@@ -49,6 +52,8 @@ export class ProfileComponent implements OnInit {
    */
   updatePersonalDetails() {
     console.log(this.settingsForm.controls);
+
+    return true;
   }
 
   /**
@@ -88,5 +93,29 @@ export class ProfileComponent implements OnInit {
         this.updatePersonalDetails();
       }
     }, 1000);
+  }
+
+  /**
+   * opens change password dialog
+   */
+  openChangePasswordDialog() {
+    const dialogRef = this.dialog.open(ChangePasswordDialogComponent, {
+      width: '500px',
+      data: {
+        currentPassword : 'Test1234'
+      },
+      panelClass: 'change-password-dialog',
+      autoFocus: false
+    });
+
+    dialogRef.afterClosed().subscribe(msg => {
+      if (msg) {
+        this.libToast.open(msg, 'Okay', {
+          duration: 2000
+        });
+      }
+    });
+
+    return true;
   }
 }

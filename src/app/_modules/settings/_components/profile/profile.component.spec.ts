@@ -1,7 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SharedModule } from '@modules/shared/shared.module';
-import { MdoUiLibraryModule } from 'mdo-ui-library';
+import { MdoUiLibraryModule, TransientService } from 'mdo-ui-library';
 
 import { ProfileComponent } from './profile.component';
 
@@ -16,8 +17,10 @@ describe('ProfileComponent', () => {
         SharedModule,
         MdoUiLibraryModule,
         FormsModule,
-        ReactiveFormsModule
-      ]
+        ReactiveFormsModule,
+        BrowserAnimationsModule
+      ],
+      providers: [TransientService]
     })
     .compileComponents();
   }));
@@ -48,5 +51,9 @@ describe('ProfileComponent', () => {
     component.setValueForFormControl(component.mockValues);
     component.submitForm();
     expect(component.updateForm).toEqual(true);
+  }));
+
+  it('opens change password dialog', async(() => {
+    expect(component.openChangePasswordDialog()).toBeTruthy();
   }));
 });
