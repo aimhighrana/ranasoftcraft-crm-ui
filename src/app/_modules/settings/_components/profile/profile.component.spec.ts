@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { SharedModule } from '@modules/shared/shared.module';
 import { MdoUiLibraryModule, TransientService } from 'mdo-ui-library';
 
@@ -18,7 +19,8 @@ describe('ProfileComponent', () => {
         MdoUiLibraryModule,
         FormsModule,
         ReactiveFormsModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        MatAutocompleteModule
       ],
       providers: [TransientService]
     })
