@@ -1,11 +1,12 @@
 import { Component, OnInit, OnChanges, ViewChild, LOCALE_ID, Inject, SimpleChanges, OnDestroy } from '@angular/core';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { GenericWidgetComponent } from '../../generic-widget/generic-widget.component';
-import { BarChartWidget, Criteria, WidgetHeader, ChartLegend, ConditionOperator, BlockType, Orientation, WidgetColorPalette } from '../../../_models/widget';
-import { BehaviorSubject } from 'rxjs';
+import { BarChartWidget, Criteria, WidgetHeader, ChartLegend, ConditionOperator, BlockType, Orientation, WidgetColorPalette, DisplayCriteria } from '../../../_models/widget';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { ChartOptions, ChartTooltipItem, ChartData } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 
@@ -16,6 +17,21 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class BarChartComponent extends GenericWidgetComponent implements OnInit, OnChanges, OnDestroy {
 
+  displayCriteriaOptions = [
+    {
+      key: DisplayCriteria.TEXT,
+      value: 'Text'
+    },
+    {
+      key: DisplayCriteria.CODE,
+      value: 'Code'
+    },
+    {
+      key: DisplayCriteria.CODE_TEXT,
+      value: 'Code and Text'
+    }
+  ];
+  displayCriteriaOption = this.displayCriteriaOptions[0];
   barWidget: BehaviorSubject<BarChartWidget> = new BehaviorSubject<BarChartWidget>(null);
   widgetHeader: WidgetHeader = new WidgetHeader();
   chartLegend: ChartLegend[] = [];
@@ -103,9 +119,12 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
       data: [0, 0, 0, 0, 0, 0, 0]
     },
   ];
+  returndata: any;
+  subscriptions: Subscription[] = [];
 
   constructor(
     private widgetService: WidgetService,
+    private snackBar: MatSnackBar,
     @Inject(LOCALE_ID) public locale: string,
     public matDialog: MatDialog
   ) {
@@ -133,10 +152,26 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     });
 
     // after color defined update on widget
-    this.afterColorDefined.subscribe(res=>{
+    const afterColorDefined = this.afterColorDefined.subscribe(res=>{
       if(res) {
         this.updateColorBasedOnDefined(res);
       }
+    });
+    this.subscriptions.push(afterColorDefined);
+
+    const getDisplayCriteria =  this.widgetService.getDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType).subscribe(res => {
+      this.displayCriteriaOption = this.displayCriteriaOptions.find(d => d.key === res.displayCriteria);
+    }, error => {
+      console.error(`Error : ${error}`);
+    });
+    this.subscriptions.push(getDisplayCriteria);
+  }
+
+  ngOnDestroy(){
+    this.barWidget.complete();
+    this.barWidget.unsubscribe();
+    this.subscriptions.forEach(sub => {
+      sub.unsubscribe();
     });
   }
 
@@ -192,72 +227,76 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
       // }];
    }
 
-  public getBarChartData(widgetId: number, critria: Criteria[]): void {
+   public getBarChartData(widgetId: number, critria: Criteria[]): void {
     this.widgetService.getWidgetData(String(widgetId), critria).subscribe(returndata => {
-      const res = Object.keys(returndata.aggregations);
-      const arrayBuckets  = returndata.aggregations[res[0]] ? returndata.aggregations[res[0]].buckets : [];
-      this.dataSet = [];
-      this.lablels = [];
-      this.dataSet = this.transformDataSets(arrayBuckets);
-      // update barchartLabels
-      console.log(this.barWidget.getValue().metaData);
-      if(this.barWidget.getValue().metaData && (this.barWidget.getValue().metaData.picklist === '0' && (this.barWidget.getValue().metaData.dataType === 'DTMS' || this.barWidget.getValue().metaData.dataType === 'DATS'))) {
-        if (this.chartLegend.length === 0) {
-          this.getDateFieldsDesc(arrayBuckets);
-        } else {
-          this.lablels = this.chartLegend.map(map => map.text);
-        }
-      } else if(this.barWidget.getValue().metaData && (this.barWidget.getValue().metaData.picklist === '1' || this.barWidget.getValue().metaData.picklist === '37' || this.barWidget.getValue().metaData.picklist === '30')) {
-        if (this.chartLegend.length === 0) {
-          this.getFieldsMetadaDesc(arrayBuckets);
-        } else {
-          this.lablels = this.chartLegend.map(map => map.text);
-        }
-      } else {
-        if (this.chartLegend.length === 0) {
-          this.getFieldsDesc(arrayBuckets);
-        } else {
-          this.lablels = this.chartLegend.map(map => map.text);
-        }
-      }
+      this.returndata = returndata;
+      this.updateChart(this.returndata);
+    });
+  }
 
-      const backgroundColorArray = [];
-      this.chartLegend.forEach(legend=>{
-        backgroundColorArray.push(this.getUpdatedColorCode(legend.code));
-      });
-      // to convert data into percentage
-      if (this.barWidget.getValue().isEnabledBarPerc) {
-        this.total = Number(this.dataSet.reduce((accumulator, currentValue) => accumulator + currentValue));
-        this.barChartOptions = {
-          plugins: {
-            datalabels: {
-              display: true,
-              formatter: (value, ctx) => {
-                if (this.total > 0) {
-                  return (value * 100 / this.total).toFixed(2) + '%';
-                }
-              },
-            }
+  private updateChart(returndata) {
+    const res = Object.keys(returndata.aggregations);
+    const arrayBuckets  = returndata.aggregations[res[0]] ? returndata.aggregations[res[0]].buckets : [];
+    this.dataSet = [];
+    this.lablels = [];
+    this.dataSet = this.transformDataSets(arrayBuckets);
+    // update barchartLabels
+    if(this.barWidget.getValue().metaData && (this.barWidget.getValue().metaData.picklist === '0' && (this.barWidget.getValue().metaData.dataType === 'DTMS' || this.barWidget.getValue().metaData.dataType === 'DATS'))) {
+      if (this.chartLegend.length === 0) {
+        this.getDateFieldsDesc(arrayBuckets);
+      } else {
+        this.setLabels();
+      }
+    } else if(this.barWidget.getValue().metaData && (this.barWidget.getValue().metaData.picklist === '1' || this.barWidget.getValue().metaData.picklist === '37' || this.barWidget.getValue().metaData.picklist === '30')) {
+      if (this.chartLegend.length === 0) {
+        this.getFieldsMetadaDesc(arrayBuckets);
+      } else {
+        this.setLabels();
+      }
+    } else {
+      if (this.chartLegend.length === 0) {
+        this.getFieldsDesc(arrayBuckets);
+      } else {
+        this.setLabels();
+      }
+    }
+
+    const backgroundColorArray = [];
+    this.chartLegend.forEach(legend=>{
+      backgroundColorArray.push(this.getUpdatedColorCode(legend.code));
+    });
+    // to convert data into percentage
+    if (this.barWidget.getValue().isEnabledBarPerc) {
+      this.total = Number(this.dataSet.reduce((accumulator, currentValue) => accumulator + currentValue));
+      this.barChartOptions = {
+        plugins: {
+          datalabels: {
+            display: true,
+            formatter: (value, ctx) => {
+              if (this.total > 0) {
+                return (value * 100 / this.total).toFixed(2) + '%';
+              }
+            },
           }
         }
       }
-      this.barChartData = [{
-        label: this.widgetHeader.widgetName,
-        barThickness: 'flex',
-        data: this.dataSet,
-        backgroundColor:backgroundColorArray
-        // data: this.dataSet
-      }];
+    }
+    this.barChartData = [{
+      label: this.widgetHeader.widgetName,
+      barThickness: 'flex',
+      data: this.dataSet,
+      backgroundColor:backgroundColorArray
+      // data: this.dataSet
+    }];
 
-      // compute graph size
+    // compute graph size
 
-      this.computeGraphSize();
+    this.computeGraphSize();
 
-      // update chart after data sets change
-      if(this.chart) {
-        this.chart.update();
-      }
-    });
+    // update chart after data sets change
+    if(this.chart) {
+      this.chart.update();
+    }
   }
 
   /**
@@ -309,7 +348,21 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
       }
       this.chartLegend.push(chartLegend);
     });
-    this.lablels = this.chartLegend.map(map => map.text);
+    this.setLabels();
+  }
+
+  setLabels() {
+    switch (this.displayCriteriaOption.key) {
+      case DisplayCriteria.CODE:
+        this.lablels = this.chartLegend.map(map => map.code);
+        break;
+        case DisplayCriteria.TEXT:
+        this.lablels = this.chartLegend.map(map => map.text);
+        break;
+        default:
+        this.lablels = this.chartLegend.map(map => map.code + ' -- ' + map.text);
+        break;
+    }
   }
 
   /**
@@ -359,7 +412,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
       }
       this.chartLegend.push(chartLegend);
     });
-    this.lablels = this.chartLegend.map(map => map.text);
+    this.setLabels();
   }
 
   /**
@@ -408,8 +461,7 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
       }
       this.chartLegend.push(chartLegend);
     });
-    this.lablels = this.chartLegend.map(map => map.text);
-
+    this.setLabels();
   }
 
   stackClickFilter(event?: MouseEvent, activeElements?: Array<any>) {
@@ -696,8 +748,13 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
     }
   }
 
-  ngOnDestroy(){
-    this.barWidget.complete();
-    this.barWidget.unsubscribe();
+  saveDisplayCriteria() {
+    const saveDisplayCriteria = this.widgetService.saveDisplayCriteria(this.widgetInfo.widgetId, this.widgetInfo.widgetType, this.displayCriteriaOption.key).subscribe(res => {
+      this.updateChart(this.returndata);
+    }, error => {
+      console.error(`Error : ${error}`);
+      this.snackBar.open(`Something went wrong`, 'Close', { duration: 3000 });
+    });
+    this.subscriptions.push(saveDisplayCriteria)
   }
 }

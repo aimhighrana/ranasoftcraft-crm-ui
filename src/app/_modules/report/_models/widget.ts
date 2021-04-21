@@ -55,6 +55,7 @@ export enum DateSelectionType {
 export enum WidgetType {
     FILTER = 'FILTER',
     BAR_CHART = 'BAR_CHART',
+    PIE_CHART = 'PIE_CHART',
     STACKED_BAR_CHART = 'STACKED_BAR_CHART',
     COUNT = 'COUNT',
     TABLE_LIST = 'TABLE_LIST',
@@ -257,6 +258,7 @@ export class ReportingWidget{
     fieldDesc:string;
     sno:number;
     fldMetaData: MetadataModel;
+    displayCriteria: DisplayCriteria;
 }
 
 export class WidgetHeader {

@@ -2,9 +2,11 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MetadataModel } from '@models/schema/schemadetailstable';
+import { DisplayCriteria } from '@modules/report/_models/widget';
 import { ReportService } from '@modules/report/_service/report.service';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
+import { WidgetService } from '@services/widgets/widget.service';
 import { Observable, of, Subscription } from 'rxjs';
 
 @Component({
@@ -57,6 +59,7 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
    * All the http or normal subscription will store in this array
    */
   subscriptions: Subscription[] = [];
+  allDisplayCriteria: DisplayCriteria;
 
   /**
    * Constructor of class
@@ -64,7 +67,9 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
   constructor(private router: Router,
     private schemaDetailsService: SchemaDetailsService,
     private sharedService: SharedServiceService,
-    private reportService: ReportService) { }
+    private reportService: ReportService,
+    private widgetService: WidgetService,
+  ) { }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => {
@@ -215,6 +220,9 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
       }
     })
     if (flag === false) {
+      if (!checkbox.displayCriteria) {
+        checkbox.displayCriteria = DisplayCriteria.CODE;
+      }
       this.data.selectedColumns.push(checkbox);
     }
     this.manageStateOfCheckbox()
@@ -232,6 +240,43 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
       this.allIndeterminate = true;
       this.allCheckboxSelected = false;
     }
+    this.manageAllDisplayCriteria();
+  }
+
+  /**
+   * function to manage all DisplayCriteria are the same
+   */
+  manageAllDisplayCriteria() {
+    const columns: MetadataModel[] = this.data.selectedColumns;
+    const text = !columns.some(s => s.displayCriteria && s.displayCriteria !== DisplayCriteria.TEXT);
+    if (text) {
+      this.allDisplayCriteria = DisplayCriteria.TEXT;
+      return;
+    }
+
+    const code = !columns.some(s => s.displayCriteria && s.displayCriteria !== DisplayCriteria.CODE);
+    if (code) {
+      this.allDisplayCriteria = DisplayCriteria.CODE;
+      return;
+    }
+
+    const codeText = !columns.some(s => s.displayCriteria && s.displayCriteria !== DisplayCriteria.CODE_TEXT);
+    if (codeText) {
+      this.allDisplayCriteria = DisplayCriteria.CODE_TEXT;
+      return;
+    }
+    this.allDisplayCriteria = null;
+  }
+
+  /**
+   * function to change all selected column to a DisplayCriteria
+   */
+  changeAllDisplayCriteria() {
+    this.data.selectedColumns.forEach(row => {
+      if (row.pickList === '1' || row.pickList === '30' || row.pickList === '37') {
+        row.displayCriteria = this.allDisplayCriteria;
+      }
+    });
   }
 
   /**
@@ -301,16 +346,24 @@ export class ReportDatatableColumnSettingsComponent implements OnInit, OnDestroy
       const obj = {
         widgetId : this.data.widgetId,
         fields: header.fieldId,
+        sno: header.sno,
+        displayCriteria: header.displayCriteria,
+        createdBy: this.data.userDetails.userName,
         fieldOrder: order++
       }
       prepareData.push(obj);
-    })
+    });
+    const saveDisplayCriteria = this.widgetService.saveDisplayCriteria(this.data.widgetId, this.data.widgetType, null, prepareData).subscribe(res => {
+    }, error => {
+      console.error('Error while updating report data table column settings', error.message);
+    });
+    this.subscriptions.push(saveDisplayCriteria);
     const reportDataTable = this.schemaDetailsService.createUpdateReportDataTable(this.data.widgetId, prepareData).subscribe(response => {
       this.close();
       this.data.isRefresh = true;
       this.sharedService.setReportDataTableSetting(this.data);
     }, error => {
-      console.error('Error while updating report data table column settings', error.message)
+      console.error('Error while updating report data table column settings', error.message);
     });
     this.subscriptions.push(reportDataTable);
   }
