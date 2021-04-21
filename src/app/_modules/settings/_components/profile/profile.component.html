@@ -9,12 +9,35 @@
             </div>
             <form [formGroup]="settingsForm">
                 <div class="entry-fields">
-                    <lib-input label="Username" i18n-label="@@username" formControlName="userName" type="text"></lib-input>
-                    <lib-input label="Full Name" i18n-label="@@full_name" formControlName="fullName" type="text" [isRequired]="true" (afterBlur)="submitForm()" (click)="updateForm = false" [hint]="(settingsForm.controls.fullName.touched && settingsForm.controls.fullName.errors && settingsForm.controls.fullName.errors.required) ? 'This is a required field' : ''" [hasError]="settingsForm.controls.fullName.touched && settingsForm.controls.fullName.errors && settingsForm.controls.fullName.errors.required"></lib-input>
-                    <lib-input label="Preferred Name" i18n-label="@@preferred_name" formControlName="preferredName" type="text" [isRequired]="true" (afterBlur)="submitForm()" (click)="updateForm = false" [hint]="(settingsForm.controls.preferredName.touched && settingsForm.controls.preferredName.errors && settingsForm.controls.preferredName.errors.required) ? 'This is a required field' : ''" [hasError]="settingsForm.controls.preferredName.touched && settingsForm.controls.preferredName.errors && settingsForm.controls.preferredName.errors.required"></lib-input>
-                    <lib-input label="Phone Number" i18n-label="@@phone_number" formControlName="phone" type="number" [isRequired]="true" (afterBlur)="submitForm()" (click)="updateForm = false" [hint]="(settingsForm.controls.phone.touched && settingsForm.controls.phone.errors && settingsForm.controls.phone.errors.required) ? 'This is a required field' : ''" [hasError]="settingsForm.controls.phone.touched && settingsForm.controls.phone.errors && settingsForm.controls.phone.errors.required"></lib-input>
-                    <lib-input label="Primary Email Address" i18n-label="@@primary_email_address" formControlName="primaryEmail" type="email" [isRequired]="true" (afterBlur)="submitForm()" (click)="updateForm = false" [hint]="(settingsForm.controls.primaryEmail.touched && settingsForm.controls.primaryEmail.errors && settingsForm.controls.primaryEmail.errors.required) ? 'This is a required field' : ((settingsForm.controls.primaryEmail.touched && settingsForm.controls.primaryEmail.errors && settingsForm.controls.primaryEmail.errors.email) ? 'Please Enter Valid Email' : '')" [hasError]="(settingsForm.controls.primaryEmail.touched && settingsForm.controls.primaryEmail.errors && settingsForm.controls.primaryEmail.errors.required) || (settingsForm.controls.primaryEmail.touched && settingsForm.controls.primaryEmail.errors && settingsForm.controls.primaryEmail.errors.email)"></lib-input>
-                    <lib-input label="Secondary Email Address" i18n-label="@@secondary_email_address" formControlName="secondaryEmail" type="email" (afterBlur)="submitForm()" (click)="updateForm = false" [hint]="(settingsForm.controls.secondaryEmail.touched && settingsForm.controls.secondaryEmail.errors && settingsForm.controls.secondaryEmail.errors.email) ? 'Please Enter Valid Email' : ''" [hasError]="settingsForm.controls.secondaryEmail.touched && settingsForm.controls.secondaryEmail.errors && settingsForm.controls.secondaryEmail.errors.email"></lib-input>
+                    <lib-input label="Username" i18n-label="@@username" formControlName="userName" type="text">
+                    </lib-input>
+                    <lib-input label="Full Name" i18n-label="@@full_name" formControlName="fullName" type="text"
+                        [isRequired]="true" (afterBlur)="submitForm()" (click)="updateForm = false"
+                        [hint]="(settingsForm.controls.fullName.touched && settingsForm.controls.fullName.errors && settingsForm.controls.fullName.errors.required) ? 'This is a required field' : ''"
+                        [hasError]="settingsForm.controls.fullName.touched && settingsForm.controls.fullName.errors && settingsForm.controls.fullName.errors.required">
+                    </lib-input>
+                    <lib-input label="Preferred Name" i18n-label="@@preferred_name" formControlName="preferredName"
+                        type="text" [isRequired]="true" (afterBlur)="submitForm()" (click)="updateForm = false"
+                        [hint]="(settingsForm.controls.preferredName.touched && settingsForm.controls.preferredName.errors && settingsForm.controls.preferredName.errors.required) ? 'This is a required field' : ''"
+                        [hasError]="settingsForm.controls.preferredName.touched && settingsForm.controls.preferredName.errors && settingsForm.controls.preferredName.errors.required">
+                    </lib-input>
+                    <lib-input label="Phone Number" i18n-label="@@phone_number" formControlName="phone" type="number"
+                        [isRequired]="true" (afterBlur)="submitForm()" (click)="updateForm = false"
+                        [hint]="(settingsForm.controls.phone.touched && settingsForm.controls.phone.errors && settingsForm.controls.phone.errors.required) ? 'This is a required field' : ''"
+                        [hasError]="settingsForm.controls.phone.touched && settingsForm.controls.phone.errors && settingsForm.controls.phone.errors.required">
+                    </lib-input>
+                    <lib-input label="Primary Email Address" i18n-label="@@primary_email_address"
+                        formControlName="primaryEmail" type="email" [isRequired]="true" (afterBlur)="submitForm()"
+                        (click)="updateForm = false"
+                        [hint]="(settingsForm.controls.primaryEmail.touched && settingsForm.controls.primaryEmail.errors && settingsForm.controls.primaryEmail.errors.required) ? 'This is a required field' : ((settingsForm.controls.primaryEmail.touched && settingsForm.controls.primaryEmail.errors && settingsForm.controls.primaryEmail.errors.email) ? 'Please Enter Valid Email' : '')"
+                        [hasError]="(settingsForm.controls.primaryEmail.touched && settingsForm.controls.primaryEmail.errors && settingsForm.controls.primaryEmail.errors.required) || (settingsForm.controls.primaryEmail.touched && settingsForm.controls.primaryEmail.errors && settingsForm.controls.primaryEmail.errors.email)">
+                    </lib-input>
+                    <lib-input label="Secondary Email Address" i18n-label="@@secondary_email_address"
+                        formControlName="secondaryEmail" type="email" (afterBlur)="submitForm()"
+                        (click)="updateForm = false"
+                        [hint]="(settingsForm.controls.secondaryEmail.touched && settingsForm.controls.secondaryEmail.errors && settingsForm.controls.secondaryEmail.errors.email) ? 'Please Enter Valid Email' : ''"
+                        [hasError]="settingsForm.controls.secondaryEmail.touched && settingsForm.controls.secondaryEmail.errors && settingsForm.controls.secondaryEmail.errors.email">
+                    </lib-input>
                     <lib-button-group>
                         <lib-button type="minor" i18n="@@change_password">Change Password</lib-button>
                         <lib-button type="minor" i18n="@@digital_signature">Digital Signature</lib-button>
@@ -24,7 +47,105 @@
         </div>
     </lib-tab>
     <lib-tab label="Language & format">
-        Content 2
+        <div class="f-col mdo-field">
+            <!-- label -->
+            <mat-label class="mdo-field-label">Language</mat-label>
+            <!-- input container -->
+            <div class="mdo-field-input">
+                {{selected}}
+                <input matInput placeholder="Type to search" #optionInput2 [formControl]="optionCtrl2"
+                    [matAutocomplete]="auto2" />
+                <mat-icon matSuffix fontSet="mdo-icons">chevron-down</mat-icon>
+                <!-- autocomplete -->
+                <mat-autocomplete class="mdo-autocomplete" #auto2="matAutocomplete"
+                    (optionSelected)="selectSingle($event)">
+                    <mat-option class="mdo-option" *ngFor="let opt of filteredOptions | async" [value]="opt">
+                        {{opt}}
+                    </mat-option>
+                </mat-autocomplete>
+            </div>
+        </div>
+
+        <!-------------Time Zone--------------->
+        <div class="f-col mdo-field">
+            <!-- label -->
+            <mat-label class="mdo-field-label">Time Zone</mat-label>
+            <!-- input container -->
+            <div class="mdo-field-input">
+                {{selected}}
+                <input matInput placeholder="Type to search" #optionInput2 [formControl]="optionCtrl2"
+                    [matAutocomplete]="auto2" />
+                <mat-icon matSuffix fontSet="mdo-icons">chevron-down</mat-icon>
+                <!-- autocomplete -->
+                <mat-autocomplete class="mdo-autocomplete" #auto2="matAutocomplete"
+                    (optionSelected)="selectSingle($event)">
+                    <mat-option class="mdo-option" *ngFor="let opt of filteredOptions | async" [value]="opt">
+                        {{opt}}
+                    </mat-option>
+                </mat-autocomplete>
+            </div>
+        </div>
+
+
+        <!-------------Date format--------------->
+        <div class="f-col mdo-field">
+            <!-- label -->
+            <mat-label class="mdo-field-label">Date format</mat-label>
+            <!-- input container -->
+            <div class="mdo-field-input">
+                {{selected}}
+                <input matInput placeholder="Type to search" #optionInput2 [formControl]="optionCtrl2"
+                    [matAutocomplete]="auto2" />
+                <mat-icon matSuffix fontSet="mdo-icons">chevron-down</mat-icon>
+                <!-- autocomplete -->
+                <mat-autocomplete class="mdo-autocomplete" #auto2="matAutocomplete"
+                    (optionSelected)="selectSingle($event)">
+                    <mat-option class="mdo-option" *ngFor="let opt of filteredOptions | async" [value]="opt">
+                        {{opt}}
+                    </mat-option>
+                </mat-autocomplete>
+            </div>
+        </div>
+
+        <!-------------Time format--------------->
+        <div class="f-col mdo-field">
+            <!-- label -->
+            <mat-label class="mdo-field-label">Time format</mat-label>
+            <!-- input container -->
+            <div class="mdo-field-input">
+                {{selected}}
+                <input matInput placeholder="Type to search" #optionInput2 [formControl]="optionCtrl2"
+                    [matAutocomplete]="auto2" />
+                <mat-icon matSuffix fontSet="mdo-icons">chevron-down</mat-icon>
+                <!-- autocomplete -->
+                <mat-autocomplete class="mdo-autocomplete" #auto2="matAutocomplete"
+                    (optionSelected)="selectSingle($event)">
+                    <mat-option class="mdo-option" *ngFor="let opt of filteredOptions | async" [value]="opt">
+                        {{opt}}
+                    </mat-option>
+                </mat-autocomplete>
+            </div>
+        </div>
+
+        <!-------------Number format--------------->
+        <div class="f-col mdo-field">
+            <!-- label -->
+            <mat-label class="mdo-field-label">Number format</mat-label>
+            <!-- input container -->
+            <div class="mdo-field-input">
+                {{selected}}
+                <input matInput placeholder="Type to search" #optionInput2 [formControl]="optionCtrl2"
+                    [matAutocomplete]="auto2" />
+                <mat-icon matSuffix fontSet="mdo-icons">chevron-down</mat-icon>
+                <!-- autocomplete -->
+                <mat-autocomplete class="mdo-autocomplete" #auto2="matAutocomplete"
+                    (optionSelected)="selectSingle($event)">
+                    <mat-option class="mdo-option" *ngFor="let opt of filteredOptions | async" [value]="opt">
+                        {{opt}}
+                    </mat-option>
+                </mat-autocomplete>
+            </div>
+        </div>
     </lib-tab>
     <lib-tab label="Working hours">
         Content 3

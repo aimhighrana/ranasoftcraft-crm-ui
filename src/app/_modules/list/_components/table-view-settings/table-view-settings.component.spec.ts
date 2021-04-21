@@ -154,6 +154,7 @@ describe('TableViewSettingsComponent', () => {
     expect(component.submitted).toBeTrue();
 
     component.viewDetails.viewName = 'test view';
+    component.viewDetails.viewId = '1701';
 
     const request = new ListPageViewDetails();
     request.fieldsReqList = [
