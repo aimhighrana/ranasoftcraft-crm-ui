@@ -42,5 +42,7 @@ describe('EndpointsListService', () => {
     expect(service.upsertListFiltersUrl()).toContain('/search/save-update-filter');
   });
 
-
+  it('getInboxNodesCountUrl', () => {
+    expect(service.getInboxNodesCountUrl()).toContain('process/feed/count');
+  });
 });

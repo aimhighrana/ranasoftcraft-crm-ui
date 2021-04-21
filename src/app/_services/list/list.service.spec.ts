@@ -12,7 +12,7 @@ describe('ListService', () => {
 
   beforeEach(() => {
     const endpointSpy = jasmine.createSpyObj('EndpointsListService', ['getAllListPageViewsUrl', 'getListPageViewDetailsUrl', 'upsertListPageViewUrl', 'deleteListPageViewUrl',
-    'getTableDataUrl', 'getDataCountUrl', 'upsertListFiltersUrl']);
+    'getTableDataUrl', 'getDataCountUrl', 'upsertListFiltersUrl', 'getInboxNodesCountUrl']);
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule ],
       providers: [
@@ -195,4 +195,24 @@ describe('ListService', () => {
     httpTestingController.verify();
   }));
 
+
+  it('getInboxNodesCount()', async(() => {
+    const url = `getInboxNodesCountUrl`;
+    // mock url
+    endpointServiceSpy.getInboxNodesCountUrl.and.returnValue(url);
+
+    const response = [];
+
+    // actual service call
+    listService.getInboxNodesCount().subscribe((actualResponse) => {
+      expect(actualResponse).toEqual(response);
+    });
+    // mock http call
+    const mockRequst = httpTestingController.expectOne(`${url}`);
+    expect(mockRequst.request.method).toEqual('GET');
+    expect(mockRequst.request.responseType).toEqual('json');
+    mockRequst.flush(response);
+    // verify http
+    httpTestingController.verify();
+  }));
 });

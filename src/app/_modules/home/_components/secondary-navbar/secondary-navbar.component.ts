@@ -1,3 +1,4 @@
+import { InboxNodesCount } from './../../../../_models/list-page/listpage';
 import { Component, OnInit, OnChanges, SimpleChanges, Input, EventEmitter, Output, ViewChild, OnDestroy, ViewChildren, QueryList, AfterViewInit } from '@angular/core';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
 import { SchemaListModuleList, SchemaListDetails } from '@models/schema/schemalist';
@@ -10,7 +11,7 @@ import { Router, Event, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { SearchInputComponent } from '@modules/shared/_components/search-input/search-input.component';
 import { UserService } from '@services/user/userservice.service';
 import { ListService } from '@services/list/list.service';
-import { distinctUntilChanged } from 'rxjs/operators';
+import { distinctUntilChanged, take } from 'rxjs/operators';
 import { CreateUpdateSchema } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SecondaynavType } from '@models/menu-navigation';
@@ -100,7 +101,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
   /**
    * Tasks list for secondary menu
    */
-  taskList = [];
+  taskList: InboxNodesCount[] = [];
 
   /**
    * Mockdata for tasks list in home page side menu
@@ -242,7 +243,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
 
     const currentUrl = this.router.url;
     this.checkDescOnReload(currentUrl)
-    this.taskList = this.mockTaskList;
+    // this.taskList = this.mockTaskList;
     const orderList = localStorage.getItem('tasklist-feeds-order');
     if (this.taskList.length && orderList) {
       this.setTaskListOrder(orderList);
@@ -721,5 +722,11 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
     }
 
     return true;
+  }
+
+  getInboxNodesCountUrl() {
+    this.listService.getInboxNodesCount().pipe(take(1)).subscribe(resp => {
+      this.taskList = resp;
+    });
   }
 }

@@ -2,7 +2,7 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { FilterCriteria, ListPageFilters, ListPageViewDetails, ViewsPage } from '@models/list-page/listpage';
+import { FilterCriteria, ListPageFilters, ListPageViewDetails, ViewsPage, InboxNodesCount } from '@models/list-page/listpage';
 import { EndpointsListService } from '@services/_endpoints/endpoints-list.service';
 
 
@@ -69,6 +69,10 @@ public getDataCount(moduleId: string, filterCriterias: FilterCriteria[]): Observ
 
 public upsertListFilters(filters: ListPageFilters): Observable<any> {
   return this.http.post<any>(this.endpointService.upsertListFiltersUrl(), filters)
+}
+
+public getInboxNodesCount() {
+  return this.http.get<InboxNodesCount[]>(this.endpointService.getInboxNodesCountUrl());
 }
 
 }

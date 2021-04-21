@@ -38,4 +38,7 @@ export class EndpointsListService {
     return this.apiUrl + `/search/save-update-filter`;
   }
 
+  public getInboxNodesCountUrl() {
+    return `${environment.apiurl}/process/feed/count`;
+  }
 }
