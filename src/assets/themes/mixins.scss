@@ -773,10 +773,12 @@
           max-height: 360px;
           min-height: auto;
           overflow: auto;
+
           &.search-module-dropdown {
             display: flex;
             flex-direction: column;
-            lib-button {
+
+            .lib-button {
               width: 100%;
               button {
                 width: 100%;
