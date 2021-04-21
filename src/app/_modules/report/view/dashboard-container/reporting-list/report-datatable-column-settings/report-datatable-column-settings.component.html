@@ -16,12 +16,21 @@
     </div>
     <div class="f-col sidesheetcontent-listing">
         <div class="f-col mdo-justify">
-            <mat-checkbox class="checkedall" color="primary" [(ngModel)]="allCheckboxSelected"
-                [indeterminate]="allIndeterminate" (change)="selectAllCheckboxes()"> <span
-                    class="checkboxlabel">All</span>
-            </mat-checkbox>
+            <div class="checkedall">
+                <mat-checkbox color="primary" [(ngModel)]="allCheckboxSelected"
+                    [indeterminate]="allIndeterminate" (change)="selectAllCheckboxes()"> <span
+                        class="checkboxlabel">All</span>
+                </mat-checkbox>
+                <mat-form-field appearance="outline">
+                    <mat-select [(ngModel)]="allDisplayCriteria" (ngModelChange)="changeAllDisplayCriteria()">
+                        <mat-option value="TEXT" i18n="@@text">Text</mat-option>
+                        <mat-option value="CODE" i18n="@@code">Code</mat-option>
+                        <mat-option value="CODE_TEXT" i18n="@@codeAndText">Code and Text</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
             <div cdkDropList [cdkDropListData]="headers" (cdkDropListDropped)="drop($event)">
-                <div *ngFor="let header of headersObs | async" id="{{ header.fieldId }}" cdkDragHandle cdkDrag
+                <div *ngFor="let header of headersObs | async; let index = index" id="{{ header.fieldId }}" cdkDragHandle cdkDrag
                     class="colunm-list">
                     <div class="f-row colunm-box">
                         <mat-icon fontSet="mdo-icons">grip-lines</mat-icon>
@@ -29,6 +38,13 @@
                         <mat-checkbox color="primary" (change)="selectionChange(header)" [checked]="isChecked(header)">
                             {{ header.fieldDescri ? header.fieldDescri : 'Untitled' }}
                         </mat-checkbox>
+                        <mat-form-field appearance="outline" *ngIf="header.pickList == '1' || header.pickList == '30' || header.pickList == '37'">
+                            <mat-select [(ngModel)]="header.displayCriteria" (ngModelChange)="manageAllDisplayCriteria()">
+                                <mat-option value="TEXT" i18n="@@text">Text</mat-option>
+                                <mat-option value="CODE" i18n="@@code">Code</mat-option>
+                                <mat-option value="CODE_TEXT" i18n="@@codeAndText">Code and Text</mat-option>
+                            </mat-select>
+                        </mat-form-field>
                     </div>
                 </div>
             </div>
