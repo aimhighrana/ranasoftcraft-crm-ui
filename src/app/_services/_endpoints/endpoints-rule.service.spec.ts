@@ -462,7 +462,7 @@ describe('EndpointsRuleService', () => {
 
   it('createCheckDataBusinessRuleUrl(), creating business rules at the time of check data..', async(() => {
     const serObj =new EndpointsRuleService();
-    expect(serObj.createCheckDataBusinessRuleUrl()).toContain('schema/create-br');
+    expect(serObj.createCheckDataBusinessRuleUrl()).toContain('schema/metadata/create-br');
   }));
 
   it('getAvailableNounsUri(),should return getAvailableNounsUri url', async(() => {

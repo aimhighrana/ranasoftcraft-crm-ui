@@ -33,7 +33,7 @@ export class EndpointsRuleService {
   }
 
   public getSchemaTableDetailsUrl(): string {
-    return this.classicOrigin + '/schema/schema-details';
+    return this.origin + '/schema/schema-details';
   }
 
   public getUpdateSchemaTableViewUrl(): string {
@@ -130,7 +130,7 @@ export class EndpointsRuleService {
   }
 
   public dropDownValuesUrl(fieldId: string): string {
-    return `${this.origin}/schema/drop-values/${fieldId}`;
+    return `${this.classicOrigin}/schema/drop-values/${fieldId}`;
   }
 
   public saveUpdateUdrBlockUrl(): string {
@@ -410,7 +410,7 @@ export class EndpointsRuleService {
    * @param schemaId: schema ID
    */
   public getCheckDataUrl(schemaId: string) {
-    return `${this.classicOrigin}/schema/checkdata/get-all-br-collaborator-details/${schemaId}`;
+    return `${this.origin}/schema/checkdata/get-all-br-collaborator-details/${schemaId}`;
   }
 
   public getAllBusinessRulesUrl() {
@@ -421,7 +421,7 @@ export class EndpointsRuleService {
    * endpoint for creating business rules at the time of check data..
    */
   public createCheckDataBusinessRuleUrl(): string {
-    return `${this.origin}/schema/create-br`;
+    return `${this.origin}/schema/metadata/create-br`;
   }
 
   /**
