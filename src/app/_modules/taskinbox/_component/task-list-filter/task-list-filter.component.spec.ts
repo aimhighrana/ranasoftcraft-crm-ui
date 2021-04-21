@@ -132,14 +132,14 @@ describe('TaskListFilterComponent', () => {
     component.ngOnInit();
     component.searchKey = 'cust';
     component.loadData([]);
-    expect(component.getLazyData).toHaveBeenCalledWith(0, 10, component.searchKey);
+    expect(component.getLazyData).toHaveBeenCalledWith(0, 20, component.searchKey);
     expect(component.infinteScrollLoading).toBeFalse();
   });
   it('resetPageEvent()', () => {
     component.ngOnInit();
     component.resetPageEvent();
     expect(component.pageEvent.pageIndex).toEqual(0);
-    expect(component.pageEvent.pageSize).toEqual(10);
+    expect(component.pageEvent.pageSize).toEqual(20);
     expect(component.pageEvent.totalCount).toEqual(0);
   });
   it('should have queryParam', fakeAsync(() => {

@@ -7,16 +7,38 @@
 
   .system {
     align-items: flex-start;
+    height: 100%;
 
     .system-fields-col {
       width: 220px;
+      height: 100%;
 
-      .fields-list {
-        max-height: 450px;
-        overflow-y: auto;
+      .filters-list {
+        height: calc(100% - 56px - 36px - 16px * 2);
+        overflow: auto;
 
-        mat-list-item {
+        .mat-tree-node {
+          overflow: visible;
+        }
+
+        mat-tree .mat-tree-node {
+          background: #fff;
+          font-size: 14px;
           cursor: pointer;
+        }
+
+        mat-tree .mat-tree-node:hover {
+          background-color: #f2f5f8;
+        }
+
+        mat-tree .mat-tree-node mat-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 36px;
+          height: 36px;
+          font-size: 24px;
+          line-height: 24px;
         }
       }
     }
@@ -27,37 +49,6 @@
 
     .date-list {
       flex: 1;
-    }
-
-    .mat-tree-node {
-      overflow: visible;
-    }
-
-    mat-tree .mat-tree-node {
-      color: #272d37;
-      background: #fff;
-      font-size: 14px;
-      cursor: pointer;
-    }
-
-    mat-tree .mat-tree-node:hover {
-      background-color: #f2f5f8;
-    }
-
-    mat-tree .mat-tree-node mat-icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 36px;
-      height: 36px;
-      font-size: 24px;
-      line-height: 24px;
-      color: #272d37;
-    }
-
-    .mat-tree-container {
-      max-height: 450px;
-      overflow-y: auto;
     }
   }
 }

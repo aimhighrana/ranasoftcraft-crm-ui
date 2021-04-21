@@ -19,7 +19,7 @@
           ><span i18n="@@apply_filters">Apply filters...</span></lib-text-line
         >
       </div>
-      <div class="mat-tree-container" id="mat-tree" prosInfiniteScroll bufferPercentage="20" (scrollEnd)="scroll(true)">
+      <div class="mat-tree-container filters-list" id="mat-tree" prosInfiniteScroll bufferPercentage="20" (scrollEnd)="scroll(true)">
         <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
           <!-- This is the tree node template for leaf nodes -->
           <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>

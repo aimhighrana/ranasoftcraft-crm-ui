@@ -24,7 +24,7 @@ export class TaskListFilterComponent implements OnInit {
   ];
   pageEvent = {
     pageIndex: 0,
-    pageSize: 10,
+    pageSize: 20,
     totalCount: 0,
   };
   infinteScrollLoading = false;
@@ -109,7 +109,7 @@ export class TaskListFilterComponent implements OnInit {
   }
   resetPageEvent() {
     this.pageEvent.pageIndex = 0;
-    this.pageEvent.pageSize = 10;
+    this.pageEvent.pageSize = 20;
     this.pageEvent.totalCount = 0;
   }
   scroll(loadMore: boolean) {
@@ -129,6 +129,7 @@ export class TaskListFilterComponent implements OnInit {
     }
   }
   loadData(existingData: TreeNode[]) {
+
     const { pageIndex, pageSize, totalCount } = this.pageEvent;
     if (pageIndex * pageSize > totalCount) {
       this.infinteScrollLoading = false;
@@ -144,7 +145,7 @@ export class TaskListFilterComponent implements OnInit {
   getLazyData(pageIndex, pageSize, value?: string) {
     if (value) {
       value = value.toLowerCase();
-      const filteredData = treeData
+      const filteredData = treeData.slice()
         .map((d) => {
           const parentNode = {
             fieldId: d.moduleId,
@@ -200,7 +201,7 @@ export class TaskListFilterComponent implements OnInit {
   }
 
   private formatForTreeData(treeDatas: any[]) {
-    const data = treeDatas.map((d) => {
+    const data = treeDatas.slice().map((d) => {
       const parentNode = {
         fieldId: d.moduleId,
         fieldDesc: d.moduleDesc,
