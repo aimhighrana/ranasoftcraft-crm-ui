@@ -71,6 +71,16 @@ public upsertListFilters(filters: ListPageFilters): Observable<any> {
   return this.http.post<any>(this.endpointService.upsertListFiltersUrl(), filters)
 }
 
+/**
+ * update default view
+ * @param objectId module id
+ * @param viewId view id
+ * @returns acknowledgement
+ */
+public updateDefaultView(objectId, viewId): Observable<any> {
+  return this.http.put<any>(this.endpointService.updateDefaultViewUrl(), null, {params: {objectId, viewId}});
+}
+
 public getInboxNodesCount() {
   return this.http.get<InboxNodesCount[]>(this.endpointService.getInboxNodesCountUrl());
 }

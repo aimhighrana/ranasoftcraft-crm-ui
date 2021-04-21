@@ -12,7 +12,7 @@ describe('ListService', () => {
 
   beforeEach(() => {
     const endpointSpy = jasmine.createSpyObj('EndpointsListService', ['getAllListPageViewsUrl', 'getListPageViewDetailsUrl', 'upsertListPageViewUrl', 'deleteListPageViewUrl',
-    'getTableDataUrl', 'getDataCountUrl', 'upsertListFiltersUrl', 'getInboxNodesCountUrl']);
+    'getTableDataUrl', 'getDataCountUrl', 'upsertListFiltersUrl', 'updateDefaultViewUrl', 'getInboxNodesCountUrl']);
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule ],
       providers: [
@@ -195,6 +195,34 @@ describe('ListService', () => {
     httpTestingController.verify();
   }));
 
+  it('updateDefaultView()', async(() => {
+
+    const url = `updateDefaultViewUrl`;
+    // mock url
+    endpointServiceSpy.updateDefaultViewUrl.and.returnValue(url);
+
+    const viewId = '1701';
+    const objectId = '1005';
+
+    const response = {
+      acknowledge: true,
+      viewId: '1701',
+      viewName: 'test view'
+    }
+
+    // actual service call
+    listService.updateDefaultView(objectId, viewId )
+      .subscribe(actualResponse => {
+          expect(actualResponse).toEqual(response);
+    });
+    // mock http call
+    const mockRequst = httpTestingController.expectOne(`${url}?objectId=${objectId}&viewId=${viewId}`);
+    expect(mockRequst.request.method).toEqual('PUT');
+    expect(mockRequst.request.responseType).toEqual('json');
+    mockRequst.flush(response);
+    // verify http
+    httpTestingController.verify();
+  }));
 
   it('getInboxNodesCount()', async(() => {
     const url = `getInboxNodesCountUrl`;

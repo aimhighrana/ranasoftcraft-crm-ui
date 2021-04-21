@@ -38,6 +38,10 @@ export class EndpointsListService {
     return this.apiUrl + `/search/save-update-filter`;
   }
 
+  public updateDefaultViewUrl(): string {
+    return this.apiUrl + `/view/update-default-view`;
+  }
+
   public getInboxNodesCountUrl() {
     return `${environment.apiurl}/process/feed/count`;
   }

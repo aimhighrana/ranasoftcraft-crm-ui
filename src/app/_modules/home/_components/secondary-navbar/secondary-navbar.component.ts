@@ -261,6 +261,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
         }
       }
     });
+    this.getInboxNodesCountUrl();
   }
 
   ngAfterViewInit() {

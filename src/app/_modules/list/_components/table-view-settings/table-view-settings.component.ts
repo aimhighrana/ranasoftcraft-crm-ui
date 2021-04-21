@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subject, Subscription } from 'rxjs';
+import { of, Subject, Subscription } from 'rxjs';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
@@ -8,7 +8,7 @@ import { ListPageViewDetails, ListPageViewFldMap } from '@models/list-page/listp
 import { CoreService } from '@services/core/core.service';
 import { FieldMetaData } from '@models/core/coreModel';
 import { sortBy } from 'lodash';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, finalize, switchMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'pros-table-view-settings',
@@ -55,13 +55,15 @@ export class TableViewSettingsComponent implements OnInit, OnDestroy {
 
   fieldsSearchString = '';
 
+  isSaving = false;
+
   constructor(
     private sharedService: SharedServiceService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private listService: ListService,
     private coreService: CoreService
-    ){}
+  ) { }
 
   ngOnInit() {
 
@@ -69,8 +71,8 @@ export class TableViewSettingsComponent implements OnInit, OnDestroy {
       this.moduleId = params.moduleId;
       this.getModuleFldMetadata();
 
-      this.viewId = params.viewId !== 'new' ? params.viewId: '';
-      if(this.viewId) {
+      this.viewId = params.viewId !== 'new' ? params.viewId : '';
+      if (this.viewId) {
         this.getTableViewDetails();
       }
     });
@@ -86,12 +88,12 @@ export class TableViewSettingsComponent implements OnInit, OnDestroy {
       debounceTime(1000),
       distinctUntilChanged()
     )
-    .subscribe(searchString => {
-      this.fieldsSearchString = searchString || '';
-      this.suggestedViewFieldsMetadata = this.viewFieldsMetadata
+      .subscribe(searchString => {
+        this.fieldsSearchString = searchString || '';
+        this.suggestedViewFieldsMetadata = this.viewFieldsMetadata
           .filter(field => field.fieldDescri.toLowerCase().includes(this.fieldsSearchString.toLowerCase()));
-      this.getModuleFldMetadata();
-    });
+        this.getModuleFldMetadata();
+      });
     this.subscriptions.push(subs);
 
   }
@@ -100,33 +102,33 @@ export class TableViewSettingsComponent implements OnInit, OnDestroy {
    * get table view details
    */
   getTableViewDetails() {
-    const sub =  this.listService.getListPageViewDetails(this.viewId, this.moduleId)
+    const sub = this.listService.getListPageViewDetails(this.viewId, this.moduleId)
       .subscribe(response => {
-          this.viewDetails = response;
-          this.viewDetails.fieldsReqList = sortBy(this.viewDetails.fieldsReqList, 'fieldOrder');
-          const fieldsList = this.viewDetails.fieldsReqList.map(field => field.fieldId);
-          this.getViewFieldsMetadata(fieldsList);
-    }, error => {
-      console.error(`Error : ${error.message}`);
-    });
+        this.viewDetails = response;
+        this.viewDetails.fieldsReqList = sortBy(this.viewDetails.fieldsReqList, 'fieldOrder');
+        const fieldsList = this.viewDetails.fieldsReqList.map(field => field.fieldId);
+        this.getViewFieldsMetadata(fieldsList);
+      }, error => {
+        console.error(`Error : ${error.message}`);
+      });
     this.subscriptions.push(sub);
   }
 
   /**
    * Get module fields metadata
    */
-   getModuleFldMetadata(loadMore?: boolean) {
+  getModuleFldMetadata(loadMore?: boolean) {
     if (this.moduleId === undefined || this.moduleId.trim() === '') {
       throw new Error('Module id cant be null or empty');
     }
 
-    if(loadMore) {
+    if (loadMore) {
       this.fieldsPageIndex++;
     } else {
       this.fieldsPageIndex = 0;
     }
     const sub = this.coreService.searchFieldsMetadata(this.moduleId, this.fieldsPageIndex, this.fieldsSearchString, 20).subscribe(response => {
-      if(response && response.length) {
+      if (response && response.length) {
         loadMore ? this.moduleFieldsMetatdata = this.moduleFieldsMetatdata.concat(response) : this.moduleFieldsMetatdata = response;
         this.fldMetadataObs.next([]);
       } else if (loadMore) {
@@ -141,7 +143,7 @@ export class TableViewSettingsComponent implements OnInit, OnDestroy {
   /**
    * Get view fields metadata
    */
-   getViewFieldsMetadata(fieldsList: string[]) {
+  getViewFieldsMetadata(fieldsList: string[]) {
     if (!fieldsList || !fieldsList.length) {
       return;
     }
@@ -158,16 +160,16 @@ export class TableViewSettingsComponent implements OnInit, OnDestroy {
   /**
    * merge view fields and module fields
    */
-   mergeFieldsMetadata() {
-     const moduleFields = this.moduleFieldsMetatdata.filter(field => !this.viewFieldsMetadata.find(f => f.fieldId === field.fieldId));
-     this.mergedFieldsMetadata = this.suggestedViewFieldsMetadata.concat(moduleFields);
+  mergeFieldsMetadata() {
+    const moduleFields = this.moduleFieldsMetatdata.filter(field => !this.viewFieldsMetadata.find(f => f.fieldId === field.fieldId));
+    this.mergedFieldsMetadata = this.suggestedViewFieldsMetadata.concat(moduleFields);
   }
 
   /**
    * close sidesheet
    */
   close() {
-    this.router.navigate([{ outlets: { sb: null }}],  {queryParamsHandling: 'preserve'});
+    this.router.navigate([{ outlets: { sb: null } }], { queryParamsHandling: 'preserve' });
   }
 
   /**
@@ -185,25 +187,38 @@ export class TableViewSettingsComponent implements OnInit, OnDestroy {
     let order = 0;
     this.mergedFieldsMetadata.forEach(metafld => {
       const field = this.viewDetails.fieldsReqList.find(fld => fld.fieldId === metafld.fieldId)
-      if(field) {
+      if (field) {
         field.fieldOrder = `${++order}`;
       }
     });
 
     this.viewDetails.fieldsReqList = sortBy(this.viewDetails.fieldsReqList, 'fieldOrder');
+    this.viewDetails.isDefault = true;
 
     const isUpdate = !!this.viewDetails.viewId;
 
-    this.listService.upsertListPageViewDetails(this.viewDetails, this.moduleId)
+    this.isSaving = true;
+    const sub = this.listService.upsertListPageViewDetails(this.viewDetails, this.moduleId)
+      .pipe(
+        tap(resp => this.viewDetails = { ...this.viewDetails, viewId: resp.viewId }),
+        switchMap(res => {
+          if (!isUpdate) {
+            return this.listService.updateDefaultView(this.moduleId, res.viewId)
+          }
+          return of(res.viewId);
+        }),
+        finalize(() => this.isSaving = false)
+      )
       .subscribe(response => {
-          this.sharedService.setViewDetailsData({
-            isUpdate,
-            viewDetails: {...this.viewDetails, viewId: response.viewId}
-          });
-          this.close();
-    }, error => {
-      console.error('Exception while persist table view');
-    });
+        this.sharedService.setViewDetailsData({
+          isUpdate,
+          viewDetails: this.viewDetails
+        });
+        this.close();
+      }, error => {
+        console.error('Exception while persist table view');
+      });
+      this.subscriptions.push(sub);
   }
 
   /**
@@ -211,8 +226,8 @@ export class TableViewSettingsComponent implements OnInit, OnDestroy {
    * @param fld changeable checkbox
    */
   selectionChange(fld: FieldMetaData) {
-    const selIndex =  this.viewDetails.fieldsReqList.findIndex(f => f.fieldId === fld.fieldId);
-    if(selIndex !==-1) {
+    const selIndex = this.viewDetails.fieldsReqList.findIndex(f => f.fieldId === fld.fieldId);
+    if (selIndex !== -1) {
       this.viewDetails.fieldsReqList.splice(selIndex, 1);
       this.viewFieldsMetadata = this.viewFieldsMetadata.filter(field => field.fieldId !== fld.fieldId);
     } else {
@@ -230,7 +245,7 @@ export class TableViewSettingsComponent implements OnInit, OnDestroy {
    */
   isChecked(fld: FieldMetaData): boolean {
     const selCheck = this.viewDetails.fieldsReqList.findIndex(f => (f.fieldId ? f.fieldId : f) === fld.fieldId);
-    return selCheck !==-1 ? true : false;
+    return selCheck !== -1 ? true : false;
   }
 
 
@@ -244,15 +259,15 @@ export class TableViewSettingsComponent implements OnInit, OnDestroy {
     }
   }
 
-  editableChange(fld: FieldMetaData){
+  editableChange(fld: FieldMetaData) {
     const field = this.viewDetails.fieldsReqList.find(f => f.fieldId === fld.fieldId);
-    if (field){
+    if (field) {
       field.isEditable = !field.isEditable;
     }
   }
 
-  isEditEnabled(fld : FieldMetaData){
-    return this.viewDetails.fieldsReqList.findIndex(field => (field.fieldId === fld.fieldId) && field.isEditable ) !== -1;
+  isEditEnabled(fld: FieldMetaData) {
+    return this.viewDetails.fieldsReqList.findIndex(field => (field.fieldId === fld.fieldId) && field.isEditable) !== -1;
   }
 
   ngOnDestroy() {
