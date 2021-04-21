@@ -67,7 +67,7 @@
       <div class="f-row filter-container">
           <!-- Filter here...-->
           <mat-chip-list>
-              <lib-search placeholder="Search..." (value)="inlineSearchSubject.next($event);" [preValue]="preInpVal">
+              <lib-search i18n-placeholder="@@search" placeholder="Search..." (value)="inlineSearchSubject.next($event);" [preValue]="preInpVal">
               </lib-search>
 
               <mat-chip class="mdo-filter-matchip" disableRipple="true" (click)="changeTabStatus('error')">

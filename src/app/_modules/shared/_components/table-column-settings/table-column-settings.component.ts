@@ -65,6 +65,8 @@ export class TableColumnSettingsComponent implements OnInit{
 
   actionsList: SchemaTableAction[] = [];
 
+  configTabSelectedIndex = 0;
+
   COMMON_ACTIONS = [
     {actionText: 'Approve', schemaCategories: [DetailView.DATAQUALITY_VIEW, DetailView.DUPLICACY_VIEW, DetailView.MRO_CLASSIFICATION_VIEW, DetailView.POTEXT_VIEW],
     actionCode: STANDARD_TABLE_ACTIONS.APPROVE, actionIconLigature: 'check' },
