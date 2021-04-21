@@ -15,7 +15,7 @@ import { SchemaDetailsService } from '@services/home/schema/schema-details.servi
 import { DisplayCriteria } from '@modules/report/_models/widget';
 
 
-fdescribe('ReportDatatableColumnSettingsComponent', () => {
+describe('ReportDatatableColumnSettingsComponent', () => {
   let component: ReportDatatableColumnSettingsComponent;
   let fixture: ComponentFixture<ReportDatatableColumnSettingsComponent>;
   let router: Router;
