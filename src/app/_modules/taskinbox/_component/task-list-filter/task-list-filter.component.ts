@@ -65,7 +65,7 @@ export class TaskListFilterComponent implements OnInit {
     });
 
     this.route.queryParams.pipe(take(1)).subscribe((queryParam) => {
-      if (this.currentFilterSettings.length <= 0) {
+      if (this.currentFilterSettings.length <= 0 && queryParam.f) {
         const decoded = atob(queryParam.f);
         if (decoded) {
           this.currentFilterSettings = JSON.parse(decoded) || [];
