@@ -773,6 +773,18 @@
           max-height: 360px;
           min-height: auto;
           overflow: auto;
+          &.search-module-dropdown {
+            display: flex;
+            flex-direction: column;
+            lib-button {
+              width: 100%;
+              button {
+                width: 100%;
+                text-align: left;
+                margin-left: 5px;
+              }
+            }
+          }
         }
 
         mat-divider.mat-divider {
