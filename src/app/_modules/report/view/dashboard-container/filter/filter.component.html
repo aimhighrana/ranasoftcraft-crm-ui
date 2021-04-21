@@ -5,7 +5,14 @@
       {{ widgetHeader.desc }}
     </div>
     <div class="f-spacer"></div>
-    <lib-button  aria-label="Clear" (click)="clearFilterCriteria()" *ngIf="enableClearIcon" type="plain" iconFontType="light" icon="times"></lib-button>
+    <lib-button [matMenuTriggerFor]="menu" type="plain" icon="ellipsis-h"></lib-button>
+    <button mat-menu-item aria-label="Clear" (click)="clearFilterCriteria()" *ngIf="enableClearIcon" type="plain" iconFontType="light" icon="times"></button>
+    <mat-menu #menu="matMenu" class="navigation-menu">
+      <lib-filter-option [matMenuTriggerFor]="tcOptionMenu" i18n="@@viewAs">View as...</lib-filter-option>
+      <mat-menu #tcOptionMenu="matMenu">
+        <lib-radio-group layout="vertical" [(value)]="displayCriteriaOption" [options]="displayCriteriaOptions" (valueChange)="saveDisplayCriteria()"></lib-radio-group>
+      </mat-menu>
+    </mat-menu>
   </div>
 
   <mat-card-content>
