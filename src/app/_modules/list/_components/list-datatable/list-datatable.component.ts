@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ListPageFilters, ListPageViewDetails, SortDirection, ViewsPage } from '@models/list-page/listpage';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { ListService } from '@services/list/list.service';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, concat, of, Subscription } from 'rxjs';
 import { PageEvent } from '@angular/material/paginator';
 import { ListDataSource } from './list-data-source';
 import { FieldMetaData, ObjectType } from '@models/core/coreModel';
@@ -13,7 +13,7 @@ import { sortBy } from 'lodash';
 import { GlobaldialogService } from '@services/globaldialog.service';
 import { ResizableColumnDirective } from '@modules/shared/_directives/resizable-column.directive';
 import { MatSort } from '@angular/material/sort';
-import { map } from 'rxjs/operators';
+import { catchError, map, skip } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { FilterSaveModalComponent } from '../filter-save-modal/filter-save-modal.component';
 
@@ -25,7 +25,7 @@ import { FilterSaveModalComponent } from '../filter-save-modal/filter-save-modal
 })
 export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  @ViewChildren(ResizableColumnDirective, {read: ElementRef}) columnsList: QueryList<ElementRef>;
+  @ViewChildren(ResizableColumnDirective, { read: ElementRef }) columnsList: QueryList<ElementRef>;
 
   @ViewChild(MatSort) sort: MatSort;
 
@@ -51,9 +51,9 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
     viewName: 'Default view',
     isSystemView: false,
     fieldsReqList: [
-      { fieldId: 'APPDATE'}, // created on
-      { fieldId: 'USERCREATED'}, // created by
-      { fieldId: 'STATUS'}, // status
+      { fieldId: 'APPDATE' }, // created on
+      { fieldId: 'USERCREATED' }, // created by
+      { fieldId: 'STATUS' }, // status
 
     ]
   } as ListPageViewDetails;
@@ -136,7 +136,7 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
 
     this.activatedRouter.queryParams.pipe(
       map(params => {
-        if(params.f) {
+        if (params.f) {
           try {
             const filters = JSON.parse(atob(params.f));
             return filters;
@@ -149,16 +149,16 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
         }
       })
     )
-    .subscribe(filters => {
-      this.filtersList = filters;
-      console.log(this.filtersList);
-      if(!this.isPageRefresh) {
+      .subscribe(filters => {
+        this.filtersList = filters;
+        console.log(this.filtersList);
+        if (!this.isPageRefresh) {
 
-        this.getTotalCount();
-        this.getTableData();
-      }
-      this.isPageRefresh = false;
-    });
+          this.getTotalCount();
+          this.getTableData();
+        }
+        this.isPageRefresh = false;
+      });
 
     this.sharedServices.getViewDetailsData().subscribe(resp => {
       if (resp && resp.isUpdate) {
@@ -181,7 +181,7 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
           this.recordsPageIndex = 1;
           this.getTableData();
         });
-      this.subscriptionsList.push(sub);
+        this.subscriptionsList.push(sub);
       }
 
     });
@@ -201,7 +201,7 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
     const sub = this.listService.getAllListPageViews(this.moduleId, this.viewsPageIndex)
       .subscribe(views => {
 
-        if(views && ((views.userViews && views.userViews.length) || (views.systemViews && views.systemViews.length))) {
+        if (views && ((views.userViews && views.userViews.length) || (views.systemViews && views.systemViews.length))) {
           if (loadMore) {
             this.viewsList.userViews = this.viewsList.userViews.concat(views.userViews || []);
             this.viewsList.systemViews = this.viewsList.systemViews.concat(views.systemViews || []);
@@ -211,14 +211,14 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
             this.getViewDetails(defaultViewId);
           }
         } else if (!loadMore) {
-            this.currentView = this.defaultView;
-            this.updateTableColumns();
+          this.currentView = this.defaultView;
+          this.updateTableColumns();
         } else {
           this.viewsPageIndex--;
         }
       }, error => {
         console.error(`Error :: ${error.message}`);
-        if(!loadMore) {
+        if (!loadMore) {
           this.currentView = this.defaultView;
           this.updateTableColumns();
         }
@@ -230,15 +230,21 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
   /**
    * get view details by id
    */
-   getViewDetails(viewId) {
-    const sub =  this.listService.getListPageViewDetails(viewId, this.moduleId)
+  getViewDetails(viewId) {
+    const view = this.userViews.concat(this.systemViews).find(v => v.viewId === viewId);
+    const defaultViewObs = view && !view.default ?
+       this.listService.updateDefaultView(this.moduleId, viewId).pipe(catchError(err => of(viewId))) : of(viewId);
+    const sub = concat(
+      defaultViewObs,
+      this.listService.getListPageViewDetails(viewId, this.moduleId)
+     ).pipe(skip(1))
       .subscribe(response => {
-          this.currentView = response;
-          this.currentView.fieldsReqList = sortBy(this.currentView.fieldsReqList, 'fieldOrder');
-          this.updateTableColumns();
-    }, error => {
-      console.error(`Error : ${error.message}`);
-    });
+        this.currentView = response;
+        this.currentView.fieldsReqList = sortBy(this.currentView.fieldsReqList, 'fieldOrder');
+        this.updateTableColumns();
+      }, error => {
+        console.error(`Error : ${error.message}`);
+      });
     this.subscriptionsList.push(sub);
   }
 
@@ -248,11 +254,11 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
    */
   deleteView(viewId: string) {
 
-    if(!viewId || viewId === 'default' ) {
+    if (!viewId || viewId === 'default') {
       return;
     }
 
-    this.glocalDialogService.confirm({label:'Are you sure to delete ?'}, (resp) => {
+    this.glocalDialogService.confirm({ label: 'Are you sure to delete ?' }, (resp) => {
       if (resp && resp === 'yes') {
         const sub = this.listService.deleteListPageView(viewId, this.moduleId)
           .subscribe(response => {
@@ -271,7 +277,7 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
    * Get all fld metada based on module of schema
    */
   getFldMetadata(fieldsList: string[]) {
-    if(!fieldsList || !fieldsList.length) {
+    if (!fieldsList || !fieldsList.length) {
       this.metadataFldLst = [];
       return;
     }
@@ -307,33 +313,33 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
     this.subscriptionsList.push(subs);
   }
 
-   /** Whether the number of selected elements matches the total number of rows. */
-   isAllSelected() {
-     const numSelected = this.selection.selected.length;
-     const numRows = this.dataSource.docLength();
-     return numSelected === numRows;
-   }
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.docLength();
+    return numSelected === numRows;
+  }
 
-   /** Selects all rows if they are not all selected; otherwise clear selection. */
-   masterToggle() {
-     this.isAllSelected() ?
-         this.selection.clear() :
-         this.dataSource.docValue().forEach(row => this.selection.select(row));
-   }
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  masterToggle() {
+    this.isAllSelected() ?
+      this.selection.clear() :
+      this.dataSource.docValue().forEach(row => this.selection.select(row));
+  }
 
-   /** The label for the checkbox on the passed row */
-   checkboxLabel(row?: any): string {
-     if (!row) {
-       return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
-     }
+  /** The label for the checkbox on the passed row */
+  checkboxLabel(row?: any): string {
+    if (!row) {
+      return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
+    }
 
-   }
+  }
 
   /**
    * open view config sidesheet
    */
   openTableViewSettings(edit?: boolean) {
-    const viewId = edit && this.currentView.viewId ?  this.currentView.viewId : 'new';
+    const viewId = edit && this.currentView.viewId ? this.currentView.viewId : 'new';
     this.router.navigate([{ outlets: { sb: `sb/list/table-view-settings/${this.moduleId}/${viewId}` } }], { queryParamsHandling: 'preserve' });
   }
 
@@ -358,7 +364,7 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
    * get table data records
    */
   getTableData() {
-    const viewId = this.currentView.viewId ?  this.currentView.viewId : '';
+    const viewId = this.currentView.viewId ? this.currentView.viewId : '';
     this.dataSource.getData(this.moduleId, viewId, this.recordsPageIndex, this.filtersList.filterCriteria);
   }
 
@@ -400,7 +406,7 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
    */
   getFieldDesc(fieldId: string): string {
     const field = this.metadataFldLst.find(f => f.fieldId === fieldId);
-    return field ? field.fieldDescri || 'Unkown': fieldId || 'Unkown';
+    return field ? field.fieldDescri || 'Unkown' : fieldId || 'Unkown';
   }
 
   /**
@@ -434,7 +440,7 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
 
   get displayedRecordsRange(): string {
     const endRecord = this.recordsPageIndex * this.recordsPageSize < this.totalCount ? this.recordsPageIndex * this.recordsPageSize : this.totalCount;
-    return this.totalCount ? `${((this.recordsPageIndex - 1) * this.recordsPageSize) + 1 } to ${endRecord} of ${this.totalCount}` : '';
+    return this.totalCount ? `${((this.recordsPageIndex - 1) * this.recordsPageSize) + 1} to ${endRecord} of ${this.totalCount}` : '';
   }
 
   /**
@@ -443,7 +449,7 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
    */
   onColumnsResize(event) {
     const column = this.currentView.fieldsReqList.find(c => c.fieldId === event.columnId);
-    if(column) {
+    if (column) {
       column.width = event.width;
 
       const sub = this.listService.upsertListPageViewDetails(this.currentView, this.moduleId).subscribe(resp => {
@@ -494,17 +500,17 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
   saveFilterCriterias() {
 
     const dialogCloseRef = this.matDialog.open(FilterSaveModalComponent, {
-      data: {filterName: this.filtersList.description},
-      width:'400px'
+      data: { filterName: this.filtersList.description },
+      width: '400px'
     });
-    dialogCloseRef.afterClosed().subscribe(res=>{
-      if(res) {
+    dialogCloseRef.afterClosed().subscribe(res => {
+      if (res) {
         this.filtersList.moduleId = this.moduleId;
         this.filtersList.description = res;
         const sub = this.listService.upsertListFilters(this.filtersList).subscribe(resp => {
-          if(resp && resp.filterId) {
+          if (resp && resp.filterId) {
             this.filtersList.filterId = resp.filterId;
-            this.router.navigate([], {queryParams: {f: btoa(JSON.stringify(this.filtersList))}});
+            this.router.navigate([], { queryParams: { f: btoa(JSON.stringify(this.filtersList)) } });
           }
         }, error => {
           console.error(`Error : ${error.message}`);
@@ -516,7 +522,7 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   resetAllFilters() {
-    this.router.navigate([], {queryParams: {}});
+    this.router.navigate([], { queryParams: {} });
   }
 
   ngOnDestroy(): void {

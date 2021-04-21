@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { SharedModule } from '@modules/shared/shared.module';
 import { MdoUiLibraryModule } from 'mdo-ui-library';
 
@@ -16,7 +17,8 @@ describe('ProfileComponent', () => {
         SharedModule,
         MdoUiLibraryModule,
         FormsModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        MatAutocompleteModule
       ]
     })
     .compileComponents();

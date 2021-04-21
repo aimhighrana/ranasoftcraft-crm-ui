@@ -42,5 +42,9 @@ describe('EndpointsListService', () => {
     expect(service.upsertListFiltersUrl()).toContain('/search/save-update-filter');
   });
 
+  it('should updateDefaultViewUrl', () => {
+    expect(service.updateDefaultViewUrl()).toContain('/view/update-default-view');
+  });
+
 
 });
