@@ -18,18 +18,22 @@
             <lib-banner *ngIf="validationError.status" status="error" [text]="validationError.message"></lib-banner>
 
             <form [formGroup]="form">
-                <div class="f-col mdo-form-field">
-                    <mat-label i18n="@@rule_type">Rule type</mat-label>
-                    <mat-form-field appearance="outline">
-                        <mat-select formControlName="rule_type">
+
+                <div class="f-col mdo-field">
+                    <!-- label -->
+                    <mat-label class="mdo-field-label" i18n="@@rule_type">Rule type</mat-label>
+                    <!-- input container -->
+                    <div class="mdo-field-input">
+                            <input matInput i18n-placeholder="@@rule_type" placeholder="Rule type"
+                            [matAutocomplete]="ruleTypeAuto"/>
+                        <mat-autocomplete class="mdo-autocomplete" [displayWith]="displayRuleFn.bind(this)" #ruleTypeAuto="matAutocomplete" (optionSelected)="selectSingle('rule_type', $event)">
                             <ng-container *ngFor="let rule of businessRuleTypes">
-                                <mat-option *ngIf="rule.isImplemented" [value]="rule.ruleType">{{rule.ruleDesc}}
+                                <mat-option class="mdo-option" *ngIf="rule.isImplemented" [value]="rule.ruleType">
+                                    {{rule.ruleDesc}}
                                 </mat-option>
                             </ng-container>
-                        </mat-select>
-                    </mat-form-field>
-                    <mat-error i18n="@@rule_type_missing_msg" *ngIf="submitted && form.controls.rule_type.errors && form.controls.rule_type.errors.required">
-                            Please enter rule type</mat-error>
+                        </mat-autocomplete>
+                    </div>
                 </div>
     
                 <div class="f-col mdo-form-field" *ngIf="!isDuplicateType">
@@ -45,18 +49,19 @@
                         Please enter Weightage</mat-error>
                 </div>
     
-                <div class="f-col mdo-form-field" *ngIf="!isUDR && !isDuplicateType">
-                    <mat-label i18n="@@category">Category</mat-label>
-                    <mat-form-field appearance="outline">
-                        <mat-select formControlName="categoryId">
-                            <mat-option *ngFor="let category of categoryList" [value]="category.categoryId">
+                <div class="f-col mdo-field" *ngIf="!isUDR && !isDuplicateType">
+                    <!-- label -->
+                    <mat-label class="mdo-field-label" i18n="@@category">Category</mat-label>
+                    <!-- input container -->
+                    <div class="mdo-field-input">
+                            <input matInput i18n-placeholder="@@category" placeholder="Category"
+                            [matAutocomplete]="categoryIDAuto"/>
+                        <mat-autocomplete class="mdo-autocomplete" [displayWith]="displayCategoryFn.bind(this)" #categoryIDAuto="matAutocomplete" (optionSelected)="selectSingle('categoryId', $event)">
+                            <mat-option class="mdo-option" *ngFor="let category of categoryList" [value]="category.categoryId">
                                 {{category.categoryDesc}}
                             </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                    <mat-error i18n="@@category_id_missing_msg"
-                        *ngIf="submitted && form.controls.categoryId.errors && form.controls.categoryId.errors.required">
-                        Please enter Category Id</mat-error>
+                        </mat-autocomplete>
+                    </div>
                 </div>
                 
                 <div class="f-col mdo-form-field">

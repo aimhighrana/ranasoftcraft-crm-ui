@@ -982,6 +982,26 @@ export class BrruleSideSheetComponent implements OnInit {
   close() {
     this.router.navigate([{ outlets: { [`${this.activeOutlet}`]: null } }], {queryParamsHandling: 'preserve'});
   }
+  /**
+   * function to set form values from mat auto complete
+   */
+  selectSingle(controlName: string, $event) {
+    this.form.controls[controlName].setValue($event.option.value);
+  }
+
+  /**
+   * function to display category name in mat auto complete
+   */
+  displayCategoryFn(value?: string) {
+    return value ? this.categoryList.find(category => category.categoryId === value)?.categoryDesc : '';
+  }
+
+  /**
+   * function to display rule desc in mat auto complete
+   */
+   displayRuleFn(value?: string) {
+    return value ? this.businessRuleTypes.find(rule => rule.ruleType === value)?.ruleDesc : '';
+  }
 
   /**
    * function to save the form data
