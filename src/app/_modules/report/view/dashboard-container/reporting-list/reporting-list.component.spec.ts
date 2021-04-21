@@ -17,7 +17,7 @@ import { Router } from '@angular/router';
 describe('ReportingListComponent', () => {
   let component: ReportingListComponent;
   let fixture: ComponentFixture<ReportingListComponent>;
-  let widgetServiceSpy: WidgetService
+  let widgetServiceSpy: WidgetService;
   let router: Router;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -51,7 +51,7 @@ describe('ReportingListComponent', () => {
 
   it('getListTableMetadata, return table data', async (() => {
     component.widgetId = 75656;
-    const response: ReportingWidget[] = [{widgetId:75656, fields:'test', fieldOrder:'APPTEST', fieldDesc:'testing', sno:65467465, fldMetaData:null}];
+    const response: ReportingWidget[] = [{widgetId:75656, fields:'test', fieldOrder:'APPTEST', fieldDesc:'testing', sno:65467465, fldMetaData:null, displayCriteria: DisplayCriteria.TEXT}];
     spyOn(widgetServiceSpy, 'getListTableMetadata').withArgs(component.widgetId).and.returnValue(of(response));
     component.getListTableMetadata();
     expect(widgetServiceSpy.getListTableMetadata).toHaveBeenCalledWith(component.widgetId);
@@ -143,6 +143,17 @@ describe('ReportingListComponent', () => {
     component.widgetHeader = {displayCriteria: DisplayCriteria.CODE_TEXT} as WidgetHeader;
     component.getListdata(pageSize, pageIndex, widgetId, criteria, soringMap);
 
+    expect(widgetServiceSpy.getListdata).toHaveBeenCalledWith(String(pageSize), String(pageIndex), String(widgetId), criteria, soringMap);
+    expect(component.resultsLength).toEqual(1);
+    expect(component.listData[0].REQUESTOR_DATE).toEqual('1584440382535');
+    expect(component.listData[0].WFID).toEqual('130086693666196566');
+    expect(component.listData[0].OVERDUE).toEqual('No');
+    expect(component.listData[0].FORWARDENABLED).toEqual('Yes');
+    expect(component.listData[0].TIME_TAKEN).toEqual('1 d 2 h 58 m 9 s');
+    expect(component.listData[0].objectNumber).toEqual('C000164628');
+
+    component.tableColumnMetaData = [{widgetId: 1612965351574, fields:'REQUESTOR_DATE', fieldOrder:'REQUESTOR_DATE', fieldDesc:'REQUESTOR_DATE', sno:65467465, fldMetaData:null, displayCriteria: DisplayCriteria.TEXT}];
+    component.getListdata(pageSize, pageIndex, widgetId, criteria, soringMap);
     expect(widgetServiceSpy.getListdata).toHaveBeenCalledWith(String(pageSize), String(pageIndex), String(widgetId), criteria, soringMap);
     expect(component.resultsLength).toEqual(1);
     expect(component.listData[0].REQUESTOR_DATE).toEqual('1584440382535');
