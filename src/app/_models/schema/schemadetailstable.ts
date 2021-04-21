@@ -1,4 +1,5 @@
 import { DropDownValue, UDRBlocksModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
+import { DisplayCriteria } from '@modules/report/_models/widget';
 import { AddFilterOutput } from './schema';
 
 
@@ -282,6 +283,8 @@ export interface MetadataModel {
     isCompleteness: string;
     criteriaDisplay: string;
     isShoppingCartRefField: boolean;
+    displayCriteria?: DisplayCriteria;
+    sno?: DisplayCriteria;
 }
 export class Heirarchy {
     objnr: number;
