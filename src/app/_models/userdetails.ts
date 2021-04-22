@@ -23,3 +23,22 @@ export class TokenPayLoadData {
     exp: string;
     iat: string;
 }
+
+export class UserPersonalDetails {
+    avatarURL: string;
+    fb: string;
+    name: string;
+    fname: string;
+    linkedin: string;
+    lname: string;
+    mname: string;
+    pemail: string;
+    phone: number;
+    profileKey: {
+        tenantId: string;
+        userName: string;
+    }
+    publicName: string;
+    semail: string;
+    twitter: string;
+}
