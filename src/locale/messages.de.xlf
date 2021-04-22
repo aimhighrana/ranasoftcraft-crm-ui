@@ -959,7 +959,7 @@
         <target>Nutzername</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">12</context>
+          <context context-type="linenumber">13</context>
         </context-group>
       </trans-unit>
       <trans-unit id="full_name" datatype="html">
@@ -967,7 +967,7 @@
         <target>Vollständiger Name</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">13</context>
+          <context context-type="linenumber">14</context>
         </context-group>
       </trans-unit>
       <trans-unit id="preferred_name" datatype="html">
@@ -975,7 +975,7 @@
         <target>bevorzugter Name</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">17</context>
+          <context context-type="linenumber">18</context>
         </context-group>
       </trans-unit>
       <trans-unit id="phone_number" datatype="html">
@@ -983,7 +983,7 @@
         <target>Telefonnummer</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">21</context>
+          <context context-type="linenumber">22</context>
         </context-group>
       </trans-unit>
       <trans-unit id="primary_email_address" datatype="html">
@@ -991,7 +991,7 @@
         <target>Haupt-Email-Adresse</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">25</context>
+          <context context-type="linenumber">26</context>
         </context-group>
       </trans-unit>
       <trans-unit id="secondary_email_address" datatype="html">
@@ -999,7 +999,7 @@
         <target>Zweite Email Adresse</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">32</context>
+          <context context-type="linenumber">33</context>
         </context-group>
       </trans-unit>
       <trans-unit id="change_password" datatype="html">
@@ -1007,7 +1007,7 @@
         <target>Kennwort ändern</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">37</context>
+          <context context-type="linenumber">38</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\change-password-dialog\change-password-dialog.component.html</context>
@@ -1019,7 +1019,7 @@
         <target>Digitale Unterschrift</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">38</context>
+          <context context-type="linenumber">39</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ok" datatype="html">

@@ -6,6 +6,8 @@ import { ChangePasswordDialogComponent } from './change-password-dialog/change-p
 import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import { UserService } from '@services/user/userservice.service';
+import { UserPersonalDetails } from '@models/userdetails';
 
 @Component({
   selector: 'pros-profile',
@@ -47,18 +49,12 @@ export class ProfileComponent implements OnInit {
   settingsForm: FormGroup;
   // updates form after user stops editing
   updateForm = false;
+  // stores user personal details obtained from db
+  currentUserDetails: UserPersonalDetails;
+  // stores error message on personal details update
+  formErrMsg;
 
-  // mock values for updating form values
-  mockValues = {
-    userName: 'Test User Name',
-    fullName: 'Test',
-    preferredName: 'Test Name',
-    phone: 21354,
-    primaryEmail: 'test@test.com',
-    secondaryEmail: 'secEmail@test.com'
-  }
-
-  constructor(private dialog: MatDialog, private libToast: TransientService) {
+  constructor(private dialog: MatDialog, private libToast: TransientService, private userService: UserService) {
     this.filteredOptions = this.optionCtrl2.valueChanges.pipe(
       startWith(''),
       map((num: string | null) => num ? this._filter(num) : this.allOptions.slice()));
@@ -86,7 +82,19 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit(): void {
     this.createForm();
-    this.setValueForFormControl(this.mockValues);
+    this.getUserPersonalDetails();
+  }
+
+  /**
+   * fetches user personal details from db
+   */
+  getUserPersonalDetails() {
+    this.userService.getUserPersonalDetails().subscribe((data) => {
+      if (data) {
+        this.currentUserDetails = data;
+        this.setValueForFormControl(data);
+      }
+    });
   }
 
   /**
@@ -107,19 +115,51 @@ export class ProfileComponent implements OnInit {
    * updates user detals in database
    */
   updatePersonalDetails() {
-    console.log(this.settingsForm.controls);
+    const personalDetails: UserPersonalDetails = this.currentUserDetails;
+    personalDetails.profileKey.userName = this.settingsForm.controls.userName.value;
+    personalDetails.name = this.settingsForm.controls.fullName.value;
+    personalDetails.publicName = this.settingsForm.controls.preferredName.value;
+    personalDetails.phone = this.settingsForm.controls.phone.value;
+    personalDetails.pemail = this.settingsForm.controls.primaryEmail.value;
+    personalDetails.semail = this.settingsForm.controls.secondaryEmail.value;
+
+    this.userService.updateUserPersonalDetails(personalDetails).subscribe((res) => {
+      if (res && res.errorMsg) {
+        this.formErrMsg = res.errorMsg;
+      }
+    });
 
     return true;
   }
 
   /**
    * updates current values in profile form
-   * @param value existing data for updating in form
+   * @param data existing data for updating in form
    */
-  setValueForFormControl(value) {
-    Object.keys(value).forEach((key) => {
-      this.setValue(key, value[key]);
-    });
+  setValueForFormControl(data) {
+    if (data.profileKey && data.profileKey.userName) {
+      this.settingsForm.controls.userName.setValue(data.profileKey.userName);
+    }
+
+    if (data.name) {
+      this.settingsForm.controls.fullName.setValue(data.name);
+    }
+
+    if (data.publicName) {
+      this.settingsForm.controls.preferredName.setValue(data.publicName);
+    }
+
+    if (data.phone) {
+      this.settingsForm.controls.phone.setValue(data.phone);
+    }
+
+    if (data.pemail) {
+      this.settingsForm.controls.primaryEmail.setValue(data.pemail);
+    }
+
+    if (data.semail) {
+      this.settingsForm.controls.secondaryEmail.setValue(data.semail);
+    }
   }
 
   /**
