@@ -1,11 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FieldMetaData } from '@models/core/coreModel';
 import { FieldControlType, FilterCriteria, ListPageFilters } from '@models/list-page/listpage';
 import { CoreService } from '@services/core/core.service';
 import { GlobaldialogService } from '@services/globaldialog.service';
-import { Subject, Subscription } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { Observable, Subject, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'pros-list-filter',
@@ -13,6 +15,45 @@ import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
   styleUrls: ['./list-filter.component.scss']
 })
 export class ListFilterComponent implements OnInit {
+
+  constructor(
+    private activatedRouter: ActivatedRoute,
+    private router: Router,
+    private coreService: CoreService,
+    private glocalDialogService: GlobaldialogService) {
+      this.filteredOptions = this.optionCtrl2.valueChanges.pipe(
+        startWith(''),
+        map((num: string | null) => num ? this._filter(num) : this.allOptions.slice()));
+    }
+
+  /**
+   * Form control for the input
+   */
+   optionCtrl2 = new FormControl();
+
+   /**
+    * hold the list of filtered options
+    */
+   filteredOptions: Observable<string[]>;
+
+   /**
+    * Available options list
+    */
+   allOptions: string[] = ['One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten'];
+
+   /**
+    * Reference to the input
+    */
+   @ViewChild('optionInput2') optionInput2: ElementRef<HTMLInputElement>;
+
+   /**
+    * reference to auto-complete
+    */
+   @ViewChild('auto') matAutocomplete: MatAutocomplete;
+   selectedValue: any;
+
+   selected: any;
+
 
   periods = [
     {value: 'Daily', key: 1},
@@ -65,14 +106,27 @@ export class ListFilterComponent implements OnInit {
 
   searchFieldSub: Subject<string> = new Subject();
 
-  constructor(
-    private activatedRouter: ActivatedRoute,
-    private router: Router,
-    private coreService: CoreService,
-    private glocalDialogService: GlobaldialogService) { }
+/**
+    * mehtod to filter items based on the searchterm
+    * @param value searchTerm
+    * @returns string[]
+    */
+ _filter(value: string): string[] {
+  const filterValue = value.toLowerCase();
+
+  return this.allOptions.filter(num => num.toLowerCase().indexOf(filterValue) === 0);
+}
+
+/**
+ * method to add item to selected items
+ * for single sleect
+ * @param event item
+ */
+ selectSingle(event: MatAutocompleteSelectedEvent): void {
+  this.selectedValue = event.option.value;
+}
 
   ngOnInit(): void {
-
     let sub = this.activatedRouter.params.subscribe(params => {
       this.moduleId = params.moduleId;
       this.getModuleFldMetadata();
