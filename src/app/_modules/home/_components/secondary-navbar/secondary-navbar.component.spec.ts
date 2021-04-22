@@ -1,4 +1,4 @@
-import { ListService } from '@services/list/list.service';
+import { TaskListService } from '@services/task-list.service';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { SecondaryNavbarComponent } from './secondary-navbar.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
@@ -28,7 +28,7 @@ describe('SecondaryNavbarComponent', () => {
   let userService: UserService;
   let reportService: ReportService;
   let sharedService: SharedServiceService;
-  let listService: ListService;
+  let taskListService: TaskListService;
   let router: Router;
   const moduleList = [
     {
@@ -53,7 +53,7 @@ describe('SecondaryNavbarComponent', () => {
     userService = fixture.debugElement.injector.get(UserService);
     reportService = fixture.debugElement.injector.get(ReportService);
     sharedService = fixture.debugElement.injector.get(SharedServiceService);
-    listService = fixture.debugElement.injector.get(ListService);
+    taskListService = fixture.debugElement.injector.get(TaskListService);
     // fixture.detectChanges();
   });
 
@@ -487,10 +487,10 @@ describe('SecondaryNavbarComponent', () => {
       {label:'Draft',id:'draft',rec_cnt:0,new_feed_cnt:0,hasNewFeeds:false},
       {label:'Error',id:'error',rec_cnt:0,new_feed_cnt:0,hasNewFeeds:false}
     ];
-    spyOn(listService, 'getInboxNodesCount').and.returnValue(of(nodeCount));
+    spyOn(taskListService, 'getInboxNodesCount').and.returnValue(of(nodeCount));
     component.getInboxNodesCount();
-    expect(listService.getInboxNodesCount).toHaveBeenCalled();
-    listService.getInboxNodesCount().subscribe((actualResponse) => {
+    expect(taskListService.getInboxNodesCount).toHaveBeenCalled();
+    taskListService.getInboxNodesCount().subscribe((actualResponse) => {
       expect(actualResponse).toEqual(nodeCount);
       expect(component.taskList).toEqual(nodeCount);
     });

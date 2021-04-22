@@ -1,3 +1,4 @@
+import { TaskListService } from '@services/task-list.service';
 import { InboxNodesCount } from './../../../../_models/list-page/listpage';
 import { Component, OnInit, OnChanges, SimpleChanges, Input, EventEmitter, Output, ViewChild, OnDestroy, ViewChildren, QueryList, AfterViewInit } from '@angular/core';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
@@ -188,6 +189,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
     private sharedService: SharedServiceService,
     private userService: UserService,
     private listService: ListService,
+    private taskListService: TaskListService,
     private matSnackBar: MatSnackBar,
     private coreService: CoreService
   ) { }
@@ -726,12 +728,14 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
   }
 
   getInboxNodesCount() {
-    this.listService.getInboxNodesCount().pipe(take(1)).subscribe(resp => {
+    this.taskListService.getInboxNodesCount().pipe(take(1)).subscribe(resp => {
       this.taskList = resp;
       const orderList = localStorage.getItem('tasklist-feeds-order');
       if (this.taskList.length && orderList) {
         this.setTaskListOrder(orderList);
       }
+    }, err => {
+      console.log(err);
     });
   }
 }

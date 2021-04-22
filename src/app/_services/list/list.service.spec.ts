@@ -223,24 +223,4 @@ describe('ListService', () => {
     // verify http
     httpTestingController.verify();
   }));
-
-  it('getInboxNodesCount()', async(() => {
-    const url = `getInboxNodesCountUrl`;
-    // mock url
-    endpointServiceSpy.getInboxNodesCountUrl.and.returnValue(url);
-
-    const response = [];
-
-    // actual service call
-    listService.getInboxNodesCount().subscribe((actualResponse) => {
-      expect(actualResponse).toEqual(response);
-    });
-    // mock http call
-    const mockRequst = httpTestingController.expectOne(`${url}`);
-    expect(mockRequst.request.method).toEqual('GET');
-    expect(mockRequst.request.responseType).toEqual('json');
-    mockRequst.flush(response);
-    // verify http
-    httpTestingController.verify();
-  }));
 });

@@ -1,3 +1,4 @@
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { TaskListService } from './../../../../_services/task-list.service';
 import { take, takeUntil } from 'rxjs/operators';
 import { SharedServiceService } from './../../../shared/_services/shared-service.service';
@@ -624,7 +625,7 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit, OnDest
   // @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private route: ActivatedRoute, private router: Router, private sharedServices: SharedServiceService, private taskListService: TaskListService) {}
+  constructor(private route: ActivatedRoute, private router: Router, private sharedServices: SharedServiceService, private taskListService: TaskListService, private matSnackBar: MatSnackBar) {}
 
   /**route param contains the node
    * node - based on node find the columns the table should have
