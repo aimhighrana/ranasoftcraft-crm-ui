@@ -897,7 +897,7 @@ describe('SchemaDetailsComponent', () => {
     component.selectedFieldsOb.next([]);
     expect(schemaDetailService.updateSchemaTableView).toHaveBeenCalled();
 
-    const selectedFields = [{fieldId: 'mtl_grp', order:1, editable: false}];
+    const selectedFields = [{fieldId: 'mtl_grp', order:1, editable: false, isEditable:false}];
     component.selectedFieldsOb.next(selectedFields);
     component.metadata.next({headers: {}} as MetadataModeleResponse);
     expect(component.selectedFields).toEqual(selectedFields);

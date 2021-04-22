@@ -278,6 +278,7 @@ export class TableColumnSettingsComponent implements OnInit{
       choosenField = this.data.selectedFields.find(field =>field.fieldId === fld);
       if( choosenField ) {
         choosenField.order = order;
+        choosenField.isEditable = choosenField.editable;
         orderFld.push(choosenField);
         order++;
       }

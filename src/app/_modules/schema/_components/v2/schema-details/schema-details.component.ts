@@ -588,7 +588,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     console.log(row);
 
     const field = this.selectedFields.find(f => f.fieldId === fldid);
-    if (field && !field.editable) {
+    if (field && !field.isEditable) {
       console.log('Edit is disabled for this field ! ', fldid);
       return;
     }

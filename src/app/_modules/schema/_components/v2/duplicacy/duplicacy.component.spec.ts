@@ -852,7 +852,7 @@ describe('DuplicacyComponent', () => {
 
   it('should calculateDisplayFields', () => {
     component.metadataFldLst = {headers: {region: {fieldDescri: 'region'}, priority: {fieldDescri: 'priority'}}};
-    component.selectedFields = [{fieldId: 'region', order: 1, editable: true}];
+    component.selectedFields = [{fieldId: 'region', order: 1, editable: true, isEditable: true}];
     component.calculateDisplayFields();
     expect(component.displayedFields.getValue()).toEqual([...component.startColumns, 'region']);
 

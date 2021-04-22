@@ -183,7 +183,7 @@ describe('EndpointsRuleService', () => {
 
   it('saveUpdateUDRUrl(), should saveudr rule', async(() => {
     const serObj =new EndpointsRuleService();
-    expect(serObj.saveUpdateUDRUrl()).toContain('admin/schema/udr/save-update');
+    expect(serObj.saveUpdateUDRUrl()).toContain('schema/metadata/udr/save-update');
   }));
 
   it('getBusinessRuleInfoUrl(),should return all business rule details', async(() => {
@@ -396,7 +396,7 @@ describe('EndpointsRuleService', () => {
 
   it('saveUpdateDuplicateRule(),should return saveUpdateDuplicateRule url', async(() => {
     const serObj =new EndpointsRuleService();
-    expect(serObj.saveUpdateDuplicateRule()).toContain('duplicate/saveDuppsett');
+    expect(serObj.saveUpdateDuplicateRule()).toContain('schema/actions/saveDuppsett');
   }));
 
   it('copyDuplicate(),should return co[y duplicate url', async(() => {
@@ -542,7 +542,7 @@ describe('EndpointsRuleService', () => {
 
   it('doDuplicacyCorrectionUrl(),should return doDuplicacyCorrectionUrl url', async(() => {
     const serObj =new EndpointsRuleService();
-    expect(serObj.doDuplicacyCorrectionUrl('schema1','run1')).toContain('duplicate/do-correction/schema1/run1');
+    expect(serObj.doDuplicacyCorrectionUrl('schema1','run1')).toContain('schema/actions/do-correction/schema1/run1');
   }));
 
   it('approveDuplicacyCorrectionUrl(),should return approveDuplicacyCorrectionUrl url', async(() => {
@@ -596,7 +596,7 @@ describe('EndpointsRuleService', () => {
 
   it('saveUpdateUDRUrl(), should saveudr rule', async(() => {
     const serObj =new EndpointsRuleService();
-    expect(serObj.saveUpdateUDRUrl()).toContain('admin/schema/udr/save-update');
+    expect(serObj.saveUpdateUDRUrl()).toContain('schema/metadata/udr/save-update');
   }));
 
   it('getCreateUpdateSchemaActionUrl(), getCreateUpdateSchemaActionUrl', async(() => {
