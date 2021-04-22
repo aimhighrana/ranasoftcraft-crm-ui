@@ -9,6 +9,7 @@ import { UserService } from '@services/user/userservice.service';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { DuplicateReportComponent } from '../duplicate-report/duplicate-report.component';
 import { MatDialog } from '@angular/material/dialog';
+
 @Component({
   selector: 'pros-dashboard',
   templateUrl: './dashboard.component.html',
@@ -85,11 +86,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   clearFilters() {
-    this.emitClearBtnEvent =  this.emitClearBtnEvent ? false : true;
+    this.emitClearBtnEvent = true;
   }
 
   showClearBtnEmit(isTrue: boolean) {
     this.showClearFilterBtn = isTrue;
+    this.emitClearBtnEvent = isTrue ? false : true;
   }
 
   delete() {
