@@ -105,11 +105,12 @@ export class ListFilterComponent implements OnInit {
   fieldsSearchString = '';
 
   searchFieldSub: Subject<string> = new Subject();
-  // /**
-  //   * mehtod to filter items based on the searchterm
-  //   * @param value searchTerm
-  //   * @returns string[]
-  //   */
+
+  /**
+   * mehtod to filter items based on the searchterm
+   * @param value searchTerm
+   * @returns string[]
+   */
   _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
 
