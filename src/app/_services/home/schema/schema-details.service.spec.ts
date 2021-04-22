@@ -52,8 +52,8 @@ describe('SchemaDetailsService', () => {
     endpointServiceSpy.getAllSelectedFields.and.returnValue(url);
     // mock data
     const mockData = [
-      {fieldId: 'FIELD1', order:0, editable: false},
-      {fieldId: 'FIELD2', order:1, editable: false}
+      {fieldId: 'FIELD1', order:0, editable: false,isEditable: false},
+      {fieldId: 'FIELD2', order:1, editable: false, isEditable:false}
     ];
     // actual service call
     schemaDetaService.getAllSelectedFields(schemaId, variantId).subscribe(actualResponse => {

@@ -142,7 +142,7 @@ export class EndpointsRuleService {
   }
 
   public saveUpdateUDRUrl(): string {
-    return `${this.origin}/admin/schema/udr/save-update`;
+    return `${this.origin}/schema/metadata/udr/save-update`;
   }
 
   public getBusinessRuleInfoUrl(brId: string): string {
@@ -344,7 +344,7 @@ export class EndpointsRuleService {
    * endpoint for saving and updating duplicate rule
    */
   public saveUpdateDuplicateRule(): string {
-    return `${this.origin}/duplicate/saveDuppsett`;
+    return `${this.origin}/schema/actions/saveDuppsett`;
   }
 
   /**
@@ -367,7 +367,7 @@ export class EndpointsRuleService {
    * @param type: type of variants
    */
   public getAllDataScopeUrl(schemaId: string, type: string): string {
-    return `${this.classicOrigin}/schema/variants/${schemaId}/${type}`;
+    return `${this.origin}/schema/variants/${schemaId}/${type}`;
   }
   /**
    * Get all noun and modifiers uri ..
@@ -533,7 +533,7 @@ export class EndpointsRuleService {
    * @param runId run id
    */
   public doDuplicacyCorrectionUrl(schemaId, runId): string {
-    return `${this.origin}/duplicate/do-correction/${schemaId}/${runId}`;
+    return `${this.origin}/schema/actions/do-correction/${schemaId}/${runId}`;
   }
 
   /**
