@@ -10,18 +10,14 @@
     
     <div class="f-row">
         <mat-nav-list class="primary-nav-list">
-            <mat-list-item class="link-items" [class.selected]="isNavSelected==='welcome'" (click)="sendToParent('welcome')">
+            <mat-list-item class="link-items" [class.selected]="isNavSelected==='welcome'" (click)="sendToParent('welcome')" i18n="@@home">
                Home
             </mat-list-item>
-            <mat-list-item class="link-items" [class.selected]="isNavSelected==='list'" (click)="sendToParent('list')">
-               Data
-            </mat-list-item>
-            <mat-list-item class="link-items" [class.selected]="isNavSelected==='schema'" (click)="sendToParent('schema')">
+            <mat-list-item class="link-items" [class.selected]="isNavSelected==='list'" (click)="sendToParent('list')" i18n="@@data">Data</mat-list-item>
+            <mat-list-item class="link-items" [class.selected]="isNavSelected==='schema'" (click)="sendToParent('schema')" i18n="@@schema">
                Schema
             </mat-list-item>
-            <mat-list-item class="link-items" [class.selected]="isNavSelected==='report'" (click)="sendToParent('report')">
-               Reports
-            </mat-list-item>
+            <mat-list-item class="link-items" [class.selected]="isNavSelected==='report'" (click)="sendToParent('report')"  i18n="@@reports">Reports</mat-list-item>
         </mat-nav-list>
     </div>
 
@@ -61,7 +57,7 @@
         <mat-menu #profile_navigation="matMenu" xPosition="before" class="navigation-menu">
             <lib-button class="menu-btn" (afterClick)="openSettings()" i18n="@@settings">Settings</lib-button>
             <mat-divider></mat-divider>
-            <lib-button class="menu-btn" (afterClick)="signOut()">Sign out</lib-button>
+            <lib-button class="menu-btn" (afterClick)="signOut()"  i18n="@@sign_out">Sign out</lib-button>
         </mat-menu>
     </div>    
 </div>
