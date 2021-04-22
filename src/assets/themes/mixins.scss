@@ -777,6 +777,8 @@
           &.search-module-dropdown {
             display: flex;
             flex-direction: column;
+            overflow: hidden;
+            overflow-y: auto;
 
             .lib-button {
               width: 100%;
