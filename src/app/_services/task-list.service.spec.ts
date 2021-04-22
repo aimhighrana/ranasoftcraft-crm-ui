@@ -427,7 +427,7 @@ describe('TaskListService', () => {
     ]
     // actual service call
     service.saveOrUpdateTasklistHeaders('inbox', payload).subscribe((actualResponse) => {
-      expect(actualResponse).not.toBe(null)
+      expect(actualResponse).not.toBe(null);
     });
     // mock http call
     const mockRequst = httpTestingController.expectOne(`${url}`);
