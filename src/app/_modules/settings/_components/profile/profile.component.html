@@ -48,105 +48,92 @@
         </div>
     </lib-tab>
     <lib-tab label="Language & format">
-        <div class="f-col mdo-field">
-            <!-- label -->
-            <mat-label class="mdo-field-label">Language</mat-label>
-            <!-- input container -->
-            <div class="mdo-field-input">
-                {{selected}}
-                <input matInput placeholder="Type to search" #optionInput2 [formControl]="optionCtrl2"
-                    [matAutocomplete]="auto2" />
-                <mat-icon matSuffix fontSet="mdo-icons">chevron-down</mat-icon>
-                <!-- autocomplete -->
-                <mat-autocomplete class="mdo-autocomplete" #auto2="matAutocomplete"
-                    (optionSelected)="selectSingle($event)">
-                    <mat-option class="mdo-option" *ngFor="let opt of filteredOptions | async" [value]="opt">
-                        {{opt}}
-                    </mat-option>
-                </mat-autocomplete>
+        <form [formGroup]="languageSettingsForm">
+            <!-------------Language--------------->
+            <div class="f-col mdo-field">
+                <!-- label -->
+                <mat-label class="mdo-field-label">Language</mat-label>
+                <!-- input container -->
+                <div class="mdo-field-input">
+                    <input matInput placeholder="Type to search" formControlName="language" [matAutocomplete]="lang" (blur)="updateLanguageSettings('language')"/>
+                    <mat-icon matSuffix fontSet="mdo-icons">chevron-down</mat-icon>
+                    <!-- autocomplete -->
+                    <mat-autocomplete class="mdo-autocomplete" #lang>
+                        <mat-option class="mdo-option" *ngFor="let opt of filteredLangList | async" [value]="opt">
+                            {{opt}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </div>
             </div>
-        </div>
 
-        <!-------------Time Zone--------------->
-        <div class="f-col mdo-field">
-            <!-- label -->
-            <mat-label class="mdo-field-label">Time Zone</mat-label>
-            <!-- input container -->
-            <div class="mdo-field-input">
-                {{selected}}
-                <input matInput placeholder="Type to search" #optionInput2 [formControl]="optionCtrl2"
-                    [matAutocomplete]="auto2" />
-                <mat-icon matSuffix fontSet="mdo-icons">chevron-down</mat-icon>
-                <!-- autocomplete -->
-                <mat-autocomplete class="mdo-autocomplete" #auto2="matAutocomplete"
-                    (optionSelected)="selectSingle($event)">
-                    <mat-option class="mdo-option" *ngFor="let opt of filteredOptions | async" [value]="opt">
-                        {{opt}}
-                    </mat-option>
-                </mat-autocomplete>
+            <!-------------Time Zone--------------->
+            <div class="f-col mdo-field">
+                <!-- label -->
+                <mat-label class="mdo-field-label">Time Zone</mat-label>
+                <!-- input container -->
+                <div class="mdo-field-input">
+                    <input matInput placeholder="Type to search" formControlName="timeZone" [matAutocomplete]="timeZone" (blur)="updateLanguageSettings('timeZone')"/>
+                    <mat-icon matSuffix fontSet="mdo-icons">chevron-down</mat-icon>
+                    <!-- autocomplete -->
+                    <mat-autocomplete class="mdo-autocomplete" #timeZone>
+                        <mat-option class="mdo-option" *ngFor="let opt of filteredTimeZoneList | async" [value]="opt">
+                            {{opt}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </div>
             </div>
-        </div>
 
-
-        <!-------------Date format--------------->
-        <div class="f-col mdo-field">
-            <!-- label -->
-            <mat-label class="mdo-field-label">Date format</mat-label>
-            <!-- input container -->
-            <div class="mdo-field-input">
-                {{selected}}
-                <input matInput placeholder="Type to search" #optionInput2 [formControl]="optionCtrl2"
-                    [matAutocomplete]="auto2" />
-                <mat-icon matSuffix fontSet="mdo-icons">chevron-down</mat-icon>
-                <!-- autocomplete -->
-                <mat-autocomplete class="mdo-autocomplete" #auto2="matAutocomplete"
-                    (optionSelected)="selectSingle($event)">
-                    <mat-option class="mdo-option" *ngFor="let opt of filteredOptions | async" [value]="opt">
-                        {{opt}}
-                    </mat-option>
-                </mat-autocomplete>
+            <!-------------Date format--------------->
+            <div class="f-col mdo-field">
+                <!-- label -->
+                <mat-label class="mdo-field-label">Date format</mat-label>
+                <!-- input container -->
+                <div class="mdo-field-input">
+                    <input matInput placeholder="Type to search" formControlName="dateFormat" [matAutocomplete]="dateFormat" (blur)="updateLanguageSettings('dateFormat')"/>
+                    <mat-icon matSuffix fontSet="mdo-icons">chevron-down</mat-icon>
+                    <!-- autocomplete -->
+                    <mat-autocomplete class="mdo-autocomplete" #dateFormat>
+                        <mat-option class="mdo-option" *ngFor="let opt of filteredDateFormatList | async" [value]="opt">
+                            {{opt}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </div>
             </div>
-        </div>
 
-        <!-------------Time format--------------->
-        <div class="f-col mdo-field">
-            <!-- label -->
-            <mat-label class="mdo-field-label">Time format</mat-label>
-            <!-- input container -->
-            <div class="mdo-field-input">
-                {{selected}}
-                <input matInput placeholder="Type to search" #optionInput2 [formControl]="optionCtrl2"
-                    [matAutocomplete]="auto2" />
-                <mat-icon matSuffix fontSet="mdo-icons">chevron-down</mat-icon>
-                <!-- autocomplete -->
-                <mat-autocomplete class="mdo-autocomplete" #auto2="matAutocomplete"
-                    (optionSelected)="selectSingle($event)">
-                    <mat-option class="mdo-option" *ngFor="let opt of filteredOptions | async" [value]="opt">
-                        {{opt}}
-                    </mat-option>
-                </mat-autocomplete>
+            <!-------------Time format--------------->
+            <div class="f-col mdo-field">
+                <!-- label -->
+                <mat-label class="mdo-field-label">Time format</mat-label>
+                <!-- input container -->
+                <div class="mdo-field-input">
+                    <input matInput placeholder="Type to search" formControlName="timeFormat" [matAutocomplete]="timeFormat" (blur)="updateLanguageSettings('timeFormat')"/>
+                    <mat-icon matSuffix fontSet="mdo-icons">chevron-down</mat-icon>
+                    <!-- autocomplete -->
+                    <mat-autocomplete class="mdo-autocomplete" #timeFormat>
+                        <mat-option class="mdo-option" *ngFor="let opt of filteredTimeFormatList | async" [value]="opt">
+                            {{opt}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </div>
             </div>
-        </div>
 
-        <!-------------Number format--------------->
-        <div class="f-col mdo-field">
-            <!-- label -->
-            <mat-label class="mdo-field-label">Number format</mat-label>
-            <!-- input container -->
-            <div class="mdo-field-input">
-                {{selected}}
-                <input matInput placeholder="Type to search" #optionInput2 [formControl]="optionCtrl2"
-                    [matAutocomplete]="auto2" />
-                <mat-icon matSuffix fontSet="mdo-icons">chevron-down</mat-icon>
-                <!-- autocomplete -->
-                <mat-autocomplete class="mdo-autocomplete" #auto2="matAutocomplete"
-                    (optionSelected)="selectSingle($event)">
-                    <mat-option class="mdo-option" *ngFor="let opt of filteredOptions | async" [value]="opt">
-                        {{opt}}
-                    </mat-option>
-                </mat-autocomplete>
+            <!-------------Number format--------------->
+            <div class="f-col mdo-field">
+                <!-- label -->
+                <mat-label class="mdo-field-label">Number format</mat-label>
+                <!-- input container -->
+                <div class="mdo-field-input">
+                    <input matInput placeholder="Type to search" formControlName="numberFormat" [matAutocomplete]="numFormat" (blur)="updateLanguageSettings('numberFormat')"/>
+                    <mat-icon matSuffix fontSet="mdo-icons">chevron-down</mat-icon>
+                    <!-- autocomplete -->
+                    <mat-autocomplete class="mdo-autocomplete" #numFormat>
+                        <mat-option class="mdo-option" *ngFor="let opt of filteredNumberFormatList | async" [value]="opt">
+                            {{opt}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </div>
             </div>
-        </div>
+        </form>
     </lib-tab>
     <lib-tab label="Working hours">
         Content 3

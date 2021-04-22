@@ -42,3 +42,17 @@ export class UserPersonalDetails {
     semail: string;
     twitter: string;
 }
+
+export class UserPreferenceDetails {
+    dformat: string;
+    lang: string;
+    nformat: string;
+    profileKey: UserPreferenceDetailsProfileKey;
+    tformat: string;
+    timezone: string;
+}
+
+export class UserPreferenceDetailsProfileKey {
+    tenantId: string;
+    userName: string;
+}

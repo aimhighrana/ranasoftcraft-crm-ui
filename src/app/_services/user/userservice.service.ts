@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { TokenPayLoadData, Userdetails, UserPersonalDetails } from 'src/app/_models/userdetails';
+import { TokenPayLoadData, Userdetails, UserPersonalDetails, UserPreferenceDetails } from 'src/app/_models/userdetails';
 import * as jwt_decode from 'jwt-decode';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
@@ -57,5 +57,25 @@ export class UserService {
 
   public updateUserPersonalDetails(personalDetails: UserPersonalDetails): Observable<any> {
     return this.http.post<any>(this.profileEndpointService.updatePersonalDetails(), personalDetails);
+  }
+
+  public getUserPreferenceDetails(): Observable<UserPreferenceDetails> {
+    return this.http.get<UserPreferenceDetails>(this.profileEndpointService.getUserPreferenceDetails());
+  }
+
+  public updateUserPreferenceDetails(pref: UserPreferenceDetails): Observable<any> {
+    return this.http.post<any>(this.profileEndpointService.updateUserPreferenceDetails(), pref);
+  }
+
+  public getAllLanguagesList(): Observable<any> {
+    return this.http.get<any>(this.profileEndpointService.getAllLanguagesList());
+  }
+
+  public getDateFormatList(): Observable<any> {
+    return this.http.get<any>(this.profileEndpointService.getDateFormatList());
+  }
+
+  public getNumberFormatList(): Observable<any> {
+    return this.http.get<any>(this.profileEndpointService.getNumberFormatList());
   }
 }
