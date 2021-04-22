@@ -3,7 +3,7 @@
         <ng-container *ngIf="!activateElement">
             <div class="f-col">
                 <lib-search  class="search" placeholder="Search for fields" *ngIf="searchDrop.length > 0" prosClickStopPropagation
-                    (value)="searchField($event)"></lib-search>
+                    (valueChange)="searchField($event)"></lib-search>
             </div>
 
             <mat-list-item *ngFor="let fld of metadaDrop" prosClickStopPropagation (click)="ctrlFlds(fld)">

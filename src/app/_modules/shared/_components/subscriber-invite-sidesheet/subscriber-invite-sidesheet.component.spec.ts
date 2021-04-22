@@ -5,6 +5,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
+import { TransientService } from 'mdo-ui-library';
 import { of } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { FormInputComponent } from '../form-input/form-input.component';
@@ -37,6 +38,7 @@ describe('SubscriberInviteSidesheetComponent', () => {
         { provide: ActivatedRoute,
           useValue: { params: of({schemaId: 'schema', outlet: 'sb'}) }
         },
+        TransientService
       ]
     })
       .compileComponents();
