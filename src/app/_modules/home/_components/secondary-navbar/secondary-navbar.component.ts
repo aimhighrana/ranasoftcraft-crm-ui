@@ -106,78 +106,78 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
   /**
    * Mockdata for tasks list in home page side menu
    */
-  // mockTaskList = [
-  //   {
-  //     label: 'Inbox',
-  //     id: 'inbox',
-  //     rec_cnt: 2,
-  //     new_feed_cnt: 1,
-  //     hasNewFeeds: true,
-  //     childs: [
-  //       {
-  //         label: 'Test Search / Filter for Tasks',
-  //         id: '1test1',
-  //         rec_cnt: 2,
-  //         new_feed_cnt: 1,
-  //         hasNewFeeds: true
-  //       },
-  //       {
-  //         label: 'Test2',
-  //         id: '1test2',
-  //         rec_cnt: 5,
-  //         new_feed_cnt: 1,
-  //         hasNewFeeds: true
-  //       }
-  //     ]
-  //   },
-  //   {
-  //     label: 'In Workflow',
-  //     id: 'in_workflow',
-  //     rec_cnt: 5,
-  //     new_feed_cnt: 2,
-  //     hasNewFeeds: true,
-  //     childs: []
-  //   },
-  //   {
-  //     label: 'Rejected',
-  //     id: 'rejected',
-  //     rec_cnt: 10,
-  //     new_feed_cnt: 1,
-  //     hasNewFeeds: true,
-  //     childs: [
-  //       {
-  //         label: 'Test1',
-  //         id: '2test1',
-  //         rec_cnt: 10,
-  //         new_feed_cnt: 0,
-  //         hasNewFeeds: false
-  //       },
-  //       {
-  //         label: 'Test2',
-  //         id: '2test2',
-  //         rec_cnt: 15,
-  //         new_feed_cnt: 1,
-  //         hasNewFeeds: true
-  //       }
-  //     ]
-  //   },
-  //   {
-  //     label: 'Completed',
-  //     id: 'completed',
-  //     rec_cnt: 15,
-  //     new_feed_cnt: 0,
-  //     hasNewFeeds: false,
-  //     childs: []
-  //   },
-  //   {
-  //     label: 'Draft',
-  //     id: 'draft',
-  //     rec_cnt: 5,
-  //     new_feed_cnt: 0,
-  //     hasNewFeeds: false,
-  //     childs: []
-  //   }
-  // ];
+  mockTaskList = [
+    {
+      label: 'Inbox',
+      id: 'inbox',
+      rec_cnt: 2,
+      new_feed_cnt: 1,
+      hasNewFeeds: true,
+      childs: [
+        {
+          label: 'Test Search / Filter for Tasks',
+          id: '1test1',
+          rec_cnt: 2,
+          new_feed_cnt: 1,
+          hasNewFeeds: true
+        },
+        {
+          label: 'Test2',
+          id: '1test2',
+          rec_cnt: 5,
+          new_feed_cnt: 1,
+          hasNewFeeds: true
+        }
+      ]
+    },
+    {
+      label: 'In Workflow',
+      id: 'in_workflow',
+      rec_cnt: 5,
+      new_feed_cnt: 2,
+      hasNewFeeds: true,
+      childs: []
+    },
+    {
+      label: 'Rejected',
+      id: 'rejected',
+      rec_cnt: 10,
+      new_feed_cnt: 1,
+      hasNewFeeds: true,
+      childs: [
+        {
+          label: 'Test1',
+          id: '2test1',
+          rec_cnt: 10,
+          new_feed_cnt: 0,
+          hasNewFeeds: false
+        },
+        {
+          label: 'Test2',
+          id: '2test2',
+          rec_cnt: 15,
+          new_feed_cnt: 1,
+          hasNewFeeds: true
+        }
+      ]
+    },
+    {
+      label: 'Completed',
+      id: 'completed',
+      rec_cnt: 15,
+      new_feed_cnt: 0,
+      hasNewFeeds: false,
+      childs: []
+    },
+    {
+      label: 'Draft',
+      id: 'draft',
+      rec_cnt: 5,
+      new_feed_cnt: 0,
+      hasNewFeeds: false,
+      childs: []
+    }
+  ];
 
   constructor(
     private router: Router,
@@ -728,6 +728,10 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
   getInboxNodesCount() {
     this.listService.getInboxNodesCount().pipe(take(1)).subscribe(resp => {
       this.taskList = resp;
+      const orderList = localStorage.getItem('tasklist-feeds-order');
+      if (this.taskList.length && orderList) {
+        this.setTaskListOrder(orderList);
+      }
     });
   }
 }
