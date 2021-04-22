@@ -12,7 +12,7 @@ describe('ListService', () => {
 
   beforeEach(() => {
     const endpointSpy = jasmine.createSpyObj('EndpointsListService', ['getAllListPageViewsUrl', 'getListPageViewDetailsUrl', 'upsertListPageViewUrl', 'deleteListPageViewUrl',
-    'getTableDataUrl', 'getDataCountUrl', 'upsertListFiltersUrl', 'updateDefaultViewUrl', 'getInboxNodesCountUrl']);
+    'getTableDataUrl', 'getDataCountUrl', 'upsertListFiltersUrl', 'updateDefaultViewUrl']);
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule ],
       providers: [

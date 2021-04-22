@@ -21,4 +21,8 @@ describe('EndpointsProcessService', () => {
   it('saveTasklistVisitByUserUrl', () => {
     expect(service.saveTasklistVisitByUserUrl('inbox')).toContain('process/feed/visit/inbox');
   });
+
+  it('saveOrUpdateTasklistHeadersUrl', () => {
+    expect(service.saveOrUpdateTasklistHeadersUrl('inbox')).toContain('process/inbox/field/save-update');
+  });
 });

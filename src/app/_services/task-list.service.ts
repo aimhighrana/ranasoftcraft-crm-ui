@@ -135,4 +135,8 @@ export class TaskListService {
   public getInboxNodesCount() {
     return this.http.get<InboxNodesCount[]>(this.endpointsProcessService.getInboxNodesCountUrl());
   }
+
+  public saveOrUpdateTasklistHeaders(nodeId: string, payload: {fldId: string, order: number}[]) {
+    return this.http.post(this.endpointsProcessService.saveOrUpdateTasklistHeadersUrl(nodeId), payload);
+  }
 }

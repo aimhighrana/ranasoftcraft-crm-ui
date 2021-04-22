@@ -12,7 +12,12 @@ export class EndpointsProcessService {
   public getInboxNodesCountUrl() {
     return `${this.apiUrl}/feed/count`;
   }
+
   public saveTasklistVisitByUserUrl(nodeId: string): string {
     return `${this.apiUrl}/feed/visit/${nodeId}`;
+  }
+
+  public saveOrUpdateTasklistHeadersUrl(nodeId: string): string {
+    return `${this.apiUrl}/${nodeId}/field/save-update`;
   }
 }
