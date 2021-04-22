@@ -9,8 +9,6 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 })
 export class ChangePasswordDialogComponent implements OnInit {
 
-  // current password
-  currentPassword;
   // form group for change password fields
   changeForm: FormGroup;
 
@@ -35,9 +33,7 @@ export class ChangePasswordDialogComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<ChangePasswordDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
-  ) {
-    this.currentPassword = this.data.currentPassword || '';
-  }
+  ) { }
 
   ngOnInit(): void {
     this.createForm();
@@ -79,11 +75,9 @@ export class ChangePasswordDialogComponent implements OnInit {
       return false;
     }
 
-    if (this.currentPassword !== this.changeForm.controls.currentPassword.value) {
-      this.bannerMessage = 'Invalid current password';
-    } else if (this.changeForm.controls.newPassword.value !== this.changeForm.controls.confirmNewPassword.value) {
+    if (this.changeForm.controls.newPassword.value !== this.changeForm.controls.confirmNewPassword.value) {
       this.bannerMessage = 'Password and confirm password did not match';
-    } else if (this.currentPassword === this.changeForm.controls.newPassword.value) {
+    } else if (this.changeForm.controls.currentPassword.value === this.changeForm.controls.newPassword.value) {
       this.bannerMessage = 'Cannot set current password as new password';
     }
 

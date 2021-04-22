@@ -62,13 +62,8 @@ describe('ChangePasswordDialogComponent', () => {
     Object.keys(mockValues).forEach((field) => {
       component.changeForm.controls[field].setValue(mockValues[field]);
     });
-    component.currentPassword = 'Test1234';
     component.changePassword();
     expect(component.bannerMessage).toEqual('');
-
-    component.changeForm.controls.currentPassword.setValue('test');
-    component.changePassword();
-    expect(component.bannerMessage).toEqual('Invalid current password');
 
     component.changeForm.controls.currentPassword.setValue('Test1234');
     component.changeForm.controls.newPassword.setValue('Test12345');
