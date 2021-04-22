@@ -21,46 +21,46 @@ export class ListFilterComponent implements OnInit {
     private router: Router,
     private coreService: CoreService,
     private glocalDialogService: GlobaldialogService) {
-      this.filteredOptions = this.optionCtrl2.valueChanges.pipe(
-        startWith(''),
-        map((num: string | null) => num ? this._filter(num) : this.allOptions.slice()));
-    }
+    this.filteredOptions = this.optionCtrl2.valueChanges.pipe(
+      startWith(''),
+      map((num: string | null) => num ? this._filter(num) : this.allOptions.slice()));
+  }
 
   /**
    * Form control for the input
    */
-   optionCtrl2 = new FormControl();
+  optionCtrl2 = new FormControl();
 
-   /**
-    * hold the list of filtered options
-    */
-   filteredOptions: Observable<string[]>;
+  /**
+   * hold the list of filtered options
+   */
+  filteredOptions: Observable<string[]>;
 
-   /**
-    * Available options list
-    */
-   allOptions: string[] = ['One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten'];
+  /**
+   * Available options list
+   */
+  allOptions: string[] = ['One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten'];
 
-   /**
-    * Reference to the input
-    */
-   @ViewChild('optionInput2') optionInput2: ElementRef<HTMLInputElement>;
+  /**
+   * Reference to the input
+   */
+  @ViewChild('optionInput2') optionInput2: ElementRef<HTMLInputElement>;
 
-   /**
-    * reference to auto-complete
-    */
-   @ViewChild('auto') matAutocomplete: MatAutocomplete;
-   selectedValue: any;
+  /**
+   * reference to auto-complete
+   */
+  @ViewChild('auto') matAutocomplete: MatAutocomplete;
+  selectedValue: any;
 
-   selected: any;
+  selected: any;
 
 
   periods = [
-    {value: 'Daily', key: 1},
-    {value: 'Weekly', key: 2},
-    {value: 'Monthly', key: 3},
-    {value: 'Quarterly', key: 4},
-    {value: 'Yearly', key: 5},
+    { value: 'Daily', key: 1 },
+    { value: 'Weekly', key: 2 },
+    { value: 'Monthly', key: 3 },
+    { value: 'Quarterly', key: 4 },
+    { value: 'Yearly', key: 5 },
   ];
 
   rulelist = [
@@ -105,26 +105,25 @@ export class ListFilterComponent implements OnInit {
   fieldsSearchString = '';
 
   searchFieldSub: Subject<string> = new Subject();
+  // /**
+  //   * mehtod to filter items based on the searchterm
+  //   * @param value searchTerm
+  //   * @returns string[]
+  //   */
+  _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
 
-/**
-    * mehtod to filter items based on the searchterm
-    * @param value searchTerm
-    * @returns string[]
-    */
- _filter(value: string): string[] {
-  const filterValue = value.toLowerCase();
+    return this.allOptions.filter(num => num.toLowerCase().indexOf(filterValue) === 0);
+  }
 
-  return this.allOptions.filter(num => num.toLowerCase().indexOf(filterValue) === 0);
-}
-
-/**
- * method to add item to selected items
- * for single sleect
- * @param event item
- */
- selectSingle(event: MatAutocompleteSelectedEvent): void {
-  this.selectedValue = event.option.value;
-}
+  /**
+   * method to add item to selected items
+   * for single sleect
+   * @param event item
+   */
+  selectSingle(event: MatAutocompleteSelectedEvent): void {
+    this.selectedValue = event.option.value;
+  }
 
   ngOnInit(): void {
     let sub = this.activatedRouter.params.subscribe(params => {
@@ -135,7 +134,7 @@ export class ListFilterComponent implements OnInit {
 
     sub = this.activatedRouter.queryParams.pipe(
       map(params => {
-        if(params.f) {
+        if (params.f) {
           try {
             const filters = JSON.parse(atob(params.f));
             return filters;
@@ -148,41 +147,41 @@ export class ListFilterComponent implements OnInit {
         }
       })
     )
-    .subscribe(filters => {
-      this.filtersList = filters;
-      const fieldsList = this.filtersList.filterCriteria.map(fc => fc.fieldId);
-      this.getfilterFieldsMetadata(fieldsList);
-    });
+      .subscribe(filters => {
+        this.filtersList = filters;
+        const fieldsList = this.filtersList.filterCriteria.map(fc => fc.fieldId);
+        this.getfilterFieldsMetadata(fieldsList);
+      });
     this.subscriptionsList.push(sub);
 
     sub = this.searchFieldSub.pipe(
       debounceTime(1000),
       distinctUntilChanged()
     )
-    .subscribe(searchString => {
-      this.fieldsSearchString = searchString || '';
-      this.suggestedFilters = this.filtersList.filterCriteria
-              .filter(field => this.getFilterDescription(field.fieldId).toLowerCase().includes(this.fieldsSearchString.toLowerCase()));
-      this.getModuleFldMetadata();
-    });
+      .subscribe(searchString => {
+        this.fieldsSearchString = searchString || '';
+        this.suggestedFilters = this.filtersList.filterCriteria
+          .filter(field => this.getFilterDescription(field.fieldId).toLowerCase().includes(this.fieldsSearchString.toLowerCase()));
+        this.getModuleFldMetadata();
+      });
     this.subscriptionsList.push(sub);
   }
 
   /**
    * Get module fields metadata
    */
-   getModuleFldMetadata(loadMore?: boolean) {
+  getModuleFldMetadata(loadMore?: boolean) {
     if (this.moduleId === undefined || this.moduleId.trim() === '') {
       throw new Error('Module id cant be null or empty');
     }
 
-    if(loadMore) {
+    if (loadMore) {
       this.fieldsPageIndex++;
     } else {
       this.fieldsPageIndex = 0;
     }
     const sub = this.coreService.searchFieldsMetadata(this.moduleId, this.fieldsPageIndex, this.fieldsSearchString, 20).subscribe(response => {
-      if(response && response.length) {
+      if (response && response.length) {
         loadMore ? this.moduleFieldsMetatdata = this.moduleFieldsMetatdata.concat(response) : this.moduleFieldsMetatdata = response;
       } else if (loadMore) {
         this.fieldsPageIndex--;
@@ -196,7 +195,7 @@ export class ListFilterComponent implements OnInit {
   /**
    * Get filters fields metadata
    */
-   getfilterFieldsMetadata(fieldsList: string[]) {
+  getfilterFieldsMetadata(fieldsList: string[]) {
     if (!fieldsList || !fieldsList.length) {
       return;
     }
@@ -214,8 +213,8 @@ export class ListFilterComponent implements OnInit {
   applyFilter() {
     const filter = JSON.parse(JSON.stringify(this.activeFilter));
     const index = this.filtersList.filterCriteria.findIndex(fc => fc.fieldId === this.activeFilter.fieldId);
-    if(index !== -1) {
-      this.filtersList.filterCriteria[index] = filter ;
+    if (index !== -1) {
+      this.filtersList.filterCriteria[index] = filter;
     } else {
       this.filtersList.filterCriteria.push(filter);
       this.suggestedFilters.push(filter);
@@ -228,9 +227,9 @@ export class ListFilterComponent implements OnInit {
    * edit filter details on field click
    * @param fieldId clicked field id
    */
-   upsertFilter(fieldId) {
+  upsertFilter(fieldId) {
     const filter = this.filtersList.filterCriteria.find(f => f.fieldId === fieldId);
-    if(filter) {
+    if (filter) {
       this.activeFilter = JSON.parse(JSON.stringify(filter));
     } else {
       this.activeFilter = new FilterCriteria();
@@ -246,7 +245,7 @@ export class ListFilterComponent implements OnInit {
    * @returns field description
    */
   getFieldDescription(fieldId) {
-    const field = this.moduleFieldsMetatdata.find(f => f.fieldId === fieldId) ;
+    const field = this.moduleFieldsMetatdata.find(f => f.fieldId === fieldId);
     return field ? field.fieldDescri || 'Unknown' : 'Unknown';
   }
 
@@ -254,8 +253,8 @@ export class ListFilterComponent implements OnInit {
    * get field desc based on field id
    * @returns field description
    */
-   getFilterDescription(fieldId) {
-    const field = this.filterFieldsMetadata.find(f => f.fieldId === fieldId) ;
+  getFilterDescription(fieldId) {
+    const field = this.filterFieldsMetadata.find(f => f.fieldId === fieldId);
     return field ? field.fieldDescri || 'Unknown' : 'Unknown';
   }
 
@@ -266,14 +265,14 @@ export class ListFilterComponent implements OnInit {
    */
   getFilterValue(fieldId) {
     const criteria = this.filtersList.filterCriteria.find(field => field.fieldId === fieldId);
-    if( !criteria ) {
+    if (!criteria) {
       return;
     }
     const filtercontrolType = this.getFieldControlType(fieldId);
 
-    if([FieldControlType.TEXT, FieldControlType.EMAIL, FieldControlType.PASSWORD, FieldControlType.TEXT_AREA]
+    if ([FieldControlType.TEXT, FieldControlType.EMAIL, FieldControlType.PASSWORD, FieldControlType.TEXT_AREA]
       .includes(filtercontrolType)) {
-        return criteria.values ? criteria.values.toString() : '';
+      return criteria.values ? criteria.values.toString() : '';
     } else if (filtercontrolType === FieldControlType.NUMBER) {
       return `From ${this.activeFilter.startValue || '0'} to ${this.activeFilter.endValue || '0'}`;
     }
@@ -289,15 +288,15 @@ export class ListFilterComponent implements OnInit {
 
     const filtercontrolType = this.getFieldControlType(this.activeFilter.fieldId);
 
-    if([FieldControlType.TEXT, FieldControlType.EMAIL, FieldControlType.PASSWORD, FieldControlType.TEXT_AREA]
-        .includes(filtercontrolType)) {
-          this.activeFilter.values = [event];
-          return;
+    if ([FieldControlType.TEXT, FieldControlType.EMAIL, FieldControlType.PASSWORD, FieldControlType.TEXT_AREA]
+      .includes(filtercontrolType)) {
+      this.activeFilter.values = [event];
+      return;
     } else if (filtercontrolType === FieldControlType.NUMBER) {
       console.log(event, ' ', this.activeFilter.values);
-        this.activeFilter.startValue = event.min;
-        this.activeFilter.endValue = event.max;
-        return;
+      this.activeFilter.startValue = event.min;
+      this.activeFilter.endValue = event.max;
+      return;
     }
 
     this.activeFilter.values = [event];
@@ -308,7 +307,7 @@ export class ListFilterComponent implements OnInit {
    * Reset all filters
    */
   clearAllFilters() {
-    this.glocalDialogService.confirm({label:'Are you sure to reset all filters ?'}, (resp) => {
+    this.glocalDialogService.confirm({ label: 'Are you sure to reset all filters ?' }, (resp) => {
       if (resp && resp === 'yes') {
         this.filtersList.filterCriteria = [];
         this.activeFilter = null;
@@ -321,7 +320,7 @@ export class ListFilterComponent implements OnInit {
    * @param index filter index
    */
   removeFilter(index, fieldId) {
-    this.glocalDialogService.confirm({label:'Are you sure to remove this filter ?'}, (resp) => {
+    this.glocalDialogService.confirm({ label: 'Are you sure to remove this filter ?' }, (resp) => {
       if (resp && resp === 'yes') {
         if (this.activeFilter && this.activeFilter.fieldId === fieldId) {
           this.activeFilter = null;
@@ -340,25 +339,25 @@ export class ListFilterComponent implements OnInit {
    */
   getFieldControlType(fieldId) {
     const field = this.moduleFieldsMetatdata.find(f => f.fieldId === fieldId);
-    if(field) {
+    if (field) {
 
-      if(field.picklist === '0' && field.dataType === 'CHAR') {
+      if (field.picklist === '0' && field.dataType === 'CHAR') {
         return FieldControlType.TEXT;
       }
 
-      if(field.picklist === '0' && field.dataType === 'PASS') {
+      if (field.picklist === '0' && field.dataType === 'PASS') {
         return FieldControlType.PASSWORD;
       }
 
-      if(field.picklist === '0' && field.dataType === 'EMAIL') {
+      if (field.picklist === '0' && field.dataType === 'EMAIL') {
         return FieldControlType.EMAIL;
       }
 
-      if(field.picklist === '22' && field.dataType === 'CHAR') {
+      if (field.picklist === '22' && field.dataType === 'CHAR') {
         return FieldControlType.TEXT_AREA;
       }
 
-      if(field.picklist === '0' && field.dataType === 'NUMC') {
+      if (field.picklist === '0' && field.dataType === 'NUMC') {
         return FieldControlType.NUMBER;
       }
 
@@ -371,9 +370,9 @@ export class ListFilterComponent implements OnInit {
    * close sidesheet
    */
   close() {
-    if(this.filtersList.filterCriteria && this.filtersList.filterCriteria.length) {
+    if (this.filtersList.filterCriteria && this.filtersList.filterCriteria.length) {
       const filters = btoa(JSON.stringify(this.filtersList));
-      this.router.navigate([{ outlets: { sb: null } }], { queryParams: {f: filters} });
+      this.router.navigate([{ outlets: { sb: null } }], { queryParams: { f: filters } });
     } else {
       this.router.navigate([{ outlets: { sb: null } }], { queryParams: {} });
     }
