@@ -2,12 +2,12 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable, of, Subscription } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { PermissionOn } from '@models/collaborator';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SchemaDashboardPermission } from '@models/collaborator';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { GlobaldialogService } from '@services/globaldialog.service';
+import { TransientService } from 'mdo-ui-library';
 
 @Component({
   selector: 'pros-subscriber-side-sheet',
@@ -71,7 +71,7 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private schemaDetailsService: SchemaDetailsService,
     private sharedService: SharedServiceService,
-    private snackBar: MatSnackBar,
+    private toasterService: TransientService,
     private globalDialogService: GlobaldialogService) { }
 
   /**
@@ -143,7 +143,7 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
    */
   createUpdateSubscriber(subscriberInfo: SchemaDashboardPermission[]) {
     this.schemaDetailsService.createUpdateUserDetails(subscriberInfo).subscribe(res => {
-      this.snackBar.open('Subscriber saved successfully.', 'okay', { duration: 3000 });
+      this.toasterService.open('Subscriber saved successfully.', 'okay', { duration: 3000 });
       this.sharedService.setAfterSubscriberSave(res);
     }, error => {
       console.log('Error while saving subscriber', error.message)
