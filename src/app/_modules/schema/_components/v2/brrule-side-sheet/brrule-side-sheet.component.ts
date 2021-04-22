@@ -985,8 +985,8 @@ export class BrruleSideSheetComponent implements OnInit {
   /**
    * function to set form values from mat auto complete
    */
-  selectSingle(controlName: string, $event) {
-    this.form.controls[controlName].setValue($event.option.value);
+  selectSingle(form: FormGroup, controlName: string, $event) {
+    form.controls[controlName].setValue($event.option.value);
   }
 
   /**
@@ -1001,6 +1001,13 @@ export class BrruleSideSheetComponent implements OnInit {
    */
    displayRuleFn(value?: string) {
     return value ? this.businessRuleTypes.find(rule => rule.ruleType === value)?.ruleDesc : '';
+  }
+
+  /**
+   * function to display Regex name in mat auto complete
+   */
+   displayRegexFn(value?: string) {
+    return value ? this.preDefinedRegex.find(rule => rule.FUNC_TYPE === value)?.FUNC_NAME : '';
   }
 
   /**

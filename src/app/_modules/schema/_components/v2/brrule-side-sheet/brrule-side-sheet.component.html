@@ -26,7 +26,7 @@
                     <div class="mdo-field-input">
                             <input matInput i18n-placeholder="@@rule_type" placeholder="Rule type"
                             [matAutocomplete]="ruleTypeAuto"/>
-                        <mat-autocomplete class="mdo-autocomplete" [displayWith]="displayRuleFn.bind(this)" #ruleTypeAuto="matAutocomplete" (optionSelected)="selectSingle('rule_type', $event)">
+                        <mat-autocomplete class="mdo-autocomplete" [displayWith]="displayRuleFn.bind(this)" #ruleTypeAuto="matAutocomplete" (optionSelected)="selectSingle(form, 'rule_type', $event)">
                             <ng-container *ngFor="let rule of businessRuleTypes">
                                 <mat-option class="mdo-option" *ngIf="rule.isImplemented" [value]="rule.ruleType">
                                     {{rule.ruleDesc}}
@@ -56,7 +56,7 @@
                     <div class="mdo-field-input">
                             <input matInput i18n-placeholder="@@category" placeholder="Category"
                             [matAutocomplete]="categoryIDAuto"/>
-                        <mat-autocomplete class="mdo-autocomplete" [displayWith]="displayCategoryFn.bind(this)" #categoryIDAuto="matAutocomplete" (optionSelected)="selectSingle('categoryId', $event)">
+                        <mat-autocomplete class="mdo-autocomplete" [displayWith]="displayCategoryFn.bind(this)" #categoryIDAuto="matAutocomplete" (optionSelected)="selectSingle(form, 'categoryId', $event)">
                             <mat-option class="mdo-option" *ngFor="let category of categoryList" [value]="category.categoryId">
                                 {{category.categoryDesc}}
                             </mat-option>
@@ -144,20 +144,26 @@
                         Please select the fields
                     </mat-error>
                 </div>
-                
-                <div class="f-col mdo-form-field" *ngIf="isRegexType ">
-                    <mat-label>Standard function</mat-label>
-                    <mat-form-field appearance="outline">
-                        <mat-select formControlName='standard_function' (selectionChange)='setRegex($event)'>
-                            <mat-option *ngFor="let regex of preDefinedRegex" [value]="regex.FUNC_TYPE">
-                                {{regex.FUNC_NAME}}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
+                <div class="f-col mdo-field" *ngIf="isRegexType">
+                    <!-- label -->
+                    <mat-label class="mdo-field-label">Standard function</mat-label>
+                    <!-- input container -->
+                    <div class="mdo-field-input">
+                            <input matInput placeholder="Standard function"
+                            [matAutocomplete]="regexNameAuto"/>
+                        <mat-autocomplete class="mdo-autocomplete" [displayWith]="displayRegexFn.bind(this)" #regexNameAuto="matAutocomplete" (optionSelected)="selectSingle(form, 'standard_function', $event)">
+                            <ng-container *ngFor="let regex of preDefinedRegex">
+                                <mat-option class="mdo-option" [value]="regex.FUNC_TYPE">
+                                    {{regex.FUNC_NAME}}
+                                </mat-option>
+                            </ng-container>
+                        </mat-autocomplete>
+                    </div>
                     <mat-error
                         *ngIf="submitted && form.controls.standard_function.errors && form.controls.standard_function.errors.required">
                         Please select the standard function</mat-error>
                 </div>
+
                 <div class="f-col mdo-form-field" *ngIf="isRegexType">
                     <lib-input label="Regex value" formControlName="regex"
                         [hint]="submitted && form.controls.regex.errors && form.controls.regex.errors.required ? 'Please enter regex' : ''"
