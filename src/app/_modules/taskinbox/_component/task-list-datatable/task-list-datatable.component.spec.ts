@@ -8,12 +8,14 @@ import { SharedModule } from '@modules/shared/shared.module';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { TaskListService } from '@services/task-list.service';
 
 describe('TaskListDatatableComponent', () => {
   let component: TaskListDatatableComponent;
   let fixture: ComponentFixture<TaskListDatatableComponent>;
   let router: Router;
   let sharedServices: SharedServiceService;
+  let taskListService: TaskListService;
   let activatedRoute: ActivatedRoute;
   // const queryParams = { s: 'inbox', f: '' };
   let queryParams: Subject<Params>;
@@ -42,6 +44,7 @@ describe('TaskListDatatableComponent', () => {
     fixture = TestBed.createComponent(TaskListDatatableComponent);
     component = fixture.componentInstance;
     sharedServices = fixture.debugElement.injector.get(SharedServiceService);
+    taskListService = fixture.debugElement.injector.get(TaskListService);
     router = TestBed.inject(Router);
     // activatedRoute = TestBed.inject(ActivatedRoute);
     fixture.detectChanges();
@@ -56,6 +59,13 @@ describe('TaskListDatatableComponent', () => {
   it('should have queryParam', async () => {
     expect(activatedRoute.snapshot.queryParams.f).toEqual('test');
   });
+  it('should have queryParam', async(() => {
+    spyOn(component, 'saveTasklistVisitByUser');
+    component.ngOnInit();
+    activatedRoute.params.subscribe(resp => {
+      expect(component.saveTasklistVisitByUser).toHaveBeenCalled();
+    });
+  }));
   it('should have queryParam', fakeAsync(() => {
     // this calls ngOnInit and we subscribe
     spyOn(component, 'updateNodeChips');
@@ -287,6 +297,14 @@ describe('TaskListDatatableComponent', () => {
 
     expect(component.pageEvent.pageIndex).toBe(5);
   });
+  it('saveTasklistVisitByUser()', async(() => {
+    spyOn(taskListService, 'saveTasklistVisitByUser').and.returnValue(of({}));
+    component.saveTasklistVisitByUser('inbox');
+    expect(taskListService.saveTasklistVisitByUser).toHaveBeenCalled();
+    taskListService.saveTasklistVisitByUser('inbox').subscribe((actualResponse) => {
+      expect(actualResponse).toBeTruthy();
+    });
+  }));
 
   it('ngOnDestroy()', () => {
     spyOn(component.unsubscribeAll$, 'unsubscribe');

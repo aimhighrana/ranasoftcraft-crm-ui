@@ -183,3 +183,12 @@ export enum FieldControlType {
     PASSWORD = 'password',
     NUMBER = 'number'
 }
+
+export class InboxNodesCount {
+  hasNewFeeds: boolean;
+  id: string;
+  label: string;
+  new_feed_cnt: number;
+  rec_cnt: number;
+  childs?: InboxNodesCount[];
+}

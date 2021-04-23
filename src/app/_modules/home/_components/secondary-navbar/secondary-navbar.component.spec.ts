@@ -1,3 +1,4 @@
+import { TaskListService } from '@services/task-list.service';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { SecondaryNavbarComponent } from './secondary-navbar.component';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
@@ -27,6 +28,7 @@ describe('SecondaryNavbarComponent', () => {
   let userService: UserService;
   let reportService: ReportService;
   let sharedService: SharedServiceService;
+  let taskListService: TaskListService;
   let router: Router;
   const moduleList = [
     {
@@ -51,6 +53,7 @@ describe('SecondaryNavbarComponent', () => {
     userService = fixture.debugElement.injector.get(UserService);
     reportService = fixture.debugElement.injector.get(ReportService);
     sharedService = fixture.debugElement.injector.get(SharedServiceService);
+    taskListService = fixture.debugElement.injector.get(TaskListService);
     // fixture.detectChanges();
   });
 
@@ -334,10 +337,11 @@ describe('SecondaryNavbarComponent', () => {
     spyOn(component, 'toggleSideBar');
     spyOn(component, 'getSchemaList');
     spyOn(component, 'checkDescOnReload');
+    spyOn(component, 'getInboxNodesCount');
 
     component.ngOnInit();
     expect(component.ngOnInit).toBeTruthy();
-
+    expect(component.getInboxNodesCount).toHaveBeenCalled();
   });
 
   it('ngOnInit(), should set value for activemenuid', async () => {
@@ -473,4 +477,22 @@ describe('SecondaryNavbarComponent', () => {
     expect(component.updateTaskState('inbox')).toBeTruthy();
     expect(component.updateTaskState('inbox', '1test2')).toBeTruthy();
   });
+
+  it('getInboxNodesCount()', async(() => {
+    const nodeCount = [
+      {label:'Inbox',id:'inbox',rec_cnt:0,new_feed_cnt:0,hasNewFeeds:false},
+      {label:'In workflo',id:'workflow',rec_cnt:0,new_feed_cnt:0,hasNewFeeds:false},
+      {label:'Rejected',id:'rejected',rec_cnt:0,new_feed_cnt:0,hasNewFeeds:false},
+      {label:'Completed',id:'completed',rec_cnt:0,new_feed_cnt:0,hasNewFeeds:false},
+      {label:'Draft',id:'draft',rec_cnt:0,new_feed_cnt:0,hasNewFeeds:false},
+      {label:'Error',id:'error',rec_cnt:0,new_feed_cnt:0,hasNewFeeds:false}
+    ];
+    spyOn(taskListService, 'getInboxNodesCount').and.returnValue(of(nodeCount));
+    component.getInboxNodesCount();
+    expect(taskListService.getInboxNodesCount).toHaveBeenCalled();
+    taskListService.getInboxNodesCount().subscribe((actualResponse) => {
+      expect(actualResponse).toEqual(nodeCount);
+      expect(component.taskList).toEqual(nodeCount);
+    });
+  }));
 });
