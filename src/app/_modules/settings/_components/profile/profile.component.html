@@ -47,16 +47,16 @@
             </form>
         </div>
     </lib-tab>
-    <lib-tab label="Language & format">
+    <lib-tab label="Language & format" i18n-label="@@language_format">
         <form [formGroup]="languageSettingsForm">
             <!-------------Language--------------->
             <div class="f-col mdo-field">
                 <!-- label -->
-                <mat-label class="mdo-field-label">Language</mat-label>
+                <mat-label class="mdo-field-label" i18n="@@language">Language</mat-label>
                 <!-- input container -->
                 <div class="mdo-field-input">
-                    <input matInput placeholder="Type to search" formControlName="language" [matAutocomplete]="lang" (blur)="updateLanguageSettings('language')"/>
-                    <mat-icon matSuffix fontSet="mdo-icons">chevron-down</mat-icon>
+                    <input matInput placeholder="Type to search" i18n-placeholder="@@type_to_search" formControlName="language" [matAutocomplete]="lang" (blur)="updateLanguageSettings('language')"/>
+                    <mat-icon matSuffix fontSet="mdo-icons">{{ getDropdownPos(lang) }}</mat-icon>
                     <!-- autocomplete -->
                     <mat-autocomplete class="mdo-autocomplete" #lang>
                         <mat-option class="mdo-option" *ngFor="let opt of filteredLangList | async" [value]="opt">
@@ -69,11 +69,11 @@
             <!-------------Time Zone--------------->
             <div class="f-col mdo-field">
                 <!-- label -->
-                <mat-label class="mdo-field-label">Time Zone</mat-label>
+                <mat-label class="mdo-field-label" i18n="@@timezone">Time Zone</mat-label>
                 <!-- input container -->
                 <div class="mdo-field-input">
-                    <input matInput placeholder="Type to search" formControlName="timeZone" [matAutocomplete]="timeZone" (blur)="updateLanguageSettings('timeZone')"/>
-                    <mat-icon matSuffix fontSet="mdo-icons">chevron-down</mat-icon>
+                    <input matInput placeholder="Type to search" i18n-placeholder="@@type_to_search" formControlName="timeZone" [matAutocomplete]="timeZone" (blur)="updateLanguageSettings('timeZone')"/>
+                    <mat-icon matSuffix fontSet="mdo-icons">{{ getDropdownPos(timeZone) }}</mat-icon>
                     <!-- autocomplete -->
                     <mat-autocomplete class="mdo-autocomplete" #timeZone>
                         <mat-option class="mdo-option" *ngFor="let opt of filteredTimeZoneList | async" [value]="opt">
@@ -86,11 +86,11 @@
             <!-------------Date format--------------->
             <div class="f-col mdo-field">
                 <!-- label -->
-                <mat-label class="mdo-field-label">Date format</mat-label>
+                <mat-label class="mdo-field-label" i18n="date_format">Date format</mat-label>
                 <!-- input container -->
                 <div class="mdo-field-input">
-                    <input matInput placeholder="Type to search" formControlName="dateFormat" [matAutocomplete]="dateFormat" (blur)="updateLanguageSettings('dateFormat')"/>
-                    <mat-icon matSuffix fontSet="mdo-icons">chevron-down</mat-icon>
+                    <input matInput placeholder="Type to search" i18n-placeholder="@@type_to_search" formControlName="dateFormat" [matAutocomplete]="dateFormat" (blur)="updateLanguageSettings('dateFormat')"/>
+                    <mat-icon matSuffix fontSet="mdo-icons">{{ getDropdownPos(dateFormat) }}</mat-icon>
                     <!-- autocomplete -->
                     <mat-autocomplete class="mdo-autocomplete" #dateFormat>
                         <mat-option class="mdo-option" *ngFor="let opt of filteredDateFormatList | async" [value]="opt">
@@ -103,11 +103,11 @@
             <!-------------Time format--------------->
             <div class="f-col mdo-field">
                 <!-- label -->
-                <mat-label class="mdo-field-label">Time format</mat-label>
+                <mat-label class="mdo-field-label" i18n="time_format">Time format</mat-label>
                 <!-- input container -->
                 <div class="mdo-field-input">
-                    <input matInput placeholder="Type to search" formControlName="timeFormat" [matAutocomplete]="timeFormat" (blur)="updateLanguageSettings('timeFormat')"/>
-                    <mat-icon matSuffix fontSet="mdo-icons">chevron-down</mat-icon>
+                    <input matInput placeholder="Type to search" i18n-placeholder="@@type_to_search" formControlName="timeFormat" [matAutocomplete]="timeFormat" (blur)="updateLanguageSettings('timeFormat')"/>
+                    <mat-icon matSuffix fontSet="mdo-icons">{{ getDropdownPos(timeFormat) }}</mat-icon>
                     <!-- autocomplete -->
                     <mat-autocomplete class="mdo-autocomplete" #timeFormat>
                         <mat-option class="mdo-option" *ngFor="let opt of filteredTimeFormatList | async" [value]="opt">
@@ -120,11 +120,11 @@
             <!-------------Number format--------------->
             <div class="f-col mdo-field">
                 <!-- label -->
-                <mat-label class="mdo-field-label">Number format</mat-label>
+                <mat-label class="mdo-field-label" i18n="@@number_format">Number format</mat-label>
                 <!-- input container -->
                 <div class="mdo-field-input">
-                    <input matInput placeholder="Type to search" formControlName="numberFormat" [matAutocomplete]="numFormat" (blur)="updateLanguageSettings('numberFormat')"/>
-                    <mat-icon matSuffix fontSet="mdo-icons">chevron-down</mat-icon>
+                    <input matInput placeholder="Type to search" i18n-placeholder="@@type_to_search" formControlName="numberFormat" [matAutocomplete]="numFormat" (blur)="updateLanguageSettings('numberFormat')"/>
+                    <mat-icon matSuffix fontSet="mdo-icons">{{ getDropdownPos(numFormat) }}</mat-icon>
                     <!-- autocomplete -->
                     <mat-autocomplete class="mdo-autocomplete" #numFormat>
                         <mat-option class="mdo-option" *ngFor="let opt of filteredNumberFormatList | async" [value]="opt">

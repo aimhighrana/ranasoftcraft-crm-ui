@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { debounceTime, map, startWith } from 'rxjs/operators';
 import { UserService } from '@services/user/userservice.service';
 import { UserPersonalDetails, UserPreferenceDetails } from '@models/userdetails';
+import { MatAutocomplete } from '@angular/material/autocomplete';
 
 @Component({
   selector: 'pros-profile',
@@ -129,31 +130,31 @@ export class ProfileComponent implements OnInit {
    */
   setupFilteredList() {
     this.filteredLangList = this.languageSettingsForm.controls.language.valueChanges.pipe(
-      debounceTime(50),
+      debounceTime(100),
       startWith(''),
       map((num: string | null) => num ? this.filter(num, this.languagesList) : (this.languagesList ? this.languagesList.slice() : this.languagesList))
     );
 
     this.filteredTimeZoneList = this.languageSettingsForm.controls.timeZone.valueChanges.pipe(
-      debounceTime(50),
+      debounceTime(100),
       startWith(''),
       map((num: string | null) => num ? this.filter(num, this.timeZoneList) : (this.timeZoneList ? this.timeZoneList.slice() : this.timeZoneList))
     );
 
     this.filteredDateFormatList = this.languageSettingsForm.controls.dateFormat.valueChanges.pipe(
-      debounceTime(50),
+      debounceTime(100),
       startWith(''),
       map((num: string | null) => num ? this.filter(num, this.dateFormatList) : (this.dateFormatList ? this.dateFormatList.slice() : this.dateFormatList))
     );
 
     this.filteredTimeFormatList = this.languageSettingsForm.controls.timeFormat.valueChanges.pipe(
-      debounceTime(50),
+      debounceTime(100),
       startWith(''),
       map((num: string | null) => num ? this.filter(num, this.timeFormatList) : (this.timeFormatList ? this.timeFormatList.slice() : this.timeFormatList))
     );
 
     this.filteredNumberFormatList = this.languageSettingsForm.controls.numberFormat.valueChanges.pipe(
-      debounceTime(50),
+      debounceTime(100),
       startWith(''),
       map((num: string | null) => num ? this.filter(num, this.numberFormatList) : (this.numberFormatList ? this.numberFormatList.slice() : this.numberFormatList))
     );
@@ -166,7 +167,9 @@ export class ProfileComponent implements OnInit {
    */
   filter(value: string, list): string[] {
     const filterValue = value.toLowerCase();
-    return list.filter(num => num.toLowerCase().indexOf(filterValue) === 0);
+    if (list) {
+      return list.filter(num => num.toLowerCase().indexOf(filterValue) === 0);
+    }
   }
 
   /**
@@ -303,5 +306,23 @@ export class ProfileComponent implements OnInit {
    */
   updateLanguageSettings(field) {
     console.log(this.languageSettingsForm.controls[field].value);
+  }
+
+  /**
+   *
+   * @param el mat auto complete element
+   * @returns icon name
+   */
+  getDropdownPos(el: MatAutocomplete) {
+    let pos = 'chevron-down';
+    try {
+      if (el && el.isOpen) {
+        pos = 'chevron-up';
+      }
+    } catch (e) {
+      console.log(e)
+    }
+
+    return pos;
   }
 }
