@@ -623,21 +623,21 @@ describe('SchemaInfoComponent', () => {
 
    });
 
-   it('should updateBrOrder', () => {
+  //  it('should updateBrOrder', () => {
 
-    spyOn(schemaService, 'updateBrMap').and.returnValues(of(false), of(true));
-    spyOn(component, 'getBusinessRuleList');
+  //   spyOn(schemaService, 'updateBrMap').and.returnValues(of(false), of(true));
+  //   spyOn(component, 'getBusinessRuleList');
 
-    let br = {brIdStr: '123', brWeightage: '20'} as CoreSchemaBrInfo;
-    component.updateBrOrder(null, 2);
-    component.updateBrOrder(br, 2);
-    component.updateBrOrder(br, 2);
-    expect(component.getBusinessRuleList).toHaveBeenCalled();
-    br = {brIdStr: '123', brWeightage: '20', status: 'test'} as CoreSchemaBrInfo;
-    component.updateBrOrder(br, 2);
-    expect(component.getBusinessRuleList).toHaveBeenCalled();
+  //   let br = {brIdStr: '123', brWeightage: '20'} as CoreSchemaBrInfo;
+  //   component.updateBrOrder(null, 2);
+  //   component.updateBrOrder(br, 2);
+  //   component.updateBrOrder(br, 2);
+  //   expect(component.getBusinessRuleList).toHaveBeenCalled();
+  //   br = {brIdStr: '123', brWeightage: '20', status: 'test'} as CoreSchemaBrInfo;
+  //   component.updateBrOrder(br, 2);
+  //   expect(component.getBusinessRuleList).toHaveBeenCalled();
 
-   });
+  //  });
 
    it('should get current br status', () => {
     let status = component.getCurrentBrStatus('');
@@ -646,15 +646,15 @@ describe('SchemaInfoComponent', () => {
     expect(status).toEqual('TEST');
    });
 
-   it('should get Business Rules', () => {
-    component.businessRuleData = [{
-      dep_rules: [{}, {}]
-    }, {
-      dep_rules: [{}, {}, {}]
-    }] as Array<CoreSchemaBrInfo>;
-    const length = component.getBusinessRulesLength;
-    expect(length).toEqual(7);
-   });
+  //  it('should get Business Rules', () => {
+  //   component.businessRuleData = [{
+  //     dep_rules: [{}, {}]
+  //   }, {
+  //     dep_rules: [{}, {}, {}]
+  //   }] as Array<CoreSchemaBrInfo>;
+  //   const length = component.getBusinessRulesLength;
+  //   expect(length).toEqual(7);
+  //  });
 
    it('should open deleteBr confirm', () => {
     component.businessRuleData = [
