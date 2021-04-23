@@ -20,4 +20,8 @@ export class EndpointsProcessService {
   public saveOrUpdateTasklistHeadersUrl(nodeId: string): string {
     return `${this.apiUrl}/${nodeId}/field/save-update`;
   }
+
+  public getHeadersForNodeUrl(nodeId: string): string {
+    return `${this.apiUrl}/${nodeId}/field/list`;
+  }
 }

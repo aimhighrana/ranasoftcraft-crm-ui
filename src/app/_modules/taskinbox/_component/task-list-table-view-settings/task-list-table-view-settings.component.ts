@@ -48,7 +48,13 @@ export class TaskListTableViewSettingsComponent implements OnInit, OnDestroy {
 
   unsubscribeAll$: Subject<boolean> = new Subject<boolean>();
 
-  constructor(private route: ActivatedRoute, private router: Router, private sharedService: SharedServiceService, private taskListService: TaskListService, private matSnackBar: MatSnackBar) {}
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private sharedService: SharedServiceService,
+    private taskListService: TaskListService,
+    private matSnackBar: MatSnackBar
+  ) {}
 
   ngOnInit(): void {
     this.route.params.subscribe((param) => {
@@ -65,12 +71,19 @@ export class TaskListTableViewSettingsComponent implements OnInit, OnDestroy {
   }
 
   getTableViewDetails() {
-    this.sharedService
-      .gettaskinboxViewDetailsData()
-      .pipe(takeUntil(this.unsubscribeAll$))
-      .subscribe((resp) => {
-        if (resp && resp.node === this.node) {
-          this.viewDetails = sortBy(resp.viewDetails, 'fieldOrder');
+    this.taskListService
+      .getHeadersForNode(this.node)
+      .pipe(take(1))
+      .subscribe((resp: { fldId: string; order: number }[]) => {
+        if (resp && resp.length > 0) {
+          const nodeFields = NODEFIELDS[this.node];
+          const nodeColumns = resp.map((d) => {
+            return {
+              ...d,
+              fldDesc: nodeFields.find((n) => n.fldId === d.fldId) ? nodeFields.find((n) => n.fldId === d.fldId).fldDesc : '',
+            };
+          });
+          this.viewDetails = sortBy(nodeColumns, 'order');
           this.viewDetailsObs.next(this.viewDetails);
         } else {
           this.viewDetails = this.metadataFldLst.map((d) => {
@@ -83,6 +96,24 @@ export class TaskListTableViewSettingsComponent implements OnInit, OnDestroy {
           this.viewDetailsObs.next(this.viewDetails);
         }
       });
+    // this.sharedService
+    //   .gettaskinboxViewDetailsData()
+    //   .pipe(takeUntil(this.unsubscribeAll$))
+    //   .subscribe((resp) => {
+    //     if (resp && resp.node === this.node) {
+    //       this.viewDetails = sortBy(resp.viewDetails, 'fieldOrder');
+    //       this.viewDetailsObs.next(this.viewDetails);
+    //     } else {
+    //       this.viewDetails = this.metadataFldLst.map((d) => {
+    //         return {
+    //           fldId: d.fldId,
+    //           fldDesc: d.fldDesc,
+    //           order: '0',
+    //         };
+    //       });
+    //       this.viewDetailsObs.next(this.viewDetails);
+    //     }
+    //   });
   }
 
   getFldMetadata() {
@@ -163,29 +194,32 @@ export class TaskListTableViewSettingsComponent implements OnInit, OnDestroy {
       node: this.node,
       viewDetails: this.viewDetails,
     });
-    const fieldOrdersToSave = this.viewDetails.map(d=> {
+    const fieldOrdersToSave = this.viewDetails.map((d) => {
       return {
         fldId: d.fldId,
-        order: +d.order
+        order: +d.order,
       };
     });
-    this.taskListService.saveOrUpdateTasklistHeaders(this.node, fieldOrdersToSave).pipe(take(1)).subscribe((resp: {
-      acknowledge: boolean,
-      errorMsg: string
-    }) => {
-      if(resp.acknowledge) {
-        this.close();
-      } else {
-        this.matSnackBar.open('Something went wrong.', 'Okay', {
-          duration: 2000
-        });
-      }
-    }, err => {
-      console.log(err);
-      this.matSnackBar.open('Something went wrong.', 'Okay', {
-        duration: 2000
-      });
-    });
+    this.taskListService
+      .saveOrUpdateTasklistHeaders(this.node, fieldOrdersToSave)
+      .pipe(take(1))
+      .subscribe(
+        (resp: { acknowledge: boolean; errorMsg: string }) => {
+          if (resp.acknowledge) {
+            this.close();
+          } else {
+            this.matSnackBar.open('Something went wrong.', 'Okay', {
+              duration: 2000,
+            });
+          }
+        },
+        (err) => {
+          console.log(err);
+          this.matSnackBar.open('Something went wrong.', 'Okay', {
+            duration: 2000,
+          });
+        }
+      );
   }
 
   /**
