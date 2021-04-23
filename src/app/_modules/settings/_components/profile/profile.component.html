@@ -3,6 +3,7 @@
 <lib-tab-group disableRipple="true">
     <lib-tab label="Personal Details" i18n-label="@@personal_details">
         <div class="row-spacer"></div>
+        <lib-banner *ngIf="formErrMsg" [text]="formErrMsg" status="error"></lib-banner>
         <div class="f-row tabs-content">
             <div class="avatar">
                 <lib-avatar size="large"></lib-avatar>
@@ -39,7 +40,7 @@
                         [hasError]="settingsForm.controls.secondaryEmail.touched && settingsForm.controls.secondaryEmail.errors && settingsForm.controls.secondaryEmail.errors.email">
                     </lib-input>
                     <lib-button-group>
-                        <lib-button type="minor" i18n="@@change_password">Change Password</lib-button>
+                        <lib-button type="minor" i18n="@@change_password" (afterClick)="openChangePasswordDialog()">Change Password</lib-button>
                         <lib-button type="minor" i18n="@@digital_signature">Digital Signature</lib-button>
                     </lib-button-group>
                 </div>

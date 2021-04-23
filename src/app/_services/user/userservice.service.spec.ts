@@ -3,17 +3,20 @@ import { TestBed, async } from '@angular/core/testing';
 import { UserService } from './userservice.service';
 import { HttpTestingController, HttpClientTestingModule } from '@angular/common/http/testing';
 import { Any2tsService } from '../any2ts.service';
-import { Userdetails } from 'src/app/_models/userdetails';
+import { Userdetails, UserPersonalDetails } from 'src/app/_models/userdetails';
 import { EndpointsAuthService } from '@services/_endpoints/endpoints-auth.service';
+import { EndpointsProfileService } from '@services/_endpoints/endpoints-profile.service';
 
 describe('UserService', () => {
   let userService: UserService;
   let any2tsServiceSpy: jasmine.SpyObj<Any2tsService>;
   let endpointServiceSpy: jasmine.SpyObj<EndpointsAuthService>;
+  let profileEndpointServiceSpy: jasmine.SpyObj<EndpointsProfileService>;
   let httpTestingController: HttpTestingController;
   beforeEach(async(() => {
     const any2tsSpy = jasmine.createSpyObj('Any2tsService', ['any2UserDetails']);
     const endpointSpy = jasmine.createSpyObj('EndpointsAuthService ', ['getUserDetailsUrl']);
+    const profileEndpointSpy = jasmine.createSpyObj('EndpointsProfileService', ['getPersonalDetails', 'updatePersonalDetails'])
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule
@@ -21,12 +24,14 @@ describe('UserService', () => {
       providers: [
         UserService,
         { provide: EndpointsAuthService, useValue: endpointSpy },
+        { provide: EndpointsProfileService, useValue: profileEndpointSpy },
         { provide: Any2tsService, useValue: any2tsSpy }
       ]
     }).compileComponents();
     userService = TestBed.inject(UserService);
     any2tsServiceSpy = TestBed.inject(Any2tsService) as jasmine.SpyObj<Any2tsService>;
     endpointServiceSpy = TestBed.inject(EndpointsAuthService ) as jasmine.SpyObj<EndpointsAuthService >;
+    profileEndpointServiceSpy = TestBed.inject(EndpointsProfileService) as jasmine.SpyObj<EndpointsProfileService>;
     httpTestingController = TestBed.inject(HttpTestingController);
   }));
 
@@ -63,6 +68,56 @@ describe('UserService', () => {
     const mockRequest = httpTestingController.expectOne(apiUrl);
     mockRequest.flush(mockData);
 
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('getUserPersonalDetails()', async(() => {
+
+    const url = `getPersonalDetails`;
+    // mock url
+    profileEndpointServiceSpy.getPersonalDetails.and.returnValue(url);
+
+    const response: UserPersonalDetails = new UserPersonalDetails();
+
+    // actual service call
+    userService.getUserPersonalDetails()
+      .subscribe(actualResponse => {
+          expect(actualResponse).toEqual(response);
+    });
+    // mock http call
+    const mockRequst = httpTestingController.expectOne(`${url}`);
+    expect(mockRequst.request.method).toEqual('GET');
+    expect(mockRequst.request.responseType).toEqual('json');
+    mockRequst.flush(response);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('updateUserPersonalDetails()', async(() => {
+
+    const url = `updatePersonalDetails`;
+    // mock url
+    profileEndpointServiceSpy.updatePersonalDetails.and.returnValue(url);
+
+    const personalDetails: UserPersonalDetails = new UserPersonalDetails();
+
+    const response = {
+      acknowledge: true,
+      errorMsg: null,
+      userName: ''
+    }
+
+    // actual service call
+    userService.updateUserPersonalDetails(personalDetails)
+      .subscribe(actualResponse => {
+          expect(actualResponse).toEqual(response);
+    });
+    // mock http call
+    const mockRequst = httpTestingController.expectOne(`${url}`);
+    expect(mockRequst.request.method).toEqual('POST');
+    expect(mockRequst.request.responseType).toEqual('json');
+    mockRequst.flush(response);
     // verify http
     httpTestingController.verify();
   }));

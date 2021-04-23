@@ -722,6 +722,10 @@
           <context context-type="linenumber">16</context>
         </context-group>
         <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\settings\_components\profile\change-password-dialog\change-password-dialog.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+        <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\save-variant-dialog\save-variant-dialog.component.html</context>
           <context context-type="linenumber">18</context>
         </context-group>
@@ -1507,7 +1511,7 @@
         <target>Nome do usuário</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">12</context>
+          <context context-type="linenumber">13</context>
         </context-group>
       </trans-unit>
       <trans-unit id="full_name" datatype="html">
@@ -1515,7 +1519,7 @@
         <target>Nome completo</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">13</context>
+          <context context-type="linenumber">14</context>
         </context-group>
       </trans-unit>
       <trans-unit id="preferred_name" datatype="html">
@@ -1523,7 +1527,7 @@
         <target>nome preferido</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">17</context>
+          <context context-type="linenumber">18</context>
         </context-group>
       </trans-unit>
       <trans-unit id="phone_number" datatype="html">
@@ -1531,7 +1535,7 @@
         <target>Número de telefone</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">21</context>
+          <context context-type="linenumber">22</context>
         </context-group>
       </trans-unit>
       <trans-unit id="primary_email_address" datatype="html">
@@ -1539,7 +1543,7 @@
         <target>Endereço de email primário</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">25</context>
+          <context context-type="linenumber">26</context>
         </context-group>
       </trans-unit>
       <trans-unit id="secondary_email_address" datatype="html">
@@ -1547,7 +1551,7 @@
         <target>Endereço de e-mail secundário</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">32</context>
+          <context context-type="linenumber">33</context>
         </context-group>
       </trans-unit>
       <trans-unit id="change_password" datatype="html">
@@ -1555,7 +1559,11 @@
         <target>Alterar a senha</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">37</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\settings\_components\profile\change-password-dialog\change-password-dialog.component.html</context>
+          <context context-type="linenumber">2</context>
         </context-group>
       </trans-unit>
       <trans-unit id="digital_signature" datatype="html">
@@ -1563,39 +1571,39 @@
         <target>Assinatura digital</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">38</context>
+          <context context-type="linenumber">39</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="please_enter_valid_email" datatype="html">
-        <source>Please Enter Valid Email</source>
-        <target>Por favor, indique Válido Email</target>
+      <trans-unit id="ok" datatype="html">
+        <source>OK</source>
+        <target>OK</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">30</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">34</context>
+          <context context-type="sourcefile">src\app\_modules\settings\_components\profile\change-password-dialog\change-password-dialog.component.html</context>
+          <context context-type="linenumber">17</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="this_is_a_required_field" datatype="html">
-        <source>This is a required field</source>
-        <target>Este é um campo obrigatório</target>
+      <trans-unit id="current_password" datatype="html">
+        <source>Current password</source>
+        <target>Senha atual</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">15</context>
+          <context context-type="sourcefile">src\app\_modules\settings\_components\profile\change-password-dialog\change-password-dialog.component.html</context>
+          <context context-type="linenumber">9</context>
         </context-group>
+      </trans-unit>
+      <trans-unit id="new_password" datatype="html">
+        <source>New password</source>
+        <target>Nova Senha</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">19</context>
+          <context context-type="sourcefile">src\app\_modules\settings\_components\profile\change-password-dialog\change-password-dialog.component.html</context>
+          <context context-type="linenumber">10</context>
         </context-group>
+      </trans-unit>
+      <trans-unit id="confirm_new_password" datatype="html">
+        <source>Confirm new password</source>
+        <target>Confirme a nova senha</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">23</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">27</context>
+          <context context-type="sourcefile">src\app\_modules\settings\_components\profile\change-password-dialog\change-password-dialog.component.html</context>
+          <context context-type="linenumber">11</context>
         </context-group>
       </trans-unit>
       <trans-unit id="text" datatype="html">
