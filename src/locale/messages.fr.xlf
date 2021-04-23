@@ -1679,7 +1679,7 @@
         <target>Langue</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">55</context>
+          <context context-type="linenumber">56</context>
         </context-group>
       </trans-unit>
       <trans-unit id="type_to_search" datatype="html">
@@ -1687,23 +1687,23 @@
         <target>Tapez pour rechercher</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">58</context>
+          <context context-type="linenumber">59</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">75</context>
+          <context context-type="linenumber">76</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">92</context>
+          <context context-type="linenumber">93</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">109</context>
+          <context context-type="linenumber">110</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">126</context>
+          <context context-type="linenumber">127</context>
         </context-group>
       </trans-unit>
       <trans-unit id="timezone" datatype="html">
@@ -1711,7 +1711,7 @@
         <target>Fuseau horaire</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">72</context>
+          <context context-type="linenumber">73</context>
         </context-group>
       </trans-unit>
       <trans-unit id="date_format" datatype="html">
@@ -1719,7 +1719,7 @@
         <target>Format de date</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">89</context>
+          <context context-type="linenumber">90</context>
         </context-group>
       </trans-unit>
       <trans-unit id="time_format" datatype="html">
@@ -1727,7 +1727,7 @@
         <target>Format de l'heure</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">106</context>
+          <context context-type="linenumber">107</context>
         </context-group>
       </trans-unit>
       <trans-unit id="number_format" datatype="html">
@@ -1735,7 +1735,7 @@
         <target>Format de nombre</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">123</context>
+          <context context-type="linenumber">124</context>
         </context-group>
       </trans-unit>
     </body>

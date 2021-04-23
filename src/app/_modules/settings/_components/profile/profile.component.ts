@@ -48,6 +48,9 @@ export class ProfileComponent implements OnInit {
   // stores error message on personal details update
   formErrMsg;
 
+  // stores error message on language settings update
+  langFormErrMsg;
+
   constructor(private dialog: MatDialog, private libToast: TransientService, private userService: UserService) { }
 
   ngOnInit(): void {
@@ -98,7 +101,7 @@ export class ProfileComponent implements OnInit {
         this.languageSettingsForm.patchValue({
           language: data.lang || '',
           timeZone: data.timezone || '',
-          dateFormat: data.dformat || '',
+          dateFormat: data.dFormat || '',
           timeFormat: data.tformat || '',
           numberFormat: data.nformat || ''
         });
@@ -211,9 +214,7 @@ export class ProfileComponent implements OnInit {
     personalDetails.semail = this.settingsForm.controls.secondaryEmail.value;
 
     this.userService.updateUserPersonalDetails(personalDetails).subscribe((res) => {
-      if (res && res.errorMsg) {
-        this.formErrMsg = res.errorMsg;
-      }
+      this.formErrMsg = (res && res.errorMsg) ? res.errorMsg : '';
     });
 
     return true;
@@ -305,7 +306,33 @@ export class ProfileComponent implements OnInit {
    * @param field form field name
    */
   updateLanguageSettings(field) {
-    console.log(this.languageSettingsForm.controls[field].value);
+    const val = this.languageSettingsForm.controls[field].value;
+    if (field === 'language') {
+      this.makeLangSettingsUpdateCall(val, 'lang', this.languagesList);
+    } else if (field === 'dateFormat') {
+      this.makeLangSettingsUpdateCall(val, 'dFormat', this.dateFormatList);
+    } else if (field === 'numberFormat') {
+      this.makeLangSettingsUpdateCall(val, 'nformat', this.numberFormatList);
+    } else if (field === 'timeZone') {
+      this.makeLangSettingsUpdateCall(val, 'timezone', this.timeZoneList);
+    } else if (field === 'timeFormat') {
+      this.makeLangSettingsUpdateCall(val, 'tformat', this.timeFormatList);
+    }
+  }
+
+  /**
+   * should make http call to update language settings
+   * @param val updated value
+   * @param langProperty property name as on http response w.r.t updated field
+   * @param list list corresponding to updated field
+   */
+  makeLangSettingsUpdateCall(val, langProperty, list) {
+    if (val && (this.currentUserPreferences[langProperty] !== val) && list.includes(val)) {
+      this.currentUserPreferences[langProperty] = val;
+      this.userService.updateUserPreferenceDetails(this.currentUserPreferences).subscribe((res) => {
+        this.langFormErrMsg = (res && res.errorMsg) ? res.errorMsg : '';
+      });
+    }
   }
 
   /**

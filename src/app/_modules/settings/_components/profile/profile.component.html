@@ -48,6 +48,7 @@
         </div>
     </lib-tab>
     <lib-tab label="Language & format" i18n-label="@@language_format">
+        <lib-banner *ngIf="langFormErrMsg" [text]="langFormErrMsg" status="error"></lib-banner>
         <form [formGroup]="languageSettingsForm">
             <!-------------Language--------------->
             <div class="f-col mdo-field">

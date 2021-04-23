@@ -123,4 +123,35 @@ describe('ProfileComponent', () => {
     const list = ['test1', 'test2', 'test3'];
     expect(component.filter('test1', list)).toEqual(['test1']);
   }));
+
+  it('makeLangSettingsUpdateCall(), should make http call to update language settings', async(() => {
+    const response = {
+      acknowledge: true,
+      errorMsg: 'Error',
+      userName: 'Test Name'
+    };
+    spyOn(userService, 'updateUserPreferenceDetails').and.returnValues(of(response), throwError({message: 'Something went wrong'}));
+
+    component.currentUserPreferences = new UserPreferenceDetails();
+    component.timeZoneList = ['IST'];
+    component.makeLangSettingsUpdateCall('IST', 'timezone', component.timeZoneList);
+
+    expect(component.currentUserPreferences.timezone).toEqual('IST');
+  }));
+
+  it('makeLangSettingsUpdateCall(), should make http call to update language settings', async(() => {
+    const response = {
+      acknowledge: true,
+      errorMsg: null,
+      userName: 'Test Name'
+    };
+    spyOn(userService, 'updateUserPreferenceDetails').and.returnValues(of(response), throwError({message: 'Something went wrong'}));
+
+    component.currentUserPreferences = new UserPreferenceDetails();
+    component.timeZoneList = ['IST'];
+    component.makeLangSettingsUpdateCall('UTC', 'timezone', component.timeZoneList);
+
+    component.makeLangSettingsUpdateCall('IST', 'timezone', component.timeZoneList);
+    expect(component.langFormErrMsg).toEqual('');
+  }));
 });

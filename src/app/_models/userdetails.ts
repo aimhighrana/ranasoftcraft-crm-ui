@@ -44,7 +44,7 @@ export class UserPersonalDetails {
 }
 
 export class UserPreferenceDetails {
-    dformat: string;
+    dFormat: string;
     lang: string;
     nformat: string;
     profileKey: UserPreferenceDetailsProfileKey;
