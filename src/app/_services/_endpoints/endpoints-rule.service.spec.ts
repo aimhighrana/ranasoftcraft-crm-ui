@@ -442,12 +442,12 @@ describe('EndpointsRuleService', () => {
 
   it('duplicacyGroupsListUrl(), duplicacyGroupsListUrl', async(() => {
     const serObj =new EndpointsRuleService();
-    expect(serObj.duplicacyGroupsListUrl()).toContain('/duplicate/getgroupId');
+    expect(serObj.duplicacyGroupsListUrl()).toContain('/schema/actions/duplicate/getgroupId');
   }));
 
   it('catalogCheckRecordsUrl(), catalogCheckRecordsUrl', async(() => {
     const serObj =new EndpointsRuleService();
-    expect(serObj.catalogCheckRecordsUrl()).toContain('/duplicate/getContent');
+    expect(serObj.catalogCheckRecordsUrl()).toContain('/schema/actions/duplicate/getContent');
   }));
 
   it('getCheckDataUrl(), should return endpoint for getting check data for schema', async(() => {
@@ -547,12 +547,12 @@ describe('EndpointsRuleService', () => {
 
   it('approveDuplicacyCorrectionUrl(),should return approveDuplicacyCorrectionUrl url', async(() => {
     const serObj =new EndpointsRuleService();
-    expect(serObj.approveDuplicacyCorrectionUrl('schema','run','user')).toContain('approveDuplicateRecords/schema/run?userName=user');
+    expect(serObj.approveDuplicacyCorrectionUrl('schema','run','user')).toContain('/schema/actions/approveDuplicateRecords/schema/run?userName=user');
   }));
 
   it('rejectDuplicacyCorrectionUrl(),should return rejectDuplicacyCorrectionUrl url', async(() => {
     const serObj =new EndpointsRuleService();
-    expect(serObj.rejectDuplicacyCorrectionUrl('schema','run','user')).toContain('rejectDuplicateRecords/schema/run?userName=user');
+    expect(serObj.rejectDuplicacyCorrectionUrl('schema','run','user')).toContain('schema/actions/rejectDuplicateRecords/schema/run?userName=user');
   }));
 
 
