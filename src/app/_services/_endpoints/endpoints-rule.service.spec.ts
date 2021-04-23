@@ -267,7 +267,7 @@ describe('EndpointsRuleService', () => {
     const runNow = true;
     const variantId = '0';
     const fileSno = '7635237862234';
-    expect(serObj.saveNewSchemaUrl(objectId, runNow, variantId, fileSno)).toContain(`schema/metadata/create-schema?objectId=${objectId}&runNow=${runNow}&variantId=${variantId}&fileSno=${fileSno}`);
+    expect(serObj.saveNewSchemaUrl(objectId, runNow, variantId, fileSno)).toContain(`schemamodule/create-schema?objectId=${objectId}&runNow=${runNow}&variantId=${variantId}&fileSno=${fileSno}`);
   }));
 
   it('getSchemaInfoByModuleIdUrl(),should return getSchemaInfoByModuleIdUrl url', async(() => {
@@ -457,7 +457,7 @@ describe('EndpointsRuleService', () => {
 
   it('getAllBusinessRulesUrl(), should return all business rule exist for the particular plantcode', async(() => {
     const serObj =new EndpointsRuleService();
-    expect(serObj.getAllBusinessRulesUrl()).toContain('schema/get-all-business-rules/');
+    expect(serObj.getAllBusinessRulesUrl()).toContain('schema/metadata/get-all-business-rules');
   }));
 
   it('createCheckDataBusinessRuleUrl(), creating business rules at the time of check data..', async(() => {
