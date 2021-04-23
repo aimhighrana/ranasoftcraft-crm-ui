@@ -56,3 +56,9 @@ export class UserPreferenceDetailsProfileKey {
     tenantId: string;
     userName: string;
 }
+
+export class UserPasswordDetails {
+    confirmPassword: string;
+    newPassword: string;
+    oldPassword: string;
+}

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { TokenPayLoadData, Userdetails, UserPersonalDetails, UserPreferenceDetails } from 'src/app/_models/userdetails';
+import { TokenPayLoadData, Userdetails, UserPasswordDetails, UserPersonalDetails, UserPreferenceDetails } from 'src/app/_models/userdetails';
 import * as jwt_decode from 'jwt-decode';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
@@ -77,5 +77,9 @@ export class UserService {
 
   public getNumberFormatList(): Observable<any> {
     return this.http.get<any>(this.profileEndpointService.getNumberFormatList());
+  }
+
+  public updatePassword(passwordDetails: UserPasswordDetails): Observable<any> {
+    return this.http.post<any>(this.endpointService.updatePassword(), passwordDetails);
   }
 }

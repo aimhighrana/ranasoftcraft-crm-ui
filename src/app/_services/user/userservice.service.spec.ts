@@ -3,7 +3,7 @@ import { TestBed, async } from '@angular/core/testing';
 import { UserService } from './userservice.service';
 import { HttpTestingController, HttpClientTestingModule } from '@angular/common/http/testing';
 import { Any2tsService } from '../any2ts.service';
-import { Userdetails, UserPersonalDetails, UserPreferenceDetails } from 'src/app/_models/userdetails';
+import { Userdetails, UserPasswordDetails, UserPersonalDetails, UserPreferenceDetails } from 'src/app/_models/userdetails';
 import { EndpointsAuthService } from '@services/_endpoints/endpoints-auth.service';
 import { EndpointsProfileService } from '@services/_endpoints/endpoints-profile.service';
 
@@ -15,7 +15,7 @@ describe('UserService', () => {
   let httpTestingController: HttpTestingController;
   beforeEach(async(() => {
     const any2tsSpy = jasmine.createSpyObj('Any2tsService', ['any2UserDetails']);
-    const endpointSpy = jasmine.createSpyObj('EndpointsAuthService ', ['getUserDetailsUrl']);
+    const endpointSpy = jasmine.createSpyObj('EndpointsAuthService ', ['getUserDetailsUrl', 'updatePassword']);
     const profileEndpointSpy = jasmine.createSpyObj('EndpointsProfileService', ['getPersonalDetails', 'updatePersonalDetails', 'getUserPreferenceDetails', 'updateUserPreferenceDetails', 'getAllLanguagesList', 'getDateFormatList', 'getNumberFormatList'])
     TestBed.configureTestingModule({
       imports: [
@@ -232,6 +232,34 @@ describe('UserService', () => {
     // mock http call
     const mockRequst = httpTestingController.expectOne(`${url}`);
     expect(mockRequst.request.method).toEqual('GET');
+    expect(mockRequst.request.responseType).toEqual('json');
+    mockRequst.flush(response);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('updatePassword()', async(() => {
+
+    const url = `updatePassword`;
+    // mock url
+    endpointServiceSpy.updatePassword.and.returnValue(url);
+
+    const passwordDetails: UserPasswordDetails = new UserPasswordDetails();
+
+    const response = {
+      acknowledge: true,
+      errorMsg: null,
+      userName: ''
+    }
+
+    // actual service call
+    userService.updatePassword(passwordDetails)
+      .subscribe(actualResponse => {
+          expect(actualResponse).toEqual(response);
+    });
+    // mock http call
+    const mockRequst = httpTestingController.expectOne(`${url}`);
+    expect(mockRequst.request.method).toEqual('POST');
     expect(mockRequst.request.responseType).toEqual('json');
     mockRequst.flush(response);
     // verify http
