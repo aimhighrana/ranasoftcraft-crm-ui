@@ -1137,6 +1137,14 @@ export class UploadDatasetComponent implements OnInit, AfterViewInit {
   }
 
   /**
+   * function to format slider thumbs label.
+   * @param percent percent
+   */
+   rangeSliderLabelFormat(percent) {
+    return `${percent}%`;
+  }
+
+  /**
    * function to set the value of scheduling
    * @param runId the value of scheduling
    */

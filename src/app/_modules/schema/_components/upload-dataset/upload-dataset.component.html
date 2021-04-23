@@ -11,10 +11,7 @@
     <mat-progress-bar mode="determinate" [value]="progressBar"></mat-progress-bar>
 
     <div class="row-spacer"></div>
-
-    <mat-card class="mat-elevation-z0 error-stackbar" *ngIf="uploadError.status">
-        {{uploadError.message}}
-    </mat-card>
+    <lib-banner *ngIf="uploadError.status" status="error" [text]="uploadError.message"></lib-banner>
 
     <mat-horizontal-stepper [@.disabled]="true" linear #stepper>
         <!-- Upload DataSet -->
@@ -71,11 +68,9 @@
         <mat-step>
             <ng-template matStepLabel></ng-template>
             <div class="f-col">
-                <pros-form-input [value]="requestForm.controls.objectDesc.value" [label]="'Module name'"
-                    [placeholder]="'Module name'" [control]="formField('objectDesc')"
-                    [hint]="!stepSubmitted || !requestForm.controls['objectDesc'].errors ? 'In MDO module is a dataset' : ''"
-                    [disabled]="requestForm.controls.objectId.value !== '' && requestForm.controls.objectId.value !== null">
-                </pros-form-input>
+                <lib-input label="Module name" [hasError]="stepSubmitted && requestForm.controls['objectDesc'].errors"
+            [hint]="!stepSubmitted || !requestForm.controls['objectDesc'].errors ? 'In MDO module is a dataset' : ''"
+            [formControl]="formField('objectDesc')"></lib-input>
                 <mat-error *ngIf="stepSubmitted && requestForm.controls['objectDesc'].errors">
                     Module name is required
                 </mat-error>
@@ -95,10 +90,9 @@
                             <div class="f-row colunm-box">
                                 <div class="col col-x8">
                                     <div [style.display]="isEditable(data)? 'block': 'none'" (click)="onClick($event)">
-                                        <pros-form-input [placeholder]="'Enter a value'" [disabled]="false"
-                                            [value]="data.excelFld" [id]="data.mdoFldId"
-                                            (valueChange)="setFormValue($event, data.mdoFldId)">
-                                        </pros-form-input>
+                                        <lib-input placeholder="Enter a value"  [disabled]="false"
+                                        [value]="data.excelFld" [id]="data.mdoFldId"
+                                        (valueChange)="setFormValue($event, data.mdoFldId)"></lib-input>
                                         <mat-error *ngIf="headerForm.controls[data.mdoFldId].errors">
                                             This field is required
                                         </mat-error>
@@ -129,11 +123,10 @@
         <mat-step>
             <ng-template matStepLabel></ng-template>
             <div class="f-col">
-                <pros-form-input [value]="requestForm.get('core_schema').value.discription" [label]="'Schema name'"
-                    (emitBlurEvent)="setschemaName($event)"
-                    [hint]="!stepSubmitted || isSchemaSet(requestForm.get('core_schema').value) ? 'Schema is a collection of business rules' : ''"
-                    [disabled]="isdisabled(requestForm.controls.schemaId.value)">
-                </pros-form-input>
+                <lib-input [value]="requestForm.get('core_schema').value.discription" [label]="'Schema name'"
+                (valueChange)="setschemaName($event)"
+                [hint]="!stepSubmitted || isSchemaSet(requestForm.get('core_schema').value) ? 'Schema is a collection of business rules' : ''"
+                [disabled]="isdisabled(requestForm.controls.schemaId.value)" [hasError]="stepSubmitted && !isSchemaSet(requestForm.get('core_schema').value)"></lib-input>
                 <mat-error *ngIf="stepSubmitted && !isSchemaSet(requestForm.get('core_schema').value)">
                     Schema name is required
                 </mat-error>
@@ -159,10 +152,7 @@
                 <div class="f-col mdo-form-field">
                     <mat-label>Threshold</mat-label>
                     <div class="f-row slider-row">
-                        <mat-slider color="primary" [thumbLabel]="requestForm.controls.schemaThreshold.value"
-                            [value]="requestForm.controls.schemaThreshold.value"
-                            (change)="setValueToForm('schemaThreshold',$event)">
-                        </mat-slider>
+                        <lib-range-slider class="lib-slider" thumbLabel="true" [formControl]="requestForm.controls.schemaThreshold"  tickInterval="1" [formatLabelFn]="rangeSliderLabelFormat" [value]="requestForm.controls.schemaThreshold.value" color="primary"></lib-range-slider>
                         <span class="f-col-spacer-half"></span>
                         <div class="percent-count">{{requestForm.controls.schemaThreshold.value}}%</div>
                     </div>
@@ -199,7 +189,7 @@
                         [message]="'No business rule added, please add at least one business rule to continue'"
                         (action)="openGlobalDialog('createBR')" *ngIf="selectedBusinessRules.length === 0">
                     </pros-null-state> -->
-                    <lib-empty-state icon="table" iconSize="120" primaryText="Nothing to see here"
+                    <lib-empty-state *ngIf="!selectedBusinessRules?.length" icon="table" iconSize="120" primaryText="Nothing to see here"
                         secondaryText="No business rule added, please add at least one business rule to continue">
                         <lib-button (click)="openGlobalDialog('createBR')" *ngIf="selectedBusinessRules.length === 0"
                             type="minor">
@@ -379,19 +369,15 @@
                     [message]="'No subscribers found, please add subscribers to continue'" (action)="addSubscribers()"
                     *ngIf="subscribersList.length === 0">
                 </pros-null-state> -->
-                <lib-empty-state icon="table" iconSize="120" primaryText="Nothing to see here"
-                    secondaryText="No business rule added, please add at least one business rule to continue">
-                    <lib-button (click)="addSubscribers()" *ngIf="selectedBusinessRules.length === 0" type="minor">
+                <lib-empty-state *ngIf="!subscribersList.length" icon="table" iconSize="120" primaryText="Nothing to see here"
+                    secondaryText="No subscribers added, please add at least one subscriber to continue">
+                    <lib-button (click)="addSubscribers()" *ngIf="subscribersList.length === 0" type="minor">
                         Add subscribers
                     </lib-button>
                 </lib-empty-state>
                 <div *ngFor="let subscriber of subscribersList;let l=index" class="f-row colunm-box rule-border-row">
                     <div class="col">
-                        <mat-card-header>
-                            <div mat-card-avatar>
-                                {{shortName(subscriber.fName, subscriber.lName)}}
-                            </div>
-                        </mat-card-header>
+                        <lib-avatar [initials]="shortName(subscriber.fName, subscriber.lName)"></lib-avatar>
                     </div>
                     <div class="col col-x4">
                         <mat-card-header>
