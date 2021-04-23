@@ -20,6 +20,7 @@ export interface PeriodicElement {
   dueby: string;
   requestby: string;
   sentby: string;
+  isImportant?: boolean;
 }
 
 const ELEMENT_DATA: PeriodicElement[] = [
@@ -27,7 +28,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
     setting: 1,
     Records: 'Hydrogen',
     description: 1.0079,
-    labels: 'H',
+    labels: 'Pending',
     sent: 'L',
     dueby: 'L',
     requestby: 'L',
@@ -37,7 +38,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
     setting: 2,
     Records: 'Helium',
     description: 4.0026,
-    labels: 'He',
+    labels: 'Forwarded',
     sent: 'L',
     dueby: 'L',
     requestby: 'L',
@@ -47,7 +48,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
     setting: 3,
     Records: 'Lithium',
     description: 6.941,
-    labels: 'Li',
+    labels: 'Delegated',
     sent: 'L',
     dueby: 'L',
     requestby: 'L',
@@ -57,7 +58,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
     setting: 4,
     Records: 'Beryllium',
     description: 9.0122,
-    labels: 'Be',
+    labels: 'Pending',
     sent: 'L',
     dueby: 'L',
     requestby: 'L',
@@ -67,11 +68,12 @@ const ELEMENT_DATA: PeriodicElement[] = [
     setting: 5,
     Records: 'Boron',
     description: 10.811,
-    labels: 'B',
+    labels: 'Forwarded',
     sent: 'L',
     dueby: 'L',
     requestby: 'L',
     sentby: 'L',
+    isImportant: true
   },
   {
     setting: 6,
@@ -87,7 +89,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
     setting: 7,
     Records: 'Nitrogen',
     description: 14.0067,
-    labels: 'N',
+    labels: 'Delegated',
     sent: 'L',
     dueby: 'L',
     requestby: 'L',
@@ -97,7 +99,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
     setting: 8,
     Records: 'Oxygen',
     description: 15.9994,
-    labels: 'O',
+    labels: 'Pending',
     sent: 'L',
     dueby: 'L',
     requestby: 'L',
@@ -107,17 +109,18 @@ const ELEMENT_DATA: PeriodicElement[] = [
     setting: 9,
     Records: 'Fluorine',
     description: 18.9984,
-    labels: 'F',
+    labels: 'Forwarded',
     sent: 'L',
     dueby: 'L',
     requestby: 'L',
     sentby: 'L',
+    isImportant: true
   },
   {
     setting: 10,
     Records: 'Neon',
     description: 20.1797,
-    labels: 'Ne',
+    labels: 'Pending',
     sent: 'L',
     dueby: 'L',
     requestby: 'L',
