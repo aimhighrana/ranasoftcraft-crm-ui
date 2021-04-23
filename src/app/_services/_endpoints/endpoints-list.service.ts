@@ -41,5 +41,4 @@ export class EndpointsListService {
   public updateDefaultViewUrl(): string {
     return this.apiUrl + `/view/update-default-view`;
   }
-
 }

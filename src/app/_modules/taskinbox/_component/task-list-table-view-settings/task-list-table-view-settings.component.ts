@@ -1,4 +1,6 @@
-import { takeUntil } from 'rxjs/operators';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { TaskListService } from '@services/task-list.service';
+import { take, takeUntil } from 'rxjs/operators';
 import { Subject, combineLatest } from 'rxjs';
 import { NODEFIELDS } from './../task-list-datatable/task-list-datatable.component';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -23,7 +25,7 @@ export class TaskListTableViewSettingsComponent implements OnInit, OnDestroy {
   viewDetails: {
     fldId: string;
     fldDesc: string;
-    fldOrder: string;
+    order: string;
   }[] = [];
 
   /**
@@ -40,13 +42,13 @@ export class TaskListTableViewSettingsComponent implements OnInit, OnDestroy {
     {
       fldId: string;
       fldDesc: string;
-      fldOrder: string;
+      order: string;
     }[]
   > = new Subject();
 
   unsubscribeAll$: Subject<boolean> = new Subject<boolean>();
 
-  constructor(private route: ActivatedRoute, private router: Router, private sharedService: SharedServiceService) {}
+  constructor(private route: ActivatedRoute, private router: Router, private sharedService: SharedServiceService, private taskListService: TaskListService, private matSnackBar: MatSnackBar) {}
 
   ngOnInit(): void {
     this.route.params.subscribe((param) => {
@@ -75,7 +77,7 @@ export class TaskListTableViewSettingsComponent implements OnInit, OnDestroy {
             return {
               fldId: d.fldId,
               fldDesc: d.fldDesc,
-              fldOrder: '0',
+              order: '0',
             };
           });
           this.viewDetailsObs.next(this.viewDetails);
@@ -133,7 +135,7 @@ export class TaskListTableViewSettingsComponent implements OnInit, OnDestroy {
     if (selIndex !== -1) {
       this.viewDetails.splice(selIndex, 1);
     } else {
-      this.viewDetails.push({ ...fld, fldOrder: '' });
+      this.viewDetails.push({ ...fld, order: '' });
     }
   }
 
@@ -153,15 +155,37 @@ export class TaskListTableViewSettingsComponent implements OnInit, OnDestroy {
     this.metadataFldLst.forEach((metafld) => {
       const field = this.viewDetails.find((fld) => fld.fldId === metafld.fldId);
       if (field) {
-        field.fldOrder = `${++order}`;
+        field.order = `${++order}`;
       }
     });
-    this.viewDetails = sortBy(this.viewDetails, 'fldOrder');
+    this.viewDetails = sortBy(this.viewDetails, 'order');
     this.sharedService.settaskinboxViewDetailsData({
       node: this.node,
       viewDetails: this.viewDetails,
     });
-    this.close();
+    const fieldOrdersToSave = this.viewDetails.map(d=> {
+      return {
+        fldId: d.fldId,
+        order: +d.order
+      };
+    });
+    this.taskListService.saveOrUpdateTasklistHeaders(this.node, fieldOrdersToSave).pipe(take(1)).subscribe((resp: {
+      acknowledge: boolean,
+      errorMsg: string
+    }) => {
+      if(resp.acknowledge) {
+        this.close();
+      } else {
+        this.matSnackBar.open('Something went wrong.', 'Okay', {
+          duration: 2000
+        });
+      }
+    }, err => {
+      console.log(err);
+      this.matSnackBar.open('Something went wrong.', 'Okay', {
+        duration: 2000
+      });
+    });
   }
 
   /**

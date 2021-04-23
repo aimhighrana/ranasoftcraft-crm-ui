@@ -46,5 +46,4 @@ describe('EndpointsListService', () => {
     expect(service.updateDefaultViewUrl()).toContain('/view/update-default-view');
   });
 
-
 });

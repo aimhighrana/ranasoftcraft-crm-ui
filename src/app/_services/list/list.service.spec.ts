@@ -223,5 +223,4 @@ describe('ListService', () => {
     // verify http
     httpTestingController.verify();
   }));
-
 });
