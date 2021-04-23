@@ -77,7 +77,7 @@ export class EndpointsRuleService {
   }
 
   public uploadFileDataUrl(): string {
-    return `${this.origin}/schema/upload-file`;
+    return `${this.classicOrigin}/schema/upload-file`;
   }
 
   public uploadDataUrl(objectType: string, fileSno: string): string {
@@ -203,7 +203,7 @@ export class EndpointsRuleService {
   }
 
   public saveNewSchemaUrl(objectId: string, runNow: boolean, variantId: string, fileSno: string): string {
-    return `${this.origin}/schema/metadata/create-schema?objectId=${objectId}&runNow=${runNow}&variantId=${variantId}&fileSno=${fileSno}`
+    return `${this.classicOrigin}/schemamodule/create-schema?objectId=${objectId}&runNow=${runNow}&variantId=${variantId}&fileSno=${fileSno}`
   }
 
   /**
@@ -414,7 +414,7 @@ export class EndpointsRuleService {
   }
 
   public getAllBusinessRulesUrl() {
-    return this.origin + `/schema/get-all-business-rules/`
+    return this.origin + `/schema/metadata/get-all-business-rules/`
   }
 
   /**
