@@ -398,11 +398,11 @@ export class EndpointsRuleService {
     return `${this.origin}/schema/checkdata/save-update`;
   }
   public duplicacyGroupsListUrl(): string {
-    return `${this.origin}/duplicate/getgroupId`;
+    return `${this.origin}/schema/actions/duplicate/getgroupId`;
   }
 
   public catalogCheckRecordsUrl(): string {
-    return `${this.origin}/duplicate/getContent`;
+    return `${this.origin}/schema/actions/duplicate/getContent`;
   }
 
   /**
@@ -543,7 +543,7 @@ export class EndpointsRuleService {
    * @param userName username
    */
   public approveDuplicacyCorrectionUrl(schemaId, runId, userName): string {
-    return `${this.origin}/schema/approveDuplicateRecords/${schemaId}/${runId}?userName=${userName}`;
+    return `${this.origin}/schema/actions/approveDuplicateRecords/${schemaId}/${runId}?userName=${userName}`;
   }
 
   /**
@@ -553,7 +553,7 @@ export class EndpointsRuleService {
    * @param userName user name
    */
   public rejectDuplicacyCorrectionUrl(schemaId, runId, userName): string {
-    return `${this.origin}/schema/rejectDuplicateRecords/${schemaId}/${runId}?userName=${userName}`;
+    return `${this.origin}/schema/actions/rejectDuplicateRecords/${schemaId}/${runId}?userName=${userName}`;
   }
 
 
