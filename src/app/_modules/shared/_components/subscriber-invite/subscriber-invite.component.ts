@@ -1,10 +1,10 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { PermissionType, SchemaDashboardPermission } from '@models/collaborator';
 import { GlobaldialogService } from '@services/globaldialog.service';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
+import { TransientService } from 'mdo-ui-library';
 
 @Component({
   selector: 'pros-subscriber-invite',
@@ -24,7 +24,7 @@ export class SubscriberInviteComponent implements OnInit {
    * @param data data from parent component
    * @param globalDialogService global dialog service object
    * @param schemaDetailsService schema details service
-   * @param snackBar mat snackbar for notifications
+   * @param transientService mat snackbar for notifications
    */
   constructor(
     public dialogRef: MatDialogRef<SubscriberInviteComponent>,
@@ -32,7 +32,7 @@ export class SubscriberInviteComponent implements OnInit {
     private _formBuilder: FormBuilder,
     private globalDialogService: GlobaldialogService,
     private schemaDetailsService: SchemaDetailsService,
-    private snackBar: MatSnackBar) { }
+    private transientService: TransientService) { }
 
   /**
    * Angular hook
@@ -115,7 +115,7 @@ export class SubscriberInviteComponent implements OnInit {
   sendInvitation() {
     this.submitted = true;
     if(!this.invitationForm.valid){
-      this.snackBar.open('Please enter the required fields', 'Dismiss');
+      this.transientService.open('Please enter the required fields', 'Dismiss');
       return;
     }
     const body: SchemaDashboardPermission[] = []
@@ -166,6 +166,7 @@ export class SubscriberInviteComponent implements OnInit {
    * @param index Pass the index
    */
   setFormValue(val: any, key: string, index: number) {
+    debugger;
     const availableControls: any = this.invites().controls[index];
     availableControls.controls[key].setValue(val);
   }

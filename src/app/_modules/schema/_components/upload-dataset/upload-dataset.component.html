@@ -215,26 +215,21 @@
                                 <div class="col col-x8 mat-item-center">
                                     <div class="f-row slider-row"
                                         *ngIf="!isExistingRule(businessRule.tempId); else notConfigured">
-                                        <mat-slider color="primary" [thumbLabel]="getWeightage(businessRule)" min="0"
-                                            [max]="100" [value]="getWeightage(businessRule)"
-                                            (change)="weightageChange($event, k)">
-                                        </mat-slider>
+                                        <lib-range-slider class="lib-slider" [minValue]="0" [maxValue]="100" thumbLabel="true"  tickInterval="1" [formatLabelFn]="rangeSliderLabelFormat" [value]="getWeightage(businessRule)" color="primary" (valueChange)="weightageChange({value:$event}, k)"></lib-range-slider>
                                         <span class="f-col-spacer-half"></span>
                                         <div class="percent-count">{{getWeightage(businessRule)}}%</div>
                                     </div>
                                     <ng-template #notConfigured>
-                                        <mat-chip-list>
-                                            <mat-chip disableRipple="true" class="error-status">Not configured
-                                            </mat-chip>
-                                        </mat-chip-list>
+                                        <lib-chip-list>
+                                            <lib-chip disableRipple="true" type="error">Not configured</lib-chip>
+                                        </lib-chip-list>
                                     </ng-template>
                                 </div>
 
                                 <div class="col col-x4">
-                                    <mat-checkbox color="primary"
-                                        *ngIf="!isExistingRule(businessRule.tempId); else configure"
-                                        [checked]="businessRule.status === '1'"
-                                        (change)="toggleBrStatus($event,businessRule)"></mat-checkbox>
+                                    <lib-checkbox *ngIf="!isExistingRule(businessRule.tempId); else configure" (valueChange)="toggleBrStatus($event,businessRule)"
+                                        [checked]="businessRule.status === '1'">
+                                    </lib-checkbox>
 
                                     <span class="f-col-spacer-half"></span>
 
@@ -252,13 +247,7 @@
                                         <!-- <div class="top-tiparrow"></div> -->
                                         <div class="f-col">
                                             <p>Only run this rule if the preceding rule returns</p>
-                                            <mat-radio-group class="f-col" color="primary"
-                                                [(ngModel)]="businessRule.dependantStatus"
-                                                (change)="updateDepRule(businessRule,$event)">
-                                                <mat-radio-button value="ALL">All</mat-radio-button>
-                                                <mat-radio-button value="SUCCESS">Success</mat-radio-button>
-                                                <mat-radio-button value="ERROR">Failure</mat-radio-button>
-                                            </mat-radio-group>
+                                            <lib-radio-group layout="vertical" [(value)]="businessRule.dependantStatus" [options]="dependantStatusList" (valueChange)="updateDepRule(businessRule,$event)"></lib-radio-group>
                                         </div>
                                     </mat-menu>
                                     <lib-button (click)="deleteBR(businessRule)" type="plain" icon="trash-alt"></lib-button>
@@ -284,18 +273,15 @@
                                         <div class="col col-x8 mat-item-center">
                                             <div class="f-row slider-row"
                                                 *ngIf="!isExistingRule(deps.tempId); else notConfigured">
-                                                <mat-slider color="primary" [thumbLabel]="getWeightage(deps)" min="0"
-                                                    [max]="100" [value]="getWeightage(businessRule)"
-                                                    (change)="weightageChange($event, k)">
-                                                </mat-slider>
+                                                <lib-range-slider class="lib-slider" thumbLabel="true" minValue="0" maxValue="100" [value]="getWeightage(businessRule)"
+                                                (valueChange)="weightageChange($event, k)" [formatLabelFn]="rangeSliderLabelFormat" color="primary"></lib-range-slider>
                                                 <span class="f-col-spacer-half"></span>
                                                 <div class="percent-count">{{getWeightage(deps)}}%</div>
                                             </div>
                                             <ng-template #notConfigured>
-                                                <mat-chip-list>
-                                                    <mat-chip disableRipple="true" class="error-status">Not configured
-                                                    </mat-chip>
-                                                </mat-chip-list>
+                                                <lib-chip-list>
+                                                    <lib-chip disableRipple="true" type="error">Not configured</lib-chip>
+                                                </lib-chip-list>
                                             </ng-template>
                                         </div>
 
@@ -321,13 +307,7 @@
                                                 <!-- <div class="top-tiparrow"></div> -->
                                                 <div class="f-col">
                                                     <p>Only run this rule if the preceding rule returns</p>
-                                                    <mat-radio-group class="f-col" color="primary"
-                                                        [(ngModel)]="deps.dependantStatus"
-                                                        (change)="updateDepRuleForChild(businessRule,i,$event)">
-                                                        <mat-radio-button value="ALL">All</mat-radio-button>
-                                                        <mat-radio-button value="SUCCESS">Success</mat-radio-button>
-                                                        <mat-radio-button value="ERROR">Failure</mat-radio-button>
-                                                    </mat-radio-group>
+                                                    <lib-radio-group layout="vertical" [(value)]="deps.dependantStatus" [options]="dependantStatusList" (valueChange)="updateDepRuleForChild(businessRule,i,$event)"></lib-radio-group>
                                                 </div>
                                             </mat-menu>
                                            
@@ -450,15 +430,7 @@
         <mat-step>
             <ng-template matStepLabel></ng-template>
             <div class="f-col">
-                <mat-radio-group color="primary" class="f-col" [(ngModel)]="requestForm.value.runTime"
-                    (change)="setRunningSchedule($event)">
-                    <mat-radio-button [value]="false">
-                        Do not run the schema now
-                    </mat-radio-button>
-                    <mat-radio-button [value]="true">
-                        Run the schema once now
-                    </mat-radio-button>
-                </mat-radio-group>
+                <lib-radio-group layout="vertical" [value]="selectedRunningSchedule" [options]="runningScheduleList" (valueChange)="setRunningSchedule($event)"></lib-radio-group>
 
                 <mat-divider class="dashed-divider"></mat-divider>
 

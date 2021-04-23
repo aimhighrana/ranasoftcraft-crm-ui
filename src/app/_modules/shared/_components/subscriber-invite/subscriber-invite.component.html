@@ -24,6 +24,7 @@
                     <ng-container *ngFor="let item of invites().controls; let i=index">
                         <div class="f-row invite-colunm" [formGroupName]="i">
                             <div class="col-x2">
+                                <lib-input class="mdo-scheduler-input" [formControl]="invites().controls[i].get('email')" type="text" [value]="invites().controls[i].get('email').value" i18n-label="@@name" label="Name" placeholder="Email address" (valueChange)="setFormValue($event, 'email', i)" [hasError]="invites().controls[i].get('email').errors && submitted" [hint]="invites().controls[i].get('email').errors && submitted ? 'Email is required' : ''"></lib-input>
                                 <pros-form-input [control]="invites().controls[i].get('email')" [type]="'text'" [placeholder]="'Email address'"
                                     (valueChange)="setFormValue($event, 'email', i)"></pros-form-input>
                                 <mat-error *ngIf="invites().controls[i].get('email').errors && submitted">
