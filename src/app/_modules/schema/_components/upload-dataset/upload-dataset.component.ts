@@ -1873,7 +1873,6 @@ get selectedRunningSchedule () {
   }
 
   updateDepRule(br: CoreSchemaBrInfo, event?: any) {
-    debugger;
     let index=null;
     if(br.brId){
       index = this.selectedBusinessRules.findIndex((brule) => brule.brId === br.brId);

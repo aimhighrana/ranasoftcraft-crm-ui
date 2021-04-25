@@ -166,7 +166,6 @@ export class SubscriberInviteComponent implements OnInit {
    * @param index Pass the index
    */
   setFormValue(val: any, key: string, index: number) {
-    debugger;
     const availableControls: any = this.invites().controls[index];
     availableControls.controls[key].setValue(val);
   }
