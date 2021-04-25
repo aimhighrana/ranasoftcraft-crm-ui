@@ -5,14 +5,14 @@
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
-                <div class="display-heading-large">Business rule library</div>
+                <div class="display-heading-large" i18n="@@business_rule_library">Business rule library</div>
                 <span class="f-col-spacer-half"></span>
                 <div class="f-spacer"></div>
-                <lib-button type="major" (click)="saveSelection()"> Save </lib-button>
+                <lib-button type="major" (click)="saveSelection()" i18n="@@save"> Save </lib-button>
             </div>
             <div class="row-spacer"></div>
             <div class="f-row">
-                <lib-search (valueChange)="search($event)" placeholder="Search business rules"></lib-search>
+                <lib-search (valueChange)="search($event)" i18n-placeholder="@@search_br" placeholder="Search business rules"></lib-search>
                 <span class="col-spacer"></span>
                 <lib-chip-list>
                     <lib-chip disableRipple="true" type="info" [matMenuTriggerFor]="businessRuleType" label="Business rule type:">{{(selectedRuleType &&
@@ -39,7 +39,7 @@
                     <div class="mat-line">{{brItem.brInfo || 'UNTITLED'}}</div>
                     <span class="f-spacer"></span>
                     <lib-button *ngIf="!isSelected(brItem); else doneButton"
-                        (click)="selectBusinessRule(brItem, constants.ADD)" type="minor">Add</lib-button>
+                        (click)="selectBusinessRule(brItem, constants.ADD)" type="minor" i18n="@@add">Add</lib-button>
                     <ng-template #doneButton>
                         <lib-button (click)="selectBusinessRule(brItem, constants.REMOVE)" type="minor" icon="check">
                         </lib-button>

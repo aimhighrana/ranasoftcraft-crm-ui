@@ -4,10 +4,10 @@
     <div class="col-spacer"></div>
     <div class="f-col mdo-constrained-right">
       <div class="f-row breadcrum-head">
-        <div class="display-heading-large">Business rule</div>
+        <div class="display-heading-large" i18n="@@business_rule">Business rule</div>
         <span class="f-col-spacer-half"></span>
         <span class="f-spacer"></span>
-        <lib-button type="major" (click)="save();$event.stopPropagation()">Save</lib-button>
+        <lib-button type="major" i18n="@@save" (click)="save();$event.stopPropagation()">Save</lib-button>
       </div>
     </div>
   </div>
@@ -36,7 +36,7 @@
         </div>
 
         <div class="f-col mdo-form-field" *ngIf="!isDuplicateType">
-          <mat-label>Weightage</mat-label>
+          <mat-label i18n="@@weightage">Weightage</mat-label>
           <div class="f-row slider-row">
             <lib-range-slider class="lib-slider" thumbLabel="true" formControlName="weightage" tickInterval="1"
               minValue="0" [formatLabelFn]="rangeSliderLabelFormat" [value]="form.controls.weightage.value"
@@ -44,7 +44,7 @@
               class="f-col-spacer-half"></span>
             <div class="percent-count">{{form.controls.weightage.value}}%</div>
           </div>
-          <mat-error *ngIf="submitted && form.controls.weightage.errors && form.controls.weightage.errors.required">
+          <mat-error i18n="@@weightage_missing_msg" *ngIf="submitted && form.controls.weightage.errors && form.controls.weightage.errors.required">
             Please enter weightage</mat-error>
         </div>
         <div class="f-col mdo-field" *ngIf="!isUDR && !isDuplicateType">
@@ -67,7 +67,7 @@
             [hint]="submitted && form.controls.rule_name.errors && form.controls.rule_name.errors.required ? 'Please enter Rule name' : ''"
             [hasError]="submitted && form.controls.rule_name.errors && form.controls.rule_name.errors.required">
           </lib-input>
-          <mat-error *ngIf="submitted && form.controls.rule_name.errors && form.controls.rule_name.errors.required">
+          <mat-error *ngIf="submitted && form.controls.rule_name.errors && form.controls.rule_name.errors.required" i18n="@@rule_name_missing">
             Please enter rule name</mat-error>
         </div>
 
@@ -77,15 +77,15 @@
             [hasError]="submitted && form.controls.error_message.errors && form.controls.error_message.errors.required">
           </lib-input>
           <mat-error
-            *ngIf="submitted && form.controls.error_message.errors && form.controls.error_message.errors.required">
+            *ngIf="submitted && form.controls.error_message.errors && form.controls.error_message.errors.required" i18n="@@error_msg_missing">
             Please enter error message</mat-error>
         </div>
 
         <div class="f-col mdo-form-field"
           *ngIf="form.controls.rule_type.value === 'MRO_GSN_DESC_MATCH' || form.controls.rule_type.value === 'MRO_MANU_PRT_NUM_LOOKUP'">
           <pros-form-input [value]="form.get('apiKey').value" [control]="formField('apiKey')" [isHelpIcon]="true"
-            [toolTipInfo]="'Please enter your spare part library access token. If you do not have access to our spare part library, please contact sales@prospecta.com for more information.'"
-            [label]="'Enter access token'">
+           i18n-toolTipInfo="@@access_token_tooltip" [toolTipInfo]="'Please enter your spare part library access token. If you do not have access to our spare part library, please contact sales@prospecta.com for more information.'"
+           i18n-label="@@enter_access_token" [label]="'Enter access token'">
           </pros-form-input>
           <mat-error *ngIf="submitted && form.controls.apiKey.errors && form.controls.apiKey.errors.required">
             Please enter access token</mat-error>
@@ -119,7 +119,7 @@
         </pros-setup-duplicate-rule>
 
         <div class="f-col mdo-form-field" *ngIf="!isUDR && !isTransformationRule && !isDuplicateType">
-          <mat-label>Fields</mat-label>
+          <mat-label i18n="@@fields">Fields</mat-label>
           <mat-form-field appearance="outline">
             <mat-chip-list #chipList>
               <mat-chip *ngFor="let field of selectedFields;let i = index" [removable]="true"
@@ -138,14 +138,14 @@
               </mat-option>
             </mat-autocomplete>
           </mat-form-field>
-          <mat-error *ngIf="submitted && form.controls.fields.errors && form.controls.fields.errors.required">
+          <mat-error i18n="@@fields_missing_msg" *ngIf="submitted && form.controls.fields.errors && form.controls.fields.errors.required">
             Please select the fields
           </mat-error>
         </div>
 
         <div class="mdo-field-input">
-          <mat-label>Standard function</mat-label>
-          <input matInput placeholder="Standard function" [matAutocomplete]="regexNameAuto" />
+          <mat-label i18n="@@standard_function">Standard function</mat-label>
+          <input matInput i18n-placeholder="@@standard_function" placeholder="Standard function" [matAutocomplete]="regexNameAuto" />
           <mat-autocomplete class="mdo-autocomplete" [displayWith]="displayRegexFn.bind(this)"
             #regexNameAuto="matAutocomplete" (optionSelected)="selectSingle(form, 'standard_function', $event)">
             <ng-container *ngFor="let regex of preDefinedRegex">
@@ -157,11 +157,11 @@
         </div>
 
         <div class="f-col mdo-form-field" *ngIf="isRegexType">
-          <lib-input label="Regex value" formControlName="regex"
+          <lib-input i18n-label="@@regex_value" label="Regex value" formControlName="regex"
             [hint]="submitted && form.controls.regex.errors && form.controls.regex.errors.required ? 'Please enter regex' : ''"
             [hasError]="submitted && form.controls.regex.errors && form.controls.regex.errors.required">
           </lib-input>
-          <mat-error *ngIf="submitted && form.controls.regex.errors && form.controls.regex.errors.required">
+          <mat-error i18n="@@regex_missing" *ngIf="submitted && form.controls.regex.errors && form.controls.regex.errors.required">
             Please enter regex</mat-error>
         </div>
       </form>
@@ -184,7 +184,7 @@
 
             <!-- field name -->
             <div class="col">
-              <mat-select [(ngModel)]="udrBlock.fieldId" placeholder="Select Field">
+              <mat-select [(ngModel)]="udrBlock.fieldId" i18n-placeholder="@@select_field" placeholder="Select Field">
                 <mat-option *ngFor="let fieldItem of fieldsList" [value]="fieldItem.fieldId">
                   {{fieldItem.fieldDescri}}
                 </mat-option>
@@ -194,7 +194,7 @@
             <!-- operators -->
             <div class="col">
               <!-- <button mat-stroked-button>Equals <mat-icon>arrow_drop_down</mat-icon></button> -->
-              <mat-select mat-stroked-button [(ngModel)]="udrBlock.operator" placeholder="Select Operator">
+              <mat-select mat-stroked-button i18n-placeholder="@@select_operator" [(ngModel)]="udrBlock.operator" placeholder="Select Operator">
                 <mat-option selected>-- None --</mat-option>
                 <mat-optgroup *ngFor="let group of operators" [label]="group.desc">
                   <mat-option *ngFor="let child of group.childs" [value]="child">
@@ -239,11 +239,11 @@
 
             <mat-menu #menu="matMenu" class="navigation-menu">
               <!-- give local reference and tell this is manu by assigning 'matMenu' -->
-              <button mat-menu-item (click)="addBlock(true,udrBlock,i)">
+              <button i18n="@@add_child_rule" mat-menu-item (click)="addBlock(true,udrBlock,i)">
                 Add child rule
               </button>
 
-              <button mat-menu-item *ngIf="i > 0" (click)="deleteParentBlock(i,udrBlock)">
+              <button i18n="@@delete" mat-menu-item *ngIf="i > 0" (click)="deleteParentBlock(i,udrBlock)">
                 Delete
               </button>
             </mat-menu>
@@ -274,7 +274,7 @@
                   </div>
 
                   <div class="col">
-                    <mat-select mat-stroked-button [(ngModel)]="child.operator" placeholder="Select Operator">
+                    <mat-select mat-stroked-button i18n-placeholder="@@select_operator" [(ngModel)]="child.operator" placeholder="Select Operator">
                       <mat-option selected>-- None --</mat-option>
                       <mat-optgroup *ngFor="let group of operators" [label]="group.desc">
                         <mat-option *ngFor="let child of group.childs" [value]="child">
@@ -293,15 +293,15 @@
                   </div>
 
                   <div class="col" *ngIf="child.operator !== 'RANGE'">
-                    <lib-input label="‎" placeholder="Comparison value" [value]="child.comparisonValue"
+                    <lib-input label="‎" i18n-placeholder="@@comparison_value" placeholder="Comparison value" [value]="child.comparisonValue"
                       (valueChange)="setComparisonValueForChild($event,child,i)"></lib-input>
                   </div>
 
                   <div class="col" *ngIf="child.operator === 'RANGE'">
-                    <lib-input label="‎" placeholder="start value" [value]="child.rangeStartValue"
+                    <lib-input label="‎" i18n-placeholder="@@start_value" placeholder="start value" [value]="child.rangeStartValue"
                       (valueChange)="setRangeValueForChild($event,'start',child)"></lib-input>
                     <div class="f-col-spacer-half"></div>
-                    <lib-input label="‎" placeholder="end value" [value]="child.rangeEndValue"
+                    <lib-input label="‎" i18n-placeholder="@@end_value" placeholder="end value" [value]="child.rangeEndValue"
                       (valueChange)="setRangeValueForChild($event,'end',child)"></lib-input>
                   </div>
 
@@ -314,7 +314,7 @@
                                                 <span>Add</span>
                                             </button> -->
 
-                      <button mat-menu-item (click)="deleteFromChildArray(i,j,child)">
+                      <button i18n="@@delete" mat-menu-item (click)="deleteFromChildArray(i,j,child)">
                         Delete
                       </button>
                     </mat-menu>

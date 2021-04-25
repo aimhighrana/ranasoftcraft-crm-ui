@@ -77,9 +77,9 @@
 
                 <div class="f-col mdo-form-field" *ngIf="form.controls.rule_type.value === 'MRO_GSN_DESC_MATCH' || form.controls.rule_type.value === 'MRO_MANU_PRT_NUM_LOOKUP'">
                     <pros-form-input  [control]="formField('apiKey')" [value]="form.controls.apiKey.value"
-                        [label]="'Enter access token'" [isHelpIcon]="true" [toolTipInfo]="'Please enter your spare part library access token. If you do not have access to our spare part library, please contact sales@prospecta.com for more information.'">
+                        i18n-label="@@enter_access_token" [label]="'Enter access token'" [isHelpIcon]="true" i18n-toolTipInfo="@@access_token_tooltip" [toolTipInfo]="'Please enter your spare part library access token. If you do not have access to our spare part library, please contact sales@prospecta.com for more information.'">
                     </pros-form-input>
-                    <mat-error *ngIf="submitted && form.controls.apiKey.errors && form.controls.apiKey.errors.required">
+                    <mat-error *ngIf="submitted && form.controls.apiKey.errors && form.controls.apiKey.errors.required" i18n="@@access_token_msg">
                         Please enter access token</mat-error>
                 </div>
 
@@ -103,7 +103,7 @@
                 </pros-lookup-rule>
 
                 <div class="f-col mdo-form-field" *ngIf="!isUDR && !isDuplicateType && !isTransformationRule">
-                    <mat-label>Fields</mat-label>
+                    <mat-label i18n="@@fields">Fields</mat-label>
                     <mat-form-field appearance="outline">
                         <mat-chip-list #chipList>
                             <mat-chip *ngFor="let field of selectedFields;let i = index" [removable]="true"
@@ -140,16 +140,16 @@
                             </mat-tree>
                         </mat-autocomplete>
                     </mat-form-field>
-                    <mat-error *ngIf="submitted && form.controls.fields.errors && form.controls.fields.errors.required">
+                    <mat-error i18n="@@fields_missing_msg" *ngIf="submitted && form.controls.fields.errors && form.controls.fields.errors.required">
                         Please select the fields
                     </mat-error>
                 </div>
                 <div class="f-col mdo-field" *ngIf="isRegexType">
                     <!-- label -->
-                    <mat-label class="mdo-field-label">Standard function</mat-label>
+                    <mat-label class="mdo-field-label" i18n="@@standard_function">Standard function</mat-label>
                     <!-- input container -->
                     <div class="mdo-field-input">
-                            <input matInput placeholder="Standard function"
+                            <input matInput i18n-placeholder="@@standard_function" placeholder="Standard function"
                             [matAutocomplete]="regexNameAuto"/>
                         <mat-autocomplete class="mdo-autocomplete" [displayWith]="displayRegexFn.bind(this)" #regexNameAuto="matAutocomplete" (optionSelected)="selectSingle(form, 'standard_function', $event)">
                             <ng-container *ngFor="let regex of preDefinedRegex">
@@ -160,7 +160,7 @@
                         </mat-autocomplete>
                     </div>
                     <mat-error
-                        *ngIf="submitted && form.controls.standard_function.errors && form.controls.standard_function.errors.required">
+                        *ngIf="submitted && form.controls.standard_function.errors && form.controls.standard_function.errors.required" i18n="@@standard_fn_missing">
                         Please select the standard function</mat-error>
                 </div>
 
@@ -194,7 +194,7 @@
                                 </div>
                                 <!-- field name -->
                                 <div class="col">
-                                    <mat-select formControlName="conditionFieldId" placeholder="Select field">
+                                    <mat-select i18n-placeholder="@@select_field" formControlName="conditionFieldId" placeholder="Select field">
                                         <mat-option *ngFor="let fieldItem of fieldsList" [value]="fieldItem.fieldId">
                                             {{fieldItem.fieldDescri}}
                                         </mat-option>
@@ -203,7 +203,7 @@
                                 <!-- operators -->
                                 <div class="col">
                                     <!-- <button mat-stroked-button>Equals <mat-icon>arrow_drop_down</mat-icon></button> -->
-                                    <mat-select mat-stroked-button formControlName="conditionOperator" placeholder="Select Operator">
+                                    <mat-select mat-stroked-button formControlName="conditionOperator" i18n-placeholder="@@select_operator" placeholder="Select Operator">
                                         <mat-optgroup *ngFor="let group of operators" [label]="group.desc">
                                             <mat-option *ngFor="let child of group.childs" [value]="child">
                                                 <ng-container *ngIf="child !== 'EQUAL' && child !== 'FIELD2FIELD'">
@@ -222,14 +222,14 @@
                                 <!-- Comparison value -->
                                 <div class="col" *ngIf="item.value.conditionOperator !== 'RANGE'">
                                     <div class="f-row">
-                                        <lib-input label="‎" placeholder="Comparison value" [value]="item.value.conditionFieldValue" 
+                                        <lib-input label="‎" i18n-placeholder="@@comparison_value" placeholder="Comparison value" [value]="item.value.conditionFieldValue" 
                                         (valueChange)="setComparisonValue($event,i)"></lib-input>
                                         <div class="f-col-spacer-half"></div>
                                     </div>
                                 </div>
                                 <div class="col" *ngIf="item.value.conditionOperator  === 'RANGE'">
                                     <div class="f-row">
-                                        <lib-input label="‎" placeholder="start value"
+                                        <lib-input label="‎" i18n-placeholder="@@start_value" placeholder="start value"
                                             [value]="item.value.conditionFieldStartValue"
                                             (valueChange)="setRangeValue($event,'start',i)">
                                         </lib-input>
@@ -247,10 +247,10 @@
                                 </div>
                                 <mat-menu #menu="matMenu" class="navigation-menu">
                                     <!-- give local reference and tell this is manu by assigning 'matMenu' -->
-                                    <button mat-menu-item (click)="addChildBlock(i)">
+                                    <button i18n="@@add_child_rule" mat-menu-item (click)="addChildBlock(i)">
                                         Add child rule
                                     </button>
-                                    <button mat-menu-item *ngIf="i > 0" (click)="removeParentNode(i)">
+                                    <button i18n="@@delete" mat-menu-item *ngIf="i > 0" (click)="removeParentNode(i)">
                                         Delete
                                     </button>
                                 </mat-menu>
@@ -278,7 +278,7 @@
                                                     </mat-select>
                                                 </div>
                                                 <div class="col">
-                                                    <mat-select mat-stroked-button formControlName="conditionOperator" placeholder="Select operator">
+                                                    <mat-select mat-stroked-button formControlName="conditionOperator" i18n-placeholder="@@select_operator" placeholder="Select operator">
                                                         <mat-optgroup *ngFor="let group of operators" [label]="group.desc">
                                                             <mat-option *ngFor="let child of group.childs" [value]="child">
                                                                 <ng-container *ngIf="child !== 'EQUAL' && child !== 'FIELD2FIELD'">
@@ -295,15 +295,15 @@
                                                     </mat-select>
                                                 </div>
                                                 <div class="col" *ngIf="chldNode.value.conditionOperator !== 'RANGE'">
-                                                    <lib-input label="‎" placeholder="Comparison value" [value]="chldNode.value.conditionFieldValue"
+                                                    <lib-input label="‎" i18n-placeholder="@@comparison_value" placeholder="Comparison value" [value]="chldNode.value.conditionFieldValue"
                                                     (valueChange)="setComparisonValueForChild($event,childIndex,i)"></lib-input>
                                                 </div>
                                                 <div class="col" *ngIf="chldNode.value.conditionOperator  === 'RANGE'">
                                                     <div class="f-row">
-                                                        <lib-input label="‎" placeholder="start value" [value]="chldNode.value.conditionFieldStartValue"
+                                                        <lib-input label="‎" i18n-placeholder="@@start_value" placeholder="start value" [value]="chldNode.value.conditionFieldStartValue"
                                                         (valueChange)="setRangeValueForChild($event,'start',childIndex, i)"></lib-input>
                                                         <div class="f-col-spacer-half"></div>
-                                                        <lib-input label="‎" placeholder="end value" [value]="chldNode.value.conditionFieldEndValue"
+                                                        <lib-input label="‎" i18n-placeholder="@@end_value" placeholder="end value" [value]="chldNode.value.conditionFieldEndValue"
                                                         (valueChange)="setRangeValueForChild($event,'end',childIndex,i)"></lib-input>
                                                     </div>
                                                 </div>
@@ -315,7 +315,7 @@
                                                             <mat-icon>add</mat-icon>
                                                             <span>Add</span>
                                                         </button> -->
-                                                        <button mat-menu-item (click)="removeChildNode(i,childIndex)">
+                                                        <button mat-menu-item (click)="removeChildNode(i,childIndex)" i18n="@@delete">
                                                             Delete
                                                         </button>
                                                     </mat-menu>

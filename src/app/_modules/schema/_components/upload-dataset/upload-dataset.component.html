@@ -30,7 +30,7 @@
                 </pros-null-state> -->
                 <lib-empty-state icon="table" iconSize="120" primaryText="No data file selected"
                     secondaryText="Drag & drop or select a file to upload">
-                    <lib-button (click)="openExplorer()" type="minor">
+                    <lib-button i18n="@@select_a_file" (click)="openExplorer()" type="minor">
                         Select a file
                     </lib-button>
                 </lib-empty-state>
@@ -68,20 +68,20 @@
         <mat-step>
             <ng-template matStepLabel></ng-template>
             <div class="f-col">
-                <lib-input label="Module name" [hasError]="stepSubmitted && requestForm.controls['objectDesc'].errors"
+                <lib-input i18n-label="@@module_name" label="Module name" [hasError]="stepSubmitted && requestForm.controls['objectDesc'].errors"
             [hint]="!stepSubmitted || !requestForm.controls['objectDesc'].errors ? 'In MDO module is a dataset' : ''"
             [formControl]="formField('objectDesc')"></lib-input>
-                <mat-error *ngIf="stepSubmitted && requestForm.controls['objectDesc'].errors">
+                <mat-error i18n="@@module_name_required" *ngIf="stepSubmitted && requestForm.controls['objectDesc'].errors">
                     Module name is required
                 </mat-error>
                 <div class="row-spacer"></div>
 
                 <div class="colunm-listing">
                     <div class="f-row colunm-box rule-border-row">
-                        <div class="col col-x8"><strong>Header</strong></div>
-                        <div class="col col-x8 text-end"><strong>Preview row</strong></div>
+                        <div class="col col-x8"><strong i18n="@@header">Header</strong></div>
+                        <div class="col col-x8 text-end"><strong i18n="@@preview_row">Preview row</strong></div>
                         <div class="col col-x8" *ngIf="requestForm.value.objectId">
-                            <strong>Target field</strong>
+                            <strong i18n="@@target_field">Target field</strong>
                         </div>
                     </div>
 
@@ -90,10 +90,10 @@
                             <div class="f-row colunm-box">
                                 <div class="col col-x8">
                                     <div [style.display]="isEditable(data)? 'block': 'none'" (click)="onClick($event)">
-                                        <lib-input placeholder="Enter a value"  [disabled]="false"
+                                        <lib-input i18n-placeholder="@@enter_value" placeholder="Enter a value"  [disabled]="false"
                                         [value]="data.excelFld" [id]="data.mdoFldId"
                                         (valueChange)="setFormValue($event, data.mdoFldId)"></lib-input>
-                                        <mat-error *ngIf="headerForm.controls[data.mdoFldId].errors">
+                                        <mat-error i18n="@@required_field_msg" *ngIf="headerForm.controls[data.mdoFldId].errors">
                                             This field is required
                                         </mat-error>
                                     </div>
@@ -123,11 +123,11 @@
         <mat-step>
             <ng-template matStepLabel></ng-template>
             <div class="f-col">
-                <lib-input [value]="requestForm.get('core_schema').value.discription" [label]="'Schema name'"
+                <lib-input [value]="requestForm.get('core_schema').value.discription" i18n-label="@@schema_name" [label]="'Schema name'"
                 (valueChange)="setschemaName($event)"
                 [hint]="!stepSubmitted || isSchemaSet(requestForm.get('core_schema').value) ? 'Schema is a collection of business rules' : ''"
                 [disabled]="isdisabled(requestForm.controls.schemaId.value)" [hasError]="stepSubmitted && !isSchemaSet(requestForm.get('core_schema').value)"></lib-input>
-                <mat-error *ngIf="stepSubmitted && !isSchemaSet(requestForm.get('core_schema').value)">
+                <mat-error i18n="@@schema_name_required" *ngIf="stepSubmitted && !isSchemaSet(requestForm.get('core_schema').value)">
                     Schema name is required
                 </mat-error>
 
@@ -150,7 +150,7 @@
                 <div class="row-spacer"></div> -->
 
                 <div class="f-col mdo-form-field">
-                    <mat-label>Threshold</mat-label>
+                    <mat-label i18n="@@threshold">Threshold</mat-label>
                     <div class="f-row slider-row">
                         <lib-range-slider class="lib-slider" thumbLabel="true" [formControl]="requestForm.controls.schemaThreshold"  tickInterval="1" [formatLabelFn]="rangeSliderLabelFormat" [value]="requestForm.controls.schemaThreshold.value" color="primary"></lib-range-slider>
                         <span class="f-col-spacer-half"></span>
@@ -162,26 +162,26 @@
             <div class="colunm-listing">
                 <div class="f-row colunm-box rule-border-row">
                     <div class="col"></div>
-                    <div class="col col-x8"><strong>Business rule</strong></div>
+                    <div class="col col-x8"><strong i18n="@@business_rule">Business rule</strong></div>
                     <div class="col col-x8 mat-item-center">
                         <div class="f-row">
-                            <strong>Weightage &nbsp;<mat-icon fontSet="mdo-icons"
-                                    matTooltip="Score assigned to a record upon successful validation of a business rule. For a schema total weightage of all the business rules must not exceed 100">
+                            <strong><span i18n="@@weightage">Weightage</span> &nbsp;<mat-icon fontSet="mdo-icons"
+                                    i18n-libTooltip="@@weightage_help_msg" libTooltip="Score assigned to a record upon successful validation of a business rule. For a schema total weightage of all the business rules must not exceed 100">
                                     question-circle</mat-icon></strong>
                         </div>
                     </div>
-                    <div class="col col-x4"><strong>Enabled</strong></div>
+                    <div class="col col-x4"><strong i18n="@@enabled">Enabled</strong></div>
                     <div class="col"></div>
                 </div>
 
                 <ng-container>
                     <div class="f-row colunm-box rule-border-row">
                         <div class="mdo-auto-complete">
-                            <pros-form-input-autoselect [fieldLabel]="'Type rule name to add'"
+                            <pros-form-input-autoselect i18n-fieldLabel="@@type_rule_name_to_add" [fieldLabel]="'Type rule name to add'"
                                 (optionSelectedEmit)="selectBusinessRule($event)"
                                 (openCustomDialog)="openGlobalDialog($event)" [updatedOptionsList]="businessRulesList"
                                 [viewMoreAction]="'existingBR'" [extraOption]="'createBR'"
-                                [extraOptionLabel]="'Add new business rule'" [labelKey]="'brInfo'">
+                                i18n-extraOptionLabel="@@add_br_rule" [extraOptionLabel]="'Add new business rule'" [labelKey]="'brInfo'">
                             </pros-form-input-autoselect>
                         </div>
                     </div>
@@ -189,9 +189,9 @@
                         [message]="'No business rule added, please add at least one business rule to continue'"
                         (action)="openGlobalDialog('createBR')" *ngIf="selectedBusinessRules.length === 0">
                     </pros-null-state> -->
-                    <lib-empty-state *ngIf="!selectedBusinessRules?.length" icon="table" iconSize="120" primaryText="Nothing to see here"
-                        secondaryText="No business rule added, please add at least one business rule to continue">
-                        <lib-button (click)="openGlobalDialog('createBR')" *ngIf="selectedBusinessRules.length === 0"
+                    <lib-empty-state *ngIf="!selectedBusinessRules?.length" icon="table" iconSize="120" i18n-primaryText="@@nothing_to_see_here" primaryText="Nothing to see here"
+                        i18n-secondaryText="@@no_br_added_msg" secondaryText="No business rule added, please add at least one business rule to continue">
+                        <lib-button i18n="@@add_br_rule" (click)="openGlobalDialog('createBR')" *ngIf="selectedBusinessRules.length === 0"
                             type="minor">
                             Add Business Rule
                         </lib-button>
@@ -221,7 +221,7 @@
                                     </div>
                                     <ng-template #notConfigured>
                                         <lib-chip-list>
-                                            <lib-chip disableRipple="true" type="error">Not configured</lib-chip>
+                                            <lib-chip disableRipple="true" type="error" i18n="@@not_configured">Not configured</lib-chip>
                                         </lib-chip-list>
                                     </ng-template>
                                 </div>
@@ -235,7 +235,7 @@
 
                                     <ng-template #configure>
                                        
-                                        <lib-button (click)="configureRule(businessRule)" type="minor"> Configure
+                                        <lib-button i18n="@@configure" (click)="configureRule(businessRule)" type="minor"> Configure
                                         </lib-button>
                                     </ng-template>
                                 </div>
@@ -246,7 +246,7 @@
                                         xPosition="before" class="mat-elevation-z0 tooltip-fields-menu">
                                         <!-- <div class="top-tiparrow"></div> -->
                                         <div class="f-col">
-                                            <p>Only run this rule if the preceding rule returns</p>
+                                            <p i18n="@@run_rule_warning_msg">Only run this rule if the preceding rule returns</p>
                                             <lib-radio-group layout="vertical" [(value)]="businessRule.dependantStatus" [options]="dependantStatusList" (valueChange)="updateDepRule(businessRule,$event)"></lib-radio-group>
                                         </div>
                                     </mat-menu>
@@ -280,7 +280,7 @@
                                             </div>
                                             <ng-template #notConfigured>
                                                 <lib-chip-list>
-                                                    <lib-chip disableRipple="true" type="error">Not configured</lib-chip>
+                                                    <lib-chip i18n="@@not_configured" disableRipple="true" type="error">Not configured</lib-chip>
                                                 </lib-chip-list>
                                             </ng-template>
                                         </div>
@@ -294,7 +294,7 @@
                                             <span class="f-col-spacer-half"></span>
 
                                             <ng-template #configure>
-                                                <lib-button (click)="configureRule(deps)" type="minor" > Configure </lib-button>
+                                                <lib-button i18n="@@configure" (click)="configureRule(deps)" type="minor" >Configure</lib-button>
                                             </ng-template>
                                         </div>
 
@@ -306,7 +306,7 @@
                                                 class="mat-elevation-z0 tooltip-fields-menu">
                                                 <!-- <div class="top-tiparrow"></div> -->
                                                 <div class="f-col">
-                                                    <p>Only run this rule if the preceding rule returns</p>
+                                                    <p i18n="@@run_rule_warning_msg">Only run this rule if the preceding rule returns</p>
                                                     <lib-radio-group layout="vertical" [(value)]="deps.dependantStatus" [options]="dependantStatusList" (valueChange)="updateDepRuleForChild(businessRule,i,$event)"></lib-radio-group>
                                                 </div>
                                             </mat-menu>
@@ -329,17 +329,17 @@
             <div class="colunm-listing">
                 <div class="f-row colunm-box rule-border-row">
                     <div class="col"></div>
-                    <div class="col col-x4"><strong>Subscriber</strong></div>
-                    <div class="col col-x4"><strong>Role</strong></div>
-                    <div class="col col-x8"><strong>Data allocation</strong></div>
+                    <div class="col col-x4"><strong i18n="@@subscriber">Subscriber</strong></div>
+                    <div class="col col-x4"><strong i18n="@@role">Role</strong></div>
+                    <div class="col col-x8"><strong i18n="@@data_allocation">Data allocation</strong></div>
                     <div class="col"></div>
                 </div>
                 <div class="f-row colunm-box rule-border-row">
                     <div class="mdo-auto-complete">
-                        <pros-form-input-autoselect [fieldLabel]="'Select subscribers'"
+                        <pros-form-input-autoselect i18n-fieldLabel="@@select_subscribers" [fieldLabel]="'Select subscribers'"
                             (optionSelectedEmit)="updateSubscribersList($event)" (openCustomDialog)="addSubscribers()"
                             [updatedOptionsList]="allSubscribers" [viewMoreAction]="'addSubscribers'"
-                            [extraOption]="'addSubscribers'" [extraOptionLabel]="'Invite people to your team'"
+                            [extraOption]="'addSubscribers'" i18n-extraOptionLabel="@@invite_people_to_team" [extraOptionLabel]="'Invite people to your team'"
                             (emitSearchValue)="getCollaborators($event)" [loader]="subscriberLoader"
                             [debounceValue]="650" [valueKey]="" [labelKey]="'fullName'">
                         </pros-form-input-autoselect>
@@ -349,9 +349,9 @@
                     [message]="'No subscribers found, please add subscribers to continue'" (action)="addSubscribers()"
                     *ngIf="subscribersList.length === 0">
                 </pros-null-state> -->
-                <lib-empty-state *ngIf="!subscribersList.length" icon="table" iconSize="120" primaryText="Nothing to see here"
-                    secondaryText="No subscribers added, please add at least one subscriber to continue">
-                    <lib-button (click)="addSubscribers()" *ngIf="subscribersList.length === 0" type="minor">
+                <lib-empty-state *ngIf="!subscribersList.length" icon="table" iconSize="120" i18n-primaryText="@@nothing_to_see_here" primaryText="Nothing to see here"
+                    i18n-secondaryText="@@no_subscribers_msg" secondaryText="No subscribers added, please add at least one subscriber to continue">
+                    <lib-button i18n="@@add_subscribers" (click)="addSubscribers()" *ngIf="subscribersList.length === 0" type="minor">
                         Add subscribers
                     </lib-button>
                 </lib-empty-state>
@@ -366,10 +366,10 @@
                     </div>
 
                     <div class="col col-x4" [matMenuTriggerFor]="subscriberlist">
-                        <lib-button type="minor" icon="caret-down" iconPosition="before" *ngIf="subscriber.isAdmin"> Admin </lib-button>
-                        <lib-button type="minor" icon="caret-down" iconPosition="before" *ngIf="subscriber.isReviewer"> Reviewer </lib-button>
-                        <lib-button type="minor" icon="caret-down" iconPosition="before" *ngIf="subscriber.isViewer"> Viewer </lib-button>
-                        <lib-button type="minor" icon="caret-down" iconPosition="before" *ngIf="subscriber.isEditer"> Editor </lib-button>
+                        <lib-button i18n="admin" type="minor" icon="caret-down" iconPosition="before" *ngIf="subscriber.isAdmin">Admin</lib-button>
+                        <lib-button i18n="reviewer" type="minor" icon="caret-down" iconPosition="before" *ngIf="subscriber.isReviewer">Reviewer</lib-button>
+                        <lib-button  i18n="viewer"type="minor" icon="caret-down" iconPosition="before" *ngIf="subscriber.isViewer">Viewer</lib-button>
+                        <lib-button i18n="editor" type="minor" icon="caret-down" iconPosition="before" *ngIf="subscriber.isEditer">Editor</lib-button>
                     </div>
                     <mat-menu #subscriberlist="matMenu" direction="right" class="navigation-menu">
                         <button mat-menu-item *ngFor="let role of roles" (click)="updateRole(role.code, subscriber,l)">
@@ -438,19 +438,16 @@
                 <div class="f-row schedule-row">
                     <!-- in case of existing schedule, will show edit button and toggle-->
                     <ng-template [ngIf]="canEditSchedule" [ngIfElse]="addSchedule">
-                        <mat-slide-toggle color="primary" [checked]="currentSchedule && currentSchedule.isEnable"
-                            (change)="toggleScheduleStatus($event)">
-                            Enable schedule
-                        </mat-slide-toggle>
+                        <mat-slide-toggle color="primary"  [checked]="currentSchedule && currentSchedule.isEnable" i18n="@@enable_schedule"
+                            (toggleChange)="toggleScheduleStatus($event)">Enable schedule</mat-slide-toggle>
                         <span class="f-spacer"></span>
-                        <lib-button (click)="openScheduleSideSheet()" iconPosition="before" type="major" icon="history">
-                            Add schedule </lib-button>
+                        <lib-button i18n="@@add_schedule" (click)="openScheduleSideSheet()" iconPosition="before" type="major" icon="history">Add schedule</lib-button>
                     </ng-template>
 
                     <!-- in case of there is no schedule, will show only add button -->
                     <ng-template #addSchedule>
                         <span class="f-spacer"></span>
-                        <lib-button (click)="openScheduleSideSheet()" iconPosition="before" type="major" icon="history">
+                        <lib-button i18n="@@add_schedule" (click)="openScheduleSideSheet()" iconPosition="before" type="major" icon="history">
                             Add schedule </lib-button>
                     </ng-template>
                 </div>
@@ -463,20 +460,18 @@
     <!-- navigation buttons -->
 
     <div class="f-row">
-        <lib-button type="plain" (click)="closeDialog()"> Cancel </lib-button>
+        <lib-button type="plain" i18n="@@cancel" (click)="closeDialog()"> Cancel </lib-button>
         <span class="f-spacer"></span>
         <div class="f-row bottom-actions">
             
-            <lib-button type="plain" *ngIf="headerTextIndex > 2" (click)="step('previous')"> Back </lib-button>
+            <lib-button type="plain" *ngIf="headerTextIndex > 2" i18n="@@back" (click)="step('previous')"> Back </lib-button>
             <ng-container *ngIf="progressBar < 100">
-                <a *ngIf="headerTextIndex === 2" (click)="step('previous'); clearFileInput()" class="info-link">Choose a
-                    different file</a>
+                <a i18n="@@choose_diff_file" *ngIf="headerTextIndex === 2" (click)="step('previous'); clearFileInput()" class="info-link">Choose a different file</a>
                 <span class="f-col-spacer-half"></span>
                
-                <lib-button type="major" (click)="step('next', true)" [disabled]="headerTextIndex === 1"> Next
-                </lib-button>
+                <lib-button type="major" i18n="@@next" (click)="step('next', true)" [disabled]="headerTextIndex === 1">Next</lib-button>
             </ng-container>
         </div>
-        <lib-button type="major" *ngIf="progressBar === 100" (click)="save()"> Done </lib-button>
+        <lib-button type="major" i18n="@@done" *ngIf="progressBar === 100" (click)="save()"> Done </lib-button>
     </div>
 </mat-card>
