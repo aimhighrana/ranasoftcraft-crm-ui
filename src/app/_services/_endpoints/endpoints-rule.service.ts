@@ -398,11 +398,11 @@ export class EndpointsRuleService {
     return `${this.origin}/schema/checkdata/save-update`;
   }
   public duplicacyGroupsListUrl(): string {
-    return `${this.origin}/schema/actions/duplicate/getgroupId`;
+    return `${this.origin}/schema/actions/getgroupId`;
   }
 
   public catalogCheckRecordsUrl(): string {
-    return `${this.origin}/schema/actions/duplicate/getContent`;
+    return `${this.origin}/schema/actions/getContent`;
   }
 
   /**
