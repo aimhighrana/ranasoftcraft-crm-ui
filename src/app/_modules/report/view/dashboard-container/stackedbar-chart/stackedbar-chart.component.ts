@@ -363,6 +363,8 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
         }
       } else {
         this.codeTextaxis1[key] = key;
+      } if(fieldId === 'OVERDUE' || fieldId === 'FORWARDENABLED' || fieldId === 'TIME_TAKEN') {
+        this.codeTextaxis1[key] = this.getFields(fieldId, key);
       }
     });
     this.updateLabelsaxis1();
@@ -487,6 +489,8 @@ export class StackedbarChartComponent extends GenericWidgetComponent implements 
           }
       } else {
         this.codeTextaxis2[key] = key;
+      } if(fieldId === 'OVERDUE' || fieldId === 'FORWARDENABLED' || fieldId === 'TIME_TAKEN') {
+        this.codeTextaxis2[key] = this.getFields(fieldId, key);
       }
     });
     this.updateLabelsaxis2();

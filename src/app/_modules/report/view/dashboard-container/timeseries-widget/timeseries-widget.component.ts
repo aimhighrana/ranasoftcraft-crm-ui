@@ -11,6 +11,7 @@ import { BlockType } from '@modules/admin/_components/module/business-rules/user
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import ChartDataLables from 'chartjs-plugin-datalabels';
+import _ from 'lodash';
 
 const btnArray: ButtonArr[] = [
   { id: 0, value: 'millisecond', isActive: false },
@@ -125,7 +126,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       }
     },
     onClick: (event?: MouseEvent, activeElements?: Array<{}>) => {
-      // this.stackClickFilter(event, activeElements);
+      this.stackClickFilter(event, activeElements);
     }
   };
 
@@ -153,7 +154,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       this.clearFilterCriteria();
     }
 
-    if (changes && changes.filterCriteria && changes.filterCriteria.currentValue !== changes.filterCriteria.currentValue.previousValue) {
+    if (changes && changes.filterCriteria && changes.filterCriteria.currentValue !== changes.filterCriteria.previousValue) {
       this.lablels = [];
       this.chartLegend = [];
       this.widgetInf.next(this.widgetInf.getValue());
@@ -180,8 +181,8 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       if (metadata) {
         this.getwidgetData(this.widgetId);
         if(this.isLoading) {
+          this.updatevalues();
           this.isLoading = false;
-          this.setChartProperties();
           this.afterColorDefined.next(metadata.timeSeries.widgetColorPalette);
         }
       }
@@ -276,7 +277,8 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         break;
     }
     const strtdatemilli = Date.parse(moment().format('MM/DD/YYYY HH:mm').toString()).toString();
-    this.emitpanAndClickevent(endDatemilli, strtdatemilli);
+    console.log(endDatemilli, strtdatemilli);
+    // this.emitpanAndClickevent(endDatemilli, strtdatemilli);
   }
 
   emitpanAndClickevent(startdate: string, enddate: string): void {
@@ -340,7 +342,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       && this.timeseriesData.timeSeries.scaleTo !== null && this.timeseriesData.timeSeries.scaleTo !== undefined
       && this.timeseriesData.timeSeries.stepSize !== null && this.timeseriesData.timeSeries.stepSize !== undefined) {
       const ticks = { displamin: this.timeseriesData.timeSeries.scaleFrom, max: this.timeseriesData.timeSeries.scaleTo, stepSize: this.timeseriesData.timeSeries.stepSize };
-      this.timeSeriesOption.scales = {
+      this.chart.chart.options.scales = {
         xAxes: [{
           type: 'time',
           time: {
@@ -349,7 +351,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
           scaleLabel: {
             display: true,
             labelString: this.timeseriesData.timeSeries.xAxisLabel ? this.timeseriesData.timeSeries.xAxisLabel : ''
-          },
+          }, ticks
         }],
         yAxes: [{
           scaleLabel: {
@@ -359,32 +361,51 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         }]
       };
     } else {
-      this.timeSeriesOption.scales = {
-        xAxes: [{
-          type: 'time',
-          time: {
-            unit: this.timeseriesData.timeSeries.seriesWith
-          },
-          scaleLabel: {
-            display: true,
-            labelString: this.timeseriesData.timeSeries.xAxisLabel ? this.timeseriesData.timeSeries.xAxisLabel : ''
-          },
-        }],
-        yAxes: [{
-          scaleLabel: {
-            display: true,
-            labelString: this.timeseriesData.timeSeries.yAxisLabel ? this.timeseriesData.timeSeries.yAxisLabel : ''
-          },
-        }]
-      };
-    }
-    const hasBtn = this.dateFilters.filter(fil => fil.value === (this.timeseriesData.timeSeries.startDate))[0];
-    if (hasBtn) {
-      const index = this.dateFilters.indexOf(hasBtn);
-      this.dateFilters.splice(index, 1);
-      hasBtn.isActive = true;
-      this.dateFilters.splice(index, 0, hasBtn);
-      this.updateForm('date', hasBtn);
+      if (this.timeseriesData.timeSeries.chartType === 'BAR') {
+        this.chart.chart.options.scales = {
+          xAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: this.timeseriesData.timeSeries.xAxisLabel ? this.timeseriesData.timeSeries.xAxisLabel : ''
+            }, ticks: {
+              padding: this.timeseriesData.timeSeries.isEnableDatalabels && (this.timeseriesData.timeSeries.datalabelsPosition === 'start' || this.timeseriesData.timeSeries.datalabelsPosition === 'center') ? 20 : 0
+            }
+          }],
+          yAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: this.timeseriesData.timeSeries.yAxisLabel ? this.timeseriesData.timeSeries.yAxisLabel : ''
+            },
+            ticks: {
+              padding: this.timeseriesData.timeSeries.isEnableDatalabels && (this.timeseriesData.timeSeries.datalabelsPosition === 'start' || this.timeseriesData.timeSeries.datalabelsPosition === 'center') ? 40 : 0
+            }
+          }]
+        }
+      } else {
+        this.chart.chart.options.scales = {
+          xAxes: [{
+            type: 'time',
+            time: {
+              unit: this.timeseriesData.timeSeries.seriesWith
+            },
+            scaleLabel: {
+              display: true,
+              labelString: this.timeseriesData.timeSeries.xAxisLabel ? this.timeseriesData.timeSeries.xAxisLabel : ''
+            }, ticks: {
+              padding: this.timeseriesData.timeSeries.isEnableDatalabels && (this.timeseriesData.timeSeries.datalabelsPosition === 'start' || this.timeseriesData.timeSeries.datalabelsPosition === 'center') ? 20 : 0
+            }
+          }],
+          yAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: this.timeseriesData.timeSeries.yAxisLabel ? this.timeseriesData.timeSeries.yAxisLabel : ''
+            },
+            ticks: {
+              padding: this.timeseriesData.timeSeries.isEnableDatalabels && (this.timeseriesData.timeSeries.datalabelsPosition === 'start' || this.timeseriesData.timeSeries.datalabelsPosition === 'center') ? 40 : 0
+            }
+          }]
+        };
+      }
     }
   }
 
@@ -484,7 +505,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
           this.tarnsformForShowInPercentage(response, metadata.timeSeries.showInPercentage);
         }
         else {
-          if (this.timeseriesData.timeSeries.chartType === 'BAR') {
+          if (metadata.timeSeries.chartType === 'BAR') {
             this.dataSet = this.transformDataForComparison(response);
           } else {
             this.showFilterOption = true;
@@ -504,6 +525,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
   }
 
   transformDataSets(data: any): any {
+    const fieldId = this.timeseriesData.timeSeries.fieldId;
     const finalOutput = new Object();
     const codetextObj = {};
     const cordKeys = ['x', 'y'];
@@ -521,7 +543,8 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
           const textTermBucket = innerBucket['sterms#textTerm'] ? innerBucket['sterms#textTerm'].buckets : null;
           if(textTermBucket){
             textTermBucket.forEach(bucket => {
-              label = bucket.key
+              const labelCode = this.codeTextValue(bucket, fieldId);
+              label = labelCode.t ? labelCode.t : labelCode;
           })
           }
           codetextObj[label] = innerBucket.key;
@@ -549,7 +572,7 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
      */
     this.chartLegend = [];
     const arrKeys = ['data', 'id', 'label', 'fill', 'border'];
-    const datasets = new Array();
+    let datasets = new Array();
     Object.keys(finalOutput).forEach(status => {
       const dataSet = new Object();
       dataSet[arrKeys[0]] = finalOutput[status];
@@ -562,7 +585,11 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       datasets.push(dataSet);
       this.setLegendForChart();
     });
-
+    // this.setLegendForChart();
+    if(this.timeseriesData.timeSeries.dataSetSize) {
+      this.chartLegend =  _.take(this.chartLegend, this.timeseriesData.timeSeries.dataSetSize);
+      datasets =  _.take(datasets, this.timeseriesData.timeSeries.dataSetSize);
+      }
     return datasets;
   }
 
@@ -571,15 +598,14 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
    * @param res server res
    */
   transformDataForComparison(res: any, forDistinct?: boolean) {
-    const finalOutput = new Array();
+    const fieldId = this.timeseriesData.timeSeries.fieldId;
+    let finalOutput = new Array();
     this.dataSetlabel = [];
     const objData = {};
     this.chartLegend = [];
     const aggregation = res ? res.aggregations['date_histogram#date'] : [];
-    const arrKeys = ['data', 'id', 'label', 'fill', 'border'];
     if (aggregation.buckets !== undefined && aggregation.buckets.length > 0) {
       aggregation.buckets.forEach(singleBucket => {
-        const dataSet = new Object();
         const milliVal = singleBucket.key_as_string;
         const resValue = Object.keys(singleBucket);
         const value = resValue.filter(data => {
@@ -587,53 +613,68 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         })
         const arrBuckets = singleBucket[value[0]] ? singleBucket[value[0]].buckets : [];
         const arrcount = new Array();
+        const dataSet = new Object();
         arrBuckets.forEach(arrBucket => {
           const bucket = arrBuckets.filter(fil => fil.key === arrBucket.key)[0];
           const count = bucket ? (forDistinct ? (bucket['cardinality#count'] ? bucket['cardinality#count'].value : 0) : bucket.doc_count) : 0;
-          arrcount.push(count);
-          const txtvalue = Object.keys(bucket);
-          const txtlabel = txtvalue.filter(data => {
-            return data.includes('terms#textTerm');
-          })
-          const textTermBucket = bucket && bucket[txtlabel[0]] ? bucket[txtlabel[0]].buckets : [];
-          let label = ''
-          if(textTermBucket.length > 0){
-            textTermBucket.forEach(textBucket => {
-              label = textBucket.key;
+          let label = '';
+          let code1 = '';
+          if (forDistinct) {
+            const labelCode = this.codeTextValue(arrBucket, fieldId);
+            label = labelCode.t ? labelCode.t : labelCode;
+            code1 = labelCode.c ? labelCode.c : labelCode;
+          } else {
+            const txtvalue = Object.keys(bucket);
+            const txtlabel = txtvalue.filter(data => {
+              return data.includes('terms#textTerm');
             })
+            const textTermBucket = bucket && bucket[txtlabel[0]] ? bucket[txtlabel[0]].buckets : [];
+            textTermBucket.forEach(innerBucket => {
+              const labelCode = label = this.codeTextValue(innerBucket, fieldId);
+              label = labelCode.t ? labelCode.t : labelCode;
+              code1 = labelCode.c ? labelCode.c : labelCode;
+            });
           }
-          const chartLegend = { text: label, code: arrBucket.key, legendIndex: this.chartLegend.length };
-          const exist = this.chartLegend.filter(map => map.code === arrBucket.key);
+          const chartLegend = { text: label, code: code1, legendIndex: this.chartLegend.length };
+          const exist = this.chartLegend.filter(map => map.code === code1);
           if (exist.length === 0) {
             this.chartLegend.push(chartLegend);
-            if (this.dataSetlabel.indexOf(arrBucket.key) === -1) {
-              label.length > 0 ? this.dataSetlabel.push(label) : this.dataSetlabel.push(arrBucket.key);
+            if (this.dataSetlabel.indexOf(code1) === -1) {
+              label && label.length > 0 ? this.dataSetlabel.push(label) : this.dataSetlabel.push(code1);
             }
+          }
+          dataSet[label] = count;
+        });
+        this.dataSetlabel.forEach(key => {
+          if (Object.keys(dataSet).includes(key.toString())) {
+            arrcount.push(dataSet[key.toString()]);
+          } else {
+            arrcount.push(0);
           }
         });
         // Prepare datasets for comparison in timeseries
-        dataSet[arrKeys[0]] = arrcount;
-        dataSet[arrKeys[2]] = milliVal;
-        if(objData[milliVal] !== undefined){
-           const oldArray = objData[milliVal];
-           const lengthOfArr = arrcount.length>oldArray.length?oldArray.length:arrcount.length;
-           for(let i=0;i<lengthOfArr.length;i++){
-             arrcount[i] = arrcount[i]+oldArray[i];
-           }
+        if (objData[milliVal] !== undefined) {
+          const oldArray = objData[milliVal];
+          const lengthOfArr = arrcount.length > oldArray.length ? oldArray.length : arrcount.length;
+          for (let i = 0; i < lengthOfArr.length; i++) {
+            arrcount[i] = arrcount[i] + oldArray[i];
+          }
         }
-        objData[milliVal]=arrcount;
+        objData[milliVal] = arrcount;
       });
     }
 
-    const arrKeyF = ['label','data'];
-    Object.keys(objData).forEach(status => {
+    const arrKeyF = ['label', 'data'];
+    Object.keys(objData).forEach((status, index) => {
       const label = {};
       label[arrKeyF[0]] = status;
       label[arrKeyF[1]] = objData[status];
       finalOutput.push(label);
     });
 
-
+    if (this.timeseriesData.timeSeries.dataSetSize) {
+      finalOutput = _.take(finalOutput, this.timeseriesData.timeSeries.dataSetSize);
+    }
     this.timeSeriesOption.scales = { xAxes: [{}], yAxes: [{}] };
     this.setLegendForChart(); // calling it to set legend
     return finalOutput;
@@ -710,19 +751,6 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
       this.dataSet = finaldata;
       this.timeSeriesOption.scales = { xAxes: [{}], yAxes: [{}] };
       this.setLegendForChart(); // calling it to set legend
-
-      const metadata = this.widgetInf.getValue() ? this.widgetInf.getValue() : {} as TimeSeriesWidget;
-      if (metadata.timeSeries && metadata.timeSeries.isEnableDatalabels) {
-        this.timeSeriesOption.plugins = {
-          ChartDataLables,
-          datalabels: {
-            align: metadata.timeSeries.datalabelsPosition ? metadata.timeSeries.datalabelsPosition : 'end',
-            anchor: metadata.timeSeries.datalabelsPosition ? metadata.timeSeries.datalabelsPosition : 'end',
-            display: 'auto'
-          }
-        }
-      }
-
     }
   }
 
@@ -955,7 +983,6 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         appliedFilters.forEach(app => this.filterCriteria.push(app));
         this.applyFilters();
       }
-
     }
   }
 
@@ -975,6 +1002,18 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
         }
       }
     }
+
+    if (this.timeseriesData.timeSeries && this.timeseriesData.timeSeries.isEnableDatalabels) {
+      this.timeSeriesOption.plugins = {
+        ChartDataLables,
+        datalabels: {
+          align: this.timeseriesData.timeSeries.datalabelsPosition ? this.timeseriesData.timeSeries.datalabelsPosition : 'end',
+          anchor: this.timeseriesData.timeSeries.datalabelsPosition ? this.timeseriesData.timeSeries.datalabelsPosition : 'end',
+          display: 'auto'
+        }
+      }
+    }
+    this.setChartProperties();
   }
 
   applyFilters(){
@@ -982,5 +1021,36 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
     // this.lablels = [];
     // this.chartLegend = [];
     // this.widgetInf.next(this.widgetInf.getValue());
+  }
+
+  updatevalues() {
+    this.timeseriesData = this.widgetInf.getValue();
+    const hasBtn = this.dateFilters.filter(fil => fil.value === (this.timeseriesData.timeSeries.startDate))[0];
+    if (hasBtn) {
+      const index = this.dateFilters.indexOf(hasBtn);
+      this.dateFilters.splice(index, 1);
+      hasBtn.isActive = true;
+      this.dateFilters.splice(index, 0, hasBtn);
+      this.updateForm('date', hasBtn);
+    }
+  }
+
+  codeTextValue(innerBucket: any, fieldId: string): any {
+    let labelValue = '';
+    const hits = innerBucket['top_hits#data_hits'] ? innerBucket['top_hits#data_hits'].hits.hits[0] : null;
+    const val = hits._source.hdvs ? (hits._source.hdvs[fieldId] ?
+      (hits._source.hdvs[fieldId] ? hits._source.hdvs[fieldId].vc : null) : null) :
+      (hits._source.staticFields && hits._source.staticFields[fieldId]) ?
+        (hits._source.staticFields[fieldId] ? hits._source.staticFields[fieldId].vc : null) : null;
+    if (val) {
+      if (fieldId === 'OVERDUE' || fieldId === 'FORWARDENABLED' || fieldId === 'TIME_TAKEN') {
+        labelValue = this.getFields(fieldId, val[0].c);
+      } else {
+        labelValue = val[0];
+      }
+    } else {
+      labelValue = innerBucket.key;
+    }
+    return labelValue;
   }
 }

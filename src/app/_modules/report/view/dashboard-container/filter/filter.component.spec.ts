@@ -214,21 +214,15 @@ describe('FilterComponent', () => {
   }));
 
   it('getFieldsMetadaDesc(), should return the dropdown value of the field', async(() => {
-    const buckets = [{doc_count:1,key:{FILTER:'1'},'top_hits#items':{hits:{hits:[{_index:'localhost_workflow_do_0_en',_type:'_doc',_source:{staticFields:{FORWARDENABLED:{vc:[{c: '1'}]}}},_id:'590347384429815008',_score:1.0}]}}}];
-    component.values = [{CODE: '1', FIELDNAME: 'FORWARDENABLED', TEXT: '1'} as DropDownValues]
-    component.getFieldsMetadaDesc(buckets, 'FORWARDENABLED');
-    expect(component.values.length).toEqual(1);
-    expect(component.values[0].TEXT).toEqual('Yes');
-
-    const buckets1 = [{doc_count:2,key:{FILTER:'212255'},'top_hits#items':{hits:{hits:[{_index:'localhost_workflow_do_0_en',_type:'_doc',_source:{staticFields:{TIME_TAKEN:{vc:[{c: '212255'}]}}},_id:'590347384429815008',_score:1.0}]}}}, {doc_count:2,key:{FILTER:'610026'},'top_hits#items':{hits:{hits:[{_index:'localhost_workflow_do_0_en',_type:'_doc',_source:{staticFields:{TIME_TAKEN:{vc:[{c: '610026'}]}}},_id:'590347384429815008',_score:1.0}]}}}];
-    component.values = [{CODE: '212255', FIELDNAME: 'TIME_TAKEN', TEXT: '212255'} as DropDownValues, {CODE: '610026', FIELDNAME: 'TIME_TAKEN', TEXT: '610026'} as DropDownValues]
-    component.getFieldsMetadaDesc(buckets1, 'TIME_TAKEN');
+    const buckets = [{doc_count:1,key:{FILTER:'1'},'top_hits#items':{hits:{hits:[{_source:{hdvs:{MATL_GROUP:{vc:[{c: '200010'}]}}}}]}}},{doc_count:1,key:{FILTER:'1'},'top_hits#items':{hits:{hits:[{_source:{hdvs:{MATL_GROUP:{vc:[{c: '200010',t:'testing'}]}}}}]}}}, {doc_count:1,key:{FILTER:'1'},'top_hits#items':{hits:{hits:[{_source:{hdvs:{MATL_GROUP:{}}}}]}}}];
+    component.values = [{CODE: '200010', FIELDNAME: 'MATL_GROUP', TEXT: '200010'} as DropDownValues, {CODE: '200010', FIELDNAME: 'MATL_GROUP', TEXT: 'testing'} as DropDownValues]
+    component.getFieldsMetadaDesc(buckets, 'MATL_GROUP');
     expect(component.values.length).toEqual(2);
-    expect(component.values[0].TEXT).toEqual('3 m 32 s');
-    expect(component.values[1].TEXT).toEqual('10 m 10 s');
+    expect(component.values[0].TEXT).toEqual('200010');
+    expect(component.values[1].TEXT).toEqual('testing');
 
     const buckets2 = [{doc_count:2,key:{FILTER:'n'},'top_hits#items':{hits:{hits:[{_index:'localhost_workflow_do_0_en',_type:'_doc',_source:{staticFields: {OVERDUE: {vc: [{c: 'n'}]}}},_id:'590347384429815008',_score:1.0}]}}}, {doc_count:2,key:{FILTER:'y'},'top_hits#items':{hits:{hits:[{_index:'localhost_workflow_do_0_en',_type:'_doc',_source:{staticFields: {OVERDUE: {vc: [{c: 'y'}]}}},_id:'590347384429815008',_score:1.0}]}}}];
-    component.values = [{CODE: 'n', FIELDNAME: 'TIME_TAKEN', TEXT: 'n'} as DropDownValues, {CODE: 'y', FIELDNAME: 'OVERDUE', TEXT: 'y'} as DropDownValues]
+    component.values = [{CODE: 'n', FIELDNAME: 'OVERDUE', TEXT: 'n'} as DropDownValues, {CODE: 'y', FIELDNAME: 'OVERDUE', TEXT: 'y'} as DropDownValues]
     component.getFieldsMetadaDesc(buckets2, 'OVERDUE');
     expect(component.values.length).toEqual(2);
     expect(component.values[0].TEXT).toEqual('No');
