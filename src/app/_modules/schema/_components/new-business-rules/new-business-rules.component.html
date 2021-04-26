@@ -14,16 +14,16 @@
 
   <div class="f-col sidesheetcontent-listing">
     <div class="f-col mdo-justify">
-      <mat-card class="mat-elevation-z0 error-stackbar" *ngIf="validationError.status">
-        {{validationError.message}}
-      </mat-card>
+
+      <lib-banner status="error" *ngIf="validationError.status" [text]="validationError.message">
+      </lib-banner>
       <form [formGroup]="form">
         <div class="f-col mdo-field">
           <!-- label -->
           <mat-label class="mdo-field-label" i18n="@@rule_type">Rule type</mat-label>
           <!-- input container -->
           <div class="mdo-field-input">
-            <input matInput i18n-placeholder="@@rule_type" placeholder="Rule type" [matAutocomplete]="ruleTypeAuto" />
+            <input matInput [formControlName]="'rule_type'" i18n-placeholder="@@rule_type" placeholder="Rule type" [matAutocomplete]="ruleTypeAuto" />
             <mat-autocomplete class="mdo-autocomplete" [displayWith]="displayRuleFn.bind(this)"
               #ruleTypeAuto="matAutocomplete" (optionSelected)="selectSingle(form, 'rule_type', $event)">
               <ng-container *ngFor="let rule of businessRuleTypes">
@@ -51,9 +51,9 @@
           <!-- label -->
           <mat-label class="mdo-field-label" i18n="@@category">Category</mat-label>
           <!-- input container -->
-          <div class="mdo-field-input">
-            <input matInput i18n-placeholder="@@category" placeholder="Category" [matAutocomplete]="categoryIDAuto" />
-            <mat-autocomplete class="mdo-autocomplete" [displayWith]="displayCategoryFn.bind(this)"
+          <div *ngIf="categoryList?.length" class="mdo-field-input">
+            <input matInput [formControlName]="'categoryId'" i18n-placeholder="@@category" placeholder="Category" [matAutocomplete]="categoryIDAuto" />
+            <mat-autocomplete  class="mdo-autocomplete" [displayWith]="displayCategoryFn.bind(this)"
               #categoryIDAuto="matAutocomplete" (optionSelected)="selectSingle(form, 'categoryId', $event)">
               <mat-option class="mdo-option" *ngFor="let category of categoryList" [value]="category.categoryId">
                 {{category.categoryDesc}}
@@ -145,7 +145,7 @@
 
         <div class="mdo-field-input" *ngIf="isRegexType">
           <mat-label i18n="@@standard_function">Standard function</mat-label>
-          <input matInput i18n-placeholder="@@standard_function" placeholder="Standard function" [matAutocomplete]="regexNameAuto" />
+          <input [formControlName]="'standard_function'" matInput i18n-placeholder="@@standard_function" placeholder="Standard function" [matAutocomplete]="regexNameAuto" />
           <mat-autocomplete class="mdo-autocomplete" [displayWith]="displayRegexFn.bind(this)"
             #regexNameAuto="matAutocomplete" (optionSelected)="selectSingle(form, 'standard_function', $event)">
             <ng-container *ngFor="let regex of preDefinedRegex">
