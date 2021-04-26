@@ -68,40 +68,12 @@ describe('TaskListTableViewSettingsComponent', () => {
     expect(component.getTableViewDetails).toHaveBeenCalled();
   });
 
-  // it('getTableViewDetails()', async(() => {
-  //   // const fieldList = [
-  //   //   { fldId: 'description', order: 1 },
-  //   //   { fldId: 'labels', order: 2 },
-  //   //   { fldId: 'sent', order: 3 },
-  //   //   { fldId: 'dueby', order: 4 },
-  //   //   { fldId: 'requestby', order: 5 },
-  //   //   { fldId: 'sentby', order: 6 },
-  //   // ];
-  //   spyOn(taskListService, 'getHeadersForNode').and.returnValue(of([]));
-  //   component.node = 'inbox';
-  //   component.getTableViewDetails();
-  //   expect(taskListService.getHeadersForNode).toHaveBeenCalledWith('inbox');
-  //   taskListService.getHeadersForNode('inbox').subscribe((actualResponse) => {
-  //     expect(actualResponse).toBeTruthy();
-  //     // expect(component.viewDetails.length).toBeGreaterThan(1);
-  //   });
-  // }));
+  it('getFldMetadata())', () => {
+    spyOn(component, 'getFldMetadata');
+    component.ngOnInit();
 
-  // it('gettaskinboxViewDetailsData() with null return', () => {
-  //   spyOn(sharedServices, 'gettaskinboxViewDetailsData').and.returnValues(of(null));
-  //   component.node = 'inbox';
-  //   component.getTableViewDetails();
-
-  //   expect(sharedServices.gettaskinboxViewDetailsData).toHaveBeenCalled();
-  //   expect(component.viewDetails.length).toBeGreaterThan(1);
-  // });
-
-  // it('getFldMetadata())', () => {
-  //   spyOn(component, 'getFldMetadata');
-  //   component.ngOnInit();
-
-  //   expect(component.getFldMetadata).toHaveBeenCalled();
-  // });
+    expect(component.getFldMetadata).toHaveBeenCalled();
+  });
 
   it('metadataFldLst suggestedFlds length exist', () => {
     component.node = 'inbox';
@@ -143,24 +115,6 @@ describe('TaskListTableViewSettingsComponent', () => {
     expect(() => component.getFldMetadata()).toThrowError('node cant be null or empty');
   });
   it('getTableViewDetails()', fakeAsync(() => {
-    // const fieldList = [
-    //   { fldId: 'description', order: 1 },
-    //   { fldId: 'labels', order: 2 },
-    //   { fldId: 'sent', order: 3 },
-    //   { fldId: 'dueby', order: 4 },
-    //   { fldId: 'requestby', order: 5 },
-    //   { fldId: 'sentby', order: 6 },
-    // ];
-    // spyOn(taskListService, 'getHeadersForNode').and.returnValue(of(fieldList));
-    // component.node = 'inbox';
-    // component.getTableViewDetails();
-    // tick();
-    // expect(taskListService.getHeadersForNode).toHaveBeenCalledWith('inbox');
-    // tick();
-    // expect(component.viewDetails.length).toBeGreaterThan(1);
-    // spyOn(taskListService, 'getHeadersForNode')
-    //   .withArgs('inbox')
-    //   .and.callFake(() => of(fieldList));
     component.node = 'inbox';
     component.getTableViewDetails();
     tick();
@@ -192,11 +146,6 @@ describe('TaskListTableViewSettingsComponent', () => {
     expect(taskListService.saveOrUpdateTasklistHeaders).toHaveBeenCalledWith(component.node, [{ fldId: 'dueby', order: 1 }]);
     tick();
     expect(component.close).toHaveBeenCalled();
-
-    // taskListService.saveOrUpdateTasklistHeaders(component.node, [{ fldId: 'dueby', order: 1 }]).subscribe((actualResponse) => {
-    //   expect(actualResponse).not.toBeNull();
-    //   expect(component.close).toHaveBeenCalled();
-    // });
   }));
 
   it('ngOnDestroy()', () => {
