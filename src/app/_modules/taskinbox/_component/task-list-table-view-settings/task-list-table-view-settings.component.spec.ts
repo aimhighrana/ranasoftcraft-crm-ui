@@ -134,7 +134,7 @@ describe('TaskListTableViewSettingsComponent', () => {
     );
 
     component.viewDetails = [{ fldId: 'dueby', fldDesc: 'Due by', order: '0' }];
-    component.metadataFldLst = [{ fldId: 'dueby', fldDesc: 'Due by' }];
+    component.metadataFldLst = [{ fldId: 'dueby', fldDesc: 'Due by'}];
     component.node = 'inbox';
 
     component.save();
