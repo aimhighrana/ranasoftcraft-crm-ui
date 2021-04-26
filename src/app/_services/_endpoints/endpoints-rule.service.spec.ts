@@ -442,12 +442,12 @@ describe('EndpointsRuleService', () => {
 
   it('duplicacyGroupsListUrl(), duplicacyGroupsListUrl', async(() => {
     const serObj =new EndpointsRuleService();
-    expect(serObj.duplicacyGroupsListUrl()).toContain('/schema/actions/duplicate/getgroupId');
+    expect(serObj.duplicacyGroupsListUrl()).toContain('/schema/actions/getgroupId');
   }));
 
   it('catalogCheckRecordsUrl(), catalogCheckRecordsUrl', async(() => {
     const serObj =new EndpointsRuleService();
-    expect(serObj.catalogCheckRecordsUrl()).toContain('/schema/actions/duplicate/getContent');
+    expect(serObj.catalogCheckRecordsUrl()).toContain('/schema/actions/getContent');
   }));
 
   it('getCheckDataUrl(), should return endpoint for getting check data for schema', async(() => {
