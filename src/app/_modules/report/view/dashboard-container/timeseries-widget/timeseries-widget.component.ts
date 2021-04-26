@@ -655,11 +655,11 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
           const bucket = arrBuckets.filter(fil => fil.key === arrBucket.key)[0];
           const count = bucket ? (forDistinct ? (bucket['cardinality#count'] ? bucket['cardinality#count'].value : 0) : bucket.doc_count) : 0;
           let label = '';
-          let code = '';
+          let codeValue = '';
           if (forDistinct) {
             const labelCode = this.codeTextValue(arrBucket, fieldId);
             label = labelCode.t ? labelCode.t : labelCode;
-            code = labelCode.c ? labelCode.c : labelCode;
+            codeValue = labelCode.c ? labelCode.c : labelCode;
           } else {
             const txtvalue = Object.keys(bucket);
             const txtlabel = txtvalue.filter(data => {
@@ -669,14 +669,14 @@ export class TimeseriesWidgetComponent extends GenericWidgetComponent implements
             textTermBucket.forEach(innerBucket => {
               const labelCode = label = this.codeTextValue(innerBucket, fieldId);
               label = labelCode.t ? labelCode.t : labelCode;
-              code = labelCode.c ? labelCode.c : labelCode;
+              codeValue = labelCode.c ? labelCode.c : labelCode;
             });
           }
-          const chartLegend = { text: label, code: code, legendIndex: this.chartLegend.length };
-          const exist = this.chartLegend.filter(map => map.code === code);
+          const chartLegend = { text: label, code: codeValue, legendIndex: this.chartLegend.length };
+          const exist = this.chartLegend.filter(map => map.code === codeValue);
           if (exist.length === 0) {
             this.chartLegend.push(chartLegend);
-            if (this.dataSetlabel.indexOf(code) === -1) {
+            if (this.dataSetlabel.indexOf(codeValue) === -1) {
               label.length > 0 ? this.dataSetlabel.push(label) : this.dataSetlabel.push(this.checkTextCode(arrBucket));
             }
           }

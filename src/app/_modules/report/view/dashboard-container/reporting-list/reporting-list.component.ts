@@ -14,7 +14,6 @@ import { Router } from '@angular/router';
 import { SharedServiceService } from '@shared/_services/shared-service.service';
 import { ReportService } from '@modules/report/_service/report.service';
 import { UserService } from '@services/user/userservice.service';
-import * as moment from 'moment';
 import { Userdetails } from '@models/userdetails';
 
 @Component({
