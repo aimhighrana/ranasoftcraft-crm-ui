@@ -1,9 +1,7 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatSliderChange } from '@angular/material/slider';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PermissionOn, SchemaCollaborator, SchemaDashboardPermission, UserMdoModel, ROLES, RuleDependentOn } from '@models/collaborator';
 import { AddFilterOutput, CheckDataBrs, CheckDataRequest, CheckDataSubscriber } from '@models/schema/schema';
@@ -18,6 +16,7 @@ import { SchemaDetailsService } from '@services/home/schema/schema-details.servi
 import { SchemaExecutionService } from '@services/home/schema/schema-execution.service';
 import { SchemaVariantService } from '@services/home/schema/schema-variant.service';
 import { SchemalistService } from '@services/home/schema/schemalist.service';
+import { TransientService } from 'mdo-ui-library';
 import { forkJoin, Subscription } from 'rxjs';
 
 
@@ -137,6 +136,20 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    */
   subscriptions: Subscription[] = [];
 
+  depRuleList = [{ value: 'ALL', key: 'ALL' }, { value: 'SUCCESS', key: 'SUCCESS' }, { value: 'FAILURE', key: 'ERROR' }];
+
+  /**
+   * function to format slider thumbs label.
+   * @param percent percent
+   */
+  rangeSliderLabelFormat(percent) {
+    return `${percent}%`;
+  }
+
+  getCurrentBrStatusObj(status) {
+    return this.depRuleList.find(depRule => depRule.key === status) || this.depRuleList[0];
+  }
+
   constructor(
     private activateRoute: ActivatedRoute,
     private router: Router,
@@ -146,7 +159,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
     private schemaListService: SchemalistService,
     private schemaExecutionService: SchemaExecutionService,
     private schemaVariantService: SchemaVariantService,
-    private matSnackBar: MatSnackBar,
+    private toasterService: TransientService,
     private globalDialogService: GlobaldialogService
   ) { }
 
@@ -193,7 +206,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
 
     this.activateRoute.queryParams.subscribe((params) => {
       console.log(params);
-      this.isFromCheckData = params.name ? false : true;
+      this.isFromCheckData = Boolean(params.isCheckData === 'true');
       this.moduleDesc = params.name;
     })
 
@@ -296,13 +309,13 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
    * @param br updateable business rules...
    * @param event value of chnaged
    */
-  updateBr(br: CoreSchemaBrInfo, event?: any) {
+  updateBr(br: CoreSchemaBrInfo, event?: any, eventName?: string) {
     const businessRule: CoreSchemaBrInfo = this.businessRuleData.filter((rule) => rule.brIdStr === br.brIdStr)[0];
     if (event instanceof MatSliderChange) {
       businessRule.brWeightage = String((event as MatSliderChange).value);
     }
-    else if (event instanceof MatCheckboxChange) {
-      businessRule.status = (event as MatCheckboxChange).checked ? '1' : '0';
+    else if (eventName === 'checkbox') {
+      businessRule.status = event ? '1' : '0';
     }
   }
 
@@ -597,7 +610,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
       const checkExistence = this.businessRuleData.filter((businessRule) => businessRule.brIdStr === brInfo.brIdStr)[0];
       console.log(checkExistence,this.businessRuleData)
       if(checkExistence) {
-        this.matSnackBar.open('Business rule already added.', 'ok', {
+        this.toasterService.open('Business rule already added.', 'ok', {
           duration: 2000,
         });
         return;
@@ -619,7 +632,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
 
     const checkExistence = this.subscriberData.filter((sub) => sub.userid === subscriberInfo.userName)[0];
     if(checkExistence) {
-      this.matSnackBar.open('Subscriber already added.', 'ok', {
+      this.toasterService.open('Subscriber already added.', 'ok', {
         duration: 2000
       });
       return;
@@ -765,7 +778,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
           console.log(result);
           this.runSchema();
           this.close();
-          this.matSnackBar.open('This action has been confirmed..', 'Okay', {
+          this.toasterService.open('This action has been confirmed..', 'Okay', {
             duration: 2000
           })
         }, (error) => {
@@ -805,6 +818,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
 
 
   updateDepRule(br: CoreSchemaBrInfo, event?: any) {
+    console.log('Update dep rule', br, event);
     const index = this.businessRuleData.findIndex(item=>item.brIdStr===br.brIdStr);
     console.log(index,br,event)
     if(event.value!==RuleDependentOn.ALL)
@@ -820,7 +834,7 @@ export class SchemaSummarySidesheetComponent implements OnInit, OnDestroy {
     this.addChildatSameRoot(tobeChild,index)
     }
     const idxforChild=this.businessRuleData[index-1].dep_rules.indexOf(tobeChild);
-    this.businessRuleData[index-1].dep_rules[idxforChild].dependantStatus=event.value;
+    this.businessRuleData[index-1].dep_rules[idxforChild].dependantStatus=event.key || event.value;
     this.businessRuleData.splice(index,1)
     }
   }

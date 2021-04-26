@@ -14,6 +14,8 @@ import { Router } from '@angular/router';
 import { SharedServiceService } from '@shared/_services/shared-service.service';
 import { ReportService } from '@modules/report/_service/report.service';
 import { UserService } from '@services/user/userservice.service';
+import * as moment from 'moment';
+import { Userdetails } from '@models/userdetails';
 
 @Component({
   selector: 'pros-reporting-list',
@@ -75,6 +77,8 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
    * To hold subscriptions of component
    */
   subscription: Subscription[] = [];
+  returndata: any;
+  userDetails: Userdetails;
 
   constructor(public widgetService: WidgetService,
     @Inject(LOCALE_ID) public locale: string,
@@ -127,6 +131,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
    */
   public getUserDetails() {
     const sub =  this.userService.getUserDetails().subscribe(user => {
+      this.userDetails = user;
       this.plantCode = user.plantCode;
       this.roleId = user.currentRoleId;
       switch (user.dateformat) {
@@ -180,6 +185,9 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
       if (returnData !== undefined && Object.keys(returnData).length > 0) {
         // this.columnDescs.objectNumber = 'Object Number';
         returnData.forEach(singlerow => {
+          if (!singlerow.displayCriteria) {
+            singlerow.displayCriteria = DisplayCriteria.CODE;
+          }
           const obj = { fields: singlerow.fields, fieldOrder: singlerow.fieldOrder }
           fieldsArray.push(obj);
           this.columnDescs[singlerow.fields] = singlerow.fieldDesc ? singlerow.fieldDesc : singlerow.fldMetaData.fieldDescri;
@@ -204,84 +212,88 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
 
 
 
-  public getListdata(pageSize, pageIndex, widgetId: number, criteria: Criteria[], soringMap): void {
+   public getListdata(pageSize, pageIndex, widgetId: number, criteria: Criteria[], soringMap): void {
     this.widgetService.getListdata(String(pageSize), String(pageIndex), String(widgetId), criteria, soringMap).subscribe(returndata => {
-      this.listData = new Array();
-      this.resultsLength = returndata.count;
-      if (returndata.data) {
-        returndata = returndata.data;
+      this.returndata = returndata;
+      this.updateTable(this.returndata);
+    });
+  }
+
+  private updateTable(returndata) {
+    this.listData = new Array();
+    this.resultsLength = returndata.count;
+    if (returndata.data) {
+      returndata = returndata.data;
+    }
+    returndata.hits.hits.forEach(element => {
+      const source = element.sourceAsMap;
+      let objectNumber = source.staticFields && source.staticFields.OBJECTID && source.staticFields.OBJECTID.vc ? source.staticFields.OBJECTID.vc[0].c : element.id;
+
+    if(source.staticFields && source.staticFields.MASSPROCESSING_ID && source.staticFields.MASSPROCESSING_ID.vc && source.staticFields.MASSPROCESSING_ID.vc !== undefined){
+        objectNumber = source.staticFields.OBJECT_NUMBER && source.staticFields.OBJECT_NUMBER.vc !== undefined ?source.staticFields.OBJECT_NUMBER.vc[0].c:objectNumber;
       }
-      returndata.hits.hits.forEach(element => {
-        const source = element.sourceAsMap;
-        let objectNumber = source.staticFields && source.staticFields.OBJECTID && source.staticFields.OBJECTID.vc ? source.staticFields.OBJECTID.vc[0].c : element.id;
+      const obj = { objectNumber };
+      const status = source?source.stat:'';
+      if(status !=='' && status !== undefined && this.displayedColumnsId.indexOf('stat')>-1){
+       const colststus = 'stat';
+        obj[colststus]=status;
+      }
 
-      if(source.staticFields && source.staticFields.MASSPROCESSING_ID && source.staticFields.MASSPROCESSING_ID.vc && source.staticFields.MASSPROCESSING_ID.vc !== undefined){
-          objectNumber = source.staticFields.OBJECT_NUMBER && source.staticFields.OBJECT_NUMBER.vc !== undefined ?source.staticFields.OBJECT_NUMBER.vc[0].c:objectNumber;
-        }
-        const obj = { objectNumber };
-        const status = source?source.stat:'';
-        if(status !=='' && status !== undefined && this.displayedColumnsId.indexOf('stat')>-1){
-         const colststus = 'stat';
-          obj[colststus]=status;
-        }
-
-        const hdvs = source.hdvs !== undefined ? source.hdvs : (source.staticFields !== undefined ? source.staticFields : source);
-        if (source.staticFields !== undefined) {
-          Object.assign(hdvs, source.staticFields);
-        }
-        this.displayedColumnsId.forEach(column => {
-          if (column === 'action' || column === 'objectNumber' || column === 'stat') {
-            if(column === 'objectNumber') {
-              obj[column]=objectNumber;
-            }
-          } else {
-            if (hdvs[column]) {
-              // check for dropdown , multiselect , userselection and objectRefrence
-              const val = hdvs[column].vc ? hdvs[column].vc : null;
-              if (val) {
-                const valArray = [];
-                val.forEach(v => {
-                  if (v.t) {
-                    valArray.push(v.t);
-                  }
-                });
-                let textvalue = valArray.toString();
-                textvalue = textvalue === 'null' ? '' : textvalue
-                let codeValue = hdvs[column] ? hdvs[column].vc && hdvs[column].vc[0] ? hdvs[column].vc.map(map => map.c).toString() : '' : '';
-                codeValue = codeValue === 'null' ? '' : codeValue;
-                if(column === 'OVERDUE' || column === 'FORWARDENABLED' || column === 'TIME_TAKEN') {
-                  textvalue = this.getFields(column, codeValue);
+      const hdvs = source.hdvs !== undefined ? source.hdvs : (source.staticFields !== undefined ? source.staticFields : source);
+      if (source.staticFields !== undefined) {
+        Object.assign(hdvs, source.staticFields);
+      }
+      this.displayedColumnsId.forEach(column => {
+        if (column === 'action' || column === 'objectNumber' || column === 'stat') {
+          if(column === 'objectNumber') {
+            obj[column]=objectNumber;
+          }
+        } else {
+          if (hdvs[column]) {
+            // check for dropdown , multiselect , userselection and objectRefrence
+            const val = hdvs[column].vc ? hdvs[column].vc : null;
+            if (val) {
+              const valArray = [];
+              val.forEach(v => {
+                if (v.t) {
+                  valArray.push(v.t);
                 }
-                switch(this.widgetHeader.displayCriteria) {
-                  case DisplayCriteria.CODE :
-                    obj[column] = `${codeValue}`;
-                    break;
-                  case DisplayCriteria.TEXT :
+              });
+              let textvalue = valArray.toString();
+              textvalue = textvalue === 'null' ? '' : textvalue
+              let codeValue = hdvs[column] ? hdvs[column].vc && hdvs[column].vc[0] ? hdvs[column].vc.map(map => map.c).toString() : '' : '';
+              codeValue = codeValue === 'null' ? '' : codeValue;
+              if(column === 'OVERDUE' || column === 'FORWARDENABLED' || column === 'TIME_TAKEN') {
+                textvalue = this.getFields(column, codeValue);
+              }
+              const reportingWidget = this.tableColumnMetaData ? this.tableColumnMetaData.find(t => t.fields = column) : null;
+              const displayCriteria = reportingWidget && reportingWidget.displayCriteria ? reportingWidget.displayCriteria : this.widgetHeader.displayCriteria;
+              switch(displayCriteria) {
+                case DisplayCriteria.CODE :
+                  obj[column] = `${codeValue}`;
+                  break;
+                case DisplayCriteria.TEXT :
+                  obj[column] = `${textvalue ? textvalue : codeValue}`;
+                  break;
+                case DisplayCriteria.CODE_TEXT :
+                  if(this.isDropdownType(column)) {
+                    obj[column] = `${(textvalue ? codeValue + ' -- ' + textvalue : codeValue ? codeValue  + ' -- ' + codeValue : '')}`;
+                  } else {
                     obj[column] = `${textvalue ? textvalue : codeValue}`;
-                    break;
-                  case DisplayCriteria.CODE_TEXT :
-                    if(this.isDropdownType(column)) {
-                      obj[column] = `${(textvalue ? codeValue + ' -- ' + textvalue : codeValue ? codeValue  + ' -- ' + codeValue : '')}`;
-                    } else {
-                      obj[column] = `${textvalue ? textvalue : codeValue}`;
-                    }
-                    break;
+                  }
+                  break;
 
-                  default:
-                    break;
-                }
+                default:
+                  break;
               }
             }
           }
-        });
-        this.listData.push(obj);
+        }
       });
-      this.dataSource = new MatTableDataSource<any>(this.listData);
-      this.dataSource.sort = this.sort;
-      //  this.widgetService.count.subscribe(count=>{
-      //   this.resultsLength = count;
-      // })
+      this.listData.push(obj);
     });
+    this.dataSource = new MatTableDataSource<any>(this.listData);
+    this.dataSource.sort = this.sort;
   }
 
   getServerData(event): PageEvent {
@@ -359,11 +371,18 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
     const sortedColumns=this.sortDisplayedColumns(this.tableColumnMetaData)
     const data = {
       objectType: this.widgetHeader.objectType,
-      selectedColumns: sortedColumns.map(columnMetaData => columnMetaData.fldMetaData),
+      selectedColumns: sortedColumns.map(columnMetaData => {
+        columnMetaData.fldMetaData.sno = columnMetaData.sno;
+        columnMetaData.fldMetaData.displayCriteria = columnMetaData.displayCriteria;
+        return columnMetaData.fldMetaData
+      }),
       isWorkflowdataSet: this.widgetHeader.isWorkflowdataSet,
       isCustomdataSet: this.widgetHeader.isCustomdataSet,
       widgetId: this.widgetId,
-      isRefresh: false,
+      widgetType: this.widgetInfo.widgetType,
+      displayCriteria: this.widgetHeader.displayCriteria,
+      userDetails: this.userDetails,
+      isRefresh: false
     }
     this.sharedService.setReportDataTableSetting(data);
     this.router.navigate(['', { outlets: { sb: `sb/report/column-settings/${this.widgetId}` } }])

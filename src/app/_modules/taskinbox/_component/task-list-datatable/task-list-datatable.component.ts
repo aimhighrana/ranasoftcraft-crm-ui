@@ -1,3 +1,5 @@
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { TaskListService } from './../../../../_services/task-list.service';
 import { take, takeUntil } from 'rxjs/operators';
 import { SharedServiceService } from './../../../shared/_services/shared-service.service';
 import { ViewsPage } from '@models/list-page/listpage';
@@ -623,7 +625,7 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit, OnDest
   // @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private route: ActivatedRoute, private router: Router, private sharedServices: SharedServiceService) {}
+  constructor(private route: ActivatedRoute, private router: Router, private sharedServices: SharedServiceService, private taskListService: TaskListService, private matSnackBar: MatSnackBar) {}
 
   /**route param contains the node
    * node - based on node find the columns the table should have
@@ -639,12 +641,13 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit, OnDest
       this.nodeColumns = NODEFIELDS[this.node];
       this.updateTableColumns();
       this.updateNodeChips();
+      this.saveTasklistVisitByUser(this.node);
     });
 
     this.route.queryParams.pipe(take(1)).subscribe((queryParam) => {
       this.savedSearchParameters = queryParam.s || null;
       this.inlineFilters = queryParam.f || null;
-      if (this.currentFilterSettings.length <= 0) {
+      if (this.currentFilterSettings.length <= 0 && queryParam.f) {
         const decoded = atob(queryParam.f);
         if (decoded) {
           const settings = JSON.parse(decoded) || [];
@@ -800,6 +803,15 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit, OnDest
     return field ? field.fldDesc || 'Unkown' : dynCol || 'Unkown';
   }
 
+  saveTasklistVisitByUser(nodeId: string) {
+    if(nodeId) {
+      this.taskListService.saveTasklistVisitByUser(nodeId).pipe(take(1)).subscribe(resp => {
+
+      }, err => {
+        console.log(err);
+      });
+    }
+  }
   /**open auxilary routing to configure settings of table columns
    *
    */

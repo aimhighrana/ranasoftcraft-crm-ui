@@ -3,13 +3,14 @@ import { TestBed, async } from '@angular/core/testing';
 import { WidgetService } from './widget.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { EndpointsAnalyticsService } from '@services/_endpoints/endpoints-analytics.service';
+import { DisplayCriteria, WidgetType } from '@modules/report/_models/widget';
 
 describe('WidgetService', () => {
   let service: WidgetService;
   let endpointServiceSpy: jasmine.SpyObj<EndpointsAnalyticsService>;
   let httpTestingController: HttpTestingController;
   beforeEach(() => {
-    const epsSpy = jasmine.createSpyObj('EndpointsAnalyticsService', ['widgetDataUrl', 'copyReport']);
+    const epsSpy = jasmine.createSpyObj('EndpointsAnalyticsService', ['widgetDataUrl', 'copyReport', 'displayCriteria']);
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
@@ -55,6 +56,62 @@ describe('WidgetService', () => {
 
     const mockhttpData = {} as any;
     service.copyReport(reportId, reportName).subscribe((response) => {
+      expect(response).not.toBe(null)
+    });
+
+    const req = httpTestingController.expectOne(`${testurl}`);
+    expect(req.request.method).toEqual('POST');
+    req.flush(mockhttpData);
+    httpTestingController.verify();
+  }));
+
+  it('getDisplayCriteria() : should call getDisplayCriteria', async(() => {
+    const widgetId = '1234';
+    const widgetType = WidgetType.PIE_CHART;
+    const testurl = 'dummy url to test';
+
+    endpointServiceSpy.displayCriteria.and.returnValue(testurl);
+
+    const mockhttpData = {} as any;
+    service.getDisplayCriteria(widgetId, widgetType).subscribe((response) => {
+      expect(response).not.toBe(null)
+    });
+
+    const req = httpTestingController.expectOne(`${testurl}`);
+    expect(req.request.method).toEqual('GET');
+    req.flush(mockhttpData);
+    httpTestingController.verify();
+  }));
+
+  it('saveDisplayCriteria() : should call saveDisplayCriteria', async(() => {
+    const widgetId = '1234';
+    const widgetType = WidgetType.PIE_CHART;
+    const testurl = 'dummy url to test';
+    const displayCriteria = DisplayCriteria.CODE;
+
+    endpointServiceSpy.displayCriteria.withArgs(widgetId, widgetType).and.returnValue(testurl);
+
+    const mockhttpData = {} as any;
+    service.saveDisplayCriteria(widgetId, widgetType, displayCriteria).subscribe((response) => {
+      expect(response).not.toBe(null)
+    });
+
+    const req = httpTestingController.expectOne(`${testurl}&displayCriteria=${displayCriteria}`);
+    expect(req.request.method).toEqual('POST');
+    req.flush(mockhttpData);
+    httpTestingController.verify();
+  }));
+
+  it('saveDisplayCriteria() : should call saveDisplayCriteria with table body', async(() => {
+    const widgetId = '1234';
+    const widgetType = WidgetType.TABLE_LIST;
+    const testurl = 'dummy url to test';
+    const body = [{widgetId:1618447669219,fields:'DTECREATED',sno:138938958398777400,displayCriteria:'CODE_TEXT',createdBy:'initiator',fieldOrder:0},{widgetId:1618447669219,fields:'ZGR_DATE',sno:650430342398777300,displayCriteria:'CODE_TEXT',createdBy:'initiator',fieldOrder:1},{widgetId:1618447669219,fields:'GS_FROM_DATE',sno:251245618398777400,displayCriteria:'CODE_TEXT',createdBy:'initiator',fieldOrder:2},{widgetId:1618447669219,fields:'LOBM_VFDAT',sno:418568174398777400,displayCriteria:'CODE_TEXT',createdBy:'initiator',fieldOrder:3},{widgetId:1618447669219,fields:'MATL_TYPE',sno:500297061398777400,displayCriteria:'CODE_TEXT',createdBy:'initiator',fieldOrder:4}];
+
+    endpointServiceSpy.displayCriteria.and.returnValue(testurl);
+
+    const mockhttpData = [{sno:138938958398777400,widgetId:1618447669219,fields:'DTECREATED',fieldOrder:0,displayCriteria:'CODE_TEXT',createdBy:'initiator'},{sno:650430342398777300,widgetId:1618447669219,fields:'ZGR_DATE',fieldOrder:1,displayCriteria:'CODE_TEXT',createdBy:'initiator'},{sno:251245618398777400,widgetId:1618447669219,fields:'GS_FROM_DATE',fieldOrder:2,displayCriteria:'CODE_TEXT',createdBy:'initiator'},{sno:418568174398777400,widgetId:1618447669219,fields:'LOBM_VFDAT',fieldOrder:3,displayCriteria:'CODE_TEXT',createdBy:'initiator'},{sno:500297061398777400,widgetId:1618447669219,fields:'MATL_TYPE',fieldOrder:4,displayCriteria:'CODE_TEXT',createdBy:'initiator'}];
+    service.saveDisplayCriteria(widgetId, widgetType, null, body).subscribe((response) => {
       expect(response).not.toBe(null)
     });
 

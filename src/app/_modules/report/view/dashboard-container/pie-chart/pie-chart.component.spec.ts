@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PieChartComponent } from './pie-chart.component';
-import { PieChartWidget, AnchorAlignPosition, AlignPosition, PositionType, Criteria, WidgetHeader, WidgetColorPalette } from '../../../_models/widget';
+import { PieChartWidget, AnchorAlignPosition, AlignPosition, PositionType, Criteria, WidgetHeader, WidgetColorPalette, Widget, WidgetType } from '../../../_models/widget';
 import { WidgetService } from 'src/app/_services/widgets/widget.service';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -23,7 +23,7 @@ describe('PieChartComponent', () => {
     open: jasmine.createSpy('open')
   };
   beforeEach(async(() => {
-    const widgetServiceSpy = jasmine.createSpyObj(WidgetService,['downloadCSV','getHeaderMetaData']);
+    const widgetServiceSpy = jasmine.createSpyObj(WidgetService,['downloadCSV','getHeaderMetaData','getDisplayCriteria']);
     TestBed.configureTestingModule({
       declarations: [ PieChartComponent ],
       imports:[AppMaterialModuleForSpec,HttpClientTestingModule,MatMenuModule, SharedModule],
@@ -135,11 +135,17 @@ describe('PieChartComponent', () => {
   }));
 
  it('ngOnInit(),  should enable pre required on this component', async(()=>{
+  component.widgetId = 12345;
+  component.widgetInfo = new Widget();
+  component.widgetInfo.widgetType = WidgetType.PIE_CHART;
+  component.widgetInfo.widgetId = component.widgetId.toString();
   component.pieWidget.next(new PieChartWidget());
+  spyOn(widgetService, 'getDisplayCriteria').withArgs(component.widgetInfo.widgetId, component.widgetInfo.widgetType).and.returnValue(of({propId:'626039146695',widgetId:12345,createdBy:'initiator',createdAt:1618442609,displayCriteria:'CODE_TEXT'}));
   component.ngOnInit();
   expect(component.chartLegend.length).toEqual(0, 'Initial pie legend length should be 0');
   expect(component.lablels.length).toEqual(0, 'Initial pie lebels length should 0');
   expect(component.pieChartData[0].data.length).toEqual(6, 'Initial pie data  length should 6');
+  expect(widgetService.getDisplayCriteria).toHaveBeenCalledWith(component.widgetInfo.widgetId, WidgetType.PIE_CHART);
 }));
 
 it('legendClick(), should show paticular stack , after click on stack',async(()=>{

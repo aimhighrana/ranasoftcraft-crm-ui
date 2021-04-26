@@ -8,7 +8,11 @@
     <mat-menu #menu="matMenu" class="navigation-menu">
       <button mat-menu-item (click)="downloadImage()">Image download (.png)</button>
       <button mat-menu-item (click)="downloadCSV()">Data download (.csv)</button>
-      <button mat-menu-item (click)="openColorPalette()">Color palette</button>
+      <button mat-menu-item [matMenuTriggerFor]="tcOptionMenu" i18n="@@viewAs">View as...</button>
+      <mat-menu #tcOptionMenu="matMenu">
+        <lib-radio-group layout="vertical" [(value)]="displayCriteriaOption" [options]="displayCriteriaOptions" (valueChange)="saveDisplayCriteria()"></lib-radio-group>
+      </mat-menu>
+      <!-- <button mat-menu-item (click)="openColorPalette()">Color palette</button> -->
     </mat-menu>
   </div>
   <div class="row-spacer"></div>

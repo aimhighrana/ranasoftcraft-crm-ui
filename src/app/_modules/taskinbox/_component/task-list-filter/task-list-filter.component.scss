@@ -1,76 +1,54 @@
-div.root {
+.root {
   user-select: none;
   height: 100%;
+  width: 900px;
+  padding: 0 16px;
   overflow: hidden;
-  width: 700px;
 
-  .breadcrum-toolbar {
-    padding: 8px 16px;
+  .system {
+    align-items: flex-start;
+    height: 100%;
 
-    .mdo-constrained-right {
-      width: 100%;
-      margin-right: 0;
-    }
-  }
+    .system-fields-col {
+      width: 220px;
+      height: 100%;
 
-  .sidesheetcontent-listing {
-    height: calc(100% - 52px);
-    overflow: auto;
+      .filters-list {
+        height: calc(100% - 128px - 16px * 3);
+        overflow: auto;
 
-    .mdo-justify {
-      margin: 0 16px;
-    }
-  }
-}
+        .mat-tree-node {
+          overflow: visible;
+        }
 
-.colunm-box {
-  align-items: center;
-  box-sizing: border-box;
-  padding: 8px 0;
-  min-height: 48px;
+        mat-tree .mat-tree-node {
+          background: #fff;
+          font-size: 14px;
+          cursor: pointer;
+        }
 
-  .col {
-    display: flex;
-    flex: 1 0 auto;
-    width: 1px;
-    align-items: center;
-    margin: 0 16px;
+        mat-tree .mat-tree-node:hover {
+          background-color: #f2f5f8;
+        }
 
-    &.col-x4 {
-      flex: 4;
-    }
-
-    &.col-x8 {
-      flex: 8;
-    }
-
-    &.text-end {
-      justify-content: flex-end;
-    }
-
-    strong {
-      align-items: center;
-    }
-
-    .editablevalue {
-      border-bottom-width: 1px;
-      border-bottom-style: dashed;
-    }
-  }
-}
-
-@media (min-width: 1024px) {
-  div.root {
-    .breadcrum-toolbar {
-      .mdo-constrained-right {
-        margin-right: 50px;
+        mat-tree .mat-tree-node mat-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 36px;
+          height: 36px;
+          font-size: 24px;
+          line-height: 24px;
+        }
       }
     }
 
-    .sidesheetcontent-listing {
-      .mdo-justify {
-        margin: 0 66px;
-      }
+    .system-values-col {
+      width: calc(100% - 220px);
+    }
+
+    .date-list {
+      flex: 1;
     }
   }
 }

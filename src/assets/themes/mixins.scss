@@ -86,6 +86,12 @@
     padding: 0 16px;
   }
 
+  .change-password-dialog {
+    .mat-dialog-container {
+      padding: 24px;
+    }
+  }
+
   .mat-drawer-container {
     height: 100%;
   }
@@ -2059,6 +2065,10 @@
   .mat-expansion-panel-content {
     display: none;
   }
+}
+
+pros-subscriber-invite-sidesheet .lib-input .mdo-field {
+  margin-bottom: 17px;
 }
 
 // primary menu btns

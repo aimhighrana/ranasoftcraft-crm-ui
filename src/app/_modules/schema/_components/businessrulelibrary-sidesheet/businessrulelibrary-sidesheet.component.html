@@ -4,18 +4,18 @@
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
-                <div class="display-heading-large">Business rule library</div>
+                <div class="display-heading-large" i18n="@@business_rule_library">Business rule library</div>
                 <span class="f-col-spacer-half"></span>
                 <div class="f-spacer"></div>
                 <lib-button type="major" i18n="@@save" (click)="saveSelection()">Save</lib-button>
             </div>
             <div class="row-spacer"></div>
             <div class="f-row">
-               <lib-search (value)="getBusinessRulesList(moduleId, $event, '', '0')" placeholder="Search..."></lib-search>
+               <lib-search (value)="getBusinessRulesList(moduleId, $event, '', '0')" i18n-placeholder="@@search" placeholder="Search..."></lib-search>
                 <span class="col-spacer"></span>
                 <mat-chip-list>
                     <mat-chip class="mdo-filter-matchip" [matMenuTriggerFor]="businessRuleType">
-                        <label>Business rule type:</label> <span
+                        <label><span i18n="@@business_rule_type">Business rule type</span>:</label> <span
                             class="info">{{(selectedRuleType && selectedRuleType.ruleDesc)? selectedRuleType.ruleDesc: 'All'}}
                         </span>
                     </mat-chip>

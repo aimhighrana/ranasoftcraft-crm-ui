@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PermissionType, SchemaDashboardPermission } from '@models/collaborator';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { GlobaldialogService } from '@services/globaldialog.service';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
+import { TransientService } from 'mdo-ui-library';
 
 @Component({
   selector: 'pros-subscriber-invite-sidesheet',
@@ -34,14 +34,13 @@ export class SubscriberInviteSidesheetComponent implements OnInit {
    * constructor of the class
    * @param globalDialogService global dialog service object
    * @param schemaDetailsService schema details service
-   * @param snackBar mat snackbar for notifications
    */
   constructor(
     private _formBuilder: FormBuilder,
     private globalDialogService: GlobaldialogService,
     private schemaDetailsService: SchemaDetailsService,
     private sharedService: SharedServiceService,
-    private snackBar: MatSnackBar,
+    private transientService: TransientService,
     private activatedRoute: ActivatedRoute,
     private router: Router) { }
 
@@ -127,7 +126,7 @@ export class SubscriberInviteSidesheetComponent implements OnInit {
         if(control.invalid)
         control.markAsTouched()})
       });
-      this.snackBar.open('Please enter the required fields', 'Dismiss');
+      this.transientService.open('Please enter the required fields', 'Dismiss');
       return;
     }
     const body: SchemaDashboardPermission[] = []
