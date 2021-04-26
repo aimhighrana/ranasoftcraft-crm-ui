@@ -322,7 +322,7 @@ describe('TaskListDatatableComponent', () => {
       { fldId: 'sent', order: 3 },
       { fldId: 'dueby', order: 4 },
       { fldId: 'requestby', order: 5 },
-      { fldId: 'sentby', order: 6 },
+      { fldId: 'sentby', order: 6},
     ];
     component.node = 'inbox';
     spyOn(taskListService, 'getHeadersForNode').and.returnValue(of(fieldList));
