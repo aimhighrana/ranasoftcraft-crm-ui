@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
+import { TransientService } from 'mdo-ui-library';
 import { of } from 'rxjs';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 import { FormInputComponent } from '../form-input/form-input.component';
@@ -38,6 +39,7 @@ describe('SubscriberInviteComponent', () => {
         { provide: FormBuilder, useValue: formBuilder },
         { provide: MatDialogRef, useValue: mockDialogRef },
         { provide: MAT_DIALOG_DATA, useValue: [] },
+        TransientService
       ]
     })
       .compileComponents();
