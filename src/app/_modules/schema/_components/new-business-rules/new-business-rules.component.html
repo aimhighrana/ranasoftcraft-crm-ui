@@ -143,7 +143,7 @@
           </mat-error>
         </div>
 
-        <div class="mdo-field-input">
+        <div class="mdo-field-input" *ngIf="isRegexType">
           <mat-label i18n="@@standard_function">Standard function</mat-label>
           <input matInput i18n-placeholder="@@standard_function" placeholder="Standard function" [matAutocomplete]="regexNameAuto" />
           <mat-autocomplete class="mdo-autocomplete" [displayWith]="displayRegexFn.bind(this)"
