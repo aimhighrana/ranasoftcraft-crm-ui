@@ -1,4 +1,4 @@
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { TransientService } from 'mdo-ui-library';
 import { TaskListService } from '@services/task-list.service';
 import { take, takeUntil } from 'rxjs/operators';
 import { Subject, combineLatest } from 'rxjs';
@@ -53,7 +53,7 @@ export class TaskListTableViewSettingsComponent implements OnInit, OnDestroy {
     private router: Router,
     private sharedService: SharedServiceService,
     private taskListService: TaskListService,
-    private matSnackBar: MatSnackBar
+    private transientService: TransientService
   ) {}
 
   ngOnInit(): void {
@@ -208,14 +208,14 @@ export class TaskListTableViewSettingsComponent implements OnInit, OnDestroy {
           if (resp.acknowledge) {
             this.close();
           } else {
-            this.matSnackBar.open('Something went wrong.', 'Okay', {
+            this.transientService.open('Something went wrong', 'Okay', {
               duration: 2000,
             });
           }
         },
         (err) => {
           console.log(err);
-          this.matSnackBar.open('Something went wrong.', 'Okay', {
+          this.transientService.open('Something went wrong', 'Okay', {
             duration: 2000,
           });
         }

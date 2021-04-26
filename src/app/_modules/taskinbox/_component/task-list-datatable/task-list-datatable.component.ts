@@ -1,4 +1,3 @@
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { TaskListService } from './../../../../_services/task-list.service';
 import { take, takeUntil } from 'rxjs/operators';
 import { SharedServiceService } from './../../../shared/_services/shared-service.service';
@@ -603,8 +602,7 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit, OnDest
     private route: ActivatedRoute,
     private router: Router,
     private sharedServices: SharedServiceService,
-    private taskListService: TaskListService,
-    private matSnackBar: MatSnackBar
+    private taskListService: TaskListService
   ) {}
 
   /**route param contains the node
@@ -816,9 +814,6 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit, OnDest
           },
           (err) => {
             console.log(err);
-            this.matSnackBar.open('Table headers load failed.', 'Okay', {
-              duration: 2000,
-            });
           }
         );
     }
