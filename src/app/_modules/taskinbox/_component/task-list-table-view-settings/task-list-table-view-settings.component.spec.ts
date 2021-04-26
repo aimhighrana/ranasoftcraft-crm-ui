@@ -44,7 +44,7 @@ describe('TaskListTableViewSettingsComponent', () => {
       { fldId: 'sent', order: 3 },
       { fldId: 'dueby', order: 4 },
       { fldId: 'requestby', order: 5 },
-      { fldId: 'sentby', order: 6 },
+      { fldId: 'sentby', order: 6},
     ];
     spyOn(taskListService, 'getHeadersForNode')
       .withArgs('inbox')
