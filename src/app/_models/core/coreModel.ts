@@ -55,6 +55,7 @@ export class FieldMetaData {
     validationService: string;
     workFlowField: string;
     workflowCriteria: string;
+    isMultiselect: string;
 }
 
 export class FieldMetaDataDependency {

@@ -2,7 +2,7 @@ import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FieldMetaData } from '@models/core/coreModel';
-import { FilterCriteria, ListPageFilters } from '@models/list-page/listpage';
+import { FieldControlType, FilterCriteria, ListPageFilters } from '@models/list-page/listpage';
 import { SharedModule } from '@modules/shared/shared.module';
 import { CoreService } from '@services/core/core.service';
 import { of, throwError } from 'rxjs';
@@ -133,6 +133,10 @@ describe('ListFilterComponent', () => {
 
   it('should upsertFilter', () => {
 
+    component.moduleFieldsMetatdata = [
+      {fieldId: 'MTL_GROUP', fieldDescri: 'Material groupe'}
+    ] as FieldMetaData[];
+
     component.upsertFilter('MTL_GROUP');
     expect(component.activeFilter.fieldId).toEqual('MTL_GROUP');
 
@@ -152,18 +156,6 @@ describe('ListFilterComponent', () => {
     ] as FieldMetaData[];
 
     expect(component.getFieldDescription('MTL_GRP')).toEqual('Material groupe');
-
-  });
-
-  it('should getFilterDescription', () => {
-
-    expect(component.getFilterDescription('any')).toEqual('Unknown');
-
-    component.filterFieldsMetadata = [
-      {fieldId: 'MTL_GRP', fieldDescri: 'Material groupe'}
-    ] as FieldMetaData[];
-
-    expect(component.getFilterDescription('MTL_GRP')).toEqual('Material groupe');
 
   });
 
@@ -199,5 +191,32 @@ describe('ListFilterComponent', () => {
     expect(component.suggestedFilters.length).toEqual(0);
 
   }));
+
+  it('should getFieldControlType', () => {
+
+    component.moduleFieldsMetatdata = [
+      {fieldId: 'TEXT', picklist:'0', dataType:'CHAR'},
+      {fieldId: 'PASS', picklist:'0', dataType:'PASS'},
+      {fieldId: 'EMAIL', picklist:'0', dataType:'EMAIL'},
+      {fieldId: 'TEXT_AREA', picklist:'22', dataType:'CHAR'},
+      {fieldId: 'NUMBER', picklist:'0', dataType:'NUMC'},
+      {fieldId: 'MULTI_SELECT', picklist:'1', isMultiselect:'true'},
+      {fieldId: 'SINGLE_SELECT', picklist:'1', isMultiselect:'false'},
+      {fieldId: 'DATS', picklist:'0', dataType:'DATS'},
+      {fieldId: 'TIMS', picklist:'0', dataType:'TIMS'},
+    ] as FieldMetaData[];
+
+    expect(component.getFieldControlType('TEXT')).toEqual(FieldControlType.TEXT);
+    expect(component.getFieldControlType('PASS')).toEqual(FieldControlType.PASSWORD);
+    expect(component.getFieldControlType('EMAIL')).toEqual(FieldControlType.EMAIL);
+    expect(component.getFieldControlType('TEXT_AREA')).toEqual(FieldControlType.TEXT_AREA);
+    expect(component.getFieldControlType('NUMBER')).toEqual(FieldControlType.NUMBER);
+    expect(component.getFieldControlType('MULTI_SELECT')).toEqual(FieldControlType.MULTI_SELECT);
+    expect(component.getFieldControlType('SINGLE_SELECT')).toEqual(FieldControlType.SINGLE_SELECT);
+    expect(component.getFieldControlType('DATS')).toEqual(FieldControlType.DATE);
+    expect(component.getFieldControlType('TIMS')).toEqual(FieldControlType.TIME);
+    expect(component.getFieldControlType('default')).toEqual(FieldControlType.TEXT);
+
+  });
 
 });
