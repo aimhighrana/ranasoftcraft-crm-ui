@@ -1,3 +1,4 @@
+import { TaskListService } from '@services/task-list.service';
 import { of } from 'rxjs';
 import { SharedModule } from '@modules/shared/shared.module';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -14,6 +15,7 @@ describe('TaskListTableViewSettingsComponent', () => {
   let fixture: ComponentFixture<TaskListTableViewSettingsComponent>;
   let router: Router;
   let sharedServices: SharedServiceService;
+  let taskListService: TaskListService;
   const params = { node: 'inbox' };
 
   beforeEach(async(() => {
@@ -33,6 +35,7 @@ describe('TaskListTableViewSettingsComponent', () => {
     fixture = TestBed.createComponent(TaskListTableViewSettingsComponent);
     component = fixture.componentInstance;
     sharedServices = fixture.debugElement.injector.get(SharedServiceService);
+    taskListService = fixture.debugElement.injector.get(TaskListService);
     router = TestBed.inject(Router);
     fixture.detectChanges();
   });
@@ -55,13 +58,13 @@ describe('TaskListTableViewSettingsComponent', () => {
 
   it('getTableViewDetails()', () => {
     spyOn(sharedServices, 'gettaskinboxViewDetailsData').and.returnValues(
-      of({ node: 'inbox', viewDetails: [{ fldId: 'dueby', fldOrder: '0', fldDesc: 'Due by' }] })
+      of({ node: 'inbox', viewDetails: [{ fldId: 'dueby', order: '0', fldDesc: 'Due by' }] })
     );
     component.node = 'inbox';
     component.getTableViewDetails();
 
     expect(sharedServices.gettaskinboxViewDetailsData).toHaveBeenCalled();
-    expect(component.viewDetails).toEqual([{ fldId: 'dueby', fldOrder: '0', fldDesc: 'Due by' }]);
+    expect(component.viewDetails).toEqual([{ fldId: 'dueby', order: '0', fldDesc: 'Due by' }]);
     expect(component.viewDetails.length).toBe(1);
   });
   it('gettaskinboxViewDetailsData() with null return', () => {
@@ -97,7 +100,7 @@ describe('TaskListTableViewSettingsComponent', () => {
   });
 
   it('isChecked(), is checked ', async(() => {
-    component.viewDetails = [{ fldId: 'dueby', fldOrder: '0', fldDesc: 'Due by' }];
+    component.viewDetails = [{ fldId: 'dueby', order: '0', fldDesc: 'Due by' }];
 
     expect(component.isChecked({ fldId: 'dueby', fldDesc: 'Due by' })).toEqual(true);
 
@@ -120,17 +123,27 @@ describe('TaskListTableViewSettingsComponent', () => {
   it('should save', () => {
     spyOn(component, 'close');
     spyOn(sharedServices, 'settaskinboxViewDetailsData');
+    spyOn(taskListService, 'saveOrUpdateTasklistHeaders').and.returnValue(of({
+      acknowledge: true,
+      errorMsg: null
+    }));
 
-    component.viewDetails = [{ fldId: 'dueby', fldDesc: 'Due by', fldOrder: '0' }];
+    component.viewDetails = [{ fldId: 'dueby', fldDesc: 'Due by', order: '0' }];
     component.metadataFldLst = [{ fldId: 'dueby', fldDesc: 'Due by' }];
 
     component.save();
 
     expect(sharedServices.settaskinboxViewDetailsData).toHaveBeenCalledWith({
       node: 'inbox',
-      viewDetails: [{ fldId: 'dueby', fldDesc: 'Due by', fldOrder: '1' }],
+      viewDetails: [{ fldId: 'dueby', fldDesc: 'Due by', order: '1' }],
     });
-    expect(component.close).toHaveBeenCalled();
+
+    const payload = [{fldId: 'dueby', order: 1}];
+    expect(taskListService.saveOrUpdateTasklistHeaders).toHaveBeenCalledWith(component.node, payload);
+    taskListService.saveOrUpdateTasklistHeaders(component.node, payload).subscribe((actualResponse) => {
+      expect(actualResponse).not.toBeNull();
+      expect(component.close).toHaveBeenCalled();
+    });
   });
 
   it('ngOnDestroy()', () => {
