@@ -25,4 +25,9 @@ describe('EndpointsProcessService', () => {
   it('saveOrUpdateTasklistHeadersUrl', () => {
     expect(service.saveOrUpdateTasklistHeadersUrl('inbox')).toContain('process/inbox/field/save-update');
   });
+
+  it('getHeadersForNodeUrl', () => {
+    expect(service.getHeadersForNodeUrl('inbox')).toContain('process/inbox/field/list');
+  });
+
 });

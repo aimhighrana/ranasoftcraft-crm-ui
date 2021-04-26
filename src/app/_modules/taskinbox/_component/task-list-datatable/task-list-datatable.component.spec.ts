@@ -61,9 +61,13 @@ describe('TaskListDatatableComponent', () => {
   });
   it('should have queryParam', async(() => {
     spyOn(component, 'saveTasklistVisitByUser');
+    spyOn(component, 'getHeadersForNode');
+    spyOn(component, 'updateNodeChips');
     component.ngOnInit();
     activatedRoute.params.subscribe(resp => {
       expect(component.saveTasklistVisitByUser).toHaveBeenCalled();
+      expect(component.getHeadersForNode).toHaveBeenCalled();
+      expect(component.updateNodeChips).toHaveBeenCalled();
     });
   }));
   it('should have queryParam', fakeAsync(() => {
@@ -95,7 +99,7 @@ describe('TaskListDatatableComponent', () => {
     spyOn(sharedServices, 'gettaskinboxViewDetailsData').and.returnValue(of());
     component.ngOnInit();
 
-    expect(component.updateTableColumns).toHaveBeenCalled();
+    // expect(component.updateTableColumns).toHaveBeenCalled();
     expect(component.updateNodeChips).toHaveBeenCalled();
     expect(sharedServices.gettaskinboxViewDetailsData).toHaveBeenCalled();
   });
@@ -287,6 +291,8 @@ describe('TaskListDatatableComponent', () => {
   });
 
   it('getFieldDesc()', () => {
+    component.node = 'inbox';
+    component.nodeColumns = [{fldId: 'dueby', fldDesc: 'Due by'}];
     expect(component.getFieldDesc('dueby')).toEqual('Due by');
   });
 
@@ -304,6 +310,26 @@ describe('TaskListDatatableComponent', () => {
     taskListService.saveTasklistVisitByUser('inbox').subscribe((actualResponse) => {
       expect(actualResponse).toBeTruthy();
     });
+  }));
+
+  it('getHeadersForNode()', fakeAsync(() => {
+    const fieldList = [
+      { fldId: 'description', order: 1 },
+      { fldId: 'labels', order: 2 },
+      { fldId: 'sent', order: 3 },
+      { fldId: 'dueby', order: 4 },
+      { fldId: 'requestby', order: 5 },
+      { fldId: 'sentby', order: 6 },
+    ];
+    component.node = 'inbox';
+    spyOn(taskListService, 'getHeadersForNode').and.returnValue(of(fieldList));
+    spyOn(component, 'updateTableColumns');
+    component.getHeadersForNode('inbox');
+    tick();
+    expect(taskListService.getHeadersForNode).toHaveBeenCalled();
+    tick();
+    expect(component.nodeColumns.length).toBeGreaterThan(1);
+    expect(component.updateTableColumns).toHaveBeenCalled();
   }));
 
   it('ngOnDestroy()', () => {
