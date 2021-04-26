@@ -46,20 +46,21 @@ describe('TaskListDatatableComponent', () => {
     sharedServices = fixture.debugElement.injector.get(SharedServiceService);
     taskListService = fixture.debugElement.injector.get(TaskListService);
     router = TestBed.inject(Router);
-    // activatedRoute = TestBed.inject(ActivatedRoute);
-    fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
   it('should have node inbox', () => {
+    component.ngOnInit();
     expect(component.node).toEqual('inbox');
   });
-  it('should have queryParam', async () => {
+  it('should have param', async () => {
+    // fixture.detectChanges();
+    component.ngOnInit();
     expect(activatedRoute.snapshot.queryParams.f).toEqual('test');
   });
-  it('should have queryParam', async(() => {
+  it('should have param and called other methods', async(() => {
     spyOn(component, 'saveTasklistVisitByUser');
     spyOn(component, 'getHeadersForNode');
     spyOn(component, 'updateNodeChips');
@@ -70,7 +71,7 @@ describe('TaskListDatatableComponent', () => {
       expect(component.updateNodeChips).toHaveBeenCalled();
     });
   }));
-  it('should have queryParam', fakeAsync(() => {
+  it('should have queryParam', async(() => {
     // this calls ngOnInit and we subscribe
     spyOn(component, 'updateNodeChips');
     const settings = [
@@ -85,14 +86,16 @@ describe('TaskListDatatableComponent', () => {
     ];
     const f = btoa(JSON.stringify(settings));
     fixture.detectChanges();
+    // component.ngOnInit();
     queryParams.next({ s: 'inbox', f });
 
     // tick to make sure the async observable resolves
-    tick();
+    // tick();
     expect(component.savedSearchParameters).toBe('inbox');
     expect(component.inlineFilters).toBe(f);
     expect(component.updateNodeChips).toHaveBeenCalledWith(settings);
   }));
+
   it('updateTableColumns()', () => {
     spyOn(component, 'updateTableColumns');
     spyOn(component, 'updateNodeChips');
