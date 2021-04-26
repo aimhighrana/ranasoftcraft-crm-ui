@@ -1,3 +1,4 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { TaskListService } from '@services/task-list.service';
 import { of } from 'rxjs';
 import { SharedModule } from '@modules/shared/shared.module';
@@ -21,7 +22,7 @@ describe('TaskListTableViewSettingsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [TaskListTableViewSettingsComponent],
-      imports: [AppMaterialModuleForSpec, RouterTestingModule, SharedModule],
+      imports: [AppMaterialModuleForSpec, RouterTestingModule, SharedModule, MdoUiLibraryModule],
       providers: [
         {
           provide: ActivatedRoute,
@@ -37,6 +38,17 @@ describe('TaskListTableViewSettingsComponent', () => {
     sharedServices = fixture.debugElement.injector.get(SharedServiceService);
     taskListService = fixture.debugElement.injector.get(TaskListService);
     router = TestBed.inject(Router);
+    const fieldList = [
+      { fldId: 'description', order: 1 },
+      { fldId: 'labels', order: 2 },
+      { fldId: 'sent', order: 3 },
+      { fldId: 'dueby', order: 4 },
+      { fldId: 'requestby', order: 5 },
+      { fldId: 'sentby', order: 6 },
+    ];
+    spyOn(taskListService, 'getHeadersForNode')
+      .withArgs('inbox')
+      .and.callFake(() => of(fieldList));
     // fixture.detectChanges();
   });
 
@@ -111,9 +123,7 @@ describe('TaskListTableViewSettingsComponent', () => {
 
   it('isChecked(), is checked ', () => {
     component.viewDetails = [{ fldId: 'dueby', order: '0', fldDesc: 'Due by' }];
-
     expect(component.isChecked({ fldId: 'dueby', fldDesc: 'Due by' })).toEqual(true);
-
     expect(component.isChecked({ fldId: 'sent', fldDesc: 'Sent' })).toBeFalse();
   });
 
@@ -133,15 +143,24 @@ describe('TaskListTableViewSettingsComponent', () => {
     expect(() => component.getFldMetadata()).toThrowError('node cant be null or empty');
   });
   it('getTableViewDetails()', fakeAsync(() => {
-    const fieldList = [
-      { fldId: 'description', order: 1 },
-      { fldId: 'labels', order: 2 },
-      { fldId: 'sent', order: 3 },
-      { fldId: 'dueby', order: 4 },
-      { fldId: 'requestby', order: 5 },
-      { fldId: 'sentby', order: 6 },
-    ];
-    spyOn(taskListService, 'getHeadersForNode').and.returnValue(of(fieldList));
+    // const fieldList = [
+    //   { fldId: 'description', order: 1 },
+    //   { fldId: 'labels', order: 2 },
+    //   { fldId: 'sent', order: 3 },
+    //   { fldId: 'dueby', order: 4 },
+    //   { fldId: 'requestby', order: 5 },
+    //   { fldId: 'sentby', order: 6 },
+    // ];
+    // spyOn(taskListService, 'getHeadersForNode').and.returnValue(of(fieldList));
+    // component.node = 'inbox';
+    // component.getTableViewDetails();
+    // tick();
+    // expect(taskListService.getHeadersForNode).toHaveBeenCalledWith('inbox');
+    // tick();
+    // expect(component.viewDetails.length).toBeGreaterThan(1);
+    // spyOn(taskListService, 'getHeadersForNode')
+    //   .withArgs('inbox')
+    //   .and.callFake(() => of(fieldList));
     component.node = 'inbox';
     component.getTableViewDetails();
     tick();
