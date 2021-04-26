@@ -36,7 +36,7 @@ describe('TaskListFilterComponent', () => {
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
     globalDialogService = fixture.debugElement.injector.get(GlobaldialogService);
-    fixture.detectChanges();
+    // fixture.detectChanges();
   });
 
   it('should create', () => {
@@ -113,7 +113,7 @@ describe('TaskListFilterComponent', () => {
     const input = field.query(By.css('input')).nativeElement;
     input.value = 'someValue';
     input.dispatchEvent(new Event('keyup'));
-    fixture.detectChanges();
+    // fixture.detectChanges();
     expect(input.value).toBe('someValue');
   }));
   it('scroll($event)', () => {
@@ -154,7 +154,8 @@ describe('TaskListFilterComponent', () => {
       },
     ];
     const f = btoa(JSON.stringify(settings));
-    fixture.detectChanges();
+    // fixture.detectChanges();
+    component.ngOnInit();
     queryParams.next({ s: 'inbox', f });
 
     // tick to make sure the async observable resolves

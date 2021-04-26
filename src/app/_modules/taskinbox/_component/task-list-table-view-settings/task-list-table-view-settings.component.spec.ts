@@ -37,7 +37,7 @@ describe('TaskListTableViewSettingsComponent', () => {
     sharedServices = fixture.debugElement.injector.get(SharedServiceService);
     taskListService = fixture.debugElement.injector.get(TaskListService);
     router = TestBed.inject(Router);
-    fixture.detectChanges();
+    // fixture.detectChanges();
   });
 
   it('should create', () => {
@@ -102,6 +102,7 @@ describe('TaskListTableViewSettingsComponent', () => {
 
   it('close()', () => {
     spyOn(router, 'navigate');
+    fixture.detectChanges();
     component.close();
     expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: null } }], {
       queryParamsHandling: 'preserve',
@@ -127,6 +128,7 @@ describe('TaskListTableViewSettingsComponent', () => {
   });
 
   it('throw error when node is undefined', () => {
+    component.ngOnInit();
     component.node = '';
     expect(() => component.getFldMetadata()).toThrowError('node cant be null or empty');
   });
