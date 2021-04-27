@@ -231,7 +231,7 @@ describe('UploadDatasetComponent', () => {
     expect(component.createBrObject(formData, formData.udrTreeData)).not.toBeUndefined();
     expect(component.createBrObject(formData, formData.udrTreeData)).not.toBeNull();
 
-    const object = {
+    const object: any = {
       tempId: '131234343434',
       sno: 123323,
       brIdStr: '12343435',
@@ -257,6 +257,16 @@ describe('UploadDatasetComponent', () => {
     };
     expect(component.createBrObject(object, formData.udrTreeData)).not.toBeUndefined();
     expect(component.createBrObject(object, formData.udrTreeData)).not.toBeNull();
+
+    object.udrHierarchies = [1,2];
+    expect(component.createBrObject(object, formData.udrTreeData).udrDto.udrHierarchies.length).toBe(2);
+    delete formData.udrTreeData.udrHierarchies;
+    expect(component.createBrObject(object, formData.udrTreeData).udrDto.udrHierarchies.length).toBe(2);
+    delete object.udrHierarchies;
+    expect(component.createBrObject(object, formData.udrTreeData).udrDto.udrHierarchies).toBeUndefined();
+    object.isCopied = true;
+    expect(component.createBrObject(object, formData.udrTreeData).isCopied).toBeTruthy();
+
   }));
 
   it(`getModulesMetaHeaders(), should be called when creating modules metadata`, async(() => {
