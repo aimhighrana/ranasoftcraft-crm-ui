@@ -17,4 +17,24 @@ export class EndpointsProfileService {
   public updatePersonalDetails(): string {
     return `${this.apiUrl}/save-personal-details`;
   }
+
+  public getUserPreferenceDetails(): string {
+    return `${this.apiUrl}/get-user-pref`;
+  }
+
+  public updateUserPreferenceDetails(): string {
+    return `${this.apiUrl}/save-user-pref`;
+  }
+
+  public getAllLanguagesList(): string {
+    return `${this.apiUrl}/get-all-languages`;
+  }
+
+  public getDateFormatList(): string {
+    return `${this.apiUrl}/get-date-format`;
+  }
+
+  public getNumberFormatList(): string {
+    return `${this.apiUrl}/get-number-format`;
+  }
 }
