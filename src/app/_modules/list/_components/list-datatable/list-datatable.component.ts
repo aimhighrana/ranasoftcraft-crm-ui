@@ -1,7 +1,7 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ListPageFilters, ListPageViewDetails, SortDirection, ViewsPage } from '@models/list-page/listpage';
+import { FilterCriteria, ListPageFilters, ListPageViewDetails, SortDirection, ViewsPage } from '@models/list-page/listpage';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { ListService } from '@services/list/list.service';
 import { BehaviorSubject, concat, of, Subscription } from 'rxjs';
@@ -16,6 +16,7 @@ import { MatSort } from '@angular/material/sort';
 import { catchError, map, skip } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { FilterSaveModalComponent } from '../filter-save-modal/filter-save-modal.component';
+import { DateTimeHelperService } from '@services/date-time-helper.service';
 
 
 @Component({
@@ -112,7 +113,8 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
     private listService: ListService,
     private coreService: CoreService,
     private glocalDialogService: GlobaldialogService,
-    private matDialog: MatDialog) {
+    private matDialog: MatDialog,
+    private dateTimeHelper: DateTimeHelperService) {
 
     this.dataSource = new ListDataSource(this.listService);
 
@@ -153,7 +155,6 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
         this.filtersList = filters;
         console.log(this.filtersList);
         if (!this.isPageRefresh) {
-
           this.getTotalCount();
           this.getTableData();
         }
@@ -305,7 +306,7 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
    * get total records count
    */
   getTotalCount() {
-    const subs = this.listService.getDataCount(this.moduleId, this.filtersList.filterCriteria).subscribe(count => {
+    const subs = this.listService.getDataCount(this.moduleId, this.mapFilerValues()).subscribe(count => {
       this.totalCount = count;
     }, error => {
       console.error(`Error : ${error.message}`);
@@ -365,7 +366,7 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
    */
   getTableData() {
     const viewId = this.currentView.viewId ? this.currentView.viewId : '';
-    this.dataSource.getData(this.moduleId, viewId, this.recordsPageIndex, this.filtersList.filterCriteria);
+    this.dataSource.getData(this.moduleId, viewId, this.recordsPageIndex, this.mapFilerValues());
   }
 
   /**
@@ -450,7 +451,7 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
   onColumnsResize(event) {
     const column = this.currentView.fieldsReqList.find(c => c.fieldId === event.columnId);
     if (column) {
-      column.width = event.width;
+      column.width = `${event.width}`;
 
       const sub = this.listService.upsertListPageViewDetails(this.currentView, this.moduleId).subscribe(resp => {
         console.log(resp);
@@ -523,6 +524,25 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
 
   resetAllFilters() {
     this.router.navigate([], { queryParams: {} });
+  }
+
+  /**
+   * map date filters based on fields metatdata
+   * @returns mapped filter criterias
+   */
+  mapFilerValues(): FilterCriteria[] {
+
+    const criterias = [];
+    this.filtersList.filterCriteria.forEach( fc => {
+      if(fc.unit && !['static_date', 'static_range'].includes(fc.unit)) {
+        const dateRange = this.dateTimeHelper.dateUnitToDateRange(fc.unit);
+        fc.startValue = dateRange.startDate.toString();
+        fc.endValue = dateRange.endDate.toString();
+      }
+      criterias.push(fc);
+    });
+
+    return criterias;
   }
 
   ngOnDestroy(): void {

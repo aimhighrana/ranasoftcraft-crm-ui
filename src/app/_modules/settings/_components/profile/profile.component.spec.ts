@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatAutocomplete, MatAutocompleteModule } from '@angular/material/autocomplete';
 import { SharedModule } from '@modules/shared/shared.module';
 import { MdoUiLibraryModule, TransientService } from 'mdo-ui-library';
 
@@ -9,7 +9,7 @@ import { ProfileComponent } from './profile.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { UserService } from '@services/user/userservice.service';
 import { of, throwError } from 'rxjs';
-import { UserPersonalDetails } from '@models/userdetails';
+import { UserPersonalDetails, UserPreferenceDetails } from '@models/userdetails';
 
 describe('ProfileComponent', () => {
   let component: ProfileComponent;
@@ -80,6 +80,19 @@ describe('ProfileComponent', () => {
     expect(component.updatePersonalDetails()).toBeTruthy();
   }));
 
+  it('getUserPreference(), should get user preference', async(() => {
+    const userPref: UserPreferenceDetails = new UserPreferenceDetails();
+    spyOn(userService, 'getUserPreferenceDetails').and.returnValues(of(userPref), throwError({message: 'Something went wrong'}));
+
+    spyOn(userService, 'getAllLanguagesList').and.returnValues(of([]), throwError({message: 'Something went wrong'}));
+    spyOn(userService, 'getDateFormatList').and.returnValues(of([]), throwError({message: 'Something went wrong'}));
+    spyOn(userService, 'getNumberFormatList').and.returnValues(of([]), throwError({message: 'Something went wrong'}));
+
+    component.createLanguageSettingsForm();
+
+    expect(component.languageSettingsForm.controls.language.value).toEqual('');
+  }));
+
   it('updates personal details in database', async(() => {
     expect(component.updatePersonalDetails).toBeTruthy();
   }));
@@ -99,5 +112,46 @@ describe('ProfileComponent', () => {
     component.setValue('userName', 'Test');
 
     expect(component.settingsForm.controls.userName.value === 'Test').toBeTruthy();
+  }));
+
+  it('getDropdownPos(), should set dropdown position', async(() => {
+    const spy = jasmine.createSpyObj(MatAutocomplete,['closed','opened']);
+    expect(component.getDropdownPos(spy)).toEqual('chevron-down');
+  }));
+
+  it('filter(), should filter based on key', async(() => {
+    const list = ['test1', 'test2', 'test3'];
+    expect(component.filter('test1', list)).toEqual(['test1']);
+  }));
+
+  it('makeLangSettingsUpdateCall(), should make http call to update language settings', async(() => {
+    const response = {
+      acknowledge: true,
+      errorMsg: 'Error',
+      userName: 'Test Name'
+    };
+    spyOn(userService, 'updateUserPreferenceDetails').and.returnValues(of(response), throwError({message: 'Something went wrong'}));
+
+    component.currentUserPreferences = new UserPreferenceDetails();
+    component.timeZoneList = ['IST'];
+    component.makeLangSettingsUpdateCall('IST', 'timezone', component.timeZoneList);
+
+    expect(component.currentUserPreferences.timezone).toEqual('IST');
+  }));
+
+  it('makeLangSettingsUpdateCall(), should make http call to update language settings', async(() => {
+    const response = {
+      acknowledge: true,
+      errorMsg: null,
+      userName: 'Test Name'
+    };
+    spyOn(userService, 'updateUserPreferenceDetails').and.returnValues(of(response), throwError({message: 'Something went wrong'}));
+
+    component.currentUserPreferences = new UserPreferenceDetails();
+    component.timeZoneList = ['IST'];
+    component.makeLangSettingsUpdateCall('UTC', 'timezone', component.timeZoneList);
+
+    component.makeLangSettingsUpdateCall('IST', 'timezone', component.timeZoneList);
+    expect(component.langFormErrMsg).toEqual('');
   }));
 });

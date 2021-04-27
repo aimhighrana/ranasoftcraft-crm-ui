@@ -1,13 +1,13 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { TransientService } from 'mdo-ui-library';
 import { ChangePasswordDialogComponent } from './change-password-dialog/change-password-dialog.component';
-import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { debounceTime, map, startWith } from 'rxjs/operators';
 import { UserService } from '@services/user/userservice.service';
-import { UserPersonalDetails } from '@models/userdetails';
+import { UserPersonalDetails, UserPreferenceDetails } from '@models/userdetails';
+import { MatAutocomplete } from '@angular/material/autocomplete';
 
 @Component({
   selector: 'pros-profile',
@@ -16,73 +16,163 @@ import { UserPersonalDetails } from '@models/userdetails';
 })
 export class ProfileComponent implements OnInit {
 
-  /**
-   * Form control for the input
-   */
-   optionCtrl2 = new FormControl();
+  // Form group for the language settings
+  languageSettingsForm: FormGroup;
 
-   /**
-    * hold the list of filtered options
-    */
-   filteredOptions: Observable<string[]>;
+  // stores user preferences
+  currentUserPreferences: UserPreferenceDetails;
 
-   /**
-    * Available options list
-    */
-   allOptions: string[] = ['One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten'];
+  // holds the list of filtered options
+  filteredLangList: Observable<string[]>;
+  filteredTimeZoneList: Observable<string[]>;
+  filteredDateFormatList: Observable<string[]>;
+  filteredTimeFormatList: Observable<string[]>;
+  filteredNumberFormatList: Observable<string[]>;
 
-   /**
-    * Reference to the input
-    */
-   @ViewChild('optionInput2') optionInput2: ElementRef<HTMLInputElement>;
-
-   /**
-    * reference to auto-complete
-    */
-   @ViewChild('auto') matAutocomplete: MatAutocomplete;
-   selectedValue: any;
-
-   selected: any;
-
+  // Language settings list
+  languagesList: string[];
+  timeZoneList: string[];
+  dateFormatList: string[];
+  timeFormatList: string[];
+  numberFormatList: string[];
 
   // settings form
   settingsForm: FormGroup;
+
   // updates form after user stops editing
   updateForm = false;
+
   // stores user personal details obtained from db
   currentUserDetails: UserPersonalDetails;
+
   // stores error message on personal details update
   formErrMsg;
 
-  constructor(private dialog: MatDialog, private libToast: TransientService, private userService: UserService) {
-    this.filteredOptions = this.optionCtrl2.valueChanges.pipe(
-      startWith(''),
-      map((num: string | null) => num ? this._filter(num) : this.allOptions.slice()));
-  }
+  // stores error message on language settings update
+  langFormErrMsg;
 
-   /**
-    * mehtod to filter items based on the searchterm
-    * @param value searchTerm
-    * @returns string[]
-    */
-   _filter(value: string): string[] {
-     const filterValue = value.toLowerCase();
-
-     return this.allOptions.filter(num => num.toLowerCase().indexOf(filterValue) === 0);
-   }
-
-   /**
-    * method to add item to selected items
-    * for single sleect
-    * @param event item
-    */
-    selectSingle(event: MatAutocompleteSelectedEvent): void {
-     this.selectedValue = event.option.value;
-   }
+  constructor(private dialog: MatDialog, private libToast: TransientService, private userService: UserService) { }
 
   ngOnInit(): void {
     this.createForm();
     this.getUserPersonalDetails();
+    this.createLanguageSettingsForm();
+  }
+
+  /**
+   * fetches data list for all language settings
+   */
+  getLanguageSettingsList() {
+    this.userService.getAllLanguagesList().subscribe((data) => {
+      if (data) {
+        this.languagesList = data;
+      }
+    }, (err) => {
+      console.log(err);
+    });
+
+    this.userService.getDateFormatList().subscribe((data) => {
+      if (data) {
+        this.dateFormatList = data;
+      }
+    }, (err) => {
+      console.log(err);
+    });
+
+    this.userService.getNumberFormatList().subscribe((data) => {
+      if (data) {
+        this.numberFormatList = data;
+      }
+    }, (err) => {
+      console.log(err);
+    });
+
+    this.timeZoneList = ['UTC', 'IST', 'AST'];
+    this.timeFormatList = ['Time Format1', 'Time Format2', 'Time Format3'];
+  }
+
+  /**
+   * gets current user preference and sets in form fields
+   */
+  getUserPreference() {
+    this.userService.getUserPreferenceDetails().subscribe((data) => {
+      if (data) {
+        this.currentUserPreferences = data;
+        this.languageSettingsForm.patchValue({
+          language: data.lang || '',
+          timeZone: data.timezone || '',
+          dateFormat: data.dFormat || '',
+          timeFormat: data.tformat || '',
+          numberFormat: data.nformat || ''
+        });
+      }
+    }, (err) => {
+      console.log(err);
+    });
+  }
+
+  /**
+   * creates language settings form
+   */
+  createLanguageSettingsForm() {
+    this.languageSettingsForm = new FormGroup({
+      language: new FormControl(),
+      timeZone: new FormControl(),
+      dateFormat: new FormControl(),
+      timeFormat: new FormControl(),
+      numberFormat: new FormControl()
+    });
+
+    this.getLanguageSettingsList();
+    this.getUserPreference();
+    this.setupFilteredList();
+  }
+
+  /**
+   * sets up filter for mat auto complete in all form fields
+   */
+  setupFilteredList() {
+    this.filteredLangList = this.languageSettingsForm.controls.language.valueChanges.pipe(
+      debounceTime(100),
+      startWith(''),
+      map((num: string | null) => num ? this.filter(num, this.languagesList) : (this.languagesList ? this.languagesList.slice() : this.languagesList))
+    );
+
+    this.filteredTimeZoneList = this.languageSettingsForm.controls.timeZone.valueChanges.pipe(
+      debounceTime(100),
+      startWith(''),
+      map((num: string | null) => num ? this.filter(num, this.timeZoneList) : (this.timeZoneList ? this.timeZoneList.slice() : this.timeZoneList))
+    );
+
+    this.filteredDateFormatList = this.languageSettingsForm.controls.dateFormat.valueChanges.pipe(
+      debounceTime(100),
+      startWith(''),
+      map((num: string | null) => num ? this.filter(num, this.dateFormatList) : (this.dateFormatList ? this.dateFormatList.slice() : this.dateFormatList))
+    );
+
+    this.filteredTimeFormatList = this.languageSettingsForm.controls.timeFormat.valueChanges.pipe(
+      debounceTime(100),
+      startWith(''),
+      map((num: string | null) => num ? this.filter(num, this.timeFormatList) : (this.timeFormatList ? this.timeFormatList.slice() : this.timeFormatList))
+    );
+
+    this.filteredNumberFormatList = this.languageSettingsForm.controls.numberFormat.valueChanges.pipe(
+      debounceTime(100),
+      startWith(''),
+      map((num: string | null) => num ? this.filter(num, this.numberFormatList) : (this.numberFormatList ? this.numberFormatList.slice() : this.numberFormatList))
+    );
+  }
+
+  /**
+   * filters data list
+   * @param value filter value
+   * @param list current list to filter
+   */
+  filter(value: string, list): string[] {
+    const filterValue = value.toLowerCase();
+    if (list) {
+      return list.filter(num => num.toLowerCase().indexOf(filterValue) === 0);
+    }
   }
 
   /**
@@ -124,9 +214,7 @@ export class ProfileComponent implements OnInit {
     personalDetails.semail = this.settingsForm.controls.secondaryEmail.value;
 
     this.userService.updateUserPersonalDetails(personalDetails).subscribe((res) => {
-      if (res && res.errorMsg) {
-        this.formErrMsg = res.errorMsg;
-      }
+      this.formErrMsg = (res && res.errorMsg) ? res.errorMsg : '';
     });
 
     return true;
@@ -211,5 +299,57 @@ export class ProfileComponent implements OnInit {
     });
 
     return true;
+  }
+
+  /**
+   * updates language settings
+   * @param field form field name
+   */
+  updateLanguageSettings(field) {
+    const val = this.languageSettingsForm.controls[field].value;
+    if (field === 'language') {
+      this.makeLangSettingsUpdateCall(val, 'lang', this.languagesList);
+    } else if (field === 'dateFormat') {
+      this.makeLangSettingsUpdateCall(val, 'dFormat', this.dateFormatList);
+    } else if (field === 'numberFormat') {
+      this.makeLangSettingsUpdateCall(val, 'nformat', this.numberFormatList);
+    } else if (field === 'timeZone') {
+      this.makeLangSettingsUpdateCall(val, 'timezone', this.timeZoneList);
+    } else if (field === 'timeFormat') {
+      this.makeLangSettingsUpdateCall(val, 'tformat', this.timeFormatList);
+    }
+  }
+
+  /**
+   * should make http call to update language settings
+   * @param val updated value
+   * @param langProperty property name as on http response w.r.t updated field
+   * @param list list corresponding to updated field
+   */
+  makeLangSettingsUpdateCall(val, langProperty, list) {
+    if (val && (this.currentUserPreferences[langProperty] !== val) && list.includes(val)) {
+      this.currentUserPreferences[langProperty] = val;
+      this.userService.updateUserPreferenceDetails(this.currentUserPreferences).subscribe((res) => {
+        this.langFormErrMsg = (res && res.errorMsg) ? res.errorMsg : '';
+      });
+    }
+  }
+
+  /**
+   *
+   * @param el mat auto complete element
+   * @returns icon name
+   */
+  getDropdownPos(el: MatAutocomplete) {
+    let pos = 'chevron-down';
+    try {
+      if (el && el.isOpen) {
+        pos = 'chevron-up';
+      }
+    } catch (e) {
+      console.log(e)
+    }
+
+    return pos;
   }
 }
