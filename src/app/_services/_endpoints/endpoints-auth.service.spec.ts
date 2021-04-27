@@ -36,4 +36,9 @@ describe('EndpointsAuthService', () => {
     const serObj = new EndpointsAuthService();
     expect(serObj.jwtRefresh()).toContain('refresh');
   }));
+
+  it('should updatePassword', () => {
+    const serObj = new EndpointsAuthService();
+    expect(serObj.updatePassword()).toContain('/user/update-password');
+  });
 });

@@ -154,6 +154,7 @@ export class FilterCriteria {
     fieldId: string;
     operator: string;
     startValue: string;
+    unit: string;
     values: string[];
 }
 
@@ -181,7 +182,11 @@ export enum FieldControlType {
     TEXT_AREA = 'text-area',
     EMAIL = 'email',
     PASSWORD = 'password',
-    NUMBER = 'number'
+    NUMBER = 'number',
+    SINGLE_SELECT = 'single-select',
+    MULTI_SELECT = 'multi-select',
+    DATE = 'date',
+    TIME = 'time'
 }
 
 export class InboxNodesCount {
@@ -192,3 +197,37 @@ export class InboxNodesCount {
   rec_cnt: number;
   childs?: InboxNodesCount[];
 }
+
+export const DATE_FILTERS_METADATA = [
+    {label: 'Day', category: 'dynamic_range', options: [
+        {value:'Today', startUnit:'day', startAmount:0, endUnit:'day', endAmount:0},
+        {value:'Yesterday', startUnit:'day', startAmount:1, endUnit:'day', endAmount:1},
+        {value:'Last 2 days', startUnit:'day', startAmount:1, endUnit:'day', endAmount:0},
+        {value:'Last 3 days', startUnit:'day', startAmount:2, endUnit:'day', endAmount:0},
+        {value:'Last 4 days', startUnit:'day', startAmount:3, endUnit:'day', endAmount:0},
+        {value:'Last 5 days', startUnit:'day', startAmount:4, endUnit:'day', endAmount:0}
+    ]},
+    {label: 'Week', category:'dynamic_range', options: [
+        {value:'This week', startUnit:'week', startAmount:0, endUnit:'week', endAmount:0},
+        {value:'Last week', startUnit:'day', startAmount:6, endUnit:'day', endAmount:0},
+        {value:'Last 2 weeks', startUnit:'day', startAmount:13, endUnit:'day', endAmount:0},
+        {value:'Last 3 weeks', startUnit:'day', startAmount:20, endUnit:'day', endAmount:0}
+    ]},
+    {label: 'Month', category:'dynamic_range', options: [
+        {value:'This month', startUnit:'month', startAmount:0, endUnit:'month', endAmount:0},
+        {value:'Last month', startUnit:'day', startAmount:30, endUnit:'day', endAmount:0},
+        {value:'Last 2 months', startUnit:'day', startAmount:60, endUnit:'day', endAmount:0}
+    ]},
+    {label: 'Quarter', category:'dynamic_range', options: [
+        {value:'This quarter', startUnit:'quarter', startAmount:0, endUnit:'quarter', endAmount:0},
+        {value:'Last quarter', startUnit:'day', startAmount:90, endUnit:'day', endAmount:0},
+        {value:'Last 2 quarters', startUnit:'day', startAmount:180, endUnit:'day', endAmount:0}
+    ]},
+    {label: 'Year', category:'dynamic_range', options: [
+        {value:'This year', startUnit:'year', startAmount:0, endUnit:'year', endAmount:0},
+        {value:'Last year', startUnit:'day', startAmount:365, endUnit:'day', endAmount:0},
+        {value:'Last 2 years', startUnit:'day', startAmount:730, endUnit:'day', endAmount:0}
+    ]},
+    {label: 'Specific date', category:'static_date', options: []},
+    {label: 'Date range', category:'static_range', options: []}
+  ];

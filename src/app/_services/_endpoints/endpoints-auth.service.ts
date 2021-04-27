@@ -25,8 +25,11 @@ export class EndpointsAuthService {
     return `${this.apiUrl}/user/detail/${userName}`;
   }
 
-
   public jwtRefresh(): string {
     return this.apiUrl + '/refresh';
+  }
+
+  public updatePassword(): string {
+    return `${this.apiUrl}/user/update-password`;
   }
 }

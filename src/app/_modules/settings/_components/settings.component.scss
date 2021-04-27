@@ -6,6 +6,10 @@
   overflow: hidden;
   align-items: flex-start;
 
+  .mat-list-item.selected {
+    background-color: #f2f5f8;
+  }
+
   .setting-tabs {
     width: 220px;
     height: 100%;

@@ -3,7 +3,7 @@ import { TestBed, async } from '@angular/core/testing';
 import { UserService } from './userservice.service';
 import { HttpTestingController, HttpClientTestingModule } from '@angular/common/http/testing';
 import { Any2tsService } from '../any2ts.service';
-import { Userdetails, UserPersonalDetails } from 'src/app/_models/userdetails';
+import { Userdetails, UserPasswordDetails, UserPersonalDetails, UserPreferenceDetails } from 'src/app/_models/userdetails';
 import { EndpointsAuthService } from '@services/_endpoints/endpoints-auth.service';
 import { EndpointsProfileService } from '@services/_endpoints/endpoints-profile.service';
 
@@ -15,8 +15,8 @@ describe('UserService', () => {
   let httpTestingController: HttpTestingController;
   beforeEach(async(() => {
     const any2tsSpy = jasmine.createSpyObj('Any2tsService', ['any2UserDetails']);
-    const endpointSpy = jasmine.createSpyObj('EndpointsAuthService ', ['getUserDetailsUrl']);
-    const profileEndpointSpy = jasmine.createSpyObj('EndpointsProfileService', ['getPersonalDetails', 'updatePersonalDetails'])
+    const endpointSpy = jasmine.createSpyObj('EndpointsAuthService ', ['getUserDetailsUrl', 'updatePassword']);
+    const profileEndpointSpy = jasmine.createSpyObj('EndpointsProfileService', ['getPersonalDetails', 'updatePersonalDetails', 'getUserPreferenceDetails', 'updateUserPreferenceDetails', 'getAllLanguagesList', 'getDateFormatList', 'getNumberFormatList'])
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule
@@ -110,6 +110,150 @@ describe('UserService', () => {
 
     // actual service call
     userService.updateUserPersonalDetails(personalDetails)
+      .subscribe(actualResponse => {
+          expect(actualResponse).toEqual(response);
+    });
+    // mock http call
+    const mockRequst = httpTestingController.expectOne(`${url}`);
+    expect(mockRequst.request.method).toEqual('POST');
+    expect(mockRequst.request.responseType).toEqual('json');
+    mockRequst.flush(response);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('getUserPreferenceDetails()', async(() => {
+
+    const url = `getUserPreferenceDetails`;
+    // mock url
+    profileEndpointServiceSpy.getUserPreferenceDetails.and.returnValue(url);
+
+    const response: UserPreferenceDetails = new UserPreferenceDetails();
+
+    // actual service call
+    userService.getUserPreferenceDetails()
+      .subscribe(actualResponse => {
+          expect(actualResponse).toEqual(response);
+    });
+    // mock http call
+    const mockRequst = httpTestingController.expectOne(`${url}`);
+    expect(mockRequst.request.method).toEqual('GET');
+    expect(mockRequst.request.responseType).toEqual('json');
+    mockRequst.flush(response);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('updateUserPreferenceDetails()', async(() => {
+
+    const url = `updateUserPreferenceDetails`;
+    // mock url
+    profileEndpointServiceSpy.updateUserPreferenceDetails.and.returnValue(url);
+
+    const userPref: UserPreferenceDetails = new UserPreferenceDetails();
+
+    const response = {
+      acknowledge: true,
+      errorMsg: null,
+      userName: ''
+    }
+
+    // actual service call
+    userService.updateUserPreferenceDetails(userPref)
+      .subscribe(actualResponse => {
+          expect(actualResponse).toEqual(response);
+    });
+    // mock http call
+    const mockRequst = httpTestingController.expectOne(`${url}`);
+    expect(mockRequst.request.method).toEqual('POST');
+    expect(mockRequst.request.responseType).toEqual('json');
+    mockRequst.flush(response);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('getAllLanguagesList()', async(() => {
+
+    const url = `getAllLanguagesList`;
+    // mock url
+    profileEndpointServiceSpy.getAllLanguagesList.and.returnValue(url);
+
+    const response: string[] = [];
+
+    // actual service call
+    userService.getAllLanguagesList()
+      .subscribe(actualResponse => {
+          expect(actualResponse).toEqual(response);
+    });
+    // mock http call
+    const mockRequst = httpTestingController.expectOne(`${url}`);
+    expect(mockRequst.request.method).toEqual('GET');
+    expect(mockRequst.request.responseType).toEqual('json');
+    mockRequst.flush(response);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('getDateFormatList()', async(() => {
+
+    const url = `getDateFormatList`;
+    // mock url
+    profileEndpointServiceSpy.getDateFormatList.and.returnValue(url);
+
+    const response: string[] = [];
+
+    // actual service call
+    userService.getDateFormatList()
+      .subscribe(actualResponse => {
+          expect(actualResponse).toEqual(response);
+    });
+    // mock http call
+    const mockRequst = httpTestingController.expectOne(`${url}`);
+    expect(mockRequst.request.method).toEqual('GET');
+    expect(mockRequst.request.responseType).toEqual('json');
+    mockRequst.flush(response);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('getNumberFormatList()', async(() => {
+
+    const url = `getNumberFormatList`;
+    // mock url
+    profileEndpointServiceSpy.getNumberFormatList.and.returnValue(url);
+
+    const response: string[] = [];
+
+    // actual service call
+    userService.getNumberFormatList()
+      .subscribe(actualResponse => {
+          expect(actualResponse).toEqual(response);
+    });
+    // mock http call
+    const mockRequst = httpTestingController.expectOne(`${url}`);
+    expect(mockRequst.request.method).toEqual('GET');
+    expect(mockRequst.request.responseType).toEqual('json');
+    mockRequst.flush(response);
+    // verify http
+    httpTestingController.verify();
+  }));
+
+  it('updatePassword()', async(() => {
+
+    const url = `updatePassword`;
+    // mock url
+    endpointServiceSpy.updatePassword.and.returnValue(url);
+
+    const passwordDetails: UserPasswordDetails = new UserPasswordDetails();
+
+    const response = {
+      acknowledge: true,
+      errorMsg: null,
+      userName: ''
+    }
+
+    // actual service call
+    userService.updatePassword(passwordDetails)
       .subscribe(actualResponse => {
           expect(actualResponse).toEqual(response);
     });
