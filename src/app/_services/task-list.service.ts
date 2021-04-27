@@ -139,4 +139,8 @@ export class TaskListService {
   public saveOrUpdateTasklistHeaders(nodeId: string, payload: {fldId: string, order: number}[]) {
     return this.http.post(this.endpointsProcessService.saveOrUpdateTasklistHeadersUrl(nodeId), payload);
   }
+
+  public getHeadersForNode(nodeId: string) {
+    return this.http.get<any[]>(this.endpointsProcessService.getHeadersForNodeUrl(nodeId));
+  }
 }

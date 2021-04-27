@@ -131,7 +131,16 @@
               {{ getFieldDesc(dynCol) }}
             </th>
             <td mat-cell *matCellDef="let element">
-              {{ element[dynCol] ? element[dynCol] : '' }}
+              <span *ngIf="dynCol == 'labels'; else defaultCellTemplate">
+                <lib-chip class="labels">{{ element[dynCol] ? element[dynCol] : '' }}</lib-chip>
+                <lib-chip *ngIf="element.isImportant" [icon]="'long-arrow-up'"></lib-chip>
+
+              </span>
+              <ng-template #defaultCellTemplate>
+                <span>
+                  {{ element[dynCol] ? element[dynCol] : '' }}
+                </span>
+              </ng-template>
             </td>
           </ng-container>
         </ng-template>
