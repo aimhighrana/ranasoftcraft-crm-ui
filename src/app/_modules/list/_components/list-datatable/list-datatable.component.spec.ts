@@ -168,7 +168,8 @@ describe('ListDatatableComponent', () => {
     pageEvent.pageIndex = 5;
 
     component.onPageChange(pageEvent);
-    expect(component.dataSource.getData).toHaveBeenCalledWith(component.moduleId, '', 5, []);
+    component.onPageChange(pageEvent);
+    expect(component.dataSource.getData).toHaveBeenCalledTimes(1);
   });
 
   it('should updateTableColumns', () => {
@@ -293,6 +294,35 @@ describe('ListDatatableComponent', () => {
     spyOn(console, 'error');
     component.getObjectTypeDetails();
     expect(console.error).toHaveBeenCalled();
+
+  });
+
+  it('should getColumnSortDir', () => {
+
+    expect(component.getColumnSortDir('any')).toEqual('');
+
+    component.currentView.fieldsReqList = [{fieldId: 'MTL_GRP', sortDirection: 'ASCENDING'}] as ListPageViewFldMap[];
+    expect(component.getColumnSortDir('any')).toEqual('asc');
+
+  });
+
+  it('should isLargeHeader', () => {
+
+    component.metadataFldLst = [
+      {fieldId: 'header', fieldDescri: 'large header description with more than 50 chars length'}
+    ] as FieldMetaData[];
+
+    expect(component.isLargeHeader('header')).toBeTrue();
+    expect(component.isLargeHeader('other')).toBeFalse();
+
+  });
+
+  it('should isLargeCell', () => {
+
+    const row = {region: {fieldData: 'large table cell content with more than 50 chars length'}};
+
+    expect(component.isLargeCell(row, 'region')).toBeTrue();
+    expect(component.isLargeCell(row, 'other')).toBeFalse();
 
   });
 
