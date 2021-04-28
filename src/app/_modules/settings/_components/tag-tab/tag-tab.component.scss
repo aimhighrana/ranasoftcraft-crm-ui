@@ -1,0 +1,31 @@
+div.root {
+  user-select: none;
+  height: 100%;
+  padding: 0 16px;
+
+  .colunm-box {
+    align-items: center;
+    box-sizing: border-box;
+    padding: 8px 0;
+    min-height: 48px;
+ 
+    .col {
+      display: flex;
+      flex: 1 0 auto;
+      width: 1px;
+      align-items: center;
+      margin: 0 16px;
+
+      &.col-x4 {
+        flex: 4;
+        justify-content: flex-end;
+      }
+
+      &.col-x8 {
+        flex: 8;
+      }
+    }
+  }
+}
+
+
