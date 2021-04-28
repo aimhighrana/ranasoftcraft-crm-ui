@@ -443,7 +443,7 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   isLargeCell(row: any, fieldId: string) {
-    return row[fieldId] && row[fieldId].fieldData && row[fieldId].fieldData > 50;
+    return row[fieldId] && row[fieldId].fieldData && row[fieldId].fieldData.length > 50;
   }
 
   get displayedRecordsRange(): string {

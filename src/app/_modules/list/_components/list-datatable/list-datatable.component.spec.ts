@@ -302,7 +302,7 @@ describe('ListDatatableComponent', () => {
     expect(component.getColumnSortDir('any')).toEqual('');
 
     component.currentView.fieldsReqList = [{fieldId: 'MTL_GRP', sortDirection: 'ASCENDING'}] as ListPageViewFldMap[];
-    expect(component.getColumnSortDir('any')).toEqual('asc');
+    expect(component.getColumnSortDir('MTL_GRP')).toEqual('asc');
 
   });
 
@@ -313,7 +313,7 @@ describe('ListDatatableComponent', () => {
     ] as FieldMetaData[];
 
     expect(component.isLargeHeader('header')).toBeTrue();
-    expect(component.isLargeHeader('other')).toBeFalse();
+    expect(component.isLargeHeader('other')).toBeFalsy();
 
   });
 
@@ -322,7 +322,7 @@ describe('ListDatatableComponent', () => {
     const row = {region: {fieldData: 'large table cell content with more than 50 chars length'}};
 
     expect(component.isLargeCell(row, 'region')).toBeTrue();
-    expect(component.isLargeCell(row, 'other')).toBeFalse();
+    expect(component.isLargeCell(row, 'other')).toBeFalsy();
 
   });
 
