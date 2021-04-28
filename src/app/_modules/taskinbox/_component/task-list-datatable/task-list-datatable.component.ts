@@ -51,7 +51,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
     sent: 'L',
     dueby: 'L',
     requestby: 'L',
-    sentby: 'L',
+    sentby: 'L' ,
   },
   {
     setting: 4,
