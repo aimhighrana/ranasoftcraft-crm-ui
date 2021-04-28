@@ -8,7 +8,6 @@ import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { MatSliderChange } from '@angular/material/slider';
 import { UDRBlocksModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import * as moment from 'moment';
 import { debounceTime } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
@@ -192,29 +191,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
       } else {
         finalVal[key] = key;
       } if(fieldId === 'OVERDUE' || fieldId === 'FORWARDENABLED' || fieldId === 'TIME_TAKEN') {
-        switch(fieldId) {
-          case 'TIME_TAKEN':
-            const days = moment.duration(Number(key), 'milliseconds').days();
-            const hours = moment.duration(Number(key), 'milliseconds').hours();
-            const minutes = moment.duration(Number(key), 'milliseconds').minutes();
-            const seconds = moment.duration(Number(key), 'milliseconds').seconds();
-            const timeString = `${days >0 ? days + ' d ': ``}${hours >0 ? hours + ' h ': ``}${minutes >0 ? minutes + ' m ': ``}${seconds >0 ? seconds + ' s': ``}`;
-            finalVal[key] = timeString ? timeString : '0 s';
-            break;
-
-          case 'OVERDUE':
-          case 'FORWARDENABLED':
-            if(key === '1' || key === 'y') {
-              finalVal[key] = 'Yes';
-            }
-            if(key === '0' || key === 'n') {
-              finalVal[key] = 'No';
-            }
-            break;
-
-          default:
-            break;
-        }
+        finalVal[key] = this.getFields(fieldId, key);
       }
     });
     Object.keys(finalVal).forEach(key=>{
@@ -408,7 +385,7 @@ export class FilterComponent extends GenericWidgetComponent implements OnInit, O
     } else {
       this.isLoadMore = false;
     }
-    if(this.filterWidget.getValue().metaData &&(this.filterWidget.getValue().metaData.picklist === '1' || this.filterWidget.getValue().metaData.picklist === '30' || this.filterWidget.getValue().metaData.picklist === '37')) {
+    if(this.filterWidget.getValue().metaData &&(this.filterWidget.getValue().metaData.picklist === '1' || this.filterWidget.getValue().metaData.picklist === '30' || this.filterWidget.getValue().metaData.picklist === '37'|| this.filterWidget.getValue().metaData.picklist === '4' || this.filterWidget.getValue().metaData.picklist === '38' || this.filterWidget.getValue().metaData.picklist === '35')) {
       const metadatas: DropDownValues[] = [];
       buckets.forEach(bucket => {
         const metaData = {CODE: bucket.key.FILTER, FIELDNAME: fieldId, TEXT: bucket.key.FILTER} as DropDownValues;
