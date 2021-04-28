@@ -1,4 +1,3 @@
-import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { TaskListService } from '@services/task-list.service';
 import { of } from 'rxjs';
 import { SharedModule } from '@modules/shared/shared.module';
@@ -22,7 +21,7 @@ describe('TaskListTableViewSettingsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [TaskListTableViewSettingsComponent],
-      imports: [AppMaterialModuleForSpec, RouterTestingModule, SharedModule, MdoUiLibraryModule],
+      imports: [AppMaterialModuleForSpec, RouterTestingModule, SharedModule],
       providers: [
         {
           provide: ActivatedRoute,

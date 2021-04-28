@@ -1,4 +1,3 @@
-import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { PageEvent } from '@angular/material/paginator';
 import { of, Subject } from 'rxjs';
@@ -27,7 +26,7 @@ describe('TaskListDatatableComponent', () => {
     // queryParams.next({ s: 'inbox', f: 'W29iamVjdCBPYmplY3Rd' });
     TestBed.configureTestingModule({
       declarations: [TaskListDatatableComponent],
-      imports: [AppMaterialModuleForSpec, RouterTestingModule, SharedModule, MdoUiLibraryModule],
+      imports: [AppMaterialModuleForSpec, RouterTestingModule, SharedModule],
       providers: [
         {
           provide: ActivatedRoute,
@@ -47,6 +46,18 @@ describe('TaskListDatatableComponent', () => {
     sharedServices = fixture.debugElement.injector.get(SharedServiceService);
     taskListService = fixture.debugElement.injector.get(TaskListService);
     router = TestBed.inject(Router);
+    const fieldList = [
+      { fldId: 'description', order: 1 },
+      { fldId: 'labels', order: 2 },
+      { fldId: 'sent', order: 3 },
+      { fldId: 'dueby', order: 4 },
+      { fldId: 'requestby', order: 5 },
+      { fldId: 'sentby', order: 6},
+    ];
+    spyOn(taskListService, 'getHeadersForNode')
+      .withArgs('inbox')
+      .and.callFake(() => of(fieldList));
+      spyOn(taskListService, 'saveTasklistVisitByUser').and.callFake(() => of({}));
   });
 
   it('should create', () => {
@@ -56,11 +67,15 @@ describe('TaskListDatatableComponent', () => {
     component.ngOnInit();
     expect(component.node).toEqual('inbox');
   });
-  it('should have param', async () => {
-    // fixture.detectChanges();
+  it('should have param', fakeAsync(() => {
+    spyOn(component, 'filterLabels');
     component.ngOnInit();
     expect(activatedRoute.snapshot.queryParams.f).toEqual('test');
-  });
+
+    component.labelSearchFieldSub.next('forwarded');
+    tick(1500);
+    expect(component.filterLabels).toHaveBeenCalledWith('forwarded');
+  }));
   it('should have param and called other methods', async(() => {
     spyOn(component, 'saveTasklistVisitByUser');
     spyOn(component, 'getHeadersForNode');
@@ -72,6 +87,7 @@ describe('TaskListDatatableComponent', () => {
       expect(component.updateNodeChips).toHaveBeenCalled();
     });
   }));
+
   it('should have queryParam', async(() => {
     // this calls ngOnInit and we subscribe
     spyOn(component, 'updateNodeChips');
@@ -308,7 +324,6 @@ describe('TaskListDatatableComponent', () => {
     expect(component.pageEvent.pageIndex).toBe(5);
   });
   it('saveTasklistVisitByUser()', async(() => {
-    spyOn(taskListService, 'saveTasklistVisitByUser').and.returnValue(of({}));
     component.saveTasklistVisitByUser('inbox');
     expect(taskListService.saveTasklistVisitByUser).toHaveBeenCalled();
     taskListService.saveTasklistVisitByUser('inbox').subscribe((actualResponse) => {
@@ -317,16 +332,7 @@ describe('TaskListDatatableComponent', () => {
   }));
 
   it('getHeadersForNode()', fakeAsync(() => {
-    const fieldList = [
-      { fldId: 'description', order: 1 },
-      { fldId: 'labels', order: 2 },
-      { fldId: 'sent', order: 3 },
-      { fldId: 'dueby', order: 4 },
-      { fldId: 'requestby', order: 5 },
-      { fldId: 'sentby', order: 6},
-    ];
     component.node = 'inbox';
-    spyOn(taskListService, 'getHeadersForNode').and.returnValue(of(fieldList));
     spyOn(component, 'updateTableColumns');
     component.getHeadersForNode('inbox');
     tick();
@@ -335,6 +341,28 @@ describe('TaskListDatatableComponent', () => {
     expect(component.nodeColumns.length).toBeGreaterThan(1);
     expect(component.updateTableColumns).toHaveBeenCalled();
   }));
+
+  it('filterLabels(event)', () => {
+    component.ngOnInit();
+    component.filterLabels('forwarded');
+    expect(component.filteredLabels.length).toBeGreaterThan(0);
+  });
+
+  it('removeLabel(element: PeriodicElement, label)', () => {
+    component.ngOnInit();
+    const element = {
+      setting: 3,
+      Records: 'Lithium',
+      description: 6.941,
+      labels: ['Delegated', 'Forwarded'],
+      sent: 'L',
+      dueby: 'L',
+      requestby: 'L',
+      sentby: 'L',
+    };
+    component.removeLabel(element, 'Forwarded');
+    expect(element.labels.length).toEqual(1);
+  });
 
   it('ngOnDestroy()', () => {
     spyOn(component.unsubscribeAll$, 'unsubscribe');

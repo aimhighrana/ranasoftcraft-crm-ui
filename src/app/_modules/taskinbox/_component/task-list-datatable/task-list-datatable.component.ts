@@ -1,12 +1,12 @@
 import { TaskListService } from './../../../../_services/task-list.service';
-import { take, takeUntil } from 'rxjs/operators';
+import { take, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { SharedServiceService } from './../../../shared/_services/shared-service.service';
 import { ViewsPage } from '@models/list-page/listpage';
 import { MatSort } from '@angular/material/sort';
 import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy, Renderer2 } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subject } from 'rxjs';
 
@@ -14,7 +14,7 @@ export interface PeriodicElement {
   Records: string;
   setting: number;
   description: number;
-  labels: string;
+  labels: string[];
   sent: string;
   dueby: string;
   requestby: string;
@@ -27,7 +27,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
     setting: 1,
     Records: 'Hydrogen',
     description: 1.0079,
-    labels: 'Pending',
+    labels: ['Pending'],
     sent: 'L',
     dueby: 'L',
     requestby: 'L',
@@ -37,7 +37,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
     setting: 2,
     Records: 'Helium',
     description: 4.0026,
-    labels: 'Forwarded',
+    labels: ['Forwarded'],
     sent: 'L',
     dueby: 'L',
     requestby: 'L',
@@ -47,7 +47,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
     setting: 3,
     Records: 'Lithium',
     description: 6.941,
-    labels: 'Delegated',
+    labels: ['Delegated', 'Forwarded'],
     sent: 'L',
     dueby: 'L',
     requestby: 'L',
@@ -57,7 +57,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
     setting: 4,
     Records: 'Beryllium',
     description: 9.0122,
-    labels: 'Pending',
+    labels: ['Pending', 'Forwarded'],
     sent: 'L',
     dueby: 'L',
     requestby: 'L',
@@ -67,7 +67,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
     setting: 5,
     Records: 'Boron',
     description: 10.811,
-    labels: 'Forwarded',
+    labels: ['Forwarded'],
     sent: 'L',
     dueby: 'L',
     requestby: 'L',
@@ -78,7 +78,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
     setting: 6,
     Records: 'Carbon',
     description: 12.0107,
-    labels: 'C',
+    labels: ['In Progress', 'Forwarded', 'Pending', 'Delegated', 'Completed'],
     sent: 'L',
     dueby: 'L',
     requestby: 'L',
@@ -88,7 +88,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
     setting: 7,
     Records: 'Nitrogen',
     description: 14.0067,
-    labels: 'Delegated',
+    labels: ['Delegated', 'In Progress', 'Pending', 'Delegated'],
     sent: 'L',
     dueby: 'L',
     requestby: 'L',
@@ -98,7 +98,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
     setting: 8,
     Records: 'Oxygen',
     description: 15.9994,
-    labels: 'Pending',
+    labels: ['Pending'],
     sent: 'L',
     dueby: 'L',
     requestby: 'L',
@@ -108,7 +108,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
     setting: 9,
     Records: 'Fluorine',
     description: 18.9984,
-    labels: 'Forwarded',
+    labels: ['Forwarded'],
     sent: 'L',
     dueby: 'L',
     requestby: 'L',
@@ -119,7 +119,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
     setting: 10,
     Records: 'Neon',
     description: 20.1797,
-    labels: 'Pending',
+    labels: ['Pending'],
     sent: 'L',
     dueby: 'L',
     requestby: 'L',
@@ -558,6 +558,7 @@ export const nodeChipsMenuItems: { [fldId: string]: string[] } = {
   Sent: ['Long', 'Short'],
   Requestedby: ['Fred', 'Shred'],
 };
+export const lableItems = ['Forwarded', 'Delegated', 'Completed', 'Pending', 'In Progress']
 
 @Component({
   selector: 'pros-task-list-datatable',
@@ -597,6 +598,9 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit, OnDest
 
   viewsList: ViewsPage = new ViewsPage();
   unsubscribeAll$: Subject<boolean> = new Subject<boolean>();
+  AllLabels = [...lableItems];
+  filteredLabels = [...lableItems];
+  labelSearchFieldSub: Subject<string> = new Subject();
 
   // @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -605,7 +609,8 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit, OnDest
     private route: ActivatedRoute,
     private router: Router,
     private sharedServices: SharedServiceService,
-    private taskListService: TaskListService
+    private taskListService: TaskListService,
+    private ren: Renderer2
   ) {}
 
   /**route param contains the node
@@ -650,6 +655,10 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit, OnDest
           this.updateTableColumns();
         }
       });
+
+    this.labelSearchFieldSub.pipe(debounceTime(1000), distinctUntilChanged()).subscribe((searchString) => {
+      this.filterLabels(searchString);
+    });
   }
 
   ngAfterViewInit() {
@@ -819,6 +828,18 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit, OnDest
             console.log(err);
           }
         );
+    }
+  }
+  filterLabels(event) {
+    this.filteredLabels = this.AllLabels.filter(d=> d.toLowerCase().indexOf(event.toLowerCase()) >=0);
+  }
+
+  removeLabel(element: PeriodicElement, label) {
+    element.labels = element.labels.filter(d=> d !== label);
+  }
+  applyLabel(element: PeriodicElement, label) {
+    if(element.labels.indexOf(label) < 0) {
+      element.labels.push(label);
     }
   }
   /**open auxilary routing to configure settings of table columns
