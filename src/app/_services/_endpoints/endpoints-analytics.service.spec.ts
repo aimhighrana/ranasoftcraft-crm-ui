@@ -138,4 +138,24 @@ describe('EndpointsAnalyticsService', () => {
     const widgetType = WidgetType.BAR_CHART;
     expect(serviceobj.displayCriteria(widgetId, widgetType)).toContain(`/report/widget/display-criteria?widgetId=${widgetId}&widgetType=${widgetType}`);
   }));
+
+  it('exportReport(), should get API string', async(() => {
+    const serviceobj = new EndpointsAnalyticsService();
+    const reportId = '6547898676578';
+    expect(serviceobj.exportReport(reportId)).toContain(`/report/export?reportId=${reportId}`);
+  }));
+
+  it('importUploadReport(), should get API string', async(() => {
+    const serviceobj = new EndpointsAnalyticsService();
+    const file = new File([], 'test');
+    expect(serviceobj.importUploadReport(file)).toContain(`/report/upload?file=${file}`);
+  }));
+
+  it('importReport(), should get API string', async(() => {
+    const serviceobj = new EndpointsAnalyticsService();
+    const fileSno = 1234;
+    const replaceOld = false;
+    const keepCopy = false;
+    expect(serviceobj.importReport(fileSno, replaceOld, keepCopy)).toContain(`/report/import?fileSno=${fileSno}&replaceOld=${replaceOld}&keepCopy=${keepCopy}`);
+  }));
 });

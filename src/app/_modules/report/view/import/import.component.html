@@ -1,0 +1,68 @@
+<div class="root">
+    <div class="f-row">
+        <lib-text-line type="leading">Import report</lib-text-line>
+        <span class="f-spacer"></span>
+        <lib-button type="plain" icon="times" iconFontType="light" *ngIf="uploadLoader" (click)="close()"></lib-button>
+    </div>
+
+    <mat-dialog-content style="overflow: visible;">
+        <lib-banner *ngIf="errorMsg" status="error" [text]="errorMsg"></lib-banner>
+        <div class="f-col upload-col" *ngIf="!uploadLoader">
+            <lib-empty-state icon="table" iconSize="120" primaryText="Upload a file"
+                secondaryText="Upload a .mdopage report file">
+                <lib-button (click)="uploadInput.click()" type="minor">
+                    Select a file
+                </lib-button>
+            </lib-empty-state>
+            <input class="drag-input" type="file" id="uploader" #uploadInput (change)="fileChange($event.target.files)"
+                prosClickStopPropagation />
+        </div>
+        <table mat-table [dataSource]="dataSource" *ngIf="uploadLoader && !isDuplicate && !isMissingModule" style="width: 100%;">
+            <ng-container matColumnDef="description">
+                <th mat-header-cell *matHeaderCellDef>Desciption</th>
+                <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+            </ng-container>
+            <ng-container matColumnDef="importedAt">
+                <th mat-header-cell *matHeaderCellDef>Import date</th>
+                <td mat-cell *matCellDef="let element"> {{element.importedAt | date:'dd/MM/yyyy'}} </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+        <table mat-table [dataSource]="importData.logs" *ngIf="isDuplicate || isMissingModule" style="width: 100%;">
+            <ng-container matColumnDef="message">
+                <th mat-header-cell *matHeaderCellDef>Warning</th>
+                <td mat-cell *matCellDef="let element"> {{element.message}} </td>
+            </ng-container>
+            <ng-container matColumnDef="category">
+                <th mat-header-cell *matHeaderCellDef>Category</th>
+                <td mat-cell *matCellDef="let element">
+                    <ng-container [ngSwitch]="element.category">
+                        <span *ngSwitchCase="ReportCategory.DUPLICATE_REPORT">
+                            Duplicate report name
+                        </span>
+                        <span *ngSwitchCase="ReportCategory.MISSING_MODULE">
+                            Missing module
+                        </span>
+                        <span *ngSwitchDefault>
+                            {{element.category}}
+                        </span>
+                    </ng-container>
+                </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumnsEror"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumnsEror;"></tr>
+        </table>
+    </mat-dialog-content>
+    
+    <mat-dialog-actions>
+        <lib-button (click)="back()" *ngIf="uploadLoader" type="plain" i18n="@@back">Back</lib-button>
+        <span class="f-spacer"></span>
+        <lib-button type="minor" (click)="addReport(true)" *ngIf="isDuplicate">Replace existing</lib-button>
+        <lib-button type="minor" (click)="addReport(false, true)" *ngIf="isDuplicate">Duplicate report</lib-button>
+        <lib-button type="minor" (click)="addReport()" *ngIf="isMissingModule">Add report</lib-button>
+        <lib-button type="major" (click)="importReport()" *ngIf="uploadLoader && !isDuplicate && !isMissingModule">Import</lib-button>
+    </mat-dialog-actions>
+</div>
+
+

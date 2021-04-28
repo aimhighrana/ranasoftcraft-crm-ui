@@ -10,7 +10,7 @@ describe('WidgetService', () => {
   let endpointServiceSpy: jasmine.SpyObj<EndpointsAnalyticsService>;
   let httpTestingController: HttpTestingController;
   beforeEach(() => {
-    const epsSpy = jasmine.createSpyObj('EndpointsAnalyticsService', ['widgetDataUrl', 'copyReport', 'displayCriteria']);
+    const epsSpy = jasmine.createSpyObj('EndpointsAnalyticsService', ['widgetDataUrl', 'copyReport', 'displayCriteria', 'exportReport', 'importUploadReport', 'importReport']);
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
@@ -107,17 +107,70 @@ describe('WidgetService', () => {
     const widgetId = '1234';
     const widgetType = WidgetType.TABLE_LIST;
     const testurl = 'dummy url to test';
-    const body = [{widgetId:1618447669219,fields:'DTECREATED',sno:138938958398777400,displayCriteria:'CODE_TEXT',createdBy:'initiator',fieldOrder:0},{widgetId:1618447669219,fields:'ZGR_DATE',sno:650430342398777300,displayCriteria:'CODE_TEXT',createdBy:'initiator',fieldOrder:1},{widgetId:1618447669219,fields:'GS_FROM_DATE',sno:251245618398777400,displayCriteria:'CODE_TEXT',createdBy:'initiator',fieldOrder:2},{widgetId:1618447669219,fields:'LOBM_VFDAT',sno:418568174398777400,displayCriteria:'CODE_TEXT',createdBy:'initiator',fieldOrder:3},{widgetId:1618447669219,fields:'MATL_TYPE',sno:500297061398777400,displayCriteria:'CODE_TEXT',createdBy:'initiator',fieldOrder:4}];
+    const body = [{ widgetId: 1618447669219, fields: 'DTECREATED', sno: 138938958398777400, displayCriteria: 'CODE_TEXT', createdBy: 'initiator', fieldOrder: 0 }, { widgetId: 1618447669219, fields: 'ZGR_DATE', sno: 650430342398777300, displayCriteria: 'CODE_TEXT', createdBy: 'initiator', fieldOrder: 1 }, { widgetId: 1618447669219, fields: 'GS_FROM_DATE', sno: 251245618398777400, displayCriteria: 'CODE_TEXT', createdBy: 'initiator', fieldOrder: 2 }, { widgetId: 1618447669219, fields: 'LOBM_VFDAT', sno: 418568174398777400, displayCriteria: 'CODE_TEXT', createdBy: 'initiator', fieldOrder: 3 }, { widgetId: 1618447669219, fields: 'MATL_TYPE', sno: 500297061398777400, displayCriteria: 'CODE_TEXT', createdBy: 'initiator', fieldOrder: 4 }];
 
     endpointServiceSpy.displayCriteria.and.returnValue(testurl);
 
-    const mockhttpData = [{sno:138938958398777400,widgetId:1618447669219,fields:'DTECREATED',fieldOrder:0,displayCriteria:'CODE_TEXT',createdBy:'initiator'},{sno:650430342398777300,widgetId:1618447669219,fields:'ZGR_DATE',fieldOrder:1,displayCriteria:'CODE_TEXT',createdBy:'initiator'},{sno:251245618398777400,widgetId:1618447669219,fields:'GS_FROM_DATE',fieldOrder:2,displayCriteria:'CODE_TEXT',createdBy:'initiator'},{sno:418568174398777400,widgetId:1618447669219,fields:'LOBM_VFDAT',fieldOrder:3,displayCriteria:'CODE_TEXT',createdBy:'initiator'},{sno:500297061398777400,widgetId:1618447669219,fields:'MATL_TYPE',fieldOrder:4,displayCriteria:'CODE_TEXT',createdBy:'initiator'}];
+    const mockhttpData = [{ sno: 138938958398777400, widgetId: 1618447669219, fields: 'DTECREATED', fieldOrder: 0, displayCriteria: 'CODE_TEXT', createdBy: 'initiator' }, { sno: 650430342398777300, widgetId: 1618447669219, fields: 'ZGR_DATE', fieldOrder: 1, displayCriteria: 'CODE_TEXT', createdBy: 'initiator' }, { sno: 251245618398777400, widgetId: 1618447669219, fields: 'GS_FROM_DATE', fieldOrder: 2, displayCriteria: 'CODE_TEXT', createdBy: 'initiator' }, { sno: 418568174398777400, widgetId: 1618447669219, fields: 'LOBM_VFDAT', fieldOrder: 3, displayCriteria: 'CODE_TEXT', createdBy: 'initiator' }, { sno: 500297061398777400, widgetId: 1618447669219, fields: 'MATL_TYPE', fieldOrder: 4, displayCriteria: 'CODE_TEXT', createdBy: 'initiator' }];
     service.saveDisplayCriteria(widgetId, widgetType, null, body).subscribe((response) => {
       expect(response).not.toBe(null)
     });
 
     const req = httpTestingController.expectOne(`${testurl}`);
     expect(req.request.method).toEqual('POST');
+    req.flush(mockhttpData);
+    httpTestingController.verify();
+  }));
+
+  it('exportReport() : should call exportReport', async(() => {
+    const testurl = 'dummy url to test';
+    const reportId = '724752745672';
+
+    endpointServiceSpy.exportReport.and.returnValue(testurl);
+
+    const mockhttpData = {};
+    service.exportReport(reportId).subscribe((response) => {
+      expect(response).not.toBe(null)
+    });
+
+    const req = httpTestingController.expectOne(`${testurl}`);
+    expect(req.request.method).toEqual('GET');
+    req.flush(mockhttpData);
+    httpTestingController.verify();
+  }));
+
+  it('importUploadReport() : should call importUploadReport', async(() => {
+    const testurl = 'dummy url to test';
+    const file = new File([], 'test');
+
+    endpointServiceSpy.importUploadReport.and.returnValue(testurl);
+
+    const mockhttpData = { alreadyExits: false, acknowledge: true, reportId: 'extract_from_file', reportName: 'extract_from_file', importedBy: '${current_userid_who_imported}', importedAt: 16887879908, updatedAt: 16887879908, fileSno: 872234723674 };
+    service.importUploadReport(file).subscribe((response) => {
+      expect(response).not.toBe(null)
+    });
+
+    const req = httpTestingController.expectOne(`${testurl}`);
+    expect(req.request.method).toEqual('GET');
+    req.flush(mockhttpData);
+    httpTestingController.verify();
+  }));
+
+  it('importReport() : should call importReport', async(() => {
+    const testurl = 'dummy url to test';
+    const fileSno = 1234;
+    const replaceOld = false;
+    const keepCopy = false;
+
+    endpointServiceSpy.importReport.and.returnValue(testurl);
+
+    const mockhttpData = { alreadyExits: false, acknowledge: true, reportId: 'extract_from_file', reportName: 'extract_from_file', importedBy: '${current_userid_who_imported}', importedAt: 16887879908, updatedAt: 16887879908, fileSno: 872234723674 };
+    service.importReport(fileSno, replaceOld, keepCopy).subscribe((response) => {
+      expect(response).not.toBe(null)
+    });
+
+    const req = httpTestingController.expectOne(`${testurl}`);
+    expect(req.request.method).toEqual('GET');
     req.flush(mockhttpData);
     httpTestingController.verify();
   }));
