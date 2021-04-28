@@ -88,7 +88,7 @@ describe('TaskListDatatableComponent', () => {
     });
   }));
 
-  it('should have queryParam', async(() => {
+  it('should have queryParam', fakeAsync(() => {
     // this calls ngOnInit and we subscribe
     spyOn(component, 'updateNodeChips');
     const settings = [
@@ -105,24 +105,31 @@ describe('TaskListDatatableComponent', () => {
     fixture.detectChanges();
     // component.ngOnInit();
     queryParams.next({ s: 'inbox', f });
-
+    tick();
     // tick to make sure the async observable resolves
-    // tick();
     expect(component.savedSearchParameters).toBe('inbox');
     expect(component.inlineFilters).toBe(f);
     expect(component.updateNodeChips).toHaveBeenCalledWith(settings);
+
+    component.ngOnInit();
+    queryParams.next({ s: null, f: null });
+    tick();
+    expect(component.savedSearchParameters).toEqual(null);
+    expect(component.inlineFilters).toEqual(null);
+
   }));
 
-  it('updateTableColumns()', () => {
+  it('updateTableColumns()', fakeAsync(() => {
     spyOn(component, 'updateTableColumns');
     spyOn(component, 'updateNodeChips');
-    spyOn(sharedServices, 'gettaskinboxViewDetailsData').and.returnValue(of());
+    spyOn(sharedServices, 'gettaskinboxViewDetailsData').and.returnValue(of({node: 'inbox', viewDetails: []}));
     component.ngOnInit();
 
-    // expect(component.updateTableColumns).toHaveBeenCalled();
-    expect(component.updateNodeChips).toHaveBeenCalled();
+    // expect(component.updateNodeChips).toHaveBeenCalled();
     expect(sharedServices.gettaskinboxViewDetailsData).toHaveBeenCalled();
-  });
+    tick();
+    expect(component.updateTableColumns).toHaveBeenCalled();
+  }));
 
   it('updateNodeChips()', () => {
     component.node = 'inbox';
@@ -240,6 +247,28 @@ describe('TaskListDatatableComponent', () => {
       },
     ]);
     expect(component.currentFilterSettings).toEqual([]);
+
+    component.setChipValue(
+      {
+        fldId: 'Bookmarked',
+        value: ['2'],
+        icon: 'star',
+        hasMenu: false,
+      },
+      '2'
+    );
+    expect(component.currentFilterSettings).toEqual([
+      {
+        fldId: 'Bookmarked',
+        value: ['2'],
+        startvalue: [],
+        endvalue: [],
+        operator: 'equal',
+        parentnode: '',
+      },
+    ]);
+
+
     expect(component.updateQueryParameter).toHaveBeenCalled();
   });
 
@@ -276,6 +305,9 @@ describe('TaskListDatatableComponent', () => {
   it('filterModulesMenu()', () => {
     component.filterModulesMenu('he', 'Label');
     expect(component.filteredNodeChipsMenuItems.Label).toEqual(['He']);
+
+    component.filterModulesMenu('he', 'UnknownChip');
+    expect(component.filteredNodeChipsMenuItems.UnknownChip).toEqual([]);
   });
 
   it('openTableViewSettings()', () => {
@@ -362,6 +394,24 @@ describe('TaskListDatatableComponent', () => {
     };
     component.removeLabel(element, 'Forwarded');
     expect(element.labels.length).toEqual(1);
+  });
+
+  it('applyLabel(element: PeriodicElement, label)', () => {
+    component.ngOnInit();
+    const element = {
+      setting: 3,
+      Records: 'Lithium',
+      description: 6.941,
+      labels: ['Delegated', 'Forwarded'],
+      sent: 'L',
+      dueby: 'L',
+      requestby: 'L',
+      sentby: 'L',
+    };
+    component.applyLabel(element, 'Forwarded');
+    expect(element.labels.length).toEqual(2);
+    component.applyLabel(element, 'Completed');
+    expect(element.labels.length).toEqual(3);
   });
 
   it('ngOnDestroy()', () => {
