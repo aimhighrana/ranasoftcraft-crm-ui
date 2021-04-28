@@ -52,12 +52,12 @@ describe('TaskListDatatableComponent', () => {
       { fldId: 'sent', order: 3 },
       { fldId: 'dueby', order: 4 },
       { fldId: 'requestby', order: 5 },
-      { fldId: 'sentby', order: 6},
+      { fldId: 'sentby', order: 6 },
     ];
     spyOn(taskListService, 'getHeadersForNode')
       .withArgs('inbox')
       .and.callFake(() => of(fieldList));
-      spyOn(taskListService, 'saveTasklistVisitByUser').and.callFake(() => of({}));
+    spyOn(taskListService, 'saveTasklistVisitByUser').and.callFake(() => of({}));
   });
 
   it('should create', () => {
@@ -81,7 +81,7 @@ describe('TaskListDatatableComponent', () => {
     spyOn(component, 'getHeadersForNode');
     spyOn(component, 'updateNodeChips');
     component.ngOnInit();
-    activatedRoute.params.subscribe(resp => {
+    activatedRoute.params.subscribe((resp) => {
       expect(component.saveTasklistVisitByUser).toHaveBeenCalled();
       expect(component.getHeadersForNode).toHaveBeenCalled();
       expect(component.updateNodeChips).toHaveBeenCalled();
@@ -105,7 +105,7 @@ describe('TaskListDatatableComponent', () => {
     fixture.detectChanges();
     // component.ngOnInit();
     queryParams.next({ s: 'inbox', f });
-    tick();
+    //
     // tick to make sure the async observable resolves
     expect(component.savedSearchParameters).toBe('inbox');
     expect(component.inlineFilters).toBe(f);
@@ -113,21 +113,20 @@ describe('TaskListDatatableComponent', () => {
 
     component.ngOnInit();
     queryParams.next({ s: null, f: null });
-    tick();
+    //
     expect(component.savedSearchParameters).toEqual(null);
     expect(component.inlineFilters).toEqual(null);
-
   }));
 
   it('updateTableColumns()', fakeAsync(() => {
     spyOn(component, 'updateTableColumns');
     spyOn(component, 'updateNodeChips');
-    spyOn(sharedServices, 'gettaskinboxViewDetailsData').and.returnValue(of({node: 'inbox', viewDetails: []}));
+    spyOn(sharedServices, 'gettaskinboxViewDetailsData').and.returnValue(of({ node: 'inbox', viewDetails: [] }));
     component.ngOnInit();
 
     // expect(component.updateNodeChips).toHaveBeenCalled();
     expect(sharedServices.gettaskinboxViewDetailsData).toHaveBeenCalled();
-    tick();
+
     expect(component.updateTableColumns).toHaveBeenCalled();
   }));
 
@@ -268,7 +267,6 @@ describe('TaskListDatatableComponent', () => {
       },
     ]);
 
-
     expect(component.updateQueryParameter).toHaveBeenCalled();
   });
 
@@ -344,7 +342,7 @@ describe('TaskListDatatableComponent', () => {
 
   it('getFieldDesc()', () => {
     component.node = 'inbox';
-    component.nodeColumns = [{fldId: 'dueby', fldDesc: 'Due by'}];
+    component.nodeColumns = [{ fldId: 'dueby', fldDesc: 'Due by' }];
     expect(component.getFieldDesc('dueby')).toEqual('Due by');
   });
 
@@ -367,9 +365,9 @@ describe('TaskListDatatableComponent', () => {
     component.node = 'inbox';
     spyOn(component, 'updateTableColumns');
     component.getHeadersForNode('inbox');
-    tick();
+
     expect(taskListService.getHeadersForNode).toHaveBeenCalled();
-    tick();
+
     expect(component.nodeColumns.length).toBeGreaterThan(1);
     expect(component.updateTableColumns).toHaveBeenCalled();
   }));

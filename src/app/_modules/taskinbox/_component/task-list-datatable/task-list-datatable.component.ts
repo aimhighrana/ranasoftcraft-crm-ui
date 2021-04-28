@@ -6,7 +6,7 @@ import { MatSort } from '@angular/material/sort';
 import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy, Renderer2 } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subject } from 'rxjs';
 
@@ -609,8 +609,7 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit, OnDest
     private route: ActivatedRoute,
     private router: Router,
     private sharedServices: SharedServiceService,
-    private taskListService: TaskListService,
-    private ren: Renderer2
+    private taskListService: TaskListService
   ) {}
 
   /**route param contains the node
