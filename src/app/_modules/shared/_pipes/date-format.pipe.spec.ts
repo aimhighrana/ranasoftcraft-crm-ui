@@ -9,8 +9,8 @@ describe('DateFormatPipe', () => {
   it('transform: test transform method', () => {
     const tableHeader = new DateFormatPipe('en-US');
     const mockString = '1561634896415';
-    const dateformat = 'MM.dd.yyyy, h:mm:ss a'
+    const dateformat = 'MM.dd.yyyy'
     const actualString =  tableHeader.transform(mockString, dateformat);
-    expect(actualString).toEqual('06.27.2019, 11:28:16 AM');
+    expect(actualString).toEqual('06.27.2019');
   });
 });
