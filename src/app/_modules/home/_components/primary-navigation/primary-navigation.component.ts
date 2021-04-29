@@ -295,4 +295,11 @@ export class PrimaryNavigationComponent implements OnInit, AfterViewInit, OnDest
       this.router.navigate(['auth', 'login']);
     }
   }
+
+  /**
+   * Open settings sidesheet
+   */
+  openSettings() {
+    this.router.navigate([{ outlets: { sb: `settings` } }]);
+  }
 }

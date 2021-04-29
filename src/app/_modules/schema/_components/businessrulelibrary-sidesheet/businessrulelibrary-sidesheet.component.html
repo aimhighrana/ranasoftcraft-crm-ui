@@ -1,23 +1,21 @@
 <div class="root">
     <div class="f-row breadcrum-toolbar">
-        <lib-button (click)="closeDialogComponent()">
-            <mat-icon fontSet="mdo-icons">times</mat-icon>
-        </lib-button>
+        <lib-button type="plain" (click)="closeDialogComponent()" iconFontType="light" icon="times"></lib-button>
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
-                <div class="display-heading-large">Business rule library</div>
+                <div class="display-heading-large" i18n="@@business_rule_library">Business rule library</div>
                 <span class="f-col-spacer-half"></span>
                 <div class="f-spacer"></div>
                 <lib-button type="major" i18n="@@save" (click)="saveSelection()">Save</lib-button>
             </div>
             <div class="row-spacer"></div>
             <div class="f-row">
-                <pros-search-input (value)="getBusinessRulesList(moduleId, $event, '', '0')"></pros-search-input>
+               <lib-search (value)="getBusinessRulesList(moduleId, $event, '', '0')" i18n-placeholder="@@search" placeholder="Search..."></lib-search>
                 <span class="col-spacer"></span>
                 <mat-chip-list>
                     <mat-chip class="mdo-filter-matchip" [matMenuTriggerFor]="businessRuleType">
-                        <label>Business rule type:</label> <span
+                        <label><span i18n="@@business_rule_type">Business rule type</span>:</label> <span
                             class="info">{{(selectedRuleType && selectedRuleType.ruleDesc)? selectedRuleType.ruleDesc: 'All'}}
                         </span>
                     </mat-chip>
@@ -39,14 +37,11 @@
                 <mat-list-item role="listitem" *cdkVirtualFor="let brItem of filteredBusinessRulesList; trackBy: trackByFn">
                     <div class="mat-line">{{brItem.brInfo}}</div>
                     <span class="f-spacer"></span>
-                    <lib-button type="minor" sizeLarge="true" *ngIf="!isSelected(brItem); else doneButton"
-                        (click)="selectBusinessRule(brItem, constants.ADD)">
-                        <mat-icon fontSet="mdo-icons">plus</mat-icon>
-                    </lib-button>
+                    <lib-button *ngIf="!isSelected(brItem); else doneButton"
+                    (click)="selectBusinessRule(brItem, constants.ADD)" type="minor" icon="plus"></lib-button>
+ 
                     <ng-template #doneButton>
-                        <lib-button type="minor" sizeLarge="true" (click)="selectBusinessRule(brItem, constants.REMOVE)">
-                            <mat-icon fontSet="mdo-icons">check</mat-icon>
-                        </lib-button>
+                        <lib-button (click)="selectBusinessRule(brItem, constants.REMOVE)" type="minor" icon="check"></lib-button>
                     </ng-template>
                 </mat-list-item>
             </mat-list>

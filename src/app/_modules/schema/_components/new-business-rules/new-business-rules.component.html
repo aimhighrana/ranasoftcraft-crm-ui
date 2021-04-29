@@ -1,15 +1,13 @@
 <div class="root">
   <div class="f-row breadcrum-toolbar">
-    <button mat-button (click)="closeDialogComponent()">
-      <mat-icon fontSet="mdo-icons">close</mat-icon>
-    </button>
+    <lib-button type="plain" (click)="closeDialogComponent()" iconFontType="light" icon="times"></lib-button>
     <div class="col-spacer"></div>
     <div class="f-col mdo-constrained-right">
       <div class="f-row breadcrum-head">
         <div class="display-heading-large">Business rule</div>
         <span class="f-col-spacer-half"></span>
         <span class="f-spacer"></span>
-        <button mat-flat-button color="primary" (click)="save();$event.stopPropagation()">Save</button>
+        <lib-button type="major" (click)="save();$event.stopPropagation()">Save</lib-button>
       </div>
     </div>
   </div>
@@ -187,7 +185,7 @@
             </div>
 
             <div class="col" *ngIf="i === 0">
-              <button mat-flat-button color="accent">When</button>
+              <lib-button *ngIf="i === 0" type="minor">When</lib-button>
             </div>
 
             <!-- field name -->
@@ -240,9 +238,7 @@
             <!-- three dots -->
             <div class="col">
               <ng-container *ngIf="i>0">
-                <button mat-button [matMenuTriggerFor]="menu">
-                  <mat-icon fontSet="mdo-icons">list-item-drag</mat-icon>
-                </button>
+                <lib-button [matMenuTriggerFor]="menu" type="plain" icon="list"></lib-button>
               </ng-container>
             </div>
 
@@ -317,9 +313,7 @@
                   </div>
 
                   <div class="col">
-                    <button mat-button [matMenuTriggerFor]="nestedMenu">
-                      <mat-icon fontSet="mdo-icons">list-item-drag</mat-icon>
-                    </button>
+                    <lib-button type="plain" [matMenuTriggerFor]="nestedMenu" icon="list"></lib-button> 
                     <mat-menu #nestedMenu="matMenu" class="navigation-menu">
                       <!-- give local reference and tell this is manu by assigning 'matMenu' -->
                       <!-- <button mat-menu-item (click)="addNestedBlock(udrBlock,i)">
@@ -340,9 +334,7 @@
         <!-- button to ad primary block -->
         <div class="f-row defined-row add-col">
           <div class="col">
-            <button mat-flat-button color="accent" (click)="addBlock(false,null,0)">
-              <mat-icon fontSet="mdo-icons">plus</mat-icon>
-            </button>
+            <lib-button type="minor" icon="plus" (click)="addBlock(false,null,0)" ></lib-button>
           </div>
         </div>
       </div>

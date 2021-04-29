@@ -4,23 +4,17 @@
       {{ data.schemaInfo ? data.schemaInfo.schemaDescription : 'Untitled' }}
     </div>
     <span class="f-spacer"></span>
-    <button mat-button (click)="dialogRef.close()">
-      <mat-icon fontSet="mdo-icons">times</mat-icon>
-    </button>
+    <lib-button (click)="dialogRef.close()" type="plain" iconFontType="light" icon="times"></lib-button>
   </div>
   <div class="row-spacer"></div>
   <div class="f-col filter-fields">
-    <pros-form-input label="Filter name" [isHelpIcon]="false" (valueChange)="variantNameChange($event)">
-    </pros-form-input>
+    <lib-input i18n-label="@@filter_name" label="Filter name" (valueChange)="variantNameChange($event)">
+    </lib-input>
   </div>
 
   <div class="f-row">
-    <button mat-flat-button color="accent" (click)="dialogRef.close()">
-      Cancel
-    </button>
+    <lib-button i18n="@@cancel" (click)="dialogRef.close()" type="minor">Cancel</lib-button>
     <span class="f-spacer"></span>
-    <button mat-flat-button color="primary" (click)="saveUpdateSchemaVariant()">
-      Create
-    </button>
+    <lib-button [disabled]="!schemaVarInfo?.variantName" i18n="@@create" (click)="saveUpdateSchemaVariant()" type="major">Create</lib-button>
   </div>
 </div>

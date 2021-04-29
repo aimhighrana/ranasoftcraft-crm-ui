@@ -6,18 +6,21 @@
         </div>
         <span class="f-col-spacer-half"></span>
         <span class="f-spacer"></span>
-        <div class="f-row action-iconbtns">
-            <lib-button mat-flat-button type="minor" (click)="openSummarySideSheet()">
-                <mat-icon fontSet="mdo-icons">square-root-alt</mat-icon>
-                <ng-container i18n="@@check_data">Check data</ng-container>
-            </lib-button>
-            <lib-button mat-fab type="minor" [matMenuTriggerFor]="navigation">
-                <mat-icon fontSet="mdo-icons">ellipsis-h</mat-icon>
-            </lib-button>
+        <div class="f-row">
+            <lib-button-group>
+                <lib-button type="minor" iconPosition="before" icon="square-root-alt" (click)="openSummarySideSheet()">
+                    <!-- <mat-icon fontSet="mdo-icons">square-root-alt</mat-icon> -->
+                    <ng-container i18n="@@check_data"> Check data </ng-container>
+                </lib-button>
+                <lib-button type="minor" icon="ellipsis-h" [matMenuTriggerFor]="navigation">
+                    <!-- <mat-icon fontSet="mdo-icons">ellipsis-h</mat-icon> -->
+                </lib-button>
+            </lib-button-group>
             <!-- menu to add business rule and subscriber -->
             <mat-menu #navigation="matMenu" direction="right" class="navigation-menu">
                 <button mat-menu-item (click)="deleteSchema()" i18n="@@delete" [disableRipple]="true"> Delete </button>
             </mat-menu>
+
         </div>
     </div>
 
@@ -28,12 +31,17 @@
         <lib-tab label="Summary" i18n-label="@@summary">
             <div class="f-col summary-root">
                 <form [formGroup]="schemaSummaryForm">
-                    <lib-input (valueChange)="onChangeSchemaDescription($event)" class="mdo-scheduler-input" [formControlName]="'schemaName'" type="text" [value]="schemaDetails?.schemaDescription ? schemaDetails.schemaDescription : ''" placeholder="Schema name" i18n-label="@@schema_name" label="Schema name" (emitBlurEvent)="updateSchemaInfo($event)"></lib-input>
+                    <lib-input (valueChange)="onChangeSchemaDescription($event)" class="mdo-scheduler-input"
+                        [formControlName]="'schemaName'" type="text"
+                        [value]="schemaDetails?.schemaDescription ? schemaDetails.schemaDescription : ''"
+                        placeholder="Schema name" i18n-label="@@schema_name" label="Schema name"
+                        (emitBlurEvent)="updateSchemaInfo($event)"></lib-input>
                     <div class="row-spacer"></div>
                     <div class="f-col mdo-form-field">
                         <mat-label i18n="@@threshold">Threshold</mat-label>
                         <div class="f-row slider-row">
-                            <lib-range-slider class="lib-slider" color="primary" thumbLabel formControlName="schemaThreshold"
+                            <lib-range-slider class="lib-slider" color="primary" thumbLabel
+                                formControlName="schemaThreshold"
                                 [value]="schemaDetails?.schemaThreshold ? schemaDetails.schemaThreshold : 0"
                                 (valueChange)="onChangeSchemaThreshold($event)"></lib-range-slider>
                             <span class="f-col-spacer-half"></span>
@@ -45,20 +53,21 @@
                         <mat-expansion-panel togglePosition="before" class="mat-elevation-z0">
                             <mat-expansion-panel-header expandedHeight="36px" collapsedHeight="36px">
                                 <mat-panel-title class="panel-title">
-                                    <span i18n="@@data_scope">Data scope</span>&nbsp;({{variantDetails ?  variantDetails.length : 0}})
+                                    <span i18n="@@data_scope">Data scope</span>&nbsp;({{variantDetails ?
+                                    variantDetails.length : 0}})
                                 </mat-panel-title>
                             </mat-expansion-panel-header>
 
                             <mat-nav-list role="navigation" class="summary-rowlist">
                                 <mat-list-item (click)="addDataScope()">
-                                    <div mat-line class="info-link">[<span i18n="@@add_data_scope">Add data scope</span>]</div>
+                                    <div mat-line class="info-link">[<span i18n="@@add_data_scope">Add data
+                                            scope</span>]</div>
                                 </mat-list-item>
                                 <mat-list-item *ngFor="let variant of variantDetails">
                                     <div mat-line class="info-link" (click)="editDataScope(variant.variantId)">
                                         {{variant.variantName}}</div>
                                     <span class="f-spacer"></span>
-                                    <lib-button (click)="deleteVariant(variant.variantId)">
-                                        <mat-icon fontSet="mdo-icons">recycle-bin</mat-icon>
+                                    <lib-button (click)="deleteVariant(variant.variantId)" type="plain" icon="recycle">
                                     </lib-button>
                                 </mat-list-item>
                             </mat-nav-list>
@@ -75,12 +84,14 @@
                     <div class="col"></div>
                     <div class="col col-x4"><strong><span i18n="@@business_rule">Business rule</span></strong></div>
                     <div class="col col-x4"><strong class="f-row"><span i18n="@@category">Category</span> &nbsp;
-                            <mat-icon i18n-libTooltip="@@br_category_tooltip_msg" libTooltip="Dimension of data quality to be measured" fontSet="mdo-icons">
+                            <mat-icon i18n-libTooltip="@@br_category_tooltip_msg"
+                                libTooltip="Dimension of data quality to be measured" fontSet="mdo-icons">
                                 question-circle</mat-icon>
                         </strong></div>
-                    <div class="col col-x8 mat-item-center"><strong class="f-row"><span i18n="@@weightage">Weightage</span> &nbsp;
-                            <mat-icon
-                                i18n-libTooltip="@@br_weightage_tooltip_msg" libTooltip="Score assigned to a record upon successful validation of a business rule.For a schema total weightage of all the business rules must not exceed 100"
+                    <div class="col col-x8 mat-item-center"><strong class="f-row"><span
+                                i18n="@@weightage">Weightage</span> &nbsp;
+                            <mat-icon i18n-libTooltip="@@br_weightage_tooltip_msg"
+                                libTooltip="Score assigned to a record upon successful validation of a business rule.For a schema total weightage of all the business rules must not exceed 100"
                                 fontSet="mdo-icons">
                                 question-circle</mat-icon>
                         </strong></div>
@@ -89,10 +100,11 @@
                 </div>
                 <div class="f-row colunm-box rule-border-row">
                     <div class="mdo-auto-complete">
-                        <pros-form-input-autoselect i18n-fieldLabel="@@type_rule_name_to_add" fieldLabel="Type rule name to add"
-                            (openCustomDialog)="openBrLibrarySideSheet()" [updatedOptionsList]="allBusinessRulesList"
-                            [labelKey]="'brInfo'" (emitExtraLabelClick)="openBusinessRuleSideSheet()"
-                            i18n-extraOptionLabel="@@add_br_rule" extraOptionLabel="Add new business rule" (optionSelectedEmit)="addBusinessRule($event)"
+                        <pros-form-input-autoselect i18n-fieldLabel="@@type_rule_name_to_add"
+                            fieldLabel="Type rule name to add" (openCustomDialog)="openBrLibrarySideSheet()"
+                            [updatedOptionsList]="allBusinessRulesList" [labelKey]="'brInfo'"
+                            (emitExtraLabelClick)="openBusinessRuleSideSheet()" i18n-extraOptionLabel="@@add_br_rule"
+                            extraOptionLabel="Add new business rule" (optionSelectedEmit)="addBusinessRule($event)"
                             (emitSearchValue)="getAllBusinessRulesList(moduleId, $event, '', '0')">
                         </pros-form-input-autoselect>
                     </div>
@@ -103,10 +115,9 @@
                         <div cdkDrag *ngFor="let businessRule of businessRuleData; let i=index">
                             <div class="f-row colunm-box rule-border-row">
                                 <div class="col">
-                                    <lib-button cdkDragHandle>
-                                        <mat-icon fontSet="mdo-icons">grip-lines</mat-icon>
+                                    <lib-button cdkDragHandle icon="grip-lines">
+                                        <!-- <mat-icon fontSet="mdo-icons">grip-lines</mat-icon> -->
                                     </lib-button>
-
                                 </div>
                                 <div class="col col-x4" (click)="editBr(businessRule)">
                                     <div mat-line><a class="info-link">{{businessRule.brInfo}}</a></div>
@@ -125,9 +136,13 @@
                                 </div>
                                 <div class="col col-x8 mat-item-center">
                                     <div class="f-row slider-row">
-                                        <lib-range-slider class="lib-slider" thumbLabel="true"  tickInterval="1" minValue="0" (valueChange)="businessRule.brWeightage=$event;updateBr(businessRule,$event)"
-                                        [value]="businessRule.brWeightage"  [maxValue]="availableWeightage(businessRule.brWeightage)" color="primary"></lib-range-slider><span class="f-col-spacer-half"></span>
-                            <div class="percent-count">{{businessRule.brWeightage}}%</div>
+                                        <lib-range-slider class="lib-slider" thumbLabel="true" tickInterval="1"
+                                            minValue="0"
+                                            (valueChange)="businessRule.brWeightage=$event;updateBr(businessRule,$event)"
+                                            [value]="businessRule.brWeightage"
+                                            [maxValue]="availableWeightage(businessRule.brWeightage)" color="primary">
+                                        </lib-range-slider><span class="f-col-spacer-half"></span>
+                                        <div class="percent-count">{{businessRule.brWeightage}}%</div>
                                     </div>
                                 </div>
 
@@ -137,8 +152,9 @@
                                 </div>
 
                                 <div class="col col-x4 text-end">
-                                    <lib-button mat-button [matMenuTriggerFor]="mappingdependency" [disabled]='i===0 '>
-                                        <mat-icon fontSet="mdo-icons">link</mat-icon>
+                                    <lib-button mat-button [matMenuTriggerFor]="mappingdependency" icon="link"
+                                        [disabled]='i===0 '>
+                                        <!-- <mat-icon fontSet="mdo-icons">link</mat-icon> -->
                                     </lib-button>
                                     <!-- Mapping Dropdown Menu -->
                                     <mat-menu #mappingdependency="matMenu" #aboveMenu="matMenu" yPosition="above"
@@ -147,14 +163,14 @@
                                         <div class="f-col">
                                             <p>Only run this rule if the preceding rule returns</p>
                                             <lib-radio-group (click)="$event.stopPropagation()" [options]="depRuleList"
-                                                class="f-col" color="primary" 
+                                                class="f-col" color="primary"
                                                 [value]="getCurrentBrStatusObj(businessRule.dependantStatus)"
                                                 (valueChange)="updateDepRule(businessRule,$event)">
                                             </lib-radio-group>
                                         </div>
                                     </mat-menu>
-                                    <lib-button mat-button (click)="deleteBr(businessRule)">
-                                        <mat-icon fontSet="mdo-icons">trash-alt</mat-icon>
+                                    <lib-button mat-button icon="trash-alt" (click)="deleteBr(businessRule)">
+                                        <!-- <mat-icon fontSet="mdo-icons">trash-alt</mat-icon> -->
                                     </lib-button>
                                 </div>
                             </div>
@@ -163,10 +179,9 @@
                                 <div cdkDrag *ngFor="let deps of businessRule.dep_rules;let i=index;">
                                     <div class="f-row colunm-box rule-border-row">
                                         <div class="col">
-                                            <lib-button cdkDragHandle>
-                                                <mat-icon>subdirectory_arrow_right</mat-icon>
+                                            <lib-button cdkDragHandle icon="arrow_right">
+                                                <!-- <mat-icon>subdirectory_arrow_right</mat-icon> -->
                                             </lib-button>
-
                                         </div>
                                         <div class="col col-x4" (click)="editBr(deps)">
                                             <div mat-line><a class="info-link">{{deps.brInfo}}</a></div>
@@ -201,8 +216,8 @@
                                         </div>
 
                                         <div class="col col-x4 text-end">
-                                            <lib-button [matMenuTriggerFor]="mappingdependency">
-                                                <mat-icon fontSet="mdo-icons">link</mat-icon>
+                                            <lib-button [matMenuTriggerFor]="mappingdependency" icon="link">
+                                                <!-- <mat-icon fontSet="mdo-icons">link</mat-icon> -->
                                             </lib-button>
                                             <!-- Mapping Dropdown Menu -->
                                             <mat-menu #mappingdependency="matMenu" #aboveMenu="matMenu"
@@ -218,17 +233,13 @@
                                                     </lib-radio-group>
                                                 </div>
                                             </mat-menu>
-                                            <button mat-button (click)="deleteBrChild(deps,businessRule)">
-                                                <mat-icon fontSet="mdo-icons">trash-alt</mat-icon>
-                                            </button>
+                                            <lib-button icon="trash-alt" (click)="deleteBrChild(deps,businessRule)"></lib-button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-
                 </ng-template>
 
                 <ng-template #nullState>
@@ -240,7 +251,8 @@
         </lib-tab>
 
         <!-- Tab for the Subscribers of the schema -->
-        <lib-tab i18n-label="@@subscribers" label="Subscribers" [badgeCount]="subscriberData ? subscriberData.length : 0">
+        <lib-tab i18n-label="@@subscribers" label="Subscribers"
+            [badgeCount]="subscriberData ? subscriberData.length : 0">
             <div class="colunm-listing">
                 <div class="f-row colunm-box rule-border-row">
                     <div class="col"></div>
@@ -299,18 +311,14 @@
                             </mat-card-header>
                         </div>
                         <div class="col col-x8" [matMenuTriggerFor]="subscriberRole">
-                            <button mat-stroked-button *ngIf="subscriber.isAdmin">Admin <mat-icon
-                                    fontSet="mdo-icons-solid">
-                                    caret-down</mat-icon></button>
-                            <button mat-stroked-button *ngIf="subscriber.isReviewer">Reviewer <mat-icon
-                                    fontSet="mdo-icons-solid">
-                                    caret-down</mat-icon></button>
-                            <button mat-stroked-button *ngIf="subscriber.isViewer">Viewer <mat-icon
-                                    fontSet="mdo-icons-solid">
-                                    caret-down</mat-icon></button>
-                            <button mat-stroked-button *ngIf="subscriber.isEditer">Editor <mat-icon
-                                    fontSet="mdo-icons-solid">
-                                    caret-down</mat-icon></button>
+                            <lib-button type="minor" icon="caret-down" iconPosition="before" *ngIf="subscriber.isAdmin">
+                                Admin </lib-button>
+                            <lib-button type="minor" icon="caret-down" iconPosition="before"
+                                *ngIf="subscriber.isReviewer"> Reviewer </lib-button>
+                            <lib-button type="minor" icon="caret-down" iconPosition="before"
+                                *ngIf="subscriber.isViewer"> Viewer </lib-button>
+                            <lib-button type="minor" icon="caret-down" iconPosition="before"
+                                *ngIf="subscriber.isEditer"> Editor </lib-button>
                         </div>
                         <mat-menu #subscriberRole="matMenu" class="navigation-menu">
                             <button mat-menu-item *ngFor="let role of roles"
@@ -362,9 +370,8 @@
                             </mat-menu>
                         </div>
                         <div class="col mat-item-end">
-                            <button mat-button (click)="deleteSubscriber(subscriber.sno)">
-                                <mat-icon fontSet="mdo-icons">trash-alt</mat-icon>
-                            </button>
+                            <lib-button (click)="deleteSubscriber(subscriber.sno)" type="plain" icon="trash-alt">
+                            </lib-button>
                         </div>
                     </div>
                 </ng-template>
@@ -377,7 +384,7 @@
         </lib-tab>
 
         <!-- Tab for the Schedule of the schema -->
-        <lib-tab label="Schedule" i18n-label="schedule">
+        <lib-tab label="Schedule" i18n-label="@@schedule">
             <div class="f-col summary-root">
                 <div class="f-row schedule-row">
 
@@ -388,18 +395,15 @@
                             Enable schedule
                         </mat-slide-toggle>
                         <span class="f-spacer"></span>
-                        <button mat-flat-button color="primary"
-                            (click)="openScheduleSideSheet(scheduleInfo.schedulerId)">
-                            <mat-icon fontSet="mdo-icons">history</mat-icon> Edit schedule
-                        </button>
+                        <lib-button (click)="openScheduleSideSheet(scheduleInfo.schedulerId)" type="major"
+                            icon="history" iconPosition="before"> Edit schedule </lib-button>
                     </ng-template>
 
                     <!-- in case of there is no schedule, will show only add button -->
                     <ng-template #addSchedule>
                         <span class="f-spacer"></span>
-                        <button mat-flat-button color="primary" (click)="openScheduleSideSheet()">
-                            <mat-icon fontSet="mdo-icons">history</mat-icon> Add schedule
-                        </button>
+                        <lib-button (click)="openScheduleSideSheet()" type="major" iconPosition="before" icon="history">
+                            Add schedule </lib-button>
                     </ng-template>
                 </div>
                 <mat-divider></mat-divider>
@@ -407,7 +411,7 @@
         </lib-tab>
 
         <!-- Tab for the Statistics of the schema -->
-        <lib-tab label="Statistics" i18n-label="statistics">
+        <lib-tab label="Statistics" i18n-label="@@statistics">
             <pros-statics [moduleId]="moduleId" [schemaId]="schemaId">
             </pros-statics>
         </lib-tab>

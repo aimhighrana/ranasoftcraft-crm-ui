@@ -24,4 +24,12 @@ export class CoreService {
     return this.http.get<ObjectType>(this.endpointsService.getObjectTypeDetailsUrl(moduleId));
   }
 
+  searchFieldsMetadata(moduleId,offset,searchString='',size, lang?): Observable<FieldMetaData[]> {
+    return this.http.get<FieldMetaData[]>(this.endpointsService.searchFieldsMetadataUrl(), {params: {lang: lang || '',moduleId,offset,searchString,size}});
+  }
+
+  getMetadataByFields(fieldsList: string[], lang?): Observable<FieldMetaData[]> {
+    return this.http.post<FieldMetaData[]>(this.endpointsService.getMetadataByFieldsUrl(),fieldsList, {params: {lang: lang || ''}});
+  }
+
 }

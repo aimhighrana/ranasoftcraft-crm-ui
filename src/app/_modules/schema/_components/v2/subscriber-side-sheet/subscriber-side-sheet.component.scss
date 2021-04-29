@@ -6,6 +6,7 @@ div.root {
 
   .breadcrum-toolbar {
     padding: 8px 16px;
+    align-items: baseline;
 
     .mdo-constrained-right {
       width: 100%;
@@ -48,6 +49,10 @@ div.root {
               min-width: 60px;
             }
           }
+        }
+
+        mat-list mat-card-header.avatar-header {
+          flex-direction: row-reverse;
         }
       }
     }

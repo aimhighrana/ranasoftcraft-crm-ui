@@ -138,6 +138,12 @@ describe('PrimaryNavigationComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: ['sb', 'system-tray'] } }]);
   });
 
+  it('should call openSettings()', async () => {
+    spyOn(router, 'navigate');
+    component.openSettings();
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: 'settings' }}]);
+  });
+
   it('should call signout()', async () => {
     spyOn(router, 'navigate');
     component.signOut();

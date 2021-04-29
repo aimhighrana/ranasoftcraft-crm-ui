@@ -30,6 +30,8 @@ import { distinctUntilChanged } from 'rxjs/operators';
 })
 export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
 
+  readonly OrderWith = OrderWith;
+
   /** when user click enable/disable widget property */
   showProperty = false;
 
@@ -186,6 +188,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       aggregrationOp: [''],
       filterType: [''],
       isMultiSelect: [false],
+      orderWith: [OrderWith.DESC],
       groupById: [''],
       objectType: [''],
       imageUrl: [''],
@@ -213,7 +216,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       legendPosition: [LegendPosition.top],
       xAxisLabel: [''],
       yAxisLabel: [''],
-      orderWith: [OrderWith.DESC],
+      orderWith: [OrderWith.ROW_DESC],
       scaleFrom: [''],
       scaleTo: [''],
       stepSize: [''],
@@ -240,6 +243,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         changedWidget.aggregrationOp = latestVal.aggregrationOp;
         changedWidget.filterType = latestVal.filterType;
         changedWidget.isMultiSelect = latestVal.isMultiSelect;
+        changedWidget.orderWith = latestVal.orderWith;
         changedWidget.groupById = latestVal.groupById;
         changedWidget.objectType = latestVal.objectType;
         changedWidget.imageUrl = latestVal.imageUrl;
@@ -505,6 +509,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           aggregrationOp: data.aggregrationOp ? data.aggregrationOp : '',
           filterType: data.filterType ? data.filterType : '',
           isMultiSelect: data.isMultiSelect ? data.isMultiSelect : false,
+          orderWith: data.orderWith ? data.orderWith : OrderWith.DESC,
           groupById: data.groupById ? data.groupById : '',
           isWorkflowdataSet: data.isWorkflowdataSet ? data.isWorkflowdataSet : false,
           imageUrl: data.imageUrl ? data.imageUrl : '',
@@ -531,7 +536,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
           this.chartPropCtrlGrp.setValue({
             chartType: ChartType.BAR, orientation: Orientation.VERTICAL, isEnableDatalabels: false,
             datalabelsPosition: DatalabelsPosition.center, isEnableLegend: false, legendPosition: LegendPosition.top, xAxisLabel: '', yAxisLabel: '',
-            orderWith: OrderWith.DESC, scaleFrom: '', scaleTo: '', stepSize: '', dataSetSize: '', seriesWith: SeriesWith.day, seriesFormat: '', blankValueAlias: '', timeseriesStartDate: TimeseriesStartDate.D7,
+            orderWith: OrderWith.ROW_DESC, scaleFrom: '', scaleTo: '', stepSize: '', dataSetSize: '', seriesWith: SeriesWith.day, seriesFormat: '', blankValueAlias: '', timeseriesStartDate: TimeseriesStartDate.D7,
             isEnabledBarPerc: false, bucketFilter: null
           });
         }
@@ -1003,7 +1008,7 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
         dropableWidget.chartProperties = {
           chartType: ChartType.BAR, orientation: Orientation.VERTICAL, isEnableDatalabels: false,
           datalabelsPosition: DatalabelsPosition.center, isEnableLegend: false, legendPosition: LegendPosition.top,
-          xAxisLabel: '', yAxisLabel: '', orderWith: OrderWith.DESC, scaleFrom: null, scaleTo: null, stepSize: null,
+          xAxisLabel: '', yAxisLabel: '', orderWith: OrderWith.ROW_DESC, scaleFrom: null, scaleTo: null, stepSize: null,
           dataSetSize: null, seriesWith: SeriesWith.day, seriesFormat: null, blankValueAlias: null, timeseriesStartDate: TimeseriesStartDate.D7, isEnabledBarPerc: false,
           bucketFilter: null
         };

@@ -83,8 +83,8 @@ export class SharedServiceService {
     return this.afterBrSaveUpdate.asObservable();
   }
 
-  public setReportListData() {
-    this.reportListData.next(true);
+  public setReportListData(isPageReload: boolean = false) {
+    this.reportListData.next({ isPageReload });
   }
 
   public getReportListData(): Observable<any> {

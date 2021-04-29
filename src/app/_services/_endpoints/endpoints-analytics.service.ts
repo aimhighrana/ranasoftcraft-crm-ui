@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { WidgetType } from '@modules/report/_models/widget';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -123,11 +124,21 @@ export class EndpointsAnalyticsService {
     return `${this.apiUrl}/report/custom-dataset/fields/${objectId}`
   }
 
-  public saveReportDownload(widgetId: string,userName:string) : string {
+  public saveReportDownload(widgetId: string, userName: string): string {
     return `${this.apiUrl}/widget/startdoDownloadFile/${widgetId}?userName=${userName}`;
   }
 
+  /**
+   * endpoint to copy endpoint
+   */
   public copyReport(reportId: string, reportName:string) : string {
-    return `${this.apiUrl}/report/copy-report?reportId=${reportId}&reportName=${reportName}`;
+    return `${this.apiUrl}/report/copy?reportId=${reportId}&reportName=${reportName}`;
+  }
+
+  /**
+   * endpoint to display-criteria endpoint
+   */
+  public displayCriteria(widgetId: string, widgetType: WidgetType): string {
+    return `${this.apiUrl}/report/widget/display-criteria?widgetId=${widgetId}&widgetType=${widgetType}`;
   }
 }

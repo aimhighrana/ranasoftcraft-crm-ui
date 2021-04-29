@@ -18,9 +18,7 @@
             <mat-header-cell *matHeaderCellDef class="fixed-width-c1">
             </mat-header-cell>
             <mat-cell *matCellDef="let row" class="fixed-width-c1">
-                <button mat-button>
-                    <mat-icon fontSet="mdo-icons">more</mat-icon>
-                </button>
+                <lib-button type="plain"  icon="ellipsis-h"></lib-button>
             </mat-cell>
         </ng-container>
 
@@ -46,15 +44,9 @@
 
         <ng-container matColumnDef="common_actions_header">
             <mat-header-cell *matHeaderCellDef [attr.colspan]="displayedFields.getValue().length">
-                <div class="f-row action-iconbtns">
-                    <button mat-flat-button color="accent">
-                        <mat-icon fontSet="mdo-icons">check-mark</mat-icon>
-                        Action
-                    </button>
-                    <button mat-flat-button (click)="selection.clear()" color="accent">
-                        <mat-icon fontSet="mdo-icons">close</mat-icon>
-                        Unselect
-                    </button>
+                <div class="f-row">
+                    <lib-button type="minor" icon="check"> Action </lib-button>
+                    <lib-button (click)="selection.clear()" type="minor" icon="times"></lib-button>
                 </div>
             </mat-header-cell>
         </ng-container>
@@ -64,5 +56,4 @@
         <mat-row *matRowDef="let row; columns: displayedFields | async;" [ngClass]="{'active-row': activeGroupId == row.groupId}" (click)="rowGroupClicked(row)"></mat-row>
     </mat-table>
     <pros-null-state *ngIf="!dataSource.data.length" [button]="null"></pros-null-state>
-
 </div>

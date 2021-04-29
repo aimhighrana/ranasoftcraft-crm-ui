@@ -26,4 +26,12 @@ describe('EndpointsCoreService', () => {
     expect(service.getObjectTypeDetailsUrl('1005')).toContain('/metadata/get-module-desc/1005');
   });
 
+  it('should searchFieldsMetadataUrl', () => {
+    expect(service.searchFieldsMetadataUrl()).toContain('/metadata/list-view-fields');
+  });
+
+  it('should getMetadataByFieldsUrl', () => {
+    expect(service.getMetadataByFieldsUrl()).toContain('/metadata/get-metadata-by-fields');
+  });
+
 });

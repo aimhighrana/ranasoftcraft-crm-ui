@@ -86,6 +86,12 @@
     padding: 0 16px;
   }
 
+  .change-password-dialog {
+    .mat-dialog-container {
+      padding: 24px;
+    }
+  }
+
   .mat-drawer-container {
     height: 100%;
   }
@@ -1163,6 +1169,16 @@
     .mat-cell:last-of-type {
       border-right: none;
     }
+
+    .resize-holder {
+      cursor: col-resize;
+      width: 20px;
+      height: 100%;
+      position: absolute;
+      right: -10px;
+      top: 0;
+      z-index: 101;
+    }
   }
 
   //Mat-Stepper
@@ -1347,6 +1363,12 @@
           }
         }
       }
+    }
+  }
+
+  pros-settings {
+    .mat-list-item.selected {
+      background-color: $color-app-hover;
     }
   }
 
@@ -2042,5 +2064,17 @@
 .cdk-drag-placeholder.tasks-list-drag-el {
   .mat-expansion-panel-content {
     display: none;
+  }
+}
+
+pros-subscriber-invite-sidesheet .lib-input .mdo-field {
+  margin-bottom: 17px;
+}
+
+// primary menu btns
+.menu-btn {
+  button {
+    width: 100%;
+    text-align: start;
   }
 }
