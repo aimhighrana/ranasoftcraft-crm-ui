@@ -219,17 +219,27 @@ describe('BarChartComponent', () => {
   }));
 
   it('getFieldsMetadaDesc(), get description of field', async(()=>{
-    const buckets = [{key:'200010',doc_count:10744,'top_hits#items':{hits:{total:{value:10744,relation:'eq'},max_score:1.0,hits:[{_source:{hdvs:{MATL_GROUP:{fId:'MATL_GROUP',lls:{EN:{label:'Material Group'}},vls:{EN:{valueTxt:'200010'}},vc:[{c:'200010'}]}}}}]}}},{key:'200030',doc_count:775,'top_hits#items':{hits:{total:{value:775,relation:'eq'},max_score:1.0,hits:[{_source:{hdvs:{MATL_GROUP:{fId:'MATL_GROUP',lls:{EN:{label:'Material Group'}},vls:{EN:{valueTxt:'200030'}},vc:[{c:'200030'}]}}}}]}}}];
+    const buckets = [{key:'200010',doc_count:10744,'top_hits#items':{hits:{total:{value:10744,relation:'eq'},max_score:1.0,hits:[{_source:{hdvs:{MATL_GROUP:{fId:'MATL_GROUP',lls:{EN:{label:'Material Group'}},vls:{EN:{valueTxt:'200010'}},vc:[{c:'200010', t:'testing'}]}}}}]}}},{key:'200030',doc_count:775,'top_hits#items':{hits:{total:{value:775,relation:'eq'},max_score:1.0,hits:[{_source:{staticFields:{MATL_GROUP:{fId:'MATL_GROUP',lls:{EN:{label:'Material Group'}},vls:{EN:{valueTxt:'200030'}},vc:[{c:'200030'}]}}}}]}}}];
 
     const data: BarChartWidget = new BarChartWidget();
     data.fieldId = 'MATL_GROUP';
     component.barWidget.next(data);
-    component.lablels = ['200010','200030'];
+    component.lablels = ['testing','200030'];
     // call actual method
     component.getFieldsMetadaDesc(buckets);
 
     expect(component.lablels.length).toEqual(2);
     expect(component.chartLegend.length).toEqual(2);
+
+    const buckets1 = [{key:'200030','top_hits#items':{hits:{hits:[{_source:{staticFields:{OVERDUE:{vc:[{c:'1'}]}}}}]}}}];
+    const data1: BarChartWidget = new BarChartWidget();
+    data1.fieldId = 'OVERDUE';
+    component.barWidget.next(data1);
+    component.lablels = ['YES'];
+    // call actual method
+    component.getFieldsMetadaDesc(buckets1);
+    expect(component.lablels.length).toEqual(3);
+    expect(component.chartLegend.length).toEqual(3);
   }));
 
   it('getBarChartData(), get bar chart data', async(()=>{

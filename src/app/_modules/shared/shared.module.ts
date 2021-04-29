@@ -80,7 +80,7 @@ import { InfiniteScrollDirective } from './_directives/infinite-scroll.directive
 import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { AutoCompleteScrollDirective } from './_directives/auto-complete-scroll.directive';
 import { ResizableColumnDirective } from './_directives/resizable-column.directive';
-
+import { DateFormatPipe } from './_pipes/date-format.pipe'
 @NgModule({
   declarations: [
     // directives
@@ -93,6 +93,7 @@ import { ResizableColumnDirective } from './_directives/resizable-column.directi
     SubstringPipe,
     ReplaceUnderscorePipe,
     ThousandconvertorPipe,
+    DateFormatPipe,
     // shared components
     PageNotFoundComponent,
     BreadcrumbComponent,
@@ -123,7 +124,7 @@ import { ResizableColumnDirective } from './_directives/resizable-column.directi
     ClassificationDatatableCellEditableComponent,
     SubscriberInviteSidesheetComponent,
     SchemaExecutionTrendComponent,
-    AutoCompleteScrollDirective
+    AutoCompleteScrollDirective,
   ],
   imports: [
     // ng modules
@@ -244,6 +245,7 @@ import { ResizableColumnDirective } from './_directives/resizable-column.directi
     ReplaceUnderscorePipe,
     ThousandconvertorPipe,
     FormatTableHeadersPipe,
+    DateFormatPipe,
     // components
     PageNotFoundComponent,
     BreadcrumbComponent,

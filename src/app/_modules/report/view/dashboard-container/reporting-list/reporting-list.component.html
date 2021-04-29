@@ -44,7 +44,7 @@
                     <th mat-header-cell *matHeaderCellDef mat-sort-header> {{columnDescs[column]}}</th>
                     <td mat-cell *matCellDef="let element"> 
                         <ng-template [ngIf]="isDateType(column)" [ngIfElse]="normalText">
-                            {{ element[column] ? (getDateTypeValue(element[column]) | date : dateFormat ): '' }} 
+                            {{ element[column] ? (getDateTypeValue(element[column]) | dateFormatPipe:dateFormat ): '' }} 
                         </ng-template>
                         <ng-template #normalText>
                             {{element[column]}}

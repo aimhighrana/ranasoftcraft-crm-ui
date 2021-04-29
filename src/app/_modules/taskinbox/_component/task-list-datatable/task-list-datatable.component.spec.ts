@@ -1,4 +1,3 @@
-import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { PageEvent } from '@angular/material/paginator';
 import { of, Subject } from 'rxjs';
@@ -27,7 +26,7 @@ describe('TaskListDatatableComponent', () => {
     // queryParams.next({ s: 'inbox', f: 'W29iamVjdCBPYmplY3Rd' });
     TestBed.configureTestingModule({
       declarations: [TaskListDatatableComponent],
-      imports: [AppMaterialModuleForSpec, RouterTestingModule, SharedModule, MdoUiLibraryModule],
+      imports: [AppMaterialModuleForSpec, RouterTestingModule, SharedModule],
       providers: [
         {
           provide: ActivatedRoute,
@@ -47,6 +46,18 @@ describe('TaskListDatatableComponent', () => {
     sharedServices = fixture.debugElement.injector.get(SharedServiceService);
     taskListService = fixture.debugElement.injector.get(TaskListService);
     router = TestBed.inject(Router);
+    const fieldList = [
+      { fldId: 'description', order: 1 },
+      { fldId: 'labels', order: 2 },
+      { fldId: 'sent', order: 3 },
+      { fldId: 'dueby', order: 4 },
+      { fldId: 'requestby', order: 5 },
+      { fldId: 'sentby', order: 6 },
+    ];
+    spyOn(taskListService, 'getHeadersForNode')
+      .withArgs('inbox')
+      .and.callFake(() => of(fieldList));
+    spyOn(taskListService, 'saveTasklistVisitByUser').and.callFake(() => of({}));
   });
 
   it('should create', () => {
@@ -56,23 +67,28 @@ describe('TaskListDatatableComponent', () => {
     component.ngOnInit();
     expect(component.node).toEqual('inbox');
   });
-  it('should have param', async () => {
-    // fixture.detectChanges();
+  it('should have param', fakeAsync(() => {
+    spyOn(component, 'filterLabels');
     component.ngOnInit();
     expect(activatedRoute.snapshot.queryParams.f).toEqual('test');
-  });
+
+    component.labelSearchFieldSub.next('forwarded');
+    tick(1500);
+    expect(component.filterLabels).toHaveBeenCalledWith('forwarded');
+  }));
   it('should have param and called other methods', async(() => {
     spyOn(component, 'saveTasklistVisitByUser');
     spyOn(component, 'getHeadersForNode');
     spyOn(component, 'updateNodeChips');
     component.ngOnInit();
-    activatedRoute.params.subscribe(resp => {
+    activatedRoute.params.subscribe((resp) => {
       expect(component.saveTasklistVisitByUser).toHaveBeenCalled();
       expect(component.getHeadersForNode).toHaveBeenCalled();
       expect(component.updateNodeChips).toHaveBeenCalled();
     });
   }));
-  it('should have queryParam', async(() => {
+
+  it('should have queryParam', fakeAsync(() => {
     // this calls ngOnInit and we subscribe
     spyOn(component, 'updateNodeChips');
     const settings = [
@@ -89,24 +105,30 @@ describe('TaskListDatatableComponent', () => {
     fixture.detectChanges();
     // component.ngOnInit();
     queryParams.next({ s: 'inbox', f });
-
+    //
     // tick to make sure the async observable resolves
-    // tick();
     expect(component.savedSearchParameters).toBe('inbox');
     expect(component.inlineFilters).toBe(f);
     expect(component.updateNodeChips).toHaveBeenCalledWith(settings);
+
+    component.ngOnInit();
+    queryParams.next({ s: null, f: null });
+    //
+    expect(component.savedSearchParameters).toEqual(null);
+    expect(component.inlineFilters).toEqual(null);
   }));
 
-  it('updateTableColumns()', () => {
+  it('updateTableColumns()', fakeAsync(() => {
     spyOn(component, 'updateTableColumns');
     spyOn(component, 'updateNodeChips');
-    spyOn(sharedServices, 'gettaskinboxViewDetailsData').and.returnValue(of());
+    spyOn(sharedServices, 'gettaskinboxViewDetailsData').and.returnValue(of({ node: 'inbox', viewDetails: [] }));
     component.ngOnInit();
 
-    // expect(component.updateTableColumns).toHaveBeenCalled();
-    expect(component.updateNodeChips).toHaveBeenCalled();
+    // expect(component.updateNodeChips).toHaveBeenCalled();
     expect(sharedServices.gettaskinboxViewDetailsData).toHaveBeenCalled();
-  });
+
+    expect(component.updateTableColumns).toHaveBeenCalled();
+  }));
 
   it('updateNodeChips()', () => {
     component.node = 'inbox';
@@ -224,6 +246,27 @@ describe('TaskListDatatableComponent', () => {
       },
     ]);
     expect(component.currentFilterSettings).toEqual([]);
+
+    component.setChipValue(
+      {
+        fldId: 'Bookmarked',
+        value: ['2'],
+        icon: 'star',
+        hasMenu: false,
+      },
+      '2'
+    );
+    expect(component.currentFilterSettings).toEqual([
+      {
+        fldId: 'Bookmarked',
+        value: ['2'],
+        startvalue: [],
+        endvalue: [],
+        operator: 'equal',
+        parentnode: '',
+      },
+    ]);
+
     expect(component.updateQueryParameter).toHaveBeenCalled();
   });
 
@@ -260,6 +303,9 @@ describe('TaskListDatatableComponent', () => {
   it('filterModulesMenu()', () => {
     component.filterModulesMenu('he', 'Label');
     expect(component.filteredNodeChipsMenuItems.Label).toEqual(['He']);
+
+    component.filterModulesMenu('he', 'UnknownChip');
+    expect(component.filteredNodeChipsMenuItems.UnknownChip).toEqual([]);
   });
 
   it('openTableViewSettings()', () => {
@@ -296,7 +342,7 @@ describe('TaskListDatatableComponent', () => {
 
   it('getFieldDesc()', () => {
     component.node = 'inbox';
-    component.nodeColumns = [{fldId: 'dueby', fldDesc: 'Due by'}];
+    component.nodeColumns = [{ fldId: 'dueby', fldDesc: 'Due by' }];
     expect(component.getFieldDesc('dueby')).toEqual('Due by');
   });
 
@@ -308,7 +354,6 @@ describe('TaskListDatatableComponent', () => {
     expect(component.pageEvent.pageIndex).toBe(5);
   });
   it('saveTasklistVisitByUser()', async(() => {
-    spyOn(taskListService, 'saveTasklistVisitByUser').and.returnValue(of({}));
     component.saveTasklistVisitByUser('inbox');
     expect(taskListService.saveTasklistVisitByUser).toHaveBeenCalled();
     taskListService.saveTasklistVisitByUser('inbox').subscribe((actualResponse) => {
@@ -317,24 +362,55 @@ describe('TaskListDatatableComponent', () => {
   }));
 
   it('getHeadersForNode()', fakeAsync(() => {
-    const fieldList = [
-      { fldId: 'description', order: 1 },
-      { fldId: 'labels', order: 2 },
-      { fldId: 'sent', order: 3 },
-      { fldId: 'dueby', order: 4 },
-      { fldId: 'requestby', order: 5 },
-      { fldId: 'sentby', order: 6},
-    ];
     component.node = 'inbox';
-    spyOn(taskListService, 'getHeadersForNode').and.returnValue(of(fieldList));
     spyOn(component, 'updateTableColumns');
     component.getHeadersForNode('inbox');
-    tick();
+
     expect(taskListService.getHeadersForNode).toHaveBeenCalled();
-    tick();
+
     expect(component.nodeColumns.length).toBeGreaterThan(1);
     expect(component.updateTableColumns).toHaveBeenCalled();
   }));
+
+  it('filterLabels(event)', () => {
+    component.ngOnInit();
+    component.filterLabels('forwarded');
+    expect(component.filteredLabels.length).toBeGreaterThan(0);
+  });
+
+  it('removeLabel(element: PeriodicElement, label)', () => {
+    component.ngOnInit();
+    const element = {
+      setting: 3,
+      Records: 'Lithium',
+      description: 6.941,
+      labels: ['Delegated', 'Forwarded'],
+      sent: 'L',
+      dueby: 'L',
+      requestby: 'L',
+      sentby: 'L',
+    };
+    component.removeLabel(element, 'Forwarded');
+    expect(element.labels.length).toEqual(1);
+  });
+
+  it('applyLabel(element: PeriodicElement, label)', () => {
+    component.ngOnInit();
+    const element = {
+      setting: 3,
+      Records: 'Lithium',
+      description: 6.941,
+      labels: ['Delegated', 'Forwarded'],
+      sent: 'L',
+      dueby: 'L',
+      requestby: 'L',
+      sentby: 'L',
+    };
+    component.applyLabel(element, 'Forwarded');
+    expect(element.labels.length).toEqual(2);
+    component.applyLabel(element, 'Completed');
+    expect(element.labels.length).toEqual(3);
+  });
 
   it('ngOnDestroy()', () => {
     spyOn(component.unsubscribeAll$, 'unsubscribe');
