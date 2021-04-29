@@ -210,7 +210,7 @@
             </div>
 
 
-            <div class="f-col listset-grid" [ngStyle]="{'width':'calc(100% - ' +widthOfSchemaNav + 'px - 24px)' }" (scroll)="onTableScroll($event)">
+            <div class="f-col listset-grid" [ngStyle]="{'width':'calc(100% - ' +widthOfSchemaNav + 'px - 24px)' }">
                 <div class="listset-text" i18n="@@header">Header</div>
                 <!-- if have data then render table -->
                 <ng-template [ngIf]="showTableLoading" [ngIfElse]="showdata">
@@ -226,7 +226,7 @@
                         </ng-template>
                         <lib-button (click)="selection.clear()" i18n="@@unselect" type="minor"> Unselect </lib-button>
                     </div>
-                    <div class="f-col datasource">
+                    <div class="f-col datasource" (scroll)="onTableScroll($event)">
                         <mat-table [dataSource]="dataSource" matSort>
                             <ng-container matColumnDef="_select_columns" sticky>
                                 <mat-header-cell *matHeaderCellDef>
