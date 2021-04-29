@@ -423,7 +423,9 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
     const businessRuleList = this.schemaService.getBusinessRulesBySchemaId(schemaId).subscribe((responseData) => {
       this.businessRuleData = responseData;
       this.businessRuleData.forEach(element => {
-        element.dependantStatus = 'ALL';
+        if(!element.dependantStatus) {
+          element.dependantStatus = 'ALL';
+        }
       });
     }, error => {
       console.log('Error while fetching business rule info for schema', error);
