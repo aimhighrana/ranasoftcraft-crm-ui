@@ -1,56 +1,265 @@
+import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { PageEvent } from '@angular/material/paginator';
-import { of } from 'rxjs';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { of, Subject } from 'rxjs';
+import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 
 import { TaskListDatatableComponent } from './task-list-datatable.component';
 import { SharedModule } from '@modules/shared/shared.module';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
+import { TaskListService } from '@services/task-list.service';
 
 describe('TaskListDatatableComponent', () => {
   let component: TaskListDatatableComponent;
   let fixture: ComponentFixture<TaskListDatatableComponent>;
   let router: Router;
   let sharedServices: SharedServiceService;
-  const queryParams = { s: 'inbox', f: 'test' };
+  let taskListService: TaskListService;
+  let activatedRoute: ActivatedRoute;
+  // const queryParams = { s: 'inbox', f: '' };
+  let queryParams: Subject<Params>;
   const params = { node: 'inbox' };
 
   beforeEach(async(() => {
+    queryParams = new Subject<Params>();
+    // queryParams.next({ s: 'inbox', f: 'W29iamVjdCBPYmplY3Rd' });
     TestBed.configureTestingModule({
       declarations: [TaskListDatatableComponent],
-      imports: [AppMaterialModuleForSpec, RouterTestingModule, SharedModule],
+      imports: [AppMaterialModuleForSpec, RouterTestingModule, SharedModule, MdoUiLibraryModule],
       providers: [
         {
           provide: ActivatedRoute,
-          useValue: { queryParams: of(queryParams), params: of(params) },
+          useValue: { queryParams, params: of(params), snapshot: { queryParams: { f: 'test' } } },
         },
       ],
-    }).compileComponents();
+    })
+      .compileComponents()
+      .then(() => {
+        activatedRoute = TestBed.inject(ActivatedRoute);
+      });
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(TaskListDatatableComponent);
     component = fixture.componentInstance;
     sharedServices = fixture.debugElement.injector.get(SharedServiceService);
+    taskListService = fixture.debugElement.injector.get(TaskListService);
     router = TestBed.inject(Router);
-    fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
   it('should have node inbox', () => {
+    component.ngOnInit();
     expect(component.node).toEqual('inbox');
   });
+  it('should have param', async () => {
+    // fixture.detectChanges();
+    component.ngOnInit();
+    expect(activatedRoute.snapshot.queryParams.f).toEqual('test');
+  });
+  it('should have param and called other methods', async(() => {
+    spyOn(component, 'saveTasklistVisitByUser');
+    spyOn(component, 'getHeadersForNode');
+    spyOn(component, 'updateNodeChips');
+    component.ngOnInit();
+    activatedRoute.params.subscribe(resp => {
+      expect(component.saveTasklistVisitByUser).toHaveBeenCalled();
+      expect(component.getHeadersForNode).toHaveBeenCalled();
+      expect(component.updateNodeChips).toHaveBeenCalled();
+    });
+  }));
+  it('should have queryParam', async(() => {
+    // this calls ngOnInit and we subscribe
+    spyOn(component, 'updateNodeChips');
+    const settings = [
+      {
+        fldId: 'Bookmarked',
+        value: ['2'],
+        startvalue: [],
+        endvalue: [],
+        operator: 'equal',
+        parentnode: '',
+      },
+    ];
+    const f = btoa(JSON.stringify(settings));
+    fixture.detectChanges();
+    // component.ngOnInit();
+    queryParams.next({ s: 'inbox', f });
+
+    // tick to make sure the async observable resolves
+    // tick();
+    expect(component.savedSearchParameters).toBe('inbox');
+    expect(component.inlineFilters).toBe(f);
+    expect(component.updateNodeChips).toHaveBeenCalledWith(settings);
+  }));
+
   it('updateTableColumns()', () => {
     spyOn(component, 'updateTableColumns');
+    spyOn(component, 'updateNodeChips');
     spyOn(sharedServices, 'gettaskinboxViewDetailsData').and.returnValue(of());
     component.ngOnInit();
 
-    expect(component.updateTableColumns).toHaveBeenCalled();
+    // expect(component.updateTableColumns).toHaveBeenCalled();
+    expect(component.updateNodeChips).toHaveBeenCalled();
     expect(sharedServices.gettaskinboxViewDetailsData).toHaveBeenCalled();
+  });
+
+  it('updateNodeChips()', () => {
+    component.node = 'inbox';
+    component.updateNodeChips();
+
+    expect(component.currentNodeFilterChips.length).toBeGreaterThan(1);
+  });
+  it('updateNodeChips() with parameter', () => {
+    component.node = 'inbox';
+    component.updateNodeChips([
+      {
+        fldId: 'Bookmarked',
+        value: [true],
+        startvalue: [],
+        endvalue: [],
+        operator: 'equal',
+        parentnode: '',
+      },
+    ]);
+    const chip = component.currentNodeFilterChips.find((d) => d.fldId === 'Bookmarked');
+    expect(chip.value).toEqual([true]);
+  });
+
+  it('setChipValue()', () => {
+    spyOn(component, 'updateQueryParameter');
+    component.currentNodeFilterChips = [
+      {
+        fldId: 'Bookmarked',
+        value: ['2'],
+        icon: 'star',
+        hasMenu: false,
+      },
+    ];
+    component.currentFilterSettings = [
+      {
+        fldId: 'Bookmarked',
+        value: ['2'],
+        startvalue: [],
+        endvalue: [],
+        operator: 'equal',
+        parentnode: '',
+      },
+    ];
+    component.setChipValue(
+      {
+        fldId: 'Bookmarked',
+        value: ['2'],
+        icon: 'star',
+        hasMenu: false,
+      },
+      '5'
+    );
+
+    expect(component.currentNodeFilterChips).toEqual([
+      {
+        fldId: 'Bookmarked',
+        value: ['2', '5'],
+        icon: 'star',
+        hasMenu: false,
+      },
+    ]);
+    expect(component.currentFilterSettings).toEqual([
+      {
+        fldId: 'Bookmarked',
+        value: ['2', '5'],
+        startvalue: [],
+        endvalue: [],
+        operator: 'equal',
+        parentnode: '',
+      },
+    ]);
+
+    component.setChipValue(
+      {
+        fldId: 'Bookmarked',
+        value: ['2'],
+        icon: 'star',
+        hasMenu: false,
+      },
+      '5'
+    );
+    expect(component.currentNodeFilterChips).toEqual([
+      {
+        fldId: 'Bookmarked',
+        value: ['2'],
+        icon: 'star',
+        hasMenu: false,
+      },
+    ]);
+    expect(component.currentFilterSettings).toEqual([
+      {
+        fldId: 'Bookmarked',
+        value: ['2'],
+        startvalue: [],
+        endvalue: [],
+        operator: 'equal',
+        parentnode: '',
+      },
+    ]);
+    component.setChipValue(
+      {
+        fldId: 'Bookmarked',
+        value: ['2'],
+        icon: 'star',
+        hasMenu: false,
+      },
+      '2'
+    );
+    expect(component.currentNodeFilterChips).toEqual([
+      {
+        fldId: 'Bookmarked',
+        value: [],
+        icon: 'star',
+        hasMenu: false,
+      },
+    ]);
+    expect(component.currentFilterSettings).toEqual([]);
+    expect(component.updateQueryParameter).toHaveBeenCalled();
+  });
+
+  it('updateQueryParameter()', () => {
+    spyOn(router, 'navigate');
+    component.node = 'inbox';
+    component.currentFilterSettings = [
+      {
+        fldId: 'Bookmarked',
+        value: ['2'],
+        startvalue: [],
+        endvalue: [],
+        operator: 'equal',
+        parentnode: '',
+      },
+    ];
+
+    component.updateQueryParameter();
+    let f = btoa(JSON.stringify(component.currentFilterSettings));
+    expect(router.navigate).toHaveBeenCalledWith([`/home/task/${component.node}/feed`], {
+      queryParams: { f },
+      queryParamsHandling: 'merge',
+    });
+
+    component.currentFilterSettings = [];
+    component.updateQueryParameter();
+    f = '';
+    expect(router.navigate).toHaveBeenCalledWith([`/home/task/${component.node}/feed`], {
+      queryParams: { f },
+      queryParamsHandling: 'merge',
+    });
+  });
+
+  it('filterModulesMenu()', () => {
+    component.filterModulesMenu('he', 'Label');
+    expect(component.filteredNodeChipsMenuItems.Label).toEqual(['He']);
   });
 
   it('openTableViewSettings()', () => {
@@ -59,6 +268,15 @@ describe('TaskListDatatableComponent', () => {
 
     component.openTableViewSettings();
     expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/task/view/${component.node}` } }], {
+      queryParamsHandling: 'preserve',
+    });
+  });
+  it('openFilterSettingsPanel()', () => {
+    spyOn(router, 'navigate');
+    component.node = 'inbox';
+
+    component.openFilterSettingsPanel();
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/task/filter/${component.node}` } }], {
       queryParamsHandling: 'preserve',
     });
   });
@@ -77,6 +295,8 @@ describe('TaskListDatatableComponent', () => {
   });
 
   it('getFieldDesc()', () => {
+    component.node = 'inbox';
+    component.nodeColumns = [{fldId: 'dueby', fldDesc: 'Due by'}];
     expect(component.getFieldDesc('dueby')).toEqual('Due by');
   });
 
@@ -87,6 +307,34 @@ describe('TaskListDatatableComponent', () => {
 
     expect(component.pageEvent.pageIndex).toBe(5);
   });
+  it('saveTasklistVisitByUser()', async(() => {
+    spyOn(taskListService, 'saveTasklistVisitByUser').and.returnValue(of({}));
+    component.saveTasklistVisitByUser('inbox');
+    expect(taskListService.saveTasklistVisitByUser).toHaveBeenCalled();
+    taskListService.saveTasklistVisitByUser('inbox').subscribe((actualResponse) => {
+      expect(actualResponse).toBeTruthy();
+    });
+  }));
+
+  it('getHeadersForNode()', fakeAsync(() => {
+    const fieldList = [
+      { fldId: 'description', order: 1 },
+      { fldId: 'labels', order: 2 },
+      { fldId: 'sent', order: 3 },
+      { fldId: 'dueby', order: 4 },
+      { fldId: 'requestby', order: 5 },
+      { fldId: 'sentby', order: 6},
+    ];
+    component.node = 'inbox';
+    spyOn(taskListService, 'getHeadersForNode').and.returnValue(of(fieldList));
+    spyOn(component, 'updateTableColumns');
+    component.getHeadersForNode('inbox');
+    tick();
+    expect(taskListService.getHeadersForNode).toHaveBeenCalled();
+    tick();
+    expect(component.nodeColumns.length).toBeGreaterThan(1);
+    expect(component.updateTableColumns).toHaveBeenCalled();
+  }));
 
   it('ngOnDestroy()', () => {
     spyOn(component.unsubscribeAll$, 'unsubscribe');

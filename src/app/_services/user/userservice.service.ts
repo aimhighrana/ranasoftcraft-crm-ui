@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { TokenPayLoadData, Userdetails } from 'src/app/_models/userdetails';
+import { TokenPayLoadData, Userdetails, UserPasswordDetails, UserPersonalDetails, UserPreferenceDetails } from 'src/app/_models/userdetails';
 import * as jwt_decode from 'jwt-decode';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Any2tsService } from '../any2ts.service';
 import { EndpointsAuthService } from '@services/_endpoints/endpoints-auth.service';
+import { EndpointsProfileService } from '@services/_endpoints/endpoints-profile.service'
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,8 @@ export class UserService {
   constructor(
     private endpointService: EndpointsAuthService,
     private http: HttpClient,
-    private any2tsService: Any2tsService
+    private any2tsService: Any2tsService,
+    private profileEndpointService: EndpointsProfileService
   ) { }
 
   public getUserIdFromToken(): string {
@@ -47,5 +49,37 @@ export class UserService {
       })).subscribe();
     }
     return this.userDetailsBehaviorSubject;
+  }
+
+  public getUserPersonalDetails(): Observable<UserPersonalDetails> {
+    return this.http.get<UserPersonalDetails>(this.profileEndpointService.getPersonalDetails());
+  }
+
+  public updateUserPersonalDetails(personalDetails: UserPersonalDetails): Observable<any> {
+    return this.http.post<any>(this.profileEndpointService.updatePersonalDetails(), personalDetails);
+  }
+
+  public getUserPreferenceDetails(): Observable<UserPreferenceDetails> {
+    return this.http.get<UserPreferenceDetails>(this.profileEndpointService.getUserPreferenceDetails());
+  }
+
+  public updateUserPreferenceDetails(pref: UserPreferenceDetails): Observable<any> {
+    return this.http.post<any>(this.profileEndpointService.updateUserPreferenceDetails(), pref);
+  }
+
+  public getAllLanguagesList(): Observable<any> {
+    return this.http.get<any>(this.profileEndpointService.getAllLanguagesList());
+  }
+
+  public getDateFormatList(): Observable<any> {
+    return this.http.get<any>(this.profileEndpointService.getDateFormatList());
+  }
+
+  public getNumberFormatList(): Observable<any> {
+    return this.http.get<any>(this.profileEndpointService.getNumberFormatList());
+  }
+
+  public updatePassword(passwordDetails: UserPasswordDetails): Observable<any> {
+    return this.http.post<any>(this.endpointService.updatePassword(), passwordDetails);
   }
 }

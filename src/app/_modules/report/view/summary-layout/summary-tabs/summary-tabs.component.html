@@ -19,6 +19,7 @@
                   <button mat-stroked-button color="primary" *ngIf="fieldData.value.length > 60" (click)="fieldData.showMore = !fieldData.showMore">
                     {{ fieldData.showMore ? 'less' : 'more'}} 
                   </button>
+                  
                 </div>
                 <ng-template  #withoutTruncate> 
                   <div mat-line> 

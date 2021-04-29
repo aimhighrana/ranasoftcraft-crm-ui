@@ -31,12 +31,15 @@ export class DuplicateReportComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  /**
+   * Copy report and navigate over to dashboard-builder, or display error message.
+   */
   onConfirm() {
     this.widgetService.copyReport(this.data.reportId, this.reportName).subscribe(res => {
       if (res.errorMsg) {
         this.errorMsg = `Unable to duplicate: (${res.errorMsg})`;
       } else {
-        this.sharedService.setReportListData();
+        this.sharedService.setReportListData(true);
         this.sharedService.setTogglePrimaryEmit();
         this.router.navigate(['/home', 'report', 'dashboard-builder', res.reportId]);
         this.dialogRef.close();
@@ -44,12 +47,17 @@ export class DuplicateReportComponent implements OnInit {
     }, error => {
       if (error.error && error.error.errorMsg) {
         this.errorMsg = `Unable to duplicate: (${error.error.errorMsg})`;
+      } else if (error.error && error.error.error) {
+        this.errorMsg = `Unable to duplicate: (${error.error.error})`;
       } else {
-        this.errorMsg = `Unable to duplicate: (${error.message})`;
+        this.errorMsg = `Unable to duplicate: (network error)`;
       }
     })
   }
 
+  /**
+   * Close dialog
+   */
   onCancel() {
     this.dialogRef.close();
   }

@@ -1,4 +1,5 @@
 import { async, inject, TestBed } from '@angular/core/testing';
+import { WidgetType } from '@modules/report/_models/widget';
 
 import { EndpointsAnalyticsService } from './endpoints-analytics.service';
 
@@ -128,7 +129,14 @@ describe('EndpointsAnalyticsService', () => {
   it('copyReport(), should copy a report', async(() => {
     const serviceobj = new EndpointsAnalyticsService();
     const reportId = '6547898676578';
-    const reportName = 'Copy of Test'
-    expect(serviceobj.copyReport(reportId, reportName)).toContain(`/report/copy-report?reportId=${reportId}&reportName=${reportName}`);
+    const reportName = 'Copy of Test';
+    expect(serviceobj.copyReport(reportId, reportName)).toContain(`/report/copy?reportId=${reportId}&reportName=${reportName}`);
+  }));
+
+  it('displayCriteria(), should get API string', async(() => {
+    const serviceobj = new EndpointsAnalyticsService();
+    const widgetId = '12345';
+    const widgetType = WidgetType.BAR_CHART;
+    expect(serviceobj.displayCriteria(widgetId, widgetType)).toContain(`/report/widget/display-criteria?widgetId=${widgetId}&widgetType=${widgetType}`);
   }));
 });

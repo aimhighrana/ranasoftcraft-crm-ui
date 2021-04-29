@@ -4,12 +4,14 @@
       {{ widgetHeader.desc }}
     </div>
     <div class="f-spacer"></div>
-    <button mat-button [matMenuTriggerFor]="menu">
-      <mat-icon fontSet="mdo-icons">more1</mat-icon>
-    </button>
+    <lib-button [matMenuTriggerFor]="menu" type="plain" icon="ellipsis-h"></lib-button>
     <mat-menu #menu="matMenu" class="navigation-menu"> 
-      <button mat-menu-item (click)="downloadImage()">Image download (.png)</button>
-      <button mat-menu-item (click)="downloadCSV()">Data download (.csv)</button>
+      <lib-filter-option (click)="downloadImage()">Image download (.png)</lib-filter-option>
+      <lib-filter-option (click)="downloadCSV()">Data download (.csv)</lib-filter-option>
+      <button mat-menu-item [matMenuTriggerFor]="tcOptionMenu" i18n="@@viewAs">View as...</button>
+      <mat-menu #tcOptionMenu="matMenu">
+        <lib-radio-group layout="vertical" [(value)]="displayCriteriaOption" [options]="displayCriteriaOptions" (valueChange)="saveDisplayCriteria()"></lib-radio-group>
+      </mat-menu>
       <ng-template [ngIf]="permissons && permissons.isAdmin">
         <button mat-menu-item (click)="openColorPalette()">Color palette</button>
       </ng-template>

@@ -1,41 +1,70 @@
-.root {
+div.root {
   user-select: none;
   height: 100%;
-  width: 900px;
-  padding: 0 16px;
   overflow: hidden;
+  width: 900px;
 
-  .system {
+  .breadcrum-toolbar {
+    padding: 8px 16px;
     align-items: flex-start;
 
-    .system-fields-col {
-      width: 220px;
+    .mdo-constrained-right {
+      width: 100%;
+      margin-right: 0;
+    }
+  }
 
-      .filters-list {
-        max-height: 300px;
-        overflow-y: auto;
+  .sidesheetcontent-listing {
+    height: 100%;
 
-        mat-list-item {
-          cursor: pointer;
+    .mdo-justify {
+      margin: 0 16px;
+      height: 100%;
+
+      .filter-container {
+        align-items: flex-start;
+        height: 100%;
+
+        .filter-fields-col {
+          width: 220px;
+          height: 100%;
+
+          .filters-list {
+            height: calc(100% - 56px - 36px - 16px * 2);
+            overflow: auto;
+
+            mat-list {
+              mat-list-item {
+                cursor: pointer;
+              }
+            }
+          }
         }
-      }
 
-      .fields-list {
-        max-height: 450px;
-        overflow-y: auto;
+        .filter-values-col {
+          width: calc(100% - 220px);
+        }
 
-        mat-list-item {
-          cursor: pointer;
+        .date-list {
+          flex: 1;
         }
       }
     }
+  }
+}
 
-    .system-values-col {
-      width: calc(100% - 220px);
+@media (min-width: 1024px) {
+  div.root {
+    .breadcrum-toolbar {
+      .mdo-constrained-right {
+        margin-right: 50px;
+      }
     }
 
-    .date-list {
-      flex: 1;
+    .sidesheetcontent-listing {
+      .mdo-justify {
+        margin: 0 66px;
+      }
     }
   }
 }

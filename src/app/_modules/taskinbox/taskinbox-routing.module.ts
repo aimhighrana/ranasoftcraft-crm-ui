@@ -1,3 +1,4 @@
+import { TaskListFilterComponent } from './_component/task-list-filter/task-list-filter.component';
 import { TaskListTableViewSettingsComponent } from './_component/task-list-table-view-settings/task-list-table-view-settings.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
@@ -13,6 +14,7 @@ const routes: Routes = [
     path: 'view/:node',
     component: TaskListTableViewSettingsComponent,
   },
+  { path: 'filter/:node', component: TaskListFilterComponent },
 ];
 
 @NgModule({

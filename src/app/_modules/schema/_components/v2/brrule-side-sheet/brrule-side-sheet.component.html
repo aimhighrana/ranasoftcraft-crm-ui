@@ -1,8 +1,6 @@
 <div class="root">
     <div class="f-row breadcrum-toolbar">
-        <lib-button (click)="close()">
-            <mat-icon fontSet="mdo-icons">times</mat-icon>
-        </lib-button>
+        <lib-button type="plain" (click)="close()" iconFontType="light" icon="times"></lib-button>
         <div class="col-spacer"></div>
         <div class="f-col mdo-constrained-right">
             <div class="f-row breadcrum-head">
@@ -122,7 +120,7 @@
                                 <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding style="cursor: pointer;"
                                     (click)="clickTreeNode(node)">
                                     <!-- use a disabled button to provide padding for tree leaf -->
-                                    <button mat-icon-button disabled></button>
+                                    <lib-button disabled="true"></lib-button>
                                     {{node.name}}
                                 </mat-tree-node>
                                 <!-- This is the tree node template for expandable nodes -->
@@ -181,7 +179,7 @@
                                     </mat-select>
                                 </div>
                                 <div class="col" *ngIf="i === 0">
-                                    <button mat-flat-button color="accent">When</button>
+                                    <lib-button type="minor">When</lib-button>
                                 </div>
                                 <!-- field name -->
                                 <div class="col">
@@ -234,9 +232,7 @@
                                 </div>
                                 <!-- three dots -->
                                 <div class="col" *ngIf="i !== 0">
-                                    <button mat-button [matMenuTriggerFor]="menu">
-                                        <mat-icon fontSet="mdo-icons">ellipsis-v</mat-icon>
-                                    </button>
+                                    <lib-button [matMenuTriggerFor]="menu" type="plain" icon="ellipsis-v"></lib-button>
                                 </div>
                                 <mat-menu #menu="matMenu" class="navigation-menu">
                                     <!-- give local reference and tell this is manu by assigning 'matMenu' -->
@@ -301,9 +297,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col">
-                                                    <lib-button [matMenuTriggerFor]="nestedMenu">
-                                                        <mat-icon fontSet="mdo-icons">ellipsis-v</mat-icon>
-                                                    </lib-button>
+                                                    <lib-button [matMenuTriggerFor]="nestedMenu" type="plain" icon="ellipsis-v"></lib-button>
                                                     <mat-menu #nestedMenu="matMenu" class="navigation-menu">
                                                         <!-- give local reference and tell this is manu by assigning 'matMenu' -->
                                                         <!-- <button mat-menu-item (click)="addNestedBlock(udrBlock,i)">
@@ -325,9 +319,7 @@
                     <!-- button to ad primary block -->
                     <div class="f-row defined-row add-col">
                         <div class="col">
-                            <button mat-flat-button color="accent" (click)="addParentBlock()">
-                                <mat-icon fontSet="mdo-icons">plus</mat-icon>
-                            </button>
+                            <lib-button (click)="addParentBlock()" type="plain" icon="plus"></lib-button>
                         </div>
                     </div>
                 </div>

@@ -1,8 +1,6 @@
 <div class="root">
     <div class="f-row breadcrum-toolbar">
-        <button mat-button (click)="close()">
-            <mat-icon fontSet="mdo-icons">close</mat-icon>
-        </button>
+        <lib-button type="plain" icon="times" (click)="close()"></lib-button>
         <div class="col-spacer"></div>
         <div class="f-row mdo-constrained-right">
             <div class="f-row breadcrum-head">
@@ -49,9 +47,7 @@
 
                 <!-- FOR CHIPS -->
                 <div class="f-row selected-coll-groups" *ngIf="selectedCollaborators.length">
-                    <button mat-button (click)="paginateChip('prev')" [disabled]="enablePreBtn">
-                        <mat-icon fontSet="mdo-icons">chevron-left</mat-icon>
-                    </button>
+                    <lib-button (click)="paginateChip('prev')" [disabled]="enablePreBtn" type="plain" icon="chevron-left"></lib-button>
                     <mat-chip-list aria-label="Collaborators selection">
                         <ng-template ngFor let-selcoll [ngForOf]="possibleChips">
                             <mat-chip *ngIf="selcoll.permissionType === 'USER'" matTooltipPosition="right"
@@ -80,9 +76,7 @@
 
                         </ng-template>
                     </mat-chip-list>
-                    <button mat-button (click)="paginateChip('next')" [disabled]="!enableNextBtn">
-                        <mat-icon fontSet="mdo-icons">chevron-right</mat-icon>
-                    </button>
+                    <lib-button (click)="paginateChip('next')" [disabled]="!enableNextBtn" icon="chevron-right" type="plain"></lib-button>
                 </div>
 
                 <div class="f-row-spacer-half"></div>
@@ -99,7 +93,7 @@
                 <div class="f-row-spacer-half"></div>
                 <div class="f-row">
                     <div class="f-spacer"></div>
-                    <button mat-flat-button color="primary" (click)="saveCollaborators()">Add</button>
+                    <lib-button type="major" (click)="saveCollaborators()">Add</lib-button>
                 </div>
 
             </div>

@@ -58,7 +58,7 @@
     </div>
     
     <ng-template [ngIf]="showGlobalFilter">
-        <pros-global-search></pros-global-search>
+        <pros-global-search (filterChanged)="showGlobalFilter = false"></pros-global-search>
     </ng-template>
 
     <div class="row-spacer"></div>

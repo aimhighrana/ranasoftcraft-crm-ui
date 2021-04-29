@@ -39,7 +39,7 @@
                             <div class="mat-line" i18n="@@specific_date">
                                 Specific date
                             </div> 
-                            <span class="f-spacer"></span><mat-icon fontSet="mdo-icons"> arrow-right-alt</mat-icon>
+                            <span class="f-spacer"></span><mat-icon fontSet="mdo-icons"> chevron-right</mat-icon>
                             <mat-form-field style="width: 0px;">
                                 <input matInput  [matDatepicker]="specificDate" disabled style="display: none;" [max]="maxDate" (dateChange) ="changeSpecificDate($event)">
                                 <mat-datepicker #specificDate disabled="false"></mat-datepicker>
@@ -50,7 +50,7 @@
                         <div class="f-row">
                             <div class="mat-line" i18n="@@date_range">
                                 Date range
-                            </div> <span class="f-spacer"></span><mat-icon fontSet="mdo-icons"> arrow-right-alt</mat-icon>                            
+                            </div> <span class="f-spacer"></span><mat-icon fontSet="mdo-icons">chevron-right</mat-icon>                            
     
                             <mat-form-field style="width: 0px;">
                                 <mat-date-range-input [rangePicker]="date_range" [max]="maxDate" separator="">
