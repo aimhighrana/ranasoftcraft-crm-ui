@@ -23,6 +23,7 @@ import { SharedModule } from '@modules/shared/shared.module';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { AddFilterOutput } from '@models/schema/schema';
 import { MatSortable } from '@angular/material/sort';
+import { SchemaExecutionTree } from '@models/schema/schema-execution';
 
 describe('SchemaDetailsComponent', () => {
   let component: SchemaDetailsComponent;
@@ -1121,4 +1122,17 @@ describe('SchemaDetailsComponent', () => {
     component.setStatus(event, 2)
     expect(component.setNavDivPositions).toHaveBeenCalled();
   });
+
+  it('getSchemaExecutionTree(), get schema execution tree...', async(()=>{
+    component.userDetails = new Userdetails();
+    component.userDetails.plantCode = 'test';
+    component.userDetails.userName = 'test';
+    spyOn(schemaService,'getSchemaExecutionTree').withArgs(component.moduleId, component.schemaId, component.variantId, component.userDetails.plantCode, component.userDetails.userName).and.returnValues(of(new SchemaExecutionTree()), throwError({message: 'api error'}));
+    component.getSchemaExecutionTree();
+    expect(schemaService.getSchemaExecutionTree).toHaveBeenCalledWith(component.moduleId, component.schemaId, component.variantId, component.userDetails.plantCode, component.userDetails.userName);
+
+    spyOn(console, 'error');
+    component.getSchemaExecutionTree();
+    expect(console.error).toHaveBeenCalled();
+  }));
 });

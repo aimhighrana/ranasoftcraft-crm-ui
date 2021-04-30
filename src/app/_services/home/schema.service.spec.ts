@@ -4,7 +4,7 @@ import { SchemaService } from './schema.service';
 import { ObjectTypeResponse, ExcelValues, GetAllSchemabymoduleidsReq, GetAllSchemabymoduleidsRes } from 'src/app/_models/schema/schema';
 import { HttpTestingController, HttpClientTestingModule } from '@angular/common/http/testing';
 import { Any2tsService } from '../any2ts.service';
-import { SchemaExecutionProgressResponse } from '@models/schema/schema-execution';
+import { SchemaExecutionProgressResponse, SchemaExecutionTree } from '@models/schema/schema-execution';
 import { Category, CoreSchemaBrInfo, CreateUpdateSchema, DropDownValue, UDRBlocksModel, UdrModel } from '@modules/admin/_components/module/business-rules/business-rules.modal';
 import { HttpResponse } from '@angular/common/http';
 import { SchemaListModuleList, SchemaStaticThresholdRes } from '@models/schema/schemalist';
@@ -23,7 +23,7 @@ describe('SchemaService', () => {
     'scheduleSchemaCount', 'deleteSchemaGroupUrl', 'uploadDataUrl', 'uploadFileDataUrl', 'getBusinessRulesInfoBySchemaIdUrl', 'getBusinessRulesInfoByModuleIdUrl',
     'getAllBusinessRulesUrl', 'getFillDataInfo', 'createSchema', 'createBr', 'getCategoriesInfo', 'saveUpdateUDRUrl', 'saveUpdateUdrBlockUrl', 'getBusinessRuleInfoUrl',
     'conditionListsUrl', 'dropDownValuesUrl', 'getBrConditionalOperatorUrl', 'deleteBr', 'getUdrBusinessRuleInfoUrl', 'deleteConditionBlock', 'getSchemaThresholdStatics',
-    'uploadCorrectionDataUrl', 'getSchemaInfoByModuleIdUrl', 'deleteSchema','copyDuplicate']);
+    'uploadCorrectionDataUrl', 'getSchemaInfoByModuleIdUrl', 'deleteSchema','copyDuplicate', 'getSchemaExecutionTree']);
     const any2Spy = jasmine.createSpyObj('Any2tsService', ['any2SchemaGroupResponse', 'any2SchemaDetails', 'any2ObjectType', 'any2SchemaGroupCountResposne',
     'any2GetAllSchemabymoduleidsResponse', 'any2SchemaGroupWithAssignSchemasResponse']);
     const epsClassicSpy = jasmine.createSpyObj('EndpointsClassicService', ['getAllObjecttypeUrl', 'scheduleSchemaCount']);
@@ -685,6 +685,28 @@ describe('SchemaService', () => {
     expect(httpReq.request.method).toEqual('POST');
     httpReq.flush(mockResponse);
     // verify http
+    httpTestingController.verify();
+  }));
+
+  it('getSchemaExecutionTree(), should call http get to get execution tree details', async(() => {
+    const schemaId = '1452462152';
+    const moduleId = '1597845';
+    const variantId = '123344';
+    const plantCode = '123445';
+    const userId = '123';
+
+    const url = 'test getSchemaExecutionTree';
+    endpointServiceSpy.getSchemaExecutionTree.and.returnValue(url);
+
+    const httpMockData = new SchemaExecutionTree();
+    schemaService.getSchemaExecutionTree(moduleId, schemaId, variantId, plantCode, userId).subscribe(data => {
+      expect(data).toEqual(httpMockData);
+    });
+
+    const httpReq = httpTestingController.expectOne(url);
+    expect(httpReq.request.method).toEqual('GET');
+    httpReq.flush(httpMockData);
+
     httpTestingController.verify();
   }));
 });

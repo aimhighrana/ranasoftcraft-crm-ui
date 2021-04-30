@@ -15,3 +15,11 @@ export interface SchemaExecutionProgressResponse {
     totalRules: number;
     completedRules: number;
 }
+
+export class SchemaExecutionTree {
+    nodeId: string;
+    nodeDesc: string;
+    nodeType: string;
+    childs: SchemaExecutionTree[];
+    docCount: number
+}

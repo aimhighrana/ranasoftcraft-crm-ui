@@ -641,4 +641,10 @@ describe('EndpointsRuleService', () => {
     const URL = serviceObj.downloadDuplicateExecutionDetailsUrl('schema1', 'error');
     expect(URL).toContain(`duplicate/download/schema1/error`);
   });
+
+  it('getSchemaExecutionTree(), should getSchemaExecutionTree', async() => {
+    const serviceObj = new EndpointsRuleService();
+    const URL = serviceObj.getSchemaExecutionTree('module1', 'schema1', 'varaint1', 'plantCode', 'userId');
+    expect(URL).toContain(`schema/execution-tree/module1/schema1`);
+  });
 });
