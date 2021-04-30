@@ -1,4 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
@@ -16,7 +17,14 @@ interface DuplicateDialogReq {
 })
 export class DuplicateReportComponent implements OnInit {
   errorMsg: string;
-  reportName: string;
+  /** Maximum length of report name */
+  maxReportNameLength = 100;
+  reportNameCtrl: FormControl = new FormControl('',
+    Validators.compose([
+      Validators.required,
+      Validators.maxLength(this.maxReportNameLength)
+    ])
+  );
 
   constructor(
     public dialogRef: MatDialogRef<DuplicateReportComponent>,
@@ -25,7 +33,7 @@ export class DuplicateReportComponent implements OnInit {
     private sharedService: SharedServiceService,
     @Inject(MAT_DIALOG_DATA) public data: DuplicateDialogReq
   ) {
-    this.reportName = 'Copy of ' + data.reportName;
+    this.reportNameCtrl.setValue('Copy of ' + data.reportName);
   }
 
   ngOnInit(): void {
@@ -35,24 +43,26 @@ export class DuplicateReportComponent implements OnInit {
    * Copy report and navigate over to dashboard-builder, or display error message.
    */
   onConfirm() {
-    this.widgetService.copyReport(this.data.reportId, this.reportName).subscribe(res => {
-      if (res.errorMsg) {
-        this.errorMsg = `Unable to duplicate: (${res.errorMsg})`;
-      } else {
-        this.sharedService.setReportListData(true);
-        this.sharedService.setTogglePrimaryEmit();
-        this.router.navigate(['/home', 'report', 'dashboard-builder', res.reportId]);
-        this.dialogRef.close();
-      }
-    }, error => {
-      if (error.error && error.error.errorMsg) {
-        this.errorMsg = `Unable to duplicate: (${error.error.errorMsg})`;
-      } else if (error.error && error.error.error) {
-        this.errorMsg = `Unable to duplicate: (${error.error.error})`;
-      } else {
-        this.errorMsg = `Unable to duplicate: (network error)`;
-      }
-    })
+    if (this.reportNameCtrl.valid) {
+      this.widgetService.copyReport(this.data.reportId, this.reportNameCtrl.value).subscribe(res => {
+        if (res.errorMsg) {
+          this.errorMsg = `Unable to duplicate: (${res.errorMsg})`;
+        } else {
+          this.sharedService.setReportListData(true);
+          this.sharedService.setTogglePrimaryEmit();
+          this.router.navigate(['/home', 'report', 'dashboard-builder', res.reportId]);
+          this.dialogRef.close();
+        }
+      }, error => {
+        if (error.error && error.error.errorMsg) {
+          this.errorMsg = `Unable to duplicate: (${error.error.errorMsg})`;
+        } else if (error.error && error.error.error) {
+          this.errorMsg = `Unable to duplicate: (${error.error.error})`;
+        } else {
+          this.errorMsg = `Unable to duplicate: (network error)`;
+        }
+      });
+    }
   }
 
   /**
