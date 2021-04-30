@@ -15,7 +15,7 @@
 <mat-dialog-actions>
     <lib-button (click)="onCancel()" type="minor" i18n="@@cancel">Cancel</lib-button>
     <span class="f-spacer"></span>
-    <lib-button type="major" (click)="onConfirm()" [disabled]="reportNameCtrl.invalid">
+    <lib-button type="major" (afterClick)="onConfirm($event)" [disabled]="reportNameCtrl.invalid">
         <span *ngIf="errorMsg; else NonError" i18n="@@retry">Retry</span>
         <ng-template #NonError>
             <span i18n="@@confirm">Confirm</span>

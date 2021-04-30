@@ -66,7 +66,7 @@ describe('DuplicateReportComponent', () => {
       reportName: null
     } as DuplicateReport;
     spyOn(WidgetServiceSpy, 'copyReport').withArgs(component.data.reportId, component.reportNameCtrl.value).and.returnValue(throwError({ error: { error: mockReportRes } }));
-    component.onConfirm();
+    component.onConfirm({ detail: 1 });
     expect(component.reportNameCtrl.valid).toBeTruthy();
     expect(WidgetServiceSpy.copyReport).toHaveBeenCalledWith(component.data.reportId, component.reportNameCtrl.value);
   }));
@@ -85,7 +85,7 @@ describe('DuplicateReportComponent', () => {
     } as DuplicateReport;
     spyOn(WidgetServiceSpy, 'copyReport').withArgs(component.data.reportId, component.reportNameCtrl.value).and.returnValue(of(mockReportRes));
     spyOn(router, 'navigate');
-    component.onConfirm();
+    component.onConfirm({ detail: 1 });
     expect(component.reportNameCtrl.valid).toBeTruthy();
     expect(WidgetServiceSpy.copyReport).toHaveBeenCalledWith(component.data.reportId, component.reportNameCtrl.value);
     expect(router.navigate).toHaveBeenCalledWith(['/home', 'report', 'dashboard-builder', mockReportRes.reportId]);
@@ -98,7 +98,7 @@ describe('DuplicateReportComponent', () => {
       reportId: '724752745672',
       reportName: component.reportNameCtrl.value
     };
-    component.onConfirm();
+    component.onConfirm({ detail: 1 });
     expect(component.reportNameCtrl.valid).toBeFalsy();
     expect(component.reportNameCtrl.errors.required).not.toBeUndefined();
 
@@ -108,7 +108,7 @@ describe('DuplicateReportComponent', () => {
       reportId: '724752745672',
       reportName: component.reportNameCtrl.value
     };
-    component.onConfirm();
+    component.onConfirm({ detail: 1 });
     expect(component.reportNameCtrl.valid).toBeFalsy();
     expect(component.reportNameCtrl.errors.maxlength).not.toBeUndefined();
   }));

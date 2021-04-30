@@ -42,8 +42,8 @@ export class DuplicateReportComponent implements OnInit {
   /**
    * Copy report and navigate over to dashboard-builder, or display error message.
    */
-  onConfirm() {
-    if (this.reportNameCtrl.valid) {
+  onConfirm(evt: { detail: number; }) {
+    if (this.reportNameCtrl.valid && evt.detail === 1) {
       this.widgetService.copyReport(this.data.reportId, this.reportNameCtrl.value).subscribe(res => {
         if (res.errorMsg) {
           this.errorMsg = `Unable to duplicate: (${res.errorMsg})`;
