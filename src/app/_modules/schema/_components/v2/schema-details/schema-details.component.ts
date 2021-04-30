@@ -23,6 +23,7 @@ import { Userdetails } from '@models/userdetails';
 import { UserService } from '@services/user/userservice.service';
 import { debounceTime, distinctUntilChanged, skip } from 'rxjs/operators';
 import { TransientService } from 'mdo-ui-library';
+import { SchemaExecutionTree } from '@models/schema/schema-execution';
 
 @Component({
   selector: 'pros-schema-details',
@@ -212,6 +213,9 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    */
   subscribers: Subscription[] = [];
 
+  // holds execution tree details of schema...
+  executionTreeHierarchy: SchemaExecutionTree;
+
   constructor(
     private activatedRouter: ActivatedRoute,
     private schemaDetailService: SchemaDetailsService,
@@ -268,6 +272,9 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       this.getSchemaTableActions();
       if (this.variantId !== '0') {
         this.getVariantDetails();
+      }
+      if (this.userDetails) {
+        this.getSchemaExecutionTree();
       }
     }
 
@@ -427,6 +434,19 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     }, error => {
       this.statics = new SchemaStaticThresholdRes();
       console.error(`Error : ${error}`);
+    });
+    this.subscribers.push(sub);
+  }
+
+  /**
+   * Call service to get schema execution tree
+   */
+  getSchemaExecutionTree() {
+    const sub = this.schemaService.getSchemaExecutionTree(this.moduleId, this.schemaId, this.variantId, this.userDetails.plantCode, this.userDetails.userName).subscribe(res => {
+      this.executionTreeHierarchy = res;
+    }, error => {
+      this.executionTreeHierarchy = new SchemaExecutionTree();
+      console.error(error);
     });
     this.subscribers.push(sub);
   }

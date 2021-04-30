@@ -8,7 +8,7 @@ import { DropDownValue, UDRBlocksModel, UdrModel, CoreSchemaBrInfo, Category, Du
 import { SchemaStaticThresholdRes, SchemaListModuleList, SchemaListDetails, CoreSchemaBrMap } from '@models/schema/schemalist';
 import { SchemaScheduler } from '@models/schema/schemaScheduler';
 import { EndpointsRuleService } from '../_endpoints/endpoints-rule.service';
-import { SchemaExecutionProgressResponse } from '@models/schema/schema-execution';
+import { SchemaExecutionProgressResponse, SchemaExecutionTree } from '@models/schema/schema-execution';
 import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
 
 @Injectable({
@@ -314,5 +314,9 @@ export class SchemaService {
    */
   public getSchemaExecutionProgressDetails(schemaId: string): Observable<SchemaExecutionProgressResponse> {
     return this.http.get<SchemaExecutionProgressResponse>(this.endpointService.schemaExecutionProgressDetailUrl(schemaId));
+  }
+
+  public getSchemaExecutionTree(moduleId: string, schemaId: string, variantId: string, plantCode: string, userId: string) {
+    return this.http.get<SchemaExecutionTree>(this.endpointService.getSchemaExecutionTree(moduleId, schemaId, variantId, plantCode, userId));
   }
 }
