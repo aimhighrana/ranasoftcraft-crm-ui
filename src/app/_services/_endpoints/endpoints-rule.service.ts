@@ -620,7 +620,7 @@ export class EndpointsRuleService {
     return `${this.origin}/duplicate/download/${schemaId}/${status.toLocaleLowerCase()}`;
   }
 
-  public getSchemaExecutionTree(moduleId: string, schemaId: string, variantId: string, plantCode: string, userId: string) {
-    return `${this.origin}/schema/execution-tree/${moduleId}/${schemaId}?plantCode=${plantCode}&userId=${userId}&variantId=${variantId}`;
+  public getSchemaExecutionTree(moduleId: string, schemaId: string, variantId: string, plantCode: string, userId: string, requestStatus: string) {
+    return `${this.origin}/schema/execution-tree/${moduleId}/${schemaId}?plantCode=${plantCode}&userId=${userId}&variantId=${variantId}&requestStatus=${requestStatus}`;
   }
 }

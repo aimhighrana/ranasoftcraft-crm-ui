@@ -24,6 +24,7 @@ import { UserService } from '@services/user/userservice.service';
 import { debounceTime, distinctUntilChanged, skip } from 'rxjs/operators';
 import { TransientService } from 'mdo-ui-library';
 import { SchemaExecutionTree } from '@models/schema/schema-execution';
+import { DownloadExecutionDataComponent } from '../download-execution-data/download-execution-data.component';
 
 @Component({
   selector: 'pros-schema-details',
@@ -442,7 +443,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    * Call service to get schema execution tree
    */
   getSchemaExecutionTree() {
-    const sub = this.schemaService.getSchemaExecutionTree(this.moduleId, this.schemaId, this.variantId, this.userDetails.plantCode, this.userDetails.userName).subscribe(res => {
+    const sub = this.schemaService.getSchemaExecutionTree(this.moduleId, this.schemaId, this.variantId, this.userDetails.plantCode, this.userDetails.userName, this.activeTab).subscribe(res => {
       this.executionTreeHierarchy = res;
     }, error => {
       this.executionTreeHierarchy = new SchemaExecutionTree();
@@ -569,6 +570,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     this.manageStaticColumns();
     this.calculateDisplayFields();
     this.selection.clear();
+    this.getSchemaExecutionTree();
     if (status === 'error' || status === 'success') {
       this.getData(this.filterCriteria.getValue(), this.sortOrder);
     } else {
@@ -590,11 +592,35 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    * Method for download error or execution logs
    */
   downloadExecutionDetails() {
-    const downloadLink = document.createElement('a');
+
+    const data = {
+      moduleId: this.moduleId,
+      schemaId: this.schemaId,
+      runId: this.schemaInfo.runId,
+      requestStatus: this.activeTab,
+      executionTreeHierarchy: this.executionTreeHierarchy
+    }
+
+    const ref = this.matDialog.open(DownloadExecutionDataComponent, {
+      width: '600px',
+      data
+    });
+
+    ref.afterClosed().subscribe(res => {
+      if(res) {
+        const downloadLink = document.createElement('a');
+        downloadLink.href = this.endpointservice.downloadExecutionDetailsByNodesUrl(this.schemaId, this.activeTab, res);
+        console.log(downloadLink.href);
+        downloadLink.setAttribute('target', '_blank');
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+      }
+    })
+    /* const downloadLink = document.createElement('a');
     downloadLink.href = this.endpointservice.downloadExecutionDetailsUrl(this.schemaId, this.activeTab) + '?runId=';
     downloadLink.setAttribute('target', '_blank');
     document.body.appendChild(downloadLink);
-    downloadLink.click();
+    downloadLink.click(); */
 
   }
 

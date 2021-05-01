@@ -694,12 +694,13 @@ describe('SchemaService', () => {
     const variantId = '123344';
     const plantCode = '123445';
     const userId = '123';
+    const requestStatus = 'error';
 
     const url = 'test getSchemaExecutionTree';
     endpointServiceSpy.getSchemaExecutionTree.and.returnValue(url);
 
     const httpMockData = new SchemaExecutionTree();
-    schemaService.getSchemaExecutionTree(moduleId, schemaId, variantId, plantCode, userId).subscribe(data => {
+    schemaService.getSchemaExecutionTree(moduleId, schemaId, variantId, plantCode, userId, requestStatus).subscribe(data => {
       expect(data).toEqual(httpMockData);
     });
 
