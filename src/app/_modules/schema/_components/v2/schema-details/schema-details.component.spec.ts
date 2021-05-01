@@ -727,7 +727,7 @@ describe('SchemaDetailsComponent', () => {
     component.schemaId = '246726532';
     component.userDetails  = {currentRoleId:'123'} as Userdetails;
 
-    const apiResponse = {acknowledge:false};
+    const apiResponse = true;
 
     spyOn(schemaDetailService,'approveCorrectedRecords').withArgs(component.schemaId, ['MAT001'] , component.userDetails.currentRoleId)
       .and.returnValues(of(apiResponse), of(apiResponse), throwError({message: 'api error'}));
@@ -737,7 +737,6 @@ describe('SchemaDetailsComponent', () => {
 
     spyOn(component, 'getData');
     component.selection.select(row);
-    apiResponse.acknowledge = true;
     component.approveRecords('all');
     expect(component.getData).toHaveBeenCalled();
 
