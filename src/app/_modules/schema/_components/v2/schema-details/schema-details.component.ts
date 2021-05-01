@@ -272,9 +272,13 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       this.getSchemaTableActions();
       if (this.variantId !== '0') {
         this.getVariantDetails();
+      } else {
+        this.variantId = '0';
       }
       if (this.userDetails) {
         this.getSchemaExecutionTree();
+      } else {
+        this.executionTreeHierarchy = new SchemaExecutionTree();
       }
     }
 

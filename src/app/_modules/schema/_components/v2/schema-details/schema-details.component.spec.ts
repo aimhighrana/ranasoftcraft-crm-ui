@@ -425,10 +425,10 @@ describe('SchemaDetailsComponent', () => {
         previousValue:null
       },
       varinatId:{
-        currentValue:'0',
+        currentValue:'1',
         firstChange:true,
         isFirstChange:null,
-        previousValue:null
+        previousValue:'0'
       }
     } as SimpleChanges;
 
@@ -438,12 +438,22 @@ describe('SchemaDetailsComponent', () => {
     spyOn(component, 'getSchemaDetails');
     spyOn(component, 'manageStaticColumns');
     spyOn(component, 'getData');
+    spyOn(component, 'getVariantDetails');
+    spyOn(component, 'getSchemaExecutionTree');
+
+    component.userDetails = new Userdetails();
+    component.userDetails.plantCode = '5454';
+    component.userDetails.userName = 'Test';
+    component.variantId = '1';
     component.ngOnChanges(changes);
+
     expect(component.getDataScope).toHaveBeenCalled();
     expect(component.getFldMetadata).toHaveBeenCalled();
     expect(component.getSchemaStatics).toHaveBeenCalled();
     expect(component.getSchemaDetails).toHaveBeenCalled();
     expect(component.manageStaticColumns).toHaveBeenCalled();
+    expect(component.getVariantDetails).toHaveBeenCalled();
+    expect(component.getSchemaExecutionTree).toHaveBeenCalled();
     component.dataSource.brMetadata.subscribe(res=> {
       if(res) {
         expect(component.getData).toHaveBeenCalled();
@@ -502,11 +512,15 @@ describe('SchemaDetailsComponent', () => {
       }
     } as SimpleChanges;
     component.ngOnChanges(changes2);
+    component.userDetails = null;
+    component.variantId = '0';
     expect(component.getDataScope).toHaveBeenCalled();
     expect(component.getFldMetadata).toHaveBeenCalled();
     expect(component.getSchemaStatics).toHaveBeenCalled();
     expect(component.getSchemaDetails).toHaveBeenCalled();
     expect(component.manageStaticColumns).toHaveBeenCalled();
+    expect(component.variantId).toEqual('0');
+    expect(component.executionTreeHierarchy).toEqual(undefined);
     component.dataSource.brMetadata.subscribe(res2=> {
       if(res2) {
         expect(component.getData).toHaveBeenCalled();
