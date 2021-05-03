@@ -11,10 +11,7 @@
     <mat-progress-bar mode="determinate" [value]="progressBar"></mat-progress-bar>
 
     <div class="row-spacer"></div>
-
-    <mat-card class="mat-elevation-z0 error-stackbar" *ngIf="uploadError.status">
-        {{uploadError.message}}
-    </mat-card>
+    <lib-banner status="error"  *ngIf="uploadError.status" [text]="uploadError.message"></lib-banner>
 
     <mat-horizontal-stepper [@.disabled]="true" linear #stepper>
         <!-- Upload DataSet -->
@@ -511,7 +508,7 @@
             
             <lib-button type="plain" *ngIf="headerTextIndex > 2" (click)="step('previous')"> Back </lib-button>
             <ng-container *ngIf="progressBar < 100">
-                <a *ngIf="headerTextIndex === 2" (click)="step('previous'); clearFileInput()" class="info-link">Choose a
+                <a *ngIf="headerTextIndex === 2" (click)="clearFileInput();step('previous');uploadError.status=false;" class="info-link">Choose a
                     different file</a>
                 <span class="f-col-spacer-half"></span>
                
