@@ -104,11 +104,13 @@ describe('ReportCollaboratorComponent', () => {
     fixture.detectChanges();
     component.loosefocus=fixture.componentInstance.loosefocus;
     component.permissionOn = {users} as PermissionOn;
+    spyOn(component, 'getCollaboratorPermission');
 
     // call actual method
     component.onSelectCollaborator(event);
 
     expect(component.selectedCollaborators.length).toEqual(1, 'After added successfully then length should be 1');
+    expect(component.getCollaboratorPermission).toHaveBeenCalledWith('', 0);
 
   }));
 
