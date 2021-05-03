@@ -179,6 +179,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
       childs: []
     }
   ];
+  loaded = false;
 
   constructor(
     private router: Router,
@@ -264,6 +265,9 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
       }
     });
     this.getInboxNodesCount();
+    setTimeout(() => {
+      this.loaded = true;
+    }, 5000);
   }
 
   ngAfterViewInit() {

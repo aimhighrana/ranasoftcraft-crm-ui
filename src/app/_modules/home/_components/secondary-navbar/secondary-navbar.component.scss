@@ -78,6 +78,9 @@
 
         .heading-title {
           font-size: 0.9rem;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
       }
     }
