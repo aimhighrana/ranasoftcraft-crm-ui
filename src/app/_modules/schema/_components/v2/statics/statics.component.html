@@ -79,7 +79,7 @@
 
             <mat-menu  #datePickerMenu="matMenu" class="date-picker-menu navigation-menu">
                 <div class="f-col">
-                    <lib-date-picker [hideInput]="true" (valueChange) ="changeSpecificDate({value:$event})" #specificDate></lib-date-picker>
+                    <lib-date-picker prosClickStopPropagation [hideInput]="true" (valueChange) ="changeSpecificDate({value:$event})" #specificDate></lib-date-picker>
                 </div>
             </mat-menu>
             <mat-menu  #dateRangePickerMenu="matMenu" class="date-picker-menu navigation-menu">

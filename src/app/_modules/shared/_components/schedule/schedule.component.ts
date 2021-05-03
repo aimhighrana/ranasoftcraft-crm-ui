@@ -102,7 +102,6 @@ export class ScheduleComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-
     this.createForm();
     this.activatedRoute.params.subscribe((params) => {
       this.schemaId = params.schemaId;
@@ -188,6 +187,19 @@ export class ScheduleComponent implements OnInit, OnDestroy {
     return SchemaSchedulerRepeatMetric[this.form.controls.schemaSchedulerRepeat.value]
   }
 
+  get selectedStartDate() {
+    try {
+      return new Date(Number(this.form.controls.startOn.value));
+    } catch (e) {}
+    return null;
+  }
+
+  get selectedEndDate() {
+    try {
+      return new Date(Number(this.form.controls.endOn.value));
+    } catch (e) {}
+    return null;
+  }
 
   /**
    * Common function to recieve value from emitter and set value
@@ -196,6 +208,15 @@ export class ScheduleComponent implements OnInit, OnDestroy {
    */
   setValue(field, value) {
     this.form.controls[field].setValue(value);
+  }
+
+  /**
+   * Common function to recieve value from emitter and set value
+   * @param field field
+   * @param value value
+   */
+  setDateValue(field, value: Date) {
+    this.form.controls[field].setValue(`${value.getTime()}`);
   }
 
 
