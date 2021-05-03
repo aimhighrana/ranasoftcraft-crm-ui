@@ -774,6 +774,10 @@
         padding: 0;
       }
 
+      &.date-picker-menu {
+        width: 240px;
+      }
+
       &.navigation-menu {
         .menu-customdropdown {
           max-height: 360px;
@@ -2094,4 +2098,8 @@ pros-subscriber-invite-sidesheet .lib-input .mdo-field {
     width: 100%;
     text-align: start;
   }
+}
+
+.date-picker-option .dropdown-option {
+  padding: 0px;
 }
