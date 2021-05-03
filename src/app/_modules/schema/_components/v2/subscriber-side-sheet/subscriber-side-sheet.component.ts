@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable, of, Subscription } from 'rxjs';
+import { Observable, of, Subject, Subscription } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { SchemaDetailsService } from '@services/home/schema/schema-details.service';
 import { PermissionOn } from '@models/collaborator';
@@ -8,6 +8,7 @@ import { SchemaDashboardPermission } from '@models/collaborator';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { GlobaldialogService } from '@services/globaldialog.service';
 import { TransientService } from 'mdo-ui-library';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'pros-subscriber-side-sheet',
@@ -59,6 +60,8 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
 
   showInviteTemplate = false;
 
+  collabSearchSub: Subject<string> = new Subject();
+
   /**
    * constructor of the class
    * @param dialogRef mat dialog ref object
@@ -84,7 +87,12 @@ export class SubscriberSideSheetComponent implements OnInit, OnDestroy {
       this.subscriberId = params.subscriberId;
       this.outlet = params.outlet;
       this.getSubscribersBySchemaId(this.schemaId);
-    })
+    });
+
+    this.collabSearchSub.pipe(
+      debounceTime(1000),
+      distinctUntilChanged()
+    ).subscribe(searchText => this.getCollaborators(searchText, 0));
   }
 
   /**

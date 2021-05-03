@@ -15,7 +15,7 @@
                 </div>
                 <div class="row-spacer"></div>
                 <div class="f-row">
-                    <lib-search (value)="getCollaborators($event, 0)" i18n-placeholder="@@search_subscribers" placeholder="Search subscribers"></lib-search>
+                    <lib-search (valueChange)="collabSearchSub.next($event)" i18n-placeholder="@@search_subscribers" placeholder="Search subscribers"></lib-search>
                    
                     <span class="col-spacer"></span>
                     <!-- <mat-chip-list>
