@@ -238,7 +238,7 @@ describe('EndpointsRuleService', () => {
 
   it('deleteSchemaCollaboratorDetailsUrl(),should delte the exexting collaborator derail', async(() => {
     const serObj = new EndpointsRuleService();
-    expect(serObj.deleteSchemaCollaboratorDetailsUrl()).toContain('admin/users/collaborator-records/delete');
+    expect(serObj.deleteSchemaCollaboratorDetailsUrl()).toContain('schema/metadata/collaborator-records/delete');
   }));
 
   it('deleteSchema(),should delte the schema', async(() => {

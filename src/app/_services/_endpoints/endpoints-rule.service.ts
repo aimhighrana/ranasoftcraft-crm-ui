@@ -183,7 +183,7 @@ export class EndpointsRuleService {
   }
 
   public deleteSchemaCollaboratorDetailsUrl(): string {
-    return `${this.origin}/admin/users/collaborator-records/delete`;
+    return `${this.origin}/schema/metadata/collaborator-records/delete`;
   }
 
   public deleteSchema(schemaId: string): string {
