@@ -562,7 +562,7 @@ export class EndpointsRuleService {
    * @param schemaId append as request path
    */
   public resetCorrectionRecords(schemaId: string): string {
-    return `${this.origin}/schema/reset-corrected-records/${schemaId}`;
+    return `${this.origin}/schema/actions/reset-corrected-records/${schemaId}`;
   }
 
   public getSchemaExecutedStatsTrendUri(schemaId: string, variantId: string): string {

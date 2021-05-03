@@ -558,7 +558,7 @@ describe('EndpointsRuleService', () => {
 
   it('resetCorrectionRecords(), return Uri for reset schema execution correction data ',async(() => {
     const serObj =new EndpointsRuleService();
-    expect(serObj.resetCorrectionRecords('654567879')).toContain('schema/reset-corrected-records/654567879');
+    expect(serObj.resetCorrectionRecords('654567879')).toContain('schema/actions/reset-corrected-records/654567879');
   }));
 
   it('downloadMroExceutionUri(),should return downloadMroExceutionUri url', async(() => {
@@ -584,7 +584,7 @@ describe('EndpointsRuleService', () => {
 
   it('resetCorrectionRecords(), return Uri for reset schema execution correction data ',async(() => {
     const serObj =new EndpointsRuleService();
-    expect(serObj.resetCorrectionRecords('654567879')).toContain('schema/reset-corrected-records/654567879');
+    expect(serObj.resetCorrectionRecords('654567879')).toContain('schema/actions/reset-corrected-records/654567879');
   }));
 
   it('getNotificationsCount(), return count of notification',async(() => {
