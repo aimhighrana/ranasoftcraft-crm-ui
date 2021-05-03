@@ -191,8 +191,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   TableActionViewType = TableActionViewType;
 
   tableActionsList: SchemaTableAction[] = [
-    { actionText: 'Approve', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT, actionCode: STANDARD_TABLE_ACTIONS.APPROVE, actionIconLigature: 'check-mark' },
-    { actionText: 'Reject', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT, actionCode: STANDARD_TABLE_ACTIONS.REJECT, actionIconLigature: 'declined' }
+    { actionText: 'Approve', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT, actionCode: STANDARD_TABLE_ACTIONS.APPROVE, actionIconLigature: 'check' },
+    { actionText: 'Reject', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT, actionCode: STANDARD_TABLE_ACTIONS.REJECT, actionIconLigature: 'ban' }
   ] as SchemaTableAction[];
 
   /**
@@ -272,9 +272,13 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       this.getSchemaTableActions();
       if (this.variantId !== '0') {
         this.getVariantDetails();
+      } else {
+        this.variantId = '0';
       }
       if (this.userDetails) {
         this.getSchemaExecutionTree();
+      } else {
+        this.executionTreeHierarchy = new SchemaExecutionTree();
       }
     }
 
@@ -774,9 +778,10 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       }
     }
     const sub =  this.schemaDetailService.approveCorrectedRecords(this.schemaId, id, this.userDetails.currentRoleId).subscribe(res => {
-      if (res.acknowledge) {
+      if (res === true) {
         this.getData();
         this.selection.clear();
+        this.transientService.open('Correction is approved', 'Okay', { duration: 2000 });
       }
     }, error => {
       this.transientService.open(`Error :: ${error}`, 'Close', { duration: 2000 });
@@ -809,6 +814,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     }
     const sub =  this.schemaDetailService.resetCorrectionRecords(this.schemaId, this.schemaInfo.runId , id).subscribe(res=>{
       if(res && res.acknowledge) {
+        this.transientService.open('Correction is rejected', 'Okay', { duration: 2000 });
             this.statics.correctedCnt = res.count ? res.count : 0;
             this.getData();
             this.selection.clear();
