@@ -73,8 +73,8 @@ describe('ChangePasswordDialogComponent', () => {
     component.changeForm.controls.currentPassword.setValue('Test1234');
     component.changeForm.controls.newPassword.setValue('Test12345');
     component.changeForm.controls.confirmNewPassword.setValue('test12345');
-    component.changePassword();
-    expect(component.bannerMessage).toEqual('Password and confirm password did not match');
+    const resutl = component.changePassword();
+    expect(resutl).toBeFalsy();
 
     component.changeForm.controls.confirmNewPassword.setValue('Test1234');
     component.changeForm.controls.newPassword.setValue('Test1234');

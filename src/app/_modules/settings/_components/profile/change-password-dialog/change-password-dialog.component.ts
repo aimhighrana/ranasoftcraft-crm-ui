@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MustMatch } from '@shared/_validators/confirm-password.validator';
 
 @Component({
   selector: 'pros-change-password-dialog',
@@ -33,6 +34,7 @@ export class ChangePasswordDialogComponent implements OnInit {
   };
 
   constructor(
+    private fb: FormBuilder,
     public dialogRef: MatDialogRef<ChangePasswordDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
@@ -47,10 +49,12 @@ export class ChangePasswordDialogComponent implements OnInit {
    * creates new form for password fields
    */
   createForm() {
-    this.changeForm = new FormGroup({
+    this.changeForm = this.fb.group({
       currentPassword: new FormControl('', [Validators.required]),
       newPassword: new FormControl('', [Validators.required, Validators.minLength(8), Validators.pattern(this.patterns.pwdPattern)]),
       confirmNewPassword: new FormControl('', [Validators.required, Validators.minLength(8), Validators.pattern(this.patterns.pwdPattern)])
+    }, {
+      validator: MustMatch('newPassword', 'confirmNewPassword')
     });
 
     return true;;
@@ -101,11 +105,11 @@ export class ChangePasswordDialogComponent implements OnInit {
   getHint(field) {
     let msg;
 
-    if (this.changeForm.controls[field].touched && this.changeForm.controls[field].errors && this.changeForm.controls[field].errors.required) {
+    if (this.changeForm.controls[field].errors && this.changeForm.controls[field].errors.required) {
       msg = 'This is a required field';
-    } else if (this.changeForm.controls[field].touched && this.changeForm.controls[field].errors && this.changeForm.controls[field].errors.minlength) {
+    } else if (this.changeForm.controls[field].errors && this.changeForm.controls[field].errors.minlength) {
       msg = 'Password should contain minimum of 8 characters';
-    } else if (this.changeForm.controls[field].touched && this.changeForm.controls[field].errors && this.changeForm.controls[field].errors.pattern) {
+    } else if (this.changeForm.controls[field].errors && this.changeForm.controls[field].errors.pattern) {
       if (this.changeForm.controls[field].value.match(this.patterns.noSpace) === null) {
         msg = 'Password should not contain space';
       } else if (this.changeForm.controls[field].value.match(this.patterns.minTwoNumbers) === null) {
@@ -113,6 +117,8 @@ export class ChangePasswordDialogComponent implements OnInit {
       } else if (this.changeForm.controls[field].value.match(this.patterns.minOneLetter) === null) {
         msg = 'Password should contain minimum of 1 letter';
       }
+    } else if(this.changeForm.controls[field].errors && this.changeForm.controls[field].errors.mustMatch) {
+      msg = `Confirm password doesn't match with password`;
     }
 
     if (msg) {
