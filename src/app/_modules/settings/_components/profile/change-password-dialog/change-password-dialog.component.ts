@@ -1,7 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MustMatch } from '@shared/_validators/confirm-password.validator';
 import { UserPasswordDetails } from '@models/userdetails';
 import { UserService } from '@services/user/userservice.service';
 
@@ -53,7 +52,7 @@ export class ChangePasswordDialogComponent implements OnInit {
       newPassword: new FormControl('', [Validators.required, Validators.minLength(8), Validators.pattern(this.patterns.pwdPattern)]),
       confirmNewPassword: new FormControl('', [Validators.required, Validators.minLength(8), Validators.pattern(this.patterns.pwdPattern)])
     }, {
-      validator: MustMatch('newPassword', 'confirmNewPassword')
+      validator: this.MustMatch('newPassword', 'confirmNewPassword')
     });
 
     return true;;
@@ -142,4 +141,23 @@ export class ChangePasswordDialogComponent implements OnInit {
     this.hasError[field] = false;
     return '';
   }
+
+  MustMatch(controlName: string, matchingControlName: string) {
+    return (formGroup: FormGroup) => {
+        const control = formGroup.controls[controlName];
+        const matchingControl = formGroup.controls[matchingControlName];
+
+        if (matchingControl.errors && !matchingControl.errors.mustMatch) {
+            // return if another validator has already found an error on the matchingControl
+            return;
+        }
+
+        // set error on matchingControl if validation fails
+        if (control.value !== matchingControl.value) {
+            matchingControl.setErrors({ mustMatch: true });
+        } else {
+            matchingControl.setErrors(null);
+        }
+    }
+}
 }
