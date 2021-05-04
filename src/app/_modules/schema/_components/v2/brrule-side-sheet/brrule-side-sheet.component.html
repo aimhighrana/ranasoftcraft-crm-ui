@@ -93,7 +93,7 @@
                 </pros-transformation-rule>
                 <!-- transformation lookup rule -->
                 <pros-lookup-rule *ngIf="isTransformationRule && selectedTransformationType === transformationType.LOOKUP"
-                    [fieldsObject]="sourceFieldsObject" [initialLookupData]="transformationLookUpData"
+                    [fieldsObject]="sourceFieldsObject" [initialLookupData]="transformationLookUpData" [allGridAndHirarchyData]="allGridAndHirarchyData"
                     (lookupRuleOutput)="setLookupData($event)">
                 </pros-lookup-rule>
 
