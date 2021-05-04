@@ -75,7 +75,7 @@ export class ChangePasswordDialogComponent implements OnInit {
     if (this.changeForm.invalid) {
       (Object).values(this.changeForm.controls).forEach(control => {
         if(control.invalid) {
-          control.markAsTouched()
+          control.markAsTouched();
         }
       });
       return false;
