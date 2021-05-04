@@ -405,10 +405,12 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       }
     });
 
-    this.userService.getUserDetails().subscribe(res=>{
+    const userSub = this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(res=>{
       this.userDetails  = res;
       this.getSchemaExecutionTree();
     }, err=> console.log(`Error ${err}`));
+
+    this.subscribers.push(userSub);
 
     /**
      * inline search changes
