@@ -1,0 +1,25 @@
+mat-card.root {
+  height: 100%;
+  user-select: none;
+  padding: 0;
+
+  .breadcrum-toolbar {
+    align-items: center;
+    margin-bottom: 24px;
+    padding-top: 8px;
+    min-height: 40px;
+  }
+
+  .nav-tree {
+    max-height: 450px;
+    overflow: auto;
+
+    mat-panel-title {
+      align-items: center;
+
+      .expand-title {
+        margin-left: 8px;
+      }
+    }
+  }
+}

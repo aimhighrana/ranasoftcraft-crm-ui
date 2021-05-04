@@ -43,6 +43,7 @@ import { AttributeComponent } from './_components/v2/library-mapping-sidesheet/a
 import { NounModifierAutocompleteComponent } from './_components/v2/library-mapping-sidesheet/noun-modifier-autocomplete/noun-modifier-autocomplete.component';
 import { ExecutionTrendSidesheetComponent } from './_components/v2/statistics/execution-trend-sidesheet/execution-trend-sidesheet.component';
 import { SchemaProgressComponent } from './_components/schema-progress/schema-progress.component';
+import { DownloadExecutionDataComponent } from './_components/v2/download-execution-data/download-execution-data.component';
 
 
 @NgModule({
@@ -91,7 +92,8 @@ import { SchemaProgressComponent } from './_components/schema-progress/schema-pr
     AttributeComponent,
     NounModifierAutocompleteComponent,
     ExecutionTrendSidesheetComponent,
-    SchemaProgressComponent
+    SchemaProgressComponent,
+    DownloadExecutionDataComponent
   ],
   imports: [
     CommonModule,

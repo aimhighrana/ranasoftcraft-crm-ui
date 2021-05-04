@@ -644,7 +644,7 @@ describe('EndpointsRuleService', () => {
 
   it('getSchemaExecutionTree(), should getSchemaExecutionTree', async() => {
     const serviceObj = new EndpointsRuleService();
-    const URL = serviceObj.getSchemaExecutionTree('module1', 'schema1', 'varaint1', 'plantCode', 'userId');
+    const URL = serviceObj.getSchemaExecutionTree('module1', 'schema1', 'varaint1', 'plantCode', 'userId', 'error');
     expect(URL).toContain(`schema/execution-tree/module1/schema1`);
   });
 });
