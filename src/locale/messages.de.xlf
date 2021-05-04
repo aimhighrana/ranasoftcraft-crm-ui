@@ -41,6 +41,10 @@
           <context context-type="sourcefile">src/app_modules/list/_components/table-view-settings/table-view-settings.component.html</context>
           <context context-type="linenumber">7</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\table-column-settings\table-column-settings.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="save" datatype="html">
         <source>save</source>
@@ -69,6 +73,14 @@
           <context context-type="sourcefile">src\app\_modules\shared\_components\schedule-dialog\schedule-dialog.component.html</context>
           <context context-type="linenumber">10</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\table-column-settings\table-column-settings.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\subscriber-side-sheet\subscriber-side-sheet.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="Column" datatype="html">
         <source>Column</source>
@@ -77,6 +89,10 @@
           <context context-type="sourcefile">src/app_modules/list/_components/table-view-settings/table-view-settings.component.html</context>
           <context context-type="linenumber">38</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\table-column-settings\table-column-settings.component.html</context>
+          <context context-type="linenumber">28</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="Visible" datatype="html">
         <source>Visible</source>
@@ -84,6 +100,10 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app_modules/list/_components/table-view-settings/table-view-settings.component.html</context>
           <context context-type="linenumber">40</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\table-column-settings\table-column-settings.component.html</context>
+          <context context-type="linenumber">30</context>
         </context-group>
       </trans-unit>
       <trans-unit id="view_name" datatype="html">
@@ -100,6 +120,10 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app_modules/list/_components/table-view-settings/table-view-settings.component.html</context>
           <context context-type="linenumber">30</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\table-column-settings\table-column-settings.component.html</context>
+          <context context-type="linenumber">21</context>
         </context-group>
       </trans-unit>
       <trans-unit id="new_view" datatype="html">
@@ -124,6 +148,14 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\list\_components\list-datatable\list-datatable.component.html</context>
           <context context-type="linenumber">39</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-details\schema-details.component.html</context>
+          <context context-type="linenumber">70</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\businessrulelibrary-sidesheet\businessrulelibrary-sidesheet.component.html</context>
+          <context context-type="linenumber">14</context>
         </context-group>
       </trans-unit>
       <trans-unit id="enter" datatype="html">
@@ -169,6 +201,10 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-lists\schema-lists.component.html</context>
           <context context-type="linenumber">7</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
+          <context context-type="linenumber">40</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="upload" datatype="html">
         <source>Upload</source>
@@ -201,6 +237,10 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
           <context context-type="linenumber">12</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
+          <context context-type="linenumber">33</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="delete" datatype="html">
         <source>Delete</source>
@@ -225,6 +265,10 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
           <context context-type="linenumber">80</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
+          <context context-type="linenumber">81</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="subscribers" datatype="html">
         <source>Subscribers</source>
@@ -232,6 +276,10 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
           <context context-type="linenumber">259</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
+          <context context-type="linenumber">215</context>
         </context-group>
       </trans-unit>
       <trans-unit id="schedule" datatype="html">
@@ -260,6 +308,10 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
           <context context-type="linenumber">9</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
+          <context context-type="linenumber">88</context>
         </context-group>
       </trans-unit>
       <trans-unit id="category" datatype="html">
@@ -293,6 +345,10 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\brrule-side-sheet.component.html</context>
           <context context-type="linenumber">40</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
+          <context context-type="linenumber">89</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="br_weightage_tooltip_msg" datatype="html">
         <source>Score assigned to a record upon successful validation of a business rule.For a schema total weightage of all the business rules must not exceed 100</source>
@@ -300,6 +356,10 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
           <context context-type="linenumber">91</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
+          <context context-type="linenumber">90</context>
         </context-group>
       </trans-unit>
       <trans-unit id="enabled" datatype="html">
@@ -309,6 +369,10 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
           <context context-type="linenumber">95</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
+          <context context-type="linenumber">93</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="type_rule_name_to_add" datatype="html">
         <source>Type rule name to add</source>
@@ -317,6 +381,10 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
           <context context-type="linenumber">100</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
+          <context context-type="linenumber">99</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="add_br_rule" datatype="html">
         <source>Add new business rule</source>
@@ -324,6 +392,10 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
           <context context-type="linenumber">103</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
+          <context context-type="linenumber">104</context>
         </context-group>
       </trans-unit>
       <trans-unit id="rule_type" datatype="html">
@@ -429,6 +501,14 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\brrule-side-sheet\duplicate-rule-config\setup-duplicate-rule\setup-duplicate-rule.component.html</context>
           <context context-type="linenumber">88</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
+          <context context-type="linenumber">204</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
+          <context context-type="linenumber">351</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="type_inside_search_box_to_find_fields" datatype="html">
         <source>Type inside the search box to find fields</source>
@@ -485,6 +565,10 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
           <context context-type="linenumber">37</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
+          <context context-type="linenumber">69</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="data_scope" datatype="html">
         <source>Data scope</source>
@@ -496,6 +580,10 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\schema\_components\datascope-sidesheet\datascope-sidesheet.component.html</context>
           <context context-type="linenumber">9</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
+          <context context-type="linenumber">56</context>
         </context-group>
       </trans-unit>
       <trans-unit id="add_data_scope" datatype="html">
@@ -529,6 +617,10 @@
           <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-info\schema-info.component.html</context>
           <context context-type="linenumber">34</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
+          <context context-type="linenumber">51</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="close" datatype="html">
         <source>close</source>
@@ -561,6 +653,10 @@
           <context context-type="sourcefile">src\app\_modules\list\_components\list-filter\list-filter.component.html</context>
           <context context-type="linenumber">51</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\filter-values\filter-values.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="type_filter_value" datatype="html">
         <source>type filter value</source>
@@ -577,6 +673,10 @@
           <context context-type="sourcefile">src\app\_modules\list\_components\list-datatable\list-datatable.component.html</context>
           <context context-type="linenumber">54</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
+          <context context-type="linenumber">132</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="reset" datatype="html">
         <source>Reset</source>
@@ -584,6 +684,10 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\list\_components\list-datatable\list-datatable.component.html</context>
           <context context-type="linenumber">55</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
+          <context context-type="linenumber">133</context>
         </context-group>
       </trans-unit>
       <trans-unit id="save_filter_as" datatype="html">
@@ -601,6 +705,10 @@
           <context context-type="sourcefile">src\app\_modules\list\_components\filter-save-modal\filter-save-modal.component.html</context>
           <context context-type="linenumber">10</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\save-variant-dialog\save-variant-dialog.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="cancel" datatype="html">
         <source>Cancel</source>
@@ -616,6 +724,10 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\change-password-dialog\change-password-dialog.component.html</context>
           <context context-type="linenumber">16</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\save-variant-dialog\save-variant-dialog.component.html</context>
+          <context context-type="linenumber">18</context>
         </context-group>
       </trans-unit>
       <trans-unit id="home" datatype="html">
@@ -866,6 +978,218 @@
           <context context-type="linenumber">21</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="duplicateReport_cancel" datatype="html">
+        <source>Cancel</source>
+        <target>Stornieren</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/_modules/report/view/duplicate-report/duplicate-report.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="check" datatype="html">
+        <source>Check</source>
+        <target>Prüfen</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
+          <context context-type="linenumber">43</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="entire_data_scope" datatype="html">
+        <source>Entire data scope</source>
+        <target>Gesamter Datenumfang</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
+          <context context-type="linenumber">61</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="run_rule_warning_msg" datatype="html">
+        <source>Only run this rule if the preceding rule returns</source>
+        <target>Nur diese Regel ausgeführt werden, wenn die Regel kehrt vorhergehenden</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
+          <context context-type="linenumber">144</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
+          <context context-type="linenumber">186</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="brs_null_message" datatype="html">
+        <source>You don't have any business rules selected. Type the business rule in the box above to add one.</source>
+        <target>Sie haben noch keine Geschäftsregeln ausgewählt. Geben Sie die Geschäftsregel in der Tabelle oben ein hinzuzufügen.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
+          <context context-type="linenumber">144</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
+          <context context-type="linenumber">204</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="subscriber" datatype="html">
+        <source>Subscriber</source>
+        <target>Teilnehmer</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
+          <context context-type="linenumber">222</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="role" datatype="html">
+        <source>Role</source>
+        <target>Rolle</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
+          <context context-type="linenumber">223</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="data_allocation" datatype="html">
+        <source>Data allocation</source>
+        <target>Datenzuordnung</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
+          <context context-type="linenumber">224</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="type_subscriber_name" datatype="html">
+        <source>Type subscriber name to add</source>
+        <target>Geben Teilnehmernamen hinzufügen</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
+          <context context-type="linenumber">232</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="invite_people_to_team" datatype="html">
+        <source>Invite people to your team</source>
+        <target>Laden Sie Personen zu Ihrem Team</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
+          <context context-type="linenumber">237</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite-sidesheet\subscriber-invite-sidesheet.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="admin" datatype="html">
+        <source>Admin</source>
+        <target>Administrator</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
+          <context context-type="linenumber">280</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite-sidesheet\subscriber-invite-sidesheet.component.html</context>
+          <context context-type="linenumber">40</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="reviewer" datatype="html">
+        <source>Reviewer</source>
+        <target>Rezensent</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
+          <context context-type="linenumber">283</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite-sidesheet\subscriber-invite-sidesheet.component.html</context>
+          <context context-type="linenumber">41</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="viewer" datatype="html">
+        <source>Viewer</source>
+        <target>Zuschauer</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
+          <context context-type="linenumber">286</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite-sidesheet\subscriber-invite-sidesheet.component.html</context>
+          <context context-type="linenumber">42</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="editor" datatype="html">
+        <source>Editor</source>
+        <target>Editor</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
+          <context context-type="linenumber">289</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite-sidesheet\subscriber-invite-sidesheet.component.html</context>
+          <context context-type="linenumber">43</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="subscriber_null_message" datatype="html">
+        <source>You don't have any subscribers selected. Type the user's name in the box above to add one.</source>
+        <target>Sie haben noch keine ausgewählten Abonnenten. Geben Sie den Namen des Benutzers in das Feld oben ein hinzuzufügen.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\schema-summary-sidesheet\schema-summary-sidesheet.component.html</context>
+          <context context-type="linenumber">351</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="add_subscribers" datatype="html">
+        <source>Add subscribers</source>
+        <target>Add Abonnenten</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\subscriber-side-sheet\subscriber-side-sheet.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="search_subscribers" datatype="html">
+        <source>Search subscribers</source>
+        <target>Suchen Abonnenten</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\subscriber-side-sheet\subscriber-side-sheet.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="add" datatype="html">
+        <source>Add</source>
+        <target>Hinzufügen</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\subscriber-side-sheet\subscriber-side-sheet.component.html</context>
+          <context context-type="linenumber">43</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="invite" datatype="html">
+        <source>Invite</source>
+        <target>Einladen</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite-sidesheet\subscriber-invite-sidesheet.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="add_user" datatype="html">
+        <source>Add user</source>
+        <target>Nutzer hinzufügen</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite-sidesheet\subscriber-invite-sidesheet.component.html</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="email_address" datatype="html">
+        <source>Email address</source>
+        <target>E-Mail-Addresse</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite-sidesheet\subscriber-invite-sidesheet.component.html</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="email_required" datatype="html">
+        <source>Email is required</source>
+        <target>E-Mail ist erforderlich</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite-sidesheet\subscriber-invite-sidesheet.component.html</context>
+          <context context-type="linenumber">33</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="role_required" datatype="html">
+        <source>Role is required</source>
+        <target>Die Rolle ist erforderlich,</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\subscriber-invite-sidesheet\subscriber-invite-sidesheet.component.html</context>
+          <context context-type="linenumber">46</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="settings" datatype="html">
         <source>Settings</source>
         <target>Einstellungen</target>
@@ -934,6 +1258,234 @@
           <context context-type="linenumber">582</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="entire_dataset" datatype="html">
+        <source>Entire dataset</source>
+        <target>gesamter Datensatz</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="new_data_scope" datatype="html">
+        <source>New data scope</source>
+        <target>Neuer Datenumfang</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="export_to_csv" datatype="html">
+        <source>Export to CSV</source>
+        <target>Export nach CSV</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="import_from_csv" datatype="html">
+        <source>Import from CSV</source>
+        <target>Import von CSV</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
+          <context context-type="linenumber">39</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="errors" datatype="html">
+        <source>Errors</source>
+        <target>Fehler</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
+          <context context-type="linenumber">74</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="success" datatype="html">
+        <source>Success</source>
+        <target>Erfolg</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
+          <context context-type="linenumber">78</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="corrections" datatype="html">
+        <source>Corrections</source>
+        <target>Korrekturen</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
+          <context context-type="linenumber">82</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="header" datatype="html">
+        <source>Header</source>
+        <target>Header</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
+          <context context-type="linenumber">148</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
+          <context context-type="linenumber">213</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="plant_data" datatype="html">
+        <source>Plant data</source>
+        <target>Anlagendaten</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
+          <context context-type="linenumber">159</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="valuation_data" datatype="html">
+        <source>Valuation data</source>
+        <target>Bewertungsdaten</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
+          <context context-type="linenumber">167</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
+          <context context-type="linenumber">172</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="language_table" datatype="html">
+        <source>Language table</source>
+        <target>Sprachtabelle</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
+          <context context-type="linenumber">184</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="all_unit_of_measure" datatype="html">
+        <source>Alt unit of measure</source>
+        <target>Alt Maßeinheit</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
+          <context context-type="linenumber">195</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="approve" datatype="html">
+        <source>Approve</source>
+        <target>Genehmigen</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
+          <context context-type="linenumber">222</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
+          <context context-type="linenumber">425</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="reject" datatype="html">
+        <source>Reject</source>
+        <target>Ablehnen</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
+          <context context-type="linenumber">223</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="unselect" datatype="html">
+        <source>Unselect</source>
+        <target>Unselect</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
+          <context context-type="linenumber">224</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="score" datatype="html">
+        <source>Score</source>
+        <target>Ergebnis</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
+          <context context-type="linenumber">270</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="object_number" datatype="html">
+        <source>Object Number</source>
+        <target>Objektnummer</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\schema-details\schema-details.component.html</context>
+          <context context-type="linenumber">334</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="create" datatype="html">
+        <source>Create</source>
+        <target>Erstellen</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\v2\save-variant-dialog\save-variant-dialog.component.html</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="columns" datatype="html">
+        <source>Columns</source>
+        <target>Säulen</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app_modules/list/_components/table-view-settings/table-view-settings.component.html</context>
+          <context context-type="linenumber">30</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\table-column-settings\table-column-settings.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="editable" datatype="html">
+        <source>Editable</source>
+        <target>editierbare</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\table-column-settings\table-column-settings.component.html</context>
+          <context context-type="linenumber">32</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="preview" datatype="html">
+        <source>Preview</source>
+        <target>Vorschau</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\table-column-settings\table-column-settings.component.html</context>
+          <context context-type="linenumber">77</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="action" datatype="html">
+        <source>Action</source>
+        <target>Aktion</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\table-column-settings\table-column-settings.component.html</context>
+          <context context-type="linenumber">144</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="primary" datatype="html">
+        <source>Primary</source>
+        <target>primär</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\table-column-settings\table-column-settings.component.html</context>
+          <context context-type="linenumber">145</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\table-column-settings\table-column-settings.component.html</context>
+          <context context-type="linenumber">146</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="new_custom_action" datatype="html">
+        <source>New custom action</source>
+        <target>Neue benutzerdefinierte Aktion</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\shared\_components\table-column-settings\table-column-settings.component.html</context>
+          <context context-type="linenumber">155</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="business_rule_library" datatype="html">
+        <source>Business rule library</source>
+        <target>Business-Rule-Bibliothek</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\businessrulelibrary-sidesheet\businessrulelibrary-sidesheet.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="business_rule_type" datatype="html">
+        <source>Business rule type</source>
+        <target>Business-Regeltyp</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\schema\_components\businessrulelibrary-sidesheet\businessrulelibrary-sidesheet.component.html</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="profile" datatype="html">
         <source>Profile</source>
         <target>Profil</target>
@@ -959,7 +1511,7 @@
         <target>Nutzername</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">12</context>
+          <context context-type="linenumber">13</context>
         </context-group>
       </trans-unit>
       <trans-unit id="full_name" datatype="html">
@@ -967,7 +1519,7 @@
         <target>Vollständiger Name</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">13</context>
+          <context context-type="linenumber">14</context>
         </context-group>
       </trans-unit>
       <trans-unit id="preferred_name" datatype="html">
@@ -975,7 +1527,7 @@
         <target>bevorzugter Name</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">17</context>
+          <context context-type="linenumber">18</context>
         </context-group>
       </trans-unit>
       <trans-unit id="phone_number" datatype="html">
@@ -983,7 +1535,7 @@
         <target>Telefonnummer</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">21</context>
+          <context context-type="linenumber">22</context>
         </context-group>
       </trans-unit>
       <trans-unit id="primary_email_address" datatype="html">
@@ -991,7 +1543,7 @@
         <target>Haupt-Email-Adresse</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">25</context>
+          <context context-type="linenumber">26</context>
         </context-group>
       </trans-unit>
       <trans-unit id="secondary_email_address" datatype="html">
@@ -999,7 +1551,7 @@
         <target>Zweite Email Adresse</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">32</context>
+          <context context-type="linenumber">33</context>
         </context-group>
       </trans-unit>
       <trans-unit id="change_password" datatype="html">
@@ -1007,7 +1559,7 @@
         <target>Kennwort ändern</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">37</context>
+          <context context-type="linenumber">38</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\change-password-dialog\change-password-dialog.component.html</context>
@@ -1019,7 +1571,7 @@
         <target>Digitale Unterschrift</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
-          <context context-type="linenumber">38</context>
+          <context context-type="linenumber">39</context>
         </context-group>
       </trans-unit>
       <trans-unit id="ok" datatype="html">
@@ -1112,6 +1664,78 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src\app\_modules\report\view\dashboard-container\filter\filter.component.html</context>
           <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="language_format" datatype="html">
+        <source>Language &amp; format</source>
+        <target>Sprache und Format</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
+          <context context-type="linenumber">50</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="language" datatype="html">
+        <source>Language</source>
+        <target>Sprache</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
+          <context context-type="linenumber">56</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="type_to_search" datatype="html">
+        <source>Type to search</source>
+        <target>Tippe um zu suchen</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
+          <context context-type="linenumber">59</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
+          <context context-type="linenumber">76</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
+          <context context-type="linenumber">93</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
+          <context context-type="linenumber">110</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
+          <context context-type="linenumber">127</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="timezone" datatype="html">
+        <source>Time Zone</source>
+        <target>Zeitzone</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
+          <context context-type="linenumber">73</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="date_format" datatype="html">
+        <source>Date format</source>
+        <target>Datumsformat</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
+          <context context-type="linenumber">90</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="time_format" datatype="html">
+        <source>Time format</source>
+        <target>Zeitformat</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
+          <context context-type="linenumber">107</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="number_format" datatype="html">
+        <source>Number format</source>
+        <target>Zahlenformat</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src\app\_modules\settings\_components\profile\profile.component.html</context>
+          <context context-type="linenumber">124</context>
         </context-group>
       </trans-unit>
     </body>

@@ -2,6 +2,8 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MustMatch } from '@shared/_validators/confirm-password.validator';
+import { UserPasswordDetails } from '@models/userdetails';
+import { UserService } from '@services/user/userservice.service';
 
 @Component({
   selector: 'pros-change-password-dialog',
@@ -10,8 +12,6 @@ import { MustMatch } from '@shared/_validators/confirm-password.validator';
 })
 export class ChangePasswordDialogComponent implements OnInit {
 
-  // current password
-  currentPassword;
   // form group for change password fields
   changeForm: FormGroup;
 
@@ -36,10 +36,9 @@ export class ChangePasswordDialogComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<ChangePasswordDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
-  ) {
-    this.currentPassword = this.data.currentPassword || '';
-  }
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private userService: UserService
+  ) { }
 
   ngOnInit(): void {
     this.createForm();
@@ -83,11 +82,9 @@ export class ChangePasswordDialogComponent implements OnInit {
       return false;
     }
 
-    if (this.currentPassword !== this.changeForm.controls.currentPassword.value) {
-      this.bannerMessage = 'Invalid current password';
-    } else if (this.changeForm.controls.newPassword.value !== this.changeForm.controls.confirmNewPassword.value) {
+    if (this.changeForm.controls.newPassword.value !== this.changeForm.controls.confirmNewPassword.value) {
       this.bannerMessage = 'Password and confirm password did not match';
-    } else if (this.currentPassword === this.changeForm.controls.newPassword.value) {
+    } else if (this.changeForm.controls.currentPassword.value === this.changeForm.controls.newPassword.value) {
       this.bannerMessage = 'Cannot set current password as new password';
     }
 
@@ -95,7 +92,23 @@ export class ChangePasswordDialogComponent implements OnInit {
       return false;
     }
 
-    this.closeDialog('Password changed successfully');
+    const data: UserPasswordDetails = {
+      confirmPassword: this.changeForm.controls.confirmNewPassword.value,
+      newPassword: this.changeForm.controls.newPassword.value,
+      oldPassword: this.changeForm.controls.currentPassword.value
+    }
+    this.userService.updatePassword(data).subscribe((res) => {
+      if (res && res.errorMsg) {
+        this.bannerMessage = res.errorMsg;
+      } else {
+        this.closeDialog('Password changed successfully');
+      }
+    }, (err) => {
+      if (err && err.error) {
+        this.bannerMessage = err.error.errorMsg || '';
+      }
+      console.log(err);
+    });
   }
 
   /**

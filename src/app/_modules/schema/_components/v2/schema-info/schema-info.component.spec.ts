@@ -266,7 +266,7 @@ describe('SchemaInfoComponent', () => {
 
     spyOn(router, 'navigate');
     component.openSummarySideSheet();
-    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/check-data/${component.moduleId}/${component.schemaId}` } }])
+    expect(router.navigate).toHaveBeenCalledWith([{ outlets: { sb: `sb/schema/check-data/${component.moduleId}/${component.schemaId}` } }], {queryParams: {isCheckData: true}})
   })
 
   it('editSubscriberInfo(), should open edit subscriber sidesheet', async () => {

@@ -320,36 +320,37 @@ describe('StackedbarChartComponent', () => {
   }));
 
   it('getFieldsMetadaDescaxis1(), get description of axis 1', async(()=>{
-    const res = [{key:{CLAIMED:'n',MASSPROCESSING_ID:'432651935700873253'},'top_hits#items':{hits:{hits:[{_index:'localhost_workflow_do_0_en',_type:'_doc',_source:{staticFields:{CLAIMED:{vc:[{c:'n',t:'No'}]},MASSPROCESSING_ID:{vc:[{c:'432651935700873253'}]}}},_id:'462107749703085781_3153515',_score:3.77689}]}}}]
+    const res = [{key:{CLAIMED:'n',MASSPROCESSING_ID:'432651935700873253'},'top_hits#items':{hits:{hits:[{_source:{staticFields:{CLAIMED:{vc:[{c:'n',t:'No'}]},MASSPROCESSING_ID:{vc:[{c:'432651935700873253'}]}}}}]}}}, {key:{CLAIMED:'n',MASSPROCESSING_ID:'432651935700873252'},'top_hits#items':{hits:{hits:[{_source:{staticFields:{CLAIMED:{vc:[{c:'n',t:'No'}]},MASSPROCESSING_ID:{vc:[{c:'432651935700873252', t:'testing'}]}}}}]}}}]
 
     component.arrayBuckets = res;
     component.getFieldsMetadaDescaxis1('MASSPROCESSING_ID');
 
     expect(component.codeTextaxis1['432651935700873253']).toEqual('432651935700873253');
+    expect(component.codeTextaxis1['432651935700873252']).toEqual('testing');
 
+    const res1 = [{key:{CLAIMED:'n',OVERDUE:'1'},'top_hits#items':{hits:{hits:[{_source:{staticFields:{CLAIMED:{vc:[{c:'n',t:'No'}]},OVERDUE:{vc:[{c:'1'}]}}}}]}}}]
 
+    component.arrayBuckets = res1;
+    component.getFieldsMetadaDescaxis1('OVERDUE');
+
+    expect(component.codeTextaxis1['1']).toEqual('Yes');
   }));
 
-  /* it('getDateFieldsDesc1(), get description of axis 1', async(()=>{
-    const res = [{key:{STATUS__C:'',LEVEL__C:''},doc_count:3,'top_hits#items':{hits:{total:{value:3,relation:'eq'},max_score:1.0,hits:[{_index:'localhost_3901_do_0',_type:'_doc',_id:'TEMP003',_score:1.0,_source:{hdvs:{STATUS__C:{fId:'STATUS__C',lls:{EN:{label:'Status'}},vls:{EN:{valueTxt:''}},vc:[{c:'1600709041279'}]},LEVEL__C:{fId:'LEVEL__C',lls:{EN:{label:'Level'}},vls:{EN:{valueTxt:''}},vc:[{c:'1600709041279'}]}}}}]}}},{key:{STATUS__C:'',LEVEL__C:'Level 3'},doc_count:2,'top_hits#items':{hits:{total:{value:2,relation:'eq'},max_score:1.0,hits:[{_index:'localhost_3901_do_0',_type:'_doc',_id:'TMP000000000000009',_score:1.0,_source:{hdvs:{STATUS__C:{fId:'STATUS__C',loc:'',lls:{EN:{label:'Status'}},ddv:[],msdv:[],vls:{EN:{valueTxt:''}},vc:[{c:''}]},LEVEL__C:{fId:'LEVEL__C',loc:'',lls:{EN:{label:'Level'}},ddv:[{val:'Level 3: $100K - $1MM',lang:'EN'}],msdv:[],vls:{EN:{valueTxt:'Level 3'}},vc:[{c:'1600709041279'}]}}}}]}}}];
-
-    component.arrayBuckets = res;
-    component.getDateFieldsDesc1('LEVEL__C');
-
-    expect(component.codeTextaxis1['Level 3']).toEqual('9/21/2020');
-
-
-  })); */
-
   it('getFieldsMetadaDescaxis2(), get description of axis 2', async(()=>{
-    const res = [{key:{STATUS__C:'',LEVEL__C:''},doc_count:3,'top_hits#items':{hits:{total:{value:3,relation:'eq'},max_score:1.0,hits:[{_index:'localhost_3901_do_0',_type:'_doc',_id:'TEMP003',_score:1.0,_source:{hdvs:{STATUS__C:{fId:'STATUS__C',lls:{EN:{label:'Status'}},vls:{EN:{valueTxt:''}},vc:[{c:''}]},LEVEL__C:{fId:'LEVEL__C',lls:{EN:{label:'Level'}},vls:{EN:{valueTxt:''}},vc:[{c:''}]}}}}]}}},{key:{STATUS__C:'',LEVEL__C:'Level 3'},doc_count:2,'top_hits#items':{hits:{total:{value:2,relation:'eq'},max_score:1.0,hits:[{_index:'localhost_3901_do_0',_type:'_doc',_id:'TMP000000000000009',_score:1.0,_source:{hdvs:{STATUS__C:{fId:'STATUS__C',loc:'',lls:{EN:{label:'Status'}},ddv:[],msdv:[],vls:{EN:{valueTxt:''}},vc:[{c:''}]},LEVEL__C:{fId:'LEVEL__C',loc:'',lls:{EN:{label:'Level'}},ddv:[{val:'Level 3: $100K - $1MM',lang:'EN'}],msdv:[],vls:{EN:{valueTxt:'Level 3'}},vc:[{c:'Level 3'}]}}}}]}}}];
+    const res = [{key:{STATUS__C:'',LEVEL__C:'level_1'},'top_hits#items':{hits:{hits:[{_source:{hdvs:{STATUS__C:{vc:[{c:''}]},LEVEL__C:{vc:[{c:'level_1'}]}}}}]}}},{key:{STATUS__C:'',LEVEL__C:'Level_3'},'top_hits#items':{hits:{hits:[{_source:{hdvs:{STATUS__C:{vc:[{c:''}]},LEVEL__C:{vc:[{c:'Level_3',t:'Level 3'}]}}}}]}}}];
 
     component.arrayBuckets = res;
-    component.getFieldsMetadaDescaxis2('STATUS__C');
+    component.getFieldsMetadaDescaxis2('LEVEL__C');
 
-    expect(component.codeTextaxis1['']).toEqual(undefined);
+    expect(component.codeTextaxis2.level_1).toEqual('level_1');
+    expect(component.codeTextaxis2.Level_3).toEqual('Level 3');
 
+    const res1 = [{key:{CLAIMED:'n',OVERDUE:'1'},'top_hits#items':{hits:{hits:[{_source:{staticFields:{CLAIMED:{vc:[{c:'n',t:'No'}]},OVERDUE:{vc:[{c:'1'}]}}}}]}}}]
 
+    component.arrayBuckets = res1;
+    component.getFieldsMetadaDescaxis2('OVERDUE');
+
+    expect(component.codeTextaxis2['1']).toEqual('Yes');
   }));
 
   it('getDateFieldsDesc2(), get description of axis 2', async(()=>{

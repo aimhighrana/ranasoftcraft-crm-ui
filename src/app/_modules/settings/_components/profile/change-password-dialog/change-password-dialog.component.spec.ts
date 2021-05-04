@@ -5,6 +5,8 @@ import { MdoUiLibraryModule } from 'mdo-ui-library';
 import { AppMaterialModuleForSpec } from 'src/app/app-material-for-spec.module';
 
 import { ChangePasswordDialogComponent } from './change-password-dialog.component';
+import { UserService } from '@services/user/userservice.service';
+import { of, throwError } from 'rxjs';
 
 describe('ChangePasswordDialogComponent', () => {
   let component: ChangePasswordDialogComponent;
@@ -19,6 +21,8 @@ describe('ChangePasswordDialogComponent', () => {
     newPassword: 'Test12345',
     confirmNewPassword: 'Test12345'
   };
+
+  let userService: UserService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -42,6 +46,7 @@ describe('ChangePasswordDialogComponent', () => {
     fixture = TestBed.createComponent(ChangePasswordDialogComponent);
     component = fixture.componentInstance;
     // fixture.detectChanges();
+    userService = fixture.debugElement.injector.get(UserService);
   });
 
   it('should create', () => {
@@ -62,13 +67,14 @@ describe('ChangePasswordDialogComponent', () => {
     Object.keys(mockValues).forEach((field) => {
       component.changeForm.controls[field].setValue(mockValues[field]);
     });
-    component.currentPassword = 'Test1234';
+    const response = {
+      acknowledge: true,
+      errorMsg: 'Error',
+      userName: 'Test Name'
+    };
+    spyOn(userService, 'updatePassword').and.returnValues(of(response), throwError({message: 'Something went wrong'}));
     component.changePassword();
-    expect(component.bannerMessage).toEqual('');
-
-    component.changeForm.controls.currentPassword.setValue('test');
-    component.changePassword();
-    expect(component.bannerMessage).toEqual('Invalid current password');
+    expect(component.bannerMessage).toEqual('Error');
 
     component.changeForm.controls.currentPassword.setValue('Test1234');
     component.changeForm.controls.newPassword.setValue('Test12345');
@@ -84,6 +90,22 @@ describe('ChangePasswordDialogComponent', () => {
     component.ngOnInit();
     component.changePassword();
     expect(component.changeForm.controls.currentPassword.touched).toEqual(true);
+  }));
+
+  it('changePassword(), should check for validation and update password', async(() => {
+    component.ngOnInit();
+    Object.keys(mockValues).forEach((field) => {
+      component.changeForm.controls[field].setValue(mockValues[field]);
+    });
+    const response = {
+      acknowledge: true,
+      errorMsg: null,
+      userName: 'Test Name'
+    };
+    spyOn(userService, 'updatePassword').and.returnValues(of(response), throwError({message: 'Something went wrong'}));
+    component.changePassword();
+
+    expect(component.bannerMessage).toEqual('');
   }));
 
   it('getHint(), should get error hints', async(() => {

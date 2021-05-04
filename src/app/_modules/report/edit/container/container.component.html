@@ -224,7 +224,7 @@
                                             <mat-option value="GROUPBY"
                                                 *ngIf="(selStyleWid.widgetType === 'BAR_CHART' || selStyleWid.widgetType === 'STACKED_BAR_CHART' || selStyleWid.widgetType === 'TIMESERIES')">
                                                 Group by</mat-option>
-                                            <mat-option value="COUNT">Count</mat-option>
+                                            <mat-option value="COUNT" *ngIf="(selStyleWid.widgetType === 'COUNT')">Count</mat-option>
                                             <!-- <mat-option value="MIN" >Min</mat-option>
                                             <mat-option value="MAX" >Max</mat-option> -->
                                             <mat-option value="SUM"

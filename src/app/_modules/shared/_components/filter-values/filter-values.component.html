@@ -1,11 +1,11 @@
 <div class="root f-col">
-    <pros-search-input (value)="searchData($event)" prosClickStopPropagation></pros-search-input>
+    <lib-search prosClickStopPropagation (valueChange)="searchData($event)"></lib-search>
     <mat-nav-list prosClickStopPropagation>
         <mat-list-item *ngFor="let checkbox of searchValue;">
-            <mat-checkbox color="primary" (change)="onChange(checkbox)" [checked]="isChecked(checkbox)"> 
-                {{ checkbox.TEXT ? checkbox.TEXT : checkbox.CODE }}
-            </mat-checkbox>
+            <lib-checkbox (valueChange)="onChange(checkbox)" [checked]="isChecked(checkbox)" [label]="checkbox.TEXT ? checkbox.TEXT : checkbox.CODE">
+                Trest checkbox
+            </lib-checkbox>
         </mat-list-item>
     </mat-nav-list>
-    <button mat-flat-button color="accent" (click)="submit()">Apply</button>
+    <lib-button type="minor" i18n="@@apply" (click)="submit()">Apply</lib-button>
 </div>

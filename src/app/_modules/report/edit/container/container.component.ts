@@ -563,14 +563,14 @@ export class ContainerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.chooseColumns = data.widgetTableFields ? data.widgetTableFields : [];
 
       // make while edit widget ..
-      if (!data.isWorkflowdataSet && !data.isCustomdataSet) {
+      if (!data.isWorkflowdataSet && !data.isCustomdataSet && data.objectType) {
         const hasObj = this.dataSets.filter(fil => fil.objectid === data.objectType)[0];
         if (hasObj) {
           setTimeout(() => {
             (document.getElementById('dataSets') as HTMLInputElement).value = hasObj.objectdesc;
           }, 1000);
         }
-      } else if(!data.isWorkflowdataSet && data.isCustomdataSet) {
+      } else if(!data.isWorkflowdataSet && data.isCustomdataSet && data.objectType) {
         const hasObj = this.customDataSets.filter(fil => fil.objectid === data.objectType)[0];
         if (hasObj) {
           setTimeout(() => {

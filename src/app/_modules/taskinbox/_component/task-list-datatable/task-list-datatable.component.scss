@@ -12,6 +12,10 @@ div.root {
 
       td.mat-cell {
         border-right: none;
+
+        .pt-6 {
+          padding-top: 6px;
+        }
       }
 
       .mat-column-select {
@@ -34,4 +38,8 @@ div.root {
       }
     }
   }
+}
+
+.height-zero-mat-menu-item {
+  height: 0;
 }

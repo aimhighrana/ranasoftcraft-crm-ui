@@ -848,7 +848,11 @@ export class SchemaInfoComponent implements OnInit, OnDestroy {
    * Function to open summary side sheet of schema
    */
   openSummarySideSheet() {
-    this.router.navigate([{ outlets: { sb: `sb/schema/check-data/${this.moduleId}/${this.schemaId}` } }]);
+    this.router.navigate([{ outlets: { sb: `sb/schema/check-data/${this.moduleId}/${this.schemaId}` } }], {
+      queryParams: {
+        isCheckData: true
+      }
+    });
   }
 
   /**

@@ -1,4 +1,5 @@
-import { take, takeUntil } from 'rxjs/operators';
+import { TaskListService } from './../../../../_services/task-list.service';
+import { take, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { SharedServiceService } from './../../../shared/_services/shared-service.service';
 import { ViewsPage } from '@models/list-page/listpage';
 import { MatSort } from '@angular/material/sort';
@@ -13,11 +14,12 @@ export interface PeriodicElement {
   Records: string;
   setting: number;
   description: number;
-  labels: string;
+  labels: string[];
   sent: string;
   dueby: string;
   requestby: string;
   sentby: string;
+  isImportant?: boolean;
 }
 
 const ELEMENT_DATA: PeriodicElement[] = [
@@ -25,7 +27,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
     setting: 1,
     Records: 'Hydrogen',
     description: 1.0079,
-    labels: 'H',
+    labels: ['Pending'],
     sent: 'L',
     dueby: 'L',
     requestby: 'L',
@@ -35,7 +37,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
     setting: 2,
     Records: 'Helium',
     description: 4.0026,
-    labels: 'He',
+    labels: ['Forwarded'],
     sent: 'L',
     dueby: 'L',
     requestby: 'L',
@@ -45,17 +47,17 @@ const ELEMENT_DATA: PeriodicElement[] = [
     setting: 3,
     Records: 'Lithium',
     description: 6.941,
-    labels: 'Li',
+    labels: ['Delegated', 'Forwarded'],
     sent: 'L',
     dueby: 'L',
     requestby: 'L',
-    sentby: 'L',
+    sentby: 'L' ,
   },
   {
     setting: 4,
     Records: 'Beryllium',
     description: 9.0122,
-    labels: 'Be',
+    labels: ['Pending', 'Forwarded'],
     sent: 'L',
     dueby: 'L',
     requestby: 'L',
@@ -65,17 +67,18 @@ const ELEMENT_DATA: PeriodicElement[] = [
     setting: 5,
     Records: 'Boron',
     description: 10.811,
-    labels: 'B',
+    labels: ['Forwarded'],
     sent: 'L',
     dueby: 'L',
     requestby: 'L',
     sentby: 'L',
+    isImportant: true
   },
   {
     setting: 6,
     Records: 'Carbon',
     description: 12.0107,
-    labels: 'C',
+    labels: ['In Progress', 'Forwarded', 'Pending', 'Delegated', 'Completed'],
     sent: 'L',
     dueby: 'L',
     requestby: 'L',
@@ -85,7 +88,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
     setting: 7,
     Records: 'Nitrogen',
     description: 14.0067,
-    labels: 'N',
+    labels: ['Delegated', 'In Progress', 'Pending', 'Delegated'],
     sent: 'L',
     dueby: 'L',
     requestby: 'L',
@@ -95,7 +98,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
     setting: 8,
     Records: 'Oxygen',
     description: 15.9994,
-    labels: 'O',
+    labels: ['Pending'],
     sent: 'L',
     dueby: 'L',
     requestby: 'L',
@@ -105,17 +108,18 @@ const ELEMENT_DATA: PeriodicElement[] = [
     setting: 9,
     Records: 'Fluorine',
     description: 18.9984,
-    labels: 'F',
+    labels: ['Forwarded'],
     sent: 'L',
     dueby: 'L',
     requestby: 'L',
     sentby: 'L',
+    isImportant: true
   },
   {
     setting: 10,
     Records: 'Neon',
     description: 20.1797,
-    labels: 'Ne',
+    labels: ['Pending'],
     sent: 'L',
     dueby: 'L',
     requestby: 'L',
@@ -150,27 +154,17 @@ export const NODEFIELDS: { [node: string]: { fldId: string; fldDesc: string }[] 
       fldDesc: 'Sent by',
     },
   ],
-  in_workflow: [
-    {
-      fldId: 'description',
-      fldDesc: 'Description',
-    },
-    {
-      fldId: 'labels',
-      fldDesc: 'Labels',
-    },
-    {
-      fldId: 'sent',
-      fldDesc: 'Sent',
-    },
-    {
-      fldId: 'requestby',
-      fldDesc: 'Request by',
-    },
-    {
-      fldId: 'sentby',
-      fldDesc: 'Sent by',
-    },
+  workflow: [
+    { fldId: 'rec_id', fldDesc: 'Rec Id' },
+    { fldId: 'cr_id', fldDesc: 'CR Id' },
+    { fldId: 'reason_rej', fldDesc: 'Reason Rejected' },
+    { fldId: 'labels', fldDesc: 'Labels' },
+    { fldId: 'event', fldDesc: 'Event' },
+    { fldId: 'mod_name', fldDesc: 'Module Name' },
+    { fldId: 'sent_on', fldDesc: 'Sent' },
+    { fldId: 'due_by', fldDesc: 'Due by' },
+    { fldId: 'sent_to', fldDesc: 'Sent To' },
+    { fldId: 'req_by', fldDesc: 'Request by' },
   ],
   rejected: [
     {
@@ -189,54 +183,38 @@ export const NODEFIELDS: { [node: string]: { fldId: string; fldDesc: string }[] 
       fldId: 'dueby',
       fldDesc: 'Due by',
     },
-    {
-      fldId: 'sentby',
-      fldDesc: 'Sent by',
-    },
   ],
   draft: [
-    {
-      fldId: 'description',
-      fldDesc: 'Description',
-    },
-    {
-      fldId: 'labels',
-      fldDesc: 'Labels',
-    },
-    {
-      fldId: 'sent',
-      fldDesc: 'Sent',
-    },
-    {
-      fldId: 'dueby',
-      fldDesc: 'Due by',
-    },
-    {
-      fldId: 'requestby',
-      fldDesc: 'Request by',
-    },
+    { fldId: 'rec_id', fldDesc: 'Rec Id' },
+    { fldId: 'cr_id', fldDesc: 'CR Id' },
+    { fldId: 'req_det', fldDesc: 'Req Det' },
+    { fldId: 'labels', fldDesc: 'Labels' },
+    { fldId: 'event', fldDesc: 'Event' },
+    { fldId: 'mod_name', fldDesc: 'Module Name' },
+    { fldId: 'sent_on', fldDesc: 'Sent' },
+    { fldId: 'comp_by', fldDesc: 'Completed By' },
+    { fldId: 'req_by', fldDesc: 'Request by' },
   ],
   completed: [
-    {
-      fldId: 'description',
-      fldDesc: 'Description',
-    },
-    {
-      fldId: 'labels',
-      fldDesc: 'Labels',
-    },
-    {
-      fldId: 'dueby',
-      fldDesc: 'Due by',
-    },
-    {
-      fldId: 'requestby',
-      fldDesc: 'Request by',
-    },
-    {
-      fldId: 'sentby',
-      fldDesc: 'Sent by',
-    },
+    { fldId: 'rec_id', fldDesc: 'Rec Id' },
+    { fldId: 'req_det', fldDesc: 'Req Det' },
+    { fldId: 'cr_id', fldDesc: 'CR Id' },
+    { fldId: 'labels', fldDesc: 'Labels' },
+    { fldId: 'event', fldDesc: 'Event' },
+    { fldId: 'mod_name', fldDesc: 'Module Name' },
+    { fldId: 'comp_on', fldDesc: 'Completed On' },
+    { fldId: 'comp_by', fldDesc: 'Completed By' },
+    { fldId: 'req_by', fldDesc: 'Request by' },
+  ],
+  error: [
+    { fldId: 'rec_id', fldDesc: 'Rec Id' },
+    { fldId: 'cr_id', fldDesc: 'CR Id' },
+    { fldId: 'req_det', fldDesc: 'Req Det' },
+    { fldId: 'labels', fldDesc: 'Labels' },
+    { fldId: 'event', fldDesc: 'Event' },
+    { fldId: 'mod_name', fldDesc: 'Module Name' },
+    { fldId: 'draft_on', fldDesc: 'Draft On' },
+    { fldId: 'req_by', fldDesc: 'Request by' },
   ],
 };
 export interface INodeChips {
@@ -331,7 +309,7 @@ export const nodeChips: {
       parentnode: '',
     },
   ],
-  in_workflow: [
+  workflow: [
     {
       fldId: 'Bookmarked',
       value: [2],
@@ -580,6 +558,7 @@ export const nodeChipsMenuItems: { [fldId: string]: string[] } = {
   Sent: ['Long', 'Short'],
   Requestedby: ['Fred', 'Shred'],
 };
+export const lableItems = ['Forwarded', 'Delegated', 'Completed', 'Pending', 'In Progress']
 
 @Component({
   selector: 'pros-task-list-datatable',
@@ -619,11 +598,19 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit, OnDest
 
   viewsList: ViewsPage = new ViewsPage();
   unsubscribeAll$: Subject<boolean> = new Subject<boolean>();
+  AllLabels = [...lableItems];
+  filteredLabels = [...lableItems];
+  labelSearchFieldSub: Subject<string> = new Subject();
 
   // @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private route: ActivatedRoute, private router: Router, private sharedServices: SharedServiceService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private sharedServices: SharedServiceService,
+    private taskListService: TaskListService
+  ) {}
 
   /**route param contains the node
    * node - based on node find the columns the table should have
@@ -636,15 +623,17 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit, OnDest
   ngOnInit(): void {
     this.route.params.subscribe((param) => {
       this.node = param.node || null;
-      this.nodeColumns = NODEFIELDS[this.node];
-      this.updateTableColumns();
+      // this.nodeColumns = NODEFIELDS[this.node];
+      // this.updateTableColumns();
+      this.getHeadersForNode(this.node);
       this.updateNodeChips();
+      this.saveTasklistVisitByUser(this.node);
     });
 
     this.route.queryParams.pipe(take(1)).subscribe((queryParam) => {
       this.savedSearchParameters = queryParam.s || null;
       this.inlineFilters = queryParam.f || null;
-      if (this.currentFilterSettings.length <= 0) {
+      if (this.currentFilterSettings.length <= 0 && queryParam.f) {
         const decoded = atob(queryParam.f);
         if (decoded) {
           const settings = JSON.parse(decoded) || [];
@@ -665,6 +654,10 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit, OnDest
           this.updateTableColumns();
         }
       });
+
+    this.labelSearchFieldSub.pipe(debounceTime(1000), distinctUntilChanged()).subscribe((searchString) => {
+      this.filterLabels(searchString);
+    });
   }
 
   ngAfterViewInit() {
@@ -800,6 +793,54 @@ export class TaskListDatatableComponent implements OnInit, AfterViewInit, OnDest
     return field ? field.fldDesc || 'Unkown' : dynCol || 'Unkown';
   }
 
+  saveTasklistVisitByUser(nodeId: string) {
+    if (nodeId) {
+      this.taskListService
+        .saveTasklistVisitByUser(nodeId)
+        .pipe(take(1))
+        .subscribe(
+          (resp) => {},
+          (err) => {
+            console.log(err);
+          }
+        );
+    }
+  }
+  getHeadersForNode(nodeId: string) {
+    if (nodeId) {
+      this.taskListService
+        .getHeadersForNode(nodeId)
+        .pipe(take(1))
+        .subscribe(
+          (resp: { fldId: string; fldDesc: string }[]) => {
+
+            const nodeFields = NODEFIELDS[nodeId];
+            this.nodeColumns = resp.map((d) => {
+              return {
+                ...d,
+                fldDesc: nodeFields.find((n) => n.fldId === d.fldId) ? nodeFields.find((n) => n.fldId === d.fldId).fldDesc : '',
+              };
+            });
+            this.updateTableColumns();
+          },
+          (err) => {
+            console.log(err);
+          }
+        );
+    }
+  }
+  filterLabels(event) {
+    this.filteredLabels = this.AllLabels.filter(d=> d.toLowerCase().indexOf(event.toLowerCase()) >=0);
+  }
+
+  removeLabel(element: PeriodicElement, label) {
+    element.labels = element.labels.filter(d=> d !== label);
+  }
+  applyLabel(element: PeriodicElement, label) {
+    if(element.labels.indexOf(label) < 0) {
+      element.labels.push(label);
+    }
+  }
   /**open auxilary routing to configure settings of table columns
    *
    */

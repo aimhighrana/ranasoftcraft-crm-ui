@@ -1,7 +1,7 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ListPageFilters, ListPageViewDetails, SortDirection, ViewsPage } from '@models/list-page/listpage';
+import { FilterCriteria, ListPageFilters, ListPageViewDetails, SortDirection, ViewsPage } from '@models/list-page/listpage';
 import { SharedServiceService } from '@modules/shared/_services/shared-service.service';
 import { ListService } from '@services/list/list.service';
 import { BehaviorSubject, concat, of, Subscription } from 'rxjs';
@@ -16,6 +16,7 @@ import { MatSort } from '@angular/material/sort';
 import { catchError, map, skip } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { FilterSaveModalComponent } from '../filter-save-modal/filter-save-modal.component';
+import { DateTimeHelperService } from '@services/date-time-helper.service';
 
 
 @Component({
@@ -112,7 +113,8 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
     private listService: ListService,
     private coreService: CoreService,
     private glocalDialogService: GlobaldialogService,
-    private matDialog: MatDialog) {
+    private matDialog: MatDialog,
+    private dateTimeHelper: DateTimeHelperService) {
 
     this.dataSource = new ListDataSource(this.listService);
 
@@ -153,7 +155,6 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
         this.filtersList = filters;
         console.log(this.filtersList);
         if (!this.isPageRefresh) {
-
           this.getTotalCount();
           this.getTableData();
         }
@@ -175,7 +176,7 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
     this.sort.sortChange.subscribe(res => {
       const col = this.currentView.fieldsReqList.find(c => c.fieldId === res.active);
       if (col) {
-        col.sortDirection = SortDirection[res.direction] || null;
+        col.sortDirection = res.direction ? SortDirection[res.direction] : null;
         // update default column sort direction
         const sub = this.listService.upsertListPageViewDetails(this.currentView, this.moduleId).subscribe(resp => {
           this.recordsPageIndex = 1;
@@ -231,6 +232,9 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
    * get view details by id
    */
   getViewDetails(viewId) {
+    if(viewId === this.currentView.viewId) {
+      return;
+    }
     const view = this.userViews.concat(this.systemViews).find(v => v.viewId === viewId);
     const defaultViewObs = view && !view.default ?
        this.listService.updateDefaultView(this.moduleId, viewId).pipe(catchError(err => of(viewId))) : of(viewId);
@@ -305,7 +309,7 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
    * get total records count
    */
   getTotalCount() {
-    const subs = this.listService.getDataCount(this.moduleId, this.filtersList.filterCriteria).subscribe(count => {
+    const subs = this.listService.getDataCount(this.moduleId, this.mapFilerValues()).subscribe(count => {
       this.totalCount = count;
     }, error => {
       console.error(`Error : ${error.message}`);
@@ -352,10 +356,11 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
 
       const fieldsList = this.currentView.fieldsReqList.map(field => field.fieldId);
       this.getFldMetadata(fieldsList);
+      this.recordsPageIndex = 1;
       this.getTableData();
 
       const activeColumns: string[] = this.currentView.fieldsReqList.map(field => field.fieldId);
-      this.displayedColumns.next(this.staticColumns.concat(activeColumns));
+      this.displayedColumns.next(Array.from(new Set(this.staticColumns.concat(activeColumns))));
     }
 
   }
@@ -364,16 +369,19 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
    * get table data records
    */
   getTableData() {
+    this.selection.clear();
     const viewId = this.currentView.viewId ? this.currentView.viewId : '';
-    this.dataSource.getData(this.moduleId, viewId, this.recordsPageIndex, this.filtersList.filterCriteria);
+    this.dataSource.getData(this.moduleId, viewId, this.recordsPageIndex, this.mapFilerValues());
   }
 
   /**
    * get page records
    */
   onPageChange(event: PageEvent) {
-    this.recordsPageIndex = event.pageIndex;
-    this.getTableData();
+    if(this.recordsPageIndex !== event.pageIndex) {
+      this.recordsPageIndex = event.pageIndex;
+      this.getTableData();
+    }
   }
 
 
@@ -435,7 +443,7 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   isLargeCell(row: any, fieldId: string) {
-    return row[fieldId] && row[fieldId].fieldData && row[fieldId].fieldData > 50;
+    return row[fieldId] && row[fieldId].fieldData && row[fieldId].fieldData.length > 50;
   }
 
   get displayedRecordsRange(): string {
@@ -449,8 +457,8 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
    */
   onColumnsResize(event) {
     const column = this.currentView.fieldsReqList.find(c => c.fieldId === event.columnId);
-    if (column) {
-      column.width = event.width;
+    if (column && event.width) {
+      column.width = `${event.width}`;
 
       const sub = this.listService.upsertListPageViewDetails(this.currentView, this.moduleId).subscribe(resp => {
         console.log(resp);
@@ -523,6 +531,25 @@ export class ListDatatableComponent implements OnInit, AfterViewInit, OnDestroy 
 
   resetAllFilters() {
     this.router.navigate([], { queryParams: {} });
+  }
+
+  /**
+   * map date filters based on fields metatdata
+   * @returns mapped filter criterias
+   */
+  mapFilerValues(): FilterCriteria[] {
+
+    const criterias = [];
+    this.filtersList.filterCriteria.forEach( fc => {
+      if(fc.unit && !['static_date', 'static_range'].includes(fc.unit)) {
+        const dateRange = this.dateTimeHelper.dateUnitToDateRange(fc.unit);
+        fc.startValue = dateRange.startDate.toString();
+        fc.endValue = dateRange.endDate.toString();
+      }
+      criterias.push(fc);
+    });
+
+    return criterias;
   }
 
   ngOnDestroy(): void {
