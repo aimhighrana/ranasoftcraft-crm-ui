@@ -407,6 +407,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
 
     this.userService.getUserDetails().subscribe(res=>{
       this.userDetails  = res;
+      this.getSchemaExecutionTree();
     }, err=> console.log(`Error ${err}`));
 
     /**
