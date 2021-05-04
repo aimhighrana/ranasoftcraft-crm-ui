@@ -328,6 +328,10 @@ describe('SchemaDetailsComponent', () => {
 
   it('should change tab status', () => {
 
+    component.userDetails = new Userdetails();
+    component.userDetails.plantCode = 'test';
+    component.userDetails.userName = 'test';
+
     spyOn(component, 'getData');
     spyOn(component, 'getSchemaExecutionTree');
     spyOn(component, 'calculateDisplayFields');
@@ -369,6 +373,11 @@ describe('SchemaDetailsComponent', () => {
 
 
   it('changeTabStatus() , change the tab and get load data ', async(() =>{
+
+    component.userDetails = new Userdetails();
+    component.userDetails.plantCode = 'test';
+    component.userDetails.userName = 'test';
+
     spyOn(component, 'getSchemaExecutionTree');
     // mock data
     component.activeTab = 'error';
@@ -1143,11 +1152,11 @@ describe('SchemaDetailsComponent', () => {
     component.userDetails.plantCode = 'test';
     component.userDetails.userName = 'test';
     spyOn(schemaService,'getSchemaExecutionTree').withArgs(component.moduleId, component.schemaId, component.variantId, component.userDetails.plantCode, component.userDetails.userName, component.activeTab).and.returnValues(of(new SchemaExecutionTree()), throwError({message: 'api error'}));
-    component.getSchemaExecutionTree();
+    component.getSchemaExecutionTree(component.userDetails.plantCode, component.userDetails.userName);
     expect(schemaService.getSchemaExecutionTree).toHaveBeenCalledWith(component.moduleId, component.schemaId, component.variantId, component.userDetails.plantCode, component.userDetails.userName, component.activeTab);
 
     spyOn(console, 'error');
-    component.getSchemaExecutionTree();
+    component.getSchemaExecutionTree(component.userDetails.plantCode, component.userDetails.userName);
     expect(console.error).toHaveBeenCalled();
   }));
 });
