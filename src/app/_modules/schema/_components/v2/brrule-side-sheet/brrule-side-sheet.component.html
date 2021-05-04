@@ -183,11 +183,13 @@
                                 </div>
                                 <!-- field name -->
                                 <div class="col">
-                                    <mat-select formControlName="conditionFieldId" placeholder="Select field">
+                                    <!-- <mat-select formControlName="conditionFieldId" placeholder="Select field">
                                         <mat-option *ngFor="let fieldItem of fieldsList" [value]="fieldItem.fieldId">
                                             {{fieldItem.fieldDescri}}
                                         </mat-option>
-                                    </mat-select>
+                                    </mat-select> -->
+                                    <pros-generic-field-control [moduleId]="moduleId" [selectedFldId]="item.controls.conditionFieldId ? [item.controls.conditionFieldId.value] : []" 
+                                    [isMultiSelection]="false" placeholder="Select field" (selectionChange)="udrFieldSelectionChange($event, i)"></pros-generic-field-control>
                                 </div>
                                 <!-- operators -->
                                 <div class="col">
@@ -259,12 +261,14 @@
                                                     </mat-select>
                                                 </div>
                                                 <div class="col">
-                                                    <mat-select formControlName="conditionFieldId" placeholder="Select field">
+                                                    <!-- <mat-select formControlName="conditionFieldId" placeholder="Select field">
                                                         <mat-option *ngFor="let fieldItem of fieldsList"
                                                             [value]="fieldItem.fieldId">
                                                             {{fieldItem.fieldDescri}}
                                                         </mat-option>
-                                                    </mat-select>
+                                                    </mat-select> -->
+                                                    <pros-generic-field-control [moduleId]="moduleId" [selectedFldId]="chldNode.controls.conditionFieldId ? [chldNode.controls.conditionFieldId.value] : []"
+                                                    [isMultiSelection]="false" placeholder="Select field" (selectionChange)="udrFieldSelectionChange($event, i , childIndex)"></pros-generic-field-control>
                                                 </div>
                                                 <div class="col">
                                                     <mat-select mat-stroked-button formControlName="conditionOperator" placeholder="Select operator">
