@@ -48,6 +48,10 @@ export class EndpointsRuleService {
     return this.origin + `/schema/metadata/get-selected-fields-view`;
   }
 
+  public getSelectedFieldsByNodeIds(): string {
+    return this.origin + `/schema/metadata/get-selected-fields-views-by-nodeIds`;
+  }
+
   public getSchemaVariantsUrl(schemaId: string): string {
     return this.classicOrigin + '/schema/variants/' + schemaId;
   }

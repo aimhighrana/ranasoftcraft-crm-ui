@@ -149,6 +149,8 @@ export class SchemaTableViewFldMap {
     order: number;
     editable: boolean;
     isEditable: boolean;
+    nodeId?: string;
+    nodeType?: string;
 }
 export class SchemaExecutionDetails {
     schemaId: string;
@@ -286,6 +288,8 @@ export interface MetadataModel {
     isShoppingCartRefField: boolean;
     displayCriteria?: DisplayCriteria;
     sno?: DisplayCriteria;
+    nodeId?: string;
+    nodeType?: string;
 }
 export class Heirarchy {
     objnr: number;

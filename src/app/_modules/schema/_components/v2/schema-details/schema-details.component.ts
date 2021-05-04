@@ -23,7 +23,8 @@ import { Userdetails } from '@models/userdetails';
 import { UserService } from '@services/user/userservice.service';
 import { debounceTime, distinctUntilChanged, skip } from 'rxjs/operators';
 import { TransientService } from 'mdo-ui-library';
-import { SchemaExecutionTree } from '@models/schema/schema-execution';
+import { SchemaExecutionNodeType, SchemaExecutionTree } from '@models/schema/schema-execution';
+import { sortBy } from 'lodash';
 
 @Component({
   selector: 'pros-schema-details',
@@ -213,6 +214,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    */
   subscribers: Subscription[] = [];
 
+  activeNode: SchemaExecutionTree = new SchemaExecutionTree();
+
   // holds execution tree details of schema...
   executionTreeHierarchy: SchemaExecutionTree;
 
@@ -281,8 +284,12 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     /**
      * Get all user selected fields based on default view ..
      */
-    this.schemaDetailService.getAllSelectedFields(this.schemaId, this.variantId).subscribe(res => {
-      this.selectedFieldsOb.next(res ? res : [])
+    this.schemaDetailService.getSelectedFieldsByNodeIds(this.schemaId, this.variantId, this.getNodeParentsHierarchy(this.executionTreeHierarchy)).subscribe(res => {
+      const allFields = [];
+      if(res && res.length) {
+        res.forEach(node => allFields.push(...node.fieldsList));
+      }
+      this.selectedFieldsOb.next(allFields);
     }, error => console.error(`Error : ${error}`));
     this.manageStaticColumns();
     this.dataSource.brMetadata.subscribe(res => {
@@ -444,6 +451,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   getSchemaExecutionTree() {
     const sub = this.schemaService.getSchemaExecutionTree(this.moduleId, this.schemaId, this.variantId, this.userDetails.plantCode, this.userDetails.userName).subscribe(res => {
       this.executionTreeHierarchy = res;
+      this.activeNode = res;
     }, error => {
       this.executionTreeHierarchy = new SchemaExecutionTree();
       console.error(error);
@@ -507,29 +515,118 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    *
    */
   calculateDisplayFields(): void {
-    const allMDF = this.metadata.getValue();
+
+    const metaFld = this.getAllNodeFields(this.activeNode);
+
     const fields = [];
     const select = [];
     const metadataLst: any = {};
     this.startColumns.forEach(col => fields.push(col));
-    for (const headerField in allMDF.headers) {
-      if (allMDF.headers.hasOwnProperty(headerField)) {
-        // if selectedFields is blank then load all fields
-        // if(fields.indexOf(headerField) < 0 && this.selectedFields.length === 0) {
-        //   select.push(headerField);
-        // }
-        // else
+    for (const headerField in metaFld) {
+      if (metaFld.hasOwnProperty(headerField)) {
         const index = this.selectedFields.findIndex(f => f.fieldId === headerField);
         if (fields.indexOf(headerField) < 0 && (index !== -1)) {
           select[index] = headerField;
         }
-        metadataLst[headerField] = allMDF.headers[headerField];
+        metadataLst[headerField] = metaFld[headerField];
       }
     }
-    // TODO for hierarchy and grid logic ..
+
     this.metadataFldLst = metadataLst;
     select.forEach(fldId => fields.push(fldId));
     this.displayedFields.next(fields);
+  }
+
+  getAllNodeFields(node: SchemaExecutionTree) {
+
+    if(!node || !node.nodeId) {
+      return this.metadata.getValue() ? this.metadata.getValue().headers: {};
+    }
+    let fields = {};
+    const parentNode = this.getParentNode(node.nodeId);
+    if(parentNode) {
+      if (node.nodeType === SchemaExecutionNodeType.HEADER) {
+        fields = this.metadata.getValue() ? this.metadata.getValue().headers || {} : {};
+        Object.keys(fields).forEach(f => {
+          fields[f] = {...fields[f],nodeId:node.nodeId,nodeType:node.nodeType};
+        });
+        const parentFields = this.getAllNodeFields(parentNode);
+        fields = {...fields, ...parentFields};
+      } else if (node.nodeType === SchemaExecutionNodeType.HEIRARCHY) {
+        fields = this.metadata.getValue() ? this.metadata.getValue().hierarchyFields[node.nodeId] || {} : {};
+        Object.keys(fields).forEach(f => {
+          fields[f] = {...fields[f],nodeId:node.nodeId,nodeType:node.nodeType};
+        });
+        const parentFields = this.getAllNodeFields(parentNode);
+        fields = {...fields, ...parentFields};
+      } else if (node.nodeType === SchemaExecutionNodeType.GRID) {
+        fields = this.metadata.getValue() ? this.metadata.getValue().gridFields[node.nodeId] || {} : {};
+        Object.keys(fields).forEach(f => {
+          fields[f] = {...fields[f],nodeId:node.nodeId,nodeType:node.nodeType};
+        });
+        const parentFields = this.getAllNodeFields(parentNode);
+        fields = {...fields, ...parentFields};
+      }
+      console.log('fields from get all fields', parentNode);
+    } else {
+      if (node.nodeType === SchemaExecutionNodeType.HEADER) {
+        fields = this.metadata.getValue() ? this.metadata.getValue().headers || {} : {};
+      } else if (node.nodeType === SchemaExecutionNodeType.HEIRARCHY) {
+        fields = this.metadata.getValue() ? this.metadata.getValue().hierarchyFields[node.nodeId] || {} : {};
+      } else if (node.nodeType === SchemaExecutionNodeType.GRID) {
+        fields = this.metadata.getValue() ? this.metadata.getValue().gridFields[node.nodeId] || {} : {};
+      }
+      Object.keys(fields).forEach(f => {
+        fields[f] = {...fields[f],nodeId:node.nodeId,nodeType:node.nodeType};
+      });
+    }
+
+    return fields;
+  }
+
+  getParentNode(nodeId) {
+    const executionTreeArray = this.getExectionArray(this.executionTreeHierarchy) || [];
+    const node = executionTreeArray.find(n => (n.nodeId === nodeId));
+    if(node && node.parentNodeId) {
+      return executionTreeArray.find(n => n.nodeId === node.parentNodeId);
+    }
+    return null;
+  }
+
+  /**
+   * Map schema execution tree to an array
+   * @param node root node
+   * @param parentNodeId parent id
+   * @returns execution array
+   */
+  getExectionArray(node: SchemaExecutionTree, parentNodeId?: string) {
+    let executionTreeArray = [];
+    const index = executionTreeArray.findIndex(n => n.nodeId === node.nodeId) ;
+    if(index !== -1){
+      executionTreeArray[index] = {...node, parentNodeId} ;
+    } else {
+      executionTreeArray.push({...node, parentNodeId});
+    }
+
+    if(node && node.childs && node.childs.length) {
+      node.childs.forEach(child => {
+        executionTreeArray =  executionTreeArray.concat(this.getExectionArray(child, node.nodeId));
+      })
+    }
+
+    return executionTreeArray;
+  }
+
+  getNodeParentsHierarchy(childNode: SchemaExecutionTree) {
+    if(!childNode || !childNode.nodeId) {
+      return ['header'];
+    }
+    const parentNode = this.getParentNode(childNode.nodeId);
+    if(parentNode) {
+      return [childNode.nodeId].concat(this.getNodeParentsHierarchy(parentNode));
+    } else {
+      return ['header'];
+    }
   }
 
 
@@ -581,7 +678,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    */
   openTableColumnSettings() {
     const data = { schemaId: this.schemaId, variantId: this.variantId, fields: this.metadata.getValue(), selectedFields: this.selectedFields,
-      editActive: true };
+      editActive: true, activeNode: this.activeNode, allNodeFields: this.getAllNodeFields(this.activeNode) };
     this.sharedServices.setChooseColumnData(data);
     this.router.navigate(['', { outlets: { sb: 'sb/schema/table-column-settings' } }], {queryParamsHandling: 'preserve'});
   }
@@ -1200,7 +1297,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   }
 
   public setStatus(event: MouseEvent, status: number) {
-    console.log(event,status)
+    // console.log(event,status)
     if (status === 1) event.stopPropagation();
     else this.setNavDivPositions();
     this.status = status;
@@ -1217,5 +1314,23 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     grabberElement.style.right = '0%';
     this.navscroll.nativeElement.appendChild(grabberElement);
 
+  }
+
+  nodeSelected(node: SchemaExecutionTree) {
+    if(node.nodeId === this.activeNode.nodeId) {
+      return;
+    }
+    this.activeNode = node;
+    this.schemaDetailService.getSelectedFieldsByNodeIds(this.schemaId, this.variantId, this.getNodeParentsHierarchy(node))
+      .subscribe(res => {
+        const allFields = [];
+        if(res && res.length) {
+          res.forEach(n => allFields.push(...n.fieldsList));
+        };
+        this.selectedFields = sortBy(allFields, 'order');
+        this.calculateDisplayFields();
+      }, error => {
+        console.error(`Error:: ${error.message}`);
+      });
   }
 }

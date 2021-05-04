@@ -131,29 +131,33 @@ export class TableColumnSettingsComponent implements OnInit{
   // header
   public headerDetails() {
     this.header = [];
+
+    const fields = this.data.allNodeFields ? this.data.allNodeFields :  (this.data.fields ? this.data.fields.headers: {});
     if(this.data && this.data.selectedFields && this.data.selectedFields.length > 0){
       for(const field of this.data.selectedFields) {
-        if(this.data.fields.headers[field.fieldId]) {
-          this.header.push(this.data.fields.headers[field.fieldId]);
+        if(fields[field.fieldId]) {
+          this.header.push(fields[field.fieldId]);
         }
       }
     }
-    if(this.data && this.data.fields && this.data.fields.headers && this.data.selectedFields){
-      for(const hekey in this.data.fields.headers){
+    if(this.data && fields && this.data.selectedFields){
+      for(const hekey in fields){
         if(this.data.selectedFields.length > 0){
           if(this.data.selectedFields.findIndex( f => f.fieldId === hekey) === -1)
           {
-            this.header.push(this.data.fields.headers[hekey]);
+            this.header.push(fields[hekey]);
           }
         }
         else {
-          this.header.push(this.data.fields.headers[hekey]);
+          this.header.push(fields[hekey]);
         }
       }
     }
+
     this.headerFieldObs = of(this.header);
     this.headerArray = this.header.map(he=> he.fieldId);
   }
+
   close()
   {
     // this.sharedService.setChooseColumnData({...this.data, tableActionsList: this.actionsList, editActive: false});
@@ -273,14 +277,16 @@ export class TableColumnSettingsComponent implements OnInit{
    */
   submitColumn() {
     const orderFld: SchemaTableViewFldMap[] = [];
-    const hdlFld = this.header.map(map=> map.fieldId);
+    // const hdlFld = this.header.map(map=> map.fieldId);
     let choosenField ;
     let order = 0;
-    hdlFld.forEach(fld=>{
-      choosenField = this.data.selectedFields.find(field =>field.fieldId === fld);
+    this.header.forEach(h=>{
+      choosenField = this.data.selectedFields.find(field =>field.fieldId === h.fieldId);
       if( choosenField ) {
         choosenField.order = order;
         choosenField.isEditable = choosenField.editable;
+        choosenField.nodeId = h.nodeId;
+        choosenField.nodeType = h.nodeType;
         orderFld.push(choosenField);
         order++;
       }
