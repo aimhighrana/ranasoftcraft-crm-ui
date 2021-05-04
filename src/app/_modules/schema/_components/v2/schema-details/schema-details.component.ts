@@ -277,7 +277,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
         this.variantId = '0';
       }
       if (this.userDetails) {
-        this.getSchemaExecutionTree();
+        this.getSchemaExecutionTree(this.userDetails.plantCode, this.userDetails.userName);
       } else {
         this.executionTreeHierarchy = new SchemaExecutionTree();
       }
@@ -405,9 +405,16 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       }
     });
 
-    this.userService.getUserDetails().subscribe(res=>{
+    const userDataSub = this.userService.getUserDetails().subscribe(res=>{
       this.userDetails  = res;
     }, err=> console.log(`Error ${err}`));
+
+    const userDataForSchemaTree = this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(res=>{
+      this.getSchemaExecutionTree(res.plantCode, res.userName);
+    }, err=> console.log(`Error ${err}`));
+
+    this.subscribers.push(userDataForSchemaTree);
+    this.subscribers.push(userDataSub);
 
     /**
      * inline search changes
@@ -446,8 +453,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   /**
    * Call service to get schema execution tree
    */
-  getSchemaExecutionTree() {
-    const sub = this.schemaService.getSchemaExecutionTree(this.moduleId, this.schemaId, this.variantId, this.userDetails.plantCode, this.userDetails.userName, this.activeTab).subscribe(res => {
+  getSchemaExecutionTree(plantCode, userName) {
+    const sub = this.schemaService.getSchemaExecutionTree(this.moduleId, this.schemaId, this.variantId, plantCode, userName, this.activeTab).subscribe(res => {
       this.executionTreeHierarchy = res;
     }, error => {
       this.executionTreeHierarchy = new SchemaExecutionTree();
@@ -574,7 +581,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     this.manageStaticColumns();
     this.calculateDisplayFields();
     this.selection.clear();
-    this.getSchemaExecutionTree();
+    this.getSchemaExecutionTree(this.userDetails.plantCode, this.userDetails.userName);
     if (status === 'error' || status === 'success') {
       this.getData(this.filterCriteria.getValue(), this.sortOrder);
     } else {
