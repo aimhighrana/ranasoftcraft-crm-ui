@@ -179,7 +179,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
       childs: []
     }
   ];
-  loaded = false;
+  isTooltipReady = false;
 
   constructor(
     private router: Router,
@@ -265,9 +265,6 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
       }
     });
     this.getInboxNodesCount();
-    setTimeout(() => {
-      this.loaded = true;
-    }, 5000);
   }
 
   ngAfterViewInit() {
@@ -398,6 +395,9 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
         }
       }, error => console.error(`Error : ${error}`));
       this.subscriptions.push(subs);
+      setTimeout(() => {
+        this.isTooltipReady = true;
+      }, 5000);
     });
     this.subscriptions.push(subscription);
   }

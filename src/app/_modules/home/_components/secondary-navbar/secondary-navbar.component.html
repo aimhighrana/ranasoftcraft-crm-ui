@@ -120,7 +120,7 @@
             [routerLink]="['report/dashboard', report.reportId]" [routerLinkActive]="'selected'">
             <div #headingTitle class="heading-title"
             [libTooltip]="report.reportName" matTooltipPosition="right"
-            [matTooltipDisabled]="loaded && !(headingTitle.offsetWidth < headingTitle.scrollWidth)">{{report.reportName ? report.reportName : 'Untitled'}}</div>
+            [matTooltipDisabled]="isTooltipReady && !(headingTitle.offsetWidth < headingTitle.scrollWidth)">{{report.reportName ? report.reportName : 'Untitled'}}</div>
           </mat-list-item>
         </mat-nav-list>
       </mat-accordion>
