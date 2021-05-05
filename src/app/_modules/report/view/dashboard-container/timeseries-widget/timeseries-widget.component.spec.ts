@@ -271,4 +271,9 @@ describe('TimeseriesWidgetComponent', () => {
     expect(component.updateForm('MATL_TYPE', { id: 1, value: '7', isActive: false })).toBe(undefined);
   }));
 
+  it('codeTextValue()', async(() => {
+    const innerBucket = {key:'200010','top_hits#data_hits':{hits:{hits:[{_source:{hdvs:{MATL_GROUP:{vc:[{c:'200010', t:'testing'}]}}}}]}}};
+    const fieldid = 'MATL_GROUP';
+    expect(component.codeTextValue(innerBucket,fieldid)).toEqual({c:'200010', t:'testing'});
+  }));
 });

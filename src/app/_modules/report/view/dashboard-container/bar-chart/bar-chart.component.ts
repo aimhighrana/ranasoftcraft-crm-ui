@@ -444,6 +444,8 @@ export class BarChartComponent extends GenericWidgetComponent implements OnInit,
         }
       } else {
         finalVal[key] = key;
+      } if(fldid === 'OVERDUE' || fldid === 'FORWARDENABLED' || fldid === 'TIME_TAKEN') {
+        finalVal[key] = this.getFields(fldid, key);
       }
     });
     // update lablels

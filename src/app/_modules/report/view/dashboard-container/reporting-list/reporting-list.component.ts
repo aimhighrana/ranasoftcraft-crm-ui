@@ -14,7 +14,6 @@ import { Router } from '@angular/router';
 import { SharedServiceService } from '@shared/_services/shared-service.service';
 import { ReportService } from '@modules/report/_service/report.service';
 import { UserService } from '@services/user/userservice.service';
-import * as moment from 'moment';
 import { Userdetails } from '@models/userdetails';
 
 @Component({
@@ -136,19 +135,19 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
       this.roleId = user.currentRoleId;
       switch (user.dateformat) {
         case 'MM.dd.yy':
-          this.dateFormat = 'MMM-dd-yy, h:mm:ss a';
+          this.dateFormat = 'MM.dd.yyyy, h:mm:ss a';
           break;
 
         case 'dd.MM.yy':
-          this.dateFormat = 'dd-MMM-yy, h:mm:ss a';
+          this.dateFormat = 'dd.MM.yyyy, h:mm:ss a';
           break;
 
         case 'dd M, yy':
-          this.dateFormat = 'dd MMM, yy, h:mm:ss a';
+          this.dateFormat = 'dd MMM, yyyy, h:mm:ss a';
           break;
 
         case 'MM d, yy':
-          this.dateFormat = 'MMM d, yy, h:mm:ss a';
+          this.dateFormat = 'MMMM d, yyyy, h:mm:ss a';
           break;
 
         default:
@@ -264,30 +263,7 @@ export class ReportingListComponent extends GenericWidgetComponent implements On
               let codeValue = hdvs[column] ? hdvs[column].vc && hdvs[column].vc[0] ? hdvs[column].vc.map(map => map.c).toString() : '' : '';
               codeValue = codeValue === 'null' ? '' : codeValue;
               if(column === 'OVERDUE' || column === 'FORWARDENABLED' || column === 'TIME_TAKEN') {
-                switch(column) {
-
-                  case 'TIME_TAKEN' :
-                    const days = moment.duration(Number(codeValue), 'milliseconds').days();
-                    const hours = moment.duration(Number(codeValue), 'milliseconds').hours();
-                    const minutes = moment.duration(Number(codeValue), 'milliseconds').minutes();
-                    const seconds = moment.duration(Number(codeValue), 'milliseconds').seconds();
-                    const timeString = `${days >0 ? days + ' d ': ''}${hours >0 ? hours + ' h ': ''}${minutes >0 ? minutes + ' m ': ''}${seconds >0 ? seconds + ' s': ''}`;
-                    textvalue = timeString ? timeString : '0 s';
-                    break;
-
-                  case 'FORWARDENABLED':
-                  case 'OVERDUE':
-                    if(codeValue === '1' || codeValue === 'y') {
-                      textvalue = 'Yes';
-                    }
-                    if(codeValue === '0' || codeValue === 'n') {
-                      textvalue = 'No';
-                    }
-                    break;
-
-                  default:
-                    break;
-                }
+                textvalue = this.getFields(column, codeValue);
               }
               const reportingWidget = this.tableColumnMetaData ? this.tableColumnMetaData.find(t => t.fields = column) : null;
               const displayCriteria = reportingWidget && reportingWidget.displayCriteria ? reportingWidget.displayCriteria : this.widgetHeader.displayCriteria;
