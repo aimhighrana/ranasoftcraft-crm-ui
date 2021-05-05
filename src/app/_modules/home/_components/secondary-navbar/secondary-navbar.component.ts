@@ -270,6 +270,7 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
   ngAfterViewInit() {
     this.expandSearchFilterInCurrentUrl();
     setTimeout(() => {
+      // TODO look at removing this setTimeout on a later date
       this.isTooltipReady = true;
     }, 5000);
   }

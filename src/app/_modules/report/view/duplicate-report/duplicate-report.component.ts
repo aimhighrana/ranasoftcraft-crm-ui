@@ -43,6 +43,7 @@ export class DuplicateReportComponent implements OnInit {
    * Copy report and navigate over to dashboard-builder, or display error message.
    */
   onConfirm(evt: { detail: number; }) {
+    this.reportNameCtrl.setValue(this.reportNameCtrl.value.trim());
     if (this.reportNameCtrl.valid && evt.detail === 1) {
       this.widgetService.copyReport(this.data.reportId, this.reportNameCtrl.value).subscribe(res => {
         if (res.errorMsg) {
