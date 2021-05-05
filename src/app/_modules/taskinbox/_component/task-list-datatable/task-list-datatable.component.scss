@@ -12,6 +12,10 @@ div.root {
 
       td.mat-cell {
         border-right: none;
+
+        .labels {
+          margin-right: 8px;
+        }
       }
 
       .mat-column-select {

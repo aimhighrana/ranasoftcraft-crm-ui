@@ -4,9 +4,9 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.prospecta.mdo</groupId>
 	<artifactId>ngx-mdo</artifactId>
-	<version>3.0.1-SNAPSHOT</version>
-	<name>Admin page html js and css</name>
-	<description>Admin page html project</description>
+	<version>3.0.1.1-SNAPSHOT</version>
+	<name>Fuze / Refresh angular ui</name>
+	<description>Mdo html ui </description>
 	<packaging>pom</packaging>
 	<build>
 		<finalName>ngx-mdo</finalName>

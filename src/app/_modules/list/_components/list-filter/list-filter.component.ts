@@ -3,11 +3,12 @@ import { FormControl } from '@angular/forms';
 import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FieldMetaData } from '@models/core/coreModel';
-import { FieldControlType, FilterCriteria, ListPageFilters } from '@models/list-page/listpage';
+import { DATE_FILTERS_METADATA, FieldControlType, FilterCriteria, ListPageFilters } from '@models/list-page/listpage';
 import { CoreService } from '@services/core/core.service';
 import { GlobaldialogService } from '@services/globaldialog.service';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, startWith } from 'rxjs/operators';
+import * as moment from 'moment';
 
 @Component({
   selector: 'pros-list-filter',
@@ -15,16 +16,6 @@ import { debounceTime, distinctUntilChanged, map, startWith } from 'rxjs/operato
   styleUrls: ['./list-filter.component.scss']
 })
 export class ListFilterComponent implements OnInit {
-
-  constructor(
-    private activatedRouter: ActivatedRoute,
-    private router: Router,
-    private coreService: CoreService,
-    private glocalDialogService: GlobaldialogService) {
-    this.filteredOptions = this.optionCtrl2.valueChanges.pipe(
-      startWith(''),
-      map((num: string | null) => num ? this._filter(num) : this.allOptions.slice()));
-  }
 
   /**
    * Form control for the input
@@ -64,8 +55,8 @@ export class ListFilterComponent implements OnInit {
   ];
 
   rulelist = [
-    { label: 'Is', value: 'value1' },
-    { label: 'Is not', value: 'value2' }
+    { label: 'Is', value: 'EQUAL' },
+    { label: 'Is not', value: 'NOT_EQUAL' }
   ]
 
   /**
@@ -105,6 +96,26 @@ export class ListFilterComponent implements OnInit {
   fieldsSearchString = '';
 
   searchFieldSub: Subject<string> = new Subject();
+
+  dateFilterOptions: any[] = [];
+
+  DATE_FILTERS_METADATA = DATE_FILTERS_METADATA;
+
+  dropdownValues: any[] = [
+    {key: 'Tunisia', value: 'Tunisia'},
+    {key: 'India', value: 'India'}
+  ];
+
+  constructor(
+    private activatedRouter: ActivatedRoute,
+    private router: Router,
+    private coreService: CoreService,
+    private glocalDialogService: GlobaldialogService) {
+
+    this.filteredOptions = this.optionCtrl2.valueChanges.pipe(
+      startWith(''),
+      map((num: string | null) => num ? this._filter(num) : this.allOptions.slice()));
+  }
 
   /**
    * mehtod to filter items based on the searchterm
@@ -150,6 +161,7 @@ export class ListFilterComponent implements OnInit {
     )
       .subscribe(filters => {
         this.filtersList = filters;
+        this.suggestedFilters = JSON.parse(JSON.stringify(this.filtersList.filterCriteria));
         const fieldsList = this.filtersList.filterCriteria.map(fc => fc.fieldId);
         this.getfilterFieldsMetadata(fieldsList);
       });
@@ -161,8 +173,9 @@ export class ListFilterComponent implements OnInit {
     )
       .subscribe(searchString => {
         this.fieldsSearchString = searchString || '';
+        this.activeFilter = null;
         this.suggestedFilters = this.filtersList.filterCriteria
-          .filter(field => this.getFilterDescription(field.fieldId).toLowerCase().includes(this.fieldsSearchString.toLowerCase()));
+          .filter(field => this.getFieldDescription(field.fieldId).toLowerCase().includes(this.fieldsSearchString.toLowerCase()));
         this.getModuleFldMetadata();
       });
     this.subscriptionsList.push(sub);
@@ -213,9 +226,11 @@ export class ListFilterComponent implements OnInit {
    */
   applyFilter() {
     const filter = JSON.parse(JSON.stringify(this.activeFilter));
-    const index = this.filtersList.filterCriteria.findIndex(fc => fc.fieldId === this.activeFilter.fieldId);
-    if (index !== -1) {
-      this.filtersList.filterCriteria[index] = filter;
+    const allFiltersIndex = this.filtersList.filterCriteria.findIndex(fc => fc.fieldId === this.activeFilter.fieldId);
+    if (allFiltersIndex !== -1) {
+      this.filtersList.filterCriteria[allFiltersIndex] = filter;
+      const suggFiltersIndex = this.filtersList.filterCriteria.findIndex(fc => fc.fieldId === this.activeFilter.fieldId);
+      this.suggestedFilters[suggFiltersIndex] = filter;
     } else {
       this.filtersList.filterCriteria.push(filter);
       this.suggestedFilters.push(filter);
@@ -232,12 +247,23 @@ export class ListFilterComponent implements OnInit {
     const filter = this.filtersList.filterCriteria.find(f => f.fieldId === fieldId);
     if (filter) {
       this.activeFilter = JSON.parse(JSON.stringify(filter));
+      if(this.getFieldControlType(fieldId) === FieldControlType.DATE) {
+        if(!['static_date','static_range'].includes(this.activeFilter.unit)) {
+          this.dateFilterOptions = this.DATE_FILTERS_METADATA.find(metadata => metadata.options.some(op => op.value === this.activeFilter.unit))
+            .options.map(option => {return {key:option.value,value:option.value}});
+        }
+      }
     } else {
       this.activeFilter = new FilterCriteria();
       this.activeFilter.fieldId = fieldId;
       this.activeFilter.operator = 'EQUAL';
       this.activeFilter.values = [];
       this.activeFilter.esFieldPath = `hdvs.${fieldId}`;
+
+      if(this.getFieldControlType(fieldId) === FieldControlType.DATE) {
+        this.dateFilterOptions = this.DATE_FILTERS_METADATA[0].options.map(option => {return {key:option.value,value:option.value}});
+        this.activeFilter.unit = this.dateFilterOptions[0].value;
+      }
     }
   }
 
@@ -246,16 +272,7 @@ export class ListFilterComponent implements OnInit {
    * @returns field description
    */
   getFieldDescription(fieldId) {
-    const field = this.moduleFieldsMetatdata.find(f => f.fieldId === fieldId);
-    return field ? field.fieldDescri || 'Unknown' : 'Unknown';
-  }
-
-  /**
-   * get field desc based on field id
-   * @returns field description
-   */
-  getFilterDescription(fieldId) {
-    const field = this.filterFieldsMetadata.find(f => f.fieldId === fieldId);
+    const field = this.moduleFieldsMetatdata.find(f => f.fieldId === fieldId) || this.filterFieldsMetadata.find(f => f.fieldId === fieldId);
     return field ? field.fieldDescri || 'Unknown' : 'Unknown';
   }
 
@@ -264,20 +281,68 @@ export class ListFilterComponent implements OnInit {
    * @param fieldId field id
    * @returns string
    */
-  getFilterValue(fieldId) {
-    const criteria = this.filtersList.filterCriteria.find(field => field.fieldId === fieldId);
-    if (!criteria) {
-      return;
-    }
-    const filtercontrolType = this.getFieldControlType(fieldId);
+  FormatFilterValue(filterCriteria: FilterCriteria) {
 
-    if ([FieldControlType.TEXT, FieldControlType.EMAIL, FieldControlType.PASSWORD, FieldControlType.TEXT_AREA]
-      .includes(filtercontrolType)) {
-      return criteria.values ? criteria.values.toString() : '';
+    const filtercontrolType = this.getFieldControlType(filterCriteria.fieldId);
+
+    if ([FieldControlType.TEXT, FieldControlType.EMAIL, FieldControlType.PASSWORD, FieldControlType.TEXT_AREA].includes(filtercontrolType)) {
+      return filterCriteria.values ? filterCriteria.values.toString() : '';
     } else if (filtercontrolType === FieldControlType.NUMBER) {
-      return `From ${this.activeFilter.startValue || '0'} to ${this.activeFilter.endValue || '0'}`;
+      return `From ${filterCriteria.startValue || '0'} to ${filterCriteria.endValue || '0'}`;
+    } else if ([FieldControlType.SINGLE_SELECT, FieldControlType.MULTI_SELECT].includes(filtercontrolType)) {
+      return `${filterCriteria.operator === 'EQUAL' ? 'Is' : 'Is not'} ${filterCriteria.values.toString()}`;
+    } else if (filtercontrolType === FieldControlType.DATE) {
+      if(filterCriteria.unit === 'static_date') {
+        return moment(+filterCriteria.startValue).format('MM/DD/YYYY');
+      } else if(filterCriteria.unit === 'static_range') {
+        return `${moment(+filterCriteria.startValue).format('MM/DD/YYYY')} to ${moment(+filterCriteria.endValue).format('MM/DD/YYYY')}`;
+      }
+      return filterCriteria.unit;
+    } else if (filtercontrolType === FieldControlType.TIME) {
+      const start = moment(+filterCriteria.startValue).format('HH:mm')
+      const end = moment(+filterCriteria.endValue).format('HH:mm');
+      return  `from ${start} to ${end}`;
     }
-    return criteria.values ? criteria.values.toString() : '';
+
+    return filterCriteria.values ? filterCriteria.values.toString() : '';
+  }
+
+  /**
+   * get filter value based on field metadata
+   * @param fieldId field id
+   * @returns any
+   */
+   getFilterValue(filterCriteria: FilterCriteria) {
+
+    const filtercontrolType = this.getFieldControlType(filterCriteria.fieldId);
+
+    if (filtercontrolType === FieldControlType.DATE) {
+      if(filterCriteria.unit === 'static_date') {
+        return moment(+filterCriteria.startValue).toDate();
+      } else if(filterCriteria.unit === 'static_range') {
+        return {start: moment(+filterCriteria.startValue).toDate(), end: moment(+filterCriteria.endValue).toDate()};
+      } else {
+        return this.dateFilterOptions.find(op => op.key === filterCriteria.unit) || '';
+      }
+    }
+
+    if(filtercontrolType === FieldControlType.SINGLE_SELECT) {
+      return  this.dropdownValues.find(option => option.key === this.activeFilter.values.toString()) || '';
+    }
+
+    if(filtercontrolType === FieldControlType.TIME) {
+      const startHour = moment(+(filterCriteria.startValue||0)).hours();
+      const startMinutes = moment(+(filterCriteria.startValue||0)).minutes() || 0;
+      let endHour = moment(+(filterCriteria.endValue||1)).hours() || 0;
+      let endMinutes = moment(+(filterCriteria.endValue||0)).minutes() || 0;
+      if(startHour >= endHour) {
+        endHour = startHour;
+        endMinutes = endMinutes >= startMinutes ? endMinutes : startMinutes;
+      }
+      return  { startHour, startMinutes, endHour, endMinutes };
+    }
+
+    return filterCriteria.values ? filterCriteria.values.toString() : '';
   }
 
   /**
@@ -289,19 +354,55 @@ export class ListFilterComponent implements OnInit {
 
     const filtercontrolType = this.getFieldControlType(this.activeFilter.fieldId);
 
-    if ([FieldControlType.TEXT, FieldControlType.EMAIL, FieldControlType.PASSWORD, FieldControlType.TEXT_AREA]
-      .includes(filtercontrolType)) {
+    if ([FieldControlType.TEXT, FieldControlType.EMAIL, FieldControlType.PASSWORD, FieldControlType.TEXT_AREA].includes(filtercontrolType)) {
       this.activeFilter.values = [event];
       return;
     } else if (filtercontrolType === FieldControlType.NUMBER) {
-      console.log(event, ' ', this.activeFilter.values);
-      this.activeFilter.startValue = event.min;
-      this.activeFilter.endValue = event.max;
+      this.activeFilter.startValue = event.min || 0;
+      this.activeFilter.endValue = event.max || 1;
       return;
+    } else if (filtercontrolType === FieldControlType.SINGLE_SELECT) {
+      this.activeFilter.values = [event.key];
+      return;
+    } else if (filtercontrolType === FieldControlType.MULTI_SELECT) {
+      const index = this.activeFilter.values.findIndex(v => v === event);
+      if(index !== -1) {
+        this.activeFilter.values.splice(index, 1);
+      } else {
+        this.activeFilter.values.push(event);
+      }
+      return;
+    } else if (filtercontrolType === FieldControlType.DATE) {
+      console.log(event);
+      if(this.activeFilter.unit === 'static_date') {
+        this.activeFilter.startValue = moment(event).startOf('day').toDate().getTime().toString();
+        this.activeFilter.endValue = moment(event).endOf('day').toDate().getTime().toString();
+      } else if(this.activeFilter.unit === 'static_range') {
+        this.activeFilter.startValue = moment(event.start).startOf('day').toDate().getTime().toString();
+        this.activeFilter.endValue = moment(event.end).endOf('day').toDate().getTime().toString();
+      } else {
+        this.activeFilter.unit = event;
+      }
+      console.log(this.activeFilter);
+      return;
+    } else if (filtercontrolType === FieldControlType.TIME) {
+      console.log(event);
     }
 
     this.activeFilter.values = [event];
+  }
 
+  timefilterChange(value, from) {
+    switch(from) {
+      case 'startHour': this.activeFilter.startValue = moment(+(this.activeFilter.startValue || 0)).set('hour',value).toDate().getTime().toString(); //
+        break;
+      case 'startMinutes': this.activeFilter.startValue = moment(+(this.activeFilter.startValue || 0)).set('minute',value).toDate().getTime().toString();
+      break;
+      case 'endHour': this.activeFilter.endValue = moment(+(this.activeFilter.endValue || 0)).set('hour',value).toDate().getTime().toString();
+      break;
+      case 'endMinutes': this.activeFilter.endValue = moment(+(this.activeFilter.endValue || 0)).set('minute',value).toDate().getTime().toString();
+      break;
+    }
   }
 
   /**
@@ -311,6 +412,7 @@ export class ListFilterComponent implements OnInit {
     this.glocalDialogService.confirm({ label: 'Are you sure to reset all filters ?' }, (resp) => {
       if (resp && resp === 'yes') {
         this.filtersList.filterCriteria = [];
+        this.suggestedFilters = [];
         this.activeFilter = null;
       }
     });
@@ -339,7 +441,7 @@ export class ListFilterComponent implements OnInit {
    * @returns control type for filter value
    */
   getFieldControlType(fieldId) {
-    const field = this.moduleFieldsMetatdata.find(f => f.fieldId === fieldId);
+    const field = this.moduleFieldsMetatdata.find(f => f.fieldId === fieldId) || this.filterFieldsMetadata.find(f => f.fieldId === fieldId);
     if (field) {
 
       if (field.picklist === '0' && field.dataType === 'CHAR') {
@@ -362,9 +464,30 @@ export class ListFilterComponent implements OnInit {
         return FieldControlType.NUMBER;
       }
 
+      if(['1', '30', '37'].includes(field.picklist)) {
+        return field.isMultiselect === 'true' ? FieldControlType.MULTI_SELECT : FieldControlType.SINGLE_SELECT;
+      }
+
+      if(field.picklist === '0' && field.dataType === 'DATS') {
+        return FieldControlType.DATE;
+      }
+
+      if(field.picklist === '0' && field.dataType === 'TIMS') {
+        return FieldControlType.TIME;
+      }
+
     }
 
     return FieldControlType.TEXT;
+  }
+
+  dateFilterSelected(filterMetadata) {
+    this.dateFilterOptions = filterMetadata.options.map(op => { return {key:op.value, value:op.value}});
+    if(['static_date', 'static_range'].includes(filterMetadata.category)) {
+      this.activeFilter.unit = filterMetadata.category;
+    } else {
+      this.activeFilter.unit = this.dateFilterOptions[0].value;
+    }
   }
 
   /**

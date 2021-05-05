@@ -141,65 +141,36 @@
         <div class="f-row listing-container" #listingContainer>
             <div class="f-col listset-navigation" [style.width.px]="widthOfSchemaNav"
                   (window:mouseup)="setStatus($event, 0)" (mousedown)="setStatus($event, 1)" #navscroll>
-                <div class="nav-tree">
+                <div class="nav-tree" *ngIf="executionTreeHierarchy">
                     <mat-accordion>
-                        <mat-expansion-panel togglePosition="before" class="mat-elevation-z0" expanded="expanded">
+                        <mat-expansion-panel togglePosition="before" class="mat-elevation-z0" [hideToggle]="(executionTreeHierarchy.childs && executionTreeHierarchy.childs.length) ? false : true">
                             <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
                                 <mat-panel-title>
-                                    <div class="expand-title" i18n="@@header">Header</div>
+                                    <div class="expand-title">{{ executionTreeHierarchy.nodeDesc }}</div>
                                     <span class="f-spacer"></span>
-                                    <div class="default-badge">22</div>
+                                    <div class="default-badge">{{ executionTreeHierarchy.docCount }}</div>
                                 </mat-panel-title>
                             </mat-expansion-panel-header>
-                            <mat-accordion>
-                                <mat-expansion-panel togglePosition="before" class="mat-elevation-z0"
-                                    expanded="expanded">
-                                    <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px"
-                                        class="undertree-expansion-panel">
-                                        <mat-panel-title>
-                                            <div class="expand-title" i18n="@@plant_data">Plant data</div>
-                                            <span class="f-spacer"></span>
-                                            <div class="default-badge">12</div>
-                                        </mat-panel-title>
-                                    </mat-expansion-panel-header>
-
-                                    <mat-nav-list role="navigation" class="tree-nav-list">
-                                        <mat-list-item class="f-row understep-two">
-                                            <div mat-line i18n="@@valuation_data"> Valuation data </div>
-                                            <span class="f-spacer"></span>
-                                            <div class="default-badge">0</div>
-                                        </mat-list-item>
-                                        <mat-list-item class="f-row understep-two">
-                                            <div mat-line i18n="@@valuation_data"> Valuation data </div>
-                                            <span class="f-spacer"></span>
-                                            <div class="default-badge">0</div>
-                                        </mat-list-item>
-                                    </mat-nav-list>
-                                </mat-expansion-panel>
-                            </mat-accordion>
-                            <mat-accordion>
-                                <mat-expansion-panel hideToggle class="mat-elevation-z0">
-                                    <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px"
-                                        class="undertree-expansion-panel">
-                                        <mat-panel-title>
-                                            <div i18n="@@language_table" class="expand-title">Language table</div>
-                                            <span class="f-spacer"></span>
-                                            <div class="default-badge">12</div>
-                                        </mat-panel-title>
-                                    </mat-expansion-panel-header>
-                                </mat-expansion-panel>
-
-                                <mat-expansion-panel hideToggle class="mat-elevation-z0">
-                                    <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px"
-                                        class="undertree-expansion-panel">
-                                        <mat-panel-title>
-                                            <div i18n="@@all_unit_of_measure" class="expand-title">Alt unit of measure</div>
-                                            <span class="f-spacer"></span>
-                                            <div class="default-badge">12</div>
-                                        </mat-panel-title>
-                                    </mat-expansion-panel-header>
-                                </mat-expansion-panel>
-                            </mat-accordion>
+                            <div *ngIf="executionTreeHierarchy.childs && executionTreeHierarchy.childs.length">
+                                <mat-accordion *ngFor="let child of executionTreeHierarchy.childs">
+                                    <mat-expansion-panel togglePosition="before" class="mat-elevation-z0" [hideToggle]="(child.childs && child.childs.length) ? false : true">
+                                        <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px" class="undertree-expansion-panel">
+                                            <mat-panel-title>
+                                                <div class="expand-title">{{ child.nodeDesc }}</div>
+                                                <span class="f-spacer"></span>
+                                                <div class="default-badge">{{ child.docCount }}</div>
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <mat-nav-list role="navigation" class="tree-nav-list" *ngIf="child.childs && child.childs.length">
+                                            <mat-list-item class="f-row understep-two" *ngFor="let subChild of child.childs">
+                                                <div mat-line> {{ subChild.nodeDesc }} </div>
+                                                <span class="f-spacer"></span>
+                                                <div class="default-badge">{{ subChild.docCount }}</div>
+                                            </mat-list-item>
+                                        </mat-nav-list>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </div>
                         </mat-expansion-panel>
                     </mat-accordion>
                 </div>
@@ -209,7 +180,8 @@
                 </div>
             </div>
 
-            <div class="f-col listset-grid" [ngStyle]="{'width':'calc(100% - ' +widthOfSchemaNav + 'px - 24px)' }" (scroll)="onTableScroll($event)">
+
+            <div class="f-col listset-grid" [ngStyle]="{'width':'calc(100% - ' +widthOfSchemaNav + 'px - 24px)' }">
                 <div class="listset-text" i18n="@@header">Header</div>
                 <!-- if have data then render table -->
                 <ng-template [ngIf]="showTableLoading" [ngIfElse]="showdata">
@@ -225,7 +197,7 @@
                         </ng-template>
                         <lib-button (click)="selection.clear()" i18n="@@unselect" type="minor"> Unselect </lib-button>
                     </div>
-                    <div class="f-col datasource">
+                    <div class="f-col datasource" (scroll)="onTableScroll($event)">
                         <mat-table [dataSource]="dataSource" matSort>
                             <ng-container matColumnDef="_select_columns" sticky>
                                 <mat-header-cell *matHeaderCellDef>

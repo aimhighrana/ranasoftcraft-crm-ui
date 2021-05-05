@@ -21,4 +21,24 @@ describe('EndpointsProfileService', () => {
   it('should updatePersonalDetails', () => {
     expect(service.updatePersonalDetails()).toContain('/save-personal-details');
   });
+
+  it('should getUserPreferenceDetails', () => {
+    expect(service.getUserPreferenceDetails()).toContain('/get-user-pref');
+  });
+
+  it('should updateUserPreferenceDetails', () => {
+    expect(service.updateUserPreferenceDetails()).toContain('/save-user-pref');
+  });
+
+  it('should getAllLanguagesList', () => {
+    expect(service.getAllLanguagesList()).toContain('/get-all-languages');
+  });
+
+  it('should getDateFormatList', () => {
+    expect(service.getDateFormatList()).toContain('/get-date-format');
+  });
+
+  it('should getNumberFormatList', () => {
+    expect(service.getNumberFormatList()).toContain('/get-number-format');
+  });
 });

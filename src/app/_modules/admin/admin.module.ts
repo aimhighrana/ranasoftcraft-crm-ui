@@ -50,7 +50,6 @@ import { UserDefinedRuleComponent } from './_components/module/business-rules/us
 import { UdrConditionFormComponent } from './_components/module/business-rules/user-defined-rule/udr-condition-form/udr-condition-form.component';
 import { UdrConditionControlComponent } from './_components/module/business-rules/user-defined-rule/udr-condition-control/udr-condition-control.component';
 import { RegexRuleComponent } from './_components/module/business-rules/regex-rule/regex-rule.component';
-import { GenericFieldControlComponent } from './_components/module/business-rules/generic-field-control/generic-field-control.component';
 import { BackgroundStepPropertiesComponent } from './_components/module/workflow/bpmn-builder/properties-panel/background-step-properties/background-step-properties.component';
 import { EmailEscalationPropertiesComponent } from './_components/module/workflow/bpmn-builder/properties-panel/email-escalation-properties/email-escalation-properties.component';
 import { ConnectionConditionModalComponent } from './_components/module/workflow/bpmn-builder/connection-condition-modal/connection-condition-modal.component';
@@ -114,7 +113,6 @@ import { ConfirmModalComponent } from './_components/module/workflow/bpmn-builde
     UdrConditionFormComponent,
     UdrConditionControlComponent,
     RegexRuleComponent,
-    GenericFieldControlComponent,
     BpmnBuilderComponent,
     PropertiesPanelComponent,
     DecisionsModalComponent,

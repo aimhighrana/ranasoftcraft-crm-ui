@@ -1,6 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { UserPasswordDetails } from '@models/userdetails';
+import { UserService } from '@services/user/userservice.service';
 
 @Component({
   selector: 'pros-change-password-dialog',
@@ -32,7 +34,8 @@ export class ChangePasswordDialogComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<ChangePasswordDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private userService: UserService
   ) { }
 
   ngOnInit(): void {
@@ -85,7 +88,23 @@ export class ChangePasswordDialogComponent implements OnInit {
       return false;
     }
 
-    this.closeDialog('Password changed successfully');
+    const data: UserPasswordDetails = {
+      confirmPassword: this.changeForm.controls.confirmNewPassword.value,
+      newPassword: this.changeForm.controls.newPassword.value,
+      oldPassword: this.changeForm.controls.currentPassword.value
+    }
+    this.userService.updatePassword(data).subscribe((res) => {
+      if (res && res.errorMsg) {
+        this.bannerMessage = res.errorMsg;
+      } else {
+        this.closeDialog('Password changed successfully');
+      }
+    }, (err) => {
+      if (err && err.error) {
+        this.bannerMessage = err.error.errorMsg || '';
+      }
+      console.log(err);
+    });
   }
 
   /**

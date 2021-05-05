@@ -309,6 +309,23 @@ describe('BrruleSideSheetComponent', () => {
     expect(filteredFields.length).toEqual(0);
   })
 
+  it('initiateAutocomplete(), should init autocomplete', async(() => {
+    component.ngOnInit();
+    component.form.controls.fields.setValue('email');
+    component.allGridAndHirarchyData = [
+      {
+        name: 'Test',
+        parent: 'Test',
+        children: []
+      }
+    ];
+    component.fieldsList = [];
+    component.initiateAutocomplete();
+    component.filteredModules.subscribe((res: any) => {
+      expect(res.length).toEqual(0);
+    });
+  }));
+
   it('should apply validators by rule type', async(() => {
       component.buildCommonDataForm();
 
