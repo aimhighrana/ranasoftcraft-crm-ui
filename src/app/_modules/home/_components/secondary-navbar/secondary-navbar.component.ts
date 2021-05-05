@@ -269,6 +269,9 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
 
   ngAfterViewInit() {
     this.expandSearchFilterInCurrentUrl();
+    setTimeout(() => {
+      this.isTooltipReady = true;
+    }, 5000);
   }
 
   /**
@@ -395,9 +398,6 @@ export class SecondaryNavbarComponent implements OnInit, OnChanges, OnDestroy, A
         }
       }, error => console.error(`Error : ${error}`));
       this.subscriptions.push(subs);
-      setTimeout(() => {
-        this.isTooltipReady = true;
-      }, 5000);
     });
     this.subscriptions.push(subscription);
   }
