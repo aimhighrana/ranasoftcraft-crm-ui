@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { DoCorrectionRequest, MasterRecordChangeRequest } from '@models/schema/duplicacy';
-import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
+import { EndpointsRuleService } from '@services/_endpoints/endpoints-rule.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -10,7 +10,7 @@ import { map } from 'rxjs/operators';
 })
 export class CatalogCheckService {
 
-  constructor(private endpointService: EndpointsClassicService,
+  constructor(private endpointService: EndpointsRuleService,
     private http: HttpClient) { }
 
 

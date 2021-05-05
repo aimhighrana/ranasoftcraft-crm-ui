@@ -36,6 +36,12 @@ export class GenericFieldControlComponent implements OnInit, OnChanges, OnDestro
   lebel: string;
 
   /**
+   * placeholder for getting
+   */
+   @Input()
+   placeholder: string;
+
+  /**
    * After option selection change event should be emit
    */
   @Output()
@@ -71,6 +77,10 @@ export class GenericFieldControlComponent implements OnInit, OnChanges, OnDestro
 
     if(changes && changes.selectedFldId && changes.selectedFldId.currentValue !== changes.selectedFldId.previousValue) {
       this.preSelectedCtrl = this.returnSelectedFldCtrl(changes.selectedFldId.currentValue);
+    }
+
+    if(changes && changes.isMultiSelection && changes.isMultiSelection.previousValue !== changes.isMultiSelection.currentValue) {
+      this.isMultiSelection = changes.isMultiSelection.currentValue;
     }
   }
 

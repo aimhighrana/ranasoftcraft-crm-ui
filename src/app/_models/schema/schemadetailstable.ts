@@ -148,6 +148,7 @@ export class SchemaTableViewFldMap {
     fieldId: string;
     order: number;
     editable: boolean;
+    isEditable: boolean;
 }
 export class SchemaExecutionDetails {
     schemaId: string;

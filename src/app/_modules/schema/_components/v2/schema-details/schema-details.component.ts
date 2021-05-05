@@ -23,6 +23,8 @@ import { Userdetails } from '@models/userdetails';
 import { UserService } from '@services/user/userservice.service';
 import { debounceTime, distinctUntilChanged, skip } from 'rxjs/operators';
 import { TransientService } from 'mdo-ui-library';
+import { SchemaExecutionTree } from '@models/schema/schema-execution';
+import { DownloadExecutionDataComponent } from '../download-execution-data/download-execution-data.component';
 
 @Component({
   selector: 'pros-schema-details',
@@ -190,8 +192,8 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
   TableActionViewType = TableActionViewType;
 
   tableActionsList: SchemaTableAction[] = [
-    { actionText: 'Approve', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT, actionCode: STANDARD_TABLE_ACTIONS.APPROVE, actionIconLigature: 'check-mark' },
-    { actionText: 'Reject', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT, actionCode: STANDARD_TABLE_ACTIONS.REJECT, actionIconLigature: 'declined' }
+    { actionText: 'Approve', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT, actionCode: STANDARD_TABLE_ACTIONS.APPROVE, actionIconLigature: 'check' },
+    { actionText: 'Reject', isPrimaryAction: true, isCustomAction: false, actionViewType: TableActionViewType.ICON_TEXT, actionCode: STANDARD_TABLE_ACTIONS.REJECT, actionIconLigature: 'ban' }
   ] as SchemaTableAction[];
 
   /**
@@ -211,6 +213,9 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    * All subscription should be in this variable ..
    */
   subscribers: Subscription[] = [];
+
+  // holds execution tree details of schema...
+  executionTreeHierarchy: SchemaExecutionTree;
 
   constructor(
     private activatedRouter: ActivatedRoute,
@@ -268,6 +273,13 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       this.getSchemaTableActions();
       if (this.variantId !== '0') {
         this.getVariantDetails();
+      } else {
+        this.variantId = '0';
+      }
+      if (this.userDetails) {
+        this.getSchemaExecutionTree(this.userDetails.plantCode, this.userDetails.userName);
+      } else {
+        this.executionTreeHierarchy = new SchemaExecutionTree();
       }
     }
 
@@ -393,9 +405,16 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       }
     });
 
-    this.userService.getUserDetails().subscribe(res=>{
+    const userDataSub = this.userService.getUserDetails().subscribe(res=>{
       this.userDetails  = res;
     }, err=> console.log(`Error ${err}`));
+
+    const userDataForSchemaTree = this.userService.getUserDetails().pipe(distinctUntilChanged()).subscribe(res=>{
+      this.getSchemaExecutionTree(res.plantCode, res.userName);
+    }, err=> console.log(`Error ${err}`));
+
+    this.subscribers.push(userDataForSchemaTree);
+    this.subscribers.push(userDataSub);
 
     /**
      * inline search changes
@@ -427,6 +446,19 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     }, error => {
       this.statics = new SchemaStaticThresholdRes();
       console.error(`Error : ${error}`);
+    });
+    this.subscribers.push(sub);
+  }
+
+  /**
+   * Call service to get schema execution tree
+   */
+  getSchemaExecutionTree(plantCode, userName) {
+    const sub = this.schemaService.getSchemaExecutionTree(this.moduleId, this.schemaId, this.variantId, plantCode, userName, this.activeTab).subscribe(res => {
+      this.executionTreeHierarchy = res;
+    }, error => {
+      this.executionTreeHierarchy = new SchemaExecutionTree();
+      console.error(error);
     });
     this.subscribers.push(sub);
   }
@@ -549,6 +581,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     this.manageStaticColumns();
     this.calculateDisplayFields();
     this.selection.clear();
+    this.getSchemaExecutionTree(this.userDetails.plantCode, this.userDetails.userName);
     if (status === 'error' || status === 'success') {
       this.getData(this.filterCriteria.getValue(), this.sortOrder);
     } else {
@@ -570,11 +603,29 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
    * Method for download error or execution logs
    */
   downloadExecutionDetails() {
-    const downloadLink = document.createElement('a');
-    downloadLink.href = this.endpointservice.downloadExecutionDetailsUrl(this.schemaId, this.activeTab) + '?runId=';
-    downloadLink.setAttribute('target', '_blank');
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
+    const data = {
+      moduleId: this.moduleId,
+      schemaId: this.schemaId,
+      runId: this.schemaInfo.runId,
+      requestStatus: this.activeTab,
+      executionTreeHierarchy: this.executionTreeHierarchy
+    }
+
+    const ref = this.matDialog.open(DownloadExecutionDataComponent, {
+      width: '600px',
+      data
+    });
+
+    ref.afterClosed().subscribe(res => {
+      if(res) {
+        const downloadLink = document.createElement('a');
+        downloadLink.href = this.endpointservice.downloadExecutionDetailsByNodesUrl(this.schemaId, this.activeTab, res);
+        console.log(downloadLink.href);
+        downloadLink.setAttribute('target', '_blank');
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+      }
+    });
 
   }
 
@@ -588,7 +639,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     console.log(row);
 
     const field = this.selectedFields.find(f => f.fieldId === fldid);
-    if (field && !field.editable) {
+    if (field && !field.isEditable) {
       console.log('Edit is disabled for this field ! ', fldid);
       return;
     }
@@ -754,9 +805,10 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
       }
     }
     const sub =  this.schemaDetailService.approveCorrectedRecords(this.schemaId, id, this.userDetails.currentRoleId).subscribe(res => {
-      if (res.acknowledge) {
+      if (res === true) {
         this.getData();
         this.selection.clear();
+        this.transientService.open('Correction is approved', 'Okay', { duration: 2000 });
       }
     }, error => {
       this.transientService.open(`Error :: ${error}`, 'Close', { duration: 2000 });
@@ -789,6 +841,7 @@ export class SchemaDetailsComponent implements OnInit, AfterViewInit, OnChanges,
     }
     const sub =  this.schemaDetailService.resetCorrectionRecords(this.schemaId, this.schemaInfo.runId , id).subscribe(res=>{
       if(res && res.acknowledge) {
+        this.transientService.open('Correction is rejected', 'Okay', { duration: 2000 });
             this.statics.correctedCnt = res.count ? res.count : 0;
             this.getData();
             this.selection.clear();

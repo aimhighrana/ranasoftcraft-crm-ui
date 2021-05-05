@@ -73,6 +73,48 @@ describe('LookupRuleComponent', () => {
 
   });
 
+  it('clickTreeNode(), should add node to selectedFields', async(() => {
+    const selectedNode = {
+      parent: 'Test',
+      name: 'Test',
+      id: 'Test'
+    }
+    component.initForm();
+    component.clickTreeNode(selectedNode);
+    component.clickTreeNode(selectedNode);
+    expect(component.selectedFields.length).toEqual(1);
+  }));
+
+  it('removeField(), should remove field', async(() => {
+    const selectedNode = {
+      parent: 'Test',
+      name: 'Test',
+      id: 'Test'
+    }
+    component.initForm();
+    component.clickTreeNode(selectedNode);
+    component.removeField(0);
+    expect(component.selectedFields.length).toEqual(1);
+  }));
+
+  it('initTargetAutocomplete(), should init auto complete', async(() => {
+    spyOn(component, 'getObjectTypes');
+    spyOn(component, 'patchLookupData');
+    component.ngOnInit();
+    component.availableField.setValue('email');
+    component.allGridAndHirarchyData = [
+      {
+        name: 'Test',
+        parent: 'Test',
+        children: []
+      }
+    ];
+    component.fieldsObject.list = [];
+    component.filteredFields.subscribe(res => {
+      expect(res).toEqual([]);
+    });
+  }));
+
   it('setLookupConfig(), should update field to selectedFields', () => {
     component.selectedFieldsCopy = [
       {
@@ -128,7 +170,7 @@ describe('LookupRuleComponent', () => {
      { objectid: '56798',
       objectdesc: 'Value form module'}
     ];
-    const result = component.getInputValue( {
+    const inp = {
       enableUserField: false,
       fieldDescri: 'Test field',
       fieldId: 'fdg444',
@@ -139,9 +181,14 @@ describe('LookupRuleComponent', () => {
       },
       lookupTargetField: 'Target',
       lookupTargetText: ''
-    });
+    };
+    const result = component.getInputValue(inp);
 
     expect(result).toEqual('Value form module');
+
+    component.modulesList[0].objectid = '12345';
+    component.getInputValue(inp);
+
     expect(component.getInputValue(null)).toEqual('');
   });
 
@@ -160,6 +207,7 @@ describe('LookupRuleComponent', () => {
         lookupTargetText: ''
       }
     ];
+    component.getValue(0, 'test');
 
     expect(component.getValue(0,'')).toEqual(component.selectedFieldsCopy[0]);
 
@@ -195,6 +243,9 @@ describe('LookupRuleComponent', () => {
     }
 
     expect(component.getFieldLabel(field)).toEqual('Region');
+
+    field.fieldId = '12345';
+    component.getFieldLabel(field);
 
     field.fieldDescri = 'Test field';
     expect(component.getFieldLabel(field)).toEqual('Test field');
@@ -253,9 +304,11 @@ describe('LookupRuleComponent', () => {
 
   it('should update on input change', () => {
     spyOn(component, 'updateTargetValue');
-    const changes: SimpleChanges = {fieldsObject: {currentValue: {labelKey: 'label', valueKey: 'value', list: []},
+    let changes: SimpleChanges = {};
+    component.ngOnChanges(changes);
+    changes = {fieldsObject: {currentValue: {labelKey: 'label', valueKey: 'value', list: []},
           previousValue: null, firstChange: true, isFirstChange: null}};
-    component.ngOnChanges(changes)
+    component.ngOnChanges(changes);
     expect(component.updateTargetValue).toHaveBeenCalled();
   });
 

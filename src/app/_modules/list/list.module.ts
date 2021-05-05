@@ -11,7 +11,6 @@ import { ListFilterComponent } from './_components/list-filter/list-filter.compo
 import { FilterSaveModalComponent } from './_components/filter-save-modal/filter-save-modal.component';
 import { FilterChipsComponent } from './_components/filter-chips/filter-chips.component';
 
-
 @NgModule({
   declarations: [
     ListComponent,

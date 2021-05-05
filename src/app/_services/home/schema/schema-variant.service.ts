@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { SendSchemavariantRequest, SchemaVariantResponse, VariantDetails, SchemaVariantsModel } from 'src/app/_models/schema/schemalist';
+import { VariantDetails, SchemaVariantsModel } from 'src/app/_models/schema/schemalist';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { Any2tsService } from '../../any2ts.service';
-import { EndpointsClassicService } from '@services/_endpoints/endpoints-classic.service';
+import { EndpointsRuleService } from '@services/_endpoints/endpoints-rule.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,18 +12,13 @@ export class SchemaVariantService {
 
   constructor(
     private http: HttpClient,
-    private endPointService: EndpointsClassicService,
+    private endPointService: EndpointsRuleService,
     private any2tsService: Any2tsService
   ) { }
 
-  public schemavariantDetailsBySchemaId(sendSchemavariantRequest: SendSchemavariantRequest): Observable<SchemaVariantResponse[]> {
-    return this.http.post<any>(this.endPointService.schemaVarinatDetails(), sendSchemavariantRequest).pipe(map(response => {
-      return this.any2tsService.any2SchemaVariantResponse(response);
-    }));
-  }
-
   public getSchemaVariantDetails(schemaId: string): Observable<VariantDetails[]> {
     return this.http.get<VariantDetails[]>(this.endPointService.getSchemaVariantsUrl(schemaId));
+
   }
 
   /**
