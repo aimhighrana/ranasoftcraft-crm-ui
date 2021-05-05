@@ -85,6 +85,11 @@ export class ScheduleComponent implements OnInit, OnDestroy {
    */
   scheduleReq: SchemaScheduler;
 
+  /**
+   * Variables to store selected start and end date objects
+   */
+   selectedEndDate: Date;
+   selectedStartDate: Date;
 
   /**
    * To hold all the subscriptions
@@ -187,12 +192,6 @@ export class ScheduleComponent implements OnInit, OnDestroy {
   get getMetricHours() {
     return SchemaSchedulerRepeatMetric[this.form.controls.schemaSchedulerRepeat.value]
   }
-
-  /**
-   * Variables to store selected start and end date objects
-   */
-  selectedStartDate: Date;
-  selectedEndDate: Date;
 
   /**
    * Common function to recieve value from emitter and set value
