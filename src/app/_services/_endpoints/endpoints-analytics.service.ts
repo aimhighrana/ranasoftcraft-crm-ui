@@ -132,7 +132,7 @@ export class EndpointsAnalyticsService {
    * endpoint to copy endpoint
    */
   public copyReport(reportId: string, reportName:string) : string {
-    return `${this.apiUrl}/report/copy?reportId=${reportId}&reportName=${reportName}`;
+    return `${this.apiUrl}/report/copy?reportId=${reportId}&reportName=${encodeURI(reportName)}`;
   }
 
   /**

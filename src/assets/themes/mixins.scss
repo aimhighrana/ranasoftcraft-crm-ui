@@ -2078,3 +2078,12 @@ pros-subscriber-invite-sidesheet .lib-input .mdo-field {
     text-align: start;
   }
 }
+
+mat-tooltip-component {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}

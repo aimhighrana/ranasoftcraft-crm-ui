@@ -118,7 +118,9 @@
         <mat-nav-list *ngFor="let report of reportOb | async" [disableRipple]="true">
           <mat-list-item [disabled]="report.permission && !report.permission.isViewable"
             [routerLink]="['report/dashboard', report.reportId]" [routerLinkActive]="'selected'">
-            <div class="heading-title">{{report.reportName ? report.reportName : 'Untitled'}}</div>
+            <div #headingTitle class="heading-title"
+            [libTooltip]="report.reportName" matTooltipPosition="right"
+            [matTooltipDisabled]="isTooltipReady && !(headingTitle.offsetWidth < headingTitle.scrollWidth)">{{report.reportName ? report.reportName : 'Untitled'}}</div>
           </mat-list-item>
         </mat-nav-list>
       </mat-accordion>
