@@ -9,6 +9,7 @@ import { WidgetService } from '@services/widgets/widget.service';
 import { of } from 'rxjs';
 import { ChartLegendLabelItem } from 'chart.js';
 import { SharedModule } from '@modules/shared/shared.module';
+import { MetadataModel } from '@models/schema/schemadetailstable';
 
 describe('TimeseriesWidgetComponent', () => {
   let component: TimeseriesWidgetComponent;
@@ -53,7 +54,8 @@ describe('TimeseriesWidgetComponent', () => {
       stepSize: 100,
       dataSetSize: 100,
       startDate: '7',
-      groupWith: 'REQUESTOR_DATE', widgetColorPalette: null, distictWith: 'REGION', bucketFilter: null, showInPercentage: false
+      groupWith: 'REQUESTOR_DATE', widgetColorPalette: null, distictWith: 'REGION', bucketFilter: null, showInPercentage: false,
+      metaData: {fieldDescri: 'Requested Date'} as MetadataModel
     }
 
     timeseriesData = { widgetId: 123, widgetName: 'test', widgetType: null, objectType: '1005', plantCode: '0', indexName: 'do_workflow', desc: '', timeSeries: widgetTimeseries }
@@ -86,7 +88,8 @@ describe('TimeseriesWidgetComponent', () => {
       stepSize: 100,
       dataSetSize: 100,
       startDate: '7',
-      groupWith: 'REQUESTOR_DATE', widgetColorPalette: null, distictWith: 'REGION', showInPercentage: false, bucketFilter: null
+      groupWith: 'REQUESTOR_DATE', widgetColorPalette: null, distictWith: 'REGION', showInPercentage: false, bucketFilter: null,
+      metaData: {fieldDescri: 'Requested Date'} as MetadataModel
     }
 
     timeseriesData = { widgetId: 123, widgetName: 'test', widgetType: null, objectType: '1005', plantCode: '0', indexName: 'do_workflow', desc: '', timeSeries: widgetTimeseries }
@@ -120,7 +123,8 @@ describe('TimeseriesWidgetComponent', () => {
       stepSize: 100,
       dataSetSize: 100,
       startDate: '7',
-      groupWith: 'REQUESTOR_DATE', widgetColorPalette: null, distictWith: 'REGION', bucketFilter: null, showInPercentage: false
+      groupWith: 'REQUESTOR_DATE', widgetColorPalette: null, distictWith: 'REGION', bucketFilter: null, showInPercentage: false,
+      metaData: {fieldDescri: 'Requested Date'} as MetadataModel
     }
 
     timeseriesData = { widgetId: 123, widgetName: 'test', widgetType: null, objectType: '1005', plantCode: '0', indexName: 'do_workflow', desc: '', timeSeries: widgetTimeseries }
@@ -158,7 +162,8 @@ describe('TimeseriesWidgetComponent', () => {
       stepSize: 100,
       dataSetSize: 100,
       startDate: '7',
-      groupWith: 'REQUESTOR_DATE', widgetColorPalette: null, distictWith: 'REGION', showInPercentage: false, bucketFilter: null
+      groupWith: 'REQUESTOR_DATE', widgetColorPalette: null, distictWith: 'REGION', showInPercentage: false, bucketFilter: null,
+      metaData: {fieldDescri: 'Requested Date'} as MetadataModel
     }
 
     timeseriesData = { widgetId: 123, widgetName: 'test', widgetType: null, objectType: '1005', plantCode: '0', indexName: 'do_workflow', desc: '', timeSeries: widgetTimeseries }
@@ -257,7 +262,8 @@ describe('TimeseriesWidgetComponent', () => {
       stepSize: 100,
       dataSetSize: 100,
       startDate: '7',
-      groupWith: 'REQUESTOR_DATE', widgetColorPalette: null, distictWith: 'REGION', showInPercentage: false, bucketFilter: null
+      groupWith: 'REQUESTOR_DATE', widgetColorPalette: null, distictWith: 'REGION', showInPercentage: false, bucketFilter: null,
+      metaData: {fieldDescri: 'Requested Date'} as MetadataModel
     }
 
     timeseriesData = { widgetId: 123, widgetName: 'test', widgetType: null, objectType: '1005', plantCode: '0', indexName: 'do_workflow', desc: '', timeSeries: widgetTimeseries }
@@ -275,5 +281,44 @@ describe('TimeseriesWidgetComponent', () => {
     const innerBucket = {key:'200010','top_hits#data_hits':{hits:{hits:[{_source:{hdvs:{MATL_GROUP:{vc:[{c:'200010', t:'testing'}]}}}}]}}};
     const fieldid = 'MATL_GROUP';
     expect(component.codeTextValue(innerBucket,fieldid)).toEqual({c:'200010', t:'testing'});
+  }));
+
+  it('dateAndCountFormat()', async(() => {
+    const dataArr = {label:'2019'};
+    const obj = {} as any;;
+    let dataObj = {x:'2005', y:2};
+    let widgetTimeseries = {seriesWith: SeriesWith.year} as WidgetTimeseries;
+    component.timeseriesData = {timeSeries: widgetTimeseries} as TimeSeriesWidget;
+    component.dateAndCountFormat(dataObj, obj, dataArr);
+
+    expect(obj.Year).toEqual('2005'+'\t');
+
+    widgetTimeseries = {seriesWith: SeriesWith.day} as WidgetTimeseries;
+    component.timeseriesData = {timeSeries: widgetTimeseries} as TimeSeriesWidget;
+    dataObj = {x:'1-10-2005', y:2};
+    component.dateAndCountFormat(dataObj, obj,dataArr);
+
+    expect(obj.Day).toEqual(dataObj.x+'\t');
+
+    widgetTimeseries = {seriesWith: SeriesWith.month} as WidgetTimeseries;
+    component.timeseriesData = {timeSeries: widgetTimeseries} as TimeSeriesWidget;
+    dataObj = {x:'1-10-2005', y:2};
+    component.dateAndCountFormat(dataObj, obj,dataArr);
+
+    expect(obj.Month).toEqual(dataObj.x+'\t');
+
+    widgetTimeseries = {seriesWith: SeriesWith.quarter} as WidgetTimeseries;
+    component.timeseriesData = {timeSeries: widgetTimeseries} as TimeSeriesWidget;
+    dataObj = {x:'1-10-2005', y:2};
+    component.dateAndCountFormat(dataObj, obj,dataArr);
+
+    expect(obj.Quater).toEqual(dataObj.x+'\t');
+
+    widgetTimeseries = {seriesWith: SeriesWith.week} as WidgetTimeseries;
+    component.timeseriesData = {timeSeries: widgetTimeseries} as TimeSeriesWidget;
+    dataObj = {x:'1-10-2005', y:2};
+    component.dateAndCountFormat(dataObj, obj,dataArr);
+
+    expect(obj.Week).toEqual(dataObj.x+'\t');
   }));
 });

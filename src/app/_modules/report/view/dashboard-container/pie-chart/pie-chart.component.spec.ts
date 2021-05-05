@@ -116,9 +116,14 @@ describe('PieChartComponent', () => {
     test.isEnableLegend = true;
     test.legendPosition = PositionType.TOP;
     component.pieWidget.next(test);
+    const eleRef = htmlnative.getElementsByTagName('canvas')[0];
+    const baseChart = new BaseChartDirective(eleRef[0], null);
+    baseChart.chart = {canvas: eleRef, getElementAtEvent:(e: any) => [{_datasetIndex:0, _index: 0} as any] } as Chart;
+    baseChart.chart.options = {scales : {xAxes: [{}], yAxes : [{}]}};
+    component.chart = baseChart;
     component.getPieConfigurationData();
     expect(component.pieWidget.getValue().isEnableLegend).toBe(true);
-    expect(component.pieWidget.getValue().legendPosition).toBe(component.pieChartOptions.legend.position);
+    expect(component.pieWidget.getValue().legendPosition).toBe(component.chart.chart.options.legend.position);
 
   }));
 
@@ -128,9 +133,14 @@ describe('PieChartComponent', () => {
     test.datalabelsPosition = AlignPosition.CENTER;
     test.anchorPosition = AnchorAlignPosition.CENTER;
     component.pieWidget.next(test);
+    const eleRef = htmlnative.getElementsByTagName('canvas')[0];
+    const baseChart = new BaseChartDirective(eleRef[0], null);
+    baseChart.chart = {canvas: eleRef, getElementAtEvent:(e: any) => [{_datasetIndex:0, _index: 0} as any] } as Chart;
+    baseChart.chart.options = {scales : {xAxes: [{}], yAxes : [{}]}};
+    component.chart = baseChart;
     component.getPieConfigurationData();
     expect(component.pieWidget.getValue().isEnableDatalabels).toBe(true);
-    expect(component.pieWidget.getValue().datalabelsPosition).toBe(component.pieChartOptions.plugins.datalabels.align.toString());
+    expect(component.pieWidget.getValue().datalabelsPosition).toBe(component.chart.chart.options.plugins.datalabels.align.toString());
 
   }));
 
@@ -170,12 +180,16 @@ it('legendClick(), should show paticular stack , after click on stack',async(()=
 }));
 
   it('should test downloadCSV()', async(()=> {
-    const excelData : any[] = [];
-    excelData.push({label :'ZERO',data: 110});
-    spyOn(widgetService,'downloadCSV').and.returnValue();
+    component.lablels = ['No'];
+    const chartData = new PieChartWidget();
+    chartData.fieldId = 'CLAIMED';
+    chartData.metaData = {fieldDescri: 'Claimed',fieldId: 'CLAIMED'} as MetadataModel;
+    component.pieWidget.next(chartData);
+    component.dataSet = ['1870'];
+    const excelData = [{Claimed: 'No	', Value: '1870	'}];
+    spyOn(widgetService,'downloadCSV').withArgs('Pie-Chart', excelData);
     component.downloadCSV();
-    expect(excelData[0]).toEqual({label :'ZERO',data: 110});
-    expect(widgetService.downloadCSV).toHaveBeenCalledWith('Pie-Chart',[]);
+    expect(widgetService.downloadCSV).toHaveBeenCalledWith('Pie-Chart', excelData);
   }));
 
   it('getFieldsMetadaDesc(), get description of field', async(()=>{
