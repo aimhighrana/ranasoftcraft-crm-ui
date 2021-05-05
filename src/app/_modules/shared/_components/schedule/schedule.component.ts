@@ -102,14 +102,15 @@ export class ScheduleComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.createForm();
     this.activatedRoute.params.subscribe((params) => {
       this.schemaId = params.schemaId;
       this.schedulerId = params.scheduleId;
     })
-
+    this.createForm();
     if(this.schedulerId) {
       this.getScheduleInfo(this.schemaId);
+    } else {
+      this.selectedStartDate = new Date();
     }
 
     this.form.controls.schemaSchedulerRepeat.valueChanges.subscribe((repeatValue) => {
@@ -165,11 +166,11 @@ export class ScheduleComponent implements OnInit, OnDestroy {
       repeatValue: new FormControl(2, [Validators.required]),
       weeklyOn: new FormControl(null),
       monthOn: new FormControl(null),
-      startOn: new FormControl(moment().utc().valueOf().toString(), [Validators.required]),
+      startOn: this.schedulerId ? new FormControl(null) : new FormControl(moment().utc().valueOf().toString(), [Validators.required]),
       end: new FormControl(null, [Validators.required]),
       occurrenceVal: new FormControl(2),
       endOn: new FormControl(moment().utc().valueOf().toString())
-    })
+    });
   }
 
   /**
@@ -187,19 +188,11 @@ export class ScheduleComponent implements OnInit, OnDestroy {
     return SchemaSchedulerRepeatMetric[this.form.controls.schemaSchedulerRepeat.value]
   }
 
-  get selectedStartDate() {
-    try {
-      return new Date(Number(this.form.controls.startOn.value));
-    } catch (e) {}
-    return null;
-  }
-
-  get selectedEndDate() {
-    try {
-      return new Date(Number(this.form.controls.endOn.value));
-    } catch (e) {}
-    return null;
-  }
+  /**
+   * Variables to store selected start and end date objects
+   */
+  selectedStartDate: Date;
+  selectedEndDate: Date;
 
   /**
    * Common function to recieve value from emitter and set value
@@ -217,6 +210,11 @@ export class ScheduleComponent implements OnInit, OnDestroy {
    */
   setDateValue(field, value: Date) {
     this.form.controls[field].setValue(`${value.getTime()}`);
+    if (field === 'startOn') {
+      this.selectedStartDate = value;
+    } else if (field === 'endOn') {
+      this.selectedEndDate = value;
+    }
   }
 
 
@@ -313,6 +311,8 @@ export class ScheduleComponent implements OnInit, OnDestroy {
     this.form.get('end').setValue(this.scheduleInfo.end);
     this.form.get('occurrenceVal').setValue(this.scheduleInfo.occurrenceVal);
     this.form.get('endOn').setValue(this.scheduleInfo.endOn);
+    this.selectedStartDate = new Date(Number(this.scheduleInfo.startOn));
+    this.selectedEndDate = new Date(Number(this.scheduleInfo.endOn));
   }
 
   /**

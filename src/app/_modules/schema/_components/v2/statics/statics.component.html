@@ -79,12 +79,12 @@
 
             <mat-menu  #datePickerMenu="matMenu" class="date-picker-menu navigation-menu">
                 <div class="f-col">
-                    <lib-date-picker prosClickStopPropagation [hideInput]="true" (valueChange) ="changeSpecificDate({value:$event})" #specificDate></lib-date-picker>
+                    <lib-date-picker [maxDate]="maxDate" prosClickStopPropagation [hideInput]="true" (valueChange) ="changeSpecificDate({value:$event})" #specificDate></lib-date-picker>
                 </div>
             </mat-menu>
             <mat-menu  #dateRangePickerMenu="matMenu" class="date-picker-menu navigation-menu">
                 <div class="f-col">
-                    <lib-date-range-picker prosClickStopPropagation [hideInput]="true" (valueChange) ="changeDateRange($event)" #rangeDate></lib-date-range-picker>
+                    <lib-date-range-picker [dateLimit]="{start: {max: maxDate}, end: {max: maxDate}}" prosClickStopPropagation [hideInput]="true" (valueChange) ="changeDateRange($event)" #rangeDate></lib-date-range-picker>
                 </div>
             </mat-menu>
         </mat-chip-list>

@@ -64,7 +64,7 @@
                 <div class="f-row mdo-form-field every-field">
                     <div class="f-col">
                         <mat-label>Starts on</mat-label>
-                        <lib-date-picker [selectedDate]="selectedStartDate" (valueChange)="setDateValue('startOn',$event)">
+                        <lib-date-picker *ngIf="selectedStartDate" [selectedDate]="selectedStartDate" (valueChange)="setDateValue('startOn',$event)">
                         </lib-date-picker>
                         <!--pros-date-picker-field [showRangeFld]="false" [preSelectedFld]="form.controls.startOn.value"
                             (strtValueSelected)="setValue('startOn',$event)" [minimumValidDate]="today"
@@ -95,12 +95,7 @@
                 <div class="f-row mdo-form-field every-field" *ngIf="form.controls.end.value === 'ON'">
                     <div class="f-col">
                         <mat-label>Date</mat-label>
-                        <lib-date-picker [selectedDate]="selectedEndDate" (valueChange)="setDateValue('endOn',$event)">
-                        </lib-date-picker>
-                        <!--pros-date-picker-field [preSelectedFld]="form.controls.endOn.value"
-                            (strtValueSelected)="setValue('endOn',$event)" [minimumValidDate]="form.controls.startOn.value"
-                            [showFutureDates]="true">
-                        </pros-date-picker-field-->
+                        <lib-date-picker *ngIf="selectedStartDate" [minDate]="selectedStartDate" [selectedDate]="selectedEndDate" (valueChange)="setDateValue('endOn',$event)"></lib-date-picker>
                         <mat-error
                             *ngIf="formSubmitted && form.controls.endOn.errors && form.controls.endOn.errors.required">
                             This is a required field when cycle ends is ON
