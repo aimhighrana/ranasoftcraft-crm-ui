@@ -350,7 +350,17 @@ export class LookupRuleComponent implements OnInit, OnChanges {
     } else {
       if (field.fieldId) {
         const fieldObj = this.fieldsObject.list.find((fld) => fld.fieldId === field.fieldId);
-        return fieldObj ? fieldObj.fieldDescri : '';
+        if (fieldObj && fieldObj.fieldDescri) {
+          return fieldObj.fieldDescri;
+        } else {
+          const fieldsselected = this.allGridAndHirarchyData.find(parent => { return parent.children.find(child => { return child.id === field.fieldId }) });
+          if (fieldsselected && fieldsselected.children.length >= 1) {
+            const fieldChild = fieldsselected.children.find(child => child.id === field.fieldId);
+            if (fieldChild && fieldChild.parent && fieldChild.name) {
+              return `${fieldChild.parent}/${fieldChild.name}`;
+            }
+          }
+        }
       }
     }
   }
