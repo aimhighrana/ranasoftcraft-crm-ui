@@ -595,9 +595,8 @@ export class BrruleSideSheetComponent implements OnInit {
       udrTreeData: '',
       weightage: br.brWeightage,
       categoryId: br.categoryId,
-      transformationRuleType: '',
+      transformationRuleType: ''
     };
-    
 
     let patchList = [];
 
