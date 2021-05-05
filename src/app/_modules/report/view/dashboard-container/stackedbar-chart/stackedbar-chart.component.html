@@ -21,7 +21,7 @@
   <mat-card-content>
     <canvas baseChart [height]="widgetInfo.height * boxSize" [width]="widgetInfo.width * boxSize"
       [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions" [colors]="barChartColors"
-      [chartType]="orientation">
+      [chartType]="this.stackBarWidget.getValue().orientation === 'VERTICAL' ? 'bar' : 'horizontalBar'">
     </canvas>
   </mat-card-content>
 </mat-card>
