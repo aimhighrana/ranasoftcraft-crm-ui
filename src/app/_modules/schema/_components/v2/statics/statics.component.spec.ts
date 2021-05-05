@@ -109,32 +109,31 @@ describe('StaticsComponent', () => {
     component.ngOnInit();
     expect(component.selectedDateFilter).toEqual('This month');
     component.statsFilterParams._date_filter_type = 'today';
-    expect(component.selectedDateFilter).toEqual('Today');   
+    expect(component.selectedDateFilter).toEqual('Today');
     component.statsFilterParams._date_filter_type = 'this_week';
-    expect(component.selectedDateFilter).toEqual('This week');   
+    expect(component.selectedDateFilter).toEqual('This week');
     component.statsFilterParams._date_filter_type = 'specific_date';
     component.statsFilterParams.exe_start_date = `${new Date('2021-01-01').getTime()}`;
-    expect(component.selectedDateFilter).toEqual('01-Jan-2021');    
+    expect(component.selectedDateFilter).toEqual('01-Jan-2021');
     component.statsFilterParams._date_filter_type = 'date_range';
     component.statsFilterParams.exe_start_date = `${new Date('2021-01-01').getTime()}`;
     component.statsFilterParams.exe_end_date = `${new Date('2021-01-10').getTime()}`;
-    expect(component.selectedDateFilter).toEqual('01-Jan-2021 - 10-Jan-2021');    
+    expect(component.selectedDateFilter).toEqual('01-Jan-2021 - 10-Jan-2021');
     component.statsFilterParams._date_filter_type = null;
-    expect(component.selectedDateFilter).toEqual('Unknown filter');  
-
+    expect(component.selectedDateFilter).toEqual('Unknown filter');
   }));
 
   it('selectedUnit(), Get units terms to readable format ..', async(()=>{
     component.ngOnInit();
     expect(component.selectedUnit).toEqual('Daily');
     component.statsFilterParams.unit = 'week';
-    expect(component.selectedUnit).toEqual('Weekly'); 
+    expect(component.selectedUnit).toEqual('Weekly');
     component.statsFilterParams.unit = 'month';
-    expect(component.selectedUnit).toEqual('Monthly');    
+    expect(component.selectedUnit).toEqual('Monthly');
   }));
 
   it('_momentDate(), Get units terms to readable format ..', async(()=>{
     component.ngOnInit();
-    expect(component._momentDate(null).length).toEqual(0);  
+    expect(component._momentDate(null).length).toEqual(0);
   }));
 });

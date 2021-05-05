@@ -266,7 +266,6 @@ describe('UploadDatasetComponent', () => {
     expect(resp.udrDto.blocks.length).toEqual(0);
     expect(resp.duplicacyField.length).toEqual(0);
     expect(resp.duplicacyMaster.length).toEqual(0);
-    
   }));
 
   it(`getModulesMetaHeaders(), should be called when creating modules metadata`, async(() => {
